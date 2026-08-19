@@ -1,26 +1,155 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --page-bg: #f0f0ee;
+  --surface-1: #f0f0ee;
+  --surface-2: #ffffff;
+  --border-strong: #d4d3ce;
+  --text-primary: #1f1f1d;
+  --text-secondary: #6b6a65;
+  --text-muted: #a3a29c;
+
+  /* HelloFresh-inspireret designsystem — bruges uden for forsiden/drejehjulet */
+  --hf-green: #17794a;
+  --hf-green-dark: #0f5c38;
+  --hf-cream: #f3efe2;
+  --hf-tan: #eae3d1;
+  --hf-tan-dark: #ded5bc;
+  --hf-black: #1a1a17;
+  --hf-white: #ffffff;
+  --hf-gray: #9a988f;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-page-bg: var(--page-bg);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-border-strong: var(--border-strong);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-hf-green: var(--hf-green);
+  --color-hf-green-dark: var(--hf-green-dark);
+  --color-hf-cream: var(--hf-cream);
+  --color-hf-tan: var(--hf-tan);
+  --color-hf-tan-dark: var(--hf-tan-dark);
+  --color-hf-black: var(--hf-black);
+  --color-hf-white: var(--hf-white);
+  --color-hf-gray: var(--hf-gray);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-hf-heading: var(--font-hf-heading);
+  --font-hf-body: var(--font-hf-body);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--page-bg);
+  color: var(--text-primary);
+}
+
+/* ---- HelloFresh-stil genbrugelige klasser (docs/UI.md) ---- */
+
+/* Overskrifter: tung, geometrisk grotesk (font-hf-heading). Brødtekst/UI: font-hf-body. */
+.hf-heading {
+  font-family: var(--font-hf-heading);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+/* Knapper */
+.hf-btn-primary {
+  font-family: var(--font-hf-body);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: var(--hf-black);
+  color: var(--hf-white);
+  font-weight: 700;
+  padding: 0.9rem 1.5rem;
+}
+
+.hf-btn-secondary {
+  font-family: var(--font-hf-body);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: transparent;
+  border: 1.5px solid var(--hf-black);
+  color: var(--hf-black);
+  font-weight: 700;
+  padding: 0.9rem 1.5rem;
+}
+
+/* Valg-chip/kort (fx "Hvad er dine mål?") */
+.hf-chip {
+  font-family: var(--font-hf-body);
+  border-radius: 1.1rem;
+  background: var(--hf-tan);
+  color: var(--hf-black);
+  font-weight: 700;
+  padding: 1.1rem 1.25rem;
+  text-align: left;
+}
+
+.hf-chip[aria-pressed="true"],
+.hf-chip.is-selected {
+  outline: 2px solid var(--hf-black);
+  outline-offset: -2px;
+}
+
+/* Søgefelt */
+.hf-search {
+  font-family: var(--font-hf-body);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid var(--hf-tan-dark);
+  background: var(--hf-white);
+  color: var(--hf-black);
+  padding: 0.65rem 1rem;
+}
+
+.hf-search input {
+  flex: 1;
+  background: transparent;
+  outline: none;
+  font-size: 0.9375rem;
+}
+
+.hf-search input::placeholder {
+  color: var(--hf-black);
+  opacity: 0.5;
+}
+
+/* Accordion-kort (udvidelig varerække) */
+.hf-accordion {
+  border-radius: 1.1rem;
+  background: var(--hf-tan);
+  overflow: hidden;
+}
+
+.hf-accordion-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.75rem 1rem;
+}
+
+.hf-accordion-row + .hf-accordion-row {
+  border-top: 1px solid var(--hf-tan-dark);
+}
+
+.hf-accordion-toggle {
+  display: flex;
+  justify-content: center;
+  padding: 0.35rem 0;
+  border-top: 1px solid var(--hf-tan-dark);
+}
+
+.hf-accordion-body {
+  padding: 0 1rem 1rem;
+  border-top: 1px solid var(--hf-tan-dark);
 }

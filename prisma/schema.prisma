@@ -1,0 +1,159 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// --- Konto ---
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  displayName  String
+  role         Role     @default(USER)
+  createdAt    DateTime @default(now())
+
+  registrations Registration[]
+  favorites     Favorite[]
+  dishes        Dish[]
+
+  @@map("users")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+// --- Fødevaredatabase ---
+
+model Brand {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  logoUrl   String?
+  createdAt DateTime  @default(now())
+  products  Product[]
+
+  @@map("brands")
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  products Product[]
+  dishes   Dish[]
+
+  @@map("categories")
+}
+
+model Product {
+  id             String    @id @default(cuid())
+  name           String
+  brand          Brand?    @relation(fields: [brandId], references: [id])
+  brandId        String?
+  category       Category? @relation(fields: [categoryId], references: [id])
+  categoryId     String?
+  imageUrl       String?
+  kcalPer100g    Float
+  proteinPer100g Float
+  carbsPer100g   Float
+  fatPer100g     Float
+  status         ProductStatus @default(PENDING)
+  discontinued   Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+
+  barcodes        Barcode[]
+  registrations   Registration[]
+  favorites       Favorite[]
+  dishIngredients DishIngredient[]
+
+  @@map("products")
+}
+
+enum ProductStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Barcode {
+  code      String   @id
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String
+  blacklisted Boolean @default(false)
+
+  @@map("barcodes")
+}
+
+// --- Egne retter / opskrifter ---
+
+model Dish {
+  id         String    @id @default(cuid())
+  name       String
+  owner      User      @relation(fields: [ownerId], references: [id])
+  ownerId    String
+  category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId String?
+  externalSource String?
+  createdAt  DateTime  @default(now())
+
+  ingredients   DishIngredient[]
+  registrations Registration[]
+  favorites     Favorite[]
+
+  @@map("dishes")
+}
+
+model DishIngredient {
+  id        String  @id @default(cuid())
+  dish      Dish    @relation(fields: [dishId], references: [id])
+  dishId    String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+  grams     Float
+
+  @@map("dish_ingredients")
+}
+
+// --- Registreringer (snapshot-princip) ---
+
+model Registration {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  product   Product? @relation(fields: [productId], references: [id])
+  productId String?
+  dish      Dish?    @relation(fields: [dishId], references: [id])
+  dishId    String?
+
+  // Snapshot-felter: værdierne på registreringstidspunktet, ændres aldrig
+  // efterfølgende selvom produktet/retten opdateres senere.
+  titleSnapshot   String
+  kcalSnapshot    Float
+  proteinSnapshot Float
+  carbsSnapshot   Float
+  fatSnapshot     Float
+  amountGrams     Float
+
+  createdAt DateTime @default(now())
+
+  @@map("registrations")
+}
+
+// --- Favoritter / bibliotek ---
+
+model Favorite {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  product   Product? @relation(fields: [productId], references: [id])
+  productId String?
+  dish      Dish?    @relation(fields: [dishId], references: [id])
+  dishId    String?
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId, dishId])
+  @@map("favorites")
+}

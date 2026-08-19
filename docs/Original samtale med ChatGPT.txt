@@ -1,0 +1,60 @@
+i går 7.43
+Findes der nogen kalorietællerapps som integrerer med fitbit og evt. smartvægt? Og som kører med AI hvor jeg på dansk kan indtale hvad jeg spiser eller tage billeder af det?
+
+Ja. Hvis du vil have Fitbit + AI + dansk tale + billeder, ville jeg kigge på disse:
+
+Fitia ⭐⭐⭐⭐⭐
+✅ Tag billede af maden
+✅ Indtal hvad du spiser (AI)
+✅ Fungerer fint med dansk tale
+✅ Synkroniserer med Apple Health og andre sundhedsapps
+⚠️ Fitbit-integration er ikke lige så dyb som nogle konkurrenter.
+Fitatu ⭐⭐⭐⭐⭐ (mit bedste bud)
+✅ Foto af maden
+✅ Stemmeinput
+✅ Direkte Fitbit-integration
+✅ Understøtter smartvægte via Fitbit/Google Health, Garmin m.fl.
+Google Health / Fitbit
+✅ AI kan logge mad via foto.
+✅ Passer naturligvis perfekt til Fitbit.
+⚠️ Stemme og AI-funktionerne kræver de nye AI-funktioner/abonnement.
+Smartvægt
+
+Hvis du vælger en Withings Body Smart, synker vægten automatisk til Apple Health, og via sundhedsplatforme kan data deles videre med andre apps.
+
+Min anbefaling
+Fitatu, hvis du vil have den bedste kombination af Fitbit + AI + foto + stemme.
+Fitia, hvis dansk tale er vigtigst.
+Google Health, hvis du helst vil blive i Fitbit-økosystemet.
+
+En anden mulighed er faktisk at bygge præcis det, du tidligere har nævnt: en lille app, hvor du bare siger på dansk: "Jeg har spist to rugbrød med leverpostej og et glas mælk", eller tager et billede, hvorefter den automatisk logger kalorier og synkroniserer til Fitbit. Det kan laves.
+
+Men har din database kendskab til danske varer og deres kalorier mv?
+
+Ja – i ret høj grad, men med nogle begrænsninger.
+
+Jeg kan genkende mange danske varer, f.eks.:
+
+Arla, Karolines Køkken, Cheasy, Lurpak
+Schulstad, Kohberg
+Tulip, Steff Houlberg
+Rema 1000, Netto, Coop, Lidl og Føtex' egne varer (mange af dem)
+Mange almindelige danske fødevarer og retter.
+
+Hvis du skriver eller siger:
+
+"2 skiver Schulstad Signatur rugbrød med Kærgården og 3 skiver Tulip hamburgerryg"
+
+kan jeg som regel finde de korrekte næringsværdier eller meget tæt på.
+
+Hvis du tager et billede af en emballage med stregkode eller næringsdeklaration, kan jeg også aflæse den.
+
+Det, jeg ikke har, er en komplet offline-database over alle danske supermarkedsvarer. For helt specifikke produkter (f.eks. en ny Rema 1000-variant eller en lokal vare) kan jeg være nødt til at slå oplysningerne op eller læse dem fra emballagen.
+
+Hvis du vil have 100 % præcision med alle danske varer, er apps som Lifesum og YAZIO stærke, fordi de har store fødevaredatabaser med stregkoder. Til gengæld er deres AI-funktioner til foto og fri tale ofte mindre fleksible end det, vi kunne bygge selv.
+
+Hvis dit mål er at kunne sige på dansk:
+
+"Jeg spiste en stor skål havregryn med minimælk og en banan"
+
+og få kalorierne registreret automatisk i Fitbit, så kan det godt lade sig gøre med en skræddersyet løsning.
