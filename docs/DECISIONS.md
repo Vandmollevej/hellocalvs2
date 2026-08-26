@@ -19,6 +19,9 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - Secrets belong in server-side environment configuration and must never be committed.
 - 2026-08-26: Production delivery uses GitHub-hosted image builds followed by an authenticated GHCR pull on Synology. Images receive both `latest` and immutable Git SHA tags; controlled deployments pin a SHA.
 - 2026-08-26: The new stack is isolated as Compose project `hellocal-v2` under `/volume1/docker/App/hellocal-v2`, with PostgreSQL 17 and host port `3100`. The stopped legacy stack and `/volume1/docker/App/hellocal/postgres` remain untouched until a separate data-migration decision is made.
+- 2026-08-26: The public HELLO CAL application remains accessible to anyone who
+  knows its address, but every response carries an `X-Robots-Tag` noindex policy
+  so search engines are instructed not to index or surface its contents.
 
 ## Engineering process
 

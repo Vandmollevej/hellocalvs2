@@ -56,6 +56,7 @@ Last updated: 2026-08-26
 
 1. Perform user acceptance testing through `hellocal.packroff.dk`, including on
    a phone.
-2. Add explicit search-engine `noindex` protection before wider use.
+2. Verify the deployed `X-Robots-Tag` noindex response header after the next
+   production image rollout.
 3. Copy verified database backups to a second storage location.
 4. Keep the external SSH maintenance switch off outside maintenance windows.
