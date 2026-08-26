@@ -12,10 +12,11 @@ type Item = {
   protein: number;
   carbs: number;
   fat: number;
+  image?: string;
 };
 
 const items: Item[] = [
-  { id: "1", title: "Rugbrød, 2 skiver", kcal: 180, amountLabel: "2 skiver", protein: 6, carbs: 28, fat: 2 },
+  { id: "1", title: "Rugbrød, 2 skiver", kcal: 180, amountLabel: "2 skiver", protein: 6, carbs: 28, fat: 2, image: "/dummy/rugbroed.png" },
   { id: "2", title: "Smør, lidt", kcal: 35, amountLabel: "8 g", protein: 0, carbs: 0, fat: 4 },
   { id: "3", title: "Roastbeef, tykt lag", kcal: 90, amountLabel: "40 g", protein: 12, carbs: 0, fat: 4 },
 ];
@@ -50,7 +51,12 @@ function VoiceItem({ item, open, onToggle }: { item: Item; open: boolean; onTogg
   return (
     <div className="overflow-hidden rounded-2xl bg-hf-tan">
       <div className="flex items-center gap-2.5 px-4 py-3.5">
-        <div className="h-11 w-11 flex-shrink-0 rounded-full bg-hf-white" />
+        <div className="h-11 w-11 flex-shrink-0">
+          {item.image && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={item.image} alt="" className="h-full w-full object-contain" />
+          )}
+        </div>
         <p className="flex-1 text-[15px] font-bold text-hf-black">{item.title}</p>
         <span className="text-sm text-hf-black opacity-70">{item.kcal} kcal</span>
       </div>
@@ -85,7 +91,7 @@ function VoiceItem({ item, open, onToggle }: { item: Item; open: boolean; onTogg
           </div>
 
           <div>
-            <p className="mb-4 text-[15px] font-extrabold text-hf-black">Energifordeling</p>
+            <p className="hf-heading mb-4 text-[15px] text-hf-black">Energifordeling</p>
             <div className="flex flex-col gap-5">
               <MacroBar label="Protein" grams={item.protein} max={30} />
               <MacroBar label="Kulhydrat" grams={item.carbs} max={40} />

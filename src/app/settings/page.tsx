@@ -17,7 +17,7 @@ export default function SettingsPage() {
           <p className="text-[15px] font-bold text-hf-black">
             Vælg dine egne opskrifter, og skræddersy din måltidskasse.
           </p>
-          <button className="mt-4 w-full rounded-full bg-hf-black py-3 text-[15px] font-bold text-hf-white">
+          <button className="hf-btn-primary mt-4 w-full py-3 text-[15px]">
             Log ind / tilmeld
           </button>
         </div>

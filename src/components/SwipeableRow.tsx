@@ -14,12 +14,14 @@ export function SwipeableRow({
   children: React.ReactNode;
 }) {
   const [dragX, setDragX] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
   const startX = useRef<number | null>(null);
   const dragging = useRef(false);
 
   function handlePointerDown(e: React.PointerEvent) {
     startX.current = e.clientX;
     dragging.current = true;
+    setIsDragging(true);
   }
 
   function handlePointerMove(e: React.PointerEvent) {
@@ -31,6 +33,7 @@ export function SwipeableRow({
 
   function handlePointerUp() {
     dragging.current = false;
+    setIsDragging(false);
     startX.current = null;
     // Snap til åben/lukket i stedet for en tilfældig mellemposition.
     setDragX((x) => {
@@ -74,7 +77,7 @@ export function SwipeableRow({
         className="relative bg-hf-cream transition-transform"
         style={{
           transform: `translateX(${dragX}px)`,
-          transitionDuration: dragging.current ? "0ms" : "150ms",
+          transitionDuration: isDragging ? "0ms" : "150ms",
         }}
       >
         {children}

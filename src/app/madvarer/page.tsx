@@ -39,13 +39,12 @@ export default function MadvarerPage() {
   return (
     <HfScreen title="Gemte madvarer">
       <div className="flex flex-col gap-3 p-4">
-        <div className="flex items-center gap-2 rounded-full border border-hf-tan-dark bg-hf-white px-3.5 py-2.5">
+        <div className="hf-search">
           <IconSearch size={16} color="var(--hf-black)" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Søg i mit bibliotek"
-            className="flex-1 bg-transparent text-sm text-hf-black outline-none placeholder:opacity-60"
           />
         </div>
 

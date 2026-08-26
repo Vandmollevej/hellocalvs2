@@ -78,9 +78,7 @@ function KameraContent() {
               placeholder="fx 5701234567890"
               className="flex-1 rounded-full bg-hf-white px-3.5 py-2 text-sm text-hf-black outline-none"
             />
-            <button className="rounded-full bg-hf-black px-4 py-2 text-xs font-bold text-hf-white">
-              Slå op
-            </button>
+            <button className="hf-btn-primary px-4 py-2 text-xs">Slå op</button>
           </form>
 
           {result.status === "loading" && (

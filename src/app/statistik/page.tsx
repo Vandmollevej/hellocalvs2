@@ -43,7 +43,7 @@ export default function StatistikPage() {
           {metrics.map((m) => (
             <div key={m.label} className="rounded-2xl bg-hf-tan p-4">
               <p className="text-xs text-hf-black opacity-60">{m.label}</p>
-              <p className="mt-1 text-xl font-extrabold text-hf-black">{m.value}</p>
+              <p className="hf-heading mt-1 text-xl text-hf-black">{m.value}</p>
             </div>
           ))}
         </div>

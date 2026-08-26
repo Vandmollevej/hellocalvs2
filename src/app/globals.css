@@ -57,6 +57,8 @@ body {
 }
 
 /* Knapper */
+/* Padding er ikke sat her med vilje — angiv altid px- og py- på selve elementet,
+   så knappen kan bruges i både store (fuld bredde) og små (inline) sammenhænge. */
 .hf-btn-primary {
   font-family: var(--font-hf-body);
   display: flex;
@@ -66,7 +68,6 @@ body {
   background: var(--hf-black);
   color: var(--hf-white);
   font-weight: 700;
-  padding: 0.9rem 1.5rem;
 }
 
 .hf-btn-secondary {
@@ -79,7 +80,6 @@ body {
   border: 1.5px solid var(--hf-black);
   color: var(--hf-black);
   font-weight: 700;
-  padding: 0.9rem 1.5rem;
 }
 
 /* Valg-chip/kort (fx "Hvad er dine mål?") */

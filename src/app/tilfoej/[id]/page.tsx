@@ -9,6 +9,7 @@ type Product = {
   name: string;
   kcalPer100g: number;
   brand: { name: string } | null;
+  imageUrl?: string | null;
 };
 
 type LoadState =
@@ -78,13 +79,22 @@ export default function TilfoejPage() {
         {state.status === "loaded" && (
           <>
             <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
-              <div className="h-[140px] w-[140px] rounded-2xl bg-hf-tan" />
+              <div className="flex h-[140px] w-[140px] items-center justify-center rounded-2xl bg-hf-tan">
+                {state.product.imageUrl && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={state.product.imageUrl}
+                    alt=""
+                    className="h-full w-full object-contain p-3"
+                  />
+                )}
+              </div>
               {state.product.brand && (
                 <p className="text-xs font-medium text-hf-black opacity-60">
                   {state.product.brand.name}
                 </p>
               )}
-              <p className="text-lg font-extrabold text-hf-black">{state.product.name}</p>
+              <p className="hf-heading text-lg text-hf-black">{state.product.name}</p>
               <p className="text-sm text-hf-black opacity-70">
                 {Math.round((state.product.kcalPer100g * amount) / 100)} kcal
               </p>
@@ -115,7 +125,7 @@ export default function TilfoejPage() {
             <button
               onClick={handleAdd}
               disabled={saving}
-              className="w-full rounded-full bg-hf-black py-3.5 text-[15px] font-bold text-hf-white disabled:opacity-60"
+              className="hf-btn-primary w-full py-3.5 text-[15px] disabled:opacity-60"
             >
               {saving ? "Gemmer..." : "Tilføj"}
             </button>

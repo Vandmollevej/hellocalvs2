@@ -34,7 +34,7 @@ export default function KalenderPage() {
   return (
     <HfScreen title="Kalender">
       <div className="p-4">
-        <p className="mb-4 text-center text-[15px] font-bold capitalize text-hf-black">
+        <p className="hf-heading mb-4 text-center text-[15px] capitalize text-hf-black">
           {monthLabel}
         </p>
 

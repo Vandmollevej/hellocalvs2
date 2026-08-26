@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { IconBookmarkFilled } from "@tabler/icons-react";
 import { SwipeableRow } from "@/components/SwipeableRow";
 
 type Entry = {
@@ -10,11 +11,12 @@ type Entry = {
   kcal: number;
   time: string;
   favorite?: boolean;
+  image?: string;
 };
 
 const initialEntries: Entry[] = [
   { id: "1", title: "Kyllingesalat med avocado, ristede kerner og citronvinaigrette", kcal: 480, time: "18:20" },
-  { id: "2", title: "Rugbrød med skinke, tomat og lidt smør", kcal: 310, time: "13:05" },
+  { id: "2", title: "Rugbrød med skinke, tomat og lidt smør", kcal: 310, time: "13:05", image: "/dummy/rugbroed.png" },
   { id: "3", title: "Havregrød med blåbær og honning", kcal: 450, time: "08:10" },
 ];
 
@@ -43,11 +45,22 @@ export function DailyList() {
                 href={`/registrering/${entry.id}`}
                 className="flex items-start gap-2.5 py-2.5"
               >
-                <div className="h-11 w-11 flex-shrink-0 rounded-lg bg-hf-tan" />
+                <div className="h-11 w-11 flex-shrink-0 overflow-hidden rounded-lg bg-hf-tan">
+                  {entry.image && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={entry.image} alt="" className="h-full w-full object-contain" />
+                  )}
+                </div>
                 <div className="min-w-0 flex-1">
                   <p className="line-clamp-2 text-sm text-hf-black">
                     {entry.title}
-                    {entry.favorite && " ★"}
+                    {entry.favorite && (
+                      <IconBookmarkFilled
+                        size={13}
+                        color="var(--hf-black)"
+                        className="ml-1 inline-block translate-y-[1px]"
+                      />
+                    )}
                   </p>
                   <div className="mt-0.5 flex justify-between">
                     <span className="text-xs text-hf-black opacity-60">{entry.kcal} kcal</span>

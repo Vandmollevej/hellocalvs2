@@ -5,30 +5,34 @@ import Link from "next/link";
 import { IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 
-type Result = { id: string; title: string };
+type Result = { id: string; title: string; image?: string };
 
 const previouslyAdded: Result[] = [
-  { id: "p1", title: "Rugbrød m. kerner, Schulstad" },
+  { id: "p1", title: "Rugbrød m. kerner, Schulstad", image: "/dummy/rugbroed.png" },
 ];
-const favorites: Result[] = [{ id: "f1", title: "Groft rugbrød, Kohberg" }];
+const favorites: Result[] = [
+  { id: "f1", title: "Groft rugbrød, Kohberg", image: "/dummy/rugbroed.png" },
+];
 
 // Vises hvis /api/products (databasen) ikke kan svare — sker i dette
 // sandbox-miljø uden en kørende Postgres, men lader UI'et forblive brugbart.
 const fallbackResults: Result[] = [
-  { id: "r1", title: "Kernerugbrød, Rema 1000" },
-  { id: "r2", title: "Rugbrød med solsikkekerner, Lidl" },
-  { id: "r3", title: "Rugkerner-snitter, Kohberg" },
+  { id: "r1", title: "Kernerugbrød, Rema 1000", image: "/dummy/rugbroed.png" },
+  { id: "r2", title: "Rugbrød med solsikkekerner, Lidl", image: "/dummy/rugbroed.png" },
+  { id: "r3", title: "Rugkerner-snitter, Kohberg", image: "/dummy/rugbroed.png" },
 ];
 
-function ResultRow({ id, title }: { id: string; title: string }) {
+function ResultRow({ id, title, image }: { id: string; title: string; image?: string }) {
   return (
     <div className="flex items-center gap-2.5 px-4 py-3 border-b border-hf-tan-dark last:border-b-0">
-      <div className="h-10 w-10 flex-shrink-0 rounded-full bg-hf-white" />
+      <div className="h-10 w-10 flex-shrink-0">
+        {image && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={image} alt="" className="h-full w-full object-contain" />
+        )}
+      </div>
       <span className="flex-1 text-[15px] font-medium text-hf-black">{title}</span>
-      <Link
-        href={`/tilfoej/${id}`}
-        className="rounded-full bg-hf-black px-4 py-1.5 text-xs font-bold text-hf-white"
-      >
+      <Link href={`/tilfoej/${id}`} className="hf-btn-primary px-4 py-1.5 text-xs">
         Tilføj
       </Link>
     </div>
@@ -51,9 +55,10 @@ export default function SoegPage() {
         if (!res.ok) throw new Error("offline");
         const data = await res.json();
         setResults(
-          data.products.map((p: { id: string; name: string }) => ({
+          data.products.map((p: { id: string; name: string; imageUrl?: string | null }) => ({
             id: p.id,
             title: p.name,
+            image: p.imageUrl ?? undefined,
           }))
         );
         setOffline(false);
@@ -78,14 +83,13 @@ export default function SoegPage() {
   return (
     <HfScreen title="Søg">
       <div className="flex flex-col gap-3.5 p-4">
-        <div className="flex items-center gap-2 rounded-full border border-hf-tan-dark bg-hf-white px-3.5 py-2.5">
+        <div className="hf-search">
           <IconSearch size={16} color="var(--hf-black)" />
           <input
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Søg fødevare eller ret"
-            className="flex-1 bg-transparent text-sm text-hf-black outline-none placeholder:opacity-60"
           />
         </div>
 
@@ -100,14 +104,14 @@ export default function SoegPage() {
             <p className="text-xs font-bold text-hf-black">Tidligere tilføjet</p>
             <div className="overflow-hidden rounded-2xl bg-hf-tan">
               {previouslyAdded.map((r) => (
-                <ResultRow key={r.id} id={r.id} title={r.title} />
+                <ResultRow key={r.id} id={r.id} title={r.title} image={r.image} />
               ))}
             </div>
 
             <p className="text-xs font-bold text-hf-black">Favoritter</p>
             <div className="overflow-hidden rounded-2xl bg-hf-tan">
               {favorites.map((r) => (
-                <ResultRow key={r.id} id={r.id} title={r.title} />
+                <ResultRow key={r.id} id={r.id} title={r.title} image={r.image} />
               ))}
             </div>
           </>
@@ -118,7 +122,7 @@ export default function SoegPage() {
         </p>
         <div className="overflow-hidden rounded-2xl bg-hf-tan">
           {results.slice(0, 6).map((r) => (
-            <ResultRow key={r.id} id={r.id} title={r.title} />
+            <ResultRow key={r.id} id={r.id} title={r.title} image={r.image} />
           ))}
           {results.length === 0 && (
             <p className="px-4 py-4 text-center text-sm text-hf-black opacity-60">

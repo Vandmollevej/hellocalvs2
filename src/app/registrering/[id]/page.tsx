@@ -70,8 +70,8 @@ export default function RegistreringPage() {
   if (!entry) {
     return (
       <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
-        <div className="flex items-center justify-center bg-hf-green px-4 py-4">
-          <h1 className="text-lg font-extrabold text-hf-white">Registrering</h1>
+        <div className="flex items-center justify-center bg-hf-green px-4 pb-4 pt-9">
+          <h1 className="hf-heading text-lg text-hf-white">Registrering</h1>
         </div>
         <p className="flex-1 p-4 text-center text-sm text-hf-black opacity-60">
           Registreringen findes ikke.
@@ -83,7 +83,7 @@ export default function RegistreringPage() {
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
-      <div className="flex items-center justify-between bg-hf-green px-4 py-4">
+      <div className="flex items-center justify-between bg-hf-green px-4 pb-4 pt-9">
         <button
           onClick={() => router.back()}
           className="text-sm font-bold text-hf-white"
@@ -110,7 +110,7 @@ export default function RegistreringPage() {
           <p className="text-sm text-hf-black opacity-70">{entry.kcal} kcal</p>
 
           <div className="flex flex-col gap-4 rounded-2xl bg-hf-tan p-4">
-            <p className="text-[15px] font-extrabold text-hf-black">Energifordeling</p>
+            <p className="hf-heading text-[15px] text-hf-black">Energifordeling</p>
             <MacroBar label="Protein" grams={entry.protein} max={40} />
             <MacroBar label="Kulhydrat" grams={entry.carbs} max={80} />
             <MacroBar label="Fedt" grams={entry.fat} max={30} />
