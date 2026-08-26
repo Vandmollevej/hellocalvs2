@@ -17,6 +17,8 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - Remote web access uses the existing Cloudflare Tunnel; no application portforwarding is intended.
 - Source code is stored in the private GitHub repository, and application images are published to GHCR.
 - Secrets belong in server-side environment configuration and must never be committed.
+- 2026-08-26: Production delivery uses GitHub-hosted image builds followed by an authenticated GHCR pull on Synology. Images receive both `latest` and immutable Git SHA tags; controlled deployments pin a SHA.
+- 2026-08-26: The new stack is isolated as Compose project `hellocal-v2` under `/volume1/docker/App/hellocal-v2`, with PostgreSQL 17 and host port `3100`. The stopped legacy stack and `/volume1/docker/App/hellocal/postgres` remain untouched until a separate data-migration decision is made.
 
 ## Engineering process
 
