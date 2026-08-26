@@ -16,7 +16,10 @@ Last updated: 2026-08-26
 - `git diff --check`: passed on 2026-08-26.
 - `npm run lint`: passed on 2026-08-26.
 - `npx tsc --noEmit`: passed after the camera implementation on 2026-08-26.
-- `npm run build`: passed on 2026-08-26 with TypeScript validation enabled.
+- The freshly compiled `/kamera?mode=produkt` development route returned HTTP
+  200 after the camera implementation on 2026-08-26.
+- `npm run build`: passed after the camera implementation on 2026-08-26 with
+  TypeScript validation enabled.
 - Prisma schema validation: passed on 2026-08-26.
 - The initial SQL migration was generated and compared against the Prisma schema;
   they match.
@@ -64,6 +67,9 @@ Last updated: 2026-08-26
 - Meal mode now shows the live camera with the specified plate guide and can
   capture and retake a local photo preview. AI meal interpretation and upload
   remain separate future work.
+- The production demo user was populated on 2026-08-26 with four non-duplicate
+  food registrations for the current day (1,044 kcal and 10 g protein total),
+  using the existing product lookup and registration APIs.
 
 ## Deployment implementation
 
