@@ -26,6 +26,8 @@ Last updated: 2026-08-26
   search, database backup, restart, and persistence passed on 2026-08-26.
 - The temporary Cloudflare hostname `hellocal-test.packroff.dk` was verified
   publicly against the isolated application on NAS port `3100`.
+- The permanent hostname `hellocal.packroff.dk` was added and verified publicly
+  against the same isolated application on 2026-08-26.
 
 ## Deployment implementation
 
@@ -52,7 +54,8 @@ Last updated: 2026-08-26
 
 ## Next work
 
-1. Perform user acceptance testing through `hellocal-test.packroff.dk`.
-2. Choose the permanent HELLO CAL hostname before changing any existing route.
+1. Perform user acceptance testing through `hellocal.packroff.dk`, including on
+   a phone.
+2. Remove the temporary `hellocal-test.packroff.dk` route after acceptance.
 3. Copy verified database backups to a second storage location.
 4. Keep the external SSH maintenance switch off outside maintenance windows.
