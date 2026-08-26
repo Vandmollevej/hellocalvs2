@@ -15,6 +15,7 @@ Last updated: 2026-08-26
 
 - `git diff --check`: passed on 2026-08-26.
 - `npm run lint`: passed on 2026-08-26.
+- `npx tsc --noEmit`: passed after the camera implementation on 2026-08-26.
 - `npm run build`: passed on 2026-08-26 with TypeScript validation enabled.
 - Prisma schema validation: passed on 2026-08-26.
 - The initial SQL migration was generated and compared against the Prisma schema;
@@ -38,6 +39,31 @@ Last updated: 2026-08-26
   those real products instead of showing example food rows.
 - The responsive app shell now removes the simulated phone frame on phones and
   other coarse-pointer devices while preserving it for desktop presentation.
+- The Stemme screen now places the live transcript above detected food entries,
+  shows a pulsing stand-microphone indicator during AI processing, and lets the
+  user edit daily-meal-style rows before approval.
+- The Stemme screen now requests real microphone access and uses the browser's
+  Danish speech-recognition service for live interim and final transcription.
+  Structured food interpretation remains placeholder data until the AI service
+  is connected.
+- Calendar goal completion now uses a subtle 1 px green outline and light-green
+  corner checkmark; the current date keeps the solid green highlight.
+- The calendar now supports horizontal swipe and arrow navigation, a full
+  month picker, and month, week, and list views from the top-right view menu.
+- Every date opens a full day view. Its registration list still uses example
+  rows and remains part of the pending database-backed calendar work.
+- The home-screen key-metric wheel is interactive by vertical swipe, mouse
+  wheel, adjacent-item tap, and keyboard arrows. Calories and protein are
+  calculated from today's PostgreSQL registration snapshots; activity metrics
+  remain prototype values until health integration is connected.
+- The Kamera screen now requests the device's rear-facing camera. Product mode
+  continuously scans real one-dimensional barcodes with ZXing, looks them up
+  through the existing local/Open Food Facts endpoint, and opens the real
+  add-product flow when a match is found. Manual barcode entry remains as a
+  fallback.
+- Meal mode now shows the live camera with the specified plate guide and can
+  capture and retake a local photo preview. AI meal interpretation and upload
+  remain separate future work.
 
 ## Deployment implementation
 

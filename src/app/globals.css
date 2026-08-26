@@ -12,6 +12,7 @@
   /* HelloFresh-inspireret designsystem — bruges uden for forsiden/drejehjulet */
   --hf-green: #17794a;
   --hf-green-dark: #0f5c38;
+  --hf-green-light: #8fd6ac;
   --hf-cream: #f3efe2;
   --hf-tan: #eae3d1;
   --hf-tan-dark: #ded5bc;
@@ -30,6 +31,7 @@
   --color-text-muted: var(--text-muted);
   --color-hf-green: var(--hf-green);
   --color-hf-green-dark: var(--hf-green-dark);
+  --color-hf-green-light: var(--hf-green-light);
   --color-hf-cream: var(--hf-cream);
   --color-hf-tan: var(--hf-tan);
   --color-hf-tan-dark: var(--hf-tan-dark);
@@ -45,6 +47,29 @@
 body {
   background: var(--page-bg);
   color: var(--text-primary);
+}
+
+/* Desktop viser prototypen i en telefonramme. På telefoner og andre enheder
+   med touch-markør fylder selve appen browserens viewport uden mockup-rammen. */
+@media (max-width: 767px), (hover: none) and (pointer: coarse) {
+  .phone-frame-stage {
+    min-height: 100dvh;
+    padding: 0;
+    background: var(--surface-1);
+  }
+
+  .phone-frame-viewport,
+  .phone-frame-device {
+    width: 100% !important;
+    height: 100dvh !important;
+  }
+
+  .phone-frame-device {
+    transform: none !important;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
 }
 
 /* ---- HelloFresh-stil genbrugelige klasser (docs/UI.md) ---- */
@@ -152,4 +177,41 @@ body {
 .hf-accordion-body {
   padding: 0 1rem 1rem;
   border-top: 1px solid var(--hf-tan-dark);
+}
+
+@keyframes calendar-slide-next {
+  from {
+    opacity: 0.45;
+    transform: translateX(18%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes calendar-slide-previous {
+  from {
+    opacity: 0.45;
+    transform: translateX(-18%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.calendar-slide-next {
+  animation: calendar-slide-next 220ms ease-out;
+}
+
+.calendar-slide-previous {
+  animation: calendar-slide-previous 220ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .calendar-slide-next,
+  .calendar-slide-previous {
+    animation: none;
+  }
 }

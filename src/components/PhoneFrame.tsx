@@ -24,13 +24,16 @@ export function PhoneFrame({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-neutral-300 p-6">
-      <div style={{ width: FRAME_WIDTH * scale, height: FRAME_HEIGHT * scale }}>
+    <div className="phone-frame-stage flex min-h-dvh items-center justify-center bg-neutral-300 p-6">
+      <div
+        className="phone-frame-viewport"
+        style={{ width: FRAME_WIDTH * scale, height: FRAME_HEIGHT * scale }}
+      >
         <div
-          className="origin-top-left overflow-hidden rounded-[44px] border-[6px] border-neutral-800 bg-surface-1 shadow-2xl"
+          className="phone-frame-device origin-top-left overflow-hidden rounded-[44px] border-[6px] border-neutral-800 bg-surface-1 shadow-2xl"
           style={{ width: FRAME_WIDTH, height: FRAME_HEIGHT, transform: `scale(${scale})` }}
         >
-          <div className="flex h-full flex-col overflow-y-auto">{children}</div>
+          <div className="phone-frame-content flex h-full flex-col overflow-y-auto">{children}</div>
         </div>
       </div>
     </div>

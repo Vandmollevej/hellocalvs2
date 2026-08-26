@@ -23,6 +23,11 @@ Fra og med implementeringsfasen skal appens generelle visuelle stil (farver, fon
 - Tilføj-dialoger vises altid på én skærm uden scrolling.
 - Kort tryk = åbn/se detaljer. Langt tryk = tilføj direkte som ny registrering (visuel "Tilføjet"-animation). Gælder favoritter, tidligere brugte, søgeresultater, kalender og statistik.
 - Kalenderen og statistikken visualiserer succes, ikke fiasko — ingen røde/gule fejlmarkeringer, ingen streaks eller kunstige "Du er fantastisk!"-beskeder.
+- Kalenderen kan vises som måned, uge eller liste via ikonet øverst til højre.
+  Vandret swipe og pile skifter periode, månedstitlen åbner alle årets måneder,
+  og tryk på en dato åbner dagens gemte registreringer.
+- I kalenderen markeres en dag med opfyldt mål diskret med en 1 px grøn ramme
+  og et lysegrønt flueben øverst til højre. Dags dato har grøn baggrund.
 
 ## Navigation
 
@@ -50,7 +55,7 @@ Indstillinger er opdelt i fire sektioner:
 - Central, halvcirkelformet **+**-knap i bunden af skærmen (ca. 1/3 af skærmbredden), placeret i den ergonomiske tommelfingerzone. Position kan flyttes venstre/højre i Indstillinger.
 - Tryk på +-knappen åbner en radial menu med fire ikoner — **Måltid** (tallerken med kniv og gaffel), **Kamera**, **Søg**, **Mikrofon** — med en kort åbne-/lukke-animation (150-200 ms). Menuen lukker automatisk igen.
 - "Måltid" åbner kameraet med tallerken-guide (til madfotografering). "Kamera" åbner kameraet uden tallerken-guide — kun en generisk fokusramme — til produkter/stregkoder/emballage. Kameraet er stadig intelligent og kan selv genkende typen, men indgangsikonet sætter den forventede kontekst.
-- Ved siden af +-knappen: et lodret nøgletalspanel udformet som et drejehjul/urskive. Hvert tal har et ikon placeret FORAN tallet (ikke efter). Det midterste tal er altid størst og tydeligst (kalorier som standard) med et flamme-ikon; tallene over og under vinkles let og er svagere, som på en urskive, hver med sit eget ikon (fx en gåfigur for skridt, et æg-ikon for protein). Ved scroll roterer panelet, så et nyt tal bliver midtstillet og forstørret.
+- Ved siden af +-knappen: et lodret nøgletalspanel udformet som et drejehjul/urskive. Hvert tal har et ikon placeret FORAN tallet (ikke efter). Det midterste tal er altid størst og tydeligst (kalorier som standard) med et flamme-ikon; tallene over og under vinkles let og er svagere, som på en urskive, hver med sit eget ikon (fx en gåfigur for skridt, et æg-ikon for protein). Lodret swipe, scroll, tryk på nabotallet eller tastaturets pile roterer panelet, så et nyt tal bliver midtstillet og forstørret.
 - Statistik-ikonet i bundnavigationen skal være en tydelig, tyk opadgående kurve med tre markerede knækpunkter (prikker) — ikke en spinkel linje.
 - Under det store centrale tal vises totalen (fx "/ 3.299 kcal") som en mindre linje nedenunder — ikke på samme linje som selve tallet, så det ikke bliver for langt.
 - Rækkefølgen af nøgletal, hvilket der vises som standard i midten (kalorier som standardvalg) og hvilket ikon der bruges pr. nøgletal kan indstilles under profilindstillinger → Præferencer.
@@ -72,7 +77,11 @@ Indstillinger er opdelt i fire sektioner:
 - Header-rækken (billede, titel, kalorier) er identisk i sammenfoldet og udfoldet tilstand — kalorier flytter/forsvinder ikke ved udfoldning. Fold-op-pilen er en smal, separat bjælke centreret lige under header-rækken, ikke en del af selve rækken.
 - I den udfoldede tilstand kan brugeren redigere: mængde (med -/+ trin). Kalorier vises kun i header-rækken, ikke duplikeret nedenunder.
 
-> Åbent punkt (ikke rettet endnu): en mikrofon-boks med sidste udsagn (fx "...et glas mælk") vist i bunden af listen under tale-optagelse er ikke en bekræftet beslutning — skal genovervejes/fjernes.
+- Under taleoptagelse står den løbende transskription øverst, direkte under en
+  standmikrofon i en cirkel. Cirklen pulserer, mens AI omformer talen til felter.
+  Fundne retter, madvarer og ingredienser vises nedenunder i samme rækkestil som
+  "Dagens måltider". Når talen er færdigbehandlet, kan brugeren redigere de
+  fundne felter eller trykke "Godkend".
 - "Energifordeling" vises som en fed overskrift med god luft ned til indholdet. Protein, kulhydrat og fedt vises hver med egen slider til at justere gram. Gramtallet vises stort nok til at kunne trykkes på for manuel indtastning (ikke kun styres via slideren).
 - Øvrige varer i listen forbliver kompakte nedenunder, mens den valgte vare er foldet ud.
 

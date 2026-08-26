@@ -9,6 +9,27 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - Registrations store nutrition snapshots so later product edits cannot alter historical records.
 - HELLO CAL is the primary data source. Apple Health and Google Health Connect are write-only integrations as described in the specification.
 - Product behavior and UI decisions in `docs/SPECIFICATION.md`, `docs/UI.md`, `docs/AI.md`, `docs/DATABASE.md`, `docs/BACKEND.md`, and `docs/ADMIN.md` take precedence over prototype placeholders.
+- 2026-08-26: The simulated phone frame is a desktop presentation aid only.
+  On phones and other coarse-pointer devices, the application fills the browser
+  viewport without an outer frame, rounded corners, shadow, or mockup background.
+- 2026-08-26: Voice registration shows the live transcript at the top below a
+  stand-microphone status circle. The circle pulses while AI processes the
+  speech; detected entries appear below in the daily-meal row style and can be
+  edited before the user approves them.
+- 2026-08-26: Voice capture uses the browser-provided Speech Recognition API in
+  Danish as the first implementation step. It provides real microphone access
+  and live transcription independently of HELLO CAL's later structured-food AI,
+  with an unsupported-browser fallback instead of silently failing.
+- 2026-08-26: Calendar success is deliberately understated: a completed day has
+  a 1 px green border and a light-green checkmark in its upper-right corner.
+  Today alone receives the solid green date treatment.
+- 2026-08-26: Calendar navigation supports month, week, and list views. The
+  period can be changed by horizontal swipe, arrow controls, or a year-aware
+  month picker. Selecting any date opens its database-backed day view.
+- 2026-08-26: The home-screen key-metric panel behaves as a vertical wheel.
+  Swipe, scroll, adjacent-item taps, and keyboard arrows rotate calories,
+  protein, water, calories burned, and steps through the emphasized center.
+  Food-derived totals use today's registration snapshots.
 
 ## Hosting and delivery
 
