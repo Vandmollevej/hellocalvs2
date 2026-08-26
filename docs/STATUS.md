@@ -6,9 +6,9 @@ Last updated: 2026-08-26
 
 - Repository: `Vandmollevej/hellocalvs2`
 - Branch: `master`
-- Latest committed checkpoint: `3c66ae5` — isolated Synology production deployment.
-- The local branch is three commits ahead of `origin/master`; push is awaiting
-  GitHub authentication on the workstation.
+- Latest published checkpoint: `3c66ae5` — isolated Synology production deployment.
+- GitHub authentication is working; only this status reconciliation remains to
+  be pushed.
 - The application is a Next.js 16 prototype with Prisma 7 and PostgreSQL.
 - The stable UI checkpoint is committed as `ed2d27d`.
 
@@ -52,8 +52,7 @@ Last updated: 2026-08-26
 
 ## Next work
 
-1. Authenticate Git on the workstation, push `master`, and verify both GHCR
-   image tags are built successfully.
+1. Verify both GHCR image tags were built successfully.
 2. Transfer the production Compose and environment template to the new
    `/volume1/docker/App/hellocal-v2` server directory.
 3. Start the isolated stack, then verify migrations, health, product lookup,
