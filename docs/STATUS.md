@@ -34,6 +34,10 @@ Last updated: 2026-08-26
 - The home screen now reads the demo user's registrations directly from
   PostgreSQL. Creating a registration, viewing it, and deleting it use the same
   database records instead of example rows.
+- The Madvarer screen now reads the product list from PostgreSQL and searches
+  those real products instead of showing example food rows.
+- The responsive app shell now removes the simulated phone frame on phones and
+  other coarse-pointer devices while preserving it for desktop presentation.
 
 ## Deployment implementation
 

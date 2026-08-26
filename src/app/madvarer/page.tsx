@@ -1,112 +1,98 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { IconSearch, IconBookmark, IconBookmarkFilled } from "@tabler/icons-react";
+import { useEffect, useMemo, useState } from "react";
+import { IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 
-type Tab = "madvarer" | "drikkevarer" | "retter";
+type Product = {
+  id: string;
+  name: string;
+  imageUrl: string | null;
+  kcalPer100g: number;
+  brand: { name: string } | null;
+};
 
-type Item = { id: string; title: string; tab: Tab; favorite: boolean; image?: string };
-
-const items: Item[] = [
-  { id: "1", title: "Rugbrød m. kerner, Schulstad", tab: "madvarer", favorite: true, image: "/dummy/rugbroed.png" },
-  { id: "2", title: "Letmælk 0,5%, Arla", tab: "drikkevarer", favorite: false },
-  { id: "3", title: "Havregrød med blåbær", tab: "retter", favorite: true },
-  { id: "4", title: "Kyllingesalat med avocado", tab: "retter", favorite: false },
-  { id: "5", title: "Skyr, naturel", tab: "madvarer", favorite: false, image: "/dummy/skyr.png" },
-];
-
-const tabs: { key: Tab; label: string }[] = [
-  { key: "madvarer", label: "Madvarer" },
-  { key: "drikkevarer", label: "Drikkevarer" },
-  { key: "retter", label: "Retter" },
-];
+type LoadState = "loading" | "ready" | "error";
 
 export default function MadvarerPage() {
-  const [tab, setTab] = useState<Tab>("madvarer");
+  const [products, setProducts] = useState<Product[]>([]);
   const [query, setQuery] = useState("");
-  const [onlyFavorites, setOnlyFavorites] = useState(false);
+  const [state, setState] = useState<LoadState>("loading");
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function loadProducts() {
+      try {
+        const response = await fetch("/api/products", { signal: controller.signal });
+        if (!response.ok) throw new Error("Kunne ikke hente madvarer");
+        const data: { products: Product[] } = await response.json();
+        setProducts(data.products);
+        setState("ready");
+      } catch (error) {
+        if ((error as Error).name !== "AbortError") setState("error");
+      }
+    }
+
+    void loadProducts();
+    return () => controller.abort();
+  }, []);
 
   const filtered = useMemo(() => {
-    return items.filter((i) => {
-      if (i.tab !== tab) return false;
-      if (onlyFavorites && !i.favorite) return false;
-      if (query.trim() && !i.title.toLowerCase().includes(query.toLowerCase())) return false;
-      return true;
-    });
-  }, [tab, query, onlyFavorites]);
+    const normalizedQuery = query.trim().toLowerCase();
+    if (!normalizedQuery) return products;
+    return products.filter((product) =>
+      `${product.name} ${product.brand?.name ?? ""}`.toLowerCase().includes(normalizedQuery)
+    );
+  }, [products, query]);
 
   return (
-    <HfScreen title="Gemte madvarer">
+    <HfScreen title="Madvarer">
       <div className="flex flex-col gap-3 p-4">
         <div className="hf-search">
           <IconSearch size={16} color="var(--hf-black)" />
           <input
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Søg i mit bibliotek"
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Søg i madvarer"
           />
         </div>
 
-        <div className="flex gap-2">
-          {tabs.map((t) => (
-            <button
-              key={t.key}
-              onClick={() => setTab(t.key)}
-              className={`rounded-full px-3.5 py-1.5 text-xs font-bold ${
-                tab === t.key
-                  ? "bg-hf-black text-hf-white"
-                  : "bg-hf-tan text-hf-black"
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
-          <button
-            onClick={() => setOnlyFavorites((v) => !v)}
-            aria-pressed={onlyFavorites}
-            aria-label="Vis kun gemte"
-            className="ml-auto flex h-8 w-8 items-center justify-center rounded-full"
-            style={{ backgroundColor: "rgba(26,26,23,0.45)" }}
-          >
-            {onlyFavorites ? (
-              <IconBookmarkFilled size={15} color="var(--hf-white)" />
-            ) : (
-              <IconBookmark size={15} stroke={1.5} color="var(--hf-white)" />
-            )}
-          </button>
-        </div>
-
         <div className="overflow-hidden rounded-2xl bg-hf-tan">
-          {filtered.map((item, i) => (
+          {state === "loading" && (
+            <p className="px-4 py-6 text-center text-sm text-hf-black opacity-60">Henter madvarer …</p>
+          )}
+          {state === "error" && (
+            <p className="px-4 py-6 text-center text-sm text-hf-black opacity-60">
+              Madvarer kunne ikke hentes lige nu
+            </p>
+          )}
+          {state === "ready" && filtered.map((product, index) => (
             <div
-              key={item.id}
+              key={product.id}
               className={`flex items-center gap-2.5 px-4 py-3 ${
-                i < filtered.length - 1 ? "border-b border-hf-tan-dark" : ""
+                index < filtered.length - 1 ? "border-b border-hf-tan-dark" : ""
               }`}
             >
-              <div className="h-10 w-10 flex-shrink-0">
-                {item.image && (
+              <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg bg-hf-white/30">
+                {product.imageUrl && (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={item.image} alt="" className="h-full w-full object-contain" />
+                  <img src={product.imageUrl} alt="" className="h-full w-full object-cover" />
                 )}
               </div>
-              <span className="flex-1 text-[15px] font-medium text-hf-black">
-                {item.title}
-              </span>
-              {item.favorite && (
-                <span
-                  className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full"
-                  style={{ backgroundColor: "rgba(26,26,23,0.55)" }}
-                >
-                  <IconBookmark size={16} stroke={2} color="var(--hf-white)" />
-                </span>
-              )}
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[15px] font-medium text-hf-black">{product.name}</p>
+                <p className="truncate text-xs text-hf-black opacity-60">
+                  {[product.brand?.name, `${Math.round(product.kcalPer100g)} kcal / 100 g`]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </p>
+              </div>
             </div>
           ))}
-          {filtered.length === 0 && (
+          {state === "ready" && filtered.length === 0 && (
             <p className="px-4 py-6 text-center text-sm text-hf-black opacity-60">
-              Ingen varer i denne fane endnu
+              {query.trim() ? "Ingen madvarer matcher din søgning" : "Ingen madvarer endnu"}
             </p>
           )}
         </div>
