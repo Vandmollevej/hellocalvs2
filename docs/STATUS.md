@@ -26,6 +26,7 @@ Last updated: 2026-08-26
 - GitHub Actions builds and pushes `ghcr.io/<repository-owner>/hellocalvs2:latest` on pushes to `master`.
 - `docker-compose.yml` currently defines PostgreSQL only; it is not yet a complete production stack.
 - Synology and Cloudflare Tunnel are the documented target, but their live configuration is not represented fully in this repository.
+- The Home Assistant SSH-port switch was confirmed working on 2026-08-26. Server login is awaiting interactive password authentication because the stored workstation key is not currently authorized.
 
 ## Next work
 

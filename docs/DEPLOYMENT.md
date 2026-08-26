@@ -17,6 +17,14 @@ This document distinguishes the repository's current implementation from the int
 - Production database migrations run with `prisma migrate deploy` during a controlled deployment step.
 - GitHub/GHCR provides versioned application delivery to the NAS.
 
+## Administrative access
+
+- The Windows development workstation has no local administrator access. Deployment and maintenance procedures must not depend on installing additional local software.
+- Synology's SSH service listens on internal port `22`. External access uses `ssh.packroff.dk:2222`, which forwards to the server's port `22`, with the user `Peter`.
+- The external forwarding is closed by default and is temporarily opened or closed by an existing Home Assistant switch. Turn the switch on before an SSH maintenance session and off again when the session is finished.
+- The workstation's existing Ed25519 key was rejected on 2026-08-26, so access currently requires the server password until key authorization is repaired.
+- Never record the password or private key contents in this repository.
+
 ## Still missing
 
 - Add the application service to a production Compose configuration.

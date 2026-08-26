@@ -16,6 +16,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ## Working rules
 
 - Preserve unrelated and uncommitted user changes.
+- The Windows workstation does not have local administrator access. Do not install software or propose workflows that require local admin rights; prefer existing built-in tools and remote server capabilities.
 - Keep business logic out of UI components and prefer small, focused modules.
 - Never commit secrets or print values from `.env`.
 - Treat the database as the source of truth and preserve snapshot semantics for registrations.
