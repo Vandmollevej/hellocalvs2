@@ -28,6 +28,9 @@ Last updated: 2026-08-26
   then removed after the permanent route passed its public check.
 - The permanent hostname `hellocal.packroff.dk` was added and verified publicly
   against the same isolated application on 2026-08-26.
+- The production rollout for commit `7c8f6cb` completed successfully. The
+  application returns `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet,
+  noimageindex`, and its health endpoint remains healthy.
 
 ## Deployment implementation
 
@@ -56,7 +59,5 @@ Last updated: 2026-08-26
 
 1. Perform user acceptance testing through `hellocal.packroff.dk`, including on
    a phone.
-2. Verify the deployed `X-Robots-Tag` noindex response header after the next
-   production image rollout.
-3. Copy verified database backups to a second storage location.
-4. Keep the external SSH maintenance switch off outside maintenance windows.
+2. Copy verified database backups to a second storage location.
+3. Keep the external SSH maintenance switch off outside maintenance windows.

@@ -134,6 +134,15 @@ remains.
 Record only the non-secret route shape after it has been confirmed. Never record
 the tunnel ID or token.
 
+## Search indexing
+
+The application adds `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet,
+noimageindex` to every response. This lets search engines crawl the public app
+only to see that it must not be indexed. Do not use `robots.txt` to block the
+app while relying on `noindex`, because a blocked crawler cannot read that
+instruction. If the application must be private rather than merely hidden from
+search, protect it with an access-control layer such as Cloudflare Access.
+
 ## Backup
 
 Create a database backup before every application update and before applying a
