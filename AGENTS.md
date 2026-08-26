@@ -23,6 +23,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Do not perform large rewrites or change deployment architecture without explicit user approval.
 - If a password prompt needs the user, continue any independent work instead of
   waiting idly. Never store, repeat, or expose the password.
+- Work continuously through the active checkpoint: after each successful step,
+  immediately start the next safe in-scope step. Stop only for a material user
+  decision, required authorization, or an exact external blocker.
 - Update `docs/STATUS.md` after material work and add durable architectural or product decisions to `docs/DECISIONS.md`.
 
 ## Verification

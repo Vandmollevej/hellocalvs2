@@ -1,16 +1,25 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getDemoUser } from "@/lib/demo-user";
 
-// Ingen login/autentificering er bygget endnu (separat, senere opgave) —
-// indtil da bruges en fast demo-bruger, så registreringsflowet kan afprøves.
-const DEMO_USER_EMAIL = "demo@hellocal.local";
+export async function GET() {
+  try {
+    const user = await getDemoUser();
+    const registrations = await prisma.registration.findMany({
+      where: { userId: user.id },
+      orderBy: { createdAt: "desc" },
+      include: { product: { select: { imageUrl: true } } },
+      take: 500,
+    });
 
-async function getDemoUser() {
-  return prisma.user.upsert({
-    where: { email: DEMO_USER_EMAIL },
-    update: {},
-    create: { email: DEMO_USER_EMAIL, displayName: "Demo" },
-  });
+    return NextResponse.json({ registrations });
+  } catch (error) {
+    console.error("Registration list failed", error);
+    return NextResponse.json(
+      { registrations: [], message: "Database ikke tilgængelig" },
+      { status: 503 }
+    );
+  }
 }
 
 // POST /api/registrations — manuel tilføjelse af en registrering.

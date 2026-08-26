@@ -1,27 +1,82 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { IconBookmarkFilled } from "@tabler/icons-react";
 import { SwipeableRow } from "@/components/SwipeableRow";
 
 type Entry = {
   id: string;
   title: string;
   kcal: number;
-  time: string;
-  favorite?: boolean;
+  createdAt: string;
   image?: string;
 };
 
-const initialEntries: Entry[] = [
-  { id: "1", title: "Kyllingesalat med avocado, ristede kerner og citronvinaigrette", kcal: 480, time: "18:20" },
-  { id: "2", title: "Rugbrød med skinke, tomat og lidt smør", kcal: 310, time: "13:05", image: "/dummy/rugbroed.png" },
-  { id: "3", title: "Havregrød med blåbær og honning", kcal: 450, time: "08:10" },
-];
+type RegistrationResponse = {
+  registrations: Array<{
+    id: string;
+    titleSnapshot: string;
+    kcalSnapshot: number;
+    createdAt: string;
+    product: { imageUrl: string | null } | null;
+  }>;
+};
+
+function isToday(dateString: string) {
+  const date = new Date(dateString);
+  const today = new Date();
+  return (
+    date.getFullYear() === today.getFullYear() &&
+    date.getMonth() === today.getMonth() &&
+    date.getDate() === today.getDate()
+  );
+}
+
+function formatTime(dateString: string) {
+  return new Intl.DateTimeFormat("da-DK", {
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(dateString));
+}
 
 export function DailyList() {
-  const [entries, setEntries] = useState(initialEntries);
+  const [entries, setEntries] = useState<Entry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/registrations")
+      .then(async (res) => {
+        if (!res.ok) throw new Error("Kunne ikke hente registreringer");
+        const data = (await res.json()) as RegistrationResponse;
+        setEntries(
+          data.registrations
+            .filter((registration) => isToday(registration.createdAt))
+            .map((registration) => ({
+              id: registration.id,
+              title: registration.titleSnapshot,
+              kcal: registration.kcalSnapshot,
+              createdAt: registration.createdAt,
+              image: registration.product?.imageUrl ?? undefined,
+            }))
+        );
+      })
+      .catch(() => setError("Kunne ikke hente dagens registreringer"))
+      .finally(() => setLoading(false));
+  }, []);
+
+  async function deleteEntry(id: string) {
+    const previousEntries = entries;
+    setEntries((current) => current.filter((entry) => entry.id !== id));
+
+    try {
+      const res = await fetch(`/api/registrations/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Kunne ikke slette registreringen");
+    } catch {
+      setEntries(previousEntries);
+      setError("Kunne ikke slette registreringen");
+    }
+  }
 
   return (
     <div className="relative">
@@ -32,14 +87,7 @@ export function DailyList() {
             className={i < entries.length - 1 ? "border-b border-hf-tan-dark" : ""}
           >
             <SwipeableRow
-              onFavorite={() =>
-                setEntries((prev) =>
-                  prev.map((e) => (e.id === entry.id ? { ...e, favorite: !e.favorite } : e))
-                )
-              }
-              onDelete={() =>
-                setEntries((prev) => prev.filter((e) => e.id !== entry.id))
-              }
+              onDelete={() => void deleteEntry(entry.id)}
             >
               <Link
                 href={`/registrering/${entry.id}`}
@@ -54,28 +102,25 @@ export function DailyList() {
                 <div className="min-w-0 flex-1">
                   <p className="line-clamp-2 text-sm text-hf-black">
                     {entry.title}
-                    {entry.favorite && (
-                      <IconBookmarkFilled
-                        size={13}
-                        color="var(--hf-black)"
-                        className="ml-1 inline-block translate-y-[1px]"
-                      />
-                    )}
                   </p>
                   <div className="mt-0.5 flex justify-between">
-                    <span className="text-xs text-hf-black opacity-60">{entry.kcal} kcal</span>
-                    <span className="text-xs text-hf-black opacity-60">Oprettet kl. {entry.time}</span>
+                    <span className="text-xs text-hf-black opacity-60">{Math.round(entry.kcal)} kcal</span>
+                    <span className="text-xs text-hf-black opacity-60">Oprettet kl. {formatTime(entry.createdAt)}</span>
                   </div>
                 </div>
               </Link>
             </SwipeableRow>
           </li>
         ))}
-        {entries.length === 0 && (
+        {loading && (
+          <li className="py-6 text-center text-sm text-hf-black opacity-60">Henter dagens registreringer...</li>
+        )}
+        {!loading && entries.length === 0 && (
           <li className="py-6 text-center text-sm text-hf-black opacity-60">
             Ingen registreringer i dag
           </li>
         )}
+        {error && <li className="pb-3 text-center text-xs text-red-700">{error}</li>}
       </ul>
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0 h-9"

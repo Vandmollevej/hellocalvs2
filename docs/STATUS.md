@@ -31,6 +31,9 @@ Last updated: 2026-08-26
 - The production rollout for commit `7c8f6cb` completed successfully. The
   application returns `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet,
   noimageindex`, and its health endpoint remains healthy.
+- The home screen now reads the demo user's registrations directly from
+  PostgreSQL. Creating a registration, viewing it, and deleting it use the same
+  database records instead of example rows.
 
 ## Deployment implementation
 
@@ -59,5 +62,8 @@ Last updated: 2026-08-26
 
 1. Perform user acceptance testing through `hellocal.packroff.dk`, including on
    a phone.
-2. Copy verified database backups to a second storage location.
-3. Keep the external SSH maintenance switch off outside maintenance windows.
+2. Replace the remaining example data on Madvarer, Kalender, Statistik, and
+   Stemme with database-backed views.
+3. Implement account authentication before inviting other users.
+4. Copy verified database backups to a second storage location.
+5. Keep the external SSH maintenance switch off outside maintenance windows.

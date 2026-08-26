@@ -9,7 +9,7 @@ export function SwipeableRow({
   onDelete,
   children,
 }: {
-  onFavorite: () => void;
+  onFavorite?: () => void;
   onDelete: () => void;
   children: React.ReactNode;
 }) {
@@ -27,7 +27,8 @@ export function SwipeableRow({
   function handlePointerMove(e: React.PointerEvent) {
     if (!dragging.current || startX.current === null) return;
     const delta = e.clientX - startX.current;
-    const clamped = Math.max(-ACTION_WIDTH, Math.min(ACTION_WIDTH, delta));
+    const minimum = onFavorite ? -ACTION_WIDTH : 0;
+    const clamped = Math.max(minimum, Math.min(ACTION_WIDTH, delta));
     setDragX(clamped);
   }
 
@@ -37,7 +38,7 @@ export function SwipeableRow({
     startX.current = null;
     // Snap til åben/lukket i stedet for en tilfældig mellemposition.
     setDragX((x) => {
-      if (x > ACTION_WIDTH / 2) return ACTION_WIDTH;
+      if (onFavorite && x > ACTION_WIDTH / 2) return ACTION_WIDTH;
       if (x < -ACTION_WIDTH / 2) return -ACTION_WIDTH;
       return 0;
     });
@@ -45,18 +46,20 @@ export function SwipeableRow({
 
   return (
     <div className="relative overflow-hidden">
-      <div className="absolute inset-y-0 left-0 flex w-20 items-center justify-center bg-hf-green">
-        <button
-          onClick={() => {
-            onFavorite();
-            setDragX(0);
-          }}
-          aria-label="Gem som favorit"
-          className="text-xs font-bold text-hf-white"
-        >
-          Favorit
-        </button>
-      </div>
+      {onFavorite && (
+        <div className="absolute inset-y-0 left-0 flex w-20 items-center justify-center bg-hf-green">
+          <button
+            onClick={() => {
+              onFavorite();
+              setDragX(0);
+            }}
+            aria-label="Gem som favorit"
+            className="text-xs font-bold text-hf-white"
+          >
+            Favorit
+          </button>
+        </div>
+      )}
       <div className="absolute inset-y-0 right-0 flex w-20 items-center justify-center bg-red-600">
         <button
           onClick={() => {
