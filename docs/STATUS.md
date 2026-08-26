@@ -6,30 +6,57 @@ Last updated: 2026-08-26
 
 - Repository: `Vandmollevej/hellocalvs2`
 - Branch: `master`
-- Latest committed checkpoint: `3d26fa7` — GitHub Actions workflow for building and pushing the Docker image to GHCR.
+- Latest committed checkpoint: `3c66ae5` — isolated Synology production deployment.
+- The local branch is three commits ahead of `origin/master`; push is awaiting
+  GitHub authentication on the workstation.
 - The application is a Next.js 16 prototype with Prisma 7 and PostgreSQL.
-- Product and UI requirements are recorded in the focused documents under `docs/`.
-- The working tree contains an unfinished set of UI refinements across the app. Preserve and review these changes before committing them.
+- The stable UI checkpoint is committed as `ed2d27d`.
 
 ## Validation
 
 - `git diff --check`: passed on 2026-08-26.
 - `npm run lint`: passed on 2026-08-26.
 - `npm run build`: passed on 2026-08-26 with TypeScript validation enabled.
-- Visual review: the home, saved foods, calendar, statistics, search, onboarding, and add/offline-state screens were reviewed locally on 2026-08-26. The reviewed layouts render coherently and onboarding dismissal works.
-- Local product lookup and registration cannot be verified end-to-end until PostgreSQL is running and seeded; the UI currently shows its designed database-unavailable fallback.
-- Local development uses Webpack because Turbopack 16.2.12 repeatedly panics while the repository is inside the OneDrive-synchronized path. Production `next build` succeeds with Turbopack.
+- Prisma schema validation: passed on 2026-08-26.
+- The initial SQL migration was generated and compared against the Prisma schema;
+  they match.
+- `compose.production.yaml` and the GitHub Actions workflow parse as valid YAML.
+- Docker image and Compose runtime checks cannot run on the Windows workstation
+  because Docker is not installed. They must run through GitHub Actions and the
+  isolated Synology stack.
+- Local product lookup and registration still require a running, migrated
+  PostgreSQL database for end-to-end verification.
 
-## Deployment status
+## Deployment implementation
 
-- The application has a production `Dockerfile` using Next.js standalone output.
-- GitHub Actions builds and pushes `ghcr.io/<repository-owner>/hellocalvs2:latest` on pushes to `master`.
-- `docker-compose.yml` currently defines PostgreSQL only; it is not yet a complete production stack.
-- Synology and Cloudflare Tunnel are the documented target, but their live configuration is not represented fully in this repository.
-- The Home Assistant SSH-port switch was confirmed working on 2026-08-26. Server login is awaiting interactive password authentication because the stored workstation key is not currently authorized.
+- `compose.production.yaml` defines the isolated `hellocal-v2` application,
+  migration, and PostgreSQL 17 services.
+- The new stack uses host port `3100` and persistent data below
+  `/volume1/docker/App/hellocal-v2`.
+- PostgreSQL has no published host port. Migrations must finish successfully
+  before the application starts.
+- `/api/health` verifies both the Next.js process and its database connection.
+- GitHub Actions publishes both `latest` and immutable Git SHA image tags.
+- GHCR authentication, first deployment, update, backup, rollback, and
+  Cloudflare test cutover are documented in `docs/DEPLOYMENT.md`.
+
+## Confirmed Synology inventory
+
+- The stopped legacy HELLO CAL stack remains in
+  `/volume1/docker/App/hellocal` and must not be changed.
+- Its PostgreSQL 17 data is bind-mounted from
+  `/volume1/docker/App/hellocal/postgres`.
+- The legacy app, API, PostgreSQL, MinIO, and Redis containers were stopped when
+  inspected on 2026-08-26.
+- The existing `Cloudflare_Tunnel` container was running.
 
 ## Next work
 
-1. Start and seed PostgreSQL, then verify product lookup and registration end-to-end.
-2. Commit a stable UI checkpoint.
-3. Create the complete Synology production stack and deployment procedure described in `docs/DEPLOYMENT.md`.
+1. Authenticate Git on the workstation, push `master`, and verify both GHCR
+   image tags are built successfully.
+2. Transfer the production Compose and environment template to the new
+   `/volume1/docker/App/hellocal-v2` server directory.
+3. Start the isolated stack, then verify migrations, health, product lookup,
+   registration, persistence, backup, and rollback.
+4. Test a temporary Cloudflare hostname against NAS port `3100` before changing
+   any existing route.
