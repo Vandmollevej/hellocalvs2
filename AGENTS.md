@@ -21,6 +21,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Never commit secrets or print values from `.env`.
 - Treat the database as the source of truth and preserve snapshot semantics for registrations.
 - Do not perform large rewrites or change deployment architecture without explicit user approval.
+- If a password prompt needs the user, continue any independent work instead of
+  waiting idly. Never store, repeat, or expose the password.
 - Update `docs/STATUS.md` after material work and add durable architectural or product decisions to `docs/DECISIONS.md`.
 
 ## Verification

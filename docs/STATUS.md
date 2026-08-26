@@ -6,9 +6,8 @@ Last updated: 2026-08-26
 
 - Repository: `Vandmollevej/hellocalvs2`
 - Branch: `master`
-- Latest published checkpoint: `3c66ae5` — isolated Synology production deployment.
-- GitHub authentication is working; only this status reconciliation remains to
-  be pushed.
+- Latest published checkpoint: `27df53c` — isolated Synology production deployment.
+- GitHub Actions built and published the production image successfully.
 - The application is a Next.js 16 prototype with Prisma 7 and PostgreSQL.
 - The stable UI checkpoint is committed as `ed2d27d`.
 
@@ -21,11 +20,12 @@ Last updated: 2026-08-26
 - The initial SQL migration was generated and compared against the Prisma schema;
   they match.
 - `compose.production.yaml` and the GitHub Actions workflow parse as valid YAML.
-- Docker image and Compose runtime checks cannot run on the Windows workstation
-  because Docker is not installed. They must run through GitHub Actions and the
-  isolated Synology stack.
-- Local product lookup and registration still require a running, migrated
-  PostgreSQL database for end-to-end verification.
+- The isolated Synology Compose stack is running with healthy application and
+  PostgreSQL services; the migration service completed with exit code `0`.
+- Production health, Open Food Facts lookup, registration snapshots, product
+  search, database backup, restart, and persistence passed on 2026-08-26.
+- The temporary Cloudflare hostname `hellocal-test.packroff.dk` was verified
+  publicly against the isolated application on NAS port `3100`.
 
 ## Deployment implementation
 
@@ -52,10 +52,7 @@ Last updated: 2026-08-26
 
 ## Next work
 
-1. Verify both GHCR image tags were built successfully.
-2. Transfer the production Compose and environment template to the new
-   `/volume1/docker/App/hellocal-v2` server directory.
-3. Start the isolated stack, then verify migrations, health, product lookup,
-   registration, persistence, backup, and rollback.
-4. Test a temporary Cloudflare hostname against NAS port `3100` before changing
-   any existing route.
+1. Perform user acceptance testing through `hellocal-test.packroff.dk`.
+2. Choose the permanent HELLO CAL hostname before changing any existing route.
+3. Copy verified database backups to a second storage location.
+4. Keep the external SSH maintenance switch off outside maintenance windows.

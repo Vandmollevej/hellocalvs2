@@ -119,6 +119,12 @@ the remotely managed tunnel to route to `http://<NAS-LAN-IP>:3100`. Verify the
 test hostname before changing the current HELLO CAL route. There must be no
 router port-forward for port `3100`.
 
+Verified on 2026-08-26: the temporary public hostname
+`hellocal-test.packroff.dk` routes through the existing `Server` tunnel to
+`http://192.168.1.90:3100`. The application loaded successfully from the public
+hostname. The existing `server.packroff.dk` and `webmail.packroff.dk` routes
+were not changed.
+
 Record only the non-secret route shape after it has been confirmed. Never record
 the tunnel ID or token.
 
