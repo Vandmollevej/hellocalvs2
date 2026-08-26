@@ -24,8 +24,8 @@ Last updated: 2026-08-26
   PostgreSQL services; the migration service completed with exit code `0`.
 - Production health, Open Food Facts lookup, registration snapshots, product
   search, database backup, restart, and persistence passed on 2026-08-26.
-- The temporary Cloudflare hostname `hellocal-test.packroff.dk` was verified
-  publicly against the isolated application on NAS port `3100`.
+- The temporary Cloudflare hostname `hellocal-test.packroff.dk` was verified and
+  then removed after the permanent route passed its public check.
 - The permanent hostname `hellocal.packroff.dk` was added and verified publicly
   against the same isolated application on 2026-08-26.
 
@@ -56,6 +56,6 @@ Last updated: 2026-08-26
 
 1. Perform user acceptance testing through `hellocal.packroff.dk`, including on
    a phone.
-2. Remove the temporary `hellocal-test.packroff.dk` route after acceptance.
+2. Add explicit search-engine `noindex` protection before wider use.
 3. Copy verified database backups to a second storage location.
 4. Keep the external SSH maintenance switch off outside maintenance windows.

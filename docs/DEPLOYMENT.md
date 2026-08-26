@@ -126,8 +126,10 @@ hostname. The existing `server.packroff.dk` and `webmail.packroff.dk` routes
 were not changed.
 
 The permanent public hostname `hellocal.packroff.dk` was then added to the same
-tunnel and verified successfully against `http://192.168.1.90:3100`. Keep the
-temporary test hostname until phone and user-acceptance testing is complete.
+tunnel and verified successfully against `http://192.168.1.90:3100`. The
+temporary test route was removed after this verification. The mistaken
+`hallocal.packroff.dk` route was also removed; neither obsolete DNS record
+remains.
 
 Record only the non-secret route shape after it has been confirmed. Never record
 the tunnel ID or token.
