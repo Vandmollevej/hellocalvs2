@@ -20,6 +20,16 @@ Last updated: 2026-08-27
   fix, nutrition-label OCR, manual create-product page). Backup taken first;
   no new migration in this release; `db` and `app` are healthy and both the
   local and public `/api/health` return `{"status":"ok"}`.
+- Production was updated to commit `1c121ae6f7ba0444039d08a5946a6efa4e2aaf32`
+  on 2026-08-27: the Stemme (voice) screen now calls a real
+  `/api/ai/interpret-meal` endpoint (OpenAI `gpt-4o-mini`) instead of showing
+  three hardcoded example rows. Each spoken ingredient is matched against the
+  local product database first; unmatched ones fall back to the AI's own
+  macro estimate, shown with an "AI-estimat" badge, and approving now saves
+  real registrations via `/api/registrations` (which creates a new `PENDING`
+  candidate product for unmatched, AI-estimated items). Needs
+  `OPENAI_API_KEY` in `.env.production` — verified live with a direct
+  `curl` to `/api/ai/interpret-meal` returning real structured items.
 - GitHub Actions built and published the production image successfully.
 - The application is a Next.js 16 prototype with Prisma 7 and PostgreSQL.
 - The stable UI checkpoint is committed as `ed2d27d`.
@@ -317,6 +327,41 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
     `npx tsc --noEmit`, and `npm run build` all pass clean (the `.next/static`
     `EPERM` lock from a concurrent dev server cleared after a retry).
 
+- 2026-08-27: Added a `FRIDA` value on `ExternalProductSource` (Prisma
+  migration `20260827180000_frida_product_source`) and a new
+  `frida_import_state` table (migration `20260827190000_frida_import_state`)
+  — neither yet applied to production. DTU Fødevareinstituttet's Frida
+  database (Danish food composition data) has no reuse API on its own site
+  (`fcdb.fooddata.dk` only exposes an undocumented internal API behind its
+  own frontend), but its dataset downloads are published to DTU's official
+  Figshare-based research-data repository (`data.dtu.dk`, DOI
+  `10.11583/DTU.32312844` for v6.1), which *does* have a real, public,
+  documented, unauthenticated API (`api.figshare.com`) — CC-BY 4.0 licensed.
+  DTU Food's Figshare group id is `18053`.
+
+  Added `scripts/frida-import` as a new always-on service (`frida-agent` in
+  `compose.production.yaml`, same pattern as `scripts/image-agent`): it polls
+  `api.figshare.com/v2/articles/search` (default every 24h,
+  `FRIDA_AGENT_POLL_INTERVAL_SECONDS`) for the newest article titled "Danish
+  Food Composition Database" under group 18053, checks `frida_import_state`
+  for whether that Figshare article id was already imported, and if not,
+  downloads its `.xlsx` file directly (no browser/manual step), parses the
+  `Food` and `Data_Normalised` sheets (openpyxl) for the four core macros
+  (Energi kcal/Protein/Kulhydrat difference/Fedt, ParameterIDs
+  356/218/170/141), and upserts them into `products` as
+  `externalSource='FRIDA'`, `status='APPROVED'`, no barcode — matched on
+  (`externalSource`, `externalId`=Frida FoodID) so a new release updates
+  existing rows instead of duplicating them. 1389 of 1390 Frida foods have
+  all four values. Verified end-to-end locally against the live Figshare API
+  (finds v6.1, downloads, parses 1389 foods) except the final Postgres
+  write — this workstation has no reachable PostgreSQL (see
+  `hellocal_no_local_db` memory). A static Frida attribution line was added
+  to `/madvarer` per Frida's reuse terms. `npm run lint`, `npx prisma
+  validate`, `npm run build`, and `compose.production.yaml`'s YAML all
+  passed. The manually-downloaded xlsx originally placed at
+  `scripts/frida-import/data/` is no longer needed by the running service
+  (kept locally, gitignored) — the agent downloads directly from Figshare.
+
 ## Next work
 
 1. Implement the pending UI/design requirements in
@@ -332,3 +377,7 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
 4. Implement account authentication before inviting other users.
 5. Copy verified database backups to a second storage location.
 6. Keep the external SSH maintenance switch off outside maintenance windows.
+7. Deploy the `20260827180000_frida_product_source` migration to production
+   and run `scripts/frida-import/import.py` there (needs `DATABASE_URL`,
+   `openpyxl`, `psycopg2-binary`, and the dataset file — see the 2026-08-27
+   Frida entry above) to actually populate the 1389 Frida products.
