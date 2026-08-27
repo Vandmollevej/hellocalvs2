@@ -9,6 +9,7 @@ import {
   IconWalk,
   type Icon,
 } from "@tabler/icons-react";
+import { DAILY_KCAL_GOAL, DAILY_PROTEIN_GOAL } from "@/lib/goals";
 
 type Registration = {
   kcalSnapshot: number;
@@ -83,7 +84,7 @@ export function StatsWheel() {
         label: "Kalorier",
         icon: IconFlame,
         value: loading ? "—" : formatNumber(totals.kcal),
-        goal: "3.299",
+        goal: formatNumber(DAILY_KCAL_GOAL),
         unit: "kcal",
       },
       {
@@ -91,7 +92,7 @@ export function StatsWheel() {
         label: "Protein",
         icon: IconEgg,
         value: loading ? "—" : formatNumber(totals.protein),
-        goal: "120",
+        goal: formatNumber(DAILY_PROTEIN_GOAL),
         unit: "g",
       },
       {

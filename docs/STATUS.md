@@ -53,8 +53,9 @@ Last updated: 2026-08-26
   corner checkmark; the current date keeps the solid green highlight.
 - The calendar now supports horizontal swipe and arrow navigation, a full
   month picker, and month, week, and list views from the top-right view menu.
-- Every date opens a full day view. Its registration list still uses example
-  rows and remains part of the pending database-backed calendar work.
+- Every date opens a full day view. Its registration list reads real
+  PostgreSQL registrations filtered by date, using the same `/api/registrations`
+  data as the home screen.
 - The home-screen key-metric wheel is interactive by vertical swipe, mouse
   wheel, adjacent-item tap, and keyboard arrows. Calories and protein are
   calculated from today's PostgreSQL registration snapshots; activity metrics
@@ -70,6 +71,13 @@ Last updated: 2026-08-26
 - The production demo user was populated on 2026-08-26 with four non-duplicate
   food registrations for the current day (1,044 kcal and 10 g protein total),
   using the existing product lookup and registration APIs.
+- The Statistik screen now reads the demo user's real registrations from
+  PostgreSQL: the weekly-average kcal chart, average kcal/protein per day,
+  days logged, and days the calorie goal was met are computed from actual
+  data instead of hardcoded example numbers. The key-metric wheel now shares
+  the same daily calorie/protein goal constants (`src/lib/goals.ts`) instead
+  of duplicating them. Water, calories burned, and steps remain prototype
+  values pending health-data integration.
 
 ## Deployment implementation
 
@@ -98,8 +106,9 @@ Last updated: 2026-08-26
 
 1. Perform user acceptance testing through `hellocal.packroff.dk`, including on
    a phone.
-2. Replace the remaining example data on Madvarer, Kalender, Statistik, and
-   Stemme with database-backed views.
+2. Replace remaining prototype values (water, calories burned, steps) with
+   real health-data integration once a source is chosen. Stemme's structured
+   food interpretation remains placeholder pending the AI service.
 3. Implement account authentication before inviting other users.
 4. Copy verified database backups to a second storage location.
 5. Keep the external SSH maintenance switch off outside maintenance windows.
