@@ -1,20 +1,29 @@
 "use client";
 
-export function OnboardingSpotlight({ onLater }: { onLater: () => void }) {
+import type { FabSide } from "./AddButton";
+
+export function OnboardingSpotlight({
+  side,
+  onLater,
+}: {
+  side: FabSide;
+  onLater: () => void;
+}) {
   return (
     <>
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-0"
+        className="pointer-events-none absolute"
         style={{
+          [side]: 0,
           top: "50%",
           transform: "translateY(-50%)",
           width: 80,
           height: 190,
-          borderRadius: "0 190px 190px 0",
+          borderRadius: side === "left" ? "0 190px 190px 0" : "190px 0 0 190px",
           boxShadow: "0 0 0 9999px rgba(20,20,18,0.6)",
           zIndex: 40,
-        }}
+        } as React.CSSProperties}
       />
 
       <div

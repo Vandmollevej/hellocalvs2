@@ -40,7 +40,7 @@ function formatNumber(value: number, maximumFractionDigits = 0) {
   return new Intl.NumberFormat("da-DK", { maximumFractionDigits }).format(value);
 }
 
-export function StatsWheel() {
+export function StatsWheel({ side }: { side: "left" | "right" }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [loading, setLoading] = useState(true);
@@ -169,8 +169,16 @@ export function StatsWheel() {
       onPointerCancel={() => {
         pointerStartY.current = null;
       }}
-      className="absolute right-[22px] flex w-[178px] touch-pan-x flex-col items-start justify-center overflow-hidden rounded-3xl px-2 py-3 text-left focus-visible:outline-2 focus-visible:outline-hf-green focus-visible:outline-offset-2"
-      style={{ top: "50%", height: 190, transform: "translateY(-50%)", perspective: 320 }}
+      className="absolute flex w-[178px] touch-pan-x flex-col items-start justify-center overflow-hidden rounded-3xl px-2 py-3 text-left transition-[left,right] duration-300 ease-out focus-visible:outline-2 focus-visible:outline-hf-green focus-visible:outline-offset-2"
+      style={
+        {
+          [side]: 22,
+          top: "50%",
+          height: 190,
+          transform: "translateY(-50%)",
+          perspective: 320,
+        } as React.CSSProperties
+      }
     >
       <WheelItem stat={stats[previousIndex]} position="previous" onClick={() => move(-1)} />
       <WheelItem stat={stats[activeIndex]} position="active" />
