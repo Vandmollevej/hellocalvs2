@@ -99,6 +99,8 @@ export const STAT_CARD_DEFS: {
   },
 ];
 
+export const DEFAULT_ACTIVE_STAT_KEYS: string[] = STAT_CARD_DEFS.map((def) => def.key);
+
 export function computeStatCards(data: StatCardData): StatCardValue[] {
   return STAT_CARD_DEFS.map((def) => ({
     key: def.key,
@@ -106,4 +108,49 @@ export function computeStatCards(data: StatCardData): StatCardValue[] {
     icon: def.icon,
     value: def.compute(data),
   }));
+}
+
+// Delt layout-persistens for StatCardsGrid og siden med ubrugte kort, så begge
+// læser/skriver den samme localStorage-nøgle uden at duplikere logikken.
+
+export type StatLayoutItem = { type: "stat"; key: string };
+export type StatHeaderLayoutItem = { type: "header"; id: string; text: string };
+export type StatGridLayoutItem = StatLayoutItem | StatHeaderLayoutItem;
+
+export const STAT_LAYOUT_STORAGE_KEY = "hellocal.statistik.layout";
+
+export function loadStatLayout(defaultLayout: StatGridLayoutItem[]): StatGridLayoutItem[] {
+  if (typeof window === "undefined") return defaultLayout;
+  try {
+    const raw = window.localStorage.getItem(STAT_LAYOUT_STORAGE_KEY);
+    if (!raw) return defaultLayout;
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed;
+    return defaultLayout;
+  } catch {
+    return defaultLayout;
+  }
+}
+
+export function saveStatLayout(layout: StatGridLayoutItem[]) {
+  try {
+    window.localStorage.setItem(STAT_LAYOUT_STORAGE_KEY, JSON.stringify(layout));
+  } catch {
+    // localStorage utilgængelig — ignorér.
+  }
+}
+
+/** Tilføjer et statistik-kort til bunden af det aktive layout, hvis det ikke allerede er der. */
+export function addStatCardToLayout(defaultLayout: StatGridLayoutItem[], key: string): StatGridLayoutItem[] {
+  const current = loadStatLayout(defaultLayout);
+  const alreadyActive = current.some((item) => item.type === "stat" && item.key === key);
+  const next = alreadyActive ? current : [...current, { type: "stat" as const, key }];
+  saveStatLayout(next);
+  return next;
+}
+
+/** Hvilke kort-nøgler er aktive i det gemte layout (eller standardlayoutet, hvis intet er gemt endnu). */
+export function activeStatKeys(defaultLayout: StatGridLayoutItem[]): Set<string> {
+  const current = loadStatLayout(defaultLayout);
+  return new Set(current.filter((item): item is StatLayoutItem => item.type === "stat").map((item) => item.key));
 }

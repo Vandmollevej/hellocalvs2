@@ -3,11 +3,24 @@
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { IconCamera, IconRefresh } from "@tabler/icons-react";
 import { BrowserMultiFormatOneDReader, type IScannerControls } from "@zxing/browser";
+import { ChecksumException, FormatException, NotFoundException } from "@zxing/library";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { HfScreen } from "@/components/HfScreen";
+import { NutritionLabelReview } from "@/components/NutritionLabelReview";
+import { recognizeNutritionLabel, type NutritionFields } from "@/lib/nutrition-ocr";
+import { OCR_DRAFT_STORAGE_KEY, type ProductDraft } from "@/app/madvarer/nyt/page";
 
 type CameraStatus = "starting" | "active" | "denied" | "unavailable" | "error";
 type LookupStatus = "idle" | "loading" | "not_found" | "error";
+type CameraMode = "produkt" | "maaltid" | "naering";
+type OcrStatus = "idle" | "processing" | "done" | "failed";
+
+const MODE_TABS: { key: CameraMode; label: string }[] = [
+  { key: "produkt", label: "Stregkode" },
+  { key: "maaltid", label: "Måltid" },
+  { key: "naering", label: "Næring" },
+];
 
 function cameraMessage(status: CameraStatus) {
   if (status === "starting") return "Starter kameraet...";
@@ -27,7 +40,8 @@ function statusFromCameraError(error: unknown): CameraStatus {
 function KameraContent() {
   const params = useSearchParams();
   const router = useRouter();
-  const mode = params.get("mode") === "maaltid" ? "maaltid" : "produkt";
+  const mode: CameraMode =
+    params.get("mode") === "maaltid" ? "maaltid" : params.get("mode") === "naering" ? "naering" : "produkt";
   const videoRef = useRef<HTMLVideoElement>(null);
   const scannerControlsRef = useRef<IScannerControls | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -37,7 +51,13 @@ function KameraContent() {
   const [barcode, setBarcode] = useState("");
   const [lookupStatus, setLookupStatus] = useState<LookupStatus>("idle");
   const [photo, setPhoto] = useState<string | null>(null);
-
+  const [ocrStatus, setOcrStatus] = useState<OcrStatus>("idle");
+  const [ocrFields, setOcrFields] = useState<NutritionFields>({
+    kcalPer100g: null,
+    proteinPer100g: null,
+    carbsPer100g: null,
+    fatPer100g: null,
+  });
   const stopCamera = useCallback(() => {
     scannerControlsRef.current?.stop();
     scannerControlsRef.current = null;
@@ -90,8 +110,24 @@ function KameraContent() {
           const controls = await reader.decodeFromConstraints(
             { audio: false, video: { facingMode: { ideal: "environment" } } },
             videoRef.current,
-            (result) => {
-              if (result && !lookupInProgressRef.current) void lookupBarcode(result.getText());
+            (result, error) => {
+              if (result && !lookupInProgressRef.current) {
+                void lookupBarcode(result.getText());
+                return;
+              }
+              // NotFoundException/ChecksumException/FormatException fire on every
+              // frame that doesn't contain a readable barcode yet — expected noise
+              // during normal scanning, not a failure. Anything else means the
+              // decode loop has stopped for good, so surface it instead of leaving
+              // a frozen, silently-broken camera view.
+              if (
+                error &&
+                !(error instanceof NotFoundException) &&
+                !(error instanceof ChecksumException) &&
+                !(error instanceof FormatException)
+              ) {
+                setCameraStatus("error");
+              }
             },
           );
           if (cancelled) controls.stop();
@@ -143,6 +179,7 @@ function KameraContent() {
     setCameraStatus("starting");
     lookupInProgressRef.current = false;
     setLookupStatus("idle");
+    setOcrStatus("idle");
     setRestartKey((key) => key + 1);
   }
 
@@ -151,14 +188,63 @@ function KameraContent() {
     void lookupBarcode(barcode);
   }
 
+  useEffect(() => {
+    if (mode !== "naering" || !photo) return;
+    let cancelled = false;
+    recognizeNutritionLabel(photo).then((result) => {
+      if (cancelled) return;
+      setOcrFields(result.fields);
+      setOcrStatus(result.ok ? "done" : "failed");
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [mode, photo]);
+
+  function useOcrValues() {
+    const draft: ProductDraft = {
+      kcalPer100g: ocrFields.kcalPer100g?.toString() ?? "",
+      proteinPer100g: ocrFields.proteinPer100g?.toString() ?? "",
+      carbsPer100g: ocrFields.carbsPer100g?.toString() ?? "",
+      fatPer100g: ocrFields.fatPer100g?.toString() ?? "",
+    };
+    sessionStorage.setItem(OCR_DRAFT_STORAGE_KEY, JSON.stringify(draft));
+    stopCamera();
+    router.push("/madvarer/nyt");
+  }
+
   const message = cameraMessage(cameraStatus);
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-3 p-4">
+      <div className="flex justify-center gap-2">
+        {MODE_TABS.map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => {
+              if (tab.key === mode) return;
+              restartCamera();
+              router.replace(`/kamera?mode=${tab.key}`);
+            }}
+            className={
+              tab.key === mode
+                ? "hf-btn-primary px-4 py-1.5 text-xs"
+                : "hf-btn-secondary px-4 py-1.5 text-xs"
+            }
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
       <div className="relative min-h-0 flex-1 overflow-hidden rounded-2xl bg-hf-black">
         {photo ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={photo} alt="Dit fotograferede måltid" className="h-full w-full object-cover" />
+          <img
+            src={photo}
+            alt={mode === "naering" ? "Dit fotograferede næringsindhold" : "Dit fotograferede måltid"}
+            className="h-full w-full object-cover"
+          />
         ) : (
           <video ref={videoRef} className="h-full w-full object-cover" autoPlay muted playsInline aria-label="Live kameravisning" />
         )}
@@ -175,6 +261,10 @@ function KameraContent() {
           </div>
         )}
 
+        {!photo && mode === "naering" && (
+          <div className="pointer-events-none absolute inset-[10%] rounded-lg border-2 border-white/80" />
+        )}
+
         {message && (
           <div className="absolute inset-0 flex items-center justify-center bg-hf-black/75 p-6 text-center">
             <p className="max-w-xs text-sm font-semibold text-white">{message}</p>
@@ -183,12 +273,31 @@ function KameraContent() {
 
         {cameraStatus === "active" && !photo && (
           <p className="absolute inset-x-4 top-4 rounded-full bg-hf-black/60 px-4 py-2 text-center text-xs font-semibold text-white">
-            {mode === "produkt" ? "Hold stregkoden inden for rammen" : "Placér tallerkenen i cirklen"}
+            {mode === "produkt"
+              ? "Hold stregkoden inden for rammen"
+              : mode === "naering"
+                ? "Placér næringsdeklarationen i rammen"
+                : "Placér tallerkenen i cirklen"}
           </p>
         )}
       </div>
 
-      {mode === "maaltid" ? (
+      {mode === "naering" ? (
+        photo ? (
+          <NutritionLabelReview
+            ocrStatus={ocrStatus === "idle" ? "processing" : ocrStatus}
+            fields={ocrFields}
+            onUseValues={useOcrValues}
+            onRetake={restartCamera}
+          />
+        ) : (
+          <div className="flex justify-center py-1">
+            <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-btn-primary gap-2 px-6 py-3 text-sm disabled:opacity-40">
+              <IconCamera size={19} /> Tag billede af næringsdeklaration
+            </button>
+          </div>
+        )
+      ) : mode === "maaltid" ? (
         <div className="flex justify-center py-1">
           {photo ? (
             <button onClick={restartCamera} className="hf-btn-secondary gap-2 px-5 py-3 text-sm">
@@ -206,7 +315,7 @@ function KameraContent() {
             {lookupStatus === "loading"
               ? `Slår ${barcode} op...`
               : lookupStatus === "not_found"
-                ? "Stregkoden blev læst, men produktet blev ikke fundet. Prøv en anden kode."
+                ? "Stregkoden blev læst, men produktet blev ikke fundet. Prøv en anden kode, eller opret produktet manuelt."
                 : lookupStatus === "error"
                   ? "Stregkoden blev læst, men produktopslaget fejlede. Prøv igen."
                   : "Kameraet scanner automatisk. Du kan også indtaste nummeret under stregkoden."}
@@ -225,6 +334,11 @@ function KameraContent() {
               Slå op
             </button>
           </form>
+          {lookupStatus === "not_found" && (
+            <Link href="/madvarer/nyt" className="mt-3 block text-center text-xs font-bold text-hf-black underline">
+              Opret produktet manuelt
+            </Link>
+          )}
           {cameraStatus !== "active" && cameraStatus !== "starting" && (
             <button onClick={restartCamera} className="mt-3 flex items-center gap-1.5 text-xs font-bold text-hf-black underline">
               <IconRefresh size={15} /> Prøv kameraet igen

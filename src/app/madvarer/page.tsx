@@ -38,10 +38,10 @@ function ProductRow({ product, isLast }: { product: Product; isLast: boolean }) 
       href={`/tilfoej/${product.id}`}
       className={`flex items-center gap-2.5 px-4 py-3 ${isLast ? "" : "border-b border-hf-tan-dark"}`}
     >
-      <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg bg-hf-white/30">
+      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-hf-white/30">
         {product.imageUrl && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={product.imageUrl} alt="" className="h-full w-full object-cover" />
+          <img src={product.imageUrl} alt="" className="h-full w-full object-cover object-center" />
         )}
       </div>
       <div className="min-w-0 flex-1">
@@ -150,6 +150,10 @@ export default function MadvarerPage() {
             </p>
           )}
         </div>
+
+        <Link href="/madvarer/nyt" className="hf-btn-secondary self-center px-4 py-2 text-xs">
+          Opret nyt produkt manuelt
+        </Link>
       </div>
     </HfScreen>
   );

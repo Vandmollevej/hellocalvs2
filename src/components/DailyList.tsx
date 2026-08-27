@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { IconChevronRight } from "@tabler/icons-react";
 import { SwipeableRow } from "@/components/SwipeableRow";
 
 type Entry = {
   id: string;
   title: string;
-  kcal: number;
+  kcalPer100g: number;
   createdAt: string;
   image?: string;
 };
@@ -17,6 +18,7 @@ type RegistrationResponse = {
     id: string;
     titleSnapshot: string;
     kcalSnapshot: number;
+    amountGrams: number;
     createdAt: string;
     product: { imageUrl: string | null } | null;
   }>;
@@ -55,7 +57,10 @@ export function DailyList() {
             .map((registration) => ({
               id: registration.id,
               title: registration.titleSnapshot,
-              kcal: registration.kcalSnapshot,
+              kcalPer100g:
+                registration.amountGrams > 0
+                  ? (registration.kcalSnapshot / registration.amountGrams) * 100
+                  : registration.kcalSnapshot,
               createdAt: registration.createdAt,
               image: registration.product?.imageUrl ?? undefined,
             }))
@@ -91,12 +96,12 @@ export function DailyList() {
             >
               <Link
                 href={`/registrering/${entry.id}`}
-                className="flex items-start gap-2.5 py-2.5"
+                className="flex items-center gap-2.5 py-2.5"
               >
-                <div className="h-11 w-11 flex-shrink-0 overflow-hidden rounded-lg bg-hf-tan">
+                <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-hf-tan">
                   {entry.image && (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={entry.image} alt="" className="h-full w-full object-contain" />
+                    <img src={entry.image} alt="" className="h-full w-full object-contain object-center" />
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -104,10 +109,13 @@ export function DailyList() {
                     {entry.title}
                   </p>
                   <div className="mt-0.5 flex justify-between">
-                    <span className="text-xs text-hf-black opacity-60">{Math.round(entry.kcal)} kcal</span>
-                    <span className="text-xs text-hf-black opacity-60">Oprettet kl. {formatTime(entry.createdAt)}</span>
+                    <span className="text-xs text-hf-black opacity-60">
+                      {Math.round(entry.kcalPer100g)} kcal / 100 g
+                    </span>
+                    <span className="text-xs text-hf-black opacity-60">Kl. {formatTime(entry.createdAt)}</span>
                   </div>
                 </div>
+                <IconChevronRight size={18} className="flex-shrink-0 text-hf-black opacity-40" />
               </Link>
             </SwipeableRow>
           </li>

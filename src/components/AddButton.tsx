@@ -125,6 +125,11 @@ export function AddButton({
 
   useEffect(() => clearLongPressTimer, []);
 
+  useEffect(() => {
+    document.body.classList.toggle("select-none", dragging);
+    return () => document.body.classList.remove("select-none");
+  }, [dragging]);
+
   function handlePointerDown(event: React.PointerEvent<HTMLButtonElement>) {
     if (event.button !== 0) return;
     pointerStart.current = { x: event.clientX, y: event.clientY };
@@ -228,7 +233,7 @@ export function AddButton({
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={endDrag}
-        className={`absolute flex items-center justify-center bg-hf-fab ${
+        className={`absolute flex items-center justify-center bg-transparent border-0 shadow-none ${
           dragging ? "" : "transition-[left,right,top] duration-300 ease-out"
         }`}
         style={{
@@ -241,7 +246,7 @@ export function AddButton({
           touchAction: "none",
         } as React.CSSProperties}
       >
-        <IconPlus size={26} color="var(--hf-white)" stroke={2} />
+        <IconPlus size={26} color="var(--hf-fab)" stroke={2} />
       </button>
 
       {actions.map((action, i) => (

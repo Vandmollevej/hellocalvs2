@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { IconCheck, IconGripVertical, IconX, type Icon } from "@tabler/icons-react";
-import type { StatCardValue } from "@/lib/stat-cards";
-
-type StatLayoutItem = { type: "stat"; key: string };
-type HeaderLayoutItem = { type: "header"; id: string; text: string };
-type LayoutItem = StatLayoutItem | HeaderLayoutItem;
-
-const STORAGE_KEY = "hellocal.statistik.layout";
+import Link from "next/link";
+import { IconGripVertical, IconPlus, IconX, type Icon } from "@tabler/icons-react";
+import {
+  loadStatLayout,
+  saveStatLayout,
+  type StatCardValue,
+  type StatGridLayoutItem as LayoutItem,
+} from "@/lib/stat-cards";
 
 function layoutItemId(item: LayoutItem) {
   return item.type === "stat" ? `stat:${item.key}` : `header:${item.id}`;
@@ -17,19 +17,6 @@ function layoutItemId(item: LayoutItem) {
 function makeId() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
   return `id-${Math.random().toString(36).slice(2)}`;
-}
-
-function loadLayout(defaultLayout: LayoutItem[]): LayoutItem[] {
-  if (typeof window === "undefined") return defaultLayout;
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return defaultLayout;
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed)) return parsed;
-    return defaultLayout;
-  } catch {
-    return defaultLayout;
-  }
 }
 
 type DragSource =
@@ -58,15 +45,13 @@ export function StatCardsGrid({
     [defaultActiveKeys],
   );
 
-  const [layout, setLayout] = useState<LayoutItem[]>(() => loadLayout(defaultLayout));
+  const [layout, setLayout] = useState<LayoutItem[]>(() => loadStatLayout(defaultLayout));
   const [editMode, setEditMode] = useState(false);
-  const [panelPosition, setPanelPosition] = useState<"above" | "below">("below");
   const [drag, setDrag] = useState<DragState | null>(null);
-  const [overZone, setOverZone] = useState<"active" | "unused" | null>(null);
+  const [overZone, setOverZone] = useState<"active" | null>(null);
 
   const activeRefs = useRef(new Map<string, HTMLElement>());
   const gridRef = useRef<HTMLDivElement>(null);
-  const unusedPanelRef = useRef<HTMLDivElement>(null);
   const longPressTimer = useRef<number | null>(null);
   const pointerStart = useRef<{ x: number; y: number } | null>(null);
   const isFirstRender = useRef(true);
@@ -76,27 +61,26 @@ export function StatCardsGrid({
       isFirstRender.current = false;
       return;
     }
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(layout));
-    } catch {
-      // localStorage utilgængelig — ignorér.
-    }
+    saveStatLayout(layout);
   }, [layout]);
 
-  const activeKeys = useMemo(
-    () => new Set(layout.filter((i): i is StatLayoutItem => i.type === "stat").map((i) => i.key)),
-    [layout],
-  );
-  const unusedCards = useMemo(() => cards.filter((c) => !activeKeys.has(c.key)), [cards, activeKeys]);
+  // Genindlæs layoutet, hvis det blev ændret et andet sted (fx siden med ubrugte
+  // kort), så snart brugeren navigerer tilbage til denne side/komponent.
+  useEffect(() => {
+    function onFocus() {
+      setLayout(loadStatLayout(defaultLayout));
+    }
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onFocus);
+    return () => {
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onFocus);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function enterEditMode() {
     setEditMode(true);
-    const rect = gridRef.current?.getBoundingClientRect();
-    if (rect) {
-      const spaceBelow = window.innerHeight - rect.bottom;
-      const spaceAbove = rect.top;
-      setPanelPosition(spaceBelow >= spaceAbove ? "below" : "above");
-    }
   }
 
   function exitEditMode() {
@@ -212,20 +196,13 @@ export function StatCardsGrid({
       });
 
       const activeRect = gridRef.current?.getBoundingClientRect();
-      const unusedRect = unusedPanelRef.current?.getBoundingClientRect();
       const inActive = activeRect
         ? event.clientX >= activeRect.left &&
           event.clientX <= activeRect.right &&
           event.clientY >= activeRect.top &&
           event.clientY <= activeRect.bottom
         : false;
-      const inUnused = unusedRect
-        ? event.clientX >= unusedRect.left &&
-          event.clientX <= unusedRect.right &&
-          event.clientY >= unusedRect.top &&
-          event.clientY <= unusedRect.bottom
-        : false;
-      setOverZone(inActive ? "active" : inUnused ? "unused" : null);
+      setOverZone(inActive ? "active" : null);
     }
 
     function onUp(event: PointerEvent) {
@@ -254,76 +231,49 @@ export function StatCardsGrid({
     );
   }
 
-  const panel = (
-    <div
-      ref={unusedPanelRef}
-      className={`rounded-2xl border border-hf-tan-dark p-3 transition-colors ${
-        overZone === "unused" ? "bg-hf-tan" : "bg-hf-tan/90"
-      }`}
-    >
-      <p className="mb-2 text-xs font-bold uppercase tracking-wide text-hf-black opacity-60">
-        Ubrugte kort
-      </p>
-      <div className="grid max-h-[45vh] grid-cols-2 gap-3 overflow-y-auto pb-2">
-        {unusedCards.map((card) => {
-          const CardIcon = card.icon;
-          return (
-            <div
-              key={card.key}
-              onPointerDown={(e) =>
-                onCardPointerDown(e, { kind: "unused", key: card.key }, card.label, card.icon)
-              }
-              className="cursor-grab touch-none rounded-2xl bg-hf-white p-3 opacity-80 active:cursor-grabbing"
-            >
-              <div className="flex items-center justify-between">
-                <p className="text-xs text-hf-black opacity-60">{card.label}</p>
-                <IconGripVertical size={14} className="opacity-40" />
-              </div>
-              <p className="hf-heading mt-1 flex items-center gap-1.5 text-lg text-hf-black">
-                <CardIcon size={16} stroke={2} />
-                {card.value}
-              </p>
-            </div>
-          );
-        })}
-        {unusedCards.length === 0 && (
-          <p className="col-span-2 py-2 text-center text-xs text-hf-black opacity-50">
-            Alle kort er i brug
-          </p>
-        )}
-      </div>
-
-      <div className="mt-2 border-t border-hf-tan-dark pt-2">
-        <div
-          onPointerDown={(e) => onCardPointerDown(e, { kind: "template" }, "Overskrift")}
-          className="flex min-h-11 cursor-grab touch-none items-center justify-center gap-2 rounded-xl border border-dashed border-hf-black/30 text-sm font-semibold text-hf-black opacity-70 active:cursor-grabbing"
-        >
-          <IconGripVertical size={14} />
-          Overskrift
-        </div>
-      </div>
-    </div>
-  );
-
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center justify-between">
+      {editMode && (
+        <button
+          type="button"
+          aria-label="Afslut redigering"
+          onPointerDown={(event) => {
+            // Baggrund, ligesom dropdown-mønstret i StatChart: tryk udenfor kortene afslutter redigering.
+            event.stopPropagation();
+            exitEditMode();
+          }}
+          className="fixed inset-0 z-30 cursor-default"
+        />
+      )}
+
+      <div className="relative z-40 flex items-center justify-between gap-2">
         <p className="hf-heading text-sm text-hf-black opacity-70">Statistik-kort</p>
         {editMode && (
-          <button
-            type="button"
-            onClick={exitEditMode}
-            className="hf-btn-primary flex min-h-8 items-center gap-1 px-3 py-1 text-xs"
-          >
-            <IconCheck size={14} stroke={2.5} />
-            Færdig
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onPointerDown={(e) => onCardPointerDown(e, { kind: "template" }, "Overskrift")}
+              className="flex min-h-8 cursor-grab touch-none items-center gap-1 rounded-full border border-dashed border-hf-black/30 px-3 py-1 text-xs font-semibold text-hf-black opacity-70 active:cursor-grabbing"
+            >
+              <IconGripVertical size={14} />
+              Overskrift
+            </button>
+            <Link
+              href="/statistik/ubrugte-kort"
+              onPointerDown={(event) => event.stopPropagation()}
+              className="hf-btn-primary flex min-h-8 items-center gap-1 px-3 py-1 text-xs"
+            >
+              <IconPlus size={14} stroke={2.5} />
+              Tilføj kort
+            </Link>
+          </div>
         )}
       </div>
 
-      {editMode && panelPosition === "above" && panel}
-
-      <div ref={gridRef} className={`grid grid-cols-2 gap-3 ${editMode && overZone === "active" ? "rounded-2xl outline-2 outline-dashed outline-hf-green outline-offset-4" : ""}`}>
+      <div
+        ref={gridRef}
+        className={`relative z-40 grid grid-cols-2 gap-3 ${editMode && overZone === "active" ? "rounded-2xl outline-2 outline-dashed outline-hf-green outline-offset-4" : ""}`}
+      >
         {layout.map((item, index) => {
           const id = layoutItemId(item);
           const isDragging = drag?.source.kind === "active" && drag.source.id === id;
@@ -395,8 +345,6 @@ export function StatCardsGrid({
           );
         })}
       </div>
-
-      {editMode && panelPosition === "below" && panel}
 
       {drag && (
         <div

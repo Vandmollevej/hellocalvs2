@@ -244,6 +244,73 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
 - DES-01 (statistik-kort HelloFresh-visuel), FOOD-01/FOOD-02 (madvareside hero/tags/metadata/CTA på `/madvarer`): not yet implemented — no matching UI found in the codebase.
 - DES-02 (fælles palette-/komponent-konsistens-audit across the whole app against `DESIGN_V2.md` §15): not yet done as a dedicated pass.
 
+- 2026-08-27: Implemented the full batch of fixes from `hello-cal-nye-rettelser.md`
+  (11 areas), run as parallel background agents and then reconciled by hand:
+  - FAB (`AddButton.tsx`): removed the visible box/border/shadow — only the
+    plus glyph renders (now `--hf-fab`-colored since the dark background box
+    is gone; it was left white by mistake mid-batch and would have been
+    invisible, caught and fixed during review). Drag/snap-to-edge behavior and
+    its transparent same-size hit area are unchanged. `document.body` gets
+    `select-none` toggled during drag so page text can't be selected.
+  - Bottom nav (`AppScreen.tsx`): now `sticky bottom-0` in a `h-full
+    overflow-hidden` shell so only the content area scrolls; the nav never
+    moves with page content. Desktop phone-frame behavior preserved.
+  - Wheel (`StatsWheel.tsx`): green circle untouched; values now offset
+    progressively by distance from the active index (continuous curve/depth
+    instead of binary prev/next), font-size/opacity scale continuously
+    (fisheye), and drag position/snap animate continuously instead of
+    jumping. Added an "Anretning" plate+cutlery stat icon.
+  - Madliste (`DailyList.tsx`): thumbnail image is now centered in its box;
+    "Oprettet" label removed (only "Kl. {time}" remains); calories always
+    show as `{kcal} / 100 g` computed from `kcalSnapshot`/`amountGrams`; a
+    `IconChevronRight` was added and the whole row stays one `Link`. No
+    per-unit/serving-size field exists on `Product`/`Registration`, so the
+    optional "Pr. stk." secondary line was not added — would need a schema
+    change.
+  - Statistik cards (`StatCardsGrid.tsx`, `src/lib/stat-cards.ts`): removed
+    the "Færdig" button — edit mode now exits via a full-screen tap-outside
+    backdrop (same pattern as `StatChart`'s dropdown) or by navigating away.
+    The old inline "ubrugte kort" floating panel was replaced by a dedicated
+    route, `src/app/statistik/ubrugte-kort/page.tsx`, grouped into the 5
+    specified categories; only "Energi og makrofordeling" and "Aktivitet og
+    øvrige data" currently have matching cards — "Kulhydrattyper og fibre",
+    "Vitaminer", and "Mineraler" render with an empty-state note since no
+    such stat types exist yet in this codebase (none were invented). Added
+    `DEFAULT_ACTIVE_STAT_KEYS` export to `stat-cards.ts` (missing after the
+    refactor, causing a build failure — fixed during review).
+  - Statistik chart (`StatChart.tsx`, `statistik/page.tsx`): the "Kalorier"
+    dropdown chevron now sits directly beside the label as one clickable
+    row. The kcal series now plots deviation from `DAILY_KCAL_GOAL` around a
+    "Mål · 0" center line (green under goal, dark over goal, matching the
+    calendar's color convention). Weight has no goal field anywhere in the
+    schema, so its series still plots raw values — implementing weight
+    deviation would need a new `User`/`WeightEntry` target-weight field.
+    Fixed a `p.deviation` type error (`normalize()` now returns the same
+    shape as `normalizeDeviation()`) found during the build/type-check pass.
+  - Barcode scanning (`kamera/page.tsx`): root cause was that the ZXing
+    decode callback ignored its `error` argument, so any fatal decoder error
+    (anything other than the expected per-frame `NotFoundException`/
+    `ChecksumException`/`FormatException`) silently froze the camera with no
+    feedback. Now surfaces `cameraStatus = "error"` (existing error overlay +
+    retry button) on any real failure. Barcode format support was already
+    correct (`MultiFormatOneDReader` covers EAN-13/UPC/Code39/128/ITF/RSS).
+  - Nutrition-label photo scanning: this was entirely unbuilt (only
+    `produkt`/`maaltid` camera modes existed). Added a third `naering` mode
+    to `/kamera` with client-side OCR (`tesseract.js`, new dependency) via
+    `src/lib/nutrition-ocr.ts`, parsing Danish nutrition-label keywords.
+  - Manual product creation: neither the OCR flow nor the barcode
+    "not found" fallback had anywhere to send the user — no manual
+    create-product screen existed at all. Added
+    `src/app/madvarer/nyt/page.tsx` as the one shared manual-create-product
+    form (name + kcal/protein/carbs/fat per 100g → `POST /api/products` →
+    `/tilfoej/[id]`). The `naering` OCR flow now writes its read values to
+    `sessionStorage` and routes here instead of posting directly itself;
+    the barcode "not found" state links here too; `/madvarer` also links
+    here directly for a fully manual entry.
+  - After reconciling all seven agents' concurrent edits: `npm run lint`,
+    `npx tsc --noEmit`, and `npm run build` all pass clean (the `.next/static`
+    `EPERM` lock from a concurrent dev server cleared after a retry).
+
 ## Next work
 
 1. Implement the pending UI/design requirements in

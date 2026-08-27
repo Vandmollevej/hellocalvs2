@@ -5,11 +5,11 @@ import { IconChartLine } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { StatChart, type ChartSeries } from "@/components/StatChart";
 import { StatCardsGrid } from "@/components/StatCardsGrid";
-import { computeStatCards, STAT_WINDOW_DAYS } from "@/lib/stat-cards";
+import { computeStatCards, DEFAULT_ACTIVE_STAT_KEYS, STAT_WINDOW_DAYS } from "@/lib/stat-cards";
 import { groupByDay, withinLastDays, type RegistrationTotals } from "@/lib/daily-totals";
+import { DAILY_KCAL_GOAL } from "@/lib/goals";
 
 const WEEK_COUNT = 6;
-const DEFAULT_ACTIVE_CARD_KEYS = ["calories", "protein", "daysLogged", "goalsMet"];
 
 type WeightEntry = {
   weightKg: number;
@@ -105,7 +105,7 @@ export default function StatistikPage() {
 
   const chartSeries = useMemo<ChartSeries[]>(
     () => [
-      { key: "kcal", label: "Kalorier", color: "var(--hf-green)", values: kcalWeekly },
+      { key: "kcal", label: "Kalorier", color: "var(--hf-green)", values: kcalWeekly, goal: DAILY_KCAL_GOAL },
       { key: "weight", label: "Vægt", color: "var(--hf-gray)", values: weightWeekly },
     ],
     [kcalWeekly, weightWeekly],
@@ -130,7 +130,7 @@ export default function StatistikPage() {
           defaultEnabledKeys={["kcal"]}
         />
 
-        <StatCardsGrid cards={displayCards} defaultActiveKeys={DEFAULT_ACTIVE_CARD_KEYS} />
+        <StatCardsGrid cards={displayCards} defaultActiveKeys={DEFAULT_ACTIVE_STAT_KEYS} />
 
         <p className="text-center text-xs text-hf-black opacity-60">
           Statistikken viser fakta, ikke fremgangs-badges eller streaks.

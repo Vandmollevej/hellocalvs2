@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ComponentProps } from "react";
 import {
   IconBolt,
   IconDroplet,
@@ -26,6 +26,41 @@ type Stat = {
   unit: string;
 };
 
+/**
+ * Plate with a knife and fork beside it. Tabler's icon set has no plate
+ * glyph, so this is hand-authored to match the tabler outline style
+ * (24x24 viewBox, round line caps/joins, `currentColor` stroke) while
+ * reusing tabler's own knife+fork path (from ToolsKitchen2) scaled down
+ * and placed beside the plate.
+ */
+function IconPlateCutlery({
+  size = 24,
+  color = "currentColor",
+  stroke = 2,
+  ...rest
+}: ComponentProps<Icon>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth={stroke}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...rest}
+    >
+      <circle cx="7.5" cy="12" r="6" />
+      <circle cx="7.5" cy="12" r="2.7" />
+      <g transform="translate(12.5,6.2) scale(0.48)">
+        <path d="M19 3v12h-5c-.023 -3.681 .184 -7.406 5 -12m0 12v6h-1v-3m-10 -14v17m-3 -17v3a3 3 0 1 0 6 0v-3" />
+      </g>
+    </svg>
+  );
+}
+
 function isToday(dateString: string) {
   const date = new Date(dateString);
   const today = new Date();
@@ -40,8 +75,20 @@ function formatNumber(value: number, maximumFractionDigits = 0) {
   return new Intl.NumberFormat("da-DK", { maximumFractionDigits }).format(value);
 }
 
+/** Shortest signed distance from `index` to `from` around a circular list of `length`. */
+function circularDistance(index: number, from: number, length: number) {
+  let diff = (index - from) % length;
+  if (diff > length / 2) diff -= length;
+  if (diff < -length / 2) diff += length;
+  return diff;
+}
+
+const ITEM_HEIGHT = 46;
+
 export function StatsWheel({ side }: { side: "left" | "right" }) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [dragPixels, setDragPixels] = useState(0);
+  const [dragging, setDragging] = useState(false);
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [loading, setLoading] = useState(true);
   const pointerStartY = useRef<number | null>(null);
@@ -119,6 +166,14 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
         goal: "10.000",
         unit: "skridt",
       },
+      {
+        key: "plating",
+        label: "Anretning",
+        icon: IconPlateCutlery,
+        value: "8,2",
+        goal: "10",
+        unit: "score",
+      },
     ];
   }, [loading, registrations]);
 
@@ -136,8 +191,10 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
     }, 260);
   }
 
-  const previousIndex = (activeIndex - 1 + stats.length) % stats.length;
-  const nextIndex = (activeIndex + 1) % stats.length;
+  // Continuous "virtual" index: the exact fractional position of the wheel,
+  // combining the committed active index with the in-progress drag offset
+  // (in pixels, positive when the pointer has moved up towards the next item).
+  const floatIndex = activeIndex + dragPixels / ITEM_HEIGHT;
 
   return (
     <div
@@ -157,19 +214,29 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
       }}
       onPointerDown={(event) => {
         pointerStartY.current = event.clientY;
+        setDragging(true);
         event.currentTarget.setPointerCapture(event.pointerId);
       }}
+      onPointerMove={(event) => {
+        if (pointerStartY.current === null) return;
+        setDragPixels(pointerStartY.current - event.clientY);
+      }}
       onPointerUp={(event) => {
-        if (pointerStartY.current !== null && Math.abs(event.clientY - pointerStartY.current) > 28) {
-          move(event.clientY < pointerStartY.current ? 1 : -1);
+        if (pointerStartY.current !== null) {
+          const steps = Math.round((pointerStartY.current - event.clientY) / ITEM_HEIGHT);
+          if (steps !== 0) move(steps > 0 ? 1 : -1);
         }
         pointerStartY.current = null;
+        setDragging(false);
+        setDragPixels(0);
         event.currentTarget.releasePointerCapture(event.pointerId);
       }}
       onPointerCancel={() => {
         pointerStartY.current = null;
+        setDragging(false);
+        setDragPixels(0);
       }}
-      className="absolute flex w-[178px] touch-pan-x flex-col items-start justify-center overflow-hidden rounded-3xl px-2 py-3 text-left transition-[left,right] duration-300 ease-out focus-visible:outline-2 focus-visible:outline-hf-green focus-visible:outline-offset-2"
+      className="absolute flex w-[178px] touch-pan-x flex-col items-center justify-center overflow-hidden rounded-3xl px-2 py-3 text-left transition-[left,right] duration-300 ease-out focus-visible:outline-2 focus-visible:outline-hf-green focus-visible:outline-offset-2"
       style={
         {
           [side]: 22,
@@ -180,52 +247,107 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
         } as React.CSSProperties
       }
     >
-      <WheelItem stat={stats[previousIndex]} position="previous" onClick={() => move(-1)} />
-      <WheelItem stat={stats[activeIndex]} position="active" />
-      <WheelItem stat={stats[nextIndex]} position="next" onClick={() => move(1)} />
+      {stats.map((stat, index) => {
+        const distance = circularDistance(index, floatIndex, stats.length);
+        // Only render items close enough to be visible; keeps the DOM small
+        // and avoids animating items that are fully faded out anyway.
+        if (Math.abs(distance) > 2.4) return null;
+        return (
+          <WheelItem
+            key={stat.key}
+            stat={stat}
+            distance={distance}
+            animate={!dragging}
+            onClick={() => {
+              if (distance === 0) return;
+              move(distance > 0 ? 1 : -1);
+            }}
+          />
+        );
+      })}
     </div>
   );
 }
 
 function WheelItem({
   stat,
-  position,
+  distance,
+  animate,
   onClick,
 }: {
   stat: Stat;
-  position: "previous" | "active" | "next";
+  /** Signed distance from the active/center position, in whole-item units. Can be fractional while dragging. */
+  distance: number;
+  /** Whether transform/opacity/font-size changes should animate (disabled while actively dragging so the item follows the pointer 1:1). */
+  animate: boolean;
   onClick?: () => void;
 }) {
   const StatIcon = stat.icon;
+  const absDistance = Math.min(Math.abs(distance), 2.4);
+  const isActive = absDistance < 0.05;
 
-  if (position === "active") {
-    return (
-      <div className="my-1 w-full origin-left py-1" style={{ transform: "rotateX(0deg)" }} aria-live="polite">
-        <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.08em] text-hf-green">
-          {stat.label}
-        </p>
-        <div className="flex items-baseline justify-start gap-2">
-          <StatIcon size={21} color="var(--hf-green)" stroke={2.2} aria-hidden="true" />
-          <span className="text-[27px] font-extrabold leading-none text-hf-black">{stat.value}</span>
-        </div>
-        <p className="mt-1 text-[12px] text-hf-black opacity-65">
-          / {stat.goal} {stat.unit}
-        </p>
-      </div>
-    );
-  }
+  // Progressive depth/curve: farther items tilt and recede further, instead
+  // of a binary previous/next tilt.
+  const rotateX = Math.max(-70, Math.min(70, distance * -30));
+  const translateZ = -absDistance * 34;
+  const translateY = distance * ITEM_HEIGHT;
+  const scale = Math.max(0.62, 1 - absDistance * 0.16);
+  const opacity = Math.max(0.18, 1 - absDistance * 0.42);
+
+  // Magnifier/fisheye: value text is largest when active and shrinks
+  // continuously with distance.
+  const valueFontSize = Math.max(13, 27 - absDistance * 7.5);
+  const labelOpacity = Math.max(0, 1 - absDistance * 1.6);
 
   return (
     <button
       type="button"
       onClick={onClick}
-      aria-label={`Vis ${stat.label.toLowerCase()}: ${stat.value} ${stat.unit}`}
-      className="flex min-h-10 w-full origin-left items-center justify-start gap-1.5 text-hf-black opacity-55 transition-all hover:opacity-80 focus-visible:rounded-lg focus-visible:outline-2 focus-visible:outline-hf-black"
-      style={{ transform: position === "previous" ? "rotateX(38deg)" : "rotateX(-38deg)" }}
+      disabled={isActive}
+      aria-current={isActive || undefined}
+      aria-label={isActive ? undefined : `Vis ${stat.label.toLowerCase()}: ${stat.value} ${stat.unit}`}
+      aria-live={isActive ? "polite" : undefined}
+      className={`absolute left-2 right-2 flex origin-center flex-col items-start justify-center ${
+        animate ? "transition-[transform,opacity] duration-300 ease-out" : ""
+      } ${isActive ? "cursor-default" : "cursor-pointer"}`}
+      style={{
+        top: "50%",
+        transform: `translateY(calc(-50% + ${translateY}px)) translateZ(${translateZ}px) rotateX(${rotateX}deg) scale(${scale})`,
+        opacity,
+      }}
     >
-      <StatIcon size={15} aria-hidden="true" />
-      <span className="text-xs font-semibold">{stat.label}</span>
-      <span className="text-sm">{stat.value}</span>
+      {isActive ? (
+        <>
+          <p
+            className="mb-1 text-[11px] font-bold uppercase tracking-[0.08em] text-hf-green"
+            style={{ opacity: labelOpacity }}
+          >
+            {stat.label}
+          </p>
+          <div className="flex items-baseline justify-start gap-2">
+            <StatIcon size={21} color="var(--hf-green)" stroke={2.2} aria-hidden="true" />
+            <span
+              className="font-extrabold leading-none text-hf-black"
+              style={{ fontSize: valueFontSize }}
+            >
+              {stat.value}
+            </span>
+          </div>
+          <p className="mt-1 text-[12px] text-hf-black opacity-65" style={{ opacity: labelOpacity * 0.65 }}>
+            / {stat.goal} {stat.unit}
+          </p>
+        </>
+      ) : (
+        <div className="flex min-h-10 w-full items-center justify-start gap-1.5 text-hf-black">
+          <StatIcon size={15} aria-hidden="true" />
+          <span className="text-xs font-semibold" style={{ opacity: labelOpacity }}>
+            {stat.label}
+          </span>
+          <span className="font-semibold" style={{ fontSize: valueFontSize }}>
+            {stat.value}
+          </span>
+        </div>
+      )}
     </button>
   );
 }

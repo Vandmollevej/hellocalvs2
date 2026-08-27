@@ -75,6 +75,24 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - 2026-08-26: The public HELLO CAL application remains accessible to anyone who
   knows its address, but every response carries an `X-Robots-Tag` noindex policy
   so search engines are instructed not to index or surface its contents.
+- 2026-08-27: Nutrition-label photo capture (`/kamera?mode=naering`, per
+  `docs/AI.md`'s "næringsdeklaration" flow) was previously unbuilt, not
+  broken — only `produkt` and `maaltid` camera modes existed. Added a third
+  camera mode with client-side OCR via `tesseract.js` (new dependency; no
+  server/API key required) and pragmatic Danish-keyword regex heuristics
+  (`src/lib/nutrition-ocr.ts`) to extract kcal/protein/kulhydrat/fedt per
+  100 g. Extracted values, if any, are handed off to a new shared manual
+  create-product screen, `src/app/madvarer/nyt/page.tsx` — the app had no
+  such screen before this change, so both the OCR flow and the barcode
+  "product not found" fallback needed one. `NutritionLabelReview.tsx` shows
+  the OCR status and forwards the read values via `sessionStorage` to that
+  screen for a final editable review before `POST /api/products` creates
+  the `PENDING` product and opens the existing `/tilfoej/[id]` registration
+  flow; OCR failure shows a clear manual-entry fallback there instead of
+  failing silently. This is intentionally minimal — it does not implement
+  the full four-step unknown-barcode flow (front + barcode + næringsdeklaration)
+  described in `docs/AI.md`; that remains separate future work on the
+  `produkt` mode.
 
 ## Engineering process
 
