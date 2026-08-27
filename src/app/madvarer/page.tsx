@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 
@@ -68,8 +69,9 @@ export default function MadvarerPage() {
             </p>
           )}
           {state === "ready" && filtered.map((product, index) => (
-            <div
+            <Link
               key={product.id}
+              href={`/tilfoej/${product.id}`}
               className={`flex items-center gap-2.5 px-4 py-3 ${
                 index < filtered.length - 1 ? "border-b border-hf-tan-dark" : ""
               }`}
@@ -88,7 +90,7 @@ export default function MadvarerPage() {
                     .join(" · ")}
                 </p>
               </div>
-            </div>
+            </Link>
           ))}
           {state === "ready" && filtered.length === 0 && (
             <p className="px-4 py-6 text-center text-sm text-hf-black opacity-60">

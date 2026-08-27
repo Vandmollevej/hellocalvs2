@@ -1,28 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 
-type Result = { id: string; title: string; image?: string };
+type Result = { id: string; title: string; image?: string | null };
 
-const previouslyAdded: Result[] = [
-  { id: "p1", title: "Rugbrød m. kerner, Schulstad", image: "/dummy/rugbroed.png" },
-];
-const favorites: Result[] = [
-  { id: "f1", title: "Groft rugbrød, Kohberg", image: "/dummy/rugbroed.png" },
-];
+type Registration = {
+  productId: string | null;
+  titleSnapshot: string;
+  createdAt: string;
+  product: { imageUrl: string | null } | null;
+};
 
-// Vises hvis /api/products (databasen) ikke kan svare — sker i dette
-// sandbox-miljø uden en kørende Postgres, men lader UI'et forblive brugbart.
-const fallbackResults: Result[] = [
-  { id: "r1", title: "Kernerugbrød, Rema 1000", image: "/dummy/rugbroed.png" },
-  { id: "r2", title: "Rugbrød med solsikkekerner, Lidl", image: "/dummy/rugbroed.png" },
-  { id: "r3", title: "Rugkerner-snitter, Kohberg", image: "/dummy/rugbroed.png" },
-];
+type LoadState = "loading" | "ready" | "error";
 
-function ResultRow({ id, title, image }: { id: string; title: string; image?: string }) {
+function ResultRow({ id, title, image }: Result) {
   return (
     <div className="flex items-center gap-2.5 px-4 py-3 border-b border-hf-tan-dark last:border-b-0">
       <div className="h-10 w-10 flex-shrink-0">
@@ -41,8 +35,9 @@ function ResultRow({ id, title, image }: { id: string; title: string; image?: st
 
 export default function SoegPage() {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<Result[]>(fallbackResults);
-  const [offline, setOffline] = useState(false);
+  const [results, setResults] = useState<Result[]>([]);
+  const [resultsState, setResultsState] = useState<LoadState>("loading");
+  const [recentlyAdded, setRecentlyAdded] = useState<Result[]>([]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -58,19 +53,13 @@ export default function SoegPage() {
           data.products.map((p: { id: string; name: string; imageUrl?: string | null }) => ({
             id: p.id,
             title: p.name,
-            image: p.imageUrl ?? undefined,
+            image: p.imageUrl,
           }))
         );
-        setOffline(false);
+        setResultsState("ready");
       } catch {
-        setOffline(true);
-        setResults(
-          query.trim()
-            ? fallbackResults.filter((r) =>
-                r.title.toLowerCase().includes(query.toLowerCase())
-              )
-            : fallbackResults
-        );
+        setResultsState("error");
+        setResults([]);
       }
     }, 200);
 
@@ -79,6 +68,35 @@ export default function SoegPage() {
       clearTimeout(timeout);
     };
   }, [query]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/registrations", { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("offline");
+        return (await response.json()) as { registrations: Registration[] };
+      })
+      .then((data) => {
+        const seen = new Set<string>();
+        const recent: Result[] = [];
+        for (const registration of data.registrations) {
+          if (!registration.productId || seen.has(registration.productId)) continue;
+          seen.add(registration.productId);
+          recent.push({
+            id: registration.productId,
+            title: registration.titleSnapshot,
+            image: registration.product?.imageUrl,
+          });
+          if (recent.length >= 5) break;
+        }
+        setRecentlyAdded(recent);
+      })
+      .catch(() => setRecentlyAdded([]));
+
+    return () => controller.abort();
+  }, []);
+
+  const showRecentlyAdded = useMemo(() => !query.trim() && recentlyAdded.length > 0, [query, recentlyAdded]);
 
   return (
     <HfScreen title="Søg">
@@ -93,24 +111,11 @@ export default function SoegPage() {
           />
         </div>
 
-        {offline && (
-          <p className="text-xs text-hf-black opacity-60">
-            Database ikke tilgængelig lige nu — viser eksempeldata.
-          </p>
-        )}
-
-        {!query.trim() && (
+        {showRecentlyAdded && (
           <>
             <p className="text-xs font-bold text-hf-black">Tidligere tilføjet</p>
             <div className="overflow-hidden rounded-2xl bg-hf-tan">
-              {previouslyAdded.map((r) => (
-                <ResultRow key={r.id} id={r.id} title={r.title} image={r.image} />
-              ))}
-            </div>
-
-            <p className="text-xs font-bold text-hf-black">Favoritter</p>
-            <div className="overflow-hidden rounded-2xl bg-hf-tan">
-              {favorites.map((r) => (
+              {recentlyAdded.map((r) => (
                 <ResultRow key={r.id} id={r.id} title={r.title} image={r.image} />
               ))}
             </div>
@@ -121,10 +126,18 @@ export default function SoegPage() {
           {query.trim() ? "Søgeresultater" : "Alle varer"}
         </p>
         <div className="overflow-hidden rounded-2xl bg-hf-tan">
-          {results.slice(0, 6).map((r) => (
+          {resultsState === "loading" && (
+            <p className="px-4 py-6 text-center text-sm text-hf-black opacity-60">Søger …</p>
+          )}
+          {resultsState === "error" && (
+            <p className="px-4 py-6 text-center text-sm text-hf-black opacity-60">
+              Madvarer kunne ikke hentes lige nu
+            </p>
+          )}
+          {resultsState === "ready" && results.slice(0, 6).map((r) => (
             <ResultRow key={r.id} id={r.id} title={r.title} image={r.image} />
           ))}
-          {results.length === 0 && (
+          {resultsState === "ready" && results.length === 0 && (
             <p className="px-4 py-4 text-center text-sm text-hf-black opacity-60">
               Ingen resultater
             </p>
