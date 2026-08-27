@@ -14,6 +14,12 @@ Last updated: 2026-08-27
   on 2026-08-27: Madvarer rows now link to the add-flow, and Søg shows real
   recent registrations instead of hardcoded example rows. Backup taken first;
   `db` and `app` are healthy and `/api/health` returns `{"status":"ok"}`.
+- Production was updated to commit `1d272a0a7dafb843d857831b58077d5e92031283`
+  on 2026-08-27: the full `hello-cal-nye-rettelser.md` fix batch (FAB, bottom
+  nav, wheel, madliste, stat-cards + unused-cards page, stat chart, barcode
+  fix, nutrition-label OCR, manual create-product page). Backup taken first;
+  no new migration in this release; `db` and `app` are healthy and both the
+  local and public `/api/health` return `{"status":"ok"}`.
 - GitHub Actions built and published the production image successfully.
 - The application is a Next.js 16 prototype with Prisma 7 and PostgreSQL.
 - The stable UI checkpoint is committed as `ed2d27d`.
