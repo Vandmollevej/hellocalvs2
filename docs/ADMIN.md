@@ -2,6 +2,15 @@
 
 Se [SPECIFICATION.md](SPECIFICATION.md) for det samlede overblik.
 
+Implementeret pr. 2026-08-27 (se `docs/DECISIONS.md`): et separat admin-UI på
+`products.hellocal.packroff.dk`, beskyttet af password + TOTP-totrinslogin
+(`/admin/setup` opretter kontoen første gang). `/admin/produkter` godkender/
+afviser nye `PENDING`-produkter; `/admin/billeder` godkender/afviser
+billede-agentens (`scripts/image-agent`) foreslåede billeder. Dette dækker
+kun "nye stregkodeprodukter" og "produktbilleder"-flowene nedenfor — brand-
+oversigt, dubletter, "Foreslå ændring", community-validering, fejlrapporter
+og domænegodkendelse er stadig ikke bygget.
+
 ## Roller
 
 - Kun to roller i v1: **Bruger** og **Administrator**. Ingen moderator- eller support-mellemroller.

@@ -362,6 +362,28 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
   `scripts/frida-import/data/` is no longer needed by the running service
   (kept locally, gitignored) — the agent downloads directly from Figshare.
 
+- 2026-08-27: Added an admin product/image approval UI (see
+  `docs/DECISIONS.md`) at `products.hellocal.packroff.dk` — `/admin` (counts),
+  `/admin/produkter` (approve/reject `PENDING` products), `/admin/billeder`
+  (accept/reject the image-agent's suggested photos). First visit to that
+  hostname goes to `/admin/setup` to create the one admin account
+  (email + password + TOTP QR code); afterwards `/admin/login` →
+  `/admin/verify` (TOTP). New `User.passwordHash`/`User.totpSecret` columns
+  via Prisma migration `20260827200000_admin_auth` (not yet applied to
+  production) and a new `ADMIN_SESSION_SECRET` env var (added to
+  `.env.production.example` and `compose.production.yaml`, not yet set on the
+  server). `npm run lint` and `npm run build` passed (the `.next` cache had
+  to be cleared first — an `EPERM` on `.next/static` from a stale/concurrent
+  lock, same class of issue noted elsewhere in this file; a clean rebuild
+  succeeded). Not yet verified against a live database or browser — no local
+  PostgreSQL is reachable from this workstation (see `hellocal_no_local_db`
+  memory). **The `products.hellocal.packroff.dk` Cloudflare Tunnel public
+  hostname still needs to be added** (same target as the existing
+  `hellocal.packroff.dk` route, `http://192.168.1.90:3100`) — this requires
+  the Cloudflare dashboard login/SSO, which was not something available to
+  do unattended; the user needs to add it (Zero Trust → Networks → Tunnels →
+  the existing `Server` tunnel → Public Hostname → Add a public hostname).
+
 ## Next work
 
 1. Implement the pending UI/design requirements in
@@ -384,3 +406,9 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
    step — see the 2026-08-27 Frida entry above). It will then import the
    1389 Frida products fully on its own on first poll; no manual file
    handling needed on an ongoing basis.
+8. Deploy the admin-auth migration (`20260827200000_admin_auth`), set a real
+   `ADMIN_SESSION_SECRET` in `.env.production`, and add the
+   `products.hellocal.packroff.dk` Cloudflare Tunnel public hostname (points
+   to the same `http://192.168.1.90:3100` target as `hellocal.packroff.dk`).
+   Then open `https://products.hellocal.packroff.dk/admin/setup` once to
+   create the admin account.

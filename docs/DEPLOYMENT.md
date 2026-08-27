@@ -158,6 +158,16 @@ remains.
 Record only the non-secret route shape after it has been confirmed. Never record
 the tunnel ID or token.
 
+### Admin hostname (`products.hellocal.packroff.dk`)
+
+The admin approval UI (`docs/ADMIN.md`) is the same application and the same
+target as `hellocal.packroff.dk` (`http://192.168.1.90:3100`) — only the
+public hostname differs; `middleware.ts` routes by hostname. Add it as a
+second public hostname on the same existing tunnel, the same way
+`hellocal.packroff.dk` was added above. This step needs the Cloudflare
+dashboard login and was not done as part of adding the admin UI's code —
+see `docs/STATUS.md`.
+
 ## Search indexing
 
 The application adds `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet,

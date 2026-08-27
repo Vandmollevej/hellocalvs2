@@ -38,6 +38,7 @@ services:
       DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env.production}
       USDA_FDC_API_KEY: ${USDA_FDC_API_KEY:-}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ADMIN_SESSION_SECRET: ${ADMIN_SESSION_SECRET:?Set ADMIN_SESSION_SECRET in .env.production}
       NODE_ENV: production
       PORT: 3000
     ports:

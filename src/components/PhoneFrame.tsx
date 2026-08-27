@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 // iPhone 17 Pro CSS-viewport (402×874 px, forhold ~2,17:1) — opslået
 // faktisk specifikation, ikke gættet.
@@ -9,7 +10,13 @@ const FRAME_HEIGHT = 874;
 const MARGIN = 48;
 
 export function PhoneFrame({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
   const [scale, setScale] = useState(1);
+
+  // The admin surface (docs/ADMIN.md) is a separate, desktop-and-mobile
+  // responsive interface, not a simulated-phone consumer screen — it renders
+  // full-viewport on every device instead of inside the phone chrome.
+  const isAdmin = pathname?.startsWith("/admin") ?? false;
 
   useEffect(() => {
     function updateScale() {
@@ -22,6 +29,8 @@ export function PhoneFrame({ children }: { children: React.ReactNode }) {
     window.addEventListener("resize", updateScale);
     return () => window.removeEventListener("resize", updateScale);
   }, []);
+
+  if (isAdmin) return <>{children}</>;
 
   return (
     <div className="phone-frame-stage flex min-h-dvh items-center justify-center bg-neutral-300 p-6">

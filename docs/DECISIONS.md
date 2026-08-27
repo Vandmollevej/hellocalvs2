@@ -80,6 +80,25 @@ This file records durable decisions. Add a dated entry when a later decision cha
   that date (`WorkShift` override) or the standing weekly pattern
   (`SleepSchedule`). See `docs/DESIGN_V2.md` §6 for the source spec.
 
+- 2026-08-27: The admin product/image approval UI (docs/ADMIN.md) is served
+  from the same codebase and deployment as the rest of the app, reached at a
+  dedicated hostname (`products.hellocal.packroff.dk`) rather than a path on
+  the public domain — `middleware.ts` rewrites that hostname's root to
+  `/admin` and refuses `/admin/*` and `/api/admin/*` entirely on any other
+  hostname (except `localhost` for local development), even though every
+  route is also login-gated. There is still no general user account/login
+  system (see "Next work" in `docs/STATUS.md`); this only adds the two
+  `User` fields (`passwordHash`, `totpSecret`) needed for the single
+  administrator account, created once via `/admin/setup` (blocked after the
+  first admin exists). Login is password + TOTP (Google
+  Authenticator/Authy-compatible, `otplib`), sessions are a signed JWT cookie
+  (`ADMIN_SESSION_SECRET`, `jose`), and login/TOTP attempts are rate-limited
+  in-memory per email/user. `/admin/produkter` approves or rejects new
+  `ProductStatus.PENDING` products; `/admin/billeder` shows each
+  `imageStatus = PENDING` product's current image beside the image-agent's
+  `pendingImageUrl` suggestion (see the 2026-08-27 image-agent entry above)
+  and promotes or rejects it.
+
 ## Hosting and delivery
 
 - Production is intended to run on the user's Synology NAS through Docker/Container Manager.

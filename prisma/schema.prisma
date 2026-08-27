@@ -19,6 +19,12 @@ model User {
   sex         Sex?
   createdAt   DateTime @default(now())
 
+  // Admin-login (docs/ADMIN.md): kun sat for den ene administratorkonto,
+  // oprettet via /admin/setup. Almindelige brugere har intet login endnu
+  // (se docs/STATUS.md "Next work" #4) og har derfor begge felter null.
+  passwordHash String?
+  totpSecret   String?
+
   // Søvnmønster: standard sengetid/stå-op-tid, med mulighed for individuelle
   // tider pr. ugedag (SleepSchedule) til brugere med skiftende arbejdstider.
   defaultBedtime   String?
