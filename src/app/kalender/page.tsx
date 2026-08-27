@@ -33,10 +33,31 @@ type Registration = {
   createdAt: string;
 };
 
+type SleepDefaults = {
+  defaultBedtime: string | null;
+  defaultWakeTime: string | null;
+};
+
+type SleepScheduleEntry = {
+  weekday: number;
+  bedtime: string;
+  wakeTime: string;
+};
+
+type WorkShiftEntry = {
+  date: string;
+  bedtime: string | null;
+  wakeTime: string | null;
+};
+
+type SleepWindow = { bedtime: number; wakeTime: number };
+
+type SleepAdjustType = "bedtime" | "wake";
+
 const VIEW_OPTIONS = [
   { value: "month" as const, label: "Måned", icon: IconCalendarMonth },
-  { value: "week" as const, label: "Listevisning", icon: IconCalendarWeek },
-  { value: "list" as const, label: "Liste (hele måneden)", icon: IconLayoutList },
+  { value: "week" as const, label: "Uge", icon: IconCalendarWeek },
+  { value: "list" as const, label: "Liste", icon: IconLayoutList },
 ];
 
 function addDays(date: Date, days: number) {
@@ -63,6 +84,13 @@ function goalWasMet(date: Date, today: Date) {
 
 function dayKey(date: Date) {
   return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+}
+
+function isoDate(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function totalKcalForDate(dailyTotals: Map<string, number>, date: Date) {
@@ -95,6 +123,38 @@ function minutesFromMidnight(date: Date) {
 const HOUR_HEIGHT = 56;
 const TIMELINE_HEIGHT = HOUR_HEIGHT * 24;
 const HOUR_MARKS = Array.from({ length: 25 }, (_, hour) => hour);
+const SLEEP_ADJUST_HOLD_MS = 500;
+const SLEEP_ADJUST_MOVE_TOLERANCE = 10;
+
+function timeToMinutes(time: string | null | undefined) {
+  if (!time) return null;
+  const [hours, minutes] = time.split(":").map(Number);
+  if (Number.isNaN(hours) || Number.isNaN(minutes)) return null;
+  return hours * 60 + minutes;
+}
+
+function minutesToTime(minutes: number) {
+  const snapped = Math.round(minutes / 15) * 15;
+  const wrapped = ((snapped % 1440) + 1440) % 1440;
+  const hours = Math.floor(wrapped / 60);
+  const mins = wrapped % 60;
+  return `${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}`;
+}
+
+function getSleepWindow(
+  date: Date,
+  defaults: SleepDefaults | null,
+  weekdaySchedules: Record<number, SleepScheduleEntry>,
+  workShifts: Record<string, WorkShiftEntry>,
+): SleepWindow | null {
+  const weekday = (date.getDay() + 6) % 7;
+  const override = workShifts[isoDate(date)];
+  const perDay = weekdaySchedules[weekday];
+  const bedtime = timeToMinutes(override?.bedtime || perDay?.bedtime || defaults?.defaultBedtime);
+  const wakeTime = timeToMinutes(override?.wakeTime || perDay?.wakeTime || defaults?.defaultWakeTime);
+  if (bedtime === null && wakeTime === null) return null;
+  return { bedtime: bedtime ?? 23 * 60, wakeTime: wakeTime ?? 7 * 60 };
+}
 
 function useIsLandscape() {
   const [isLandscape, setIsLandscape] = useState(false);
@@ -120,6 +180,14 @@ export default function KalenderPage() {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [registrationsLoading, setRegistrationsLoading] = useState(true);
   const [registrationsError, setRegistrationsError] = useState(false);
+  const [sleepDefaults, setSleepDefaults] = useState<SleepDefaults | null>(null);
+  const [weekdaySchedules, setWeekdaySchedules] = useState<Record<number, SleepScheduleEntry>>({});
+  const [workShifts, setWorkShifts] = useState<Record<string, WorkShiftEntry>>({});
+  const [pendingSleepChange, setPendingSleepChange] = useState<{
+    date: Date;
+    type: SleepAdjustType;
+    minutes: number;
+  } | null>(null);
   const pointerStart = useRef<number | null>(null);
   const isLandscape = useIsLandscape();
   const effectiveView: CalendarView = isLandscape ? "week" : view;
@@ -208,11 +276,81 @@ export default function KalenderPage() {
     };
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([
+      fetch("/api/profile").then((response) => response.json()),
+      fetch("/api/sleep-schedule").then((response) => response.json()),
+      fetch("/api/work-shifts").then((response) => response.json()),
+    ])
+      .then(([profileData, scheduleData, shiftData]) => {
+        if (cancelled) return;
+        setSleepDefaults(profileData.user ?? null);
+        const byWeekday: Record<number, SleepScheduleEntry> = {};
+        for (const entry of (scheduleData.schedules ?? []) as SleepScheduleEntry[]) {
+          byWeekday[entry.weekday] = entry;
+        }
+        setWeekdaySchedules(byWeekday);
+        const byDate: Record<string, WorkShiftEntry> = {};
+        for (const shift of (shiftData.shifts ?? []) as WorkShiftEntry[]) {
+          byDate[isoDate(new Date(shift.date))] = shift;
+        }
+        setWorkShifts(byDate);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  function resolveSleepWindow(date: Date) {
+    return getSleepWindow(date, sleepDefaults, weekdaySchedules, workShifts);
+  }
+
+  function requestSleepAdjust(date: Date, type: SleepAdjustType, minutes: number) {
+    setPendingSleepChange({ date, type, minutes });
+  }
+
+  function applySleepChange(scope: "date" | "pattern") {
+    if (!pendingSleepChange) return;
+    const { date, type, minutes } = pendingSleepChange;
+    const time = minutesToTime(minutes);
+
+    if (scope === "date") {
+      const iso = isoDate(date);
+      const body = type === "bedtime" ? { bedtime: time } : { wakeTime: time };
+      setWorkShifts((current) => ({
+        ...current,
+        [iso]: { ...(current[iso] ?? { date: iso, bedtime: null, wakeTime: null }), ...body },
+      }));
+      fetch(`/api/work-shifts/${iso}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      }).catch(() => {});
+    } else {
+      const weekday = (date.getDay() + 6) % 7;
+      const existing = weekdaySchedules[weekday];
+      const bedtime = type === "bedtime" ? time : existing?.bedtime || sleepDefaults?.defaultBedtime || null;
+      const wakeTime = type === "wake" ? time : existing?.wakeTime || sleepDefaults?.defaultWakeTime || null;
+      setWeekdaySchedules((current) => ({
+        ...current,
+        [weekday]: { weekday, bedtime: bedtime ?? "", wakeTime: wakeTime ?? "" },
+      }));
+      fetch("/api/sleep-schedule", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ weekday, bedtime, wakeTime }),
+      }).catch(() => {});
+    }
+    setPendingSleepChange(null);
+  }
+
   function movePeriod(direction: -1 | 1) {
     setSlideDirection(direction === 1 ? "next" : "previous");
     setAnimationKey((key) => key + 1);
     setVisibleDate((current) =>
-      effectiveView === "week"
+      effectiveView === "week" || effectiveView === "list"
         ? addDays(current, direction * 7)
         : new Date(current.getFullYear(), current.getMonth() + direction, 1),
     );
@@ -241,16 +379,17 @@ export default function KalenderPage() {
             aria-label={`Skift kalendervisning. Aktuel visning: ${activeView.label}`}
             aria-haspopup="listbox"
             aria-expanded={viewMenuOpen}
+            disabled={isLandscape}
             onClick={() => {
               setViewMenuOpen((open) => !open);
               setMonthMenuOpen(false);
             }}
-            className="flex flex-col items-center gap-0.5 rounded-lg focus-visible:outline-2 focus-visible:outline-white"
+            className="flex flex-col items-center gap-0.5 rounded-lg focus-visible:outline-2 focus-visible:outline-white disabled:opacity-50"
           >
             <IconCalendarMonth size={20} stroke={2} />
             <IconChevronDown size={12} stroke={2.5} className={viewMenuOpen ? "rotate-180" : ""} />
           </button>
-          {viewMenuOpen && (
+          {viewMenuOpen && !isLandscape && (
             <div className="absolute left-0 top-full z-40 mt-2 w-44 overflow-hidden rounded-2xl border border-hf-tan-dark bg-hf-white p-1.5 text-hf-black shadow-xl">
               {VIEW_OPTIONS.map((option) => {
                 const OptionIcon = option.icon;
@@ -289,7 +428,7 @@ export default function KalenderPage() {
         )}
 
         <div className="relative z-30 mb-4 flex items-center justify-between gap-2">
-          <PeriodButton direction="previous" view={view} onClick={() => movePeriod(-1)} />
+          <PeriodButton direction="previous" view={effectiveView} onClick={() => movePeriod(-1)} />
           <div className="relative min-w-0">
             <button
               type="button"
@@ -302,7 +441,7 @@ export default function KalenderPage() {
               className="flex min-h-11 max-w-full items-center justify-center gap-1.5 rounded-full px-3 text-hf-black hover:bg-hf-tan focus-visible:outline-2 focus-visible:outline-hf-black"
             >
               <span className="hf-heading truncate text-[15px] capitalize">
-                {view === "week" ? weekLabel : monthLabel}
+                {effectiveView === "week" || effectiveView === "list" ? weekLabel : monthLabel}
               </span>
               <IconChevronDown size={18} className={monthMenuOpen ? "rotate-180" : ""} />
             </button>
@@ -310,7 +449,7 @@ export default function KalenderPage() {
               <MonthPicker year={year} month={month} onYearChange={setVisibleDate} onSelect={selectMonth} />
             )}
           </div>
-          <PeriodButton direction="next" view={view} onClick={() => movePeriod(1)} />
+          <PeriodButton direction="next" view={effectiveView} onClick={() => movePeriod(1)} />
         </div>
 
         <div
@@ -329,20 +468,40 @@ export default function KalenderPage() {
           }}
         >
           <div
-            key={`${view}-${year}-${month}-${animationKey}`}
+            key={`${effectiveView}-${year}-${month}-${animationKey}`}
             className={slideDirection === "next" ? "calendar-slide-next" : "calendar-slide-previous"}
           >
-            {view === "month" && (
-              <MonthView cells={monthCells} month={month} today={today} onOpenDate={openDate} />
-            )}
-            {view === "week" && <WeekView days={weekDays} today={today} onOpenDate={openDate} />}
-            {view === "list" && (
-              <ListView year={year} month={month} today={today} onOpenDate={openDate} />
+            {isLandscape ? (
+              <WeekTimelineView
+                days={weekDays}
+                today={today}
+                registrations={registrations}
+                onOpenDate={openDate}
+                getSleepWindow={resolveSleepWindow}
+                onSleepAdjust={requestSleepAdjust}
+              />
+            ) : (
+              <>
+                {view === "month" && (
+                  <MonthView cells={monthCells} month={month} today={today} onOpenDate={openDate} />
+                )}
+                {view === "week" && <WeekView days={weekDays} today={today} onOpenDate={openDate} />}
+                {view === "list" && (
+                  <ListView
+                    days={weekDays}
+                    today={today}
+                    dailyTotals={dailyTotals}
+                    onOpenDate={openDate}
+                    onPrevWeek={() => movePeriod(-1)}
+                    onNextWeek={() => movePeriod(1)}
+                  />
+                )}
+              </>
             )}
           </div>
         </div>
 
-        <MonthlyStatus status={monthlyStatus} />
+        {!isLandscape && <MonthlyStatus status={monthlyStatus} />}
       </div>
 
       {selectedDate && (
@@ -354,8 +513,46 @@ export default function KalenderPage() {
           )}
           loading={registrationsLoading}
           error={registrationsError}
+          sleepWindow={resolveSleepWindow(selectedDate)}
+          onSleepAdjust={(type, minutes) => requestSleepAdjust(selectedDate, type, minutes)}
           onClose={() => setSelectedDate(null)}
+          onNavigate={(direction) => setSelectedDate((current) => (current ? addDays(current, direction) : current))}
         />
+      )}
+
+      {pendingSleepChange && (
+        <div className="fixed inset-x-0 bottom-0 z-[60] flex justify-center p-4">
+          <div className="w-full max-w-sm rounded-2xl border border-hf-tan-dark bg-hf-white p-4 text-hf-black shadow-xl">
+            <p className="mb-3 text-sm">
+              {pendingSleepChange.type === "bedtime" ? "Sengetid" : "Stå-op-tid"} sat til{" "}
+              <span className="font-bold">{minutesToTime(pendingSleepChange.minutes)}</span>. Skal ændringen
+              gælde kun denne dato, eller dit faste mønster?
+            </p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => applySleepChange("date")}
+                className="min-h-11 flex-1 rounded-xl bg-hf-tan px-3 text-sm font-semibold text-hf-black"
+              >
+                Kun denne dato
+              </button>
+              <button
+                type="button"
+                onClick={() => applySleepChange("pattern")}
+                className="min-h-11 flex-1 rounded-xl bg-hf-green px-3 text-sm font-semibold text-hf-white"
+              >
+                Standardmønster
+              </button>
+            </div>
+            <button
+              type="button"
+              onClick={() => setPendingSleepChange(null)}
+              className="mt-2 min-h-9 w-full text-center text-xs font-semibold opacity-60"
+            >
+              Annuller
+            </button>
+          </div>
+        </div>
       )}
     </HfScreen>
   );
@@ -371,7 +568,7 @@ function PeriodButton({
   onClick: () => void;
 }) {
   const Icon = direction === "previous" ? IconChevronLeft : IconChevronRight;
-  const period = view === "week" ? "uge" : "måned";
+  const period = view === "week" || view === "list" ? "uge" : "måned";
   return (
     <button
       type="button"
@@ -510,31 +707,333 @@ function WeekView({ days, today, onOpenDate }: { days: Date[]; today: Date; onOp
   );
 }
 
-function ListView({ year, month, today, onOpenDate }: { year: number; month: number; today: Date; onOpenDate: (date: Date) => void }) {
-  const days = Array.from({ length: new Date(year, month + 1, 0).getDate() }, (_, index) => new Date(year, month, index + 1));
+function ListView({
+  days,
+  today,
+  dailyTotals,
+  onOpenDate,
+  onPrevWeek,
+  onNextWeek,
+}: {
+  days: Date[];
+  today: Date;
+  dailyTotals: Map<string, number>;
+  onOpenDate: (date: Date) => void;
+  onPrevWeek: () => void;
+  onNextWeek: () => void;
+}) {
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [overflowing, setOverflowing] = useState(false);
+  const overscroll = useRef(0);
+  const touchStartY = useRef<number | null>(null);
+
+  useEffect(() => {
+    const node = scrollRef.current;
+    if (!node) return;
+    node.scrollTop = 0;
+    setOverflowing(node.scrollHeight > node.clientHeight + 1);
+  }, [days]);
+
+  function handleWheel(event: React.WheelEvent<HTMLDivElement>) {
+    const node = scrollRef.current;
+    if (!node) return;
+    const atTop = node.scrollTop <= 0;
+    const atBottom = node.scrollTop + node.clientHeight >= node.scrollHeight - 1;
+    if ((atTop && event.deltaY < 0) || (atBottom && event.deltaY > 0)) {
+      overscroll.current += event.deltaY;
+      if (overscroll.current > 80) {
+        overscroll.current = 0;
+        onNextWeek();
+      } else if (overscroll.current < -80) {
+        overscroll.current = 0;
+        onPrevWeek();
+      }
+    } else {
+      overscroll.current = 0;
+    }
+  }
+
+  function handleTouchStart(event: React.TouchEvent<HTMLDivElement>) {
+    touchStartY.current = event.touches[0].clientY;
+  }
+
+  function handleTouchMove(event: React.TouchEvent<HTMLDivElement>) {
+    const node = scrollRef.current;
+    if (!node || touchStartY.current === null) return;
+    const deltaY = touchStartY.current - event.touches[0].clientY;
+    const atTop = node.scrollTop <= 0;
+    const atBottom = node.scrollTop + node.clientHeight >= node.scrollHeight - 1;
+    if ((atTop && deltaY < 0) || (atBottom && deltaY > 0)) {
+      if (Math.abs(deltaY) > 60) {
+        touchStartY.current = event.touches[0].clientY;
+        if (deltaY > 0) onNextWeek();
+        else onPrevWeek();
+      }
+    }
+  }
+
   return (
-    <div className="overflow-hidden rounded-2xl bg-hf-white">
-      {days.map((date) => {
-        const met = goalWasMet(date, today);
-        const current = isSameDay(date, today);
-        return (
-          <button key={date.toISOString()} type="button" onClick={() => onOpenDate(date)} className="flex min-h-[58px] w-full items-center gap-3 border-b border-hf-tan px-4 text-left last:border-b-0 hover:bg-hf-cream focus-visible:outline-2 focus-visible:outline-hf-black">
-            <span className={`relative flex size-9 shrink-0 items-center justify-center rounded-lg border text-sm font-bold ${
-              current
-                ? "border-hf-green bg-hf-green text-hf-white"
-                : met
-                  ? "border-hf-green bg-hf-white text-hf-black"
-                  : "border-transparent bg-hf-tan text-hf-black"
-            }`}>
-              {date.getDate()}
-              {met && <IconCheck size={11} stroke={3} className="absolute right-0.5 top-0.5 text-hf-green-light" aria-hidden="true" />}
-            </span>
-            <span className="flex-1 text-sm capitalize">{date.toLocaleDateString("da-DK", { weekday: "long" })}</span>
-            {met && <span className="text-xs font-semibold text-hf-green">Mål nået</span>}
-            <IconChevronRight size={18} className="opacity-50" />
-          </button>
-        );
-      })}
+    <div className="relative">
+      <div
+        ref={scrollRef}
+        onWheel={handleWheel}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={() => {
+          touchStartY.current = null;
+        }}
+        className="max-h-[min(60vh,420px)] snap-y snap-mandatory overflow-y-auto overscroll-contain rounded-2xl bg-hf-white"
+      >
+        {days.map((date) => {
+          const kcal = totalKcalForDate(dailyTotals, date);
+          const met = dailyGoalMet(dailyTotals, date);
+          const current = isSameDay(date, today);
+          return (
+            <button
+              key={date.toISOString()}
+              type="button"
+              onClick={() => onOpenDate(date)}
+              className="flex min-h-[58px] w-full shrink-0 snap-start items-center gap-3 border-b border-hf-tan px-4 text-left last:border-b-0 hover:bg-hf-cream focus-visible:outline-2 focus-visible:outline-hf-black"
+            >
+              <span className="w-16 shrink-0 truncate text-sm capitalize opacity-80">
+                {date.toLocaleDateString("da-DK", { weekday: "long" })}
+              </span>
+              <span
+                className={`flex size-9 shrink-0 items-center justify-center rounded-lg border text-sm font-bold ${
+                  current ? "border-hf-green bg-hf-green text-hf-white" : "border-hf-gray bg-hf-white text-hf-black"
+                }`}
+              >
+                {date.getDate()}
+              </span>
+              <span className="flex-1 truncate text-sm font-semibold">
+                {met ? "Du nåede dit mål" : "Du overskred dit mål"}
+              </span>
+              <span className={`shrink-0 text-sm font-bold tabular-nums ${met ? "text-hf-green" : "text-hf-black"}`}>
+                {Math.round(kcal)} kcal
+              </span>
+              {met ? (
+                <IconCheck size={18} stroke={2.5} className="shrink-0 text-hf-green" aria-hidden="true" />
+              ) : (
+                <IconMinus size={18} stroke={2.5} className="shrink-0 opacity-50" aria-hidden="true" />
+              )}
+            </button>
+          );
+        })}
+      </div>
+      {overflowing && (
+        <div
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-8 rounded-b-2xl bg-gradient-to-t from-hf-white to-transparent"
+          aria-hidden="true"
+        />
+      )}
+    </div>
+  );
+}
+
+function WeekTimelineView({
+  days,
+  today,
+  registrations,
+  onOpenDate,
+  getSleepWindow,
+  onSleepAdjust,
+}: {
+  days: Date[];
+  today: Date;
+  registrations: Registration[];
+  onOpenDate: (date: Date) => void;
+  getSleepWindow: (date: Date) => SleepWindow | null;
+  onSleepAdjust: (date: Date, type: SleepAdjustType, minutes: number) => void;
+}) {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-hf-tan bg-hf-white">
+      <div className="flex overflow-x-auto">
+        <div className="h-12 w-12 shrink-0 border-b border-r border-hf-tan" />
+        {days.map((date) => {
+          const met = goalWasMet(date, today);
+          const current = isSameDay(date, today);
+          return (
+            <button
+              key={date.toISOString()}
+              type="button"
+              onClick={() => onOpenDate(date)}
+              className={`flex h-12 min-w-[92px] flex-1 flex-col items-center justify-center border-b border-r border-hf-tan last:border-r-0 focus-visible:outline-2 focus-visible:outline-hf-black ${
+                current ? "bg-hf-green text-hf-white" : "text-hf-black"
+              }`}
+            >
+              <span className="text-[10px] font-bold uppercase opacity-70">
+                {date.toLocaleDateString("da-DK", { weekday: "short" })}
+              </span>
+              <span className="hf-heading flex items-center gap-1 text-sm">
+                {date.getDate()}
+                {met && <IconCheck size={11} stroke={3} aria-hidden="true" />}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      <div className="overflow-auto" style={{ maxHeight: "calc(100vh - 260px)" }}>
+        <div className="flex" style={{ height: TIMELINE_HEIGHT }}>
+          <div className="relative w-12 shrink-0 border-r border-hf-tan">
+            {HOUR_MARKS.map((hour) => (
+              <span
+                key={hour}
+                className="absolute right-1.5 -translate-y-1/2 text-[10px] font-medium opacity-50"
+                style={{ top: hour * HOUR_HEIGHT }}
+              >
+                {String(hour).padStart(2, "0")}
+              </span>
+            ))}
+          </div>
+          {days.map((date) => {
+            const dayRegistrations = registrations.filter((registration) =>
+              isSameDay(new Date(registration.createdAt), date),
+            );
+            const sleepWindow = getSleepWindow(date);
+            return (
+              <div key={date.toISOString()} className="relative min-w-[92px] flex-1 border-r border-hf-tan last:border-r-0">
+                <SleepBands window={sleepWindow} />
+                {HOUR_MARKS.map((hour) => (
+                  <div
+                    key={hour}
+                    className="absolute left-0 right-0 border-t border-hf-tan/60"
+                    style={{ top: hour * HOUR_HEIGHT }}
+                  />
+                ))}
+                {sleepWindow && (
+                  <>
+                    <SleepBoundaryHandle
+                      minutes={sleepWindow.wakeTime}
+                      type="wake"
+                      onCommit={(type, minutes) => onSleepAdjust(date, type, minutes)}
+                    />
+                    <SleepBoundaryHandle
+                      minutes={sleepWindow.bedtime}
+                      type="bedtime"
+                      onCommit={(type, minutes) => onSleepAdjust(date, type, minutes)}
+                    />
+                  </>
+                )}
+                {dayRegistrations.map((registration) => {
+                  const time = new Date(registration.createdAt);
+                  return (
+                    <div
+                      key={registration.id}
+                      className="absolute left-0.5 right-0.5 truncate rounded-md bg-hf-green px-1 text-[10px] font-semibold text-hf-white"
+                      style={{ top: (minutesFromMidnight(time) / 60) * HOUR_HEIGHT, minHeight: 18 }}
+                      title={`${registration.titleSnapshot} · ${Math.round(registration.kcalSnapshot)} kcal`}
+                    >
+                      {Math.round(registration.kcalSnapshot)} kcal
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SleepBands({ window }: { window: SleepWindow | null }) {
+  if (!window) return null;
+  return (
+    <>
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 bg-hf-gray/15"
+        style={{ height: (window.wakeTime / 60) * HOUR_HEIGHT }}
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 bg-hf-gray/15"
+        style={{ height: ((24 * 60 - window.bedtime) / 60) * HOUR_HEIGHT }}
+        aria-hidden="true"
+      />
+    </>
+  );
+}
+
+function SleepBoundaryHandle({
+  minutes,
+  type,
+  onCommit,
+}: {
+  minutes: number;
+  type: SleepAdjustType;
+  onCommit: (type: SleepAdjustType, minutes: number) => void;
+}) {
+  const [dragMinutes, setDragMinutes] = useState<number | null>(null);
+  const activatedRef = useRef(false);
+  const movedRef = useRef(false);
+  const startYRef = useRef(0);
+  const startMinutesRef = useRef(minutes);
+  const dragMinutesRef = useRef<number | null>(null);
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function clearTimer() {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  }
+
+  function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    event.stopPropagation();
+    startYRef.current = event.clientY;
+    startMinutesRef.current = minutes;
+    movedRef.current = false;
+    activatedRef.current = false;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    longPressTimer.current = setTimeout(() => {
+      if (!movedRef.current) {
+        activatedRef.current = true;
+        dragMinutesRef.current = minutes;
+        setDragMinutes(minutes);
+      }
+    }, SLEEP_ADJUST_HOLD_MS);
+  }
+
+  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    const deltaY = event.clientY - startYRef.current;
+    if (!activatedRef.current) {
+      if (Math.abs(deltaY) > SLEEP_ADJUST_MOVE_TOLERANCE) {
+        movedRef.current = true;
+        clearTimer();
+      }
+      return;
+    }
+    event.stopPropagation();
+    const deltaMinutes = (deltaY / HOUR_HEIGHT) * 60;
+    const next = startMinutesRef.current + deltaMinutes;
+    dragMinutesRef.current = next;
+    setDragMinutes(next);
+  }
+
+  function finishDrag() {
+    clearTimer();
+    if (activatedRef.current && dragMinutesRef.current !== null) {
+      onCommit(type, dragMinutesRef.current);
+    }
+    activatedRef.current = false;
+    dragMinutesRef.current = null;
+    setDragMinutes(null);
+  }
+
+  const displayMinutes = dragMinutes ?? minutes;
+  const top = (displayMinutes / 60) * HOUR_HEIGHT;
+
+  return (
+    <div
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={finishDrag}
+      onPointerCancel={finishDrag}
+      aria-label={type === "bedtime" ? "Justér sengetid" : "Justér stå-op-tid"}
+      className="absolute inset-x-0 z-10 flex touch-none items-center justify-center"
+      style={{ top: top - 10, height: 20 }}
+    >
+      <div className={`h-[3px] w-8 rounded-full ${dragMinutes !== null ? "bg-hf-black" : "bg-hf-gray/70"}`} />
     </div>
   );
 }
@@ -545,16 +1044,30 @@ function DayDetails({
   registrations,
   loading,
   error,
+  sleepWindow,
+  onSleepAdjust,
   onClose,
+  onNavigate,
 }: {
   date: Date;
   today: Date;
   registrations: Registration[];
   loading: boolean;
   error: boolean;
+  sleepWindow: SleepWindow | null;
+  onSleepAdjust: (type: SleepAdjustType, minutes: number) => void;
   onClose: () => void;
+  onNavigate: (direction: -1 | 1) => void;
 }) {
   const met = goalWasMet(date, today);
+  const canGoForward = stripTime(date) < stripTime(today);
+  const pointerStart = useRef<number | null>(null);
+  const timelineRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    timelineRef.current?.scrollTo({ top: Math.max(0, 6 * HOUR_HEIGHT - 40) });
+  }, [date]);
+
   return (
     <div className="absolute inset-0 z-50 flex flex-col bg-hf-cream" role="dialog" aria-modal="true" aria-labelledby="day-title">
       <div className="relative flex items-center justify-center bg-hf-green px-4 pb-4 pt-9 text-hf-white">
@@ -563,7 +1076,26 @@ function DayDetails({
         </button>
         <h2 id="day-title" className="hf-heading text-lg capitalize">{date.toLocaleDateString("da-DK", { weekday: "long", day: "numeric", month: "long" })}</h2>
       </div>
-      <div className="flex-1 overflow-y-auto p-4">
+      <div
+        className="flex-1 overflow-y-auto p-4 touch-pan-y"
+        onPointerDown={(event) => {
+          pointerStart.current = event.clientX;
+        }}
+        onPointerUp={(event) => {
+          if (pointerStart.current !== null && Math.abs(event.clientX - pointerStart.current) > 48) {
+            const direction: -1 | 1 = event.clientX < pointerStart.current ? 1 : -1;
+            if (direction === 1 && !canGoForward) {
+              pointerStart.current = null;
+              return;
+            }
+            onNavigate(direction);
+          }
+          pointerStart.current = null;
+        }}
+        onPointerCancel={() => {
+          pointerStart.current = null;
+        }}
+      >
         <div className={`mb-4 flex items-center gap-3 rounded-2xl p-4 ${met ? "bg-hf-green text-hf-white" : "bg-hf-tan text-hf-black"}`}>
           <div className={`flex size-10 items-center justify-center rounded-full ${met ? "bg-white/20" : "bg-hf-white"}`}>
             {met ? <IconCheck size={23} /> : <span className="size-2.5 rounded-full bg-hf-tan-dark" />}
@@ -584,35 +1116,62 @@ function DayDetails({
             <p className="font-semibold text-hf-black">Registreringerne kunne ikke hentes</p>
             <p className="mt-1 text-sm text-hf-black opacity-60">Prøv igen, når forbindelsen til databasen er tilbage.</p>
           </div>
-        ) : registrations.length > 0 ? (
-          <div className="overflow-hidden rounded-2xl bg-hf-white">
-            {registrations.map((registration) => (
-              <DayEntry key={registration.id} registration={registration} />
-            ))}
-          </div>
         ) : (
-          <div className="rounded-2xl bg-hf-white p-5 text-center">
+          <div
+            ref={timelineRef}
+            className="relative overflow-y-auto rounded-2xl border border-hf-tan bg-hf-white"
+            style={{ maxHeight: "calc(100vh - 320px)" }}
+          >
+            <div className="relative ml-12" style={{ height: TIMELINE_HEIGHT }}>
+              <div className="absolute -left-12 top-0 h-full w-12">
+                {HOUR_MARKS.map((hour) => (
+                  <span
+                    key={hour}
+                    className="absolute right-1.5 -translate-y-1/2 text-[10px] font-medium opacity-50"
+                    style={{ top: hour * HOUR_HEIGHT }}
+                  >
+                    {String(hour).padStart(2, "0")}
+                  </span>
+                ))}
+              </div>
+              <SleepBands window={sleepWindow} />
+              {HOUR_MARKS.map((hour) => (
+                <div key={hour} className="absolute left-0 right-0 border-t border-hf-tan/60" style={{ top: hour * HOUR_HEIGHT }} />
+              ))}
+              {sleepWindow && (
+                <>
+                  <SleepBoundaryHandle minutes={sleepWindow.wakeTime} type="wake" onCommit={onSleepAdjust} />
+                  <SleepBoundaryHandle minutes={sleepWindow.bedtime} type="bedtime" onCommit={onSleepAdjust} />
+                </>
+              )}
+              {registrations.map((registration) => {
+                const time = new Date(registration.createdAt);
+                return (
+                  <Link
+                    key={registration.id}
+                    href={`/registrering/${registration.id}`}
+                    className="absolute left-1 right-1 flex items-center gap-2 truncate rounded-lg bg-hf-green px-2 text-xs font-semibold text-hf-white focus-visible:outline-2 focus-visible:outline-hf-black"
+                    style={{ top: (minutesFromMidnight(time) / 60) * HOUR_HEIGHT, minHeight: 26 }}
+                  >
+                    <span className="shrink-0 opacity-80">
+                      {new Intl.DateTimeFormat("da-DK", { hour: "2-digit", minute: "2-digit" }).format(time)}
+                    </span>
+                    <span className="flex-1 truncate">{registration.titleSnapshot}</span>
+                    <span className="shrink-0 opacity-80">{Math.round(registration.kcalSnapshot)} kcal</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
+        {!loading && !error && registrations.length === 0 && (
+          <div className="mt-3 rounded-2xl bg-hf-white p-5 text-center">
             <p className="font-semibold text-hf-black">Ingen registreringer denne dag</p>
             <p className="mt-1 text-sm text-hf-black opacity-60">Dagens registreringer vises her, når de er tilføjet.</p>
           </div>
         )}
       </div>
     </div>
-  );
-}
-
-function DayEntry({ registration }: { registration: Registration }) {
-  return (
-    <Link href={`/registrering/${registration.id}`} className="flex min-h-[66px] w-full items-center gap-3 border-b border-hf-tan px-4 text-left last:border-b-0 hover:bg-hf-cream focus-visible:outline-2 focus-visible:outline-hf-black">
-      <span className="w-11 text-xs font-semibold opacity-55">
-        {new Intl.DateTimeFormat("da-DK", { hour: "2-digit", minute: "2-digit" }).format(
-          new Date(registration.createdAt),
-        )}
-      </span>
-      <span className="flex-1 font-semibold">{registration.titleSnapshot}</span>
-      <span className="text-sm opacity-65">{Math.round(registration.kcalSnapshot)} kcal</span>
-      <IconChevronRight size={18} className="opacity-45" />
-    </Link>
   );
 }
 

@@ -2,7 +2,7 @@
 
 Status: Rekonstrueret fra den fulde ChatGPT-designsamtale (OCR'et PDF-eksport, 189 sider). Et tidligere forsøg på at eksportere specifikationen via Codex mislykkedes og efterlod tomme skabelonfiler — denne version genopbygger indholdet direkte fra samtalen.
 
-> Dette dokument er det samlede beslutningsgrundlag. [ADMIN.md](ADMIN.md), [AI.md](AI.md), [BACKEND.md](BACKEND.md), [DATABASE.md](DATABASE.md) og [UI.md](UI.md) uddyber hvert deres område.
+> Dette dokument er det samlede beslutningsgrundlag. [ADMIN.md](ADMIN.md), [AI.md](AI.md), [BACKEND.md](BACKEND.md), [DATABASE.md](DATABASE.md) og [UI.md](UI.md) uddyber hvert deres område. [DESIGN_V2.md](DESIGN_V2.md) er en supplerende, detaljeret UI-tjekliste (kalender, bundmenu, FAB, statistik, madvareside) modtaget fra en parallel designsamtale — hvor den er i konflikt med dette dokument, gælder dette dokument.
 
 ## 1. Produkt og platform
 

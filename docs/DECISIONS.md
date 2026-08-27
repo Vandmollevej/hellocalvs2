@@ -49,6 +49,14 @@ This file records durable decisions. Add a dated entry when a later decision cha
   user has chosen "Påmind mig senere" once, mirroring the existing forced
   onboarding modal's pattern.
 
+- 2026-08-27: The calendar's landscape week timeline and day-detail timeline
+  now render sleep as a light-grey background band (00:00–wake and
+  bedtime–24:00) derived from `SleepSchedule`/`WorkShift`/`User` defaults.
+  Holding the sleep/wake boundary line for ~0.5s and dragging adjusts the
+  time (15-minute snap); releasing asks whether the change applies only to
+  that date (`WorkShift` override) or the standing weekly pattern
+  (`SleepSchedule`). See `docs/DESIGN_V2.md` §6 for the source spec.
+
 ## Hosting and delivery
 
 - Production is intended to run on the user's Synology NAS through Docker/Container Manager.
