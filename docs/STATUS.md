@@ -109,21 +109,26 @@ Last updated: 2026-08-26
   inspected on 2026-08-26.
 - The existing `Cloudflare_Tunnel` container was running.
 
-- Added `scripts/image-agent`: a Python service (Docker) that polls for
-  brandless, approved products missing an image, searches Google Custom
-  Search for a high-resolution candidate, removes the background with
+- Added and deployed `scripts/image-agent`: a Python service (Docker) that
+  polls for brandless, approved products missing an image, searches Google
+  Custom Search for a high-resolution candidate, removes the background with
   `rembg`, and writes the result as `Product.pendingImageUrl`
   (`imageStatus = PENDING`). It never sets the live `imageUrl` directly —
   admin approval to promote it is still future work (no UI yet). Added via
   `compose.production.yaml` (new `image-agent` service, shared
   `data/product-images` volume) and Prisma migration
-  `20260827120000_product_image_status`. Needs `GOOGLE_API_KEY` and
-  `GOOGLE_CSE_ID` in `.env.production` before it will start. The Google
-  Programmable Search Engine (`hellocal-images`, cx `f25aa8ec646534e07`) is
-  scoped to `commons.wikimedia.org` only — Google no longer allows new
-  engines to search the whole web, and Wikimedia Commons images are freely
-  licensed, avoiding copyright risk from scraping arbitrary Google Images
-  results.
+  `20260827120000_product_image_status`. The Google Programmable Search
+  Engine (`hellocal-images`, cx `f25aa8ec646534e07`) is scoped to
+  `commons.wikimedia.org` only — Google no longer allows new engines to
+  search the whole web, and Wikimedia Commons images are freely licensed,
+  avoiding copyright risk from scraping arbitrary Google Images results.
+  `DATABASE_URL`'s Prisma-only `?schema=public` query param is stripped
+  before use since psycopg2/libpq rejects it. Verified running in production
+  on 2026-08-27 (`no products waiting for an image` — connects fine, just no
+  current candidates). The server's `compose.production.yaml` and
+  `scripts/image-agent/` had to be updated by hand outside the normal
+  `HELLOCAL_TAG` bump flow, since this was the stack's first new service —
+  ordinary code changes still only need the 3-step controlled update.
 
 - The Statistik screen chart now supports multiple dataserier (kalorier +
   vægt from `WeightEntry`), each independently normalized, with a legend and
