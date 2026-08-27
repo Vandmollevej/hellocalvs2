@@ -12,7 +12,6 @@ import io
 import logging
 import os
 import time
-from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode
 
 import psycopg2
 import requests
@@ -22,15 +21,9 @@ from rembg import remove
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger("image-agent")
 
-def _strip_prisma_only_params(database_url):
-    # Prisma's DATABASE_URL carries a `schema` query param that psycopg2/libpq
-    # doesn't recognize; Postgres already defaults to the "public" schema.
-    parts = urlsplit(database_url)
-    query = [(k, v) for k, v in parse_qsl(parts.query) if k != "schema"]
-    return urlunsplit(parts._replace(query=urlencode(query)))
-
-
-DATABASE_URL = _strip_prisma_only_params(os.environ["DATABASE_URL"])
+# Prisma's DATABASE_URL carries a `?schema=public` query param that
+# psycopg2/libpq doesn't recognize; Postgres already defaults to "public".
+DATABASE_URL = os.environ["DATABASE_URL"].split("?")[0]
 GOOGLE_API_KEY = os.environ["GOOGLE_API_KEY"]
 GOOGLE_CSE_ID = os.environ["GOOGLE_CSE_ID"]
 OUTPUT_DIR = os.environ.get("IMAGE_OUTPUT_DIR", "/images")
