@@ -8,11 +8,27 @@ type Item = {
   id: string;
   title: string;
   kcal: number;
+  amountGrams: number;
   amountLabel: string;
   protein: number;
   carbs: number;
   fat: number;
-  image?: string;
+  image?: string | null;
+  productId?: string | null;
+  estimated?: boolean;
+};
+
+type InterpretedItem = {
+  title: string;
+  amountGrams: number;
+  amountLabel: string;
+  kcal: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  productId: string | null;
+  image: string | null;
+  estimated: boolean;
 };
 
 type SpeechRecognitionResultLike = {
@@ -55,11 +71,6 @@ function getSpeechRecognition() {
   return speechWindow.SpeechRecognition ?? speechWindow.webkitSpeechRecognition;
 }
 
-const initialItems: Item[] = [
-  { id: "1", title: "Rugbrød", kcal: 180, amountLabel: "2 skiver", protein: 6, carbs: 28, fat: 2, image: "/dummy/rugbroed.png" },
-  { id: "2", title: "Smør", kcal: 35, amountLabel: "8 g", protein: 0, carbs: 0, fat: 4 },
-  { id: "3", title: "Roastbeef", kcal: 90, amountLabel: "40 g", protein: 12, carbs: 0, fat: 4 },
-];
 
 function StandMicrophone() {
   return (
@@ -100,7 +111,12 @@ function VoiceItem({ item, open, onToggle, onChange }: { item: Item; open: boole
           )}
         </div>
         <button type="button" onClick={onToggle} className="min-w-0 flex-1 text-left" aria-expanded={open}>
-          <span className="block truncate text-sm font-semibold text-hf-black">{item.title}</span>
+          <span className="flex items-center gap-1.5">
+            <span className="block truncate text-sm font-semibold text-hf-black">{item.title}</span>
+            {item.estimated && (
+              <span className="flex-shrink-0 rounded-full bg-hf-tan px-1.5 py-0.5 text-[10px] font-bold uppercase text-hf-black opacity-70">AI-estimat</span>
+            )}
+          </span>
           <span className="mt-0.5 block text-xs text-hf-black opacity-60">{item.amountLabel}</span>
         </button>
         <span className="text-xs text-hf-black opacity-60">{item.kcal} kcal</span>
@@ -139,18 +155,16 @@ function VoiceItem({ item, open, onToggle, onChange }: { item: Item; open: boole
 
 export default function StemmePage() {
   const [openId, setOpenId] = useState<string | null>(null);
-  const [items, setItems] = useState(initialItems);
+  const [items, setItems] = useState<Item[]>([]);
   const [phase, setPhase] = useState<VoicePhase>("idle");
   const [transcript, setTranscript] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const finalTranscriptRef = useRef("");
-  const processingTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     return () => {
       recognitionRef.current?.abort();
-      if (processingTimerRef.current) window.clearTimeout(processingTimerRef.current);
     };
   }, []);
 
@@ -158,9 +172,76 @@ export default function StemmePage() {
   const isProcessing = phase === "processing";
   const approved = phase === "approved";
 
-  function finishProcessing() {
+  async function finishProcessing() {
     setPhase("processing");
-    processingTimerRef.current = window.setTimeout(() => setPhase("review"), 900);
+    const spokenText = finalTranscriptRef.current.trim();
+
+    if (!spokenText) {
+      setPhase("error");
+      setErrorMessage("Jeg hørte ingen tale. Prøv igen.");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/ai/interpret-meal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ transcript: spokenText }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message ?? "AI-tolkning slog fejl");
+
+      const interpreted = (data.items as InterpretedItem[]).map((item, index) => ({
+        id: `${index}`,
+        title: item.title,
+        kcal: item.kcal,
+        amountGrams: item.amountGrams,
+        amountLabel: item.amountLabel,
+        protein: item.protein,
+        carbs: item.carbs,
+        fat: item.fat,
+        image: item.image,
+        productId: item.productId,
+        estimated: item.estimated,
+      }));
+
+      setItems(interpreted);
+      setPhase(interpreted.length > 0 ? "review" : "error");
+      if (interpreted.length === 0) setErrorMessage("Jeg kunne ikke genkende nogen madvarer. Prøv igen.");
+    } catch {
+      setPhase("error");
+      setErrorMessage("AI-tolkningen slog fejl. Prøv igen.");
+    }
+  }
+
+  async function approveItems() {
+    setPhase("processing");
+    try {
+      await Promise.all(
+        items.map((item) =>
+          fetch("/api/registrations", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(
+              item.productId
+                ? { productId: item.productId, amountGrams: item.amountGrams }
+                : {
+                    amountGrams: item.amountGrams,
+                    titleSnapshot: item.title,
+                    kcalSnapshot: item.kcal,
+                    proteinSnapshot: item.protein,
+                    carbsSnapshot: item.carbs,
+                    fatSnapshot: item.fat,
+                  }
+            ),
+          })
+        )
+      );
+      setPhase("approved");
+    } catch {
+      setPhase("review");
+      setErrorMessage("Kunne ikke gemme registreringerne. Prøv igen.");
+    }
   }
 
   function startListening() {
@@ -170,7 +251,6 @@ export default function StemmePage() {
       return;
     }
 
-    if (processingTimerRef.current) window.clearTimeout(processingTimerRef.current);
     const recognition = new SpeechRecognition();
     let recognitionFailed = false;
 
@@ -284,7 +364,7 @@ export default function StemmePage() {
           </ul>
         </section>
 
-        <button type="button" disabled={phase !== "review"} onClick={() => setPhase("approved")} className="hf-btn-primary mt-5 w-full py-3.5 text-[15px] disabled:opacity-45">{approved ? "Godkendt" : "Godkend"}</button>
+        <button type="button" disabled={phase !== "review"} onClick={approveItems} className="hf-btn-primary mt-5 w-full py-3.5 text-[15px] disabled:opacity-45">{approved ? "Godkendt" : "Godkend"}</button>
       </div>
     </HfScreen>
   );
