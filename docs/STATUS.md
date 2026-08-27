@@ -10,6 +10,10 @@ Last updated: 2026-08-26
 - Production was updated to commit `10d64698a51ea550922be75f5c653ba034b5a2cb`
   on 2026-08-27 (Statistik real-data change). Backup taken first; `db` and
   `app` are healthy and `/api/health` returns `{"status":"ok"}`.
+- Production was updated to commit `ef6e3da1d625ad2bd9366114c5ff2e6e469de20f`
+  on 2026-08-27: Madvarer rows now link to the add-flow, and Søg shows real
+  recent registrations instead of hardcoded example rows. Backup taken first;
+  `db` and `app` are healthy and `/api/health` returns `{"status":"ok"}`.
 - GitHub Actions built and published the production image successfully.
 - The application is a Next.js 16 prototype with Prisma 7 and PostgreSQL.
 - The stable UI checkpoint is committed as `ed2d27d`.
