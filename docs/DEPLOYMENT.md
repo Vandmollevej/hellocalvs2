@@ -40,6 +40,30 @@ the new deployment. The new stack uses:
 This separation is required until the old data has been assessed and either
 formally migrated or archived.
 
+## Local development environment (this Windows workstation)
+
+- This workstation has **no Docker, no WSL, and no local PostgreSQL** — confirmed
+  2026-08-27 (`Get-Command docker`, `wsl.exe -l`, and every relevant Windows
+  service all come back empty/not-installed). The repository's root
+  `docker-compose.yml` (a plain `postgres:16-alpine` service on `5432`) cannot
+  be started here.
+- Do not repeatedly ask the user to start a local database or install Docker —
+  it requires local admin rights the workstation does not have (see
+  "Administrative access" below), so the answer will not change between
+  sessions. Do not propose installing Docker Desktop/WSL as a fix.
+- There is no local dev server or local database on this machine. The only
+  running instance of HELLO CAL is the **production Synology deployment**,
+  reachable at `https://hellocal.packroff.dk` (`/api/health` → `{"status":"ok"}`
+  when it is up).
+- Consequence for verification: `npm run lint` and `npm run build` are the
+  verification bar reachable from this workstation (per `docs/DECISIONS.md`
+  "Engineering process"). Live browser verification of a change requires it to
+  actually be deployed to the Synology first, which needs the user to open the
+  SSH maintenance switch and authenticate (see "Administrative access") — this
+  is a user action, not something to poll or wait out. Ask the user once
+  whether they want the change deployed for live verification; do not ask
+  again in later sessions unless something about this changes.
+
 ## Administrative access
 
 - The Windows workstation has no local administrator access. Deployment must
