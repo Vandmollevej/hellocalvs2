@@ -10,9 +10,12 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconLayoutList,
+  IconMinus,
+  IconStarFilled,
   IconX,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { DAILY_KCAL_GOAL } from "@/lib/goals";
 
 const WEEKDAYS = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
 const MONTHS = Array.from({ length: 12 }, (_, month) =>
@@ -30,8 +33,8 @@ type Registration = {
 
 const VIEW_OPTIONS = [
   { value: "month" as const, label: "Måned", icon: IconCalendarMonth },
-  { value: "week" as const, label: "Uge", icon: IconCalendarWeek },
-  { value: "list" as const, label: "Liste", icon: IconLayoutList },
+  { value: "week" as const, label: "Listevisning", icon: IconCalendarWeek },
+  { value: "list" as const, label: "Liste (hele måneden)", icon: IconLayoutList },
 ];
 
 function addDays(date: Date, days: number) {
@@ -56,13 +59,51 @@ function goalWasMet(date: Date, today: Date) {
   return new Set([2, 5, 6, 9, 14, 18, 23, 27]).has(date.getDate()) || isSameDay(date, today);
 }
 
+function dayKey(date: Date) {
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+}
+
+function totalKcalForDate(dailyTotals: Map<string, number>, date: Date) {
+  return dailyTotals.get(dayKey(date)) ?? 0;
+}
+
+function dailyGoalMet(dailyTotals: Map<string, number>, date: Date) {
+  const total = totalKcalForDate(dailyTotals, date);
+  return total > 0 && total <= DAILY_KCAL_GOAL;
+}
+
 function buildMonthGrid(year: number, month: number) {
   const offset = (new Date(year, month, 1).getDay() + 6) % 7;
   const count = new Date(year, month + 1, 0).getDate();
-  const cells: Array<Date | null> = Array(offset).fill(null);
+  const cells: Array<Date | null> = [];
+  for (let day = offset; day > 0; day -= 1) cells.push(new Date(year, month, 1 - day));
   for (let day = 1; day <= count; day += 1) cells.push(new Date(year, month, day));
   while (cells.length % 7) cells.push(null);
   return cells;
+}
+
+function stripTime(date: Date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function minutesFromMidnight(date: Date) {
+  return date.getHours() * 60 + date.getMinutes();
+}
+
+const HOUR_HEIGHT = 56;
+const TIMELINE_HEIGHT = HOUR_HEIGHT * 24;
+const HOUR_MARKS = Array.from({ length: 25 }, (_, hour) => hour);
+
+function useIsLandscape() {
+  const [isLandscape, setIsLandscape] = useState(false);
+  useEffect(() => {
+    const query = window.matchMedia("(orientation: landscape)");
+    const update = () => setIsLandscape(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+  return isLandscape;
 }
 
 export default function KalenderPage() {
@@ -78,6 +119,8 @@ export default function KalenderPage() {
   const [registrationsLoading, setRegistrationsLoading] = useState(true);
   const [registrationsError, setRegistrationsError] = useState(false);
   const pointerStart = useRef<number | null>(null);
+  const isLandscape = useIsLandscape();
+  const effectiveView: CalendarView = isLandscape ? "week" : view;
 
   const year = visibleDate.getFullYear();
   const month = visibleDate.getMonth();
@@ -97,7 +140,41 @@ export default function KalenderPage() {
     year: "numeric",
   })}`;
   const activeView = VIEW_OPTIONS.find((option) => option.value === view) ?? VIEW_OPTIONS[0];
-  const ActiveViewIcon = activeView.icon;
+
+  const dailyTotals = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const registration of registrations) {
+      const key = dayKey(new Date(registration.createdAt));
+      map.set(key, (map.get(key) ?? 0) + registration.kcalSnapshot);
+    }
+    return map;
+  }, [registrations]);
+
+  const monthlyStatus = useMemo(() => {
+    const isCurrentMonth = year === today.getFullYear() && month === today.getMonth();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const consideredDays = isCurrentMonth ? today.getDate() : daysInMonth;
+
+    let consumed = 0;
+    let metCount = 0;
+    for (let day = 1; day <= consideredDays; day += 1) {
+      const total = totalKcalForDate(dailyTotals, new Date(year, month, day));
+      consumed += total;
+      if (total > 0 && total <= DAILY_KCAL_GOAL) metCount += 1;
+    }
+    const remaining = DAILY_KCAL_GOAL * consideredDays - consumed;
+
+    let sevenDayConsumed = 0;
+    for (let offset = 0; offset < 7; offset += 1) {
+      sevenDayConsumed += totalKcalForDate(dailyTotals, addDays(today, -offset));
+    }
+    const sevenDayRemaining = DAILY_KCAL_GOAL * 7 - sevenDayConsumed;
+
+    let streak = 0;
+    while (dailyGoalMet(dailyTotals, addDays(today, -streak))) streak += 1;
+
+    return { isCurrentMonth, consideredDays, metCount, remaining, sevenDayRemaining, streak };
+  }, [dailyTotals, year, month, today]);
 
   useEffect(() => {
     function handleEscape(event: KeyboardEvent) {
@@ -136,7 +213,7 @@ export default function KalenderPage() {
     setSlideDirection(direction === 1 ? "next" : "previous");
     setAnimationKey((key) => key + 1);
     setVisibleDate((current) =>
-      view === "week"
+      effectiveView === "week"
         ? addDays(current, direction * 7)
         : new Date(current.getFullYear(), current.getMonth() + direction, 1),
     );
@@ -156,7 +233,49 @@ export default function KalenderPage() {
   }
 
   return (
-    <HfScreen title="Kalender" icon={<IconCalendarMonth size={20} stroke={2} />}>
+    <HfScreen
+      title="Kalender"
+      icon={
+        <div className="relative z-30">
+          <button
+            type="button"
+            aria-label={`Skift kalendervisning. Aktuel visning: ${activeView.label}`}
+            aria-haspopup="listbox"
+            aria-expanded={viewMenuOpen}
+            onClick={() => {
+              setViewMenuOpen((open) => !open);
+              setMonthMenuOpen(false);
+            }}
+            className="flex flex-col items-center gap-0.5 rounded-lg focus-visible:outline-2 focus-visible:outline-white"
+          >
+            <IconCalendarMonth size={20} stroke={2} />
+            <IconChevronDown size={12} stroke={2.5} className={viewMenuOpen ? "rotate-180" : ""} />
+          </button>
+          {viewMenuOpen && (
+            <div className="absolute left-0 top-full z-40 mt-2 w-44 overflow-hidden rounded-2xl border border-hf-tan-dark bg-hf-white p-1.5 text-hf-black shadow-xl">
+              {VIEW_OPTIONS.map((option) => {
+                const OptionIcon = option.icon;
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => {
+                      setView(option.value);
+                      setViewMenuOpen(false);
+                    }}
+                    className="flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold hover:bg-hf-cream focus-visible:outline-2 focus-visible:outline-hf-black"
+                  >
+                    <OptionIcon size={20} stroke={1.8} />
+                    <span className="flex-1">{option.label}</span>
+                    {view === option.value && <IconCheck size={18} aria-hidden="true" />}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      }
+    >
       <div className="relative p-4">
         {(monthMenuOpen || viewMenuOpen) && (
           <button
@@ -192,45 +311,7 @@ export default function KalenderPage() {
               <MonthPicker year={year} month={month} onYearChange={setVisibleDate} onSelect={selectMonth} />
             )}
           </div>
-          <div className="flex items-center gap-1">
           <PeriodButton direction="next" view={view} onClick={() => movePeriod(1)} />
-          <div className="relative">
-            <button
-              type="button"
-              aria-label={`Skift kalendervisning. Aktuel visning: ${activeView.label}`}
-              aria-expanded={viewMenuOpen}
-              onClick={() => {
-                setViewMenuOpen((open) => !open);
-                setMonthMenuOpen(false);
-              }}
-              className="flex size-11 items-center justify-center rounded-full text-hf-black hover:bg-hf-tan focus-visible:outline-2 focus-visible:outline-hf-black"
-            >
-              <ActiveViewIcon size={22} stroke={1.8} />
-            </button>
-            {viewMenuOpen && (
-              <div className="absolute right-0 top-12 z-40 w-44 overflow-hidden rounded-2xl border border-hf-tan-dark bg-hf-white p-1.5 text-hf-black shadow-xl">
-                {VIEW_OPTIONS.map((option) => {
-                  const OptionIcon = option.icon;
-                  return (
-                    <button
-                      key={option.value}
-                      type="button"
-                      onClick={() => {
-                        setView(option.value);
-                        setViewMenuOpen(false);
-                      }}
-                      className="flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold hover:bg-hf-cream focus-visible:outline-2 focus-visible:outline-hf-black"
-                    >
-                      <OptionIcon size={20} stroke={1.8} />
-                      <span className="flex-1">{option.label}</span>
-                      {view === option.value && <IconCheck size={18} aria-hidden="true" />}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-          </div>
         </div>
 
         <div
@@ -253,7 +334,7 @@ export default function KalenderPage() {
             className={slideDirection === "next" ? "calendar-slide-next" : "calendar-slide-previous"}
           >
             {view === "month" && (
-              <MonthView cells={monthCells} today={today} onOpenDate={openDate} />
+              <MonthView cells={monthCells} month={month} today={today} onOpenDate={openDate} />
             )}
             {view === "week" && <WeekView days={weekDays} today={today} onOpenDate={openDate} />}
             {view === "list" && (
@@ -344,7 +425,17 @@ function MonthPicker({
   );
 }
 
-function MonthView({ cells, today, onOpenDate }: { cells: Array<Date | null>; today: Date; onOpenDate: (date: Date) => void }) {
+function MonthView({
+  cells,
+  month,
+  today,
+  onOpenDate,
+}: {
+  cells: Array<Date | null>;
+  month: number;
+  today: Date;
+  onOpenDate: (date: Date) => void;
+}) {
   return (
     <>
       <div className="mb-2 grid grid-cols-7 text-center">
@@ -355,22 +446,30 @@ function MonthView({ cells, today, onOpenDate }: { cells: Array<Date | null>; to
           if (!date) return <div key={`empty-${index}`} />;
           const met = goalWasMet(date, today);
           const current = isSameDay(date, today);
+          const isOtherMonth = date.getMonth() !== month;
+          const isPast = date < today && !current;
+          const faded = isOtherMonth && isPast;
           return (
             <button
               key={date.toISOString()}
               type="button"
               onClick={() => onOpenDate(date)}
-              aria-label={`${date.toLocaleDateString("da-DK", { dateStyle: "long" })}${current ? ", i dag" : ""}${met ? ", mål nået" : ""}`}
+              aria-label={`${date.toLocaleDateString("da-DK", { dateStyle: "long" })}${current ? ", i dag" : ""}${
+                met ? ", mål nået" : ", mål ikke nået"
+              }`}
               className={`relative flex aspect-square items-center justify-center rounded-lg border text-sm font-medium focus-visible:outline-2 focus-visible:outline-hf-black ${
                 current
                   ? "border-hf-green bg-hf-green text-hf-white"
-                  : met
-                    ? "border-hf-green bg-hf-tan text-hf-black"
-                    : "border-transparent bg-hf-tan text-hf-black"
+                  : `border-transparent bg-hf-tan ${faded ? "text-hf-gray" : "text-hf-black"}`
               }`}
             >
               {date.getDate()}
-              {met && <IconCheck size={13} stroke={3} className="absolute right-1 top-1 text-hf-green-light" aria-hidden="true" />}
+              {!current &&
+                (met ? (
+                  <IconCheck size={13} stroke={3} className="absolute right-1 top-1 text-hf-green" aria-hidden="true" />
+                ) : (
+                  <IconMinus size={13} stroke={3} className="absolute right-1 top-1 text-hf-red-dark" aria-hidden="true" />
+                ))}
             </button>
           );
         })}
@@ -520,11 +619,23 @@ function DayEntry({ registration }: { registration: Registration }) {
 
 function Legend() {
   return (
-    <p className="mt-4 flex items-center justify-center gap-2 text-center text-xs opacity-60">
-      <span className="relative size-5 rounded border border-hf-green bg-hf-tan">
-        <IconCheck size={11} stroke={3} className="absolute right-0.5 top-0.5 text-hf-green-light" aria-hidden="true" />
+    <p className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-center text-xs opacity-60">
+      <span className="flex items-center gap-1.5">
+        <span className="relative size-5 rounded border border-transparent bg-hf-tan">
+          <IconCheck size={11} stroke={3} className="absolute right-0.5 top-0.5 text-hf-green" aria-hidden="true" />
+        </span>
+        Mål nået
       </span>
-      Grøn ramme og flueben = dagens mål blev nået
+      <span className="flex items-center gap-1.5">
+        <span className="relative size-5 rounded border border-transparent bg-hf-tan">
+          <IconMinus size={11} stroke={3} className="absolute right-0.5 top-0.5 text-hf-red-dark" aria-hidden="true" />
+        </span>
+        Mål ikke nået
+      </span>
+      <span className="flex items-center gap-1.5">
+        <span className="size-5 rounded border border-hf-green bg-hf-green" />
+        I dag
+      </span>
     </p>
   );
 }

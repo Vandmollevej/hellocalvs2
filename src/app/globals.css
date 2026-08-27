@@ -18,7 +18,11 @@
   --hf-tan-dark: #ded5bc;
   --hf-black: #1a1a17;
   --hf-white: #ffffff;
+  --hf-gray-light: #e4e2d8;
   --hf-gray: #9a988f;
+  --hf-gray-dark: #6b6a65;
+  --hf-red-dark: #a3271f;
+  --hf-fab: #232323;
 }
 
 @theme inline {
@@ -37,7 +41,11 @@
   --color-hf-tan-dark: var(--hf-tan-dark);
   --color-hf-black: var(--hf-black);
   --color-hf-white: var(--hf-white);
+  --color-hf-gray-light: var(--hf-gray-light);
   --color-hf-gray: var(--hf-gray);
+  --color-hf-gray-dark: var(--hf-gray-dark);
+  --color-hf-red-dark: var(--hf-red-dark);
+  --color-hf-fab: var(--hf-fab);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-hf-heading: var(--font-hf-heading);
