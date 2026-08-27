@@ -18,19 +18,71 @@ export async function GET() {
 // PATCH /api/profile — gemmer løbende, jf. UI-princippet om ingen "Gem"-knap.
 export async function PATCH(req: Request) {
   const body = await req.json();
-  const { displayName, weightKg, heightCm, birthYear, sex } = body as {
+  const {
+    displayName,
+    weightKg,
+    heightCm,
+    birthYear,
+    sex,
+    defaultBedtime,
+    defaultWakeTime,
+    shiftWorkEnabled,
+    dailyLogPreference,
+    workHoursInCalendarEnabled,
+    healthImportRequested,
+    onboardingStep,
+    onboardingCompletedAt,
+    onboardingRemindLaterAt,
+    onboardingDismissed,
+  } = body as {
     displayName?: string;
     weightKg?: number | null;
     heightCm?: number | null;
     birthYear?: number | null;
     sex?: "FEMALE" | "MALE" | null;
+    defaultBedtime?: string | null;
+    defaultWakeTime?: string | null;
+    shiftWorkEnabled?: boolean;
+    dailyLogPreference?: "WORK_HOURS" | "SLEEP_TIMES" | null;
+    workHoursInCalendarEnabled?: boolean;
+    healthImportRequested?: boolean;
+    onboardingStep?: number;
+    onboardingCompletedAt?: string | null;
+    onboardingRemindLaterAt?: string | null;
+    onboardingDismissed?: boolean;
   };
 
   try {
     const user = await getDemoUser();
     const updated = await prisma.user.update({
       where: { id: user.id },
-      data: { displayName, weightKg, heightCm, birthYear, sex },
+      data: {
+        displayName,
+        weightKg,
+        heightCm,
+        birthYear,
+        sex,
+        defaultBedtime,
+        defaultWakeTime,
+        shiftWorkEnabled,
+        dailyLogPreference,
+        workHoursInCalendarEnabled,
+        healthImportRequested,
+        onboardingStep,
+        onboardingCompletedAt:
+          onboardingCompletedAt === undefined
+            ? undefined
+            : onboardingCompletedAt === null
+              ? null
+              : new Date(onboardingCompletedAt),
+        onboardingRemindLaterAt:
+          onboardingRemindLaterAt === undefined
+            ? undefined
+            : onboardingRemindLaterAt === null
+              ? null
+              : new Date(onboardingRemindLaterAt),
+        onboardingDismissed,
+      },
     });
 
     return NextResponse.json({ user: updated });

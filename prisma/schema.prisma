@@ -19,10 +19,38 @@ model User {
   sex          Sex?
   createdAt    DateTime @default(now())
 
+  // Søvnmønster: standard sengetid/stå-op-tid, med mulighed for individuelle
+  // tider pr. ugedag (SleepSchedule) til brugere med skiftende arbejdstider.
+  defaultBedtime   String?
+  defaultWakeTime  String?
+  shiftWorkEnabled Boolean @default(false)
+
+  // Skiftende arbejdstider: foretrækker brugeren at registrere arbejdstider
+  // eller søvntider dagligt (spurgt i opsætningsguiden, kun relevant når
+  // shiftWorkEnabled er sand).
+  dailyLogPreference DailyLogPreference?
+
+  // Vil brugeren kunne registrere arbejdstider direkte i kalenderen.
+  workHoursInCalendarEnabled Boolean @default(false)
+
+  // Har brugeren bedt om at få smartwatch-/sundhedsapp-import sat op.
+  // Selve integrationen (Apple Health/Google Health Connect/Fitbit) er
+  // separat, senere arbejde — dette felt husker kun ønsket fra guiden.
+  healthImportRequested Boolean @default(false)
+
+  // Fuldskærms-opsætningsguide ved første login (docs/UI.md "Onboarding og
+  // hjælp"). onboardingStep er det næste trin der skal vises ved genoptagelse.
+  onboardingStep          Int       @default(0)
+  onboardingCompletedAt   DateTime?
+  onboardingRemindLaterAt DateTime?
+  onboardingDismissed     Boolean   @default(false)
+
   registrations Registration[]
   favorites     Favorite[]
   dishes        Dish[]
   weightEntries WeightEntry[]
+  sleepSchedules SleepSchedule[]
+  workShifts     WorkShift[]
 
   @@map("users")
 }
@@ -35,6 +63,11 @@ enum Role {
 enum Sex {
   FEMALE
   MALE
+}
+
+enum DailyLogPreference {
+  WORK_HOURS
+  SLEEP_TIMES
 }
 
 // --- Vægtkalibrering ---
@@ -67,6 +100,41 @@ enum TimeOfDay {
   MORNING
   EVENING
   UNKNOWN
+}
+
+// --- Søvnmønster og skiftende arbejdstider ---
+// Individuelle sengetider/stå-op-tider pr. ugedag. Bruges kun når brugeren har
+// slået "individuelle tider" til; ellers gælder User.defaultBedtime/-WakeTime.
+
+model SleepSchedule {
+  id       String @id @default(cuid())
+  user     User   @relation(fields: [userId], references: [id])
+  userId   String
+  weekday  Int // 0 = mandag … 6 = søndag
+  bedtime  String
+  wakeTime String
+
+  @@unique([userId, weekday])
+  @@map("sleep_schedules")
+}
+
+// Arbejdsdage/-tider registreret direkte i kalenderen (evt. skiftehold/
+// natarbejde). bedtime/wakeTime er en valgfri søvn-override for den dato,
+// brugt i kalenderens søvnvisualisering når shiftWorkEnabled er slået til.
+
+model WorkShift {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  date      DateTime @db.Date
+  startTime String?
+  endTime   String?
+  bedtime   String?
+  wakeTime  String?
+  createdAt DateTime @default(now())
+
+  @@unique([userId, date])
+  @@map("work_shifts")
 }
 
 // --- Fødevaredatabase ---

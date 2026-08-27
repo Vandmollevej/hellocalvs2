@@ -2,10 +2,12 @@ import { TopBar } from "@/components/TopBar";
 import { Hero } from "@/components/Hero";
 import { DailyList } from "@/components/DailyList";
 import { BottomNav } from "@/components/BottomNav";
+import { OnboardingWizard } from "@/components/OnboardingWizard";
 
 export default function Home() {
   return (
     <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
+      <OnboardingWizard />
       <TopBar />
 
       <div className="mt-1.5">

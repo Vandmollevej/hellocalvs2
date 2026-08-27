@@ -36,6 +36,18 @@ This file records durable decisions. Add a dated entry when a later decision cha
   was met. A star streak indicator (with a day count) appears once the goal
   has been met at least 5 days in a row and disappears immediately the streak
   breaks. No other badges or motivational messaging were added.
+- 2026-08-27: A fullscreen first-run setup wizard (`OnboardingWizard`) was
+  implemented for the three questions the user specified: sleep-pattern /
+  shift-work / daily work-hours-vs-sleep-times logging preference, smartwatch
+  health-data import, and work-hours-in-calendar. Only these are specified,
+  so the wizard's step list (`ALL_STEPS` in `src/components/OnboardingWizard.tsx`)
+  currently has 3–5 visible steps (shift-work and daily-log-preference are
+  conditionally skipped), not the "10 trin" example in `docs/UI.md`. The
+  remaining onboarding content (goals, activity level, etc. from
+  `docs/SPECIFICATION.md` §5) is unspecified and must be added to the step
+  list once decided — do not infer it. "Vis ikke igen" only appears after the
+  user has chosen "Påmind mig senere" once, mirroring the existing forced
+  onboarding modal's pattern.
 
 ## Hosting and delivery
 

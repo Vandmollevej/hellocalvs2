@@ -2,6 +2,9 @@
 
 Se [SPECIFICATION.md](SPECIFICATION.md) for det samlede overblik.
 
+> Ny, endnu ikke implementeret kravspec (kalender, statistik, madvareside, FAB,
+> bundmenu, accordion/chevron m.m.): se [UI-KRAVSPEC-2026-08-27.md](UI-KRAVSPEC-2026-08-27.md).
+
 ## Visuelt designsystem — HelloFresh-stil
 
 Fra og med implementeringsfasen skal appens generelle visuelle stil (farver, fonte, knapstørrelser, boksdesign) lægge sig tæt op ad HelloFreshs app — **undtaget forsiden med halvcirkel-knappen og drejehjulet, som ikke må ændres**.
@@ -168,3 +171,12 @@ Indstillinger er opdelt i fire sektioner:
 - Kontekstuelle "intelligente tips" vises, hvis en bruger aldrig har brugt en funktion (fx langt tryk) — kan slås til/fra i Indstillinger.
 - En statusbjælke øverst viser hvor stor en procentdel af onboardingen der er gennemført (kan skjules i Indstillinger). Klik åbner de resterende punkter. Et punkt markeres kun som gennemført, når brugeren selv har udført handlingen.
 - Hver hovedfane har en sammenklappet hjælpesektion nederst på siden, foldet sammen som standard.
+
+### Opsætningsguide (fuldskærm, ved første konto)
+
+- Første gang brugeren opretter sig, vises en fuldskærms opsætningsguide med tydelig trin-for-trin-progression (fx "Trin 3 af 10"). Progressionen kan også ses senere på profilniveau.
+- Nederst i guiden: "Næste", "Påmind mig senere", og "Vis ikke igen" (sidstnævnte vises først, når brugeren allerede har valgt "Påmind mig senere" mindst én gang — samme mønster som den øvrige tvungne onboarding ovenfor).
+- Søvnspørgsmål: "Har du et fast søvnmønster?" (Ja/Nej). Hvis nej: "Skyldes det varierende arbejdstider eller natarbejde?" (Ja/Nej). Hvis ja til det: aktivér `shiftWorkEnabled`, og spørg om brugeren ønsker at registrere arbejdstider eller søvntider dagligt (`dailyLogPreference`).
+- Smartwatch/sundhedsdata: spørg om import fra smartwatch/sundhedsapp. Vis én positiv handling ("Opsæt nu") — ikke tre ligeværdige valg — ellers fortsætter brugeren blot med "Næste". Kan sættes op senere under personlige oplysninger (Profil).
+- Arbejdstider i kalenderen: guiden kan også spørge, om brugeren ønsker mulighed for at registrere arbejdstider direkte i kalenderen (`workHoursInCalendarEnabled`).
+- Implementeringsstatus: kun disse tre spørgsmål er specificeret og bygget i dag (`src/components/OnboardingWizard.tsx`); guidens fulde ti-trins indhold (mål, aktivitetsniveau m.m. fra §5) er endnu ikke specificeret og tilføjes til komponentens `ALL_STEPS`-liste, når det besluttes. Se `docs/DECISIONS.md` (2026-08-27).

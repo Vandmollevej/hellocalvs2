@@ -1,11 +1,31 @@
+"use client";
+
 import {
   IconHelp,
   IconFileText,
   IconWorld,
+  IconRefresh,
 } from "@tabler/icons-react";
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { BottomNav } from "@/components/BottomNav";
+
+function restartOnboarding() {
+  fetch("/api/profile", {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      onboardingStep: 0,
+      onboardingCompletedAt: null,
+      onboardingRemindLaterAt: null,
+      onboardingDismissed: false,
+    }),
+  })
+    .then(() => {
+      window.location.href = "/";
+    })
+    .catch(() => {});
+}
 
 export default function SettingsPage() {
   return (
@@ -23,7 +43,13 @@ export default function SettingsPage() {
         </div>
 
         <AccordionCard>
-          <ChevronRow icon={<IconHelp size={20} />} label="Hjælpecenter" divider={false} />
+          <ChevronRow icon={<IconHelp size={20} />} label="Hjælpecenter" />
+          <ChevronRow
+            icon={<IconRefresh size={20} />}
+            label="Genstart opsætningsguide"
+            onClick={restartOnboarding}
+            divider={false}
+          />
         </AccordionCard>
 
         <AccordionCard>

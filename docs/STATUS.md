@@ -184,13 +184,46 @@ Last updated: 2026-08-26
   still could not be run — the `.next/static` `EPERM` lock from a concurrent
   session persists.
 
+- SET-01 (Opsætningsguide, `docs/UI-KRAVSPEC-2026-08-27.md` §8): implemented.
+  A fullscreen `OnboardingWizard` (`src/components/OnboardingWizard.tsx`)
+  shows on the home screen for a user who hasn't completed or dismissed it,
+  with a progress bar ("Trin X af Y") and Næste / Påmind mig senere / Vis
+  ikke igen (the last only appears after "Påmind mig senere" was used once).
+  Implements the three specified questions: sleep pattern → shift-work/night
+  work → daily work-hours-vs-sleep-times logging preference; smartwatch/health
+  import ("Opsæt nu" as the single primary action, otherwise "Næste"); and
+  work-hours-in-calendar. New `User` fields (`dailyLogPreference`,
+  `workHoursInCalendarEnabled`, `healthImportRequested`, `onboardingStep`,
+  `onboardingCompletedAt`, `onboardingRemindLaterAt`, `onboardingDismissed`)
+  were added via Prisma migration `20260827160000_onboarding_wizard`.
+  `/api/profile` PATCH now accepts these fields. Progress and the health
+  import toggle are also reachable from Profil (`Sundhedsdata (smartwatch)`,
+  and a per-weekday work-hours-in-calendar checkbox on `/profil/soevn`); the
+  guide can be restarted from Indstillinger. Only the three specified
+  questions exist — the "10 trin" example step count in the spec is
+  illustrative, and remaining onboarding content (goals/activity level etc.)
+  is unspecified pending further product decisions; see `docs/DECISIONS.md`
+  (2026-08-27). `npm run lint` and `npm run build` passed. The migration
+  could **not** be applied — no local PostgreSQL is reachable at
+  `localhost:5432` in this environment (no docker CLI, no local compose file)
+  — and the wizard could not be exercised against live data as a result
+  (`/api/profile` returned 503 on the shared dev server too). Apply
+  `npx prisma migrate deploy` and verify the wizard end-to-end once a
+  reachable database (local or the Synology deployment pipeline) is
+  available.
+
 ## Next work
 
-1. Perform user acceptance testing through `hellocal.packroff.dk`, including on
+1. Implement the pending UI/design requirements in
+   [docs/UI-KRAVSPEC-2026-08-27.md](UI-KRAVSPEC-2026-08-27.md) (calendar status
+   markers, list/week view, sleep visualization, onboarding wizard, bottom nav
+   editing, FAB, statistics cards, food page, accordion/chevron). None of it is
+   implemented yet; mark items done here as they land.
+2. Perform user acceptance testing through `hellocal.packroff.dk`, including on
    a phone.
-2. Replace remaining prototype values (water, calories burned, steps) with
+3. Replace remaining prototype values (water, calories burned, steps) with
    real health-data integration once a source is chosen. Stemme's structured
    food interpretation remains placeholder pending the AI service.
-3. Implement account authentication before inviting other users.
-4. Copy verified database backups to a second storage location.
-5. Keep the external SSH maintenance switch off outside maintenance windows.
+4. Implement account authentication before inviting other users.
+5. Copy verified database backups to a second storage location.
+6. Keep the external SSH maintenance switch off outside maintenance windows.

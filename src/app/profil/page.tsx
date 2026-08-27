@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconScale } from "@tabler/icons-react";
+import { IconMoon, IconScale, IconHeartbeat } from "@tabler/icons-react";
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 
@@ -15,6 +15,7 @@ type ProfileUser = {
   heightCm: number | null;
   birthYear: number | null;
   sex: Sex | null;
+  healthImportRequested: boolean;
 };
 
 function Field({
@@ -157,6 +158,16 @@ export default function ProfilePage() {
               icon={<IconScale size={20} />}
               label="Vægt kalibrering"
               href="/profil/vaegt-kalibrering"
+            />
+            <ChevronRow
+              icon={<IconMoon size={20} />}
+              label="Søvnmønster"
+              href="/profil/soevn"
+            />
+            <ChevronRow
+              icon={<IconHeartbeat size={20} />}
+              label={user.healthImportRequested ? "Sundhedsdata (smartwatch) — opsat" : "Sundhedsdata (smartwatch)"}
+              onClick={() => update("healthImportRequested", !user.healthImportRequested)}
               divider={false}
             />
           </AccordionCard>
