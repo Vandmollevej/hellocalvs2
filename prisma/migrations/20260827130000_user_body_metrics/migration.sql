@@ -1,0 +1,8 @@
+-- CreateEnum
+CREATE TYPE "Sex" AS ENUM ('FEMALE', 'MALE');
+
+-- AlterTable
+ALTER TABLE "users" ADD COLUMN "weightKg" DOUBLE PRECISION;
+ALTER TABLE "users" ADD COLUMN "heightCm" DOUBLE PRECISION;
+ALTER TABLE "users" ADD COLUMN "birthYear" INTEGER;
+ALTER TABLE "users" ADD COLUMN "sex" "Sex";

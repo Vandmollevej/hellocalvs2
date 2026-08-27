@@ -1,12 +1,15 @@
+import Link from "next/link";
+
 export function TopBar() {
   return (
-    <div className="flex items-center justify-between px-5 pt-4">
-      <span className="text-[15px] font-extrabold tracking-wide text-hf-green">
-        HELLO CAL
-      </span>
-      <div className="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-hf-tan text-xs font-bold text-hf-black">
+    <div className="flex items-center justify-end px-5 pt-4">
+      <Link
+        href="/profil"
+        aria-label="Åbn mine oplysninger"
+        className="flex h-10 w-10 items-center justify-center rounded-full bg-hf-tan text-sm font-bold text-hf-black"
+      >
         PT
-      </div>
+      </Link>
     </div>
   );
 }

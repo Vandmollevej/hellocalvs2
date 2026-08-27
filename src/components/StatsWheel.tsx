@@ -169,23 +169,12 @@ export function StatsWheel() {
       onPointerCancel={() => {
         pointerStartY.current = null;
       }}
-      className="absolute right-[22px] flex w-[178px] touch-pan-x flex-col items-end justify-center overflow-hidden rounded-3xl px-2 py-3 text-right focus-visible:outline-2 focus-visible:outline-hf-green focus-visible:outline-offset-2"
-      style={{ top: "50%", height: 190, transform: "translateY(-50%)" }}
+      className="absolute right-[22px] flex w-[178px] touch-pan-x flex-col items-start justify-center overflow-hidden rounded-3xl px-2 py-3 text-left focus-visible:outline-2 focus-visible:outline-hf-green focus-visible:outline-offset-2"
+      style={{ top: "50%", height: 190, transform: "translateY(-50%)", perspective: 320 }}
     >
       <WheelItem stat={stats[previousIndex]} position="previous" onClick={() => move(-1)} />
       <WheelItem stat={stats[activeIndex]} position="active" />
       <WheelItem stat={stats[nextIndex]} position="next" onClick={() => move(1)} />
-
-      <div className="mt-2 flex w-full justify-end gap-1.5 pr-1" aria-hidden="true">
-        {stats.map((stat, index) => (
-          <span
-            key={stat.key}
-            className={`h-1.5 rounded-full transition-all duration-200 ${
-              index === activeIndex ? "w-4 bg-hf-green" : "w-1.5 bg-hf-tan-dark"
-            }`}
-          />
-        ))}
-      </div>
     </div>
   );
 }
@@ -203,11 +192,11 @@ function WheelItem({
 
   if (position === "active") {
     return (
-      <div className="my-1 w-full py-1" aria-live="polite">
+      <div className="my-1 w-full origin-left py-1" style={{ transform: "rotateX(0deg)" }} aria-live="polite">
         <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.08em] text-hf-green">
           {stat.label}
         </p>
-        <div className="flex items-baseline justify-end gap-2">
+        <div className="flex items-baseline justify-start gap-2">
           <StatIcon size={21} color="var(--hf-green)" stroke={2.2} aria-hidden="true" />
           <span className="text-[27px] font-extrabold leading-none text-hf-black">{stat.value}</span>
         </div>
@@ -223,9 +212,8 @@ function WheelItem({
       type="button"
       onClick={onClick}
       aria-label={`Vis ${stat.label.toLowerCase()}: ${stat.value} ${stat.unit}`}
-      className={`flex min-h-10 w-full items-center justify-end gap-1.5 text-hf-black opacity-55 transition-all hover:opacity-80 focus-visible:rounded-lg focus-visible:outline-2 focus-visible:outline-hf-black ${
-        position === "previous" ? "origin-right rotate-[3deg]" : "origin-right -rotate-[3deg]"
-      }`}
+      className="flex min-h-10 w-full origin-left items-center justify-start gap-1.5 text-hf-black opacity-55 transition-all hover:opacity-80 focus-visible:rounded-lg focus-visible:outline-2 focus-visible:outline-hf-black"
+      style={{ transform: position === "previous" ? "rotateX(38deg)" : "rotateX(-38deg)" }}
     >
       <StatIcon size={15} aria-hidden="true" />
       <span className="text-xs font-semibold">{stat.label}</span>

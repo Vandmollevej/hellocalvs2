@@ -13,11 +13,16 @@ model User {
   email        String   @unique
   displayName  String
   role         Role     @default(USER)
+  weightKg     Float?
+  heightCm     Float?
+  birthYear    Int?
+  sex          Sex?
   createdAt    DateTime @default(now())
 
   registrations Registration[]
   favorites     Favorite[]
   dishes        Dish[]
+  weightEntries WeightEntry[]
 
   @@map("users")
 }
@@ -25,6 +30,43 @@ model User {
 enum Role {
   USER
   ADMIN
+}
+
+enum Sex {
+  FEMALE
+  MALE
+}
+
+// --- Vægtkalibrering ---
+// Flere ugentlige vejninger under forskellige forhold (tøj, tidspunkt på
+// dagen, toilet/mad) giver brugeren en fornemmelse af udsvinget i løbet af
+// dagen, uden at kræve at man altid vejer sig nøgen for at kunne sammenligne.
+
+model WeightEntry {
+  id          String        @id @default(cuid())
+  user        User          @relation(fields: [userId], references: [id])
+  userId      String
+  weightKg    Float
+  clothed     Boolean       @default(true)
+  toilet      RelativeTime  @default(UNKNOWN)
+  meal        RelativeTime  @default(UNKNOWN)
+  timeOfDay   TimeOfDay     @default(UNKNOWN)
+  note        String?
+  weighedAt   DateTime      @default(now())
+
+  @@map("weight_entries")
+}
+
+enum RelativeTime {
+  BEFORE
+  AFTER
+  UNKNOWN
+}
+
+enum TimeOfDay {
+  MORNING
+  EVENING
+  UNKNOWN
 }
 
 // --- Fødevaredatabase ---
@@ -55,7 +97,9 @@ model Product {
   brandId        String?
   category       Category? @relation(fields: [categoryId], references: [id])
   categoryId     String?
-  imageUrl       String?
+  imageUrl        String?
+  pendingImageUrl String?
+  imageStatus     ImageStatus @default(NONE)
   kcalPer100g    Float
   proteinPer100g Float
   carbsPer100g   Float
@@ -73,6 +117,16 @@ model Product {
 }
 
 enum ProductStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// Status for AI-fundne kandidatbilleder (kun generiske råvarer uden brand).
+// Adskilt fra ProductStatus: et produkt kan være godkendt, mens dets billede
+// afventer separat admin-godkendelse (se docs/ADMIN.md).
+enum ImageStatus {
+  NONE
   PENDING
   APPROVED
   REJECTED
