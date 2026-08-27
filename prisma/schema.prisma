@@ -172,6 +172,9 @@ model Product {
   proteinPer100g Float
   carbsPer100g   Float
   fatPer100g     Float
+  externalSource ExternalProductSource?
+  externalId     String?
+  sourceCheckedAt DateTime?
   status         ProductStatus @default(PENDING)
   discontinued   Boolean   @default(false)
   createdAt      DateTime  @default(now())
@@ -181,7 +184,13 @@ model Product {
   favorites       Favorite[]
   dishIngredients DishIngredient[]
 
+  @@index([externalSource, externalId])
   @@map("products")
+}
+
+enum ExternalProductSource {
+  OPEN_FOOD_FACTS
+  USDA
 }
 
 enum ProductStatus {

@@ -48,6 +48,12 @@ This file records durable decisions. Add a dated entry when a later decision cha
   list once decided — do not infer it. "Vis ikke igen" only appears after the
   user has chosen "Påmind mig senere" once, mirroring the existing forced
   onboarding modal's pattern.
+- 2026-08-27: Unknown product barcodes are resolved through a deterministic
+  fallback chain: HELLO CAL's own database, Open Food Facts, then USDA
+  FoodData Central when `USDA_FDC_API_KEY` is configured. Imported products
+  retain their external source, external id, and lookup timestamp. USDA data
+  never overwrites an existing local product, and all external imports remain
+  `PENDING` for the existing validation/admin flow.
 
 - 2026-08-27: The calendar's landscape week timeline and day-detail timeline
   now render sleep as a light-grey background band (00:00–wake and

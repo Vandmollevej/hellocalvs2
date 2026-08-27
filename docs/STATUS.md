@@ -1,6 +1,6 @@
 # HELLO CAL — project status
 
-Last updated: 2026-08-26
+Last updated: 2026-08-27
 
 ## Current checkpoint
 
@@ -17,6 +17,19 @@ Last updated: 2026-08-26
 - GitHub Actions built and published the production image successfully.
 - The application is a Next.js 16 prototype with Prisma 7 and PostgreSQL.
 - The stable UI checkpoint is committed as `ed2d27d`.
+- USDA FoodData Central is now implemented as the second external barcode
+  fallback after Open Food Facts. Imported products retain `externalSource`,
+  `externalId`, and `sourceCheckedAt`, remain `PENDING`, and are stored in the
+  local product database so registration snapshots stay authoritative. The
+  fallback is enabled only when the server has `USDA_FDC_API_KEY`; the example
+  environment and production Compose service include that variable. A live
+  lookup through the new module returned the exact GTIN, FDC id, brand, and
+  kcal/protein/carbohydrate/fat values for the USDA test product
+  `737628064502`. Prisma format/validation, `npm run lint`, and `npm run build`
+  passed on 2026-08-27. Migration
+  `20260827170000_external_product_sources` still needs to be deployed with
+  the application and the real USDA key added to Synology before production
+  fallback becomes active.
 
 ## Validation
 

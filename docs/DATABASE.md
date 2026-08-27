@@ -7,7 +7,9 @@ Se [SPECIFICATION.md](SPECIFICATION.md) for det samlede overblik.
 - Historiske registreringer er snapshots og ændres aldrig af efterfølgende produkt-, restaurant- eller OCR-opdateringer. Fælles databasedata og brugerens registrering holdes adskilt via reference plus gemte snapshotfelter. Fletning og erstatning må kun ændre den interne reference, ikke det tidligere indtastede indhold.
 - Databasen er "sandheden" — ingen data må kun eksistere lokalt uden synkronisering.
 - HELLO CAL bygger sin egen produktdatabase op over tid: første gang et produkt registreres, tages billeder af forside, næringsdeklaration og stregkode, og AI læser og gemmer produktet. Næste gang genkendes det automatisk via billede eller stregkode.
-- Stregkodescanning bruger opslag i Open Food Facts som fallback for ukendte produkter.
+- Stregkodescanning bruger først Open Food Facts og derefter USDA FoodData
+  Central som fallback for ukendte produkter. USDA-fallbacken er kun aktiv,
+  når servermiljøet har `USDA_FDC_API_KEY`.
 - Sletning: kun slet, ingen arkivfunktion. Historiske registreringer bevares uændret; en slettet vare kan "gen-tilføjes" fra en tidligere dag (fungerer som en simpel backup).
 
 ## Produkter og stregkoder
@@ -20,6 +22,9 @@ Se [SPECIFICATION.md](SPECIFICATION.md) for det samlede overblik.
 - Produkt med flere pakkestørrelser vises som én vare i søgning; på produktsiden vises undervarer (samme indhold, andre størrelser/stregkoder) nedenunder.
 - Findes et internationalt produkt allerede (fx via Open Food Facts), duplikeres/merges det ind i HELLO CALs egen database og kobles til eget brand-logo-bibliotek.
 - Fejlmelding fra det internationale bibliotek gemmes som et lokalt override-lag: det internationale ID bevares, den lokale rettelse overskriver kun de rettede felter, og internationale opdateringer må ikke overskrive godkendte lokale rettelser.
+- Importerede produkter gemmer ekstern kilde, eksternt id og seneste
+  kontroltidspunkt. Det gør kilderne sporbare uden at ændre historiske
+  registrerings-snapshots.
 
 ## Brands
 

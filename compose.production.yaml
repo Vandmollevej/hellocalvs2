@@ -36,6 +36,7 @@ services:
     restart: unless-stopped
     environment:
       DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env.production}
+      USDA_FDC_API_KEY: ${USDA_FDC_API_KEY:-}
       NODE_ENV: production
       PORT: 3000
     ports:
