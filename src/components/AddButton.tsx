@@ -44,19 +44,18 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
           if (!open) onOpen?.();
           setOpen((v) => !v);
         }}
-        className="absolute left-0 flex items-center justify-start bg-hf-green transition-transform"
+        className="absolute left-0 flex items-center justify-center bg-hf-green transition-transform"
         style={{
           top: "50%",
           transform: `translateY(-50%) rotate(${open ? 45 : 0}deg)`,
-          width: 80,
-          height: 190,
-          borderRadius: "0 190px 190px 0",
-          paddingLeft: 20,
+          width: 65,
+          height: 130,
+          borderRadius: "0 130px 130px 0",
           transformOrigin: "0% 50%",
         }}
       >
         <span style={{ transform: `rotate(${open ? -45 : 0}deg)`, display: "inline-flex" }}>
-          <IconPlus size={28} color="var(--hf-white)" />
+          <IconPlus size={36} color="var(--hf-white)" stroke={2.75} />
         </span>
       </button>
 

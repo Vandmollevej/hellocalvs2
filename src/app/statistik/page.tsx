@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { IconChartLine } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
 import { groupByDay, withinLastDays, type RegistrationTotals } from "@/lib/daily-totals";
@@ -92,7 +93,7 @@ export default function StatistikPage() {
   }, [registrations, loading]);
 
   return (
-    <HfScreen title="Statistik">
+    <HfScreen title="Statistik" icon={<IconChartLine size={20} stroke={2} />}>
       <div className="flex flex-col gap-4 p-4">
         <div className="rounded-2xl bg-hf-tan p-4">
           <p className="mb-3 text-sm font-bold text-hf-black">

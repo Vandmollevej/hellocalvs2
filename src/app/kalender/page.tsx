@@ -156,47 +156,7 @@ export default function KalenderPage() {
   }
 
   return (
-    <HfScreen
-      title="Kalender"
-      headerRight={
-        <div className="relative">
-          <button
-            type="button"
-            aria-label={`Skift kalendervisning. Aktuel visning: ${activeView.label}`}
-            aria-expanded={viewMenuOpen}
-            onClick={() => {
-              setViewMenuOpen((open) => !open);
-              setMonthMenuOpen(false);
-            }}
-            className="flex size-11 items-center justify-center rounded-full text-hf-white hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white"
-          >
-            <ActiveViewIcon size={25} stroke={1.8} />
-          </button>
-          {viewMenuOpen && (
-            <div className="absolute right-0 top-12 z-40 w-44 overflow-hidden rounded-2xl border border-hf-tan-dark bg-hf-white p-1.5 text-hf-black shadow-xl">
-              {VIEW_OPTIONS.map((option) => {
-                const OptionIcon = option.icon;
-                return (
-                  <button
-                    key={option.value}
-                    type="button"
-                    onClick={() => {
-                      setView(option.value);
-                      setViewMenuOpen(false);
-                    }}
-                    className="flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold hover:bg-hf-cream focus-visible:outline-2 focus-visible:outline-hf-black"
-                  >
-                    <OptionIcon size={20} stroke={1.8} />
-                    <span className="flex-1">{option.label}</span>
-                    {view === option.value && <IconCheck size={18} aria-hidden="true" />}
-                  </button>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      }
-    >
+    <HfScreen title="Kalender" icon={<IconCalendarMonth size={20} stroke={2} />}>
       <div className="relative p-4">
         {(monthMenuOpen || viewMenuOpen) && (
           <button
@@ -232,7 +192,45 @@ export default function KalenderPage() {
               <MonthPicker year={year} month={month} onYearChange={setVisibleDate} onSelect={selectMonth} />
             )}
           </div>
+          <div className="flex items-center gap-1">
           <PeriodButton direction="next" view={view} onClick={() => movePeriod(1)} />
+          <div className="relative">
+            <button
+              type="button"
+              aria-label={`Skift kalendervisning. Aktuel visning: ${activeView.label}`}
+              aria-expanded={viewMenuOpen}
+              onClick={() => {
+                setViewMenuOpen((open) => !open);
+                setMonthMenuOpen(false);
+              }}
+              className="flex size-11 items-center justify-center rounded-full text-hf-black hover:bg-hf-tan focus-visible:outline-2 focus-visible:outline-hf-black"
+            >
+              <ActiveViewIcon size={22} stroke={1.8} />
+            </button>
+            {viewMenuOpen && (
+              <div className="absolute right-0 top-12 z-40 w-44 overflow-hidden rounded-2xl border border-hf-tan-dark bg-hf-white p-1.5 text-hf-black shadow-xl">
+                {VIEW_OPTIONS.map((option) => {
+                  const OptionIcon = option.icon;
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => {
+                        setView(option.value);
+                        setViewMenuOpen(false);
+                      }}
+                      className="flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold hover:bg-hf-cream focus-visible:outline-2 focus-visible:outline-hf-black"
+                    >
+                      <OptionIcon size={20} stroke={1.8} />
+                      <span className="flex-1">{option.label}</span>
+                      {view === option.value && <IconCheck size={18} aria-hidden="true" />}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+          </div>
         </div>
 
         <div

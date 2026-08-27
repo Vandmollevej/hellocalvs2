@@ -2,10 +2,12 @@ import { IconChevronLeft } from "@tabler/icons-react";
 
 export function ScreenHeader({
   title,
+  icon,
   onBack,
   rightAction,
 }: {
   title: string;
+  icon?: React.ReactNode;
   onBack?: () => void;
   rightAction?: React.ReactNode;
 }) {
@@ -20,7 +22,14 @@ export function ScreenHeader({
           <IconChevronLeft size={26} />
         </button>
       )}
-      <h1 className="hf-heading text-lg text-hf-white">{title}</h1>
+      <div className="flex items-center gap-2">
+        {icon && (
+          <span className="flex text-hf-white" aria-hidden="true">
+            {icon}
+          </span>
+        )}
+        <h1 className="hf-heading text-lg text-hf-white">{title}</h1>
+      </div>
       {rightAction && (
         <div className="absolute bottom-3 right-3">{rightAction}</div>
       )}
