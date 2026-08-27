@@ -9,15 +9,15 @@ datasource db {
 // --- Konto ---
 
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
-  displayName  String
-  role         Role     @default(USER)
-  weightKg     Float?
-  heightCm     Float?
-  birthYear    Int?
-  sex          Sex?
-  createdAt    DateTime @default(now())
+  id          String   @id @default(cuid())
+  email       String   @unique
+  displayName String
+  role        Role     @default(USER)
+  weightKg    Float?
+  heightCm    Float?
+  birthYear   Int?
+  sex         Sex?
+  createdAt   DateTime @default(now())
 
   // Søvnmønster: standard sengetid/stå-op-tid, med mulighed for individuelle
   // tider pr. ugedag (SleepSchedule) til brugere med skiftende arbejdstider.
@@ -45,10 +45,10 @@ model User {
   onboardingRemindLaterAt DateTime?
   onboardingDismissed     Boolean   @default(false)
 
-  registrations Registration[]
-  favorites     Favorite[]
-  dishes        Dish[]
-  weightEntries WeightEntry[]
+  registrations  Registration[]
+  favorites      Favorite[]
+  dishes         Dish[]
+  weightEntries  WeightEntry[]
   sleepSchedules SleepSchedule[]
   workShifts     WorkShift[]
 
@@ -76,16 +76,16 @@ enum DailyLogPreference {
 // dagen, uden at kræve at man altid vejer sig nøgen for at kunne sammenligne.
 
 model WeightEntry {
-  id          String        @id @default(cuid())
-  user        User          @relation(fields: [userId], references: [id])
-  userId      String
-  weightKg    Float
-  clothed     Boolean       @default(true)
-  toilet      RelativeTime  @default(UNKNOWN)
-  meal        RelativeTime  @default(UNKNOWN)
-  timeOfDay   TimeOfDay     @default(UNKNOWN)
-  note        String?
-  weighedAt   DateTime      @default(now())
+  id        String       @id @default(cuid())
+  user      User         @relation(fields: [userId], references: [id])
+  userId    String
+  weightKg  Float
+  clothed   Boolean      @default(true)
+  toilet    RelativeTime @default(UNKNOWN)
+  meal      RelativeTime @default(UNKNOWN)
+  timeOfDay TimeOfDay    @default(UNKNOWN)
+  note      String?
+  weighedAt DateTime     @default(now())
 
   @@map("weight_entries")
 }
@@ -159,25 +159,25 @@ model Category {
 }
 
 model Product {
-  id             String    @id @default(cuid())
-  name           String
-  brand          Brand?    @relation(fields: [brandId], references: [id])
-  brandId        String?
-  category       Category? @relation(fields: [categoryId], references: [id])
-  categoryId     String?
+  id              String                 @id @default(cuid())
+  name            String
+  brand           Brand?                 @relation(fields: [brandId], references: [id])
+  brandId         String?
+  category        Category?              @relation(fields: [categoryId], references: [id])
+  categoryId      String?
   imageUrl        String?
   pendingImageUrl String?
-  imageStatus     ImageStatus @default(NONE)
-  kcalPer100g    Float
-  proteinPer100g Float
-  carbsPer100g   Float
-  fatPer100g     Float
-  externalSource ExternalProductSource?
-  externalId     String?
+  imageStatus     ImageStatus            @default(NONE)
+  kcalPer100g     Float
+  proteinPer100g  Float
+  carbsPer100g    Float
+  fatPer100g      Float
+  externalSource  ExternalProductSource?
+  externalId      String?
   sourceCheckedAt DateTime?
-  status         ProductStatus @default(PENDING)
-  discontinued   Boolean   @default(false)
-  createdAt      DateTime  @default(now())
+  status          ProductStatus          @default(PENDING)
+  discontinued    Boolean                @default(false)
+  createdAt       DateTime               @default(now())
 
   barcodes        Barcode[]
   registrations   Registration[]
@@ -191,6 +191,18 @@ model Product {
 enum ExternalProductSource {
   OPEN_FOOD_FACTS
   USDA
+  FRIDA
+}
+
+// Hvilken Frida-udgivelse (DTU's Figshare-datasæt) der senest er importeret,
+// så frida-agent (scripts/frida-import) ikke genimporterer samme version.
+model FridaImportState {
+  id                Int      @id @default(autoincrement())
+  figshareArticleId Int      @unique
+  title             String
+  importedAt        DateTime @default(now())
+
+  @@map("frida_import_state")
 }
 
 enum ProductStatus {
@@ -210,9 +222,9 @@ enum ImageStatus {
 }
 
 model Barcode {
-  code      String   @id
-  product   Product  @relation(fields: [productId], references: [id])
-  productId String
+  code        String  @id
+  product     Product @relation(fields: [productId], references: [id])
+  productId   String
   blacklisted Boolean @default(false)
 
   @@map("barcodes")
@@ -221,14 +233,14 @@ model Barcode {
 // --- Egne retter / opskrifter ---
 
 model Dish {
-  id         String    @id @default(cuid())
-  name       String
-  owner      User      @relation(fields: [ownerId], references: [id])
-  ownerId    String
-  category   Category? @relation(fields: [categoryId], references: [id])
-  categoryId String?
+  id             String    @id @default(cuid())
+  name           String
+  owner          User      @relation(fields: [ownerId], references: [id])
+  ownerId        String
+  category       Category? @relation(fields: [categoryId], references: [id])
+  categoryId     String?
   externalSource String?
-  createdAt  DateTime  @default(now())
+  createdAt      DateTime  @default(now())
 
   ingredients   DishIngredient[]
   registrations Registration[]

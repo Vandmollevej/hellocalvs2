@@ -40,3 +40,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Frida dataset (large, licensed — download separately, see docs/STATUS.md)
+/scripts/frida-import/data/
+__pycache__/

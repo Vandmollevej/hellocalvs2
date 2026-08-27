@@ -55,6 +55,23 @@ This file records durable decisions. Add a dated entry when a later decision cha
   never overwrites an existing local product, and all external imports remain
   `PENDING` for the existing validation/admin flow.
 
+- 2026-08-27: Danish generic-food data comes from DTU Fødevareinstituttet's
+  Frida database, imported as `Product` rows with `externalSource='FRIDA'`
+  and `status='APPROVED'` (no barcode). Frida's own site
+  (`fcdb.fooddata.dk`) has no public reuse API — only an undocumented
+  internal API behind its frontend, deliberately not used for anything more
+  than confirming this. Instead, its dataset releases are published to
+  DTU's official Figshare-based repository (`data.dtu.dk`), which has a
+  real public, documented, unauthenticated, CC-BY-4.0 API
+  (`api.figshare.com`, DTU Food's group id `18053`). `scripts/frida-import`
+  (`frida-agent` service) polls that API on a schedule
+  (`FRIDA_AGENT_POLL_INTERVAL_SECONDS`, default 24h), and — unlike the
+  USDA/Open Food Facts barcode fallback — imports automatically as
+  `APPROVED` without an admin review step, since it is DTU's own curated
+  reference data rather than a single external contributor's submission.
+  `frida_import_state` tracks which Figshare release has already been
+  imported so the same version is never reprocessed.
+
 - 2026-08-27: The calendar's landscape week timeline and day-detail timeline
   now render sleep as a light-grey background band (00:00–wake and
   bedtime–24:00) derived from `SleepSchedule`/`WorkShift`/`User` defaults.

@@ -154,6 +154,10 @@ export default function MadvarerPage() {
         <Link href="/madvarer/nyt" className="hf-btn-secondary self-center px-4 py-2 text-xs">
           Opret nyt produkt manuelt
         </Link>
+
+        <p className="px-1 text-center text-[10px] text-hf-black opacity-40">
+          Råvaredata: Fødevaredata (frida.fooddata.dk), DTU Fødevareinstituttet
+        </p>
       </div>
     </HfScreen>
   );

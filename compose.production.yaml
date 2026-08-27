@@ -84,6 +84,21 @@ services:
       - backend
       - edge
 
+  frida-agent:
+    build: ./scripts/frida-import
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env.production}
+      FRIDA_POLL_INTERVAL_SECONDS: ${FRIDA_AGENT_POLL_INTERVAL_SECONDS:-86400}
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - backend
+      - edge
+
 networks:
   backend:
     internal: true

@@ -377,7 +377,10 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
 4. Implement account authentication before inviting other users.
 5. Copy verified database backups to a second storage location.
 6. Keep the external SSH maintenance switch off outside maintenance windows.
-7. Deploy the `20260827180000_frida_product_source` migration to production
-   and run `scripts/frida-import/import.py` there (needs `DATABASE_URL`,
-   `openpyxl`, `psycopg2-binary`, and the dataset file — see the 2026-08-27
-   Frida entry above) to actually populate the 1389 Frida products.
+7. Deploy the two Frida migrations (`20260827180000_frida_product_source`,
+   `20260827190000_frida_import_state`) and the new `frida-agent` compose
+   service to production (new service in `compose.production.yaml`, needs
+   `docker compose up -d --build frida-agent` alongside the normal migration
+   step — see the 2026-08-27 Frida entry above). It will then import the
+   1389 Frida products fully on its own on first poll; no manual file
+   handling needed on an ongoing basis.
