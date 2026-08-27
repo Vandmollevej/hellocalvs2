@@ -3,6 +3,8 @@
 export type RegistrationTotals = {
   kcalSnapshot: number;
   proteinSnapshot: number;
+  carbsSnapshot?: number;
+  fatSnapshot?: number;
   createdAt: string;
 };
 
@@ -10,6 +12,8 @@ export type DailyTotal = {
   dateKey: string;
   kcal: number;
   protein: number;
+  carbs: number;
+  fat: number;
 };
 
 function dateKey(dateString: string) {
@@ -26,11 +30,15 @@ export function groupByDay(registrations: RegistrationTotals[]): DailyTotal[] {
     if (existing) {
       existing.kcal += registration.kcalSnapshot;
       existing.protein += registration.proteinSnapshot;
+      existing.carbs += registration.carbsSnapshot ?? 0;
+      existing.fat += registration.fatSnapshot ?? 0;
     } else {
       byDay.set(key, {
         dateKey: key,
         kcal: registration.kcalSnapshot,
         protein: registration.proteinSnapshot,
+        carbs: registration.carbsSnapshot ?? 0,
+        fat: registration.fatSnapshot ?? 0,
       });
     }
   }

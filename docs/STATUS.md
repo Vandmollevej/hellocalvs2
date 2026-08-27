@@ -125,6 +125,65 @@ Last updated: 2026-08-26
   licensed, avoiding copyright risk from scraping arbitrary Google Images
   results.
 
+- The Statistik screen chart now supports multiple dataserier (kalorier +
+  vægt from `WeightEntry`), each independently normalized, with a legend and
+  a small non-fullscreen dropdown (persisted to `localStorage`) to choose
+  which series show. The stat-card grid below it is now modular: long-press
+  enters an edit mode (cards wobble), cards can be drag-reordered or dragged
+  into/out of a scrollable "ubrugte kort" panel (positioned above/below by
+  available space), and a draggable "Overskrift" template creates a
+  renameable full-width divider row. Layout is persisted to `localStorage`
+  (`src/components/StatChart.tsx`, `src/components/StatCardsGrid.tsx`,
+  `src/lib/stat-cards.ts`). `npm run lint` passed; `npm run build` could not
+  be run — a concurrent session's dev server holds a lock on `.next/static`
+  (`EPERM: operation not permitted, unlink`). Re-run the build once no other
+  session has the dev server active.
+- The home-screen FAB (`src/components/AddButton.tsx`) is now a dark
+  (`--hf-fab`) rounded-square button matching the HelloFresh reference —
+  thin white plus, no circle/outline/shadow, ~64px, 14px corner radius.
+  Long-pressing it enters drag mode with a ghost preview and a snap outline;
+  releasing snaps it to the left or right edge at the chosen vertical
+  position, and the choice persists via `localStorage`
+  (`src/components/AddButton.tsx`'s `useFabPosition`, a
+  `useSyncExternalStore` hook). `StatsWheel` and `OnboardingSpotlight`
+  (`src/components/StatsWheel.tsx`, `src/components/OnboardingSpotlight.tsx`)
+  now read the FAB's side and always render on the opposite side, sliding
+  when it changes. `npm run lint` passed; `npm run build` could not be run
+  for the same concurrent-session `.next/static` lock as above. Verified
+  interactively against the other session's already-running dev server:
+  computed FAB styles (64x64, 14px radius, `rgb(35,35,35)`, no shadow), a
+  simulated long-press drag correctly showed the ghost/snap outline and
+  committed the side + vertical offset, and `StatsWheel` swapped sides in
+  response. The concurrent session's own edits caused frequent Fast Refresh
+  reloads and some 503s on that shared dev server during testing, which made
+  one reload-persistence check unreliable; re-verify that specific case
+  (reload the page after moving the FAB, confirm it stays put) once no other
+  session is editing concurrently.
+
+- The bottom nav icons are now larger (30px, matching HelloFresh's bottom-tab
+  proportions from the reference screenshots) and no longer sit inside a
+  background shape, matching HelloFresh's own plain-icon tab bar. Long-pressing
+  any bottom-nav icon enters an iOS-style jiggle edit mode: active icons can be
+  dragged to reorder or removed with a small ×, and a panel slides up above the
+  bar listing unused functions (Kamera, Søg, Stemme, Profil) that can be
+  dragged (or tapped) into the bar. The arrangement persists in `localStorage`
+  per browser, not in the database.
+
+- The calendar month/week views now show a calm red marker on days the goal
+  was missed (alongside the existing green marker for days it was met), and
+  the month footer below the grid replaces the old legend with a monthly
+  status summary: whether the user is within their calorie goal (and by how
+  much), a 7-day over/under summary, and a "X of Y days" goal count. A green
+  star streak badge with a day count appears once the goal has been met at
+  least 5 days running and disappears immediately the streak breaks
+  (`src/app/kalender/page.tsx`, `MonthlyStatus`). `daily-totals.ts` now
+  exports `groupByDay` for reuse. This reverses the prior "no red markers, no
+  streaks" principle per the updated `docs/SPECIFICATION.md`/`docs/UI.md`;
+  see `docs/DECISIONS.md` (2026-08-27). `npm run lint` passed (only
+  pre-existing unused-var warnings in `kalender/page.tsx`); `npm run build`
+  still could not be run — the `.next/static` `EPERM` lock from a concurrent
+  session persists.
+
 ## Next work
 
 1. Perform user acceptance testing through `hellocal.packroff.dk`, including on

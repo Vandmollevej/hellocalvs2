@@ -30,6 +30,12 @@ This file records durable decisions. Add a dated entry when a later decision cha
   Swipe, scroll, adjacent-item taps, and keyboard arrows rotate calories,
   protein, water, calories burned, and steps through the emphasized center.
   Food-derived totals use today's registration snapshots.
+- 2026-08-27: Supersedes the 2026-08-26 "visualizes success, not failure"
+  principle for the calendar. The calendar now shows a calm red marker on
+  days the goal was not met, alongside the existing green marker for days it
+  was met. A star streak indicator (with a day count) appears once the goal
+  has been met at least 5 days in a row and disappears immediately the streak
+  breaks. No other badges or motivational messaging were added.
 
 ## Hosting and delivery
 

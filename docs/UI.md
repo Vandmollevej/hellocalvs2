@@ -22,7 +22,7 @@ Fra og med implementeringsfasen skal appens generelle visuelle stil (farver, fon
 - Ingen "Gem"-knap noget sted — alt gemmes automatisk løbende. "Luk"/"Annuller" er de eneste relevante lukkehandlinger.
 - Tilføj-dialoger vises altid på én skærm uden scrolling.
 - Kort tryk = åbn/se detaljer. Langt tryk = tilføj direkte som ny registrering (visuel "Tilføjet"-animation). Gælder favoritter, tidligere brugte, søgeresultater, kalender og statistik.
-- Kalenderen og statistikken visualiserer succes, ikke fiasko — ingen røde/gule fejlmarkeringer, ingen streaks eller kunstige "Du er fantastisk!"-beskeder.
+- Kalenderen viser en rolig rød markering, når en dags mål ikke er nået, og en grøn stjerne-streak (antal dage i træk) fra 5 dage og opefter — ellers ingen kunstige "Du er fantastisk!"-beskeder.
 - Kalenderen kan vises som måned, uge eller liste via ikonet øverst til højre.
   Vandret swipe og pile skifter periode, månedstitlen åbner alle årets måneder,
   og tryk på en dato åbner dagens gemte registreringer.

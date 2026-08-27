@@ -16,6 +16,7 @@ import {
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
+import { groupByDay } from "@/lib/daily-totals";
 
 const WEEKDAYS = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
 const MONTHS = Array.from({ length: 12 }, (_, month) =>
@@ -28,6 +29,7 @@ type Registration = {
   id: string;
   titleSnapshot: string;
   kcalSnapshot: number;
+  proteinSnapshot: number;
   createdAt: string;
 };
 
@@ -143,10 +145,7 @@ export default function KalenderPage() {
 
   const dailyTotals = useMemo(() => {
     const map = new Map<string, number>();
-    for (const registration of registrations) {
-      const key = dayKey(new Date(registration.createdAt));
-      map.set(key, (map.get(key) ?? 0) + registration.kcalSnapshot);
-    }
+    for (const day of groupByDay(registrations)) map.set(day.dateKey, day.kcal);
     return map;
   }, [registrations]);
 
@@ -342,6 +341,8 @@ export default function KalenderPage() {
             )}
           </div>
         </div>
+
+        <MonthlyStatus status={monthlyStatus} />
       </div>
 
       {selectedDate && (
@@ -474,7 +475,6 @@ function MonthView({
           );
         })}
       </div>
-      <Legend />
     </>
   );
 }
@@ -506,7 +506,6 @@ function WeekView({ days, today, onOpenDate }: { days: Date[]; today: Date; onOp
           </button>
         );
       })}
-      <Legend />
     </div>
   );
 }
@@ -617,25 +616,51 @@ function DayEntry({ registration }: { registration: Registration }) {
   );
 }
 
-function Legend() {
+type MonthlyStatusData = {
+  isCurrentMonth: boolean;
+  consideredDays: number;
+  metCount: number;
+  remaining: number;
+  sevenDayRemaining: number;
+  streak: number;
+};
+
+function MonthlyStatus({ status }: { status: MonthlyStatusData }) {
+  const { isCurrentMonth, consideredDays, metCount, remaining, sevenDayRemaining, streak } = status;
+  const withinGoal = remaining >= 0;
+  const goalDaysText = isCurrentMonth
+    ? `${metCount} ud af ${consideredDays} dage har du opnået din målsætning.`
+    : `${metCount} ud af ${consideredDays} dage opnåede du din målsætning.`;
+
   return (
-    <p className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-center text-xs opacity-60">
-      <span className="flex items-center gap-1.5">
-        <span className="relative size-5 rounded border border-transparent bg-hf-tan">
-          <IconCheck size={11} stroke={3} className="absolute right-0.5 top-0.5 text-hf-green" aria-hidden="true" />
+    <div className="mt-5 space-y-1.5 text-center">
+      {streak >= 5 && (
+        <div className="mb-2 flex justify-center">
+          <span className="relative flex size-9 items-center justify-center" aria-label={`${streak} dages stribe i træk`}>
+            <IconStarFilled size={36} className="text-hf-green" aria-hidden="true" />
+            <span className="absolute text-xs font-bold text-hf-white">{streak}</span>
+          </span>
+        </div>
+      )}
+
+      <p className="flex items-center justify-center gap-2 text-lg">
+        {withinGoal ? (
+          <IconCheck size={22} stroke={2.5} className="shrink-0 text-hf-green" aria-hidden="true" />
+        ) : (
+          <IconMinus size={22} stroke={2.5} className="shrink-0 text-hf-red-dark" aria-hidden="true" />
+        )}
+        <span className="text-hf-gray-dark">
+          {withinGoal ? "Du er inden for din målsætning. Du har " : "Du er ikke inden for din målsætning. Du har overskredet med "}
+          <span className="font-bold text-hf-black">{Math.round(Math.abs(remaining))}</span>
+          {withinGoal ? " kalorier til gode." : " kalorier."}
         </span>
-        Mål nået
-      </span>
-      <span className="flex items-center gap-1.5">
-        <span className="relative size-5 rounded border border-transparent bg-hf-tan">
-          <IconMinus size={11} stroke={3} className="absolute right-0.5 top-0.5 text-hf-red-dark" aria-hidden="true" />
-        </span>
-        Mål ikke nået
-      </span>
-      <span className="flex items-center gap-1.5">
-        <span className="size-5 rounded border border-hf-green bg-hf-green" />
-        I dag
-      </span>
-    </p>
+      </p>
+
+      <p className="text-sm text-hf-gray">
+        Over de sidste syv dage er du {sevenDayRemaining >= 0 ? "under" : "over"} din målsætning.
+      </p>
+
+      <p className="text-sm text-hf-gray">{goalDaysText}</p>
+    </div>
   );
 }

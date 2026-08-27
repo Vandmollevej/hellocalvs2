@@ -126,8 +126,8 @@ Se [DATABASE.md](DATABASE.md) og [AI.md](AI.md) for fuld detalje. HELLO CAL bygg
 
 ## 13. Kalender og statistik
 
-- Kalenderoversigt viser kun en positiv/grøn markering, når (brugerdefinerede) mål er opfyldt en given dag — ingen røde/gule/orange "fejl"-markeringer. Princip: "appen visualiserer succes, ikke fiasko."
-- Ingen streaks, badges eller kunstige motiverende beskeder. AI giver kun faktabaserede indsigter.
+- Kalenderoversigt viser en grøn markering, når (brugerdefinerede) mål er opfyldt en given dag, og en rolig rød markering, når det ikke er tilfældet.
+- En streak-indikator (stjerne med antal dage) vises, når målet er nået mindst 5 dage i træk, og forsvinder straks streaken brydes. Ingen øvrige badges eller kunstige motiverende beskeder. AI giver kun faktabaserede indsigter.
 - Statistikpanel viser samlet energi-/næringsfordeling over tid, inkl. kosttilskud (registreres som almindelige fødevarer, ingen separat type i v1).
 
 ## 14. Dataprincipper

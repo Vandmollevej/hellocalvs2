@@ -3,18 +3,40 @@
 import { useEffect, useMemo, useState } from "react";
 import { IconChartLine } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
-import { DAILY_KCAL_GOAL } from "@/lib/goals";
+import { StatChart, type ChartSeries } from "@/components/StatChart";
+import { StatCardsGrid } from "@/components/StatCardsGrid";
+import { computeStatCards, STAT_WINDOW_DAYS } from "@/lib/stat-cards";
 import { groupByDay, withinLastDays, type RegistrationTotals } from "@/lib/daily-totals";
 
 const WEEK_COUNT = 6;
-const WINDOW_DAYS = 30;
+const DEFAULT_ACTIVE_CARD_KEYS = ["calories", "protein", "daysLogged", "goalsMet"];
 
-function formatNumber(value: number, maximumFractionDigits = 0) {
-  return new Intl.NumberFormat("da-DK", { maximumFractionDigits }).format(value);
+type WeightEntry = {
+  weightKg: number;
+  weighedAt: string;
+};
+
+function weightWeeklyAverages(entries: WeightEntry[]) {
+  const cutoff = Date.now() - WEEK_COUNT * 7 * 24 * 60 * 60 * 1000;
+  const byDay = new Map<string, { sum: number; count: number }>();
+  for (const entry of entries) {
+    const date = new Date(entry.weighedAt);
+    const time = date.getTime();
+    if (time < cutoff) continue;
+    const key = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    const existing = byDay.get(key) ?? { sum: 0, count: 0 };
+    existing.sum += entry.weightKg;
+    existing.count += 1;
+    byDay.set(key, existing);
+  }
+  const days = Array.from(byDay.entries()).map(([dateKey, { sum, count }]) => ({
+    dateKey,
+    value: sum / count,
+  }));
+  return weeklyAverages(days);
 }
 
-function weeklyKcalAverages(registrations: RegistrationTotals[]) {
-  const days = groupByDay(withinLastDays(registrations, WEEK_COUNT * 7));
+function weeklyAverages(days: { dateKey: string; value: number }[]) {
   const now = Date.now();
 
   return Array.from({ length: WEEK_COUNT }, (_, weekIndex) => {
@@ -29,26 +51,38 @@ function weeklyKcalAverages(registrations: RegistrationTotals[]) {
     });
 
     if (daysInWeek.length === 0) return 0;
-    return daysInWeek.reduce((sum, day) => sum + day.kcal, 0) / daysInWeek.length;
+    return daysInWeek.reduce((sum, day) => sum + day.value, 0) / daysInWeek.length;
   });
 }
 
 export default function StatistikPage() {
   const [registrations, setRegistrations] = useState<RegistrationTotals[]>([]);
+  const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/registrations")
-      .then(async (response) => {
-        if (!response.ok) throw new Error("Kunne ikke hente statistik");
+
+    Promise.all([
+      fetch("/api/registrations").then(async (response) => {
+        if (!response.ok) throw new Error("Kunne ikke hente registreringer");
         return (await response.json()) as { registrations: RegistrationTotals[] };
-      })
-      .then((data) => {
-        if (!cancelled) setRegistrations(data.registrations);
+      }),
+      fetch("/api/weight-entries").then(async (response) => {
+        if (!response.ok) throw new Error("Kunne ikke hente vejninger");
+        return (await response.json()) as { entries: WeightEntry[] };
+      }),
+    ])
+      .then(([registrationData, weightData]) => {
+        if (cancelled) return;
+        setRegistrations(registrationData.registrations);
+        setWeightEntries(weightData.entries);
       })
       .catch(() => {
-        if (!cancelled) setRegistrations([]);
+        if (!cancelled) {
+          setRegistrations([]);
+          setWeightEntries([]);
+        }
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -59,69 +93,44 @@ export default function StatistikPage() {
     };
   }, []);
 
-  const weeklyAverages = useMemo(() => weeklyKcalAverages(registrations), [registrations]);
+  const kcalWeekly = useMemo(() => {
+    const days = groupByDay(withinLastDays(registrations, WEEK_COUNT * 7)).map((d) => ({
+      dateKey: d.dateKey,
+      value: d.kcal,
+    }));
+    return weeklyAverages(days);
+  }, [registrations]);
 
-  const points = useMemo(() => {
-    const max = Math.max(...weeklyAverages, 1);
-    const min = Math.min(...weeklyAverages.filter((v) => v > 0), 0);
-    const range = Math.max(max - min, 1);
+  const weightWeekly = useMemo(() => weightWeeklyAverages(weightEntries), [weightEntries]);
 
-    return weeklyAverages.map((value, i) => {
-      const x = 10 + i * 50;
-      const normalized = value > 0 ? (value - min) / range : 0;
-      const y = 75 - normalized * 60;
-      return { x, y };
-    });
-  }, [weeklyAverages]);
+  const chartSeries = useMemo<ChartSeries[]>(
+    () => [
+      { key: "kcal", label: "Kalorier", color: "var(--hf-green)", values: kcalWeekly },
+      { key: "weight", label: "Vægt", color: "var(--hf-gray)", values: weightWeekly },
+    ],
+    [kcalWeekly, weightWeekly],
+  );
 
-  const polyline = points.map((p) => `${p.x},${p.y}`).join(" ");
+  const statCards = useMemo(() => {
+    const days = groupByDay(withinLastDays(registrations, STAT_WINDOW_DAYS));
+    return computeStatCards({ days });
+  }, [registrations]);
 
-  const metrics = useMemo(() => {
-    const recentRegistrations = withinLastDays(registrations, WINDOW_DAYS);
-    const days = groupByDay(recentRegistrations);
-    const daysLogged = days.length;
-    const avgKcal = daysLogged > 0 ? days.reduce((sum, d) => sum + d.kcal, 0) / daysLogged : 0;
-    const avgProtein = daysLogged > 0 ? days.reduce((sum, d) => sum + d.protein, 0) / daysLogged : 0;
-    const goalsMet = days.filter((d) => d.kcal > 0 && d.kcal <= DAILY_KCAL_GOAL).length;
-
-    return [
-      { label: "Gns. kalorier / dag", value: loading ? "—" : `${formatNumber(avgKcal)} kcal` },
-      { label: "Gns. protein / dag", value: loading ? "—" : `${formatNumber(avgProtein)} g` },
-      { label: `Dage logget (${WINDOW_DAYS} dage)`, value: loading ? "—" : `${daysLogged}` },
-      { label: "Mål nået", value: loading ? "—" : `${goalsMet} dage` },
-    ];
-  }, [registrations, loading]);
+  const displayCards = useMemo(
+    () => statCards.map((c) => ({ ...c, value: loading ? "—" : c.value })),
+    [statCards, loading],
+  );
 
   return (
     <HfScreen title="Statistik" icon={<IconChartLine size={20} stroke={2} />}>
       <div className="flex flex-col gap-4 p-4">
-        <div className="rounded-2xl bg-hf-tan p-4">
-          <p className="mb-3 text-sm font-bold text-hf-black">
-            Kalorier — gennemsnit pr. uge (seneste {WEEK_COUNT} uger)
-          </p>
-          <svg viewBox="0 0 280 90" className="w-full" aria-hidden="true">
-            <polyline
-              points={polyline}
-              fill="none"
-              stroke="var(--hf-green)"
-              strokeWidth="2.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            {points.map((p, i) => (
-              <circle key={i} cx={p.x} cy={p.y} r="3.2" fill="var(--hf-green)" />
-            ))}
-          </svg>
-        </div>
+        <StatChart
+          title={`Kalorier — gennemsnit pr. uge (seneste ${WEEK_COUNT} uger)`}
+          series={chartSeries}
+          defaultEnabledKeys={["kcal"]}
+        />
 
-        <div className="grid grid-cols-2 gap-3">
-          {metrics.map((m) => (
-            <div key={m.label} className="rounded-2xl bg-hf-tan p-4">
-              <p className="text-xs text-hf-black opacity-60">{m.label}</p>
-              <p className="hf-heading mt-1 text-xl text-hf-black">{m.value}</p>
-            </div>
-          ))}
-        </div>
+        <StatCardsGrid cards={displayCards} defaultActiveKeys={DEFAULT_ACTIVE_CARD_KEYS} />
 
         <p className="text-center text-xs text-hf-black opacity-60">
           Statistikken viser fakta, ikke fremgangs-badges eller streaks.
