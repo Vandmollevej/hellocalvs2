@@ -99,6 +99,37 @@ This file records durable decisions. Add a dated entry when a later decision cha
   `pendingImageUrl` suggestion (see the 2026-08-27 image-agent entry above)
   and promotes or rejects it.
 
+- 2026-08-28: Admin UI v2 design (not yet implemented — currently a static
+  HTML mockup only, no code): the default/only landing view is "Nye
+  produkter" in reverse-chronological order — no separate dashboard/start
+  screen. Each product row expands (on image click) into two image rows —
+  top 5 highest-scoring "primær" candidates (front-of-package, meets the
+  background/quality bar, used as the profile photo) and up to 5 "sekundær"
+  images (no background requirement) — drag-reorderable, each with a
+  checkbox ("brug billede") and a ⋮ menu (Slet / Send til revision). An
+  image sent to revision moves to a new "Billeder til gennemgang" page
+  (placeholder for now) and is expected to come back and update the product
+  automatically once manually processed (e.g. background removed in
+  Photoshop) — this is a *conditional* approval, not a rejection. A new
+  "Billeder" page lists every submitted image across all products, sortable
+  by an AI-assessed quality score (0–100%, threshold-based status) alongside
+  product/type/status — the AI scoring model/pipeline itself is not yet
+  designed. Each product also has a ⋮ menu: Afvis (rejects — does **not**
+  retroactively affect any user who already logged the item, and does not
+  create the product in the shared database), Godkend, and Betinget
+  godkendt (opens a note field + SEND; the product stays in the database but
+  moves to a new "Betingede godkendelser" page — placeholder for now —
+  pending revision).
+- 2026-08-28: **Product edits must not retroactively change historical data**
+  other users already logged — this is already true today (registrations
+  snapshot nutrition values, see the top of this section) and stays true by
+  default. A new admin setting is planned — "Overskriv tilføjede produkter
+  ved ændringer og opdateringer i databasen" (on/off) — that, when enabled,
+  would deliberately let a product edit retroactively update existing users'
+  logged registrations instead of only affecting future ones. Not yet
+  implemented; default must be **off** (preserve current snapshot behavior)
+  until this setting exists.
+
 ## Hosting and delivery
 
 - Production is intended to run on the user's Synology NAS through Docker/Container Manager.
