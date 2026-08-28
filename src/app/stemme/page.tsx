@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { IconCheck, IconChevronDown, IconChevronUp, IconMinus, IconPlus } from "@tabler/icons-react";
+import { createPortal } from "react-dom";
+import { IconCheck, IconChevronDown, IconChevronUp, IconMinus, IconPlus, IconRecycle } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 
 type Item = {
@@ -93,6 +94,22 @@ function mapInterpretedItems(interpreted: InterpretedItem[]): Item[] {
     productId: item.productId,
     estimated: item.estimated,
   }));
+}
+
+function parseAmount(label: string): { value: number; unit: string } {
+  const trimmed = label.trim();
+  const match = trimmed.match(/^(-?\d+(?:[.,]\d+)?)\s*(.*)$/);
+  if (!match) return { value: 0, unit: trimmed || "stk." };
+  const value = parseFloat(match[1].replace(",", "."));
+  const rawUnit = match[2].trim();
+  const unit = !rawUnit || /^stk\.?$|^stykke(r)?$/i.test(rawUnit) ? "stk." : rawUnit;
+  return { value: Number.isNaN(value) ? 0 : value, unit };
+}
+
+function formatAmount(value: number, unit: string) {
+  const rounded = Math.round(value * 10) / 10;
+  const text = rounded % 1 === 0 ? rounded.toFixed(0) : String(rounded);
+  return `${text} ${unit}`;
 }
 
 function TypingDots() {
@@ -225,25 +242,170 @@ function StandMicrophone() {
   );
 }
 
-function MacroBar({ label, grams, max }: { label: string; grams: number; max: number }) {
+function MacroBar({ label, grams, max, onChange }: { label: string; grams: number; max: number; onChange: (value: number) => void }) {
   const pct = Math.min(100, (grams / max) * 100);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const gramsRef = useRef(grams);
+  const holdIntervalRef = useRef<number | null>(null);
+  const [editing, setEditing] = useState(false);
+  const [editValue, setEditValue] = useState(String(grams));
+
+  useEffect(() => {
+    gramsRef.current = grams;
+  }, [grams]);
+
+  useEffect(() => stopHold, []);
+
+  function stopHold() {
+    if (holdIntervalRef.current !== null) {
+      window.clearInterval(holdIntervalRef.current);
+      holdIntervalRef.current = null;
+    }
+  }
+
+  function updateFromPointer(clientX: number) {
+    const track = trackRef.current;
+    if (!track) return;
+    const rect = track.getBoundingClientRect();
+    const ratio = (clientX - rect.left) / rect.width;
+
+    if (ratio >= 1) {
+      if (holdIntervalRef.current === null) {
+        onChange(Math.max(max, gramsRef.current));
+        holdIntervalRef.current = window.setInterval(() => {
+          onChange(gramsRef.current + 1);
+        }, 150);
+      }
+      return;
+    }
+
+    stopHold();
+    onChange(Math.max(0, Math.round(ratio * max)));
+  }
+
+  function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    event.currentTarget.setPointerCapture(event.pointerId);
+    updateFromPointer(event.clientX);
+  }
+
+  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    if (event.buttons === 0) return;
+    updateFromPointer(event.clientX);
+  }
+
+  function openEditor() {
+    setEditValue(String(grams));
+    setEditing(true);
+  }
+
+  function commitEdit() {
+    const parsed = parseFloat(editValue.replace(",", "."));
+    if (!Number.isNaN(parsed)) onChange(Math.max(0, Math.round(parsed)));
+    setEditing(false);
+  }
+
   return (
     <div>
       <div className="mb-1.5 flex items-center justify-between">
         <span className="text-[13px] text-hf-black opacity-70">{label}</span>
-        <span className="min-w-[36px] text-right text-base font-bold text-hf-black">{grams} g</span>
+        <button
+          type="button"
+          onClick={openEditor}
+          className="min-w-[36px] rounded px-1 text-right text-base font-bold text-hf-black active:bg-hf-tan-dark"
+        >
+          {grams} g
+        </button>
       </div>
-      <div className="relative flex h-5 items-center">
+      <div
+        ref={trackRef}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={stopHold}
+        onPointerCancel={stopHold}
+        className="relative flex h-5 touch-none items-center"
+      >
         <div className="relative h-1 w-full rounded bg-hf-tan-dark">
           <div className="absolute inset-y-0 left-0 rounded bg-hf-green" style={{ width: `${pct}%` }} />
         </div>
         <div className="absolute h-[18px] w-[18px] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-hf-green bg-hf-white" style={{ left: `${pct}%`, top: "50%" }} />
       </div>
+
+      {editing &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-50 flex items-end justify-center bg-black/40"
+            onClick={() => setEditing(false)}
+          >
+            <div onClick={(event) => event.stopPropagation()} className="mb-6 w-[280px] rounded-2xl bg-hf-white p-4 shadow-lg">
+              <p className="text-xs font-bold text-hf-black">{label}</p>
+              <div className="mt-2 flex items-center gap-2">
+                <input
+                  autoFocus
+                  type="number"
+                  inputMode="decimal"
+                  value={editValue}
+                  onChange={(event) => setEditValue(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") commitEdit();
+                  }}
+                  className="w-full rounded-xl border border-hf-tan-dark px-3 py-2.5 text-lg outline-none focus:border-hf-green"
+                />
+                <span className="text-sm text-hf-black opacity-70">g</span>
+              </div>
+              <button type="button" onClick={commitEdit} className="mt-3 w-full rounded-xl bg-hf-green py-2.5 text-sm font-bold text-hf-white">
+                Gem
+              </button>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
 
-function VoiceItem({ item, open, onToggle, onChange, onDelete }: { item: Item; open: boolean; onToggle: () => void; onChange: (changes: Partial<Item>) => void; onDelete: () => void }) {
+function VoiceItem({
+  item,
+  open,
+  onToggle,
+  onChange,
+  onDelete,
+  onReset,
+}: {
+  item: Item;
+  open: boolean;
+  onToggle: () => void;
+  onChange: (changes: Partial<Item>) => void;
+  onDelete: () => void;
+  onReset?: () => void;
+}) {
+  const { value: amountValue, unit: amountUnit } = parseAmount(item.amountLabel);
+  const [prevAmountValue, setPrevAmountValue] = useState(amountValue);
+  const [amountDraft, setAmountDraft] = useState(String(amountValue));
+
+  if (amountValue !== prevAmountValue) {
+    setPrevAmountValue(amountValue);
+    setAmountDraft(String(amountValue));
+  }
+
+  function applyAmount(newValue: number) {
+    const clamped = Math.max(0, newValue);
+    const ratio = amountValue > 0 ? clamped / amountValue : 1;
+    onChange({
+      amountLabel: formatAmount(clamped, amountUnit),
+      amountGrams: Math.max(0, Math.round(item.amountGrams * ratio)),
+      kcal: Math.max(0, Math.round(item.kcal * ratio)),
+      protein: Math.max(0, Math.round(item.protein * ratio)),
+      carbs: Math.max(0, Math.round(item.carbs * ratio)),
+      fat: Math.max(0, Math.round(item.fat * ratio)),
+    });
+  }
+
+  function commitAmountDraft() {
+    const parsed = parseFloat(amountDraft.replace(",", "."));
+    if (!Number.isNaN(parsed)) applyAmount(parsed);
+    else setAmountDraft(String(amountValue));
+  }
+
   return (
     <li className="border-b border-hf-tan-dark last:border-b-0">
       <SwipeableRow onEdit={onToggle} onDelete={onDelete}>
@@ -270,7 +432,7 @@ function VoiceItem({ item, open, onToggle, onChange, onDelete }: { item: Item; o
         </div>
 
         {open && (
-          <div className="mb-3 rounded-2xl bg-hf-tan p-4">
+          <div className="mb-3 rounded-2xl bg-hf-tan p-4 pb-6">
             <label className="block text-xs font-bold text-hf-black">
               Madvare eller ret
               <input value={item.title} onChange={(event) => onChange({ title: event.target.value })} className="mt-1.5 w-full rounded-xl border border-hf-tan-dark bg-hf-white px-3 py-2.5 text-sm font-normal outline-none focus:border-hf-green" />
@@ -279,18 +441,57 @@ function VoiceItem({ item, open, onToggle, onChange, onDelete }: { item: Item; o
             <div className="mt-3 flex items-center justify-between">
               <span className="text-[13px] text-hf-black opacity-70">Mængde</span>
               <div className="flex items-center gap-2">
-                <button type="button" className="flex h-8 w-8 items-center justify-center rounded-full bg-hf-white" aria-label="Mindre mængde"><IconMinus size={14} /></button>
-                <input value={item.amountLabel} onChange={(event) => onChange({ amountLabel: event.target.value })} aria-label="Mængde" className="w-[74px] rounded-lg border border-hf-tan-dark bg-hf-white px-2 py-1.5 text-center text-sm outline-none focus:border-hf-green" />
-                <button type="button" className="flex h-8 w-8 items-center justify-center rounded-full bg-hf-white" aria-label="Større mængde"><IconPlus size={14} /></button>
+                <button
+                  type="button"
+                  onClick={() => applyAmount(amountValue - 1)}
+                  disabled={amountValue <= 1}
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-hf-white disabled:opacity-40"
+                  aria-label="Mindre mængde"
+                >
+                  <IconMinus size={14} />
+                </button>
+                <input
+                  value={amountDraft}
+                  onChange={(event) => setAmountDraft(event.target.value)}
+                  onBlur={commitAmountDraft}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") (event.target as HTMLInputElement).blur();
+                  }}
+                  inputMode="decimal"
+                  aria-label="Mængde"
+                  className="w-11 rounded-lg border border-hf-tan-dark bg-hf-white px-1 py-1.5 text-center text-sm outline-none focus:border-hf-green"
+                />
+                <span className="text-sm font-semibold text-hf-black">{amountUnit}</span>
+                <button
+                  type="button"
+                  onClick={() => applyAmount(amountValue + 1)}
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-hf-white"
+                  aria-label="Større mængde"
+                >
+                  <IconPlus size={14} />
+                </button>
               </div>
             </div>
 
             <p className="hf-heading mb-4 mt-5 text-[15px] text-hf-black">Energifordeling</p>
             <div className="flex flex-col gap-4">
-              <MacroBar label="Protein" grams={item.protein} max={30} />
-              <MacroBar label="Kulhydrat" grams={item.carbs} max={40} />
-              <MacroBar label="Fedt" grams={item.fat} max={20} />
+              <MacroBar label="Protein" grams={item.protein} max={30} onChange={(value) => onChange({ protein: value })} />
+              <MacroBar label="Kulhydrat" grams={item.carbs} max={40} onChange={(value) => onChange({ carbs: value })} />
+              <MacroBar label="Fedt" grams={item.fat} max={20} onChange={(value) => onChange({ fat: value })} />
             </div>
+
+            {onReset && (
+              <div className="mt-5 flex justify-center">
+                <button
+                  type="button"
+                  onClick={onReset}
+                  aria-label="Nulstil ændringer"
+                  className="flex h-11 w-11 items-center justify-center rounded-full bg-hf-green text-hf-white"
+                >
+                  <IconRecycle size={20} />
+                </button>
+              </div>
+            )}
           </div>
         )}
       </SwipeableRow>
@@ -313,6 +514,7 @@ export default function StemmePage() {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const micStreamRef = useRef<MediaStream | null>(null);
   const rafIdRef = useRef<number | null>(null);
+  const originalItemsRef = useRef<Record<string, Item>>({});
 
   const isListening = phase === "listening";
   const isProcessing = phase === "processing";
@@ -463,6 +665,9 @@ export default function StemmePage() {
       );
 
       const savedItems = saved.filter((item): item is Item => item !== null);
+      savedItems.forEach((savedItem) => {
+        originalItemsRef.current[savedItem.id] = savedItem;
+      });
       setItems((current) => [...current, ...savedItems]);
       setPhase(savedItems.length > 0 ? "added" : "error");
       if (savedItems.length === 0) setErrorMessage("Kunne ikke gemme registreringerne. Prøv igen.");
@@ -552,8 +757,14 @@ export default function StemmePage() {
     fetch(`/api/registrations/${id}`, { method: "DELETE" }).catch(() => {});
   }
 
+  function resetItem(id: string) {
+    const original = originalItemsRef.current[id];
+    if (!original) return;
+    setItems((current) => current.map((item) => (item.id === id ? { ...original } : item)));
+  }
+
   return (
-    <HfScreen title={isListening ? "Lytter..." : "Stemme"}>
+    <HfScreen title={isListening ? "Lytter..." : ""}>
       <div className="flex flex-col px-4 pb-6 pt-5">
         <section className="flex flex-col items-center" aria-live="polite">
           <button
@@ -613,6 +824,7 @@ export default function StemmePage() {
                 onToggle={() => setOpenId((value) => (value === item.id ? null : item.id))}
                 onChange={(changes) => updateItem(item.id, changes)}
                 onDelete={() => deleteItem(item.id)}
+                onReset={originalItemsRef.current[item.id] ? () => resetItem(item.id) : undefined}
               />
             ))}
           </ul>
