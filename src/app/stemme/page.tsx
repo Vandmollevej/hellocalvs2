@@ -61,7 +61,7 @@ type SpeechRecognitionLike = {
 
 type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
 
-type VoicePhase = "idle" | "listening" | "processing" | "review" | "approved" | "error" | "unsupported";
+type VoicePhase = "idle" | "listening" | "processing" | "added" | "error" | "unsupported";
 
 function getSpeechRecognition() {
   const speechWindow = window as typeof window & {
@@ -69,6 +69,149 @@ function getSpeechRecognition() {
     webkitSpeechRecognition?: SpeechRecognitionConstructor;
   };
   return speechWindow.SpeechRecognition ?? speechWindow.webkitSpeechRecognition;
+}
+
+function getAudioContextConstructor() {
+  const audioWindow = window as typeof window & {
+    AudioContext?: typeof AudioContext;
+    webkitAudioContext?: typeof AudioContext;
+  };
+  return audioWindow.AudioContext ?? audioWindow.webkitAudioContext;
+}
+
+function mapInterpretedItems(interpreted: InterpretedItem[]): Item[] {
+  return interpreted.map((item, index) => ({
+    id: `${index}`,
+    title: item.title,
+    kcal: item.kcal,
+    amountGrams: item.amountGrams,
+    amountLabel: item.amountLabel,
+    protein: item.protein,
+    carbs: item.carbs,
+    fat: item.fat,
+    image: item.image,
+    productId: item.productId,
+    estimated: item.estimated,
+  }));
+}
+
+function TypingDots() {
+  return (
+    <span className="ml-1 inline-flex items-end gap-0.5" aria-hidden="true">
+      <span className="h-1 w-1 animate-bounce rounded-full bg-hf-black opacity-60" style={{ animationDelay: "0ms" }} />
+      <span className="h-1 w-1 animate-bounce rounded-full bg-hf-black opacity-60" style={{ animationDelay: "150ms" }} />
+      <span className="h-1 w-1 animate-bounce rounded-full bg-hf-black opacity-60" style={{ animationDelay: "300ms" }} />
+    </span>
+  );
+}
+
+const WAVEFORM_BAR_COUNT = 28;
+
+function Waveform({ barRefs }: { barRefs: React.MutableRefObject<(HTMLDivElement | null)[]> }) {
+  return (
+    <div className="mt-3 flex h-8 w-full max-w-[280px] items-end gap-[3px]" aria-hidden="true">
+      {Array.from({ length: WAVEFORM_BAR_COUNT }).map((_, index) => (
+        <div
+          key={index}
+          ref={(element) => {
+            barRefs.current[index] = element;
+          }}
+          className="w-[3px] flex-1 rounded-full bg-hf-green"
+          style={{ height: "8%" }}
+        />
+      ))}
+    </div>
+  );
+}
+
+function SwipeableRow({
+  onEdit,
+  onDelete,
+  children,
+}: {
+  onEdit: () => void;
+  onDelete: () => void;
+  children: React.ReactNode;
+}) {
+  const ACTIONS_WIDTH = 152;
+  const [open, setOpen] = useState(false);
+  const [dragX, setDragX] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const dragStateRef = useRef<{ startX: number; base: number; moved: boolean } | null>(null);
+
+  function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    dragStateRef.current = { startX: event.clientX, base: open ? -ACTIONS_WIDTH : 0, moved: false };
+    setDragging(true);
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    const drag = dragStateRef.current;
+    if (!drag) return;
+    const delta = event.clientX - drag.startX;
+    if (Math.abs(delta) > 4) drag.moved = true;
+    setDragX(Math.min(0, Math.max(-ACTIONS_WIDTH, drag.base + delta)));
+  }
+
+  function handlePointerUp() {
+    const drag = dragStateRef.current;
+    dragStateRef.current = null;
+    setDragging(false);
+    if (!drag) return;
+    if (!drag.moved) return;
+    setDragX((current) => {
+      const shouldOpen = current < -ACTIONS_WIDTH / 2;
+      setOpen(shouldOpen);
+      return shouldOpen ? -ACTIONS_WIDTH : 0;
+    });
+  }
+
+  function handleContentClickCapture(event: React.MouseEvent<HTMLDivElement>) {
+    if (open) {
+      event.preventDefault();
+      event.stopPropagation();
+      setOpen(false);
+      setDragX(0);
+    }
+  }
+
+  return (
+    <div className="relative overflow-hidden">
+      <div className="absolute inset-y-0 right-0 flex">
+        <button
+          type="button"
+          onClick={() => {
+            setOpen(false);
+            setDragX(0);
+            onEdit();
+          }}
+          style={{ width: 76 }}
+          className="flex items-center justify-center bg-hf-gray text-[13px] font-semibold text-hf-white"
+        >
+          Rediger
+        </button>
+        <button
+          type="button"
+          onClick={onDelete}
+          style={{ width: 76 }}
+          className="flex items-center justify-center bg-red-600 text-[13px] font-semibold text-white"
+        >
+          Slet
+        </button>
+      </div>
+      <div
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+        onClickCapture={handleContentClickCapture}
+        style={{ transform: `translateX(${dragX}px)`, transition: dragging ? "none" : "transform 200ms ease" }}
+        className="relative bg-hf-white touch-pan-y"
+      >
+        {children}
+      </div>
+    </div>
+  );
 }
 
 
@@ -100,55 +243,57 @@ function MacroBar({ label, grams, max }: { label: string; grams: number; max: nu
   );
 }
 
-function VoiceItem({ item, open, onToggle, onChange }: { item: Item; open: boolean; onToggle: () => void; onChange: (changes: Partial<Item>) => void }) {
+function VoiceItem({ item, open, onToggle, onChange, onDelete }: { item: Item; open: boolean; onToggle: () => void; onChange: (changes: Partial<Item>) => void; onDelete: () => void }) {
   return (
     <li className="border-b border-hf-tan-dark last:border-b-0">
-      <div className="flex items-center gap-2.5 py-2.5">
-        <div className="h-11 w-11 flex-shrink-0 overflow-hidden rounded-lg bg-hf-tan">
-          {item.image && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={item.image} alt="" className="h-full w-full object-contain" />
-          )}
-        </div>
-        <button type="button" onClick={onToggle} className="min-w-0 flex-1 text-left" aria-expanded={open}>
-          <span className="flex items-center gap-1.5">
-            <span className="block truncate text-sm font-semibold text-hf-black">{item.title}</span>
-            {item.estimated && (
-              <span className="flex-shrink-0 rounded-full bg-hf-tan px-1.5 py-0.5 text-[10px] font-bold uppercase text-hf-black opacity-70">AI-estimat</span>
+      <SwipeableRow onEdit={onToggle} onDelete={onDelete}>
+        <div className="flex items-center gap-2.5 py-2.5">
+          <div className="h-11 w-11 flex-shrink-0 overflow-hidden rounded-lg bg-hf-tan">
+            {item.image && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={item.image} alt="" className="h-full w-full object-contain" />
             )}
-          </span>
-          <span className="mt-0.5 block text-xs text-hf-black opacity-60">{item.amountLabel}</span>
-        </button>
-        <span className="text-xs text-hf-black opacity-60">{item.kcal} kcal</span>
-        <button type="button" onClick={onToggle} aria-label={open ? "Luk redigering" : `Rediger ${item.title}`} className="flex h-9 w-9 items-center justify-center rounded-full">
-          {open ? <IconChevronUp size={18} /> : <IconChevronDown size={18} />}
-        </button>
-      </div>
+          </div>
+          <button type="button" onClick={onToggle} className="min-w-0 flex-1 text-left" aria-expanded={open}>
+            <span className="flex items-center gap-1.5">
+              <span className="block truncate text-sm font-semibold text-hf-black">{item.title}</span>
+              {item.estimated && (
+                <span className="flex-shrink-0 rounded-full bg-hf-tan px-1.5 py-0.5 text-[10px] font-bold uppercase text-hf-black opacity-70">AI-estimat</span>
+              )}
+            </span>
+            <span className="mt-0.5 block text-xs text-hf-black opacity-60">{item.amountLabel}</span>
+          </button>
+          <span className="text-xs text-hf-black opacity-60">{item.kcal} kcal</span>
+          <button type="button" onClick={onToggle} aria-label={open ? "Luk redigering" : `Rediger ${item.title}`} className="flex h-9 w-9 items-center justify-center rounded-full">
+            {open ? <IconChevronUp size={18} /> : <IconChevronDown size={18} />}
+          </button>
+        </div>
 
-      {open && (
-        <div className="mb-3 rounded-2xl bg-hf-tan p-4">
-          <label className="block text-xs font-bold text-hf-black">
-            Madvare eller ret
-            <input value={item.title} onChange={(event) => onChange({ title: event.target.value })} className="mt-1.5 w-full rounded-xl border border-hf-tan-dark bg-hf-white px-3 py-2.5 text-sm font-normal outline-none focus:border-hf-green" />
-          </label>
+        {open && (
+          <div className="mb-3 rounded-2xl bg-hf-tan p-4">
+            <label className="block text-xs font-bold text-hf-black">
+              Madvare eller ret
+              <input value={item.title} onChange={(event) => onChange({ title: event.target.value })} className="mt-1.5 w-full rounded-xl border border-hf-tan-dark bg-hf-white px-3 py-2.5 text-sm font-normal outline-none focus:border-hf-green" />
+            </label>
 
-          <div className="mt-3 flex items-center justify-between">
-            <span className="text-[13px] text-hf-black opacity-70">Mængde</span>
-            <div className="flex items-center gap-2">
-              <button type="button" className="flex h-8 w-8 items-center justify-center rounded-full bg-hf-white" aria-label="Mindre mængde"><IconMinus size={14} /></button>
-              <input value={item.amountLabel} onChange={(event) => onChange({ amountLabel: event.target.value })} aria-label="Mængde" className="w-[74px] rounded-lg border border-hf-tan-dark bg-hf-white px-2 py-1.5 text-center text-sm outline-none focus:border-hf-green" />
-              <button type="button" className="flex h-8 w-8 items-center justify-center rounded-full bg-hf-white" aria-label="Større mængde"><IconPlus size={14} /></button>
+            <div className="mt-3 flex items-center justify-between">
+              <span className="text-[13px] text-hf-black opacity-70">Mængde</span>
+              <div className="flex items-center gap-2">
+                <button type="button" className="flex h-8 w-8 items-center justify-center rounded-full bg-hf-white" aria-label="Mindre mængde"><IconMinus size={14} /></button>
+                <input value={item.amountLabel} onChange={(event) => onChange({ amountLabel: event.target.value })} aria-label="Mængde" className="w-[74px] rounded-lg border border-hf-tan-dark bg-hf-white px-2 py-1.5 text-center text-sm outline-none focus:border-hf-green" />
+                <button type="button" className="flex h-8 w-8 items-center justify-center rounded-full bg-hf-white" aria-label="Større mængde"><IconPlus size={14} /></button>
+              </div>
+            </div>
+
+            <p className="hf-heading mb-4 mt-5 text-[15px] text-hf-black">Energifordeling</p>
+            <div className="flex flex-col gap-4">
+              <MacroBar label="Protein" grams={item.protein} max={30} />
+              <MacroBar label="Kulhydrat" grams={item.carbs} max={40} />
+              <MacroBar label="Fedt" grams={item.fat} max={20} />
             </div>
           </div>
-
-          <p className="hf-heading mb-4 mt-5 text-[15px] text-hf-black">Energifordeling</p>
-          <div className="flex flex-col gap-4">
-            <MacroBar label="Protein" grams={item.protein} max={30} />
-            <MacroBar label="Kulhydrat" grams={item.carbs} max={40} />
-            <MacroBar label="Fedt" grams={item.fat} max={20} />
-          </div>
-        </div>
-      )}
+        )}
+      </SwipeableRow>
     </li>
   );
 }
@@ -161,24 +306,115 @@ export default function StemmePage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const finalTranscriptRef = useRef("");
-
-  useEffect(() => {
-    return () => {
-      recognitionRef.current?.abort();
-    };
-  }, []);
+  const isListeningRef = useRef(false);
+  const liveRequestIdRef = useRef(0);
+  const barRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const micStreamRef = useRef<MediaStream | null>(null);
+  const rafIdRef = useRef<number | null>(null);
 
   const isListening = phase === "listening";
   const isProcessing = phase === "processing";
-  const approved = phase === "approved";
+  const hasAdded = phase === "added";
+
+  useEffect(() => {
+    isListeningRef.current = isListening;
+  }, [isListening]);
+
+  function stopAudioMeter() {
+    if (rafIdRef.current !== null) cancelAnimationFrame(rafIdRef.current);
+    rafIdRef.current = null;
+    micStreamRef.current?.getTracks().forEach((track) => track.stop());
+    micStreamRef.current = null;
+    if (audioCtxRef.current) audioCtxRef.current.close().catch(() => {});
+    audioCtxRef.current = null;
+    analyserRef.current = null;
+  }
+
+  function drawWaveformFrame() {
+    const analyser = analyserRef.current;
+    if (!analyser) return;
+    const data = new Uint8Array(analyser.frequencyBinCount);
+    analyser.getByteFrequencyData(data);
+    const t = performance.now() / 1000;
+    const bars = barRefs.current;
+    for (let i = 0; i < bars.length; i += 1) {
+      const bar = bars[i];
+      if (!bar) continue;
+      const dataIndex = Math.floor((i / bars.length) * data.length);
+      const amplitude = data[dataIndex] / 255;
+      const idle = 0.05 + 0.03 * Math.sin(t * 3 + i * 0.6);
+      const level = Math.min(1, idle + amplitude * 0.9);
+      bar.style.height = `${Math.max(6, level * 100)}%`;
+    }
+    rafIdRef.current = requestAnimationFrame(drawWaveformFrame);
+  }
+
+  async function startAudioMeter() {
+    try {
+      const AudioCtxConstructor = getAudioContextConstructor();
+      if (!AudioCtxConstructor) return;
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      micStreamRef.current = stream;
+      const ctx = new AudioCtxConstructor();
+      audioCtxRef.current = ctx;
+      const source = ctx.createMediaStreamSource(stream);
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 64;
+      analyser.smoothingTimeConstant = 0.6;
+      source.connect(analyser);
+      analyserRef.current = analyser;
+      rafIdRef.current = requestAnimationFrame(drawWaveformFrame);
+    } catch {
+      // Waveform er kun visuel pynt — talegenkendelsen kører uafhængigt af den.
+    }
+  }
+
+  useEffect(() => {
+    startListening();
+    return () => {
+      recognitionRef.current?.abort();
+      stopAudioMeter();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- kør kun ved mount
+  }, []);
+
+  useEffect(() => {
+    if (!isListening) return;
+    if (!transcript.trim()) return;
+    const handle = setTimeout(() => {
+      interpretLive(transcript);
+    }, 700);
+    return () => clearTimeout(handle);
+  }, [transcript, isListening]);
+
+  async function interpretLive(text: string) {
+    const requestId = ++liveRequestIdRef.current;
+    try {
+      const res = await fetch("/api/ai/interpret-meal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ transcript: text }),
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (requestId !== liveRequestIdRef.current) return;
+      if (!isListeningRef.current) return;
+      setItems(mapInterpretedItems(data.items as InterpretedItem[]));
+    } catch {
+      // Ignorer fejl i den løbende, foreløbige tolkning — det endelige kald sker når man stopper.
+    }
+  }
 
   async function finishProcessing() {
     setPhase("processing");
+    stopAudioMeter();
     const spokenText = finalTranscriptRef.current.trim();
 
     if (!spokenText) {
-      setPhase("error");
-      setErrorMessage("Jeg hørte ingen tale. Prøv igen.");
+      setPhase(items.length > 0 ? "added" : "error");
+      if (items.length === 0) setErrorMessage("Jeg hørte ingen tale. Prøv igen.");
       return;
     }
 
@@ -191,56 +427,48 @@ export default function StemmePage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message ?? "AI-tolkning slog fejl");
 
-      const interpreted = (data.items as InterpretedItem[]).map((item, index) => ({
-        id: `${index}`,
-        title: item.title,
-        kcal: item.kcal,
-        amountGrams: item.amountGrams,
-        amountLabel: item.amountLabel,
-        protein: item.protein,
-        carbs: item.carbs,
-        fat: item.fat,
-        image: item.image,
-        productId: item.productId,
-        estimated: item.estimated,
-      }));
+      const interpreted = mapInterpretedItems(data.items as InterpretedItem[]);
+      if (interpreted.length === 0) {
+        setPhase("error");
+        setErrorMessage("Jeg kunne ikke genkende nogen madvarer. Prøv igen.");
+        return;
+      }
 
-      setItems(interpreted);
-      setPhase(interpreted.length > 0 ? "review" : "error");
-      if (interpreted.length === 0) setErrorMessage("Jeg kunne ikke genkende nogen madvarer. Prøv igen.");
+      const saved = await Promise.all(
+        interpreted.map(async (item) => {
+          try {
+            const saveRes = await fetch("/api/registrations", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(
+                item.productId
+                  ? { productId: item.productId, amountGrams: item.amountGrams }
+                  : {
+                      amountGrams: item.amountGrams,
+                      titleSnapshot: item.title,
+                      kcalSnapshot: item.kcal,
+                      proteinSnapshot: item.protein,
+                      carbsSnapshot: item.carbs,
+                      fatSnapshot: item.fat,
+                    }
+              ),
+            });
+            if (!saveRes.ok) return null;
+            const saveData = await saveRes.json();
+            return { ...item, id: saveData.registration.id as string };
+          } catch {
+            return null;
+          }
+        })
+      );
+
+      const savedItems = saved.filter((item): item is Item => item !== null);
+      setItems((current) => [...current, ...savedItems]);
+      setPhase(savedItems.length > 0 ? "added" : "error");
+      if (savedItems.length === 0) setErrorMessage("Kunne ikke gemme registreringerne. Prøv igen.");
     } catch {
       setPhase("error");
       setErrorMessage("AI-tolkningen slog fejl. Prøv igen.");
-    }
-  }
-
-  async function approveItems() {
-    setPhase("processing");
-    try {
-      await Promise.all(
-        items.map((item) =>
-          fetch("/api/registrations", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(
-              item.productId
-                ? { productId: item.productId, amountGrams: item.amountGrams }
-                : {
-                    amountGrams: item.amountGrams,
-                    titleSnapshot: item.title,
-                    kcalSnapshot: item.kcal,
-                    proteinSnapshot: item.protein,
-                    carbsSnapshot: item.carbs,
-                    fatSnapshot: item.fat,
-                  }
-            ),
-          })
-        )
-      );
-      setPhase("approved");
-    } catch {
-      setPhase("review");
-      setErrorMessage("Kunne ikke gemme registreringerne. Prøv igen.");
     }
   }
 
@@ -263,7 +491,10 @@ export default function StemmePage() {
     recognition.interimResults = true;
     recognition.lang = "da-DK";
     recognition.maxAlternatives = 1;
-    recognition.onstart = () => setPhase("listening");
+    recognition.onstart = () => {
+      setPhase("listening");
+      startAudioMeter();
+    };
     recognition.onresult = (event) => {
       let interimTranscript = "";
       let newFinalTranscript = "";
@@ -280,6 +511,7 @@ export default function StemmePage() {
     recognition.onerror = (event) => {
       recognitionFailed = true;
       recognitionRef.current = null;
+      stopAudioMeter();
       setPhase("error");
       setErrorMessage(
         event.error === "not-allowed" || event.error === "service-not-allowed"
@@ -314,6 +546,12 @@ export default function StemmePage() {
     setItems((current) => current.map((item) => (item.id === id ? { ...item, ...changes } : item)));
   }
 
+  function deleteItem(id: string) {
+    setItems((current) => current.filter((item) => item.id !== id));
+    if (openId === id) setOpenId(null);
+    fetch(`/api/registrations/${id}`, { method: "DELETE" }).catch(() => {});
+  }
+
   return (
     <HfScreen title={isListening ? "Lytter..." : "Stemme"}>
       <div className="flex flex-col px-4 pb-6 pt-5">
@@ -321,50 +559,64 @@ export default function StemmePage() {
           <button
             type="button"
             onClick={isListening ? stopListening : startListening}
-            disabled={isProcessing || approved || phase === "unsupported"}
+            disabled={isProcessing || phase === "unsupported"}
             aria-label={isListening ? "Stop mikrofonen" : "Start mikrofonen"}
             className="relative flex h-24 w-24 items-center justify-center disabled:cursor-default"
           >
             {(isListening || isProcessing) && <span className="absolute inset-0 animate-ping rounded-full bg-hf-green opacity-20 motion-reduce:animate-none" />}
             <span className={`relative flex h-20 w-20 items-center justify-center rounded-full text-hf-white shadow-sm ${phase === "unsupported" ? "bg-hf-gray" : "bg-hf-green"}`}>
-              {approved ? <IconCheck size={44} stroke={2.5} /> : <StandMicrophone />}
+              {hasAdded ? <IconCheck size={44} stroke={2.5} /> : <StandMicrophone />}
             </span>
           </button>
           <p className="mt-2 text-xs font-bold text-hf-green">
-            {approved
-              ? "Godkendt"
-              : isListening
-                ? "Lytter — tryk for at stoppe"
-                : isProcessing
-                  ? "Gør teksten klar..."
-                  : phase === "review"
-                    ? "Klar til godkendelse"
-                    : phase === "unsupported"
-                      ? "Talegenkendelse understøttes ikke"
-                      : "Tryk på mikrofonen for at tale"}
+            {isListening
+              ? "Lytter — tryk for at stoppe"
+              : isProcessing
+                ? "Tilføjer..."
+                : hasAdded
+                  ? "Tilføjet"
+                  : phase === "unsupported"
+                    ? "Talegenkendelse understøttes ikke"
+                    : "Tryk på mikrofonen for at tale"}
           </p>
+          {isListening && <Waveform barRefs={barRefs} />}
           {errorMessage && <p className="mt-2 max-w-[310px] text-center text-xs leading-4 text-red-700">{errorMessage}</p>}
         </section>
 
         <section className="mt-4">
-          <label htmlFor="voice-transcript" className="hf-heading text-sm text-hf-black">Det hørte jeg</label>
-          <textarea id="voice-transcript" value={transcript} onChange={(event) => setTranscript(event.target.value)} placeholder="Din tale vises her..." rows={3} className="mt-2 w-full resize-none rounded-2xl border border-hf-tan-dark bg-hf-white px-4 py-3 text-sm leading-5 text-hf-black outline-none focus:border-hf-green" />
-          <p className="mt-1.5 text-xs text-hf-black opacity-55">Teksten opdateres løbende, mens du taler.</p>
+          {isListening ? (
+            <div className="mt-2 min-h-[72px] w-full rounded-2xl border border-hf-tan-dark bg-hf-white px-4 py-3 text-sm leading-5 text-hf-black">
+              <span>{transcript || "Sig noget..."}</span>
+              <TypingDots />
+            </div>
+          ) : (
+            <textarea
+              id="voice-transcript"
+              aria-label="Din tale"
+              value={transcript}
+              onChange={(event) => setTranscript(event.target.value)}
+              placeholder="Din tale vises her..."
+              rows={3}
+              className="mt-2 w-full resize-none rounded-2xl border border-hf-tan-dark bg-hf-white px-4 py-3 text-sm leading-5 text-hf-black outline-none focus:border-hf-green"
+            />
+          )}
         </section>
 
         <section className="mt-5">
-          <div className="mb-1 flex items-center justify-between">
-            <h2 className="hf-heading text-base text-hf-black">Fundet i din tale</h2>
-            <span className="text-xs text-hf-black opacity-55">Tryk for at redigere</span>
-          </div>
-          <ul>
+          <h2 className="hf-heading mb-1 text-base text-hf-black">Tilføjet</h2>
+          <ul className="max-h-[45vh] overflow-y-auto">
             {items.map((item) => (
-              <VoiceItem key={item.id} item={item} open={openId === item.id} onToggle={() => setOpenId((value) => (value === item.id ? null : item.id))} onChange={(changes) => updateItem(item.id, changes)} />
+              <VoiceItem
+                key={item.id}
+                item={item}
+                open={openId === item.id}
+                onToggle={() => setOpenId((value) => (value === item.id ? null : item.id))}
+                onChange={(changes) => updateItem(item.id, changes)}
+                onDelete={() => deleteItem(item.id)}
+              />
             ))}
           </ul>
         </section>
-
-        <button type="button" disabled={phase !== "review"} onClick={approveItems} className="hf-btn-primary mt-5 w-full py-3.5 text-[15px] disabled:opacity-45">{approved ? "Godkendt" : "Godkend"}</button>
       </div>
     </HfScreen>
   );
