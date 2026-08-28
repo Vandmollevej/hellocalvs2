@@ -34,6 +34,8 @@ export async function PATCH(req: Request) {
     onboardingCompletedAt,
     onboardingRemindLaterAt,
     onboardingDismissed,
+    showAllergens,
+    allergenVisibility,
   } = body as {
     displayName?: string;
     weightKg?: number | null;
@@ -50,6 +52,8 @@ export async function PATCH(req: Request) {
     onboardingCompletedAt?: string | null;
     onboardingRemindLaterAt?: string | null;
     onboardingDismissed?: boolean;
+    showAllergens?: boolean;
+    allergenVisibility?: Record<string, boolean>;
   };
 
   try {
@@ -82,6 +86,8 @@ export async function PATCH(req: Request) {
               ? null
               : new Date(onboardingRemindLaterAt),
         onboardingDismissed,
+        showAllergens,
+        allergenVisibility,
       },
     });
 

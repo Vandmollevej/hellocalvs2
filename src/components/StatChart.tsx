@@ -8,6 +8,8 @@ export type ChartSeries = {
   label: string;
   color: string;
   values: number[];
+  /** Enhed vist ved siden af serienavnet i vælgeren, fx "kcal" eller "kg". */
+  unit?: string;
   /**
    * Optional mål-værdi. Når sat, plottes serien som afvigelse fra målet
    * (0 = målet ramt) i stedet for rå værdier, og punkterne farves efter
@@ -69,6 +71,17 @@ function normalizeDeviation(values: number[], goal: number) {
   });
 }
 
+/** Tekst for det seneste datapunkts afvigelse fra målet, fx "342 kcal over mål". */
+function deviationLabel(series: ChartSeries, points: { hasData: boolean; deviation: number }[]) {
+  const last = [...points].reverse().find((p) => p.hasData);
+  if (!last) return null;
+  const rounded = Math.round(Math.abs(last.deviation));
+  const unit = series.unit ? `${series.unit} ` : "";
+  if (rounded === 0) return `${series.label.toLowerCase()} lige på mål`;
+  const direction = last.deviation > 0 ? "over mål" : "under mål";
+  return `${rounded} ${unit}${direction}`;
+}
+
 export function StatChart({
   title,
   series,
@@ -111,11 +124,18 @@ export function StatChart({
     <div className="relative rounded-2xl bg-hf-tan p-4">
       <p className="mb-3 text-sm font-bold text-hf-black">{title}</p>
 
-      {hasGoalSeries && (
-        <p className="mb-1 text-center text-[10px] font-semibold uppercase tracking-wide text-hf-black opacity-50">
-          Mål · 0
-        </p>
-      )}
+      {visibleSeries
+        .filter((s) => s.goal != null)
+        .map((s) => {
+          const points = normalizeDeviation(s.values, s.goal as number);
+          const label = deviationLabel(s, points);
+          if (!label) return null;
+          return (
+            <p key={s.key} className="mb-1 text-center text-[11px] text-hf-black opacity-60">
+              {label}
+            </p>
+          );
+        })}
 
       <svg viewBox="0 0 280 90" className="w-full" aria-hidden="true">
         {hasGoalSeries && (
@@ -134,21 +154,50 @@ export function StatChart({
           const underColor = s.underGoalColor ?? "var(--hf-green)";
           const overColor = s.overGoalColor ?? "var(--hf-black)";
           const points = s.goal != null ? normalizeDeviation(s.values, s.goal) : normalize(s.values);
-          const polyline = points.map((p) => `${p.x},${p.y}`).join(" ");
 
           return (
             <g key={s.key}>
-              <polyline
-                points={polyline}
-                fill="none"
-                stroke={s.goal != null ? "var(--hf-gray)" : s.color}
-                strokeWidth="2.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+              {s.goal != null
+                ? points.slice(1).map((p, i) => {
+                    const prev = points[i];
+                    const segColor = prev.deviation > 0 || p.deviation > 0 ? overColor : underColor;
+                    return (
+                      <line
+                        key={i}
+                        x1={prev.x}
+                        y1={prev.y}
+                        x2={p.x}
+                        y2={p.y}
+                        stroke={segColor}
+                        strokeWidth="2.8"
+                        strokeLinecap="round"
+                      />
+                    );
+                  })
+                : (
+                    <polyline
+                      points={points.map((p) => `${p.x},${p.y}`).join(" ")}
+                      fill="none"
+                      stroke={s.color}
+                      strokeWidth="2.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  )}
               {points.map((p, i) => {
                 const dotColor = s.goal != null ? (p.deviation > 0 ? overColor : underColor) : s.color;
-                return <circle key={i} cx={p.x} cy={p.y} r="3.2" fill={dotColor} />;
+                const isUnder = s.goal != null && p.deviation <= 0;
+                return (
+                  <circle
+                    key={i}
+                    cx={p.x}
+                    cy={p.y}
+                    r="3.2"
+                    fill={dotColor}
+                    stroke={isUnder ? "var(--hf-white)" : "none"}
+                    strokeWidth={isUnder ? 1.5 : 0}
+                  />
+                );
               })}
             </g>
           );
@@ -173,6 +222,7 @@ export function StatChart({
                   style={{ backgroundColor: s.color }}
                 />
                 {s.label}
+                {s.unit ? ` (${s.unit})` : ""}
               </span>
             ))}
           </span>
@@ -208,6 +258,7 @@ export function StatChart({
                     style={{ backgroundColor: s.color }}
                   />
                   {s.label}
+                  {s.unit ? ` (${s.unit})` : ""}
                 </label>
               );
             })}

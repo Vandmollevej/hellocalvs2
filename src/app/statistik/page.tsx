@@ -5,54 +5,49 @@ import { IconChartLine } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { StatChart, type ChartSeries } from "@/components/StatChart";
 import { StatCardsGrid } from "@/components/StatCardsGrid";
-import { computeStatCards, DEFAULT_ACTIVE_STAT_KEYS, STAT_WINDOW_DAYS } from "@/lib/stat-cards";
-import { groupByDay, withinLastDays, type RegistrationTotals } from "@/lib/daily-totals";
-import { DAILY_KCAL_GOAL } from "@/lib/goals";
+import { computeStatCards, DEFAULT_ACTIVE_STAT_KEYS, type StatCardValue } from "@/lib/stat-cards";
+import { groupByDay, type RegistrationTotals } from "@/lib/daily-totals";
+import { DAILY_KCAL_GOAL, WEIGHT_GOAL_KG } from "@/lib/goals";
+import { STAT_PERIODS, periodRange, filterDaysInRange, type StatPeriodKey } from "@/lib/stat-periods";
 
-const WEEK_COUNT = 6;
+const DAY_COUNT = 7;
 
 type WeightEntry = {
   weightKg: number;
   weighedAt: string;
 };
 
-function weightWeeklyAverages(entries: WeightEntry[]) {
-  const cutoff = Date.now() - WEEK_COUNT * 7 * 24 * 60 * 60 * 1000;
+function dateKeyFromDate(date: Date) {
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+}
+
+/** Én værdi pr. dag for de seneste `dayCount` dage (i dag inklusive). */
+function dailySeries(days: { dateKey: string; value: number }[], dayCount: number) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  return Array.from({ length: dayCount }, (_, i) => {
+    const dayOffset = dayCount - 1 - i;
+    const date = new Date(today);
+    date.setDate(date.getDate() - dayOffset);
+    const key = dateKeyFromDate(date);
+    return days.find((d) => d.dateKey === key)?.value ?? 0;
+  });
+}
+
+function weightByDay(entries: WeightEntry[]) {
   const byDay = new Map<string, { sum: number; count: number }>();
   for (const entry of entries) {
-    const date = new Date(entry.weighedAt);
-    const time = date.getTime();
-    if (time < cutoff) continue;
-    const key = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    const key = dateKeyFromDate(new Date(entry.weighedAt));
     const existing = byDay.get(key) ?? { sum: 0, count: 0 };
     existing.sum += entry.weightKg;
     existing.count += 1;
     byDay.set(key, existing);
   }
-  const days = Array.from(byDay.entries()).map(([dateKey, { sum, count }]) => ({
+  return Array.from(byDay.entries()).map(([dateKey, { sum, count }]) => ({
     dateKey,
     value: sum / count,
   }));
-  return weeklyAverages(days);
-}
-
-function weeklyAverages(days: { dateKey: string; value: number }[]) {
-  const now = Date.now();
-
-  return Array.from({ length: WEEK_COUNT }, (_, weekIndex) => {
-    const weeksAgo = WEEK_COUNT - 1 - weekIndex;
-    const windowStart = now - (weeksAgo + 1) * 7 * 24 * 60 * 60 * 1000;
-    const windowEnd = now - weeksAgo * 7 * 24 * 60 * 60 * 1000;
-
-    const daysInWeek = days.filter((day) => {
-      const [y, m, d] = day.dateKey.split("-").map(Number);
-      const time = new Date(y, m, d).getTime();
-      return time >= windowStart && time < windowEnd;
-    });
-
-    if (daysInWeek.length === 0) return 0;
-    return daysInWeek.reduce((sum, day) => sum + day.value, 0) / daysInWeek.length;
-  });
 }
 
 export default function StatistikPage() {
@@ -93,48 +88,62 @@ export default function StatistikPage() {
     };
   }, []);
 
-  const kcalWeekly = useMemo(() => {
-    const days = groupByDay(withinLastDays(registrations, WEEK_COUNT * 7)).map((d) => ({
-      dateKey: d.dateKey,
-      value: d.kcal,
-    }));
-    return weeklyAverages(days);
-  }, [registrations]);
+  const allDays = useMemo(() => groupByDay(registrations), [registrations]);
 
-  const weightWeekly = useMemo(() => weightWeeklyAverages(weightEntries), [weightEntries]);
+  const kcalDaily = useMemo(
+    () => dailySeries(allDays.map((d) => ({ dateKey: d.dateKey, value: d.kcal })), DAY_COUNT),
+    [allDays],
+  );
+
+  const weightDaily = useMemo(() => dailySeries(weightByDay(weightEntries), DAY_COUNT), [weightEntries]);
 
   const chartSeries = useMemo<ChartSeries[]>(
     () => [
-      { key: "kcal", label: "Kalorier", color: "var(--hf-green)", values: kcalWeekly, goal: DAILY_KCAL_GOAL },
-      { key: "weight", label: "Vægt", color: "var(--hf-gray)", values: weightWeekly },
+      {
+        key: "kcal",
+        label: "Kalorier",
+        color: "var(--hf-green)",
+        unit: "kcal",
+        values: kcalDaily,
+        goal: DAILY_KCAL_GOAL,
+      },
+      {
+        key: "weight",
+        label: "Vægt",
+        color: "var(--hf-gray)",
+        unit: "kg",
+        values: weightDaily,
+        goal: WEIGHT_GOAL_KG,
+      },
     ],
-    [kcalWeekly, weightWeekly],
+    [kcalDaily, weightDaily],
   );
 
-  const statCards = useMemo(() => {
-    const days = groupByDay(withinLastDays(registrations, STAT_WINDOW_DAYS));
-    return computeStatCards({ days });
-  }, [registrations]);
-
-  const displayCards = useMemo(
-    () => statCards.map((c) => ({ ...c, value: loading ? "—" : c.value })),
-    [statCards, loading],
-  );
+  const cardsByPeriod = useMemo(() => {
+    const map = {} as Record<StatPeriodKey, StatCardValue[]>;
+    for (const { key } of STAT_PERIODS) {
+      const days = filterDaysInRange(allDays, periodRange(key));
+      const cards = computeStatCards({ days });
+      map[key] = cards.map((c) => ({ ...c, value: loading ? "—" : c.value }));
+    }
+    return map;
+  }, [allDays, loading]);
 
   return (
     <HfScreen title="Statistik" icon={<IconChartLine size={20} stroke={2} />}>
       <div className="flex flex-col gap-4 p-4">
-        <StatChart
-          title={`Kalorier — gennemsnit pr. uge (seneste ${WEEK_COUNT} uger)`}
-          series={chartSeries}
-          defaultEnabledKeys={["kcal"]}
-        />
+        <div className="flex flex-col gap-1">
+          <StatChart title="Kalorier og vægt" series={chartSeries} defaultEnabledKeys={["kcal"]} />
+          <p className="text-center text-xs font-normal text-hf-black opacity-50">Seneste 7 dage</p>
+        </div>
 
-        <StatCardsGrid cards={displayCards} defaultActiveKeys={DEFAULT_ACTIVE_STAT_KEYS} />
+        <div className="flex flex-col gap-3 border-t border-hf-tan-dark pt-4">
+          <StatCardsGrid cardsByPeriod={cardsByPeriod} defaultActiveKeys={DEFAULT_ACTIVE_STAT_KEYS} />
 
-        <p className="text-center text-xs text-hf-black opacity-60">
-          Statistikken viser fakta, ikke fremgangs-badges eller streaks.
-        </p>
+          <p className="text-center text-xs font-normal text-hf-black opacity-50">
+            Swipe i bokse for at skifte visning
+          </p>
+        </div>
       </div>
     </HfScreen>
   );

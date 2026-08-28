@@ -45,6 +45,7 @@ export async function POST(req: Request) {
   const proteinPer100g = parsePositiveNumber(body.proteinPer100g);
   const carbsPer100g = parsePositiveNumber(body.carbsPer100g);
   const fatPer100g = parsePositiveNumber(body.fatPer100g);
+  const servingSizeGrams = parsePositiveNumber(body.servingSizeGrams);
 
   if (!name || kcalPer100g === null || proteinPer100g === null || carbsPer100g === null || fatPer100g === null) {
     return NextResponse.json(
@@ -55,7 +56,14 @@ export async function POST(req: Request) {
 
   try {
     const product = await prisma.product.create({
-      data: { name, kcalPer100g, proteinPer100g, carbsPer100g, fatPer100g },
+      data: {
+        name,
+        kcalPer100g,
+        proteinPer100g,
+        carbsPer100g,
+        fatPer100g,
+        servingSizeGrams: servingSizeGrams ?? undefined,
+      },
     });
     return NextResponse.json({ product }, { status: 201 });
   } catch (error) {

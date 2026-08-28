@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconMoon, IconScale, IconHeartbeat } from "@tabler/icons-react";
+import { IconMoon, IconScale, IconHeartbeat, IconSettings } from "@tabler/icons-react";
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 
@@ -168,6 +168,11 @@ export default function ProfilePage() {
               icon={<IconHeartbeat size={20} />}
               label={user.healthImportRequested ? "Sundhedsdata (smartwatch) — opsat" : "Sundhedsdata (smartwatch)"}
               onClick={() => update("healthImportRequested", !user.healthImportRequested)}
+            />
+            <ChevronRow
+              icon={<IconSettings size={20} />}
+              label="Indstillinger"
+              href="/profil/indstillinger"
               divider={false}
             />
           </AccordionCard>

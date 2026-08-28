@@ -384,6 +384,184 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
   do unattended; the user needs to add it (Zero Trust → Networks → Tunnels →
   the existing `Server` tunnel → Public Hostname → Add a public hostname).
 
+- 2026-08-28: Reworked the calendar day-detail view
+  (`src/app/kalender/page.tsx`) per direct user feedback: the app's own
+  header/bottom nav now stay visible behind it (`HfScreen`'s content wrapper
+  is `relative` so the modal's `absolute inset-0` no longer escapes to the
+  viewport); the header gained prev/next chevrons and a calendar icon
+  (swipe still works too), and the Danish month name no longer gets
+  wrongly capitalized (`capitalize` replaced with `first-letter:uppercase`).
+  Removed invented copy ("Flot balance i dagens registreringer" etc.); an
+  empty day now shows a plain gray "Ingen registreringer" beside the
+  "Registreringer" heading instead of a bold box, and the bottom of the
+  view now always shows "Mål: X kcal" plus remaining/overskredet kcal.
+  The sleep visualization no longer disappears when the user has no
+  sleep schedule set (falls back to a dummy 23:00–07:00 window) and is
+  now a single continuous light-gray band with one draggable dark center
+  handle instead of two edge handles; the whole hour grid is rotated so
+  the day's wake-up hour is always the first row (`rotatedTop` in
+  `kalender/page.tsx`). Each hour is now its own row showing a bold kcal
+  total (when logged) and a chevron that opens a per-hour drill-down list
+  (`HourEntriesOverlay`) with a time-separator between distinct timestamps.
+  Long-pressing an empty hour row (1s) shows a "Tilføj" bar that opens
+  `/madvarer` pre-filled with that hour, which now carries `date`/`time`
+  through to `/tilfoej/[id]`; that page gained an editable time field.
+  `POST /api/registrations` now accepts an optional `createdAt` override
+  (`src/app/api/registrations/route.ts`). `npm run lint` passed clean.
+  `npm run build`'s TypeScript check currently fails, but only on
+  unrelated concurrent-session WIP (`api/products/lookup/[barcode]`,
+  `api/profile/route.ts` — Prisma schema/allergen work in progress, not
+  part of this change); re-run the build once that session's changes
+  settle. Not yet verified live in the browser (no reachable local
+  PostgreSQL, see `hellocal_no_local_db` memory) — verify the rotated
+  sleep band, hour drill-down, and time-prefilled add flow against
+  `hellocal.packroff.dk` next.
+
+- 2026-08-28: Extended `/tilfoej/[id]` (add-product screen) per direct user
+  feedback: the product image is now bigger (190px) and sits higher on the
+  screen instead of vertically centered. Added a "Detaljer" underlined link
+  with a chevron-down beside the kcal line that smooth-scrolls to a new
+  details section below the amount stepper/Tilføj button, containing an
+  editable "Energifordeling" (slider + tap-to-type-a-number, extracted from
+  `stemme/page.tsx`'s `MacroBar` into a shared `MacroSliderBar` component),
+  an "Allergener" line, and "Ingredienser". Product now has
+  `ingredientsText`/`allergens`/`additives` fields (Prisma migration
+  `20260828120000_product_nutrition_details`), populated from Open Food
+  Facts' `ingredients_text`/`allergens_tags`/`additives_tags` when a barcode
+  is looked up (`src/lib/openFoodFacts.ts`, `src/lib/allergens.ts` maps OFF
+  tags to the 14 EU-mandated allergens). Allergens only render when the user
+  has turned on "Vis allergener" in a new `/profil/indstillinger` page, which
+  also lists all 14 allergens as individual on/off checkboxes
+  (`User.showAllergens`/`allergenVisibility` on the same migration) and shows
+  the required "Vi henter data fra 3. part..." disclaimer. When a product has
+  E-numbers, a green "E" badge + "E-tilsætningsstoffer" link appears beside
+  Detaljer and a full list renders in the details section; tapping one opens
+  an `AdditiveInfoModal` (white card, 1px border, X to close, click-outside
+  to close) with a short factual description from a new curated
+  `src/lib/additives.ts` (~50 common E-numbers) plus a
+  general-information/third-party-data disclaimer — not sourced from live
+  external research, since no such feed exists yet. `POST /api/registrations`
+  now accepts optional `proteinSnapshot`/`carbsSnapshot`/`fatSnapshot`
+  overrides even when `productId` is given, so slider edits on this screen
+  are actually saved. `npm run lint` and `npx prisma validate` passed;
+  `npm run build`'s TypeScript check passed clean, but the build itself
+  currently fails prerendering `/madvarer` — that page is mid-edit by a
+  concurrent session (unrelated `useSearchParams`/Suspense issue, not part of
+  this change) and should resolve once that session's changes land. Not yet
+  verified live (no reachable local PostgreSQL, see `hellocal_no_local_db`
+  memory) — verify the new Detaljer scroll, allergen toggle, and E-number
+  modal against `hellocal.packroff.dk` once deployed, and apply the new
+  migration.
+
+- 2026-08-28: Corrected a prior mistaken instruction (see `docs/DECISIONS.md`):
+  screens/headers fill the full viewport edge-to-edge (HelloFresh-style), and
+  the profile/user-menu circle moved from the top-right to the top-left corner
+  of the standard header (`TopBar.tsx`, `hf/ScreenHeader.tsx`) to leave room
+  for a close-cross on closable pages. `npm run lint` passed (TypeScript build
+  check passed clean); the production build still fails prerendering
+  `/madvarer` for the same unrelated concurrent-session `useSearchParams`
+  issue already noted above, not caused by this change.
+
+- 2026-08-28: Three FAB/add-flow features per direct user request
+  (`hello-cal-nye-rettelser.md`'s successor feedback). (1) Restored the green
+  half-circle behind the tilføj-menu (`src/components/AddButton.tsx`),
+  smaller than the pre-removal version and flush against the FAB's edge,
+  shown while the menu is open. Replaced the old two-tap "open, then tap an
+  option" flow with a press-and-drag gesture: pressing the FAB and dragging
+  toward one of the five fanned-out actions (without lifting) highlights and
+  enlarges the nearest one live, and releasing over it navigates straight
+  there; a plain tap still opens/closes the menu as before, and tapping an
+  option directly still works too. In the same pass, a concurrent session
+  had already dropped the FAB's drag-to-reposition/edge-snap feature
+  (`useFabPosition`, `FabPosition`) in favor of a fixed left-edge FAB — this
+  session's work builds on that fixed-position version rather than
+  reintroducing dragging. (2) Added a shared hand-authored
+  `IconPlateCutlery` (`src/components/icons/PlateCutlery.tsx`: plate with a
+  fork on the left and knife on the right, tabler-outline style) and pointed
+  both the FAB's "Måltid" action and the wheel's "Anretning" stat
+  (`StatsWheel.tsx`) at it, replacing the old single-sided
+  plate+bundled-cutlery icon and the plain crossed fork/knife glyph.
+  (3) Built the "Egne retter" (own dishes) feature end to end against the
+  `Dish`/`DishIngredient` Prisma models that already existed in schema but
+  had no UI/API: a pot icon (`IconSoup`) FAB action opens a new
+  `/opret-ret` page where ingredients are added by reusing the existing
+  single-food add flow (search/barcode-scan/OCR-photo/manual-create) — each
+  now accepts a `?for=ret` query param that swaps `/tilfoej/[id]`'s primary
+  button to "Tilføj til ret", which appends the product to an in-progress
+  ingredient list kept in `sessionStorage` (`src/lib/dish-draft.ts`) instead
+  of registering it, then returns to `/opret-ret`. Saving there posts to the
+  new `POST /api/dishes` (creates the dish + ingredients) and clears the
+  draft. `GET/POST /api/dishes` and `GET /api/dishes/[id]` were added, and
+  `POST /api/registrations` now also accepts `{ dishId, amountGrams }`,
+  computing the snapshot from the sum of the dish's ingredients scaled to
+  the logged amount — no new migration needed, `dishes`/`dish_ingredients`
+  were already part of the initial migration. While fixing the build, also
+  wrapped `/madvarer`'s `useSearchParams()` in a `Suspense` boundary (the
+  concurrent-session issue flagged in the two entries above) since it was
+  blocking verification of this work. `npm run lint` and `npm run build`
+  both passed clean. Not yet verified live in the browser (no reachable
+  local PostgreSQL, see `hellocal_no_local_db` memory) — verify the new
+  drag-select gesture, the plate/cutlery icon, and the full opret-ret ->
+  save -> dish flow against `hellocal.packroff.dk` once deployed.
+
+- 2026-08-28: Added an E-number reference database at
+  `scripts/e-numre/data/e_numre.csv` (343 rows, the full official EU-approved
+  E-number range E100-E1521, one row per number/sub-number) with columns
+  E-nummer, Internationalt navn, Dansk kaldenavn, Funktion, Risici,
+  Forskningsafsnit, Link, Kilde. Compiled by 8 parallel research agents
+  cross-checking EFSA opinions, the EU additives Annex II/III, and UK FSA's
+  mirrored approved-additives list; conservative "ingen dokumenteret
+  EU-specifik advarsel" wording used wherever no specific documented risk was
+  found (no invented risks/studies). A Python screening tool,
+  `scripts/e-numre/scan.py`, takes free text (e.g. an ingredient
+  declaration) and reports which E-numbers it contains plus any not present
+  in the local database. Not yet wired into the app (no UI, no product-page
+  integration, no database table) — currently a standalone CSV +
+  command-line tool only.
+
+- 2026-08-28: Fixed the bottom nav so only 4 icons are ever visible at once,
+  per direct user report that adding more icons kept cramming them into one
+  row (`src/components/BottomNav.tsx`). Active icons are now paginated into
+  fixed 4-slot pages (a `grid-cols-4` per page, so empty slots stay static
+  gaps rather than the row re-centering); small dots above the bar show the
+  current page when there's more than one. A horizontal drag on any icon (or
+  an empty slot) that isn't a long-press swipes between pages, following the
+  finger with a rubber-band edge and snapping on release — like a carousel,
+  intentionally lighter-weight than an iOS-style hold-to-page delay since the
+  user offered that as an acceptable simpler alternative. Long-press-to-reorder
+  is unchanged (still reorders by nearest-icon-center, now scoped to only the
+  current page's icons); dragging a reordered icon to within 36px of the bar's
+  left/right edge for 650ms now flips to the adjacent page (iOS springboard
+  style), so icons can be dragged across pages. `npm run lint` and
+  `npx tsc --noEmit` passed clean. `npm run build` still fails prerendering
+  `/madvarer` on the same unrelated concurrent-session issue noted above
+  (not caused by this change). Verified live against the dev server by
+  injecting 5-8 active icons via `localStorage` and driving synthetic
+  pointer events: paging renders exactly 4 buttons per page with the extra
+  icon alone on page 2 (3 static empty slots beside it), the page dots and
+  `aria-hidden`/`translateX` state update correctly, a horizontal drag flips
+  the visible page, and long-press still enters jiggle/edit mode. Not
+  re-verified against real touch input on a phone.
+
+- 2026-08-28: Wired the E-number reference database into the real database
+  instead of a standalone CSV. Added an `Additive` Prisma model (table
+  `additives`, migration `20260828130000_additives`, not yet applied to
+  production) holding the 343 rows from `scripts/e-numre/data/e_numre.csv`
+  (E100-E1521, sourced from EFSA/EU-forordning 1333/2008). Added
+  `scripts/e-numre/import_to_db.py` (psycopg2, same DATABASE_URL convention as
+  `scripts/frida-import`) to upsert the CSV into the table — run it after the
+  migration is deployed. Added `GET /api/additives` returning the full table.
+  `src/lib/additives.ts` now fetches from that endpoint (client-side cached)
+  instead of a hardcoded ~50-entry map; `AdditiveInfoModal` and the
+  E-tilsætningsstoffer list on `/tilfoej/[id]` were updated to the new async
+  API and the modal now also shows Risici/Forskning/Link, not just a one-line
+  description. `npx prisma validate`, `npm run lint`, and `npm run build` all
+  passed. Not yet verified live (no reachable local PostgreSQL, see
+  `hellocal_no_local_db` memory) — after deploying, run
+  `npm run db:deploy` then `python scripts/e-numre/import_to_db.py` with
+  `DATABASE_URL` set, and verify `/api/additives` and the product-page
+  additive list/modal against real data.
+
 ## Next work
 
 1. Implement the pending UI/design requirements in

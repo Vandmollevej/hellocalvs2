@@ -2,13 +2,14 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { IconGripVertical, IconPlus, IconX, type Icon } from "@tabler/icons-react";
+import { IconPlus, IconX, type Icon } from "@tabler/icons-react";
 import {
   loadStatLayout,
   saveStatLayout,
   type StatCardValue,
   type StatGridLayoutItem as LayoutItem,
 } from "@/lib/stat-cards";
+import { STAT_PERIODS, DEFAULT_STAT_PERIOD, type StatPeriodKey } from "@/lib/stat-periods";
 
 function layoutItemId(item: LayoutItem) {
   return item.type === "stat" ? `stat:${item.key}` : `header:${item.id}`;
@@ -19,27 +20,65 @@ function makeId() {
   return `id-${Math.random().toString(36).slice(2)}`;
 }
 
+function periodLabel(key: StatPeriodKey) {
+  return STAT_PERIODS.find((p) => p.key === key)?.label ?? "";
+}
+
+function cyclePeriod(key: StatPeriodKey, direction: 1 | -1): StatPeriodKey {
+  const index = STAT_PERIODS.findIndex((p) => p.key === key);
+  const nextIndex = (index + direction + STAT_PERIODS.length) % STAT_PERIODS.length;
+  return STAT_PERIODS[nextIndex].key;
+}
+
 type DragSource =
   | { kind: "active"; id: string; item: LayoutItem }
   | { kind: "unused"; key: string }
   | { kind: "template" };
 
+type DragContent =
+  | { kind: "card"; card: StatCardValue }
+  | { kind: "header"; text: string }
+  | { kind: "pill"; label: string; icon?: Icon };
+
 type DragState = {
   source: DragSource;
-  label: string;
-  icon?: Icon;
+  content: DragContent;
   x: number;
   y: number;
+  offsetX: number;
+  offsetY: number;
+  width: number;
+  height: number;
 };
 
+function CardTile({ card, floating }: { card: StatCardValue; floating?: boolean }) {
+  const CardIcon = card.icon;
+  return (
+    <div className={`flex h-full w-full flex-col rounded-2xl bg-hf-tan p-4 ${floating ? "shadow-xl" : ""}`}>
+      <p className="text-xs text-hf-black opacity-60">{card.label}</p>
+      <p className="hf-heading mt-1 flex items-center gap-1.5 text-xl text-hf-black">
+        {CardIcon && <CardIcon size={17} stroke={2} />}
+        {card.value}
+      </p>
+    </div>
+  );
+}
+
 export function StatCardsGrid({
-  cards,
+  cardsByPeriod,
   defaultActiveKeys,
 }: {
-  cards: StatCardValue[];
+  cardsByPeriod: Record<StatPeriodKey, StatCardValue[]>;
   defaultActiveKeys: string[];
 }) {
-  const cardByKey = useMemo(() => new Map(cards.map((c) => [c.key, c])), [cards]);
+  const cardByKeyByPeriod = useMemo(() => {
+    const map = new Map<StatPeriodKey, Map<string, StatCardValue>>();
+    for (const period of STAT_PERIODS) {
+      map.set(period.key, new Map((cardsByPeriod[period.key] ?? []).map((c) => [c.key, c])));
+    }
+    return map;
+  }, [cardsByPeriod]);
+
   const defaultLayout = useMemo<LayoutItem[]>(
     () => defaultActiveKeys.map((key) => ({ type: "stat", key })),
     [defaultActiveKeys],
@@ -49,11 +88,13 @@ export function StatCardsGrid({
   const [editMode, setEditMode] = useState(false);
   const [drag, setDrag] = useState<DragState | null>(null);
   const [overZone, setOverZone] = useState<"active" | null>(null);
+  const [periodByKey, setPeriodByKey] = useState<Record<string, StatPeriodKey>>({});
+  const [swipe, setSwipe] = useState<{ id: string; dx: number } | null>(null);
 
   const activeRefs = useRef(new Map<string, HTMLElement>());
   const gridRef = useRef<HTMLDivElement>(null);
   const longPressTimer = useRef<number | null>(null);
-  const pointerStart = useRef<{ x: number; y: number } | null>(null);
+  const pointerDownInfo = useRef<{ x: number; y: number; source: DragSource } | null>(null);
   const isFirstRender = useRef(true);
 
   useEffect(() => {
@@ -89,25 +130,34 @@ export function StatCardsGrid({
     setOverZone(null);
   }
 
-  function beginDrag(source: DragSource, label: string, icon: Icon | undefined, x: number, y: number) {
-    setDrag({ source, label, icon, x, y });
+  function beginDrag(source: DragSource, content: DragContent, x: number, y: number, rect: DOMRect) {
+    setDrag({
+      source,
+      content,
+      x,
+      y,
+      offsetX: x - rect.left,
+      offsetY: y - rect.top,
+      width: rect.width,
+      height: rect.height,
+    });
   }
 
   function onCardPointerDown(
     event: React.PointerEvent,
     source: DragSource,
-    label: string,
-    icon?: Icon,
+    content: DragContent,
   ) {
     if (event.target instanceof HTMLInputElement) return;
-    pointerStart.current = { x: event.clientX, y: event.clientY };
+    pointerDownInfo.current = { x: event.clientX, y: event.clientY, source };
+    const rect = event.currentTarget.getBoundingClientRect();
     if (!editMode) {
       longPressTimer.current = window.setTimeout(() => {
         enterEditMode();
-        beginDrag(source, label, icon, event.clientX, event.clientY);
+        beginDrag(source, content, event.clientX, event.clientY, rect);
       }, 500);
     } else {
-      beginDrag(source, label, icon, event.clientX, event.clientY);
+      beginDrag(source, content, event.clientX, event.clientY, rect);
     }
   }
 
@@ -182,14 +232,33 @@ export function StatCardsGrid({
 
   useEffect(() => {
     function onMove(event: PointerEvent) {
-      if (longPressTimer.current && pointerStart.current) {
-        const dx = event.clientX - pointerStart.current.x;
-        const dy = event.clientY - pointerStart.current.y;
+      const info = pointerDownInfo.current;
+
+      if (longPressTimer.current && info) {
+        const dx = event.clientX - info.x;
+        const dy = event.clientY - info.y;
         if (Math.hypot(dx, dy) > 10) {
           window.clearTimeout(longPressTimer.current);
           longPressTimer.current = null;
         }
       }
+
+      // Vandret swipe på et statistik-kort (uden for redigeringstilstand) skifter periode
+      // i stedet for at flytte kortet.
+      if (
+        !editMode &&
+        !drag &&
+        info &&
+        info.source.kind === "active" &&
+        info.source.item.type === "stat"
+      ) {
+        const dx = event.clientX - info.x;
+        const dy = event.clientY - info.y;
+        if (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+          setSwipe({ id: info.source.id, dx });
+        }
+      }
+
       setDrag((current) => {
         if (!current) return current;
         return { ...current, x: event.clientX, y: event.clientY };
@@ -210,7 +279,22 @@ export function StatCardsGrid({
         window.clearTimeout(longPressTimer.current);
         longPressTimer.current = null;
       }
-      pointerStart.current = null;
+
+      setSwipe((current) => {
+        if (current && Math.abs(current.dx) > 40) {
+          const key = current.id.startsWith("stat:") ? current.id.slice(5) : null;
+          if (key) {
+            const direction = current.dx < 0 ? 1 : -1;
+            setPeriodByKey((prev) => ({
+              ...prev,
+              [key]: cyclePeriod(prev[key] ?? DEFAULT_STAT_PERIOD, direction),
+            }));
+          }
+        }
+        return null;
+      });
+
+      pointerDownInfo.current = null;
       commitDrop(event.clientX, event.clientY);
     }
 
@@ -223,7 +307,7 @@ export function StatCardsGrid({
       window.removeEventListener("pointercancel", onUp);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [drag]);
+  }, [drag, editMode]);
 
   function updateHeaderText(id: string, text: string) {
     setLayout((prev) =>
@@ -248,26 +332,27 @@ export function StatCardsGrid({
 
       <div className="relative z-40 flex items-center justify-between gap-2">
         <p className="hf-heading text-sm text-hf-black opacity-70">Statistik-kort</p>
-        {editMode && (
-          <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2">
+          {editMode && (
             <button
               type="button"
-              onPointerDown={(e) => onCardPointerDown(e, { kind: "template" }, "Overskrift")}
-              className="flex min-h-8 cursor-grab touch-none items-center gap-1 rounded-full border border-dashed border-hf-black/30 px-3 py-1 text-xs font-semibold text-hf-black opacity-70 active:cursor-grabbing"
+              onPointerDown={(e) =>
+                onCardPointerDown(e, { kind: "template" }, { kind: "header", text: "Overskrift" })
+              }
+              className="flex min-h-8 cursor-grab touch-none select-none items-center rounded-full border border-dashed border-hf-black/30 px-3 py-1 text-xs font-semibold text-hf-black opacity-70 active:cursor-grabbing"
             >
-              <IconGripVertical size={14} />
               Overskrift
             </button>
-            <Link
-              href="/statistik/ubrugte-kort"
-              onPointerDown={(event) => event.stopPropagation()}
-              className="hf-btn-primary flex min-h-8 items-center gap-1 px-3 py-1 text-xs"
-            >
-              <IconPlus size={14} stroke={2.5} />
-              Tilføj kort
-            </Link>
-          </div>
-        )}
+          )}
+          <Link
+            href="/statistik/ubrugte-kort"
+            onPointerDown={(event) => event.stopPropagation()}
+            className="hf-btn-primary flex min-h-8 items-center gap-1 px-3 py-1 text-xs"
+          >
+            <IconPlus size={14} stroke={2.5} />
+            Tilføj kort
+          </Link>
+        </div>
       </div>
 
       <div
@@ -277,6 +362,8 @@ export function StatCardsGrid({
         {layout.map((item, index) => {
           const id = layoutItemId(item);
           const isDragging = drag?.source.kind === "active" && drag.source.id === id;
+          const swipeDx = swipe && swipe.id === id ? swipe.dx : null;
+          const isSwiping = swipeDx !== null;
 
           if (item.type === "header") {
             return (
@@ -287,14 +374,13 @@ export function StatCardsGrid({
                   else activeRefs.current.delete(id);
                 }}
                 style={{ animationDelay: `${(index % 3) * 60}ms` }}
-                className={`col-span-2 flex items-center gap-2 rounded-2xl bg-hf-tan-dark px-4 py-3 ${
-                  editMode ? "stat-card-editing" : ""
-                } ${isDragging ? "opacity-30" : ""}`}
-                onPointerDown={(e) => onCardPointerDown(e, { kind: "active", id, item }, item.text)}
+                className={`col-span-2 flex items-center gap-2 rounded-2xl bg-hf-tan-dark px-4 py-3 select-none ${
+                  editMode ? "stat-card-editing border-2 border-dashed border-hf-black/30" : ""
+                } ${isDragging ? "opacity-0" : ""}`}
+                onPointerDown={(e) =>
+                  onCardPointerDown(e, { kind: "active", id, item }, { kind: "header", text: item.text })
+                }
               >
-                {editMode ? (
-                  <IconGripVertical size={16} className="shrink-0 opacity-50" />
-                ) : null}
                 <input
                   value={item.text}
                   onChange={(e) => updateHeaderText(item.id, e.target.value)}
@@ -316,7 +402,8 @@ export function StatCardsGrid({
             );
           }
 
-          const card = cardByKey.get(item.key);
+          const period = periodByKey[item.key] ?? DEFAULT_STAT_PERIOD;
+          const card = cardByKeyByPeriod.get(period)?.get(item.key);
           if (!card) return null;
           const CardIcon = card.icon;
 
@@ -327,20 +414,29 @@ export function StatCardsGrid({
                 if (el) activeRefs.current.set(id, el);
                 else activeRefs.current.delete(id);
               }}
-              style={{ animationDelay: `${(index % 3) * 60}ms` }}
-              onPointerDown={(e) => onCardPointerDown(e, { kind: "active", id, item }, card.label, card.icon)}
-              className={`touch-none rounded-2xl bg-hf-tan p-4 ${editMode ? "stat-card-editing cursor-grab active:cursor-grabbing" : ""} ${
-                isDragging ? "opacity-30" : ""
-              }`}
+              style={{
+                animationDelay: `${(index % 3) * 60}ms`,
+                transform: swipeDx !== null ? `translateX(${swipeDx}px)` : undefined,
+              }}
+              onPointerDown={(e) =>
+                onCardPointerDown(e, { kind: "active", id, item }, { kind: "card", card })
+              }
+              className={`touch-none select-none rounded-2xl bg-hf-tan p-4 ${!isSwiping ? "transition-transform" : ""} ${
+                editMode ? "stat-card-editing cursor-grab border-2 border-dashed border-hf-black/30 active:cursor-grabbing" : ""
+              } ${isDragging ? "opacity-0" : ""}`}
             >
               <div className="flex items-center justify-between">
                 <p className="text-xs text-hf-black opacity-60">{card.label}</p>
-                {editMode && <IconGripVertical size={14} className="opacity-40" />}
               </div>
               <p className="hf-heading mt-1 flex items-center gap-1.5 text-xl text-hf-black">
                 {CardIcon && <CardIcon size={17} stroke={2} />}
                 {card.value}
               </p>
+              {!editMode && (
+                <p className="mt-0.5 text-[10px] font-normal text-hf-black opacity-50">
+                  {periodLabel(period)}
+                </p>
+              )}
             </div>
           );
         })}
@@ -349,11 +445,26 @@ export function StatCardsGrid({
       {drag && (
         <div
           aria-hidden="true"
-          className="pointer-events-none fixed z-50 flex items-center gap-1.5 rounded-xl bg-hf-black px-3 py-2 text-xs font-semibold text-hf-white shadow-xl"
-          style={{ left: drag.x + 12, top: drag.y + 12 }}
+          className="pointer-events-none fixed z-50"
+          style={{
+            left: drag.x - drag.offsetX,
+            top: drag.y - drag.offsetY,
+            width: drag.width,
+            height: drag.height,
+          }}
         >
-          {drag.icon && <drag.icon size={14} />}
-          {drag.label}
+          {drag.content.kind === "card" ? (
+            <CardTile card={drag.content.card} floating />
+          ) : drag.content.kind === "header" ? (
+            <div className="flex h-full w-full items-center gap-2 rounded-2xl bg-hf-tan-dark px-4 py-3 shadow-xl">
+              <span className="hf-heading text-sm text-hf-black">{drag.content.text}</span>
+            </div>
+          ) : (
+            <div className="flex h-full w-full items-center justify-center gap-1.5 rounded-full bg-hf-black px-3 py-2 text-xs font-semibold text-hf-white shadow-xl">
+              {drag.content.icon && <drag.content.icon size={14} />}
+              {drag.content.label}
+            </div>
+          )}
         </div>
       )}
     </div>

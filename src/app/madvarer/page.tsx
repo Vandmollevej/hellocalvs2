@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { IconApple, IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 
@@ -32,10 +33,18 @@ function mostUsedProducts(products: Product[], registrations: Registration[]) {
     .slice(0, FAVORITES_LIMIT);
 }
 
-function ProductRow({ product, isLast }: { product: Product; isLast: boolean }) {
+function ProductRow({
+  product,
+  isLast,
+  prefillQuery,
+}: {
+  product: Product;
+  isLast: boolean;
+  prefillQuery: string;
+}) {
   return (
     <Link
-      href={`/tilfoej/${product.id}`}
+      href={`/tilfoej/${product.id}${prefillQuery}`}
       className={`flex items-center gap-2.5 px-4 py-3 ${isLast ? "" : "border-b border-hf-tan-dark"}`}
     >
       <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-hf-white/30">
@@ -56,7 +65,17 @@ function ProductRow({ product, isLast }: { product: Product; isLast: boolean }) 
   );
 }
 
-export default function MadvarerPage() {
+function MadvarerContent() {
+  const searchParams = useSearchParams();
+  const prefillTime = searchParams.get("time");
+  const prefillDate = searchParams.get("date");
+  const prefillQuery = (() => {
+    const params = new URLSearchParams();
+    if (prefillTime) params.set("time", prefillTime);
+    if (prefillDate) params.set("date", prefillDate);
+    const query = params.toString();
+    return query ? `?${query}` : "";
+  })();
   const [products, setProducts] = useState<Product[]>([]);
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [query, setQuery] = useState("");
@@ -142,7 +161,12 @@ export default function MadvarerPage() {
           )}
           {state === "ready" &&
             visibleProducts.map((product, index) => (
-              <ProductRow key={product.id} product={product} isLast={index === visibleProducts.length - 1} />
+              <ProductRow
+                key={product.id}
+                product={product}
+                isLast={index === visibleProducts.length - 1}
+                prefillQuery={prefillQuery}
+              />
             ))}
           {state === "ready" && visibleProducts.length === 0 && (
             <p className="px-4 py-6 text-center text-sm text-hf-black opacity-60">
@@ -160,5 +184,13 @@ export default function MadvarerPage() {
         </p>
       </div>
     </HfScreen>
+  );
+}
+
+export default function MadvarerPage() {
+  return (
+    <Suspense fallback={null}>
+      <MadvarerContent />
+    </Suspense>
   );
 }

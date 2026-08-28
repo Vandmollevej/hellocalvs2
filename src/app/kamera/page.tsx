@@ -42,6 +42,8 @@ function KameraContent() {
   const router = useRouter();
   const mode: CameraMode =
     params.get("mode") === "maaltid" ? "maaltid" : params.get("mode") === "naering" ? "naering" : "produkt";
+  const forDish = params.get("for") === "ret";
+  const returnSuffix = forDish ? "?for=ret" : "";
   const videoRef = useRef<HTMLVideoElement>(null);
   const scannerControlsRef = useRef<IScannerControls | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -85,12 +87,12 @@ function KameraContent() {
 
       const data = (await response.json()) as { product: { id: string } };
       stopCamera();
-      router.push(`/tilfoej/${data.product.id}`);
+      router.push(`/tilfoej/${data.product.id}${returnSuffix}`);
     } catch {
       setLookupStatus("error");
       lookupInProgressRef.current = false;
     }
-  }, [router, stopCamera]);
+  }, [router, stopCamera, returnSuffix]);
 
   useEffect(() => {
     let cancelled = false;
@@ -210,7 +212,7 @@ function KameraContent() {
     };
     sessionStorage.setItem(OCR_DRAFT_STORAGE_KEY, JSON.stringify(draft));
     stopCamera();
-    router.push("/madvarer/nyt");
+    router.push(`/madvarer/nyt${returnSuffix}`);
   }
 
   const message = cameraMessage(cameraStatus);
@@ -224,7 +226,7 @@ function KameraContent() {
             onClick={() => {
               if (tab.key === mode) return;
               restartCamera();
-              router.replace(`/kamera?mode=${tab.key}`);
+              router.replace(`/kamera?mode=${tab.key}${forDish ? "&for=ret" : ""}`);
             }}
             className={
               tab.key === mode
@@ -335,7 +337,10 @@ function KameraContent() {
             </button>
           </form>
           {lookupStatus === "not_found" && (
-            <Link href="/madvarer/nyt" className="mt-3 block text-center text-xs font-bold text-hf-black underline">
+            <Link
+              href={`/madvarer/nyt${returnSuffix}`}
+              className="mt-3 block text-center text-xs font-bold text-hf-black underline"
+            >
               Opret produktet manuelt
             </Link>
           )}

@@ -65,7 +65,7 @@ Se [UI.md](UI.md) for fuld detalje. Kort opsummeret:
 - Forsiden ("Tilføj") har en central, halvcirkelformet **+**-knap (ca. 1/3 af skærmbredden) i den ergonomiske tommelfingerzone. Position kan flyttes venstre/højre i indstillinger.
 - Tryk på +-knappen åbner en radial menu med tre ikoner: Kamera, Mikrofon, Søg.
 - Ved siden af +-knappen vises et lodret nøgletalspanel (kalorier størst/først), og under +-knappen vises dagens registreringer som en lodret, scrollbar tidslinje (nyeste øverst).
-- Øverste bjælke: venstre tom, midt evt. dato, højre cirkel med brugerens initialer (åbner Profil/Indstillinger/Skift konto/Log ud).
+- Øverste bjælke: venstre cirkel med brugerens initialer (åbner Profil/Indstillinger/Skift konto/Log ud), midt evt. dato, højre plads til luk-kryds på sider der kan lukkes.
 
 ## 7. Grupper
 

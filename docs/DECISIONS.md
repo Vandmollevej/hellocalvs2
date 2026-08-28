@@ -130,6 +130,18 @@ This file records durable decisions. Add a dated entry when a later decision cha
   implemented; default must be **off** (preserve current snapshot behavior)
   until this setting exists.
 
+- 2026-08-28: **Correction, overrides any contradicting guidance given earlier
+  (in this file or verbally to other agent sessions):** screens/windows and
+  their headers fill the entire viewport edge-to-edge, matching the HelloFresh
+  app — never inset with a visible margin or frame around them (the desktop
+  `PhoneFrame` presentation aid is unaffected, see 2026-08-26). The
+  profile/user-menu circle moves from the top-right to the **top-left** corner
+  of the standard top bar, because the top-right corner is needed for a
+  close-cross (×) on pages that can be closed — there is no room for both in
+  the same corner. This supersedes the earlier `docs/UI.md` claim that there
+  is no separate close-cross on the persistent frame. See `docs/SPECIFICATION.md`
+  §6 and `docs/UI.md`'s Navigation/Layout-konsistens sections.
+
 ## Hosting and delivery
 
 - Production is intended to run on the user's Synology NAS through Docker/Container Manager.

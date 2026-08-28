@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type ComponentProps } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   IconBolt,
   IconDroplet,
@@ -10,6 +10,7 @@ import {
   type Icon,
 } from "@tabler/icons-react";
 import { DAILY_KCAL_GOAL, DAILY_PROTEIN_GOAL } from "@/lib/goals";
+import { IconPlateCutlery } from "@/components/icons/PlateCutlery";
 
 type Registration = {
   kcalSnapshot: number;
@@ -25,41 +26,6 @@ type Stat = {
   goal: string;
   unit: string;
 };
-
-/**
- * Plate with a knife and fork beside it. Tabler's icon set has no plate
- * glyph, so this is hand-authored to match the tabler outline style
- * (24x24 viewBox, round line caps/joins, `currentColor` stroke) while
- * reusing tabler's own knife+fork path (from ToolsKitchen2) scaled down
- * and placed beside the plate.
- */
-function IconPlateCutlery({
-  size = 24,
-  color = "currentColor",
-  stroke = 2,
-  ...rest
-}: ComponentProps<Icon>) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={color}
-      strokeWidth={stroke}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...rest}
-    >
-      <circle cx="7.5" cy="12" r="6" />
-      <circle cx="7.5" cy="12" r="2.7" />
-      <g transform="translate(12.5,6.2) scale(0.48)">
-        <path d="M19 3v12h-5c-.023 -3.681 .184 -7.406 5 -12m0 12v6h-1v-3m-10 -14v17m-3 -17v3a3 3 0 1 0 6 0v-3" />
-      </g>
-    </svg>
-  );
-}
 
 function isToday(dateString: string) {
   const date = new Date(dateString);
@@ -236,14 +202,13 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
         setDragging(false);
         setDragPixels(0);
       }}
-      className="absolute flex w-[178px] touch-pan-x flex-col items-center justify-center overflow-hidden rounded-3xl px-2 py-3 text-left transition-[left,right] duration-300 ease-out focus-visible:outline-2 focus-visible:outline-hf-green focus-visible:outline-offset-2"
+      className="absolute flex w-[178px] touch-pan-x flex-col items-end justify-center overflow-hidden rounded-3xl px-2 py-3 text-right transition-[left,right] duration-300 ease-out focus-visible:outline-2 focus-visible:outline-hf-green focus-visible:outline-offset-2"
       style={
         {
           [side]: 22,
           top: "50%",
           height: 190,
           transform: "translateY(-50%)",
-          perspective: 320,
         } as React.CSSProperties
       }
     >
@@ -286,10 +251,8 @@ function WheelItem({
   const absDistance = Math.min(Math.abs(distance), 2.4);
   const isActive = absDistance < 0.05;
 
-  // Progressive depth/curve: farther items tilt and recede further, instead
-  // of a binary previous/next tilt.
-  const rotateX = Math.max(-70, Math.min(70, distance * -30));
-  const translateZ = -absDistance * 34;
+  // Progressive size: items shrink the further they sit from the centered,
+  // active stat — no 3D tilt/carousel effect, just a flat right-aligned list.
   const translateY = distance * ITEM_HEIGHT;
   const scale = Math.max(0.62, 1 - absDistance * 0.16);
   const opacity = Math.max(0.18, 1 - absDistance * 0.42);
@@ -307,12 +270,12 @@ function WheelItem({
       aria-current={isActive || undefined}
       aria-label={isActive ? undefined : `Vis ${stat.label.toLowerCase()}: ${stat.value} ${stat.unit}`}
       aria-live={isActive ? "polite" : undefined}
-      className={`absolute left-2 right-2 flex origin-center flex-col items-start justify-center ${
+      className={`absolute left-2 right-2 flex origin-right flex-col items-end justify-center ${
         animate ? "transition-[transform,opacity] duration-300 ease-out" : ""
       } ${isActive ? "cursor-default" : "cursor-pointer"}`}
       style={{
         top: "50%",
-        transform: `translateY(calc(-50% + ${translateY}px)) translateZ(${translateZ}px) rotateX(${rotateX}deg) scale(${scale})`,
+        transform: `translateY(calc(-50% + ${translateY}px)) scale(${scale})`,
         opacity,
       }}
     >
@@ -324,28 +287,28 @@ function WheelItem({
           >
             {stat.label}
           </p>
-          <div className="flex items-baseline justify-start gap-2">
-            <StatIcon size={21} color="var(--hf-green)" stroke={2.2} aria-hidden="true" />
+          <div className="flex items-baseline justify-end gap-2">
             <span
               className="font-extrabold leading-none text-hf-black"
               style={{ fontSize: valueFontSize }}
             >
               {stat.value}
             </span>
+            <StatIcon size={21} color="var(--hf-green)" stroke={2.2} aria-hidden="true" />
           </div>
           <p className="mt-1 text-[12px] text-hf-black opacity-65" style={{ opacity: labelOpacity * 0.65 }}>
             / {stat.goal} {stat.unit}
           </p>
         </>
       ) : (
-        <div className="flex min-h-10 w-full items-center justify-start gap-1.5 text-hf-black">
-          <StatIcon size={15} aria-hidden="true" />
-          <span className="text-xs font-semibold" style={{ opacity: labelOpacity }}>
-            {stat.label}
-          </span>
+        <div className="flex min-h-10 w-full items-center justify-end gap-1.5 text-hf-black">
           <span className="font-semibold" style={{ fontSize: valueFontSize }}>
             {stat.value}
           </span>
+          <span className="text-xs font-semibold" style={{ opacity: labelOpacity }}>
+            {stat.label}
+          </span>
+          <StatIcon size={15} aria-hidden="true" />
         </div>
       )}
     </button>

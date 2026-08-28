@@ -1,3 +1,5 @@
+import { mapOffAllergenTags } from "./allergens";
+
 export type OffProduct = {
   barcode: string;
   name: string;
@@ -7,6 +9,10 @@ export type OffProduct = {
   proteinPer100g: number;
   carbsPer100g: number;
   fatPer100g: number;
+  servingSizeGrams: number | null;
+  ingredientsText: string | null;
+  allergens: string[];
+  additives: string[];
 };
 
 // Fallback-opslag for ukendte stregkoder, jf. docs/DATABASE.md.
@@ -29,6 +35,27 @@ export async function lookupOpenFoodFacts(
   const p = data.product;
   const n = p.nutriments ?? {};
 
+  // serving_quantity er OFF's "pr. stk"-vægt (fx en enkelt kiks eller bar).
+  // Bruger IKKE product_quantity som fallback — det er hele pakkens vægt
+  // (fx en æske kiks) og ville give en forkert "pr. stk"-værdi.
+  const servingQuantity = Number(p.serving_quantity);
+  const servingSizeGrams = Number.isFinite(servingQuantity) && servingQuantity > 0
+    ? servingQuantity
+    : null;
+
+  // additives_tags kommer som "en:e330" — normaliseres til "E330".
+  const additives: string[] = Array.isArray(p.additives_tags)
+    ? Array.from(
+        new Set(
+          p.additives_tags
+            .map((tag: unknown) =>
+              typeof tag === "string" ? tag.replace(/^en:/, "").toUpperCase() : ""
+            )
+            .filter(Boolean)
+        )
+      )
+    : [];
+
   return {
     barcode,
     name: p.product_name_da || p.product_name || "Ukendt produkt",
@@ -38,5 +65,9 @@ export async function lookupOpenFoodFacts(
     proteinPer100g: n.proteins_100g ?? 0,
     carbsPer100g: n.carbohydrates_100g ?? 0,
     fatPer100g: n.fat_100g ?? 0,
+    servingSizeGrams,
+    ingredientsText: p.ingredients_text_da || p.ingredients_text || null,
+    allergens: mapOffAllergenTags(p.allergens_tags),
+    additives,
   };
 }

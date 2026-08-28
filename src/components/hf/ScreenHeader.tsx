@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { IconChevronLeft } from "@tabler/icons-react";
 
 export function ScreenHeader({
@@ -13,6 +14,13 @@ export function ScreenHeader({
 }) {
   return (
     <div className="relative flex flex-col items-center justify-end bg-hf-green px-4 pb-4 pt-9">
+      <Link
+        href="/profil"
+        aria-label="Åbn mine oplysninger"
+        className="absolute left-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-hf-tan text-xs font-bold text-hf-black"
+      >
+        PT
+      </Link>
       {onBack && (
         <button
           onClick={onBack}

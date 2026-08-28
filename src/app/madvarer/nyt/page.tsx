@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { IconApple } from "@tabler/icons-react";
 
@@ -41,8 +41,10 @@ function readOcrDraft(): { values: FormValues; fromOcr: boolean } {
   }
 }
 
-export default function NytProduktPage() {
+function NytProduktContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const forDish = searchParams.get("for") === "ret";
   const [{ values: initialValues, fromOcr }] = useState(readOcrDraft);
   const [values, setValues] = useState<FormValues>(initialValues);
   const [saving, setSaving] = useState(false);
@@ -67,7 +69,7 @@ export default function NytProduktPage() {
         setSaveError(data.message ?? "Kunne ikke gemme produktet");
         return;
       }
-      router.push(`/tilfoej/${data.product.id}`);
+      router.push(`/tilfoej/${data.product.id}${forDish ? "?for=ret" : ""}`);
     } catch {
       setSaveError("Kunne ikke gemme produktet");
     } finally {
@@ -155,5 +157,13 @@ export default function NytProduktPage() {
         </form>
       </div>
     </HfScreen>
+  );
+}
+
+export default function NytProduktPage() {
+  return (
+    <Suspense fallback={null}>
+      <NytProduktContent />
+    </Suspense>
   );
 }

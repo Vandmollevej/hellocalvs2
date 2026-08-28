@@ -51,12 +51,21 @@ model User {
   onboardingRemindLaterAt DateTime?
   onboardingDismissed     Boolean   @default(false)
 
+  // Personlige indstillinger, ikke-standard "Vis allergener" (§ docs/STATUS.md
+  // "Detaljer"-udvidelse): master-switch plus hvilke af de 14 EU-allergener
+  // (se src/lib/allergens.ts) brugeren ønsker vist, hvis produktet indeholder
+  // dem. Null = alle vises, når showAllergens er sand.
+  showAllergens      Boolean @default(false)
+  allergenVisibility Json?
+
   registrations  Registration[]
   favorites      Favorite[]
   dishes         Dish[]
   weightEntries  WeightEntry[]
   sleepSchedules SleepSchedule[]
   workShifts     WorkShift[]
+  integrations   Integration[]
+  activities     Activity[]
 
   @@map("users")
 }
@@ -87,9 +96,15 @@ model WeightEntry {
   userId    String
   weightKg  Float
   clothed   Boolean      @default(true)
+  shoes     ShoesState   @default(UNKNOWN)
   toilet    RelativeTime @default(UNKNOWN)
   meal      RelativeTime @default(UNKNOWN)
   timeOfDay TimeOfDay    @default(UNKNOWN)
+  // Hvor vejningen kommer fra. En aktiv vægt-integration overskriver
+  // automatisk seneste værdi (docs/SPECIFICATION.md:47) — scale-kilder kan
+  // ikke vide tøj/sko/toilet/mad-tilstand, så de felter forbliver UNKNOWN/true
+  // (standard) for rækker skrevet af en integration.
+  source    WeightSource @default(MANUAL)
   note      String?
   weighedAt DateTime     @default(now())
 
@@ -106,6 +121,18 @@ enum TimeOfDay {
   MORNING
   EVENING
   UNKNOWN
+}
+
+enum ShoesState {
+  ON
+  OFF
+  UNKNOWN
+}
+
+enum WeightSource {
+  MANUAL
+  FITBIT
+  WITHINGS
 }
 
 // --- Søvnmønster og skiftende arbejdstider ---
@@ -143,6 +170,69 @@ model WorkShift {
   @@map("work_shifts")
 }
 
+// --- Sundhedsintegrationer ---
+// Apple Health/Google Health Connect er write-only (docs/SPECIFICATION.md §4)
+// og har derfor ingen rækker her. Fitbit og Withings har rigtige OAuth-API'er
+// og gemmer deres forbindelse i denne tabel; Garmin/Apple Health/Apple
+// Watch/Google Health vises kun statisk i UI'en indtil en forbindelsesvej er
+// valgt (companion-app eller tredjeparts-aggregator, se docs/DECISIONS.md).
+
+model Integration {
+  id           String              @id @default(cuid())
+  user         User                @relation(fields: [userId], references: [id])
+  userId       String
+  provider     IntegrationProvider
+  status       IntegrationStatus   @default(DISCONNECTED)
+  accessToken  String?
+  refreshToken String?
+  expiresAt    DateTime?
+  scope        String?
+  connectedAt  DateTime?
+  lastSyncedAt DateTime?
+  lastError    String?
+  createdAt    DateTime            @default(now())
+
+  @@unique([userId, provider])
+  @@map("integrations")
+}
+
+enum IntegrationProvider {
+  FITBIT
+  WITHINGS
+  GARMIN
+  APPLE_HEALTH
+  GOOGLE_HEALTH
+}
+
+enum IntegrationStatus {
+  DISCONNECTED
+  CONNECTED
+  ERROR
+}
+
+// Sportsregistreringer (træning/aktivitet), manuelt indtastet eller hentet fra
+// en tilkoblet Integration. Bruges til kalenderens sportsikon/bonuskalorier
+// og statistikkens sport-blokke (docs/SPECIFICATION.md §5 "Kaloriebank").
+model Activity {
+  id              String         @id @default(cuid())
+  user            User           @relation(fields: [userId], references: [id])
+  userId          String
+  source          ActivitySource @default(MANUAL)
+  sportType       String
+  startedAt       DateTime
+  durationMinutes Int
+  caloriesBurned  Float
+  createdAt       DateTime       @default(now())
+
+  @@map("activities")
+}
+
+enum ActivitySource {
+  MANUAL
+  FITBIT
+  GARMIN
+}
+
 // --- Fødevaredatabase ---
 
 model Brand {
@@ -165,25 +255,29 @@ model Category {
 }
 
 model Product {
-  id              String                 @id @default(cuid())
-  name            String
-  brand           Brand?                 @relation(fields: [brandId], references: [id])
-  brandId         String?
-  category        Category?              @relation(fields: [categoryId], references: [id])
-  categoryId      String?
-  imageUrl        String?
-  pendingImageUrl String?
-  imageStatus     ImageStatus            @default(NONE)
-  kcalPer100g     Float
-  proteinPer100g  Float
-  carbsPer100g    Float
-  fatPer100g      Float
-  externalSource  ExternalProductSource?
-  externalId      String?
-  sourceCheckedAt DateTime?
-  status          ProductStatus          @default(PENDING)
-  discontinued    Boolean                @default(false)
-  createdAt       DateTime               @default(now())
+  id               String                 @id @default(cuid())
+  name             String
+  brand            Brand?                 @relation(fields: [brandId], references: [id])
+  brandId          String?
+  category         Category?              @relation(fields: [categoryId], references: [id])
+  categoryId       String?
+  imageUrl         String?
+  pendingImageUrl  String?
+  imageStatus      ImageStatus            @default(NONE)
+  kcalPer100g      Float
+  proteinPer100g   Float
+  carbsPer100g     Float
+  fatPer100g       Float
+  servingSizeGrams Float?
+  ingredientsText  String?
+  allergens        String[]               @default([])
+  additives        String[]               @default([])
+  externalSource   ExternalProductSource?
+  externalId       String?
+  sourceCheckedAt  DateTime?
+  status           ProductStatus          @default(PENDING)
+  discontinued     Boolean                @default(false)
+  createdAt        DateTime               @default(now())
 
   barcodes        Barcode[]
   registrations   Registration[]
@@ -198,6 +292,22 @@ enum ExternalProductSource {
   OPEN_FOOD_FACTS
   USDA
   FRIDA
+}
+
+// Reference-database over EU-godkendte E-tilsætningsstoffer (E100-E1521),
+// importeret fra scripts/e-numre/data/e_numre.csv via scripts/e-numre/import_to_db.py.
+model Additive {
+  eNumber           String   @id @map("e_number")
+  internationalName String   @map("international_name")
+  danishName        String   @map("danish_name")
+  function          String
+  risks             String
+  research          String
+  link              String
+  source            String
+  updatedAt         DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("additives")
 }
 
 // Hvilken Frida-udgivelse (DTU's Figshare-datasæt) der senest er importeret,

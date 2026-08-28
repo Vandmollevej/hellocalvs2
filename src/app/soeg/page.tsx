@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 
@@ -16,7 +17,7 @@ type Registration = {
 
 type LoadState = "loading" | "ready" | "error";
 
-function ResultRow({ id, title, image }: Result) {
+function ResultRow({ id, title, image, forDish }: Result & { forDish: boolean }) {
   return (
     <div className="flex items-center gap-2.5 px-4 py-3 border-b border-hf-tan-dark last:border-b-0">
       <div className="h-10 w-10 flex-shrink-0">
@@ -26,14 +27,19 @@ function ResultRow({ id, title, image }: Result) {
         )}
       </div>
       <span className="flex-1 text-[15px] font-medium text-hf-black">{title}</span>
-      <Link href={`/tilfoej/${id}`} className="hf-btn-primary px-4 py-1.5 text-xs">
+      <Link
+        href={forDish ? `/tilfoej/${id}?for=ret` : `/tilfoej/${id}`}
+        className="hf-btn-primary px-4 py-1.5 text-xs"
+      >
         Tilføj
       </Link>
     </div>
   );
 }
 
-export default function SoegPage() {
+function SoegContent() {
+  const searchParams = useSearchParams();
+  const forDish = searchParams.get("for") === "ret";
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Result[]>([]);
   const [resultsState, setResultsState] = useState<LoadState>("loading");
@@ -116,7 +122,7 @@ export default function SoegPage() {
             <p className="text-xs font-bold text-hf-black">Tidligere tilføjet</p>
             <div className="overflow-hidden rounded-2xl bg-hf-tan">
               {recentlyAdded.map((r) => (
-                <ResultRow key={r.id} id={r.id} title={r.title} image={r.image} />
+                <ResultRow key={r.id} id={r.id} title={r.title} image={r.image} forDish={forDish} />
               ))}
             </div>
           </>
@@ -135,7 +141,7 @@ export default function SoegPage() {
             </p>
           )}
           {resultsState === "ready" && results.slice(0, 6).map((r) => (
-            <ResultRow key={r.id} id={r.id} title={r.title} image={r.image} />
+            <ResultRow key={r.id} id={r.id} title={r.title} image={r.image} forDish={forDish} />
           ))}
           {resultsState === "ready" && results.length === 0 && (
             <p className="px-4 py-4 text-center text-sm text-hf-black opacity-60">
@@ -145,5 +151,13 @@ export default function SoegPage() {
         </div>
       </div>
     </HfScreen>
+  );
+}
+
+export default function SoegPage() {
+  return (
+    <Suspense fallback={null}>
+      <SoegContent />
+    </Suspense>
   );
 }

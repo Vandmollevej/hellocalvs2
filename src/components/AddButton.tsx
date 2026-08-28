@@ -1,14 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   IconPlus,
-  IconToolsKitchen2,
   IconCamera,
   IconSearch,
   IconMicrophone,
+  IconSoup,
+  type Icon,
 } from "@tabler/icons-react";
+import { IconPlateCutlery } from "@/components/icons/PlateCutlery";
 
 export const HERO_HEIGHT = 280;
 const CENTER_Y = HERO_HEIGHT / 2;
@@ -18,137 +21,113 @@ const CIRCLE = 46;
 export const FAB_SIZE = 64;
 const FAB_RADIUS = 14;
 export const FAB_INSET = 18;
-const VERTICAL_RANGE = 70;
-const LONG_PRESS_MS = 420;
 const DRAG_THRESHOLD = 6;
 
-const ANGLES_DEG = [-60, -20, 20, 60];
+// Half circle backdrop behind the fanned-out actions, flush against the
+// screen edge the FAB sits on.
+const HALF_CIRCLE_RADIUS = 48;
+
+// Minimum distance from the FAB center before a drag counts as "aiming at"
+// an option, so a small wobble right after pressing down doesn't select
+// anything.
+const SELECT_DEAD_ZONE = 30;
+
+const ANGLES_DEG = [-70, -35, 0, 35, 70];
 
 export type FabSide = "left" | "right";
-export type FabPosition = { side: FabSide; offsetY: number };
 
-const STORAGE_KEY = "hellocal.fabPosition";
-const DEFAULT_POSITION: FabPosition = { side: "left", offsetY: 0 };
+// The FAB is fixed to the left edge of the hero — it is no longer
+// draggable to a custom position.
+const SIDE: FabSide = "left";
 
-function clamp(value: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, value));
-}
-
-function readStoredPosition(): FabPosition {
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return DEFAULT_POSITION;
-    const parsed = JSON.parse(raw) as Partial<FabPosition>;
-    const side: FabSide = parsed.side === "right" ? "right" : "left";
-    const offsetY = clamp(Number(parsed.offsetY) || 0, -VERTICAL_RANGE, VERTICAL_RANGE);
-    return { side, offsetY };
-  } catch {
-    return DEFAULT_POSITION;
-  }
-}
-
-let cachedPosition: FabPosition | null = null;
-const positionListeners = new Set<() => void>();
-
-function getPositionSnapshot(): FabPosition {
-  if (!cachedPosition) cachedPosition = readStoredPosition();
-  return cachedPosition;
-}
-
-function getServerPositionSnapshot(): FabPosition {
-  return DEFAULT_POSITION;
-}
-
-function subscribeToPosition(listener: () => void) {
-  positionListeners.add(listener);
-  return () => positionListeners.delete(listener);
-}
-
-function setStoredPosition(next: FabPosition) {
-  cachedPosition = next;
-  try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-  } catch {
-    // Prototype: ignore storage failures (private browsing, quota, ...).
-  }
-  positionListeners.forEach((listener) => listener());
-}
-
-export function useFabPosition() {
-  const position = useSyncExternalStore(
-    subscribeToPosition,
-    getPositionSnapshot,
-    getServerPositionSnapshot,
-  );
-  return [position, setStoredPosition] as const;
-}
-
-const actions = [
-  { key: "maaltid", href: "/kamera?mode=maaltid", icon: <IconToolsKitchen2 size={20} color="var(--hf-black)" />, label: "Måltid" },
-  { key: "kamera", href: "/kamera?mode=produkt", icon: <IconCamera size={20} color="var(--hf-black)" />, label: "Kamera" },
-  { key: "soeg", href: "/soeg", icon: <IconSearch size={20} color="var(--hf-black)" />, label: "Søg" },
-  { key: "mikrofon", href: "/stemme", icon: <IconMicrophone size={20} color="var(--hf-black)" />, label: "Mikrofon" },
+const actions: { key: string; href: string; icon: Icon; label: string }[] = [
+  { key: "maaltid", href: "/kamera?mode=maaltid", icon: IconPlateCutlery, label: "Måltid" },
+  { key: "kamera", href: "/kamera?mode=produkt", icon: IconCamera, label: "Kamera" },
+  { key: "soeg", href: "/soeg", icon: IconSearch, label: "Søg" },
+  { key: "mikrofon", href: "/stemme", icon: IconMicrophone, label: "Mikrofon" },
+  { key: "ret", href: "/opret-ret", icon: IconSoup, label: "Egne retter" },
 ];
 
-function arcItemStyle(angleDeg: number, side: FabSide, offsetY: number): React.CSSProperties {
+function arcItemCenter(angleDeg: number, containerWidth: number) {
   const rad = (angleDeg * Math.PI) / 180;
-  const inward = RADIUS * Math.cos(rad) - CIRCLE / 2;
-  const top = CENTER_Y + offsetY + RADIUS * Math.sin(rad) - CIRCLE / 2;
-  const horizontalInset = FAB_INSET + FAB_SIZE / 2 + inward;
-  return side === "left" ? { left: horizontalInset, top } : { right: horizontalInset, top };
+  const inward = RADIUS * Math.cos(rad);
+  const fabCenterX = SIDE === "left" ? FAB_INSET + FAB_SIZE / 2 : containerWidth - FAB_INSET - FAB_SIZE / 2;
+  const x = SIDE === "left" ? fabCenterX + inward : fabCenterX - inward;
+  const y = CENTER_Y + RADIUS * Math.sin(rad);
+  return { x, y };
 }
 
-export function AddButton({
-  position,
-  onPositionChange,
-  onOpen,
-}: {
-  position: FabPosition;
-  onPositionChange: (position: FabPosition) => void;
-  onOpen?: () => void;
-}) {
+function arcItemStyle(angleDeg: number): React.CSSProperties {
+  const rad = (angleDeg * Math.PI) / 180;
+  const inward = RADIUS * Math.cos(rad) - CIRCLE / 2;
+  const top = CENTER_Y + RADIUS * Math.sin(rad) - CIRCLE / 2;
+  const horizontalInset = FAB_INSET + FAB_SIZE / 2 + inward;
+  return SIDE === "left" ? { left: horizontalInset, top } : { right: horizontalInset, top };
+}
+
+export function AddButton({ onOpen }: { onOpen?: () => void }) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [dragging, setDragging] = useState(false);
-  const [dragPreview, setDragPreview] = useState<FabPosition | null>(null);
+  const [highlightedKey, setHighlightedKey] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const longPressTimer = useRef<number | null>(null);
   const pointerStart = useRef<{ x: number; y: number } | null>(null);
   const movedRef = useRef(false);
-  const draggingRef = useRef(false);
+  const selectingRef = useRef(false);
+  const highlightedKeyRef = useRef<string | null>(null);
+  const wasOpenOnPressRef = useRef(false);
 
-  const clearLongPressTimer = () => {
-    if (longPressTimer.current !== null) {
-      window.clearTimeout(longPressTimer.current);
-      longPressTimer.current = null;
+  useEffect(() => () => document.body.classList.remove("select-none"), []);
+
+  function startSelecting(pointerId: number, target: HTMLButtonElement) {
+    selectingRef.current = true;
+    document.body.classList.add("select-none");
+    try {
+      target.setPointerCapture(pointerId);
+    } catch {
+      // Ignore capture failures (e.g. pointer already released).
     }
-  };
+  }
 
-  useEffect(() => clearLongPressTimer, []);
+  function updateHighlight(event: React.PointerEvent<HTMLButtonElement>) {
+    const container = containerRef.current;
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    const px = event.clientX - rect.left;
+    const py = event.clientY - rect.top;
 
-  useEffect(() => {
-    document.body.classList.toggle("select-none", dragging);
-    return () => document.body.classList.remove("select-none");
-  }, [dragging]);
+    let nearestKey: string | null = null;
+    let nearestDistance = Infinity;
+    for (let i = 0; i < actions.length; i += 1) {
+      const { x, y } = arcItemCenter(ANGLES_DEG[i], rect.width);
+      const distance = Math.hypot(px - x, py - y);
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestKey = actions[i].key;
+      }
+    }
+
+    const fabCenterX = SIDE === "left" ? FAB_INSET + FAB_SIZE / 2 : rect.width - FAB_INSET - FAB_SIZE / 2;
+    const fabCenterY = CENTER_Y;
+    const distanceFromFab = Math.hypot(px - fabCenterX, py - fabCenterY);
+
+    const next = distanceFromFab > SELECT_DEAD_ZONE ? nearestKey : null;
+    highlightedKeyRef.current = next;
+    setHighlightedKey(next);
+  }
 
   function handlePointerDown(event: React.PointerEvent<HTMLButtonElement>) {
     if (event.button !== 0) return;
     pointerStart.current = { x: event.clientX, y: event.clientY };
     movedRef.current = false;
-    draggingRef.current = false;
-    clearLongPressTimer();
-    const pointerId = event.pointerId;
-    const target = event.currentTarget;
-    longPressTimer.current = window.setTimeout(() => {
-      if (movedRef.current) return;
-      draggingRef.current = true;
-      setDragging(true);
-      setDragPreview(position);
-      try {
-        target.setPointerCapture(pointerId);
-      } catch {
-        // Ignore capture failures (e.g. pointer already released).
-      }
-    }, LONG_PRESS_MS);
+    selectingRef.current = false;
+    highlightedKeyRef.current = null;
+    setHighlightedKey(null);
+    wasOpenOnPressRef.current = open;
+
+    if (open) {
+      // Menu is already open: this press aims straight at picking an option.
+      startSelecting(event.pointerId, event.currentTarget);
+    }
   }
 
   function handlePointerMove(event: React.PointerEvent<HTMLButtonElement>) {
@@ -157,73 +136,73 @@ export function AddButton({
       const dy = event.clientY - pointerStart.current.y;
       if (Math.hypot(dx, dy) > DRAG_THRESHOLD) movedRef.current = true;
     }
-    if (!draggingRef.current) {
-      if (movedRef.current) clearLongPressTimer();
+
+    if (selectingRef.current) {
+      updateHighlight(event);
       return;
     }
-    const container = containerRef.current;
-    if (!container) return;
-    const rect = container.getBoundingClientRect();
-    const relX = event.clientX - rect.left;
-    const side: FabSide = relX < rect.width / 2 ? "left" : "right";
-    const offsetY = clamp(event.clientY - rect.top - CENTER_Y, -VERTICAL_RANGE, VERTICAL_RANGE);
-    setDragPreview({ side, offsetY });
+
+    // Moving before the menu is open means the user is aiming for an option
+    // directly instead of just tapping — open the menu and start selecting.
+    if (movedRef.current && !wasOpenOnPressRef.current && !open) {
+      onOpen?.();
+      setOpen(true);
+      startSelecting(event.pointerId, event.currentTarget);
+      updateHighlight(event);
+    }
   }
 
-  function endDrag(event: React.PointerEvent<HTMLButtonElement>) {
-    clearLongPressTimer();
-    if (draggingRef.current) {
-      draggingRef.current = false;
-      setDragging(false);
-      if (dragPreview) onPositionChange(dragPreview);
-      setDragPreview(null);
+  function endInteraction(event: React.PointerEvent<HTMLButtonElement>) {
+    if (selectingRef.current) {
+      selectingRef.current = false;
+      document.body.classList.remove("select-none");
       try {
         event.currentTarget.releasePointerCapture(event.pointerId);
       } catch {
         // Ignore release failures.
       }
+      const key = highlightedKeyRef.current;
+      setHighlightedKey(null);
+      pointerStart.current = null;
+      if (key) {
+        const action = actions.find((a) => a.key === key);
+        setOpen(false);
+        if (action) router.push(action.href);
+        return true;
+      }
+      return true;
     }
     pointerStart.current = null;
+    return false;
   }
 
   function handlePointerUp(event: React.PointerEvent<HTMLButtonElement>) {
-    const wasDragging = draggingRef.current;
-    endDrag(event);
-    if (!wasDragging && !movedRef.current) {
+    const handledBySelection = endInteraction(event);
+    if (handledBySelection) return;
+    if (!movedRef.current) {
       if (!open) onOpen?.();
       setOpen((v) => !v);
     }
   }
 
-  const activePosition = dragPreview ?? position;
-
   return (
     <div ref={containerRef} className="absolute inset-0">
-      {dragging && dragPreview && (
-        <>
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute border-2 border-dashed border-hf-gray opacity-60"
-            style={{
-              [position.side === "left" ? "left" : "right"]: FAB_INSET,
-              top: CENTER_Y + position.offsetY - FAB_SIZE / 2,
-              width: FAB_SIZE,
-              height: FAB_SIZE,
-              borderRadius: FAB_RADIUS,
-            } as React.CSSProperties}
-          />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute border-2 border-dashed border-hf-green bg-hf-green-light/30"
-            style={{
-              [dragPreview.side === "left" ? "left" : "right"]: FAB_INSET,
-              top: CENTER_Y + dragPreview.offsetY - FAB_SIZE / 2,
-              width: FAB_SIZE,
-              height: FAB_SIZE,
-              borderRadius: FAB_RADIUS,
-            } as React.CSSProperties}
-          />
-        </>
+      {open && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute bg-hf-green transition-opacity duration-200"
+          style={{
+            [SIDE === "left" ? "left" : "right"]: 0,
+            top: CENTER_Y - HALF_CIRCLE_RADIUS,
+            width: HALF_CIRCLE_RADIUS,
+            height: HALF_CIRCLE_RADIUS * 2,
+            borderRadius:
+              SIDE === "left"
+                ? `0 ${HALF_CIRCLE_RADIUS * 2}px ${HALF_CIRCLE_RADIUS * 2}px 0`
+                : `${HALF_CIRCLE_RADIUS * 2}px 0 0 ${HALF_CIRCLE_RADIUS * 2}px`,
+            opacity: 0.92,
+          } as React.CSSProperties}
+        />
       )}
 
       <button
@@ -232,41 +211,44 @@ export function AddButton({
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
-        onPointerCancel={endDrag}
-        className={`absolute flex items-center justify-center bg-transparent border-0 shadow-none ${
-          dragging ? "" : "transition-[left,right,top] duration-300 ease-out"
-        }`}
+        onPointerCancel={endInteraction}
+        className="absolute z-10 flex items-center justify-center bg-transparent border-0 shadow-none"
         style={{
-          [activePosition.side === "left" ? "left" : "right"]: FAB_INSET,
-          top: CENTER_Y + activePosition.offsetY - FAB_SIZE / 2,
+          [SIDE === "left" ? "left" : "right"]: FAB_INSET,
+          top: CENTER_Y - FAB_SIZE / 2,
           width: FAB_SIZE,
           height: FAB_SIZE,
           borderRadius: FAB_RADIUS,
-          opacity: dragging ? 0.4 : 1,
           touchAction: "none",
         } as React.CSSProperties}
       >
-        <IconPlus size={26} color="var(--hf-fab)" stroke={2} />
+        <IconPlus size={26} color={open ? "var(--hf-white)" : "var(--hf-fab)"} stroke={2} />
       </button>
 
-      {actions.map((action, i) => (
-        <Link
-          key={action.key}
-          href={action.href}
-          aria-label={action.label}
-          className="absolute flex items-center justify-center rounded-full bg-hf-tan transition-all duration-200"
-          style={{
-            ...arcItemStyle(ANGLES_DEG[i], position.side, position.offsetY),
-            width: CIRCLE,
-            height: CIRCLE,
-            opacity: open ? 1 : 0,
-            pointerEvents: open ? "auto" : "none",
-            transform: open ? "scale(1)" : "scale(0.4)",
-          }}
-        >
-          {action.icon}
-        </Link>
-      ))}
+      {actions.map((action, i) => {
+        const isHighlighted = highlightedKey === action.key;
+        const Icon = action.icon;
+        return (
+          <Link
+            key={action.key}
+            href={action.href}
+            aria-label={action.label}
+            className="absolute flex items-center justify-center rounded-full bg-hf-tan transition-all duration-150"
+            style={{
+              ...arcItemStyle(ANGLES_DEG[i]),
+              width: CIRCLE,
+              height: CIRCLE,
+              opacity: open ? 1 : 0,
+              pointerEvents: open ? "auto" : "none",
+              transform: open ? `scale(${isHighlighted ? 1.35 : 1})` : "scale(0.4)",
+              backgroundColor: isHighlighted ? "var(--hf-green)" : undefined,
+              boxShadow: isHighlighted ? "0 4px 14px rgba(0,0,0,0.25)" : undefined,
+            }}
+          >
+            <Icon size={20} color={isHighlighted ? "var(--hf-white)" : "var(--hf-black)"} />
+          </Link>
+        );
+      })}
     </div>
   );
 }

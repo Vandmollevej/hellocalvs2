@@ -22,7 +22,11 @@
   --hf-gray: #9a988f;
   --hf-gray-dark: #6b6a65;
   --hf-red-dark: #a3271f;
+  --hf-green-muted: #6fa584;
+  --hf-red-muted: #b98077;
+  --hf-gray-border: #dbd9cd;
   --hf-fab: #232323;
+  --hf-lime: #a3e635;
 }
 
 @theme inline {
@@ -45,7 +49,11 @@
   --color-hf-gray: var(--hf-gray);
   --color-hf-gray-dark: var(--hf-gray-dark);
   --color-hf-red-dark: var(--hf-red-dark);
+  --color-hf-green-muted: var(--hf-green-muted);
+  --color-hf-red-muted: var(--hf-red-muted);
+  --color-hf-gray-border: var(--hf-gray-border);
   --color-hf-fab: var(--hf-fab);
+  --color-hf-lime: var(--hf-lime);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-hf-heading: var(--font-hf-heading);
@@ -81,6 +89,14 @@ body {
 }
 
 /* ---- HelloFresh-stil genbrugelige klasser (docs/UI.md) ---- */
+
+/* Knapper må aldrig blive markeret som tekst, fx når man forsøger at trække dem (drag-to-reorder). */
+button,
+[role="button"] {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
 
 /* Overskrifter: tung, geometrisk grotesk (font-hf-heading). Brødtekst/UI: font-hf-body. */
 .hf-heading {

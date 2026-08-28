@@ -8,6 +8,7 @@ export type FoodDataCentralProduct = {
   proteinPer100g: number;
   carbsPer100g: number;
   fatPer100g: number;
+  servingSizeGrams: number | null;
 };
 
 type FdcSearchFood = {
@@ -35,6 +36,8 @@ type FdcFood = {
   brandOwner?: string;
   gtinUpc?: string;
   foodNutrients?: FdcNutrient[];
+  servingSize?: number;
+  servingSizeUnit?: string;
 };
 
 const FDC_API_BASE = "https://api.nal.usda.gov/fdc/v1";
@@ -101,6 +104,15 @@ export async function lookupFoodDataCentral(
   const food = await fetchFdc<FdcFood>(`/food/${match.fdcId}`, apiKey);
   if (!food.description || !food.fdcId) return null;
 
+  // FDC's servingSize er kun en "pr. stk"-vægt, når enheden er gram —
+  // andre enheder (ml, IU osv.) kan ikke bruges direkte til kcal-omregning.
+  const servingSizeGrams =
+    food.servingSizeUnit?.toLowerCase() === "g" &&
+    typeof food.servingSize === "number" &&
+    food.servingSize > 0
+      ? food.servingSize
+      : null;
+
   return {
     externalId: String(food.fdcId),
     barcode,
@@ -111,5 +123,6 @@ export async function lookupFoodDataCentral(
     proteinPer100g: nutrientAmount(food, "203", "g"),
     carbsPer100g: nutrientAmount(food, "205", "g"),
     fatPer100g: nutrientAmount(food, "204", "g"),
+    servingSizeGrams,
   };
 }

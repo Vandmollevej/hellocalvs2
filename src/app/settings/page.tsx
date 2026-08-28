@@ -5,6 +5,7 @@ import {
   IconFileText,
   IconWorld,
   IconRefresh,
+  IconPlugConnected,
 } from "@tabler/icons-react";
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -48,6 +49,15 @@ export default function SettingsPage() {
             icon={<IconRefresh size={20} />}
             label="Genstart opsætningsguide"
             onClick={restartOnboarding}
+            divider={false}
+          />
+        </AccordionCard>
+
+        <AccordionCard>
+          <ChevronRow
+            icon={<IconPlugConnected size={20} />}
+            label="Integrationer"
+            href="/settings/integrationer"
             divider={false}
           />
         </AccordionCard>

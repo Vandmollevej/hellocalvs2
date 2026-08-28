@@ -68,7 +68,7 @@ export const STAT_CARD_DEFS: {
   },
   {
     key: "daysLogged",
-    label: `Dage logget (${STAT_WINDOW_DAYS} dage)`,
+    label: "Dage logget",
     icon: IconTargetArrow,
     compute: (data) => `${data.days.length}`,
   },

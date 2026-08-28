@@ -2,7 +2,9 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
+  IconCalendar,
   IconCalendarMonth,
   IconCalendarWeek,
   IconCheck,
@@ -120,11 +122,13 @@ function minutesFromMidnight(date: Date) {
   return date.getHours() * 60 + date.getMinutes();
 }
 
-const HOUR_HEIGHT = 56;
+const HOUR_HEIGHT = 40;
 const TIMELINE_HEIGHT = HOUR_HEIGHT * 24;
 const HOUR_MARKS = Array.from({ length: 25 }, (_, hour) => hour);
 const SLEEP_ADJUST_HOLD_MS = 500;
 const SLEEP_ADJUST_MOVE_TOLERANCE = 10;
+const ADD_BAR_HOLD_MS = 1000;
+const ADD_BAR_MOVE_TOLERANCE = 10;
 
 function timeToMinutes(time: string | null | undefined) {
   if (!time) return null;
@@ -141,19 +145,25 @@ function minutesToTime(minutes: number) {
   return `${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}`;
 }
 
+// Falder tilbage til en typisk nattesøvn (23:00–07:00), hvis brugeren endnu
+// ikke har sat søvnmønster/arbejdstider — søvnvisualiseringen skal altid vises.
 function getSleepWindow(
   date: Date,
   defaults: SleepDefaults | null,
   weekdaySchedules: Record<number, SleepScheduleEntry>,
   workShifts: Record<string, WorkShiftEntry>,
-): SleepWindow | null {
+): SleepWindow {
   const weekday = (date.getDay() + 6) % 7;
   const override = workShifts[isoDate(date)];
   const perDay = weekdaySchedules[weekday];
   const bedtime = timeToMinutes(override?.bedtime || perDay?.bedtime || defaults?.defaultBedtime);
   const wakeTime = timeToMinutes(override?.wakeTime || perDay?.wakeTime || defaults?.defaultWakeTime);
-  if (bedtime === null && wakeTime === null) return null;
   return { bedtime: bedtime ?? 23 * 60, wakeTime: wakeTime ?? 7 * 60 };
+}
+
+function rotatedTop(minutes: number, anchorMinutes: number) {
+  const wrapped = (((minutes - anchorMinutes) % 1440) + 1440) % 1440;
+  return (wrapped / 60) * HOUR_HEIGHT;
 }
 
 function useIsLandscape() {
@@ -384,10 +394,14 @@ export default function KalenderPage() {
               setViewMenuOpen((open) => !open);
               setMonthMenuOpen(false);
             }}
-            className="flex flex-col items-center gap-0.5 rounded-lg focus-visible:outline-2 focus-visible:outline-white disabled:opacity-50"
+            className="relative flex h-5 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-white disabled:opacity-50"
           >
             <IconCalendarMonth size={20} stroke={2} />
-            <IconChevronDown size={12} stroke={2.5} className={viewMenuOpen ? "rotate-180" : ""} />
+            <IconChevronDown
+              size={12}
+              stroke={2.5}
+              className={`absolute -bottom-2.5 left-1/2 -translate-x-1/2 ${viewMenuOpen ? "rotate-180" : ""}`}
+            />
           </button>
           {viewMenuOpen && !isLandscape && (
             <div className="absolute left-0 top-full z-40 mt-2 w-44 overflow-hidden rounded-2xl border border-hf-tan-dark bg-hf-white p-1.5 text-hf-black shadow-xl">
@@ -419,7 +433,7 @@ export default function KalenderPage() {
           <button
             type="button"
             aria-label="Luk menu"
-            className="fixed inset-0 z-30 cursor-default"
+            className="fixed inset-0 z-20 cursor-default"
             onClick={() => {
               setMonthMenuOpen(false);
               setViewMenuOpen(false);
@@ -440,6 +454,7 @@ export default function KalenderPage() {
               }}
               className="flex min-h-11 max-w-full items-center justify-center gap-1.5 rounded-full px-3 text-hf-black hover:bg-hf-tan focus-visible:outline-2 focus-visible:outline-hf-black"
             >
+              <IconCalendar size={16} className="shrink-0 text-hf-black" aria-hidden="true" />
               <span className="hf-heading truncate text-[15px] capitalize">
                 {effectiveView === "week" || effectiveView === "list" ? weekLabel : monthLabel}
               </span>
@@ -506,6 +521,7 @@ export default function KalenderPage() {
 
       {selectedDate && (
         <DayDetails
+          key={isoDate(selectedDate)}
           date={selectedDate}
           today={today}
           registrations={registrations.filter((registration) =>
@@ -645,8 +661,6 @@ function MonthView({
           const met = goalWasMet(date, today);
           const current = isSameDay(date, today);
           const isOtherMonth = date.getMonth() !== month;
-          const isPast = date < today && !current;
-          const faded = isOtherMonth && isPast;
           return (
             <button
               key={date.toISOString()}
@@ -658,15 +672,27 @@ function MonthView({
               className={`relative flex aspect-square items-center justify-center rounded-lg border text-sm font-medium focus-visible:outline-2 focus-visible:outline-hf-black ${
                 current
                   ? "border-hf-green bg-hf-green text-hf-white"
-                  : `border-transparent bg-hf-tan ${faded ? "text-hf-gray" : "text-hf-black"}`
+                  : isOtherMonth
+                    ? "border-hf-gray-border bg-transparent text-hf-gray"
+                    : "border-transparent bg-hf-tan text-hf-black"
               }`}
             >
               {date.getDate()}
               {!current &&
                 (met ? (
-                  <IconCheck size={13} stroke={3} className="absolute right-1 top-1 text-hf-green" aria-hidden="true" />
+                  <IconCheck
+                    size={12}
+                    stroke={3}
+                    className="absolute right-0.5 top-0.5 text-hf-lime"
+                    aria-hidden="true"
+                  />
                 ) : (
-                  <IconMinus size={13} stroke={3} className="absolute right-1 top-1 text-hf-red-dark" aria-hidden="true" />
+                  <span
+                    className="absolute right-1 top-0.5 text-[11px] font-bold leading-none text-hf-red-muted"
+                    aria-hidden="true"
+                  >
+                    ÷
+                  </span>
                 ))}
             </button>
           );
@@ -699,7 +725,7 @@ function WeekView({ days, today, onOpenDate }: { days: Date[]; today: Date; onOp
             <span className="hf-heading w-8 text-xl">{date.getDate()}</span>
             <span className="flex-1 text-sm font-semibold">{met ? "Dagens mål nået" : "Se dagen"}</span>
             <IconChevronRight size={19} />
-            {met && <IconCheck size={14} stroke={3} className="absolute right-2 top-2 text-hf-green-light" aria-hidden="true" />}
+            {met && <IconCheck size={14} stroke={3} className="absolute right-2 top-2 text-hf-lime" aria-hidden="true" />}
           </button>
         );
       })}
@@ -812,7 +838,7 @@ function ListView({
                 {Math.round(kcal)} kcal
               </span>
               {met ? (
-                <IconCheck size={18} stroke={2.5} className="shrink-0 text-hf-green" aria-hidden="true" />
+                <IconCheck size={18} stroke={2.5} className="shrink-0 text-hf-lime" aria-hidden="true" />
               ) : (
                 <IconMinus size={18} stroke={2.5} className="shrink-0 opacity-50" aria-hidden="true" />
               )}
@@ -866,7 +892,7 @@ function WeekTimelineView({
               </span>
               <span className="hf-heading flex items-center gap-1 text-sm">
                 {date.getDate()}
-                {met && <IconCheck size={11} stroke={3} aria-hidden="true" />}
+                {met && <IconCheck size={11} stroke={3} className="text-hf-lime" aria-hidden="true" />}
               </span>
             </button>
           );
@@ -1054,27 +1080,68 @@ function DayDetails({
   registrations: Registration[];
   loading: boolean;
   error: boolean;
-  sleepWindow: SleepWindow | null;
+  sleepWindow: SleepWindow;
   onSleepAdjust: (type: SleepAdjustType, minutes: number) => void;
   onClose: () => void;
   onNavigate: (direction: -1 | 1) => void;
 }) {
+  const router = useRouter();
   const met = goalWasMet(date, today);
   const canGoForward = stripTime(date) < stripTime(today);
   const pointerStart = useRef<number | null>(null);
-  const timelineRef = useRef<HTMLDivElement | null>(null);
+  const [addBarHour, setAddBarHour] = useState<number | null>(null);
+  const [openHour, setOpenHour] = useState<number | null>(null);
 
-  useEffect(() => {
-    timelineRef.current?.scrollTo({ top: Math.max(0, 6 * HOUR_HEIGHT - 40) });
-  }, [date]);
+  const anchorHour = Math.floor(sleepWindow.wakeTime / 60);
+  const anchorMinutes = anchorHour * 60;
+
+  const dayKcal = registrations.reduce((sum, registration) => sum + registration.kcalSnapshot, 0);
+  const remaining = DAILY_KCAL_GOAL - dayKcal;
+
+  function goToAddFlow(hour: number) {
+    const params = new URLSearchParams({
+      date: isoDate(date),
+      time: `${String(hour).padStart(2, "0")}:00`,
+    });
+    router.push(`/madvarer?${params.toString()}`);
+  }
 
   return (
     <div className="absolute inset-0 z-50 flex flex-col bg-hf-cream" role="dialog" aria-modal="true" aria-labelledby="day-title">
-      <div className="relative flex items-center justify-center bg-hf-green px-4 pb-4 pt-9 text-hf-white">
-        <button type="button" onClick={onClose} aria-label="Luk dagsvisning" className="absolute bottom-3 right-3 flex size-11 items-center justify-center rounded-full hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white">
-          <IconX size={25} />
+      <div className="relative flex items-center justify-between gap-1 bg-hf-green px-1 pb-4 pt-9 text-hf-white">
+        <button
+          type="button"
+          onClick={() => onNavigate(-1)}
+          aria-label="Forrige dag"
+          className="flex size-9 shrink-0 items-center justify-center rounded-full hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white"
+        >
+          <IconChevronLeft size={20} />
         </button>
-        <h2 id="day-title" className="hf-heading text-lg capitalize">{date.toLocaleDateString("da-DK", { weekday: "long", day: "numeric", month: "long" })}</h2>
+        <h2 id="day-title" className="hf-heading flex min-w-0 items-center justify-center gap-1.5 text-base">
+          <IconCalendar size={16} className="shrink-0" aria-hidden="true" />
+          <span className="truncate first-letter:uppercase">
+            {date.toLocaleDateString("da-DK", { weekday: "long", day: "numeric", month: "long" })}
+          </span>
+        </h2>
+        <div className="flex shrink-0 items-center gap-0.5">
+          <button
+            type="button"
+            onClick={() => canGoForward && onNavigate(1)}
+            disabled={!canGoForward}
+            aria-label="Næste dag"
+            className="flex size-9 items-center justify-center rounded-full hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white disabled:opacity-30"
+          >
+            <IconChevronRight size={20} />
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Luk dagsvisning"
+            className="flex size-9 items-center justify-center rounded-full hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white"
+          >
+            <IconX size={22} />
+          </button>
+        </div>
       </div>
       <div
         className="flex-1 overflow-y-auto p-4 touch-pan-y"
@@ -1100,13 +1167,15 @@ function DayDetails({
           <div className={`flex size-10 items-center justify-center rounded-full ${met ? "bg-white/20" : "bg-hf-white"}`}>
             {met ? <IconCheck size={23} /> : <span className="size-2.5 rounded-full bg-hf-tan-dark" />}
           </div>
-          <div>
-            <p className="font-bold">{met ? "Dagens mål blev nået" : "Dagens mål er ikke markeret"}</p>
-            <p className="text-sm opacity-75">{met ? "Flot balance i dagens registreringer" : "Du kan stadig åbne og se dagens detaljer"}</p>
-          </div>
+          <p className="font-bold">{met ? "Dagens mål blev nået" : "Dagens mål er ikke markeret"}</p>
         </div>
 
-        <h3 className="hf-heading mb-2 text-base">Registreringer</h3>
+        <div className="mb-2 flex items-center justify-between">
+          <h3 className="hf-heading text-base">Registreringer</h3>
+          {!loading && !error && registrations.length === 0 && (
+            <span className="text-sm text-hf-gray">Ingen registreringer</span>
+          )}
+        </div>
         {loading ? (
           <div className="rounded-2xl bg-hf-white p-5 text-center text-sm opacity-60">
             Henter dagens registreringer…
@@ -1118,58 +1187,313 @@ function DayDetails({
           </div>
         ) : (
           <div
-            ref={timelineRef}
             className="relative overflow-y-auto rounded-2xl border border-hf-tan bg-hf-white"
-            style={{ maxHeight: "calc(100vh - 320px)" }}
+            style={{ maxHeight: "calc(100vh - 380px)" }}
           >
             <div className="relative ml-12" style={{ height: TIMELINE_HEIGHT }}>
               <div className="absolute -left-12 top-0 h-full w-12">
-                {HOUR_MARKS.map((hour) => (
+                {HOUR_MARKS.map((mark) => (
                   <span
-                    key={hour}
+                    key={mark}
                     className="absolute right-1.5 -translate-y-1/2 text-[10px] font-medium opacity-50"
-                    style={{ top: hour * HOUR_HEIGHT }}
+                    style={{ top: mark * HOUR_HEIGHT }}
                   >
-                    {String(hour).padStart(2, "0")}
+                    {String((anchorHour + mark) % 24).padStart(2, "0")}
                   </span>
                 ))}
               </div>
-              <SleepBands window={sleepWindow} />
-              {HOUR_MARKS.map((hour) => (
-                <div key={hour} className="absolute left-0 right-0 border-t border-hf-tan/60" style={{ top: hour * HOUR_HEIGHT }} />
+              {HOUR_MARKS.map((mark) => (
+                <div key={mark} className="absolute left-0 right-0 border-t border-hf-tan/60" style={{ top: mark * HOUR_HEIGHT }} />
               ))}
-              {sleepWindow && (
-                <>
-                  <SleepBoundaryHandle minutes={sleepWindow.wakeTime} type="wake" onCommit={onSleepAdjust} />
-                  <SleepBoundaryHandle minutes={sleepWindow.bedtime} type="bedtime" onCommit={onSleepAdjust} />
-                </>
+              <SleepBlock sleepWindow={sleepWindow} anchorMinutes={anchorMinutes} onAdjust={onSleepAdjust} />
+              {addBarHour !== null && (
+                <button
+                  type="button"
+                  aria-label="Luk tilføj"
+                  className="absolute inset-0 z-10"
+                  onClick={() => setAddBarHour(null)}
+                />
               )}
-              {registrations.map((registration) => {
-                const time = new Date(registration.createdAt);
+              {Array.from({ length: 24 }, (_, mark) => {
+                const hour = (anchorHour + mark) % 24;
+                const hourRegistrations = registrations.filter(
+                  (registration) => new Date(registration.createdAt).getHours() === hour,
+                );
+                const kcalTotal = hourRegistrations.reduce((sum, registration) => sum + registration.kcalSnapshot, 0);
                 return (
-                  <Link
-                    key={registration.id}
-                    href={`/registrering/${registration.id}`}
-                    className="absolute left-1 right-1 flex items-center gap-2 truncate rounded-lg bg-hf-green px-2 text-xs font-semibold text-hf-white focus-visible:outline-2 focus-visible:outline-hf-black"
-                    style={{ top: (minutesFromMidnight(time) / 60) * HOUR_HEIGHT, minHeight: 26 }}
-                  >
-                    <span className="shrink-0 opacity-80">
-                      {new Intl.DateTimeFormat("da-DK", { hour: "2-digit", minute: "2-digit" }).format(time)}
-                    </span>
-                    <span className="flex-1 truncate">{registration.titleSnapshot}</span>
-                    <span className="shrink-0 opacity-80">{Math.round(registration.kcalSnapshot)} kcal</span>
-                  </Link>
+                  <HourRow
+                    key={hour}
+                    hour={hour}
+                    top={mark * HOUR_HEIGHT}
+                    height={HOUR_HEIGHT}
+                    kcalTotal={kcalTotal}
+                    hasEntries={hourRegistrations.length > 0}
+                    showAddBar={addBarHour === hour}
+                    onOpenDetails={setOpenHour}
+                    onLongPress={setAddBarHour}
+                    onTapAddBar={(h) => {
+                      setAddBarHour(null);
+                      goToAddFlow(h);
+                    }}
+                  />
                 );
               })}
             </div>
           </div>
         )}
-        {!loading && !error && registrations.length === 0 && (
-          <div className="mt-3 rounded-2xl bg-hf-white p-5 text-center">
-            <p className="font-semibold text-hf-black">Ingen registreringer denne dag</p>
-            <p className="mt-1 text-sm text-hf-black opacity-60">Dagens registreringer vises her, når de er tilføjet.</p>
+
+        <div className="mt-3 flex flex-col items-end gap-0.5 pr-1 text-right">
+          <p className="text-sm text-hf-gray">Mål: {DAILY_KCAL_GOAL} kcal</p>
+          {remaining >= 0 ? (
+            <p className="text-sm font-semibold text-hf-black">Du har {Math.round(remaining)} kalorier endnu</p>
+          ) : (
+            <p className="text-sm font-semibold text-hf-red-dark">Du er overskredet med {Math.round(Math.abs(remaining))} kcal</p>
+          )}
+        </div>
+      </div>
+
+      {openHour !== null && (
+        <HourEntriesOverlay
+          hour={openHour}
+          registrations={registrations.filter((registration) => new Date(registration.createdAt).getHours() === openHour)}
+          onClose={() => setOpenHour(null)}
+        />
+      )}
+    </div>
+  );
+}
+
+function SleepBlock({
+  sleepWindow,
+  anchorMinutes,
+  onAdjust,
+}: {
+  sleepWindow: SleepWindow;
+  anchorMinutes: number;
+  onAdjust: (type: SleepAdjustType, minutes: number) => void;
+}) {
+  const [dragDelta, setDragDelta] = useState<number | null>(null);
+  const activatedRef = useRef(false);
+  const movedRef = useRef(false);
+  const startYRef = useRef(0);
+  const dragDeltaRef = useRef<number | null>(null);
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function clearTimer() {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  }
+
+  function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    event.stopPropagation();
+    startYRef.current = event.clientY;
+    movedRef.current = false;
+    activatedRef.current = false;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    longPressTimer.current = setTimeout(() => {
+      if (!movedRef.current) {
+        activatedRef.current = true;
+        dragDeltaRef.current = 0;
+        setDragDelta(0);
+      }
+    }, SLEEP_ADJUST_HOLD_MS);
+  }
+
+  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    const deltaY = event.clientY - startYRef.current;
+    if (!activatedRef.current) {
+      if (Math.abs(deltaY) > SLEEP_ADJUST_MOVE_TOLERANCE) {
+        movedRef.current = true;
+        clearTimer();
+      }
+      return;
+    }
+    event.stopPropagation();
+    const deltaMinutes = (deltaY / HOUR_HEIGHT) * 60;
+    dragDeltaRef.current = deltaMinutes;
+    setDragDelta(deltaMinutes);
+  }
+
+  function finishDrag() {
+    clearTimer();
+    if (activatedRef.current && dragDeltaRef.current !== null && Math.round(dragDeltaRef.current) !== 0) {
+      const delta = dragDeltaRef.current;
+      onAdjust("wake", sleepWindow.wakeTime + delta);
+      onAdjust("bedtime", sleepWindow.bedtime + delta);
+    }
+    activatedRef.current = false;
+    dragDeltaRef.current = null;
+    setDragDelta(null);
+  }
+
+  const delta = dragDelta ?? 0;
+  const top = Math.max(0, rotatedTop(sleepWindow.bedtime, anchorMinutes) + delta);
+  const height = Math.max(0, TIMELINE_HEIGHT - top);
+  const handleTop = top + height / 2;
+
+  return (
+    <>
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 bg-hf-gray/15"
+        style={{ top, height }}
+        aria-hidden="true"
+      />
+      <div
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={finishDrag}
+        onPointerCancel={finishDrag}
+        aria-label="Justér nattesøvn"
+        className="absolute inset-x-0 z-10 flex touch-none items-center justify-center"
+        style={{ top: handleTop - 12, height: 24 }}
+      >
+        <div className={`h-[3px] w-10 rounded-full ${dragDelta !== null ? "bg-hf-black" : "bg-hf-gray-dark/60"}`} />
+      </div>
+    </>
+  );
+}
+
+function HourRow({
+  hour,
+  top,
+  height,
+  kcalTotal,
+  hasEntries,
+  showAddBar,
+  onOpenDetails,
+  onLongPress,
+  onTapAddBar,
+}: {
+  hour: number;
+  top: number;
+  height: number;
+  kcalTotal: number;
+  hasEntries: boolean;
+  showAddBar: boolean;
+  onOpenDetails: (hour: number) => void;
+  onLongPress: (hour: number) => void;
+  onTapAddBar: (hour: number) => void;
+}) {
+  const pressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const movedRef = useRef(false);
+  const startRef = useRef({ x: 0, y: 0 });
+
+  function clearTimer() {
+    if (pressTimer.current) {
+      clearTimeout(pressTimer.current);
+      pressTimer.current = null;
+    }
+  }
+
+  function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    movedRef.current = false;
+    startRef.current = { x: event.clientX, y: event.clientY };
+    pressTimer.current = setTimeout(() => {
+      if (!movedRef.current) onLongPress(hour);
+    }, ADD_BAR_HOLD_MS);
+  }
+
+  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    const dx = event.clientX - startRef.current.x;
+    const dy = event.clientY - startRef.current.y;
+    if (Math.hypot(dx, dy) > ADD_BAR_MOVE_TOLERANCE) {
+      movedRef.current = true;
+      clearTimer();
+    }
+  }
+
+  return (
+    <div
+      className="absolute inset-x-0"
+      style={{ top, height }}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={clearTimer}
+      onPointerCancel={clearTimer}
+    >
+      {hasEntries && (
+        <button
+          type="button"
+          onClick={() => onOpenDetails(hour)}
+          className="absolute inset-y-0 right-1 z-[5] flex items-center gap-1 pl-2 text-xs font-bold text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
+        >
+          <span>{Math.round(kcalTotal)} kalorier</span>
+          <IconChevronRight size={16} className="opacity-50" />
+        </button>
+      )}
+      {showAddBar && (
+        <button
+          type="button"
+          onClick={() => onTapAddBar(hour)}
+          className="absolute inset-x-1 inset-y-0.5 z-20 flex items-center justify-center rounded-md bg-hf-black text-xs font-semibold text-hf-white"
+        >
+          Tilføj
+        </button>
+      )}
+    </div>
+  );
+}
+
+function HourEntriesOverlay({
+  hour,
+  registrations,
+  onClose,
+}: {
+  hour: number;
+  registrations: Registration[];
+  onClose: () => void;
+}) {
+  const sorted = [...registrations].sort(
+    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+  );
+  const groups: Array<{ key: string; time: Date; items: Registration[] }> = [];
+  for (const registration of sorted) {
+    const time = new Date(registration.createdAt);
+    const key = `${time.getHours()}:${time.getMinutes()}`;
+    const lastGroup = groups[groups.length - 1];
+    if (lastGroup && lastGroup.key === key) lastGroup.items.push(registration);
+    else groups.push({ key, time, items: [registration] });
+  }
+
+  return (
+    <div className="absolute inset-0 z-[60] flex flex-col bg-hf-cream" role="dialog" aria-modal="true">
+      <div className="relative flex items-center justify-center bg-hf-green px-4 pb-4 pt-9 text-hf-white">
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Tilbage"
+          className="absolute bottom-3 left-3 flex size-11 items-center justify-center rounded-full hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white"
+        >
+          <IconChevronLeft size={24} />
+        </button>
+        <h2 className="hf-heading text-lg">
+          Kl. {String(hour).padStart(2, "0")}–{String((hour + 1) % 24).padStart(2, "0")}
+        </h2>
+      </div>
+      <div className="flex-1 overflow-y-auto p-4">
+        {groups.map((group) => (
+          <div key={group.key}>
+            <div className="my-3 flex items-center gap-2 text-xs font-semibold text-hf-gray">
+              <span className="h-px flex-1 bg-hf-tan-dark" aria-hidden="true" />
+              <span>{new Intl.DateTimeFormat("da-DK", { hour: "2-digit", minute: "2-digit" }).format(group.time)}</span>
+              <span className="h-px flex-1 bg-hf-tan-dark" aria-hidden="true" />
+            </div>
+            {group.items.map((registration) => (
+              <Link
+                key={registration.id}
+                href={`/registrering/${registration.id}`}
+                className="mb-2 flex items-center justify-between rounded-2xl bg-hf-white p-3 focus-visible:outline-2 focus-visible:outline-hf-black"
+              >
+                <span className="truncate text-sm text-hf-black">{registration.titleSnapshot}</span>
+                <span className="ml-2 shrink-0 text-sm font-bold text-hf-black">
+                  {Math.round(registration.kcalSnapshot)} kcal
+                </span>
+              </Link>
+            ))}
           </div>
-        )}
+        ))}
       </div>
     </div>
   );
@@ -1194,26 +1518,42 @@ function MonthlyStatus({ status }: { status: MonthlyStatusData }) {
   return (
     <div className="mt-5 space-y-1.5 text-center">
       {streak >= 5 && (
-        <div className="mb-2 flex justify-center">
+        <div className="mb-3 flex flex-col items-center gap-1">
           <span className="relative flex size-9 items-center justify-center" aria-label={`${streak} dages stribe i træk`}>
             <IconStarFilled size={36} className="text-hf-green" aria-hidden="true" />
             <span className="absolute text-xs font-bold text-hf-white">{streak}</span>
           </span>
+          <p className="text-sm font-semibold text-hf-black">Flot! {streak} dage i træk har du nået dit mål!</p>
         </div>
       )}
 
-      <p className="flex items-center justify-center gap-2 text-lg">
-        {withinGoal ? (
-          <IconCheck size={22} stroke={2.5} className="shrink-0 text-hf-green" aria-hidden="true" />
-        ) : (
-          <IconMinus size={22} stroke={2.5} className="shrink-0 text-hf-red-dark" aria-hidden="true" />
-        )}
-        <span className="text-hf-gray-dark">
-          {withinGoal ? "Du er inden for din målsætning. Du har " : "Du er ikke inden for din målsætning. Du har overskredet med "}
-          <span className="font-bold text-hf-black">{Math.round(Math.abs(remaining))}</span>
-          {withinGoal ? " kalorier til gode." : " kalorier."}
+      <div className="flex items-start justify-center gap-2 text-left">
+        <span
+          className={`mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full ${
+            withinGoal ? "bg-hf-green" : "bg-hf-red-muted"
+          }`}
+        >
+          {withinGoal ? (
+            <IconCheck size={13} stroke={3} className="text-hf-white" aria-hidden="true" />
+          ) : (
+            <span className="text-[11px] font-bold leading-none text-hf-white" aria-hidden="true">
+              ÷
+            </span>
+          )}
         </span>
-      </p>
+        <div>
+          <p className="text-base font-semibold text-hf-black">
+            {withinGoal ? "Du er inden for din målsætning." : "Du er ikke inden for din målsætning."}
+          </p>
+          <p className="text-sm font-normal text-hf-gray-dark">
+            {withinGoal ? (
+              <>Du har <span className="font-semibold text-hf-black">{Math.round(Math.abs(remaining))}</span> kalorier til gode.</>
+            ) : (
+              <>Du har overskredet med <span className="font-semibold text-hf-black">{Math.round(Math.abs(remaining))}</span> kalorier.</>
+            )}
+          </p>
+        </div>
+      </div>
 
       <p className="text-sm text-hf-gray">
         Over de sidste syv dage er du {sevenDayRemaining >= 0 ? "under" : "over"} din målsætning.

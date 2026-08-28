@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import {
   IconPlus,
@@ -11,12 +11,25 @@ import {
   IconMicrophone,
   IconUser,
   IconX,
+  IconRecycle,
 } from "@tabler/icons-react";
 
-const ICON_SIZE = 30;
+const ICON_SIZE = 24;
+const NAV_ACTIVE_COLOR = "#232323";
+const NAV_INACTIVE_COLOR = "#4b4b4b";
+const NAV_BORDER_COLOR = "#afadaa";
+const PANEL_ICON_SIZE = 24;
 const STORAGE_KEY = "hellocal:bottomnav:v1";
 const LONG_PRESS_MS = 550;
+const READY_MS = 1000;
 const MOVE_CANCEL_PX = 10;
+const SHEET_CLOSE_PX = 60;
+const FLIP_MS = 200;
+const PAGE_SIZE = 4;
+const EDGE_ZONE_PX = 36;
+const EDGE_HOLD_MS = 650;
+const SWIPE_MIN_RATIO = 0.22;
+const PAGE_ANIM_MS = 220;
 
 function TrendIcon({ color, size }: { color: string; size: number }) {
   return (
@@ -99,6 +112,13 @@ const DEFAULT_INACTIVE = NAV_ITEMS.map((i) => i.key).filter(
   (k) => !DEFAULT_ACTIVE.includes(k),
 );
 
+function chunk<T>(arr: T[], size: number): T[][] {
+  const out: T[][] = [];
+  for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+  if (out.length === 0) out.push([]);
+  return out;
+}
+
 function loadLayout(): { active: string[]; inactive: string[] } {
   if (typeof window === "undefined") {
     return { active: DEFAULT_ACTIVE, inactive: DEFAULT_INACTIVE };
@@ -130,7 +150,21 @@ type DragState = {
   x: number;
   y: number;
   moved: boolean;
+  ready: boolean;
+  overTarget: boolean;
 };
+
+type PageSwipeState = {
+  pointerId: number;
+  startX: number;
+  offsetX: number;
+};
+
+function overRect(el: HTMLElement | null, clientX: number, clientY: number) {
+  if (!el) return false;
+  const r = el.getBoundingClientRect();
+  return clientX >= r.left && clientX <= r.right && clientY >= r.top && clientY <= r.bottom;
+}
 
 export function BottomNav() {
   const pathname = usePathname();
@@ -141,13 +175,29 @@ export function BottomNav() {
   const [editMode, setEditMode] = useState(false);
   const [drag, setDrag] = useState<DragState | null>(null);
   const [hydrated, setHydrated] = useState(false);
+  const [sheetOffset, setSheetOffset] = useState(0);
+  const [sheetSnapping, setSheetSnapping] = useState(false);
+  const [sheetDragActive, setSheetDragActive] = useState(false);
+  const [page, setPage] = useState(0);
+  const [pageSwipe, setPageSwipe] = useState<PageSwipeState | null>(null);
 
   const barRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef(new Map<string, HTMLElement>());
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const readyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const edgeHoldTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const edgeHoldDir = useRef(0);
   const pressStart = useRef<{ x: number; y: number } | null>(null);
   const dragRef = useRef<DragState | null>(null);
+  const pageSwipeRef = useRef<PageSwipeState | null>(null);
+  const activeKeysRef = useRef(activeKeys);
+  const pageRef = useRef(page);
+  const sheetDrag = useRef<{ pointerId: number; startY: number } | null>(null);
+  const prevRects = useRef(new Map<string, DOMRect>());
+
+  const pages = chunk(activeKeys, PAGE_SIZE);
+  const currentPage = Math.min(page, pages.length - 1);
 
   useEffect(() => {
     const layout = loadLayout();
@@ -165,6 +215,38 @@ export function BottomNav() {
     );
   }, [activeKeys, inactiveKeys, hydrated]);
 
+  useEffect(() => {
+    activeKeysRef.current = activeKeys;
+  }, [activeKeys]);
+
+  useEffect(() => {
+    pageRef.current = currentPage;
+  }, [currentPage]);
+
+  // FLIP-animate icons that shift position when the active/inactive lists reorder.
+  useLayoutEffect(() => {
+    const nextRects = new Map<string, DOMRect>();
+    itemRefs.current.forEach((el, key) => {
+      nextRects.set(key, el.getBoundingClientRect());
+    });
+    itemRefs.current.forEach((el, key) => {
+      if (dragRef.current?.moved && dragRef.current.key === key) return;
+      const prev = prevRects.current.get(key);
+      const next = nextRects.get(key);
+      if (!prev || !next) return;
+      const dx = prev.left - next.left;
+      const dy = prev.top - next.top;
+      if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) return;
+      el.style.transition = "none";
+      el.style.transform = `translate(${dx}px, ${dy}px)`;
+      requestAnimationFrame(() => {
+        el.style.transition = `transform ${FLIP_MS}ms ease`;
+        el.style.transform = "";
+      });
+    });
+    prevRects.current = nextRects;
+  }, [activeKeys, inactiveKeys]);
+
   const clearLongPress = useCallback(() => {
     if (longPressTimer.current) {
       clearTimeout(longPressTimer.current);
@@ -172,42 +254,50 @@ export function BottomNav() {
     }
   }, []);
 
-  const finishDrag = useCallback(
-    (clientX: number, clientY: number) => {
-      const current = dragRef.current;
-      dragRef.current = null;
-      setDrag(null);
-      if (!current) return;
+  const clearReadyTimer = useCallback(() => {
+    if (readyTimer.current) {
+      clearTimeout(readyTimer.current);
+      readyTimer.current = null;
+    }
+  }, []);
 
-      const overRect = (el: HTMLElement | null) => {
-        if (!el) return false;
-        const r = el.getBoundingClientRect();
-        return clientX >= r.left && clientX <= r.right && clientY >= r.top && clientY <= r.bottom;
-      };
+  const clearEdgeHoldTimer = useCallback(() => {
+    if (edgeHoldTimer.current) {
+      clearTimeout(edgeHoldTimer.current);
+      edgeHoldTimer.current = null;
+    }
+    edgeHoldDir.current = 0;
+  }, []);
 
-      if (!current.moved) {
-        if (current.source === "inactive") {
-          setInactiveKeys((prev) => prev.filter((k) => k !== current.key));
-          setActiveKeys((prev) => (prev.includes(current.key) ? prev : [...prev, current.key]));
-        }
-        return;
-      }
+  const finishDrag = useCallback((clientX: number, clientY: number) => {
+    clearReadyTimer();
+    clearEdgeHoldTimer();
+    const current = dragRef.current;
+    dragRef.current = null;
+    setDrag(null);
+    if (!current) return;
 
-      if (current.source === "active" && overRect(panelRef.current)) {
-        setActiveKeys((prev) => prev.filter((k) => k !== current.key));
-        setInactiveKeys((prev) => (prev.includes(current.key) ? prev : [...prev, current.key]));
-        return;
-      }
-
+    if (!current.moved) {
       if (current.source === "inactive") {
-        if (overRect(barRef.current)) {
-          setInactiveKeys((prev) => prev.filter((k) => k !== current.key));
-          setActiveKeys((prev) => (prev.includes(current.key) ? prev : [...prev, current.key]));
-        }
+        setInactiveKeys((prev) => prev.filter((k) => k !== current.key));
+        setActiveKeys((prev) => (prev.includes(current.key) ? prev : [...prev, current.key]));
       }
-    },
-    [],
-  );
+      return;
+    }
+
+    if (current.source === "active" && overRect(panelRef.current, clientX, clientY)) {
+      setActiveKeys((prev) => prev.filter((k) => k !== current.key));
+      setInactiveKeys((prev) => (prev.includes(current.key) ? prev : [...prev, current.key]));
+      return;
+    }
+
+    if (current.source === "inactive") {
+      if (overRect(barRef.current, clientX, clientY)) {
+        setInactiveKeys((prev) => prev.filter((k) => k !== current.key));
+        setActiveKeys((prev) => (prev.includes(current.key) ? prev : [...prev, current.key]));
+      }
+    }
+  }, [clearReadyTimer, clearEdgeHoldTimer]);
 
   useEffect(() => {
     if (!drag) return;
@@ -218,16 +308,48 @@ export function BottomNav() {
 
       const dx = e.clientX - current.x;
       const dy = e.clientY - current.y;
-      const moved = current.moved || Math.hypot(dx, dy) > MOVE_CANCEL_PX;
-      const next = { ...current, x: e.clientX, y: e.clientY, moved };
+      const justStartedMoving = !current.moved && Math.hypot(dx, dy) > MOVE_CANCEL_PX;
+      const moved = current.moved || justStartedMoving;
+      if (justStartedMoving) clearReadyTimer();
+      const overTarget = moved
+        ? current.source === "active"
+          ? overRect(panelRef.current, e.clientX, e.clientY)
+          : overRect(barRef.current, e.clientX, e.clientY)
+        : false;
+      const next = { ...current, x: e.clientX, y: e.clientY, moved, overTarget };
       dragRef.current = next;
       setDrag(next);
 
       if (moved && current.source === "active") {
+        const barRect = barRef.current?.getBoundingClientRect();
+        const totalPages = Math.max(1, Math.ceil(activeKeysRef.current.length / PAGE_SIZE));
+        if (barRect) {
+          const nearLeft = e.clientX - barRect.left < EDGE_ZONE_PX && pageRef.current > 0;
+          const nearRight =
+            barRect.right - e.clientX < EDGE_ZONE_PX && pageRef.current < totalPages - 1;
+          const dir = nearLeft ? -1 : nearRight ? 1 : 0;
+          if (dir !== 0) {
+            if (edgeHoldDir.current !== dir) {
+              clearEdgeHoldTimer();
+              edgeHoldDir.current = dir;
+              edgeHoldTimer.current = setTimeout(() => {
+                const total = Math.max(1, Math.ceil(activeKeysRef.current.length / PAGE_SIZE));
+                setPage((p) => Math.min(total - 1, Math.max(0, p + dir)));
+                edgeHoldTimer.current = null;
+                edgeHoldDir.current = 0;
+              }, EDGE_HOLD_MS);
+            }
+          } else {
+            clearEdgeHoldTimer();
+          }
+        }
+
+        const currentPageKeys = new Set(chunk(activeKeysRef.current, PAGE_SIZE)[pageRef.current] ?? []);
         let closestKey: string | null = null;
         let closestDist = Infinity;
         itemRefs.current.forEach((el, key) => {
           if (key === current.key) return;
+          if (!currentPageKeys.has(key)) return;
           const r = el.getBoundingClientRect();
           const cx = r.left + r.width / 2;
           const dist = Math.abs(cx - e.clientX);
@@ -263,10 +385,60 @@ export function BottomNav() {
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
       window.removeEventListener("pointercancel", onUp);
+      clearEdgeHoldTimer();
     };
-  }, [drag, finishDrag]);
+  }, [drag, finishDrag, clearReadyTimer, clearEdgeHoldTimer]);
+
+  function beginPageSwipe(pointerId: number, startX: number) {
+    const state: PageSwipeState = { pointerId, startX, offsetX: 0 };
+    pageSwipeRef.current = state;
+    setPageSwipe(state);
+  }
+
+  useEffect(() => {
+    if (!pageSwipe) return;
+
+    function onMove(e: PointerEvent) {
+      const current = pageSwipeRef.current;
+      if (!current || e.pointerId !== current.pointerId) return;
+      const totalPages = Math.max(1, Math.ceil(activeKeysRef.current.length / PAGE_SIZE));
+      let offsetX = e.clientX - current.startX;
+      if ((pageRef.current === 0 && offsetX > 0) || (pageRef.current === totalPages - 1 && offsetX < 0)) {
+        offsetX *= 0.3;
+      }
+      const next = { ...current, offsetX };
+      pageSwipeRef.current = next;
+      setPageSwipe(next);
+    }
+
+    function onUp(e: PointerEvent) {
+      const current = pageSwipeRef.current;
+      if (!current || e.pointerId !== current.pointerId) return;
+      const rect = barRef.current?.getBoundingClientRect();
+      const width = rect?.width || 1;
+      const ratio = current.offsetX / width;
+      const totalPages = Math.max(1, Math.ceil(activeKeysRef.current.length / PAGE_SIZE));
+      pageSwipeRef.current = null;
+      setPageSwipe(null);
+      if (ratio <= -SWIPE_MIN_RATIO && pageRef.current < totalPages - 1) {
+        setPage((p) => Math.min(totalPages - 1, p + 1));
+      } else if (ratio >= SWIPE_MIN_RATIO && pageRef.current > 0) {
+        setPage((p) => Math.max(0, p - 1));
+      }
+    }
+
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+    };
+  }, [pageSwipe]);
 
   function beginDrag(key: string, source: "active" | "inactive", e: React.PointerEvent) {
+    clearReadyTimer();
     const state: DragState = {
       key,
       source,
@@ -274,9 +446,18 @@ export function BottomNav() {
       x: e.clientX,
       y: e.clientY,
       moved: false,
+      ready: false,
+      overTarget: false,
     };
     dragRef.current = state;
     setDrag(state);
+    readyTimer.current = setTimeout(() => {
+      if (dragRef.current && dragRef.current.key === key && !dragRef.current.moved) {
+        const next = { ...dragRef.current, ready: true };
+        dragRef.current = next;
+        setDrag(next);
+      }
+    }, READY_MS);
   }
 
   function handleActivePointerDown(key: string, e: React.PointerEvent) {
@@ -294,11 +475,16 @@ export function BottomNav() {
 
   function handleActivePointerMove(e: React.PointerEvent) {
     if (editMode || !pressStart.current) return;
-    const dx = e.clientX - pressStart.current.x;
-    const dy = e.clientY - pressStart.current.y;
+    const start = pressStart.current;
+    const dx = e.clientX - start.x;
+    const dy = e.clientY - start.y;
     if (Math.hypot(dx, dy) > MOVE_CANCEL_PX) {
       clearLongPress();
       pressStart.current = null;
+      const horizontal = Math.abs(dx) > Math.abs(dy);
+      if (horizontal && pages.length > 1) {
+        beginPageSwipe(e.pointerId, start.x);
+      }
     }
   }
 
@@ -312,20 +498,103 @@ export function BottomNav() {
     }
   }
 
+  function handleEmptySlotPointerDown(e: React.PointerEvent) {
+    beginPageSwipe(e.pointerId, e.clientX);
+  }
+
   function removeFromActive(key: string) {
     setActiveKeys((prev) => prev.filter((k) => k !== key));
     setInactiveKeys((prev) => (prev.includes(key) ? prev : [...prev, key]));
   }
 
+  function resetLayout() {
+    setActiveKeys(DEFAULT_ACTIVE);
+    setInactiveKeys(DEFAULT_INACTIVE);
+    setPage(0);
+  }
+
+  function closePanel() {
+    setEditMode(false);
+  }
+
+  function handleSheetPointerDown(e: React.PointerEvent) {
+    sheetDrag.current = { pointerId: e.pointerId, startY: e.clientY };
+    setSheetSnapping(false);
+    setSheetDragActive(true);
+  }
+
+  useEffect(() => {
+    if (!sheetDragActive) return;
+
+    function onMove(e: PointerEvent) {
+      const current = sheetDrag.current;
+      if (!current || e.pointerId !== current.pointerId) return;
+      const dy = Math.max(0, e.clientY - current.startY);
+      setSheetOffset(dy);
+    }
+
+    function onUp(e: PointerEvent) {
+      const current = sheetDrag.current;
+      if (!current || e.pointerId !== current.pointerId) return;
+      sheetDrag.current = null;
+      setSheetDragActive(false);
+      setSheetSnapping(true);
+      setSheetOffset((offset) => {
+        if (offset > SHEET_CLOSE_PX) {
+          closePanel();
+        }
+        return 0;
+      });
+    }
+
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+    };
+  }, [sheetDragActive]);
+
   const draggedKey = drag?.moved ? drag.key : null;
+  const draggedOverPanel = drag?.moved && drag.source === "active" && drag.overTarget;
+  const draggedOverBar = drag?.moved && drag.source === "inactive" && drag.overTarget;
+  const trackOffsetPx = pageSwipe?.offsetX ?? 0;
 
   return (
-    <div className="relative">
+    <div className="relative select-none [-webkit-touch-callout:none]">
+      {editMode && (
+        <div
+          className="fixed inset-0 z-40 bg-hf-black/10"
+          aria-hidden="true"
+          onClick={closePanel}
+        />
+      )}
+
       {editMode && (
         <div
           ref={panelRef}
-          className="hf-nav-panel-in absolute bottom-full left-0 right-0 rounded-t-2xl border border-b-0 border-hf-tan-dark bg-hf-tan px-4 pb-3 pt-3 shadow-[0_-6px_16px_rgba(0,0,0,0.08)]"
+          className={`hf-nav-panel-in absolute bottom-full left-0 right-0 z-50 rounded-t-2xl border border-b-0 px-4 pb-3 pt-2 shadow-[0_-6px_16px_rgba(0,0,0,0.08)] ${
+            draggedOverBar ? "border-dashed border-hf-gray-dark" : "border-hf-tan-dark"
+          }`}
+          style={{
+            backgroundColor: "var(--hf-tan)",
+            transform: sheetOffset ? `translateY(${sheetOffset}px)` : undefined,
+            transition: sheetSnapping ? "transform 180ms ease-out" : undefined,
+          }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closePanel();
+          }}
         >
+          <div
+            className="-mx-4 mb-1 flex justify-center py-1.5 touch-none"
+            onPointerDown={handleSheetPointerDown}
+            aria-hidden="true"
+          >
+            <span className="h-1.5 w-10 rounded-full bg-hf-black/30" />
+          </div>
+
           <div className="mb-2 flex items-center justify-between">
             <span
               className="text-[13px] font-medium"
@@ -335,7 +604,7 @@ export function BottomNav() {
             </span>
             <button
               type="button"
-              onClick={() => setEditMode(false)}
+              onClick={closePanel}
               className="text-[13px] font-semibold"
               style={{ color: "var(--hf-green)", fontFamily: "var(--font-hf-body)" }}
             >
@@ -346,22 +615,35 @@ export function BottomNav() {
             {inactiveKeys.map((key) => {
               const item = ITEMS_BY_KEY.get(key);
               if (!item) return null;
-              const hidden = draggedKey === key && drag?.source === "inactive";
+              const isPlaceholder = draggedKey === key && drag?.source === "inactive";
+              const isReady =
+                drag?.key === key && drag.source === "inactive" && !drag.moved && drag.ready;
               return (
                 <button
                   key={key}
                   type="button"
+                  ref={(el) => {
+                    if (el) itemRefs.current.set(key, el);
+                    else itemRefs.current.delete(key);
+                  }}
                   onPointerDown={(e) => beginDrag(key, "inactive", e)}
-                  className="flex w-16 flex-col items-center gap-1 rounded-xl bg-hf-gray-light px-1 py-2 touch-none"
-                  style={{ opacity: hidden ? 0.25 : 1 }}
+                  className={`flex h-[64px] w-16 flex-none flex-col items-center justify-center gap-1 rounded-xl border px-1 py-2 touch-none select-none ${
+                    isPlaceholder
+                      ? "border-dashed border-hf-gray-dark bg-transparent"
+                      : isReady
+                        ? "border-dashed border-hf-gray-dark bg-hf-gray-light"
+                        : "border-hf-gray-light bg-hf-gray-light"
+                  }`}
                   aria-label={`Tilføj ${item.label}`}
                 >
-                  {item.render("var(--hf-black)", 24)}
-                  <span
-                    className="text-[10px] leading-tight text-center"
-                    style={{ color: "var(--hf-black)", fontFamily: "var(--font-hf-body)" }}
-                  >
-                    {item.label}
+                  <span className={`flex flex-col items-center gap-1 ${isPlaceholder ? "invisible" : ""}`}>
+                    {item.render("var(--hf-black)", PANEL_ICON_SIZE)}
+                    <span
+                      className="text-[10px] leading-tight text-center"
+                      style={{ color: "var(--hf-black)", fontFamily: "var(--font-hf-body)" }}
+                    >
+                      {item.label}
+                    </span>
                   </span>
                 </button>
               );
@@ -375,65 +657,126 @@ export function BottomNav() {
               </span>
             )}
           </div>
+
+          <div className="mt-4 flex justify-end">
+            <button
+              type="button"
+              onClick={resetLayout}
+              aria-label="Nulstil menu"
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-hf-green text-hf-white"
+            >
+              <IconRecycle size={20} />
+            </button>
+          </div>
         </div>
       )}
 
       <nav
         ref={barRef}
-        className="flex items-start border-t border-hf-tan-dark bg-hf-tan pb-6 pt-3"
+        className={`relative border-t bg-hf-tan pb-6 pt-2 ${
+          draggedOverPanel ? "border-dashed border-hf-gray-dark" : ""
+        }`}
+        style={draggedOverPanel ? undefined : { borderTopColor: NAV_BORDER_COLOR }}
         aria-label="Hovednavigation"
       >
-        {activeKeys.map((key, i) => {
-          const item = ITEMS_BY_KEY.get(key);
-          if (!item) return null;
-          const active = pathname === item.href;
-          const color = active ? "var(--hf-black)" : "var(--hf-gray)";
-          const isDragged = draggedKey === key && drag?.source === "active";
-          return (
-            <button
-              key={key}
-              type="button"
-              ref={(el) => {
-                if (el) itemRefs.current.set(key, el);
-                else itemRefs.current.delete(key);
-              }}
-              aria-label={item.label}
-              aria-current={active ? "page" : undefined}
-              onPointerDown={(e) => handleActivePointerDown(key, e)}
-              onPointerMove={handleActivePointerMove}
-              onPointerUp={() => handleActivePointerUp(key, item.href)}
-              className={`relative flex flex-1 flex-col items-center gap-1 touch-none ${
-                i < activeKeys.length - 1 ? "border-r border-hf-tan-dark" : ""
-              } ${editMode && !isDragged ? "hf-nav-jiggle" : ""}`}
-              style={{
-                animationDelay: editMode ? `${(i % 2) * 0.08}s` : undefined,
-                opacity: isDragged ? 0.25 : 1,
-              }}
-            >
-              {editMode && (
-                <span
-                  role="button"
-                  aria-label={`Fjern ${item.label}`}
-                  onPointerDown={(e) => e.stopPropagation()}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeFromActive(key);
-                  }}
-                  className="absolute -left-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-hf-black"
-                >
-                  <IconX size={13} stroke={2.2} color="var(--hf-tan)" />
-                </span>
-              )}
-              {item.render(color, ICON_SIZE)}
+        {pages.length > 1 && (
+          <div className="mb-1.5 flex justify-center gap-1" aria-hidden="true">
+            {pages.map((_, i) => (
               <span
-                className="text-[12px]"
-                style={{ color, fontFamily: "var(--font-hf-body)" }}
+                key={i}
+                className="h-1.5 w-1.5 rounded-full transition-colors"
+                style={{
+                  backgroundColor: i === currentPage ? "var(--hf-black)" : "var(--hf-gray-light)",
+                }}
+              />
+            ))}
+          </div>
+        )}
+        <div className="overflow-hidden">
+          <div
+            className="flex"
+            style={{
+              transform: `translateX(calc(${-currentPage * 100}% + ${trackOffsetPx}px))`,
+              transition: pageSwipe ? "none" : `transform ${PAGE_ANIM_MS}ms ease`,
+            }}
+          >
+            {pages.map((pageKeys, pageIndex) => (
+              <div
+                key={pageIndex}
+                className="grid w-full flex-none grid-cols-4 items-start justify-items-center"
+                aria-hidden={pageIndex !== currentPage}
               >
-                {item.label}
-              </span>
-            </button>
-          );
-        })}
+                {Array.from({ length: PAGE_SIZE }, (_, slotIndex) => {
+                  const key = pageKeys[slotIndex];
+                  if (!key) {
+                    return (
+                      <div
+                        key={`empty-${pageIndex}-${slotIndex}`}
+                        className="h-[58px] w-16 touch-none select-none"
+                        onPointerDown={handleEmptySlotPointerDown}
+                      />
+                    );
+                  }
+                  const item = ITEMS_BY_KEY.get(key);
+                  if (!item) return <div key={key} className="h-[58px] w-16" />;
+                  const active = pathname === item.href;
+                  const color = active ? NAV_ACTIVE_COLOR : NAV_INACTIVE_COLOR;
+                  const isPlaceholder = draggedKey === key && drag?.source === "active";
+                  const isReady =
+                    drag?.key === key && drag.source === "active" && !drag.moved && drag.ready;
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      ref={(el) => {
+                        if (el) itemRefs.current.set(key, el);
+                        else itemRefs.current.delete(key);
+                      }}
+                      aria-label={item.label}
+                      aria-current={active ? "page" : undefined}
+                      onPointerDown={(e) => handleActivePointerDown(key, e)}
+                      onPointerMove={handleActivePointerMove}
+                      onPointerUp={() => handleActivePointerUp(key, item.href)}
+                      className={`relative flex h-[58px] w-16 flex-none flex-col items-center justify-center gap-1 rounded-xl touch-none select-none ${
+                        editMode ? "border" : "border-transparent"
+                      } ${
+                        isReady || isPlaceholder
+                          ? "border-dashed border-hf-gray-dark"
+                          : editMode
+                            ? "border-hf-gray-light"
+                            : ""
+                      } ${editMode && !isPlaceholder && !isReady ? "hf-nav-jiggle" : ""}`}
+                    >
+                      {editMode && !isPlaceholder && (
+                        <span
+                          role="button"
+                          aria-label={`Fjern ${item.label}`}
+                          onPointerDown={(e) => e.stopPropagation()}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeFromActive(key);
+                          }}
+                          className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-hf-black"
+                        >
+                          <IconX size={13} stroke={2.2} color="var(--hf-tan)" />
+                        </span>
+                      )}
+                      <span className={`flex flex-col items-center gap-2 ${isPlaceholder ? "invisible" : ""}`}>
+                        {item.render(color, ICON_SIZE)}
+                        <span
+                          className="text-[11px]"
+                          style={{ color, fontFamily: "var(--font-hf-body)" }}
+                        >
+                          {item.label}
+                        </span>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
       </nav>
 
       {drag?.moved && (

@@ -9,7 +9,7 @@ Se [SPECIFICATION.md](SPECIFICATION.md) for det samlede overblik.
 
 Fra og med implementeringsfasen skal appens generelle visuelle stil (farver, fonte, knapstørrelser, boksdesign) lægge sig tæt op ad HelloFreshs app — **undtaget forsiden med halvcirkel-knappen og drejehjulet, som ikke må ændres**.
 
-- **Farver:** Grøn header/primærfarve (`--hf-green`), cremet/beige sidebaggrund (`--hf-cream`), tan/beige accordion- og kortbokse (`--hf-tan`), sort tekst og sorte pilleformede knapper (`--hf-black`).
+- **Farver:** Grøn header/primærfarve (`--hf-green`), cremet/beige sidebaggrund (`--hf-cream`), tan/beige accordion- og kortbokse (`--hf-tan`), sort tekst og sorte pilleformede knapper (`--hf-black`). Lysegrøn/lime accentfarve (`--hf-lime`, `#a3e635` — samme nuance som HelloFreshs "Beta"-badge) bruges til flueben/positive markeringer, fx opfyldt mål i kalenderen.
 - **Typografi:** Fed, sort/hvid tekst på headere og knapper.
 - **Accordion-mønster:** Indstillinger og lignende lister opbygges som cremede/tan rundede kort med chevron-rækker (ikon til venstre, label, ">" til højre), grupperet i separate kort — matcher HelloFreshs Indstillinger-skærm.
 - **Ingrediens-/kalorieopstilling:** Skal genbruge HelloFreshs ingrediensliste-design (cirkulære ikoner pr. ingrediens, fed mængde + navn).
@@ -30,14 +30,14 @@ Fra og med implementeringsfasen skal appens generelle visuelle stil (farver, fon
   Vandret swipe og pile skifter periode, månedstitlen åbner alle årets måneder,
   og tryk på en dato åbner dagens gemte registreringer.
 - I kalenderen markeres en dag med opfyldt mål diskret med en 1 px grøn ramme
-  og et lysegrønt flueben øverst til højre. Dags dato har grøn baggrund.
+  og et flueben i lime-accentfarven (`--hf-lime`) øverst til højre. Dags dato har grøn baggrund.
 
 ## Navigation
 
 - Bundnavigation med fire faner: **Tilføj** (hjem), **Madvarer**, **Kalender**, **Statistik**.
 - Hovedfaner skiftes med vandret swipe. Swipet deaktiveres, når et fuldskærmsvindue er åbent.
 - Historik ligger under profilmenuen, ikke i bundnavigationen.
-- Øverste bjælke (på forsiden): venstre tom, højre en cirkel med brugerens initialer — tryk åbner en kort menu: Profil, Indstillinger, Privatliv, Log ud.
+- Øverste bjælke (på forsiden): venstre en cirkel med brugerens initialer — tryk åbner en kort menu: Profil, Indstillinger, Privatliv, Log ud. Højre hjørne holdes fri til luk-krydset på sider der kan lukkes.
 
 ### Indstillinger — struktur
 
@@ -70,9 +70,10 @@ Indstillinger er opdelt i fire sektioner:
 
 ## Layout-konsistens
 
-- Den samme topbjælke og den samme bundnavigation (fire ikoner) vises konsekvent på alle skærme — også Tilføj, Kamera, Stemme og Søgning. Der er ikke en særskilt "luk"/"annuller"-krydsknap, som fjerner den faste ramme; indholdet skifter, men rammen foroven og forneden er identisk overalt.
-- Topbjælken viser "HELLO CAL" (tekst-logo) i venstre hjørne og profilcirklen i højre hjørne — modsatte hjørner.
+- Den samme topbjælke og den samme bundnavigation (fire ikoner) vises konsekvent på alle skærme — også Tilføj, Kamera, Stemme og Søgning. Sider der kan lukkes har et luk-kryds i topbjælkens højre hjørne; indholdet skifter, men rammen foroven og forneden er identisk overalt.
+- Topbjælken viser profilcirklen i venstre hjørne. Højre hjørne er reserveret til luk-krydset på sider der kan lukkes (ellers tomt) — der er ikke plads til både profilcirkel og luk-kryds i samme hjørne, derfor sidder profilcirklen til venstre.
 - Handlingsknapper som "Tilføj" vises som en lille, rund plus-knap i stedet for en stor fuldbredde-knap, så der er mere plads til selve indholdet.
+- Skærme og deres topbjælke/overskrifter fylder hele vinduet/viewporten (edge-to-edge, som i HelloFresh-appen) — ikke indrammet med synlig margin eller baggrund omkring.
 
 ## Accordion — udvidelse af en vare i en liste
 
