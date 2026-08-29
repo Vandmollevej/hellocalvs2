@@ -19,6 +19,7 @@ import {
 import { HfScreen } from "@/components/HfScreen";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
 import { groupByDay } from "@/lib/daily-totals";
+import { getSportMeta } from "@/lib/sport-icons";
 
 const WEEKDAYS = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
 const MONTHS = Array.from({ length: 12 }, (_, month) =>
@@ -33,6 +34,14 @@ type Registration = {
   kcalSnapshot: number;
   proteinSnapshot: number;
   createdAt: string;
+};
+
+type Activity = {
+  id: string;
+  sportType: string;
+  startedAt: string;
+  durationMinutes: number;
+  caloriesBurned: number;
 };
 
 type SleepDefaults = {
@@ -129,6 +138,20 @@ const SLEEP_ADJUST_HOLD_MS = 500;
 const SLEEP_ADJUST_MOVE_TOLERANCE = 10;
 const ADD_BAR_HOLD_MS = 1000;
 const ADD_BAR_MOVE_TOLERANCE = 10;
+const MOVE_ENTRY_HOLD_MS = 500;
+const MOVE_ENTRY_MOVE_TOLERANCE = 10;
+const MIN_HOUR_HEIGHT = HOUR_HEIGHT;
+const MAX_HOUR_HEIGHT = HOUR_HEIGHT * 4;
+const ZOOM_SENSITIVITY = 220; // px to fingers must move for a full 1x scale step
+const HOUR_HEIGHT_STORAGE_KEY = "hellocal.kalender.hourHeight";
+
+function loadStoredHourHeight(): number {
+  if (typeof window === "undefined") return HOUR_HEIGHT;
+  const raw = window.localStorage.getItem(HOUR_HEIGHT_STORAGE_KEY);
+  const parsed = raw ? Number(raw) : NaN;
+  if (Number.isNaN(parsed)) return HOUR_HEIGHT;
+  return Math.min(MAX_HOUR_HEIGHT, Math.max(MIN_HOUR_HEIGHT, parsed));
+}
 
 function timeToMinutes(time: string | null | undefined) {
   if (!time) return null;
@@ -161,9 +184,9 @@ function getSleepWindow(
   return { bedtime: bedtime ?? 23 * 60, wakeTime: wakeTime ?? 7 * 60 };
 }
 
-function rotatedTop(minutes: number, anchorMinutes: number) {
+function rotatedTop(minutes: number, anchorMinutes: number, hourHeight: number = HOUR_HEIGHT) {
   const wrapped = (((minutes - anchorMinutes) % 1440) + 1440) % 1440;
-  return (wrapped / 60) * HOUR_HEIGHT;
+  return (wrapped / 60) * hourHeight;
 }
 
 function useIsLandscape() {
@@ -190,6 +213,7 @@ export default function KalenderPage() {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [registrationsLoading, setRegistrationsLoading] = useState(true);
   const [registrationsError, setRegistrationsError] = useState(false);
+  const [activities, setActivities] = useState<Activity[]>([]);
   const [sleepDefaults, setSleepDefaults] = useState<SleepDefaults | null>(null);
   const [weekdaySchedules, setWeekdaySchedules] = useState<Record<number, SleepScheduleEntry>>({});
   const [workShifts, setWorkShifts] = useState<Record<string, WorkShiftEntry>>({});
@@ -288,6 +312,24 @@ export default function KalenderPage() {
 
   useEffect(() => {
     let cancelled = false;
+    fetch("/api/activities")
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Aktiviteter kunne ikke hentes");
+        return (await response.json()) as { activities: Activity[] };
+      })
+      .then((data) => {
+        if (!cancelled) setActivities(data.activities);
+      })
+      .catch(() => {
+        if (!cancelled) setActivities([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
     Promise.all([
       fetch("/api/profile").then((response) => response.json()),
       fetch("/api/sleep-schedule").then((response) => response.json()),
@@ -319,6 +361,20 @@ export default function KalenderPage() {
 
   function requestSleepAdjust(date: Date, type: SleepAdjustType, minutes: number) {
     setPendingSleepChange({ date, type, minutes });
+  }
+
+  function handleEntryMoved(registrationId: string, newCreatedAt: Date) {
+    const iso = newCreatedAt.toISOString();
+    setRegistrations((current) =>
+      current.map((registration) =>
+        registration.id === registrationId ? { ...registration, createdAt: iso } : registration,
+      ),
+    );
+    fetch(`/api/registrations/${registrationId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ createdAt: iso }),
+    }).catch(() => {});
   }
 
   function applySleepChange(scope: "date" | "pattern") {
@@ -527,9 +583,11 @@ export default function KalenderPage() {
           registrations={registrations.filter((registration) =>
             isSameDay(new Date(registration.createdAt), selectedDate),
           )}
+          activities={activities.filter((activity) => isSameDay(new Date(activity.startedAt), selectedDate))}
           loading={registrationsLoading}
           error={registrationsError}
           sleepWindow={resolveSleepWindow(selectedDate)}
+          onEntryMoved={handleEntryMoved}
           onSleepAdjust={(type, minutes) => requestSleepAdjust(selectedDate, type, minutes)}
           onClose={() => setSelectedDate(null)}
           onNavigate={(direction) => setSelectedDate((current) => (current ? addDays(current, direction) : current))}
@@ -1068,20 +1126,24 @@ function DayDetails({
   date,
   today,
   registrations,
+  activities,
   loading,
   error,
   sleepWindow,
   onSleepAdjust,
+  onEntryMoved,
   onClose,
   onNavigate,
 }: {
   date: Date;
   today: Date;
   registrations: Registration[];
+  activities: Activity[];
   loading: boolean;
   error: boolean;
   sleepWindow: SleepWindow;
   onSleepAdjust: (type: SleepAdjustType, minutes: number) => void;
+  onEntryMoved: (registrationId: string, newCreatedAt: Date) => void;
   onClose: () => void;
   onNavigate: (direction: -1 | 1) => void;
 }) {
@@ -1091,9 +1153,49 @@ function DayDetails({
   const pointerStart = useRef<number | null>(null);
   const [addBarHour, setAddBarHour] = useState<number | null>(null);
   const [openHour, setOpenHour] = useState<number | null>(null);
+  const [hourHeight, setHourHeight] = useState(() => loadStoredHourHeight());
+  const activeZoomPointers = useRef(new Map<number, number>());
+  const zoomStart = useRef<{ avgY: number; hourHeight: number } | null>(null);
 
   const anchorHour = Math.floor(sleepWindow.wakeTime / 60);
   const anchorMinutes = anchorHour * 60;
+
+  function handleTimelinePointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    activeZoomPointers.current.set(event.pointerId, event.clientY);
+    if (activeZoomPointers.current.size === 2) {
+      const values = Array.from(activeZoomPointers.current.values());
+      zoomStart.current = { avgY: (values[0] + values[1]) / 2, hourHeight };
+    }
+  }
+
+  function handleTimelinePointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    if (!activeZoomPointers.current.has(event.pointerId)) return;
+    activeZoomPointers.current.set(event.pointerId, event.clientY);
+    if (activeZoomPointers.current.size === 2 && zoomStart.current) {
+      event.stopPropagation();
+      const values = Array.from(activeZoomPointers.current.values());
+      const avgY = (values[0] + values[1]) / 2;
+      const deltaY = avgY - zoomStart.current.avgY;
+      const next = Math.round(zoomStart.current.hourHeight + deltaY * (HOUR_HEIGHT / ZOOM_SENSITIVITY) * 4);
+      setHourHeight(Math.min(MAX_HOUR_HEIGHT, Math.max(MIN_HOUR_HEIGHT, next)));
+    }
+  }
+
+  function handleTimelinePointerEnd(event: React.PointerEvent<HTMLDivElement>) {
+    activeZoomPointers.current.delete(event.pointerId);
+    if (activeZoomPointers.current.size < 2) zoomStart.current = null;
+    if (activeZoomPointers.current.size === 0) {
+      try {
+        window.localStorage.setItem(HOUR_HEIGHT_STORAGE_KEY, String(hourHeight));
+      } catch {
+        // localStorage utilgængelig — ignorér.
+      }
+    }
+  }
+
+  const timelineHeight = hourHeight * 24;
+  const showMinuteLines = hourHeight >= HOUR_HEIGHT * 2;
+  const minuteStep = hourHeight >= HOUR_HEIGHT * 3 ? 5 : 15;
 
   const dayKcal = registrations.reduce((sum, registration) => sum + registration.kcalSnapshot, 0);
   const remaining = DAILY_KCAL_GOAL - dayKcal;
@@ -1187,25 +1289,41 @@ function DayDetails({
           </div>
         ) : (
           <div
-            className="relative overflow-y-auto rounded-2xl border border-hf-tan bg-hf-white"
+            className="relative touch-pan-y overflow-y-auto rounded-2xl border border-hf-tan bg-hf-white"
             style={{ maxHeight: "calc(100vh - 380px)" }}
+            onPointerDown={handleTimelinePointerDown}
+            onPointerMove={handleTimelinePointerMove}
+            onPointerUp={handleTimelinePointerEnd}
+            onPointerCancel={handleTimelinePointerEnd}
           >
-            <div className="relative ml-12" style={{ height: TIMELINE_HEIGHT }}>
+            <div className="relative ml-12" style={{ height: timelineHeight }}>
               <div className="absolute -left-12 top-0 h-full w-12">
                 {HOUR_MARKS.map((mark) => (
                   <span
                     key={mark}
                     className="absolute right-1.5 -translate-y-1/2 text-[10px] font-medium opacity-50"
-                    style={{ top: mark * HOUR_HEIGHT }}
+                    style={{ top: mark * hourHeight }}
                   >
                     {String((anchorHour + mark) % 24).padStart(2, "0")}
                   </span>
                 ))}
               </div>
               {HOUR_MARKS.map((mark) => (
-                <div key={mark} className="absolute left-0 right-0 border-t border-hf-tan/60" style={{ top: mark * HOUR_HEIGHT }} />
+                <div key={mark} className="absolute left-0 right-0 border-t border-hf-tan/60" style={{ top: mark * hourHeight }} />
               ))}
-              <SleepBlock sleepWindow={sleepWindow} anchorMinutes={anchorMinutes} onAdjust={onSleepAdjust} />
+              {showMinuteLines &&
+                Array.from({ length: 24 }, (_, mark) =>
+                  Array.from({ length: Math.floor(60 / minuteStep) - 1 }, (_, step) => (step + 1) * minuteStep).map(
+                    (minuteOffset) => (
+                      <div
+                        key={`${mark}-${minuteOffset}`}
+                        className="absolute left-0 right-0 border-t border-hf-tan/30"
+                        style={{ top: mark * hourHeight + (minuteOffset / 60) * hourHeight }}
+                      />
+                    ),
+                  ),
+                )}
+              <SleepBlock sleepWindow={sleepWindow} anchorMinutes={anchorMinutes} hourHeight={hourHeight} onAdjust={onSleepAdjust} />
               {addBarHour !== null && (
                 <button
                   type="button"
@@ -1220,13 +1338,17 @@ function DayDetails({
                   (registration) => new Date(registration.createdAt).getHours() === hour,
                 );
                 const kcalTotal = hourRegistrations.reduce((sum, registration) => sum + registration.kcalSnapshot, 0);
+                const hourActivities = activities.filter(
+                  (activity) => new Date(activity.startedAt).getHours() === hour,
+                );
                 return (
                   <HourRow
                     key={hour}
                     hour={hour}
-                    top={mark * HOUR_HEIGHT}
-                    height={HOUR_HEIGHT}
+                    top={mark * hourHeight}
+                    height={hourHeight}
                     kcalTotal={kcalTotal}
+                    activities={hourActivities}
                     hasEntries={hourRegistrations.length > 0}
                     showAddBar={addBarHour === hour}
                     onOpenDetails={setOpenHour}
@@ -1238,6 +1360,17 @@ function DayDetails({
                   />
                 );
               })}
+              {showMinuteLines &&
+                registrations.map((registration) => (
+                  <DraggableEntryMarker
+                    key={registration.id}
+                    registration={registration}
+                    hourHeight={hourHeight}
+                    anchorMinutes={anchorMinutes}
+                    onOpen={() => router.push(`/registrering/${registration.id}`)}
+                    onMoved={(newCreatedAt) => onEntryMoved(registration.id, newCreatedAt)}
+                  />
+                ))}
             </div>
           </div>
         )}
@@ -1266,10 +1399,12 @@ function DayDetails({
 function SleepBlock({
   sleepWindow,
   anchorMinutes,
+  hourHeight,
   onAdjust,
 }: {
   sleepWindow: SleepWindow;
   anchorMinutes: number;
+  hourHeight: number;
   onAdjust: (type: SleepAdjustType, minutes: number) => void;
 }) {
   const [dragDelta, setDragDelta] = useState<number | null>(null);
@@ -1311,7 +1446,7 @@ function SleepBlock({
       return;
     }
     event.stopPropagation();
-    const deltaMinutes = (deltaY / HOUR_HEIGHT) * 60;
+    const deltaMinutes = (deltaY / hourHeight) * 60;
     dragDeltaRef.current = deltaMinutes;
     setDragDelta(deltaMinutes);
   }
@@ -1329,8 +1464,8 @@ function SleepBlock({
   }
 
   const delta = dragDelta ?? 0;
-  const top = Math.max(0, rotatedTop(sleepWindow.bedtime, anchorMinutes) + delta);
-  const height = Math.max(0, TIMELINE_HEIGHT - top);
+  const top = Math.max(0, rotatedTop(sleepWindow.bedtime, anchorMinutes, hourHeight) + delta);
+  const height = Math.max(0, hourHeight * 24 - top);
   const handleTop = top + height / 2;
 
   return (
@@ -1360,6 +1495,7 @@ function HourRow({
   top,
   height,
   kcalTotal,
+  activities,
   hasEntries,
   showAddBar,
   onOpenDetails,
@@ -1370,12 +1506,14 @@ function HourRow({
   top: number;
   height: number;
   kcalTotal: number;
+  activities: Activity[];
   hasEntries: boolean;
   showAddBar: boolean;
   onOpenDetails: (hour: number) => void;
   onLongPress: (hour: number) => void;
   onTapAddBar: (hour: number) => void;
 }) {
+  const bonusKcal = activities.reduce((sum, activity) => sum + activity.caloriesBurned, 0);
   const pressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const movedRef = useRef(false);
   const startRef = useRef({ x: 0, y: 0 });
@@ -1413,6 +1551,15 @@ function HourRow({
       onPointerUp={clearTimer}
       onPointerCancel={clearTimer}
     >
+      {activities.length > 0 && (
+        <div className="absolute inset-y-0 left-1 z-[5] flex items-center gap-1">
+          {activities.map((activity) => {
+            const { icon: SportIcon, label } = getSportMeta(activity.sportType);
+            return <SportIcon key={activity.id} size={16} className="text-hf-black opacity-70" aria-label={label} />;
+          })}
+          <span className="text-xs font-bold text-hf-green">+{Math.round(bonusKcal)} kcal</span>
+        </div>
+      )}
       {hasEntries && (
         <button
           type="button"
@@ -1432,6 +1579,108 @@ function HourRow({
           Tilføj
         </button>
       )}
+    </div>
+  );
+}
+
+// En enkelt registrering vist direkte på tidslinjen, kun når to-finger-zoom
+// har afsløret minut-linjer (ellers ville alle dagens registreringer oversvømme
+// den kompakte 40px-høje visning). Kort tryk åbner registreringen; ½ sek. hold
+// går i "flyt"-tilstand (viser klokkeslæt+navn), og lodret træk derefter
+// justerer tidspunktet (5-min snap) indtil slip, som gemmer via
+// PATCH /api/registrations/[id].
+function DraggableEntryMarker({
+  registration,
+  hourHeight,
+  anchorMinutes,
+  onOpen,
+  onMoved,
+}: {
+  registration: Registration;
+  hourHeight: number;
+  anchorMinutes: number;
+  onOpen: () => void;
+  onMoved: (newCreatedAt: Date) => void;
+}) {
+  const originalMinutes = minutesFromMidnight(new Date(registration.createdAt));
+  const [dragMinutes, setDragMinutes] = useState<number | null>(null);
+  const armedRef = useRef(false);
+  const movedRef = useRef(false);
+  const startYRef = useRef(0);
+  const dragMinutesRef = useRef<number | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function clearTimer() {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+  }
+
+  function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    event.stopPropagation();
+    startYRef.current = event.clientY;
+    movedRef.current = false;
+    armedRef.current = false;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    timerRef.current = setTimeout(() => {
+      if (!movedRef.current) {
+        armedRef.current = true;
+        dragMinutesRef.current = originalMinutes;
+        setDragMinutes(originalMinutes);
+      }
+    }, MOVE_ENTRY_HOLD_MS);
+  }
+
+  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    const deltaY = event.clientY - startYRef.current;
+    if (!armedRef.current) {
+      if (Math.abs(deltaY) > MOVE_ENTRY_MOVE_TOLERANCE) {
+        movedRef.current = true;
+        clearTimer();
+      }
+      return;
+    }
+    event.stopPropagation();
+    const deltaMinutesRaw = (deltaY / hourHeight) * 60;
+    const snapped = Math.round(deltaMinutesRaw / 5) * 5;
+    const next = Math.min(24 * 60 - 1, Math.max(0, originalMinutes + snapped));
+    dragMinutesRef.current = next;
+    setDragMinutes(next);
+  }
+
+  function finish() {
+    clearTimer();
+    if (armedRef.current && dragMinutesRef.current !== null && dragMinutesRef.current !== originalMinutes) {
+      const next = new Date(registration.createdAt);
+      next.setHours(Math.floor(dragMinutesRef.current / 60), dragMinutesRef.current % 60, 0, 0);
+      onMoved(next);
+    } else if (!armedRef.current && !movedRef.current) {
+      onOpen();
+    }
+    armedRef.current = false;
+    movedRef.current = false;
+    dragMinutesRef.current = null;
+    setDragMinutes(null);
+  }
+
+  const displayMinutes = dragMinutes ?? originalMinutes;
+  const top = rotatedTop(displayMinutes, anchorMinutes, hourHeight);
+
+  return (
+    <div
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={finish}
+      onPointerCancel={finish}
+      className={`absolute left-1 right-14 z-[6] touch-none truncate rounded-md px-1.5 text-[10px] font-semibold text-hf-white ${
+        dragMinutes !== null ? "bg-hf-black" : "bg-hf-green"
+      }`}
+      style={{ top, height: 16, lineHeight: "16px" }}
+    >
+      {dragMinutes !== null
+        ? `${minutesToTime(displayMinutes)} · ${registration.titleSnapshot}`
+        : registration.titleSnapshot}
     </div>
   );
 }

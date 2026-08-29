@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { IconMoon, IconScale, IconHeartbeat, IconSettings } from "@tabler/icons-react";
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
+import { latestTrendWeight, type MealSample, type WeightSample } from "@/lib/weight-trend";
 
 type Sex = "FEMALE" | "MALE";
 
@@ -42,6 +43,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const [user, setUser] = useState<ProfileUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [trendWeightKg, setTrendWeightKg] = useState<number | null>(null);
   const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -61,6 +63,30 @@ export default function ProfilePage() {
         if (!cancelled) setLoading(false);
       });
 
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([
+      fetch("/api/weight-entries").then(async (response) => {
+        if (!response.ok) throw new Error("Kunne ikke hente vejninger");
+        return (await response.json()) as { entries: WeightSample[] };
+      }),
+      fetch("/api/registrations").then(async (response) => {
+        if (!response.ok) throw new Error("Kunne ikke hente registreringer");
+        return (await response.json()) as { registrations: MealSample[] };
+      }),
+    ])
+      .then(([weightData, registrationData]) => {
+        if (cancelled) return;
+        setTrendWeightKg(latestTrendWeight(weightData.entries, registrationData.registrations));
+      })
+      .catch(() => {
+        if (!cancelled) setTrendWeightKg(null);
+      });
     return () => {
       cancelled = true;
     };
@@ -112,6 +138,11 @@ export default function ProfilePage() {
                   update("weightKg", event.target.value === "" ? null : Number(event.target.value))
                 }
               />
+              {trendWeightKg !== null && (
+                <span className="text-[11px] text-hf-black opacity-60">
+                  Trendvægt (AI-estimat): {trendWeightKg.toFixed(1)} kg
+                </span>
+              )}
             </Field>
 
             <Field label="Højde (cm)">

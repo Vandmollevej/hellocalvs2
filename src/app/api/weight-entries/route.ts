@@ -23,9 +23,10 @@ export async function GET() {
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { weightKg, clothed, toilet, meal, timeOfDay, note } = body as {
+  const { weightKg, clothed, shoes, toilet, meal, timeOfDay, note } = body as {
     weightKg: number;
     clothed: boolean;
+    shoes?: "ON" | "OFF" | "UNKNOWN";
     toilet: "BEFORE" | "AFTER" | "UNKNOWN";
     meal: "BEFORE" | "AFTER" | "UNKNOWN";
     timeOfDay: "MORNING" | "EVENING" | "UNKNOWN";
@@ -43,6 +44,7 @@ export async function POST(req: Request) {
         userId: user.id,
         weightKg,
         clothed: clothed ?? true,
+        shoes: shoes ?? "UNKNOWN",
         toilet: toilet ?? "UNKNOWN",
         meal: meal ?? "UNKNOWN",
         timeOfDay: timeOfDay ?? "UNKNOWN",

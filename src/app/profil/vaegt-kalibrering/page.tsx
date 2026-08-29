@@ -6,11 +6,13 @@ import { ScreenHeader } from "@/components/hf/ScreenHeader";
 
 type RelativeTime = "BEFORE" | "AFTER" | "UNKNOWN";
 type TimeOfDay = "MORNING" | "EVENING" | "UNKNOWN";
+type ShoesState = "ON" | "OFF" | "UNKNOWN";
 
 type WeightEntry = {
   id: string;
   weightKg: number;
   clothed: boolean;
+  shoes: ShoesState;
   toilet: RelativeTime;
   meal: RelativeTime;
   timeOfDay: TimeOfDay;
@@ -28,6 +30,12 @@ const MEAL_LABELS: Record<RelativeTime, string> = {
   BEFORE: "Før mad",
   AFTER: "Efter mad",
   UNKNOWN: "Mad ikke angivet",
+};
+
+const SHOES_LABELS: Record<ShoesState, string> = {
+  ON: "Med sko",
+  OFF: "Uden sko",
+  UNKNOWN: "Sko ikke angivet",
 };
 
 const TIME_LABELS: Record<TimeOfDay, string> = {
@@ -85,6 +93,7 @@ export default function WeightCalibrationPage() {
 
   const [weightKg, setWeightKg] = useState("");
   const [clothed, setClothed] = useState<"true" | "false">("true");
+  const [shoes, setShoes] = useState<ShoesState>("UNKNOWN");
   const [toilet, setToilet] = useState<RelativeTime>("UNKNOWN");
   const [meal, setMeal] = useState<RelativeTime>("UNKNOWN");
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>("UNKNOWN");
@@ -117,6 +126,7 @@ export default function WeightCalibrationPage() {
         body: JSON.stringify({
           weightKg: parsed,
           clothed: clothed === "true",
+          shoes,
           toilet,
           meal,
           timeOfDay,
@@ -124,6 +134,7 @@ export default function WeightCalibrationPage() {
       });
       if (response.ok) {
         setWeightKg("");
+        setShoes("UNKNOWN");
         setToilet("UNKNOWN");
         setMeal("UNKNOWN");
         setTimeOfDay("UNKNOWN");
@@ -170,6 +181,15 @@ export default function WeightCalibrationPage() {
             options={[
               { value: "false", label: "Uden tøj" },
               { value: "true", label: "Med tøj" },
+            ]}
+          />
+          <Segmented
+            value={shoes}
+            onChange={setShoes}
+            options={[
+              { value: "OFF", label: "Uden sko" },
+              { value: "ON", label: "Med sko" },
+              { value: "UNKNOWN", label: "Ved ikke" },
             ]}
           />
           <Segmented
@@ -232,6 +252,7 @@ export default function WeightCalibrationPage() {
                 <p className="text-[12px] text-hf-black opacity-60">
                   {[
                     entry.clothed ? "Med tøj" : "Uden tøj",
+                    entry.shoes !== "UNKNOWN" ? SHOES_LABELS[entry.shoes] : null,
                     TIME_LABELS[entry.timeOfDay] || null,
                     entry.toilet !== "UNKNOWN" ? TOILET_LABELS[entry.toilet] : null,
                     entry.meal !== "UNKNOWN" ? MEAL_LABELS[entry.meal] : null,

@@ -1,15 +1,19 @@
 import { prisma } from "@/lib/prisma";
 import type { Integration, IntegrationProvider } from "@prisma/client";
 
-// Katalog over alle udbydere Integrationer-siden kan vise. Kun FITBIT og
-// WITHINGS har en rigtig, selvstændig cloud-OAuth-API og kan derfor faktisk
-// forbindes i denne omgang — se docs/DECISIONS.md for baggrunden. De øvrige
-// tre vises kun statisk med en forklaring, uden nogen database-række.
+// Katalog over alle udbydere Integrationer-siden kan vise.
+// - FITBIT/WITHINGS: rigtig, selvstændig cloud-OAuth-API — forbindes direkte.
+// - APPLE_HEALTH/GOOGLE_HEALTH: kan ikke tilgås fra en webapp overhovedet
+//   (native-only), men er forberedt til at modtage data fra en fremtidig
+//   companion-app via et enhedstoken (`ingestOnly`) — se
+//   docs/HEALTHKIT_COMPANION.md og docs/DECISIONS.md.
+// - GARMIN: afventer separat partnergodkendelse, helt utilgængelig indtil da.
 export type IntegrationMeta = {
   provider: IntegrationProvider;
   label: string;
   description: string;
   connectable: boolean;
+  ingestOnly?: boolean;
   unavailableReason?: string;
 };
 
@@ -38,18 +42,22 @@ export const INTEGRATION_CATALOG: IntegrationMeta[] = [
   {
     provider: "APPLE_HEALTH",
     label: "Apple Health",
-    description: "Apple tillader kun native apps at læse Health-data.",
+    description:
+      "Apple tillader kun native apps at læse Health-data — kræver en companion-app (forberedt, ikke bygget endnu).",
     connectable: false,
+    ingestOnly: true,
     unavailableReason:
-      "Kræver enten en companion-app eller et betalt tredjeparts-abonnement (fx Terra/Vital) — ikke tilkoblet endnu.",
+      "Backend er klar (enhedstoken + modtagelse), men der findes endnu ingen iOS-app der sender data.",
   },
   {
     provider: "GOOGLE_HEALTH",
     label: "Google Health Connect",
-    description: "Ligesom Apple Health kun tilgængeligt on-device for native apps.",
+    description:
+      "Ligesom Apple Health kun tilgængeligt on-device — kræver en companion-app (forberedt, ikke bygget endnu).",
     connectable: false,
+    ingestOnly: true,
     unavailableReason:
-      "Kræver enten en companion-app eller et betalt tredjeparts-abonnement (fx Terra/Vital) — ikke tilkoblet endnu.",
+      "Backend er klar (enhedstoken + modtagelse), men der findes endnu ingen Android-app der sender data.",
   },
 ];
 

@@ -42,7 +42,7 @@ Status: Rekonstrueret fra den fulde ChatGPT-designsamtale (OCR'et PDF-eksport, 1
 
 ## 4. Sundhedsintegration
 
-- Apple Health og Google Health Connect er **write-only**: HELLO CAL skriver data (vægt, kropsmål, kalorier, makro, vand, vitaminer/mineraler, træning, aktive kalorier, kropsfedt m.m.) hvis brugeren tillader det pr. datatype — appen læser aldrig data derfra. HELLO CAL er den primære datakilde.
+- Apple Health og Google Health Connect er **write-only fra selve webappen**: HELLO CAL skriver data (vægt, kropsmål, kalorier, makro, vand, vitaminer/mineraler, træning, aktive kalorier, kropsfedt m.m.) hvis brugeren tillader det pr. datatype — webappen kan aldrig læse data derfra (Apple/Google tillader det kun for native apps). En separat, endnu ikke bygget native companion-app kan læse HealthKit/Health Connect og sende data videre til HELLO CALs egen database via et enhedstoken — se `docs/HEALTHKIT_COMPANION.md`. HELLO CAL forbliver den primære datakilde/database uanset kilden til den enkelte måling.
 - Fitbit understøttes som selvstændig integration (ikke kun via Apple Health), inkl. hentning af aktivitet/forbrænding og evt. vægt fra tilknyttet smartvægt.
 - Er en vægt-/aktivitetsintegration aktiv, overskriver den automatisk den aktuelle værdi i HELLO CAL (fx seneste vægtmåling).
 

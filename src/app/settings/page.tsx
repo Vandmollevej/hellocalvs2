@@ -6,6 +6,7 @@ import {
   IconWorld,
   IconRefresh,
   IconPlugConnected,
+  IconCreditCard,
 } from "@tabler/icons-react";
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -28,12 +29,47 @@ function restartOnboarding() {
     .catch(() => {});
 }
 
+// Intet betalings-/kredit-backend findes endnu (ingen konto-/abonnementssystem
+// i det hele taget, se docs/STATUS.md "Next work"). Invitationen er derfor kun
+// en delefunktion — ingen belønning krediteres, se docs/DECISIONS.md.
+async function inviteAFriend() {
+  const shareData = {
+    title: "Hello Cal",
+    text: "Prøv Hello Cal med mig — så får vi begge en måned gratis!",
+    url: "https://hellocal.packroff.dk",
+  };
+
+  if (navigator.share) {
+    try {
+      await navigator.share(shareData);
+    } catch {
+      // Brugeren annullerede delingen — ignorér.
+    }
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+  } catch {
+    // Udklipsholder utilgængelig — ignorér.
+  }
+}
+
 export default function SettingsPage() {
   return (
     <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
       <ScreenHeader title="Indstillinger" />
 
       <div className="flex flex-col gap-4 p-4">
+        <AccordionCard>
+          <ChevronRow
+            icon={<IconCreditCard size={20} />}
+            label="Betaling"
+            href="/settings/betaling"
+            divider={false}
+          />
+        </AccordionCard>
+
         <div className="rounded-2xl bg-hf-tan p-5 text-center">
           <p className="text-[15px] font-bold text-hf-black">
             Vælg dine egne opskrifter, og skræddersy din måltidskasse.
@@ -71,6 +107,15 @@ export default function SettingsPage() {
         <AccordionCard>
           <ChevronRow icon={<IconWorld size={20} />} label="Vælg dit land" divider={false} />
         </AccordionCard>
+
+        <button
+          type="button"
+          onClick={inviteAFriend}
+          className="rounded-2xl bg-hf-green p-5 text-left text-hf-white"
+        >
+          <p className="text-[15px] font-bold">Invitér en ven</p>
+          <p className="mt-0.5 text-[13px] opacity-90">– Så får I begge en måned gratis</p>
+        </button>
       </div>
 
       <div className="flex-1" />

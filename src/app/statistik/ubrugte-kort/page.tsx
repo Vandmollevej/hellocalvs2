@@ -8,11 +8,25 @@ import {
   computeStatCards,
   addStatCardToLayout,
   DEFAULT_ACTIVE_STAT_KEYS,
+  SPORT_STAT_KEY_PREFIX,
   STAT_WINDOW_DAYS,
+  type ActivityTotals,
+  type HealthMetricTotals,
   type StatCardValue,
   type StatGridLayoutItem,
 } from "@/lib/stat-cards";
 import { groupByDay, withinLastDays, type RegistrationTotals } from "@/lib/daily-totals";
+import type { IntegrationCardStatus } from "@/lib/integrations";
+
+function withinLastDaysActivities(activities: ActivityTotals[], days: number) {
+  const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
+  return activities.filter((activity) => new Date(activity.startedAt).getTime() >= cutoff);
+}
+
+function withinLastDaysMetrics(metrics: HealthMetricTotals[], days: number) {
+  const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
+  return metrics.filter((metric) => new Date(metric.recordedAt).getTime() >= cutoff);
+}
 
 const DEFAULT_LAYOUT: StatGridLayoutItem[] = DEFAULT_ACTIVE_STAT_KEYS.map((key) => ({
   type: "stat" as const,
@@ -22,32 +36,63 @@ const DEFAULT_LAYOUT: StatGridLayoutItem[] = DEFAULT_ACTIVE_STAT_KEYS.map((key) 
 // Grupperer de kendte statistik-kort (src/lib/stat-cards.ts) i faste kategorier.
 // Kategorier uden nogen matchende kort i denne kodebase vises stadig, men med en
 // besked om at der endnu ikke findes data — der opfindes ingen nye stat-typer her.
-const CATEGORY_KEYS: { title: string; keys: string[] }[] = [
+const CATEGORY_KEYS: { title: string; keys: string[] | "dynamic-sport" }[] = [
   { title: "Energi og makrofordeling", keys: ["calories", "protein", "carbs", "fat"] },
   { title: "Kulhydrattyper og fibre", keys: [] },
   { title: "Vitaminer", keys: [] },
   { title: "Mineraler", keys: [] },
   { title: "Aktivitet og øvrige data", keys: ["steps", "water", "burned", "daysLogged", "goalsMet"] },
+  // Sportstyper er dynamiske (én pr. sportsgren brugeren faktisk har data for),
+  // og kun til stede når mindst én rigtig integration er CONNECTED — se
+  // computeStatCards()/SPORT_STAT_KEY_PREFIX i src/lib/stat-cards.ts.
+  { title: "Sport og aktivitet", keys: "dynamic-sport" },
 ];
 
 export default function UbrugteStatCardsPage() {
   const router = useRouter();
   const [registrations, setRegistrations] = useState<RegistrationTotals[]>([]);
+  const [activities, setActivities] = useState<ActivityTotals[]>([]);
+  const [metrics, setMetrics] = useState<HealthMetricTotals[]>([]);
+  const [hasConnectedIntegration, setHasConnectedIntegration] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeKeys, setActiveKeys] = useState<Set<string>>(() => activeStatKeys(DEFAULT_LAYOUT));
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/registrations")
-      .then(async (response) => {
+    Promise.all([
+      fetch("/api/registrations").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente registreringer");
         return (await response.json()) as { registrations: RegistrationTotals[] };
-      })
-      .then((data) => {
-        if (!cancelled) setRegistrations(data.registrations);
+      }),
+      fetch("/api/activities").then(async (response) => {
+        if (!response.ok) throw new Error("Kunne ikke hente aktiviteter");
+        return (await response.json()) as { activities: ActivityTotals[] };
+      }),
+      fetch("/api/integrations").then(async (response) => {
+        if (!response.ok) throw new Error("Kunne ikke hente integrationer");
+        return (await response.json()) as { integrations: IntegrationCardStatus[] };
+      }),
+      fetch("/api/health-metrics").then(async (response) => {
+        if (!response.ok) throw new Error("Kunne ikke hente sundhedsdata");
+        return (await response.json()) as { metrics: HealthMetricTotals[] };
+      }),
+    ])
+      .then(([registrationData, activityData, integrationData, metricData]) => {
+        if (cancelled) return;
+        setRegistrations(registrationData.registrations);
+        setActivities(activityData.activities);
+        setHasConnectedIntegration(
+          integrationData.integrations.some((i) => i.connectable && i.status === "CONNECTED"),
+        );
+        setMetrics(metricData.metrics);
       })
       .catch(() => {
-        if (!cancelled) setRegistrations([]);
+        if (!cancelled) {
+          setRegistrations([]);
+          setActivities([]);
+          setHasConnectedIntegration(false);
+          setMetrics([]);
+        }
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -59,8 +104,14 @@ export default function UbrugteStatCardsPage() {
 
   const allCards = useMemo(() => {
     const days = groupByDay(withinLastDays(registrations, STAT_WINDOW_DAYS));
-    return computeStatCards({ days });
-  }, [registrations]);
+    const recentActivities = withinLastDaysActivities(activities, STAT_WINDOW_DAYS);
+    const recentMetrics = withinLastDaysMetrics(metrics, STAT_WINDOW_DAYS);
+    return computeStatCards({
+      days,
+      activities: hasConnectedIntegration ? recentActivities : undefined,
+      metrics: recentMetrics,
+    });
+  }, [registrations, activities, metrics, hasConnectedIntegration]);
 
   const cardByKey = useMemo(() => new Map(allCards.map((c) => [c.key, c])), [allCards]);
 
@@ -80,10 +131,13 @@ export default function UbrugteStatCardsPage() {
         </p>
 
         {CATEGORY_KEYS.map((category) => {
-          const cards = category.keys
-            .map((key) => cardByKey.get(key))
-            .filter((c): c is StatCardValue => Boolean(c))
-            .filter((c) => !activeKeys.has(c.key));
+          const cards =
+            category.keys === "dynamic-sport"
+              ? allCards.filter((c) => c.key.startsWith(SPORT_STAT_KEY_PREFIX) && !activeKeys.has(c.key))
+              : category.keys
+                  .map((key) => cardByKey.get(key))
+                  .filter((c): c is StatCardValue => Boolean(c))
+                  .filter((c) => !activeKeys.has(c.key));
 
           return (
             <section key={category.title} className="flex flex-col gap-2">

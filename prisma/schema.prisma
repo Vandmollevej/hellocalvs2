@@ -66,6 +66,9 @@ model User {
   workShifts     WorkShift[]
   integrations   Integration[]
   activities     Activity[]
+  deviceTokens   DeviceToken[]
+  healthMetrics  HealthMetric[]
+  passkeys       Passkey[]
 
   @@map("users")
 }
@@ -83,6 +86,27 @@ enum Sex {
 enum DailyLogPreference {
   WORK_HOURS
   SLEEP_TIMES
+}
+
+// WebAuthn/passkey credentials for the admin login (docs/ADMIN.md) —
+// alternative to password + TOTP, e.g. Face ID on iPhone via iCloud Keychain.
+// A successful passkey assertion already proves possession + biometric user
+// verification, so it grants a full session directly (no separate TOTP step).
+model Passkey {
+  id           String    @id @default(cuid())
+  user         User      @relation(fields: [userId], references: [id])
+  userId       String
+  credentialId String    @unique
+  publicKey    Bytes
+  counter      Int       @default(0)
+  transports   String[]  @default([])
+  deviceType   String?
+  backedUp     Boolean   @default(false)
+  name         String?
+  createdAt    DateTime  @default(now())
+  lastUsedAt   DateTime?
+
+  @@map("passkeys")
 }
 
 // --- Vægtkalibrering ---
@@ -133,6 +157,8 @@ enum WeightSource {
   MANUAL
   FITBIT
   WITHINGS
+  APPLE_HEALTH
+  GOOGLE_HEALTH
 }
 
 // --- Søvnmønster og skiftende arbejdstider ---
@@ -171,11 +197,13 @@ model WorkShift {
 }
 
 // --- Sundhedsintegrationer ---
-// Apple Health/Google Health Connect er write-only (docs/SPECIFICATION.md §4)
-// og har derfor ingen rækker her. Fitbit og Withings har rigtige OAuth-API'er
-// og gemmer deres forbindelse i denne tabel; Garmin/Apple Health/Apple
-// Watch/Google Health vises kun statisk i UI'en indtil en forbindelsesvej er
-// valgt (companion-app eller tredjeparts-aggregator, se docs/DECISIONS.md).
+// Fitbit og Withings har rigtige OAuth-API'er og gemmer deres forbindelse i
+// Integration-tabellen. Garmin afventer separat partnergodkendelse og vises
+// kun statisk i UI'en. Apple Health/Google Health Connect kan ikke tilgås fra
+// en webapp overhovedet (HealthKit/Health Connect er native-only) — i stedet
+// er der forberedt en generisk indtags-vej (DeviceToken + HealthMetric) som
+// en fremtidig native companion-app kan sende data til; se
+// docs/HEALTHKIT_COMPANION.md og docs/DECISIONS.md (2026-08-28).
 
 model Integration {
   id           String              @id @default(cuid())
@@ -231,6 +259,58 @@ enum ActivitySource {
   MANUAL
   FITBIT
   GARMIN
+  APPLE_HEALTH
+  GOOGLE_HEALTH
+}
+
+// Et personligt, langtlevende adgangstoken en fremtidig native companion-app
+// (iOS/HealthKit eller Android/Health Connect) autentificerer sig med mod
+// POST /api/integrations/healthkit/ingest. Kun tokenets hash gemmes — den
+// rå værdi vises én gang ved oprettelse, ligesom et personligt API-nøgle-mønster.
+model DeviceToken {
+  id         String    @id @default(cuid())
+  user       User      @relation(fields: [userId], references: [id])
+  userId     String
+  tokenHash  String    @unique
+  label      String
+  createdAt  DateTime  @default(now())
+  lastUsedAt DateTime?
+
+  @@map("device_tokens")
+}
+
+// Generiske sundhedsmålinger fra en tilkoblet native companion-app, for
+// datatyper der ikke passer ind i WeightEntry/Activity (skridt, puls, søvn,
+// kropsfedt, højde, BMI m.m.). Se docs/HEALTHKIT_COMPANION.md.
+model HealthMetric {
+  id         String             @id @default(cuid())
+  user       User               @relation(fields: [userId], references: [id])
+  userId     String
+  source     HealthMetricSource
+  type       HealthMetricType
+  value      Float
+  recordedAt DateTime
+  createdAt  DateTime           @default(now())
+
+  @@unique([userId, source, type, recordedAt])
+  @@map("health_metrics")
+}
+
+enum HealthMetricSource {
+  APPLE_HEALTH
+  GOOGLE_HEALTH
+}
+
+enum HealthMetricType {
+  STEPS
+  ACTIVE_ENERGY_KCAL
+  RESTING_ENERGY_KCAL
+  HEART_RATE_BPM
+  SLEEP_MINUTES
+  BODY_FAT_PERCENT
+  HEIGHT_CM
+  BMI
+  WATER_ML
 }
 
 // --- Fødevaredatabase ---
@@ -245,6 +325,13 @@ model Brand {
   @@map("brands")
 }
 
+// Rene katalogiseringskategorier (ikke vist i UI'en) der gør det lettere at
+// scanne/filtrere fødevaredatabasen internt: "Retter" (fx HelloFresh-opskrifter
+// importeret som Product), "Menuer" (ugentlige menu-grupperinger, endnu ikke
+// populeret — HelloFresh eksponerer ikke en stabil uge-gruppering offentligt),
+// "Ingredienser" (den delte Ingredient-katalog, se nedenfor) og "Færdigmad"
+// (købte færdigretter, endnu ikke auto-tagget). Se docs/DECISIONS.md
+// (2026-08-29, HelloFresh-import).
 model Category {
   id       String    @id @default(cuid())
   name     String    @unique
@@ -292,6 +379,7 @@ enum ExternalProductSource {
   OPEN_FOOD_FACTS
   USDA
   FRIDA
+  HELLOFRESH
 }
 
 // Reference-database over EU-godkendte E-tilsætningsstoffer (E100-E1521),

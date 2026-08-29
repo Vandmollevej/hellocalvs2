@@ -99,6 +99,27 @@ This file records durable decisions. Add a dated entry when a later decision cha
   `pendingImageUrl` suggestion (see the 2026-08-27 image-agent entry above)
   and promotes or rejects it.
 
+- 2026-08-28: Added passkey (WebAuthn) login for the admin account as an
+  alternative to password + TOTP — e.g. Face ID on iPhone via iCloud
+  Keychain. `@simplewebauthn/server`/`@simplewebauthn/browser`; a new
+  `Passkey` model (migration `20260828170000_admin_passkeys`) stores each
+  credential. Registration (`/admin/passkeys`, `POST
+  /api/admin/passkey/register/*`) requires an existing session — only the
+  already-authenticated admin can add a new device — and uses a discoverable
+  credential (`residentKey: "required"`) so login doesn't need an email
+  first. Login (`POST /api/admin/passkey/authenticate/*`, public, listed in
+  `middleware.ts`'s public admin API paths) is usernameless: the browser/OS
+  shows whichever passkeys it has for the site. A verified passkey assertion
+  already proves possession plus biometric/PIN user verification, so it
+  grants a full session directly, skipping the separate TOTP step — treated
+  as equivalent strength to password + TOTP combined, not as a weaker
+  shortcut. Relying-party ID/origin are derived from the request's
+  `Origin`/`Host` headers rather than a fixed env var, so the same code
+  works on `products.hellocal.packroff.dk` and `localhost`. `/admin/setup`
+  now signs the new admin straight into a session after TOTP confirmation
+  (previously redirected to `/admin/login`) so they can add a passkey
+  immediately without a second login round-trip.
+
 - 2026-08-28: Admin UI v2 design (not yet implemented — currently a static
   HTML mockup only, no code): the default/only landing view is "Nye
   produkter" in reverse-chronological order — no separate dashboard/start
@@ -141,6 +162,81 @@ This file records durable decisions. Add a dated entry when a later decision cha
   the same corner. This supersedes the earlier `docs/UI.md` claim that there
   is no separate close-cross on the persistent frame. See `docs/SPECIFICATION.md`
   §6 and `docs/UI.md`'s Navigation/Layout-konsistens sections.
+
+- 2026-08-28: Health-API integration strategy, chosen with the user before
+  implementation started: **Fitbit and Withings get real, working OAuth2
+  integrations now** (both have genuine cloud APIs). **Apple Health, Apple
+  Watch, Garmin, and Google Health Connect are shown as disabled "kommer
+  snart" cards with no live connection** — Apple Health/Health Connect
+  cannot be read by a plain web app at all (HealthKit/Health Connect are
+  native-only; there is no cloud REST API Apple or Google expose for
+  third-party reads), and Garmin's Health API requires a separate business
+  partner application. A future connection to those either needs a native
+  companion app or a paid third-party aggregator (Terra/Vital/Spike) — not
+  decided, and out of scope for this batch. See `src/lib/integrations.ts`
+  (`INTEGRATION_CATALOG`, `connectable` flag) and the `Integration` Prisma
+  model.
+- 2026-08-28: Sport/activity data (`Activity` model) and its calendar/
+  statistik surfacing (icon + green bonus calories on the calendar; dynamic
+  `sport:<type>` stat cards) are only shown when the user has at least one
+  *connectable* integration (Fitbit/Withings) actually `CONNECTED` — not
+  merely because `Activity` rows exist. This matches the user's own framing
+  ("HVIS integrationerne er slået til").
+- 2026-08-28: "Trendvægt" (AI-estimated weight, `docs/SPECIFICATION.md` §5)
+  is computed on-the-fly from `WeightEntry` + `Registration` timestamps
+  (`src/lib/weight-trend.ts`) — separate exponential smoothing for morning
+  vs. evening weigh-ins, nudged down slightly when food was logged within
+  ±2h of the weigh-in. It is deliberately plain TypeScript, not a Python/ML
+  service, since the underlying method is simple statistical smoothing, not
+  a trained model — revisit only if a real model is later warranted. It is
+  never stored as its own `WeightEntry` row, to keep measured data
+  unpolluted; needs ≥5 samples before it is shown at all.
+- 2026-08-28: The calendar day-detail timeline's long-press vocabulary is
+  gesture-specific, refining (for calendar rows only) the older general rule
+  in `docs/SPECIFICATION.md:26`/`docs/UI.md:27` ("langt tryk = tilføj som ny
+  registrering") — that rule was never actually implemented for calendar
+  entries. Holding an entry now arms "move" mode (drag to retime, shown via
+  a live `HH:MM · title` label, committed on release through the new
+  `PATCH /api/registrations/[id]`); a plain tap still opens the
+  registration's detail page. A two-finger vertical drag on the day
+  timeline zooms it (up to 4×, persisted per-browser in `localStorage`) to
+  reveal 15-/5-minute gridlines and per-registration markers, which only
+  render once zoomed — at the default zoom level the timeline still shows
+  only the existing per-hour aggregate, unchanged.
+
+- 2026-08-28: **HealthKit/Health Connect as the future integration hub**
+  (user-directed, based on a ChatGPT architecture discussion the user
+  relayed): rather than building a direct API integration per device brand,
+  a single future native iOS companion app (HealthKit) and Android companion
+  app (Health Connect) would each read whatever the user's devices already
+  sync there (Apple Watch, Fitbit, Garmin, smart scales, etc.) and relay it
+  to HELLO CAL's own backend — see the new `docs/SPECIFICATION.md` §4
+  wording and `docs/HEALTHKIT_COMPANION.md`. This does **not** replace the
+  direct Fitbit/Withings OAuth integrations already built (2026-08-28,
+  above) — those remain independently useful for a user who doesn't want to
+  install anything beyond the web app. Building the actual native app is a
+  separate project requiring a Mac + Xcode (+ an Apple Developer Program
+  membership) that could not be done from this session; what *was* prepared
+  ahead of time, so the backend is ready the moment such an app exists:
+  - `DeviceToken` model + `POST /api/integrations/healthkit/tokens`
+    (create/list) and `DELETE .../tokens/[id]` (revoke) — a personal,
+    SHA-256-hashed bearer token, generated from the Integrationer page
+    ("Generér enhedskode"), shown once.
+  - `HealthMetric` model (generic `type`/`value`/`recordedAt`, one row per
+    day for cumulative types) for data that doesn't fit `WeightEntry`/
+    `Activity` — steps, active/resting energy, heart rate, sleep minutes,
+    body fat %, height, BMI, water.
+  - `POST /api/integrations/healthkit/ingest`, bearer-token authenticated
+    (no user login exists yet to build a real OAuth flow against), accepts
+    a batch of `metrics`/`weights`/`activities` tagged
+    `source: APPLE_HEALTH | GOOGLE_HEALTH`.
+  - The three previously-hardcoded Statistik placeholder cards (`steps`,
+    `water`, `burned` in `src/lib/stat-cards.ts`) now read real averages
+    from `HealthMetric` once any exist, falling back to the old placeholder
+    text otherwise — no UI change until real data is actually ingested.
+  - `docs/HEALTHKIT_COMPANION.md` documents the full contract (HealthKit
+    type → `HealthMetricType` mapping, request/response shape, a minimal
+    Swift reference snippet) for whenever the native app work starts.
 
 ## Hosting and delivery
 

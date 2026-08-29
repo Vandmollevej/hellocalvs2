@@ -37,12 +37,22 @@ function formatDateTime(value: string) {
   }).format(new Date(value));
 }
 
+type DeviceToken = {
+  id: string;
+  label: string;
+  createdAt: string;
+  lastUsedAt: string | null;
+};
+
 function IntegrationerContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [integrations, setIntegrations] = useState<IntegrationCardStatus[]>([]);
   const [loading, setLoading] = useState(true);
   const [busyProvider, setBusyProvider] = useState<string | null>(null);
+  const [tokens, setTokens] = useState<DeviceToken[]>([]);
+  const [newToken, setNewToken] = useState<{ raw: string; label: string } | null>(null);
+  const [tokenBusy, setTokenBusy] = useState(false);
 
   const notice =
     searchParams.get("connected") === "fitbit"
@@ -68,9 +78,48 @@ function IntegrationerContent() {
       .finally(() => setLoading(false));
   }
 
+  function loadTokens() {
+    fetch("/api/integrations/healthkit/tokens")
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Kunne ikke hente enhedstokens");
+        return (await response.json()) as { tokens: DeviceToken[] };
+      })
+      .then((data) => setTokens(data.tokens))
+      .catch(() => setTokens([]));
+  }
+
   useEffect(() => {
     load();
+    loadTokens();
   }, []);
+
+  async function createToken() {
+    setTokenBusy(true);
+    try {
+      const response = await fetch("/api/integrations/healthkit/tokens", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ label: "Companion-app" }),
+      });
+      if (response.ok) {
+        const data = (await response.json()) as { token: string; label: string };
+        setNewToken({ raw: data.token, label: data.label });
+        loadTokens();
+      }
+    } finally {
+      setTokenBusy(false);
+    }
+  }
+
+  async function revokeToken(id: string) {
+    setTokenBusy(true);
+    try {
+      await fetch(`/api/integrations/healthkit/tokens/${id}`, { method: "DELETE" });
+      loadTokens();
+    } finally {
+      setTokenBusy(false);
+    }
+  }
 
   async function disconnect(provider: string) {
     setBusyProvider(provider);
@@ -118,7 +167,7 @@ function IntegrationerContent() {
               <div
                 key={integration.provider}
                 className={`flex flex-col gap-3 rounded-2xl bg-hf-tan p-4 ${
-                  integration.connectable ? "" : "opacity-50"
+                  integration.connectable || integration.ingestOnly ? "" : "opacity-50"
                 }`}
               >
                 <div className="flex items-start gap-3">
@@ -190,6 +239,62 @@ function IntegrationerContent() {
               </div>
             );
           })}
+
+        {!loading && (
+          <div className="flex flex-col gap-3 rounded-2xl bg-hf-tan p-4">
+            <div>
+              <p className="text-[15px] font-bold text-hf-black">Enhedstokens (companion-app)</p>
+              <p className="text-[12px] text-hf-black opacity-70">
+                Bruges af en fremtidig iOS/Android-app til at sende Apple Health-/Google Health-data
+                til Hello Cal — se docs/HEALTHKIT_COMPANION.md. Ingen app findes endnu, men koden kan
+                genereres og gemmes klar.
+              </p>
+            </div>
+
+            {tokens.map((token) => (
+              <div key={token.id} className="flex items-center justify-between gap-2 rounded-xl bg-hf-cream px-3 py-2">
+                <div className="min-w-0">
+                  <p className="truncate text-[13px] font-semibold text-hf-black">{token.label}</p>
+                  <p className="text-[11px] text-hf-black opacity-60">
+                    Oprettet {formatDateTime(token.createdAt)}
+                    {token.lastUsedAt ? ` · Sidst brugt ${formatDateTime(token.lastUsedAt)}` : ""}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  disabled={tokenBusy}
+                  onClick={() => revokeToken(token.id)}
+                  className="shrink-0 text-[12px] font-semibold text-hf-red-dark disabled:opacity-50"
+                >
+                  Fjern
+                </button>
+              </div>
+            ))}
+
+            {newToken ? (
+              <div className="rounded-xl bg-hf-black p-3 text-hf-white">
+                <p className="text-[12px] font-semibold">Gem denne værdi nu — den vises ikke igen:</p>
+                <p className="mt-1 break-all font-mono text-[12px]">{newToken.raw}</p>
+                <button
+                  type="button"
+                  onClick={() => setNewToken(null)}
+                  className="mt-2 text-[12px] font-semibold underline"
+                >
+                  Luk
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                disabled={tokenBusy}
+                onClick={createToken}
+                className="hf-btn-primary py-2.5 text-[13px] disabled:opacity-50"
+              >
+                Generér enhedskode
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

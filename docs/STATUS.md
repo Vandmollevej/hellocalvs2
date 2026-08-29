@@ -562,6 +562,128 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
   `DATABASE_URL` set, and verify `/api/additives` and the product-page
   additive list/modal against real data.
 
+- 2026-08-28: Started the Integrationer/sport/vægt-AI/kalender-gestures/
+  statistik/indstillinger batch (see `docs/DECISIONS.md` for the health-API
+  strategy the user chose). Checkpoints 1-4 done so far:
+  - **Checkpoint 1 (datamodel):** new Prisma models `Integration`
+    (userId+provider unique, OAuth token/status fields) and `Activity`
+    (sportType/startedAt/durationMinutes/caloriesBurned/source), plus
+    `WeightEntry.shoes` (`ShoesState`: ON/OFF/UNKNOWN) and
+    `WeightEntry.source` (`WeightSource`: MANUAL/FITBIT/WITHINGS). Migration
+    `20260828140000_integrations_activity_weight_source` (hand-written, no
+    local Postgres to run `prisma migrate dev` — see `hellocal_no_local_db`
+    memory).
+  - **Checkpoint 2 (Integrationer-side + Fitbit/Withings OAuth):** new
+    `src/lib/integrations.ts` (provider catalog: only FITBIT/WITHINGS are
+    `connectable: true`; GARMIN/APPLE_HEALTH/GOOGLE_HEALTH render as static
+    "kommer snart" cards) and `src/lib/integrations/{fitbit,withings}.ts`
+    (real OAuth2 authorize/token-exchange/refresh + activity/weight fetch
+    functions against the documented Fitbit Web API and Withings Health
+    API). Routes: `GET /api/integrations`, and per-provider
+    `connect`/`callback`/`disconnect`/`sync` under
+    `/api/integrations/{fitbit,withings}/`. New page
+    `src/app/settings/integrationer/page.tsx`, linked from a new
+    "Integrationer" row in `src/app/settings/page.tsx`. New env vars
+    (`FITBIT_CLIENT_ID/SECRET`, `WITHINGS_CLIENT_ID/SECRET`,
+    `INTEGRATIONS_REDIRECT_BASE_URL`) added to `.env.production.example` and
+    `compose.production.yaml` — **not yet set on the server**; the user needs
+    to create developer apps at `dev.fitbit.com` and
+    `developer.withings.com` (self-serve) before either integration can be
+    tested live. Garmin needs separate partner approval (instructions were
+    given to the user directly in chat, not stored in a doc).
+  - **Checkpoint 3 (kalender sportsikon):** `kalender/page.tsx` now fetches
+    `/api/activities` and shows each hour's sport icon
+    (`src/lib/sport-icons.ts`, reused from `@tabler/icons-react`) plus its
+    bonus calories in green (`+X kcal`) beside the existing kcal total.
+  - **Checkpoint 4 (statistik sport-blokke):** `computeStatCards()`
+    (`src/lib/stat-cards.ts`) now accepts an optional `activities` list and
+    appends one dynamic `sport:<type>` card per sport type present;
+    `statistik/page.tsx` and `statistik/ubrugte-kort/page.tsx` only pass
+    activities through (and only show the new "Sport og aktivitet" category)
+    when at least one connectable integration is `CONNECTED`.
+  - `npm run lint`, `npx tsc --noEmit`, and `npm run build` all passed after
+    checkpoint 4 (the `.next/static` `EPERM` lock from a concurrent session
+    cleared on retry, same known issue as prior entries in this file). Not
+    yet verified live (no reachable local PostgreSQL, and no real Fitbit/
+    Withings credentials exist yet to exercise the OAuth flow end-to-end).
+  - **Checkpoint 5 (vægt-guide + Trendvægt):** `/profil/vaegt-kalibrering`
+    gained a fourth "Med sko"/"Uden sko" segmented control
+    (`WeightEntry.shoes`), same pattern as the existing clothed/toilet/meal
+    controls. New `src/lib/weight-trend.ts` computes an AI-estimated
+    "Trendvægt" on the fly (separate exponential smoothing for morning vs.
+    evening weigh-ins, nudged down when food was logged within ±2h) —
+    plain TypeScript, not a Python/ML service (see `docs/DECISIONS.md`),
+    never stored as its own row, and only shown once ≥5 samples exist. It
+    now renders as a dashed third series on the Statistik chart
+    (`StatChart.tsx` gained an optional `dashed` field) and as a small line
+    under the weight field on Profil.
+  - **Checkpoint 6 (kalender-gestures):** new shared `src/hooks/useLongPress.ts`
+    (the 7 pre-existing hand-rolled long-press copies elsewhere in this
+    codebase were left alone — out of scope). The day-detail timeline
+    (`kalender/page.tsx`) now supports a two-finger vertical drag to zoom the
+    hour scale up to 4× (persisted per-browser in `localStorage`), revealing
+    15-/5-minute gridlines and, once zoomed, a draggable marker per
+    registration (`DraggableEntryMarker`): a plain tap opens the
+    registration, a ½s hold arms "move" mode showing a live `HH:MM · title`
+    label, and dragging then releasing retimes it via a new
+    `PATCH /api/registrations/[id]`. At the default (unzoomed) level the
+    timeline is visually unchanged from before. See `docs/DECISIONS.md` for
+    how this refines the older, never-implemented-for-calendar-rows
+    "long-press = add new registration" rule.
+  - **Checkpoint 7 (statistik intradag-kurve + måltids-AI):** new
+    `src/components/IntradayKcalChart.tsx` renders a smooth (not bar) curve
+    of average kcal by half-hour bucket across 00-24, below the existing
+    Kalorier/vægt chart on `/statistik`. New `src/lib/meal-time-classifier.ts`
+    buckets registrations into morgenmad/frokost/aftensmad by fixed
+    time-of-day windows (a deliberately simplified v1 of `docs/AI.md`'s
+    fuller hverdag/weekend/fødevaretype profiling) and shows the average
+    time+kcal per meal as analytical text only — no registration is
+    auto-tagged.
+  - **Checkpoint 8 (indstillinger):** `/settings` now has a "Betaling" row as
+    its very first item (links to a new placeholder `/settings/betaling` —
+    no payment/subscription backend exists yet) and a green "Invitér en ven"
+    bar at the bottom ("– Så får I begge en måned gratis") that uses
+    `navigator.share` (clipboard fallback) — purely a share action, since
+    there is no account/payment system yet to credit a reward against (see
+    `docs/DECISIONS.md`).
+  - `npm run lint`, `npx tsc --noEmit`, and `npm run build` all passed clean
+    after checkpoint 8 — full route list built successfully (50 routes,
+    including all new `/api/integrations/*`, `/settings/integrationer`,
+    `/settings/betaling`). Not yet verified live in a browser (no reachable
+    local PostgreSQL, see `hellocal_no_local_db` memory) and no real
+    Fitbit/Withings developer credentials exist yet — verify the full batch
+    end-to-end against `hellocal.packroff.dk` once deployed: weight-guide
+    shoes field, Trendvægt display, two-finger timeline zoom + entry
+    drag-to-retime, the new intraday chart, and the Betaling/Invitér rows.
+    Apply the new migration
+    (`20260828140000_integrations_activity_weight_source`) and set the new
+    env vars (see `.env.production.example`) before that.
+  - **Checkpoint 9 (HealthKit/Health Connect prep, added after the user
+    relayed a ChatGPT architecture discussion):** see the 2026-08-28
+    "HealthKit/Health Connect as the future integration hub" entry in
+    `docs/DECISIONS.md` for the full reasoning. New `DeviceToken` and
+    `HealthMetric` Prisma models (migration
+    `20260828160000_healthkit_ingest_prep`, also extends `WeightSource`/
+    `ActivitySource` with `APPLE_HEALTH`/`GOOGLE_HEALTH`); new
+    `POST/GET /api/integrations/healthkit/tokens`,
+    `DELETE .../tokens/[id]`, and a bearer-token-authenticated
+    `POST /api/integrations/healthkit/ingest` (`src/lib/device-tokens.ts`
+    for the SHA-256 hashing); new `GET /api/health-metrics`. The
+    Integrationer page (`src/app/settings/integrationer/page.tsx`) gained a
+    device-token management section (generate/list/revoke), and the Apple
+    Health/Google Health cards are no longer fully dimmed (marked
+    `ingestOnly` in `src/lib/integrations.ts`) since they now have a real,
+    working action even without a companion app existing yet. The three
+    previously-hardcoded Statistik placeholder cards (steps/water/burned)
+    now read real `HealthMetric` averages once any exist. New
+    `docs/HEALTHKIT_COMPANION.md` documents the full ingest contract +
+    HealthKit-type mapping + a Swift reference snippet for whenever the
+    native app itself gets built (needs a Mac + Xcode, not done in this
+    session). `npm run lint`, `npx tsc --noEmit`, and `npm run build` all
+    passed clean (61 routes). Not yet verified live for the same reasons as
+    checkpoint 8 above; additionally, the ingest endpoint has no consuming
+    app yet to test against beyond manual `curl` calls once deployed.
+
 ## Next work
 
 1. Implement the pending UI/design requirements in
@@ -590,3 +712,14 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
    to the same `http://192.168.1.90:3100` target as `hellocal.packroff.dk`).
    Then open `https://products.hellocal.packroff.dk/admin/setup` once to
    create the admin account.
+9. Deploy migrations `20260828140000_integrations_activity_weight_source` and
+   `20260828160000_healthkit_ingest_prep`.
+   Create Fitbit (`dev.fitbit.com/apps/new`) and Withings
+   (`developer.withings.com/dashboard`) developer apps, each with redirect
+   URI `https://hellocal.packroff.dk/api/integrations/<provider>/callback`,
+   then set `FITBIT_CLIENT_ID/SECRET`, `WITHINGS_CLIENT_ID/SECRET`, and
+   `INTEGRATIONS_REDIRECT_BASE_URL` in `.env.production` — only then can the
+   Integrationer page's Fitbit/Withings connect flow be tested live. Garmin
+   needs a separate partner-access application (instructions were given to
+   the user directly in chat on 2026-08-28) before it can move beyond its
+   current "kommer snart" card.

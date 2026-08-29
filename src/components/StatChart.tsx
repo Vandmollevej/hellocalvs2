@@ -20,6 +20,8 @@ export type ChartSeries = {
   underGoalColor?: string;
   /** Farve brugt for punkter over målet (default: hf-black). */
   overGoalColor?: string;
+  /** Stiplet linje, fx til et AI-estimat (Trendvægt) i stedet for målte data. */
+  dashed?: boolean;
 };
 
 const STORAGE_KEY = "hellocal.statistik.series";
@@ -182,6 +184,7 @@ export function StatChart({
                       strokeWidth="2.8"
                       strokeLinecap="round"
                       strokeLinejoin="round"
+                      strokeDasharray={s.dashed ? "5 4" : undefined}
                     />
                   )}
               {points.map((p, i) => {

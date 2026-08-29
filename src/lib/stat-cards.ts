@@ -13,6 +13,7 @@ import {
 } from "@tabler/icons-react";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
 import type { DailyTotal } from "@/lib/daily-totals";
+import { getSportMeta } from "@/lib/sport-icons";
 
 export const STAT_WINDOW_DAYS = 30;
 
@@ -23,8 +24,29 @@ export type StatCardValue = {
   value: string;
 };
 
+export type ActivityTotals = {
+  sportType: string;
+  durationMinutes: number;
+  caloriesBurned: number;
+  startedAt: string;
+};
+
+// Løst koblet til HealthMetricType (Prisma) — `type` er en fri streng her for
+// ikke at give denne delte lib en hård afhængighed af @prisma/client.
+export type HealthMetricTotals = {
+  type: string;
+  value: number;
+  recordedAt: string;
+};
+
 export type StatCardData = {
   days: DailyTotal[];
+  // Kun sat når mindst én rigtig integration (Fitbit/Withings) er CONNECTED,
+  // jf. docs/DECISIONS.md — se hvor computeStatCards() kaldes fra.
+  activities?: ActivityTotals[];
+  // Fra en fremtidig HealthKit/Health Connect-companion-app (se
+  // docs/HEALTHKIT_COMPANION.md) — tomt/udefineret indtil data findes.
+  metrics?: HealthMetricTotals[];
 };
 
 function formatNumber(value: number, maximumFractionDigits = 0) {
@@ -34,6 +56,14 @@ function formatNumber(value: number, maximumFractionDigits = 0) {
 function average(days: DailyTotal[], pick: (d: DailyTotal) => number) {
   if (days.length === 0) return 0;
   return days.reduce((sum, d) => sum + pick(d), 0) / days.length;
+}
+
+/** Gennemsnit af én HealthMetricType's værdier (typisk én række pr. dag fra
+ * companion-appen) — null hvis der slet ingen data findes for typen endnu. */
+function averageMetric(metrics: HealthMetricTotals[] | undefined, type: string): number | null {
+  const matching = (metrics ?? []).filter((m) => m.type === type);
+  if (matching.length === 0) return null;
+  return matching.reduce((sum, m) => sum + m.value, 0) / matching.length;
 }
 
 export const STAT_CARD_DEFS: {
@@ -82,32 +112,69 @@ export const STAT_CARD_DEFS: {
     key: "steps",
     label: "Skridt",
     icon: IconWalk,
-    // Skridt kommer fra sundhedsintegration, som ikke er tilkoblet endnu.
-    compute: () => "6.210",
+    // Rigtige data når en HealthKit/Health Connect-companion-app har sendt
+    // STEPS-målinger (se docs/HEALTHKIT_COMPANION.md); indtil da et pladsholdertal.
+    compute: (data) => {
+      const avg = averageMetric(data.metrics, "STEPS");
+      return avg !== null ? formatNumber(avg) : "6.210";
+    },
   },
   {
     key: "water",
     label: "Vand",
     icon: IconDroplet,
-    compute: () => "1,6 l",
+    compute: (data) => {
+      const avg = averageMetric(data.metrics, "WATER_ML");
+      return avg !== null ? `${(avg / 1000).toFixed(1).replace(".", ",")} l` : "1,6 l";
+    },
   },
   {
     key: "burned",
     label: "Forbrændt",
     icon: IconBolt,
-    compute: () => "642 kcal",
+    compute: (data) => {
+      const avg = averageMetric(data.metrics, "ACTIVE_ENERGY_KCAL");
+      return avg !== null ? `${formatNumber(avg)} kcal` : "642 kcal";
+    },
   },
 ];
 
 export const DEFAULT_ACTIVE_STAT_KEYS: string[] = STAT_CARD_DEFS.map((def) => def.key);
 
+export const SPORT_STAT_KEY_PREFIX = "sport:";
+
+// Ét kort pr. sportstype brugeren faktisk har aktivitetsdata for (fra en
+// tilkoblet integration eller egen manuel registrering) — sportsgrene er
+// åbne/dynamiske, så de kan ikke være en fast STAT_CARD_DEFS-entry.
+function computeSportStatCards(activities: ActivityTotals[]): StatCardValue[] {
+  const bySport = new Map<string, { durationMinutes: number; caloriesBurned: number }>();
+  for (const activity of activities) {
+    const existing = bySport.get(activity.sportType) ?? { durationMinutes: 0, caloriesBurned: 0 };
+    existing.durationMinutes += activity.durationMinutes;
+    existing.caloriesBurned += activity.caloriesBurned;
+    bySport.set(activity.sportType, existing);
+  }
+
+  return Array.from(bySport.entries()).map(([sportType, totals]) => {
+    const meta = getSportMeta(sportType);
+    return {
+      key: `${SPORT_STAT_KEY_PREFIX}${sportType}`,
+      label: meta.label,
+      icon: meta.icon,
+      value: `${formatNumber(totals.durationMinutes)} min · ${formatNumber(totals.caloriesBurned)} kcal`,
+    };
+  });
+}
+
 export function computeStatCards(data: StatCardData): StatCardValue[] {
-  return STAT_CARD_DEFS.map((def) => ({
+  const staticCards = STAT_CARD_DEFS.map((def) => ({
     key: def.key,
     label: def.label,
     icon: def.icon,
     value: def.compute(data),
   }));
+  const sportCards = data.activities ? computeSportStatCards(data.activities) : [];
+  return [...staticCards, ...sportCards];
 }
 
 // Delt layout-persistens for StatCardsGrid og siden med ubrugte kort, så begge
