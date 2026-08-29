@@ -2,7 +2,13 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { verifyTotpCode } from "@/lib/admin-totp";
-import { ADMIN_SETUP_COOKIE, verifyAdminSetupPending } from "@/lib/admin-auth";
+import {
+  ADMIN_SESSION_COOKIE,
+  ADMIN_SESSION_MAX_AGE,
+  ADMIN_SETUP_COOKIE,
+  signAdminSession,
+  verifyAdminSetupPending,
+} from "@/lib/admin-auth";
 
 // Step 2 of admin setup: proves the QR code from /api/admin/setup was
 // actually scanned correctly before anything is persisted to the database.
@@ -32,7 +38,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "En administrator findes allerede" }, { status: 409 });
   }
 
-  await prisma.user.upsert({
+  const admin = await prisma.user.upsert({
     where: { email: pending.email },
     update: { role: "ADMIN", passwordHash: pending.passwordHash, totpSecret: pending.totpSecret },
     create: {
@@ -44,7 +50,17 @@ export async function POST(req: Request) {
     },
   });
 
+  // Log the new admin straight in so they can immediately add a passkey
+  // (Face ID etc., see /admin/passkeys) without a separate login round-trip.
+  const sessionToken = await signAdminSession(admin.id);
   const response = NextResponse.json({ ok: true });
   response.cookies.delete(ADMIN_SETUP_COOKIE);
+  response.cookies.set(ADMIN_SESSION_COOKIE, sessionToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+    path: "/",
+    maxAge: ADMIN_SESSION_MAX_AGE,
+  });
   return response;
 }

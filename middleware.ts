@@ -8,7 +8,14 @@ import { ADMIN_SESSION_COOKIE, verifyAdminSession } from "@/lib/admin-auth";
 const ADMIN_HOST = "products.hellocal.packroff.dk";
 
 const PUBLIC_ADMIN_PATHS = ["/admin/login", "/admin/verify", "/admin/setup"];
-const PUBLIC_ADMIN_API_PATHS = ["/api/admin/login", "/api/admin/verify", "/api/admin/setup"];
+const PUBLIC_ADMIN_API_PATHS = [
+  "/api/admin/login",
+  "/api/admin/verify",
+  "/api/admin/setup",
+  // Discoverable/usernameless passkey login (docs/DECISIONS.md 2026-08-28) —
+  // by definition happens before there is any session.
+  "/api/admin/passkey/authenticate",
+];
 
 function isPublicPath(pathname: string, publicPaths: string[]) {
   return publicPaths.some((p) => pathname === p || pathname.startsWith(`${p}/`));

@@ -54,7 +54,8 @@ export function AdminSetupForm() {
         setError(data.message ?? "Forkert kode");
         return;
       }
-      router.push("/admin/login");
+      router.push("/admin/passkeys");
+      router.refresh();
     } finally {
       setLoading(false);
     }

@@ -384,6 +384,23 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
   do unattended; the user needs to add it (Zero Trust → Networks → Tunnels →
   the existing `Server` tunnel → Public Hostname → Add a public hostname).
 
+- 2026-08-28: Added passkey (WebAuthn/Face ID) login for the admin account
+  as an alternative to password + TOTP (see `docs/DECISIONS.md`).
+  `@simplewebauthn/server` and `@simplewebauthn/browser`; new `Passkey`
+  table via Prisma migration `20260828170000_admin_passkeys` (not yet
+  applied to production, same as the other pending admin-auth migration).
+  `/admin/setup` now signs the new admin straight into a session after TOTP
+  confirmation instead of sending them to `/admin/login`, so they land on
+  the new `/admin/passkeys` page and can add a passkey (e.g. their iPhone's
+  Face ID via iCloud Keychain) immediately. `/admin/login` gained a
+  "Log ind med Face ID / passkey" button for a usernameless/discoverable
+  login — a verified passkey grants a full session directly, skipping the
+  separate TOTP step. `npm run lint` and `npm run build` passed. Could not
+  be exercised end-to-end — no WebAuthn-capable browser/authenticator is
+  available on this workstation and no local PostgreSQL is reachable (see
+  `hellocal_no_local_db` memory); verify the whole flow (add a passkey,
+  then log in with only Face ID) from an iPhone once deployed.
+
 - 2026-08-28: Reworked the calendar day-detail view
   (`src/app/kalender/page.tsx`) per direct user feedback: the app's own
   header/bottom nav now stay visible behind it (`HfScreen`'s content wrapper
@@ -706,12 +723,17 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
    step — see the 2026-08-27 Frida entry above). It will then import the
    1389 Frida products fully on its own on first poll; no manual file
    handling needed on an ongoing basis.
-8. Deploy the admin-auth migration (`20260827200000_admin_auth`), set a real
-   `ADMIN_SESSION_SECRET` in `.env.production`, and add the
-   `products.hellocal.packroff.dk` Cloudflare Tunnel public hostname (points
-   to the same `http://192.168.1.90:3100` target as `hellocal.packroff.dk`).
-   Then open `https://products.hellocal.packroff.dk/admin/setup` once to
-   create the admin account.
+8. Deploy the admin-auth migrations (`20260827200000_admin_auth`,
+   `20260828170000_admin_passkeys`), set a real `ADMIN_SESSION_SECRET` in
+   `.env.production`, and add the `products.hellocal.packroff.dk` Cloudflare
+   Tunnel public hostname (points to the same `http://192.168.1.90:3100`
+   target as `hellocal.packroff.dk`). Then open
+   `https://products.hellocal.packroff.dk/admin/setup` once to create the
+   admin account — it now signs you straight in afterward so you can add a
+   passkey (Face ID etc.) from `/admin/passkeys` immediately. Passkey login
+   needs a real WebAuthn-capable browser/device to test, which this
+   workstation cannot do — verify the "Log ind med Face ID / passkey" button
+   on `/admin/login` from an iPhone once deployed.
 9. Deploy migrations `20260828140000_integrations_activity_weight_source` and
    `20260828160000_healthkit_ingest_prep`.
    Create Fitbit (`dev.fitbit.com/apps/new`) and Withings

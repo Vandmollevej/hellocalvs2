@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -7,6 +8,7 @@ const LINKS = [
   { href: "/admin", label: "Oversigt" },
   { href: "/admin/produkter", label: "Nye produkter" },
   { href: "/admin/billeder", label: "Billedforslag" },
+  { href: "/admin/passkeys", label: "Passkeys" },
 ];
 
 export function AdminNav({ email }: { email: string }) {
@@ -22,7 +24,10 @@ export function AdminNav({ email }: { email: string }) {
   return (
     <header className="border-b border-border-strong bg-surface-2">
       <div className="mx-auto flex max-w-4xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3 sm:px-6">
-        <span className="text-sm font-semibold text-hf-green-dark">HELLO CAL — Admin</span>
+        <span className="flex items-center gap-2">
+          <Image src="/hello-cal-logo.png" alt="Hello Cal" width={110} height={49} priority />
+          <span className="text-sm font-semibold text-hf-green-dark">Admin</span>
+        </span>
         <nav className="flex flex-1 flex-wrap gap-4 text-sm">
           {LINKS.map((link) => (
             <Link
