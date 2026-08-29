@@ -363,7 +363,7 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
   (kept locally, gitignored) — the agent downloads directly from Figshare.
 
 - 2026-08-27: Added an admin product/image approval UI (see
-  `docs/DECISIONS.md`) at `products.hellocal.packroff.dk` — `/admin` (counts),
+  `docs/DECISIONS.md`) at `adminhellocal.packroff.dk` — `/admin` (counts),
   `/admin/produkter` (approve/reject `PENDING` products), `/admin/billeder`
   (accept/reject the image-agent's suggested photos). First visit to that
   hostname goes to `/admin/setup` to create the one admin account
@@ -377,7 +377,7 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
   lock, same class of issue noted elsewhere in this file; a clean rebuild
   succeeded). Not yet verified against a live database or browser — no local
   PostgreSQL is reachable from this workstation (see `hellocal_no_local_db`
-  memory). **The `products.hellocal.packroff.dk` Cloudflare Tunnel public
+  memory). **The `adminhellocal.packroff.dk` Cloudflare Tunnel public
   hostname still needs to be added** (same target as the existing
   `hellocal.packroff.dk` route, `http://192.168.1.90:3100`) — this requires
   the Cloudflare dashboard login/SSO, which was not something available to
@@ -776,10 +776,10 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
    handling needed on an ongoing basis.
 8. Deploy the admin-auth migrations (`20260827200000_admin_auth`,
    `20260828170000_admin_passkeys`), set a real `ADMIN_SESSION_SECRET` in
-   `.env.production`, and add the `products.hellocal.packroff.dk` Cloudflare
+   `.env.production`, and add the `adminhellocal.packroff.dk` Cloudflare
    Tunnel public hostname (points to the same `http://192.168.1.90:3100`
    target as `hellocal.packroff.dk`). Then open
-   `https://products.hellocal.packroff.dk/admin/setup` once to create the
+   `https://adminhellocal.packroff.dk/admin/setup` once to create the
    admin account — it now signs you straight in afterward so you can add a
    passkey (Face ID etc.) from `/admin/passkeys` immediately. Passkey login
    needs a real WebAuthn-capable browser/device to test, which this

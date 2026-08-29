@@ -5,7 +5,7 @@ import { ADMIN_SESSION_COOKIE, verifyAdminSession } from "@/lib/admin-auth";
 // deployment — this host just gets every path treated as living under
 // /admin, so visiting the bare hostname shows the admin UI. Localhost is
 // included so /admin works during local development without a special host.
-const ADMIN_HOST = "products.hellocal.packroff.dk";
+const ADMIN_HOST = "adminhellocal.packroff.dk";
 
 const PUBLIC_ADMIN_PATHS = ["/admin/login", "/admin/verify", "/admin/setup"];
 const PUBLIC_ADMIN_API_PATHS = [

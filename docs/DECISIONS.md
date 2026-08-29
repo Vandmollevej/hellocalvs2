@@ -82,7 +82,7 @@ This file records durable decisions. Add a dated entry when a later decision cha
 
 - 2026-08-27: The admin product/image approval UI (docs/ADMIN.md) is served
   from the same codebase and deployment as the rest of the app, reached at a
-  dedicated hostname (`products.hellocal.packroff.dk`) rather than a path on
+  dedicated hostname (`adminhellocal.packroff.dk`) rather than a path on
   the public domain — `middleware.ts` rewrites that hostname's root to
   `/admin` and refuses `/admin/*` and `/api/admin/*` entirely on any other
   hostname (except `localhost` for local development), even though every
@@ -115,7 +115,7 @@ This file records durable decisions. Add a dated entry when a later decision cha
   as equivalent strength to password + TOTP combined, not as a weaker
   shortcut. Relying-party ID/origin are derived from the request's
   `Origin`/`Host` headers rather than a fixed env var, so the same code
-  works on `products.hellocal.packroff.dk` and `localhost`. `/admin/setup`
+  works on `adminhellocal.packroff.dk` and `localhost`. `/admin/setup`
   now signs the new admin straight into a session after TOTP confirmation
   (previously redirected to `/admin/login`) so they can add a passkey
   immediately without a second login round-trip.

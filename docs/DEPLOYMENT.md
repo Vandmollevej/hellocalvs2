@@ -158,7 +158,7 @@ remains.
 Record only the non-secret route shape after it has been confirmed. Never record
 the tunnel ID or token.
 
-### Admin hostname (`products.hellocal.packroff.dk`)
+### Admin hostname (`adminhellocal.packroff.dk`)
 
 The admin approval UI (`docs/ADMIN.md`) is the same application and the same
 target as `hellocal.packroff.dk` (`http://192.168.1.90:3100`) — only the

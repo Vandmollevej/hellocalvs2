@@ -1,6 +1,6 @@
 // Derives the WebAuthn relying-party ID and expected origin from the actual
 // request instead of a fixed env var, so the same code works against the
-// production hostname (products.hellocal.packroff.dk) and localhost in dev.
+// production hostname (adminhellocal.packroff.dk) and localhost in dev.
 export function getWebauthnRelyingParty(req: Request) {
   const originHeader = req.headers.get("origin");
   const hostHeader = req.headers.get("host") ?? "localhost";
