@@ -238,6 +238,89 @@ This file records durable decisions. Add a dated entry when a later decision cha
     type → `HealthMetricType` mapping, request/response shape, a minimal
     Swift reference snippet) for whenever the native app work starts.
 
+- 2026-08-29: HelloFresh Danmarks recipe catalog is imported as ordinary
+  `Product` rows (`externalSource='HELLOFRESH'`, `status='APPROVED'`, category
+  "Retter") rather than a separate `Recipe` model — this makes every imported
+  dish immediately searchable/loggable through the existing Madvarer/tilføj
+  flow with no new UI. A new shared `Ingredient` model (category
+  "Ingredienser") caches each unique HelloFresh ingredient's image once and
+  reuses it across every recipe that contains it; `ProductIngredient` records
+  each ingredient's raw amount, gram amount (when the unit is grams), and its
+  proportion of the dish's total tracked weight — the concrete building block
+  for later "how much did the bell pepper contribute" estimates. **Explicit
+  user decision (asked before building, given this reverses the copyright-risk
+  avoidance established for the image-agent/Frida sources): download and
+  rehost HelloFresh's dish/ingredient photos as requested, accepting the
+  copyright/ToS exposure** — "Det er en app til [mig] jeg er igang med at
+  udvikle. Så bare fortsæt som jeg skrev."
+  Four `Category` rows (Retter/Menuer/Ingredienser/Færdigmad) were seeded for
+  internal scanning/filtering only, not shown in the UI; "Menuer" and
+  "Færdigmad" are reserved for future use — nothing populates them yet.
+  `scripts/hellofresh-import` (new `hellofresh-agent` service) crawls
+  `sitemap_recipe_pages.xml` — the sitemap HelloFresh's own `robots.txt`
+  explicitly links for crawling — rather than the "Se flere" pagination UI:
+  that button calls an internal `recipe.search` API on a Kubernetes-internal
+  hostname (`products-service.live-k8s.hellofresh.io`, private DNS only, not
+  reachable outside their cluster) and the `?page=` URL parameter is itself
+  disallowed by `robots.txt`. Each recipe's own public page embeds its full
+  data (name, macros, ingredients with gram amounts, image path) in a
+  `__NEXT_DATA__` script tag — the same public HTML any visitor's browser
+  receives, no auth or private API involved. Re-import matches on `recipeId`
+  and updates existing rows rather than duplicating; HelloFresh frequently
+  re-publishes the same dish under a new `recipeId` week to week
+  (`clonedFrom` in their data) — a full same-dish-across-reruns dedup chain
+  was **not** attempted in this first version, so near-duplicate `Product`
+  rows across reruns of a dish are a known limitation. Per-ingredient
+  vitamin/mineral estimation (matching each ingredient against Frida data)
+  was also not implemented yet — Frida import currently only stores the four
+  core macros (see the 2026-08-27 Frida entry above), not vitamins/minerals,
+  so there is nothing yet to match against; the gram/proportion data this
+  import produces is what a future pass would need. Recipe-level minerals
+  HelloFresh already publishes directly (potassium/calcium/iron/fiber/sugar/
+  salt) are stored as-is in a new `Product.nutritionExtra` JSON field.
+  Images are downloaded at `w=2000` from `media.hellofresh.com` (Cloudinary-
+  style `c_limit` never upscales, so this reliably returns the source file's
+  native resolution) into a new shared `./data/hellofresh-images` volume,
+  mounted into both the agent and the app (served as `/hellofresh-images/...`
+  the same way `/product-images` already is for the image-agent).
+  **Note:** a concurrent session was found mid-way through this same feature
+  (an empty `scripts/hellofresh-import/`, an enum-only migration, and a
+  `hellofresh-agent` compose block using different env var names, plus a
+  separate `/api/ai/recognize-hellofresh` endpoint and a `kamera` "hellofresh"
+  mode answering the "compare a plate photo against HelloFresh's catalog"
+  part of the request) — the compose service block was reconciled to this
+  session's actual env vars/volume; the recognize-hellofresh endpoint/camera
+  mode were left untouched as out of this session's scope.
+- 2026-08-29: The other side of the same feature, from the session referenced
+  in the note directly above (recognize-hellofresh/kamera "hellofresh" mode):
+  the user's original request asked for a "Ret nr." (dish number) field above
+  the normal search box on `/madvarer`. **Confirmed directly with the user:
+  HelloFresh only prints that number on the physical recipe card at
+  delivery** — it does not appear anywhere on their public website (verified
+  by inspecting the same `__NEXT_DATA__` payload the catalog-import agent
+  reads), so it cannot be looked up from a typed number at all. Per the
+  user's own follow-up ("den del må vi skippe... billedegenkendelsen må
+  forhåbentligt kunne genkende retten"), the number field was dropped
+  entirely in favor of AI photo recognition: `/api/ai/recognize-hellofresh`
+  sends a photo of the plated meal plus the names of every currently
+  non-discontinued `externalSource='HELLOFRESH'` product to `gpt-4o-mini`
+  (vision), which returns its best-guess product id; a new `kamera`
+  `?mode=hellofresh` capture flow (single-purpose — it hides the usual
+  Stregkode/Måltid/Næring tab row) shows the match via `HelloFreshMatchReview`
+  for the user to confirm before landing on the existing `/tilfoej/[id]`
+  screen, reusing the ordinary registration flow rather than a new one. The
+  entry point is a "HelloFresh — Genkend din ret" row above the search box on
+  `/madvarer`. Separately, `/tilfoej/[id]` now treats any product with
+  `servingSizeGrams` set as counted in portions rather than grams (the
+  amount stepper steps by half a serving and labels itself "portion(er)");
+  this is a small generic UI change, not HelloFresh-specific, but it is what
+  makes the recognized HelloFresh dish's real per-portion `servingSizeGrams`
+  (from the 2026-08-29 catalog-import entry above) display and log
+  correctly. This session's own first-draft `scripts/hellofresh-import` (a
+  simpler menu-listing crawler using a nominal 500 g serving size) was
+  superseded on disk by the more thorough sitemap/ingredient-catalog version
+  from the other session — only that version remains.
+
 ## Hosting and delivery
 
 - Production is intended to run on the user's Synology NAS through Docker/Container Manager.

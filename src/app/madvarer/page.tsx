@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { IconApple, IconSearch } from "@tabler/icons-react";
+import { IconApple, IconCamera, IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 
 type Product = {
@@ -134,6 +134,21 @@ function MadvarerContent() {
   return (
     <HfScreen title="Madvarer" icon={<IconApple size={20} stroke={2} />}>
       <div className="flex flex-col gap-3 p-4">
+        <Link
+          href="/kamera?mode=hellofresh"
+          className="flex items-center gap-3 rounded-2xl bg-hf-tan px-4 py-3"
+        >
+          <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-hf-green text-hf-white">
+            <IconCamera size={17} stroke={2} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-xs font-semibold uppercase tracking-[0.06em] text-hf-black opacity-60">
+              HelloFresh
+            </span>
+            <span className="block text-sm font-medium text-hf-black">Genkend din ret</span>
+          </span>
+        </Link>
+
         <div className="hf-search">
           <IconSearch size={16} color="var(--hf-black)" />
           <input

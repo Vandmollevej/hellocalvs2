@@ -701,6 +701,57 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
     checkpoint 8 above; additionally, the ingest endpoint has no consuming
     app yet to test against beyond manual `curl` calls once deployed.
 
+- 2026-08-29: Applied the newly uploaded Hello Cal logo/favicon assets: the
+  lime-only mark is now `src/app/icon.png`/`apple-icon.png`/`favicon.ico`
+  (Next.js's file-convention favicon, replacing the default placeholder), and
+  the full wordmark now renders in the admin header
+  (`src/components/admin/AdminNav.tsx`) instead of plain text. Source PNGs
+  were cropped/square-padded from the uploaded files; originals left in the
+  project root.
+- 2026-08-29: Added `scripts/hellofresh-import` (new `hellofresh-agent`
+  service) — see `docs/DECISIONS.md` for the full design (why `Product`/new
+  `Ingredient`/`ProductIngredient` models instead of a separate `Recipe`
+  model, why the sitemap instead of the "Se flere" API, the explicit
+  copyright-risk decision, and known limitations: no cross-run dedup beyond
+  matching `recipeId`, no per-ingredient vitamin/mineral estimate yet).
+  New migration `20260829010000_hellofresh_catalog` (on top of the
+  already-present `20260829000000_hellofresh_product_source` enum migration)
+  adds `Product.nutritionExtra`, the `Ingredient`/`ProductIngredient` tables,
+  and seeds the four `Category` rows (Retter/Menuer/Ingredienser/Færdigmad).
+  Neither migration is applied to production yet. `compose.production.yaml`
+  gained the `hellofresh-agent` service (reconciled with a concurrent
+  session's already-present block — see `docs/DECISIONS.md`) plus a new
+  `./data/hellofresh-images` volume mounted into both the agent and `app`.
+  `npx prisma validate` and `npx tsc --noEmit` passed clean. `npm run lint`
+  passed for every file touched by this work; it also surfaced two
+  pre-existing errors in `src/app/kamera/page.tsx` and
+  `src/app/tilfoej/[id]/page.tsx` (`react-hooks/set-state-in-effect`) from a
+  concurrent session's in-progress `recognize-hellofresh` work, not caused by
+  this change. `npm run build` still hit the known concurrent-session
+  `.next/static` `EPERM` lock (see prior entries in this file) — re-run once
+  no other session's dev server is active. Not yet run against a live
+  database (see `hellocal_no_local_db`) — deploy both new migrations, then
+  bring up `hellofresh-agent` to start the first import pass.
+- 2026-08-29: Built the recognize-hellofresh/UI side referenced above (see
+  `docs/DECISIONS.md` for the "Ret nr. isn't public, use AI photo recognition
+  instead" decision): `POST /api/ai/recognize-hellofresh`,
+  `src/components/HelloFreshMatchReview.tsx`, a `kamera` `?mode=hellofresh`
+  capture flow, a "HelloFresh — Genkend din ret" entry row on `/madvarer`,
+  and a generic portion-based amount stepper on `/tilfoej/[id]` for any
+  product with `servingSizeGrams` set. The two `react-hooks/set-state-in-effect`
+  lint errors the entry above attributes to this work are now fixed (moved
+  the `setAmount`/`setRecognizeStatus` calls out of a bare effect body into
+  the existing async `.then()` callbacks); `npm run lint` is clean again.
+  `npx prisma generate` was re-run after the concurrent session's schema
+  additions landed. `npm run build` (retried after the shared `.next/static`
+  `EPERM` lock — confirmed held by the concurrent session's live `next dev`
+  process, not stale — cleared) then passed clean: TypeScript, all 62 routes
+  including `/api/ai/recognize-hellofresh` and `/tilfoej/[id]`. Not yet
+  verified live in a browser (no reachable local PostgreSQL, see
+  `hellocal_no_local_db`) — verify the HelloFresh camera-recognition flow and
+  the portion stepper against `hellocal.packroff.dk` once both migrations are
+  deployed and `hellofresh-agent` has imported at least one recipe.
+
 ## Next work
 
 1. Implement the pending UI/design requirements in
@@ -745,3 +796,10 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
    needs a separate partner-access application (instructions were given to
    the user directly in chat on 2026-08-28) before it can move beyond its
    current "kommer snart" card.
+10. Deploy migrations `20260829000000_hellofresh_product_source` and
+    `20260829010000_hellofresh_catalog`, then `docker compose up -d --build
+    hellofresh-agent` (new service — needs its first build, not covered by
+    the normal `HELLOCAL_TAG` bump flow, same as the other agents). It will
+    then work through HelloFresh's ~6000-recipe public catalog on its own
+    over several hours (polite request pacing, see `docs/DECISIONS.md`); no
+    manual step needed after that.

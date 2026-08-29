@@ -75,6 +75,10 @@ export default function TilfoejPage() {
         if (!res.ok) return setState({ status: "error" });
         const data = await res.json();
         setState({ status: "loaded", product: data.product });
+        // Retter med en fast portionsstørrelse (fx HelloFresh, se
+        // scripts/hellofresh-import) tælles i portioner, ikke gram — start på
+        // 1 portion i stedet for den almindelige 100 g-standard.
+        if (data.product?.servingSizeGrams) setAmount(data.product.servingSizeGrams);
       })
       .catch(() => setState({ status: "error" }));
 
@@ -86,6 +90,8 @@ export default function TilfoejPage() {
 
   const product = state.status === "loaded" ? state.product : null;
   const factor = amount / 100;
+  const servingSizeGrams = product?.servingSizeGrams ?? null;
+  const step = servingSizeGrams ? servingSizeGrams / 2 : 10;
 
   useEffect(() => {
     const codes = product?.additives ?? [];
@@ -219,16 +225,10 @@ export default function TilfoejPage() {
                 )}
                 <p className="hf-heading text-lg text-hf-black">{state.product.name}</p>
                 <p className="text-sm font-bold text-hf-black">
-                  {Math.round(state.product.kcalPer100g)} kcal/100g
+                  {servingSizeGrams
+                    ? `${Math.round((state.product.kcalPer100g * servingSizeGrams) / 100)} kcal / portion`
+                    : `${Math.round(state.product.kcalPer100g)} kcal/100g`}
                 </p>
-                {state.product.servingSizeGrams != null && (
-                  <p className="text-xs text-hf-black opacity-70">
-                    {Math.round(
-                      (state.product.kcalPer100g * state.product.servingSizeGrams) / 100
-                    )}{" "}
-                    kcal/stk
-                  </p>
-                )}
 
                 <div className="mt-2 flex items-center gap-4">
                   <button
@@ -269,19 +269,23 @@ export default function TilfoejPage() {
 
               <div className="mb-4 flex items-center gap-2">
                 <button
-                  onClick={() => setAmount((a) => Math.max(10, a - 10))}
+                  onClick={() => setAmount((a) => Math.max(step, a - step))}
                   className="h-11 w-11 rounded-full bg-hf-tan text-lg font-bold text-hf-black"
                 >
                   −
                 </button>
                 <div className="flex-1 rounded-2xl bg-hf-tan py-3 text-center text-hf-black">
-                  <p className="text-xl font-bold">{amount} g</p>
+                  <p className="text-xl font-bold">
+                    {servingSizeGrams
+                      ? `${(amount / servingSizeGrams).toLocaleString("da-DK", { maximumFractionDigits: 1 })} ${amount === servingSizeGrams ? "portion" : "portioner"}`
+                      : `${amount} g`}
+                  </p>
                   <p className="text-xs opacity-70">
                     {Math.round((state.product.kcalPer100g * amount) / 100)} kcal
                   </p>
                 </div>
                 <button
-                  onClick={() => setAmount((a) => a + 10)}
+                  onClick={() => setAmount((a) => a + step)}
                   className="h-11 w-11 rounded-full bg-hf-tan text-lg font-bold text-hf-black"
                 >
                   +

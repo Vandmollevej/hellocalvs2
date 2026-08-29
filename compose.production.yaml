@@ -50,6 +50,7 @@ services:
       - "${HELLOCAL_BIND_ADDRESS:-0.0.0.0}:${HELLOCAL_HTTP_PORT:-3100}:3000"
     volumes:
       - ./data/product-images:/app/public/product-images
+      - ./data/hellofresh-images:/app/public/hellofresh-images
     depends_on:
       db:
         condition: service_healthy
@@ -96,6 +97,24 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env.production}
       FRIDA_POLL_INTERVAL_SECONDS: ${FRIDA_AGENT_POLL_INTERVAL_SECONDS:-86400}
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - backend
+      - edge
+
+  hellofresh-agent:
+    build: ./scripts/hellofresh-import
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env.production}
+      HELLOFRESH_POLL_INTERVAL_SECONDS: ${HELLOFRESH_AGENT_POLL_INTERVAL_SECONDS:-120}
+      HELLOFRESH_BATCH_SIZE: ${HELLOFRESH_AGENT_BATCH_SIZE:-30}
+    volumes:
+      - ./data/hellofresh-images:/images
     depends_on:
       db:
         condition: service_healthy

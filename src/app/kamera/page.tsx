@@ -8,13 +8,22 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { HfScreen } from "@/components/HfScreen";
 import { NutritionLabelReview } from "@/components/NutritionLabelReview";
+import { HelloFreshMatchReview } from "@/components/HelloFreshMatchReview";
 import { recognizeNutritionLabel, type NutritionFields } from "@/lib/nutrition-ocr";
 import { OCR_DRAFT_STORAGE_KEY, type ProductDraft } from "@/app/madvarer/nyt/page";
 
 type CameraStatus = "starting" | "active" | "denied" | "unavailable" | "error";
 type LookupStatus = "idle" | "loading" | "not_found" | "error";
-type CameraMode = "produkt" | "maaltid" | "naering";
+type CameraMode = "produkt" | "maaltid" | "naering" | "hellofresh";
 type OcrStatus = "idle" | "processing" | "done" | "failed";
+type RecognizeStatus = "idle" | "processing" | "found" | "not_found" | "failed";
+type MatchedHelloFreshProduct = {
+  id: string;
+  name: string;
+  imageUrl: string | null;
+  kcalPer100g: number;
+  servingSizeGrams: number | null;
+};
 
 const MODE_TABS: { key: CameraMode; label: string }[] = [
   { key: "produkt", label: "Stregkode" },
@@ -40,8 +49,15 @@ function statusFromCameraError(error: unknown): CameraStatus {
 function KameraContent() {
   const params = useSearchParams();
   const router = useRouter();
+  const modeParam = params.get("mode");
   const mode: CameraMode =
-    params.get("mode") === "maaltid" ? "maaltid" : params.get("mode") === "naering" ? "naering" : "produkt";
+    modeParam === "maaltid"
+      ? "maaltid"
+      : modeParam === "naering"
+        ? "naering"
+        : modeParam === "hellofresh"
+          ? "hellofresh"
+          : "produkt";
   const forDish = params.get("for") === "ret";
   const returnSuffix = forDish ? "?for=ret" : "";
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -60,6 +76,8 @@ function KameraContent() {
     carbsPer100g: null,
     fatPer100g: null,
   });
+  const [recognizeStatus, setRecognizeStatus] = useState<RecognizeStatus>("idle");
+  const [matchedProduct, setMatchedProduct] = useState<MatchedHelloFreshProduct | null>(null);
   const stopCamera = useCallback(() => {
     scannerControlsRef.current?.stop();
     scannerControlsRef.current = null;
@@ -182,6 +200,8 @@ function KameraContent() {
     lookupInProgressRef.current = false;
     setLookupStatus("idle");
     setOcrStatus("idle");
+    setRecognizeStatus("idle");
+    setMatchedProduct(null);
     setRestartKey((key) => key + 1);
   }
 
@@ -203,6 +223,35 @@ function KameraContent() {
     };
   }, [mode, photo]);
 
+  useEffect(() => {
+    if (mode !== "hellofresh" || !photo) return;
+    let cancelled = false;
+    fetch("/api/ai/recognize-hellofresh", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ photo }),
+    })
+      .then((res) => res.json())
+      .then((data: { product: MatchedHelloFreshProduct | null }) => {
+        if (cancelled) return;
+        setMatchedProduct(data.product);
+        setRecognizeStatus(data.product ? "found" : "not_found");
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setRecognizeStatus("failed");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [mode, photo]);
+
+  function confirmHelloFreshMatch() {
+    if (!matchedProduct) return;
+    stopCamera();
+    router.push(`/tilfoej/${matchedProduct.id}`);
+  }
+
   function useOcrValues() {
     const draft: ProductDraft = {
       kcalPer100g: ocrFields.kcalPer100g?.toString() ?? "",
@@ -219,25 +268,27 @@ function KameraContent() {
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-3 p-4">
-      <div className="flex justify-center gap-2">
-        {MODE_TABS.map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => {
-              if (tab.key === mode) return;
-              restartCamera();
-              router.replace(`/kamera?mode=${tab.key}${forDish ? "&for=ret" : ""}`);
-            }}
-            className={
-              tab.key === mode
-                ? "hf-btn-primary px-4 py-1.5 text-xs"
-                : "hf-btn-secondary px-4 py-1.5 text-xs"
-            }
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      {mode !== "hellofresh" && (
+        <div className="flex justify-center gap-2">
+          {MODE_TABS.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => {
+                if (tab.key === mode) return;
+                restartCamera();
+                router.replace(`/kamera?mode=${tab.key}${forDish ? "&for=ret" : ""}`);
+              }}
+              className={
+                tab.key === mode
+                  ? "hf-btn-primary px-4 py-1.5 text-xs"
+                  : "hf-btn-secondary px-4 py-1.5 text-xs"
+              }
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className="relative min-h-0 flex-1 overflow-hidden rounded-2xl bg-hf-black">
         {photo ? (
@@ -251,7 +302,7 @@ function KameraContent() {
           <video ref={videoRef} className="h-full w-full object-cover" autoPlay muted playsInline aria-label="Live kameravisning" />
         )}
 
-        {!photo && mode === "maaltid" && (
+        {!photo && (mode === "maaltid" || mode === "hellofresh") && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
             <div className="aspect-square w-[68%] rounded-full border-2 border-white/80 shadow-[0_0_0_999px_rgba(0,0,0,0.2)]" />
           </div>
@@ -296,6 +347,21 @@ function KameraContent() {
           <div className="flex justify-center py-1">
             <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-btn-primary gap-2 px-6 py-3 text-sm disabled:opacity-40">
               <IconCamera size={19} /> Tag billede af næringsdeklaration
+            </button>
+          </div>
+        )
+      ) : mode === "hellofresh" ? (
+        photo ? (
+          <HelloFreshMatchReview
+            status={recognizeStatus === "idle" ? "processing" : recognizeStatus}
+            product={matchedProduct}
+            onConfirm={confirmHelloFreshMatch}
+            onRetake={restartCamera}
+          />
+        ) : (
+          <div className="flex justify-center py-1">
+            <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-btn-primary gap-2 px-6 py-3 text-sm disabled:opacity-40">
+              <IconCamera size={19} /> Tag billede af din ret
             </button>
           </div>
         )

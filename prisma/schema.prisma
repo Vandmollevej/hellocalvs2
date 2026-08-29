@@ -362,6 +362,10 @@ model Product {
   externalSource   ExternalProductSource?
   externalId       String?
   sourceCheckedAt  DateTime?
+  // Ekstra næringsværdier der ikke passer i de faste per-100g-felter ovenfor
+  // (fx HelloFresh-opskrifters fiber/sukker/salt/kalium/calcium/jern pr.
+  // serveringsstørrelse). Se docs/DECISIONS.md (2026-08-29).
+  nutritionExtra   Json?
   status           ProductStatus          @default(PENDING)
   discontinued     Boolean                @default(false)
   createdAt        DateTime               @default(now())
@@ -370,6 +374,7 @@ model Product {
   registrations   Registration[]
   favorites       Favorite[]
   dishIngredients DishIngredient[]
+  ingredients     ProductIngredient[]
 
   @@index([externalSource, externalId])
   @@map("products")
@@ -407,6 +412,47 @@ model FridaImportState {
   importedAt        DateTime @default(now())
 
   @@map("frida_import_state")
+}
+
+// Delt ingrediens-billedkatalog, hentet af hellofresh-agent
+// (scripts/hellofresh-import) fra HelloFreshs offentlige opskriftssider.
+// Adskilt fra Product: det er billeder/metadata til visning på tværs af
+// appen (fx "denne ret indeholder: [ikon] Gulerod"), ikke en selvstændig
+// logbar fødevare — Frida-importerede Product-rækker er stadig den eneste
+// kilde til egentlige næringsværdier for rå ingredienser. Se
+// docs/DECISIONS.md (2026-08-29).
+model Ingredient {
+  id             String   @id @default(cuid())
+  name           String
+  slug           String?
+  externalSource String? // "HELLOFRESH"
+  externalId     String?  @unique
+  imageUrl       String?
+  createdAt      DateTime @default(now())
+
+  products ProductIngredient[]
+
+  @@map("ingredients")
+}
+
+// Ingrediens-sammensætningen af en "Ret" (Product med category "Retter"),
+// med gram-mængde og andel af rettens samlede vægt — bruges til at estimere
+// fx hvor meget en peberfrugt bidrager til rettens vitamin-/mineralindhold.
+// proportion/amountGrams er null når HelloFresh kun oplyser mængden i en
+// ikke-vægt-enhed (stk/dl/tsk/spsk) — se docs/DECISIONS.md (2026-08-29).
+model ProductIngredient {
+  id           String     @id @default(cuid())
+  product      Product    @relation(fields: [productId], references: [id])
+  productId    String
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+  ingredientId String
+  rawAmount    Float
+  rawUnit      String
+  amountGrams  Float?
+  proportion   Float?
+
+  @@unique([productId, ingredientId])
+  @@map("product_ingredients")
 }
 
 enum ProductStatus {
