@@ -254,6 +254,12 @@ Guiden skal spørge om brugeren ønsker at importere data fra smartwatch/sundhed
 Guiden kan også spørge, om brugeren ønsker mulighed for at registrere arbejdstider
 direkte i kalenderen.
 
+## 8.x Fast placering af Gem/fortsæt-knap
+
+- Primær Gem/fortsæt-knap (fx "Gem ret", "Tilføj") skal altid stå fast lige over
+  bundmenuen, uanset hvor meget siden scroller. Implementeret via `footer`-prop
+  på `HfScreen` (src/components/HfScreen.tsx).
+
 ## 9. Bundmenu
 
 ### 9.1 Ikonstørrelse og proportioner

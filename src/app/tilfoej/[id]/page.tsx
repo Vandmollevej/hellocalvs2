@@ -188,7 +188,25 @@ export default function TilfoejPage() {
   }
 
   return (
-    <HfScreen title={forDish ? "Tilføj ingrediens" : "Tilføj"}>
+    <HfScreen
+      title={forDish ? "Tilføj ingrediens" : "Tilføj"}
+      footer={
+        state.status === "loaded" ? (
+          <>
+            {saveError && (
+              <p className="mb-2 text-center text-sm text-hf-black opacity-70">{saveError}</p>
+            )}
+            <button
+              onClick={forDish ? handleAddToDish : handleAdd}
+              disabled={saving}
+              className="hf-btn-primary w-full py-3.5 text-[15px] disabled:opacity-60"
+            >
+              {forDish ? "Tilføj til ret" : saving ? "Gemmer..." : "Tilføj"}
+            </button>
+          </>
+        ) : undefined
+      }
+    >
       <div className="flex h-full flex-col overflow-y-auto">
         {state.status === "loading" && (
           <p className="p-4 text-center text-sm text-hf-black opacity-60">Henter...</p>
@@ -292,17 +310,6 @@ export default function TilfoejPage() {
                 </button>
               </div>
 
-              {saveError && (
-                <p className="mb-2 text-center text-sm text-hf-black opacity-70">{saveError}</p>
-              )}
-
-              <button
-                onClick={forDish ? handleAddToDish : handleAdd}
-                disabled={saving}
-                className="hf-btn-primary w-full py-3.5 text-[15px] disabled:opacity-60"
-              >
-                {forDish ? "Tilføj til ret" : saving ? "Gemmer..." : "Tilføj"}
-              </button>
             </div>
 
             <div ref={detailsRef} className="flex flex-col gap-6 border-t border-hf-tan-dark p-4">

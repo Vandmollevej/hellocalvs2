@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconSearch, IconCamera, IconApple, IconX, IconSoup } from "@tabler/icons-react";
+import { IconBarcode, IconCamera, IconHandClick, IconX, IconSoup } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import {
   readDishDraft,
@@ -80,7 +80,24 @@ export default function OpretRetPage() {
   }
 
   return (
-    <HfScreen title="Opret egen ret" icon={<IconSoup size={20} stroke={2} />}>
+    <HfScreen
+      title="Opret egen ret"
+      icon={<IconSoup size={20} stroke={2} />}
+      footer={
+        <>
+          {saveError && (
+            <p className="mb-2 text-center text-sm text-hf-black opacity-70">{saveError}</p>
+          )}
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="hf-btn-primary w-full py-3.5 text-[15px] disabled:opacity-60"
+          >
+            {saving ? "Gemmer..." : "Gem ret"}
+          </button>
+        </>
+      }
+    >
       <div className="flex flex-col gap-4 p-4">
         <input
           value={name}
@@ -150,7 +167,7 @@ export default function OpretRetPage() {
               href="/soeg?for=ret"
               className="flex flex-col items-center gap-1.5 rounded-2xl bg-hf-tan py-3 text-center"
             >
-              <IconSearch size={20} color="var(--hf-black)" />
+              <IconBarcode size={20} color="var(--hf-black)" />
               <span className="text-xs font-medium text-hf-black">Søg</span>
             </a>
             <a
@@ -164,21 +181,12 @@ export default function OpretRetPage() {
               href="/madvarer/nyt?for=ret"
               className="flex flex-col items-center gap-1.5 rounded-2xl bg-hf-tan py-3 text-center"
             >
-              <IconApple size={20} color="var(--hf-black)" />
+              <IconHandClick size={20} color="var(--hf-black)" />
               <span className="text-xs font-medium text-hf-black">Manuelt</span>
             </a>
           </div>
         </div>
 
-        {saveError && <p className="text-center text-sm text-hf-black opacity-70">{saveError}</p>}
-
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="hf-btn-primary w-full py-3.5 text-[15px] disabled:opacity-60"
-        >
-          {saving ? "Gemmer..." : "Gem ret"}
-        </button>
       </div>
     </HfScreen>
   );
