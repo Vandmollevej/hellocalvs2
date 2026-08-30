@@ -90,6 +90,23 @@ body {
 
 /* ---- HelloFresh-stil genbrugelige klasser (docs/UI.md) ---- */
 
+/* Skjul browserens native op/ned-spinner og pil-dropdown overalt — de ser
+   forskellige ud pr. browser/OS og matcher ikke det flade HelloFresh-look.
+   Erstattes pr. felt med simple, sorte pile tegnet i markup (fx `hf/NumberField.tsx`). */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
 /* Knapper må aldrig blive markeret som tekst, fx når man forsøger at trække dem (drag-to-reorder). */
 button,
 [role="button"] {

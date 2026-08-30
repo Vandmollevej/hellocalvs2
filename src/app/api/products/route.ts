@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { ExternalProductSource } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { searchOpenFoodFacts } from "@/lib/openFoodFacts";
 import { barcodeMatchesRegion } from "@/lib/regions";
@@ -53,17 +54,28 @@ async function importMatchingOffProducts(q: string) {
 // en global live søgning i Open Food Facts hvis lokale resultater er
 // sparsomme. Resultater med stregkode fra brugerens valgte region (se
 // /profil/indstillinger) prioriteres øverst.
+// ?source=HELLOFRESH filtrerer til én ekstern kilde (fx til at browse hele
+// HelloFresh-kataloget); ?take=N overstyrer standardgrænsen på 20 (maks. 200).
 export async function GET(req: Request) {
-  const q = new URL(req.url).searchParams.get("q")?.trim() ?? "";
+  const params = new URL(req.url).searchParams;
+  const q = params.get("q")?.trim() ?? "";
+  const sourceParam = params.get("source")?.trim();
+  const source =
+    sourceParam && sourceParam in ExternalProductSource
+      ? (sourceParam as ExternalProductSource)
+      : undefined;
+  const take = Math.min(Math.max(parseInt(params.get("take") ?? "20", 10) || 20, 1), 200);
 
   try {
     const findProducts = () =>
       prisma.product.findMany({
-        where: q
-          ? { name: { contains: q, mode: "insensitive" }, discontinued: false }
-          : { discontinued: false },
+        where: {
+          discontinued: false,
+          ...(q ? { name: { contains: q, mode: "insensitive" } } : {}),
+          ...(source ? { externalSource: source } : {}),
+        },
         include: { brand: true, barcodes: true },
-        take: 20,
+        take,
         orderBy: { createdAt: "desc" },
       });
 

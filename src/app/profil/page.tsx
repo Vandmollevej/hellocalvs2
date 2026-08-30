@@ -2,9 +2,17 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconMoon, IconScale, IconHeartbeat, IconSettings } from "@tabler/icons-react";
+import {
+  IconMoon,
+  IconScale,
+  IconHeartbeat,
+  IconSettings,
+  IconChevronUp,
+  IconChevronDown,
+} from "@tabler/icons-react";
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
+import { BottomNav } from "@/components/BottomNav";
 import { latestTrendWeight, type MealSample, type WeightSample } from "@/lib/weight-trend";
 
 type Sex = "FEMALE" | "MALE";
@@ -38,6 +46,55 @@ function Field({
 
 const inputClass =
   "rounded-xl bg-hf-tan px-4 py-3 text-[15px] text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green";
+
+function NumberField({
+  value,
+  onChange,
+  step = 1,
+  inputMode = "decimal",
+}: {
+  value: number | null;
+  onChange: (value: number | null) => void;
+  step?: number;
+  inputMode?: "decimal" | "numeric";
+}) {
+  function nudge(delta: number) {
+    const next = Math.round(((value ?? 0) + delta) * 100) / 100;
+    onChange(next);
+  }
+
+  return (
+    <div className="flex items-stretch rounded-xl bg-hf-tan pr-2">
+      <input
+        type="number"
+        inputMode={inputMode}
+        className="w-full min-w-0 flex-1 bg-transparent px-4 py-3 text-[15px] text-hf-black outline-none"
+        value={value ?? ""}
+        onChange={(event) =>
+          onChange(event.target.value === "" ? null : Number(event.target.value))
+        }
+      />
+      <div className="flex flex-col justify-center gap-0.5">
+        <button
+          type="button"
+          aria-label="Øg"
+          onClick={() => nudge(step)}
+          className="flex h-3.5 w-4 items-center justify-center text-hf-black"
+        >
+          <IconChevronUp size={14} stroke={2.5} />
+        </button>
+        <button
+          type="button"
+          aria-label="Reducér"
+          onClick={() => nudge(-step)}
+          className="flex h-3.5 w-4 items-center justify-center text-hf-black"
+        >
+          <IconChevronDown size={14} stroke={2.5} />
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -129,14 +186,9 @@ export default function ProfilePage() {
 
           <div className="grid grid-cols-2 gap-3">
             <Field label="Vægt (kg)">
-              <input
-                type="number"
-                inputMode="decimal"
-                className={inputClass}
-                value={user.weightKg ?? ""}
-                onChange={(event) =>
-                  update("weightKg", event.target.value === "" ? null : Number(event.target.value))
-                }
+              <NumberField
+                value={user.weightKg}
+                onChange={(value) => update("weightKg", value)}
               />
               {trendWeightKg !== null && (
                 <span className="text-[11px] text-hf-black opacity-60">
@@ -146,41 +198,39 @@ export default function ProfilePage() {
             </Field>
 
             <Field label="Højde (cm)">
-              <input
-                type="number"
-                inputMode="decimal"
-                className={inputClass}
-                value={user.heightCm ?? ""}
-                onChange={(event) =>
-                  update("heightCm", event.target.value === "" ? null : Number(event.target.value))
-                }
+              <NumberField
+                value={user.heightCm}
+                onChange={(value) => update("heightCm", value)}
               />
             </Field>
 
             <Field label="Fødselsår">
-              <input
-                type="number"
+              <NumberField
+                value={user.birthYear}
                 inputMode="numeric"
-                className={inputClass}
-                value={user.birthYear ?? ""}
-                onChange={(event) =>
-                  update("birthYear", event.target.value === "" ? null : Number(event.target.value))
-                }
+                onChange={(value) => update("birthYear", value)}
               />
             </Field>
 
             <Field label="Køn">
-              <select
-                className={inputClass}
-                value={user.sex ?? ""}
-                onChange={(event) =>
-                  update("sex", event.target.value === "" ? null : (event.target.value as Sex))
-                }
-              >
-                <option value="">Ikke angivet</option>
-                <option value="FEMALE">Kvinde</option>
-                <option value="MALE">Mand</option>
-              </select>
+              <div className="relative">
+                <select
+                  className={`${inputClass} w-full appearance-none pr-9`}
+                  value={user.sex ?? ""}
+                  onChange={(event) =>
+                    update("sex", event.target.value === "" ? null : (event.target.value as Sex))
+                  }
+                >
+                  <option value="">Ikke angivet</option>
+                  <option value="FEMALE">Kvinde</option>
+                  <option value="MALE">Mand</option>
+                </select>
+                <IconChevronDown
+                  size={16}
+                  stroke={2.5}
+                  className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-hf-black"
+                />
+              </div>
             </Field>
           </div>
 
@@ -209,6 +259,7 @@ export default function ProfilePage() {
           </AccordionCard>
         </div>
       )}
+      <BottomNav />
     </div>
   );
 }

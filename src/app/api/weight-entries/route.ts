@@ -23,7 +23,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { weightKg, clothed, shoes, toilet, meal, timeOfDay, note } = body as {
+  const { weightKg, clothed, shoes, toilet, meal, timeOfDay, note, weighedAt } = body as {
     weightKg: number;
     clothed: boolean;
     shoes?: "ON" | "OFF" | "UNKNOWN";
@@ -31,10 +31,19 @@ export async function POST(req: Request) {
     meal: "BEFORE" | "AFTER" | "UNKNOWN";
     timeOfDay: "MORNING" | "EVENING" | "UNKNOWN";
     note?: string;
+    // Valgfri overstyring af tidspunktet, samme mønster som
+    // Registration.createdAt — bruges til at bagudregistrere historiske
+    // vejninger (fx ved oprettelse af en testbruger).
+    weighedAt?: string;
   };
 
   if (!weightKg || weightKg <= 0) {
     return NextResponse.json({ message: "weightKg (> 0) er påkrævet" }, { status: 400 });
+  }
+
+  const parsedWeighedAt = weighedAt ? new Date(weighedAt) : undefined;
+  if (parsedWeighedAt && Number.isNaN(parsedWeighedAt.getTime())) {
+    return NextResponse.json({ message: "weighedAt er ugyldig" }, { status: 400 });
   }
 
   try {
@@ -49,6 +58,7 @@ export async function POST(req: Request) {
         meal: meal ?? "UNKNOWN",
         timeOfDay: timeOfDay ?? "UNKNOWN",
         note: note || null,
+        ...(parsedWeighedAt ? { weighedAt: parsedWeighedAt } : {}),
       },
     });
 

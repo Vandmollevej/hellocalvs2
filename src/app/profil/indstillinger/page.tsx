@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { IconChevronDown } from "@tabler/icons-react";
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import { ALLERGEN_CATALOG } from "@/lib/allergens";
 import { REGIONS } from "@/lib/regions";
@@ -88,17 +89,24 @@ export default function IndstillingerPage() {
                 Prioriterer produktsøgning efter dit lands stregkoder.
               </span>
             </span>
-            <select
-              className="rounded-xl border border-hf-tan-dark bg-white px-3 py-2 text-[14px] text-hf-black"
-              value={user.region}
-              onChange={(event) => updateRegion(event.target.value)}
-            >
-              {REGIONS.map((region) => (
-                <option key={region.code} value={region.code}>
-                  {region.label}
-                </option>
-              ))}
-            </select>
+            <div className="relative">
+              <select
+                className="appearance-none rounded-xl border border-hf-tan-dark bg-white py-2 pl-3 pr-8 text-[14px] text-hf-black"
+                value={user.region}
+                onChange={(event) => updateRegion(event.target.value)}
+              >
+                {REGIONS.map((region) => (
+                  <option key={region.code} value={region.code}>
+                    {region.label}
+                  </option>
+                ))}
+              </select>
+              <IconChevronDown
+                size={14}
+                stroke={2.5}
+                className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-hf-black"
+              />
+            </div>
           </label>
 
           <label className="flex items-center gap-3 rounded-2xl bg-hf-tan px-4 py-4">
