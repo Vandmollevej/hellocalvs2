@@ -3,15 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import {
   IconPlus,
   IconCamera,
   IconSearch,
   IconMicrophone,
-  IconSoup,
   type Icon,
 } from "@tabler/icons-react";
-import { IconPlateCutlery } from "@/components/icons/PlateCutlery";
 
 export const HERO_HEIGHT = 280;
 const CENTER_Y = HERO_HEIGHT / 2;
@@ -23,15 +22,18 @@ const FAB_RADIUS = 14;
 export const FAB_INSET = 18;
 const DRAG_THRESHOLD = 6;
 
-// Half circle backdrop behind the fanned-out actions, flush against the
-// screen edge the FAB sits on.
-const HALF_CIRCLE_RADIUS = 48;
+// Joystick backdrop behind the fanned-out actions, flush against the
+// screen edge the FAB sits on. Always visible (not just while open) and
+// large enough that a thumb can comfortably roam inside it.
+const HALF_CIRCLE_RADIUS = 72;
 
 // Minimum distance from the FAB center before a drag counts as "aiming at"
 // an option, so a small wobble right after pressing down doesn't select
-// anything.
-const SELECT_DEAD_ZONE = 30;
+// anything. Kept small so the whole joystick circle is "live" — the user
+// shouldn't have to drag all the way out to an icon to register a choice.
+const SELECT_DEAD_ZONE = 14;
 
+// Top to bottom: mikrofon, gryde (egne retter), søg, tallerken (måltid), kamera (produkt).
 const ANGLES_DEG = [-70, -35, 0, 35, 70];
 
 export type FabSide = "left" | "right";
@@ -40,12 +42,20 @@ export type FabSide = "left" | "right";
 // draggable to a custom position.
 const SIDE: FabSide = "left";
 
-const actions: { key: string; href: string; icon: Icon; label: string }[] = [
-  { key: "maaltid", href: "/kamera?mode=maaltid", icon: IconPlateCutlery, label: "Måltid" },
-  { key: "kamera", href: "/kamera?mode=produkt", icon: IconCamera, label: "Kamera" },
-  { key: "soeg", href: "/soeg", icon: IconSearch, label: "Søg" },
+type Action = {
+  key: string;
+  href: string;
+  label: string;
+  icon?: Icon;
+  imageSrc?: string;
+};
+
+const actions: Action[] = [
   { key: "mikrofon", href: "/stemme", icon: IconMicrophone, label: "Mikrofon" },
-  { key: "ret", href: "/opret-ret", icon: IconSoup, label: "Egne retter" },
+  { key: "ret", href: "/opret-ret", imageSrc: "/icons/gryde.png", label: "Egne retter" },
+  { key: "soeg", href: "/soeg", icon: IconSearch, label: "Søg" },
+  { key: "maaltid", href: "/kamera?mode=maaltid", imageSrc: "/icons/tallerken-kamera.png", label: "Måltid" },
+  { key: "kamera", href: "/kamera?mode=produkt", icon: IconCamera, label: "Kamera" },
 ];
 
 function arcItemCenter(angleDeg: number, containerWidth: number) {
@@ -187,23 +197,21 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
 
   return (
     <div ref={containerRef} className="absolute inset-0">
-      {open && (
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute bg-hf-green transition-opacity duration-200"
-          style={{
-            [SIDE === "left" ? "left" : "right"]: 0,
-            top: CENTER_Y - HALF_CIRCLE_RADIUS,
-            width: HALF_CIRCLE_RADIUS,
-            height: HALF_CIRCLE_RADIUS * 2,
-            borderRadius:
-              SIDE === "left"
-                ? `0 ${HALF_CIRCLE_RADIUS * 2}px ${HALF_CIRCLE_RADIUS * 2}px 0`
-                : `${HALF_CIRCLE_RADIUS * 2}px 0 0 ${HALF_CIRCLE_RADIUS * 2}px`,
-            opacity: 0.92,
-          } as React.CSSProperties}
-        />
-      )}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute bg-hf-green transition-all duration-200"
+        style={{
+          [SIDE === "left" ? "left" : "right"]: 0,
+          top: CENTER_Y - HALF_CIRCLE_RADIUS,
+          width: HALF_CIRCLE_RADIUS,
+          height: HALF_CIRCLE_RADIUS * 2,
+          borderRadius:
+            SIDE === "left"
+              ? `0 ${HALF_CIRCLE_RADIUS * 2}px ${HALF_CIRCLE_RADIUS * 2}px 0`
+              : `${HALF_CIRCLE_RADIUS * 2}px 0 0 ${HALF_CIRCLE_RADIUS * 2}px`,
+          opacity: 1,
+        } as React.CSSProperties}
+      />
 
       <button
         aria-label={open ? "Luk tilføj-menu" : "Åbn tilføj-menu"}
@@ -222,7 +230,7 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
           touchAction: "none",
         } as React.CSSProperties}
       >
-        <IconPlus size={26} color={open ? "var(--hf-white)" : "var(--hf-fab)"} stroke={2} />
+        <IconPlus size={26} color="var(--hf-white)" stroke={2} />
       </button>
 
       {actions.map((action, i) => {
@@ -245,7 +253,11 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
               boxShadow: isHighlighted ? "0 4px 14px rgba(0,0,0,0.25)" : undefined,
             }}
           >
-            <Icon size={20} color={isHighlighted ? "var(--hf-white)" : "var(--hf-black)"} />
+            {Icon ? (
+              <Icon size={20} color={isHighlighted ? "var(--hf-white)" : "var(--hf-black)"} />
+            ) : (
+              <Image src={action.imageSrc!} alt="" width={22} height={22} className="object-contain" />
+            )}
           </Link>
         );
       })}
