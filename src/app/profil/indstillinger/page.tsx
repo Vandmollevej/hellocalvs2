@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import { ALLERGEN_CATALOG } from "@/lib/allergens";
+import { REGIONS } from "@/lib/regions";
 
 type SettingsUser = {
   showAllergens: boolean;
   allergenVisibility: Record<string, boolean> | null;
+  region: string;
 };
 
 export default function IndstillingerPage() {
@@ -47,6 +49,15 @@ export default function IndstillingerPage() {
     }).catch(() => {});
   }
 
+  function updateRegion(region: string) {
+    setUser((current) => (current ? { ...current, region } : current));
+    fetch("/api/profile", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ region }),
+    }).catch(() => {});
+  }
+
   function toggleAllergen(key: string, value: boolean) {
     setUser((current) => {
       if (!current) return current;
@@ -70,6 +81,26 @@ export default function IndstillingerPage() {
         </p>
       ) : (
         <div className="flex flex-col gap-4 p-4">
+          <label className="flex items-center justify-between gap-3 rounded-2xl bg-hf-tan px-4 py-4">
+            <span className="flex-1">
+              <span className="block text-[15px] font-medium text-hf-black">Region</span>
+              <span className="block text-[12px] text-hf-black opacity-60">
+                Prioriterer produktsøgning efter dit lands stregkoder.
+              </span>
+            </span>
+            <select
+              className="rounded-xl border border-hf-tan-dark bg-white px-3 py-2 text-[14px] text-hf-black"
+              value={user.region}
+              onChange={(event) => updateRegion(event.target.value)}
+            >
+              {REGIONS.map((region) => (
+                <option key={region.code} value={region.code}>
+                  {region.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
           <label className="flex items-center gap-3 rounded-2xl bg-hf-tan px-4 py-4">
             <input
               type="checkbox"

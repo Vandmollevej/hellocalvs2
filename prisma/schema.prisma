@@ -25,6 +25,13 @@ model User {
   passwordHash String?
   totpSecret   String?
 
+  // Almindelig bruger-tilmelding via /tilmeld (e-mail + adgangskode).
+  // emailVerifiedAt sættes med det samme ved oprettelse, fordi der endnu
+  // ikke er sat SMTP op til at sende en rigtig verifikationsmail — se
+  // docs/STATUS.md "Next work" for opgaven om at eftermontere den rigtige
+  // verifikationsmail, når SMTP findes.
+  emailVerifiedAt DateTime?
+
   // Søvnmønster: standard sengetid/stå-op-tid, med mulighed for individuelle
   // tider pr. ugedag (SleepSchedule) til brugere med skiftende arbejdstider.
   defaultBedtime   String?
@@ -57,6 +64,11 @@ model User {
   // dem. Null = alle vises, når showAllergens er sand.
   showAllergens      Boolean @default(false)
   allergenVisibility Json?
+
+  // Region (ISO 3166-1 alpha-2), bruges til at prioritere produktsøgeresultater
+  // efter landets GS1-stregkodepræfiks (se src/lib/regions.ts). Danmark er
+  // standard, da det er appens primære marked.
+  region String @default("DK")
 
   registrations  Registration[]
   favorites      Favorite[]

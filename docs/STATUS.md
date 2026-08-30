@@ -46,6 +46,14 @@ Last updated: 2026-08-27
   `20260827170000_external_product_sources` still needs to be deployed with
   the application and the real USDA key added to Synology before production
   fallback becomes active.
+- Product search (`/api/products`) now supplements local results with a live
+  Open Food Facts text search (`src/lib/openFoodFacts.ts:searchOpenFoodFacts`),
+  limited to Danish products (GS1 barcode prefix `57` + `countries_tags_en`
+  filter) when local matches are fewer than 10. Matches are imported as
+  `PENDING` products (same pattern as barcode lookup) so repeat searches for
+  the same term don't re-fetch OFF. No bulk import of the OFF catalog exists
+  or is planned — this is a live per-search fallback. `npm run lint` and
+  `npm run build` passed on 2026-08-30.
 
 ## Validation
 
@@ -751,6 +759,22 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
   `hellocal_no_local_db`) — verify the HelloFresh camera-recognition flow and
   the portion stepper against `hellocal.packroff.dk` once both migrations are
   deployed and `hellofresh-agent` has imported at least one recipe.
+- 2026-08-29: Deployed the accumulated pending migrations to production in
+  one pass — Frida (`20260827180000`/`20260827190000`), admin passkeys
+  (`20260828170000`), integrations/healthkit
+  (`20260828140000`/`20260828160000`), and both HelloFresh migrations
+  (`20260829000000`/`20260829010000`) — all 18 applied cleanly (`prisma
+  migrate deploy` log: "All migrations have been successfully applied").
+  Brought up `frida-agent` and the new `hellofresh-agent` service for the
+  first time (`docker compose up -d --build`); `hellofresh-agent` found 6054
+  recipe URLs in HelloFresh's sitemap and started importing (30/cycle, every
+  2 minutes — full catalog takes a while but needs no manual step).
+  `/api/health` verified `{"status":"ok"}` on the live server. Added
+  `/volume1/docker/App/hellocal-v2/deploy.sh` (server-only, see
+  `docs/DEPLOYMENT.md`) to collapse the controlled-update steps into one
+  command — use it for future deploys instead of the manual sequence.
+  See `docs/DEPLOYMENT.md`'s "Operational gotchas" note for the SFTP-chroot
+  and terminal-paste quirks hit along the way.
 
 ## Next work
 
@@ -766,28 +790,28 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
    food interpretation remains placeholder pending the AI service.
 4. Implement account authentication before inviting other users.
 5. Copy verified database backups to a second storage location.
-6. Keep the external SSH maintenance switch off outside maintenance windows.
-7. Deploy the two Frida migrations (`20260827180000_frida_product_source`,
-   `20260827190000_frida_import_state`) and the new `frida-agent` compose
-   service to production (new service in `compose.production.yaml`, needs
-   `docker compose up -d --build frida-agent` alongside the normal migration
-   step — see the 2026-08-27 Frida entry above). It will then import the
-   1389 Frida products fully on its own on first poll; no manual file
-   handling needed on an ongoing basis.
-8. Deploy the admin-auth migrations (`20260827200000_admin_auth`,
-   `20260828170000_admin_passkeys`), set a real `ADMIN_SESSION_SECRET` in
-   `.env.production`, and add the `adminhellocal.packroff.dk` Cloudflare
-   Tunnel public hostname (points to the same `http://192.168.1.90:3100`
-   target as `hellocal.packroff.dk`). Then open
-   `https://adminhellocal.packroff.dk/admin/setup` once to create the
-   admin account — it now signs you straight in afterward so you can add a
-   passkey (Face ID etc.) from `/admin/passkeys` immediately. Passkey login
-   needs a real WebAuthn-capable browser/device to test, which this
-   workstation cannot do — verify the "Log ind med Face ID / passkey" button
-   on `/admin/login` from an iPhone once deployed.
-9. Deploy migrations `20260828140000_integrations_activity_weight_source` and
-   `20260828160000_healthkit_ingest_prep`.
-   Create Fitbit (`dev.fitbit.com/apps/new`) and Withings
+6. Keep the external SSH maintenance switch off outside maintenance windows
+   (not used for the 2026-08-29 deploy — done from the home LAN directly).
+7. ~~Deploy the Frida migrations and `frida-agent`~~ — done 2026-08-29;
+   running in production. Known residual issue: the server-side
+   `scripts/frida-import/` files are owned by a different user than `Peter`
+   (a leftover from an earlier manual copy), so a plain `rm`/overwrite from
+   the deploy flow fails with "Permission denied" — the currently-running
+   `frida-agent` image is built from whatever version was already on disk,
+   not necessarily the latest `agent.py` in this repo. Fix with
+   `sudo rm -rf scripts/frida-import` once, then re-copy, next time
+   `frida-import`'s code actually needs to change.
+8. Admin-auth migrations are deployed and `ADMIN_SESSION_SECRET` is set
+   (regenerated 2026-08-29 during the HelloFresh deploy — this invalidates
+   any previously-issued admin session/JWT, not the Passkey records
+   themselves). Still open: add the `adminhellocal.packroff.dk` Cloudflare
+   Tunnel public hostname (same target as `hellocal.packroff.dk`,
+   `http://192.168.1.90:3100`) — needs the Cloudflare dashboard login. Then
+   open `https://adminhellocal.packroff.dk/admin/setup` once to create the
+   admin account and add a passkey from `/admin/passkeys`; verify the
+   "Log ind med Face ID / passkey" button from an iPhone once deployed.
+9. Integrations/healthkit migrations are deployed. Still open: create Fitbit
+   (`dev.fitbit.com/apps/new`) and Withings
    (`developer.withings.com/dashboard`) developer apps, each with redirect
    URI `https://hellocal.packroff.dk/api/integrations/<provider>/callback`,
    then set `FITBIT_CLIENT_ID/SECRET`, `WITHINGS_CLIENT_ID/SECRET`, and
@@ -796,10 +820,9 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
    needs a separate partner-access application (instructions were given to
    the user directly in chat on 2026-08-28) before it can move beyond its
    current "kommer snart" card.
-10. Deploy migrations `20260829000000_hellofresh_product_source` and
-    `20260829010000_hellofresh_catalog`, then `docker compose up -d --build
-    hellofresh-agent` (new service — needs its first build, not covered by
-    the normal `HELLOCAL_TAG` bump flow, same as the other agents). It will
-    then work through HelloFresh's ~6000-recipe public catalog on its own
-    over several hours (polite request pacing, see `docs/DECISIONS.md`); no
-    manual step needed after that.
+10. ~~Deploy the HelloFresh migrations and `hellofresh-agent`~~ — done
+    2026-08-29; running in production, importing HelloFresh's ~6000-recipe
+    catalog on its own (30 recipes/cycle, every 2 minutes — no manual step
+    needed). Verify the camera-recognition flow and the portion stepper
+    against `hellocal.packroff.dk` once it has imported enough of the
+    current week's menu to test against.

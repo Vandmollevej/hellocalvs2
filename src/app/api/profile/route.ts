@@ -36,6 +36,7 @@ export async function PATCH(req: Request) {
     onboardingDismissed,
     showAllergens,
     allergenVisibility,
+    region,
   } = body as {
     displayName?: string;
     weightKg?: number | null;
@@ -54,6 +55,7 @@ export async function PATCH(req: Request) {
     onboardingDismissed?: boolean;
     showAllergens?: boolean;
     allergenVisibility?: Record<string, boolean>;
+    region?: string;
   };
 
   try {
@@ -88,6 +90,7 @@ export async function PATCH(req: Request) {
         onboardingDismissed,
         showAllergens,
         allergenVisibility,
+        region,
       },
     });
 
