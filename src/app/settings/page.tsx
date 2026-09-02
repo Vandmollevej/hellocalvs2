@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   IconHelp,
   IconFileText,
@@ -11,9 +12,10 @@ import {
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { BottomNav } from "@/components/BottomNav";
+import { OnboardingWizard } from "@/components/OnboardingWizard";
 
-function restartOnboarding() {
-  fetch("/api/profile", {
+function resetOnboardingProgress() {
+  return fetch("/api/profile", {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -22,11 +24,7 @@ function restartOnboarding() {
       onboardingRemindLaterAt: null,
       onboardingDismissed: false,
     }),
-  })
-    .then(() => {
-      window.location.href = "/";
-    })
-    .catch(() => {});
+  }).catch(() => {});
 }
 
 // Intet betalings-/kredit-backend findes endnu (ingen konto-/abonnementssystem
@@ -56,11 +54,16 @@ async function inviteAFriend() {
 }
 
 export default function SettingsPage() {
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
   return (
     <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
+      {showOnboarding && (
+        <OnboardingWizard forceVisible onClose={() => setShowOnboarding(false)} />
+      )}
       <ScreenHeader title="Indstillinger" />
 
-      <div className="flex flex-col gap-4 p-4">
+      <div className="flex flex-col gap-8 p-4">
         <AccordionCard>
           <ChevronRow
             icon={<IconCreditCard size={20} />}
@@ -70,11 +73,11 @@ export default function SettingsPage() {
           />
         </AccordionCard>
 
-        <div className="rounded-2xl bg-hf-tan p-5 text-center">
-          <p className="text-[15px] font-bold text-hf-black">
+        <div className="rounded-[8px] bg-hf-tan p-4 text-center">
+          <p className="hf-type-body-sm font-bold">
             Vælg dine egne opskrifter, og skræddersy din måltidskasse.
           </p>
-          <button className="hf-btn-primary mt-4 w-full py-3 text-[15px]">
+          <button className="hf-btn-primary mt-4 h-12 w-full text-[17px]">
             Log ind / tilmeld
           </button>
         </div>
@@ -83,8 +86,10 @@ export default function SettingsPage() {
           <ChevronRow icon={<IconHelp size={20} />} label="Hjælpecenter" />
           <ChevronRow
             icon={<IconRefresh size={20} />}
-            label="Genstart opsætningsguide"
-            onClick={restartOnboarding}
+            label="Lær appen at kende"
+            onClick={() => {
+              resetOnboardingProgress().then(() => setShowOnboarding(true));
+            }}
             divider={false}
           />
         </AccordionCard>
@@ -111,10 +116,10 @@ export default function SettingsPage() {
         <button
           type="button"
           onClick={inviteAFriend}
-          className="rounded-2xl bg-hf-green p-5 text-left text-hf-white"
+          className="rounded-[8px] bg-hf-green p-4 text-left text-hf-white"
         >
-          <p className="text-[15px] font-bold">Invitér en ven</p>
-          <p className="mt-0.5 text-[13px] opacity-90">– Så får I begge en måned gratis</p>
+          <p className="hf-type-body-sm font-bold">Invitér en ven</p>
+          <p className="hf-type-caption mt-0.5 text-hf-white opacity-90">Og få en gratis måned hver</p>
         </button>
       </div>
 

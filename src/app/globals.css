@@ -355,7 +355,7 @@ button,
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 9999px;
+  border-radius: 8px;
   background: var(--hf-black);
   color: var(--hf-white);
   font-weight: 700;
@@ -366,7 +366,7 @@ button,
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 9999px;
+  border-radius: 8px;
   background: transparent;
   border: 1.5px solid var(--hf-black);
   color: var(--hf-black);
@@ -390,24 +390,27 @@ button,
   outline-offset: -2px;
 }
 
-/* Søgefelt */
+/* Søgefelt, jf. design.md §6.5: 48px høj, radius 8px, kant i --hf-color-line. */
 .hf-search {
   font-family: var(--font-hf-body);
   display: flex;
+  height: 48px;
   align-items: center;
-  gap: 0.5rem;
-  border-radius: 9999px;
-  border: 1px solid var(--hf-tan-dark);
+  gap: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--hf-gray-border);
   background: var(--hf-white);
   color: var(--hf-black);
-  padding: 0.65rem 1rem;
+  padding: 0 1rem;
 }
 
 .hf-search input {
   flex: 1;
+  height: 100%;
   background: transparent;
   outline: none;
-  font-size: 0.9375rem;
+  font-size: 17px;
+  line-height: 24px;
 }
 
 .hf-search input::placeholder {

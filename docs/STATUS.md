@@ -861,9 +861,27 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
   inactive icon/label color was `#4b4b4b` (an unrelated hover token) instead
   of `--hf-color-text-secondary` (`#656565`), and tab labels now use
   `.hf-type-tab` (12px) instead of a hardcoded 11px. Verified live:
-  `/madvarer` shows the corrected nav background/colors. Not yet done: the
-  rest of design.md §11's migration order (button/field/card/row primitives,
-  then per-screen migration) — continue from there.
+  `/madvarer` shows the corrected nav background/colors.
+
+  Continued into step 3 (shared primitives, DES-004/005/009/010): `.hf-card`
+  radius is now 8px everywhere it was still 16-17px pill/rounded-2xl
+  (`AccordionCard`, the settings promo/invite cards); `ChevronRow` is now a
+  fixed 48px row with `.hf-type-body` (17/25) labels instead of a 56px
+  `py-4` row with `text-[15px] font-medium`; `.hf-btn-primary`/
+  `.hf-btn-secondary` radius corrected from a full pill to 8px (only the
+  radius — the many call sites that size these buttons via local
+  `py-*`/`text-*` for compact/small inline actions were deliberately left
+  alone, since the class intentionally doesn't own height/padding yet; a
+  real `--primary`/`--compact`/`--small`/`--full` modifier system per
+  design.md §6.2 is still a separate follow-up). `.hf-search` is now a fixed
+  48px field with 8px radius and the correct `--hf-color-line` border
+  (was a full pill with the wrong `--hf-tan-dark` border) — used on
+  `/madvarer` and `/soeg`. Settings page: card-group gap corrected from 16px
+  to the contracted 32px. `npm run lint` and `npm run build` passed; verified
+  live (`/settings`, `/madvarer`) against this session's dev server. Not yet
+  done: the button size-variant system, `.hf-field`/TextField auth styling,
+  and then the per-screen migration pass (auth/velkomst, statistik, kalender,
+  stemme, kamera) per design.md §11 — continue from there.
 
 ## Next work
 
