@@ -4,8 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { HfChevron } from "@/components/hf/HfChevron";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 export default function VelkommenPage() {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -43,14 +45,12 @@ export default function VelkommenPage() {
         </div>
 
         <h1 className="hf-type-hero mt-8">
-          Indblik i dine madvaner
+          {t("welcome.headline1")}
           <br />
-          <span className="text-hf-green">Hold dig sund med Hello Cal!</span>
+          <span className="text-hf-green">{t("welcome.headline2")}</span>
         </h1>
 
-        <p className="hf-type-body-lg mt-8">
-          Den nemmeste app til at registrere og holde styr på dit kalorieindtag.
-        </p>
+        <p className="hf-type-body-lg mt-8">{t("welcome.subtext")}</p>
       </div>
 
       <div className="flex flex-col gap-3 px-4 pb-8 pt-4">
@@ -58,13 +58,13 @@ export default function VelkommenPage() {
           href="/signup"
           className="hf-btn-primary hf-type-button h-12 w-full"
         >
-          Tilmeld dig
+          {t("welcome.signUp")}
         </Link>
         <Link
           href="/login"
           className="hf-btn-secondary hf-type-button h-12 w-full"
         >
-          Log ind
+          {t("welcome.logIn")}
         </Link>
       </div>
     </div>

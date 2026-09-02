@@ -1,0 +1,103 @@
+{
+  "common": {
+    "back": "Back",
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "or": "or",
+    "chooseCountry": "Choose your country",
+    "loading": "Loading…"
+  },
+  "welcome": {
+    "welcome": "Welcome!",
+    "headline1": "Insight into your eating habits",
+    "headline2": "Stay healthy with Hello Cal!",
+    "subtext": "The easiest app for logging and keeping track of your calorie intake.",
+    "signUp": "Sign up",
+    "logIn": "Log in"
+  },
+  "login": {
+    "title": "Sign up / Log in",
+    "cancel": "Cancel",
+    "country": "Denmark",
+    "chooseCountry": "Choose your country",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithApple": "Continue with Apple",
+    "continueWithFacebook": "Continue with Facebook",
+    "emailPlaceholder": "Email address",
+    "continueButton": "Continue"
+  },
+  "country": {
+    "title": "Choose your country",
+    "back": "Back",
+    "countries": {
+      "australien": "Australia",
+      "belgien": "Belgium",
+      "canada": "Canada",
+      "danmark": "Denmark",
+      "frankrig": "France",
+      "hollandEngelsk": "Netherlands (English)",
+      "irland": "Ireland",
+      "italien": "Italy",
+      "luxembourg": "Luxembourg",
+      "nederlandene": "Netherlands (Dutch)",
+      "newZealand": "New Zealand",
+      "norge": "Norway",
+      "schweiz": "Switzerland",
+      "spanien": "Spain",
+      "storbritannien": "United Kingdom",
+      "sverige": "Sweden",
+      "tyskland": "Germany",
+      "usa": "USA",
+      "oestrig": "Austria"
+    }
+  },
+  "signup": {
+    "title": "Create account",
+    "back": "Back",
+    "nameLabel": "Name",
+    "namePlaceholder": "Your name",
+    "emailLabel": "Email address",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "At least 8 characters",
+    "submit": "Create account",
+    "submitting": "Creating account…",
+    "genericError": "Something went wrong — try again",
+    "networkError": "Could not create the account — check your connection and try again"
+  },
+  "nav": {
+    "add": "Add",
+    "foods": "Foods",
+    "calendar": "Calendar",
+    "statistics": "Statistics",
+    "camera": "Camera",
+    "search": "Search",
+    "voice": "Voice",
+    "profile": "Profile",
+    "addItemAriaLabel": "Add {item}",
+    "removeItemAriaLabel": "Remove {item}",
+    "allIconsInUse": "All icons are in use.",
+    "resetMenuAriaLabel": "Reset menu",
+    "mainNavigationAriaLabel": "Main navigation"
+  },
+  "settings": {
+    "title": "Settings",
+    "openProfile": "Open my details",
+    "back": "Back",
+    "loading": "Loading…",
+    "loadError": "Could not load settings.",
+    "regionLabel": "Region",
+    "regionDescription": "Prioritizes product search by your country's barcodes.",
+    "showAllergens": "Show allergens",
+    "showAllergensDescription": "Show an allergen line on foods when data is available.",
+    "thirdPartyDisclaimer": "We fetch data from third parties and take no responsibility for missing data.",
+    "languageLabel": "Language",
+    "languageDescription": "Choose which language the app is shown in.",
+    "languageDanish": "Dansk",
+    "languageEnglish": "English",
+    "setupProgress": "Step {done} of {total} complete",
+    "setupProgressStepRegion": "Region",
+    "setupProgressStepAllergens": "Allergens",
+    "setupProgressStepWeight": "Weight calibration",
+    "setupProgressHint": "Complete weight calibration to finish setup."
+  }
+}

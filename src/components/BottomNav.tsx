@@ -13,6 +13,7 @@ import {
   IconX,
   IconRecycle,
 } from "@tabler/icons-react";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 const ICON_SIZE = 24;
 const NAV_ACTIVE_COLOR = "#232323";
@@ -51,7 +52,10 @@ function TrendIcon({ color, size }: { color: string; size: number }) {
 type NavItem = {
   key: string;
   href: string;
-  label: string;
+  // Translation key under the "nav" namespace (src/i18n/locales/*.json).
+  // The `key` field above stays the stable internal identity used for
+  // localStorage layout persistence and must not be translated.
+  labelKey: string;
   render: (color: string, size: number) => React.ReactNode;
 };
 
@@ -59,49 +63,49 @@ const NAV_ITEMS: NavItem[] = [
   {
     key: "tilfoej",
     href: "/",
-    label: "Tilføj",
+    labelKey: "add",
     render: (color, size) => <IconPlus size={size} stroke={1.6} color={color} />,
   },
   {
     key: "madvarer",
     href: "/foods",
-    label: "Madvarer",
+    labelKey: "foods",
     render: (color, size) => <IconApple size={size} stroke={1.6} color={color} />,
   },
   {
     key: "kalender",
     href: "/calendar",
-    label: "Kalender",
+    labelKey: "calendar",
     render: (color, size) => <IconCalendar size={size} stroke={1.6} color={color} />,
   },
   {
     key: "statistik",
     href: "/statistics",
-    label: "Statistik",
+    labelKey: "statistics",
     render: (color, size) => <TrendIcon color={color} size={size} />,
   },
   {
     key: "kamera",
     href: "/camera",
-    label: "Kamera",
+    labelKey: "camera",
     render: (color, size) => <IconCamera size={size} stroke={1.6} color={color} />,
   },
   {
     key: "soeg",
     href: "/search",
-    label: "Søg",
+    labelKey: "search",
     render: (color, size) => <IconSearch size={size} stroke={1.6} color={color} />,
   },
   {
     key: "stemme",
     href: "/voice",
-    label: "Stemme",
+    labelKey: "voice",
     render: (color, size) => <IconMicrophone size={size} stroke={1.6} color={color} />,
   },
   {
     key: "profil",
     href: "/profile",
-    label: "Profil",
+    labelKey: "profile",
     render: (color, size) => <IconUser size={size} stroke={1.6} color={color} />,
   },
 ];
@@ -167,6 +171,7 @@ function overRect(el: HTMLElement | null, clientX: number, clientY: number) {
 }
 
 export function BottomNav() {
+  const { t } = useTranslation();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -634,7 +639,7 @@ export function BottomNav() {
                         ? "border-dashed border-hf-gray-dark bg-hf-gray-light"
                         : "border-hf-gray-light bg-hf-gray-light"
                   }`}
-                  aria-label={`Tilføj ${item.label}`}
+                  aria-label={t("nav.addItemAriaLabel", { item: t(`nav.${item.labelKey}`) })}
                 >
                   <span className={`flex flex-col items-center gap-1 ${isPlaceholder ? "invisible" : ""}`}>
                     {item.render("var(--hf-black)", PANEL_ICON_SIZE)}
@@ -642,7 +647,7 @@ export function BottomNav() {
                       className="text-[10px] leading-tight text-center"
                       style={{ color: "var(--hf-black)", fontFamily: "var(--font-hf-body)" }}
                     >
-                      {item.label}
+                      {t(`nav.${item.labelKey}`)}
                     </span>
                   </span>
                 </button>
@@ -653,7 +658,7 @@ export function BottomNav() {
                 className="text-[12px]"
                 style={{ color: "var(--hf-gray-dark)", fontFamily: "var(--font-hf-body)" }}
               >
-                Alle ikoner er i brug.
+                {t("nav.allIconsInUse")}
               </span>
             )}
           </div>
@@ -662,7 +667,7 @@ export function BottomNav() {
             <button
               type="button"
               onClick={resetLayout}
-              aria-label="Nulstil menu"
+              aria-label={t("nav.resetMenuAriaLabel")}
               className="flex h-11 w-11 items-center justify-center rounded-full bg-hf-green text-hf-white"
             >
               <IconRecycle size={20} />
@@ -677,7 +682,7 @@ export function BottomNav() {
           draggedOverPanel ? "border-dashed border-hf-gray-dark" : ""
         }`}
         style={draggedOverPanel ? undefined : { borderTopColor: NAV_BORDER_COLOR }}
-        aria-label="Hovednavigation"
+        aria-label={t("nav.mainNavigationAriaLabel")}
       >
         {pages.length > 1 && (
           <div className="mb-1.5 flex justify-center gap-1" aria-hidden="true">
@@ -732,7 +737,7 @@ export function BottomNav() {
                         if (el) itemRefs.current.set(key, el);
                         else itemRefs.current.delete(key);
                       }}
-                      aria-label={item.label}
+                      aria-label={t(`nav.${item.labelKey}`)}
                       aria-current={active ? "page" : undefined}
                       onPointerDown={(e) => handleActivePointerDown(key, e)}
                       onPointerMove={handleActivePointerMove}
@@ -750,7 +755,7 @@ export function BottomNav() {
                       {editMode && !isPlaceholder && (
                         <span
                           role="button"
-                          aria-label={`Fjern ${item.label}`}
+                          aria-label={t("nav.removeItemAriaLabel", { item: t(`nav.${item.labelKey}`) })}
                           onPointerDown={(e) => e.stopPropagation()}
                           onClick={(e) => {
                             e.stopPropagation();
@@ -764,7 +769,7 @@ export function BottomNav() {
                       <span className={`flex flex-col items-center gap-2 ${isPlaceholder ? "invisible" : ""}`}>
                         {item.render(color, ICON_SIZE)}
                         <span className="hf-type-tab" style={{ color }}>
-                          {item.label}
+                          {t(`nav.${item.labelKey}`)}
                         </span>
                       </span>
                     </button>

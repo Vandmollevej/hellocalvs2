@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { IconArrowLeft } from "@tabler/icons-react";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 export function ScreenHeader({
   title,
@@ -14,12 +17,13 @@ export function ScreenHeader({
   rightAction?: React.ReactNode;
   variant?: "brand" | "main";
 }) {
+  const { t } = useTranslation();
   return (
     <div
       className={`hf-appbar ${variant === "main" ? "hf-appbar--main" : "hf-appbar--brand"}`}
     >
       <div className="hf-appbar__slot">
-        <Link href="/profile" aria-label="Åbn mine oplysninger">
+        <Link href="/profile" aria-label={t("settings.openProfile")}>
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-hf-tan text-xs font-bold text-hf-black">
             PT
           </span>
@@ -35,7 +39,7 @@ export function ScreenHeader({
       </div>
       <div className="hf-appbar__slot">
         {onBack ? (
-          <button onClick={onBack} aria-label="Tilbage" className="text-hf-white">
+          <button onClick={onBack} aria-label={t("common.back")} className="text-hf-white">
             <IconArrowLeft size={24} />
           </button>
         ) : (

@@ -37,6 +37,7 @@ export async function PATCH(req: Request) {
     showAllergens,
     allergenVisibility,
     region,
+    locale,
     photoDiaryRequiresPasscode,
     wantsPushNotifications,
     wantsUpdateNewsEmails,
@@ -61,6 +62,7 @@ export async function PATCH(req: Request) {
     showAllergens?: boolean;
     allergenVisibility?: Record<string, boolean>;
     region?: string;
+    locale?: "da" | "en";
     photoDiaryRequiresPasscode?: boolean;
     wantsPushNotifications?: boolean;
     wantsUpdateNewsEmails?: boolean;
@@ -101,6 +103,7 @@ export async function PATCH(req: Request) {
         showAllergens,
         allergenVisibility,
         region,
+        locale,
         photoDiaryRequiresPasscode,
         wantsPushNotifications,
         wantsUpdateNewsEmails,

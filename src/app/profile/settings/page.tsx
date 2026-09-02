@@ -7,6 +7,8 @@ import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import { ALLERGEN_CATALOG } from "@/lib/allergens";
 import { REGIONS } from "@/lib/regions";
 import { Toggle } from "@/components/ui/Toggle";
+import { useTranslation } from "@/i18n/LocaleProvider";
+import type { Locale } from "@/i18n";
 
 type SettingsUser = {
   showAllergens: boolean;
@@ -23,12 +25,17 @@ type SetupProgressUser = {
 // Setup is considered complete once weight calibration has been done (at least
 // one weigh-in) — see the weight-calibration page.
 function SetupProgressBar({ weightSet }: { weightSet: boolean }) {
-  const steps = ["Region", "Allergener", "Vægtkalibrering"];
+  const { t } = useTranslation();
+  const steps = [
+    t("settings.setupProgressStepRegion"),
+    t("settings.setupProgressStepAllergens"),
+    t("settings.setupProgressStepWeight"),
+  ];
   const doneCount = weightSet ? steps.length : steps.length - 1;
   return (
     <div className="px-1 pb-1">
       <p className="text-center text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
-        Trin {doneCount} af {steps.length} gennemført
+        {t("settings.setupProgress", { done: doneCount, total: steps.length })}
       </p>
       <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-hf-tan">
         <div
@@ -37,15 +44,14 @@ function SetupProgressBar({ weightSet }: { weightSet: boolean }) {
         />
       </div>
       {!weightSet && (
-        <p className="mt-1 text-[12px] text-hf-black opacity-60">
-          Gennemfør vægtkalibrering for at afslutte opsætningen.
-        </p>
+        <p className="mt-1 text-[12px] text-hf-black opacity-60">{t("settings.setupProgressHint")}</p>
       )}
     </div>
   );
 }
 
 export default function ProfileSettingsPage() {
+  const { t, locale, setLocale } = useTranslation();
   const router = useRouter();
   const [user, setUser] = useState<SettingsUser | null>(null);
   const [weightSet, setWeightSet] = useState(false);
@@ -110,11 +116,11 @@ export default function ProfileSettingsPage() {
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
-      <ScreenHeader title="Indstillinger" onBack={() => router.back()} />
+      <ScreenHeader title={t("settings.title")} onBack={() => router.back()} />
 
       {loading || !user ? (
         <p className="p-6 text-center text-[14px] text-hf-black opacity-60">
-          {loading ? "Henter…" : "Kunne ikke hente indstillinger."}
+          {loading ? t("settings.loading") : t("settings.loadError")}
         </p>
       ) : (
         <div className="flex flex-col gap-4 p-4">
@@ -122,9 +128,11 @@ export default function ProfileSettingsPage() {
 
           <label className="flex items-center justify-between gap-3 rounded-2xl bg-hf-tan px-4 py-4">
             <span className="flex-1">
-              <span className="block text-[15px] font-medium text-hf-black">Region</span>
+              <span className="block text-[15px] font-medium text-hf-black">
+                {t("settings.regionLabel")}
+              </span>
               <span className="block text-[12px] text-hf-black opacity-60">
-                Prioriterer produktsøgning efter dit lands stregkoder.
+                {t("settings.regionDescription")}
               </span>
             </span>
             <div className="relative">
@@ -148,10 +156,17 @@ export default function ProfileSettingsPage() {
           </label>
 
           <Toggle
-            label="Vis allergener"
-            description="Vis en allergen-linje på madvarer, når data findes."
+            label={t("settings.showAllergens")}
+            description={t("settings.showAllergensDescription")}
             checked={user.showAllergens}
             onChange={toggleShowAllergens}
+          />
+
+          <Toggle
+            label={t("settings.languageLabel")}
+            description={t("settings.languageDescription")}
+            checked={locale === "en"}
+            onChange={(checked) => setLocale((checked ? "en" : "da") as Locale)}
           />
 
           {user.showAllergens && (
@@ -174,7 +189,7 @@ export default function ProfileSettingsPage() {
           )}
 
           <p className="px-1 text-[12px] leading-relaxed text-hf-black opacity-60">
-            Vi henter data fra 3. part og fraskriver os ansvar for manglende data.
+            {t("settings.thirdPartyDisclaimer")}
           </p>
         </div>
       )}

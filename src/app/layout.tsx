@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import { PhoneFrame } from "@/components/PhoneFrame";
+import { LocaleProvider } from "@/i18n/LocaleProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,7 +35,9 @@ export default function RootLayout({
       className={`${geistSans.variable} h-full antialiased`}
     >
       <body className="min-h-full text-text-primary font-sans">
-        <PhoneFrame>{children}</PhoneFrame>
+        <LocaleProvider>
+          <PhoneFrame>{children}</PhoneFrame>
+        </LocaleProvider>
       </body>
     </html>
   );

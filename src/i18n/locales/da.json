@@ -4,9 +4,10 @@
     "cancel": "Afbryd",
     "continue": "Fortsæt",
     "or": "eller",
-    "chooseCountry": "Vælg dit land"
+    "chooseCountry": "Vælg dit land",
+    "loading": "Henter…"
   },
-  "velkommen": {
+  "welcome": {
     "welcome": "Velkommen!",
     "headline1": "Indblik i dine madvaner",
     "headline2": "Hold dig sund med Hello Cal!",
@@ -14,16 +15,20 @@
     "signUp": "Tilmeld dig",
     "logIn": "Log ind"
   },
-  "logind": {
+  "login": {
     "title": "Tilmeld dig / Log ind",
+    "cancel": "Afbryd",
     "country": "Danmark",
+    "chooseCountry": "Vælg dit land",
     "continueWithGoogle": "Fortsæt med Google",
     "continueWithApple": "Fortsæt med Apple",
     "continueWithFacebook": "Fortsæt med Facebook",
-    "emailPlaceholder": "E-mailadresse"
+    "emailPlaceholder": "E-mailadresse",
+    "continueButton": "Fortsæt"
   },
-  "land": {
+  "country": {
     "title": "Vælg dit land",
+    "back": "Tilbage",
     "countries": {
       "australien": "Australien",
       "belgien": "Belgien",
@@ -46,8 +51,53 @@
       "oestrig": "Østrig"
     }
   },
-  "tilmeld": {
-    "comingSoonTitle": "Tilmeldingsflow kommer snart",
-    "comingSoonBody": "Denne del er endnu ikke bygget."
+  "signup": {
+    "title": "Opret konto",
+    "back": "Tilbage",
+    "nameLabel": "Navn",
+    "namePlaceholder": "Dit navn",
+    "emailLabel": "E-mailadresse",
+    "passwordLabel": "Adgangskode",
+    "passwordPlaceholder": "Mindst 8 tegn",
+    "submit": "Opret konto",
+    "submitting": "Opretter konto…",
+    "genericError": "Noget gik galt — prøv igen",
+    "networkError": "Kunne ikke oprette kontoen — tjek din forbindelse og prøv igen"
+  },
+  "nav": {
+    "add": "Tilføj",
+    "foods": "Madvarer",
+    "calendar": "Kalender",
+    "statistics": "Statistik",
+    "camera": "Kamera",
+    "search": "Søg",
+    "voice": "Stemme",
+    "profile": "Profil",
+    "addItemAriaLabel": "Tilføj {item}",
+    "removeItemAriaLabel": "Fjern {item}",
+    "allIconsInUse": "Alle ikoner er i brug.",
+    "resetMenuAriaLabel": "Nulstil menu",
+    "mainNavigationAriaLabel": "Hovednavigation"
+  },
+  "settings": {
+    "title": "Indstillinger",
+    "openProfile": "Åbn mine oplysninger",
+    "back": "Tilbage",
+    "loading": "Henter…",
+    "loadError": "Kunne ikke hente indstillinger.",
+    "regionLabel": "Region",
+    "regionDescription": "Prioriterer produktsøgning efter dit lands stregkoder.",
+    "showAllergens": "Vis allergener",
+    "showAllergensDescription": "Vis en allergen-linje på madvarer, når data findes.",
+    "thirdPartyDisclaimer": "Vi henter data fra 3. part og fraskriver os ansvar for manglende data.",
+    "languageLabel": "Sprog",
+    "languageDescription": "Vælg det sprog appen skal vises på.",
+    "languageDanish": "Dansk",
+    "languageEnglish": "English",
+    "setupProgress": "Trin {done} af {total} gennemført",
+    "setupProgressStepRegion": "Region",
+    "setupProgressStepAllergens": "Allergener",
+    "setupProgressStepWeight": "Vægtkalibrering",
+    "setupProgressHint": "Gennemfør vægtkalibrering for at afslutte opsætningen."
   }
 }

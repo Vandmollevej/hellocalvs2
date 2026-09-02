@@ -5,8 +5,10 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { TextField } from "@/components/hf/TextField";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 export default function TilmeldPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
@@ -27,13 +29,13 @@ export default function TilmeldPage() {
       });
       const data = await response.json();
       if (!response.ok) {
-        setError(data.message ?? "Noget gik galt — prøv igen");
+        setError(data.message ?? t("signup.genericError"));
         setSubmitting(false);
         return;
       }
       router.push("/");
     } catch {
-      setError("Kunne ikke oprette kontoen — tjek din forbindelse og prøv igen");
+      setError(t("signup.networkError"));
       setSubmitting(false);
     }
   }
@@ -45,9 +47,9 @@ export default function TilmeldPage() {
         style={{ paddingTop: "max(16px, env(safe-area-inset-top, 0px))" }}
       >
         <span className="hf-appbar__slot" aria-hidden="true" />
-        <h1 className="hf-type-nav-title hf-appbar__title">Opret konto</h1>
+        <h1 className="hf-type-nav-title hf-appbar__title">{t("signup.title")}</h1>
         <div className="hf-appbar__slot">
-          <Link href="/welcome" aria-label="Tilbage" className="text-hf-white">
+          <Link href="/welcome" aria-label={t("signup.back")} className="text-hf-white">
             <IconArrowLeft size={24} />
           </Link>
         </div>
@@ -55,16 +57,16 @@ export default function TilmeldPage() {
 
       <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4 px-4 pt-6">
         <TextField
-          label="Navn"
+          label={t("signup.nameLabel")}
           type="text"
           required
           value={displayName}
           onChange={(e) => setDisplayName(e.target.value)}
-          placeholder="Dit navn"
+          placeholder={t("signup.namePlaceholder")}
         />
 
         <TextField
-          label="E-mailadresse"
+          label={t("signup.emailLabel")}
           type="email"
           required
           value={email}
@@ -72,13 +74,13 @@ export default function TilmeldPage() {
         />
 
         <TextField
-          label="Adgangskode"
+          label={t("signup.passwordLabel")}
           type="password"
           required
           minLength={8}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Mindst 8 tegn"
+          placeholder={t("signup.passwordPlaceholder")}
         />
 
         {error && <p className="hf-type-caption text-hf-red-dark">{error}</p>}
@@ -90,7 +92,7 @@ export default function TilmeldPage() {
           disabled={submitting}
           className="hf-btn-primary hf-type-button mb-8 h-12 w-full disabled:opacity-50"
         >
-          {submitting ? "Opretter konto…" : "Opret konto"}
+          {submitting ? t("signup.submitting") : t("signup.submit")}
         </button>
       </form>
     </div>

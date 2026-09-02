@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { IconArrowLeft, IconCheck } from "@tabler/icons-react";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 // Purely visually prepared list — no language/country selection logic yet.
 // The order follows the flag images supplied in "Billeder til brug".
@@ -8,28 +11,29 @@ import { IconArrowLeft, IconCheck } from "@tabler/icons-react";
 const SELECTED_COUNTRY = "denmark";
 
 const COUNTRIES = [
-  { label: "Australien", flag: "australia" },
-  { label: "Belgien", flag: "belgium" },
-  { label: "Canada", flag: "canada" },
-  { label: "Danmark", flag: "denmark" },
-  { label: "Frankrig", flag: "france" },
-  { label: "Holland (engelsk)", flag: "netherlands-english" },
-  { label: "Irland", flag: "ireland" },
-  { label: "Italien", flag: "italy" },
-  { label: "Luxembourg", flag: "luxembourg" },
-  { label: "Nederlandene (hollandsk)", flag: "netherlands" },
-  { label: "New Zealand", flag: "new-zealand" },
-  { label: "Norge", flag: "norway" },
-  { label: "Schweiz", flag: "switzerland" },
-  { label: "Spanien", flag: "spain" },
-  { label: "Storbritannien", flag: "united-kingdom" },
-  { label: "Sverige", flag: "sweden" },
-  { label: "Tyskland", flag: "germany" },
-  { label: "USA", flag: "usa" },
-  { label: "Østrig", flag: "austria" },
+  { key: "australien", flag: "australia" },
+  { key: "belgien", flag: "belgium" },
+  { key: "canada", flag: "canada" },
+  { key: "danmark", flag: "denmark" },
+  { key: "frankrig", flag: "france" },
+  { key: "hollandEngelsk", flag: "netherlands-english" },
+  { key: "irland", flag: "ireland" },
+  { key: "italien", flag: "italy" },
+  { key: "luxembourg", flag: "luxembourg" },
+  { key: "nederlandene", flag: "netherlands" },
+  { key: "newZealand", flag: "new-zealand" },
+  { key: "norge", flag: "norway" },
+  { key: "schweiz", flag: "switzerland" },
+  { key: "spanien", flag: "spain" },
+  { key: "storbritannien", flag: "united-kingdom" },
+  { key: "sverige", flag: "sweden" },
+  { key: "tyskland", flag: "germany" },
+  { key: "usa", flag: "usa" },
+  { key: "oestrig", flag: "austria" },
 ];
 
 export default function CountryPickerPage() {
+  const { t } = useTranslation();
   return (
     <div className="flex h-full min-h-full flex-col bg-hf-cream">
       <div
@@ -37,9 +41,9 @@ export default function CountryPickerPage() {
         style={{ paddingTop: "max(16px, env(safe-area-inset-top, 0px))" }}
       >
         <span className="hf-appbar__slot" aria-hidden="true" />
-        <h1 className="hf-type-nav-title hf-appbar__title">Vælg dit land</h1>
+        <h1 className="hf-type-nav-title hf-appbar__title">{t("country.title")}</h1>
         <div className="hf-appbar__slot">
-          <Link href="/login" aria-label="Tilbage" className="text-hf-white">
+          <Link href="/login" aria-label={t("country.back")} className="text-hf-white">
             <IconArrowLeft size={24} />
           </Link>
         </div>
@@ -60,7 +64,7 @@ export default function CountryPickerPage() {
                 height={27}
                 className="rounded-[2px]"
               />
-              <span className="hf-type-body flex-1">{country.label}</span>
+              <span className="hf-type-body flex-1">{t(`country.countries.${country.key}`)}</span>
               {selected && (
                 <IconCheck size={20} stroke={2.5} className="text-hf-green" aria-hidden="true" />
               )}
