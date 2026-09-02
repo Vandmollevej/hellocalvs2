@@ -9,9 +9,9 @@ export async function GET() {
       where: { userId: user.id },
       orderBy: { createdAt: "desc" },
       include: { product: { select: { imageUrl: true } } },
-      // 3000 daekker godt over et halvt aars historik (~4 registreringer/dag),
-      // saa statistik/kalender kan vise hele trenden i stedet for kun de
-      // seneste ~3-4 maaneder.
+      // 3000 comfortably covers over half a year of history (~4 registrations/day),
+      // so statistics/calendar can show the whole trend instead of just the
+      // last ~3-4 months.
       take: 3000,
     });
 
@@ -25,19 +25,19 @@ export async function GET() {
   }
 }
 
-// POST /api/registrations — manuel tilføjelse af en registrering.
-// Kalorier/makroer gemmes som snapshot på registreringen selv, jf.
-// docs/DATABASE.md, og ændres derfor aldrig af senere produktopdateringer.
+// POST /api/registrations — manual addition of a registration.
+// Calories/macros are saved as a snapshot on the registration itself, per
+// docs/DATABASE.md, and are therefore never changed by later product updates.
 //
-// Tre former:
-// - { productId, amountGrams } — normalt flow, snapshot udregnes fra produktet.
-// - { dishId, amountGrams } — en egen ret (se /opret-ret); snapshot udregnes
-//   ud fra summen af rettens ingredienser, skaleret til amountGrams.
+// Three forms:
+// - { productId, amountGrams } — normal flow, snapshot is calculated from the product.
+// - { dishId, amountGrams } — a custom dish (see /create-dish); snapshot is
+//   calculated from the sum of the dish's ingredients, scaled to amountGrams.
 // - { titleSnapshot, kcalSnapshot, proteinSnapshot, carbsSnapshot, fatSnapshot,
-//   amountGrams } uden productId/dishId — bruges når stemme/AI-flowet (se
-//   /api/ai/interpret-meal) foreslår en madvare uden match i databasen. Varen
-//   oprettes her som en ny "PENDING"-kandidat (jf. docs/ADMIN.md), så den kan
-//   genkendes/godkendes fremover i stedet for at gætte hver gang.
+//   amountGrams } without productId/dishId — used when the voice/AI flow (see
+//   /api/ai/interpret-meal) suggests a food item with no match in the database. The
+//   item is created here as a new "PENDING" candidate (per docs/ADMIN.md), so it can
+//   be recognized/approved going forward instead of guessing every time.
 export async function POST(req: Request) {
   const body = await req.json();
   const {
@@ -55,9 +55,9 @@ export async function POST(req: Request) {
     dishId?: string;
     amountGrams: number;
     titleSnapshot?: string;
-    // Ved productId/dishId er disse tre valgfri overstyringer af de udregnede
-    // makroer (fx justeret via Energifordeling-slidere i /tilfoej), ikke et
-    // krav om fuldt selvstændigt snapshot som i AI-flowet nedenfor.
+    // With productId/dishId these three are optional overrides of the calculated
+    // macros (e.g. adjusted via the Energy distribution sliders in /add), not a
+    // requirement for a fully independent snapshot like in the AI flow below.
     kcalSnapshot?: number;
     proteinSnapshot?: number;
     carbsSnapshot?: number;

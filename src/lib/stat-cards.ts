@@ -1,5 +1,5 @@
-// Definerer de statistik-kort brugeren kan sætte sammen på Statistik-siden.
-// Kortenes rækkefølge/aktive sæt gemmes af StatCardsGrid (localStorage), ikke her.
+// Defines the stat cards the user can assemble on the Statistics page.
+// The cards' order/active set is stored by StatCardsGrid (localStorage), not here.
 
 import {
   IconBolt,
@@ -31,8 +31,8 @@ export type ActivityTotals = {
   startedAt: string;
 };
 
-// Løst koblet til HealthMetricType (Prisma) — `type` er en fri streng her for
-// ikke at give denne delte lib en hård afhængighed af @prisma/client.
+// Loosely coupled to HealthMetricType (Prisma) — `type` is a free string here so
+// this shared lib doesn't get a hard dependency on @prisma/client.
 export type HealthMetricTotals = {
   type: string;
   value: number;
@@ -41,11 +41,11 @@ export type HealthMetricTotals = {
 
 export type StatCardData = {
   days: DailyTotal[];
-  // Kun sat når mindst én rigtig integration (Fitbit/Withings) er CONNECTED,
-  // jf. docs/DECISIONS.md — se hvor computeStatCards() kaldes fra.
+  // Only set when at least one real integration (Fitbit/Withings) is CONNECTED,
+  // per docs/DECISIONS.md — see where computeStatCards() is called from.
   activities?: ActivityTotals[];
-  // Fra en fremtidig HealthKit/Health Connect-companion-app (se
-  // docs/HEALTHKIT_COMPANION.md) — tomt/udefineret indtil data findes.
+  // From a future HealthKit/Health Connect companion app (see
+  // docs/HEALTHKIT_COMPANION.md) — empty/undefined until data exists.
   metrics?: HealthMetricTotals[];
 };
 
@@ -112,8 +112,8 @@ export const STAT_CARD_DEFS: {
     key: "steps",
     label: "Skridt",
     icon: IconWalk,
-    // Rigtige data når en HealthKit/Health Connect-companion-app har sendt
-    // STEPS-målinger (se docs/HEALTHKIT_COMPANION.md); indtil da et pladsholdertal.
+    // Real data once a HealthKit/Health Connect companion app has sent
+    // STEPS readings (see docs/HEALTHKIT_COMPANION.md); a placeholder number until then.
     compute: (data) => {
       const avg = averageMetric(data.metrics, "STEPS");
       return avg !== null ? formatNumber(avg) : "6.210";
@@ -143,9 +143,9 @@ export const DEFAULT_ACTIVE_STAT_KEYS: string[] = STAT_CARD_DEFS.map((def) => de
 
 export const SPORT_STAT_KEY_PREFIX = "sport:";
 
-// Ét kort pr. sportstype brugeren faktisk har aktivitetsdata for (fra en
-// tilkoblet integration eller egen manuel registrering) — sportsgrene er
-// åbne/dynamiske, så de kan ikke være en fast STAT_CARD_DEFS-entry.
+// One card per sport type the user actually has activity data for (from a
+// connected integration or their own manual logging) — sports are
+// open-ended/dynamic, so they can't be a fixed STAT_CARD_DEFS entry.
 function computeSportStatCards(activities: ActivityTotals[]): StatCardValue[] {
   const bySport = new Map<string, { durationMinutes: number; caloriesBurned: number }>();
   for (const activity of activities) {
@@ -177,8 +177,8 @@ export function computeStatCards(data: StatCardData): StatCardValue[] {
   return [...staticCards, ...sportCards];
 }
 
-// Delt layout-persistens for StatCardsGrid og siden med ubrugte kort, så begge
-// læser/skriver den samme localStorage-nøgle uden at duplikere logikken.
+// Shared layout persistence for StatCardsGrid and the unused-cards page, so both
+// read/write the same localStorage key without duplicating the logic.
 
 export type StatLayoutItem = { type: "stat"; key: string };
 export type StatHeaderLayoutItem = { type: "header"; id: string; text: string };
@@ -203,11 +203,11 @@ export function saveStatLayout(layout: StatGridLayoutItem[]) {
   try {
     window.localStorage.setItem(STAT_LAYOUT_STORAGE_KEY, JSON.stringify(layout));
   } catch {
-    // localStorage utilgængelig — ignorér.
+    // localStorage unavailable — ignore.
   }
 }
 
-/** Tilføjer et statistik-kort til bunden af det aktive layout, hvis det ikke allerede er der. */
+/** Adds a stat card to the bottom of the active layout if it isn't already there. */
 export function addStatCardToLayout(defaultLayout: StatGridLayoutItem[], key: string): StatGridLayoutItem[] {
   const current = loadStatLayout(defaultLayout);
   const alreadyActive = current.some((item) => item.type === "stat" && item.key === key);
@@ -216,7 +216,7 @@ export function addStatCardToLayout(defaultLayout: StatGridLayoutItem[], key: st
   return next;
 }
 
-/** Hvilke kort-nøgler er aktive i det gemte layout (eller standardlayoutet, hvis intet er gemt endnu). */
+/** Which card keys are active in the saved layout (or the default layout, if nothing is saved yet). */
 export function activeStatKeys(defaultLayout: StatGridLayoutItem[]): Set<string> {
   const current = loadStatLayout(defaultLayout);
   return new Set(current.filter((item): item is StatLayoutItem => item.type === "stat").map((item) => item.key));

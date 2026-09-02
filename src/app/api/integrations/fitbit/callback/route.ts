@@ -4,7 +4,7 @@ import { getDemoUser } from "@/lib/demo-user";
 import { exchangeFitbitCode } from "@/lib/integrations/fitbit";
 
 const STATE_COOKIE = "fitbit_oauth_state";
-const DONE_URL = "/settings/integrationer";
+const DONE_URL = "/settings/integrations";
 
 export async function GET(req: NextRequest) {
   const code = req.nextUrl.searchParams.get("code");

@@ -1,4 +1,4 @@
-// Aggregerer registreringer til dagstotaler, delt af Statistik og nøgletalshjulet.
+// Aggregates registrations into daily totals, shared by Statistics and the key-metrics wheel.
 
 export type RegistrationTotals = {
   kcalSnapshot: number;

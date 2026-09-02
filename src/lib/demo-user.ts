@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 
-// Login er endnu ikke implementeret. Indtil da samles den afgrænsede
-// produktprøves data på én demo-bruger, så UI og database bruger samme kilde.
+// Login isn't implemented yet. Until then, the scoped product trial's
+// data is consolidated on a single demo user, so the UI and database use the same source.
 const DEMO_USER_EMAIL = "demo@hellocal.local";
 
 export function getDemoUser() {

@@ -105,8 +105,8 @@ export function StatCardsGrid({
     saveStatLayout(layout);
   }, [layout]);
 
-  // Genindlæs layoutet, hvis det blev ændret et andet sted (fx siden med ubrugte
-  // kort), så snart brugeren navigerer tilbage til denne side/komponent.
+  // Reload the layout if it was changed elsewhere (e.g. the unused-cards
+  // page) as soon as the user navigates back to this page/component.
   useEffect(() => {
     function onFocus() {
       setLayout(loadStatLayout(defaultLayout));
@@ -221,7 +221,7 @@ export function StatCardsGrid({
           return next;
         });
       } else if (source.kind === "active") {
-        // Trukket ud af det aktive gitter — fjern kortet (statistik-kort lægges tilbage i puljen).
+        // Dragged out of the active grid — remove the card (stat card goes back into the pool).
         setLayout((prev) => prev.filter((i) => layoutItemId(i) !== source.id));
       }
 
@@ -243,8 +243,8 @@ export function StatCardsGrid({
         }
       }
 
-      // Vandret swipe på et statistik-kort (uden for redigeringstilstand) skifter periode
-      // i stedet for at flytte kortet.
+      // A horizontal swipe on a stat card (outside edit mode) changes the period
+      // instead of moving the card.
       if (
         !editMode &&
         !drag &&
@@ -322,7 +322,7 @@ export function StatCardsGrid({
           type="button"
           aria-label="Afslut redigering"
           onPointerDown={(event) => {
-            // Baggrund, ligesom dropdown-mønstret i StatChart: tryk udenfor kortene afslutter redigering.
+            // Backdrop, like the dropdown pattern in StatChart: tapping outside the cards exits edit mode.
             event.stopPropagation();
             exitEditMode();
           }}
@@ -345,7 +345,7 @@ export function StatCardsGrid({
             </button>
           )}
           <Link
-            href="/statistik/ubrugte-kort"
+            href="/statistics/unused-cards"
             onPointerDown={(event) => event.stopPropagation()}
             className="hf-btn-primary flex min-h-8 items-center gap-1 px-3 py-1 text-xs"
           >

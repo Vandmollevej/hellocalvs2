@@ -1,9 +1,9 @@
 import { randomBytes, createHash } from "crypto";
 
-// Personlige enhedstokens til en fremtidig native companion-app (se
-// docs/HEALTHKIT_COMPANION.md). Kun SHA-256-hashen gemmes — samme princip som
-// et personligt API-nøgle-flow (fx GitHub PAT); den rå værdi vises kun én
-// gang ved oprettelse og kan aldrig genskabes.
+// Personal device tokens for a future native companion app (see
+// docs/HEALTHKIT_COMPANION.md). Only the SHA-256 hash is stored — same principle
+// as a personal API key flow (e.g. GitHub PAT); the raw value is shown only once
+// at creation and can never be recovered.
 const TOKEN_PREFIX = "hcal_";
 
 export function generateDeviceToken() {

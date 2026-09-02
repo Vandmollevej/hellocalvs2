@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-// Justerbar makro-bjælke: slider + tekstfelt til at overskrive værdien.
-// Udtrukket fra src/app/stemme/page.tsx's MacroBar til genbrug i Tilføj-flowet.
+// Adjustable macro bar: slider + text field to override the value.
+// Extracted from src/app/voice/page.tsx's MacroBar for reuse in the Add flow.
 export function MacroSliderBar({
   label,
   grams,

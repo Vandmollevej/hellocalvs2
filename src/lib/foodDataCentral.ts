@@ -104,8 +104,8 @@ export async function lookupFoodDataCentral(
   const food = await fetchFdc<FdcFood>(`/food/${match.fdcId}`, apiKey);
   if (!food.description || !food.fdcId) return null;
 
-  // FDC's servingSize er kun en "pr. stk"-vægt, når enheden er gram —
-  // andre enheder (ml, IU osv.) kan ikke bruges direkte til kcal-omregning.
+  // FDC's servingSize is only a "per piece" weight when the unit is grams —
+  // other units (ml, IU, etc.) can't be used directly for kcal conversion.
   const servingSizeGrams =
     food.servingSizeUnit?.toLowerCase() === "g" &&
     typeof food.servingSize === "number" &&

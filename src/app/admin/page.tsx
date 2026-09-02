@@ -17,14 +17,14 @@ export default async function AdminDashboardPage() {
       <h1 className="text-lg font-semibold text-text-primary">Oversigt</h1>
       <div className="grid gap-4 sm:grid-cols-2">
         <Link
-          href="/admin/produkter"
+          href="/admin/products"
           className="rounded-lg border border-border-strong bg-surface-2 p-5 hover:border-hf-green"
         >
           <p className="text-3xl font-semibold text-hf-green-dark">{pendingProducts}</p>
           <p className="mt-1 text-sm text-text-secondary">Nye produkter afventer godkendelse</p>
         </Link>
         <Link
-          href="/admin/billeder"
+          href="/admin/images"
           className="rounded-lg border border-border-strong bg-surface-2 p-5 hover:border-hf-green"
         >
           <p className="text-3xl font-semibold text-hf-green-dark">{pendingImages}</p>

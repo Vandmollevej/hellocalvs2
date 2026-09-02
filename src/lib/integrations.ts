@@ -1,13 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import type { Integration, IntegrationProvider } from "@prisma/client";
 
-// Katalog over alle udbydere Integrationer-siden kan vise.
-// - FITBIT/WITHINGS: rigtig, selvstændig cloud-OAuth-API — forbindes direkte.
-// - APPLE_HEALTH/GOOGLE_HEALTH: kan ikke tilgås fra en webapp overhovedet
-//   (native-only), men er forberedt til at modtage data fra en fremtidig
-//   companion-app via et enhedstoken (`ingestOnly`) — se
-//   docs/HEALTHKIT_COMPANION.md og docs/DECISIONS.md.
-// - GARMIN: afventer separat partnergodkendelse, helt utilgængelig indtil da.
+// Catalog of all providers the Integrations page can show.
+// - FITBIT/WITHINGS: real, standalone cloud OAuth API — connects directly.
+// - APPLE_HEALTH/GOOGLE_HEALTH: cannot be accessed from a web app at all
+//   (native-only), but are prepared to receive data from a future
+//   companion app via a device token (`ingestOnly`) — see
+//   docs/HEALTHKIT_COMPANION.md and docs/DECISIONS.md.
+// - GARMIN: awaiting separate partner approval, fully unavailable until then.
 export type IntegrationMeta = {
   provider: IntegrationProvider;
   label: string;
@@ -84,8 +84,8 @@ export async function listIntegrationStatuses(userId: string): Promise<Integrati
   });
 }
 
-// Minimumsinterval mellem to synkroniseringer af samme udbyder (on-demand,
-// ingen baggrunds-poller i denne omgang, jf. docs/DECISIONS.md).
+// Minimum interval between two syncs of the same provider (on-demand,
+// no background poller for now, per docs/DECISIONS.md).
 export const SYNC_THROTTLE_MS = 15 * 60 * 1000;
 
 export function shouldSync(lastSyncedAt: Date | null): boolean {

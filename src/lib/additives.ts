@@ -1,7 +1,8 @@
-// Klient-side adgang til E-nummer-referencedatabasen (tabellen "additives",
-// se prisma/schema.prisma og scripts/e-numre/). Hele tabellen (~343 rækker)
-// hentes én gang via /api/additives og caches i modulet, så både
-// AdditiveInfoModal og produktsiden kan slå op synkront efter første hentning.
+// Client-side access to the E-number reference database (the "additives"
+// table, see prisma/schema.prisma and scripts/e-numre/). The entire table
+// (~343 rows) is fetched once via /api/additives and cached in the module,
+// so both AdditiveInfoModal and the product page can look up synchronously
+// after the first fetch.
 
 export type AdditiveInfo = {
   eNumber: string;

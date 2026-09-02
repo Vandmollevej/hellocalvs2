@@ -6,7 +6,7 @@ datasource db {
   provider = "postgresql"
 }
 
-// --- Konto ---
+// --- Account ---
 
 model User {
   id          String   @id @default(cuid())
@@ -19,55 +19,58 @@ model User {
   sex         Sex?
   createdAt   DateTime @default(now())
 
-  // Admin-login (docs/ADMIN.md): kun sat for den ene administratorkonto,
-  // oprettet via /admin/setup. Almindelige brugere har intet login endnu
-  // (se docs/STATUS.md "Next work" #4) og har derfor begge felter null.
+  // Admin login (docs/ADMIN.md): only set for the single administrator
+  // account, created via /admin/setup. Regular users have no login yet
+  // (see docs/STATUS.md "Next work" #4), so both fields are null for them.
   passwordHash String?
   totpSecret   String?
 
-  // Almindelig bruger-tilmelding via /tilmeld (e-mail + adgangskode).
-  // emailVerifiedAt sættes med det samme ved oprettelse, fordi der endnu
-  // ikke er sat SMTP op til at sende en rigtig verifikationsmail — se
-  // docs/STATUS.md "Next work" for opgaven om at eftermontere den rigtige
-  // verifikationsmail, når SMTP findes.
+  // Regular user signup via /signup (email + password).
+  // emailVerifiedAt is set immediately on creation, because SMTP is not
+  // yet set up to send a real verification email — see docs/STATUS.md
+  // "Next work" for the task of retrofitting the real verification
+  // email once SMTP exists.
   emailVerifiedAt DateTime?
 
-  // Søvnmønster: standard sengetid/stå-op-tid, med mulighed for individuelle
-  // tider pr. ugedag (SleepSchedule) til brugere med skiftende arbejdstider.
+  // Sleep pattern: default bedtime/wake time, with the option of
+  // individual times per weekday (SleepSchedule) for users with shifting
+  // work hours.
   defaultBedtime   String?
   defaultWakeTime  String?
   shiftWorkEnabled Boolean @default(false)
 
-  // Skiftende arbejdstider: foretrækker brugeren at registrere arbejdstider
-  // eller søvntider dagligt (spurgt i opsætningsguiden, kun relevant når
-  // shiftWorkEnabled er sand).
+  // Shifting work hours: does the user prefer to log work hours or sleep
+  // times daily (asked in the setup wizard, only relevant when
+  // shiftWorkEnabled is true).
   dailyLogPreference DailyLogPreference?
 
-  // Vil brugeren kunne registrere arbejdstider direkte i kalenderen.
+  // Whether the user wants to be able to log work hours directly in the
+  // calendar.
   workHoursInCalendarEnabled Boolean @default(false)
 
-  // Har brugeren bedt om at få smartwatch-/sundhedsapp-import sat op.
-  // Selve integrationen (Apple Health/Google Health Connect/Fitbit) er
-  // separat, senere arbejde — dette felt husker kun ønsket fra guiden.
+  // Has the user asked to have smartwatch/health app import set up.
+  // The integration itself (Apple Health/Google Health Connect/Fitbit) is
+  // separate, later work — this field only remembers the wish from the
+  // wizard.
   healthImportRequested Boolean @default(false)
 
-  // Fuldskærms-opsætningsguide ved første login (docs/UI.md "Onboarding og
-  // hjælp"). onboardingStep er det næste trin der skal vises ved genoptagelse.
+  // Full-screen setup wizard at first login (docs/UI.md "Onboarding and
+  // help"). onboardingStep is the next step to show on resume.
   onboardingStep          Int       @default(0)
   onboardingCompletedAt   DateTime?
   onboardingRemindLaterAt DateTime?
   onboardingDismissed     Boolean   @default(false)
 
-  // Personlige indstillinger, ikke-standard "Vis allergener" (§ docs/STATUS.md
-  // "Detaljer"-udvidelse): master-switch plus hvilke af de 14 EU-allergener
-  // (se src/lib/allergens.ts) brugeren ønsker vist, hvis produktet indeholder
-  // dem. Null = alle vises, når showAllergens er sand.
+  // Personal settings, non-default "Show allergens" (see docs/STATUS.md
+  // "Details" extension): master switch plus which of the 14 EU allergens
+  // (see src/lib/allergens.ts) the user wants shown when a product contains
+  // them. Null = all are shown, when showAllergens is true.
   showAllergens      Boolean @default(false)
   allergenVisibility Json?
 
-  // Region (ISO 3166-1 alpha-2), bruges til at prioritere produktsøgeresultater
-  // efter landets GS1-stregkodepræfiks (se src/lib/regions.ts). Danmark er
-  // standard, da det er appens primære marked.
+  // Region (ISO 3166-1 alpha-2), used to prioritize product search results
+  // by the country's GS1 barcode prefix (see src/lib/regions.ts). Denmark is
+  // the default, since it's the app's primary market.
   region String @default("DK")
 
   registrations  Registration[]
@@ -121,10 +124,11 @@ model Passkey {
   @@map("passkeys")
 }
 
-// --- Vægtkalibrering ---
-// Flere ugentlige vejninger under forskellige forhold (tøj, tidspunkt på
-// dagen, toilet/mad) giver brugeren en fornemmelse af udsvinget i løbet af
-// dagen, uden at kræve at man altid vejer sig nøgen for at kunne sammenligne.
+// --- Weight calibration ---
+// Several weekly weigh-ins under different conditions (clothing, time of
+// day, toilet/food) give the user a sense of the fluctuation throughout the
+// day, without requiring them to always weigh themselves naked in order to
+// compare.
 
 model WeightEntry {
   id        String       @id @default(cuid())
@@ -136,10 +140,10 @@ model WeightEntry {
   toilet    RelativeTime @default(UNKNOWN)
   meal      RelativeTime @default(UNKNOWN)
   timeOfDay TimeOfDay    @default(UNKNOWN)
-  // Hvor vejningen kommer fra. En aktiv vægt-integration overskriver
-  // automatisk seneste værdi (docs/SPECIFICATION.md:47) — scale-kilder kan
-  // ikke vide tøj/sko/toilet/mad-tilstand, så de felter forbliver UNKNOWN/true
-  // (standard) for rækker skrevet af en integration.
+  // Where the weigh-in comes from. An active weight integration automatically
+  // overwrites the latest value (docs/SPECIFICATION.md:47) — scale sources
+  // can't know the clothing/shoes/toilet/food state, so those fields stay
+  // UNKNOWN/true (default) for rows written by an integration.
   source    WeightSource @default(MANUAL)
   note      String?
   weighedAt DateTime     @default(now())
@@ -173,15 +177,15 @@ enum WeightSource {
   GOOGLE_HEALTH
 }
 
-// --- Søvnmønster og skiftende arbejdstider ---
-// Individuelle sengetider/stå-op-tider pr. ugedag. Bruges kun når brugeren har
-// slået "individuelle tider" til; ellers gælder User.defaultBedtime/-WakeTime.
+// --- Sleep pattern and shifting work hours ---
+// Individual bedtimes/wake times per weekday. Only used when the user has
+// enabled "individual times"; otherwise User.defaultBedtime/-WakeTime applies.
 
 model SleepSchedule {
   id       String @id @default(cuid())
   user     User   @relation(fields: [userId], references: [id])
   userId   String
-  weekday  Int // 0 = mandag … 6 = søndag
+  weekday  Int // 0 = Monday … 6 = Sunday
   bedtime  String
   wakeTime String
 
@@ -189,9 +193,10 @@ model SleepSchedule {
   @@map("sleep_schedules")
 }
 
-// Arbejdsdage/-tider registreret direkte i kalenderen (evt. skiftehold/
-// natarbejde). bedtime/wakeTime er en valgfri søvn-override for den dato,
-// brugt i kalenderens søvnvisualisering når shiftWorkEnabled er slået til.
+// Work days/hours logged directly in the calendar (e.g. shift work/
+// night work). bedtime/wakeTime is an optional sleep override for that
+// date, used in the calendar's sleep visualization when shiftWorkEnabled
+// is on.
 
 model WorkShift {
   id        String   @id @default(cuid())
@@ -208,14 +213,15 @@ model WorkShift {
   @@map("work_shifts")
 }
 
-// --- Sundhedsintegrationer ---
-// Fitbit og Withings har rigtige OAuth-API'er og gemmer deres forbindelse i
-// Integration-tabellen. Garmin afventer separat partnergodkendelse og vises
-// kun statisk i UI'en. Apple Health/Google Health Connect kan ikke tilgås fra
-// en webapp overhovedet (HealthKit/Health Connect er native-only) — i stedet
-// er der forberedt en generisk indtags-vej (DeviceToken + HealthMetric) som
-// en fremtidig native companion-app kan sende data til; se
-// docs/HEALTHKIT_COMPANION.md og docs/DECISIONS.md (2026-08-28).
+// --- Health integrations ---
+// Fitbit and Withings have real OAuth APIs and store their connection in
+// the Integration table. Garmin is pending separate partner approval and is
+// only shown statically in the UI. Apple Health/Google Health Connect can't
+// be accessed from a web app at all (HealthKit/Health Connect are
+// native-only) — instead a generic ingestion path (DeviceToken +
+// HealthMetric) has been prepared, which a future native companion app can
+// send data to; see docs/HEALTHKIT_COMPANION.md and docs/DECISIONS.md
+// (2026-08-28).
 
 model Integration {
   id           String              @id @default(cuid())
@@ -250,9 +256,9 @@ enum IntegrationStatus {
   ERROR
 }
 
-// Sportsregistreringer (træning/aktivitet), manuelt indtastet eller hentet fra
-// en tilkoblet Integration. Bruges til kalenderens sportsikon/bonuskalorier
-// og statistikkens sport-blokke (docs/SPECIFICATION.md §5 "Kaloriebank").
+// Sports/activity logs, entered manually or fetched from a connected
+// Integration. Used for the calendar's sports icon/bonus calories and the
+// statistics page's sport blocks (docs/SPECIFICATION.md §5 "Calorie bank").
 model Activity {
   id              String         @id @default(cuid())
   user            User           @relation(fields: [userId], references: [id])
@@ -275,10 +281,11 @@ enum ActivitySource {
   GOOGLE_HEALTH
 }
 
-// Et personligt, langtlevende adgangstoken en fremtidig native companion-app
-// (iOS/HealthKit eller Android/Health Connect) autentificerer sig med mod
-// POST /api/integrations/healthkit/ingest. Kun tokenets hash gemmes — den
-// rå værdi vises én gang ved oprettelse, ligesom et personligt API-nøgle-mønster.
+// A personal, long-lived access token a future native companion app
+// (iOS/HealthKit or Android/Health Connect) authenticates with against
+// POST /api/integrations/healthkit/ingest. Only the token's hash is
+// stored — the raw value is shown once at creation, like a personal
+// API-key pattern.
 model DeviceToken {
   id         String    @id @default(cuid())
   user       User      @relation(fields: [userId], references: [id])
@@ -291,9 +298,9 @@ model DeviceToken {
   @@map("device_tokens")
 }
 
-// Generiske sundhedsmålinger fra en tilkoblet native companion-app, for
-// datatyper der ikke passer ind i WeightEntry/Activity (skridt, puls, søvn,
-// kropsfedt, højde, BMI m.m.). Se docs/HEALTHKIT_COMPANION.md.
+// Generic health metrics from a connected native companion app, for
+// data types that don't fit in WeightEntry/Activity (steps, heart rate,
+// sleep, body fat, height, BMI, etc.). See docs/HEALTHKIT_COMPANION.md.
 model HealthMetric {
   id         String             @id @default(cuid())
   user       User               @relation(fields: [userId], references: [id])
@@ -325,7 +332,7 @@ enum HealthMetricType {
   WATER_ML
 }
 
-// --- Fødevaredatabase ---
+// --- Food database ---
 
 model Brand {
   id        String    @id @default(cuid())
@@ -337,13 +344,13 @@ model Brand {
   @@map("brands")
 }
 
-// Rene katalogiseringskategorier (ikke vist i UI'en) der gør det lettere at
-// scanne/filtrere fødevaredatabasen internt: "Retter" (fx HelloFresh-opskrifter
-// importeret som Product), "Menuer" (ugentlige menu-grupperinger, endnu ikke
-// populeret — HelloFresh eksponerer ikke en stabil uge-gruppering offentligt),
-// "Ingredienser" (den delte Ingredient-katalog, se nedenfor) og "Færdigmad"
-// (købte færdigretter, endnu ikke auto-tagget). Se docs/DECISIONS.md
-// (2026-08-29, HelloFresh-import).
+// Pure cataloging categories (not shown in the UI) that make it easier to
+// scan/filter the food database internally: "Retter" (dishes, e.g. HelloFresh
+// recipes imported as Product), "Menuer" (menus, weekly menu groupings, not
+// yet populated — HelloFresh doesn't expose a stable weekly grouping
+// publicly), "Ingredienser" (ingredients, the shared Ingredient catalog, see
+// below) and "Færdigmad" (ready meals, purchased ready meals, not yet
+// auto-tagged). See docs/DECISIONS.md (2026-08-29, HelloFresh import).
 model Category {
   id       String    @id @default(cuid())
   name     String    @unique
@@ -374,9 +381,9 @@ model Product {
   externalSource   ExternalProductSource?
   externalId       String?
   sourceCheckedAt  DateTime?
-  // Ekstra næringsværdier der ikke passer i de faste per-100g-felter ovenfor
-  // (fx HelloFresh-opskrifters fiber/sukker/salt/kalium/calcium/jern pr.
-  // serveringsstørrelse). Se docs/DECISIONS.md (2026-08-29).
+  // Extra nutrition values that don't fit in the fixed per-100g fields above
+  // (e.g. HelloFresh recipes' fiber/sugar/salt/potassium/calcium/iron per
+  // serving size). See docs/DECISIONS.md (2026-08-29).
   nutritionExtra   Json?
   status           ProductStatus          @default(PENDING)
   discontinued     Boolean                @default(false)
@@ -399,8 +406,8 @@ enum ExternalProductSource {
   HELLOFRESH
 }
 
-// Reference-database over EU-godkendte E-tilsætningsstoffer (E100-E1521),
-// importeret fra scripts/e-numre/data/e_numre.csv via scripts/e-numre/import_to_db.py.
+// Reference database of EU-approved E-number additives (E100-E1521),
+// imported from scripts/e-numre/data/e_numre.csv via scripts/e-numre/import_to_db.py.
 model Additive {
   eNumber           String   @id @map("e_number")
   internationalName String   @map("international_name")
@@ -415,8 +422,8 @@ model Additive {
   @@map("additives")
 }
 
-// Hvilken Frida-udgivelse (DTU's Figshare-datasæt) der senest er importeret,
-// så frida-agent (scripts/frida-import) ikke genimporterer samme version.
+// Which Frida release (DTU's Figshare dataset) was most recently imported,
+// so frida-agent (scripts/frida-import) doesn't re-import the same version.
 model FridaImportState {
   id                Int      @id @default(autoincrement())
   figshareArticleId Int      @unique
@@ -426,12 +433,12 @@ model FridaImportState {
   @@map("frida_import_state")
 }
 
-// Delt ingrediens-billedkatalog, hentet af hellofresh-agent
-// (scripts/hellofresh-import) fra HelloFreshs offentlige opskriftssider.
-// Adskilt fra Product: det er billeder/metadata til visning på tværs af
-// appen (fx "denne ret indeholder: [ikon] Gulerod"), ikke en selvstændig
-// logbar fødevare — Frida-importerede Product-rækker er stadig den eneste
-// kilde til egentlige næringsværdier for rå ingredienser. Se
+// Shared ingredient image catalog, fetched by hellofresh-agent
+// (scripts/hellofresh-import) from HelloFresh's public recipe pages.
+// Separate from Product: it's images/metadata for display across the
+// app (e.g. "this dish contains: [icon] Carrot"), not a standalone
+// loggable food item — Frida-imported Product rows are still the only
+// source for actual nutrition values of raw ingredients. See
 // docs/DECISIONS.md (2026-08-29).
 model Ingredient {
   id             String   @id @default(cuid())
@@ -447,11 +454,12 @@ model Ingredient {
   @@map("ingredients")
 }
 
-// Ingrediens-sammensætningen af en "Ret" (Product med category "Retter"),
-// med gram-mængde og andel af rettens samlede vægt — bruges til at estimere
-// fx hvor meget en peberfrugt bidrager til rettens vitamin-/mineralindhold.
-// proportion/amountGrams er null når HelloFresh kun oplyser mængden i en
-// ikke-vægt-enhed (stk/dl/tsk/spsk) — se docs/DECISIONS.md (2026-08-29).
+// The ingredient composition of a "Ret" (dish; a Product with category
+// "Retter"), with gram amount and share of the dish's total weight — used
+// to estimate e.g. how much a bell pepper contributes to the dish's
+// vitamin/mineral content. proportion/amountGrams is null when HelloFresh
+// only states the amount in a non-weight unit (piece/dl/tsp/tbsp) — see
+// docs/DECISIONS.md (2026-08-29).
 model ProductIngredient {
   id           String     @id @default(cuid())
   product      Product    @relation(fields: [productId], references: [id])
@@ -473,9 +481,10 @@ enum ProductStatus {
   REJECTED
 }
 
-// Status for AI-fundne kandidatbilleder (kun generiske råvarer uden brand).
-// Adskilt fra ProductStatus: et produkt kan være godkendt, mens dets billede
-// afventer separat admin-godkendelse (se docs/ADMIN.md).
+// Status for AI-found candidate images (generic raw-ingredient products
+// without a brand only). Separate from ProductStatus: a product can be
+// approved while its image is pending separate admin approval (see
+// docs/ADMIN.md).
 enum ImageStatus {
   NONE
   PENDING
@@ -492,7 +501,7 @@ model Barcode {
   @@map("barcodes")
 }
 
-// --- Egne retter / opskrifter ---
+// --- Custom dishes / recipes ---
 
 model Dish {
   id             String    @id @default(cuid())
@@ -522,7 +531,7 @@ model DishIngredient {
   @@map("dish_ingredients")
 }
 
-// --- Registreringer (snapshot-princip) ---
+// --- Registrations (snapshot principle) ---
 
 model Registration {
   id        String   @id @default(cuid())
@@ -533,8 +542,8 @@ model Registration {
   dish      Dish?    @relation(fields: [dishId], references: [id])
   dishId    String?
 
-  // Snapshot-felter: værdierne på registreringstidspunktet, ændres aldrig
-  // efterfølgende selvom produktet/retten opdateres senere.
+  // Snapshot fields: the values at the time of registration, never changed
+  // afterwards even if the product/dish is updated later.
   titleSnapshot   String
   kcalSnapshot    Float
   proteinSnapshot Float
@@ -547,7 +556,7 @@ model Registration {
   @@map("registrations")
 }
 
-// --- Favoritter / bibliotek ---
+// --- Favorites / library ---
 
 model Favorite {
   id        String   @id @default(cuid())

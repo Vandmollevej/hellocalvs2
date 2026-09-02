@@ -36,7 +36,7 @@ export function SwipeableRow({
     dragging.current = false;
     setIsDragging(false);
     startX.current = null;
-    // Snap til åben/lukket i stedet for en tilfældig mellemposition.
+    // Snap to open/closed instead of a random in-between position.
     setDragX((x) => {
       if (onFavorite && x > ACTION_WIDTH / 2) return ACTION_WIDTH;
       if (x < -ACTION_WIDTH / 2) return -ACTION_WIDTH;

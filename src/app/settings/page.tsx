@@ -29,9 +29,9 @@ function restartOnboarding() {
     .catch(() => {});
 }
 
-// Intet betalings-/kredit-backend findes endnu (ingen konto-/abonnementssystem
-// i det hele taget, se docs/STATUS.md "Next work"). Invitationen er derfor kun
-// en delefunktion — ingen belønning krediteres, se docs/DECISIONS.md.
+// No payment/credit backend exists yet (no account/subscription system
+// at all, see docs/STATUS.md "Next work"). The invite is therefore only
+// a sharing feature — no reward is credited, see docs/DECISIONS.md.
 async function inviteAFriend() {
   const shareData = {
     title: "Hello Cal",
@@ -43,7 +43,7 @@ async function inviteAFriend() {
     try {
       await navigator.share(shareData);
     } catch {
-      // Brugeren annullerede delingen — ignorér.
+      // User cancelled the share — ignore.
     }
     return;
   }
@@ -51,7 +51,7 @@ async function inviteAFriend() {
   try {
     await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
   } catch {
-    // Udklipsholder utilgængelig — ignorér.
+    // Clipboard unavailable — ignore.
   }
 }
 
@@ -65,7 +65,7 @@ export default function SettingsPage() {
           <ChevronRow
             icon={<IconCreditCard size={20} />}
             label="Betaling"
-            href="/settings/betaling"
+            href="/settings/payment"
             divider={false}
           />
         </AccordionCard>
@@ -93,7 +93,7 @@ export default function SettingsPage() {
           <ChevronRow
             icon={<IconPlugConnected size={20} />}
             label="Integrationer"
-            href="/settings/integrationer"
+            href="/settings/integrations"
             divider={false}
           />
         </AccordionCard>

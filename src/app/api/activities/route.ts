@@ -21,9 +21,9 @@ export async function GET() {
   }
 }
 
-// POST /api/activities — manuel sportsregistrering. Integrationssync
-// (src/app/api/integrations/*/sync) opretter rækker direkte via Prisma i
-// stedet for at kalde denne route, da den skriver source=FITBIT/GARMIN.
+// POST /api/activities — manual sport registration. Integration sync
+// (src/app/api/integrations/*/sync) creates rows directly via Prisma
+// instead of calling this route, since it writes source=FITBIT/GARMIN.
 export async function POST(req: Request) {
   const body = await req.json();
   const { sportType, startedAt, durationMinutes, caloriesBurned } = body as {

@@ -1,9 +1,9 @@
-// Heuristisk måltidstype-klassificering til analytisk brug (docs/AI.md
-// "Klassificering af måltidstype"). Dette er en forenklet v1: faste
-// tidsvinduer på døgnet, IKKE den fulde hverdags-/weekend- og
-// fødevaretype-profilering som docs/AI.md beskriver — det kræver en
-// produkt-taxonomi der ikke findes endnu. Ingen registreringer tagges
-// automatisk her; det er kun et statistik-resumé.
+// Heuristic meal-type classification for analytics use (docs/AI.md
+// "Meal type classification"). This is a simplified v1: fixed
+// time-of-day windows, NOT the full weekday/weekend and
+// food-type profiling described in docs/AI.md — that requires a
+// product taxonomy that doesn't exist yet. No registrations are tagged
+// automatically here; it's only a statistics summary.
 
 export type MealWindowType = "BREAKFAST" | "LUNCH" | "DINNER" | "OTHER";
 

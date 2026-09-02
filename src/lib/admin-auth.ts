@@ -6,10 +6,10 @@ export const ADMIN_SETUP_COOKIE = "hc_admin_setup";
 export const ADMIN_WEBAUTHN_REG_CHALLENGE_COOKIE = "hc_admin_webauthn_reg";
 export const ADMIN_WEBAUTHN_AUTH_CHALLENGE_COOKIE = "hc_admin_webauthn_auth";
 
-const SESSION_TTL_SECONDS = 12 * 60 * 60; // 12 timer
-const MFA_TTL_SECONDS = 5 * 60; // 5 minutter til at indtaste TOTP-koden
-const SETUP_TTL_SECONDS = 10 * 60; // 10 minutter til at scanne QR-koden og bekræfte
-const WEBAUTHN_CHALLENGE_TTL_SECONDS = 2 * 60; // 2 minutter til at fuldføre Face ID/passkey-ceremonien
+const SESSION_TTL_SECONDS = 12 * 60 * 60; // 12 hours
+const MFA_TTL_SECONDS = 5 * 60; // 5 minutes to enter the TOTP code
+const SETUP_TTL_SECONDS = 10 * 60; // 10 minutes to scan the QR code and confirm
+const WEBAUTHN_CHALLENGE_TTL_SECONDS = 2 * 60; // 2 minutes to complete the Face ID/passkey ceremony
 
 function getSecretKey() {
   const secret = process.env.ADMIN_SESSION_SECRET;

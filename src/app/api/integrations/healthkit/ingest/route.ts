@@ -3,11 +3,11 @@ import { prisma } from "@/lib/prisma";
 import { hashDeviceToken } from "@/lib/device-tokens";
 import type { HealthMetricType } from "@prisma/client";
 
-// POST /api/integrations/healthkit/ingest — modtager data fra en fremtidig
-// native companion-app (iOS/HealthKit eller Android/Health Connect), se
-// docs/HEALTHKIT_COMPANION.md. Autentificeres med et DeviceToken som
-// "Authorization: Bearer <token>", ikke cookies/OAuth — appen har ingen egen
-// brugerkonto at logge ind med endnu (se docs/STATUS.md "Next work" #4).
+// POST /api/integrations/healthkit/ingest — receives data from a future
+// native companion app (iOS/HealthKit or Android/Health Connect), see
+// docs/HEALTHKIT_COMPANION.md. Authenticated with a DeviceToken as
+// "Authorization: Bearer <token>", not cookies/OAuth — the app has no user
+// account of its own to log into yet (see docs/STATUS.md "Next work" #4).
 type IngestBody = {
   source?: "APPLE_HEALTH" | "GOOGLE_HEALTH";
   metrics?: { type?: HealthMetricType; value?: number; recordedAt?: string }[];

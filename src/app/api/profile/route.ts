@@ -15,7 +15,7 @@ export async function GET() {
   }
 }
 
-// PATCH /api/profile — gemmer løbende, jf. UI-princippet om ingen "Gem"-knap.
+// PATCH /api/profile — saves continuously, per the UI principle of no "Save" button.
 export async function PATCH(req: Request) {
   const body = await req.json();
   const {

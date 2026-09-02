@@ -1,8 +1,8 @@
-// Midlertidigt "kladde"-lager for en egen ret, der er ved at blive
-// sammensat på /opret-ret. Ingredienser tilføjes ved at navigere væk (søg,
-// scan, manuel oprettelse) og tilbage igen, så listen skal overleve
-// navigation uden en database-tur — sessionStorage er nok, og ryddes når
-// retten gemmes eller opgives.
+// Temporary "draft" storage for a custom dish being assembled on
+// /create-dish. Ingredients are added by navigating away (search,
+// scan, manual creation) and back again, so the list needs to survive
+// navigation without a database round trip — sessionStorage is enough,
+// and it is cleared when the dish is saved or abandoned.
 
 const STORAGE_KEY = "hellocal.dishDraftIngredients";
 

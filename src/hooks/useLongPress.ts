@@ -1,12 +1,12 @@
 import { useRef } from "react";
 
-// Delt hold-og-flyt-mønster: fyrer onLongPress efter holdMs, men kun hvis
-// pointeren ikke har bevæget sig mere end moveTolerancePx i mellemtiden.
-// Dette mønster fandtes tidligere som 7 separate håndskrevne kopier på tværs
-// af AddButton.tsx/BottomNav.tsx/StatCardsGrid.tsx/kalender/page.tsx (se
-// docs/DECISIONS.md) — nye gestures bør bruge denne hook i stedet for endnu
-// en kopi. De eksisterende 7 kopier er ikke rettet til at bruge den (uden for
-// scope for denne ændring).
+// Shared hold-and-move pattern: fires onLongPress after holdMs, but only if
+// the pointer hasn't moved more than moveTolerancePx in the meantime.
+// This pattern previously existed as 7 separate hand-written copies across
+// AddButton.tsx/BottomNav.tsx/StatCardsGrid.tsx/calendar/page.tsx (see
+// docs/DECISIONS.md) — new gestures should use this hook instead of yet
+// another copy. The existing 7 copies have not been migrated to use it
+// (out of scope for this change).
 export function useLongPress({
   onLongPress,
   holdMs = 500,

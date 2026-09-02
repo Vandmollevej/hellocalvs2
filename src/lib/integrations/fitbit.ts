@@ -1,6 +1,6 @@
-// Fitbit Web API (OAuth2, dokumenteret på dev.fitbit.com). Brugeren opretter
-// selv en app på https://dev.fitbit.com/apps/new og sætter FITBIT_CLIENT_ID/
-// FITBIT_CLIENT_SECRET samt INTEGRATIONS_REDIRECT_BASE_URL i .env.production.
+// Fitbit Web API (OAuth2, documented at dev.fitbit.com). The user creates
+// their own app at https://dev.fitbit.com/apps/new and sets FITBIT_CLIENT_ID/
+// FITBIT_CLIENT_SECRET as well as INTEGRATIONS_REDIRECT_BASE_URL in .env.production.
 
 const AUTHORIZE_URL = "https://www.fitbit.com/oauth2/authorize";
 const TOKEN_URL = "https://api.fitbit.com/oauth2/token";
@@ -94,8 +94,8 @@ export type FitbitActivityLog = {
   originalStartTime: string;
 };
 
-// Loggede træningspas (ikke den daglige aktivitetsopsummering) — mapper 1:1
-// til vores Activity-model (sportType/startedAt/durationMinutes/caloriesBurned).
+// Logged workout sessions (not the daily activity summary) — maps 1:1
+// to our Activity model (sportType/startedAt/durationMinutes/caloriesBurned).
 export async function fetchFitbitActivityLogs(accessToken: string, afterDate: Date) {
   const url = new URL("https://api.fitbit.com/1/user/-/activities/list.json");
   url.searchParams.set("afterDate", formatDate(afterDate));
@@ -114,7 +114,7 @@ export async function fetchFitbitActivityLogs(accessToken: string, afterDate: Da
 export type FitbitWeightLog = {
   date: string;
   time: string;
-  weight: number; // kg, når brugerens Fitbit-konto er sat til metrisk
+  weight: number; // kg, when the user's Fitbit account is set to metric
 };
 
 export async function fetchFitbitWeightLogs(accessToken: string, baseDate: Date, endDate: Date) {
