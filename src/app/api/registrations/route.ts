@@ -9,7 +9,10 @@ export async function GET() {
       where: { userId: user.id },
       orderBy: { createdAt: "desc" },
       include: { product: { select: { imageUrl: true } } },
-      take: 500,
+      // 3000 daekker godt over et halvt aars historik (~4 registreringer/dag),
+      // saa statistik/kalender kan vise hele trenden i stedet for kun de
+      // seneste ~3-4 maaneder.
+      take: 3000,
     });
 
     return NextResponse.json({ registrations });
