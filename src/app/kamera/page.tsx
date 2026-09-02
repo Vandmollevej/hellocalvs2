@@ -1,21 +1,17 @@
 "use client";
 
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
-import { IconCamera, IconRefresh } from "@tabler/icons-react";
+import { IconCamera } from "@tabler/icons-react";
 import { BrowserMultiFormatOneDReader, type IScannerControls } from "@zxing/browser";
 import { ChecksumException, FormatException, NotFoundException } from "@zxing/library";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { HfScreen } from "@/components/HfScreen";
-import { NutritionLabelReview } from "@/components/NutritionLabelReview";
 import { HelloFreshMatchReview } from "@/components/HelloFreshMatchReview";
-import { recognizeNutritionLabel, type NutritionFields } from "@/lib/nutrition-ocr";
-import { OCR_DRAFT_STORAGE_KEY, type ProductDraft } from "@/app/madvarer/nyt/page";
 
 type CameraStatus = "starting" | "active" | "denied" | "unavailable" | "error";
 type LookupStatus = "idle" | "loading" | "not_found" | "error";
-type CameraMode = "produkt" | "maaltid" | "naering" | "hellofresh";
-type OcrStatus = "idle" | "processing" | "done" | "failed";
+type CameraMode = "produkt" | "maaltid" | "hellofresh";
 type RecognizeStatus = "idle" | "processing" | "found" | "not_found" | "failed";
 type MatchedHelloFreshProduct = {
   id: string;
@@ -27,8 +23,7 @@ type MatchedHelloFreshProduct = {
 
 const MODE_TABS: { key: CameraMode; label: string }[] = [
   { key: "produkt", label: "Stregkode" },
-  { key: "maaltid", label: "Måltid" },
-  { key: "naering", label: "Næring" },
+  { key: "hellofresh", label: "Produkt" },
 ];
 
 function cameraMessage(status: CameraStatus) {
@@ -51,13 +46,7 @@ function KameraContent() {
   const router = useRouter();
   const modeParam = params.get("mode");
   const mode: CameraMode =
-    modeParam === "maaltid"
-      ? "maaltid"
-      : modeParam === "naering"
-        ? "naering"
-        : modeParam === "hellofresh"
-          ? "hellofresh"
-          : "produkt";
+    modeParam === "maaltid" ? "maaltid" : modeParam === "hellofresh" ? "hellofresh" : "produkt";
   const forDish = params.get("for") === "ret";
   const returnSuffix = forDish ? "?for=ret" : "";
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -69,13 +58,6 @@ function KameraContent() {
   const [barcode, setBarcode] = useState("");
   const [lookupStatus, setLookupStatus] = useState<LookupStatus>("idle");
   const [photo, setPhoto] = useState<string | null>(null);
-  const [ocrStatus, setOcrStatus] = useState<OcrStatus>("idle");
-  const [ocrFields, setOcrFields] = useState<NutritionFields>({
-    kcalPer100g: null,
-    proteinPer100g: null,
-    carbsPer100g: null,
-    fatPer100g: null,
-  });
   const [recognizeStatus, setRecognizeStatus] = useState<RecognizeStatus>("idle");
   const [matchedProduct, setMatchedProduct] = useState<MatchedHelloFreshProduct | null>(null);
   const stopCamera = useCallback(() => {
@@ -199,7 +181,6 @@ function KameraContent() {
     setCameraStatus("starting");
     lookupInProgressRef.current = false;
     setLookupStatus("idle");
-    setOcrStatus("idle");
     setRecognizeStatus("idle");
     setMatchedProduct(null);
     setRestartKey((key) => key + 1);
@@ -209,19 +190,6 @@ function KameraContent() {
     event.preventDefault();
     void lookupBarcode(barcode);
   }
-
-  useEffect(() => {
-    if (mode !== "naering" || !photo) return;
-    let cancelled = false;
-    recognizeNutritionLabel(photo).then((result) => {
-      if (cancelled) return;
-      setOcrFields(result.fields);
-      setOcrStatus(result.ok ? "done" : "failed");
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [mode, photo]);
 
   useEffect(() => {
     if (mode !== "hellofresh" || !photo) return;
@@ -246,29 +214,24 @@ function KameraContent() {
     };
   }, [mode, photo]);
 
+  useEffect(() => {
+    if (recognizeStatus !== "not_found") return;
+    const timer = setTimeout(() => restartCamera(), 1800);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [recognizeStatus]);
+
   function confirmHelloFreshMatch() {
     if (!matchedProduct) return;
     stopCamera();
     router.push(`/tilfoej/${matchedProduct.id}`);
   }
 
-  function useOcrValues() {
-    const draft: ProductDraft = {
-      kcalPer100g: ocrFields.kcalPer100g?.toString() ?? "",
-      proteinPer100g: ocrFields.proteinPer100g?.toString() ?? "",
-      carbsPer100g: ocrFields.carbsPer100g?.toString() ?? "",
-      fatPer100g: ocrFields.fatPer100g?.toString() ?? "",
-    };
-    sessionStorage.setItem(OCR_DRAFT_STORAGE_KEY, JSON.stringify(draft));
-    stopCamera();
-    router.push(`/madvarer/nyt${returnSuffix}`);
-  }
-
   const message = cameraMessage(cameraStatus);
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-3 p-4">
-      {mode !== "hellofresh" && (
+      {mode !== "maaltid" && (
         <div className="flex justify-center gap-2">
           {MODE_TABS.map((tab) => (
             <button
@@ -290,14 +253,10 @@ function KameraContent() {
         </div>
       )}
 
-      <div className="relative min-h-0 flex-1 overflow-hidden rounded-2xl bg-hf-black">
+      <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-hf-black">
         {photo ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={photo}
-            alt={mode === "naering" ? "Dit fotograferede næringsindhold" : "Dit fotograferede måltid"}
-            className="h-full w-full object-cover"
-          />
+          <img src={photo} alt="Dit fotograferede billede" className="h-full w-full object-cover" />
         ) : (
           <video ref={videoRef} className="h-full w-full object-cover" autoPlay muted playsInline aria-label="Live kameravisning" />
         )}
@@ -314,10 +273,6 @@ function KameraContent() {
           </div>
         )}
 
-        {!photo && mode === "naering" && (
-          <div className="pointer-events-none absolute inset-[10%] rounded-lg border-2 border-white/80" />
-        )}
-
         {message && (
           <div className="absolute inset-0 flex items-center justify-center bg-hf-black/75 p-6 text-center">
             <p className="max-w-xs text-sm font-semibold text-white">{message}</p>
@@ -326,42 +281,35 @@ function KameraContent() {
 
         {cameraStatus === "active" && !photo && (
           <p className="absolute inset-x-4 top-4 rounded-full bg-hf-black/60 px-4 py-2 text-center text-xs font-semibold text-white">
-            {mode === "produkt"
-              ? "Hold stregkoden inden for rammen"
-              : mode === "naering"
-                ? "Placér næringsdeklarationen i rammen"
-                : "Placér tallerkenen i cirklen"}
+            {mode === "produkt" ? "Hold stregkoden inden for rammen" : mode === "hellofresh" ? "Placér produktet i cirklen" : "Placér tallerkenen i cirklen"}
           </p>
+        )}
+
+        {mode === "hellofresh" && recognizeStatus === "not_found" && (
+          <button
+            type="button"
+            onClick={restartCamera}
+            className="absolute inset-0 flex items-center justify-center bg-hf-black/75 p-6 text-center"
+          >
+            <p className="max-w-xs text-sm font-semibold text-white">Produkt ikke genkendt, prøv igen</p>
+          </button>
         )}
       </div>
 
-      {mode === "naering" ? (
+      {mode === "hellofresh" ? (
         photo ? (
-          <NutritionLabelReview
-            ocrStatus={ocrStatus === "idle" ? "processing" : ocrStatus}
-            fields={ocrFields}
-            onUseValues={useOcrValues}
-            onRetake={restartCamera}
-          />
+          recognizeStatus !== "not_found" && (
+            <HelloFreshMatchReview
+              status={recognizeStatus === "idle" ? "processing" : recognizeStatus}
+              product={matchedProduct}
+              onConfirm={confirmHelloFreshMatch}
+              onRetake={restartCamera}
+            />
+          )
         ) : (
           <div className="flex justify-center py-1">
             <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-btn-primary gap-2 px-6 py-3 text-sm disabled:opacity-40">
-              <IconCamera size={19} /> Tag billede af næringsdeklaration
-            </button>
-          </div>
-        )
-      ) : mode === "hellofresh" ? (
-        photo ? (
-          <HelloFreshMatchReview
-            status={recognizeStatus === "idle" ? "processing" : recognizeStatus}
-            product={matchedProduct}
-            onConfirm={confirmHelloFreshMatch}
-            onRetake={restartCamera}
-          />
-        ) : (
-          <div className="flex justify-center py-1">
-            <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-btn-primary gap-2 px-6 py-3 text-sm disabled:opacity-40">
-              <IconCamera size={19} /> Tag billede af din ret
+              <IconCamera size={19} /> Tag billede af produktet
             </button>
           </div>
         )
@@ -369,7 +317,7 @@ function KameraContent() {
         <div className="flex justify-center py-1">
           {photo ? (
             <button onClick={restartCamera} className="hf-btn-secondary gap-2 px-5 py-3 text-sm">
-              <IconRefresh size={18} /> Tag billedet om
+              Tag billedet om
             </button>
           ) : (
             <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-btn-primary gap-2 px-6 py-3 text-sm disabled:opacity-40">
@@ -383,7 +331,7 @@ function KameraContent() {
             {lookupStatus === "loading"
               ? `Slår ${barcode} op...`
               : lookupStatus === "not_found"
-                ? "Stregkoden blev læst, men produktet blev ikke fundet. Prøv en anden kode, eller opret produktet manuelt."
+                ? "Stregkoden blev læst, men produktet blev ikke fundet. Prøv en anden kode."
                 : lookupStatus === "error"
                   ? "Stregkoden blev læst, men produktopslaget fejlede. Prøv igen."
                   : "Kameraet scanner automatisk. Du kan også indtaste nummeret under stregkoden."}
@@ -402,20 +350,13 @@ function KameraContent() {
               Slå op
             </button>
           </form>
-          {lookupStatus === "not_found" && (
-            <Link
-              href={`/madvarer/nyt${returnSuffix}`}
-              className="mt-3 block text-center text-xs font-bold text-hf-black underline"
-            >
-              Opret produktet manuelt
-            </Link>
-          )}
-          {cameraStatus !== "active" && cameraStatus !== "starting" && (
-            <button onClick={restartCamera} className="mt-3 flex items-center gap-1.5 text-xs font-bold text-hf-black underline">
-              <IconRefresh size={15} /> Prøv kameraet igen
-            </button>
-          )}
         </div>
+      )}
+
+      {mode !== "maaltid" && (
+        <Link href={`/madvarer/nyt${returnSuffix}`} className="hf-btn-secondary justify-center py-2.5 text-xs">
+          Tilføj manuelt
+        </Link>
       )}
     </div>
   );
