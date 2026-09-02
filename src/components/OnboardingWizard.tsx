@@ -42,7 +42,10 @@ function visibleSteps(hasRegularSleep: boolean | null, shiftWork: boolean | null
   });
 }
 
-export function OnboardingWizard() {
+export function OnboardingWizard({
+  forceVisible = false,
+  onClose,
+}: { forceVisible?: boolean; onClose?: () => void } = {}) {
   const [user, setUser] = useState<OnboardingUser | null>(null);
   const [visible, setVisible] = useState(false);
   const [hasRegularSleep, setHasRegularSleep] = useState<boolean | null>(null);
@@ -66,14 +69,14 @@ export function OnboardingWizard() {
         setCanDismissPermanently(Boolean(user.onboardingRemindLaterAt));
 
         const alreadyDone = Boolean(user.onboardingCompletedAt) || user.onboardingDismissed;
-        if (!alreadyDone) setVisible(true);
+        if (!alreadyDone || forceVisible) setVisible(true);
       })
       .catch(() => {});
 
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [forceVisible]);
 
   if (!visible || !user) return null;
 
@@ -97,17 +100,20 @@ export function OnboardingWizard() {
     } else {
       save({ onboardingCompletedAt: new Date().toISOString() });
       setVisible(false);
+      onClose?.();
     }
   }
 
   function remindLater() {
     save({ onboardingRemindLaterAt: new Date().toISOString() });
     setVisible(false);
+    onClose?.();
   }
 
   function dontShowAgain() {
     save({ onboardingDismissed: true });
     setVisible(false);
+    onClose?.();
   }
 
   return (

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
+import { HfChevron } from "@/components/hf/HfChevron";
 
 type RelativeTime = "BEFORE" | "AFTER" | "UNKNOWN";
 type TimeOfDay = "MORNING" | "EVENING" | "UNKNOWN";
@@ -82,6 +83,41 @@ function Segmented<T extends string>({
           {option.label}
         </button>
       ))}
+    </div>
+  );
+}
+
+// Item 7 (2026-09-02): side-by-side "Morgen vs. Aften" valgrække frem for en
+// vertikal liste med "Ved ikke/Andet". Klik venstre/højre halvdel for at
+// vælge; midterste chevron er kun dekorativ (HfChevron, aldrig teksttegnet ">").
+function MorningEveningRow({
+  value,
+  onChange,
+}: {
+  value: TimeOfDay;
+  onChange: (value: TimeOfDay) => void;
+}) {
+  return (
+    <div className="grid grid-cols-[1fr_20px_1fr] items-center gap-1">
+      <button
+        type="button"
+        onClick={() => onChange("MORNING")}
+        className={`rounded-lg px-2 py-2 text-center text-[13px] font-semibold ${
+          value === "MORNING" ? "bg-hf-green text-hf-white" : "bg-hf-tan text-hf-black opacity-70"
+        }`}
+      >
+        Morgen
+      </button>
+      <HfChevron compact className="mx-auto text-hf-black opacity-50" />
+      <button
+        type="button"
+        onClick={() => onChange("EVENING")}
+        className={`rounded-lg px-2 py-2 text-center text-[13px] font-semibold ${
+          value === "EVENING" ? "bg-hf-green text-hf-white" : "bg-hf-tan text-hf-black opacity-70"
+        }`}
+      >
+        Aften
+      </button>
     </div>
   );
 }
@@ -192,15 +228,7 @@ export default function WeightCalibrationPage() {
               { value: "UNKNOWN", label: "Ved ikke" },
             ]}
           />
-          <Segmented
-            value={timeOfDay}
-            onChange={setTimeOfDay}
-            options={[
-              { value: "MORNING", label: "Morgen" },
-              { value: "EVENING", label: "Aften" },
-              { value: "UNKNOWN", label: "Andet" },
-            ]}
-          />
+          <MorningEveningRow value={timeOfDay} onChange={setTimeOfDay} />
           <Segmented
             value={toilet}
             onChange={setToilet}

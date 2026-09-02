@@ -221,3 +221,12 @@ export function activeStatKeys(defaultLayout: StatGridLayoutItem[]): Set<string>
   const current = loadStatLayout(defaultLayout);
   return new Set(current.filter((item): item is StatLayoutItem => item.type === "stat").map((item) => item.key));
 }
+
+/** Tilføjer en ny "Overskrift"-sektionsskilledeler til bunden af det aktive layout. */
+export function addHeaderToLayout(defaultLayout: StatGridLayoutItem[]): StatGridLayoutItem[] {
+  const current = loadStatLayout(defaultLayout);
+  const id = typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `id-${Date.now()}`;
+  const next = [...current, { type: "header" as const, id, text: "Overskrift" }];
+  saveStatLayout(next);
+  return next;
+}

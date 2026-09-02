@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconChevronDown } from "@tabler/icons-react";
+import { Toggle } from "@/components/ui/Toggle";
 
 export type ChartSeries = {
   key: string;
@@ -22,6 +23,10 @@ export type ChartSeries = {
   overGoalColor?: string;
   /** Dashed line, e.g. for an AI estimate (trend weight) instead of measured data. */
   dashed?: boolean;
+  /** Farv linje/punkter efter over/under mål (fx kalorier). Uden dette bruges altid `color`. */
+  colorByGoal?: boolean;
+  /** Vis +/- status med ikon ved hvert punkt (ændring siden forrige måling). */
+  showPointStatus?: boolean;
 };
 
 const STORAGE_KEY = "hellocal.statistik.series";
@@ -73,15 +78,18 @@ function normalizeDeviation(values: number[], goal: number) {
   });
 }
 
-/** Text for the latest data point's deviation from the goal, e.g. "342 kcal over goal". */
-function deviationLabel(series: ChartSeries, points: { hasData: boolean; deviation: number }[]) {
-  const last = [...points].reverse().find((p) => p.hasData);
-  if (!last) return null;
-  const rounded = Math.round(Math.abs(last.deviation));
-  const unit = series.unit ? `${series.unit} ` : "";
-  if (rounded === 0) return `${series.label.toLowerCase()} lige på mål`;
-  const direction = last.deviation > 0 ? "over mål" : "under mål";
-  return `${rounded} ${unit}${direction}`;
+/** Status for a single point: change from the previous measurement, with sign. */
+function pointStatus(values: number[], i: number, unit?: string) {
+  if (i === 0) return null;
+  const prev = values[i - 1];
+  const curr = values[i];
+  if (prev <= 0 || curr <= 0) return null;
+  const diff = curr - prev;
+  const rounded = Math.round(Math.abs(diff) * 10) / 10;
+  if (rounded === 0) return null;
+  const sign = diff > 0 ? "+" : "-";
+  const unitLabel = unit ?? "";
+  return { text: `${sign}${rounded}${unitLabel}`, good: diff <= 0 };
 }
 
 export function StatChart({
@@ -124,22 +132,12 @@ export function StatChart({
 
   return (
     <div className="relative rounded-2xl bg-hf-tan p-4">
-      <p className="mb-3 text-sm font-bold text-hf-black">{title}</p>
+      <div className="mb-3 flex items-baseline justify-between">
+        <p className="text-sm font-bold text-hf-black">{title}</p>
+        <p className="text-[11px] text-hf-black opacity-50">Seneste 7 dage</p>
+      </div>
 
-      {visibleSeries
-        .filter((s) => s.goal != null)
-        .map((s) => {
-          const points = normalizeDeviation(s.values, s.goal as number);
-          const label = deviationLabel(s, points);
-          if (!label) return null;
-          return (
-            <p key={s.key} className="mb-1 text-center text-[11px] text-hf-black opacity-60">
-              {label}
-            </p>
-          );
-        })}
-
-      <svg viewBox="0 0 280 90" className="w-full" aria-hidden="true">
+      <svg viewBox="0 0 280 90" className="w-full overflow-visible" aria-hidden="true">
         {hasGoalSeries && (
           <line
             x1="6"
@@ -157,9 +155,11 @@ export function StatChart({
           const overColor = s.overGoalColor ?? "var(--hf-black)";
           const points = s.goal != null ? normalizeDeviation(s.values, s.goal) : normalize(s.values);
 
+          const useGoalColor = s.goal != null && s.colorByGoal;
+
           return (
             <g key={s.key}>
-              {s.goal != null
+              {useGoalColor
                 ? points.slice(1).map((p, i) => {
                     const prev = points[i];
                     const segColor = prev.deviation > 0 || p.deviation > 0 ? overColor : underColor;
@@ -188,18 +188,34 @@ export function StatChart({
                     />
                   )}
               {points.map((p, i) => {
-                const dotColor = s.goal != null ? (p.deviation > 0 ? overColor : underColor) : s.color;
-                const isUnder = s.goal != null && p.deviation <= 0;
+                const dotColor = useGoalColor ? (p.deviation > 0 ? overColor : underColor) : s.color;
+                const isUnder = useGoalColor && p.deviation <= 0;
+                const status = s.showPointStatus ? pointStatus(s.values, i, s.unit) : null;
+                const labelAbove = i % 2 === 0;
                 return (
-                  <circle
-                    key={i}
-                    cx={p.x}
-                    cy={p.y}
-                    r="3.2"
-                    fill={dotColor}
-                    stroke={isUnder ? "var(--hf-white)" : "none"}
-                    strokeWidth={isUnder ? 1.5 : 0}
-                  />
+                  <g key={i}>
+                    <circle
+                      cx={p.x}
+                      cy={p.y}
+                      r="3.2"
+                      fill={dotColor}
+                      stroke={isUnder ? "var(--hf-white)" : "none"}
+                      strokeWidth={isUnder ? 1.5 : 0}
+                    />
+                    {status && (
+                      <text
+                        x={p.x}
+                        y={labelAbove ? p.y - 8 : p.y + 13}
+                        textAnchor="middle"
+                        fontSize="7"
+                        fontWeight="700"
+                        fill={status.good ? "var(--hf-green)" : "var(--hf-black)"}
+                      >
+                        {status.good ? "✓ " : "− "}
+                        {status.text}
+                      </text>
+                    )}
+                  </g>
                 );
               })}
             </g>
@@ -245,24 +261,21 @@ export function StatChart({
             {series.map((s) => {
               const checked = enabledKeys.includes(s.key);
               return (
-                <label
+                <div
                   key={s.key}
-                  className="flex min-h-11 w-full cursor-pointer items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold hover:bg-hf-cream"
+                  className="flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold hover:bg-hf-cream"
                 >
-                  <input
-                    type="checkbox"
-                    checked={checked}
-                    onChange={() => toggleSeries(s.key)}
-                    className="size-4 accent-hf-green"
-                  />
                   <span
                     aria-hidden="true"
                     className="inline-block size-2 rounded-full"
                     style={{ backgroundColor: s.color }}
                   />
-                  {s.label}
-                  {s.unit ? ` (${s.unit})` : ""}
-                </label>
+                  <span className="flex-1">
+                    {s.label}
+                    {s.unit ? ` (${s.unit})` : ""}
+                  </span>
+                  <Toggle checked={checked} onChange={() => toggleSeries(s.key)} />
+                </div>
               );
             })}
           </div>

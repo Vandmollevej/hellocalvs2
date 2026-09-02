@@ -201,7 +201,42 @@ target database have been verified.
 3. Change only `HELLOCAL_TAG` in the server's `.env.production` to that full SHA.
 4. Run `pull`, then `up -d` with the commands from the first deployment.
 5. Verify Compose state, `/api/health`, product lookup, and registration.
-6. Turn off the SSH maintenance switch.
+6. Turn off the SSH maintenance switch (only relevant if the external
+   maintenance port was used — not needed when connected from the home LAN).
+
+### `deploy.sh` (2026-08-29)
+
+Steps 2–5 above are wrapped in `/volume1/docker/App/hellocal-v2/deploy.sh` on
+the server (not committed to this repo — server-only, since it has no
+secrets but is purely an operational convenience script). Usage:
+
+```sh
+cd /volume1/docker/App/hellocal-v2
+./deploy.sh <full-commit-sha>
+```
+
+It backs up the database, sets `HELLOCAL_TAG`, pulls, rebuilds the
+locally-built agents (`--build`), prints Compose status, and checks
+`/api/health` — all in one call. Re-create it (base64-encode the script and
+`| base64 -d > deploy.sh` in one line — see below) if the server is ever
+rebuilt.
+
+**Operational gotchas found deploying HelloFresh (2026-08-29), for next time:**
+- The Synology's SFTP subsystem appears chrooted — plain `scp`/SFTP to
+  absolute paths outside it silently fails (`stat remote`/`dest open`: "No
+  such file or directory") even though the path exists and is writable over
+  a normal SSH shell. Workaround used: write files server-side instead of
+  transferring them — base64-encode the file locally, then on the server
+  `echo "<base64>" | base64 -d > path/to/file` as **one single line** (no
+  embedded newlines to go wrong).
+- The Windows Terminal/cmd.exe SSH session reliably swallows the newline
+  between a pasted command and whatever is pasted/typed next, silently
+  concatenating them into one broken line. Never send two commands
+  expecting them to land as separate lines — chain everything needed into
+  one line with `&&`, or use a script like `deploy.sh` instead.
+- `sudo` requires a real TTY: a non-interactive `ssh host "sudo ..."` fails
+  with "a terminal is required to read the password" unless you add `-t` to
+  force a pseudo-terminal.
 
 ## Rollback
 

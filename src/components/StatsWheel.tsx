@@ -9,8 +9,6 @@ import {
   IconWalk,
   type Icon,
 } from "@tabler/icons-react";
-import { DAILY_KCAL_GOAL, DAILY_PROTEIN_GOAL } from "@/lib/goals";
-import { IconPlateCutlery } from "@/components/icons/PlateCutlery";
 
 type Registration = {
   kcalSnapshot: number;
@@ -23,7 +21,6 @@ type Stat = {
   label: string;
   icon: Icon;
   value: string;
-  goal: string;
   unit: string;
 };
 
@@ -97,7 +94,6 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
         label: "Kalorier",
         icon: IconFlame,
         value: loading ? "—" : formatNumber(totals.kcal),
-        goal: formatNumber(DAILY_KCAL_GOAL),
         unit: "kcal",
       },
       {
@@ -105,7 +101,6 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
         label: "Protein",
         icon: IconEgg,
         value: loading ? "—" : formatNumber(totals.protein),
-        goal: formatNumber(DAILY_PROTEIN_GOAL),
         unit: "g",
       },
       {
@@ -113,15 +108,13 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
         label: "Vand",
         icon: IconDroplet,
         value: "1,6",
-        goal: "2,5",
-        unit: "l",
+        unit: "Liter",
       },
       {
         key: "burned",
         label: "Forbrændt",
         icon: IconBolt,
         value: "642",
-        goal: "800",
         unit: "kcal",
       },
       {
@@ -129,16 +122,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
         label: "Skridt",
         icon: IconWalk,
         value: "6.210",
-        goal: "10.000",
         unit: "skridt",
-      },
-      {
-        key: "plating",
-        label: "Anretning",
-        icon: IconPlateCutlery,
-        value: "8,2",
-        goal: "10",
-        unit: "score",
       },
     ];
   }, [loading, registrations]);
@@ -292,21 +276,15 @@ function WheelItem({
               className="font-extrabold leading-none text-hf-black"
               style={{ fontSize: valueFontSize }}
             >
-              {stat.value}
+              {stat.value} <span className="font-semibold">{stat.unit}</span>
             </span>
             <StatIcon size={21} color="var(--hf-green)" stroke={2.2} aria-hidden="true" />
           </div>
-          <p className="mt-1 text-[12px] text-hf-black opacity-65" style={{ opacity: labelOpacity * 0.65 }}>
-            / {stat.goal} {stat.unit}
-          </p>
         </>
       ) : (
         <div className="flex min-h-10 w-full items-center justify-end gap-1.5 text-hf-black">
           <span className="font-semibold" style={{ fontSize: valueFontSize }}>
-            {stat.value}
-          </span>
-          <span className="text-xs font-semibold" style={{ opacity: labelOpacity }}>
-            {stat.label}
+            {stat.value} {stat.unit}
           </span>
           <StatIcon size={15} aria-hidden="true" />
         </div>

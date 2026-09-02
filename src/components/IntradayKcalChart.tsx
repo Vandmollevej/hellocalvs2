@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo } from "react";
-import { classifyMeals, formatMealTime } from "@/lib/meal-time-classifier";
 
 type Registration = {
   createdAt: string;
@@ -38,22 +37,33 @@ export function IntradayKcalChart({
   windowDays: number;
 }) {
   const averages = useMemo(() => bucketAverages(registrations, windowDays), [registrations, windowDays]);
-  const meals = useMemo(() => classifyMeals(registrations), [registrations]);
 
   const max = Math.max(...averages, 1);
   const points = averages.map((value, i) => {
     const x = 10 + i * (260 / (BUCKET_COUNT - 1));
     const y = 80 - (value / max) * 65;
-    return { x, y };
+    return { x, y, value };
   });
   const polylinePoints = points.map((p) => `${p.x},${p.y}`).join(" ");
   const areaPoints = `10,80 ${polylinePoints} 270,80`;
+
+  // Lokale toppe i kurven, så man kan se hvor mange kcal der blev spist på de
+  // tidspunkter, kurven topper — kun tydelige toppe, ikke støj.
+  const peaks = points.filter((p, i) => {
+    if (p.value < max * 0.15) return false;
+    const prev = points[i - 1];
+    const next = points[i + 1];
+    if (prev && p.value < prev.value) return false;
+    if (next && p.value < next.value) return false;
+    if (prev && next && p.value === prev.value && p.value === next.value) return false;
+    return true;
+  });
 
   return (
     <div className="rounded-2xl bg-hf-tan p-4">
       <p className="mb-3 text-sm font-bold text-hf-black">Kalorieindtag i løbet af dagen</p>
 
-      <svg viewBox="0 0 280 90" className="w-full" aria-hidden="true">
+      <svg viewBox="0 0 280 90" className="w-full overflow-visible" aria-hidden="true">
         <polygon points={areaPoints} fill="var(--hf-green)" opacity="0.15" />
         <polyline
           points={polylinePoints}
@@ -63,26 +73,25 @@ export function IntradayKcalChart({
           strokeLinecap="round"
           strokeLinejoin="round"
         />
+        {peaks.map((p, i) => (
+          <text
+            key={i}
+            x={p.x}
+            y={Math.max(8, p.y - 6)}
+            textAnchor="middle"
+            fontSize="7"
+            fontWeight="700"
+            fill="var(--hf-black)"
+          >
+            {Math.round(p.value)} kcal
+          </text>
+        ))}
       </svg>
 
       <div className="mt-1 flex justify-between text-[10px] text-hf-black opacity-50">
         {HOUR_LABELS.map((hour) => (
           <span key={hour}>{String(hour).padStart(2, "0")}</span>
         ))}
-      </div>
-
-      <div className="mt-3 flex flex-col gap-1 border-t border-hf-tan-dark pt-3">
-        {meals
-          .filter((meal) => meal.count > 0)
-          .map((meal) => (
-            <p key={meal.type} className="text-xs text-hf-black opacity-70">
-              Gennemsnitlig {meal.label.toLowerCase()}: {formatMealTime(meal.averageMinutes)},{" "}
-              {Math.round(meal.averageKcal)} kcal
-            </p>
-          ))}
-        {meals.every((meal) => meal.count === 0) && (
-          <p className="text-xs text-hf-black opacity-50">Ikke nok registreringer endnu.</p>
-        )}
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { IconChevronDown } from "@tabler/icons-react";
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
+import { Toggle } from "@/components/ui/Toggle";
 
 const WEEKDAY_LABELS = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
 
@@ -94,24 +95,46 @@ export default function SleepSchedulePage() {
     }).catch(() => {});
   }
 
+  function saveWeekday(weekday: number, bedtime: string, wakeTime: string) {
+    const existingTimeout = weekdaySaveTimeouts.current[weekday];
+    if (existingTimeout) clearTimeout(existingTimeout);
+    weekdaySaveTimeouts.current[weekday] = setTimeout(() => {
+      fetch("/api/sleep-schedule", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          weekday,
+          bedtime: bedtime || null,
+          wakeTime: wakeTime || null,
+        }),
+      }).catch(() => {});
+    }, 500);
+  }
+
+  // Når Mandag udfyldes, kopieres værdien automatisk til Tirsdag-Fredag
+  // (de øvrige hverdage), men kun for felter der stadig er tomme — brugeren
+  // kan altid redigere de udfyldte dage bagefter.
   function updateWeekday(weekday: number, field: "bedtime" | "wakeTime", value: string) {
     setSchedules((current) => {
       const existing = current[weekday] ?? { weekday, bedtime: "", wakeTime: "" };
       const next = { ...existing, [field]: value };
-      const existingTimeout = weekdaySaveTimeouts.current[weekday];
-      if (existingTimeout) clearTimeout(existingTimeout);
-      weekdaySaveTimeouts.current[weekday] = setTimeout(() => {
-        fetch("/api/sleep-schedule", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            weekday,
-            bedtime: next.bedtime || null,
-            wakeTime: next.wakeTime || null,
-          }),
-        }).catch(() => {});
-      }, 500);
-      return { ...current, [weekday]: next };
+      saveWeekday(weekday, next.bedtime, next.wakeTime);
+      const updated = { ...current, [weekday]: next };
+
+      if (weekday === 0 && value) {
+        for (const otherWeekday of [1, 2, 3, 4]) {
+          const otherExisting = current[otherWeekday];
+          if (otherExisting?.[field]) continue; // udfyldt af brugeren allerede — rør ikke
+          const otherNext = {
+            ...(otherExisting ?? { weekday: otherWeekday, bedtime: "", wakeTime: "" }),
+            [field]: value,
+          };
+          updated[otherWeekday] = otherNext;
+          saveWeekday(otherWeekday, otherNext.bedtime, otherNext.wakeTime);
+        }
+      }
+
+      return updated;
     });
   }
 
@@ -185,20 +208,12 @@ export default function SleepSchedulePage() {
             </div>
           )}
 
-          <label className="flex items-center gap-3 rounded-2xl bg-hf-tan px-4 py-4">
-            <input
-              type="checkbox"
-              className="size-5 accent-hf-green"
-              checked={user.shiftWorkEnabled}
-              onChange={(event) => toggleShiftWork(event.target.checked)}
-            />
-            <span className="flex-1">
-              <span className="block text-[15px] font-medium text-hf-black">Skiftende arbejdstider</span>
-              <span className="block text-[12px] text-hf-black opacity-60">
-                Registrér natarbejde/skiftehold og tilhørende søvntider direkte i kalenderen.
-              </span>
-            </span>
-          </label>
+          <Toggle
+            label="Skiftende arbejdstider"
+            description="Registrér natarbejde/skiftehold og tilhørende søvntider direkte i kalenderen."
+            checked={user.shiftWorkEnabled}
+            onChange={toggleShiftWork}
+          />
 
           {user.shiftWorkEnabled && (
             <p className="text-[13px] text-hf-black opacity-70">
@@ -207,20 +222,12 @@ export default function SleepSchedulePage() {
             </p>
           )}
 
-          <label className="flex items-center gap-3 rounded-2xl bg-hf-tan px-4 py-4">
-            <input
-              type="checkbox"
-              className="size-5 accent-hf-green"
-              checked={user.workHoursInCalendarEnabled}
-              onChange={(event) => updateDefault("workHoursInCalendarEnabled", event.target.checked)}
-            />
-            <span className="flex-1">
-              <span className="block text-[15px] font-medium text-hf-black">Arbejdstider i kalenderen</span>
-              <span className="block text-[12px] text-hf-black opacity-60">
-                Vis mulighed for at registrere arbejdstider direkte på en dag i kalenderen.
-              </span>
-            </span>
-          </label>
+          <Toggle
+            label="Arbejdstider i kalenderen"
+            description="Vis mulighed for at registrere arbejdstider direkte på en dag i kalenderen."
+            checked={user.workHoursInCalendarEnabled}
+            onChange={(value) => updateDefault("workHoursInCalendarEnabled", value)}
+          />
         </div>
       )}
     </div>

@@ -5,18 +5,17 @@ import { IconChartLine } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { StatChart, type ChartSeries } from "@/components/StatChart";
 import { StatCardsGrid } from "@/components/StatCardsGrid";
+import { StatPeriodPicker } from "@/components/StatPeriodPicker";
 import { IntradayKcalChart } from "@/components/IntradayKcalChart";
 import {
   computeStatCards,
   DEFAULT_ACTIVE_STAT_KEYS,
-  STAT_WINDOW_DAYS,
   type ActivityTotals,
   type HealthMetricTotals,
-  type StatCardValue,
 } from "@/lib/stat-cards";
-import { groupByDay, withinLastDays, type RegistrationTotals } from "@/lib/daily-totals";
+import { groupByDay, type RegistrationTotals } from "@/lib/daily-totals";
 import { DAILY_KCAL_GOAL, WEIGHT_GOAL_KG } from "@/lib/goals";
-import { STAT_PERIODS, periodRange, filterDaysInRange, type StatPeriodKey } from "@/lib/stat-periods";
+import { DEFAULT_STAT_SELECTION, filterDaysInRange, selectionRange, type StatPeriodSelection } from "@/lib/stat-periods";
 import type { IntegrationCardStatus } from "@/lib/integrations";
 import { computeTrendWeight, type WeightSample, type MealSample } from "@/lib/weight-trend";
 
@@ -31,6 +30,16 @@ type WeightEntry = {
 function filterActivitiesInRange(activities: ActivityTotals[], range: { start: Date; end: Date }) {
   return activities.filter((activity) => {
     const time = new Date(activity.startedAt).getTime();
+    return time >= range.start.getTime() && time < range.end.getTime();
+  });
+}
+
+function filterActivitiesInRangeRegistrations(
+  registrations: RegistrationTotals[],
+  range: { start: Date; end: Date },
+) {
+  return registrations.filter((registration) => {
+    const time = new Date(registration.createdAt).getTime();
     return time >= range.start.getTime() && time < range.end.getTime();
   });
 }
@@ -89,6 +98,7 @@ export default function StatisticsPage() {
   const [metrics, setMetrics] = useState<HealthMetricTotals[]>([]);
   const [hasConnectedIntegration, setHasConnectedIntegration] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [periodSelection, setPeriodSelection] = useState<StatPeriodSelection>(DEFAULT_STAT_SELECTION);
 
   useEffect(() => {
     let cancelled = false;
@@ -176,6 +186,7 @@ export default function StatisticsPage() {
         unit: "kcal",
         values: kcalDaily,
         goal: DAILY_KCAL_GOAL,
+        colorByGoal: true,
       },
       {
         key: "weight",
@@ -184,6 +195,7 @@ export default function StatisticsPage() {
         unit: "kg",
         values: weightDaily,
         goal: WEIGHT_GOAL_KG,
+        showPointStatus: true,
       },
       ...(weightTrendDaily
         ? [
@@ -201,45 +213,46 @@ export default function StatisticsPage() {
     [kcalDaily, weightDaily, weightTrendDaily],
   );
 
-  const cardsByPeriod = useMemo(() => {
-    const map = {} as Record<StatPeriodKey, StatCardValue[]>;
-    for (const { key } of STAT_PERIODS) {
-      const range = periodRange(key);
-      const days = filterDaysInRange(allDays, range);
-      const cards = computeStatCards({
-        days,
-        activities: hasConnectedIntegration ? filterActivitiesInRange(activities, range) : undefined,
-        metrics: metrics.filter((m) => {
-          const time = new Date(m.recordedAt).getTime();
-          return time >= range.start.getTime() && time < range.end.getTime();
-        }),
-      });
-      map[key] = cards.map((c) => ({ ...c, value: loading ? "—" : c.value }));
-    }
-    return map;
-  }, [allDays, activities, hasConnectedIntegration, metrics, loading]);
+  const activePeriodRange = useMemo(() => selectionRange(periodSelection), [periodSelection]);
+
+  const activePeriodDays = useMemo(
+    () => Math.max(1, Math.round((activePeriodRange.end.getTime() - activePeriodRange.start.getTime()) / 86400000)),
+    [activePeriodRange],
+  );
+
+  // Ét globalt periodevalg (StatPeriodPicker) gælder for både statistik-kortene og
+  // dagsprofilen herunder — ikke længere ét periodevalg pr. kort (swipe er fjernet).
+  const statCards = useMemo(() => {
+    const days = filterDaysInRange(allDays, activePeriodRange);
+    const cards = computeStatCards({
+      days,
+      activities: hasConnectedIntegration ? filterActivitiesInRange(activities, activePeriodRange) : undefined,
+      metrics: metrics.filter((m) => {
+        const time = new Date(m.recordedAt).getTime();
+        return time >= activePeriodRange.start.getTime() && time < activePeriodRange.end.getTime();
+      }),
+    });
+    return cards.map((c) => ({ ...c, value: loading ? "—" : c.value }));
+  }, [allDays, activities, hasConnectedIntegration, metrics, loading, activePeriodRange]);
 
   const recentRegistrations = useMemo(
-    () => withinLastDays(registrations, STAT_WINDOW_DAYS),
-    [registrations],
+    () => filterActivitiesInRangeRegistrations(registrations, activePeriodRange),
+    [registrations, activePeriodRange],
   );
 
   return (
     <HfScreen title="Statistik" icon={<IconChartLine size={20} stroke={2} />}>
       <div className="flex flex-col gap-4 p-4">
-        <div className="flex flex-col gap-1">
-          <StatChart title="Kalorier og vægt" series={chartSeries} defaultEnabledKeys={["kcal"]} />
-          <p className="text-center text-xs font-normal text-hf-black opacity-50">Seneste 7 dage</p>
-        </div>
+        <StatChart title="Kalorier og vægt" series={chartSeries} defaultEnabledKeys={["kcal"]} />
 
-        <IntradayKcalChart registrations={recentRegistrations} windowDays={STAT_WINDOW_DAYS} />
+        <IntradayKcalChart registrations={recentRegistrations} windowDays={activePeriodDays} />
 
         <div className="flex flex-col gap-3 border-t border-hf-tan-dark pt-4">
-          <StatCardsGrid cardsByPeriod={cardsByPeriod} defaultActiveKeys={DEFAULT_ACTIVE_STAT_KEYS} />
+          <div className="flex items-center justify-end">
+            <StatPeriodPicker selection={periodSelection} onChange={setPeriodSelection} />
+          </div>
 
-          <p className="text-center text-xs font-normal text-hf-black opacity-50">
-            Swipe i bokse for at skifte visning
-          </p>
+          <StatCardsGrid cards={statCards} defaultActiveKeys={DEFAULT_ACTIVE_STAT_KEYS} />
         </div>
       </div>
     </HfScreen>

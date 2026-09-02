@@ -21,7 +21,31 @@ export const STAT_PERIODS: { key: StatPeriodKey; label: string }[] = [
   { key: "lastYear", label: "Sidste år" },
 ];
 
-export const DEFAULT_STAT_PERIOD: StatPeriodKey = "last7";
+export const DEFAULT_STAT_PERIOD: StatPeriodKey = "today";
+
+// En valgt periode er enten et af de faste presets ovenfor eller en
+// brugervalgt fra-til-periode fra kalender-dropdown'en (StatPeriodPicker).
+// Bruges til ÉT globalt periodevalg for hele statistiksiden — ikke længere
+// ét valg pr. kort (den tidligere swipe-for-at-skifte-periode er fjernet).
+export type StatPeriodSelection =
+  | { kind: "preset"; key: StatPeriodKey }
+  | { kind: "custom"; start: Date; end: Date };
+
+export const DEFAULT_STAT_SELECTION: StatPeriodSelection = { kind: "preset", key: DEFAULT_STAT_PERIOD };
+
+export function selectionRange(selection: StatPeriodSelection): { start: Date; end: Date } {
+  return selection.kind === "custom" ? { start: selection.start, end: selection.end } : periodRange(selection.key);
+}
+
+export function selectionLabel(selection: StatPeriodSelection): string {
+  if (selection.kind === "preset") {
+    return STAT_PERIODS.find((p) => p.key === selection.key)?.label ?? "";
+  }
+  const format = (date: Date) => date.toLocaleDateString("da-DK", { day: "numeric", month: "short" });
+  const inclusiveEnd = new Date(selection.end);
+  inclusiveEnd.setDate(inclusiveEnd.getDate() - 1);
+  return `${format(selection.start)} – ${format(inclusiveEnd)}`;
+}
 
 function startOfDay(date: Date) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());

@@ -37,6 +37,11 @@ export async function PATCH(req: Request) {
     showAllergens,
     allergenVisibility,
     region,
+    photoDiaryRequiresPasscode,
+    wantsPushNotifications,
+    wantsUpdateNewsEmails,
+    wantsAdviceEmails,
+    wantsPartnerOffersEmails,
   } = body as {
     displayName?: string;
     weightKg?: number | null;
@@ -56,6 +61,11 @@ export async function PATCH(req: Request) {
     showAllergens?: boolean;
     allergenVisibility?: Record<string, boolean>;
     region?: string;
+    photoDiaryRequiresPasscode?: boolean;
+    wantsPushNotifications?: boolean;
+    wantsUpdateNewsEmails?: boolean;
+    wantsAdviceEmails?: boolean;
+    wantsPartnerOffersEmails?: boolean;
   };
 
   try {
@@ -91,6 +101,11 @@ export async function PATCH(req: Request) {
         showAllergens,
         allergenVisibility,
         region,
+        photoDiaryRequiresPasscode,
+        wantsPushNotifications,
+        wantsUpdateNewsEmails,
+        wantsAdviceEmails,
+        wantsPartnerOffersEmails,
       },
     });
 

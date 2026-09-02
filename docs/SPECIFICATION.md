@@ -144,3 +144,4 @@ Se [DATABASE.md](DATABASE.md) og [AI.md](AI.md) for fuld detalje. HELLO CAL bygg
 - Endelig datamodel- og API-kontrakt (se [BACKEND.md](BACKEND.md) for arkitekturprincipper).
 - PDF-import af opskrifter (arkitektur forberedes, ikke i v1).
 - QR-kode-menuer / digital menuintegration (udskudt).
+- Hello Fresh-kontologin (udskudt): integrationen skal senere understøtte login til brugerens Hello Fresh-konto. (Valg af antal personer/gram ved tilføjelse af en Hello Fresh-ret er implementeret, se `/tilfoej/[id]`.)

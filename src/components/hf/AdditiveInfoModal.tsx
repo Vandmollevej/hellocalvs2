@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { IconX } from "@tabler/icons-react";
+import { IconArrowLeft } from "@tabler/icons-react";
 import { getAdditiveInfo, type AdditiveInfo } from "@/lib/additives";
 
 export function AdditiveInfoModal({
@@ -40,10 +40,10 @@ export function AdditiveInfoModal({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Luk"
+            aria-label="Tilbage"
             className="flex h-7 w-7 items-center justify-center rounded-full text-hf-black"
           >
-            <IconX size={18} />
+            <IconArrowLeft size={18} />
           </button>
         </div>
         <div className="overflow-y-auto p-4">

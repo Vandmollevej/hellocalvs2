@@ -927,6 +927,43 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
   /soeg, /kamera, /settings/integrationer, /settings/betaling once free,
   alongside the auth screens noted above.
 
+- 2026-09-02: Built the guided camera auto-recognition + product-creation
+  flow (full design/reasoning in `docs/DECISIONS.md`). New routes
+  `src/app/kamera/opret/page.tsx` (own camera bootstrap, does not touch the
+  existing `/kamera` `produkt`/`maaltid`/`hellofresh` tabs) and
+  `src/app/produkt/opret/page.tsx` (new create-product screen: masterdata
+  form + the new 2x2 `CreateProductMediaGrid` — stregkode/næringsindhold/
+  indholdsfortegnelse/produktbilleder, each behind a `NumberedBadge`).
+  Recognition cascade is local-first (OCR via `tesseract.js`, fuzzy text
+  match, average-hash image match, regex nutrition parsing) with two new AI
+  routes (`/api/ai/recognize-product-photo`, `/api/ai/extract-nutrition`,
+  same `gpt-4o-mini` pattern as `recognize-hellofresh`) only as the
+  documented last resort; new supporting routes
+  `/api/products/{recognize-text,generic-candidates,match-nutrition}`.
+  `POST /api/products` now also accepts optional `barcode`/`imageUrl`/
+  `ingredientsText`/`extraImages`. `design.md` §6.11 documents the new
+  primitives (`NumberedBadge`, `HfBarcodeIcon`, `ScanningOverlay`, the
+  banner/points cards — the points box is UI-only, no data model).
+
+  While preparing to verify: found and fixed two pre-existing git
+  merge-conflict-marker blocks in `src/components/StatCardsGrid.tsx`/
+  `StatChart.tsx` (unrelated to this change, from a stash/pull conflict —
+  see `docs/DECISIONS.md`), and a BigInt-literal/`tsconfig` `target: ES2017`
+  incompatibility in the new `src/lib/image-similarity.ts` (fixed by using
+  `BigInt(0)`/`BigInt(1)` instead of `0n`/`1n` literals). `npm run lint` and
+  `npx tsc --noEmit` are both clean for every file this change touches.
+  Full `npm run build` is currently still blocked, but only by an unrelated,
+  actively in-progress concurrent session that appears to be duplicating the
+  whole app's routing into English-named routes (`src/app/statistics/`,
+  `src/app/product/create/`, etc. alongside the existing Danish routes) —
+  same class of "concurrent session WIP blocks the build" issue noted
+  repeatedly elsewhere in this file. Not yet verified live in a browser (no
+  reachable local PostgreSQL, see `hellocal_no_local_db` memory) — once a
+  database is reachable, exercise the full flow (product with visible text,
+  a generic fruit/vegetable with no text, an unknown product all the way to
+  the create page) against `hellocal.packroff.dk`, and re-run
+  `npm run build` once the concurrent routing work settles.
+
 ## Next work
 
 1. Implement the pending UI/design requirements in

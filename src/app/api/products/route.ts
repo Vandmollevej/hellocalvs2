@@ -127,12 +127,28 @@ export async function POST(req: Request) {
   const carbsPer100g = parsePositiveNumber(body.carbsPer100g);
   const fatPer100g = parsePositiveNumber(body.fatPer100g);
   const servingSizeGrams = parsePositiveNumber(body.servingSizeGrams);
+  const ingredientsText = typeof body.ingredientsText === "string" ? body.ingredientsText.trim() : "";
+  const barcode = typeof body.barcode === "string" ? body.barcode.trim() : "";
+  const imageUrl = typeof body.imageUrl === "string" ? body.imageUrl : undefined;
+  const extraImages = Array.isArray(body.extraImages)
+    ? body.extraImages.filter((img): img is string => typeof img === "string")
+    : [];
 
   if (!name || kcalPer100g === null || proteinPer100g === null || carbsPer100g === null || fatPer100g === null) {
     return NextResponse.json(
       { message: "Navn, kalorier, protein, kulhydrat og fedt skal udfyldes med gyldige tal" },
       { status: 400 }
     );
+  }
+
+  if (barcode) {
+    const existingBarcode = await prisma.barcode.findUnique({ where: { code: barcode } });
+    if (existingBarcode) {
+      return NextResponse.json(
+        { message: "Stregkoden er allerede knyttet til et andet produkt" },
+        { status: 409 }
+      );
+    }
   }
 
   try {
@@ -144,6 +160,12 @@ export async function POST(req: Request) {
         carbsPer100g,
         fatPer100g,
         servingSizeGrams: servingSizeGrams ?? undefined,
+        ingredientsText: ingredientsText || undefined,
+        imageUrl,
+        ...(barcode ? { barcodes: { create: { code: barcode } } } : {}),
+        ...(extraImages.length
+          ? { images: { create: extraImages.map((url, order) => ({ url, order })) } }
+          : {}),
       },
     });
     return NextResponse.json({ product }, { status: 201 });

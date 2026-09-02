@@ -423,3 +423,65 @@ This file records durable decisions. Add a dated entry when a later decision cha
   icon; no shipped code used a cross in the appbar yet, so this was a
   forward decision, not a fix. Matches the user's separately stated global
   preference (back arrow over cross for close/back actions in any project).
+- 2026-09-02: Built the guided product-creation auto-recognition flow the
+  user specified (a fuller realization of `docs/AI.md`'s "Ny vare via
+  stregkode" four-step flow, explicitly noted as never fully implemented —
+  see the 2026-08-27 entry above). New, self-contained route
+  `src/app/kamera/opret/page.tsx` (own camera bootstrap, does **not** touch
+  the existing `/kamera` `produkt`/`maaltid`/`hellofresh` tabs, per explicit
+  instruction) drives three stages: forsidefoto → stregkode → næring, ending
+  on a new `src/app/produkt/opret/page.tsx` create-product page prefilled
+  from whatever was recognized/captured (`src/lib/product-draft.ts`
+  sessionStorage cache, same pattern as the existing OCR-draft key).
+  Recognition order is local-first, AI only as the documented last resort
+  per the user's explicit instruction: OCR text (`tesseract.js`, activating
+  the previously-unused dependency noted in the 2026-08-27 entry) → fuzzy
+  ≥90% text match (`src/lib/text-similarity.ts`, hand-rolled Levenshtein, no
+  new dependency) against local products; if no text, a local average-hash
+  image similarity check (`src/lib/image-similarity.ts`, canvas-based, no ML
+  model) against generic Frugt/Grønt-category products; only then
+  `/api/ai/recognize-product-photo` (OpenAI `gpt-4o-mini`, same pattern as
+  `/api/ai/recognize-hellofresh`, requires ≥95% confidence to count as a
+  match). Barcode step reuses the existing ZXing setup and
+  `/api/products/lookup/[barcode]`. Nutrition step: regex parsing
+  (`src/lib/product-ocr.ts:parseNutritionText`) first, `/api/ai/extract-nutrition`
+  only if regex can't derive all four per-100g values, then a tolerance-based
+  dedupe check (`/api/products/match-nutrition`) before falling through to
+  the create page, matching the user's "if not ~identical to an existing
+  product" wording.
+
+  **Known limitation, flagged as an explicit assumption (not silently
+  chosen):** there is no image-embedding/ML infrastructure in this project
+  (no pgvector, no vision-embedding pipeline), so the "vektor"-matching step
+  is a lightweight perceptual average-hash, not real ML similarity — it can
+  reliably match a near-identical photo but cannot reliably distinguish
+  visually similar produce (e.g. a peach vs. a nectarine). The AI-vision
+  fallback is the real safety net for that case, per the user's own
+  instructions. It also depends on `imageUrl` being readable by canvas
+  (`crossOrigin: "anonymous"`) — an externally hosted candidate image without
+  permissive CORS headers is silently skipped rather than breaking the flow.
+
+  The 2×2 create-product media grid (`src/components/hf/CreateProductMediaGrid.tsx`:
+  stregkode/næringsindhold/indholdsfortegnelse/produktbilleder, each behind a
+  numbered corner badge) and its supporting primitives (`NumberedBadge`,
+  `HfBarcodeIcon`, `ScanningOverlay`) are new Hello Cal-specific components,
+  documented in `design.md` §6.11 per its own governance rule requiring new
+  primitives to be named before a page uses them. The points banner
+  ("Opret produktet og optjen 10 points") is **UI only** — there is no points/
+  gamification data model anywhere in this project; the user explicitly
+  deferred that to a separate task and asked only to show the box for now.
+  `POST /api/products` was extended to optionally accept `barcode`,
+  `imageUrl`, `ingredientsText`, and `extraImages` (creates the `Barcode`/
+  `ProductImage` rows) — additive, existing manual-create behavior from
+  `src/app/madvarer/nyt/page.tsx` is unchanged.
+
+  While preparing to verify this with `npm run build`, found and resolved
+  two unrelated pre-existing git merge-conflict-marker blocks left in
+  `src/components/StatCardsGrid.tsx` and `src/components/StatChart.tsx`
+  (from a `git stash`/pull conflict, not part of this change) — resolved by
+  keeping the more complete/integrated side in each case (an orphaned
+  `deviationLabel` helper and a `setSwipe` call with no matching `useState`
+  declaration were dropped as clearly incomplete work-in-progress, not a
+  deliberate feature removal). A concurrent session appeared to be resolving
+  the same files at the same time; only the conflict(s) still present when
+  checked were touched.

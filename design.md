@@ -549,6 +549,39 @@ komponenter.
   egne navikoner.
 - Loading, fejl og tomme lister må ikke flytte, klippe eller skjule menuen.
 
+### 6.11 Kamera-auto-genkendelse og produkt-oprettelse
+
+Hello Cal-specifikke primitiver uden HelloFresh-reference (jf. §1), tilføjet
+2026-09-02 til det guidede kamera-auto-flow (`/kamera/opret`) og opret-siden
+(`/produkt/opret`):
+
+**`NumberedBadge`** — 28 px cirkel-badge, `--hf-color-brand`-baggrund, hvid
+`.hf-type-button`-tal, positioneret `-8px`/`-8px` så den overlapper det
+øverste venstre hjørne af en 1:1-boks uden at dække dens indhold.
+
+**`HfBarcodeIcon`** — SVG-stregkode (bjælker af varierende bredde) med et
+mock-cifferlag under, brugt som placeholder-ikon og som prompt-illustration i
+stregkode-trinnet. Farve arves via `currentColor`.
+
+**`ScanningOverlay`** — gråtonet (`bg-black/55`) fuld-overlay med en 3 px
+lodret hvid/gennemsigtig linje (`.hf-scan-line`, `globals.css`) der animerer
+frem og tilbage over billedet, plus en statuslabel nederst. Vises mens et
+billede analyseres automatisk (OCR/lokalt match/AI-fallback).
+
+**Produkt-medie-grid (`CreateProductMediaGrid`)** — statisk 2×2-grid under
+produkt-masterdata på opret-siden: 1 stregkode, 2 næringsindhold,
+3 indholdsfortegnelse, 4 produktbilleder (selv underopdelt i 1 hovedbillede +
+3 valgfrie sidebilleder). Hver boks er `--hf-color-card`, radius 12 px
+(`--hf-radius-md`), med et `NumberedBadge` i hjørnet og viser enten sit
+ikon/label eller brugerens (evt. auto-beskårne) foto.
+
+**Banner-kort ved forgæves tilføj-forsøg** — vises kun når opret-siden nås
+via `?fromFailedAdd=1`: et grønt kort (`--hf-color-brand`, hvid tekst) med
+teksten "Produktet er endnu ikke registreret...", direkte efterfulgt af et
+gult kort med grøn kant (`#FDF3D3` baggrund, `--hf-color-brand` kant, mørk
+`--hf-color-text`) med "Opret produktet og optjen 10 points." Sidstnævnte er
+rent visuelt — der findes intet pointsystem i datamodellen endnu.
+
 ## 7. Referenceproportioner, som skal bevares
 
 ### Velkomst/start

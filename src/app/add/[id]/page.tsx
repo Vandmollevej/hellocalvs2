@@ -54,6 +54,7 @@ export default function AddPage() {
   const [state, setState] = useState<LoadState>({ status: "loading" });
   const [profile, setProfile] = useState<ProfileUser | null>(null);
   const [amount, setAmount] = useState(100);
+  const [amountUnit, setAmountUnit] = useState<"personer" | "gram">("personer");
   const [time, setTime] = useState(() => searchParams.get("time") ?? currentTimeString());
   const [date] = useState(() => searchParams.get("date") ?? currentDateString());
   const [saving, setSaving] = useState(false);
@@ -91,7 +92,7 @@ export default function AddPage() {
   const product = state.status === "loaded" ? state.product : null;
   const factor = amount / 100;
   const servingSizeGrams = product?.servingSizeGrams ?? null;
-  const step = servingSizeGrams ? servingSizeGrams / 2 : 10;
+  const step = servingSizeGrams && amountUnit === "personer" ? servingSizeGrams : 10;
 
   useEffect(() => {
     const codes = product?.additives ?? [];
@@ -285,6 +286,33 @@ export default function AddPage() {
                 </div>
               )}
 
+              {servingSizeGrams && (
+                <div className="mb-3 flex justify-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setAmountUnit("personer")}
+                    className={
+                      amountUnit === "personer"
+                        ? "hf-btn-primary px-4 py-1.5 text-xs"
+                        : "hf-btn-secondary px-4 py-1.5 text-xs"
+                    }
+                  >
+                    Personer
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setAmountUnit("gram")}
+                    className={
+                      amountUnit === "gram"
+                        ? "hf-btn-primary px-4 py-1.5 text-xs"
+                        : "hf-btn-secondary px-4 py-1.5 text-xs"
+                    }
+                  >
+                    Gram
+                  </button>
+                </div>
+              )}
+
               <div className="mb-4 flex items-center gap-2">
                 <button
                   onClick={() => setAmount((a) => Math.max(step, a - step))}
@@ -293,11 +321,24 @@ export default function AddPage() {
                   −
                 </button>
                 <div className="flex-1 rounded-2xl bg-hf-tan py-3 text-center text-hf-black">
-                  <p className="text-xl font-bold">
-                    {servingSizeGrams
-                      ? `${(amount / servingSizeGrams).toLocaleString("da-DK", { maximumFractionDigits: 1 })} ${amount === servingSizeGrams ? "portion" : "portioner"}`
-                      : `${amount} g`}
-                  </p>
+                  {servingSizeGrams && amountUnit === "personer" ? (
+                    <p className="text-xl font-bold">
+                      {`${Math.round(amount / servingSizeGrams)} ${amount === servingSizeGrams ? "person" : "personer"}`}
+                    </p>
+                  ) : (
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      min={10}
+                      step={10}
+                      value={amount}
+                      onChange={(event) => {
+                        const value = Number(event.target.value);
+                        if (Number.isFinite(value)) setAmount(Math.max(0, value));
+                      }}
+                      className="w-full bg-transparent text-center text-xl font-bold text-hf-black outline-none"
+                    />
+                  )}
                   <p className="text-xs opacity-70">
                     {Math.round((state.product.kcalPer100g * amount) / 100)} kcal
                   </p>

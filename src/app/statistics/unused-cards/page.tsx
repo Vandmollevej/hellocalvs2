@@ -6,6 +6,7 @@ import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import {
   activeStatKeys,
   computeStatCards,
+  addHeaderToLayout,
   addStatCardToLayout,
   DEFAULT_ACTIVE_STAT_KEYS,
   SPORT_STAT_KEY_PREFIX,
@@ -121,6 +122,11 @@ export default function UnusedStatCardsPage() {
     router.back();
   }
 
+  function addHeader() {
+    addHeaderToLayout(DEFAULT_LAYOUT);
+    router.back();
+  }
+
   return (
     <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
       <ScreenHeader title="Ubrugte statistik-kort" onBack={() => router.back()} />
@@ -173,6 +179,19 @@ export default function UnusedStatCardsPage() {
             </section>
           );
         })}
+
+        <div className="mt-2 border-t border-hf-tan-dark pt-4">
+          <button
+            type="button"
+            onClick={addHeader}
+            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-hf-black/30 text-sm font-semibold text-hf-black opacity-80 active:opacity-100"
+          >
+            + Overskrift
+          </button>
+          <p className="mt-1.5 text-center text-xs text-hf-black opacity-50">
+            Tilføjer en sektionsoverskrift til din statistikside, som du selv kan omdøbe.
+          </p>
+        </div>
       </div>
     </div>
   );

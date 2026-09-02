@@ -558,3 +558,36 @@ button,
     animation: none;
   }
 }
+
+/* Scanningslinje, jf. design.md §6.11 — bruges af ScanningOverlay mens
+   /kamera/opret analyserer et billede automatisk. */
+@keyframes hf-scan-line {
+  0% {
+    left: 0%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.hf-scan-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(
+    to bottom,
+    rgb(255 255 255 / 0%),
+    rgb(255 255 255 / 90%),
+    rgb(255 255 255 / 0%)
+  );
+  box-shadow: 0 0 12px 2px rgb(255 255 255 / 60%);
+  animation: hf-scan-line 1.6s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hf-scan-line {
+    animation: none;
+    left: 50%;
+  }
+}

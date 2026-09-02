@@ -6,6 +6,7 @@ import { IconChevronDown } from "@tabler/icons-react";
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import { ALLERGEN_CATALOG } from "@/lib/allergens";
 import { REGIONS } from "@/lib/regions";
+import { Toggle } from "@/components/ui/Toggle";
 
 type SettingsUser = {
   showAllergens: boolean;
@@ -13,9 +14,41 @@ type SettingsUser = {
   region: string;
 };
 
+type SetupProgressUser = {
+  weightKg: number | null;
+};
+
+// Reuses the same "Step X of Y" + progress bar pattern as
+// OnboardingWizard.tsx, per design.md §12 (reuse instead of inventing new style).
+// Setup is considered complete once weight calibration has been done (at least
+// one weigh-in) — see the weight-calibration page.
+function SetupProgressBar({ weightSet }: { weightSet: boolean }) {
+  const steps = ["Region", "Allergener", "Vægtkalibrering"];
+  const doneCount = weightSet ? steps.length : steps.length - 1;
+  return (
+    <div className="px-1 pb-1">
+      <p className="text-center text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
+        Trin {doneCount} af {steps.length} gennemført
+      </p>
+      <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-hf-tan">
+        <div
+          className="h-full rounded-full bg-hf-green transition-all"
+          style={{ width: `${(doneCount / steps.length) * 100}%` }}
+        />
+      </div>
+      {!weightSet && (
+        <p className="mt-1 text-[12px] text-hf-black opacity-60">
+          Gennemfør vægtkalibrering for at afslutte opsætningen.
+        </p>
+      )}
+    </div>
+  );
+}
+
 export default function ProfileSettingsPage() {
   const router = useRouter();
   const [user, setUser] = useState<SettingsUser | null>(null);
+  const [weightSet, setWeightSet] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,7 +56,10 @@ export default function ProfileSettingsPage() {
     fetch("/api/profile")
       .then((res) => res.json())
       .then((data) => {
-        if (!cancelled) setUser(data.user);
+        if (!cancelled) {
+          setUser(data.user);
+          setWeightSet(Boolean((data.user as SetupProgressUser | undefined)?.weightKg));
+        }
       })
       .catch(() => {
         if (!cancelled) setUser(null);
@@ -82,6 +118,8 @@ export default function ProfileSettingsPage() {
         </p>
       ) : (
         <div className="flex flex-col gap-4 p-4">
+          <SetupProgressBar weightSet={weightSet} />
+
           <label className="flex items-center justify-between gap-3 rounded-2xl bg-hf-tan px-4 py-4">
             <span className="flex-1">
               <span className="block text-[15px] font-medium text-hf-black">Region</span>
@@ -109,38 +147,28 @@ export default function ProfileSettingsPage() {
             </div>
           </label>
 
-          <label className="flex items-center gap-3 rounded-2xl bg-hf-tan px-4 py-4">
-            <input
-              type="checkbox"
-              className="size-5 accent-hf-green"
-              checked={user.showAllergens}
-              onChange={(event) => toggleShowAllergens(event.target.checked)}
-            />
-            <span className="flex-1">
-              <span className="block text-[15px] font-medium text-hf-black">Vis allergener</span>
-              <span className="block text-[12px] text-hf-black opacity-60">
-                Vis en allergen-linje på madvarer, når data findes.
-              </span>
-            </span>
-          </label>
+          <Toggle
+            label="Vis allergener"
+            description="Vis en allergen-linje på madvarer, når data findes."
+            checked={user.showAllergens}
+            onChange={toggleShowAllergens}
+          />
 
           {user.showAllergens && (
             <div className="flex flex-col gap-1 overflow-hidden rounded-2xl bg-hf-tan">
               {ALLERGEN_CATALOG.map((allergen, index) => (
-                <label
+                <div
                   key={allergen.key}
                   className={`flex items-center gap-3 px-4 py-3 ${
                     index < ALLERGEN_CATALOG.length - 1 ? "border-b border-hf-tan-dark" : ""
                   }`}
                 >
-                  <input
-                    type="checkbox"
-                    className="size-4 accent-hf-green"
-                    checked={isAllergenVisible(allergen.key)}
-                    onChange={(event) => toggleAllergen(allergen.key, event.target.checked)}
-                  />
                   <span className="flex-1 text-[14px] text-hf-black">{allergen.label}</span>
-                </label>
+                  <Toggle
+                    checked={isAllergenVisible(allergen.key)}
+                    onChange={(value) => toggleAllergen(allergen.key, value)}
+                  />
+                </div>
               ))}
             </div>
           )}
