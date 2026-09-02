@@ -114,6 +114,11 @@ export function AdminProductSearch() {
 
       {activeId && (
         <div className="rounded-lg border border-border-strong bg-surface-2 p-4">
+          <div className="mb-3 flex justify-end">
+            <a href={`/admin/produkter/${activeId}`} className="text-xs text-hf-green-dark underline">
+              Åbn produktside (merge m.m.)
+            </a>
+          </div>
           <div className="grid grid-cols-2 gap-3">
             <label className="flex flex-col gap-1 text-xs text-text-secondary">
               Navn
