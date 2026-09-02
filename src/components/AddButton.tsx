@@ -12,9 +12,8 @@ import {
   type Icon,
 } from "@tabler/icons-react";
 
-export const HERO_HEIGHT = 280;
+export const HERO_HEIGHT = 300;
 const CENTER_Y = HERO_HEIGHT / 2;
-const RADIUS = 92;
 const CIRCLE = 46;
 
 export const FAB_SIZE = 64;
@@ -24,8 +23,16 @@ const DRAG_THRESHOLD = 6;
 
 // Joystick backdrop behind the fanned-out actions, flush against the
 // screen edge the FAB sits on. Always visible (not just while open) and
-// large enough that a thumb can comfortably roam inside it.
-const HALF_CIRCLE_RADIUS = 72;
+// large enough that a thumb can comfortably roam inside it. 15% bigger
+// than the original 72px radius.
+const HALF_CIRCLE_RADIUS = 83;
+
+// The action arc is centered on the same point as the backdrop semicircle
+// (the screen edge, not the FAB button), so every icon sits the same
+// distance from the backdrop's curved edge. Icons sit just outside the
+// backdrop, never inside it.
+const ARC_GAP = 8;
+const RADIUS = HALF_CIRCLE_RADIUS + ARC_GAP + CIRCLE / 2;
 
 // Minimum distance from the FAB center before a drag counts as "aiming at"
 // an option, so a small wobble right after pressing down doesn't select
@@ -58,21 +65,22 @@ const actions: Action[] = [
   { key: "kamera", href: "/kamera?mode=produkt", icon: IconCamera, label: "Kamera" },
 ];
 
+// Both functions place icons on an arc centered at the screen edge — the
+// same center the backdrop semicircle uses — so every icon ends up exactly
+// RADIUS away from that center, i.e. the same margin from the curved edge.
 function arcItemCenter(angleDeg: number, containerWidth: number) {
   const rad = (angleDeg * Math.PI) / 180;
-  const inward = RADIUS * Math.cos(rad);
-  const fabCenterX = SIDE === "left" ? FAB_INSET + FAB_SIZE / 2 : containerWidth - FAB_INSET - FAB_SIZE / 2;
-  const x = SIDE === "left" ? fabCenterX + inward : fabCenterX - inward;
+  const reach = RADIUS * Math.cos(rad);
+  const x = SIDE === "left" ? reach : containerWidth - reach;
   const y = CENTER_Y + RADIUS * Math.sin(rad);
   return { x, y };
 }
 
 function arcItemStyle(angleDeg: number): React.CSSProperties {
   const rad = (angleDeg * Math.PI) / 180;
-  const inward = RADIUS * Math.cos(rad) - CIRCLE / 2;
+  const reach = RADIUS * Math.cos(rad) - CIRCLE / 2;
   const top = CENTER_Y + RADIUS * Math.sin(rad) - CIRCLE / 2;
-  const horizontalInset = FAB_INSET + FAB_SIZE / 2 + inward;
-  return SIDE === "left" ? { left: horizontalInset, top } : { right: horizontalInset, top };
+  return SIDE === "left" ? { left: reach, top } : { right: reach, top };
 }
 
 export function AddButton({ onOpen }: { onOpen?: () => void }) {
