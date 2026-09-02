@@ -98,6 +98,19 @@
     "setupProgressStepRegion": "Region",
     "setupProgressStepAllergens": "Allergens",
     "setupProgressStepWeight": "Weight calibration",
-    "setupProgressHint": "Complete weight calibration to finish setup."
+    "setupProgressHint": "Complete weight calibration to finish setup.",
+    "payment": "Payment",
+    "recipesPromo": "Choose your own recipes and customize your meal box.",
+    "logInOrSignUp": "Log in / sign up",
+    "helpCenter": "Help center",
+    "learnTheApp": "Learn the app",
+    "integrations": "Integrations",
+    "terms": "Terms",
+    "privacyPolicy": "Privacy policy",
+    "dataTracking": "Data tracking",
+    "chooseCountry": "Choose your country",
+    "inviteFriend": "Invite a friend",
+    "inviteFriendDescription": "And get a free month each",
+    "inviteShareText": "Try Hello Cal with me — then we both get a free month!"
   }
 }

@@ -13,6 +13,7 @@ import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { BottomNav } from "@/components/BottomNav";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 function resetOnboardingProgress() {
   return fetch("/api/profile", {
@@ -30,10 +31,10 @@ function resetOnboardingProgress() {
 // No payment/credit backend exists yet (no account/subscription system
 // at all, see docs/STATUS.md "Next work"). The invite is therefore only
 // a sharing feature — no reward is credited, see docs/DECISIONS.md.
-async function inviteAFriend() {
+async function inviteAFriend(shareText: string) {
   const shareData = {
     title: "Hello Cal",
-    text: "Prøv Hello Cal med mig — så får vi begge en måned gratis!",
+    text: shareText,
     url: "https://hellocal.packroff.dk",
   };
 
@@ -54,6 +55,7 @@ async function inviteAFriend() {
 }
 
 export default function SettingsPage() {
+  const { t } = useTranslation();
   const [showOnboarding, setShowOnboarding] = useState(false);
 
   return (
@@ -61,32 +63,30 @@ export default function SettingsPage() {
       {showOnboarding && (
         <OnboardingWizard forceVisible onClose={() => setShowOnboarding(false)} />
       )}
-      <ScreenHeader title="Indstillinger" />
+      <ScreenHeader title={t("settings.title")} />
 
       <div className="flex flex-col gap-8 p-4">
         <AccordionCard>
           <ChevronRow
             icon={<IconCreditCard size={20} />}
-            label="Betaling"
+            label={t("settings.payment")}
             href="/settings/payment"
             divider={false}
           />
         </AccordionCard>
 
         <div className="rounded-[8px] bg-hf-tan p-4 text-center">
-          <p className="hf-type-body-sm font-bold">
-            Vælg dine egne opskrifter, og skræddersy din måltidskasse.
-          </p>
+          <p className="hf-type-body-sm font-bold">{t("settings.recipesPromo")}</p>
           <button className="hf-btn-primary mt-4 h-12 w-full text-[17px]">
-            Log ind / tilmeld
+            {t("settings.logInOrSignUp")}
           </button>
         </div>
 
         <AccordionCard>
-          <ChevronRow icon={<IconHelp size={20} />} label="Hjælpecenter" />
+          <ChevronRow icon={<IconHelp size={20} />} label={t("settings.helpCenter")} />
           <ChevronRow
             icon={<IconRefresh size={20} />}
-            label="Lær appen at kende"
+            label={t("settings.learnTheApp")}
             onClick={() => {
               resetOnboardingProgress().then(() => setShowOnboarding(true));
             }}
@@ -97,29 +97,31 @@ export default function SettingsPage() {
         <AccordionCard>
           <ChevronRow
             icon={<IconPlugConnected size={20} />}
-            label="Integrationer"
+            label={t("settings.integrations")}
             href="/settings/integrations"
             divider={false}
           />
         </AccordionCard>
 
         <AccordionCard>
-          <ChevronRow icon={<IconFileText size={20} />} label="Betingelser" />
-          <ChevronRow icon={<IconFileText size={20} />} label="Privatlivspolitik" />
-          <ChevronRow icon={<IconFileText size={20} />} label="Datasporing" divider={false} />
+          <ChevronRow icon={<IconFileText size={20} />} label={t("settings.terms")} />
+          <ChevronRow icon={<IconFileText size={20} />} label={t("settings.privacyPolicy")} />
+          <ChevronRow icon={<IconFileText size={20} />} label={t("settings.dataTracking")} divider={false} />
         </AccordionCard>
 
         <AccordionCard>
-          <ChevronRow icon={<IconWorld size={20} />} label="Vælg dit land" divider={false} />
+          <ChevronRow icon={<IconWorld size={20} />} label={t("settings.chooseCountry")} divider={false} />
         </AccordionCard>
 
         <button
           type="button"
-          onClick={inviteAFriend}
+          onClick={() => inviteAFriend(t("settings.inviteShareText"))}
           className="rounded-[8px] bg-hf-green p-4 text-left text-hf-white"
         >
-          <p className="hf-type-body-sm font-bold">Invitér en ven</p>
-          <p className="hf-type-caption mt-0.5 text-hf-white opacity-90">Og få en gratis måned hver</p>
+          <p className="hf-type-body-sm font-bold">{t("settings.inviteFriend")}</p>
+          <p className="hf-type-caption mt-0.5 text-hf-white opacity-90">
+            {t("settings.inviteFriendDescription")}
+          </p>
         </button>
       </div>
 

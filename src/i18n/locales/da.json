@@ -98,6 +98,19 @@
     "setupProgressStepRegion": "Region",
     "setupProgressStepAllergens": "Allergener",
     "setupProgressStepWeight": "Vægtkalibrering",
-    "setupProgressHint": "Gennemfør vægtkalibrering for at afslutte opsætningen."
+    "setupProgressHint": "Gennemfør vægtkalibrering for at afslutte opsætningen.",
+    "payment": "Betaling",
+    "recipesPromo": "Vælg dine egne opskrifter, og skræddersy din måltidskasse.",
+    "logInOrSignUp": "Log ind / tilmeld",
+    "helpCenter": "Hjælpecenter",
+    "learnTheApp": "Lær appen at kende",
+    "integrations": "Integrationer",
+    "terms": "Betingelser",
+    "privacyPolicy": "Privatlivspolitik",
+    "dataTracking": "Datasporing",
+    "chooseCountry": "Vælg dit land",
+    "inviteFriend": "Invitér en ven",
+    "inviteFriendDescription": "Og få en gratis måned hver",
+    "inviteShareText": "Prøv Hello Cal med mig — så får vi begge en måned gratis!"
   }
 }
