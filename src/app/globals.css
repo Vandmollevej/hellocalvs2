@@ -27,6 +27,12 @@
   --hf-gray-border: #dbd9cd;
   --hf-fab: #232323;
   --hf-lime: #a3e635;
+
+  /* SF Pro (systemfont på Apple), jf. hellofresh_typografi_og_farver.txt.
+     SF Pro Display til overskrifter, SF Pro Text til brødtekst/UI — begge
+     rammer samme systemfont, faldback dækker ikke-Apple platforme. */
+  --font-hf-heading: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
+  --font-hf-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
 }
 
 @theme inline {
@@ -118,8 +124,7 @@ button,
 /* Overskrifter: tung, geometrisk grotesk (font-hf-heading). Brødtekst/UI: font-hf-body. */
 .hf-heading {
   font-family: var(--font-hf-heading);
-  font-weight: 800;
-  letter-spacing: -0.01em;
+  font-weight: 700;
 }
 
 /* Knapper */
@@ -244,6 +249,17 @@ button,
 
 .calendar-slide-next {
   animation: calendar-slide-next 220ms ease-out;
+}
+
+/* Skjuler den native scrollbar-slider — indhold skal altid swipes med fingeren,
+   ikke trækkes via en synlig håndtag-bjælke. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 .calendar-slide-previous {

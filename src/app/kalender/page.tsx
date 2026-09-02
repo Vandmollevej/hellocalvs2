@@ -134,8 +134,6 @@ function minutesFromMidnight(date: Date) {
 const HOUR_HEIGHT = 40;
 const TIMELINE_HEIGHT = HOUR_HEIGHT * 24;
 const HOUR_MARKS = Array.from({ length: 25 }, (_, hour) => hour);
-const SLEEP_ADJUST_HOLD_MS = 500;
-const SLEEP_ADJUST_MOVE_TOLERANCE = 10;
 const ADD_BAR_HOLD_MS = 1000;
 const ADD_BAR_MOVE_TOLERANCE = 10;
 const MOVE_ENTRY_HOLD_MS = 500;
@@ -224,7 +222,10 @@ export default function KalenderPage() {
   } | null>(null);
   const pointerStart = useRef<number | null>(null);
   const isLandscape = useIsLandscape();
-  const effectiveView: CalendarView = isLandscape ? "week" : view;
+  // Liggende visning bruges kun som en ekstra tidslinje-fremstilling af ugevisningen —
+  // den må aldrig overstyre brugerens valgte visning eller det faste standardvalg (måned).
+  const effectiveView: CalendarView = view;
+  const showWeekTimeline = isLandscape && view === "week";
 
   const year = visibleDate.getFullYear();
   const month = visibleDate.getMonth();
@@ -439,28 +440,27 @@ export default function KalenderPage() {
     <HfScreen
       title="Kalender"
       icon={
-        <div className="relative z-30">
+        <div className="relative z-[100]">
           <button
             type="button"
             aria-label={`Skift kalendervisning. Aktuel visning: ${activeView.label}`}
             aria-haspopup="listbox"
             aria-expanded={viewMenuOpen}
-            disabled={isLandscape}
             onClick={() => {
               setViewMenuOpen((open) => !open);
               setMonthMenuOpen(false);
             }}
-            className="relative flex h-5 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-white disabled:opacity-50"
+            className="relative flex h-6 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-white"
           >
-            <IconCalendarMonth size={20} stroke={2} />
+            <IconCalendar size={24} stroke={1.6} />
             <IconChevronDown
               size={12}
               stroke={2.5}
               className={`absolute -bottom-2.5 left-1/2 -translate-x-1/2 ${viewMenuOpen ? "rotate-180" : ""}`}
             />
           </button>
-          {viewMenuOpen && !isLandscape && (
-            <div className="absolute left-0 top-full z-40 mt-2 w-44 overflow-hidden rounded-2xl border border-hf-tan-dark bg-hf-white p-1.5 text-hf-black shadow-xl">
+          {viewMenuOpen && (
+            <div className="absolute left-0 top-full z-[100] mt-2 w-44 overflow-hidden rounded-2xl border border-hf-tan-dark bg-hf-white p-1.5 text-hf-black shadow-xl">
               {VIEW_OPTIONS.map((option) => {
                 const OptionIcon = option.icon;
                 return (
@@ -508,13 +508,11 @@ export default function KalenderPage() {
                 setMonthMenuOpen((open) => !open);
                 setViewMenuOpen(false);
               }}
-              className="flex min-h-11 max-w-full items-center justify-center gap-1.5 rounded-full px-3 text-hf-black hover:bg-hf-tan focus-visible:outline-2 focus-visible:outline-hf-black"
+              className="flex min-h-11 max-w-full items-center justify-center rounded-full px-3 text-hf-black hover:bg-hf-tan focus-visible:outline-2 focus-visible:outline-hf-black"
             >
-              <IconCalendar size={16} className="shrink-0 text-hf-black" aria-hidden="true" />
-              <span className="hf-heading truncate text-[15px] capitalize">
+              <span className="whitespace-nowrap text-[15px] font-semibold capitalize">
                 {effectiveView === "week" || effectiveView === "list" ? weekLabel : monthLabel}
               </span>
-              <IconChevronDown size={18} className={monthMenuOpen ? "rotate-180" : ""} />
             </button>
             {monthMenuOpen && (
               <MonthPicker year={year} month={month} onYearChange={setVisibleDate} onSelect={selectMonth} />
@@ -542,37 +540,36 @@ export default function KalenderPage() {
             key={`${effectiveView}-${year}-${month}-${animationKey}`}
             className={slideDirection === "next" ? "calendar-slide-next" : "calendar-slide-previous"}
           >
-            {isLandscape ? (
-              <WeekTimelineView
+            {view === "month" && (
+              <MonthView cells={monthCells} month={month} today={today} onOpenDate={openDate} />
+            )}
+            {view === "week" &&
+              (showWeekTimeline ? (
+                <WeekTimelineView
+                  days={weekDays}
+                  today={today}
+                  registrations={registrations}
+                  onOpenDate={openDate}
+                  getSleepWindow={resolveSleepWindow}
+                  onSleepAdjust={requestSleepAdjust}
+                />
+              ) : (
+                <WeekView days={weekDays} today={today} dailyTotals={dailyTotals} onOpenDate={openDate} />
+              ))}
+            {view === "list" && (
+              <ListView
                 days={weekDays}
                 today={today}
-                registrations={registrations}
+                dailyTotals={dailyTotals}
                 onOpenDate={openDate}
-                getSleepWindow={resolveSleepWindow}
-                onSleepAdjust={requestSleepAdjust}
+                onPrevWeek={() => movePeriod(-1)}
+                onNextWeek={() => movePeriod(1)}
               />
-            ) : (
-              <>
-                {view === "month" && (
-                  <MonthView cells={monthCells} month={month} today={today} onOpenDate={openDate} />
-                )}
-                {view === "week" && <WeekView days={weekDays} today={today} onOpenDate={openDate} />}
-                {view === "list" && (
-                  <ListView
-                    days={weekDays}
-                    today={today}
-                    dailyTotals={dailyTotals}
-                    onOpenDate={openDate}
-                    onPrevWeek={() => movePeriod(-1)}
-                    onNextWeek={() => movePeriod(1)}
-                  />
-                )}
-              </>
             )}
           </div>
         </div>
 
-        {!isLandscape && <MonthlyStatus status={monthlyStatus} />}
+        <MonthlyStatus status={monthlyStatus} />
       </div>
 
       {selectedDate && (
@@ -760,30 +757,50 @@ function MonthView({
   );
 }
 
-function WeekView({ days, today, onOpenDate }: { days: Date[]; today: Date; onOpenDate: (date: Date) => void }) {
+function WeekView({
+  days,
+  today,
+  dailyTotals,
+  onOpenDate,
+}: {
+  days: Date[];
+  today: Date;
+  dailyTotals: Map<string, number>;
+  onOpenDate: (date: Date) => void;
+}) {
   return (
     <div className="space-y-2">
       {days.map((date) => {
-        const met = goalWasMet(date, today);
+        const kcal = totalKcalForDate(dailyTotals, date);
+        const met = dailyGoalMet(dailyTotals, date);
+        const diff = Math.round(Math.abs(DAILY_KCAL_GOAL - kcal));
         const current = isSameDay(date, today);
         return (
           <button
             key={date.toISOString()}
             type="button"
             onClick={() => onOpenDate(date)}
-            className={`relative flex min-h-[66px] w-full items-center gap-3 rounded-2xl border px-4 text-left focus-visible:outline-2 focus-visible:outline-hf-black ${
-              current
-                ? "border-hf-green bg-hf-green text-hf-white"
-                : met
-                  ? "border-hf-green bg-hf-tan text-hf-black"
-                  : "border-transparent bg-hf-tan text-hf-black"
-            }`}
+            className="flex min-h-[66px] w-full items-center gap-3 rounded-2xl border border-hf-tan-dark bg-hf-tan px-4 text-left text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
           >
             <span className="w-10 text-xs font-bold uppercase opacity-70">{date.toLocaleDateString("da-DK", { weekday: "short" })}</span>
-            <span className="hf-heading w-8 text-xl">{date.getDate()}</span>
-            <span className="flex-1 text-sm font-semibold">{met ? "Dagens mål nået" : "Se dagen"}</span>
-            <IconChevronRight size={19} />
-            {met && <IconCheck size={14} stroke={3} className="absolute right-2 top-2 text-hf-lime" aria-hidden="true" />}
+            <span
+              className={`flex size-9 shrink-0 items-center justify-center rounded-lg border text-sm font-bold ${
+                current ? "border-hf-green bg-hf-green text-hf-white" : "border-hf-gray bg-hf-white text-hf-black"
+              }`}
+            >
+              {date.getDate()}
+            </span>
+            {met ? (
+              <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />
+            ) : (
+              <IconMinus size={16} stroke={3} className="shrink-0 opacity-50" aria-hidden="true" />
+            )}
+            <span className="flex-1 text-sm font-semibold">{met ? "Mål nået" : "Mål ikke nået"}</span>
+            <span className={`shrink-0 text-sm font-bold tabular-nums ${met ? "text-hf-green" : "text-hf-red-dark"}`}>
+              {met ? "+" : "-"}
+              {diff} kcal
+            </span>
+            <IconChevronRight size={19} className="shrink-0" />
           </button>
         );
       })}
@@ -866,7 +883,7 @@ function ListView({
         onTouchEnd={() => {
           touchStartY.current = null;
         }}
-        className="max-h-[min(60vh,420px)] snap-y snap-mandatory overflow-y-auto overscroll-contain rounded-2xl bg-hf-white"
+        className="no-scrollbar max-h-[min(60vh,420px)] snap-y snap-mandatory overflow-y-auto overscroll-contain rounded-2xl bg-hf-white"
       >
         {days.map((date) => {
           const kcal = totalKcalForDate(dailyTotals, date);
@@ -929,9 +946,48 @@ function WeekTimelineView({
   getSleepWindow: (date: Date) => SleepWindow | null;
   onSleepAdjust: (date: Date, type: SleepAdjustType, minutes: number) => void;
 }) {
+  const headerDrag = useRef<{ x: number; scrollLeft: number } | null>(null);
+  const gridDrag = useRef<{ x: number; y: number; scrollLeft: number; scrollTop: number } | null>(null);
+
+  function handleHeaderPointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    if (event.pointerType !== "mouse") return;
+    headerDrag.current = { x: event.clientX, scrollLeft: event.currentTarget.scrollLeft };
+  }
+  function handleHeaderPointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    if (!headerDrag.current) return;
+    event.currentTarget.scrollLeft = headerDrag.current.scrollLeft - (event.clientX - headerDrag.current.x);
+  }
+  function handleHeaderPointerUp() {
+    headerDrag.current = null;
+  }
+
+  function handleGridPointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    if (event.pointerType !== "mouse") return;
+    gridDrag.current = {
+      x: event.clientX,
+      y: event.clientY,
+      scrollLeft: event.currentTarget.scrollLeft,
+      scrollTop: event.currentTarget.scrollTop,
+    };
+  }
+  function handleGridPointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    if (!gridDrag.current) return;
+    event.currentTarget.scrollLeft = gridDrag.current.scrollLeft - (event.clientX - gridDrag.current.x);
+    event.currentTarget.scrollTop = gridDrag.current.scrollTop - (event.clientY - gridDrag.current.y);
+  }
+  function handleGridPointerUp() {
+    gridDrag.current = null;
+  }
+
   return (
     <div className="overflow-hidden rounded-2xl border border-hf-tan bg-hf-white">
-      <div className="flex overflow-x-auto">
+      <div
+        onPointerDown={handleHeaderPointerDown}
+        onPointerMove={handleHeaderPointerMove}
+        onPointerUp={handleHeaderPointerUp}
+        onPointerCancel={handleHeaderPointerUp}
+        className="no-scrollbar flex overflow-x-auto"
+      >
         <div className="h-12 w-12 shrink-0 border-b border-r border-hf-tan" />
         {days.map((date) => {
           const met = goalWasMet(date, today);
@@ -948,15 +1004,21 @@ function WeekTimelineView({
               <span className="text-[10px] font-bold uppercase opacity-70">
                 {date.toLocaleDateString("da-DK", { weekday: "short" })}
               </span>
-              <span className="hf-heading flex items-center gap-1 text-sm">
+              <span className="hf-heading flex items-center gap-2 text-sm">
                 {date.getDate()}
-                {met && <IconCheck size={11} stroke={3} className="text-hf-lime" aria-hidden="true" />}
+                {met && <IconCheck size={15} stroke={3.5} className="text-hf-lime" aria-hidden="true" />}
               </span>
             </button>
           );
         })}
       </div>
-      <div className="overflow-auto" style={{ maxHeight: "calc(100vh - 260px)" }}>
+      <div
+        onPointerDown={handleGridPointerDown}
+        onPointerMove={handleGridPointerMove}
+        onPointerUp={handleGridPointerUp}
+        onPointerCancel={handleGridPointerUp}
+        className="no-scrollbar overflow-auto"
+        style={{ maxHeight: "calc(100vh - 260px)" }}>
         <div className="flex" style={{ height: TIMELINE_HEIGHT }}>
           <div className="relative w-12 shrink-0 border-r border-hf-tan">
             {HOUR_MARKS.map((hour) => (
@@ -1048,46 +1110,23 @@ function SleepBoundaryHandle({
   onCommit: (type: SleepAdjustType, minutes: number) => void;
 }) {
   const [dragMinutes, setDragMinutes] = useState<number | null>(null);
-  const activatedRef = useRef(false);
-  const movedRef = useRef(false);
   const startYRef = useRef(0);
   const startMinutesRef = useRef(minutes);
   const dragMinutesRef = useRef<number | null>(null);
-  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  function clearTimer() {
-    if (longPressTimer.current) {
-      clearTimeout(longPressTimer.current);
-      longPressTimer.current = null;
-    }
-  }
 
   function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
     event.stopPropagation();
     startYRef.current = event.clientY;
     startMinutesRef.current = minutes;
-    movedRef.current = false;
-    activatedRef.current = false;
+    dragMinutesRef.current = minutes;
     event.currentTarget.setPointerCapture(event.pointerId);
-    longPressTimer.current = setTimeout(() => {
-      if (!movedRef.current) {
-        activatedRef.current = true;
-        dragMinutesRef.current = minutes;
-        setDragMinutes(minutes);
-      }
-    }, SLEEP_ADJUST_HOLD_MS);
+    setDragMinutes(minutes);
   }
 
   function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    const deltaY = event.clientY - startYRef.current;
-    if (!activatedRef.current) {
-      if (Math.abs(deltaY) > SLEEP_ADJUST_MOVE_TOLERANCE) {
-        movedRef.current = true;
-        clearTimer();
-      }
-      return;
-    }
+    if (dragMinutesRef.current === null) return;
     event.stopPropagation();
+    const deltaY = event.clientY - startYRef.current;
     const deltaMinutes = (deltaY / HOUR_HEIGHT) * 60;
     const next = startMinutesRef.current + deltaMinutes;
     dragMinutesRef.current = next;
@@ -1095,11 +1134,9 @@ function SleepBoundaryHandle({
   }
 
   function finishDrag() {
-    clearTimer();
-    if (activatedRef.current && dragMinutesRef.current !== null) {
+    if (dragMinutesRef.current !== null) {
       onCommit(type, dragMinutesRef.current);
     }
-    activatedRef.current = false;
     dragMinutesRef.current = null;
     setDragMinutes(null);
   }
@@ -1156,6 +1193,7 @@ function DayDetails({
   const [hourHeight, setHourHeight] = useState(() => loadStoredHourHeight());
   const activeZoomPointers = useRef(new Map<number, number>());
   const zoomStart = useRef<{ avgY: number; hourHeight: number } | null>(null);
+  const mouseDrag = useRef<{ y: number; scrollTop: number } | null>(null);
 
   const anchorHour = Math.floor(sleepWindow.wakeTime / 60);
   const anchorMinutes = anchorHour * 60;
@@ -1165,25 +1203,33 @@ function DayDetails({
     if (activeZoomPointers.current.size === 2) {
       const values = Array.from(activeZoomPointers.current.values());
       zoomStart.current = { avgY: (values[0] + values[1]) / 2, hourHeight };
+    } else if (event.pointerType === "mouse") {
+      mouseDrag.current = { y: event.clientY, scrollTop: event.currentTarget.scrollTop };
     }
   }
 
   function handleTimelinePointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    if (!activeZoomPointers.current.has(event.pointerId)) return;
-    activeZoomPointers.current.set(event.pointerId, event.clientY);
-    if (activeZoomPointers.current.size === 2 && zoomStart.current) {
-      event.stopPropagation();
-      const values = Array.from(activeZoomPointers.current.values());
-      const avgY = (values[0] + values[1]) / 2;
-      const deltaY = avgY - zoomStart.current.avgY;
-      const next = Math.round(zoomStart.current.hourHeight + deltaY * (HOUR_HEIGHT / ZOOM_SENSITIVITY) * 4);
-      setHourHeight(Math.min(MAX_HOUR_HEIGHT, Math.max(MIN_HOUR_HEIGHT, next)));
+    if (activeZoomPointers.current.has(event.pointerId)) {
+      activeZoomPointers.current.set(event.pointerId, event.clientY);
+      if (activeZoomPointers.current.size === 2 && zoomStart.current) {
+        event.stopPropagation();
+        const values = Array.from(activeZoomPointers.current.values());
+        const avgY = (values[0] + values[1]) / 2;
+        const deltaY = avgY - zoomStart.current.avgY;
+        const next = Math.round(zoomStart.current.hourHeight + deltaY * (HOUR_HEIGHT / ZOOM_SENSITIVITY) * 4);
+        setHourHeight(Math.min(MAX_HOUR_HEIGHT, Math.max(MIN_HOUR_HEIGHT, next)));
+      }
+      return;
+    }
+    if (mouseDrag.current) {
+      event.currentTarget.scrollTop = mouseDrag.current.scrollTop - (event.clientY - mouseDrag.current.y);
     }
   }
 
   function handleTimelinePointerEnd(event: React.PointerEvent<HTMLDivElement>) {
     activeZoomPointers.current.delete(event.pointerId);
     if (activeZoomPointers.current.size < 2) zoomStart.current = null;
+    mouseDrag.current = null;
     if (activeZoomPointers.current.size === 0) {
       try {
         window.localStorage.setItem(HOUR_HEIGHT_STORAGE_KEY, String(hourHeight));
@@ -1289,7 +1335,7 @@ function DayDetails({
           </div>
         ) : (
           <div
-            className="relative touch-pan-y overflow-y-auto rounded-2xl border border-hf-tan bg-hf-white"
+            className="no-scrollbar relative touch-pan-y overflow-y-auto rounded-2xl border border-hf-tan bg-hf-white"
             style={{ maxHeight: "calc(100vh - 380px)" }}
             onPointerDown={handleTimelinePointerDown}
             onPointerMove={handleTimelinePointerMove}
@@ -1408,57 +1454,32 @@ function SleepBlock({
   onAdjust: (type: SleepAdjustType, minutes: number) => void;
 }) {
   const [dragDelta, setDragDelta] = useState<number | null>(null);
-  const activatedRef = useRef(false);
-  const movedRef = useRef(false);
   const startYRef = useRef(0);
   const dragDeltaRef = useRef<number | null>(null);
-  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  function clearTimer() {
-    if (longPressTimer.current) {
-      clearTimeout(longPressTimer.current);
-      longPressTimer.current = null;
-    }
-  }
 
   function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
     event.stopPropagation();
     startYRef.current = event.clientY;
-    movedRef.current = false;
-    activatedRef.current = false;
+    dragDeltaRef.current = 0;
     event.currentTarget.setPointerCapture(event.pointerId);
-    longPressTimer.current = setTimeout(() => {
-      if (!movedRef.current) {
-        activatedRef.current = true;
-        dragDeltaRef.current = 0;
-        setDragDelta(0);
-      }
-    }, SLEEP_ADJUST_HOLD_MS);
+    setDragDelta(0);
   }
 
   function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    const deltaY = event.clientY - startYRef.current;
-    if (!activatedRef.current) {
-      if (Math.abs(deltaY) > SLEEP_ADJUST_MOVE_TOLERANCE) {
-        movedRef.current = true;
-        clearTimer();
-      }
-      return;
-    }
+    if (dragDeltaRef.current === null) return;
     event.stopPropagation();
+    const deltaY = event.clientY - startYRef.current;
     const deltaMinutes = (deltaY / hourHeight) * 60;
     dragDeltaRef.current = deltaMinutes;
     setDragDelta(deltaMinutes);
   }
 
   function finishDrag() {
-    clearTimer();
-    if (activatedRef.current && dragDeltaRef.current !== null && Math.round(dragDeltaRef.current) !== 0) {
+    if (dragDeltaRef.current !== null && Math.round(dragDeltaRef.current) !== 0) {
       const delta = dragDeltaRef.current;
       onAdjust("wake", sleepWindow.wakeTime + delta);
       onAdjust("bedtime", sleepWindow.bedtime + delta);
     }
-    activatedRef.current = false;
     dragDeltaRef.current = null;
     setDragDelta(null);
   }
@@ -1758,11 +1779,8 @@ type MonthlyStatusData = {
 };
 
 function MonthlyStatus({ status }: { status: MonthlyStatusData }) {
-  const { isCurrentMonth, consideredDays, metCount, remaining, sevenDayRemaining, streak } = status;
+  const { remaining, streak } = status;
   const withinGoal = remaining >= 0;
-  const goalDaysText = isCurrentMonth
-    ? `${metCount} ud af ${consideredDays} dage har du opnået din målsætning.`
-    : `${metCount} ud af ${consideredDays} dage opnåede du din målsætning.`;
 
   return (
     <div className="mt-5 space-y-1.5 text-center">
@@ -1790,25 +1808,10 @@ function MonthlyStatus({ status }: { status: MonthlyStatusData }) {
             </span>
           )}
         </span>
-        <div>
-          <p className="text-base font-semibold text-hf-black">
-            {withinGoal ? "Du er inden for din målsætning." : "Du er ikke inden for din målsætning."}
-          </p>
-          <p className="text-sm font-normal text-hf-gray-dark">
-            {withinGoal ? (
-              <>Du har <span className="font-semibold text-hf-black">{Math.round(Math.abs(remaining))}</span> kalorier til gode.</>
-            ) : (
-              <>Du har overskredet med <span className="font-semibold text-hf-black">{Math.round(Math.abs(remaining))}</span> kalorier.</>
-            )}
-          </p>
-        </div>
+        <p className="text-base font-semibold text-hf-black">
+          {withinGoal ? "Du er inden for din målsætning." : "Du er ikke inden for din målsætning."}
+        </p>
       </div>
-
-      <p className="text-sm text-hf-gray">
-        Over de sidste syv dage er du {sevenDayRemaining >= 0 ? "under" : "over"} din målsætning.
-      </p>
-
-      <p className="text-sm text-hf-gray">{goalDaysText}</p>
     </div>
   );
 }
