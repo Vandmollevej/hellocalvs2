@@ -855,10 +855,15 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
   local PostgreSQL, see `hellocal_no_local_db`): `/settings` (top-level, no
   back arrow) and `/settings/integrationer` (with back arrow) both render the
   new appbar correctly at 402px width; kalender's day-detail overlay opens
-  with the arrow-left close button and correct header height. Not yet done:
-  the rest of design.md §11's migration order (bottom-nav shell contract,
-  button/field/card/row primitives, then per-screen migration) — continue
-  from there.
+  with the arrow-left close button and correct header height. Also fixed
+  `BottomNav.tsx` (DES-012): the bar used the wrong `--hf-tan` (card)
+  background instead of `--hf-tan-dark` (`--hf-color-nav`, `#DFD9CC`), the
+  inactive icon/label color was `#4b4b4b` (an unrelated hover token) instead
+  of `--hf-color-text-secondary` (`#656565`), and tab labels now use
+  `.hf-type-tab` (12px) instead of a hardcoded 11px. Verified live:
+  `/madvarer` shows the corrected nav background/colors. Not yet done: the
+  rest of design.md §11's migration order (button/field/card/row primitives,
+  then per-screen migration) — continue from there.
 
 ## Next work
 

@@ -16,7 +16,7 @@ import {
 
 const ICON_SIZE = 24;
 const NAV_ACTIVE_COLOR = "#232323";
-const NAV_INACTIVE_COLOR = "#4b4b4b";
+const NAV_INACTIVE_COLOR = "#656565";
 const NAV_BORDER_COLOR = "#afadaa";
 const PANEL_ICON_SIZE = 24;
 const STORAGE_KEY = "hellocal:bottomnav:v1";
@@ -673,7 +673,7 @@ export function BottomNav() {
 
       <nav
         ref={barRef}
-        className={`relative border-t bg-hf-tan pb-6 pt-2 ${
+        className={`relative border-t bg-hf-tan-dark pb-6 pt-2 ${
           draggedOverPanel ? "border-dashed border-hf-gray-dark" : ""
         }`}
         style={draggedOverPanel ? undefined : { borderTopColor: NAV_BORDER_COLOR }}
@@ -763,10 +763,7 @@ export function BottomNav() {
                       )}
                       <span className={`flex flex-col items-center gap-2 ${isPlaceholder ? "invisible" : ""}`}>
                         {item.render(color, ICON_SIZE)}
-                        <span
-                          className="text-[11px]"
-                          style={{ color, fontFamily: "var(--font-hf-body)" }}
-                        >
+                        <span className="hf-type-tab" style={{ color }}>
                           {item.label}
                         </span>
                       </span>
