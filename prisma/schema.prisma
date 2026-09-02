@@ -73,19 +73,56 @@ model User {
   // the default, since it's the app's primary market.
   region String @default("DK")
 
-  registrations  Registration[]
-  favorites      Favorite[]
-  dishes         Dish[]
-  weightEntries  WeightEntry[]
-  sleepSchedules SleepSchedule[]
-  workShifts     WorkShift[]
-  integrations   Integration[]
-  activities     Activity[]
-  deviceTokens   DeviceToken[]
-  healthMetrics  HealthMetric[]
-  passkeys       Passkey[]
+  // Billede-dagbog (docs/STATUS.md 2026-09-02): rent klient-lagret
+  // foto-sammenligning i dag (localStorage), men adgangs-præferencen skal
+  // være autoritativ i databasen. OS-niveau adgangskode-håndhævelse er en
+  // fremtidig native-app-opgave — dette felt er kun den gemte brugerpræference.
+  photoDiaryRequiresPasscode Boolean @default(false)
+
+  // Kommunikationspræferencer (docs/STATUS.md 2026-09-02).
+  wantsPushNotifications   Boolean @default(false)
+  wantsUpdateNewsEmails    Boolean @default(false)
+  wantsAdviceEmails        Boolean @default(false)
+  wantsPartnerOffersEmails Boolean @default(false)
+
+  // "Invitér en ven"-bogføring (docs/DECISIONS.md 2026-09-02): der findes
+  // endnu ikke noget rigtigt invitations-/henvisningskode-flow, så dette er
+  // kun datamodellen og optællingslogikken. freeMonthsCredited er loftet på
+  // maks. 12 gratis måneder nogensinde.
+  freeMonthsCredited Int @default(0)
+
+  registrations    Registration[]
+  favorites        Favorite[]
+  dishes           Dish[]
+  weightEntries    WeightEntry[]
+  sleepSchedules   SleepSchedule[]
+  workShifts       WorkShift[]
+  integrations     Integration[]
+  activities       Activity[]
+  deviceTokens     DeviceToken[]
+  healthMetrics    HealthMetric[]
+  passkeys         Passkey[]
+  referralsMade    Referral[]      @relation("ReferralsMade")
+  referralReceived Referral?       @relation("ReferralReceived")
 
   @@map("users")
+}
+
+// "Invitér en ven"-bogføring. Der er ikke bygget noget rigtigt
+// invitations-/henvisningskode-system endnu (intet konto-login-flow kan
+// endnu attribuere hvem der inviterede hvem) — se docs/DECISIONS.md. Denne
+// model er kun den fremtidige bogføring, klar til når et rigtigt
+// invite-link/signup-attribution-mekanisme findes.
+model Referral {
+  id                   String    @id @default(cuid())
+  referrer             User      @relation("ReferralsMade", fields: [referrerId], references: [id])
+  referrerId           String
+  referredUser         User      @relation("ReferralReceived", fields: [referredUserId], references: [id])
+  referredUserId       String    @unique
+  referredRegisteredAt DateTime
+  rewardGrantedAt      DateTime?
+
+  @@map("referrals")
 }
 
 enum Role {
@@ -394,9 +431,26 @@ model Product {
   favorites       Favorite[]
   dishIngredients DishIngredient[]
   ingredients     ProductIngredient[]
+  images          ProductImage[]
 
   @@index([externalSource, externalId])
   @@map("products")
+}
+
+// Up to 3 additional photos alongside the primary Product.imageUrl (e.g. the
+// other sides of a milk carton or box). Admin-managed only (docs/ADMIN.md,
+// "Merge og øvrige billeder") — the image-agent's automated suggestion flow
+// still targets pendingImageUrl/imageStatus above, unrelated to this table.
+model ProductImage {
+  id        String   @id @default(cuid())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  url       String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+  @@map("product_images")
 }
 
 enum ExternalProductSource {

@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Claude Code agent worktrees/scratch state — never app source, and each
+    // worktree has its own .next build output that isn't excluded by the
+    // plain ".next/**" pattern once nested this deep.
+    ".claude/**",
   ]),
 ]);
 

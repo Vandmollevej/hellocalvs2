@@ -8,13 +8,13 @@ import {
   IconCalendarMonth,
   IconCalendarWeek,
   IconCheck,
+  IconArrowLeft,
   IconChevronDown,
   IconChevronLeft,
   IconChevronRight,
   IconLayoutList,
   IconMinus,
   IconStarFilled,
-  IconX,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
@@ -1256,7 +1256,10 @@ function DayDetails({
 
   return (
     <div className="absolute inset-0 z-50 flex flex-col bg-hf-cream" role="dialog" aria-modal="true" aria-labelledby="day-title">
-      <div className="relative flex items-center justify-between gap-1 bg-hf-green px-1 pb-4 pt-9 text-hf-white">
+      <div
+        className="relative flex items-center justify-between gap-1 bg-hf-green px-1 pb-4 text-hf-white"
+        style={{ paddingTop: "max(16px, env(safe-area-inset-top, 0px))" }}
+      >
         <button
           type="button"
           onClick={() => onNavigate(-1)}
@@ -1284,10 +1287,10 @@ function DayDetails({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Luk dagsvisning"
+            aria-label="Tilbage"
             className="flex size-9 items-center justify-center rounded-full hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white"
           >
-            <IconX size={22} />
+            <IconArrowLeft size={22} />
           </button>
         </div>
       </div>
@@ -1729,14 +1732,17 @@ function HourEntriesOverlay({
 
   return (
     <div className="absolute inset-0 z-[60] flex flex-col bg-hf-cream" role="dialog" aria-modal="true">
-      <div className="relative flex items-center justify-center bg-hf-green px-4 pb-4 pt-9 text-hf-white">
+      <div
+        className="relative flex items-center justify-center bg-hf-green px-4 pb-4 text-hf-white"
+        style={{ paddingTop: "max(16px, env(safe-area-inset-top, 0px))" }}
+      >
         <button
           type="button"
           onClick={onClose}
           aria-label="Tilbage"
           className="absolute bottom-3 left-3 flex size-11 items-center justify-center rounded-full hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white"
         >
-          <IconChevronLeft size={24} />
+          <IconArrowLeft size={24} />
         </button>
         <h2 className="hf-heading text-lg">
           Kl. {String(hour).padStart(2, "0")}–{String((hour + 1) % 24).padStart(2, "0")}

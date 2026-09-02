@@ -776,6 +776,157 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
   See `docs/DEPLOYMENT.md`'s "Operational gotchas" note for the SFTP-chroot
   and terminal-paste quirks hit along the way.
 
+- 2026-08-30: Completed a dedicated HelloFresh visual consistency audit without
+  changing application code. Added root `design.md` as the binding visual
+  contract and referenced it from `CLAUDE.md`. The contract corrects the source
+  screenshot scale to 3x (1206x2622 -> 402x874), records the exact measured
+  palette, typography, spacing/radius families, reusable component variants,
+  and 33 concrete current-code/live-view deviations. The contract now also
+  defines reusable padding roles for standard 16 px screen gutters, the
+  measured 32 px editorial variant, cards, 48 px rows, fields, buttons,
+  modals, images, app bars, action bars, bottom navigation, grids, and safe
+  areas. It also includes a concrete, explicitly not-yet-implemented CSS
+  blueprint for tokens, Tailwind theme mapping, the scoped app font root,
+  typography, shell/appbar, a locked button taxonomy (appearance, size, form,
+  loading/disabled states, icon/FAB and social login), fields/search, cards/rows,
+  chevrons, imagery, action bars, bottom navigation, legacy aliases, and a
+  controlled component-by-component migration. A fresh 402x874 local
+  review covered `/velkommen`, `/logind`, `/tilmeld`, `/`, `/madvarer`,
+  `/settings`, `/profil`, `/soeg`, `/statistik`, `/kalender`, `/stemme`, and
+  `/kamera?mode=produkt`; database-backed states could not all load, but this
+  exposed inconsistent short/error-state bottom-nav placement on Profil/Søg,
+  clipped nav on Kalender, and nav below the viewport on Kamera. No lint/build
+  was required because no runtime source was changed.
+  On 2026-08-31, the contract was cross-checked against live computed styles
+  from the official HelloFresh Denmark homepage at desktop and 402x874 mobile
+  sizes plus its login page. The review confirms the core text, action, brand,
+  page, secondary-text and field-border colors; 48 px primary controls; 4/8 px
+  radii; 44 px icon hit area; and the 4/8-based spacing family. `design.md` now
+  also records exact official web hover/active/focus colors and explicitly
+  separates website-only Agrandir/Roboto, marketing green and social-provider
+  variants from the primary iOS-app evidence.
+
+- 2026-09-02: Implemented a batch of 13 requested UI/product changes (no local
+  DB — verified with `npm run lint` + `npm run build` only, live verification
+  pending per `hellocal_no_local_db`). Added `src/components/ui/Toggle.tsx`
+  (standing rule: no checkboxes anywhere, see `docs/DECISIONS.md`) and
+  `src/components/hf/HfChevron.tsx`; replaced all `type="checkbox"` and the
+  literal "›" chevron. Added `src/components/hf/FullscreenAccordionRow.tsx`
+  (fullscreen-takeover accordion, collapses back in place) and moved the
+  profile's core fields into a new first "Profil" accordion item on
+  `/profil`; renamed "Sundhedsdata" to "Integrationer" (now links to
+  `/settings/integrationer`, no more "— opsat" suffix); added a "Kommunikation"
+  accordion with 4 push/email preference toggles; added
+  `/profil/billede-dagbog` (photo diary — photos stored client-side in
+  localStorage only, no blob storage infra exists yet; the "requires phone
+  passcode" toggle persists `User.photoDiaryRequiresPasscode` but has no real
+  OS-level enforcement, future native-app work). Added `src/components/ui/WheelPicker.tsx`
+  (iOS-style scroll picker, "Vælg" default, birth year scrolls to 1990) for
+  fødselsår/højde. Added a weight "Opdateret d. X fra (enhed)" caption sourced
+  from the latest `WeightEntry`. `/profil/soevn` now auto-fills Tirsdag-Fredag
+  from Mandag's entry (still editable). `/profil/vaegt-kalibrering`'s
+  time-of-day picker is now a side-by-side Morgen/Aften row with `HfChevron`.
+  `/profil/indstillinger` now shows a setup progress bar (same pattern as
+  `OnboardingWizard`) tracking region/allergener/vægtkalibrering. Added the
+  `Referral` model + `User.freeMonthsCredited` + `src/lib/referrals.ts` for
+  "Invitér en ven" reward bookkeeping (3 months → 1 free month, capped at 12) —
+  this is data-model/logic only, since no real invite-link/attribution system
+  exists yet (flagged explicitly, not faked). Hand-wrote migration
+  `20260902000000_communication_photodiary_referrals` (not applied to any
+  live DB from here).
+
+- 2026-09-02: Started the design.md-driven visual migration (§11 order),
+  step 1-2. Added the `.hf-type-*` typography classes (including
+  `.hf-type-progress-active/inactive`, centered `page-title`/`category-title`)
+  and the `.hf-appbar`/`.hf-appbar__slot`/`.hf-appbar__title` shell classes to
+  `globals.css`, plus the missing `--hf-color-white`/`--hf-color-nav-legacy`
+  tokens. Rewrote `ScreenHeader.tsx` to the fixed 44/1fr/44px slot grid with
+  real `env(safe-area-inset-top)` instead of hardcoded `pt-9`: the profile
+  circle is now always the left slot and a back arrow (never a cross/✕, see
+  `docs/DECISIONS.md`) is the right slot on closable pages — this also fixes
+  the DES-007/DES-032 profile-left/close-right violation on every screen that
+  passed `onBack` (Profil, Indstillinger, Søvnmønster, Vægt kalibrering,
+  Billede-dagbog, Betaling, Integrationer, Ubrugte statistik-kort). Also fixed
+  the two kalender-internal custom headers (day-detail overlay, hour
+  drill-down overlay) to use the same real safe-area padding instead of
+  `pt-9`, and swapped the day-detail's chevron-left close button for the same
+  arrow-left used everywhere else. `npm run lint` and `npm run build` both
+  passed. Verified live against this session's own dev server (no reachable
+  local PostgreSQL, see `hellocal_no_local_db`): `/settings` (top-level, no
+  back arrow) and `/settings/integrationer` (with back arrow) both render the
+  new appbar correctly at 402px width; kalender's day-detail overlay opens
+  with the arrow-left close button and correct header height. Also fixed
+  `BottomNav.tsx` (DES-012): the bar used the wrong `--hf-tan` (card)
+  background instead of `--hf-tan-dark` (`--hf-color-nav`, `#DFD9CC`), the
+  inactive icon/label color was `#4b4b4b` (an unrelated hover token) instead
+  of `--hf-color-text-secondary` (`#656565`), and tab labels now use
+  `.hf-type-tab` (12px) instead of a hardcoded 11px. Verified live:
+  `/madvarer` shows the corrected nav background/colors.
+
+  Continued into step 3 (shared primitives, DES-004/005/009/010): `.hf-card`
+  radius is now 8px everywhere it was still 16-17px pill/rounded-2xl
+  (`AccordionCard`, the settings promo/invite cards); `ChevronRow` is now a
+  fixed 48px row with `.hf-type-body` (17/25) labels instead of a 56px
+  `py-4` row with `text-[15px] font-medium`; `.hf-btn-primary`/
+  `.hf-btn-secondary` radius corrected from a full pill to 8px (only the
+  radius — the many call sites that size these buttons via local
+  `py-*`/`text-*` for compact/small inline actions were deliberately left
+  alone, since the class intentionally doesn't own height/padding yet; a
+  real `--primary`/`--compact`/`--small`/`--full` modifier system per
+  design.md §6.2 is still a separate follow-up). `.hf-search` is now a fixed
+  48px field with 8px radius and the correct `--hf-color-line` border
+  (was a full pill with the wrong `--hf-tan-dark` border) — used on
+  `/madvarer` and `/soeg`. Settings page: card-group gap corrected from 16px
+  to the contracted 32px. `npm run lint` and `npm run build` passed; verified
+  live (`/settings`, `/madvarer`) against this session's dev server. Not yet
+  done: the button size-variant system, and then the rest of the per-screen
+  migration pass (statistik, kalender, stemme, kamera) per design.md §11 —
+  continue from there.
+
+- 2026-09-02: Migrated the auth/onboarding screens (design.md §11 step 4,
+  clearest 1:1 references): /velkommen, /logind, /logind/land, /tilmeld.
+  Added SocialLoginButton.tsx (correct provider colors: Google #4285F4 fill
+  with a white icon zone, Apple #232323, Facebook #00178C — the prior
+  Google button was white-with-border, Apple was the wrong near-black) and
+  TextField.tsx (48px, auth variant 4px radius, .hf-type-input/label,
+  placeholder now uses --hf-color-placeholder via a new
+  .hf-type-input::placeholder rule). Fixed the 20px->16px gutter (DES-033),
+  replaced every literal pt-9 with real safe-area padding, replaced the
+  literal chevron character and IconChevronDown with HfChevron, replaced
+  IconChevronLeft close buttons with IconArrowLeft (back-arrow-not-cross
+  rule), and fixed /logind/land from individually-rounded/ringed cards to
+  the reference's flat full-width 56px-row list with a plain checkmark for
+  the selected country (DES-021). /velkommen's hero circle is now 180px
+  (was 176px) with the correct 32px gaps; body copy moved from an invented
+  15px to .hf-type-body-lg.
+
+  Also fixed a lint-blocking issue unrelated to this change: another
+  concurrent agent session's git worktree under .claude/worktrees/ had its
+  own .next build output, which ESLint was traversing into (its .next/**
+  ignore doesn't reach that deeply nested a path) — added .claude/** to
+  eslint.config.mjs's ignores, since worktrees are never app source.
+
+  npm run lint and npm run build both passed. Live browser verification was
+  not possible this pass — a concurrent session holds Next.js's
+  single-instance dev-server lock on this exact directory (next dev refuses
+  a second instance even on a different port); re-verify /velkommen,
+  /logind, /logind/land, and /tilmeld at 402px once no other session's dev
+  server is active.
+
+- 2026-09-02: Fixed the remaining 8px-radius (DES-004) violations on screens
+  not touched by the concurrent statistik/profil-focused session: /madvarer
+  (HelloFresh promo card, product-list container), /soeg (recently-added and
+  results containers), /kamera (camera preview frame -> 12px radius-md since
+  it's an image frame not a card; the barcode-lookup status card -> 8px),
+  /settings/integrationer (notice banner, provider cards, device-token rows,
+  device-code display block), /settings/betaling (placeholder card). Left
+  the `rounded-full` status-badge pills alone (pills are a legitimate
+  radius-round use, not a violation). `npm run lint` and `npm run build`
+  passed. Live verification still blocked by the same concurrent session's
+  Next.js dev-server directory lock (PID unchanged) — re-verify /madvarer,
+  /soeg, /kamera, /settings/integrationer, /settings/betaling once free,
+  alongside the auth screens noted above.
+
 ## Next work
 
 1. Implement the pending UI/design requirements in

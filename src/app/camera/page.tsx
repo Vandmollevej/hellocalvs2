@@ -253,7 +253,7 @@ function KameraContent() {
         </div>
       )}
 
-      <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-hf-black">
+      <div className="relative aspect-square w-full overflow-hidden rounded-[12px] bg-hf-black">
         {photo ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={photo} alt="Dit fotograferede billede" className="h-full w-full object-cover" />
@@ -326,7 +326,7 @@ function KameraContent() {
           )}
         </div>
       ) : (
-        <div className="rounded-2xl bg-hf-tan p-4">
+        <div className="rounded-[8px] bg-hf-tan p-4">
           <p className="mb-2 text-xs text-hf-black opacity-70">
             {lookupStatus === "loading"
               ? `Slår ${barcode} op...`

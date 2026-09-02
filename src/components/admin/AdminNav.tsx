@@ -8,6 +8,7 @@ const LINKS = [
   { href: "/admin", label: "Oversigt" },
   { href: "/admin/products", label: "Nye produkter" },
   { href: "/admin/images", label: "Billedforslag" },
+  { href: "/admin/warnings", label: "Advarsler" },
   { href: "/admin/search", label: "Søg" },
   { href: "/admin/passkeys", label: "Passkeys" },
 ];

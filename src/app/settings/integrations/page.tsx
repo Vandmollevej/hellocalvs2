@@ -147,7 +147,7 @@ function IntegrationerContent() {
 
       <div className="flex flex-col gap-4 p-4">
         {notice && (
-          <p className="rounded-xl bg-hf-tan px-4 py-3 text-[13px] text-hf-black">{notice}</p>
+          <p className="rounded-[8px] bg-hf-tan px-4 py-3 text-[13px] text-hf-black">{notice}</p>
         )}
 
         <p className="px-1 text-[13px] leading-relaxed text-hf-black opacity-60">
@@ -166,7 +166,7 @@ function IntegrationerContent() {
             return (
               <div
                 key={integration.provider}
-                className={`flex flex-col gap-3 rounded-2xl bg-hf-tan p-4 ${
+                className={`flex flex-col gap-3 rounded-[8px] bg-hf-tan p-4 ${
                   integration.connectable || integration.ingestOnly ? "" : "opacity-50"
                 }`}
               >
@@ -241,7 +241,7 @@ function IntegrationerContent() {
           })}
 
         {!loading && (
-          <div className="flex flex-col gap-3 rounded-2xl bg-hf-tan p-4">
+          <div className="flex flex-col gap-3 rounded-[8px] bg-hf-tan p-4">
             <div>
               <p className="text-[15px] font-bold text-hf-black">Enhedstokens (companion-app)</p>
               <p className="text-[12px] text-hf-black opacity-70">
@@ -252,7 +252,7 @@ function IntegrationerContent() {
             </div>
 
             {tokens.map((token) => (
-              <div key={token.id} className="flex items-center justify-between gap-2 rounded-xl bg-hf-cream px-3 py-2">
+              <div key={token.id} className="flex items-center justify-between gap-2 rounded-[8px] bg-hf-cream px-3 py-2">
                 <div className="min-w-0">
                   <p className="truncate text-[13px] font-semibold text-hf-black">{token.label}</p>
                   <p className="text-[11px] text-hf-black opacity-60">
@@ -272,7 +272,7 @@ function IntegrationerContent() {
             ))}
 
             {newToken ? (
-              <div className="rounded-xl bg-hf-black p-3 text-hf-white">
+              <div className="rounded-[8px] bg-hf-black p-3 text-hf-white">
                 <p className="text-[12px] font-semibold">Gem denne værdi nu — den vises ikke igen:</p>
                 <p className="mt-1 break-all font-mono text-[12px]">{newToken.raw}</p>
                 <button

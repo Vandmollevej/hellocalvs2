@@ -136,7 +136,7 @@ function MadvarerContent() {
       <div className="flex flex-col gap-3 p-4">
         <Link
           href="/camera?mode=hellofresh"
-          className="flex items-center gap-3 rounded-2xl bg-hf-tan px-4 py-3"
+          className="flex items-center gap-3 rounded-[8px] bg-hf-tan px-4 py-3"
         >
           <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-hf-green text-hf-white">
             <IconCamera size={17} stroke={2} />
@@ -165,7 +165,7 @@ function MadvarerContent() {
           </p>
         )}
 
-        <div className="max-h-[60vh] overflow-y-auto overflow-x-hidden rounded-2xl bg-hf-tan">
+        <div className="max-h-[60vh] overflow-y-auto overflow-x-hidden rounded-[8px] bg-hf-tan">
           {state === "loading" && (
             <p className="px-4 py-6 text-center text-sm text-hf-black opacity-60">Henter madvarer …</p>
           )}

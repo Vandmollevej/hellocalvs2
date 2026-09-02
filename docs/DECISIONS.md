@@ -358,3 +358,68 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - Preserve unrelated local changes.
 - A checkpoint is complete only after lint and production build pass, unless an unresolved check is documented in `docs/STATUS.md`.
 - Local `npm run dev` uses Next.js' Webpack mode. Turbopack 16.2.12 produced a reproducible HMR panic in the OneDrive-synchronized repository, while Webpack and the production build are stable.
+- 2026-08-30: Root `design.md` is the binding visual implementation contract
+  for colors, typography, geometry, spacing, radius, icons, and reusable UI
+  primitives. It does not override product behavior in `SPECIFICATION.md`,
+  `DECISIONS.md`, or `UI.md`. Existing code is not a design authority when it
+  differs from this contract. The source HelloFresh screenshots are measured
+  at their original 1206x2622 resolution (exactly 3x a 402x874 logical
+  viewport), not the 941x2048 preview size recorded in the older typography
+  note. The references contain two contextual greens: `#067A46` for
+  brand/auth/onboarding and `#35784A` for newer app bars; implementations must
+  use named variants instead of blending them into an arbitrary third green.
+  General horizontal screen padding is 16 px. The measured 32 px padding is a
+  named editorial/feature variant, not a second default. Cards, rows, fields,
+  buttons, modals and safe-area containers own their internal padding so pages
+  may not compensate with route-specific margins or nested padding wrappers.
+  `design.md` also contains the proposed CSS blueprint. That code is guidance,
+  not an implemented state: runtime CSS must be migrated component by
+  component, with temporary semantic legacy aliases, fresh in-place visual
+  verification, lint, and build before any part is marked complete.
+- 2026-08-31: The live official HelloFresh Denmark website is secondary visual
+  evidence, while the supplied original app screenshots remain primary for
+  Hello Cal. Official web computed styles confirm the shared core colors
+  `#242424`, `#232323`, `#067A46`, `#FAF8F3`, `#656565`, and `#7D7561`, plus
+  the 4/8-based spacing/radius family and 48 px controls. Web-only typography
+  (Agrandir Tight/Roboto), marketing green `#056835`, and provider/state color
+  differences must not overwrite direct app measurements. Exact documented
+  web hover/active/focus values may be used only in their named interaction
+  states.
+- 2026-09-02: Standing rule — checkboxes must never be used anywhere in the
+  app; every on/off preference uses the shared right-aligned iOS-style
+  `Toggle` component (`src/components/ui/Toggle.tsx`). Replaced all remaining
+  `type="checkbox"` usages (profil/indstillinger, profil/soevn, StatChart).
+  Added `HfChevron` (`src/components/hf/HfChevron.tsx`) as the single allowed
+  chevron primitive per `design.md` §6.7; `AccordionCard`'s literal "›" was
+  replaced with it.
+- 2026-09-02: Billede-dagbog stores photos client-side only (localStorage) —
+  there is no blob/object storage infrastructure in this project yet. Only
+  the "requires phone passcode" preference (`User.photoDiaryRequiresPasscode`)
+  is persisted server-side; there is no real OS-level passcode/biometric
+  enforcement, which is a future native-app concern.
+- 2026-09-02: "Invitér en ven" reward bookkeeping (`Referral` model,
+  `User.freeMonthsCredited`, `src/lib/referrals.ts`) is pure data-model and
+  computation logic. There is still no real invite-link/referral-code or
+  signup-attribution mechanism anywhere in the app (no account/login system
+  generally, see `docs/STATUS.md`), so no `Referral` rows can be created yet.
+  Do not invent a fake referral-code system to fill this gap — wire this up
+  once real attribution exists.
+- 2026-09-02: `design.md` typography resolved against a second independent
+  measurement pass (ChatGPT) plus fresh visual re-checks of the source
+  screenshots, closing prior ambiguities: inline text-links use only
+  `#242424` (no separate muted/back-link color); `.hf-type-tab` differs
+  active/inactive by color only, never weight (confirmed against
+  `Startside.png`); social-login labels are weight 700 (confirmed against
+  `Log-in.png`, same weight as adjacent CTA buttons); a new
+  `.hf-type-progress-active` (600, `#035624`) and `.hf-type-progress-inactive`
+  (400, `#828282`) pair was added for onboarding step indicators (confirmed
+  against `Oprettelsesflow.png`); `.hf-type-page-title` and
+  `.hf-type-category-title` are centered by default app-wide (not a
+  auth-only variant) — this changes existing left-aligned page headings and
+  must be applied when those screens are next touched.
+- 2026-09-02: Standing rule — the appbar's closable-page action is always a
+  back arrow (←), never an ✕/cross, anywhere in the app. This overrides
+  `docs/UI.md`'s prior wording (now corrected) which had specified a cross
+  icon; no shipped code used a cross in the appbar yet, so this was a
+  forward decision, not a fix. Matches the user's separately stated global
+  preference (back arrow over cross for close/back actions in any project).

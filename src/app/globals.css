@@ -9,24 +9,58 @@
   --text-secondary: #6b6a65;
   --text-muted: #a3a29c;
 
-  /* HelloFresh-inspireret designsystem — bruges uden for forsiden/drejehjulet */
-  --hf-green: #17794a;
-  --hf-green-dark: #0f5c38;
+  /* Målt HelloFresh-palette, jf. design.md afsnit 3. */
+  --hf-color-page: #faf8f3;
+  --hf-color-surface: #ffffff;
+  --hf-color-card: #eee9df;
+  --hf-color-nav: #dfd9cc;
+  --hf-color-nav-legacy: #e0d9cb;
+  --hf-color-white: #ffffff;
+  --hf-color-brand: #067a46;
+  --hf-color-appbar: #35784a;
+  --hf-color-progress-dark: #035624;
+  --hf-color-progress: #007838;
+  --hf-color-text: #242424;
+  --hf-color-action: #232323;
+  --hf-color-action-hover: #353535;
+  --hf-color-action-active: #4b4b4b;
+  --hf-color-secondary-hover: #e3e3e3;
+  --hf-color-secondary-active: #d2d2d2;
+  --hf-color-text-secondary: #656565;
+  --hf-color-inactive: #828282;
+  --hf-color-placeholder: #c1c0be;
+  --hf-color-disabled: #a6a29f;
+  --hf-color-line: #afadaa;
+  --hf-color-field-border: #7d7561;
+  --hf-color-field-hover: #615c50;
+  --hf-color-field-focus: #4a463d;
+  --hf-color-google: #4285f4;
+  --hf-color-facebook: #00178c;
+
+  /* Bevidste Hello Cal-undtagelser (ikke fra HelloFresh-referencen) */
+  --hf-color-positive: #a3e635;
+  --hf-color-danger: #a3271f;
+  --hf-color-overlay: rgb(35 35 35 / 40%);
+
+  /* Legacy-navne — pegede tidligere på ikke-målte farver, peger nu på de
+     korrekte tokens ovenfor, så eksisterende kode ikke skal migreres på én gang. */
+  --hf-green: var(--hf-color-brand);
+  --hf-green-dark: var(--hf-color-progress-dark);
   --hf-green-light: #8fd6ac;
-  --hf-cream: #f3efe2;
-  --hf-tan: #eae3d1;
-  --hf-tan-dark: #ded5bc;
-  --hf-black: #1a1a17;
-  --hf-white: #ffffff;
+  --hf-cream: var(--hf-color-page);
+  --hf-tan: var(--hf-color-card);
+  --hf-tan-dark: var(--hf-color-nav);
+  --hf-black: var(--hf-color-action);
+  --hf-white: var(--hf-color-white, #ffffff);
   --hf-gray-light: #e4e2d8;
-  --hf-gray: #9a988f;
-  --hf-gray-dark: #6b6a65;
-  --hf-red-dark: #a3271f;
+  --hf-gray: var(--hf-color-inactive);
+  --hf-gray-dark: var(--hf-color-text-secondary);
+  --hf-red-dark: var(--hf-color-danger);
   --hf-green-muted: #6fa584;
   --hf-red-muted: #b98077;
-  --hf-gray-border: #dbd9cd;
-  --hf-fab: #232323;
-  --hf-lime: #a3e635;
+  --hf-gray-border: var(--hf-color-line);
+  --hf-fab: var(--hf-color-action);
+  --hf-lime: var(--hf-color-positive);
 
   /* SF Pro (systemfont på Apple), jf. hellofresh_typografi_og_farver.txt.
      SF Pro Display til overskrifter, SF Pro Text til brødtekst/UI — begge
@@ -60,7 +94,7 @@
   --color-hf-gray-border: var(--hf-gray-border);
   --color-hf-fab: var(--hf-fab);
   --color-hf-lime: var(--hf-lime);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-hf-body);
   --font-mono: var(--font-geist-mono);
   --font-hf-heading: var(--font-hf-heading);
   --font-hf-body: var(--font-hf-body);
@@ -127,6 +161,197 @@ button,
   font-weight: 700;
 }
 
+/* ---- Bindende tekstroller, jf. design.md §4.2. Nye klasser — erstatter
+   gradvist ad-hoc text-[Npx]/font-medium-brug pr. side, én skærm ad gangen. ---- */
+.hf-type-hero {
+  margin: 0;
+  font-family: var(--font-hf-heading);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 38px;
+  color: var(--hf-color-text);
+  text-align: left;
+}
+
+.hf-type-page-title {
+  margin: 0;
+  font-family: var(--font-hf-heading);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 29px;
+  color: var(--hf-color-text);
+  text-align: center;
+}
+
+.hf-type-nav-title {
+  margin: 0;
+  font-family: var(--font-hf-heading);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 24px;
+  color: var(--hf-color-white, #ffffff);
+  text-align: center;
+}
+
+.hf-type-section-title {
+  margin: 0;
+  font-family: var(--font-hf-heading);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 24px;
+  color: var(--hf-color-text);
+  text-align: left;
+}
+
+.hf-type-category-title {
+  margin: 0;
+  font-family: var(--font-hf-heading);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 22px;
+  color: #464646;
+  text-align: center;
+}
+
+.hf-type-body-lg {
+  margin: 0;
+  font-family: var(--font-hf-body);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 29px;
+  color: var(--hf-color-text);
+}
+
+.hf-type-body {
+  margin: 0;
+  font-family: var(--font-hf-body);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 25px;
+  color: var(--hf-color-text);
+}
+
+.hf-type-body-sm {
+  margin: 0;
+  font-family: var(--font-hf-body);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  color: var(--hf-color-text);
+}
+
+.hf-type-caption {
+  margin: 0;
+  font-family: var(--font-hf-body);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 18px;
+  color: var(--hf-color-text-secondary);
+}
+
+.hf-type-progress-active {
+  margin: 0;
+  font-family: var(--font-hf-body);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  color: var(--hf-color-progress-dark);
+}
+
+.hf-type-progress-inactive {
+  margin: 0;
+  font-family: var(--font-hf-body);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 18px;
+  color: var(--hf-color-inactive);
+}
+
+.hf-type-label {
+  margin: 0;
+  font-family: var(--font-hf-body);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--hf-color-text);
+}
+
+.hf-type-button {
+  margin: 0;
+  font-family: var(--font-hf-body);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 24px;
+  text-align: center;
+}
+
+.hf-type-input {
+  margin: 0;
+  font-family: var(--font-hf-body);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 24px;
+  color: var(--hf-color-text);
+}
+
+.hf-type-input::placeholder {
+  color: var(--hf-color-placeholder);
+  opacity: 1;
+}
+
+.hf-type-placeholder {
+  margin: 0;
+  font-family: var(--font-hf-body);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  color: var(--hf-color-placeholder);
+}
+
+.hf-type-tab {
+  margin: 0;
+  font-family: var(--font-hf-body);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  text-align: center;
+}
+
+/* ---- Appbar-shell, jf. design.md §6.1/§9.3. Fast 44/1fr/44px-slotgrid, så
+   titlen aldrig flytter sig, uanset om en side har et venstre-/højre-ikon. ---- */
+.hf-appbar {
+  display: grid;
+  min-height: calc(52px + env(safe-area-inset-top, 0px));
+  flex: 0 0 auto;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  align-items: center;
+  padding: env(safe-area-inset-top, 0px) 16px 0;
+  color: var(--hf-color-white);
+}
+
+.hf-appbar--brand {
+  background: var(--hf-color-brand);
+}
+
+.hf-appbar--main {
+  background: var(--hf-color-appbar);
+}
+
+.hf-appbar__slot {
+  display: flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+}
+
+.hf-appbar__title {
+  overflow: hidden;
+  color: var(--hf-color-white);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* Knapper */
 /* Padding er ikke sat her med vilje — angiv altid px- og py- på selve elementet,
    så knappen kan bruges i både store (fuld bredde) og små (inline) sammenhænge. */
@@ -135,7 +360,7 @@ button,
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 9999px;
+  border-radius: 8px;
   background: var(--hf-black);
   color: var(--hf-white);
   font-weight: 700;
@@ -146,7 +371,7 @@ button,
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 9999px;
+  border-radius: 8px;
   background: transparent;
   border: 1.5px solid var(--hf-black);
   color: var(--hf-black);
@@ -170,24 +395,27 @@ button,
   outline-offset: -2px;
 }
 
-/* Søgefelt */
+/* Søgefelt, jf. design.md §6.5: 48px høj, radius 8px, kant i --hf-color-line. */
 .hf-search {
   font-family: var(--font-hf-body);
   display: flex;
+  height: 48px;
   align-items: center;
-  gap: 0.5rem;
-  border-radius: 9999px;
-  border: 1px solid var(--hf-tan-dark);
+  gap: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--hf-gray-border);
   background: var(--hf-white);
   color: var(--hf-black);
-  padding: 0.65rem 1rem;
+  padding: 0 1rem;
 }
 
 .hf-search input {
   flex: 1;
+  height: 100%;
   background: transparent;
   outline: none;
-  font-size: 0.9375rem;
+  font-size: 17px;
+  line-height: 24px;
 }
 
 .hf-search input::placeholder {

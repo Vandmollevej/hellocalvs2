@@ -120,7 +120,7 @@ function SoegContent() {
         {showRecentlyAdded && (
           <>
             <p className="text-xs font-bold text-hf-black">Tidligere tilføjet</p>
-            <div className="overflow-hidden rounded-2xl bg-hf-tan">
+            <div className="overflow-hidden rounded-[8px] bg-hf-tan">
               {recentlyAdded.map((r) => (
                 <ResultRow key={r.id} id={r.id} title={r.title} image={r.image} forDish={forDish} />
               ))}
@@ -131,7 +131,7 @@ function SoegContent() {
         <p className="text-xs font-bold text-hf-black">
           {query.trim() ? "Søgeresultater" : "Alle varer"}
         </p>
-        <div className="overflow-hidden rounded-2xl bg-hf-tan">
+        <div className="overflow-hidden rounded-[8px] bg-hf-tan">
           {resultsState === "loading" && (
             <p className="px-4 py-6 text-center text-sm text-hf-black opacity-60">Søger …</p>
           )}

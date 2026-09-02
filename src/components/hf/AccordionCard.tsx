@@ -1,8 +1,9 @@
 import Link from "next/link";
+import { HfChevron } from "@/components/hf/HfChevron";
 
 export function AccordionCard({ children }: { children: React.ReactNode }) {
   return (
-    <div className="overflow-hidden rounded-2xl bg-hf-tan">{children}</div>
+    <div className="overflow-hidden rounded-[8px] bg-hf-tan">{children}</div>
   );
 }
 
@@ -19,16 +20,14 @@ export function ChevronRow({
   href?: string;
   onClick?: () => void;
 }) {
-  const className = `flex w-full items-center gap-3 px-4 py-4 text-left ${
+  const className = `flex h-12 w-full items-center gap-4 px-4 text-left ${
     divider ? "border-b border-hf-tan-dark" : ""
   }`;
   const content = (
     <>
-      <span className="text-hf-black">{icon}</span>
-      <span className="flex-1 text-[15px] font-medium text-hf-black">
-        {label}
-      </span>
-      <span className="text-hf-black">›</span>
+      <span className="flex h-5 w-5 items-center justify-center text-hf-black">{icon}</span>
+      <span className="hf-type-body flex-1 truncate">{label}</span>
+      <HfChevron className="text-hf-black" />
     </>
   );
 
