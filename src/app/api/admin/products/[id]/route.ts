@@ -21,6 +21,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
   const name = typeof body.name === "string" ? body.name.trim() : undefined;
   const brandName = typeof body.brand === "string" ? body.brand.trim() : undefined;
+  const imageUrl = typeof body.imageUrl === "string" ? body.imageUrl.trim() : undefined;
   const kcal = parseNumber(body.kcalPer100g);
   const protein = parseNumber(body.proteinPer100g);
   const carbs = parseNumber(body.carbsPer100g);
@@ -42,12 +43,13 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     data: {
       ...(name !== undefined ? { name } : {}),
       ...(brandId !== undefined ? { brandId } : {}),
+      ...(imageUrl !== undefined ? { imageUrl: imageUrl || null } : {}),
       ...(kcal !== undefined ? { kcalPer100g: kcal } : {}),
       ...(protein !== undefined ? { proteinPer100g: protein } : {}),
       ...(carbs !== undefined ? { carbsPer100g: carbs } : {}),
       ...(fat !== undefined ? { fatPer100g: fat } : {}),
     },
-    include: { brand: true },
+    include: { brand: true, images: { orderBy: { order: "asc" } } },
   });
   return NextResponse.json({ product });
 }

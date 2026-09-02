@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { ProductImageGallery } from "./ProductImageGallery";
 
 type Product = {
   id: string;
   name: string;
   brand: { name: string } | null;
   imageUrl: string | null;
+  images: { id: string; url: string }[];
   kcalPer100g: number;
   proteinPer100g: number;
   carbsPer100g: number;
@@ -92,7 +94,9 @@ export function ProductDetailEditor({ product }: { product: Product }) {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_200px]">
+    <div className="flex flex-col gap-4">
+      <ProductImageGallery productId={product.id} imageUrl={product.imageUrl} images={product.images} />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_200px]">
       <div className="rounded-lg border border-border-strong bg-surface-2 p-4">
         <div className="grid grid-cols-2 gap-3">
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
@@ -220,6 +224,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
             {mergeError && <p className="mt-2 text-xs text-hf-red-dark">{mergeError}</p>}
           </div>
         )}
+      </div>
       </div>
     </div>
   );

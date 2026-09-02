@@ -8,7 +8,10 @@ export default async function AdminProductDetailPage({ params }: { params: Promi
   if (!admin) redirect("/admin/login");
 
   const { id } = await params;
-  const product = await prisma.product.findUnique({ where: { id }, include: { brand: true } });
+  const product = await prisma.product.findUnique({
+    where: { id },
+    include: { brand: true, images: { orderBy: { order: "asc" } } },
+  });
   if (!product) notFound();
 
   return (
