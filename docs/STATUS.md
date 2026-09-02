@@ -913,6 +913,20 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
   /logind, /logind/land, and /tilmeld at 402px once no other session's dev
   server is active.
 
+- 2026-09-02: Fixed the remaining 8px-radius (DES-004) violations on screens
+  not touched by the concurrent statistik/profil-focused session: /madvarer
+  (HelloFresh promo card, product-list container), /soeg (recently-added and
+  results containers), /kamera (camera preview frame -> 12px radius-md since
+  it's an image frame not a card; the barcode-lookup status card -> 8px),
+  /settings/integrationer (notice banner, provider cards, device-token rows,
+  device-code display block), /settings/betaling (placeholder card). Left
+  the `rounded-full` status-badge pills alone (pills are a legitimate
+  radius-round use, not a violation). `npm run lint` and `npm run build`
+  passed. Live verification still blocked by the same concurrent session's
+  Next.js dev-server directory lock (PID unchanged) — re-verify /madvarer,
+  /soeg, /kamera, /settings/integrationer, /settings/betaling once free,
+  alongside the auth screens noted above.
+
 ## Next work
 
 1. Implement the pending UI/design requirements in
