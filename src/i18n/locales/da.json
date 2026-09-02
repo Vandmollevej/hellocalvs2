@@ -1,0 +1,53 @@
+{
+  "common": {
+    "back": "Tilbage",
+    "cancel": "Afbryd",
+    "continue": "Fortsæt",
+    "or": "eller",
+    "chooseCountry": "Vælg dit land"
+  },
+  "velkommen": {
+    "welcome": "Velkommen!",
+    "headline1": "Indblik i dine madvaner",
+    "headline2": "Hold dig sund med Hello Cal!",
+    "subtext": "Den nemmeste app til at registrere og holde styr på dit kalorieindtag.",
+    "signUp": "Tilmeld dig",
+    "logIn": "Log ind"
+  },
+  "logind": {
+    "title": "Tilmeld dig / Log ind",
+    "country": "Danmark",
+    "continueWithGoogle": "Fortsæt med Google",
+    "continueWithApple": "Fortsæt med Apple",
+    "continueWithFacebook": "Fortsæt med Facebook",
+    "emailPlaceholder": "E-mailadresse"
+  },
+  "land": {
+    "title": "Vælg dit land",
+    "countries": {
+      "australien": "Australien",
+      "belgien": "Belgien",
+      "canada": "Canada",
+      "danmark": "Danmark",
+      "frankrig": "Frankrig",
+      "hollandEngelsk": "Holland (engelsk)",
+      "irland": "Irland",
+      "italien": "Italien",
+      "luxembourg": "Luxembourg",
+      "nederlandene": "Nederlandene (hollandsk)",
+      "newZealand": "New Zealand",
+      "norge": "Norge",
+      "schweiz": "Schweiz",
+      "spanien": "Spanien",
+      "storbritannien": "Storbritannien",
+      "sverige": "Sverige",
+      "tyskland": "Tyskland",
+      "usa": "USA",
+      "oestrig": "Østrig"
+    }
+  },
+  "tilmeld": {
+    "comingSoonTitle": "Tilmeldingsflow kommer snart",
+    "comingSoonBody": "Denne del er endnu ikke bygget."
+  }
+}

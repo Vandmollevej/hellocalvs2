@@ -2,34 +2,34 @@ import Image from "next/image";
 import Link from "next/link";
 import { IconArrowLeft, IconCheck } from "@tabler/icons-react";
 
-// Rent visuelt forberedt liste — ingen sprog-/landevalgslogik endnu.
-// Rækkefølgen følger de leverede flagbilleder i "Billeder til brug".
-// "Danmark" er markeret som det valgte land, indtil rigtigt landevalg bygges.
-const SELECTED_COUNTRY = "danmark";
+// Purely visually prepared list — no language/country selection logic yet.
+// The order follows the flag images supplied in "Billeder til brug".
+// "Denmark" is marked as the selected country until real country selection is built.
+const SELECTED_COUNTRY = "denmark";
 
 const COUNTRIES = [
-  { label: "Australien", flag: "australien" },
-  { label: "Belgien", flag: "belgien" },
+  { label: "Australien", flag: "australia" },
+  { label: "Belgien", flag: "belgium" },
   { label: "Canada", flag: "canada" },
-  { label: "Danmark", flag: "danmark" },
-  { label: "Frankrig", flag: "frankrig" },
-  { label: "Holland (engelsk)", flag: "holland-engelsk" },
-  { label: "Irland", flag: "irland" },
-  { label: "Italien", flag: "italien" },
+  { label: "Danmark", flag: "denmark" },
+  { label: "Frankrig", flag: "france" },
+  { label: "Holland (engelsk)", flag: "netherlands-english" },
+  { label: "Irland", flag: "ireland" },
+  { label: "Italien", flag: "italy" },
   { label: "Luxembourg", flag: "luxembourg" },
-  { label: "Nederlandene (hollandsk)", flag: "nederlandene" },
+  { label: "Nederlandene (hollandsk)", flag: "netherlands" },
   { label: "New Zealand", flag: "new-zealand" },
-  { label: "Norge", flag: "norge" },
-  { label: "Schweiz", flag: "schweiz" },
-  { label: "Spanien", flag: "spanien" },
-  { label: "Storbritannien", flag: "storbritannien" },
-  { label: "Sverige", flag: "sverige" },
-  { label: "Tyskland", flag: "tyskland" },
+  { label: "Norge", flag: "norway" },
+  { label: "Schweiz", flag: "switzerland" },
+  { label: "Spanien", flag: "spain" },
+  { label: "Storbritannien", flag: "united-kingdom" },
+  { label: "Sverige", flag: "sweden" },
+  { label: "Tyskland", flag: "germany" },
   { label: "USA", flag: "usa" },
-  { label: "Østrig", flag: "oestrig" },
+  { label: "Østrig", flag: "austria" },
 ];
 
-export default function VaelgLandPage() {
+export default function CountryPickerPage() {
   return (
     <div className="flex h-full min-h-full flex-col bg-hf-cream">
       <div
@@ -39,7 +39,7 @@ export default function VaelgLandPage() {
         <span className="hf-appbar__slot" aria-hidden="true" />
         <h1 className="hf-type-nav-title hf-appbar__title">Vælg dit land</h1>
         <div className="hf-appbar__slot">
-          <Link href="/logind" aria-label="Tilbage" className="text-hf-white">
+          <Link href="/login" aria-label="Tilbage" className="text-hf-white">
             <IconArrowLeft size={24} />
           </Link>
         </div>

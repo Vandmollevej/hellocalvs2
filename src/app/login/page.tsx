@@ -11,7 +11,7 @@ export default function LogIndPage() {
         className="flex items-center justify-between bg-hf-green px-4 pb-4"
         style={{ paddingTop: "max(16px, env(safe-area-inset-top, 0px))" }}
       >
-        <Link href="/velkommen" className="hf-type-body text-hf-white">
+        <Link href="/welcome" className="hf-type-body text-hf-white">
           Afbryd
         </Link>
         <p className="hf-type-nav-title">
@@ -24,7 +24,7 @@ export default function LogIndPage() {
         <p className="hf-type-body-sm">Vælg dit land</p>
         <div className="mt-2 h-px bg-hf-gray-border" />
         <Link
-          href="/logind/land"
+          href="/login/country"
           className="flex h-12 items-center justify-between border-b border-hf-gray-border"
         >
           <div className="hf-type-body flex items-center gap-3">

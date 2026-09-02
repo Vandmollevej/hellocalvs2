@@ -55,13 +55,13 @@ export default function VelkommenPage() {
 
       <div className="flex flex-col gap-3 px-4 pb-8 pt-4">
         <Link
-          href="/tilmeld"
+          href="/signup"
           className="hf-btn-primary hf-type-button h-12 w-full"
         >
           Tilmeld dig
         </Link>
         <Link
-          href="/logind"
+          href="/login"
           className="hf-btn-secondary hf-type-button h-12 w-full"
         >
           Log ind

@@ -47,7 +47,7 @@ export default function TilmeldPage() {
         <span className="hf-appbar__slot" aria-hidden="true" />
         <h1 className="hf-type-nav-title hf-appbar__title">Opret konto</h1>
         <div className="hf-appbar__slot">
-          <Link href="/velkommen" aria-label="Tilbage" className="text-hf-white">
+          <Link href="/welcome" aria-label="Tilbage" className="text-hf-white">
             <IconArrowLeft size={24} />
           </Link>
         </div>
