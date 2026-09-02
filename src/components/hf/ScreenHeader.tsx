@@ -1,46 +1,47 @@
 import Link from "next/link";
-import { IconChevronLeft } from "@tabler/icons-react";
+import { IconArrowLeft } from "@tabler/icons-react";
 
 export function ScreenHeader({
   title,
   icon,
   onBack,
   rightAction,
+  variant = "brand",
 }: {
   title: string;
   icon?: React.ReactNode;
   onBack?: () => void;
   rightAction?: React.ReactNode;
+  variant?: "brand" | "main";
 }) {
   return (
-    <div className="relative flex flex-col items-center justify-end bg-hf-green px-4 pb-4 pt-9">
-      <Link
-        href="/profil"
-        aria-label="Åbn mine oplysninger"
-        className="absolute left-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-hf-tan text-xs font-bold text-hf-black"
-      >
-        PT
-      </Link>
-      {onBack && (
-        <button
-          onClick={onBack}
-          aria-label="Tilbage"
-          className="absolute left-4 bottom-4 text-hf-white"
-        >
-          <IconChevronLeft size={26} />
-        </button>
-      )}
-      <div className="flex items-center gap-2">
+    <div
+      className={`hf-appbar ${variant === "main" ? "hf-appbar--main" : "hf-appbar--brand"}`}
+    >
+      <div className="hf-appbar__slot">
+        <Link href="/profil" aria-label="Åbn mine oplysninger">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-hf-tan text-xs font-bold text-hf-black">
+            PT
+          </span>
+        </Link>
+      </div>
+      <div className="flex items-center justify-center gap-2 overflow-hidden">
         {icon && (
-          <span className="flex text-hf-white" aria-hidden="true">
+          <span className="flex shrink-0 text-hf-white" aria-hidden="true">
             {icon}
           </span>
         )}
-        <h1 className="hf-heading text-lg text-hf-white">{title}</h1>
+        <h1 className="hf-type-nav-title hf-appbar__title">{title}</h1>
       </div>
-      {rightAction && (
-        <div className="absolute bottom-3 right-3">{rightAction}</div>
-      )}
+      <div className="hf-appbar__slot">
+        {onBack ? (
+          <button onClick={onBack} aria-label="Tilbage" className="text-hf-white">
+            <IconArrowLeft size={24} />
+          </button>
+        ) : (
+          rightAction
+        )}
+      </div>
     </div>
   );
 }
