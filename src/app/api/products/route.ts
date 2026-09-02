@@ -5,9 +5,9 @@ import { searchOpenFoodFacts } from "@/lib/openFoodFacts";
 import { barcodeMatchesRegion } from "@/lib/regions";
 import { getDemoUser } from "@/lib/demo-user";
 
-// Henter Open Food Facts-produkter globalt live for søgeord uden nok lokale
-// resultater, og gemmer dem som PENDING (samme mønster som stregkodeopslag i
-// /api/products/lookup/[barcode]), så de kan søges igen uden ny live-kald.
+// Fetches Open Food Facts products globally live for search terms without enough local
+// results, and saves them as PENDING (same pattern as the barcode lookup in
+// /api/products/lookup/[barcode]), so they can be searched again without a new live call.
 async function importMatchingOffProducts(q: string) {
   try {
     const offProducts = await searchOpenFoodFacts(q);
@@ -45,17 +45,17 @@ async function importMatchingOffProducts(q: string) {
       });
     }
   } catch (error) {
-    // Live OFF-søgning er et supplement — fejler ikke selve produktsøgningen.
+    // Live OFF search is a supplement — does not fail the actual product search.
     console.error("Open Food Facts search import failed", error);
   }
 }
 
-// GET /api/products?q=rugbrød — søgning i egen produktdatabase, suppleret med
-// en global live søgning i Open Food Facts hvis lokale resultater er
-// sparsomme. Resultater med stregkode fra brugerens valgte region (se
-// /profil/indstillinger) prioriteres øverst.
-// ?source=HELLOFRESH filtrerer til én ekstern kilde (fx til at browse hele
-// HelloFresh-kataloget); ?take=N overstyrer standardgrænsen på 20 (maks. 200).
+// GET /api/products?q=rugbrød — search in our own product database, supplemented by
+// a global live search in Open Food Facts if local results are
+// sparse. Results with a barcode from the user's selected region (see
+// /profile/settings) are prioritized at the top.
+// ?source=HELLOFRESH filters to a single external source (e.g. to browse the entire
+// HelloFresh catalog); ?take=N overrides the default limit of 20 (max 200).
 export async function GET(req: Request) {
   const params = new URL(req.url).searchParams;
   const q = params.get("q")?.trim() ?? "";
@@ -110,9 +110,9 @@ function parsePositiveNumber(value: unknown): number | null {
   return Number.isFinite(num) && num >= 0 ? num : null;
 }
 
-// POST /api/products — opret et produkt manuelt, fx fra et foto af en
-// næringsdeklaration (se /kamera?mode=naering). Oprettes som PENDING,
-// samme status som andre brugerbidragede produkter (se docs/ADMIN.md).
+// POST /api/products — create a product manually, e.g. from a photo of a
+// nutrition label (see /camera?mode=naering). Created as PENDING,
+// the same status as other user-contributed products (see docs/ADMIN.md).
 export async function POST(req: Request) {
   let body: Record<string, unknown>;
   try {

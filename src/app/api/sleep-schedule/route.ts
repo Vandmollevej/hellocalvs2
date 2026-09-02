@@ -20,8 +20,8 @@ export async function GET() {
   }
 }
 
-// PUT /api/sleep-schedule — upsert (eller sletter, hvis begge tider mangler)
-// tiderne for én ugedag ad gangen, jf. UI-princippet om ingen "Gem"-knap.
+// PUT /api/sleep-schedule — upserts (or deletes, if both times are missing)
+// the times for one weekday at a time, per the UI principle of no "Save" button.
 export async function PUT(req: Request) {
   const body = await req.json();
   const { weekday, bedtime, wakeTime } = body as {

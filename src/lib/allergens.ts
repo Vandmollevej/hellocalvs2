@@ -1,5 +1,5 @@
-// De 14 EU-mærkningspligtige allergener (forordning 1169/2011, bilag II).
-// `offTag` matcher Open Food Facts' `allergens_tags`-værdier (uden "en:"-præfiks).
+// The 14 EU-mandatory-labeling allergens (regulation 1169/2011, annex II).
+// `offTag` matches Open Food Facts' `allergens_tags` values (without the "en:" prefix).
 export const ALLERGEN_CATALOG = [
   { key: "gluten", offTag: "gluten", label: "Gluten" },
   { key: "crustaceans", offTag: "crustaceans", label: "Skaldyr" },
@@ -30,7 +30,7 @@ export function labelForAllergen(key: string): string {
   return KEY_TO_LABEL.get(key) ?? key;
 }
 
-// Open Food Facts leverer tags som "en:milk", "en:sesame-seeds" osv.
+// Open Food Facts provides tags like "en:milk", "en:sesame-seeds" etc.
 export function mapOffAllergenTags(tags: unknown): string[] {
   if (!Array.isArray(tags)) return [];
   const keys = new Set<string>();

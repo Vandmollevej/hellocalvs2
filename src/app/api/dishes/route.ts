@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getDemoUser } from "@/lib/demo-user";
 
-// GET /api/dishes — brugerens egne retter (nyeste først).
+// GET /api/dishes — the user's own dishes (newest first).
 export async function GET() {
   try {
     const user = await getDemoUser();
@@ -23,9 +23,9 @@ export async function GET() {
 
 type IngredientInput = { productId: string; grams: number };
 
-// POST /api/dishes — opret en egen ret ud fra en liste af ingredienser
-// (produkt + gram), tilføjet via søgning/stregkode/manuel oprettelse på
-// samme måde som en almindelig madvare (se /opret-ret).
+// POST /api/dishes — create a custom dish from a list of ingredients
+// (product + grams), added via search/barcode/manual creation in the
+// same way as a regular food item (see /create-dish).
 export async function POST(req: Request) {
   let body: Record<string, unknown>;
   try {

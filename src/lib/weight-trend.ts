@@ -1,13 +1,13 @@
-// AI-estimeret "Trendvægt" (docs/SPECIFICATION.md §5: "Vægtvisning arbejder
-// med Målt vægt, Trendvægt (AI-beregnet) og Forventet vægt"). Beregnes altid
-// on-the-fly ud fra WeightEntry — gemmes aldrig som sin egen række, så målte
-// data ikke forurenes.
+// AI-estimated "trend weight" (docs/SPECIFICATION.md §5: "Weight display works
+// with Measured weight, Trend weight (AI-calculated) and Expected weight").
+// Always computed on-the-fly from WeightEntry — never stored as its own row, so
+// measured data isn't contaminated.
 //
-// Metode: separate eksponentielt udjævnede gennemsnit for morgen- og
-// aften-vejninger (brugerens eget udsvingsmønster over døgnet), med et lille
-// fast fradrag når der er registreret mad tæt på vejningstidspunktet (mad
-// vejer typisk 0,3-0,6 kg midlertidigt). Dette er letvægts statistik, ikke en
-// ML-model — se docs/DECISIONS.md.
+// Method: separate exponentially smoothed averages for morning and evening
+// weigh-ins (the user's own daily fluctuation pattern), with a small fixed
+// deduction when food has been logged close to the weigh-in time (food
+// typically weighs 0.3-0.6 kg temporarily). This is lightweight statistics, not
+// an ML model — see docs/DECISIONS.md.
 
 export type WeightSample = {
   weightKg: number;
@@ -37,7 +37,7 @@ function ema(previous: number | null, value: number) {
   return previous === null ? value : SMOOTHING_ALPHA * value + (1 - SMOOTHING_ALPHA) * previous;
 }
 
-/** Returnerer null hvis der ikke er nok data til et pålideligt estimat endnu. */
+/** Returns null if there isn't enough data yet for a reliable estimate. */
 export function computeTrendWeight(entries: WeightSample[], meals: MealSample[] = []): TrendPoint[] | null {
   if (entries.length < MIN_TREND_SAMPLES) return null;
 

@@ -31,9 +31,9 @@ export async function POST(req: Request) {
     meal: "BEFORE" | "AFTER" | "UNKNOWN";
     timeOfDay: "MORNING" | "EVENING" | "UNKNOWN";
     note?: string;
-    // Valgfri overstyring af tidspunktet, samme mønster som
-    // Registration.createdAt — bruges til at bagudregistrere historiske
-    // vejninger (fx ved oprettelse af en testbruger).
+    // Optional override of the timestamp, same pattern as
+    // Registration.createdAt — used to backdate historical
+    // weigh-ins (e.g. when creating a test user).
     weighedAt?: string;
   };
 

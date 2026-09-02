@@ -3,15 +3,15 @@ import { prisma } from "@/lib/prisma";
 
 // POST /api/ai/interpret-meal — { transcript: string }
 //
-// Omsætter dansk taleinput til madvarer og mængder, jf. docs/AI.md
-// ("Dansk taleinput til madlogning ... AI omsætter til mængder, som
-// brugeren kan rette"). Skriver aldrig noget til databasen selv — AI
-// foreslår kun, brugeren godkender/retter i UI'et og gemmer eksplicit
+// Converts Danish speech input into food items and amounts, per docs/AI.md
+// ("Danish speech input for meal logging ... AI converts to amounts that
+// the user can correct"). Never writes anything to the database itself — AI
+// only suggests, the user approves/corrects in the UI and saves explicitly
 // via /api/registrations.
 //
-// For hver genkendt madvare slås der først op i vores egen database
-// (samme princip som stregkode-flowet); kun uden match bruges AI'ens
-// egne makro-estimater, tydeligt markeret som estimat.
+// For each recognized food item, we first look it up in our own database
+// (same principle as the barcode flow); only without a match are the AI's
+// own macro estimates used, clearly marked as an estimate.
 
 type AiItem = {
   name: string;

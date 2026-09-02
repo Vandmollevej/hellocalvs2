@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getDemoUser } from "@/lib/demo-user";
 
-// GET /api/health-metrics — læsning af data indsendt via
-// POST /api/integrations/healthkit/ingest (se docs/HEALTHKIT_COMPANION.md).
-// Bruges af Statistik til steps/vand/forbrændt-kortene (src/lib/stat-cards.ts).
+// GET /api/health-metrics — reads data submitted via
+// POST /api/integrations/healthkit/ingest (see docs/HEALTHKIT_COMPANION.md).
+// Used by Statistics for the steps/water/burned cards (src/lib/stat-cards.ts).
 export async function GET() {
   try {
     const user = await getDemoUser();

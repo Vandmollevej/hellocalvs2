@@ -1,6 +1,6 @@
-// Understøttede regioner til personlige indstillinger. `barcodePrefixes` er
-// landets GS1-stregkodepræfikser, brugt til at prioritere søgeresultater fra
-// egen database og Open Food Facts (se src/app/api/products/route.ts).
+// Supported regions for personal settings. `barcodePrefixes` are the
+// country's GS1 barcode prefixes, used to prioritize search results from
+// our own database and Open Food Facts (see src/app/api/products/route.ts).
 export const REGIONS = [
   { code: "DK", label: "Danmark", barcodePrefixes: ["57"] },
   { code: "SE", label: "Sverige", barcodePrefixes: ["73"] },
@@ -20,7 +20,7 @@ export function isRegionCode(value: string): value is RegionCode {
   return PREFIXES_BY_REGION.has(value);
 }
 
-// True hvis stregkoden starter med et af regionens GS1-præfikser.
+// True if the barcode starts with one of the region's GS1 prefixes.
 export function barcodeMatchesRegion(barcode: string, region: string): boolean {
   const prefixes = PREFIXES_BY_REGION.get(region);
   if (!prefixes) return false;

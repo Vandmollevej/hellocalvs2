@@ -84,7 +84,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message ?? "Kunne ikke flette produkterne");
-      router.push(`/admin/produkter/${mergeTarget.id}`);
+      router.push(`/admin/products/${mergeTarget.id}`);
       router.refresh();
     } catch (err) {
       setMergeError(err instanceof Error ? err.message : "Kunne ikke flette produkterne");

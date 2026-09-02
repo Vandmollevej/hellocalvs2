@@ -1,8 +1,8 @@
-// Withings Health API (OAuth2, dokumenteret på developer.withings.com).
-// Brugeren opretter selv en app på https://developer.withings.com/dashboard
-// og sætter WITHINGS_CLIENT_ID/WITHINGS_CLIENT_SECRET samt
-// INTEGRATIONS_REDIRECT_BASE_URL i .env.production. Bruges udelukkende til
-// vægt (smart-vægt), jf. docs/DECISIONS.md.
+// Withings Health API (OAuth2, documented at developer.withings.com).
+// The user creates their own app at https://developer.withings.com/dashboard
+// and sets WITHINGS_CLIENT_ID/WITHINGS_CLIENT_SECRET as well as
+// INTEGRATIONS_REDIRECT_BASE_URL in .env.production. Used exclusively for
+// weight (smart scale), per docs/DECISIONS.md.
 
 const AUTHORIZE_URL = "https://account.withings.com/oauth2_user/authorize2";
 const TOKEN_URL = "https://wbsapi.withings.net/v2/oauth2";
@@ -79,7 +79,7 @@ export async function refreshWithingsToken(refreshToken: string): Promise<Within
   });
 }
 
-// Withings' egen "meastype" for vægt er 1; enheden er value * 10^unit kg.
+// Withings' own "meastype" for weight is 1; the unit is value * 10^unit kg.
 type WithingsMeasureGroup = {
   date: number; // unix-sekunder
   measures: { value: number; type: number; unit: number }[];

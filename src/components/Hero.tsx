@@ -5,8 +5,8 @@ import { AddButton, HERO_HEIGHT } from "./AddButton";
 import { StatsWheel } from "./StatsWheel";
 import { OnboardingSpotlight } from "./OnboardingSpotlight";
 
-// Antagelse for prototypen: brugeren er ny og har ikke set onboarding før.
-// I appen skal dette komme fra brugerens faktiske onboarding-status.
+// Assumption for the prototype: the user is new and hasn't seen onboarding before.
+// In the app this should come from the user's actual onboarding status.
 const IS_NEW_USER = true;
 
 export function Hero() {

@@ -19,7 +19,7 @@ export function ScreenHeader({
       className={`hf-appbar ${variant === "main" ? "hf-appbar--main" : "hf-appbar--brand"}`}
     >
       <div className="hf-appbar__slot">
-        <Link href="/profil" aria-label="Åbn mine oplysninger">
+        <Link href="/profile" aria-label="Åbn mine oplysninger">
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-hf-tan text-xs font-bold text-hf-black">
             PT
           </span>

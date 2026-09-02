@@ -1,4 +1,4 @@
-// Tidsperioder brugeren kan swipe imellem på de enkelte statistik-kort.
+// Time periods the user can swipe between on the individual stat cards.
 
 export type StatPeriodKey =
   | "today"

@@ -15,10 +15,10 @@ type OnboardingUser = {
   workHoursInCalendarEnabled: boolean;
 };
 
-// Rækkefølgen af trin brugeren faktisk kan møde. "Skiftende arbejdstider" og
-// "daglig registrering" springes automatisk over, hvis brugeren svarer at de
-// har et fast søvnmønster. Se docs/UI.md "Onboarding og hjælp" — kun disse
-// trin er specificeret i dag; flere kan føjes til guiden senere.
+// The order of steps the user can actually encounter. "Shift work" and
+// "daily logging" are automatically skipped if the user answers that they
+// have a regular sleep pattern. See docs/UI.md "Onboarding og hjælp" — only
+// these steps are specified today; more can be added to the wizard later.
 type StepId =
   | "sleep-pattern"
   | "shift-work"

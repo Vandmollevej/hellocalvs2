@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 
-// GET /api/admin/products/search?q=rugbrød — søgning i den godkendte database
-// til admin-redigering (docs/ADMIN.md "Rediger produkter").
+// GET /api/admin/products/search?q=rugbrød — search in the approved database
+// for admin editing (docs/ADMIN.md "Edit products").
 export async function GET(req: Request) {
   const admin = await requireAdminUser();
   if (!admin) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });

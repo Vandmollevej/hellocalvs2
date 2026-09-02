@@ -3,12 +3,12 @@ import { prisma } from "@/lib/prisma";
 
 // POST /api/ai/recognize-hellofresh — { photo: string (data URL) }
 //
-// Genkender hvilken af ugens HelloFresh-retter et foto af et tilberedt måltid
-// mest sandsynligt viser, og kombinerer det med de næringsværdier
-// scripts/hellofresh-import allerede har importeret for den ret (se
-// docs/DECISIONS.md). "Ret nr." kan ikke bruges — det står kun på det
-// fysiske opskriftskort ved levering, ikke på HelloFresh's hjemmeside — så
-// billedgenkendelse er i stedet den primære indgang for HelloFresh-retter.
+// Recognizes which of this week's HelloFresh dishes a photo of a prepared meal
+// most likely shows, and combines it with the nutritional values
+// scripts/hellofresh-import has already imported for that dish (see
+// docs/DECISIONS.md). "Dish no." can't be used — it's only printed on the
+// physical recipe card at delivery, not on HelloFresh's website — so
+// image recognition is instead the primary entry point for HelloFresh dishes.
 
 const RESPONSE_SCHEMA = {
   name: "hellofresh_match",

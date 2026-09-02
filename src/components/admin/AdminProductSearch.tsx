@@ -115,7 +115,7 @@ export function AdminProductSearch() {
       {activeId && (
         <div className="rounded-lg border border-border-strong bg-surface-2 p-4">
           <div className="mb-3 flex justify-end">
-            <a href={`/admin/produkter/${activeId}`} className="text-xs text-hf-green-dark underline">
+            <a href={`/admin/products/${activeId}`} className="text-xs text-hf-green-dark underline">
               Åbn produktside (merge m.m.)
             </a>
           </div>

@@ -8,8 +8,8 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-// HelloFresh-stil: tunge, geometriske overskrifter (nærmeste gratis match til
-// deres "Owners"-brandfont) og en ren humanist sans til UI/brødtekst.
+// HelloFresh style: heavy, geometric headings (closest free match to
+// their "Owners" brand font) and a clean humanist sans for UI/body text.
 const hfHeading = Poppins({
   variable: "--font-hf-heading",
   subsets: ["latin"],

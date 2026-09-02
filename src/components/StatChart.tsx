@@ -8,19 +8,19 @@ export type ChartSeries = {
   label: string;
   color: string;
   values: number[];
-  /** Enhed vist ved siden af serienavnet i vælgeren, fx "kcal" eller "kg". */
+  /** Unit shown next to the series name in the picker, e.g. "kcal" or "kg". */
   unit?: string;
   /**
-   * Optional mål-værdi. Når sat, plottes serien som afvigelse fra målet
-   * (0 = målet ramt) i stedet for rå værdier, og punkterne farves efter
-   * om de ligger under eller over målet.
+   * Optional goal value. When set, the series is plotted as deviation from
+   * the goal (0 = goal hit) instead of raw values, and the points are
+   * colored by whether they are below or above the goal.
    */
   goal?: number;
-  /** Farve brugt for punkter under målet (default: hf-green). */
+  /** Color used for points below the goal (default: hf-green). */
   underGoalColor?: string;
-  /** Farve brugt for punkter over målet (default: hf-black). */
+  /** Color used for points above the goal (default: hf-black). */
   overGoalColor?: string;
-  /** Stiplet linje, fx til et AI-estimat (Trendvægt) i stedet for målte data. */
+  /** Dashed line, e.g. for an AI estimate (trend weight) instead of measured data. */
   dashed?: boolean;
 };
 
@@ -57,7 +57,7 @@ function normalize(values: number[]) {
   });
 }
 
-/** Ligesom normalize, men punkterne afspejler afvigelsen fra `goal` (0 midt på grafen). */
+/** Like normalize, but the points reflect the deviation from `goal` (0 at the middle of the chart). */
 function normalizeDeviation(values: number[], goal: number) {
   const deviations = values.map((value) => (value > 0 ? value - goal : null));
   const maxAbs = Math.max(...deviations.map((d) => (d === null ? 0 : Math.abs(d))), 1);
@@ -73,7 +73,7 @@ function normalizeDeviation(values: number[], goal: number) {
   });
 }
 
-/** Tekst for det seneste datapunkts afvigelse fra målet, fx "342 kcal over mål". */
+/** Text for the latest data point's deviation from the goal, e.g. "342 kcal over goal". */
 function deviationLabel(series: ChartSeries, points: { hasData: boolean; deviation: number }[]) {
   const last = [...points].reverse().find((p) => p.hasData);
   if (!last) return null;
@@ -105,7 +105,7 @@ export function StatChart({
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(enabledKeys));
     } catch {
-      // localStorage utilgængelig (privat browsing e.l.) — ignorér.
+      // localStorage unavailable (private browsing etc.) — ignore.
     }
   }, [enabledKeys]);
 

@@ -6,10 +6,10 @@ import { usePathname, useRouter } from "next/navigation";
 
 const LINKS = [
   { href: "/admin", label: "Oversigt" },
-  { href: "/admin/produkter", label: "Nye produkter" },
-  { href: "/admin/billeder", label: "Billedforslag" },
-  { href: "/admin/advarsler", label: "Advarsler" },
-  { href: "/admin/soeg", label: "Søg" },
+  { href: "/admin/products", label: "Nye produkter" },
+  { href: "/admin/images", label: "Billedforslag" },
+  { href: "/admin/warnings", label: "Advarsler" },
+  { href: "/admin/search", label: "Søg" },
   { href: "/admin/passkeys", label: "Passkeys" },
 ];
 

@@ -40,7 +40,7 @@ const RADIUS = HALF_CIRCLE_RADIUS + ARC_GAP + CIRCLE / 2;
 // shouldn't have to drag all the way out to an icon to register a choice.
 const SELECT_DEAD_ZONE = 14;
 
-// Top to bottom: mikrofon, gryde (egne retter), søg, tallerken (måltid), kamera (produkt).
+// Top to bottom: microphone, pot (own dishes), search, plate (meal), camera (product).
 const ANGLES_DEG = [-70, -35, 0, 35, 70];
 
 export type FabSide = "left" | "right";
@@ -58,11 +58,11 @@ type Action = {
 };
 
 const actions: Action[] = [
-  { key: "mikrofon", href: "/stemme", icon: IconMicrophone, label: "Mikrofon" },
-  { key: "ret", href: "/opret-ret", imageSrc: "/icons/gryde.png", label: "Egne retter" },
-  { key: "soeg", href: "/soeg", icon: IconSearch, label: "Søg" },
-  { key: "maaltid", href: "/kamera?mode=maaltid", imageSrc: "/icons/tallerken-kamera.png", label: "Måltid" },
-  { key: "kamera", href: "/kamera?mode=produkt", icon: IconCamera, label: "Kamera" },
+  { key: "microphone", href: "/voice", icon: IconMicrophone, label: "Mikrofon" },
+  { key: "dish", href: "/create-dish", imageSrc: "/icons/pot.png", label: "Egne retter" },
+  { key: "search", href: "/search", icon: IconSearch, label: "Søg" },
+  { key: "meal", href: "/camera?mode=maaltid", imageSrc: "/icons/plate-camera.png", label: "Måltid" },
+  { key: "camera", href: "/camera?mode=produkt", icon: IconCamera, label: "Kamera" },
 ];
 
 // Both functions place icons on an arc centered at the screen edge — the

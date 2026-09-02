@@ -21,15 +21,15 @@ function mapOffProduct(p: Record<string, unknown>): OffProduct | null {
 
   const n = (p.nutriments as Record<string, unknown>) ?? {};
 
-  // serving_quantity er OFF's "pr. stk"-vægt (fx en enkelt kiks eller bar).
-  // Bruger IKKE product_quantity som fallback — det er hele pakkens vægt
-  // (fx en æske kiks) og ville give en forkert "pr. stk"-værdi.
+  // serving_quantity is OFF's "per piece" weight (e.g. a single biscuit or bar).
+  // Does NOT use product_quantity as a fallback — that's the whole package's
+  // weight (e.g. a box of biscuits) and would give a wrong "per piece" value.
   const servingQuantity = Number(p.serving_quantity);
   const servingSizeGrams = Number.isFinite(servingQuantity) && servingQuantity > 0
     ? servingQuantity
     : null;
 
-  // additives_tags kommer som "en:e330" — normaliseres til "E330".
+  // additives_tags comes as "en:e330" — normalized to "E330".
   const additives: string[] = Array.isArray(p.additives_tags)
     ? Array.from(
         new Set(
@@ -58,8 +58,8 @@ function mapOffProduct(p: Record<string, unknown>): OffProduct | null {
   };
 }
 
-// Fallback-opslag for ukendte stregkoder, jf. docs/DATABASE.md.
-// Bruges kun når produktet ikke allerede findes i vores egen database.
+// Fallback lookup for unknown barcodes, per docs/DATABASE.md.
+// Only used when the product isn't already found in our own database.
 export async function lookupOpenFoodFacts(
   barcode: string
 ): Promise<OffProduct | null> {
@@ -78,9 +78,9 @@ export async function lookupOpenFoodFacts(
   return mapOffProduct({ ...data.product, code: barcode });
 }
 
-// Live tekstsøgning mod Open Food Facts' globale katalog. Bruges som
-// supplement til vores egen produktdatabase, så brugeren ikke skal
-// downloade/importere hele OFF-kataloget for at kunne søge på fx "toast".
+// Live text search against Open Food Facts' global catalog. Used as a
+// supplement to our own product database, so the user doesn't have to
+// download/import the whole OFF catalog just to search for e.g. "toast".
 export async function searchOpenFoodFacts(query: string): Promise<OffProduct[]> {
   const url =
     "https://world.openfoodfacts.org/cgi/search.pl?" +

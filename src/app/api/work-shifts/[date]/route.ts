@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getDemoUser } from "@/lib/demo-user";
 
-// :date er "YYYY-MM-DD".
+// :date is "YYYY-MM-DD".
 
 export async function GET(_req: Request, { params }: { params: Promise<{ date: string }> }) {
   const { date } = await params;
@@ -23,7 +23,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ date: s
   }
 }
 
-// PUT — upsert dagens arbejdstid/søvn-override. Ingen "Gem"-knap-princip.
+// PUT — upsert today's work hours/sleep override. No "Save" button principle.
 export async function PUT(req: Request, { params }: { params: Promise<{ date: string }> }) {
   const { date } = await params;
   const body = await req.json();

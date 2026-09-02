@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
-// iPhone 17 Pro CSS-viewport (402×874 px, forhold ~2,17:1) — opslået
-// faktisk specifikation, ikke gættet.
+// iPhone 17 Pro CSS viewport (402×874 px, ratio ~2.17:1) — looked up
+// from the actual spec, not guessed.
 const FRAME_WIDTH = 402;
 const FRAME_HEIGHT = 874;
 const MARGIN = 48;

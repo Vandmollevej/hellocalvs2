@@ -18,9 +18,9 @@ export async function GET() {
   }
 }
 
-// POST /api/integrations/healthkit/tokens — opretter et nyt enhedstoken til
-// en fremtidig HealthKit/Health Connect-companion-app (docs/HEALTHKIT_COMPANION.md).
-// Den rå token-værdi returneres kun her, én gang.
+// POST /api/integrations/healthkit/tokens — creates a new device token for
+// a future HealthKit/Health Connect companion app (docs/HEALTHKIT_COMPANION.md).
+// The raw token value is only returned here, once.
 export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}));
   const label = typeof body.label === "string" && body.label.trim() ? body.label.trim() : "Companion-app";

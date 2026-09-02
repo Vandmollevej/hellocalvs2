@@ -28,10 +28,10 @@ export async function GET(_req: Request, { params }: RouteContext) {
   }
 }
 
-// PATCH /api/registrations/[id] — flytter en registrering til et nyt
-// tidspunkt (samme dato, nyt klokkeslæt). Bruges af kalenderens
-// hold-og-træk-gestus (src/app/kalender/page.tsx, DraggableEntryMarker).
-// Snapshot-felterne (kcal/protein/osv.) ændres aldrig her.
+// PATCH /api/registrations/[id] — moves a registration to a new
+// time (same date, new time of day). Used by the calendar's
+// press-and-drag gesture (src/app/kalender/page.tsx, DraggableEntryMarker).
+// The snapshot fields (kcal/protein/etc.) are never changed here.
 export async function PATCH(req: Request, { params }: RouteContext) {
   const { id } = await params;
   const body = await req.json();

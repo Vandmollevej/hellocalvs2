@@ -5,10 +5,10 @@ import { lookupFoodDataCentral } from "@/lib/foodDataCentral";
 
 // GET /api/products/lookup/:barcode
 //
-// 1. Kigger i vores egen database først (stregkoden kan allerede være kendt).
-// 2. Falder tilbage til Open Food Facts, hvis produktet er ukendt.
-// 3. Gemmer fundet produkt lokalt (som "PENDING" — kræver admin-godkendelse,
-//    jf. docs/ADMIN.md), så det ikke skal slås op igen næste gang.
+// 1. Looks in our own database first (the barcode may already be known).
+// 2. Falls back to Open Food Facts if the product is unknown.
+// 3. Saves the found product locally (as "PENDING" — requires admin approval,
+//    per docs/ADMIN.md), so it doesn't need to be looked up again next time.
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ barcode: string }> }
@@ -71,9 +71,9 @@ export async function GET(
       { source: offProduct ? "openfoodfacts" : "usda", product }
     );
   } catch (error) {
-    // Ingen databaseforbindelse i dette miljø (kører uden Postgres) —
-    // fejler tydeligt i stedet for at crashe appen. Virker uændret, når
-    // DATABASE_URL peger på en rigtig Postgres-container på Synology.
+    // No database connection in this environment (running without Postgres) —
+    // fails clearly instead of crashing the app. Works unchanged when
+    // DATABASE_URL points to a real Postgres container on Synology.
     console.error("Product lookup failed", error);
     return NextResponse.json(
       {
