@@ -879,9 +879,39 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
   `/madvarer` and `/soeg`. Settings page: card-group gap corrected from 16px
   to the contracted 32px. `npm run lint` and `npm run build` passed; verified
   live (`/settings`, `/madvarer`) against this session's dev server. Not yet
-  done: the button size-variant system, `.hf-field`/TextField auth styling,
-  and then the per-screen migration pass (auth/velkomst, statistik, kalender,
-  stemme, kamera) per design.md §11 — continue from there.
+  done: the button size-variant system, and then the rest of the per-screen
+  migration pass (statistik, kalender, stemme, kamera) per design.md §11 —
+  continue from there.
+
+- 2026-09-02: Migrated the auth/onboarding screens (design.md §11 step 4,
+  clearest 1:1 references): /velkommen, /logind, /logind/land, /tilmeld.
+  Added SocialLoginButton.tsx (correct provider colors: Google #4285F4 fill
+  with a white icon zone, Apple #232323, Facebook #00178C — the prior
+  Google button was white-with-border, Apple was the wrong near-black) and
+  TextField.tsx (48px, auth variant 4px radius, .hf-type-input/label,
+  placeholder now uses --hf-color-placeholder via a new
+  .hf-type-input::placeholder rule). Fixed the 20px->16px gutter (DES-033),
+  replaced every literal pt-9 with real safe-area padding, replaced the
+  literal chevron character and IconChevronDown with HfChevron, replaced
+  IconChevronLeft close buttons with IconArrowLeft (back-arrow-not-cross
+  rule), and fixed /logind/land from individually-rounded/ringed cards to
+  the reference's flat full-width 56px-row list with a plain checkmark for
+  the selected country (DES-021). /velkommen's hero circle is now 180px
+  (was 176px) with the correct 32px gaps; body copy moved from an invented
+  15px to .hf-type-body-lg.
+
+  Also fixed a lint-blocking issue unrelated to this change: another
+  concurrent agent session's git worktree under .claude/worktrees/ had its
+  own .next build output, which ESLint was traversing into (its .next/**
+  ignore doesn't reach that deeply nested a path) — added .claude/** to
+  eslint.config.mjs's ignores, since worktrees are never app source.
+
+  npm run lint and npm run build both passed. Live browser verification was
+  not possible this pass — a concurrent session holds Next.js's
+  single-instance dev-server lock on this exact directory (next dev refuses
+  a second instance even on a different port); re-verify /velkommen,
+  /logind, /logind/land, and /tilmeld at 402px once no other session's dev
+  server is active.
 
 ## Next work
 

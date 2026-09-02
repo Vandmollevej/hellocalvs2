@@ -294,6 +294,11 @@ button,
   color: var(--hf-color-text);
 }
 
+.hf-type-input::placeholder {
+  color: var(--hf-color-placeholder);
+  opacity: 1;
+}
+
 .hf-type-placeholder {
   margin: 0;
   font-family: var(--font-hf-body);
