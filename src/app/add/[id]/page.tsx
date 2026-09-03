@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { IconChevronDown } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { ForwardButton } from "@/components/ForwardButton";
 import { appendDishDraftIngredient } from "@/lib/dish-draft";
 import { MacroSliderBar } from "@/components/hf/MacroSliderBar";
 import { AdditiveInfoModal } from "@/components/hf/AdditiveInfoModal";
@@ -191,6 +192,11 @@ export default function AddPage() {
   return (
     <HfScreen
       title={forDish ? "Tilføj ingrediens" : "Tilføj"}
+      headerRight={
+        !forDish && state.status === "loaded" ? (
+          <ForwardButton kind="PRODUCT" itemId={state.product.id} name={state.product.name} />
+        ) : undefined
+      }
       footer={
         state.status === "loaded" ? (
           <>

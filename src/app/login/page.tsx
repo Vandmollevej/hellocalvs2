@@ -2,14 +2,16 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { SocialLoginButton } from "@/components/hf/SocialLoginButton";
 import { TextField } from "@/components/hf/TextField";
 
-export default function LogIndPage() {
+function LogIndContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next") ?? "/";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -31,7 +33,7 @@ export default function LogIndPage() {
         setSubmitting(false);
         return;
       }
-      router.push("/");
+      router.push(next);
     } catch {
       setError("Kunne ikke logge ind — tjek din forbindelse og prøv igen");
       setSubmitting(false);
@@ -109,5 +111,13 @@ export default function LogIndPage() {
         </button>
       </div>
     </div>
+  );
+}
+
+export default function LogIndPage() {
+  return (
+    <Suspense fallback={null}>
+      <LogIndContent />
+    </Suspense>
   );
 }
