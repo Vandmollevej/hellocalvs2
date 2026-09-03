@@ -11,6 +11,7 @@ import {
   IconMicrophone,
   type Icon,
 } from "@tabler/icons-react";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 export const HERO_HEIGHT = 300;
 const CENTER_Y = HERO_HEIGHT / 2;
@@ -57,13 +58,15 @@ type Action = {
   imageSrc?: string;
 };
 
-const actions: Action[] = [
-  { key: "microphone", href: "/voice", icon: IconMicrophone, label: "Mikrofon" },
-  { key: "dish", href: "/create-dish", imageSrc: "/icons/pot.png", label: "Egne retter" },
-  { key: "search", href: "/search", icon: IconSearch, label: "Søg" },
-  { key: "meal", href: "/camera?mode=maaltid", imageSrc: "/icons/plate-camera.png", label: "Måltid" },
-  { key: "camera", href: "/camera?mode=produkt", icon: IconCamera, label: "Kamera" },
-];
+function buildActions(t: (key: string) => string): Action[] {
+  return [
+    { key: "microphone", href: "/voice", icon: IconMicrophone, label: t("addButton.microphone") },
+    { key: "dish", href: "/create-dish", imageSrc: "/icons/pot.png", label: t("addButton.ownDishes") },
+    { key: "search", href: "/search", icon: IconSearch, label: t("addButton.search") },
+    { key: "meal", href: "/camera?mode=maaltid", imageSrc: "/icons/plate-camera.png", label: t("addButton.meal") },
+    { key: "camera", href: "/camera?mode=produkt", icon: IconCamera, label: t("addButton.camera") },
+  ];
+}
 
 // Both functions place icons on an arc centered at the screen edge — the
 // same center the backdrop semicircle uses — so every icon ends up exactly
@@ -84,6 +87,8 @@ function arcItemStyle(angleDeg: number): React.CSSProperties {
 }
 
 export function AddButton({ onOpen }: { onOpen?: () => void }) {
+  const { t } = useTranslation();
+  const actions = buildActions(t);
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [highlightedKey, setHighlightedKey] = useState<string | null>(null);
@@ -222,7 +227,7 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
       />
 
       <button
-        aria-label={open ? "Luk tilføj-menu" : "Åbn tilføj-menu"}
+        aria-label={open ? t("addButton.closeMenu") : t("addButton.openMenu")}
         aria-expanded={open}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}

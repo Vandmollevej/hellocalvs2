@@ -567,5 +567,43 @@
       "recognitionInterrupted": "Speech recognition was interrupted. Please try again.",
       "micCouldNotStart": "The microphone couldn't be started. Please try again."
     }
+  },
+  "addButton": {
+    "closeMenu": "Close add menu",
+    "openMenu": "Open add menu",
+    "microphone": "Microphone",
+    "ownDishes": "Own dishes",
+    "search": "Search",
+    "meal": "Meal",
+    "camera": "Camera"
+  },
+  "onboarding": {
+    "stepProgress": "Step {current} of {total} completed",
+    "sleepPatternQuestion": "Do you have a regular sleep pattern?",
+    "shiftWorkQuestion": "Is that due to varying work hours or night work?",
+    "dailyLogQuestion": "Do you want to log work hours or sleep times daily?",
+    "workHours": "Work hours",
+    "sleepTimes": "Sleep times",
+    "healthImportQuestion": "Do you want to import data from your smartwatch or health app?",
+    "healthImportHint": "Can always be set up later under personal details.",
+    "setUpNow": "Set up now",
+    "workHoursCalendarQuestion": "Do you want to be able to log work hours directly in the calendar?",
+    "next": "Next",
+    "remindLater": "Remind me later",
+    "doNotShowAgain": "Don't show again",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "swipeableRow": {
+    "saveAsFavorite": "Save as favorite",
+    "favorite": "Favorite",
+    "delete": "Delete"
+  },
+  "dailyList": {
+    "loading": "Loading today's registrations...",
+    "noEntriesToday": "No registrations today",
+    "loadError": "Couldn't load today's registrations",
+    "deleteError": "Couldn't delete the registration",
+    "atTime": "At {time}"
   }
 }

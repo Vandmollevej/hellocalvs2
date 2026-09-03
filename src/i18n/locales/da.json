@@ -567,5 +567,43 @@
       "recognitionInterrupted": "Talegenkendelsen blev afbrudt. Prøv igen.",
       "micCouldNotStart": "Mikrofonen kunne ikke startes. Prøv igen."
     }
+  },
+  "addButton": {
+    "closeMenu": "Luk tilføj-menu",
+    "openMenu": "Åbn tilføj-menu",
+    "microphone": "Mikrofon",
+    "ownDishes": "Egne retter",
+    "search": "Søg",
+    "meal": "Måltid",
+    "camera": "Kamera"
+  },
+  "onboarding": {
+    "stepProgress": "Trin {current} af {total} gennemført",
+    "sleepPatternQuestion": "Har du et fast søvnmønster?",
+    "shiftWorkQuestion": "Skyldes det varierende arbejdstider eller natarbejde?",
+    "dailyLogQuestion": "Vil du registrere arbejdstider eller søvntider dagligt?",
+    "workHours": "Arbejdstider",
+    "sleepTimes": "Søvntider",
+    "healthImportQuestion": "Vil du importere data fra din smartwatch eller sundhedsapp?",
+    "healthImportHint": "Kan altid sættes op senere under personlige oplysninger.",
+    "setUpNow": "Opsæt nu",
+    "workHoursCalendarQuestion": "Vil du kunne registrere arbejdstider direkte i kalenderen?",
+    "next": "Næste",
+    "remindLater": "Påmind mig senere",
+    "doNotShowAgain": "Vis ikke igen",
+    "yes": "Ja",
+    "no": "Nej"
+  },
+  "swipeableRow": {
+    "saveAsFavorite": "Gem som favorit",
+    "favorite": "Favorit",
+    "delete": "Slet"
+  },
+  "dailyList": {
+    "loading": "Henter dagens registreringer...",
+    "noEntriesToday": "Ingen registreringer i dag",
+    "loadError": "Kunne ikke hente dagens registreringer",
+    "deleteError": "Kunne ikke slette registreringen",
+    "atTime": "Kl. {time}"
   }
 }

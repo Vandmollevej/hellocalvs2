@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 type DailyLogPreference = "WORK_HOURS" | "SLEEP_TIMES";
 
@@ -46,6 +47,7 @@ export function OnboardingWizard({
   forceVisible = false,
   onClose,
 }: { forceVisible?: boolean; onClose?: () => void } = {}) {
+  const { t } = useTranslation();
   const [user, setUser] = useState<OnboardingUser | null>(null);
   const [visible, setVisible] = useState(false);
   const [hasRegularSleep, setHasRegularSleep] = useState<boolean | null>(null);
@@ -125,7 +127,7 @@ export function OnboardingWizard({
     >
       <div className="px-5 pb-3 pt-9">
         <p className="text-center text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
-          Trin {stepIndex + 1} af {totalSteps} gennemført
+          {t("onboarding.stepProgress", { current: stepIndex + 1, total: totalSteps })}
         </p>
         <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-hf-tan">
           <div
@@ -139,7 +141,7 @@ export function OnboardingWizard({
         {currentStep === "sleep-pattern" && (
           <YesNoStep
             id="onboarding-title"
-            question="Har du et fast søvnmønster?"
+            question={t("onboarding.sleepPatternQuestion")}
             value={hasRegularSleep}
             onChange={(value) => {
               setHasRegularSleep(value);
@@ -151,7 +153,7 @@ export function OnboardingWizard({
         {currentStep === "shift-work" && (
           <YesNoStep
             id="onboarding-title"
-            question="Skyldes det varierende arbejdstider eller natarbejde?"
+            question={t("onboarding.shiftWorkQuestion")}
             value={shiftWork}
             onChange={(value) => {
               setShiftWork(value);
@@ -163,11 +165,11 @@ export function OnboardingWizard({
         {currentStep === "daily-log-preference" && (
           <div className="flex flex-col gap-4">
             <h2 id="onboarding-title" className="hf-heading text-xl text-hf-black">
-              Vil du registrere arbejdstider eller søvntider dagligt?
+              {t("onboarding.dailyLogQuestion")}
             </h2>
             <div className="flex flex-col gap-3">
               <ChoiceButton
-                label="Arbejdstider"
+                label={t("onboarding.workHours")}
                 selected={dailyLogPreference === "WORK_HOURS"}
                 onClick={() => {
                   setDailyLogPreference("WORK_HOURS");
@@ -175,7 +177,7 @@ export function OnboardingWizard({
                 }}
               />
               <ChoiceButton
-                label="Søvntider"
+                label={t("onboarding.sleepTimes")}
                 selected={dailyLogPreference === "SLEEP_TIMES"}
                 onClick={() => {
                   setDailyLogPreference("SLEEP_TIMES");
@@ -189,10 +191,10 @@ export function OnboardingWizard({
         {currentStep === "health-import" && (
           <div className="flex flex-col gap-4">
             <h2 id="onboarding-title" className="hf-heading text-xl text-hf-black">
-              Vil du importere data fra din smartwatch eller sundhedsapp?
+              {t("onboarding.healthImportQuestion")}
             </h2>
             <p className="text-[14px] text-hf-black opacity-70">
-              Kan altid sættes op senere under personlige oplysninger.
+              {t("onboarding.healthImportHint")}
             </p>
             <button
               onClick={() => {
@@ -201,7 +203,7 @@ export function OnboardingWizard({
               }}
               className="hf-btn-primary w-full py-3.5 text-[15px]"
             >
-              Opsæt nu
+              {t("onboarding.setUpNow")}
             </button>
           </div>
         )}
@@ -209,7 +211,7 @@ export function OnboardingWizard({
         {currentStep === "work-hours-calendar" && (
           <YesNoStep
             id="onboarding-title"
-            question="Vil du kunne registrere arbejdstider direkte i kalenderen?"
+            question={t("onboarding.workHoursCalendarQuestion")}
             value={workHoursInCalendar}
             onChange={(value) => {
               setWorkHoursInCalendar(value);
@@ -221,21 +223,21 @@ export function OnboardingWizard({
 
       <div className="flex flex-col gap-2 px-6 pb-8">
         <button onClick={goNext} className="hf-btn-primary w-full py-3.5 text-[15px]">
-          Næste
+          {t("onboarding.next")}
         </button>
         <div className="flex justify-center gap-4 pt-1">
           <button
             onClick={remindLater}
             className="text-[13px] font-medium text-hf-black opacity-60"
           >
-            Påmind mig senere
+            {t("onboarding.remindLater")}
           </button>
           {canDismissPermanently && (
             <button
               onClick={dontShowAgain}
               className="text-[13px] font-medium text-hf-black opacity-60"
             >
-              Vis ikke igen
+              {t("onboarding.doNotShowAgain")}
             </button>
           )}
         </div>
@@ -255,14 +257,15 @@ function YesNoStep({
   value: boolean | null;
   onChange: (value: boolean) => void;
 }) {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col gap-4">
       <h2 id={id} className="hf-heading text-xl text-hf-black">
         {question}
       </h2>
       <div className="flex gap-3">
-        <ChoiceButton label="Ja" selected={value === true} onClick={() => onChange(true)} />
-        <ChoiceButton label="Nej" selected={value === false} onClick={() => onChange(false)} />
+        <ChoiceButton label={t("onboarding.yes")} selected={value === true} onClick={() => onChange(true)} />
+        <ChoiceButton label={t("onboarding.no")} selected={value === false} onClick={() => onChange(false)} />
       </div>
     </div>
   );

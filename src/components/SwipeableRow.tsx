@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 const ACTION_WIDTH = 80;
 
@@ -13,6 +14,7 @@ export function SwipeableRow({
   onDelete: () => void;
   children: React.ReactNode;
 }) {
+  const { t } = useTranslation();
   const [dragX, setDragX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const startX = useRef<number | null>(null);
@@ -53,10 +55,10 @@ export function SwipeableRow({
               onFavorite();
               setDragX(0);
             }}
-            aria-label="Gem som favorit"
+            aria-label={t("swipeableRow.saveAsFavorite")}
             className="text-xs font-bold text-hf-white"
           >
-            Favorit
+            {t("swipeableRow.favorite")}
           </button>
         </div>
       )}
@@ -66,10 +68,10 @@ export function SwipeableRow({
             onDelete();
             setDragX(0);
           }}
-          aria-label="Slet"
+          aria-label={t("swipeableRow.delete")}
           className="text-xs font-bold text-white"
         >
-          Slet
+          {t("swipeableRow.delete")}
         </button>
       </div>
 

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { IconChevronRight } from "@tabler/icons-react";
 import { SwipeableRow } from "@/components/SwipeableRow";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 type Entry = {
   id: string;
@@ -42,6 +43,7 @@ function formatTime(dateString: string) {
 }
 
 export function DailyList() {
+  const { t } = useTranslation();
   const [entries, setEntries] = useState<Entry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -66,9 +68,9 @@ export function DailyList() {
             }))
         );
       })
-      .catch(() => setError("Kunne ikke hente dagens registreringer"))
+      .catch(() => setError(t("dailyList.loadError")))
       .finally(() => setLoading(false));
-  }, []);
+  }, [t]);
 
   async function deleteEntry(id: string) {
     const previousEntries = entries;
@@ -79,7 +81,7 @@ export function DailyList() {
       if (!res.ok) throw new Error("Kunne ikke slette registreringen");
     } catch {
       setEntries(previousEntries);
-      setError("Kunne ikke slette registreringen");
+      setError(t("dailyList.deleteError"));
     }
   }
 
@@ -112,7 +114,7 @@ export function DailyList() {
                     <span className="text-xs text-hf-black opacity-60">
                       {Math.round(entry.kcalPer100g)} kcal / 100 g
                     </span>
-                    <span className="text-xs text-hf-black opacity-60">Kl. {formatTime(entry.createdAt)}</span>
+                    <span className="text-xs text-hf-black opacity-60">{t("dailyList.atTime", { time: formatTime(entry.createdAt) })}</span>
                   </div>
                 </div>
                 <IconChevronRight size={18} className="flex-shrink-0 text-hf-black opacity-40" />
@@ -121,11 +123,11 @@ export function DailyList() {
           </li>
         ))}
         {loading && (
-          <li className="py-6 text-center text-sm text-hf-black opacity-60">Henter dagens registreringer...</li>
+          <li className="py-6 text-center text-sm text-hf-black opacity-60">{t("dailyList.loading")}</li>
         )}
         {!loading && entries.length === 0 && (
           <li className="py-6 text-center text-sm text-hf-black opacity-60">
-            Ingen registreringer i dag
+            {t("dailyList.noEntriesToday")}
           </li>
         )}
         {error && <li className="pb-3 text-center text-xs text-red-700">{error}</li>}
