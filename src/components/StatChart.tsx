@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconChevronDown } from "@tabler/icons-react";
 import { Toggle } from "@/components/ui/Toggle";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 export type ChartSeries = {
   key: string;
@@ -101,6 +102,7 @@ export function StatChart({
   series: ChartSeries[];
   defaultEnabledKeys: string[];
 }) {
+  const { t } = useTranslation();
   const [enabledKeys, setEnabledKeys] = useState<string[]>(() => loadEnabledKeys(defaultEnabledKeys));
   const [menuOpen, setMenuOpen] = useState(false);
   const isFirstRender = useRef(true);
@@ -134,7 +136,7 @@ export function StatChart({
     <div className="relative rounded-2xl bg-hf-tan p-4">
       <div className="mb-3 flex items-baseline justify-between">
         <p className="text-sm font-bold text-hf-black">{title}</p>
-        <p className="text-[11px] text-hf-black opacity-50">Seneste 7 dage</p>
+        <p className="text-[11px] text-hf-black opacity-50">{t("statChart.last7Days")}</p>
       </div>
 
       <svg viewBox="0 0 280 90" className="w-full overflow-visible" aria-hidden="true">
@@ -226,7 +228,7 @@ export function StatChart({
       <div className="mt-2 flex items-center">
         <button
           type="button"
-          aria-label="Vælg dataserier"
+          aria-label={t("statChart.selectSeriesAria")}
           aria-haspopup="true"
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen((open) => !open)}
@@ -253,7 +255,7 @@ export function StatChart({
         <>
           <button
             type="button"
-            aria-label="Luk menu"
+            aria-label={t("statChart.closeMenuAria")}
             className="fixed inset-0 z-30 cursor-default"
             onClick={() => setMenuOpen(false)}
           />

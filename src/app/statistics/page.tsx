@@ -18,6 +18,7 @@ import { DAILY_KCAL_GOAL, WEIGHT_GOAL_KG } from "@/lib/goals";
 import { DEFAULT_STAT_SELECTION, filterDaysInRange, selectionRange, type StatPeriodSelection } from "@/lib/stat-periods";
 import type { IntegrationCardStatus } from "@/lib/integrations";
 import { computeTrendWeight, type WeightSample, type MealSample } from "@/lib/weight-trend";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 const DAY_COUNT = 7;
 
@@ -92,6 +93,7 @@ function trendByDay(points: { dateKey: string; trendKg: number }[]) {
 }
 
 export default function StatisticsPage() {
+  const { t } = useTranslation();
   const [registrations, setRegistrations] = useState<RegistrationTotals[]>([]);
   const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
   const [activities, setActivities] = useState<ActivityTotals[]>([]);
@@ -181,7 +183,7 @@ export default function StatisticsPage() {
     () => [
       {
         key: "kcal",
-        label: "Kalorier",
+        label: t("statistics.calories"),
         color: "var(--hf-green)",
         unit: "kcal",
         values: kcalDaily,
@@ -190,7 +192,7 @@ export default function StatisticsPage() {
       },
       {
         key: "weight",
-        label: "Vægt",
+        label: t("statistics.weight"),
         color: "var(--hf-gray)",
         unit: "kg",
         values: weightDaily,
@@ -201,7 +203,7 @@ export default function StatisticsPage() {
         ? [
             {
               key: "weightTrend",
-              label: "Trendvægt (AI-estimat)",
+              label: t("statistics.trendWeight"),
               color: "var(--hf-black)",
               unit: "kg",
               values: weightTrendDaily,
@@ -210,7 +212,7 @@ export default function StatisticsPage() {
           ]
         : []),
     ],
-    [kcalDaily, weightDaily, weightTrendDaily],
+    [kcalDaily, weightDaily, weightTrendDaily, t],
   );
 
   const activePeriodRange = useMemo(() => selectionRange(periodSelection), [periodSelection]);
@@ -241,9 +243,9 @@ export default function StatisticsPage() {
   );
 
   return (
-    <HfScreen title="Statistik" icon={<IconChartLine size={20} stroke={2} />}>
+    <HfScreen title={t("statistics.title")} icon={<IconChartLine size={20} stroke={2} />}>
       <div className="flex flex-col gap-4 p-4">
-        <StatChart title="Kalorier og vægt" series={chartSeries} defaultEnabledKeys={["kcal"]} />
+        <StatChart title={t("statistics.caloriesAndWeightChart")} series={chartSeries} defaultEnabledKeys={["kcal"]} />
 
         <IntradayKcalChart registrations={recentRegistrations} windowDays={activePeriodDays} />
 

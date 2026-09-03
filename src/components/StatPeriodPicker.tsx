@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { IconCalendar, IconChevronDown } from "@tabler/icons-react";
 import { STAT_PERIODS, selectionLabel, selectionRange, type StatPeriodSelection } from "@/lib/stat-periods";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 function toInputValue(date: Date) {
   const year = date.getFullYear();
@@ -26,6 +27,7 @@ export function StatPeriodPicker({
   selection: StatPeriodSelection;
   onChange: (selection: StatPeriodSelection) => void;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const range = selectionRange(selection);
   const [customFrom, setCustomFrom] = useState(() => toInputValue(range.start));
@@ -62,7 +64,7 @@ export function StatPeriodPicker({
         <>
           <button
             type="button"
-            aria-label="Luk periodevælger"
+            aria-label={t("statPeriodPicker.closeAria")}
             className="fixed inset-0 z-40 cursor-default"
             onClick={() => setOpen(false)}
           />
@@ -89,19 +91,19 @@ export function StatPeriodPicker({
             </div>
 
             <div className="mt-2 border-t border-hf-tan-dark pt-2">
-              <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide opacity-60">Vælg periode</p>
+              <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide opacity-60">{t("statPeriodPicker.selectPeriod")}</p>
               <div className="flex items-center gap-2">
                 <input
                   type="date"
-                  aria-label="Fra dato"
+                  aria-label={t("statPeriodPicker.fromDateAria")}
                   value={customFrom}
                   onChange={(event) => setCustomFrom(event.target.value)}
                   className="min-h-9 flex-1 rounded-xl border border-hf-tan-dark bg-hf-cream px-2 text-sm"
                 />
-                <span className="text-xs opacity-60">til</span>
+                <span className="text-xs opacity-60">{t("statPeriodPicker.to")}</span>
                 <input
                   type="date"
-                  aria-label="Til dato"
+                  aria-label={t("statPeriodPicker.toDateAria")}
                   value={customTo}
                   onChange={(event) => setCustomTo(event.target.value)}
                   className="min-h-9 flex-1 rounded-xl border border-hf-tan-dark bg-hf-cream px-2 text-sm"
@@ -112,7 +114,7 @@ export function StatPeriodPicker({
                 onClick={applyCustomRange}
                 className="hf-btn-primary mt-2 flex min-h-9 w-full items-center justify-center text-sm"
               >
-                Brug periode
+                {t("statPeriodPicker.usePeriod")}
               </button>
             </div>
           </div>

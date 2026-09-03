@@ -490,5 +490,48 @@
     "noPaymentMethod": "Ingen betalingsmetode tilføjet endnu",
     "noPaymentMethodHint": "Kommer, når Hello Cal har en betalingsudbyder tilknyttet. Understøtter Visa, Apple Pay, Google Pay og MobilePay, når det er klar.",
     "supportedMethodsTitle": "Understøttede metoder"
+  },
+  "statistics": {
+    "title": "Statistik",
+    "calories": "Kalorier",
+    "weight": "Vægt",
+    "trendWeight": "Trendvægt (AI-estimat)",
+    "caloriesAndWeightChart": "Kalorier og vægt"
+  },
+  "statUnusedCards": {
+    "title": "Ubrugte statistik-kort",
+    "hint": "Tryk på et kort for at tilføje det til din statistikside.",
+    "category": {
+      "energyMacros": "Energi og makrofordeling",
+      "carbsFibre": "Kulhydrattyper og fibre",
+      "vitamins": "Vitaminer",
+      "minerals": "Mineraler",
+      "activityOther": "Aktivitet og øvrige data",
+      "sport": "Sport og aktivitet"
+    },
+    "noCardsYet": "Ingen kort her endnu.",
+    "addHeading": "+ Overskrift",
+    "addHeadingHint": "Tilføjer en sektionsoverskrift til din statistikside, som du selv kan omdøbe."
+  },
+  "statCardsGrid": {
+    "exitEditing": "Afslut redigering",
+    "heading": "Overskrift",
+    "title": "Statistik-kort",
+    "addCard": "Tilføj kort",
+    "renameHeading": "Omdøb overskrift",
+    "removeHeading": "Fjern overskrift"
+  },
+  "statChart": {
+    "last7Days": "Seneste 7 dage",
+    "selectSeriesAria": "Vælg dataserier",
+    "closeMenuAria": "Luk menu"
+  },
+  "statPeriodPicker": {
+    "closeAria": "Luk periodevælger",
+    "selectPeriod": "Vælg periode",
+    "to": "til",
+    "fromDateAria": "Fra dato",
+    "toDateAria": "Til dato",
+    "usePeriod": "Brug periode"
   }
 }

@@ -9,6 +9,7 @@ import {
   type StatCardValue,
   type StatGridLayoutItem as LayoutItem,
 } from "@/lib/stat-cards";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 function layoutItemId(item: LayoutItem) {
   return item.type === "stat" ? `stat:${item.key}` : `header:${item.id}`;
@@ -60,6 +61,7 @@ export function StatCardsGrid({
   cards: StatCardValue[];
   defaultActiveKeys: string[];
 }) {
+  const { t } = useTranslation();
   const cardByKey = useMemo(() => new Map(cards.map((c) => [c.key, c])), [cards]);
 
   const defaultLayout = useMemo<LayoutItem[]>(
@@ -193,7 +195,7 @@ export function StatCardsGrid({
           } else if (source.kind === "unused") {
             item = { type: "stat", key: source.key };
           } else {
-            item = { type: "header", id: makeId(), text: "Overskrift" };
+            item = { type: "header", id: makeId(), text: t("statCardsGrid.heading") };
           }
           let insertAt = toIndex;
           if (fromIndex >= 0 && fromIndex < toIndex) insertAt -= 1;
@@ -270,7 +272,7 @@ export function StatCardsGrid({
       {editMode && (
         <button
           type="button"
-          aria-label="Afslut redigering"
+          aria-label={t("statCardsGrid.exitEditing")}
           onPointerDown={(event) => {
             // Backdrop, like the dropdown pattern in StatChart: tapping outside the cards exits edit mode.
             event.stopPropagation();
@@ -281,17 +283,17 @@ export function StatCardsGrid({
       )}
 
       <div className="relative z-40 flex items-center justify-between gap-2">
-        <p className="hf-heading text-sm text-hf-black opacity-70">Statistik-kort</p>
+        <p className="hf-heading text-sm text-hf-black opacity-70">{t("statCardsGrid.title")}</p>
         <div className="flex items-center gap-2">
           {editMode && (
             <button
               type="button"
               onPointerDown={(e) =>
-                onCardPointerDown(e, { kind: "template" }, { kind: "header", text: "Overskrift" })
+                onCardPointerDown(e, { kind: "template" }, { kind: "header", text: t("statCardsGrid.heading") })
               }
               className="flex min-h-8 cursor-grab touch-none select-none items-center rounded-full border border-dashed border-hf-black/30 px-3 py-1 text-xs font-semibold text-hf-black opacity-70 active:cursor-grabbing"
             >
-              Overskrift
+              {t("statCardsGrid.heading")}
             </button>
           )}
           <Link
@@ -300,7 +302,7 @@ export function StatCardsGrid({
             className="hf-btn-primary flex min-h-8 items-center gap-1 px-3 py-1 text-xs"
           >
             <IconPlus size={14} stroke={2.5} />
-            Tilføj kort
+            {t("statCardsGrid.addCard")}
           </Link>
         </div>
       </div>
@@ -334,12 +336,12 @@ export function StatCardsGrid({
                   onChange={(e) => updateHeaderText(item.id, e.target.value)}
                   disabled={!editMode}
                   className="hf-heading w-full bg-transparent text-sm text-hf-black outline-none disabled:opacity-100"
-                  aria-label="Omdøb overskrift"
+                  aria-label={t("statCardsGrid.renameHeading")}
                 />
                 {editMode && (
                   <button
                     type="button"
-                    aria-label="Fjern overskrift"
+                    aria-label={t("statCardsGrid.removeHeading")}
                     onClick={() => setLayout((prev) => prev.filter((i) => layoutItemId(i) !== id))}
                     className="shrink-0 rounded-full p-1 opacity-60 hover:opacity-100"
                   >

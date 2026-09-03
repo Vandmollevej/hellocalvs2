@@ -18,6 +18,7 @@ import {
 } from "@/lib/stat-cards";
 import { groupByDay, withinLastDays, type RegistrationTotals } from "@/lib/daily-totals";
 import type { IntegrationCardStatus } from "@/lib/integrations";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 function withinLastDaysActivities(activities: ActivityTotals[], days: number) {
   const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
@@ -37,19 +38,22 @@ const DEFAULT_LAYOUT: StatGridLayoutItem[] = DEFAULT_ACTIVE_STAT_KEYS.map((key) 
 // Groups the known stat cards (src/lib/stat-cards.ts) into fixed categories.
 // Categories with no matching cards in this codebase are still shown, but with a
 // message saying no data exists yet — no new stat types are invented here.
-const CATEGORY_KEYS: { title: string; keys: string[] | "dynamic-sport" }[] = [
-  { title: "Energi og makrofordeling", keys: ["calories", "protein", "carbs", "fat"] },
-  { title: "Kulhydrattyper og fibre", keys: [] },
-  { title: "Vitaminer", keys: [] },
-  { title: "Mineraler", keys: [] },
-  { title: "Aktivitet og øvrige data", keys: ["steps", "water", "burned", "daysLogged", "goalsMet"] },
-  // Sport types are dynamic (one per sport the user actually has data for),
-  // and only present when at least one real integration is CONNECTED — see
-  // computeStatCards()/SPORT_STAT_KEY_PREFIX in src/lib/stat-cards.ts.
-  { title: "Sport og aktivitet", keys: "dynamic-sport" },
-];
+function categoryDefs(t: (key: string) => string): { title: string; keys: string[] | "dynamic-sport" }[] {
+  return [
+    { title: t("statUnusedCards.category.energyMacros"), keys: ["calories", "protein", "carbs", "fat"] },
+    { title: t("statUnusedCards.category.carbsFibre"), keys: [] },
+    { title: t("statUnusedCards.category.vitamins"), keys: [] },
+    { title: t("statUnusedCards.category.minerals"), keys: [] },
+    { title: t("statUnusedCards.category.activityOther"), keys: ["steps", "water", "burned", "daysLogged", "goalsMet"] },
+    // Sport types are dynamic (one per sport the user actually has data for),
+    // and only present when at least one real integration is CONNECTED — see
+    // computeStatCards()/SPORT_STAT_KEY_PREFIX in src/lib/stat-cards.ts.
+    { title: t("statUnusedCards.category.sport"), keys: "dynamic-sport" },
+  ];
+}
 
 export default function UnusedStatCardsPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [registrations, setRegistrations] = useState<RegistrationTotals[]>([]);
   const [activities, setActivities] = useState<ActivityTotals[]>([]);
@@ -129,14 +133,14 @@ export default function UnusedStatCardsPage() {
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
-      <ScreenHeader title="Ubrugte statistik-kort" onBack={() => router.back()} />
+      <ScreenHeader title={t("statUnusedCards.title")} onBack={() => router.back()} />
 
       <div className="flex flex-col gap-5 p-4">
         <p className="text-xs text-hf-black opacity-60">
-          Tryk på et kort for at tilføje det til din statistikside.
+          {t("statUnusedCards.hint")}
         </p>
 
-        {CATEGORY_KEYS.map((category) => {
+        {categoryDefs(t).map((category) => {
           const cards =
             category.keys === "dynamic-sport"
               ? allCards.filter((c) => c.key.startsWith(SPORT_STAT_KEY_PREFIX) && !activeKeys.has(c.key))
@@ -153,7 +157,7 @@ export default function UnusedStatCardsPage() {
 
               {cards.length === 0 ? (
                 <p className="rounded-2xl bg-hf-tan/60 p-3 text-xs text-hf-black opacity-50">
-                  Ingen kort her endnu.
+                  {t("statUnusedCards.noCardsYet")}
                 </p>
               ) : (
                 <div className="grid grid-cols-2 gap-3">
@@ -186,10 +190,10 @@ export default function UnusedStatCardsPage() {
             onClick={addHeader}
             className="flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-hf-black/30 text-sm font-semibold text-hf-black opacity-80 active:opacity-100"
           >
-            + Overskrift
+            {t("statUnusedCards.addHeading")}
           </button>
           <p className="mt-1.5 text-center text-xs text-hf-black opacity-50">
-            Tilføjer en sektionsoverskrift til din statistikside, som du selv kan omdøbe.
+            {t("statUnusedCards.addHeadingHint")}
           </p>
         </div>
       </div>

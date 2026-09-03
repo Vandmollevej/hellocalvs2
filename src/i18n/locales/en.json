@@ -490,5 +490,48 @@
     "noPaymentMethod": "No payment method added yet",
     "noPaymentMethodHint": "Coming once Hello Cal has a payment provider connected. Supports Visa, Apple Pay, Google Pay and MobilePay when it's ready.",
     "supportedMethodsTitle": "Supported methods"
+  },
+  "statistics": {
+    "title": "Statistics",
+    "calories": "Calories",
+    "weight": "Weight",
+    "trendWeight": "Trend weight (AI estimate)",
+    "caloriesAndWeightChart": "Calories and weight"
+  },
+  "statUnusedCards": {
+    "title": "Unused stat cards",
+    "hint": "Tap a card to add it to your statistics page.",
+    "category": {
+      "energyMacros": "Energy and macro breakdown",
+      "carbsFibre": "Carb types and fibre",
+      "vitamins": "Vitamins",
+      "minerals": "Minerals",
+      "activityOther": "Activity and other data",
+      "sport": "Sport and activity"
+    },
+    "noCardsYet": "No cards here yet.",
+    "addHeading": "+ Heading",
+    "addHeadingHint": "Adds a section heading to your statistics page, which you can rename yourself."
+  },
+  "statCardsGrid": {
+    "exitEditing": "Exit editing",
+    "heading": "Heading",
+    "title": "Stat cards",
+    "addCard": "Add card",
+    "renameHeading": "Rename heading",
+    "removeHeading": "Remove heading"
+  },
+  "statChart": {
+    "last7Days": "Last 7 days",
+    "selectSeriesAria": "Select data series",
+    "closeMenuAria": "Close menu"
+  },
+  "statPeriodPicker": {
+    "closeAria": "Close period picker",
+    "selectPeriod": "Select period",
+    "to": "to",
+    "fromDateAria": "From date",
+    "toDateAria": "To date",
+    "usePeriod": "Use period"
   }
 }
