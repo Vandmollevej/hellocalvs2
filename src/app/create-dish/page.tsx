@@ -10,6 +10,7 @@ import {
   clearDishDraft,
   type DishDraftIngredient,
 } from "@/lib/dish-draft";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 function round(value: number, decimals = 0) {
   const factor = 10 ** decimals;
@@ -17,6 +18,7 @@ function round(value: number, decimals = 0) {
 }
 
 export default function CreateDishPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [name, setName] = useState("");
   const [ingredients, setIngredients] = useState<DishDraftIngredient[]>(readDishDraft);
@@ -48,11 +50,11 @@ export default function CreateDishPage() {
   async function handleSave() {
     setSaveError(null);
     if (!name.trim()) {
-      setSaveError("Giv retten et navn");
+      setSaveError(t("createDish.nameRequired"));
       return;
     }
     if (ingredients.length === 0) {
-      setSaveError("Tilføj mindst én ingrediens");
+      setSaveError(t("createDish.ingredientRequired"));
       return;
     }
     setSaving(true);
@@ -67,13 +69,13 @@ export default function CreateDishPage() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setSaveError(data.message ?? "Kunne ikke gemme retten");
+        setSaveError(data.message ?? t("createDish.saveError"));
         return;
       }
       clearDishDraft();
       router.push("/foods");
     } catch {
-      setSaveError("Kunne ikke gemme retten");
+      setSaveError(t("createDish.saveError"));
     } finally {
       setSaving(false);
     }
@@ -81,7 +83,7 @@ export default function CreateDishPage() {
 
   return (
     <HfScreen
-      title="Opret egen ret"
+      title={t("createDish.title")}
       icon={<IconSoup size={20} stroke={2} />}
       footer={
         <>
@@ -93,7 +95,7 @@ export default function CreateDishPage() {
             disabled={saving}
             className="hf-btn-primary w-full py-3.5 text-[15px] disabled:opacity-60"
           >
-            {saving ? "Gemmer..." : "Gem ret"}
+            {saving ? t("createDish.saving") : t("createDish.saveDish")}
           </button>
         </>
       }
@@ -103,16 +105,16 @@ export default function CreateDishPage() {
           value={name}
           onChange={(event) => setName(event.target.value)}
           autoComplete="off"
-          aria-label="Rettens navn"
-          placeholder="Navn på retten"
+          aria-label={t("createDish.nameAriaLabel")}
+          placeholder={t("createDish.namePlaceholder")}
           className="min-w-0 rounded-full bg-hf-tan px-4 py-2.5 text-sm text-hf-black outline-none"
         />
 
         <div>
-          <p className="mb-2 text-xs font-bold text-hf-black">Ingredienser</p>
+          <p className="mb-2 text-xs font-bold text-hf-black">{t("createDish.ingredients")}</p>
           {ingredients.length === 0 ? (
             <div className="rounded-2xl bg-hf-tan p-4 text-center">
-              <p className="text-sm text-hf-black opacity-60">Ingen ingredienser endnu</p>
+              <p className="text-sm text-hf-black opacity-60">{t("createDish.noIngredientsYet")}</p>
             </div>
           ) : (
             <div className="overflow-hidden rounded-2xl bg-hf-tan">
@@ -130,13 +132,16 @@ export default function CreateDishPage() {
                   <div className="flex-1">
                     <p className="text-[14px] font-medium text-hf-black">{ingredient.name}</p>
                     <p className="text-xs text-hf-black opacity-60">
-                      {ingredient.grams} g · {round((ingredient.kcalPer100g * ingredient.grams) / 100)} kcal
+                      {t("createDish.gramsKcal", {
+                        grams: ingredient.grams,
+                        kcal: round((ingredient.kcalPer100g * ingredient.grams) / 100),
+                      })}
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={() => handleRemove(index)}
-                    aria-label="Fjern ingrediens"
+                    aria-label={t("createDish.removeIngredient")}
                     className="flex h-7 w-7 items-center justify-center rounded-full bg-hf-white text-hf-black"
                   >
                     <IconX size={14} />
@@ -149,40 +154,43 @@ export default function CreateDishPage() {
 
         {ingredients.length > 0 && (
           <div className="rounded-2xl bg-hf-tan p-4">
-            <p className="mb-1 text-xs font-bold text-hf-black">I alt</p>
+            <p className="mb-1 text-xs font-bold text-hf-black">{t("createDish.total")}</p>
             <p className="text-sm text-hf-black">
-              {round(totals.grams)} g · {round(totals.kcal)} kcal
+              {t("createDish.gramsKcal", { grams: round(totals.grams), kcal: round(totals.kcal) })}
             </p>
             <p className="text-xs text-hf-black opacity-60">
-              Protein {round(totals.protein, 1)} g · Kulhydrat {round(totals.carbs, 1)} g · Fedt{" "}
-              {round(totals.fat, 1)} g
+              {t("createDish.macrosSummary", {
+                protein: round(totals.protein, 1),
+                carbs: round(totals.carbs, 1),
+                fat: round(totals.fat, 1),
+              })}
             </p>
           </div>
         )}
 
         <div>
-          <p className="mb-2 text-xs font-bold text-hf-black">Tilføj ingrediens</p>
+          <p className="mb-2 text-xs font-bold text-hf-black">{t("createDish.addIngredient")}</p>
           <div className="grid grid-cols-3 gap-2">
             <a
               href="/search?for=ret"
               className="flex flex-col items-center gap-1.5 rounded-2xl bg-hf-tan py-3 text-center"
             >
               <IconBarcode size={20} color="var(--hf-black)" />
-              <span className="text-xs font-medium text-hf-black">Søg</span>
+              <span className="text-xs font-medium text-hf-black">{t("createDish.search")}</span>
             </a>
             <a
               href="/camera?mode=produkt&for=ret"
               className="flex flex-col items-center gap-1.5 rounded-2xl bg-hf-tan py-3 text-center"
             >
               <IconCamera size={20} color="var(--hf-black)" />
-              <span className="text-xs font-medium text-hf-black">Scan</span>
+              <span className="text-xs font-medium text-hf-black">{t("createDish.scan")}</span>
             </a>
             <a
               href="/foods/new?for=ret"
               className="flex flex-col items-center gap-1.5 rounded-2xl bg-hf-tan py-3 text-center"
             >
               <IconHandClick size={20} color="var(--hf-black)" />
-              <span className="text-xs font-medium text-hf-black">Manuelt</span>
+              <span className="text-xs font-medium text-hf-black">{t("createDish.manually")}</span>
             </a>
           </div>
         </div>

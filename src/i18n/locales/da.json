@@ -246,20 +246,24 @@
     "saving": "Gemmer...",
     "createProduct": "Opret produkt"
   },
-  "cameraCreate": {
-    "title": "Tilføj vare",
-    "analyzingImage": "Analyserer billedet...",
-    "readingImage": "Læser billedet...",
-    "searchingDatabase": "Søger i databasen...",
-    "comparingKnownItems": "Sammenligner med kendte varer...",
-    "analyzingWithAI": "Undersøger billedet med AI...",
-    "readingNutrition": "Læser næringsindholdet...",
-    "checkingDuplicate": "Tjekker for dublet...",
-    "stagePhotoProduct": "Foto af produkt",
-    "stagePhotoBarcode": "Foto af stregkode",
-    "stagePhotoNutrition": "Foto af næringsindhold",
-    "barcodeNotRecognized": "Stregkoden blev ikke genkendt. Prøv igen, eller indtast nummeret.",
-    "showBarcodeOrEnter": "Vis stregkoden for kameraet, eller indtast nummeret manuelt.",
-    "skipCreateManually": "Spring over — opret produktet manuelt"
+  "createDish": {
+    "title": "Opret egen ret",
+    "nameRequired": "Giv retten et navn",
+    "ingredientRequired": "Tilføj mindst én ingrediens",
+    "saveError": "Kunne ikke gemme retten",
+    "saving": "Gemmer...",
+    "saveDish": "Gem ret",
+    "nameAriaLabel": "Rettens navn",
+    "namePlaceholder": "Navn på retten",
+    "ingredients": "Ingredienser",
+    "noIngredientsYet": "Ingen ingredienser endnu",
+    "gramsKcal": "{grams} g · {kcal} kcal",
+    "removeIngredient": "Fjern ingrediens",
+    "total": "I alt",
+    "macrosSummary": "Protein {protein} g · Kulhydrat {carbs} g · Fedt {fat} g",
+    "addIngredient": "Tilføj ingrediens",
+    "search": "Søg",
+    "scan": "Scan",
+    "manually": "Manuelt"
   }
 }

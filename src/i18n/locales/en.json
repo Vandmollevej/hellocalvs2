@@ -246,20 +246,24 @@
     "saving": "Saving...",
     "createProduct": "Create product"
   },
-  "cameraCreate": {
-    "title": "Add item",
-    "analyzingImage": "Analyzing the image...",
-    "readingImage": "Reading the image...",
-    "searchingDatabase": "Searching the database...",
-    "comparingKnownItems": "Comparing with known items...",
-    "analyzingWithAI": "Examining the image with AI...",
-    "readingNutrition": "Reading the nutrition label...",
-    "checkingDuplicate": "Checking for a duplicate...",
-    "stagePhotoProduct": "Photo of product",
-    "stagePhotoBarcode": "Photo of barcode",
-    "stagePhotoNutrition": "Photo of nutrition label",
-    "barcodeNotRecognized": "The barcode was not recognized. Try again, or enter the number.",
-    "showBarcodeOrEnter": "Show the barcode to the camera, or enter the number manually.",
-    "skipCreateManually": "Skip — create the product manually"
+  "createDish": {
+    "title": "Create own dish",
+    "nameRequired": "Give the dish a name",
+    "ingredientRequired": "Add at least one ingredient",
+    "saveError": "Couldn't save the dish",
+    "saving": "Saving...",
+    "saveDish": "Save dish",
+    "nameAriaLabel": "Dish name",
+    "namePlaceholder": "Name of the dish",
+    "ingredients": "Ingredients",
+    "noIngredientsYet": "No ingredients yet",
+    "gramsKcal": "{grams} g · {kcal} kcal",
+    "removeIngredient": "Remove ingredient",
+    "total": "Total",
+    "macrosSummary": "Protein {protein} g · Carbs {carbs} g · Fat {fat} g",
+    "addIngredient": "Add ingredient",
+    "search": "Search",
+    "scan": "Scan",
+    "manually": "Manually"
   }
 }
