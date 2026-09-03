@@ -9,6 +9,7 @@ const LINKS = [
   { href: "/admin/products", label: "Nye produkter" },
   { href: "/admin/users", label: "Brugere" },
   { href: "/admin/bug-reports", label: "Fejlrapporter" },
+  { href: "/admin/messaging", label: "Besked automatisering" },
   { href: "/admin/images", label: "Billedforslag" },
   { href: "/admin/warnings", label: "Advarsler" },
   { href: "/admin/search", label: "Søg" },
