@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 import { ensureDefaultMessageTemplates } from "@/lib/messaging";
 import { MessageTemplateRow } from "@/components/admin/MessageTemplateRow";
+import { t } from "@/lib/admin-i18n";
 
 const STATUS_LABELS: Record<string, string> = {
   QUEUED: "I kø",
@@ -35,7 +36,7 @@ export default async function AdminMessagingPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-lg font-semibold text-text-primary">Besked automatisering</h1>
+        <h1 className="text-lg font-semibold text-text-primary">{t(admin.locale, "messaging_title")}</h1>
         <p className="mt-1 text-sm text-text-secondary">
           Styr indhold og kanal for automatiske mails og pushbeskeder.
         </p>

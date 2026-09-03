@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 import { AdminUserRow } from "@/components/admin/AdminUserRow";
+import { t } from "@/lib/admin-i18n";
 
 // Admin "Brugere" (docs/DECISIONS.md 2026-09-02): oversigt over registranter
 // med betalingsstatus, points, nyhedsbrevs-tilmeldinger, "log ind som
@@ -26,7 +27,7 @@ export default async function AdminUsersPage() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h1 className="text-lg font-semibold text-text-primary">Brugere</h1>
+        <h1 className="text-lg font-semibold text-text-primary">{t(admin.locale, "users_title")}</h1>
         <p className="text-sm text-text-secondary">
           {users.length} registranter. Klik ikonet for at logge ind som en bruger (åbner en ny
           fane) eller anonymisere kontoen.
@@ -37,12 +38,12 @@ export default async function AdminUsersPage() {
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-border-strong text-xs uppercase tracking-wide text-text-muted">
-              <th className="py-2 pr-3">Bruger</th>
-              <th className="py-2 pr-3">Betaling</th>
-              <th className="py-2 pr-3">Points</th>
-              <th className="py-2 pr-3">Nyhedsbreve</th>
-              <th className="py-2 pr-3">Oprettet</th>
-              <th className="py-2">Handlinger</th>
+              <th className="py-2 pr-3">{t(admin.locale, "users_col_user")}</th>
+              <th className="py-2 pr-3">{t(admin.locale, "users_col_payment")}</th>
+              <th className="py-2 pr-3">{t(admin.locale, "users_col_points")}</th>
+              <th className="py-2 pr-3">{t(admin.locale, "users_col_newsletters")}</th>
+              <th className="py-2 pr-3">{t(admin.locale, "users_col_created")}</th>
+              <th className="py-2">{t(admin.locale, "users_col_actions")}</th>
             </tr>
           </thead>
           <tbody>

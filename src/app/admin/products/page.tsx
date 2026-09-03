@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 import { PendingProductCard } from "@/components/admin/PendingProductCard";
+import { t } from "@/lib/admin-i18n";
 
 // Adskilt visning af bruger-indsendte vs. auto-importerede (AI/API/DB)
 // produkter (docs/DECISIONS.md 2026-09-02) — filter/faner, ikke en ny side.
@@ -33,13 +34,13 @@ export default async function AdminProductsPage({
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-lg font-semibold text-text-primary">Nye produkter</h1>
+      <h1 className="text-lg font-semibold text-text-primary">{t(admin.locale, "products_title")}</h1>
       <div className="flex gap-2">
         <Link href="/admin/products?tab=user" className={tabClass(tab === "user")}>
-          Bruger-indsendte
+          {t(admin.locale, "products_tab_user")}
         </Link>
         <Link href="/admin/products?tab=auto" className={tabClass(tab === "auto")}>
-          Auto-importerede
+          {t(admin.locale, "products_tab_auto")}
         </Link>
       </div>
       <p className="text-sm text-text-secondary">Nyeste øverst.</p>

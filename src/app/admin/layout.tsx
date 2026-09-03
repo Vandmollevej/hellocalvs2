@@ -12,7 +12,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <div className="min-h-dvh bg-page-bg text-text-primary">
-      {admin && <AdminNav email={admin.email} />}
+      {admin && <AdminNav email={admin.email} locale={admin.locale} />}
       <main className="mx-auto max-w-4xl px-4 py-6 sm:px-6 sm:py-8">{children}</main>
     </div>
   );
