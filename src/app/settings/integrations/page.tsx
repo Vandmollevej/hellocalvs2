@@ -13,6 +13,7 @@ import {
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import type { IntegrationCardStatus } from "@/lib/integrations";
 import type { IntegrationProvider } from "@prisma/client";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 const PROVIDER_ICONS: Record<IntegrationProvider, Icon> = {
   FITBIT: IconRun,
@@ -22,11 +23,13 @@ const PROVIDER_ICONS: Record<IntegrationProvider, Icon> = {
   GOOGLE_HEALTH: IconBrandGoogle,
 };
 
-const STATUS_LABELS: Record<IntegrationCardStatus["status"], string> = {
-  DISCONNECTED: "Ikke forbundet",
-  CONNECTED: "Forbundet",
-  ERROR: "Fejl",
-};
+function statusLabels(t: (key: string) => string): Record<IntegrationCardStatus["status"], string> {
+  return {
+    DISCONNECTED: t("integrations.status.disconnected"),
+    CONNECTED: t("integrations.status.connected"),
+    ERROR: t("integrations.status.error"),
+  };
+}
 
 function formatDateTime(value: string) {
   return new Intl.DateTimeFormat("da-DK", {
@@ -45,6 +48,7 @@ type DeviceToken = {
 };
 
 function IntegrationerContent() {
+  const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [integrations, setIntegrations] = useState<IntegrationCardStatus[]>([]);
@@ -56,15 +60,15 @@ function IntegrationerContent() {
 
   const notice =
     searchParams.get("connected") === "fitbit"
-      ? "Fitbit blev forbundet."
+      ? t("integrations.notice.fitbitConnected")
       : searchParams.get("connected") === "withings"
-        ? "Withings blev forbundet."
+        ? t("integrations.notice.withingsConnected")
         : searchParams.get("error") === "fitbit_authorize_failed" ||
             searchParams.get("error") === "fitbit_token_exchange_failed"
-          ? "Kunne ikke forbinde Fitbit. Prøv igen."
+          ? t("integrations.notice.fitbitFailed")
           : searchParams.get("error") === "withings_authorize_failed" ||
               searchParams.get("error") === "withings_token_exchange_failed"
-            ? "Kunne ikke forbinde Withings. Prøv igen."
+            ? t("integrations.notice.withingsFailed")
             : null;
 
   function load() {
@@ -143,7 +147,7 @@ function IntegrationerContent() {
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
-      <ScreenHeader title="Integrationer" onBack={() => router.back()} />
+      <ScreenHeader title={t("integrations.title")} onBack={() => router.back()} />
 
       <div className="flex flex-col gap-4 p-4">
         {notice && (
@@ -151,12 +155,10 @@ function IntegrationerContent() {
         )}
 
         <p className="px-1 text-[13px] leading-relaxed text-hf-black opacity-60">
-          Forbind Fitbit eller Withings for at hente sport, forbrænding og vægt automatisk. De
-          øvrige kræver enten en companion-app eller et tredjeparts-abonnement — ikke tilkoblet
-          endnu.
+          {t("integrations.intro")}
         </p>
 
-        {loading && <p className="text-center text-[13px] text-hf-black opacity-60">Henter…</p>}
+        {loading && <p className="text-center text-[13px] text-hf-black opacity-60">{t("integrations.loading")}</p>}
 
         {!loading &&
           integrations.map((integration) => {
@@ -190,7 +192,7 @@ function IntegrationerContent() {
                             : "bg-hf-tan-dark text-hf-black"
                       }`}
                     >
-                      {STATUS_LABELS[integration.status]}
+                      {statusLabels(t)[integration.status]}
                     </span>
                   )}
                 </div>
@@ -201,7 +203,7 @@ function IntegrationerContent() {
                       <>
                         {integration.lastSyncedAt && (
                           <p className="text-[11px] text-hf-black opacity-60">
-                            Sidst synkroniseret {formatDateTime(integration.lastSyncedAt)}
+                            {t("integrations.lastSynced", { date: formatDateTime(integration.lastSyncedAt) })}
                           </p>
                         )}
                         {integration.lastError && (
@@ -214,7 +216,7 @@ function IntegrationerContent() {
                             onClick={() => sync(integration.provider)}
                             className="hf-btn-primary flex-1 py-2.5 text-[13px] disabled:opacity-50"
                           >
-                            Synkroniser nu
+                            {t("integrations.syncNow")}
                           </button>
                           <button
                             type="button"
@@ -222,7 +224,7 @@ function IntegrationerContent() {
                             onClick={() => disconnect(integration.provider)}
                             className="flex-1 rounded-full bg-hf-cream py-2.5 text-[13px] font-semibold text-hf-black disabled:opacity-50"
                           >
-                            Frakobl
+                            {t("integrations.disconnect")}
                           </button>
                         </div>
                       </>
@@ -231,7 +233,7 @@ function IntegrationerContent() {
                         href={`/api/integrations/${integration.provider.toLowerCase()}/connect`}
                         className="hf-btn-primary block w-full py-2.5 text-center text-[13px]"
                       >
-                        Forbind
+                        {t("integrations.connect")}
                       </a>
                     )}
                   </div>
@@ -243,11 +245,9 @@ function IntegrationerContent() {
         {!loading && (
           <div className="flex flex-col gap-3 rounded-[8px] bg-hf-tan p-4">
             <div>
-              <p className="text-[15px] font-bold text-hf-black">Enhedstokens (companion-app)</p>
+              <p className="text-[15px] font-bold text-hf-black">{t("integrations.deviceTokensTitle")}</p>
               <p className="text-[12px] text-hf-black opacity-70">
-                Bruges af en fremtidig iOS/Android-app til at sende Apple Health-/Google Health-data
-                til Hello Cal — se docs/HEALTHKIT_COMPANION.md. Ingen app findes endnu, men koden kan
-                genereres og gemmes klar.
+                {t("integrations.deviceTokensDescription")}
               </p>
             </div>
 
@@ -256,8 +256,8 @@ function IntegrationerContent() {
                 <div className="min-w-0">
                   <p className="truncate text-[13px] font-semibold text-hf-black">{token.label}</p>
                   <p className="text-[11px] text-hf-black opacity-60">
-                    Oprettet {formatDateTime(token.createdAt)}
-                    {token.lastUsedAt ? ` · Sidst brugt ${formatDateTime(token.lastUsedAt)}` : ""}
+                    {t("integrations.createdAt", { date: formatDateTime(token.createdAt) })}
+                    {token.lastUsedAt ? t("integrations.lastUsedAt", { date: formatDateTime(token.lastUsedAt) }) : ""}
                   </p>
                 </div>
                 <button
@@ -266,21 +266,21 @@ function IntegrationerContent() {
                   onClick={() => revokeToken(token.id)}
                   className="shrink-0 text-[12px] font-semibold text-hf-red-dark disabled:opacity-50"
                 >
-                  Fjern
+                  {t("integrations.remove")}
                 </button>
               </div>
             ))}
 
             {newToken ? (
               <div className="rounded-[8px] bg-hf-black p-3 text-hf-white">
-                <p className="text-[12px] font-semibold">Gem denne værdi nu — den vises ikke igen:</p>
+                <p className="text-[12px] font-semibold">{t("integrations.saveTokenNotice")}</p>
                 <p className="mt-1 break-all font-mono text-[12px]">{newToken.raw}</p>
                 <button
                   type="button"
                   onClick={() => setNewToken(null)}
                   className="mt-2 text-[12px] font-semibold underline"
                 >
-                  Luk
+                  {t("integrations.close")}
                 </button>
               </div>
             ) : (
@@ -290,7 +290,7 @@ function IntegrationerContent() {
                 onClick={createToken}
                 className="hf-btn-primary py-2.5 text-[13px] disabled:opacity-50"
               >
-                Generér enhedskode
+                {t("integrations.generateDeviceCode")}
               </button>
             )}
           </div>

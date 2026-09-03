@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 type Result = { id: string; title: string; image?: string | null };
 
@@ -17,7 +18,7 @@ type Registration = {
 
 type LoadState = "loading" | "ready" | "error";
 
-function ResultRow({ id, title, image, forDish }: Result & { forDish: boolean }) {
+function ResultRow({ id, title, image, forDish, t }: Result & { forDish: boolean; t: (key: string) => string }) {
   return (
     <div className="flex items-center gap-2.5 px-4 py-3 border-b border-hf-tan-dark last:border-b-0">
       <div className="h-10 w-10 flex-shrink-0">
@@ -31,13 +32,14 @@ function ResultRow({ id, title, image, forDish }: Result & { forDish: boolean })
         href={forDish ? `/add/${id}?for=ret` : `/add/${id}`}
         className="hf-btn-primary px-4 py-1.5 text-xs"
       >
-        Tilføj
+        {t("search.add")}
       </Link>
     </div>
   );
 }
 
 function SoegContent() {
+  const { t } = useTranslation();
   const searchParams = useSearchParams();
   const forDish = searchParams.get("for") === "ret";
   const [query, setQuery] = useState("");
@@ -105,7 +107,7 @@ function SoegContent() {
   const showRecentlyAdded = useMemo(() => !query.trim() && recentlyAdded.length > 0, [query, recentlyAdded]);
 
   return (
-    <HfScreen title="Søg">
+    <HfScreen title={t("search.title")}>
       <div className="flex flex-col gap-3.5 p-4">
         <div className="hf-search">
           <IconSearch size={16} color="var(--hf-black)" />
@@ -113,39 +115,39 @@ function SoegContent() {
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Søg fødevare eller ret"
+            placeholder={t("search.searchPlaceholder")}
           />
         </div>
 
         {showRecentlyAdded && (
           <>
-            <p className="text-xs font-bold text-hf-black">Tidligere tilføjet</p>
+            <p className="text-xs font-bold text-hf-black">{t("search.recentlyAdded")}</p>
             <div className="overflow-hidden rounded-[8px] bg-hf-tan">
               {recentlyAdded.map((r) => (
-                <ResultRow key={r.id} id={r.id} title={r.title} image={r.image} forDish={forDish} />
+                <ResultRow key={r.id} id={r.id} title={r.title} image={r.image} forDish={forDish} t={t} />
               ))}
             </div>
           </>
         )}
 
         <p className="text-xs font-bold text-hf-black">
-          {query.trim() ? "Søgeresultater" : "Alle varer"}
+          {query.trim() ? t("search.searchResults") : t("search.allItems")}
         </p>
         <div className="overflow-hidden rounded-[8px] bg-hf-tan">
           {resultsState === "loading" && (
-            <p className="px-4 py-6 text-center text-sm text-hf-black opacity-60">Søger …</p>
+            <p className="px-4 py-6 text-center text-sm text-hf-black opacity-60">{t("search.searching")}</p>
           )}
           {resultsState === "error" && (
             <p className="px-4 py-6 text-center text-sm text-hf-black opacity-60">
-              Madvarer kunne ikke hentes lige nu
+              {t("foods.loadError")}
             </p>
           )}
           {resultsState === "ready" && results.slice(0, 6).map((r) => (
-            <ResultRow key={r.id} id={r.id} title={r.title} image={r.image} forDish={forDish} />
+            <ResultRow key={r.id} id={r.id} title={r.title} image={r.image} forDish={forDish} t={t} />
           ))}
           {resultsState === "ready" && results.length === 0 && (
             <p className="px-4 py-4 text-center text-sm text-hf-black opacity-60">
-              Ingen resultater
+              {t("search.noResults")}
             </p>
           )}
         </div>

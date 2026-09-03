@@ -437,5 +437,58 @@
     "saveError": "Kunne ikke gemme registreringen",
     "allergens": "Allergener",
     "allergenDisclaimer": "Vi henter data fra 3. part og fraskriver os ansvar for manglende data."
+  },
+  "search": {
+    "title": "Søg",
+    "add": "Tilføj",
+    "searchPlaceholder": "Søg fødevare eller ret",
+    "recentlyAdded": "Tidligere tilføjet",
+    "searchResults": "Søgeresultater",
+    "allItems": "Alle varer",
+    "searching": "Søger …",
+    "noResults": "Ingen resultater"
+  },
+  "integrations": {
+    "title": "Integrationer",
+    "loading": "Henter…",
+    "status": {
+      "disconnected": "Ikke forbundet",
+      "connected": "Forbundet",
+      "error": "Fejl"
+    },
+    "notice": {
+      "fitbitConnected": "Fitbit blev forbundet.",
+      "withingsConnected": "Withings blev forbundet.",
+      "fitbitFailed": "Kunne ikke forbinde Fitbit. Prøv igen.",
+      "withingsFailed": "Kunne ikke forbinde Withings. Prøv igen."
+    },
+    "intro": "Forbind Fitbit eller Withings for at hente sport, forbrænding og vægt automatisk. De øvrige kræver enten en companion-app eller et tredjeparts-abonnement — ikke tilkoblet endnu.",
+    "lastSynced": "Sidst synkroniseret {date}",
+    "syncNow": "Synkroniser nu",
+    "disconnect": "Frakobl",
+    "connect": "Forbind",
+    "deviceTokensTitle": "Enhedstokens (companion-app)",
+    "deviceTokensDescription": "Bruges af en fremtidig iOS/Android-app til at sende Apple Health-/Google Health-data til Hello Cal — se docs/HEALTHKIT_COMPANION.md. Ingen app findes endnu, men koden kan genereres og gemmes klar.",
+    "createdAt": "Oprettet {date}",
+    "lastUsedAt": " · Sidst brugt {date}",
+    "remove": "Fjern",
+    "saveTokenNotice": "Gem denne værdi nu — den vises ikke igen:",
+    "close": "Luk",
+    "generateDeviceCode": "Generér enhedskode"
+  },
+  "payment": {
+    "title": "Betaling",
+    "status": {
+      "inactive": "Intet aktivt abonnement",
+      "active": "Aktivt abonnement",
+      "trialing": "Prøveperiode",
+      "freeMonth": "Gratis måned aktiv",
+      "canceled": "Opsagt"
+    },
+    "freeMonthsRemaining": "{count} gratis måned(er) i kø",
+    "paymentMethodsTitle": "Betalingsmetoder",
+    "noPaymentMethod": "Ingen betalingsmetode tilføjet endnu",
+    "noPaymentMethodHint": "Kommer, når Hello Cal har en betalingsudbyder tilknyttet. Understøtter Visa, Apple Pay, Google Pay og MobilePay, når det er klar.",
+    "supportedMethodsTitle": "Understøttede metoder"
   }
 }

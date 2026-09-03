@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 // Betaling (docs/DECISIONS.md 2026-09-02): databasen (Subscription,
 // PaymentMethod) og denne side er forberedt til Visa, Apple Pay, Google Pay
@@ -13,18 +14,21 @@ import { ScreenHeader } from "@/components/hf/ScreenHeader";
 // en PSP's egne sikre/hostede felter (fx Reepay/Quickpay/Stripe), aldrig
 // rå felter i denne kode — se docs/DECISIONS.md for hvorfor.
 
-const STATUS_LABELS: Record<string, string> = {
-  INACTIVE: "Intet aktivt abonnement",
-  ACTIVE: "Aktivt abonnement",
-  TRIALING: "Prøveperiode",
-  FREE_MONTH: "Gratis måned aktiv",
-  CANCELED: "Opsagt",
-};
+function statusLabels(t: (key: string) => string): Record<string, string> {
+  return {
+    INACTIVE: t("payment.status.inactive"),
+    ACTIVE: t("payment.status.active"),
+    TRIALING: t("payment.status.trialing"),
+    FREE_MONTH: t("payment.status.freeMonth"),
+    CANCELED: t("payment.status.canceled"),
+  };
+}
 
 type Subscription = { status: string; freeMonthsRemaining: number; currentPeriodEnd?: string | null };
 type PaymentMethod = { id: string; brand: string; last4: string | null };
 
 export default function PaymentPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
@@ -41,30 +45,29 @@ export default function PaymentPage() {
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
-      <ScreenHeader title="Betaling" onBack={() => router.back()} />
+      <ScreenHeader title={t("payment.title")} onBack={() => router.back()} />
 
       <div className="flex flex-col gap-4 p-4">
         <div className="rounded-[8px] p-4" style={{ background: "var(--hf-color-brand)" }}>
           <p className="hf-type-body-sm font-bold text-hf-white">
-            {STATUS_LABELS[subscription?.status ?? "INACTIVE"]}
+            {statusLabels(t)[subscription?.status ?? "INACTIVE"]}
           </p>
           {subscription && subscription.freeMonthsRemaining > 0 && (
             <p className="hf-type-caption mt-1 text-hf-white opacity-90">
-              {subscription.freeMonthsRemaining} gratis måned(er) i kø
+              {t("payment.freeMonthsRemaining", { count: subscription.freeMonthsRemaining })}
             </p>
           )}
         </div>
 
         <div>
-          <p className="hf-type-section-title">Betalingsmetoder</p>
+          <p className="hf-type-section-title">{t("payment.paymentMethodsTitle")}</p>
           {paymentMethods.length === 0 ? (
             <div className="mt-2 rounded-[8px] bg-hf-tan p-4 text-center">
               <p className="hf-type-body-sm font-bold text-hf-black">
-                Ingen betalingsmetode tilføjet endnu
+                {t("payment.noPaymentMethod")}
               </p>
               <p className="hf-type-caption mt-1 text-hf-black opacity-60">
-                Kommer, når Hello Cal har en betalingsudbyder tilknyttet. Understøtter Visa, Apple
-                Pay, Google Pay og MobilePay, når det er klar.
+                {t("payment.noPaymentMethodHint")}
               </p>
             </div>
           ) : (
@@ -84,7 +87,7 @@ export default function PaymentPage() {
         </div>
 
         <div>
-          <p className="hf-type-section-title">Understøttede metoder</p>
+          <p className="hf-type-section-title">{t("payment.supportedMethodsTitle")}</p>
           <div className="mt-2 grid grid-cols-2 gap-2">
             {["Visa", "Apple Pay", "Google Pay", "MobilePay"].map((method) => (
               <div

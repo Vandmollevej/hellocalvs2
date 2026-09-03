@@ -437,5 +437,58 @@
     "saveError": "Couldn't save the registration",
     "allergens": "Allergens",
     "allergenDisclaimer": "We fetch data from a third party and take no responsibility for missing data."
+  },
+  "search": {
+    "title": "Search",
+    "add": "Add",
+    "searchPlaceholder": "Search for a food or dish",
+    "recentlyAdded": "Recently added",
+    "searchResults": "Search results",
+    "allItems": "All items",
+    "searching": "Searching …",
+    "noResults": "No results"
+  },
+  "integrations": {
+    "title": "Integrations",
+    "loading": "Loading…",
+    "status": {
+      "disconnected": "Not connected",
+      "connected": "Connected",
+      "error": "Error"
+    },
+    "notice": {
+      "fitbitConnected": "Fitbit was connected.",
+      "withingsConnected": "Withings was connected.",
+      "fitbitFailed": "Couldn't connect Fitbit. Please try again.",
+      "withingsFailed": "Couldn't connect Withings. Please try again."
+    },
+    "intro": "Connect Fitbit or Withings to automatically fetch exercise, calorie burn and weight. The others require either a companion app or a third-party subscription — not connected yet.",
+    "lastSynced": "Last synced {date}",
+    "syncNow": "Sync now",
+    "disconnect": "Disconnect",
+    "connect": "Connect",
+    "deviceTokensTitle": "Device tokens (companion app)",
+    "deviceTokensDescription": "Used by a future iOS/Android app to send Apple Health/Google Health data to Hello Cal — see docs/HEALTHKIT_COMPANION.md. No app exists yet, but the code can be generated and saved ready.",
+    "createdAt": "Created {date}",
+    "lastUsedAt": " · Last used {date}",
+    "remove": "Remove",
+    "saveTokenNotice": "Save this value now — it won't be shown again:",
+    "close": "Close",
+    "generateDeviceCode": "Generate device code"
+  },
+  "payment": {
+    "title": "Payment",
+    "status": {
+      "inactive": "No active subscription",
+      "active": "Active subscription",
+      "trialing": "Trial period",
+      "freeMonth": "Free month active",
+      "canceled": "Canceled"
+    },
+    "freeMonthsRemaining": "{count} free month(s) queued",
+    "paymentMethodsTitle": "Payment methods",
+    "noPaymentMethod": "No payment method added yet",
+    "noPaymentMethodHint": "Coming once Hello Cal has a payment provider connected. Supports Visa, Apple Pay, Google Pay and MobilePay when it's ready.",
+    "supportedMethodsTitle": "Supported methods"
   }
 }
