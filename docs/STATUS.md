@@ -1,6 +1,67 @@
 # HELLO CAL — project status
 
-Last updated: 2026-08-27
+Last updated: 2026-09-03
+
+## In progress (2026-09-03): pointsystem, betaling, besked-automatisering, admin-brugere
+
+Large multi-part feature, approved via plan mode and then expanded further
+mid-implementation by the user across several follow-up messages. Full
+requirement list: `docs/POINTS_MESSAGING_CHECKLIST.md`. Architectural
+decisions: `docs/DECISIONS.md` (2026-09-02/03 entries).
+
+Done so far:
+- Prisma schema extended (points ledger, bug reports, message
+  templates/outbound queue, notification preferences, push subscriptions,
+  forwards, subscriptions/payment methods, admin audit log, `User.locale`,
+  `User.referralCode`, `User.forgottenAt`, `Product.approvalToken`/
+  `escalationSentAt`). Two migrations were **hand-written** (`prisma/migrations/
+  20260902020000_points_messaging_forwards`, `.../20260902030000_payments_referrals_admin_users`)
+  because there is no local database on this workstation to run
+  `prisma migrate dev` against — validated with `prisma validate` +
+  `prisma generate` + `tsc --noEmit` only, NOT yet applied to a real
+  database. **Must be reviewed and applied via `prisma migrate deploy` on
+  the next Synology release, and verified there before trusting the SQL.**
+- Core lib layer: `src/lib/points.ts` (ledger, 50/month forward cap, 300→1
+  free month redemption), `src/lib/messaging.ts` (template rendering +
+  notification-preference gating + `OutboundMessage` queue), `src/lib/mailer.ts`
+  (nodemailer, no-op until `SMTP_*` env vars exist), `src/lib/push.ts`
+  (web-push, no-op until `VAPID_*` env vars exist), `src/lib/gdpr.ts`
+  (anonymize, not hard-delete), `src/lib/scheduler.ts` + root `instrumentation.ts`
+  (in-process 48h escalation + queue flush, DB-driven, not OS-cron —
+  deliberately not Synology-specific per user instruction).
+- `src/lib/referrals.ts` and `POST /api/auth/register` rewritten: referral
+  attribution now works via `User.referralCode` in the signup body: both
+  referrer and new user get 300 points (not a direct free month) once the
+  existing 3-month wait passes.
+- **Blocking gap found and fixed**: every regular-user route in the app used
+  a single shared `getDemoUser()` (`src/lib/demo-user.ts`) — there was no
+  real per-user login/session at all (matches the pre-existing "Next work"
+  #4 item below). Points, bug reports, forwarding between two people,
+  referral attribution, and per-user notification preferences are all
+  meaningless without distinct logged-in users, so this had to be built
+  first: `src/lib/user-auth.ts` + `src/lib/session.ts` (JWT session cookie,
+  same pattern as `src/lib/admin-auth.ts`, deliberately separate
+  cookie/secret from the admin session), `POST /api/auth/login`,
+  `POST /api/auth/logout`, and `POST /api/auth/register` now sets the
+  session cookie on success. `/login` (previously a non-functional mockup
+  with a permanently disabled button) now has a real working email/password
+  form; `/signup` now captures `?ref=<code>` and passes it through. Existing
+  routes that still use `getDemoUser()` were deliberately left as-is — fully
+  migrating the rest of the app to real sessions is a larger, separate piece
+  of work, not bundled into this feature.
+
+Still to build (see checklist for the full breakdown): product-approval
+points hooks + admin tabs (auto vs. user-submitted), bug report feature end
+to end, `/betingelser` page + banner updates, login-free admin approval page,
+"Besked automatisering" admin tab, notification-preferences page (two entry
+points), "Invitér en ven" UI + `/profile/points` redemption UI, "Videresend
+til en ven" end to end (incl. cross-send abuse flag surfaced in Advarsler),
+"Betaling" page (provider-agnostic — no PSP chosen yet, user rejected the
+clarifying question and said to prepare it generically), admin "Brugere"
+page (impersonation, GDPR button, payment/newsletter overview), admin
+DA/EN language switch. `npm run lint`/`npm run build` have only been run
+against the lib layer so far, not the full new surface — run both again
+once the remaining pages/routes exist.
 
 ## Current checkpoint
 
@@ -54,6 +115,18 @@ Last updated: 2026-08-27
   the same term don't re-fetch OFF. No bulk import of the OFF catalog exists
   or is planned — this is a live per-search fallback. `npm run lint` and
   `npm run build` passed on 2026-08-30.
+- Meal-photo mode (`/camera?mode=meal`) is wired up end to end: capturing a
+  photo now calls `/api/ai/analyze-meal-photo`, which sends it to Passio
+  Nutrition-AI (`src/lib/passio.ts`) for plate segmentation, checks each
+  ingredient against the local product database (same pattern as
+  `interpret-meal`), and returns an editable list the user can trim before
+  saving via `/api/registrations`. HelloFresh recipe matching is unchanged
+  and still never calls Passio — only the general "scan a plate" flow does.
+  Requires `PASSIO_API_KEY` (get one at accounts.passiolife.com); not yet set
+  on Synology, so this is untested against the live Passio API. The detailed
+  visual overlay/uncertain-ingredient UI from `docs/AI.md` is not built —
+  this is a simple review list only. `npm run lint` and `npm run build`
+  passed on 2026-09-03.
 
 ## Validation
 

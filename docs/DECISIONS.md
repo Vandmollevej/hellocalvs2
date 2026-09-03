@@ -485,3 +485,51 @@ This file records durable decisions. Add a dated entry when a later decision cha
   deliberate feature removal). A concurrent session appeared to be resolving
   the same files at the same time; only the conflict(s) still present when
   checked were touched.
+
+## 2026-09-02/03: Pointsystem, betaling, besked-automatisering, admin-brugere
+
+- Points tildeles ved admin-godkendelse (produkter, fejlrapporter), ikke ved
+  indsendelse — forhindrer at spam-indsendelser giver points.
+- Ledger frem for et cachet saldofelt: `PointsTransaction` er kilden til
+  sandhed, saldo er altid en SUM-forespørgsel.
+- "Invitér en ven" giver 300 points til begge parter (ikke en direkte gratis
+  måned); 300 points kan indløses til 1 gratis måned, som kræver en gemt
+  betalingsmetode, så abonnementet fortsætter automatisk til fuld pris
+  bagefter. Lifetime-loft på 12 gratis måneder er uændret fra den
+  oprindelige `freeMonthsCredited`-regel.
+- "Videresend ret/produkt til en ven" giver kun points når modtageren rent
+  faktisk tilføjer varen til sin egen dag (ikke blot åbner linket), har et
+  loft på 50 points/måned/bruger, og krydsspærrer to brugere der sender frem
+  og tilbage mere end én tur-retur på 24 timer (flag håndteres i den
+  eksisterende admin "Advarsler"-side, ingen ny admin-side).
+- 48-timers admin-eskalering (produkter og fejlrapporter) kører som et
+  in-process baggrundsjob i selve Next.js-serveren (`src/lib/scheduler.ts` +
+  `instrumentation.ts`), DB-drevet og bevidst IKKE bundet til Synology Task
+  Scheduler eller andet OS-cron — appen skal kunne flyttes til en anden
+  host uden at miste funktionen.
+- Mail (`src/lib/mailer.ts`, nodemailer) og Web Push (`src/lib/push.ts`,
+  web-push) er forberedt fuldt ud men er bevidst no-op indtil
+  `SMTP_*`/`VAPID_*`-miljøvariabler findes — se `docs/DEPLOYMENT.md`. Ingen
+  konkret mailudbyder er valgt endnu.
+- **Sydtrafik-infrastruktur eller -konti må ALDRIG bruges til noget i dette
+  projekt** — Hello Cal er brugerens eget personlige projekt, fuldstændig
+  adskilt fra dennes arbejdsplads. Gælder mail, hosting, betaling — alt.
+- Betalingsside/-model er bevidst udbyder-uafhængig: der er endnu ingen
+  indløsningsaftale, så `Subscription`/`PaymentMethod` er forberedt med et
+  `PaymentProvider`-enum (Reepay/Quickpay/Stripe/MobilePay Online), men
+  ingen konkret PSP-API kaldes i kode endnu. MobilePay-understøttelse kræver
+  en dansk PSP (ikke Stripe alene) — vælges når en aftale findes.
+- GDPR "ret til at blive glemt" er en **anonymisering**, ikke et hårdt slet:
+  mange tabeller kræver `userId` (RESTRICT) for at bevare
+  registrerings-snapshot-princippet. `src/lib/gdpr.ts` rydder PII og
+  login-midler, men bevarer selve User-rækken og dens historik.
+- Admin "log ind som bruger" (impersonation) og GDPR-sletning logges begge i
+  en ny `AdminAuditLog`-tabel — følsomme admin-handlinger skal kunne
+  efterspores.
+- To Prisma-migrationer i denne batch (`20260902020000_points_messaging_forwards`,
+  `20260902030000_payments_referrals_admin_users`) blev skrevet i hånden,
+  fordi arbejdsstationen ikke har lokal database-adgang til at generere dem
+  med `prisma migrate dev`. De er kun valideret med `prisma validate` +
+  `prisma generate` + `tsc --noEmit` — skal gennemgås og køres med
+  `prisma migrate deploy` ved næste Synology-udrulning før de kan stoles på.
+

@@ -1,10 +1,43 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { SocialLoginButton } from "@/components/hf/SocialLoginButton";
 import { TextField } from "@/components/hf/TextField";
 
 export default function LogIndPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setSubmitting(true);
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.message ?? "Kunne ikke logge ind");
+        setSubmitting(false);
+        return;
+      }
+      router.push("/");
+    } catch {
+      setError("Kunne ikke logge ind — tjek din forbindelse og prøv igen");
+      setSubmitting(false);
+    }
+  }
+
   return (
     <div className="flex h-full min-h-full flex-col bg-hf-cream">
       <div
@@ -20,7 +53,7 @@ export default function LogIndPage() {
         <span className="w-[52px]" aria-hidden="true" />
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 pt-5">
+      <form id="login-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-4 pt-5">
         <p className="hf-type-body-sm">Vælg dit land</p>
         <div className="mt-2 h-px bg-hf-gray-border" />
         <Link
@@ -42,14 +75,37 @@ export default function LogIndPage() {
 
         <p className="hf-type-body-sm mt-4 text-center opacity-70">eller</p>
 
-        <div className="mt-2">
-          <TextField type="email" placeholder="E-mailadresse" />
+        <div className="mt-2 flex flex-col gap-3">
+          <TextField
+            type="email"
+            placeholder="E-mailadresse"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <TextField
+            type="password"
+            placeholder="Adgangskode"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </div>
-      </div>
+        {error && <p className="hf-type-caption mt-2 text-hf-red-dark">{error}</p>}
+
+        <p className="hf-type-body-sm mt-4 text-center">
+          Ny her? <Link href="/signup" className="underline">Opret konto</Link>
+        </p>
+      </form>
 
       <div className="px-4 pb-8 pt-4">
-        <button className="hf-btn-primary hf-type-button h-12 w-full disabled:opacity-40" disabled>
-          Fortsæt
+        <button
+          type="submit"
+          form="login-form"
+          disabled={submitting || !email || !password}
+          className="hf-btn-primary hf-type-button h-12 w-full disabled:opacity-40"
+        >
+          {submitting ? "Logger ind…" : "Fortsæt"}
         </button>
       </div>
     </div>

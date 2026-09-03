@@ -1,13 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { TextField } from "@/components/hf/TextField";
 
-export default function TilmeldPage() {
+function TilmeldContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const referralCode = searchParams.get("ref") ?? undefined;
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,7 +25,7 @@ export default function TilmeldPage() {
       const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ displayName, email, password }),
+        body: JSON.stringify({ displayName, email, password, referralCode }),
       });
       const data = await response.json();
       if (!response.ok) {
@@ -94,5 +96,13 @@ export default function TilmeldPage() {
         </button>
       </form>
     </div>
+  );
+}
+
+export default function TilmeldPage() {
+  return (
+    <Suspense fallback={null}>
+      <TilmeldContent />
+    </Suspense>
   );
 }

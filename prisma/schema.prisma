@@ -85,34 +85,70 @@ model User {
   wantsAdviceEmails        Boolean @default(false)
   wantsPartnerOffersEmails Boolean @default(false)
 
-  // "Invitér en ven"-bogføring (docs/DECISIONS.md 2026-09-02): der findes
-  // endnu ikke noget rigtigt invitations-/henvisningskode-flow, så dette er
-  // kun datamodellen og optællingslogikken. freeMonthsCredited er loftet på
-  // maks. 12 gratis måneder nogensinde.
+  // "Invitér en ven": kort delbar kode brugt i invite-linket
+  // (https://.../tilmeld?ref=<referralCode>). Belønning er 300 points til
+  // både afsender og ny bruger ved gennemført tilmelding (PointsReason
+  // FRIEND_REFERRAL), IKKE en direkte gratis måned — se Referral-modellen.
+  referralCode String @unique @default(cuid())
+
+  // Lifetime-loft: maks. 12 gratis måneder nogensinde, uanset om de kommer
+  // fra "invitér en ven" (300 points/stk.) eller anden fremtidig kilde.
+  // Forhøjes kun via 300-points-indløsning (PointsReason FREE_MONTH_REDEEMED),
+  // se src/lib/points.ts.
   freeMonthsCredited Int @default(0)
 
-  registrations    Registration[]
-  favorites        Favorite[]
-  dishes           Dish[]
-  weightEntries    WeightEntry[]
-  sleepSchedules   SleepSchedule[]
-  workShifts       WorkShift[]
-  integrations     Integration[]
-  activities       Activity[]
-  deviceTokens     DeviceToken[]
-  healthMetrics    HealthMetric[]
-  passkeys         Passkey[]
-  referralsMade    Referral[]      @relation("ReferralsMade")
-  referralReceived Referral?       @relation("ReferralReceived")
+  // Admin-UI-sprog (kun relevant for role=ADMIN, men fælles felt er enklere
+  // end en separat admin-only tabel).
+  locale Locale @default(DA)
+
+  // GDPR "ret til at blive glemt" (docs/DECISIONS.md 2026-09-02): sat når en
+  // admin har anonymiseret kontoen. Historiske Registration-rækker bevares
+  // (snapshot-princippet), men PII er ryddet — se src/lib/gdpr.ts.
+  forgottenAt DateTime?
+
+  // Krydsspærring for "videresend til en ven" (docs/DECISIONS.md, points-
+  // system 2026-09-02): sat når to brugere har sendt mere end én tur-retur
+  // videresendelse til hinanden inden for 24 timer. Blokerer nye points fra
+  // FRIEND_FORWARD_FULFILLED for begge brugere, indtil admin rydder flaget
+  // fra Advarsler-siden.
+  forwardAbuseFlaggedAt DateTime?
+
+  registrations           Registration[]
+  favorites               Favorite[]
+  dishes                  Dish[]
+  weightEntries           WeightEntry[]
+  sleepSchedules          SleepSchedule[]
+  workShifts              WorkShift[]
+  integrations            Integration[]
+  activities              Activity[]
+  deviceTokens            DeviceToken[]
+  healthMetrics           HealthMetric[]
+  passkeys                Passkey[]
+  referralsMade           Referral[]               @relation("ReferralsMade")
+  referralReceived        Referral?                @relation("ReferralReceived")
+  pointsTransactions      PointsTransaction[]
+  bugReports              BugReport[]
+  notificationPreferences NotificationPreference[]
+  pushSubscriptions       PushSubscription[]
+  forwardsSent            Forward[]                @relation("ForwardSender")
+  forwardsReceived        Forward[]                @relation("ForwardRecipient")
+  outboundMessages        OutboundMessage[]
+  subscription            Subscription?
+  paymentMethods          PaymentMethod[]
+  adminAuditLogsAsActor   AdminAuditLog[]          @relation("AdminAuditActor")
+  adminAuditLogsAsTarget  AdminAuditLog[]          @relation("AdminAuditTarget")
 
   @@map("users")
 }
 
-// "Invitér en ven"-bogføring. Der er ikke bygget noget rigtigt
-// invitations-/henvisningskode-system endnu (intet konto-login-flow kan
-// endnu attribuere hvem der inviterede hvem) — se docs/DECISIONS.md. Denne
-// model er kun den fremtidige bogføring, klar til når et rigtigt
-// invite-link/signup-attribution-mekanisme findes.
+// "Invitér en ven"-bogføring. Attribueres ved tilmelding via
+// User.referralCode i invite-linket (src/app/api/auth/register/route.ts).
+// Belønning (docs/DECISIONS.md 2026-09-02): 300 points til BÅDE referrer og
+// referredUser, tildelt af src/lib/referrals.ts når referredRegisteredAt er
+// ≥3 måneder gammel (uændret ventetid-regel). Points indløses separat til
+// gratis måneder (300 points = 1 måned, kræver gemt betalingsmetode så
+// abonnementet fortsætter automatisk bagefter) — se PointsReason
+// FREE_MONTH_REDEEMED og src/app/profile/points/page.tsx.
 model Referral {
   id                   String    @id @default(cuid())
   referrer             User      @relation("ReferralsMade", fields: [referrerId], references: [id])
@@ -128,6 +164,12 @@ model Referral {
 enum Role {
   USER
   ADMIN
+}
+
+// Admin-UI-sprog (docs/DECISIONS.md 2026-09-02).
+enum Locale {
+  DA
+  EN
 }
 
 enum Sex {
@@ -426,12 +468,23 @@ model Product {
   discontinued     Boolean                @default(false)
   createdAt        DateTime               @default(now())
 
-  barcodes        Barcode[]
-  registrations   Registration[]
-  favorites       Favorite[]
-  dishIngredients DishIngredient[]
-  ingredients     ProductIngredient[]
-  images          ProductImage[]
+  // Login-frit admin-godkendelseslink (points-system 2026-09-02, se
+  // docs/DECISIONS.md): unikt token brugt i mail-varsler, så admin kan
+  // godkende/afvise direkte fra en mail uden at logge ind. Sættes til null
+  // igen, når produktet er godkendt/afvist, så linket ikke kan genbruges.
+  approvalToken    String?   @unique
+  // Sat når 48-timers eskaleringsvarslet er lagt i besked-køen for et
+  // produkt der stadig er PENDING, så det ikke sendes flere gange.
+  escalationSentAt DateTime?
+
+  barcodes           Barcode[]
+  registrations      Registration[]
+  favorites          Favorite[]
+  dishIngredients    DishIngredient[]
+  ingredients        ProductIngredient[]
+  images             ProductImage[]
+  pointsTransactions PointsTransaction[]
+  forwards           Forward[]
 
   @@index([externalSource, externalId])
   @@map("products")
@@ -570,6 +623,7 @@ model Dish {
   ingredients   DishIngredient[]
   registrations Registration[]
   favorites     Favorite[]
+  forwards      Forward[]
 
   @@map("dishes")
 }
@@ -624,4 +678,289 @@ model Favorite {
 
   @@unique([userId, productId, dishId])
   @@map("favorites")
+}
+
+// --- Pointsystem (docs/DECISIONS.md 2026-09-02) ---
+// Ledger frem for et cachet saldo-felt: saldoen er blot en SUM af
+// PointsTransaction.amount for brugeren, hvilket giver et fuldt revisionsspor
+// uden risiko for at et cachet felt driver ud af sync.
+
+enum PointsReason {
+  PRODUCT_APPROVED
+  PRODUCT_INGREDIENTS_BONUS
+  PRODUCT_PHOTOS_BONUS
+  BUG_REPORT_APPROVED
+  FRIEND_FORWARD_FULFILLED
+  FRIEND_REFERRAL
+  FREE_MONTH_REDEEMED
+}
+
+model PointsTransaction {
+  id          String       @id @default(cuid())
+  user        User         @relation(fields: [userId], references: [id])
+  userId      String
+  reason      PointsReason
+  amount      Int
+  product     Product?     @relation(fields: [productId], references: [id])
+  productId   String?
+  bugReport   BugReport?   @relation(fields: [bugReportId], references: [id])
+  bugReportId String?
+  forward     Forward?     @relation(fields: [forwardId], references: [id])
+  forwardId   String?
+  createdAt   DateTime     @default(now())
+
+  @@index([userId])
+  @@map("points_transactions")
+}
+
+// --- Fejlrapporter ("Indberet fejl") ---
+
+enum BugReportStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model BugReport {
+  id            String          @id @default(cuid())
+  user          User            @relation(fields: [userId], references: [id])
+  userId        String
+  description   String
+  screenshotUrl String?
+  status        BugReportStatus @default(PENDING)
+  createdAt     DateTime        @default(now())
+  resolvedAt    DateTime?
+
+  // Login-frit admin-godkendelseslink, samme mønster som Product.approvalToken.
+  approvalToken    String?   @unique
+  escalationSentAt DateTime?
+
+  pointsTransactions PointsTransaction[]
+
+  @@map("bug_reports")
+}
+
+// --- Besked automatisering (mail + push, docs/DECISIONS.md 2026-09-02) ---
+// Faktisk afsendelse er forberedt (src/lib/mailer.ts, src/lib/push.ts), men
+// aktiveres først når SMTP-/VAPID-miljøvariabler er udfyldt — se
+// docs/DEPLOYMENT.md. Indtil da lægges beskeder blot i OutboundMessage-køen
+// med status QUEUED.
+
+enum MessageEvent {
+  ACCOUNT_CREATED
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+  FRIEND_REFERRAL
+  PRODUCT_APPROVED
+  PRODUCT_REJECTED
+  PRODUCT_ESCALATION_ADMIN
+  BUG_REPORT_ESCALATION_ADMIN
+  BUG_REPORT_RESOLVED
+  POINTS_AWARDED
+  FRIEND_FORWARD_RECEIVED
+}
+
+enum MessageChannel {
+  EMAIL
+  PUSH
+  BOTH
+}
+
+// Admin-redigerbar skabelon pr. event ("Besked automatisering"-fanen).
+// Seedet med en standardrække pr. MessageEvent ved migration.
+model MessageTemplate {
+  id        String         @id @default(cuid())
+  event     MessageEvent   @unique
+  channel   MessageChannel @default(EMAIL)
+  enabled   Boolean        @default(true)
+  subject   String
+  bodyHtml  String
+  pushTitle String?
+  pushBody  String?
+  updatedAt DateTime       @default(now()) @updatedAt
+
+  @@map("message_templates")
+}
+
+enum OutboundStatus {
+  QUEUED
+  SENT
+  FAILED
+  SKIPPED
+}
+
+// Kø/log over alle udsendte/forsøgte beskeder. toEmail bruges når der ikke
+// er en kendt bruger (fx admin-varsler til den faste admin-mail).
+model OutboundMessage {
+  id        String         @id @default(cuid())
+  user      User?          @relation(fields: [userId], references: [id])
+  userId    String?
+  toEmail   String?
+  event     MessageEvent
+  channel   MessageChannel
+  subject   String?
+  bodyHtml  String?
+  status    OutboundStatus @default(QUEUED)
+  error     String?
+  createdAt DateTime       @default(now())
+  sentAt    DateTime?
+
+  @@index([status])
+  @@map("outbound_messages")
+}
+
+// Brugerstyrbare notifikationspræferencer pr. event (kun de events der ikke
+// er transaktionelle, se src/lib/messaging.ts). Manglende række for en
+// bruger/event betyder "til" (standarden nedenfor).
+model NotificationPreference {
+  id     String       @id @default(cuid())
+  user   User         @relation(fields: [userId], references: [id])
+  userId String
+  event  MessageEvent
+  email  Boolean      @default(true)
+  push   Boolean      @default(true)
+
+  @@unique([userId, event])
+  @@map("notification_preferences")
+}
+
+// Web Push-abonnement (forberedt infrastruktur, aktiveres når VAPID-nøgler
+// er udfyldt, se src/lib/push.ts).
+model PushSubscription {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+
+  @@map("push_subscriptions")
+}
+
+// --- Videresend ret/produkt til en ven ---
+
+enum ForwardStatus {
+  PENDING
+  OPENED
+  FULFILLED
+  EXPIRED
+}
+
+enum ForwardKind {
+  PRODUCT
+  DISH
+}
+
+model Forward {
+  id          String        @id @default(cuid())
+  token       String        @unique @default(cuid())
+  sender      User          @relation("ForwardSender", fields: [senderId], references: [id])
+  senderId    String
+  recipient   User?         @relation("ForwardRecipient", fields: [recipientId], references: [id])
+  recipientId String?
+  kind        ForwardKind
+  product     Product?      @relation(fields: [productId], references: [id])
+  productId   String?
+  dish        Dish?         @relation(fields: [dishId], references: [id])
+  dishId      String?
+  status      ForwardStatus @default(PENDING)
+  createdAt   DateTime      @default(now())
+  openedAt    DateTime?
+  fulfilledAt DateTime?
+
+  pointsTransactions PointsTransaction[]
+
+  @@index([senderId])
+  @@index([recipientId])
+  @@map("forwards")
+}
+
+// --- Betaling / abonnement (docs/DECISIONS.md 2026-09-02) ---
+// Udbyder-uafhængig forberedelse: der er endnu ikke en indløsningsaftale, så
+// ingen konkret PSP er kaldt i kode endnu. provider/providerCustomerId/
+// providerSubscriptionId er klar til at blive udfyldt, når en aftale
+// (fx Reepay/Quickpay for MobilePay-understøttelse) er på plads.
+
+enum SubscriptionStatus {
+  INACTIVE
+  ACTIVE
+  TRIALING
+  FREE_MONTH
+  CANCELED
+}
+
+enum PaymentProvider {
+  REEPAY
+  QUICKPAY
+  STRIPE
+  MOBILEPAY_ONLINE
+}
+
+enum PaymentMethodBrand {
+  VISA
+  MASTERCARD
+  APPLE_PAY
+  GOOGLE_PAY
+  MOBILEPAY
+}
+
+model Subscription {
+  id                     String             @id @default(cuid())
+  user                   User               @relation(fields: [userId], references: [id])
+  userId                 String             @unique
+  status                 SubscriptionStatus @default(INACTIVE)
+  provider               PaymentProvider?
+  providerCustomerId     String?
+  providerSubscriptionId String?
+  currentPeriodEnd       DateTime?
+  // Optjente men endnu ikke forbrugte gratis måneder (indløst via 300
+  // points, se PointsReason FREE_MONTH_REDEEMED), ventende på at blive
+  // anvendt på næste faktureringsperiode.
+  freeMonthsRemaining    Int                @default(0)
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @default(now()) @updatedAt
+
+  @@map("subscriptions")
+}
+
+// Gemte betalingsmetoder (kort/wallets). Selve kortoplysningerne opbevares
+// aldrig her — kun det udbyderen returnerer til visning (mærke, sidste 4
+// cifre, udløb) plus en reference-id til PSP'en for det faktiske kort/token.
+model PaymentMethod {
+  id                      String             @id @default(cuid())
+  user                    User               @relation(fields: [userId], references: [id])
+  userId                  String
+  provider                PaymentProvider
+  brand                   PaymentMethodBrand
+  last4                   String?
+  expiryMonth             Int?
+  expiryYear              Int?
+  isDefault               Boolean            @default(true)
+  providerPaymentMethodId String?
+  createdAt               DateTime           @default(now())
+
+  @@index([userId])
+  @@map("payment_methods")
+}
+
+// --- Admin: brugerstøtte og revisionsspor ---
+
+enum AdminAuditAction {
+  IMPERSONATE_USER
+  GDPR_FORGET_USER
+}
+
+// Revisionsspor for følsomme admin-handlinger ("log ind som bruger" og
+// "ret til at blive glemt") — docs/DECISIONS.md 2026-09-02.
+model AdminAuditLog {
+  id           String           @id @default(cuid())
+  admin        User             @relation("AdminAuditActor", fields: [adminId], references: [id])
+  adminId      String
+  action       AdminAuditAction
+  targetUser   User?            @relation("AdminAuditTarget", fields: [targetUserId], references: [id])
+  targetUserId String?
+  createdAt    DateTime         @default(now())
+
+  @@map("admin_audit_logs")
 }
