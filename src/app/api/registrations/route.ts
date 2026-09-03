@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getDemoUser } from "@/lib/demo-user";
+import { getEffectiveUser } from "@/lib/session";
+import { fulfillMatchingForward } from "@/lib/forwards";
 
 export async function GET() {
   try {
-    const user = await getDemoUser();
+    const user = await getEffectiveUser();
     const registrations = await prisma.registration.findMany({
       where: { userId: user.id },
       orderBy: { createdAt: "desc" },
@@ -78,7 +79,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const user = await getDemoUser();
+    const user = await getEffectiveUser();
 
     if (productId) {
       const product = await prisma.product.findUnique({ where: { id: productId } });
@@ -101,6 +102,7 @@ export async function POST(req: Request) {
         },
       });
 
+      await fulfillMatchingForward(user.id, "PRODUCT", product.id);
       return NextResponse.json({ registration });
     }
 
@@ -141,6 +143,7 @@ export async function POST(req: Request) {
         },
       });
 
+      await fulfillMatchingForward(user.id, "DISH", dish.id);
       return NextResponse.json({ registration });
     }
 

@@ -7,7 +7,15 @@ import { ADMIN_SESSION_COOKIE, verifyAdminSession } from "@/lib/admin-auth";
 // included so /admin works during local development without a special host.
 const ADMIN_HOST = "adminhellocal.packroff.dk";
 
-const PUBLIC_ADMIN_PATHS = ["/admin/login", "/admin/verify", "/admin/setup"];
+const PUBLIC_ADMIN_PATHS = [
+  "/admin/login",
+  "/admin/verify",
+  "/admin/setup",
+  // Login-frit mail-godkendelseslink (docs/DECISIONS.md 2026-09-02):
+  // sikkerheden kommer fra det unikke, uigætlige token i URL'en, ikke fra
+  // en admin-session — se src/app/admin/approve/[token]/page.tsx.
+  "/admin/approve",
+];
 const PUBLIC_ADMIN_API_PATHS = [
   "/api/admin/login",
   "/api/admin/verify",
@@ -15,6 +23,7 @@ const PUBLIC_ADMIN_API_PATHS = [
   // Discoverable/usernameless passkey login (docs/DECISIONS.md 2026-08-28) —
   // by definition happens before there is any session.
   "/api/admin/passkey/authenticate",
+  "/api/admin/approve",
 ];
 
 function isPublicPath(pathname: string, publicPaths: string[]) {

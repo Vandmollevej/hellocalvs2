@@ -3,6 +3,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 import { PendingImageCard } from "@/components/admin/PendingImageCard";
+import { ClearForwardFlagButton } from "@/components/admin/ClearForwardFlagButton";
 
 // Possible duplicates: two products sharing the same name (case-insensitive)
 // — the schema's Barcode.code is a primary key, so two products can never
@@ -37,9 +38,13 @@ export default async function AdminWarningsPage() {
   const admin = await requireAdminUser();
   if (!admin) redirect("/admin/login");
 
-  const [duplicateGroups, pendingImages] = await Promise.all([
+  const [duplicateGroups, pendingImages, forwardAbuseUsers] = await Promise.all([
     findDuplicateGroups(),
     prisma.product.findMany({ where: { imageStatus: "PENDING" }, include: { brand: true }, orderBy: { createdAt: "asc" } }),
+    prisma.user.findMany({
+      where: { forwardAbuseFlaggedAt: { not: null } },
+      orderBy: { forwardAbuseFlaggedAt: "desc" },
+    }),
   ]);
 
   return (
@@ -103,6 +108,36 @@ export default async function AdminWarningsPage() {
           <div className="grid gap-3 sm:grid-cols-2">
             {pendingImages.map((product) => (
               <PendingImageCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="flex flex-col gap-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-text-muted">
+          Videresend-misbrug ({forwardAbuseUsers.length})
+        </h2>
+        <p className="text-sm text-text-secondary">
+          Brugere flagget for mere end én tur-retur videresendelse med samme person på 24 timer.
+          Flaget blokerer nye forward-points for brugeren, indtil det ryddes.
+        </p>
+        {forwardAbuseUsers.length === 0 ? (
+          <p className="text-sm text-text-secondary">Ingen aktive flag.</p>
+        ) : (
+          <div className="flex flex-col gap-2">
+            {forwardAbuseUsers.map((user) => (
+              <div
+                key={user.id}
+                className="flex items-center justify-between rounded-lg border border-border-strong bg-surface-2 p-3"
+              >
+                <div>
+                  <p className="text-sm font-medium text-text-primary">{user.displayName}</p>
+                  <p className="text-xs text-text-muted">
+                    {user.email} · flagget {user.forwardAbuseFlaggedAt?.toLocaleString("da-DK")}
+                  </p>
+                </div>
+                <ClearForwardFlagButton userId={user.id} />
+              </div>
             ))}
           </div>
         )}

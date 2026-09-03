@@ -24,7 +24,13 @@
     "continueWithApple": "Fortsæt med Apple",
     "continueWithFacebook": "Fortsæt med Facebook",
     "emailPlaceholder": "E-mailadresse",
-    "continueButton": "Fortsæt"
+    "passwordPlaceholder": "Adgangskode",
+    "continueButton": "Fortsæt",
+    "submitting": "Logger ind…",
+    "genericError": "Kunne ikke logge ind",
+    "networkError": "Kunne ikke logge ind — tjek din forbindelse og prøv igen",
+    "newHere": "Ny her?",
+    "createAccount": "Opret konto"
   },
   "country": {
     "title": "Vælg dit land",
@@ -109,8 +115,10 @@
     "privacyPolicy": "Privatlivspolitik",
     "dataTracking": "Datasporing",
     "chooseCountry": "Vælg dit land",
+    "notifications": "Notifikationer",
     "inviteFriend": "Invitér en ven",
     "inviteFriendDescription": "Og få en gratis måned hver",
-    "inviteShareText": "Prøv Hello Cal med mig — så får vi begge en måned gratis!"
+    "inviteShareText": "Prøv Hello Cal med mig — så får vi begge en måned gratis!",
+    "invitePointsDescription": "I optjener begge 300 points hver"
   }
 }

@@ -1,6 +1,106 @@
 # HELLO CAL — project status
 
-Last updated: 2026-08-27
+Last updated: 2026-09-03
+
+## In progress (2026-09-03): pointsystem, betaling, besked-automatisering, admin-brugere
+
+Large multi-part feature, approved via plan mode and then expanded further
+mid-implementation by the user across several follow-up messages. Full
+requirement list: `docs/POINTS_MESSAGING_CHECKLIST.md`. Architectural
+decisions: `docs/DECISIONS.md` (2026-09-02/03 entries).
+
+Done so far:
+- Prisma schema extended (points ledger, bug reports, message
+  templates/outbound queue, notification preferences, push subscriptions,
+  forwards, subscriptions/payment methods, admin audit log, `User.locale`,
+  `User.referralCode`, `User.forgottenAt`, `Product.approvalToken`/
+  `escalationSentAt`). Two migrations were **hand-written** (`prisma/migrations/
+  20260902020000_points_messaging_forwards`, `.../20260902030000_payments_referrals_admin_users`)
+  because there is no local database on this workstation to run
+  `prisma migrate dev` against — validated with `prisma validate` +
+  `prisma generate` + `tsc --noEmit` only, NOT yet applied to a real
+  database. **Must be reviewed and applied via `prisma migrate deploy` on
+  the next Synology release, and verified there before trusting the SQL.**
+- Core lib layer: `src/lib/points.ts` (ledger, 50/month forward cap, 300→1
+  free month redemption), `src/lib/messaging.ts` (template rendering +
+  notification-preference gating + `OutboundMessage` queue), `src/lib/mailer.ts`
+  (nodemailer, no-op until `SMTP_*` env vars exist), `src/lib/push.ts`
+  (web-push, no-op until `VAPID_*` env vars exist), `src/lib/gdpr.ts`
+  (anonymize, not hard-delete), `src/lib/scheduler.ts` + root `instrumentation.ts`
+  (in-process 48h escalation + queue flush, DB-driven, not OS-cron —
+  deliberately not Synology-specific per user instruction).
+- `src/lib/referrals.ts` and `POST /api/auth/register` rewritten: referral
+  attribution now works via `User.referralCode` in the signup body: both
+  referrer and new user get 300 points (not a direct free month) once the
+  existing 3-month wait passes.
+- **Blocking gap found and fixed**: every regular-user route in the app used
+  a single shared `getDemoUser()` (`src/lib/demo-user.ts`) — there was no
+  real per-user login/session at all (matches the pre-existing "Next work"
+  #4 item below). Points, bug reports, forwarding between two people,
+  referral attribution, and per-user notification preferences are all
+  meaningless without distinct logged-in users, so this had to be built
+  first: `src/lib/user-auth.ts` + `src/lib/session.ts` (JWT session cookie,
+  same pattern as `src/lib/admin-auth.ts`, deliberately separate
+  cookie/secret from the admin session), `POST /api/auth/login`,
+  `POST /api/auth/logout`, and `POST /api/auth/register` now sets the
+  session cookie on success. `/login` (previously a non-functional mockup
+  with a permanently disabled button) now has a real working email/password
+  form; `/signup` now captures `?ref=<code>` and passes it through. Existing
+  routes that still use `getDemoUser()` were deliberately left as-is — fully
+  migrating the rest of the app to real sessions is a larger, separate piece
+  of work, not bundled into this feature.
+
+**Update 2026-09-03, later same day: feature is code-complete.** Everything
+in `docs/POINTS_MESSAGING_CHECKLIST.md` is implemented — product-approval
+points hooks + admin bruger-indsendte/auto-importerede tabs, bug reports end
+to end, `/betingelser` + banner updates, login-free
+`/admin/approve/[token]` mail-approval page (exempted from the admin-session
+middleware gate via its unguessable token instead), "Besked automatisering"
+admin tab (template editor + outbound log), `/profile/notifications` (two
+entry points), "Invitér en ven" UI, "Videresend til en ven" end to end
+(claim-time cross-send abuse check, flag surfaced in the existing Advarsler
+page), "Betaling" page (provider-agnostic, no raw card fields — see
+`docs/DECISIONS.md` for why), admin "Brugere" page (cross-host impersonation
+via a 2-minute handoff token, GDPR anonymize, payment/newsletter overview),
+admin DA/EN switch (nav + new-page titles; older admin pages stay Danish-only
+for now). A third migration was added:
+`prisma/migrations/20260902040000_product_created_by_user` (adds
+`Product.createdByUserId`, needed so points can be attributed to whoever
+actually submitted a product). `npm run lint` and `npm run build` are both
+green against the full new surface (verified repeatedly as each piece was
+added, most recently after the i18n switch).
+
+**Not done, and out of scope for this pass:**
+- No browser verification anywhere — this workstation has no local database
+  (see "No local DB" note elsewhere in this file), so nothing has been
+  clicked through in a real browser yet, only compiled/typechecked. Do that
+  after deploy, per the checklist's verification section.
+- `ACCOUNT_CREATED`/`EMAIL_VERIFICATION`/`PASSWORD_RESET` message templates
+  exist but nothing calls `queueMessage()` for them yet (forgot-password
+  doesn't exist as a feature at all). Only escalation/approval/points/forward
+  events are actually wired.
+- No real payment method can be added yet — deliberate, see `docs/DECISIONS.md`
+  (no PSP chosen, and raw card fields are never appropriate without one).
+
+**New environment variables this feature needs in `.env.production`** (not
+added to `.env.production.example` in this pass — that file already has an
+unrelated uncommitted addition in progress, `PASSIO_API_KEY`, so a separate
+edit avoids colliding with it; fold these in next time that file is touched):
+- `USER_SESSION_SECRET` — required, same rules as `ADMIN_SESSION_SECRET`
+  (long random secret, falls back to `ADMIN_SESSION_SECRET` if unset, but a
+  distinct value is safer). Changing it invalidates all regular-user sessions.
+- `ADMIN_NOTIFICATION_EMAIL` — where 48h escalation mails go; defaults to
+  `peter@packroff.dk` if unset.
+- `ADMIN_BASE_URL` — defaults to `https://adminhellocal.packroff.dk`; only
+  needed if that hostname ever changes.
+- `APP_BASE_URL` — defaults to `https://hellocal.packroff.dk`; used to build
+  the impersonation handoff link.
+- `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` / `SMTP_FROM` —
+  optional; email sending stays a no-op (queued, never sent) until all four
+  required ones are set.
+- `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` / `VAPID_CONTACT_EMAIL` —
+  optional; generate with `npx web-push generate-vapid-keys`. Push sending
+  stays a no-op until the two keys are set.
 
 ## Current checkpoint
 
@@ -54,6 +154,18 @@ Last updated: 2026-08-27
   the same term don't re-fetch OFF. No bulk import of the OFF catalog exists
   or is planned — this is a live per-search fallback. `npm run lint` and
   `npm run build` passed on 2026-08-30.
+- Meal-photo mode (`/camera?mode=meal`) is wired up end to end: capturing a
+  photo now calls `/api/ai/analyze-meal-photo`, which sends it to Passio
+  Nutrition-AI (`src/lib/passio.ts`) for plate segmentation, checks each
+  ingredient against the local product database (same pattern as
+  `interpret-meal`), and returns an editable list the user can trim before
+  saving via `/api/registrations`. HelloFresh recipe matching is unchanged
+  and still never calls Passio — only the general "scan a plate" flow does.
+  Requires `PASSIO_API_KEY` (get one at accounts.passiolife.com); not yet set
+  on Synology, so this is untested against the live Passio API. The detailed
+  visual overlay/uncertain-ingredient UI from `docs/AI.md` is not built —
+  this is a simple review list only. `npm run lint` and `npm run build`
+  passed on 2026-09-03.
 
 ## Validation
 
@@ -1014,3 +1126,12 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
     needed). Verify the camera-recognition flow and the portion stepper
     against `hellocal.packroff.dk` once it has imported enough of the
     current week's menu to test against.
+11. Set `PASSIO_API_KEY` (get one at accounts.passiolife.com) in `.env` and
+    `.env.production`/Synology so the meal-photo scan flow
+    (`/camera?mode=meal` → `/api/ai/analyze-meal-photo` →
+    `src/lib/passio.ts`, built 2026-09-03) actually works — untested against
+    the live Passio API without it. Once a key exists, verify end to end on
+    `hellocal.packroff.dk` (take a plate photo, confirm ingredients/grams
+    come back and save correctly). The full visual overlay/uncertain-
+    ingredient UI from `docs/AI.md`'s "Måltidsanalyse" section is still not
+    built — only a simple editable review list exists so far.

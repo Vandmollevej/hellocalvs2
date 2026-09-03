@@ -24,7 +24,13 @@
     "continueWithApple": "Continue with Apple",
     "continueWithFacebook": "Continue with Facebook",
     "emailPlaceholder": "Email address",
-    "continueButton": "Continue"
+    "passwordPlaceholder": "Password",
+    "continueButton": "Continue",
+    "submitting": "Logging in…",
+    "genericError": "Could not log in",
+    "networkError": "Could not log in — check your connection and try again",
+    "newHere": "New here?",
+    "createAccount": "Create account"
   },
   "country": {
     "title": "Choose your country",
@@ -109,8 +115,10 @@
     "privacyPolicy": "Privacy policy",
     "dataTracking": "Data tracking",
     "chooseCountry": "Choose your country",
+    "notifications": "Notifications",
     "inviteFriend": "Invite a friend",
     "inviteFriendDescription": "And get a free month each",
-    "inviteShareText": "Try Hello Cal with me — then we both get a free month!"
+    "inviteShareText": "Try Hello Cal with me — then we both get a free month!",
+    "invitePointsDescription": "You'll both earn 300 points each"
   }
 }

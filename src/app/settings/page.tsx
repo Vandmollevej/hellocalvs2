@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
   IconHelp,
   IconFileText,
@@ -8,6 +9,7 @@ import {
   IconRefresh,
   IconPlugConnected,
   IconCreditCard,
+  IconBell,
 } from "@tabler/icons-react";
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -26,32 +28,6 @@ function resetOnboardingProgress() {
       onboardingDismissed: false,
     }),
   }).catch(() => {});
-}
-
-// No payment/credit backend exists yet (no account/subscription system
-// at all, see docs/STATUS.md "Next work"). The invite is therefore only
-// a sharing feature — no reward is credited, see docs/DECISIONS.md.
-async function inviteAFriend(shareText: string) {
-  const shareData = {
-    title: "Hello Cal",
-    text: shareText,
-    url: "https://hellocal.packroff.dk",
-  };
-
-  if (navigator.share) {
-    try {
-      await navigator.share(shareData);
-    } catch {
-      // User cancelled the share — ignore.
-    }
-    return;
-  }
-
-  try {
-    await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
-  } catch {
-    // Clipboard unavailable — ignore.
-  }
 }
 
 export default function SettingsPage() {
@@ -104,7 +80,16 @@ export default function SettingsPage() {
         </AccordionCard>
 
         <AccordionCard>
-          <ChevronRow icon={<IconFileText size={20} />} label={t("settings.terms")} />
+          <ChevronRow
+            icon={<IconBell size={20} />}
+            label={t("settings.notifications")}
+            href="/profile/notifications"
+            divider={false}
+          />
+        </AccordionCard>
+
+        <AccordionCard>
+          <ChevronRow icon={<IconFileText size={20} />} label={t("settings.terms")} href="/betingelser" />
           <ChevronRow icon={<IconFileText size={20} />} label={t("settings.privacyPolicy")} />
           <ChevronRow icon={<IconFileText size={20} />} label={t("settings.dataTracking")} divider={false} />
         </AccordionCard>
@@ -113,16 +98,15 @@ export default function SettingsPage() {
           <ChevronRow icon={<IconWorld size={20} />} label={t("settings.chooseCountry")} divider={false} />
         </AccordionCard>
 
-        <button
-          type="button"
-          onClick={() => inviteAFriend(t("settings.inviteShareText"))}
-          className="rounded-[8px] bg-hf-green p-4 text-left text-hf-white"
+        <Link
+          href="/profile/invite"
+          className="block rounded-[8px] bg-hf-green p-4 text-left text-hf-white"
         >
           <p className="hf-type-body-sm font-bold">{t("settings.inviteFriend")}</p>
           <p className="hf-type-caption mt-0.5 text-hf-white opacity-90">
-            {t("settings.inviteFriendDescription")}
+            {t("settings.invitePointsDescription")}
           </p>
-        </button>
+        </Link>
       </div>
 
       <div className="flex-1" />
