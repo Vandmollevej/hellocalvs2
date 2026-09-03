@@ -533,5 +533,39 @@
     "fromDateAria": "Fra dato",
     "toDateAria": "Til dato",
     "usePeriod": "Brug periode"
+  },
+  "voice": {
+    "edit": "Rediger",
+    "delete": "Slet",
+    "save": "Gem",
+    "aiEstimate": "AI-estimat",
+    "closeEditing": "Luk redigering",
+    "editItem": "Rediger {title}",
+    "foodOrDish": "Madvare eller ret",
+    "amount": "Mængde",
+    "lessAmount": "Mindre mængde",
+    "moreAmount": "Større mængde",
+    "resetChanges": "Nulstil ændringer",
+    "listeningTitle": "Lytter...",
+    "stopMic": "Stop mikrofonen",
+    "startMic": "Start mikrofonen",
+    "listeningStatus": "Lytter — tryk for at stoppe",
+    "adding": "Tilføjer...",
+    "added": "Tilføjet",
+    "unsupported": "Talegenkendelse understøttes ikke",
+    "tapToTalk": "Tryk på mikrofonen for at tale",
+    "sayNothingYet": "Sig noget...",
+    "yourSpeech": "Din tale",
+    "speechPlaceholder": "Din tale vises her...",
+    "error": {
+      "noSpeech": "Jeg hørte ingen tale. Prøv igen.",
+      "noFoodRecognized": "Jeg kunne ikke genkende nogen madvarer. Prøv igen.",
+      "couldNotSaveRegistrations": "Kunne ikke gemme registreringerne. Prøv igen.",
+      "aiInterpretFailed": "AI-tolkningen slog fejl. Prøv igen.",
+      "micDenied": "Mikrofonadgang blev afvist. Tillad mikrofonen i browserens indstillinger og prøv igen.",
+      "noSpeechCloser": "Jeg hørte ingen tale. Prøv igen og tal tættere på mikrofonen.",
+      "recognitionInterrupted": "Talegenkendelsen blev afbrudt. Prøv igen.",
+      "micCouldNotStart": "Mikrofonen kunne ikke startes. Prøv igen."
+    }
   }
 }

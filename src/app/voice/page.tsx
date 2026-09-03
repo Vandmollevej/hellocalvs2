@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { IconCheck, IconChevronDown, IconChevronUp, IconMinus, IconPlus, IconRecycle } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 type Item = {
   id: string;
@@ -141,14 +142,18 @@ function Waveform({ barRefs }: { barRefs: React.MutableRefObject<(HTMLDivElement
   );
 }
 
+type T = (key: string, params?: Record<string, string | number>) => string;
+
 function SwipeableRow({
   onEdit,
   onDelete,
   children,
+  t,
 }: {
   onEdit: () => void;
   onDelete: () => void;
   children: React.ReactNode;
+  t: T;
 }) {
   const ACTIONS_WIDTH = 152;
   const [open, setOpen] = useState(false);
@@ -205,7 +210,7 @@ function SwipeableRow({
           style={{ width: 76 }}
           className="flex items-center justify-center bg-hf-gray text-[13px] font-semibold text-hf-white"
         >
-          Rediger
+          {t("voice.edit")}
         </button>
         <button
           type="button"
@@ -213,7 +218,7 @@ function SwipeableRow({
           style={{ width: 76 }}
           className="flex items-center justify-center bg-red-600 text-[13px] font-semibold text-white"
         >
-          Slet
+          {t("voice.delete")}
         </button>
       </div>
       <div
@@ -242,7 +247,7 @@ function StandMicrophone() {
   );
 }
 
-function MacroBar({ label, grams, max, onChange }: { label: string; grams: number; max: number; onChange: (value: number) => void }) {
+function MacroBar({ label, grams, max, onChange, t }: { label: string; grams: number; max: number; onChange: (value: number) => void; t: T }) {
   const pct = Math.min(100, (grams / max) * 100);
   const trackRef = useRef<HTMLDivElement>(null);
   const gramsRef = useRef(grams);
@@ -353,7 +358,7 @@ function MacroBar({ label, grams, max, onChange }: { label: string; grams: numbe
                 <span className="text-sm text-hf-black opacity-70">g</span>
               </div>
               <button type="button" onClick={commitEdit} className="mt-3 w-full rounded-xl bg-hf-green py-2.5 text-sm font-bold text-hf-white">
-                Gem
+                {t("voice.save")}
               </button>
             </div>
           </div>,
@@ -370,6 +375,7 @@ function VoiceItem({
   onChange,
   onDelete,
   onReset,
+  t,
 }: {
   item: Item;
   open: boolean;
@@ -377,6 +383,7 @@ function VoiceItem({
   onChange: (changes: Partial<Item>) => void;
   onDelete: () => void;
   onReset?: () => void;
+  t: T;
 }) {
   const { value: amountValue, unit: amountUnit } = parseAmount(item.amountLabel);
   const [prevAmountValue, setPrevAmountValue] = useState(amountValue);
@@ -408,7 +415,7 @@ function VoiceItem({
 
   return (
     <li className="border-b border-hf-tan-dark last:border-b-0">
-      <SwipeableRow onEdit={onToggle} onDelete={onDelete}>
+      <SwipeableRow onEdit={onToggle} onDelete={onDelete} t={t}>
         <div className="flex items-center gap-2.5 py-2.5">
           <div className="h-11 w-11 flex-shrink-0 overflow-hidden rounded-lg bg-hf-tan">
             {item.image && (
@@ -420,13 +427,13 @@ function VoiceItem({
             <span className="flex items-center gap-1.5">
               <span className="block truncate text-sm font-semibold text-hf-black">{item.title}</span>
               {item.estimated && (
-                <span className="flex-shrink-0 rounded-full bg-hf-tan px-1.5 py-0.5 text-[10px] font-bold uppercase text-hf-black opacity-70">AI-estimat</span>
+                <span className="flex-shrink-0 rounded-full bg-hf-tan px-1.5 py-0.5 text-[10px] font-bold uppercase text-hf-black opacity-70">{t("voice.aiEstimate")}</span>
               )}
             </span>
             <span className="mt-0.5 block text-xs text-hf-black opacity-60">{item.amountLabel}</span>
           </button>
           <span className="text-xs text-hf-black opacity-60">{item.kcal} kcal</span>
-          <button type="button" onClick={onToggle} aria-label={open ? "Luk redigering" : `Rediger ${item.title}`} className="flex h-9 w-9 items-center justify-center rounded-full">
+          <button type="button" onClick={onToggle} aria-label={open ? t("voice.closeEditing") : t("voice.editItem", { title: item.title })} className="flex h-9 w-9 items-center justify-center rounded-full">
             {open ? <IconChevronUp size={18} /> : <IconChevronDown size={18} />}
           </button>
         </div>
@@ -434,19 +441,19 @@ function VoiceItem({
         {open && (
           <div className="mb-3 rounded-2xl bg-hf-tan p-4 pb-6">
             <label className="block text-xs font-bold text-hf-black">
-              Madvare eller ret
+              {t("voice.foodOrDish")}
               <input value={item.title} onChange={(event) => onChange({ title: event.target.value })} className="mt-1.5 w-full rounded-xl border border-hf-tan-dark bg-hf-white px-3 py-2.5 text-sm font-normal outline-none focus:border-hf-green" />
             </label>
 
             <div className="mt-3 flex items-center justify-between">
-              <span className="text-[13px] text-hf-black opacity-70">Mængde</span>
+              <span className="text-[13px] text-hf-black opacity-70">{t("voice.amount")}</span>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => applyAmount(amountValue - 1)}
                   disabled={amountValue <= 1}
                   className="flex h-8 w-8 items-center justify-center rounded-full bg-hf-white disabled:opacity-40"
-                  aria-label="Mindre mængde"
+                  aria-label={t("voice.lessAmount")}
                 >
                   <IconMinus size={14} />
                 </button>
@@ -458,7 +465,7 @@ function VoiceItem({
                     if (event.key === "Enter") (event.target as HTMLInputElement).blur();
                   }}
                   inputMode="decimal"
-                  aria-label="Mængde"
+                  aria-label={t("voice.amount")}
                   className="w-11 rounded-lg border border-hf-tan-dark bg-hf-white px-1 py-1.5 text-center text-sm outline-none focus:border-hf-green"
                 />
                 <span className="text-sm font-semibold text-hf-black">{amountUnit}</span>
@@ -466,18 +473,18 @@ function VoiceItem({
                   type="button"
                   onClick={() => applyAmount(amountValue + 1)}
                   className="flex h-8 w-8 items-center justify-center rounded-full bg-hf-white"
-                  aria-label="Større mængde"
+                  aria-label={t("voice.moreAmount")}
                 >
                   <IconPlus size={14} />
                 </button>
               </div>
             </div>
 
-            <p className="hf-heading mb-4 mt-5 text-[15px] text-hf-black">Energifordeling</p>
+            <p className="hf-heading mb-4 mt-5 text-[15px] text-hf-black">{t("common.macroBreakdown")}</p>
             <div className="flex flex-col gap-4">
-              <MacroBar label="Protein" grams={item.protein} max={30} onChange={(value) => onChange({ protein: value })} />
-              <MacroBar label="Kulhydrat" grams={item.carbs} max={40} onChange={(value) => onChange({ carbs: value })} />
-              <MacroBar label="Fedt" grams={item.fat} max={20} onChange={(value) => onChange({ fat: value })} />
+              <MacroBar label={t("common.protein")} grams={item.protein} max={30} onChange={(value) => onChange({ protein: value })} t={t} />
+              <MacroBar label={t("common.carbs")} grams={item.carbs} max={40} onChange={(value) => onChange({ carbs: value })} t={t} />
+              <MacroBar label={t("common.fat")} grams={item.fat} max={20} onChange={(value) => onChange({ fat: value })} t={t} />
             </div>
 
             {onReset && (
@@ -485,7 +492,7 @@ function VoiceItem({
                 <button
                   type="button"
                   onClick={onReset}
-                  aria-label="Nulstil ændringer"
+                  aria-label={t("voice.resetChanges")}
                   className="flex h-11 w-11 items-center justify-center rounded-full bg-hf-green text-hf-white"
                 >
                   <IconRecycle size={20} />
@@ -500,6 +507,7 @@ function VoiceItem({
 }
 
 export default function VoicePage() {
+  const { t } = useTranslation();
   const [openId, setOpenId] = useState<string | null>(null);
   const [items, setItems] = useState<Item[]>([]);
   const [phase, setPhase] = useState<VoicePhase>("idle");
@@ -616,7 +624,7 @@ export default function VoicePage() {
 
     if (!spokenText) {
       setPhase(items.length > 0 ? "added" : "error");
-      if (items.length === 0) setErrorMessage("Jeg hørte ingen tale. Prøv igen.");
+      if (items.length === 0) setErrorMessage(t("voice.error.noSpeech"));
       return;
     }
 
@@ -632,7 +640,7 @@ export default function VoicePage() {
       const interpreted = mapInterpretedItems(data.items as InterpretedItem[]);
       if (interpreted.length === 0) {
         setPhase("error");
-        setErrorMessage("Jeg kunne ikke genkende nogen madvarer. Prøv igen.");
+        setErrorMessage(t("voice.error.noFoodRecognized"));
         return;
       }
 
@@ -670,10 +678,10 @@ export default function VoicePage() {
       });
       setItems((current) => [...current, ...savedItems]);
       setPhase(savedItems.length > 0 ? "added" : "error");
-      if (savedItems.length === 0) setErrorMessage("Kunne ikke gemme registreringerne. Prøv igen.");
+      if (savedItems.length === 0) setErrorMessage(t("voice.error.couldNotSaveRegistrations"));
     } catch {
       setPhase("error");
-      setErrorMessage("AI-tolkningen slog fejl. Prøv igen.");
+      setErrorMessage(t("voice.error.aiInterpretFailed"));
     }
   }
 
@@ -720,10 +728,10 @@ export default function VoicePage() {
       setPhase("error");
       setErrorMessage(
         event.error === "not-allowed" || event.error === "service-not-allowed"
-          ? "Mikrofonadgang blev afvist. Tillad mikrofonen i browserens indstillinger og prøv igen."
+          ? t("voice.error.micDenied")
           : event.error === "no-speech"
-            ? "Jeg hørte ingen tale. Prøv igen og tal tættere på mikrofonen."
-            : "Talegenkendelsen blev afbrudt. Prøv igen."
+            ? t("voice.error.noSpeechCloser")
+            : t("voice.error.recognitionInterrupted")
       );
     };
     recognition.onend = () => {
@@ -737,7 +745,7 @@ export default function VoicePage() {
     } catch {
       recognitionRef.current = null;
       setPhase("error");
-      setErrorMessage("Mikrofonen kunne ikke startes. Prøv igen.");
+      setErrorMessage(t("voice.error.micCouldNotStart"));
     }
   }
 
@@ -764,14 +772,14 @@ export default function VoicePage() {
   }
 
   return (
-    <HfScreen title={isListening ? "Lytter..." : ""}>
+    <HfScreen title={isListening ? t("voice.listeningTitle") : ""}>
       <div className="flex flex-col px-4 pb-6 pt-5">
         <section className="flex flex-col items-center" aria-live="polite">
           <button
             type="button"
             onClick={isListening ? stopListening : startListening}
             disabled={isProcessing || phase === "unsupported"}
-            aria-label={isListening ? "Stop mikrofonen" : "Start mikrofonen"}
+            aria-label={isListening ? t("voice.stopMic") : t("voice.startMic")}
             className="relative flex h-24 w-24 items-center justify-center disabled:cursor-default"
           >
             {(isListening || isProcessing) && <span className="absolute inset-0 animate-ping rounded-full bg-hf-green opacity-20 motion-reduce:animate-none" />}
@@ -781,14 +789,14 @@ export default function VoicePage() {
           </button>
           <p className="mt-2 text-xs font-bold text-hf-green">
             {isListening
-              ? "Lytter — tryk for at stoppe"
+              ? t("voice.listeningStatus")
               : isProcessing
-                ? "Tilføjer..."
+                ? t("voice.adding")
                 : hasAdded
-                  ? "Tilføjet"
+                  ? t("voice.added")
                   : phase === "unsupported"
-                    ? "Talegenkendelse understøttes ikke"
-                    : "Tryk på mikrofonen for at tale"}
+                    ? t("voice.unsupported")
+                    : t("voice.tapToTalk")}
           </p>
           {isListening && <Waveform barRefs={barRefs} />}
           {errorMessage && <p className="mt-2 max-w-[310px] text-center text-xs leading-4 text-red-700">{errorMessage}</p>}
@@ -797,16 +805,16 @@ export default function VoicePage() {
         <section className="mt-4">
           {isListening ? (
             <div className="mt-2 min-h-[72px] w-full rounded-2xl border border-hf-tan-dark bg-hf-white px-4 py-3 text-sm leading-5 text-hf-black">
-              <span>{transcript || "Sig noget..."}</span>
+              <span>{transcript || t("voice.sayNothingYet")}</span>
               <TypingDots />
             </div>
           ) : (
             <textarea
               id="voice-transcript"
-              aria-label="Din tale"
+              aria-label={t("voice.yourSpeech")}
               value={transcript}
               onChange={(event) => setTranscript(event.target.value)}
-              placeholder="Din tale vises her..."
+              placeholder={t("voice.speechPlaceholder")}
               rows={3}
               className="mt-2 w-full resize-none rounded-2xl border border-hf-tan-dark bg-hf-white px-4 py-3 text-sm leading-5 text-hf-black outline-none focus:border-hf-green"
             />
@@ -814,7 +822,7 @@ export default function VoicePage() {
         </section>
 
         <section className="mt-5">
-          <h2 className="hf-heading mb-1 text-base text-hf-black">Tilføjet</h2>
+          <h2 className="hf-heading mb-1 text-base text-hf-black">{t("voice.added")}</h2>
           <ul className="max-h-[45vh] overflow-y-auto">
             {items.map((item) => (
               <VoiceItem
@@ -825,6 +833,7 @@ export default function VoicePage() {
                 onChange={(changes) => updateItem(item.id, changes)}
                 onDelete={() => deleteItem(item.id)}
                 onReset={originalItemsRef.current[item.id] ? () => resetItem(item.id) : undefined}
+                t={t}
               />
             ))}
           </ul>

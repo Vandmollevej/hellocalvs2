@@ -533,5 +533,39 @@
     "fromDateAria": "From date",
     "toDateAria": "To date",
     "usePeriod": "Use period"
+  },
+  "voice": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "aiEstimate": "AI estimate",
+    "closeEditing": "Close editing",
+    "editItem": "Edit {title}",
+    "foodOrDish": "Food or dish",
+    "amount": "Amount",
+    "lessAmount": "Less amount",
+    "moreAmount": "More amount",
+    "resetChanges": "Reset changes",
+    "listeningTitle": "Listening...",
+    "stopMic": "Stop the microphone",
+    "startMic": "Start the microphone",
+    "listeningStatus": "Listening — tap to stop",
+    "adding": "Adding...",
+    "added": "Added",
+    "unsupported": "Speech recognition not supported",
+    "tapToTalk": "Tap the microphone to talk",
+    "sayNothingYet": "Say something...",
+    "yourSpeech": "Your speech",
+    "speechPlaceholder": "Your speech will appear here...",
+    "error": {
+      "noSpeech": "I didn't hear anything. Please try again.",
+      "noFoodRecognized": "I couldn't recognize any foods. Please try again.",
+      "couldNotSaveRegistrations": "Couldn't save the registrations. Please try again.",
+      "aiInterpretFailed": "The AI interpretation failed. Please try again.",
+      "micDenied": "Microphone access was denied. Allow the microphone in your browser settings and try again.",
+      "noSpeechCloser": "I didn't hear anything. Please try again and speak closer to the microphone.",
+      "recognitionInterrupted": "Speech recognition was interrupted. Please try again.",
+      "micCouldNotStart": "The microphone couldn't be started. Please try again."
+    }
   }
 }
