@@ -22,6 +22,7 @@ import { Toggle } from "@/components/ui/Toggle";
 import { WheelPicker } from "@/components/ui/WheelPicker";
 import { BottomNav } from "@/components/BottomNav";
 import { latestTrendWeight, type MealSample, type WeightSample } from "@/lib/weight-trend";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 type Sex = "FEMALE" | "MALE";
 
@@ -38,13 +39,15 @@ type ProfileUser = {
   wantsPartnerOffersEmails: boolean;
 };
 
-const WEIGHT_SOURCE_LABELS: Record<string, string> = {
-  MANUAL: "manuel indtastning",
-  FITBIT: "Fitbit",
-  WITHINGS: "Withings",
-  APPLE_HEALTH: "Apple Health",
-  GOOGLE_HEALTH: "Google Health Connect",
-};
+function weightSourceLabels(t: (key: string) => string): Record<string, string> {
+  return {
+    MANUAL: t("profile.weightSource.manual"),
+    FITBIT: t("profile.weightSource.fitbit"),
+    WITHINGS: t("profile.weightSource.withings"),
+    APPLE_HEALTH: t("profile.weightSource.appleHealth"),
+    GOOGLE_HEALTH: t("profile.weightSource.googleHealth"),
+  };
+}
 
 function formatUpdatedDate(value: string) {
   return new Intl.DateTimeFormat("da-DK", { day: "numeric", month: "short", year: "numeric" }).format(
@@ -73,6 +76,7 @@ const inputClass =
   "rounded-xl bg-hf-tan px-4 py-3 text-[15px] text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green";
 
 export default function ProfilePage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [user, setUser] = useState<ProfileUser | null>(null);
   const [loading, setLoading] = useState(true);
@@ -165,23 +169,23 @@ export default function ProfilePage() {
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
-      <ScreenHeader title="Mine oplysninger" onBack={() => router.back()} />
+      <ScreenHeader title={t("profile.title")} onBack={() => router.back()} />
 
       {loading || !user ? (
         <p className="p-6 text-center text-[14px] text-hf-black opacity-60">
-          {loading ? "Henter…" : "Kunne ikke hente profil."}
+          {loading ? t("profile.loading") : t("profile.loadError")}
         </p>
       ) : (
         <div className="flex flex-col gap-4 p-4">
           <AccordionCard>
             <FullscreenAccordionRow
               icon={<IconUser size={20} />}
-              label="Profil"
+              label={t("profile.section.profile")}
               open={profileOpen}
               onOpenChange={setProfileOpen}
             >
               <div className="flex flex-col gap-4 pt-2">
-                <Field label="Navn">
+                <Field label={t("profile.field.name")}>
                   <input
                     className={inputClass}
                     value={user.displayName}
@@ -189,12 +193,12 @@ export default function ProfilePage() {
                   />
                 </Field>
 
-                <Field label="E-mail">
+                <Field label={t("profile.field.email")}>
                   <input className={`${inputClass} opacity-60`} value={user.email} disabled />
                 </Field>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <Field label="Vægt (kg)">
+                  <Field label={t("profile.field.weight")}>
                     <input
                       type="number"
                       inputMode="decimal"
@@ -206,20 +210,22 @@ export default function ProfilePage() {
                     />
                     {trendWeightKg !== null && (
                       <span className="text-[11px] text-hf-black opacity-60">
-                        Trendvægt (AI-estimat): {trendWeightKg.toFixed(1)} kg
+                        {t("profile.trendWeight", { value: trendWeightKg.toFixed(1) })}
                       </span>
                     )}
                     {lastWeightEntry && (
                       <span className="text-[11px] text-hf-black opacity-60">
-                        Opdateret d. {formatUpdatedDate(lastWeightEntry.weighedAt)} fra{" "}
-                        {WEIGHT_SOURCE_LABELS[lastWeightEntry.source] ?? lastWeightEntry.source}
+                        {t("profile.updatedFrom", {
+                          date: formatUpdatedDate(lastWeightEntry.weighedAt),
+                          source: weightSourceLabels(t)[lastWeightEntry.source] ?? lastWeightEntry.source,
+                        })}
                       </span>
                     )}
                   </Field>
 
-                  <Field label="Højde (cm)">
+                  <Field label={t("profile.field.height")}>
                     <WheelPicker
-                      label="Højde"
+                      label={t("profile.field.height")}
                       value={user.heightCm !== null ? Math.round(user.heightCm) : null}
                       min={100}
                       max={230}
@@ -229,9 +235,9 @@ export default function ProfilePage() {
                     />
                   </Field>
 
-                  <Field label="Fødselsår">
+                  <Field label={t("profile.field.birthYear")}>
                     <WheelPicker
-                      label="Fødselsår"
+                      label={t("profile.field.birthYear")}
                       value={user.birthYear}
                       min={1920}
                       max={new Date().getFullYear()}
@@ -240,7 +246,7 @@ export default function ProfilePage() {
                     />
                   </Field>
 
-                  <Field label="Køn">
+                  <Field label={t("profile.field.sex")}>
                     <select
                       className={`${inputClass} w-full appearance-none`}
                       value={user.sex ?? ""}
@@ -248,9 +254,9 @@ export default function ProfilePage() {
                         updateNow("sex", event.target.value === "" ? null : (event.target.value as Sex))
                       }
                     >
-                      <option value="">Ikke angivet</option>
-                      <option value="FEMALE">Kvinde</option>
-                      <option value="MALE">Mand</option>
+                      <option value="">{t("profile.sexOption.unspecified")}</option>
+                      <option value="FEMALE">{t("profile.sexOption.female")}</option>
+                      <option value="MALE">{t("profile.sexOption.male")}</option>
                     </select>
                   </Field>
                 </div>
@@ -259,65 +265,65 @@ export default function ProfilePage() {
 
             <ChevronRow
               icon={<IconScale size={20} />}
-              label="Vægt kalibrering"
+              label={t("profile.row.weightCalibration")}
               href="/profile/weight-calibration"
             />
             <ChevronRow
               icon={<IconMoon size={20} />}
-              label="Søvnmønster"
+              label={t("profile.row.sleep")}
               href="/profile/sleep"
             />
             <ChevronRow
               icon={<IconCamera size={20} />}
-              label="Billede-dagbog"
+              label={t("profile.row.photoDiary")}
               href="/profile/photo-diary"
             />
             <ChevronRow
               icon={<IconPlugConnected size={20} />}
-              label="Integrationer"
+              label={t("profile.row.integrations")}
               href="/settings/integrationer"
             />
-            <ChevronRow icon={<IconStar size={20} />} label="Points" href="/profile/points" />
+            <ChevronRow icon={<IconStar size={20} />} label={t("profile.row.points")} href="/profile/points" />
             <ChevronRow
               icon={<IconUserPlus size={20} />}
-              label="Invitér en ven"
+              label={t("profile.row.inviteFriend")}
               href="/profile/invite"
             />
             <ChevronRow
               icon={<IconBell size={20} />}
-              label="Notifikationer"
+              label={t("profile.row.notifications")}
               href="/profile/notifications"
             />
             <ChevronRow
               icon={<IconBug size={20} />}
-              label="Indberet fejl"
+              label={t("profile.row.reportBug")}
               href="/profile/report-bug"
             />
 
             <FullscreenAccordionRow
               icon={<IconMessageCircle size={20} />}
-              label="Kommunikation"
+              label={t("profile.section.communication")}
               open={communicationOpen}
               onOpenChange={setCommunicationOpen}
             >
               <div className="flex flex-col gap-3 pt-2">
                 <Toggle
-                  label="Jeg ønsker at modtage push-beskeder"
+                  label={t("profile.communication.push")}
                   checked={user.wantsPushNotifications}
                   onChange={(value) => updateNow("wantsPushNotifications", value)}
                 />
                 <Toggle
-                  label="Jeg vil gerne modtage nyheder om updates"
+                  label={t("profile.communication.updateNews")}
                   checked={user.wantsUpdateNewsEmails}
                   onChange={(value) => updateNow("wantsUpdateNewsEmails", value)}
                 />
                 <Toggle
-                  label="Jeg vil gerne modtage gode råd pr. mail"
+                  label={t("profile.communication.advice")}
                   checked={user.wantsAdviceEmails}
                   onChange={(value) => updateNow("wantsAdviceEmails", value)}
                 />
                 <Toggle
-                  label="Jeg vil gerne modtage gode tilbud og information fra vores samarbejdspartnere"
+                  label={t("profile.communication.partnerOffers")}
                   checked={user.wantsPartnerOffersEmails}
                   onChange={(value) => updateNow("wantsPartnerOffersEmails", value)}
                 />
@@ -326,7 +332,7 @@ export default function ProfilePage() {
 
             <ChevronRow
               icon={<IconSettings size={20} />}
-              label="Indstillinger"
+              label={t("profile.row.settings")}
               href="/profile/settings"
               divider={false}
             />

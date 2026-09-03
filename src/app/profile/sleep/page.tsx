@@ -5,8 +5,7 @@ import { useRouter } from "next/navigation";
 import { IconChevronDown } from "@tabler/icons-react";
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import { Toggle } from "@/components/ui/Toggle";
-
-const WEEKDAY_LABELS = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 type SleepUser = {
   defaultBedtime: string | null;
@@ -36,6 +35,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 export default function SleepSchedulePage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [user, setUser] = useState<SleepUser | null>(null);
   const [schedules, setSchedules] = useState<Record<number, SleepSchedule>>({});
@@ -140,16 +140,16 @@ export default function SleepSchedulePage() {
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
-      <ScreenHeader title="Søvnmønster" onBack={() => router.back()} />
+      <ScreenHeader title={t("profileSleep.title")} onBack={() => router.back()} />
 
       {loading || !user ? (
         <p className="p-6 text-center text-[14px] text-hf-black opacity-60">
-          {loading ? "Henter…" : "Kunne ikke hente søvnmønster."}
+          {loading ? t("profileSleep.loading") : t("profileSleep.loadError")}
         </p>
       ) : (
         <div className="flex flex-col gap-4 p-4">
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Normal sengetid">
+            <Field label={t("profileSleep.defaultBedtime")}>
               <input
                 type="time"
                 className={timeInputClass}
@@ -157,7 +157,7 @@ export default function SleepSchedulePage() {
                 onChange={(event) => updateDefault("defaultBedtime", event.target.value || null)}
               />
             </Field>
-            <Field label="Normal stå-op-tid">
+            <Field label={t("profileSleep.defaultWakeTime")}>
               <input
                 type="time"
                 className={timeInputClass}
@@ -173,7 +173,7 @@ export default function SleepSchedulePage() {
             className="flex w-full items-center gap-2 rounded-2xl bg-hf-tan px-4 py-3 text-left"
           >
             <span className="flex-1 text-[15px] font-medium text-hf-black">
-              Individuelle tider pr. ugedag
+              {t("profileSleep.perDayToggle")}
             </span>
             <IconChevronDown size={18} className={perDayOpen ? "rotate-180" : ""} />
           </button>
@@ -181,23 +181,24 @@ export default function SleepSchedulePage() {
           {perDayOpen && (
             <div className="flex flex-col gap-3 rounded-2xl bg-hf-tan p-4">
               <p className="text-[12px] text-hf-black opacity-60">
-                Angiv kun tider for de dage, der afviger fra normal sengetid/stå-op-tid ovenfor.
+                {t("profileSleep.perDayHint")}
               </p>
-              {WEEKDAY_LABELS.map((label, weekday) => {
+              {[0, 1, 2, 3, 4, 5, 6].map((weekday) => {
+                const label = t(`profileSleep.weekdays.${weekday}`);
                 const schedule = schedules[weekday];
                 return (
                   <div key={label} className="grid grid-cols-[80px_1fr_1fr] items-center gap-2">
                     <span className="text-[13px] font-semibold text-hf-black">{label}</span>
                     <input
                       type="time"
-                      aria-label={`${label} sengetid`}
+                      aria-label={t("profileSleep.bedtimeAria", { day: label })}
                       className="rounded-xl bg-hf-cream px-3 py-2 text-[14px] text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green"
                       value={schedule?.bedtime ?? ""}
                       onChange={(event) => updateWeekday(weekday, "bedtime", event.target.value)}
                     />
                     <input
                       type="time"
-                      aria-label={`${label} stå-op-tid`}
+                      aria-label={t("profileSleep.wakeTimeAria", { day: label })}
                       className="rounded-xl bg-hf-cream px-3 py-2 text-[14px] text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green"
                       value={schedule?.wakeTime ?? ""}
                       onChange={(event) => updateWeekday(weekday, "wakeTime", event.target.value)}
@@ -209,22 +210,21 @@ export default function SleepSchedulePage() {
           )}
 
           <Toggle
-            label="Skiftende arbejdstider"
-            description="Registrér natarbejde/skiftehold og tilhørende søvntider direkte i kalenderen."
+            label={t("profileSleep.shiftWork")}
+            description={t("profileSleep.shiftWorkDescription")}
             checked={user.shiftWorkEnabled}
             onChange={toggleShiftWork}
           />
 
           {user.shiftWorkEnabled && (
             <p className="text-[13px] text-hf-black opacity-70">
-              Åbn en dag i kalenderen for at registrere arbejdstid og en eventuel søvn-override for den
-              dag. Dataene bruges i kalenderens søvnvisualisering.
+              {t("profileSleep.shiftWorkHint")}
             </p>
           )}
 
           <Toggle
-            label="Arbejdstider i kalenderen"
-            description="Vis mulighed for at registrere arbejdstider direkte på en dag i kalenderen."
+            label={t("profileSleep.workHours")}
+            description={t("profileSleep.workHoursDescription")}
             checked={user.workHoursInCalendarEnabled}
             onChange={(value) => updateDefault("workHoursInCalendarEnabled", value)}
           />

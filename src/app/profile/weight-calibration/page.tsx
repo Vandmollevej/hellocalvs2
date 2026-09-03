@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import { HfChevron } from "@/components/hf/HfChevron";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 type RelativeTime = "BEFORE" | "AFTER" | "UNKNOWN";
 type TimeOfDay = "MORNING" | "EVENING" | "UNKNOWN";
@@ -21,29 +22,39 @@ type WeightEntry = {
   weighedAt: string;
 };
 
-const TOILET_LABELS: Record<RelativeTime, string> = {
-  BEFORE: "Før toilet",
-  AFTER: "Efter toilet",
-  UNKNOWN: "Toilet ikke angivet",
-};
+type T = (key: string) => string;
 
-const MEAL_LABELS: Record<RelativeTime, string> = {
-  BEFORE: "Før mad",
-  AFTER: "Efter mad",
-  UNKNOWN: "Mad ikke angivet",
-};
+function toiletLabels(t: T): Record<RelativeTime, string> {
+  return {
+    BEFORE: t("weightCalibration.toilet.before"),
+    AFTER: t("weightCalibration.toilet.after"),
+    UNKNOWN: t("weightCalibration.toilet.unknownLabel"),
+  };
+}
 
-const SHOES_LABELS: Record<ShoesState, string> = {
-  ON: "Med sko",
-  OFF: "Uden sko",
-  UNKNOWN: "Sko ikke angivet",
-};
+function mealLabels(t: T): Record<RelativeTime, string> {
+  return {
+    BEFORE: t("weightCalibration.meal.before"),
+    AFTER: t("weightCalibration.meal.after"),
+    UNKNOWN: t("weightCalibration.meal.unknownLabel"),
+  };
+}
 
-const TIME_LABELS: Record<TimeOfDay, string> = {
-  MORNING: "Morgen",
-  EVENING: "Aften",
-  UNKNOWN: "",
-};
+function shoesLabels(t: T): Record<ShoesState, string> {
+  return {
+    ON: t("weightCalibration.shoes.on"),
+    OFF: t("weightCalibration.shoes.off"),
+    UNKNOWN: t("weightCalibration.shoes.unknownLabel"),
+  };
+}
+
+function timeLabels(t: T): Record<TimeOfDay, string> {
+  return {
+    MORNING: t("weightCalibration.timeOfDay.morning"),
+    EVENING: t("weightCalibration.timeOfDay.evening"),
+    UNKNOWN: "",
+  };
+}
 
 function formatDateTime(value: string) {
   return new Intl.DateTimeFormat("da-DK", {
@@ -93,9 +104,11 @@ function Segmented<T extends string>({
 function MorningEveningRow({
   value,
   onChange,
+  t,
 }: {
   value: TimeOfDay;
   onChange: (value: TimeOfDay) => void;
+  t: T;
 }) {
   return (
     <div className="grid grid-cols-[1fr_20px_1fr] items-center gap-1">
@@ -106,7 +119,7 @@ function MorningEveningRow({
           value === "MORNING" ? "bg-hf-green text-hf-white" : "bg-hf-tan text-hf-black opacity-70"
         }`}
       >
-        Morgen
+        {t("weightCalibration.timeOfDay.morning")}
       </button>
       <HfChevron compact className="mx-auto text-hf-black opacity-50" />
       <button
@@ -116,13 +129,14 @@ function MorningEveningRow({
           value === "EVENING" ? "bg-hf-green text-hf-white" : "bg-hf-tan text-hf-black opacity-70"
         }`}
       >
-        Aften
+        {t("weightCalibration.timeOfDay.evening")}
       </button>
     </div>
   );
 }
 
 export default function WeightCalibrationPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [entries, setEntries] = useState<WeightEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -188,18 +202,17 @@ export default function WeightCalibrationPage() {
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
-      <ScreenHeader title="Vægt kalibrering" onBack={() => router.back()} />
+      <ScreenHeader title={t("weightCalibration.title")} onBack={() => router.back()} />
 
       <div className="flex flex-col gap-4 p-4">
         <p className="text-[13px] text-hf-black opacity-60">
-          Vej dig på forskellige tidspunkter og under forskellige forhold — så får du en fornemmelse
-          af dit udsving i løbet af dagen, uden at skulle veje dig nøgen hver gang.
+          {t("weightCalibration.intro")}
         </p>
 
         <div className="flex flex-col gap-3 rounded-2xl bg-hf-tan p-4">
           <label className="flex flex-col gap-1.5">
             <span className="text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
-              Vægt (kg)
+              {t("weightCalibration.weightLabel")}
             </span>
             <input
               type="number"
@@ -207,7 +220,7 @@ export default function WeightCalibrationPage() {
               value={weightKg}
               onChange={(event) => setWeightKg(event.target.value)}
               className="rounded-xl bg-hf-cream px-4 py-3 text-[15px] text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green"
-              placeholder="fx 78,4"
+              placeholder={t("weightCalibration.weightPlaceholder")}
             />
           </label>
 
@@ -215,36 +228,36 @@ export default function WeightCalibrationPage() {
             value={clothed}
             onChange={setClothed}
             options={[
-              { value: "false", label: "Uden tøj" },
-              { value: "true", label: "Med tøj" },
+              { value: "false", label: t("weightCalibration.clothed.false") },
+              { value: "true", label: t("weightCalibration.clothed.true") },
             ]}
           />
           <Segmented
             value={shoes}
             onChange={setShoes}
             options={[
-              { value: "OFF", label: "Uden sko" },
-              { value: "ON", label: "Med sko" },
-              { value: "UNKNOWN", label: "Ved ikke" },
+              { value: "OFF", label: t("weightCalibration.shoes.off") },
+              { value: "ON", label: t("weightCalibration.shoes.on") },
+              { value: "UNKNOWN", label: t("weightCalibration.shoes.unknown") },
             ]}
           />
-          <MorningEveningRow value={timeOfDay} onChange={setTimeOfDay} />
+          <MorningEveningRow value={timeOfDay} onChange={setTimeOfDay} t={t} />
           <Segmented
             value={toilet}
             onChange={setToilet}
             options={[
-              { value: "BEFORE", label: "Før toilet" },
-              { value: "AFTER", label: "Efter toilet" },
-              { value: "UNKNOWN", label: "Ved ikke" },
+              { value: "BEFORE", label: t("weightCalibration.toilet.before") },
+              { value: "AFTER", label: t("weightCalibration.toilet.after") },
+              { value: "UNKNOWN", label: t("weightCalibration.toilet.unknown") },
             ]}
           />
           <Segmented
             value={meal}
             onChange={setMeal}
             options={[
-              { value: "BEFORE", label: "Før mad" },
-              { value: "AFTER", label: "Efter mad" },
-              { value: "UNKNOWN", label: "Ved ikke" },
+              { value: "BEFORE", label: t("weightCalibration.meal.before") },
+              { value: "AFTER", label: t("weightCalibration.meal.after") },
+              { value: "UNKNOWN", label: t("weightCalibration.meal.unknown") },
             ]}
           />
 
@@ -254,15 +267,15 @@ export default function WeightCalibrationPage() {
             disabled={saving || !weightKg}
             className="hf-btn-primary mt-1 w-full py-3 text-[15px] disabled:opacity-50"
           >
-            Registrér vejning
+            {t("weightCalibration.submit")}
           </button>
         </div>
 
         <div className="flex flex-col gap-2">
-          {loading && <p className="text-center text-[13px] text-hf-black opacity-60">Henter…</p>}
+          {loading && <p className="text-center text-[13px] text-hf-black opacity-60">{t("weightCalibration.loading")}</p>}
           {!loading && entries.length === 0 && (
             <p className="text-center text-[13px] text-hf-black opacity-60">
-              Ingen vejninger registreret endnu.
+              {t("weightCalibration.noEntriesYet")}
             </p>
           )}
           {entries.map((entry) => (
@@ -279,11 +292,11 @@ export default function WeightCalibrationPage() {
                 </p>
                 <p className="text-[12px] text-hf-black opacity-60">
                   {[
-                    entry.clothed ? "Med tøj" : "Uden tøj",
-                    entry.shoes !== "UNKNOWN" ? SHOES_LABELS[entry.shoes] : null,
-                    TIME_LABELS[entry.timeOfDay] || null,
-                    entry.toilet !== "UNKNOWN" ? TOILET_LABELS[entry.toilet] : null,
-                    entry.meal !== "UNKNOWN" ? MEAL_LABELS[entry.meal] : null,
+                    entry.clothed ? t("weightCalibration.clothed.true") : t("weightCalibration.clothed.false"),
+                    entry.shoes !== "UNKNOWN" ? shoesLabels(t)[entry.shoes] : null,
+                    timeLabels(t)[entry.timeOfDay] || null,
+                    entry.toilet !== "UNKNOWN" ? toiletLabels(t)[entry.toilet] : null,
+                    entry.meal !== "UNKNOWN" ? mealLabels(t)[entry.meal] : null,
                   ]
                     .filter(Boolean)
                     .join(" · ")}
@@ -292,10 +305,10 @@ export default function WeightCalibrationPage() {
               <button
                 type="button"
                 onClick={() => remove(entry.id)}
-                aria-label="Slet vejning"
+                aria-label={t("weightCalibration.deleteAria")}
                 className="px-2 text-[13px] font-semibold text-hf-black opacity-50"
               >
-                Slet
+                {t("weightCalibration.delete")}
               </button>
             </div>
           ))}

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { IconTrash } from "@tabler/icons-react";
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import { Toggle } from "@/components/ui/Toggle";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 type DiaryPhoto = {
   id: string;
@@ -56,6 +57,7 @@ function formatDate(value: string) {
 }
 
 export default function BilledeDagbogPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [user, setUser] = useState<DiaryUser | null>(null);
   const [loading, setLoading] = useState(true);
@@ -116,17 +118,17 @@ export default function BilledeDagbogPage() {
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
-      <ScreenHeader title="Billede-dagbog" onBack={() => router.back()} />
+      <ScreenHeader title={t("photoDiary.title")} onBack={() => router.back()} />
 
       {loading || !user ? (
         <p className="p-6 text-center text-[14px] text-hf-black opacity-60">
-          {loading ? "Henter…" : "Kunne ikke hente billede-dagbog."}
+          {loading ? t("photoDiary.loading") : t("photoDiary.loadError")}
         </p>
       ) : (
         <div className="flex flex-col gap-4 p-4">
           <Toggle
-            label="Kræver telefonens adgangskode for at vise"
-            description="Håndhæves endnu ikke af OS'et — det kræver en native app. Kun en gemt præference i dag."
+            label={t("photoDiary.requiresPasscode")}
+            description={t("photoDiary.requiresPasscodeDescription")}
             checked={user.photoDiaryRequiresPasscode}
             onChange={toggleRequiresPasscode}
           />
@@ -137,7 +139,7 @@ export default function BilledeDagbogPage() {
               onClick={() => setLocked(false)}
               className="hf-btn-primary w-full py-3.5 text-[15px]"
             >
-              Vis billeder (ingen rigtig adgangskode-kontrol endnu)
+              {t("photoDiary.showPhotos")}
             </button>
           ) : (
             <>
@@ -154,12 +156,12 @@ export default function BilledeDagbogPage() {
                 onClick={() => fileInputRef.current?.click()}
                 className="hf-btn-primary w-full py-3.5 text-[15px]"
               >
-                Tag billede (fuld figur eller mave)
+                {t("photoDiary.takePhoto")}
               </button>
 
               {photos.length === 0 ? (
                 <p className="text-center text-[13px] text-hf-black opacity-60">
-                  Ingen billeder endnu — tag det første for at kunne sammenligne senere.
+                  {t("photoDiary.noPhotosYet")}
                 </p>
               ) : (
                 <div className="grid grid-cols-2 gap-3">
@@ -168,7 +170,7 @@ export default function BilledeDagbogPage() {
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={photo.dataUrl}
-                        alt="Billede-dagbog-optagelse"
+                        alt={t("photoDiary.photoAlt")}
                         className="h-40 w-full object-cover"
                       />
                       <span className="absolute bottom-1 left-1 rounded bg-black/50 px-1.5 py-0.5 text-[10px] text-white">
@@ -176,7 +178,7 @@ export default function BilledeDagbogPage() {
                       </span>
                       <button
                         type="button"
-                        aria-label="Slet billede"
+                        aria-label={t("photoDiary.deleteAria")}
                         onClick={() => remove(photo.id)}
                         className="absolute right-1 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white"
                       >

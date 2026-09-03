@@ -291,5 +291,119 @@
     "mediaSideImage1": "Side photo 1",
     "mediaSideImage2": "Side photo 2",
     "mediaSideImage3": "Side photo 3"
+  },
+  "profile": {
+    "title": "My details",
+    "loading": "Loading…",
+    "loadError": "Couldn't load profile.",
+    "section": {
+      "profile": "Profile",
+      "communication": "Communication"
+    },
+    "field": {
+      "name": "Name",
+      "email": "Email",
+      "weight": "Weight (kg)",
+      "height": "Height (cm)",
+      "birthYear": "Birth year",
+      "sex": "Sex"
+    },
+    "sexOption": {
+      "unspecified": "Not specified",
+      "female": "Female",
+      "male": "Male"
+    },
+    "trendWeight": "Trend weight (AI estimate): {value} kg",
+    "updatedFrom": "Updated on {date} from {source}",
+    "weightSource": {
+      "manual": "manual entry",
+      "fitbit": "Fitbit",
+      "withings": "Withings",
+      "appleHealth": "Apple Health",
+      "googleHealth": "Google Health Connect"
+    },
+    "row": {
+      "weightCalibration": "Weight calibration",
+      "sleep": "Sleep pattern",
+      "photoDiary": "Photo diary",
+      "integrations": "Integrations",
+      "points": "Points",
+      "inviteFriend": "Invite a friend",
+      "notifications": "Notifications",
+      "reportBug": "Report a bug",
+      "settings": "Settings"
+    },
+    "communication": {
+      "push": "I want to receive push notifications",
+      "updateNews": "I want to receive news about updates",
+      "advice": "I want to receive helpful advice by email",
+      "partnerOffers": "I want to receive great offers and information from our partners"
+    }
+  },
+  "profileSleep": {
+    "title": "Sleep pattern",
+    "loading": "Loading…",
+    "loadError": "Couldn't load sleep pattern.",
+    "weekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "defaultBedtime": "Usual bedtime",
+    "defaultWakeTime": "Usual wake-up time",
+    "perDayToggle": "Individual times per weekday",
+    "perDayHint": "Only set times for days that differ from your usual bedtime/wake-up time above.",
+    "bedtimeAria": "{day} bedtime",
+    "wakeTimeAria": "{day} wake-up time",
+    "shiftWork": "Shifting work hours",
+    "shiftWorkDescription": "Log night work/shift work and the related sleep times directly in the calendar.",
+    "shiftWorkHint": "Open a day in the calendar to log work hours and any sleep override for that day. The data is used in the calendar's sleep visualization.",
+    "workHours": "Work hours in the calendar",
+    "workHoursDescription": "Show the option to log work hours directly on a day in the calendar."
+  },
+  "weightCalibration": {
+    "title": "Weight calibration",
+    "intro": "Weigh yourself at different times and under different conditions — this gives you a sense of your fluctuation throughout the day, without having to weigh yourself naked every time.",
+    "weightLabel": "Weight (kg)",
+    "weightPlaceholder": "e.g. 78.4",
+    "clothed": {
+      "false": "Without clothes",
+      "true": "With clothes"
+    },
+    "shoes": {
+      "off": "Without shoes",
+      "on": "With shoes",
+      "unknown": "Don't know",
+      "unknownLabel": "Shoes not specified"
+    },
+    "timeOfDay": {
+      "morning": "Morning",
+      "evening": "Evening"
+    },
+    "toilet": {
+      "before": "Before toilet",
+      "after": "After toilet",
+      "unknown": "Don't know",
+      "unknownLabel": "Toilet not specified"
+    },
+    "meal": {
+      "before": "Before meal",
+      "after": "After meal",
+      "unknown": "Don't know",
+      "unknownLabel": "Meal not specified"
+    },
+    "submit": "Log weigh-in",
+    "loading": "Loading…",
+    "noEntriesYet": "No weigh-ins logged yet.",
+    "deleteAria": "Delete weigh-in",
+    "delete": "Delete"
+  },
+  "photoDiary": {
+    "title": "Photo diary",
+    "loading": "Loading…",
+    "loadError": "Couldn't load photo diary.",
+    "requiresPasscode": "Requires phone passcode to view",
+    "requiresPasscodeDescription": "Not yet enforced by the OS — that requires a native app. Just a saved preference for now.",
+    "showPhotos": "Show photos (no real passcode check yet)",
+    "takePhoto": "Take photo (full body or stomach)",
+    "noPhotosYet": "No photos yet — take the first one to compare later.",
+    "photoAlt": "Photo diary entry",
+    "deleteAria": "Delete photo"
   }
 }

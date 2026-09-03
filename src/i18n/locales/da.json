@@ -291,5 +291,119 @@
     "mediaSideImage1": "Sidebillede 1",
     "mediaSideImage2": "Sidebillede 2",
     "mediaSideImage3": "Sidebillede 3"
+  },
+  "profile": {
+    "title": "Mine oplysninger",
+    "loading": "Henter…",
+    "loadError": "Kunne ikke hente profil.",
+    "section": {
+      "profile": "Profil",
+      "communication": "Kommunikation"
+    },
+    "field": {
+      "name": "Navn",
+      "email": "E-mail",
+      "weight": "Vægt (kg)",
+      "height": "Højde (cm)",
+      "birthYear": "Fødselsår",
+      "sex": "Køn"
+    },
+    "sexOption": {
+      "unspecified": "Ikke angivet",
+      "female": "Kvinde",
+      "male": "Mand"
+    },
+    "trendWeight": "Trendvægt (AI-estimat): {value} kg",
+    "updatedFrom": "Opdateret d. {date} fra {source}",
+    "weightSource": {
+      "manual": "manuel indtastning",
+      "fitbit": "Fitbit",
+      "withings": "Withings",
+      "appleHealth": "Apple Health",
+      "googleHealth": "Google Health Connect"
+    },
+    "row": {
+      "weightCalibration": "Vægt kalibrering",
+      "sleep": "Søvnmønster",
+      "photoDiary": "Billede-dagbog",
+      "integrations": "Integrationer",
+      "points": "Points",
+      "inviteFriend": "Invitér en ven",
+      "notifications": "Notifikationer",
+      "reportBug": "Indberet fejl",
+      "settings": "Indstillinger"
+    },
+    "communication": {
+      "push": "Jeg ønsker at modtage push-beskeder",
+      "updateNews": "Jeg vil gerne modtage nyheder om updates",
+      "advice": "Jeg vil gerne modtage gode råd pr. mail",
+      "partnerOffers": "Jeg vil gerne modtage gode tilbud og information fra vores samarbejdspartnere"
+    }
+  },
+  "profileSleep": {
+    "title": "Søvnmønster",
+    "loading": "Henter…",
+    "loadError": "Kunne ikke hente søvnmønster.",
+    "weekdays": ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"],
+    "defaultBedtime": "Normal sengetid",
+    "defaultWakeTime": "Normal stå-op-tid",
+    "perDayToggle": "Individuelle tider pr. ugedag",
+    "perDayHint": "Angiv kun tider for de dage, der afviger fra normal sengetid/stå-op-tid ovenfor.",
+    "bedtimeAria": "{day} sengetid",
+    "wakeTimeAria": "{day} stå-op-tid",
+    "shiftWork": "Skiftende arbejdstider",
+    "shiftWorkDescription": "Registrér natarbejde/skiftehold og tilhørende søvntider direkte i kalenderen.",
+    "shiftWorkHint": "Åbn en dag i kalenderen for at registrere arbejdstid og en eventuel søvn-override for den dag. Dataene bruges i kalenderens søvnvisualisering.",
+    "workHours": "Arbejdstider i kalenderen",
+    "workHoursDescription": "Vis mulighed for at registrere arbejdstider direkte på en dag i kalenderen."
+  },
+  "weightCalibration": {
+    "title": "Vægt kalibrering",
+    "intro": "Vej dig på forskellige tidspunkter og under forskellige forhold — så får du en fornemmelse af dit udsving i løbet af dagen, uden at skulle veje dig nøgen hver gang.",
+    "weightLabel": "Vægt (kg)",
+    "weightPlaceholder": "fx 78,4",
+    "clothed": {
+      "false": "Uden tøj",
+      "true": "Med tøj"
+    },
+    "shoes": {
+      "off": "Uden sko",
+      "on": "Med sko",
+      "unknown": "Ved ikke",
+      "unknownLabel": "Sko ikke angivet"
+    },
+    "timeOfDay": {
+      "morning": "Morgen",
+      "evening": "Aften"
+    },
+    "toilet": {
+      "before": "Før toilet",
+      "after": "Efter toilet",
+      "unknown": "Ved ikke",
+      "unknownLabel": "Toilet ikke angivet"
+    },
+    "meal": {
+      "before": "Før mad",
+      "after": "Efter mad",
+      "unknown": "Ved ikke",
+      "unknownLabel": "Mad ikke angivet"
+    },
+    "submit": "Registrér vejning",
+    "loading": "Henter…",
+    "noEntriesYet": "Ingen vejninger registreret endnu.",
+    "deleteAria": "Slet vejning",
+    "delete": "Slet"
+  },
+  "photoDiary": {
+    "title": "Billede-dagbog",
+    "loading": "Henter…",
+    "loadError": "Kunne ikke hente billede-dagbog.",
+    "requiresPasscode": "Kræver telefonens adgangskode for at vise",
+    "requiresPasscodeDescription": "Håndhæves endnu ikke af OS'et — det kræver en native app. Kun en gemt præference i dag.",
+    "showPhotos": "Vis billeder (ingen rigtig adgangskode-kontrol endnu)",
+    "takePhoto": "Tag billede (fuld figur eller mave)",
+    "noPhotosYet": "Ingen billeder endnu — tag det første for at kunne sammenligne senere.",
+    "photoAlt": "Billede-dagbog-optagelse",
+    "deleteAria": "Slet billede"
   }
 }
