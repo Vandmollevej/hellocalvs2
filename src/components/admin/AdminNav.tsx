@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 const LINKS = [
   { href: "/admin", label: "Oversigt" },
   { href: "/admin/products", label: "Nye produkter" },
+  { href: "/admin/users", label: "Brugere" },
   { href: "/admin/bug-reports", label: "Fejlrapporter" },
   { href: "/admin/images", label: "Billedforslag" },
   { href: "/admin/warnings", label: "Advarsler" },
