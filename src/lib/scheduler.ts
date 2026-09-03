@@ -16,7 +16,10 @@ const ESCALATION_HOURS = 48;
 const TICK_INTERVAL_MS = 15 * 60 * 1000;
 
 const ADMIN_NOTIFICATION_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL || "peter@packroff.dk";
-const APP_BASE_URL = process.env.APP_BASE_URL || "https://hellocal.packroff.dk";
+// Samme faste admin-hostname som middleware.ts (ADMIN_HOST) — godkendelseslinket
+// skal pege på admin-domænet, ikke det almindelige brugerdomæne, ellers
+// afviser middleware'en siden med 404.
+const ADMIN_BASE_URL = process.env.ADMIN_BASE_URL || "https://adminhellocal.packroff.dk";
 
 const globalForScheduler = globalThis as unknown as { hellocalSchedulerStarted?: boolean };
 
@@ -36,7 +39,7 @@ async function escalateStalePendingProducts(now: Date) {
       toEmail: ADMIN_NOTIFICATION_EMAIL,
       vars: {
         productName: product.name,
-        approveLink: `${APP_BASE_URL}/admin/approve/${approvalToken}`,
+        approveLink: `${ADMIN_BASE_URL}/admin/approve/${approvalToken}`,
       },
     });
   }
@@ -59,7 +62,7 @@ async function escalateStaleBugReports(now: Date) {
       toEmail: ADMIN_NOTIFICATION_EMAIL,
       vars: {
         displayName: report.user.displayName,
-        approveLink: `${APP_BASE_URL}/admin/approve/${approvalToken}`,
+        approveLink: `${ADMIN_BASE_URL}/admin/approve/${approvalToken}`,
       },
     });
   }
