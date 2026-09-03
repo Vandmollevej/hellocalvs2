@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { IconApple, IconCamera, IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 type Product = {
   id: string;
@@ -42,6 +43,7 @@ function ProductRow({
   isLast: boolean;
   prefillQuery: string;
 }) {
+  const { t } = useTranslation();
   return (
     <Link
       href={`/add/${product.id}${prefillQuery}`}
@@ -56,7 +58,7 @@ function ProductRow({
       <div className="min-w-0 flex-1">
         <p className="truncate text-[15px] font-medium text-hf-black">{product.name}</p>
         <p className="truncate text-xs text-hf-black opacity-60">
-          {[product.brand?.name, `${Math.round(product.kcalPer100g)} kcal / 100 g`]
+          {[product.brand?.name, t("foods.kcalPer100g", { kcal: Math.round(product.kcalPer100g) })]
             .filter(Boolean)
             .join(" · ")}
         </p>
@@ -66,6 +68,7 @@ function ProductRow({
 }
 
 function MadvarerContent() {
+  const { t } = useTranslation();
   const searchParams = useSearchParams();
   const prefillTime = searchParams.get("time");
   const prefillDate = searchParams.get("date");
@@ -132,7 +135,7 @@ function MadvarerContent() {
   const visibleProducts = isSearching ? filtered : favorites;
 
   return (
-    <HfScreen title="Madvarer" icon={<IconApple size={20} stroke={2} />}>
+    <HfScreen title={t("foods.title")} icon={<IconApple size={20} stroke={2} />}>
       <div className="flex flex-col gap-3 p-4">
         <Link
           href="/camera?mode=hellofresh"
@@ -145,7 +148,7 @@ function MadvarerContent() {
             <span className="block text-xs font-semibold uppercase tracking-[0.06em] text-hf-black opacity-60">
               HelloFresh
             </span>
-            <span className="block text-sm font-medium text-hf-black">Genkend din ret</span>
+            <span className="block text-sm font-medium text-hf-black">{t("foods.recognizeDish")}</span>
           </span>
         </Link>
 
@@ -155,23 +158,23 @@ function MadvarerContent() {
             ref={searchInputRef}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Søg i madvarer"
+            placeholder={t("foods.searchPlaceholder")}
           />
         </div>
 
         {!isSearching && state === "ready" && favorites.length > 0 && (
           <p className="px-1 text-xs font-semibold uppercase tracking-[0.08em] text-hf-black opacity-60">
-            Mest brugte
+            {t("foods.mostUsed")}
           </p>
         )}
 
         <div className="max-h-[60vh] overflow-y-auto overflow-x-hidden rounded-[8px] bg-hf-tan">
           {state === "loading" && (
-            <p className="px-4 py-6 text-center text-sm text-hf-black opacity-60">Henter madvarer …</p>
+            <p className="px-4 py-6 text-center text-sm text-hf-black opacity-60">{t("foods.loading")}</p>
           )}
           {state === "error" && (
             <p className="px-4 py-6 text-center text-sm text-hf-black opacity-60">
-              Madvarer kunne ikke hentes lige nu
+              {t("foods.loadError")}
             </p>
           )}
           {state === "ready" &&
@@ -185,17 +188,17 @@ function MadvarerContent() {
             ))}
           {state === "ready" && visibleProducts.length === 0 && (
             <p className="px-4 py-6 text-center text-sm text-hf-black opacity-60">
-              {isSearching ? "Ingen madvarer matcher din søgning" : "Ingen favoritter endnu"}
+              {isSearching ? t("foods.noSearchMatches") : t("foods.noFavoritesYet")}
             </p>
           )}
         </div>
 
         <Link href="/foods/new" className="hf-btn-secondary self-center px-4 py-2 text-xs">
-          Opret nyt produkt manuelt
+          {t("foods.createManually")}
         </Link>
 
         <p className="px-1 text-center text-[10px] text-hf-black opacity-40">
-          Råvaredata: Fødevaredata (frida.fooddata.dk), DTU Fødevareinstituttet
+          {t("foods.dataSource")}
         </p>
       </div>
     </HfScreen>

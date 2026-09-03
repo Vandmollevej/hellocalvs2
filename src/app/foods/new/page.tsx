@@ -4,6 +4,7 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { IconApple } from "@tabler/icons-react";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 export const OCR_DRAFT_STORAGE_KEY = "hellocal-ocr-product-draft";
 
@@ -42,6 +43,7 @@ function readOcrDraft(): { values: FormValues; fromOcr: boolean } {
 }
 
 function NytProduktContent() {
+  const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
   const forDish = searchParams.get("for") === "ret";
@@ -66,23 +68,23 @@ function NytProduktContent() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setSaveError(data.message ?? "Kunne ikke gemme produktet");
+        setSaveError(data.message ?? t("foods.saveError"));
         return;
       }
       router.push(`/add/${data.product.id}${forDish ? "?for=ret" : ""}`);
     } catch {
-      setSaveError("Kunne ikke gemme produktet");
+      setSaveError(t("foods.saveError"));
     } finally {
       setSaving(false);
     }
   }
 
   return (
-    <HfScreen title="Nyt produkt" icon={<IconApple size={20} stroke={2} />}>
+    <HfScreen title={t("foods.newProductTitle")} icon={<IconApple size={20} stroke={2} />}>
       <div className="flex flex-col gap-3 p-4">
         {fromOcr && (
           <p className="px-1 text-xs text-hf-black opacity-70">
-            Værdierne herunder er læst automatisk fra dit billede — tjek og ret dem, hvis noget er forkert.
+            {t("foods.ocrHint")}
           </p>
         )}
 
@@ -91,30 +93,30 @@ function NytProduktContent() {
             value={values.name}
             onChange={(event) => update("name", event.target.value)}
             autoComplete="off"
-            aria-label="Produktnavn"
-            placeholder="Produktnavn"
+            aria-label={t("foods.productNameLabel")}
+            placeholder={t("foods.productNameLabel")}
             className={numberInputClass}
             required
           />
           <div className="flex gap-2">
             <label className="flex-1 text-xs text-hf-black opacity-70">
-              Kalorier (kcal/100g)
+              {t("foods.caloriesLabel")}
               <input
                 value={values.kcalPer100g}
                 onChange={(event) => update("kcalPer100g", event.target.value)}
                 inputMode="decimal"
-                aria-label="Kalorier pr. 100 gram"
+                aria-label={t("foods.caloriesAriaLabel")}
                 className={`${numberInputClass} mt-1 w-full`}
                 required
               />
             </label>
             <label className="flex-1 text-xs text-hf-black opacity-70">
-              Protein (g/100g)
+              {t("foods.proteinLabel")}
               <input
                 value={values.proteinPer100g}
                 onChange={(event) => update("proteinPer100g", event.target.value)}
                 inputMode="decimal"
-                aria-label="Protein pr. 100 gram"
+                aria-label={t("foods.proteinAriaLabel")}
                 className={`${numberInputClass} mt-1 w-full`}
                 required
               />
@@ -122,23 +124,23 @@ function NytProduktContent() {
           </div>
           <div className="flex gap-2">
             <label className="flex-1 text-xs text-hf-black opacity-70">
-              Kulhydrat (g/100g)
+              {t("foods.carbsLabel")}
               <input
                 value={values.carbsPer100g}
                 onChange={(event) => update("carbsPer100g", event.target.value)}
                 inputMode="decimal"
-                aria-label="Kulhydrat pr. 100 gram"
+                aria-label={t("foods.carbsAriaLabel")}
                 className={`${numberInputClass} mt-1 w-full`}
                 required
               />
             </label>
             <label className="flex-1 text-xs text-hf-black opacity-70">
-              Fedt (g/100g)
+              {t("foods.fatLabel")}
               <input
                 value={values.fatPer100g}
                 onChange={(event) => update("fatPer100g", event.target.value)}
                 inputMode="decimal"
-                aria-label="Fedt pr. 100 gram"
+                aria-label={t("foods.fatAriaLabel")}
                 className={`${numberInputClass} mt-1 w-full`}
                 required
               />
@@ -152,7 +154,7 @@ function NytProduktContent() {
             disabled={saving}
             className="hf-btn-primary mt-1 py-2.5 text-xs disabled:opacity-40"
           >
-            {saving ? "Gemmer..." : "Opret produkt"}
+            {saving ? t("foods.saving") : t("foods.createProduct")}
           </button>
         </form>
       </div>
