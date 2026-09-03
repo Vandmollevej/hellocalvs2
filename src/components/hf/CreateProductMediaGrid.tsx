@@ -3,6 +3,7 @@
 import { IconClipboardText, IconList, IconPhoto } from "@tabler/icons-react";
 import { NumberedBadge } from "@/components/hf/NumberedBadge";
 import { HfBarcodeIcon } from "@/components/hf/HfBarcodeIcon";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 export type MediaGridValue = {
   barcodeImage?: string;
@@ -109,6 +110,7 @@ export function CreateProductMediaGrid({
   value: MediaGridValue;
   onChange: (next: MediaGridValue) => void;
 }) {
+  const { t } = useTranslation();
   async function setField(key: "barcodeImage" | "nutritionImage" | "ingredientsImage" | "mainImage", file: File) {
     onChange({ ...value, [key]: await readAsDataUrl(file) });
   }
@@ -123,21 +125,21 @@ export function CreateProductMediaGrid({
     <div className="grid grid-cols-2 gap-4">
       <MediaBox
         number={1}
-        label="Stregkode"
+        label={t("productCreate.mediaBarcode")}
         image={value.barcodeImage}
         icon={<HfBarcodeIcon />}
         onPick={(file) => setField("barcodeImage", file)}
       />
       <MediaBox
         number={2}
-        label="Næringsindhold"
+        label={t("productCreate.mediaNutrition")}
         image={value.nutritionImage}
         icon={<IconClipboardText size={32} stroke={1.75} />}
         onPick={(file) => setField("nutritionImage", file)}
       />
       <MediaBox
         number={3}
-        label="Indholdsfortegnelse"
+        label={t("productCreate.mediaIngredients")}
         image={value.ingredientsImage}
         icon={<IconList size={32} stroke={1.75} />}
         onPick={(file) => setField("ingredientsImage", file)}
@@ -145,10 +147,10 @@ export function CreateProductMediaGrid({
       <div className="relative aspect-square rounded-[12px] p-1.5" style={{ background: "var(--hf-color-card)" }}>
         <NumberedBadge number={4} />
         <div className="grid h-full grid-cols-2 gap-1.5">
-          <ImageSubCell label="Hovedbillede" image={value.mainImage} onPick={(file) => setField("mainImage", file)} />
-          <ImageSubCell label="Sidebillede 1" image={value.sideImages[0]} onPick={(file) => setSideImage(0, file)} />
-          <ImageSubCell label="Sidebillede 2" image={value.sideImages[1]} onPick={(file) => setSideImage(1, file)} />
-          <ImageSubCell label="Sidebillede 3" image={value.sideImages[2]} onPick={(file) => setSideImage(2, file)} />
+          <ImageSubCell label={t("productCreate.mediaMainImage")} image={value.mainImage} onPick={(file) => setField("mainImage", file)} />
+          <ImageSubCell label={t("productCreate.mediaSideImage1")} image={value.sideImages[0]} onPick={(file) => setSideImage(0, file)} />
+          <ImageSubCell label={t("productCreate.mediaSideImage2")} image={value.sideImages[1]} onPick={(file) => setSideImage(1, file)} />
+          <ImageSubCell label={t("productCreate.mediaSideImage3")} image={value.sideImages[2]} onPick={(file) => setSideImage(2, file)} />
         </div>
       </div>
     </div>

@@ -265,5 +265,31 @@
     "search": "Search",
     "scan": "Scan",
     "manually": "Manually"
+  },
+  "productCreate": {
+    "title": "Create product",
+    "saveError": "Couldn't save the product",
+    "failedAddBanner": "The product isn't registered yet. We've made it easy for you to create the product below.",
+    "pointsBanner": "Create the product and earn 10 points.*",
+    "readTerms": "Read terms",
+    "barcodeLabel": "Barcode (optional)",
+    "barcodePlaceholder": "e.g. 5701234567890",
+    "productNameLabel": "Product name",
+    "productNamePlaceholder": "Product name",
+    "caloriesLabel": "Calories (kcal/100g)",
+    "proteinLabel": "Protein (g/100g)",
+    "carbsLabel": "Carbs (g/100g)",
+    "fatLabel": "Fat (g/100g)",
+    "servingSizeLabel": "Serving size (g, optional)",
+    "ingredientsLabel": "Ingredients list (optional)",
+    "saving": "Saving...",
+    "createProduct": "Create product",
+    "mediaBarcode": "Barcode",
+    "mediaNutrition": "Nutrition facts",
+    "mediaIngredients": "Ingredients list",
+    "mediaMainImage": "Main photo",
+    "mediaSideImage1": "Side photo 1",
+    "mediaSideImage2": "Side photo 2",
+    "mediaSideImage3": "Side photo 3"
   }
 }

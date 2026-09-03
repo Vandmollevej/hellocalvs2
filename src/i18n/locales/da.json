@@ -265,5 +265,31 @@
     "search": "Søg",
     "scan": "Scan",
     "manually": "Manuelt"
+  },
+  "productCreate": {
+    "title": "Opret produkt",
+    "saveError": "Kunne ikke gemme produktet",
+    "failedAddBanner": "Produktet er endnu ikke registreret. Vi har gjort det nemt for dig selv at oprette produktet nedenfor.",
+    "pointsBanner": "Opret produktet og optjen 10 points.*",
+    "readTerms": "Læs betingelser",
+    "barcodeLabel": "Stregkode (valgfri)",
+    "barcodePlaceholder": "fx 5701234567890",
+    "productNameLabel": "Produktnavn",
+    "productNamePlaceholder": "Produktnavn",
+    "caloriesLabel": "Kalorier (kcal/100g)",
+    "proteinLabel": "Protein (g/100g)",
+    "carbsLabel": "Kulhydrat (g/100g)",
+    "fatLabel": "Fedt (g/100g)",
+    "servingSizeLabel": "Portionsstørrelse (g, valgfri)",
+    "ingredientsLabel": "Indholdsfortegnelse (valgfri)",
+    "saving": "Gemmer...",
+    "createProduct": "Opret vare",
+    "mediaBarcode": "Stregkode",
+    "mediaNutrition": "Næringsindhold",
+    "mediaIngredients": "Indholdsfortegnelse",
+    "mediaMainImage": "Hovedbillede",
+    "mediaSideImage1": "Sidebillede 1",
+    "mediaSideImage2": "Sidebillede 2",
+    "mediaSideImage3": "Sidebillede 3"
   }
 }

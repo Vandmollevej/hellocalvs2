@@ -8,6 +8,7 @@ import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import { TextField } from "@/components/hf/TextField";
 import { CreateProductMediaGrid, type MediaGridValue } from "@/components/hf/CreateProductMediaGrid";
 import { PRODUCT_DRAFT_STORAGE_KEY, type ProductCreateDraft } from "@/lib/product-draft";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 type FormValues = {
   name: string;
@@ -63,6 +64,7 @@ function readDraft(): { form: FormValues; media: MediaGridValue; fromCamera: boo
 }
 
 function OpretProduktContent() {
+  const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
   const fromFailedAdd = searchParams.get("fromFailedAdd") === "1";
@@ -101,12 +103,12 @@ function OpretProduktContent() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setSaveError(data.message ?? "Kunne ikke gemme produktet");
+        setSaveError(data.message ?? t("productCreate.saveError"));
         return;
       }
       router.push(`/tilfoej/${data.product.id}`);
     } catch {
-      setSaveError("Kunne ikke gemme produktet");
+      setSaveError(t("productCreate.saveError"));
     } finally {
       setSaving(false);
     }
@@ -114,14 +116,14 @@ function OpretProduktContent() {
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
-      <ScreenHeader title="Opret produkt" icon={<IconApple size={20} stroke={2} />} onBack={() => router.back()} />
+      <ScreenHeader title={t("productCreate.title")} icon={<IconApple size={20} stroke={2} />} onBack={() => router.back()} />
       <div className="flex flex-col gap-4 p-4">
         {fromFailedAdd && (
           <div
             className="hf-type-body-sm rounded-[8px] p-4 text-center"
             style={{ background: "var(--hf-color-brand)", color: "var(--hf-color-white)" }}
           >
-            Produktet er endnu ikke registreret. Vi har gjort det nemt for dig selv at oprette produktet nedenfor.
+            {t("productCreate.failedAddBanner")}
           </div>
         )}
         {fromFailedAdd && (
@@ -134,7 +136,7 @@ function OpretProduktContent() {
                 color: "var(--hf-color-text)",
               }}
             >
-              Opret produktet og optjen 10 points.*
+              {t("productCreate.pointsBanner")}
             </div>
             <p
               className="hf-type-caption mt-1 text-center"
@@ -142,7 +144,7 @@ function OpretProduktContent() {
             >
               *
               <Link href="/betingelser#pointsystem" className="underline">
-                Læs betingelser
+                {t("productCreate.readTerms")}
               </Link>
             </p>
           </div>
@@ -156,8 +158,8 @@ function OpretProduktContent() {
             value={media.barcodeValue}
             onChange={(event) => setMedia((prev) => ({ ...prev, barcodeValue: event.target.value }))}
             inputMode="numeric"
-            label="Stregkode (valgfri)"
-            placeholder="fx 5701234567890"
+            label={t("productCreate.barcodeLabel")}
+            placeholder={t("productCreate.barcodePlaceholder")}
           />
 
           <div className="flex flex-col gap-3 rounded-[8px] p-4" style={{ background: "var(--hf-color-card)" }}>
@@ -166,8 +168,8 @@ function OpretProduktContent() {
               value={form.name}
               onChange={(event) => update("name", event.target.value)}
               autoComplete="off"
-              label="Produktnavn"
-              placeholder="Produktnavn"
+              label={t("productCreate.productNameLabel")}
+              placeholder={t("productCreate.productNamePlaceholder")}
               required
             />
             <div className="flex gap-3">
@@ -177,7 +179,7 @@ function OpretProduktContent() {
                 value={form.kcalPer100g}
                 onChange={(event) => update("kcalPer100g", event.target.value)}
                 inputMode="decimal"
-                label="Kalorier (kcal/100g)"
+                label={t("productCreate.caloriesLabel")}
                 required
               />
               <TextField
@@ -186,7 +188,7 @@ function OpretProduktContent() {
                 value={form.proteinPer100g}
                 onChange={(event) => update("proteinPer100g", event.target.value)}
                 inputMode="decimal"
-                label="Protein (g/100g)"
+                label={t("productCreate.proteinLabel")}
                 required
               />
             </div>
@@ -197,7 +199,7 @@ function OpretProduktContent() {
                 value={form.carbsPer100g}
                 onChange={(event) => update("carbsPer100g", event.target.value)}
                 inputMode="decimal"
-                label="Kulhydrat (g/100g)"
+                label={t("productCreate.carbsLabel")}
                 required
               />
               <TextField
@@ -206,7 +208,7 @@ function OpretProduktContent() {
                 value={form.fatPer100g}
                 onChange={(event) => update("fatPer100g", event.target.value)}
                 inputMode="decimal"
-                label="Fedt (g/100g)"
+                label={t("productCreate.fatLabel")}
                 required
               />
             </div>
@@ -215,10 +217,10 @@ function OpretProduktContent() {
               value={form.servingSizeGrams}
               onChange={(event) => update("servingSizeGrams", event.target.value)}
               inputMode="decimal"
-              label="Portionsstørrelse (g, valgfri)"
+              label={t("productCreate.servingSizeLabel")}
             />
             <label className="flex flex-col gap-1">
-              <span className="hf-type-label">Indholdsfortegnelse (valgfri)</span>
+              <span className="hf-type-label">{t("productCreate.ingredientsLabel")}</span>
               <textarea
                 value={form.ingredientsText}
                 onChange={(event) => update("ingredientsText", event.target.value)}
@@ -232,7 +234,7 @@ function OpretProduktContent() {
           {saveError && <p className="hf-type-caption text-center">{saveError}</p>}
 
           <button type="submit" disabled={saving} className="hf-btn-primary h-12 disabled:opacity-40">
-            <span className="hf-type-button">{saving ? "Gemmer..." : "Opret vare"}</span>
+            <span className="hf-type-button">{saving ? t("productCreate.saving") : t("productCreate.createProduct")}</span>
           </button>
         </form>
       </div>
