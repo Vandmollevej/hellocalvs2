@@ -205,6 +205,22 @@
   },
   "cameraCreate": {
     "title": "Tilføj vare",
+    "analyzingDefault": "Analyserer billedet...",
+    "readingImage": "Læser billedet...",
+    "searchingDatabase": "Søger i databasen...",
+    "comparingKnownItems": "Sammenligner med kendte varer...",
+    "analyzingWithAi": "Undersøger billedet med AI...",
+    "readingNutrition": "Læser næringsindholdet...",
+    "checkingDuplicate": "Tjekker for dublet...",
+    "stagePhoto": "Foto af produkt",
+    "stageBarcode": "Foto af stregkode",
+    "stageNutrition": "Foto af næringsindhold",
+    "barcodeNotRecognized": "Stregkoden blev ikke genkendt. Prøv igen, eller indtast nummeret.",
+    "showBarcodeHint": "Vis stregkoden for kameraet, eller indtast nummeret manuelt.",
+    "skipCreateManually": "Spring over — opret produktet manuelt"
+  },
+  "cameraCreate": {
+    "title": "Tilføj vare",
     "analyzingImage": "Analyserer billedet...",
     "readingImage": "Læser billedet...",
     "searchingDatabase": "Søger i databasen...",

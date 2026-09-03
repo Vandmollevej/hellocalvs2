@@ -11,6 +11,7 @@ import { HfBarcodeIcon } from "@/components/hf/HfBarcodeIcon";
 import { extractText, hasMeaningfulText, parseNutritionText } from "@/lib/product-ocr";
 import { bestImageMatch } from "@/lib/image-similarity";
 import { PRODUCT_DRAFT_STORAGE_KEY, type ProductCreateDraft } from "@/lib/product-draft";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 // Guidet auto-genkendelsesflow: forsidefoto → (tekst-OCR-match eller
 // billed-hash/AI-match) → stregkode → næringsdeklaration → opret-siden,
@@ -21,11 +22,11 @@ import { PRODUCT_DRAFT_STORAGE_KEY, type ProductCreateDraft } from "@/lib/produc
 type CameraStatus = "starting" | "active" | "denied" | "unavailable" | "error";
 type Stage = "foto" | "stregkode" | "naering";
 
-function cameraMessage(status: CameraStatus) {
-  if (status === "starting") return "Starter kameraet...";
-  if (status === "denied") return "Giv HELLO CAL adgang til kameraet i browserens indstillinger.";
-  if (status === "unavailable") return "Denne browser eller enhed har ikke et tilgængeligt kamera.";
-  if (status === "error") return "Kameraet kunne ikke startes. Luk andre apps, der bruger kameraet, og prøv igen.";
+function cameraMessage(status: CameraStatus, t: (key: string) => string) {
+  if (status === "starting") return t("camera.starting");
+  if (status === "denied") return t("camera.deniedAccess");
+  if (status === "unavailable") return t("camera.unavailable");
+  if (status === "error") return t("camera.error");
   return null;
 }
 
@@ -46,6 +47,7 @@ function capturePhotoFromVideo(video: HTMLVideoElement | null): string | null {
 }
 
 function KameraOpretContent() {
+  const { t } = useTranslation();
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const scannerControlsRef = useRef<IScannerControls | null>(null);
@@ -57,7 +59,7 @@ function KameraOpretContent() {
   const [restartKey, setRestartKey] = useState(0);
   const [photo, setPhoto] = useState<string | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
-  const [analyzingLabel, setAnalyzingLabel] = useState("Analyserer billedet...");
+  const [analyzingLabel, setAnalyzingLabel] = useState(t("cameraCreate.analyzingDefault"));
   const [manualBarcode, setManualBarcode] = useState("");
   const [barcodeLookupFailed, setBarcodeLookupFailed] = useState(false);
 
@@ -83,7 +85,7 @@ function KameraOpretContent() {
       if (!cleaned || lookupInProgressRef.current) return;
       lookupInProgressRef.current = true;
       setAnalyzing(true);
-      setAnalyzingLabel(`Slår ${cleaned} op...`);
+      setAnalyzingLabel(t("camera.lookingUp", { code: cleaned }));
       try {
         const res = await fetch(`/api/products/lookup/${encodeURIComponent(cleaned)}`);
         if (res.status === 404) {
@@ -105,7 +107,7 @@ function KameraOpretContent() {
         lookupInProgressRef.current = false;
       }
     },
-    [router, stopCamera]
+    [router, stopCamera, t]
   );
 
   // Kamera-bootstrap: almindelig getUserMedia til foto/næring-trin, ZXing
@@ -197,13 +199,13 @@ function KameraOpretContent() {
 
     async function analyze() {
       setAnalyzing(true);
-      setAnalyzingLabel("Læser billedet...");
+      setAnalyzingLabel(t("cameraCreate.readingImage"));
       try {
         const ocrText = await extractText(photo!);
         if (cancelled) return;
 
         if (hasMeaningfulText(ocrText)) {
-          setAnalyzingLabel("Søger i databasen...");
+          setAnalyzingLabel(t("cameraCreate.searchingDatabase"));
           const res = await fetch("/api/products/recognize-text", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -222,7 +224,7 @@ function KameraOpretContent() {
             .find((line) => line.length >= 3);
           if (guessedName) draftRef.current.name = guessedName.slice(0, 80);
         } else {
-          setAnalyzingLabel("Sammenligner med kendte varer...");
+          setAnalyzingLabel(t("cameraCreate.comparingKnownItems"));
           const candidatesRes = await fetch("/api/products/generic-candidates");
           const candidatesData = (await candidatesRes.json()) as {
             products: { id: string; name: string; imageUrl: string | null }[];
@@ -235,7 +237,7 @@ function KameraOpretContent() {
             return;
           }
 
-          setAnalyzingLabel("Undersøger billedet med AI...");
+          setAnalyzingLabel(t("cameraCreate.analyzingWithAi"));
           const aiRes = await fetch("/api/ai/recognize-product-photo", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -289,14 +291,14 @@ function KameraOpretContent() {
 
     async function analyze() {
       setAnalyzing(true);
-      setAnalyzingLabel("Læser næringsindholdet...");
+      setAnalyzingLabel(t("cameraCreate.readingNutrition"));
       try {
         const ocrText = await extractText(photo!);
         if (cancelled) return;
         let parsed = parseNutritionText(ocrText);
 
         if (!parsed) {
-          setAnalyzingLabel("Undersøger billedet med AI...");
+          setAnalyzingLabel(t("cameraCreate.analyzingWithAi"));
           const aiRes = await fetch("/api/ai/extract-nutrition", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -318,7 +320,7 @@ function KameraOpretContent() {
         draftRef.current.nutritionImage = photo!;
 
         if (parsed) {
-          setAnalyzingLabel("Tjekker for dublet...");
+          setAnalyzingLabel(t("cameraCreate.checkingDuplicate"));
           const dedupeRes = await fetch("/api/products/match-nutrition", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -358,9 +360,13 @@ function KameraOpretContent() {
     void lookupBarcode(manualBarcode);
   }
 
-  const message = cameraMessage(cameraStatus);
+  const message = cameraMessage(cameraStatus, t);
   const stageLabel =
-    stage === "foto" ? "Foto af produkt" : stage === "stregkode" ? "Foto af stregkode" : "Foto af næringsindhold";
+    stage === "foto"
+      ? t("cameraCreate.stagePhoto")
+      : stage === "stregkode"
+        ? t("cameraCreate.stageBarcode")
+        : t("cameraCreate.stageNutrition");
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-3 p-4">
@@ -369,7 +375,7 @@ function KameraOpretContent() {
       <div className="relative aspect-square w-full overflow-hidden rounded-[12px] bg-hf-black">
         {photo ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={photo} alt="Dit fotograferede billede" className="h-full w-full object-cover" />
+          <img src={photo} alt={t("camera.photoAlt")} className="h-full w-full object-cover" />
         ) : (
           <video
             ref={videoRef}
@@ -377,7 +383,7 @@ function KameraOpretContent() {
             autoPlay
             muted
             playsInline
-            aria-label="Live kameravisning"
+            aria-label={t("camera.liveViewAriaLabel")}
           />
         )}
 
@@ -407,8 +413,8 @@ function KameraOpretContent() {
           <HfBarcodeIcon className="text-hf-black" />
           <p className="hf-type-caption text-center">
             {barcodeLookupFailed
-              ? "Stregkoden blev ikke genkendt. Prøv igen, eller indtast nummeret."
-              : "Vis stregkoden for kameraet, eller indtast nummeret manuelt."}
+              ? t("cameraCreate.barcodeNotRecognized")
+              : t("cameraCreate.showBarcodeHint")}
           </p>
           <form onSubmit={submitManualBarcode} className="flex w-full gap-2">
             <input
@@ -416,16 +422,16 @@ function KameraOpretContent() {
               onChange={(event) => setManualBarcode(event.target.value.replace(/\D/g, ""))}
               inputMode="numeric"
               autoComplete="off"
-              aria-label="Stregkodenummer"
-              placeholder="Stregkodenummer"
+              aria-label={t("camera.barcodeNumberAriaLabel")}
+              placeholder={t("camera.barcodeNumberAriaLabel")}
               className="min-w-0 flex-1 rounded-full bg-hf-white px-3.5 py-2 text-sm text-hf-black outline-none"
             />
             <button disabled={!manualBarcode} className="hf-btn-primary px-4 py-2 text-xs disabled:opacity-40">
-              Slå op
+              {t("camera.lookUp")}
             </button>
           </form>
           <button onClick={goToCreatePage} className="hf-btn-secondary w-full justify-center py-2 text-xs">
-            Spring over — opret produktet manuelt
+            {t("cameraCreate.skipCreateManually")}
           </button>
         </div>
       )}
@@ -435,7 +441,7 @@ function KameraOpretContent() {
           {photo ? (
             !analyzing && (
               <button onClick={retake} className="hf-btn-secondary gap-2 px-5 py-3 text-sm">
-                Tag billedet om
+                {t("camera.retakePhoto")}
               </button>
             )
           ) : (
@@ -444,7 +450,7 @@ function KameraOpretContent() {
               disabled={cameraStatus !== "active"}
               className="hf-btn-primary gap-2 px-6 py-3 text-sm disabled:opacity-40"
             >
-              <IconCamera size={19} /> Tag billede
+              <IconCamera size={19} /> {t("camera.takePhoto")}
             </button>
           )}
         </div>
@@ -454,8 +460,9 @@ function KameraOpretContent() {
 }
 
 export default function KameraOpretPage() {
+  const { t } = useTranslation();
   return (
-    <HfScreen title="Tilføj vare">
+    <HfScreen title={t("cameraCreate.title")}>
       <Suspense fallback={null}>
         <KameraOpretContent />
       </Suspense>

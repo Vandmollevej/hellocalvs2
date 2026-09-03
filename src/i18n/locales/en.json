@@ -205,6 +205,22 @@
   },
   "cameraCreate": {
     "title": "Add item",
+    "analyzingDefault": "Analyzing the photo...",
+    "readingImage": "Reading the photo...",
+    "searchingDatabase": "Searching the database...",
+    "comparingKnownItems": "Comparing with known items...",
+    "analyzingWithAi": "Examining the photo with AI...",
+    "readingNutrition": "Reading the nutrition info...",
+    "checkingDuplicate": "Checking for a duplicate...",
+    "stagePhoto": "Photo of product",
+    "stageBarcode": "Photo of barcode",
+    "stageNutrition": "Photo of nutrition info",
+    "barcodeNotRecognized": "The barcode wasn't recognized. Try again, or enter the number.",
+    "showBarcodeHint": "Show the barcode to the camera, or enter the number manually.",
+    "skipCreateManually": "Skip — create the product manually"
+  },
+  "cameraCreate": {
+    "title": "Add item",
     "analyzingImage": "Analyzing the image...",
     "readingImage": "Reading the image...",
     "searchingDatabase": "Searching the database...",
