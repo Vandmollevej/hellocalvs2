@@ -1,29 +1,13 @@
 "use client";
 
 import { Suspense, useState } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { IconApple } from "@tabler/icons-react";
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import { TextField } from "@/components/hf/TextField";
 import { CreateProductMediaGrid, type MediaGridValue } from "@/components/hf/CreateProductMediaGrid";
-
-export const PRODUCT_DRAFT_STORAGE_KEY = "hellocal-product-create-draft";
-
-export type ProductCreateDraft = {
-  name?: string;
-  kcalPer100g?: string;
-  proteinPer100g?: string;
-  carbsPer100g?: string;
-  fatPer100g?: string;
-  servingSizeGrams?: string;
-  ingredientsText?: string;
-  barcodeValue?: string;
-  barcodeImage?: string;
-  nutritionImage?: string;
-  ingredientsImage?: string;
-  mainImage?: string;
-  sideImages?: [string?, string?, string?];
-};
+import { PRODUCT_DRAFT_STORAGE_KEY, type ProductCreateDraft } from "@/lib/product-draft";
 
 type FormValues = {
   name: string;
@@ -76,13 +60,6 @@ function readDraft(): { form: FormValues; media: MediaGridValue; fromCamera: boo
   } catch {
     return empty;
   }
-}
-
-function parsePositiveNumber(value: string): number | null {
-  const normalized = value.replace(",", ".").trim();
-  if (!normalized) return null;
-  const num = parseFloat(normalized);
-  return Number.isFinite(num) && num >= 0 ? num : null;
 }
 
 function OpretProduktContent() {
@@ -148,15 +125,26 @@ function OpretProduktContent() {
           </div>
         )}
         {fromFailedAdd && (
-          <div
-            className="hf-type-body-sm rounded-[8px] border-2 p-4 text-center"
-            style={{
-              background: "#FDF3D3",
-              borderColor: "var(--hf-color-brand)",
-              color: "var(--hf-color-text)",
-            }}
-          >
-            Opret produktet og optjen 10 points.
+          <div>
+            <div
+              className="hf-type-body-sm rounded-[8px] border-2 p-4 text-center"
+              style={{
+                background: "#FDF3D3",
+                borderColor: "var(--hf-color-brand)",
+                color: "var(--hf-color-text)",
+              }}
+            >
+              Opret produktet og optjen 10 points.*
+            </div>
+            <p
+              className="hf-type-caption mt-1 text-center"
+              style={{ color: "var(--hf-color-text-secondary)" }}
+            >
+              *
+              <Link href="/betingelser#pointsystem" className="underline">
+                Læs betingelser
+              </Link>
+            </p>
           </div>
         )}
 

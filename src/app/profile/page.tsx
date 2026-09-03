@@ -10,6 +10,10 @@ import {
   IconUser,
   IconCamera,
   IconMessageCircle,
+  IconStar,
+  IconBug,
+  IconUserPlus,
+  IconBell,
 } from "@tabler/icons-react";
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -266,12 +270,28 @@ export default function ProfilePage() {
             <ChevronRow
               icon={<IconCamera size={20} />}
               label="Billede-dagbog"
-              href="/profil/billede-dagbog"
+              href="/profile/photo-diary"
             />
             <ChevronRow
               icon={<IconPlugConnected size={20} />}
               label="Integrationer"
               href="/settings/integrationer"
+            />
+            <ChevronRow icon={<IconStar size={20} />} label="Points" href="/profile/points" />
+            <ChevronRow
+              icon={<IconUserPlus size={20} />}
+              label="Invitér en ven"
+              href="/profile/invite"
+            />
+            <ChevronRow
+              icon={<IconBell size={20} />}
+              label="Notifikationer"
+              href="/profile/notifications"
+            />
+            <ChevronRow
+              icon={<IconBug size={20} />}
+              label="Indberet fejl"
+              href="/profile/report-bug"
             />
 
             <FullscreenAccordionRow

@@ -1,14 +1,11 @@
 import { prisma } from "@/lib/prisma";
 import type { PointsReason } from "@prisma/client";
+import { FREE_MONTH_COST, MAX_FREE_MONTHS, MAX_FORWARD_POINTS_PER_MONTH } from "@/lib/points-constants";
 
 // Pointsystem (docs/DECISIONS.md 2026-09-02): ledger frem for et cachet
 // saldofelt. Saldoen er altid SUM(PointsTransaction.amount) for brugeren —
 // se getPointsBalance. Negative beløb bruges kun til FREE_MONTH_REDEEMED
 // (indløsning trækker 300 points fra saldoen).
-
-const FREE_MONTH_COST = 300;
-const MAX_FREE_MONTHS = 12;
-const MAX_FORWARD_POINTS_PER_MONTH = 50;
 
 export async function awardPoints(
   userId: string,
@@ -96,5 +93,3 @@ export async function redeemFreeMonth(userId: string) {
     }),
   ]);
 }
-
-export { FREE_MONTH_COST, MAX_FREE_MONTHS, MAX_FORWARD_POINTS_PER_MONTH };

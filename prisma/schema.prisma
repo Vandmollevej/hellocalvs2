@@ -137,6 +137,7 @@ model User {
   paymentMethods          PaymentMethod[]
   adminAuditLogsAsActor   AdminAuditLog[]          @relation("AdminAuditActor")
   adminAuditLogsAsTarget  AdminAuditLog[]          @relation("AdminAuditTarget")
+  productsCreated         Product[]                @relation("ProductsCreatedByUser")
 
   @@map("users")
 }
@@ -476,6 +477,14 @@ model Product {
   // Sat når 48-timers eskaleringsvarslet er lagt i besked-køen for et
   // produkt der stadig er PENDING, så det ikke sendes flere gange.
   escalationSentAt DateTime?
+
+  // Hvem der indsendte produktet (null for AI/API/DB-autoimporterede
+  // produkter, se externalSource, og for produkter oprettet før dette felt
+  // fandtes). Bruges til: (1) at adskille bruger-indsendte fra
+  // auto-importerede i admin-fanerne, (2) at vide hvem der skal have points
+  // ved godkendelse — se src/app/api/admin/products/[id]/approve/route.ts.
+  createdBy       User?   @relation("ProductsCreatedByUser", fields: [createdByUserId], references: [id])
+  createdByUserId String?
 
   barcodes           Barcode[]
   registrations      Registration[]

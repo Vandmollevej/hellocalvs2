@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
   IconHelp,
   IconFileText,
@@ -8,6 +9,7 @@ import {
   IconRefresh,
   IconPlugConnected,
   IconCreditCard,
+  IconBell,
 } from "@tabler/icons-react";
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -25,32 +27,6 @@ function resetOnboardingProgress() {
       onboardingDismissed: false,
     }),
   }).catch(() => {});
-}
-
-// No payment/credit backend exists yet (no account/subscription system
-// at all, see docs/STATUS.md "Next work"). The invite is therefore only
-// a sharing feature — no reward is credited, see docs/DECISIONS.md.
-async function inviteAFriend() {
-  const shareData = {
-    title: "Hello Cal",
-    text: "Prøv Hello Cal med mig — så får vi begge en måned gratis!",
-    url: "https://hellocal.packroff.dk",
-  };
-
-  if (navigator.share) {
-    try {
-      await navigator.share(shareData);
-    } catch {
-      // User cancelled the share — ignore.
-    }
-    return;
-  }
-
-  try {
-    await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
-  } catch {
-    // Clipboard unavailable — ignore.
-  }
 }
 
 export default function SettingsPage() {
@@ -104,7 +80,11 @@ export default function SettingsPage() {
         </AccordionCard>
 
         <AccordionCard>
-          <ChevronRow icon={<IconFileText size={20} />} label="Betingelser" />
+          <ChevronRow icon={<IconBell size={20} />} label="Notifikationer" href="/profile/notifications" divider={false} />
+        </AccordionCard>
+
+        <AccordionCard>
+          <ChevronRow icon={<IconFileText size={20} />} label="Betingelser" href="/betingelser" />
           <ChevronRow icon={<IconFileText size={20} />} label="Privatlivspolitik" />
           <ChevronRow icon={<IconFileText size={20} />} label="Datasporing" divider={false} />
         </AccordionCard>
@@ -113,14 +93,15 @@ export default function SettingsPage() {
           <ChevronRow icon={<IconWorld size={20} />} label="Vælg dit land" divider={false} />
         </AccordionCard>
 
-        <button
-          type="button"
-          onClick={inviteAFriend}
-          className="rounded-[8px] bg-hf-green p-4 text-left text-hf-white"
+        <Link
+          href="/profile/invite"
+          className="block rounded-[8px] bg-hf-green p-4 text-left text-hf-white"
         >
           <p className="hf-type-body-sm font-bold">Invitér en ven</p>
-          <p className="hf-type-caption mt-0.5 text-hf-white opacity-90">Og få en gratis måned hver</p>
-        </button>
+          <p className="hf-type-caption mt-0.5 text-hf-white opacity-90">
+            I optjener begge 300 points hver
+          </p>
+        </Link>
       </div>
 
       <div className="flex-1" />

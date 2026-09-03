@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { searchOpenFoodFacts } from "@/lib/openFoodFacts";
 import { barcodeMatchesRegion } from "@/lib/regions";
 import { getDemoUser } from "@/lib/demo-user";
+import { getSessionUser } from "@/lib/session";
 
 // Fetches Open Food Facts products globally live for search terms without enough local
 // results, and saves them as PENDING (same pattern as the barcode lookup in
@@ -152,6 +153,12 @@ export async function POST(req: Request) {
   }
 
   try {
+    // Points (docs/DECISIONS.md 2026-09-02) kræver at vide hvem der rent
+    // faktisk indsendte produktet — kun sat når brugeren er logget ind med
+    // en rigtig session (ikke den delte demo-bruger), ellers forbliver
+    // createdByUserId null og produktet giver ingen points ved godkendelse.
+    const sessionUser = await getSessionUser();
+
     const product = await prisma.product.create({
       data: {
         name,
@@ -162,6 +169,7 @@ export async function POST(req: Request) {
         servingSizeGrams: servingSizeGrams ?? undefined,
         ingredientsText: ingredientsText || undefined,
         imageUrl,
+        createdByUserId: sessionUser?.id,
         ...(barcode ? { barcodes: { create: { code: barcode } } } : {}),
         ...(extraImages.length
           ? { images: { create: extraImages.map((url, order) => ({ url, order })) } }

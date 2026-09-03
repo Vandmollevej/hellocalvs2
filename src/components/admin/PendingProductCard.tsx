@@ -89,6 +89,9 @@ export function PendingProductCard({ product, hasExtra }: { product: Product; ha
           <p className="text-xs text-text-muted">
             P {product.proteinPer100g}g · K {product.carbsPer100g}g · F {product.fatPer100g}g
           </p>
+          <p className="text-xs text-text-muted">
+            Dato: {new Date(product.createdAt).toLocaleDateString("da-DK")}
+          </p>
         </div>
         <button
           type="button"
