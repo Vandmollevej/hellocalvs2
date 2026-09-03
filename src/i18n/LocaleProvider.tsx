@@ -26,8 +26,9 @@ function readStoredLocale(): Locale | null {
 // Wraps the whole app. Default is Danish for every user who hasn't touched
 // the language setting — nothing changes for them. The chosen locale is kept
 // in React state, mirrored to localStorage for an instant reload, and
-// persisted to the user's profile (locale column) so it follows them across
-// devices; see src/app/api/profile/route.ts.
+// persisted to the user's profile (appLocale column — distinct from the
+// admin-only `locale` enum field) so it follows them across devices; see
+// src/app/api/profile/route.ts.
 export function LocaleProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(() => readStoredLocale() ?? DEFAULT_LOCALE);
 
@@ -37,7 +38,7 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (cancelled) return;
-        const serverLocale = data?.user?.locale;
+        const serverLocale = data?.user?.appLocale;
         if (isLocale(serverLocale)) {
           setLocaleState(serverLocale);
         }
@@ -62,7 +63,7 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
     fetch("/api/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ locale: next }),
+      body: JSON.stringify({ appLocale: next }),
     }).catch(() => {});
   }, []);
 

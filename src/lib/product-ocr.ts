@@ -1,6 +1,6 @@
 // Lokal, gratis tekstgenkendelse af et kamerabillede (tesseract.js, kører i
 // browseren) samt regex-parsing af en næringsdeklarations rå OCR-tekst. Bruges
-// af det guidede auto-genkendelsesflow i /kamera/opret, jf. docs/DECISIONS.md:
+// af det guidede auto-genkendelsesflow i /camera/create, jf. docs/DECISIONS.md:
 // lokal OCR/regex forsøges altid først, AI-vision er kun sidste udvej.
 
 export type ParsedNutrition = {

@@ -1,5 +1,5 @@
 // Letvægts, ikke-AI billedmatching (average-hash) — bruges kun for det
-// tekstløse spor i /kamera/opret (fx en fersken uden tekst på billedet), som
+// tekstløse spor i /camera/create (fx en fersken uden tekst på billedet), som
 // et gratis første forsøg før AI-vision-fallback. Kører i browseren via
 // canvas, så ingen server-side billedafkodning er nødvendig.
 //

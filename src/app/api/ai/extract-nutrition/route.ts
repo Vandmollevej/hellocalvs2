@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 // POST /api/ai/extract-nutrition — { photo: string (data URL af næringsdeklaration) }
 //
-// Sidste udvej i næringsindhold-trinnet af /kamera/opret: den lokale, gratis
+// Sidste udvej i næringsindhold-trinnet af /camera/create: den lokale, gratis
 // regex-parsing (src/lib/product-ocr.ts, parseNutritionText) forsøges altid
 // først på tesseract.js's OCR-tekst i klienten. Kun når regex ikke kan
 // udlede alle fire pr.-100g-værdier, kaldes denne route, som bruger AI til

@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 
 // POST /api/ai/recognize-product-photo — { photo: string (data URL) }
 //
-// Sidste udvej i det tekstløse spor af /kamera/opret: lokal billed-hash-match
+// Sidste udvej i det tekstløse spor af /camera/create: lokal billed-hash-match
 // (src/lib/image-similarity.ts) forsøges altid først i klienten. Kun når den
 // ikke finder noget med tilstrækkelig sikkerhed, kaldes denne route, som
 // bruger AI udelukkende til selve billedgenkendelsen (samme mønster som

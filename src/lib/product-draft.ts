@@ -1,5 +1,5 @@
 // Delt sessionStorage-cache mellem det guidede kamera-auto-flow
-// (/kamera/opret) og opret-produkt-siden (/produkt/opret) — alt brugeren har
+// (/camera/create) og opret-produkt-siden (/product/create) — alt brugeren har
 // fotograferet og fået genkendt undervejs, så opret-siden kan prælægges uden
 // et nyt kamera-kald.
 export const PRODUCT_DRAFT_STORAGE_KEY = "hellocal-product-create-draft";

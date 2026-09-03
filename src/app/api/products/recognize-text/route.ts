@@ -7,7 +7,7 @@ import { bestTextMatch } from "@/lib/text-similarity";
 // Lokal, gratis produktgenkendelse (ingen AI): finder kandidatprodukter ud
 // fra et par ord i teksten og fuzzy-matcher hele teksten mod
 // "mærke + navn" med et 90%-threshold, jf. krav 3 i det guidede
-// kamera-auto-flow (/kamera/opret). Bruges FØR AI-vision-fallback.
+// kamera-auto-flow (/camera/create). Bruges FØR AI-vision-fallback.
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
   const text = typeof body?.text === "string" ? body.text.trim() : "";

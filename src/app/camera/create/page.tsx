@@ -74,7 +74,7 @@ function KameraOpretContent() {
   const goToCreatePage = useCallback(() => {
     sessionStorage.setItem(PRODUCT_DRAFT_STORAGE_KEY, JSON.stringify(draftRef.current));
     stopCamera();
-    router.push("/produkt/opret?fromFailedAdd=1");
+    router.push("/product/create?fromFailedAdd=1");
   }, [router, stopCamera]);
 
   const lookupBarcode = useCallback(
@@ -109,7 +109,7 @@ function KameraOpretContent() {
   );
 
   // Kamera-bootstrap: almindelig getUserMedia til foto/næring-trin, ZXing
-  // (samme bibliotek som /kamera?mode=produkt) til stregkode-trinnet.
+  // (samme bibliotek som /camera?mode=product) til stregkode-trinnet.
   useEffect(() => {
     let cancelled = false;
 

@@ -1,7 +1,7 @@
 // Hello Cal-specifik primitiv, dokumenteret i design.md §6.11 — gråtonet
 // loading-overlay med en lodret, hvid/gennemsigtig scanningslinje der
 // bevæger sig fra venstre mod højre, mens et billede analyseres automatisk
-// i /kamera/opret.
+// i /camera/create.
 export function ScanningOverlay({ label }: { label: string }) {
   return (
     <div className="absolute inset-0 overflow-hidden bg-black/55">

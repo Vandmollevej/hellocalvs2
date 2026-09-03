@@ -560,7 +560,7 @@ button,
 }
 
 /* Scanningslinje, jf. design.md §6.11 — bruges af ScanningOverlay mens
-   /kamera/opret analyserer et billede automatisk. */
+   /camera/create analyserer et billede automatisk. */
 @keyframes hf-scan-line {
   0% {
     left: 0%;

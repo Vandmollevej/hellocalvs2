@@ -73,10 +73,12 @@ model User {
   // the default, since it's the app's primary market.
   region String @default("DK")
 
-  // UI language (i18n, added 2026-09-02): "da" (default) or "en". Every
-  // existing user defaults to Danish so nothing changes unless they open the
-  // language setting in Settings.
-  locale String @default("da")
+  // End-user app UI language (i18n, added 2026-09-02): "da" (default) or
+  // "en". Every existing user defaults to Danish so nothing changes unless
+  // they open the language setting in Settings. Kept distinct from the
+  // admin-only `locale` enum field below (different feature, different
+  // value domain).
+  appLocale String @default("da")
 
   // Billede-dagbog (docs/STATUS.md 2026-09-02): rent klient-lagret
   // foto-sammenligning i dag (localStorage), men adgangs-præferencen skal

@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 
 // POST /api/products/match-nutrition — { kcalPer100g, proteinPer100g, carbsPer100g, fatPer100g }
 //
-// Sidste dublet-tjek i næringsindhold-trinnet af /kamera/opret: hvis de
+// Sidste dublet-tjek i næringsindhold-trinnet af /camera/create: hvis de
 // aflæste pr.-100g-værdier er (så godt som) identiske med et eksisterende
 // produkt, er det formentlig samme vare igen — brugeren skal ikke oprette
 // en dublet (krav 6: "hvis energifordelingen ikke er 100% identisk med en

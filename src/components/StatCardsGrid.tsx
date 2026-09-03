@@ -9,7 +9,6 @@ import {
   type StatCardValue,
   type StatGridLayoutItem as LayoutItem,
 } from "@/lib/stat-cards";
-import { STAT_PERIODS, DEFAULT_STAT_PERIOD, type StatPeriodKey } from "@/lib/stat-periods";
 
 function layoutItemId(item: LayoutItem) {
   return item.type === "stat" ? `stat:${item.key}` : `header:${item.id}`;
@@ -18,16 +17,6 @@ function layoutItemId(item: LayoutItem) {
 function makeId() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
   return `id-${Math.random().toString(36).slice(2)}`;
-}
-
-function periodLabel(key: StatPeriodKey) {
-  return STAT_PERIODS.find((p) => p.key === key)?.label ?? "";
-}
-
-function cyclePeriod(key: StatPeriodKey, direction: 1 | -1): StatPeriodKey {
-  const index = STAT_PERIODS.findIndex((p) => p.key === key);
-  const nextIndex = (index + direction + STAT_PERIODS.length) % STAT_PERIODS.length;
-  return STAT_PERIODS[nextIndex].key;
 }
 
 type DragSource =
@@ -65,19 +54,13 @@ function CardTile({ card, floating }: { card: StatCardValue; floating?: boolean 
 }
 
 export function StatCardsGrid({
-  cardsByPeriod,
+  cards,
   defaultActiveKeys,
 }: {
-  cardsByPeriod: Record<StatPeriodKey, StatCardValue[]>;
+  cards: StatCardValue[];
   defaultActiveKeys: string[];
 }) {
-  const cardByKeyByPeriod = useMemo(() => {
-    const map = new Map<StatPeriodKey, Map<string, StatCardValue>>();
-    for (const period of STAT_PERIODS) {
-      map.set(period.key, new Map((cardsByPeriod[period.key] ?? []).map((c) => [c.key, c])));
-    }
-    return map;
-  }, [cardsByPeriod]);
+  const cardByKey = useMemo(() => new Map(cards.map((c) => [c.key, c])), [cards]);
 
   const defaultLayout = useMemo<LayoutItem[]>(
     () => defaultActiveKeys.map((key) => ({ type: "stat", key })),
@@ -88,8 +71,6 @@ export function StatCardsGrid({
   const [editMode, setEditMode] = useState(false);
   const [drag, setDrag] = useState<DragState | null>(null);
   const [overZone, setOverZone] = useState<"active" | null>(null);
-  const [periodByKey, setPeriodByKey] = useState<Record<string, StatPeriodKey>>({});
-  const [swipe, setSwipe] = useState<{ id: string; dx: number } | null>(null);
 
   const activeRefs = useRef(new Map<string, HTMLElement>());
   const gridRef = useRef<HTMLDivElement>(null);
@@ -243,22 +224,6 @@ export function StatCardsGrid({
         }
       }
 
-      // A horizontal swipe on a stat card (outside edit mode) changes the period
-      // instead of moving the card.
-      if (
-        !editMode &&
-        !drag &&
-        info &&
-        info.source.kind === "active" &&
-        info.source.item.type === "stat"
-      ) {
-        const dx = event.clientX - info.x;
-        const dy = event.clientY - info.y;
-        if (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy) * 1.3) {
-          setSwipe({ id: info.source.id, dx });
-        }
-      }
-
       setDrag((current) => {
         if (!current) return current;
         return { ...current, x: event.clientX, y: event.clientY };
@@ -279,21 +244,6 @@ export function StatCardsGrid({
         window.clearTimeout(longPressTimer.current);
         longPressTimer.current = null;
       }
-
-      setSwipe((current) => {
-        if (current && Math.abs(current.dx) > 40) {
-          const key = current.id.startsWith("stat:") ? current.id.slice(5) : null;
-          if (key) {
-            const direction = current.dx < 0 ? 1 : -1;
-            setPeriodByKey((prev) => ({
-              ...prev,
-              [key]: cyclePeriod(prev[key] ?? DEFAULT_STAT_PERIOD, direction),
-            }));
-          }
-        }
-        return null;
-      });
-
       pointerDownInfo.current = null;
       commitDrop(event.clientX, event.clientY);
     }
@@ -362,8 +312,6 @@ export function StatCardsGrid({
         {layout.map((item, index) => {
           const id = layoutItemId(item);
           const isDragging = drag?.source.kind === "active" && drag.source.id === id;
-          const swipeDx = swipe && swipe.id === id ? swipe.dx : null;
-          const isSwiping = swipeDx !== null;
 
           if (item.type === "header") {
             return (
@@ -402,8 +350,7 @@ export function StatCardsGrid({
             );
           }
 
-          const period = periodByKey[item.key] ?? DEFAULT_STAT_PERIOD;
-          const card = cardByKeyByPeriod.get(period)?.get(item.key);
+          const card = cardByKey.get(item.key);
           if (!card) return null;
           const CardIcon = card.icon;
 
@@ -414,29 +361,19 @@ export function StatCardsGrid({
                 if (el) activeRefs.current.set(id, el);
                 else activeRefs.current.delete(id);
               }}
-              style={{
-                animationDelay: `${(index % 3) * 60}ms`,
-                transform: swipeDx !== null ? `translateX(${swipeDx}px)` : undefined,
-              }}
+              style={{ animationDelay: `${(index % 3) * 60}ms` }}
               onPointerDown={(e) =>
                 onCardPointerDown(e, { kind: "active", id, item }, { kind: "card", card })
               }
-              className={`touch-none select-none rounded-2xl bg-hf-tan p-4 ${!isSwiping ? "transition-transform" : ""} ${
+              className={`touch-none select-none rounded-2xl bg-hf-tan p-4 ${
                 editMode ? "stat-card-editing cursor-grab border-2 border-dashed border-hf-black/30 active:cursor-grabbing" : ""
               } ${isDragging ? "opacity-0" : ""}`}
             >
-              <div className="flex items-center justify-between">
-                <p className="text-xs text-hf-black opacity-60">{card.label}</p>
-              </div>
+              <p className="text-xs text-hf-black opacity-60">{card.label}</p>
               <p className="hf-heading mt-1 flex items-center gap-1.5 text-xl text-hf-black">
                 {CardIcon && <CardIcon size={17} stroke={2} />}
                 {card.value}
               </p>
-              {!editMode && (
-                <p className="mt-0.5 text-[10px] font-normal text-hf-black opacity-50">
-                  {periodLabel(period)}
-                </p>
-              )}
             </div>
           );
         })}
