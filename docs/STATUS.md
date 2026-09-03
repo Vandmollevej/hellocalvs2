@@ -50,18 +50,57 @@ Done so far:
   migrating the rest of the app to real sessions is a larger, separate piece
   of work, not bundled into this feature.
 
-Still to build (see checklist for the full breakdown): product-approval
-points hooks + admin tabs (auto vs. user-submitted), bug report feature end
-to end, `/betingelser` page + banner updates, login-free admin approval page,
-"Besked automatisering" admin tab, notification-preferences page (two entry
-points), "Invitér en ven" UI + `/profile/points` redemption UI, "Videresend
-til en ven" end to end (incl. cross-send abuse flag surfaced in Advarsler),
-"Betaling" page (provider-agnostic — no PSP chosen yet, user rejected the
-clarifying question and said to prepare it generically), admin "Brugere"
-page (impersonation, GDPR button, payment/newsletter overview), admin
-DA/EN language switch. `npm run lint`/`npm run build` have only been run
-against the lib layer so far, not the full new surface — run both again
-once the remaining pages/routes exist.
+**Update 2026-09-03, later same day: feature is code-complete.** Everything
+in `docs/POINTS_MESSAGING_CHECKLIST.md` is implemented — product-approval
+points hooks + admin bruger-indsendte/auto-importerede tabs, bug reports end
+to end, `/betingelser` + banner updates, login-free
+`/admin/approve/[token]` mail-approval page (exempted from the admin-session
+middleware gate via its unguessable token instead), "Besked automatisering"
+admin tab (template editor + outbound log), `/profile/notifications` (two
+entry points), "Invitér en ven" UI, "Videresend til en ven" end to end
+(claim-time cross-send abuse check, flag surfaced in the existing Advarsler
+page), "Betaling" page (provider-agnostic, no raw card fields — see
+`docs/DECISIONS.md` for why), admin "Brugere" page (cross-host impersonation
+via a 2-minute handoff token, GDPR anonymize, payment/newsletter overview),
+admin DA/EN switch (nav + new-page titles; older admin pages stay Danish-only
+for now). A third migration was added:
+`prisma/migrations/20260902040000_product_created_by_user` (adds
+`Product.createdByUserId`, needed so points can be attributed to whoever
+actually submitted a product). `npm run lint` and `npm run build` are both
+green against the full new surface (verified repeatedly as each piece was
+added, most recently after the i18n switch).
+
+**Not done, and out of scope for this pass:**
+- No browser verification anywhere — this workstation has no local database
+  (see "No local DB" note elsewhere in this file), so nothing has been
+  clicked through in a real browser yet, only compiled/typechecked. Do that
+  after deploy, per the checklist's verification section.
+- `ACCOUNT_CREATED`/`EMAIL_VERIFICATION`/`PASSWORD_RESET` message templates
+  exist but nothing calls `queueMessage()` for them yet (forgot-password
+  doesn't exist as a feature at all). Only escalation/approval/points/forward
+  events are actually wired.
+- No real payment method can be added yet — deliberate, see `docs/DECISIONS.md`
+  (no PSP chosen, and raw card fields are never appropriate without one).
+
+**New environment variables this feature needs in `.env.production`** (not
+added to `.env.production.example` in this pass — that file already has an
+unrelated uncommitted addition in progress, `PASSIO_API_KEY`, so a separate
+edit avoids colliding with it; fold these in next time that file is touched):
+- `USER_SESSION_SECRET` — required, same rules as `ADMIN_SESSION_SECRET`
+  (long random secret, falls back to `ADMIN_SESSION_SECRET` if unset, but a
+  distinct value is safer). Changing it invalidates all regular-user sessions.
+- `ADMIN_NOTIFICATION_EMAIL` — where 48h escalation mails go; defaults to
+  `peter@packroff.dk` if unset.
+- `ADMIN_BASE_URL` — defaults to `https://adminhellocal.packroff.dk`; only
+  needed if that hostname ever changes.
+- `APP_BASE_URL` — defaults to `https://hellocal.packroff.dk`; used to build
+  the impersonation handoff link.
+- `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` / `SMTP_FROM` —
+  optional; email sending stays a no-op (queued, never sent) until all four
+  required ones are set.
+- `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` / `VAPID_CONTACT_EMAIL` —
+  optional; generate with `npx web-push generate-vapid-keys`. Push sending
+  stays a no-op until the two keys are set.
 
 ## Current checkpoint
 
@@ -1087,3 +1126,12 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
     needed). Verify the camera-recognition flow and the portion stepper
     against `hellocal.packroff.dk` once it has imported enough of the
     current week's menu to test against.
+11. Set `PASSIO_API_KEY` (get one at accounts.passiolife.com) in `.env` and
+    `.env.production`/Synology so the meal-photo scan flow
+    (`/camera?mode=meal` → `/api/ai/analyze-meal-photo` →
+    `src/lib/passio.ts`, built 2026-09-03) actually works — untested against
+    the live Passio API without it. Once a key exists, verify end to end on
+    `hellocal.packroff.dk` (take a plate photo, confirm ingredients/grams
+    come back and save correctly). The full visual overlay/uncertain-
+    ingredient UI from `docs/AI.md`'s "Måltidsanalyse" section is still not
+    built — only a simple editable review list exists so far.
