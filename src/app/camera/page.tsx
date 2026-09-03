@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { HfScreen } from "@/components/HfScreen";
 import { HelloFreshMatchReview } from "@/components/HelloFreshMatchReview";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 type CameraStatus = "starting" | "active" | "denied" | "unavailable" | "error";
 type LookupStatus = "idle" | "loading" | "not_found" | "error";
@@ -21,16 +22,16 @@ type MatchedHelloFreshProduct = {
   servingSizeGrams: number | null;
 };
 
-const MODE_TABS: { key: CameraMode; label: string }[] = [
-  { key: "produkt", label: "Stregkode" },
-  { key: "hellofresh", label: "Produkt" },
+const MODE_TABS: { key: CameraMode; labelKey: string }[] = [
+  { key: "produkt", labelKey: "camera.tabBarcode" },
+  { key: "hellofresh", labelKey: "camera.tabProduct" },
 ];
 
-function cameraMessage(status: CameraStatus) {
-  if (status === "starting") return "Starter kameraet...";
-  if (status === "denied") return "Giv HELLO CAL adgang til kameraet i browserens indstillinger.";
-  if (status === "unavailable") return "Denne browser eller enhed har ikke et tilgængeligt kamera.";
-  if (status === "error") return "Kameraet kunne ikke startes. Luk andre apps, der bruger kameraet, og prøv igen.";
+function cameraMessage(status: CameraStatus, t: (key: string) => string) {
+  if (status === "starting") return t("camera.starting");
+  if (status === "denied") return t("camera.deniedAccess");
+  if (status === "unavailable") return t("camera.unavailable");
+  if (status === "error") return t("camera.error");
   return null;
 }
 
@@ -42,6 +43,7 @@ function statusFromCameraError(error: unknown): CameraStatus {
 }
 
 function KameraContent() {
+  const { t } = useTranslation();
   const params = useSearchParams();
   const router = useRouter();
   const modeParam = params.get("mode");
@@ -227,7 +229,7 @@ function KameraContent() {
     router.push(`/add/${matchedProduct.id}`);
   }
 
-  const message = cameraMessage(cameraStatus);
+  const message = cameraMessage(cameraStatus, t);
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-3 p-4">
@@ -247,7 +249,7 @@ function KameraContent() {
                   : "hf-btn-secondary px-4 py-1.5 text-xs"
               }
             >
-              {tab.label}
+              {t(tab.labelKey)}
             </button>
           ))}
         </div>
@@ -256,9 +258,9 @@ function KameraContent() {
       <div className="relative aspect-square w-full overflow-hidden rounded-[12px] bg-hf-black">
         {photo ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={photo} alt="Dit fotograferede billede" className="h-full w-full object-cover" />
+          <img src={photo} alt={t("camera.photoAlt")} className="h-full w-full object-cover" />
         ) : (
-          <video ref={videoRef} className="h-full w-full object-cover" autoPlay muted playsInline aria-label="Live kameravisning" />
+          <video ref={videoRef} className="h-full w-full object-cover" autoPlay muted playsInline aria-label={t("camera.liveViewAriaLabel")} />
         )}
 
         {!photo && (mode === "maaltid" || mode === "hellofresh") && (
@@ -281,7 +283,11 @@ function KameraContent() {
 
         {cameraStatus === "active" && !photo && (
           <p className="absolute inset-x-4 top-4 rounded-full bg-hf-black/60 px-4 py-2 text-center text-xs font-semibold text-white">
-            {mode === "produkt" ? "Hold stregkoden inden for rammen" : mode === "hellofresh" ? "Placér produktet i cirklen" : "Placér tallerkenen i cirklen"}
+            {mode === "produkt"
+              ? t("camera.holdBarcodeInFrame")
+              : mode === "hellofresh"
+                ? t("camera.placeProductInCircle")
+                : t("camera.placePlateInCircle")}
           </p>
         )}
 
@@ -291,7 +297,7 @@ function KameraContent() {
             onClick={restartCamera}
             className="absolute inset-0 flex items-center justify-center bg-hf-black/75 p-6 text-center"
           >
-            <p className="max-w-xs text-sm font-semibold text-white">Produkt ikke genkendt, prøv igen</p>
+            <p className="max-w-xs text-sm font-semibold text-white">{t("camera.notRecognizedRetry")}</p>
           </button>
         )}
       </div>
@@ -309,7 +315,7 @@ function KameraContent() {
         ) : (
           <div className="flex justify-center py-1">
             <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-btn-primary gap-2 px-6 py-3 text-sm disabled:opacity-40">
-              <IconCamera size={19} /> Tag billede af produktet
+              <IconCamera size={19} /> {t("camera.takePhotoOfProduct")}
             </button>
           </div>
         )
@@ -317,11 +323,11 @@ function KameraContent() {
         <div className="flex justify-center py-1">
           {photo ? (
             <button onClick={restartCamera} className="hf-btn-secondary gap-2 px-5 py-3 text-sm">
-              Tag billedet om
+              {t("camera.retakePhoto")}
             </button>
           ) : (
             <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-btn-primary gap-2 px-6 py-3 text-sm disabled:opacity-40">
-              <IconCamera size={19} /> Tag billede
+              <IconCamera size={19} /> {t("camera.takePhoto")}
             </button>
           )}
         </div>
@@ -329,12 +335,12 @@ function KameraContent() {
         <div className="rounded-[8px] bg-hf-tan p-4">
           <p className="mb-2 text-xs text-hf-black opacity-70">
             {lookupStatus === "loading"
-              ? `Slår ${barcode} op...`
+              ? t("camera.lookingUp", { code: barcode })
               : lookupStatus === "not_found"
-                ? "Stregkoden blev læst, men produktet blev ikke fundet. Prøv en anden kode."
+                ? t("camera.barcodeNotFound")
                 : lookupStatus === "error"
-                  ? "Stregkoden blev læst, men produktopslaget fejlede. Prøv igen."
-                  : "Kameraet scanner automatisk. Du kan også indtaste nummeret under stregkoden."}
+                  ? t("camera.barcodeLookupError")
+                  : t("camera.autoScanHint")}
           </p>
           <form onSubmit={submitManualBarcode} className="flex gap-2">
             <input
@@ -342,12 +348,12 @@ function KameraContent() {
               onChange={(event) => setBarcode(event.target.value.replace(/\D/g, ""))}
               inputMode="numeric"
               autoComplete="off"
-              aria-label="Stregkodenummer"
-              placeholder="Stregkodenummer"
+              aria-label={t("camera.barcodeNumberAriaLabel")}
+              placeholder={t("camera.barcodeNumberAriaLabel")}
               className="min-w-0 flex-1 rounded-full bg-hf-white px-3.5 py-2 text-sm text-hf-black outline-none"
             />
             <button disabled={!barcode || lookupStatus === "loading"} className="hf-btn-primary px-4 py-2 text-xs disabled:opacity-40">
-              Slå op
+              {t("camera.lookUp")}
             </button>
           </form>
         </div>
@@ -355,7 +361,7 @@ function KameraContent() {
 
       {mode !== "maaltid" && (
         <Link href={`/foods/new${returnSuffix}`} className="hf-btn-secondary justify-center py-2.5 text-xs">
-          Tilføj manuelt
+          {t("camera.addManually")}
         </Link>
       )}
     </div>
@@ -363,8 +369,9 @@ function KameraContent() {
 }
 
 export default function CameraPage() {
+  const { t } = useTranslation();
   return (
-    <HfScreen title="Kamera">
+    <HfScreen title={t("camera.title")}>
       <Suspense fallback={null}>
         <KameraContent />
       </Suspense>
