@@ -1,11 +1,16 @@
 {
   "common": {
     "back": "Tilbage",
+    "close": "Luk",
     "cancel": "Afbryd",
     "continue": "Fortsæt",
     "or": "eller",
     "chooseCountry": "Vælg dit land",
-    "loading": "Henter…"
+    "loading": "Henter…",
+    "macroBreakdown": "Energifordeling",
+    "protein": "Protein",
+    "carbs": "Kulhydrat",
+    "fat": "Fedt"
   },
   "welcome": {
     "welcome": "Velkommen!",
@@ -405,5 +410,32 @@
     "noPhotosYet": "Ingen billeder endnu — tag det første for at kunne sammenligne senere.",
     "photoAlt": "Billede-dagbog-optagelse",
     "deleteAria": "Slet billede"
+  },
+  "registration": {
+    "title": "Registrering",
+    "loading": "Henter registrering...",
+    "notFound": "Registreringen findes ikke.",
+    "loadError": "Kunne ikke hente registreringen."
+  },
+  "addProduct": {
+    "title": "Tilføj",
+    "titleForDish": "Tilføj ingrediens",
+    "loading": "Henter...",
+    "notFound": "Produktet findes ikke (eksempeldata har ikke rigtige id'er i dette miljø).",
+    "error": "Database ikke tilgængelig i dette miljø.",
+    "kcalPerServing": "{kcal} kcal / portion",
+    "kcalPer100g": "{kcal} kcal/100g",
+    "details": "Detaljer",
+    "additives": "E-tilsætningsstoffer",
+    "time": "Tidspunkt",
+    "personsUnit": "Personer",
+    "gramsUnit": "Gram",
+    "personSingular": "person",
+    "personPlural": "personer",
+    "addToDish": "Tilføj til ret",
+    "add": "Tilføj",
+    "saveError": "Kunne ikke gemme registreringen",
+    "allergens": "Allergener",
+    "allergenDisclaimer": "Vi henter data fra 3. part og fraskriver os ansvar for manglende data."
   }
 }

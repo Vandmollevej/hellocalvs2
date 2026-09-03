@@ -10,6 +10,7 @@ import { MacroSliderBar } from "@/components/hf/MacroSliderBar";
 import { AdditiveInfoModal } from "@/components/hf/AdditiveInfoModal";
 import { getAdditiveInfo } from "@/lib/additives";
 import { labelForAllergen } from "@/lib/allergens";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 function currentTimeString() {
   const now = new Date();
@@ -48,6 +49,7 @@ type LoadState =
   | { status: "error" };
 
 export default function AddPage() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -163,12 +165,12 @@ export default function AddPage() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        setSaveError(data.message ?? "Kunne ikke gemme registreringen");
+        setSaveError(data.message ?? t("addProduct.saveError"));
         return;
       }
       router.push("/");
     } catch {
-      setSaveError("Kunne ikke gemme registreringen");
+      setSaveError(t("addProduct.saveError"));
     } finally {
       setSaving(false);
     }
@@ -191,7 +193,7 @@ export default function AddPage() {
 
   return (
     <HfScreen
-      title={forDish ? "Tilføj ingrediens" : "Tilføj"}
+      title={forDish ? t("addProduct.titleForDish") : t("addProduct.title")}
       headerRight={
         !forDish && state.status === "loaded" ? (
           <ForwardButton kind="PRODUCT" itemId={state.product.id} name={state.product.name} />
@@ -208,7 +210,7 @@ export default function AddPage() {
               disabled={saving}
               className="hf-btn-primary w-full py-3.5 text-[15px] disabled:opacity-60"
             >
-              {forDish ? "Tilføj til ret" : saving ? "Gemmer..." : "Tilføj"}
+              {forDish ? t("addProduct.addToDish") : saving ? t("createDish.saving") : t("addProduct.add")}
             </button>
           </>
         ) : undefined
@@ -216,15 +218,15 @@ export default function AddPage() {
     >
       <div className="flex h-full flex-col overflow-y-auto">
         {state.status === "loading" && (
-          <p className="p-4 text-center text-sm text-hf-black opacity-60">Henter...</p>
+          <p className="p-4 text-center text-sm text-hf-black opacity-60">{t("addProduct.loading")}</p>
         )}
 
         {(state.status === "not_found" || state.status === "error") && (
           <div className="m-4 rounded-2xl bg-hf-tan p-4 text-center">
             <p className="text-sm text-hf-black opacity-70">
               {state.status === "not_found"
-                ? "Produktet findes ikke (eksempeldata har ikke rigtige id'er i dette miljø)."
-                : "Database ikke tilgængelig i dette miljø."}
+                ? t("addProduct.notFound")
+                : t("addProduct.error")}
             </p>
           </div>
         )}
@@ -251,8 +253,8 @@ export default function AddPage() {
                 <p className="hf-heading text-lg text-hf-black">{state.product.name}</p>
                 <p className="text-sm font-bold text-hf-black">
                   {servingSizeGrams
-                    ? `${Math.round((state.product.kcalPer100g * servingSizeGrams) / 100)} kcal / portion`
-                    : `${Math.round(state.product.kcalPer100g)} kcal/100g`}
+                    ? t("addProduct.kcalPerServing", { kcal: Math.round((state.product.kcalPer100g * servingSizeGrams) / 100) })
+                    : t("addProduct.kcalPer100g", { kcal: Math.round(state.product.kcalPer100g) })}
                 </p>
 
                 <div className="mt-2 flex items-center gap-4">
@@ -261,7 +263,7 @@ export default function AddPage() {
                     onClick={scrollToDetails}
                     className="flex items-center gap-1 text-[13px] font-medium text-hf-black underline underline-offset-2"
                   >
-                    Detaljer
+                    {t("addProduct.details")}
                     <IconChevronDown size={15} />
                   </button>
 
@@ -274,7 +276,7 @@ export default function AddPage() {
                       <span className="flex h-4 w-4 items-center justify-center rounded-full bg-hf-green text-[10px] font-bold text-hf-white">
                         E
                       </span>
-                      <span className="underline underline-offset-2">E-tilsætningsstoffer</span>
+                      <span className="underline underline-offset-2">{t("addProduct.additives")}</span>
                     </button>
                   )}
                 </div>
@@ -282,7 +284,7 @@ export default function AddPage() {
 
               {!forDish && (
                 <div className="mb-3 mt-6 flex items-center justify-between rounded-2xl bg-hf-tan px-4 py-3">
-                  <span className="text-sm font-medium text-hf-black opacity-70">Tidspunkt</span>
+                  <span className="text-sm font-medium text-hf-black opacity-70">{t("addProduct.time")}</span>
                   <input
                     type="time"
                     value={time}
@@ -303,7 +305,7 @@ export default function AddPage() {
                         : "hf-btn-secondary px-4 py-1.5 text-xs"
                     }
                   >
-                    Personer
+                    {t("addProduct.personsUnit")}
                   </button>
                   <button
                     type="button"
@@ -314,7 +316,7 @@ export default function AddPage() {
                         : "hf-btn-secondary px-4 py-1.5 text-xs"
                     }
                   >
-                    Gram
+                    {t("addProduct.gramsUnit")}
                   </button>
                 </div>
               )}
@@ -329,7 +331,7 @@ export default function AddPage() {
                 <div className="flex-1 rounded-2xl bg-hf-tan py-3 text-center text-hf-black">
                   {servingSizeGrams && amountUnit === "personer" ? (
                     <p className="text-xl font-bold">
-                      {`${Math.round(amount / servingSizeGrams)} ${amount === servingSizeGrams ? "person" : "personer"}`}
+                      {`${Math.round(amount / servingSizeGrams)} ${amount === servingSizeGrams ? t("addProduct.personSingular") : t("addProduct.personPlural")}`}
                     </p>
                   ) : (
                     <input
@@ -361,22 +363,22 @@ export default function AddPage() {
 
             <div ref={detailsRef} className="flex flex-col gap-6 border-t border-hf-tan-dark p-4">
               <div>
-                <p className="hf-heading mb-4 text-[15px] text-hf-black">Energifordeling</p>
+                <p className="hf-heading mb-4 text-[15px] text-hf-black">{t("common.macroBreakdown")}</p>
                 <div className="flex flex-col gap-4">
                   <MacroSliderBar
-                    label="Protein"
+                    label={t("common.protein")}
                     grams={macros.protein}
                     max={Math.max(30, Math.ceil(defaultMacros.protein * 2))}
                     onChange={(value) => setMacroOverride({ ...macros, amount, protein: value })}
                   />
                   <MacroSliderBar
-                    label="Kulhydrat"
+                    label={t("common.carbs")}
                     grams={macros.carbs}
                     max={Math.max(40, Math.ceil(defaultMacros.carbs * 2))}
                     onChange={(value) => setMacroOverride({ ...macros, amount, carbs: value })}
                   />
                   <MacroSliderBar
-                    label="Fedt"
+                    label={t("common.fat")}
                     grams={macros.fat}
                     max={Math.max(20, Math.ceil(defaultMacros.fat * 2))}
                     onChange={(value) => setMacroOverride({ ...macros, amount, fat: value })}
@@ -386,7 +388,7 @@ export default function AddPage() {
 
               {!!state.product.additives?.length && (
                 <div>
-                  <p className="hf-heading mb-3 text-[15px] text-hf-black">E-tilsætningsstoffer</p>
+                  <p className="hf-heading mb-3 text-[15px] text-hf-black">{t("addProduct.additives")}</p>
                   <div className="flex flex-col gap-1 overflow-hidden rounded-2xl bg-hf-tan">
                     {state.product.additives.map((code, index) => {
                       const name = additiveNames[code] ?? code.toUpperCase();
@@ -417,19 +419,19 @@ export default function AddPage() {
 
               {!!visibleAllergens.length && (
                 <div>
-                  <p className="hf-heading mb-2 text-[15px] text-hf-black">Allergener</p>
+                  <p className="hf-heading mb-2 text-[15px] text-hf-black">{t("addProduct.allergens")}</p>
                   <p className="text-[13px] text-hf-black opacity-70">
                     {visibleAllergens.map((key) => labelForAllergen(key)).join(", ")}
                   </p>
                   <p className="mt-2 text-[11px] text-hf-black opacity-50">
-                    Vi henter data fra 3. part og fraskriver os ansvar for manglende data.
+                    {t("addProduct.allergenDisclaimer")}
                   </p>
                 </div>
               )}
 
               {!!state.product.ingredientsText && (
                 <div>
-                  <p className="hf-heading mb-2 text-[15px] text-hf-black">Ingredienser</p>
+                  <p className="hf-heading mb-2 text-[15px] text-hf-black">{t("createDish.ingredients")}</p>
                   <p className="text-[13px] leading-relaxed text-hf-black opacity-70">
                     {state.product.ingredientsText}
                   </p>

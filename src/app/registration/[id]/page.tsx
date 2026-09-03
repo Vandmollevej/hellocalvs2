@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { BottomNav } from "@/components/BottomNav";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 type Registration = {
   id: string;
@@ -33,6 +34,7 @@ function MacroBar({ label, grams, max }: { label: string; grams: number; max: nu
 }
 
 export default function RegistrationPage() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const [registration, setRegistration] = useState<Registration | null>(null);
@@ -53,15 +55,15 @@ export default function RegistrationPage() {
   if (status !== "loaded" || !registration) {
     const message =
       status === "loading"
-        ? "Henter registrering..."
+        ? t("registration.loading")
         : status === "not_found"
-          ? "Registreringen findes ikke."
-          : "Kunne ikke hente registreringen.";
+          ? t("registration.notFound")
+          : t("registration.loadError");
 
     return (
       <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
         <div className="flex items-center justify-center bg-hf-green px-4 pb-4 pt-9">
-          <h1 className="hf-heading text-lg text-hf-white">Registrering</h1>
+          <h1 className="hf-heading text-lg text-hf-white">{t("registration.title")}</h1>
         </div>
         <p className="flex-1 p-4 text-center text-sm text-hf-black opacity-60">{message}</p>
         <BottomNav />
@@ -73,10 +75,10 @@ export default function RegistrationPage() {
     <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
       <div className="flex items-center justify-between bg-hf-green px-4 pb-4 pt-9">
         <button onClick={() => router.back()} className="text-sm font-bold text-hf-white">
-          Tilbage
+          {t("common.back")}
         </button>
         <button onClick={() => router.push("/")} className="text-sm font-bold text-hf-white">
-          Luk
+          {t("common.close")}
         </button>
       </div>
 
@@ -95,10 +97,10 @@ export default function RegistrationPage() {
           </p>
 
           <div className="flex flex-col gap-4 rounded-2xl bg-hf-tan p-4">
-            <p className="hf-heading text-[15px] text-hf-black">Energifordeling</p>
-            <MacroBar label="Protein" grams={registration.proteinSnapshot} max={40} />
-            <MacroBar label="Kulhydrat" grams={registration.carbsSnapshot} max={80} />
-            <MacroBar label="Fedt" grams={registration.fatSnapshot} max={30} />
+            <p className="hf-heading text-[15px] text-hf-black">{t("common.macroBreakdown")}</p>
+            <MacroBar label={t("common.protein")} grams={registration.proteinSnapshot} max={40} />
+            <MacroBar label={t("common.carbs")} grams={registration.carbsSnapshot} max={80} />
+            <MacroBar label={t("common.fat")} grams={registration.fatSnapshot} max={30} />
           </div>
         </div>
       </div>

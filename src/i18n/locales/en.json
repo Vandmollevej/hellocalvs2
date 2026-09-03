@@ -1,11 +1,16 @@
 {
   "common": {
     "back": "Back",
+    "close": "Close",
     "cancel": "Cancel",
     "continue": "Continue",
     "or": "or",
     "chooseCountry": "Choose your country",
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "macroBreakdown": "Macro breakdown",
+    "protein": "Protein",
+    "carbs": "Carbs",
+    "fat": "Fat"
   },
   "welcome": {
     "welcome": "Welcome!",
@@ -405,5 +410,32 @@
     "noPhotosYet": "No photos yet — take the first one to compare later.",
     "photoAlt": "Photo diary entry",
     "deleteAria": "Delete photo"
+  },
+  "registration": {
+    "title": "Registration",
+    "loading": "Loading registration...",
+    "notFound": "The registration doesn't exist.",
+    "loadError": "Couldn't load the registration."
+  },
+  "addProduct": {
+    "title": "Add",
+    "titleForDish": "Add ingredient",
+    "loading": "Loading...",
+    "notFound": "The product doesn't exist (sample data doesn't have real ids in this environment).",
+    "error": "Database not available in this environment.",
+    "kcalPerServing": "{kcal} kcal / serving",
+    "kcalPer100g": "{kcal} kcal/100g",
+    "details": "Details",
+    "additives": "E-additives",
+    "time": "Time",
+    "personsUnit": "Servings",
+    "gramsUnit": "Grams",
+    "personSingular": "serving",
+    "personPlural": "servings",
+    "addToDish": "Add to dish",
+    "add": "Add",
+    "saveError": "Couldn't save the registration",
+    "allergens": "Allergens",
+    "allergenDisclaimer": "We fetch data from a third party and take no responsibility for missing data."
   }
 }
