@@ -25,7 +25,7 @@ COPY --from=build --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=build --chown=nextjs:nodejs /app/prisma.config.ts ./prisma.config.ts
 # The production image also runs `prisma migrate deploy` as a one-shot
 # Compose service. Keep the installed CLI and its transitive dependencies.
-COPY --from=build --chown=nextjs:nodejs /app/node_modules ./node_modules
+COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules
 
 USER nextjs
 EXPOSE 3000
