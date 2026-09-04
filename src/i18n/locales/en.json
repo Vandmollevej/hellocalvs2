@@ -206,7 +206,14 @@
     "autoScanHint": "The camera scans automatically. You can also enter the number below the barcode.",
     "barcodeNumberAriaLabel": "Barcode number",
     "lookUp": "Look up",
-    "addManually": "Add manually"
+    "addManually": "Add manually",
+    "analyzingMeal": "Analyzing the meal...",
+    "mealAnalyzeError": "Could not analyze the photo. Try again.",
+    "noMealItemsFound": "No foods recognized. Try a clearer photo.",
+    "aiEstimateBadge": "AI estimate",
+    "removeItem": "Remove",
+    "savingMeal": "Saving...",
+    "saveMeal": "Save meal"
   },
   "cameraCreate": {
     "title": "Add item",

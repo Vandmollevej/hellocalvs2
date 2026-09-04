@@ -63,8 +63,8 @@ function buildActions(t: (key: string) => string): Action[] {
     { key: "microphone", href: "/voice", icon: IconMicrophone, label: t("addButton.microphone") },
     { key: "dish", href: "/create-dish", imageSrc: "/icons/pot.png", label: t("addButton.ownDishes") },
     { key: "search", href: "/search", icon: IconSearch, label: t("addButton.search") },
-    { key: "meal", href: "/camera?mode=maaltid", imageSrc: "/icons/plate-camera.png", label: t("addButton.meal") },
-    { key: "camera", href: "/camera?mode=produkt", icon: IconCamera, label: t("addButton.camera") },
+    { key: "meal", href: "/camera?mode=meal", imageSrc: "/icons/plate-camera.png", label: t("addButton.meal") },
+    { key: "camera", href: "/camera?mode=product", icon: IconCamera, label: t("addButton.camera") },
   ];
 }
 

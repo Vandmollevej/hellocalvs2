@@ -12,7 +12,7 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 
 type CameraStatus = "starting" | "active" | "denied" | "unavailable" | "error";
 type LookupStatus = "idle" | "loading" | "not_found" | "error";
-type CameraMode = "produkt" | "maaltid" | "hellofresh";
+type CameraMode = "product" | "meal" | "hellofresh";
 type RecognizeStatus = "idle" | "processing" | "found" | "not_found" | "failed";
 type MatchedHelloFreshProduct = {
   id: string;
@@ -21,9 +21,23 @@ type MatchedHelloFreshProduct = {
   kcalPer100g: number;
   servingSizeGrams: number | null;
 };
+type MealAnalyzeStatus = "idle" | "done" | "error";
+type MealItem = {
+  id: string;
+  title: string;
+  amountGrams: number;
+  amountLabel: string;
+  kcal: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  productId: string | null;
+  image: string | null;
+  estimated: boolean;
+};
 
 const MODE_TABS: { key: CameraMode; labelKey: string }[] = [
-  { key: "produkt", labelKey: "camera.tabBarcode" },
+  { key: "product", labelKey: "camera.tabBarcode" },
   { key: "hellofresh", labelKey: "camera.tabProduct" },
 ];
 
@@ -48,7 +62,7 @@ function KameraContent() {
   const router = useRouter();
   const modeParam = params.get("mode");
   const mode: CameraMode =
-    modeParam === "maaltid" ? "maaltid" : modeParam === "hellofresh" ? "hellofresh" : "produkt";
+    modeParam === "meal" ? "meal" : modeParam === "hellofresh" ? "hellofresh" : "product";
   const forDish = params.get("for") === "ret";
   const returnSuffix = forDish ? "?for=ret" : "";
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -62,6 +76,9 @@ function KameraContent() {
   const [photo, setPhoto] = useState<string | null>(null);
   const [recognizeStatus, setRecognizeStatus] = useState<RecognizeStatus>("idle");
   const [matchedProduct, setMatchedProduct] = useState<MatchedHelloFreshProduct | null>(null);
+  const [mealAnalyzeStatus, setMealAnalyzeStatus] = useState<MealAnalyzeStatus>("idle");
+  const [mealItems, setMealItems] = useState<MealItem[]>([]);
+  const [mealSaving, setMealSaving] = useState(false);
   const stopCamera = useCallback(() => {
     scannerControlsRef.current?.stop();
     scannerControlsRef.current = null;
@@ -106,7 +123,7 @@ function KameraContent() {
       }
 
       try {
-        if (mode === "produkt") {
+        if (mode === "product") {
           const reader = new BrowserMultiFormatOneDReader(undefined, {
             delayBetweenScanAttempts: 250,
             delayBetweenScanSuccess: 1000,
@@ -185,7 +202,44 @@ function KameraContent() {
     setLookupStatus("idle");
     setRecognizeStatus("idle");
     setMatchedProduct(null);
+    setMealAnalyzeStatus("idle");
+    setMealItems([]);
     setRestartKey((key) => key + 1);
+  }
+
+  function removeMealItem(id: string) {
+    setMealItems((current) => current.filter((item) => item.id !== id));
+  }
+
+  async function saveMeal() {
+    if (mealSaving || mealItems.length === 0) return;
+    setMealSaving(true);
+    try {
+      await Promise.all(
+        mealItems.map((item) =>
+          fetch("/api/registrations", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(
+              item.productId
+                ? { productId: item.productId, amountGrams: item.amountGrams }
+                : {
+                    amountGrams: item.amountGrams,
+                    titleSnapshot: item.title,
+                    kcalSnapshot: item.kcal,
+                    proteinSnapshot: item.protein,
+                    carbsSnapshot: item.carbs,
+                    fatSnapshot: item.fat,
+                  }
+            ),
+          })
+        )
+      );
+      stopCamera();
+      router.push("/");
+    } catch {
+      setMealSaving(false);
+    }
   }
 
   function submitManualBarcode(event: React.FormEvent) {
@@ -217,6 +271,29 @@ function KameraContent() {
   }, [mode, photo]);
 
   useEffect(() => {
+    if (mode !== "meal" || !photo) return;
+    let cancelled = false;
+    fetch("/api/ai/analyze-meal-photo", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ photo }),
+    })
+      .then((res) => res.json())
+      .then((data: { items: Omit<MealItem, "id">[] }) => {
+        if (cancelled) return;
+        setMealItems(data.items.map((item, index) => ({ ...item, id: `${index}` })));
+        setMealAnalyzeStatus("done");
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setMealAnalyzeStatus("error");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [mode, photo]);
+
+  useEffect(() => {
     if (recognizeStatus !== "not_found") return;
     const timer = setTimeout(() => restartCamera(), 1800);
     return () => clearTimeout(timer);
@@ -233,7 +310,7 @@ function KameraContent() {
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-3 p-4">
-      {mode !== "maaltid" && (
+      {mode !== "meal" && (
         <div className="flex justify-center gap-2">
           {MODE_TABS.map((tab) => (
             <button
@@ -263,13 +340,13 @@ function KameraContent() {
           <video ref={videoRef} className="h-full w-full object-cover" autoPlay muted playsInline aria-label={t("camera.liveViewAriaLabel")} />
         )}
 
-        {!photo && (mode === "maaltid" || mode === "hellofresh") && (
+        {!photo && (mode === "meal" || mode === "hellofresh") && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
             <div className="aspect-square w-[68%] rounded-full border-2 border-white/80 shadow-[0_0_0_999px_rgba(0,0,0,0.2)]" />
           </div>
         )}
 
-        {!photo && mode === "produkt" && (
+        {!photo && mode === "product" && (
           <div className="pointer-events-none absolute inset-[18%] border-2 border-white/80">
             <span className="absolute -inset-0.5 border-[6px] border-transparent border-t-hf-green" />
           </div>
@@ -283,7 +360,7 @@ function KameraContent() {
 
         {cameraStatus === "active" && !photo && (
           <p className="absolute inset-x-4 top-4 rounded-full bg-hf-black/60 px-4 py-2 text-center text-xs font-semibold text-white">
-            {mode === "produkt"
+            {mode === "product"
               ? t("camera.holdBarcodeInFrame")
               : mode === "hellofresh"
                 ? t("camera.placeProductInCircle")
@@ -319,16 +396,68 @@ function KameraContent() {
             </button>
           </div>
         )
-      ) : mode === "maaltid" ? (
-        <div className="flex justify-center py-1">
-          {photo ? (
-            <button onClick={restartCamera} className="hf-btn-secondary gap-2 px-5 py-3 text-sm">
-              {t("camera.retakePhoto")}
-            </button>
-          ) : (
-            <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-btn-primary gap-2 px-6 py-3 text-sm disabled:opacity-40">
-              <IconCamera size={19} /> {t("camera.takePhoto")}
-            </button>
+      ) : mode === "meal" ? (
+        <div className="flex flex-col gap-3">
+          <div className="flex justify-center py-1">
+            {photo ? (
+              <button onClick={restartCamera} className="hf-btn-secondary gap-2 px-5 py-3 text-sm">
+                {t("camera.retakePhoto")}
+              </button>
+            ) : (
+              <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-btn-primary gap-2 px-6 py-3 text-sm disabled:opacity-40">
+                <IconCamera size={19} /> {t("camera.takePhoto")}
+              </button>
+            )}
+          </div>
+
+          {photo && mealAnalyzeStatus === "idle" && (
+            <p className="text-center text-xs font-semibold text-hf-black opacity-70">{t("camera.analyzingMeal")}</p>
+          )}
+          {photo && mealAnalyzeStatus === "error" && (
+            <p className="text-center text-xs font-semibold text-red-700">{t("camera.mealAnalyzeError")}</p>
+          )}
+          {photo && mealAnalyzeStatus === "done" && mealItems.length === 0 && (
+            <p className="text-center text-xs font-semibold text-hf-black opacity-70">
+              {t("camera.noMealItemsFound")}
+            </p>
+          )}
+          {photo && mealAnalyzeStatus === "done" && mealItems.length > 0 && (
+            <>
+              <ul className="flex max-h-[38vh] flex-col gap-2 overflow-y-auto">
+                {mealItems.map((item) => (
+                  <li key={item.id} className="flex items-center gap-2.5 rounded-[8px] bg-hf-tan p-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="flex items-center gap-1.5 text-sm font-semibold text-hf-black">
+                        <span className="truncate">{item.title}</span>
+                        {item.estimated && (
+                          <span className="flex-shrink-0 rounded-full bg-hf-white px-1.5 py-0.5 text-[10px] font-bold uppercase text-hf-black opacity-70">
+                            {t("camera.aiEstimateBadge")}
+                          </span>
+                        )}
+                      </p>
+                      <p className="text-xs text-hf-black opacity-60">
+                        {item.amountLabel} · {item.kcal} kcal
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeMealItem(item.id)}
+                      className="flex-shrink-0 text-xs font-semibold text-hf-black opacity-60 underline"
+                    >
+                      {t("camera.removeItem")}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <button
+                type="button"
+                onClick={saveMeal}
+                disabled={mealSaving}
+                className="hf-btn-primary justify-center py-3 text-sm disabled:opacity-40"
+              >
+                {mealSaving ? t("camera.savingMeal") : t("camera.saveMeal")}
+              </button>
+            </>
           )}
         </div>
       ) : (
@@ -359,7 +488,7 @@ function KameraContent() {
         </div>
       )}
 
-      {mode !== "maaltid" && (
+      {mode !== "meal" && (
         <Link href={`/foods/new${returnSuffix}`} className="hf-btn-secondary justify-center py-2.5 text-xs">
           {t("camera.addManually")}
         </Link>

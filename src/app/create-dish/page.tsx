@@ -179,7 +179,7 @@ export default function CreateDishPage() {
               <span className="text-xs font-medium text-hf-black">{t("createDish.search")}</span>
             </a>
             <a
-              href="/camera?mode=produkt&for=ret"
+              href="/camera?mode=product&for=ret"
               className="flex flex-col items-center gap-1.5 rounded-2xl bg-hf-tan py-3 text-center"
             >
               <IconCamera size={20} color="var(--hf-black)" />

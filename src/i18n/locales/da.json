@@ -206,7 +206,14 @@
     "autoScanHint": "Kameraet scanner automatisk. Du kan også indtaste nummeret under stregkoden.",
     "barcodeNumberAriaLabel": "Stregkodenummer",
     "lookUp": "Slå op",
-    "addManually": "Tilføj manuelt"
+    "addManually": "Tilføj manuelt",
+    "analyzingMeal": "Analyserer måltidet...",
+    "mealAnalyzeError": "Kunne ikke analysere billedet. Prøv igen.",
+    "noMealItemsFound": "Ingen madvarer genkendt. Prøv et tydeligere billede.",
+    "aiEstimateBadge": "AI-estimat",
+    "removeItem": "Fjern",
+    "savingMeal": "Gemmer...",
+    "saveMeal": "Gem måltid"
   },
   "cameraCreate": {
     "title": "Tilføj vare",
