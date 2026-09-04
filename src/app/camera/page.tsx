@@ -353,7 +353,10 @@ function KameraContent() {
         )}
 
         {message && (
-          <div className="absolute inset-0 flex items-center justify-center bg-hf-black/75 p-6 text-center">
+          <div
+            className="absolute inset-0 flex items-center justify-center bg-hf-black/75 p-6 text-center"
+            onClick={cameraStatus === "denied" || cameraStatus === "error" ? restartCamera : undefined}
+          >
             <p className="max-w-xs text-sm font-semibold text-white">{message}</p>
           </div>
         )}

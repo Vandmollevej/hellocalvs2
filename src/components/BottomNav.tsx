@@ -684,19 +684,6 @@ export function BottomNav() {
         style={draggedOverPanel ? undefined : { borderTopColor: NAV_BORDER_COLOR }}
         aria-label={t("nav.mainNavigationAriaLabel")}
       >
-        {pages.length > 1 && (
-          <div className="mb-1.5 flex justify-center gap-1" aria-hidden="true">
-            {pages.map((_, i) => (
-              <span
-                key={i}
-                className="h-1.5 w-1.5 rounded-full transition-colors"
-                style={{
-                  backgroundColor: i === currentPage ? "var(--hf-black)" : "var(--hf-gray-light)",
-                }}
-              />
-            ))}
-          </div>
-        )}
         <div className="overflow-hidden">
           <div
             className="flex"
