@@ -3,8 +3,8 @@
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { IconApple } from "@tabler/icons-react";
-import { ScreenHeader } from "@/components/hf/ScreenHeader";
+import { IconApple, IconArrowLeft } from "@tabler/icons-react";
+import { HfScreen } from "@/components/HfScreen";
 import { TextField } from "@/components/hf/TextField";
 import { CreateProductMediaGrid, type MediaGridValue } from "@/components/hf/CreateProductMediaGrid";
 import { PRODUCT_DRAFT_STORAGE_KEY, type ProductCreateDraft } from "@/lib/product-draft";
@@ -106,7 +106,7 @@ function OpretProduktContent() {
         setSaveError(data.message ?? t("productCreate.saveError"));
         return;
       }
-      router.push(`/tilfoej/${data.product.id}`);
+      router.push(`/add/${data.product.id}`);
     } catch {
       setSaveError(t("productCreate.saveError"));
     } finally {
@@ -115,8 +115,15 @@ function OpretProduktContent() {
   }
 
   return (
-    <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
-      <ScreenHeader title={t("productCreate.title")} icon={<IconApple size={20} stroke={2} />} onBack={() => router.back()} />
+    <HfScreen
+      title={t("productCreate.title")}
+      icon={<IconApple size={20} stroke={2} />}
+      headerRight={
+        <button onClick={() => router.back()} aria-label={t("common.back")} className="text-hf-white">
+          <IconArrowLeft size={24} />
+        </button>
+      }
+    >
       <div className="flex flex-col gap-4 p-4">
         {fromFailedAdd && (
           <div
@@ -238,7 +245,7 @@ function OpretProduktContent() {
           </button>
         </form>
       </div>
-    </div>
+    </HfScreen>
   );
 }
 

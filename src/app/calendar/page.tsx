@@ -1342,11 +1342,21 @@ function DayDetails({
           pointerStart.current = null;
         }}
       >
-        <div className={`mb-4 flex items-center gap-3 rounded-2xl p-4 ${met ? "bg-hf-green text-hf-white" : "bg-hf-tan text-hf-black"}`}>
-          <div className={`flex size-10 items-center justify-center rounded-full ${met ? "bg-white/20" : "bg-hf-white"}`}>
-            {met ? <IconCheck size={23} /> : <span className="size-2.5 rounded-full bg-hf-tan-dark" />}
-          </div>
-          <p className="font-bold">{met ? t("calendar.dailyGoalReached") : t("calendar.dailyGoalNotMarked")}</p>
+        <div className="mb-4 flex items-center gap-2">
+          <span
+            className={`flex size-5 shrink-0 items-center justify-center rounded-full ${
+              met ? "bg-hf-green" : "bg-hf-gray"
+            }`}
+          >
+            {met ? (
+              <IconCheck size={13} stroke={3} className="text-hf-white" aria-hidden="true" />
+            ) : (
+              <span className="size-2 rounded-full bg-hf-white" aria-hidden="true" />
+            )}
+          </span>
+          <p className="text-base font-semibold text-hf-black">
+            {met ? t("calendar.dailyGoalReached") : t("calendar.dailyGoalNotMarked")}
+          </p>
         </div>
 
         <div className="mb-2 flex items-center justify-between">

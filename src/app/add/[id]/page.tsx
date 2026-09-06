@@ -57,12 +57,16 @@ export default function AddPage() {
   const [state, setState] = useState<LoadState>({ status: "loading" });
   const [profile, setProfile] = useState<ProfileUser | null>(null);
   const [amount, setAmount] = useState(100);
-  const [amountUnit, setAmountUnit] = useState<"personer" | "gram">("personer");
+  // Standard skal altid være gram (Fejlretninger/FEJLLISTE.md #1/#22): "personer"
+  // er kun en mulighed, når varen faktisk har en defineret portionsstørrelse,
+  // og må ikke være default-valget selv når den findes.
+  const [amountUnit, setAmountUnit] = useState<"personer" | "gram">("gram");
   const [time, setTime] = useState(() => searchParams.get("time") ?? currentTimeString());
   const [date] = useState(() => searchParams.get("date") ?? currentDateString());
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [openAdditive, setOpenAdditive] = useState<string | null>(null);
+  const [additivesOpen, setAdditivesOpen] = useState(false);
   const [additiveNames, setAdditiveNames] = useState<Record<string, string>>({});
   const [macroOverride, setMacroOverride] = useState<{
     amount: number;
@@ -257,7 +261,7 @@ export default function AddPage() {
                     : t("addProduct.kcalPer100g", { kcal: Math.round(state.product.kcalPer100g) })}
                 </p>
 
-                <div className="mt-2 flex items-center gap-4">
+                <div className="mt-2 flex items-center justify-center gap-4">
                   <button
                     type="button"
                     onClick={scrollToDetails}
@@ -266,19 +270,6 @@ export default function AddPage() {
                     {t("addProduct.details")}
                     <IconChevronDown size={15} />
                   </button>
-
-                  {!!state.product.additives?.length && (
-                    <button
-                      type="button"
-                      onClick={scrollToDetails}
-                      className="flex items-center gap-1.5 text-[13px] text-hf-black opacity-70"
-                    >
-                      <span className="flex h-4 w-4 items-center justify-center rounded-full bg-hf-green text-[10px] font-bold text-hf-white">
-                        E
-                      </span>
-                      <span className="underline underline-offset-2">{t("addProduct.additives")}</span>
-                    </button>
-                  )}
                 </div>
               </div>
 
@@ -388,7 +379,18 @@ export default function AddPage() {
 
               {!!state.product.additives?.length && (
                 <div>
-                  <p className="hf-heading mb-3 text-[15px] text-hf-black">{t("addProduct.additives")}</p>
+                  <button
+                    type="button"
+                    onClick={() => setAdditivesOpen((open) => !open)}
+                    className="mb-3 flex w-full items-center justify-between"
+                  >
+                    <p className="hf-heading text-[15px] text-hf-black">{t("addProduct.additives")}</p>
+                    <IconChevronDown
+                      size={18}
+                      className={`text-hf-black transition-transform ${additivesOpen ? "rotate-180" : ""}`}
+                    />
+                  </button>
+                  {additivesOpen && (
                   <div className="flex flex-col gap-1 overflow-hidden rounded-2xl bg-hf-tan">
                     {state.product.additives.map((code, index) => {
                       const name = additiveNames[code] ?? code.toUpperCase();
@@ -414,12 +416,18 @@ export default function AddPage() {
                       );
                     })}
                   </div>
+                  )}
                 </div>
               )}
 
               {!!visibleAllergens.length && (
                 <div>
-                  <p className="hf-heading mb-2 text-[15px] text-hf-black">{t("addProduct.allergens")}</p>
+                  <p className="hf-heading mb-2 flex items-center gap-2 text-[15px] text-hf-black">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-hf-green text-[12px] font-bold text-hf-white">
+                      !
+                    </span>
+                    {t("addProduct.allergens")}
+                  </p>
                   <p className="text-[13px] text-hf-black opacity-70">
                     {visibleAllergens.map((key) => labelForAllergen(key)).join(", ")}
                   </p>

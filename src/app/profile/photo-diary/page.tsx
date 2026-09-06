@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconTrash } from "@tabler/icons-react";
-import { ScreenHeader } from "@/components/hf/ScreenHeader";
+import { IconArrowLeft, IconTrash } from "@tabler/icons-react";
+import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -117,8 +117,14 @@ export default function BilledeDagbogPage() {
   }
 
   return (
-    <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
-      <ScreenHeader title={t("photoDiary.title")} onBack={() => router.back()} />
+    <HfScreen
+      title={t("photoDiary.title")}
+      headerRight={
+        <button onClick={() => router.back()} aria-label={t("common.back")} className="text-hf-white">
+          <IconArrowLeft size={24} />
+        </button>
+      }
+    >
 
       {loading || !user ? (
         <p className="p-6 text-center text-[14px] text-hf-black opacity-60">
@@ -192,6 +198,6 @@ export default function BilledeDagbogPage() {
           )}
         </div>
       )}
-    </div>
+    </HfScreen>
   );
 }

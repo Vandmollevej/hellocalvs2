@@ -99,6 +99,7 @@
     "regionLabel": "Region",
     "regionDescription": "Prioritizes product search by your country's barcodes.",
     "showAllergens": "Show allergens",
+    "setupTitle": "Setup",
     "showAllergensDescription": "Show an allergen line on foods when data is available.",
     "thirdPartyDisclaimer": "We fetch data from third parties and take no responsibility for missing data.",
     "languageLabel": "Language",
@@ -120,7 +121,7 @@
     "privacyPolicy": "Privacy policy",
     "dataTracking": "Data tracking",
     "chooseCountry": "Choose your country",
-    "notifications": "Notifications",
+    "notifications": "Communication",
     "inviteFriend": "Invite a friend",
     "inviteFriendDescription": "And get a free month each",
     "inviteShareText": "Try Hello Cal with me — then we both get a free month!",
@@ -341,15 +342,22 @@
       "integrations": "Integrations",
       "points": "Points",
       "inviteFriend": "Invite a friend",
-      "notifications": "Notifications",
+      "notifications": "Communication",
       "reportBug": "Report a bug",
       "settings": "Settings"
     },
     "communication": {
+      "intro": "Choose which messages you get as email and/or push. Important account messages (e.g. verification and password reset) are always sent.",
+      "pushSection": "Push notifications",
       "push": "I want to receive push notifications",
+      "emailSection": "Emails",
       "updateNews": "I want to receive news about updates",
       "advice": "I want to receive helpful advice by email",
-      "partnerOffers": "I want to receive great offers and information from our partners"
+      "partnerSection": "Information from our partners",
+      "partnerOffers": "I want to receive great offers and information from our partners",
+      "specificSection": "Specific messages",
+      "specificHint": "Fine-tune email and push for particular events on your account.",
+      "termsLink": "Read our terms"
     }
   },
   "profileSleep": {
@@ -401,6 +409,7 @@
       "unknownLabel": "Meal not specified"
     },
     "submit": "Log weigh-in",
+    "saving": "Saving…",
     "loading": "Loading…",
     "noEntriesYet": "No weigh-ins logged yet.",
     "deleteAria": "Delete weigh-in",
@@ -449,9 +458,13 @@
     "title": "Search",
     "add": "Add",
     "searchPlaceholder": "Search for a food or dish",
-    "recentlyAdded": "Recently added",
+    "favorites": "Favorites",
+    "addFavorite": "Add to favorites",
+    "removeFavorite": "Remove from favorites",
+    "recentlyAdded": "Recently used",
     "searchResults": "Search results",
     "allItems": "All items",
+    "emptyState": "Search for a food, or add a favorite to see it here.",
     "searching": "Searching …",
     "noResults": "No results"
   },
@@ -553,6 +566,7 @@
     "lessAmount": "Less amount",
     "moreAmount": "More amount",
     "resetChanges": "Reset changes",
+    "resetTranscript": "Reset text",
     "listeningTitle": "Listening...",
     "stopMic": "Stop the microphone",
     "startMic": "Start the microphone",

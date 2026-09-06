@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ScreenHeader } from "@/components/hf/ScreenHeader";
+import { IconArrowLeft } from "@tabler/icons-react";
+import { HfScreen } from "@/components/HfScreen";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -164,6 +165,11 @@ export default function WeightCalibrationPage() {
     load();
   }, []);
 
+  // Gemmer i realtid, uden en synlig "Gem"-knap: udløses når brugeren forlader
+  // vægtfeltet (onBlur), og tager de segmenterede valg med, som allerede er
+  // sat på det tidspunkt. Kaldes bevidst IKKE fra hvert segment-valgs onChange
+  // — det ville poste en ny, ufuldstændig vejningsrække pr. tryk (og tømme
+  // vægtfeltet undervejs), i stedet for én samlet række pr. vejning.
   async function submit() {
     const parsed = Number(weightKg.replace(",", "."));
     if (!parsed || parsed <= 0) return;
@@ -201,27 +207,32 @@ export default function WeightCalibrationPage() {
   }
 
   return (
-    <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
-      <ScreenHeader title={t("weightCalibration.title")} onBack={() => router.back()} />
+    <HfScreen
+      title={t("weightCalibration.title")}
+      headerRight={
+        <button onClick={() => router.back()} aria-label={t("common.back")} className="text-hf-white">
+          <IconArrowLeft size={24} />
+        </button>
+      }
+    >
 
       <div className="flex flex-col gap-4 p-4">
-        <p className="text-[13px] text-hf-black opacity-60">
-          {t("weightCalibration.intro")}
-        </p>
+        <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
+          <p className="text-[13px] leading-5">{t("weightCalibration.intro")}</p>
+        </div>
 
         <div className="flex flex-col gap-3 rounded-2xl bg-hf-tan p-4">
-          <label className="flex flex-col gap-1.5">
-            <span className="text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
-              {t("weightCalibration.weightLabel")}
-            </span>
+          <label className="flex items-end gap-2 border-b border-hf-black/30 pb-1.5">
             <input
               type="number"
               inputMode="decimal"
               value={weightKg}
               onChange={(event) => setWeightKg(event.target.value)}
-              className="rounded-xl bg-hf-cream px-4 py-3 text-[15px] text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green"
+              onBlur={() => submit()}
+              className="w-full bg-transparent text-[17px] text-hf-black outline-none"
               placeholder={t("weightCalibration.weightPlaceholder")}
             />
+            <span className="pb-0.5 text-[13px] font-semibold text-hf-black opacity-60">kg</span>
           </label>
 
           <Segmented
@@ -260,15 +271,7 @@ export default function WeightCalibrationPage() {
               { value: "UNKNOWN", label: t("weightCalibration.meal.unknown") },
             ]}
           />
-
-          <button
-            type="button"
-            onClick={submit}
-            disabled={saving || !weightKg}
-            className="hf-btn-primary mt-1 w-full py-3 text-[15px] disabled:opacity-50"
-          >
-            {t("weightCalibration.submit")}
-          </button>
+          {saving && <p className="text-center text-[11px] text-hf-black opacity-50">{t("weightCalibration.saving")}</p>}
         </div>
 
         <div className="flex flex-col gap-2">
@@ -314,6 +317,6 @@ export default function WeightCalibrationPage() {
           ))}
         </div>
       </div>
-    </div>
+    </HfScreen>
   );
 }

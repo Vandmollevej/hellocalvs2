@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ScreenHeader } from "@/components/hf/ScreenHeader";
+import { IconArrowLeft } from "@tabler/icons-react";
+import { HfScreen } from "@/components/HfScreen";
 import { FREE_MONTH_COST } from "@/lib/points-constants";
 
 type Transaction = {
@@ -61,14 +62,19 @@ export default function PointsPage() {
   }
 
   return (
-    <div className="flex h-full min-h-full flex-col bg-hf-cream">
-      <ScreenHeader title="Points" onBack={() => router.back()} />
-
-      <div className="flex-1 overflow-y-auto px-4 pt-4 pb-8">
+    <HfScreen
+      title="Points"
+      headerRight={
+        <button onClick={() => router.back()} aria-label="Tilbage" className="text-hf-white">
+          <IconArrowLeft size={24} />
+        </button>
+      }
+    >
+      <div className="px-4 pt-4 pb-8">
         <div className="rounded-lg p-4 text-center" style={{ background: "var(--hf-color-brand)" }}>
-          <p className="hf-type-caption text-hf-white opacity-80">Din saldo</p>
-          <p className="hf-type-hero text-hf-white">{balance ?? "…"}</p>
-          <p className="hf-type-caption text-hf-white opacity-80">points</p>
+          <p className="hf-type-caption opacity-80" style={{ color: "var(--hf-color-white)" }}>Din saldo</p>
+          <p className="hf-type-hero" style={{ color: "var(--hf-color-white)" }}>{balance ?? "…"}</p>
+          <p className="hf-type-caption opacity-80" style={{ color: "var(--hf-color-white)" }}>points</p>
         </div>
 
         <div className="mt-4 rounded-lg border p-4" style={{ borderColor: "var(--hf-color-line)" }}>
@@ -112,6 +118,6 @@ export default function PointsPage() {
           </div>
         )}
       </div>
-    </div>
+    </HfScreen>
   );
 }

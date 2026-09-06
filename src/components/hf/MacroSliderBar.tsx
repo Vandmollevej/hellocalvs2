@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 
 // Adjustable macro bar: slider + text field to override the value.
 // Extracted from src/app/voice/page.tsx's MacroBar for reuse in the Add flow.
@@ -81,13 +80,32 @@ export function MacroSliderBar({
     <div>
       <div className="mb-1.5 flex items-center justify-between">
         <span className="text-[13px] text-hf-black opacity-70">{label}</span>
-        <button
-          type="button"
-          onClick={openEditor}
-          className="min-w-[36px] rounded px-1 text-right text-base font-bold text-hf-black active:bg-hf-tan-dark"
-        >
-          {grams} g
-        </button>
+        {editing ? (
+          <span className="flex items-center gap-1 rounded bg-hf-white px-1">
+            <input
+              autoFocus
+              type="number"
+              inputMode="decimal"
+              value={editValue}
+              onChange={(event) => setEditValue(event.target.value)}
+              onFocus={(event) => event.currentTarget.select()}
+              onBlur={commitEdit}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") event.currentTarget.blur();
+              }}
+              className="w-12 text-right text-base font-bold text-hf-black outline-none"
+            />
+            <span className="text-base font-bold text-hf-black">g</span>
+          </span>
+        ) : (
+          <button
+            type="button"
+            onClick={openEditor}
+            className="min-w-[36px] rounded px-1 text-right text-base font-bold text-hf-black active:bg-hf-tan-dark"
+          >
+            {grams} g
+          </button>
+        )}
       </div>
       <div
         ref={trackRef}
@@ -105,40 +123,6 @@ export function MacroSliderBar({
           style={{ left: `${pct}%`, top: "50%" }}
         />
       </div>
-
-      {editing &&
-        createPortal(
-          <div
-            className="fixed inset-0 z-50 flex items-end justify-center bg-black/40"
-            onClick={() => setEditing(false)}
-          >
-            <div onClick={(event) => event.stopPropagation()} className="mb-6 w-[280px] rounded-2xl bg-hf-white p-4 shadow-lg">
-              <p className="text-xs font-bold text-hf-black">{label}</p>
-              <div className="mt-2 flex items-center gap-2">
-                <input
-                  autoFocus
-                  type="number"
-                  inputMode="decimal"
-                  value={editValue}
-                  onChange={(event) => setEditValue(event.target.value)}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") commitEdit();
-                  }}
-                  className="w-full rounded-xl border border-hf-tan-dark px-3 py-2.5 text-lg outline-none focus:border-hf-green"
-                />
-                <span className="text-sm text-hf-black opacity-70">g</span>
-              </div>
-              <button
-                type="button"
-                onClick={commitEdit}
-                className="mt-3 w-full rounded-xl bg-hf-green py-2.5 text-sm font-bold text-hf-white"
-              >
-                Gem
-              </button>
-            </div>
-          </div>,
-          document.body
-        )}
     </div>
   );
 }

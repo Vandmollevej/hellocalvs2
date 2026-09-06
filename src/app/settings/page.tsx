@@ -11,9 +11,8 @@ import {
   IconCreditCard,
   IconBell,
 } from "@tabler/icons-react";
-import { ScreenHeader } from "@/components/hf/ScreenHeader";
+import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
-import { BottomNav } from "@/components/BottomNav";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -35,11 +34,10 @@ export default function SettingsPage() {
   const [showOnboarding, setShowOnboarding] = useState(false);
 
   return (
-    <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
+    <HfScreen title={t("settings.title")}>
       {showOnboarding && (
         <OnboardingWizard forceVisible onClose={() => setShowOnboarding(false)} />
       )}
-      <ScreenHeader title={t("settings.title")} />
 
       <div className="flex flex-col gap-8 p-4">
         <AccordionCard>
@@ -102,15 +100,14 @@ export default function SettingsPage() {
           href="/profile/invite"
           className="block rounded-[8px] bg-hf-green p-4 text-left text-hf-white"
         >
-          <p className="hf-type-body-sm font-bold">{t("settings.inviteFriend")}</p>
-          <p className="hf-type-caption mt-0.5 text-hf-white opacity-90">
+          <p className="hf-type-body-sm font-bold" style={{ color: "var(--hf-color-white)" }}>
+            {t("settings.inviteFriend")}
+          </p>
+          <p className="hf-type-caption mt-0.5 opacity-90" style={{ color: "var(--hf-color-white)" }}>
             {t("settings.invitePointsDescription")}
           </p>
         </Link>
       </div>
-
-      <div className="flex-1" />
-      <BottomNav />
-    </div>
+    </HfScreen>
   );
 }

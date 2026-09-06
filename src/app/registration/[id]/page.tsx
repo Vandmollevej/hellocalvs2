@@ -61,11 +61,13 @@ export default function RegistrationPage() {
           : t("registration.loadError");
 
     return (
-      <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
+      <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-hf-cream">
         <div className="flex items-center justify-center bg-hf-green px-4 pb-4 pt-9">
           <h1 className="hf-heading text-lg text-hf-white">{t("registration.title")}</h1>
         </div>
-        <p className="flex-1 p-4 text-center text-sm text-hf-black opacity-60">{message}</p>
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+          <p className="p-4 text-center text-sm text-hf-black opacity-60">{message}</p>
+        </div>
         <BottomNav />
       </div>
     );

@@ -24,13 +24,13 @@ export function Toggle({
       aria-label={label ?? undefined}
       disabled={disabled}
       onClick={() => onChange(!checked)}
-      className={`relative h-7 w-12 shrink-0 rounded-full transition-colors disabled:opacity-50 ${
+      className={`relative h-6 w-10 shrink-0 rounded-full transition-colors disabled:opacity-50 ${
         checked ? "bg-hf-green" : "bg-hf-tan-dark"
       }`}
     >
       <span
-        className={`absolute top-0.5 h-6 w-6 rounded-full bg-white shadow transition-transform ${
-          checked ? "translate-x-[22px]" : "translate-x-0.5"
+        className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
+          checked ? "translate-x-[18px]" : "translate-x-0.5"
         }`}
       />
     </button>
@@ -39,14 +39,16 @@ export function Toggle({
   if (!label) return switchEl;
 
   return (
-    <div className="flex items-center gap-3 rounded-2xl bg-hf-tan px-4 py-4">
+    <div className="flex items-start gap-3 rounded-2xl bg-hf-tan px-4 py-4">
       <span className="flex-1">
         <span className="block text-[15px] font-medium text-hf-black">{label}</span>
         {description && (
-          <span className="block text-[12px] text-hf-black opacity-60">{description}</span>
+          <span className="mt-2 block border-t border-hf-gray-light pt-2 text-[12px] text-hf-black opacity-60">
+            {description}
+          </span>
         )}
       </span>
-      {switchEl}
+      <span className="pt-0.5">{switchEl}</span>
     </div>
   );
 }

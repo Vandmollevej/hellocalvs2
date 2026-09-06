@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconChevronDown } from "@tabler/icons-react";
-import { ScreenHeader } from "@/components/hf/ScreenHeader";
+import { IconArrowLeft, IconChevronDown } from "@tabler/icons-react";
+import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -19,6 +19,15 @@ type SleepSchedule = {
   bedtime: string;
   wakeTime: string;
 };
+
+// Lægger (evt. negative) minutter til et "HH:MM"-tidspunkt, med wrap over midnat.
+function addMinutes(time: string, minutes: number) {
+  const [hours, mins] = time.split(":").map(Number);
+  const total = (((hours * 60 + mins + minutes) % 1440) + 1440) % 1440;
+  const nextHours = Math.floor(total / 60);
+  const nextMinutes = Math.round(total % 60);
+  return `${String(nextHours).padStart(2, "0")}:${String(nextMinutes).padStart(2, "0")}`;
+}
 
 const timeInputClass =
   "rounded-xl bg-hf-tan px-4 py-3 text-[15px] text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green";
@@ -73,17 +82,26 @@ export default function SleepSchedulePage() {
     };
   }, []);
 
-  function updateDefault<K extends keyof SleepUser>(key: K, value: SleepUser[K]) {
-    setUser((current) => (current ? { ...current, [key]: value } : current));
+  // Tager et helt patch-objekt (ikke kun ét felt ad gangen), så to felter der
+  // ændres i samme handling (fx stå-op-tid + den auto-udregnede sengetid)
+  // rent faktisk begge bliver gemt — den delte debounce-timer nedenfor ville
+  // ellers lade det andet kald annullere det første kalds PATCH, før den når
+  // at blive sendt.
+  function updateDefaults(patch: Partial<SleepUser>) {
+    setUser((current) => (current ? { ...current, ...patch } : current));
 
     if (saveTimeout.current) clearTimeout(saveTimeout.current);
     saveTimeout.current = setTimeout(() => {
       fetch("/api/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ [key]: value }),
+        body: JSON.stringify(patch),
       }).catch(() => {});
     }, 500);
+  }
+
+  function updateDefault<K extends keyof SleepUser>(key: K, value: SleepUser[K]) {
+    updateDefaults({ [key]: value } as Partial<SleepUser>);
   }
 
   function toggleShiftWork(enabled: boolean) {
@@ -139,9 +157,14 @@ export default function SleepSchedulePage() {
   }
 
   return (
-    <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
-      <ScreenHeader title={t("profileSleep.title")} onBack={() => router.back()} />
-
+    <HfScreen
+      title={t("profileSleep.title")}
+      headerRight={
+        <button onClick={() => router.back()} aria-label={t("common.back")} className="text-hf-white">
+          <IconArrowLeft size={24} />
+        </button>
+      }
+    >
       {loading || !user ? (
         <p className="p-6 text-center text-[14px] text-hf-black opacity-60">
           {loading ? t("profileSleep.loading") : t("profileSleep.loadError")}
@@ -149,20 +172,33 @@ export default function SleepSchedulePage() {
       ) : (
         <div className="flex flex-col gap-4 p-4">
           <div className="grid grid-cols-2 gap-3">
-            <Field label={t("profileSleep.defaultBedtime")}>
-              <input
-                type="time"
-                className={timeInputClass}
-                value={user.defaultBedtime ?? ""}
-                onChange={(event) => updateDefault("defaultBedtime", event.target.value || null)}
-              />
-            </Field>
             <Field label={t("profileSleep.defaultWakeTime")}>
               <input
                 type="time"
                 className={timeInputClass}
                 value={user.defaultWakeTime ?? ""}
-                onChange={(event) => updateDefault("defaultWakeTime", event.target.value || null)}
+                onChange={(event) => {
+                  const wakeTime = event.target.value || null;
+                  // Udregn automatisk 7,5 timers søvn, hvis sengetid endnu ikke er sat.
+                  if (wakeTime && !user.defaultBedtime) {
+                    updateDefault("defaultBedtime", addMinutes(wakeTime, -7.5 * 60));
+                  }
+                  updateDefault("defaultWakeTime", wakeTime);
+                }}
+              />
+            </Field>
+            <Field label={t("profileSleep.defaultBedtime")}>
+              <input
+                type="time"
+                className={timeInputClass}
+                value={user.defaultBedtime ?? ""}
+                onChange={(event) => {
+                  const bedtime = event.target.value || null;
+                  if (bedtime && !user.defaultWakeTime) {
+                    updateDefault("defaultWakeTime", addMinutes(bedtime, 7.5 * 60));
+                  }
+                  updateDefault("defaultBedtime", bedtime);
+                }}
               />
             </Field>
           </div>
@@ -230,6 +266,6 @@ export default function SleepSchedulePage() {
           />
         </div>
       )}
-    </div>
+    </HfScreen>
   );
 }

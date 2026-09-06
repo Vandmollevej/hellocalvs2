@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ScreenHeader } from "@/components/hf/ScreenHeader";
+import { IconArrowLeft } from "@tabler/icons-react";
+import { HfScreen } from "@/components/HfScreen";
 
 type Referral = { id: string; referredUser: { displayName: string }; rewardGrantedAt: string | null };
 
@@ -53,15 +54,30 @@ export default function InvitePage() {
   }
 
   return (
-    <div className="flex h-full min-h-full flex-col bg-hf-cream">
-      <ScreenHeader title="Invitér en ven" onBack={() => router.back()} />
-
-      <div className="flex-1 overflow-y-auto px-4 pt-4 pb-8">
+    <HfScreen
+      title="Invitér en ven"
+      headerRight={
+        <button onClick={() => router.back()} aria-label="Tilbage" className="text-hf-white">
+          <IconArrowLeft size={24} />
+        </button>
+      }
+      footer={
+        <button
+          type="button"
+          onClick={share}
+          disabled={!shareUrl}
+          className="hf-btn-primary hf-type-button h-12 w-full disabled:opacity-40"
+        >
+          {copied ? "Link kopieret!" : "Del dit invite-link"}
+        </button>
+      }
+    >
+      <div className="px-4 pt-4 pb-8">
         <div className="rounded-lg p-4" style={{ background: "var(--hf-color-brand)" }}>
-          <p className="hf-type-body-sm font-bold text-hf-white">
+          <p className="hf-type-body-sm font-bold" style={{ color: "var(--hf-color-white)" }}>
             I optjener begge 300 points, når din ven har oprettet en konto*
           </p>
-          <p className="hf-type-caption mt-1 text-hf-white opacity-90">
+          <p className="hf-type-caption mt-1" style={{ color: "var(--hf-color-white)" }}>
             300 points kan indløses til 1 gratis måned under Profil → Points.
           </p>
         </div>
@@ -71,15 +87,6 @@ export default function InvitePage() {
             Læs betingelser
           </a>
         </p>
-
-        <button
-          type="button"
-          onClick={share}
-          disabled={!shareUrl}
-          className="hf-btn-primary hf-type-button mt-6 h-12 w-full disabled:opacity-40"
-        >
-          {copied ? "Link kopieret!" : "Del dit invite-link"}
-        </button>
 
         <h2 className="hf-type-section-title mt-6">Dine invitationer</h2>
         {referrals.length === 0 ? (
@@ -101,6 +108,6 @@ export default function InvitePage() {
           </div>
         )}
       </div>
-    </div>
+    </HfScreen>
   );
 }

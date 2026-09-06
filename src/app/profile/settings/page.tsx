@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconChevronDown } from "@tabler/icons-react";
-import { ScreenHeader } from "@/components/hf/ScreenHeader";
+import { IconArrowLeft, IconChevronDown } from "@tabler/icons-react";
+import { HfScreen } from "@/components/HfScreen";
 import { ALLERGEN_CATALOG } from "@/lib/allergens";
 import { REGIONS } from "@/lib/regions";
 import { Toggle } from "@/components/ui/Toggle";
@@ -115,9 +115,14 @@ export default function ProfileSettingsPage() {
   }
 
   return (
-    <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
-      <ScreenHeader title={t("settings.title")} onBack={() => router.back()} />
-
+    <HfScreen
+      title={t("settings.setupTitle")}
+      headerRight={
+        <button onClick={() => router.back()} aria-label={t("common.back")} className="text-hf-white">
+          <IconArrowLeft size={24} />
+        </button>
+      }
+    >
       {loading || !user ? (
         <p className="p-6 text-center text-[14px] text-hf-black opacity-60">
           {loading ? t("settings.loading") : t("settings.loadError")}
@@ -193,6 +198,6 @@ export default function ProfileSettingsPage() {
           </p>
         </div>
       )}
-    </div>
+    </HfScreen>
   );
 }

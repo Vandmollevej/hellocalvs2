@@ -48,7 +48,7 @@ function LogIndContent() {
         className="flex items-center justify-between bg-hf-green px-4 pb-4"
         style={{ paddingTop: "max(16px, env(safe-area-inset-top, 0px))" }}
       >
-        <Link href="/welcome" className="hf-type-body text-hf-white">
+        <Link href="/welcome" className="hf-type-body" style={{ color: "var(--hf-color-white)" }}>
           {t("login.cancel")}
         </Link>
         <p className="hf-type-nav-title">

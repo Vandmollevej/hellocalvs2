@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { IconBookmark } from "@tabler/icons-react";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 const ACTION_WIDTH = 80;
@@ -56,20 +57,21 @@ export function SwipeableRow({
               setDragX(0);
             }}
             aria-label={t("swipeableRow.saveAsFavorite")}
-            className="text-xs font-bold text-hf-white"
+            className="flex flex-col items-center gap-1 text-xs font-bold text-hf-white"
           >
+            <IconBookmark size={18} />
             {t("swipeableRow.favorite")}
           </button>
         </div>
       )}
-      <div className="absolute inset-y-0 right-0 flex w-20 items-center justify-center bg-red-600">
+      <div className="absolute inset-y-0 right-0 flex w-20 items-center justify-center bg-hf-black">
         <button
           onClick={() => {
             onDelete();
             setDragX(0);
           }}
           aria-label={t("swipeableRow.delete")}
-          className="text-xs font-bold text-white"
+          className="text-xs font-bold text-hf-white"
         >
           {t("swipeableRow.delete")}
         </button>

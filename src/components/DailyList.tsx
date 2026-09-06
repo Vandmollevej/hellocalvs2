@@ -12,6 +12,7 @@ type Entry = {
   kcalPer100g: number;
   createdAt: string;
   image?: string;
+  productId: string | null;
 };
 
 type RegistrationResponse = {
@@ -21,6 +22,7 @@ type RegistrationResponse = {
     kcalSnapshot: number;
     amountGrams: number;
     createdAt: string;
+    productId: string | null;
     product: { imageUrl: string | null } | null;
   }>;
 };
@@ -65,12 +67,26 @@ export function DailyList() {
                   : registration.kcalSnapshot,
               createdAt: registration.createdAt,
               image: registration.product?.imageUrl ?? undefined,
+              productId: registration.productId,
             }))
         );
       })
       .catch(() => setError(t("dailyList.loadError")))
       .finally(() => setLoading(false));
   }, [t]);
+
+  async function favoriteEntry(productId: string | null) {
+    if (!productId) return;
+    try {
+      await fetch("/api/favorites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId }),
+      });
+    } catch {
+      // Stille fejl — favoritmarkering er ikke kritisk nok til en fejlbanner her.
+    }
+  }
 
   async function deleteEntry(id: string) {
     const previousEntries = entries;
@@ -94,6 +110,7 @@ export function DailyList() {
             className={i < entries.length - 1 ? "border-b border-hf-tan-dark" : ""}
           >
             <SwipeableRow
+              onFavorite={entry.productId ? () => void favoriteEntry(entry.productId) : undefined}
               onDelete={() => void deleteEntry(entry.id)}
             >
               <Link

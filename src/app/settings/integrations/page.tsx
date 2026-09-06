@@ -10,7 +10,8 @@ import {
   IconBrandGoogle,
   type Icon,
 } from "@tabler/icons-react";
-import { ScreenHeader } from "@/components/hf/ScreenHeader";
+import { IconArrowLeft } from "@tabler/icons-react";
+import { HfScreen } from "@/components/HfScreen";
 import type { IntegrationCardStatus } from "@/lib/integrations";
 import type { IntegrationProvider } from "@prisma/client";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -146,9 +147,14 @@ function IntegrationerContent() {
   }
 
   return (
-    <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
-      <ScreenHeader title={t("integrations.title")} onBack={() => router.back()} />
-
+    <HfScreen
+      title={t("integrations.title")}
+      headerRight={
+        <button onClick={() => router.back()} aria-label={t("common.back")} className="text-hf-white">
+          <IconArrowLeft size={24} />
+        </button>
+      }
+    >
       <div className="flex flex-col gap-4 p-4">
         {notice && (
           <p className="rounded-[8px] bg-hf-tan px-4 py-3 text-[13px] text-hf-black">{notice}</p>
@@ -296,7 +302,7 @@ function IntegrationerContent() {
           </div>
         )}
       </div>
-    </div>
+    </HfScreen>
   );
 }
 

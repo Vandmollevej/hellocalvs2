@@ -11,7 +11,7 @@ import {
   IconMicrophone,
   IconUser,
   IconX,
-  IconRecycle,
+  IconRefresh,
 } from "@tabler/icons-react";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -668,9 +668,9 @@ export function BottomNav() {
               type="button"
               onClick={resetLayout}
               aria-label={t("nav.resetMenuAriaLabel")}
-              className="flex h-11 w-11 items-center justify-center rounded-full bg-hf-green text-hf-white"
+              className="flex h-11 w-11 items-center justify-center rounded-full text-hf-green"
             >
-              <IconRecycle size={20} />
+              <IconRefresh size={20} />
             </button>
           </div>
         </div>

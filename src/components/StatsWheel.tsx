@@ -263,26 +263,26 @@ function WheelItem({
         opacity,
       }}
     >
+      <p
+        className={`mb-1 text-[11px] font-bold uppercase tracking-[0.08em] ${
+          isActive ? "text-hf-green" : "text-hf-gray-dark"
+        }`}
+        style={{ opacity: labelOpacity }}
+      >
+        {stat.label}
+      </p>
       {isActive ? (
-        <>
-          <p
-            className="mb-1 text-[11px] font-bold uppercase tracking-[0.08em] text-hf-green"
-            style={{ opacity: labelOpacity }}
+        <div className="flex items-baseline justify-end gap-2">
+          <span
+            className="font-extrabold leading-none text-hf-black"
+            style={{ fontSize: valueFontSize }}
           >
-            {stat.label}
-          </p>
-          <div className="flex items-baseline justify-end gap-2">
-            <span
-              className="font-extrabold leading-none text-hf-black"
-              style={{ fontSize: valueFontSize }}
-            >
-              {stat.value} <span className="font-semibold">{stat.unit}</span>
-            </span>
-            <StatIcon size={21} color="var(--hf-green)" stroke={2.2} aria-hidden="true" />
-          </div>
-        </>
+            {stat.value} <span className="font-semibold">{stat.unit}</span>
+          </span>
+          <StatIcon size={21} color="var(--hf-green)" stroke={2.2} aria-hidden="true" />
+        </div>
       ) : (
-        <div className="flex min-h-10 w-full items-center justify-end gap-1.5 text-hf-black">
+        <div className="flex w-full items-center justify-end gap-1.5 text-hf-black">
           <span className="font-semibold" style={{ fontSize: valueFontSize }}>
             {stat.value} {stat.unit}
           </span>

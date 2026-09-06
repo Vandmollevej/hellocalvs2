@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ScreenHeader } from "@/components/hf/ScreenHeader";
+import { IconArrowLeft } from "@tabler/icons-react";
+import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 // Betaling (docs/DECISIONS.md 2026-09-02): databasen (Subscription,
@@ -44,16 +45,21 @@ export default function PaymentPage() {
   }, []);
 
   return (
-    <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
-      <ScreenHeader title={t("payment.title")} onBack={() => router.back()} />
-
+    <HfScreen
+      title={t("payment.title")}
+      headerRight={
+        <button onClick={() => router.back()} aria-label={t("common.back")} className="text-hf-white">
+          <IconArrowLeft size={24} />
+        </button>
+      }
+    >
       <div className="flex flex-col gap-4 p-4">
         <div className="rounded-[8px] p-4" style={{ background: "var(--hf-color-brand)" }}>
-          <p className="hf-type-body-sm font-bold text-hf-white">
+          <p className="hf-type-body-sm font-bold" style={{ color: "var(--hf-color-white)" }}>
             {statusLabels(t)[subscription?.status ?? "INACTIVE"]}
           </p>
           {subscription && subscription.freeMonthsRemaining > 0 && (
-            <p className="hf-type-caption mt-1 text-hf-white opacity-90">
+            <p className="hf-type-caption mt-1 opacity-90" style={{ color: "var(--hf-color-white)" }}>
               {t("payment.freeMonthsRemaining", { count: subscription.freeMonthsRemaining })}
             </p>
           )}
@@ -101,6 +107,6 @@ export default function PaymentPage() {
           </div>
         </div>
       </div>
-    </div>
+    </HfScreen>
   );
 }

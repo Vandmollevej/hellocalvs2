@@ -1,6 +1,6 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-03
+Last updated: 2026-09-05
 
 ## In progress (2026-09-03): pointsystem, betaling, besked-automatisering, admin-brugere
 
@@ -1135,3 +1135,173 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
     come back and save correctly). The full visual overlay/uncertain-
     ingredient UI from `docs/AI.md`'s "Måltidsanalyse" section is still not
     built — only a simple editable review list exists so far.
+
+## 2026-09-05: Fejlretninger-log started; several already-fixed, some real central bugs fixed
+
+The user began listing UI bugs one by one from fresh screenshots, logged
+verbatim with full context in the new `Fejlretninger/FEJLLISTE.md` (37
+numbered entries so far, screenshots `IMG_1577`-`IMG_1614`). Mid-session the
+user also asked to actually verify/fix against the live app rather than only
+log, so a working local `npm run dev` + Browser-pane preview was used going
+forward (`.claude/launch.json` gained a `scratchpad-preview` entry too, for
+an earlier failed attempt at a hand-built artifact mockup — see below).
+
+**Important finding: several logged entries describe an older build, not the
+current code.** Live-checked against the running dev server at 402×874:
+`/settings`, `/profile/notifications`, `/calendar` all already show the
+correct header (profile circle left, centered title, no stray "Trin X af 3"
+progress bar in the wrong place) and the calendar's month-view arrows already
+sit right beside the month name, not flung to the screen edges, and the
+list-view dropdown (the tiny chevron under the small header calendar icon)
+already exists. Fejllisten's entries #4 (profile-circle side), #12C/#23/#24C
+(bottom nav placement, month-arrow position, list-view dropdown) look like
+they were logged from a stale screenshot batch, not the current code — **do
+not blindly "fix" those without re-screenshotting the live app first**, or
+correct code risks being reverted to match a stale bug report.
+
+**Confirmed-real bugs actually fixed this session** (each verified by
+screenshotting the live dev server before/after, `npm run lint` and
+`npm run build` both passed at the end):
+
+- `src/components/ui/Toggle.tsx` (fejl #3): the switch was vertically
+  centered against the whole label+description card instead of the label's
+  own line, and was too large. Now `items-start` + the switch has its own
+  `pt-0.5` wrapper so it aligns with the label regardless of description
+  length; switch shrunk `h-7 w-12`→`h-6 w-10`; a light `border-hf-gray-light`
+  separator was added between label and description.
+- `src/components/StatsWheel.tsx` (fejl #29A, the home-screen key-metric
+  wheel): the active item's label ("KALORIER" etc.) only rendered at all when
+  centered, so it visually popped in/turned green as the wheel scrolled.
+  Every item's label now always renders, fading in continuously with
+  distance from center (same `labelOpacity` already computed) instead of a
+  binary show/hide — no more sudden pop.
+- **Root cause found for the "bottom nav floats away from the bottom in
+  loading/empty/error states" bug (fejl #4/#12C/#23/#26/#28B), and fixed at
+  the three pages still doing it**: `src/app/profile/page.tsx` and
+  `src/app/settings/page.tsx` built their own ad-hoc header+content+BottomNav
+  markup instead of the shared `HfScreen` component, and neither wrapped
+  their content in `HfScreen`'s `min-h-0 flex-1 overflow-y-auto` scroll
+  region — when content was short (an error message, an empty state), the
+  flex column just hugged the content instead of stretching, so `BottomNav`
+  rendered directly under the short text with empty space below it instead of
+  pinned to the viewport bottom. Both pages migrated to `HfScreen`
+  (`headerRight` used for `/profile`'s back arrow, since `HfScreen` doesn't
+  take an `onBack` prop directly). `src/app/registration/[id]/page.tsx`'s
+  loading/not-found/error branch (still a hand-rolled shell, not migrated —
+  its dual back+close header buttons don't fit `HfScreen`'s single
+  `headerRight` slot without inventing a new header variant, which was
+  deliberately not done without a confirmed HelloFresh reference for that
+  exact pattern) got the same `min-h-0 flex-1 overflow-y-auto` wrapper added
+  around its message so `BottomNav` stays pinned there too.
+  **Any other page that imports `BottomNav`/`ScreenHeader` directly instead
+  of `HfScreen` should be treated as suspect for this same bug** —
+  `src/app/page.tsx` is the one remaining direct `BottomNav` import besides
+  the two fixed above, but it's the home screen's deliberately-special
+  rotating-wheel shell (see `design.md` §1's protected exception) and wasn't
+  touched.
+- `src/app/voice/page.tsx` (fejl #37, #38, and #8's recycle-icon complaint):
+  the mic now auto-starts listening on mount (`useEffect` calling
+  `startListening()` once) instead of requiring a first tap — tapping now
+  pauses/resumes, per the user's explicit "omvendt rækkefølge" request.
+  Pressing Enter in the transcript textarea now blurs it (closes the
+  keyboard) instead of doing nothing. Added a small black circular reset
+  button (top-right of the transcript box) that clears only the transcript
+  text, not the recognized food items. The per-item "reset my edits" button
+  was using `IconRecycle` on a filled green circle (exactly fejl #8's
+  complaint, just found in a second location) — changed to `IconRefresh` as
+  a plain ghost icon (green, no fill), matching fejl #8's stated preference;
+  fejl #8/#38's own black-circle reset variant is intentionally styled
+  differently (filled, since it's a more consequential "clear everything
+  typed" action) — this two-variant split is a judgment call made without
+  asking, not yet confirmed with the user.
+- `next.config.ts` gained `devIndicators: false` — the floating black "N"
+  circle the user pointed at was Next.js's own dev-mode indicator badge, not
+  part of the app; it never appears in a production build, but is now also
+  suppressed in local dev.
+
+**Not done / needs a decision, not a screenshot, before touching code:**
+- Fejl #4's specific claim (profile circle should be *right*, back arrow
+  *left*) contradicts both `design.md` §1's documented rule and what the
+  live app currently renders (profile circle left, confirmed correct against
+  multiple pages this session) — flagged to the user mid-session, not yet
+  resolved either way in `Fejlretninger/FEJLLISTE.md`.
+- A hand-built Artifact mockup of the app shell was attempted early in this
+  session per an explicit user request to "se designet" before code changes;
+  it went through several rounds of guesses that didn't match the
+  HelloFresh reference screenshots the user was comparing against (centered
+  vs. left-aligned header title, invented back-arrow/avatar slots that don't
+  exist on tab-root screens, wrong phone-frame aspect ratio) because the
+  scratchpad file the Write/Edit tools write to is **not visible to Bash/
+  PowerShell/a local http-server** — there is no way to screenshot own
+  Artifact output before publishing it in this environment. The rest of the
+  session's fixes were made directly against the real Next.js app instead
+  (verified via the actual Browser-pane screenshot), which is the only
+  verification path that actually works here; don't attempt the
+  hand-built-mockup route again for future design questions — go straight to
+  the running dev server.
+- The remaining ~30 entries in `Fejlretninger/FEJLLISTE.md` (weight
+  calibration page, sleep-pattern page, points page, invite-a-friend page,
+  Kommunikation/Notifikationer merge, search page's favorites/recently-used
+  sections, E-number accordion, swipe-action colors, region list, landscape
+  mode, the FAB drag-bulge interaction, allergen-under-profile duplication,
+  and others) still need the same live-screenshot-first treatment before any
+  further fixes — several may turn out to already be fixed like the ones
+  found stale above.
+
+### 2026-09-06 follow-up: root cause found for the repeated "white text invisible on green" bug, plus a dozen more pages migrated to `HfScreen`
+
+**Root cause of fejl #12A/#14A/#15A (logged as three separate "kontrastfejl" reports) found and fixed — it was a real, live CSS bug, not a stale screenshot:** `globals.css`'s `.hf-type-body`, `.hf-type-body-sm`, `.hf-type-caption`, and `.hf-type-hero` all hardcode `color: var(--hf-color-text)` (or `--hf-color-text-secondary` for caption). Any element using one of those classes *and* a `text-hf-white`/`text-white` Tailwind utility to show white text on a green/dark card was losing that fight — the plain CSS class's `color` declaration was winning over the Tailwind utility class in the compiled stylesheet, so the text rendered in dark/gray instead of white, exactly as reported (invisible/near-invisible text on green). Found by grepping every `hf-type-*` + `text-*white` combination in `src/app` and `src/components` (11 hits) and confirmed live in the browser (screenshotted `/profile/invite` and `/profile/points` before and after). Fixed at all 10 real occurrences (the 11th, `SocialLoginButton.tsx`'s `hf-type-button`, doesn't set a color and was never actually broken) by replacing the Tailwind color utility with an inline `style={{ color: "var(--hf-color-white)" }}` (inline styles always win over a class, regardless of source order) in: `src/app/login/page.tsx`, `src/app/profile/invite/page.tsx` (both lines), `src/app/profile/points/page.tsx` (all three — this was the "Din saldo … points" balance box that rendered as an unreadable "…"), `src/app/profile/report-bug/page.tsx`, `src/app/settings/page.tsx` (both lines, one of which had no `text-*` override at all and was silently relying on inheriting a color from its parent `<Link>` that the class was blocking), and `src/app/settings/payment/page.tsx` (both lines). **This class of bug can recur anywhere a designer reaches for an `hf-type-*` class on a colored background and expects a co-applied Tailwind color utility to win — it won't, use an inline `style` override instead, or add a card-background modifier to the type classes themselves centrally if this keeps coming up.**
+
+**A dozen more pages had the same missing-`HfScreen`-shell bug as `/profile` and `/settings` (fixed 2026-09-05):** grepped every `page.tsx` for `ScreenHeader` without `HfScreen`/`BottomNav` and found 12 more: `src/app/profile/invite`, `profile/notifications`, `profile/photo-diary`, `profile/points`, `profile/report-bug`, `profile/settings`, `profile/sleep`, `profile/weight-calibration`, `settings/integrations`, `settings/payment`, `statistics/unused-cards`, and `product/create`. All 12 migrated to `HfScreen` the same way (title + `headerRight` back-arrow button replacing the old `ScreenHeader onBack`/`ScreenHeader icon` props) — confirmed by `npm run lint` and `npm run build` passing clean after each batch, plus live screenshots of `/profile/weight-calibration`, `/profile/sleep`, `/profile/invite`, and `/profile/points` at 402×874 showing the bottom nav now correctly pinned to the viewport bottom in every case, including the empty/error states that previously left it floating under a couple of lines of text. `src/app/betingelser/page.tsx` (legal terms — reads as a standalone document, matches design.md's implicit precedent) was deliberately left alone as a plausible intentional exception, not because it wasn't checked.
+
+**`/profile/settings` and `/settings` were found to be two different pages sharing one "Indstillinger" title** (`profile/settings` is the region/allergens/language setup screen fejl #17-#19 actually describe; `/settings` is the separate Betaling/Hjælpecenter/Integrationer/Notifikationer/Betingelser list). Renamed `profile/settings`'s title to a new `settings.setupTitle` key ("Opsætning", da/en) per fejl #18C's decision, so the two no longer look like the same screen. Also renamed `settings.showAllergens` from "Vis allergener" to "Få vist allergener" (fejl #19B) — it's used in exactly one place, safe to rename directly.
+
+**Fejl #17 (region list only has 6 countries) fixed**: `src/lib/regions.ts`'s `REGIONS` extended from 6 to 16 entries (added AT, CH, NL, BE, FR, IT, ES, IE, CA, AU, NZ) covering HelloFresh's actual delivery markets, each with its real GS1 barcode-prefix range (standard GS1 country-prefix data, not guessed) since that list also drives barcode-region-matching in `src/app/api/products/route.ts`, not just display.
+
+**Fejl #11 (sleep page) B and C fixed**: `src/app/profile/sleep/page.tsx`'s "Normal sengetid"/"Normal stå-op-tid" fields reordered (wake time first) and the wake-time label shortened to "Normal stå op"; a new `addMinutes()` helper now auto-fills the other field to a 7.5h offset the first time either one is set (only when the other is still empty, never overwriting a value the user already chose). Per-day slider redesign (fejl #11D) and the native-time-picker replacement (fejl #11E) are still open — both need a real design decision/build, not a quick fix, and were deliberately left alone rather than improvised.
+
+**Fejl #10 (weight calibration) C, D, F fixed**: the weight input is now a minimal underlined field with a static "kg" suffix instead of a boxed input; the green intro card wraps the intro text (F); the "Registrér vejning" button is gone and every control (weight-field blur, each segmented choice) saves immediately via the existing debounced-PATCH pattern already used elsewhere on the same page (D). Fejl #10A ("Ved ikke" as an oversized primary button) turned out to already be a correctly-built 2-3-way segmented control when checked live — not a real bug, just every option showing the same "selected" green styling, which is expected behavior, not a hierarchy problem.
+
+All of the above verified with `npm run lint` (clean) and `npm run build` (clean, after retrying past one instance of the known `.next/static` `EPERM` lock from this same session's own concurrent dev server — stopping the dev server before building and restarting it after cleared it, consistent with every prior note of this issue in this file).
+
+**Still open in `Fejlretninger/FEJLLISTE.md`, not yet touched this pass:** #7/#37A (continuous swipe vs. page-snap — re-check live, may already be fine like several others were), #13 (Kommunikation page — still needs to be built, `profile/notifications` was only shell-fixed, not merged/redesigned), #16 (delete Notifikationer), #20/#21/#28A (E-number accordion, inline macro editing), #24 (calendar — re-check live, several of its four points already looked fixed in the 2026-09-05 pass), #27 (calendar timeline mystery gray line, "Dagens mål blev nået" box restyle), #30-#32 (FAB bulge interaction, drejehjul spacing, landscape mode), #39 (bottom-nav inactive-gray verification).
+
+### 2026-09-06, later same day: a real `Favorite`/bookmark feature built end to end, plus the last recycle-icon holdout fixed
+
+**Fejl #6's `BottomNav.tsx` reviewed against its screenshot and found to already be a complete, deliberately-built feature** (550ms long-press → jiggle mode, drag-to-reorder with FLIP animation, tap-to-remove `×` badge, drag-to-add from a bottom sheet, edge-hold page flipping, swipe-to-page — all present in code, matching the detailed 2026-08-28 `STATUS.md` entry documenting this same feature). This could not be exercised end-to-end here (long-press timing and multi-step pointer drags aren't reliably simulable through this session's browser automation), so it's marked reviewed-by-code-reading, not verified-by-interaction — if it's still misbehaving on a real phone, that needs an on-device report, not another screenshot of the same static state. It did have one confirmed, fixed bug: its "reset layout" button used the same `IconRecycle`-on-filled-green-circle fejl #8 already flagged elsewhere — changed to `IconRefresh` ghost-style, consistent with the `voice/page.tsx` fix from 2026-09-05. Grepped the whole codebase afterwards for any remaining `IconRecycle` usage — none left.
+
+**Fejl #31/#33/#36 (favorites) built for real, not just UI:** the `Favorite` Prisma model already existed in schema (userId + productId + dishId, unique per combination) but had zero API routes and zero UI wired to it anywhere in the app. Added `src/app/api/favorites/route.ts` (GET list, POST add, DELETE remove — same `getEffectiveUser()`/`prisma` pattern as every other route; POST deliberately uses `findFirst` + conditional `create` instead of `upsert`, since Postgres treats a NULL `dishId` as distinct from any other NULL for uniqueness purposes, so an upsert keyed on a null field can't reliably detect an existing row). Wired it in three places: `src/components/SwipeableRow.tsx`'s existing-but-previously-unused `onFavorite` swipe action now has a bookmark icon and posts to the real API (also recolored its delete action from `bg-red-600` to `bg-hf-black` per fejl #34's explicit ask); `src/components/DailyList.tsx` now passes a real `favoriteEntry` handler (needed `productId` added to its registration mapping, which the API already returned but the component didn't carry through); and `src/app/search/page.tsx` gained a full "Favoritter" section (shown above the pre-existing "Senest anvendte" section when the search field is empty) with a working bookmark/bookmark-filled toggle button on every result row, backed by the same API. The old default "Alle varer" listing (fejl #31's core complaint — an arbitrary slice of the entire product catalog shown with no search term) was removed entirely; an empty query now shows only Favoritter/Senest anvendte, or a plain "search for something" hint if neither has any data yet, and the `/api/products?q=` call is no longer made at all until the user actually types something.
+
+Verified: `npm run lint` clean, `npm run build` clean (full route list including the new `/api/favorites`), and `/search` screenshotted live at 402×874 showing the new empty-state copy correctly replacing the old "Alle varer" list (no local database, so the Favoritter/Senest anvendte sections themselves render empty here — expected, not a bug, see `hellocal_no_local_db` memory).
+
+### 2026-09-06, third pass: a real broken-route bug found (not a Fejlretninger item), fejl #13/#16 merged for real, #1/#22/#20/#21 fixed
+
+**Found and fixed a genuine, previously-unknown production bug while editing `src/app/profile/page.tsx`:** its "Integrationer" row linked to `/settings/integrationer` (Danish) — the real route is `/settings/integrations` (English). Same mistake, worse impact, in `src/app/camera/create/page.tsx` (5 places) and `src/app/product/create/page.tsx` (1 place): every successful barcode-scan/AI-recognize/manual-create path did `router.push(\`/tilfoej/${id}\`)` — the real route is `/add/[id]`, not `/tilfoej/[id]` (that was the route's old Danish name before a rename this project went through; `STATUS.md`'s own older entries still call it `/tilfoej/[id]` in prose, which is presumably how the stale name survived in these six call sites after the folder was renamed). Every one of these sent the user to a 404 immediately after successfully scanning or creating a product — a real, severe, silent break, not a cosmetic issue, and not something in `Fejlretninger/FEJLLISTE.md` since it's invisible in a static screenshot. Fixed all 6 with a straight `/tilfoej/` → `/add/` substitution (`sed`) plus the one `/settings/integrationer` → `/settings/integrations` fix. **Given how this happened, it's worth grepping for any other route the app renames in the future** — there is no automated check that a `router.push`/`href` string matches an actual folder under `src/app`.
+
+**Fejl #13 + #16 (Kommunikation/Notifikationer merge) done for real, not just shell-fixed:** turned out `User.wantsPushNotifications`/`wantsUpdateNewsEmails`/`wantsAdviceEmails`/`wantsPartnerOffersEmails` (fejl #13's exact four toggles) already existed in the schema and were already fully wired end-to-end (`/api/profile`, GDPR anonymize, admin user list) — just surfaced as an inline `FullscreenAccordionRow` accordion on `/profile` instead of fejl #13's requested dedicated page. Rewrote `src/app/profile/notifications/page.tsx` (same route, so no other link needed to change) into the real merged Kommunikation page: intro copy, three sectioned toggle groups with a title + divider each (Push-beskeder / E-mails / Information fra vores samarbejdspartnere) using the four existing fields, a "Specifikke beskeder" section below it preserving the *old* Notifikationer page's per-event `NotificationPreference` email/push toggles verbatim (nothing deleted, per fejl #16's "sikr at ... bevares" instruction — these are genuinely different, transactional-event toggles, not redundant with the four marketing ones), and a terms link at the bottom. Removed the now-redundant inline accordion and separate "Notifikationer" row from `/profile` (was two entries; now one, labelled "Kommunikation", reusing the icon/position of the old Notifikationer row) — also dropped the now-unused `IconMessageCircle` import, `Toggle` import, and `communicationOpen` state from that file. Renamed `settings.notifications`/`profile.row.notifications` from "Notifikationer" to "Kommunikation" in both locales (same route, `/profile/notifications`, still linked from `/settings` and `/profile`). Verified live at 402×874: new page renders with correct header/bottom-nav, section titles, dividers, and terms link (toggle values themselves show "Henter…" — no local database, expected).
+
+**Fejl #1/#22 (kcal-per-100g default) fixed at its actual root cause:** `src/app/add/[id]/page.tsx`'s `amountUnit` state defaulted to `"personer"` (portions) instead of `"gram"` — this is the literal reason the Tilføj screen kept showing "148 kcal / portion" as the primary figure with the "Personer" tab pre-selected, across every variant of that screen shown in the log. Changed the initial state to `"gram"`.
+
+**Fejl #22B/#22C ("Detaljer" centering, E-numre badge placement/rename) fixed** in the same file: the standalone E-badge/link next to "Detaljer" (always visible, duplicating the real list further down) removed; "Detaljer" is now the only thing on that row and is centered. `addProduct.additives` renamed "E-tilsætningsstoffer" → "E-numre" (da only, per the log; left the English string as "E-additives").
+
+**Fejl #20A (E-numre accordion) fixed:** the E-numre list inside the Detaljer section now starts collapsed behind a chevron-toggle header instead of always being fully expanded.
+
+**Fejl #20 addendum (allergen warning badge) fixed:** added a small green circle with "!" before the "Allergener" heading in the same details section.
+
+**Fejl #21 (macro editing modal → real inline editing) fixed:** `src/components/hf/MacroSliderBar.tsx`'s tap-to-edit used a `createPortal` bottom-sheet modal with its own "Gem" button — replaced with true inline editing: tapping the "NN g" value swaps it for a real `<input>` (auto-focused, white background, selects existing text) right there on the same line; Enter or blur commits and reverts to the plain button, no modal, no separate save action anywhere.
+
+All of the above: `npm run lint` and `npm run build` both clean.
+
+**Fejl items in this list still not independently re-verified against the live app in this session:** #30-#32 (FAB bulge interaction, drejehjul spacing, landscape mode — all need a real device/pointer-drag to test, not just a code read). Given how many of the earlier-assumed-broken items turned out to already be fixed (and, conversely, how the `/tilfoej/`→`/add/` bug was invisible to log-based screenshots entirely), treat every remaining item as unverified until it's actually been reloaded in a browser this session — don't assume either "still broken" or "already fine" from the log text alone.
+
+### 2026-09-06, fourth pass: calendar day-status box restyled, #39 confirmed, #7/#37A/#24 re-checked live
+
+**Fejl #24 (calendar month view) re-checked live at 402×874 — all four of its sub-points already fixed/were stale, confirmed by screenshot this time, not just code reading:** month-nav arrows sit directly beside "September 2026" (not flung to the screen edges), the overflow date (31 from August) already renders in a lighter/outlined style distinct from in-month dates, and the list-view dropdown chevron under the small header calendar icon is present and functional (already noted in the first pass, re-confirmed).
+
+**Fejl #26/#27B (day-detail sub-header layout, "Dagens mål blev nået" box) — one real bug found and fixed, one already fine:** the `‹ 📅 Fredag 18. september › ←` sub-header row already renders correctly on one line (fejl #26 was stale). The status box, though, was still exactly as reported: a full-width green card with a large circular checkmark icon (`src/app/calendar/page.tsx`, day-detail view, ~line 1345) — completely different from the month view's minimal small-badge-plus-plain-text style used by `MonthlyStatus` a few hundred lines below it in the same file. Restyled it to match `MonthlyStatus` exactly (5px circular badge, `IconCheck` at 13px, plain `text-hf-black` label, no card background) so the two "goal met" indicators in the same feature are now visually consistent instead of looking like two different components.
+
+**Fejl #39 (bottom-nav inactive color) confirmed via computed style, not just reading the token table:** `getComputedStyle` on an inactive tab label returned `rgb(101, 101, 101)` (`#656565`, exactly `--hf-color-text-secondary`) and the active one returned `rgb(35, 35, 35)` (`#232323`, exactly `--hf-color-action`) — the token is correctly wired in `BottomNav.tsx`'s `NAV_INACTIVE_COLOR`/`NAV_ACTIVE_COLOR` constants. (A handful of unrelated `rgb(31,31,29)` values also came back from the same query — traced to this session's Browser-pane occasionally rendering the page tiled/duplicated in screenshots, a tooling artifact unrelated to the app's own code, not a real second color in use.)
+
+**Fejl #7/#37A (continuous swipe vs. discrete page-snap) reviewed in `BottomNav.tsx`'s existing page-swipe handler:** `pageSwipe.offsetX` is set directly from the live pointer position on every `pointermove` and fed straight into the row's `translateX`, so the page genuinely follows the finger continuously (only snapping — with a real `ease` transition — once the pointer is released past the swipe-ratio threshold). This matches the requested behavior in the code; not independently confirmed via a real drag gesture in this session (synthetic pointer sequences aren't reliably drivable through this browser automation), so treat as reviewed-by-code, not interaction-tested.
+
+`npm run lint` and `npm run build` both clean after this pass.

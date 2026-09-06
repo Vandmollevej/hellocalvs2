@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { IconCheck, IconChevronDown, IconChevronUp, IconMinus, IconPlus, IconRecycle } from "@tabler/icons-react";
+import { IconCheck, IconChevronDown, IconChevronUp, IconMinus, IconPlus, IconRefresh } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -493,9 +493,9 @@ function VoiceItem({
                   type="button"
                   onClick={onReset}
                   aria-label={t("voice.resetChanges")}
-                  className="flex h-11 w-11 items-center justify-center rounded-full bg-hf-green text-hf-white"
+                  className="flex h-11 w-11 items-center justify-center rounded-full text-hf-green"
                 >
-                  <IconRecycle size={20} />
+                  <IconRefresh size={20} />
                 </button>
               </div>
             )}
@@ -531,6 +531,16 @@ export default function VoicePage() {
   useEffect(() => {
     isListeningRef.current = isListening;
   }, [isListening]);
+
+  // Mikrofonen skal være tændt som standard, når siden åbnes — brugeren
+  // skal kunne PAUSE optagelsen ved tryk, i stedet for selv at skulle starte den.
+  useEffect(() => {
+    startListening();
+    return () => {
+      recognitionRef.current?.stop();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function stopAudioMeter() {
     if (rafIdRef.current !== null) cancelAnimationFrame(rafIdRef.current);
@@ -802,7 +812,18 @@ export default function VoicePage() {
           {errorMessage && <p className="mt-2 max-w-[310px] text-center text-xs leading-4 text-red-700">{errorMessage}</p>}
         </section>
 
-        <section className="mt-4">
+        <section className="relative mt-4">
+          <button
+            type="button"
+            onClick={() => {
+              finalTranscriptRef.current = "";
+              setTranscript("");
+            }}
+            aria-label={t("voice.resetTranscript")}
+            className="absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-hf-black text-hf-white"
+          >
+            <IconRefresh size={16} />
+          </button>
           {isListening ? (
             <div className="mt-2 min-h-[72px] w-full rounded-2xl border border-hf-tan-dark bg-hf-white px-4 py-3 text-sm leading-5 text-hf-black">
               <span>{transcript || t("voice.sayNothingYet")}</span>
@@ -814,6 +835,12 @@ export default function VoicePage() {
               aria-label={t("voice.yourSpeech")}
               value={transcript}
               onChange={(event) => setTranscript(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && !event.shiftKey) {
+                  event.preventDefault();
+                  event.currentTarget.blur();
+                }
+              }}
               placeholder={t("voice.speechPlaceholder")}
               rows={3}
               className="mt-2 w-full resize-none rounded-2xl border border-hf-tan-dark bg-hf-white px-4 py-3 text-sm leading-5 text-hf-black outline-none focus:border-hf-green"

@@ -9,18 +9,16 @@ import {
   IconSettings,
   IconUser,
   IconCamera,
-  IconMessageCircle,
   IconStar,
   IconBug,
   IconUserPlus,
   IconBell,
+  IconArrowLeft,
 } from "@tabler/icons-react";
-import { ScreenHeader } from "@/components/hf/ScreenHeader";
+import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { FullscreenAccordionRow } from "@/components/hf/FullscreenAccordionRow";
-import { Toggle } from "@/components/ui/Toggle";
 import { WheelPicker } from "@/components/ui/WheelPicker";
-import { BottomNav } from "@/components/BottomNav";
 import { latestTrendWeight, type MealSample, type WeightSample } from "@/lib/weight-trend";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -85,7 +83,6 @@ export default function ProfilePage() {
     null
   );
   const [profileOpen, setProfileOpen] = useState(false);
-  const [communicationOpen, setCommunicationOpen] = useState(false);
   const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -168,9 +165,14 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
-      <ScreenHeader title={t("profile.title")} onBack={() => router.back()} />
-
+    <HfScreen
+      title={t("profile.title")}
+      headerRight={
+        <button onClick={() => router.back()} aria-label={t("common.back")} className="text-hf-white">
+          <IconArrowLeft size={24} />
+        </button>
+      }
+    >
       {loading || !user ? (
         <p className="p-6 text-center text-[14px] text-hf-black opacity-60">
           {loading ? t("profile.loading") : t("profile.loadError")}
@@ -281,7 +283,7 @@ export default function ProfilePage() {
             <ChevronRow
               icon={<IconPlugConnected size={20} />}
               label={t("profile.row.integrations")}
-              href="/settings/integrationer"
+              href="/settings/integrations"
             />
             <ChevronRow icon={<IconStar size={20} />} label={t("profile.row.points")} href="/profile/points" />
             <ChevronRow
@@ -291,7 +293,7 @@ export default function ProfilePage() {
             />
             <ChevronRow
               icon={<IconBell size={20} />}
-              label={t("profile.row.notifications")}
+              label={t("profile.section.communication")}
               href="/profile/notifications"
             />
             <ChevronRow
@@ -299,36 +301,6 @@ export default function ProfilePage() {
               label={t("profile.row.reportBug")}
               href="/profile/report-bug"
             />
-
-            <FullscreenAccordionRow
-              icon={<IconMessageCircle size={20} />}
-              label={t("profile.section.communication")}
-              open={communicationOpen}
-              onOpenChange={setCommunicationOpen}
-            >
-              <div className="flex flex-col gap-3 pt-2">
-                <Toggle
-                  label={t("profile.communication.push")}
-                  checked={user.wantsPushNotifications}
-                  onChange={(value) => updateNow("wantsPushNotifications", value)}
-                />
-                <Toggle
-                  label={t("profile.communication.updateNews")}
-                  checked={user.wantsUpdateNewsEmails}
-                  onChange={(value) => updateNow("wantsUpdateNewsEmails", value)}
-                />
-                <Toggle
-                  label={t("profile.communication.advice")}
-                  checked={user.wantsAdviceEmails}
-                  onChange={(value) => updateNow("wantsAdviceEmails", value)}
-                />
-                <Toggle
-                  label={t("profile.communication.partnerOffers")}
-                  checked={user.wantsPartnerOffersEmails}
-                  onChange={(value) => updateNow("wantsPartnerOffersEmails", value)}
-                />
-              </div>
-            </FullscreenAccordionRow>
 
             <ChevronRow
               icon={<IconSettings size={20} />}
@@ -339,7 +311,6 @@ export default function ProfilePage() {
           </AccordionCard>
         </div>
       )}
-      <BottomNav />
-    </div>
+    </HfScreen>
   );
 }

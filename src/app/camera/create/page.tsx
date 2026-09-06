@@ -100,7 +100,7 @@ function KameraOpretContent() {
         if (!res.ok) throw new Error("Barcode lookup failed");
         const data = (await res.json()) as { product: { id: string } };
         stopCamera();
-        router.push(`/tilfoej/${data.product.id}`);
+        router.push(`/add/${data.product.id}`);
       } catch {
         setBarcodeLookupFailed(true);
         setAnalyzing(false);
@@ -215,7 +215,7 @@ function KameraOpretContent() {
           if (cancelled) return;
           if (data.product) {
             stopCamera();
-            router.push(`/tilfoej/${data.product.id}`);
+            router.push(`/add/${data.product.id}`);
             return;
           }
           const guessedName = ocrText
@@ -233,7 +233,7 @@ function KameraOpretContent() {
           const localMatch = await bestImageMatch(photo!, candidatesData.products, (c) => c.imageUrl, 0.85);
           if (localMatch) {
             stopCamera();
-            router.push(`/tilfoej/${localMatch.candidate.id}`);
+            router.push(`/add/${localMatch.candidate.id}`);
             return;
           }
 
@@ -250,7 +250,7 @@ function KameraOpretContent() {
           if (cancelled) return;
           if (aiData.product) {
             stopCamera();
-            router.push(`/tilfoej/${aiData.product.id}`);
+            router.push(`/add/${aiData.product.id}`);
             return;
           }
           if (aiData.guess?.name) draftRef.current.name = aiData.guess.name;
@@ -330,7 +330,7 @@ function KameraOpretContent() {
           if (cancelled) return;
           if (dedupeData.product) {
             stopCamera();
-            router.push(`/tilfoej/${dedupeData.product.id}`);
+            router.push(`/add/${dedupeData.product.id}`);
             return;
           }
           draftRef.current.kcalPer100g = String(parsed.kcalPer100g);
