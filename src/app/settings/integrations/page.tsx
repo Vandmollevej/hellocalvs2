@@ -10,7 +10,6 @@ import {
   IconBrandGoogle,
   type Icon,
 } from "@tabler/icons-react";
-import { IconArrowLeft } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import type { IntegrationCardStatus } from "@/lib/integrations";
 import type { IntegrationProvider } from "@prisma/client";
@@ -149,11 +148,7 @@ function IntegrationerContent() {
   return (
     <HfScreen
       title={t("integrations.title")}
-      headerRight={
-        <button onClick={() => router.back()} aria-label={t("common.back")} className="text-hf-white">
-          <IconArrowLeft size={24} />
-        </button>
-      }
+      onBack={() => router.back()}
     >
       <div className="flex flex-col gap-4 p-4">
         {notice && (

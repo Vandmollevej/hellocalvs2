@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconArrowLeft } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -209,11 +208,7 @@ export default function WeightCalibrationPage() {
   return (
     <HfScreen
       title={t("weightCalibration.title")}
-      headerRight={
-        <button onClick={() => router.back()} aria-label={t("common.back")} className="text-hf-white">
-          <IconArrowLeft size={24} />
-        </button>
-      }
+      onBack={() => router.back()}
     >
 
       <div className="flex flex-col gap-4 p-4">

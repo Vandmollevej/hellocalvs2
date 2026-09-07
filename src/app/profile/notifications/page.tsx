@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { IconArrowLeft } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -85,11 +84,7 @@ export default function CommunicationPage() {
   return (
     <HfScreen
       title={t("profile.section.communication")}
-      headerRight={
-        <button onClick={() => router.back()} aria-label={t("common.back")} className="text-hf-white">
-          <IconArrowLeft size={24} />
-        </button>
-      }
+      onBack={() => router.back()}
     >
       <div className="flex flex-col gap-4 px-4 pt-4 pb-8">
         <p className="hf-type-body-sm opacity-70">{t("profile.communication.intro")}</p>

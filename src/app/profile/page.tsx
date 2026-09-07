@@ -13,7 +13,6 @@ import {
   IconBug,
   IconUserPlus,
   IconBell,
-  IconArrowLeft,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -167,11 +166,7 @@ export default function ProfilePage() {
   return (
     <HfScreen
       title={t("profile.title")}
-      headerRight={
-        <button onClick={() => router.back()} aria-label={t("common.back")} className="text-hf-white">
-          <IconArrowLeft size={24} />
-        </button>
-      }
+      onBack={() => router.back()}
     >
       {loading || !user ? (
         <p className="p-6 text-center text-[14px] text-hf-black opacity-60">

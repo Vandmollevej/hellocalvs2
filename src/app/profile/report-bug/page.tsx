@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { IconArrowLeft } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 
 // "Indberet fejl" (docs/DECISIONS.md 2026-09-02): 10 points ved godkendt
@@ -42,11 +41,7 @@ export default function ReportBugPage() {
   return (
     <HfScreen
       title="Indberet fejl"
-      headerRight={
-        <button onClick={() => router.back()} aria-label="Tilbage" className="text-hf-white">
-          <IconArrowLeft size={24} />
-        </button>
-      }
+      onBack={() => router.back()}
     >
       <div className="px-4 pt-4">
         <div className="rounded-lg p-4" style={{ background: "var(--hf-color-brand)" }}>

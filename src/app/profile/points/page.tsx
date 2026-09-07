@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconArrowLeft } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { FREE_MONTH_COST } from "@/lib/points-constants";
 
@@ -64,11 +63,7 @@ export default function PointsPage() {
   return (
     <HfScreen
       title="Points"
-      headerRight={
-        <button onClick={() => router.back()} aria-label="Tilbage" className="text-hf-white">
-          <IconArrowLeft size={24} />
-        </button>
-      }
+      onBack={() => router.back()}
     >
       <div className="px-4 pt-4 pb-8">
         <div className="rounded-lg p-4 text-center" style={{ background: "var(--hf-color-brand)" }}>

@@ -3,7 +3,7 @@
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { IconApple, IconArrowLeft } from "@tabler/icons-react";
+import { IconApple } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { TextField } from "@/components/hf/TextField";
 import { CreateProductMediaGrid, type MediaGridValue } from "@/components/hf/CreateProductMediaGrid";
@@ -118,11 +118,7 @@ function OpretProduktContent() {
     <HfScreen
       title={t("productCreate.title")}
       icon={<IconApple size={20} stroke={2} />}
-      headerRight={
-        <button onClick={() => router.back()} aria-label={t("common.back")} className="text-hf-white">
-          <IconArrowLeft size={24} />
-        </button>
-      }
+      onBack={() => router.back()}
     >
       <div className="flex flex-col gap-4 p-4">
         {fromFailedAdd && (

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconArrowLeft } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 
 type Referral = { id: string; referredUser: { displayName: string }; rewardGrantedAt: string | null };
@@ -56,11 +55,7 @@ export default function InvitePage() {
   return (
     <HfScreen
       title="Invitér en ven"
-      headerRight={
-        <button onClick={() => router.back()} aria-label="Tilbage" className="text-hf-white">
-          <IconArrowLeft size={24} />
-        </button>
-      }
+      onBack={() => router.back()}
       footer={
         <button
           type="button"

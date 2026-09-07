@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconArrowLeft } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import {
   activeStatKeys,
@@ -135,11 +134,7 @@ export default function UnusedStatCardsPage() {
   return (
     <HfScreen
       title={t("statUnusedCards.title")}
-      headerRight={
-        <button onClick={() => router.back()} aria-label={t("common.back")} className="text-hf-white">
-          <IconArrowLeft size={24} />
-        </button>
-      }
+      onBack={() => router.back()}
     >
       <div className="flex flex-col gap-5 p-4">
         <p className="text-xs text-hf-black opacity-60">

@@ -198,11 +198,6 @@ export default function AddPage() {
   return (
     <HfScreen
       title={forDish ? t("addProduct.titleForDish") : t("addProduct.title")}
-      headerRight={
-        !forDish && state.status === "loaded" ? (
-          <ForwardButton kind="PRODUCT" itemId={state.product.id} name={state.product.name} />
-        ) : undefined
-      }
       footer={
         state.status === "loaded" ? (
           <>
@@ -238,6 +233,11 @@ export default function AddPage() {
         {state.status === "loaded" && (
           <>
             <div className="flex flex-col p-4">
+              {!forDish && (
+                <div className="flex justify-end">
+                  <ForwardButton kind="PRODUCT" itemId={state.product.id} name={state.product.name} />
+                </div>
+              )}
               <div className="flex flex-col items-center gap-2 pt-2 text-center">
                 <div className="flex h-[190px] w-[190px] items-center justify-center rounded-2xl bg-hf-tan">
                   {state.product.imageUrl && (
