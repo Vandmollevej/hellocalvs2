@@ -1561,7 +1561,14 @@ function SleepBlock({
         className="absolute inset-x-0 z-10 flex touch-none items-center justify-center"
         style={{ top: handleTop - 12, height: 24 }}
       >
-        <div className={`h-[3px] w-10 rounded-full ${dragDelta !== null ? "bg-hf-black" : "bg-hf-gray-dark/60"}`} />
+        {/* Fejlretninger/FEJLLISTE.md #27: denne bjælke er IKKE en gengivelsesfejl —
+            det er søvnbåndets trækhåndtag (samme mønster som en iOS-bundsheets
+            håndtag), som lader brugeren trække hele søvnperioden op/ned. Gjort
+            mere synlig/tydeligt "grip"-agtig, så den ikke længere ligner en løs
+            streg uden formål. */}
+        <div
+          className={`h-[5px] w-12 rounded-full shadow-sm ${dragDelta !== null ? "bg-hf-black" : "bg-hf-white"}`}
+        />
       </div>
     </>
   );
