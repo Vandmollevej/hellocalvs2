@@ -247,8 +247,18 @@ export default function CalendarPage() {
   } | null>(null);
   const pointerStart = useRef<number | null>(null);
   const isLandscape = useIsLandscape();
-  // Landscape mode is only used as an extra timeline rendering of the week view —
-  // it must never override the user's chosen view or the fixed default (month).
+  const wasLandscapeRef = useRef(false);
+  // Fejlretninger/FEJLLISTE.md #32C: brugeren bekræftede eksplicit 2026-09-07
+  // at rotation TIL landscape skal skifte til ugevisning automatisk — dette
+  // tilsidesætter den tidligere beslutning om aldrig at gøre det. Skiftet
+  // sker kun på selve overgangen ind i landscape (ikke ved hver render), og
+  // rører ikke visningen igen hvis brugeren derefter selv vælger noget andet.
+  useEffect(() => {
+    if (isLandscape && !wasLandscapeRef.current) {
+      setView((current) => (current === "month" ? "week" : current));
+    }
+    wasLandscapeRef.current = isLandscape;
+  }, [isLandscape]);
   const effectiveView: CalendarView = view;
   const showWeekTimeline = isLandscape && view === "week";
 

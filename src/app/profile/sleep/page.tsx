@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { IconChevronDown } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
+import { TimeSliderBar } from "@/components/hf/TimeSliderBar";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 type SleepUser = {
@@ -31,6 +32,18 @@ function addMinutes(time: string, minutes: number) {
 
 const timeInputClass =
   "rounded-xl bg-hf-tan px-4 py-3 text-[15px] text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green";
+
+function timeToMinutes(time: string | null | undefined): number | null {
+  if (!time) return null;
+  const [hours, mins] = time.split(":").map(Number);
+  if (Number.isNaN(hours) || Number.isNaN(mins)) return null;
+  return hours * 60 + mins;
+}
+
+function minutesToTime(minutes: number) {
+  const wrapped = ((minutes % 1440) + 1440) % 1440;
+  return `${String(Math.floor(wrapped / 60)).padStart(2, "0")}:${String(wrapped % 60).padStart(2, "0")}`;
+}
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -218,22 +231,26 @@ export default function SleepSchedulePage() {
               {[0, 1, 2, 3, 4, 5, 6].map((weekday) => {
                 const label = t(`profileSleep.weekdays.${weekday}`);
                 const schedule = schedules[weekday];
+                // Ikke-udfyldte dage viser den generelle standard som
+                // udgangspunkt (nemt at finjustere derfra), men gemmer først
+                // en dags-specifik afvigelse, når brugeren rent faktisk
+                // rører netop den dags slider.
+                const wakeMinutes =
+                  timeToMinutes(schedule?.wakeTime) ?? timeToMinutes(user.defaultWakeTime) ?? 7 * 60;
+                const bedtimeMinutes =
+                  timeToMinutes(schedule?.bedtime) ?? timeToMinutes(user.defaultBedtime) ?? 23 * 60;
                 return (
-                  <div key={label} className="grid grid-cols-[80px_1fr_1fr] items-center gap-2">
+                  <div key={label} className="flex flex-col gap-1.5">
                     <span className="text-[13px] font-semibold text-hf-black">{label}</span>
-                    <input
-                      type="time"
-                      aria-label={t("profileSleep.bedtimeAria", { day: label })}
-                      className="rounded-xl bg-hf-cream px-3 py-2 text-[14px] text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green"
-                      value={schedule?.bedtime ?? ""}
-                      onChange={(event) => updateWeekday(weekday, "bedtime", event.target.value)}
+                    <TimeSliderBar
+                      labelSide="left"
+                      minutes={wakeMinutes}
+                      onChange={(value) => updateWeekday(weekday, "wakeTime", minutesToTime(value))}
                     />
-                    <input
-                      type="time"
-                      aria-label={t("profileSleep.wakeTimeAria", { day: label })}
-                      className="rounded-xl bg-hf-cream px-3 py-2 text-[14px] text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green"
-                      value={schedule?.wakeTime ?? ""}
-                      onChange={(event) => updateWeekday(weekday, "wakeTime", event.target.value)}
+                    <TimeSliderBar
+                      labelSide="right"
+                      minutes={bedtimeMinutes}
+                      onChange={(value) => updateWeekday(weekday, "bedtime", minutesToTime(value))}
                     />
                   </div>
                 );

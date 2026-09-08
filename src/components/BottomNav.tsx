@@ -30,7 +30,6 @@ const FLIP_MS = 200;
 const PAGE_SIZE = 4;
 const EDGE_ZONE_PX = 36;
 const EDGE_HOLD_MS = 650;
-const SWIPE_MIN_RATIO = 0.22;
 const PAGE_ANIM_MS = 220;
 
 function TrendIcon({ color, size }: { color: string; size: number }) {
@@ -159,10 +158,15 @@ type DragState = {
   overTarget: boolean;
 };
 
+// Fejlretninger/FEJLLISTE.md #7: brugeren bekræftede eksplicit at dette IKKE
+// må hoppe mellem hele "sider" af 4 ikoner — det skal glide kontinuerligt,
+// som en almindelig scroll-bar, og kunne flyttes selv ved at trække i blot
+// ét ikon. `scrollPages` er derfor en flydende værdi (kan stå midt mellem to
+// "sider"), ikke et heltal, og der snappes IKKE til nærmeste side ved slip.
 type PageSwipeState = {
   pointerId: number;
   startX: number;
-  offsetX: number;
+  startScrollPages: number;
 };
 
 function overRect(el: HTMLElement | null, clientX: number, clientY: number) {
@@ -184,7 +188,7 @@ export function BottomNav() {
   const [sheetOffset, setSheetOffset] = useState(0);
   const [sheetSnapping, setSheetSnapping] = useState(false);
   const [sheetDragActive, setSheetDragActive] = useState(false);
-  const [page, setPage] = useState(0);
+  const [scrollPages, setScrollPages] = useState(0);
   // Fejlretninger/FEJLLISTE.md #32B: i liggende format starter bundnav
   // foldet sammen til en smal håndtag-bjælke, for ikke at spise for meget af
   // den korte skærmhøjde — udfoldes ved tryk.
@@ -204,12 +208,14 @@ export function BottomNav() {
   const dragRef = useRef<DragState | null>(null);
   const pageSwipeRef = useRef<PageSwipeState | null>(null);
   const activeKeysRef = useRef(activeKeys);
-  const pageRef = useRef(page);
+  const scrollPagesRef = useRef(scrollPages);
   const sheetDrag = useRef<{ pointerId: number; startY: number } | null>(null);
   const prevRects = useRef(new Map<string, DOMRect>());
 
   const pages = chunk(activeKeys, PAGE_SIZE);
-  const currentPage = Math.min(page, pages.length - 1);
+  const maxScrollPages = Math.max(0, pages.length - 1);
+  const clampedScrollPages = Math.min(Math.max(scrollPages, 0), maxScrollPages);
+  const roundedPage = Math.round(clampedScrollPages);
 
   useEffect(() => {
     const layout = loadLayout();
@@ -232,8 +238,8 @@ export function BottomNav() {
   }, [activeKeys]);
 
   useEffect(() => {
-    pageRef.current = currentPage;
-  }, [currentPage]);
+    scrollPagesRef.current = clampedScrollPages;
+  }, [clampedScrollPages]);
 
   // Fejlretninger/FEJLLISTE.md #9: baggrundssiden kunne stadig scrolles bag
   // redigeringssheetet. `document.body` er ikke selve scroll-beholderen i
@@ -353,9 +359,9 @@ export function BottomNav() {
         const barRect = barRef.current?.getBoundingClientRect();
         const totalPages = Math.max(1, Math.ceil(activeKeysRef.current.length / PAGE_SIZE));
         if (barRect) {
-          const nearLeft = e.clientX - barRect.left < EDGE_ZONE_PX && pageRef.current > 0;
+          const nearLeft = e.clientX - barRect.left < EDGE_ZONE_PX && scrollPagesRef.current > 0;
           const nearRight =
-            barRect.right - e.clientX < EDGE_ZONE_PX && pageRef.current < totalPages - 1;
+            barRect.right - e.clientX < EDGE_ZONE_PX && scrollPagesRef.current < totalPages - 1;
           const dir = nearLeft ? -1 : nearRight ? 1 : 0;
           if (dir !== 0) {
             if (edgeHoldDir.current !== dir) {
@@ -363,7 +369,7 @@ export function BottomNav() {
               edgeHoldDir.current = dir;
               edgeHoldTimer.current = setTimeout(() => {
                 const total = Math.max(1, Math.ceil(activeKeysRef.current.length / PAGE_SIZE));
-                setPage((p) => Math.min(total - 1, Math.max(0, p + dir)));
+                setScrollPages((p) => Math.min(total - 1, Math.max(0, Math.round(p) + dir)));
                 edgeHoldTimer.current = null;
                 edgeHoldDir.current = 0;
               }, EDGE_HOLD_MS);
@@ -373,7 +379,7 @@ export function BottomNav() {
           }
         }
 
-        const currentPageKeys = new Set(chunk(activeKeysRef.current, PAGE_SIZE)[pageRef.current] ?? []);
+        const currentPageKeys = new Set(chunk(activeKeysRef.current, PAGE_SIZE)[Math.round(scrollPagesRef.current)] ?? []);
         let closestKey: string | null = null;
         let closestDist = Infinity;
         itemRefs.current.forEach((el, key) => {
@@ -419,11 +425,14 @@ export function BottomNav() {
   }, [drag, finishDrag, clearReadyTimer, clearEdgeHoldTimer]);
 
   function beginPageSwipe(pointerId: number, startX: number) {
-    const state: PageSwipeState = { pointerId, startX, offsetX: 0 };
+    const state: PageSwipeState = { pointerId, startX, startScrollPages: scrollPagesRef.current };
     pageSwipeRef.current = state;
     setPageSwipe(state);
   }
 
+  // Kontinuerlig, uden snap: følger fingeren 1:1 (i "sider" pr. bar-bredde)
+  // og bliver stående nøjagtigt der, hvor den blev sluppet — aldrig et hop
+  // til nærmeste hele side. Se PageSwipeState-kommentaren for baggrunden.
   useEffect(() => {
     if (!pageSwipe) return;
 
@@ -431,29 +440,27 @@ export function BottomNav() {
       const current = pageSwipeRef.current;
       if (!current || e.pointerId !== current.pointerId) return;
       const totalPages = Math.max(1, Math.ceil(activeKeysRef.current.length / PAGE_SIZE));
-      let offsetX = e.clientX - current.startX;
-      if ((pageRef.current === 0 && offsetX > 0) || (pageRef.current === totalPages - 1 && offsetX < 0)) {
-        offsetX *= 0.3;
-      }
-      const next = { ...current, offsetX };
-      pageSwipeRef.current = next;
-      setPageSwipe(next);
+      const maxPages = totalPages - 1;
+      const rect = barRef.current?.getBoundingClientRect();
+      const width = rect?.width || 1;
+      const deltaPages = (current.startX - e.clientX) / width;
+      let next = current.startScrollPages + deltaPages;
+      if (next < 0) next *= 0.3;
+      else if (next > maxPages) next = maxPages + (next - maxPages) * 0.3;
+      setScrollPages(next);
     }
 
     function onUp(e: PointerEvent) {
       const current = pageSwipeRef.current;
       if (!current || e.pointerId !== current.pointerId) return;
-      const rect = barRef.current?.getBoundingClientRect();
-      const width = rect?.width || 1;
-      const ratio = current.offsetX / width;
-      const totalPages = Math.max(1, Math.ceil(activeKeysRef.current.length / PAGE_SIZE));
       pageSwipeRef.current = null;
       setPageSwipe(null);
-      if (ratio <= -SWIPE_MIN_RATIO && pageRef.current < totalPages - 1) {
-        setPage((p) => Math.min(totalPages - 1, p + 1));
-      } else if (ratio >= SWIPE_MIN_RATIO && pageRef.current > 0) {
-        setPage((p) => Math.max(0, p - 1));
-      }
+      // Ingen snap til nærmeste side — bare clamp evt. rubber-band-overtræk
+      // tilbage inden for de gyldige grænser og bliv stående.
+      setScrollPages((p) => {
+        const totalPages = Math.max(1, Math.ceil(activeKeysRef.current.length / PAGE_SIZE));
+        return Math.min(Math.max(p, 0), totalPages - 1);
+      });
     }
 
     window.addEventListener("pointermove", onMove);
@@ -539,7 +546,7 @@ export function BottomNav() {
   function resetLayout() {
     setActiveKeys(DEFAULT_ACTIVE);
     setInactiveKeys(DEFAULT_INACTIVE);
-    setPage(0);
+    setScrollPages(0);
   }
 
   function closePanel() {
@@ -589,7 +596,6 @@ export function BottomNav() {
   const draggedKey = drag?.moved ? drag.key : null;
   const draggedOverPanel = drag?.moved && drag.source === "active" && drag.overTarget;
   const draggedOverBar = drag?.moved && drag.source === "inactive" && drag.overTarget;
-  const trackOffsetPx = pageSwipe?.offsetX ?? 0;
 
   return (
     <div className="relative select-none [-webkit-touch-callout:none]">
@@ -733,7 +739,7 @@ export function BottomNav() {
           <div
             className="flex"
             style={{
-              transform: `translateX(calc(${-currentPage * 100}% + ${trackOffsetPx}px))`,
+              transform: `translateX(${-(pageSwipe ? scrollPages : clampedScrollPages) * 100}%)`,
               transition: pageSwipe ? "none" : `transform ${PAGE_ANIM_MS}ms ease`,
             }}
           >
@@ -741,7 +747,7 @@ export function BottomNav() {
               <div
                 key={pageIndex}
                 className="grid w-full flex-none grid-cols-4 items-start justify-items-center"
-                aria-hidden={pageIndex !== currentPage}
+                aria-hidden={pageIndex !== roundedPage}
               >
                 {Array.from({ length: PAGE_SIZE }, (_, slotIndex) => {
                   const key = pageKeys[slotIndex];
