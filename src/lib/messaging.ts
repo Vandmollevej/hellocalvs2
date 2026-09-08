@@ -126,6 +126,11 @@ const DEFAULT_TEMPLATES: Record<MessageEventType, { subject: string; bodyHtml: s
     bodyHtml: "<p>Hej {{displayName}},</p><p>{{senderName}} har videresendt \"{{itemName}}\" til dig i Hello Cal.</p>",
     channel: "BOTH",
   },
+  FRIEND_INVITATION: {
+    subject: "{{inviterName}} har inviteret dig til Hello Cal",
+    bodyHtml: "<p>{{inviterName}} synes du skulle prøve Hello Cal.</p><p><a href=\"{{inviteUrl}}\">Opret din konto</a> — I optjener begge 300 points, når du er med. Linket er gyldigt i 7 dage.</p>",
+    channel: "EMAIL",
+  },
 };
 
 export async function ensureDefaultMessageTemplates() {

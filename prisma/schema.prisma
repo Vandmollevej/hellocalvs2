@@ -133,6 +133,7 @@ model User {
   passkeys                Passkey[]
   referralsMade           Referral[]               @relation("ReferralsMade")
   referralReceived        Referral?                @relation("ReferralReceived")
+  sentInvitations         SentInvitation[]
   pointsTransactions      PointsTransaction[]
   bugReports              BugReport[]
   notificationPreferences NotificationPreference[]
@@ -167,6 +168,23 @@ model Referral {
   rewardGrantedAt      DateTime?
 
   @@map("referrals")
+}
+
+// Fejlretninger/FEJLLISTE.md #12D: sporer selve invitations-e-mailen, adskilt
+// fra Referral (som først findes, når modtageren rent faktisk opretter en
+// konto). En invitation er gyldig 1 uge og kan gensendes (bumper sentAt/
+// expiresAt og genkøer beskeden i stedet for at oprette en ny række).
+model SentInvitation {
+  id         String    @id @default(cuid())
+  inviter    User      @relation(fields: [inviterId], references: [id])
+  inviterId  String
+  email      String
+  sentAt     DateTime  @default(now())
+  expiresAt  DateTime
+  acceptedAt DateTime?
+
+  @@index([inviterId])
+  @@map("sent_invitations")
 }
 
 enum Role {
@@ -774,6 +792,7 @@ enum MessageEvent {
   BUG_REPORT_RESOLVED
   POINTS_AWARDED
   FRIEND_FORWARD_RECEIVED
+  FRIEND_INVITATION
 }
 
 enum MessageChannel {
