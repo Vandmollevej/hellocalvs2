@@ -46,5 +46,5 @@ jobs:
       - name: Deploy Hello Cal
         run: |
           cd /deploy
-          docker compose -f compose.production.yaml --env-file .env.production pull
-          docker compose -f compose.production.yaml --env-file .env.production up -d
+          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production pull
+          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d
