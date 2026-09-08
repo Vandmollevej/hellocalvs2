@@ -41,6 +41,39 @@ const RADIUS = HALF_CIRCLE_RADIUS + ARC_GAP + CIRCLE / 2;
 // shouldn't have to drag all the way out to an icon to register a choice.
 const SELECT_DEAD_ZONE = 14;
 
+// Fejlretninger/FEJLLISTE.md #30: the plus sits in its own light circle that
+// follows the finger while dragging (clamped so it never leaves the green
+// backdrop), and the backdrop's own edge bulges outward toward the drag
+// direction — like the light circle is physically pressing into it.
+const LIGHT_CIRCLE_SIZE = 40;
+const LIGHT_CIRCLE_TRAVEL = HALF_CIRCLE_RADIUS - LIGHT_CIRCLE_SIZE / 2 - 6;
+const BULGE_MAX = 20;
+// How tightly the bulge concentrates around the drag angle (in degrees) —
+// smaller spread = a narrower, more pronounced single bump; larger = a
+// broader, softer push.
+const BULGE_SPREAD_DEG = 46;
+const BULGE_SAMPLE_COUNT = 40;
+
+function backdropPath(bulgeAngleDeg: number | null, bulgeAmount: number) {
+  const points: [number, number][] = [];
+  for (let i = 0; i <= BULGE_SAMPLE_COUNT; i += 1) {
+    const angleDeg = -90 + (180 * i) / BULGE_SAMPLE_COUNT;
+    const angleRad = (angleDeg * Math.PI) / 180;
+    let radius = HALF_CIRCLE_RADIUS;
+    if (bulgeAngleDeg !== null && bulgeAmount > 0) {
+      let diff = Math.abs(angleDeg - bulgeAngleDeg);
+      if (diff > 180) diff = 360 - diff;
+      const falloff = Math.max(0, Math.cos((diff / BULGE_SPREAD_DEG) * (Math.PI / 2)));
+      radius += bulgeAmount * Math.max(0, falloff) ** 2;
+    }
+    const x = radius * Math.cos(angleRad);
+    const y = HALF_CIRCLE_RADIUS + radius * Math.sin(angleRad);
+    points.push([x, y]);
+  }
+  const commands = points.map(([x, y], i) => `${i === 0 ? "M" : "L"}${x.toFixed(1)},${y.toFixed(1)}`);
+  return `${commands.join(" ")} L0,${HALF_CIRCLE_RADIUS * 2} L0,0 Z`;
+}
+
 // Top to bottom: microphone, pot (own dishes), search, plate (meal), camera (product).
 const ANGLES_DEG = [-70, -35, 0, 35, 70];
 
@@ -92,6 +125,7 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [highlightedKey, setHighlightedKey] = useState<string | null>(null);
+  const [dragOffset, setDragOffset] = useState<{ x: number; y: number } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const pointerStart = useRef<{ x: number; y: number } | null>(null);
   const movedRef = useRef(false);
@@ -131,11 +165,22 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
 
     const fabCenterX = SIDE === "left" ? FAB_INSET + FAB_SIZE / 2 : rect.width - FAB_INSET - FAB_SIZE / 2;
     const fabCenterY = CENTER_Y;
-    const distanceFromFab = Math.hypot(px - fabCenterX, py - fabCenterY);
+    const dx = px - fabCenterX;
+    const dy = py - fabCenterY;
+    const distanceFromFab = Math.hypot(dx, dy);
 
     const next = distanceFromFab > SELECT_DEAD_ZONE ? nearestKey : null;
     highlightedKeyRef.current = next;
     setHighlightedKey(next);
+
+    // Clamp the light circle's travel to stay inside the green backdrop —
+    // it follows the finger's direction but never actually leaves the shape.
+    const clampedDistance = Math.min(distanceFromFab, LIGHT_CIRCLE_TRAVEL);
+    const angle = Math.atan2(dy, dx);
+    setDragOffset({
+      x: Math.cos(angle) * clampedDistance,
+      y: Math.sin(angle) * clampedDistance,
+    });
   }
 
   function handlePointerDown(event: React.PointerEvent<HTMLButtonElement>) {
@@ -145,6 +190,7 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
     selectingRef.current = false;
     highlightedKeyRef.current = null;
     setHighlightedKey(null);
+    setDragOffset(null);
     wasOpenOnPressRef.current = open;
 
     if (open) {
@@ -186,6 +232,7 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
       }
       const key = highlightedKeyRef.current;
       setHighlightedKey(null);
+      setDragOffset(null);
       pointerStart.current = null;
       if (key) {
         const action = actions.find((a) => a.key === key);
@@ -208,23 +255,20 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
     }
   }
 
+  const dragAngleDeg = dragOffset ? (Math.atan2(dragOffset.y, dragOffset.x) * 180) / Math.PI : null;
+  const dragDistance = dragOffset ? Math.hypot(dragOffset.x, dragOffset.y) : 0;
+  const bulgeAmount = dragOffset ? Math.min(BULGE_MAX, (dragDistance / LIGHT_CIRCLE_TRAVEL) * BULGE_MAX) : 0;
+
   return (
     <div ref={containerRef} className="absolute inset-0">
-      <div
+      <svg
         aria-hidden="true"
-        className="pointer-events-none absolute bg-hf-green transition-all duration-200"
-        style={{
-          [SIDE === "left" ? "left" : "right"]: 0,
-          top: CENTER_Y - HALF_CIRCLE_RADIUS,
-          width: HALF_CIRCLE_RADIUS,
-          height: HALF_CIRCLE_RADIUS * 2,
-          borderRadius:
-            SIDE === "left"
-              ? `0 ${HALF_CIRCLE_RADIUS * 2}px ${HALF_CIRCLE_RADIUS * 2}px 0`
-              : `${HALF_CIRCLE_RADIUS * 2}px 0 0 ${HALF_CIRCLE_RADIUS * 2}px`,
-          opacity: 1,
-        } as React.CSSProperties}
-      />
+        className="pointer-events-none absolute"
+        style={{ left: 0, top: CENTER_Y - HALF_CIRCLE_RADIUS, width: HALF_CIRCLE_RADIUS + BULGE_MAX, height: HALF_CIRCLE_RADIUS * 2 }}
+        viewBox={`0 0 ${HALF_CIRCLE_RADIUS + BULGE_MAX} ${HALF_CIRCLE_RADIUS * 2}`}
+      >
+        <path d={backdropPath(dragAngleDeg, bulgeAmount)} fill="var(--hf-green)" />
+      </svg>
 
       <button
         aria-label={open ? t("addButton.closeMenu") : t("addButton.openMenu")}
@@ -243,7 +287,20 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
           touchAction: "none",
         } as React.CSSProperties}
       >
-        <IconPlus size={26} color="var(--hf-white)" stroke={2} />
+        {/* Fejlretninger/FEJLLISTE.md #30: plusset sidder i sin egen lyse
+            cirkel, som følger fingeren under træk (clampet af dragOffset,
+            se updateHighlight) — i stedet for at stå fast midt i knappen. */}
+        <span
+          className="pointer-events-none flex items-center justify-center rounded-full bg-hf-white shadow-sm transition-transform"
+          style={{
+            width: LIGHT_CIRCLE_SIZE,
+            height: LIGHT_CIRCLE_SIZE,
+            transform: dragOffset ? `translate(${dragOffset.x}px, ${dragOffset.y}px)` : undefined,
+            transitionDuration: dragOffset ? "0ms" : "150ms",
+          }}
+        >
+          <IconPlus size={22} color="var(--hf-color-action)" stroke={2} />
+        </span>
       </button>
 
       {actions.map((action, i) => {
