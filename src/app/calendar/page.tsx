@@ -175,8 +175,14 @@ function minutesToTime(minutes: number) {
   return `${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}`;
 }
 
-// Falls back to a typical night's sleep (23:00-07:00) if the user hasn't
-// yet set a sleep pattern/work hours — the sleep visualization must always show.
+// Fejlretninger/FEJLLISTE.md #25: hvis kun ét af de to tidspunkter er sat
+// nogen steder i kæden (dags-override → ugedag → generel standard), udregnes
+// det andet som 7,5 times søvn derfra i stedet for at falde tilbage til to
+// UAFHÆNGIGE faste tidspunkter (som ellers kunne give en søvnperiode på fx
+// 3 eller 12 timer, hvis kun ét felt var sat). Kun når INGEN af dem er sat
+// noget sted, bruges et fast standardvindue (23:00-06:30, 7,5 timer).
+const FALLBACK_SLEEP_MINUTES = 7.5 * 60;
+
 function getSleepWindow(
   date: Date,
   defaults: SleepDefaults | null,
@@ -188,7 +194,11 @@ function getSleepWindow(
   const perDay = weekdaySchedules[weekday];
   const bedtime = timeToMinutes(override?.bedtime || perDay?.bedtime || defaults?.defaultBedtime);
   const wakeTime = timeToMinutes(override?.wakeTime || perDay?.wakeTime || defaults?.defaultWakeTime);
-  return { bedtime: bedtime ?? 23 * 60, wakeTime: wakeTime ?? 7 * 60 };
+
+  if (bedtime !== null && wakeTime !== null) return { bedtime, wakeTime };
+  if (bedtime !== null) return { bedtime, wakeTime: (bedtime + FALLBACK_SLEEP_MINUTES) % 1440 };
+  if (wakeTime !== null) return { bedtime: (wakeTime - FALLBACK_SLEEP_MINUTES + 1440) % 1440, wakeTime };
+  return { bedtime: 23 * 60, wakeTime: (23 * 60 + FALLBACK_SLEEP_MINUTES) % 1440 };
 }
 
 function rotatedTop(minutes: number, anchorMinutes: number, hourHeight: number = HOUR_HEIGHT) {

@@ -228,6 +228,23 @@ export function BottomNav() {
     pageRef.current = currentPage;
   }, [currentPage]);
 
+  // Fejlretninger/FEJLLISTE.md #9: baggrundssiden kunne stadig scrolles bag
+  // redigeringssheetet. `document.body` er ikke selve scroll-beholderen i
+  // denne app (HfScreen's indre content-div er), så en almindelig
+  // `body.style.overflow = "hidden"` rammer intet reelt — i stedet stoppes
+  // ethvert touchmove uden for selve panelet, mens sheetet er åbent.
+  useEffect(() => {
+    if (!editMode) return;
+    function blockBackgroundScroll(event: TouchEvent) {
+      if (panelRef.current?.contains(event.target as Node)) return;
+      event.preventDefault();
+    }
+    document.addEventListener("touchmove", blockBackgroundScroll, { passive: false });
+    return () => {
+      document.removeEventListener("touchmove", blockBackgroundScroll);
+    };
+  }, [editMode]);
+
   // FLIP-animate icons that shift position when the active/inactive lists reorder.
   useLayoutEffect(() => {
     const nextRects = new Map<string, DOMRect>();

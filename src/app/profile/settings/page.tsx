@@ -163,19 +163,12 @@ export default function ProfileSettingsPage() {
             onChange={toggleShowAllergens}
           />
 
-          <Toggle
-            label={t("settings.languageLabel")}
-            description={t("settings.languageDescription")}
-            checked={locale === "en"}
-            onChange={(checked) => setLocale((checked ? "en" : "da") as Locale)}
-          />
-
           {user.showAllergens && (
-            <div className="flex flex-col gap-1 overflow-hidden rounded-2xl bg-hf-tan">
+            <div className="-mt-2 flex flex-col gap-1 overflow-hidden rounded-b-2xl border-t border-hf-gray-light bg-hf-tan">
               {ALLERGEN_CATALOG.map((allergen, index) => (
                 <div
                   key={allergen.key}
-                  className={`flex items-center gap-3 px-4 py-3 ${
+                  className={`flex items-center gap-3 px-4 py-2.5 ${
                     index < ALLERGEN_CATALOG.length - 1 ? "border-b border-hf-tan-dark" : ""
                   }`}
                 >
@@ -188,6 +181,13 @@ export default function ProfileSettingsPage() {
               ))}
             </div>
           )}
+
+          <Toggle
+            label={t("settings.languageLabel")}
+            description={t("settings.languageDescription")}
+            checked={locale === "en"}
+            onChange={(checked) => setLocale((checked ? "en" : "da") as Locale)}
+          />
 
           <p className="px-1 text-[12px] leading-relaxed text-hf-black opacity-60">
             {t("settings.thirdPartyDisclaimer")}

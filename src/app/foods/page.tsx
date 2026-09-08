@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { IconApple, IconCamera, IconSearch } from "@tabler/icons-react";
+import { IconApple, IconBookmark, IconBookmarkFilled, IconCamera, IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -38,32 +38,45 @@ function ProductRow({
   product,
   isLast,
   prefillQuery,
+  isFavorite,
+  onToggleFavorite,
 }: {
   product: Product;
   isLast: boolean;
   prefillQuery: string;
+  isFavorite: boolean;
+  onToggleFavorite: (id: string, next: boolean) => void;
 }) {
   const { t } = useTranslation();
   return (
-    <Link
-      href={`/add/${product.id}${prefillQuery}`}
+    <div
       className={`flex items-center gap-2.5 px-4 py-3 ${isLast ? "" : "border-b border-hf-tan-dark"}`}
     >
-      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-hf-white/30">
-        {product.imageUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={product.imageUrl} alt="" className="h-full w-full object-cover object-center" />
-        )}
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-[15px] font-medium text-hf-black">{product.name}</p>
-        <p className="truncate text-xs text-hf-black opacity-60">
-          {[product.brand?.name, t("foods.kcalPer100g", { kcal: Math.round(product.kcalPer100g) })]
-            .filter(Boolean)
-            .join(" · ")}
-        </p>
-      </div>
-    </Link>
+      <Link href={`/add/${product.id}${prefillQuery}`} className="flex min-w-0 flex-1 items-center gap-2.5">
+        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-hf-white/30">
+          {product.imageUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={product.imageUrl} alt="" className="h-full w-full object-cover object-center" />
+          )}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-[15px] font-medium text-hf-black">{product.name}</p>
+          <p className="truncate text-xs text-hf-black opacity-60">
+            {[product.brand?.name, t("foods.kcalPer100g", { kcal: Math.round(product.kcalPer100g) })]
+              .filter(Boolean)
+              .join(" · ")}
+          </p>
+        </div>
+      </Link>
+      <button
+        type="button"
+        onClick={() => onToggleFavorite(product.id, !isFavorite)}
+        aria-label={t(isFavorite ? "search.removeFavorite" : "search.addFavorite")}
+        className="flex-shrink-0 text-hf-green"
+      >
+        {isFavorite ? <IconBookmarkFilled size={20} /> : <IconBookmark size={20} />}
+      </button>
+    </div>
   );
 }
 
@@ -83,7 +96,36 @@ function MadvarerContent() {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [query, setQuery] = useState("");
   const [state, setState] = useState<LoadState>("loading");
+  const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/favorites", { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("offline");
+        return (await response.json()) as { favorites: Array<{ product: { id: string } | null }> };
+      })
+      .then((data) => {
+        setFavoriteIds(new Set(data.favorites.filter((f) => f.product).map((f) => f.product!.id)));
+      })
+      .catch(() => setFavoriteIds(new Set()));
+    return () => controller.abort();
+  }, []);
+
+  function toggleFavorite(productId: string, next: boolean) {
+    setFavoriteIds((current) => {
+      const updated = new Set(current);
+      if (next) updated.add(productId);
+      else updated.delete(productId);
+      return updated;
+    });
+    fetch("/api/favorites", {
+      method: next ? "POST" : "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ productId }),
+    }).catch(() => {});
+  }
 
   useEffect(() => {
     searchInputRef.current?.focus();
@@ -184,6 +226,8 @@ function MadvarerContent() {
                 product={product}
                 isLast={index === visibleProducts.length - 1}
                 prefillQuery={prefillQuery}
+                isFavorite={favoriteIds.has(product.id)}
+                onToggleFavorite={toggleFavorite}
               />
             ))}
           {state === "ready" && visibleProducts.length === 0 && (
@@ -196,10 +240,6 @@ function MadvarerContent() {
         <Link href="/foods/new" className="hf-btn-secondary self-center px-4 py-2 text-xs">
           {t("foods.createManually")}
         </Link>
-
-        <p className="px-1 text-center text-[10px] text-hf-black opacity-40">
-          {t("foods.dataSource")}
-        </p>
       </div>
     </HfScreen>
   );
