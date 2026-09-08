@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconTrash } from "@tabler/icons-react";
+import { IconChevronLeft, IconChevronRight, IconTrash, IconX } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -63,6 +63,7 @@ export default function BilledeDagbogPage() {
   const [loading, setLoading] = useState(true);
   const [photos, setPhotos] = useState<DiaryPhoto[]>(() => loadPhotos());
   const [locked, setLocked] = useState(false);
+  const [viewerIndex, setViewerIndex] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -167,8 +168,13 @@ export default function BilledeDagbogPage() {
                 </p>
               ) : (
                 <div className="grid grid-cols-2 gap-3">
-                  {photos.map((photo) => (
-                    <div key={photo.id} className="relative overflow-hidden rounded-2xl bg-hf-tan">
+                  {photos.map((photo, index) => (
+                    <button
+                      key={photo.id}
+                      type="button"
+                      onClick={() => setViewerIndex(index)}
+                      className="relative overflow-hidden rounded-2xl bg-hf-tan text-left"
+                    >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={photo.dataUrl}
@@ -178,15 +184,7 @@ export default function BilledeDagbogPage() {
                       <span className="absolute bottom-1 left-1 rounded bg-black/50 px-1.5 py-0.5 text-[10px] text-white">
                         {formatDate(photo.takenAt)}
                       </span>
-                      <button
-                        type="button"
-                        aria-label={t("photoDiary.deleteAria")}
-                        onClick={() => remove(photo.id)}
-                        className="absolute right-1 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white"
-                      >
-                        <IconTrash size={14} />
-                      </button>
-                    </div>
+                    </button>
                   ))}
                 </div>
               )}
@@ -194,6 +192,114 @@ export default function BilledeDagbogPage() {
           )}
         </div>
       )}
+
+      {viewerIndex !== null && photos[viewerIndex] && (
+        <PhotoViewer
+          photos={photos}
+          index={viewerIndex}
+          onIndexChange={setViewerIndex}
+          onClose={() => setViewerIndex(null)}
+          onDelete={(id) => {
+            remove(id);
+            setViewerIndex((current) => {
+              if (current === null) return current;
+              const remaining = photos.length - 1;
+              if (remaining <= 0) return null;
+              return Math.min(current, remaining - 1);
+            });
+          }}
+          t={t}
+        />
+      )}
     </HfScreen>
+  );
+}
+
+// Fejlretninger/FEJLLISTE.md #21: fuld-højde portræt-visning med swipe frem/
+// tilbage og dato under billedet, i stedet for kun det faste 2-kolonne-grid.
+function PhotoViewer({
+  photos,
+  index,
+  onIndexChange,
+  onClose,
+  onDelete,
+  t,
+}: {
+  photos: DiaryPhoto[];
+  index: number;
+  onIndexChange: (index: number) => void;
+  onClose: () => void;
+  onDelete: (id: string) => void;
+  t: (key: string) => string;
+}) {
+  const startX = useRef<number | null>(null);
+  const photo = photos[index];
+
+  function handlePointerDown(event: React.PointerEvent) {
+    startX.current = event.clientX;
+  }
+
+  function handlePointerUp(event: React.PointerEvent) {
+    if (startX.current === null) return;
+    const delta = event.clientX - startX.current;
+    startX.current = null;
+    const SWIPE_THRESHOLD = 50;
+    if (delta < -SWIPE_THRESHOLD && index < photos.length - 1) onIndexChange(index + 1);
+    else if (delta > SWIPE_THRESHOLD && index > 0) onIndexChange(index - 1);
+  }
+
+  if (!photo) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col bg-black">
+      <div className="flex items-center justify-between px-4 py-3">
+        <button type="button" onClick={onClose} aria-label={t("common.close")} className="text-white">
+          <IconX size={24} />
+        </button>
+        <button
+          type="button"
+          onClick={() => onDelete(photo.id)}
+          aria-label={t("photoDiary.deleteAria")}
+          className="text-white"
+        >
+          <IconTrash size={20} />
+        </button>
+      </div>
+
+      <div
+        className="relative flex flex-1 items-center justify-center overflow-hidden"
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+      >
+        {index > 0 && (
+          <button
+            type="button"
+            onClick={() => onIndexChange(index - 1)}
+            aria-label={t("photoDiary.previousPhoto")}
+            className="absolute left-2 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-white"
+          >
+            <IconChevronLeft size={20} />
+          </button>
+        )}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={photo.dataUrl}
+          alt={t("photoDiary.photoAlt")}
+          className="h-full w-full object-contain"
+        />
+        {index < photos.length - 1 && (
+          <button
+            type="button"
+            onClick={() => onIndexChange(index + 1)}
+            aria-label={t("photoDiary.nextPhoto")}
+            className="absolute right-2 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-white"
+          >
+            <IconChevronRight size={20} />
+          </button>
+        )}
+      </div>
+
+      <p className="px-4 py-4 text-center text-[13px] text-white/80">{formatDate(photo.takenAt)}</p>
+    </div>
   );
 }

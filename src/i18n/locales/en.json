@@ -425,7 +425,9 @@
     "takePhoto": "Take photo (full body or stomach)",
     "noPhotosYet": "No photos yet — take the first one to compare later.",
     "photoAlt": "Photo diary entry",
-    "deleteAria": "Delete photo"
+    "deleteAria": "Delete photo",
+    "previousPhoto": "Previous photo",
+    "nextPhoto": "Next photo"
   },
   "registration": {
     "title": "Registration",

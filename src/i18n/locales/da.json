@@ -425,7 +425,9 @@
     "takePhoto": "Tag billede (fuld figur eller mave)",
     "noPhotosYet": "Ingen billeder endnu — tag det første for at kunne sammenligne senere.",
     "photoAlt": "Billede-dagbog-optagelse",
-    "deleteAria": "Slet billede"
+    "deleteAria": "Slet billede",
+    "previousPhoto": "Forrige billede",
+    "nextPhoto": "Næste billede"
   },
   "registration": {
     "title": "Registrering",
