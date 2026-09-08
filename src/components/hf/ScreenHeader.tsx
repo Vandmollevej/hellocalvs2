@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useIsCompactLandscape } from "@/hooks/useIsCompactLandscape";
 
 // Tilbagepilen sidder altid til venstre, profilcirklen altid til højre —
 // magen til Hello Fresh, ikke omvendt (rettet 2026-09-06, se
@@ -20,9 +21,12 @@ export function ScreenHeader({
   variant?: "brand" | "main";
 }) {
   const { t } = useTranslation();
+  const isCompact = useIsCompactLandscape();
   return (
     <div
-      className={`hf-appbar ${variant === "main" ? "hf-appbar--main" : "hf-appbar--brand"}`}
+      className={`hf-appbar ${variant === "main" ? "hf-appbar--main" : "hf-appbar--brand"} ${
+        isCompact ? "hf-appbar--compact" : ""
+      }`}
     >
       <div className="hf-appbar__slot">
         {onBack && (

@@ -337,6 +337,24 @@ button,
   background: var(--hf-color-appbar);
 }
 
+/* Fejlretninger/FEJLLISTE.md #32A: smal header i liggende format (en
+   rigtig rotereret telefon, se useIsCompactLandscape) — kun højden og
+   skrifttypen skrumper, farver/lag er uændrede. */
+.hf-appbar--compact {
+  min-height: calc(34px + env(safe-area-inset-top, 0px));
+  grid-template-columns: 34px minmax(0, 1fr) 34px;
+}
+
+.hf-appbar--compact .hf-appbar__slot {
+  width: 34px;
+  height: 34px;
+}
+
+.hf-appbar--compact .hf-appbar__title {
+  font-size: 15px;
+  line-height: 18px;
+}
+
 .hf-appbar__slot {
   display: flex;
   width: 44px;

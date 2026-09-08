@@ -88,7 +88,9 @@
     "removeItemAriaLabel": "Remove {item}",
     "allIconsInUse": "All icons are in use.",
     "resetMenuAriaLabel": "Reset menu",
-    "mainNavigationAriaLabel": "Main navigation"
+    "mainNavigationAriaLabel": "Main navigation",
+    "expandAriaLabel": "Show bottom menu",
+    "collapseAriaLabel": "Hide bottom menu"
   },
   "settings": {
     "title": "Settings",

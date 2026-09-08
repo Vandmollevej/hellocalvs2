@@ -88,7 +88,9 @@
     "removeItemAriaLabel": "Fjern {item}",
     "allIconsInUse": "Alle ikoner er i brug.",
     "resetMenuAriaLabel": "Nulstil menu",
-    "mainNavigationAriaLabel": "Hovednavigation"
+    "mainNavigationAriaLabel": "Hovednavigation",
+    "expandAriaLabel": "Vis bundmenu",
+    "collapseAriaLabel": "Skjul bundmenu"
   },
   "settings": {
     "title": "Indstillinger",

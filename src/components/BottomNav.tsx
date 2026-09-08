@@ -14,6 +14,7 @@ import {
   IconRefresh,
 } from "@tabler/icons-react";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useIsCompactLandscape } from "@/hooks/useIsCompactLandscape";
 
 const ICON_SIZE = 24;
 const NAV_ACTIVE_COLOR = "#232323";
@@ -184,6 +185,12 @@ export function BottomNav() {
   const [sheetSnapping, setSheetSnapping] = useState(false);
   const [sheetDragActive, setSheetDragActive] = useState(false);
   const [page, setPage] = useState(0);
+  // Fejlretninger/FEJLLISTE.md #32B: i liggende format starter bundnav
+  // foldet sammen til en smal håndtag-bjælke, for ikke at spise for meget af
+  // den korte skærmhøjde — udfoldes ved tryk.
+  const isCompactLandscape = useIsCompactLandscape();
+  const [landscapeExpanded, setLandscapeExpanded] = useState(false);
+  const showCollapsedBar = isCompactLandscape && !landscapeExpanded;
   const [pageSwipe, setPageSwipe] = useState<PageSwipeState | null>(null);
 
   const barRef = useRef<HTMLDivElement>(null);
@@ -695,12 +702,33 @@ export function BottomNav() {
 
       <nav
         ref={barRef}
-        className={`relative border-t bg-hf-tan-dark pb-6 pt-2 ${
+        className={`relative border-t bg-hf-tan-dark ${showCollapsedBar ? "py-1.5" : "pb-6 pt-2"} ${
           draggedOverPanel ? "border-dashed border-hf-gray-dark" : ""
         }`}
         style={draggedOverPanel ? undefined : { borderTopColor: NAV_BORDER_COLOR }}
         aria-label={t("nav.mainNavigationAriaLabel")}
       >
+        {showCollapsedBar ? (
+          <button
+            type="button"
+            onClick={() => setLandscapeExpanded(true)}
+            aria-label={t("nav.expandAriaLabel")}
+            className="flex w-full items-center justify-center py-1.5"
+          >
+            <span className="h-1.5 w-10 rounded-full bg-hf-black/30" />
+          </button>
+        ) : (
+          <>
+            {isCompactLandscape && (
+              <button
+                type="button"
+                onClick={() => setLandscapeExpanded(false)}
+                aria-label={t("nav.collapseAriaLabel")}
+                className="absolute inset-x-0 top-0 flex justify-center py-1"
+              >
+                <span className="h-1.5 w-10 rounded-full bg-hf-black/30" />
+              </button>
+            )}
         <div className="overflow-hidden">
           <div
             className="flex"
@@ -783,6 +811,8 @@ export function BottomNav() {
             ))}
           </div>
         </div>
+          </>
+        )}
       </nav>
 
       {drag?.moved && (
