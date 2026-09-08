@@ -259,11 +259,12 @@ def upsert_recipe(conn, recipe, retter_category_id):
             """
             INSERT INTO products
                 (id, name, "categoryId", "imageUrl", "kcalPer100g", "proteinPer100g",
-                 "carbsPer100g", "fatPer100g", "servingSizeGrams", "ingredientsText",
+                 "carbsPer100g", "fatPer100g", "servingSizeGrams",
+                 "servingSizeUnitSingular", "servingSizeUnitPlural", "ingredientsText",
                  allergens, "nutritionExtra", "externalSource", "externalId",
                  "sourceCheckedAt", status, discontinued, "createdAt")
             VALUES
-                (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'HELLOFRESH', %s, NOW(), 'APPROVED', false, NOW())
+                (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'HELLOFRESH', %s, NOW(), 'APPROVED', false, NOW())
             ON CONFLICT (id) DO UPDATE SET
                 name = EXCLUDED.name,
                 "imageUrl" = COALESCE(EXCLUDED."imageUrl", products."imageUrl"),
@@ -272,6 +273,8 @@ def upsert_recipe(conn, recipe, retter_category_id):
                 "carbsPer100g" = EXCLUDED."carbsPer100g",
                 "fatPer100g" = EXCLUDED."fatPer100g",
                 "servingSizeGrams" = EXCLUDED."servingSizeGrams",
+                "servingSizeUnitSingular" = EXCLUDED."servingSizeUnitSingular",
+                "servingSizeUnitPlural" = EXCLUDED."servingSizeUnitPlural",
                 "ingredientsText" = EXCLUDED."ingredientsText",
                 allergens = EXCLUDED.allergens,
                 "nutritionExtra" = EXCLUDED."nutritionExtra",
@@ -287,6 +290,8 @@ def upsert_recipe(conn, recipe, retter_category_id):
                 round(carbs * factor, 1),
                 round(fat * factor, 1),
                 serving_size,
+                "portion",
+                "portioner",
                 ingredients_text,
                 allergen_keys,
                 json.dumps(extra) if extra else None,

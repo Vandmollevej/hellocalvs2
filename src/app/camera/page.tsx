@@ -20,6 +20,7 @@ type MatchedHelloFreshProduct = {
   imageUrl: string | null;
   kcalPer100g: number;
   servingSizeGrams: number | null;
+  servingSizeUnitSingular?: string | null;
 };
 type MealAnalyzeStatus = "idle" | "done" | "error";
 type MealItem = {

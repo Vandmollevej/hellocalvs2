@@ -480,6 +480,12 @@ model Product {
   carbsPer100g     Float
   fatPer100g       Float
   servingSizeGrams Float?
+  // Betegnelsen for servingSizeGrams-enheden ("portion"/"portioner",
+  // "person"/"personer", "skive"/"skiver" osv.), kun sat når kilden faktisk
+  // angiver den. UI må aldrig gætte/hardkode en enhed, når disse er null —
+  // se design.md-diskussion 2026-09-08.
+  servingSizeUnitSingular String?
+  servingSizeUnitPlural   String?
   ingredientsText  String?
   allergens        String[]               @default([])
   additives        String[]               @default([])

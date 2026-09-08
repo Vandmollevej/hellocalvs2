@@ -6,6 +6,7 @@ type MatchedProduct = {
   imageUrl: string | null;
   kcalPer100g: number;
   servingSizeGrams: number | null;
+  servingSizeUnitSingular?: string | null;
 };
 
 type Status = "processing" | "found" | "not_found" | "failed";
@@ -35,8 +36,8 @@ export function HelloFreshMatchReview({ status, product, onConfirm, onRetake }: 
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold text-hf-black">{product.name}</p>
             <p className="text-xs text-hf-black opacity-60">
-              {product.servingSizeGrams
-                ? `${Math.round((product.kcalPer100g * product.servingSizeGrams) / 100)} kcal / portion`
+              {product.servingSizeGrams && product.servingSizeUnitSingular
+                ? `${Math.round((product.kcalPer100g * product.servingSizeGrams) / 100)} kcal / ${product.servingSizeUnitSingular}`
                 : `${Math.round(product.kcalPer100g)} kcal/100g`}
             </p>
           </div>

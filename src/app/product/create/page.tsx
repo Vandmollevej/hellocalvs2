@@ -17,6 +17,8 @@ type FormValues = {
   carbsPer100g: string;
   fatPer100g: string;
   servingSizeGrams: string;
+  servingSizeUnitSingular: string;
+  servingSizeUnitPlural: string;
   ingredientsText: string;
 };
 
@@ -27,6 +29,8 @@ const EMPTY_VALUES: FormValues = {
   carbsPer100g: "",
   fatPer100g: "",
   servingSizeGrams: "",
+  servingSizeUnitSingular: "",
+  servingSizeUnitPlural: "",
   ingredientsText: "",
 };
 
@@ -46,6 +50,8 @@ function readDraft(): { form: FormValues; media: MediaGridValue; fromCamera: boo
         carbsPer100g: draft.carbsPer100g ?? "",
         fatPer100g: draft.fatPer100g ?? "",
         servingSizeGrams: draft.servingSizeGrams ?? "",
+        servingSizeUnitSingular: "",
+        servingSizeUnitPlural: "",
         ingredientsText: draft.ingredientsText ?? "",
       },
       media: {
@@ -93,6 +99,8 @@ function OpretProduktContent() {
           carbsPer100g: form.carbsPer100g,
           fatPer100g: form.fatPer100g,
           servingSizeGrams: form.servingSizeGrams || undefined,
+          servingSizeUnitSingular: form.servingSizeUnitSingular || undefined,
+          servingSizeUnitPlural: form.servingSizeUnitPlural || undefined,
           ingredientsText: form.ingredientsText || undefined,
           barcode: media.barcodeValue || undefined,
           imageUrl: media.mainImage,
@@ -222,6 +230,26 @@ function OpretProduktContent() {
               inputMode="decimal"
               label={t("productCreate.servingSizeLabel")}
             />
+            {form.servingSizeGrams && (
+              <div className="flex gap-3">
+                <TextField
+                  variant="standard"
+                  className="flex-1"
+                  value={form.servingSizeUnitSingular}
+                  onChange={(event) => update("servingSizeUnitSingular", event.target.value)}
+                  label={t("productCreate.servingSizeUnitSingularLabel")}
+                  placeholder={t("productCreate.servingSizeUnitSingularPlaceholder")}
+                />
+                <TextField
+                  variant="standard"
+                  className="flex-1"
+                  value={form.servingSizeUnitPlural}
+                  onChange={(event) => update("servingSizeUnitPlural", event.target.value)}
+                  label={t("productCreate.servingSizeUnitPluralLabel")}
+                  placeholder={t("productCreate.servingSizeUnitPluralPlaceholder")}
+                />
+              </div>
+            )}
             <label className="flex flex-col gap-1">
               <span className="hf-type-label">{t("productCreate.ingredientsLabel")}</span>
               <textarea

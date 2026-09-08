@@ -30,6 +30,8 @@ type Product = {
   carbsPer100g: number;
   fatPer100g: number;
   servingSizeGrams?: number | null;
+  servingSizeUnitSingular?: string | null;
+  servingSizeUnitPlural?: string | null;
   brand: { name: string } | null;
   imageUrl?: string | null;
   ingredientsText?: string | null;
@@ -99,6 +101,12 @@ export default function AddPage() {
   const product = state.status === "loaded" ? state.product : null;
   const factor = amount / 100;
   const servingSizeGrams = product?.servingSizeGrams ?? null;
+  // Enheden ("portion"/"portioner", "person"/"personer" osv.) vises kun når
+  // varen faktisk har den i databasen — UI må ikke gætte en generisk enhed
+  // (se design.md-diskussion 2026-09-08).
+  const servingSizeUnitSingular = product?.servingSizeUnitSingular ?? null;
+  const servingSizeUnitPlural = product?.servingSizeUnitPlural ?? null;
+  const hasServingUnit = Boolean(servingSizeGrams && servingSizeUnitSingular && servingSizeUnitPlural);
   const step = servingSizeGrams && amountUnit === "personer" ? servingSizeGrams : 10;
 
   useEffect(() => {
@@ -256,8 +264,11 @@ export default function AddPage() {
                 )}
                 <p className="hf-heading text-lg text-hf-black">{state.product.name}</p>
                 <p className="text-sm font-bold text-hf-black">
-                  {servingSizeGrams
-                    ? t("addProduct.kcalPerServing", { kcal: Math.round((state.product.kcalPer100g * servingSizeGrams) / 100) })
+                  {servingSizeGrams && hasServingUnit
+                    ? t("addProduct.kcalPerServing", {
+                        kcal: Math.round((state.product.kcalPer100g * servingSizeGrams) / 100),
+                        unit: servingSizeUnitSingular as string,
+                      })
                     : t("addProduct.kcalPer100g", { kcal: Math.round(state.product.kcalPer100g) })}
                 </p>
 
@@ -285,7 +296,7 @@ export default function AddPage() {
                 </div>
               )}
 
-              {servingSizeGrams && (
+              {hasServingUnit && (
                 <div className="mb-3 flex justify-center gap-2">
                   <button
                     type="button"
@@ -296,7 +307,7 @@ export default function AddPage() {
                         : "hf-btn-secondary px-4 py-1.5 text-xs"
                     }
                   >
-                    {t("addProduct.personsUnit")}
+                    <span className="capitalize">{servingSizeUnitPlural}</span>
                   </button>
                   <button
                     type="button"
@@ -320,9 +331,11 @@ export default function AddPage() {
                   −
                 </button>
                 <div className="flex-1 rounded-2xl bg-hf-tan py-3 text-center text-hf-black">
-                  {servingSizeGrams && amountUnit === "personer" ? (
-                    <p className="text-xl font-bold">
-                      {`${Math.round(amount / servingSizeGrams)} ${amount === servingSizeGrams ? t("addProduct.personSingular") : t("addProduct.personPlural")}`}
+                  {hasServingUnit && amountUnit === "personer" ? (
+                    <p className="text-xl font-bold capitalize">
+                      {`${Math.round(amount / (servingSizeGrams as number))} ${
+                        amount === servingSizeGrams ? servingSizeUnitSingular : servingSizeUnitPlural
+                      }`}
                     </p>
                   ) : (
                     <input

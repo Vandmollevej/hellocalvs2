@@ -128,6 +128,10 @@ export async function POST(req: Request) {
   const carbsPer100g = parsePositiveNumber(body.carbsPer100g);
   const fatPer100g = parsePositiveNumber(body.fatPer100g);
   const servingSizeGrams = parsePositiveNumber(body.servingSizeGrams);
+  const servingSizeUnitSingular =
+    typeof body.servingSizeUnitSingular === "string" ? body.servingSizeUnitSingular.trim() : "";
+  const servingSizeUnitPlural =
+    typeof body.servingSizeUnitPlural === "string" ? body.servingSizeUnitPlural.trim() : "";
   const ingredientsText = typeof body.ingredientsText === "string" ? body.ingredientsText.trim() : "";
   const barcode = typeof body.barcode === "string" ? body.barcode.trim() : "";
   const imageUrl = typeof body.imageUrl === "string" ? body.imageUrl : undefined;
@@ -167,6 +171,17 @@ export async function POST(req: Request) {
         carbsPer100g,
         fatPer100g,
         servingSizeGrams: servingSizeGrams ?? undefined,
+        // Enhedsnavnet gemmes kun, når portionsstørrelsen faktisk er angivet
+        // og begge bøjningsformer er udfyldt — ellers skal UI falde tilbage
+        // til kcal/100g i stedet for at gætte en enhed.
+        servingSizeUnitSingular:
+          servingSizeGrams && servingSizeUnitSingular && servingSizeUnitPlural
+            ? servingSizeUnitSingular
+            : undefined,
+        servingSizeUnitPlural:
+          servingSizeGrams && servingSizeUnitSingular && servingSizeUnitPlural
+            ? servingSizeUnitPlural
+            : undefined,
         ingredientsText: ingredientsText || undefined,
         imageUrl,
         createdByUserId: sessionUser?.id,
