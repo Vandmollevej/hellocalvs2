@@ -61,13 +61,11 @@ export function SleepRangeSlider({
     else onChangeBedtime(value);
   }
 
-  function handlePointerDown(handle: Handle) {
-    return (event: React.PointerEvent<HTMLDivElement>) => {
-      event.stopPropagation();
-      event.currentTarget.setPointerCapture(event.pointerId);
-      draggingRef.current = handle;
-      updateHandle(handle, event.clientX);
-    };
+  function handlePointerDown(handle: Handle, event: React.PointerEvent<HTMLDivElement>) {
+    event.stopPropagation();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    draggingRef.current = handle;
+    updateHandle(handle, event.clientX);
   }
 
   function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
@@ -178,12 +176,12 @@ export function SleepRangeSlider({
         )}
 
         <div
-          onPointerDown={handlePointerDown("bedtime")}
+          onPointerDown={(event) => handlePointerDown("bedtime", event)}
           className="absolute h-[18px] w-[18px] -translate-x-1/2 -translate-y-1/2 touch-none rounded-full border-2 border-hf-green bg-hf-white"
           style={{ left: `${bedtimePct}%`, top: "50%" }}
         />
         <div
-          onPointerDown={handlePointerDown("wake")}
+          onPointerDown={(event) => handlePointerDown("wake", event)}
           className="absolute h-[18px] w-[18px] -translate-x-1/2 -translate-y-1/2 touch-none rounded-full border-2 border-hf-green bg-hf-white"
           style={{ left: `${wakePct}%`, top: "50%" }}
         />

@@ -2,6 +2,45 @@
 
 Last updated: 2026-09-11
 
+## 2026-09-11: `npm run lint`/`npm run build` actually run, two real bugs fixed
+
+Correction to every "cannot run node/npm" note elsewhere in this file: this
+workstation has no `node`/`npm` on PATH, but a real Node.js binary exists
+elsewhere on disk (`~/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe`,
+bundled for an unrelated tool) — invoking it directly against the project's
+own `node_modules/eslint/bin/eslint.js` and `node_modules/next/dist/bin/next`
+(and `node_modules/prisma/build/index.js`) works fine, since `node_modules`
+is already installed and `npm run build`/`lint` are just thin wrappers around
+those. `npx prisma generate` was also run this way. **Future sessions should
+try this before reporting lint/build as unrunnable.**
+
+Running lint for real (not just reasoning about the diff) surfaced two
+genuine `react-hooks/refs` errors, unrelated to this session's own nutrition-
+panel work — from other concurrent sessions' recent commits:
+
+- `src/app/calendar/page.tsx` (`WeekTimelineView`): wrote to
+  `getSleepWindowRef.current` directly in the component body (a "keep the
+  latest callback without retriggering the effect" pattern) — moved into a
+  bare `useEffect(() => { ... })` (no deps, runs after every render) instead,
+  which is the correct place to mutate a ref for this pattern. Also dropped
+  a now-stale `eslint-disable-next-line react-hooks/exhaustive-deps` that
+  lint reported as unused.
+- `src/components/hf/SleepRangeSlider.tsx`: `handlePointerDown(handle)` was a
+  factory returning a closure, so the ref write (`draggingRef.current = ...`)
+  happened inside a function invoked directly in the JSX expression
+  (`onPointerDown={handlePointerDown("wake")}`), which the linter can't
+  distinguish from a render-time call. Changed to a plain
+  `handlePointerDown(handle, event)` invoked from an inline arrow at each
+  call site (`onPointerDown={(event) => handlePointerDown("wake", event)}`) —
+  same runtime behavior, now unambiguously an event handler.
+
+Both fixed, verified with a clean `eslint .` run, and `next build` (TypeScript
++ full static/dynamic route generation, 104 pages) passed clean afterwards —
+covers this session's own extended-nutrition-panel changes plus everything
+else outstanding in the working tree at commit `d51786e`. Migrations are
+still **not applied** to any real database (no reachable Postgres here) —
+run `npx prisma migrate deploy` on the next Synology release.
+
 ## 2026-09-11: finished the "add card" stat categories (all 5, incl. Vitaminer) + a real MyFitnessPal-style extended nutrition panel
 
 Direct user feedback on a fresh screenshot of `/statistics/unused-cards`:

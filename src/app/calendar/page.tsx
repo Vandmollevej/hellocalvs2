@@ -1001,7 +1001,9 @@ function WeekTimelineView({
   const gridDrag = useRef<{ x: number; y: number; scrollLeft: number; scrollTop: number } | null>(null);
   const gridScrollRef = useRef<HTMLDivElement | null>(null);
   const getSleepWindowRef = useRef(getSleepWindow);
-  getSleepWindowRef.current = getSleepWindow;
+  useEffect(() => {
+    getSleepWindowRef.current = getSleepWindow;
+  });
 
   useEffect(() => {
     const node = gridScrollRef.current;
@@ -1009,7 +1011,6 @@ function WeekTimelineView({
     const sleepWindow = getSleepWindowRef.current(days[0]);
     const anchorHour = sleepWindow ? Math.floor(sleepWindow.wakeTime / 60) : 0;
     node.scrollTop = Math.max(0, anchorHour * HOUR_HEIGHT - HOUR_HEIGHT);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [days]);
 
   function handleHeaderPointerDown(event: React.PointerEvent<HTMLDivElement>) {
