@@ -12,6 +12,23 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - 2026-08-26: The simulated phone frame is a desktop presentation aid only.
   On phones and other coarse-pointer devices, the application fills the browser
   viewport without an outer frame, rounded corners, shadow, or mockup background.
+- 2026-09-11: Hello Cal is now a proper installable PWA (`src/app/manifest.ts`,
+  `src/app/apple-icon.png`, `appleWebApp`/`themeColor` in `src/app/layout.tsx`)
+  so the app can match HelloFresh's native header height. In a normal browser
+  tab, `.hf-appbar` (design.md §6.1) is unavoidably shorter than a native app's
+  header, because the phone's own status bar (clock/battery) is drawn by the
+  browser above the page and cannot be repainted with CSS — measured directly:
+  the reference `Hello Fresh inspiration/Log-in.png` header is 100px
+  (CSS px), ours was 52px with 0 safe-area-inset-top in that context. Only
+  when a user adds Hello Cal to the home screen and opens it standalone does
+  `apple-mobile-web-app-status-bar-style: black-translucent` hand the status
+  bar area to the page, at which point `env(safe-area-inset-top)` (already
+  used in `.hf-appbar`, design.md §6.1/§9.3) becomes non-zero and the green
+  header genuinely extends behind it like the reference. This is intentionally
+  not "fixable" by just enlarging `.hf-appbar`'s own height in CSS — doing
+  that would either look wrong when a real safe-area-inset-top later stacks
+  on top (double-tall header) or still not reach the real status bar in an
+  un-installed browser tab.
 - 2026-08-26: Voice registration shows the live transcript at the top below a
   stand-microphone status circle. The circle pulses while AI processes the
   speech; detected entries appear below in the daily-meal row style and can be
@@ -532,4 +549,31 @@ This file records durable decisions. Add a dated entry when a later decision cha
   med `prisma migrate dev`. De er kun valideret med `prisma validate` +
   `prisma generate` + `tsc --noEmit` — skal gennemgås og køres med
   `prisma migrate deploy` ved næste Synology-udrulning før de kan stoles på.
+
+## 2026-09-11: Udvidet næringspanel (MyFitnessPal-stil)
+
+- Produktets næringsindhold udvides med et "MyFitnessPal-stil" udvidet panel:
+  mættet/umættet/transfedt, kolesterol, natrium, kalium, kostfibre, sukker,
+  vitamin A, vitamin C, calcium, jern. De seks nye felter (mættet/umættet/
+  transfedt, kolesterol, vitamin A, vitamin C) er nye `Product`/`Registration`-
+  felter pr. 100g/snapshot; natrium/kalium/kostfibre/sukker/calcium/jern
+  genbruger det eksisterende `Product.nutritionExtra`-felt (kun HelloFresh-
+  opskrifter, se 2026-08-29-posten) via de allerede tilføjede
+  `Registration`-snapshot-kolonner.
+- **Vises aldrig som standard.** Kun som en kollapset "Vis mere"-sektion
+  under næringsindholdet på `/add/[id]`, og kun når brugeren selv har slået
+  "Vis udvidet næringsindhold" til under `/profile/settings` (nyt
+  `User.showExtendedNutrition`-felt, default false, samme mønster som
+  "Få vist allergener"). Sektionen vises slet ikke, hvis produktet ingen af
+  de 12 værdier har — aldrig en tom boks.
+- Kun Open Food Facts leverer de seks nye felter indtil videre
+  (`src/lib/openFoodFacts.ts`); Frida og HelloFresh-scrapet har dem ikke.
+  Enhedskonvertering (g/mg/µg) sker via OFF's egne `<nutrient>_unit`-felter,
+  aldrig ved at antage en enhed — en ukendt enhed (fx "IU") giver `null`,
+  ikke et gæt.
+- Ny hånd-skrevet migration `20260911120000_extended_nutrition_panel` (ikke
+  anvendt endnu — ingen lokal database). En tidligere migration,
+  `20260910000000_registration_extra_nutrition_snapshots`, var allerede
+  skrevet af en tidligere/samtidig session, men `schema.prisma` var aldrig
+  opdateret til at matche den — rettet i samme omgang.
 

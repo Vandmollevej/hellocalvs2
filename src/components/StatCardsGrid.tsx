@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { IconPlus, IconX, type Icon } from "@tabler/icons-react";
+import { IconGripVertical, IconPlus, IconX, type Icon } from "@tabler/icons-react";
 import {
   loadStatLayout,
   saveStatLayout,
@@ -79,6 +79,10 @@ export function StatCardsGrid({
   const longPressTimer = useRef<number | null>(null);
   const pointerDownInfo = useRef<{ x: number; y: number; source: DragSource } | null>(null);
   const isFirstRender = useRef(true);
+  // FLIP-style reorder animation: rects captured just before a layout change,
+  // then diffed against the post-render position so cards visibly slide into
+  // their new spot instead of instantly teleporting there.
+  const prevRectsRef = useRef<Map<string, DOMRect> | null>(null);
 
   useEffect(() => {
     if (isFirstRender.current) {
@@ -102,6 +106,47 @@ export function StatCardsGrid({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Wrap every layout-reordering setLayout call with this so the move is
+  // animated (see the useLayoutEffect below) instead of an instant jump.
+  function setLayoutAnimated(updater: LayoutItem[] | ((prev: LayoutItem[]) => LayoutItem[])) {
+    const rects = new Map<string, DOMRect>();
+    activeRefs.current.forEach((el, id) => rects.set(id, el.getBoundingClientRect()));
+    prevRectsRef.current = rects;
+    setLayout(updater);
+  }
+
+  useLayoutEffect(() => {
+    const prevRects = prevRectsRef.current;
+    if (!prevRects) return;
+    prevRectsRef.current = null;
+
+    activeRefs.current.forEach((el, id) => {
+      const prev = prevRects.get(id);
+      if (!prev) return; // newly inserted item — no previous position to animate from
+      const next = el.getBoundingClientRect();
+      const dx = prev.left - next.left;
+      const dy = prev.top - next.top;
+      if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+
+      // Edit mode's continuous "wobble" animation also drives `transform`, and an
+      // animation wins over an inline transform — so it has to be suspended for
+      // the slide to actually be visible, then handed back afterwards.
+      el.style.animation = "none";
+      el.style.transition = "none";
+      el.style.transform = `translate(${dx}px, ${dy}px)`;
+      // Force layout so the transform above applies before we animate away from it.
+      void el.getBoundingClientRect();
+      requestAnimationFrame(() => {
+        el.style.transition = "transform 220ms ease";
+        el.style.transform = "";
+      });
+      window.setTimeout(() => {
+        el.style.transition = "";
+        el.style.animation = "";
+      }, 260);
+    });
+  }, [layout]);
 
   function enterEditMode() {
     setEditMode(true);
@@ -184,7 +229,7 @@ export function StatCardsGrid({
       if (droppedOnActive) {
         const excludeId = source.kind === "active" ? source.id : undefined;
         const toIndex = nearestInsertionIndex(x, y, excludeId);
-        setLayout((prev) => {
+        setLayoutAnimated((prev) => {
           const next = [...prev];
           let fromIndex = -1;
           let item: LayoutItem;
@@ -205,7 +250,7 @@ export function StatCardsGrid({
         });
       } else if (source.kind === "active") {
         // Dragged out of the active grid — remove the card (stat card goes back into the pool).
-        setLayout((prev) => prev.filter((i) => layoutItemId(i) !== source.id));
+        setLayoutAnimated((prev) => prev.filter((i) => layoutItemId(i) !== source.id));
       }
 
       return null;
@@ -282,29 +327,15 @@ export function StatCardsGrid({
         />
       )}
 
-      <div className="relative z-40 flex items-center justify-between gap-2">
-        <p className="hf-heading text-sm text-hf-black opacity-70">{t("statCardsGrid.title")}</p>
-        <div className="flex items-center gap-2">
-          {editMode && (
-            <button
-              type="button"
-              onPointerDown={(e) =>
-                onCardPointerDown(e, { kind: "template" }, { kind: "header", text: t("statCardsGrid.heading") })
-              }
-              className="flex min-h-8 cursor-grab touch-none select-none items-center rounded-full border border-dashed border-hf-black/30 px-3 py-1 text-xs font-semibold text-hf-black opacity-70 active:cursor-grabbing"
-            >
-              {t("statCardsGrid.heading")}
-            </button>
-          )}
-          <Link
-            href="/statistics/unused-cards"
-            onPointerDown={(event) => event.stopPropagation()}
-            className="hf-btn-primary flex min-h-8 items-center gap-1 px-3 py-1 text-xs"
-          >
-            <IconPlus size={14} stroke={2.5} />
-            {t("statCardsGrid.addCard")}
-          </Link>
-        </div>
+      <div className="relative z-40 flex items-center justify-end gap-2">
+        <Link
+          href="/statistics/unused-cards"
+          onPointerDown={(event) => event.stopPropagation()}
+          className="flex min-h-8 items-center gap-1 text-xs font-semibold text-hf-black"
+        >
+          <IconPlus size={14} stroke={2.5} />
+          {t("statCardsGrid.addCard")}
+        </Link>
       </div>
 
       <div
@@ -324,25 +355,32 @@ export function StatCardsGrid({
                   else activeRefs.current.delete(id);
                 }}
                 style={{ animationDelay: `${(index % 3) * 60}ms` }}
-                className={`col-span-2 flex items-center gap-2 rounded-2xl bg-hf-tan-dark px-4 py-3 select-none ${
+                className={`col-span-2 flex items-center gap-2 rounded-2xl bg-hf-tan-dark px-3 py-3 select-none ${
                   editMode ? "stat-card-editing border-2 border-dashed border-hf-black/30" : ""
                 } ${isDragging ? "opacity-0" : ""}`}
-                onPointerDown={(e) =>
-                  onCardPointerDown(e, { kind: "active", id, item }, { kind: "header", text: item.text })
-                }
               >
+                <button
+                  type="button"
+                  aria-label={t("statCardsGrid.dragHeading")}
+                  onPointerDown={(e) =>
+                    onCardPointerDown(e, { kind: "active", id, item }, { kind: "header", text: item.text })
+                  }
+                  className="flex h-8 w-8 shrink-0 cursor-grab touch-none items-center justify-center rounded-full text-hf-black/50 active:cursor-grabbing"
+                >
+                  <IconGripVertical size={18} stroke={1.75} />
+                </button>
                 <input
                   value={item.text}
                   onChange={(e) => updateHeaderText(item.id, e.target.value)}
                   disabled={!editMode}
-                  className="hf-heading w-full bg-transparent text-sm text-hf-black outline-none disabled:opacity-100"
+                  className="hf-heading w-full select-text bg-transparent text-sm text-hf-black outline-none disabled:opacity-100"
                   aria-label={t("statCardsGrid.renameHeading")}
                 />
                 {editMode && (
                   <button
                     type="button"
                     aria-label={t("statCardsGrid.removeHeading")}
-                    onClick={() => setLayout((prev) => prev.filter((i) => layoutItemId(i) !== id))}
+                    onClick={() => setLayoutAnimated((prev) => prev.filter((i) => layoutItemId(i) !== id))}
                     className="shrink-0 rounded-full p-1 opacity-60 hover:opacity-100"
                   >
                     <IconX size={16} />
@@ -353,7 +391,29 @@ export function StatCardsGrid({
           }
 
           const card = cardByKey.get(item.key);
-          if (!card) return null;
+          if (!card) {
+            // The key is a real, saved part of the layout (e.g. a sport-activity
+            // card with no data in the currently selected period) — render a
+            // placeholder in its slot instead of silently vanishing from the grid.
+            return (
+              <div
+                key={id}
+                ref={(el) => {
+                  if (el) activeRefs.current.set(id, el);
+                  else activeRefs.current.delete(id);
+                }}
+                style={{ animationDelay: `${(index % 3) * 60}ms` }}
+                onPointerDown={(e) =>
+                  onCardPointerDown(e, { kind: "active", id, item }, { kind: "pill", label: item.key })
+                }
+                className={`touch-none select-none rounded-2xl bg-hf-tan/50 p-4 ${
+                  editMode ? "stat-card-editing cursor-grab border-2 border-dashed border-hf-black/30 active:cursor-grabbing" : ""
+                } ${isDragging ? "opacity-0" : ""}`}
+              >
+                <p className="text-xs text-hf-black opacity-40">{t("statCardsGrid.noData")}</p>
+              </div>
+            );
+          }
           const CardIcon = card.icon;
 
           return (

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { IconCalendar, IconChevronDown } from "@tabler/icons-react";
+import { IconChevronDown } from "@tabler/icons-react";
 import { STAT_PERIODS, selectionLabel, selectionRange, type StatPeriodSelection } from "@/lib/stat-periods";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -53,9 +53,8 @@ export function StatPeriodPicker({
         aria-haspopup="true"
         aria-expanded={open}
         onClick={() => setOpen((current) => !current)}
-        className="flex min-h-9 items-center gap-1.5 rounded-full border border-hf-tan-dark bg-hf-white px-3 text-sm font-semibold text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
+        className="flex min-h-9 items-center gap-1.5 border-b border-hf-black px-0 text-sm font-semibold text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
       >
-        <IconCalendar size={16} stroke={2} />
         {selectionLabel(selection)}
         <IconChevronDown size={16} stroke={2.5} className={open ? "rotate-180" : ""} />
       </button>

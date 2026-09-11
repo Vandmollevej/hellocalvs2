@@ -40,10 +40,23 @@ const DEFAULT_LAYOUT: StatGridLayoutItem[] = DEFAULT_ACTIVE_STAT_KEYS.map((key) 
 // message saying no data exists yet — no new stat types are invented here.
 function categoryDefs(t: (key: string) => string): { title: string; keys: string[] | "dynamic-sport" }[] {
   return [
-    { title: t("statUnusedCards.category.energyMacros"), keys: ["calories", "protein", "carbs", "fat"] },
-    { title: t("statUnusedCards.category.carbsFibre"), keys: [] },
-    { title: t("statUnusedCards.category.vitamins"), keys: [] },
-    { title: t("statUnusedCards.category.minerals"), keys: [] },
+    // Fat breakdown/cholesterol are the MyFitnessPal-style extended panel
+    // (2026-09-11, Open Food Facts-sourced products only, see
+    // src/lib/openFoodFacts.ts) — grouped here since they're macro-related.
+    {
+      title: t("statUnusedCards.category.energyMacros"),
+      keys: ["calories", "protein", "carbs", "fat", "saturatedFat", "unsaturatedFat", "transFat", "cholesterol"],
+    },
+    // Sugar/fiber come from Product.nutritionExtra (HelloFresh recipes only,
+    // see docs/DECISIONS.md 2026-08-29) — real data, not invented.
+    { title: t("statUnusedCards.category.carbsFibre"), keys: ["sugar", "fiber"] },
+    // Vitamin A/C are the extended panel too (Open Food Facts only) — real
+    // data, not invented; this used to be a permanently empty category
+    // before that source existed.
+    { title: t("statUnusedCards.category.vitamins"), keys: ["vitaminA", "vitaminC"] },
+    // Salt/potassium/calcium/iron are also HelloFresh-recipe-only, same source
+    // as sugar/fiber above.
+    { title: t("statUnusedCards.category.minerals"), keys: ["salt", "potassium", "calcium", "iron"] },
     { title: t("statUnusedCards.category.activityOther"), keys: ["steps", "water", "burned", "daysLogged", "goalsMet"] },
     // Sport types are dynamic (one per sport the user actually has data for),
     // and only present when at least one real integration is CONNECTED — see

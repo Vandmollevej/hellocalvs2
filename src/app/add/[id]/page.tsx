@@ -17,6 +17,10 @@ function currentTimeString() {
   return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
 }
 
+function formatDaNumber(value: number, maximumFractionDigits: number) {
+  return new Intl.NumberFormat("da-DK", { maximumFractionDigits }).format(value);
+}
+
 function currentDateString() {
   const now = new Date();
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
@@ -37,11 +41,23 @@ type Product = {
   ingredientsText?: string | null;
   allergens?: string[];
   additives?: string[];
+  // HelloFresh-recipe extra nutrition, per Product.servingSizeGrams — see
+  // docs/DECISIONS.md 2026-08-29/2026-09-10.
+  nutritionExtra?: Record<string, number> | null;
+  // MyFitnessPal-style extended panel (2026-09-11), per 100g — currently only
+  // populated for products sourced from Open Food Facts.
+  saturatedFatPer100g?: number | null;
+  unsaturatedFatPer100g?: number | null;
+  transFatPer100g?: number | null;
+  cholesterolPer100g?: number | null;
+  vitaminAPer100g?: number | null;
+  vitaminCPer100g?: number | null;
 };
 
 type ProfileUser = {
   showAllergens: boolean;
   allergenVisibility: Record<string, boolean> | null;
+  showExtendedNutrition: boolean;
 };
 
 type LoadState =
@@ -69,6 +85,7 @@ export default function AddPage() {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [openAdditive, setOpenAdditive] = useState<string | null>(null);
   const [additivesOpen, setAdditivesOpen] = useState(false);
+  const [extendedNutritionOpen, setExtendedNutritionOpen] = useState(false);
   const [additiveNames, setAdditiveNames] = useState<Record<string, string>>({});
   const [macroOverride, setMacroOverride] = useState<{
     amount: number;
@@ -143,6 +160,42 @@ export default function AddPage() {
   // Overrides only apply to the amount they were set at — if the amount changes,
   // the bars automatically follow the computed default values again.
   const macros = macroOverride && macroOverride.amount === amount ? macroOverride : defaultMacros;
+
+  // MyFitnessPal-style extended nutrition panel (2026-09-11): saturated/
+  // unsaturated/trans fat, cholesterol, and vitamin A/C are real per-100g
+  // Product fields (Open Food Facts-sourced products only), scaled by the
+  // current amount just like the macro bars above. Sugar/fiber/salt/
+  // potassium/calcium/iron come from Product.nutritionExtra instead, which is
+  // per the product's own servingSizeGrams, not per 100g (see
+  // scripts/hellofresh-import/agent.py) — only scaled when that's known.
+  const extendedNutrition = useMemo(() => {
+    if (!product) return [];
+    const extraFactor = product.servingSizeGrams ? amount / product.servingSizeGrams : null;
+    const extra = product.nutritionExtra ?? null;
+    const fromExtra = (key: string) =>
+      extraFactor !== null && extra && typeof extra[key] === "number" ? extra[key] * extraFactor : null;
+    const fromPer100g = (value: number | null | undefined) =>
+      typeof value === "number" ? value * factor : null;
+
+    const rows: { key: string; value: number | null; unit: string; digits?: number }[] = [
+      { key: "saturatedFat", value: fromPer100g(product.saturatedFatPer100g), unit: "g", digits: 1 },
+      { key: "unsaturatedFat", value: fromPer100g(product.unsaturatedFatPer100g), unit: "g", digits: 1 },
+      { key: "transFat", value: fromPer100g(product.transFatPer100g), unit: "g", digits: 2 },
+      { key: "cholesterol", value: fromPer100g(product.cholesterolPer100g), unit: "mg" },
+      { key: "sodium", value: fromExtra("saltG"), unit: "g", digits: 1 },
+      { key: "potassium", value: fromExtra("potassiumMg"), unit: "mg" },
+      { key: "fiber", value: fromExtra("fiberG"), unit: "g", digits: 1 },
+      { key: "sugar", value: fromExtra("sugarG"), unit: "g", digits: 1 },
+      { key: "vitaminA", value: fromPer100g(product.vitaminAPer100g), unit: "µg" },
+      { key: "vitaminC", value: fromPer100g(product.vitaminCPer100g), unit: "mg" },
+      { key: "calcium", value: fromExtra("calciumMg"), unit: "mg" },
+      { key: "iron", value: fromExtra("ironMg"), unit: "mg", digits: 1 },
+    ];
+
+    return rows
+      .filter((row): row is { key: string; value: number; unit: string; digits?: number } => row.value !== null)
+      .map((row) => ({ ...row, label: t(`addProduct.nutrient.${row.key}`) }));
+  }, [product, amount, factor, t]);
 
   const visibleAllergens = useMemo(() => {
     if (!product?.allergens?.length || !profile?.showAllergens) return [];
@@ -247,22 +300,32 @@ export default function AddPage() {
                 </div>
               )}
               <div className="flex flex-col items-center gap-2 pt-2 text-center">
-                <div className="flex h-[190px] w-[190px] items-center justify-center rounded-2xl bg-hf-tan">
-                  {state.product.imageUrl && (
-                    // eslint-disable-next-line @next/next/no-img-element
+                <div className="relative h-[190px] w-[190px]">
+                  <div className="flex h-full w-full items-center justify-center rounded-full bg-hf-tan">
+                    {state.product.imageUrl && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={state.product.imageUrl}
+                        alt=""
+                        className="h-full w-full object-contain p-8"
+                      />
+                    )}
+                  </div>
+                  <div className="absolute -right-5 bottom-0 flex h-[72px] w-[72px] items-center justify-center rounded-full bg-white shadow-md">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={state.product.imageUrl}
+                      src="/hello-cal-fruit.png"
                       alt=""
-                      className="h-full w-full object-contain p-3"
+                      className="h-14 w-14 object-contain"
                     />
-                  )}
+                  </div>
                 </div>
+                <p className="hf-heading text-lg text-hf-black">{state.product.name}</p>
                 {state.product.brand && (
-                  <p className="text-xs font-medium text-hf-black opacity-60">
+                  <p className="text-sm font-bold text-hf-green">
                     {state.product.brand.name}
                   </p>
                 )}
-                <p className="hf-heading text-lg text-hf-black">{state.product.name}</p>
                 <p className="text-sm font-bold text-hf-black">
                   {servingSizeGrams && hasServingUnit
                     ? t("addProduct.kcalPerServing", {
@@ -456,6 +519,49 @@ export default function AddPage() {
                   <p className="text-[13px] leading-relaxed text-hf-black opacity-70">
                     {state.product.ingredientsText}
                   </p>
+                </div>
+              )}
+
+              {/* MyFitnessPal-style extended nutrition panel (2026-09-11): only
+                  shown when the user opted in (profile/settings) AND at least
+                  one value actually exists for this product — never renders
+                  as an empty block. Collapsed by default behind "Vis mere". */}
+              {profile?.showExtendedNutrition && !!extendedNutrition.length && (
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setExtendedNutritionOpen((open) => !open)}
+                    className="flex w-full items-center justify-between"
+                  >
+                    <p className="hf-heading text-[15px] text-hf-black">{t("addProduct.extendedNutrition")}</p>
+                    <span className="flex items-center gap-1 text-[13px] font-medium text-hf-black underline underline-offset-2">
+                      {extendedNutritionOpen ? t("addProduct.showLess") : t("addProduct.showMore")}
+                      <IconChevronDown
+                        size={15}
+                        className={`transition-transform ${extendedNutritionOpen ? "rotate-180" : ""}`}
+                      />
+                    </span>
+                  </button>
+                  {extendedNutritionOpen && (
+                    <div className="mt-3 flex flex-col overflow-hidden rounded-2xl bg-hf-tan">
+                      {extendedNutrition.map((row, index) => (
+                        <div
+                          key={row.key}
+                          className={`flex items-center justify-between px-4 py-2.5 text-[13px] text-hf-black ${
+                            index < extendedNutrition.length - 1 ? "border-b border-hf-tan-dark" : ""
+                          }`}
+                        >
+                          <span className="opacity-70">{row.label}</span>
+                          <span className="font-medium">
+                            {formatDaNumber(row.value, row.digits ?? 0)} {row.unit}
+                          </span>
+                        </div>
+                      ))}
+                      <p className="px-4 py-2.5 text-[11px] text-hf-black opacity-50">
+                        {t("addProduct.extendedNutritionDisclaimer")}
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

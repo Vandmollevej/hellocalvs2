@@ -14,11 +14,13 @@ export function ScreenHeader({
   icon,
   onBack,
   variant = "brand",
+  titleClassName,
 }: {
   title: string;
   icon?: React.ReactNode;
   onBack?: () => void;
   variant?: "brand" | "main";
+  titleClassName?: string;
 }) {
   const { t } = useTranslation();
   const isCompact = useIsCompactLandscape();
@@ -35,13 +37,14 @@ export function ScreenHeader({
           </button>
         )}
       </div>
-      <div className="flex items-center justify-center gap-2 overflow-hidden">
+      <div className="flex min-w-0 items-center justify-center gap-2">
         {icon && (
-          <span className="flex shrink-0 text-hf-white" aria-hidden="true">
+          <span className="flex h-6 w-6 shrink-0 items-center justify-center text-hf-white" aria-hidden="true">
             {icon}
           </span>
         )}
-        <h1 className="hf-type-nav-title hf-appbar__title">{title}</h1>
+        <h1 className={`hf-type-nav-title hf-appbar__title ${titleClassName ?? ""}`}>{title}</h1>
+        {icon && <span className="h-6 w-6 shrink-0" aria-hidden="true" />}
       </div>
       <div className="hf-appbar__slot">
         <Link href="/profile" aria-label={t("settings.openProfile")}>

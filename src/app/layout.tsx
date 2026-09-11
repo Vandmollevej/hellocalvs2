@@ -16,12 +16,23 @@ const geistSans = Geist({
 export const metadata: Metadata = {
   title: "Hello Cal",
   description: "Kalorie- og måltidsregistrering",
+  appleWebApp: {
+    capable: true,
+    title: "Hello Cal",
+    // "black-translucent" lader vores egen .hf-appbar-baggrund strække sig
+    // op bag statusbjælken (ur/batteri), i stedet for at browseren tegner
+    // en hvid/sort bjælke ovenover — det er præcis det, der gør HelloFresh's
+    // native header højere end vores i en almindelig browserfane.
+    statusBarStyle: "black-translucent",
+  },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
+  viewportFit: "cover",
+  themeColor: "#067A46",
 };
 
 export default function RootLayout({

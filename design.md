@@ -582,6 +582,18 @@ gult kort med grøn kant (`#FDF3D3` baggrund, `--hf-color-brand` kant, mørk
 `--hf-color-text`) med "Opret produktet og optjen 10 points." Sidstnævnte er
 rent visuelt — der findes intet pointsystem i datamodellen endnu.
 
+**`PointsPromoBanner`** (`src/components/hf/PointsPromoBanner.tsx`), tilføjet
+2026-09-11 — erstatter de tidligere rene tekstbannere for "optjen X points
+ved at ..." på Invitér en ven og Indberet fejl. Struktur kopieret efter
+brugerreference (HelloFresh-app, "Spar op til ... + Aktivér rabat"-kort på
+Privatlivspolitik-skærmen): grønt kort (`--hf-color-brand`, radius 8 px, 16 px
+padding), en 44×44 luk-knap (`IconX`, hvid) øverst til højre, fed hvid
+overskriftstekst, valgfri hvid brødtekstlinje, og en fuldbredde hvid knap
+(`--hf-color-white` baggrund, `--hf-color-action` tekst) med en handlingslabel
+(fx "Læs betingelser"). Luk skjuler kortet lokalt for resten af sessionen
+(ingen persistering). Erstatter det tidligere mønster med "*" i teksten og en
+separat lysegrå "*Læs betingelser"-linje under kortet.
+
 ## 7. Referenceproportioner, som skal bevares
 
 ### Velkomst/start

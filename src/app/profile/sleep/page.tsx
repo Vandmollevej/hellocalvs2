@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { IconChevronDown } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
-import { TimeSliderBar } from "@/components/hf/TimeSliderBar";
+import { SleepRangeSlider } from "@/components/hf/SleepRangeSlider";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 type SleepUser = {
@@ -242,15 +242,11 @@ export default function SleepSchedulePage() {
                 return (
                   <div key={label} className="flex flex-col gap-1.5">
                     <span className="text-[13px] font-semibold text-hf-black">{label}</span>
-                    <TimeSliderBar
-                      labelSide="left"
-                      minutes={wakeMinutes}
-                      onChange={(value) => updateWeekday(weekday, "wakeTime", minutesToTime(value))}
-                    />
-                    <TimeSliderBar
-                      labelSide="right"
-                      minutes={bedtimeMinutes}
-                      onChange={(value) => updateWeekday(weekday, "bedtime", minutesToTime(value))}
+                    <SleepRangeSlider
+                      wakeMinutes={wakeMinutes}
+                      bedtimeMinutes={bedtimeMinutes}
+                      onChangeWake={(value) => updateWeekday(weekday, "wakeTime", minutesToTime(value))}
+                      onChangeBedtime={(value) => updateWeekday(weekday, "bedtime", minutesToTime(value))}
                     />
                   </div>
                 );

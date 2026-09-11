@@ -1,13 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { HfScreen } from "@/components/HfScreen";
+import { PointsPromoBanner } from "@/components/hf/PointsPromoBanner";
 
 // "Indberet fejl" (docs/DECISIONS.md 2026-09-02): 10 points ved godkendt
-// fejlindberetning. Banner-mønster genbrugt fra src/app/product/create/page.tsx
-// (grønt banner, "*" i teksten, lysegrå "*Læs betingelser"-linje under).
+// fejlindberetning.
 export default function ReportBugPage() {
   const router = useRouter();
   const [description, setDescription] = useState("");
@@ -44,17 +43,10 @@ export default function ReportBugPage() {
       onBack={() => router.back()}
     >
       <div className="px-4 pt-4">
-        <div className="rounded-lg p-4" style={{ background: "var(--hf-color-brand)" }}>
-          <p className="hf-type-body" style={{ color: "var(--hf-color-white)" }}>
-            Indberet en fejl og optjen 10 points, når den godkendes og rettes.*
-          </p>
-        </div>
-        <p className="hf-type-caption mt-1" style={{ color: "var(--hf-color-text-secondary)" }}>
-          *
-          <Link href="/betingelser#pointsystem" className="underline">
-            Læs betingelser
-          </Link>
-        </p>
+        <PointsPromoBanner
+          headline="Indberet en fejl og optjen 10 points, når den godkendes og rettes."
+          href="/betingelser#pointsystem"
+        />
 
         {done ? (
           <p className="hf-type-body mt-6">

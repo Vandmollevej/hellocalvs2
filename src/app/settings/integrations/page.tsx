@@ -4,20 +4,20 @@ import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   IconRun,
-  IconScale,
   IconDeviceWatch,
   IconHeartbeat,
   IconBrandGoogle,
   type Icon,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { IconBathScale } from "@/components/hf/IconBathScale";
 import type { IntegrationCardStatus } from "@/lib/integrations";
 import type { IntegrationProvider } from "@prisma/client";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 const PROVIDER_ICONS: Record<IntegrationProvider, Icon> = {
   FITBIT: IconRun,
-  WITHINGS: IconScale,
+  WITHINGS: IconBathScale,
   GARMIN: IconDeviceWatch,
   APPLE_HEALTH: IconHeartbeat,
   GOOGLE_HEALTH: IconBrandGoogle,

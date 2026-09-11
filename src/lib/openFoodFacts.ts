@@ -13,7 +13,44 @@ export type OffProduct = {
   ingredientsText: string | null;
   allergens: string[];
   additives: string[];
+  // MyFitnessPal-style extended panel (2026-09-11) — null when OFF doesn't
+  // report the nutrient at all, or reports it in a unit this app doesn't
+  // know how to convert (e.g. "IU"), rather than guessing.
+  saturatedFatPer100g: number | null;
+  unsaturatedFatPer100g: number | null;
+  transFatPer100g: number | null;
+  cholesterolPer100g: number | null; // mg
+  vitaminAPer100g: number | null; // µg
+  vitaminCPer100g: number | null; // mg
 };
+
+// OFF reports most nutriments in the nutrient's own canonical unit (g, mg or
+// µg), with a companion "<nutrient>_unit" field naming which one was used —
+// normalizes to a fixed target unit instead of assuming. Returns null rather
+// than guess when the value is missing or the unit isn't a plain mass unit
+// (e.g. "IU", which needs a per-nutrient conversion factor this app doesn't have).
+function offNutrientAs(
+  n: Record<string, unknown>,
+  key: string,
+  targetUnit: "mg" | "µg"
+): number | null {
+  const raw = n[`${key}_100g`];
+  const value = typeof raw === "number" ? raw : typeof raw === "string" ? parseFloat(raw) : NaN;
+  if (!Number.isFinite(value)) return null;
+
+  const unit = String(n[`${key}_unit`] ?? "g").toLowerCase();
+  const grams =
+    unit === "g"
+      ? value
+      : unit === "mg"
+        ? value / 1000
+        : unit === "µg" || unit === "mcg" || unit === "ug"
+          ? value / 1_000_000
+          : null;
+  if (grams === null) return null;
+
+  return targetUnit === "mg" ? grams * 1000 : grams * 1_000_000;
+}
 
 function mapOffProduct(p: Record<string, unknown>): OffProduct | null {
   const code = typeof p.code === "string" ? p.code : null;
@@ -42,6 +79,15 @@ function mapOffProduct(p: Record<string, unknown>): OffProduct | null {
       )
     : [];
 
+  const fatPer100g = (n.fat_100g as number) ?? 0;
+  const saturatedFatPer100g =
+    typeof n["saturated-fat_100g"] === "number" ? (n["saturated-fat_100g"] as number) : null;
+  const transFatPer100g = typeof n["trans-fat_100g"] === "number" ? (n["trans-fat_100g"] as number) : null;
+  const unsaturatedFatPer100g =
+    saturatedFatPer100g !== null && transFatPer100g !== null
+      ? Math.max(0, fatPer100g - saturatedFatPer100g - transFatPer100g)
+      : null;
+
   return {
     barcode: code,
     name: (p.product_name_da as string) || (p.product_name as string) || "Ukendt produkt",
@@ -50,11 +96,17 @@ function mapOffProduct(p: Record<string, unknown>): OffProduct | null {
     kcalPer100g: (n["energy-kcal_100g"] as number) ?? 0,
     proteinPer100g: (n.proteins_100g as number) ?? 0,
     carbsPer100g: (n.carbohydrates_100g as number) ?? 0,
-    fatPer100g: (n.fat_100g as number) ?? 0,
+    fatPer100g,
     servingSizeGrams,
     ingredientsText: (p.ingredients_text_da as string) || (p.ingredients_text as string) || null,
     allergens: mapOffAllergenTags(p.allergens_tags as unknown[]),
     additives,
+    saturatedFatPer100g,
+    unsaturatedFatPer100g,
+    transFatPer100g,
+    cholesterolPer100g: offNutrientAs(n, "cholesterol", "mg"),
+    vitaminAPer100g: offNutrientAs(n, "vitamin-a", "µg"),
+    vitaminCPer100g: offNutrientAs(n, "vitamin-c", "mg"),
   };
 }
 

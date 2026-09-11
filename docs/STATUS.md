@@ -1,6 +1,170 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-07
+Last updated: 2026-09-11
+
+## 2026-09-11: finished the "add card" stat categories (all 5, incl. Vitaminer) + a real MyFitnessPal-style extended nutrition panel
+
+Direct user feedback on a fresh screenshot of `/statistics/unused-cards`:
+"Vitaminer" still showed an empty "Ingen kort her endnu." box — the
+2026-09-10 entry below turned out to be **inconsistent with the actual code**
+when re-checked: `schema.prisma` was missing the six `Registration` snapshot
+columns its own migration added (Prisma Client wouldn't have matched the
+database), and `src/lib/stat-cards.ts`/`unused-cards/page.tsx` didn't have the
+`sugar`/`fiber`/`salt`/`potassium`/`calcium`/`iron` entries the note claimed
+at the start of this session — likely a concurrent session's work landing
+between then and now. Re-checked live at the start of this pass:
+`schema.prisma` was fixed to match the existing migration (see below), and by
+the time `stat-cards.ts`/`unused-cards/page.tsx` were touched here, a
+concurrent session had already wired the original six fields in — this pass
+only added the six new ones on top and fixed the schema gap. The user then
+asked for the full MyFitnessPal-style nutrition list to be built for real
+(fat breakdown, cholesterol, sodium, potassium, fibre, sugar, vitamin A/C,
+calcium, iron), shown as a collapsed "Vis mere" section (never open by
+default) below the nutrition info on `/add/[id]`, gated by a new opt-in
+setting — asked in an `AskUserQuestion` round-trip before building, per the
+"no autonomous actions on architecture decisions" rule.
+
+- `prisma/schema.prisma`: added the six `Registration` columns matching
+  `prisma/migrations/20260910000000_registration_extra_nutrition_snapshots`
+  (still not applied — no reachable database, same as other pending
+  migrations). Added a new hand-written migration,
+  `prisma/migrations/20260911120000_extended_nutrition_panel`, for: six new
+  nullable `Product.*Per100g` fields (saturated/unsaturated/trans fat,
+  cholesterol, vitamin A, vitamin C), matching `Registration.*Snapshot`
+  columns, and `User.showExtendedNutrition` (boolean, default false).
+- `src/lib/openFoodFacts.ts`: maps the six new fields from Open Food Facts'
+  `nutriments` object. Cholesterol/vitamin A/vitamin C use a new
+  `offNutrientAs()` helper that reads OFF's companion `<nutrient>_unit`
+  field and converts g/mg/µg explicitly instead of assuming a unit — returns
+  null (not a guess) for anything else (e.g. "IU"). Unsaturated fat is
+  derived as `fat − saturated − trans` only when both are known. **This is
+  currently the only data source for these six fields** — Frida and the
+  HelloFresh scrape don't have them, so most products will show none of this
+  section at all, same "unknown = hidden, not zero" convention as everywhere
+  else in this codebase.
+- `src/app/api/products/route.ts` (OFF search-import path) and
+  `src/app/api/products/lookup/[barcode]/route.ts` (barcode lookup path) now
+  pass these six fields through when creating a `Product` from an OFF result.
+- `src/app/api/registrations/route.ts`: snapshots the six new fields the same
+  way as kcal/protein/carbs/fat (simple `amountGrams/100` factor against the
+  Product's per-100g value) — simpler than the existing sugar/fiber/salt/
+  potassium/calcium/iron path just below it, which stays on the older
+  `nutritionExtra`-per-serving-size scaling (HelloFresh recipes only, see the
+  2026-08-29/2026-09-10 entries) since that data still only exists there.
+- `src/lib/daily-totals.ts`: `DailyTotal`/`RegistrationTotals` gained the six
+  new fields, zero-filled the same way as the existing six.
+- `src/lib/stat-cards.ts`: added `saturatedFat`/`unsaturatedFat`/`transFat`/
+  `cholesterol`/`vitaminA`/`vitaminC` to `STAT_CARD_DEFS` (not added to
+  `DEFAULT_ACTIVE_STAT_KEYS`, same reasoning as the existing six — reachable
+  via "unused cards" instead of cluttering a fresh dashboard).
+- `src/app/statistics/unused-cards/page.tsx`: `categoryDefs()`'s
+  "Energi og makrofordeling" now also includes the fat breakdown +
+  cholesterol; **"Vitaminer" now maps to `["vitaminA", "vitaminC"]` — no
+  longer permanently empty.** All 5 categories now have at least one real,
+  non-invented card source.
+- `src/app/add/[id]/page.tsx`: new collapsed "Vis mere"/"Vis mindre" section
+  (`addProduct.extendedNutrition`) below the ingredients/allergens details,
+  listing whichever of the 12 extended nutrients (the 6 new per-100g fields +
+  the existing 6 `nutritionExtra` ones) actually have a value for this
+  product at the current amount — **only rendered at all when
+  `profile.showExtendedNutrition` is on AND at least one row has data**, so
+  it never shows as an empty block. Never expanded by default.
+- `src/app/profile/settings/page.tsx` + `src/app/api/profile/route.ts`: new
+  "Vis udvidet næringsindhold" toggle (off by default), same pattern as the
+  existing "Få vist allergener" toggle.
+- New i18n keys added to both `da.json`/`en.json`:
+  `settings.showExtendedNutrition(Description)`,
+  `addProduct.showMore/showLess/extendedNutrition(Disclaimer)`, and
+  `addProduct.nutrient.*` (12 nutrient labels).
+- This workstation cannot run `node`/`npm`/`npx` at all in this session
+  (checked both Bash and PowerShell) — same "no Node.js install at all"
+  constraint noted in the entry directly below. **The user needs to run
+  `npx prisma generate`, `npm run lint`, and `npm run build` themselves**,
+  then apply both pending migrations (`npx prisma migrate deploy`) before
+  this reaches production. Run command:
+  `npx prisma generate && npm run lint && npm run build`.
+
+## 2026-09-11: profile weight field lock + new "målvægt" (target weight) feature
+
+`/profile/edit` ("Profil"): the weight field is renamed "Start-vægt (kg)" and
+is now locked by default — a light-grey lock icon next to the label must be
+clicked to unlock it for editing, so it reads as a one-time starting value
+rather than a field to update regularly (that's what "Indtast ny vægt"/vægt-
+kalibrering is for). Added a row of three buttons below the basic-info grid:
+Fotodagbog, Indtast ny vægt, Indtast mål — linking to `/profile/photo-diary`,
+`/profile/weight-calibration`, and a new `/profile/target-weight` page.
+
+New shared icon: `src/components/hf/IconBathScale.tsx` — a bathroom-scale SVG
+(same primitive pattern as `HfChevron`), now the one weight icon used
+everywhere a weight icon appears (`/profile`, `/profile/edit`'s new weight
+button, and the Withings row in `/settings/integrations`), replacing
+`@tabler/icons-react`'s `IconScale` (a balance/kitchen scale) which does not
+exist as a bathroom-scale variant in that icon set.
+
+New feature: target/goal weight. `User.targetWeightKg` (nullable Float) added
+to the schema; hand-written migration
+`prisma/migrations/20260911000000_user_target_weight` (same reason as other
+recent hand-written migrations — no local database on this workstation to run
+`prisma migrate dev` against; only `prisma validate`-level checking was
+possible here). `PATCH /api/profile` now also accepts `targetWeightKg`.
+`/profile/target-weight` autosaves on blur (no "Save" button, per the
+existing convention). This is a new concept with no other consumer yet
+(e.g. not surfaced in statistics) — that's out of scope for this pass.
+
+**Not verified in a browser** (no local database on this workstation, same
+constraint as other recent entries in this file). `npm run lint` and
+`npm run build` could not be run either — this workstation has no Node.js/npm
+install at all (only a Playwright-bundled `node.exe`, not a general runtime),
+and it has no local admin rights to install one. Needs `prisma migrate deploy`
++ a real click-through on the next Synology release, same as the pending
+migrations noted elsewhere in this file.
+
+## 2026-09-10: filled two of the empty "add card" stat categories with real data
+
+Per direct user feedback that `/statistics/unused-cards` showed several empty
+categories ("Kulhydrattyper og fibre", "Vitaminer", "Mineraler") — these were
+deliberately left empty in the 2026-08-27 batch since no matching stat types
+existed. Re-checked the schema: `Product.nutritionExtra` (added 2026-08-29 for
+HelloFresh-recipe imports) already carries real sugar/fiber/salt/potassium/
+calcium/iron values per docs/DECISIONS.md, just never wired into
+registrations or stat cards. Wired it up rather than inventing placeholder
+numbers:
+
+- `Registration` gained six nullable snapshot columns (`sugarSnapshot`,
+  `fiberSnapshot`, `saltSnapshot`, `potassiumSnapshot`, `calciumSnapshot`,
+  `ironSnapshot`) via a new hand-written migration
+  (`prisma/migrations/20260910000000_registration_extra_nutrition_snapshots`
+  — not yet applied, same "no local DB reachable" situation as other pending
+  migrations in this file).
+- `POST /api/registrations` (productId path) now reads `product.nutritionExtra`
+  and scales it by `amountGrams / product.servingSizeGrams` (nutritionExtra is
+  per-serving, not per-100g — see the code comment and
+  `scripts/hellofresh-import/agent.py`) into the new snapshot fields. Only
+  populated when both the product has a `servingSizeGrams` and the specific
+  key exists in `nutritionExtra`; otherwise left `undefined`/null, same as
+  every other "no data yet" case in this codebase.
+- `src/lib/daily-totals.ts`'s `DailyTotal`/`RegistrationTotals` types and
+  `groupByDay()` now also sum sugar/fiber/salt/potassium/calcium/iron
+  (zero-filled on days without a HelloFresh-recipe registration, same
+  averaging convention as every other stat card).
+- `src/lib/stat-cards.ts`: added `sugar`/`fiber`/`salt`/`potassium`/`calcium`/
+  `iron` entries to `STAT_CARD_DEFS`. **Not** added to
+  `DEFAULT_ACTIVE_STAT_KEYS` (that's now an explicit 9-key list instead of
+  "every def") so a fresh Statistik dashboard isn't cluttered with
+  mostly-zero cards for users with no HelloFresh registrations — they're
+  reachable the normal way, via "unused cards".
+- `src/app/statistics/unused-cards/page.tsx`: `categoryDefs()`'s
+  "Kulhydrattyper og fibre" now maps to `["sugar", "fiber"]` and "Mineraler"
+  to `["salt", "potassium", "calcium", "iron"]`. "Vitaminer" is **still**
+  empty on purpose — no vitamin data exists anywhere in this codebase or in
+  the HelloFresh scrape, so it was left as a genuine empty-state rather than
+  invented.
+- This workstation cannot run `npx prisma generate`/`npm run lint`/
+  `npm run build` at all in this session (`node`/`npm`/`npx` are not on PATH
+  in either shell here, not just "no local DB" as in other entries) — the
+  user needs to run `npx prisma generate`, `npm run lint`, and
+  `npm run build` themselves, then apply the new migration
+  (`npx prisma migrate deploy`) before this reaches production.
 
 ## In progress (2026-09-03): pointsystem, betaling, besked-automatisering, admin-brugere
 
@@ -166,6 +330,19 @@ edit avoids colliding with it; fold these in next time that file is touched):
   visual overlay/uncertain-ingredient UI from `docs/AI.md` is not built —
   this is a simple review list only. `npm run lint` and `npm run build`
   passed on 2026-09-03.
+
+- 2026-09-11: Added installable-PWA support (`src/app/manifest.ts`,
+  `src/app/apple-icon.png`, `public/icons/icon-192.png`/`icon-512.png`
+  generated from the existing `src/app/icon.png` mark, `appleWebApp`/
+  `themeColor` metadata in `src/app/layout.tsx`) so the header can actually
+  match HelloFresh's native app header height when added to the home screen
+  — see `docs/DECISIONS.md` (2026-09-11) for why a plain browser tab can
+  never fully match it. Not yet verified: `npm run lint`/`npm run build`
+  could not be run from this environment (no `npm` on PATH here — see
+  `docs/STATUS.md`'s other "no local DB"-style workstation notes); run
+  `npm run lint && npm run build` and then, on an actual iPhone, add
+  `hellocal.packroff.dk` to the home screen and open it standalone to confirm
+  the green `.hf-appbar` now extends behind the status bar.
 
 ## Validation
 
@@ -1352,3 +1529,15 @@ All three: `npm run lint` clean, `rm -rf .next && npm run build` clean.
 ### 2026-09-08: serving-unit label ("portion"/"person" etc.) now DB-driven, not hardcoded
 
 User flagged that `add/[id]/page.tsx`'s serving-count UI hardcoded the word "person"/"personer" (and `kcalPerServing` hardcoded "portion") regardless of what the product actually is — a smoothie recipe showing "1 portion" was luck, not data. Added `Product.servingSizeUnitSingular`/`servingSizeUnitPlural` (migration `20260908053300_product_serving_size_unit`), only ever set together with `servingSizeGrams`. UI now shows the servings toggle/stepper/kcal-per-serving text only when both are actually present on the product — falls back to kcal/100g otherwise, never guesses a unit. `product/create/page.tsx` gained the two input fields (shown once a serving size is entered); `scripts/hellofresh-import/agent.py` now writes "portion"/"portioner" for every HelloFresh dish (a real fact about that data source, not a UI guess); `HelloFreshMatchReview.tsx` updated to match. Old i18n keys `personSingular`/`personPlural`/`personsUnit` removed (values now come from the DB). Lint+build clean; not exercised live (no reachable DB in this environment) — needs `prisma migrate deploy` on next deploy (handled automatically by the `migrate` service, per existing pattern).
+
+### 2026-09-10: statistics stat-card drag-and-drop — three real bugs fixed in `src/components/StatCardsGrid.tsx`
+
+User reported (with a live screenshot of `/statistics`) three concrete problems with the stat-card editor's drag-and-drop: (1) moving a card to an empty spot silently reshuffles the other cards with **no animation**, so it's unclear what just happened; (2) elements **sometimes just disappear**; (3) the **heading/"Overskrift" field can't be moved at all**.
+
+All three traced to real causes in the existing code, not vague/unreproducible reports:
+
+- **Heading undraggable (root cause):** the heading row's drag was triggered by `onPointerDown` on the *outer* row div, but `onCardPointerDown` explicitly bails out early when `event.target instanceof HTMLInputElement` — and the row's `<input>` (the editable heading text) was styled `w-full`, i.e. it covered the entire row. Every pointerdown on the row therefore landed on the input and was ignored for drag purposes; there was no non-input surface left to grab. Fixed by giving the heading row a dedicated small drag handle (`IconGripVertical` button, new `statCardsGrid.dragHeading` i18n key) that owns the pointerdown-to-drag wiring, narrowing the input so it no longer spans the full row.
+- **Elements disappearing (root cause):** stat cards are looked up by key from the `cards` prop (`cardByKey.get(item.key)`); when a key saved in the layout (e.g. a `sport:<type>` card) has no matching entry for the currently selected period — a perfectly normal case, not corrupted state — the render code did `if (!card) return null`, i.e. the card's grid slot rendered nothing at all with no visual explanation. Replaced with a real placeholder tile ("Ingen data i perioden" / `statCardsGrid.noData`) that still occupies the slot and stays draggable/removable, instead of vanishing.
+- **No reorder animation (root cause):** the grid is a plain CSS grid keyed by array order; on any layout change React just re-renders cards into their new grid cells with zero transition, so a reorder looks like a jump-cut. Added a small FLIP-style animation: `setLayoutAnimated()` snapshots every active card's `getBoundingClientRect()` right before a reordering `setLayout` call, and a `useLayoutEffect` on `[layout]` diffs old vs. new rect per card, applying an inline `translate()` that's then animated back to zero via `requestAnimationFrame` + a `transition`. Had to also temporarily set `el.style.animation = "none"` during the slide, because edit mode's existing `stat-card-wobble` CSS animation also drives the `transform` property and — being animation-driven rather than inline — would otherwise win over the FLIP translate and hide it completely.
+
+Verification: read through the interaction logic and the CSS animation-precedence interaction (wobble vs. inline transform) carefully since this bug class is easy to get subtly wrong; **not** verified live in a browser or via `npm run lint`/`npm run build` — this workstation's shell has no `node`/`npm` on `PATH` in this session (previous sessions' STATUS.md entries ran these successfully, so this looks like an environment/PATH regression on this machine, not a project issue). Flagging per AGENTS.md's "report checks that could not be run and why" — these two checks are still owed before this is a real checkpoint.

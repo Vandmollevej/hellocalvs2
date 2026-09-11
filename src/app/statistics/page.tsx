@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { IconChartLine } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { TrendIcon } from "@/components/BottomNav";
 import { StatChart, type ChartSeries } from "@/components/StatChart";
 import { StatCardsGrid } from "@/components/StatCardsGrid";
 import { StatPeriodPicker } from "@/components/StatPeriodPicker";
@@ -243,14 +243,14 @@ export default function StatisticsPage() {
   );
 
   return (
-    <HfScreen title={t("statistics.title")} icon={<IconChartLine size={20} stroke={2} />}>
+    <HfScreen title={t("statistics.title")} icon={<TrendIcon color="currentColor" size={20} />}>
       <div className="flex flex-col gap-4 p-4">
         <StatChart title={t("statistics.caloriesAndWeightChart")} series={chartSeries} defaultEnabledKeys={["kcal"]} />
 
         <IntradayKcalChart registrations={recentRegistrations} windowDays={activePeriodDays} />
 
         <div className="flex flex-col gap-3 border-t border-hf-tan-dark pt-4">
-          <div className="flex items-center justify-end">
+          <div className="flex items-center justify-start">
             <StatPeriodPicker selection={periodSelection} onChange={setPeriodSelection} />
           </div>
 

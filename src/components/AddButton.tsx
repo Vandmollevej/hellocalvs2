@@ -11,6 +11,7 @@ import {
   IconMicrophone,
   type Icon,
 } from "@tabler/icons-react";
+import { IconBathroomScale } from "@/components/icons/BathroomScale";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 export const HERO_HEIGHT = 300;
@@ -19,7 +20,6 @@ const CIRCLE = 46;
 
 export const FAB_SIZE = 64;
 const FAB_RADIUS = 14;
-export const FAB_INSET = 18;
 const DRAG_THRESHOLD = 6;
 
 // Joystick backdrop behind the fanned-out actions, flush against the
@@ -28,11 +28,18 @@ const DRAG_THRESHOLD = 6;
 // than the original 72px radius.
 const HALF_CIRCLE_RADIUS = 83;
 
+// The backdrop is a half-disk (flat edge against the screen edge, curved
+// edge bulging inward) — its visual "middle" is not the half-disk's own
+// bounding-box midpoint. It's the centroid of a half-disk area, which sits
+// 4r/3π from the flat edge. The FAB (and its plus) is centered there so it
+// reads as sitting in the middle of the green shape, not off to one side.
+export const FAB_INSET = Math.round((4 * HALF_CIRCLE_RADIUS) / (3 * Math.PI) - FAB_SIZE / 2);
+
 // The action arc is centered on the same point as the backdrop semicircle
 // (the screen edge, not the FAB button), so every icon sits the same
 // distance from the backdrop's curved edge. Icons sit just outside the
 // backdrop, never inside it.
-const ARC_GAP = 8;
+const ARC_GAP = 24;
 const RADIUS = HALF_CIRCLE_RADIUS + ARC_GAP + CIRCLE / 2;
 
 // Minimum distance from the FAB center before a drag counts as "aiming at"
@@ -74,7 +81,7 @@ function backdropPath(bulgeAngleDeg: number | null, bulgeAmount: number) {
   return `${commands.join(" ")} L0,${HALF_CIRCLE_RADIUS * 2} L0,0 Z`;
 }
 
-// Top to bottom: microphone, pot (own dishes), search, plate (meal), camera (product).
+// Top to bottom: microphone, pot (own dishes), search, scale (weight), camera (product).
 const ANGLES_DEG = [-70, -35, 0, 35, 70];
 
 export type FabSide = "left" | "right";
@@ -96,7 +103,7 @@ function buildActions(t: (key: string) => string): Action[] {
     { key: "microphone", href: "/voice", icon: IconMicrophone, label: t("addButton.microphone") },
     { key: "dish", href: "/create-dish", imageSrc: "/icons/pot.png", label: t("addButton.ownDishes") },
     { key: "search", href: "/search", icon: IconSearch, label: t("addButton.search") },
-    { key: "meal", href: "/camera?mode=meal", imageSrc: "/icons/plate-camera.png", label: t("addButton.meal") },
+    { key: "weight", href: "/weight/create", icon: IconBathroomScale, label: t("addButton.weight") },
     { key: "camera", href: "/camera?mode=product", icon: IconCamera, label: t("addButton.camera") },
   ];
 }
@@ -234,11 +241,13 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
       setHighlightedKey(null);
       setDragOffset(null);
       pointerStart.current = null;
+      // Whether an option was picked or not, this press was consumed by the
+      // open menu — closing it either way. A second tap on the FAB with
+      // nothing chosen should just dismiss the fanned-out actions.
+      setOpen(false);
       if (key) {
         const action = actions.find((a) => a.key === key);
-        setOpen(false);
         if (action) router.push(action.href);
-        return true;
       }
       return true;
     }
@@ -255,9 +264,15 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
     }
   }
 
-  const dragAngleDeg = dragOffset ? (Math.atan2(dragOffset.y, dragOffset.x) * 180) / Math.PI : null;
+  // The bulge snaps to whichever icon currently has focus (its fixed arc
+  // angle), instead of continuously tracking the raw finger angle — it
+  // should only ever point at the highlighted option, never drift toward
+  // the exact pointer position.
+  const highlightedIndex = highlightedKey ? actions.findIndex((a) => a.key === highlightedKey) : -1;
+  const bulgeAngleDeg = highlightedIndex >= 0 ? ANGLES_DEG[highlightedIndex] : null;
   const dragDistance = dragOffset ? Math.hypot(dragOffset.x, dragOffset.y) : 0;
-  const bulgeAmount = dragOffset ? Math.min(BULGE_MAX, (dragDistance / LIGHT_CIRCLE_TRAVEL) * BULGE_MAX) : 0;
+  const bulgeAmount =
+    highlightedIndex >= 0 ? Math.min(BULGE_MAX, (dragDistance / LIGHT_CIRCLE_TRAVEL) * BULGE_MAX) : 0;
 
   return (
     <div ref={containerRef} className="absolute inset-0">
@@ -267,7 +282,7 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
         style={{ left: 0, top: CENTER_Y - HALF_CIRCLE_RADIUS, width: HALF_CIRCLE_RADIUS + BULGE_MAX, height: HALF_CIRCLE_RADIUS * 2 }}
         viewBox={`0 0 ${HALF_CIRCLE_RADIUS + BULGE_MAX} ${HALF_CIRCLE_RADIUS * 2}`}
       >
-        <path d={backdropPath(dragAngleDeg, bulgeAmount)} fill="var(--hf-green)" />
+        <path d={backdropPath(bulgeAngleDeg, bulgeAmount)} fill="var(--hf-green)" />
       </svg>
 
       <button
@@ -291,15 +306,16 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
             cirkel, som følger fingeren under træk (clampet af dragOffset,
             se updateHighlight) — i stedet for at stå fast midt i knappen. */}
         <span
-          className="pointer-events-none flex items-center justify-center rounded-full bg-hf-white shadow-sm transition-transform"
+          className="pointer-events-none flex items-center justify-center rounded-full shadow-sm transition-transform"
           style={{
             width: LIGHT_CIRCLE_SIZE,
             height: LIGHT_CIRCLE_SIZE,
+            backgroundColor: "var(--hf-tan-dark)",
             transform: dragOffset ? `translate(${dragOffset.x}px, ${dragOffset.y}px)` : undefined,
             transitionDuration: dragOffset ? "0ms" : "150ms",
           }}
         >
-          <IconPlus size={22} color="var(--hf-color-action)" stroke={2} />
+          <IconPlus size={22} color="var(--hf-white)" stroke={2} />
         </span>
       </button>
 
@@ -326,7 +342,14 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
             {Icon ? (
               <Icon size={20} color={isHighlighted ? "var(--hf-white)" : "var(--hf-black)"} />
             ) : (
-              <Image src={action.imageSrc!} alt="" width={22} height={22} className="object-contain" />
+              <Image
+                src={action.imageSrc!}
+                alt=""
+                width={22}
+                height={22}
+                className="object-contain"
+                style={isHighlighted ? { filter: "brightness(0) invert(1)" } : undefined}
+              />
             )}
           </Link>
         );

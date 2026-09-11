@@ -7,16 +7,18 @@ export function HfScreen({
   children,
   onBack,
   footer,
+  titleClassName,
 }: {
   title: string;
   icon?: React.ReactNode;
   children: React.ReactNode;
   onBack?: () => void;
   footer?: React.ReactNode;
+  titleClassName?: string;
 }) {
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-hf-cream">
-      <ScreenHeader title={title} icon={icon} onBack={onBack} />
+      <ScreenHeader title={title} icon={icon} onBack={onBack} titleClassName={titleClassName} />
       <div className="relative min-h-0 flex-1 overflow-y-auto overscroll-contain">{children}</div>
       {footer && (
         <div className="flex-shrink-0 border-t border-hf-tan-dark bg-hf-cream p-4">{footer}</div>

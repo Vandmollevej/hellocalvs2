@@ -19,7 +19,6 @@ import { useIsCompactLandscape } from "@/hooks/useIsCompactLandscape";
 const ICON_SIZE = 24;
 const NAV_ACTIVE_COLOR = "#232323";
 const NAV_INACTIVE_COLOR = "#656565";
-const NAV_BORDER_COLOR = "#afadaa";
 const PANEL_ICON_SIZE = 24;
 const STORAGE_KEY = "hellocal:bottomnav:v1";
 const LONG_PRESS_MS = 550;
@@ -32,7 +31,7 @@ const EDGE_ZONE_PX = 36;
 const EDGE_HOLD_MS = 650;
 const PAGE_ANIM_MS = 220;
 
-function TrendIcon({ color, size }: { color: string; size: number }) {
+export function TrendIcon({ color, size }: { color: string; size: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <polyline
@@ -708,10 +707,9 @@ export function BottomNav() {
 
       <nav
         ref={barRef}
-        className={`relative border-t bg-hf-tan-dark ${showCollapsedBar ? "py-1.5" : "pb-6 pt-2"} ${
-          draggedOverPanel ? "border-dashed border-hf-gray-dark" : ""
-        }`}
-        style={draggedOverPanel ? undefined : { borderTopColor: NAV_BORDER_COLOR }}
+        className={`relative border-t bg-hf-tan-dark ${
+          showCollapsedBar ? "py-1" : "pb-[env(safe-area-inset-bottom,0px)] pt-2"
+        } ${draggedOverPanel ? "border-dashed border-hf-gray-dark" : "border-hf-gray-border"}`}
         aria-label={t("nav.mainNavigationAriaLabel")}
       >
         {showCollapsedBar ? (
@@ -719,7 +717,7 @@ export function BottomNav() {
             type="button"
             onClick={() => setLandscapeExpanded(true)}
             aria-label={t("nav.expandAriaLabel")}
-            className="flex w-full items-center justify-center py-1.5"
+            className="mx-auto flex w-1/4 items-center justify-center py-0.5"
           >
             <span className="h-1.5 w-10 rounded-full bg-hf-black/30" />
           </button>
@@ -755,13 +753,13 @@ export function BottomNav() {
                     return (
                       <div
                         key={`empty-${pageIndex}-${slotIndex}`}
-                        className="h-[58px] w-16 touch-none select-none"
+                        className="h-12 w-16 touch-none select-none"
                         onPointerDown={handleEmptySlotPointerDown}
                       />
                     );
                   }
                   const item = ITEMS_BY_KEY.get(key);
-                  if (!item) return <div key={key} className="h-[58px] w-16" />;
+                  if (!item) return <div key={key} className="h-12 w-16" />;
                   const active = pathname === item.href;
                   const color = active ? NAV_ACTIVE_COLOR : NAV_INACTIVE_COLOR;
                   const isPlaceholder = draggedKey === key && drag?.source === "active";
@@ -780,7 +778,7 @@ export function BottomNav() {
                       onPointerDown={(e) => handleActivePointerDown(key, e)}
                       onPointerMove={handleActivePointerMove}
                       onPointerUp={() => handleActivePointerUp(key, item.href)}
-                      className={`relative flex h-[58px] w-16 flex-none flex-col items-center justify-center gap-1 rounded-xl touch-none select-none ${
+                      className={`relative flex h-12 w-16 flex-none flex-col items-center justify-center gap-1 rounded-xl touch-none select-none ${
                         editMode ? "border" : "border-transparent"
                       } ${
                         isReady || isPlaceholder

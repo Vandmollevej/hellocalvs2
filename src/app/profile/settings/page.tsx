@@ -13,6 +13,7 @@ import type { Locale } from "@/i18n";
 type SettingsUser = {
   showAllergens: boolean;
   allergenVisibility: Record<string, boolean> | null;
+  showExtendedNutrition: boolean;
   region: string;
 };
 
@@ -89,6 +90,15 @@ export default function ProfileSettingsPage() {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ showAllergens: value }),
+    }).catch(() => {});
+  }
+
+  function toggleShowExtendedNutrition(value: boolean) {
+    setUser((current) => (current ? { ...current, showExtendedNutrition: value } : current));
+    fetch("/api/profile", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ showExtendedNutrition: value }),
     }).catch(() => {});
   }
 
@@ -181,6 +191,13 @@ export default function ProfileSettingsPage() {
               ))}
             </div>
           )}
+
+          <Toggle
+            label={t("settings.showExtendedNutrition")}
+            description={t("settings.showExtendedNutritionDescription")}
+            checked={user.showExtendedNutrition}
+            onChange={toggleShowExtendedNutrition}
+          />
 
           <Toggle
             label={t("settings.languageLabel")}

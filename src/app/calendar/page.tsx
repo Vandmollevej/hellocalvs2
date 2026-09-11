@@ -8,7 +8,6 @@ import {
   IconCalendarMonth,
   IconCalendarWeek,
   IconCheck,
-  IconArrowLeft,
   IconChevronDown,
   IconChevronLeft,
   IconChevronRight,
@@ -17,6 +16,7 @@ import {
   IconStarFilled,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { HfChevron } from "@/components/hf/HfChevron";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
 import { groupByDay } from "@/lib/daily-totals";
 import { getSportMeta } from "@/lib/sport-icons";
@@ -128,7 +128,7 @@ function buildMonthGrid(year: number, month: number) {
   const cells: Array<Date | null> = [];
   for (let day = offset; day > 0; day -= 1) cells.push(new Date(year, month, 1 - day));
   for (let day = 1; day <= count; day += 1) cells.push(new Date(year, month, day));
-  while (cells.length % 7) cells.push(null);
+  while (cells.length < 42) cells.push(null);
   return cells;
 }
 
@@ -471,9 +471,12 @@ export default function CalendarPage() {
     setViewMenuOpen(false);
   }
 
+  const periodLabel = effectiveView === "week" || effectiveView === "list" ? weekLabel : monthLabel;
+
   return (
     <HfScreen
-      title={t("nav.calendar")}
+      title={isLandscape ? periodLabel : t("nav.calendar")}
+      titleClassName={isLandscape ? "hf-appbar__title--tight capitalize" : undefined}
       icon={
         <div className="relative z-[100]">
           <button
@@ -532,29 +535,31 @@ export default function CalendarPage() {
           />
         )}
 
-        <div className="relative z-30 mb-4 flex items-center justify-between gap-2">
-          <PeriodButton direction="previous" view={effectiveView} onClick={() => movePeriod(-1)} />
-          <div className="relative min-w-0">
-            <button
-              type="button"
-              aria-expanded={monthMenuOpen}
-              aria-haspopup="listbox"
-              onClick={() => {
-                setMonthMenuOpen((open) => !open);
-                setViewMenuOpen(false);
-              }}
-              className="flex min-h-11 max-w-full items-center justify-center rounded-full px-3 text-hf-black hover:bg-hf-tan focus-visible:outline-2 focus-visible:outline-hf-black"
-            >
-              <span className="whitespace-nowrap text-[15px] font-semibold capitalize">
-                {effectiveView === "week" || effectiveView === "list" ? weekLabel : monthLabel}
-              </span>
-            </button>
-            {monthMenuOpen && (
-              <MonthPicker year={year} month={month} onYearChange={setVisibleDate} onSelect={selectMonth} />
-            )}
+        {!isLandscape && (
+          <div className="relative z-30 mb-4 flex items-center justify-center gap-3">
+            <PeriodButton direction="previous" view={effectiveView} onClick={() => movePeriod(-1)} />
+            <div className="relative min-w-0">
+              <button
+                type="button"
+                aria-expanded={monthMenuOpen}
+                aria-haspopup="listbox"
+                onClick={() => {
+                  setMonthMenuOpen((open) => !open);
+                  setViewMenuOpen(false);
+                }}
+                className="flex min-h-11 max-w-full items-center justify-center rounded-full px-3 text-hf-black hover:bg-hf-tan focus-visible:outline-2 focus-visible:outline-hf-black"
+              >
+                <span className="whitespace-nowrap text-[15px] font-semibold capitalize">
+                  {periodLabel}
+                </span>
+              </button>
+              {monthMenuOpen && (
+                <MonthPicker year={year} month={month} onYearChange={setVisibleDate} onSelect={selectMonth} />
+              )}
+            </div>
+            <PeriodButton direction="next" view={effectiveView} onClick={() => movePeriod(1)} />
           </div>
-          <PeriodButton direction="next" view={effectiveView} onClick={() => movePeriod(1)} />
-        </div>
+        )}
 
         <div
           className="touch-pan-y overflow-hidden"
@@ -756,7 +761,7 @@ function MonthView({
       </div>
       <div className="grid grid-cols-7 gap-1.5">
         {cells.map((date, index) => {
-          if (!date) return <div key={`empty-${index}`} />;
+          if (!date) return <div key={`empty-${index}`} className="aspect-square" aria-hidden="true" />;
           const met = goalWasMet(date, today);
           const current = isSameDay(date, today);
           const isOtherMonth = date.getMonth() !== month;
@@ -994,6 +999,18 @@ function WeekTimelineView({
 }) {
   const headerDrag = useRef<{ x: number; scrollLeft: number } | null>(null);
   const gridDrag = useRef<{ x: number; y: number; scrollLeft: number; scrollTop: number } | null>(null);
+  const gridScrollRef = useRef<HTMLDivElement | null>(null);
+  const getSleepWindowRef = useRef(getSleepWindow);
+  getSleepWindowRef.current = getSleepWindow;
+
+  useEffect(() => {
+    const node = gridScrollRef.current;
+    if (!node || days.length === 0) return;
+    const sleepWindow = getSleepWindowRef.current(days[0]);
+    const anchorHour = sleepWindow ? Math.floor(sleepWindow.wakeTime / 60) : 0;
+    node.scrollTop = Math.max(0, anchorHour * HOUR_HEIGHT - HOUR_HEIGHT);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [days]);
 
   function handleHeaderPointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (event.pointerType !== "mouse") return;
@@ -1059,6 +1076,7 @@ function WeekTimelineView({
         })}
       </div>
       <div
+        ref={gridScrollRef}
         onPointerDown={handleGridPointerDown}
         onPointerMove={handleGridPointerMove}
         onPointerUp={handleGridPointerUp}
@@ -1305,42 +1323,43 @@ function DayDetails({
   return (
     <div className="absolute inset-0 z-50 flex flex-col bg-hf-cream" role="dialog" aria-modal="true" aria-labelledby="day-title">
       <div
-        className="relative flex items-center justify-between gap-1 bg-hf-green px-1 pb-4 text-hf-white"
+        className="relative flex items-center gap-1 bg-hf-green px-1 pb-4 text-hf-white"
         style={{ paddingTop: "max(16px, env(safe-area-inset-top, 0px))" }}
       >
         <button
           type="button"
-          onClick={() => onNavigate(-1)}
-          aria-label={t("calendar.previousDayAriaLabel")}
+          onClick={onClose}
+          aria-label={t("common.back")}
           className="flex size-9 shrink-0 items-center justify-center rounded-full hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white"
         >
-          <IconChevronLeft size={20} />
+          <HfChevron direction="left" className="text-hf-white" />
         </button>
-        <h2 id="day-title" className="hf-heading flex min-w-0 items-center justify-center gap-1.5 text-base">
-          <IconCalendar size={16} className="shrink-0" aria-hidden="true" />
-          <span className="truncate first-letter:uppercase">
-            {date.toLocaleDateString("da-DK", { weekday: "long", day: "numeric", month: "long" })}
-          </span>
-        </h2>
-        <div className="flex shrink-0 items-center gap-0.5">
+        <div className="flex min-w-0 flex-1 items-center justify-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => onNavigate(-1)}
+            aria-label={t("calendar.previousDayAriaLabel")}
+            className="flex size-9 shrink-0 items-center justify-center rounded-full hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white"
+          >
+            <IconChevronLeft size={20} />
+          </button>
+          <h2 id="day-title" className="hf-heading flex min-w-0 items-center justify-center gap-1.5 text-base">
+            <IconCalendar size={16} className="shrink-0" aria-hidden="true" />
+            <span className="truncate first-letter:uppercase">
+              {date.toLocaleDateString("da-DK", { weekday: "long", day: "numeric", month: "long" })}
+            </span>
+          </h2>
           <button
             type="button"
             onClick={() => canGoForward && onNavigate(1)}
             disabled={!canGoForward}
             aria-label={t("calendar.nextDayAriaLabel")}
-            className="flex size-9 items-center justify-center rounded-full hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white disabled:opacity-30"
+            className="flex size-9 shrink-0 items-center justify-center rounded-full hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white disabled:opacity-30"
           >
             <IconChevronRight size={20} />
           </button>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label={t("common.back")}
-            className="flex size-9 items-center justify-center rounded-full hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white"
-          >
-            <IconArrowLeft size={22} />
-          </button>
         </div>
+        <div className="size-9 shrink-0" aria-hidden="true" />
       </div>
       <div
         className="flex-1 overflow-y-auto p-4 touch-pan-y"
@@ -1362,29 +1381,6 @@ function DayDetails({
           pointerStart.current = null;
         }}
       >
-        <div className="mb-4 flex items-center gap-2">
-          <span
-            className={`flex size-5 shrink-0 items-center justify-center rounded-full ${
-              met ? "bg-hf-green" : "bg-hf-gray"
-            }`}
-          >
-            {met ? (
-              <IconCheck size={13} stroke={3} className="text-hf-white" aria-hidden="true" />
-            ) : (
-              <span className="size-2 rounded-full bg-hf-white" aria-hidden="true" />
-            )}
-          </span>
-          <p className="text-base font-semibold text-hf-black">
-            {met ? t("calendar.dailyGoalReached") : t("calendar.dailyGoalNotMarked")}
-          </p>
-        </div>
-
-        <div className="mb-2 flex items-center justify-between">
-          <h3 className="hf-heading text-base">{t("calendar.registrations")}</h3>
-          {!loading && !error && registrations.length === 0 && (
-            <span className="text-sm text-hf-gray">{t("calendar.noRegistrations")}</span>
-          )}
-        </div>
         {loading ? (
           <div className="rounded-2xl bg-hf-white p-5 text-center text-sm opacity-60">
             {t("calendar.loadingDayRegistrations")}
@@ -1397,7 +1393,7 @@ function DayDetails({
         ) : (
           <div
             className="no-scrollbar relative touch-pan-y overflow-y-auto rounded-2xl border border-hf-tan bg-hf-white"
-            style={{ maxHeight: "calc(100vh - 380px)" }}
+            style={{ maxHeight: "calc(100vh - 300px)" }}
             onPointerDown={handleTimelinePointerDown}
             onPointerMove={handleTimelinePointerMove}
             onPointerUp={handleTimelinePointerEnd}
@@ -1482,17 +1478,35 @@ function DayDetails({
           </div>
         )}
 
-        <div className="mt-3 flex flex-col items-end gap-0.5 pr-1 text-right">
-          <p className="text-sm text-hf-gray">{t("calendar.goalLabel", { goal: DAILY_KCAL_GOAL })}</p>
-          {remaining >= 0 ? (
-            <p className="text-sm font-semibold text-hf-black">
-              {t("calendar.remainingCalories", { remaining: Math.round(remaining) })}
+        <div className="mt-3 flex items-center justify-between gap-2 pr-1">
+          <div className="flex min-w-0 items-center gap-2">
+            <span
+              className={`flex size-5 shrink-0 items-center justify-center rounded-full ${
+                met ? "bg-hf-green" : "bg-hf-gray"
+              }`}
+            >
+              {met ? (
+                <IconCheck size={13} stroke={3} className="text-hf-white" aria-hidden="true" />
+              ) : (
+                <span className="size-2 rounded-full bg-hf-white" aria-hidden="true" />
+              )}
+            </span>
+            <p className="truncate text-sm font-semibold text-hf-black">
+              {met ? t("calendar.dailyGoalReached") : t("calendar.dailyGoalNotMarked")}
             </p>
-          ) : (
-            <p className="text-sm font-semibold text-hf-red-dark">
-              {t("calendar.exceededCalories", { amount: Math.round(Math.abs(remaining)) })}
-            </p>
-          )}
+          </div>
+          <div className="flex shrink-0 flex-col items-end gap-0.5 text-right">
+            <p className="text-sm text-hf-gray">{t("calendar.goalLabel", { goal: DAILY_KCAL_GOAL })}</p>
+            {remaining >= 0 ? (
+              <p className="text-sm font-semibold text-hf-black">
+                {t("calendar.remainingCalories", { remaining: Math.round(remaining) })}
+              </p>
+            ) : (
+              <p className="text-sm font-semibold text-hf-red-dark">
+                {t("calendar.exceededCalories", { amount: Math.round(Math.abs(remaining)) })}
+              </p>
+            )}
+          </div>
         </div>
       </div>
 
@@ -1551,17 +1565,33 @@ function SleepBlock({
   }
 
   const delta = dragDelta ?? 0;
+  const timelineHeight = hourHeight * 24;
   const top = Math.max(0, rotatedTop(sleepWindow.bedtime, anchorMinutes, hourHeight) + delta);
-  const height = Math.max(0, hourHeight * 24 - top);
-  const handleTop = top + height / 2;
+  // Søvnvarigheden er stå-op minus sengetid, wrappet til [0, 24t), IKKE "til bunden af
+  // listen" — ellers strækker den grå søvnskygge sig langt forbi den faktiske stå-op-tid
+  // (Fejlretninger/FEJLLISTE.md #27). Timelinen er anchored ved stå-op-timen, så
+  // søvnperioden kan ende lige efter start af listen (wrapHeight) i stedet for ved bunden.
+  const durationMinutes = ((sleepWindow.wakeTime - sleepWindow.bedtime) % 1440 + 1440) % 1440;
+  const durationHeight = (durationMinutes / 60) * hourHeight;
+  const height = Math.max(0, Math.min(durationHeight, timelineHeight - top));
+  const wrapHeight = Math.max(0, durationHeight - height);
+  let handleTop = top + durationHeight / 2;
+  if (handleTop > timelineHeight) handleTop -= timelineHeight;
 
   return (
     <>
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 bg-hf-gray/15"
+        className="pointer-events-none absolute inset-x-0 bg-hf-gray/15"
         style={{ top, height }}
         aria-hidden="true"
       />
+      {wrapHeight > 0 && (
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 bg-hf-gray/15"
+          style={{ height: wrapHeight }}
+          aria-hidden="true"
+        />
+      )}
       <div
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
@@ -1814,7 +1844,7 @@ function HourEntriesOverlay({
           aria-label={t("common.back")}
           className="absolute bottom-3 left-3 flex size-11 items-center justify-center rounded-full hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white"
         >
-          <IconArrowLeft size={24} />
+          <HfChevron direction="left" className="text-hf-white" />
         </button>
         <h2 className="hf-heading text-lg">
           {t("calendar.hourRangeLabel", {
@@ -1865,7 +1895,7 @@ function MonthlyStatus({ status }: { status: MonthlyStatusData }) {
   const withinGoal = remaining >= 0;
 
   return (
-    <div className="mt-5 space-y-1.5 text-center">
+    <div className="mt-8 space-y-1.5 text-center">
       {streak >= 5 && (
         <div className="mb-3 flex flex-col items-center gap-1">
           <span className="relative flex size-9 items-center justify-center" aria-label={t("calendar.streakAriaLabel", { streak })}>
@@ -1876,7 +1906,7 @@ function MonthlyStatus({ status }: { status: MonthlyStatusData }) {
         </div>
       )}
 
-      <div className="flex items-start justify-center gap-2 text-left">
+      <div className="flex items-start justify-start gap-2 text-left">
         <span
           className={`mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full ${
             withinGoal ? "bg-hf-green" : "bg-hf-red-muted"

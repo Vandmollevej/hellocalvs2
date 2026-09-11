@@ -21,6 +21,7 @@ export async function PATCH(req: Request) {
   const {
     displayName,
     weightKg,
+    targetWeightKg,
     heightCm,
     birthYear,
     sex,
@@ -36,6 +37,7 @@ export async function PATCH(req: Request) {
     onboardingDismissed,
     showAllergens,
     allergenVisibility,
+    showExtendedNutrition,
     region,
     appLocale,
     photoDiaryRequiresPasscode,
@@ -46,6 +48,7 @@ export async function PATCH(req: Request) {
   } = body as {
     displayName?: string;
     weightKg?: number | null;
+    targetWeightKg?: number | null;
     heightCm?: number | null;
     birthYear?: number | null;
     sex?: "FEMALE" | "MALE" | null;
@@ -61,6 +64,7 @@ export async function PATCH(req: Request) {
     onboardingDismissed?: boolean;
     showAllergens?: boolean;
     allergenVisibility?: Record<string, boolean>;
+    showExtendedNutrition?: boolean;
     region?: string;
     appLocale?: "da" | "en";
     photoDiaryRequiresPasscode?: boolean;
@@ -77,6 +81,7 @@ export async function PATCH(req: Request) {
       data: {
         displayName,
         weightKg,
+        targetWeightKg,
         heightCm,
         birthYear,
         sex,
@@ -102,6 +107,7 @@ export async function PATCH(req: Request) {
         onboardingDismissed,
         showAllergens,
         allergenVisibility,
+        showExtendedNutrition,
         region,
         appLocale,
         photoDiaryRequiresPasscode,

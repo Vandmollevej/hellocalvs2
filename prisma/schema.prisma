@@ -17,6 +17,9 @@ model User {
   heightCm    Float?
   birthYear   Int?
   sex         Sex?
+  // Målvægt: brugerens eget mål, sat via /profile/target-weight. Adskilt fra
+  // weightKg (start-vægt, låst felt) og weight_entries (løbende vejninger).
+  targetWeightKg Float?
   createdAt   DateTime @default(now())
 
   // Admin login (docs/ADMIN.md): only set for the single administrator
@@ -67,6 +70,13 @@ model User {
   // them. Null = all are shown, when showAllergens is true.
   showAllergens      Boolean @default(false)
   allergenVisibility Json?
+
+  // Personal setting (2026-09-11): shows the MyFitnessPal-style extended
+  // nutrition panel (saturated/unsaturated/trans fat, cholesterol, sodium,
+  // potassium, fibre, sugar, vitamin A/C, calcium, iron) as a collapsed
+  // "Vis mere" section below the normal nutrition table on the add-product
+  // screen. Off by default — see design.md's product-detail contract.
+  showExtendedNutrition Boolean @default(false)
 
   // Region (ISO 3166-1 alpha-2), used to prioritize product search results
   // by the country's GS1 barcode prefix (see src/lib/regions.ts). Denmark is
@@ -496,6 +506,17 @@ model Product {
   // (e.g. HelloFresh recipes' fiber/sugar/salt/potassium/calcium/iron per
   // serving size). See docs/DECISIONS.md (2026-08-29).
   nutritionExtra   Json?
+
+  // MyFitnessPal-style extended nutrition panel, per 100g, added 2026-09-11.
+  // Only Open Food Facts currently supplies these (see src/lib/openFoodFacts.ts) —
+  // null on every other product/source until a matching source is wired up.
+  // Only shown in the UI when User.showExtendedNutrition is on (see design.md).
+  saturatedFatPer100g   Float?
+  unsaturatedFatPer100g Float?
+  transFatPer100g       Float?
+  cholesterolPer100g    Float? // mg
+  vitaminAPer100g       Float? // µg (retinol activity equivalents)
+  vitaminCPer100g       Float? // mg
   status           ProductStatus          @default(PENDING)
   discontinued     Boolean                @default(false)
   createdAt        DateTime               @default(now())
@@ -698,6 +719,28 @@ model Registration {
   carbsSnapshot   Float
   fatSnapshot     Float
   amountGrams     Float
+
+  // Optional extra-nutrition snapshots, only populated when the source
+  // product has matching Product.nutritionExtra data (currently HelloFresh
+  // recipes only, see docs/DECISIONS.md 2026-08-29) — null for every other
+  // product/dish/AI-estimated registration. Used by the "Kulhydrattyper og
+  // fibre"/"Mineraler" stat-card categories (src/lib/stat-cards.ts).
+  sugarSnapshot     Float?
+  fiberSnapshot     Float?
+  saltSnapshot      Float?
+  potassiumSnapshot Float?
+  calciumSnapshot   Float?
+  ironSnapshot      Float?
+
+  // MyFitnessPal-style extended panel snapshots (2026-09-11), from the new
+  // Product.*Per100g fields above — currently only populated for products
+  // sourced from Open Food Facts (see src/lib/openFoodFacts.ts).
+  saturatedFatSnapshot   Float?
+  unsaturatedFatSnapshot Float?
+  transFatSnapshot       Float?
+  cholesterolSnapshot    Float?
+  vitaminASnapshot       Float?
+  vitaminCSnapshot       Float?
 
   createdAt DateTime @default(now())
 

@@ -24,7 +24,7 @@ export function Toggle({
       aria-label={label ?? undefined}
       disabled={disabled}
       onClick={() => onChange(!checked)}
-      className={`relative h-6 w-10 shrink-0 rounded-full transition-colors disabled:opacity-50 ${
+      className={`relative h-6 w-10 shrink-0 rounded-full text-left transition-colors disabled:opacity-50 ${
         checked ? "bg-hf-green" : "bg-hf-tan-dark"
       }`}
     >

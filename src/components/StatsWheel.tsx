@@ -6,7 +6,7 @@ import {
   IconDroplet,
   IconEgg,
   IconFlame,
-  IconWalk,
+  IconFootsteps,
   type Icon,
 } from "@tabler/icons-react";
 
@@ -46,7 +46,7 @@ function circularDistance(index: number, from: number, length: number) {
   return diff;
 }
 
-const ITEM_HEIGHT = 46;
+const ITEM_HEIGHT = 34;
 
 export function StatsWheel({ side }: { side: "left" | "right" }) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -120,7 +120,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
       {
         key: "steps",
         label: "Skridt",
-        icon: IconWalk,
+        icon: IconFootsteps,
         value: "6.210",
         unit: "skridt",
       },
@@ -244,7 +244,6 @@ function WheelItem({
   // Magnifier/fisheye: value text is largest when active and shrinks
   // continuously with distance.
   const valueFontSize = Math.max(13, 27 - absDistance * 7.5);
-  const labelOpacity = Math.max(0, 1 - absDistance * 1.6);
 
   return (
     <button
@@ -263,14 +262,6 @@ function WheelItem({
         opacity,
       }}
     >
-      <p
-        className={`mb-1 text-[11px] font-bold uppercase tracking-[0.08em] ${
-          isActive ? "text-hf-green" : "text-hf-gray-dark"
-        }`}
-        style={{ opacity: labelOpacity }}
-      >
-        {stat.label}
-      </p>
       {isActive ? (
         <div className="flex items-baseline justify-end gap-2">
           <span

@@ -341,18 +341,27 @@ button,
    rigtig rotereret telefon, se useIsCompactLandscape) — kun højden og
    skrifttypen skrumper, farver/lag er uændrede. */
 .hf-appbar--compact {
-  min-height: calc(34px + env(safe-area-inset-top, 0px));
-  grid-template-columns: 34px minmax(0, 1fr) 34px;
+  min-height: calc(40px + env(safe-area-inset-top, 0px));
+  grid-template-columns: 40px minmax(0, 1fr) 40px;
 }
 
 .hf-appbar--compact .hf-appbar__slot {
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
 }
 
 .hf-appbar--compact .hf-appbar__title {
   font-size: 15px;
   line-height: 18px;
+}
+
+/* Kalenderens dato-periode, flyttet ind i headeren i vandret visning
+   (Fejlretninger/FEJLLISTE.md #32C-opfølgning) — samme tekst som den
+   fjernede "7. sep. – 13. sep. 2026"-række, blot mindre og garanteret én
+   linje via .hf-appbar__title's ellipsis/nowrap. */
+.hf-appbar__title--tight {
+  font-size: 13px;
+  line-height: 16px;
 }
 
 .hf-appbar__slot {

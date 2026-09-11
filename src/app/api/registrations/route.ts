@@ -88,6 +88,15 @@ export async function POST(req: Request) {
       }
 
       const factor = amountGrams / 100;
+      // nutritionExtra (sugar/fiber/salt/potassium/calcium/iron) is stored per
+      // the product's own servingSizeGrams, NOT per 100g like the core macros
+      // (see scripts/hellofresh-import/agent.py, docs/DECISIONS.md 2026-08-29)
+      // — only scale it when we actually know that serving size.
+      const extraFactor = product.servingSizeGrams ? amountGrams / product.servingSizeGrams : null;
+      const extra = (product.nutritionExtra ?? null) as Record<string, number> | null;
+      const scaledExtra = (key: string) =>
+        extraFactor !== null && extra && typeof extra[key] === "number" ? extra[key] * extraFactor : undefined;
+
       const registration = await prisma.registration.create({
         data: {
           userId: user.id,
@@ -98,6 +107,22 @@ export async function POST(req: Request) {
           carbsSnapshot: carbsSnapshot ?? product.carbsPer100g * factor,
           ...(parsedCreatedAt ? { createdAt: parsedCreatedAt } : {}),
           fatSnapshot: fatSnapshot ?? product.fatPer100g * factor,
+          sugarSnapshot: scaledExtra("sugarG"),
+          fiberSnapshot: scaledExtra("fiberG"),
+          saltSnapshot: scaledExtra("saltG"),
+          potassiumSnapshot: scaledExtra("potassiumMg"),
+          calciumSnapshot: scaledExtra("calciumMg"),
+          ironSnapshot: scaledExtra("ironMg"),
+          // MyFitnessPal-style extended panel (2026-09-11): real per-100g
+          // Product fields (currently only populated from Open Food Facts),
+          // scaled the same way as kcal/protein/carbs/fat above.
+          saturatedFatSnapshot: product.saturatedFatPer100g !== null ? product.saturatedFatPer100g * factor : undefined,
+          unsaturatedFatSnapshot:
+            product.unsaturatedFatPer100g !== null ? product.unsaturatedFatPer100g * factor : undefined,
+          transFatSnapshot: product.transFatPer100g !== null ? product.transFatPer100g * factor : undefined,
+          cholesterolSnapshot: product.cholesterolPer100g !== null ? product.cholesterolPer100g * factor : undefined,
+          vitaminASnapshot: product.vitaminAPer100g !== null ? product.vitaminAPer100g * factor : undefined,
+          vitaminCSnapshot: product.vitaminCPer100g !== null ? product.vitaminCPer100g * factor : undefined,
           amountGrams,
         },
       });

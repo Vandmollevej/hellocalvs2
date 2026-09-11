@@ -103,6 +103,8 @@
     "showAllergens": "Show allergens",
     "setupTitle": "Setup",
     "showAllergensDescription": "Show an allergen line on foods when data is available.",
+    "showExtendedNutrition": "Show extended nutrition info",
+    "showExtendedNutritionDescription": "Shows a \"Show more\" section below the nutrition table with saturated/unsaturated/trans fat, cholesterol, sodium, potassium, fibre, sugar, vitamin A and C, calcium, and iron, when data is available.",
     "thirdPartyDisclaimer": "We fetch data from third parties and take no responsibility for missing data.",
     "languageLabel": "Language",
     "languageDescription": "Choose which language the app is shown in.",
@@ -322,7 +324,7 @@
     "field": {
       "name": "Name",
       "email": "Email",
-      "weight": "Weight (kg)",
+      "weight": "Starting weight (kg)",
       "height": "Height (cm)",
       "birthYear": "Birth year",
       "sex": "Sex"
@@ -341,6 +343,13 @@
       "appleHealth": "Apple Health",
       "googleHealth": "Google Health Connect"
     },
+    "unlockWeight": "Unlock starting weight for editing",
+    "lockWeight": "Lock starting weight",
+    "actions": {
+      "photoDiary": "Photo diary",
+      "newWeight": "Enter new weight",
+      "target": "Enter goal"
+    },
     "row": {
       "weightCalibration": "Weight calibration",
       "sleep": "Sleep pattern",
@@ -352,6 +361,7 @@
       "reportBug": "Report a bug",
       "settings": "Settings"
     },
+    "logOut": "Log out",
     "communication": {
       "intro": "Choose which messages you get as email and/or push. Important account messages (e.g. verification and password reset) are always sent.",
       "pushSection": "Push notifications",
@@ -388,6 +398,10 @@
     "intro": "Weigh yourself at different times and under different conditions — this gives you a sense of your fluctuation throughout the day, without having to weigh yourself naked every time.",
     "weightLabel": "Weight (kg)",
     "weightPlaceholder": "e.g. 78.4",
+    "timeGrid": {
+      "title": "Weight throughout the day",
+      "placeholder": "–"
+    },
     "clothed": {
       "false": "Without clothes",
       "true": "With clothes"
@@ -420,6 +434,29 @@
     "noEntriesYet": "No weigh-ins logged yet.",
     "deleteAria": "Delete weigh-in",
     "delete": "Delete"
+  },
+  "targetWeight": {
+    "title": "Goal",
+    "intro": "Set the weight you're aiming for. Used to track your progress in the statistics.",
+    "weightLabel": "Goal weight (kg)",
+    "weightPlaceholder": "e.g. 72.0",
+    "saving": "Saving…",
+    "loading": "Loading…",
+    "loadError": "Couldn't load goal."
+  },
+  "weightLog": {
+    "title": "Weight",
+    "intro": "Log your weight. It's saved right away and shows up in the calendar and statistics.",
+    "weightLabel": "Weight (kg)",
+    "weightPlaceholder": "e.g. 78.4",
+    "save": "Save",
+    "saving": "Saving…",
+    "saveError": "Couldn't save the weight.",
+    "saved": "Weight saved.",
+    "moreDetailsLink": "Log with more detail (clothes, shoes, time of day)",
+    "loading": "Loading…",
+    "noEntriesYet": "No weigh-ins logged yet.",
+    "recentTitle": "Recent weigh-ins"
   },
   "photoDiary": {
     "title": "Photo diary",
@@ -457,7 +494,25 @@
     "add": "Add",
     "saveError": "Couldn't save the registration",
     "allergens": "Allergens",
-    "allergenDisclaimer": "We fetch data from a third party and take no responsibility for missing data."
+    "allergenDisclaimer": "We fetch data from a third party and take no responsibility for missing data.",
+    "showMore": "Show more",
+    "showLess": "Show less",
+    "extendedNutrition": "Nutrition facts",
+    "extendedNutritionDisclaimer": "Only shown when data is available for this product.",
+    "nutrient": {
+      "saturatedFat": "Saturated fat",
+      "unsaturatedFat": "Unsaturated fat",
+      "transFat": "Trans fat",
+      "cholesterol": "Cholesterol",
+      "sodium": "Sodium",
+      "potassium": "Potassium",
+      "fiber": "Dietary fibre",
+      "sugar": "Sugars",
+      "vitaminA": "Vitamin A",
+      "vitaminC": "Vitamin C",
+      "calcium": "Calcium",
+      "iron": "Iron"
+    }
   },
   "search": {
     "title": "Search",
@@ -544,7 +599,9 @@
     "title": "Stat cards",
     "addCard": "Add card",
     "renameHeading": "Rename heading",
-    "removeHeading": "Remove heading"
+    "removeHeading": "Remove heading",
+    "dragHeading": "Move heading",
+    "noData": "No data for this period"
   },
   "statChart": {
     "last7Days": "Last 7 days",
@@ -600,7 +657,7 @@
     "microphone": "Microphone",
     "ownDishes": "Own dishes",
     "search": "Search",
-    "meal": "Meal",
+    "weight": "Weight",
     "camera": "Camera"
   },
   "onboarding": {

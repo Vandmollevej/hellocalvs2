@@ -2,10 +2,19 @@
 // The cards' order/active set is stored by StatCardsGrid (localStorage), not here.
 
 import {
+  IconApple,
+  IconAtom2,
   IconBolt,
+  IconBone,
+  IconCandy,
+  IconCarrot,
   IconDroplet,
   IconEgg,
   IconFlame,
+  IconHeartbeat,
+  IconLeaf,
+  IconLemon2,
+  IconSalt,
   IconTargetArrow,
   IconToolsKitchen2,
   IconWalk,
@@ -96,6 +105,85 @@ export const STAT_CARD_DEFS: {
     icon: IconDroplet,
     compute: (data) => `${formatNumber(average(data.days, (d) => d.fat))} g`,
   },
+  // sugar/fiber/salt/potassium/calcium/iron only have real values on days with
+  // at least one HelloFresh-recipe registration (the only source that carries
+  // Product.nutritionExtra, see docs/DECISIONS.md 2026-08-29) — days without
+  // one contribute 0, same zero-fill approach as every other average here.
+  {
+    key: "sugar",
+    label: "Sukker",
+    icon: IconCandy,
+    compute: (data) => `${formatNumber(average(data.days, (d) => d.sugar), 1)} g`,
+  },
+  {
+    key: "fiber",
+    label: "Kostfibre",
+    icon: IconLeaf,
+    compute: (data) => `${formatNumber(average(data.days, (d) => d.fiber), 1)} g`,
+  },
+  {
+    key: "salt",
+    label: "Salt",
+    icon: IconSalt,
+    compute: (data) => `${formatNumber(average(data.days, (d) => d.salt), 1)} g`,
+  },
+  {
+    key: "potassium",
+    label: "Kalium",
+    icon: IconApple,
+    compute: (data) => `${formatNumber(average(data.days, (d) => d.potassium))} mg`,
+  },
+  {
+    key: "calcium",
+    label: "Calcium",
+    icon: IconBone,
+    compute: (data) => `${formatNumber(average(data.days, (d) => d.calcium))} mg`,
+  },
+  {
+    key: "iron",
+    label: "Jern",
+    icon: IconAtom2,
+    compute: (data) => `${formatNumber(average(data.days, (d) => d.iron), 1)} mg`,
+  },
+  // MyFitnessPal-style extended panel (2026-09-11): only has real values on
+  // products imported from Open Food Facts so far (see
+  // src/lib/openFoodFacts.ts) — same zero-fill averaging as above otherwise.
+  {
+    key: "saturatedFat",
+    label: "Mættet fedt",
+    icon: IconDroplet,
+    compute: (data) => `${formatNumber(average(data.days, (d) => d.saturatedFat), 1)} g`,
+  },
+  {
+    key: "unsaturatedFat",
+    label: "Umættet fedt",
+    icon: IconDroplet,
+    compute: (data) => `${formatNumber(average(data.days, (d) => d.unsaturatedFat), 1)} g`,
+  },
+  {
+    key: "transFat",
+    label: "Transfedt",
+    icon: IconDroplet,
+    compute: (data) => `${formatNumber(average(data.days, (d) => d.transFat), 2)} g`,
+  },
+  {
+    key: "cholesterol",
+    label: "Kolesterol",
+    icon: IconHeartbeat,
+    compute: (data) => `${formatNumber(average(data.days, (d) => d.cholesterol))} mg`,
+  },
+  {
+    key: "vitaminA",
+    label: "Vitamin A",
+    icon: IconCarrot,
+    compute: (data) => `${formatNumber(average(data.days, (d) => d.vitaminA))} µg`,
+  },
+  {
+    key: "vitaminC",
+    label: "Vitamin C",
+    icon: IconLemon2,
+    compute: (data) => `${formatNumber(average(data.days, (d) => d.vitaminC))} mg`,
+  },
   {
     key: "daysLogged",
     label: "Dage logget",
@@ -139,7 +227,22 @@ export const STAT_CARD_DEFS: {
   },
 ];
 
-export const DEFAULT_ACTIVE_STAT_KEYS: string[] = STAT_CARD_DEFS.map((def) => def.key);
+// The cards a fresh Statistik dashboard shows out of the box. Deliberately not
+// "every STAT_CARD_DEFS key" — sugar/fiber/salt/potassium/calcium/iron only
+// have data for HelloFresh-recipe registrations, so they start out available
+// via "unused cards" (statistics/unused-cards) rather than cluttering the
+// default view with mostly-zero cards for everyone else.
+export const DEFAULT_ACTIVE_STAT_KEYS: string[] = [
+  "calories",
+  "protein",
+  "carbs",
+  "fat",
+  "daysLogged",
+  "goalsMet",
+  "steps",
+  "water",
+  "burned",
+];
 
 export const SPORT_STAT_KEY_PREFIX = "sport:";
 

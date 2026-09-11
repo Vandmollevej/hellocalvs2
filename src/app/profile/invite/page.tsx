@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { IconRefresh } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { PointsPromoBanner } from "@/components/hf/PointsPromoBanner";
 
 type Referral = { id: string; referredUser: { displayName: string }; rewardGrantedAt: string | null };
 type Invitation = { id: string; email: string; sentAt: string; expiresAt: string; acceptedAt: string | null };
@@ -131,20 +132,11 @@ export default function InvitePage() {
       }
     >
       <div className="px-4 pt-4 pb-8">
-        <div className="rounded-lg p-4" style={{ background: "var(--hf-color-brand)" }}>
-          <p className="hf-type-body-sm font-bold" style={{ color: "var(--hf-color-white)" }}>
-            I optjener begge 300 points, når din ven har oprettet en konto*
-          </p>
-          <p className="hf-type-caption mt-1" style={{ color: "var(--hf-color-white)" }}>
-            300 points kan indløses til 1 gratis måned under Profil → Points.
-          </p>
-        </div>
-        <p className="hf-type-caption mt-1" style={{ color: "var(--hf-color-text-secondary)" }}>
-          *
-          <a href="/betingelser#pointsystem" className="underline">
-            Læs betingelser
-          </a>
-        </p>
+        <PointsPromoBanner
+          headline="I optjener begge 300 points, når din ven har oprettet en konto"
+          subtext="300 points kan indløses til 1 gratis måned under Profil → Points."
+          href="/betingelser#pointsystem"
+        />
 
         <h2 className="hf-type-section-title mt-6">Send invitation pr. e-mail</h2>
         <form onSubmit={sendInvitation} className="mt-2 flex gap-2">
