@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { IconChevronDown } from "@tabler/icons-react";
+import Link from "next/link";
+import { IconChevronDown, IconBookmark, IconBookmarkFilled, IconAlertTriangle } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { ForwardButton } from "@/components/ForwardButton";
 import { appendDishDraftIngredient } from "@/lib/dish-draft";
@@ -41,6 +42,8 @@ type Product = {
   ingredientsText?: string | null;
   allergens?: string[];
   additives?: string[];
+  barcodes?: { code: string }[];
+  createdByUserId?: string | null;
   // HelloFresh-recipe extra nutrition, per Product.servingSizeGrams — see
   // docs/DECISIONS.md 2026-08-29/2026-09-10.
   nutritionExtra?: Record<string, number> | null;
@@ -55,6 +58,7 @@ type Product = {
 };
 
 type ProfileUser = {
+  id: string;
   showAllergens: boolean;
   allergenVisibility: Record<string, boolean> | null;
   showExtendedNutrition: boolean;
@@ -87,6 +91,8 @@ export default function AddPage() {
   const [additivesOpen, setAdditivesOpen] = useState(false);
   const [extendedNutritionOpen, setExtendedNutritionOpen] = useState(false);
   const [additiveNames, setAdditiveNames] = useState<Record<string, string>>({});
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favoritePending, setFavoritePending] = useState(false);
   const [macroOverride, setMacroOverride] = useState<{
     amount: number;
     protein: number;
@@ -113,7 +119,33 @@ export default function AddPage() {
       .then((res) => res.json())
       .then((data) => setProfile(data.user ?? null))
       .catch(() => setProfile(null));
+
+    fetch("/api/favorites")
+      .then((res) => res.json())
+      .then((data) => {
+        const favorites = (data.favorites ?? []) as { product: { id: string } | null }[];
+        setIsFavorite(favorites.some((favorite) => favorite.product?.id === id));
+      })
+      .catch(() => setIsFavorite(false));
   }, [id]);
+
+  async function handleToggleFavorite() {
+    if (favoritePending) return;
+    const next = !isFavorite;
+    setIsFavorite(next);
+    setFavoritePending(true);
+    try {
+      await fetch("/api/favorites", {
+        method: next ? "POST" : "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: id }),
+      });
+    } catch {
+      setIsFavorite(!next);
+    } finally {
+      setFavoritePending(false);
+    }
+  }
 
   const product = state.status === "loaded" ? state.product : null;
   const factor = amount / 100;
@@ -311,6 +343,14 @@ export default function AddPage() {
                       />
                     )}
                   </div>
+                  <button
+                    type="button"
+                    onClick={handleToggleFavorite}
+                    aria-label={t(isFavorite ? "search.removeFavorite" : "search.addFavorite")}
+                    className="hf-favorite-button"
+                  >
+                    {isFavorite ? <IconBookmarkFilled size={24} /> : <IconBookmark size={24} />}
+                  </button>
                   <div className="absolute -right-5 bottom-0 flex h-[72px] w-[72px] items-center justify-center rounded-full bg-white shadow-md">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
@@ -320,6 +360,15 @@ export default function AddPage() {
                     />
                   </div>
                 </div>
+                {!!state.product.barcodes?.length && state.product.createdByUserId !== profile?.id && (
+                  <Link
+                    href="/profile/report-bug"
+                    className="flex items-center gap-1 self-start text-[13px] font-medium text-hf-black opacity-70"
+                  >
+                    <IconAlertTriangle size={16} />
+                    {t("swipeableRow.reportError")}
+                  </Link>
+                )}
                 <p className="hf-heading text-lg text-hf-black">{state.product.name}</p>
                 {state.product.brand && (
                   <p className="text-sm font-bold text-hf-green">
