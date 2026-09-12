@@ -47,7 +47,8 @@ export function StatPeriodPicker({
   }
 
   return (
-    <div className="relative z-50">
+    <div className="relative z-50 flex items-center gap-1.5">
+      <span className="text-sm font-semibold text-hf-black">{t("statPeriodPicker.showLabel")}</span>
       <button
         type="button"
         aria-haspopup="true"

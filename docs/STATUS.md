@@ -1,6 +1,187 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-11
+Last updated: 2026-09-12
+
+## 2026-09-12: Calendar day-view — back arrow moved onto the same row as the profile/appbar, off the date-nav row
+
+Direct user feedback on a live screenshot of `/calendar`'s day-detail overlay
+(`src/app/calendar/page.tsx`, the full-screen `role="dialog"` opened by
+tapping a day): the "Tilbage" arrow was rendered on the same row as the
+"Søndag 20. september" date-navigation controls (prev/next-day chevrons),
+instead of up on the same row as the rest of the app's fixed appbar. Split
+that dialog's header into two rows: a real `.hf-appbar .hf-appbar--brand`
+row (same fixed slots/class every other `ScreenHeader` screen uses) holding
+only the back button and a "Kalender" title, and a second green row below it
+that now only has the prev-day/date/next-day controls — no back arrow on
+that row anymore.
+
+Verified live (not just read): `eslint` clean on the changed file; `next
+build` (via the known-working
+`~/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe`
+binary, since this workstation still has no `npm`/`node` on PATH) passed
+clean, full route list, no TypeScript errors. Opened the Browser pane
+against the user's own already-running `next dev` (port 3000), clicked into
+20 September's day view via a real DOM `button[aria-label]` click, and
+inspected the rendered dialog's DOM: the "Tilbage" button is inside
+`.hf-appbar.hf-appbar--brand` next to the "Kalender" title, and the
+prev/next-day row below it has no back button.
+
+## 2026-09-12: Hello Doc real external access (Next work #12A) — reviewed and confirmed done, docs were stale
+
+Resumed after a token-budget pause to check whether a concurrent session (working in this same repo at the same time — its dev server was up, and it overwrote a file mid-edit while this session was building the same feature, see the collision note below) had finished the Hello Doc token-authenticated external view, per the user's own instruction. It had:
+
+- `src/app/hello-doc/[token]/page.tsx` — the real, login-free page a doctor/dietitian opens from the invitation e-mail. Renders `NOT_FOUND`/`REVOKED`/`EXPIRED` as plain status cards, `PENDING` as an accept screen (owner's name, the granted category list, expiry hint, "Bekræft og se data" button), and `ACTIVE` as the actual data view — sections shown only for the categories the owner granted (mirrors `/settings/hello-doc/preview`'s layout/`MiniChart` components, but scoped, not the owner's full data).
+- `src/app/api/hello-doc/[token]/route.ts` — `GET` resolves the token (flips a timed-out `PENDING` to `EXPIRED` on read), returns only enough for the accept screen while `PENDING`, and the category-redacted data once `ACTIVE`; `POST` on the same path is the accept action (`PENDING` → `ACTIVE`, stamps `acceptedAt`). No `getSessionUser()` anywhere in the file — the unguessable `DoctorShare.token` is the only access control, same pattern as `Product.approvalToken`/`/admin/approve/[token]`.
+- `helloDoc.token.*` i18n keys present in both `da.json`/`en.json`.
+
+**This session's own contribution while working the same task before spotting the collision** (kept, doesn't conflict with the above): `src/lib/doctor-share-data.ts` (a `fetchDoctorShareOwnerData(ownerId, range)` helper) and a small `isDoctorSharePendingExpired` guard in `src/lib/doctor-share.ts`; refactored `/api/doctor-shares/preview/route.ts` to call the shared helper instead of duplicating the query logic inline (also dropped its unused `heightCm` field, which the preview page never rendered). A separate `accept/route.ts` this session started got deleted once the other session's combined `GET`+`POST` `route.ts` landed — that file is now the only accept path, kept as-is.
+
+**Verification this pass:** `eslint .` (whole repo) and `next build` (full route list, including `/hello-doc/[token]`) both passed clean, despite multiple other `node.exe` processes already running (the other session's dev server) at the time. Not verified by an actual browser click-through/accept flow — this workstation still has no reachable local Postgres, so `GET /api/hello-doc/[token]` has nothing to resolve against locally; needs a real invite + real device/browser test against `hellocal.packroff.dk` once deployed.
+
+**Follow-up pass (same session that wrote `/hello-doc/[token]` above, resumed via a scheduled one-shot cron after a token-budget pause):** consolidated the duplicated PENDING-expiry check in `src/app/api/hello-doc/[token]/route.ts` (both `GET` and `POST` had their own inline `expiresAt < now` comparison) to call the other session's `isDoctorSharePendingExpired()` helper instead, so there's exactly one place that rule lives. Also hit and resolved a genuine instance of this repo's known OneDrive-sync `.next` lock issue (documented elsewhere in this file): `next build` failed with "Another next build process is already running" despite no `node`/`next` process actually running (`Get-CimInstance Win32_Process` and a port-3000 check both came back empty) — `rm -rf .next` cleared the stale native lock, then the build succeeded. `eslint .` (whole repo, after the consolidation) and `next build` (full route list) both clean afterwards. Also live-verified (own dev server, no reachable local Postgres as usual): `GET /hello-doc/<garbage-token>` renders the real page (not a crash), correctly falls into the `loadError`/"Kunne ikke hente denne side" state once the underlying DB call throws (`ECONNREFUSED`, pre-existing), and `PhoneFrame.tsx`'s new `/hello-doc` exemption is in effect (`document.querySelector('.phone-frame-stage')` is `null` on that route) — no phone bezel wrapping the recipient's desktop-oriented view.
+
+`docs/DECISIONS.md`'s 2026-09-12 Hello Doc entry still said "der findes endnu ingen token-autentificeret ekstern visning" (no such view exists yet) — that's now stale/incorrect; corrected there too. `docs/STATUS.md` "Next work" #12A marked done below (menstrual-cycle-tracking-as-a-real-feature is the only piece of that item still open).
+
+## 2026-09-12: FAB radial menu — more clearance from the joystick backdrop, green action-hint labels
+
+Direct user feedback on a live screenshot of the front-page FAB's fanned-out
+action circles: the icons were still too close to the green joystick backdrop
+— dragging a thumb toward an option covered it before it was clearly visible.
+User also asked for a short green text label to appear next to whichever
+action is currently highlighted during the drag, naming the action verbally
+rather than relying on the icon alone (e.g. camera → "Tag billede").
+
+`src/components/AddButton.tsx`:
+- `ARC_GAP` (radial gap between the backdrop's curved edge and the action
+  icons) increased from 24px to 40px, giving the drag/joystick zone more
+  breathing room before it reaches the icon ring.
+- Each `Action` gained a `hint` string (new `addButton.hint.*` i18n keys in
+  both locale files: `mikrofon → Indtal`, `gryde → Måltid`, `søgning →
+  Søgning`, `vægt → Vægt og mål`, `kamera → Tag billede` — deliberately
+  distinct from the existing `addButton.*` aria-labels used for
+  accessibility, which stay unchanged). Rendered as a `.hf-green`, bold,
+  `whitespace-nowrap` label positioned just to the right of the action's
+  circle (vertically centered with it, `SIDE`-aware so it still reads
+  correctly if the FAB is ever mirrored to the right edge), visible only
+  while that specific action is highlighted during the drag.
+
+Verified live (not just read): opened the Browser pane against the user's own
+running dev server (`localhost:3000`, no `npm run dev` started from this
+session since one was already running), dispatched real `PointerEvent`
+sequences (`pointerdown` → stepped `pointermove` → `pointerup`) against the
+FAB button at 402×874. Screenshots mid-drag confirmed the enlarged gap and the
+correct green hint label appearing next to the highlighted icon; releasing
+navigated to `/weight/create` — the highlighted action's real route — via
+`location.href`, matching the correctly-picked action.
+
+**Roadmap note, not implemented this pass:** the user wants an additional,
+manually-added FAB action for logging water intake ("VAND"), to be designed
+later — recorded here so it isn't lost, not built yet.
+
+`node_modules/eslint/bin/eslint.js` (run via the known Playwright-bundled
+`node.exe`, since this workstation still has no `node`/`npm` on `PATH`) is
+clean on `AddButton.tsx` and both locale files. A full-repo `eslint .` run
+surfaced one **pre-existing, unrelated** error — `src/app/hello-doc/[token]/page.tsx:84`,
+`react-hooks/set-state-in-effect` (`load()` called synchronously inside a bare
+`useEffect`) — from the in-progress Hello Doc feature (see the entry below),
+not from this change; flagged to the user rather than fixed without being
+asked. `next build` (via the same Playwright `node.exe`, full TypeScript +
+all ~130 routes) passed clean, exit code 0 — no errors, only the usual static/
+dynamic route summary.
+
+## 2026-09-12: Stemme (voice) screen — five direct bug/UX fixes from live screenshot feedback
+
+`src/app/voice/page.tsx` had five issues reported directly against a live screenshot ("Lytter..." screen with items already showing under "Tilføjet"):
+
+- **Fatal reset bug**: the file had two separate `useEffect(() => { startListening(); ... }, [])` blocks (an accidental duplicate), both firing on mount. This started two independent `SpeechRecognition` sessions against the same microphone at once; only one was tracked by `recognitionRef`, so the orphaned session kept running and silently kept re-appending its own recognized speech into the shared `finalTranscriptRef`/`transcript` state even after the visible "reset" button cleared them — explaining why previously-spoken text reappeared after a reset. Fixed by consolidating to a single mount effect, and the reset button (`voice.resetTranscript`) now `abort()`s the current recognition outright and starts a genuinely new one (`restartListening`), instead of only clearing the displayed text of a still-running session.
+- **"Tilføjet" list redesign**: removed the down-chevron/inline amount-and-macro edit panel (`VoiceItem`, `MacroBar`) entirely, per direct instruction ("der skal ikke være pil ned... vises som de andre steder"). Rows now reuse the same shared `src/components/SwipeableRow.tsx` the home-screen `DailyList` already uses — swipe left for Fejl/Slet, swipe right for Favorit — and an already-added item is a `<Link href="/registration/[id]">` like every other registration row in the app, rather than an inline expandable editor. `SwipeableRow`'s `onReportError` prop was made optional (small, backward-compatible change — `DailyList` always passes it, so its behavior is unchanged) since a not-yet-added item has no registration to report an error against.
+- **Persistence until the next day**: already-added items are now also written to `localStorage` (`hf-voice-added-items`, keyed by today's Y-M-D) so navigating away — e.g. via the new "Fejl" swipe action, or any other navigation — and back doesn't lose them from the screen; a stale previous day's entry is dropped automatically on the next visit. Only confirmed (saved) items are persisted this way, not an in-progress unconfirmed preview.
+- **Mic auto-off on any interaction**: a capture-phase `pointerdown` listener on `document` stops the recognition session the instant the user interacts with anything else on the page or navigates away, excluding only the mic button and reset button (which already manage the session themselves) — a general fix rather than wiring `stopListening()` into every individual handler.
+- **No more auto-add**: recognized items are no longer silently `POST`ed to `/api/registrations` the moment recognition ends. They now render as an unsaved preview (`Item.saved = false`); a new full-width green "Tilføj viste varer" button (only shown while there is at least one unsaved item) performs the actual save and flips matching items to `saved: true`, at which point they become real, swipeable/clickable registrations.
+
+Removed now-unused i18n keys from both locale files (`voice.edit/save/foodOrDish/amount/lessAmount/moreAmount/resetChanges/closeEditing/editItem/delete` — all were only ever referenced from the removed inline editor); added `voice.addShownItems`. `npm run lint` (whole repo) and `npm run build` both passed clean (via the previously-documented `~/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe`, since this workstation still has no `node`/`npm` on PATH). **Not verified in a live browser** — same recurring constraint as other entries in this file; the mic-lifecycle and localStorage-persistence behavior should be click-tested on a real device before the next Synology release.
+
+## 2026-09-12: Hello Doc — set up (not fully wired), per docs/DECISIONS.md
+
+Built the new "Hello Doc" feature the user specified in detail: a new
+Settings row (`src/app/settings/page.tsx`, `IconStethoscope`) opens
+`/settings/hello-doc` ("Del din fremgang med din læge eller diætist"), an
+"Inviter bruger" list/detail flow, and a "Sådan ser det ud" scientific/
+medical-styled preview page. See `docs/DECISIONS.md` (2026-09-12) for the
+full data-model/scope writeup — summary:
+
+- New `DoctorShare` Prisma model + `DoctorShareStatus`/`DoctorShareHistoryRange`
+  enums (migration `20260912000000_hello_doc`, hand-written, not applied —
+  no local database, same as every other pending migration in this file).
+  New `MessageEvent.DOCTOR_SHARE_INVITATION` template
+  (`src/lib/messaging.ts`), queued the same way as `FRIEND_INVITATION`.
+- `src/lib/doctor-share.ts`: the shared list of 9 shareable data categories.
+  Two of them (menstrual cycle, digestion) have no underlying data model
+  anywhere in Hello Cal yet, so they render as disabled/informational rows
+  instead of a working toggle — flagged directly to the user in chat too,
+  answering their own "did I miss any fields?" question.
+- Pages: `src/app/settings/hello-doc/page.tsx` (list),
+  `.../invite/page.tsx` (new invitation), `.../[id]/page.tsx` (edit an
+  existing invited user — intentionally near-identical body to the invite
+  page via the new shared `src/components/hf/DoctorShareEditor.tsx`, per the
+  user's own instruction), `.../preview/page.tsx` ("Sådan ser det ud").
+  New `src/components/hf/MiniChart.tsx` (dependency-free inline-SVG line/bar
+  charts, same hand-rolled-SVG convention as `StatChart`/`StatsWheel` — no
+  charting library exists in this project).
+- API: `src/app/api/doctor-shares/route.ts` (list/create),
+  `.../[id]/route.ts` (get/update), `.../[id]/resend/route.ts`,
+  `.../[id]/revoke/route.ts`, `.../preview/route.ts`. All require a real
+  session (`getSessionUser`), same as `/api/invitations` — no demo-user
+  fallback, so nothing here is exercisable locally without a working login,
+  same limitation as `/profile/invite`.
+- **Explicitly out of scope for this pass, added to "Next work" below**:
+  there is no token-authenticated external view yet — a real doctor/dietitian
+  can't open their invite link and see anything; the "PENDING → ACTIVE"
+  acceptance transition doesn't exist either, so every created share stays
+  "Afventer" indefinitely for now. The preview page instead shows the
+  signed-in owner's own data in the intended layout, clearly labeled as a
+  preview in the UI.
+- `npx prisma validate`, `npx prisma generate`, `npm run lint` (whole repo),
+  and `npm run build` (full TypeScript + all 118 routes, via the bundled
+  Playwright `node.exe` per this file's other "no npm on PATH" notes) all
+  passed clean. **Not yet done**: applying the migration to a real database
+  (`npx prisma migrate deploy`, same "no local Postgres reachable" situation
+  as every other pending migration) and any actual browser click-through —
+  every Hello Doc route requires a real logged-in session
+  (`getSessionUser`), which this workstation can't exercise locally.
+
+## 2026-09-11: calendar long-press text-selection fix, "Dagens mål er nået" tense fix, daily-list swipe actions reworked (red Slet + new "Fejl" action)
+
+Direct user feedback from two live screenshots (calendar day view mid-long-press, and the home-screen daily list with a row swiped open):
+
+- **Calendar long-press selection**: holding a finger down on the day-timeline to reveal the "Tilføj" bar (`src/app/calendar/page.tsx`, `HourRow`) was letting the browser paint its native mobile tap/long-press highlight (light blue) across the row, and nothing on the touched element reset `-webkit-user-select`/`-webkit-touch-callout`/the tap-highlight color. Fixed two ways: `HourRow`'s pointer-handling `<div>` now has `select-none [-webkit-touch-callout:none]` (same pattern already used in `BottomNav.tsx`'s long-press drag), and `html` in `src/app/globals.css` now sets `-webkit-tap-highlight-color: transparent` globally, so this class of highlight can't reappear on some other untouched element either.
+- **`calendar.dailyGoalReached`** (`src/i18n/locales/da.json`/`en.json`): "Dagens mål blev nået" (past tense) → "Dagens mål er nået" (present tense); English key updated to match ("was reached" → "is reached").
+- **`SwipeableRow.tsx`** (used by `DailyList.tsx`'s home-screen entries — the shared component, not the separate local one inside `src/app/voice/page.tsx`): the "Slet" action is now `bg-hf-red-dark` (the existing `--hf-color-danger` semantic token) with white text instead of black. Added a second right-side action, "Fejl" (`swipeableRow.reportError`, neutral `bg-hf-gray-dark`), placed to the left of "Slet" — **not** "Rediger", per explicit instruction, since editing an entry already happens by tapping the row itself. Tapping "Fejl" navigates to a new `/registration/[id]/report-error` route.
+- **New route**: `src/app/registration/[id]/report-error/page.tsx` — a skeleton screen only (standard `HfScreen` shell with the usual back-chevron, a translated placeholder line). **Design for this screen is intentionally not built yet** — the user will specify it in a follow-up message. Do not invent form fields/content for it before that happens.
+
+**Flagged for the roadmap (see "Next work" #12 below), not implemented this pass**: the user wants the calendar's long-press-to-add gesture to eventually open a brand-new full-screen add overlay (replacing/supplementing the current inline black "Tilføj" bar), with the detailed design to follow later. Recorded here and in "Next work" specifically so it isn't lost.
+
+Lint/build not run this pass (see this workstation's recurring Node/npm-on-PATH notes elsewhere in this file for the current working method) — these are small, targeted edits; re-run `npm run lint`/`npm run build` before the next deploy per usual.
+
+## 2026-09-11: front-page StatsWheel — removed redundant unit text, fixed the jumpy scale animation
+
+Direct user feedback on a live screenshot of the front page: the steps row showed a redundant "skridt" unit next to the footstep icon, "Liter" should be "L", and — the bigger complaint — switching which stat is active "jumps" instead of moving smoothly like an iOS wheel picker, and the icon sometimes visually sits above/below the value instead of staying to its right during that motion.
+
+`src/components/StatsWheel.tsx`: dropped the `unit: "skridt"` (icon already conveys it) and changed `unit: "Liter"` to `"L"`. Root cause of the jump: `WheelItem` rendered two entirely different DOM branches for the active vs. inactive item (different flex alignment — `items-baseline` vs `items-center` — and different gap), *and* separately recomputed `font-size`/icon `size` every render as raw numeric px/attribute values. Neither of those is covered by the `transition-[transform,opacity]` class, so they snapped instantly at the exact moment `isActive` flipped, while position/opacity kept easing — that's what read as a sudden jump and the icon momentarily landing above/below the text (baseline vs. center alignment shifts the icon vertically). Fixed by using one unified markup for every item, with a single fixed font-size (27px) and icon size (21px) for all rows, letting the existing CSS `transform: scale()` (already smooth and GPU-composited) be the only thing that shrinks smaller/farther items — exactly like a native picker wheel, where items are scaled copies of one size rather than independently resized. Verified live: computed styles now show `font-size: 27px` on every row regardless of active state, with `transform`/`opacity` as the only transitioning properties.
+
+Also updated `.claude/launch.json`'s `hello-cal-dev` entry to invoke Next directly via the known-working Node binary (`.venv/Lib/site-packages/playwright/driver/node.exe node_modules/next/dist/bin/next dev`) instead of `npm run dev` — `npm`/`node` still aren't on this workstation's PATH, so the previous config failed immediately when the Browser-pane preview tool tried to start it.
+
+`eslint .` on the changed file is clean; verified live via the local dev server (registrations API 503s as usual — no reachable local Postgres, pre-existing).
+
+## 2026-09-11: stat-card reorder animation fixed for real (verified live), "Vis:"/Tilføj kort moved onto the period-picker row
+
+**Found a working Node binary on this workstation:** `C:\Users\Peter\.venv\Lib\site-packages\playwright\driver\node.exe` (bundled with the Python `playwright` package, already installed — not a new install). Since `node_modules` is already present, this runs `eslint`/`next build`/`next dev` directly (`node.exe node_modules/eslint/bin/eslint.js .`, etc.) without needing `npm`/`node` on `PATH`. **Use this going forward instead of reporting lint/build as unrunnable on this machine.**
+
+**Stat-card drag-reorder animation (`src/components/StatCardsGrid.tsx`) — the 2026-09-10 FLIP fix was real but incomplete, now fixed and actually verified live:** user reported (with a live screenshot) that after dropping a dragged card onto another, only the dragged card slid into place — the displaced card (previously occupying that slot) just snapped with no visible transition. Root cause: the previous fix took its "before" position snapshot manually, once, inside the pointerup handler right before triggering the reorder (`setLayoutAnimated`) — a timing-fragile one-shot pattern that was never live-tested (STATUS.md said so explicitly). `BottomNav.tsx`'s icon-reorder animation — already interaction-verified — uses a more robust pattern instead: the `useLayoutEffect` itself measures every card's position on every relevant render and diffs against whatever it measured the *previous* time it ran, self-correcting regardless of React's exact batching. Ported that pattern into `StatCardsGrid.tsx` (removed `setLayoutAnimated`, all three call sites now just call plain `setLayout`). Verified this time with a real local dev server (`next dev` via the Playwright node binary above) — `eslint .` and `next build` both clean.
+
+**"Tilføj kort" moved onto the period-picker row, "Vis:" label added in front of it** (direct user request): moved the link out of `StatCardsGrid.tsx` into `src/app/statistics/page.tsx`, now sharing a `justify-between` row with `StatPeriodPicker`. Added `statPeriodPicker.showLabel` ("Vis:"/"Show:") to both locale files, rendered before the period button inside `StatPeriodPicker.tsx`. Verified live at 402×874 (screenshot): "Vis: I dag ⌄" and "+ Tilføj kort" now sit on one row where "I dag" used to be alone.
+
+**Found, but deliberately did NOT fix (out of scope for this pass):** the period-picker's dropdown panel (`StatPeriodPicker.tsx`'s `absolute right-0 top-11 w-64` panel) renders mostly off-screen to the left at 402px width — confirmed via computed rect (`left: -154px`, only ~102px of the 256px-wide panel actually inside the viewport). This is pre-existing (the panel's `right-0` was always relative to the narrow picker-button container, which sits near the left edge of the screen, not the right) — not introduced by the changes above. Flagged for a future pass, not silently patched.
 
 ## 2026-09-11: `npm run lint`/`npm run build` actually run, two real bugs fixed
 
@@ -1351,6 +1532,20 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
     come back and save correctly). The full visual overlay/uncertain-
     ingredient UI from `docs/AI.md`'s "Måltidsanalyse" section is still not
     built — only a simple editable review list exists so far.
+~~12A. Hello Doc real external access~~ — done 2026-09-12 (see the dated
+    entry above this list). Still open: revisit whether menstrual-cycle
+    tracking should become a real feature (currently a disabled placeholder
+    in the share-category list, since no such data exists anywhere in Hello
+    Cal).
+12. **Calendar "Tilføj" long-press → new full-screen add overlay** (requested
+    2026-09-11, not yet designed or built): currently, long-pressing an hour
+    row in the calendar day/week timeline (`src/app/calendar/page.tsx`,
+    `HourRow`) reveals an inline black "Tilføj" bar within that row. The user
+    wants this interaction to instead open a new dedicated screen overlay for
+    adding an entry at that time. The user will provide the actual design in
+    a follow-up message — do not build it ahead of that. Also see the
+    "Indberet fejl" skeleton page (`/registration/[id]/report-error`, added
+    2026-09-11) which has the same status: route exists, design pending.
 
 ## 2026-09-05: Fejlretninger-log started; several already-fixed, some real central bugs fixed
 

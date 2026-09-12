@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { IconChevronRight } from "@tabler/icons-react";
 import { SwipeableRow } from "@/components/SwipeableRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -46,6 +47,7 @@ function formatTime(dateString: string) {
 
 export function DailyList() {
   const { t } = useTranslation();
+  const router = useRouter();
   const [entries, setEntries] = useState<Entry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -102,8 +104,8 @@ export function DailyList() {
   }
 
   return (
-    <div className="relative">
-      <ul className="px-4">
+    <div className="relative flex h-full min-h-0 flex-col">
+      <ul className="min-h-0 flex-1 overflow-y-auto px-4 pb-9">
         {entries.map((entry, i) => (
           <li
             key={entry.id}
@@ -111,6 +113,7 @@ export function DailyList() {
           >
             <SwipeableRow
               onFavorite={entry.productId ? () => void favoriteEntry(entry.productId) : undefined}
+              onReportError={() => router.push(`/registration/${entry.id}/report-error`)}
               onDelete={() => void deleteEntry(entry.id)}
             >
               <Link

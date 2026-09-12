@@ -100,7 +100,25 @@
   --font-hf-body: var(--font-hf-body);
 }
 
+/* Låser hele dokumentet (html/body) mod scroll og bounce/rubber-band —
+   uden dette rubber-bander mobil-Safari selve siden (og viser/skjuler sin
+   egen adressebjælke ved swipe), fordi kun de indre containere (`.hf-screen__scroll`
+   m.fl.) havde `overscroll-behavior: contain`. Al reel scroll skal ske i de
+   navngivne indre scroll-containere, aldrig i html/body selv. */
+html {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  /* Uden dette viser mobil-Safari/Chrome sin egen blå tap-highlight-overlay
+     under et langt tryk (fx kalenderens "Tilføj"-hold), selv på elementer der
+     ikke er links/knapper. */
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
   background: var(--page-bg);
   color: var(--text-primary);
 }
@@ -403,6 +421,42 @@ button,
   border: 1.5px solid var(--hf-black);
   color: var(--hf-black);
   font-weight: 700;
+}
+
+/* "Notched" felt (border-kant med indlejret label), Hello Doc — bevidst
+   afvigelse fra den generelle .hf-field-kontrakt, matcher direkte det
+   HelloFresh-checkout-skærmbillede brugeren gav som reference for
+   Hello Doc-invitationssiden (2026-09-12). Native <fieldset>/<legend> giver
+   "hakket" i kantlinjen uden JS. Ikke en generel afløser for TextField. */
+.hd-notched-field {
+  min-width: 0;
+  margin: 0;
+  padding: 0 16px;
+  border: 1px solid var(--hf-color-field-border);
+  border-radius: 10px;
+}
+
+.hd-notched-field legend {
+  margin-left: 4px;
+  padding: 0 6px;
+  color: var(--hf-color-text-secondary);
+  font-family: var(--font-hf-body);
+  font-size: 14px;
+}
+
+.hd-notched-field input {
+  width: 100%;
+  height: 60px;
+  border: none;
+  background: transparent;
+  outline: none;
+  color: var(--hf-color-text);
+  font-family: var(--font-hf-body);
+  font-size: 19px;
+}
+
+.hd-notched-field input::placeholder {
+  color: var(--hf-color-placeholder);
 }
 
 /* Valg-chip/kort (fx "Hvad er dine mål?") */

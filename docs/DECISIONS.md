@@ -550,6 +550,64 @@ This file records durable decisions. Add a dated entry when a later decision cha
   `prisma generate` + `tsc --noEmit` — skal gennemgås og køres med
   `prisma migrate deploy` ved næste Synology-udrulning før de kan stoles på.
 
+## 2026-09-12: Hello Doc — del fremgang med læge/diætist
+
+- Ny funktion under Indstillinger → "Hello Doc": ejeren kan invitere en
+  navngiven modtager (læge/diætist) pr. e-mail til at se en udvalgt del af
+  sine egne data. Ny `DoctorShare`-model (migration
+  `20260912000000_hello_doc`, hånd-skrevet — samme "ingen lokal database"-
+  begrundelse som andre nylige migrationer i dette projekt): navn, e-mail,
+  status (PENDING/ACTIVE/EXPIRED/REVOKED), et unikt `token` (samme mønster
+  som `Product.approvalToken`, til den fremtidige eksterne visning), hvilke
+  datakategorier der er delt (`categories`, JSON-liste af nøgler fra
+  `src/lib/doctor-share.ts`), og en valgt historikperiode (7 dage/måned/
+  år/hele). Invitationsmailen genbruger den eksisterende
+  besked-automatiserings-infrastruktur (`queueMessage`, nyt
+  `MessageEvent.DOCTOR_SHARE_INVITATION`), samme no-op-indtil-SMTP-regel som
+  alt andet i den kø.
+- **Oprindeligt kun sat op, ikke færdigbygget end-to-end** (eksplicit
+  brugerønske — "Nøjes med at sæt den op for nu"): ved denne funktions første
+  udbygning fandtes der endnu ingen token-autentificeret ekstern visning.
+  `/settings/hello-doc/preview` ("Sådan ser det ud") og dens API
+  (`/api/doctor-shares/preview`) viser den INDLOGGEDE ejers egne data i det
+  planlagte layout — en forhåndsvisning af formatet, ikke selve
+  modtagersiden. **Rettet samme dag:** den rigtige, login-frie visning findes
+  nu på `/hello-doc/[token]` (`src/app/api/hello-doc/[token]/route.ts`
+  GET+POST), inklusive accepteringsflowet der rykker status PENDING →
+  ACTIVE — se `docs/STATUS.md`s dedikerede 2026-09-12-post om dette. "Next
+  work" #12A er lukket; kun spørgsmålet om menstruationscyklus som en rigtig
+  fremtidig funktion er stadig åbent.
+- **To af de ni datakategorier har intet underliggende datagrundlag i Hello
+  Cal endnu** og vises derfor som deaktiverede/informative rækker, ikke
+  rigtige til/fra-valg, samme "ikke lav en tom/falsk funktion"-konvention som
+  resten af appen: "Menstruationscyklus" (ingen cyklus-model findes noget
+  sted i skemaet) og "Fordøjelse" (eksplicit udskudt af brugeren selv,
+  "kommer senere"). Flagget direkte til brugeren, da funktionen blev bygget,
+  som svar på deres eget spørgsmål "Er der nogen felter jeg har overset?".
+  De øvrige kategorier (profil, vægt, mål, søvnrytme, mad/kalorier,
+  mineraler/vitaminer, væske) bruger allerede eksisterende felter/modeller
+  (`User`, `WeightEntry`, `Registration`-snapshots, `HealthMetric` for
+  væske) — væske og søvnrytme er dog stadig prototype-/integrationsafhængige
+  data samme sted som resten af appen (se `docs/STATUS.md` "Next work" #3).
+- Startvægt/startmål på forhåndsvisningen bruger `User.createdAt` som
+  tidspunkt, fordi hverken `User.weightKg` eller `User.targetWeightKg` har
+  sit eget "indtastet den"-tidsstempel — en tilnærmelse, ikke et præcist
+  logget tidspunkt.
+- Aktiveret adgang (status ACTIVE) er permanent som standard — der er ingen
+  UI endnu til at sætte en kortere adgangsperiode efter accept, kun
+  invitationens egen 14-dages udløbsfrist før accept.
+- **Tilføjelse samme dag**: brugeren gav et skærmbillede af HelloFreshs eget
+  checkout-login-trin ("Log ind på din HelloFresh-konto") som direkte
+  visuel reference for felt-/tekststørrelse/knap-stil på "Inviter bruger"-
+  og redigér-siderne — eksplicit undtagelse fra den generelle
+  `.hf-field`/`TextField`-kontrakt for netop disse to skærme. Ny
+  `NotchedTextField`/`.hd-notched-field` (native `<fieldset>`/`<legend>`,
+  giver "hakket" kantlabel uden JS) bruges kun i `DoctorShareEditor`, samt en
+  større/rundere primærknap (64px, radius 12px) på begge skærme. Dette er en
+  bevidst side-specifik afvigelse godkendt direkte af brugeren, ikke en ny
+  generel designsystem-primitiv — `docs/design.md` er ikke opdateret med
+  denne variant.
+
 ## 2026-09-11: Udvidet næringspanel (MyFitnessPal-stil)
 
 - Produktets næringsindhold udvides med et "MyFitnessPal-stil" udvidet panel:

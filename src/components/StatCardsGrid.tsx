@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
-import { IconGripVertical, IconPlus, IconX, type Icon } from "@tabler/icons-react";
+import { IconGripVertical, IconX, type Icon } from "@tabler/icons-react";
 import {
   loadStatLayout,
   saveStatLayout,
@@ -78,11 +77,20 @@ export function StatCardsGrid({
   const gridRef = useRef<HTMLDivElement>(null);
   const longPressTimer = useRef<number | null>(null);
   const pointerDownInfo = useRef<{ x: number; y: number; source: DragSource } | null>(null);
+  // Whether the pointer has actually moved past the drag threshold since it went
+  // down. A long-press-then-release with no movement must leave the layout
+  // untouched instead of snapping the card to whatever happens to be nearest.
+  const hasMovedRef = useRef(false);
   const isFirstRender = useRef(true);
-  // FLIP-style reorder animation: rects captured just before a layout change,
-  // then diffed against the post-render position so cards visibly slide into
-  // their new spot instead of instantly teleporting there.
-  const prevRectsRef = useRef<Map<string, DOMRect> | null>(null);
+  // FLIP-style reorder animation, mirroring BottomNav.tsx's icon-reorder
+  // mechanism: rects are captured continuously by the effect itself (last
+  // time it ran) and diffed against the freshly-measured post-render
+  // position — self-correcting regardless of how React batches the
+  // surrounding state updates, unlike a one-shot snapshot taken manually in
+  // the event handler. This is what makes *every* card that shifts slot
+  // (not just the one being dragged) visibly slide there instead of
+  // instantly teleporting.
+  const prevRectsRef = useRef(new Map<string, DOMRect>());
 
   useEffect(() => {
     if (isFirstRender.current) {
@@ -107,24 +115,14 @@ export function StatCardsGrid({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Wrap every layout-reordering setLayout call with this so the move is
-  // animated (see the useLayoutEffect below) instead of an instant jump.
-  function setLayoutAnimated(updater: LayoutItem[] | ((prev: LayoutItem[]) => LayoutItem[])) {
-    const rects = new Map<string, DOMRect>();
-    activeRefs.current.forEach((el, id) => rects.set(id, el.getBoundingClientRect()));
-    prevRectsRef.current = rects;
-    setLayout(updater);
-  }
-
   useLayoutEffect(() => {
-    const prevRects = prevRectsRef.current;
-    if (!prevRects) return;
-    prevRectsRef.current = null;
+    const nextRects = new Map<string, DOMRect>();
+    activeRefs.current.forEach((el, id) => nextRects.set(id, el.getBoundingClientRect()));
 
     activeRefs.current.forEach((el, id) => {
-      const prev = prevRects.get(id);
-      if (!prev) return; // newly inserted item — no previous position to animate from
-      const next = el.getBoundingClientRect();
+      const prev = prevRectsRef.current.get(id);
+      const next = nextRects.get(id);
+      if (!prev || !next) return; // newly inserted item — no previous position to animate from
       const dx = prev.left - next.left;
       const dy = prev.top - next.top;
       if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
@@ -146,6 +144,8 @@ export function StatCardsGrid({
         el.style.animation = "";
       }, 260);
     });
+
+    prevRectsRef.current = nextRects;
   }, [layout]);
 
   function enterEditMode() {
@@ -178,6 +178,7 @@ export function StatCardsGrid({
   ) {
     if (event.target instanceof HTMLInputElement) return;
     pointerDownInfo.current = { x: event.clientX, y: event.clientY, source };
+    hasMovedRef.current = false;
     const rect = event.currentTarget.getBoundingClientRect();
     if (!editMode) {
       longPressTimer.current = window.setTimeout(() => {
@@ -221,6 +222,15 @@ export function StatCardsGrid({
     setDrag((current) => {
       if (!current) return null;
       const { source } = current;
+
+      // No movement since the pointer went down: this was a long-press-and-release,
+      // not a drag. Leave the layout exactly as it was instead of reordering it
+      // against whichever card happens to be nearest to the (unmoved) finger.
+      if (!hasMovedRef.current) {
+        setOverZone(null);
+        return null;
+      }
+
       const gridRect = gridRef.current?.getBoundingClientRect();
       const droppedOnActive = gridRect
         ? x >= gridRect.left && x <= gridRect.right && y >= gridRect.top && y <= gridRect.bottom
@@ -229,7 +239,7 @@ export function StatCardsGrid({
       if (droppedOnActive) {
         const excludeId = source.kind === "active" ? source.id : undefined;
         const toIndex = nearestInsertionIndex(x, y, excludeId);
-        setLayoutAnimated((prev) => {
+        setLayout((prev) => {
           const next = [...prev];
           let fromIndex = -1;
           let item: LayoutItem;
@@ -250,7 +260,7 @@ export function StatCardsGrid({
         });
       } else if (source.kind === "active") {
         // Dragged out of the active grid — remove the card (stat card goes back into the pool).
-        setLayoutAnimated((prev) => prev.filter((i) => layoutItemId(i) !== source.id));
+        setLayout((prev) => prev.filter((i) => layoutItemId(i) !== source.id));
       }
 
       return null;
@@ -262,12 +272,15 @@ export function StatCardsGrid({
     function onMove(event: PointerEvent) {
       const info = pointerDownInfo.current;
 
-      if (longPressTimer.current && info) {
+      if (info) {
         const dx = event.clientX - info.x;
         const dy = event.clientY - info.y;
         if (Math.hypot(dx, dy) > 10) {
-          window.clearTimeout(longPressTimer.current);
-          longPressTimer.current = null;
+          hasMovedRef.current = true;
+          if (longPressTimer.current) {
+            window.clearTimeout(longPressTimer.current);
+            longPressTimer.current = null;
+          }
         }
       }
 
@@ -327,17 +340,6 @@ export function StatCardsGrid({
         />
       )}
 
-      <div className="relative z-40 flex items-center justify-end gap-2">
-        <Link
-          href="/statistics/unused-cards"
-          onPointerDown={(event) => event.stopPropagation()}
-          className="flex min-h-8 items-center gap-1 text-xs font-semibold text-hf-black"
-        >
-          <IconPlus size={14} stroke={2.5} />
-          {t("statCardsGrid.addCard")}
-        </Link>
-      </div>
-
       <div
         ref={gridRef}
         className={`relative z-40 grid grid-cols-2 gap-3 ${editMode && overZone === "active" ? "rounded-2xl outline-2 outline-dashed outline-hf-green outline-offset-4" : ""}`}
@@ -380,7 +382,7 @@ export function StatCardsGrid({
                   <button
                     type="button"
                     aria-label={t("statCardsGrid.removeHeading")}
-                    onClick={() => setLayoutAnimated((prev) => prev.filter((i) => layoutItemId(i) !== id))}
+                    onClick={() => setLayout((prev) => prev.filter((i) => layoutItemId(i) !== id))}
                     className="shrink-0 rounded-full p-1 opacity-60 hover:opacity-100"
                   >
                     <IconX size={16} />

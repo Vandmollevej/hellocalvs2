@@ -697,7 +697,7 @@ export function BottomNav() {
               type="button"
               onClick={resetLayout}
               aria-label={t("nav.resetMenuAriaLabel")}
-              className="flex h-11 w-11 items-center justify-center rounded-full text-hf-green"
+              className="flex h-11 w-11 items-center justify-center rounded-full text-hf-black"
             >
               <IconRefresh size={20} />
             </button>

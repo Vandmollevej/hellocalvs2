@@ -201,11 +201,6 @@ function getSleepWindow(
   return { bedtime: 23 * 60, wakeTime: (23 * 60 + FALLBACK_SLEEP_MINUTES) % 1440 };
 }
 
-function rotatedTop(minutes: number, anchorMinutes: number, hourHeight: number = HOUR_HEIGHT) {
-  const wrapped = (((minutes - anchorMinutes) % 1440) + 1440) % 1440;
-  return (wrapped / 60) * hourHeight;
-}
-
 function useIsLandscape() {
   const [isLandscape, setIsLandscape] = useState(false);
   useEffect(() => {
@@ -1147,18 +1142,18 @@ function WeekTimelineView({
   );
 }
 
-function SleepBands({ window }: { window: SleepWindow | null }) {
+function SleepBands({ window, hourHeight = HOUR_HEIGHT }: { window: SleepWindow | null; hourHeight?: number }) {
   if (!window) return null;
   return (
     <>
       <div
         className="pointer-events-none absolute inset-x-0 top-0 bg-hf-gray/15"
-        style={{ height: (window.wakeTime / 60) * HOUR_HEIGHT }}
+        style={{ height: (window.wakeTime / 60) * hourHeight }}
         aria-hidden="true"
       />
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0 bg-hf-gray/15"
-        style={{ height: ((24 * 60 - window.bedtime) / 60) * HOUR_HEIGHT }}
+        style={{ height: ((24 * 60 - window.bedtime) / 60) * hourHeight }}
         aria-hidden="true"
       />
     </>
@@ -1169,10 +1164,12 @@ function SleepBoundaryHandle({
   minutes,
   type,
   onCommit,
+  hourHeight = HOUR_HEIGHT,
 }: {
   minutes: number;
   type: SleepAdjustType;
   onCommit: (type: SleepAdjustType, minutes: number) => void;
+  hourHeight?: number;
 }) {
   const { t } = useTranslation();
   const [dragMinutes, setDragMinutes] = useState<number | null>(null);
@@ -1193,7 +1190,7 @@ function SleepBoundaryHandle({
     if (dragMinutesRef.current === null) return;
     event.stopPropagation();
     const deltaY = event.clientY - startYRef.current;
-    const deltaMinutes = (deltaY / HOUR_HEIGHT) * 60;
+    const deltaMinutes = (deltaY / hourHeight) * 60;
     const next = startMinutesRef.current + deltaMinutes;
     dragMinutesRef.current = next;
     setDragMinutes(next);
@@ -1208,7 +1205,7 @@ function SleepBoundaryHandle({
   }
 
   const displayMinutes = dragMinutes ?? minutes;
-  const top = (displayMinutes / 60) * HOUR_HEIGHT;
+  const top = (displayMinutes / 60) * hourHeight;
 
   return (
     <div
@@ -1261,9 +1258,7 @@ function DayDetails({
   const activeZoomPointers = useRef(new Map<number, number>());
   const zoomStart = useRef<{ avgY: number; hourHeight: number } | null>(null);
   const mouseDrag = useRef<{ y: number; scrollTop: number } | null>(null);
-
-  const anchorHour = Math.floor(sleepWindow.wakeTime / 60);
-  const anchorMinutes = anchorHour * 60;
+  const timelineScrollRef = useRef<HTMLDivElement | null>(null);
 
   function handleTimelinePointerDown(event: React.PointerEvent<HTMLDivElement>) {
     activeZoomPointers.current.set(event.pointerId, event.clientY);
@@ -1310,6 +1305,18 @@ function DayDetails({
   const showMinuteLines = hourHeight >= HOUR_HEIGHT * 2;
   const minuteStep = hourHeight >= HOUR_HEIGHT * 3 ? 5 : 15;
 
+  // Tidslinjen løber altid fra 00:00 (top) til 24:00 (bund) — ikke roteret om
+  // stå-op-tiden. Ved åbning scroller vi ned til lige før stå-op, så halen af
+  // nattens grå felt og trækhåndtaget er synligt uden scroll, men brugeren kan
+  // stadig scrolle helt op til 00:00 (Fejlretninger/FEJLLISTE.md #27-opfølgning).
+  useEffect(() => {
+    const node = timelineScrollRef.current;
+    if (!node) return;
+    const wakeHour = sleepWindow.wakeTime / 60;
+    node.scrollTop = Math.max(0, (wakeHour - 1) * hourHeight);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const dayKcal = registrations.reduce((sum, registration) => sum + registration.kcalSnapshot, 0);
   const remaining = DAILY_KCAL_GOAL - dayKcal;
 
@@ -1323,18 +1330,18 @@ function DayDetails({
 
   return (
     <div className="absolute inset-0 z-50 flex flex-col bg-hf-cream" role="dialog" aria-modal="true" aria-labelledby="day-title">
-      <div
-        className="relative flex items-center gap-1 bg-hf-green px-1 pb-4 text-hf-white"
-        style={{ paddingTop: "max(16px, env(safe-area-inset-top, 0px))" }}
-      >
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label={t("common.back")}
-          className="flex size-9 shrink-0 items-center justify-center rounded-full hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white"
-        >
-          <HfChevron direction="left" className="text-hf-white" />
-        </button>
+      <div className="hf-appbar hf-appbar--brand">
+        <div className="hf-appbar__slot">
+          <button onClick={onClose} aria-label={t("common.back")} className="text-hf-white">
+            <HfChevron direction="left" />
+          </button>
+        </div>
+        <div className="flex min-w-0 items-center justify-center gap-2">
+          <h1 className="hf-type-nav-title hf-appbar__title first-letter:uppercase">{t("nav.calendar")}</h1>
+        </div>
+        <div className="hf-appbar__slot" aria-hidden="true" />
+      </div>
+      <div className="relative flex items-center gap-1 bg-hf-green px-1 pb-4 text-hf-white">
         <div className="flex min-w-0 flex-1 items-center justify-center gap-1.5">
           <button
             type="button"
@@ -1360,7 +1367,6 @@ function DayDetails({
             <IconChevronRight size={20} />
           </button>
         </div>
-        <div className="size-9 shrink-0" aria-hidden="true" />
       </div>
       <div
         className="flex-1 overflow-y-auto p-4 touch-pan-y"
@@ -1393,6 +1399,7 @@ function DayDetails({
           </div>
         ) : (
           <div
+            ref={timelineScrollRef}
             className="no-scrollbar relative touch-pan-y overflow-y-auto rounded-2xl border border-hf-tan bg-hf-white"
             style={{ maxHeight: "calc(100vh - 300px)" }}
             onPointerDown={handleTimelinePointerDown}
@@ -1408,7 +1415,7 @@ function DayDetails({
                     className="absolute right-1.5 -translate-y-1/2 text-[10px] font-medium opacity-50"
                     style={{ top: mark * hourHeight }}
                   >
-                    {String((anchorHour + mark) % 24).padStart(2, "0")}
+                    {String(mark % 24).padStart(2, "0")}
                   </span>
                 ))}
               </div>
@@ -1427,7 +1434,19 @@ function DayDetails({
                     ),
                   ),
                 )}
-              <SleepBlock sleepWindow={sleepWindow} anchorMinutes={anchorMinutes} hourHeight={hourHeight} onAdjust={onSleepAdjust} />
+              <SleepBands window={sleepWindow} hourHeight={hourHeight} />
+              <SleepBoundaryHandle
+                minutes={sleepWindow.wakeTime}
+                type="wake"
+                hourHeight={hourHeight}
+                onCommit={onSleepAdjust}
+              />
+              <SleepBoundaryHandle
+                minutes={sleepWindow.bedtime}
+                type="bedtime"
+                hourHeight={hourHeight}
+                onCommit={onSleepAdjust}
+              />
               {addBarHour !== null && (
                 <button
                   type="button"
@@ -1436,8 +1455,7 @@ function DayDetails({
                   onClick={() => setAddBarHour(null)}
                 />
               )}
-              {Array.from({ length: 24 }, (_, mark) => {
-                const hour = (anchorHour + mark) % 24;
+              {Array.from({ length: 24 }, (_, hour) => {
                 const hourRegistrations = registrations.filter(
                   (registration) => new Date(registration.createdAt).getHours() === hour,
                 );
@@ -1449,7 +1467,7 @@ function DayDetails({
                   <HourRow
                     key={hour}
                     hour={hour}
-                    top={mark * hourHeight}
+                    top={hour * hourHeight}
                     height={hourHeight}
                     kcalTotal={kcalTotal}
                     activities={hourActivities}
@@ -1470,7 +1488,6 @@ function DayDetails({
                     key={registration.id}
                     registration={registration}
                     hourHeight={hourHeight}
-                    anchorMinutes={anchorMinutes}
                     onOpen={() => router.push(`/registration/${registration.id}`)}
                     onMoved={(newCreatedAt) => onEntryMoved(registration.id, newCreatedAt)}
                   />
@@ -1519,99 +1536,6 @@ function DayDetails({
         />
       )}
     </div>
-  );
-}
-
-function SleepBlock({
-  sleepWindow,
-  anchorMinutes,
-  hourHeight,
-  onAdjust,
-}: {
-  sleepWindow: SleepWindow;
-  anchorMinutes: number;
-  hourHeight: number;
-  onAdjust: (type: SleepAdjustType, minutes: number) => void;
-}) {
-  const { t } = useTranslation();
-  const [dragDelta, setDragDelta] = useState<number | null>(null);
-  const startYRef = useRef(0);
-  const dragDeltaRef = useRef<number | null>(null);
-
-  function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
-    event.stopPropagation();
-    startYRef.current = event.clientY;
-    dragDeltaRef.current = 0;
-    event.currentTarget.setPointerCapture(event.pointerId);
-    setDragDelta(0);
-  }
-
-  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    if (dragDeltaRef.current === null) return;
-    event.stopPropagation();
-    const deltaY = event.clientY - startYRef.current;
-    const deltaMinutes = (deltaY / hourHeight) * 60;
-    dragDeltaRef.current = deltaMinutes;
-    setDragDelta(deltaMinutes);
-  }
-
-  function finishDrag() {
-    if (dragDeltaRef.current !== null && Math.round(dragDeltaRef.current) !== 0) {
-      const delta = dragDeltaRef.current;
-      onAdjust("wake", sleepWindow.wakeTime + delta);
-      onAdjust("bedtime", sleepWindow.bedtime + delta);
-    }
-    dragDeltaRef.current = null;
-    setDragDelta(null);
-  }
-
-  const delta = dragDelta ?? 0;
-  const timelineHeight = hourHeight * 24;
-  const top = Math.max(0, rotatedTop(sleepWindow.bedtime, anchorMinutes, hourHeight) + delta);
-  // Søvnvarigheden er stå-op minus sengetid, wrappet til [0, 24t), IKKE "til bunden af
-  // listen" — ellers strækker den grå søvnskygge sig langt forbi den faktiske stå-op-tid
-  // (Fejlretninger/FEJLLISTE.md #27). Timelinen er anchored ved stå-op-timen, så
-  // søvnperioden kan ende lige efter start af listen (wrapHeight) i stedet for ved bunden.
-  const durationMinutes = ((sleepWindow.wakeTime - sleepWindow.bedtime) % 1440 + 1440) % 1440;
-  const durationHeight = (durationMinutes / 60) * hourHeight;
-  const height = Math.max(0, Math.min(durationHeight, timelineHeight - top));
-  const wrapHeight = Math.max(0, durationHeight - height);
-  let handleTop = top + durationHeight / 2;
-  if (handleTop > timelineHeight) handleTop -= timelineHeight;
-
-  return (
-    <>
-      <div
-        className="pointer-events-none absolute inset-x-0 bg-hf-gray/15"
-        style={{ top, height }}
-        aria-hidden="true"
-      />
-      {wrapHeight > 0 && (
-        <div
-          className="pointer-events-none absolute inset-x-0 top-0 bg-hf-gray/15"
-          style={{ height: wrapHeight }}
-          aria-hidden="true"
-        />
-      )}
-      <div
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={finishDrag}
-        onPointerCancel={finishDrag}
-        aria-label={t("calendar.adjustSleepAriaLabel")}
-        className="absolute inset-x-0 z-10 flex touch-none items-center justify-center"
-        style={{ top: handleTop - 12, height: 24 }}
-      >
-        {/* Fejlretninger/FEJLLISTE.md #27: denne bjælke er IKKE en gengivelsesfejl —
-            det er søvnbåndets trækhåndtag (samme mønster som en iOS-bundsheets
-            håndtag), som lader brugeren trække hele søvnperioden op/ned. Gjort
-            mere synlig/tydeligt "grip"-agtig, så den ikke længere ligner en løs
-            streg uden formål. */}
-        <div
-          className={`h-[5px] w-12 rounded-full shadow-sm ${dragDelta !== null ? "bg-hf-black" : "bg-hf-white"}`}
-        />
-      </div>
-    </>
   );
 }
 
@@ -1670,7 +1594,7 @@ function HourRow({
 
   return (
     <div
-      className="absolute inset-x-0"
+      className="absolute inset-x-0 select-none [-webkit-touch-callout:none]"
       style={{ top, height }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
@@ -1718,13 +1642,11 @@ function HourRow({
 function DraggableEntryMarker({
   registration,
   hourHeight,
-  anchorMinutes,
   onOpen,
   onMoved,
 }: {
   registration: Registration;
   hourHeight: number;
-  anchorMinutes: number;
   onOpen: () => void;
   onMoved: (newCreatedAt: Date) => void;
 }) {
@@ -1791,7 +1713,7 @@ function DraggableEntryMarker({
   }
 
   const displayMinutes = dragMinutes ?? originalMinutes;
-  const top = rotatedTop(displayMinutes, anchorMinutes, hourHeight);
+  const top = (displayMinutes / 60) * hourHeight;
 
   return (
     <div
@@ -1832,6 +1754,19 @@ function HourEntriesOverlay({
     if (lastGroup && lastGroup.key === key) lastGroup.items.push(registration);
     else groups.push({ key, time, items: [registration] });
   }
+  // Hvert præcist tidspunkt er en foldbar accordion (lukket som standard) —
+  // brugerens eksplicitte rettelse: tidligere var alle indtastninger altid
+  // fuldt udfoldet under tidsangivelsen. Kollapset viser tid + samlet kcal +
+  // HfChevron, magen til den kollapsede time-række i selve dagsvisningen.
+  const [openKeys, setOpenKeys] = useState<Set<string>>(new Set());
+  function toggleGroup(key: string) {
+    setOpenKeys((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  }
 
   return (
     <div className="absolute inset-0 z-[60] flex flex-col bg-hf-cream" role="dialog" aria-modal="true">
@@ -1855,27 +1790,44 @@ function HourEntriesOverlay({
         </h2>
       </div>
       <div className="flex-1 overflow-y-auto p-4">
-        {groups.map((group) => (
-          <div key={group.key}>
-            <div className="my-3 flex items-center gap-2 text-xs font-semibold text-hf-gray">
-              <span className="h-px flex-1 bg-hf-tan-dark" aria-hidden="true" />
-              <span>{new Intl.DateTimeFormat("da-DK", { hour: "2-digit", minute: "2-digit" }).format(group.time)}</span>
-              <span className="h-px flex-1 bg-hf-tan-dark" aria-hidden="true" />
-            </div>
-            {group.items.map((registration) => (
-              <Link
-                key={registration.id}
-                href={`/registration/${registration.id}`}
-                className="mb-2 flex items-center justify-between rounded-2xl bg-hf-white p-3 focus-visible:outline-2 focus-visible:outline-hf-black"
+        {groups.map((group) => {
+          const isOpen = openKeys.has(group.key);
+          const groupKcal = group.items.reduce((sum, registration) => sum + registration.kcalSnapshot, 0);
+          return (
+            <div key={group.key} className="mb-2 overflow-hidden rounded-2xl bg-hf-tan">
+              <button
+                type="button"
+                onClick={() => toggleGroup(group.key)}
+                aria-expanded={isOpen}
+                className="flex w-full items-center justify-between px-4 py-3 text-left focus-visible:outline-2 focus-visible:outline-hf-black"
               >
-                <span className="truncate text-sm text-hf-black">{registration.titleSnapshot}</span>
-                <span className="ml-2 shrink-0 text-sm font-bold text-hf-black">
-                  {Math.round(registration.kcalSnapshot)} kcal
+                <span className="text-sm font-semibold text-hf-black">
+                  {new Intl.DateTimeFormat("da-DK", { hour: "2-digit", minute: "2-digit" }).format(group.time)}
                 </span>
-              </Link>
-            ))}
-          </div>
-        ))}
+                <span className="flex items-center gap-1 text-sm font-bold text-hf-black">
+                  {Math.round(groupKcal)} kalorier
+                  <HfChevron direction={isOpen ? "down" : "right"} className="text-hf-black" />
+                </span>
+              </button>
+              {isOpen && (
+                <div className="flex flex-col gap-2 px-3 pb-3">
+                  {group.items.map((registration) => (
+                    <Link
+                      key={registration.id}
+                      href={`/registration/${registration.id}`}
+                      className="flex items-center justify-between rounded-2xl bg-hf-white p-3 focus-visible:outline-2 focus-visible:outline-hf-black"
+                    >
+                      <span className="truncate text-sm text-hf-black">{registration.titleSnapshot}</span>
+                      <span className="ml-2 shrink-0 text-sm font-bold text-hf-black">
+                        {Math.round(registration.kcalSnapshot)} kcal
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

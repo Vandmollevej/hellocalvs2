@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "hello-cal-dev",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeExecutable": "C:\\Users\\Peter\\.venv\\Lib\\site-packages\\playwright\\driver\\node.exe",
+      "runtimeArgs": ["node_modules/next/dist/bin/next", "dev"],
       "port": 3000,
       "autoPort": true
     }

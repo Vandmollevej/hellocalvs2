@@ -108,7 +108,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
         label: "Vand",
         icon: IconDroplet,
         value: "1,6",
-        unit: "Liter",
+        unit: "L",
       },
       {
         key: "burned",
@@ -122,7 +122,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
         label: "Skridt",
         icon: IconFootsteps,
         value: "6.210",
-        unit: "skridt",
+        unit: "",
       },
     ];
   }, [loading, registrations]);
@@ -227,7 +227,7 @@ function WheelItem({
   stat: Stat;
   /** Signed distance from the active/center position, in whole-item units. Can be fractional while dragging. */
   distance: number;
-  /** Whether transform/opacity/font-size changes should animate (disabled while actively dragging so the item follows the pointer 1:1). */
+  /** Whether the transform/opacity change should animate (disabled while actively dragging so the item follows the pointer 1:1). */
   animate: boolean;
   onClick?: () => void;
 }) {
@@ -237,13 +237,17 @@ function WheelItem({
 
   // Progressive size: items shrink the further they sit from the centered,
   // active stat — no 3D tilt/carousel effect, just a flat right-aligned list.
+  // Everything here (position, scale, opacity) is driven by ONE CSS
+  // transform + opacity, exactly like an iOS picker wheel: the value text and
+  // icon keep a fixed font-size/icon-size and shrink together as one rigid
+  // unit via `scale()`, instead of also separately resizing the font/icon on
+  // every render. Mixing those two mechanisms is what previously made the
+  // motion look like it "jumped" in discrete pixel steps — font-size and
+  // icon-size changes aren't picked up by the transform/opacity transition
+  // below, so they snapped instantly instead of easing.
   const translateY = distance * ITEM_HEIGHT;
   const scale = Math.max(0.62, 1 - absDistance * 0.16);
   const opacity = Math.max(0.18, 1 - absDistance * 0.42);
-
-  // Magnifier/fisheye: value text is largest when active and shrinks
-  // continuously with distance.
-  const valueFontSize = Math.max(13, 27 - absDistance * 7.5);
 
   return (
     <button
@@ -251,9 +255,13 @@ function WheelItem({
       onClick={onClick}
       disabled={isActive}
       aria-current={isActive || undefined}
-      aria-label={isActive ? undefined : `Vis ${stat.label.toLowerCase()}: ${stat.value} ${stat.unit}`}
+      aria-label={
+        isActive
+          ? undefined
+          : `Vis ${stat.label.toLowerCase()}: ${stat.value}${stat.unit ? ` ${stat.unit}` : ""}`
+      }
       aria-live={isActive ? "polite" : undefined}
-      className={`absolute left-2 right-2 flex origin-right flex-col items-end justify-center ${
+      className={`absolute left-2 right-2 flex origin-right items-center justify-end gap-2 whitespace-nowrap text-hf-black ${
         animate ? "transition-[transform,opacity] duration-300 ease-out" : ""
       } ${isActive ? "cursor-default" : "cursor-pointer"}`}
       style={{
@@ -262,24 +270,11 @@ function WheelItem({
         opacity,
       }}
     >
-      {isActive ? (
-        <div className="flex items-baseline justify-end gap-2">
-          <span
-            className="font-extrabold leading-none text-hf-black"
-            style={{ fontSize: valueFontSize }}
-          >
-            {stat.value} <span className="font-semibold">{stat.unit}</span>
-          </span>
-          <StatIcon size={21} color="var(--hf-green)" stroke={2.2} aria-hidden="true" />
-        </div>
-      ) : (
-        <div className="flex w-full items-center justify-end gap-1.5 text-hf-black">
-          <span className="font-semibold" style={{ fontSize: valueFontSize }}>
-            {stat.value} {stat.unit}
-          </span>
-          <StatIcon size={15} aria-hidden="true" />
-        </div>
-      )}
+      <span className="font-extrabold leading-none" style={{ fontSize: 27 }}>
+        {stat.value}
+        {stat.unit && <span className="font-semibold"> {stat.unit}</span>}
+      </span>
+      <StatIcon size={21} color={isActive ? "var(--hf-green)" : "currentColor"} stroke={2.2} aria-hidden="true" />
     </button>
   );
 }

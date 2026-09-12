@@ -63,6 +63,9 @@ async function importMatchingOffProducts(q: string) {
 // /profile/settings) are prioritized at the top.
 // ?source=HELLOFRESH filters to a single external source (e.g. to browse the entire
 // HelloFresh catalog); ?take=N overrides the default limit of 20 (max 200).
+// HelloFresh dishes are deliberately excluded unless ?source=HELLOFRESH is passed
+// explicitly — they must stay discoverable only via the dedicated dish-recognition
+// flow (/api/ai/recognize-hellofresh), not through ordinary Madvarer/Søg search.
 export async function GET(req: Request) {
   const params = new URL(req.url).searchParams;
   const q = params.get("q")?.trim() ?? "";
@@ -79,7 +82,9 @@ export async function GET(req: Request) {
         where: {
           discontinued: false,
           ...(q ? { name: { contains: q, mode: "insensitive" } } : {}),
-          ...(source ? { externalSource: source } : {}),
+          ...(source
+            ? { externalSource: source }
+            : { OR: [{ externalSource: null }, { externalSource: { not: "HELLOFRESH" } }] }),
         },
         include: { brand: true, barcodes: true },
         take,

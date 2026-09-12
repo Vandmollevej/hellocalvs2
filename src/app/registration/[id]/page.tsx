@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { BottomNav } from "@/components/BottomNav";
+import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 type Registration = {
@@ -61,53 +61,34 @@ export default function RegistrationPage() {
           : t("registration.loadError");
 
     return (
-      <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-hf-cream">
-        <div className="flex items-center justify-center bg-hf-green px-4 pb-4 pt-9">
-          <h1 className="hf-heading text-lg text-hf-white">{t("registration.title")}</h1>
-        </div>
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-          <p className="p-4 text-center text-sm text-hf-black opacity-60">{message}</p>
-        </div>
-        <BottomNav />
-      </div>
+      <HfScreen title={t("addProduct.title")} onBack={() => router.back()}>
+        <p className="p-4 text-center text-sm text-hf-black opacity-60">{message}</p>
+      </HfScreen>
     );
   }
 
   return (
-    <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
-      <div className="flex items-center justify-between bg-hf-green px-4 pb-4 pt-9">
-        <button onClick={() => router.back()} className="text-sm font-bold text-hf-white">
-          {t("common.back")}
-        </button>
-        <button onClick={() => router.push("/")} className="text-sm font-bold text-hf-white">
-          {t("common.close")}
-        </button>
+    <HfScreen title={t("addProduct.title")} onBack={() => router.back()}>
+      <div className="flex h-44 items-center justify-center bg-hf-tan">
+        {registration.product?.imageUrl && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={registration.product.imageUrl} alt="" className="h-full w-full object-contain p-3" />
+        )}
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto">
-        <div className="flex h-44 items-center justify-center bg-hf-tan">
-          {registration.product?.imageUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={registration.product.imageUrl} alt="" className="h-full w-full object-contain p-3" />
-          )}
-        </div>
+      <div className="flex flex-col gap-4 p-4">
+        <h1 className="hf-heading text-lg text-hf-black">{registration.titleSnapshot}</h1>
+        <p className="text-sm text-hf-black opacity-70">
+          {Math.round(registration.kcalSnapshot)} kcal · {registration.amountGrams} g
+        </p>
 
-        <div className="flex flex-col gap-4 p-4">
-          <h1 className="hf-heading text-lg text-hf-black">{registration.titleSnapshot}</h1>
-          <p className="text-sm text-hf-black opacity-70">
-            {Math.round(registration.kcalSnapshot)} kcal · {registration.amountGrams} g
-          </p>
-
-          <div className="flex flex-col gap-4 rounded-2xl bg-hf-tan p-4">
-            <p className="hf-heading text-[15px] text-hf-black">{t("common.macroBreakdown")}</p>
-            <MacroBar label={t("common.protein")} grams={registration.proteinSnapshot} max={40} />
-            <MacroBar label={t("common.carbs")} grams={registration.carbsSnapshot} max={80} />
-            <MacroBar label={t("common.fat")} grams={registration.fatSnapshot} max={30} />
-          </div>
+        <div className="flex flex-col gap-4 rounded-2xl bg-hf-tan p-4">
+          <p className="hf-heading text-[15px] text-hf-black">{t("common.macroBreakdown")}</p>
+          <MacroBar label={t("common.protein")} grams={registration.proteinSnapshot} max={40} />
+          <MacroBar label={t("common.carbs")} grams={registration.carbsSnapshot} max={80} />
+          <MacroBar label={t("common.fat")} grams={registration.fatSnapshot} max={30} />
         </div>
       </div>
-
-      <BottomNav />
-    </div>
+    </HfScreen>
   );
 }

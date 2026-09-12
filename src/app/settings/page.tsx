@@ -10,6 +10,7 @@ import {
   IconPlugConnected,
   IconCreditCard,
   IconBell,
+  IconStethoscope,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -82,6 +83,15 @@ export default function SettingsPage() {
             icon={<IconBell size={20} />}
             label={t("settings.notifications")}
             href="/profile/notifications"
+            divider={false}
+          />
+        </AccordionCard>
+
+        <AccordionCard>
+          <ChevronRow
+            icon={<IconStethoscope size={20} />}
+            label={t("settings.helloDoc")}
+            href="/settings/hello-doc"
             divider={false}
           />
         </AccordionCard>

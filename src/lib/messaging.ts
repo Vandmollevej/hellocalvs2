@@ -131,6 +131,11 @@ const DEFAULT_TEMPLATES: Record<MessageEventType, { subject: string; bodyHtml: s
     bodyHtml: "<p>{{inviterName}} synes du skulle prøve Hello Cal.</p><p><a href=\"{{inviteUrl}}\">Opret din konto</a> — I optjener begge 300 points, når du er med. Linket er gyldigt i 7 dage.</p>",
     channel: "EMAIL",
   },
+  DOCTOR_SHARE_INVITATION: {
+    subject: "{{ownerName}} har inviteret dig til at følge deres fremgang i Hello Cal",
+    bodyHtml: "<p>{{ownerName}} har inviteret dig til at se udvalgte data i Hello Cal.</p><p><a href=\"{{viewUrl}}\">Se oversigten</a> — invitationen er gyldig i 14 dage.</p>",
+    channel: "EMAIL",
+  },
 };
 
 export async function ensureDefaultMessageTemplates() {

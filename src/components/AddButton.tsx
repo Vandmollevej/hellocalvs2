@@ -39,7 +39,7 @@ export const FAB_INSET = Math.round((4 * HALF_CIRCLE_RADIUS) / (3 * Math.PI) - F
 // (the screen edge, not the FAB button), so every icon sits the same
 // distance from the backdrop's curved edge. Icons sit just outside the
 // backdrop, never inside it.
-const ARC_GAP = 24;
+const ARC_GAP = 40;
 const RADIUS = HALF_CIRCLE_RADIUS + ARC_GAP + CIRCLE / 2;
 
 // Minimum distance from the FAB center before a drag counts as "aiming at"
@@ -61,20 +61,34 @@ const BULGE_MAX = 20;
 const BULGE_SPREAD_DEG = 46;
 const BULGE_SAMPLE_COUNT = 40;
 
+// The two points where the curve meets the flat edge (angle -90 and +90) are
+// fixed anchors — the flat edge is docked against the screen edge and can't
+// move. The old model bulged radially from the semicircle's center, but near
+// those poles the radial direction is almost purely vertical, so even a
+// small bulge there pushed points past y=0 / y=2R (the pole's own y): the
+// curve dipped past the anchor, looped back, and — clipped by the SVG's
+// exact-fit viewBox — read as a flat/cut edge, like the circle were oval.
+//
+// Instead, sample the curve by y (not angle) and only ever add to x. Each
+// point's y is fixed by construction, so it can never leave [0, 2R] — no
+// clamping needed. The bulge is scaled by baseX/R, which is exactly 1 at the
+// equator and fades smoothly to exactly 0 at the poles (where baseX is 0),
+// so the anchors stay pinned and the curve stays a single smooth sweep.
 function backdropPath(bulgeAngleDeg: number | null, bulgeAmount: number) {
   const points: [number, number][] = [];
   for (let i = 0; i <= BULGE_SAMPLE_COUNT; i += 1) {
-    const angleDeg = -90 + (180 * i) / BULGE_SAMPLE_COUNT;
-    const angleRad = (angleDeg * Math.PI) / 180;
-    let radius = HALF_CIRCLE_RADIUS;
+    const y = (HALF_CIRCLE_RADIUS * 2 * i) / BULGE_SAMPLE_COUNT;
+    const sinTheta = Math.max(-1, Math.min(1, y / HALF_CIRCLE_RADIUS - 1));
+    const theta = Math.asin(sinTheta);
+    const baseX = HALF_CIRCLE_RADIUS * Math.cos(theta);
+    let x = baseX;
     if (bulgeAngleDeg !== null && bulgeAmount > 0) {
+      const angleDeg = (theta * 180) / Math.PI;
       let diff = Math.abs(angleDeg - bulgeAngleDeg);
       if (diff > 180) diff = 360 - diff;
       const falloff = Math.max(0, Math.cos((diff / BULGE_SPREAD_DEG) * (Math.PI / 2)));
-      radius += bulgeAmount * Math.max(0, falloff) ** 2;
+      x += bulgeAmount * Math.max(0, falloff) ** 2 * (baseX / HALF_CIRCLE_RADIUS);
     }
-    const x = radius * Math.cos(angleRad);
-    const y = HALF_CIRCLE_RADIUS + radius * Math.sin(angleRad);
     points.push([x, y]);
   }
   const commands = points.map(([x, y], i) => `${i === 0 ? "M" : "L"}${x.toFixed(1)},${y.toFixed(1)}`);
@@ -94,17 +108,48 @@ type Action = {
   key: string;
   href: string;
   label: string;
+  hint: string;
   icon?: Icon;
   imageSrc?: string;
 };
 
 function buildActions(t: (key: string) => string): Action[] {
   return [
-    { key: "microphone", href: "/voice", icon: IconMicrophone, label: t("addButton.microphone") },
-    { key: "dish", href: "/create-dish", imageSrc: "/icons/pot.png", label: t("addButton.ownDishes") },
-    { key: "search", href: "/search", icon: IconSearch, label: t("addButton.search") },
-    { key: "weight", href: "/weight/create", icon: IconBathroomScale, label: t("addButton.weight") },
-    { key: "camera", href: "/camera?mode=product", icon: IconCamera, label: t("addButton.camera") },
+    {
+      key: "microphone",
+      href: "/voice",
+      icon: IconMicrophone,
+      label: t("addButton.microphone"),
+      hint: t("addButton.hint.microphone"),
+    },
+    {
+      key: "dish",
+      href: "/create-dish",
+      imageSrc: "/icons/pot.png",
+      label: t("addButton.ownDishes"),
+      hint: t("addButton.hint.ownDishes"),
+    },
+    {
+      key: "search",
+      href: "/search",
+      icon: IconSearch,
+      label: t("addButton.search"),
+      hint: t("addButton.hint.search"),
+    },
+    {
+      key: "weight",
+      href: "/weight/create",
+      icon: IconBathroomScale,
+      label: t("addButton.weight"),
+      hint: t("addButton.hint.weight"),
+    },
+    {
+      key: "camera",
+      href: "/camera?mode=product",
+      icon: IconCamera,
+      label: t("addButton.camera"),
+      hint: t("addButton.hint.camera"),
+    },
   ];
 }
 
@@ -322,36 +367,62 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
       {actions.map((action, i) => {
         const isHighlighted = highlightedKey === action.key;
         const Icon = action.icon;
+        const itemStyle = arcItemStyle(ANGLES_DEG[i]);
         return (
-          <Link
-            key={action.key}
-            href={action.href}
-            aria-label={action.label}
-            className="absolute flex items-center justify-center rounded-full bg-hf-tan transition-all duration-150"
-            style={{
-              ...arcItemStyle(ANGLES_DEG[i]),
-              width: CIRCLE,
-              height: CIRCLE,
-              opacity: open ? 1 : 0,
-              pointerEvents: open ? "auto" : "none",
-              transform: open ? `scale(${isHighlighted ? 1.35 : 1})` : "scale(0.4)",
-              backgroundColor: isHighlighted ? "var(--hf-green)" : undefined,
-              boxShadow: isHighlighted ? "0 4px 14px rgba(0,0,0,0.25)" : undefined,
-            }}
-          >
-            {Icon ? (
-              <Icon size={20} color={isHighlighted ? "var(--hf-white)" : "var(--hf-black)"} />
-            ) : (
-              <Image
-                src={action.imageSrc!}
-                alt=""
-                width={22}
-                height={22}
-                className="object-contain"
-                style={isHighlighted ? { filter: "brightness(0) invert(1)" } : undefined}
-              />
-            )}
-          </Link>
+          <div key={action.key} className="absolute" style={{ top: itemStyle.top, [SIDE === "left" ? "left" : "right"]: itemStyle[SIDE === "left" ? "left" : "right"], height: CIRCLE }}>
+            <Link
+              href={action.href}
+              aria-label={action.label}
+              className="absolute flex items-center justify-center rounded-full bg-hf-tan transition-all duration-150"
+              style={{
+                width: CIRCLE,
+                height: CIRCLE,
+                opacity: open ? 1 : 0,
+                pointerEvents: open ? "auto" : "none",
+                transform: open ? `scale(${isHighlighted ? 1.35 : 1})` : "scale(0.4)",
+                backgroundColor: isHighlighted ? "var(--hf-green)" : undefined,
+                boxShadow: isHighlighted ? "0 4px 14px rgba(0,0,0,0.25)" : undefined,
+              }}
+            >
+              {Icon ? (
+                <Icon size={20} color={isHighlighted ? "var(--hf-white)" : "var(--hf-black)"} />
+              ) : (
+                <Image
+                  src={action.imageSrc!}
+                  alt=""
+                  width={22}
+                  height={22}
+                  className="object-contain"
+                  style={isHighlighted ? { filter: "brightness(0) invert(1)" } : undefined}
+                />
+              )}
+            </Link>
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute flex items-center whitespace-nowrap font-bold transition-opacity duration-150"
+              style={
+                SIDE === "left"
+                  ? {
+                      left: CIRCLE + 12,
+                      top: 0,
+                      height: CIRCLE,
+                      color: "var(--hf-green)",
+                      fontSize: 15,
+                      opacity: open && isHighlighted ? 1 : 0,
+                    }
+                  : {
+                      right: CIRCLE + 12,
+                      top: 0,
+                      height: CIRCLE,
+                      color: "var(--hf-green)",
+                      fontSize: 15,
+                      opacity: open && isHighlighted ? 1 : 0,
+                    }
+              }
+            >
+              {action.hint}
+            </span>
+          </div>
         );
       })}
     </div>

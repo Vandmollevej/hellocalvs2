@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import { IconCheck, IconChevronDown, IconChevronUp, IconMinus, IconPlus, IconRefresh } from "@tabler/icons-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { IconCheck, IconChevronRight, IconRefresh } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { SwipeableRow } from "@/components/SwipeableRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 type Item = {
@@ -18,6 +20,8 @@ type Item = {
   image?: string | null;
   productId?: string | null;
   estimated?: boolean;
+  /** Whether this item is a saved registration (has a real, server-issued id) or still an unconfirmed preview. */
+  saved: boolean;
 };
 
 type InterpretedItem = {
@@ -83,7 +87,7 @@ function getAudioContextConstructor() {
 
 function mapInterpretedItems(interpreted: InterpretedItem[]): Item[] {
   return interpreted.map((item, index) => ({
-    id: `${index}`,
+    id: `pending-${Date.now()}-${index}`,
     title: item.title,
     kcal: item.kcal,
     amountGrams: item.amountGrams,
@@ -94,23 +98,31 @@ function mapInterpretedItems(interpreted: InterpretedItem[]): Item[] {
     image: item.image,
     productId: item.productId,
     estimated: item.estimated,
+    saved: false,
   }));
 }
 
-function parseAmount(label: string): { value: number; unit: string } {
-  const trimmed = label.trim();
-  const match = trimmed.match(/^(-?\d+(?:[.,]\d+)?)\s*(.*)$/);
-  if (!match) return { value: 0, unit: trimmed || "stk." };
-  const value = parseFloat(match[1].replace(",", "."));
-  const rawUnit = match[2].trim();
-  const unit = !rawUnit || /^stk\.?$|^stykke(r)?$/i.test(rawUnit) ? "stk." : rawUnit;
-  return { value: Number.isNaN(value) ? 0 : value, unit };
+const VOICE_ITEMS_STORAGE_KEY = "hf-voice-added-items";
+
+function todayKey() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 }
 
-function formatAmount(value: number, unit: string) {
-  const rounded = Math.round(value * 10) / 10;
-  const text = rounded % 1 === 0 ? rounded.toFixed(0) : String(rounded);
-  return `${text} ${unit}`;
+function loadPersistedItems(): Item[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(VOICE_ITEMS_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as { date: string; items: Item[] };
+    if (parsed.date !== todayKey()) {
+      window.localStorage.removeItem(VOICE_ITEMS_STORAGE_KEY);
+      return [];
+    }
+    return parsed.items;
+  } catch {
+    return [];
+  }
 }
 
 function TypingDots() {
@@ -144,99 +156,6 @@ function Waveform({ barRefs }: { barRefs: React.MutableRefObject<(HTMLDivElement
 
 type T = (key: string, params?: Record<string, string | number>) => string;
 
-function SwipeableRow({
-  onEdit,
-  onDelete,
-  children,
-  t,
-}: {
-  onEdit: () => void;
-  onDelete: () => void;
-  children: React.ReactNode;
-  t: T;
-}) {
-  const ACTIONS_WIDTH = 152;
-  const [open, setOpen] = useState(false);
-  const [dragX, setDragX] = useState(0);
-  const [dragging, setDragging] = useState(false);
-  const dragStateRef = useRef<{ startX: number; base: number; moved: boolean } | null>(null);
-
-  function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
-    dragStateRef.current = { startX: event.clientX, base: open ? -ACTIONS_WIDTH : 0, moved: false };
-    setDragging(true);
-    event.currentTarget.setPointerCapture(event.pointerId);
-  }
-
-  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    const drag = dragStateRef.current;
-    if (!drag) return;
-    const delta = event.clientX - drag.startX;
-    if (Math.abs(delta) > 4) drag.moved = true;
-    setDragX(Math.min(0, Math.max(-ACTIONS_WIDTH, drag.base + delta)));
-  }
-
-  function handlePointerUp() {
-    const drag = dragStateRef.current;
-    dragStateRef.current = null;
-    setDragging(false);
-    if (!drag) return;
-    if (!drag.moved) return;
-    setDragX((current) => {
-      const shouldOpen = current < -ACTIONS_WIDTH / 2;
-      setOpen(shouldOpen);
-      return shouldOpen ? -ACTIONS_WIDTH : 0;
-    });
-  }
-
-  function handleContentClickCapture(event: React.MouseEvent<HTMLDivElement>) {
-    if (open) {
-      event.preventDefault();
-      event.stopPropagation();
-      setOpen(false);
-      setDragX(0);
-    }
-  }
-
-  return (
-    <div className="relative overflow-hidden">
-      <div className="absolute inset-y-0 right-0 flex">
-        <button
-          type="button"
-          onClick={() => {
-            setOpen(false);
-            setDragX(0);
-            onEdit();
-          }}
-          style={{ width: 76 }}
-          className="flex items-center justify-center bg-hf-gray text-[13px] font-semibold text-hf-white"
-        >
-          {t("voice.edit")}
-        </button>
-        <button
-          type="button"
-          onClick={onDelete}
-          style={{ width: 76 }}
-          className="flex items-center justify-center bg-red-600 text-[13px] font-semibold text-white"
-        >
-          {t("voice.delete")}
-        </button>
-      </div>
-      <div
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerUp}
-        onClickCapture={handleContentClickCapture}
-        style={{ transform: `translateX(${dragX}px)`, transition: dragging ? "none" : "transform 200ms ease" }}
-        className="relative bg-hf-white touch-pan-y"
-      >
-        {children}
-      </div>
-    </div>
-  );
-}
-
-
 function StandMicrophone() {
   return (
     <svg viewBox="0 0 64 64" className="h-14 w-14" aria-hidden="true">
@@ -247,282 +166,77 @@ function StandMicrophone() {
   );
 }
 
-function MacroBar({ label, grams, max, onChange, t }: { label: string; grams: number; max: number; onChange: (value: number) => void; t: T }) {
-  const pct = Math.min(100, (grams / max) * 100);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const gramsRef = useRef(grams);
-  const holdIntervalRef = useRef<number | null>(null);
-  const [editing, setEditing] = useState(false);
-  const [editValue, setEditValue] = useState(String(grams));
-
-  useEffect(() => {
-    gramsRef.current = grams;
-  }, [grams]);
-
-  useEffect(() => stopHold, []);
-
-  function stopHold() {
-    if (holdIntervalRef.current !== null) {
-      window.clearInterval(holdIntervalRef.current);
-      holdIntervalRef.current = null;
-    }
-  }
-
-  function updateFromPointer(clientX: number) {
-    const track = trackRef.current;
-    if (!track) return;
-    const rect = track.getBoundingClientRect();
-    const ratio = (clientX - rect.left) / rect.width;
-
-    if (ratio >= 1) {
-      if (holdIntervalRef.current === null) {
-        onChange(Math.max(max, gramsRef.current));
-        holdIntervalRef.current = window.setInterval(() => {
-          onChange(gramsRef.current + 1);
-        }, 150);
-      }
-      return;
-    }
-
-    stopHold();
-    onChange(Math.max(0, Math.round(ratio * max)));
-  }
-
-  function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
-    event.currentTarget.setPointerCapture(event.pointerId);
-    updateFromPointer(event.clientX);
-  }
-
-  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    if (event.buttons === 0) return;
-    updateFromPointer(event.clientX);
-  }
-
-  function openEditor() {
-    setEditValue(String(grams));
-    setEditing(true);
-  }
-
-  function commitEdit() {
-    const parsed = parseFloat(editValue.replace(",", "."));
-    if (!Number.isNaN(parsed)) onChange(Math.max(0, Math.round(parsed)));
-    setEditing(false);
-  }
-
-  return (
-    <div>
-      <div className="mb-1.5 flex items-center justify-between">
-        <span className="text-[13px] text-hf-black opacity-70">{label}</span>
-        <button
-          type="button"
-          onClick={openEditor}
-          className="min-w-[36px] rounded px-1 text-right text-base font-bold text-hf-black active:bg-hf-tan-dark"
-        >
-          {grams} g
-        </button>
-      </div>
-      <div
-        ref={trackRef}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={stopHold}
-        onPointerCancel={stopHold}
-        className="relative flex h-5 touch-none items-center"
-      >
-        <div className="relative h-1 w-full rounded bg-hf-tan-dark">
-          <div className="absolute inset-y-0 left-0 rounded bg-hf-green" style={{ width: `${pct}%` }} />
-        </div>
-        <div className="absolute h-[18px] w-[18px] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-hf-green bg-hf-white" style={{ left: `${pct}%`, top: "50%" }} />
-      </div>
-
-      {editing &&
-        createPortal(
-          <div
-            className="fixed inset-0 z-50 flex items-end justify-center bg-black/40"
-            onClick={() => setEditing(false)}
-          >
-            <div onClick={(event) => event.stopPropagation()} className="mb-6 w-[280px] rounded-2xl bg-hf-white p-4 shadow-lg">
-              <p className="text-xs font-bold text-hf-black">{label}</p>
-              <div className="mt-2 flex items-center gap-2">
-                <input
-                  autoFocus
-                  type="number"
-                  inputMode="decimal"
-                  value={editValue}
-                  onChange={(event) => setEditValue(event.target.value)}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") commitEdit();
-                  }}
-                  className="w-full rounded-xl border border-hf-tan-dark px-3 py-2.5 text-lg outline-none focus:border-hf-green"
-                />
-                <span className="text-sm text-hf-black opacity-70">g</span>
-              </div>
-              <button type="button" onClick={commitEdit} className="mt-3 w-full rounded-xl bg-hf-green py-2.5 text-sm font-bold text-hf-white">
-                {t("voice.save")}
-              </button>
-            </div>
-          </div>,
-          document.body
-        )}
-    </div>
-  );
-}
-
-function VoiceItem({
+function VoiceItemRow({
   item,
-  open,
-  onToggle,
-  onChange,
+  onFavorite,
+  onReportError,
   onDelete,
-  onReset,
   t,
 }: {
   item: Item;
-  open: boolean;
-  onToggle: () => void;
-  onChange: (changes: Partial<Item>) => void;
+  onFavorite?: () => void;
+  onReportError?: () => void;
   onDelete: () => void;
-  onReset?: () => void;
   t: T;
 }) {
-  const { value: amountValue, unit: amountUnit } = parseAmount(item.amountLabel);
-  const [prevAmountValue, setPrevAmountValue] = useState(amountValue);
-  const [amountDraft, setAmountDraft] = useState(String(amountValue));
-
-  if (amountValue !== prevAmountValue) {
-    setPrevAmountValue(amountValue);
-    setAmountDraft(String(amountValue));
-  }
-
-  function applyAmount(newValue: number) {
-    const clamped = Math.max(0, newValue);
-    const ratio = amountValue > 0 ? clamped / amountValue : 1;
-    onChange({
-      amountLabel: formatAmount(clamped, amountUnit),
-      amountGrams: Math.max(0, Math.round(item.amountGrams * ratio)),
-      kcal: Math.max(0, Math.round(item.kcal * ratio)),
-      protein: Math.max(0, Math.round(item.protein * ratio)),
-      carbs: Math.max(0, Math.round(item.carbs * ratio)),
-      fat: Math.max(0, Math.round(item.fat * ratio)),
-    });
-  }
-
-  function commitAmountDraft() {
-    const parsed = parseFloat(amountDraft.replace(",", "."));
-    if (!Number.isNaN(parsed)) applyAmount(parsed);
-    else setAmountDraft(String(amountValue));
-  }
+  const content = (
+    <div className="flex items-center gap-2.5 py-2.5">
+      <div className="h-11 w-11 flex-shrink-0 overflow-hidden rounded-lg bg-hf-tan">
+        {item.image && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={item.image} alt="" className="h-full w-full object-contain" />
+        )}
+      </div>
+      <div className="min-w-0 flex-1">
+        <span className="flex items-center gap-1.5">
+          <span className="block truncate text-sm font-semibold text-hf-black">{item.title}</span>
+          {item.estimated && (
+            <span className="flex-shrink-0 rounded-full bg-hf-tan px-1.5 py-0.5 text-[10px] font-bold uppercase text-hf-black opacity-70">{t("voice.aiEstimate")}</span>
+          )}
+        </span>
+        <span className="mt-0.5 block text-xs text-hf-black opacity-60">{item.amountLabel}</span>
+      </div>
+      <span className="flex-shrink-0 text-xs text-hf-black opacity-60">{item.kcal} kcal</span>
+      {item.saved && <IconChevronRight size={18} className="flex-shrink-0 text-hf-black opacity-40" />}
+    </div>
+  );
 
   return (
-    <li className="border-b border-hf-tan-dark last:border-b-0">
-      <SwipeableRow onEdit={onToggle} onDelete={onDelete} t={t}>
-        <div className="flex items-center gap-2.5 py-2.5">
-          <div className="h-11 w-11 flex-shrink-0 overflow-hidden rounded-lg bg-hf-tan">
-            {item.image && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={item.image} alt="" className="h-full w-full object-contain" />
-            )}
-          </div>
-          <button type="button" onClick={onToggle} className="min-w-0 flex-1 text-left" aria-expanded={open}>
-            <span className="flex items-center gap-1.5">
-              <span className="block truncate text-sm font-semibold text-hf-black">{item.title}</span>
-              {item.estimated && (
-                <span className="flex-shrink-0 rounded-full bg-hf-tan px-1.5 py-0.5 text-[10px] font-bold uppercase text-hf-black opacity-70">{t("voice.aiEstimate")}</span>
-              )}
-            </span>
-            <span className="mt-0.5 block text-xs text-hf-black opacity-60">{item.amountLabel}</span>
-          </button>
-          <span className="text-xs text-hf-black opacity-60">{item.kcal} kcal</span>
-          <button type="button" onClick={onToggle} aria-label={open ? t("voice.closeEditing") : t("voice.editItem", { title: item.title })} className="flex h-9 w-9 items-center justify-center rounded-full">
-            {open ? <IconChevronUp size={18} /> : <IconChevronDown size={18} />}
-          </button>
-        </div>
-
-        {open && (
-          <div className="mb-3 rounded-2xl bg-hf-tan p-4 pb-6">
-            <label className="block text-xs font-bold text-hf-black">
-              {t("voice.foodOrDish")}
-              <input value={item.title} onChange={(event) => onChange({ title: event.target.value })} className="mt-1.5 w-full rounded-xl border border-hf-tan-dark bg-hf-white px-3 py-2.5 text-sm font-normal outline-none focus:border-hf-green" />
-            </label>
-
-            <div className="mt-3 flex items-center justify-between">
-              <span className="text-[13px] text-hf-black opacity-70">{t("voice.amount")}</span>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => applyAmount(amountValue - 1)}
-                  disabled={amountValue <= 1}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-hf-white disabled:opacity-40"
-                  aria-label={t("voice.lessAmount")}
-                >
-                  <IconMinus size={14} />
-                </button>
-                <input
-                  value={amountDraft}
-                  onChange={(event) => setAmountDraft(event.target.value)}
-                  onBlur={commitAmountDraft}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") (event.target as HTMLInputElement).blur();
-                  }}
-                  inputMode="decimal"
-                  aria-label={t("voice.amount")}
-                  className="w-11 rounded-lg border border-hf-tan-dark bg-hf-white px-1 py-1.5 text-center text-sm outline-none focus:border-hf-green"
-                />
-                <span className="text-sm font-semibold text-hf-black">{amountUnit}</span>
-                <button
-                  type="button"
-                  onClick={() => applyAmount(amountValue + 1)}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-hf-white"
-                  aria-label={t("voice.moreAmount")}
-                >
-                  <IconPlus size={14} />
-                </button>
-              </div>
-            </div>
-
-            <p className="hf-heading mb-4 mt-5 text-[15px] text-hf-black">{t("common.macroBreakdown")}</p>
-            <div className="flex flex-col gap-4">
-              <MacroBar label={t("common.protein")} grams={item.protein} max={30} onChange={(value) => onChange({ protein: value })} t={t} />
-              <MacroBar label={t("common.carbs")} grams={item.carbs} max={40} onChange={(value) => onChange({ carbs: value })} t={t} />
-              <MacroBar label={t("common.fat")} grams={item.fat} max={20} onChange={(value) => onChange({ fat: value })} t={t} />
-            </div>
-
-            {onReset && (
-              <div className="mt-5 flex justify-center">
-                <button
-                  type="button"
-                  onClick={onReset}
-                  aria-label={t("voice.resetChanges")}
-                  className="flex h-11 w-11 items-center justify-center rounded-full text-hf-green"
-                >
-                  <IconRefresh size={20} />
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-      </SwipeableRow>
-    </li>
+    <SwipeableRow onFavorite={onFavorite} onReportError={onReportError} onDelete={onDelete}>
+      {item.saved ? (
+        <Link href={`/registration/${item.id}`} className="block">
+          {content}
+        </Link>
+      ) : (
+        content
+      )}
+    </SwipeableRow>
   );
 }
 
 export default function VoicePage() {
   const { t } = useTranslation();
-  const [openId, setOpenId] = useState<string | null>(null);
-  const [items, setItems] = useState<Item[]>([]);
-  const [phase, setPhase] = useState<VoicePhase>("idle");
+  const router = useRouter();
+  // Loaded from localStorage so items added earlier today survive navigating
+  // away (e.g. a swipe to report an error) and back; a previous day's items
+  // are dropped (see loadPersistedItems).
+  const [items, setItems] = useState<Item[]>(() => loadPersistedItems());
+  const [phase, setPhase] = useState<VoicePhase>(() => (loadPersistedItems().length > 0 ? "added" : "idle"));
   const [transcript, setTranscript] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isAdding, setIsAdding] = useState(false);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const finalTranscriptRef = useRef("");
   const isListeningRef = useRef(false);
+  const itemsRef = useRef<Item[]>([]);
   const liveRequestIdRef = useRef(0);
   const barRefs = useRef<(HTMLDivElement | null)[]>([]);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const micStreamRef = useRef<MediaStream | null>(null);
   const rafIdRef = useRef<number | null>(null);
-  const originalItemsRef = useRef<Record<string, Item>>({});
+  const micButtonRef = useRef<HTMLButtonElement | null>(null);
+  const resetButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const isListening = phase === "listening";
   const isProcessing = phase === "processing";
@@ -532,15 +246,24 @@ export default function VoicePage() {
     isListeningRef.current = isListening;
   }, [isListening]);
 
-  // Mikrofonen skal være tændt som standard, når siden åbnes — brugeren
-  // skal kunne PAUSE optagelsen ved tryk, i stedet for selv at skulle starte den.
   useEffect(() => {
-    startListening();
-    return () => {
-      recognitionRef.current?.stop();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    itemsRef.current = items;
+  }, [items]);
+
+  // Persist only confirmed (saved) items — an in-progress, unconfirmed preview
+  // is not something the user asked to keep across a reload.
+  useEffect(() => {
+    const savedItems = items.filter((item) => item.saved);
+    try {
+      if (savedItems.length > 0) {
+        window.localStorage.setItem(VOICE_ITEMS_STORAGE_KEY, JSON.stringify({ date: todayKey(), items: savedItems }));
+      } else {
+        window.localStorage.removeItem(VOICE_ITEMS_STORAGE_KEY);
+      }
+    } catch {
+      // localStorage may be unavailable (private mode) — losing persistence across navigation is an acceptable degradation.
+    }
+  }, [items]);
 
   function stopAudioMeter() {
     if (rafIdRef.current !== null) cancelAnimationFrame(rafIdRef.current);
@@ -591,13 +314,32 @@ export default function VoicePage() {
     }
   }
 
+  // Single source of truth for the mic's lifecycle: exactly one recognition
+  // session is started on mount, and it is fully torn down on unmount.
   useEffect(() => {
     startListening();
     return () => {
       recognitionRef.current?.abort();
+      recognitionRef.current = null;
       stopAudioMeter();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- run only on mount
+  }, []);
+
+  // Any interaction elsewhere on the page stops the mic immediately — it must
+  // never keep listening once the user's attention has moved on. The mic
+  // toggle and the "start over" button are excluded since they already manage
+  // the recognition session themselves.
+  useEffect(() => {
+    function handleOutsideInteraction(event: PointerEvent) {
+      if (!isListeningRef.current) return;
+      const target = event.target as Node | null;
+      if (micButtonRef.current?.contains(target)) return;
+      if (resetButtonRef.current?.contains(target)) return;
+      stopListening();
+    }
+    document.addEventListener("pointerdown", handleOutsideInteraction, true);
+    return () => document.removeEventListener("pointerdown", handleOutsideInteraction, true);
   }, []);
 
   useEffect(() => {
@@ -621,7 +363,7 @@ export default function VoicePage() {
       const data = await res.json();
       if (requestId !== liveRequestIdRef.current) return;
       if (!isListeningRef.current) return;
-      setItems(mapInterpretedItems(data.items as InterpretedItem[]));
+      setItems((current) => [...current.filter((item) => item.saved), ...mapInterpretedItems(data.items as InterpretedItem[])]);
     } catch {
       // Ignore errors in the ongoing, preliminary interpretation — the final call happens on stop.
     }
@@ -633,8 +375,10 @@ export default function VoicePage() {
     const spokenText = finalTranscriptRef.current.trim();
 
     if (!spokenText) {
-      setPhase(items.length > 0 ? "added" : "error");
-      if (items.length === 0) setErrorMessage(t("voice.error.noSpeech"));
+      const remaining = itemsRef.current.filter((item) => item.saved);
+      setItems(remaining);
+      setPhase(remaining.length > 0 ? "added" : "error");
+      if (remaining.length === 0) setErrorMessage(t("voice.error.noSpeech"));
       return;
     }
 
@@ -648,48 +392,20 @@ export default function VoicePage() {
       if (!res.ok) throw new Error(data.message ?? "AI-tolkning slog fejl");
 
       const interpreted = mapInterpretedItems(data.items as InterpretedItem[]);
+      const alreadySaved = itemsRef.current.filter((item) => item.saved);
+
       if (interpreted.length === 0) {
-        setPhase("error");
-        setErrorMessage(t("voice.error.noFoodRecognized"));
+        setItems(alreadySaved);
+        setPhase(alreadySaved.length > 0 ? "added" : "error");
+        if (alreadySaved.length === 0) setErrorMessage(t("voice.error.noFoodRecognized"));
         return;
       }
 
-      const saved = await Promise.all(
-        interpreted.map(async (item) => {
-          try {
-            const saveRes = await fetch("/api/registrations", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(
-                item.productId
-                  ? { productId: item.productId, amountGrams: item.amountGrams }
-                  : {
-                      amountGrams: item.amountGrams,
-                      titleSnapshot: item.title,
-                      kcalSnapshot: item.kcal,
-                      proteinSnapshot: item.protein,
-                      carbsSnapshot: item.carbs,
-                      fatSnapshot: item.fat,
-                    }
-              ),
-            });
-            if (!saveRes.ok) return null;
-            const saveData = await saveRes.json();
-            return { ...item, id: saveData.registration.id as string };
-          } catch {
-            return null;
-          }
-        })
-      );
-
-      const savedItems = saved.filter((item): item is Item => item !== null);
-      savedItems.forEach((savedItem) => {
-        originalItemsRef.current[savedItem.id] = savedItem;
-      });
-      setItems((current) => [...current, ...savedItems]);
-      setPhase(savedItems.length > 0 ? "added" : "error");
-      if (savedItems.length === 0) setErrorMessage(t("voice.error.couldNotSaveRegistrations"));
+      setItems([...alreadySaved, ...interpreted]);
+      setPhase("idle");
+      setErrorMessage(null);
     } catch {
+      setItems(itemsRef.current.filter((item) => item.saved));
       setPhase("error");
       setErrorMessage(t("voice.error.aiInterpretFailed"));
     }
@@ -708,7 +424,6 @@ export default function VoicePage() {
     finalTranscriptRef.current = "";
     setTranscript("");
     setErrorMessage(null);
-    setOpenId(null);
 
     recognition.continuous = true;
     recognition.interimResults = true;
@@ -765,27 +480,92 @@ export default function VoicePage() {
     recognitionRef.current.stop();
   }
 
-  function updateItem(id: string, changes: Partial<Item>) {
-    setItems((current) => current.map((item) => (item.id === id ? { ...item, ...changes } : item)));
+  // Reset means starting completely over: abort the current recognition
+  // session outright (not just clear the displayed text) before starting a
+  // brand-new one, so no lingering session can silently keep appending its
+  // own results back into the transcript afterward.
+  function restartListening() {
+    recognitionRef.current?.abort();
+    recognitionRef.current = null;
+    stopAudioMeter();
+    startListening();
   }
 
-  function deleteItem(id: string) {
-    setItems((current) => current.filter((item) => item.id !== id));
-    if (openId === id) setOpenId(null);
-    fetch(`/api/registrations/${id}`, { method: "DELETE" }).catch(() => {});
+  async function addShownItems() {
+    const pending = items.filter((item) => !item.saved);
+    if (pending.length === 0) return;
+    setIsAdding(true);
+    setErrorMessage(null);
+
+    const pendingIds = new Set(pending.map((item) => item.id));
+    const results = await Promise.all(
+      pending.map(async (item) => {
+        try {
+          const saveRes = await fetch("/api/registrations", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(
+              item.productId
+                ? { productId: item.productId, amountGrams: item.amountGrams }
+                : {
+                    amountGrams: item.amountGrams,
+                    titleSnapshot: item.title,
+                    kcalSnapshot: item.kcal,
+                    proteinSnapshot: item.protein,
+                    carbsSnapshot: item.carbs,
+                    fatSnapshot: item.fat,
+                  }
+            ),
+          });
+          if (!saveRes.ok) return null;
+          const saveData = await saveRes.json();
+          return { ...item, id: saveData.registration.id as string, saved: true };
+        } catch {
+          return null;
+        }
+      })
+    );
+
+    const newlySaved = results.filter((result): result is Item => result !== null);
+    setItems((current) => [...current.filter((item) => !pendingIds.has(item.id)), ...newlySaved]);
+    setIsAdding(false);
+
+    if (newlySaved.length === 0) {
+      setPhase("error");
+      setErrorMessage(t("voice.error.couldNotSaveRegistrations"));
+    } else {
+      setPhase("added");
+      if (newlySaved.length < pending.length) setErrorMessage(t("voice.error.couldNotSaveRegistrations"));
+    }
   }
 
-  function resetItem(id: string) {
-    const original = originalItemsRef.current[id];
-    if (!original) return;
-    setItems((current) => current.map((item) => (item.id === id ? { ...original } : item)));
+  function deleteItem(item: Item) {
+    setItems((current) => current.filter((existing) => existing.id !== item.id));
+    if (item.saved) {
+      fetch(`/api/registrations/${item.id}`, { method: "DELETE" }).catch(() => {});
+    }
   }
+
+  async function favoriteItem(productId: string) {
+    try {
+      await fetch("/api/favorites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId }),
+      });
+    } catch {
+      // Silent — matches DailyList's favoriteEntry, not critical enough for an error banner here.
+    }
+  }
+
+  const hasPendingItems = items.some((item) => !item.saved);
 
   return (
     <HfScreen title={isListening ? t("voice.listeningTitle") : ""}>
       <div className="flex flex-col px-4 pb-6 pt-5">
         <section className="flex flex-col items-center" aria-live="polite">
           <button
+            ref={micButtonRef}
             type="button"
             onClick={isListening ? stopListening : startListening}
             disabled={isProcessing || phase === "unsupported"}
@@ -814,11 +594,9 @@ export default function VoicePage() {
 
         <section className="relative mt-4">
           <button
+            ref={resetButtonRef}
             type="button"
-            onClick={() => {
-              finalTranscriptRef.current = "";
-              setTranscript("");
-            }}
+            onClick={restartListening}
             aria-label={t("voice.resetTranscript")}
             className="absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-hf-black text-hf-white"
           >
@@ -852,18 +630,27 @@ export default function VoicePage() {
           <h2 className="hf-heading mb-1 text-base text-hf-black">{t("voice.added")}</h2>
           <ul className="max-h-[45vh] overflow-y-auto">
             {items.map((item) => (
-              <VoiceItem
-                key={item.id}
-                item={item}
-                open={openId === item.id}
-                onToggle={() => setOpenId((value) => (value === item.id ? null : item.id))}
-                onChange={(changes) => updateItem(item.id, changes)}
-                onDelete={() => deleteItem(item.id)}
-                onReset={originalItemsRef.current[item.id] ? () => resetItem(item.id) : undefined}
-                t={t}
-              />
+              <li key={item.id} className="border-b border-hf-tan-dark last:border-b-0">
+                <VoiceItemRow
+                  item={item}
+                  onFavorite={item.productId ? () => void favoriteItem(item.productId as string) : undefined}
+                  onReportError={item.saved ? () => router.push(`/registration/${item.id}/report-error`) : undefined}
+                  onDelete={() => deleteItem(item)}
+                  t={t}
+                />
+              </li>
             ))}
           </ul>
+          {hasPendingItems && (
+            <button
+              type="button"
+              onClick={() => void addShownItems()}
+              disabled={isAdding}
+              className="mt-4 flex h-12 w-full items-center justify-center rounded-xl bg-hf-green text-base font-bold text-hf-white disabled:opacity-60"
+            >
+              {isAdding ? t("voice.adding") : t("voice.addShownItems")}
+            </button>
+          )}
         </section>
       </div>
     </HfScreen>

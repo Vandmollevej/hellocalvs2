@@ -151,6 +151,7 @@ model User {
   forwardsSent            Forward[]                @relation("ForwardSender")
   forwardsReceived        Forward[]                @relation("ForwardRecipient")
   outboundMessages        OutboundMessage[]
+  doctorShares            DoctorShare[]
   subscription            Subscription?
   paymentMethods          PaymentMethod[]
   adminAuditLogsAsActor   AdminAuditLog[]          @relation("AdminAuditActor")
@@ -842,6 +843,7 @@ enum MessageEvent {
   POINTS_AWARDED
   FRIEND_FORWARD_RECEIVED
   FRIEND_INVITATION
+  DOCTOR_SHARE_INVITATION
 }
 
 enum MessageChannel {
@@ -1026,6 +1028,55 @@ model PaymentMethod {
 
   @@index([userId])
   @@map("payment_methods")
+}
+
+// --- Hello Doc: del fremgang med læge/diætist (docs/DECISIONS.md 2026-09-12) ---
+// Ejeren (User) inviterer en e-mail (læge/diætist) til at se en skrivebeskyttet
+// oversigt over udvalgte datakategorier. `token` er det unikke, login-frie
+// link til selve visningen (samme mønster som Product.approvalToken) — den
+// token-autentificerede eksterne visning er endnu ikke bygget (se
+// docs/STATUS.md "Next work"); indtil da virker "Sådan ser det ud" kun som en
+// forhåndsvisning af ejerens egne data.
+
+enum DoctorShareStatus {
+  PENDING
+  ACTIVE
+  EXPIRED
+  REVOKED
+}
+
+enum DoctorShareHistoryRange {
+  LAST_7_DAYS
+  LAST_MONTH
+  LAST_YEAR
+  ALL
+}
+
+model DoctorShare {
+  id     String            @id @default(cuid())
+  owner  User              @relation(fields: [ownerId], references: [id])
+  ownerId String
+  name   String
+  email  String
+  status DoctorShareStatus @default(PENDING)
+  token  String            @unique @default(cuid())
+
+  // Array of DoctorShareCategory keys (src/lib/doctor-share.ts) the owner has
+  // opted to share with this recipient.
+  categories   Json
+  historyRange DoctorShareHistoryRange @default(ALL)
+
+  sentAt DateTime @default(now())
+  // Invitationens egen udløbsfrist (14 dage), før den er accepteret. Sat til
+  // null når status bliver ACTIVE uden en separat aftalt adgangsperiode
+  // ("Permanent" i oversigten) — der findes endnu ingen UI til at sætte en
+  // kortere adgangsperiode efter accept.
+  expiresAt  DateTime?
+  acceptedAt DateTime?
+  revokedAt  DateTime?
+
+  @@index([ownerId])
+  @@map("doctor_shares")
 }
 
 // --- Admin: brugerstøtte og revisionsspor ---

@@ -16,7 +16,11 @@ export function PhoneFrame({ children }: { children: React.ReactNode }) {
   // The admin surface (docs/ADMIN.md) is a separate, desktop-and-mobile
   // responsive interface, not a simulated-phone consumer screen — it renders
   // full-viewport on every device instead of inside the phone chrome.
-  const isAdmin = pathname?.startsWith("/admin") ?? false;
+  // /hello-doc/[token] (docs/STATUS.md "Next work" #12A) is the same kind of
+  // exception: an external doctor/dietitian opens it directly from an email
+  // link, most likely on a laptop, and its own layout is already responsive
+  // two-column — it must not be squeezed into a 402px phone bezel either.
+  const isFullViewport = (pathname?.startsWith("/admin") || pathname?.startsWith("/hello-doc")) ?? false;
 
   useEffect(() => {
     function updateScale() {
@@ -30,7 +34,7 @@ export function PhoneFrame({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener("resize", updateScale);
   }, []);
 
-  if (isAdmin) return <>{children}</>;
+  if (isFullViewport) return <>{children}</>;
 
   return (
     <div className="phone-frame-stage flex min-h-dvh items-center justify-center bg-neutral-300 p-6">

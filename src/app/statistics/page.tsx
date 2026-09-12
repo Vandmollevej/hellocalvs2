@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { IconPlus } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { TrendIcon } from "@/components/BottomNav";
 import { StatChart, type ChartSeries } from "@/components/StatChart";
@@ -250,8 +252,15 @@ export default function StatisticsPage() {
         <IntradayKcalChart registrations={recentRegistrations} windowDays={activePeriodDays} />
 
         <div className="flex flex-col gap-3 border-t border-hf-tan-dark pt-4">
-          <div className="flex items-center justify-start">
+          <div className="relative z-40 flex items-center justify-between gap-2">
             <StatPeriodPicker selection={periodSelection} onChange={setPeriodSelection} />
+            <Link
+              href="/statistics/unused-cards"
+              className="flex min-h-8 items-center gap-1 text-xs font-semibold text-hf-black"
+            >
+              <IconPlus size={14} stroke={2.5} />
+              {t("statCardsGrid.addCard")}
+            </Link>
           </div>
 
           <StatCardsGrid cards={statCards} defaultActiveKeys={DEFAULT_ACTIVE_STAT_KEYS} />
