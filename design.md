@@ -1,6 +1,6 @@
 # HELLO CAL — bindende visuel designkontrakt og audit
 
-Senest opdateret: 2026-09-02
+Senest opdateret: 2026-09-12
 
 Dette dokument er den visuelle kontrakt for Hello Cal. Det beskriver de
 HelloFresh-mål, farver, typografiske roller, afstande og komponentvarianter,
@@ -559,6 +559,21 @@ Hello Cal-specifikke primitiver uden HelloFresh-reference (jf. §1), tilføjet
 `.hf-type-button`-tal, positioneret `-8px`/`-8px` så den overlapper det
 øverste venstre hjørne af en 1:1-boks uden at dække dens indhold.
 
+**`CalorieBadge`** (`src/components/hf/CalorieBadge.tsx`), tilføjet
+2026-09-12 til opskriftslisten under Profil → "Opskrifter"
+(`src/app/profile/recipes/page.tsx`) — en 56 px cirkel-badge, hvid baggrund,
+mørk `--hf-color-text` tekst og et let skygge-lift for læsbarhed over
+madfotos, positioneret `-8px`/`-8px` (bund/venstre) så den overlapper det
+nederste venstre hjørne af opskriftsbilledet — samme overlap-princip som
+`NumberedBadge`, blot forskudt til det modsatte hjørne. Viser to linjer:
+kcal-tallet (bold, 13 px) og en mindre enhedslabel ("kcal/pers.", 8 px,
+sekundær tekstfarve). Bevidst Hello Cal-tilføjelse uden HelloFresh-reference
+— det oprindelige HelloFresh-kort under "Kogebog" har intet kalorietal på
+selve billedet. Kcal/person udregnes lokalt
+(`kcalPer100g × servingSizeGrams ÷ 100`, falder tilbage til 100 g hvis
+opskriften ikke har en registreret portionsstørrelse) og erstatter den
+tidligere kcal-tekstlinje under billedet i stedet for at duplikere den.
+
 **`HfBarcodeIcon`** — SVG-stregkode (bjælker af varierende bredde) med et
 mock-cifferlag under, brugt som placeholder-ikon og som prompt-illustration i
 stregkode-trinnet. Farve arves via `currentColor`.
@@ -594,7 +609,64 @@ overskriftstekst, valgfri hvid brødtekstlinje, og en fuldbredde hvid knap
 (ingen persistering). Erstatter det tidligere mønster med "*" i teksten og en
 separat lysegrå "*Læs betingelser"-linje under kortet.
 
-## 7. Referenceproportioner, som skal bevares
+**Selfie-portrætkort i Billede-dagbog** (`src/app/profile/photo-diary/page.tsx`),
+tilføjet 2026-09-12 — Hello Cal-specifik variant uden HelloFresh-reference,
+bygget efter brugerens egen reference (den høje, fuldbredde portrætblok i
+venstre side af Kogebog-startsiden, se sagens vedhæftede skærmbillede):
+selfies (front-kamera, `capture="user"`) vises i én kolonne som fuldbredde
+`aspect-[3/4]` `object-cover`-kort (`rounded-2xl`, `bg-hf-tan`), adskilt fra
+det eksisterende faste 2-kolonne-grid til almindelige billeder (bagkamera,
+`capture="environment"`), som er uændret. Under hvert selfie-kort vises to
+tekstlinjer oven på hinanden: vægt-linjen og mål-linjen. Begge følger samme
+regel — er der en `WeightEntry` hhv. `BodyMeasurement` fra samme kalenderdag
+som billedet, vises "Aktuel vægt"/"Aktuelle mål"; ellers vises den seneste
+værdi før billedet som "Seneste vægt"/"Seneste mål" med dato; findes slet
+ingen data, vises en dæmpet "ingen registreret endnu"-linje. Målene er
+kropsomkreds i cm (talje, hofte, bryst, lår, overarm — de mål en diætist
+typisk følger ud over vægten), lagret i den nye `BodyMeasurement`-model
+(`prisma/schema.prisma`, migration `20260912020000_body_measurements`) og
+læst via `/api/body-measurements`. Selve indtastningssiden for disse mål
+("måleside") er bevidst IKKE bygget her — det er en separat, senere opgave
+(se `docs/STATUS.md`); denne visning tåler derfor i dag altid den tomme
+"ingen mål registreret endnu"-tilstand.
+
+**`BarcodeScanOverlay`** (`src/components/hf/BarcodeScanOverlay.tsx`),
+tilføjet 2026-09-12 til den live stregkode-scanning på
+`/camera?mode=product` ("Stregkode"-fanen) — Hello Cal-specifik primitiv
+uden HelloFresh-reference (jf. §1), bygget efter brugerens egen detaljerede
+beskrivelse af en scanningsguide: en 2,2:1 guide-boks centreret i
+kamera-viewfinderet, med samme "hul i mørkt overlay"-teknik som den
+eksisterende cirkel-guide (`box-shadow: 0 0 0 999px rgba(0,0,0,.55)`, clippet
+af forælderens `overflow-hidden`). Boksens 1 px kant er hvid som udgangspunkt,
+`--hf-color-positive` ("hf-lime") når en afkodet stregkode ligger inden i
+boksen, og Hello Cal-undtagelsens danger-token ("hf-red-dark") når kameraet
+har afkodet en stregkode et andet sted i billedet, men uden for boksen.
+Position/justering udregnes i `src/lib/barcode-scan.ts` ud fra @zxing's
+`ResultPoint`-koordinater (bekræftet at være i native `videoWidth`/
+`videoHeight`-pixelrum, jf. `node_modules/@zxing/browser`s
+`BrowserCodeReader.createCaptureCanvas`/`drawImageOnCanvas`), mappet til en
+brøkdel (0..1) af det kvadratiske viewfinder-lærred efter samme
+`object-fit: cover`-beskæring som selve `<video>`-elementet bruger. Kun en
+afkodet kode, hvis centrum falder inden for boksen, udløser det faktiske
+produktopslag — en kode uden for boksen viser kun den røde kant, uden at
+navigere væk.
+
+Så længe koden ikke er bekræftet, viser boksen en fiktiv, aldrig-opslået
+EAN-13 (hvide bjælker + tal, `src/lib/regions.ts`s `buildFakeBarcodeForRegion`/
+`formatEan13`) — koden starter altid med brugerens eget regions rigtige
+3-cifrede GS1-præfix (samme `REGIONS`-liste som `barcodeMatchesRegion`
+bruger), hentet via `GET /api/profile` (falder tilbage til "DK", samme
+default som `User.region`). I det øjeblik en kode bekræftes inden i boksen,
+forsvinder denne fiktive illustration og erstattes et kort øjeblik
+(~450 ms, før det faktiske opslag/navigation) af en grøn (`hf-lime`,
+transparent) markering hen over selve det afkodede bjælkeområde plus en
+tyndere grøn bjælke lige under, som repræsenterer de aflæste cifre — den
+faktiske fysiske stregkode/tal overlejres ikke pixel-præcist, kun det
+omtrentlige, udregnede område. Efter ca. 6 sekunder uden en bekræftet
+aflæsning viser viewfinderet desuden en halvgennemsigtig sort bjælke
+(`bg-black/80`) med hvid hjælpetekst, der roterer mellem to hints ("stregkode
+uden for feltet" / "prøv større afstand, hvis den er sløret") hvert 4.
+sekund, indtil enten en kode bekræftes eller kameraet genstartes.
 
 ### Velkomst/start
 

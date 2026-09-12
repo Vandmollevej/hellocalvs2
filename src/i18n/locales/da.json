@@ -35,7 +35,32 @@
     "genericError": "Kunne ikke logge ind",
     "networkError": "Kunne ikke logge ind — tjek din forbindelse og prøv igen",
     "newHere": "Ny her?",
-    "createAccount": "Opret konto"
+    "createAccount": "Opret konto",
+    "forgotPassword": "Glemt adgangskode?"
+  },
+  "forgotPassword": {
+    "title": "Glemt adgangskode",
+    "back": "Tilbage",
+    "instructions": "Angiv din e-mailadresse, så sender vi dig et link til at nulstille din adgangskode.",
+    "emailLabel": "E-mailadresse",
+    "submit": "Send nulstillingslink",
+    "submitting": "Sender…",
+    "genericError": "Noget gik galt — prøv igen",
+    "networkError": "Kunne ikke sende linket — tjek din forbindelse og prøv igen",
+    "sentMessage": "Hvis kontoen findes, har vi sendt en mail med et link til at nulstille adgangskoden.",
+    "backToLogin": "Tilbage til log ind"
+  },
+  "resetPassword": {
+    "title": "Nulstil adgangskode",
+    "newPasswordLabel": "Ny adgangskode",
+    "confirmPasswordLabel": "Gentag ny adgangskode",
+    "submit": "Nulstil adgangskode",
+    "submitting": "Nulstiller…",
+    "genericError": "Noget gik galt — prøv igen",
+    "networkError": "Kunne ikke nulstille adgangskoden — tjek din forbindelse og prøv igen",
+    "mismatchError": "Adgangskoderne er ikke ens",
+    "missingToken": "Nulstillingslinket mangler eller er ugyldigt.",
+    "requestNewLink": "Anmod om et nyt link"
   },
   "country": {
     "title": "Vælg dit land",
@@ -292,7 +317,9 @@
     "photoAlt": "Dit fotograferede billede",
     "liveViewAriaLabel": "Live kameravisning",
     "notRecognizedRetry": "Produkt ikke genkendt, prøv igen",
-    "holdBarcodeInFrame": "Hold stregkoden inden for rammen",
+    "holdCameraStill": "Hold kameraet stille over stregkoden",
+    "barcodeHintOutsideFrame": "Sørg for at stregkoden er inden for feltet, til rammen lyser grønt.",
+    "barcodeHintBlurry": "Stregkoden er sløret? Prøv at holde lidt længere afstand, til den er skarp.",
     "placeProductInCircle": "Placér produktet i cirklen",
     "placePlateInCircle": "Placér tallerkenen i cirklen",
     "takePhotoOfProduct": "Tag billede af produktet",
@@ -356,6 +383,14 @@
     "saving": "Gemmer...",
     "createProduct": "Opret produkt"
   },
+  "recipes": {
+    "title": "Opskrifter",
+    "searchPlaceholder": "Søg i HelloFresh-opskrifter",
+    "kcalBadgeUnit": "kcal/pers.",
+    "loading": "Henter opskrifter …",
+    "loadError": "Opskrifter kunne ikke hentes lige nu",
+    "noResults": "Ingen opskrifter matcher din søgning"
+  },
   "createDish": {
     "title": "Opret egen ret",
     "nameRequired": "Giv retten et navn",
@@ -373,6 +408,9 @@
     "macrosSummary": "Protein {protein} g · Kulhydrat {carbs} g · Fedt {fat} g",
     "addIngredient": "Tilføj ingrediens",
     "search": "Søg",
+    "searchPlaceholder": "Søg efter ingrediens",
+    "searching": "Søger...",
+    "noResults": "Ingen varer matcher din søgning",
     "scan": "Scan",
     "manually": "Manuelt"
   },
@@ -404,7 +442,18 @@
     "mediaMainImage": "Hovedbillede",
     "mediaSideImage1": "Sidebillede 1",
     "mediaSideImage2": "Sidebillede 2",
-    "mediaSideImage3": "Sidebillede 3"
+    "mediaSideImage3": "Sidebillede 3",
+    "mediaScanningBarcode": "Læser stregkode...",
+    "mediaScanningNutrition": "Læser næringsindhold...",
+    "mediaScanningIngredients": "Læser indholdsfortegnelse...",
+    "mediaScanFailedBarcode": "Kunne ikke læse stregkoden — indtast den nedenfor",
+    "mediaScanFailedNutrition": "Kunne ikke læse næringsindholdet — udfyld det nedenfor",
+    "mediaScanFailedIngredients": "Kunne ikke læse indholdsfortegnelsen — udfyld den nedenfor",
+    "savedOffline": "Ingen forbindelse — produktet er gemt på enheden og uploades automatisk, når du har netværk igen."
+  },
+  "offlineQueue": {
+    "pendingBannerOne": "1 oprettelse afventer upload",
+    "pendingBannerMany": "{count} oprettelser afventer upload"
   },
   "profile": {
     "title": "Mine oplysninger",
@@ -452,6 +501,7 @@
       "inviteFriend": "Invitér en ven",
       "notifications": "Kommunikation",
       "reportBug": "Indberet fejl",
+      "recipes": "Opskrifter",
       "settings": "Indstillinger"
     },
     "logOut": "Log af",
@@ -559,17 +609,34 @@
     "requiresPasscodeDescription": "Håndhæves endnu ikke af OS'et — det kræver en native app. Kun en gemt præference i dag.",
     "showPhotos": "Vis billeder (ingen rigtig adgangskode-kontrol endnu)",
     "takePhoto": "Tag billede (fuld figur eller mave)",
+    "takeSelfie": "Tag selfie (portræt)",
     "noPhotosYet": "Ingen billeder endnu — tag det første for at kunne sammenligne senere.",
     "photoAlt": "Billede-dagbog-optagelse",
     "deleteAria": "Slet billede",
     "previousPhoto": "Forrige billede",
-    "nextPhoto": "Næste billede"
+    "nextPhoto": "Næste billede",
+    "selfiesSectionTitle": "Selfies",
+    "noSelfiesYet": "Ingen selfies endnu — tag den første for at kunne sammenligne senere.",
+    "photosSectionTitle": "Andre billeder",
+    "currentWeight": "Aktuel vægt: {value} kg",
+    "latestWeight": "Seneste vægt: {value} kg ({date})",
+    "noWeight": "Ingen vægt registreret endnu",
+    "currentMeasurements": "Aktuelle mål: {value}",
+    "latestMeasurements": "Seneste mål: {value} ({date})",
+    "noMeasurements": "Ingen mål registreret endnu",
+    "measurementWaist": "Talje {value} cm",
+    "measurementHip": "Hofte {value} cm",
+    "measurementChest": "Bryst {value} cm",
+    "measurementThigh": "Lår {value} cm",
+    "measurementUpperArm": "Overarm {value} cm"
   },
   "registration": {
     "title": "Registrering",
     "loading": "Henter registrering...",
     "notFound": "Registreringen findes ikke.",
-    "loadError": "Kunne ikke hente registreringen."
+    "loadError": "Kunne ikke hente registreringen.",
+    "per100g": "pr. 100 g",
+    "perUnit": "pr. {unit}"
   },
   "registrationReportError": {
     "title": "Indberet fejl",

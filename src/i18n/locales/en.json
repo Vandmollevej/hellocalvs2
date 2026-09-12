@@ -35,7 +35,32 @@
     "genericError": "Could not log in",
     "networkError": "Could not log in — check your connection and try again",
     "newHere": "New here?",
-    "createAccount": "Create account"
+    "createAccount": "Create account",
+    "forgotPassword": "Forgot password?"
+  },
+  "forgotPassword": {
+    "title": "Forgot password",
+    "back": "Back",
+    "instructions": "Enter your email address and we'll send you a link to reset your password.",
+    "emailLabel": "Email address",
+    "submit": "Send reset link",
+    "submitting": "Sending…",
+    "genericError": "Something went wrong — try again",
+    "networkError": "Could not send the link — check your connection and try again",
+    "sentMessage": "If the account exists, we've sent an email with a link to reset the password.",
+    "backToLogin": "Back to log in"
+  },
+  "resetPassword": {
+    "title": "Reset password",
+    "newPasswordLabel": "New password",
+    "confirmPasswordLabel": "Repeat new password",
+    "submit": "Reset password",
+    "submitting": "Resetting…",
+    "genericError": "Something went wrong — try again",
+    "networkError": "Could not reset the password — check your connection and try again",
+    "mismatchError": "The passwords don't match",
+    "missingToken": "The reset link is missing or invalid.",
+    "requestNewLink": "Request a new link"
   },
   "country": {
     "title": "Choose your country",
@@ -292,7 +317,9 @@
     "photoAlt": "Your captured photo",
     "liveViewAriaLabel": "Live camera view",
     "notRecognizedRetry": "Product not recognized, try again",
-    "holdBarcodeInFrame": "Hold the barcode inside the frame",
+    "holdCameraStill": "Hold the camera steady over the barcode",
+    "barcodeHintOutsideFrame": "Make sure the barcode is inside the box, until the frame turns green.",
+    "barcodeHintBlurry": "Barcode blurry? Try holding a bit further back until it's in focus.",
     "placeProductInCircle": "Place the product in the circle",
     "placePlateInCircle": "Place the plate in the circle",
     "takePhotoOfProduct": "Take a photo of the product",
@@ -356,6 +383,14 @@
     "saving": "Saving...",
     "createProduct": "Create product"
   },
+  "recipes": {
+    "title": "Recipes",
+    "searchPlaceholder": "Search HelloFresh recipes",
+    "kcalBadgeUnit": "kcal/serving",
+    "loading": "Loading recipes …",
+    "loadError": "Recipes could not be loaded right now",
+    "noResults": "No recipes match your search"
+  },
   "createDish": {
     "title": "Create own dish",
     "nameRequired": "Give the dish a name",
@@ -373,6 +408,9 @@
     "macrosSummary": "Protein {protein} g · Carbs {carbs} g · Fat {fat} g",
     "addIngredient": "Add ingredient",
     "search": "Search",
+    "searchPlaceholder": "Search for ingredient",
+    "searching": "Searching...",
+    "noResults": "No products match your search",
     "scan": "Scan",
     "manually": "Manually"
   },
@@ -404,7 +442,18 @@
     "mediaMainImage": "Main photo",
     "mediaSideImage1": "Side photo 1",
     "mediaSideImage2": "Side photo 2",
-    "mediaSideImage3": "Side photo 3"
+    "mediaSideImage3": "Side photo 3",
+    "mediaScanningBarcode": "Reading barcode...",
+    "mediaScanningNutrition": "Reading nutrition facts...",
+    "mediaScanningIngredients": "Reading ingredients list...",
+    "mediaScanFailedBarcode": "Couldn't read the barcode — enter it below",
+    "mediaScanFailedNutrition": "Couldn't read the nutrition facts — fill them in below",
+    "mediaScanFailedIngredients": "Couldn't read the ingredients list — fill it in below",
+    "savedOffline": "No connection — the product is saved on this device and will upload automatically once you're back online."
+  },
+  "offlineQueue": {
+    "pendingBannerOne": "1 creation pending upload",
+    "pendingBannerMany": "{count} creations pending upload"
   },
   "profile": {
     "title": "My details",
@@ -452,6 +501,7 @@
       "inviteFriend": "Invite a friend",
       "notifications": "Communication",
       "reportBug": "Report a bug",
+      "recipes": "Recipes",
       "settings": "Settings"
     },
     "logOut": "Log out",
@@ -559,17 +609,34 @@
     "requiresPasscodeDescription": "Not yet enforced by the OS — that requires a native app. Just a saved preference for now.",
     "showPhotos": "Show photos (no real passcode check yet)",
     "takePhoto": "Take photo (full body or stomach)",
+    "takeSelfie": "Take selfie (portrait)",
     "noPhotosYet": "No photos yet — take the first one to compare later.",
     "photoAlt": "Photo diary entry",
     "deleteAria": "Delete photo",
     "previousPhoto": "Previous photo",
-    "nextPhoto": "Next photo"
+    "nextPhoto": "Next photo",
+    "selfiesSectionTitle": "Selfies",
+    "noSelfiesYet": "No selfies yet — take the first one to compare later.",
+    "photosSectionTitle": "Other photos",
+    "currentWeight": "Current weight: {value} kg",
+    "latestWeight": "Latest weight: {value} kg ({date})",
+    "noWeight": "No weight logged yet",
+    "currentMeasurements": "Current measurements: {value}",
+    "latestMeasurements": "Latest measurements: {value} ({date})",
+    "noMeasurements": "No measurements logged yet",
+    "measurementWaist": "Waist {value} cm",
+    "measurementHip": "Hip {value} cm",
+    "measurementChest": "Chest {value} cm",
+    "measurementThigh": "Thigh {value} cm",
+    "measurementUpperArm": "Upper arm {value} cm"
   },
   "registration": {
     "title": "Registration",
     "loading": "Loading registration...",
     "notFound": "The registration doesn't exist.",
-    "loadError": "Couldn't load the registration."
+    "loadError": "Couldn't load the registration.",
+    "per100g": "per 100 g",
+    "perUnit": "per {unit}"
   },
   "registrationReportError": {
     "title": "Report error",

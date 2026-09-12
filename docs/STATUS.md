@@ -2,6 +2,278 @@
 
 Last updated: 2026-09-12
 
+## 2026-09-12: Kcal/person-badge på opskriftslisten (`/profile/recipes`)
+
+Brugerens ønske: linket til HelloFresh-opskrifter under profilindstillinger
+("Opskrifter", allerede eksisterende, linket fra `/profile`) skulle ligne
+HelloFresh-appens egne opskriftskort, men med ét tilføjet element — en cirkel
+i nederste venstre hjørne, der går en smule ud over billedets venstre og
+nederste kant, og viser kcal pr. person/servering udregnet af den originale
+ret.
+
+- Ny primitiv `CalorieBadge` (`src/components/hf/CalorieBadge.tsx`,
+  dokumenteret i `design.md` §6.11): 56 px hvid cirkel, mørk tekst, let
+  skygge for læsbarhed over madfotos, positioneret `-8px`/`-8px` (bund/
+  venstre) efter samme overlap-princip som den eksisterende `NumberedBadge`
+  (blot modsat hjørne). To linjer: kcal (bold, 13 px) og en enhedslabel
+  ("kcal/pers." / "kcal/serving", 8 px, sekundær farve, ny i18n-nøgle
+  `recipes.kcalBadgeUnit`).
+- `src/app/profile/recipes/page.tsx`: badgen erstatter den tidligere
+  kcal-tekstlinje under billedet (ikke en duplikering). Kcal/person
+  genbruger den eksisterende `kcalPerPerson()`-beregning
+  (`kcalPer100g × servingSizeGrams ÷ 100`, falder tilbage til 100 g uden
+  registreret portionsstørrelse) — ingen ny datakilde, listen filtrerer
+  fortsat kun `source: "HELLOFRESH"`-produkter, og søgefeltet indekserer
+  fortsat kun disse retter (uændret, var allerede bygget).
+- `eslint` på de to ændrede filer er rent. Fuld `next build` (alle ruter,
+  inkl. `/profile/recipes`) er kørt igennem uden fejl.
+- **Visuelt verificeret**: startede projektets egen `next dev` (ingen anden
+  session havde længere en server på port 3000), genindlæste
+  `/profile/recipes` frisk — fejltilstanden ("Opskrifter kunne ikke hentes
+  lige nu") rendered korrekt, da der ikke er en lokal database at hente
+  rigtige opskrifter fra (samme kendte begrænsning som andre entries i denne
+  fil). For selve badgens visuelle udseende (som ikke kan ses uden rigtige
+  `HELLOFRESH`-produkter i en database) blev et midlertidigt test-DOM-element
+  med præcis samme klasser/CSS-variabler indsat via DevTools oven på et
+  eksempelbillede og fjernet igen bagefter — bekræftede at cirklen faktisk
+  overlapper billedets nederste venstre hjørne synligt og læsbart, ikke kun i
+  koden. Serveren blev lukket ned efter verifikationen.
+
+## 2026-09-12: Live stregkode-scanningsguide på `/camera?mode=product` ("Stregkode"-fanen)
+
+Bygget efter brugerens detaljerede beskrivelse af en scanningsguide (dæmpet
+overlay med et 2,2:1-hul, rødt/grønt kant-feedback, fiktiv EAN-13-illustration
+seedet fra brugerens region, grøn "læst"-markering, ny tekst under
+viewfinderet, og en svær-at-scanne hjælpebjælke). Se design.md §6.11
+(`BarcodeScanOverlay`, tilføjet 2026-09-12) for den fulde primitiv-beskrivelse.
+
+- `src/lib/barcode-scan.ts` (ny): ren geometri — 2,2:1-guideboksen som en
+  brøkdel af det kvadratiske viewfinder-lærred, og mapping fra @zxing's
+  `ResultPoint`-koordinater (native `videoWidth`/`videoHeight`-pixelrum,
+  bekræftet mod `node_modules/@zxing/browser`s `BrowserCodeReader`) til
+  samme brøkdel-koordinatsystem som viewfinderets `object-fit: cover`-video.
+- `src/lib/regions.ts`: ny `buildFakeBarcodeForRegion`/`formatEan13` — en
+  fiktiv, aldrig opslået EAN-13 der starter med brugerens regions rigtige
+  GS1-præfiks (samme `REGIONS`-liste som `barcodeMatchesRegion`), med et
+  reelt udregnet EAN-13-kontrolciffer.
+- `src/components/hf/BarcodeScanOverlay.tsx` (ny): den rent præsentationelle
+  guideboks — hvid kant som udgangspunkt, `hf-lime` når en afkodet kode
+  centrerer sig inden i boksen, `hf-red-dark` når koden er afkodet et andet
+  sted i billedet men uden for boksen. Fiktiv stregkode + tal vises inden i
+  boksen, indtil en kode bekræftes — så erstattes de et kort øjeblik af en
+  grøn markering over selve det (omtrentligt udregnede) afkodede område.
+- `src/app/camera/page.tsx`: `mode === "product"`'s @zxing decode-callback
+  beregner nu justering pr. frame og **kræver at koden ligger inden for
+  guideboksen**, før det rigtige produktopslag/navigation udløses (før blev
+  enhver afkodet kode overalt i billedet accepteret med det samme) — en
+  kode uden for boksen viser kun den røde kant. Hentede brugerens region via
+  `GET /api/profile` (falder tilbage til "DK", samme default som
+  `User.region`). Ny tekst "Hold kameraet stille over stregkoden" under
+  viewfinderet (erstatter den tidligere øverste "Hold stregkoden inden for
+  rammen"-pille for denne fane specifikt); efter ~6 sekunder uden en
+  bekræftet aflæsning roterer en halvgennemsigtig sort hjælpebjælke mellem to
+  hints. Nye/ændrede i18n-nøgler i begge `src/i18n/locales/*.json`:
+  `camera.holdCameraStill`, `camera.barcodeHintOutsideFrame`,
+  `camera.barcodeHintBlurry` (erstatter den nu ubrugte `camera.holdBarcodeInFrame`).
+
+Tjekket først mod den sideløbende session "Produktside UI-elementer" (samme
+repo, samtidigt): dens ændringer (`src/app/add/[id]/page.tsx`s
+favorit-knap/"Indberet fejl", `src/app/api/products/[id]/route.ts`, en ny
+`.hf-favorite-button`-klasse i `globals.css`) rører ingen af filerne i denne
+opgave — ingen filkonflikt. `da.json`/`en.json`/`globals.css`/`design.md` er
+delte og rørt af flere samtidige sessioner; alle blev genlæst umiddelbart før
+redigering for kun at lægge til, ikke overskrive.
+
+Verificeret: `eslint` (de ændrede filer, fangede og rettede to reelle
+`react-hooks/set-state-in-effect`/`react-hooks/immutability`-fejl undervejs)
+og `next build` (fuld TypeScript + alle ~140 routes) begge rene, via den
+kendte Playwright-`node.exe` (samme "intet `npm`/`node` på PATH"-arbejdsgang
+som resten af denne fil). Startede egen `next dev` via Browser-panelet og
+genindlæste `/camera?mode=product` ved 402×874: den fiktive stregkode
+("5 700000 000004", DK-fallback da `/api/profile` 503'er uden lokal
+database, som forventet) og "Hold kameraet stille over stregkoden" render
+korrekt; guideboksens computed geometri (288,6×131,2 px, centreret i det
+370×370 px viewfinder) matcher 2,2:1/78%-specifikationen præcist, og
+standardkanten er hvid 1 px. Browser-panelets sandbox blokerer reel
+kameraadgang, så den dynamiske rød/grøn-justering, den grønne
+"læst"-markering og timing på hjælpebjælken er **ikke** afprøvet med en
+rigtig stregkode/kamera — det kræver en rigtig telefon/browser med
+kameraadgang.
+
+## 2026-09-12: Produktoprettelse — reelt scan-udtræk i stregkode/næring/ingrediens-boksene, region styrer OCR-/talesprog
+
+Topprioritets-opgave (bruger satte alle andre planlagte opgaver på pause for
+denne). Fuld baggrund/afklaring: `docs/DECISIONS.md`s indgang med samme
+overskrift. `/product/create`s eksisterende 2×2 `CreateProductMediaGrid`
+(design.md §6.11) havde kun ren fil-upload uden nogen udtræk — nu OpenAI er
+sat op (`OPENAI_API_KEY`), er de tre første bokse forbundet til rigtig
+udtræk:
+
+- **Stregkode (boks 1):** afkodes lokalt og gratis med `@zxing/browser`s
+  `BrowserMultiFormatReader.decodeFromImageUrl()` på selve stillbilledet —
+  udfylder `barcodeValue` automatisk ved succes. **Ingen AI-fallback bygget
+  med vilje** (brugerens egen instruks: "det skal helst ikke bruge AI") —
+  fejler afkodningen, viser boksen en fejlbesked og brugeren indtaster
+  stregkoden manuelt i det eksisterende tekstfelt nedenunder, som hele tiden
+  var fallback-stien.
+- **Næring (boks 2):** genbruger nu det samme "lokal regex først
+  (`src/lib/product-ocr.ts` `parseNutritionText`), AI kun som fallback
+  (`/api/ai/extract-nutrition`)"-mønster, som allerede kørte i det guidede
+  `/camera/create`-flow — det var aldrig forbundet til selve grid-boksen før.
+  Udfylder `kcalPer100g`/`proteinPer100g`/`carbsPer100g`/`fatPer100g` direkte
+  i formularen (bruger kan stadig rette manuelt).
+- **Ingredienser (boks 3):** helt ny route,
+  `src/app/api/ai/extract-ingredients/route.ts`. Lokal OCR
+  (`extractText`) læser altid billedet først; AI'ens ENESTE rolle er at
+  oversætte den fundne tekst til appens UI-sprog (ren tekst-til-tekst
+  chatcompletion, intet billede sendes, intet opslag) — kaldes kun, hvis OCR-
+  sproget (udledt af regionen) rent faktisk afviger fra UI-sproget, ellers
+  bruges OCR-teksten direkte uden noget AI-kald overhovedet (brugerens eget
+  ønske om at spare unødvendige AI-kald). Udfylder `ingredientsText`.
+- **Produktbilleder (boks 4):** uændret, ren upload — krævede ingen ændring.
+
+**Region (ikke telefonens/browserens visningssprog) styrer nu det sprog, OCR
+og talegenkendelse forventer** — ny `regionToOcrLanguage()`/
+`regionToSpeechLang()` i `src/lib/regions.ts`, udledt af det allerede
+eksisterende `User.region`-felt (GS1-præfiks-mapping fandtes i forvejen).
+Rettede to steder, der ikke tog højde for dette:
+  - `src/lib/product-ocr.ts` `extractText()` havde tesseract.js hardcodet til
+    `"dan+eng"` uanset region — tager nu en `lang`-parameter; alle tre
+    kaldesteder (`/camera/create` foto- og næringstrin, samt de nye
+    scan-bokse) sender nu regionens sprog.
+  - `src/app/voice/page.tsx:430` havde `recognition.lang` hardcodet til
+    `"da-DK"` uanset `User.region` (ikke kun uanset telefonens
+    visningssprog — den kiggede slet ikke på regionen). Bruger nu
+    `regionToSpeechLang(regionRef.current)`.
+
+**Ikke bygget denne omgang, flagget i stedet for gættet:** brugeren bad om at
+kombinere dette arbejde med en anden, allerede beskrevet opgave om en grøn
+kant, når stregkoden er i fokus, plus automatisk optagelse af 2-3 billeder på
+det tidspunkt til krydstjek mod produktbillederne. Denne sessions research
+kunne **ikke finde en skriftlig kilde** til den opgave — tjekket
+`docs/UI.md`, `Fejlretninger/FEJLLISTE.md`, og de utriagerede
+screenshot-mapper `Fejlretninger/Nye rettelser til Hello Cal/` og
+`Fejlretninger/MyFitnessPal/` (kun rå `.png`/`.jpeg`-filer uden
+tekstbeskrivelse). `/camera/page.tsx` og `/camera/create/page.tsx` har
+allerede en statisk grøn kant-accent (`border-t-hf-green`) på scan-rammen,
+men ingen dynamisk "tændt, når i fokus"-tilstand og ingen automatisk
+multi-shot-optagelse. **Brugeren bedes pege på den konkrete kilde** (skærm-
+billede/filnavn/besked), så det kan bygges korrekt i én omgang, i stedet for
+at blive gættet på nu.
+
+**Verifikation:** `eslint` (de ændrede filer), `tsc --noEmit -p .` (hele
+projektet) og til sidst en fuld `next build` (via den kendte
+Playwright-bundlede `node.exe`, se denne fils andre "intet npm på PATH"-noter)
+er alle kørt og clean — build ventede kort på, at en anden samtidig sessions
+egen `next build`-proces på denne workstation blev færdig først (en reel
+kørende proces, ikke den kendte OneDrive-stale-lock-fejl fra tidligere
+indgange i denne fil), men lykkedes derefter uden fejl: alle 113 ruter,
+inklusive den nye `/api/ai/extract-ingredients`-route. Ikke testet i en
+rigtig browser (ingen lokal
+Postgres på denne workstation, samme gentagne begrænsning som andre indgange)
+— stregkode-/næring-/ingrediens-udtrækkene bør klik-testes med rigtige
+billeder på en rigtig enhed, især om `@zxing/browser`s stillbillede-afkodning
+(`decodeFromImageUrl`, kun brugt til live-scanning andre steder i appen
+indtil nu) rent faktisk finder stregkoder pålideligt i almindelige
+telefonfotos (vinkel/lys/skarphed varierer langt mere end i den kontrollerede
+live-scan-ramme).
+
+## 2026-09-12: New "Opskrifter" (recipes) screen under Profil, backed by the existing HelloFresh catalog
+
+Direct user request: integrate the HelloFresh app's "Opdag" recipe-browsing screen into Hello Cal, reachable from the profile page, titled "Opskrifter" (not "Opdag"), and showing kcal per person under each recipe instead of minutes/protein, sourced from "the official HelloFresh database".
+
+No new scraping/import work was needed: HelloFresh's recipe catalog is already imported as ordinary `Product` rows (`externalSource='HELLOFRESH'`, category "Retter") via `scripts/hellofresh-import` (see the 2026-08-29 entry below), and `GET /api/products?source=HELLOFRESH` already existed to list them. New screen `src/app/profile/recipes/page.tsx` calls that endpoint (with `q=` for live search, `take=60`), showing results in a 2-column vertical grid (confirmed with the user: the HelloFresh reference's horizontal-scrolling "Mest populære opskrifter" row was deliberately **not** copied — there is no real popularity/view-count data behind that heading, and the user asked for a vertical list instead, with images cropped to fit). Each card shows the cropped dish photo, a bookmark favorite toggle (same `/api/favorites` pattern as `foods`/`search`), the recipe name, and a new circular `CalorieBadge` (`src/components/hf/CalorieBadge.tsx`, documented in `design.md` §6.11) overlapping the bottom-left corner of the image showing kcal per person — computed client-side as `kcalPer100g × servingSizeGrams ÷ 100` (falls back to 100g if a recipe has no recorded serving size), replacing minutes/protein entirely rather than duplicating an existing text line. Tapping a card links to the existing `/add/[id]` registration flow, same as every other loggable product. New i18n keys under `recipes.*` (da/en) and a new `profile.row.recipes` row (book icon) linking to `/profile/recipes` added to the profile menu (`src/app/profile/page.tsx`).
+
+**Explicitly out of scope per the user's own answers when asked before building:** the HelloFresh reference screen's horizontal cuisine-category icon row (Skandinavisk/Europæisk/Middelhavsretter/Asiatisk/etc.) — this data was never scraped (only name/image/nutrition/ingredients are), and building it as a purely decorative, non-functional row would have needed sourcing 5+ icon images with no real filtering behind them; skipped rather than invented. The "Mest populære opskrifter" heading was dropped for the same reason (no real popularity signal exists).
+
+`eslint .` and `next build` both passed clean across the full project (104+ routes, including the new `/profile/recipes`). Verified live at 402×874 in the local dev server: the green brand appbar reads "Opskrifter" with the correct back-chevron/profile-circle slots, the search field renders correctly, and the empty/error state ("Opskrifter kunne ikke hentes lige nu") displays gracefully instead of crashing — this workstation still has no reachable local PostgreSQL (same recurring constraint noted throughout this file), so the actual HelloFresh recipe cards, images, and kcal badges could **not** be clicked through against real data. Verify the populated grid, image cropping, and `CalorieBadge` numbers against real data on the next environment with a reachable database.
+
+## 2026-09-12: Offline product creation queue + admin "Dobbeltoprettelser" (duplicate-creation merge) page
+
+Two related requests from the user in one message: (1) the user-facing app should keep working offline, specifically letting someone photograph a product (and fill in the rest of the create-product form) with no network, uploading automatically once a connection is back; (2) when two of "the same" product get created at nearly the same time (e.g. two people, or an offline-queued submission landing after an online one already went through), that pair should show up in a new admin report page, "Dobbeltoprettelser", as a linked pair the admin can compare image-by-image (checkboxes) and merge with a dedicated Merge button.
+
+**Offline queue** (`src/lib/offline-product-queue.ts`): the existing create-product flow (`src/app/product/create/page.tsx`, fed by `/camera/create`) already builds the whole `POST /api/products` body as plain JSON with every photo already encoded as a `data:` URL (see `CreateProductMediaGrid`/`product-draft.ts`) — there is no separate binary upload step to intercept. So the queue is simple: an IndexedDB store (`hellocal-offline` / `pendingProducts`, not `localStorage`, since a few captured photos as data URLs can exceed its ~5-10MB origin cap) holding the exact JSON body. `product/create`'s submit handler now checks `navigator.onLine` and also catches a `fetch` failure, and in both cases queues the payload instead of showing a dead-end error, then shows a dedicated "saved offline" confirmation screen (new `productCreate.savedOffline` i18n key) instead of navigating to `/add/[id]` (there is no product id yet). A new `OfflineQueueBanner` client component, mounted once in the root layout (`src/app/layout.tsx`, alongside `LocaleProvider`, above `PhoneFrame`) so it survives navigation, flushes the queue on mount, on the browser's `online` event, and every 60s while online, and shows a small fixed top banner ("`offlineQueue.pendingBannerOne/Many`") while anything is still queued. A queued item that comes back from the server with a real error (not a network failure — e.g. a barcode already taken) is removed from the queue rather than retried forever, since replaying the exact same bad payload indefinitely would not help; only a genuine network failure leaves it queued for the next attempt.
+
+**Not done in this pass, flagged rather than silently skipped:** the barcode-lookup/OCR/AI-recognition steps inside `/camera/create` were **not modified** — they already wrap every network call in try/catch that falls through to manual entry on any failure (verified by reading the file, not just assumed), so they already degrade gracefully offline; the camera itself needs no network at all. Only the final submission needed a real fix. Also not built: any dedicated "afventer upload" review list (the top banner is the only visibility into the queue) — a small future page could list `listPendingProducts()`'s entries for the user to inspect/retry/discard individually.
+
+**Dobbeltoprettelser** (`docs/ADMIN.md` "Godkendelsesflow: nye stregkodeprodukter" already said duplicates should warn the admin and be mergeable; `/admin/warnings`'s existing "Mulige dubletter" section only ever linked out to each product's own page, with no image-comparison/merge UI — this is a new, purpose-built page for the specific "created near-simultaneously" case, not a replacement for that broader same-name list):
+
+- New `ProductDuplicateLink` model (migration `20260912010000_product_duplicate_links`, hand-written — same "no local database reachable from this workstation" reason as every other recent migration in this file) with `productAId`/`productBId` (always stored sorted so the same pair is never flagged twice) and a `PENDING/MERGED/DISMISSED` status.
+- `src/lib/product-duplicates.ts`: `flagSimultaneousDuplicates()`, called right after a product is created in `POST /api/products` (`src/app/api/products/route.ts`) — looks for another product with the same normalized name created within a 10-minute window and upserts a `ProductDuplicateLink`. Wrapped so a failure here can never fail the actual product creation.
+- `/admin/duplicate-products` (nav entry "Dobbeltoprettelser"/"Duplicate creations", `src/lib/admin-i18n.ts` + `AdminNav.tsx`): lists every `PENDING` link. Each pair renders as a `DuplicateProductCard` (client component) — two selectable product summaries (name/brand/macros/status/created-at; the selected one, default the earlier-created, is the row that survives the merge), a grid of every image from **both** products (`imageUrl` + `images[]`) each with its own checkbox (default checked), and Merge/"Ikke en dublet" (dismiss) actions.
+- `POST /api/admin/duplicate-products/[id]/merge`: reassigns every FK referencing the discarded product (barcodes, registrations, dish ingredients, points transactions, forwards — plain `updateMany`, none of these have a unique constraint that could collide) plus `ProductIngredient`/`Favorite` (which do have unique constraints — same drop-the-duplicate-row-on-clash pattern already used by the pre-existing `/api/admin/products/[id]/merge` endpoint for `/admin/warnings`'s name-only dedup flow), replaces both products' images with exactly the admin's checked/ordered selection (first checked image becomes the kept product's `imageUrl`, the rest become `ProductImage` rows), marks the link `MERGED`, and deletes the discarded product. Registration/PointsTransaction snapshot fields are never touched, so historical entries keep showing exactly what was logged at the time, per the existing snapshot principle.
+- `POST /api/admin/duplicate-products/[id]/dismiss`: marks a link `DISMISSED` without merging anything, for a same-name pair that genuinely isn't a duplicate.
+
+**Verification:** `npx prisma validate` and `npx prisma generate` both passed (via the known-working `~/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe` binary, this workstation still has no `node`/`npm` on PATH). `eslint .` (whole repo) passed clean, exit code 0. `next build` (full TypeScript + all 112 routes, including the two new `/admin/duplicate-products/[id]/*` API routes and the new page) passed clean. **Not verified live in a browser** — same recurring constraint as most other entries in this file: no reachable local Postgres, and the offline-queue banner/IndexedDB behavior specifically needs a real device test (toggle airplane mode, create a product with photos, confirm the banner appears and the item uploads once back online) before trusting it in production. The new migration also still needs `npx prisma migrate deploy` on the next Synology release, same as the several other pending migrations already noted in this file.
+
+## 2026-09-12: "Opret egen ret" — inline search field instead of a boxed "Søg" tile
+
+Direct user feedback on a live screenshot: the "Tilføj ingrediens" section had
+three equal box tiles (Søg/Scan/Manuelt); the user wanted a real search field
+in that section instead of "Søg" being just another box.
+
+`src/app/create-dish/page.tsx`: replaced the "Søg" tile (which linked out to
+`/search?for=ret`) with an inline `.hf-search` input, live-querying
+`/api/products?q=...` the same way `/search/page.tsx` does (200ms debounce,
+`AbortController`). Matches render directly below the field as a bookmark-free
+result list (image + name), each a `Link` to `/add/[id]?for=ret` — same
+downstream add-to-dish flow as before. "Scan" and "Manuelt" remain as a
+2-column tile grid below the search field/results. New i18n keys:
+`createDish.searchPlaceholder/searching/noResults` (both locales).
+
+Verified live: `eslint` clean on the changed file, `next build` (full route
+list, via the known bundled `node.exe` — see this file's other "no npm on
+PATH" notes) passed clean. Opened the Browser pane against the other
+concurrent session's already-running dev server (port 56077, this session's
+own `preview_start` refused since a `next dev` was already up) at 375×812:
+screenshot confirms the search field renders as a plain white input (not a
+box tile), typing into it fires a real debounced `GET /api/products?q=...`
+request and renders the live results/empty state below the field — the
+request itself 503s locally per this workstation's recurring "no reachable
+local Postgres" constraint, not a bug in this change.
+
+## 2026-09-12: Photo diary — selfie capture in portrait format, weight/measurement captions; new `BodyMeasurement` model
+
+User request (with a HelloFresh Kogebog screenshot as the visual reference
+for the tall portrait block): `/profile/photo-diary` should support taking a
+selfie (front camera) and showing it in a tall portrait card, and each such
+photo should show two caption lines underneath — the user's weight and body
+measurements as of that day if logged the same calendar day, otherwise the
+most recent prior values.
+
+`src/app/profile/photo-diary/page.tsx`: `DiaryPhoto` gained a `kind: "selfie"
+| "photo"` field (existing localStorage entries without it default to
+`"photo"`, unchanged). A new "Tag selfie" button (`capture="user"`, front
+camera) sits above the existing "Tag billede" (`capture="environment"`, now
+secondary-styled) button. Selfies render as a single-column feed of
+full-width `aspect-[3/4]` `object-cover` portrait cards (the tall-block format
+from the reference screenshot), each followed by two stacked caption lines:
+"Aktuel vægt"/"Seneste vægt" and "Aktuelle mål"/"Seneste mål", with a plain
+"ingen ... registreret endnu" fallback when there's no data at all. Regular
+(rear-camera) photos keep the original, unchanged 2-column square grid below,
+under its own section heading. The full-screen swipe viewer (Fejlretninger
+#21) now opens against whichever section (selfies vs. photos) was tapped
+instead of the single combined array.
+
+New `BodyMeasurement` model (`prisma/schema.prisma`, migration
+`20260912020000_body_measurements`): the dietitian-style circumference
+measurements tracked alongside weight — waist, hip, chest, thigh, upper arm
+(all optional `Float`, cm) plus `measuredAt`/`note`, same shape as
+`WeightEntry`. New `/api/body-measurements` route (GET list + POST create,
+same pattern as `/api/weight-entries`). **The actual data-entry screen for
+these measurements ("måleside") is explicitly out of scope for this session**
+— the user asked for it to be built in a separate chat — so today only the
+model, the API, and the photo-diary's read-only caption exist; see "Next
+work" #13.
+
+`design.md` §6.11 documents the new selfie-portrait-card pattern as a
+Hello-Cal-specific primitive (no HelloFresh reference for it).
+
+Verified with `npm run lint` and `npm run build` only — this workstation has
+no reachable local PostgreSQL (recurring `hellocal_no_local_db` constraint),
+so the weight/measurement fetches hit their 503 fallback locally; not
+screenshotted end-to-end with real data for the same reason.
+
 ## 2026-09-12: Calendar day-view — back arrow moved onto the same row as the profile/appbar, off the date-nav row
 
 Direct user feedback on a live screenshot of `/calendar`'s day-detail overlay
@@ -459,10 +731,10 @@ added, most recently after the i18n switch).
   (see "No local DB" note elsewhere in this file), so nothing has been
   clicked through in a real browser yet, only compiled/typechecked. Do that
   after deploy, per the checklist's verification section.
-- `ACCOUNT_CREATED`/`EMAIL_VERIFICATION`/`PASSWORD_RESET` message templates
-  exist but nothing calls `queueMessage()` for them yet (forgot-password
-  doesn't exist as a feature at all). Only escalation/approval/points/forward
-  events are actually wired.
+- `ACCOUNT_CREATED`/`EMAIL_VERIFICATION` message templates still exist but
+  nothing calls `queueMessage()` for them. `PASSWORD_RESET` is now wired (see
+  2026-09-12 "forgot password" entry below) — only account-created/email-
+  verification remain unimplemented from this trio.
 - No real payment method can be added yet — deliberate, see `docs/DECISIONS.md`
   (no PSP chosen, and raw card fields are never appropriate without one).
 
@@ -1546,6 +1818,15 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
     a follow-up message — do not build it ahead of that. Also see the
     "Indberet fejl" skeleton page (`/registration/[id]/report-error`, added
     2026-09-11) which has the same status: route exists, design pending.
+13. **Body-measurement entry page ("måleside")** — requested 2026-09-12 in a
+    separate chat/session from the one that added the `BodyMeasurement` model
+    (see the 2026-09-12 photo-diary entry above). The model
+    (`prisma/schema.prisma`, migration `20260912020000_body_measurements`)
+    and a GET+POST `/api/body-measurements` route already exist so the photo
+    diary's "Aktuelle mål"/"Seneste mål" caption has a real source; the
+    dedicated screen for a user to actually record a waist/hip/chest/thigh/
+    upper-arm measurement (mirroring `/profile/weight-calibration`'s pattern)
+    is not built yet.
 
 ## 2026-09-05: Fejlretninger-log started; several already-fixed, some real central bugs fixed
 
@@ -1775,3 +2056,39 @@ All three traced to real causes in the existing code, not vague/unreproducible r
 - **No reorder animation (root cause):** the grid is a plain CSS grid keyed by array order; on any layout change React just re-renders cards into their new grid cells with zero transition, so a reorder looks like a jump-cut. Added a small FLIP-style animation: `setLayoutAnimated()` snapshots every active card's `getBoundingClientRect()` right before a reordering `setLayout` call, and a `useLayoutEffect` on `[layout]` diffs old vs. new rect per card, applying an inline `translate()` that's then animated back to zero via `requestAnimationFrame` + a `transition`. Had to also temporarily set `el.style.animation = "none"` during the slide, because edit mode's existing `stat-card-wobble` CSS animation also drives the `transform` property and — being animation-driven rather than inline — would otherwise win over the FLIP translate and hide it completely.
 
 Verification: read through the interaction logic and the CSS animation-precedence interaction (wobble vs. inline transform) carefully since this bug class is easy to get subtly wrong; **not** verified live in a browser or via `npm run lint`/`npm run build` — this workstation's shell has no `node`/`npm` on `PATH` in this session (previous sessions' STATUS.md entries ran these successfully, so this looks like an environment/PATH regression on this machine, not a project issue). Flagging per AGENTS.md's "report checks that could not be run and why" — these two checks are still owed before this is a real checkpoint.
+
+### 2026-09-12: "Glemt adgangskode" (forgot password) built end-to-end
+
+Login/signup pages had no password-reset path at all — `docs/SPECIFICATION.md:37`
+specifies "Password-reset via tidsbegrænset, éngangs e-mail-link" and the
+`PASSWORD_RESET` message template already existed in `messaging.ts`, but
+nothing called `queueMessage()` for it and there was no token model.
+
+Built: `PasswordResetToken` model (migration
+`20260912030000_password_reset_tokens`, hand-written — no local PostgreSQL
+reachable from this workstation, same reason as every other migration in this
+file) storing only a SHA-256 hash of the token (`src/lib/password-reset.ts`,
+same pattern as `DeviceToken.tokenHash`), 1-hour expiry, single-use
+(`usedAt`). `POST /api/auth/forgot-password` always returns the same generic
+message regardless of whether the email exists (no account enumeration),
+rate-limited per email via the existing `src/lib/rate-limit.ts`, and queues
+the existing `PASSWORD_RESET` template with a real `resetLink` built from
+`APP_BASE_URL` (same env var/fallback host as the invite/doctor-share links).
+`POST /api/auth/reset-password` consumes the token, hashes the new password
+with `bcryptjs` (same cost factor as register/login), and signs the user in
+immediately via the existing `signUserSession`. Two new pages,
+`src/app/forgot-password/page.tsx` and `src/app/reset-password/page.tsx`,
+built with the same shell/appbar/`TextField`/`hf-btn-primary` primitives as
+`signup/page.tsx` — no new visual patterns introduced. Added a "Glemt
+adgangskode?" link on both `login/page.tsx` and `signup/page.tsx`. New i18n
+keys under `forgotPassword`/`resetPassword` (+ `login.forgotPassword`) in
+both `da.json` and `en.json`.
+
+`npm run lint` clean. `npm run build` could **not** be run this pass — `.next`
+already had a stale/live build lock (`.next/lock`) from another process on
+this machine, and three `node.exe` processes were running; didn't kill them
+without checking with the user first (could be the user's own dev server).
+Needs a clean `npm run build` before this checkpoint is fully verified.
+Also not exercised live in a browser — same no-reachable-local-database
+limitation as prior entries. Needs `prisma migrate deploy` on next deploy
+(handled automatically by the existing `migrate` service).
