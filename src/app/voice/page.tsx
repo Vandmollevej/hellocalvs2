@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { IconCheck, IconChevronRight, IconRefresh } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { SwipeableRow } from "@/components/SwipeableRow";
+import { regionToSpeechLang } from "@/lib/regions";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 type Item = {
@@ -237,6 +238,27 @@ export default function VoicePage() {
   const rafIdRef = useRef<number | null>(null);
   const micButtonRef = useRef<HTMLButtonElement | null>(null);
   const resetButtonRef = useRef<HTMLButtonElement | null>(null);
+  // Region (not the phone's/browser's display language) decides which
+  // language the user is expected to speak — EU-lovkrav om lokalsprog gælder
+  // ikke tale, men samme princip: en bruger med engelsk visningssprog, bosat
+  // i Danmark, taler stadig dansk (docs/DECISIONS.md 2026-09-12). A ref, not
+  // state, since startListening() is a plain closure invoked from a
+  // mount-only effect and must read the latest fetched value even if that
+  // effect's own closure is stale.
+  const regionRef = useRef("DK");
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/profile")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { user?: { region?: string } } | null) => {
+        if (!cancelled && data?.user?.region) regionRef.current = data.user.region;
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const isListening = phase === "listening";
   const isProcessing = phase === "processing";
@@ -427,7 +449,7 @@ export default function VoicePage() {
 
     recognition.continuous = true;
     recognition.interimResults = true;
-    recognition.lang = "da-DK";
+    recognition.lang = regionToSpeechLang(regionRef.current);
     recognition.maxAlternatives = 1;
     recognition.onstart = () => {
       setPhase("listening");

@@ -1,13 +1,15 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { IconApple } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { TextField } from "@/components/hf/TextField";
 import { CreateProductMediaGrid, type MediaGridValue } from "@/components/hf/CreateProductMediaGrid";
+import type { ParsedNutrition } from "@/lib/product-ocr";
 import { PRODUCT_DRAFT_STORAGE_KEY, type ProductCreateDraft } from "@/lib/product-draft";
+import { queuePendingProduct } from "@/lib/offline-product-queue";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 type FormValues = {
@@ -70,7 +72,7 @@ function readDraft(): { form: FormValues; media: MediaGridValue; fromCamera: boo
 }
 
 function OpretProduktContent() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
   const fromFailedAdd = searchParams.get("fromFailedAdd") === "1";
@@ -79,35 +81,85 @@ function OpretProduktContent() {
   const [media, setMedia] = useState<MediaGridValue>(initialMedia);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [savedOffline, setSavedOffline] = useState(false);
+  const [region, setRegion] = useState("DK");
+
+  // Fetches the signed-in user's region once, so the barcode/nutrition/
+  // ingredients scan boxes below know which language the packaging is
+  // actually printed in (docs/DECISIONS.md 2026-09-12) — not the browser's/
+  // telefonens visningssprog. Defaults to "DK" while loading/on error, same
+  // convention as /camera/page.tsx and /camera/create/page.tsx.
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/profile")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { user?: { region?: string } } | null) => {
+        if (!cancelled && data?.user?.region) setRegion(data.user.region);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   function update(key: keyof FormValues, value: string) {
     setForm((prev) => ({ ...prev, [key]: value }));
+  }
+
+  function applyExtractedNutrition(values: ParsedNutrition) {
+    setForm((prev) => ({
+      ...prev,
+      kcalPer100g: String(values.kcalPer100g),
+      proteinPer100g: String(values.proteinPer100g),
+      carbsPer100g: String(values.carbsPer100g),
+      fatPer100g: String(values.fatPer100g),
+    }));
+  }
+
+  function applyExtractedIngredients(text: string) {
+    setForm((prev) => ({ ...prev, ingredientsText: text }));
   }
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     setSaving(true);
     setSaveError(null);
+
+    const body = {
+      name: form.name,
+      kcalPer100g: form.kcalPer100g,
+      proteinPer100g: form.proteinPer100g,
+      carbsPer100g: form.carbsPer100g,
+      fatPer100g: form.fatPer100g,
+      servingSizeGrams: form.servingSizeGrams || undefined,
+      servingSizeUnitSingular: form.servingSizeUnitSingular || undefined,
+      servingSizeUnitPlural: form.servingSizeUnitPlural || undefined,
+      ingredientsText: form.ingredientsText || undefined,
+      barcode: media.barcodeValue || undefined,
+      imageUrl: media.mainImage,
+      extraImages: [media.sideImages[0], media.sideImages[1], media.sideImages[2]].filter(
+        (img): img is string => Boolean(img)
+      ),
+    };
+
+    // Offline (or the device only thinks it's offline): the same JSON body
+    // that would otherwise POST straight to /api/products is queued on the
+    // device instead (src/lib/offline-product-queue.ts) and replayed
+    // automatically once the browser reports a connection again — there is
+    // no product id yet, so there's nothing to navigate to, unlike the
+    // normal success path below.
+    if (typeof navigator !== "undefined" && navigator.onLine === false) {
+      await queuePendingProduct(body);
+      setSaving(false);
+      setSavedOffline(true);
+      return;
+    }
+
     try {
       const res = await fetch("/api/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name,
-          kcalPer100g: form.kcalPer100g,
-          proteinPer100g: form.proteinPer100g,
-          carbsPer100g: form.carbsPer100g,
-          fatPer100g: form.fatPer100g,
-          servingSizeGrams: form.servingSizeGrams || undefined,
-          servingSizeUnitSingular: form.servingSizeUnitSingular || undefined,
-          servingSizeUnitPlural: form.servingSizeUnitPlural || undefined,
-          ingredientsText: form.ingredientsText || undefined,
-          barcode: media.barcodeValue || undefined,
-          imageUrl: media.mainImage,
-          extraImages: [media.sideImages[0], media.sideImages[1], media.sideImages[2]].filter(
-            (img): img is string => Boolean(img)
-          ),
-        }),
+        body: JSON.stringify(body),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -116,10 +168,31 @@ function OpretProduktContent() {
       }
       router.push(`/add/${data.product.id}`);
     } catch {
-      setSaveError(t("productCreate.saveError"));
+      // fetch threw — most likely a real network failure, so queue it
+      // instead of showing a dead-end error.
+      await queuePendingProduct(body);
+      setSavedOffline(true);
     } finally {
       setSaving(false);
     }
+  }
+
+  if (savedOffline) {
+    return (
+      <HfScreen title={t("productCreate.title")} icon={<IconApple size={20} stroke={2} />} onBack={() => router.back()}>
+        <div className="flex flex-col gap-4 p-4">
+          <div
+            className="hf-type-body-sm rounded-[8px] p-4 text-center"
+            style={{ background: "var(--hf-color-brand)", color: "var(--hf-color-white)" }}
+          >
+            {t("productCreate.savedOffline")}
+          </div>
+          <button type="button" onClick={() => router.push("/foods")} className="hf-btn-primary h-12">
+            <span className="hf-type-button">{t("common.continue")}</span>
+          </button>
+        </div>
+      </HfScreen>
+    );
   }
 
   return (
@@ -162,7 +235,14 @@ function OpretProduktContent() {
         )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <CreateProductMediaGrid value={media} onChange={setMedia} />
+          <CreateProductMediaGrid
+            value={media}
+            onChange={setMedia}
+            region={region}
+            uiLang={locale}
+            onNutritionExtracted={applyExtractedNutrition}
+            onIngredientsExtracted={applyExtractedIngredients}
+          />
 
           <TextField
             variant="standard"

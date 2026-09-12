@@ -337,6 +337,16 @@ This file records durable decisions. Add a dated entry when a later decision cha
   simpler menu-listing crawler using a nominal 500 g serving size) was
   superseded on disk by the more thorough sitemap/ingredient-catalog version
   from the other session — only that version remains.
+- 2026-09-12: Body measurements (waist/hip/chest/thigh/upper-arm circumference
+  in cm) are a distinct concept from `User.targetWeightKg` ("mål" as in
+  goal weight, set 2026-09-11) and from `WeightEntry` (the scale weight
+  itself) — added as the new `BodyMeasurement` model specifically so the
+  photo diary can caption a photo with "Aktuel/Seneste mål" the same way it
+  already does for weight. The user explicitly deferred the actual
+  measurement-entry screen ("måleside") to a separate chat/session; this
+  model and its read+write API exist without that screen so the data has a
+  real place to live rather than being faked, per the project's standing
+  rule against inventing placeholder data mechanisms.
 
 ## Hosting and delivery
 
@@ -634,4 +644,117 @@ This file records durable decisions. Add a dated entry when a later decision cha
   `20260910000000_registration_extra_nutrition_snapshots`, var allerede
   skrevet af en tidligere/samtidig session, men `schema.prisma` var aldrig
   opdateret til at matche den — rettet i samme omgang.
+
+## 2026-09-12: Offline produktoprettelse + admin "Dobbeltoprettelser"
+
+- **Offline-kø** (`src/lib/offline-product-queue.ts`): brugerappen skal kunne
+  fotografere produkter og udfylde opret-formularen uden netværk; indsendelsen
+  uploades automatisk, når enheden får forbindelse igen. Da hele
+  opret-produkt-formularens `POST /api/products`-krop allerede sendes som
+  ren JSON med hvert billede som en `data:`-URL (ingen separat binær
+  upload-trin findes), er selve køen en IndexedDB-butik
+  (`hellocal-offline`/`pendingProducts`) af netop denne JSON-krop —
+  `localStorage` blev bevidst fravalgt, da nogle få fotos som data-URL'er
+  nemt kan overskride dens ~5-10MB pr. origin. `/product/create` tjekker
+  `navigator.onLine` og fanger også en `fetch`-fejl, og kø'er i begge
+  tilfælde i stedet for at vise en blindgyde-fejl. En ny
+  `OfflineQueueBanner` (monteret én gang i `src/app/layout.tsx`, uden for
+  `PhoneFrame`, så den overlever navigation) fletter køen ved mount, ved
+  browserens `online`-event og hvert 60. sekund mens der er forbindelse, og
+  viser en lille fast bjælke øverst mens noget stadig afventer. Et element,
+  der rent faktisk får et rigtigt fejlsvar fra serveren (ikke en
+  netværksfejl — fx en stregkode der allerede er taget), fjernes fra køen i
+  stedet for at blive forsøgt igen i det uendelige.
+- **Dobbeltoprettelser** (`docs/ADMIN.md`s eksisterende regel om at admin
+  advares ved dubletter, og at de kan flettes, var allerede beskrevet, men
+  aldrig bygget som en dedikeret side med billed-sammenligning): en ny
+  `ProductDuplicateLink`-model (migration
+  `20260912010000_product_duplicate_links`, hånd-skrevet — samme "ingen
+  lokal database"-begrundelse som andre nylige migrationer) flager to
+  produkter oprettet med samme normaliserede navn inden for et 10-minutters
+  vindue (`src/lib/product-duplicates.ts`, kaldt lige efter oprettelse i
+  `POST /api/products`, fejler aldrig selve oprettelsen). Ny admin-side
+  `/admin/duplicate-products` ("Dobbeltoprettelser") viser hvert par side om
+  side med alle billeder fra begge produkter som afkrydsningsfelter
+  (standard: alle valgt) og en Merge-knap. Fletning
+  (`POST /api/admin/duplicate-products/[id]/merge`) flytter alle
+  referencer (stregkoder, registreringer, favoritter, ingredienser, points,
+  videresendelser — samme mønster som det allerede eksisterende
+  `/api/admin/products/[id]/merge` bag `/admin/warnings`s navne-baserede
+  dublet-liste) til det valgte produkt, erstatter begge produkters billeder
+  med præcis den afkrydsede/ordnede liste, og sletter det andet produkt.
+  Registrerings-/points-snapshots ændres aldrig, jf. snapshot-princippet.
+  En separat "Ikke en dublet"-handling markerer parret `DISMISSED` uden at
+  flette noget.
+- `npx prisma validate`/`generate`, `eslint .` (hele repoet) og `next build`
+  (fuld TypeScript + alle 112 routes) er alle kørt rent. Ikke verificeret
+  live i en browser — se `docs/STATUS.md` for detaljer og kendte
+  begrænsninger; migrationen mangler stadig `prisma migrate deploy` på
+  næste Synology-udrulning.
+
+## 2026-09-12: Produktoprettelse — scanning af stregkode/næring/ingredienser, region styrer sprog (ikke telefonens visningssprog)
+
+Topprioritets-opgave: `/product/create`s eksisterende 2×2 `CreateProductMediaGrid`
+(design.md §6.11: 1 stregkode, 2 næringsindhold, 3 indholdsfortegnelse,
+4 produktbilleder) skal have reelt auto-udtræk pr. boks, nu hvor
+`OPENAI_API_KEY` er sat op. Afklaret med brugeren via `AskUserQuestion`
+(2026-09-12) plus en direkte opfølgende besked, der udvidede scopet:
+
+- **Stregkode (boks 1):** afkodes lokalt og gratis med `@zxing/browser`
+  (allerede en dependency, bruges i dag til live-scanning i
+  `src/app/camera/create/page.tsx`) på selve stillbilledet. AI bruges kun som
+  absolut sidste udvej, hvis ZXing slet ikke kan afkode billedet — aldrig som
+  primær metode, fordi en stregkode er et præcist stregmønster, som AI-vision
+  er markant dårligere til at læse korrekt end en rigtig decoder.
+- **Næring (boks 2):** samme "lokal regex først, AI kun som fallback"-mønster
+  som allerede findes i det guidede `/camera/create`-flow
+  (`src/lib/product-ocr.ts` `parseNutritionText` + `/api/ai/extract-nutrition`)
+  skal genbruges her — det er i dag kun forbundet til det guidede flow, ikke
+  til den manuelle grid-boks.
+- **Ingredienser (boks 3):** ny route (findes slet ikke i dag). Lokal gratis
+  OCR (tesseract.js, `extractText`) først. AI må **kun oversætte** den
+  OCR'ede tekst — den må ikke selv gætte/slå ingredienser op eller foreslå
+  indhold, den skal udelukkende sikre, at den tekst, der rent faktisk stod på
+  billedet, ender i `ingredientsText`-feltet på det sprog, appens UI viser
+  (bruger-locale `da`/`en`, jf. `src/i18n/`), uanset hvilket sprog
+  deklarationen selv var trykt på.
+- **Produktbilleder (boks 4):** ren upload, ingen scanning nødvendig — virker
+  allerede.
+
+**Region styrer forventet sprog, ikke telefonens/browserens visningssprog.**
+Bruger-feedback, ordret pointe: EU-lovgivning kræver, at indholdsdeklarationer
+er på det lokale sprog, uanset hvilket UI-sprog en bruger har valgt på sin
+telefon (brugerens eksempel: telefon sat til engelsk visning, men bosat i
+Danmark — pakken er stadig trykt på dansk, og AI/OCR skal forvente dansk,
+ikke engelsk). Samme regel gælder allerede-eksisterende
+`User.region`/`REGIONS`/`barcodeMatchesRegion` (`src/lib/regions.ts`, GS1-
+præfiks `57` = Danmark) og skal fremover også styre:
+  - Hvilket sprog tesseract.js's `extractText()` forventer (i dag hardcodet
+    `"dan+eng"` — skal udledes af regionens officielle sprog i stedet, med
+    engelsk som sekundært OCR-sprog for blandet emballagetekst).
+  - Talegenkendelsens sprog i `/voice` (`src/app/voice/page.tsx:430`,
+    `recognition.lang = "da-DK"` er i dag hardcodet uden hensyn til
+    `User.region` overhovedet — skal udledes derfra på samme måde, ikke fra
+    browserens/telefonens visningssprog).
+- **Automatisk multi-shot-optagelse ved fokus ("grøn kant"):** brugeren
+  refererer til en anden, allerede beskrevet opgave om, at stregkode-
+  scanneren skal vise en grøn kant, når koden er i fokus, og har bedt om at
+  det arbejde kombineres med dette, så det ikke laves to gange: når
+  stregkoden (og tilsvarende næringsdeklaration/indholdsfortegnelse) er i
+  fokus, skal appen selv tage 2-3 billeder automatisk (ikke vente på et tryk),
+  til brug for at krydstjekke, at den scannede stregkode rent faktisk matcher
+  de billeder, der bliver taget af produktet. **Denne sessions research kunne
+  ikke finde en skriftlig kilde til "grøn kant ved fokus"-opgaven** (tjekket
+  `docs/UI.md`, `Fejlretninger/FEJLLISTE.md`, og de utriagerede
+  skærmbillede-mapper `Fejlretninger/Nye rettelser til Hello Cal/` og
+  `Fejlretninger/MyFitnessPal/`, som kun indeholder rå `.png`/`.jpeg`-filer
+  uden tilhørende tekstbeskrivelse) — implementeres derfor efter bedste
+  vurdering (fx: ZXings egen succesfulde decode-callback som "i fokus"-signal
+  for stregkoden; en simpel stabil-frame-heuristik for næring/ingredienser),
+  og brugeren bedes bekræfte/rette det, når det er bygget.
+- Brugeren har eksplicit bedt om **ikke** at vente på flere afklarende svar —
+  byg det, der kan bygges ud fra denne beslutning, og flag i `docs/STATUS.md`
+  hvad der kræver brugerens egen handling (fx en manglende reference-kilde,
+  eller server-side environment/deploy-trin denne workstation ikke selv kan
+  udføre).
 

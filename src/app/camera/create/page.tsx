@@ -10,6 +10,7 @@ import { ScanningOverlay } from "@/components/hf/ScanningOverlay";
 import { HfBarcodeIcon } from "@/components/hf/HfBarcodeIcon";
 import { extractText, hasMeaningfulText, parseNutritionText } from "@/lib/product-ocr";
 import { bestImageMatch } from "@/lib/image-similarity";
+import { regionToOcrLanguage } from "@/lib/regions";
 import { PRODUCT_DRAFT_STORAGE_KEY, type ProductCreateDraft } from "@/lib/product-draft";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -62,8 +63,27 @@ function KameraOpretContent() {
   const [analyzingLabel, setAnalyzingLabel] = useState(t("cameraCreate.analyzingDefault"));
   const [manualBarcode, setManualBarcode] = useState("");
   const [barcodeLookupFailed, setBarcodeLookupFailed] = useState(false);
+  const [region, setRegion] = useState("DK");
 
   const draftRef = useRef<ProductCreateDraft>({ sideImages: [undefined, undefined, undefined] });
+
+  // Fetches the signed-in user's region once, so OCR expects the language the
+  // package is actually printed in (EU-lovkrav om lokalsprog på
+  // fødevaredeklarationer, jf. docs/DECISIONS.md 2026-09-12) — ikke
+  // browserens/telefonens visningssprog. Defaults to "DK" while loading/on
+  // error, same convention as /camera/page.tsx.
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/profile")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { user?: { region?: string } } | null) => {
+        if (!cancelled && data?.user?.region) setRegion(data.user.region);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const stopCamera = useCallback(() => {
     scannerControlsRef.current?.stop();
@@ -201,7 +221,7 @@ function KameraOpretContent() {
       setAnalyzing(true);
       setAnalyzingLabel(t("cameraCreate.readingImage"));
       try {
-        const ocrText = await extractText(photo!);
+        const ocrText = await extractText(photo!, regionToOcrLanguage(region));
         if (cancelled) return;
 
         if (hasMeaningfulText(ocrText)) {
@@ -293,7 +313,7 @@ function KameraOpretContent() {
       setAnalyzing(true);
       setAnalyzingLabel(t("cameraCreate.readingNutrition"));
       try {
-        const ocrText = await extractText(photo!);
+        const ocrText = await extractText(photo!, regionToOcrLanguage(region));
         if (cancelled) return;
         let parsed = parseNutritionText(ocrText);
 

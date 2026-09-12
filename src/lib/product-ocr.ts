@@ -12,10 +12,14 @@ export type ParsedNutrition = {
 
 // Kører tesseract.js på et data-URL-billede og returnerer rå tekst. Dynamisk
 // import, så biblioteket kun hentes i browseren og aldrig indgår i
-// server-bundlen.
-export async function extractText(imageDataUrl: string): Promise<string> {
+// server-bundlen. `lang` skal udledes af brugerens REGION (se
+// src/lib/regions.ts, regionToOcrLanguage), ikke af browserens/telefonens
+// visningssprog — EU-lovgivning kræver indholdsdeklaration på det lokale
+// sprog, uanset hvilket UI-sprog brugeren selv har valgt (docs/DECISIONS.md
+// 2026-09-12).
+export async function extractText(imageDataUrl: string, lang: string = "dan+eng"): Promise<string> {
   const { recognize } = await import("tesseract.js");
-  const result = await recognize(imageDataUrl, "dan+eng");
+  const result = await recognize(imageDataUrl, lang);
   return result.data.text ?? "";
 }
 
