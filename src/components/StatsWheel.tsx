@@ -9,6 +9,7 @@ import {
   IconFootsteps,
   type Icon,
 } from "@tabler/icons-react";
+import { DAILY_KCAL_GOAL, DAILY_PROTEIN_GOAL } from "@/lib/goals";
 
 type Registration = {
   kcalSnapshot: number;
@@ -22,6 +23,9 @@ type Stat = {
   icon: Icon;
   value: string;
   unit: string;
+  /** Dagens mål, jf. docs/UI.md:63 — vises som en mindre "/ mål" linje under
+   * det store centrale tal. Udeladt for nøgletal uden et defineret mål. */
+  goal?: number;
 };
 
 function isToday(dateString: string) {
@@ -95,6 +99,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
         icon: IconFlame,
         value: loading ? "—" : formatNumber(totals.kcal),
         unit: "kcal",
+        goal: DAILY_KCAL_GOAL,
       },
       {
         key: "protein",
@@ -102,6 +107,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
         icon: IconEgg,
         value: loading ? "—" : formatNumber(totals.protein),
         unit: "g",
+        goal: DAILY_PROTEIN_GOAL,
       },
       {
         key: "water",
@@ -261,7 +267,7 @@ function WheelItem({
           : `Vis ${stat.label.toLowerCase()}: ${stat.value}${stat.unit ? ` ${stat.unit}` : ""}`
       }
       aria-live={isActive ? "polite" : undefined}
-      className={`absolute left-2 right-2 flex origin-right items-center justify-end gap-2 whitespace-nowrap text-hf-black ${
+      className={`absolute left-2 right-2 flex origin-right flex-col items-end whitespace-nowrap text-hf-black ${
         animate ? "transition-[transform,opacity] duration-300 ease-out" : ""
       } ${isActive ? "cursor-default" : "cursor-pointer"}`}
       style={{
@@ -270,11 +276,18 @@ function WheelItem({
         opacity,
       }}
     >
-      <span className="font-extrabold leading-none" style={{ fontSize: 27 }}>
-        {stat.value}
-        {stat.unit && <span className="font-semibold"> {stat.unit}</span>}
+      <span className="flex items-center gap-2">
+        <StatIcon size={21} color={isActive ? "var(--hf-green)" : "currentColor"} stroke={2.2} aria-hidden="true" />
+        <span className="font-extrabold leading-none" style={{ fontSize: 27 }}>
+          {stat.value}
+          {stat.unit && <span className="font-semibold"> {stat.unit}</span>}
+        </span>
       </span>
-      <StatIcon size={21} color={isActive ? "var(--hf-green)" : "currentColor"} stroke={2.2} aria-hidden="true" />
+      {isActive && stat.goal != null && (
+        <span className="mt-0.5 text-sm font-medium text-hf-gray-dark">
+          / {formatNumber(stat.goal)} {stat.unit}
+        </span>
+      )}
     </button>
   );
 }
