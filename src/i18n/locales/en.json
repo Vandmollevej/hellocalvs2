@@ -150,16 +150,78 @@
     "privacyPolicy": "Privacy policy",
     "dataTracking": "Data tracking",
     "chooseCountry": "Choose your country",
+    "messages": "Messages",
     "notifications": "Communication",
     "inviteFriend": "Invite a friend",
     "inviteFriendDescription": "And get a free month each",
     "inviteShareText": "Try Hello Cal with me — then we both get a free month!",
     "invitePointsDescription": "You'll both earn 300 points each",
-    "helloDoc": "Hello Doc"
+    "helloDoc": "Hello Doc",
+    "display": "Display",
+    "frontPage": "Front page",
+    "recommendedLimits": "Recommended limits",
+    "menstrualCycle": "Menstrual cycle",
+    "calendarView": "Calendar view"
+  },
+  "calendarViewSettings": {
+    "title": "Calendar view",
+    "intro": "Choose which view the calendar opens in by default.",
+    "optionMonth": "Month view",
+    "optionWeek": "Week view",
+    "optionList": "List view"
+  },
+  "displaySettings": {
+    "title": "Recommended limits",
+    "warnOnRecommendedLimits": "Highlight values above/below the recommended normal range",
+    "warnOnRecommendedLimitsDescription": "Shows a 1 px dark-red border around statistic cards when a documented recommendation for your region and profile is exceeded. Missing data is never flagged."
+  },
+  "menstrualCycleSettings": {
+    "intro": "Log your menstrual cycle and get it as an option in the add menu.",
+    "toggleLabel": "Show menstrual cycle",
+    "toggleDescription": "Adds \"Period\" to the add menu so you can log when your cycle starts."
+  },
+  "frontPageSettings": {
+    "intro": "Choose which fields should appear in the wheel on the front page. The top field always shows a list of every add-element.",
+    "sideSectionTitle": "Side layout",
+    "sideLeft": "Left",
+    "sideRight": "Right",
+    "sideHint": "The number slider always shows on the opposite side: {side}.",
+    "buttonsSectionTitle": "Buttons in the wheel",
+    "selectedCount": "{count} of {max} fields selected",
+    "maxReachedHint": "Remove a field to add another one.",
+    "statsSectionTitle": "Numbers in the number slider",
+    "statsIntro": "Choose which numbers can appear in the front page's number slider. If the list gets long, just scroll."
+  },
+  "frontPageStats": {
+    "calories": "Calories consumed",
+    "kcalRemaining": "Calories still available",
+    "protein": "Protein",
+    "carbs": "Carbs",
+    "fat": "Fat",
+    "sugar": "Sugar",
+    "fiber": "Fiber",
+    "salt": "Salt",
+    "potassium": "Potassium",
+    "calcium": "Calcium",
+    "iron": "Iron",
+    "saturatedFat": "Saturated fat",
+    "unsaturatedFat": "Unsaturated fat",
+    "transFat": "Trans fat",
+    "cholesterol": "Cholesterol",
+    "vitaminA": "Vitamin A",
+    "vitaminC": "Vitamin C",
+    "water": "Water",
+    "burned": "Calories from sport",
+    "steps": "Steps",
+    "distanceKm": "Kilometers moved"
+  },
+  "addMenu": {
+    "title": "Add"
   },
   "helloDoc": {
     "title": "Hello Doc",
     "subtitle": "Share your progress with your doctor or dietitian",
+    "requiresSerious": "Hello Doc requires the Serious subscription. Tap here to upgrade.",
     "inviteButton": "Invite user",
     "invitedUsersTitle": "Invited users",
     "emptyInvited": "No one invited yet.",
@@ -266,6 +328,7 @@
     "next": "Next",
     "periodWeek": "week",
     "periodMonth": "month",
+    "weekNumberLabel": "week {number}",
     "periodNavAriaLabel": "{direction} {period}",
     "previousYearAriaLabel": "Previous year",
     "nextYearAriaLabel": "Next year",
@@ -281,8 +344,9 @@
     "adjustWakeTimeAriaLabel": "Adjust wake time",
     "previousDayAriaLabel": "Previous day",
     "nextDayAriaLabel": "Next day",
-    "dailyGoalReached": "Today's goal is reached",
-    "dailyGoalNotMarked": "Today's goal is not marked",
+    "dailyGoalReached": "You're within today's goal",
+    "dailyGoalExceeded": "You've exceeded today's goal",
+    "dailyGoalNone": "Nothing logged yet",
     "registrations": "Log entries",
     "noRegistrations": "No log entries",
     "loadingDayRegistrations": "Loading the day's log entries…",
@@ -354,7 +418,11 @@
     "stageNutrition": "Photo of nutrition info",
     "barcodeNotRecognized": "The barcode wasn't recognized. Try again, or enter the number.",
     "showBarcodeHint": "Show the barcode to the camera, or enter the number manually.",
-    "skipCreateManually": "Skip — create the product manually"
+    "skipCreateManually": "Skip — create the product manually",
+    "stageIngredients": "Ingredients",
+    "readingIngredients": "Reading ingredients...",
+    "continueWithBarcode": "Continue with this barcode",
+    "barcodeLookupFailedContinue": "The lookup failed. You can continue with the scanned barcode."
   },
   "foods": {
     "title": "Foods",
@@ -381,7 +449,24 @@
     "fatLabel": "Fat (g/100g)",
     "fatAriaLabel": "Fat per 100 grams",
     "saving": "Saving...",
-    "createProduct": "Create product"
+    "createProduct": "Create product",
+    "manualKindTitle": "What do you want to create?",
+    "manualKindIngredient": "Ingredient",
+    "manualKindIngredientHint": "Fruit, vegetable, meat or other loose item with no brand/packaging",
+    "manualKindProduct": "Product",
+    "manualKindProductHint": "A packaged product with a brand and nutrition label",
+    "brandLabel": "Brand (optional)",
+    "subbrandLabel": "Product line (optional)",
+    "ingredientNameLabel": "Name",
+    "ingredientNamePlaceholder": "e.g. Apple",
+    "ingredientCategoryLabel": "Category",
+    "categoryFruit": "Fruit",
+    "categoryVegetable": "Vegetable",
+    "categoryMeat": "Meat",
+    "categoryOther": "Other",
+    "ingredientNutritionHint": "Nutrition is looked up automatically from Danish reference food data (Frida), since loose ingredients have no packaging to read it from.",
+    "ingredientSaveError": "Could not save the ingredient",
+    "createIngredient": "Create ingredient"
   },
   "recipes": {
     "title": "Recipes",
@@ -424,6 +509,14 @@
     "barcodePlaceholder": "e.g. 5701234567890",
     "productNameLabel": "Product name",
     "productNamePlaceholder": "Product name",
+    "brandLabel": "Brand",
+    "brandPlaceholder": "E.g. Arla",
+    "subbrandLabel": "Sub-brand",
+    "subbrandPlaceholder": "E.g. LactoFREE",
+    "variantLabel": "Variant",
+    "variantPlaceholder": "E.g. Strawberry or 1.5%",
+    "packageSizeLabel": "Package size",
+    "packageSizePlaceholder": "E.g. 1 L or 500 g",
     "caloriesLabel": "Calories (kcal/100g)",
     "proteinLabel": "Protein (g/100g)",
     "carbsLabel": "Carbs (g/100g)",
@@ -468,7 +561,7 @@
       "email": "Email",
       "weight": "Starting weight (kg)",
       "height": "Height (cm)",
-      "birthYear": "Birth year",
+      "birthDate": "Date of birth",
       "sex": "Sex"
     },
     "sexOption": {
@@ -476,6 +569,7 @@
       "female": "Female",
       "male": "Male"
     },
+    "age": "{age} years old",
     "trendWeight": "Trend weight (AI estimate): {value} kg",
     "updatedFrom": "Updated on {date} from {source}",
     "weightSource": {
@@ -490,10 +584,13 @@
     "actions": {
       "photoDiary": "Photo diary",
       "newWeight": "Enter new weight",
-      "target": "Enter goal"
+      "target": "Enter goal",
+      "bodyMeasurements": "Body measurements"
     },
     "row": {
+      "subscription": "Subscription",
       "weightCalibration": "Weight calibration",
+      "bodyMeasurements": "Body measurements",
       "sleep": "Sleep pattern",
       "photoDiary": "Photo diary",
       "integrations": "Integrations",
@@ -505,6 +602,11 @@
       "settings": "Settings"
     },
     "logOut": "Log out",
+    "messages": {
+      "title": "Messages",
+      "empty": "You have no messages yet.",
+      "markAllRead": "Mark all as read"
+    },
     "communication": {
       "intro": "Choose which messages you get as email and/or push. Important account messages (e.g. verification and password reset) are always sent.",
       "pushSection": "Push notifications",
@@ -518,6 +620,39 @@
       "specificHint": "Fine-tune email and push for particular events on your account.",
       "termsLink": "Read our terms"
     }
+  },
+  "subscription": {
+    "title": "Subscription",
+    "loading": "Loading…",
+    "loadError": "Could not load subscription.",
+    "giftCode": {
+      "label": "Gift code",
+      "placeholder": "Enter gift code",
+      "submitAria": "Redeem gift code",
+      "redeeming": "Redeeming…",
+      "success": "Gift code redeemed! You're Serious until {date}.",
+      "genericError": "Could not redeem the gift code right now"
+    },
+    "redeemPoints": "Redeem points",
+    "redeemPointsHint": "{cost} points can be redeemed for 1 free month of Serious",
+    "currentPlan": "Your subscription",
+    "tier": {
+      "free": "Free",
+      "serious": "Serious"
+    },
+    "activeUntil": "Active until {date}",
+    "freePlan": {
+      "title": "Free",
+      "description": "Access to everything in Hello Cal except Hello Doc. Only the last 30 days of history are shown — older data is kept and comes back if you go Serious."
+    },
+    "seriousPlan": {
+      "title": "Serious",
+      "priceSuffix": "kr./month",
+      "description": "Full history with no 30-day limit, plus access to Hello Doc.",
+      "upgradeCta": "Upgrade to Serious",
+      "upgradeUnavailable": "Payment isn't connected yet — use a gift code or redeem points to go Serious until a payment provider is in place."
+    },
+    "retentionNote": "Data older than 30 days is never deleted — it's kept and shown again as soon as you go Serious."
   },
   "profileSleep": {
     "title": "Sleep pattern",
@@ -578,6 +713,21 @@
     "deleteAria": "Delete weigh-in",
     "delete": "Delete"
   },
+  "bodyMeasurements": {
+    "title": "Body measurements",
+    "intro": "Log your body measurements alongside your weight — they often change before the scale does, giving a fuller picture of your body over time.",
+    "waist": "Waist (cm)",
+    "hip": "Hip (cm)",
+    "chest": "Chest (cm)",
+    "thigh": "Thigh (cm)",
+    "upperArm": "Upper arm (cm)",
+    "placeholder": "e.g. 82",
+    "saving": "Saving…",
+    "loading": "Loading…",
+    "noEntriesYet": "No measurements logged yet.",
+    "deleteAria": "Delete measurement",
+    "delete": "Delete"
+  },
   "targetWeight": {
     "title": "Goal",
     "intro": "Set the weight you're aiming for. Used to track your progress in the statistics.",
@@ -600,6 +750,30 @@
     "loading": "Loading…",
     "noEntriesYet": "No weigh-ins logged yet.",
     "recentTitle": "Recent weigh-ins"
+  },
+  "waterLog": {
+    "title": "Water",
+    "intro": "Log your water intake. Pick a bottle or glass, or set the amount manually on the slider.",
+    "amountLabel": "Amount",
+    "add": "Add",
+    "saving": "Saving…",
+    "saveError": "Couldn't save the entry.",
+    "saved": "Water logged.",
+    "loading": "Loading…",
+    "noEntriesYet": "No water logged yet.",
+    "recentTitle": "Recent entries"
+  },
+  "periodLog": {
+    "title": "Period",
+    "intro": "Log when your period starts to track your cycle over time.",
+    "startDate": "Start date",
+    "add": "Add",
+    "saving": "Saving…",
+    "saveError": "Couldn't save the entry.",
+    "saved": "Period logged.",
+    "loading": "Loading…",
+    "noEntriesYet": "No entries yet.",
+    "recentTitle": "Recent entries"
   },
   "photoDiary": {
     "title": "Photo diary",
@@ -650,6 +824,8 @@
     "error": "Database not available in this environment.",
     "kcalPerServing": "{kcal} kcal / {unit}",
     "kcalPer100g": "{kcal} kcal/100g",
+    "alternativeServing": "{label}: {kcal} kcal",
+    "nutritionUnknown": "Nutrition unknown",
     "details": "Details",
     "additives": "E-additives",
     "time": "Time",
@@ -746,16 +922,18 @@
     "title": "Unused stat cards",
     "hint": "Tap a card to add it to your statistics page.",
     "category": {
-      "energyMacros": "Energy and macro breakdown",
       "carbsFibre": "Carb types and fibre",
-      "vitamins": "Vitamins",
-      "minerals": "Minerals",
-      "activityOther": "Activity and other data",
-      "sport": "Sport and activity"
+      "vitaminsMinerals": "Vitamins and minerals",
+      "allergensAdditives": "Allergens and E-numbers",
+      "sportActivity": "Sport and activity",
+      "sleep": "Sleep",
+      "other": "Other data"
     },
     "noCardsYet": "No cards here yet.",
     "addHeading": "+ Heading",
-    "addHeadingHint": "Adds a section heading to your statistics page, which you can rename yourself."
+    "addHeadingHint": "Adds a section heading to your statistics page, which you can rename yourself.",
+    "addDivider": "+ Divider",
+    "addDividerHint": "Adds a black divider line to your statistics page."
   },
   "statCardsGrid": {
     "exitEditing": "Exit editing",
@@ -765,6 +943,7 @@
     "renameHeading": "Rename heading",
     "removeHeading": "Remove heading",
     "dragHeading": "Move heading",
+    "removeDivider": "Remove divider",
     "noData": "No data for this period"
   },
   "statChart": {
@@ -814,13 +993,19 @@
     "ownDishes": "Own dishes",
     "search": "Search",
     "weight": "Weight",
+    "water": "Water",
     "camera": "Camera",
+    "list": "See all",
+    "menstrualCycle": "Period",
     "hint": {
       "microphone": "Speak",
       "ownDishes": "Meal",
       "search": "Search",
       "weight": "Weight & measurements",
-      "camera": "Take photo"
+      "water": "Water intake",
+      "camera": "Take photo",
+      "list": "See all",
+      "menstrualCycle": "Log period"
     }
   },
   "onboarding": {

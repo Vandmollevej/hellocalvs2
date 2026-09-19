@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { IconBookmark, IconBookmarkFilled, IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { FoodRow } from "@/components/FoodRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 type Result = { id: string; title: string; image?: string | null };
@@ -37,28 +38,29 @@ function ResultRow({
   onToggleFavorite: (id: string, next: boolean) => void;
 }) {
   return (
-    <div className="flex items-center gap-2.5 px-4 py-3 border-b border-hf-tan-dark last:border-b-0">
-      <div className="h-10 w-10 flex-shrink-0">
-        {image && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={image} alt="" className="h-full w-full object-contain" />
-        )}
-      </div>
-      <span className="flex-1 text-[15px] font-medium text-hf-black">{title}</span>
-      <button
-        type="button"
-        onClick={() => onToggleFavorite(id, !isFavorite)}
-        aria-label={t(isFavorite ? "search.removeFavorite" : "search.addFavorite")}
-        className="flex-shrink-0 text-hf-green"
-      >
-        {isFavorite ? <IconBookmarkFilled size={20} /> : <IconBookmark size={20} />}
-      </button>
-      <Link
-        href={forDish ? `/add/${id}?for=ret` : `/add/${id}`}
-        className="hf-btn-primary px-4 py-1.5 text-xs"
-      >
-        {t("search.add")}
-      </Link>
+    <div className="px-4 border-b border-hf-tan-dark last:border-b-0">
+      <FoodRow
+        image={image}
+        title={title}
+        right={
+          <>
+            <button
+              type="button"
+              onClick={() => onToggleFavorite(id, !isFavorite)}
+              aria-label={t(isFavorite ? "search.removeFavorite" : "search.addFavorite")}
+              className="text-hf-green"
+            >
+              {isFavorite ? <IconBookmarkFilled size={20} /> : <IconBookmark size={20} />}
+            </button>
+            <Link
+              href={forDish ? `/add/${id}?for=ret` : `/add/${id}`}
+              className="hf-btn-primary px-4 py-1.5 text-xs"
+            >
+              {t("search.add")}
+            </Link>
+          </>
+        }
+      />
     </div>
   );
 }

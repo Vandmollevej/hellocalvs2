@@ -1,10 +1,15 @@
 import { NextResponse } from "next/server";
-import { ExternalProductSource } from "@prisma/client";
+import { ExternalProductSource, type Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { searchOpenFoodFacts } from "@/lib/openFoodFacts";
-import { barcodeMatchesRegion } from "@/lib/regions";
+import { inferGs1OriginCountryCode } from "@/lib/regions";
 import { getDemoUser } from "@/lib/demo-user";
 import { getSessionUser } from "@/lib/session";
+import { flagSimultaneousDuplicates } from "@/lib/product-duplicates";
+import { deriveIsVerified, rankProducts } from "@/lib/product-search-ranking";
+import { getActiveSearchRankingWeights } from "@/lib/search-ranking-config";
+import { cleanAlternativeServings } from "@/lib/alternative-servings";
+import { flagUncertainAlternativeServings } from "@/lib/alternative-servings-review";
 
 // Fetches Open Food Facts products globally live for search terms without enough local
 // results, and saves them as PENDING (same pattern as the barcode lookup in
@@ -46,6 +51,7 @@ async function importMatchingOffProducts(q: string) {
           externalSource: "OPEN_FOOD_FACTS",
           externalId: offProduct.barcode,
           sourceCheckedAt: new Date(),
+          originCountryCode: inferGs1OriginCountryCode(offProduct.barcode),
           status: "PENDING",
           barcodes: { create: { code: offProduct.barcode } },
         },
@@ -59,10 +65,16 @@ async function importMatchingOffProducts(q: string) {
 
 // GET /api/products?q=rugbrød — search in our own product database, supplemented by
 // a global live search in Open Food Facts if local results are
-// sparse. Results with a barcode from the user's selected region (see
-// /profile/settings) are prioritized at the top.
+// sparse. Results are ranked by src/lib/product-search-ranking.ts: text match
+// is always dominant, and hidden regional search/click/hour-of-day statistics
+// plus GS1 origin/market only reorder otherwise-comparable matches (see
+// docs/DECISIONS.md, 2026-09-19). Live autosuggest deliberately starts at 2
+// typed characters (?q= with 1 character returns an empty list).
 // ?source=HELLOFRESH filters to a single external source (e.g. to browse the entire
 // HelloFresh catalog); ?take=N overrides the default limit of 20 (max 200).
+// ?hour=0..23 overrides the ranking's local-hour bucket (defaults to the
+// server's current hour) — used by the client to send the *browser's* local
+// hour so region×time ranking reflects the user, not the server.
 // HelloFresh dishes are deliberately excluded unless ?source=HELLOFRESH is passed
 // explicitly — they must stay discoverable only via the dedicated dish-recognition
 // flow (/api/ai/recognize-hellofresh), not through ordinary Madvarer/Søg search.
@@ -75,39 +87,189 @@ export async function GET(req: Request) {
       ? (sourceParam as ExternalProductSource)
       : undefined;
   const take = Math.min(Math.max(parseInt(params.get("take") ?? "20", 10) || 20, 1), 200);
+  const requestedHour = Number(params.get("hour"));
+  const localHour =
+    Number.isInteger(requestedHour) && requestedHour >= 0 && requestedHour <= 23
+      ? requestedHour
+      : new Date().getHours();
+
+  if (q.length === 1 && !source) {
+    return NextResponse.json({ products: [], minQueryLength: 2 });
+  }
 
   try {
+    // Ranking re-sorts a wider candidate pool than `take`, since a
+    // low-popularity-but-exact match further down createdAt-order must still
+    // be able to surface once ranked.
+    const candidateTake = q ? Math.max(take * 6, 80) : take;
     const findProducts = () =>
       prisma.product.findMany({
         where: {
           discontinued: false,
-          ...(q ? { name: { contains: q, mode: "insensitive" } } : {}),
+          ...(q
+            ? {
+                OR: [
+                  { name: { contains: q, mode: "insensitive" } },
+                  { brand: { name: { contains: q, mode: "insensitive" } } },
+                ],
+              }
+            : {}),
           ...(source
             ? { externalSource: source }
             : { OR: [{ externalSource: null }, { externalSource: { not: "HELLOFRESH" } }] }),
         },
-        include: { brand: true, barcodes: true },
-        take,
+        include: {
+          // Altid samme include-form (ikke betinget på q/source), så Prisma's
+          // udledte returtype er ét fast skema — undgår en union-type der
+          // ellers ville kræve en cast for hver adgang nedenfor. De ekstra
+          // felter bruges kun i søge-grenen (q && !source), men er billige
+          // at hente for de få kandidater de øvrige grene henter.
+          brand: { include: { regionSearchStats: true } },
+          barcodes: true,
+          regionSearchStats: true,
+          regionHourStats: true,
+          // Verificerings-signal (Søgealgoritmer, 2026-09-19): kun
+          // billed-*antal*, aldrig selve billederne.
+          _count: { select: { images: true } },
+          aiAnalyses: { select: { kind: true } },
+        },
+        take: candidateTake,
         orderBy: { createdAt: "desc" },
       });
 
     let products = await findProducts();
 
-    if (q && products.length < 10) {
+    if (q.length >= 2 && products.length < 10 && !source) {
       await importMatchingOffProducts(q);
       products = await findProducts();
     }
 
-    if (q) {
-      const user = await getDemoUser();
-      products = [...products].sort((a, b) => {
-        const aMatch = a.barcodes.some((bc) => barcodeMatchesRegion(bc.code, user.region));
-        const bMatch = b.barcodes.some((bc) => barcodeMatchesRegion(bc.code, user.region));
-        return aMatch === bMatch ? 0 : aMatch ? -1 : 1;
-      });
+    if (q && !source) {
+      const sessionUser = await getSessionUser();
+      const user = sessionUser ?? (await getDemoUser());
+      const weights = await getActiveSearchRankingWeights();
+
+      // Personlig historik (2026-09-19, se docs/DECISIONS.md) — kun for en
+      // rigtig indlogget bruger, aldrig den delte demo-bruger.
+      const personalHistory = sessionUser
+        ? await prisma.userProductSearchHistory.findMany({
+            where: { userId: sessionUser.id, productId: { in: products.map((p) => p.id) } },
+          })
+        : [];
+      const personalByProductId = new Map(personalHistory.map((entry) => [entry.productId, entry]));
+
+      const rankable = products.map((product) => ({
+        ...product,
+        isVerified: deriveIsVerified({
+          barcodeCount: product.barcodes.length,
+          imageCount: product._count?.images ?? 0,
+          aiAnalyses: product.aiAnalyses,
+        }),
+        brandRegionStats: product.brand?.regionSearchStats,
+        personalSearchCount: personalByProductId.get(product.id)?.searchCount,
+        personalClickCount: personalByProductId.get(product.id)?.clickCount,
+        entityBias: -1, // "Generiske ingredienser vs. varer" — et rigtigt Product
+      }));
+
+      const ranked = rankProducts(rankable, q, user.region, localHour, take, weights);
+      products = ranked.map((entry) => entry.product);
+
+      // Impressions: every ranked result shown to the user counts as a
+      // regional "search" for that product/brand, feeding the popularity
+      // signal above for future queries. Never blocks the response.
+      if (products.length > 0) {
+        const now = new Date();
+        await prisma.$transaction([
+          ...products.map((product) =>
+            prisma.productRegionSearchStat.upsert({
+              where: { productId_region: { productId: product.id, region: user.region } },
+              create: {
+                productId: product.id,
+                region: user.region,
+                searchCount: 1,
+                lastSearchedAt: now,
+              },
+              update: {
+                searchCount: { increment: 1 },
+                lastSearchedAt: now,
+              },
+            })
+          ),
+          ...products
+            .filter((product) => product.brandId)
+            .map((product) =>
+              prisma.brandRegionSearchStat.upsert({
+                where: { brandId_region: { brandId: product.brandId as string, region: user.region } },
+                create: {
+                  brandId: product.brandId as string,
+                  region: user.region,
+                  searchCount: 1,
+                  lastSearchedAt: now,
+                },
+                update: { searchCount: { increment: 1 }, lastSearchedAt: now },
+              })
+            ),
+          // Personlig historik (2026-09-19): kun for rigtige, indloggede
+          // brugere — se User.productSearchHistory og anonymizeUser() i
+          // src/lib/gdpr.ts, som sletter denne igen ved "Ret til at blive
+          // glemt".
+          ...(sessionUser
+            ? products.map((product) =>
+                prisma.userProductSearchHistory.upsert({
+                  where: { userId_productId: { userId: sessionUser.id, productId: product.id } },
+                  create: {
+                    userId: sessionUser.id,
+                    productId: product.id,
+                    searchCount: 1,
+                    lastSearchedAt: now,
+                  },
+                  update: { searchCount: { increment: 1 }, lastSearchedAt: now },
+                })
+              )
+            : []),
+        ]);
+      }
+    } else if (products.length > take) {
+      products = products.slice(0, take);
     }
 
-    return NextResponse.json({ products });
+    // Hidden ranking statistics/origin data are internal and must never be
+    // exposed to users (design.md, docs/DECISIONS.md 2026-09-19).
+    const publicProducts = products.map((product) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars -- deliberately stripped, never sent to the client
+      const {
+        regionSearchStats,
+        regionHourStats,
+        originCountryCode,
+        aiAnalyses,
+        isVerified,
+        brandRegionStats,
+        personalSearchCount,
+        personalClickCount,
+        entityBias,
+        _count,
+        ...publicProduct
+      } = product as typeof product & {
+        regionSearchStats?: unknown;
+        regionHourStats?: unknown;
+        aiAnalyses?: unknown;
+        isVerified?: unknown;
+        brandRegionStats?: unknown;
+        personalSearchCount?: unknown;
+        personalClickCount?: unknown;
+        entityBias?: unknown;
+        _count?: unknown;
+      };
+      // Mærkets egen hidden region-popularitet (brandRegionStats' kilde,
+      // se ovenfor) må heller aldrig lække til klienten.
+      const brand = publicProduct.brand
+        ? // eslint-disable-next-line @typescript-eslint/no-unused-vars -- deliberately stripped, never sent to the client
+          (({ regionSearchStats, ...publicBrand }) => publicBrand)(publicProduct.brand)
+        : publicProduct.brand;
+      return { ...publicProduct, brand };
+    });
+
+    return NextResponse.json({ products: publicProducts, minQueryLength: 2 });
   } catch (error) {
     console.error("Product search failed", error);
     return NextResponse.json(
@@ -122,9 +284,28 @@ function parsePositiveNumber(value: unknown): number | null {
   return Number.isFinite(num) && num >= 0 ? num : null;
 }
 
+function cleanOptionalString(value: unknown) {
+  return typeof value === "string" && value.trim() ? value.trim() : undefined;
+}
+
+// analysisIds kommer fra det guidede barcode-first kamera-flow (draften i
+// src/lib/product-draft.ts) — id'er på de AiProductAnalysis-rækker, der blev
+// oprettet ved hver AI-analyse (forside/ingredienser/næring). Kun kendte
+// nøgler/streng-værdier accepteres fra klienten.
+function cleanAnalysisIds(value: unknown) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {} as Record<string, string>;
+  const source = value as Record<string, unknown>;
+  const out: Record<string, string> = {};
+  for (const key of ["front", "ingredients", "nutrition"]) {
+    if (typeof source[key] === "string" && source[key]) out[key] = source[key] as string;
+  }
+  return out;
+}
+
 // POST /api/products — create a product manually, e.g. from a photo of a
-// nutrition label (see /camera?mode=naering). Created as PENDING,
-// the same status as other user-contributed products (see docs/ADMIN.md).
+// nutrition label, or from the guided barcode-first AI flow (see
+// /camera/create). Created as PENDING, the same status as other
+// user-contributed products (see docs/ADMIN.md).
 export async function POST(req: Request) {
   let body: Record<string, unknown>;
   try {
@@ -134,6 +315,14 @@ export async function POST(req: Request) {
   }
 
   const name = typeof body.name === "string" ? body.name.trim() : "";
+  // brand/subbrand/variant/packageSizeText (docs/DECISIONS.md, 2026-09-17):
+  // brand = hovedmærke/logo, subbrand = produktserie, variant = smag/type/
+  // styrke — bevidst adskilt fra selve produktnavnet.
+  const brandName = cleanOptionalString(body.brand);
+  const subbrand = cleanOptionalString(body.subbrand);
+  const variant = cleanOptionalString(body.variant);
+  const packageSizeText = cleanOptionalString(body.packageSizeText);
+
   const kcalPer100g = parsePositiveNumber(body.kcalPer100g);
   const proteinPer100g = parsePositiveNumber(body.proteinPer100g);
   const carbsPer100g = parsePositiveNumber(body.carbsPer100g);
@@ -149,6 +338,11 @@ export async function POST(req: Request) {
   const extraImages = Array.isArray(body.extraImages)
     ? body.extraImages.filter((img): img is string => typeof img === "string")
     : [];
+  const analysisIds = cleanAnalysisIds(body.analysisIds);
+  // Alternative kalorievisninger (per glas/skive/stk. osv.) fundet af
+  // /api/ai/extract-nutrition-v2 på selve emballagen — se
+  // docs/DECISIONS.md 2026-09-19.
+  const alternativeServings = cleanAlternativeServings(body.alternativeServings);
 
   if (!name || kcalPer100g === null || proteinPer100g === null || carbsPer100g === null || fatPer100g === null) {
     return NextResponse.json(
@@ -173,10 +367,24 @@ export async function POST(req: Request) {
     // en rigtig session (ikke den delte demo-bruger), ellers forbliver
     // createdByUserId null og produktet giver ingen points ved godkendelse.
     const sessionUser = await getSessionUser();
+    // Brand-normalisering (docs/DECISIONS.md, 2026-09-17): AI'ens brandforslag
+    // upsertes mod eksisterende Brand-rækker case-sensitivt for nu — en
+    // separat BrandAlias-tabel er en senere opgave, ikke prompt-hardcoding.
+    const brand = brandName
+      ? await prisma.brand.upsert({
+          where: { name: brandName },
+          update: {},
+          create: { name: brandName },
+        })
+      : null;
 
     const product = await prisma.product.create({
       data: {
         name,
+        brandId: brand?.id,
+        subbrand,
+        variant,
+        packageSizeText,
         kcalPer100g,
         proteinPer100g,
         carbsPer100g,
@@ -194,7 +402,11 @@ export async function POST(req: Request) {
             ? servingSizeUnitPlural
             : undefined,
         ingredientsText: ingredientsText || undefined,
+        alternativeServings: alternativeServings.length
+          ? (alternativeServings as unknown as Prisma.InputJsonValue)
+          : undefined,
         imageUrl,
+        originCountryCode: barcode ? inferGs1OriginCountryCode(barcode) : undefined,
         createdByUserId: sessionUser?.id,
         ...(barcode ? { barcodes: { create: { code: barcode } } } : {}),
         ...(extraImages.length
@@ -202,6 +414,55 @@ export async function POST(req: Request) {
           : {}),
       },
     });
+    await flagSimultaneousDuplicates(product.id, product.name, product.createdAt);
+    await flagUncertainAlternativeServings(product.id, product.name, alternativeServings);
+
+    // Ground-truth feedback-loop (docs/DECISIONS.md, 2026-09-17): kobl hver
+    // AI-analyse fra det guidede flow til det oprettede produkt og gem
+    // brugerens endelige (evt. rettede) værdier som correction. prediction
+    // (analysens oprindelige AI-svar) er allerede gemt uændret af analyse-
+    // routen — kun productId/correction/correctedAt opdateres her.
+    const correctedAt = new Date();
+
+    if (analysisIds.front) {
+      await prisma.aiProductAnalysis.updateMany({
+        where: { id: analysisIds.front, kind: "FRONT" },
+        data: {
+          productId: product.id,
+          correction: {
+            brand: brandName ?? null,
+            subbrand: subbrand ?? null,
+            productName: name,
+            variant: variant ?? null,
+            packageSizeText: packageSizeText ?? null,
+          },
+          correctedAt,
+        },
+      });
+    }
+
+    if (analysisIds.ingredients) {
+      await prisma.aiProductAnalysis.updateMany({
+        where: { id: analysisIds.ingredients, kind: "INGREDIENTS" },
+        data: {
+          productId: product.id,
+          correction: { ingredientsText: ingredientsText || null },
+          correctedAt,
+        },
+      });
+    }
+
+    if (analysisIds.nutrition) {
+      await prisma.aiProductAnalysis.updateMany({
+        where: { id: analysisIds.nutrition, kind: "NUTRITION" },
+        data: {
+          productId: product.id,
+          correction: { kcalPer100g, proteinPer100g, carbsPer100g, fatPer100g, alternativeServings },
+          correctedAt,
+        },
+      });
+    }
+
     return NextResponse.json({ product }, { status: 201 });
   } catch (error) {
     console.error("Product creation failed", error);

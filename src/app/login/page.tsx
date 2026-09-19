@@ -95,6 +95,11 @@ function LogIndContent() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
+        <p className="hf-type-body-sm mt-2 text-right">
+          <Link href="/forgot-password" className="underline">
+            {t("login.forgotPassword")}
+          </Link>
+        </p>
         {error && <p className="hf-type-caption mt-2 text-hf-red-dark">{error}</p>}
 
         <p className="hf-type-body-sm mt-4 text-center">

@@ -17,9 +17,11 @@ import {
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { HfChevron } from "@/components/hf/HfChevron";
+import { FoodRow } from "@/components/FoodRow";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
 import { groupByDay } from "@/lib/daily-totals";
 import { getSportMeta } from "@/lib/sport-icons";
+import { useDefaultCalendarView } from "@/lib/calendar-view-pref";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 const WEEKDAY_KEYS = [
@@ -43,6 +45,8 @@ type Registration = {
   kcalSnapshot: number;
   proteinSnapshot: number;
   createdAt: string;
+  productId?: string | null;
+  product?: { imageUrl: string | null } | null;
 };
 
 type Activity = {
@@ -90,16 +94,26 @@ function mondayOf(date: Date) {
   return addDays(date, -((date.getDay() + 6) % 7));
 }
 
+// ISO-8601 week number (weeks start Monday, week 1 contains the year's first
+// Thursday) — used for the "uge N" label in week view and the small week
+// numbers beside each row in month view. No date library in this repo carries
+// this, so it's hand-rolled like the rest of the date math here.
+function getIsoWeek(date: Date): number {
+  const cursor = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const weekday = (cursor.getUTCDay() + 6) % 7;
+  cursor.setUTCDate(cursor.getUTCDate() - weekday + 3);
+  const firstThursday = new Date(Date.UTC(cursor.getUTCFullYear(), 0, 4));
+  const firstThursdayWeekday = (firstThursday.getUTCDay() + 6) % 7;
+  firstThursday.setUTCDate(firstThursday.getUTCDate() - firstThursdayWeekday + 3);
+  return 1 + Math.round((cursor.getTime() - firstThursday.getTime()) / (7 * 86400000));
+}
+
 function isSameDay(a: Date, b: Date) {
   return (
     a.getFullYear() === b.getFullYear() &&
     a.getMonth() === b.getMonth() &&
     a.getDate() === b.getDate()
   );
-}
-
-function goalWasMet(date: Date, today: Date) {
-  return new Set([2, 5, 6, 9, 14, 18, 23, 27]).has(date.getDate()) || isSameDay(date, today);
 }
 
 function dayKey(date: Date) {
@@ -223,7 +237,18 @@ export default function CalendarPage() {
   const [today] = useState(() => new Date());
   const [visibleDate, setVisibleDate] = useState(() => new Date(today));
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [view, setView] = useState<CalendarView>("month");
+  const defaultView = useDefaultCalendarView();
+  const [view, setView] = useState<CalendarView>(defaultView);
+  const appliedDefaultView = useRef(false);
+  // Settings → Visning → Kalendervisning determines only the INITIAL view on
+  // load (useState above already SSR-safely defaults to "month" before the
+  // localStorage-backed preference hydrates) — apply it once when it becomes
+  // available, without overriding a view the user has since picked by hand.
+  useEffect(() => {
+    if (appliedDefaultView.current) return;
+    appliedDefaultView.current = true;
+    setView(defaultView);
+  }, [defaultView]);
   const [monthMenuOpen, setMonthMenuOpen] = useState(false);
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
   const [slideDirection, setSlideDirection] = useState<"next" | "previous">("next");
@@ -264,6 +289,7 @@ export default function CalendarPage() {
     const monday = mondayOf(visibleDate);
     return Array.from({ length: 7 }, (_, index) => addDays(monday, index));
   }, [visibleDate]);
+  const weekNumber = useMemo(() => getIsoWeek(weekDays[0]), [weekDays]);
 
   const monthLabel = visibleDate.toLocaleDateString("da-DK", { month: "long", year: "numeric" });
   const weekLabel = `${weekDays[0].toLocaleDateString("da-DK", {
@@ -547,6 +573,11 @@ export default function CalendarPage() {
                 <span className="whitespace-nowrap text-[15px] font-semibold capitalize">
                   {periodLabel}
                 </span>
+                {view === "week" && (
+                  <span className="block whitespace-nowrap text-center text-[11px] font-medium lowercase leading-tight opacity-60">
+                    {t("calendar.weekNumberLabel", { number: weekNumber })}
+                  </span>
+                )}
               </button>
               {monthMenuOpen && (
                 <MonthPicker year={year} month={month} onYearChange={setVisibleDate} onSelect={selectMonth} />
@@ -558,31 +589,47 @@ export default function CalendarPage() {
 
         <div
           className="touch-pan-y overflow-hidden"
-          onPointerDown={(event) => {
-            pointerStart.current = event.clientX;
-          }}
-          onPointerUp={(event) => {
-            if (pointerStart.current !== null && Math.abs(event.clientX - pointerStart.current) > 48) {
-              movePeriod(event.clientX < pointerStart.current ? 1 : -1);
-            }
-            pointerStart.current = null;
-          }}
-          onPointerCancel={() => {
+          onPointerDown={
+            view === "list"
+              ? undefined
+              : (event) => {
+                  pointerStart.current = event.clientX;
+                }
+          }
+          onPointerUp={
+            view === "list"
+              ? undefined
+              : (event) => {
+                  if (pointerStart.current !== null && Math.abs(event.clientX - pointerStart.current) > 48) {
+                    movePeriod(event.clientX < pointerStart.current ? 1 : -1);
+                  }
+                  pointerStart.current = null;
+                }
+          }
+          onPointerCancel={view === "list" ? undefined : () => {
             pointerStart.current = null;
           }}
         >
           <div
             key={`${effectiveView}-${year}-${month}-${animationKey}`}
-            className={slideDirection === "next" ? "calendar-slide-next" : "calendar-slide-previous"}
+            className={view === "list" ? "" : slideDirection === "next" ? "calendar-slide-next" : "calendar-slide-previous"}
           >
             {view === "month" && (
-              <MonthView cells={monthCells} month={month} today={today} onOpenDate={openDate} weekdays={WEEKDAYS} />
+              <MonthView
+                cells={monthCells}
+                month={month}
+                today={today}
+                dailyTotals={dailyTotals}
+                onOpenDate={openDate}
+                weekdays={WEEKDAYS}
+              />
             )}
             {view === "week" &&
               (showWeekTimeline ? (
                 <WeekTimelineView
                   days={weekDays}
                   today={today}
+                  dailyTotals={dailyTotals}
                   registrations={registrations}
                   onOpenDate={openDate}
                   getSleepWindow={resolveSleepWindow}
@@ -623,6 +670,15 @@ export default function CalendarPage() {
           onSleepAdjust={(type, minutes) => requestSleepAdjust(selectedDate, type, minutes)}
           onClose={() => setSelectedDate(null)}
           onNavigate={(direction) => setSelectedDate((current) => (current ? addDays(current, direction) : current))}
+          viewOptions={VIEW_OPTIONS}
+          activeView={activeView}
+          viewMenuOpen={viewMenuOpen}
+          onToggleViewMenu={() => setViewMenuOpen((open) => !open)}
+          onSelectView={(nextView) => {
+            setView(nextView);
+            setViewMenuOpen(false);
+            setSelectedDate(null);
+          }}
         />
       )}
 
@@ -739,61 +795,90 @@ function MonthView({
   cells,
   month,
   today,
+  dailyTotals,
   onOpenDate,
   weekdays,
 }: {
   cells: Array<Date | null>;
   month: number;
   today: Date;
+  dailyTotals: Map<string, number>;
   onOpenDate: (date: Date) => void;
   weekdays: string[];
 }) {
   const { t } = useTranslation();
+  // Fejlretninger: brugeren bekræftede eksplicit at ISO-ugenumre til venstre
+  // for hver uge i månedsvisningen MÅ bryde det ellers faste layout (kolonnen
+  // sidder delvist i den normale p-4-margen) — der er ikke plads til den uden.
+  const weeks = useMemo(() => {
+    const rows: Array<Array<Date | null>> = [];
+    for (let index = 0; index < cells.length; index += 7) rows.push(cells.slice(index, index + 7));
+    return rows;
+  }, [cells]);
   return (
     <>
-      <div className="mb-2 grid grid-cols-7 text-center">
-        {weekdays.map((day) => <span key={day} className="text-xs font-medium opacity-60">{day}</span>)}
+      <div className="mb-2 flex items-center gap-1.5">
+        <span className="w-3.5 shrink-0" aria-hidden="true" />
+        <div className="grid flex-1 grid-cols-7 text-center">
+          {weekdays.map((day) => <span key={day} className="text-xs font-medium opacity-60">{day}</span>)}
+        </div>
       </div>
-      <div className="grid grid-cols-7 gap-1.5">
-        {cells.map((date, index) => {
-          if (!date) return <div key={`empty-${index}`} className="aspect-square" aria-hidden="true" />;
-          const met = goalWasMet(date, today);
-          const current = isSameDay(date, today);
-          const isOtherMonth = date.getMonth() !== month;
+      <div className="flex flex-col gap-1.5">
+        {weeks.map((week, weekIndex) => {
+          const anchor = week.find((date): date is Date => date !== null);
+          const weekNumber = anchor ? getIsoWeek(anchor) : null;
           return (
-            <button
-              key={date.toISOString()}
-              type="button"
-              onClick={() => onOpenDate(date)}
-              aria-label={`${date.toLocaleDateString("da-DK", { dateStyle: "long" })}${current ? t("calendar.todaySuffix") : ""}${
-                met ? t("calendar.goalMetSuffix") : t("calendar.goalMissedSuffix")
-              }`}
-              className={`relative flex aspect-square items-center justify-center rounded-lg border text-sm font-medium focus-visible:outline-2 focus-visible:outline-hf-black ${
-                current
-                  ? "border-hf-green bg-hf-green text-hf-white"
-                  : isOtherMonth
-                    ? "border-hf-gray-border bg-transparent text-hf-gray"
-                    : "border-transparent bg-hf-tan text-hf-black"
-              }`}
-            >
-              {date.getDate()}
-              {!current &&
-                (met ? (
-                  <IconCheck
-                    size={12}
-                    stroke={3}
-                    className="absolute right-0.5 top-0.5 text-hf-lime"
-                    aria-hidden="true"
-                  />
-                ) : (
-                  <span
-                    className="absolute right-1 top-0.5 text-[11px] font-bold leading-none text-hf-red-muted"
-                    aria-hidden="true"
-                  >
-                    ÷
-                  </span>
-                ))}
-            </button>
+            <div key={weekIndex} className="flex items-center gap-1.5">
+              <span
+                className="-ml-2.5 w-3.5 shrink-0 text-right text-[9px] font-medium leading-none opacity-45"
+                aria-hidden="true"
+              >
+                {weekNumber ?? ""}
+              </span>
+              <div className="grid flex-1 grid-cols-7 gap-1.5">
+                {week.map((date, index) => {
+                  if (!date) return <div key={`empty-${weekIndex}-${index}`} className="aspect-square" aria-hidden="true" />;
+                  const met = dailyGoalMet(dailyTotals, date);
+                  const current = isSameDay(date, today);
+                  const isOtherMonth = date.getMonth() !== month;
+                  return (
+                    <button
+                      key={date.toISOString()}
+                      type="button"
+                      onClick={() => onOpenDate(date)}
+                      aria-label={`${date.toLocaleDateString("da-DK", { dateStyle: "long" })}${current ? t("calendar.todaySuffix") : ""}${
+                        met ? t("calendar.goalMetSuffix") : t("calendar.goalMissedSuffix")
+                      }`}
+                      className={`relative flex aspect-square items-center justify-center rounded-lg border text-sm font-medium focus-visible:outline-2 focus-visible:outline-hf-black ${
+                        current
+                          ? "border-hf-green bg-hf-green text-hf-white"
+                          : isOtherMonth
+                            ? "border-hf-gray-border bg-transparent text-hf-gray"
+                            : "border-transparent bg-hf-tan text-hf-black"
+                      }`}
+                    >
+                      {date.getDate()}
+                      {!current &&
+                        (met ? (
+                          <IconCheck
+                            size={12}
+                            stroke={3}
+                            className="absolute right-0.5 top-0.5 text-hf-lime"
+                            aria-hidden="true"
+                          />
+                        ) : (
+                          <span
+                            className="absolute right-1 top-0.5 text-[11px] font-bold leading-none text-hf-red-muted"
+                            aria-hidden="true"
+                          >
+                            ÷
+                          </span>
+                        ))}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           );
         })}
       </div>
@@ -870,7 +955,6 @@ function ListView({
 }) {
   const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement | null>(null);
-  const [overflowing, setOverflowing] = useState(false);
   const overscroll = useRef(0);
   const touchStartY = useRef<number | null>(null);
 
@@ -878,7 +962,6 @@ function ListView({
     const node = scrollRef.current;
     if (!node) return;
     node.scrollTop = 0;
-    setOverflowing(node.scrollHeight > node.clientHeight + 1);
   }, [days]);
 
   function handleWheel(event: React.WheelEvent<HTMLDivElement>) {
@@ -920,59 +1003,50 @@ function ListView({
   }
 
   return (
-    <div className="relative">
-      <div
-        ref={scrollRef}
-        onWheel={handleWheel}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={() => {
-          touchStartY.current = null;
-        }}
-        className="no-scrollbar max-h-[min(60vh,420px)] snap-y snap-mandatory overflow-y-auto overscroll-contain rounded-2xl bg-hf-white"
-      >
-        {days.map((date) => {
-          const kcal = totalKcalForDate(dailyTotals, date);
-          const met = dailyGoalMet(dailyTotals, date);
-          const current = isSameDay(date, today);
-          return (
-            <button
-              key={date.toISOString()}
-              type="button"
-              onClick={() => onOpenDate(date)}
-              className="flex min-h-[58px] w-full shrink-0 snap-start items-center gap-3 border-b border-hf-tan px-4 text-left last:border-b-0 hover:bg-hf-cream focus-visible:outline-2 focus-visible:outline-hf-black"
+    <div
+      ref={scrollRef}
+      onWheel={handleWheel}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={() => {
+        touchStartY.current = null;
+      }}
+      className="max-h-[min(60vh,420px)] space-y-2 overflow-y-auto overscroll-contain"
+    >
+      {days.map((date) => {
+        const kcal = totalKcalForDate(dailyTotals, date);
+        const met = dailyGoalMet(dailyTotals, date);
+        const diff = Math.round(Math.abs(DAILY_KCAL_GOAL - kcal));
+        const current = isSameDay(date, today);
+        return (
+          <button
+            key={date.toISOString()}
+            type="button"
+            onClick={() => onOpenDate(date)}
+            className="flex min-h-[66px] w-full shrink-0 items-center gap-3 rounded-2xl border border-hf-tan-dark bg-hf-tan px-4 text-left text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
+          >
+            <span className="w-10 text-xs font-bold uppercase opacity-70">{date.toLocaleDateString("da-DK", { weekday: "short" })}</span>
+            <span
+              className={`flex size-9 shrink-0 items-center justify-center rounded-lg border text-sm font-bold ${
+                current ? "border-hf-green bg-hf-green text-hf-white" : "border-hf-gray bg-hf-white text-hf-black"
+              }`}
             >
-              <span className="w-16 shrink-0 truncate text-sm capitalize opacity-80">
-                {date.toLocaleDateString("da-DK", { weekday: "long" })}
-              </span>
-              <span
-                className={`flex size-9 shrink-0 items-center justify-center rounded-lg border text-sm font-bold ${
-                  current ? "border-hf-green bg-hf-green text-hf-white" : "border-hf-gray bg-hf-white text-hf-black"
-                }`}
-              >
-                {date.getDate()}
-              </span>
-              <span className="flex-1 truncate text-sm font-semibold">
-                {met ? t("calendar.goalReachedList") : t("calendar.goalExceededList")}
-              </span>
-              <span className={`shrink-0 text-sm font-bold tabular-nums ${met ? "text-hf-green" : "text-hf-black"}`}>
-                {Math.round(kcal)} kcal
-              </span>
-              {met ? (
-                <IconCheck size={18} stroke={2.5} className="shrink-0 text-hf-lime" aria-hidden="true" />
-              ) : (
-                <IconMinus size={18} stroke={2.5} className="shrink-0 opacity-50" aria-hidden="true" />
-              )}
-            </button>
-          );
-        })}
-      </div>
-      {overflowing && (
-        <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-8 rounded-b-2xl bg-gradient-to-t from-hf-white to-transparent"
-          aria-hidden="true"
-        />
-      )}
+              {date.getDate()}
+            </span>
+            {met ? (
+              <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />
+            ) : (
+              <IconMinus size={16} stroke={3} className="shrink-0 opacity-50" aria-hidden="true" />
+            )}
+            <span className="flex-1 text-sm font-semibold">{met ? t("calendar.goalMet") : t("calendar.goalMissed")}</span>
+            <span className={`shrink-0 text-sm font-bold tabular-nums ${met ? "text-hf-green" : "text-hf-red-dark"}`}>
+              {met ? "+" : "-"}
+              {diff} kcal
+            </span>
+            <IconChevronRight size={19} className="shrink-0" />
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -980,6 +1054,7 @@ function ListView({
 function WeekTimelineView({
   days,
   today,
+  dailyTotals,
   registrations,
   onOpenDate,
   getSleepWindow,
@@ -987,6 +1062,7 @@ function WeekTimelineView({
 }: {
   days: Date[];
   today: Date;
+  dailyTotals: Map<string, number>;
   registrations: Registration[];
   onOpenDate: (date: Date) => void;
   getSleepWindow: (date: Date) => SleepWindow | null;
@@ -1049,7 +1125,7 @@ function WeekTimelineView({
       >
         <div className="h-12 w-12 shrink-0 border-b border-r border-hf-tan" />
         {days.map((date) => {
-          const met = goalWasMet(date, today);
+          const met = dailyGoalMet(dailyTotals, date);
           const current = isSameDay(date, today);
           return (
             <button
@@ -1144,16 +1220,18 @@ function WeekTimelineView({
 
 function SleepBands({ window, hourHeight = HOUR_HEIGHT }: { window: SleepWindow | null; hourHeight?: number }) {
   if (!window) return null;
+  const topHeight = (window.wakeTime / 60) * hourHeight;
+  const bottomHeight = ((24 * 60 - window.bedtime) / 60) * hourHeight;
   return (
     <>
       <div
-        className="pointer-events-none absolute inset-x-0 top-0 bg-hf-gray/15"
-        style={{ height: (window.wakeTime / 60) * hourHeight }}
+        className="pointer-events-none absolute inset-x-0 top-0 border-b border-hf-gray-border/60 bg-hf-gray/15"
+        style={{ height: topHeight }}
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 bg-hf-gray/15"
-        style={{ height: ((24 * 60 - window.bedtime) / 60) * hourHeight }}
+        className="pointer-events-none absolute inset-x-0 bottom-0 border-t border-hf-gray-border/60 bg-hf-gray/15"
+        style={{ height: bottomHeight }}
         aria-hidden="true"
       />
     </>
@@ -1215,9 +1293,11 @@ function SleepBoundaryHandle({
       onPointerCancel={finishDrag}
       aria-label={type === "bedtime" ? t("calendar.adjustBedtimeAriaLabel") : t("calendar.adjustWakeTimeAriaLabel")}
       className="absolute inset-x-0 z-10 flex touch-none items-center justify-center"
-      style={{ top: top - 10, height: 20 }}
+      style={{ top: top - 14, height: 28 }}
     >
-      <div className={`h-[3px] w-8 rounded-full ${dragMinutes !== null ? "bg-hf-black" : "bg-hf-gray/70"}`} />
+      <div
+        className={`h-1 w-10 rounded-full shadow-sm ${dragMinutes !== null ? "bg-hf-black" : "bg-hf-gray"}`}
+      />
     </div>
   );
 }
@@ -1234,6 +1314,11 @@ function DayDetails({
   onEntryMoved,
   onClose,
   onNavigate,
+  viewOptions,
+  activeView,
+  viewMenuOpen,
+  onToggleViewMenu,
+  onSelectView,
 }: {
   date: Date;
   today: Date;
@@ -1246,10 +1331,14 @@ function DayDetails({
   onEntryMoved: (registrationId: string, newCreatedAt: Date) => void;
   onClose: () => void;
   onNavigate: (direction: -1 | 1) => void;
+  viewOptions: { value: CalendarView; label: string; icon: typeof IconCalendarMonth }[];
+  activeView: { value: CalendarView; label: string; icon: typeof IconCalendarMonth };
+  viewMenuOpen: boolean;
+  onToggleViewMenu: () => void;
+  onSelectView: (view: CalendarView) => void;
 }) {
   const router = useRouter();
   const { t } = useTranslation();
-  const met = goalWasMet(date, today);
   const canGoForward = stripTime(date) < stripTime(today);
   const pointerStart = useRef<number | null>(null);
   const [addBarHour, setAddBarHour] = useState<number | null>(null);
@@ -1306,30 +1395,38 @@ function DayDetails({
   const minuteStep = hourHeight >= HOUR_HEIGHT * 3 ? 5 : 15;
 
   // Tidslinjen løber altid fra 00:00 (top) til 24:00 (bund) — ikke roteret om
-  // stå-op-tiden. Ved åbning scroller vi ned til lige før stå-op, så halen af
-  // nattens grå felt og trækhåndtaget er synligt uden scroll, men brugeren kan
-  // stadig scrolle helt op til 00:00 (Fejlretninger/FEJLLISTE.md #27-opfølgning).
+  // stå-op-tiden. Ved åbning scroller vi ned, så kun en kort flig (~80% af en
+  // time) af nattens grå felt er synlig lige over stå-op-håndtaget, og resten
+  // af visningen er dagens indhold — håndtaget er dermed altid synligt uden
+  // scroll, men brugeren kan stadig scrolle helt op til 00:00
+  // (Fejlretninger/FEJLLISTE.md #27-opfølgning).
   useEffect(() => {
     const node = timelineScrollRef.current;
     if (!node) return;
     const wakeHour = sleepWindow.wakeTime / 60;
-    node.scrollTop = Math.max(0, (wakeHour - 1) * hourHeight);
+    node.scrollTop = Math.max(0, (wakeHour - 0.8) * hourHeight);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const dayKcal = registrations.reduce((sum, registration) => sum + registration.kcalSnapshot, 0);
   const remaining = DAILY_KCAL_GOAL - dayKcal;
+  const hasEntries = registrations.length > 0;
+  const met = hasEntries && dayKcal <= DAILY_KCAL_GOAL;
 
   function goToAddFlow(hour: number) {
+    // Opens the same "everything you can add" menu as the front page's
+    // joystick "list" slot (/add/menu), per explicit user request — not the
+    // old direct jump to /foods. date/time are forwarded so the food-search
+    // path still lands the registration at the tapped hour.
     const params = new URLSearchParams({
       date: isoDate(date),
       time: `${String(hour).padStart(2, "0")}:00`,
     });
-    router.push(`/foods?${params.toString()}`);
+    router.push(`/add/menu?${params.toString()}`);
   }
 
   return (
-    <div className="absolute inset-0 z-50 flex flex-col bg-hf-cream" role="dialog" aria-modal="true" aria-labelledby="day-title">
+    <div className="fixed inset-0 z-50 flex flex-col bg-hf-cream" role="dialog" aria-modal="true" aria-labelledby="day-title">
       <div className="hf-appbar hf-appbar--brand">
         <div className="hf-appbar__slot">
           <button onClick={onClose} aria-label={t("common.back")} className="text-hf-white">
@@ -1339,33 +1436,78 @@ function DayDetails({
         <div className="flex min-w-0 items-center justify-center gap-2">
           <h1 className="hf-type-nav-title hf-appbar__title first-letter:uppercase">{t("nav.calendar")}</h1>
         </div>
-        <div className="hf-appbar__slot" aria-hidden="true" />
+        <div className="hf-appbar__slot relative z-[100]">
+          <button
+            type="button"
+            aria-label={t("calendar.switchViewAriaLabel", { view: activeView.label })}
+            aria-haspopup="listbox"
+            aria-expanded={viewMenuOpen}
+            onClick={onToggleViewMenu}
+            className="relative flex h-6 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-white"
+          >
+            <IconCalendar size={24} stroke={1.6} className="text-hf-white" />
+            <IconChevronDown
+              size={12}
+              stroke={2.5}
+              className={`absolute -bottom-2.5 left-1/2 -translate-x-1/2 text-hf-white ${viewMenuOpen ? "rotate-180" : ""}`}
+            />
+          </button>
+          {viewMenuOpen && (
+            <div className="absolute right-0 top-full z-[100] mt-2 w-44 overflow-hidden rounded-2xl border border-hf-tan-dark bg-hf-white p-1.5 text-hf-black shadow-xl">
+              {viewOptions.map((option) => {
+                const OptionIcon = option.icon;
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => onSelectView(option.value)}
+                    className="flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold hover:bg-hf-cream focus-visible:outline-2 focus-visible:outline-hf-black"
+                  >
+                    <OptionIcon size={20} stroke={1.8} />
+                    <span className="flex-1">{option.label}</span>
+                    {activeView.value === option.value && <IconCheck size={18} aria-hidden="true" />}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
-      <div className="relative flex items-center gap-1 bg-hf-green px-1 pb-4 text-hf-white">
-        <div className="flex min-w-0 flex-1 items-center justify-center gap-1.5">
-          <button
-            type="button"
-            onClick={() => onNavigate(-1)}
-            aria-label={t("calendar.previousDayAriaLabel")}
-            className="flex size-9 shrink-0 items-center justify-center rounded-full hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white"
-          >
-            <IconChevronLeft size={20} />
-          </button>
-          <h2 id="day-title" className="hf-heading flex min-w-0 items-center justify-center gap-1.5 text-base">
-            <IconCalendar size={16} className="shrink-0" aria-hidden="true" />
-            <span className="truncate first-letter:uppercase">
-              {date.toLocaleDateString("da-DK", { weekday: "long", day: "numeric", month: "long" })}
-            </span>
-          </h2>
-          <button
-            type="button"
-            onClick={() => canGoForward && onNavigate(1)}
-            disabled={!canGoForward}
-            aria-label={t("calendar.nextDayAriaLabel")}
-            className="flex size-9 shrink-0 items-center justify-center rounded-full hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white disabled:opacity-30"
-          >
-            <IconChevronRight size={20} />
-          </button>
+      {viewMenuOpen && (
+        <button
+          type="button"
+          aria-label={t("calendar.closeMenuAriaLabel")}
+          className="fixed inset-0 z-[90] cursor-default"
+          onClick={onToggleViewMenu}
+        />
+      )}
+      <div className="bg-hf-cream px-4 pt-4">
+        <div className="flex items-center gap-1 rounded-lg border border-hf-gray-border bg-hf-white px-1 py-2.5 text-hf-black">
+          <div className="flex min-w-0 flex-1 items-center justify-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => onNavigate(-1)}
+              aria-label={t("calendar.previousDayAriaLabel")}
+              className="flex size-9 shrink-0 items-center justify-center rounded-full hover:bg-hf-cream focus-visible:outline-2 focus-visible:outline-hf-black"
+            >
+              <IconChevronLeft size={20} />
+            </button>
+            <h2 id="day-title" className="hf-heading flex min-w-0 items-center justify-center gap-1.5 text-base">
+              <IconCalendar size={16} className="shrink-0" aria-hidden="true" />
+              <span className="truncate first-letter:uppercase">
+                {date.toLocaleDateString("da-DK", { weekday: "long", day: "numeric", month: "long" })}
+              </span>
+            </h2>
+            <button
+              type="button"
+              onClick={() => canGoForward && onNavigate(1)}
+              disabled={!canGoForward}
+              aria-label={t("calendar.nextDayAriaLabel")}
+              className="flex size-9 shrink-0 items-center justify-center rounded-full hover:bg-hf-cream focus-visible:outline-2 focus-visible:outline-hf-black disabled:opacity-30"
+            >
+              <IconChevronRight size={20} />
+            </button>
+          </div>
         </div>
       </div>
       <div
@@ -1496,35 +1638,39 @@ function DayDetails({
           </div>
         )}
 
-        <div className="mt-3 flex items-center justify-between gap-2 pr-1">
-          <div className="flex min-w-0 items-center gap-2">
-            <span
-              className={`flex size-5 shrink-0 items-center justify-center rounded-full ${
-                met ? "bg-hf-green" : "bg-hf-gray"
-              }`}
-            >
-              {met ? (
-                <IconCheck size={13} stroke={3} className="text-hf-white" aria-hidden="true" />
-              ) : (
-                <span className="size-2 rounded-full bg-hf-white" aria-hidden="true" />
-              )}
-            </span>
-            <p className="truncate text-sm font-semibold text-hf-black">
-              {met ? t("calendar.dailyGoalReached") : t("calendar.dailyGoalNotMarked")}
-            </p>
-          </div>
-          <div className="flex shrink-0 flex-col items-end gap-0.5 text-right">
-            <p className="text-sm text-hf-gray">{t("calendar.goalLabel", { goal: DAILY_KCAL_GOAL })}</p>
-            {remaining >= 0 ? (
+        <div className="mt-3 flex flex-col gap-1 pr-1">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex min-w-0 items-center gap-2">
+              <span
+                className={`flex size-5 shrink-0 items-center justify-center rounded-full ${
+                  met ? "bg-hf-green" : hasEntries ? "bg-hf-red-dark" : "bg-hf-gray"
+                }`}
+              >
+                {met ? (
+                  <IconCheck size={13} stroke={3} className="text-hf-white" aria-hidden="true" />
+                ) : (
+                  <span className="size-2 rounded-full bg-hf-white" aria-hidden="true" />
+                )}
+              </span>
               <p className="text-sm font-semibold text-hf-black">
-                {t("calendar.remainingCalories", { remaining: Math.round(remaining) })}
+                {hasEntries
+                  ? met
+                    ? t("calendar.dailyGoalReached")
+                    : t("calendar.dailyGoalExceeded")
+                  : t("calendar.dailyGoalNone")}
               </p>
-            ) : (
-              <p className="text-sm font-semibold text-hf-red-dark">
-                {t("calendar.exceededCalories", { amount: Math.round(Math.abs(remaining)) })}
-              </p>
-            )}
+            </div>
+            <p className="shrink-0 text-sm text-hf-gray">{t("calendar.goalLabel", { goal: DAILY_KCAL_GOAL })}</p>
           </div>
+          {remaining >= 0 ? (
+            <p className="text-right text-sm font-semibold text-hf-black">
+              {t("calendar.remainingCalories", { remaining: Math.round(remaining) })}
+            </p>
+          ) : (
+            <p className="text-right text-sm font-semibold text-hf-red-dark">
+              {t("calendar.exceededCalories", { amount: Math.round(Math.abs(remaining)) })}
+            </p>
+          )}
         </div>
       </div>
 
@@ -1810,17 +1956,24 @@ function HourEntriesOverlay({
                 </span>
               </button>
               {isOpen && (
-                <div className="flex flex-col gap-2 px-3 pb-3">
-                  {group.items.map((registration) => (
+                <div className="bg-hf-cream px-4">
+                  {group.items.map((registration, i) => (
                     <Link
                       key={registration.id}
                       href={`/registration/${registration.id}`}
-                      className="flex items-center justify-between rounded-2xl bg-hf-white p-3 focus-visible:outline-2 focus-visible:outline-hf-black"
+                      className={`block focus-visible:outline-2 focus-visible:outline-hf-black ${
+                        i < group.items.length - 1 ? "border-b border-hf-tan-dark" : ""
+                      }`}
                     >
-                      <span className="truncate text-sm text-hf-black">{registration.titleSnapshot}</span>
-                      <span className="ml-2 shrink-0 text-sm font-bold text-hf-black">
-                        {Math.round(registration.kcalSnapshot)} kcal
-                      </span>
+                      <FoodRow
+                        image={registration.product?.imageUrl}
+                        title={registration.titleSnapshot}
+                        right={
+                          <span className="text-sm font-bold text-hf-black">
+                            {Math.round(registration.kcalSnapshot)} kcal
+                          </span>
+                        }
+                      />
                     </Link>
                   ))}
                 </div>

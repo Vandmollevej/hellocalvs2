@@ -55,24 +55,22 @@ export async function awardForwardPointsIfUnderCap(userId: string, forwardId: st
 
 export class RedeemFreeMonthError extends Error {}
 
-// Indløser 300 points til 1 gratis abonnementsmåned. Kræver en gemt
-// betalingsmetode, så abonnementet fortsætter automatisk til fuld pris
-// bagefter (docs/DECISIONS.md 2026-09-02), og respekterer lifetime-loftet på
-// 12 gratis måneder.
+// Indløser 300 points til 1 gratis abonnementsmåned, og respekterer
+// lifetime-loftet på 12 gratis måneder.
+//
+// 2026-09-19: en gemt betalingsmetode kræves IKKE længere for denne
+// indløsning (overstyrer den oprindelige 2026-09-02-beslutning, se
+// docs/DECISIONS.md 2026-09-19) — en gratisbruger må gerne indløse uden kort;
+// abonnementet falder blot tilbage til Gratis igen efter perioden, medmindre
+// brugeren selv har tilføjet et kort og en rigtig PSP-aftale findes.
 export async function redeemFreeMonth(userId: string) {
-  const [balance, user, paymentMethod] = await Promise.all([
+  const [balance, user] = await Promise.all([
     getPointsBalance(userId),
     prisma.user.findUniqueOrThrow({ where: { id: userId } }),
-    prisma.paymentMethod.findFirst({ where: { userId } }),
   ]);
 
   if (balance < FREE_MONTH_COST) {
     throw new RedeemFreeMonthError("Du har ikke nok points endnu (300 points kræves).");
-  }
-  if (!paymentMethod) {
-    throw new RedeemFreeMonthError(
-      "Tilføj en betalingsmetode under Betaling, så abonnementet kan fortsætte automatisk efter den gratis måned."
-    );
   }
   if (user.freeMonthsCredited >= MAX_FREE_MONTHS) {
     throw new RedeemFreeMonthError("Du har allerede opnået det maksimale antal gratis måneder.");

@@ -8,20 +8,30 @@ import { ChecksumException, FormatException, NotFoundException } from "@zxing/li
 import { HfScreen } from "@/components/HfScreen";
 import { ScanningOverlay } from "@/components/hf/ScanningOverlay";
 import { HfBarcodeIcon } from "@/components/hf/HfBarcodeIcon";
-import { extractText, hasMeaningfulText, parseNutritionText } from "@/lib/product-ocr";
-import { bestImageMatch } from "@/lib/image-similarity";
-import { regionToOcrLanguage } from "@/lib/regions";
+import { parseNutritionText } from "@/lib/product-ocr";
+import { extractTextPrioritized } from "@/lib/product-ocr-prioritized";
+import { buildBarcodeContext } from "@/lib/barcode-context";
 import { PRODUCT_DRAFT_STORAGE_KEY, type ProductCreateDraft } from "@/lib/product-draft";
+import type {
+  IngredientsAnalysis,
+  NutritionAnalysis,
+  ProductFrontAnalysis,
+} from "@/lib/product-analysis-types";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
-// Guidet auto-genkendelsesflow: forsidefoto → (tekst-OCR-match eller
-// billed-hash/AI-match) → stregkode → næringsdeklaration → opret-siden,
-// forudfyldt fra det, der blev fundet undervejs. Selvstændig indgang/route,
-// rører ikke de eksisterende /kamera-faner (Stregkode/Måltid/HelloFresh),
-// jf. brugerens krav.
+// Bindende flow (docs/DECISIONS.md, 2026-09-17):
+// STREGKODE ALTID FØRST -> forside -> ingredienser -> næring -> produkt-create.
+// Senere billeder må aldrig ændre markedsregion/GS1-signalet fra barcode-trinnet.
+//
+// Hvert kamera-capture gemmer altid HELE videobilledet (capturePhotoFromVideo
+// tegner hele <video>-framen på canvas, ikke kun et beskåret fokusområde) —
+// også det der ligger uden for selve stregkoden/feltet, selv når det ikke er
+// skarpt. Det originale billede sendes både til AI-analysen og gemmes som
+// produktets barcodeImage/mainImage/ingredientsImage/nutritionImage, så intet
+// af det brugeren fotograferede kasseres før produktet er gemt.
 
 type CameraStatus = "starting" | "active" | "denied" | "unavailable" | "error";
-type Stage = "foto" | "stregkode" | "naering";
+type Stage = "stregkode" | "foto" | "ingredienser" | "naering";
 
 function cameraMessage(status: CameraStatus, t: (key: string) => string) {
   if (status === "starting") return t("camera.starting");
@@ -38,13 +48,16 @@ function statusFromCameraError(error: unknown): CameraStatus {
   return "error";
 }
 
+// Tegner hele videobilledet (fuld opløsning, fuld ramme) — bevidst ingen
+// beskæring til et fokusfelt, så det originale billede uden for fx
+// stregkoden altid er med i det, der gemmes/analyseres.
 function capturePhotoFromVideo(video: HTMLVideoElement | null): string | null {
   if (!video || !video.videoWidth || !video.videoHeight) return null;
   const canvas = document.createElement("canvas");
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
   canvas.getContext("2d")?.drawImage(video, 0, 0, canvas.width, canvas.height);
-  return canvas.toDataURL("image/jpeg", 0.88);
+  return canvas.toDataURL("image/jpeg", 0.9);
 }
 
 function KameraOpretContent() {
@@ -55,7 +68,7 @@ function KameraOpretContent() {
   const streamRef = useRef<MediaStream | null>(null);
   const lookupInProgressRef = useRef(false);
 
-  const [stage, setStage] = useState<Stage>("foto");
+  const [stage, setStage] = useState<Stage>("stregkode");
   const [cameraStatus, setCameraStatus] = useState<CameraStatus>("starting");
   const [restartKey, setRestartKey] = useState(0);
   const [photo, setPhoto] = useState<string | null>(null);
@@ -65,13 +78,14 @@ function KameraOpretContent() {
   const [barcodeLookupFailed, setBarcodeLookupFailed] = useState(false);
   const [region, setRegion] = useState("DK");
 
-  const draftRef = useRef<ProductCreateDraft>({ sideImages: [undefined, undefined, undefined] });
+  const draftRef = useRef<ProductCreateDraft>({
+    sideImages: [undefined, undefined, undefined],
+    analysisIds: {},
+  });
 
-  // Fetches the signed-in user's region once, so OCR expects the language the
-  // package is actually printed in (EU-lovkrav om lokalsprog på
-  // fødevaredeklarationer, jf. docs/DECISIONS.md 2026-09-12) — ikke
-  // browserens/telefonens visningssprog. Defaults to "DK" while loading/on
-  // error, same convention as /camera/page.tsx.
+  // Bruger-regionen er det primære sprogsignal (aldrig telefonens/browserens
+  // visningssprog, jf. docs/DECISIONS.md 2026-09-12) — hentes én gang, før
+  // stregkoden fastfryser den i draften.
   useEffect(() => {
     let cancelled = false;
     fetch("/api/profile")
@@ -99,39 +113,74 @@ function KameraOpretContent() {
     router.push("/product/create?fromFailedAdd=1");
   }, [router, stopCamera]);
 
+  function storeBarcodeContext(code: string) {
+    const context = buildBarcodeContext(code, region);
+    draftRef.current.barcodeValue = context.barcode;
+    draftRef.current.marketRegion = context.marketRegion;
+    draftRef.current.gs1Prefix3 = context.gs1Prefix3 ?? undefined;
+    draftRef.current.gs1Regions = context.gs1Regions;
+    draftRef.current.primaryOcrLanguages = context.primaryOcrLanguages;
+    return context;
+  }
+
+  const continueAfterUnknownBarcode = useCallback(
+    (code: string) => {
+      const cleaned = code.replace(/\D/g, "");
+      if (!cleaned) return;
+      storeBarcodeContext(cleaned);
+      draftRef.current.barcodeImage = capturePhotoFromVideo(videoRef.current) ?? draftRef.current.barcodeImage;
+      lookupInProgressRef.current = false;
+      setBarcodeLookupFailed(false);
+      setAnalyzing(false);
+      setPhoto(null);
+      setCameraStatus("starting");
+      setStage("foto");
+      setRestartKey((key) => key + 1);
+    },
+    // region intentionally included: barcode context must freeze the market region at scan time.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [region],
+  );
+
   const lookupBarcode = useCallback(
     async (code: string) => {
-      const cleaned = code.trim();
+      const cleaned = code.replace(/\D/g, "");
       if (!cleaned || lookupInProgressRef.current) return;
+
       lookupInProgressRef.current = true;
       setAnalyzing(true);
+      setBarcodeLookupFailed(false);
       setAnalyzingLabel(t("camera.lookingUp", { code: cleaned }));
+
       try {
-        const res = await fetch(`/api/products/lookup/${encodeURIComponent(cleaned)}`);
-        if (res.status === 404) {
-          draftRef.current.barcodeValue = cleaned;
-          draftRef.current.barcodeImage = capturePhotoFromVideo(videoRef.current) ?? undefined;
-          setStage("naering");
-          setPhoto(null);
-          setAnalyzing(false);
-          setRestartKey((k) => k + 1);
+        const response = await fetch(`/api/products/lookup/${encodeURIComponent(cleaned)}`);
+        if (response.status === 404) {
+          continueAfterUnknownBarcode(cleaned);
           return;
         }
-        if (!res.ok) throw new Error("Barcode lookup failed");
-        const data = (await res.json()) as { product: { id: string } };
+        if (!response.ok) throw new Error("Barcode lookup failed");
+
+        const data = (await response.json()) as { product: { id: string } };
         stopCamera();
         router.push(`/add/${data.product.id}`);
       } catch {
+        // Vi har stadig en gyldig aflæst barcode. Vis fejl, men lad brugeren
+        // fortsætte med netop den barcode i stedet for at kassere scan-data.
+        storeBarcodeContext(cleaned);
+        draftRef.current.barcodeImage = capturePhotoFromVideo(videoRef.current) ?? undefined;
+        setManualBarcode(cleaned);
         setBarcodeLookupFailed(true);
         setAnalyzing(false);
         lookupInProgressRef.current = false;
       }
     },
-    [router, stopCamera, t]
+    // storeBarcodeContext intentionally omitted: it's a plain function, not
+    // memoized, and re-deriving it every render would defeat this callback's
+    // own memoization; region (its actual dependency) is already listed.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [continueAfterUnknownBarcode, region, router, stopCamera, t],
   );
 
-  // Kamera-bootstrap: almindelig getUserMedia til foto/næring-trin, ZXing
-  // (samme bibliotek som /camera?mode=product) til stregkode-trinnet.
   useEffect(() => {
     let cancelled = false;
 
@@ -140,6 +189,7 @@ function KameraOpretContent() {
         setCameraStatus("unavailable");
         return;
       }
+
       try {
         if (stage === "stregkode") {
           const reader = new BrowserMultiFormatOneDReader(undefined, {
@@ -162,7 +212,7 @@ function KameraOpretContent() {
               ) {
                 setCameraStatus("error");
               }
-            }
+            },
           );
           if (cancelled) controls.stop();
           else {
@@ -207,91 +257,88 @@ function KameraOpretContent() {
     setPhoto(null);
     setAnalyzing(false);
     setCameraStatus("starting");
-    setRestartKey((k) => k + 1);
+    setRestartKey((key) => key + 1);
   }
 
-  // Trin 1: forsidefoto — tekst-OCR-match, ellers lokal billed-hash-match,
-  // ellers AI-vision som sidste udvej. Fund redirecter direkte til
-  // produktet; intet fund fortsætter til stregkode-trinnet.
+  function nextStage(next: Stage) {
+    setPhoto(null);
+    setAnalyzing(false);
+    setCameraStatus("starting");
+    setStage(next);
+    setRestartKey((key) => key + 1);
+  }
+
+  // FORSIDE: barcode er allerede fastlagt. Først billig OCR til duplicate-search,
+  // derefter OpenAI Vision til brand/subbrand/product/variant. Midlertidig
+  // dispensation (docs/DECISIONS.md, 2026-09-17): AI er her primær læser af
+  // fotoet, ikke kun fallback — se samme note ved ingredienser/næring nedenfor.
   useEffect(() => {
     if (stage !== "foto" || !photo) return;
     let cancelled = false;
 
     async function analyze() {
+      let shouldAdvance = true;
       setAnalyzing(true);
       setAnalyzingLabel(t("cameraCreate.readingImage"));
+      const barcode = draftRef.current.barcodeValue;
+      if (!barcode) return;
+      const context = buildBarcodeContext(barcode, draftRef.current.marketRegion ?? region);
+
       try {
-        const ocrText = await extractText(photo!, regionToOcrLanguage(region));
+        const localOcr = await extractTextPrioritized(photo!, context.primaryOcrLanguages);
         if (cancelled) return;
 
-        if (hasMeaningfulText(ocrText)) {
+        if (localOcr.text) {
           setAnalyzingLabel(t("cameraCreate.searchingDatabase"));
-          const res = await fetch("/api/products/recognize-text", {
+          const duplicateResponse = await fetch("/api/products/recognize-text", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text: ocrText }),
+            body: JSON.stringify({ text: localOcr.text }),
           });
-          const data = (await res.json()) as { product: { id: string } | null };
-          if (cancelled) return;
-          if (data.product) {
-            stopCamera();
-            router.push(`/add/${data.product.id}`);
-            return;
+          if (duplicateResponse.ok) {
+            const duplicate = (await duplicateResponse.json()) as { product: { id: string } | null };
+            if (duplicate.product) {
+              shouldAdvance = false;
+              stopCamera();
+              router.push(`/add/${duplicate.product.id}`);
+              return;
+            }
           }
-          const guessedName = ocrText
-            .split("\n")
-            .map((line) => line.trim())
-            .find((line) => line.length >= 3);
-          if (guessedName) draftRef.current.name = guessedName.slice(0, 80);
-        } else {
-          setAnalyzingLabel(t("cameraCreate.comparingKnownItems"));
-          const candidatesRes = await fetch("/api/products/generic-candidates");
-          const candidatesData = (await candidatesRes.json()) as {
-            products: { id: string; name: string; imageUrl: string | null }[];
-          };
-          if (cancelled) return;
-          const localMatch = await bestImageMatch(photo!, candidatesData.products, (c) => c.imageUrl, 0.85);
-          if (localMatch) {
-            stopCamera();
-            router.push(`/add/${localMatch.candidate.id}`);
-            return;
-          }
-
-          setAnalyzingLabel(t("cameraCreate.analyzingWithAi"));
-          const aiRes = await fetch("/api/ai/recognize-product-photo", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ photo }),
-          });
-          const aiData = (await aiRes.json()) as {
-            product: { id: string } | null;
-            guess: { name: string | null; brand: string | null } | null;
-          };
-          if (cancelled) return;
-          if (aiData.product) {
-            stopCamera();
-            router.push(`/add/${aiData.product.id}`);
-            return;
-          }
-          if (aiData.guess?.name) draftRef.current.name = aiData.guess.name;
         }
 
-        draftRef.current.mainImage = photo!;
-        setStage("stregkode");
-        setPhoto(null);
-        setAnalyzing(false);
-        setCameraStatus("starting");
-        setRestartKey((k) => k + 1);
-      } catch {
+        setAnalyzingLabel(t("cameraCreate.analyzingWithAi"));
+        const response = await fetch("/api/ai/analyze-product-front", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            photo,
+            barcode,
+            marketRegion: context.marketRegion,
+          }),
+        });
+        const data = (await response.json()) as {
+          analysisId: string | null;
+          result: ProductFrontAnalysis | null;
+        };
         if (cancelled) return;
-        // Genkendelse fejlede helt (netværk/AI nede) — gå videre i stedet for
-        // at brugeren står fast; masterdata udfyldes manuelt på opret-siden.
-        draftRef.current.mainImage = photo!;
-        setStage("stregkode");
-        setPhoto(null);
-        setAnalyzing(false);
-        setCameraStatus("starting");
-        setRestartKey((k) => k + 1);
+
+        if (data.analysisId) {
+          draftRef.current.analysisIds = { ...draftRef.current.analysisIds, front: data.analysisId };
+        }
+        if (data.result) {
+          draftRef.current.brand = data.result.brand ?? undefined;
+          draftRef.current.subbrand = data.result.subbrand ?? undefined;
+          draftRef.current.name = data.result.productName ?? undefined;
+          draftRef.current.variant = data.result.variant ?? undefined;
+          draftRef.current.packageSizeText = data.result.packageSizeText ?? undefined;
+        }
+      } catch {
+        // Bevar flowet: AI/OCR-fejl må ikke blokere manuel produkt-oprettelse.
+      } finally {
+        if (!cancelled && shouldAdvance) {
+          draftRef.current.mainImage = photo!;
+          nextStage("ingredienser");
+        }
       }
     }
 
@@ -302,9 +349,67 @@ function KameraOpretContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stage, photo]);
 
-  // Trin 3: næringsdeklaration — regex-parsing lokalt, AI-vision kun hvis
-  // regex ikke kan udlede alle fire pr.-100g-værdier. Herefter altid videre
-  // til opret-siden (medmindre værdierne er ~identiske med et kendt produkt).
+  // INGREDIENSER: prioriteret lokal OCR sendes med som støtte, men AI læser
+  // selve fotoet (midlertidig dispensation, docs/DECISIONS.md 2026-09-17 —
+  // skal senere rulles tilbage til "lokal OCR først, AI kun fallback").
+  useEffect(() => {
+    if (stage !== "ingredienser" || !photo) return;
+    let cancelled = false;
+
+    async function analyze() {
+      setAnalyzing(true);
+      setAnalyzingLabel(t("cameraCreate.readingIngredients"));
+      const barcode = draftRef.current.barcodeValue;
+      if (!barcode) return;
+      const context = buildBarcodeContext(barcode, draftRef.current.marketRegion ?? region);
+      let localOcrText = "";
+
+      try {
+        const localOcr = await extractTextPrioritized(photo!, context.primaryOcrLanguages);
+        if (cancelled) return;
+        localOcrText = localOcr.text;
+
+        const response = await fetch("/api/ai/extract-ingredients-photo", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            photo,
+            barcode,
+            marketRegion: context.marketRegion,
+            ocrText: localOcr.text,
+          }),
+        });
+        const data = (await response.json()) as {
+          analysisId: string | null;
+          result: IngredientsAnalysis | null;
+        };
+        if (cancelled) return;
+
+        if (data.analysisId) {
+          draftRef.current.analysisIds = { ...draftRef.current.analysisIds, ingredients: data.analysisId };
+        }
+        draftRef.current.ingredientsText = data.result?.ingredientsText || localOcr.text || undefined;
+      } catch {
+        if (localOcrText) draftRef.current.ingredientsText = localOcrText;
+      } finally {
+        if (!cancelled) {
+          draftRef.current.ingredientsImage = photo!;
+          nextStage("naering");
+        }
+      }
+    }
+
+    void analyze();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stage, photo]);
+
+  // NÆRING: lokal OCR/regex som sanity check + fallback, OpenAI vision som
+  // primær struktureret aflæsning (samme midlertidige dispensation som
+  // ingredienser ovenfor). OpenAI-værdier bruges når alle fire pr.-100g-felter
+  // er udfyldt, ellers falder vi tilbage til lokal parse.
   useEffect(() => {
     if (stage !== "naering" || !photo) return;
     let cancelled = false;
@@ -312,58 +417,74 @@ function KameraOpretContent() {
     async function analyze() {
       setAnalyzing(true);
       setAnalyzingLabel(t("cameraCreate.readingNutrition"));
+      const barcode = draftRef.current.barcodeValue;
+      if (!barcode) return;
+      const context = buildBarcodeContext(barcode, draftRef.current.marketRegion ?? region);
+
+      let localParsed: ReturnType<typeof parseNutritionText> = null;
+
       try {
-        const ocrText = await extractText(photo!, regionToOcrLanguage(region));
+        const localOcr = await extractTextPrioritized(photo!, context.primaryOcrLanguages);
+        localParsed = parseNutritionText(localOcr.text);
+
+        setAnalyzingLabel(t("cameraCreate.analyzingWithAi"));
+        const response = await fetch("/api/ai/extract-nutrition-v2", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            photo,
+            barcode,
+            marketRegion: context.marketRegion,
+            ocrText: localOcr.text,
+          }),
+        });
+        const data = (await response.json()) as {
+          analysisId: string | null;
+          result: NutritionAnalysis | null;
+        };
         if (cancelled) return;
-        let parsed = parseNutritionText(ocrText);
 
-        if (!parsed) {
-          setAnalyzingLabel(t("cameraCreate.analyzingWithAi"));
-          const aiRes = await fetch("/api/ai/extract-nutrition", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ photo }),
-          });
-          const aiData = (await aiRes.json()) as { values: Record<string, number | null> | null };
-          if (cancelled) return;
-          const v = aiData.values;
-          if (v && v.kcalPer100g != null && v.proteinPer100g != null && v.carbsPer100g != null && v.fatPer100g != null) {
-            parsed = {
-              kcalPer100g: v.kcalPer100g,
-              proteinPer100g: v.proteinPer100g,
-              carbsPer100g: v.carbsPer100g,
-              fatPer100g: v.fatPer100g,
-            };
-          }
+        if (data.analysisId) {
+          draftRef.current.analysisIds = { ...draftRef.current.analysisIds, nutrition: data.analysisId };
         }
 
-        draftRef.current.nutritionImage = photo!;
+        const ai = data.result;
+        const aiComplete =
+          ai?.kcalPer100g != null &&
+          ai.proteinPer100g != null &&
+          ai.carbsPer100g != null &&
+          ai.fatPer100g != null;
 
-        if (parsed) {
-          setAnalyzingLabel(t("cameraCreate.checkingDuplicate"));
-          const dedupeRes = await fetch("/api/products/match-nutrition", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(parsed),
-          });
-          const dedupeData = (await dedupeRes.json()) as { product: { id: string } | null };
-          if (cancelled) return;
-          if (dedupeData.product) {
-            stopCamera();
-            router.push(`/add/${dedupeData.product.id}`);
-            return;
-          }
-          draftRef.current.kcalPer100g = String(parsed.kcalPer100g);
-          draftRef.current.proteinPer100g = String(parsed.proteinPer100g);
-          draftRef.current.carbsPer100g = String(parsed.carbsPer100g);
-          draftRef.current.fatPer100g = String(parsed.fatPer100g);
+        const selected = aiComplete
+          ? {
+              kcalPer100g: ai!.kcalPer100g!,
+              proteinPer100g: ai!.proteinPer100g!,
+              carbsPer100g: ai!.carbsPer100g!,
+              fatPer100g: ai!.fatPer100g!,
+            }
+          : localParsed;
+
+        if (selected) {
+          draftRef.current.kcalPer100g = String(selected.kcalPer100g);
+          draftRef.current.proteinPer100g = String(selected.proteinPer100g);
+          draftRef.current.carbsPer100g = String(selected.carbsPer100g);
+          draftRef.current.fatPer100g = String(selected.fatPer100g);
         }
-
-        goToCreatePage();
+        if (ai?.alternativeServings?.length) {
+          draftRef.current.alternativeServings = ai.alternativeServings;
+        }
       } catch {
-        if (cancelled) return;
-        draftRef.current.nutritionImage = photo!;
-        goToCreatePage();
+        if (localParsed) {
+          draftRef.current.kcalPer100g = String(localParsed.kcalPer100g);
+          draftRef.current.proteinPer100g = String(localParsed.proteinPer100g);
+          draftRef.current.carbsPer100g = String(localParsed.carbsPer100g);
+          draftRef.current.fatPer100g = String(localParsed.fatPer100g);
+        }
+      } finally {
+        if (!cancelled) {
+          draftRef.current.nutritionImage = photo!;
+          goToCreatePage();
+        }
       }
     }
 
@@ -382,11 +503,13 @@ function KameraOpretContent() {
 
   const message = cameraMessage(cameraStatus, t);
   const stageLabel =
-    stage === "foto"
-      ? t("cameraCreate.stagePhoto")
-      : stage === "stregkode"
-        ? t("cameraCreate.stageBarcode")
-        : t("cameraCreate.stageNutrition");
+    stage === "stregkode"
+      ? t("cameraCreate.stageBarcode")
+      : stage === "foto"
+        ? t("cameraCreate.stagePhoto")
+        : stage === "ingredienser"
+          ? t("cameraCreate.stageIngredients")
+          : t("cameraCreate.stageNutrition");
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-3 p-4">
@@ -408,9 +531,7 @@ function KameraOpretContent() {
         )}
 
         {!photo && stage !== "stregkode" && (
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-            <div className="aspect-square w-[68%] rounded-full border-2 border-white/80 shadow-[0_0_0_999px_rgba(0,0,0,0.2)]" />
-          </div>
+          <div className="pointer-events-none absolute inset-[12%] rounded-[12px] border-2 border-white/80 shadow-[0_0_0_999px_rgba(0,0,0,0.2)]" />
         )}
 
         {!photo && stage === "stregkode" && (
@@ -432,9 +553,7 @@ function KameraOpretContent() {
         <div className="flex flex-col items-center gap-2 rounded-[8px] p-4" style={{ background: "var(--hf-color-card)" }}>
           <HfBarcodeIcon className="text-hf-black" />
           <p className="hf-type-caption text-center">
-            {barcodeLookupFailed
-              ? t("cameraCreate.barcodeNotRecognized")
-              : t("cameraCreate.showBarcodeHint")}
+            {barcodeLookupFailed ? t("cameraCreate.barcodeLookupFailedContinue") : t("cameraCreate.showBarcodeHint")}
           </p>
           <form onSubmit={submitManualBarcode} className="flex w-full gap-2">
             <input
@@ -450,9 +569,15 @@ function KameraOpretContent() {
               {t("camera.lookUp")}
             </button>
           </form>
-          <button onClick={goToCreatePage} className="hf-btn-secondary w-full justify-center py-2 text-xs">
-            {t("cameraCreate.skipCreateManually")}
-          </button>
+          {barcodeLookupFailed && manualBarcode && (
+            <button
+              type="button"
+              onClick={() => continueAfterUnknownBarcode(manualBarcode)}
+              className="hf-btn-secondary w-full justify-center py-2 text-xs"
+            >
+              {t("cameraCreate.continueWithBarcode")}
+            </button>
+          )}
         </div>
       )}
 

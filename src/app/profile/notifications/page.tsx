@@ -23,6 +23,7 @@ const EVENT_LABELS: Record<string, string> = {
   PRODUCT_APPROVED: "Produkt godkendt",
   PRODUCT_REJECTED: "Produkt afvist",
   BUG_REPORT_RESOLVED: "Fejlrapport løst",
+  BUG_REPORT_REJECTED: "Fejlrapport afvist",
   POINTS_AWARDED: "Points optjent",
   FRIEND_FORWARD_RECEIVED: "Videresendelse fra en ven",
 };

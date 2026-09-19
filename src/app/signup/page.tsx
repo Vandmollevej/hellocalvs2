@@ -85,6 +85,12 @@ function TilmeldContent() {
           placeholder={t("signup.passwordPlaceholder")}
         />
 
+        <p className="hf-type-body-sm text-right">
+          <Link href="/forgot-password" className="underline">
+            {t("login.forgotPassword")}
+          </Link>
+        </p>
+
         {error && <p className="hf-type-caption text-hf-red-dark">{error}</p>}
 
         <div className="flex-1" />

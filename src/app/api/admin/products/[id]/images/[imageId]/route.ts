@@ -15,17 +15,29 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
   return NextResponse.json({ ok: true });
 }
 
-// PATCH { direction: "up" | "down" } — swap order with the neighbouring image.
+// PATCH { direction: "up" | "down" } — swap order with the neighbouring
+// image, or { tags: string[] } — replace the image's metatags (see
+// src/lib/image-tags.ts, docs/DECISIONS.md 2026-09-19).
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string; imageId: string }> }) {
   const admin = await requireAdminUser();
   if (!admin) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   const { id: productId, imageId } = await params;
-  let body: { direction?: "up" | "down" };
+  let body: { direction?: "up" | "down"; tags?: string[] };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ message: "Ugyldig anmodning" }, { status: 400 });
+  }
+
+  if (Array.isArray(body.tags)) {
+    const image = await prisma.productImage.findUnique({ where: { id: imageId } });
+    if (!image || image.productId !== productId) {
+      return NextResponse.json({ message: "Ikke fundet" }, { status: 404 });
+    }
+    const tags = body.tags.filter((tag): tag is string => typeof tag === "string");
+    const updated = await prisma.productImage.update({ where: { id: imageId }, data: { tags } });
+    return NextResponse.json({ image: updated });
   }
 
   const images = await prisma.productImage.findMany({ where: { productId }, orderBy: { order: "asc" } });

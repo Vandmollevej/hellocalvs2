@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AddButton, HERO_HEIGHT } from "./AddButton";
 import { StatsWheel } from "./StatsWheel";
 import { OnboardingSpotlight } from "./OnboardingSpotlight";
+import { oppositeSide, useFabSide } from "@/lib/frontpage-layout";
 
 // Denne overlay har hidtil altid vist sig igen ved hvert genbesøg — den var
 // hardkodet til IS_NEW_USER = true og aldrig forbundet til rigtig gemt
@@ -24,6 +25,7 @@ function loadDismissed() {
 }
 
 export function Hero() {
+  const fabSide = useFabSide();
   const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
@@ -45,8 +47,8 @@ export function Hero() {
   return (
     <div className="relative" style={{ height: HERO_HEIGHT }}>
       <AddButton onOpen={dismiss} />
-      <StatsWheel side="right" />
-      {showOnboarding && <OnboardingSpotlight side="left" onLater={dismiss} />}
+      <StatsWheel side={oppositeSide(fabSide)} />
+      {showOnboarding && <OnboardingSpotlight side={fabSide} onLater={dismiss} />}
     </div>
   );
 }

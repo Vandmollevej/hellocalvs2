@@ -61,7 +61,9 @@ async function escalateStaleBugReports(now: Date) {
     await queueMessage("BUG_REPORT_ESCALATION_ADMIN", {
       toEmail: ADMIN_NOTIFICATION_EMAIL,
       vars: {
-        displayName: report.user.displayName,
+        // AI-genererede rapporter (BugReportSource.AI, docs/DECISIONS.md
+        // 2026-09-19) har intet userId/user at vise navn for.
+        displayName: report.user?.displayName ?? "AI-genereret",
         approveLink: `${ADMIN_BASE_URL}/admin/approve/${approvalToken}`,
       },
     });

@@ -1,21 +1,36 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { Icon } from "@tabler/icons-react";
 import {
-  IconBolt,
-  IconDroplet,
-  IconEgg,
-  IconFlame,
-  IconFootsteps,
-  type Icon,
-} from "@tabler/icons-react";
-import { DAILY_KCAL_GOAL, DAILY_PROTEIN_GOAL } from "@/lib/goals";
+  FRONTPAGE_STAT_DEFS,
+  useFrontpageStatKeys,
+  type FrontpageMetricTotals,
+  type FrontpageNutritionTotals,
+} from "@/lib/frontpage-stats";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 type Registration = {
   kcalSnapshot: number;
   proteinSnapshot: number;
+  carbsSnapshot?: number;
+  fatSnapshot?: number;
+  sugarSnapshot?: number | null;
+  fiberSnapshot?: number | null;
+  saltSnapshot?: number | null;
+  potassiumSnapshot?: number | null;
+  calciumSnapshot?: number | null;
+  ironSnapshot?: number | null;
+  saturatedFatSnapshot?: number | null;
+  unsaturatedFatSnapshot?: number | null;
+  transFatSnapshot?: number | null;
+  cholesterolSnapshot?: number | null;
+  vitaminASnapshot?: number | null;
+  vitaminCSnapshot?: number | null;
   createdAt: string;
 };
+
+type HealthMetric = { type: string; value: number; recordedAt: string };
 
 type Stat = {
   key: string;
@@ -38,8 +53,32 @@ function isToday(dateString: string) {
   );
 }
 
-function formatNumber(value: number, maximumFractionDigits = 0) {
-  return new Intl.NumberFormat("da-DK", { maximumFractionDigits }).format(value);
+function emptyTotals(): FrontpageNutritionTotals {
+  return {
+    kcal: 0,
+    protein: 0,
+    carbs: 0,
+    fat: 0,
+    sugar: 0,
+    fiber: 0,
+    salt: 0,
+    potassium: 0,
+    calcium: 0,
+    iron: 0,
+    saturatedFat: 0,
+    unsaturatedFat: 0,
+    transFat: 0,
+    cholesterol: 0,
+    vitaminA: 0,
+    vitaminC: 0,
+  };
+}
+
+/** Sum of today's HealthMetric rows of one type — null when none exist at all yet. */
+function sumMetricToday(metrics: HealthMetric[], type: string): number | null {
+  const matching = metrics.filter((m) => m.type === type && isToday(m.recordedAt));
+  if (matching.length === 0) return null;
+  return matching.reduce((sum, m) => sum + m.value, 0);
 }
 
 /** Shortest signed distance from `index` to `from` around a circular list of `length`. */
@@ -53,26 +92,39 @@ function circularDistance(index: number, from: number, length: number) {
 const ITEM_HEIGHT = 34;
 
 export function StatsWheel({ side }: { side: "left" | "right" }) {
+  const { t } = useTranslation();
+  const activeKeys = useFrontpageStatKeys();
   const [activeIndex, setActiveIndex] = useState(0);
   const [dragPixels, setDragPixels] = useState(0);
   const [dragging, setDragging] = useState(false);
   const [registrations, setRegistrations] = useState<Registration[]>([]);
+  const [metrics, setMetrics] = useState<HealthMetric[]>([]);
   const [loading, setLoading] = useState(true);
   const pointerStartY = useRef<number | null>(null);
   const wheelLocked = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/registrations")
-      .then(async (response) => {
+    Promise.all([
+      fetch("/api/registrations").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente dagens nøgletal");
         return (await response.json()) as { registrations: Registration[] };
-      })
-      .then((data) => {
-        if (!cancelled) setRegistrations(data.registrations.filter((item) => isToday(item.createdAt)));
+      }),
+      fetch("/api/health-metrics").then(async (response) => {
+        if (!response.ok) throw new Error("Kunne ikke hente dagens måltal");
+        return (await response.json()) as { metrics: HealthMetric[] };
+      }),
+    ])
+      .then(([registrationData, metricData]) => {
+        if (cancelled) return;
+        setRegistrations(registrationData.registrations.filter((item) => isToday(item.createdAt)));
+        setMetrics(metricData.metrics);
       })
       .catch(() => {
-        if (!cancelled) setRegistrations([]);
+        if (!cancelled) {
+          setRegistrations([]);
+          setMetrics([]);
+        }
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -84,56 +136,51 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
   }, []);
 
   const stats = useMemo<Stat[]>(() => {
-    const totals = registrations.reduce(
-      (sum, item) => ({
-        kcal: sum.kcal + item.kcalSnapshot,
-        protein: sum.protein + item.proteinSnapshot,
-      }),
-      { kcal: 0, protein: 0 },
-    );
+    const totals = registrations.reduce((sum, item) => {
+      sum.kcal += item.kcalSnapshot;
+      sum.protein += item.proteinSnapshot;
+      sum.carbs += item.carbsSnapshot ?? 0;
+      sum.fat += item.fatSnapshot ?? 0;
+      sum.sugar += item.sugarSnapshot ?? 0;
+      sum.fiber += item.fiberSnapshot ?? 0;
+      sum.salt += item.saltSnapshot ?? 0;
+      sum.potassium += item.potassiumSnapshot ?? 0;
+      sum.calcium += item.calciumSnapshot ?? 0;
+      sum.iron += item.ironSnapshot ?? 0;
+      sum.saturatedFat += item.saturatedFatSnapshot ?? 0;
+      sum.unsaturatedFat += item.unsaturatedFatSnapshot ?? 0;
+      sum.transFat += item.transFatSnapshot ?? 0;
+      sum.cholesterol += item.cholesterolSnapshot ?? 0;
+      sum.vitaminA += item.vitaminASnapshot ?? 0;
+      sum.vitaminC += item.vitaminCSnapshot ?? 0;
+      return sum;
+    }, emptyTotals());
 
-    return [
-      {
-        key: "calories",
-        label: "Kalorier",
-        icon: IconFlame,
-        value: loading ? "—" : formatNumber(totals.kcal),
-        unit: "kcal",
-        goal: DAILY_KCAL_GOAL,
-      },
-      {
-        key: "protein",
-        label: "Protein",
-        icon: IconEgg,
-        value: loading ? "—" : formatNumber(totals.protein),
-        unit: "g",
-        goal: DAILY_PROTEIN_GOAL,
-      },
-      {
-        key: "water",
-        label: "Vand",
-        icon: IconDroplet,
-        value: "1,6",
-        unit: "L",
-      },
-      {
-        key: "burned",
-        label: "Forbrændt",
-        icon: IconBolt,
-        value: "642",
-        unit: "kcal",
-      },
-      {
-        key: "steps",
-        label: "Skridt",
-        icon: IconFootsteps,
-        value: "6.210",
-        unit: "",
-      },
-    ];
-  }, [loading, registrations]);
+    const metricTotals: FrontpageMetricTotals = {
+      steps: sumMetricToday(metrics, "STEPS"),
+      waterMl: sumMetricToday(metrics, "WATER_ML"),
+      burnedKcal: sumMetricToday(metrics, "ACTIVE_ENERGY_KCAL"),
+      distanceKm: sumMetricToday(metrics, "DISTANCE_KM"),
+    };
+
+    return activeKeys
+      .map((key) => FRONTPAGE_STAT_DEFS.find((def) => def.key === key))
+      .filter((def): def is NonNullable<typeof def> => Boolean(def))
+      .map((def) => {
+        const { value, unit, goal } = def.compute({ totals, metrics: metricTotals });
+        return {
+          key: def.key,
+          label: t(def.labelKey),
+          icon: def.icon,
+          value: loading ? "—" : value,
+          unit,
+          goal,
+        };
+      });
+  }, [activeKeys, loading, metrics, registrations, t]);
 
   function move(direction: -1 | 1) {
+    if (stats.length === 0) return;
     setActiveIndex((current) => (current + direction + stats.length) % stats.length);
   }
 
@@ -285,7 +332,7 @@ function WheelItem({
       </span>
       {isActive && stat.goal != null && (
         <span className="mt-0.5 text-sm font-medium text-hf-gray-dark">
-          / {formatNumber(stat.goal)} {stat.unit}
+          / {stat.goal} {stat.unit}
         </span>
       )}
     </button>

@@ -41,7 +41,9 @@ export default async function TokenApprovePage({ params }: { params: Promise<{ t
           <>
             <h1 className="text-lg font-semibold text-text-primary">Fejlrapport</h1>
             <p className="mt-1 text-sm text-text-secondary">
-              Fra {bugReport.user.displayName} ({bugReport.user.email})
+              {bugReport.user
+                ? `Fra ${bugReport.user.displayName} (${bugReport.user.email})`
+                : "AI-genereret (ingen bruger)"}
             </p>
             <p className="mt-3 whitespace-pre-wrap text-sm text-text-primary">{bugReport.description}</p>
           </>

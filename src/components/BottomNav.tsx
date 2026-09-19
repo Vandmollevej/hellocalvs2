@@ -733,7 +733,7 @@ export function BottomNav() {
                 <span className="h-1.5 w-10 rounded-full bg-hf-black/30" />
               </button>
             )}
-        <div className="overflow-hidden">
+        <div className="overflow-x-hidden overflow-y-visible pt-1">
           <div
             className="flex"
             style={{
@@ -753,7 +753,7 @@ export function BottomNav() {
                     return (
                       <div
                         key={`empty-${pageIndex}-${slotIndex}`}
-                        className="h-12 w-16 touch-none select-none"
+                        className="h-14 w-16 touch-none select-none"
                         onPointerDown={handleEmptySlotPointerDown}
                       />
                     );
@@ -778,7 +778,7 @@ export function BottomNav() {
                       onPointerDown={(e) => handleActivePointerDown(key, e)}
                       onPointerMove={handleActivePointerMove}
                       onPointerUp={() => handleActivePointerUp(key, item.href)}
-                      className={`relative flex h-12 w-16 flex-none flex-col items-center justify-center gap-1 rounded-xl touch-none select-none ${
+                      className={`relative flex h-14 w-16 flex-none flex-col items-center justify-center gap-1 rounded-xl py-1.5 touch-none select-none ${
                         editMode ? "border" : "border-transparent"
                       } ${
                         isReady || isPlaceholder
@@ -797,7 +797,7 @@ export function BottomNav() {
                             e.stopPropagation();
                             removeFromActive(key);
                           }}
-                          className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-hf-black"
+                          className="absolute -right-1.5 -top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-hf-black"
                         >
                           <IconX size={13} stroke={2.2} color="var(--hf-tan)" />
                         </span>

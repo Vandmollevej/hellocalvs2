@@ -11,7 +11,16 @@ export async function GET(_req: Request, { params }: RouteContext) {
     const user = await getDemoUser();
     const registration = await prisma.registration.findFirst({
       where: { id, userId: user.id },
-      include: { product: { select: { imageUrl: true } } },
+      include: {
+        product: {
+          select: {
+            imageUrl: true,
+            servingSizeGrams: true,
+            servingSizeUnitSingular: true,
+            servingSizeUnitPlural: true,
+          },
+        },
+      },
     });
 
     if (!registration) {

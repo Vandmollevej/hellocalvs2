@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconBarcode, IconCamera, IconHandClick, IconX, IconSoup } from "@tabler/icons-react";
+import Link from "next/link";
+import { IconCamera, IconHandClick, IconSearch, IconX, IconSoup } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import {
   readDishDraft,
@@ -24,6 +25,34 @@ export default function CreateDishPage() {
   const [ingredients, setIngredients] = useState<DishDraftIngredient[]>(readDishDraft);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<{ id: string; name: string; imageUrl?: string | null }[]>([]);
+  const [searchState, setSearchState] = useState<"idle" | "loading" | "ready" | "error">("idle");
+
+  useEffect(() => {
+    if (!query.trim()) return;
+    const controller = new AbortController();
+    const timeout = setTimeout(async () => {
+      setSearchState("loading");
+      try {
+        const res = await fetch(`/api/products?q=${encodeURIComponent(query)}`, {
+          signal: controller.signal,
+        });
+        if (!res.ok) throw new Error("offline");
+        const data = await res.json();
+        setResults(data.products ?? []);
+        setSearchState("ready");
+      } catch {
+        setSearchState("error");
+        setResults([]);
+      }
+    }, 200);
+
+    return () => {
+      controller.abort();
+      clearTimeout(timeout);
+    };
+  }, [query]);
 
   const totals = useMemo(
     () =>
@@ -170,14 +199,61 @@ export default function CreateDishPage() {
 
         <div>
           <p className="mb-2 text-xs font-bold text-hf-black">{t("createDish.addIngredient")}</p>
-          <div className="grid grid-cols-3 gap-2">
-            <a
-              href="/search?for=ret"
-              className="flex flex-col items-center gap-1.5 rounded-2xl bg-hf-tan py-3 text-center"
-            >
-              <IconBarcode size={20} color="var(--hf-black)" />
-              <span className="text-xs font-medium text-hf-black">{t("createDish.search")}</span>
-            </a>
+          <div className="hf-search">
+            <IconSearch size={16} color="var(--hf-black)" />
+            <input
+              value={query}
+              onChange={(event) => {
+                const value = event.target.value;
+                setQuery(value);
+                if (!value.trim()) {
+                  setSearchState("idle");
+                  setResults([]);
+                }
+              }}
+              placeholder={t("createDish.searchPlaceholder")}
+            />
+          </div>
+
+          {query.trim() && (
+            <div className="mt-2 overflow-hidden rounded-[8px] bg-hf-tan">
+              {searchState === "loading" && (
+                <p className="px-4 py-4 text-center text-sm text-hf-black opacity-60">
+                  {t("createDish.searching")}
+                </p>
+              )}
+              {searchState === "error" && (
+                <p className="px-4 py-4 text-center text-sm text-hf-black opacity-60">
+                  {t("createDish.noResults")}
+                </p>
+              )}
+              {searchState === "ready" && results.length === 0 && (
+                <p className="px-4 py-4 text-center text-sm text-hf-black opacity-60">
+                  {t("createDish.noResults")}
+                </p>
+              )}
+              {searchState === "ready" &&
+                results.slice(0, 6).map((product, index) => (
+                  <Link
+                    key={product.id}
+                    href={`/add/${product.id}?for=ret`}
+                    className={`flex items-center gap-2.5 px-4 py-3 ${
+                      index < Math.min(results.length, 6) - 1 ? "border-b border-hf-tan-dark" : ""
+                    }`}
+                  >
+                    <div className="h-9 w-9 flex-shrink-0">
+                      {product.imageUrl && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={product.imageUrl} alt="" className="h-full w-full object-contain" />
+                      )}
+                    </div>
+                    <span className="flex-1 text-[14px] font-medium text-hf-black">{product.name}</span>
+                  </Link>
+                ))}
+            </div>
+          )}
+
+          <div className="mt-3 grid grid-cols-2 gap-2">
             <a
               href="/camera?mode=product&for=ret"
               className="flex flex-col items-center gap-1.5 rounded-2xl bg-hf-tan py-3 text-center"

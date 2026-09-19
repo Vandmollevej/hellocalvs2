@@ -2,12 +2,19 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getEffectiveUser } from "@/lib/session";
 import { fulfillMatchingForward } from "@/lib/forwards";
+import { getSubscriptionTier, getRetentionCutoffDate } from "@/lib/subscription";
 
 export async function GET() {
   try {
     const user = await getEffectiveUser();
+    const subscription = await prisma.subscription.findUnique({ where: { userId: user.id } });
+    // Rullende 30-dages historik for gratisbrugere (docs/DECISIONS.md
+    // 2026-09-19) — data ældre end grænsen skjules her ved en ren
+    // forespørgselsgrænse, ikke ved at slette eller markere rækkerne, så det
+    // med det samme kommer tilbage hvis brugeren bliver Seriøs.
+    const cutoff = getRetentionCutoffDate(getSubscriptionTier(subscription));
     const registrations = await prisma.registration.findMany({
-      where: { userId: user.id },
+      where: { userId: user.id, ...(cutoff ? { createdAt: { gte: cutoff } } : {}) },
       orderBy: { createdAt: "desc" },
       include: { product: { select: { imageUrl: true } } },
       // 3000 comfortably covers over half a year of history (~4 registrations/day),
@@ -44,6 +51,7 @@ export async function POST(req: Request) {
   const {
     productId,
     dishId,
+    genericIngredientId,
     amountGrams,
     titleSnapshot,
     kcalSnapshot,
@@ -54,6 +62,7 @@ export async function POST(req: Request) {
   } = body as {
     productId?: string;
     dishId?: string;
+    genericIngredientId?: string;
     amountGrams: number;
     titleSnapshot?: string;
     // With productId/dishId these three are optional overrides of the calculated
@@ -128,6 +137,30 @@ export async function POST(req: Request) {
       });
 
       await fulfillMatchingForward(user.id, "PRODUCT", product.id);
+      return NextResponse.json({ registration });
+    }
+
+    if (genericIngredientId) {
+      const ingredient = await prisma.genericIngredient.findUnique({ where: { id: genericIngredientId } });
+      if (!ingredient) {
+        return NextResponse.json({ message: "Ingrediens ikke fundet" }, { status: 404 });
+      }
+
+      const factor = amountGrams / 100;
+      const registration = await prisma.registration.create({
+        data: {
+          userId: user.id,
+          genericIngredientId: ingredient.id,
+          titleSnapshot: ingredient.name,
+          kcalSnapshot: kcalSnapshot ?? (ingredient.kcalPer100g ?? 0) * factor,
+          proteinSnapshot: proteinSnapshot ?? (ingredient.proteinPer100g ?? 0) * factor,
+          carbsSnapshot: carbsSnapshot ?? (ingredient.carbsPer100g ?? 0) * factor,
+          fatSnapshot: fatSnapshot ?? (ingredient.fatPer100g ?? 0) * factor,
+          ...(parsedCreatedAt ? { createdAt: parsedCreatedAt } : {}),
+          amountGrams,
+        },
+      });
+
       return NextResponse.json({ registration });
     }
 

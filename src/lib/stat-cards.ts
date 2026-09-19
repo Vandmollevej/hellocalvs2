@@ -2,6 +2,7 @@
 // The cards' order/active set is stored by StatCardsGrid (localStorage), not here.
 
 import {
+  IconActivity,
   IconApple,
   IconAtom2,
   IconBolt,
@@ -14,6 +15,7 @@ import {
   IconHeartbeat,
   IconLeaf,
   IconLemon2,
+  IconRoute,
   IconSalt,
   IconTargetArrow,
   IconToolsKitchen2,
@@ -30,7 +32,17 @@ export type StatCardValue = {
   key: string;
   label: string;
   icon: Icon;
+  // Periodic-table symbol for minerals/trace elements (Fe, Ca, K, Na, Mg, …).
+  // When set, StatCardsGrid renders this instead of the generic icon.
+  symbol?: string;
   value: string;
+  // True only when a separately validated, region/profile-aware recommendation
+  // evaluator has determined the value is outside the applicable normal
+  // range. This app does not ship such an evaluator yet, so no compute()
+  // below ever sets this — it exists so StatCardsGrid's red-stroke rendering
+  // (gated behind User.warnOnRecommendedLimits) has something real to read
+  // once one exists, instead of inventing thresholds now.
+  outsideRecommendedRange?: boolean;
 };
 
 export type ActivityTotals = {
@@ -75,10 +87,39 @@ function averageMetric(metrics: HealthMetricTotals[] | undefined, type: string):
   return matching.reduce((sum, m) => sum + m.value, 0) / matching.length;
 }
 
+/** Formatteret gennemsnit af en HealthMetricType, eller "—" uden data — aldrig
+ * et opdigtet eksempeltal. */
+function metricValue(data: StatCardData, type: string, unit = "", maximumFractionDigits = 0): string {
+  const avg = averageMetric(data.metrics, type);
+  if (avg === null) return "—";
+  const formatted = formatNumber(avg, maximumFractionDigits);
+  return unit ? `${formatted} ${unit}` : formatted;
+}
+
+function metricHoursMinutes(data: StatCardData, type: string): string {
+  const avg = averageMetric(data.metrics, type);
+  if (avg === null) return "—";
+  const minutes = Math.max(0, Math.round(avg));
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+  return hours > 0 ? `${hours} t ${rest} min` : `${rest} min`;
+}
+
+/** Klokketid fra minut-i-døgnet (0-1439), fx sengetid/opvågningstidspunkt. */
+function minuteOfDay(data: StatCardData, type: string): string {
+  const avg = averageMetric(data.metrics, type);
+  if (avg === null) return "—";
+  const minutes = ((Math.round(avg) % 1440) + 1440) % 1440;
+  const hh = String(Math.floor(minutes / 60)).padStart(2, "0");
+  const mm = String(minutes % 60).padStart(2, "0");
+  return `${hh}:${mm}`;
+}
+
 export const STAT_CARD_DEFS: {
   key: string;
   label: string;
   icon: Icon;
+  symbol?: string;
   compute: (data: StatCardData) => string;
 }[] = [
   {
@@ -127,24 +168,43 @@ export const STAT_CARD_DEFS: {
     icon: IconSalt,
     compute: (data) => `${formatNumber(average(data.days, (d) => d.salt), 1)} g`,
   },
+  // Vitaminer og mineraler — grundstofsymboler bruges hvor de findes
+  // (StatCardsGrid.tsx renderer card.symbol i stedet for card.icon).
   {
     key: "potassium",
     label: "Kalium",
+    symbol: "K",
     icon: IconApple,
     compute: (data) => `${formatNumber(average(data.days, (d) => d.potassium))} mg`,
   },
   {
     key: "calcium",
     label: "Calcium",
+    symbol: "Ca",
     icon: IconBone,
     compute: (data) => `${formatNumber(average(data.days, (d) => d.calcium))} mg`,
   },
   {
     key: "iron",
     label: "Jern",
+    symbol: "Fe",
     icon: IconAtom2,
     compute: (data) => `${formatNumber(average(data.days, (d) => d.iron), 1)} mg`,
   },
+  // The remaining minerals have no product-level data source yet (no snapshot
+  // field on Registration, unlike potassium/calcium/iron above) — real once a
+  // HealthKit/Health Connect companion app or a richer food database sends
+  // them, "—" until then.
+  { key: "sodium", label: "Natrium", symbol: "Na", icon: IconAtom2, compute: (data) => metricValue(data, "SODIUM_MG", "mg") },
+  { key: "magnesium", label: "Magnesium", symbol: "Mg", icon: IconAtom2, compute: (data) => metricValue(data, "MAGNESIUM_MG", "mg") },
+  { key: "zinc", label: "Zink", symbol: "Zn", icon: IconAtom2, compute: (data) => metricValue(data, "ZINC_MG", "mg", 1) },
+  { key: "copper", label: "Kobber", symbol: "Cu", icon: IconAtom2, compute: (data) => metricValue(data, "COPPER_MG", "mg", 1) },
+  { key: "manganese", label: "Mangan", symbol: "Mn", icon: IconAtom2, compute: (data) => metricValue(data, "MANGANESE_MG", "mg", 1) },
+  { key: "selenium", label: "Selen", symbol: "Se", icon: IconAtom2, compute: (data) => metricValue(data, "SELENIUM_UG", "µg") },
+  { key: "phosphorus", label: "Fosfor", symbol: "P", icon: IconAtom2, compute: (data) => metricValue(data, "PHOSPHORUS_MG", "mg") },
+  { key: "iodine", label: "Jod", symbol: "I", icon: IconAtom2, compute: (data) => metricValue(data, "IODINE_UG", "µg") },
+  { key: "chromium", label: "Krom", symbol: "Cr", icon: IconAtom2, compute: (data) => metricValue(data, "CHROMIUM_UG", "µg") },
+  { key: "molybdenum", label: "Molybdæn", symbol: "Mo", icon: IconAtom2, compute: (data) => metricValue(data, "MOLYBDENUM_UG", "µg") },
   // MyFitnessPal-style extended panel (2026-09-11): only has real values on
   // products imported from Open Food Facts so far (see
   // src/lib/openFoodFacts.ts) — same zero-fill averaging as above otherwise.
@@ -184,6 +244,27 @@ export const STAT_CARD_DEFS: {
     icon: IconLemon2,
     compute: (data) => `${formatNumber(average(data.days, (d) => d.vitaminC))} mg`,
   },
+  // The rest of the B/D/E/K vitamins have no product-level data source yet —
+  // same "real once a companion app sends it" pattern as the trace minerals.
+  { key: "vitaminD", label: "Vitamin D", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_D_UG", "µg", 1) },
+  { key: "vitaminE", label: "Vitamin E", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_E_MG", "mg", 1) },
+  { key: "vitaminK", label: "Vitamin K", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_K_UG", "µg") },
+  { key: "vitaminB1", label: "Vitamin B1", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B1_MG", "mg", 1) },
+  { key: "vitaminB2", label: "Vitamin B2", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B2_MG", "mg", 1) },
+  { key: "vitaminB3", label: "Vitamin B3", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B3_MG", "mg", 1) },
+  { key: "vitaminB5", label: "Vitamin B5", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B5_MG", "mg", 1) },
+  { key: "vitaminB6", label: "Vitamin B6", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B6_MG", "mg", 1) },
+  { key: "vitaminB7", label: "Vitamin B7", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B7_UG", "µg") },
+  { key: "vitaminB9", label: "Vitamin B9", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B9_UG", "µg") },
+  { key: "vitaminB12", label: "Vitamin B12", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B12_UG", "µg", 1) },
+  // Allergener og E-numre: Product.allergens/additives (see prisma/schema.prisma)
+  // exist per-product, but Registration has no allergen/additive snapshot
+  // field yet (unlike the nutrition snapshot fields), so a real per-period
+  // aggregate isn't wired up here — placeholder "—" rather than an
+  // aggregate built on top of the *current* product record, which would
+  // break registration snapshot semantics. See docs/DECISIONS.md.
+  { key: "allergens", label: "Allergener", icon: IconActivity, compute: () => "—" },
+  { key: "additives", label: "E-numre", icon: IconActivity, compute: () => "—" },
   {
     key: "daysLogged",
     label: "Dage logget",
@@ -196,16 +277,13 @@ export const STAT_CARD_DEFS: {
     icon: IconTargetArrow,
     compute: (data) => `${data.days.filter((d) => d.kcal > 0 && d.kcal <= DAILY_KCAL_GOAL).length} dage`,
   },
+  // Sport og aktivitet. Manglende integrationsdata vises som en streg — aldrig
+  // som et opdigtet eksempeltal.
   {
     key: "steps",
     label: "Skridt",
     icon: IconWalk,
-    // Real data once a HealthKit/Health Connect companion app has sent
-    // STEPS readings (see docs/HEALTHKIT_COMPANION.md); a placeholder number until then.
-    compute: (data) => {
-      const avg = averageMetric(data.metrics, "STEPS");
-      return avg !== null ? formatNumber(avg) : "6.210";
-    },
+    compute: (data) => metricValue(data, "STEPS"),
   },
   {
     key: "water",
@@ -213,18 +291,51 @@ export const STAT_CARD_DEFS: {
     icon: IconDroplet,
     compute: (data) => {
       const avg = averageMetric(data.metrics, "WATER_ML");
-      return avg !== null ? `${(avg / 1000).toFixed(1).replace(".", ",")} l` : "1,6 l";
+      return avg !== null ? `${(avg / 1000).toFixed(1).replace(".", ",")} l` : "—";
     },
   },
   {
     key: "burned",
     label: "Forbrændt",
     icon: IconBolt,
-    compute: (data) => {
-      const avg = averageMetric(data.metrics, "ACTIVE_ENERGY_KCAL");
-      return avg !== null ? `${formatNumber(avg)} kcal` : "642 kcal";
-    },
+    compute: (data) => metricValue(data, "ACTIVE_ENERGY_KCAL", "kcal"),
   },
+  {
+    key: "distanceKm",
+    label: "Kilometer",
+    icon: IconRoute,
+    compute: (data) => metricValue(data, "DISTANCE_KM", "km", 1),
+  },
+  { key: "exerciseMinutes", label: "Aktive minutter", icon: IconActivity, compute: (data) => metricValue(data, "EXERCISE_MINUTES", "min") },
+  { key: "standMinutes", label: "Aktive timer", icon: IconActivity, compute: (data) => metricHoursMinutes(data, "STAND_MINUTES") },
+  { key: "floorsClimbed", label: "Etager", icon: IconActivity, compute: (data) => metricValue(data, "FLOORS_CLIMBED") },
+  { key: "activeZoneMinutes", label: "Zoneminutter", icon: IconTargetArrow, compute: (data) => metricValue(data, "ACTIVE_ZONE_MINUTES", "min") },
+  { key: "heartRate", label: "Puls", icon: IconHeartbeat, compute: (data) => metricValue(data, "HEART_RATE_BPM", "bpm") },
+  { key: "restingHeartRate", label: "Hvilepuls", icon: IconHeartbeat, compute: (data) => metricValue(data, "RESTING_HEART_RATE_BPM", "bpm") },
+  { key: "restingHeartRateMinutes", label: "Tid med hvilepuls", icon: IconHeartbeat, compute: (data) => metricValue(data, "RESTING_HEART_RATE_MINUTES", "min") },
+  { key: "heartRateMin", label: "Laveste puls", icon: IconHeartbeat, compute: (data) => metricValue(data, "HEART_RATE_MIN_BPM", "bpm") },
+  { key: "heartRateMax", label: "Højeste puls", icon: IconHeartbeat, compute: (data) => metricValue(data, "HEART_RATE_MAX_BPM", "bpm") },
+  { key: "hrv", label: "HRV", icon: IconHeartbeat, compute: (data) => metricValue(data, "HEART_RATE_VARIABILITY_MS", "ms", 1) },
+  { key: "vo2Max", label: "VO₂ max", icon: IconHeartbeat, compute: (data) => metricValue(data, "VO2_MAX", "ml/kg/min", 1) },
+  { key: "heartRateRecovery", label: "Pulsrestitution", icon: IconHeartbeat, compute: (data) => metricValue(data, "HEART_RATE_RECOVERY_BPM", "bpm") },
+  { key: "respiratoryRate", label: "Vejrtrækningsfrekvens", icon: IconActivity, compute: (data) => metricValue(data, "RESPIRATORY_RATE_BPM", "/min", 1) },
+  { key: "spo2", label: "SpO₂", icon: IconActivity, compute: (data) => metricValue(data, "OXYGEN_SATURATION_PERCENT", "%", 1) },
+  { key: "temperature", label: "Temperatur", icon: IconActivity, compute: (data) => metricValue(data, "TEMPERATURE_C", "°C", 1) },
+  { key: "stress", label: "Stress", icon: IconActivity, compute: (data) => metricValue(data, "STRESS_SCORE") },
+  { key: "edaResponses", label: "EDA-responser", icon: IconActivity, compute: (data) => metricValue(data, "EDA_RESPONSES") },
+  { key: "cardioLoad", label: "Cardio load", icon: IconActivity, compute: (data) => metricValue(data, "CARDIO_LOAD", "", 1) },
+  // Søvn. Klokketider er lagret som minut-i-døgnet fra en companion-app.
+  { key: "sleepDuration", label: "Søvntid", icon: IconActivity, compute: (data) => metricHoursMinutes(data, "SLEEP_MINUTES") },
+  { key: "sleepInBed", label: "Tid i seng", icon: IconActivity, compute: (data) => metricHoursMinutes(data, "SLEEP_IN_BED_MINUTES") },
+  { key: "sleepBedtime", label: "Sengetid", icon: IconActivity, compute: (data) => minuteOfDay(data, "SLEEP_START_MINUTE_OF_DAY") },
+  { key: "sleepWakeTime", label: "Opvågning", icon: IconActivity, compute: (data) => minuteOfDay(data, "SLEEP_END_MINUTE_OF_DAY") },
+  { key: "sleepAwake", label: "Vågen", icon: IconActivity, compute: (data) => metricValue(data, "SLEEP_AWAKE_MINUTES", "min") },
+  { key: "sleepRem", label: "REM-søvn", icon: IconActivity, compute: (data) => metricValue(data, "SLEEP_REM_MINUTES", "min") },
+  { key: "sleepLight", label: "Let/Core-søvn", icon: IconActivity, compute: (data) => metricValue(data, "SLEEP_LIGHT_MINUTES", "min") },
+  { key: "sleepDeep", label: "Dyb søvn", icon: IconActivity, compute: (data) => metricValue(data, "SLEEP_DEEP_MINUTES", "min") },
+  { key: "sleepScore", label: "Søvnkvalitet", icon: IconActivity, compute: (data) => metricValue(data, "SLEEP_SCORE") },
+  { key: "sleepEfficiency", label: "Søvneffektivitet", icon: IconActivity, compute: (data) => metricValue(data, "SLEEP_EFFICIENCY_PERCENT", "%", 1) },
+  { key: "sleepAwakenings", label: "Opvågninger", icon: IconActivity, compute: (data) => metricValue(data, "SLEEP_AWAKENINGS") },
 ];
 
 // The cards a fresh Statistik dashboard shows out of the box. Deliberately not
@@ -246,9 +357,16 @@ export const DEFAULT_ACTIVE_STAT_KEYS: string[] = [
 
 export const SPORT_STAT_KEY_PREFIX = "sport:";
 
+// Always offered as sport cards (per the user's own request), even before any
+// activity data exists for them — shown as an empty "—" placeholder until
+// then. Additional sport types the user actually logs still appear
+// dynamically alongside these.
+const PINNED_SPORT_TYPES = ["running", "cycling", "swimming", "cardio", "ski"] as const;
+
 // One card per sport type the user actually has activity data for (from a
-// connected integration or their own manual logging) — sports are
-// open-ended/dynamic, so they can't be a fixed STAT_CARD_DEFS entry.
+// connected integration or their own manual logging), plus the pinned sport
+// types above even with zero data — sports are otherwise open-ended/dynamic,
+// so they can't be a fixed STAT_CARD_DEFS entry.
 function computeSportStatCards(activities: ActivityTotals[]): StatCardValue[] {
   const bySport = new Map<string, { durationMinutes: number; caloriesBurned: number }>();
   for (const activity of activities) {
@@ -258,13 +376,23 @@ function computeSportStatCards(activities: ActivityTotals[]): StatCardValue[] {
     bySport.set(activity.sportType, existing);
   }
 
-  return Array.from(bySport.entries()).map(([sportType, totals]) => {
+  const orderedTypes = [
+    ...PINNED_SPORT_TYPES,
+    ...Array.from(bySport.keys()).filter(
+      (type) => !PINNED_SPORT_TYPES.includes(type as (typeof PINNED_SPORT_TYPES)[number]),
+    ),
+  ];
+
+  return orderedTypes.map((sportType) => {
+    const totals = bySport.get(sportType);
     const meta = getSportMeta(sportType);
     return {
       key: `${SPORT_STAT_KEY_PREFIX}${sportType}`,
       label: meta.label,
       icon: meta.icon,
-      value: `${formatNumber(totals.durationMinutes)} min · ${formatNumber(totals.caloriesBurned)} kcal`,
+      value: totals
+        ? `${formatNumber(totals.durationMinutes)} min · ${formatNumber(totals.caloriesBurned)} kcal`
+        : "—",
     };
   });
 }
@@ -274,6 +402,7 @@ export function computeStatCards(data: StatCardData): StatCardValue[] {
     key: def.key,
     label: def.label,
     icon: def.icon,
+    symbol: def.symbol,
     value: def.compute(data),
   }));
   const sportCards = data.activities ? computeSportStatCards(data.activities) : [];
@@ -285,7 +414,8 @@ export function computeStatCards(data: StatCardData): StatCardValue[] {
 
 export type StatLayoutItem = { type: "stat"; key: string };
 export type StatHeaderLayoutItem = { type: "header"; id: string; text: string };
-export type StatGridLayoutItem = StatLayoutItem | StatHeaderLayoutItem;
+export type StatDividerLayoutItem = { type: "divider"; id: string };
+export type StatGridLayoutItem = StatLayoutItem | StatHeaderLayoutItem | StatDividerLayoutItem;
 
 export const STAT_LAYOUT_STORAGE_KEY = "hellocal.statistik.layout";
 
@@ -325,11 +455,20 @@ export function activeStatKeys(defaultLayout: StatGridLayoutItem[]): Set<string>
   return new Set(current.filter((item): item is StatLayoutItem => item.type === "stat").map((item) => item.key));
 }
 
-/** Tilføjer en ny "Overskrift"-sektionsskilledeler til bunden af det aktive layout. */
+/** Tilføjer en ny "Overskrift"-sektionsskilledeler øverst i det aktive layout. */
 export function addHeaderToLayout(defaultLayout: StatGridLayoutItem[]): StatGridLayoutItem[] {
   const current = loadStatLayout(defaultLayout);
   const id = typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `id-${Date.now()}`;
-  const next = [...current, { type: "header" as const, id, text: "Overskrift" }];
+  const next = [{ type: "header" as const, id, text: "Overskrift" }, ...current];
+  saveStatLayout(next);
+  return next;
+}
+
+/** Tilføjer en ny visuel skillelinje (divider) øverst i det aktive layout. */
+export function addDividerToLayout(defaultLayout: StatGridLayoutItem[]): StatGridLayoutItem[] {
+  const current = loadStatLayout(defaultLayout);
+  const id = typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `id-${Date.now()}`;
+  const next = [{ type: "divider" as const, id }, ...current];
   saveStatLayout(next);
   return next;
 }

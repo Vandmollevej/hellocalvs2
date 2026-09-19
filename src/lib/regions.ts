@@ -72,6 +72,33 @@ export function regionToOcrLanguage(region: string): string {
   return isRegionCode(region) ? OCR_LANGUAGE_BY_REGION[region] : "dan+eng";
 }
 
+// GS1 country-prefix candidates for a barcode. Used only as a *fallback*
+// signal alongside the user's own region below — never a whitelist, and
+// never treated as a confirmed physical country of production (a GS1 prefix
+// is a registration/issuance signal only). See docs/DECISIONS.md, OpenAI
+// product recognition (2026-09-16/17).
+export function gs1RegionCandidates(barcode: string): RegionCode[] {
+  const cleaned = barcode.replace(/\D/g, "");
+  if (!cleaned) return [];
+  // US/CA share the 000-139 GS1 range in this project's mapping, so both
+  // are returned rather than inventing one certain match.
+  return REGIONS.filter((region) =>
+    region.barcodePrefixes.some((prefix) => cleaned.startsWith(prefix))
+  ).map((region) => region.code);
+}
+
+// Ordered, deduplicated Tesseract/vision language codes: the user's market
+// region is the primary signal (never the phone/browser display language,
+// see OCR_LANGUAGE_BY_REGION above), the barcode's GS1 signal is a
+// secondary/fallback signal, English is always included last as a safety
+// net. This is a priority order, not a hard restriction — low-confidence
+// OCR/vision may still recognize other languages.
+export function primaryOcrLanguages(marketRegion: string, gs1Regions: RegionCode[]): string[] {
+  const region = isRegionCode(marketRegion) ? marketRegion : "DK";
+  const codesFor = (r: RegionCode) => OCR_LANGUAGE_BY_REGION[r].split("+");
+  return [...new Set([...codesFor(region), ...gs1Regions.flatMap(codesFor), "eng"])];
+}
+
 // BCP-47 speech-recognition language tags per region, same reasoning as
 // OCR_LANGUAGE_BY_REGION above.
 const SPEECH_LANG_BY_REGION: Record<RegionCode, string> = {
@@ -121,4 +148,25 @@ export function buildFakeBarcodeForRegion(region: string): string {
 // Human-readable EAN-13 grouping: 1 digit, then two groups of 6.
 export function formatEan13(code: string): string {
   return `${code.slice(0, 1)} ${code.slice(1, 7)} ${code.slice(7, 13)}`;
+}
+
+// A single-value GS1 origin/market signal for a barcode, stored on
+// Product.originCountryCode and used only as a search-ranking boost (see
+// src/lib/product-search-ranking.ts, docs/DECISIONS.md 2026-09-19). Unlike
+// gs1RegionCandidates() above (which returns every matching region as an
+// OCR-language fallback list), this collapses to one code — or "US_CA" when
+// the prefix is ambiguous between the two — and null when the prefix maps to
+// more than one distinct region. Same caveat applies: a GS1 prefix identifies
+// where the company prefix was issued, not necessarily the physical
+// manufacturing country, and must never be shown as such in the UI.
+export function inferGs1OriginCountryCode(barcode: string): string | null {
+  const matches = REGIONS.filter((region) =>
+    region.barcodePrefixes.some((prefix) => barcode.startsWith(prefix))
+  );
+  if (matches.length === 0) return null;
+
+  const codes = [...new Set(matches.map((match) => match.code))];
+  if (codes.length === 1) return codes[0];
+  if (codes.length === 2 && codes.includes("US") && codes.includes("CA")) return "US_CA";
+  return null;
 }

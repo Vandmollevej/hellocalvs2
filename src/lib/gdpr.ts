@@ -21,8 +21,9 @@ export async function anonymizeUser(targetUserId: string, adminId: string) {
         totpSecret: null,
         weightKg: null,
         heightCm: null,
-        birthYear: null,
+        birthDate: null,
         sex: null,
+        cycleTrackingEnabled: false,
         wantsPushNotifications: false,
         wantsUpdateNewsEmails: false,
         wantsAdviceEmails: false,
@@ -34,6 +35,10 @@ export async function anonymizeUser(targetUserId: string, adminId: string) {
     prisma.passkey.deleteMany({ where: { userId: targetUserId } }),
     prisma.deviceToken.deleteMany({ where: { userId: targetUserId } }),
     prisma.pushSubscription.deleteMany({ where: { userId: targetUserId } }),
+    // Personlig søge-/klikhistorik til søgerangering (2026-09-19, se
+    // docs/DECISIONS.md) — slettes fuldt ud, ikke kun anonymiseret, da den
+    // ikke har samme historik-/snapshot-krav som Registration m.fl.
+    prisma.userProductSearchHistory.deleteMany({ where: { userId: targetUserId } }),
     prisma.adminAuditLog.create({
       data: { adminId, action: "GDPR_FORGET_USER", targetUserId },
     }),

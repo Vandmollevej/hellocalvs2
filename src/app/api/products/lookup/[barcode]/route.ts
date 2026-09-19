@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { lookupOpenFoodFacts } from "@/lib/openFoodFacts";
 import { lookupFoodDataCentral } from "@/lib/foodDataCentral";
+import { inferGs1OriginCountryCode } from "@/lib/regions";
 
 // GET /api/products/lookup/:barcode
 //
@@ -67,6 +68,7 @@ export async function GET(
         externalSource,
         externalId,
         sourceCheckedAt: new Date(),
+        originCountryCode: inferGs1OriginCountryCode(barcode),
         status: "PENDING",
         barcodes: { create: { code: barcode } },
       },

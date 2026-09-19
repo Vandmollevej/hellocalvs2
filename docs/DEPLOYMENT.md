@@ -51,6 +51,12 @@ formally migrated or archived.
   it requires local admin rights the workstation does not have (see
   "Administrative access" below), so the answer will not change between
   sessions. Do not propose installing Docker Desktop/WSL as a fix.
+- Node.js **is** installed on this workstation, at `C:\Program Files\nodejs`,
+  but it is not on the Bash tool's default `PATH` (a plain `node`/`npm`/`npx`
+  call fails with "command not found"). Prepend it once per session instead of
+  concluding Node is missing or asking the user to install it:
+  `export PATH="$PATH:/c/Program Files/nodejs"` (Bash) — confirmed working for
+  `node`, `npm`, and `node_modules/.bin/prisma` (2026-09-12).
 - There is no local dev server or local database on this machine. The only
   running instance of HELLO CAL is the **production Synology deployment**,
   reachable at `https://hellocal.packroff.dk` (`/api/health` → `{"status":"ok"}`
@@ -71,6 +77,11 @@ formally migrated or archived.
 - Synology SSH listens internally on port `22`. External maintenance access is
   temporarily enabled through the existing Home Assistant switch and the
   documented external port `2222`.
+- The workstation is on the same LAN as the NAS (`192.168.1.90`, same host the
+  Cloudflare Tunnel points at — see "Cloudflare Tunnel cutover" below), so a
+  plain `ssh Peter@192.168.1.90` from this workstation reaches it directly over
+  internal port `22` — the Home Assistant switch/external port `2222` is only
+  needed for a connection from *outside* the LAN. SSH username: `Peter`.
 - Password authentication is currently required because the workstation's
   Ed25519 key is not yet authorized.
 - Turn the Home Assistant SSH switch off immediately after maintenance.

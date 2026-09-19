@@ -23,8 +23,11 @@ export async function PATCH(req: Request) {
     weightKg,
     targetWeightKg,
     heightCm,
-    birthYear,
+    birthDate,
     sex,
+    cycleTrackingEnabled,
+    averageCycleLengthDays,
+    averagePeriodLengthDays,
     defaultBedtime,
     defaultWakeTime,
     shiftWorkEnabled,
@@ -38,6 +41,7 @@ export async function PATCH(req: Request) {
     showAllergens,
     allergenVisibility,
     showExtendedNutrition,
+    warnOnRecommendedLimits,
     region,
     appLocale,
     photoDiaryRequiresPasscode,
@@ -50,8 +54,11 @@ export async function PATCH(req: Request) {
     weightKg?: number | null;
     targetWeightKg?: number | null;
     heightCm?: number | null;
-    birthYear?: number | null;
+    birthDate?: string | null;
     sex?: "FEMALE" | "MALE" | null;
+    cycleTrackingEnabled?: boolean;
+    averageCycleLengthDays?: number;
+    averagePeriodLengthDays?: number;
     defaultBedtime?: string | null;
     defaultWakeTime?: string | null;
     shiftWorkEnabled?: boolean;
@@ -65,6 +72,7 @@ export async function PATCH(req: Request) {
     showAllergens?: boolean;
     allergenVisibility?: Record<string, boolean>;
     showExtendedNutrition?: boolean;
+    warnOnRecommendedLimits?: boolean;
     region?: string;
     appLocale?: "da" | "en";
     photoDiaryRequiresPasscode?: boolean;
@@ -83,8 +91,12 @@ export async function PATCH(req: Request) {
         weightKg,
         targetWeightKg,
         heightCm,
-        birthYear,
+        birthDate:
+          birthDate === undefined ? undefined : birthDate === null ? null : new Date(birthDate),
         sex,
+        cycleTrackingEnabled,
+        averageCycleLengthDays,
+        averagePeriodLengthDays,
         defaultBedtime,
         defaultWakeTime,
         shiftWorkEnabled,
@@ -108,6 +120,7 @@ export async function PATCH(req: Request) {
         showAllergens,
         allergenVisibility,
         showExtendedNutrition,
+        warnOnRecommendedLimits,
         region,
         appLocale,
         photoDiaryRequiresPasscode,

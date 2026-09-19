@@ -6,6 +6,31 @@ import { getSessionUser } from "@/lib/session";
 // se src/lib/bug-report-approval.ts. Kræver en rigtig session — en
 // fejlrapport uden kendt afsender giver ingen mening (og ingen at kreditere
 // points).
+
+// Reported from a specific product's "Indberet fejl" link (docs/DECISIONS.md
+// 2026-09-19): a user may only have one PENDING report per product at a
+// time, so the client can show the "afventer gennemgang" overlay instead of
+// letting a second identical report be queued.
+export async function GET(req: Request) {
+  const user = await getSessionUser();
+  if (!user) {
+    return NextResponse.json({ message: "Log ind for at se din indberetning" }, { status: 401 });
+  }
+
+  const { searchParams } = new URL(req.url);
+  const productId = searchParams.get("productId");
+  if (!productId) {
+    return NextResponse.json({ message: "productId mangler" }, { status: 400 });
+  }
+
+  const bugReport = await prisma.bugReport.findFirst({
+    where: { userId: user.id, productId, status: "PENDING" },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return NextResponse.json({ bugReport });
+}
+
 export async function POST(req: Request) {
   const user = await getSessionUser();
   if (!user) {
@@ -21,6 +46,7 @@ export async function POST(req: Request) {
 
   const description = typeof body.description === "string" ? body.description.trim() : "";
   const screenshotUrl = typeof body.screenshotUrl === "string" ? body.screenshotUrl : undefined;
+  const productId = typeof body.productId === "string" ? body.productId : undefined;
 
   if (!description || description.length < 10) {
     return NextResponse.json(
@@ -29,8 +55,21 @@ export async function POST(req: Request) {
     );
   }
 
+  if (productId) {
+    const pending = await prisma.bugReport.findFirst({
+      where: { userId: user.id, productId, status: "PENDING" },
+      orderBy: { createdAt: "desc" },
+    });
+    if (pending) {
+      return NextResponse.json(
+        { message: "Du har allerede en rettelse på dette produkt, som afventer gennemgang", bugReport: pending },
+        { status: 409 }
+      );
+    }
+  }
+
   const bugReport = await prisma.bugReport.create({
-    data: { userId: user.id, description, screenshotUrl },
+    data: { userId: user.id, description, screenshotUrl, productId },
   });
 
   return NextResponse.json({ bugReport }, { status: 201 });

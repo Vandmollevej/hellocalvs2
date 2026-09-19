@@ -16,6 +16,10 @@ const eslintConfig = defineConfig([
     // worktree has its own .next build output that isn't excluded by the
     // plain ".next/**" pattern once nested this deep.
     ".claude/**",
+    // Reference-only ChatGPT handoff package (docs/DECISIONS.md, 2026-09-17)
+    // — its code/ subtree was the integration source, not app source; the
+    // actual app copies live under src/.
+    "HelloCal_OpenAI_ProductRecognition_Handoff_2026-09-16/**",
   ]),
 ]);
 

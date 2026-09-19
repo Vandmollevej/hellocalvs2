@@ -13,7 +13,12 @@ type Registration = {
   carbsSnapshot: number;
   fatSnapshot: number;
   amountGrams: number;
-  product: { imageUrl: string | null } | null;
+  product: {
+    imageUrl: string | null;
+    servingSizeGrams: number | null;
+    servingSizeUnitSingular: string | null;
+    servingSizeUnitPlural: string | null;
+  } | null;
 };
 
 function MacroBar({ label, grams, max }: { label: string; grams: number; max: number }) {
@@ -79,8 +84,26 @@ export default function RegistrationPage() {
       <div className="flex flex-col gap-4 p-4">
         <h1 className="hf-heading text-lg text-hf-black">{registration.titleSnapshot}</h1>
         <p className="text-sm text-hf-black opacity-70">
-          {Math.round(registration.kcalSnapshot)} kcal · {registration.amountGrams} g
+          {registration.amountGrams > 0
+            ? Math.round((registration.kcalSnapshot / registration.amountGrams) * 100)
+            : Math.round(registration.kcalSnapshot)}{" "}
+          kcal {t("registration.per100g")}
         </p>
+        {(() => {
+          const { servingSizeGrams, servingSizeUnitSingular, servingSizeUnitPlural } =
+            registration.product ?? {};
+          if (!servingSizeGrams || servingSizeGrams <= 0 || !servingSizeUnitSingular) return null;
+          const count = registration.amountGrams / servingSizeGrams;
+          const unitLabel =
+            Math.abs(count - 1) < 0.05 ? servingSizeUnitSingular : (servingSizeUnitPlural ?? servingSizeUnitSingular);
+          const roundedCount = Math.round(count * 10) / 10;
+          const kcalForCount = Math.round(registration.kcalSnapshot);
+          return (
+            <p className="text-sm text-hf-black opacity-70">
+              {kcalForCount} kcal {t("registration.perUnit", { unit: `${roundedCount} ${unitLabel}` })}
+            </p>
+          );
+        })()}
 
         <div className="flex flex-col gap-4 rounded-2xl bg-hf-tan p-4">
           <p className="hf-heading text-[15px] text-hf-black">{t("common.macroBreakdown")}</p>

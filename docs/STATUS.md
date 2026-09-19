@@ -1,6 +1,865 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-12
+Last updated: 2026-09-19
+
+## 2026-09-19: Alternative kalorievisninger (per glas/skive/stk.) + AI-genererede admin-fejlrapporter ved usikkerhed
+
+Direct user request, full rationale in `docs/DECISIONS.md` (same heading,
+2026-09-19).
+
+- `prisma/schema.prisma`: `Product.alternativeServings` (Json?) +
+  `BugReport.userId` gjort valgfri + ny `BugReportSource` enum (`USER`/`AI`,
+  default `USER`) på `BugReport`. Migration
+  `prisma/migrations/20260919070000_alternative_serving_calories`
+  (hand-written, ikke anvendt — ingen lokal database i dette miljø, samme
+  `hellocal_no_local_db`-begrænsning som resten af filen).
+- Nye `src/lib/alternative-servings.ts` (client-sikker: `cleanAlternativeServings`,
+  `isAlternativeServingConfident`, tærskel 0.7) og
+  `src/lib/alternative-servings-review.ts` (server-only, bruger `prisma`:
+  `flagUncertainAlternativeServings`) — adskilt i to filer, fordi
+  førstnævnte importeres direkte af det client-renderede `/add/[id]`.
+- `POST /api/products` gemmer nu `alternativeServings` på produktet (når
+  arrayet ikke er tomt), lægger dem ind i den eksisterende
+  AI-prediction/correction-log for næringsanalysen, og filer en
+  AI-`BugReport` for enhver post under confidence-tærsklen.
+- `src/lib/bug-report-approval.ts` springer `awardPoints`/`queueMessage`
+  over når `userId` er null (AI-rapporter). `src/lib/scheduler.ts`s
+  48-timers eskalering viser "AI-genereret" i stedet for et brugernavn for
+  disse. `/admin/bug-reports` + `PendingBugReportCard.tsx` viser
+  "AI-genereret (ingen bruger)" og skjuler points-teksten på
+  godkend-knappen for `source = AI`-rækker.
+- `/add/[id]/page.tsx` viser nu confidence-godkendte alternative
+  kalorievisninger som ekstra linjer direkte under det eksisterende
+  "X kcal/100g"-tal (ikke som et separat mængde-/portionsvalg — eksplicit
+  brugerpræcisering midt i sessionen). Nye i18n-nøgle
+  `addProduct.alternativeServing` (begge sprog).
+- Draften bærer feltet gennem det eksisterende `/camera/create` →
+  `/product/create` → `POST /api/products`-flow uændret (samme mønster som
+  `analysisIds`), ikke et redigerbart formularfelt.
+
+`npx prisma validate`/`generate`, `npm run lint` (repo-wide, clean) og
+`npm run build` (fuld TypeScript + alle routes) passerede alle. Fandt og
+rettede undervejs en reel type-fejl i `src/lib/scheduler.ts` (den
+eksisterende 48-timers eskalerings-mail antog `report.user` altid var
+sat — rettet med et `"AI-genereret"`-fallback, ikke en urelateret
+omskrivning). **Ikke testet i en rigtig browser eller mod rigtig AI-vision**:
+ingen lokal PostgreSQL i dette miljø, og ingen ny AI-analyse er kørt i denne
+session — `alternativeServings`-udtrækket i `/api/ai/extract-nutrition-v2`
+fandtes allerede fra 2026-09-17-arbejdet og er ikke ændret her, kun det der
+sker med resultatet bagefter.
+
+## 2026-09-19: GenericIngredient region search-ranking — closed the missing time-of-day counter
+
+Direct user request re-describing the regional search-ranking requirement
+(hidden per-region search count with lower-priority for low counts,
+GS1-derived origin-country priority, more-characters/higher-similarity
+threshold for low-priority items, 2-character live+cached autosuggest, and a
+click-time-of-day×region counter). All of this was already built the same
+day for `Product`/`Ingredient` (see the "Regional product/ingredient search
+ranking" entry below) — checked the current code against every point in the
+request and found exactly one gap: `GenericIngredient` had the region
+search/click counter (`GenericIngredientRegionSearchStat`) but no
+time-of-day bucket, unlike `Product`/`Ingredient`.
+
+- New `GenericIngredientRegionHourStat` model (same shape as
+  `ProductRegionHourStat`/`IngredientRegionHourStat`), migration
+  `prisma/migrations/20260919060000_generic_ingredient_hour_stats`
+  (hand-written, no local PostgreSQL reachable from this workstation, same
+  as every other pending migration in this file).
+- `GET /api/generic-ingredients` now also includes/reads `regionHourStats`
+  (already passed `localHour` into `rankProducts()`, but had no hour data to
+  rank against) and strips it from the response, same as `regionSearchStats`.
+- `POST /api/products/search-event` now also accepts `genericIngredientId`
+  (alongside the existing `productId`/`ingredientId`), recording both the
+  region click count and the region×hour click count — no UI currently calls
+  this for generic ingredients yet (search/discovery for them isn't wired
+  into `/foods` yet, per the 2026-09-19 "own database" decision), so this is
+  ready infrastructure, not yet exercised end-to-end.
+
+`npx prisma validate`/`generate` and `npm run lint` (repo-wide) passed
+clean. `npm run build`'s TypeScript phase hit two **pre-existing, unrelated**
+errors from a concurrent session's in-progress work (not touched by this
+change): `src/lib/alternative-servings.ts` (new, untracked) and
+`src/lib/scheduler.ts:64` (`report.user` now possibly `null` since
+`BugReport.userId` became optional for AI-authored reports) — confirmed via
+`git status` that neither file was part of this change before flagging
+rather than fixing someone else's in-progress feature. Not verified against
+a live database — same recurring `hellocal_no_local_db` constraint as most
+other entries in this file.
+
+Direct user request for an upgrade/payment page. Full architecture writeup in
+`docs/DECISIONS.md` (2026-09-19, same heading) — this entry is the
+build/verification summary.
+
+- New `/profile/subscription` page, added as item #2 on the profile menu
+  (`src/app/profile/page.tsx`, right after "Profil"): a gift-code row (label
+  above field + right-arrow icon-button submit, per the user's own
+  description), an "Indløs points" row linking to the pre-existing
+  `/profile/points` screen, and a current-plan card (Gratis vs. Seriøs, 119
+  kr./måned, disabled "Opgradér" CTA since no PSP is wired up yet, plus a
+  link out to the pre-existing `/settings/payment` page for saved cards).
+- New `GiftCode` model + `src/lib/gift-codes.ts` (`redeemGiftCode`) and `POST
+  /api/subscription/redeem-gift-code`. New `src/lib/subscription.ts`:
+  `getSubscriptionTier()` (derives Gratis/Seriøs from the existing
+  `Subscription.status`/`currentPeriodEnd`, no new tier column),
+  `getRetentionCutoffDate()` (the 30-day rolling window, a pure query
+  filter — never deletes or marks rows).
+- `src/lib/points.ts`'s `redeemFreeMonth()` no longer requires a saved
+  payment method (explicit user decision overriding 2026-09-02, see
+  `docs/DECISIONS.md`) — `/profile/points`'s copy updated to match.
+- **Found and fixed while wiring this up**: `/settings/payment` (built
+  2026-09-02/03) has always fetched `/api/subscription`, but that route
+  never actually existed — the page has been silently running against a 404
+  this whole time. Built the route now, keeping the exact
+  `{subscription, paymentMethods}` shape that page already expects, alongside
+  the new `{tier, pointsBalance, priceDkk, ...}` fields `/profile/subscription`
+  needs, so one endpoint now serves both pages correctly.
+- 30-day retention filter is wired into `GET /api/registrations` (the
+  calendar/statistics primary data source) for this pass. **Not done yet,
+  explicit follow-up**: the same filter is not yet applied to
+  `WeightEntry`/`HealthMetric`/`BodyMeasurement`/sleep endpoints, even though
+  the user's decision covers all data types — this needs the same
+  `getSubscriptionTier`/`getRetentionCutoffDate` call added to each of those
+  GET routes, deliberately not done as one large sweeping change without
+  review. Photo diary is already localStorage-only (2026-09-02) so this
+  server-side mechanism doesn't apply to it.
+- Hello Doc (the one category excluded from Gratis) is gated both
+  server-side (`POST /api/doctor-shares` → 403 when tier isn't Seriøs) and
+  in the UI (`/settings/hello-doc` shows an upgrade link instead of the
+  invite button for Gratis users).
+- **Not built, explicit follow-up**: no admin UI to create/generate gift
+  codes yet — only the data model and redemption endpoint exist. A gift code
+  currently has to be inserted directly in the database to test redemption.
+
+`npx prisma validate`/`generate`, `eslint .` (clean after fixing one
+`react-hooks/set-state-in-effect` on the new page), and `next build` (full
+TypeScript + all 165 routes, including the two new `/api/subscription*`
+routes and `/profile/subscription`) all passed clean — the build briefly
+waited on a concurrent session's own `next build` lock on this workstation,
+same as other entries in this file, then succeeded. **Verified live** in the
+local dev server (402×874): `/profile/subscription` renders its title and a
+graceful "Kunne ikke hente abonnement." error state instead of crashing — no
+reachable local PostgreSQL in this environment (`hellocal_no_local_db`, same
+recurring constraint as the rest of this file), so the actual gift-code
+redemption, points redemption without a card, and the 30-day retention
+cutoff could not be exercised against real data on this workstation.
+
+## 2026-09-19: Statistik-udvidelse — Sport og aktivitet, Søvn, Vitaminer og mineraler, Allergener og E-numre; fjernede opdigtede fallback-tal; ny "Anbefalede grænser"-indstilling
+
+Integrerede en ekstern Codex/ChatGPT-forberedt kodepakke
+(`HELLOCAL-statistik-IMPLEMENTATION.zip`, base `master@fb563a25`) mod den
+faktiske aktuelle kode — pakken var 5 dage gammel og forudsatte bl.a. et
+`DISTANCE_METERS`-felt, mens `DISTANCE_KM` allerede var tilføjet i mellemtiden
+(2026-09-19, front-page-tal-slideren) og layoutet allerede havde fået en
+"divider"-type og et flyttet `/settings/display`-undermenu-mønster fra andre
+samtidige sessioner; integrationen blev derfor lavet som en manuel merge, ikke
+et blindt patch-apply.
+
+- `src/lib/stat-cards.ts`: udvidede `STAT_CARD_DEFS` med rigtige
+  grundstofsymboler (Fe, Ca, K, Na, Mg, Zn, Cu, Mn, Se, P, I, Cr, Mo) på et nyt
+  `StatCardValue.symbol`-felt (StatCardsGrid.tsx viser symbolet i stedet for
+  det generiske ikon, når det findes) samt B/D/E/K-vitaminer, allergener/
+  E-numre (placeholder, se nedenfor), og en stor "Sport og aktivitet"/"Søvn"
+  gruppe (løb/cykling/svømning/cardio/ski som altid tilbudte "pinned"
+  sportskort, aktive minutter, zoneminutter, hvilepuls, HRV, VO₂ max,
+  søvnfaser osv.) — alle nye felter falder tilbage til "—" uden data, aldrig
+  et opdigtet tal. **Fjernede de eksisterende opdigtede fallback-tal**
+  (skridt "6.210", vand "1,6 l", forbrændt "642 kcal") til samme "—"-mønster.
+  Beholdt den eksisterende `distanceKm`/`IconRoute`-kort (tilføjet tidligere
+  samme dag af en anden session via `DISTANCE_KM`) i stedet for pakkens eget
+  duplikerede `DISTANCE_METERS`-forslag.
+- Nyt `StatCardValue.outsideRecommendedRange` — bevidst aldrig sat af nogen
+  `compute()`-funktion endnu. Denne app har **ingen** valideret,
+  region/profil-bevidst grænseværdi-evaluator; feltet findes kun som et sted
+  for en fremtidig evaluator at skrive til, i stedet for at opdigte grænser
+  nu. Se "Ikke bygget" nedenfor.
+- Ny `src/lib/nutrition-terminology.ts` (`nutritionSectionLabel(region)`):
+  regionsafhængig titel på næringssektionen (fx "Næringsindhold" i Danmark,
+  "Nutrition Facts" i USA) — bruges nu som titlen på statistikkens
+  makro/energi-kategori i stedet for et fast "Energi og makrofordeling"-navn.
+- `prisma/schema.prisma` + `prisma/migrations/20260919020000_stat_threshold_alerts/`:
+  nyt `User.warnOnRecommendedLimits` (default `false`), `FITBIT`/`WITHINGS`/
+  `GARMIN` på `HealthMetricSource`, og alle de nye sport/søvn/mikronæringsstof-
+  værdier på `HealthMetricType` (undtaget `DISTANCE_METERS`, se ovenfor).
+- `src/lib/sport-icons.ts`: tilføjede `cardio`/`ski` til `SPORT_TYPES`.
+- `src/components/StatCardsGrid.tsx`: nyt `highlightRecommendedLimits`-prop —
+  når sand OG `card.outsideRecommendedRange === true`, får kortet en 1 px
+  `border-hf-red-dark`-kant (både i det faste grid og i drag-floating-preview).
+  Da ingen `compute()` sætter `outsideRecommendedRange`, er kanten reelt
+  inaktiv, indtil en rigtig evaluator bygges — se "Ikke bygget" nedenfor.
+- `src/app/statistics/page.tsx`: henter nu `/api/profile` for
+  `warnOnRecommendedLimits` og sender den videre til `StatCardsGrid`.
+- `src/app/statistics/unused-cards/page.tsx`: ny kategorisering —
+  regionsafhængig næringstitel, "Vitaminer og mineraler" (samlet), "Allergener
+  og E-numre" (ny), "Sport og aktivitet" (udvidet, inkl. de fem pinned
+  sportskort), "Søvn" (ny), "Øvrige data". Henter nu også `region` fra
+  `/api/profile`.
+- `src/app/api/profile/route.ts`: `warnOnRecommendedLimits` tilføjet til
+  PATCH-whitelisten.
+- Ny indstillingsside `/settings/display/limits`
+  (`src/app/settings/display/limits/page.tsx`, samme mønster som den
+  eksisterende `/settings/display/front-page`): én `Toggle` for
+  "Gør opmærksom på grænseværdier over/under anbefalet normal". Ny
+  `ChevronRow` ("Anbefalede grænser", `IconAlertTriangle`) i den eksisterende
+  "Visning"-gruppe på `/settings` (`src/app/settings/page.tsx`).
+- Nye i18n-nøgler (begge sprog): `settings.recommendedLimits`,
+  `displaySettings.title/warnOnRecommendedLimits/warnOnRecommendedLimitsDescription`,
+  `statUnusedCards.category.vitaminsMinerals/allergensAdditives/sportActivity/sleep`
+  (erstatter de fjernede `energyMacros/vitamins/minerals/activityOther/sport`).
+
+**Ikke bygget denne omgang, flagget i stedet for opdigtet:**
+"Allergener"/"E-numre"-kortene viser altid "—" — `Product.allergens`/
+`additives` findes allerede pr. produkt (`prisma/schema.prisma`), men
+`Registration` har intet allergen-/E-nummer-snapshot-felt (kun
+næringssnapshot-felter), så et rigtigt periode-aggregat kunne ikke bygges
+uden enten at bryde registrerings-snapshot-princippet (AGENTS.md) eller
+tilføje nye snapshot-kolonner — en beslutning der bør tages eksplicit, ikke
+gættes i denne omgang. Den røde grænseværdi-kant er kun UI-lag: der findes
+ingen medicinsk/næringsfaglig grænseværdi-evaluator, så
+`warnOnRecommendedLimits`-slåknappen har i praksis ingen synlig effekt endnu.
+
+Verificeret: `npx prisma validate`, `npx prisma generate`, `eslint .` (hele
+repoet, 0 fejl) og en fuld `next build` (alle 137 routes, inkl. de nye
+`/settings/display/limits` og opdaterede `/statistics`/`/statistics/unused-
+cards`) via den kendte Playwright-bundlede `node.exe` — ventede undervejs på,
+at en anden samtidig sessions rigtige `next build`-proces blev færdig først
+(bekræftet med `Get-CimInstance Win32_Process`, ikke den kendte OneDrive-
+stale-lock-fejl). **Ikke testet i en rigtig browser** — samme gentagne
+begrænsning som andre entries i denne fil (ingen lokal Postgres).
+
+## 2026-09-19: Produktfejl-indberetning — afventer-gennemgang-overlay, ingen dobbelt-indsendelse, besked ved godkendelse/afvisning
+
+Direct user request: when a user has reported an error on a product, show a
+screen overlay ("Vi har modtaget din rettelse som afventer gennemgang") with
+a white "Redigér" button below it going back into the report form, so a
+second report on the same product can't be submitted while one is still
+pending; and when an admin approves or rejects the correction, send the user
+an in-app message saying so and whether points were transferred.
+
+- `BugReport` (`prisma/schema.prisma`) gained an optional `productId` (new
+  migration `20260919030000_bug_report_product_link`, hand-written — no local
+  database reachable from this workstation, same as every other pending
+  migration in this file). Previously every report was a plain, product-less
+  text description; now a report opened from a product's own "Indberet
+  fejl" link (`src/app/add/[id]/page.tsx`, now linking to
+  `/profile/report-bug?productId=<id>`) carries that context, while the
+  separate generic entry point under Profil stays product-less as before.
+- `POST /api/bug-reports` now rejects (409, returning the existing row) a
+  second `PENDING` report from the same user for the same `productId` —
+  duplicate prevention is enforced server-side, not just hidden in the UI.
+  New `GET /api/bug-reports?productId=` (does the same existing-PENDING
+  lookup, for the page to check on load) and new
+  `PATCH /api/bug-reports/[id]` (lets the user edit their own still-PENDING
+  report's description in place — the "Redigér" flow — instead of ever
+  creating a second row for the same product).
+- `src/app/profile/report-bug/page.tsx`: when a PENDING report already
+  exists for the given `productId` (or was just created), shows the overlay
+  screen with the exact requested copy and a `.hf-btn-secondary` (white,
+  bordered) "Redigér" button that reveals the same form pre-filled from the
+  existing report, submitting via `PATCH` instead of `POST`. Wrapped in
+  `Suspense` for `useSearchParams()`, matching `/product/create`'s existing
+  pattern for a static route with a query param.
+- Reused the existing "besked automatisering" in-app inbox
+  (`OutboundMessage`/`queueMessage()`, read via `/profile/messages` +
+  `GET/PATCH /api/messages`, already how `BUG_REPORT_RESOLVED`/
+  `PRODUCT_APPROVED` etc. reach the user) rather than building a new
+  notification system — this is what "besked i appen" already means
+  elsewhere in this codebase. `approveBugReport()` already queued
+  `BUG_REPORT_RESOLVED` (mentions the 10 points). `rejectBugReport()`
+  (`src/lib/bug-report-approval.ts`) previously sent **no** message at all on
+  rejection — added a new `BUG_REPORT_REJECTED` `MessageEvent` (schema enum +
+  default template, `src/lib/messaging.ts`, explicitly stating no points were
+  transferred) and wired `rejectBugReport()` to queue it. Also added to
+  `USER_TOGGLEABLE_EVENTS` and `/profile/notifications`' `EVENT_LABELS`, same
+  as every other user-facing event.
+- Admin's `/admin/bug-reports` list (`PendingBugReportCard.tsx`) now shows
+  "Produktrettelse: {brand} {name}" above the description when a report is
+  tied to a product, so the admin isn't reviewing a bare text blob with no
+  idea which product it's about.
+
+`npx prisma validate`/`generate`, `npm run lint` (whole repo, clean), and
+`npm run build` (full TypeScript + all routes, including the new
+`/api/bug-reports/[id]` route) all passed — the build briefly hit "Another
+next build process is already running" from a concurrent session's own
+build and a stale-looking i18n type error on the first attempt, both cleared
+on retry once that session's build finished, consistent with this file's
+other concurrent-build notes. **Not verified live in a browser**: no
+reachable local PostgreSQL in this environment, so the overlay/duplicate-409/
+edit-in-place round trip needs a real click-through against a database that
+actually has a product, a session user and a submitted report.
+
+## 2026-09-19: Manuel oprettelse — Ingrediens/Produkt-valg + ny GenericIngredient-database
+
+Direct user request: manuelt-oprettede produkter skal have brand/subbrand og
+følge samme visningsstruktur som andre produkter; og øverst under "manuelt
+tilføjet" skal brugeren vælge mellem "Ingrediens" og "Produkt". Generiske,
+ikke-scannede ingredienser (grønt/frugt/kød uden brand/emballage) skal have
+deres egen database og en region/land-popularitetskobling. Clarified with the
+user before building (AskUserQuestion): new standalone `GenericIngredient`
+model (not the existing `Ingredient`, which stays a HelloFresh image-only
+cache); an ingredient displays identically to a product except it never has a
+brand/barcode; region-popularity reuses the existing search/click-count
+pattern rather than a manually curated country list. See `docs/DECISIONS.md`
+for the full write-up.
+
+- New `GenericIngredient` + `GenericIngredientRegionSearchStat` models
+  (migration `20260919020000_generic_ingredients`, hand-written — no local
+  PostgreSQL reachable from this workstation, same as every other recent
+  migration in this file). No packaging means no energideklaration to read —
+  `POST /api/generic-ingredients` resolves per-100g macros once at creation
+  time via `src/lib/generic-ingredient-match.ts` (fuzzy match against
+  FRIDA-imported reference products) and copies them onto the row; an
+  unmatched ingredient has `kcalPer100g` etc. left `null` and the UI shows
+  "Næringsindhold ukendt" rather than inventing a number (same convention as
+  the 2026-09-19 `distanceKm` field).
+- **Reused the existing `/add/[id]` display screen as-is**, per the user's
+  "same display structure" request: `GET /api/products/[id]` now falls back
+  to `GenericIngredient` when no `Product` matches the id, reshaping it into
+  the same product-like JSON contract (`brand: null`, `barcodes: []`, plus a
+  new `isGenericIngredient`/`hasKnownNutrition` flag). `Registration` gained
+  a new nullable `genericIngredientId` (alongside the existing
+  `productId`/`dishId`), and `POST /api/registrations` gained a matching
+  branch — the same snapshot semantics as a normal product registration.
+  Favoriting a generic ingredient is **not** built yet (the bookmark button is
+  hidden for ingredients) — flagged as a follow-up rather than silently wired
+  into `Favorite`, which only has a `productId`/`dishId` FK today.
+- `GET /api/generic-ingredients?q=` search reuses
+  `src/lib/product-search-ranking.ts` (same text-match + region-popularity
+  ranking as ordinary product search) and records the same
+  search-count-per-region stat on every ranked result.
+- **New top-of-flow chooser**: `src/app/foods/new/page.tsx` (reached from the
+  "Manuelt" tile on `/create-dish` and elsewhere) now first asks "Hvad vil du
+  oprette?" — Ingrediens or Produkt — before showing either the new,
+  minimal ingredient form (name + category: frugt/grøntsag/kød/andet) or the
+  existing manual product form, which now also has **brand/subbrand** text
+  fields (the existing `POST /api/products` already accepted these from the
+  2026-09-17 guided flow — no backend change needed for that part).
+- Not built this pass, flagged rather than guessed: making generic
+  ingredients searchable/discoverable from `/foods` or `/search` (they are
+  currently only reachable right after creation, via the returned id), and
+  favoriting. Also not built: any manually-curated country/region list for
+  ingredients — the user explicitly chose to reuse the search/click-count
+  popularity pattern instead.
+- `npx prisma validate`/`generate`, `npm run lint` (whole repo) passed clean.
+  `npm run build`'s own TypeScript phase ("Finished TypeScript") completed
+  with 0 errors against every changed/new file in this pass; the final bundle
+  step could not be re-confirmed standalone afterwards because a concurrent
+  session held `.next`'s build lock for the rest of this session — `.next`'s
+  own manifests (`BUILD_ID`, `prerender-manifest.json`,
+  `required-server-files.js`, all freshly written) show a complete build
+  already exists on disk. Not verified live in a browser — no reachable local
+  PostgreSQL in this environment, same recurring constraint as other entries
+  in this file.
+
+## 2026-09-19: Calendar day-goal status — real logic, no more placeholder
+
+Direct user follow-up to the same day's day-detail "Dagens mål" text fix
+(same session, two-part request): the day-detail overlay's status text/layout
+was already fixed to use real registration data instead of a hardcoded
+placeholder, but the month grid and the week timeline header (`MonthView`/
+`WeekTimelineView` in `src/app/calendar/page.tsx`) still called the old
+`goalWasMet(date, today)` placeholder — a fixed `Set([2, 5, 6, 9, 14, 18, 23,
+27])` of "met" dates plus "today always counts as met" — which had nothing to
+do with what was actually logged.
+
+- Both components now take a `dailyTotals` prop (already computed once in the
+  parent, already used by the existing `WeekView`/`ListView`/`DayDetails`) and
+  call the pre-existing real `dailyGoalMet(dailyTotals, date)` helper —
+  the same helper the week/list rows and the streak counter already used.
+  `goalWasMet()` had no remaining callers and was deleted.
+- **Day-detail overlay** (`DayDetails`, same file): replaced `goalWasMet()`
+  with logic derived from the overlay's own already-loaded `registrations`
+  (`hasEntries` + `dayKcal <= DAILY_KCAL_GOAL`), and reworked the "Dagens
+  mål" row from three lines to two — status text and "Mål: X kcal" now share
+  the top row (no more `truncate` clipping the status text), remaining/
+  exceeded calories on the row below. Three status texts instead of two:
+  no registrations → `calendar.dailyGoalNone` ("Endnu intet registreret"),
+  within goal → `calendar.dailyGoalReached` ("Du er inden for dagens mål"),
+  over goal → new `calendar.dailyGoalExceeded` ("Du har overskredet dagens
+  mål", new red status dot). `calendar.dailyGoalNotMarked` removed (had no
+  other callers). New/changed i18n keys in both `da.json`/`en.json`.
+- Not touched: the month-grid day cell's own check/`÷` icon only has room for
+  a binary met/not-met glyph — a genuinely-unlogged past day still renders the
+  same "not met" `÷` mark it always did there; only the *day-detail overlay*
+  got the three-way "none vs. within vs. exceeded" distinction, since that's
+  the only place with enough room for real text (this is a UI-density
+  limitation of the small grid cell, not a data gap — `dailyTotals` now feeds
+  it correctly either way).
+
+`npm run lint` and `npm run build` both passed clean (build briefly waited on
+a concurrent session's own `next build` lock on this workstation, same
+recurring pattern as other entries in this file, then completed with no
+errors across all routes including `/calendar`). Not verified live in a
+browser — day-detail/month/week views all need real registration data behind
+a login, and this workstation still has no reachable local PostgreSQL nor
+a test-user password available in this session.
+
+## 2026-09-19: Regional product/ingredient search ranking
+
+Integrated a ChatGPT-prepared code handoff (`hellocal-search-ranking-code.zip`,
+downloaded by the user) implementing the regional search-ranking requirement
+the user specified in the same conversation. Full scope/rationale in
+`docs/DECISIONS.md` (2026-09-19, same heading) — summary here:
+
+- Schema: `Product.originCountryCode` (hidden GS1 origin/market signal) +
+  `ProductRegionSearchStat`/`ProductRegionHourStat`/
+  `IngredientRegionSearchStat`/`IngredientRegionHourStat` (aggregate
+  region-scoped search/click counters, no PII). New migration
+  `prisma/migrations/20260919000000_product_search_ranking` (hand-written,
+  not applied — no reachable local database in this environment, same
+  recurring `hellocal_no_local_db` constraint as most other entries in this
+  file).
+- New `src/lib/product-search-ranking.ts` (`rankProducts`, `textSimilarity`)
+  and `POST /api/products/search-event` (click tracking).
+- New `inferGs1OriginCountryCode()` in `src/lib/regions.ts`.
+- `src/app/api/products/route.ts` GET: 2-character autosuggest minimum,
+  brand-name matching, wider ranked candidate pool, per-result search
+  impressions, hidden fields stripped before the response ever reaches the
+  client. `POST` and `/api/products/lookup/[barcode]` now set
+  `originCountryCode` on creation.
+- `src/app/foods/page.tsx`: replaced client-side filtering of a single
+  unfiltered fetch with real debounced per-query calls to the ranked
+  endpoint, an instant 5-minute cache, and click-tracking via `sendBeacon`.
+
+The handoff's own stated base commit (`097fca5`) was several commits behind
+actual `master` by integration time — every target file's real current
+content was re-read and the patches adapted by hand rather than applied
+blindly (e.g. `/foods/page.tsx`'s actual structure already differed from what
+the package's diff assumed in some respects, though compatible in others).
+
+**Verified:** `npx prisma validate` and `npx prisma generate` both passed.
+`npm run lint` (repo-wide) is clean — fixed two real issues surfaced along
+the way, unrelated to copy-pasting the handoff verbatim: a
+`react-hooks/set-state-in-effect` violation (a synchronous `setSearchResults`
+call inside the debounce effect; the instant-cache read is now a plain
+derived `useMemo` instead) and a `react-hooks/purity` violation (the same
+`useMemo` originally called `Date.now()` for TTL freshness, which this
+project's React compiler rejects as an impure render — freshness is now only
+checked inside the effect's async callback). `npm run build` (via `node`/`npm`
+now present on PATH in this environment) passed clean — full TypeScript
+check and all routes, including the new `/api/products/search-event` route.
+Also regenerated the Prisma client mid-session after a concurrent session's
+own unrelated schema edit landed on disk (a new `MessageEvent` enum value)
+made the first build fail with a stale-client type error — confirmed via
+`git log`/`git status` that the failing file belonged to that other session's
+in-progress work, not this change, before regenerating rather than editing it.
+
+**Not done:** no live database to exercise the ranking/impression/click-
+tracking behavior against real search traffic; the admin "Søgealgoritmer"
+weight-tuning page the user mentioned as a future destination for these
+weights was explicitly out of scope for the delivered code package.
+`npx prisma migrate deploy` is still needed on the next Synology release,
+same as every other pending migration noted elsewhere in this file.
+
+## 2026-09-19: Joystick add-button — fixed backdrop curve + more icon breathing room
+
+Direct user request off a phone screenshot showing the green joystick backdrop
+looking like a "lemon" (a flat/cut edge) when dragging toward the top item.
+
+- **Root cause** (`src/components/AddButton.tsx`'s `backdropPath`): the curve
+  was sampled at uniform steps in *y*, but near the poles (where the flat
+  screen-edge meets the curve) `dy/dtheta -> 0`, so a uniform-y step skipped
+  over a huge swing in angle/x — the very first line segment leapt from x=0 to
+  nearly a third of the radius in one straight jump, reading as a flat facet
+  right at the anchor. Fixed by sampling uniform in angle (theta) instead,
+  which naturally clusters points where the curve bends fastest.
+- **Second bug, found after the first fix** (reported by the user as "only
+  bulges to the side, not up/down"): the bulge amount was scaled by
+  `baseX/HALF_CIRCLE_RADIUS` to keep the pole anchors pinned, but that scale
+  factor fades across the *entire* quarter-circle — so the top/bottom action
+  icons (only ~15° from a pole) got almost no visible bulge at all. Replaced
+  with `BULGE_POLE_TAPER_DEG` (12°): a pin factor that's 0 exactly at the pole
+  and ramps to 1 within 12°, so only the last few degrees at the anchor are
+  suppressed and every action icon — including the top/bottom ones — gets the
+  same bulge as one at the side.
+- **More spacing**: `ARC_GAP` 40 → 52 (icons sit a bit further from the green
+  backdrop at rest), plus a new `HIGHLIGHT_EXTRA_RADIUS` (14px) that pushes
+  the currently-highlighted icon out further still so the thumb doesn't cover
+  it — animated via a new `transition-[top,left,right]` on the icon's
+  positioning wrapper.
+- Verified in the browser preview by dispatching synthetic `PointerEvent`s at
+  the FAB (drag simulation can't rely on `left_click_drag`, which releases
+  immediately — used `pointerdown`/`pointermove` dispatched directly on the
+  button element, matching the pointer-capture target) and reading the live
+  SVG `path` `d` attribute plus screenshots, dragging toward both the top and
+  bottom action.
+- Label-on-highlight and deselect-on-return-to-center (the other two items in
+  the user's report) were already implemented correctly in the existing code
+  (`opacity: open && isHighlighted`, and the `SELECT_DEAD_ZONE` check in
+  `updateHighlight`) — no change needed there.
+
+## 2026-09-19: Front page fully configurable — side layout + number-slider fields
+
+Direct user request, extending the 2026-09-18 configurable-wheel checkpoint:
+Settings → Visning → Forside now also lets the user swap which screen edge
+the joystick add-button vs. the key-metric number-slider sit on, and choose
+on/off which fields appear in that number-slider — offering the same field
+catalog as the statistics page's cards, per the user's own framing ("som
+udgangspunkt alle de valgmuligheder, som også findes i kortene på
+statistik").
+
+- **Side layout** (`src/lib/frontpage-layout.ts`, new): a single `FabSide`
+  ("left"/"right") localStorage preference — there are only ever two elements
+  on the hero (`AddButton`/`StatsWheel`), so one choice fully determines both;
+  the number-slider always takes the side the add-button isn't on.
+  `AddButton.tsx`'s previously-hardcoded `SIDE` constant (and its arc-math
+  helpers, `arcItemCenter`/`arcItemStyle`) now take `side` as a real
+  parameter; `Hero.tsx` reads the same preference once and passes the
+  opposite side to `StatsWheel`, and the onboarding spotlight now points at
+  whichever side the FAB actually sits on instead of an assumed "left".
+  Same `useSyncExternalStore` SSR-safe pattern as every other
+  localStorage-backed preference here (see 2026-09-18's hydration-pitfall
+  note in this file, and `docs/DECISIONS.md`).
+- **Number-slider fields** (`src/lib/frontpage-stats.ts`, new): a catalog of
+  21 fields mirroring `src/lib/stat-cards.ts`'s statistics-page cards, but
+  computing *today's* single-day totals (from `/api/registrations`'
+  snapshot fields and `/api/health-metrics`' today's rows) instead of a
+  30-day average. `StatsWheel.tsx` no longer hardcodes 5 fixed stats with
+  three of them baked-in fake numbers — it now renders whichever
+  `useFrontpageStatKeys()` localStorage selection is active, in catalog
+  order. No cap on how many fields can be active (unlike the wheel's 5-button
+  cap) — the user explicitly said a long list should just scroll.
+  - New field **"Kalorier i plus"** (`kcalRemaining`): per the user's own
+    clarification mid-session, this means calories still available today
+    ("til gode"), i.e. `max(0, DAILY_KCAL_GOAL - consumed)` — never negative,
+    and distinct from an over-goal overshoot (not built, wasn't asked for).
+  - New field **"Kilometer bevæget"** (`distanceKm`): no existing data source
+    for movement distance — added a new `HealthMetricType.DISTANCE_KM` enum
+    value (`prisma/migrations/20260919010000_distance_km_metric`, hand-written,
+    same no-local-database reason as every other recent migration in this
+    file), following the exact same "prepared for a future HealthKit/Health
+    Connect companion app" pattern as the pre-existing steps/water/burned
+    metrics (docs/DECISIONS.md 2026-08-28) — explicitly requested by the user
+    for future smartwatch sync. Also added as a statistics-page card
+    (`src/lib/stat-cards.ts`) for consistency. Unlike steps/water/burned,
+    there was no pre-existing placeholder demo number for distance, so an
+    empty reading shows a plain "–" rather than an invented number.
+  - The other 16 fields (protein/carbs/fat/sugar/fiber/salt/potassium/
+    calcium/iron/saturatedFat/unsaturatedFat/transFat/cholesterol/vitaminA/
+    vitaminC/water) reuse existing snapshot/metric data, same zero-fill and
+    placeholder-fallback conventions as `stat-cards.ts`.
+  - Default active set (`DEFAULT_FRONTPAGE_STAT_KEYS`): calories, kcalRemaining,
+    burned, steps, distanceKm — exactly the five fields the user listed by
+    name. Every other field is available in the settings toggle list but off
+    by default.
+
+**Note on concurrent work**: this session ran alongside another actively
+building menstrual-cycle tracking (`prisma/schema.prisma`'s
+`MenstrualCycleEntry`/`User.sex`/`cycleTrackingEnabled` fields,
+`src/lib/add-actions.ts`'s `visibleAddActions()`, `/period/create`,
+`/settings/display/menstrual-cycle` — see that session's own 2026-09-19 entry
+directly below). Confirmed no file-level collisions: this session only added
+new files (`frontpage-layout.ts`, `frontpage-stats.ts`) plus targeted edits to
+`AddButton.tsx`/`Hero.tsx`/`StatsWheel.tsx`/`stat-cards.ts`/
+`settings/display/front-page/page.tsx`/`schema.prisma` (a same-enum-block,
+non-overlapping addition) — re-read every shared file immediately before
+editing, per this project's standing concurrent-session convention.
+
+`npm run lint` and `npm run build` (full TypeScript + all 130 routes,
+including the other session's new `/period/create` and
+`/settings/display/menstrual-cycle` routes) both passed clean. **Verified
+live** against the already-running dev server (402×874): Settings → Visning →
+Forside shows all three new/updated sections (Sidevisning, Knapper i hjulet,
+Tal i tal-slideren) with correct labels; toggling "Højre" moved the FAB from
+`left: 335` to the right edge and the number-slider to `left: 22` on the
+front page (confirmed via computed bounding rects, reset back to the default
+afterward); the number-slider's default fields compute correctly with no
+registrations logged today (0 kcal consumed, 3.299 kcal remaining — the full
+goal since none is consumed, 642/6.210 kcal/steps fallback placeholders,
+"– km" for the brand-new unreadinged distance field). No reachable local
+PostgreSQL in this environment (recurring `hellocal_no_local_db` constraint),
+so the registrations/health-metrics fetches hit their 503 fallback in this
+session's own testing, consistent with every other entry in this file.
+
+## 2026-09-19: Gender + full birth date + menstrual cycle tracking (women only)
+
+Direct user request: confirm Sex (mand/kvinde) is editable under Indstillinger
+alongside name/age, replace the year-only birth field with a full birth date
+so age auto-updates, and let women log their menstrual cycle from Visning and
+from the calendar's own "Tilføj" flow. See `docs/DECISIONS.md` (2026-09-19)
+for the data-model writeup.
+
+- `User.sex` (FEMALE/MALE) already existed in `/profile/edit` — confirmed
+  working, no change needed there.
+- `User.birthYear` (Int, year only) replaced with `User.birthDate` (DateTime),
+  so age is computed precisely and updates automatically every year instead
+  of being a static "current year minus birth year". New `src/lib/age.ts`
+  (`computeAge`). `/profile/edit` now has a native date input instead of the
+  old year `WheelPicker`, showing the live computed age underneath.
+  `src/lib/gdpr.ts` and `/api/profile` updated to match.
+- New `MenstrualCycleEntry` model (start/end date per period) + three new
+  `User` fields: `cycleTrackingEnabled` (the "Vis menstruationscyklus" toggle,
+  off by default — same "never on by default" convention as showAllergens/
+  showExtendedNutrition), `averageCycleLengthDays`/`averagePeriodLengthDays`
+  (reserved for a future prediction feature, not used yet — no fertility/
+  prediction UI was built, only logging a period's start date). Hand-written
+  migration `20260919000000_menstrual_cycle_and_birthdate` (not applied — no
+  local database, same as every other pending migration in this file).
+- Settings → Visning now shows a second row, "Menstruationscyklus", but ONLY
+  when the signed-in user's `sex` is FEMALE (`src/app/settings/page.tsx`
+  fetches `/api/profile` once to decide). It opens
+  `/settings/display/menstrual-cycle`, a single toggle page in the same style
+  as `/settings/display/front-page`.
+- New add-action `menstrualCycle` in `src/lib/add-actions.ts`, gated by a new
+  `requiresCycleTracking` flag + `visibleAddActions(profile)` helper (visible
+  only when sex = FEMALE AND `cycleTrackingEnabled` is on). All three
+  consumers of the `ADD_ACTIONS` catalog — the front-page joystick wheel
+  (`AddButton.tsx`), `/add/menu`, and its own settings toggle list
+  (`/settings/display/front-page`) — now filter through this helper via the
+  new `useAddActionsProfile()` hook, instead of rendering the raw catalog, so
+  a male user (or a female user with the toggle off) never sees "Menstruation"
+  anywhere. New `/period/create` page + `/api/menstrual-cycle` route (GET/POST,
+  same `getDemoUser` pattern as `water-entries`) — logs only a period's start
+  date; no prediction/fertility-window UI, since none was specified.
+- **Explicit user instruction, implemented as asked, not the pre-existing
+  behavior**: the calendar's per-hour "Tilføj" bar
+  (`src/app/calendar/page.tsx`'s `goToAddFlow`) previously jumped straight to
+  `/foods`. It now opens `/add/menu` instead — the same all-elements menu the
+  front page's joystick "list" slot opens — forwarding `date`/`time` as query
+  params onto whichever action the user picks from there (harmless for
+  actions that ignore them; still what makes the food-search path land the
+  registration at the tapped hour).
+- Also fixed, found while running the build for this change: a genuine
+  pre-existing TypeScript build break from a concurrent session's work on the
+  front-page number-slider — `src/components/StatsWheel.tsx:335` called an
+  undefined `formatNumber()`. Fixed by rendering `stat.goal` raw, matching how
+  `stat.value` is already rendered just above it (unformatted) — not a design
+  change, just what made `npm run build` pass again.
+- Not built (out of scope for this pass, flagged rather than invented): any
+  prediction/fertility-window display on the calendar itself, editing/ending
+  an in-progress period, and wiring the new real `MenstrualCycleEntry` data
+  into Hello Doc's `doctor-share.ts` (`menstrualCycle` is still listed in
+  `DOCTOR_SHARE_UNAVAILABLE_CATEGORIES` even though a data model now exists —
+  intentionally left alone this pass to keep the change scoped to what was
+  asked; worth revisiting).
+- `npx prisma validate`, `npx prisma generate`, `npm run lint` (whole repo),
+  and `npm run build` (full TypeScript + all 130 routes, via the bundled
+  Playwright `node.exe` per this file's other "no npm on PATH" notes) all
+  passed clean. **Not yet done**: applying the migration to a real database
+  and any browser click-through (no local database on this workstation).
+
+## 2026-09-18: Settings → Visning → Forside (joystick wheel field picker) + new "Tilføj" all-elements screen
+
+Direct user request: a new "Visning" (Display) section under Settings with a
+"Forside" (Front page) item, where the user can choose which fields appear
+in the front page's joystick wheel (`AddButton.tsx`); the wheel's top slot
+becomes a fixed list icon opening a new full-screen list of every
+add-element in the app (back arrow, same as other screens) — a quick
+shortcut to weight, goal/measurements ("mål") and everything else.
+
+- New `src/lib/add-actions.ts`: single catalog (`ADD_ACTIONS`) of every real
+  add-destination in the app — microphone/voice, own dishes, search, weight,
+  water, camera/scan, target weight ("Indtast mål"), body measurements
+  ("Kropsmål") — reused by both the wheel and the new all-elements screen so
+  neither can drift from the other. `targetWeight`/`bodyMeasurements` reuse
+  the existing `profile.actions.target`/`profile.row.bodyMeasurements` i18n
+  keys rather than duplicating the strings.
+- `AddButton.tsx`'s wheel top slot (previously the microphone action) is now
+  always a fixed "list" action (`IconList`) opening the new
+  `src/app/add/menu/page.tsx` — a static route alongside the existing
+  dynamic `src/app/add/[id]/page.tsx`, listing every `ADD_ACTIONS` entry as
+  a plain `ChevronRow` list. The remaining wheel slots (up to
+  `MAX_WHEEL_ACTIONS` = 5) are whichever catalog entries the user picked;
+  default matches the previous 6 actions minus microphone (which moved into
+  the new list screen instead of losing its own slot). Icon angles are now
+  computed for however many actions are actually shown
+  (`computeAngles(count)`) instead of a fixed 6-item array, so a smaller
+  selection still spreads evenly across the same -75°..75° arc.
+- New `src/app/settings/display/front-page/page.tsx`: a plain on/off list
+  (`Toggle`, never a checkbox per the 2026-09-02 standing rule) for every
+  catalog entry except the fixed "list" action, capped at
+  `MAX_WHEEL_ACTIONS`; further toggles disable once the cap is reached.
+  Selection is **stored in `localStorage`** (`hellocal.frontpage.wheelActions`),
+  not the database — the same per-device-preference pattern already used for
+  the statistics page's card layout (`StatCardsGrid.tsx`/`stat-cards.ts`).
+- **Hydration pitfall hit and fixed during this pass**: an initial attempt
+  read `localStorage` inside a lazy `useState(() => …)` initializer (mirroring
+  `StatCardsGrid`'s existing pattern) — this is only safe for a component that
+  is never server-rendered/hydrated with a different default. `AddButton` IS
+  part of the statically prerendered front page, so a non-default saved
+  selection produced a real "Hydration failed" error in the browser (caught by
+  this session's own live verification, not just lint/build). Fixed with a
+  proper `useSyncExternalStore`-based hook (`useWheelActionKeys()` in
+  `add-actions.ts`): the server/first-hydration pass always sees
+  `DEFAULT_WHEEL_ACTION_KEYS`, then React re-renders with the real
+  `localStorage` value immediately after, with no mismatch. `StatCardsGrid`'s
+  own equivalent lazy-`useState` read has the same latent risk (it's only
+  used on the statistics page, not something rendered on first paint of a
+  prerendered route in the same way) — **not fixed here, out of this
+  session's scope**, flagged for awareness if it's ever moved somewhere
+  hydration-sensitive.
+- Settings section heading style reuses the existing plain uppercase-caption
+  pattern from `statUnusedCards`'s category headings — no new heading
+  primitive.
+
+`npm run lint` and `npm run build` (full TypeScript + all routes, including
+the two new routes) both passed clean. **Verified live** in the local dev
+server (402×874): the wheel's top slot is a list icon; tapping it opens
+"Tilføj" with a back arrow and all 8 catalog rows (Mikrofon, Egne retter,
+Søg, Vægt, Vand, Kamera, Indtast mål, Kropsmål); Settings shows a new
+"VISNING" section with "Forside"; toggling fields there (confirmed turning
+Kamera off and back on, and hitting the 5-field cap with the rest disabled)
+updates the wheel's actual icons after navigating back to the front page. No
+reachable local Postgres, same recurring constraint as other entries in this
+file — irrelevant here since this feature has no database dependency.
+
+## 2026-09-17: Barcode-first guided AI product recognition integrated
+
+Top-priority task: integrated the ChatGPT-prepared handoff package
+(`HelloCal_OpenAI_ProductRecognition_Handoff_2026-09-16/`, reference-only,
+now excluded from lint via `eslint.config.mjs`) into the guided product
+creation flow. See `docs/DECISIONS.md` (2026-09-17) for the full architecture
+and the two explicit **temporary dispensations** from the pre-existing
+2026-09-12 OCR-scope decision.
+
+- **Flow order in `/camera/create`** is now barcode → front photo →
+  ingredients photo → nutrition photo → `/product/create`, replacing the old
+  front-photo-first flow. An existing/known barcode still redirects straight
+  to `/add/<id>` as before; an unknown barcode continues into the new flow.
+  Every capture (`capturePhotoFromVideo`) saves the **entire** camera frame,
+  not a cropped focus area — so the original image content around/outside
+  the barcode or declaration is preserved even when out of focus, per the
+  user's explicit request (2026-09-17).
+- **Database**: `Product.subbrand`/`variant`/`packageSizeText` and a new
+  `AiProductAnalysis` table (`prisma/migrations/20260917000000_ai_product_analysis`,
+  hand-written — no local PostgreSQL reachable from this workstation, same as
+  other recent migrations). One row per AI vision analysis
+  (FRONT/INGREDIENTS/NUTRITION): `prediction` is written immediately by the
+  analysis route; `productId`/`correction`/`correctedAt` are filled in by
+  `POST /api/products` at product-save time, using the `analysisIds` the
+  client collected during the guided flow. This is the ground-truth
+  feedback loop the user specifically asked to have made clear —
+  `prediction` (AI's original answer) vs `correction` (user's final saved
+  values) live side by side on the same row, keyed by `analysisId`.
+- **New AI routes**: `/api/ai/analyze-product-front` (brand/subbrand/
+  productName/variant/packageSizeText/claims), `/api/ai/extract-ingredients-photo`,
+  `/api/ai/extract-nutrition-v2`, `/api/ai/product-feedback` (manual
+  correction outside the normal save flow, e.g. from admin),
+  `/api/admin/ai-training/export` (canonical JSONL export of corrected rows,
+  behind `requireAdminUser`). Model is `OPENAI_PRODUCT_VISION_MODEL`
+  (`.env.production.example`), defaulting to `gpt-5.6-terra` — verified via
+  web search to be a real, current OpenAI model name (not the
+  ChatGPT-fabricated name it first looked like), reusing the existing
+  `OPENAI_API_KEY`.
+- **Language-priority table consolidated**: the handoff package's own
+  region→OCR-language table was merged into the existing
+  `src/lib/regions.ts` (`gs1RegionCandidates`, `primaryOcrLanguages`, both
+  new) instead of keeping a second, parallel table in `barcode-context.ts`.
+  `barcode-context.ts` is now a thin wrapper. Market region (user's own
+  setting, never the phone's display language) stays the primary signal;
+  the barcode's GS1 prefix is a secondary/fallback signal — never a
+  whitelist, and never treated as a confirmed physical production country.
+- **Brand upsert**: `POST /api/products` upserts `Brand` by exact name from
+  the AI's (or user's corrected) brand text. No alias table yet — flagged in
+  `docs/DECISIONS.md` as a known follow-up (e.g. "Arla Foods" vs "Arla").
+- `npx prisma validate`/`generate`, `eslint .` (whole repo) and `next build`
+  (full TypeScript + all 179 routes) all ran clean. Not verified live in a
+  browser — no reachable local PostgreSQL in this environment; a real
+  end-to-end camera/AI-call test still needs to happen against a deployed
+  environment with `OPENAI_API_KEY`/`OPENAI_PRODUCT_VISION_MODEL` set and
+  `prisma migrate deploy` run.
+
+### Known follow-ups (not done here)
+
+- **Revert the two temporary AI-first dispensations** (ingredients and
+  nutrition photo analysis) back to "local OCR/regex first, AI only as
+  fallback" once the guided flow has a working prototype the user has
+  actually tested — see `docs/DECISIONS.md` 2026-09-17. Do not treat the
+  current AI-first behavior as final architecture.
+- `BrandAlias` table for real brand-name normalization (e.g. "Arla Foods" →
+  "Arla"), per `01_STRATEGY.md` in the handoff package.
+- Eval/benchmark tooling on top of `GET /api/admin/ai-training/export` once
+  enough corrected rows exist (package's own guidance: start around 100-200
+  corrected front-photo products).
+
+## 2026-09-14: Area source maps and proposed boundaries
+
+- Added `docs/areas/README.md` and four area entry guides for Hello Cal,
+  admin, product creation and integrations; linked from `docs/README.md`.
+- Mapped actual schema/routes/shared logic. Integrations already contain
+  code; no live provider functionality verified. Employee payment and shelf
+  workflows remain planned requirements, not existing dedicated models.
+- Proposed one repository/schema with focused work areas and later gradual
+  module extraction. No code moved, new apps created or architecture changed.
+- Next: agree proposed boundaries, then shorten mandatory entry documentation
+  with preserved history. Feature discovery remains paused.
+- Documentation only; no lint/build run (no implementation checkpoint).
+
+## 2026-09-14: Project boundary discussion saved; feature discovery paused
+
+- Saved confirmed conversation requirements and unresolved questions in
+  `docs/PROJECT-BOUNDARIES.md`. These are planning notes, not built features.
+- User redirected the discussion to its original purpose: agree project and
+  folder boundaries before further feature discovery or implementation.
+- No repository split, folder moves, database changes or application edits.
+- Documentation-only save; lint/build not run because no code changed and
+  this is not a completed implementation checkpoint.
+
+## 2026-09-13: ChatGPT project context and uncommitted handoff
+
+- Added `docs/chatgpt/CONTEXT.md`: setup instructions, product vocabulary,
+  canonical source map, root `design.md` contract, actual component/API/i18n
+  locations, route mapping, and integration guidance for new pages.
+- Added `docs/chatgpt/PROJECT-INSTRUCTIONS.md` to copy into ChatGPT project
+  instructions and `docs/chatgpt/HANDOFF-TEMPLATE.md` for exact file paths,
+  patches, acceptance criteria and honest validation reporting. Linked from
+  `docs/README.md`; recorded the handoff workflow in `docs/DECISIONS.md`.
+- Explicitly distinguishes GitHub read access, uploaded snapshots, local
+  integration, commit/push and deployment. New pages go in `src/app` after
+  Codex integrates against current files, then remain uncommitted by default.
+  Only selected documentation should be uploaded; no whole-workspace bundle.
+- Documents known stale-history traps in this file's older checkpoint/Next
+  work lists and the starter root README; does not rewrite historical entries
+  or treat outstanding local changes as published functionality.
+- Documentation only. All unrelated existing changes preserved; no commit,
+  push, deployment or application code changes made for this task.
+- Verification: all 62 concrete source paths in CONTEXT checked (excluding
+  placeholders and the explicitly incorrect `docs/design.md` example);
+  `git diff --check` and `npm run lint` passed. `npm run build` failed because
+  the existing `src/app/layout.tsx` Geist import could not fetch Google Fonts.
+  A requested retry with network access was rejected by the user. No font or
+  application changes made; production build remains unverified for this task.
+
+## 2026-09-12: Kropsmål-side (`/profile/body-measurements`) — the "måleside" built
+
+Follow-up to the same day's earlier photo-diary/selfie entry (this file, the
+"Photo diary — selfie capture..." entry below), which added the
+`BodyMeasurement` model and `/api/body-measurements` (GET+POST) but explicitly
+deferred the actual data-entry screen to a separate chat. The user later sent
+a bare "Fortsæt" in this same chat; asked which task that meant, they chose to
+build the måleside here after all (superseding the earlier "separate chat"
+instruction) — see "Next work" #13, now done.
+
+- New `src/app/profile/body-measurements/page.tsx`: same visual pattern as
+  `/profile/weight-calibration` (green intro card, borderless number inputs
+  that only show a bottom border on focus, no visible "Gem" button, a history
+  list with a delete button per row). Five optional fields in a 2-column grid
+  — waist/hip/chest/thigh/upper-arm, all cm.
+- Unlike weight-calibration's two weight fields (which deliberately create two
+  *separate* rows, since "with clothes"/"without clothes" are two distinct
+  weigh-ins), this page merges same-day field edits into **one**
+  `BodyMeasurement` row: on blur, it PATCHes today's existing row if one
+  exists, otherwise POSTs a new one and remembers its id for the rest of the
+  session. This is deliberate — it's what lets the photo diary's "Aktuelle
+  mål" caption show several measurements together for one day instead of just
+  whichever single field was typed last.
+- New `src/app/api/body-measurements/[id]/route.ts` (PATCH partial-update,
+  DELETE), mirroring `/api/weight-entries/[id]`.
+- Wired up two navigation entries: a new "Kropsmål" row on `/profile` (right
+  after "Vægt kalibrering", `IconRulerMeasure`) and a 4th button on
+  `/profile/edit`'s existing Fotodagbog/Indtast ny vægt/Indtast mål row
+  (`profile.actions.bodyMeasurements`) — that row's existing "Indtast mål"
+  button still means goal weight (`/profile/target-weight`, a separate,
+  already-existing concept), so this needed its own distinct label/entry
+  point rather than reusing that one.
+- `design.md` §6.11 updated: the photo-diary entry no longer says the entry
+  screen is unbuilt, plus a new "Kropsmål-side" paragraph documents this page.
+- New i18n: `bodyMeasurements.*` (both locales), `profile.row.bodyMeasurements`,
+  `profile.actions.bodyMeasurements`.
+
+Verified with `npm run lint` (clean) and `npm run build` (clean, full route
+list including the new page and API). Not screenshotted end-to-end with real
+data — no reachable local PostgreSQL in this environment (`hellocal_no_local_db`).
 
 ## 2026-09-12: Kcal/person-badge på opskriftslisten (`/profile/recipes`)
 
@@ -1810,23 +2669,31 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
     in the share-category list, since no such data exists anywhere in Hello
     Cal).
 12. **Calendar "Tilføj" long-press → new full-screen add overlay** (requested
-    2026-09-11, not yet designed or built): currently, long-pressing an hour
-    row in the calendar day/week timeline (`src/app/calendar/page.tsx`,
-    `HourRow`) reveals an inline black "Tilføj" bar within that row. The user
-    wants this interaction to instead open a new dedicated screen overlay for
-    adding an entry at that time. The user will provide the actual design in
-    a follow-up message — do not build it ahead of that. Also see the
-    "Indberet fejl" skeleton page (`/registration/[id]/report-error`, added
-    2026-09-11) which has the same status: route exists, design pending.
-13. **Body-measurement entry page ("måleside")** — requested 2026-09-12 in a
-    separate chat/session from the one that added the `BodyMeasurement` model
-    (see the 2026-09-12 photo-diary entry above). The model
-    (`prisma/schema.prisma`, migration `20260912020000_body_measurements`)
-    and a GET+POST `/api/body-measurements` route already exist so the photo
-    diary's "Aktuelle mål"/"Seneste mål" caption has a real source; the
-    dedicated screen for a user to actually record a waist/hip/chest/thigh/
-    upper-arm measurement (mirroring `/profile/weight-calibration`'s pattern)
-    is not built yet.
+    2026-09-11, not yet designed or built): long-pressing an hour row in the
+    calendar day/week timeline (`src/app/calendar/page.tsx`, `HourRow`)
+    reveals an inline black "Tilføj" bar within that row. **Partially
+    addressed 2026-09-19**: tapping that bar now opens `/add/menu` (the same
+    all-elements list the front page's joystick "list" slot opens) instead of
+    jumping straight to `/foods`, per an explicit user request made while
+    building menstrual-cycle tracking. The bigger ask from this item — a
+    dedicated new full-screen overlay design, rather than reusing the
+    existing `/add/menu` list screen — is still open; the user will provide
+    the actual design in a follow-up message. Also see the "Indberet fejl"
+    skeleton page (`/registration/[id]/report-error`, added 2026-09-11) which
+    has the same status: route exists, design pending.
+~~13. Body-measurement entry page ("måleside")~~ — done 2026-09-12, same
+    session/chat as the item that added the `BodyMeasurement` model, once the
+    user explicitly said to continue here instead of a separate chat. See the
+    dated entry below ("Kropsmål-side").
+14. **Wire real `MenstrualCycleEntry` data into Hello Doc** (added
+    2026-09-19): `src/lib/doctor-share.ts` still lists `menstrualCycle` in
+    `DOCTOR_SHARE_UNAVAILABLE_CATEGORIES` with a comment saying no data model
+    exists — that's now stale, since `MenstrualCycleEntry` was added the same
+    day (see docs/DECISIONS.md 2026-09-19). Deliberately not wired up in that
+    same pass to keep the change scoped to what was actually asked
+    (settings toggle + calendar logging) — revisit when Hello Doc's real
+    per-category data plumbing (`src/lib/doctor-share-data.ts`) is next
+    touched.
 
 ## 2026-09-05: Fejlretninger-log started; several already-fixed, some real central bugs fixed
 
@@ -2092,3 +2959,50 @@ Needs a clean `npm run build` before this checkpoint is fully verified.
 Also not exercised live in a browser — same no-reachable-local-database
 limitation as prior entries. Needs `prisma migrate deploy` on next deploy
 (handled automatically by the existing `migrate` service).
+
+### 2026-09-12: Kalenderens dag-visning — nat/dag-grænsens håndtag gjort tydeligere og synligt uden scroll
+
+Brugerfeedback: håndtaget der markerer grænsen mellem nat og dag i dag-visningens
+lodrette 00:00–24:00-tidslinje (`SleepBoundaryHandle`/`SleepBands`,
+`src/app/calendar/page.tsx`) kunne fremstå placeret "midt i det hele" i stedet
+for tydeligt på selve kanten, og krævede scroll for at se ved åbning.
+
+Undersøgt først: `SleepBands`s højdeberegning (top-bånd = 00:00→stå-op,
+bund-bånd = sengetid→24:00) var allerede korrekt afgrænset til selve
+24-timers-containeren — det tidligere rapporterede "nat vises for langt ned"
+(Fejlretninger/FEJLLISTE.md #27) var en højdeberegningsfejl, der blev rettet
+2026-09-10, og timelinen kan strukturelt ikke vise nat ud over 23:59/00:00,
+fordi containeren altid er præcis 24 timer høj. Ingen reel visningsfejl fundet
+her denne gang.
+
+Rettet i denne omgang:
+- `SleepBands` har nu en 1px kant (`hf-gray-border/60`) præcis på grænsen
+  mellem det grå nat-felt og det hvide dag-felt, så kanten er utvetydig selv
+  før man ser håndtaget.
+- `SleepBoundaryHandle`s greb er gjort mere synligt (bredere/tykkere bjælke
+  med let skygge) og har fået et større usynligt træk-område (28px i stedet
+  for 20px), centreret på selve grænsen.
+- Initial scroll ved åbning af dag-visningen (`useEffect` i `DayDetails`)
+  justeret fra "1 hel time nat-flig" til "~0,8 times flig", så kun en kort
+  flig af nattens grå felt er synlig lige over stå-op-håndtaget uden scroll,
+  mens resten af den synlige tidslinje er dagens indhold.
+
+Ikke bygget i denne omgang (kræver en separat, større, eksplicit godkendt
+opgave jf. AGENTS.md's forbud mod store omskrivninger uden godkendelse): det
+"vandrette visning"-mønster brugeren beskrev, hvor en footer skjules og kun en
+diskret trækbar streg vises, og en fuld sammenklappelig nat-sektion (fast
+"peek"-højde uafhængig af søvnvarighed, med kun én synlig håndtags-kant og
+uden at kræve scroll for hverken stå-op- eller sengetids-håndtaget samtidig).
+Der findes intet eksisterende "footer skjules ved slide"-mønster andetsteds i
+kodebasen at genbruge (bekræftet ved grep i `src/app/calendar/page.tsx`), så
+det ville være en ny, ikke-triviel interaktion, der bør designes og
+verificeres visuelt med brugeren først, ikke antages ud fra en tekstbeskrivelse.
+
+`npm run lint` clean, `npm run build` gennemført uden fejl (node/npm var ikke
+på `PATH` i dette shell-miljø denne gang — fundet manuelt under
+`C:\Program Files\nodejs`). **Ikke** visuelt verificeret i browser: en anden
+session har allerede en `next dev`-server kørende i samme projektmappe (PID
+låser porten/mappen på tværs af port-forsøg), og denne sessions Browser-pane
+kan ikke nå den server. Denne ændring bør derfor tjekkes visuelt af brugeren
+selv (eller i en senere session, når den anden dev-server ikke kører), særligt
+justeringen af scroll-fligen ved forskellige stå-op-tidspunkter.

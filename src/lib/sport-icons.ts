@@ -19,6 +19,8 @@ export const SPORT_TYPES: { key: string; label: string; icon: Icon }[] = [
   { key: "cycling", label: "Cykling", icon: IconBike },
   { key: "walking", label: "Gang", icon: IconWalk },
   { key: "swimming", label: "Svømning", icon: IconSwimming },
+  { key: "cardio", label: "Cardio", icon: IconActivity },
+  { key: "ski", label: "Ski", icon: IconActivity },
   { key: "strength", label: "Styrketræning", icon: IconBarbell },
   { key: "yoga", label: "Yoga", icon: IconYoga },
   { key: "football", label: "Fodbold", icon: IconBallFootball },

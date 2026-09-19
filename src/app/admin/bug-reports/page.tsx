@@ -10,7 +10,15 @@ export default async function AdminBugReportsPage() {
 
   const reports = await prisma.bugReport.findMany({
     where: { status: "PENDING" },
-    include: { user: { select: { displayName: true, email: true } } },
+    select: {
+      id: true,
+      description: true,
+      screenshotUrl: true,
+      createdAt: true,
+      source: true,
+      user: { select: { displayName: true, email: true } },
+      product: { select: { id: true, name: true, brand: { select: { name: true } } } },
+    },
     orderBy: { createdAt: "desc" },
   });
 
@@ -18,7 +26,7 @@ export default async function AdminBugReportsPage() {
     <div className="flex flex-col gap-4">
       <h1 className="text-lg font-semibold text-text-primary">{t(admin.locale, "bug_reports_title")}</h1>
       <p className="text-sm text-text-secondary">
-        Godkendelse giver brugeren 10 points. Nyeste øverst.
+        Godkendelse giver brugeren 10 points (gælder ikke AI-genererede rapporter). Nyeste øverst.
       </p>
       {reports.length === 0 ? (
         <p className="text-sm text-text-secondary">Ingen fejlrapporter afventer gennemgang.</p>

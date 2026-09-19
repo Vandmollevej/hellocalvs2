@@ -150,16 +150,78 @@
     "privacyPolicy": "Privatlivspolitik",
     "dataTracking": "Datasporing",
     "chooseCountry": "Vælg dit land",
+    "messages": "Beskeder",
     "notifications": "Kommunikation",
     "inviteFriend": "Invitér en ven",
     "inviteFriendDescription": "Og få en gratis måned hver",
     "inviteShareText": "Prøv Hello Cal med mig — så får vi begge en måned gratis!",
     "invitePointsDescription": "I optjener begge 300 points hver",
-    "helloDoc": "Hello Doc"
+    "helloDoc": "Hello Doc",
+    "display": "Visning",
+    "frontPage": "Forside",
+    "recommendedLimits": "Anbefalede grænser",
+    "menstrualCycle": "Menstruationscyklus",
+    "calendarView": "Kalendervisning"
+  },
+  "calendarViewSettings": {
+    "title": "Kalendervisning",
+    "intro": "Vælg hvilken visning kalenderen skal åbne i som standard.",
+    "optionMonth": "Månedsvisning",
+    "optionWeek": "Ugevisning",
+    "optionList": "Listevisning"
+  },
+  "displaySettings": {
+    "title": "Anbefalede grænser",
+    "warnOnRecommendedLimits": "Gør opmærksom på grænseværdier over/under anbefalet normal",
+    "warnOnRecommendedLimitsDescription": "Viser en 1 px mørkerød kant omkring statistikbokse, når en dokumenteret anbefalet grænse for din region og profil er overskredet. Manglende data markeres ikke."
+  },
+  "menstrualCycleSettings": {
+    "intro": "Log din menstruationscyklus og få den som en mulighed i tilføj-menuen.",
+    "toggleLabel": "Vis menstruationscyklus",
+    "toggleDescription": "Tilføjer \"Menstruation\" til tilføj-menuen, så du kan logge cyklussens start."
+  },
+  "frontPageSettings": {
+    "intro": "Vælg hvilke felter, der skal vises i hjulet på forsiden. Det øverste felt viser altid en liste med samtlige tilføj-elementer.",
+    "sideSectionTitle": "Sidevisning",
+    "sideLeft": "Venstre",
+    "sideRight": "Højre",
+    "sideHint": "Tal-slideren vises altid i den modsatte side: {side}.",
+    "buttonsSectionTitle": "Knapper i hjulet",
+    "selectedCount": "{count} af {max} felter valgt",
+    "maxReachedHint": "Fjern et felt for at kunne tilføje et andet.",
+    "statsSectionTitle": "Tal i tal-slideren",
+    "statsIntro": "Vælg hvilke tal, der kan vises i tal-slideren på forsiden. Bliver listen for lang, kan du bare scrolle."
+  },
+  "frontPageStats": {
+    "calories": "Kalorier indtaget",
+    "kcalRemaining": "Kalorier i plus",
+    "protein": "Protein",
+    "carbs": "Kulhydrat",
+    "fat": "Fedt",
+    "sugar": "Sukker",
+    "fiber": "Kostfibre",
+    "salt": "Salt",
+    "potassium": "Kalium",
+    "calcium": "Calcium",
+    "iron": "Jern",
+    "saturatedFat": "Mættet fedt",
+    "unsaturatedFat": "Umættet fedt",
+    "transFat": "Transfedt",
+    "cholesterol": "Kolesterol",
+    "vitaminA": "Vitamin A",
+    "vitaminC": "Vitamin C",
+    "water": "Vand",
+    "burned": "Kalorier ved sport",
+    "steps": "Skridt",
+    "distanceKm": "Kilometer bevæget"
+  },
+  "addMenu": {
+    "title": "Tilføj"
   },
   "helloDoc": {
     "title": "Hello Doc",
     "subtitle": "Del din fremgang med din læge eller diætist",
+    "requiresSerious": "Hello Doc kræver abonnementet Seriøs. Tryk her for at opgradere.",
     "inviteButton": "Inviter bruger",
     "invitedUsersTitle": "Inviterede brugere",
     "emptyInvited": "Ingen inviteret endnu.",
@@ -266,6 +328,7 @@
     "next": "Næste",
     "periodWeek": "uge",
     "periodMonth": "måned",
+    "weekNumberLabel": "uge {number}",
     "periodNavAriaLabel": "{direction} {period}",
     "previousYearAriaLabel": "Forrige år",
     "nextYearAriaLabel": "Næste år",
@@ -281,8 +344,9 @@
     "adjustWakeTimeAriaLabel": "Justér stå-op-tid",
     "previousDayAriaLabel": "Forrige dag",
     "nextDayAriaLabel": "Næste dag",
-    "dailyGoalReached": "Dagens mål er nået",
-    "dailyGoalNotMarked": "Dagens mål er ikke markeret",
+    "dailyGoalReached": "Du er inden for dagens mål",
+    "dailyGoalExceeded": "Du har overskredet dagens mål",
+    "dailyGoalNone": "Endnu intet registreret",
     "registrations": "Registreringer",
     "noRegistrations": "Ingen registreringer",
     "loadingDayRegistrations": "Henter dagens registreringer…",
@@ -354,7 +418,11 @@
     "stageNutrition": "Foto af næringsindhold",
     "barcodeNotRecognized": "Stregkoden blev ikke genkendt. Prøv igen, eller indtast nummeret.",
     "showBarcodeHint": "Vis stregkoden for kameraet, eller indtast nummeret manuelt.",
-    "skipCreateManually": "Spring over — opret produktet manuelt"
+    "skipCreateManually": "Spring over — opret produktet manuelt",
+    "stageIngredients": "Ingredienser",
+    "readingIngredients": "Læser ingredienslisten...",
+    "continueWithBarcode": "Fortsæt med denne stregkode",
+    "barcodeLookupFailedContinue": "Opslaget fejlede. Du kan fortsætte med den scannede stregkode."
   },
   "foods": {
     "title": "Madvarer",
@@ -381,7 +449,24 @@
     "fatLabel": "Fedt (g/100g)",
     "fatAriaLabel": "Fedt pr. 100 gram",
     "saving": "Gemmer...",
-    "createProduct": "Opret produkt"
+    "createProduct": "Opret produkt",
+    "manualKindTitle": "Hvad vil du oprette?",
+    "manualKindIngredient": "Ingrediens",
+    "manualKindIngredientHint": "Frugt, grøntsag, kød eller andet uden brand/emballage",
+    "manualKindProduct": "Produkt",
+    "manualKindProductHint": "Et emballeret produkt med brand og næringsdeklaration",
+    "brandLabel": "Brand (valgfri)",
+    "subbrandLabel": "Produktserie (valgfri)",
+    "ingredientNameLabel": "Navn",
+    "ingredientNamePlaceholder": "Fx Æble",
+    "ingredientCategoryLabel": "Kategori",
+    "categoryFruit": "Frugt",
+    "categoryVegetable": "Grøntsag",
+    "categoryMeat": "Kød",
+    "categoryOther": "Andet",
+    "ingredientNutritionHint": "Næringsindhold findes automatisk ud fra Fødevaredata (Frida), da løse råvarer ikke har en emballage at læse fra.",
+    "ingredientSaveError": "Kunne ikke gemme ingrediensen",
+    "createIngredient": "Opret ingrediens"
   },
   "recipes": {
     "title": "Opskrifter",
@@ -424,6 +509,14 @@
     "barcodePlaceholder": "fx 5701234567890",
     "productNameLabel": "Produktnavn",
     "productNamePlaceholder": "Produktnavn",
+    "brandLabel": "Brand",
+    "brandPlaceholder": "Fx Arla",
+    "subbrandLabel": "Subbrand",
+    "subbrandPlaceholder": "Fx LactoFREE",
+    "variantLabel": "Variant",
+    "variantPlaceholder": "Fx Jordbær eller 1,5%",
+    "packageSizeLabel": "Pakningsstørrelse",
+    "packageSizePlaceholder": "Fx 1 L eller 500 g",
     "caloriesLabel": "Kalorier (kcal/100g)",
     "proteinLabel": "Protein (g/100g)",
     "carbsLabel": "Kulhydrat (g/100g)",
@@ -468,7 +561,7 @@
       "email": "E-mail",
       "weight": "Start-vægt (kg)",
       "height": "Højde (cm)",
-      "birthYear": "Fødselsår",
+      "birthDate": "Fødselsdato",
       "sex": "Køn"
     },
     "sexOption": {
@@ -476,6 +569,7 @@
       "female": "Kvinde",
       "male": "Mand"
     },
+    "age": "{age} år",
     "trendWeight": "Trendvægt (AI-estimat): {value} kg",
     "updatedFrom": "Opdateret d. {date} fra {source}",
     "weightSource": {
@@ -490,10 +584,13 @@
     "actions": {
       "photoDiary": "Fotodagbog",
       "newWeight": "Indtast ny vægt",
-      "target": "Indtast mål"
+      "target": "Indtast mål",
+      "bodyMeasurements": "Kropsmål"
     },
     "row": {
+      "subscription": "Abonnement",
       "weightCalibration": "Vægt kalibrering",
+      "bodyMeasurements": "Kropsmål",
       "sleep": "Søvnmønster",
       "photoDiary": "Billede-dagbog",
       "integrations": "Integrationer",
@@ -505,6 +602,11 @@
       "settings": "Indstillinger"
     },
     "logOut": "Log af",
+    "messages": {
+      "title": "Beskeder",
+      "empty": "Du har ingen beskeder endnu.",
+      "markAllRead": "Markér alle som læst"
+    },
     "communication": {
       "intro": "Vælg hvilke beskeder du vil have som e-mail og/eller push. Vigtige kontobeskeder (fx verifikation og nulstil kodeord) sendes altid.",
       "pushSection": "Push-beskeder",
@@ -518,6 +620,39 @@
       "specificHint": "Finjuster e-mail og push for bestemte hændelser på din konto.",
       "termsLink": "Læs vores betingelser"
     }
+  },
+  "subscription": {
+    "title": "Abonnement",
+    "loading": "Henter…",
+    "loadError": "Kunne ikke hente abonnement.",
+    "giftCode": {
+      "label": "Gavekode",
+      "placeholder": "Indtast gavekode",
+      "submitAria": "Indløs gavekode",
+      "redeeming": "Indløser…",
+      "success": "Gavekoden er indløst! Du er nu Seriøs indtil {date}.",
+      "genericError": "Kunne ikke indløse gavekoden lige nu"
+    },
+    "redeemPoints": "Indløs points",
+    "redeemPointsHint": "{cost} points kan indløses til 1 gratis måned med Seriøs",
+    "currentPlan": "Dit abonnement",
+    "tier": {
+      "free": "Gratis",
+      "serious": "Seriøs"
+    },
+    "activeUntil": "Aktiv til {date}",
+    "freePlan": {
+      "title": "Gratis",
+      "description": "Adgang til alt i Hello Cal undtagen Hello Doc. Kun de seneste 30 dages historik vises — ældre data gemmes og kommer tilbage, hvis du bliver Seriøs."
+    },
+    "seriousPlan": {
+      "title": "Seriøs",
+      "priceSuffix": "kr./måned",
+      "description": "Fuld historik uden 30-dages-grænse, plus adgang til Hello Doc.",
+      "upgradeCta": "Opgradér til Seriøs",
+      "upgradeUnavailable": "Betaling er ikke tilsluttet endnu — brug en gavekode eller indløs points for at blive Seriøs, indtil en betalingsudbyder er på plads."
+    },
+    "retentionNote": "Data ældre end 30 dage slettes aldrig — det gemmes og vises igen, så snart du bliver Seriøs."
   },
   "profileSleep": {
     "title": "Søvnmønster",
@@ -578,6 +713,21 @@
     "deleteAria": "Slet vejning",
     "delete": "Slet"
   },
+  "bodyMeasurements": {
+    "title": "Kropsmål",
+    "intro": "Registrér dine kropsmål ved siden af vægten — de ændrer sig ofte, før vægten gør, og giver et mere fuldstændigt billede af din krop over tid.",
+    "waist": "Talje (cm)",
+    "hip": "Hofte (cm)",
+    "chest": "Bryst (cm)",
+    "thigh": "Lår (cm)",
+    "upperArm": "Overarm (cm)",
+    "placeholder": "fx 82",
+    "saving": "Gemmer…",
+    "loading": "Henter…",
+    "noEntriesYet": "Ingen kropsmål registreret endnu.",
+    "deleteAria": "Slet måling",
+    "delete": "Slet"
+  },
   "targetWeight": {
     "title": "Mål",
     "intro": "Sæt den vægt, du sigter efter. Bruges til at følge din fremgang i statistikken.",
@@ -600,6 +750,30 @@
     "loading": "Henter…",
     "noEntriesYet": "Ingen vejninger registreret endnu.",
     "recentTitle": "Seneste vejninger"
+  },
+  "waterLog": {
+    "title": "Vand",
+    "intro": "Registrér dit vandindtag. Vælg en dunk eller et glas, eller indstil mængden manuelt på skyderen.",
+    "amountLabel": "Mængde",
+    "add": "Tilføj",
+    "saving": "Gemmer…",
+    "saveError": "Registreringen kunne ikke gemmes.",
+    "saved": "Vand registreret.",
+    "loading": "Henter…",
+    "noEntriesYet": "Intet vand registreret endnu.",
+    "recentTitle": "Seneste registreringer"
+  },
+  "periodLog": {
+    "title": "Menstruation",
+    "intro": "Registrér hvornår din menstruation starter, så du kan følge din cyklus over tid.",
+    "startDate": "Startdato",
+    "add": "Tilføj",
+    "saving": "Gemmer…",
+    "saveError": "Registreringen kunne ikke gemmes.",
+    "saved": "Menstruation registreret.",
+    "loading": "Henter…",
+    "noEntriesYet": "Ingen registreringer endnu.",
+    "recentTitle": "Seneste registreringer"
   },
   "photoDiary": {
     "title": "Billede-dagbog",
@@ -650,6 +824,8 @@
     "error": "Database ikke tilgængelig i dette miljø.",
     "kcalPerServing": "{kcal} kcal / {unit}",
     "kcalPer100g": "{kcal} kcal/100g",
+    "alternativeServing": "{label}: {kcal} kcal",
+    "nutritionUnknown": "Næringsindhold ukendt",
     "details": "Detaljer",
     "additives": "E-numre",
     "time": "Tidspunkt",
@@ -746,16 +922,18 @@
     "title": "Ubrugte statistik-kort",
     "hint": "Tryk på et kort for at tilføje det til din statistikside.",
     "category": {
-      "energyMacros": "Energi og makrofordeling",
       "carbsFibre": "Kulhydrattyper og fibre",
-      "vitamins": "Vitaminer",
-      "minerals": "Mineraler",
-      "activityOther": "Aktivitet og øvrige data",
-      "sport": "Sport og aktivitet"
+      "vitaminsMinerals": "Vitaminer og mineraler",
+      "allergensAdditives": "Allergener og E-numre",
+      "sportActivity": "Sport og aktivitet",
+      "sleep": "Søvn",
+      "other": "Øvrige data"
     },
     "noCardsYet": "Ingen kort her endnu.",
     "addHeading": "+ Overskrift",
-    "addHeadingHint": "Tilføjer en sektionsoverskrift til din statistikside, som du selv kan omdøbe."
+    "addHeadingHint": "Tilføjer en sektionsoverskrift til din statistikside, som du selv kan omdøbe.",
+    "addDivider": "+ Adskillelseslinje",
+    "addDividerHint": "Tilføjer en sort adskillelseslinje til din statistikside."
   },
   "statCardsGrid": {
     "exitEditing": "Afslut redigering",
@@ -765,6 +943,7 @@
     "renameHeading": "Omdøb overskrift",
     "removeHeading": "Fjern overskrift",
     "dragHeading": "Flyt overskrift",
+    "removeDivider": "Fjern adskillelseslinje",
     "noData": "Ingen data i perioden"
   },
   "statChart": {
@@ -814,13 +993,19 @@
     "ownDishes": "Egne retter",
     "search": "Søg",
     "weight": "Vægt",
+    "water": "Vand",
     "camera": "Kamera",
+    "list": "Se alle",
+    "menstrualCycle": "Menstruation",
     "hint": {
       "microphone": "Indtal",
       "ownDishes": "Måltid",
       "search": "Søgning",
       "weight": "Vægt og mål",
-      "camera": "Tag billede"
+      "water": "Vandindtag",
+      "camera": "Tag billede",
+      "list": "Se alle",
+      "menstrualCycle": "Log menstruation"
     }
   },
   "onboarding": {

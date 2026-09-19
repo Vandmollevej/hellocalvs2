@@ -6,6 +6,7 @@ import { HfScreen } from "@/components/HfScreen";
 import {
   activeStatKeys,
   computeStatCards,
+  addDividerToLayout,
   addHeaderToLayout,
   addStatCardToLayout,
   DEFAULT_ACTIVE_STAT_KEYS,
@@ -16,6 +17,7 @@ import {
   type StatCardValue,
   type StatGridLayoutItem,
 } from "@/lib/stat-cards";
+import { nutritionSectionLabel } from "@/lib/nutrition-terminology";
 import { groupByDay, withinLastDays, type RegistrationTotals } from "@/lib/daily-totals";
 import type { IntegrationCardStatus } from "@/lib/integrations";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -35,33 +37,60 @@ const DEFAULT_LAYOUT: StatGridLayoutItem[] = DEFAULT_ACTIVE_STAT_KEYS.map((key) 
   key,
 }));
 
+type CategoryDef = { title: string; keys: string[]; includeSportCards?: boolean };
+
 // Groups the known stat cards (src/lib/stat-cards.ts) into fixed categories.
 // Categories with no matching cards in this codebase are still shown, but with a
 // message saying no data exists yet — no new stat types are invented here.
-function categoryDefs(t: (key: string) => string): { title: string; keys: string[] | "dynamic-sport" }[] {
+function categoryDefs(t: (key: string) => string, region: string): CategoryDef[] {
   return [
     // Fat breakdown/cholesterol are the MyFitnessPal-style extended panel
     // (2026-09-11, Open Food Facts-sourced products only, see
     // src/lib/openFoodFacts.ts) — grouped here since they're macro-related.
+    // Title is the region's own consumer wording (e.g. "Næringsindhold" in
+    // Denmark), not a fixed "Makroer"/"energyMacros" label, per
+    // src/lib/nutrition-terminology.ts.
     {
-      title: t("statUnusedCards.category.energyMacros"),
+      title: nutritionSectionLabel(region),
       keys: ["calories", "protein", "carbs", "fat", "saturatedFat", "unsaturatedFat", "transFat", "cholesterol"],
     },
     // Sugar/fiber come from Product.nutritionExtra (HelloFresh recipes only,
     // see docs/DECISIONS.md 2026-08-29) — real data, not invented.
     { title: t("statUnusedCards.category.carbsFibre"), keys: ["sugar", "fiber"] },
-    // Vitamin A/C are the extended panel too (Open Food Facts only) — real
-    // data, not invented; this used to be a permanently empty category
-    // before that source existed.
-    { title: t("statUnusedCards.category.vitamins"), keys: ["vitaminA", "vitaminC"] },
-    // Salt/potassium/calcium/iron are also HelloFresh-recipe-only, same source
-    // as sugar/fiber above.
-    { title: t("statUnusedCards.category.minerals"), keys: ["salt", "potassium", "calcium", "iron"] },
-    { title: t("statUnusedCards.category.activityOther"), keys: ["steps", "water", "burned", "daysLogged", "goalsMet"] },
-    // Sport types are dynamic (one per sport the user actually has data for),
-    // and only present when at least one real integration is CONNECTED — see
-    // computeStatCards()/SPORT_STAT_KEY_PREFIX in src/lib/stat-cards.ts.
-    { title: t("statUnusedCards.category.sport"), keys: "dynamic-sport" },
+    {
+      title: t("statUnusedCards.category.vitaminsMinerals"),
+      keys: [
+        "vitaminA", "vitaminC", "vitaminD", "vitaminE", "vitaminK",
+        "vitaminB1", "vitaminB2", "vitaminB3", "vitaminB5", "vitaminB6",
+        "vitaminB7", "vitaminB9", "vitaminB12",
+        "salt", "sodium", "potassium", "calcium", "iron", "magnesium",
+        "zinc", "copper", "manganese", "selenium", "phosphorus", "iodine",
+        "chromium", "molybdenum",
+      ],
+    },
+    { title: t("statUnusedCards.category.allergensAdditives"), keys: ["allergens", "additives"] },
+    {
+      // Sport types are dynamic (one per sport the user actually has data
+      // for, plus five pinned types even before there's any data), and only
+      // present when at least one real integration is CONNECTED — see
+      // computeStatCards()/SPORT_STAT_KEY_PREFIX in src/lib/stat-cards.ts.
+      title: t("statUnusedCards.category.sportActivity"),
+      keys: [
+        "steps", "distanceKm", "burned", "exerciseMinutes", "standMinutes", "floorsClimbed",
+        "activeZoneMinutes", "heartRate", "restingHeartRate", "restingHeartRateMinutes",
+        "heartRateMin", "heartRateMax", "hrv", "vo2Max", "heartRateRecovery",
+        "respiratoryRate", "spo2", "temperature", "stress", "edaResponses", "cardioLoad",
+      ],
+      includeSportCards: true,
+    },
+    {
+      title: t("statUnusedCards.category.sleep"),
+      keys: [
+        "sleepDuration", "sleepInBed", "sleepBedtime", "sleepWakeTime", "sleepAwake",
+        "sleepRem", "sleepLight", "sleepDeep", "sleepScore", "sleepEfficiency", "sleepAwakenings",
+      ],
+    },
+    { title: t("statUnusedCards.category.other"), keys: ["water", "daysLogged", "goalsMet"] },
   ];
 }
 
@@ -72,6 +101,7 @@ export default function UnusedStatCardsPage() {
   const [activities, setActivities] = useState<ActivityTotals[]>([]);
   const [metrics, setMetrics] = useState<HealthMetricTotals[]>([]);
   const [hasConnectedIntegration, setHasConnectedIntegration] = useState(false);
+  const [region, setRegion] = useState("DK");
   const [loading, setLoading] = useState(true);
   const [activeKeys, setActiveKeys] = useState<Set<string>>(() => activeStatKeys(DEFAULT_LAYOUT));
 
@@ -94,8 +124,12 @@ export default function UnusedStatCardsPage() {
         if (!response.ok) throw new Error("Kunne ikke hente sundhedsdata");
         return (await response.json()) as { metrics: HealthMetricTotals[] };
       }),
+      fetch("/api/profile").then(async (response) => {
+        if (!response.ok) throw new Error("Kunne ikke hente profil");
+        return (await response.json()) as { user: { region?: string } };
+      }),
     ])
-      .then(([registrationData, activityData, integrationData, metricData]) => {
+      .then(([registrationData, activityData, integrationData, metricData, profileData]) => {
         if (cancelled) return;
         setRegistrations(registrationData.registrations);
         setActivities(activityData.activities);
@@ -103,6 +137,7 @@ export default function UnusedStatCardsPage() {
           integrationData.integrations.some((i) => i.connectable && i.status === "CONNECTED"),
         );
         setMetrics(metricData.metrics);
+        setRegion(profileData.user.region ?? "DK");
       })
       .catch(() => {
         if (!cancelled) {
@@ -110,6 +145,7 @@ export default function UnusedStatCardsPage() {
           setActivities([]);
           setHasConnectedIntegration(false);
           setMetrics([]);
+          setRegion("DK");
         }
       })
       .finally(() => {
@@ -144,6 +180,11 @@ export default function UnusedStatCardsPage() {
     router.back();
   }
 
+  function addDivider() {
+    addDividerToLayout(DEFAULT_LAYOUT);
+    router.back();
+  }
+
   return (
     <HfScreen
       title={t("statUnusedCards.title")}
@@ -154,14 +195,16 @@ export default function UnusedStatCardsPage() {
           {t("statUnusedCards.hint")}
         </p>
 
-        {categoryDefs(t).map((category) => {
-          const cards =
-            category.keys === "dynamic-sport"
-              ? allCards.filter((c) => c.key.startsWith(SPORT_STAT_KEY_PREFIX) && !activeKeys.has(c.key))
-              : category.keys
-                  .map((key) => cardByKey.get(key))
-                  .filter((c): c is StatCardValue => Boolean(c))
-                  .filter((c) => !activeKeys.has(c.key));
+        {categoryDefs(t, region).map((category) => {
+          const categoryCards = category.keys
+            .map((key) => cardByKey.get(key))
+            .filter((c): c is StatCardValue => Boolean(c));
+
+          const sportCards = category.includeSportCards
+            ? allCards.filter((c) => c.key.startsWith(SPORT_STAT_KEY_PREFIX))
+            : [];
+
+          const cards = [...categoryCards, ...sportCards].filter((c) => !activeKeys.has(c.key));
 
           return (
             <section key={category.title} className="flex flex-col gap-2">
@@ -186,7 +229,13 @@ export default function UnusedStatCardsPage() {
                       >
                         <p className="text-xs text-hf-black opacity-60">{card.label}</p>
                         <p className="hf-heading mt-1 flex items-center gap-1.5 text-xl text-hf-black">
-                          <CardIcon size={17} stroke={2} />
+                          {card.symbol ? (
+                            <span className="inline-flex min-w-[22px] items-center justify-center text-[15px] font-bold leading-none">
+                              {card.symbol}
+                            </span>
+                          ) : (
+                            <CardIcon size={17} stroke={2} />
+                          )}
                           {loading ? "—" : card.value}
                         </p>
                       </button>
@@ -208,6 +257,17 @@ export default function UnusedStatCardsPage() {
           </button>
           <p className="mt-1.5 text-center text-xs text-hf-black opacity-50">
             {t("statUnusedCards.addHeadingHint")}
+          </p>
+
+          <button
+            type="button"
+            onClick={addDivider}
+            className="mt-3 flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-hf-black/30 text-sm font-semibold text-hf-black opacity-80 active:opacity-100"
+          >
+            {t("statUnusedCards.addDivider")}
+          </button>
+          <p className="mt-1.5 text-center text-xs text-hf-black opacity-50">
+            {t("statUnusedCards.addDividerHint")}
           </p>
         </div>
       </div>

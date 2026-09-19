@@ -2,11 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconCamera, IconLock, IconLockOpen, IconTarget } from "@tabler/icons-react";
+import { IconCamera, IconLock, IconLockOpen, IconRulerMeasure, IconTarget } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { IconBathScale } from "@/components/hf/IconBathScale";
 import { WheelPicker } from "@/components/ui/WheelPicker";
 import { latestTrendWeight, type MealSample, type WeightSample } from "@/lib/weight-trend";
+import { computeAge } from "@/lib/age";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 type Sex = "FEMALE" | "MALE";
@@ -17,7 +18,7 @@ type ProfileUser = {
   weightKg: number | null;
   targetWeightKg: number | null;
   heightCm: number | null;
-  birthYear: number | null;
+  birthDate: string | null;
   sex: Sex | null;
   wantsPushNotifications: boolean;
   wantsUpdateNewsEmails: boolean;
@@ -232,15 +233,25 @@ export default function ProfileEditPage() {
               />
             </Field>
 
-            <Field label={t("profile.field.birthYear")}>
-              <WheelPicker
-                label={t("profile.field.birthYear")}
-                value={user.birthYear}
-                min={1920}
-                max={new Date().getFullYear()}
-                initialScrollValue={1990}
-                onChange={(value) => updateNow("birthYear", value)}
+            <Field label={t("profile.field.birthDate")}>
+              <input
+                type="date"
+                className={inputClass}
+                value={user.birthDate ? user.birthDate.slice(0, 10) : ""}
+                min="1900-01-01"
+                max={new Date().toISOString().slice(0, 10)}
+                onChange={(event) =>
+                  updateNow("birthDate", event.target.value === "" ? null : event.target.value)
+                }
               />
+              {(() => {
+                const age = computeAge(user.birthDate);
+                return age !== null ? (
+                  <span className="text-[11px] text-hf-black opacity-60">
+                    {t("profile.age", { age })}
+                  </span>
+                ) : null;
+              })()}
             </Field>
 
             <Field label={t("profile.field.sex")}>
@@ -282,6 +293,14 @@ export default function ProfileEditPage() {
             >
               <IconTarget size={20} />
               {t("profile.actions.target")}
+            </button>
+            <button
+              type="button"
+              onClick={() => router.push("/profile/body-measurements")}
+              className="flex flex-1 flex-col items-center gap-1.5 rounded-xl bg-hf-tan px-2 py-3 text-center text-[13px] font-semibold text-hf-black"
+            >
+              <IconRulerMeasure size={20} />
+              {t("profile.actions.bodyMeasurements")}
             </button>
           </div>
         </div>

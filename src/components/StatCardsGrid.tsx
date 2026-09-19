@@ -11,7 +11,9 @@ import {
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 function layoutItemId(item: LayoutItem) {
-  return item.type === "stat" ? `stat:${item.key}` : `header:${item.id}`;
+  if (item.type === "stat") return `stat:${item.key}`;
+  if (item.type === "header") return `header:${item.id}`;
+  return `divider:${item.id}`;
 }
 
 function makeId() {
@@ -27,6 +29,7 @@ type DragSource =
 type DragContent =
   | { kind: "card"; card: StatCardValue }
   | { kind: "header"; text: string }
+  | { kind: "divider" }
   | { kind: "pill"; label: string; icon?: Icon };
 
 type DragState = {
@@ -40,13 +43,32 @@ type DragState = {
   height: number;
 };
 
-function CardTile({ card, floating }: { card: StatCardValue; floating?: boolean }) {
+function CardTile({
+  card,
+  floating,
+  highlightRecommendedLimits = false,
+}: {
+  card: StatCardValue;
+  floating?: boolean;
+  highlightRecommendedLimits?: boolean;
+}) {
   const CardIcon = card.icon;
+  const showLimitWarning = highlightRecommendedLimits && card.outsideRecommendedRange === true;
   return (
-    <div className={`flex h-full w-full flex-col rounded-2xl bg-hf-tan p-4 ${floating ? "shadow-xl" : ""}`}>
+    <div
+      className={`flex h-full w-full flex-col rounded-2xl bg-hf-tan p-4 ${
+        showLimitWarning ? "border border-hf-red-dark" : "border border-transparent"
+      } ${floating ? "shadow-xl" : ""}`}
+    >
       <p className="text-xs text-hf-black opacity-60">{card.label}</p>
       <p className="hf-heading mt-1 flex items-center gap-1.5 text-xl text-hf-black">
-        {CardIcon && <CardIcon size={17} stroke={2} />}
+        {card.symbol ? (
+          <span className="inline-flex min-w-[22px] items-center justify-center text-[15px] font-bold leading-none">
+            {card.symbol}
+          </span>
+        ) : (
+          CardIcon && <CardIcon size={17} stroke={2} />
+        )}
         {card.value}
       </p>
     </div>
@@ -56,9 +78,11 @@ function CardTile({ card, floating }: { card: StatCardValue; floating?: boolean 
 export function StatCardsGrid({
   cards,
   defaultActiveKeys,
+  highlightRecommendedLimits = false,
 }: {
   cards: StatCardValue[];
   defaultActiveKeys: string[];
+  highlightRecommendedLimits?: boolean;
 }) {
   const { t } = useTranslation();
   const cardByKey = useMemo(() => new Map(cards.map((c) => [c.key, c])), [cards]);
@@ -358,7 +382,7 @@ export function StatCardsGrid({
                 }}
                 style={{ animationDelay: `${(index % 3) * 60}ms` }}
                 className={`col-span-2 flex items-center gap-2 rounded-2xl bg-hf-tan-dark px-3 py-3 select-none ${
-                  editMode ? "stat-card-editing border-2 border-dashed border-hf-black/30" : ""
+                  editMode ? "stat-card-editing touch-none border-2 border-dashed border-hf-black/50" : ""
                 } ${isDragging ? "opacity-0" : ""}`}
               >
                 <button
@@ -392,6 +416,37 @@ export function StatCardsGrid({
             );
           }
 
+          if (item.type === "divider") {
+            return (
+              <div
+                key={id}
+                ref={(el) => {
+                  if (el) activeRefs.current.set(id, el);
+                  else activeRefs.current.delete(id);
+                }}
+                style={{ animationDelay: `${(index % 3) * 60}ms` }}
+                onPointerDown={(e) =>
+                  onCardPointerDown(e, { kind: "active", id, item }, { kind: "divider" })
+                }
+                className={`relative col-span-2 flex h-5 items-center justify-center rounded-2xl select-none ${
+                  editMode ? "stat-card-editing touch-none cursor-grab border-2 border-dashed border-hf-black/50 active:cursor-grabbing" : ""
+                } ${isDragging ? "opacity-0" : ""}`}
+              >
+                <div className="h-0.5 w-[80%] bg-hf-black" />
+                {editMode && (
+                  <button
+                    type="button"
+                    aria-label={t("statCardsGrid.removeDivider")}
+                    onClick={() => setLayout((prev) => prev.filter((i) => layoutItemId(i) !== id))}
+                    className="absolute right-1 shrink-0 rounded-full bg-hf-tan p-1 opacity-60 hover:opacity-100"
+                  >
+                    <IconX size={16} />
+                  </button>
+                )}
+              </div>
+            );
+          }
+
           const card = cardByKey.get(item.key);
           if (!card) {
             // The key is a real, saved part of the layout (e.g. a sport-activity
@@ -417,6 +472,7 @@ export function StatCardsGrid({
             );
           }
           const CardIcon = card.icon;
+          const showLimitWarning = highlightRecommendedLimits && card.outsideRecommendedRange === true;
 
           return (
             <div
@@ -430,12 +486,20 @@ export function StatCardsGrid({
                 onCardPointerDown(e, { kind: "active", id, item }, { kind: "card", card })
               }
               className={`touch-none select-none rounded-2xl bg-hf-tan p-4 ${
+                showLimitWarning ? "border border-hf-red-dark" : "border border-transparent"
+              } ${
                 editMode ? "stat-card-editing cursor-grab border-2 border-dashed border-hf-black/30 active:cursor-grabbing" : ""
               } ${isDragging ? "opacity-0" : ""}`}
             >
               <p className="text-xs text-hf-black opacity-60">{card.label}</p>
               <p className="hf-heading mt-1 flex items-center gap-1.5 text-xl text-hf-black">
-                {CardIcon && <CardIcon size={17} stroke={2} />}
+                {card.symbol ? (
+                  <span className="inline-flex min-w-[22px] items-center justify-center text-[15px] font-bold leading-none">
+                    {card.symbol}
+                  </span>
+                ) : (
+                  CardIcon && <CardIcon size={17} stroke={2} />
+                )}
                 {card.value}
               </p>
             </div>
@@ -455,10 +519,18 @@ export function StatCardsGrid({
           }}
         >
           {drag.content.kind === "card" ? (
-            <CardTile card={drag.content.card} floating />
+            <CardTile
+              card={drag.content.card}
+              floating
+              highlightRecommendedLimits={highlightRecommendedLimits}
+            />
           ) : drag.content.kind === "header" ? (
             <div className="flex h-full w-full items-center gap-2 rounded-2xl bg-hf-tan-dark px-4 py-3 shadow-xl">
               <span className="hf-heading text-sm text-hf-black">{drag.content.text}</span>
+            </div>
+          ) : drag.content.kind === "divider" ? (
+            <div className="flex h-full w-full items-center justify-center rounded-2xl bg-hf-tan shadow-xl">
+              <div className="h-0.5 w-[80%] bg-hf-black" />
             </div>
           ) : (
             <div className="flex h-full w-full items-center justify-center gap-1.5 rounded-full bg-hf-black px-3 py-2 text-xs font-semibold text-hf-white shadow-xl">

@@ -690,3 +690,47 @@ button,
     left: 50%;
   }
 }
+
+/* HelloFresh-stil splash-loader: ringen roterer konstant, mens buelængden
+   trækker sig fra kort til næsten hel og tilbage igen (Material-mønster). */
+@keyframes hf-loader-rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes hf-loader-dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
+}
+
+.hf-loader {
+  animation: hf-loader-rotate 1.8s linear infinite;
+}
+
+.hf-loader__path {
+  animation: hf-loader-dash 1.5s ease-in-out infinite;
+  stroke-linecap: round;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hf-loader {
+    animation: none;
+  }
+
+  .hf-loader__path {
+    animation: none;
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+}

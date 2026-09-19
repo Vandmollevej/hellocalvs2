@@ -2,10 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { IMAGE_TAG_MULTIPLE, IMAGE_TAG_RAW } from "@/lib/image-tags";
 
-type ProductImage = { id: string; url: string };
+type ProductImage = { id: string; url: string; tags: string[] };
 
 const MAX_SECONDARY = 3;
+const TOGGLEABLE_TAGS = [
+  { tag: IMAGE_TAG_MULTIPLE, label: "Flere (Multiple)" },
+  { tag: IMAGE_TAG_RAW, label: "Rå-vare (Raw)" },
+];
 
 export function ProductImageGallery({
   productId,
@@ -76,6 +81,16 @@ export function ProductImageGallery({
     router.refresh();
   }
 
+  async function toggleTag(image: ProductImage, tag: string) {
+    const tags = image.tags.includes(tag) ? image.tags.filter((t) => t !== tag) : [...image.tags, tag];
+    await fetch(`/api/admin/products/${productId}/images/${image.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tags }),
+    });
+    router.refresh();
+  }
+
   return (
     <div className="rounded-lg border border-border-strong bg-surface-2 p-4">
       <p className="mb-3 text-xs font-medium uppercase tracking-wide text-text-muted">
@@ -112,6 +127,26 @@ export function ProductImageGallery({
               >
                 Slet
               </button>
+            </div>
+            <div className="flex flex-wrap justify-center gap-1">
+              {TOGGLEABLE_TAGS.map(({ tag, label }) => {
+                const active = img.tags.includes(tag);
+                return (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => toggleTag(img, tag)}
+                    className={
+                      "rounded-full border px-1.5 py-0.5 text-[10px] " +
+                      (active
+                        ? "border-hf-green-dark bg-hf-green-dark text-hf-white"
+                        : "border-border-strong text-text-muted")
+                    }
+                  >
+                    {label}
+                  </button>
+                );
+              })}
             </div>
           </div>
         ))}

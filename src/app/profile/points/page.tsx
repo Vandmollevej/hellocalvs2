@@ -74,8 +74,8 @@ export default function PointsPage() {
 
         <div className="mt-4 rounded-lg border p-4" style={{ borderColor: "var(--hf-color-line)" }}>
           <p className="hf-type-body">
-            {FREE_MONTH_COST} points kan indløses til 1 gratis abonnementsmåned. Kræver en gemt
-            betalingsmetode under Betaling, så abonnementet fortsætter automatisk bagefter.
+            {FREE_MONTH_COST} points kan indløses til 1 gratis måned med Seriøs — ingen
+            betalingskort nødvendigt. Abonnementet falder tilbage til Gratis igen bagefter.
           </p>
           <button
             type="button"

@@ -9,7 +9,7 @@ type Product = {
   name: string;
   brand: { name: string } | null;
   imageUrl: string | null;
-  images: { id: string; url: string }[];
+  images: { id: string; url: string; tags: string[] }[];
   kcalPer100g: number;
   proteinPer100g: number;
   carbsPer100g: number;

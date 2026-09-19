@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { IconApple, IconBookmark, IconBookmarkFilled, IconCamera, IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { FoodRow } from "@/components/FoodRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 type Product = {
@@ -20,6 +21,15 @@ type Registration = { productId: string | null };
 type LoadState = "loading" | "ready" | "error";
 
 const FAVORITES_LIMIT = 10;
+// Regional search ranking (2026-09-19, see docs/DECISIONS.md): autosuggest
+// starts at 2 typed characters, shows a short-lived cached result instantly
+// while a live re-ranked request is in flight, and reports which result was
+// opened so future searches can weight it (region×hour click popularity).
+const SEARCH_MIN_LENGTH = 2;
+const SEARCH_DEBOUNCE_MS = 140;
+const SEARCH_CACHE_TTL_MS = 5 * 60 * 1000;
+
+const searchCache = new Map<string, { expiresAt: number; products: Product[] }>();
 
 function mostUsedProducts(products: Product[], registrations: Registration[]) {
   const countByProductId = new Map<string, number>();
@@ -40,42 +50,45 @@ function ProductRow({
   prefillQuery,
   isFavorite,
   onToggleFavorite,
+  onOpen,
 }: {
   product: Product;
   isLast: boolean;
   prefillQuery: string;
   isFavorite: boolean;
   onToggleFavorite: (id: string, next: boolean) => void;
+  onOpen?: (id: string) => void;
 }) {
   const { t } = useTranslation();
   return (
-    <div
-      className={`flex items-center gap-2.5 px-4 py-3 ${isLast ? "" : "border-b border-hf-tan-dark"}`}
-    >
-      <Link href={`/add/${product.id}${prefillQuery}`} className="flex min-w-0 flex-1 items-center gap-2.5">
-        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-hf-white/30">
-          {product.imageUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={product.imageUrl} alt="" className="h-full w-full object-cover object-center" />
-          )}
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-[15px] font-medium text-hf-black">{product.name}</p>
-          <p className="truncate text-xs text-hf-black opacity-60">
-            {[product.brand?.name, t("foods.kcalPer100g", { kcal: Math.round(product.kcalPer100g) })]
-              .filter(Boolean)
-              .join(" · ")}
-          </p>
-        </div>
+    <div className={`px-4 ${isLast ? "" : "border-b border-hf-tan-dark"}`}>
+      <Link href={`/add/${product.id}${prefillQuery}`} onClick={() => onOpen?.(product.id)} className="block">
+        <FoodRow
+          image={product.imageUrl}
+          title={product.name}
+          subtitle={
+            <p className="truncate text-xs text-hf-black opacity-60">
+              {[product.brand?.name, t("foods.kcalPer100g", { kcal: Math.round(product.kcalPer100g) })]
+                .filter(Boolean)
+                .join(" · ")}
+            </p>
+          }
+          right={
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onToggleFavorite(product.id, !isFavorite);
+              }}
+              aria-label={t(isFavorite ? "search.removeFavorite" : "search.addFavorite")}
+              className="text-hf-green"
+            >
+              {isFavorite ? <IconBookmarkFilled size={20} /> : <IconBookmark size={20} />}
+            </button>
+          }
+        />
       </Link>
-      <button
-        type="button"
-        onClick={() => onToggleFavorite(product.id, !isFavorite)}
-        aria-label={t(isFavorite ? "search.removeFavorite" : "search.addFavorite")}
-        className="flex-shrink-0 text-hf-green"
-      >
-        {isFavorite ? <IconBookmarkFilled size={20} /> : <IconBookmark size={20} />}
-      </button>
     </div>
   );
 }
@@ -95,6 +108,7 @@ function MadvarerContent() {
   const [products, setProducts] = useState<Product[]>([]);
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [query, setQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [state, setState] = useState<LoadState>("loading");
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -159,22 +173,87 @@ function MadvarerContent() {
     return () => controller.abort();
   }, []);
 
-  const isSearching = query.trim().length > 0;
+  const normalizedQuery = query.trim();
+  const isSearching = normalizedQuery.length >= SEARCH_MIN_LENGTH;
+
+  // Cached results for the current query render instantly (no setState —
+  // this is a plain derived read of the module-level cache), while the
+  // effect below revalidates live and only calls setState from its
+  // asynchronous fetch callback.
+  // Freshness (TTL) is only checked where a timestamp read is allowed to be
+  // impure — inside the effect below, not here. A render past its TTL is
+  // corrected within SEARCH_DEBOUNCE_MS by the live revalidation anyway.
+  const cachedResults = useMemo(() => {
+    if (normalizedQuery.length < SEARCH_MIN_LENGTH) return null;
+    return searchCache.get(normalizedQuery.toLocaleLowerCase())?.products ?? null;
+  }, [normalizedQuery]);
+
+  useEffect(() => {
+    const q = query.trim();
+    if (q.length < SEARCH_MIN_LENGTH) return;
+
+    const cacheKey = q.toLocaleLowerCase();
+    const hadCacheHit = searchCache.has(cacheKey);
+    const controller = new AbortController();
+    const timer = window.setTimeout(async () => {
+      try {
+        const hour = new Date().getHours();
+        const response = await fetch(
+          `/api/products?q=${encodeURIComponent(q)}&hour=${hour}&take=20`,
+          { signal: controller.signal }
+        );
+        if (!response.ok) throw new Error("search failed");
+        const data = (await response.json()) as { products: Product[] };
+        searchCache.set(cacheKey, {
+          expiresAt: Date.now() + SEARCH_CACHE_TTL_MS,
+          products: data.products,
+        });
+        setSearchResults(data.products);
+      } catch (error) {
+        if ((error as Error).name !== "AbortError" && !hadCacheHit) {
+          setSearchResults([]);
+        }
+      }
+    }, SEARCH_DEBOUNCE_MS);
+
+    return () => {
+      window.clearTimeout(timer);
+      controller.abort();
+    };
+  }, [query]);
+
+  function trackSearchClick(productId: string) {
+    if (query.trim().length < SEARCH_MIN_LENGTH) return;
+    const payload = JSON.stringify({
+      productId,
+      localHour: new Date().getHours(),
+    });
+
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon("/api/products/search-event", new Blob([payload], { type: "application/json" }));
+      return;
+    }
+
+    void fetch("/api/products/search-event", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: payload,
+      keepalive: true,
+    });
+  }
 
   const favorites = useMemo(
     () => mostUsedProducts(products, registrations),
     [products, registrations]
   );
 
-  const filtered = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
-    if (!normalizedQuery) return [];
-    return products.filter((product) =>
-      `${product.name} ${product.brand?.name ?? ""}`.toLowerCase().includes(normalizedQuery)
-    );
-  }, [products, query]);
-
-  const visibleProducts = isSearching ? filtered : favorites;
+  // Below the minimum, `searchResults` may still hold the last real query's
+  // results — masked here rather than reset from an effect body (avoids a
+  // synchronous setState-in-effect; the state is simply irrelevant while
+  // isSearching is false and gets overwritten by the next real query anyway).
+  // While searching, prefer the cached instant result until the live,
+  // re-ranked fetch for this exact query has actually landed.
+  const visibleProducts = isSearching ? cachedResults ?? searchResults : favorites;
 
   return (
     <HfScreen title={t("foods.title")} icon={<IconApple size={20} stroke={2} />}>
@@ -228,6 +307,7 @@ function MadvarerContent() {
                 prefillQuery={prefillQuery}
                 isFavorite={favoriteIds.has(product.id)}
                 onToggleFavorite={toggleFavorite}
+                onOpen={isSearching ? trackSearchClick : undefined}
               />
             ))}
           {state === "ready" && visibleProducts.length === 0 && (

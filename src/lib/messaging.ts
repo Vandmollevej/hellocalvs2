@@ -15,6 +15,7 @@ const USER_TOGGLEABLE_EVENTS: MessageEventType[] = [
   "PRODUCT_APPROVED",
   "PRODUCT_REJECTED",
   "BUG_REPORT_RESOLVED",
+  "BUG_REPORT_REJECTED",
   "POINTS_AWARDED",
   "FRIEND_FORWARD_RECEIVED",
 ];
@@ -114,6 +115,11 @@ const DEFAULT_TEMPLATES: Record<MessageEventType, { subject: string; bodyHtml: s
   BUG_REPORT_RESOLVED: {
     subject: "Din fejlrapport er godkendt",
     bodyHtml: "<p>Hej {{displayName}},</p><p>Tak for din fejlrapport — den er godkendt og du har optjent 10 points.</p>",
+    channel: "BOTH",
+  },
+  BUG_REPORT_REJECTED: {
+    subject: "Din indberetning blev ikke godkendt",
+    bodyHtml: "<p>Hej {{displayName}},</p><p>Vi har gennemgået din indberetning, men kunne desværre ikke godkende den. Der er ikke overført points denne gang.</p>",
     channel: "BOTH",
   },
   POINTS_AWARDED: {

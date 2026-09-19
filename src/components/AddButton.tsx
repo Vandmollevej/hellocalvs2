@@ -4,14 +4,15 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { IconList, type Icon } from "@tabler/icons-react";
 import {
-  IconPlus,
-  IconCamera,
-  IconSearch,
-  IconMicrophone,
-  type Icon,
-} from "@tabler/icons-react";
-import { IconBathroomScale } from "@/components/icons/BathroomScale";
+  addActionByKey,
+  useAddActionsProfile,
+  useWheelActionKeys,
+  visibleAddActions,
+  type AddActionKey,
+} from "@/lib/add-actions";
+import { useFabSide, type FabSide } from "@/lib/frontpage-layout";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 export const HERO_HEIGHT = 300;
@@ -39,8 +40,12 @@ export const FAB_INSET = Math.round((4 * HALF_CIRCLE_RADIUS) / (3 * Math.PI) - F
 // (the screen edge, not the FAB button), so every icon sits the same
 // distance from the backdrop's curved edge. Icons sit just outside the
 // backdrop, never inside it.
-const ARC_GAP = 40;
+const ARC_GAP = 52;
 const RADIUS = HALF_CIRCLE_RADIUS + ARC_GAP + CIRCLE / 2;
+
+// The highlighted icon steps further out still, so the thumb pressing on it
+// doesn't sit right on top of / block the icon it just selected.
+const HIGHLIGHT_EXTRA_RADIUS = 14;
 
 // Minimum distance from the FAB center before a drag counts as "aiming at"
 // an option, so a small wobble right after pressing down doesn't select
@@ -59,7 +64,13 @@ const BULGE_MAX = 20;
 // smaller spread = a narrower, more pronounced single bump; larger = a
 // broader, softer push.
 const BULGE_SPREAD_DEG = 46;
-const BULGE_SAMPLE_COUNT = 40;
+const BULGE_SAMPLE_COUNT = 48;
+
+// How close (in degrees) to the very pole the bulge tapers to zero. Keeping
+// this small means the top/bottom action icons (only ~15deg from a pole)
+// still get the (near-)full bulge — only the last few degrees right at the
+// flat-edge anchor are pinned down.
+const BULGE_POLE_TAPER_DEG = 12;
 
 // The two points where the curve meets the flat edge (angle -90 and +90) are
 // fixed anchors — the flat edge is docked against the screen edge and can't
@@ -69,25 +80,35 @@ const BULGE_SAMPLE_COUNT = 40;
 // curve dipped past the anchor, looped back, and — clipped by the SVG's
 // exact-fit viewBox — read as a flat/cut edge, like the circle were oval.
 //
-// Instead, sample the curve by y (not angle) and only ever add to x. Each
-// point's y is fixed by construction, so it can never leave [0, 2R] — no
-// clamping needed. The bulge is scaled by baseX/R, which is exactly 1 at the
-// equator and fades smoothly to exactly 0 at the poles (where baseX is 0),
-// so the anchors stay pinned and the curve stays a single smooth sweep.
+// The bulge itself is added only to x and scaled by a pin factor that's 0
+// exactly at the poles and ramps up to 1 within BULGE_POLE_TAPER_DEG — unlike
+// scaling by baseX/R (which fades across the *whole* quarter-circle and left
+// the top/bottom action icons, close to the poles, with almost no visible
+// bulge at all), this only pins down the last few degrees right at the
+// anchor, so dragging toward a top/bottom icon bulges just as much as one at
+// the side.
+//
+// Sampling must be uniform in angle (theta), not in y: near the poles,
+// dy/dtheta -> 0, so equal-y steps skip over huge swings in theta/x — the
+// very first segment used to leap from x=0 to nearly a third of the radius
+// in a single straight line, which read as a flat cut/facet ("lemon" edge)
+// right where the curve meets the flat side. Equal-theta steps put more
+// points exactly where the curve bends fastest (the poles) and fewer where
+// it's already nearly flat (the equator), keeping every segment short.
 function backdropPath(bulgeAngleDeg: number | null, bulgeAmount: number) {
   const points: [number, number][] = [];
   for (let i = 0; i <= BULGE_SAMPLE_COUNT; i += 1) {
-    const y = (HALF_CIRCLE_RADIUS * 2 * i) / BULGE_SAMPLE_COUNT;
-    const sinTheta = Math.max(-1, Math.min(1, y / HALF_CIRCLE_RADIUS - 1));
-    const theta = Math.asin(sinTheta);
+    const angleDeg = -90 + (180 * i) / BULGE_SAMPLE_COUNT;
+    const theta = (angleDeg * Math.PI) / 180;
+    const y = HALF_CIRCLE_RADIUS * (1 + Math.sin(theta));
     const baseX = HALF_CIRCLE_RADIUS * Math.cos(theta);
     let x = baseX;
     if (bulgeAngleDeg !== null && bulgeAmount > 0) {
-      const angleDeg = (theta * 180) / Math.PI;
       let diff = Math.abs(angleDeg - bulgeAngleDeg);
       if (diff > 180) diff = 360 - diff;
       const falloff = Math.max(0, Math.cos((diff / BULGE_SPREAD_DEG) * (Math.PI / 2)));
-      x += bulgeAmount * Math.max(0, falloff) ** 2 * (baseX / HALF_CIRCLE_RADIUS);
+      const pinFactor = Math.min(1, (90 - Math.abs(angleDeg)) / BULGE_POLE_TAPER_DEG);
+      x += bulgeAmount * Math.max(0, falloff) ** 2 * pinFactor;
     }
     points.push([x, y]);
   }
@@ -95,14 +116,21 @@ function backdropPath(bulgeAngleDeg: number | null, bulgeAmount: number) {
   return `${commands.join(" ")} L0,${HALF_CIRCLE_RADIUS * 2} L0,0 Z`;
 }
 
-// Top to bottom: microphone, pot (own dishes), search, scale (weight), camera (product).
-const ANGLES_DEG = [-70, -35, 0, 35, 70];
+// Angles are spread evenly across the same -75..75 arc regardless of how
+// many actions are shown (the fixed "list" slot plus 0-5 user-chosen
+// actions, see src/lib/add-actions.ts) — one item sits at the top (-75),
+// one at the bottom (75), the rest evenly spaced between them.
+function computeAngles(count: number): number[] {
+  if (count <= 1) return [0];
+  const step = 150 / (count - 1);
+  return Array.from({ length: count }, (_, i) => -75 + i * step);
+}
 
-export type FabSide = "left" | "right";
-
-// The FAB is fixed to the left edge of the hero — it is no longer
-// draggable to a custom position.
-const SIDE: FabSide = "left";
+// Which screen edge the FAB sits on is a user preference (settings → Visning
+// → Forside), not a fixed constant or something draggable to a custom
+// position — see src/lib/frontpage-layout.ts, which is also what StatsWheel
+// reads (always the opposite edge) so the two can never disagree.
+export type { FabSide };
 
 type Action = {
   key: string;
@@ -113,67 +141,66 @@ type Action = {
   imageSrc?: string;
 };
 
-function buildActions(t: (key: string) => string): Action[] {
-  return [
-    {
-      key: "microphone",
-      href: "/voice",
-      icon: IconMicrophone,
-      label: t("addButton.microphone"),
-      hint: t("addButton.hint.microphone"),
-    },
-    {
-      key: "dish",
-      href: "/create-dish",
-      imageSrc: "/icons/pot.png",
-      label: t("addButton.ownDishes"),
-      hint: t("addButton.hint.ownDishes"),
-    },
-    {
-      key: "search",
-      href: "/search",
-      icon: IconSearch,
-      label: t("addButton.search"),
-      hint: t("addButton.hint.search"),
-    },
-    {
-      key: "weight",
-      href: "/weight/create",
-      icon: IconBathroomScale,
-      label: t("addButton.weight"),
-      hint: t("addButton.hint.weight"),
-    },
-    {
-      key: "camera",
-      href: "/camera?mode=product",
-      icon: IconCamera,
-      label: t("addButton.camera"),
-      hint: t("addButton.hint.camera"),
-    },
-  ];
+// The top wheel slot is always this fixed "list" action — it opens the new
+// /add/menu screen with every add-element, and is not part of the
+// user-configurable set below (src/lib/add-actions.ts, settings → Visning →
+// Forside).
+function buildActions(
+  t: (key: string) => string,
+  selectedKeys: AddActionKey[],
+  allowedKeys: Set<AddActionKey>
+): Action[] {
+  const listAction: Action = {
+    key: "list",
+    href: "/add/menu",
+    icon: IconList,
+    label: t("addButton.list"),
+    hint: t("addButton.hint.list"),
+  };
+
+  const selected = selectedKeys
+    .filter((key) => allowedKeys.has(key))
+    .map((key) => addActionByKey(key))
+    .filter((action): action is NonNullable<typeof action> => Boolean(action))
+    .map<Action>((action) => ({
+      key: action.key,
+      href: action.href,
+      icon: action.icon,
+      imageSrc: action.imageSrc,
+      label: t(action.labelKey),
+      hint: t(action.hintKey),
+    }));
+
+  return [listAction, ...selected];
 }
 
 // Both functions place icons on an arc centered at the screen edge — the
 // same center the backdrop semicircle uses — so every icon ends up exactly
 // RADIUS away from that center, i.e. the same margin from the curved edge.
-function arcItemCenter(angleDeg: number, containerWidth: number) {
+function arcItemCenter(angleDeg: number, containerWidth: number, side: FabSide) {
   const rad = (angleDeg * Math.PI) / 180;
   const reach = RADIUS * Math.cos(rad);
-  const x = SIDE === "left" ? reach : containerWidth - reach;
+  const x = side === "left" ? reach : containerWidth - reach;
   const y = CENTER_Y + RADIUS * Math.sin(rad);
   return { x, y };
 }
 
-function arcItemStyle(angleDeg: number): React.CSSProperties {
+function arcItemStyle(angleDeg: number, side: FabSide, isHighlighted: boolean): React.CSSProperties {
+  const radius = RADIUS + (isHighlighted ? HIGHLIGHT_EXTRA_RADIUS : 0);
   const rad = (angleDeg * Math.PI) / 180;
-  const reach = RADIUS * Math.cos(rad) - CIRCLE / 2;
-  const top = CENTER_Y + RADIUS * Math.sin(rad) - CIRCLE / 2;
-  return SIDE === "left" ? { left: reach, top } : { right: reach, top };
+  const reach = radius * Math.cos(rad) - CIRCLE / 2;
+  const top = CENTER_Y + radius * Math.sin(rad) - CIRCLE / 2;
+  return side === "left" ? { left: reach, top } : { right: reach, top };
 }
 
 export function AddButton({ onOpen }: { onOpen?: () => void }) {
   const { t } = useTranslation();
-  const actions = buildActions(t);
+  const side = useFabSide();
+  const selectedKeys = useWheelActionKeys();
+  const profile = useAddActionsProfile();
+  const allowedKeys = new Set(visibleAddActions(profile).map((action) => action.key));
+  const actions = buildActions(t, selectedKeys, allowedKeys);
+  const anglesDeg = computeAngles(actions.length);
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [highlightedKey, setHighlightedKey] = useState<string | null>(null);
@@ -207,7 +234,7 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
     let nearestKey: string | null = null;
     let nearestDistance = Infinity;
     for (let i = 0; i < actions.length; i += 1) {
-      const { x, y } = arcItemCenter(ANGLES_DEG[i], rect.width);
+      const { x, y } = arcItemCenter(anglesDeg[i], rect.width, side);
       const distance = Math.hypot(px - x, py - y);
       if (distance < nearestDistance) {
         nearestDistance = distance;
@@ -215,7 +242,7 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
       }
     }
 
-    const fabCenterX = SIDE === "left" ? FAB_INSET + FAB_SIZE / 2 : rect.width - FAB_INSET - FAB_SIZE / 2;
+    const fabCenterX = side === "left" ? FAB_INSET + FAB_SIZE / 2 : rect.width - FAB_INSET - FAB_SIZE / 2;
     const fabCenterY = CENTER_Y;
     const dx = px - fabCenterX;
     const dy = py - fabCenterY;
@@ -314,7 +341,7 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
   // should only ever point at the highlighted option, never drift toward
   // the exact pointer position.
   const highlightedIndex = highlightedKey ? actions.findIndex((a) => a.key === highlightedKey) : -1;
-  const bulgeAngleDeg = highlightedIndex >= 0 ? ANGLES_DEG[highlightedIndex] : null;
+  const bulgeAngleDeg = highlightedIndex >= 0 ? anglesDeg[highlightedIndex] : null;
   const dragDistance = dragOffset ? Math.hypot(dragOffset.x, dragOffset.y) : 0;
   const bulgeAmount =
     highlightedIndex >= 0 ? Math.min(BULGE_MAX, (dragDistance / LIGHT_CIRCLE_TRAVEL) * BULGE_MAX) : 0;
@@ -339,7 +366,7 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
         onPointerCancel={endInteraction}
         className="absolute z-10 flex items-center justify-center bg-transparent border-0 shadow-none"
         style={{
-          [SIDE === "left" ? "left" : "right"]: FAB_INSET,
+          [side === "left" ? "left" : "right"]: FAB_INSET,
           top: CENTER_Y - FAB_SIZE / 2,
           width: FAB_SIZE,
           height: FAB_SIZE,
@@ -347,9 +374,14 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
           touchAction: "none",
         } as React.CSSProperties}
       >
-        {/* Fejlretninger/FEJLLISTE.md #30: plusset sidder i sin egen lyse
+        {/* Fejlretninger/FEJLLISTE.md #30: ikonet sidder i sin egen lyse
             cirkel, som følger fingeren under træk (clampet af dragOffset,
-            se updateHighlight) — i stedet for at stå fast midt i knappen. */}
+            se updateHighlight) — i stedet for at stå fast midt i knappen.
+            Erstattede det tidligere IconPlus med et fingeraftryk (bruger-
+            leveret public/icons/fingerprint.png) som symbol for at cirklen
+            kan navigeres — samme "brightness(0) invert(1)"-hvidgørings-
+            mønster som allerede bruges til wheel-actionernes PNG-ikoner
+            nedenfor, så den rå PNG altid vises hvid uanset kildefarve. */}
         <span
           className="pointer-events-none flex items-center justify-center rounded-full shadow-sm transition-transform"
           style={{
@@ -360,16 +392,27 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
             transitionDuration: dragOffset ? "0ms" : "150ms",
           }}
         >
-          <IconPlus size={22} color="var(--hf-white)" stroke={2} />
+          <Image
+            src="/icons/fingerprint.png"
+            alt=""
+            width={22}
+            height={22}
+            className="object-contain"
+            style={{ filter: "brightness(0) invert(1)" }}
+          />
         </span>
       </button>
 
       {actions.map((action, i) => {
         const isHighlighted = highlightedKey === action.key;
         const Icon = action.icon;
-        const itemStyle = arcItemStyle(ANGLES_DEG[i]);
+        const itemStyle = arcItemStyle(anglesDeg[i], side, isHighlighted);
         return (
-          <div key={action.key} className="absolute" style={{ top: itemStyle.top, [SIDE === "left" ? "left" : "right"]: itemStyle[SIDE === "left" ? "left" : "right"], height: CIRCLE }}>
+          <div
+            key={action.key}
+            className="absolute transition-[top,left,right] duration-150"
+            style={{ top: itemStyle.top, [side === "left" ? "left" : "right"]: itemStyle[side === "left" ? "left" : "right"], height: CIRCLE }}
+          >
             <Link
               href={action.href}
               aria-label={action.label}
@@ -401,7 +444,7 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
               aria-hidden="true"
               className="pointer-events-none absolute flex items-center whitespace-nowrap font-bold transition-opacity duration-150"
               style={
-                SIDE === "left"
+                side === "left"
                   ? {
                       left: CIRCLE + 12,
                       top: 0,

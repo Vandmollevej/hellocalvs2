@@ -101,6 +101,7 @@ export default function StatisticsPage() {
   const [activities, setActivities] = useState<ActivityTotals[]>([]);
   const [metrics, setMetrics] = useState<HealthMetricTotals[]>([]);
   const [hasConnectedIntegration, setHasConnectedIntegration] = useState(false);
+  const [warnOnRecommendedLimits, setWarnOnRecommendedLimits] = useState(false);
   const [loading, setLoading] = useState(true);
   const [periodSelection, setPeriodSelection] = useState<StatPeriodSelection>(DEFAULT_STAT_SELECTION);
 
@@ -128,8 +129,12 @@ export default function StatisticsPage() {
         if (!response.ok) throw new Error("Kunne ikke hente sundhedsdata");
         return (await response.json()) as { metrics: HealthMetricTotals[] };
       }),
+      fetch("/api/profile").then(async (response) => {
+        if (!response.ok) throw new Error("Kunne ikke hente profil");
+        return (await response.json()) as { user: { warnOnRecommendedLimits?: boolean } };
+      }),
     ])
-      .then(([registrationData, weightData, activityData, integrationData, metricData]) => {
+      .then(([registrationData, weightData, activityData, integrationData, metricData, profileData]) => {
         if (cancelled) return;
         setRegistrations(registrationData.registrations);
         setWeightEntries(weightData.entries);
@@ -138,6 +143,7 @@ export default function StatisticsPage() {
           integrationData.integrations.some((i) => i.connectable && i.status === "CONNECTED"),
         );
         setMetrics(metricData.metrics);
+        setWarnOnRecommendedLimits(Boolean(profileData.user.warnOnRecommendedLimits));
       })
       .catch(() => {
         if (!cancelled) {
@@ -146,6 +152,7 @@ export default function StatisticsPage() {
           setActivities([]);
           setHasConnectedIntegration(false);
           setMetrics([]);
+          setWarnOnRecommendedLimits(false);
         }
       })
       .finally(() => {
@@ -263,7 +270,11 @@ export default function StatisticsPage() {
             </Link>
           </div>
 
-          <StatCardsGrid cards={statCards} defaultActiveKeys={DEFAULT_ACTIVE_STAT_KEYS} />
+          <StatCardsGrid
+            cards={statCards}
+            defaultActiveKeys={DEFAULT_ACTIVE_STAT_KEYS}
+            highlightRecommendedLimits={warnOnRecommendedLimits}
+          />
         </div>
       </div>
     </HfScreen>

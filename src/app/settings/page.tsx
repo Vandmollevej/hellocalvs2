@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   IconHelp,
@@ -10,7 +10,12 @@ import {
   IconPlugConnected,
   IconCreditCard,
   IconBell,
+  IconMail,
   IconStethoscope,
+  IconHome2,
+  IconCalendarHeart,
+  IconCalendarWeek,
+  IconAlertTriangle,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -33,6 +38,36 @@ function resetOnboardingProgress() {
 export default function SettingsPage() {
   const { t } = useTranslation();
   const [showOnboarding, setShowOnboarding] = useState(false);
+  // "Menstruationscyklus" (Visning) only shows up for sex = FEMALE, per
+  // docs/DECISIONS.md 2026-09-19 — fetched once here rather than blocking
+  // the rest of the settings page on it.
+  const [isFemale, setIsFemale] = useState(false);
+  const [unreadMessages, setUnreadMessages] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/profile")
+      .then(async (response) => {
+        if (!response.ok) throw new Error("failed");
+        return (await response.json()) as { user: { sex: "FEMALE" | "MALE" | null } };
+      })
+      .then((data) => {
+        if (!cancelled) setIsFemale(data.user.sex === "FEMALE");
+      })
+      .catch(() => {});
+    fetch("/api/messages")
+      .then(async (response) => {
+        if (!response.ok) throw new Error("failed");
+        return (await response.json()) as { unreadCount: number };
+      })
+      .then((data) => {
+        if (!cancelled) setUnreadMessages(data.unreadCount);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <HfScreen title={t("settings.title")}>
@@ -80,6 +115,12 @@ export default function SettingsPage() {
 
         <AccordionCard>
           <ChevronRow
+            icon={<IconMail size={20} />}
+            label={t("settings.messages")}
+            href="/profile/messages"
+            badgeCount={unreadMessages}
+          />
+          <ChevronRow
             icon={<IconBell size={20} />}
             label={t("settings.notifications")}
             href="/profile/notifications"
@@ -95,6 +136,40 @@ export default function SettingsPage() {
             divider={false}
           />
         </AccordionCard>
+
+        <div className="flex flex-col gap-2">
+          <p className="hf-heading px-1 text-xs font-bold uppercase tracking-wide text-hf-black opacity-60">
+            {t("settings.display")}
+          </p>
+          <AccordionCard>
+            <ChevronRow
+              icon={<IconHome2 size={20} />}
+              label={t("settings.frontPage")}
+              href="/settings/display/front-page"
+              divider
+            />
+            <ChevronRow
+              icon={<IconAlertTriangle size={20} />}
+              label={t("settings.recommendedLimits")}
+              href="/settings/display/limits"
+              divider
+            />
+            <ChevronRow
+              icon={<IconCalendarWeek size={20} />}
+              label={t("settings.calendarView")}
+              href="/settings/display/calendar-view"
+              divider={isFemale}
+            />
+            {isFemale && (
+              <ChevronRow
+                icon={<IconCalendarHeart size={20} />}
+                label={t("settings.menstrualCycle")}
+                href="/settings/display/menstrual-cycle"
+                divider={false}
+              />
+            )}
+          </AccordionCard>
+        </div>
 
         <AccordionCard>
           <ChevronRow icon={<IconFileText size={20} />} label={t("settings.terms")} href="/betingelser" />

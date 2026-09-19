@@ -2,6 +2,343 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-19: Alternative kalorievisninger (per glas/skive/stk.) gemmes og vises; usikre AI-fund går til admin som fejlrapport
+
+Direct user request: gem ekstra felter for alternative kalorievisninger (fx
+"per glas (25 ml)", "per skive", "per styk") ud over vægt/mængde, vis dem —
+hvor data findes — under valgmulighederne på produktet man tilføjer, og lad
+billedegenkendelsen læse dem fra emballagen. Hvor noget er fundet men er
+usikkert, skal det indgå i den admin-fejlrapport, der allerede findes fra det
+tidligere AI-produktgenkendelses-arbejde (`/admin/bug-reports`).
+
+- `/api/ai/extract-nutrition-v2` (2026-09-17-arbejdet) udtrak allerede denne
+  præcise struktur (`NutritionAnalysis.alternativeServings`: label/amount/
+  unit/kcal/confidence pr. fund), men den blev tidligere kasseret ved
+  produktoprettelse. Genbrugt i stedet for at bygge en ny AI-prompt/skema.
+- Ny `Product.alternativeServings` (Json, migration
+  `20260919070000_alternative_serving_calories`, hand-written — ingen lokal
+  database i dette miljø, samme som andre migrationer i denne fil): gemmer
+  arrayet uændret. Kun vist for brugeren på `/add/[id]` (under den
+  eksisterende "kcal/100g"-linje, ikke som et separat valg af mængde — jf.
+  brugerens egen præcisering midt i sessionen) når `confidence >= 0.7` og
+  `kcal` faktisk er sat (`src/lib/alternative-servings.ts`,
+  `isAlternativeServingConfident`) — under tærsklen gættes/vises intet.
+- **Usikre fund (under tærsklen) filer automatisk en AI-genereret
+  `BugReport`** (`src/lib/alternative-servings-review.ts`,
+  `flagUncertainAlternativeServings`, kaldt fra `POST /api/products`) i
+  samme admin-kø som brugerens egne "Indberet fejl"-rapporter
+  (`/admin/bug-reports`), i stedet for en ny separat admin-side — dette ER
+  den "Lokal machine learning til produktvisning..."-agents admin-side,
+  ikke en ny. Krævede `BugReport.userId` gjort valgfri + ny
+  `BugReportSource` enum (`USER`/`AI`) på skemaet, da en AI-fil ikke har en
+  indsendende bruger at kreditere/adressere. Godkendelse/afvisning
+  (`src/lib/bug-report-approval.ts`) springer nu points/besked over, når
+  `userId` er null; `PendingBugReportCard.tsx` viser "AI-genereret (ingen
+  bruger)" i stedet for brugerens navn/e-mail og dropper points-teksten på
+  knappen for disse rækker.
+- Draften bærer feltet uændret gennem det eksisterende guidede flow
+  (`src/lib/product-draft.ts` → `/camera/create` → `/product/create` →
+  `POST /api/products`), samme mønster som `analysisIds`/`marketRegion` —
+  ikke et redigerbart formularfelt, kun et transparent pass-through, siden
+  det er AI'ens rå fund, ikke noget brugeren selv indtaster.
+- Ikke bygget: en portions-vælger (fx "vis i skiver i stedet for gram") —
+  brugeren præciserede eksplicit at disse værdier skal vises som ekstra
+  linjer under standard-per-100g-tallet, ikke som et alternativt
+  mængde-/registreringsvalg.
+
+## 2026-09-19: Statistik-udvidelse — ingen opdigtede grænseværdier eller allergen-aggregater
+
+Relayeret brugerkrav (via ChatGPT/Codex-handoff, se `docs/STATUS.md` samme
+dato for den fulde implementeringsliste): tilføj Sport og aktivitet/Søvn/
+Vitaminer og mineraler/Allergener og E-numre til Statistik, brug rigtige
+grundstofsymboler, fjern de eksisterende opdigtede fallback-tal, og tilføj en
+indstilling der giver statistikbokse en mørkerød kant, når en anbefalet
+grænse er overskredet.
+
+- **Ingen grænseværdier opdigtes.** `StatCardValue.outsideRecommendedRange`
+  findes som et felt en fremtidig region/profil-bevidst evaluator kan skrive
+  til, men ingen `compute()`-funktion i `src/lib/stat-cards.ts` sætter det.
+  Den nye `warnOnRecommendedLimits`-indstilling (`/settings/display/limits`)
+  og den røde `border-hf-red-dark`-kant i `StatCardsGrid.tsx` er derfor reelt
+  klar UI-infrastruktur uden synlig effekt, indtil en sådan evaluator
+  besluttes og bygges separat — det er en fremtidig opgave, ikke gættet nu.
+- **Allergener/E-numre viser altid "—", ikke et rigtigt aggregat.**
+  `Product.allergens`/`additives` findes pr. produkt, men `Registration` har
+  ingen allergen-/E-nummer-snapshot-felt (kun næringssnapshot-felter). Et
+  aggregat bygget på det *nuværende* produkt i stedet for et snapshot ville
+  bryde registrerings-snapshot-princippet (AGENTS.md: "preserve snapshot
+  semantics for registrations") — en historisk registrering ville kunne vise
+  et allergen, der først blev tilføjet til produktet bagefter. At tilføje nye
+  snapshot-kolonner er en mulig fremtidig udvidelse, men er en eksplicit
+  skema-beslutning, der bør tages for sig, ikke som en biting af denne opgave.
+- **`distanceKm`, ikke `DISTANCE_METERS`.** Den eksterne pakke forudsatte et
+  nyt `DISTANCE_METERS`-felt, men samme dags tidligere arbejde (front-page-
+  tal-slideren) havde allerede tilføjet `HealthMetricType.DISTANCE_KM` til
+  præcis samme formål ("bevægelsesdistance"). Beholdt den eksisterende
+  km-baserede metrik i stedet for at indføre to konkurrerende
+  distance-repræsentationer.
+
+## 2026-09-19: Generic (non-scanned) ingredients get their own database, separate from Product
+
+Direct user request, clarified with three questions before building (see
+`docs/STATUS.md` for the implementation write-up):
+
+- Loose fruit/vegetable/meat items with no brand or packaging get a new,
+  standalone `GenericIngredient` model — **not** the existing `Ingredient`
+  model (which stays exactly what it already was: a HelloFresh recipe-image
+  cache, not a loggable item) and **not** a repurposed `Product` row. The
+  user explicitly chose "own database" over reusing either existing table.
+- A generic ingredient has no energideklaration to read, so its per-100g
+  macros are resolved **once, at creation time**, from the closest-matching
+  FRIDA-imported reference product (`src/lib/generic-ingredient-match.ts`,
+  looser matching than the guided-flow's ≥90% threshold, since Frida names
+  are verbose). Copied onto the row rather than looked up live, so a later
+  Frida re-import can't silently change an already-logged ingredient's
+  numbers. An unmatched ingredient shows "Næringsindhold ukendt" — never an
+  invented number, same convention as the 2026-09-19 `distanceKm` field.
+- **Displayed through the exact same `/add/[id]` screen as an ordinary
+  Product** (the user's explicit ask: "samme struktur i visning som øvrige,
+  statiske produkter"), by having `GET /api/products/[id]` fall back to
+  `GenericIngredient` when no Product matches the id, rather than building a
+  parallel display page. The only visible differences are the ones that
+  follow directly from having no brand/barcode: no brand line, no
+  "report error" link, no favorite button (favoriting isn't wired up for
+  ingredients yet — flagged, not built).
+- `Registration` gained a `genericIngredientId` FK (alongside the existing
+  `productId`/`dishId`) rather than forcing every logged ingredient through a
+  synthetic `Product` row — this keeps the "own database" separation real
+  instead of just cosmetic, while reusing the exact same snapshot semantics.
+- **Region/country popularity linkage reuses the existing search/click-count
+  pattern** (`GenericIngredientRegionSearchStat`, same shape as
+  `ProductRegionSearchStat`/`IngredientRegionSearchStat`), per the user's own
+  choice — not a manually curated "this ingredient is popular in these
+  countries" list. Ranking goes through the same
+  `src/lib/product-search-ranking.ts` used for product search.
+- Not built this pass: making generic ingredients discoverable through
+  `/foods`/`/search` (only reachable immediately after creation right now)
+  and favoriting. Both are natural next steps, not silently skipped forever.
+
+## 2026-09-19: Manual food creation now asks "Ingrediens eller Produkt?" first
+
+`src/app/foods/new/page.tsx` (reached from the "Manuelt" tile in
+`/create-dish` and elsewhere) now shows a top-level choice before any form:
+"Ingrediens" (see the GenericIngredient decision above) or "Produkt" (the
+pre-existing manual-product form, direct user request). The Produkt branch
+gained **brand/subbrand** text fields, per the user's explicit ask that
+manually-created products carry the same brand/subbrand structure as products
+from the guided barcode-first flow (2026-09-17) — `POST /api/products`
+already accepted these fields from that flow, so no backend change was
+needed, only the missing form fields on this older, simpler screen.
+
+## 2026-09-19: Regional product/ingredient search ranking, integrated from a ChatGPT-prepared handoff package
+
+User requirement (verbatim spec pasted from a ChatGPT conversation, then a
+second message with the actual code as a downloadable
+`hellocal-search-ranking-code.zip`, following the same handoff pattern as the
+2026-09-17 barcode-first entry below): search/autosuggest should weight
+text match, regional popularity (searches/clicks per region), GS1
+origin/market relevance, and time-of-day×region click patterns — with text
+match always dominant, and low-regional-popularity products required to have
+more typed characters and a higher text similarity before they can surface.
+Live autosuggest should start at 2 typed characters and show a cached result
+instantly while revalidating live. None of this may ever be exposed to the
+end user — it's ranking input, not a visible field/badge.
+
+Integrated against the actual current `master` (the handoff's own stated
+base commit, `097fca5`, was already several commits behind by the time this
+was applied — re-checked every target file's real current content rather
+than blindly applying the package's patches).
+
+- New hidden `Product.originCountryCode`/two new stat model pairs
+  (`ProductRegionSearchStat`/`ProductRegionHourStat`,
+  `IngredientRegionSearchStat`/`IngredientRegionHourStat`) — aggregate
+  region-scoped counters only, never a user id or raw query text. Migration
+  `prisma/migrations/20260919000000_product_search_ranking`.
+- `src/lib/product-search-ranking.ts` (`rankProducts`): text similarity via a
+  prefix/substring/Dice-bigram cascade is the base score; regional
+  popularity, hour-of-day popularity and a GS1 origin boost only add on top
+  of that, and a product below a similarity/character-count threshold is
+  dropped outright regardless of popularity — a popular-but-wrong product can
+  never outrank a clear text match.
+- `src/lib/regions.ts`: new `inferGs1OriginCountryCode()` — a single-value
+  origin/market code (or `"US_CA"` when the GS1 prefix is ambiguous, `null`
+  otherwise), distinct from the pre-existing `gs1RegionCandidates()` (which
+  returns every matching region for OCR-language fallback). Same caveat as
+  that function: a GS1 prefix is an issuance/market signal, not proof of
+  physical manufacturing origin — must never be shown as such in the UI.
+  Set on product creation in `/api/products` (POST + the Open Food Facts
+  live-import helper) and `/api/products/lookup/[barcode]`.
+- `/api/products` GET: autosuggest returns `{ products: [], minQueryLength: 2
+  }` for a 1-character query; a 2+ character query without `?source=` now
+  also matches on brand name (not just product name), ranks a wider
+  candidate pool (up to `take * 6`, min 80) through `rankProducts()`, and
+  records a regional search-impression per returned product. Every response
+  strips `regionSearchStats`/`regionHourStats`/`originCountryCode` before
+  returning — this is enforced in the route itself, not left to callers.
+  `?source=HELLOFRESH` (dish browsing) is deliberately excluded from ranking
+  and impression-tracking, unchanged from its prior plain name-match+
+  createdAt-desc behavior.
+- New `POST /api/products/search-event`: records a click (product or
+  ingredient, region + local hour) when a search result is opened. No
+  session is required (falls back to the shared demo user, same pattern as
+  other unauthenticated read paths in this app).
+- `/foods` (`src/app/foods/page.tsx`): replaced the old
+  "fetch-all-then-filter-client-side" search (which only ever searched
+  whatever the initial unfiltered `/api/products` fetch happened to return)
+  with real per-query calls to the ranked endpoint — 140ms debounce, a
+  module-level 5-minute-TTL cache for the instant/cached-then-revalidate
+  behavior, and a `sendBeacon`-based `search-event` call when a search result
+  row is opened. The instant-cache read is a plain derived value (no
+  `setState` inside the debounce effect for that path — the project's React
+  compiler enforces effect purity/no-synchronous-setState-in-effect; see the
+  file for the pattern), since a bare `Date.now()`-gated cache check inside
+  render/`useMemo` is also rejected as an impure render.
+- **Not built in this pass, out of scope for the handoff as scoped**: the
+  admin "Søgealgoritmer" page the user described (to view/tune the ranking
+  weights live) — mentioned only as a future destination for these weights
+  in the ChatGPT conversation, not part of the delivered code package.
+  Region×hour cross-tabulation is stored (`ProductRegionHourStat`) but has no
+  admin-facing view yet.
+- Verified: `npx prisma validate`/`generate`, `npm run lint` (repo-wide,
+  clean), `npm run build` (full TypeScript + all routes, clean, including the
+  new `/api/products/search-event` route) — see `docs/STATUS.md` (2026-09-19)
+  for the full write-up. **Not verified against a live database** — same
+  recurring `hellocal_no_local_db` constraint as most other entries in this
+  file; the ranking/impression-tracking/click-tracking behavior should be
+  exercised against real search traffic before trusting the weights.
+
+## 2026-09-18: Front-page joystick wheel becomes user-configurable; new all-elements screen
+
+- The front page's joystick wheel (`AddButton.tsx`) is no longer a fixed set
+  of 6 actions. Its top slot is now permanently a "list" action opening a
+  new `/add/menu` screen listing every add-element in the app
+  (`src/lib/add-actions.ts`'s `ADD_ACTIONS` catalog); the remaining slots
+  (up to 5) are whichever catalog entries the user picked under
+  Settings → Visning → Forside (`src/app/settings/display/front-page/page.tsx`).
+  See `docs/STATUS.md` (2026-09-18) for the full build/verification writeup.
+- **This selection is a per-device UI preference stored in `localStorage`
+  (`hellocal.frontpage.wheelActions`), not the database** — deliberately
+  matching the existing precedent set by the statistics page's card layout
+  (`StatCardsGrid.tsx`). Do not migrate this to a `User` column without a
+  fresh decision; the project's existing convention treats this class of
+  preference (which cards/fields show, in what order) as local, not synced
+  account state.
+- Reading a `localStorage`-backed preference for a component that is part of
+  a statically prerendered/hydrated route (like the front page) must use a
+  `useSyncExternalStore`-based hook with `DEFAULT_WHEEL_ACTION_KEYS` as the
+  server snapshot (`useWheelActionKeys()` in `add-actions.ts`) — a lazy
+  `useState(() => loadFromLocalStorage())` initializer, while fine for a
+  component only ever reached via client-side navigation, produces a real
+  React hydration error the moment the saved value differs from the default
+  on a route that's part of the initial server-rendered HTML. Apply this
+  pattern to any future localStorage-backed preference read by something
+  rendered on first paint of a prerendered route.
+- `docs/UI.md`'s existing rule that the front page's half-circle button and
+  wheel are exempt from the general HelloFresh visual-style migration is
+  about visual styling only, not about freezing its feature set — this
+  change adds behavior/configurability without altering its established
+  visual language (same circles/icons/animation).
+
+## 2026-09-17: Barcode-first guided AI product recognition
+
+Top-priority task, built from a ChatGPT-prepared handoff package
+(`HelloCal_OpenAI_ProductRecognition_Handoff_2026-09-16/`, kept as
+reference only, excluded from lint). See `docs/STATUS.md` (2026-09-17) for
+the file-level summary.
+
+- **Flow**: `/camera/create` now scans the barcode first, always. A known
+  barcode still redirects straight to the existing product. An unknown
+  barcode derives a GS1 country-prefix signal (`gs1RegionCandidates` in
+  `src/lib/regions.ts`) and freezes it, together with the user's market
+  region, into the session draft (`src/lib/product-draft.ts`) — later
+  photos (front/ingredients/nutrition) must never change this signal.
+  Front photo extracts `brand`/`subbrand`/`productName`/`variant`/
+  `packageSizeText`/`claims` as explicitly separate fields: brand is the
+  commercial mark/logo, subbrand is the product line/family, productName is
+  the item itself, variant is flavor/type/strength. This is a data/flow
+  change, not a redesign — existing HelloFresh-style components/layout are
+  reused throughout.
+- **Language priority is a priority, not a whitelist**: market region (the
+  user's own setting, never the phone's/browser's display language — see
+  the 2026-09-12 entry below, which this extends rather than replaces) is
+  the primary OCR/vision language signal; the barcode's GS1 prefix is a
+  secondary/fallback signal. Low-confidence OCR/vision may still recognize
+  other languages. Consolidated into `src/lib/regions.ts`
+  (`gs1RegionCandidates`, `primaryOcrLanguages`) instead of keeping a
+  second, separate region→language table in `barcode-context.ts` — that
+  file is now a thin wrapper so there is exactly one source of truth for
+  region/language mapping.
+- **GS1 prefix is a registration/issuance signal, not a confirmed physical
+  production country.** It is used only to prioritize languages, never
+  stored or presented as a verified country of manufacture.
+- **Ground-truth training data**: new `AiProductAnalysis` table
+  (`prediction`, `correction`, `confidence`, `model`, `promptVersion`,
+  `barcode`, `marketRegion`, `gs1Regions`, `languages`). Each guided-flow
+  photo analysis writes a `prediction` row immediately; `POST /api/products`
+  links the row to the created product and writes the user's final
+  (possibly edited) values as `correction` — this is the actual mechanism
+  the user asked to have made explicit and verifiable, since it's the
+  foundation for later prompt evals/fine-tuning (`GET
+  /api/admin/ai-training/export`, canonical JSONL, admin-only).
+- **Brand normalization**: `POST /api/products` upserts `Brand` by exact
+  name from the (possibly user-corrected) brand text. A dedicated
+  `BrandAlias` table for real aliasing (e.g. "Arla Foods" → "Arla") is a
+  known follow-up, not built here — see `docs/STATUS.md`.
+- **Model**: `OPENAI_PRODUCT_VISION_MODEL` (default `gpt-5.6-terra`),
+  reusing the existing `OPENAI_API_KEY`, kept as its own env var so the
+  model can be A/B-tested without a code change. Verified via web search
+  (2026-09-17) to be a real, current OpenAI model name — it initially looked
+  fabricated (outside this session's training data) but is not.
+
+### Explicit temporary dispensations (user-approved 2026-09-16/17) — must be revisited
+
+The pre-existing 2026-09-12 decision below established "local OCR/regex
+first, AI only as fallback" for both ingredients and nutrition in the guided
+flow. For this integration, the user explicitly approved a **temporary**
+reversal for both:
+
+- `POST /api/ai/extract-ingredients-photo` and `POST /api/ai/extract-nutrition-v2`
+  send the photo to AI vision as the **primary** reader; local OCR
+  (`extractTextPrioritized` in `src/lib/product-ocr-prioritized.ts`) only
+  runs as supporting context passed alongside the photo, not as a first
+  attempt whose failure triggers AI.
+- **Why**: the user wants a working prototype they can actually use/test
+  now, rather than spending time first building the local-OCR-first
+  intelligence. Their own words: this is a deliberate, temporary
+  "dispensation", not a reversal of the underlying principle.
+- **How to apply**: do not treat this as final architecture. Once the user
+  has a working prototype and has tested it, revert both routes to
+  "local OCR/regex first, AI only as fallback", matching the front-photo
+  duplicate-search step (which still does local OCR first) and the
+  2026-09-12 nutrition/ingredients pattern in `/camera/create`'s older
+  stages. Track this reversal as outstanding work in `docs/STATUS.md` until
+  it's done.
+
+## 2026-09-14: Project boundaries before further feature discovery
+
+- Prioritize agreeing work-project and folder boundaries for Hello Cal,
+  admin, employee product creation and integrations. No physical split or
+  deployment/database architecture has been approved yet.
+- Confirmed employee-product workflow requirements and open questions are
+  preserved in `PROJECT-BOUNDARIES.md`; they do not imply implementation.
+- User explicitly paused detailed feature discovery to return to the split.
+
+## 2026-09-13: ChatGPT context and handoff to Codex
+
+- `docs/chatgpt/CONTEXT.md` maps the canonical product/design sources and current
+  code structure; it supplements rather than replaces the existing contracts.
+  `PROJECT-INSTRUCTIONS.md` is copied into the ChatGPT project's instructions,
+  and `HANDOFF-TEMPLATE.md` defines a reviewable delivery with exact target paths.
+- ChatGPT deliveries without local write access are files/patches for Codex to
+  integrate against the current checkout. Read access to GitHub does not mean
+  local changes have been made. Uploaded context is a dated snapshot.
+- For this handoff workflow, integrated changes remain local and uncommitted by
+  default. Commit, push and deployment require a separate user request. Preserve
+  unrelated work, including changes in shared files; do not stage everything.
+- Do not put loose TS/TSX draft copies inside the checkout: the current tsconfig
+  includes them broadly. Use Markdown/patch deliveries or transport files outside
+  the checkout until integration. New real pages belong in `src/app`.
+
 ## Product and data
 
 - The product name is **HELLO CAL**.
@@ -342,11 +679,17 @@ This file records durable decisions. Add a dated entry when a later decision cha
   goal weight, set 2026-09-11) and from `WeightEntry` (the scale weight
   itself) — added as the new `BodyMeasurement` model specifically so the
   photo diary can caption a photo with "Aktuel/Seneste mål" the same way it
-  already does for weight. The user explicitly deferred the actual
-  measurement-entry screen ("måleside") to a separate chat/session; this
-  model and its read+write API exist without that screen so the data has a
-  real place to live rather than being faked, per the project's standing
-  rule against inventing placeholder data mechanisms.
+  already does for weight. The user initially deferred the actual
+  measurement-entry screen ("måleside") to a separate chat/session, so this
+  model and its read+write API were built first without that screen, so the
+  data had a real place to live rather than being faked, per the project's
+  standing rule against inventing placeholder data mechanisms. Later the same
+  day, the user chose to have the entry screen (`/profile/body-measurements`)
+  built in the same chat after all — see the matching `docs/STATUS.md` entry.
+  It merges same-calendar-day field edits into one row (PATCH the existing
+  row, else POST a new one) rather than one row per field, specifically so
+  the photo diary's caption can show several measurements together for a
+  single day.
 
 ## Hosting and delivery
 
@@ -618,6 +961,37 @@ This file records durable decisions. Add a dated entry when a later decision cha
   generel designsystem-primitiv — `docs/design.md` er ikke opdateret med
   denne variant.
 
+## 2026-09-19: Køn, fødselsdato og menstruationscyklus (kun kvinder)
+
+- `User.sex` (FEMALE/MALE) fandtes allerede i `/profile/edit` sammen med
+  navn/vægt/højde — bekræftet fungerende, ingen ny funktion nødvendig der.
+- `User.birthYear` (kun årstal) erstattet af `User.birthDate` (fuld dato), så
+  alderen beregnes præcist og opdateres automatisk hvert år i stedet for at
+  være en statisk "indeværende år minus fødselsår"-værdi. Se `src/lib/age.ts`.
+- Ny `MenstrualCycleEntry`-model (startDate/endDate pr. periode) + tre nye
+  `User`-felter: `cycleTrackingEnabled` (slåknappen under Indstillinger →
+  Visning → Menstruationscyklus, default fra — samme konvention som
+  showAllergens/showExtendedNutrition), og `averageCycleLengthDays`/
+  `averagePeriodLengthDays` (reserveret til en fremtidig prognosefunktion,
+  ikke brugt endnu — der er ikke bygget nogen prognose-/fertilitetsvisning i
+  denne omgang, kun logning af en periodes startdato).
+- Menstruationscyklus er **kun** synlig/aktiv når `sex = FEMALE` — både
+  Indstillinger → Visning-rækken og "Menstruation" i den fælles tilføj-menu
+  (`src/lib/add-actions.ts`'s `visibleAddActions()`) skjules helt for mænd,
+  ikke bare grået ud.
+- Eksplicit brugerønske: kalenderens time-baserede "Tilføj"-bjælke
+  (`src/app/calendar/page.tsx`) åbner nu samme `/add/menu`-skærm som
+  forsidens joystick-hjuls faste "liste"-felt, i stedet for at gå direkte til
+  `/foods` som tidligere. `date`/`time` videreføres som query-parametre til
+  det valgte tilføj-element.
+- Bevidst ikke bygget i denne omgang: prognose/fertilitetsvindue på selve
+  kalenderen, redigering/afslutning af en igangværende periode, og at koble
+  de nye rigtige `MenstrualCycleEntry`-data ind i Hello Doc
+  (`src/lib/doctor-share.ts` lister stadig `menstrualCycle` som
+  `DOCTOR_SHARE_UNAVAILABLE_CATEGORIES`, selvom der nu findes en datamodel) —
+  bevidst holdt uden for denne ændrings scope, tilføjet til `docs/STATUS.md`
+  "Next work".
+
 ## 2026-09-11: Udvidet næringspanel (MyFitnessPal-stil)
 
 - Produktets næringsindhold udvides med et "MyFitnessPal-stil" udvidet panel:
@@ -758,3 +1132,73 @@ præfiks `57` = Danmark) og skal fremover også styre:
   eller server-side environment/deploy-trin denne workstation ikke selv kan
   udføre).
 
+## 2026-09-19: Abonnement/betalingsside — Gratis vs. Seriøs, gavekoder, 30-dages rullende historik
+
+Direkte brugerønske: en ny "Abonnement"-side (nr. 2 på profilsiden, lige efter
+"Profil") med et gavekode-felt (label + felt + højrepil som accept), en
+"Indløs points"-mulighed nedenunder, og et Gratis/Seriøs-abonnement hvor
+Gratis kun viser de seneste 30 dages historik (data slettes aldrig, men
+skjules — som et overvågningskameras rullende optagelse — og kommer tilbage
+med det samme ved opgradering). Se `docs/STATUS.md` (2026-09-19) for
+build-/verifikationsnoter.
+
+- **Pris**: Seriøs koster **119 kr./måned**, vist direkte på siden fra nu af
+  (bevidst IKKE "kommer snart" — eksplicit brugerinstruks, i modsætning til
+  den generelle 2026-09-02-beslutning om at holde selve betalingssiden
+  udbyder-uafhængig). Der er stadig ingen konkret PSP-aftale, så "Opgradér
+  til Seriøs"-knappen på `/profile/subscription` er bevidst disabled med en
+  forklarende tekst — kun gavekode og points-indløsning kan reelt gøre en
+  bruger Seriøs indtil en betalingsudbyder er valgt.
+- **Tier udledes, gemmes ikke som et nyt felt**: `src/lib/subscription.ts`s
+  `getSubscriptionTier()` afleder Gratis/Seriøs fra den allerede
+  eksisterende `Subscription.status`/`currentPeriodEnd` (ACTIVE/TRIALING/
+  FREE_MONTH = Seriøs, forudsat `currentPeriodEnd` ikke er overskredet) —
+  ingen ny "tier"-kolonne, for ikke at få to kilder til sandhed.
+- **Ny `GiftCode`-model** (migration `20260919050000_gift_codes`,
+  hånd-skrevet — samme "ingen lokal database"-begrundelse som andre nylige
+  migrationer i dette projekt): admin-oprettede engangskoder med en fast
+  `durationDays`. Indløsning (`src/lib/gift-codes.ts`) forlænger/sætter
+  `Subscription.currentPeriodEnd` og status `FREE_MONTH` — **ingen
+  betalingsmetode kræves**, samme "seriøs uden reel PSP-aftale lige nu"-
+  semantik som den eksisterende points→gratis måned-mekanisme.
+  **Ikke bygget denne omgang, flagget som opfølgning:** der findes endnu
+  ingen admin-side til at oprette/generere gavekoder — kun datamodellen og
+  selve indløsningen (`POST /api/subscription/redeem-gift-code`) er klar.
+- **Korrektion af den eksisterende 2026-09-02-beslutning**: points→gratis
+  måned (`redeemFreeMonth` i `src/lib/points.ts`, 300 points = 1 måned)
+  krævede tidligere en gemt betalingsmetode, "så abonnementet fortsætter
+  automatisk til fuld pris bagefter". Eksplicit brugerbeslutning i denne
+  omgang: **kravet om gemt kort er fjernet** — en gratisbruger må gerne
+  indløse uden kort; abonnementet falder blot tilbage til Gratis igen efter
+  perioden, medmindre brugeren selv har tilføjet et kort og en rigtig
+  PSP-aftale findes. `/profile/points`s tekst er opdateret til at matche.
+- **Rullende 30-dages historik for Gratis** (`getRetentionCutoffDate()` i
+  `src/lib/subscription.ts`): en ren forespørgselsgrænse (`createdAt >=
+  cutoff`), ikke en fysisk "skjult"-markering eller et sletnings-job — data
+  ældre end 30 dage bliver aldrig rørt i databasen og er derfor øjeblikkeligt
+  synlige igen i samme øjeblik brugeren bliver Seriøs, uden noget
+  "genfremkald"-job. Eksplicit brugerbeslutning: dette gælder **al**
+  brugerdata (registreringer, vægt, søvn, helbredsmålinger, fotodagbog osv.),
+  ikke kun mad-/kalorieregistreringer.
+  **Ikke bygget denne omgang, flagget som opfølgning:** grænsen er kun
+  faktisk koblet på `GET /api/registrations` (kalenderens/statistikkens
+  primære datakilde) i denne omgang. `WeightEntry`, `HealthMetric`,
+  `BodyMeasurement`, søvn m.fl. har **ikke** fået samme forespørgselsgrænse
+  endnu — kræver at hvert af disse GET-endpoints får samme
+  `getSubscriptionTier`/`getRetentionCutoffDate`-kald tilføjet, en
+  cross-cutting ændring der bevidst ikke blev lavet i én stor omgang uden
+  brugerens gennemgang. Billede-dagbogen er allerede localStorage-only
+  (2026-09-02-beslutning) og derfor slet ikke omfattet af denne
+  server-side-mekanisme.
+- **Hello Doc kræver Seriøs** — den ene datakategori der eksplicit er
+  udelukket fra Gratis. Håndhævet både server-side (`POST
+  /api/doctor-shares` afviser med 403 hvis tier ikke er Seriøs) og i UI'et
+  (`/settings/hello-doc` viser et opgraderings-link i stedet for
+  "Inviter bruger"-knappen, når brugeren er Gratis).
+- `/api/subscription` (GET) fandtes allerede som forventet endepunkt i den
+  tidligere forberedte `/settings/payment`-side (2026-09-02/03-batchen) —
+  men selve route-filen var aldrig bygget, så den side har kørt mod et
+  404-svar indtil nu. Denne omgang bygger endepunktet og bevarer det
+  oprindeligt forventede svar-format (`subscription`, `paymentMethods`) ved
+  siden af de nye felter (`tier`, `pointsBalance`, `priceDkk` m.fl.), så
+  begge sider deler ét endepunkt uden at knække den eksisterende side.

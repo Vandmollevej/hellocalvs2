@@ -625,10 +625,25 @@ ingen data, vises en dæmpet "ingen registreret endnu"-linje. Målene er
 kropsomkreds i cm (talje, hofte, bryst, lår, overarm — de mål en diætist
 typisk følger ud over vægten), lagret i den nye `BodyMeasurement`-model
 (`prisma/schema.prisma`, migration `20260912020000_body_measurements`) og
-læst via `/api/body-measurements`. Selve indtastningssiden for disse mål
-("måleside") er bevidst IKKE bygget her — det er en separat, senere opgave
-(se `docs/STATUS.md`); denne visning tåler derfor i dag altid den tomme
-"ingen mål registreret endnu"-tilstand.
+læst via `/api/body-measurements`. Indtastningssiden ("måleside") er nu bygget
+på `/profile/body-measurements` (samme session, senere samme dag) — se den
+dedikerede beskrivelse nedenfor. Denne visning tåler stadig altid den tomme
+"ingen mål registreret endnu"-tilstand for brugere, der aldrig har brugt den.
+
+**Kropsmål-side** (`src/app/profile/body-measurements/page.tsx`), tilføjet
+2026-09-12 — Hello Cal-specifik indtastningsside uden HelloFresh-reference,
+bygget efter samme visuelle mønster som den eksisterende `/profile/weight-
+calibration` (grønt introkort, kantløst talfelt der kun viser en bundkant ved
+fokus, ingen synlig "Gem"-knap, historik-liste med slet-knap nedenunder).
+Fem valgfrie felter (talje, hofte, bryst, lår, overarm, alle i cm) i ét
+2-kolonne-grid; redigering af et felt gemmer automatisk ved blur. I
+modsætning til vægt-kalibreringens to vægtfelter (som bevidst opretter to
+separate rækker, fordi "med tøj"/"uden tøj" er to forskellige målinger),
+samler denne side alle feltredigeringer foretaget samme kalenderdag i ÉN
+`BodyMeasurement`-række (PATCH på dagens eksisterende række, hvis den findes;
+ellers POST af en ny) — det er bevidst, så billede-dagbogens "Aktuelle mål"
+kan vise flere mål sammen for én dag, i stedet for kun det senest indtastede
+enkeltfelt.
 
 **`BarcodeScanOverlay`** (`src/components/hf/BarcodeScanOverlay.tsx`),
 tilføjet 2026-09-12 til den live stregkode-scanning på
@@ -667,6 +682,44 @@ aflæsning viser viewfinderet desuden en halvgennemsigtig sort bjælke
 (`bg-black/80`) med hvid hjælpetekst, der roterer mellem to hints ("stregkode
 uden for feltet" / "prøv større afstand, hvis den er sløret") hvert 4.
 sekund, indtil enten en kode bekræftes eller kameraet genstartes.
+
+### 6.12 Produktsidens billedområde — fast geometri, uafhængig af billedet
+
+Tilføjet 2026-09-14 efter brugerens eksplicitte krav (relayeret fra en
+ChatGPT-samtale om en separat redesign-agent for produktsiden
+`src/app/add/[id]/page.tsx`). Dette er et ufravigeligt krav, ikke en
+anbefaling:
+
+**Produktbilledet må aldrig styre layoutets proportioner.** Produktsidens
+billedområde (og efter samme princip: hele produktsidens øvrige geometri —
+knapper, afstande, kort) skal altid bevare de fastlagte HelloFresh-
+proportioner 1:1 med referencedesignet, uanset billedets opløsning,
+dimensioner, billedformat, eller om produktet slet ikke har et billede.
+
+- Billedområdet har fast størrelse/geometri: `190 × 190 px`, cirkulær
+  (`rounded-full`), med `bg-hf-tan` som baggrund.
+- Geometrien låses med redundante Tailwind-klasser
+  (`h-[190px] w-[190px] min-h-[190px] min-w-[190px] max-h-[190px]
+  max-w-[190px] shrink-0`), så hverken et flex-parent, et stort/skævt billede
+  eller en manglende `img` kan ændre boksens mål.
+- Selve billedet tilpasses inde i dette fastlåste område med
+  `object-contain` og intern padding (`p-8`) — aldrig `object-fit: cover` på
+  bekostning af proportionerne, og aldrig `height: auto`,
+  billed-aspect-ratio-baseret sizing eller anden dynamisk størrelse afledt af
+  billedfilen.
+- Mangler produktet et billede, viser boksen samme faste geometri med et tomt
+  indre (ingen `img`-tag), ikke en mindre eller anderledes formet boks.
+- Ingen variation i billedmaterialet må ændre boksens højde, dens afstand til
+  omgivende elementer, eller proportionerne for sidens øvrige elementer
+  (navn, mærke, kcal, afstandsknapper osv.).
+- Favoritknappen (`.hf-favorite-button`) og det lille frugtmærke
+  (`hello-cal-fruit.png`, `72 × 72 px`, hvid rund baggrund, `-right-5 bottom-0`)
+  er absolut positioneret på selve den fastlåste boks og påvirkes derfor
+  heller ikke af billedets indhold.
+- En fremtidig redesign-agent for produktsiden må implementere hele siden
+  efter samme princip — ikke kun billedcirklen — men må ikke ændre selve
+  billedboksens mål, radius eller `object-fit`-regel uden at dokumentere det
+  her først.
 
 ### Velkomst/start
 

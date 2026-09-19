@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { IconChevronRight } from "@tabler/icons-react";
 import { SwipeableRow } from "@/components/SwipeableRow";
+import { FoodRow } from "@/components/FoodRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 type Entry = {
@@ -116,28 +117,20 @@ export function DailyList() {
               onReportError={() => router.push(`/registration/${entry.id}/report-error`)}
               onDelete={() => void deleteEntry(entry.id)}
             >
-              <Link
-                href={`/registration/${entry.id}`}
-                className="flex items-center gap-2.5 py-2.5"
-              >
-                <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-hf-tan">
-                  {entry.image && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={entry.image} alt="" className="h-full w-full object-contain object-center" />
-                  )}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="line-clamp-2 text-sm text-hf-black">
-                    {entry.title}
-                  </p>
-                  <div className="mt-0.5 flex justify-between">
-                    <span className="text-xs text-hf-black opacity-60">
-                      {Math.round(entry.kcalPer100g)} kcal / 100 g
-                    </span>
-                    <span className="text-xs text-hf-black opacity-60">{t("dailyList.atTime", { time: formatTime(entry.createdAt) })}</span>
-                  </div>
-                </div>
-                <IconChevronRight size={18} className="flex-shrink-0 text-hf-black opacity-40" />
+              <Link href={`/registration/${entry.id}`} className="block">
+                <FoodRow
+                  image={entry.image}
+                  title={entry.title}
+                  subtitle={
+                    <div className="mt-0.5 flex justify-between">
+                      <span className="text-xs text-hf-black opacity-60">
+                        {Math.round(entry.kcalPer100g)} kcal / 100 g
+                      </span>
+                      <span className="text-xs text-hf-black opacity-60">{t("dailyList.atTime", { time: formatTime(entry.createdAt) })}</span>
+                    </div>
+                  }
+                  right={<IconChevronRight size={18} className="text-hf-black opacity-40" />}
+                />
               </Link>
             </SwipeableRow>
           </li>

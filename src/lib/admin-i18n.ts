@@ -14,7 +14,9 @@ const DICTIONARY = {
   nav_messaging: { DA: "Besked automatisering", EN: "Message automation" },
   nav_images: { DA: "Billedforslag", EN: "Image suggestions" },
   nav_warnings: { DA: "Advarsler", EN: "Warnings" },
+  nav_duplicate_products: { DA: "Dobbeltoprettelser", EN: "Duplicate creations" },
   nav_search: { DA: "Søg", EN: "Search" },
+  nav_search_ranking: { DA: "Søgealgoritmer", EN: "Search ranking" },
   nav_passkeys: { DA: "Passkeys", EN: "Passkeys" },
   nav_logout: { DA: "Log ud", EN: "Log out" },
 

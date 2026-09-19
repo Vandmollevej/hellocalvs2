@@ -12,6 +12,8 @@ import { AdditiveInfoModal } from "@/components/hf/AdditiveInfoModal";
 import { getAdditiveInfo } from "@/lib/additives";
 import { labelForAllergen } from "@/lib/allergens";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { isAlternativeServingConfident } from "@/lib/alternative-servings";
+import type { AlternativeServing } from "@/lib/product-analysis-types";
 
 function currentTimeString() {
   const now = new Date();
@@ -55,6 +57,16 @@ type Product = {
   cholesterolPer100g?: number | null;
   vitaminAPer100g?: number | null;
   vitaminCPer100g?: number | null;
+  // Alternative kalorievisninger fra emballagen (per glas/skive/stk. osv.),
+  // se docs/DECISIONS.md 2026-09-19 — kun vist når AI'en var sikker nok.
+  alternativeServings?: AlternativeServing[] | null;
+  // Generisk, ikke-scannet ingrediens (grønt/frugt/kød uden brand, se
+  // docs/DECISIONS.md 2026-09-19) — flag sat af /api/products/[id]'s fallback
+  // til GenericIngredient. Bruges kun til at vælge registrerings-feltet
+  // (genericIngredientId i stedet for productId) og skjule favorit-knappen,
+  // som ikke understøtter ingredienser endnu.
+  isGenericIngredient?: boolean;
+  hasKnownNutrition?: boolean;
 };
 
 type ProfileUser = {
@@ -193,6 +205,15 @@ export default function AddPage() {
   // the bars automatically follow the computed default values again.
   const macros = macroOverride && macroOverride.amount === amount ? macroOverride : defaultMacros;
 
+  // Alternative kalorievisninger fra emballagen (per glas/skive/stk. osv.,
+  // docs/DECISIONS.md 2026-09-19), vist under standard-Per-100g-tallet — kun
+  // dem AI'en var sikker nok på; usikre fund vises aldrig som fakta her, de
+  // går i stedet til admin (se src/lib/alternative-servings-review.ts).
+  const confidentAlternativeServings = useMemo(
+    () => (product?.alternativeServings ?? []).filter(isAlternativeServingConfident),
+    [product],
+  );
+
   // MyFitnessPal-style extended nutrition panel (2026-09-11): saturated/
   // unsaturated/trans fat, cholesterol, and vitamin A/C are real per-100g
   // Product fields (Open Food Facts-sourced products only), scaled by the
@@ -252,7 +273,7 @@ export default function AddPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          productId: id,
+          ...(product?.isGenericIngredient ? { genericIngredientId: id } : { productId: id }),
           amountGrams: amount,
           createdAt: createdAt.toISOString(),
           proteinSnapshot: macros.protein,
@@ -332,25 +353,29 @@ export default function AddPage() {
                 </div>
               )}
               <div className="flex flex-col items-center gap-2 pt-2 text-center">
-                <div className="relative h-[190px] w-[190px]">
-                  <div className="flex h-full w-full items-center justify-center rounded-full bg-hf-tan">
-                    {state.product.imageUrl && (
+                <div className="relative h-[190px] w-[190px] min-h-[190px] min-w-[190px] max-h-[190px] max-w-[190px] shrink-0 overflow-visible">
+                  <div className="flex h-[190px] w-[190px] min-h-[190px] min-w-[190px] items-center justify-center overflow-hidden rounded-full bg-hf-tan">
+                    {state.product.imageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={state.product.imageUrl}
                         alt=""
-                        className="h-full w-full object-contain p-8"
+                        className="block h-full w-full max-h-full max-w-full object-contain p-8"
                       />
+                    ) : (
+                      <div aria-hidden="true" className="h-full w-full" />
                     )}
                   </div>
-                  <button
-                    type="button"
-                    onClick={handleToggleFavorite}
-                    aria-label={t(isFavorite ? "search.removeFavorite" : "search.addFavorite")}
-                    className="hf-favorite-button"
-                  >
-                    {isFavorite ? <IconBookmarkFilled size={24} /> : <IconBookmark size={24} />}
-                  </button>
+                  {!state.product.isGenericIngredient && (
+                    <button
+                      type="button"
+                      onClick={handleToggleFavorite}
+                      aria-label={t(isFavorite ? "search.removeFavorite" : "search.addFavorite")}
+                      className="hf-favorite-button"
+                    >
+                      {isFavorite ? <IconBookmarkFilled size={24} /> : <IconBookmark size={24} />}
+                    </button>
+                  )}
                   <div className="absolute -right-5 bottom-0 flex h-[72px] w-[72px] items-center justify-center rounded-full bg-white shadow-md">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
@@ -362,7 +387,7 @@ export default function AddPage() {
                 </div>
                 {!!state.product.barcodes?.length && state.product.createdByUserId !== profile?.id && (
                   <Link
-                    href="/profile/report-bug"
+                    href={`/profile/report-bug?productId=${id}`}
                     className="flex items-center gap-1 self-start text-[13px] font-medium text-hf-black opacity-70"
                   >
                     <IconAlertTriangle size={16} />
@@ -376,13 +401,24 @@ export default function AddPage() {
                   </p>
                 )}
                 <p className="text-sm font-bold text-hf-black">
-                  {servingSizeGrams && hasServingUnit
+                  {state.product.isGenericIngredient && state.product.hasKnownNutrition === false
+                    ? t("addProduct.nutritionUnknown")
+                    : servingSizeGrams && hasServingUnit
                     ? t("addProduct.kcalPerServing", {
                         kcal: Math.round((state.product.kcalPer100g * servingSizeGrams) / 100),
                         unit: servingSizeUnitSingular as string,
                       })
                     : t("addProduct.kcalPer100g", { kcal: Math.round(state.product.kcalPer100g) })}
                 </p>
+                {!!confidentAlternativeServings.length && (
+                  <div className="mt-1 flex flex-col items-center gap-0.5">
+                    {confidentAlternativeServings.map((serving: AlternativeServing, index: number) => (
+                      <p key={`${serving.label}-${index}`} className="text-xs text-hf-black opacity-60">
+                        {t("addProduct.alternativeServing", { label: serving.label, kcal: Math.round(serving.kcal as number) })}
+                      </p>
+                    ))}
+                  </div>
+                )}
 
                 <div className="mt-2 flex items-center justify-center gap-4">
                   <button
@@ -464,7 +500,9 @@ export default function AddPage() {
                     />
                   )}
                   <p className="text-xs opacity-70">
-                    {Math.round((state.product.kcalPer100g * amount) / 100)} kcal
+                    {state.product.isGenericIngredient && state.product.hasKnownNutrition === false
+                      ? t("addProduct.nutritionUnknown")
+                      : `${Math.round((state.product.kcalPer100g * amount) / 100)} kcal`}
                   </p>
                 </div>
                 <button

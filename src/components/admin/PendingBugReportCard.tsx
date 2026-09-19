@@ -8,7 +8,12 @@ type BugReport = {
   description: string;
   screenshotUrl: string | null;
   createdAt: string;
-  user: { displayName: string; email: string };
+  // Null for source = "AI" (auto-filed by the product-recognition pipeline,
+  // e.g. an uncertain alternative calorie display — see
+  // docs/DECISIONS.md 2026-09-19) — there is no submitting user.
+  user: { displayName: string; email: string } | null;
+  source: "USER" | "AI";
+  product: { id: string; name: string; brand: { name: string } | null } | null;
 };
 
 export function PendingBugReportCard({ report }: { report: BugReport }) {
@@ -36,8 +41,15 @@ export function PendingBugReportCard({ report }: { report: BugReport }) {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 flex-1">
           <p className="text-xs text-text-muted">
-            {report.user.displayName} · {report.user.email} · {new Date(report.createdAt).toLocaleDateString("da-DK")}
+            {report.user ? `${report.user.displayName} · ${report.user.email}` : "AI-genereret (ingen bruger)"} ·{" "}
+            {new Date(report.createdAt).toLocaleDateString("da-DK")}
           </p>
+          {report.product && (
+            <p className="mt-1 text-xs font-medium text-hf-green-dark">
+              Produktrettelse: {report.product.brand?.name ? `${report.product.brand.name} ` : ""}
+              {report.product.name}
+            </p>
+          )}
           <p className="mt-1 whitespace-pre-wrap text-sm text-text-primary">{report.description}</p>
           {report.screenshotUrl && (
             // eslint-disable-next-line @next/next/no-img-element
@@ -63,7 +75,7 @@ export function PendingBugReportCard({ report }: { report: BugReport }) {
             disabled={loading !== null}
             className="rounded-md bg-hf-green-dark px-3 py-1.5 text-sm text-hf-white disabled:opacity-60"
           >
-            {loading === "approve" ? "…" : "Godkend (+10 points)"}
+            {loading === "approve" ? "…" : report.source === "AI" ? "Godkend" : "Godkend (+10 points)"}
           </button>
         </div>
       </div>

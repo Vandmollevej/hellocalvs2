@@ -12,6 +12,9 @@ import {
   IconBug,
   IconUserPlus,
   IconBell,
+  IconBook2,
+  IconRulerMeasure,
+  IconCreditCard,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -25,7 +28,7 @@ type ProfileUser = {
   email: string;
   weightKg: number | null;
   heightCm: number | null;
-  birthYear: number | null;
+  birthDate: string | null;
   sex: Sex | null;
   wantsPushNotifications: boolean;
   wantsUpdateNewsEmails: boolean;
@@ -79,9 +82,19 @@ export default function ProfilePage() {
               href="/profile/edit"
             />
             <ChevronRow
+              icon={<IconCreditCard size={20} />}
+              label={t("profile.row.subscription")}
+              href="/profile/subscription"
+            />
+            <ChevronRow
               icon={<IconBathScale size={20} />}
               label={t("profile.row.weightCalibration")}
               href="/profile/weight-calibration"
+            />
+            <ChevronRow
+              icon={<IconRulerMeasure size={20} />}
+              label={t("profile.row.bodyMeasurements")}
+              href="/profile/body-measurements"
             />
             <ChevronRow
               icon={<IconMoon size={20} />}
@@ -99,6 +112,11 @@ export default function ProfilePage() {
               href="/settings/integrations"
             />
             <ChevronRow icon={<IconStar size={20} />} label={t("profile.row.points")} href="/profile/points" />
+            <ChevronRow
+              icon={<IconBook2 size={20} />}
+              label={t("profile.row.recipes")}
+              href="/profile/recipes"
+            />
             <ChevronRow
               icon={<IconUserPlus size={20} />}
               label={t("profile.row.inviteFriend")}
