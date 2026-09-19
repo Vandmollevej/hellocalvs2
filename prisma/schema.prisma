@@ -729,6 +729,15 @@ model Product {
   // serving size). See docs/DECISIONS.md (2026-08-29).
   nutritionExtra   Json?
 
+  // Free-text dietary/label claims (2026-09-19, see docs/DECISIONS.md), e.g.
+  // { isVegan: "Vegansk", isLactoseFree: "Laktosefri", isSugarFree: "Sukkerfri" }.
+  // Deliberately free text, not booleans: a single claim like "Økologisk"
+  // triggers a specific label, and equivalents vary across the ~17 markets
+  // this must eventually cover, so a fixed set of typed columns doesn't fit
+  // yet. Source of the shelf/fridge-photo dietary overlay feature. Revisit as
+  // typed columns once the exact tag taxonomy stabilizes.
+  dietaryTags      Json?
+
   // MyFitnessPal-style extended nutrition panel, per 100g, added 2026-09-11.
   // Only Open Food Facts currently supplies these (see src/lib/openFoodFacts.ts) —
   // null on every other product/source until a matching source is wired up.
@@ -792,14 +801,48 @@ model Product {
   duplicateLinksAsA  ProductDuplicateLink[] @relation("ProductDuplicateLinkA")
   duplicateLinksAsB  ProductDuplicateLink[] @relation("ProductDuplicateLinkB")
   aiAnalyses         AiProductAnalysis[]
+  matchChecks        ProductMatchCheck[]
+  photoAwards        ProductPhotoAward[]
   regionSearchStats  ProductRegionSearchStat[]
   regionHourStats    ProductRegionHourStat[]
   bugReports         BugReport[]
   genericIngredientsMatched GenericIngredient[]
+  stores             ProductStore[]
   personalSearchHistory UserProductSearchHistory[]
 
   @@index([externalSource, externalId])
   @@map("products")
+}
+
+// Chain-level "found in this store" tagging (2026-09-19, see
+// docs/DECISIONS.md). Chain granularity only (e.g. "Rema 1000", "Netto"), not
+// individual physical stores/GPS — feeds the planned shelf/fridge-photo
+// dietary overlay, which needs to know which chains carry a product, not
+// exactly which branch. A product can be carried by several chains, hence
+// the join table rather than a single FK on Product.
+model Store {
+  id        String         @id @default(cuid())
+  name      String         @unique
+  products  ProductStore[]
+  createdAt DateTime       @default(now())
+
+  @@map("stores")
+}
+
+// Bulk-imported products (e.g. REMA1000, see scripts/rema1000-import) default
+// to the chain they were scraped from. User-submitted products should link
+// themselves to whichever chain the submitter is shopping in at creation
+// time once that capture UI exists (not built yet — this table is the
+// foundation for it).
+model ProductStore {
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  storeId   String
+  taggedAt  DateTime @default(now())
+
+  @@id([productId, storeId])
+  @@map("product_stores")
 }
 
 // Hidden per-region search-ranking statistics for a product (2026-09-19, see
@@ -845,6 +888,12 @@ model ProductRegionHourStat {
 // for prompt/model evals and later fine-tuning (docs/DECISIONS.md,
 // 2026-09-17). Images are not duplicated here — they already live on
 // Product/ProductImage, and an analysis links to the product instead.
+//
+// 2026-09-19 (quality control/image-match, see docs/DECISIONS.md): `imageUrl`
+// and the new BARCODE kind were added so the guided-flow's barcode/nutrition/
+// ingredients photos are actually persisted (they previously were sent
+// transiently to OpenAI Vision and never saved anywhere) — this is what the
+// local quality-control-agent compares against Product.imageUrl.
 model AiProductAnalysis {
   id            String         @id @default(cuid())
   kind          AiAnalysisKind
@@ -860,10 +909,16 @@ model AiProductAnalysis {
   prediction    Json
   correction    Json?
   confidence    Float?
+  // The guided-flow photo itself (BARCODE/NUTRITION/INGREDIENTS only — a
+  // FRONT analysis has no image here, since the front photo becomes
+  // Product.imageUrl directly). Null for analyses created before this field
+  // existed.
+  imageUrl      String?        @map("image_url")
   product       Product?       @relation(fields: [productId], references: [id], onDelete: SetNull)
   productId     String?        @map("product_id")
   createdAt     DateTime       @default(now()) @map("created_at")
   correctedAt   DateTime?      @map("corrected_at")
+  matchCheck    ProductMatchCheck?
 
   @@index([kind, correctedAt])
   @@index([productId])
@@ -874,6 +929,82 @@ enum AiAnalysisKind {
   FRONT
   INGREDIENTS
   NUTRITION
+  BARCODE
+}
+
+// Kvalitetskontrol / billed-match (2026-09-19, se docs/DECISIONS.md): en
+// lokal (ikke-OpenAI) billedanalyse-agent (scripts/quality-control-agent)
+// sammenligner et produkts stregkode-/næring-/ingrediensfoto
+// (AiProductAnalysis.imageUrl) mod dets forsidefoto (Product.imageUrl) og
+// beregner en match-confidence. Under 80% confidence stilles til manuel
+// admin-gennemgang (aldrig automatisk deaktivering af produktet). Admins
+// korrekt/forkert/usikker-afgørelse gemmes permanent som fremtidig
+// træningsdata til en senere Hello Cal-specifik model.
+model ProductMatchCheck {
+  id              String            @id @default(cuid())
+  product         Product           @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId       String
+  analysis        AiProductAnalysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+  analysisId      String            @unique
+  photoType       AiAnalysisKind
+  // Delresultater, ikke kun én samlet procent — se docs/DECISIONS.md, så
+  // vægtningen kan justeres senere uden at genberegne fra bunden.
+  visualScore     Float?
+  colorScore      Float?
+  structuralScore Float?
+  confidence      Float?
+  status          MatchCheckStatus  @default(PENDING)
+  adminVerdict    MatchVerdict?
+  reviewedAt      DateTime?
+  createdAt       DateTime          @default(now())
+  award           ProductPhotoAward?
+
+  @@index([productId, status])
+  @@index([status, confidence])
+  @@map("product_match_checks")
+}
+
+enum MatchCheckStatus {
+  PENDING
+  REVIEWED
+}
+
+enum MatchVerdict {
+  CORRECT
+  WRONG
+  UNCERTAIN
+}
+
+// Point-belønning for at indsende et bedre billede, tilknyttet en konkret
+// ProductMatchCheck-problemstilling (docs/DECISIONS.md 2026-09-19). Admin
+// sætter selv antal points (ingen fast sats). Det nye billede erstatter
+// IKKE automatisk det gamle ved indsendelse — kun når admin godkender det
+// (se PATCH /api/admin/quality-control/[id]/award), så systemet forbliver
+// selvforstærkende uden at risikere at gemme et dårligere billede.
+model ProductPhotoAward {
+  id                String       @id @default(cuid())
+  matchCheck        ProductMatchCheck @relation(fields: [matchCheckId], references: [id], onDelete: Cascade)
+  matchCheckId      String       @unique
+  product           Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId         String
+  photoType         AiAnalysisKind
+  points            Int
+  enabled           Boolean      @default(false)
+  status            AwardStatus  @default(OPEN)
+  submittedImageUrl String?
+  submittedByUserId String?
+  submittedAt       DateTime?
+  resolvedAt        DateTime?
+  createdAt         DateTime     @default(now())
+
+  @@index([productId, enabled, status])
+  @@map("product_photo_awards")
+}
+
+enum AwardStatus {
+  OPEN
+  SUBMITTED
+  RESOLVED
 }
 
 // Flags two Product rows created with the same normalized name within a
@@ -936,6 +1067,7 @@ enum ExternalProductSource {
   USDA
   FRIDA
   HELLOFRESH
+  REMA1000
 }
 
 // Reference database of EU-approved E-number additives (E100-E1521),
@@ -1325,6 +1457,10 @@ enum PointsReason {
   FRIEND_FORWARD_FULFILLED
   FRIEND_REFERRAL
   FREE_MONTH_REDEEMED
+  // Kvalitetskontrol/billed-match (2026-09-19, docs/DECISIONS.md): brugeren
+  // fik godkendt et erstatningsbillede for et lavt-confidence stregkode-/
+  // næring-/ingrediensfoto, se ProductPhotoAward.
+  QUALITY_CONTROL_PHOTO
 }
 
 model PointsTransaction {

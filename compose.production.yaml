@@ -106,6 +106,27 @@ services:
       - backend
       - edge
 
+  quality-control-agent:
+    build: ./scripts/quality-control-agent
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env.production}
+      POLL_INTERVAL_SECONDS: ${QUALITY_CONTROL_AGENT_POLL_INTERVAL_SECONDS:-300}
+      BATCH_SIZE: ${QUALITY_CONTROL_AGENT_BATCH_SIZE:-10}
+    volumes:
+      - ./data/product-images:/images
+      # DINOv2 model weights (~90MB), downloaded from Hugging Face on first
+      # start — cached here so a container restart doesn't re-download them.
+      - ./data/quality-control-model-cache:/root/.cache/huggingface
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - backend
+      - edge
+
   hellofresh-agent:
     build: ./scripts/hellofresh-import
     restart: unless-stopped
@@ -123,6 +144,19 @@ services:
     networks:
       - backend
       - edge
+
+  rema1000-agent:
+    build: ./scripts/rema1000-import
+    restart: "no"
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env.production}
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - backend
 
 networks:
   backend:
