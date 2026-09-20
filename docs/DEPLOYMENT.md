@@ -14,6 +14,9 @@ private hostnames in the repository.
   quality-control agent contexts into the server deployment directory, and sets
   `HELLOCAL_TAG` to that exact commit SHA before running Compose. This keeps the
   server definition, local build contexts, and application image on one release.
+  Core database migrations and the web app are started before the locally-built
+  catalog and quality-control agents, so an auxiliary-agent build failure cannot
+  prevent the already-verified web release from starting.
 - Synology Container Manager pulls the image and runs the application together
   with PostgreSQL 17 through `compose.production.yaml`.
 - `prisma migrate deploy` runs as a one-shot service after PostgreSQL is healthy

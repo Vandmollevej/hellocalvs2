@@ -54,7 +54,7 @@ jobs:
           cp -R scripts/rema1000-import/. /deploy/scripts/rema1000-import/
           cp -R scripts/quality-control-agent/. /deploy/scripts/quality-control-agent/
 
-      - name: Deploy Hello Cal
+      - name: Select release and pull images
         run: |
           set -euo pipefail
           cd /deploy
@@ -64,4 +64,21 @@ jobs:
             printf '\nHELLOCAL_TAG=%s\n' '${{ github.sha }}' >> .env.production
           fi
           docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production pull
-          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d --build
+
+      - name: Deploy database migrations and app
+        run: |
+          set -euo pipefail
+          cd /deploy
+          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d db migrate app
+
+      - name: Build and start catalog agents
+        run: |
+          set -euo pipefail
+          cd /deploy
+          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d --build image-agent frida-agent hellofresh-agent rema1000-agent
+
+      - name: Build and start quality-control agent
+        run: |
+          set -euo pipefail
+          cd /deploy
+          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d --build quality-control-agent
