@@ -9,6 +9,11 @@ private hostnames in the repository.
 - GitHub Actions builds the application on a GitHub-hosted runner.
 - Each push to `master` publishes both `latest` and an immutable Git commit SHA
   tag to `ghcr.io/vandmollevej/hellocalvs2`.
+- After the image build succeeds, the self-hosted deploy job checks out the same
+  commit, syncs `compose.production.yaml` plus the locally-built REMA 1000 and
+  quality-control agent contexts into the server deployment directory, and sets
+  `HELLOCAL_TAG` to that exact commit SHA before running Compose. This keeps the
+  server definition, local build contexts, and application image on one release.
 - Synology Container Manager pulls the image and runs the application together
   with PostgreSQL 17 through `compose.production.yaml`.
 - `prisma migrate deploy` runs as a one-shot service after PostgreSQL is healthy
@@ -231,6 +236,10 @@ locally-built agents (`--build`), prints Compose status, and checks
 `/api/health` — all in one call. Re-create it (base64-encode the script and
 `| base64 -d > deploy.sh` in one line — see below) if the server is ever
 rebuilt.
+
+The GitHub Actions deploy job now performs the same release-tag update and
+local-agent rebuild automatically after a successful image build. Keep
+`deploy.sh` for manual controlled updates and recovery; do not remove it.
 
 **Operational gotchas found deploying HelloFresh (2026-08-29), for next time:**
 - The Synology's SFTP subsystem appears chrooted — plain `scp`/SFTP to

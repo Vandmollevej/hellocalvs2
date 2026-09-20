@@ -43,8 +43,25 @@ jobs:
     runs-on: self-hosted
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Sync deployment definition
+        run: |
+          set -euo pipefail
+          cp compose.production.yaml /deploy/compose.production.yaml
+          mkdir -p /deploy/scripts/rema1000-import /deploy/scripts/quality-control-agent
+          cp -R scripts/rema1000-import/. /deploy/scripts/rema1000-import/
+          cp -R scripts/quality-control-agent/. /deploy/scripts/quality-control-agent/
+
       - name: Deploy Hello Cal
         run: |
+          set -euo pipefail
           cd /deploy
+          if grep -q '^HELLOCAL_TAG=' .env.production; then
+            sed -i "s/^HELLOCAL_TAG=.*/HELLOCAL_TAG=${{ github.sha }}/" .env.production
+          else
+            printf '\nHELLOCAL_TAG=%s\n' '${{ github.sha }}' >> .env.production
+          fi
           docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production pull
-          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d
+          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d --build
