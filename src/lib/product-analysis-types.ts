@@ -2,6 +2,11 @@ export type AnalysisIds = {
   front?: string;
   ingredients?: string;
   nutrition?: string;
+  // Kvalitetskontrol/billed-match (docs/DECISIONS.md 2026-09-19): id på den
+  // AiProductAnalysis-række der gemte selve stregkode-fotoet (kind=BARCODE),
+  // så den lokale billedanalyse-agent senere kan sammenligne det mod
+  // produktets forsidefoto.
+  barcode?: string;
 };
 
 export type ProductFrontAnalysis = {

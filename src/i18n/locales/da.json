@@ -854,6 +854,19 @@
       "iron": "Jern"
     }
   },
+  "photoAward": {
+    "bannerSingle": "Du kan optjene {points} points ved at tage et nyt billede af {photoType}.",
+    "bannerMultiple": "Du kan optjene op til {points} points ved at hjælpe med billeder af dette produkt.",
+    "photoTypeBarcode": "stregkoden på emballagen",
+    "photoTypeNutrition": "næringsdeklarationen på emballagen",
+    "photoTypeIngredients": "ingredienslisten på emballagen",
+    "title": "Tag et nyt billede",
+    "pointsForPhoto": "{points} points for {photoType}",
+    "takePhoto": "Tag billede",
+    "submitting": "Sender...",
+    "submitError": "Kunne ikke sende billedet",
+    "submitted": "Tak! Dit billede afventer nu gennemgang."
+  },
   "search": {
     "title": "Søg",
     "add": "Tilføj",

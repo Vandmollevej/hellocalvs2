@@ -1,3 +1,4 @@
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { DEFAULT_SEARCH_RANKING_WEIGHTS, type SearchRankingWeights } from "@/lib/product-search-ranking";
 
@@ -57,7 +58,12 @@ export async function commitSearchRankingWeights(
   return prisma.$transaction(async (tx) => {
     await tx.searchRankingConfig.updateMany({ where: { isActive: true }, data: { isActive: false } });
     return tx.searchRankingConfig.create({
-      data: { weights, isActive: true, note, createdById: adminId },
+      data: {
+        weights: weights as unknown as Prisma.InputJsonValue,
+        isActive: true,
+        note,
+        createdById: adminId,
+      },
     });
   });
 }

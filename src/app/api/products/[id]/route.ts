@@ -10,7 +10,7 @@ export async function GET(
   try {
     const product = await prisma.product.findUnique({
       where: { id },
-      include: { brand: true, barcodes: true },
+      include: { brand: true, barcodes: true, images: { orderBy: { order: "asc" } } },
     });
     if (product) {
       return NextResponse.json({ product });
@@ -22,7 +22,10 @@ export async function GET(
     // /add/[id] can display it through the exact same screen. `brand`,
     // `barcodes` and `ingredientsText` are always empty/null — a generic
     // ingredient never has those.
-    const ingredient = await prisma.genericIngredient.findUnique({ where: { id } });
+    const ingredient = await prisma.genericIngredient.findUnique({
+      where: { id },
+      include: { images: { orderBy: { order: "asc" } } },
+    });
     if (ingredient) {
       return NextResponse.json({
         product: {
@@ -37,6 +40,7 @@ export async function GET(
           servingSizeUnitPlural: null,
           brand: null,
           imageUrl: ingredient.imageUrl,
+          images: ingredient.images,
           ingredientsText: null,
           allergens: [],
           additives: [],

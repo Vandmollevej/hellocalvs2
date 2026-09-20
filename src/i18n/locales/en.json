@@ -854,6 +854,19 @@
       "iron": "Iron"
     }
   },
+  "photoAward": {
+    "bannerSingle": "You can earn {points} points by taking a new photo of {photoType}.",
+    "bannerMultiple": "You can earn up to {points} points by helping with photos of this product.",
+    "photoTypeBarcode": "the barcode on the packaging",
+    "photoTypeNutrition": "the nutrition label on the packaging",
+    "photoTypeIngredients": "the ingredients list on the packaging",
+    "title": "Take a new photo",
+    "pointsForPhoto": "{points} points for {photoType}",
+    "takePhoto": "Take photo",
+    "submitting": "Submitting...",
+    "submitError": "Could not submit the photo",
+    "submitted": "Thanks! Your photo is now awaiting review."
+  },
   "search": {
     "title": "Search",
     "add": "Add",

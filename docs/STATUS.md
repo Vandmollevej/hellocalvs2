@@ -2,6 +2,131 @@
 
 Last updated: 2026-09-19
 
+## 2026-09-19: Admin Søgealgoritmer — tunable search-ranking weights with live test, commit/backup, and new personal/brand/verification signals
+
+Direct user request for a new admin subpage. Full architecture/rationale in
+`docs/DECISIONS.md` (2026-09-19, same heading) — this entry is the
+build/verification summary.
+
+- New `/admin/search-ranking` page (`AdminNav`/`admin-i18n` entry
+  "Søgealgoritmer") with a `SearchRankingTuner` client component: a
+  query+region+test-hour+optional-preview-user-id bar, one `<details>`
+  accordion per tunable parameter (Verificering, Regionale stregkoder (EAN),
+  Tidspunkt, Regionale mærker, Ingrediens vs. vare, Personlig historik,
+  Regional popularitet), a debounced live-test result list with a per-signal
+  score breakdown, a "Commit" button + optional note, and a "Tidligere
+  versioner" backup/restore list.
+- New Prisma models: `SearchRankingConfig` (append-only weight commits,
+  exactly one `isActive`), `BrandRegionSearchStat` (region-scoped brand
+  popularity), `UserProductSearchHistory` (per-user search/click history —
+  see the DECISIONS.md entry for why this reverses the earlier
+  anonymous-only stats principle). Hand-written migration
+  `prisma/migrations/20260919080000_search_ranking_weights/` — not applied,
+  no reachable local PostgreSQL in this environment, same recurring
+  `hellocal_no_local_db` constraint as most other entries in this file.
+- `src/lib/product-search-ranking.ts`: `rankProducts()` now takes a
+  `SearchRankingWeights` argument (defaults reproduce the exact previous
+  hardcoded behavior) and returns a per-signal `breakdown` alongside the
+  score. New `deriveIsVerified()`. New `src/lib/search-ranking-config.ts`
+  (`sanitizeWeights`, `getActiveSearchRankingWeights`,
+  `commitSearchRankingWeights`).
+- `/api/products` GET and `/api/generic-ingredients` GET both now read the
+  active committed weights, compute the new verification/brand/personal
+  signals for their candidates, and (only for a real logged-in session user,
+  never the shared demo user) upsert `UserProductSearchHistory` alongside
+  the existing region stats. `/api/products/search-event` does the same for
+  clicks, plus `BrandRegionSearchStat`. New
+  `POST /api/admin/search-ranking` (read/commit),
+  `POST /api/admin/search-ranking/[id]/restore`, and
+  `POST /api/admin/search-ranking/preview` (side-effect-free live test
+  against a draft weight set, merging Product + GenericIngredient candidates
+  into one ranked list so the ingredient-vs-product weight is visible).
+- `src/lib/gdpr.ts`'s `anonymizeUser()` ("Ret til at blive glemt") now also
+  deletes every `UserProductSearchHistory` row for the target user.
+- **Not built this pass, explicitly flagged**: `docs/UI.md` already
+  describes a self-service "Privatliv" settings page/toggle for this exact
+  kind of personalization data — it still does not exist anywhere in the
+  app (confirmed no route). The only current way to erase this data is the
+  existing admin "Ret til at blive glemt" flow. Also not built: an actual
+  merged Product+GenericIngredient result list for real end users — the
+  "Generiske ingredienser vs. varer" weight is real and wired into ranking,
+  but is only visibly comparable in the admin's own live-test tool, since
+  `/foods` and `/api/generic-ingredients` remain two separate result lists
+  in production, unchanged by this task.
+
+`npx prisma validate`/`generate`, `npm run lint` (whole repo, clean), and a
+full `npx tsc --noEmit` (whole repo, clean) all passed for this change.
+`npm run build` itself could not be captured as one clean run in this
+session — two unrelated concurrent sessions were actively building a
+quality-control image-match admin feature throughout, and each build
+attempt's TypeScript error was confirmed via `git status`/`git diff` to
+belong to their in-progress files, not this one, before moving on. Not
+verified live in a browser: no reachable local PostgreSQL, and no admin
+session was available in this workstation environment to click through
+`/admin/search-ranking` interactively.
+
+## 2026-09-19: Billed-metatags ("Multiple"/"Raw") på Product/Ingredient/GenericIngredient
+
+Brugerens ønske: billeddatabasen skal kunne vise et alternativt billede med
+flere eksemplarer (fx flere æbler) når en registreret mængde er stor, og et
+"rå-vare"-billede (fx fersk kød) når varen indgår i en opskrift/ret under
+tilberedning i stedet for det normale (ofte tilberedte/emballerede)
+standardbillede. Se `docs/DECISIONS.md` (samme dato) for arkitekturbeslutningen.
+
+- **Bygget denne omgang:** to metatags, `"Multiple"` og `"Raw"`
+  (`src/lib/image-tags.ts`), sat på det enkelte billede — ikke på selve
+  produktet/ingrediensen — fordi samme vare kan have et emballeret
+  standardbillede ved scanning, men skal vise en rå/fersk variant under
+  tilberedning. Nyt `tags String[]`-felt på `ProductImage`, samt to nye
+  gallerimodeller `IngredientImage` og `GenericIngredientImage` (samme form
+  som `ProductImage`) med samme `tags`-felt — hånd-skrevet migration
+  `20260919020000_image_variant_tags` (samme "ingen lokal database
+  tilgængelig"-begrundelse som andre nylige migrationer i dette projekt).
+- **"Raw"-visning er koblet på nu:** `/tilfoej/[id]` (`src/app/add/[id]/page.tsx`)
+  viser og gemmer et `"Raw"`-tagget billede i stedet for standardbilledet, når
+  varen tilføjes til en ret (`?for=ret`, `handleAddToDish`/den store
+  produktbillede-cirkel øverst) — både for almindelige `Product`-rækker og for
+  `GenericIngredient`-fallbacket (`/api/products/[id]` inkluderer nu
+  `images`/`ingredient.images` i svaret).
+- **Admin-tagging kun bygget for Product:** `ProductImageGallery.tsx` (den
+  eksisterende "øvrige billeder"-galleri på `/admin/products/[id]`) har nu
+  to til/fra-piller pr. billede ("Flere (Multiple)"/"Rå-vare (Raw)"), der
+  PATCH'er det udvidede `/api/admin/products/[id]/images/[imageId]`
+  (accepterer nu også `{ tags: string[] }`, ud over det eksisterende
+  `{ direction }`).
+- **Ikke bygget denne omgang, sat på roadmap efter eksplicit brugerønske**
+  ("Vent med opgaven, men sæt den på roadmap"): automatisk valg af et
+  `"Multiple"`-tagget billede når en registreret mængde overstiger en "normal
+  maksstørrelse" for varen. Kræver først en beslutning om, hvordan den
+  maksstørrelse fastsættes pr. vare (brugeren har endnu ikke valgt mellem et
+  nyt admin-felt pr. produkt eller en fast kategori-tommelfingerregel) — se
+  "Next work" nedenfor.
+- **Ingen admin-brugerflade for at tagge `Ingredient`-/`GenericIngredient`-
+  billeder endnu** — begge modeller har i forvejen ingen billedgalleri-
+  administrationsside (kun ét `imageUrl`-felt sat ved import/oprettelse), så
+  denne omgang gav dem kun datamodellen (galleri + tags) og læse-siden er
+  klar (`/api/products/[id]` sender `images` med for `GenericIngredient`);
+  der er ingen skrive-UI/route til at sætte tags på deres billeder endnu.
+  Flagget som opfølgning i stedet for at bygge en ny admin-side, der ikke var
+  bedt om.
+
+`npx prisma validate`/`generate`, `npm run lint` (0 fejl, kun forudeksisterende
+warnings i en urelateret fil) og `npm run build` (fuld TypeScript + alle
+routes) kørt og rene. Ikke afprøvet i en rigtig browser med rigtige data
+(ingen lokal Postgres på denne workstation, samme gentagne begrænsning som
+andre indgange i denne fil) — næste skridt er at sætte mindst ét `"Raw"`-
+tagget billede på et rigtigt produkt og bekræfte, at `/opret-ret`-flowet rent
+faktisk viser det.
+
+### Next work (tilføjet denne omgang)
+
+- Beslut hvordan "normal maksstørrelse" pr. vare fastsættes (nyt admin-felt vs.
+  kategori-tommelfingerregel vs. andet), og byg derefter den faktiske
+  mængde-baserede auto-visning af `"Multiple"`-taggede billeder.
+- Byg en admin-brugerflade til at tagge `Ingredient`-/`GenericIngredient`-
+  billeder (i dag kun muligt direkte i databasen/via en fremtidig route) —
+  ingen af de to har nogen eksisterende billed-administrationsside at udvide.
+
 ## 2026-09-19: Alternative kalorievisninger (per glas/skive/stk.) + AI-genererede admin-fejlrapporter ved usikkerhed
 
 Direct user request, full rationale in `docs/DECISIONS.md` (same heading,

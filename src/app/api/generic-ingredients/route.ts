@@ -89,7 +89,7 @@ export async function GET(req: Request) {
     }
 
     const publicIngredients = results.map((ingredient) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars -- hidden ranking stats/inputs, never sent to the client
+      /* eslint-disable @typescript-eslint/no-unused-vars -- hidden ranking stats/inputs, never sent to the client */
       const {
         regionSearchStats,
         regionHourStats,
@@ -106,6 +106,7 @@ export async function GET(req: Request) {
         personalClickCount?: unknown;
         entityBias?: unknown;
       };
+      /* eslint-enable @typescript-eslint/no-unused-vars */
       return rest;
     });
     return NextResponse.json({ ingredients: publicIngredients });

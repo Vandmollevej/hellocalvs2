@@ -2,6 +2,145 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-19: Admin "Søgealgoritmer" — tunable ranking weights, region-brand popularity, and personal search/click history (reverses the earlier anonymous-only search-stat principle)
+
+Direct user request: a new admin subpage, Søgealgoritmer, where the admin can
+turn secondary search-ranking parameters up/down, with a search field + region
+dropdown at the top for a **live** test of the effect, sliders grouped into
+dropdown accordions, and (clarified via follow-up questions before building)
+a "Commit" button plus a backup/restore history — draft weights are only
+tested live in the admin panel until committed, and every commit keeps the
+previous version rather than overwriting it.
+
+- **Text similarity stays the fixed, non-tunable base of the score** — this
+  page only exposes the *secondary* signals, matching the existing 2026-09-19
+  "text match is always dominant" principle in `src/lib/product-search-ranking.ts`.
+  Nothing here lets an admin make a wrong product outrank a clear text match.
+- New `SearchRankingWeights` type + `DEFAULT_SEARCH_RANKING_WEIGHTS`
+  (`src/lib/product-search-ranking.ts`): `regionalPopularity`/`timeOfDay`/
+  `regionEan` default to the exact previous hardcoded values (18/4/12), so an
+  empty/unreachable config table changes nothing. Three genuinely new
+  signals — `verification`, `regionBrand`, `personalHistory` — default to 0
+  (off) until the admin explicitly turns them on, and `genericVsProduct`
+  (signed, favors products vs. generic ingredients) defaults to neutral (0).
+- **Commit/backup versioning**: new `SearchRankingConfig` model
+  (`weights` Json, `isActive`, `note`, `createdById`). Every commit inserts a
+  new row and flips the previous active row to inactive — never overwritten,
+  never deleted — so the admin page's history list doubles as the requested
+  backup, and "Gendan" (`POST /api/admin/search-ranking/[id]/restore`) just
+  re-commits an old row's weights as a fresh active version.
+  `getActiveSearchRankingWeights()` (`src/lib/search-ranking-config.ts`) is
+  read by the real `/api/products` and `/api/generic-ingredients` search
+  routes on every request — a committed change takes effect immediately, no
+  caching layer, no deploy needed.
+- **Live test tool** (`POST /api/admin/search-ranking/preview`) runs the
+  exact same `rankProducts()` end users get, but against the *draft* (not
+  yet committed) weights, and — since production still queries Product and
+  GenericIngredient through two separate endpoints — merges both into one
+  ranked list so the "Generiske ingredienser vs. varer" slider's effect is
+  actually visible. This preview never writes impression/click counters.
+  `rankProducts()` now also returns a per-signal `breakdown` (raw values
+  before the weight multiply) so the admin can see *why* something ranked
+  where it did, not just the final score.
+- **"Er verificeret med stregkode, mindst 2 billeder, varedeklaration og
+  energifordeling"**: computed on read (`deriveIsVerified()`), not stored —
+  barcode present + ≥2 `ProductImage` rows + an `AiProductAnalysis` row of
+  kind `INGREDIENTS` *and* one of kind `NUTRITION` linked to the product
+  (i.e. a real guided-flow photo was analyzed for both, not just typed text).
+  A manually-typed or Frida/HelloFresh-imported product is never "verified"
+  under this definition — that is the point of the signal.
+- **New `BrandRegionSearchStat`** (region-scoped popularity of a *Brand*,
+  not a single product) feeds "Region-specifikke brands/mærker". Same
+  aggregate-only shape as the existing `ProductRegionSearchStat`, incremented
+  alongside a product's own region stat on every search impression/click
+  that has a brand.
+- **"Generiske ingredienser vs. varer"**: a flat, signed `entityBias` on each
+  candidate (-1 Product, +1 GenericIngredient) multiplied by this weight.
+  Real and wired into both `/api/products` and `/api/generic-ingredients`
+  ranking, but production still shows the two as separate result lists (the
+  Foods/search UI was not changed to merge them) — the bias only has a
+  visible combined effect in the admin preview above, until/unless a future
+  task actually asks for one merged end-user result list.
+- **Personal search/click history — explicit reversal of the 2026-09-19
+  "aggregate/anonymous-only, never a user id" search-stat principle.**
+  Clarified directly with the user before building: the benefit to the user
+  (not re-typing/re-finding the same product every time) requires storing it
+  per-user, not just per-region. New `UserProductSearchHistory`
+  (`userId` + one of `productId`/`ingredientId`/`genericIngredientId`,
+  `searchCount`/`clickCount`) — written by `/api/products`, `/api/generic-
+  ingredients`, and `/api/products/search-event` whenever a *real* session
+  user (never the shared demo user) searches/clicks. Feeds the "Personligt
+  tidligere søgte produkter" weight (defaults to 0/off) via
+  `personalSearchCount`/`personalClickCount` on `RankableProduct`.
+  **Erasure**: `anonymizeUser()` (`src/lib/gdpr.ts`, "Ret til at blive
+  glemt") now also fully deletes every `UserProductSearchHistory` row for
+  that user — not just anonymizes it, since none of the historical-snapshot
+  reasons that protect `Registration` etc. apply here.
+  **Not built this pass, explicitly flagged rather than silently added**:
+  `docs/UI.md:40`/`:125` already describe a "Privatliv" menu item and a
+  per-user on/off toggle for "personlig historik/favoritter/hyppighed" in
+  search ranking — there is still **no real `/privatliv` settings page or
+  self-service toggle anywhere in the app** (confirmed: no route exists).
+  The only way to stop/erase this data today is the existing admin-triggered
+  "Ret til at blive glemt" flow (`/admin/users` → `anonymizeUser()`), which
+  does erase it fully, but is not a self-service opt-out. Building the
+  actual Privatliv settings page is out of scope for this change (a much
+  larger, separate UI task) and is recorded here so it is not forgotten.
+
+`npx prisma validate`/`generate`, `npm run lint` (whole repo, clean) and a
+full `npx tsc --noEmit` pass (whole repo, clean) all passed. `npm run build`
+could not be completed as a single clean run in this session: two *other*,
+unrelated concurrent sessions were actively editing overlapping admin/AI
+files throughout (a quality-control image-match feature adding
+`AiProductAnalysis.imageUrl`/`BARCODE` and a new `/admin/quality-control`
+page) — confirmed via `git status`/`git diff` each time a build error
+appeared that the failing file/line belonged to that other work, not this
+change, before moving on rather than fixing or waiting on it. The last
+`npx tsc --noEmit` re-run (after their schema/enum edits landed) showed
+exactly one remaining error, in `src/app/admin/quality-control/page.tsx`
+referencing a `QualityControlTable` component that session had not yet
+created — still their in-progress work, not this one's. Not verified in a
+live browser: no reachable local PostgreSQL in this environment, and the
+admin login/session setup needed to reach `/admin/search-ranking` was not
+available to exercise interactively from this workstation either.
+
+## 2026-09-19: Billed-metatags — tags lever på billedet, ikke på produktet
+
+- **Metatags i stedet for et fast produktfelt**: et billede kan tagges
+  `"Multiple"` (viser flere eksemplarer, fx flere æbler) og/eller `"Raw"`
+  (rå/fersk, fx råt kød), som en fri `String[]`-liste på selve billedrækken
+  (`ProductImage.tags`, samt de to nye galleri-modeller `IngredientImage`/
+  `GenericIngredientImage`, se `docs/STATUS.md` samme dato). **Eksplicit
+  brugerbegrundelse**: "Det skal ikke være knyttet op på selve produktet jo!
+  For det kan være i en pakke når man scanner det, men når man tilbereder det
+  er det det ikke." — samme vare kan altså have flere billeder med forskellig
+  kontekst, og valget sker pr. billede, ikke som et fast felt på
+  `Product`/`Ingredient`/`GenericIngredient`.
+- **Gælder alle tre vare-typer** (`Product`, `Ingredient`, `GenericIngredient`)
+  — brugerens eget argument: "ellers kan systemet ikke kende forskel mellem
+  dem". Hver af de tre beholder sit eksisterende enkelte `imageUrl`-felt som
+  det utaggede standardbillede; taggede varianter ligger i et lille galleri
+  ved siden af (samme mønster `ProductImage` allerede brugte for "øvrige
+  billeder").
+- **"Raw" er koblet på ved tilberedning nu**: når en vare tilføjes til en
+  ret/opskrift (`/opret-ret`, `?for=ret`), foretrækkes et `"Raw"`-tagget
+  billede frem for standardbilledet (`src/lib/image-tags.ts`,
+  `selectRawContextImageUrl`) — almindelig logning af et allerede spist
+  måltid viser fortsat standardbilledet uændret, per brugerens egen
+  beskrivelse af hvornår hvert billede hører til.
+- **"Multiple" er kun data-laget indtil videre — ikke den mængde-baserede
+  auto-visning.** Brugeren bad eksplicit om at vente med selve opgaven
+  ("Vent med opgaven, men sæt den på roadmap") og satte den på roadmap i
+  stedet, fordi det først kræver en beslutning om, hvordan en vares "normale
+  maksstørrelse" fastsættes (endnu intet datagrundlag til at udregne det
+  automatisk). Se `docs/STATUS.md`s "Next work" for samme dato.
+- **Admin-skriveflade kun bygget for `Product`** (den eneste af de tre, der i
+  forvejen har en billed-administrationsside, `ProductImageGallery.tsx`).
+  `Ingredient`/`GenericIngredient` fik kun datamodellen — ingen ny
+  admin-side blev bygget for at tagge deres billeder, da det ville være en
+  ny administrationsflade, der ikke var bedt om; flagget som opfølgning i
+  stedet for gættet på.
+
 ## 2026-09-19: Alternative kalorievisninger (per glas/skive/stk.) gemmes og vises; usikre AI-fund går til admin som fejlrapport
 
 Direct user request: gem ekstra felter for alternative kalorievisninger (fx

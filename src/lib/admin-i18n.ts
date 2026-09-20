@@ -17,8 +17,18 @@ const DICTIONARY = {
   nav_duplicate_products: { DA: "Dobbeltoprettelser", EN: "Duplicate creations" },
   nav_search: { DA: "Søg", EN: "Search" },
   nav_search_ranking: { DA: "Søgealgoritmer", EN: "Search ranking" },
+  nav_quality_control: { DA: "Kvalitetskontrol", EN: "Quality control" },
   nav_passkeys: { DA: "Passkeys", EN: "Passkeys" },
   nav_logout: { DA: "Log ud", EN: "Log out" },
+
+  quality_control_title: { DA: "Kvalitetskontrol", EN: "Quality control" },
+  quality_control_empty: { DA: "Ingen billeder afventer gennemgang.", EN: "No photos awaiting review." },
+  quality_control_col_date: { DA: "Dato", EN: "Date" },
+  quality_control_col_product: { DA: "Produkt", EN: "Product" },
+  quality_control_col_issue: { DA: "Problem", EN: "Issue" },
+  quality_control_col_confidence: { DA: "Confidence", EN: "Confidence" },
+  quality_control_col_usage: { DA: "Valgt 30 dage", EN: "Chosen (30 days)" },
+  quality_control_filter_all: { DA: "Alle", EN: "All" },
 
   products_title: { DA: "Nye produkter", EN: "New products" },
   products_tab_user: { DA: "Bruger-indsendte", EN: "User-submitted" },

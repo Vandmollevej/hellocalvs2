@@ -3,6 +3,7 @@ import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { buildBarcodeContext } from "@/lib/barcode-context";
 import { callStructuredVision } from "@/lib/product-ai";
+import { saveDataUrlImage } from "@/lib/qc-image-storage";
 import type { IngredientsAnalysis } from "@/lib/product-analysis-types";
 
 const PROMPT_VERSION = "ingredients-v1-2026-09-16";
@@ -60,6 +61,11 @@ export async function POST(req: Request) {
         .join("\n"),
     });
 
+    // Kvalitetskontrol/billed-match (docs/DECISIONS.md 2026-09-19): gemmer
+    // selve fotoet, så den lokale billedanalyse-agent kan sammenligne det mod
+    // produktets forsidefoto. Fejl her må aldrig stoppe selve ingrediens-aflæsningen.
+    const imageUrl = await saveDataUrlImage(photo).catch(() => null);
+
     const analysis = await prisma.aiProductAnalysis.create({
       data: {
         kind: "INGREDIENTS",
@@ -71,6 +77,7 @@ export async function POST(req: Request) {
         promptVersion: PROMPT_VERSION,
         prediction: value as unknown as Prisma.InputJsonValue,
         confidence: value.confidence,
+        imageUrl,
       },
       select: { id: true },
     });

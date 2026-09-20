@@ -123,12 +123,33 @@ function KameraOpretContent() {
     return context;
   }
 
+  // Kvalitetskontrol/billed-match (docs/DECISIONS.md 2026-09-19): gemmer
+  // stregkode-fotoet i baggrunden, uden at blokere selve scan-flowet — samme
+  // "productId udfyldes senere ved oprettelse"-mønster som forside/
+  // ingredienser/næring. Fejl her må aldrig afbryde stregkode-flowet.
+  function saveBarcodePhotoInBackground(photo: string, barcode: string, marketRegion: string) {
+    fetch("/api/ai/save-barcode-photo", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ photo, barcode, marketRegion }),
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: { analysisId?: string } | null) => {
+        if (data?.analysisId) {
+          draftRef.current.analysisIds = { ...draftRef.current.analysisIds, barcode: data.analysisId };
+        }
+      })
+      .catch(() => {});
+  }
+
   const continueAfterUnknownBarcode = useCallback(
     (code: string) => {
       const cleaned = code.replace(/\D/g, "");
       if (!cleaned) return;
-      storeBarcodeContext(cleaned);
-      draftRef.current.barcodeImage = capturePhotoFromVideo(videoRef.current) ?? draftRef.current.barcodeImage;
+      const context = storeBarcodeContext(cleaned);
+      const capturedPhoto = capturePhotoFromVideo(videoRef.current);
+      draftRef.current.barcodeImage = capturedPhoto ?? draftRef.current.barcodeImage;
+      if (capturedPhoto) saveBarcodePhotoInBackground(capturedPhoto, cleaned, context.marketRegion);
       lookupInProgressRef.current = false;
       setBarcodeLookupFailed(false);
       setAnalyzing(false);
@@ -166,8 +187,10 @@ function KameraOpretContent() {
       } catch {
         // Vi har stadig en gyldig aflæst barcode. Vis fejl, men lad brugeren
         // fortsætte med netop den barcode i stedet for at kassere scan-data.
-        storeBarcodeContext(cleaned);
-        draftRef.current.barcodeImage = capturePhotoFromVideo(videoRef.current) ?? undefined;
+        const context = storeBarcodeContext(cleaned);
+        const capturedPhoto = capturePhotoFromVideo(videoRef.current);
+        draftRef.current.barcodeImage = capturedPhoto ?? undefined;
+        if (capturedPhoto) saveBarcodePhotoInBackground(capturedPhoto, cleaned, context.marketRegion);
         setManualBarcode(cleaned);
         setBarcodeLookupFailed(true);
         setAnalyzing(false);

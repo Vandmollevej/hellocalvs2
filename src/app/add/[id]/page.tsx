@@ -7,6 +7,7 @@ import { IconChevronDown, IconBookmark, IconBookmarkFilled, IconAlertTriangle } 
 import { HfScreen } from "@/components/HfScreen";
 import { ForwardButton } from "@/components/ForwardButton";
 import { appendDishDraftIngredient } from "@/lib/dish-draft";
+import { selectRawContextImageUrl } from "@/lib/image-tags";
 import { MacroSliderBar } from "@/components/hf/MacroSliderBar";
 import { AdditiveInfoModal } from "@/components/hf/AdditiveInfoModal";
 import { getAdditiveInfo } from "@/lib/additives";
@@ -14,6 +15,12 @@ import { labelForAllergen } from "@/lib/allergens";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { isAlternativeServingConfident } from "@/lib/alternative-servings";
 import type { AlternativeServing } from "@/lib/product-analysis-types";
+
+const PHOTO_AWARD_TYPE_KEY: Record<string, "photoAward.photoTypeBarcode" | "photoAward.photoTypeNutrition" | "photoAward.photoTypeIngredients"> = {
+  BARCODE: "photoAward.photoTypeBarcode",
+  NUTRITION: "photoAward.photoTypeNutrition",
+  INGREDIENTS: "photoAward.photoTypeIngredients",
+};
 
 function currentTimeString() {
   const now = new Date();
@@ -41,6 +48,10 @@ type Product = {
   servingSizeUnitPlural?: string | null;
   brand: { name: string } | null;
   imageUrl?: string | null;
+  // Tagged image variants (Multiple/Raw), see src/lib/image-tags.ts and
+  // docs/DECISIONS.md 2026-09-19. Empty when the product/ingredient has no
+  // tagged alternates.
+  images?: { url: string; tags: string[] }[];
   ingredientsText?: string | null;
   allergens?: string[];
   additives?: string[];
@@ -105,6 +116,10 @@ export default function AddPage() {
   const [additiveNames, setAdditiveNames] = useState<Record<string, string>>({});
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoritePending, setFavoritePending] = useState(false);
+  // Kvalitetskontrol/billed-match (docs/DECISIONS.md 2026-09-19): åbne Awards
+  // brugeren kan optjene points ved at indsende et bedre billede af dette
+  // produkt. Aldrig vist for et produkt uden nogen enabled+OPEN award.
+  const [photoAwards, setPhotoAwards] = useState<{ id: string; photoType: string; points: number }[]>([]);
   const [macroOverride, setMacroOverride] = useState<{
     amount: number;
     protein: number;
@@ -139,6 +154,11 @@ export default function AddPage() {
         setIsFavorite(favorites.some((favorite) => favorite.product?.id === id));
       })
       .catch(() => setIsFavorite(false));
+
+    fetch(`/api/products/${id}/photo-awards`)
+      .then((res) => res.json())
+      .then((data) => setPhotoAwards(data.awards ?? []))
+      .catch(() => setPhotoAwards([]));
   }, [id]);
 
   async function handleToggleFavorite() {
@@ -160,6 +180,14 @@ export default function AddPage() {
   }
 
   const product = state.status === "loaded" ? state.product : null;
+  // Når varen tilføjes til en opskrift/ret (for=ret), vis den rå-varen
+  // (Multiple/Raw-tags, se src/lib/image-tags.ts) i stedet for
+  // standardbilledet, som ofte viser det tilberedte/emballerede produkt.
+  const displayImageUrl = product
+    ? forDish
+      ? selectRawContextImageUrl(product.imageUrl, product.images)
+      : (product.imageUrl ?? null)
+    : null;
   const factor = amount / 100;
   const servingSizeGrams = product?.servingSizeGrams ?? null;
   // Enheden ("portion"/"portioner", "person"/"personer" osv.) vises kun når
@@ -299,7 +327,10 @@ export default function AddPage() {
     appendDishDraftIngredient({
       productId: product.id,
       name: product.name,
-      imageUrl: product.imageUrl,
+      // Tilberedning/opskrift viser rå-varen, når et "Raw"-tagget billede
+      // findes, i stedet for standardbilledet (som ofte er det tilberedte/
+      // emballerede produkt) — se src/lib/image-tags.ts.
+      imageUrl: selectRawContextImageUrl(product.imageUrl, product.images),
       kcalPer100g: product.kcalPer100g,
       proteinPer100g: product.proteinPer100g,
       carbsPer100g: product.carbsPer100g,
@@ -346,6 +377,21 @@ export default function AddPage() {
 
         {state.status === "loaded" && (
           <>
+            {!forDish && photoAwards.length > 0 && (
+              <Link
+                href={`/add/${id}/photo-award`}
+                className="block bg-hf-black px-4 py-3 text-center text-[13px] font-medium text-hf-white"
+              >
+                {photoAwards.length === 1
+                  ? t("photoAward.bannerSingle", {
+                      points: photoAwards[0].points,
+                      photoType: t(PHOTO_AWARD_TYPE_KEY[photoAwards[0].photoType]),
+                    })
+                  : t("photoAward.bannerMultiple", {
+                      points: photoAwards.reduce((sum, award) => sum + award.points, 0),
+                    })}
+              </Link>
+            )}
             <div className="flex flex-col p-4">
               {!forDish && (
                 <div className="flex justify-end">
@@ -355,10 +401,10 @@ export default function AddPage() {
               <div className="flex flex-col items-center gap-2 pt-2 text-center">
                 <div className="relative h-[190px] w-[190px] min-h-[190px] min-w-[190px] max-h-[190px] max-w-[190px] shrink-0 overflow-visible">
                   <div className="flex h-[190px] w-[190px] min-h-[190px] min-w-[190px] items-center justify-center overflow-hidden rounded-full bg-hf-tan">
-                    {state.product.imageUrl ? (
+                    {displayImageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={state.product.imageUrl}
+                        src={displayImageUrl}
                         alt=""
                         className="block h-full w-full max-h-full max-w-full object-contain p-8"
                       />

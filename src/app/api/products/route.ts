@@ -236,7 +236,7 @@ export async function GET(req: Request) {
     // Hidden ranking statistics/origin data are internal and must never be
     // exposed to users (design.md, docs/DECISIONS.md 2026-09-19).
     const publicProducts = products.map((product) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars -- deliberately stripped, never sent to the client
+      /* eslint-disable @typescript-eslint/no-unused-vars -- deliberately stripped, never sent to the client */
       const {
         regionSearchStats,
         regionHourStats,
@@ -260,6 +260,7 @@ export async function GET(req: Request) {
         entityBias?: unknown;
         _count?: unknown;
       };
+      /* eslint-enable @typescript-eslint/no-unused-vars */
       // Mærkets egen hidden region-popularitet (brandRegionStats' kilde,
       // se ovenfor) må heller aldrig lække til klienten.
       const brand = publicProduct.brand
@@ -296,7 +297,7 @@ function cleanAnalysisIds(value: unknown) {
   if (!value || typeof value !== "object" || Array.isArray(value)) return {} as Record<string, string>;
   const source = value as Record<string, unknown>;
   const out: Record<string, string> = {};
-  for (const key of ["front", "ingredients", "nutrition"]) {
+  for (const key of ["front", "ingredients", "nutrition", "barcode"]) {
     if (typeof source[key] === "string" && source[key]) out[key] = source[key] as string;
   }
   return out;
@@ -460,6 +461,16 @@ export async function POST(req: Request) {
           correction: { kcalPer100g, proteinPer100g, carbsPer100g, fatPer100g, alternativeServings },
           correctedAt,
         },
+      });
+    }
+
+    // Stregkode-fotoet har ingen AI-korrektion (ingen AI-kald involveret, se
+    // POST /api/ai/save-barcode-photo) — kun productId sættes, så den lokale
+    // kvalitetskontrol-agent (scripts/quality-control-agent) kan finde den.
+    if (analysisIds.barcode) {
+      await prisma.aiProductAnalysis.updateMany({
+        where: { id: analysisIds.barcode, kind: "BARCODE" },
+        data: { productId: product.id, correctedAt },
       });
     }
 
