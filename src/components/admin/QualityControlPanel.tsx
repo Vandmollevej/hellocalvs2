@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import type { QualityControlPhotoType } from "@/lib/quality-control-photo-types";
 
 type Award = {
   id: string;
@@ -13,7 +14,7 @@ type Award = {
 
 type MatchCheck = {
   id: string;
-  photoType: "BARCODE" | "NUTRITION" | "INGREDIENTS";
+  photoType: QualityControlPhotoType;
   confidence: number | null;
   visualScore: number | null;
   colorScore: number | null;

@@ -4,13 +4,14 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Locale } from "@prisma/client";
 import { t } from "@/lib/admin-i18n";
+import type { QualityControlPhotoType } from "@/lib/quality-control-photo-types";
 
 type Row = {
   id: string;
   productId: string;
   productName: string;
   brandName: string | null;
-  photoType: "BARCODE" | "NUTRITION" | "INGREDIENTS";
+  photoType: QualityControlPhotoType;
   confidence: number | null;
   createdAt: string;
   usageLast30Days: number;

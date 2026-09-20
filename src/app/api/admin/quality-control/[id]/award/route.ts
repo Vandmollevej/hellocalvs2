@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
+import { isQualityControlPhotoType } from "@/lib/quality-control-photo-types";
 
 // Award-toggle for en ProductMatchCheck-problemstilling (docs/DECISIONS.md,
 // 2026-09-19). Admin sætter selv antal points pr. Award (ingen fast sats,
@@ -23,6 +24,9 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     select: { productId: true, photoType: true },
   });
   if (!matchCheck) return NextResponse.json({ message: "Ikke fundet" }, { status: 404 });
+  if (!isQualityControlPhotoType(matchCheck.photoType)) {
+    return NextResponse.json({ message: "Billedtypen kan ikke bruges til en Award" }, { status: 400 });
+  }
 
   const award = await prisma.productPhotoAward.upsert({
     where: { matchCheckId: id },

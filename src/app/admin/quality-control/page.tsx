@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 import { t } from "@/lib/admin-i18n";
 import { QualityControlTable } from "@/components/admin/QualityControlTable";
+import { hasQualityControlPhotoType, QUALITY_CONTROL_PHOTO_TYPES } from "@/lib/quality-control-photo-types";
 
 function daysAgo(days: number) {
   return new Date(Date.now() - days * 24 * 60 * 60 * 1000);
@@ -17,7 +18,7 @@ export default async function AdminQualityControlPage() {
   if (!admin) redirect("/admin/login");
 
   const matchChecks = await prisma.productMatchCheck.findMany({
-    where: { status: "PENDING" },
+    where: { status: "PENDING", photoType: { in: [...QUALITY_CONTROL_PHOTO_TYPES] } },
     include: {
       product: { select: { id: true, name: true, brand: { select: { name: true } } } },
     },
@@ -35,7 +36,7 @@ export default async function AdminQualityControlPage() {
     : [];
   const usageByProductId = new Map(usageCounts.map((row) => [row.productId, row._count._all]));
 
-  const rows = matchChecks.map((check) => ({
+  const rows = matchChecks.filter(hasQualityControlPhotoType).map((check) => ({
     id: check.id,
     productId: check.productId,
     productName: check.product.name,

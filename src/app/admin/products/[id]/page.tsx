@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 import { ProductDetailEditor } from "@/components/admin/ProductDetailEditor";
 import { QualityControlPanel } from "@/components/admin/QualityControlPanel";
+import { hasQualityControlPhotoType, QUALITY_CONTROL_PHOTO_TYPES } from "@/lib/quality-control-photo-types";
 
 export default async function AdminProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const admin = await requireAdminUser();
@@ -20,6 +21,7 @@ export default async function AdminProductDetailPage({ params }: { params: Promi
     prisma.productMatchCheck.findMany({
       where: {
         productId: id,
+        photoType: { in: [...QUALITY_CONTROL_PHOTO_TYPES] },
         OR: [{ status: "PENDING" }, { award: { status: { in: ["OPEN", "SUBMITTED"] } } }],
       },
       include: { award: true },
@@ -31,7 +33,7 @@ export default async function AdminProductDetailPage({ params }: { params: Promi
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-lg font-semibold text-text-primary">{product.name}</h1>
-      <QualityControlPanel matchChecks={matchChecks} />
+      <QualityControlPanel matchChecks={matchChecks.filter(hasQualityControlPhotoType)} />
       <ProductDetailEditor product={product} />
     </div>
   );
