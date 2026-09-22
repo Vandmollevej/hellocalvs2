@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function TopBar() {
   return (
-    <div data-top-bar className="flex items-center justify-end px-4 pt-4">
+    <div className="flex items-center justify-end px-4 pt-4">
       <Link
         href="/profile"
         aria-label="Åbn mine oplysninger"

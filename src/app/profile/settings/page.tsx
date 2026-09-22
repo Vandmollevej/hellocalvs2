@@ -8,7 +8,7 @@ import { ALLERGEN_CATALOG } from "@/lib/allergens";
 import { REGIONS } from "@/lib/regions";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import type { Locale } from "@/i18n";
+import { DEFAULT_LOCALE, isLocale, type Locale } from "@/i18n";
 
 type SettingsUser = {
   showAllergens: boolean;
@@ -20,6 +20,55 @@ type SettingsUser = {
 type SetupProgressUser = {
   weightKg: number | null;
 };
+
+// Language names are shown in their own language, so they are not translated.
+const LANGUAGE_OPTIONS: Array<{ value: Locale; label: string }> = [
+  { value: "da", label: "Dansk" },
+  { value: "en", label: "English" },
+];
+
+// Shared card for the select-type settings (Region, Sprog) so they stay
+// visually identical.
+function SetupSelectCard({
+  label,
+  description,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  description: string;
+  value: string;
+  options: Array<{ value: string; label: string }>;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="flex items-center justify-between gap-3 rounded-2xl bg-hf-tan px-4 py-4">
+      <span className="min-w-0 flex-1">
+        <span className="block text-[15px] font-medium text-hf-black">{label}</span>
+        <span className="block text-[12px] text-hf-black opacity-60">{description}</span>
+      </span>
+      <div className="relative shrink-0">
+        <select
+          className="appearance-none rounded-xl border border-hf-tan-dark bg-white py-2 pl-3 pr-8 text-[14px] text-hf-black"
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+        >
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <IconChevronDown
+          size={14}
+          stroke={2.5}
+          className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-hf-black"
+        />
+      </div>
+    </label>
+  );
+}
 
 // Reuses the same "Step X of Y" + progress bar pattern as
 // OnboardingWizard.tsx, per design.md §12 (reuse instead of inventing new style).
@@ -137,34 +186,21 @@ export default function ProfileSettingsPage() {
         <div className="flex flex-col gap-4 p-4">
           <SetupProgressBar weightSet={weightSet} />
 
-          <label className="flex items-center justify-between gap-3 rounded-2xl bg-hf-tan px-4 py-4">
-            <span className="flex-1">
-              <span className="block text-[15px] font-medium text-hf-black">
-                {t("settings.regionLabel")}
-              </span>
-              <span className="block text-[12px] text-hf-black opacity-60">
-                {t("settings.regionDescription")}
-              </span>
-            </span>
-            <div className="relative">
-              <select
-                className="appearance-none rounded-xl border border-hf-tan-dark bg-white py-2 pl-3 pr-8 text-[14px] text-hf-black"
-                value={user.region}
-                onChange={(event) => updateRegion(event.target.value)}
-              >
-                {REGIONS.map((region) => (
-                  <option key={region.code} value={region.code}>
-                    {region.label}
-                  </option>
-                ))}
-              </select>
-              <IconChevronDown
-                size={14}
-                stroke={2.5}
-                className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-hf-black"
-              />
-            </div>
-          </label>
+          <SetupSelectCard
+            label={t("settings.regionLabel")}
+            description={t("settings.regionDescription")}
+            value={user.region}
+            options={REGIONS.map((region) => ({ value: region.code, label: region.label }))}
+            onChange={updateRegion}
+          />
+
+          <SetupSelectCard
+            label={t("settings.languageLabel")}
+            description={t("settings.languageDescription")}
+            value={locale}
+            options={LANGUAGE_OPTIONS}
+            onChange={(value) => setLocale(isLocale(value) ? value : DEFAULT_LOCALE)}
+          />
 
           <Toggle
             label={t("settings.showAllergens")}
@@ -197,13 +233,6 @@ export default function ProfileSettingsPage() {
             description={t("settings.showExtendedNutritionDescription")}
             checked={user.showExtendedNutrition}
             onChange={toggleShowExtendedNutrition}
-          />
-
-          <Toggle
-            label={t("settings.languageLabel")}
-            description={t("settings.languageDescription")}
-            checked={locale === "en"}
-            onChange={(checked) => setLocale((checked ? "en" : "da") as Locale)}
           />
 
           <p className="px-1 text-[12px] leading-relaxed text-hf-black opacity-60">
