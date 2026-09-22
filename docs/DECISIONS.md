@@ -2,6 +2,20 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-22: Skift adgangskode (Profil → Skift adgangskode)
+
+`/profile/change-password` + `POST /api/profile/change-password`. Brugeren
+identificeres kun via den rigtige brugersession (`getSessionUser()`, ikke
+demo-brugeren); body indeholder kun `currentPassword`/`newPassword`. Samme
+bcryptjs cost 12 og 8-tegns-minimum som register/reset. Forkert nuværende
+adgangskode tæller i den eksisterende in-memory `rate-limit.ts` (nøgle
+`change-password:<userId>`). Databaseopdateringen er autoritativ; derefter
+lægges en `PASSWORD_CHANGED`-sikkerhedsmail (nyt `MessageEvent`, link til
+`/forgot-password`, aldrig adgangskoder) i den eksisterende
+`queueMessage()`-kø — en fejl her logges men returnerer stadig success.
+Andre aktive sessioner invalideres ikke: brugersessionen er en stateless JWT
+uden revokeringsmekanisme, og at tilføje en er bevidst uden for scope.
+
 ## 2026-09-22: Produktside — energifordeling er låst som standard (UI-lås + reset)
 
 Direkte brugerønske. På `/add/[id]` vises en outline-hængelås (Tabler

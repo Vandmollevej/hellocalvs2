@@ -14,6 +14,7 @@ const EVENT_LABELS: Record<string, string> = {
   ACCOUNT_CREATED: "Konto oprettet",
   EMAIL_VERIFICATION: "E-mail-verifikation",
   PASSWORD_RESET: "Glemt kodeord",
+  PASSWORD_CHANGED: "Adgangskode ændret",
   FRIEND_REFERRAL: "Invitér en ven — belønning givet",
   PRODUCT_APPROVED: "Produkt godkendt",
   PRODUCT_REJECTED: "Produkt afvist",

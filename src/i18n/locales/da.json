@@ -602,6 +602,24 @@
       "recipes": "Opskrifter",
       "settings": "Indstillinger"
     },
+    "changePasswordButton": "Skift adgangskode",
+    "changePassword": {
+      "title": "Skift adgangskode",
+      "currentLabel": "Nuværende adgangskode",
+      "newLabel": "Ny adgangskode",
+      "confirmLabel": "Gentag ny adgangskode",
+      "submit": "Skift adgangskode",
+      "submitting": "Ændrer adgangskode…",
+      "success": "Din adgangskode er ændret.",
+      "requiredError": "Udfyld alle felter.",
+      "tooShortError": "Adgangskoden skal være mindst 8 tegn.",
+      "mismatchError": "De nye adgangskoder er ikke ens.",
+      "sameError": "Den nye adgangskode skal være forskellig fra den nuværende.",
+      "genericError": "Adgangskoden kunne ikke ændres. Prøv igen.",
+      "networkError": "Kunne ikke ændre adgangskoden — tjek din forbindelse og prøv igen.",
+      "loginRequired": "Log ind for at ændre din adgangskode.",
+      "logIn": "Log ind"
+    },
     "logOut": "Log af",
     "messages": {
       "title": "Beskeder",

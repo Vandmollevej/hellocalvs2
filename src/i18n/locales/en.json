@@ -602,6 +602,24 @@
       "recipes": "Recipes",
       "settings": "Settings"
     },
+    "changePasswordButton": "Change password",
+    "changePassword": {
+      "title": "Change password",
+      "currentLabel": "Current password",
+      "newLabel": "New password",
+      "confirmLabel": "Repeat new password",
+      "submit": "Change password",
+      "submitting": "Changing password…",
+      "success": "Your password has been changed.",
+      "requiredError": "Fill in all fields.",
+      "tooShortError": "Password must be at least 8 characters.",
+      "mismatchError": "The new passwords do not match.",
+      "sameError": "The new password must be different from the current one.",
+      "genericError": "The password could not be changed. Please try again.",
+      "networkError": "Could not change the password — check your connection and try again.",
+      "loginRequired": "Log in to change your password.",
+      "logIn": "Log in"
+    },
     "logOut": "Log out",
     "messages": {
       "title": "Messages",

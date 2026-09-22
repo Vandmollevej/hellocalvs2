@@ -2,6 +2,19 @@
 
 Last updated: 2026-09-19
 
+## 2026-09-22: Skift adgangskode
+
+- Sort "Skift adgangskode"-knap nederst på `/profile/edit` → ny side
+  `/profile/change-password` (grøn `HfScreen`-header, tre `TextField`
+  password-felter, fejl ved relevant felt, succesbesked, felter ryddes).
+- `POST /api/profile/change-password` (session-krævet, bcrypt, rate-limit),
+  nyt `MessageEvent.PASSWORD_CHANGED` + standardskabelon; håndskrevet
+  migration `20260922080000_password_changed_message` — ikke anvendt
+  (ingen lokal PostgreSQL).
+- Kendte huller: andre sessioner invalideres ikke (stateless JWT);
+  mailen sendes kun hvis skabelonen er seedet (`ensureDefaultMessageTemplates`
+  køres lazily fra admin-siden — samme som øvrige beskeder) og SMTP er sat op.
+
 ## 2026-09-22: Produktside — lås på energifordeling + ny logo-placering
 
 Se `docs/DECISIONS.md` (2026-09-22, samme emne). Ændrede filer:

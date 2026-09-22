@@ -87,6 +87,12 @@ const DEFAULT_TEMPLATES: Record<MessageEventType, { subject: string; bodyHtml: s
     bodyHtml: "<p>Hej {{displayName}},</p><p>Nulstil din adgangskode her: {{resetLink}}</p>",
     channel: "EMAIL",
   },
+  PASSWORD_CHANGED: {
+    subject: "Din adgangskode til Hello Cal er ændret",
+    bodyHtml:
+      "<p>Hej {{displayName}},</p><p>Din adgangskode til Hello Cal er blevet ændret.</p><p>Hvis det var dig, behøver du ikke gøre noget.</p><p>Hvis du ikke selv har ændret adgangskoden, bør du straks <a href=\"{{resetLink}}\">nulstille din adgangskode</a> for at sikre din konto.</p><p>Hello Cal</p>",
+    channel: "EMAIL",
+  },
   FRIEND_REFERRAL: {
     subject: "Din ven er nu med i Hello Cal",
     bodyHtml: "<p>Hej {{displayName}},</p><p>{{friendName}} har oprettet en konto via dit invite-link. I har begge optjent 300 points!</p>",
