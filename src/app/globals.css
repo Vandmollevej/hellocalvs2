@@ -173,6 +173,14 @@ button,
   -webkit-touch-callout: none;
 }
 
+/* Global clipboard-regel (docs/DECISIONS.md, 2026-09-22): skjul iOS' long-press-menu
+   (Paste/Copy) på felter. Ingen user-select: none her — markør og redigering skal virke. */
+input,
+textarea,
+[contenteditable="true"] {
+  -webkit-touch-callout: none;
+}
+
 /* Overskrifter: tung, geometrisk grotesk (font-hf-heading). Brødtekst/UI: font-hf-body. */
 .hf-heading {
   font-family: var(--font-hf-heading);

@@ -2,6 +2,24 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-22: Global clipboard-regel — ingen copy, cut eller paste i appen
+
+Bindende produktbeslutning: Hello Cal tillader ikke copy, cut eller paste i
+brugergrænsefladen. Reglen håndhæves globalt af
+`src/components/GlobalClipboardGuard.tsx`, som er monteret én gang i
+`src/app/layout.tsx` (capture-lyttere på `copy`, `cut`, `paste`, `drop`,
+Ctrl/Cmd+C/X/V, Shift+Insert og `beforeinput` af paste/drop/cut-typer), plus
+`-webkit-touch-callout: none` på `input`, `textarea` og
+`[contenteditable="true"]` i `globals.css` mod iOS' long-press-menu. Reglen
+gælder automatisk alle eksisterende og fremtidige input-, textarea- og
+contenteditable-felter samt øvrige steder, hvor clipboard-handlinger ellers
+kunne udføres. Nye komponenter må ikke omgå reglen (fx med lokale
+`onPaste`/`onCopy`/`onCut`) uden en eksplicit senere produktbeslutning.
+Almindelig indtastning, markørflytning, sletning og autofill påvirkes ikke;
+derfor bruges `user-select: none` ikke på felter. App-initierede
+"kopiér link"-knapper (`navigator.clipboard.writeText` i invite/forward) er
+ikke brugerens clipboard-handling og er uændrede.
+
 ## 2026-09-22: Produktside — energifordeling er låst som standard (UI-lås + reset)
 
 Direkte brugerønske. På `/add/[id]` vises en outline-hængelås (Tabler

@@ -4,6 +4,7 @@ import "./globals.css";
 import { PhoneFrame } from "@/components/PhoneFrame";
 import { LocaleProvider } from "@/i18n/LocaleProvider";
 import { OfflineQueueBanner } from "@/components/OfflineQueueBanner";
+import { GlobalClipboardGuard } from "@/components/GlobalClipboardGuard";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,6 +48,7 @@ export default function RootLayout({
       className={`${geistSans.variable} h-full antialiased`}
     >
       <body className="min-h-full text-text-primary font-sans">
+        <GlobalClipboardGuard />
         <LocaleProvider>
           <OfflineQueueBanner />
           <PhoneFrame>{children}</PhoneFrame>
