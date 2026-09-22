@@ -7,11 +7,14 @@ import type { ReactNode } from "react";
  */
 export function FoodRow({
   image,
+  thumbnail,
   title,
   subtitle,
   right,
 }: {
   image?: string | null;
+  // Icon rendered in the image slot for non-product entries (e.g. water).
+  thumbnail?: ReactNode;
   title: string;
   subtitle?: ReactNode;
   right?: ReactNode;
@@ -19,7 +22,8 @@ export function FoodRow({
   return (
     <div className="flex items-center gap-2.5 py-2.5">
       <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-hf-tan">
-        {image && (
+        {thumbnail}
+        {!thumbnail && image && (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={image} alt="" className="h-full w-full object-contain object-center" />
         )}

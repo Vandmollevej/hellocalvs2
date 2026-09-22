@@ -3,7 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { IconDroplet } from "@tabler/icons-react";
+import { FoodRow } from "@/components/FoodRow";
 import { HfScreen } from "@/components/HfScreen";
+import { HfSlider } from "@/components/hf/HfSlider";
+import { SectionSeparator } from "@/components/hf/SectionSeparator";
 import {
   IconBottleLarge,
   IconBottleSmall,
@@ -32,13 +35,38 @@ const CONTAINERS = [
   { key: "glassSmall", ml: 250, Icon: IconGlassSmall },
 ] as const;
 
-function formatDateTime(value: string) {
+function formatTime(value: string) {
   return new Intl.DateTimeFormat("da-DK", {
-    day: "numeric",
-    month: "short",
     hour: "2-digit",
     minute: "2-digit",
   }).format(new Date(value));
+}
+
+function formatDateLabel(value: string) {
+  const date = new Date(value);
+  return new Intl.DateTimeFormat("da-DK", {
+    day: "numeric",
+    month: "short",
+    ...(date.getFullYear() !== new Date().getFullYear() ? { year: "numeric" as const } : {}),
+  }).format(date);
+}
+
+function localDateKey(value: string) {
+  const date = new Date(value);
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+}
+
+// Newest first; entries from the same calendar day share one date separator.
+function groupByDate(entries: WaterEntry[]) {
+  const sorted = [...entries].sort((a, b) => new Date(b.loggedAt).getTime() - new Date(a.loggedAt).getTime());
+  const groups: { key: string; label: string; entries: WaterEntry[] }[] = [];
+  for (const entry of sorted) {
+    const key = localDateKey(entry.loggedAt);
+    const last = groups[groups.length - 1];
+    if (last && last.key === key) last.entries.push(entry);
+    else groups.push({ key, label: formatDateLabel(entry.loggedAt), entries: [entry] });
+  }
+  return groups;
 }
 
 export default function WaterCreatePage() {
@@ -136,18 +164,16 @@ export default function WaterCreatePage() {
             <span className="text-[13px] font-semibold text-hf-black">{t("waterLog.amountLabel")}</span>
             <span className="text-[20px] font-bold text-hf-black">{amountMl} ml</span>
           </div>
-          <input
-            type="range"
+          <HfSlider
             min={MIN_ML}
             max={MAX_ML}
             step={STEP_ML}
             value={amountMl}
-            onChange={(event) => {
-              setAmountMl(Number(event.target.value));
+            onChange={(value) => {
+              setAmountMl(value);
               setSelectedKey(null);
               setSaved(false);
             }}
-            className="w-full accent-[var(--hf-green)]"
             aria-label={t("waterLog.amountLabel")}
           />
 
@@ -174,12 +200,27 @@ export default function WaterCreatePage() {
           {!loading && entries.length === 0 && (
             <p className="text-center text-[13px] text-hf-black opacity-60">{t("waterLog.noEntriesYet")}</p>
           )}
-          {entries.map((entry) => (
-            <div key={entry.id} className="flex items-center justify-between rounded-2xl bg-hf-tan px-4 py-3">
-              <p className="text-[16px] font-bold text-hf-black">
-                {entry.amountMl} ml
-                <span className="ml-2 text-[12px] font-normal opacity-60">{formatDateTime(entry.loggedAt)}</span>
-              </p>
+          {groupByDate(entries).map((group) => (
+            <div key={group.key}>
+              <SectionSeparator label={group.label} className="my-2" />
+              <ul>
+                {group.entries.map((entry, i) => (
+                  <li
+                    key={entry.id}
+                    className={i < group.entries.length - 1 ? "border-b border-hf-tan-dark" : ""}
+                  >
+                    <FoodRow
+                      thumbnail={<IconDroplet size={22} stroke={1.75} className="text-hf-black" />}
+                      title={`${entry.amountMl} ml`}
+                      right={
+                        <span className="text-xs text-hf-black opacity-60">
+                          {t("common.clockPrefix")} {formatTime(entry.loggedAt)}
+                        </span>
+                      }
+                    />
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>
