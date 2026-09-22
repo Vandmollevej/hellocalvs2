@@ -557,33 +557,37 @@ export default function CalendarPage() {
         )}
 
         {!isLandscape && (
-          <div className="relative z-30 mb-4 flex items-center justify-center gap-3">
-            <PeriodButton direction="previous" view={effectiveView} onClick={() => movePeriod(-1)} />
-            <div className="relative min-w-0">
-              <button
-                type="button"
-                aria-expanded={monthMenuOpen}
-                aria-haspopup="listbox"
-                onClick={() => {
-                  setMonthMenuOpen((open) => !open);
-                  setViewMenuOpen(false);
-                }}
-                className="flex min-h-11 max-w-full items-center justify-center rounded-full px-3 text-hf-black hover:bg-hf-tan focus-visible:outline-2 focus-visible:outline-hf-black"
-              >
-                <span className="whitespace-nowrap text-[15px] font-semibold capitalize">
-                  {periodLabel}
-                </span>
-                {view === "week" && (
-                  <span className="block whitespace-nowrap text-center text-[11px] font-medium lowercase leading-tight opacity-60">
-                    {t("calendar.weekNumberLabel", { number: weekNumber })}
+          <div className="relative z-30 mb-4">
+            <div className="flex items-center justify-center gap-3">
+              <PeriodButton direction="previous" view={effectiveView} onClick={() => movePeriod(-1)} />
+              <div className="relative min-w-0">
+                <button
+                  type="button"
+                  aria-expanded={monthMenuOpen}
+                  aria-haspopup="listbox"
+                  onClick={() => {
+                    setMonthMenuOpen((open) => !open);
+                    setViewMenuOpen(false);
+                  }}
+                  className="flex min-h-11 max-w-full items-center justify-center rounded-full px-3 text-hf-black hover:bg-hf-tan focus-visible:outline-2 focus-visible:outline-hf-black"
+                >
+                  <span className="whitespace-nowrap text-[15px] font-semibold capitalize">
+                    {periodLabel}
                   </span>
+                </button>
+                {monthMenuOpen && (
+                  <MonthPicker year={year} month={month} onYearChange={setVisibleDate} onSelect={selectMonth} />
                 )}
-              </button>
-              {monthMenuOpen && (
-                <MonthPicker year={year} month={month} onYearChange={setVisibleDate} onSelect={selectMonth} />
-              )}
+              </div>
+              <PeriodButton direction="next" view={effectiveView} onClick={() => movePeriod(1)} />
             </div>
-            <PeriodButton direction="next" view={effectiveView} onClick={() => movePeriod(1)} />
+            {/* Ugenummeret står på sin egen linje under dato-navigationen —
+                aldrig i forlængelse af datointervallet. */}
+            {view === "week" && (
+              <p className="mt-1.5 text-center text-[13px] font-normal lowercase text-hf-black opacity-60">
+                {t("calendar.weekNumberLabel", { number: weekNumber })}
+              </p>
+            )}
           </div>
         )}
 
