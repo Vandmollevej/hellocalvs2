@@ -81,6 +81,8 @@ export async function PATCH(req: Request) {
     wantsPartnerOffersEmails?: boolean;
   };
 
+  try {
+    const user = await getDemoUser();
 
     // Start-vægten er låst (docs/DECISIONS.md 2026-09-22): her kan den kun
     // sættes første gang (mens den er tom). Enhver senere ændring skal gå
@@ -100,8 +102,6 @@ export async function PATCH(req: Request) {
       initialWeightKg = parsed;
     }
 
-  try {
-    const user = await getDemoUser();
     const updated = await prisma.user.update({
       where: { id: user.id },
       data: {
