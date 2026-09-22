@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { IconCamera, IconLock, IconLockOpen, IconRulerMeasure, IconTarget } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { IconBathScale } from "@/components/hf/IconBathScale";
+import { BirthDatePicker } from "@/components/ui/BirthDatePicker";
 import { WheelPicker } from "@/components/ui/WheelPicker";
 import { latestTrendWeight, type MealSample, type WeightSample } from "@/lib/weight-trend";
 import { computeAge } from "@/lib/age";
@@ -234,15 +235,10 @@ export default function ProfileEditPage() {
             </Field>
 
             <Field label={t("profile.field.birthDate")}>
-              <input
-                type="date"
-                className={inputClass}
-                value={user.birthDate ? user.birthDate.slice(0, 10) : ""}
-                min="1900-01-01"
-                max={new Date().toISOString().slice(0, 10)}
-                onChange={(event) =>
-                  updateNow("birthDate", event.target.value === "" ? null : event.target.value)
-                }
+              <BirthDatePicker
+                label={t("profile.field.birthDate")}
+                value={user.birthDate}
+                onChange={(value) => updateNow("birthDate", value)}
               />
               {(() => {
                 const age = computeAge(user.birthDate);
@@ -303,6 +299,14 @@ export default function ProfileEditPage() {
               {t("profile.actions.bodyMeasurements")}
             </button>
           </div>
+
+          <button
+            type="button"
+            onClick={() => router.push("/profile/change-password")}
+            className="hf-btn-primary hf-type-button mt-4 h-12 w-full px-4"
+          >
+            {t("profile.changePasswordButton")}
+          </button>
         </div>
       )}
     </HfScreen>
