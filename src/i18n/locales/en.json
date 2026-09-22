@@ -366,6 +366,7 @@
     "sleepWakeTimeLabel": "Wake time",
     "sleepSetToConnector": "set to",
     "sleepSetToSuffix": ". Should the change apply to just this date, or your standard pattern?",
+    "hourColumnLabel": "Time",
     "sleepScopeDateOnly": "Just this date",
     "sleepScopeStandardPattern": "Standard pattern",
     "cancelSleepChange": "Cancel"

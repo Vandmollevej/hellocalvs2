@@ -366,6 +366,7 @@
     "sleepWakeTimeLabel": "Stå-op-tid",
     "sleepSetToConnector": "sat til",
     "sleepSetToSuffix": ". Skal ændringen gælde kun denne dato, eller dit faste mønster?",
+    "hourColumnLabel": "Kl.",
     "sleepScopeDateOnly": "Kun denne dato",
     "sleepScopeStandardPattern": "Standardmønster",
     "cancelSleepChange": "Annuller"
