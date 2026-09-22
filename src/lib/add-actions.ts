@@ -57,7 +57,7 @@ export const ADD_ACTIONS: AddAction[] = [
   {
     key: "ownDishes",
     href: "/create-dish",
-    imageSrc: "/icons/pot.png",
+    imageSrc: "/icons/gryde.png",
     labelKey: "addButton.ownDishes",
     hintKey: "addButton.hint.ownDishes",
   },
