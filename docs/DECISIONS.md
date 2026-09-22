@@ -2,6 +2,28 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-22: Start-vægt er låst — ændring kun via e-mailverificeret engangslink
+
+- Start-vægt = `User.weightKg` (canonical, ingen parallel kolonne). Dagsvægt
+  = `WeightEntry`. De to påvirker aldrig hinanden: verificeret ændring
+  opretter ingen `WeightEntry`, og vejninger ændrer ikke start-vægten.
+- `PATCH /api/profile` må kun sætte `weightKg` første gang (mens den er
+  null); ellers 403. Al senere ændring går via
+  `/profile/start-weight` → "Send verificeringsmail"
+  (`POST /api/profile/start-weight/verification`) → mail-link
+  `/profile/start-weight/verify?token=…` → `POST /api/profile/start-weight`.
+- Token: 32 random bytes, kun SHA-256-hash i `start_weight_change_tokens`,
+  30 min levetid, engangs; nyt link sletter tidligere ubrugte. Forbrug +
+  vægtopdatering sker i én transaktion med betinget `updateMany` (race-sikker).
+- `User.startWeightUpdatedAt` er datoen under start-vægten på Profil
+  (fallback `createdAt`); den er ikke længere afledt af seneste `WeightEntry`.
+- Mail via `queueMessage("START_WEIGHT_CHANGE")` (transaktionel, ikke
+  brugerstyrbar); ruten seeder standardskabeloner først, så mailen ikke
+  bliver SKIPPED før admin har åbnet Besked automatisering.
+- Identitet følger `/api/profile` (`getDemoUser()`), så linket ændrer den
+  bruger Profil viser. Skal migreres til rigtig session samtidig med
+  `/api/profile` — ikke halvt.
+
 ## 2026-09-22: Målsætning — historiske, daterede målsætninger for vægt og kropsmål
 
 "Mål" hedder nu "Målsætning" (for ikke at forveksle med Kropsmål). Profilens

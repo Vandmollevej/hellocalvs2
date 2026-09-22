@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getDemoUser } from "@/lib/demo-user";
+import { isValidStartWeight, parseWeightInput } from "@/lib/start-weight-verification";
 
 export async function GET() {
   try {
@@ -51,7 +52,7 @@ export async function PATCH(req: Request) {
     wantsPartnerOffersEmails,
   } = body as {
     displayName?: string;
-    weightKg?: number | null;
+    weightKg?: unknown;
     targetWeightKg?: number | null;
     heightCm?: number | null;
     birthDate?: string | null;
@@ -82,13 +83,33 @@ export async function PATCH(req: Request) {
     wantsPartnerOffersEmails?: boolean;
   };
 
+
+    // Start-vægten er låst (docs/DECISIONS.md 2026-09-22): her kan den kun
+    // sættes første gang (mens den er tom). Enhver senere ændring skal gå
+    // gennem det e-mailverificerede flow i /api/profile/start-weight.
+    let initialWeightKg: number | undefined;
+    if (weightKg !== undefined) {
+      const parsed = parseWeightInput(weightKg);
+      if (user.weightKg !== null) {
+        return NextResponse.json(
+          { message: "Startvægten er låst og kan kun ændres via verificeringsmail." },
+          { status: 403 }
+        );
+      }
+      if (!isValidStartWeight(parsed)) {
+        return NextResponse.json({ message: "Angiv en gyldig startvægt." }, { status: 400 });
+      }
+      initialWeightKg = parsed;
+    }
+
   try {
     const user = await getDemoUser();
     const updated = await prisma.user.update({
       where: { id: user.id },
       data: {
         displayName,
-        weightKg,
+        weightKg: initialWeightKg,
+        startWeightUpdatedAt: initialWeightKg !== undefined ? new Date() : undefined,
         targetWeightKg,
         heightCm,
         birthDate:

@@ -2,6 +2,23 @@
 
 Last updated: 2026-09-19
 
+## 2026-09-22: Låst start-vægt med e-mailverificeret ændring
+
+Se `docs/DECISIONS.md` (samme dato). Profil: labels "Start-vægt"/"Højde"
+uden enhed, værdier "110 KG"/"186 CM"; hængelåsen er en knap →
+`/profile/start-weight` (forklaring, "Send verificeringsmail",
+"Registrer dagsvægten her" → `/profile/weight-calibration`). Mail-link →
+`/profile/start-weight/verify` (input + GEM → "Startvægten er gemt" →
+"Gå tilbage til appen" = `/profile/edit`). Nye filer:
+`src/lib/start-weight-verification.ts`, `src/app/api/profile/start-weight/`
+(`route.ts`, `verification/route.ts`), `src/app/profile/start-weight/`
+(`page.tsx`, `verify/page.tsx`). Håndskrevet migration
+`20260922100000_start_weight_verification` — ikke kørt (ingen lokal
+PostgreSQL). Lint ren; `next build` kompilerer, men type-check stoppede på
+en korrupt genereret `.next/dev/types/validator.ts` fra en anden sessions
+kørende `next dev`. Ikke browser-/DB-testet lokalt; tokenflowet kræver test
+på Synology efter deploy + SMTP for reel afsendelse.
+
 ## 2026-09-22: Målsætning — oversigt + opret-formular (vægt og kropsmål)
 
 Se `docs/DECISIONS.md` (samme dato). Nye filer: `src/app/profile/goals/page.tsx`,

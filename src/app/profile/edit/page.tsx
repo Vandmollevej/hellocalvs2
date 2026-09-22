@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconCamera, IconLock, IconLockOpen, IconRulerMeasure, IconTarget } from "@tabler/icons-react";
+import { IconCamera, IconLock, IconRulerMeasure, IconTarget } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { IconBathScale } from "@/components/hf/IconBathScale";
 import { BirthDatePicker } from "@/components/ui/BirthDatePicker";
@@ -17,6 +17,8 @@ type ProfileUser = {
   displayName: string;
   email: string;
   weightKg: number | null;
+  startWeightUpdatedAt: string | null;
+  createdAt: string;
   targetWeightKg: number | null;
   heightCm: number | null;
   birthDate: string | null;
@@ -27,14 +29,8 @@ type ProfileUser = {
   wantsPartnerOffersEmails: boolean;
 };
 
-function weightSourceLabels(t: (key: string) => string): Record<string, string> {
-  return {
-    MANUAL: t("profile.weightSource.manual"),
-    FITBIT: t("profile.weightSource.fitbit"),
-    WITHINGS: t("profile.weightSource.withings"),
-    APPLE_HEALTH: t("profile.weightSource.appleHealth"),
-    GOOGLE_HEALTH: t("profile.weightSource.googleHealth"),
-  };
+function formatKg(value: number) {
+  return new Intl.NumberFormat("da-DK", { maximumFractionDigits: 1 }).format(value);
 }
 
 function formatUpdatedDate(value: string) {
@@ -68,14 +64,9 @@ export default function ProfileEditPage() {
   const router = useRouter();
   const [user, setUser] = useState<ProfileUser | null>(null);
   const [loading, setLoading] = useState(true);
-  // Start-vægten er ikke tænkt som et felt man løbende opdaterer (det er
-  // formålet med "Indtast ny vægt"/vægt-kalibrering) — derfor låst som
-  // standard, og kun redigerbart efter et bevidst klik på hængelåsen.
-  const [startWeightUnlocked, setStartWeightUnlocked] = useState(false);
   const [trendWeightKg, setTrendWeightKg] = useState<number | null>(null);
-  const [lastWeightEntry, setLastWeightEntry] = useState<{ weighedAt: string; source: string } | null>(
-    null
-  );
+  // Kun brugt når start-vægten endnu ikke er sat (første indtastning).
+  const [initialWeightInput, setInitialWeightInput] = useState("");
   const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -105,19 +96,11 @@ export default function ProfileEditPage() {
     fetch("/api/weight-entries")
       .then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente vejninger");
-        return (await response.json()) as {
-          entries: (WeightSample & { source: string })[];
-        };
+        return (await response.json()) as { entries: WeightSample[] };
       })
       .then((weightData) => {
         if (cancelled) return;
         const entries = weightData.entries;
-        if (entries.length > 0) {
-          // Nyeste vejning antages først i listen (samme rækkefølge som
-          // vaegt-kalibrering-siden viser dem).
-          const latest = entries[0];
-          setLastWeightEntry({ weighedAt: latest.weighedAt, source: latest.source });
-        }
         return fetch("/api/registrations").then(async (response) => {
           if (!response.ok) throw new Error("Kunne ikke hente registreringer");
           return (await response.json()) as { registrations: MealSample[] };
@@ -146,6 +129,33 @@ export default function ProfileEditPage() {
         body: JSON.stringify({ [key]: value }),
       }).catch(() => {});
     }, 500);
+  }
+
+  // Første indtastning af start-vægt; serveren afviser alle senere ændringer
+  // via /api/profile, så herefter er feltet låst.
+  function saveInitialWeight() {
+    const parsed = Number(initialWeightInput.trim().replace(",", "."));
+    if (!initialWeightInput.trim() || !Number.isFinite(parsed) || parsed <= 0) return;
+    fetch("/api/profile", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ weightKg: parsed }),
+    })
+      .then(async (response) => {
+        if (!response.ok) return;
+        const data = (await response.json()) as { user: ProfileUser };
+        setUser((current) =>
+          current
+            ? {
+                ...current,
+                weightKg: data.user.weightKg,
+                startWeightUpdatedAt: data.user.startWeightUpdatedAt,
+              }
+            : current
+        );
+        setInitialWeightInput("");
+      })
+      .catch(() => {});
   }
 
   function updateNow<K extends keyof ProfileUser>(key: K, value: ProfileUser[K]) {
@@ -181,46 +191,53 @@ export default function ProfileEditPage() {
           </Field>
 
           <div className="grid grid-cols-2 gap-3">
-            <label className="flex flex-col gap-1.5">
+            {/* div, ikke label: en label ville sende tryk på feltet videre
+                til hængelås-knappen — kun selve låsen må være klikbar. */}
+            <div className="flex flex-col gap-1.5">
               <span className="flex items-center gap-1.5">
                 <span className="text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
                   {t("profile.field.weight")}
                 </span>
-                <button
-                  type="button"
-                  onClick={() => setStartWeightUnlocked((current) => !current)}
-                  aria-label={
-                    startWeightUnlocked ? t("profile.lockWeight") : t("profile.unlockWeight")
-                  }
-                  className="flex h-5 w-5 items-center justify-center text-hf-gray"
-                >
-                  {startWeightUnlocked ? <IconLockOpen size={16} /> : <IconLock size={16} />}
-                </button>
+                {user.weightKg !== null && (
+                  <button
+                    type="button"
+                    onClick={() => router.push("/profile/start-weight")}
+                    aria-label={t("profile.startWeight.openLockedInfo")}
+                    className="flex h-5 w-5 items-center justify-center text-hf-gray"
+                  >
+                    <IconLock size={16} />
+                  </button>
+                )}
               </span>
-              <input
-                type="number"
-                inputMode="decimal"
-                className={`${inputClass} ${!startWeightUnlocked ? "opacity-60" : ""}`}
-                value={user.weightKg ?? ""}
-                disabled={!startWeightUnlocked}
-                onChange={(event) =>
-                  update("weightKg", event.target.value === "" ? null : Number(event.target.value))
-                }
-              />
+              {user.weightKg !== null ? (
+                // Låst (docs/DECISIONS.md 2026-09-22): ændres kun via
+                // hængelåsen → e-mailverificering. Dagsvægt er "Vægt".
+                <div className={`${inputClass} opacity-60`}>{formatKg(user.weightKg)} KG</div>
+              ) : (
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  className={inputClass}
+                  value={initialWeightInput}
+                  placeholder="KG"
+                  aria-label={t("profile.field.weight")}
+                  onChange={(event) => setInitialWeightInput(event.target.value)}
+                  onBlur={saveInitialWeight}
+                />
+              )}
               {trendWeightKg !== null && (
                 <span className="text-[11px] text-hf-black opacity-60">
                   {t("profile.trendWeight", { value: trendWeightKg.toFixed(1) })}
                 </span>
               )}
-              {lastWeightEntry && (
+              {user.weightKg !== null && (
                 <span className="text-[11px] text-hf-black opacity-60">
-                  {t("profile.updatedFrom", {
-                    date: formatUpdatedDate(lastWeightEntry.weighedAt),
-                    source: weightSourceLabels(t)[lastWeightEntry.source] ?? lastWeightEntry.source,
+                  {t("profile.startWeightUpdated", {
+                    date: formatUpdatedDate(user.startWeightUpdatedAt ?? user.createdAt),
                   })}
                 </span>
               )}
-            </label>
+            </div>
 
             <Field label={t("profile.field.height")}>
               <WheelPicker
@@ -228,7 +245,7 @@ export default function ProfileEditPage() {
                 value={user.heightCm !== null ? Math.round(user.heightCm) : null}
                 min={100}
                 max={230}
-                unit="cm"
+                unit="CM"
                 initialScrollValue={175}
                 onChange={(value) => updateNow("heightCm", value)}
               />
@@ -299,14 +316,6 @@ export default function ProfileEditPage() {
               {t("profile.actions.bodyMeasurements")}
             </button>
           </div>
-
-          <button
-            type="button"
-            onClick={() => router.push("/profile/change-password")}
-            className="hf-btn-primary hf-type-button mt-4 h-12 w-full px-4"
-          >
-            {t("profile.changePasswordButton")}
-          </button>
 
           <button
             type="button"

@@ -23,6 +23,9 @@ model User {
   // Målvægt: brugerens eget mål, sat via /profile/target-weight. Adskilt fra
   // weightKg (start-vægt, låst felt) og weight_entries (løbende vejninger).
   targetWeightKg Float?
+  // Tidspunkt for seneste e-mailverificerede ændring af start-vægten
+  // (/profile/start-weight). Null = aldrig ændret; så gælder createdAt.
+  startWeightUpdatedAt DateTime?
   createdAt   DateTime @default(now())
 
   // Admin login (docs/ADMIN.md): only set for the single administrator
@@ -185,6 +188,7 @@ model User {
   adminAuditLogsAsTarget  AdminAuditLog[]          @relation("AdminAuditTarget")
   productsCreated         Product[]                @relation("ProductsCreatedByUser")
   passwordResetTokens     PasswordResetToken[]
+  startWeightChangeTokens StartWeightChangeToken[]
   genericIngredientsCreated GenericIngredient[]     @relation("GenericIngredientsCreatedByUser")
   searchRankingConfigsCreated SearchRankingConfig[]
   // Personal search/click history (2026-09-19, see docs/DECISIONS.md) — feeds
@@ -289,6 +293,22 @@ model PasswordResetToken {
 
   @@index([userId])
   @@map("password_reset_tokens")
+}
+
+// Engangslink til ændring af den låste start-vægt (docs/DECISIONS.md
+// 2026-09-22). Kun hash gemmes — samme mønster som PasswordResetToken.
+model StartWeightChangeToken {
+  id         String    @id @default(cuid())
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  tokenHash  String    @unique
+  expiresAt  DateTime
+  usedAt     DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("start_weight_change_tokens")
 }
 
 // --- Weight calibration ---
@@ -1587,6 +1607,7 @@ enum MessageEvent {
   EMAIL_VERIFICATION
   PASSWORD_RESET
   PASSWORD_CHANGED
+  START_WEIGHT_CHANGE
   FRIEND_REFERRAL
   PRODUCT_APPROVED
   PRODUCT_REJECTED

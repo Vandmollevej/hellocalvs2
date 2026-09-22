@@ -93,6 +93,12 @@ const DEFAULT_TEMPLATES: Record<MessageEventType, { subject: string; bodyHtml: s
       "<p>Hej {{displayName}},</p><p>Din adgangskode til Hello Cal er blevet ændret.</p><p>Hvis det var dig, behøver du ikke gøre noget.</p><p>Hvis du ikke selv har ændret adgangskoden, bør du straks <a href=\"{{resetLink}}\">nulstille din adgangskode</a> for at sikre din konto.</p><p>Hello Cal</p>",
     channel: "EMAIL",
   },
+  START_WEIGHT_CHANGE: {
+    subject: "Ændr din startvægt",
+    bodyHtml:
+      "<p>Hej {{displayName}},</p><p>Du har bedt om adgang til at ændre din startvægt i Hello Cal.</p><p>Tryk på linket nedenfor for at fortsætte.</p><p><a href=\"{{verificationLink}}\">Ændr startvægt</a></p><p>Linket kan kun bruges én gang og udløber efter 30 minutter.</p><p>Hvis du ikke har bedt om denne ændring, kan du ignorere denne e-mail.</p>",
+    channel: "EMAIL",
+  },
   FRIEND_REFERRAL: {
     subject: "Din ven er nu med i Hello Cal",
     bodyHtml: "<p>Hej {{displayName}},</p><p>{{friendName}} har oprettet en konto via dit invite-link. I har begge optjent 300 points!</p>",
