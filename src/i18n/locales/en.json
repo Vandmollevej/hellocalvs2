@@ -740,6 +740,13 @@
     "chest": "Chest (cm)",
     "thigh": "Thigh (cm)",
     "upperArm": "Upper arm (cm)",
+    "names": {
+      "waist": "Waist",
+      "hip": "Hip",
+      "chest": "Chest",
+      "thigh": "Thigh",
+      "upperArm": "Upper arm"
+    },
     "placeholder": "e.g. 82",
     "saving": "Saving…",
     "loading": "Loading…",
@@ -747,14 +754,22 @@
     "deleteAria": "Delete measurement",
     "delete": "Delete"
   },
-  "targetWeight": {
-    "title": "Goal",
-    "intro": "Set the weight you're aiming for. Used to track your progress in the statistics.",
-    "weightLabel": "Goal weight (kg)",
-    "weightPlaceholder": "e.g. 72.0",
-    "saving": "Saving…",
+  "goals": {
+    "title": "Goals",
     "loading": "Loading…",
-    "loadError": "Couldn't load goal."
+    "loadError": "Couldn't load goals.",
+    "empty": "You haven't created any goals yet. Create one with the button below",
+    "create": "Create new goal",
+    "completedAria": "Goal reached",
+    "intro": "Set the targets you're aiming for. Used to track your progress in the statistics.",
+    "weight": "Weight",
+    "bodyMeasurementsHeading": "Body measurements",
+    "weightPlaceholder": "e.g. 72.0",
+    "measurementPlaceholder": "e.g. 82",
+    "save": "Save goal",
+    "saving": "Saving…",
+    "saveError": "Couldn't save the goal.",
+    "atLeastOne": "Fill in at least one target to save."
   },
   "weightLog": {
     "title": "Weight",

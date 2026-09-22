@@ -284,7 +284,7 @@ export default function ProfileEditPage() {
             </button>
             <button
               type="button"
-              onClick={() => router.push("/profile/target-weight")}
+              onClick={() => router.push("/profile/goals")}
               className="flex flex-1 flex-col items-center gap-1.5 rounded-xl bg-hf-tan px-2 py-3 text-center text-[13px] font-semibold text-hf-black"
             >
               <IconTarget size={20} />

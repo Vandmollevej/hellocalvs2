@@ -157,6 +157,7 @@ model User {
   dishes                  Dish[]
   weightEntries           WeightEntry[]
   bodyMeasurements        BodyMeasurement[]
+  goals                   Goal[]
   waterEntries            WaterEntry[]
   menstrualCycleEntries   MenstrualCycleEntry[]
   sleepSchedules          SleepSchedule[]
@@ -364,6 +365,52 @@ model BodyMeasurement {
 
   @@index([userId, measuredAt])
   @@map("body_measurements")
+}
+
+// --- Målsætninger ---
+// Historiske, daterede målsætninger (2026-09-22): én Goal pr. gang brugeren
+// trykker "Opret ny målsætning", med ét GoalTarget pr. udfyldt felt (vægt
+// og/eller et BodyMeasurement-felt). Rækker slettes/overskrives aldrig, så
+// historikken bevares. User.targetWeightKg holdes i sync med den nyeste
+// vægt-target, fordi Hello Doc m.fl. stadig læser det felt.
+
+enum GoalDirection {
+  INCREASE
+  DECREASE
+  MAINTAIN
+}
+
+model Goal {
+  id        String       @id @default(cuid())
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  createdAt DateTime     @default(now())
+  targets   GoalTarget[]
+
+  @@index([userId, createdAt])
+  @@map("goals")
+}
+
+model GoalTarget {
+  id          String         @id @default(cuid())
+  goal        Goal           @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  goalId      String
+  // "weight" eller et BodyMeasurement-feltnavn ("waistCm", "hipCm", …), jf.
+  // src/lib/body-measurements.ts.
+  type        String
+  value       Float
+  unit        String
+  // Seneste registrerede værdi ved oprettelsen; afgør retningen, så systemet
+  // aldrig skal gætte, om brugeren ville op eller ned. Null indtil første
+  // måling, hvis der ikke fandtes nogen historik.
+  startValue  Float?
+  direction   GoalDirection?
+  // Sættes én gang, når en måling efter oprettelsen når målet, og ryddes
+  // aldrig igen — historikken skal vise, at målet på et tidspunkt blev nået.
+  completedAt DateTime?
+
+  @@unique([goalId, type])
+  @@map("goal_targets")
 }
 
 // Manual water intake logging (docs/STATUS.md roadmap note, 2026-09-12: a

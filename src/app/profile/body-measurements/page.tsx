@@ -4,6 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import {
+  BODY_MEASUREMENT_FIELDS,
+  emptyBodyMeasurementValues,
+  type BodyMeasurementField,
+} from "@/lib/body-measurements";
 
 type BodyMeasurementEntry = {
   id: string;
@@ -15,15 +20,7 @@ type BodyMeasurementEntry = {
   measuredAt: string;
 };
 
-type MeasurementField = "waistCm" | "hipCm" | "chestCm" | "thighCm" | "upperArmCm";
-
-const FIELDS: { field: MeasurementField; labelKey: string }[] = [
-  { field: "waistCm", labelKey: "bodyMeasurements.waist" },
-  { field: "hipCm", labelKey: "bodyMeasurements.hip" },
-  { field: "chestCm", labelKey: "bodyMeasurements.chest" },
-  { field: "thighCm", labelKey: "bodyMeasurements.thigh" },
-  { field: "upperArmCm", labelKey: "bodyMeasurements.upperArm" },
-];
+type MeasurementField = BodyMeasurementField;
 
 function isSameLocalDay(isoA: string, isoB: string) {
   const a = new Date(isoA);
@@ -45,13 +42,9 @@ function formatDateTime(value: string) {
 }
 
 function formatEntrySummary(entry: BodyMeasurementEntry, t: (key: string, params?: Record<string, string | number>) => string) {
-  const parts: string[] = [];
-  if (entry.waistCm != null) parts.push(`${t("bodyMeasurements.waist")}: ${entry.waistCm} cm`);
-  if (entry.hipCm != null) parts.push(`${t("bodyMeasurements.hip")}: ${entry.hipCm} cm`);
-  if (entry.chestCm != null) parts.push(`${t("bodyMeasurements.chest")}: ${entry.chestCm} cm`);
-  if (entry.thighCm != null) parts.push(`${t("bodyMeasurements.thigh")}: ${entry.thighCm} cm`);
-  if (entry.upperArmCm != null) parts.push(`${t("bodyMeasurements.upperArm")}: ${entry.upperArmCm} cm`);
-  return parts.join(" · ");
+  return BODY_MEASUREMENT_FIELDS.filter(({ field }) => entry[field] != null)
+    .map(({ field, labelKey }) => `${t(labelKey)}: ${entry[field]} cm`)
+    .join(" · ");
 }
 
 // Samme mønster som vægt-kalibrerings hvilende, kantløse talfelt — kun en
@@ -86,13 +79,9 @@ export default function BodyMeasurementsPage() {
   const [entries, setEntries] = useState<BodyMeasurementEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [values, setValues] = useState<Record<MeasurementField, string>>({
-    waistCm: "",
-    hipCm: "",
-    chestCm: "",
-    thighCm: "",
-    upperArmCm: "",
-  });
+  const [values, setValues] = useState<Record<MeasurementField, string>>(
+    emptyBodyMeasurementValues,
+  );
   // Dagens række (hvis en findes) — flere feltredigeringer samme dag samles i
   // denne ene række i stedet for at oprette en ny måling pr. felt, så
   // billede-dagbogens "Aktuelle mål" kan vise dem samlet.
@@ -109,13 +98,11 @@ export default function BodyMeasurementsPage() {
         const now = new Date().toISOString();
         const today = data.entries.find((entry) => isSameLocalDay(entry.measuredAt, now));
         todaysEntryId.current = today?.id ?? null;
-        setValues({
-          waistCm: today?.waistCm != null ? String(today.waistCm) : "",
-          hipCm: today?.hipCm != null ? String(today.hipCm) : "",
-          chestCm: today?.chestCm != null ? String(today.chestCm) : "",
-          thighCm: today?.thighCm != null ? String(today.thighCm) : "",
-          upperArmCm: today?.upperArmCm != null ? String(today.upperArmCm) : "",
-        });
+        const next = emptyBodyMeasurementValues();
+        for (const { field } of BODY_MEASUREMENT_FIELDS) {
+          if (today?.[field] != null) next[field] = String(today[field]);
+        }
+        setValues(next);
       })
       .catch(() => setEntries([]))
       .finally(() => setLoading(false));
@@ -172,7 +159,7 @@ export default function BodyMeasurementsPage() {
         </div>
 
         <div className="grid grid-cols-2 gap-4 rounded-2xl bg-hf-tan p-4">
-          {FIELDS.map(({ field, labelKey }) => (
+          {BODY_MEASUREMENT_FIELDS.map(({ field, labelKey }) => (
             <label key={field} className="flex flex-col gap-1 text-left">
               <span className="text-[13px] font-semibold text-hf-black">{t(labelKey)}</span>
               <InlineMeasurementInput

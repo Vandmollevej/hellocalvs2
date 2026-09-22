@@ -2,6 +2,32 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-22: Målsætning — historiske, daterede målsætninger for vægt og kropsmål
+
+"Mål" hedder nu "Målsætning" (for ikke at forveksle med Kropsmål). Profilens
+Målsætning-knap åbner en oversigt (`/profile/goals`) med alle målsætninger,
+nyeste øverst, grupperet under oprettelsesdatoen (fælles `SectionSeparator`);
+"Opret ny målsætning" åbner formularen (`/profile/goals/new`) med Vægt øverst
+og alle kropsmål nedenunder. `/profile/target-weight` redirecter hertil.
+
+- Datamodel: `Goal` (userId, createdAt) + `GoalTarget` (type = "weight" eller
+  et BodyMeasurement-feltnavn, value, unit, startValue, direction,
+  completedAt). Én Goal pr. oprettelse; rækker slettes/overskrives aldrig.
+- Kropsmålslisten har én kilde: `src/lib/body-measurements.ts`, brugt af både
+  Kropsmål-siden og Målsætning.
+- Retning gemmes ved oprettelsen fra seneste registrerede værdi (vægt:
+  seneste vejning, ellers profilens startvægt). Uden historik udfyldes
+  startværdi/retning af første måling efter oprettelsen.
+- Gennemført beregnes server-side (`src/lib/user-goals.ts`) ved hentning af
+  oversigten: første måling efter oprettelsen, der når målet i den gemte
+  retning, sætter `completedAt`, som aldrig ryddes igen.
+- `User.targetWeightKg` bevares og sættes til nyeste vægt-target (Hello Doc
+  læser det). Migrationen backfiller eksisterende målvægte som en historisk
+  målsætning.
+- Formularen har en eksplicit "Gem målsætning"-knap (undtagelse fra
+  auto-gem-reglen): det er oprettelse af en samlet, dateret post, ikke
+  redigering af en indstilling — samme mønster som opret-ret.
+
 ## 2026-09-22: Skift adgangskode (Profil → Skift adgangskode)
 
 `/profile/change-password` + `POST /api/profile/change-password`. Brugeren

@@ -91,7 +91,7 @@ export const ADD_ACTIONS: AddAction[] = [
   },
   {
     key: "targetWeight",
-    href: "/profile/target-weight",
+    href: "/profile/goals",
     icon: IconTarget,
     labelKey: "profile.actions.target",
     hintKey: "profile.actions.target",

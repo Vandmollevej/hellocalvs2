@@ -740,6 +740,13 @@
     "chest": "Bryst (cm)",
     "thigh": "Lår (cm)",
     "upperArm": "Overarm (cm)",
+    "names": {
+      "waist": "Talje",
+      "hip": "Hofte",
+      "chest": "Bryst",
+      "thigh": "Lår",
+      "upperArm": "Overarm"
+    },
     "placeholder": "fx 82",
     "saving": "Gemmer…",
     "loading": "Henter…",
@@ -747,14 +754,22 @@
     "deleteAria": "Slet måling",
     "delete": "Slet"
   },
-  "targetWeight": {
-    "title": "Mål",
-    "intro": "Sæt den vægt, du sigter efter. Bruges til at følge din fremgang i statistikken.",
-    "weightLabel": "Målvægt (kg)",
-    "weightPlaceholder": "fx 72,0",
-    "saving": "Gemmer…",
+  "goals": {
+    "title": "Målsætning",
     "loading": "Henter…",
-    "loadError": "Kunne ikke hente mål."
+    "loadError": "Kunne ikke hente målsætninger.",
+    "empty": "Du har ikke oprettet nogen målsætninger endnu. Opret på knappen nedenfor",
+    "create": "Opret ny målsætning",
+    "completedAria": "Målsætning nået",
+    "intro": "Sæt de mål, du sigter efter. Bruges til at følge din fremgang i statistikken.",
+    "weight": "Vægt",
+    "bodyMeasurementsHeading": "Kropsmål",
+    "weightPlaceholder": "fx 72,0",
+    "measurementPlaceholder": "fx 82",
+    "save": "Gem målsætning",
+    "saving": "Gemmer…",
+    "saveError": "Kunne ikke gemme målsætningen.",
+    "atLeastOne": "Udfyld mindst ét mål for at gemme."
   },
   "weightLog": {
     "title": "Vægt",

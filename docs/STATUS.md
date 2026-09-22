@@ -2,6 +2,18 @@
 
 Last updated: 2026-09-19
 
+## 2026-09-22: Målsætning — oversigt + opret-formular (vægt og kropsmål)
+
+Se `docs/DECISIONS.md` (samme dato). Nye filer: `src/app/profile/goals/page.tsx`,
+`src/app/profile/goals/new/page.tsx`, `src/app/api/goals/route.ts`,
+`src/lib/user-goals.ts`, `src/lib/body-measurements.ts`,
+`src/components/hf/DateSeparator.tsx`. Prisma: `Goal`, `GoalTarget`,
+`GoalDirection`; håndskrevet migration
+`prisma/migrations/20260922090000_goals/` (med backfill af eksisterende
+`targetWeightKg`) — ikke kørt, ingen lokal PostgreSQL. Links fra Profil og
+Tilføj-menuen peger nu på `/profile/goals`. Statistik-siden bruger stadig den
+hardcodede `WEIGHT_GOAL_KG` fra `src/lib/goals.ts` — ikke ændret her.
+
 ## 2026-09-22: Skift adgangskode
 
 - Sort "Skift adgangskode"-knap nederst på `/profile/edit` → ny side
