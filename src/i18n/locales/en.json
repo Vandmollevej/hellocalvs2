@@ -695,15 +695,14 @@
     "weekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
     "defaultBedtime": "Usual bedtime",
     "defaultWakeTime": "Usual wake-up time",
+    "defaultTimesHint": "(Default shown in the calendar, can be changed per day)",
     "perDayToggle": "Individual times per weekday",
     "perDayHint": "Only set times for days that differ from your usual bedtime/wake-up time above.",
     "bedtimeAria": "{day} bedtime",
     "wakeTimeAria": "{day} wake-up time",
     "shiftWork": "Shifting work hours",
     "shiftWorkDescription": "Log night work/shift work and the related sleep times directly in the calendar.",
-    "shiftWorkHint": "Open a day in the calendar to log work hours and any sleep override for that day. The data is used in the calendar's sleep visualization.",
-    "workHours": "Work hours in the calendar",
-    "workHoursDescription": "Show the option to log work hours directly on a day in the calendar."
+    "shiftWorkHint": "Open a day in the calendar to log work hours and any sleep override for that day. The data is used in the calendar's sleep visualization."
   },
   "weightCalibration": {
     "title": "Weight calibration",
@@ -1083,7 +1082,6 @@
     "healthImportQuestion": "Do you want to import data from your smartwatch or health app?",
     "healthImportHint": "Can always be set up later under personal details.",
     "setUpNow": "Set up now",
-    "workHoursCalendarQuestion": "Do you want to be able to log work hours directly in the calendar?",
     "next": "Next",
     "remindLater": "Remind me later",
     "doNotShowAgain": "Don't show again",

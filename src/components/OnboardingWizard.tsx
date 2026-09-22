@@ -13,7 +13,6 @@ type OnboardingUser = {
   shiftWorkEnabled: boolean;
   dailyLogPreference: DailyLogPreference | null;
   healthImportRequested: boolean;
-  workHoursInCalendarEnabled: boolean;
 };
 
 // The order of steps the user can actually encounter. "Shift work" and
@@ -24,15 +23,13 @@ type StepId =
   | "sleep-pattern"
   | "shift-work"
   | "daily-log-preference"
-  | "health-import"
-  | "work-hours-calendar";
+  | "health-import";
 
 const ALL_STEPS: StepId[] = [
   "sleep-pattern",
   "shift-work",
   "daily-log-preference",
   "health-import",
-  "work-hours-calendar",
 ];
 
 function visibleSteps(hasRegularSleep: boolean | null, shiftWork: boolean | null): StepId[] {
@@ -53,7 +50,6 @@ export function OnboardingWizard({
   const [hasRegularSleep, setHasRegularSleep] = useState<boolean | null>(null);
   const [shiftWork, setShiftWork] = useState<boolean | null>(null);
   const [dailyLogPreference, setDailyLogPreference] = useState<DailyLogPreference | null>(null);
-  const [workHoursInCalendar, setWorkHoursInCalendar] = useState<boolean | null>(null);
   const [stepIndex, setStepIndex] = useState(0);
   const [canDismissPermanently, setCanDismissPermanently] = useState(false);
 
@@ -67,7 +63,6 @@ export function OnboardingWizard({
         setUser(user);
         setShiftWork(user.shiftWorkEnabled || null);
         setDailyLogPreference(user.dailyLogPreference);
-        setWorkHoursInCalendar(user.workHoursInCalendarEnabled || null);
         setCanDismissPermanently(Boolean(user.onboardingRemindLaterAt));
 
         const alreadyDone = Boolean(user.onboardingCompletedAt) || user.onboardingDismissed;
@@ -206,18 +201,6 @@ export function OnboardingWizard({
               {t("onboarding.setUpNow")}
             </button>
           </div>
-        )}
-
-        {currentStep === "work-hours-calendar" && (
-          <YesNoStep
-            id="onboarding-title"
-            question={t("onboarding.workHoursCalendarQuestion")}
-            value={workHoursInCalendar}
-            onChange={(value) => {
-              setWorkHoursInCalendar(value);
-              save({ workHoursInCalendarEnabled: value });
-            }}
-          />
         )}
       </div>
 

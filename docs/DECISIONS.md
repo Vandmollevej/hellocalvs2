@@ -24,6 +24,20 @@ This file records durable decisions. Add a dated entry when a later decision cha
   bruger Profil viser. Skal migreres til rigtig session samtidig med
   `/api/profile` — ikke halvt.
 
+## 2026-09-22: Søvnmønster — separat "Arbejdstider i kalenderen"-toggle fjernet
+
+- Den særskilte brugerindstilling `workHoursInCalendarEnabled` udgår: kortet
+  "Arbejdstider i kalenderen" på Søvnmønster og det tilhørende onboarding-trin
+  er fjernet, og feltet læses/skrives ikke længere af `/api/profile`.
+  Genindfør det ikke — ældre krav (docs/UI.md, UI-KRAVSPEC, DESIGN_V2) om
+  denne toggle er overskrevet.
+- "Skiftende arbejdstider" (`shiftWorkEnabled`), konkrete `WorkShift`-
+  registreringer, `/api/work-shifts` og søvn-overrides bevares uændret.
+- Standard stå-op-/sengetid har hjælpeteksten "(Standard vist i kalenderen,
+  kan ændres per dag)" under begge felter samlet.
+- DB-kolonnen `users.workHoursInCalendarEnabled` står midlertidigt tilbage
+  (ubrugt); fjernes i en senere migration.
+
 ## 2026-09-22: Målsætning — historiske, daterede målsætninger for vægt og kropsmål
 
 "Mål" hedder nu "Målsætning" (for ikke at forveksle med Kropsmål). Profilens

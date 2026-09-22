@@ -12,7 +12,6 @@ type SleepUser = {
   defaultBedtime: string | null;
   defaultWakeTime: string | null;
   shiftWorkEnabled: boolean;
-  workHoursInCalendarEnabled: boolean;
 };
 
 type SleepSchedule = {
@@ -211,6 +210,9 @@ export default function SleepSchedulePage() {
               />
             </Field>
           </div>
+          <p className="-mt-2 text-[13px] text-hf-black opacity-60">
+            {t("profileSleep.defaultTimesHint")}
+          </p>
 
           <button
             type="button"
@@ -266,13 +268,6 @@ export default function SleepSchedulePage() {
               {t("profileSleep.shiftWorkHint")}
             </p>
           )}
-
-          <Toggle
-            label={t("profileSleep.workHours")}
-            description={t("profileSleep.workHoursDescription")}
-            checked={user.workHoursInCalendarEnabled}
-            onChange={(value) => updateDefault("workHoursInCalendarEnabled", value)}
-          />
         </div>
       )}
     </HfScreen>

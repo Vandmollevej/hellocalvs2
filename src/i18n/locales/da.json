@@ -695,15 +695,14 @@
     "weekdays": ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"],
     "defaultBedtime": "Normal sengetid",
     "defaultWakeTime": "Normal stå op",
+    "defaultTimesHint": "(Standard vist i kalenderen, kan ændres per dag)",
     "perDayToggle": "Individuelle tider pr. ugedag",
     "perDayHint": "Angiv kun tider for de dage, der afviger fra normal sengetid/stå-op-tid ovenfor.",
     "bedtimeAria": "{day} sengetid",
     "wakeTimeAria": "{day} stå-op-tid",
     "shiftWork": "Skiftende arbejdstider",
     "shiftWorkDescription": "Registrér natarbejde/skiftehold og tilhørende søvntider direkte i kalenderen.",
-    "shiftWorkHint": "Åbn en dag i kalenderen for at registrere arbejdstid og en eventuel søvn-override for den dag. Dataene bruges i kalenderens søvnvisualisering.",
-    "workHours": "Arbejdstider i kalenderen",
-    "workHoursDescription": "Vis mulighed for at registrere arbejdstider direkte på en dag i kalenderen."
+    "shiftWorkHint": "Åbn en dag i kalenderen for at registrere arbejdstid og en eventuel søvn-override for den dag. Dataene bruges i kalenderens søvnvisualisering."
   },
   "weightCalibration": {
     "title": "Vægt kalibrering",
@@ -1083,7 +1082,6 @@
     "healthImportQuestion": "Vil du importere data fra din smartwatch eller sundhedsapp?",
     "healthImportHint": "Kan altid sættes op senere under personlige oplysninger.",
     "setUpNow": "Opsæt nu",
-    "workHoursCalendarQuestion": "Vil du kunne registrere arbejdstider direkte i kalenderen?",
     "next": "Næste",
     "remindLater": "Påmind mig senere",
     "doNotShowAgain": "Vis ikke igen",

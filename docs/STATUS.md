@@ -19,6 +19,13 @@ en korrupt genereret `.next/dev/types/validator.ts` fra en anden sessions
 kørende `next dev`. Ikke browser-/DB-testet lokalt; tokenflowet kræver test
 på Synology efter deploy + SMTP for reel afsendelse.
 
+## 2026-09-22: Søvnmønster — "Arbejdstider i kalenderen" fjernet
+
+Se `docs/DECISIONS.md` (samme dato). Ændret: `src/app/profile/sleep/page.tsx`
+(hjælpetekst under standardtider, kort fjernet), `src/components/OnboardingWizard.tsx`
+(trin `work-hours-calendar` fjernet), `src/app/api/profile/route.ts`, da/en
+locales. Prisma-kolonnen `workHoursInCalendarEnabled` er bevidst ikke droppet endnu.
+
 ## 2026-09-22: Målsætning — oversigt + opret-formular (vægt og kropsmål)
 
 Se `docs/DECISIONS.md` (samme dato). Nye filer: `src/app/profile/goals/page.tsx`,
