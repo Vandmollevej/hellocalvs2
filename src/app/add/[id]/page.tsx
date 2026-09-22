@@ -10,6 +10,7 @@ import { appendDishDraftIngredient } from "@/lib/dish-draft";
 import { selectRawContextImageUrl } from "@/lib/image-tags";
 import { MacroSliderBar } from "@/components/hf/MacroSliderBar";
 import { AdditiveInfoModal } from "@/components/hf/AdditiveInfoModal";
+import { TimeSection } from "@/components/hf/TimeSection";
 import { getAdditiveInfo } from "@/lib/additives";
 import { labelForAllergen } from "@/lib/allergens";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -479,15 +480,7 @@ export default function AddPage() {
               </div>
 
               {!forDish && (
-                <div className="mb-3 mt-6 flex items-center justify-between rounded-2xl bg-hf-tan px-4 py-3">
-                  <span className="text-sm font-medium text-hf-black opacity-70">{t("addProduct.time")}</span>
-                  <input
-                    type="time"
-                    value={time}
-                    onChange={(event) => setTime(event.target.value)}
-                    className="bg-transparent text-right text-sm font-bold text-hf-black"
-                  />
-                </div>
+                <TimeSection value={time} onChange={setTime} className="mb-3 mt-6" />
               )}
 
               {hasServingUnit && (

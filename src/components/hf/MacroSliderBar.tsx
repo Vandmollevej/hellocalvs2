@@ -9,11 +9,14 @@ export function MacroSliderBar({
   grams,
   max,
   onChange,
+  disabled = false,
 }: {
   label: string;
   grams: number;
   max: number;
   onChange: (value: number) => void;
+  // Read-only display: values render normally but can't be dragged or typed.
+  disabled?: boolean;
 }) {
   const pct = Math.min(100, (grams / max) * 100);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -56,12 +59,13 @@ export function MacroSliderBar({
   }
 
   function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    if (disabled) return;
     event.currentTarget.setPointerCapture(event.pointerId);
     updateFromPointer(event.clientX);
   }
 
   function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    if (event.buttons === 0) return;
+    if (disabled || event.buttons === 0) return;
     updateFromPointer(event.clientX);
   }
 
@@ -80,7 +84,9 @@ export function MacroSliderBar({
     <div>
       <div className="mb-1.5 flex items-center justify-between">
         <span className="text-[13px] text-hf-black opacity-70">{label}</span>
-        {editing ? (
+        {disabled ? (
+          <span className="min-w-[36px] px-1 text-right text-base font-bold text-hf-black">{grams} g</span>
+        ) : editing ? (
           <span className="flex items-center gap-1 rounded bg-hf-white px-1">
             <input
               autoFocus
@@ -113,7 +119,7 @@ export function MacroSliderBar({
         onPointerMove={handlePointerMove}
         onPointerUp={stopHold}
         onPointerCancel={stopHold}
-        className="relative flex h-5 touch-none items-center"
+        className={`relative flex h-5 items-center ${disabled ? "" : "touch-none"}`}
       >
         <div className="relative h-1 w-full rounded bg-hf-tan-dark">
           <div className="absolute inset-y-0 left-0 rounded bg-hf-green" style={{ width: `${pct}%` }} />

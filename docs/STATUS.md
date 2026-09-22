@@ -2,6 +2,17 @@
 
 Last updated: 2026-09-19
 
+## 2026-09-22: Produktside — lås på energifordeling + ny logo-placering
+
+Se `docs/DECISIONS.md` (2026-09-22, samme emne). Ændrede filer:
+`src/app/add/[id]/page.tsx`, `src/components/hf/MacroSliderBar.tsx`
+(`disabled`-prop), `src/i18n/locales/{da,en}.json`
+(`addProduct.unlockEditing/lockEditing/resetChanges`). `eslint` på de ændrede
+filer er ren. Hele `tsc --noEmit` fejler kun på en parallel sessions
+igangværende `PASSWORD_CHANGED`-ændring i `src/lib/messaging.ts`, ikke på
+denne ændring. Ikke verificeret i browser: en anden sessions `next dev` kørte
+allerede i mappen, så denne sessions server kunne ikke starte.
+
 ## 2026-09-19: Admin Søgealgoritmer — tunable search-ranking weights with live test, commit/backup, and new personal/brand/verification signals
 
 Direct user request for a new admin subpage. Full architecture/rationale in
