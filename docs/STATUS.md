@@ -2,6 +2,22 @@
 
 Last updated: 2026-09-19
 
+## 2026-09-22: Forside — den grønne tilføj-cirkel kan flyttes lodret
+
+- `AddButton.tsx`: træk på den grønne baggrund (ikke fingeraftryk-knappen)
+  flytter hele cirklen inkl. handlingsbuen lodret; X er låst. Pointer Events
+  + pointer capture, `touch-action: none` kun på den grønne form, ingen
+  transition/snapping. Grænser måles live: toppen af `[data-top-bar]` og
+  topkanten af `[data-bottom-navigation]` (BottomNav); re-clampes ved
+  resize/visualViewport/ResizeObserver på navigationen.
+- Fingeraftryk-knappen (`data-fingerprint-control`) er et separat element,
+  så dens eksisterende joystick-logik er uændret.
+- Placering gemmes pr. enhed i localStorage (`hellocal.frontpage.fabOffsetY`,
+  px-offset fra standardpositionen, se `frontpage-layout.ts`).
+- Lint ren for de ændrede filer. Ikke browser-verificeret: en anden sessions
+  `next dev` kørte allerede i mappen. `npm run build`/fuld `tsc` blokeres af
+  en anden sessions ucommittede startvægt-/Prisma-ændringer.
+
 ## 2026-09-22: Skift adgangskode
 
 - Sort "Skift adgangskode"-knap nederst på `/profile/edit` → ny side

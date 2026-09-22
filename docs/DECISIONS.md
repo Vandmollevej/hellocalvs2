@@ -2,6 +2,16 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-22: Forsidens tilføj-cirkel er lodret flytbar
+
+- Den grønne cirkel kan trækkes lodret (kun Y) ved at tage fat uden for
+  fingeraftryk-knappen; fingeraftrykket bevarer joystick-funktionen.
+  Nederste grænse er altid bundnavigationens målte topkant, øverste grænse
+  er top-baren. Ingen snapping.
+- Y-position = CSS-px-offset fra standardpositionen i hero'en, gemt pr.
+  enhed i localStorage (samme mønster som valg af side), altid re-clampet
+  mod det aktuelle layout.
+
 ## 2026-09-22: Skift adgangskode (Profil → Skift adgangskode)
 
 `/profile/change-password` + `POST /api/profile/change-password`. Brugeren

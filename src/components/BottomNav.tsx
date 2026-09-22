@@ -707,6 +707,7 @@ export function BottomNav() {
 
       <nav
         ref={barRef}
+        data-bottom-navigation
         className={`relative border-t bg-hf-tan-dark ${
           showCollapsedBar ? "py-1" : "pb-[env(safe-area-inset-bottom,0px)] pt-2"
         } ${draggedOverPanel ? "border-dashed border-hf-gray-dark" : "border-hf-gray-border"}`}
