@@ -2,17 +2,27 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
-## 2026-09-22: Global tidspunkt-regel — let separator, "Kl." foran tiden
+## 2026-09-22: Produktside — energifordeling er låst som standard (UI-lås + reset)
 
-Bindende UI-regel: redigerbare tidspunkt-sektioner vises aldrig mere som den
-tunge beige bjælke ("Tidspunkt 05.28"). De bruger altid den fælles
-`src/components/hf/TimeSection.tsx`: en centreret "TIDSPUNKT"-overskrift
-mellem to ubrudte (ikke stiplede) streger i separatorfarven `hf-tan-dark`,
-ca. 80 % af indholdsbredden, uden baggrund/container, og under den værdien
-som "Kl. 05.28" (ikke fed). Eksisterende tidsformat, state og time-input
-bevares. Gælder ikke historiske timestamps, lister, admin-tabeller,
-"sidst opdateret"-metadata eller felter med egne labels (fx vågen-/sengetid
-på søvnprofilen).
+Direkte brugerønske. På `/add/[id]` vises en outline-hængelås (Tabler
+`IconLock`/`IconLockOpen`, ingen baggrund) yderst til højre i
+"Energifordeling"-headeren. Siden starter altid låst: makro-sliderne
+(`MacroSliderBar`, ny `disabled`-prop) viser værdierne normalt, men kan
+hverken trækkes eller redigeres. Tryk på låsen låser op og tager et snapshot af
+den aktuelle `macroOverride`; det eksisterende reset-ikon (`IconRefresh`, samme
+som BottomNav's "Nulstil menu") vises til venstre for den åbne lås og gendanner
+snapshottet uden at låse igen. Låsen er ren UI-state — aldrig gemt, ingen
+migration; reload starter låst igen.
+
+Indholdsfortegnelsen er i dag ren tekst uden redigering på denne side, og der
+findes ikke et admin-review-flow for brugerændrede næringsværdier her
+(makro-ændringer går kun i registreringens snapshot). Låsen er derfor den ene
+fælles lås, som et fremtidigt ingrediens-/review-redigeringsflow skal gates
+bag — der er ikke opfundet et nyt flow.
+
+Samtidig: Hello Cal-logoet på produktcirklen har ikke længere hvid cirkel/skygge;
+det ligger i front (`z-10`) med nederste venstre hjørne i cirklens bundpunkt og
+en bredde på én radius (95px).
 
 ## 2026-09-22: Global clipboard-regel — ingen copy, cut eller paste i appen
 

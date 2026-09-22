@@ -6,8 +6,6 @@
     "continue": "Fortsæt",
     "or": "eller",
     "chooseCountry": "Vælg dit land",
-    "timeHeading": "Tidspunkt",
-    "clockPrefix": "Kl.",
     "loading": "Henter…",
     "macroBreakdown": "Energifordeling",
     "protein": "Protein",
@@ -821,6 +819,9 @@
   "addProduct": {
     "title": "Tilføj",
     "titleForDish": "Tilføj ingrediens",
+    "unlockEditing": "Lås op for redigering",
+    "lockEditing": "Lås redigering",
+    "resetChanges": "Nulstil ændringer",
     "loading": "Henter...",
     "notFound": "Produktet findes ikke (eksempeldata har ikke rigtige id'er i dette miljø).",
     "error": "Database ikke tilgængelig i dette miljø.",
