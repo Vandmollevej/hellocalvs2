@@ -583,8 +583,8 @@
     "lockWeight": "Lås start-vægt",
     "actions": {
       "photoDiary": "Fotodagbog",
-      "newWeight": "Indtast ny vægt",
-      "target": "Indtast mål",
+      "newWeight": "Vægt",
+      "target": "Målsætning",
       "bodyMeasurements": "Kropsmål"
     },
     "row": {
