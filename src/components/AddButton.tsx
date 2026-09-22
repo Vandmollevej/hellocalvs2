@@ -30,11 +30,11 @@ const DRAG_THRESHOLD = 6;
 const HALF_CIRCLE_RADIUS = 83;
 
 // The backdrop is a half-disk (flat edge against the screen edge, curved
-// edge bulging inward) — its visual "middle" is not the half-disk's own
-// bounding-box midpoint. It's the centroid of a half-disk area, which sits
-// 4r/3π from the flat edge. The FAB (and its plus) is centered there so it
-// reads as sitting in the middle of the green shape, not off to one side.
-export const FAB_INSET = Math.round((4 * HALF_CIRCLE_RADIUS) / (3 * Math.PI) - FAB_SIZE / 2);
+// edge bulging inward). The FAB (and its fingerprint) is centered on the
+// half-disk's own bounding box — r/2 from the flat edge, vertically on
+// CENTER_Y — so the large fingerprint reads as center-center in the visible
+// green shape (the earlier 4r/3π centroid pulled it visibly toward the edge).
+export const FAB_INSET = Math.round(HALF_CIRCLE_RADIUS / 2 - FAB_SIZE / 2);
 
 // The action arc is centered on the same point as the backdrop semicircle
 // (the screen edge, not the FAB button), so every icon sits the same
@@ -74,6 +74,9 @@ const BULGE_POLE_TAPER_DEG = 12;
 
 // The two points where the curve meets the flat edge (angle -90 and +90) are
 // fixed anchors — the flat edge is docked against the screen edge and can't
+// The fingerprint sits directly on the green backdrop (no light circle behind
+// it) and is a bit larger than the old 40px light circle.
+const FINGERPRINT_SIZE = 60;
 // move. The old model bulged radially from the semicircle's center, but near
 // those poles the radial direction is almost purely vertical, so even a
 // small bulge there pushed points past y=0 / y=2R (the pole's own y): the
@@ -374,20 +377,20 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
           touchAction: "none",
         } as React.CSSProperties}
       >
-        {/* Fejlretninger/FEJLLISTE.md #30: ikonet sidder i sin egen lyse
-            cirkel, som følger fingeren under træk (clampet af dragOffset,
-            se updateHighlight) — i stedet for at stå fast midt i knappen.
+        {/* Fejlretninger/FEJLLISTE.md #30: fingeraftrykket ligger direkte på
+            den grønne baggrund (ingen lys cirkel bag det) og følger fingeren
+            under træk (clampet af dragOffset, se updateHighlight). Knappen
+            selv er et usynligt, større hit-area omkring ikonet.
             Erstattede det tidligere IconPlus med et fingeraftryk (bruger-
             leveret public/icons/fingerprint.png) som symbol for at cirklen
             kan navigeres — samme "brightness(0) invert(1)"-hvidgørings-
             mønster som allerede bruges til wheel-actionernes PNG-ikoner
             nedenfor, så den rå PNG altid vises hvid uanset kildefarve. */}
         <span
-          className="pointer-events-none flex items-center justify-center rounded-full shadow-sm transition-transform"
+          className="pointer-events-none flex flex-none items-center justify-center transition-transform"
           style={{
-            width: LIGHT_CIRCLE_SIZE,
-            height: LIGHT_CIRCLE_SIZE,
-            backgroundColor: "var(--hf-tan-dark)",
+            width: FINGERPRINT_SIZE,
+            height: FINGERPRINT_SIZE,
             transform: dragOffset ? `translate(${dragOffset.x}px, ${dragOffset.y}px)` : undefined,
             transitionDuration: dragOffset ? "0ms" : "150ms",
           }}
@@ -395,9 +398,9 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
           <Image
             src="/icons/fingerprint.png"
             alt=""
-            width={22}
-            height={22}
-            className="object-contain"
+            width={FINGERPRINT_SIZE}
+            height={FINGERPRINT_SIZE}
+            className="block object-contain"
             style={{ filter: "brightness(0) invert(1)" }}
           />
         </span>
