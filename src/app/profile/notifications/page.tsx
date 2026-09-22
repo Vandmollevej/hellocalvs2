@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
@@ -45,7 +44,6 @@ function SectionDivider() {
 
 export default function CommunicationPage() {
   const { t } = useTranslation();
-  const router = useRouter();
   const [user, setUser] = useState<CommunicationUser | null>(null);
   const [preferences, setPreferences] = useState<Preference[] | null>(null);
 
@@ -85,7 +83,6 @@ export default function CommunicationPage() {
   return (
     <HfScreen
       title={t("profile.section.communication")}
-      onBack={() => router.back()}
     >
       <div className="flex flex-col gap-4 px-4 pt-4 pb-8">
         <p className="hf-type-body-sm opacity-70">{t("profile.communication.intro")}</p>

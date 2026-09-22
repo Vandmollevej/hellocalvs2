@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -29,7 +28,6 @@ type PaymentMethod = { id: string; brand: string; last4: string | null };
 
 export default function PaymentPage() {
   const { t } = useTranslation();
-  const router = useRouter();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
 
@@ -46,7 +44,6 @@ export default function PaymentPage() {
   return (
     <HfScreen
       title={t("payment.title")}
-      onBack={() => router.back()}
     >
       <div className="flex flex-col gap-4 p-4">
         <div className="rounded-[8px] p-4" style={{ background: "var(--hf-color-brand)" }}>

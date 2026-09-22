@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
-import { IconArrowLeft } from "@tabler/icons-react";
+import { HfChevron } from "@/components/hf/HfChevron";
 import { TextField } from "@/components/hf/TextField";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -48,13 +48,13 @@ function TilmeldContent() {
         className="hf-appbar hf-appbar--brand"
         style={{ paddingTop: "max(16px, env(safe-area-inset-top, 0px))" }}
       >
-        <span className="hf-appbar__slot" aria-hidden="true" />
-        <h1 className="hf-type-nav-title hf-appbar__title">{t("signup.title")}</h1>
         <div className="hf-appbar__slot">
-          <Link href="/welcome" aria-label={t("signup.back")} className="text-hf-white">
-            <IconArrowLeft size={24} />
+          <Link href="/welcome" aria-label={t("signup.back")} className="flex h-full w-full items-center justify-center text-hf-white">
+            <HfChevron direction="left" />
           </Link>
         </div>
+        <h1 className="hf-type-nav-title hf-appbar__title">{t("signup.title")}</h1>
+        <span className="hf-appbar__slot" aria-hidden="true" />
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4 px-4 pt-6">

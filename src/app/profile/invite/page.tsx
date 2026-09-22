@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { IconRefresh } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { PointsPromoBanner } from "@/components/hf/PointsPromoBanner";
@@ -27,7 +26,6 @@ function expiryLabel(expiresAt: string) {
 // ventetid-regel). 300 points kan siden indløses til 1 gratis måned under
 // Profil → Points.
 export default function InvitePage() {
-  const router = useRouter();
   const [referralCode, setReferralCode] = useState<string | null>(null);
   const [referrals, setReferrals] = useState<Referral[]>([]);
   const [copied, setCopied] = useState(false);
@@ -119,7 +117,6 @@ export default function InvitePage() {
   return (
     <HfScreen
       title="Invitér en ven"
-      onBack={() => router.back()}
       footer={
         <button
           type="button"

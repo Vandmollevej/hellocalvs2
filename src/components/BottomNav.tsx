@@ -15,12 +15,18 @@ import {
 } from "@tabler/icons-react";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { useIsCompactLandscape } from "@/hooks/useIsCompactLandscape";
+import {
+  BOTTOM_NAV_CHANGED_EVENT,
+  BOTTOM_NAV_HREFS,
+  BOTTOM_NAV_STORAGE_KEY,
+  DEFAULT_BOTTOM_NAV_ACTIVE,
+} from "@/lib/navigation";
 
 const ICON_SIZE = 24;
 const NAV_ACTIVE_COLOR = "#232323";
 const NAV_INACTIVE_COLOR = "#656565";
 const PANEL_ICON_SIZE = 24;
-const STORAGE_KEY = "hellocal:bottomnav:v1";
+const STORAGE_KEY = BOTTOM_NAV_STORAGE_KEY;
 const LONG_PRESS_MS = 550;
 const READY_MS = 1000;
 const MOVE_CANCEL_PX = 10;
@@ -61,56 +67,56 @@ type NavItem = {
 const NAV_ITEMS: NavItem[] = [
   {
     key: "tilfoej",
-    href: "/",
+    href: BOTTOM_NAV_HREFS.tilfoej,
     labelKey: "add",
     render: (color, size) => <IconPlus size={size} stroke={1.6} color={color} />,
   },
   {
     key: "madvarer",
-    href: "/foods",
+    href: BOTTOM_NAV_HREFS.madvarer,
     labelKey: "foods",
     render: (color, size) => <IconApple size={size} stroke={1.6} color={color} />,
   },
   {
     key: "kalender",
-    href: "/calendar",
+    href: BOTTOM_NAV_HREFS.kalender,
     labelKey: "calendar",
     render: (color, size) => <IconCalendar size={size} stroke={1.6} color={color} />,
   },
   {
     key: "statistik",
-    href: "/statistics",
+    href: BOTTOM_NAV_HREFS.statistik,
     labelKey: "statistics",
     render: (color, size) => <TrendIcon color={color} size={size} />,
   },
   {
     key: "kamera",
-    href: "/camera",
+    href: BOTTOM_NAV_HREFS.kamera,
     labelKey: "camera",
     render: (color, size) => <IconCamera size={size} stroke={1.6} color={color} />,
   },
   {
     key: "soeg",
-    href: "/search",
+    href: BOTTOM_NAV_HREFS.soeg,
     labelKey: "search",
     render: (color, size) => <IconSearch size={size} stroke={1.6} color={color} />,
   },
   {
     key: "stemme",
-    href: "/voice",
+    href: BOTTOM_NAV_HREFS.stemme,
     labelKey: "voice",
     render: (color, size) => <IconMicrophone size={size} stroke={1.6} color={color} />,
   },
   {
     key: "profil",
-    href: "/profile",
+    href: BOTTOM_NAV_HREFS.profil,
     labelKey: "profile",
     render: (color, size) => <IconUser size={size} stroke={1.6} color={color} />,
   },
 ];
 
 const ITEMS_BY_KEY = new Map(NAV_ITEMS.map((item) => [item.key, item]));
-const DEFAULT_ACTIVE = ["tilfoej", "madvarer", "kalender", "statistik"];
+const DEFAULT_ACTIVE = DEFAULT_BOTTOM_NAV_ACTIVE;
 const DEFAULT_INACTIVE = NAV_ITEMS.map((i) => i.key).filter(
   (k) => !DEFAULT_ACTIVE.includes(k),
 );
@@ -230,6 +236,8 @@ export function BottomNav() {
       STORAGE_KEY,
       JSON.stringify({ active: activeKeys, inactive: inactiveKeys }),
     );
+    // ScreenHeader's back arrow follows which routes are footer roots.
+    window.dispatchEvent(new Event(BOTTOM_NAV_CHANGED_EVENT));
   }, [activeKeys, inactiveKeys, hydrated]);
 
   useEffect(() => {

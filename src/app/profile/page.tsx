@@ -67,7 +67,6 @@ export default function ProfilePage() {
   return (
     <HfScreen
       title={t("profile.title")}
-      onBack={() => router.back()}
     >
       {loading || !user ? (
         <p className="p-6 text-center text-[14px] text-hf-black opacity-60">

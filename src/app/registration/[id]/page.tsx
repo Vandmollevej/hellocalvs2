@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -41,7 +41,6 @@ function MacroBar({ label, grams, max }: { label: string; grams: number; max: nu
 export default function RegistrationPage() {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
-  const router = useRouter();
   const [registration, setRegistration] = useState<Registration | null>(null);
   const [status, setStatus] = useState<"loading" | "not_found" | "error" | "loaded">("loading");
 
@@ -66,14 +65,14 @@ export default function RegistrationPage() {
           : t("registration.loadError");
 
     return (
-      <HfScreen title={t("addProduct.title")} onBack={() => router.back()}>
+      <HfScreen title={t("addProduct.title")}>
         <p className="p-4 text-center text-sm text-hf-black opacity-60">{message}</p>
       </HfScreen>
     );
   }
 
   return (
-    <HfScreen title={t("addProduct.title")} onBack={() => router.back()}>
+    <HfScreen title={t("addProduct.title")}>
       <div className="flex h-44 items-center justify-center bg-hf-tan">
         {registration.product?.imageUrl && (
           // eslint-disable-next-line @next/next/no-img-element

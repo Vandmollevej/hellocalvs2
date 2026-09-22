@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { IconChevronLeft, IconChevronRight, IconTrash, IconX } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
@@ -124,7 +123,6 @@ function formatMeasurement(entry: BodyMeasurementLite, t: (key: string, params?:
 
 export default function BilledeDagbogPage() {
   const { t } = useTranslation();
-  const router = useRouter();
   const [user, setUser] = useState<DiaryUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [photos, setPhotos] = useState<DiaryPhoto[]>(() => loadPhotos());
@@ -238,7 +236,6 @@ export default function BilledeDagbogPage() {
   return (
     <HfScreen
       title={t("photoDiary.title")}
-      onBack={() => router.back()}
     >
 
       {loading || !user ? (

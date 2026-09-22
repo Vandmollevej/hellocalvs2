@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import {
@@ -75,7 +74,6 @@ function InlineMeasurementInput({
 
 export default function BodyMeasurementsPage() {
   const { t } = useTranslation();
-  const router = useRouter();
   const [entries, setEntries] = useState<BodyMeasurementEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -152,7 +150,7 @@ export default function BodyMeasurementsPage() {
   }
 
   return (
-    <HfScreen title={t("bodyMeasurements.title")} onBack={() => router.back()}>
+    <HfScreen title={t("bodyMeasurements.title")}>
       <div className="flex flex-col gap-4 p-4">
         <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
           <p className="text-[13px] leading-5">{t("bodyMeasurements.intro")}</p>

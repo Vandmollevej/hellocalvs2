@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import {
   IconRun,
   IconDeviceWatch,
@@ -49,7 +49,6 @@ type DeviceToken = {
 
 function IntegrationerContent() {
   const { t } = useTranslation();
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [integrations, setIntegrations] = useState<IntegrationCardStatus[]>([]);
   const [loading, setLoading] = useState(true);
@@ -148,7 +147,6 @@ function IntegrationerContent() {
   return (
     <HfScreen
       title={t("integrations.title")}
-      onBack={() => router.back()}
     >
       <div className="flex flex-col gap-4 p-4">
         {notice && (

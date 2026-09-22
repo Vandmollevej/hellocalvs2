@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { IconBookmark, IconBookmarkFilled, IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
@@ -68,7 +67,6 @@ function RecipeCard({
 
 export default function RecipesPage() {
   const { t } = useTranslation();
-  const router = useRouter();
   const [query, setQuery] = useState("");
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [state, setState] = useState<LoadState>("loading");
@@ -129,7 +127,7 @@ export default function RecipesPage() {
   }, [query]);
 
   return (
-    <HfScreen title={t("recipes.title")} onBack={() => router.back()}>
+    <HfScreen title={t("recipes.title")}>
       <div className="flex flex-col gap-4 p-4">
         <div className="hf-search">
           <IconSearch size={16} color="var(--hf-black)" />

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -16,7 +15,6 @@ type Message = {
 
 export default function MessagesPage() {
   const { t } = useTranslation();
-  const router = useRouter();
   const [messages, setMessages] = useState<Message[] | null>(null);
 
   useEffect(() => {
@@ -50,7 +48,7 @@ export default function MessagesPage() {
   const hasUnread = !!messages?.some((m) => !m.readAt);
 
   return (
-    <HfScreen title={t("profile.messages.title")} onBack={() => router.back()}>
+    <HfScreen title={t("profile.messages.title")}>
       <div className="flex flex-col gap-3 px-4 pt-4 pb-8">
         {hasUnread && (
           <button

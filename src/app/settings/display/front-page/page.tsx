@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
@@ -31,7 +30,6 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 // localStorage, not the database.
 export default function FrontPageDisplaySettingsPage() {
   const { t } = useTranslation();
-  const router = useRouter();
   const selectedKeys = useWheelActionKeys();
   const profile = useAddActionsProfile();
   const actions = visibleAddActions(profile);
@@ -61,7 +59,7 @@ export default function FrontPageDisplaySettingsPage() {
   const atMax = selectedKeys.length >= MAX_WHEEL_ACTIONS;
 
   return (
-    <HfScreen title={t("settings.frontPage")} onBack={() => router.back()}>
+    <HfScreen title={t("settings.frontPage")}>
       <div className="flex flex-col gap-4 p-4">
         <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
           <p className="text-[13px] leading-5">{t("frontPageSettings.intro")}</p>

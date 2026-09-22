@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { IconChevronDown } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
@@ -57,7 +56,6 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 export default function SleepSchedulePage() {
   const { t } = useTranslation();
-  const router = useRouter();
   const [user, setUser] = useState<SleepUser | null>(null);
   const [schedules, setSchedules] = useState<Record<number, SleepSchedule>>({});
   const [loading, setLoading] = useState(true);
@@ -171,7 +169,6 @@ export default function SleepSchedulePage() {
   return (
     <HfScreen
       title={t("profileSleep.title")}
-      onBack={() => router.back()}
     >
       {loading || !user ? (
         <p className="p-6 text-center text-[14px] text-hf-black opacity-60">

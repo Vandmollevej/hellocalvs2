@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { FREE_MONTH_COST } from "@/lib/points-constants";
 
@@ -23,7 +22,6 @@ const REASON_LABELS: Record<string, string> = {
 };
 
 export default function PointsPage() {
-  const router = useRouter();
   const [balance, setBalance] = useState<number | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [redeeming, setRedeeming] = useState(false);
@@ -63,7 +61,6 @@ export default function PointsPage() {
   return (
     <HfScreen
       title="Points"
-      onBack={() => router.back()}
     >
       <div className="px-4 pt-4 pb-8">
         <div className="rounded-lg p-4 text-center" style={{ background: "var(--hf-color-brand)" }}>

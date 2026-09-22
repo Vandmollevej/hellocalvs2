@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { IconDroplet } from "@tabler/icons-react";
 import { FoodRow } from "@/components/FoodRow";
 import { HfScreen } from "@/components/HfScreen";
@@ -71,7 +70,6 @@ function groupByDate(entries: WaterEntry[]) {
 
 export default function WaterCreatePage() {
   const { t } = useTranslation();
-  const router = useRouter();
   const [amountMl, setAmountMl] = useState(250);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -128,7 +126,7 @@ export default function WaterCreatePage() {
   }
 
   return (
-    <HfScreen title={t("waterLog.title")} icon={<IconDroplet size={20} stroke={2} />} onBack={() => router.back()}>
+    <HfScreen title={t("waterLog.title")} icon={<IconDroplet size={20} stroke={2} />}>
       <div className="flex flex-col gap-4 p-4">
         <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
           <p className="text-[13px] leading-5">{t("waterLog.intro")}</p>

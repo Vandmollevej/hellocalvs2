@@ -2,6 +2,25 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-22: Global tilbage-navigation på undersider
+
+- Alle routede undersider viser som standard en tilbagepil i **venstre**
+  slot af den fælles app-header (`ScreenHeader`/`HfScreen`); profilcirklen
+  står i højre slot. Sider sender ikke selv `onBack` for at få pilen —
+  `onBack` bruges kun til at overstyre handlingen (fx flertrinsflow).
+- Undtaget er kun de sider, der åbnes direkte fra bundnavigationen. Da
+  brugeren selv kan ændre footerens ikoner, følger undtagelsen det gemte
+  footer-layout (standard: `/`, `/foods`, `/calendar`, `/statistics`).
+  Reglen ligger ét sted: `isMainFooterRoute()`/`useFooterRootHrefs()` i
+  `src/lib/navigation.ts` (eksakt match — nested routes som `/foods/new`
+  har altid pil). `hideBackButton` er en sjælden, eksplicit undtagelse.
+- Tilbage = `router.back()`; åbnet direkte uden historik → `/`.
+- Ikonet er den fælles `HfChevron` (SVG, hvid) — ingen tekst, intet ✕,
+  ingen Unicode-pil. Reelle modals/sheets uden egen route (fx kalenderens
+  dagsvisning) styrer selv deres lukke-/tilbagehandling.
+- Login-/auth-sider uden profilcirkel (signup, glemt/nulstil adgangskode,
+  land) følger samme placering: pil i venstre slot.
+
 ## 2026-09-22: Start-vægt er låst — ændring kun via e-mailverificeret engangslink
 
 - Start-vægt = `User.weightKg` (canonical, ingen parallel kolonne). Dagsvægt

@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { IconArrowLeft, IconCheck } from "@tabler/icons-react";
+import { IconCheck } from "@tabler/icons-react";
+import { HfChevron } from "@/components/hf/HfChevron";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 // Purely visually prepared list — no language/country selection logic yet.
@@ -40,13 +41,13 @@ export default function CountryPickerPage() {
         className="hf-appbar hf-appbar--brand"
         style={{ paddingTop: "max(16px, env(safe-area-inset-top, 0px))" }}
       >
-        <span className="hf-appbar__slot" aria-hidden="true" />
-        <h1 className="hf-type-nav-title hf-appbar__title">{t("country.title")}</h1>
         <div className="hf-appbar__slot">
-          <Link href="/login" aria-label={t("country.back")} className="text-hf-white">
-            <IconArrowLeft size={24} />
+          <Link href="/login" aria-label={t("country.back")} className="flex h-full w-full items-center justify-center text-hf-white">
+            <HfChevron direction="left" />
           </Link>
         </div>
+        <h1 className="hf-type-nav-title hf-appbar__title">{t("country.title")}</h1>
+        <span className="hf-appbar__slot" aria-hidden="true" />
       </div>
 
       <div className="flex-1 overflow-y-auto">

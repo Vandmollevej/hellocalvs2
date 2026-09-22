@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { useAddActionsProfile, visibleAddActions } from "@/lib/add-actions";
@@ -21,7 +21,6 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 // ignore them, and what lets /foods land the registration at the tapped hour.
 function AddMenuContent() {
   const { t } = useTranslation();
-  const router = useRouter();
   const searchParams = useSearchParams();
   const profile = useAddActionsProfile();
   const actions = visibleAddActions(profile);
@@ -34,7 +33,7 @@ function AddMenuContent() {
   const suffix = context.toString();
 
   return (
-    <HfScreen title={t("addMenu.title")} onBack={() => router.back()}>
+    <HfScreen title={t("addMenu.title")}>
       <div className="flex flex-col gap-4 p-4">
         <AccordionCard>
           {actions.map((action, index) => (

@@ -37,7 +37,7 @@ Fra og med implementeringsfasen skal appens generelle visuelle stil (farver, fon
 - Bundnavigation med fire faner: **Tilføj** (hjem), **Madvarer**, **Kalender**, **Statistik**.
 - Hovedfaner skiftes med vandret swipe. Swipet deaktiveres, når et fuldskærmsvindue er åbent.
 - Historik ligger under profilmenuen, ikke i bundnavigationen.
-- Øverste bjælke (på forsiden): venstre en cirkel med brugerens initialer — tryk åbner en kort menu: Profil, Indstillinger, Privatliv, Log ud. Højre hjørne holdes fri til tilbagepilen på sider der kan lukkes.
+- Øverste bjælke (på forsiden): venstre en cirkel med brugerens initialer — tryk åbner en kort menu: Profil, Indstillinger, Privatliv, Log ud. (Undersider: tilbagepil i venstre hjørne, profilcirkel i højre — se Layout-konsistens.)
 
 ### Indstillinger — struktur
 
@@ -70,8 +70,8 @@ Indstillinger er opdelt i fire sektioner:
 
 ## Layout-konsistens
 
-- Den samme topbjælke og den samme bundnavigation (fire ikoner) vises konsekvent på alle skærme — også Tilføj, Kamera, Stemme og Søgning. Sider der kan lukkes har en tilbagepil (←) i topbjælkens højre hjørne; indholdet skifter, men rammen foroven og forneden er identisk overalt.
-- Topbjælken viser profilcirklen i venstre hjørne. Højre hjørne er reserveret til tilbagepilen på sider der kan lukkes (ellers tomt) — der er ikke plads til både profilcirkel og tilbagepil i samme hjørne, derfor sidder profilcirklen til venstre. Der bruges aldrig et ✕/kryds til at lukke eller navigere tilbage nogetsteds i appen — kun tilbagepilen, jf. `docs/DECISIONS.md`.
+- Den samme topbjælke og den samme bundnavigation (fire ikoner) vises konsekvent på alle skærme — også Tilføj, Kamera, Stemme og Søgning. Indholdet skifter, men rammen foroven og forneden er identisk overalt.
+- Topbjælken har faste slots: tilbagepil i **venstre** hjørne, titel i midten, profilcirkel i **højre** hjørne. Tilbagepilen vises automatisk på alle routede sider undtagen de sider, der åbnes direkte fra bundnavigationen (standard: Tilføj, Madvarer, Kalender, Statistik); nested routes under dem har pil. Pilen er den fælles SVG-chevron (`HfChevron`), hvid, uden tekst eller cirkel. Der bruges aldrig et ✕/kryds til at lukke eller navigere tilbage nogetsteds i appen, jf. `docs/DECISIONS.md` (2026-09-22 "Global tilbage-navigation").
 - Handlingsknapper som "Tilføj" vises som en lille, rund plus-knap i stedet for en stor fuldbredde-knap, så der er mere plads til selve indholdet.
 - Skærme og deres topbjælke/overskrifter fylder hele vinduet/viewporten (edge-to-edge, som i HelloFresh-appen) — ikke indrammet med synlig margin eller baggrund omkring.
 

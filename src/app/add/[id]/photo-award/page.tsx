@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -30,7 +30,6 @@ function readFileAsDataUrl(file: File): Promise<string> {
 export default function PhotoAwardPage() {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
-  const router = useRouter();
   const [awards, setAwards] = useState<Award[]>([]);
   const [submittingId, setSubmittingId] = useState<string | null>(null);
   const [submittedIds, setSubmittedIds] = useState<string[]>([]);
@@ -75,7 +74,7 @@ export default function PhotoAwardPage() {
   }
 
   return (
-    <HfScreen title={t("photoAward.title")} onBack={() => router.back()}>
+    <HfScreen title={t("photoAward.title")}>
       <input
         ref={fileInputRef}
         type="file"

@@ -226,7 +226,7 @@ function OpretProduktContent() {
 
   if (savedOffline) {
     return (
-      <HfScreen title={t("productCreate.title")} icon={<IconApple size={20} stroke={2} />} onBack={() => router.back()}>
+      <HfScreen title={t("productCreate.title")} icon={<IconApple size={20} stroke={2} />}>
         <div className="flex flex-col gap-4 p-4">
           <div
             className="hf-type-body-sm rounded-[8px] p-4 text-center"
@@ -246,7 +246,6 @@ function OpretProduktContent() {
     <HfScreen
       title={t("productCreate.title")}
       icon={<IconApple size={20} stroke={2} />}
-      onBack={() => router.back()}
     >
       <div className="flex flex-col gap-4 p-4">
         {fromFailedAdd && (

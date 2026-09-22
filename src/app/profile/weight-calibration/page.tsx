@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -176,7 +175,6 @@ function InlineWeightInput({
 
 export default function WeightCalibrationPage() {
   const { t } = useTranslation();
-  const router = useRouter();
   const [entries, setEntries] = useState<WeightEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -295,7 +293,6 @@ export default function WeightCalibrationPage() {
   return (
     <HfScreen
       title={t("weightCalibration.title")}
-      onBack={() => router.back()}
     >
 
       <div className="flex flex-col gap-4 p-4">

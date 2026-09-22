@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -18,7 +17,6 @@ type DisplaySettingsUser = {
 
 export default function RecommendedLimitsSettingsPage() {
   const { t } = useTranslation();
-  const router = useRouter();
   const [user, setUser] = useState<DisplaySettingsUser | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -53,7 +51,7 @@ export default function RecommendedLimitsSettingsPage() {
   }
 
   return (
-    <HfScreen title={t("settings.recommendedLimits")} onBack={() => router.back()}>
+    <HfScreen title={t("settings.recommendedLimits")}>
       {loading || !user ? (
         <p className="p-6 text-center text-[14px] text-hf-black opacity-60">
           {loading ? t("settings.loading") : t("settings.loadError")}

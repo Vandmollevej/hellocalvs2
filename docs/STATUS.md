@@ -2,6 +2,19 @@
 
 Last updated: 2026-09-19
 
+## 2026-09-22: Tilbagepil gendannet globalt
+
+Se `docs/DECISIONS.md` (samme dato). `ScreenHeader` viser nu selv
+tilbagepilen på alle sider, der ikke er footer-rødder
+(`src/lib/navigation.ts`, følger BottomNavs gemte layout via
+`useSyncExternalStore` + `hellocal:bottomnav-changed`-event). Sider der
+manglede pil (bl.a. `/foods/new`, `/camera/create`, `/create-dish`,
+`/add/[id]`, `/settings`, `/camera`, `/search`, `/voice`) får den
+automatisk. 36 lokale `onBack={() => router.back()}` fjernet. Auth-siderne
+(signup, forgot/reset-password, login/country) flyttet fra `IconArrowLeft`
+i højre slot til `HfChevron` i venstre. `docs/UI.md`'s forældede
+"pil i højre hjørne"-regel rettet. Lint ren.
+
 ## 2026-09-22: Låst start-vægt med e-mailverificeret ændring
 
 Se `docs/DECISIONS.md` (samme dato). Profil: labels "Start-vægt"/"Højde"

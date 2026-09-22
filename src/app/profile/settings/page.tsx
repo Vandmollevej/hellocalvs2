@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { IconChevronDown } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { ALLERGEN_CATALOG } from "@/lib/allergens";
@@ -102,7 +101,6 @@ function SetupProgressBar({ weightSet }: { weightSet: boolean }) {
 
 export default function ProfileSettingsPage() {
   const { t, locale, setLocale } = useTranslation();
-  const router = useRouter();
   const [user, setUser] = useState<SettingsUser | null>(null);
   const [weightSet, setWeightSet] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -176,7 +174,6 @@ export default function ProfileSettingsPage() {
   return (
     <HfScreen
       title={t("settings.setupTitle")}
-      onBack={() => router.back()}
     >
       {loading || !user ? (
         <p className="p-6 text-center text-[14px] text-hf-black opacity-60">

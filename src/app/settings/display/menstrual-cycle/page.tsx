@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -18,7 +17,6 @@ type ProfileFlags = {
 // visible-by-default extra" convention as showAllergens/showExtendedNutrition.
 export default function MenstrualCycleDisplaySettingsPage() {
   const { t } = useTranslation();
-  const router = useRouter();
   const [profile, setProfile] = useState<ProfileFlags | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -53,7 +51,7 @@ export default function MenstrualCycleDisplaySettingsPage() {
   }
 
   return (
-    <HfScreen title={t("settings.menstrualCycle")} onBack={() => router.back()}>
+    <HfScreen title={t("settings.menstrualCycle")}>
       <div className="flex flex-col gap-4 p-4">
         <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
           <p className="text-[13px] leading-5">{t("menstrualCycleSettings.intro")}</p>

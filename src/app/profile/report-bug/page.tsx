@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { PointsPromoBanner } from "@/components/hf/PointsPromoBanner";
 
@@ -14,7 +14,6 @@ type BugReport = { id: string; description: string; status: string };
 // et nyt forsøg viser i stedet en overlay med "Redigér" i stedet for endnu
 // en formular.
 function ReportBugContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const productId = searchParams.get("productId");
 
@@ -80,7 +79,6 @@ function ReportBugContent() {
   return (
     <HfScreen
       title="Indberet fejl"
-      onBack={() => router.back()}
     >
       <div className="px-4 pt-4">
         <PointsPromoBanner

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { IconCalendarHeart } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -29,7 +28,6 @@ function formatDate(value: string) {
 // to invent without a spec.
 export default function PeriodCreatePage() {
   const { t } = useTranslation();
-  const router = useRouter();
   const [startDate, setStartDate] = useState(todayIso());
   const [entries, setEntries] = useState<CycleEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -76,7 +74,7 @@ export default function PeriodCreatePage() {
   }
 
   return (
-    <HfScreen title={t("periodLog.title")} icon={<IconCalendarHeart size={20} stroke={2} />} onBack={() => router.back()}>
+    <HfScreen title={t("periodLog.title")} icon={<IconCalendarHeart size={20} stroke={2} />}>
       <div className="flex flex-col gap-4 p-4">
         <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
           <p className="text-[13px] leading-5">{t("periodLog.intro")}</p>

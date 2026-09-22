@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
 
 // Betingelser (docs/DECISIONS.md 2026-09-02): egne standardbetingelser
@@ -17,11 +16,10 @@ function Section({ id, title, children }: { id?: string; title: string; children
 }
 
 export default function BetingelserPage() {
-  const router = useRouter();
 
   return (
     <div className="flex h-full min-h-full flex-col bg-hf-cream">
-      <ScreenHeader title="Betingelser" onBack={() => router.back()} />
+      <ScreenHeader title="Betingelser" />
 
       <div className="flex-1 overflow-y-auto px-4 pb-10 pt-4">
         <p className="hf-type-caption opacity-70">Senest opdateret: 2026-09-03</p>

@@ -43,7 +43,6 @@ export default function InviteHelloDocUserPage() {
   return (
     <HfScreen
       title={t("helloDoc.inviteTitle")}
-      onBack={() => router.back()}
       footer={
         <div className="flex flex-col gap-2">
           <button

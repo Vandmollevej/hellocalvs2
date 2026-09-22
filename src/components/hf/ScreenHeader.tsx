@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { isMainFooterRoute, useFooterRootHrefs } from "@/lib/navigation";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { useIsCompactLandscape } from "@/hooks/useIsCompactLandscape";
@@ -9,21 +11,46 @@ import { useIsCompactLandscape } from "@/hooks/useIsCompactLandscape";
 // magen til Hello Fresh, ikke omvendt (rettet 2026-09-06, se
 // Fejlretninger/FEJLLISTE.md #4). Ikonet er den fælles HfChevron
 // (design.md §6.7), aldrig en fuld pil med skaft.
+//
+// Tilbagepilen vises automatisk på alle routede sider undtagen footer-
+// rødderne (src/lib/navigation.ts, docs/DECISIONS.md 2026-09-22) — sider
+// skal ikke selv sende onBack for at få den. onBack overstyrer kun selve
+// handlingen (fx et flertrinsflow der skal et trin tilbage i stedet).
 export function ScreenHeader({
   title,
   icon,
   onBack,
+  hideBackButton = false,
   variant = "brand",
   titleClassName,
 }: {
   title: string;
   icon?: React.ReactNode;
   onBack?: () => void;
+  hideBackButton?: boolean;
   variant?: "brand" | "main";
   titleClassName?: string;
 }) {
   const { t } = useTranslation();
   const isCompact = useIsCompactLandscape();
+  const router = useRouter();
+  const pathname = usePathname();
+  const footerRoots = useFooterRootHrefs();
+  const showBack = !hideBackButton && !isMainFooterRoute(pathname, footerRoots);
+
+  function handleBack() {
+    if (onBack) {
+      onBack();
+      return;
+    }
+    // Åbnet direkte (ingen app-historik) → fald tilbage til forsiden.
+    if (window.history.length > 1) {
+      router.back();
+    } else {
+      router.replace("/");
+    }
+  }
+
   return (
     <div
       className={`hf-appbar ${variant === "main" ? "hf-appbar--main" : "hf-appbar--brand"} ${
@@ -31,8 +58,13 @@ export function ScreenHeader({
       }`}
     >
       <div className="hf-appbar__slot">
-        {onBack && (
-          <button onClick={onBack} aria-label={t("common.back")} className="text-hf-white">
+        {showBack && (
+          <button
+            type="button"
+            onClick={handleBack}
+            aria-label={t("common.back")}
+            className="flex h-full w-full items-center justify-center text-hf-white focus-visible:outline-2 focus-visible:outline-hf-white"
+          >
             <HfChevron direction="left" />
           </button>
         )}

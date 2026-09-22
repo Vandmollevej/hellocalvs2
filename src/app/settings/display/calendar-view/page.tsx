@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import {
   DEFAULT_CALENDAR_VIEW,
@@ -18,11 +17,10 @@ const OPTIONS: { value: CalendarDefaultView; labelKey: string }[] = [
 
 export default function CalendarViewDisplaySettingsPage() {
   const { t } = useTranslation();
-  const router = useRouter();
   const selectedView = useDefaultCalendarView();
 
   return (
-    <HfScreen title={t("calendarViewSettings.title")} onBack={() => router.back()}>
+    <HfScreen title={t("calendarViewSettings.title")}>
       <div className="flex flex-col gap-4 p-4">
         <p className="px-1 text-[13px] leading-5 text-hf-black opacity-70">
           {t("calendarViewSettings.intro")}

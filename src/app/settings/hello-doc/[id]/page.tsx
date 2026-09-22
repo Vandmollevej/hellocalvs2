@@ -103,7 +103,7 @@ export default function EditHelloDocUserPage() {
 
   if (loadError) {
     return (
-      <HfScreen title={t("helloDoc.editTitle")} onBack={() => router.back()}>
+      <HfScreen title={t("helloDoc.editTitle")}>
         <p className="hf-type-body-sm p-4 text-hf-red-dark">{t("helloDoc.loadError")}</p>
       </HfScreen>
     );
@@ -111,7 +111,7 @@ export default function EditHelloDocUserPage() {
 
   if (!share) {
     return (
-      <HfScreen title={t("helloDoc.editTitle")} onBack={() => router.back()}>
+      <HfScreen title={t("helloDoc.editTitle")}>
         <p className="hf-type-body-sm p-4 opacity-70">{t("common.loading")}</p>
       </HfScreen>
     );
@@ -127,7 +127,6 @@ export default function EditHelloDocUserPage() {
   return (
     <HfScreen
       title={t("helloDoc.editTitle")}
-      onBack={() => router.back()}
       footer={
         <div className="flex flex-col gap-2">
           <button

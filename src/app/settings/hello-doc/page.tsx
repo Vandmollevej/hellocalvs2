@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -31,7 +30,6 @@ function expiryLabel(share: DoctorShare, t: (key: string, params?: Record<string
 // docs/STATUS.md "Next work".
 export default function HelloDocPage() {
   const { t } = useTranslation();
-  const router = useRouter();
   const [shares, setShares] = useState<DoctorShare[] | null>(null);
   const [error, setError] = useState(false);
   const [isSerious, setIsSerious] = useState<boolean | null>(null);
@@ -51,7 +49,7 @@ export default function HelloDocPage() {
   }, []);
 
   return (
-    <HfScreen title={t("helloDoc.title")} onBack={() => router.back()}>
+    <HfScreen title={t("helloDoc.title")}>
       <div className="flex flex-col gap-6 px-4 pb-8 pt-4">
         <p className="hf-type-body-sm opacity-80">{t("helloDoc.subtitle")}</p>
 

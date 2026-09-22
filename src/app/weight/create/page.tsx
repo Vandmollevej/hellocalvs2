@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { TextField } from "@/components/hf/TextField";
 import { IconBathroomScale } from "@/components/icons/BathroomScale";
@@ -29,7 +28,6 @@ function formatKg(value: number) {
 
 export default function WeightCreatePage() {
   const { t } = useTranslation();
-  const router = useRouter();
   const [weightKg, setWeightKg] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -84,7 +82,6 @@ export default function WeightCreatePage() {
     <HfScreen
       title={t("weightLog.title")}
       icon={<IconBathroomScale size={20} stroke={2} />}
-      onBack={() => router.back()}
     >
       <div className="flex flex-col gap-4 p-4">
         <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">

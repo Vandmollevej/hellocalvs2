@@ -188,7 +188,6 @@ export default function UnusedStatCardsPage() {
   return (
     <HfScreen
       title={t("statUnusedCards.title")}
-      onBack={() => router.back()}
     >
       <div className="flex flex-col gap-5 p-4">
         <p className="text-xs text-hf-black opacity-60">
