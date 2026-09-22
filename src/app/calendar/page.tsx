@@ -587,6 +587,8 @@ export default function CalendarPage() {
           </div>
         )}
 
+        <MonthlyStatus status={monthlyStatus} />
+
         <div
           className="touch-pan-y overflow-hidden"
           onPointerDown={
@@ -650,8 +652,6 @@ export default function CalendarPage() {
             )}
           </div>
         </div>
-
-        <MonthlyStatus status={monthlyStatus} />
       </div>
 
       {selectedDate && (
@@ -2001,7 +2001,7 @@ function MonthlyStatus({ status }: { status: MonthlyStatusData }) {
   const withinGoal = remaining >= 0;
 
   return (
-    <div className="mt-8 space-y-1.5 text-center">
+    <div className="mb-6 mt-2 space-y-1.5 text-center">
       {streak >= 5 && (
         <div className="mb-3 flex flex-col items-center gap-1">
           <span className="relative flex size-9 items-center justify-center" aria-label={t("calendar.streakAriaLabel", { streak })}>
