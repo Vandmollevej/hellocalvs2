@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import type { MessageEvent as MessageEventType } from "@prisma/client";
+import type { MessageChannel, MessageEvent as MessageEventType } from "@prisma/client";
 
 // Besked automatisering (docs/DECISIONS.md 2026-09-02): queueMessage() er
 // den ENESTE indgang til at sende en mail/pushbesked i appen. Den slår
@@ -20,8 +20,21 @@ const USER_TOGGLEABLE_EVENTS: MessageEventType[] = [
   "FRIEND_FORWARD_RECEIVED",
 ];
 
+// docs/PRIVACY.md: serveren kender ikke brugernes navne. Et manglende eller
+// tomt {{displayName}} fjernes, så hilsnen blot bliver "Hej,".
 function renderTemplate(template: string, vars: Record<string, string>): string {
-  return template.replace(/\{\{(\w+)\}\}/g, (match, key) => vars[key] ?? match);
+  return template
+    .replace(/\{\{(\w+)\}\}/g, (match, key) => (key === "displayName" ? vars[key] ?? "" : vars[key] ?? match))
+    .replace(/Hej\s+,/g, "Hej,");
+}
+
+// Almindelige brugere har ingen e-mail på serveren (docs/PRIVACY.md), så
+// e-mail kan ikke sendes til dem: BOTH bliver til PUSH, og ren EMAIL springes over.
+async function channelFor(userId: string | undefined, channel: MessageChannel): Promise<MessageChannel | null> {
+  if (!userId || channel === "PUSH") return channel;
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } });
+  if (user?.email) return channel;
+  return channel === "BOTH" ? "PUSH" : null;
 }
 
 export async function queueMessage(
@@ -54,13 +67,20 @@ export async function queueMessage(
     }
   }
 
+  const channel = opts.toEmail ? template.channel : await channelFor(opts.userId, template.channel);
+  if (!channel) {
+    return prisma.outboundMessage.create({
+      data: { userId: opts.userId, event, channel: template.channel, status: "SKIPPED" },
+    });
+  }
+
   const vars = opts.vars ?? {};
   return prisma.outboundMessage.create({
     data: {
       userId: opts.userId,
       toEmail: opts.toEmail,
       event,
-      channel: template.channel,
+      channel,
       subject: renderTemplate(template.subject, vars),
       bodyHtml: renderTemplate(template.bodyHtml, vars),
       status: "QUEUED",
