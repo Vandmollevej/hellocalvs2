@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconExternalLink, IconUserOff } from "@tabler/icons-react";
+import { IconUserOff } from "@tabler/icons-react";
 
 export type AdminUserRowData = {
   id: string;
@@ -27,20 +27,9 @@ const SUBSCRIPTION_LABELS: Record<string, string> = {
 
 export function AdminUserRow({ user }: { user: AdminUserRowData }) {
   const router = useRouter();
-  const [busy, setBusy] = useState<"impersonate" | "forget" | null>(null);
-
-  async function impersonate() {
-    setBusy("impersonate");
-    try {
-      const res = await fetch(`/api/admin/users/${user.id}/impersonate`, { method: "POST" });
-      const data = await res.json();
-      if (res.ok && data.url) {
-        window.open(data.url, "_blank", "noopener,noreferrer");
-      }
-    } finally {
-      setBusy(null);
-    }
-  }
+  // "Log ind som bruger" er fjernet (docs/PRIVACY.md, docs/DECISIONS.md
+  // 2026-09-23): Support ser kun det, brugeren selv giver adgang til.
+  const [busy, setBusy] = useState<"forget" | null>(null);
 
   async function forget() {
     if (!confirm(`Anonymisér ${user.displayName} (${user.email})? Dette kan ikke fortrydes.`)) return;
@@ -96,15 +85,6 @@ export function AdminUserRow({ user }: { user: AdminUserRowData }) {
       </td>
       <td className="py-2">
         <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={impersonate}
-            disabled={busy !== null}
-            title="Log ind som bruger"
-            className="flex h-8 w-8 items-center justify-center rounded-full text-hf-green-dark hover:bg-hf-tan disabled:opacity-50"
-          >
-            <IconExternalLink size={16} />
-          </button>
           <button
             type="button"
             onClick={forget}

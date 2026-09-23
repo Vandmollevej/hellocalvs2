@@ -4,7 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { buildBarcodeContext } from "@/lib/barcode-context";
 import { callStructuredVision } from "@/lib/product-ai";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
-import type { IngredientsAnalysis } from "@/lib/product-analysis-types";
+import { parseWholeGrain } from "@/lib/whole-grain";
+import type { IngredientsAiResult, IngredientsAnalysis } from "@/lib/product-analysis-types";
 
 const PROMPT_VERSION = "ingredients-v1-2026-09-16";
 
@@ -38,7 +39,7 @@ export async function POST(req: Request) {
   const context = buildBarcodeContext(barcode, marketRegion);
 
   try {
-    const { value, model } = await callStructuredVision<IngredientsAnalysis>({
+    const { value: aiValue, model } = await callStructuredVision<IngredientsAiResult>({
       photo,
       schemaName: "hello_cal_ingredients",
       schema: INGREDIENT_SCHEMA,
@@ -60,6 +61,16 @@ export async function POST(req: Request) {
         .filter(Boolean)
         .join("\n"),
     });
+    // Fuldkorn udledes deterministisk af selve varedeklarationen, ikke af
+    // modellen (src/lib/whole-grain.ts, docs/DECISIONS.md 2026-09-23).
+    const wholeGrain = parseWholeGrain({ ingredientsText: aiValue.ingredientsText || aiValue.rawText });
+    const value: IngredientsAnalysis = {
+      ...aiValue,
+      wholeGrainPercent: wholeGrain.wholeGrainPercent,
+      isWholeGrain: wholeGrain.isWholeGrain,
+      wholeGrainConfidence: wholeGrain.confidence,
+      wholeGrainEvidence: wholeGrain.evidence,
+    };
 
     // Kvalitetskontrol/billed-match (docs/DECISIONS.md 2026-09-19): gemmer
     // selve fotoet, så den lokale billedanalyse-agent kan sammenligne det mod

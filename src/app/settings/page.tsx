@@ -16,6 +16,7 @@ import {
   IconCalendarHeart,
   IconCalendarWeek,
   IconAlertTriangle,
+  IconLifebuoy,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -133,6 +134,15 @@ export default function SettingsPage() {
             icon={<IconStethoscope size={20} />}
             label={t("settings.helloDoc")}
             href="/settings/hello-doc"
+            divider={false}
+          />
+        </AccordionCard>
+
+        <AccordionCard>
+          <ChevronRow
+            icon={<IconLifebuoy size={20} />}
+            label={t("settings.support.title")}
+            href="/settings/support"
             divider={false}
           />
         </AccordionCard>

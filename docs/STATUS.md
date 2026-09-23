@@ -2,6 +2,47 @@
 
 Last updated: 2026-09-19
 
+## 2026-09-23: Support-side + fiber-%, sukker-%, salt-% og fuldkorn som søgefelter
+
+Se `docs/DECISIONS.md` (samme dato, sidste afsnit).
+
+- Support: `/settings/support` (række i Indstillinger), `/settings/support/contact`,
+  `GET/PUT/DELETE /api/support/access`, `POST /api/support/requests`,
+  `/admin/support` + `PATCH /api/admin/support/[id]`. Nye filer
+  `src/lib/support-permissions.ts` (kategorierne ét sted) og
+  `src/lib/support-access.ts` (server: aktiv/udløbet, datoer i
+  Europe/Copenhagen, validering). `Toggle` har fået `ariaLabel`.
+- "Log ind som bruger" er fjernet: `api/admin/users/[id]/impersonate`,
+  `api/auth/impersonate`, handoff-funktionerne i `user-auth.ts` og
+  admin-knappen. Gamle admin-udstedte sessioner afvises.
+- Produktdata: ny `ProductNutritionFeatures` + `src/lib/whole-grain.ts`,
+  `src/lib/nutrition-normalize.ts` og `src/lib/product-nutrition-features.ts`.
+  Nye felter i `NutritionAnalysis` (`fiberPercent`) og `IngredientsAnalysis`
+  (`wholeGrainPercent`, `isWholeGrain`, `wholeGrainConfidence`,
+  `wholeGrainEvidence`), som udledes efter AI-kaldet. OFF gemmer nu
+  sukker/fiber/salt pr. 100 i `nutritionExtra` og `packageSizeText`.
+- Migration `20260923130000_support_access_and_nutrition_features` er
+  håndskrevet (ingen lokal PostgreSQL). Den skal køres ved deploy, og derefter
+  skal `POST /api/admin/products/nutrition-features` køres (gentag med
+  `nextCursor`, til den er null), så eksisterende produkter får værdierne.
+
+Verificeret: `tsc --noEmit` og `npm run lint` er rene. Fuldkorns-parseren er
+testet på 13 eksempler (bl.a. 52 %, 31+18 = 49 %, nested 60 % × 50 % = 30 %,
+"(62%)", "rig på fuldkorn" → true/null, liste uden fuldkorn → false/0, ingen
+liste → null). Datovalidering, udløb, tilbagekaldelse, DST-dagen og afvisning
+af ukendte nøgler er testet direkte. I browseren (mobilbredde) er
+Indstillinger → Support → tilbage, "Vælg alle" og de enkelte kontakter
+testet. Ikke testet: gem/genindlæs mod en rigtig database (ingen lokal DB,
+og preview-sessionen er ikke logget ind). `npm run build` kompilerer, men
+typetjekket stopper på en forældet `.next/dev/types/validator.ts` fra en
+anden sessions dev-server (henviser til den slettede `forgot-password`-side).
+
+Next work: Support-datapakken skal bygges på brugerens enhed og krypteres
+til Supports offentlige nøgle ud fra tilladelsens kategorier og periode
+(boks-fasen, `docs/PRIVACY.md`). Et admin-UI til manuelle (MANUAL)
+produktværdier og søgefiltre (fx fiber ≥ 6 %, fuldkorn ≥ 50 %) er endnu ikke
+bygget.
+
 ## 2026-09-23: Statistik "Tilføj kort" — fold-ud-grupper, Mineraler og Vitaminer
 
 Se `docs/DECISIONS.md` (samme dato). Ny `AccordionSection` og `StatCardIcon`,

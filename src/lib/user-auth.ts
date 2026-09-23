@@ -34,59 +34,14 @@ export async function signUserSession(userId: string) {
     .sign(getSecretKey());
 }
 
-// "Log ind som bruger" (admin-support, docs/DECISIONS.md 2026-09-02):
-// samme session-form, men med et ekstra felt så vi ved den er admin-mintet,
-// hvis det senere skal vises i UI'et eller udelukkes fra visse handlinger.
-export async function signImpersonatedUserSession(userId: string, adminId: string) {
-  return new SignJWT({ sub: userId, purpose: "user-session", impersonatedBy: adminId })
-    .setProtectedHeader({ alg: "HS256" })
-    .setIssuedAt()
-    .setExpirationTime(`${SESSION_TTL_SECONDS}s`)
-    .sign(getSecretKey());
-}
-
-export async function verifyUserSession(token: string): Promise<{ userId: string; impersonatedBy?: string } | null> {
+export async function verifyUserSession(token: string): Promise<{ userId: string } | null> {
   try {
     const { payload } = await jwtVerify(token, getSecretKey());
     if (payload.purpose !== "user-session" || typeof payload.sub !== "string") return null;
-    return {
-      userId: payload.sub,
-      impersonatedBy: typeof payload.impersonatedBy === "string" ? payload.impersonatedBy : undefined,
-    };
-  } catch {
-    return null;
-  }
-}
-
-// Kort-levet håndsætning fra admin- til bruger-domænet (docs/DECISIONS.md
-// 2026-09-02): adminHellocal.packroff.dk og hellocal.packroff.dk er
-// forskellige hosts, så en cookie sat af den ene kan ikke læses af den
-// anden. Admin-panelet beder om et 2-minutters engangs-link
-// (GET <bruger-host>/api/auth/impersonate?token=...), som brugerdomænet
-// selv veksler til den rigtige USER_SESSION_COOKIE — se
-// src/app/api/admin/users/[id]/impersonate/route.ts og
-// src/app/api/auth/impersonate/route.ts.
-const HANDOFF_TTL_SECONDS = 2 * 60;
-
-export async function signImpersonationHandoff(userId: string, adminId: string) {
-  return new SignJWT({ sub: userId, purpose: "impersonation-handoff", adminId })
-    .setProtectedHeader({ alg: "HS256" })
-    .setIssuedAt()
-    .setExpirationTime(`${HANDOFF_TTL_SECONDS}s`)
-    .sign(getSecretKey());
-}
-
-export async function verifyImpersonationHandoff(token: string): Promise<{ userId: string; adminId: string } | null> {
-  try {
-    const { payload } = await jwtVerify(token, getSecretKey());
-    if (
-      payload.purpose !== "impersonation-handoff" ||
-      typeof payload.sub !== "string" ||
-      typeof payload.adminId !== "string"
-    ) {
-      return null;
-    }
-    return { userId: payload.sub, adminId: payload.adminId };
+    // "Log ind som bruger" er fjernet (docs/PRIVACY.md, docs/DECISIONS.md
+    // 2026-09-23). Sessioner, en admin tidligere har udstedt, afvises.
+    if (payload.impersonatedBy !== undefined) return null;
+    return { userId: payload.sub };
   } catch {
     return null;
   }

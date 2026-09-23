@@ -22,6 +22,13 @@ export type OffProduct = {
   cholesterolPer100g: number | null; // mg
   vitaminAPer100g: number | null; // µg
   vitaminCPer100g: number | null; // mg
+  // Sugar/fiber/salt per 100 g/ml → stored in Product.nutritionExtra under the
+  // same per-100 keys the retailer imports use, and normalized into
+  // ProductNutritionFeatures (docs/DECISIONS.md 2026-09-23). Null when OFF has
+  // none of them.
+  nutritionExtraPer100: { sugarPer100g?: number; fiberPer100g?: number; saltPer100g?: number } | null;
+  // OFF "quantity", e.g. "500 g" / "1 l" — tells whether values are per 100 ml.
+  packageSizeText: string | null;
 };
 
 // OFF reports most nutriments in the nutrient's own canonical unit (g, mg or
@@ -107,7 +114,21 @@ function mapOffProduct(p: Record<string, unknown>): OffProduct | null {
     cholesterolPer100g: offNutrientAs(n, "cholesterol", "mg"),
     vitaminAPer100g: offNutrientAs(n, "vitamin-a", "µg"),
     vitaminCPer100g: offNutrientAs(n, "vitamin-c", "mg"),
+    nutritionExtraPer100: offPer100Extra(n),
+    packageSizeText: typeof p.quantity === "string" && p.quantity.trim() ? p.quantity.trim() : null,
   };
+}
+
+function offPer100Extra(n: Record<string, unknown>): OffProduct["nutritionExtraPer100"] {
+  const out: NonNullable<OffProduct["nutritionExtraPer100"]> = {};
+  const read = (key: string) => (typeof n[key] === "number" && Number.isFinite(n[key]) ? (n[key] as number) : null);
+  const sugar = read("sugars_100g");
+  const fiber = read("fiber_100g");
+  const salt = read("salt_100g");
+  if (sugar !== null) out.sugarPer100g = sugar;
+  if (fiber !== null) out.fiberPer100g = fiber;
+  if (salt !== null) out.saltPer100g = salt;
+  return Object.keys(out).length ? out : null;
 }
 
 // Fallback lookup for unknown barcodes, per docs/DATABASE.md.

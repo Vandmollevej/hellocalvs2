@@ -9,19 +9,23 @@ export function Toggle({
   label,
   description,
   disabled = false,
+  ariaLabel,
 }: {
   checked: boolean;
   onChange: (value: boolean) => void;
   label?: string;
   description?: string;
   disabled?: boolean;
+  // Accessible name when the switch sits bare inside a caller's own row
+  // (no `label`, so no card).
+  ariaLabel?: string;
 }) {
   const switchEl = (
     <button
       type="button"
       role="switch"
       aria-checked={checked}
-      aria-label={label ?? undefined}
+      aria-label={label ?? ariaLabel}
       disabled={disabled}
       onClick={() => onChange(!checked)}
       className={`relative h-6 w-10 shrink-0 rounded-full text-left transition-colors disabled:opacity-50 ${

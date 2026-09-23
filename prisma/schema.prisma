@@ -197,6 +197,10 @@ model User {
   giftCodesRedeemed       GiftCode[]
   adminAuditLogsAsActor   AdminAuditLog[]          @relation("AdminAuditActor")
   adminAuditLogsAsTarget  AdminAuditLog[]          @relation("AdminAuditTarget")
+  // Support (docs/DECISIONS.md 2026-09-23): brugerens egne, tidsbegrænsede
+  // tilladelser til Support + brugerens henvendelser til Support.
+  supportAccessGrants     SupportAccessGrant[]
+  supportRequests         SupportRequest[]
   productsCreated         Product[]                @relation("ProductsCreatedByUser")
   passwordResetTokens     PasswordResetToken[]
   startWeightChangeTokens StartWeightChangeToken[]
@@ -882,6 +886,9 @@ model Product {
   productType     String?
 
   barcodes           Barcode[]
+  // Normaliserede søge-/ernæringsparametre (fiber-%, sukker-%, fuldkorn …),
+  // docs/DECISIONS.md 2026-09-23. Højst én række pr. produkt.
+  nutritionFeatures  ProductNutritionFeatures?
   registrations      Registration[]
   favorites          Favorite[]
   dishIngredients    DishIngredient[]
@@ -2145,4 +2152,139 @@ model InviteReward {
 
   @@index([eligibleOn])
   @@map("invite_rewards")
+}
+
+// --- Support: tidsbegrænset, brugerstyret dataadgang (docs/DECISIONS.md 2026-09-23) ---
+
+// Brugeren bestemmer selv under Indstillinger → Support, hvilke datakategorier
+// Support må se, og i hvilken periode. Aktiv kun når revokedAt er null og
+// validFrom <= nu <= validUntil — kontrolleres server-side i
+// src/lib/support-access.ts, aldrig kun i UI. Tilbagekaldelse sætter
+// revokedAt (ingen fysisk sletning), så historikken bevares.
+model SupportAccessGrant {
+  id          String    @id @default(cuid())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  // Start på Fra-dagen og slut på Til-dagen i Europe/Copenhagen.
+  validFrom   DateTime
+  validUntil  DateTime
+  // { [SupportPermissionKey]: boolean } — kun kendte nøgler gemmes.
+  permissions Json
+  revokedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  supportRequests SupportRequest[]
+
+  @@index([userId, revokedAt])
+  @@index([validUntil])
+  @@map("support_access_grants")
+}
+
+enum SupportRequestCategory {
+  ACCOUNT
+  DATA
+  PRODUCTS
+  PAYMENT
+  BUG
+  OTHER
+}
+
+enum SupportRequestStatus {
+  OPEN
+  RESOLVED
+}
+
+// "Kontakt os" fra Support-siden. Kobles til brugerens aktive grant på
+// oprettelsestidspunktet (kan være null — man kan skrive uden at give adgang).
+model SupportRequest {
+  id             String                 @id @default(cuid())
+  user           User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+  category       SupportRequestCategory @default(OTHER)
+  subject        String
+  message        String
+  supportGrant   SupportAccessGrant?    @relation(fields: [supportGrantId], references: [id], onDelete: SetNull)
+  supportGrantId String?
+  status         SupportRequestStatus   @default(OPEN)
+  createdAt      DateTime               @default(now())
+  resolvedAt     DateTime?
+
+  @@index([status, createdAt])
+  @@index([userId])
+  @@map("support_requests")
+}
+
+// --- Normaliserede produkt-søgeparametre (docs/DECISIONS.md 2026-09-23) ---
+
+// Hvor en normaliseret værdi kommer fra. Prioritet (høj → lav), se
+// src/lib/product-nutrition-features.ts: MANUAL > PACKAGE_PERCENT >
+// NUTRITION_LABEL = MANUFACTURER > EXTERNAL_DATABASE > DERIVED >
+// AI_INTERPRETATION. En lavere kilde overskriver aldrig en højere.
+enum ProductFeatureSource {
+  MANUAL
+  // Eksplicit procent i varedeklarationen/på forsiden (fx "41% fuldkorn").
+  PACKAGE_PERCENT
+  // Aflæst fra næringsdeklarationen (guidet foto-flow).
+  NUTRITION_LABEL
+  // Producent-/kædedata (REMA 1000-, HelloFresh-import).
+  MANUFACTURER
+  // Open Food Facts o.l.
+  EXTERNAL_DATABASE
+  // Deterministisk udledt (fx fiberPercent fra fiber pr. 100 g, nested %).
+  DERIVED
+  AI_INTERPRETATION
+}
+
+// Én række pr. produkt med de maskinlæsbare værdier, appen søger, filtrerer,
+// scorer og laver statistik på. Rå tekst (Product.ingredientsText,
+// Product.nutritionExtra, AiProductAnalysis.prediction) bevares separat som
+// evidens, så alt kan genberegnes uden ny OCR. kcal/protein/kulhydrat/fedt/
+// mættet fedt ligger allerede som kolonner på Product og dubleres ikke her.
+// Procenter er altid 0–100 (ikke 0–1); ukendt er null, aldrig 0.
+model ProductNutritionFeatures {
+  id        String  @id @default(cuid())
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String  @unique
+
+  // "100g" | "100ml" — grundlag for pr.100-værdierne. Procenter udledes
+  // kun automatisk, når basis = 100g.
+  basis String?
+
+  // Sukkerarter fra næringsdeklarationen — IKKE tilsat sukker.
+  sugarsPer100g   Float?
+  sugarPercent    Float?
+  sugarSource     ProductFeatureSource?
+  sugarConfidence Float?
+
+  fiberPer100g    Float?
+  fiberPercent    Float?
+  fiberSource     ProductFeatureSource?
+  fiberConfidence Float?
+
+  saltPer100g     Float?
+  saltPercent     Float?
+  saltSource      ProductFeatureSource?
+  saltConfidence  Float?
+
+  // Andel af HELE produktet, der er fuldkorn. isWholeGrain = null betyder
+  // ukendt; false bruges kun, når ingredienslisten faktisk viser det.
+  wholeGrainPercent    Float?
+  isWholeGrain         Boolean?
+  wholeGrainSource     ProductFeatureSource?
+  wholeGrainConfidence Float?
+  // Tekststumper fra deklarationen som begrundelse (admin/debug).
+  wholeGrainEvidence   String[] @default([])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sugarsPer100g])
+  @@index([sugarPercent])
+  @@index([fiberPer100g])
+  @@index([fiberPercent])
+  @@index([saltPer100g])
+  @@index([wholeGrainPercent])
+  @@index([isWholeGrain])
+  @@map("product_nutrition_features")
 }

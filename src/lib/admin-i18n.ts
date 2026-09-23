@@ -19,6 +19,8 @@ const DICTIONARY = {
   nav_search_ranking: { DA: "Søgealgoritmer", EN: "Search ranking" },
   nav_quality_control: { DA: "Kvalitetskontrol", EN: "Quality control" },
   nav_passkeys: { DA: "Passkeys", EN: "Passkeys" },
+  nav_support: { DA: "Support", EN: "Support" },
+  support_title: { DA: "Supporthenvendelser", EN: "Support requests" },
   nav_logout: { DA: "Log ud", EN: "Log out" },
 
   quality_control_title: { DA: "Kvalitetskontrol", EN: "Quality control" },
@@ -44,7 +46,6 @@ const DICTIONARY = {
   users_col_newsletters: { DA: "Nyhedsbreve", EN: "Newsletters" },
   users_col_created: { DA: "Oprettet", EN: "Created" },
   users_col_actions: { DA: "Handlinger", EN: "Actions" },
-  users_impersonate: { DA: "Log ind som bruger", EN: "Log in as user" },
   users_forget: { DA: "Ret til at blive glemt", EN: "Right to be forgotten" },
 
   bug_reports_title: { DA: "Fejlrapporter", EN: "Bug reports" },

@@ -10,6 +10,7 @@ import { deriveIsVerified, rankProducts } from "@/lib/product-search-ranking";
 import { getActiveSearchRankingWeights } from "@/lib/search-ranking-config";
 import { cleanAlternativeServings } from "@/lib/alternative-servings";
 import { flagUncertainAlternativeServings } from "@/lib/alternative-servings-review";
+import { syncProductNutritionFeaturesSafely } from "@/lib/product-nutrition-features";
 import { composeProductName } from "@/lib/product-naming";
 
 // Fetches Open Food Facts products globally live for search terms without enough local
@@ -30,7 +31,7 @@ async function importMatchingOffProducts(q: string) {
           })
         : null;
 
-      await prisma.product.create({
+      const created = await prisma.product.create({
         data: {
           name: offProduct.name,
           brandId: brand?.id,
@@ -49,6 +50,8 @@ async function importMatchingOffProducts(q: string) {
           cholesterolPer100g: offProduct.cholesterolPer100g,
           vitaminAPer100g: offProduct.vitaminAPer100g,
           vitaminCPer100g: offProduct.vitaminCPer100g,
+          nutritionExtra: offProduct.nutritionExtraPer100 ?? undefined,
+          packageSizeText: offProduct.packageSizeText ?? undefined,
           externalSource: "OPEN_FOOD_FACTS",
           externalId: offProduct.barcode,
           sourceCheckedAt: new Date(),
@@ -57,6 +60,7 @@ async function importMatchingOffProducts(q: string) {
           barcodes: { create: { code: offProduct.barcode } },
         },
       });
+      await syncProductNutritionFeaturesSafely(created.id);
     }
   } catch (error) {
     // Live OFF search is a supplement — does not fail the actual product search.
@@ -481,6 +485,11 @@ export async function POST(req: Request) {
         data: { productId: product.id, correctedAt },
       });
     }
+
+    // Normaliserede søgeparametre (fiber-%, sukker-%, fuldkorn …) ud fra den
+    // nu tilknyttede næringsanalyse og ingredienslisten (docs/DECISIONS.md
+    // 2026-09-23).
+    await syncProductNutritionFeaturesSafely(product.id);
 
     return NextResponse.json({ product }, { status: 201 });
   } catch (error) {

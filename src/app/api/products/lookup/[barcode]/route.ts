@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { lookupOpenFoodFacts } from "@/lib/openFoodFacts";
 import { lookupFoodDataCentral } from "@/lib/foodDataCentral";
 import { inferGs1OriginCountryCode } from "@/lib/regions";
+import { syncProductNutritionFeaturesSafely } from "@/lib/product-nutrition-features";
 
 // GET /api/products/lookup/:barcode
 //
@@ -65,6 +66,8 @@ export async function GET(
         cholesterolPer100g: offProduct?.cholesterolPer100g ?? null,
         vitaminAPer100g: offProduct?.vitaminAPer100g ?? null,
         vitaminCPer100g: offProduct?.vitaminCPer100g ?? null,
+        nutritionExtra: offProduct?.nutritionExtraPer100 ?? undefined,
+        packageSizeText: offProduct?.packageSizeText ?? undefined,
         externalSource,
         externalId,
         sourceCheckedAt: new Date(),
@@ -74,6 +77,7 @@ export async function GET(
       },
       include: { brand: true },
     });
+    await syncProductNutritionFeaturesSafely(product.id);
 
     return NextResponse.json(
       { source: offProduct ? "openfoodfacts" : "usda", product }

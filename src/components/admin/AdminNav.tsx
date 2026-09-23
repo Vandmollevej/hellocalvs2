@@ -11,6 +11,7 @@ const LINK_DEFS: { href: string; key: AdminI18nKey }[] = [
   { href: "/admin", key: "nav_overview" },
   { href: "/admin/products", key: "nav_products" },
   { href: "/admin/users", key: "nav_users" },
+  { href: "/admin/support", key: "nav_support" },
   { href: "/admin/bug-reports", key: "nav_bug_reports" },
   { href: "/admin/messaging", key: "nav_messaging" },
   { href: "/admin/images", key: "nav_images" },
@@ -19,6 +20,7 @@ const LINK_DEFS: { href: string; key: AdminI18nKey }[] = [
   { href: "/admin/duplicate-products", key: "nav_duplicate_products" },
   { href: "/admin/search", key: "nav_search" },
   { href: "/admin/search-ranking", key: "nav_search_ranking" },
+  { href: "/admin/recovery", key: "nav_recovery" },
   { href: "/admin/passkeys", key: "nav_passkeys" },
 ];
 

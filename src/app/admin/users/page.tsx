@@ -5,9 +5,9 @@ import { AdminUserRow } from "@/components/admin/AdminUserRow";
 import { t } from "@/lib/admin-i18n";
 
 // Admin "Brugere" (docs/DECISIONS.md 2026-09-02): oversigt over registranter
-// med betalingsstatus, points, nyhedsbrevs-tilmeldinger, "log ind som
-// bruger" (impersonation, revisionsspor i AdminAuditLog) og "ret til at
-// blive glemt" (GDPR-anonymisering, src/lib/gdpr.ts).
+// med betalingsstatus, points, nyhedsbrevs-tilmeldinger og "ret til at
+// blive glemt" (GDPR-anonymisering, src/lib/gdpr.ts). "Log ind som bruger"
+// er fjernet 2026-09-23 (docs/PRIVACY.md).
 export default async function AdminUsersPage() {
   const admin = await requireAdminUser();
   if (!admin) redirect("/admin/login");
@@ -29,8 +29,7 @@ export default async function AdminUsersPage() {
       <div>
         <h1 className="text-lg font-semibold text-text-primary">{t(admin.locale, "users_title")}</h1>
         <p className="text-sm text-text-secondary">
-          {users.length} registranter. Klik ikonet for at logge ind som en bruger (åbner en ny
-          fane) eller anonymisere kontoen.
+          {users.length} registranter. Klik ikonet for at anonymisere kontoen.
         </p>
       </div>
 

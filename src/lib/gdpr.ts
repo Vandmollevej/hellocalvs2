@@ -39,6 +39,13 @@ export async function anonymizeUser(targetUserId: string, adminId: string) {
     // docs/DECISIONS.md) — slettes fuldt ud, ikke kun anonymiseret, da den
     // ikke har samme historik-/snapshot-krav som Registration m.fl.
     prisma.userProductSearchHistory.deleteMany({ where: { userId: targetUserId } }),
+    // Support (docs/DECISIONS.md 2026-09-23): henvendelsernes fritekst slettes,
+    // og en evt. aktiv tilladelse tilbagekaldes.
+    prisma.supportRequest.deleteMany({ where: { userId: targetUserId } }),
+    prisma.supportAccessGrant.updateMany({
+      where: { userId: targetUserId, revokedAt: null },
+      data: { revokedAt: new Date() },
+    }),
     prisma.adminAuditLog.create({
       data: { adminId, action: "GDPR_FORGET_USER", targetUserId },
     }),

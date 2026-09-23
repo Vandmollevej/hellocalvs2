@@ -1655,3 +1655,76 @@ build-/verifikationsnoter.
 - Nye kort Klorid og Fluorid med nye `HealthMetricType`-værdier
   `CHLORIDE_MG`/`FLUORIDE_MG` — samme forberedte mønster som de øvrige
   sporstoffer: "—" indtil en kilde sender data.
+
+## 2026-09-23: Support-side med tidsbegrænset tilladelse + normaliserede fiber-/sukker-/salt-/fuldkornsfelter
+
+Support (Indstillinger → Support, `/settings/support`):
+
+- Brugeren vælger en periode (Fra/Til, standard i dag → om 7 dage) og hvilke
+  af 25 datakategorier Support må se. Alle er slået fra som standard, og
+  "Vælg alle" findes øverst. Kategorierne er defineret ét sted:
+  `src/lib/support-permissions.ts`. Produktdatabasen og alt
+  sikkerhedsrelateret (adgangskode-hash, TOTP, passkeys, tokens,
+  betalingsoplysninger) kan aldrig vælges.
+- Tilladelsen gemmes server-side som `SupportAccessGrant` med `permissions`
+  som JSON (ingen boolean-kolonner på `User`). Den er kun aktiv, når
+  `revokedAt` er null og `validFrom ≤ nu ≤ validUntil`. Perioden fortolkes
+  som hele kalenderdage i Europe/Copenhagen, så en dag ikke kan forskydes af
+  tidszonen. Adgangen udløber af sig selv, fordi forespørgslen ikke længere
+  matcher efter Til-datoen.
+- Gem med alt slået fra = tilbagekald. Tilbagekaldelse sætter `revokedAt`, og
+  intet slettes. Et nyt gem tilbagekalder den forrige tilladelse og opretter
+  en ny.
+- "Kontakt os" er en intern formular (`SupportRequest`: kategori, emne,
+  besked), ikke `mailto:`. Den virker uden datatilladelse og kobles til den
+  aktive tilladelse, hvis der er en. Admin ser henvendelserne under
+  `/admin/support` med tilladelsens kategorier og periode.
+- Teksten øverst bruger den faktuelt korrekte formulering ("Support har som
+  udgangspunkt ikke adgang …"). "Hello Cal gemmer intet om dig" ville være
+  forkert, fordi appen gemmer brugerens egne data.
+- **Brugerens valg (2026-09-23):** Support må kun få adgang, når brugeren
+  selv har bedt om hjælp. Det flugter med `docs/PRIVACY.md`. Derfor er
+  "Log ind som bruger" fjernet (routes, admin-knap og handoff-token), og
+  sessioner, som en admin tidligere har udstedt, afvises. Der er ingen
+  server-side læsning af brugerens klartekstdata til Support. Selve
+  datapakken skal bygges og krypteres til Supports offentlige nøgle på
+  brugerens enhed ud fra de valgte kategorier og periode (boks-fasen i
+  `docs/PRIVACY.md`). Tilladelsesmodellen her er den del, pakken skal
+  bygges ud fra.
+
+Normaliserede produkt-søgeparametre (`ProductNutritionFeatures`, 1:1 med
+`Product`):
+
+- Kolonner med index: `sugarsPer100g`/`sugarPercent`,
+  `fiberPer100g`/`fiberPercent`, `saltPer100g`/`saltPercent`,
+  `wholeGrainPercent`/`isWholeGrain`, og til hver af dem en kilde
+  (`ProductFeatureSource`) og en sikkerhed (confidence). Fuldkorn har
+  desuden `wholeGrainEvidence`. kcal/protein/kulhydrat/fedt/mættet fedt
+  ligger allerede på `Product` og kopieres ikke over. Tilsat sukker er ikke
+  det samme som sukkerarter og skal have sit eget felt, hvis det bygges.
+- Procenter er altid 0–100. En ukendt værdi er null, aldrig 0.
+  Procent = g pr. 100 g kun når grundlaget er 100 g. Ved 100 ml er procenten
+  null, fordi den kræver produktets densitet.
+- Værdierne udledes deterministisk af den evidens, der allerede er gemt:
+  næringsanalysen (`AiProductAnalysis`), `Product.nutritionExtra`
+  (REMA-/OFF-nøgler pr. 100, HelloFresh pr. portion) og **varedeklarationen**
+  (`ingredientsText`) plus forsidens claims. Brugeren præciserede, at
+  fuldkorn skal læses ud fra indholdet og varedeklarationen, ikke gættes ud
+  fra billeder, og AI'en bliver aldrig spurgt om procenterne. Derfor kan
+  alt genberegnes uden ny OCR.
+- Fuldkorn (`src/lib/whole-grain.ts`): en eksplicit total ("41% fuldkorn")
+  vinder. Ellers lægges fuldkornsingredienser med procent af hele produktet
+  sammen, og procenter i en underblanding ganges med blandingens egen
+  procent (60% × 50% = 30%). Mangler en fuldkornsdel en entydig andel, bliver
+  procenten null, mens `isWholeGrain` er true. `false`/0 bruges kun, når der
+  findes en rigtig ingrediensliste uden fuldkorn. Ordene genkendes på dansk,
+  svensk/norsk, engelsk, tysk, hollandsk, italiensk/spansk, fransk, finsk og
+  polsk.
+- Kilde-prioritet: MANUAL > PACKAGE_PERCENT > NUTRITION_LABEL = MANUFACTURER
+  > EXTERNAL_DATABASE > DERIVED > AI_INTERPRETATION. Automatiske værdier
+  følger den aktuelle evidens, og en manuel værdi overskrives aldrig
+  automatisk.
+- Beregningen kører, når et produkt oprettes (guidet flow/manuelt), ved
+  import fra OFF (søgning og stregkodeopslag) og via
+  `POST /api/admin/products/nutrition-features` (backfill i sider, også
+  efter REMA-/HelloFresh-importer, der skriver direkte til databasen).

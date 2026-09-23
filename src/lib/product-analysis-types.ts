@@ -28,12 +28,24 @@ export type ProductFrontAnalysis = {
   };
 };
 
-export type IngredientsAnalysis = {
+// The AI's raw answer (schema in /api/ai/extract-ingredients-photo).
+export type IngredientsAiResult = {
   rawText: string;
   ingredientsText: string;
   allergens: string[];
   language: string | null;
   confidence: number;
+};
+
+// + whole grain, derived deterministically from ingredientsText AFTER the AI
+// call (src/lib/whole-grain.ts) — never asked from the model, so it can be
+// recomputed later without new OCR (docs/DECISIONS.md 2026-09-23).
+// Percent is 0–100 of the WHOLE product; null = unknown, never guessed.
+export type IngredientsAnalysis = IngredientsAiResult & {
+  wholeGrainPercent: number | null;
+  isWholeGrain: boolean | null;
+  wholeGrainConfidence: number;
+  wholeGrainEvidence: string[];
 };
 
 export type AlternativeServing = {
@@ -44,7 +56,8 @@ export type AlternativeServing = {
   confidence: number;
 };
 
-export type NutritionAnalysis = {
+// The AI's raw answer (schema in /api/ai/extract-nutrition-v2).
+export type NutritionAiResult = {
   basis: "100g" | "100ml" | "portion" | "unknown";
   energyKj: number | null;
   kcalPer100g: number | null;
@@ -59,4 +72,11 @@ export type NutritionAnalysis = {
   language: string | null;
   alternativeServings: AlternativeServing[];
   confidence: number;
+};
+
+// + fiberPercent, derived deterministically after the AI call: equal to
+// fiberPer100g on a 100 g basis, null otherwise (100 ml needs the density).
+// sugarsPer100g are "sukkerarter" from the label — NOT added sugar.
+export type NutritionAnalysis = NutritionAiResult & {
+  fiberPercent: number | null;
 };

@@ -4,7 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { buildBarcodeContext } from "@/lib/barcode-context";
 import { callStructuredVision } from "@/lib/product-ai";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
-import type { NutritionAnalysis } from "@/lib/product-analysis-types";
+import { deriveFiberPercent } from "@/lib/nutrition-normalize";
+import type { NutritionAiResult, NutritionAnalysis } from "@/lib/product-analysis-types";
 
 const PROMPT_VERSION = "nutrition-v2-2026-09-16";
 
@@ -78,7 +79,7 @@ export async function POST(req: Request) {
   const context = buildBarcodeContext(barcode, marketRegion);
 
   try {
-    const { value, model } = await callStructuredVision<NutritionAnalysis>({
+    const { value: aiValue, model } = await callStructuredVision<NutritionAiResult>({
       photo,
       schemaName: "hello_cal_nutrition",
       schema: NUTRITION_SCHEMA,
@@ -101,6 +102,12 @@ export async function POST(req: Request) {
         .filter(Boolean)
         .join("\n"),
     });
+    // fiberPercent beregnes deterministisk, modellen bliver aldrig spurgt om
+    // det (docs/DECISIONS.md 2026-09-23).
+    const value: NutritionAnalysis = {
+      ...aiValue,
+      fiberPercent: deriveFiberPercent(aiValue.basis, aiValue.fiberPer100g),
+    };
 
     // Kvalitetskontrol/billed-match (docs/DECISIONS.md 2026-09-19): gemmer
     // selve fotoet, så den lokale billedanalyse-agent kan sammenligne det mod
