@@ -129,6 +129,20 @@ Samtidig: Hello Cal-logoet på produktcirklen har ikke længere hvid cirkel/skyg
 det ligger i front (`z-10`) med nederste venstre hjørne i cirklens bundpunkt og
 en bredde på én radius (95px).
 
+## 2026-09-23: Målsætningsdato på målsætningen
+
+"Opret ny målsætning" har nu en påkrævet målsætningsdato øverst (dato →
+målvægt → kropsmål i 2 kolonner); topbjælken hedder "Opret ny målsætning".
+
+- Datoen gemmes på `Goal.targetDate` (nullable), ikke på `User`: hver
+  historisk målsætning har sin egen dato. Ældre/backfillede målsætninger har
+  ingen dato. Et forslag om `User.targetDate` blev bevidst ikke fulgt.
+- Kalenderdato: klienten sender "YYYY-MM-DD", serveren gemmer kl. 12:00 UTC,
+  så datoen ikke skifter ved tidszonekonvertering. Datoer før i dag afvises
+  (med én dags slæk for tidszoner foran UTC).
+- Native date input; hele feltet åbner vælgeren, tomt felt viser "Vælg dato".
+- Oversigten viser "Nås senest {dato}" under oprettelsesdatoen.
+
 ## 2026-09-22: Global tidspunkt-regel — let separator, "Kl." foran tiden
 
 Bindende UI-regel: redigerbare tidspunkt-sektioner vises aldrig mere som den

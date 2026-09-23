@@ -99,6 +99,11 @@ export default function GoalsPage() {
           {goals.map((goal) => (
             <section key={goal.id} className="flex flex-col">
               <DateSeparator label={formatDate(goal.createdAt)} />
+              {goal.targetDate && (
+                <p className="pt-2 text-[13px] font-semibold text-hf-black opacity-60">
+                  {t("goals.targetDateLabel", { date: formatDate(goal.targetDate) })}
+                </p>
+              )}
               <div className="flex flex-col divide-y divide-hf-gray-border pt-1">
                 {goal.targets.map((target) => (
                   <GoalTargetRow key={target.id} target={target} />

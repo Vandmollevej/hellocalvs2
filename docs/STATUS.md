@@ -55,6 +55,16 @@ Se `docs/DECISIONS.md` (samme dato). Ændret: `src/app/profile/sleep/page.tsx`
 (trin `work-hours-calendar` fjernet), `src/app/api/profile/route.ts`, da/en
 locales. Prisma-kolonnen `workHoursInCalendarEnabled` er bevidst ikke droppet endnu.
 
+## 2026-09-23: Målsætningsdato + nyt layout på Opret ny målsætning
+
+Se `docs/DECISIONS.md` (samme dato). Ændret: `prisma/schema.prisma`
+(`Goal.targetDate`), håndskrevet migration
+`prisma/migrations/20260923080000_goal_target_date/` (ikke kørt lokalt),
+`src/lib/user-goals.ts`, `src/app/api/goals/route.ts`,
+`src/app/profile/goals/new/page.tsx`, `src/app/profile/goals/page.tsx`,
+da/en locales. Verificeret: lint, build, layout i preview ved 375 px. Gem mod
+DB ikke testet lokalt (ingen PostgreSQL).
+
 ## 2026-09-22: Målsætning — oversigt + opret-formular (vægt og kropsmål)
 
 Se `docs/DECISIONS.md` (samme dato). Nye filer: `src/app/profile/goals/page.tsx`,

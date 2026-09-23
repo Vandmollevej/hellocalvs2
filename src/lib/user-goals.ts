@@ -168,6 +168,8 @@ export type GoalTargetDTO = {
 export type GoalDTO = {
   id: string;
   createdAt: string;
+  // "YYYY-MM-DD" — den kalenderdato, målsætningen ønskes nået.
+  targetDate: string | null;
   targets: GoalTargetDTO[];
 };
 
@@ -182,6 +184,7 @@ export async function listGoals(userId: string): Promise<GoalDTO[]> {
   return goals.map((goal) => ({
     id: goal.id,
     createdAt: goal.createdAt.toISOString(),
+    targetDate: goal.targetDate?.toISOString().slice(0, 10) ?? null,
     targets: goal.targets
       .filter((target): target is typeof target & { type: GoalTargetType } => isGoalTargetType(target.type))
       .sort((a, b) => GOAL_TARGET_TYPES.indexOf(a.type) - GOAL_TARGET_TYPES.indexOf(b.type))
@@ -195,7 +198,11 @@ export async function listGoals(userId: string): Promise<GoalDTO[]> {
   }));
 }
 
-export async function createGoal(userId: string, values: Partial<Record<GoalTargetType, number>>) {
+export async function createGoal(
+  userId: string,
+  targetDate: Date,
+  values: Partial<Record<GoalTargetType, number>>,
+) {
   const latest = await getLatestValues(userId);
   const entries = GOAL_TARGET_TYPES.flatMap((type) => {
     const value = values[type];
@@ -206,6 +213,7 @@ export async function createGoal(userId: string, values: Partial<Record<GoalTarg
     const goal = await tx.goal.create({
       data: {
         userId,
+        targetDate,
         targets: {
           create: entries.map(({ type, value }) => {
             const startValue = latest.get(type) ?? null;
