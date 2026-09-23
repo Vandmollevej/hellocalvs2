@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 import { t } from "@/lib/admin-i18n";
 import { SupportRequestStatusButton } from "@/components/admin/SupportRequestStatusButton";
+import { SupportKeyManager } from "@/components/admin/SupportKeyManager";
+import { SupportPackageViewer } from "@/components/admin/SupportPackageViewer";
 import { instantToDateKey, isSupportGrantActive } from "@/lib/support-access";
 import { SUPPORT_PERMISSION_KEYS, readSupportPermissions } from "@/lib/support-permissions";
 import da from "@/i18n/locales/da.json";
@@ -41,6 +43,8 @@ export default async function AdminSupportPage() {
           har givet Support lov til at se, og i hvilken periode.
         </p>
       </div>
+
+      <SupportKeyManager />
 
       {requests.length === 0 && <p className="py-4 text-sm text-text-secondary">Ingen henvendelser endnu.</p>}
 
@@ -81,6 +85,9 @@ export default async function AdminSupportPage() {
                     </span>{" "}
                     · {instantToDateKey(grant.validFrom)} – {instantToDateKey(grant.validUntil)} ·{" "}
                     {allowed.length ? allowed.map((key) => PERMISSION_LABELS[key] ?? key).join(", ") : "Ingen datatyper"}
+                    {grantActive && allowed.length > 0 && (
+                      <SupportPackageViewer grantId={grant.id} labels={PERMISSION_LABELS} />
+                    )}
                   </>
                 )}
               </div>

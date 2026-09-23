@@ -2189,6 +2189,7 @@ model SupportAccessGrant {
   updatedAt   DateTime  @updatedAt
 
   supportRequests SupportRequest[]
+  packages        SupportPackage[]
 
   @@index([userId, revokedAt])
   @@index([validUntil])
@@ -2316,4 +2317,31 @@ model NewsletterSubscription {
   createdAt   DateTime  @default(now())
 
   @@map("newsletter_subscriptions")
+}
+
+// Supportpakker (docs/PRIVACY.md "Support"). Supports nøglepar laves i
+// admins browser; kun den offentlige nøgle ligger her. Brugerens enhed
+// forsegler de valgte data til den, og kun admins browser kan åbne dem.
+model SupportKey {
+  id        String   @id @default(cuid())
+  publicKey String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@map("support_keys")
+}
+
+// Én forseglet pakke pr. tilladelse. Slettes, når tilladelsen tilbagekaldes
+// eller udløber.
+model SupportPackage {
+  id         String             @id @default(cuid())
+  grant      SupportAccessGrant @relation(fields: [grantId], references: [id], onDelete: Cascade)
+  grantId    String             @unique
+  keyId      String
+  epk        String
+  iv         String
+  ciphertext String
+  createdAt  DateTime           @default(now())
+
+  @@map("support_packages")
 }

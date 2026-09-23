@@ -30,7 +30,9 @@ export async function PUT(request: Request) {
   }
 
   const now = new Date();
-  const [, grant] = await prisma.$transaction([
+  const [, , grant] = await prisma.$transaction([
+    // docs/PRIVACY.md: en tilbagekaldt tilladelses pakke slettes med det samme.
+    prisma.supportPackage.deleteMany({ where: { grant: { userId: user.id, revokedAt: null } } }),
     prisma.supportAccessGrant.updateMany({
       where: { userId: user.id, revokedAt: null },
       data: { revokedAt: now },
@@ -53,10 +55,13 @@ export async function DELETE() {
   const user = await getSessionUser();
   if (!user) return NextResponse.json({ message: "Log ind for at tilbagekalde Support-adgang" }, { status: 401 });
 
-  await prisma.supportAccessGrant.updateMany({
-    where: { userId: user.id, revokedAt: null },
-    data: { revokedAt: new Date() },
-  });
+  await prisma.$transaction([
+    prisma.supportPackage.deleteMany({ where: { grant: { userId: user.id, revokedAt: null } } }),
+    prisma.supportAccessGrant.updateMany({
+      where: { userId: user.id, revokedAt: null },
+      data: { revokedAt: new Date() },
+    }),
+  ]);
 
   return NextResponse.json({ grant: null });
 }

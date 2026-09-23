@@ -122,7 +122,7 @@ export default function SupportSettingsPage() {
       // All off = revoke the current permission (kept as history server-side).
       const visiblePermissions = Object.fromEntries(visibleKeys.map((key) => [key, permissions[key]]));
       const response = anySelected
-        ? await fetch("/api/support/access", {
+        ? await localApi("/api/support/access", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ validFrom, validUntil, permissions: visiblePermissions }),

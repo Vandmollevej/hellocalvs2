@@ -74,6 +74,10 @@ export async function runSchedulerTick(now: Date = new Date()) {
   await escalateStalePendingProducts(now);
   await escalateStaleBugReports(now);
   await grantDueInviteRewards(now);
+  // docs/PRIVACY.md "Support": pakker for udløbne tilladelser slettes.
+  await prisma.supportPackage.deleteMany({
+    where: { grant: { OR: [{ validUntil: { lt: now } }, { revokedAt: { not: null } }] } },
+  });
   await flushQueuedEmails();
   await flushQueuedPush();
 }

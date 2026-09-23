@@ -8,3 +8,4 @@ import "@/lib/vault/handlers/goals";
 import "@/lib/vault/handlers/meals";
 import "@/lib/vault/handlers/search";
 import "@/lib/vault/handlers/doctor-shares";
+import "@/lib/vault/handlers/support";
