@@ -63,7 +63,7 @@ export async function POST(req: Request) {
     select: { iv: true, ciphertext: true },
   });
 
-  const response = NextResponse.json({ ok: true, credentialId, envelope });
+  const response = NextResponse.json({ ok: true, credentialId, envelope, userId: passkey.userId });
   clearPendingCeremony(response);
   await setUserSessionCookie(response, passkey.userId);
   return response;

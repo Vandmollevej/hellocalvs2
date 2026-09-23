@@ -79,7 +79,7 @@ export async function POST(req: Request) {
     await prisma.passkey.create({ data: { userId: pending.userId, ...passkeyData } });
   }
 
-  const response = NextResponse.json({ ok: true, credentialId: credential.id });
+  const response = NextResponse.json({ ok: true, credentialId: credential.id, userId: pending.userId });
   clearPendingCeremony(response);
   await setUserSessionCookie(response, pending.userId);
   return response;

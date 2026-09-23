@@ -21,6 +21,7 @@ export async function GET() {
   ]);
   const withEnvelope = new Set(envelopes.filter((e) => e.kind === "PASSKEY_PRF").map((e) => e.credentialId));
   return NextResponse.json({
+    userId: user.id,
     passkeys: passkeys.map((p) => ({ ...p, hasEnvelope: withEnvelope.has(p.credentialId) })),
     hasRecovery: Boolean(share) && envelopes.some((e) => e.kind === "RECOVERY"),
     recoveryCreatedAt: share?.createdAt ?? null,
