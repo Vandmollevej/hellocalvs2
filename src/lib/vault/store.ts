@@ -77,6 +77,10 @@ async function openClient(masterKey: Uint8Array, userId: string) {
   void import("@/lib/vault/handlers/doctor-shares")
     .then(({ publishDoctorShares }) => publishDoctorShares(client))
     .catch(() => undefined);
+  // Anonym statistik for de foregående dage (docs/PRIVACY.md "Statistik").
+  void import("@/lib/vault/handlers/analytics")
+    .then(({ submitDailyAnalytics }) => submitDailyAnalytics(client))
+    .catch(() => undefined);
 }
 
 async function init() {

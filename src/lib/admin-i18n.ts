@@ -18,6 +18,7 @@ const DICTIONARY = {
   nav_search: { DA: "Søg", EN: "Search" },
   nav_search_ranking: { DA: "Søgealgoritmer", EN: "Search ranking" },
   nav_quality_control: { DA: "Kvalitetskontrol", EN: "Quality control" },
+  nav_anonymous_stats: { DA: "Anonym statistik", EN: "Anonymous statistics" },
   nav_recovery: { DA: "Gendannelse", EN: "Recovery" },
   nav_passkeys: { DA: "Passkeys", EN: "Passkeys" },
   nav_support: { DA: "Support", EN: "Support" },

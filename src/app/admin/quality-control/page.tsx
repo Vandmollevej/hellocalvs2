@@ -39,14 +39,16 @@ export default async function AdminQualityControlPage() {
     ...new Set([...matchChecks.map((check) => check.productId), ...nutritionReports.map((r) => r.productId)]),
   ];
   const cutoff = daysAgo(30);
+  // Anonym daglig brug (docs/PRIVACY.md) — brugernes registreringer ligger
+  // krypteret i deres boks og kan ikke tælles her.
   const usageCounts = productIds.length
-    ? await prisma.registration.groupBy({
+    ? await prisma.productUsageDaily.groupBy({
         by: ["productId"],
-        where: { productId: { in: productIds }, createdAt: { gte: cutoff } },
-        _count: { _all: true },
+        where: { productId: { in: productIds }, day: { gte: cutoff } },
+        _sum: { count: true },
       })
     : [];
-  const usageByProductId = new Map(usageCounts.map((row) => [row.productId, row._count._all]));
+  const usageByProductId = new Map(usageCounts.map((row) => [row.productId, row._sum.count ?? 0]));
 
   const matchRows: QualityControlRow[] = matchChecks.filter(hasQualityControlPhotoType).map((check) => ({
     kind: "match",

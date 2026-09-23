@@ -2345,3 +2345,32 @@ model SupportPackage {
 
   @@map("support_packages")
 }
+
+// Anonym statistik (docs/PRIVACY.md "Statistik"). Kun grupperede tællinger
+// og summer — intet bruger-, konto-, boks- eller enheds-ID og ingen IP.
+model AnalyticsBucket {
+  id          String   @id @default(cuid())
+  day         DateTime @db.Date
+  country     String
+  ageBand     String
+  sex         String
+  metric      String
+  bucket      String
+  count       Int      @default(0)
+  sum         Float    @default(0)
+
+  @@unique([day, country, ageBand, sex, metric, bucket])
+  @@index([metric, day])
+  @@map("analytics_buckets")
+}
+
+// Anonym brug af produkter pr. dag (Kvalitetskontrol). Ingen bruger.
+model ProductUsageDaily {
+  day       DateTime @db.Date
+  productId String
+  count     Int      @default(0)
+
+  @@id([day, productId])
+  @@index([productId, day])
+  @@map("product_usage_daily")
+}

@@ -304,7 +304,15 @@ route("POST", "/api/registrations", async ({ vault, body }) => {
 
   const id = newRecordId();
   await vault.put(REGISTRATIONS, id, registration);
-  if (registration.productId) await fulfillPendingForward(vault, "PRODUCT", registration.productId);
+  if (registration.productId) {
+    await fulfillPendingForward(vault, "PRODUCT", registration.productId);
+    // Anonym popularitet til Kvalitetskontrol — uden bruger (docs/PRIVACY.md).
+    void fetch("/api/analytics/product-usage", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ productId: registration.productId }),
+    }).catch(() => undefined);
+  }
   if (registration.dishId) await fulfillPendingForward(vault, "DISH", registration.dishId);
   return json({ registration: { ...registration, id } });
 });
