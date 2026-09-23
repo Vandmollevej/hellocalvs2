@@ -109,7 +109,7 @@ export default function RecipesPage() {
       try {
         const params = new URLSearchParams({ source: "HELLOFRESH", take: "60" });
         if (query.trim()) params.set("q", query.trim());
-        const response = await fetch(`/api/products?${params.toString()}`, {
+        const response = await localApi(`/api/products?${params.toString()}`, {
           signal: controller.signal,
         });
         if (!response.ok) throw new Error("offline");

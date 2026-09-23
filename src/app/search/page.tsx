@@ -109,7 +109,7 @@ function SoegContent() {
     const timeout = setTimeout(async () => {
       setResultsState("loading");
       try {
-        const res = await fetch(
+        const res = await localApi(
           `/api/products?q=${encodeURIComponent(query)}`,
           { signal: controller.signal }
         );

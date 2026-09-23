@@ -199,7 +199,7 @@ function MadvarerContent() {
     const timer = window.setTimeout(async () => {
       try {
         const hour = new Date().getHours();
-        const response = await fetch(
+        const response = await localApi(
           `/api/products?q=${encodeURIComponent(q)}&hour=${hour}&take=20`,
           { signal: controller.signal }
         );
@@ -230,16 +230,12 @@ function MadvarerContent() {
       localHour: new Date().getHours(),
     });
 
-    if (navigator.sendBeacon) {
-      navigator.sendBeacon("/api/products/search-event", new Blob([payload], { type: "application/json" }));
-      return;
-    }
-
-    void fetch("/api/products/search-event", {
+    // Klikket gemmes i brugerens krypterede søgehistorik og sendes uden
+    // bruger til den regionale statistik (docs/PRIVACY.md).
+    void localApi("/api/products/search-event", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: payload,
-      keepalive: true,
     });
   }
 

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { GenericIngredientCategory } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { getEffectiveUser, getSessionUser } from "@/lib/session";
+import { getSessionUser } from "@/lib/session";
 import { rankProducts } from "@/lib/product-search-ranking";
 import { getActiveSearchRankingWeights } from "@/lib/search-ranking-config";
 import { matchFridaProduct } from "@/lib/generic-ingredient-match";
@@ -28,32 +28,26 @@ export async function GET(req: Request) {
     });
 
     const sessionUser = await getSessionUser();
-    const user = sessionUser ?? (await getEffectiveUser());
+    const region = sessionUser?.region ?? "DK";
+    // docs/PRIVACY.md: personlig søgehistorik ligger i boksen; med
+    // ?personal=1 rangerer enheden selv (src/lib/vault/handlers/search.ts).
+    const personalRank = params.get("personal") === "1";
+    let personalHistoryWeight: number | null = null;
+    const scoreById = new Map<string, number>();
 
     let results = ingredients;
     if (q) {
       const weights = await getActiveSearchRankingWeights();
-
-      // Personlig historik (2026-09-19, se docs/DECISIONS.md) — kun for en
-      // rigtig indlogget bruger, aldrig den delte demo-bruger.
-      const personalHistory = sessionUser
-        ? await prisma.userProductSearchHistory.findMany({
-            where: { userId: sessionUser.id, genericIngredientId: { in: ingredients.map((i) => i.id) } },
-          })
-        : [];
-      const personalByIngredientId = new Map(
-        personalHistory.map((entry) => [entry.genericIngredientId, entry])
-      );
+      if (personalRank) personalHistoryWeight = weights.personalHistory;
 
       const rankable = ingredients.map((ingredient) => ({
         ...ingredient,
         brand: null as { name: string } | null,
         barcodes: [] as { code: string }[],
-        personalSearchCount: personalByIngredientId.get(ingredient.id)?.searchCount,
-        personalClickCount: personalByIngredientId.get(ingredient.id)?.clickCount,
         entityBias: 1, // "Generiske ingredienser vs. varer" — en GenericIngredient
       }));
-      const ranked = rankProducts(rankable, q, user.region, localHour, take, weights);
+      const ranked = rankProducts(rankable, q, region, localHour, personalRank ? take * 2 : take, weights);
+      for (const entry of ranked) scoreById.set(entry.product.id, entry.score);
       results = ranked.map((entry) => entry.product);
 
       if (results.length > 0) {
@@ -61,27 +55,11 @@ export async function GET(req: Request) {
         await prisma.$transaction([
           ...results.map((ingredient) =>
             prisma.genericIngredientRegionSearchStat.upsert({
-              where: { ingredientId_region: { ingredientId: ingredient.id, region: user.region } },
-              create: { ingredientId: ingredient.id, region: user.region, searchCount: 1, lastSearchedAt: now },
+              where: { ingredientId_region: { ingredientId: ingredient.id, region } },
+              create: { ingredientId: ingredient.id, region, searchCount: 1, lastSearchedAt: now },
               update: { searchCount: { increment: 1 }, lastSearchedAt: now },
             })
           ),
-          ...(sessionUser
-            ? results.map((ingredient) =>
-                prisma.userProductSearchHistory.upsert({
-                  where: {
-                    userId_genericIngredientId: { userId: sessionUser.id, genericIngredientId: ingredient.id },
-                  },
-                  create: {
-                    userId: sessionUser.id,
-                    genericIngredientId: ingredient.id,
-                    searchCount: 1,
-                    lastSearchedAt: now,
-                  },
-                  update: { searchCount: { increment: 1 }, lastSearchedAt: now },
-                })
-              )
-            : []),
         ]);
       }
     } else {
@@ -107,9 +85,12 @@ export async function GET(req: Request) {
         entityBias?: unknown;
       };
       /* eslint-enable @typescript-eslint/no-unused-vars */
-      return rest;
+      return personalRank ? { ...rest, rankScore: scoreById.get(rest.id) ?? 0 } : rest;
     });
-    return NextResponse.json({ ingredients: publicIngredients });
+    return NextResponse.json({
+      ingredients: publicIngredients,
+      ...(personalRank ? { personalHistoryWeight } : {}),
+    });
   } catch (error) {
     console.error("Generic ingredient search failed", error);
     return NextResponse.json(

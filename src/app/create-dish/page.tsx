@@ -36,7 +36,7 @@ export default function CreateDishPage() {
     const timeout = setTimeout(async () => {
       setSearchState("loading");
       try {
-        const res = await fetch(`/api/products?q=${encodeURIComponent(query)}`, {
+        const res = await localApi(`/api/products?q=${encodeURIComponent(query)}`, {
           signal: controller.signal,
         });
         if (!res.ok) throw new Error("offline");

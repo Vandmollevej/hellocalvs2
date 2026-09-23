@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getDemoUser } from "@/lib/demo-user";
 import { getSessionUser } from "@/lib/session";
 
 function validHour(value: unknown): number | null {
@@ -11,13 +10,8 @@ function validHour(value: unknown): number | null {
 // POST /api/products/search-event
 // Records aggregate region/brand click statistics (2026-09-19, see
 // docs/DECISIONS.md) used by src/lib/product-search-ranking.ts. Never stores
-// the raw query text. Since 2026-09-19 this ALSO records a per-user click
-// (UserProductSearchHistory) when the caller has a real session — an
-// explicit, later reversal of this route's original "never a user id"
-// design, made so the "Personligt tidligere søgte produkter" ranking weight
-// has real data. Erased in full by "Ret til at blive glemt"
-// (src/lib/gdpr.ts). The anonymous demo user never gets a personal-history
-// row, since it is shared across every unauthenticated visitor.
+// the raw query text or who clicked. The personal click history lives in
+// the user's encrypted vault (docs/PRIVACY.md, src/lib/vault/handlers/search.ts).
 // Body: { productId?: string, ingredientId?: string, localHour: 0..23 }
 export async function POST(req: Request) {
   let body: Record<string, unknown>;
@@ -40,7 +34,7 @@ export async function POST(req: Request) {
 
   try {
     const sessionUser = await getSessionUser();
-    const region = sessionUser?.region ?? (await getDemoUser()).region;
+    const region = sessionUser?.region ?? "DK";
     const now = new Date();
 
     if (productId) {
@@ -86,15 +80,6 @@ export async function POST(req: Request) {
               }),
             ]
           : []),
-        ...(sessionUser
-          ? [
-              prisma.userProductSearchHistory.upsert({
-                where: { userId_productId: { userId: sessionUser.id, productId } },
-                create: { userId: sessionUser.id, productId, clickCount: 1, lastClickedAt: now },
-                update: { clickCount: { increment: 1 }, lastClickedAt: now },
-              }),
-            ]
-          : []),
       ]);
     } else if (ingredientId) {
       await prisma.$transaction([
@@ -125,15 +110,6 @@ export async function POST(req: Request) {
             lastClickedAt: now,
           },
         }),
-        ...(sessionUser
-          ? [
-              prisma.userProductSearchHistory.upsert({
-                where: { userId_ingredientId: { userId: sessionUser.id, ingredientId } },
-                create: { userId: sessionUser.id, ingredientId, clickCount: 1, lastClickedAt: now },
-                update: { clickCount: { increment: 1 }, lastClickedAt: now },
-              }),
-            ]
-          : []),
       ]);
     } else if (genericIngredientId) {
       await prisma.$transaction([
@@ -166,22 +142,6 @@ export async function POST(req: Request) {
             lastClickedAt: now,
           },
         }),
-        ...(sessionUser
-          ? [
-              prisma.userProductSearchHistory.upsert({
-                where: {
-                  userId_genericIngredientId: { userId: sessionUser.id, genericIngredientId },
-                },
-                create: {
-                  userId: sessionUser.id,
-                  genericIngredientId,
-                  clickCount: 1,
-                  lastClickedAt: now,
-                },
-                update: { clickCount: { increment: 1 }, lastClickedAt: now },
-              }),
-            ]
-          : []),
       ]);
     }
 
