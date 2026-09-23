@@ -252,6 +252,19 @@ export function getVaultClient(): VaultClient | null {
   return state.client;
 }
 
+// Venter, til boksen er færdig med at starte op (session + enhedsnøgle),
+// og returnerer klienten, hvis den er åben.
+export function waitForVault(): Promise<VaultClient | null> {
+  if (state.status !== "loading") return Promise.resolve(state.client);
+  return new Promise((resolve) => {
+    const unsubscribe = subscribe(() => {
+      if (state.status === "loading") return;
+      unsubscribe();
+      resolve(state.client);
+    });
+  });
+}
+
 // Alle poster i en samling; opdateres automatisk ved ændringer.
 export function useVaultCollection<T>(collection: string): { entries: VaultEntry<T>[]; ready: boolean } {
   const { client, version, status } = useVault();
