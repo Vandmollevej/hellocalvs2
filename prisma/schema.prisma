@@ -2302,3 +2302,18 @@ model ProductNutritionFeatures {
   @@index([isWholeGrain])
   @@map("product_nutrition_features")
 }
+
+// Nyhedsbrev: separat, frivillig tilmelding (docs/PRIVACY.md "Sociale funktioner").
+// Ingen relation til User — tilmeldingen kan ikke kobles til en konto.
+model NewsletterSubscription {
+  id          String    @id @default(cuid())
+  email       String    @unique
+  // Emner: UPDATES, ADVICE, PARTNER_OFFERS.
+  topics      String[]  @default([])
+  // Engangstoken til bekræftelse og afmelding (kun hash gemmes).
+  tokenHash   String    @unique
+  confirmedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@map("newsletter_subscriptions")
+}

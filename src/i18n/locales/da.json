@@ -1188,6 +1188,14 @@
     "atTime": "Kl. {time}"
   },
   "account": {
+    "newsletterTitle": "Nyhedsbrev",
+    "newsletterIntro": "Hello Cal kender ikke din e-mail. Vil du have nyhedsbreve, tilmelder du dig separat — tilmeldingen er ikke koblet til din konto.",
+    "newsletterTopicUpdates": "Nyheder og opdateringer",
+    "newsletterTopicAdvice": "Råd og vejledning",
+    "newsletterTopicPartners": "Tilbud fra samarbejdspartnere",
+    "newsletterSignup": "Tilmeld",
+    "newsletterSent": "Tjek din mail for at bekræfte tilmeldingen.",
+    "pushOnlyHint": "Hello Cal kender ikke din e-mail, så beskeder sendes kun som push.",
     "back": "Tilbage",
     "cancel": "Afbryd",
     "networkError": "Noget gik galt — tjek din forbindelse og prøv igen",

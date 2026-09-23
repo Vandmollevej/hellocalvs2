@@ -1188,6 +1188,14 @@
     "atTime": "At {time}"
   },
   "account": {
+    "newsletterTitle": "Newsletter",
+    "newsletterIntro": "Hello Cal does not know your email. To receive newsletters, sign up separately — the signup is not linked to your account.",
+    "newsletterTopicUpdates": "News and updates",
+    "newsletterTopicAdvice": "Advice and guidance",
+    "newsletterTopicPartners": "Offers from partners",
+    "newsletterSignup": "Sign up",
+    "newsletterSent": "Check your email to confirm the signup.",
+    "pushOnlyHint": "Hello Cal does not know your email, so messages are only sent as push.",
     "back": "Back",
     "cancel": "Cancel",
     "networkError": "Something went wrong — check your connection and try again",
