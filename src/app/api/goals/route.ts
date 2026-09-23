@@ -19,7 +19,7 @@ export async function GET() {
 // Kalenderdato "YYYY-MM-DD" → Date kl. 12:00 UTC, så datoen ikke skifter ved
 // tidszonekonvertering. Null ved ugyldig dato eller en dato før i dag.
 function parseTargetDate(value: unknown): Date | null {
-  if (typeof value !== "string" || !/^d{4}-d{2}-d{2}$/.test(value)) return null;
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
   const date = new Date(`${value}T12:00:00.000Z`);
   if (Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== value) return null;
   // Én dags slæk, så en klient i en tidszone foran UTC kan vælge sin egen "i dag".
