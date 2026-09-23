@@ -690,7 +690,7 @@
       "recipes": "Opskrifter",
       "settings": "Indstillinger"
     },
-    "changePasswordButton": "Skift adgangskode",
+    "changePasswordButton": "Login og gendannelse",
     "changePassword": {
       "title": "Skift adgangskode",
       "currentLabel": "Nuværende adgangskode",

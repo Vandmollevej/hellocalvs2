@@ -318,7 +318,7 @@ export default function ProfileEditPage() {
 
           <button
             type="button"
-            onClick={() => router.push("/profile/change-password")}
+            onClick={() => router.push("/profile/security")}
             className="hf-btn-primary hf-type-button mt-4 h-12 w-full px-4"
           >
             {t("profile.changePasswordButton")}

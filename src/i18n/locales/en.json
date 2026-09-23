@@ -690,7 +690,7 @@
       "recipes": "Recipes",
       "settings": "Settings"
     },
-    "changePasswordButton": "Change password",
+    "changePasswordButton": "Login and recovery",
     "changePassword": {
       "title": "Change password",
       "currentLabel": "Current password",
