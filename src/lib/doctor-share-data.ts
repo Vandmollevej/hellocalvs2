@@ -80,7 +80,7 @@ export async function fetchDoctorShareOwnerData(
   return {
     profile: {
       displayName: user.displayName,
-      email: user.email,
+      email: user.email ?? "",
       sex: user.sex,
     },
     startWeightKg: user.weightKg,

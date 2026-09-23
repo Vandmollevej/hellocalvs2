@@ -11,7 +11,7 @@ type BugReport = {
   // Null for source = "AI" (auto-filed by the product-recognition pipeline,
   // e.g. an uncertain alternative calorie display — see
   // docs/DECISIONS.md 2026-09-19) — there is no submitting user.
-  user: { displayName: string; email: string } | null;
+  user: { displayName: string; email: string | null } | null;
   source: "USER" | "AI";
   product: { id: string; name: string; brand: { name: string } | null } | null;
 };
@@ -41,7 +41,7 @@ export function PendingBugReportCard({ report }: { report: BugReport }) {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 flex-1">
           <p className="text-xs text-text-muted">
-            {report.user ? `${report.user.displayName} · ${report.user.email}` : "AI-genereret (ingen bruger)"} ·{" "}
+            {report.user ? [report.user.displayName, report.user.email].filter(Boolean).join(" · ") || "Anonym bruger" : "AI-genereret (ingen bruger)"} ·{" "}
             {new Date(report.createdAt).toLocaleDateString("da-DK")}
           </p>
           {report.product && (

@@ -10,8 +10,13 @@ datasource db {
 
 model User {
   id          String   @id @default(cuid())
-  email       String   @unique
-  displayName String
+  // docs/PRIVACY.md: almindelige brugere har INGEN klartekst-e-mail og intet
+  // navn på serveren. email bruges kun af admin/personale; brugere findes via
+  // emailHash (HMAC-SHA256 med EMAIL_HASH_PEPPER, src/lib/email-hash.ts).
+  // displayName er tom for almindelige brugere — navnet ligger i boksen.
+  email       String?  @unique
+  emailHash   String?  @unique
+  displayName String   @default("")
   role        Role     @default(USER)
   weightKg    Float?
   heightCm    Float?
@@ -170,6 +175,10 @@ model User {
   deviceTokens            DeviceToken[]
   healthMetrics           HealthMetric[]
   passkeys                Passkey[]
+  keyEnvelopes            KeyEnvelope[]
+  recoveryShare           RecoveryShare?
+  recoveryRequests        RecoveryRequest[]        @relation("RecoveryRequestUser")
+  recoveryRequestsApproved RecoveryRequest[]       @relation("RecoveryRequestApprover")
   referralsMade           Referral[]               @relation("ReferralsMade")
   referralReceived        Referral?                @relation("ReferralReceived")
   sentInvitations         SentInvitation[]
@@ -1898,4 +1907,154 @@ model AdminAuditLog {
   createdAt    DateTime         @default(now())
 
   @@map("admin_audit_logs")
+}
+
+// ===================================================================
+// Privacy-by-architecture (docs/PRIVACY.md, 2026-09-23)
+// ===================================================================
+
+// ---- Identitet: nøglekuverter og gendannelse ----
+
+enum KeyEnvelopeKind {
+  PASSKEY_PRF
+  RECOVERY
+}
+
+// Brugerens hovednøgle (MK), krypteret på enheden. Serveren kan ikke åbne
+// den: PASSKEY_PRF kræver passkeyens PRF-output, RECOVERY kræver både
+// brugerens gendannelsesfil (F) og RecoveryShare.serverShare (S).
+model KeyEnvelope {
+  id         String          @id @default(cuid())
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  kind       KeyEnvelopeKind
+  // Passkey.credentialId for PASSKEY_PRF; null for RECOVERY.
+  credentialId String?       @unique
+  // PRF-salt (base64url) for PASSKEY_PRF.
+  prfSalt    String?
+  iv         String
+  ciphertext String
+  createdAt  DateTime        @default(now())
+
+  @@index([userId, kind])
+  @@map("key_envelopes")
+}
+
+// Hello Cals halvdel (S) af gendannelsesnøglen. fileHash = SHA-256(F), så
+// serveren kan se, at brugeren har filen, uden at kende F.
+model RecoveryShare {
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String   @id
+  serverShare String
+  fileHash    String
+  createdAt   DateTime @default(now())
+
+  @@map("recovery_shares")
+}
+
+enum RecoveryRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  COMPLETED
+  EXPIRED
+}
+
+// Gendannelsessag: oprettes efter e-mailbekræftelse + upload af filens hash.
+// Support bekræfter identiteten personligt og godkender; først da frigives S
+// én gang via releaseTokenHash.
+model RecoveryRequest {
+  id               String                @id @default(cuid())
+  user             User                  @relation("RecoveryRequestUser", fields: [userId], references: [id], onDelete: Cascade)
+  userId           String
+  caseCode         String                @unique
+  status           RecoveryRequestStatus @default(PENDING)
+  releaseTokenHash String?               @unique
+  approvedBy       User?                 @relation("RecoveryRequestApprover", fields: [approvedById], references: [id])
+  approvedById     String?
+  approvedAt       DateTime?
+  expiresAt        DateTime
+  completedAt      DateTime?
+  createdAt        DateTime              @default(now())
+
+  @@index([status])
+  @@map("recovery_requests")
+}
+
+enum EmailLinkPurpose {
+  SIGNUP
+  RECOVERY
+}
+
+// Engangslinks sendt til en e-mail, som brugeren netop har tastet. Kun
+// e-mailens hash gemmes — aldrig adressen.
+model EmailLinkToken {
+  id        String           @id @default(cuid())
+  purpose   EmailLinkPurpose
+  emailHash String
+  tokenHash String           @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  @@index([emailHash])
+  @@map("email_link_tokens")
+}
+
+// ---- Boks: INGEN relation til User ----
+
+// id = SHA-256(vaultToken). vaultToken afledes af brugerens hovednøgle, så
+// serveren kan ikke finde en brugers boks ud fra kontoen.
+model Vault {
+  id           String        @id
+  // X25519-offentlig nøgle (base64url) til forsegling af data til boksen.
+  publicKey    String
+  createdAt    DateTime      @default(now())
+  // Opdateres højst én gang i døgnet; bruges til at rydde forældreløse bokse.
+  lastAccessAt DateTime      @default(now())
+  records      VaultRecord[]
+
+  @@map("vaults")
+}
+
+// Én krypteret post. tag = HMAC af samlingsnavnet, recordId = klientens
+// tilfældige ID. Indholdet er AES-256-GCM med AAD "<tag>/<recordId>".
+model VaultRecord {
+  id         String   @id @default(cuid())
+  vault      Vault    @relation(fields: [vaultId], references: [id], onDelete: Cascade)
+  vaultId    String
+  tag        String
+  recordId   String
+  iv         String
+  ciphertext String
+  deleted    Boolean  @default(false)
+  updatedAt  DateTime @updatedAt
+
+  @@unique([vaultId, tag, recordId])
+  @@index([vaultId, updatedAt])
+  @@map("vault_records")
+}
+
+// Indbakke for data, som serveren forsegler til boksen (import fra
+// integrationer). id = SHA-256(inboxToken); tokenet ligger i boksen.
+model VaultInbox {
+  id        String           @id
+  publicKey String
+  createdAt DateTime         @default(now())
+  items     VaultInboxItem[]
+
+  @@map("vault_inboxes")
+}
+
+model VaultInboxItem {
+  id         String     @id @default(cuid())
+  inbox      VaultInbox @relation(fields: [inboxId], references: [id], onDelete: Cascade)
+  inboxId    String
+  epk        String
+  iv         String
+  ciphertext String
+  createdAt  DateTime   @default(now())
+
+  @@index([inboxId, createdAt])
+  @@map("vault_inbox_items")
 }
