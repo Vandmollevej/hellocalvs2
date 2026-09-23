@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 import { ProductDetailEditor } from "@/components/admin/ProductDetailEditor";
 import { QualityControlPanel } from "@/components/admin/QualityControlPanel";
+import { NutritionReportPanel } from "@/components/admin/NutritionReportPanel";
+import { parseNutritionReportChanges } from "@/lib/nutrition-reports";
 import { hasQualityControlPhotoType, QUALITY_CONTROL_PHOTO_TYPES } from "@/lib/quality-control-photo-types";
 
 export default async function AdminProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -10,7 +12,7 @@ export default async function AdminProductDetailPage({ params }: { params: Promi
   if (!admin) redirect("/admin/login");
 
   const { id } = await params;
-  const [product, matchChecks] = await Promise.all([
+  const [product, matchChecks, nutritionReports] = await Promise.all([
     prisma.product.findUnique({
       where: { id },
       include: { brand: true, images: { orderBy: { order: "asc" } } },
@@ -27,6 +29,10 @@ export default async function AdminProductDetailPage({ params }: { params: Promi
       include: { award: true },
       orderBy: { createdAt: "asc" },
     }),
+    prisma.productNutritionReport.findMany({
+      where: { productId: id, status: "PENDING" },
+      orderBy: { createdAt: "asc" },
+    }),
   ]);
   if (!product) notFound();
 
@@ -34,6 +40,16 @@ export default async function AdminProductDetailPage({ params }: { params: Promi
     <div className="flex flex-col gap-4">
       <h1 className="text-lg font-semibold text-text-primary">{product.name}</h1>
       <QualityControlPanel matchChecks={matchChecks.filter(hasQualityControlPhotoType)} />
+      <NutritionReportPanel
+        reports={nutritionReports.map((report) => ({
+          id: report.id,
+          confidence: report.confidence,
+          amountGrams: report.amountGrams,
+          createdAt: report.createdAt.toISOString(),
+          canReply: report.replyInboxId !== null,
+          changes: parseNutritionReportChanges(report.changes),
+        }))}
+      />
       <ProductDetailEditor product={product} />
     </div>
   );

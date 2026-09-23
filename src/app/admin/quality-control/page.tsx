@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 import { t } from "@/lib/admin-i18n";
-import { QualityControlTable } from "@/components/admin/QualityControlTable";
+import { QualityControlTable, type QualityControlRow } from "@/components/admin/QualityControlTable";
 import { hasQualityControlPhotoType, QUALITY_CONTROL_PHOTO_TYPES } from "@/lib/quality-control-photo-types";
 
 function daysAgo(days: number) {
@@ -25,7 +25,19 @@ export default async function AdminQualityControlPage() {
     orderBy: { createdAt: "desc" },
   });
 
-  const productIds = [...new Set(matchChecks.map((check) => check.productId))];
+  // Brugerindberettede næringsændringer (docs/DECISIONS.md 2026-09-23) vises
+  // i samme liste, samlet til én række pr. produkt med antal indberetninger.
+  const nutritionReports = await prisma.productNutritionReport.findMany({
+    where: { status: "PENDING" },
+    include: {
+      product: { select: { id: true, name: true, brand: { select: { name: true } } } },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const productIds = [
+    ...new Set([...matchChecks.map((check) => check.productId), ...nutritionReports.map((r) => r.productId)]),
+  ];
   const cutoff = daysAgo(30);
   const usageCounts = productIds.length
     ? await prisma.registration.groupBy({
@@ -36,7 +48,8 @@ export default async function AdminQualityControlPage() {
     : [];
   const usageByProductId = new Map(usageCounts.map((row) => [row.productId, row._count._all]));
 
-  const rows = matchChecks.filter(hasQualityControlPhotoType).map((check) => ({
+  const matchRows: QualityControlRow[] = matchChecks.filter(hasQualityControlPhotoType).map((check) => ({
+    kind: "match",
     id: check.id,
     productId: check.productId,
     productName: check.product.name,
@@ -46,6 +59,29 @@ export default async function AdminQualityControlPage() {
     createdAt: check.createdAt.toISOString(),
     usageLast30Days: usageByProductId.get(check.productId) ?? 0,
   }));
+
+  const reportRowsByProduct = new Map<string, QualityControlRow & { kind: "userEdit" }>();
+  for (const report of nutritionReports) {
+    const existing = reportRowsByProduct.get(report.productId);
+    if (existing) {
+      existing.reportCount += 1;
+      existing.confidence = Math.min(existing.confidence ?? 100, report.confidence);
+      continue;
+    }
+    reportRowsByProduct.set(report.productId, {
+      kind: "userEdit",
+      id: `user-edit-${report.productId}`,
+      productId: report.productId,
+      productName: report.product.name,
+      brandName: report.product.brand?.name ?? null,
+      reportCount: 1,
+      confidence: report.confidence,
+      createdAt: report.createdAt.toISOString(),
+      usageLast30Days: usageByProductId.get(report.productId) ?? 0,
+    });
+  }
+
+  const rows = [...matchRows, ...reportRowsByProduct.values()];
 
   return (
     <div className="flex flex-col gap-4">

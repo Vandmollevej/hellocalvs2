@@ -206,6 +206,7 @@ model User {
   // the Søgealgoritmer "Personligt tidligere søgte produkter" weight. Erased
   // by anonymizeUser() (src/lib/gdpr.ts), same as every other per-user table.
   productSearchHistory    UserProductSearchHistory[]
+  nutritionReportsReviewed ProductNutritionReport[] @relation("NutritionReportReviewer")
 
   @@map("users")
 }
@@ -895,6 +896,7 @@ model Product {
   genericIngredientsMatched GenericIngredient[]
   stores             ProductStore[]
   personalSearchHistory UserProductSearchHistory[]
+  nutritionReports   ProductNutritionReport[]
 
   @@index([externalSource, externalId])
   @@map("products")
@@ -1048,6 +1050,54 @@ model ProductMatchCheck {
   @@index([productId, status])
   @@index([status, confidence])
   @@map("product_match_checks")
+}
+
+// Brugerindberettede ændringer af næringsindhold (docs/DECISIONS.md
+// 2026-09-23). Oprettes server-side af POST /api/registrations, når en
+// ikke-admin bruger har ændret protein/kulhydrat/fedt via skyderne i forhold
+// til produktets egne værdier. Vises i admin "Kvalitetskontrol" sammen med
+// ProductMatchCheck-rækkerne. Produktet overskrives KUN ved admin-godkendelse
+// (PATCH /api/admin/nutrition-reports/[id]); afvisning ændrer intet på
+// produktet. Rækkerne slettes aldrig, så de udgør historikken.
+model ProductNutritionReport {
+  id               String                @id @default(cuid())
+  product          Product               @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId        String
+  // Privacy (docs/PRIVACY.md): ingen User- eller Registration-reference —
+  // rapporten må ikke afsløre, hvem der har spist varen. I stedet en anonym
+  // svaradresse: indberetterens VaultInbox-id (SHA-256 af et token, der kun
+  // ligger i brugerens boks). Admin kan forsegle en besked dertil
+  // (sealToPublicKey) uden at kunne se, hvem modtageren er. Null, når
+  // klienten ikke har en indbakke endnu.
+  replyInboxId     String?
+  source           FoodChangeSource      @default(USER_EDIT)
+  amountGrams      Float
+  // Kun de felter der faktisk er ændret, omregnet til pr. 100 g:
+  // [{ field: "proteinPer100g", before: 18.4, reported: 20.1 }, ...]
+  changes          Json
+  confidence       Float
+  status           NutritionReportStatus @default(PENDING)
+  reviewedBy       User?                 @relation("NutritionReportReviewer", fields: [reviewedByUserId], references: [id], onDelete: SetNull)
+  reviewedByUserId String?
+  reviewedAt       DateTime?
+  createdAt        DateTime              @default(now())
+
+  @@index([productId, status])
+  @@index([status, createdAt])
+  @@map("product_nutrition_reports")
+}
+
+enum FoodChangeSource {
+  USER_EDIT
+}
+
+// PENDING = afventer admin, produktet er uændret.
+// APPROVED = admin godkendte, de indberettede værdier er skrevet til produktet.
+// REJECTED = admin afviste, produktet er uændret.
+enum NutritionReportStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 enum MatchCheckStatus {

@@ -2,6 +2,34 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-23: Brugerindberettede næringsrettelser → Kvalitetskontrol (anonymt)
+
+Brugerens valg (opgave fra ChatGPT, afklaret punkt for punkt):
+
+- **Udløser:** så snart en ikke-admin registrerer en vare med protein/
+  kulhydrat/fedt ændret via skyderne på Tilføj. Serveren (`POST
+  /api/registrations`) afgør selv, om værdierne afviger fra produktet
+  (afrundet til 0,1 g), så klienten ikke kan omgå kontrollen. Admin-roller
+  opretter aldrig brugerindberetninger.
+- **Model:** ny `ProductNutritionReport` (kilde `FoodChangeSource.USER_EDIT`),
+  kun ændrede felter, omregnet til pr. 100 g med før/indberettet værdi.
+  Oprettes i samme transaktion som registreringen. Snapshot-semantikken er
+  uændret: registreringen gemmer brugerens værdier, produktet røres ikke.
+- **Status:** `PENDING` (produkt uændret) → `APPROVED` (værdierne skrevet til
+  produktet i samme transaktion) eller `REJECTED` (produkt uændret). Kun en
+  `PENDING` rapport kan afgøres. Rækker slettes aldrig = historik.
+- **Confidence:** fast 25 % (`USER_EDIT_CONFIDENCE`), så de altid ligger blandt
+  de kontrolkrævende.
+- **Visning:** i admin "Kvalitetskontrol" i samme liste som fotokontrollerne,
+  én række pr. produkt med mærket "Brugerindberettet" og antal indberetninger.
+  Godkend/Afvis sker på produktets admin-side.
+- **Privatliv (docs/PRIVACY.md):** rapporten har intet bruger- eller
+  registrerings-ID, så admin ikke kan se, hvem der har spist varen. Brugeren
+  ønskede alligevel at kunne skrive til indberetteren: rapporten gemmer en
+  anonym svaradresse (`replyInboxId` = indberetterens `VaultInbox`), og admin
+  kan sende en besked, der forsegles med `sealToPublicKey` og kun kan åbnes på
+  brugerens enhed.
+
 ## 2026-09-23: Privacy-by-architecture — Hello Cal må ikke kunne læse brugerdata
 
 Brugeren har vedtaget en arkitekturændring (forslag fra ChatGPT, afklaret med

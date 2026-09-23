@@ -2,6 +2,25 @@
 
 Last updated: 2026-09-19
 
+## 2026-09-23: Brugerindberettede næringsrettelser i Kvalitetskontrol
+
+Se `docs/DECISIONS.md` (samme dato).
+
+- Ny `ProductNutritionReport` + migration
+  `prisma/migrations/20260923090000_product_nutrition_reports/` (håndskrevet,
+  ikke kørt: ingen lokal PostgreSQL).
+- `POST /api/registrations` opretter rapporten, `src/lib/nutrition-reports.ts`
+  har reglerne. Admin: `/admin/quality-control` viser rækkerne,
+  `/admin/products/[id]` har `NutritionReportPanel` med Før/Bruger, Godkend,
+  Afvis og "Send besked". Nye ruter: `PATCH /api/admin/nutrition-reports/[id]`
+  og `POST /api/admin/nutrition-reports/[id]/message`.
+- **Ikke færdigt (afhænger af boks-klienten, anden session):** klienten sender
+  endnu ikke `x-inbox-token` ved registrering, og appen viser endnu ikke
+  beskeder fra indbakken. Indtil da står der "Indberetteren kan ikke
+  kontaktes" på rapporterne.
+- Ingen "sendt til kontrol"-besked hos brugeren: appen har ikke et
+  toast-mønster, og Tilføj navigerer straks til forsiden.
+
 ## 2026-09-23: "Nyt produkt"-formularen omlagt
 
 Se `docs/DECISIONS.md` (samme dato). `/foods/new`: Produktnavn fjernet, nye

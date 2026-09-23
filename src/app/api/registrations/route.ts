@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { getEffectiveUser } from "@/lib/session";
 import { fulfillMatchingForward } from "@/lib/forwards";
 import { getSubscriptionTier, getRetentionCutoffDate } from "@/lib/subscription";
+import { detectNutritionChanges, USER_EDIT_CONFIDENCE } from "@/lib/nutrition-reports";
+import { idFromSecretToken, INBOX_TOKEN_HEADER } from "@/lib/vault/server";
 
 export async function GET() {
   try {
@@ -106,34 +108,77 @@ export async function POST(req: Request) {
       const scaledExtra = (key: string) =>
         extraFactor !== null && extra && typeof extra[key] === "number" ? extra[key] * extraFactor : undefined;
 
-      const registration = await prisma.registration.create({
-        data: {
-          userId: user.id,
-          productId: product.id,
-          titleSnapshot: product.name,
-          kcalSnapshot: kcalSnapshot ?? product.kcalPer100g * factor,
-          proteinSnapshot: proteinSnapshot ?? product.proteinPer100g * factor,
-          carbsSnapshot: carbsSnapshot ?? product.carbsPer100g * factor,
-          ...(parsedCreatedAt ? { createdAt: parsedCreatedAt } : {}),
-          fatSnapshot: fatSnapshot ?? product.fatPer100g * factor,
-          sugarSnapshot: scaledExtra("sugarG"),
-          fiberSnapshot: scaledExtra("fiberG"),
-          saltSnapshot: scaledExtra("saltG"),
-          potassiumSnapshot: scaledExtra("potassiumMg"),
-          calciumSnapshot: scaledExtra("calciumMg"),
-          ironSnapshot: scaledExtra("ironMg"),
-          // MyFitnessPal-style extended panel (2026-09-11): real per-100g
-          // Product fields (currently only populated from Open Food Facts),
-          // scaled the same way as kcal/protein/carbs/fat above.
-          saturatedFatSnapshot: product.saturatedFatPer100g !== null ? product.saturatedFatPer100g * factor : undefined,
-          unsaturatedFatSnapshot:
-            product.unsaturatedFatPer100g !== null ? product.unsaturatedFatPer100g * factor : undefined,
-          transFatSnapshot: product.transFatPer100g !== null ? product.transFatPer100g * factor : undefined,
-          cholesterolSnapshot: product.cholesterolPer100g !== null ? product.cholesterolPer100g * factor : undefined,
-          vitaminASnapshot: product.vitaminAPer100g !== null ? product.vitaminAPer100g * factor : undefined,
-          vitaminCSnapshot: product.vitaminCPer100g !== null ? product.vitaminCPer100g * factor : undefined,
-          amountGrams,
-        },
+      // Brugerindberetning (docs/DECISIONS.md 2026-09-23): har en ikke-admin
+      // ændret protein/kulhydrat/fedt via skyderne, oprettes en kontrolsag til
+      // admin Kvalitetskontrol. Afgøres her på serveren ud fra de faktisk
+      // indsendte værdier, så klienten ikke kan springe kontrollen over.
+      // Produktet selv ændres aldrig her — kun ved admin-godkendelse.
+      const nutritionChanges =
+        user.role === "ADMIN"
+          ? []
+          : detectNutritionChanges(product, amountGrams, {
+              proteinPer100g: proteinSnapshot,
+              carbsPer100g: carbsSnapshot,
+              fatPer100g: fatSnapshot,
+            });
+
+      // Anonym svaradresse (docs/PRIVACY.md): klientens indbakke-token giver
+      // et VaultInbox-id, som admin kan forsegle en besked til. Gemmes kun,
+      // hvis indbakken findes. Rapporten får aldrig bruger- eller
+      // registrerings-ID.
+      const inboxId =
+        nutritionChanges.length > 0 ? idFromSecretToken(req.headers.get(INBOX_TOKEN_HEADER)) : null;
+      const replyInboxId =
+        inboxId && (await prisma.vaultInbox.findUnique({ where: { id: inboxId }, select: { id: true } }))
+          ? inboxId
+          : null;
+
+      // Registrering og kontrolsag i samme transaktion: én rapport pr. gem,
+      // aldrig en halv tilstand.
+      const registration = await prisma.$transaction(async (tx) => {
+        const created = await tx.registration.create({
+          data: {
+            userId: user.id,
+            productId: product.id,
+            titleSnapshot: product.name,
+            kcalSnapshot: kcalSnapshot ?? product.kcalPer100g * factor,
+            proteinSnapshot: proteinSnapshot ?? product.proteinPer100g * factor,
+            carbsSnapshot: carbsSnapshot ?? product.carbsPer100g * factor,
+            ...(parsedCreatedAt ? { createdAt: parsedCreatedAt } : {}),
+            fatSnapshot: fatSnapshot ?? product.fatPer100g * factor,
+            sugarSnapshot: scaledExtra("sugarG"),
+            fiberSnapshot: scaledExtra("fiberG"),
+            saltSnapshot: scaledExtra("saltG"),
+            potassiumSnapshot: scaledExtra("potassiumMg"),
+            calciumSnapshot: scaledExtra("calciumMg"),
+            ironSnapshot: scaledExtra("ironMg"),
+            // MyFitnessPal-style extended panel (2026-09-11): real per-100g
+            // Product fields (currently only populated from Open Food Facts),
+            // scaled the same way as kcal/protein/carbs/fat above.
+            saturatedFatSnapshot: product.saturatedFatPer100g !== null ? product.saturatedFatPer100g * factor : undefined,
+            unsaturatedFatSnapshot:
+              product.unsaturatedFatPer100g !== null ? product.unsaturatedFatPer100g * factor : undefined,
+            transFatSnapshot: product.transFatPer100g !== null ? product.transFatPer100g * factor : undefined,
+            cholesterolSnapshot: product.cholesterolPer100g !== null ? product.cholesterolPer100g * factor : undefined,
+            vitaminASnapshot: product.vitaminAPer100g !== null ? product.vitaminAPer100g * factor : undefined,
+            vitaminCSnapshot: product.vitaminCPer100g !== null ? product.vitaminCPer100g * factor : undefined,
+            amountGrams,
+          },
+        });
+
+        if (nutritionChanges.length > 0) {
+          await tx.productNutritionReport.create({
+            data: {
+              productId: product.id,
+              replyInboxId,
+              source: "USER_EDIT",
+              amountGrams,
+              changes: nutritionChanges,
+              confidence: USER_EDIT_CONFIDENCE,
+            },
+          });
+        }
+        return created;
       });
 
       await fulfillMatchingForward(user.id, "PRODUCT", product.id);

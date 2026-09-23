@@ -6,18 +6,26 @@ import type { Locale } from "@prisma/client";
 import { t } from "@/lib/admin-i18n";
 import type { QualityControlPhotoType } from "@/lib/quality-control-photo-types";
 
-type Row = {
+type BaseRow = {
   id: string;
   productId: string;
   productName: string;
   brandName: string | null;
-  photoType: QualityControlPhotoType;
   confidence: number | null;
   createdAt: string;
   usageLast30Days: number;
 };
 
-const PHOTO_TYPE_LABEL: Record<Row["photoType"], string> = {
+// "match" = AI-fotokontrol (ProductMatchCheck); "userEdit" = én række pr.
+// produkt med ventende brugerindberettede næringsændringer
+// (ProductNutritionReport, docs/DECISIONS.md 2026-09-23).
+export type QualityControlRow =
+  | (BaseRow & { kind: "match"; photoType: QualityControlPhotoType })
+  | (BaseRow & { kind: "userEdit"; reportCount: number });
+
+type Row = QualityControlRow;
+
+const PHOTO_TYPE_LABEL: Record<QualityControlPhotoType, string> = {
   BARCODE: "Stregkodefoto",
   NUTRITION: "Næringsfoto",
   INGREDIENTS: "Ingrediensfoto",
@@ -125,7 +133,23 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
                 <td className="px-3 py-2 font-medium text-text-primary">
                   {row.brandName ? `${row.brandName} ${row.productName}` : row.productName}
                 </td>
-                <td className="px-3 py-2 text-text-secondary">{PHOTO_TYPE_LABEL[row.photoType]}</td>
+                <td className="px-3 py-2 text-text-secondary">
+                  {row.kind === "match" ? (
+                    PHOTO_TYPE_LABEL[row.photoType]
+                  ) : (
+                    <span className="flex flex-wrap items-center gap-1.5">
+                      {t(locale, "quality_control_issue_nutrition")}
+                      <span className="rounded-full bg-hf-gray-light px-2 py-0.5 text-xs font-medium text-hf-gray-dark">
+                        {t(locale, "quality_control_user_reported")}
+                      </span>
+                      {row.reportCount > 1 && (
+                        <span className="text-xs">
+                          {row.reportCount} {t(locale, "quality_control_user_report_count")}
+                        </span>
+                      )}
+                    </span>
+                  )}
+                </td>
                 <td className="px-3 py-2">
                   <span
                     className={`rounded-full px-2 py-0.5 text-xs font-medium ${
