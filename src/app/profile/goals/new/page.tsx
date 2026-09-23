@@ -11,6 +11,7 @@ import {
   emptyBodyMeasurementValues,
   type BodyMeasurementField,
 } from "@/lib/body-measurements";
+import { localApi } from "@/lib/vault/local-api";
 
 // "" = tomt felt (ignoreres), null = ugyldig værdi, ellers det parsede tal.
 function parseValue(raw: string): number | "" | null {
@@ -87,7 +88,7 @@ export default function NewGoalPage() {
     setSaving(true);
     setSaveError(false);
     try {
-      const response = await fetch("/api/goals", {
+      const response = await localApi("/api/goals", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ targetDate, targets }),

@@ -448,7 +448,7 @@ export default function CalendarPage() {
   useEffect(() => {
     let cancelled = false;
     Promise.all([
-      fetch("/api/profile").then((response) => response.json()),
+      localApi("/api/profile").then((response) => response.json()),
       localApi("/api/sleep-schedule").then((response) => response.json()),
       localApi("/api/work-shifts").then((response) => response.json()),
     ])

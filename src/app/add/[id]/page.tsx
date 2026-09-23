@@ -24,6 +24,7 @@ import { labelForAllergen } from "@/lib/allergens";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { isAlternativeServingConfident } from "@/lib/alternative-servings";
 import type { AlternativeServing } from "@/lib/product-analysis-types";
+import { localApi } from "@/lib/vault/local-api";
 
 const PHOTO_AWARD_TYPE_KEY: Record<string, "photoAward.photoTypeBarcode" | "photoAward.photoTypeNutrition" | "photoAward.photoTypeIngredients"> = {
   BARCODE: "photoAward.photoTypeBarcode",
@@ -156,7 +157,7 @@ export default function AddPage() {
       })
       .catch(() => setState({ status: "error" }));
 
-    fetch("/api/profile")
+    localApi("/api/profile")
       .then((res) => res.json())
       .then((data) => setProfile(data.user ?? null))
       .catch(() => setProfile(null));

@@ -10,6 +10,7 @@ import {
   type Icon,
 } from "@tabler/icons-react";
 import { IconBathroomScale } from "@/components/icons/BathroomScale";
+import { localApi } from "@/lib/vault/local-api";
 
 // Every real "add something" destination in the app — the pool the
 // front-page joystick wheel (AddButton.tsx) can show a subset of, and the
@@ -144,7 +145,7 @@ export function useAddActionsProfile(): { sex: "FEMALE" | "MALE" | null; cycleTr
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/profile")
+    localApi("/api/profile")
       .then(async (response) => {
         if (!response.ok) throw new Error("failed");
         return (await response.json()) as {

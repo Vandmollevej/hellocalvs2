@@ -12,6 +12,7 @@ import { PRODUCT_DRAFT_STORAGE_KEY, type ProductCreateDraft } from "@/lib/produc
 import type { AlternativeServing, AnalysisIds } from "@/lib/product-analysis-types";
 import { queuePendingProduct } from "@/lib/offline-product-queue";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { localApi } from "@/lib/vault/local-api";
 
 type FormValues = {
   brand: string;
@@ -124,7 +125,7 @@ function OpretProduktContent() {
   useEffect(() => {
     if (initial.marketRegion) return;
     let cancelled = false;
-    fetch("/api/profile")
+    localApi("/api/profile")
       .then((response) => (response.ok ? response.json() : null))
       .then((data: { user?: { region?: string } } | null) => {
         if (!cancelled && data?.user?.region) setRegion(data.user.region);

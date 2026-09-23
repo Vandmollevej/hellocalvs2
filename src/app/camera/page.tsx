@@ -18,6 +18,7 @@ import {
 } from "@/lib/barcode-scan";
 import { buildFakeBarcodeForRegion } from "@/lib/regions";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { localApi } from "@/lib/vault/local-api";
 
 type CameraStatus = "starting" | "active" | "denied" | "unavailable" | "error";
 type LookupStatus = "idle" | "loading" | "not_found" | "error";
@@ -257,7 +258,7 @@ function KameraContent() {
   // "DK" (matches the User.region schema default) while loading or on error.
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/profile")
+    localApi("/api/profile")
       .then((response) => (response.ok ? response.json() : null))
       .then((data: { user?: { region?: string } } | null) => {
         if (!cancelled && data?.user?.region) setRegion(data.user.region);

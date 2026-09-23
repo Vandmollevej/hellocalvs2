@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { localApi } from "@/lib/vault/local-api";
 
 // Settings → Visning → Anbefalede grænser: a single toggle for
 // User.warnOnRecommendedLimits (src/lib/stat-cards.ts /
@@ -22,7 +23,7 @@ export default function RecommendedLimitsSettingsPage() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/profile")
+    localApi("/api/profile")
       .then(async (response) => {
         if (!response.ok) throw new Error("profile");
         return (await response.json()) as { user: DisplaySettingsUser };
@@ -43,7 +44,7 @@ export default function RecommendedLimitsSettingsPage() {
 
   function setRecommendedLimitWarnings(value: boolean) {
     setUser((current) => (current ? { ...current, warnOnRecommendedLimits: value } : current));
-    fetch("/api/profile", {
+    localApi("/api/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ warnOnRecommendedLimits: value }),

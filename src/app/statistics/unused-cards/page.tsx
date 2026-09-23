@@ -134,7 +134,7 @@ export default function UnusedStatCardsPage() {
         if (!response.ok) throw new Error("Kunne ikke hente sundhedsdata");
         return (await response.json()) as { metrics: HealthMetricTotals[] };
       }),
-      fetch("/api/profile").then(async (response) => {
+      localApi("/api/profile").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente profil");
         return (await response.json()) as { user: { region?: string } };
       }),

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { localApi } from "@/lib/vault/local-api";
 
 type DailyLogPreference = "WORK_HOURS" | "SLEEP_TIMES";
 
@@ -55,7 +56,7 @@ export function OnboardingWizard({
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/profile")
+    localApi("/api/profile")
       .then((response) => (response.ok ? response.json() : null))
       .then((data: { user: OnboardingUser } | null) => {
         if (cancelled || !data) return;
@@ -82,7 +83,7 @@ export function OnboardingWizard({
   const totalSteps = steps.length;
 
   function save(data: Record<string, unknown>) {
-    fetch("/api/profile", {
+    localApi("/api/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),

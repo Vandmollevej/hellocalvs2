@@ -5,6 +5,7 @@ import Link from "next/link";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { localApi } from "@/lib/vault/local-api";
 
 // Kommunikation (Fejlretninger/FEJLLISTE.md #13/#16, 2026-09-06): erstatter
 // den tidligere separate "Notifikationer"-side. De fire generelle
@@ -48,7 +49,7 @@ export default function CommunicationPage() {
   const [preferences, setPreferences] = useState<Preference[] | null>(null);
 
   useEffect(() => {
-    fetch("/api/profile")
+    localApi("/api/profile")
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data) setUser(data.user);
@@ -62,7 +63,7 @@ export default function CommunicationPage() {
 
   function updateUser<K extends keyof CommunicationUser>(key: K, value: CommunicationUser[K]) {
     setUser((current) => (current ? { ...current, [key]: value } : current));
-    fetch("/api/profile", {
+    localApi("/api/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ [key]: value }),

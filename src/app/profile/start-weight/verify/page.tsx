@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
+import { localApi } from "@/lib/vault/local-api";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 // Landingsside fra verificeringsmailen (docs/DECISIONS.md 2026-09-22) — kun
@@ -29,7 +30,7 @@ function VerifyStartWeightContent() {
   useEffect(() => {
     if (!token) return;
     let cancelled = false;
-    fetch(`/api/profile/start-weight?token=${encodeURIComponent(token)}`)
+    localApi(`/api/profile/start-weight?token=${encodeURIComponent(token)}`)
       .then(async (response) => {
         if (!response.ok) throw new Error("invalid");
         return (await response.json()) as { valid: boolean; currentWeightKg: number | null };
@@ -66,7 +67,7 @@ function VerifyStartWeightContent() {
     setError(null);
     setState("saving");
     try {
-      const response = await fetch("/api/profile/start-weight", {
+      const response = await localApi("/api/profile/start-weight", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, weightKg: parsed }),

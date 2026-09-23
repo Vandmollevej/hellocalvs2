@@ -72,7 +72,7 @@ export default function ProfileEditPage() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/profile")
+    localApi("/api/profile")
       .then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente profil");
         return (await response.json()) as { user: ProfileUser };
@@ -124,7 +124,7 @@ export default function ProfileEditPage() {
 
     if (saveTimeout.current) clearTimeout(saveTimeout.current);
     saveTimeout.current = setTimeout(() => {
-      fetch("/api/profile", {
+      localApi("/api/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ [key]: value }),
@@ -137,7 +137,7 @@ export default function ProfileEditPage() {
   function saveInitialWeight() {
     const parsed = Number(initialWeightInput.trim().replace(",", "."));
     if (!initialWeightInput.trim() || !Number.isFinite(parsed) || parsed <= 0) return;
-    fetch("/api/profile", {
+    localApi("/api/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ weightKg: parsed }),
@@ -161,7 +161,7 @@ export default function ProfileEditPage() {
 
   function updateNow<K extends keyof ProfileUser>(key: K, value: ProfileUser[K]) {
     setUser((current) => (current ? { ...current, [key]: value } : current));
-    fetch("/api/profile", {
+    localApi("/api/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ [key]: value }),
@@ -184,10 +184,6 @@ export default function ProfileEditPage() {
               value={user.displayName}
               onChange={(event) => update("displayName", event.target.value)}
             />
-          </Field>
-
-          <Field label={t("profile.field.email")}>
-            <input className={`${inputClass} opacity-60`} value={user.email} disabled />
           </Field>
 
           <div className="grid grid-cols-2 gap-3">

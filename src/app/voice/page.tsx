@@ -8,6 +8,7 @@ import { HfScreen } from "@/components/HfScreen";
 import { SwipeableRow } from "@/components/SwipeableRow";
 import { regionToSpeechLang } from "@/lib/regions";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { localApi } from "@/lib/vault/local-api";
 
 type Item = {
   id: string;
@@ -249,7 +250,7 @@ export default function VoicePage() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/profile")
+    localApi("/api/profile")
       .then((response) => (response.ok ? response.json() : null))
       .then((data: { user?: { region?: string } } | null) => {
         if (!cancelled && data?.user?.region) regionRef.current = data.user.region;

@@ -137,7 +137,7 @@ export default function BilledeDagbogPage() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/profile")
+    localApi("/api/profile")
       .then((res) => res.json())
       .then((data) => {
         if (cancelled) return;
@@ -179,7 +179,7 @@ export default function BilledeDagbogPage() {
 
   function toggleRequiresPasscode(value: boolean) {
     setUser((current) => (current ? { ...current, photoDiaryRequiresPasscode: value } : current));
-    fetch("/api/profile", {
+    localApi("/api/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ photoDiaryRequiresPasscode: value }),

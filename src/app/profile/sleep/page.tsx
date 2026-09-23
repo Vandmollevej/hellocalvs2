@@ -68,7 +68,7 @@ export default function SleepSchedulePage() {
     let cancelled = false;
 
     Promise.all([
-      fetch("/api/profile").then((res) => res.json()),
+      localApi("/api/profile").then((res) => res.json()),
       localApi("/api/sleep-schedule").then((res) => res.json()),
     ])
       .then(([profileData, scheduleData]) => {
@@ -103,7 +103,7 @@ export default function SleepSchedulePage() {
 
     if (saveTimeout.current) clearTimeout(saveTimeout.current);
     saveTimeout.current = setTimeout(() => {
-      fetch("/api/profile", {
+      localApi("/api/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(patch),
@@ -117,7 +117,7 @@ export default function SleepSchedulePage() {
 
   function toggleShiftWork(enabled: boolean) {
     setUser((current) => (current ? { ...current, shiftWorkEnabled: enabled } : current));
-    fetch("/api/profile", {
+    localApi("/api/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ shiftWorkEnabled: enabled }),

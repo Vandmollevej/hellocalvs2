@@ -15,6 +15,7 @@ import {
   type SupportPermissionKey,
   type SupportPermissions,
 } from "@/lib/support-permissions";
+import { localApi } from "@/lib/vault/local-api";
 
 // Local calendar date as "YYYY-MM-DD" — the value <input type="date"> uses.
 // Never parsed back into a Date on the client, so no timezone can shift it.
@@ -57,7 +58,7 @@ export default function SupportSettingsPage() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/profile")
+    localApi("/api/profile")
       .then((response) => (response.ok ? response.json() : null))
       .then((data: { user?: { sex?: string | null } } | null) => {
         if (!cancelled) setIsFemale(data?.user?.sex === "FEMALE");
