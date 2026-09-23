@@ -12,7 +12,6 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconLayoutList,
-  IconMinus,
   IconStarFilled,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
@@ -1016,11 +1015,7 @@ function WeekView({
               <span className="flex-1" />
             ) : (
               <>
-                {met ? (
-                  <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />
-                ) : (
-                  <IconMinus size={16} stroke={3} className="shrink-0 opacity-50" aria-hidden="true" />
-                )}
+                {met && <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />}
                 <span className="flex-1 text-sm font-semibold">{met ? t("calendar.goalMet") : t("calendar.goalMissed")}</span>
                 <span className={`shrink-0 text-sm font-bold tabular-nums ${met ? "text-hf-green" : "text-hf-red-dark"}`}>
                   {met ? "+" : "-"}
@@ -1177,11 +1172,7 @@ function ListView({
               <span className="flex-1" />
             ) : (
               <>
-                {met ? (
-                  <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />
-                ) : (
-                  <IconMinus size={16} stroke={3} className="shrink-0 opacity-50" aria-hidden="true" />
-                )}
+                {met && <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />}
                 <span className="flex-1 text-sm font-semibold">{met ? t("calendar.goalMet") : t("calendar.goalMissed")}</span>
                 <span className={`shrink-0 text-sm font-bold tabular-nums ${met ? "text-hf-green" : "text-hf-red-dark"}`}>
                   {met ? "+" : "-"}
