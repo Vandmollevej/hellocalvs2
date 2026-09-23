@@ -626,6 +626,12 @@
     "title": "My details",
     "loading": "Loading…",
     "loadError": "Couldn't load profile.",
+    "completion": {
+      "label": "Profile completion",
+      "aboutYou": "About you",
+      "goals": "Goals",
+      "habits": "Habits"
+    },
     "section": {
       "profile": "Profile",
       "communication": "Communication"

@@ -626,6 +626,12 @@
     "title": "Mine oplysninger",
     "loading": "Henter…",
     "loadError": "Kunne ikke hente profil.",
+    "completion": {
+      "label": "Profilens færdiggørelse",
+      "aboutYou": "Om dig",
+      "goals": "Mål",
+      "habits": "Vaner"
+    },
     "section": {
       "profile": "Profil",
       "communication": "Kommunikation"

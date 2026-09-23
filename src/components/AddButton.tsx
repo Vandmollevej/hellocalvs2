@@ -30,11 +30,11 @@ const DRAG_THRESHOLD = 6;
 const HALF_CIRCLE_RADIUS = 83;
 
 // The backdrop is a half-disk (flat edge against the screen edge, curved
-// edge bulging inward) — its visual "middle" is not the half-disk's own
-// bounding-box midpoint. It's the centroid of a half-disk area, which sits
-// 4r/3π from the flat edge. The FAB (and its plus) is centered there so it
-// reads as sitting in the middle of the green shape, not off to one side.
-export const FAB_INSET = Math.round((4 * HALF_CIRCLE_RADIUS) / (3 * Math.PI) - FAB_SIZE / 2);
+// edge bulging inward). The FAB (and its fingerprint) is centered on the
+// half-disk's own bounding box — r/2 from the flat edge, vertically on
+// CENTER_Y — so the large fingerprint reads as center-center in the visible
+// green shape (the earlier 4r/3π centroid pulled it visibly toward the edge).
+export const FAB_INSET = Math.round(HALF_CIRCLE_RADIUS / 2 - FAB_SIZE / 2);
 
 // The action arc is centered on the same point as the backdrop semicircle
 // (the screen edge, not the FAB button), so every icon sits the same
@@ -47,6 +47,22 @@ const RADIUS = HALF_CIRCLE_RADIUS + ARC_GAP + CIRCLE / 2;
 // doesn't sit right on top of / block the icon it just selected.
 const HIGHLIGHT_EXTRA_RADIUS = 14;
 
+// Active (highlighted) icons keep their exact focus position; the inactive
+// ones sit a little closer to the backdrop than the base RADIUS.
+const ACTIVE_RADIUS = RADIUS + HIGHLIGHT_EXTRA_RADIUS;
+const INACTIVE_RADIUS = RADIUS - 8;
+
+// The highlighted icon is scaled up, so the label offset must account for
+// the scaled circle's edge to keep a clear gap between circle and label box.
+const HIGHLIGHT_SCALE = 1.35;
+const LABEL_GAP = 12;
+const LABEL_OFFSET = CIRCLE / 2 + (CIRCLE * HIGHLIGHT_SCALE) / 2 + LABEL_GAP;
+const ICON_SIZE = 26;
+
+const INACTIVE_SHADOW = "0 2px 5px rgba(0,0,0,0.10), 0 1px 2px rgba(0,0,0,0.05)";
+const ACTIVE_SHADOW = "0 8px 18px rgba(0,0,0,0.15), 0 3px 8px rgba(0,0,0,0.08)";
+const LABEL_SHADOW = "0 2px 4px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)";
+
 // Minimum distance from the FAB center before a drag counts as "aiming at"
 // an option, so a small wobble right after pressing down doesn't select
 // anything. Kept small so the whole joystick circle is "live" — the user
@@ -58,6 +74,9 @@ const SELECT_DEAD_ZONE = 14;
 // backdrop), and the backdrop's own edge bulges outward toward the drag
 // direction — like the light circle is physically pressing into it.
 const LIGHT_CIRCLE_SIZE = 40;
+// The fingerprint sits directly on the green backdrop (no light circle behind
+// it) and is a bit larger than the old 40px light circle.
+const FINGERPRINT_SIZE = 60;
 const LIGHT_CIRCLE_TRAVEL = HALF_CIRCLE_RADIUS - LIGHT_CIRCLE_SIZE / 2 - 6;
 const BULGE_MAX = 20;
 // How tightly the bulge concentrates around the drag angle (in degrees) —
@@ -179,14 +198,30 @@ function buildActions(
 // RADIUS away from that center, i.e. the same margin from the curved edge.
 function arcItemCenter(angleDeg: number, containerWidth: number, side: FabSide) {
   const rad = (angleDeg * Math.PI) / 180;
-  const reach = RADIUS * Math.cos(rad);
+  const reach = INACTIVE_RADIUS * Math.cos(rad);
   const x = side === "left" ? reach : containerWidth - reach;
-  const y = CENTER_Y + RADIUS * Math.sin(rad);
+  const y = CENTER_Y + INACTIVE_RADIUS * Math.sin(rad);
   return { x, y };
 }
 
+// Vertical extent (relative to the hero's top) of everything the circle can
+// show: the green backdrop and the fanned-out action arc in its worst case
+// (highlighted = stepped out by HIGHLIGHT_EXTRA_RADIUS and scaled up). The action
+// buttons are the natural limit when the circle is dragged vertically, so
+// no button can end up under the bottom navigation or above the page top.
+function circleExtent(anglesDeg: number[]) {
+  const outerRadius = RADIUS + HIGHLIGHT_EXTRA_RADIUS;
+  // Highlighted icons are drawn scaled up 1.35x.
+  const halfIcon = (CIRCLE * 1.35) / 2;
+  const iconYs = anglesDeg.map((angle) => CENTER_Y + outerRadius * Math.sin((angle * Math.PI) / 180));
+  return {
+    top: Math.min(CENTER_Y - HALF_CIRCLE_RADIUS, ...iconYs.map((y) => y - halfIcon)),
+    bottom: Math.max(CENTER_Y + HALF_CIRCLE_RADIUS, ...iconYs.map((y) => y + halfIcon)),
+  };
+}
+
 function arcItemStyle(angleDeg: number, side: FabSide, isHighlighted: boolean): React.CSSProperties {
-  const radius = RADIUS + (isHighlighted ? HIGHLIGHT_EXTRA_RADIUS : 0);
+  const radius = isHighlighted ? ACTIVE_RADIUS : INACTIVE_RADIUS;
   const rad = (angleDeg * Math.PI) / 180;
   const reach = radius * Math.cos(rad) - CIRCLE / 2;
   const top = CENTER_Y + radius * Math.sin(rad) - CIRCLE / 2;
@@ -204,22 +239,6 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [highlightedKey, setHighlightedKey] = useState<string | null>(null);
-// Vertical extent (relative to the hero's top) of everything the circle can
-// show: the green backdrop and the fanned-out action arc in its worst case
-// (highlighted = stepped out by HIGHLIGHT_EXTRA_RADIUS and scaled up). The action
-// buttons are the natural limit when the circle is dragged vertically, so
-// no button can end up under the bottom navigation or above the page top.
-function circleExtent(anglesDeg: number[]) {
-  const outerRadius = RADIUS + HIGHLIGHT_EXTRA_RADIUS;
-  // Highlighted icons are drawn scaled up 1.35x.
-  const halfIcon = (CIRCLE * 1.35) / 2;
-  const iconYs = anglesDeg.map((angle) => CENTER_Y + outerRadius * Math.sin((angle * Math.PI) / 180));
-  return {
-    top: Math.min(CENTER_Y - HALF_CIRCLE_RADIUS, ...iconYs.map((y) => y - halfIcon)),
-    bottom: Math.max(CENTER_Y + HALF_CIRCLE_RADIUS, ...iconYs.map((y) => y + halfIcon)),
-  };
-}
-
   const [dragOffset, setDragOffset] = useState<{ x: number; y: number } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const pointerStart = useRef<{ x: number; y: number } | null>(null);
@@ -498,20 +517,20 @@ function circleExtent(anglesDeg: number[]) {
           touchAction: "none",
         } as React.CSSProperties}
       >
-        {/* Fejlretninger/FEJLLISTE.md #30: ikonet sidder i sin egen lyse
-            cirkel, som følger fingeren under træk (clampet af dragOffset,
-            se updateHighlight) — i stedet for at stå fast midt i knappen.
+        {/* Fejlretninger/FEJLLISTE.md #30: fingeraftrykket ligger direkte på
+            den grønne baggrund (ingen lys cirkel bag det) og følger fingeren
+            under træk (clampet af dragOffset, se updateHighlight). Knappen
+            selv er et usynligt, større hit-area omkring ikonet.
             Erstattede det tidligere IconPlus med et fingeraftryk (bruger-
             leveret public/icons/fingerprint.png) som symbol for at cirklen
             kan navigeres — samme "brightness(0) invert(1)"-hvidgørings-
             mønster som allerede bruges til wheel-actionernes PNG-ikoner
             nedenfor, så den rå PNG altid vises hvid uanset kildefarve. */}
         <span
-          className="pointer-events-none flex items-center justify-center rounded-full shadow-sm transition-transform"
+          className="pointer-events-none flex flex-none items-center justify-center transition-transform"
           style={{
-            width: LIGHT_CIRCLE_SIZE,
-            height: LIGHT_CIRCLE_SIZE,
-            backgroundColor: "var(--hf-tan-dark)",
+            width: FINGERPRINT_SIZE,
+            height: FINGERPRINT_SIZE,
             transform: dragOffset ? `translate(${dragOffset.x}px, ${dragOffset.y}px)` : undefined,
             transitionDuration: dragOffset ? "0ms" : "150ms",
           }}
@@ -519,9 +538,9 @@ function circleExtent(anglesDeg: number[]) {
           <Image
             src="/icons/fingerprint.png"
             alt=""
-            width={22}
-            height={22}
-            className="object-contain"
+            width={FINGERPRINT_SIZE}
+            height={FINGERPRINT_SIZE}
+            className="block object-contain"
             style={{ filter: "brightness(0) invert(1)" }}
           />
         </span>
@@ -546,19 +565,19 @@ function circleExtent(anglesDeg: number[]) {
                 height: CIRCLE,
                 opacity: open ? 1 : 0,
                 pointerEvents: open ? "auto" : "none",
-                transform: open ? `scale(${isHighlighted ? 1.35 : 1})` : "scale(0.4)",
+                transform: open ? `scale(${isHighlighted ? HIGHLIGHT_SCALE : 1})` : "scale(0.4)",
                 backgroundColor: isHighlighted ? "var(--hf-green)" : undefined,
-                boxShadow: isHighlighted ? "0 4px 14px rgba(0,0,0,0.25)" : undefined,
+                boxShadow: isHighlighted ? ACTIVE_SHADOW : INACTIVE_SHADOW,
               }}
             >
               {Icon ? (
-                <Icon size={20} color={isHighlighted ? "var(--hf-white)" : "var(--hf-black)"} />
+                <Icon size={ICON_SIZE} color={isHighlighted ? "var(--hf-white)" : "var(--hf-black)"} />
               ) : (
                 <Image
                   src={action.imageSrc!}
                   alt=""
-                  width={22}
-                  height={22}
+                  width={ICON_SIZE}
+                  height={ICON_SIZE}
                   className="object-contain"
                   style={isHighlighted ? { filter: "brightness(0) invert(1)" } : undefined}
                 />
@@ -566,26 +585,18 @@ function circleExtent(anglesDeg: number[]) {
             </Link>
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute flex items-center whitespace-nowrap font-bold transition-opacity duration-150"
-              style={
-                side === "left"
-                  ? {
-                      left: CIRCLE + 12,
-                      top: 0,
-                      height: CIRCLE,
-                      color: "var(--hf-green)",
-                      fontSize: 15,
-                      opacity: open && isHighlighted ? 1 : 0,
-                    }
-                  : {
-                      right: CIRCLE + 12,
-                      top: 0,
-                      height: CIRCLE,
-                      color: "var(--hf-green)",
-                      fontSize: 15,
-                      opacity: open && isHighlighted ? 1 : 0,
-                    }
-              }
+              className="pointer-events-none absolute flex items-center whitespace-nowrap bg-hf-tan font-bold transition-opacity duration-150"
+              style={{
+                [side === "left" ? "left" : "right"]: LABEL_OFFSET,
+                top: CIRCLE / 2,
+                transform: "translateY(-50%)",
+                padding: "7px 10px",
+                borderRadius: 3,
+                boxShadow: LABEL_SHADOW,
+                color: "var(--hf-green)",
+                fontSize: 15,
+                opacity: open && isHighlighted ? 1 : 0,
+              }}
             >
               {action.hint}
             </span>

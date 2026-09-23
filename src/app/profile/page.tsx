@@ -19,6 +19,7 @@ import {
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { IconBathScale } from "@/components/hf/IconBathScale";
+import { HfProgressStepper } from "@/components/hf/HfProgressStepper";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { localApi } from "@/lib/vault/local-api";
 
@@ -75,6 +76,17 @@ export default function ProfilePage() {
         </p>
       ) : (
         <div className="flex flex-col gap-4 p-4">
+          {/* Statisk indtil guided profilopsætning beregner det dynamisk. */}
+          <HfProgressStepper
+            steps={[
+              t("profile.completion.aboutYou"),
+              t("profile.completion.goals"),
+              t("profile.completion.habits"),
+            ]}
+            current={0}
+            progress={0.2}
+            label={t("profile.completion.label")}
+          />
           <AccordionCard>
             <ChevronRow
               icon={<IconUser size={20} />}
