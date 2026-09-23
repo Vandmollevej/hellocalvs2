@@ -869,6 +869,10 @@ model Product {
   subbrand        String?
   variant         String?
   packageSizeText String?
+  // Produkttype = navneord for selve varen (fx "Skyr"), læst af AI eller
+  // importeret fra Excel. Manuelt oprettede produkter sammensætter name af
+  // Sub brand + Produkttype + Variant (docs/DECISIONS.md 2026-09-23).
+  productType     String?
 
   barcodes           Barcode[]
   registrations      Registration[]

@@ -1592,3 +1592,20 @@ build-/verifikationsnoter.
   oprindeligt forventede svar-format (`subscription`, `paymentMethods`) ved
   siden af de nye felter (`tier`, `pointsBalance`, `priceDkk` m.fl.), så
   begge sider deler ét endepunkt uden at knække den eksisterende side.
+
+## 2026-09-23: "Nyt produkt" — sammensat produktnavn, Produkttype, Mængde, knapper nederst
+
+- Den manuelle formular (`/foods/new`) har ikke længere et Produktnavn-felt.
+  Felterne er Brand (påkrævet), Sub brand (valgfri), Produkttype (påkrævet),
+  Variant (valgfri) og Mængde (total) (påkrævet: tal + enhed g/kg/ml/cl/L/stk).
+- **Produkttype** er et navneord for selve varen (fx "Skyr"), som ellers læses
+  af AI eller importeres fra Excel — fri tekst, ikke en kategori. Gemmes i den
+  nye kolonne `Product.productType`.
+- `Product.name` sammensættes server-side af Sub brand + Produkttype + Variant
+  (`composeProductName` i `src/lib/product-naming.ts`). Brand ligger i
+  brand-relationen og mængden i `packageSizeText`, så ingen af dem gentages i
+  navnet. `POST /api/products` bruger et eksplicit `name`, hvis det sendes
+  (øvrige flows), ellers det sammensatte navn.
+- **Global UI-regel:** primære handlingsknapper på formularsider ligger altid
+  nederst, lige over footer-navigationen — via `HfScreen`'s `footer`-slot og
+  `form`-attributten — og aldrig lige efter felterne midt på siden.

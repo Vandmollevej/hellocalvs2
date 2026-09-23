@@ -10,6 +10,7 @@ import { deriveIsVerified, rankProducts } from "@/lib/product-search-ranking";
 import { getActiveSearchRankingWeights } from "@/lib/search-ranking-config";
 import { cleanAlternativeServings } from "@/lib/alternative-servings";
 import { flagUncertainAlternativeServings } from "@/lib/alternative-servings-review";
+import { composeProductName } from "@/lib/product-naming";
 
 // Fetches Open Food Facts products globally live for search terms without enough local
 // results, and saves them as PENDING (same pattern as the barcode lookup in
@@ -315,7 +316,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "Ugyldig anmodning" }, { status: 400 });
   }
 
-  const name = typeof body.name === "string" ? body.name.trim() : "";
   // brand/subbrand/variant/packageSizeText (docs/DECISIONS.md, 2026-09-17):
   // brand = hovedmærke/logo, subbrand = produktserie, variant = smag/type/
   // styrke — bevidst adskilt fra selve produktnavnet.
@@ -323,6 +323,13 @@ export async function POST(req: Request) {
   const subbrand = cleanOptionalString(body.subbrand);
   const variant = cleanOptionalString(body.variant);
   const packageSizeText = cleanOptionalString(body.packageSizeText);
+  // Manuel "Nyt produkt" (docs/DECISIONS.md 2026-09-23) sender ingen name,
+  // men en productType — name sammensættes så af Sub brand + Produkttype +
+  // Variant. Andre flows sender fortsat et eksplicit name.
+  const productType = cleanOptionalString(body.productType);
+  const explicitName = typeof body.name === "string" ? body.name.trim() : "";
+  const name =
+    explicitName || (productType ? composeProductName({ subbrand, productType, variant }) : "");
 
   const kcalPer100g = parsePositiveNumber(body.kcalPer100g);
   const proteinPer100g = parsePositiveNumber(body.proteinPer100g);
@@ -386,6 +393,7 @@ export async function POST(req: Request) {
         subbrand,
         variant,
         packageSizeText,
+        productType,
         kcalPer100g,
         proteinPer100g,
         carbsPer100g,

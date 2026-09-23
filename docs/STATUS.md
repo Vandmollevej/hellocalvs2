@@ -2,6 +2,15 @@
 
 Last updated: 2026-09-19
 
+## 2026-09-23: "Nyt produkt"-formularen omlagt
+
+Se `docs/DECISIONS.md` (samme dato). `/foods/new`: Produktnavn fjernet, nye
+felter Produkttype og Variant samt Mængde (total) som tal + enhed. Brand er
+påkrævet, Sub brand valgfri. "Opret produkt"/"Opret ingrediens" ligger nu i
+`HfScreen`'s footer lige over bundnavigationen. Ny kolonne
+`Product.productType` (migration `20260923100000_product_type`) og ny
+`src/lib/product-naming.ts`. Migrationen skal køres på serveren ved deploy.
+
 ## 2026-09-23 (senere): Ugesummering slået til + rigtigt vægtestimat
 
 Bygger videre på indlægget nedenfor (`37ee7f4`), se DECISIONS samme dato

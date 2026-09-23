@@ -5,28 +5,51 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { IconApple, IconCarrot } from "@tabler/icons-react";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { PACKAGE_SIZE_UNITS, formatPackageSize, type PackageSizeUnit } from "@/lib/product-naming";
 
 export const OCR_DRAFT_STORAGE_KEY = "hellocal-ocr-product-draft";
 
 export type ProductDraft = {
-  name?: string;
   kcalPer100g?: string;
   proteinPer100g?: string;
   carbsPer100g?: string;
   fatPer100g?: string;
 };
 
-type FormValues = Required<ProductDraft> & { brand: string; subbrand: string };
+// Produktnavnet indtastes ikke — det sammensættes server-side af Sub brand +
+// Produkttype + Variant (docs/DECISIONS.md 2026-09-23).
+type FormValues = Required<ProductDraft> & {
+  brand: string;
+  subbrand: string;
+  productType: string;
+  variant: string;
+  packageAmount: string;
+  packageUnit: PackageSizeUnit;
+};
 
 const EMPTY_VALUES: FormValues = {
-  name: "",
   kcalPer100g: "",
   proteinPer100g: "",
   carbsPer100g: "",
   fatPer100g: "",
   brand: "",
   subbrand: "",
+  productType: "",
+  variant: "",
+  packageAmount: "",
+  packageUnit: "g",
 };
+
+const NUMERIC_KEYS = new Set<keyof FormValues>([
+  "kcalPer100g",
+  "proteinPer100g",
+  "carbsPer100g",
+  "fatPer100g",
+  "packageAmount",
+]);
+
+const PRODUCT_FORM_ID = "create-product-form";
+const INGREDIENT_FORM_ID = "create-ingredient-form";
 
 const numberInputClass =
   "min-w-0 flex-1 rounded-full bg-hf-white px-3.5 py-2 text-sm text-hf-black outline-none";
@@ -38,7 +61,16 @@ function readOcrDraft(): { values: FormValues; fromOcr: boolean } {
   sessionStorage.removeItem(OCR_DRAFT_STORAGE_KEY);
   try {
     const draft = JSON.parse(raw) as ProductDraft;
-    return { values: { ...EMPTY_VALUES, ...draft }, fromOcr: true };
+    return {
+      values: {
+        ...EMPTY_VALUES,
+        kcalPer100g: draft.kcalPer100g ?? "",
+        proteinPer100g: draft.proteinPer100g ?? "",
+        carbsPer100g: draft.carbsPer100g ?? "",
+        fatPer100g: draft.fatPer100g ?? "",
+      },
+      fromOcr: true,
+    };
   } catch {
     return { values: EMPTY_VALUES, fromOcr: false };
   }
@@ -67,12 +99,17 @@ function NytProduktContent() {
   const [ingredientSaving, setIngredientSaving] = useState(false);
   const [ingredientSaveError, setIngredientSaveError] = useState<string | null>(null);
 
-  function update(key: keyof FormValues, value: string) {
-    setValues((prev) => ({ ...prev, [key]: value.replace(",", ".") }));
+  function update(key: Exclude<keyof FormValues, "packageUnit">, value: string) {
+    setValues((prev) => ({ ...prev, [key]: NUMERIC_KEYS.has(key) ? value.replace(",", ".") : value }));
   }
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
+    const packageSizeText = formatPackageSize(values.packageAmount, values.packageUnit);
+    if (!packageSizeText) {
+      setSaveError(t("foods.packageSizeInvalid"));
+      return;
+    }
     setSaving(true);
     setSaveError(null);
     try {
@@ -80,9 +117,11 @@ function NytProduktContent() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: values.name,
-          brand: values.brand || undefined,
+          brand: values.brand,
           subbrand: values.subbrand || undefined,
+          productType: values.productType,
+          variant: values.variant || undefined,
+          packageSizeText,
           kcalPer100g: values.kcalPer100g,
           proteinPer100g: values.proteinPer100g,
           carbsPer100g: values.carbsPer100g,
@@ -125,8 +164,27 @@ function NytProduktContent() {
     }
   }
 
+  // Primære handlingsknapper ligger altid nederst, lige over footeren
+  // (docs/DECISIONS.md 2026-09-23) — HfScreen's footer-slot, knyttet til
+  // formularen via form-attributten.
+  const footer =
+    kind === "product" ? (
+      <button type="submit" form={PRODUCT_FORM_ID} disabled={saving} className="hf-btn-primary w-full py-2.5 text-xs disabled:opacity-40">
+        {saving ? t("foods.saving") : t("foods.createProduct")}
+      </button>
+    ) : kind === "ingredient" ? (
+      <button
+        type="submit"
+        form={INGREDIENT_FORM_ID}
+        disabled={ingredientSaving}
+        className="hf-btn-primary w-full py-2.5 text-xs disabled:opacity-40"
+      >
+        {ingredientSaving ? t("foods.saving") : t("foods.createIngredient")}
+      </button>
+    ) : undefined;
+
   return (
-    <HfScreen title={t("foods.newProductTitle")} icon={<IconApple size={20} stroke={2} />}>
+    <HfScreen title={t("foods.newProductTitle")} icon={<IconApple size={20} stroke={2} />} footer={footer}>
       <div className="flex flex-col gap-3 p-4">
         {kind === null && (
           <div className="flex flex-col gap-2">
@@ -155,7 +213,11 @@ function NytProduktContent() {
         )}
 
         {kind === "ingredient" && (
-          <form onSubmit={handleSubmitIngredient} className="flex flex-col gap-2 rounded-2xl bg-hf-tan p-4">
+          <form
+            id={INGREDIENT_FORM_ID}
+            onSubmit={handleSubmitIngredient}
+            className="flex flex-col gap-2 rounded-2xl bg-hf-tan p-4"
+          >
             <input
               value={ingredientName}
               onChange={(event) => setIngredientName(event.target.value)}
@@ -183,14 +245,6 @@ function NytProduktContent() {
             {ingredientSaveError && (
               <p className="text-center text-xs text-hf-black opacity-70">{ingredientSaveError}</p>
             )}
-
-            <button
-              type="submit"
-              disabled={ingredientSaving}
-              className="hf-btn-primary mt-1 py-2.5 text-xs disabled:opacity-40"
-            >
-              {ingredientSaving ? t("foods.saving") : t("foods.createIngredient")}
-            </button>
           </form>
         )}
 
@@ -202,7 +256,11 @@ function NytProduktContent() {
               </p>
             )}
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-2 rounded-2xl bg-hf-tan p-4">
+            <form
+              id={PRODUCT_FORM_ID}
+              onSubmit={handleSubmit}
+              className="flex flex-col gap-2 rounded-2xl bg-hf-tan p-4"
+            >
               <input
                 value={values.brand}
                 onChange={(event) => update("brand", event.target.value)}
@@ -210,6 +268,7 @@ function NytProduktContent() {
                 aria-label={t("foods.brandLabel")}
                 placeholder={t("foods.brandLabel")}
                 className={numberInputClass}
+                required
               />
               <input
                 value={values.subbrand}
@@ -220,14 +279,50 @@ function NytProduktContent() {
                 className={numberInputClass}
               />
               <input
-                value={values.name}
-                onChange={(event) => update("name", event.target.value)}
+                value={values.productType}
+                onChange={(event) => update("productType", event.target.value)}
                 autoComplete="off"
-                aria-label={t("foods.productNameLabel")}
-                placeholder={t("foods.productNameLabel")}
+                aria-label={t("foods.productTypeLabel")}
+                placeholder={t("foods.productTypePlaceholder")}
                 className={numberInputClass}
                 required
               />
+              <input
+                value={values.variant}
+                onChange={(event) => update("variant", event.target.value)}
+                autoComplete="off"
+                aria-label={t("foods.variantLabel")}
+                placeholder={t("foods.variantLabel")}
+                className={numberInputClass}
+              />
+              <label className="text-xs text-hf-black opacity-70">
+                {t("foods.packageSizeLabel")}
+                <span className="mt-1 flex gap-2">
+                  <input
+                    value={values.packageAmount}
+                    onChange={(event) => update("packageAmount", event.target.value)}
+                    inputMode="decimal"
+                    aria-label={t("foods.packageAmountAriaLabel")}
+                    placeholder={t("foods.packageAmountPlaceholder")}
+                    className={numberInputClass}
+                    required
+                  />
+                  <select
+                    value={values.packageUnit}
+                    onChange={(event) =>
+                      setValues((prev) => ({ ...prev, packageUnit: event.target.value as PackageSizeUnit }))
+                    }
+                    aria-label={t("foods.packageUnitAriaLabel")}
+                    className={`${numberInputClass} max-w-24`}
+                  >
+                    {PACKAGE_SIZE_UNITS.map((unit) => (
+                      <option key={unit} value={unit}>
+                        {unit}
+                      </option>
+                    ))}
+                  </select>
+                </span>
+              </label>
               <div className="flex gap-2">
                 <label className="flex-1 text-xs text-hf-black opacity-70">
                   {t("foods.caloriesLabel")}
@@ -278,14 +373,6 @@ function NytProduktContent() {
               </div>
 
               {saveError && <p className="text-center text-xs text-hf-black opacity-70">{saveError}</p>}
-
-              <button
-                type="submit"
-                disabled={saving}
-                className="hf-btn-primary mt-1 py-2.5 text-xs disabled:opacity-40"
-              >
-                {saving ? t("foods.saving") : t("foods.createProduct")}
-              </button>
             </form>
           </>
         )}
