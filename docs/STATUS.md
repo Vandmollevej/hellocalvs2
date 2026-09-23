@@ -2,6 +2,14 @@
 
 Last updated: 2026-09-19
 
+## 2026-09-23: Statistik "Tilføj kort" — fold-ud-grupper, Mineraler og Vitaminer
+
+Se `docs/DECISIONS.md` (samme dato). Ny `AccordionSection` og `StatCardIcon`,
+15 mineral- og 13 vitaminikoner flyttet til `public/icons/minerals|vitamins/`,
+nye kort Klorid/Fluorid og migration
+`prisma/migrations/20260923140000_chloride_fluoride_metrics/` (håndskrevet,
+ikke kørt). Migrationen skal køres på serveren ved deploy.
+
 ## 2026-09-23: Brugerindberettede næringsrettelser i Kvalitetskontrol
 
 Se `docs/DECISIONS.md` (samme dato).

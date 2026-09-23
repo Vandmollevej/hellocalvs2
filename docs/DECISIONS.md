@@ -1637,3 +1637,21 @@ build-/verifikationsnoter.
 - **Global UI-regel:** primære handlingsknapper på formularsider ligger altid
   nederst, lige over footer-navigationen — via `HfScreen`'s `footer`-slot og
   `form`-attributten — og aldrig lige efter felterne midt på siden.
+
+## 2026-09-23: Statistik → "Tilføj kort" med fold-ud-grupper, separate Mineraler og Vitaminer
+
+- Hver gruppe på `/statistics/unused-cards` er en fold-ud-boks
+  (`src/components/hf/AccordionSection.tsx`, samme geometri som kalenderens
+  timegrupper). Kun første gruppe (Næringsindhold) er åben fra start; flere
+  må være åbne samtidig.
+- "Vitaminer og mineraler" er delt i **Mineraler** og **Vitaminer**. Mineraler
+  indeholder kun grundstoffer fra det periodiske system (15 kort). Salt er
+  ikke et grundstof og ligger nu under Næringsindhold.
+- Mineralkort viser periodisk-system-ikoner (`public/icons/minerals/`),
+  vitaminkort vitaminikoner (`public/icons/vitamins/`) via `iconSrc` og den
+  fælles `StatCardIcon`. Dette erstatter tekstsymbolerne (`symbol`) fra
+  2026-09-19-beslutningen om "rigtige grundstofsymboler". Objekt-ikonerne for
+  mineraler i `Icons/Vitaminer` bruges ikke.
+- Nye kort Klorid og Fluorid med nye `HealthMetricType`-værdier
+  `CHLORIDE_MG`/`FLUORIDE_MG` — samme forberedte mønster som de øvrige
+  sporstoffer: "—" indtil en kilde sender data.

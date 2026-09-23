@@ -1002,7 +1002,8 @@
     "hint": "Tap a card to add it to your statistics page.",
     "category": {
       "carbsFibre": "Carb types and fibre",
-      "vitaminsMinerals": "Vitamins and minerals",
+      "minerals": "Minerals",
+      "vitamins": "Vitamins",
       "allergensAdditives": "Allergens and E-numbers",
       "sportActivity": "Sport and activity",
       "sleep": "Sleep",

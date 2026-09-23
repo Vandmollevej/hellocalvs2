@@ -1,0 +1,3 @@
+-- AlterEnum
+ALTER TYPE "HealthMetricType" ADD VALUE 'CHLORIDE_MG';
+ALTER TYPE "HealthMetricType" ADD VALUE 'FLUORIDE_MG';

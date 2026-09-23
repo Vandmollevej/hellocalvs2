@@ -32,9 +32,9 @@ export type StatCardValue = {
   key: string;
   label: string;
   icon: Icon;
-  // Periodic-table symbol for minerals/trace elements (Fe, Ca, K, Na, Mg, …).
-  // When set, StatCardsGrid renders this instead of the generic icon.
-  symbol?: string;
+  // Public image path (periodic-table icon for minerals, vitamin icon for
+  // vitamins). When set, StatCardIcon renders this instead of `icon`.
+  iconSrc?: string;
   value: string;
   // True only when a separately validated, region/profile-aware recommendation
   // evaluator has determined the value is outside the applicable normal
@@ -119,7 +119,7 @@ export const STAT_CARD_DEFS: {
   key: string;
   label: string;
   icon: Icon;
-  symbol?: string;
+  iconSrc?: string;
   compute: (data: StatCardData) => string;
 }[] = [
   {
@@ -168,26 +168,27 @@ export const STAT_CARD_DEFS: {
     icon: IconSalt,
     compute: (data) => `${formatNumber(average(data.days, (d) => d.salt), 1)} g`,
   },
-  // Vitaminer og mineraler — grundstofsymboler bruges hvor de findes
-  // (StatCardsGrid.tsx renderer card.symbol i stedet for card.icon).
+  // Mineraler og vitaminer — billedikoner fra public/icons/minerals og
+  // public/icons/vitamins (StatCardIcon.tsx renderer card.iconSrc i stedet
+  // for card.icon).
   {
     key: "potassium",
     label: "Kalium",
-    symbol: "K",
+    iconSrc: "/icons/minerals/potassium.png",
     icon: IconApple,
     compute: (data) => `${formatNumber(average(data.days, (d) => d.potassium))} mg`,
   },
   {
     key: "calcium",
     label: "Calcium",
-    symbol: "Ca",
+    iconSrc: "/icons/minerals/calcium.png",
     icon: IconBone,
     compute: (data) => `${formatNumber(average(data.days, (d) => d.calcium))} mg`,
   },
   {
     key: "iron",
     label: "Jern",
-    symbol: "Fe",
+    iconSrc: "/icons/minerals/iron.png",
     icon: IconAtom2,
     compute: (data) => `${formatNumber(average(data.days, (d) => d.iron), 1)} mg`,
   },
@@ -195,16 +196,18 @@ export const STAT_CARD_DEFS: {
   // field on Registration, unlike potassium/calcium/iron above) — real once a
   // HealthKit/Health Connect companion app or a richer food database sends
   // them, "—" until then.
-  { key: "sodium", label: "Natrium", symbol: "Na", icon: IconAtom2, compute: (data) => metricValue(data, "SODIUM_MG", "mg") },
-  { key: "magnesium", label: "Magnesium", symbol: "Mg", icon: IconAtom2, compute: (data) => metricValue(data, "MAGNESIUM_MG", "mg") },
-  { key: "zinc", label: "Zink", symbol: "Zn", icon: IconAtom2, compute: (data) => metricValue(data, "ZINC_MG", "mg", 1) },
-  { key: "copper", label: "Kobber", symbol: "Cu", icon: IconAtom2, compute: (data) => metricValue(data, "COPPER_MG", "mg", 1) },
-  { key: "manganese", label: "Mangan", symbol: "Mn", icon: IconAtom2, compute: (data) => metricValue(data, "MANGANESE_MG", "mg", 1) },
-  { key: "selenium", label: "Selen", symbol: "Se", icon: IconAtom2, compute: (data) => metricValue(data, "SELENIUM_UG", "µg") },
-  { key: "phosphorus", label: "Fosfor", symbol: "P", icon: IconAtom2, compute: (data) => metricValue(data, "PHOSPHORUS_MG", "mg") },
-  { key: "iodine", label: "Jod", symbol: "I", icon: IconAtom2, compute: (data) => metricValue(data, "IODINE_UG", "µg") },
-  { key: "chromium", label: "Krom", symbol: "Cr", icon: IconAtom2, compute: (data) => metricValue(data, "CHROMIUM_UG", "µg") },
-  { key: "molybdenum", label: "Molybdæn", symbol: "Mo", icon: IconAtom2, compute: (data) => metricValue(data, "MOLYBDENUM_UG", "µg") },
+  { key: "sodium", label: "Natrium", iconSrc: "/icons/minerals/sodium.png", icon: IconAtom2, compute: (data) => metricValue(data, "SODIUM_MG", "mg") },
+  { key: "magnesium", label: "Magnesium", iconSrc: "/icons/minerals/magnesium.png", icon: IconAtom2, compute: (data) => metricValue(data, "MAGNESIUM_MG", "mg") },
+  { key: "zinc", label: "Zink", iconSrc: "/icons/minerals/zinc.png", icon: IconAtom2, compute: (data) => metricValue(data, "ZINC_MG", "mg", 1) },
+  { key: "copper", label: "Kobber", iconSrc: "/icons/minerals/copper.png", icon: IconAtom2, compute: (data) => metricValue(data, "COPPER_MG", "mg", 1) },
+  { key: "manganese", label: "Mangan", iconSrc: "/icons/minerals/manganese.png", icon: IconAtom2, compute: (data) => metricValue(data, "MANGANESE_MG", "mg", 1) },
+  { key: "selenium", label: "Selen", iconSrc: "/icons/minerals/selenium.png", icon: IconAtom2, compute: (data) => metricValue(data, "SELENIUM_UG", "µg") },
+  { key: "phosphorus", label: "Fosfor", iconSrc: "/icons/minerals/phosphorus.png", icon: IconAtom2, compute: (data) => metricValue(data, "PHOSPHORUS_MG", "mg") },
+  { key: "iodine", label: "Jod", iconSrc: "/icons/minerals/iodine.png", icon: IconAtom2, compute: (data) => metricValue(data, "IODINE_UG", "µg") },
+  { key: "chromium", label: "Krom", iconSrc: "/icons/minerals/chromium.png", icon: IconAtom2, compute: (data) => metricValue(data, "CHROMIUM_UG", "µg") },
+  { key: "molybdenum", label: "Molybdæn", iconSrc: "/icons/minerals/molybdenum.png", icon: IconAtom2, compute: (data) => metricValue(data, "MOLYBDENUM_UG", "µg") },
+  { key: "chloride", label: "Klorid", iconSrc: "/icons/minerals/chloride.png", icon: IconAtom2, compute: (data) => metricValue(data, "CHLORIDE_MG", "mg") },
+  { key: "fluoride", label: "Fluorid", iconSrc: "/icons/minerals/fluoride.png", icon: IconAtom2, compute: (data) => metricValue(data, "FLUORIDE_MG", "mg", 1) },
   // MyFitnessPal-style extended panel (2026-09-11): only has real values on
   // products imported from Open Food Facts so far (see
   // src/lib/openFoodFacts.ts) — same zero-fill averaging as above otherwise.
@@ -235,28 +238,30 @@ export const STAT_CARD_DEFS: {
   {
     key: "vitaminA",
     label: "Vitamin A",
+    iconSrc: "/icons/vitamins/vitamin-a.png",
     icon: IconCarrot,
     compute: (data) => `${formatNumber(average(data.days, (d) => d.vitaminA))} µg`,
   },
   {
     key: "vitaminC",
     label: "Vitamin C",
+    iconSrc: "/icons/vitamins/vitamin-c.png",
     icon: IconLemon2,
     compute: (data) => `${formatNumber(average(data.days, (d) => d.vitaminC))} mg`,
   },
   // The rest of the B/D/E/K vitamins have no product-level data source yet —
   // same "real once a companion app sends it" pattern as the trace minerals.
-  { key: "vitaminD", label: "Vitamin D", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_D_UG", "µg", 1) },
-  { key: "vitaminE", label: "Vitamin E", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_E_MG", "mg", 1) },
-  { key: "vitaminK", label: "Vitamin K", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_K_UG", "µg") },
-  { key: "vitaminB1", label: "Vitamin B1", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B1_MG", "mg", 1) },
-  { key: "vitaminB2", label: "Vitamin B2", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B2_MG", "mg", 1) },
-  { key: "vitaminB3", label: "Vitamin B3", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B3_MG", "mg", 1) },
-  { key: "vitaminB5", label: "Vitamin B5", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B5_MG", "mg", 1) },
-  { key: "vitaminB6", label: "Vitamin B6", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B6_MG", "mg", 1) },
-  { key: "vitaminB7", label: "Vitamin B7", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B7_UG", "µg") },
-  { key: "vitaminB9", label: "Vitamin B9", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B9_UG", "µg") },
-  { key: "vitaminB12", label: "Vitamin B12", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B12_UG", "µg", 1) },
+  { key: "vitaminD", label: "Vitamin D", iconSrc: "/icons/vitamins/vitamin-d.png", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_D_UG", "µg", 1) },
+  { key: "vitaminE", label: "Vitamin E", iconSrc: "/icons/vitamins/vitamin-e.png", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_E_MG", "mg", 1) },
+  { key: "vitaminK", label: "Vitamin K", iconSrc: "/icons/vitamins/vitamin-k.png", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_K_UG", "µg") },
+  { key: "vitaminB1", label: "Vitamin B1", iconSrc: "/icons/vitamins/vitamin-b1.png", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B1_MG", "mg", 1) },
+  { key: "vitaminB2", label: "Vitamin B2", iconSrc: "/icons/vitamins/vitamin-b2.png", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B2_MG", "mg", 1) },
+  { key: "vitaminB3", label: "Vitamin B3", iconSrc: "/icons/vitamins/vitamin-b3.png", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B3_MG", "mg", 1) },
+  { key: "vitaminB5", label: "Vitamin B5", iconSrc: "/icons/vitamins/vitamin-b5.png", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B5_MG", "mg", 1) },
+  { key: "vitaminB6", label: "Vitamin B6", iconSrc: "/icons/vitamins/vitamin-b6.png", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B6_MG", "mg", 1) },
+  { key: "vitaminB7", label: "Vitamin B7", iconSrc: "/icons/vitamins/vitamin-b7.png", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B7_UG", "µg") },
+  { key: "vitaminB9", label: "Vitamin B9", iconSrc: "/icons/vitamins/vitamin-b9.png", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B9_UG", "µg") },
+  { key: "vitaminB12", label: "Vitamin B12", iconSrc: "/icons/vitamins/vitamin-b12.png", icon: IconLemon2, compute: (data) => metricValue(data, "VITAMIN_B12_UG", "µg", 1) },
   // Allergener og E-numre: Product.allergens/additives (see prisma/schema.prisma)
   // exist per-product, but Registration has no allergen/additive snapshot
   // field yet (unlike the nutrition snapshot fields), so a real per-period
@@ -402,7 +407,7 @@ export function computeStatCards(data: StatCardData): StatCardValue[] {
     key: def.key,
     label: def.label,
     icon: def.icon,
-    symbol: def.symbol,
+    iconSrc: def.iconSrc,
     value: def.compute(data),
   }));
   const sportCards = data.activities ? computeSportStatCards(data.activities) : [];

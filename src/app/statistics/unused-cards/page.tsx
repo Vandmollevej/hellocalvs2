@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
+import { AccordionSection } from "@/components/hf/AccordionSection";
+import { StatCardIcon } from "@/components/StatCardIcon";
 import {
   activeStatKeys,
   computeStatCards,
@@ -52,20 +54,27 @@ function categoryDefs(t: (key: string) => string, region: string): CategoryDef[]
     // src/lib/nutrition-terminology.ts.
     {
       title: nutritionSectionLabel(region),
-      keys: ["calories", "protein", "carbs", "fat", "saturatedFat", "unsaturatedFat", "transFat", "cholesterol"],
+      keys: ["calories", "protein", "carbs", "fat", "saturatedFat", "unsaturatedFat", "transFat", "cholesterol", "salt"],
     },
     // Sugar/fiber come from Product.nutritionExtra (HelloFresh recipes only,
     // see docs/DECISIONS.md 2026-08-29) — real data, not invented.
     { title: t("statUnusedCards.category.carbsFibre"), keys: ["sugar", "fiber"] },
+    // Mineraler = only periodic-table elements; salt (not an element) lives
+    // under Næringsindhold above. Vitamins are their own separate group.
     {
-      title: t("statUnusedCards.category.vitaminsMinerals"),
+      title: t("statUnusedCards.category.minerals"),
       keys: [
-        "vitaminA", "vitaminC", "vitaminD", "vitaminE", "vitaminK",
-        "vitaminB1", "vitaminB2", "vitaminB3", "vitaminB5", "vitaminB6",
-        "vitaminB7", "vitaminB9", "vitaminB12",
-        "salt", "sodium", "potassium", "calcium", "iron", "magnesium",
-        "zinc", "copper", "manganese", "selenium", "phosphorus", "iodine",
-        "chromium", "molybdenum",
+        "calcium", "chloride", "chromium", "fluoride", "phosphorus", "iron",
+        "iodine", "potassium", "copper", "magnesium", "manganese", "molybdenum",
+        "sodium", "selenium", "zinc",
+      ],
+    },
+    {
+      title: t("statUnusedCards.category.vitamins"),
+      keys: [
+        "vitaminA", "vitaminB1", "vitaminB2", "vitaminB3", "vitaminB5", "vitaminB6",
+        "vitaminB7", "vitaminB9", "vitaminB12", "vitaminC", "vitaminD", "vitaminE",
+        "vitaminK",
       ],
     },
     { title: t("statUnusedCards.category.allergensAdditives"), keys: ["allergens", "additives"] },
@@ -189,12 +198,12 @@ export default function UnusedStatCardsPage() {
     <HfScreen
       title={t("statUnusedCards.title")}
     >
-      <div className="flex flex-col gap-5 p-4">
+      <div className="flex flex-col gap-2 p-4">
         <p className="text-xs text-hf-black opacity-60">
           {t("statUnusedCards.hint")}
         </p>
 
-        {categoryDefs(t, region).map((category) => {
+        {categoryDefs(t, region).map((category, index) => {
           const categoryCards = category.keys
             .map((key) => cardByKey.get(key))
             .filter((c): c is StatCardValue => Boolean(c));
@@ -206,11 +215,13 @@ export default function UnusedStatCardsPage() {
           const cards = [...categoryCards, ...sportCards].filter((c) => !activeKeys.has(c.key));
 
           return (
-            <section key={category.title} className="flex flex-col gap-2">
-              <p className="hf-heading text-xs font-bold uppercase tracking-wide text-hf-black opacity-60">
-                {category.title}
-              </p>
-
+            // Only the first group (Næringsindhold) starts open.
+            <AccordionSection
+              key={category.title}
+              title={category.title}
+              count={cards.length}
+              defaultOpen={index === 0}
+            >
               {cards.length === 0 ? (
                 <p className="rounded-2xl bg-hf-tan/60 p-3 text-xs text-hf-black opacity-50">
                   {t("statUnusedCards.noCardsYet")}
@@ -218,7 +229,6 @@ export default function UnusedStatCardsPage() {
               ) : (
                 <div className="grid grid-cols-2 gap-3">
                   {cards.map((card) => {
-                    const CardIcon = card.icon;
                     return (
                       <button
                         key={card.key}
@@ -228,13 +238,7 @@ export default function UnusedStatCardsPage() {
                       >
                         <p className="text-xs text-hf-black opacity-60">{card.label}</p>
                         <p className="hf-heading mt-1 flex items-center gap-1.5 text-xl text-hf-black">
-                          {card.symbol ? (
-                            <span className="inline-flex min-w-[22px] items-center justify-center text-[15px] font-bold leading-none">
-                              {card.symbol}
-                            </span>
-                          ) : (
-                            <CardIcon size={17} stroke={2} />
-                          )}
+                          <StatCardIcon icon={card.icon} iconSrc={card.iconSrc} />
                           {loading ? "—" : card.value}
                         </p>
                       </button>
@@ -242,7 +246,7 @@ export default function UnusedStatCardsPage() {
                   })}
                 </div>
               )}
-            </section>
+            </AccordionSection>
           );
         })}
 

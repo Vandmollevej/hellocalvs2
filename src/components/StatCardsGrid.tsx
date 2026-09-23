@@ -9,6 +9,7 @@ import {
   type StatGridLayoutItem as LayoutItem,
 } from "@/lib/stat-cards";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { StatCardIcon } from "@/components/StatCardIcon";
 
 function layoutItemId(item: LayoutItem) {
   if (item.type === "stat") return `stat:${item.key}`;
@@ -52,7 +53,6 @@ function CardTile({
   floating?: boolean;
   highlightRecommendedLimits?: boolean;
 }) {
-  const CardIcon = card.icon;
   const showLimitWarning = highlightRecommendedLimits && card.outsideRecommendedRange === true;
   return (
     <div
@@ -62,13 +62,7 @@ function CardTile({
     >
       <p className="text-xs text-hf-black opacity-60">{card.label}</p>
       <p className="hf-heading mt-1 flex items-center gap-1.5 text-xl text-hf-black">
-        {card.symbol ? (
-          <span className="inline-flex min-w-[22px] items-center justify-center text-[15px] font-bold leading-none">
-            {card.symbol}
-          </span>
-        ) : (
-          CardIcon && <CardIcon size={17} stroke={2} />
-        )}
+        <StatCardIcon icon={card.icon} iconSrc={card.iconSrc} />
         {card.value}
       </p>
     </div>
@@ -471,7 +465,6 @@ export function StatCardsGrid({
               </div>
             );
           }
-          const CardIcon = card.icon;
           const showLimitWarning = highlightRecommendedLimits && card.outsideRecommendedRange === true;
 
           return (
@@ -493,13 +486,7 @@ export function StatCardsGrid({
             >
               <p className="text-xs text-hf-black opacity-60">{card.label}</p>
               <p className="hf-heading mt-1 flex items-center gap-1.5 text-xl text-hf-black">
-                {card.symbol ? (
-                  <span className="inline-flex min-w-[22px] items-center justify-center text-[15px] font-bold leading-none">
-                    {card.symbol}
-                  </span>
-                ) : (
-                  CardIcon && <CardIcon size={17} stroke={2} />
-                )}
+                <StatCardIcon icon={card.icon} iconSrc={card.iconSrc} />
                 {card.value}
               </p>
             </div>

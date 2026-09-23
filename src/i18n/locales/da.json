@@ -1002,7 +1002,8 @@
     "hint": "Tryk på et kort for at tilføje det til din statistikside.",
     "category": {
       "carbsFibre": "Kulhydrattyper og fibre",
-      "vitaminsMinerals": "Vitaminer og mineraler",
+      "minerals": "Mineraler",
+      "vitamins": "Vitaminer",
       "allergensAdditives": "Allergener og E-numre",
       "sportActivity": "Sport og aktivitet",
       "sleep": "Søvn",
