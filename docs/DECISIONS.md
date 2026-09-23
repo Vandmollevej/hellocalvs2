@@ -119,6 +119,18 @@ Samtidig: Hello Cal-logoet på produktcirklen har ikke længere hvid cirkel/skyg
 det ligger i front (`z-10`) med nederste venstre hjørne i cirklens bundpunkt og
 en bredde på én radius (95px).
 
+## 2026-09-22: Global tidspunkt-regel — let separator, "Kl." foran tiden
+
+Bindende UI-regel: redigerbare tidspunkt-sektioner vises aldrig mere som den
+tunge beige bjælke ("Tidspunkt 05.28"). De bruger altid den fælles
+`src/components/hf/TimeSection.tsx`: en centreret "TIDSPUNKT"-overskrift
+mellem to ubrudte (ikke stiplede) streger i separatorfarven `hf-tan-dark`,
+ca. 80 % af indholdsbredden, uden baggrund/container, og under den værdien
+som "Kl. 05.28" (ikke fed). Eksisterende tidsformat, state og time-input
+bevares. Gælder ikke historiske timestamps, lister, admin-tabeller,
+"sidst opdateret"-metadata eller felter med egne labels (fx vågen-/sengetid
+på søvnprofilen).
+
 ## 2026-09-22: Global clipboard-regel — ingen copy, cut eller paste i appen
 
 Bindende produktbeslutning: Hello Cal tillader ikke copy, cut eller paste i
