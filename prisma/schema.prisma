@@ -189,7 +189,6 @@ model User {
   notificationPreferences NotificationPreference[]
   pushSubscriptions       PushSubscription[]
   forwardsSent            Forward[]                @relation("ForwardSender")
-  forwardsReceived        Forward[]                @relation("ForwardRecipient")
   outboundMessages        OutboundMessage[]
   doctorShares            DoctorShare[]
   subscription            Subscription?
@@ -1800,8 +1799,11 @@ model Forward {
   token       String        @unique @default(cuid())
   sender      User          @relation("ForwardSender", fields: [senderId], references: [id])
   senderId    String
-  recipient   User?         @relation("ForwardRecipient", fields: [recipientId], references: [id])
-  recipientId String?
+  // docs/PRIVACY.md: modtageren gemmes ikke. Afsenderens navn og en delt
+  // egen ret ligger krypteret i payload; nøglen findes kun i linkets
+  // URL-fragment (#k=…), som serveren aldrig ser.
+  payloadIv         String?
+  payloadCiphertext String?
   kind        ForwardKind
   product     Product?      @relation(fields: [productId], references: [id])
   productId   String?
@@ -1815,7 +1817,6 @@ model Forward {
   pointsTransactions PointsTransaction[]
 
   @@index([senderId])
-  @@index([recipientId])
   @@map("forwards")
 }
 

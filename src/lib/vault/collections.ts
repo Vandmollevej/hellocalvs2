@@ -18,6 +18,7 @@ export const VAULT_COLLECTIONS = [
   "searchHistory",
   "integrations",
   "settings",
+  "pendingForwards",
 ] as const;
 
 export type VaultCollection = (typeof VAULT_COLLECTIONS)[number];

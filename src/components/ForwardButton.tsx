@@ -2,10 +2,13 @@
 
 import { useState } from "react";
 import { IconShare } from "@tabler/icons-react";
+import { localApi } from "@/lib/vault/local-api";
+import { createForwardLink, type ForwardDish } from "@/lib/vault/handlers/forwards";
 
 // "Videresend til en ven" — afsender-siden. 5 points til afsenderen, første
 // gang modtageren rent faktisk tilføjer varen (ikke ved åbning), se
-// src/lib/forwards.ts.
+// src/lib/forwards.ts. Navn og evt. egen ret krypteres i linket
+// (docs/PRIVACY.md) — serveren kan ikke læse dem.
 export function ForwardButton({ kind, itemId, name }: { kind: "PRODUCT" | "DISH"; itemId: string; name: string }) {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -14,17 +17,20 @@ export function ForwardButton({ kind, itemId, name }: { kind: "PRODUCT" | "DISH"
     setSending(true);
     setError(null);
     try {
-      const res = await fetch("/api/forwards", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(kind === "PRODUCT" ? { kind, productId: itemId } : { kind, dishId: itemId }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.message ?? "Kunne ikke videresende");
-        return;
+      const profile = await localApi("/api/profile").then((r) => (r.ok ? r.json() : null)).catch(() => null);
+      const senderName = (profile?.user?.displayName as string | undefined)?.trim() || null;
+      let dish: ForwardDish | undefined;
+      if (kind === "DISH") {
+        const res = await localApi(`/api/dishes/${encodeURIComponent(itemId)}`);
+        const data = (await res.json().catch(() => ({}))) as { dish?: ForwardDish };
+        if (!res.ok || !data.dish) throw new Error("Retten kunne ikke findes");
+        dish = { name: data.dish.name, ingredients: data.dish.ingredients };
       }
-      const url = `${window.location.origin}/forward/${data.forward.token}`;
+      const url = await createForwardLink({
+        kind,
+        productId: kind === "PRODUCT" ? itemId : undefined,
+        payload: { senderName, dish },
+      });
       const shareData = { title: name, text: `Prøv "${name}" i Hello Cal!`, url };
       if (navigator.share) {
         try {
@@ -35,6 +41,8 @@ export function ForwardButton({ kind, itemId, name }: { kind: "PRODUCT" | "DISH"
         return;
       }
       await navigator.clipboard.writeText(url).catch(() => {});
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Kunne ikke videresende");
     } finally {
       setSending(false);
     }

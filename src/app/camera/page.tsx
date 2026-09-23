@@ -317,7 +317,7 @@ function KameraContent() {
     try {
       await Promise.all(
         mealItems.map((item) =>
-          fetch("/api/registrations", {
+          localApi("/api/registrations", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(

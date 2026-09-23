@@ -1,58 +1,69 @@
+"use client";
+
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
-import { getSessionUser } from "@/lib/session";
-import { claimForward, ForwardAbuseError } from "@/lib/forwards";
+import { use, useEffect, useState } from "react";
 import { AddForwardedItemButton } from "@/components/AddForwardedItemButton";
+import { useVault } from "@/lib/vault/store";
+import { openForwardLink, type OpenedForward } from "@/lib/vault/handlers/forwards";
 
-// "Videresend ret/produkt til en ven" — modtager-siden. Kræver login (så vi
-// kender modtagerens identitet, jf. docs/DECISIONS.md 2026-09-02); claimer
-// forwarden (sætter recipientId + status OPENED) ved første besøg, hvilket
-// også er hvor krydsspærringen tjekkes.
-export default async function ForwardPage({ params }: { params: Promise<{ token: string }> }) {
-  const { token } = await params;
-  const user = await getSessionUser();
+// "Videresend ret/produkt til en ven" — modtager-siden (docs/PRIVACY.md).
+// Linkets nøgle står i URL-fragmentet (#k=…) og læses kun her i browseren.
+// Serveren gemmer ikke, hvem der åbner linket.
+export default function ForwardPage({ params }: { params: Promise<{ token: string }> }) {
+  const { token } = use(params);
+  const { status } = useVault();
+  const [opened, setOpened] = useState<OpenedForward | null>(null);
+  const [productName, setProductName] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!user) {
+  useEffect(() => {
+    if (status !== "ready") return;
+    const key = new URLSearchParams(window.location.hash.slice(1)).get("k") ?? "";
+    let cancelled = false;
+    openForwardLink(token, key)
+      .then(async (result) => {
+        if (cancelled) return;
+        setOpened(result);
+        if (result.kind === "PRODUCT" && result.productId) {
+          const res = await fetch(`/api/products/${encodeURIComponent(result.productId)}`);
+          const data = (await res.json().catch(() => ({}))) as { product?: { name: string } | null };
+          if (!cancelled) setProductName(data.product?.name ?? null);
+        }
+      })
+      .catch((e) => !cancelled && setError(e instanceof Error ? e.message : "Kunne ikke åbne linket."));
+    return () => {
+      cancelled = true;
+    };
+  }, [status, token]);
+
+  if (status === "loading") return null;
+
+  if (status !== "ready") {
     return (
       <div className="mx-auto max-w-sm p-6 text-center">
         <p className="hf-type-body">Log ind for at se hvad din ven har sendt dig.</p>
-        <Link href={`/login?next=/forward/${token}`} className="hf-btn-primary mt-4 inline-block h-12 px-6 leading-[48px]">
+        <Link
+          href={`/login?next=${encodeURIComponent(`/forward/${token}`)}`}
+          className="hf-btn-primary mt-4 inline-block h-12 px-6 leading-[48px]"
+        >
           Log ind
         </Link>
       </div>
     );
   }
 
-  let forward;
-  try {
-    forward = await claimForward(token, user.id);
-  } catch (error) {
+  if (error) {
     return (
       <div className="mx-auto max-w-sm p-6 text-center">
-        <p className="hf-type-body text-hf-red-dark">
-          {error instanceof ForwardAbuseError ? error.message : "Kunne ikke åbne linket."}
-        </p>
+        <p className="hf-type-body text-hf-red-dark">{error}</p>
       </div>
     );
   }
 
-  if (!forward) {
-    return (
-      <div className="mx-auto max-w-sm p-6 text-center">
-        <p className="hf-type-body">Linket er ikke gyldigt.</p>
-      </div>
-    );
-  }
+  if (!opened) return null;
 
-  const item =
-    forward.kind === "PRODUCT" && forward.productId
-      ? await prisma.product.findUnique({ where: { id: forward.productId } })
-      : forward.dishId
-        ? await prisma.dish.findUnique({ where: { id: forward.dishId } })
-        : null;
-  const sender = await prisma.user.findUnique({ where: { id: forward.senderId } });
-
-  if (!item) {
+  const name = opened.kind === "DISH" ? opened.payload.dish?.name ?? null : productName;
+  if (!name) {
     return (
       <div className="mx-auto max-w-sm p-6 text-center">
         <p className="hf-type-body">Varen findes ikke længere.</p>
@@ -62,10 +73,10 @@ export default async function ForwardPage({ params }: { params: Promise<{ token:
 
   return (
     <div className="mx-auto max-w-sm p-6 text-center">
-      <p className="hf-type-body-sm opacity-70">{sender?.displayName ?? "En ven"} har sendt dig</p>
-      <h1 className="hf-type-page-title mt-1">{item.name}</h1>
+      <p className="hf-type-body-sm opacity-70">{opened.payload.senderName ?? "En ven"} har sendt dig</p>
+      <h1 className="hf-type-page-title mt-1">{name}</h1>
       <div className="mt-6">
-        <AddForwardedItemButton kind={forward.kind} itemId={item.id} name={item.name} />
+        <AddForwardedItemButton token={token} forward={opened} name={name} />
       </div>
     </div>
   );

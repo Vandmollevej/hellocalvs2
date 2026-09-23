@@ -12,6 +12,7 @@ import {
   type DishDraftIngredient,
 } from "@/lib/dish-draft";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { localApi } from "@/lib/vault/local-api";
 
 function round(value: number, decimals = 0) {
   const factor = 10 ** decimals;
@@ -88,7 +89,7 @@ export default function CreateDishPage() {
     }
     setSaving(true);
     try {
-      const res = await fetch("/api/dishes", {
+      const res = await localApi("/api/dishes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

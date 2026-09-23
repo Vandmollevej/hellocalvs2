@@ -7,6 +7,7 @@ import { IconBookmark, IconBookmarkFilled, IconSearch } from "@tabler/icons-reac
 import { HfScreen } from "@/components/HfScreen";
 import { FoodRow } from "@/components/FoodRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { localApi } from "@/lib/vault/local-api";
 
 type Result = { id: string; title: string; image?: string | null };
 
@@ -83,14 +84,14 @@ function SoegContent() {
         const source = [...results, ...recentlyAdded].find((r) => r.id === productId);
         return source ? [...current, source] : current;
       });
-      fetch("/api/favorites", {
+      localApi("/api/favorites", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId }),
       }).catch(() => {});
     } else {
       setFavorites((current) => current.filter((f) => f.id !== productId));
-      fetch("/api/favorites", {
+      localApi("/api/favorites", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId }),
@@ -136,7 +137,7 @@ function SoegContent() {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch("/api/registrations", { signal: controller.signal })
+    localApi("/api/registrations", { signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) throw new Error("offline");
         return (await response.json()) as { registrations: Registration[] };
@@ -163,7 +164,7 @@ function SoegContent() {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch("/api/favorites", { signal: controller.signal })
+    localApi("/api/favorites", { signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) throw new Error("offline");
         return (await response.json()) as FavoriteResponse;

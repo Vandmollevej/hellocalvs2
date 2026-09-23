@@ -5,3 +5,4 @@ import "@/lib/vault/handlers/weight";
 import "@/lib/vault/handlers/tracking";
 import "@/lib/vault/handlers/profile";
 import "@/lib/vault/handlers/goals";
+import "@/lib/vault/handlers/meals";

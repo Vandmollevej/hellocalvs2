@@ -162,7 +162,7 @@ export default function AddPage() {
       .then((data) => setProfile(data.user ?? null))
       .catch(() => setProfile(null));
 
-    fetch("/api/favorites")
+    localApi("/api/favorites")
       .then((res) => res.json())
       .then((data) => {
         const favorites = (data.favorites ?? []) as { product: { id: string } | null }[];
@@ -182,7 +182,7 @@ export default function AddPage() {
     setIsFavorite(next);
     setFavoritePending(true);
     try {
-      await fetch("/api/favorites", {
+      await localApi("/api/favorites", {
         method: next ? "POST" : "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId: id }),
@@ -317,7 +317,7 @@ export default function AddPage() {
       const [hours, minutes] = time.split(":").map(Number);
       const createdAt = new Date(year, month - 1, day, hours, minutes, 0, 0);
 
-      const res = await fetch("/api/registrations", {
+      const res = await localApi("/api/registrations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

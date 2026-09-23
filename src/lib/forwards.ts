@@ -2,97 +2,76 @@ import { prisma } from "@/lib/prisma";
 import { awardForwardPointsIfUnderCap } from "@/lib/points";
 import { queueMessage } from "@/lib/messaging";
 
-// "Videresend ret/produkt til en ven" (docs/DECISIONS.md 2026-09-02).
+// "Videresend ret/produkt til en ven" (docs/DECISIONS.md 2026-09-02),
+// omlagt efter docs/PRIVACY.md "Sociale funktioner":
+// - Modtageren gemmes aldrig. Serveren ved kun, at linket er åbnet og brugt.
+// - Afsenderens navn og en delt egen ret ligger krypteret i payload; nøglen
+//   findes kun i linkets URL-fragment.
+// - Den tidligere krydsspærring (frem-og-tilbage mellem to brugere) kræver
+//   at kende begge parter og er derfor fjernet. Pointloftet pr. måned
+//   (awardForwardPointsIfUnderCap) begrænser fortsat misbrug.
 
-const ABUSE_WINDOW_HOURS = 24;
+export class ForwardError extends Error {}
 
-export class ForwardAbuseError extends Error {}
-
-// Krydsspærring: hvis der allerede er sket mindst én tur-retur (mindst 1
-// videresendelse i hver retning) mellem de to brugere inden for de sidste
-// 24 timer, blokeres en NY videresendelse mellem dem — det ville være
-// begyndelsen på en anden tur-retur samme dag. Begge brugere flages, så
-// admin kan se og rydde det fra Advarsler.
-async function checkCrossSendAbuse(senderId: string, recipientId: string, now: Date) {
-  const since = new Date(now.getTime() - ABUSE_WINDOW_HOURS * 60 * 60 * 1000);
-
-  const [outgoing, incoming] = await Promise.all([
-    prisma.forward.count({
-      where: { senderId, recipientId, createdAt: { gte: since } },
-    }),
-    prisma.forward.count({
-      where: { senderId: recipientId, recipientId: senderId, createdAt: { gte: since } },
-    }),
-  ]);
-
-  if (outgoing >= 1 && incoming >= 1) {
-    await prisma.user.updateMany({
-      where: { id: { in: [senderId, recipientId] } },
-      data: { forwardAbuseFlaggedAt: now },
-    });
-    throw new ForwardAbuseError(
-      "I har allerede videresendt frem og tilbage i dag — prøv igen i morgen."
-    );
-  }
-}
-
-// Ved oprettelse kendes modtageren typisk ikke endnu (anonymt delelink) —
-// krydsspærringen kan derfor først tjekkes ved claimForward(), hvor
-// modtageren rent faktisk identificeres.
-export async function createForward(senderId: string, kind: "PRODUCT" | "DISH", itemId: string) {
+export async function createForward(
+  senderId: string,
+  kind: "PRODUCT" | "DISH",
+  productId: string | null,
+  payload: { iv: string; ciphertext: string }
+) {
   return prisma.forward.create({
     data: {
       senderId,
       kind,
-      productId: kind === "PRODUCT" ? itemId : undefined,
-      dishId: kind === "DISH" ? itemId : undefined,
+      productId: kind === "PRODUCT" ? productId : null,
+      payloadIv: payload.iv,
+      payloadCiphertext: payload.ciphertext,
     },
+    select: { token: true },
   });
 }
 
-// Kaldes når en logget ind bruger åbner /forward/[token] første gang.
-// Idempotent: en allerede-claimet forward returneres blot uændret, så et
-// gensyn af siden ikke fejler eller tjekker misbrug igen.
-export async function claimForward(token: string, recipientId: string, now: Date = new Date()) {
-  const forward = await prisma.forward.findUnique({ where: { token } });
-  if (!forward) return null;
-  if (forward.recipientId) return forward;
-
-  if (forward.senderId === recipientId) {
-    throw new ForwardAbuseError("Du kan ikke videresende til dig selv.");
-  }
-
-  await checkCrossSendAbuse(forward.senderId, recipientId, now);
-
-  return prisma.forward.update({
+export async function getForward(token: string) {
+  return prisma.forward.findUnique({
     where: { token },
-    data: { recipientId, status: "OPENED", openedAt: now },
+    select: {
+      token: true,
+      senderId: true,
+      kind: true,
+      productId: true,
+      status: true,
+      payloadIv: true,
+      payloadCiphertext: true,
+      id: true,
+    },
   });
 }
 
-// Kaldes når en bruger opretter en registrering — tjekker om der findes en
-// OPENED videresendelse af samme produkt/ret til denne bruger, og giver i så
-// fald afsenderen points (kun når modtageren rent faktisk har brugt varen,
-// ikke blot åbnet linket).
-export async function fulfillMatchingForward(
-  recipientId: string,
-  kind: "PRODUCT" | "DISH",
-  itemId: string,
-  now: Date = new Date()
-) {
-  const forward = await prisma.forward.findFirst({
-    where: {
-      recipientId,
-      status: "OPENED",
-      ...(kind === "PRODUCT" ? { productId: itemId } : { dishId: itemId }),
-    },
-  });
-  if (!forward) return;
+// Modtageren åbner linket. Hvem modtageren er, gemmes ikke — kun at linket
+// er åbnet. Afsenderen kan ikke åbne sit eget link.
+export async function openForward(token: string, userId: string) {
+  const forward = await getForward(token);
+  if (!forward) return null;
+  if (forward.senderId === userId) throw new ForwardError("Du kan ikke videresende til dig selv.");
+  if (forward.status === "PENDING") {
+    await prisma.forward.updateMany({
+      where: { token, status: "PENDING" },
+      data: { status: "OPENED", openedAt: new Date() },
+    });
+  }
+  return forward;
+}
 
-  await prisma.forward.update({
-    where: { id: forward.id },
+// Modtageren har tilføjet varen. Afsenderen får points (første gang, under
+// månedsloftet). Kun et åbnet link kan opfyldes, og kun én gang.
+export async function fulfillForward(token: string, userId: string, now: Date = new Date()) {
+  const forward = await getForward(token);
+  if (!forward || forward.senderId === userId) return false;
+  const claimed = await prisma.forward.updateMany({
+    where: { token, status: "OPENED" },
     data: { status: "FULFILLED", fulfilledAt: now },
   });
+  if (claimed.count !== 1) return false;
 
   const awarded = await awardForwardPointsIfUnderCap(forward.senderId, forward.id, now);
   if (awarded) {
@@ -101,4 +80,5 @@ export async function fulfillMatchingForward(
       vars: { points: String(awarded.amount) },
     });
   }
+  return true;
 }

@@ -69,7 +69,7 @@ async function hkdfBytes(ikm: Uint8Array, info: string, length = 32, salt?: Uint
   return new Uint8Array(bits);
 }
 
-async function aesKeyFrom(bytes: Uint8Array, usages: KeyUsage[] = ["encrypt", "decrypt"]) {
+export async function aesKeyFrom(bytes: Uint8Array, usages: KeyUsage[] = ["encrypt", "decrypt"]) {
   return subtle().importKey("raw", copy(bytes), { name: "AES-GCM" }, false, usages);
 }
 

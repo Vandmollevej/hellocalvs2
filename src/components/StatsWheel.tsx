@@ -107,7 +107,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
   useEffect(() => {
     let cancelled = false;
     Promise.all([
-      fetch("/api/registrations").then(async (response) => {
+      localApi("/api/registrations").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente dagens nøgletal");
         return (await response.json()) as { registrations: Registration[] };
       }),

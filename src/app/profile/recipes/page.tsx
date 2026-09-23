@@ -6,6 +6,7 @@ import { IconBookmark, IconBookmarkFilled, IconSearch } from "@tabler/icons-reac
 import { HfScreen } from "@/components/HfScreen";
 import { CalorieBadge } from "@/components/hf/CalorieBadge";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { localApi } from "@/lib/vault/local-api";
 
 type Recipe = {
   id: string;
@@ -75,7 +76,7 @@ export default function RecipesPage() {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch("/api/favorites", { signal: controller.signal })
+    localApi("/api/favorites", { signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) throw new Error("offline");
         return (await response.json()) as { favorites: Array<{ product: { id: string } | null }> };
@@ -94,7 +95,7 @@ export default function RecipesPage() {
       else updated.delete(productId);
       return updated;
     });
-    fetch("/api/favorites", {
+    localApi("/api/favorites", {
       method: next ? "POST" : "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ productId }),

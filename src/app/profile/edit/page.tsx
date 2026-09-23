@@ -102,7 +102,7 @@ export default function ProfileEditPage() {
       .then((weightData) => {
         if (cancelled) return;
         const entries = weightData.entries;
-        return fetch("/api/registrations").then(async (response) => {
+        return localApi("/api/registrations").then(async (response) => {
           if (!response.ok) throw new Error("Kunne ikke hente registreringer");
           return (await response.json()) as { registrations: MealSample[] };
         }).then((registrationData) => {

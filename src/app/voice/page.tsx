@@ -524,7 +524,7 @@ export default function VoicePage() {
     const results = await Promise.all(
       pending.map(async (item) => {
         try {
-          const saveRes = await fetch("/api/registrations", {
+          const saveRes = await localApi("/api/registrations", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(
@@ -565,13 +565,13 @@ export default function VoicePage() {
   function deleteItem(item: Item) {
     setItems((current) => current.filter((existing) => existing.id !== item.id));
     if (item.saved) {
-      fetch(`/api/registrations/${item.id}`, { method: "DELETE" }).catch(() => {});
+      localApi(`/api/registrations/${item.id}`, { method: "DELETE" }).catch(() => {});
     }
   }
 
   async function favoriteItem(productId: string) {
     try {
-      await fetch("/api/favorites", {
+      await localApi("/api/favorites", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId }),

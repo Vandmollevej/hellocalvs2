@@ -395,7 +395,7 @@ export default function CalendarPage() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/registrations")
+    localApi("/api/registrations")
       .then(async (response) => {
         if (!response.ok) throw new Error("Registreringer kunne ikke hentes");
         return (await response.json()) as { registrations: Registration[] };
@@ -496,7 +496,7 @@ export default function CalendarPage() {
         registration.id === registrationId ? { ...registration, createdAt: iso } : registration,
       ),
     );
-    fetch(`/api/registrations/${registrationId}`, {
+    localApi(`/api/registrations/${registrationId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ createdAt: iso }),
