@@ -76,3 +76,31 @@ export function saveFabSide(side: FabSide) {
 export function useFabSide(): FabSide {
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
+
+// The green add-circle can be dragged vertically on the front page (drag
+// anywhere on the green backdrop except the fingerprint control). Coordinate
+// system: CSS pixels, measured as a vertical offset from the circle's
+// default position centered in the hero (0 = default, positive = further
+// down). Stored per device, same localStorage pattern as the side choice.
+// The value is only a wish — AddButton always re-clamps it against the live
+// layout (top of the page, top edge of the bottom navigation).
+const FAB_OFFSET_Y_STORAGE_KEY = "hellocal.frontpage.fabOffsetY";
+
+export function loadFabOffsetY(): number {
+  if (typeof window === "undefined") return 0;
+  try {
+    const value = Number(window.localStorage.getItem(FAB_OFFSET_Y_STORAGE_KEY));
+    return Number.isFinite(value) ? value : 0;
+  } catch {
+    return 0;
+  }
+}
+
+export function saveFabOffsetY(offsetY: number) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(FAB_OFFSET_Y_STORAGE_KEY, String(Math.round(offsetY)));
+  } catch {
+    // localStorage unavailable — the position just resets next visit.
+  }
+}

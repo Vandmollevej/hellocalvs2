@@ -12,7 +12,7 @@ import {
   visibleAddActions,
   type AddActionKey,
 } from "@/lib/add-actions";
-import { useFabSide, type FabSide } from "@/lib/frontpage-layout";
+import { loadFabOffsetY, saveFabOffsetY, useFabSide, type FabSide } from "@/lib/frontpage-layout";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 export const HERO_HEIGHT = 300;
@@ -212,7 +212,96 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
   const highlightedKeyRef = useRef<string | null>(null);
   const wasOpenOnPressRef = useRef(false);
 
+  // Vertical drag of the whole circle (backdrop + fingerprint + action arc).
+  // offsetY is in CSS px relative to the default hero position — see
+  // loadFabOffsetY() in src/lib/frontpage-layout.ts for the coordinate system.
+  const [offsetY, setOffsetY] = useState(0);
+  const offsetYRef = useRef(0);
+  const moveDragRef = useRef<{ pointerId: number; startPointerY: number; startOffsetY: number } | null>(null);
+
   useEffect(() => () => document.body.classList.remove("select-none"), []);
+
+  // Allowed offset range, from the live layout: the green backdrop's top may
+  // not rise above the page's top bar, and its bottom may not sink below the
+  // top edge of the bottom navigation (measured, so safe-area padding,
+  // collapsed/landscape bar and browser chrome are all respected).
+  function offsetBounds() {
+    const container = containerRef.current;
+    if (!container) return null;
+    const baseTop = container.getBoundingClientRect().top - offsetYRef.current;
+    const topLimit = document.querySelector<HTMLElement>("[data-top-bar]")?.getBoundingClientRect().top ?? 0;
+    const bottomLimit =
+      document.querySelector<HTMLElement>("[data-bottom-navigation]")?.getBoundingClientRect().top ??
+      window.innerHeight;
+    const min = topLimit - (baseTop + CENTER_Y - HALF_CIRCLE_RADIUS);
+    const max = Math.max(min, bottomLimit - (baseTop + CENTER_Y + HALF_CIRCLE_RADIUS));
+    return { min, max };
+  }
+
+  function applyOffsetY(next: number) {
+    const bounds = offsetBounds();
+    const clamped = bounds ? Math.min(bounds.max, Math.max(bounds.min, next)) : next;
+    offsetYRef.current = clamped;
+    setOffsetY(clamped);
+    return clamped;
+  }
+
+  // Restore the saved position after mount (server render always uses the
+  // default), and re-clamp whenever the viewport or bottom nav changes size
+  // so the circle can never end up behind the navigation.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time hydration from localStorage, same as Hero.tsx
+    applyOffsetY(loadFabOffsetY());
+    const reclamp = () => applyOffsetY(offsetYRef.current);
+    window.addEventListener("resize", reclamp);
+    window.visualViewport?.addEventListener("resize", reclamp);
+    const nav = document.querySelector<HTMLElement>("[data-bottom-navigation]");
+    const observer = nav && typeof ResizeObserver !== "undefined" ? new ResizeObserver(reclamp) : null;
+    if (nav) observer?.observe(nav);
+    return () => {
+      window.removeEventListener("resize", reclamp);
+      window.visualViewport?.removeEventListener("resize", reclamp);
+      observer?.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only; applyOffsetY reads refs/DOM
+  }, []);
+
+  function handleMovePointerDown(event: React.PointerEvent<SVGPathElement>) {
+    if (!event.isPrimary || event.button !== 0) return;
+    event.preventDefault();
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    } catch {
+      // Ignore capture failures.
+    }
+    moveDragRef.current = {
+      pointerId: event.pointerId,
+      startPointerY: event.clientY,
+      startOffsetY: offsetYRef.current,
+    };
+  }
+
+  function handleMovePointerMove(event: React.PointerEvent<SVGPathElement>) {
+    const drag = moveDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    event.preventDefault();
+    applyOffsetY(drag.startOffsetY + event.clientY - drag.startPointerY);
+  }
+
+  function handleMovePointerEnd(event: React.PointerEvent<SVGPathElement>) {
+    const drag = moveDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    moveDragRef.current = null;
+    try {
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      }
+    } catch {
+      // Ignore release failures.
+    }
+    // No snapping: the circle stays exactly where it was released.
+    saveFabOffsetY(offsetYRef.current);
+  }
 
   function startSelecting(pointerId: number, target: HTMLButtonElement) {
     selectingRef.current = true;
@@ -347,24 +436,40 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
     highlightedIndex >= 0 ? Math.min(BULGE_MAX, (dragDistance / LIGHT_CIRCLE_TRAVEL) * BULGE_MAX) : 0;
 
   return (
-    <div ref={containerRef} className="absolute inset-0">
+    <div
+      ref={containerRef}
+      className="pointer-events-none absolute inset-0 z-30"
+      style={{ transform: `translate3d(0, ${offsetY}px, 0)`, willChange: "transform" }}
+    >
       <svg
         aria-hidden="true"
         className="pointer-events-none absolute"
         style={{ left: 0, top: CENTER_Y - HALF_CIRCLE_RADIUS, width: HALF_CIRCLE_RADIUS + BULGE_MAX, height: HALF_CIRCLE_RADIUS * 2 }}
         viewBox={`0 0 ${HALF_CIRCLE_RADIUS + BULGE_MAX} ${HALF_CIRCLE_RADIUS * 2}`}
       >
-        <path d={backdropPath(bulgeAngleDeg, bulgeAmount)} fill="var(--hf-green)" />
+        {/* Only the painted green shape is a drag handle for moving the whole
+            circle vertically; the fingerprint button above it is a separate
+            element, so presses on it never reach these handlers. */}
+        <path
+          d={backdropPath(bulgeAngleDeg, bulgeAmount)}
+          fill="var(--hf-green)"
+          style={{ pointerEvents: "auto", touchAction: "none", userSelect: "none", WebkitUserSelect: "none" }}
+          onPointerDown={handleMovePointerDown}
+          onPointerMove={handleMovePointerMove}
+          onPointerUp={handleMovePointerEnd}
+          onPointerCancel={handleMovePointerEnd}
+        />
       </svg>
 
       <button
         aria-label={open ? t("addButton.closeMenu") : t("addButton.openMenu")}
         aria-expanded={open}
+        data-fingerprint-control
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={endInteraction}
-        className="absolute z-10 flex items-center justify-center bg-transparent border-0 shadow-none"
+        className="pointer-events-auto absolute z-10 flex items-center justify-center bg-transparent border-0 shadow-none"
         style={{
           [side === "left" ? "left" : "right"]: FAB_INSET,
           top: CENTER_Y - FAB_SIZE / 2,
