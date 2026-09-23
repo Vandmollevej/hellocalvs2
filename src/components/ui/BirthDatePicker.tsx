@@ -5,6 +5,9 @@ import { useEffect, useRef, useState } from "react";
 const ITEM_HEIGHT = 40;
 const MIN_YEAR = 1900;
 const DEFAULT_YEAR = 1990;
+// Nobody logs calories from birth: the latest pickable birth date is this many
+// years before today, and a saved date later than that is treated as unset.
+const MIN_AGE_YEARS = 10;
 const MONTHS = ["jan.", "feb.", "mar.", "apr.", "maj", "jun.", "jul.", "aug.", "sep.", "okt.", "nov.", "dec."];
 
 type Parts = { year: number; month: number; day: number };
@@ -13,9 +16,11 @@ function daysInMonth(year: number, month: number) {
   return new Date(year, month, 0).getDate();
 }
 
-function todayParts(): Parts {
+function latestParts(): Parts {
   const now = new Date();
-  return { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
+  const year = now.getFullYear() - MIN_AGE_YEARS;
+  const month = now.getMonth() + 1;
+  return { year, month, day: Math.min(now.getDate(), daysInMonth(year, month)) };
 }
 
 function parse(value: string | null): Parts | null {
@@ -28,13 +33,13 @@ function format({ year, month, day }: Parts) {
   return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 }
 
-// Clamps the day to the month's length and the whole date to today, so a
-// future birth date can never be picked.
+// Clamps the day to the month's length and the whole date to the latest
+// allowed birth date, so a future or too-recent date can never be picked.
 function normalize(parts: Parts): Parts {
   const day = Math.min(parts.day, daysInMonth(parts.year, parts.month));
   const next = { ...parts, day };
-  const today = todayParts();
-  return format(next) > format(today) ? today : next;
+  const latest = latestParts();
+  return format(next) > format(latest) ? latest : next;
 }
 
 // Fødselsdato-vælger (2026-09-22): the native date input opens on today when
@@ -50,8 +55,9 @@ export function BirthDatePicker({
   onChange: (value: string) => void;
 }) {
   const [draft, setDraft] = useState<Parts | null>(null);
-  const saved = parse(value);
-  const maxYear = todayParts().year;
+  const parsed = parse(value);
+  const saved = parsed && format(parsed) <= format(latestParts()) ? parsed : null;
+  const maxYear = latestParts().year;
 
   const years: number[] = [];
   for (let n = maxYear; n >= MIN_YEAR; n -= 1) years.push(n);
