@@ -179,6 +179,8 @@ model User {
   recoveryShare           RecoveryShare?
   recoveryRequests        RecoveryRequest[]        @relation("RecoveryRequestUser")
   recoveryRequestsApproved RecoveryRequest[]       @relation("RecoveryRequestApprover")
+  inviteLinks             InviteLink[]
+  inviteRewards           InviteReward[]
   referralsMade           Referral[]               @relation("ReferralsMade")
   referralReceived        Referral?                @relation("ReferralReceived")
   sentInvitations         SentInvitation[]
@@ -2061,4 +2063,32 @@ model VaultInboxItem {
 
   @@index([inboxId, createdAt])
   @@map("vault_inbox_items")
+}
+
+// ---- Invitér en ven uden gemt kobling (docs/PRIVACY.md "Sociale funktioner") ----
+
+// Engangslink oprettet af afsenderen. Rækken SLETTES, når linket bruges, så
+// der aldrig findes en række, der kobler afsender og modtager.
+model InviteLink {
+  id        String   @id @default(cuid())
+  inviter   User     @relation(fields: [inviterId], references: [id], onDelete: Cascade)
+  inviterId String
+  codeHash  String   @unique
+  expiresAt DateTime
+
+  @@index([inviterId])
+  @@map("invite_links")
+}
+
+// Ventende belønning for én bruger. Afsender og modtager får hver sin række
+// uden fælles ID; kun datoen (ikke tidspunktet) gemmes.
+model InviteReward {
+  id          String    @id @default(cuid())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  eligibleOn  DateTime  @db.Date
+  grantedAt   DateTime?
+
+  @@index([eligibleOn])
+  @@map("invite_rewards")
 }
