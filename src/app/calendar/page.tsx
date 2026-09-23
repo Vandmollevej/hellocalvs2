@@ -38,6 +38,7 @@ import { computeAge } from "@/lib/age";
 import { getSportMeta } from "@/lib/sport-icons";
 import { useDefaultCalendarView } from "@/lib/calendar-view-pref";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { localApi } from "@/lib/vault/local-api";
 
 const WEEKDAY_KEYS = [
   "calendar.weekdayMon",
@@ -433,7 +434,7 @@ export default function CalendarPage() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/weight-entries")
+    localApi("/api/weight-entries")
       .then((response) => (response.ok ? response.json() : { entries: [] }))
       .then((data: { entries?: WeighIn[] }) => {
         if (!cancelled) setWeighIns(data.entries ?? []);

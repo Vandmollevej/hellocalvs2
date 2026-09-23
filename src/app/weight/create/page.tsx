@@ -6,6 +6,7 @@ import { HfScreen } from "@/components/HfScreen";
 import { TextField } from "@/components/hf/TextField";
 import { IconBathroomScale } from "@/components/icons/BathroomScale";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { localApi } from "@/lib/vault/local-api";
 
 type WeightEntry = {
   id: string;
@@ -36,7 +37,7 @@ export default function WeightCreatePage() {
   const [loading, setLoading] = useState(true);
 
   function load() {
-    fetch("/api/weight-entries")
+    localApi("/api/weight-entries")
       .then(async (response) => {
         if (!response.ok) throw new Error("failed");
         return (await response.json()) as { entries: WeightEntry[] };
@@ -59,7 +60,7 @@ export default function WeightCreatePage() {
     setSaveError(null);
     setSaved(false);
     try {
-      const response = await fetch("/api/weight-entries", {
+      const response = await localApi("/api/weight-entries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ weightKg: parsed }),

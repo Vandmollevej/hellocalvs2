@@ -5,6 +5,7 @@ import { IconChevronLeft, IconChevronRight, IconTrash, IconX } from "@tabler/ico
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { localApi } from "@/lib/vault/local-api";
 
 type DiaryPhotoKind = "selfie" | "photo";
 
@@ -159,7 +160,7 @@ export default function BilledeDagbogPage() {
   // selve billeddagbogen.
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/weight-entries")
+    localApi("/api/weight-entries")
       .then((res) => res.json())
       .then((data) => {
         if (!cancelled) setWeightEntries(Array.isArray(data.entries) ? data.entries : []);

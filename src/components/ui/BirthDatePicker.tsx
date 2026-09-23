@@ -7,7 +7,7 @@ const MIN_YEAR = 1900;
 const DEFAULT_YEAR = 1990;
 // Nobody logs calories from birth: the latest pickable birth date is this many
 // years before today, and a saved date later than that is treated as unset.
-const MIN_AGE_YEARS = 10;
+export const BIRTH_DATE_MIN_AGE_YEARS = 10;
 const MONTHS = ["jan.", "feb.", "mar.", "apr.", "maj", "jun.", "jul.", "aug.", "sep.", "okt.", "nov.", "dec."];
 
 type Parts = { year: number; month: number; day: number };
@@ -18,7 +18,7 @@ function daysInMonth(year: number, month: number) {
 
 function latestParts(): Parts {
   const now = new Date();
-  const year = now.getFullYear() - MIN_AGE_YEARS;
+  const year = now.getFullYear() - BIRTH_DATE_MIN_AGE_YEARS;
   const month = now.getMonth() + 1;
   return { year, month, day: Math.min(now.getDate(), daysInMonth(year, month)) };
 }

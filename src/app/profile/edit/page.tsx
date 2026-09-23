@@ -5,11 +5,12 @@ import { useRouter } from "next/navigation";
 import { IconCamera, IconLock, IconRulerMeasure, IconTarget } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { IconBathScale } from "@/components/hf/IconBathScale";
-import { BirthDatePicker } from "@/components/ui/BirthDatePicker";
+import { BIRTH_DATE_MIN_AGE_YEARS, BirthDatePicker } from "@/components/ui/BirthDatePicker";
 import { WheelPicker } from "@/components/ui/WheelPicker";
 import { latestTrendWeight, type MealSample, type WeightSample } from "@/lib/weight-trend";
 import { computeAge } from "@/lib/age";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { localApi } from "@/lib/vault/local-api";
 
 type Sex = "FEMALE" | "MALE";
 
@@ -93,7 +94,7 @@ export default function ProfileEditPage() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/weight-entries")
+    localApi("/api/weight-entries")
       .then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente vejninger");
         return (await response.json()) as { entries: WeightSample[] };
@@ -258,7 +259,7 @@ export default function ProfileEditPage() {
               />
               {(() => {
                 const age = computeAge(user.birthDate);
-                return age !== null ? (
+                return age !== null && age >= BIRTH_DATE_MIN_AGE_YEARS ? (
                   <span className="text-[11px] text-hf-black opacity-60">
                     {t("profile.age", { age })}
                   </span>

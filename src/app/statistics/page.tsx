@@ -21,6 +21,7 @@ import { DEFAULT_STAT_SELECTION, filterDaysInRange, selectionRange, type StatPer
 import type { IntegrationCardStatus } from "@/lib/integrations";
 import { computeTrendWeight, type WeightSample, type MealSample } from "@/lib/weight-trend";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { localApi } from "@/lib/vault/local-api";
 
 const DAY_COUNT = 7;
 
@@ -113,7 +114,7 @@ export default function StatisticsPage() {
         if (!response.ok) throw new Error("Kunne ikke hente registreringer");
         return (await response.json()) as { registrations: RegistrationTotals[] };
       }),
-      fetch("/api/weight-entries").then(async (response) => {
+      localApi("/api/weight-entries").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente vejninger");
         return (await response.json()) as { entries: WeightEntry[] };
       }),

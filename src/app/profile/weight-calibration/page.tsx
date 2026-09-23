@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { localApi } from "@/lib/vault/local-api";
 
 type RelativeTime = "BEFORE" | "AFTER" | "UNKNOWN";
 type TimeOfDay = "MORNING" | "EVENING" | "UNKNOWN";
@@ -189,7 +190,7 @@ export default function WeightCalibrationPage() {
   const [gridValues, setGridValues] = useState<Record<number, string>>({});
 
   function load() {
-    fetch("/api/weight-entries")
+    localApi("/api/weight-entries")
       .then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente vejninger");
         return (await response.json()) as { entries: WeightEntry[] };
@@ -232,7 +233,7 @@ export default function WeightCalibrationPage() {
 
     setSaving(true);
     try {
-      const response = await fetch("/api/weight-entries", {
+      const response = await localApi("/api/weight-entries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -266,12 +267,12 @@ export default function WeightCalibrationPage() {
     setSaving(true);
     try {
       const response = existingId
-        ? await fetch(`/api/weight-entries/${existingId}`, {
+        ? await localApi(`/api/weight-entries/${existingId}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ weightKg: parsed }),
           })
-        : await fetch("/api/weight-entries", {
+        : await localApi("/api/weight-entries", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -287,7 +288,7 @@ export default function WeightCalibrationPage() {
 
   async function remove(id: string) {
     setEntries((current) => current.filter((entry) => entry.id !== id));
-    await fetch(`/api/weight-entries/${id}`, { method: "DELETE" }).catch(() => {});
+    await localApi(`/api/weight-entries/${id}`, { method: "DELETE" }).catch(() => {});
   }
 
   return (
