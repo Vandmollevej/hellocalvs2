@@ -135,8 +135,10 @@ Brugerens svar (2026-09-23). Tilstrækkeligt til at bygge uden yderligere dialog
 - **Indstillinger → Opskrifter**: to faner, "Mine retter" og "Søg i delte
   retter". Søgning i titel, ingredienser og kategori/tags. Alle sprog vises
   (i originalsproget). Sortering: relevans, popularitet, dato — som
-  `.hf-button--secondary --small --pill` (design.md filter/mode), efter
-  samme mønster som bibliotekets filtre/sortering i `docs/UI.md`.
+  små pills (brugerens ønske 2026-09-23: mindre end design.md's 36 px
+  `--small`, ca. 18 px synlig højde, 11 px tekst; hit area bevares).
+  Admin-handlinger (Godkend/Afvis/Bloker deling) er små teksthandlinger,
+  ikke store knapper.
   Popularitet kræver registrering af brug (favorit/kalender).
 - **Moderation**: synlig straks, men sendes til godkendelse på en ny fane
   under admin → Kontrol. Afvist = bliver privat hos ejeren (ingen besked).
