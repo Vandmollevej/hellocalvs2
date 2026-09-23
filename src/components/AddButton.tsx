@@ -204,6 +204,22 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [highlightedKey, setHighlightedKey] = useState<string | null>(null);
+// Vertical extent (relative to the hero's top) of everything the circle can
+// show: the green backdrop and the fanned-out action arc in its worst case
+// (highlighted = stepped out by HIGHLIGHT_EXTRA_RADIUS and scaled up). The action
+// buttons are the natural limit when the circle is dragged vertically, so
+// no button can end up under the bottom navigation or above the page top.
+function circleExtent(anglesDeg: number[]) {
+  const outerRadius = RADIUS + HIGHLIGHT_EXTRA_RADIUS;
+  // Highlighted icons are drawn scaled up 1.35x.
+  const halfIcon = (CIRCLE * 1.35) / 2;
+  const iconYs = anglesDeg.map((angle) => CENTER_Y + outerRadius * Math.sin((angle * Math.PI) / 180));
+  return {
+    top: Math.min(CENTER_Y - HALF_CIRCLE_RADIUS, ...iconYs.map((y) => y - halfIcon)),
+    bottom: Math.max(CENTER_Y + HALF_CIRCLE_RADIUS, ...iconYs.map((y) => y + halfIcon)),
+  };
+}
+
   const [dragOffset, setDragOffset] = useState<{ x: number; y: number } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const pointerStart = useRef<{ x: number; y: number } | null>(null);
@@ -221,11 +237,13 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
 
   useEffect(() => () => document.body.classList.remove("select-none"), []);
 
-  // Allowed offset range, from the live layout: the green backdrop's top may
-  // not rise above the page's top bar, and its bottom may not sink below the
-  // top edge of the bottom navigation (measured, so safe-area padding,
-  // collapsed/landscape bar and browser chrome are all respected).
+  // Allowed offset range, from the live layout: the circle including its
+  // action buttons (circleExtent) may not rise above the page's top bar, and
+  // may not sink below the top edge of the bottom navigation (measured, so
+  // safe-area padding, collapsed/landscape bar and browser chrome are all
+  // respected).
   function offsetBounds() {
+    const extent = circleExtent(anglesDeg);
     const container = containerRef.current;
     if (!container) return null;
     const baseTop = container.getBoundingClientRect().top - offsetYRef.current;
@@ -233,8 +251,8 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
     const bottomLimit =
       document.querySelector<HTMLElement>("[data-bottom-navigation]")?.getBoundingClientRect().top ??
       window.innerHeight;
-    const min = topLimit - (baseTop + CENTER_Y - HALF_CIRCLE_RADIUS);
-    const max = Math.max(min, bottomLimit - (baseTop + CENTER_Y + HALF_CIRCLE_RADIUS));
+    const min = topLimit - (baseTop + extent.top);
+    const max = Math.max(min, bottomLimit - (baseTop + extent.bottom));
     return { min, max };
   }
 
@@ -248,7 +266,8 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
 
   // Restore the saved position after mount (server render always uses the
   // default), and re-clamp whenever the viewport or bottom nav changes size
-  // so the circle can never end up behind the navigation.
+  // so the circle can never end up behind the navigation. Re-runs when the
+  // number of wheel actions changes, since that changes the arc's extent.
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time hydration from localStorage, same as Hero.tsx
     applyOffsetY(loadFabOffsetY());
@@ -263,8 +282,8 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
       window.visualViewport?.removeEventListener("resize", reclamp);
       observer?.disconnect();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only; applyOffsetY reads refs/DOM
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- applyOffsetY reads refs/DOM; only the arc size matters
+  }, [actions.length]);
 
   function handleMovePointerDown(event: React.PointerEvent<SVGPathElement>) {
     if (!event.isPrimary || event.button !== 0) return;
