@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { sanitizeAiPhoto } from "@/lib/image-metadata";
 
 // POST /api/ai/recognize-product-photo — { photo: string (data URL) }
 //
@@ -53,7 +54,7 @@ async function callOpenAi(photo: string, candidates: { id: string; name: string 
           role: "user",
           content: [
             { type: "text", text: `Kendte produkter:\n${candidates.map((c) => `${c.id}: ${c.name}`).join("\n")}` },
-            { type: "image_url", image_url: { url: photo } },
+            { type: "image_url", image_url: { url: sanitizeAiPhoto(photo) } },
           ],
         },
       ],

@@ -1,3 +1,4 @@
+import { sanitizeAiPhoto } from "@/lib/image-metadata";
 // Passio Nutrition-AI client: exchanges PASSIO_API_KEY for a bearer token
 // (cached in memory, valid ~24h) and calls the meal-photo recognition
 // endpoint. Used only by /api/ai/analyze-meal-photo for the "Måltid"
@@ -46,7 +47,7 @@ export async function recognizeMealPhoto(photoDataUrl: string): Promise<PassioIn
       Authorization: `Bearer ${token.accessToken}`,
       "Passio-ID": token.customerId,
     },
-    body: JSON.stringify({ image: photoDataUrl }),
+    body: JSON.stringify({ image: sanitizeAiPhoto(photoDataUrl) }),
   });
 
   if (res.status === 401) {

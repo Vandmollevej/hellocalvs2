@@ -1,3 +1,4 @@
+import { sanitizeAiPhoto } from "@/lib/image-metadata";
 type JsonSchema = Record<string, unknown>;
 
 type StructuredVisionArgs = {
@@ -46,6 +47,9 @@ export async function callStructuredVision<T>({
     throw new Error("photo skal være data:image/... eller https URL");
   }
 
+  // docs/PRIVACY.md "AI": ingen metadata og ingen ID'er til OpenAI, og
+  // svaret må ikke gemmes hos OpenAI (store: false).
+  const cleanPhoto = sanitizeAiPhoto(photo);
   const model = getProductVisionModel();
   const response = await fetch("https://api.openai.com/v1/responses", {
     method: "POST",
@@ -55,6 +59,7 @@ export async function callStructuredVision<T>({
     },
     body: JSON.stringify({
       model,
+      store: false,
       input: [
         {
           role: "system",
@@ -64,7 +69,7 @@ export async function callStructuredVision<T>({
           role: "user",
           content: [
             { type: "input_text", text },
-            { type: "input_image", image_url: photo, detail: "high" },
+            { type: "input_image", image_url: cleanPhoto, detail: "high" },
           ],
         },
       ],

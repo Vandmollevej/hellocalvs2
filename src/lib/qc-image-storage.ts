@@ -1,6 +1,7 @@
 import { randomUUID } from "crypto";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
+import { stripImageMetadata } from "@/lib/image-metadata";
 
 // Kvalitetskontrol/billed-match (docs/DECISIONS.md 2026-09-19): de guidede
 // stregkode-/næring-/ingrediens-fotos blev tidligere kun sendt transient til
@@ -25,7 +26,9 @@ export async function saveDataUrlImage(dataUrl: string): Promise<string | null> 
   const extension = EXTENSION_BY_MIME[match[1].toLowerCase()];
   if (!extension) return null;
 
-  const buffer = Buffer.from(match[2], "base64");
+  // docs/PRIVACY.md: gemte billeder må ikke bære EXIF/GPS.
+  const mime = match[1].toLowerCase() === "jpg" ? "image/jpeg" : `image/${match[1].toLowerCase()}`;
+  const buffer = stripImageMetadata(Buffer.from(match[2], "base64"), mime);
   await mkdir(OUTPUT_DIR, { recursive: true });
   const filename = `${randomUUID()}.${extension}`;
   await writeFile(path.join(OUTPUT_DIR, filename), buffer);

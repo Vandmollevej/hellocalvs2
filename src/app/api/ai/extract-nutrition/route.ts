@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { sanitizeAiPhoto } from "@/lib/image-metadata";
 
 // POST /api/ai/extract-nutrition — { photo: string (data URL af næringsdeklaration) }
 //
@@ -52,7 +53,7 @@ async function callOpenAi(photo: string): Promise<NutritionResult> {
           role: "user",
           content: [
             { type: "text", text: "Aflæs næringsværdierne pr. 100g/100ml fra billedet." },
-            { type: "image_url", image_url: { url: photo } },
+            { type: "image_url", image_url: { url: sanitizeAiPhoto(photo) } },
           ],
         },
       ],
