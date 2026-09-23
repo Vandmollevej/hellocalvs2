@@ -338,6 +338,7 @@
     "goalMissedSuffix": ", goal not reached",
     "goalMet": "Goal reached",
     "goalMissed": "Goal not reached",
+    "weeklyEstimatedWeight": "Estimated {value}",
     "goalReachedList": "You reached your goal",
     "goalExceededList": "You exceeded your goal",
     "adjustBedtimeAriaLabel": "Adjust bedtime",

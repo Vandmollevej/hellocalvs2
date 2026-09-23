@@ -2,6 +2,19 @@
 
 Last updated: 2026-09-19
 
+## 2026-09-23: Kalender — ugentlig kaloriebalance (bygget, skjult bag flag)
+
+Se `docs/DECISIONS.md` (samme dato). Status: IMPLEMENTERET BAG FEATURE FLAG –
+AKTIVERES VED NATIVE APP / TILSTRÆKKELIG SKÆRMPLADS. Ny
+`src/lib/weekly-energy-summary.ts` (flag, ugebalance, 7.700 kcal/kg-estimat,
+dansk formattering) og `WeeklyEnergySummaryRow` i `src/app/calendar/page.tsx`,
+som vises under Uge- og Liste-visningen, når flaget er slået til. Nye i18n-nøgler:
+`calendar.weeklyEstimatedWeight`. Lint og typecheck er fejlfri. Ikke testet i
+browser, fordi flaget er slået fra.
+
+Next work: skaf en kilde til brugerens vedligeholdelseskalorier, så
+vægtestimatet kan vises. Slå flaget til, når der er plads på skærmen.
+
 ## 2026-09-22: Forside — den grønne tilføj-cirkel kan flyttes lodret
 
 - `AddButton.tsx`: træk på den grønne baggrund (ikke fingeraftryk-knappen)

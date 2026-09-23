@@ -338,6 +338,7 @@
     "goalMissedSuffix": ", mål ikke nået",
     "goalMet": "Mål nået",
     "goalMissed": "Mål ikke nået",
+    "weeklyEstimatedWeight": "Estimeret {value}",
     "goalReachedList": "Du nåede dit mål",
     "goalExceededList": "Du overskred dit mål",
     "adjustBedtimeAriaLabel": "Justér sengetid",

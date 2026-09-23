@@ -140,6 +140,7 @@ Se [DATABASE.md](DATABASE.md) og [AI.md](AI.md) for fuld detalje. HELLO CAL bygg
 ## 15. Åbne punkter
 
 - Præcis vægtvisnings-logik (målt vs. trend vs. forventet vægt).
+- ROADMAP – IKKE SYNLIG ENDNU (bygget bag flag): Kalender — ugentlig kaloriebalance + estimeret energibaseret vægtændring under ugens dagsrækker. Aktiveres ved native app/tilstrækkelig skærmhøjde. Vægtestimatet kræver brugerens vedligeholdelseskalorier. Se DECISIONS 2026-09-23.
 - Endelig liste over notifikationstyper.
 - Endelig datamodel- og API-kontrakt (se [BACKEND.md](BACKEND.md) for arkitekturprincipper).
 - PDF-import af opskrifter (arkitektur forberedes, ikke i v1).

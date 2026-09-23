@@ -20,6 +20,13 @@ import { HfChevron } from "@/components/hf/HfChevron";
 import { FoodRow } from "@/components/FoodRow";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
 import { groupByDay } from "@/lib/daily-totals";
+import {
+  ENABLE_WEEKLY_ENERGY_SUMMARY,
+  computeWeeklyEnergySummary,
+  estimateWeightChangeGrams,
+  formatEstimatedWeight,
+  formatSignedKcal,
+} from "@/lib/weekly-energy-summary";
 import { getSportMeta } from "@/lib/sport-icons";
 import { useDefaultCalendarView } from "@/lib/calendar-view-pref";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -647,6 +654,9 @@ export default function CalendarPage() {
               ) : (
                 <WeekView days={weekDays} today={today} dailyTotals={dailyTotals} onOpenDate={openDate} />
               ))}
+            {ENABLE_WEEKLY_ENERGY_SUMMARY && view === "week" && !showWeekTimeline && (
+              <WeeklyEnergySummaryRow days={weekDays} today={today} dailyTotals={dailyTotals} />
+            )}
             {view === "list" && (
               <ListView
                 days={weekDays}
@@ -656,6 +666,9 @@ export default function CalendarPage() {
                 onPrevWeek={() => movePeriod(-1)}
                 onNextWeek={() => movePeriod(1)}
               />
+            )}
+            {ENABLE_WEEKLY_ENERGY_SUMMARY && view === "list" && (
+              <WeeklyEnergySummaryRow days={weekDays} today={today} dailyTotals={dailyTotals} />
             )}
           </div>
         </div>
@@ -941,6 +954,44 @@ function WeekView({
           </button>
         );
       })}
+    </div>
+  );
+}
+
+function WeeklyEnergySummaryRow({
+  days,
+  today,
+  dailyTotals,
+}: {
+  days: Date[];
+  today: Date;
+  dailyTotals: Map<string, number>;
+}) {
+  const { t } = useTranslation();
+  const summary = computeWeeklyEnergySummary(days, today, dailyTotals, DAILY_KCAL_GOAL);
+  if (!summary) return null;
+  const consumed = summary.balanceKcal + DAILY_KCAL_GOAL * summary.countedDays;
+  // No maintenance-calorie source exists yet, so the estimate stays hidden.
+  const estimateGrams = estimateWeightChangeGrams(consumed, summary.countedDays, null);
+  const withinGoal = summary.balanceKcal <= 0;
+  // Same px-4/gap-3 as the rows above; the trailing 19px spacer matches their
+  // chevron so the total sits directly under the kcal column.
+  return (
+    <div className="mt-2 flex items-center gap-3 px-4">
+      <span className="flex min-w-0 flex-1 items-center gap-1.5 text-sm font-normal">
+        {estimateGrams !== null && (
+          <>
+            <span className="text-hf-green" aria-hidden="true">≈</span>
+            <span className="text-hf-black opacity-60">
+              {t("calendar.weeklyEstimatedWeight", { value: formatEstimatedWeight(estimateGrams) })}
+            </span>
+          </>
+        )}
+      </span>
+      <span className={`shrink-0 text-sm font-bold tabular-nums ${withinGoal ? "text-hf-green" : "text-hf-red-dark"}`}>
+        {formatSignedKcal(summary.balanceKcal)}
+      </span>
+      <span className="w-[19px] shrink-0" aria-hidden="true" />
     </div>
   );
 }

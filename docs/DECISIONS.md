@@ -2,6 +2,33 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-23: Kalender — ugentlig kaloriebalance + estimeret vægtændring (bygget, skjult)
+
+- ROADMAP: bygget, men IKKE synlig endnu. Slås til med
+  `ENABLE_WEEKLY_ENERGY_SUMMARY` i `src/lib/weekly-energy-summary.ts`, når
+  Hello Cal kører som native app eller kalenderen på anden måde har plads til
+  linjen. I den nuværende web/PWA tager browserens URL-bjælke pladsen.
+- Én diskret linje under de 7 dagsrækker i Uge- og Liste-visningen (ikke
+  tidslinjevisningen): kcal-total til højre under kcal-kolonnen, estimeret
+  vægtændring til venstre. Intet ekstra kort og ingen ramme. Linjen må ikke
+  presse rækkerne sammen, overlappe noget eller give ekstra scroll.
+- Totalen er summen af (spist − dagsmål) for dage fra mandag til og med i dag,
+  der **har registreringer**. Tomme dage og fremtidige dage tæller ikke med,
+  fordi manglende data ikke er et underskud. Ellers ville en tom uge vise ca.
+  −23.000 kcal. Fortegnet vises altid, og negativ betyder underskud.
+- Vægtestimatet vises med et grønt `≈`-tegn og "Estimeret ±X g" i grå tekst,
+  der ikke er fed. Appen havde ikke noget eksisterende bue-/usikkerhedstegn,
+  så `≈` blev valgt.
+- Estimatet bruger 7.700 kcal/kg som en grov approksimation. Det er aldrig en
+  faktisk vægtændring, så UI'et skriver aldrig "Du har tabt …". Det holdes
+  adskilt fra målt vægt og trendvægt (`weight-trend.ts`).
+- Estimatet vises kun, når appen kender brugerens **vedligeholdelseskalorier**.
+  Dagsmålet (`DAILY_KCAL_GOAL`) kan ikke bruges i stedet, fordi et vægttabsmål
+  allerede har et underskud indbygget. Den kilde findes ikke endnu, så
+  `estimateWeightChangeGrams` kaldes med `null`, og linjen viser kun
+  kcal-totalen, indtil den er på plads (fx via aktivitetsniveau/mål i
+  SPECIFICATION §5 eller forbrænding fra en integration).
+
 ## 2026-09-22: Forsidens tilføj-cirkel er lodret flytbar
 
 - Den grønne cirkel kan trækkes lodret (kun Y) ved at tage fat uden for
