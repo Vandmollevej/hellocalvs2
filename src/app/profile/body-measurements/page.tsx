@@ -8,6 +8,7 @@ import {
   emptyBodyMeasurementValues,
   type BodyMeasurementField,
 } from "@/lib/body-measurements";
+import { localApi } from "@/lib/vault/local-api";
 
 type BodyMeasurementEntry = {
   id: string;
@@ -86,7 +87,7 @@ export default function BodyMeasurementsPage() {
   const todaysEntryId = useRef<string | null>(null);
 
   function load() {
-    fetch("/api/body-measurements")
+    localApi("/api/body-measurements")
       .then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente kropsmål");
         return (await response.json()) as { entries: BodyMeasurementEntry[] };
@@ -118,7 +119,7 @@ export default function BodyMeasurementsPage() {
     setSaving(true);
     try {
       if (todaysEntryId.current) {
-        const response = await fetch(`/api/body-measurements/${todaysEntryId.current}`, {
+        const response = await localApi(`/api/body-measurements/${todaysEntryId.current}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ [field]: parsed }),
@@ -128,7 +129,7 @@ export default function BodyMeasurementsPage() {
       }
 
       if (parsed === null) return;
-      const response = await fetch("/api/body-measurements", {
+      const response = await localApi("/api/body-measurements", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ [field]: parsed }),
@@ -146,7 +147,7 @@ export default function BodyMeasurementsPage() {
   async function remove(id: string) {
     setEntries((current) => current.filter((entry) => entry.id !== id));
     if (todaysEntryId.current === id) todaysEntryId.current = null;
-    await fetch(`/api/body-measurements/${id}`, { method: "DELETE" }).catch(() => {});
+    await localApi(`/api/body-measurements/${id}`, { method: "DELETE" }).catch(() => {});
   }
 
   return (

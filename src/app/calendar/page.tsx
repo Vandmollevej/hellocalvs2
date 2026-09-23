@@ -416,7 +416,7 @@ export default function CalendarPage() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/activities")
+    localApi("/api/activities")
       .then(async (response) => {
         if (!response.ok) throw new Error("Aktiviteter kunne ikke hentes");
         return (await response.json()) as { activities: Activity[] };
@@ -449,8 +449,8 @@ export default function CalendarPage() {
     let cancelled = false;
     Promise.all([
       fetch("/api/profile").then((response) => response.json()),
-      fetch("/api/sleep-schedule").then((response) => response.json()),
-      fetch("/api/work-shifts").then((response) => response.json()),
+      localApi("/api/sleep-schedule").then((response) => response.json()),
+      localApi("/api/work-shifts").then((response) => response.json()),
     ])
       .then(([profileData, scheduleData, shiftData]) => {
         if (cancelled) return;
@@ -515,7 +515,7 @@ export default function CalendarPage() {
         ...current,
         [iso]: { ...(current[iso] ?? { date: iso, bedtime: null, wakeTime: null }), ...body },
       }));
-      fetch(`/api/work-shifts/${iso}`, {
+      localApi(`/api/work-shifts/${iso}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -529,7 +529,7 @@ export default function CalendarPage() {
         ...current,
         [weekday]: { weekday, bedtime: bedtime ?? "", wakeTime: wakeTime ?? "" },
       }));
-      fetch("/api/sleep-schedule", {
+      localApi("/api/sleep-schedule", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ weekday, bedtime, wakeTime }),

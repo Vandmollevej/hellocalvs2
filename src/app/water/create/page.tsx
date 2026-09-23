@@ -13,6 +13,7 @@ import {
   IconGlassSmall,
 } from "@/components/icons/WaterContainers";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { localApi } from "@/lib/vault/local-api";
 
 type WaterEntry = {
   id: string;
@@ -79,7 +80,7 @@ export default function WaterCreatePage() {
   const [loading, setLoading] = useState(true);
 
   function load() {
-    fetch("/api/water-entries")
+    localApi("/api/water-entries")
       .then(async (response) => {
         if (!response.ok) throw new Error("failed");
         return (await response.json()) as { entries: WaterEntry[] };
@@ -106,7 +107,7 @@ export default function WaterCreatePage() {
     setSaveError(null);
     setSaved(false);
     try {
-      const response = await fetch("/api/water-entries", {
+      const response = await localApi("/api/water-entries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amountMl }),

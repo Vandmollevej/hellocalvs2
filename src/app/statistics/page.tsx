@@ -118,7 +118,7 @@ export default function StatisticsPage() {
         if (!response.ok) throw new Error("Kunne ikke hente vejninger");
         return (await response.json()) as { entries: WeightEntry[] };
       }),
-      fetch("/api/activities").then(async (response) => {
+      localApi("/api/activities").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente aktiviteter");
         return (await response.json()) as { activities: ActivityTotals[] };
       }),
@@ -126,7 +126,7 @@ export default function StatisticsPage() {
         if (!response.ok) throw new Error("Kunne ikke hente integrationer");
         return (await response.json()) as { integrations: IntegrationCardStatus[] };
       }),
-      fetch("/api/health-metrics").then(async (response) => {
+      localApi("/api/health-metrics").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente sundhedsdata");
         return (await response.json()) as { metrics: HealthMetricTotals[] };
       }),

@@ -166,7 +166,7 @@ export default function BilledeDagbogPage() {
         if (!cancelled) setWeightEntries(Array.isArray(data.entries) ? data.entries : []);
       })
       .catch(() => {});
-    fetch("/api/body-measurements")
+    localApi("/api/body-measurements")
       .then((res) => res.json())
       .then((data) => {
         if (!cancelled) setMeasurements(Array.isArray(data.entries) ? data.entries : []);

@@ -9,6 +9,7 @@ import {
   type FrontpageNutritionTotals,
 } from "@/lib/frontpage-stats";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { localApi } from "@/lib/vault/local-api";
 
 type Registration = {
   kcalSnapshot: number;
@@ -110,7 +111,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
         if (!response.ok) throw new Error("Kunne ikke hente dagens nøgletal");
         return (await response.json()) as { registrations: Registration[] };
       }),
-      fetch("/api/health-metrics").then(async (response) => {
+      localApi("/api/health-metrics").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente dagens måltal");
         return (await response.json()) as { metrics: HealthMetric[] };
       }),

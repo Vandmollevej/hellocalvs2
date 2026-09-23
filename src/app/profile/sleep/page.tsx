@@ -6,6 +6,7 @@ import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { SleepRangeSlider } from "@/components/hf/SleepRangeSlider";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { localApi } from "@/lib/vault/local-api";
 
 type SleepUser = {
   defaultBedtime: string | null;
@@ -68,7 +69,7 @@ export default function SleepSchedulePage() {
 
     Promise.all([
       fetch("/api/profile").then((res) => res.json()),
-      fetch("/api/sleep-schedule").then((res) => res.json()),
+      localApi("/api/sleep-schedule").then((res) => res.json()),
     ])
       .then(([profileData, scheduleData]) => {
         if (cancelled) return;
@@ -127,7 +128,7 @@ export default function SleepSchedulePage() {
     const existingTimeout = weekdaySaveTimeouts.current[weekday];
     if (existingTimeout) clearTimeout(existingTimeout);
     weekdaySaveTimeouts.current[weekday] = setTimeout(() => {
-      fetch("/api/sleep-schedule", {
+      localApi("/api/sleep-schedule", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
