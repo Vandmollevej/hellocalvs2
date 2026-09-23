@@ -11,6 +11,8 @@ import {
   type DoctorShareCategory,
   type DoctorShareHistoryRange,
 } from "@/lib/doctor-share";
+import { localApi } from "@/lib/vault/local-api";
+import { openInviteMail } from "@/lib/vault/handlers/doctor-shares";
 
 type DoctorShare = {
   id: string;
@@ -43,7 +45,7 @@ export default function EditHelloDocUserPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`/api/doctor-shares/${params.id}`)
+    localApi(`/api/doctor-shares/${params.id}`)
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data) => {
         const loaded: DoctorShare = data.share;
@@ -60,7 +62,7 @@ export default function EditHelloDocUserPage() {
     setSaving(true);
     setError(null);
     try {
-      const res = await fetch(`/api/doctor-shares/${params.id}`, {
+      const res = await localApi(`/api/doctor-shares/${params.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, categories, historyRange }),
@@ -82,13 +84,14 @@ export default function EditHelloDocUserPage() {
     setResending(true);
     setError(null);
     try {
-      const res = await fetch(`/api/doctor-shares/${params.id}/resend`, { method: "POST" });
+      const res = await localApi(`/api/doctor-shares/${params.id}/resend`, { method: "POST" });
       const data = await res.json();
       if (!res.ok) {
         setError(data.message ?? t("helloDoc.errorGeneric"));
         return;
       }
       setShare(data.share);
+      if (data.share?.inviteLink) openInviteMail(data.share.email, "", data.share.inviteLink);
     } finally {
       setResending(false);
     }
@@ -97,7 +100,7 @@ export default function EditHelloDocUserPage() {
   async function revoke() {
     if (!share) return;
     if (!window.confirm(t("helloDoc.revokeConfirm", { name: share.name }))) return;
-    await fetch(`/api/doctor-shares/${params.id}/revoke`, { method: "POST" });
+    await localApi(`/api/doctor-shares/${params.id}/revoke`, { method: "POST" });
     router.replace("/settings/hello-doc");
   }
 

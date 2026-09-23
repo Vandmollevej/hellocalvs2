@@ -1938,8 +1938,10 @@ model DoctorShare {
   id     String            @id @default(cuid())
   owner  User              @relation(fields: [ownerId], references: [id])
   ownerId String
-  name   String
-  email  String
+  // docs/PRIVACY.md: modtagerens navn og e-mail ligger i ejerens boks, ikke
+  // her. Felterne er kun bevaret for ældre rækker.
+  name   String?
+  email  String?
   status DoctorShareStatus @default(PENDING)
   token  String            @unique @default(cuid())
 
@@ -1956,6 +1958,12 @@ model DoctorShare {
   expiresAt  DateTime?
   acceptedAt DateTime?
   revokedAt  DateTime?
+
+  // Rapporten, krypteret på ejerens enhed med en nøgle, der kun står i
+  // lægens link (#k=…). Opdateres af ejerens enhed; serveren kan ikke læse den.
+  snapshotIv         String?
+  snapshotCiphertext String?
+  snapshotUpdatedAt  DateTime?
 
   @@index([ownerId])
   @@map("doctor_shares")

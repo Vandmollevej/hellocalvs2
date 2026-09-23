@@ -73,6 +73,10 @@ async function openClient(masterKey: Uint8Array, userId: string) {
   void import("@/lib/vault/handlers/inbox")
     .then(({ drainIntoVault }) => drainIntoVault(client))
     .catch(() => undefined);
+  // Hello Doc: opdater de krypterede rapporter til læger (højst hver time).
+  void import("@/lib/vault/handlers/doctor-shares")
+    .then(({ publishDoctorShares }) => publishDoctorShares(client))
+    .catch(() => undefined);
 }
 
 async function init() {

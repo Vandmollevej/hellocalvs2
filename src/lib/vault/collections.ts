@@ -19,6 +19,7 @@ export const VAULT_COLLECTIONS = [
   "integrations",
   "settings",
   "pendingForwards",
+  "doctorShares",
 ] as const;
 
 export type VaultCollection = (typeof VAULT_COLLECTIONS)[number];

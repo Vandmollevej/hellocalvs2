@@ -1,63 +1,36 @@
 import { NextResponse } from "next/server";
-import type { DoctorShareHistoryRange } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { sanitizeDoctorShareCategories, isDoctorShareHistoryRange } from "@/lib/doctor-share";
+import { SHARE_SELECT } from "@/lib/doctor-share-server";
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+type Ctx = { params: Promise<{ id: string }> };
 
-export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(_request: Request, { params }: Ctx) {
   const user = await getSessionUser();
   if (!user) return NextResponse.json({ message: "Log ind for at se denne invitation" }, { status: 401 });
-
   const { id } = await params;
-  const share = await prisma.doctorShare.findFirst({ where: { id, ownerId: user.id } });
+  const share = await prisma.doctorShare.findFirst({ where: { id, ownerId: user.id }, select: SHARE_SELECT });
   if (!share) return NextResponse.json({ message: "Ikke fundet" }, { status: 404 });
-
   return NextResponse.json({ share });
 }
 
-export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+// PATCH { categories?, historyRange? } — navn/e-mail ændres i ejerens boks.
+export async function PATCH(request: Request, { params }: Ctx) {
   const user = await getSessionUser();
   if (!user) return NextResponse.json({ message: "Log ind for at redigere denne invitation" }, { status: 401 });
-
   const { id } = await params;
-  const existing = await prisma.doctorShare.findFirst({ where: { id, ownerId: user.id } });
+  const existing = await prisma.doctorShare.findFirst({ where: { id, ownerId: user.id }, select: { id: true } });
   if (!existing) return NextResponse.json({ message: "Ikke fundet" }, { status: 404 });
 
-  let body: { name?: string; email?: string; categories?: unknown; historyRange?: unknown };
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ message: "Ugyldig anmodning" }, { status: 400 });
-  }
-
-  const data: {
-    name?: string;
-    email?: string;
-    categories?: string[];
-    historyRange?: DoctorShareHistoryRange;
-  } = {};
-
-  if (body.name !== undefined) {
-    const name = body.name.trim();
-    if (!name) return NextResponse.json({ message: "Angiv et navn" }, { status: 400 });
-    data.name = name;
-  }
-  if (body.email !== undefined) {
-    const email = body.email.trim().toLowerCase();
-    if (!email || !EMAIL_PATTERN.test(email)) {
-      return NextResponse.json({ message: "Angiv en gyldig e-mailadresse" }, { status: 400 });
-    }
-    data.email = email;
-  }
-  if (body.categories !== undefined) {
-    data.categories = sanitizeDoctorShareCategories(body.categories);
-  }
-  if (body.historyRange !== undefined && isDoctorShareHistoryRange(body.historyRange)) {
-    data.historyRange = body.historyRange;
-  }
-
-  const share = await prisma.doctorShare.update({ where: { id }, data });
+  const body = (await request.json().catch(() => null)) as { categories?: unknown; historyRange?: unknown } | null;
+  const share = await prisma.doctorShare.update({
+    where: { id },
+    data: {
+      ...(body?.categories !== undefined ? { categories: sanitizeDoctorShareCategories(body.categories) } : {}),
+      ...(isDoctorShareHistoryRange(body?.historyRange) ? { historyRange: body.historyRange } : {}),
+    },
+    select: SHARE_SELECT,
+  });
   return NextResponse.json({ share });
 }

@@ -7,3 +7,4 @@ import "@/lib/vault/handlers/profile";
 import "@/lib/vault/handlers/goals";
 import "@/lib/vault/handlers/meals";
 import "@/lib/vault/handlers/search";
+import "@/lib/vault/handlers/doctor-shares";
