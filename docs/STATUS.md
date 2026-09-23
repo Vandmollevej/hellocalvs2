@@ -107,6 +107,43 @@ Se `docs/DECISIONS.md` (samme dato). Nye filer: `src/app/profile/goals/page.tsx`
 Tilføj-menuen peger nu på `/profile/goals`. Statistik-siden bruger stadig den
 hardcodede `WEIGHT_GOAL_KG` fra `src/lib/goals.ts` — ikke ændret her.
 
+
+## TODO (2026-09-23): Delte brugeropskrifter — afklaret, ikke bygget
+
+Brugerens svar (2026-09-23). Tilstrækkeligt til at bygge uden yderligere dialog.
+
+- **Opret ret**: under titlen et on/off-felt "Ønsker du at dele retten med
+  andre brugere?" med i-ikon til højre (popover). Starter som **ON**.
+  Infotekst: "Ingen personlige detaljer deles, når du deler en ret".
+  Deling kan altid slås til/fra af ejeren; OFF fjerner straks retten fra
+  søgning.
+- **Datamodel**: egen Prisma-model/tabel (samme database) for
+  brugeroprettede opskrifter med `ownerUserId`, `isShared`, `sharedAt`,
+  tilfældigt `publicId`, moderationsstatus, `language`. `ownerUserId`
+  bruges kun server-side og returneres aldrig til andre brugere; offentlig
+  API serialiserer en sanitiseret model uden brugerobjekt. Private retter
+  håndhæves server-side.
+- **Hvad deles**: hele retten inkl. brugerens eget billede (automatisk).
+  Ingen ophavsmand vises overhovedet (heller ikke "en Hello Cal-bruger").
+- **Genbrug**: andre bruger originalen direkte og kan favoritmarkere den.
+  Vil de ændre den, gemmer de en privat, uafhængig kopi (kun ejeren
+  redigerer originalen). Sletter ejeren retten eller slår deling fra,
+  **beholder** brugere, der har den som favorit, retten (forsvinder kun fra
+  søgning).
+- **Kontosletning**: delte retter bliver liggende anonymt; forbindelsen
+  til `ownerUserId` destrueres permanent.
+- **Indstillinger → Opskrifter**: to faner, "Mine retter" og "Søg i delte
+  retter". Søgning i titel, ingredienser og kategori/tags. Alle sprog vises
+  (i originalsproget). Sortering: relevans, popularitet, dato — som
+  `.hf-button--secondary --small --pill` (design.md filter/mode), efter
+  samme mønster som bibliotekets filtre/sortering i `docs/UI.md`.
+  Popularitet kræver registrering af brug (favorit/kalender).
+- **Moderation**: synlig straks, men sendes til godkendelse på en ny fane
+  under admin → Kontrol. Afvist = bliver privat hos ejeren (ingen besked).
+  Andre kan trykke "Anmeld", indtil admin har godkendt; derefter forsvinder
+  knappen. Anmeldte vises øverst på fanen. Admin ser ejeren kun som et
+  anonymt pseudonym (GDPR), nok til at blokere vedkommende fra at dele.
+
 ## 2026-09-22: Skift adgangskode
 
 - Sort "Skift adgangskode"-knap nederst på `/profile/edit` → ny side
