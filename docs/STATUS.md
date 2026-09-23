@@ -2,6 +2,23 @@
 
 Last updated: 2026-09-19
 
+## 2026-09-23 (senere): Ugesummering slået til + rigtigt vægtestimat
+
+Bygger videre på indlægget nedenfor (`37ee7f4`), se DECISIONS samme dato
+(senere). `ENABLE_WEEKLY_ENERGY_SUMMARY = true`. `∼` erstatter `≈`, og
+kcal-totalen har nu samme fortegn som dagsrækkerne. Fremtidige dage i Uge- og
+Liste-visningen viser hverken status eller kcal. `weekly-energy-summary.ts` har
+fået `estimateBmr` (Mifflin-St Jeor), `estimateAdaptiveMaintenance` (28 dage,
+indtag vs. vægthældning, sanity-tjekket mod formlen) og
+`estimateWeeklyWeightChange` (kun afsluttede, registrerede dage, mindst 3).
+Den gamle `estimateWeightChangeGrams` er fjernet. Kalendersiden henter nu
+også `/api/weight-entries` og bruger `weightKg`/`heightCm`/`birthDate`/`sex`
+fra `/api/profile`.
+
+`npm run lint` og `npm run build` er fejlfri. Ikke testet i browser: En anden
+sessions `next dev` kørte allerede i mappen (Next tillader kun én ad gangen),
+og den blev ikke stoppet.
+
 ## 2026-09-23: Kalender — ugentlig kaloriebalance (bygget, skjult bag flag)
 
 Se `docs/DECISIONS.md` (samme dato). Status: IMPLEMENTERET BAG FEATURE FLAG –

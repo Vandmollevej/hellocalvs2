@@ -2,6 +2,34 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-23 (senere): Ugesummering vises nu, `∼`-tegn, rigtigt vægtestimat, fremtidige dage uden status
+
+Ændrer punkterne i indlægget nedenfor, hvor de er i modstrid:
+
+- Brugeren har valgt at vise linjen **med det samme**
+  (`ENABLE_WEEKLY_ENERGY_SUMMARY = true`), også i den nuværende web/PWA.
+- Usikkerhedstegnet er `∼` (U+223C, enkelt bølge) i grønt. Det er brugerens
+  eget valg og erstatter `≈`.
+- Kcal-totalen bruger nu **samme fortegn som dagsrækkerne**: "+" betyder
+  under dagsmålet og vises i grønt, "−" betyder over målet og vises i rødt.
+  Totalen kan dermed læses som summen af kolonnen ovenover. Det er stadig kun
+  dage til og med i dag, der har registreringer.
+- Fremtidige dage viser i Uge- og Liste-visningen kun ugedag og dato, uden
+  "Mål ikke nået" og uden kcal-tal.
+- Vedligeholdelseskalorier estimeres nu i to niveauer. Begge dele er bygget nu
+  efter brugerens valg:
+  1. **Selvlærende** (foretrækkes): Over de seneste 28 afsluttede dage er
+     vedligehold lig med gennemsnitligt registreret indtag minus hældningen på
+     vejningerne (mindste kvadraters metode) × 7.700. Det kræver mindst 14
+     registrerede dage og mindst 3 vejninger, der spænder over mindst 14 dage.
+     Resultatet afvises, hvis det ligger uden for 0,7–1,4 × formelværdien, fordi
+     det typisk skyldes underregistrering eller væskeudsving.
+  2. **Formel** (fallback): Mifflin-St Jeor-BMR (vægt, højde, alder og køn)
+     × 1,2 (stillesiddende) plus dagens registrerede `Activity.caloriesBurned`.
+     Vægten er seneste vejning inden for perioden og ellers profilens startvægt.
+- Estimatet medregner kun **afsluttede** dage (før i dag) med registreringer og
+  kræver mindst 3 af dem i ugen. Ellers vises kun kcal-totalen.
+
 ## 2026-09-23: Kalender — ugentlig kaloriebalance + estimeret vægtændring (bygget, skjult)
 
 - ROADMAP: bygget, men IKKE synlig endnu. Slås til med

@@ -22,11 +22,20 @@ import { DAILY_KCAL_GOAL } from "@/lib/goals";
 import { groupByDay } from "@/lib/daily-totals";
 import {
   ENABLE_WEEKLY_ENERGY_SUMMARY,
+  activityKcalByDay,
   computeWeeklyEnergySummary,
-  estimateWeightChangeGrams,
+  estimateAdaptiveMaintenance,
+  estimateBmr,
+  estimateWeeklyWeightChange,
   formatEstimatedWeight,
   formatSignedKcal,
+  formulaMaintenanceEstimate,
+  weightAt,
+  type EnergyProfile,
+  type WeighIn,
+  type WeightChangeEstimate,
 } from "@/lib/weekly-energy-summary";
+import { computeAge } from "@/lib/age";
 import { getSportMeta } from "@/lib/sport-icons";
 import { useDefaultCalendarView } from "@/lib/calendar-view-pref";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -268,6 +277,8 @@ export default function CalendarPage() {
   const [registrationsError, setRegistrationsError] = useState(false);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [sleepDefaults, setSleepDefaults] = useState<SleepDefaults | null>(null);
+  const [energyProfile, setEnergyProfile] = useState<EnergyProfile | null>(null);
+  const [weighIns, setWeighIns] = useState<WeighIn[]>([]);
   const [weekdaySchedules, setWeekdaySchedules] = useState<Record<number, SleepScheduleEntry>>({});
   const [workShifts, setWorkShifts] = useState<Record<string, WorkShiftEntry>>({});
   const [pendingSleepChange, setPendingSleepChange] = useState<{
@@ -317,6 +328,32 @@ export default function CalendarPage() {
     for (const day of groupByDay(registrations)) map.set(day.dateKey, day.kcal);
     return map;
   }, [registrations]);
+
+  const weeklyWeightEstimate = useMemo(() => {
+    if (!energyProfile) return null;
+    const weekEnd = addDays(weekDays[6], 1);
+    // Maintenance is judged as of the earlier of "end of the shown week" and
+    // "start of today", so past weeks aren't estimated with later data.
+    const asOf = weekEnd.getTime() < stripTime(today).getTime() ? weekEnd : stripTime(today);
+    const bmr = estimateBmr({
+      ...energyProfile,
+      weightKg: weightAt(weighIns, asOf, energyProfile.weightKg),
+    });
+    const adaptiveMaintenance = estimateAdaptiveMaintenance({
+      dailyTotals,
+      weighIns,
+      endExclusive: asOf,
+      formulaMaintenance: formulaMaintenanceEstimate(bmr, activities),
+    });
+    return estimateWeeklyWeightChange({
+      days: weekDays,
+      today,
+      dailyTotals,
+      activityByDay: activityKcalByDay(activities),
+      bmr,
+      adaptiveMaintenance,
+    });
+  }, [energyProfile, weighIns, activities, dailyTotals, weekDays, today]);
 
   const monthlyStatus = useMemo(() => {
     const isCurrentMonth = year === today.getFullYear() && month === today.getMonth();
@@ -397,6 +434,19 @@ export default function CalendarPage() {
 
   useEffect(() => {
     let cancelled = false;
+    fetch("/api/weight-entries")
+      .then((response) => (response.ok ? response.json() : { entries: [] }))
+      .then((data: { entries?: WeighIn[] }) => {
+        if (!cancelled) setWeighIns(data.entries ?? []);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
     Promise.all([
       fetch("/api/profile").then((response) => response.json()),
       fetch("/api/sleep-schedule").then((response) => response.json()),
@@ -405,6 +455,15 @@ export default function CalendarPage() {
       .then(([profileData, scheduleData, shiftData]) => {
         if (cancelled) return;
         setSleepDefaults(profileData.user ?? null);
+        const user = profileData.user;
+        if (user) {
+          setEnergyProfile({
+            weightKg: user.weightKg ?? null,
+            heightCm: user.heightCm ?? null,
+            age: computeAge(user.birthDate),
+            sex: user.sex ?? null,
+          });
+        }
         const byWeekday: Record<number, SleepScheduleEntry> = {};
         for (const entry of (scheduleData.schedules ?? []) as SleepScheduleEntry[]) {
           byWeekday[entry.weekday] = entry;
@@ -655,7 +714,12 @@ export default function CalendarPage() {
                 <WeekView days={weekDays} today={today} dailyTotals={dailyTotals} onOpenDate={openDate} />
               ))}
             {ENABLE_WEEKLY_ENERGY_SUMMARY && view === "week" && !showWeekTimeline && (
-              <WeeklyEnergySummaryRow days={weekDays} today={today} dailyTotals={dailyTotals} />
+              <WeeklyEnergySummaryRow
+                days={weekDays}
+                today={today}
+                dailyTotals={dailyTotals}
+                weightEstimate={weeklyWeightEstimate}
+              />
             )}
             {view === "list" && (
               <ListView
@@ -668,7 +732,12 @@ export default function CalendarPage() {
               />
             )}
             {ENABLE_WEEKLY_ENERGY_SUMMARY && view === "list" && (
-              <WeeklyEnergySummaryRow days={weekDays} today={today} dailyTotals={dailyTotals} />
+              <WeeklyEnergySummaryRow
+                days={weekDays}
+                today={today}
+                dailyTotals={dailyTotals}
+                weightEstimate={weeklyWeightEstimate}
+              />
             )}
           </div>
         </div>
@@ -925,6 +994,8 @@ function WeekView({
         const met = dailyGoalMet(dailyTotals, date);
         const diff = Math.round(Math.abs(DAILY_KCAL_GOAL - kcal));
         const current = isSameDay(date, today);
+        // Days that haven't happened yet have no status to show.
+        const future = stripTime(date).getTime() > stripTime(today).getTime();
         return (
           <button
             key={date.toISOString()}
@@ -940,16 +1011,22 @@ function WeekView({
             >
               {date.getDate()}
             </span>
-            {met ? (
-              <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />
+            {future ? (
+              <span className="flex-1" />
             ) : (
-              <IconMinus size={16} stroke={3} className="shrink-0 opacity-50" aria-hidden="true" />
+              <>
+                {met ? (
+                  <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />
+                ) : (
+                  <IconMinus size={16} stroke={3} className="shrink-0 opacity-50" aria-hidden="true" />
+                )}
+                <span className="flex-1 text-sm font-semibold">{met ? t("calendar.goalMet") : t("calendar.goalMissed")}</span>
+                <span className={`shrink-0 text-sm font-bold tabular-nums ${met ? "text-hf-green" : "text-hf-red-dark"}`}>
+                  {met ? "+" : "-"}
+                  {diff} kcal
+                </span>
+              </>
             )}
-            <span className="flex-1 text-sm font-semibold">{met ? t("calendar.goalMet") : t("calendar.goalMissed")}</span>
-            <span className={`shrink-0 text-sm font-bold tabular-nums ${met ? "text-hf-green" : "text-hf-red-dark"}`}>
-              {met ? "+" : "-"}
-              {diff} kcal
-            </span>
             <IconChevronRight size={19} className="shrink-0" />
           </button>
         );
@@ -962,34 +1039,36 @@ function WeeklyEnergySummaryRow({
   days,
   today,
   dailyTotals,
+  weightEstimate,
 }: {
   days: Date[];
   today: Date;
   dailyTotals: Map<string, number>;
+  weightEstimate: WeightChangeEstimate | null;
 }) {
   const { t } = useTranslation();
   const summary = computeWeeklyEnergySummary(days, today, dailyTotals, DAILY_KCAL_GOAL);
   if (!summary) return null;
-  const consumed = summary.balanceKcal + DAILY_KCAL_GOAL * summary.countedDays;
-  // No maintenance-calorie source exists yet, so the estimate stays hidden.
-  const estimateGrams = estimateWeightChangeGrams(consumed, summary.countedDays, null);
-  const withinGoal = summary.balanceKcal <= 0;
+  // Same sign convention as the day rows above ("+" = under the goal), so the
+  // total reads as the sum of the column it sits under.
+  const goalBalance = -summary.balanceKcal;
+  const withinGoal = goalBalance >= 0;
   // Same px-4/gap-3 as the rows above; the trailing 19px spacer matches their
   // chevron so the total sits directly under the kcal column.
   return (
     <div className="mt-2 flex items-center gap-3 px-4">
       <span className="flex min-w-0 flex-1 items-center gap-1.5 text-sm font-normal">
-        {estimateGrams !== null && (
+        {weightEstimate !== null && (
           <>
-            <span className="text-hf-green" aria-hidden="true">≈</span>
+            <span className="text-base leading-none text-hf-green" aria-hidden="true">∼</span>
             <span className="text-hf-black opacity-60">
-              {t("calendar.weeklyEstimatedWeight", { value: formatEstimatedWeight(estimateGrams) })}
+              {t("calendar.weeklyEstimatedWeight", { value: formatEstimatedWeight(weightEstimate.grams) })}
             </span>
           </>
         )}
       </span>
       <span className={`shrink-0 text-sm font-bold tabular-nums ${withinGoal ? "text-hf-green" : "text-hf-red-dark"}`}>
-        {formatSignedKcal(summary.balanceKcal)}
+        {formatSignedKcal(goalBalance)}
       </span>
       <span className="w-[19px] shrink-0" aria-hidden="true" />
     </div>
@@ -1076,6 +1155,8 @@ function ListView({
         const met = dailyGoalMet(dailyTotals, date);
         const diff = Math.round(Math.abs(DAILY_KCAL_GOAL - kcal));
         const current = isSameDay(date, today);
+        // Days that haven't happened yet have no status to show.
+        const future = stripTime(date).getTime() > stripTime(today).getTime();
         return (
           <button
             key={date.toISOString()}
@@ -1091,16 +1172,22 @@ function ListView({
             >
               {date.getDate()}
             </span>
-            {met ? (
-              <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />
+            {future ? (
+              <span className="flex-1" />
             ) : (
-              <IconMinus size={16} stroke={3} className="shrink-0 opacity-50" aria-hidden="true" />
+              <>
+                {met ? (
+                  <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />
+                ) : (
+                  <IconMinus size={16} stroke={3} className="shrink-0 opacity-50" aria-hidden="true" />
+                )}
+                <span className="flex-1 text-sm font-semibold">{met ? t("calendar.goalMet") : t("calendar.goalMissed")}</span>
+                <span className={`shrink-0 text-sm font-bold tabular-nums ${met ? "text-hf-green" : "text-hf-red-dark"}`}>
+                  {met ? "+" : "-"}
+                  {diff} kcal
+                </span>
+              </>
             )}
-            <span className="flex-1 text-sm font-semibold">{met ? t("calendar.goalMet") : t("calendar.goalMissed")}</span>
-            <span className={`shrink-0 text-sm font-bold tabular-nums ${met ? "text-hf-green" : "text-hf-red-dark"}`}>
-              {met ? "+" : "-"}
-              {diff} kcal
-            </span>
             <IconChevronRight size={19} className="shrink-0" />
           </button>
         );
