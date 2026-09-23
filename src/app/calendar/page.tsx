@@ -650,10 +650,11 @@ export default function CalendarPage() {
               </div>
               <PeriodButton direction="next" view={effectiveView} onClick={() => movePeriod(1)} />
             </div>
-            {/* Ugenummeret står på sin egen linje under dato-navigationen —
-                aldrig i forlængelse af datointervallet. */}
+            {/* Ugenummeret står midt i luften mellem appbarens bund og
+                datointervallet — absolut placeret, så det hverken forlænger
+                datolinjen eller gør området højere. */}
             {view === "week" && (
-              <p className="mt-1.5 text-center text-[13px] font-normal lowercase text-hf-black opacity-60">
+              <p className="pointer-events-none absolute inset-x-0 top-0 -translate-y-1/2 text-center text-[13px] font-normal leading-none lowercase text-hf-black opacity-60">
                 {t("calendar.weekNumberLabel", { number: weekNumber })}
               </p>
             )}
