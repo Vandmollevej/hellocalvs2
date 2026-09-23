@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
-import { getDemoUser } from "@/lib/demo-user";
+import { getSessionUser } from "@/lib/session";
 import { listIntegrationStatuses } from "@/lib/integrations";
 
 export async function GET() {
   try {
-    const user = await getDemoUser();
+    const user = await getSessionUser();
+    if (!user) return NextResponse.json({ message: "Log ind først" }, { status: 401 });
     const integrations = await listIntegrationStatuses(user.id);
     return NextResponse.json({ integrations });
   } catch (error) {

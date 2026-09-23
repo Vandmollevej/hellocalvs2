@@ -69,6 +69,10 @@ async function openClient(masterKey: Uint8Array, userId: string) {
   unsubscribeClient = client.subscribe(() => setState({ version: client.getVersion() }));
   setState({ status: "ready", client, userId, version: client.getVersion() });
   window.dispatchEvent(new Event("hellocal:vault-ready"));
+  // Data, som integrationer har forseglet til boksen siden sidst.
+  void import("@/lib/vault/handlers/inbox")
+    .then(({ drainIntoVault }) => drainIntoVault(client))
+    .catch(() => undefined);
 }
 
 async function init() {

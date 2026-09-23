@@ -542,6 +542,9 @@ model Integration {
   connectedAt  DateTime?
   lastSyncedAt DateTime?
   lastError    String?
+  // docs/PRIVACY.md: hentede data forsegles straks til denne indbakke
+  // (VaultInbox.id). Serveren gemmer dem aldrig i klartekst.
+  inboxId      String?
   createdAt    DateTime            @default(now())
 
   @@unique([userId, provider])
@@ -600,6 +603,8 @@ model DeviceToken {
   label      String
   createdAt  DateTime  @default(now())
   lastUsedAt DateTime?
+  // docs/PRIVACY.md: indsendte data forsegles til denne indbakke.
+  inboxId    String?
 
   @@map("device_tokens")
 }

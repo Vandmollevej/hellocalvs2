@@ -1,16 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashDeviceToken } from "@/lib/device-tokens";
-import type { HealthMetricType } from "@prisma/client";
+import { deliverToInbox, type InboxEnvelope } from "@/lib/vault/inbox-delivery";
 
-// POST /api/integrations/healthkit/ingest — receives data from a future
-// native companion app (iOS/HealthKit or Android/Health Connect), see
-// docs/HEALTHKIT_COMPANION.md. Authenticated with a DeviceToken as
-// "Authorization: Bearer <token>", not cookies/OAuth — the app has no user
-// account of its own to log into yet (see docs/STATUS.md "Next work" #4).
 type IngestBody = {
   source?: "APPLE_HEALTH" | "GOOGLE_HEALTH";
-  metrics?: { type?: HealthMetricType; value?: number; recordedAt?: string }[];
+  metrics?: { type?: string; value?: number; recordedAt?: string }[];
   weights?: { weightKg?: number; weighedAt?: string }[];
   activities?: {
     sportType?: string;
@@ -24,75 +19,58 @@ async function authenticate(req: Request) {
   const auth = req.headers.get("authorization");
   const raw = auth?.startsWith("Bearer ") ? auth.slice("Bearer ".length) : null;
   if (!raw) return null;
-
   const token = await prisma.deviceToken.findUnique({ where: { tokenHash: hashDeviceToken(raw) } });
   if (!token) return null;
-
   await prisma.deviceToken.update({ where: { id: token.id }, data: { lastUsedAt: new Date() } });
-  return token.userId;
+  return token;
 }
 
+function validDate(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? null : d.toISOString();
+}
+
+// POST — companion-appen (HealthKit/Health Connect) sender data med sit
+// enhedstoken. Data forsegles straks til brugerens indbakke og gemmes aldrig
+// i klartekst (docs/PRIVACY.md). Klienten flytter dem ind i boksen.
 export async function POST(req: Request) {
-  const userId = await authenticate(req);
-  if (!userId) {
-    return NextResponse.json({ message: "Ugyldigt eller manglende enhedstoken" }, { status: 401 });
-  }
+  const token = await authenticate(req);
+  if (!token) return NextResponse.json({ message: "Ugyldigt eller manglende enhedstoken" }, { status: 401 });
+  if (!token.inboxId) return NextResponse.json({ message: "Enhedstokenet mangler en indbakke" }, { status: 409 });
 
   const body = (await req.json().catch(() => ({}))) as IngestBody;
-  if (body.source !== "APPLE_HEALTH" && body.source !== "GOOGLE_HEALTH") {
+  const source = body.source;
+  if (source !== "APPLE_HEALTH" && source !== "GOOGLE_HEALTH") {
     return NextResponse.json({ message: "source skal være APPLE_HEALTH eller GOOGLE_HEALTH" }, { status: 400 });
   }
 
+  const items: InboxEnvelope[] = [];
+  for (const m of body.metrics ?? []) {
+    const recordedAt = validDate(m.recordedAt);
+    if (m.type && typeof m.value === "number" && recordedAt) {
+      items.push({ kind: "metric", payload: { source, type: m.type, value: m.value, recordedAt } });
+    }
+  }
+  for (const w of body.weights ?? []) {
+    const weighedAt = validDate(w.weighedAt);
+    if (w.weightKg && weighedAt) items.push({ kind: "weight", payload: { source, weightKg: w.weightKg, weighedAt } });
+  }
+  for (const a of body.activities ?? []) {
+    const startedAt = validDate(a.startedAt);
+    if (a.sportType && startedAt && a.durationMinutes && a.caloriesBurned) {
+      items.push({
+        kind: "activity",
+        payload: { source, sportType: a.sportType, startedAt, durationMinutes: a.durationMinutes, caloriesBurned: a.caloriesBurned },
+      });
+    }
+  }
+
   try {
-    let metricsCreated = 0;
-    if (body.metrics?.length) {
-      const rows = body.metrics
-        .filter((m) => m.type && typeof m.value === "number" && m.recordedAt)
-        .map((m) => ({
-          userId,
-          source: body.source!,
-          type: m.type!,
-          value: m.value!,
-          recordedAt: new Date(m.recordedAt!),
-        }));
-      const result = await prisma.healthMetric.createMany({ data: rows, skipDuplicates: true });
-      metricsCreated = result.count;
-    }
-
-    let weightsCreated = 0;
-    for (const weight of body.weights ?? []) {
-      if (!weight.weightKg || !weight.weighedAt) continue;
-      const weighedAt = new Date(weight.weighedAt);
-      const existing = await prisma.weightEntry.findFirst({ where: { userId, source: body.source, weighedAt } });
-      if (existing) continue;
-      await prisma.weightEntry.create({
-        data: { userId, weightKg: weight.weightKg, source: body.source, weighedAt },
-      });
-      weightsCreated += 1;
-    }
-
-    let activitiesCreated = 0;
-    for (const activity of body.activities ?? []) {
-      if (!activity.sportType || !activity.startedAt || !activity.durationMinutes || !activity.caloriesBurned) continue;
-      const startedAt = new Date(activity.startedAt);
-      const existing = await prisma.activity.findFirst({ where: { userId, source: body.source, startedAt } });
-      if (existing) continue;
-      await prisma.activity.create({
-        data: {
-          userId,
-          source: body.source,
-          sportType: activity.sportType,
-          startedAt,
-          durationMinutes: activity.durationMinutes,
-          caloriesBurned: activity.caloriesBurned,
-        },
-      });
-      activitiesCreated += 1;
-    }
-
-    return NextResponse.json({ ok: true, metricsCreated, weightsCreated, activitiesCreated });
+    const delivered = await deliverToInbox(token.inboxId, items);
+    return NextResponse.json({ ok: true, delivered });
   } catch (error) {
-    console.error("HealthKit ingest failed", error);
+    console.error("HealthKit ingest failed", error instanceof Error ? error.message : "ukendt");
     return NextResponse.json({ message: "Database ikke tilgængelig" }, { status: 503 });
   }
 }
