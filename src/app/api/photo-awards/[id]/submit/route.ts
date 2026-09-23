@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getDemoUser } from "@/lib/demo-user";
+import { getSessionUser } from "@/lib/session";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
 
 // Bruger-indsendelse af et erstatningsbillede for en åben Award
@@ -26,9 +26,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     return NextResponse.json({ message: "Kunne ikke gemme billedet" }, { status: 503 });
   }
 
-  // Der er stadig intet generelt brugerlogin i denne app (se docs/STATUS.md) —
-  // samme delte demo-bruger andre uautentificerede skriveveje bruger.
-  const user = await getDemoUser();
+  // Indsendelsen krediteres den indloggede bruger (points).
+  const user = await getSessionUser();
+  if (!user) return NextResponse.json({ message: "Log ind først" }, { status: 401 });
   const updated = await prisma.productPhotoAward.update({
     where: { id },
     data: {

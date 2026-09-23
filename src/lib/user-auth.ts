@@ -1,18 +1,8 @@
 import { SignJWT, jwtVerify } from "jose";
 
-// Rigtig session for almindelige brugere — mangler indtil nu (docs/STATUS.md
-// "Next work" #4: "Implement account authentication before inviting other
-// users"). Hele resten af appen har hidtil brugt én delt getDemoUser()
-// (src/lib/demo-user.ts) i stedet for en rigtig session, hvilket ikke kan
-// bære pointsystemet, "videresend til en ven", "invitér en ven" eller
-// notifikationspræferencer — alle kræver at kunne kende to FORSKELLIGE
-// brugere fra hinanden. Samme JWT/cookie-mønster som src/lib/admin-auth.ts,
-// men et separat cookie-navn/secret, så en admin-session og en almindelig
-// brugersession aldrig kan forveksles.
-//
-// Eksisterende ruter der stadig bruger getDemoUser() er bevidst IKKE migreret
-// her — det er en større, separat migrering, se docs/STATUS.md. Denne fil
-// bruges kun af de NYE ruter i pointsystem-batchen (2026-09-02/03).
+// Session for almindelige brugere (passkey-login, docs/PRIVACY.md). Samme
+// JWT/cookie-mønster som src/lib/admin-auth.ts, men et separat cookie-navn/
+// secret, så en admin-session og en brugersession aldrig kan forveksles.
 
 export const USER_SESSION_COOKIE = "hc_user_session";
 const SESSION_TTL_SECONDS = 30 * 24 * 60 * 60; // 30 dage
