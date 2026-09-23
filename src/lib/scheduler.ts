@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { queueMessage } from "@/lib/messaging";
 import { flushQueuedEmails } from "@/lib/mailer";
 import { flushQueuedPush } from "@/lib/push";
-import { grantEligibleReferralRewards } from "@/lib/referrals";
+import { grantDueInviteRewards } from "@/lib/invite-links";
 
 // In-process baggrundsjob (docs/DECISIONS.md 2026-09-02): DB-drevet, kører i
 // selve Next.js-serverprocessen uanset hvor den hostes (Synology i dag,
@@ -73,7 +73,7 @@ async function escalateStaleBugReports(now: Date) {
 export async function runSchedulerTick(now: Date = new Date()) {
   await escalateStalePendingProducts(now);
   await escalateStaleBugReports(now);
-  await grantEligibleReferralRewards(now);
+  await grantDueInviteRewards(now);
   await flushQueuedEmails();
   await flushQueuedPush();
 }
