@@ -3,7 +3,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { IconChevronDown, IconBookmark, IconBookmarkFilled, IconAlertTriangle } from "@tabler/icons-react";
+import {
+  IconChevronDown,
+  IconBookmark,
+  IconBookmarkFilled,
+  IconAlertTriangle,
+  IconLock,
+  IconLockOpen,
+  IconRefresh,
+} from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { ForwardButton } from "@/components/ForwardButton";
 import { appendDishDraftIngredient } from "@/lib/dish-draft";
@@ -127,6 +135,11 @@ export default function AddPage() {
     carbs: number;
     fat: number;
   } | null>(null);
+  // UI-only edit lock (docs/DECISIONS.md 2026-09-22): energifordeling starts
+  // read-only on every page load; the snapshot taken at unlock is what the
+  // reset button restores. Never persisted.
+  const [isProductEditingUnlocked, setIsProductEditingUnlocked] = useState(false);
+  const [macroOverrideSnapshot, setMacroOverrideSnapshot] = useState<typeof macroOverride>(null);
   const detailsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -286,6 +299,11 @@ export default function AddPage() {
     );
   }, [product, profile]);
 
+  function handleToggleEditLock() {
+    if (!isProductEditingUnlocked) setMacroOverrideSnapshot(macroOverride);
+    setIsProductEditingUnlocked((unlocked) => !unlocked);
+  }
+
   function scrollToDetails() {
     detailsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -423,14 +441,15 @@ export default function AddPage() {
                       {isFavorite ? <IconBookmarkFilled size={24} /> : <IconBookmark size={24} />}
                     </button>
                   )}
-                  <div className="absolute -right-5 bottom-0 flex h-[72px] w-[72px] items-center justify-center rounded-full bg-white shadow-md">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="/hello-cal-fruit.png"
-                      alt=""
-                      className="h-14 w-14 object-contain"
-                    />
-                  </div>
+                  {/* Logo sits on top of the product circle: its bottom-left
+                      corner at the circle's bottom point, spanning one radius
+                      to the right. */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/hello-cal-fruit.png"
+                    alt=""
+                    className="pointer-events-none absolute bottom-0 left-1/2 z-10 h-[95px] w-[95px] object-contain object-left-bottom"
+                  />
                 </div>
                 {!!state.product.barcodes?.length && state.product.createdByUserId !== profile?.id && (
                   <Link
@@ -556,25 +575,51 @@ export default function AddPage() {
 
             <div ref={detailsRef} className="flex flex-col gap-6 border-t border-hf-tan-dark p-4">
               <div>
-                <p className="hf-heading mb-4 text-[15px] text-hf-black">{t("common.macroBreakdown")}</p>
+                <div className="mb-4 flex items-center justify-between">
+                  <p className="hf-heading text-[15px] text-hf-black">{t("common.macroBreakdown")}</p>
+                  <div className="-my-3 -mr-3 flex items-center">
+                    {isProductEditingUnlocked && (
+                      <button
+                        type="button"
+                        onClick={() => setMacroOverride(macroOverrideSnapshot)}
+                        aria-label={t("addProduct.resetChanges")}
+                        className="flex h-11 w-11 items-center justify-center rounded-full text-hf-black"
+                      >
+                        <IconRefresh size={20} />
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={handleToggleEditLock}
+                      aria-label={t(isProductEditingUnlocked ? "addProduct.lockEditing" : "addProduct.unlockEditing")}
+                      aria-pressed={isProductEditingUnlocked}
+                      className="flex h-11 w-11 items-center justify-center rounded-full text-hf-black"
+                    >
+                      {isProductEditingUnlocked ? <IconLockOpen size={20} /> : <IconLock size={20} />}
+                    </button>
+                  </div>
+                </div>
                 <div className="flex flex-col gap-4">
                   <MacroSliderBar
                     label={t("common.protein")}
                     grams={macros.protein}
                     max={Math.max(30, Math.ceil(defaultMacros.protein * 2))}
                     onChange={(value) => setMacroOverride({ ...macros, amount, protein: value })}
+                    disabled={!isProductEditingUnlocked}
                   />
                   <MacroSliderBar
                     label={t("common.carbs")}
                     grams={macros.carbs}
                     max={Math.max(40, Math.ceil(defaultMacros.carbs * 2))}
                     onChange={(value) => setMacroOverride({ ...macros, amount, carbs: value })}
+                    disabled={!isProductEditingUnlocked}
                   />
                   <MacroSliderBar
                     label={t("common.fat")}
                     grams={macros.fat}
                     max={Math.max(20, Math.ceil(defaultMacros.fat * 2))}
                     onChange={(value) => setMacroOverride({ ...macros, amount, fat: value })}
+                    disabled={!isProductEditingUnlocked}
                   />
                 </div>
               </div>
