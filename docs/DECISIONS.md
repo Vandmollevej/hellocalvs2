@@ -2,6 +2,31 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-23: Privacy-by-architecture — Hello Cal må ikke kunne læse brugerdata
+
+Brugeren har vedtaget en arkitekturændring (forslag fra ChatGPT, afklaret med
+brugeren punkt for punkt). Den bindende kontrakt er `docs/PRIVACY.md`.
+
+- Tre adskilte dataverdener: identitet, krypteret boks, anonym statistik. Ingen
+  fælles nøgle. Boksen har ingen reference til kontoen.
+- Private data krypteres på enheden. Hello Cal har ingen nøgle, der kan
+  dekryptere dem.
+- Almindelige brugere logger ind med passkey. E-mail gemmes kun som HMAC-hash.
+- Gendannelse: delt nøgle. Brugeren **downloader** sin halvdel som fil, og
+  Hello Cal gemmer den anden. Support frigiver serverhalvdelen efter
+  personlig identitetsbekræftelse. Der gemmes ikke placering eller IP som bevis.
+- "Log ind som bruger" (impersonation) fjernes. Support sker kun via brugerens
+  egen, tidsbegrænsede tilladelse til udvalgte datatyper.
+- Nyhedsbreve: separat, frivillig tilmelding, ikke koblet til kontoen.
+- Invitér/videresend til en ven: engangslinks uden gemt afsender→modtager-kobling.
+- AI: metadata fjernes, ingen ID'er sendes til OpenAI.
+- Statistik: klienten sender buckets uden ID; minimum 25 pr. gruppe.
+- **Omstøder** 2026-09-02 (impersonation, e-mail + adgangskode-login,
+  server-side GDPR-anonymisering af klartekst) og 2026-09-19 (personlig
+  søgehistorik på serveren; flyttes til boksen).
+- Konsekvens: stort set alle bruger-API'er og store dele af Prisma-modellen
+  ændres. Planen køres i faser, se `docs/STATUS.md`.
+
 ## 2026-09-23 (senere): Ugesummering vises nu, `∼`-tegn, rigtigt vægtestimat, fremtidige dage uden status
 
 Ændrer punkterne i indlægget nedenfor, hvor de er i modstrid:
