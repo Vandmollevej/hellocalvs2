@@ -130,7 +130,7 @@ Ejer: G9-overtagelse, konto B
 | --- | --- | --- | --- |
 | b4666faa | Grydeikon: trim `Gryde.png` og erstat på forsiden | Færdig (f5895a3) | Var allerede lavet: `public/icons/gryde.png` (770×759, trimmet), brugt i `src/lib/add-actions.ts` |
 | 60e492ca | Vand-siden: 4 PNG'er (75/50/33/25 cl) | Færdig (6cf89c5) | Billeder i `public/icons/water/`, registrerer 750/500/330/250 ml. Afventer brugerens godkendelse af udseendet |
-| ea9d1f7c | Dublet af 60e492ca (glas/flaske i række på fire) | Dublet | Luk sammen med 60e492ca |
+| ea9d1f7c | Dublet af 60e492ca (glas/flaske i række på fire) | Færdig (6cf89c5) | Lukket af G9: spørgsmålet om billede↔størrelse er besvaret af filnavnene i 60e492ca |
 
 ## G10 — Bundnavigation + global overskrift-stil
 Filer: `src/components/BottomNav.tsx`, `src/app/globals.css`.
