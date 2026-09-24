@@ -1832,3 +1832,8 @@ Normaliserede produkt-søgeparametre (`ProductNutritionFeatures`, 1:1 med
 - Indtil rigtigt adgangskode-login er bygget, logger ejeren ind på `/login` med e-mail + kode (`src/app/api/auth/code-login/route.ts`). E-mail og kode ligger kun i serverens `.env.production` (`CODE_LOGIN_EMAIL`, `CODE_LOGIN_CODE`); tomme = slået fra.
 - Boksens hovednøgle for denne konto afledes på serveren af `USER_SESSION_SECRET`, så den er den samme på alle enheder. Bevidst, midlertidig undtagelse fra "serveren kan ikke læse data"; fjernes, når rigtigt login findes.
 - Login- og opret-siden viser ingen tekster om databehandling.
+
+## 2026-09-24: HelloFresh kun i Opret ret; handlingsknapper i fuld bredde
+
+- HelloFresh-boksen ("Genkend din ret") er fjernet fra Madvarer-siden. Opret ret når den via kameraet (`/camera?...&for=ret`). HelloFresh må ikke vises på Madvarer, produktsøgning, produkt-/ingrediensoprettelse eller produktvisning. Åbent punkt: kameraets "Produkt"-fane (`mode=hellofresh`) vises også uden for Opret ret; ikke ændret endnu.
+- Almindelige primære/sekundære handlingsknapper fylder altid hele indholdsbredden. Fælles komponent: `ActionButton`/`ActionLink` (`src/components/hf/ActionButton.tsx`); regel i design.md §6.2. Små ikon-/inline-kontroller er undtaget. Eksisterende smalle knapper rettes efterhånden, når deres side alligevel ændres.

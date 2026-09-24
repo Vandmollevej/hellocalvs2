@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { IconShare } from "@tabler/icons-react";
+import { IconShare3 } from "@tabler/icons-react";
 import { localApi } from "@/lib/vault/local-api";
 import { createForwardLink, type ForwardDish } from "@/lib/vault/handlers/forwards";
 
@@ -49,17 +49,17 @@ export function ForwardButton({ kind, itemId, name }: { kind: "PRODUCT" | "DISH"
   }
 
   return (
-    <div className="flex flex-col items-end gap-1">
+    <div className="flex min-w-0 items-center justify-end gap-2">
+      {error && <span className="whitespace-nowrap text-[13px] text-hf-red-dark">{error}</span>}
       <button
         type="button"
         onClick={share}
         disabled={sending}
         aria-label="Videresend til en ven"
-        className="flex h-11 w-11 items-center justify-center text-hf-black disabled:opacity-50"
+        className="flex h-11 w-11 shrink-0 items-center justify-center text-hf-black disabled:opacity-50"
       >
-        <IconShare size={22} />
+        <IconShare3 size={24} />
       </button>
-      {error && <p className="text-[11px] text-hf-red-dark">{error}</p>}
     </div>
   );
 }
