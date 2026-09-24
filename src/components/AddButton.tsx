@@ -76,7 +76,7 @@ const SELECT_DEAD_ZONE = 14;
 const LIGHT_CIRCLE_SIZE = 40;
 // The fingerprint sits directly on the green backdrop (no light circle behind
 // it) and is a bit larger than the old 40px light circle.
-const FINGERPRINT_SIZE = 60;
+const FINGERPRINT_SIZE = 52;
 const FINGERPRINT_TILT_DEG = 35;
 const LIGHT_CIRCLE_TRAVEL = HALF_CIRCLE_RADIUS - LIGHT_CIRCLE_SIZE / 2 - 6;
 const BULGE_MAX = 20;
