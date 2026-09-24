@@ -59,7 +59,6 @@ function LogIndContent() {
       </Link>
 
       <p className="hf-type-body mt-2">{t("account.loginIntro")}</p>
-      <p className="hf-type-body-sm text-hf-gray-dark">{t("account.loginPrivacy")}</p>
       {!supported && <AuthError message={t("account.noPasskeySupport")} />}
       <AuthError message={error} />
 

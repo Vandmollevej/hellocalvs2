@@ -29,7 +29,6 @@ function TilmeldContent() {
       purpose="signup"
       title={t("account.signupTitle")}
       intro={t("account.signupIntro")}
-      note={t("account.signupEmailNote")}
       backHref="/welcome"
     />
   );
