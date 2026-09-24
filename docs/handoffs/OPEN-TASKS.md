@@ -80,8 +80,8 @@ Ejer: G5-overtagelse, konto B (2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 548ca51e | Ny invite-only agent-app (hyldebillede, opret vare, 2FA, admin-oversigt, aflønnings-backend) | Venter på bruger | Alle svar skrevet ind i `docs/OPRETTELSES-APP.md`. Venter på "byg"-go fra brugeren. Må IKKE i `compose.production.yaml` før eksplicit godkendelse |
-| 850e575e / 0669f736 | Logo-robot: isolér logo ved scanning, match mod DB, natlig Google-søgning, admin-kø under 90 % | Venter på bruger | Spurgt om søge-API: Google Custom Search er lukket for nye kunder og stopper 2027-01-01 — anbefalet Vision API Web Detection. Afventer svar |
+| 548ca51e | Ny invite-only agent-app (hyldebillede, opret vare, 2FA, admin-oversigt, aflønnings-backend) | I gang | Bruger sagde 2026-09-24 "byg det hele, ny container". Bygger: Prisma-modeller → admin scan-invites/medarbejdersider → agent-app-container |
+| 850e575e / 0669f736 | Logo-robot: isolér logo ved scanning, match mod DB, natlig Google-søgning, admin-kø under 90 % | I gang | Besluttet: Google Vision API Web Detection (ikke Custom Search/CSE, lukker 2027-01-01). Bygges efter agent-appens datamodel |
 
 ## G6 — Madvare-flow (Tilføj madvare, Madvarer-siden)
 Filer: `src/app/add/**`, `src/components/ForwardButton.tsx`, Madvarer-siden, fælles knap-komponent.
