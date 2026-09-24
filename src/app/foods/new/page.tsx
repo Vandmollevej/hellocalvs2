@@ -251,7 +251,6 @@ function NytProduktContent() {
                 <option value="OTHER">{t("foods.categoryOther")}</option>
               </select>
             </label>
-            <p className="px-1 text-xs text-hf-black opacity-60">{t("foods.ingredientNutritionHint")}</p>
 
             {ingredientSaveError && (
               <p className="text-center text-xs text-hf-black opacity-70">{ingredientSaveError}</p>
