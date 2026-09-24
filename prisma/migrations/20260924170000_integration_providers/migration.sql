@@ -1,0 +1,5 @@
+-- 2026-09-24: otte sundhedsintegrationer (docs/DECISIONS.md).
+ALTER TYPE "IntegrationProvider" ADD VALUE IF NOT EXISTS 'HEALTH_CONNECT';
+ALTER TYPE "IntegrationProvider" ADD VALUE IF NOT EXISTS 'POLAR';
+ALTER TYPE "IntegrationProvider" ADD VALUE IF NOT EXISTS 'SAMSUNG_HEALTH';
+ALTER TYPE "IntegrationProvider" ADD VALUE IF NOT EXISTS 'STRAVA';
