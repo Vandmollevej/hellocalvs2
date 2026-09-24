@@ -8,7 +8,8 @@ import { AuthError, AuthScreen } from "@/components/account/AuthScreen";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { TextField } from "@/components/hf/TextField";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { logInWithCode } from "@/lib/vault/store";
+import { logIn, logInWithCode } from "@/lib/vault/store";
+import { isPasskeySupported } from "@/lib/vault/webauthn-client";
 
 // Midlertidigt login med e-mail + kode (docs/DECISIONS.md 2026-09-24), indtil
 // rigtig adgangskode-login er bygget.
@@ -21,6 +22,7 @@ function LogIndContent() {
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const passkeySupported = typeof window === "undefined" || isPasskeySupported();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -35,20 +37,44 @@ function LogIndContent() {
     }
   }
 
+  async function handlePasskeyLogin() {
+    setError(null);
+    setSubmitting(true);
+    try {
+      const result = await logIn();
+      router.push(result === "ready" ? next : "/gendan?locked=1");
+    } catch (err) {
+      setError(err instanceof Error && err.name !== "NotAllowedError" ? err.message : t("account.loginFailed"));
+      setSubmitting(false);
+    }
+  }
+
   return (
     <AuthScreen
       title={t("account.loginTitle")}
       backHref="/welcome"
       backLabel={t("account.back")}
       actions={
-        <button
-          type="submit"
-          form="code-login-form"
-          disabled={submitting || !email || !code}
-          className="hf-btn-primary hf-type-button h-12 w-full disabled:opacity-40"
-        >
-          {submitting ? t("login.submitting") : t("login.continueButton")}
-        </button>
+        <div className="flex flex-col gap-3">
+          <button
+            type="submit"
+            form="code-login-form"
+            disabled={submitting || !email || !code}
+            className="hf-btn-primary hf-type-button h-12 w-full disabled:opacity-40"
+          >
+            {submitting ? t("login.submitting") : t("login.continueButton")}
+          </button>
+          {passkeySupported && (
+            <button
+              type="button"
+              onClick={handlePasskeyLogin}
+              disabled={submitting}
+              className="hf-btn-secondary hf-type-button h-12 w-full disabled:opacity-40"
+            >
+              {t("account.faceIdLogin")}
+            </button>
+          )}
+        </div>
       }
     >
       <p className="hf-type-body-sm">{t("login.chooseCountry")}</p>
@@ -78,6 +104,9 @@ function LogIndContent() {
           onChange={(e) => setCode(e.target.value)}
         />
       </form>
+      <Link href="/gendan" className="hf-type-body-sm self-start underline">
+        {t("login.forgotPassword")}
+      </Link>
       <AuthError message={error} />
 
       <p className="hf-type-body-sm mt-4 text-center">
