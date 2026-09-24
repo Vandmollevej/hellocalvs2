@@ -43,11 +43,11 @@ Ejer: —
 ## G2 — Statistik-siden (redigering, drag/drop)
 Filer: statistik-siden, `src/components/StatsWheel.tsx`, `src/lib/frontpage-layout.ts`, `src/lib/frontpage-stats.ts`.
 Ukendte ændringer: de tre nævnte filer er ændret og ikke committet.
-Ejer: —
+Ejer: G2-overtagelse, konto C (2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 7fd0a9a3 | Rettelser til kort-redigering: fjern 6 prikker, skillelinje, vibration stop, scroll, slette-cirkel, ét slider-design | Ikke startet | Tjek om allerede lavet, ellers byg |
+| 7fd0a9a3 | Rettelser til kort-redigering: fjern 6 prikker, skillelinje, vibration stop, scroll, slette-cirkel, ét slider-design | I gang | Læser transcript + diff |
 | fb445e0d | Drag/drop til frie felter, stiplede rammer, dropzone til overskrift | Ikke startet | Tjek om allerede lavet, ellers byg |
 
 ## G3 — Produktkategorier + statistikbokse + "Månedens synder"
