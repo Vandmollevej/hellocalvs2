@@ -1,0 +1,141 @@
+# Åbne opgaver — fælles overlevering mellem konti
+
+Opgaverne her blev startet på én Claude-konto og kan fortsættes på en anden.
+Samme maskine, samme repo. Denne fil er den eneste fælles sandhed om, hvem der
+laver hvad.
+
+## Regler for alle sessioner
+
+1. Læs denne fil før du begynder, og find din opgave/gruppe.
+2. Hvis du fortsætter en opgave: sæt `Ejer` til din sessions titel + konto (fx
+   "Kalender-gruppen, konto B") og opdatér `Status` + `Næste skridt` løbende —
+   mindst hver gang du committer eller stopper.
+3. Rør kun filer i din egen gruppe. Skal du ændre en fil, en anden gruppe ejer,
+   så skriv det her og vent.
+4. Ikke-committede ændringer i en gruppes filer (se "Ukendte ændringer") kan
+   stamme fra en afbrudt session: læs `git diff` på filen før du ændrer den, og
+   byg videre på den i stedet for at overskrive.
+5. Den fulde originale samtale ligger i
+   `C:\Users\Peter\.claude\projects\C--Users-Peter-Desktop-Hello-Cal\<id>*.jsonl`
+   (id = første 8 tegn nedenfor). Læs den, hvis du mangler detaljer om kravet.
+6. Når en opgave er færdig og committet: sæt `Status: Færdig (<commit>)`.
+7. Løber din konto tør: sørg for at din linje her er opdateret og committet.
+
+Status-værdier: `Ikke startet` · `Venter på bruger` · `I gang` · `Blokeret` · `Færdig`
+
+Status opdateret: 2026-09-24 (overtaget fra konto A kl. 17:29)
+
+---
+
+## G1 — Kalender
+Filer: `src/app/calendar/**`, kalender-komponenter.
+Ukendte ændringer: `src/app/calendar/page.tsx` er ændret og ikke committet.
+Ejer: —
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| 5ac89589 | Flyt "Du er inden for din målsætning" op mellem måned og kalendergitter | Ikke startet | Tjek om allerede lavet, ellers byg |
+| 85b824f8 | Statusfelt nederst: bottom-align, "Tilbage for i dag" ikke fed | Ikke startet | Tjek om allerede lavet, ellers byg |
+| 70e219fb | Dagvisning: fjern dropdown, ugedag-stil, "Kl." over tider, luft | Ikke startet | Tjek om allerede lavet, ellers byg |
+| 9848667e | Ugetal på egen linje under datoen | Ikke startet | Tjek om allerede lavet, ellers byg |
+| 63e9ff5d | Ugesummering (kaloriebalance + estimeret vægt) — kun roadmap-beslutning | Ikke startet | Skriv i docs som roadmap, byg ikke |
+
+## G2 — Statistik-siden (redigering, drag/drop)
+Filer: statistik-siden, `src/components/StatsWheel.tsx`, `src/lib/frontpage-layout.ts`, `src/lib/frontpage-stats.ts`.
+Ukendte ændringer: de tre nævnte filer er ændret og ikke committet.
+Ejer: —
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| 7fd0a9a3 | Rettelser til kort-redigering: fjern 6 prikker, skillelinje, vibration stop, scroll, slette-cirkel, ét slider-design | Ikke startet | Tjek om allerede lavet, ellers byg |
+| fb445e0d | Drag/drop til frie felter, stiplede rammer, dropzone til overskrift | Ikke startet | Tjek om allerede lavet, ellers byg |
+
+## G3 — Produktkategorier + statistikbokse + "Månedens synder"
+Filer: Prisma-skema (kategori), kategori-lib, nye statistikbokse, ny liste-side, knap i kalender (koordinér med G1).
+Ejer: —
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| c0d3a8fa / f5505465 | Ernæringsmæssige produktkategorier (alkohol, fedt, ost, yoghurt, …; ultraforarbejdet som tag) | Venter på bruger | Spørgsmål delvist besvaret i c0d3a8fa — stil de resterende, byg når brugeren siger til |
+| d7f6eb5c / 1578bf02 | Kød/fisk-bokse (g + kcal), sukkerholdige drikke, alkohol, "største syndere", liste-side, "Månedens synder" | Venter på bruger | Spørgsmål stillet (se 1578bf02), ikke besvaret. Afhænger af kategorierne |
+
+## G4 — Usikkerhed (bølgeikon + Uncertainties-admin)
+Filer: usikkerheds-ikon/komponent, mikronæringsvisning, indstillinger → Visning, admin Uncertainties.
+Ejer: —
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| d2f522ca / 52205f52 | Globalt bølgeikon for usikre varer + mikrodata, margin i grå, on/off i indstillinger | Venter på bruger | Krav i STATUS (commit 1beb7a8). Mangler: ikon som tekst-tilde eller SVG? Frida-vitaminer skal evt. bygges først |
+| ff7fc6a5 | Admin "Uncertainties" med 4 faner, rød prik, lightbox med beskåret OCR-billede | Venter på bruger | Krav i STATUS punkt 15. Brugeren sagde "Udfør" til sidst — bekræft om det betyder byg nu |
+
+## G5 — Agent-app + logo-robot
+Filer: ny agent-app, admin "scan-invites", logo-agent (Python/container).
+Ejer: —
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| 548ca51e | Ny invite-only agent-app (hyldebillede, opret vare, 2FA, admin-oversigt, aflønnings-backend) | I gang (afbrudt) | Svar modtaget. 3 filer redigeret — læs transcript og fortsæt |
+| 850e575e / 0669f736 | Logo-robot: isolér logo ved scanning, match mod DB, natlig Google-søgning, admin-kø under 90 % | Venter på bruger | Mangler `GOOGLE_CSE_ID` (Programmable Search Engine) fra brugeren |
+
+## G6 — Madvare-flow (Tilføj madvare, Madvarer-siden)
+Filer: `src/app/add/**`, `src/components/ForwardButton.tsx`, Madvarer-siden, fælles knap-komponent.
+Ukendte ændringer: `src/components/ForwardButton.tsx` er halvt ændret (ikon skiftet, brug ikke rettet — kan give build-fejl).
+Ejer: —
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| 155dc7cf | Forward-ikon i stedet for dele-ikon, "Log ind…"-tekst på linje med ikonet | I gang (afbrudt) | Gør ForwardButton.tsx færdig |
+| 56fda7bc | Mængde altid med enhed (g / ml / cl efter produkttype) | Ikke startet | Tjek om allerede lavet, ellers byg |
+| ad648ee7 | HelloFresh kun i Opret ret + global regel: knapper fuld bredde | Ikke startet | Tjek om allerede lavet, ellers byg |
+
+## G7 — Profil
+Filer: `src/app/profile/**`.
+Ukendte ændringer: `profile/body-measurements`, `profile/invite`, `profile/photo-diary`, `profile/settings`, `profile/weight-calibration`, `src/lib/body-measurements.ts` er ændret og ikke committet.
+Ejer: —
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| 9a0770ce | Ny oversigtsside over målsætninger (historik, grønt flueben, fast knap nederst) | Ikke startet | Tjek om allerede lavet, ellers byg |
+| 8b0a278f | Kropsmål med mand/kvinde-tegninger (fra hovedmappen), kort som på statistik | Ikke startet | Tjek om allerede lavet, ellers byg |
+| d22c7e61 | Invitér en ven: kun visuelt (betingelser som tekstlink, luft, fjern skillelinje, demo-data) | Venter på bruger | E-mail-invitation/venneliste strider mod privacy — kun visuelle rettelser |
+| ef8a5612 | "Skift adgangskode"-side | Blokeret | Strider sandsynligvis mod passkey-only login — spørg brugeren |
+
+## G8 — Integrationer
+Filer: `src/lib/integrations.ts`, integrationssiden, `/api/withings/**`, Google Health.
+Ejer: —
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| 6068f78a | 8 sundhedsintegrationer + nye ikoner | Blokeret | Strider mod vault-arkitekturen. Brugeren svarede "Forstår ikke" — forklar enkelt og spørg |
+| 8d98b548 | Withings + Google Health koblet på, egen data-sync | Ikke startet | Læs transcript (indeholder også en HelloFresh-trin-rettelse) |
+| d0442775 | Waldemarsro (DK-only) + scraper | Venter på bruger | Krav afklaret og committet (ea7843a) — byg når brugeren siger til |
+
+## G9 — Ikoner (forside + vand)
+Filer: forsidens grydeikon, Vand-siden, `public/` assets.
+Ejer: —
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| b4666faa | Grydeikon: trim `Gryde.png` og erstat på forsiden | Ikke startet | Tjek om allerede lavet, ellers byg |
+| 60e492ca | Vand-siden: 4 PNG'er (75/50/33/25 cl) | Ikke startet | Tjek om allerede lavet, ellers byg |
+
+---
+
+## Færdige — kan lukkes
+| Id | Opgave | Bevis |
+| --- | --- | --- |
+| 1584eca0 | Global tidspunkt-visning | `src/components/hf/TimeSection.tsx` |
+| 1d1d05b2 | Profil-knapper "Vægt"/"Målsætning" | Gamle strenge findes ikke længere |
+| 40d682e3 | Brugerændringer i næringsindhold → admin | STATUS 2026-09-23, `NutritionReportPanel` |
+| 4cb55b0b / efe65bbb | Logo-placering + hængelås på energifordeling | `src/app/add/[id]/page.tsx`, DECISIONS |
+| 7a744bd5 | Global copy/paste-blokering | `GlobalClipboardGuard.tsx` |
+| 819c071c | Fødselsdato-vælger åbner på 1990 | `BirthDatePicker.tsx` |
+| b649e8f4 | Anonymitet/kryptering | DECISIONS 117-121 |
+| e542c2f4 | Produkttitel sort + brand grøn | `src/app/add/[id]/page.tsx` |
+| 217a0faf | Stregkode auto-rotation, fjern manuelt felt | commit 1643610 |
+
+## Ikke fordelt
+Ændret og ikke committet uden kendt ejer: `docs/AI.md`, `src/app/create-dish/page.tsx`, `src/app/globals.css`,
+`src/components/AddButton.tsx`, `src/components/BottomNav.tsx`, `src/components/hf/PointsPromoBanner.tsx`,
+`src/components/ui/WheelPicker.tsx`, `src/i18n/locales/*.json`, `src/lib/vault/webauthn-client.ts`.
+Nogle hører muligvis til login-/Mailjet-sessionerne på konto B. Rør dem ikke uden at læse diff'en først.
