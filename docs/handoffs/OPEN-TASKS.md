@@ -80,11 +80,11 @@ Ejer: G5-overtagelse, konto B (2026-09-24)
 ## G6 — Madvare-flow (Tilføj madvare, Madvarer-siden)
 Filer: `src/app/add/**`, `src/components/ForwardButton.tsx`, Madvarer-siden, fælles knap-komponent.
 Ukendte ændringer: `src/components/ForwardButton.tsx` er halvt ændret (ikon skiftet, brug ikke rettet — kan give build-fejl).
-Ejer: —
+Ejer: G6-overtagelse, konto B (2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 155dc7cf | Forward-ikon i stedet for dele-ikon, "Log ind…"-tekst på linje med ikonet | I gang (afbrudt) | Gør ForwardButton.tsx færdig |
+| 155dc7cf | Forward-ikon i stedet for dele-ikon, "Log ind…"-tekst på linje med ikonet | I gang | Ikon-brug rettet; tjekker "Log ind…"-tekst mod transcript |
 | 56fda7bc | Mængde altid med enhed (g / ml / cl efter produkttype) | Ikke startet | Tjek om allerede lavet, ellers byg |
 | ad648ee7 | HelloFresh kun i Opret ret + global regel: knapper fuld bredde | Ikke startet | Tjek om allerede lavet, ellers byg |
 
