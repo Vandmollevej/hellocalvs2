@@ -1664,17 +1664,28 @@ enum BugReportSource {
   AI
 }
 
+// Optional tags the user picks on the "Indberet fejl" form (four icon
+// buttons) to say which part of the product's data is wrong, so admin
+// triage doesn't have to guess it from free text alone.
+enum BugReportCategory {
+  EAN
+  ENERGY
+  CONTENT
+  PRODUCT_IMAGE
+}
+
 model BugReport {
-  id            String          @id @default(cuid())
+  id            String              @id @default(cuid())
   // Null only for source = AI (see BugReportSource above) — an AI-filed
   // report has no submitting user to attribute or award points to.
-  user          User?           @relation(fields: [userId], references: [id])
+  user          User?               @relation(fields: [userId], references: [id])
   userId        String?
-  source        BugReportSource @default(USER)
+  source        BugReportSource     @default(USER)
   description   String
+  categories    BugReportCategory[] @default([])
   screenshotUrl String?
-  status        BugReportStatus @default(PENDING)
-  createdAt     DateTime        @default(now())
+  status        BugReportStatus     @default(PENDING)
+  createdAt     DateTime            @default(now())
   resolvedAt    DateTime?
 
   // Sat når indberetningen kommer fra et konkret produkts "Indberet fejl"-link

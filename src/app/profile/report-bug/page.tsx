@@ -2,10 +2,22 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { IconBarcode, IconBolt, IconList, IconPhoto } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { PointsPromoBanner } from "@/components/hf/PointsPromoBanner";
 
-type BugReport = { id: string; description: string; status: string };
+type BugReport = { id: string; description: string; status: string; categories?: string[] };
+
+// Fire ikon-knapper der lader brugeren tagge hvilken del af produktets data
+// der er forkert, så admin-triage ikke skal gætte det ud fra fri tekst alene
+// (prisma/schema.prisma BugReportCategory). Rent visuelt en toggle-chip pr.
+// kategori — flere kan vælges ad gangen, ingen er påkrævet.
+const BUG_REPORT_CATEGORIES: { value: string; label: string; icon: React.ReactNode }[] = [
+  { value: "EAN", label: "EAN", icon: <IconBarcode size={22} stroke={1.75} /> },
+  { value: "ENERGY", label: "Energi", icon: <IconBolt size={22} stroke={1.75} /> },
+  { value: "CONTENT", label: "Indhold", icon: <IconList size={22} stroke={1.75} /> },
+  { value: "PRODUCT_IMAGE", label: "Produktbillede", icon: <IconPhoto size={22} stroke={1.75} /> },
+];
 
 // "Indberet fejl" (docs/DECISIONS.md 2026-09-02): 10 points ved godkendt
 // fejlindberetning. Når reached via et produkts "Indberet fejl"-link
@@ -18,6 +30,7 @@ function ReportBugContent() {
   const productId = searchParams.get("productId");
 
   const [description, setDescription] = useState("");
+  const [categories, setCategories] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [pending, setPending] = useState<BugReport | null | undefined>(productId ? undefined : null);
@@ -31,8 +44,13 @@ function ReportBugContent() {
       .catch(() => setPending(null));
   }, [productId]);
 
+  function toggleCategory(value: string) {
+    setCategories((prev) => (prev.includes(value) ? prev.filter((c) => c !== value) : [...prev, value]));
+  }
+
   function startEditing(report: BugReport) {
     setDescription(report.description);
+    setCategories(report.categories ?? []);
     setEditing(true);
   }
 
@@ -47,7 +65,9 @@ function ReportBugContent() {
         {
           method: editingExisting ? "PATCH" : "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(editingExisting ? { description } : { description, productId }),
+          body: JSON.stringify(
+            editingExisting ? { description, categories } : { description, categories, productId }
+          ),
         }
       );
       const data = await response.json();
@@ -117,6 +137,28 @@ function ReportBugContent() {
               />
             </label>
             {error && <p className="hf-type-caption text-hf-red-dark">{error}</p>}
+            <div className="mt-1 grid grid-cols-4 gap-2">
+              {BUG_REPORT_CATEGORIES.map((cat) => {
+                const selected = categories.includes(cat.value);
+                return (
+                  <button
+                    key={cat.value}
+                    type="button"
+                    onClick={() => toggleCategory(cat.value)}
+                    aria-pressed={selected}
+                    className="flex flex-col items-center gap-1 rounded-[8px] border p-2"
+                    style={{
+                      borderColor: selected ? "var(--hf-color-action)" : "var(--hf-color-field-border)",
+                      background: selected ? "var(--hf-color-action)" : "transparent",
+                      color: selected ? "var(--hf-color-on-action, #fff)" : "var(--hf-color-action)",
+                    }}
+                  >
+                    {cat.icon}
+                    <span className="hf-type-caption text-center">{cat.label}</span>
+                  </button>
+                );
+              })}
+            </div>
             <button
               type="submit"
               disabled={submitting}

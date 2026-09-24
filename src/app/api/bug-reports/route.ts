@@ -1,6 +1,16 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
+import { BugReportCategory } from "@prisma/client";
+
+const BUG_REPORT_CATEGORIES = Object.values(BugReportCategory);
+
+function parseCategories(body: Record<string, unknown>): BugReportCategory[] {
+  if (!Array.isArray(body.categories)) return [];
+  return body.categories.filter((c): c is BugReportCategory =>
+    typeof c === "string" && (BUG_REPORT_CATEGORIES as string[]).includes(c)
+  );
+}
 
 // "Indberet fejl" (docs/DECISIONS.md 2026-09-02): 10 points ved godkendelse,
 // se src/lib/bug-report-approval.ts. Kræver en rigtig session — en
@@ -47,6 +57,7 @@ export async function POST(req: Request) {
   const description = typeof body.description === "string" ? body.description.trim() : "";
   const screenshotUrl = typeof body.screenshotUrl === "string" ? body.screenshotUrl : undefined;
   const productId = typeof body.productId === "string" ? body.productId : undefined;
+  const categories = parseCategories(body);
 
   if (!description || description.length < 10) {
     return NextResponse.json(
@@ -69,7 +80,7 @@ export async function POST(req: Request) {
   }
 
   const bugReport = await prisma.bugReport.create({
-    data: { userId: user.id, description, screenshotUrl, productId },
+    data: { userId: user.id, description, categories, screenshotUrl, productId },
   });
 
   return NextResponse.json({ bugReport }, { status: 201 });

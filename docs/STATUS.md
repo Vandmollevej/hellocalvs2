@@ -2,6 +2,32 @@
 
 Last updated: 2026-09-24
 
+## 2026-09-24: "Indberet fejl" — fire kategori-ikoner (EAN/Energi/Indhold/Produktbillede)
+
+Brugeren viste et screenshot af `/profile/report-bug` og bad om fire ikoner
+under beskrivelsesboksen, før "Send indberetning". Bygget som fire
+toggle-chips (multi-select, ingen påkrævet) der tagger hvilken del af
+produktdata fejlen handler om, så admin-triage ikke skal gætte det ud fra fri
+tekst alene:
+
+- `prisma/schema.prisma`: nyt `BugReportCategory`-enum (`EAN`, `ENERGY`,
+  `CONTENT`, `PRODUCT_IMAGE`) og `BugReport.categories` (array, default
+  tom). Hand-written migration
+  `prisma/migrations/20260924130000_bug_report_categories/` — samme grund
+  som andre nylige migrationer i dette projekt (ingen lokal PostgreSQL
+  tilgængelig fra denne arbejdsstation).
+- `src/app/api/bug-reports/route.ts` (POST) og
+  `src/app/api/bug-reports/[id]/route.ts` (PATCH): accepterer nu valgfrit
+  `categories: string[]` i body, valideret mod enum-værdierne.
+- `src/app/profile/report-bug/page.tsx`: fire ikon-chips
+  (`@tabler/icons-react` `IconBarcode`/`IconBolt`/`IconList`/`IconPhoto`)
+  med dansk label EAN/Energi/Indhold/Produktbillede, mellem
+  fejlbeskrivelsen og send-knappen; forudfyldes fra eksisterende
+  kategorier i "Redigér"-flowet.
+- Ikke bygget: ingen visning af valgte kategorier i admin (findes ikke
+  endnu en admin-liste over bug reports at udvide) — kan tilføjes når/hvis
+  den bygges.
+
 ## 2026-09-24: Oprettelses-app (medarbejder-hylde-app) — kravrunde genoptaget, kun dokumentation
 
 - Brugeren har genoptaget den medarbejder-produktoprettelsesapp der blev
