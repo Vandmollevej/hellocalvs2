@@ -77,6 +77,7 @@ const LIGHT_CIRCLE_SIZE = 40;
 // The fingerprint sits directly on the green backdrop (no light circle behind
 // it) and is a bit larger than the old 40px light circle.
 const FINGERPRINT_SIZE = 60;
+const FINGERPRINT_TILT_DEG = 35;
 const LIGHT_CIRCLE_TRAVEL = HALF_CIRCLE_RADIUS - LIGHT_CIRCLE_SIZE / 2 - 6;
 const BULGE_MAX = 20;
 // How tightly the bulge concentrates around the drag angle (in degrees) —
@@ -375,18 +376,21 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
     const dy = py - fabCenterY;
     const distanceFromFab = Math.hypot(dx, dy);
 
-    const next = distanceFromFab > SELECT_DEAD_ZONE ? nearestKey : null;
-    highlightedKeyRef.current = next;
-    setHighlightedKey(next);
-
     // Clamp the light circle's travel to stay inside the green backdrop —
     // it follows the finger's direction but never actually leaves the shape.
     const clampedDistance = Math.min(distanceFromFab, LIGHT_CIRCLE_TRAVEL);
     const angle = Math.atan2(dy, dx);
-    setDragOffset({
-      x: Math.cos(angle) * clampedDistance,
-      y: Math.sin(angle) * clampedDistance,
-    });
+    const offset = { x: Math.cos(angle) * clampedDistance, y: Math.sin(angle) * clampedDistance };
+    setDragOffset(offset);
+
+    // Pulling back toward the screen edge cancels the choice: as soon as the
+    // fingerprint touches the edge, no option is selected.
+    const inwardOffset = side === "left" ? offset.x : -offset.x;
+    const touchesEdge = FAB_INSET + FAB_SIZE / 2 + inwardOffset - FINGERPRINT_SIZE / 2 <= 0;
+
+    const next = distanceFromFab > SELECT_DEAD_ZONE && !touchesEdge ? nearestKey : null;
+    highlightedKeyRef.current = next;
+    setHighlightedKey(next);
   }
 
   function handlePointerDown(event: React.PointerEvent<HTMLButtonElement>) {
@@ -541,7 +545,12 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
             width={FINGERPRINT_SIZE}
             height={FINGERPRINT_SIZE}
             className="block object-contain"
-            style={{ filter: "brightness(0) invert(1)" }}
+            // Tilted like a thumb reaching in from the lower screen corner:
+            // a left thumb on the left side, mirrored for the right side.
+            style={{
+              filter: "brightness(0) invert(1)",
+              transform: side === "left" ? `rotate(${FINGERPRINT_TILT_DEG}deg) scaleX(-1)` : `rotate(-${FINGERPRINT_TILT_DEG}deg)`,
+            }}
           />
         </span>
       </button>
