@@ -177,6 +177,20 @@ export async function logIn(): Promise<LoginResult> {
   return "ready";
 }
 
+// Midlertidigt login med e-mail + kode (src/app/api/auth/code-login/route.ts).
+export async function logInWithCode(email: string, code: string): Promise<void> {
+  const res = await fetch("/api/auth/code-login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, code }),
+  });
+  const data = (await res.json().catch(() => ({}))) as { userId?: string; masterKey?: string; message?: string };
+  if (!res.ok || !data.userId || !data.masterKey) throw new Error(data.message ?? "Kunne ikke logge ind");
+  const masterKey = fromBase64Url(data.masterKey);
+  await saveMasterKeyOnDevice(masterKey, data.userId);
+  await openClient(masterKey, data.userId);
+}
+
 // Lås boksen op med gendannelsesfilen på en enhed, hvor brugeren er logget
 // ind men mangler nøglen. Kræver godkendt sag (claim) — se completeRecovery.
 export async function completeRecovery(claim: string, fileSecret: Uint8Array | null): Promise<AccountSetupResult> {

@@ -6,29 +6,31 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AuthError, AuthScreen } from "@/components/account/AuthScreen";
 import { HfChevron } from "@/components/hf/HfChevron";
+import { TextField } from "@/components/hf/TextField";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { logIn } from "@/lib/vault/store";
-import { isPasskeySupported } from "@/lib/vault/webauthn-client";
+import { logInWithCode } from "@/lib/vault/store";
 
-// Login med passkey (docs/PRIVACY.md "Login og e-mail"). Ingen e-mail og
-// ingen adgangskode: telefonen viser selv de passkeys, den har til Hello Cal.
+// Midlertidigt login med e-mail + kode (docs/DECISIONS.md 2026-09-24), indtil
+// rigtig adgangskode-login er bygget.
 function LogIndContent() {
   const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next") ?? "/";
+  const [email, setEmail] = useState("");
+  const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const supported = typeof window === "undefined" || isPasskeySupported();
 
-  async function handleLogin() {
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
     setError(null);
     setSubmitting(true);
     try {
-      const result = await logIn();
-      router.push(result === "ready" ? next : "/gendan?locked=1");
-    } catch (e) {
-      setError(e instanceof Error && e.name !== "NotAllowedError" ? e.message : t("account.loginFailed"));
+      await logInWithCode(email, code);
+      router.push(next);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t("login.genericError"));
       setSubmitting(false);
     }
   }
@@ -40,12 +42,12 @@ function LogIndContent() {
       backLabel={t("account.back")}
       actions={
         <button
-          type="button"
-          onClick={handleLogin}
-          disabled={submitting || !supported}
+          type="submit"
+          form="code-login-form"
+          disabled={submitting || !email || !code}
           className="hf-btn-primary hf-type-button h-12 w-full disabled:opacity-40"
         >
-          {submitting ? t("account.loggingIn") : t("account.loginButton")}
+          {submitting ? t("login.submitting") : t("login.continueButton")}
         </button>
       }
     >
@@ -58,20 +60,30 @@ function LogIndContent() {
         <HfChevron className="text-hf-gray" />
       </Link>
 
-      <p className="hf-type-body mt-2">{t("account.loginIntro")}</p>
-      {!supported && <AuthError message={t("account.noPasskeySupport")} />}
+      <form id="code-login-form" onSubmit={handleSubmit} className="mt-2 flex flex-col gap-3">
+        <TextField
+          label={t("login.emailPlaceholder")}
+          type="email"
+          autoComplete="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <TextField
+          label={t("login.passwordPlaceholder")}
+          type="password"
+          autoComplete="current-password"
+          required
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+        />
+      </form>
       <AuthError message={error} />
 
       <p className="hf-type-body-sm mt-4 text-center">
         {t("account.newHere")}{" "}
         <Link href="/signup" className="underline">
           {t("account.createAccount")}
-        </Link>
-      </p>
-      <p className="hf-type-body-sm text-center">
-        {t("account.lostAccess")}{" "}
-        <Link href="/gendan" className="underline">
-          {t("account.recoverAccess")}
         </Link>
       </p>
     </AuthScreen>

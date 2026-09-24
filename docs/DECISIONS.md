@@ -1826,3 +1826,9 @@ Normaliserede produkt-søgeparametre (`ProductNutritionFeatures`, 1:1 med
 - Drikkevarer: cl bevares, når pakningsstørrelsen (`packageSizeText`) er angivet i cl (fx "33cl"); ellers ml (også for liter). Et fejlagtigt "g" på en drikkevare giver aldrig gram.
 - Mængden gemmes fortsat i basisenheden (`amountGrams` = g eller ml, 1:1 mod næringsværdierne pr. 100). cl er kun visning (1 cl = 10 ml), så kcal-beregning og +/− trin (10 g/ml = 1 cl) er uændrede.
 - Én fælles helper: `src/lib/product-display-unit.ts` (tests: `npm test`).
+
+## 2026-09-24: Midlertidigt login med e-mail + kode
+
+- Indtil rigtigt adgangskode-login er bygget, logger ejeren ind på `/login` med e-mail + kode (`src/app/api/auth/code-login/route.ts`). E-mail og kode ligger kun i serverens `.env.production` (`CODE_LOGIN_EMAIL`, `CODE_LOGIN_CODE`); tomme = slået fra.
+- Boksens hovednøgle for denne konto afledes på serveren af `USER_SESSION_SECRET`, så den er den samme på alle enheder. Bevidst, midlertidig undtagelse fra "serveren kan ikke læse data"; fjernes, når rigtigt login findes.
+- Login- og opret-siden viser ingen tekster om databehandling.
