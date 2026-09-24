@@ -5,6 +5,7 @@ Dansk mobil PWA til kalorie- og måltidsregistrering med AI-baseret foto-/talege
 ## Struktur
 
 - [Arbejdsområder og mappeplan](areas/README.md) — fire fokuserede startvejledninger, faktisk kodekort og forslag til projektgrænser (2026-09-14).
+- [Oprettelses-app (medarbejder-hylde-app)](OPRETTELSES-APP.md) — kravkladde og åbne spørgsmål for den planlagte invite-only medarbejderapp (2026-09-24, ikke implementeret).
 
 - [ChatGPT-startpakke](chatgpt/CONTEXT.md) — opsætning, kildekort, designregler, mappestruktur og aflevering til Codex uden commit. [Projektinstruktion](chatgpt/PROJECT-INSTRUCTIONS.md) kopieres til ChatGPT-projektet; [afleveringsskabelon](chatgpt/HANDOFF-TEMPLATE.md) bruges til konkrete opgaver.
 - [Visuel designkontrakt](../design.md) — bindende designregler i repositoryets rod.

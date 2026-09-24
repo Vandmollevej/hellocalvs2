@@ -2,6 +2,24 @@
 
 Last updated: 2026-09-24
 
+## 2026-09-24: Oprettelses-app (medarbejder-hylde-app) — kravrunde genoptaget, kun dokumentation
+
+- Brugeren har genoptaget den medarbejder-produktoprettelsesapp der blev
+  parkeret 2026-09-14 i `docs/PROJECT-BOUNDARIES.md`, med en detaljeret
+  brief (login/2FA, hylde-foto-overlay med grønt flueben/minus og 1px
+  kontur, swipe, kamera/slet-ikoner, brugerikon-undermenu med
+  Profil/Bankoplysninger/Historik/Ikke afregnet/Beskeder/Kontakt/Log-ud,
+  admin "scan-invites" og medarbejder-/aflønningsbackend).
+- Al ny information er samlet i det nye [`docs/OPRETTELSES-APP.md`](OPRETTELSES-APP.md),
+  som eksplicit bygger videre på (og ikke gentager) de allerede bekræftede
+  2026-09-14-krav, og lister åbne spørgsmål — bl.a. et direkte
+  arkitekturkonflikt-punkt: dagens brief forudsætter separate containere,
+  mens 2026-09-14-anbefalingen i `docs/areas/README.md` var ét
+  repo/app/skema.
+- Spørgsmålene stilles til brugeren i chatten (AskUserQuestion) før noget
+  implementeres. Ingen kode, skema, container eller deployment er ændret.
+- Dokumentation kun; lint/build ikke kørt (ingen kodeændring).
+
 ## 2026-09-24: Krav tilføjet — væske fra produktspecifikationer + alkohol-algoritme (ikke bygget)
 
 Brugerens krav, tilføjet til roadmap for at sikre opfølgning (ikke bygget denne omgang):
