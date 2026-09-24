@@ -1,4 +1,4 @@
-# Oprettelses-app — planlægning (kladde, IKKE implementeret)
+# Oprettelses-app — planlægning (krav afklaret, IKKE implementeret)
 
 Dato: 2026-09-24. Dette er en kravsamling og spørgsmålsliste, ikke en
 implementeringsstatus. Ingen kode, database eller deployment er ændret som
@@ -13,8 +13,8 @@ projekt-/mappegrænser først; se også [`areas/README.md`](areas/README.md),
 som dengang anbefalede **ét** repository/Next-app/Prisma-skema og at
 "separate apps/repositories og databaser er ikke vedtaget". Dagens brief
 beder eksplicit om separate containere til den nye app — det er en direkte
-konflikt med den tidligere anbefaling og er derfor et åbent spørgsmål nedenfor
-(spørgsmål A), ikke en besluttet arkitektur.
+konflikt med den tidligere anbefaling; brugeren har nu valgt samme database +
+ny container (se "Besvarede spørgsmål" A).
 
 ## Formål
 
@@ -126,54 +126,75 @@ API-grænser, synkronisering, udbetalingsregistrering.
   nedenfor er besvaret (jf. AGENTS.md: ingen store omskrivninger eller
   ændret deploymentarkitektur uden eksplicit godkendelse).
 
-## Åbne spørgsmål
+## Besvarede spørgsmål (2026-09-24, fire runder i samtale 548ca51e)
 
-Se den separate spørgsmålsrunde i chatten (AskUserQuestion). Kategorier:
+Disse svar er bindende for implementeringen og erstatter de åbne spørgsmål,
+der stod her før.
 
-**A. Arkitektur og deling af data**
-- Separate containere/app vs. udvidelse af nuværende repo/skema (konflikt
-  med 2026-09-14-anbefalingen).
-- Delt database (samme Postgres/skema, ny app-container) vs. API mellem apps.
-- Hvor bor medarbejder-/aflønningsmodellerne: nyt Prisma-skema i samme
-  database, eller helt separat database?
+**A. Arkitektur**
+- Samme Postgres-database og samme Prisma-skema som Hello Cal/admin, men
+  medarbejder-UI'et kører i sin **egen container** (egen Next.js-app, nyt
+  image i samme compose-stak — samme mønster som REMA-/quality-control-
+  agenterne). Ingen separat database og intet API-lag imellem.
 
-**B. Adgang, sikkerhed og følsomme data**
-- Invitationsmekanisme: hvordan sætter medarbejderen sin egen adgangskode?
-- Tofaktor-metode: SMS, autenticator-app (TOTP) eller e-mail-kode?
-- CPR-nummer og bankoplysninger er meget følsomme data. Hello Cal er midt i
-  en gennemgribende privacy-by-architecture/vault-omlægning
-  (`docs/PRIVACY.md`, seneste commits om vault). Skal medarbejderdata følge
-  samme klient-krypterede vault-mønster, eller er det almindelige
-  server-side admin-data (fordi admin skal kunne se det for at afregne)?
+**B. Adgang og følsomme data**
+- Invitation: admin opretter navn + mail under "scan-invites". Medarbejderen
+  får en mail med et tidsbegrænset opsætningslink og vælger selv adgangskode
+  og tofaktor (samme mønster som Hello Cals eksisterende invite-flow).
+- Tofaktor: genbrug præcis den mekanisme admin-login allerede har
+  (`src/lib/admin-auth.ts`): adgangskode + enten autenticator-app (TOTP)
+  eller passkey/Face ID (WebAuthn). Medarbejderen vælger selv.
+- Privacy-/vault-arkitekturen gælder **ikke** for ansatte (brugerens svar).
+  CPR, adresse og bankoplysninger gemmes som almindelige server-side
+  admin-data (krypteret i hvile som øvrige server-hemmeligheder), ikke i
+  klient-boksen.
 
-**C. Produktgenkendelse og overlay**
-- Hvilken model/tjeneste genkender produkter på hyldebilledet (OpenAI
-  Vision, som resten af appen, eller andet)?
-- Hvad afgør "allerede oprettet": stregkode-match, visuelt/navn-match, eller
-  en direkte kobling til det specifikke billedudsnit?
-- Hvad sker der med usikkert markerede produkter over tid (kø til senere
-  gennemgang, automatisk udløb, andet)?
+**C. Hyldegenkendelse og overlay**
+- Genkendelse: OpenAI Vision på hele hyldebilledet — returnerer synlige
+  produkter med afgrænsningsboks, navn og logo-/brandtekst.
+- Match: stregkoder kan ikke ses på et hyldebillede, så match sker på
+  **navn/logo (AI-vurdering)** mellem hyldeudsnittet og databasens produkter.
+- Medarbejderen kan manuelt rette en forkert tildeling i overlayet
+  ("ret tildeling"), så et fejlmatch ikke låser et udsnit.
 
 **D. Aflønning og fødevarevurdering**
-- Er raten (fx 1 kr./billede) global fra start, eller skal den kunne variere
-  pr. medarbejder allerede i datamodellen?
-- Betales der for at supplere/rette et produkt med en stregkode der allerede
-  findes, eller kun for helt nye produkter?
-- Vurderes "er det en fødevare" manuelt af admin, automatisk, eller en
-  kombination (AI foreslår, admin bekræfter)?
-- Konkrete faste afvisningsårsager (liste) — skal bruges i afvisnings­
-  overlayet.
+- Én global sats for alle (fx 1 kr.). Ingen sats pr. medarbejder i første
+  version.
+- Admin vurderer altid selv fødevare/ikke-fødevare og accept/afvisning —
+  ingen automatisk regel. Systemet giver admin en **ekstra tydelig
+  advarsel**, når en indsendelse mangler energitabel og/eller
+  ingrediensliste (ud over den almindelige udråbstegn-markering).
+- Supplering af et produkt, hvis stregkode allerede findes: tæller som en
+  hel, betalt vare (stregkoden skal fotograferes igen) — **undtagen** hvis
+  det er medarbejderen selv, der oprindeligt oprettede den mangelfulde vare.
+- Afvisningsårsager: start med en fornuftig liste, som admin selv kan
+  redigere/tilføje uden ny kodeopgave. Startliste: Ikke en fødevare ·
+  Ulæseligt/sløret billede · Dublet af eksisterende produkt ·
+  Forkert/manglende stregkode · Mangler energitabel/ingredienser · Andet.
+  Plus valgfrit kommentarfelt.
 
-**E. Lokation, billeder og oprydning**
-- Skal hele appen være utilgængelig uden lokationstilladelse, eller kun
-  hylde-fotofunktionen?
-- Sletning via tandhjul: soft delete (bevares til admin-log) eller reel
-  sletning af billedet?
-- Hvor mange tidligere hyldebilleder skal kunne swipes igennem (alle, eller
-  en grænse)?
+**E. Lokation og billeder**
+- **Hele appen** spærres, indtil lokationstilladelse er givet (også
+  historik/profil).
+- Tandhjul → sletning: billedet **slettes helt** (database + lager), også
+  for admin.
+- Swipe: alle hyldebilleder medarbejderen nogensinde har taget, nyeste først.
 
-**F. Historik, profil og beskeder**
-- Kan medarbejderen selv redigere profil/bankoplysninger (med
-  versionering), eller er det admin, der redigerer, og medarbejderen kun ser?
-- Er "Beskeder" enkeltrettet (admin → medarbejder) eller en reel dialog?
-- Bekræft ISO-ugenumre og mandag–søndag-perioder som eneste tidsinddeling.
+**F. Profil, bank og beskeder**
+- Kun admin redigerer profil og bankoplysninger (med versionering i admin).
+  Medarbejderen ser dem read-only.
+- "Beskeder" er en **tovejs** dialog mellem medarbejder og admin. "Kontakt"
+  i menuen åbner den samme beskedtråd (ikke en separat side). Almindelige
+  Hello Cal-brugere får ikke denne funktion.
+
+**Standardvalg (ikke spurgt, kan ændres):**
+- Uger er ISO-uger, mandag–søndag.
+- Usikkert markerede produkter på et hyldebillede forbliver markeret, indtil
+  de oprettes/rettes eller billedet slettes; intet automatisk udløb.
+
+## Næste skridt
+
+Alle spørgsmål er besvaret. Implementering kan starte, når brugeren siger
+til. Ifølge den oprindelige brief må intet sættes i produktion: den nye
+container må derfor **ikke** tilføjes `compose.production.yaml` (som deployes
+automatisk ved push til `master`), før brugeren eksplicit godkender det.
