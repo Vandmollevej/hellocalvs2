@@ -6,6 +6,7 @@ import { HfScreen } from "@/components/HfScreen";
 import { IconApple, IconCarrot } from "@tabler/icons-react";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { PACKAGE_SIZE_UNITS, formatPackageSize, type PackageSizeUnit } from "@/lib/product-naming";
+import type { ProductCategory } from "@/lib/product-display-unit";
 
 export const OCR_DRAFT_STORAGE_KEY = "hellocal-ocr-product-draft";
 
@@ -25,7 +26,15 @@ type FormValues = Required<ProductDraft> & {
   variant: string;
   packageAmount: string;
   packageUnit: PackageSizeUnit;
+  // Produktkategori (docs/DECISIONS.md 2026-09-24): styrer om mængden vises
+  // i ml/cl (drikkevare) eller g. Manuelt oprettede produkter har brand.
+  productCategory: ProductCategory;
 };
+
+const PRODUCT_CATEGORY_OPTIONS = [
+  { value: "PROCESSED", labelKey: "foods.productCategoryProcessed" },
+  { value: "DRINK", labelKey: "foods.productCategoryDrink" },
+] as const;
 
 const EMPTY_VALUES: FormValues = {
   kcalPer100g: "",
@@ -38,6 +47,7 @@ const EMPTY_VALUES: FormValues = {
   variant: "",
   packageAmount: "",
   packageUnit: "g",
+  productCategory: "PROCESSED",
 };
 
 const NUMERIC_KEYS = new Set<keyof FormValues>([
@@ -99,7 +109,7 @@ function NytProduktContent() {
   const [ingredientSaving, setIngredientSaving] = useState(false);
   const [ingredientSaveError, setIngredientSaveError] = useState<string | null>(null);
 
-  function update(key: Exclude<keyof FormValues, "packageUnit">, value: string) {
+  function update(key: Exclude<keyof FormValues, "packageUnit" | "productCategory">, value: string) {
     setValues((prev) => ({ ...prev, [key]: NUMERIC_KEYS.has(key) ? value.replace(",", ".") : value }));
   }
 
@@ -122,6 +132,7 @@ function NytProduktContent() {
           productType: values.productType,
           variant: values.variant || undefined,
           packageSizeText,
+          productCategory: values.productCategory,
           kcalPer100g: values.kcalPer100g,
           proteinPer100g: values.proteinPer100g,
           carbsPer100g: values.carbsPer100g,
@@ -261,6 +272,22 @@ function NytProduktContent() {
               onSubmit={handleSubmit}
               className="flex flex-col gap-2 rounded-2xl bg-hf-tan p-4"
             >
+              <label className="text-xs text-hf-black opacity-70">
+                {t("foods.productCategoryLabel")}
+                <select
+                  value={values.productCategory}
+                  onChange={(event) =>
+                    setValues((prev) => ({ ...prev, productCategory: event.target.value as ProductCategory }))
+                  }
+                  className={`${numberInputClass} mt-1 w-full`}
+                >
+                  {PRODUCT_CATEGORY_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {t(option.labelKey)}
+                    </option>
+                  ))}
+                </select>
+              </label>
               <input
                 value={values.brand}
                 onChange={(event) => update("brand", event.target.value)}

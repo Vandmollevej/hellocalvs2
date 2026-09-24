@@ -39,6 +39,23 @@ DATABASE_URL = os.environ["DATABASE_URL"].split("?")[0]
 DATA_PATH = os.environ.get("REMA1000_DATA_PATH", "/app/data/rema1000_products.json")
 STORE_NAME = "Rema 1000"
 
+# Excel/JSON-kolonnen "Type" -> Product.productCategory (docs/DECISIONS.md
+# 2026-09-24). Kun DRINK styrer noget i UI'et (ml/cl i stedet for g); ukendte
+# typer gemmes som NULL (= g) i stedet for at blive gættet.
+PRODUCT_CATEGORY_BY_TYPE = {
+    "drikkevare": "DRINK",
+    "processed foods": "PROCESSED",
+    "slik": "PROCESSED",
+    "pålæg": "PROCESSED",
+    "pålægssalat": "PROCESSED",
+    "salater": "PROCESSED",
+    "råvarer": "RAW",
+    "grøntsager": "RAW",
+    "grøntsager og frugt": "RAW",
+    "frisk frugt m.m.": "RAW",
+    "frisk grønt": "RAW",
+}
+
 
 def clean(v):
     if v is None:
@@ -134,6 +151,7 @@ def run():
             "subbrand": clean(row.get("subbrand")),
             "variant": clean(row.get("variant")),
             "packageSize": clean(row.get("quantity")),
+            "productCategory": PRODUCT_CATEGORY_BY_TYPE.get((clean(row.get("type")) or "").lower()),
             "dietaryTags": psycopg2.extras.Json(dietary_tags) if dietary_tags else None,
             "nutritionExtra": psycopg2.extras.Json(nutrition_extra) if nutrition_extra else None,
         }
@@ -165,6 +183,7 @@ def run():
                     subbrand = %(subbrand)s,
                     variant = %(variant)s,
                     "packageSizeText" = %(packageSize)s,
+                    "productCategory" = %(productCategory)s::"ProductCategory",
                     "dietaryTags" = %(dietaryTags)s,
                     "nutritionExtra" = %(nutritionExtra)s,
                     "sourceCheckedAt" = now()
@@ -183,13 +202,14 @@ def run():
                     id, name, "brandId", "categoryId", "kcalPer100g", "proteinPer100g",
                     "carbsPer100g", "fatPer100g", "saturatedFatPer100g", "ingredientsText",
                     allergens, additives, "externalSource", "externalId", "sourceCheckedAt",
-                    status, subbrand, variant, "packageSizeText", "dietaryTags",
+                    status, subbrand, variant, "packageSizeText", "productCategory", "dietaryTags",
                     "nutritionExtra", "createdAt"
                 ) VALUES (
                     %(id)s, %(name)s, %(brandId)s, %(categoryId)s, %(kcal)s, %(protein)s,
                     %(carbs)s, %(fat)s, %(satFat)s, %(ingredients)s,
                     %(allergens)s, %(additives)s, 'REMA1000', %(externalId)s, now(),
-                    'APPROVED', %(subbrand)s, %(variant)s, %(packageSize)s, %(dietaryTags)s,
+                    'APPROVED', %(subbrand)s, %(variant)s, %(packageSize)s,
+                    %(productCategory)s::"ProductCategory", %(dietaryTags)s,
                     %(nutritionExtra)s, now()
                 )
                 """,

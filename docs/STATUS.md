@@ -2,6 +2,13 @@
 
 Last updated: 2026-09-24
 
+## 2026-09-24: Mængden på Tilføj-skærmen vises altid med enhed
+
+- `/add/[id]` viser nu fx "100 g" / "100 ml" / "33 cl" i mængdefeltet (samme font/størrelse), og "kcal/100 ml" for drikkevarer. Ny kolonne `Product.productCategory` + migration `20260924120000_product_category`, REMA-importen udfylder den fra "Type", "Nyt produkt" har en Madvare/Drikkevare-dropdown. Se DECISIONS 2026-09-24.
+- Kræver deploy (migration + genkørsel af rema1000-agent) før drikkevarer viser ml/cl i produktion; indtil da vises g.
+- Ikke visuelt verificeret lokalt: ingen database tilgængelig fra denne maskine. Lint, `tsc`, `npm run build` og `npm test` (9 helper-tests) er grønne.
+- Registreringsdetaljen (`/registration/[id]`) viser stadig "kcal pr. 100 g" — dens produkt-snapshot ligger i vault-handleren `meals.ts`, som en anden session har uncommitted ændringer i.
+
 ## 2026-09-24: Privacy-by-architecture gennemført (docs/PRIVACY.md)
 
 Se `docs/DECISIONS.md` 2026-09-23 og kontrakten `docs/PRIVACY.md`.

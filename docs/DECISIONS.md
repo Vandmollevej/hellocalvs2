@@ -1728,3 +1728,12 @@ Normaliserede produkt-søgeparametre (`ProductNutritionFeatures`, 1:1 med
   import fra OFF (søgning og stregkodeopslag) og via
   `POST /api/admin/products/nutrition-features` (backfill i sider, også
   efter REMA-/HelloFresh-importer, der skriver direkte til databasen).
+
+## 2026-09-24: Produktkategori styrer mængdeenheden (g / ml / cl)
+
+- Ny kolonne `Product.productCategory` (enum `DRINK`/`GENERIC`/`PROCESSED`/`RAW`/`INGREDIENT`), nullable. Autoritativ for mængdeenheden: drikkevare → ml/cl, alt andet → g. Null/ukendt → g. Der gættes aldrig ud fra produktnavnet.
+- Kilden er Excel/JSON-kolonnen "Type" (Drikkevare, Processed Foods, Råvarer, Pålæg, Slik …), som REMA1000-importen nu mapper ind (`scripts/rema1000-import/agent.py`, `PRODUCT_CATEGORY_BY_TYPE`). Importen kører ved hver container-start, så eksisterende REMA-varer backfilles ved næste deploy.
+- Manuelt oprettede produkter ("Nyt produkt") vælger Madvare/Drikkevare i en dropdown. Generiske ingredienser (GenericIngredient) er altid `INGREDIENT` → g.
+- Drikkevarer: cl bevares, når pakningsstørrelsen (`packageSizeText`) er angivet i cl (fx "33cl"); ellers ml (også for liter). Et fejlagtigt "g" på en drikkevare giver aldrig gram.
+- Mængden gemmes fortsat i basisenheden (`amountGrams` = g eller ml, 1:1 mod næringsværdierne pr. 100). cl er kun visning (1 cl = 10 ml), så kcal-beregning og +/− trin (10 g/ml = 1 cl) er uændrede.
+- Én fælles helper: `src/lib/product-display-unit.ts` (tests: `npm test`).

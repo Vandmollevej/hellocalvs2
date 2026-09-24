@@ -24,6 +24,7 @@ import { labelForAllergen } from "@/lib/allergens";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { isAlternativeServingConfident } from "@/lib/alternative-servings";
 import type { AlternativeServing } from "@/lib/product-analysis-types";
+import { fromDisplayAmount, getProductDisplayUnit, toDisplayAmount } from "@/lib/product-display-unit";
 import { localApi } from "@/lib/vault/local-api";
 
 const PHOTO_AWARD_TYPE_KEY: Record<string, "photoAward.photoTypeBarcode" | "photoAward.photoTypeNutrition" | "photoAward.photoTypeIngredients"> = {
@@ -57,6 +58,10 @@ type Product = {
   servingSizeUnitSingular?: string | null;
   servingSizeUnitPlural?: string | null;
   brand: { name: string } | null;
+  // Produktkategori + pakningsstørrelse bestemmer mængdeenheden (drikkevare =
+  // ml/cl, ellers g), se src/lib/product-display-unit.ts.
+  productCategory?: string | null;
+  packageSizeText?: string | null;
   imageUrl?: string | null;
   // Tagged image variants (Multiple/Raw), see src/lib/image-tags.ts and
   // docs/DECISIONS.md 2026-09-19. Empty when the product/ingredient has no
@@ -212,6 +217,16 @@ export default function AddPage() {
   const servingSizeUnitPlural = product?.servingSizeUnitPlural ?? null;
   const hasServingUnit = Boolean(servingSizeGrams && servingSizeUnitSingular && servingSizeUnitPlural);
   const step = servingSizeGrams && amountUnit === "personer" ? servingSizeGrams : 10;
+  // Enheden følger produktets registrerede kategori og skifter aldrig ved
+  // +/−; amount er altid i basisenheden (g/ml), cl er kun visning.
+  const displayUnit = getProductDisplayUnit(product);
+  const displayAmount = toDisplayAmount(amount, displayUnit);
+  const baseUnitLabel =
+    displayUnit === "cl"
+      ? t("addProduct.centilitresUnit")
+      : displayUnit === "ml"
+        ? t("addProduct.millilitresUnit")
+        : t("addProduct.gramsUnit");
 
   useEffect(() => {
     const codes = product?.additives ?? [];
@@ -475,7 +490,9 @@ export default function AddPage() {
                         kcal: Math.round((state.product.kcalPer100g * servingSizeGrams) / 100),
                         unit: servingSizeUnitSingular as string,
                       })
-                    : t("addProduct.kcalPer100g", { kcal: Math.round(state.product.kcalPer100g) })}
+                    : displayUnit === "g"
+                    ? t("addProduct.kcalPer100g", { kcal: Math.round(state.product.kcalPer100g) })
+                    : t("addProduct.kcalPer100ml", { kcal: Math.round(state.product.kcalPer100g) })}
                 </p>
                 {!!confidentAlternativeServings.length && (
                   <div className="mt-1 flex flex-col items-center gap-0.5">
@@ -525,7 +542,7 @@ export default function AddPage() {
                         : "hf-btn-secondary px-4 py-1.5 text-xs"
                     }
                   >
-                    {t("addProduct.gramsUnit")}
+                    {baseUnitLabel}
                   </button>
                 </div>
               )}
@@ -545,18 +562,22 @@ export default function AddPage() {
                       }`}
                     </p>
                   ) : (
-                    <input
-                      type="number"
-                      inputMode="numeric"
-                      min={10}
-                      step={10}
-                      value={amount}
-                      onChange={(event) => {
-                        const value = Number(event.target.value);
-                        if (Number.isFinite(value)) setAmount(Math.max(0, value));
-                      }}
-                      className="w-full bg-transparent text-center text-xl font-bold text-hf-black outline-none"
-                    />
+                    <label className="flex items-baseline justify-center text-xl font-bold text-hf-black">
+                      <input
+                        type="number"
+                        inputMode="numeric"
+                        min={displayUnit === "cl" ? 1 : 10}
+                        step={displayUnit === "cl" ? 1 : 10}
+                        value={displayAmount}
+                        onChange={(event) => {
+                          const value = Number(event.target.value);
+                          if (Number.isFinite(value)) setAmount(Math.max(0, fromDisplayAmount(value, displayUnit)));
+                        }}
+                        style={{ width: `${Math.max(1, String(displayAmount).length) + 0.5}ch` }}
+                        className="bg-transparent text-right outline-none"
+                      />
+                      <span>&nbsp;{displayUnit}</span>
+                    </label>
                   )}
                   <p className="text-xs opacity-70">
                     {state.product.isGenericIngredient && state.product.hasKnownNutrition === false

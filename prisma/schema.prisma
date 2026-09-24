@@ -888,6 +888,11 @@ model Product {
   // importeret fra Excel. Manuelt oprettede produkter sammensætter name af
   // Sub brand + Produkttype + Variant (docs/DECISIONS.md 2026-09-23).
   productType     String?
+  // Produktkategori (docs/DECISIONS.md 2026-09-24): drikkevare / generisk /
+  // processed (brand) / råvare / ingrediens. Autoritativ for mængdeenheden —
+  // DRINK vises i ml/cl, alt andet i g (src/lib/product-display-unit.ts).
+  // Null = ukendt → g.
+  productCategory ProductCategory?
 
   barcodes           Barcode[]
   // Normaliserede søge-/ernæringsparametre (fiber-%, sukker-%, fuldkorn …),
@@ -1468,6 +1473,15 @@ model ProductIngredient {
 
   @@unique([productId, ingredientId])
   @@map("product_ingredients")
+}
+
+// Se Product.productCategory.
+enum ProductCategory {
+  DRINK
+  GENERIC
+  PROCESSED
+  RAW
+  INGREDIENT
 }
 
 enum ProductStatus {

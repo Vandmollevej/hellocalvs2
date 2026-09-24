@@ -11,6 +11,7 @@ import { cleanAlternativeServings } from "@/lib/alternative-servings";
 import { flagUncertainAlternativeServings } from "@/lib/alternative-servings-review";
 import { syncProductNutritionFeaturesSafely } from "@/lib/product-nutrition-features";
 import { composeProductName } from "@/lib/product-naming";
+import { isProductCategory } from "@/lib/product-display-unit";
 
 // Fetches Open Food Facts products globally live for search terms without enough local
 // results, and saves them as PENDING (same pattern as the barcode lookup in
@@ -315,6 +316,9 @@ export async function POST(req: Request) {
   // men en productType — name sammensættes så af Sub brand + Produkttype +
   // Variant. Andre flows sender fortsat et eksplicit name.
   const productType = cleanOptionalString(body.productType);
+  // Produktkategori (docs/DECISIONS.md 2026-09-24) styrer mængdeenheden
+  // (drikkevare = ml/cl, ellers g). Ukendte værdier ignoreres (= g).
+  const productCategory = isProductCategory(body.productCategory) ? body.productCategory : null;
   const explicitName = typeof body.name === "string" ? body.name.trim() : "";
   const name =
     explicitName || (productType ? composeProductName({ subbrand, productType, variant }) : "");
@@ -382,6 +386,7 @@ export async function POST(req: Request) {
         variant,
         packageSizeText,
         productType,
+        productCategory,
         kcalPer100g,
         proteinPer100g,
         carbsPer100g,

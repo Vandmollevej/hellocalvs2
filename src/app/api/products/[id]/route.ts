@@ -46,6 +46,9 @@ export async function GET(
           additives: [],
           barcodes: [],
           createdByUserId: ingredient.createdByUserId,
+          // Løs ingrediens uden brand/stregkode — altid gram.
+          productCategory: "INGREDIENT",
+          packageSizeText: null,
           isGenericIngredient: true,
           // Uden et Frida-match har ingrediensen ingen kendt næringsværdi —
           // UI skal vise "–", ikke lade som om 0 er en rigtig målt værdi.
