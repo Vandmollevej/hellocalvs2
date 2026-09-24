@@ -102,12 +102,12 @@ Ejer: —
 
 ## G8 — Integrationer
 Filer: `src/lib/integrations.ts`, integrationssiden, `/api/withings/**`, Google Health.
-Ejer: —
+Ejer: G8-sessionen, konto C (overtaget 2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 6068f78a | 8 sundhedsintegrationer + nye ikoner | Blokeret | Strider mod vault-arkitekturen. Brugeren svarede "Forstår ikke" — forklar enkelt og spørg |
-| 8d98b548 | Withings + Google Health koblet på, egen data-sync | Ikke startet | Læs transcript (indeholder også en HelloFresh-trin-rettelse) |
+| 6068f78a | 8 sundhedsintegrationer + nye ikoner | Venter på bruger | Strider mod vault-arkitekturen. Brugeren svarede "Forstår ikke" — forklar enkelt og spørg |
+| 8d98b548 | Withings + Google Health koblet på, egen data-sync | I gang | Transcript læst. Bygger Google Health inden for vault-arkitekturen, tjekker Withings-flowet. HelloFresh-trin-rettelsen i samme transcript hører til G6, ikke G8 |
 | d0442775 | Waldemarsro (DK-only) + scraper | Venter på bruger | Krav afklaret og committet (ea7843a) — byg når brugeren siger til |
 
 ## G9 — Ikoner (forside + vand)
