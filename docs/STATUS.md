@@ -2,6 +2,32 @@
 
 Last updated: 2026-09-24
 
+## 2026-09-24: Kvalitetskontrol — viser nu det faktiske omstridte billede
+
+Verificerede (på brugerens bestilling) at kvalitetskontrol/billed-match-
+funktionen fra 2026-09-19 var færdigbygget af en anden samtidig session
+(`ProductMatchCheck`, `scripts/quality-control-agent`, `/admin/quality-
+control`, Award-panel, brugerens `/add/[id]/photo-award`) — den var det, kun
+med én konkret mangel mod den oprindelige spec: det faktisk omstridte billede
+(`AiProductAnalysis.imageUrl`) blev aldrig hentet eller vist noget sted i
+admin, hverken som thumbnail på listen eller øverst på produktsiden.
+
+- `src/app/admin/quality-control/page.tsx`: begge queries henter nu billedet
+  (`analysis.imageUrl` for match-checks, `product.imageUrl` som fallback for
+  brugerindberettede næringsrækker, der ikke har et omstridt foto).
+- `src/components/admin/QualityControlTable.tsx`: ny `IssueThumbnail` — 40×40
+  billede med en rund %-badge i hjørnet (farvekodet grøn/gul/rød som den
+  eksisterende confidence-pille, nu delt via `confidenceBadgeClasses`).
+- `src/app/admin/products/[id]/page.tsx` + `QualityControlPanel.tsx`: samme
+  billede vises nu øverst i hver "Problemer fundet"-blok.
+
+`npx tsc --noEmit` og `npx eslint` på de fire ændrede filer er rene (kun
+allerede eksisterende, urelaterede fejl fra andre samtidige sessioners
+in-progress arbejde, fx `BugReportCategory`/`ForwardButton.tsx`). Ikke
+verificeret i en rigtig browser — ingen lokal database/admin-session
+tilgængelig fra denne maskine, samme gentagne begrænsning som resten af
+denne fil.
+
 ## 2026-09-24: "Indberet fejl" — fire kategori-ikoner (EAN/Energi/Indhold/Produktbillede)
 
 Brugeren viste et screenshot af `/profile/report-bug` og bad om fire ikoner

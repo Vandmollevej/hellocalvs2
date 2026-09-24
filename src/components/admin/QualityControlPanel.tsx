@@ -21,6 +21,7 @@ type MatchCheck = {
   structuralScore: number | null;
   adminVerdict: "CORRECT" | "WRONG" | "UNCERTAIN" | null;
   award: Award;
+  imageUrl: string | null;
 };
 
 const PHOTO_TYPE_LABEL: Record<MatchCheck["photoType"], string> = {
@@ -93,6 +94,14 @@ function IssueRow({ matchCheck }: { matchCheck: MatchCheck }) {
 
   return (
     <div className="flex flex-col gap-3 rounded-lg border border-border-strong p-3">
+      {matchCheck.imageUrl && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={matchCheck.imageUrl}
+          alt={PHOTO_TYPE_LABEL[matchCheck.photoType]}
+          className="h-40 w-40 self-start rounded-md border border-border-strong object-contain"
+        />
+      )}
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-text-primary">{PHOTO_TYPE_LABEL[matchCheck.photoType]}</span>
         <span className="rounded-full bg-hf-tan px-2 py-0.5 text-xs font-medium text-text-primary">

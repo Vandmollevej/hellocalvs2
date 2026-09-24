@@ -26,7 +26,7 @@ export default async function AdminProductDetailPage({ params }: { params: Promi
         photoType: { in: [...QUALITY_CONTROL_PHOTO_TYPES] },
         OR: [{ status: "PENDING" }, { award: { status: { in: ["OPEN", "SUBMITTED"] } } }],
       },
-      include: { award: true },
+      include: { award: true, analysis: { select: { imageUrl: true } } },
       orderBy: { createdAt: "asc" },
     }),
     prisma.productNutritionReport.findMany({
@@ -39,7 +39,12 @@ export default async function AdminProductDetailPage({ params }: { params: Promi
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-lg font-semibold text-text-primary">{product.name}</h1>
-      <QualityControlPanel matchChecks={matchChecks.filter(hasQualityControlPhotoType)} />
+      <QualityControlPanel
+        matchChecks={matchChecks.filter(hasQualityControlPhotoType).map((check) => ({
+          ...check,
+          imageUrl: check.analysis.imageUrl,
+        }))}
+      />
       <NutritionReportPanel
         reports={nutritionReports.map((report) => ({
           id: report.id,

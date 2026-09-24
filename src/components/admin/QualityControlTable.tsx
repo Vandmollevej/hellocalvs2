@@ -14,7 +14,37 @@ type BaseRow = {
   confidence: number | null;
   createdAt: string;
   usageLast30Days: number;
+  imageUrl: string | null;
 };
+
+function confidenceBadgeClasses(confidence: number | null) {
+  if (confidence === null) return "bg-hf-gray-light text-hf-gray-dark";
+  if (confidence < 50) return "bg-hf-red-muted text-hf-white";
+  if (confidence < 80) return "bg-hf-tan-dark text-hf-black";
+  return "bg-hf-green-light text-hf-green-dark";
+}
+
+// Firkantet billede af det, der rent faktisk er tvivl om (docs/DECISIONS.md
+// 2026-09-19), med en cirkel-badge i hjørnet der viser %-sikkerheden.
+function IssueThumbnail({ imageUrl, confidence }: { imageUrl: string | null; confidence: number | null }) {
+  return (
+    <div className="relative h-10 w-10 shrink-0">
+      {imageUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={imageUrl} alt="" className="h-10 w-10 rounded-md border border-border-strong object-cover" />
+      ) : (
+        <div className="h-10 w-10 rounded-md border border-border-strong bg-hf-gray-light" />
+      )}
+      <span
+        className={`absolute -bottom-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full border border-surface-2 text-[9px] font-semibold leading-none ${confidenceBadgeClasses(
+          confidence
+        )}`}
+      >
+        {confidence === null ? "—" : Math.round(confidence)}
+      </span>
+    </div>
+  );
+}
 
 // "match" = AI-fotokontrol (ProductMatchCheck); "userEdit" = én række pr.
 // produkt med ventende brugerindberettede næringsændringer
@@ -110,6 +140,7 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
               <th className="cursor-pointer px-3 py-2" onClick={() => toggleSort("date")}>
                 {t(locale, "quality_control_col_date")}
               </th>
+              <th className="px-3 py-2" />
               <th className="px-3 py-2">{t(locale, "quality_control_col_product")}</th>
               <th className="px-3 py-2">{t(locale, "quality_control_col_issue")}</th>
               <th className="cursor-pointer px-3 py-2" onClick={() => toggleSort("confidence")}>
@@ -129,6 +160,9 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
               >
                 <td className="px-3 py-2 text-text-secondary">
                   {new Date(row.createdAt).toLocaleDateString("da-DK")}
+                </td>
+                <td className="px-3 py-2">
+                  <IssueThumbnail imageUrl={row.imageUrl} confidence={row.confidence} />
                 </td>
                 <td className="px-3 py-2 font-medium text-text-primary">
                   {row.brandName ? `${row.brandName} ${row.productName}` : row.productName}
@@ -151,17 +185,7 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
                   )}
                 </td>
                 <td className="px-3 py-2">
-                  <span
-                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                      row.confidence === null
-                        ? "bg-hf-gray-light text-hf-gray-dark"
-                        : row.confidence < 50
-                        ? "bg-hf-red-muted text-hf-white"
-                        : row.confidence < 80
-                        ? "bg-hf-tan-dark text-hf-black"
-                        : "bg-hf-green-light text-hf-green-dark"
-                    }`}
-                  >
+                  <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${confidenceBadgeClasses(row.confidence)}`}>
                     {row.confidence === null ? "—" : `${Math.round(row.confidence)}%`}
                   </span>
                 </td>

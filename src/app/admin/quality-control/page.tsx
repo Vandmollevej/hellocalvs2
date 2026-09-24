@@ -22,6 +22,7 @@ export default async function AdminQualityControlPage() {
     where: { status: "PENDING", photoType: { in: [...QUALITY_CONTROL_PHOTO_TYPES] } },
     include: {
       product: { select: { id: true, name: true, brand: { select: { name: true } } } },
+      analysis: { select: { imageUrl: true } },
     },
     orderBy: { createdAt: "desc" },
   });
@@ -31,7 +32,7 @@ export default async function AdminQualityControlPage() {
   const nutritionReports = await prisma.productNutritionReport.findMany({
     where: { status: "PENDING" },
     include: {
-      product: { select: { id: true, name: true, brand: { select: { name: true } } } },
+      product: { select: { id: true, name: true, brand: { select: { name: true } }, imageUrl: true } },
     },
     orderBy: { createdAt: "desc" },
   });
@@ -61,6 +62,9 @@ export default async function AdminQualityControlPage() {
     confidence: check.confidence,
     createdAt: check.createdAt.toISOString(),
     usageLast30Days: usageByProductId.get(check.productId) ?? 0,
+    // Billedet, som der faktisk er tvivl om (ikke produktets eget billede) —
+    // se docs/DECISIONS.md 2026-09-19, "firkant/billede + cirkel-badge".
+    imageUrl: check.analysis.imageUrl,
   }));
 
   const reportRowsByProduct = new Map<string, QualityControlRow & { kind: "userEdit" }>();
@@ -81,6 +85,9 @@ export default async function AdminQualityControlPage() {
       confidence: report.confidence,
       createdAt: report.createdAt.toISOString(),
       usageLast30Days: usageByProductId.get(report.productId) ?? 0,
+      // Ingen omstridt foto for en næringsindberetning — vis produktets eget
+      // billede i stedet, så listen aldrig har en tom firkant.
+      imageUrl: report.product.imageUrl,
     });
   }
 
