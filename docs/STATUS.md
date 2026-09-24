@@ -39,7 +39,8 @@ set i browseren.
 Next work:
 1. Sæt `EMAIL_HASH_PEPPER`, `USER_SESSION_SECRET`, `APP_BASE_URL` og SMTP i
    `.env.production` på Synology (se `docs/DEPLOYMENT.md` "Privacy").
-2. Afvent brugerens beslutning om at droppe de gamle klartekst-tabeller.
+2. De gamle klartekst-tabeller (demo-brugerens testdata) beholdes indtil
+   videre efter brugerens valg 2026-09-24; de slettes først efter ny besked.
 3. Lav supportnøglen i admin, før brugere kan dele data med Support.
 
 ## 2026-09-23: Support-side + fiber-%, sukker-%, salt-% og fuldkorn som søgefelter
