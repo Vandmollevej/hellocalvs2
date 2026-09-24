@@ -1,6 +1,46 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-19
+Last updated: 2026-09-24
+
+## 2026-09-24: Privacy-by-architecture gennemført (docs/PRIVACY.md)
+
+Se `docs/DECISIONS.md` 2026-09-23 og kontrakten `docs/PRIVACY.md`.
+
+- **Login**: kun passkeys for almindelige brugere (`/login`, `/signup` →
+  e-mail-link → `/tilmeld/bekraeft`). E-mail gemmes kun som HMAC-hash
+  (`EMAIL_HASH_PEPPER`). Adgangskoder, glemt/nulstil og impersonation er fjernet.
+- **Boks**: al private data krypteres på enheden (`src/lib/vault/*`).
+  Sider kalder `localApi(...)` i stedet for `fetch(...)` for private
+  endpoints; handlerne i `src/lib/vault/handlers/` svarer med samme JSON som
+  de gamle ruter. Flyttet: vægt, vand, cyklus, kropsmål, søvn, vagter,
+  aktiviteter, sundhedsmålinger, profil, mål, registreringer, retter,
+  favoritter, søgehistorik, Hello Doc-modtagere.
+- **Gendannelse**: delt nøgle. Brugeren downloader sin halvdel; admin godkender
+  sager under `/admin/recovery` efter personlig kontakt (`/gendan`).
+- **Integrationer** forsegler hentede data til en anonym indbakke.
+- **Hello Doc**: rapporten bygges og krypteres på ejerens enhed; nøglen står
+  kun i lægens link; invitationen sendes fra brugerens egen mail-app.
+- **Videresend/invitér**: engangslinks uden gemt kobling mellem brugere.
+- **Support**: pakker forsegles til Supports nøgle (laves i admins browser på
+  `/admin/support`) og kan kun åbnes der, mens tilladelsen er aktiv.
+- **Statistik**: `/admin/anonymous-stats` — buckets uden ID, min. 25 pr.
+  gruppe, Laplace-støj. Kvalitetskontrol bruger anonym daglig produktbrug.
+- **Nyhedsbrev**: separat tilmelding (`/api/newsletter`), ikke koblet til kontoen.
+- **AI**: metadata fjernes fra billeder; `store: false` hos OpenAI.
+- Den delte demo-bruger er fjernet; private sider kræver åben boks (`VaultGate`).
+
+Migrationer (håndskrevet via `prisma migrate diff`, ikke kørt — ingen lokal
+PostgreSQL): `20260923120000_privacy_vault` … `20260923200000_anonymous_analytics`.
+
+`npm run lint` og `npm run build` er fejlfri. Ikke testet ende-til-ende: der er
+ingen lokal database, og passkeys kræver HTTPS/rigtig enhed. Login-siden er
+set i browseren.
+
+Next work:
+1. Sæt `EMAIL_HASH_PEPPER`, `USER_SESSION_SECRET`, `APP_BASE_URL` og SMTP i
+   `.env.production` på Synology (se `docs/DEPLOYMENT.md` "Privacy").
+2. Afvent brugerens beslutning om at droppe de gamle klartekst-tabeller.
+3. Lav supportnøglen i admin, før brugere kan dele data med Support.
 
 ## 2026-09-23: Support-side + fiber-%, sukker-%, salt-% og fuldkorn som søgefelter
 

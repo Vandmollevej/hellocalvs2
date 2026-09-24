@@ -213,6 +213,25 @@ Restoration is intentionally not automated. A restore replaces database state
 and must be planned against a stopped application after the exact backup and
 target database have been verified.
 
+## Privacy (docs/PRIVACY.md)
+
+- `EMAIL_HASH_PEPPER` (mindst 32 tegn) SKAL sættes i `.env.production`, før
+  den første bruger opretter sig, og må aldrig ændres bagefter. Ellers kan
+  ingen brugere findes via e-mail ved gendannelse.
+- `USER_SESSION_SECRET` og `APP_BASE_URL` sættes som i
+  `.env.production.example`.
+- SMTP (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`)
+  er påkrævet: tilmelding, gendannelse, start-vægt og nyhedsbrev sender mails
+  direkte uden at gemme adressen. Uden SMTP svarer de med 503 i produktion.
+- Passkeys kræver HTTPS på det rigtige domæne (Cloudflare Tunnel leverer det).
+- Reverse proxy/Cloudflare må ikke logge IP for `/api/analytics`,
+  `/api/analytics/product-usage` og `/api/vault/*` til persistens.
+- Backups taget FØR overgangen indeholder brugerdata i klartekst og skal
+  slettes (inkl. kopier på andet lager), når overgangen er bekræftet.
+  Nye backups indeholder kun ID'er og ciphertext for private data.
+- Supportnøglen laves på `/admin/support` i admins browser. Backupfilen skal
+  opbevares sikkert og uden for serveren.
+
 ## Controlled update
 
 1. Confirm GitHub Actions published the intended commit SHA tag.

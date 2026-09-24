@@ -119,8 +119,31 @@ Ingen fælles nøgle eller fremmednøgle mellem de tre.
 - Backups taget før overgangen indeholder klartekst og skal slettes, når
   overgangen er gennemført.
 
+## Implementering (2026-09-24)
+
+- Klient: `src/lib/vault/` (kryptering, boks, passkeys, enhedslager).
+  Private endpoints håndteres på enheden af `localApi` +
+  `src/lib/vault/handlers/*` med samme JSON som de tidligere serverruter.
+- Hello Doc: rapporten krypteres på ejerens enhed med en nøgle pr. deling,
+  som kun står i lægens link; invitationen sendes fra ejerens mail-app.
+- Support: pakken indeholder hele historikken i de kategorier, brugeren har
+  valgt; adgangsperioden styrer, hvornår Support må åbne den.
+- Invitér en ven: afsenderens belønning afhænger ikke længere af, at den nye
+  konto findes efter 3 måneder (den kobling findes ikke).
+- Videresend: krydsspærringen mellem to brugere er fjernet (den krævede at
+  kende begge); månedsloftet for points gælder fortsat.
+
 ## Kendt restlækage (accepteret)
 
 - Serveren ser tidspunkter og antal for boksposter og IP-adresser på
   transportniveau (TLS-terminering). Disse logges ikke til persistens.
 - Betalingsudbyderen kender betalerens identitet (identitetsverdenen).
+- Integrationer: serveren har Fitbit/Withings-tokens og ser hentede data
+  kortvarigt i hukommelsen, før de forsegles. HealthKit-companion-appen
+  sender data til serveren, som forsegler dem straks.
+- Søgning og produktvisning afslører i selve forespørgslen, hvilke offentlige
+  produkter der slås op (gemmes ikke pr. bruger).
+- Anonym statistik: sessionen bruges ved indsendelse til at afvise anonyme
+  kald og tælle én gang pr. dag (hash i hukommelsen, gemmes ikke).
+- Rapporter om ændret næringsindhold og AI-produktkandidater er anonyme
+  bidrag til den fælles produktdatabase.
