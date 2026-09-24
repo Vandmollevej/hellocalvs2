@@ -29,18 +29,18 @@ Status opdateret: 2026-09-24 (overtaget fra konto A kl. 17:29)
 
 ## G1 — Kalender
 Filer: `src/app/calendar/**`, kalender-komponenter.
-Ukendte ændringer: `src/app/calendar/page.tsx` er ændret og ikke committet.
+Ukendte ændringer: `src/app/calendar/page.tsx` indeholder G3's ikke-committede "Månedens synder"-knap (G3 ejer den del).
 Ejer: G1-overtagelse, konto C (2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 5ac89589 | Flyt "Du er inden for din målsætning" op mellem måned og kalendergitter | Ikke startet | Tjek om allerede lavet, ellers byg |
-| 85b824f8 | Statusfelt nederst: bottom-align, "Tilbage for i dag" ikke fed | Ikke startet | Tjek om allerede lavet, ellers byg |
-| 70e219fb | Dagvisning: fjern dropdown, ugedag-stil, "Kl." over tider, luft | Ikke startet | Tjek om allerede lavet, ellers byg |
-| 9848667e | Ugetal på egen linje under datoen | Ikke startet | Tjek om allerede lavet, ellers byg |
-| 63e9ff5d | Ugesummering (kaloriebalance + estimeret vægt) — kun roadmap-beslutning | Ikke startet | Skriv i docs som roadmap, byg ikke |
-| b4d954bd | Listevisning: fjern +/−, "Mål (ikke) nået" regulær + flyttet, lige afstand | Lavet, ikke verificeret | **Er sandsynligvis kilden til diff'en i calendar/page.tsx.** Verificér visuelt og commit |
-| 116d3656 | Dagvisning: søvn-slider med to grå nuancer kan ikke trækkes + fjern dialogen "Kun denne dato / Standardmønster" | Ikke startet | Læs transcript, find årsag, byg |
+| 5ac89589 | Flyt "Du er inden for din målsætning" op mellem måned og kalendergitter | Færdig (06599b0) | — |
+| 85b824f8 | Statusfelt nederst: bottom-align, "Tilbage for i dag" ikke fed | Færdig (3ab3d8d) | — |
+| 70e219fb | Dagvisning: fjern dropdown, ugedag-stil, "Kl." over tider, luft | Færdig (d0fd708) | — |
+| 9848667e | Ugetal på egen linje under datoen | Færdig (2573548, justeret 7ef4534/9e7e9bb) | — |
+| 63e9ff5d | Ugesummering (kaloriebalance + estimeret vægt) — kun roadmap-beslutning | Færdig (37ee7f4; senere slået til i 7747ea1, DECISIONS 2026-09-23) | — |
+| b4d954bd | Listevisning: fjern +/−, "Mål (ikke) nået" regulær + flyttet, lige afstand | Færdig (se G1-commit) | Minus vises nu som ÷ (brugerens valg: fortegn som symbol, som i månedsgitteret). Afventer brugerens visuelle godkendelse |
+| 116d3656 | Dagvisning: søvn-slider med to grå nuancer kan ikke trækkes + fjern dialogen "Kun denne dato / Standardmønster" | Færdig (se G1-commit) | Ét gråt felt ved dagsøvn, feltet følger håndtaget, tryk uden træk gemmer intet, dialog fjernet (gælder kun datoen). Ikke live-testet: lokal DB mangler |
 
 ## G2 — Statistik-siden (redigering, drag/drop)
 Filer: statistik-siden, `src/components/StatsWheel.tsx`, `src/lib/frontpage-layout.ts`, `src/lib/frontpage-stats.ts`.

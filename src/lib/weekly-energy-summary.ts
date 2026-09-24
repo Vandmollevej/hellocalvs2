@@ -230,7 +230,8 @@ export function formulaMaintenanceEstimate(bmr: number | null, activities: Activ
 
 export function formatSignedKcal(value: number) {
   const rounded = Math.round(value);
-  const sign = rounded > 0 ? "+" : rounded < 0 ? "-" : "";
+  // "÷" is the calendar's minus symbol (month grid, goal status, day rows).
+  const sign = rounded > 0 ? "+" : rounded < 0 ? "÷" : "";
   return `${sign}${Math.abs(rounded).toLocaleString("da-DK")} kcal`;
 }
 
