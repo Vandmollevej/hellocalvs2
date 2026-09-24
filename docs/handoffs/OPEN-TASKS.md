@@ -154,12 +154,12 @@ Ejer: G10-overtagelse, konto D (2026-09-24)
 
 ## G11 — Næringsdata på produktsiden (E-numre, toksiner, fedt-advarsel)
 Filer: produktsidens næringsvisning, statistik-boks-katalog (koordinér med G2), Opsætning/Visning (koordinér med G7).
-Ejer: —
+Ejer: G11-overtagelse, konto C (2026-09-24). Arbejder i worktree `gifted-hofstadter-894e70`, fletter ind i master
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 03b329f3 / 5a3cdd2b | E-numre + toksiner som valgfri statistik-bokse og til/fra i Opsætning, vist på produktsiden; "udvidet næringsindhold" åben som standard | Venter på bruger | E-numre findes allerede. Toksiner: brugeren sagde de gælder indholdsfortegnelsen og kendte toksiner i bestemte grøntsager — afklar datakilde og byg |
-| 56f30763 | Advarselstrekant med udråbstegn ved mættet/usundt fedt | Ikke startet | Tjek om allerede lavet, ellers byg |
+| 03b329f3 / 5a3cdd2b | E-numre + toksiner som valgfri statistik-bokse og til/fra i Opsætning, vist på produktsiden; "udvidet næringsindhold" åben som standard | I gang | Datakilde afklaret 2026-09-24: kurateret liste (Fødevarestyrelsen + EFSA) matchet mod indholdsfortegnelsen, med særligt fokus på graviditet, amning og fertilitet. Bygger |
+| 56f30763 | Advarselstrekant med udråbstegn ved mættet/usundt fedt | I gang | Ikke lavet endnu. Bygger på statistik-boksene (mættet fedt, transfedt) og produktsiden |
 
 ## Venter på dig (ingen gruppe)
 | Id | Opgave | Status | Næste skridt |
