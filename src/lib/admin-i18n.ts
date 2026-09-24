@@ -27,6 +27,18 @@ const DICTIONARY = {
 
   quality_control_title: { DA: "Kvalitetskontrol", EN: "Quality control" },
   quality_control_empty: { DA: "Intet afventer gennemgang.", EN: "Nothing awaiting review." },
+  quality_control_tab_products: { DA: "Produkter", EN: "Products" },
+  quality_control_tab_shared_recipes: { DA: "Delte retter", EN: "Shared dishes" },
+  shared_recipes_owner: { DA: "Ejer", EN: "Owner" },
+  shared_recipes_reports: { DA: "anmeldelser", EN: "reports" },
+  shared_recipes_new: { DA: "Ny", EN: "New" },
+  shared_recipes_approve: { DA: "Godkend", EN: "Approve" },
+  shared_recipes_reject: { DA: "Afvis", EN: "Reject" },
+  shared_recipes_block: { DA: "Bloker deling", EN: "Block sharing" },
+  shared_recipes_hint: {
+    DA: "Anmeldte retter står øverst. Afvis gør retten privat hos ejeren. Bloker deling stopper udgiveren (pseudonym) i at dele flere retter og skjuler alle dennes delte retter.",
+    EN: "Reported dishes are listed first. Reject makes the dish private to its owner. Block sharing stops the publisher (pseudonym) from sharing more dishes and hides all their shared dishes.",
+  },
   quality_control_col_date: { DA: "Dato", EN: "Date" },
   quality_control_col_product: { DA: "Produkt", EN: "Product" },
   quality_control_col_issue: { DA: "Problem", EN: "Issue" },

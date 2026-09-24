@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 import { t } from "@/lib/admin-i18n";
 import { QualityControlTable, type QualityControlRow } from "@/components/admin/QualityControlTable";
+import { QualityControlTabs } from "@/components/admin/QualityControlTabs";
 import { hasQualityControlPhotoType, QUALITY_CONTROL_PHOTO_TYPES } from "@/lib/quality-control-photo-types";
 
 function daysAgo(days: number) {
@@ -88,6 +89,7 @@ export default async function AdminQualityControlPage() {
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-lg font-semibold text-text-primary">{t(admin.locale, "quality_control_title")}</h1>
+      <QualityControlTabs active="products" locale={admin.locale} />
       {rows.length === 0 ? (
         <p className="text-sm text-text-secondary">{t(admin.locale, "quality_control_empty")}</p>
       ) : (

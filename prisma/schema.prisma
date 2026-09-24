@@ -2388,3 +2388,55 @@ model ProductUsageDaily {
   @@index([productId, day])
   @@map("product_usage_daily")
 }
+
+// Delte brugeropskrifter (docs/DECISIONS.md 2026-09-24). Offentlig verden
+// (docs/PRIVACY.md): ingen reference til User eller Vault. Ejeren beviser
+// ejerskab med et hemmeligt udgivertoken, der kun ligger i ejerens boks;
+// serveren gemmer kun SHA-256(token) som publisherHash. Admin ser kun et
+// pseudonym afledt af hashen. Slettes boksen, kan ingen længere ændre
+// retten, og den bliver liggende anonymt.
+enum SharedRecipeStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model SharedRecipe {
+  // Tilfældigt offentligt ID (UUID), uden sammenhæng med bruger eller boks.
+  id            String             @id @default(uuid())
+  publisherHash String
+  name          String
+  // Sproget retten er skrevet på ("da"/"en"). Alle sprog vises i søgningen.
+  language      String             @default("da")
+  // [{ productId, name, grams, imageUrl, kcalPer100g, proteinPer100g,
+  //    carbsPer100g, fatPer100g }] — snapshot af ingredienserne.
+  ingredients   Json
+  // Titel + ingrediensnavne i små bogstaver, til søgning.
+  searchText    String
+  totalGrams    Float
+  kcal          Float
+  protein       Float
+  carbs         Float
+  fat           Float
+  status        SharedRecipeStatus @default(PENDING)
+  // Anmeldelser tælles kun, mens retten afventer godkendelse.
+  reportCount   Int                @default(0)
+  // Anonym brug (favorit, kopi): popularitet i søgningen.
+  popularity    Int                @default(0)
+  reviewedAt    DateTime?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  @@index([status, createdAt])
+  @@index([publisherHash])
+  @@map("shared_recipes")
+}
+
+// Udgivere (pseudonym), som admin har blokeret fra at dele. Rører ikke
+// brugerens almindelige konto — og kan heller ikke, da der ingen kobling er.
+model SharedRecipePublisherBlock {
+  publisherHash String   @id
+  createdAt     DateTime @default(now())
+
+  @@map("shared_recipe_publisher_blocks")
+}

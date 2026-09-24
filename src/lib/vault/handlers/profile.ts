@@ -34,6 +34,8 @@ export const PRIVATE_PROFILE_DEFAULTS = {
   showAllergens: false,
   allergenVisibility: null as Record<string, boolean> | null,
   showExtendedNutrition: false,
+  // HelloFresh-opskrifter i "Søg i delte retter" (Indstillinger → Integrationer).
+  helloFreshEnabled: false,
   warnOnRecommendedLimits: false,
   photoDiaryRequiresPasscode: false,
   cycleTrackingEnabled: false,

@@ -2,6 +2,36 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-24: Delte brugeropskrifter uden kobling til brugeren
+
+Brugerens valg (2026-09-23, punkt for punkt): deling starter ON, kan altid
+slås fra; intet om ophavsmand vises; andre bruger originalen, kan
+favoritmarkere den og beholder favoritten, selvom ejeren sletter/stopper
+delingen; ændringer sker i en privat kopi; ved kontosletning bliver delte
+retter liggende anonymt; to faner under Opskrifter; søgning i titel,
+ingredienser og kategori; alle sprog; synlig straks, men til godkendelse i
+admin (afvist = privat hos ejeren); "Anmeld" kun indtil godkendelse; admin
+ser kun et anonymt pseudonym; sortering relevans/popularitet/dato som små
+knapper; HelloFresh-opskrifter med i søgningen, kun når brugeren har slået
+dem til under Integrationer.
+
+Tilpasset `docs/PRIVACY.md` (vedtaget efter afklaringen, har forrang):
+
+- Den afklarede `ownerUserId` er erstattet af et **udgivertoken**, der kun
+  ligger i ejerens krypterede boks. Serveren gemmer kun `SHA-256(token)`
+  (`publisherHash`) og har ingen reference til `User` eller `Vault`.
+  Ejerskab (stop deling) bevises ved at sende tokenet.
+- Admin-pseudonymet er afledt af `publisherHash`; blokering sker på
+  pseudonymet og rører ikke kontoen.
+- Kontosletning: boksen og dermed tokenet forsvinder, så retten bliver
+  liggende uden nogen, der kan ændre den — der er intet at destruere på
+  serveren.
+- Favoritter på delte retter gemmes som kopi i brugerens boks, så de
+  overlever ejerens sletning. Popularitet tælles anonymt (favorit/kopi).
+- Anmeldelser: én pr. bruger og ret holdes kun i processens hukommelse.
+- Kategori/tags findes ikke på brugerretter endnu; søgningen dækker titel
+  og ingredienser.
+
 ## 2026-09-23: Brugerindberettede næringsrettelser → Kvalitetskontrol (anonymt)
 
 Brugerens valg (opgave fra ChatGPT, afklaret punkt for punkt):

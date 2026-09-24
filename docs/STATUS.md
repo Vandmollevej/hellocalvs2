@@ -234,43 +234,35 @@ Tilføj-menuen peger nu på `/profile/goals`. Statistik-siden bruger stadig den
 hardcodede `WEIGHT_GOAL_KG` fra `src/lib/goals.ts` — ikke ændret her.
 
 
-## TODO (2026-09-23): Delte brugeropskrifter — afklaret, ikke bygget
+## 2026-09-24: Delte brugeropskrifter (bygget)
 
-Brugerens svar (2026-09-23). Tilstrækkeligt til at bygge uden yderligere dialog.
+Se `docs/DECISIONS.md` (2026-09-24). Bygget efter brugerens afklaring
+2026-09-23, tilpasset `docs/PRIVACY.md`:
 
-- **Opret ret**: under titlen et on/off-felt "Ønsker du at dele retten med
-  andre brugere?" med i-ikon til højre (popover). Starter som **ON**.
-  Infotekst: "Ingen personlige detaljer deles, når du deler en ret".
-  Deling kan altid slås til/fra af ejeren; OFF fjerner straks retten fra
-  søgning.
-- **Datamodel**: egen Prisma-model/tabel (samme database) for
-  brugeroprettede opskrifter med `ownerUserId`, `isShared`, `sharedAt`,
-  tilfældigt `publicId`, moderationsstatus, `language`. `ownerUserId`
-  bruges kun server-side og returneres aldrig til andre brugere; offentlig
-  API serialiserer en sanitiseret model uden brugerobjekt. Private retter
-  håndhæves server-side.
-- **Hvad deles**: hele retten inkl. brugerens eget billede (automatisk).
-  Ingen ophavsmand vises overhovedet (heller ikke "en Hello Cal-bruger").
-- **Genbrug**: andre bruger originalen direkte og kan favoritmarkere den.
-  Vil de ændre den, gemmer de en privat, uafhængig kopi (kun ejeren
-  redigerer originalen). Sletter ejeren retten eller slår deling fra,
-  **beholder** brugere, der har den som favorit, retten (forsvinder kun fra
-  søgning).
-- **Kontosletning**: delte retter bliver liggende anonymt; forbindelsen
-  til `ownerUserId` destrueres permanent.
-- **Indstillinger → Opskrifter**: to faner, "Mine retter" og "Søg i delte
-  retter". Søgning i titel, ingredienser og kategori/tags. Alle sprog vises
-  (i originalsproget). Sortering: relevans, popularitet, dato — som
-  små pills (brugerens ønske 2026-09-23: mindre end design.md's 36 px
-  `--small`, ca. 18 px synlig højde, 11 px tekst; hit area bevares).
-  Admin-handlinger (Godkend/Afvis/Bloker deling) er små teksthandlinger,
-  ikke store knapper.
-  Popularitet kræver registrering af brug (favorit/kalender).
-- **Moderation**: synlig straks, men sendes til godkendelse på en ny fane
-  under admin → Kontrol. Afvist = bliver privat hos ejeren (ingen besked).
-  Andre kan trykke "Anmeld", indtil admin har godkendt; derefter forsvinder
-  knappen. Anmeldte vises øverst på fanen. Admin ser ejeren kun som et
-  anonymt pseudonym (GDPR), nok til at blokere vedkommende fra at dele.
+- **Opret ret** (`src/app/create-dish/page.tsx`): on/off-felt "Ønsker du at
+  dele retten med andre brugere?" under titlen, starter ON, i-ikon åbner
+  "Ingen personlige detaljer deles, når du deler en ret". Efter gem går man
+  til Opskrifter → Mine retter.
+- **Opskrifter** (`/profile/recipes`): faner "Mine retter" (egne retter +
+  favoritter fra boksen, mærket Delt/Privat/Favorit) og "Søg i delte retter"
+  (titel/ingredienser, sortering Relevans/Popularitet/Dato som små knapper;
+  HelloFresh medtages kun, når det er slået til under Integrationer).
+  Detaljeside `/profile/recipes/[id]?kind=own|shared`: deling til/fra for
+  egne retter; favorit, "Gem som egen kopi" og "Anmeld" (kun før
+  godkendelse) for delte.
+- **Integrationer**: nyt on/off-felt "HelloFresh-opskrifter"
+  (`helloFreshEnabled` i boksens profil, standard OFF).
+- **Admin → Kvalitetskontrol → Delte retter**: afventende retter,
+  anmeldte øverst, ejer som pseudonym (`bruger-XXXXXX`), Godkend/Afvis/
+  Bloker deling som små teksthandlinger.
+- **Data**: `SharedRecipe` + `SharedRecipePublisherBlock`, håndskrevet
+  migration `20260924090000_shared_recipes` — ikke kørt (ingen lokal
+  PostgreSQL); køres af migrate-servicen ved deploy. Boks: ny samling
+  `recipeFavorites`, udgivertoken i `settings`, `sharedRecipeId` på egne retter.
+- **Ikke med**: egne billeder (Opret ret har ingen billedupload endnu),
+  redigering/sletning af egne retter og registrering af en ret i kalenderen
+  (findes ikke i UI endnu). Ikke verificeret i browser: siderne kræver
+  login/boks og database, som ikke findes lokalt.
 
 ## 2026-09-22: Skift adgangskode
 

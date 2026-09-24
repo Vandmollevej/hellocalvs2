@@ -3,8 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { IconCamera, IconHandClick, IconSearch, IconX, IconSoup } from "@tabler/icons-react";
+import { IconCamera, IconHandClick, IconInfoCircle, IconSearch, IconX, IconSoup } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { Toggle } from "@/components/ui/Toggle";
 import {
   readDishDraft,
   removeDishDraftIngredient,
@@ -20,9 +21,12 @@ function round(value: number, decimals = 0) {
 }
 
 export default function CreateDishPage() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const router = useRouter();
   const [name, setName] = useState("");
+  // Deling starter slået til (docs/DECISIONS.md 2026-09-24).
+  const [shared, setShared] = useState(true);
+  const [showShareInfo, setShowShareInfo] = useState(false);
   const [ingredients, setIngredients] = useState<DishDraftIngredient[]>(readDishDraft);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -103,7 +107,20 @@ export default function CreateDishPage() {
         return;
       }
       clearDishDraft();
-      router.push("/foods");
+      if (shared && data.dish?.id) {
+        const shareRes = await localApi(`/api/dishes/${encodeURIComponent(data.dish.id)}/share`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ shared: true, language: locale === "en" ? "en" : "da" }),
+        }).catch(() => null);
+        if (!shareRes?.ok) {
+          // Retten er gemt privat; delingen kan slås til senere under Mine retter.
+          setSaveError(t("createDish.shareError"));
+          setTimeout(() => router.push("/profile/recipes?tab=mine"), 1500);
+          return;
+        }
+      }
+      router.push("/profile/recipes?tab=mine");
     } catch {
       setSaveError(t("createDish.saveError"));
     } finally {
@@ -139,6 +156,27 @@ export default function CreateDishPage() {
           placeholder={t("createDish.namePlaceholder")}
           className="min-w-0 rounded-full bg-hf-tan px-4 py-2.5 text-sm text-hf-black outline-none"
         />
+
+        <div>
+          <div className="flex items-center gap-3 rounded-2xl bg-hf-tan px-4 py-3">
+            <span className="flex-1 text-[14px] font-medium text-hf-black">{t("createDish.shareLabel")}</span>
+            <button
+              type="button"
+              onClick={() => setShowShareInfo((open) => !open)}
+              aria-label={t("createDish.shareInfoAria")}
+              aria-expanded={showShareInfo}
+              className="-my-2 flex h-11 w-8 shrink-0 items-center justify-center text-hf-black"
+            >
+              <IconInfoCircle size={20} />
+            </button>
+            <Toggle checked={shared} onChange={setShared} />
+          </div>
+          {showShareInfo && (
+            <p className="mt-2 rounded-[8px] border border-hf-gray-light bg-hf-white px-3 py-2 text-[13px] text-hf-black">
+              {t("createDish.shareInfo")}
+            </p>
+          )}
+        </div>
 
         <div>
           <p className="mb-2 text-xs font-bold text-hf-black">{t("createDish.ingredients")}</p>

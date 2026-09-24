@@ -335,7 +335,13 @@ async function reportNutritionEdit(productId: string, amountGrams: number, input
 // ---------- egne retter ----------
 
 type DishIngredient = { id: string; productId: string; grams: number; product: PublicProduct };
-type StoredDish = { name: string; createdAt: string; ingredients: DishIngredient[] };
+type StoredDish = {
+  name: string;
+  createdAt: string;
+  ingredients: DishIngredient[];
+  // Offentligt ID på den delte udgave (handlers/shared-recipes.ts).
+  sharedRecipeId?: string | null;
+};
 
 export function listDishes(vault: { list<T>(c: string): { id: string; value: T }[] }) {
   return vault

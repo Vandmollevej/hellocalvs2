@@ -20,6 +20,7 @@ export const VAULT_COLLECTIONS = [
   "settings",
   "pendingForwards",
   "doctorShares",
+  "recipeFavorites",
 ] as const;
 
 export type VaultCollection = (typeof VAULT_COLLECTIONS)[number];

@@ -7,10 +7,13 @@ import {
   IconDeviceWatch,
   IconHeartbeat,
   IconBrandGoogle,
+  IconChefHat,
   type Icon,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { Toggle } from "@/components/ui/Toggle";
 import { IconBathScale } from "@/components/hf/IconBathScale";
+import { localApi } from "@/lib/vault/local-api";
 import type { IntegrationCardStatus } from "@/lib/integrations";
 import type { IntegrationProvider } from "@prisma/client";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -58,6 +61,26 @@ function IntegrationerContent() {
   const [tokens, setTokens] = useState<DeviceToken[]>([]);
   const [newToken, setNewToken] = useState<{ raw: string; label: string } | null>(null);
   const [tokenBusy, setTokenBusy] = useState(false);
+  // HelloFresh-opskrifter i "Søg i delte retter" (docs/DECISIONS.md
+  // 2026-09-24). Valget ligger i brugerens boks.
+  const [helloFresh, setHelloFresh] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    localApi("/api/profile")
+      .then(async (res) => (res.ok ? ((await res.json()) as { user?: { helloFreshEnabled?: boolean } }) : {}))
+      .then((data) => setHelloFresh(Boolean(data.user?.helloFreshEnabled)))
+      .catch(() => setHelloFresh(false));
+  }, []);
+
+  async function changeHelloFresh(next: boolean) {
+    setHelloFresh(next);
+    const res = await localApi("/api/profile", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ helloFreshEnabled: next }),
+    }).catch(() => null);
+    if (!res?.ok) setHelloFresh(!next);
+  }
 
   const notice =
     searchParams.get("connected") === "fitbit"
@@ -181,6 +204,21 @@ function IntegrationerContent() {
         <p className="px-1 text-[13px] leading-relaxed text-hf-black opacity-60">
           {t("integrations.intro")}
         </p>
+
+        {helloFresh !== null && (
+          <div className="flex items-start gap-3 rounded-[8px] bg-hf-tan p-4">
+            <span className="mt-0.5 text-hf-black">
+              <IconChefHat size={22} />
+            </span>
+            <div className="flex-1">
+              <p className="text-[15px] font-bold text-hf-black">{t("integrations.helloFreshTitle")}</p>
+              <p className="text-[12px] text-hf-black opacity-70">{t("integrations.helloFreshDescription")}</p>
+            </div>
+            <span className="pt-0.5">
+              <Toggle checked={helloFresh} onChange={changeHelloFresh} />
+            </span>
+          </div>
+        )}
 
         {loading && <p className="text-center text-[13px] text-hf-black opacity-60">{t("integrations.loading")}</p>}
 
