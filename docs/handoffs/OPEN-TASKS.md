@@ -52,7 +52,7 @@ Ejer: G2-overtagelse, konto C (2026-09-24)
 
 ## G3 — Produktkategorier + statistikbokse + "Månedens synder"
 Filer: Prisma-skema (kategori), kategori-lib, nye statistikbokse, ny liste-side, knap i kalender (koordinér med G1).
-Ejer: —
+Ejer: G3-sessionen, konto B (overtaget 2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
