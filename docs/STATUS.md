@@ -2,6 +2,73 @@
 
 Last updated: 2026-09-24
 
+## TODO (2026-09-24): Waldemarsro-integration (dansk opskriftsside) — afklaret, ikke bygget
+
+Brugerens svar (2026-09-24). Tilstrækkeligt til at bygge uden yderligere
+dialog.
+
+- **Koncept**: samme mønster som HelloFresh-integrationen i dag — en
+  toggle-boks på `/settings/integrations` (`waldemarsroEnabled` på `User`,
+  analogt med `helloFreshEnabled`), der slår Waldemarsro-opskrifter til/fra i
+  "Søg i delte retter". Ikke en OAuth-konto (der er intet at logge ind på)
+  — men den skal *ligge* i `INTEGRATION_CATALOG`-listen som et kort, fordi en
+  reel kontoforbindelse kan komme senere.
+- **Region-gating**: kortet vises kun når brugerens region
+  (`src/lib/regions.ts`) er `DK`. Selve scraper-/import-jobbet kører
+  uafhængigt af hvem der har regionen slået til (ren batch-proces, ikke
+  live per bruger).
+- **Ingrediens-matching**: samme princip som HelloFresh-import
+  (`scripts/hellofresh-import`) — match ingredienser mod eksisterende
+  `Product`. Uafklarede ingredienser (intet match) importeres **ikke**
+  gættet; de logges til en liste til manuel gennemgang, og selve
+  opskriften springes over indtil afklaret.
+- **Scraper-scriptet**: nyt script (`scripts/waldemarsro-import`, samme
+  struktur som `scripts/hellofresh-import`), der crawler hele
+  waldemarsro.dk's opskriftsside (kategori-for-kategori discovery, som ved
+  øvrige scrapere — se memory `feedback_discovery_one_subcategory_at_a_time`)
+  og gemmer opskrift, ingrediensliste, mængder, billede og
+  næringsindhold (hvis siden oplyser det) som `Dish`/`DishIngredient`
+  (`externalSource: "WALDEMARSRO"`).
+
+Åbne punkter, der først afklares ved selve byggeopgaven (ikke blokerende
+for denne TODO, men skal besluttes før kodning): eksakt UI-tekst,
+Prisma-migration for `externalSource`-værdien og evt. ny
+`IntegrationProvider`-enum-værdi, samt om Waldemarsro-opskrifter skal
+kunne opdateres/re-scrapes automatisk eller kun manuelt via scriptet.
+
+## 2026-09-24: Usikkerheds-bølgeikon — krav afklaret, ikke bygget
+
+Fuld afklaring (punkt for punkt) i `docs/DECISIONS.md` 2026-09-24
+"Usikkerheds-bølgeikon". Ingen kode, skema eller UI er ændret denne omgang —
+kun dokumentation, efter brugerens ønske om at afklare alt først.
+
+Kort resumé: grønt bølge-/tilde-ikon erstatter (for usikre data) det grønne
+"godkendt"-skjold i søgeresultater, og vises ved enkelte mikronæringsstof-
+værdier (Statistik-bokse + "vis mere"-tabellen) der ikke stammer fra
+varedeklarationen, med et gråt ±-margental derunder. To on/off-knapper under
+Indstillinger → Visning (slået til som standard).
+
+Next work (byg i denne rækkefølge, alt er afklaret — ingen yderligere
+spørgsmål nødvendige):
+1. Udvid `ProductFeatureSource`/`*Confidence`-mønstret (i dag kun sukker/
+   fiber/salt/fuldkorn, se `prisma/schema.prisma` linje ~2264-2315) til alle
+   næringsstoffer, inkl. vitaminer og mineraler — ny migration.
+2. Byg Frida-baseret vitamin/mineral-estimering (matcher hver ingrediens mod
+   Frida-data, se `src/lib/generic-ingredient-match.ts` og `frida-agent`),
+   da Frida-importen i dag kun dækker de 4 kerne-makroer. Dette er
+   forudsætningen for at kunne udregne et konkret ±-margental fra Frida.
+3. Design/vælg det grønne bølge-/tilde-ikon (SVG, samme stil som eksisterende
+   ikoner i `src/components/icons/`).
+4. Vis ikonet ved varer i søgeresultater (i stedet for det grønne skjold) når
+   én eller flere felter er kilde-markeret som ikke-fra-label.
+5. Vis ikonet + gråt ±-margental under hver relevant Statistik-boks
+   (`src/lib/stat-cards.ts` / `StatCardsGrid.tsx`) og i "vis mere"-tabellen,
+   når feltets værdi ikke stammer fra varedeklarationen.
+6. Byg to nye sider under `src/app/settings/display/` (samme mønster som
+   `limits/page.tsx`) med hver sit `User`-boolean-felt: usikkerhed på varer i
+   søgeresultater, og usikkerhed på mikrodata. Begge default TIL.
+7. `npm run lint` og `npm run build` efter implementering.
+
 ## 2026-09-24: Kvalitetskontrol — viser nu det faktiske omstridte billede
 
 Verificerede (på brugerens bestilling) at kvalitetskontrol/billed-match-
