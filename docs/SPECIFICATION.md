@@ -124,6 +124,8 @@ Se [UI.md](UI.md) for fuld detalje. Nøglepunkter:
 
 Se [DATABASE.md](DATABASE.md) og [AI.md](AI.md) for fuld detalje. HELLO CAL bygger sin egen fødevaredatabase op over tid (foto af forside/næringsdeklaration/stregkode → AI læser og gemmer), med Open Food Facts som fallback for ukendte produkter, community-validering med et tillidssystem, og admin-godkendelse af nye stregkodeprodukter, brands og produktbilleder.
 
+- **Krav (endnu ikke implementeret, se STATUS.md "Next work"):** når en fødevare tilføjes til databasen ud fra dens produktspecifikation (separat regneark med varebeskrivelse og indhold), og indholdsfortegnelsen angiver "Vand" eller anden væske med en mængde i gram eller procent, skal den tilsvarende væskemængde (udregnet ud fra den angivne indtagne mængde) automatisk lægges til brugerens væskebalance, når varen registreres. Gælder ikke alkohol, som er vanddrivende og derfor skal behandles modsat (se punkt 15).
+
 ## 13. Kalender og statistik
 
 - Kalenderoversigt viser en grøn markering, når (brugerdefinerede) mål er opfyldt en given dag, og en rolig rød markering, når det ikke er tilfældet.
@@ -146,3 +148,4 @@ Se [DATABASE.md](DATABASE.md) og [AI.md](AI.md) for fuld detalje. HELLO CAL bygg
 - PDF-import af opskrifter (arkitektur forberedes, ikke i v1).
 - QR-kode-menuer / digital menuintegration (udskudt).
 - Hello Fresh-kontologin (udskudt): integrationen skal senere understøtte login til brugerens Hello Fresh-konto. (Valg af antal personer/gram ved tilføjelse af en Hello Fresh-ret er implementeret, se `/tilfoej/[id]`.)
+- Alkohol og væskebalance (ikke bygget): der mangler en algoritme, der udregner, hvor meget væske kroppen taber ved indtagelse af alkohol (alkohol er vanddrivende, i modsætning til almindelig væske fra fx "Vand" i en indholdsfortegnelse, som lægges til væskebalancen — se punkt 12). Når algoritmen findes, skal det beregnede væsketab indgå i den daglige udregning af væskeindtag og vises som bokse på linje med den øvrige væskevisning. Kræver en beslutning om beregningsmetode, før den bygges.

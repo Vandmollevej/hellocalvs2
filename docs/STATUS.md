@@ -2,6 +2,18 @@
 
 Last updated: 2026-09-24
 
+## 2026-09-24: Krav tilføjet — væske fra produktspecifikationer + alkohol-algoritme (ikke bygget)
+
+Brugerens krav, tilføjet til roadmap for at sikre opfølgning (ikke bygget denne omgang):
+
+- Når en fødevare tilføjes til databasen ud fra dens produktspecifikation (separat regneark med varebeskrivelse og indhold), og indholdsfortegnelsen angiver "Vand" eller anden væske med mængde i gram/procent, skal den tilsvarende væskemængde (procentuelt ud fra den registrerede indtagne mængde) lægges til brugerens væskebalance. Gælder ikke alkohol. Se `docs/SPECIFICATION.md` §12.
+- Roadmap: en algoritme, der udregner væsketab ved indtagelse af alkohol (vanddrivende), skal indgå i den daglige væskeudregning og vises som bokse. Beregningsmetode er endnu ikke besluttet. Se `docs/SPECIFICATION.md` §15.
+
+Next work (nyt, føj til eksisterende liste):
+- Beslut datakilde/format for produktspecifikations-regnearket (hvor "Vand"/væskeindhold står) og hvordan det matches til det oprettede produkt.
+- Byg beregning: væskemængde fra indhold → tilføjelse til `WaterIntake`/væskebalance ved registrering.
+- Beslut og byg alkohol-væsketab-algoritme + visning ("bokse") i den daglige væskeudregning.
+
 ## 2026-09-24: Mængden på Tilføj-skærmen vises altid med enhed
 
 - `/add/[id]` viser nu fx "100 g" / "100 ml" / "33 cl" i mængdefeltet (samme font/størrelse), og "kcal/100 ml" for drikkevarer. Ny kolonne `Product.productCategory` + migration `20260924120000_product_category`, REMA-importen udfylder den fra "Type", "Nyt produkt" har en Madvare/Drikkevare-dropdown. Se DECISIONS 2026-09-24.
@@ -158,22 +170,6 @@ browser, fordi flaget er slået fra.
 Next work: skaf en kilde til brugerens vedligeholdelseskalorier, så
 vægtestimatet kan vises. Slå flaget til, når der er plads på skærmen.
 
-## 2026-09-22: Forside — den grønne tilføj-cirkel kan flyttes lodret
-
-- `AddButton.tsx`: træk på den grønne baggrund (ikke fingeraftryk-knappen)
-  flytter hele cirklen inkl. handlingsbuen lodret; X er låst. Pointer Events
-  + pointer capture, `touch-action: none` kun på den grønne form, ingen
-  transition/snapping. Grænser måles live: toppen af `[data-top-bar]` og
-  topkanten af `[data-bottom-navigation]` (BottomNav); re-clampes ved
-  resize/visualViewport/ResizeObserver på navigationen.
-- Fingeraftryk-knappen (`data-fingerprint-control`) er et separat element,
-  så dens eksisterende joystick-logik er uændret.
-- Placering gemmes pr. enhed i localStorage (`hellocal.frontpage.fabOffsetY`,
-  px-offset fra standardpositionen, se `frontpage-layout.ts`).
-- Lint ren for de ændrede filer. Ikke browser-verificeret: en anden sessions
-  `next dev` kørte allerede i mappen. `npm run build`/fuld `tsc` blokeres af
-  en anden sessions ucommittede startvægt-/Prisma-ændringer.
-
 ## 2026-09-22: Tilbagepil gendannet globalt
 
 Se `docs/DECISIONS.md` (samme dato). `ScreenHeader` viser nu selv
@@ -204,6 +200,22 @@ en korrupt genereret `.next/dev/types/validator.ts` fra en anden sessions
 kørende `next dev`. Ikke browser-/DB-testet lokalt; tokenflowet kræver test
 på Synology efter deploy + SMTP for reel afsendelse.
 
+## 2026-09-22: Forside — den grønne tilføj-cirkel kan flyttes lodret
+
+- `AddButton.tsx`: træk på den grønne baggrund (ikke fingeraftryk-knappen)
+  flytter hele cirklen inkl. handlingsbuen lodret; X er låst. Pointer Events
+  + pointer capture, `touch-action: none` kun på den grønne form, ingen
+  transition/snapping. Grænser måles live: toppen af `[data-top-bar]` og
+  topkanten af `[data-bottom-navigation]` (BottomNav); re-clampes ved
+  resize/visualViewport/ResizeObserver på navigationen.
+- Fingeraftryk-knappen (`data-fingerprint-control`) er et separat element,
+  så dens eksisterende joystick-logik er uændret.
+- Placering gemmes pr. enhed i localStorage (`hellocal.frontpage.fabOffsetY`,
+  px-offset fra standardpositionen, se `frontpage-layout.ts`).
+- Lint ren for de ændrede filer. Ikke browser-verificeret: en anden sessions
+  `next dev` kørte allerede i mappen. `npm run build`/fuld `tsc` blokeres af
+  en anden sessions ucommittede startvægt-/Prisma-ændringer.
+
 ## 2026-09-22: Søvnmønster — "Arbejdstider i kalenderen" fjernet
 
 Se `docs/DECISIONS.md` (samme dato). Ændret: `src/app/profile/sleep/page.tsx`
@@ -233,6 +245,21 @@ Se `docs/DECISIONS.md` (samme dato). Nye filer: `src/app/profile/goals/page.tsx`
 Tilføj-menuen peger nu på `/profile/goals`. Statistik-siden bruger stadig den
 hardcodede `WEIGHT_GOAL_KG` fra `src/lib/goals.ts` — ikke ændret her.
 
+## TODO (2026-09-22): Profil — statusbjælke for færdiggørelse
+
+Statisk version bygget 2026-09-23 som fælles HelloFresh-trinindikator
+`src/components/hf/HfProgressStepper.tsx` (prikker + linjer + labels som
+`Hello Fresh inspiration/Oprettelsesflow.png`), indsat i
+`src/app/profile/page.tsx` med trinene Om dig / Mål / Vaner, `current={0}`,
+`progress={0.2}` (i18n `profile.completion.*`). Erstatter oprindeligt ønske om
+bjælke + `1/10`. Oprindeligt ønske: grøn progress-bjælke + tæller (fx `1/10`) allerøverst i
+indholdet på `/profile`, over Profil-rækken; headeren ændres ikke. Først
+statisk via `<ProfileCompletion completed={…} total={…} />` (ingen hardcodet
+`1/10` i markup), senere beregnet dynamisk fra de faktiske profilfelter
+(ingen gemt completion-sandhed i databasen, ingen ekstra persondata).
+Afventer produktafklaring: hvilke punkter tæller, hvornår et punkt er
+færdigt, visning ved 100 %, klikadfærd, samspil med guided setup
+(`OnboardingWizard`) og `docs/UI.md`'s eksisterende onboarding-statusbjælke.
 
 ## 2026-09-24: Delte brugeropskrifter (bygget)
 
@@ -263,6 +290,29 @@ Se `docs/DECISIONS.md` (2026-09-24). Bygget efter brugerens afklaring
   redigering/sletning af egne retter og registrering af en ret i kalenderen
   (findes ikke i UI endnu). Ikke verificeret i browser: siderne kræver
   login/boks og database, som ikke findes lokalt.
+
+## TODO (2026-09-23): Kun tilgængelig i HelloFresh-lande — afklaret, ikke bygget
+
+Brugerens svar (2026-09-23). Tilstrækkeligt til at bygge uden yderligere
+dialog. Se `docs/DECISIONS.md` (samme dato/emne).
+
+- **Håndhævelse**: kun via landevalg i App Store Connect og Google Play
+  Console. Appen blokerer ingen selv (ingen GPS/IP-tjek); brugere må bruge
+  appen på rejse og efter flytning.
+- **Webappen** (`hellocal.packroff.dk`) begrænses ikke.
+- **Testversioner** (TestFlight, Google Play-test) er globale.
+- **Landeliste**: fast, manuelt vedligeholdt; låst til listen pr.
+  2026-09-23 (skal *ikke* genhentes ved bygning). Nye HelloFresh-lande
+  kræver manuel godkendelse. Lukker HelloFresh et land, gøres intet.
+- **Låst liste (16)**: AT, BE, DK, FR, DE, LU, NL, SE, CH, GB, IE, NO, US,
+  CA, AU, NZ. (HelloFresh forlod ES og IT i foråret 2026 — ikke med.)
+  Kilde: HelloFresh Group-landeoversigt (sep. 2025) + exit-meddelelse
+  12.02.2026.
+- **Datamodel**: central tabel (fx `SupportedCountry`) med landenavn,
+  ISO-kode, aktiv, HelloFresh tilgængelig, iOS/Android/web tilgængelig;
+  redigerbar i admin. Butikkernes landevalg sættes manuelt efter tabellen.
+- **HelloFresh-indhold**: brugerens eget land prioriteres øverst, men
+  indhold fra andre lande kan stadig vises.
 
 ## 2026-09-22: Skift adgangskode
 
@@ -3105,6 +3155,57 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
     (settings toggle + calendar logging) — revisit when Hello Doc's real
     per-category data plumbing (`src/lib/doctor-share-data.ts`) is next
     touched.
+
+15. **New admin "Uncertainties" page** (requested 2026-09-20, not yet designed
+    or built — direct user request, open questions pending, see
+    `docs/DECISIONS.md` 2026-09-20 for items to clarify before starting):
+    - New admin nav item "Uncertainties" (may end up being a rename/merge of
+      the existing "Advarsler" page — needs deciding), with a red dot next
+      to the nav item whenever there is unresolved content, matching the
+      existing dot convention used for chat/speech-bubble notifications.
+    - Page has four tabs: 1. Produkt, 2. Energi, 3. Indhold, 4. EAN.
+    - Each tab lists one row per product, sortable by creation date, percent
+      uncertainty, and name. Default sort: percent uncertainty, highest first.
+    - Row shows: product name, a link to the product page (opens as an HTML
+      overlay on the admin page, not a full navigation), a thumbnail of the
+      product image, and — far right — the percent uncertainty.
+    - Clicking "rediger" (also far right, next to the percentage) opens a
+      full-screen overlay/lightbox:
+      - Image at the top, cropped to only the region that was OCR-processed.
+      - Below it, either the nutrition table, or a text field for EAN/
+        ingredient list, depending on the tab.
+      - Red border around the uncertain area on the image, and likewise
+        around the corresponding part of the editable text/table below.
+    - A nightly separate robot job re-runs AI on these uncertainties to try
+      to raise confidence. Target: every product should reach at least
+      ~90% confidence (exact threshold and methodology still need
+      sparring/review with the user before committing to it).
+    - **Decided 2026-09-20**: Uncertainties replaces/renames the existing
+      "Advarsler" admin page (one page, no duplication) rather than being
+      added alongside it.
+    - **Decided 2026-09-20**: the 90% figure is a guiding target shown as
+      progress, not a hard requirement — a product is never blocked/held
+      back for being under 90%. Open sub-question: whether a separate,
+      lower *minimum* threshold should still exist below which a product
+      is treated differently (e.g. flagged more urgently) — user raised
+      this but it is not decided yet.
+    - **Decided 2026-09-24**: no bounding boxes exist today for where in an
+      image the AI/OCR was uncertain (only an overall confidence score).
+      The AI call will be extended to also return coordinates of the
+      uncertain region(s), so the crop + red-border UI can work from the
+      start (not deferred to a later phase).
+    - **Decided 2026-09-24**: the four tabs reuse the existing AI-generated
+      BugReport confidence data (the same source already driving the
+      current "Advarsler" page today) rather than adding new dedicated
+      per-field confidence columns — each BugReport needs to be
+      categorized into which of Produkt/Energi/Indhold/EAN it belongs to.
+    - **Decided 2026-09-24**: build order is the admin page (listing +
+      edit lightbox) first; the nightly automatic AI re-run job that tries
+      to raise confidence is a separate, later phase — not built together
+      with the page.
+    - Still open: whether a separate, lower minimum confidence threshold
+      should exist below the 90% guiding target (flagged more urgently);
+      exact scheduling cadence for the (later) nightly re-run job.
 
 ## 2026-09-05: Fejlretninger-log started; several already-fixed, some real central bugs fixed
 
