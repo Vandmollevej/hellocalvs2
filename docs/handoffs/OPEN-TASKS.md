@@ -118,8 +118,8 @@ Ejer: G8-sessionen, konto C (overtaget 2026-09-24)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | 69a1b2bd / 2c95590f | Dubletter af 6068f78a og 8d98b548 — læs dem for ekstra svar fra brugeren ("Så byg det, der mangler. Det skal jo bare virke!") | Dublet | Luk sammen med hovedopgaverne |
-| 6068f78a | 8 sundhedsintegrationer + nye ikoner | Venter på bruger | Strider mod vault-arkitekturen. Brugeren svarede "Forstår ikke" — forklar enkelt og spørg |
-| 8d98b548 | Withings + Google Health koblet på, egen data-sync | I gang | Transcript læst. Bygger Google Health inden for vault-arkitekturen, tjekker Withings-flowet. HelloFresh-trin-rettelsen i samme transcript hører til G6, ikke G8 |
+| 6068f78a | 8 sundhedsintegrationer + nye ikoner | Færdig (22184fe) | Brugeren valgte "Byg alle 8" inden for boks-arkitekturen. Mangler kun nøgler på serveren + deploy |
+| 8d98b548 | Withings + Google Health koblet på, egen data-sync | Venter på bruger | Kode færdig (22184fe). Brugeren skal lægge nøglerne i .env.production på Synology, så deployes der. HelloFresh-trin-rettelsen i samme transcript hører til G6 |
 | d0442775 | Waldemarsro (DK-only) + scraper | Venter på bruger | Krav afklaret og committet (ea7843a) — byg når brugeren siger til |
 
 ## G9 — Ikoner (forside + vand)
