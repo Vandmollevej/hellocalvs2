@@ -30,7 +30,7 @@ Status opdateret: 2026-09-24 (overtaget fra konto A kl. 17:29)
 ## G1 — Kalender
 Filer: `src/app/calendar/**`, kalender-komponenter.
 Ukendte ændringer: `src/app/calendar/page.tsx` er ændret og ikke committet.
-Ejer: —
+Ejer: G1-overtagelse, konto C (2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
