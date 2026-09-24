@@ -3,6 +3,7 @@ import { queueMessage } from "@/lib/messaging";
 import { flushQueuedEmails } from "@/lib/mailer";
 import { flushQueuedPush } from "@/lib/push";
 import { grantDueInviteRewards } from "@/lib/invite-links";
+import { backfillMissingProductNutritionFeatures } from "@/lib/product-nutrition-features";
 
 // In-process baggrundsjob (docs/DECISIONS.md 2026-09-02): DB-drevet, kører i
 // selve Next.js-serverprocessen uanset hvor den hostes (Synology i dag,
@@ -80,6 +81,9 @@ export async function runSchedulerTick(now: Date = new Date()) {
   });
   await flushQueuedEmails();
   await flushQueuedPush();
+  // Fiber-/sukker-/salt-/fuldkornsfelter for produkter uden dem endnu
+  // (docs/DECISIONS.md 2026-09-23) — 500 pr. tick, ingen OCR/AI-kald.
+  await backfillMissingProductNutritionFeatures();
 }
 
 export function startScheduler() {

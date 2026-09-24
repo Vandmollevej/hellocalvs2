@@ -63,9 +63,10 @@ Se `docs/DECISIONS.md` (samme dato, sidste afsnit).
   `wholeGrainEvidence`), som udledes efter AI-kaldet. OFF gemmer nu
   sukker/fiber/salt pr. 100 i `nutritionExtra` og `packageSizeText`.
 - Migration `20260923130000_support_access_and_nutrition_features` er
-  håndskrevet (ingen lokal PostgreSQL). Den skal køres ved deploy, og derefter
-  skal `POST /api/admin/products/nutrition-features` køres (gentag med
-  `nextCursor`, til den er null), så eksisterende produkter får værdierne.
+  håndskrevet (ingen lokal PostgreSQL) og køres af migrate-servicen ved deploy.
+  Eksisterende produkter udfyldes automatisk af scheduleren (500 pr. kvarter,
+  `backfillMissingProductNutritionFeatures`). `POST
+  /api/admin/products/nutrition-features` kan genberegne alle manuelt.
 
 Verificeret: `tsc --noEmit` og `npm run lint` er rene. Fuldkorns-parseren er
 testet på 13 eksempler (bl.a. 52 %, 31+18 = 49 %, nested 60 % × 50 % = 30 %,

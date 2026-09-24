@@ -155,13 +155,32 @@ export async function syncProductNutritionFeatures(productId: string) {
     }
   }
 
-  if (Object.keys(data).length === 0) return existing;
+  // No evidence at all: still store an all-null row, so the product counts
+  // as processed and the scheduler backfill doesn't revisit it every tick.
+  if (Object.keys(data).length === 0) {
+    return existing ?? prisma.productNutritionFeatures.create({ data: { productId } });
+  }
 
   return prisma.productNutritionFeatures.upsert({
     where: { productId },
     create: { productId, ...data },
     update: data,
   });
+}
+
+// Scheduler backfill (src/lib/scheduler.ts): products that have never been
+// processed — existing products after the 2026-09-23 migration and products
+// written straight to the database by the REMA 1000/HelloFresh importers.
+const BACKFILL_BATCH = 500;
+
+export async function backfillMissingProductNutritionFeatures() {
+  const products = await prisma.product.findMany({
+    where: { nutritionFeatures: null },
+    take: BACKFILL_BATCH,
+    select: { id: true },
+  });
+  for (const product of products) await syncProductNutritionFeaturesSafely(product.id);
+  return products.length;
 }
 
 // Never lets feature bookkeeping break the caller (product creation, import,
