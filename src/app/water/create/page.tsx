@@ -1,17 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { IconDroplet } from "@tabler/icons-react";
 import { FoodRow } from "@/components/FoodRow";
 import { HfScreen } from "@/components/HfScreen";
 import { HfSlider } from "@/components/hf/HfSlider";
 import { SectionSeparator } from "@/components/hf/SectionSeparator";
-import {
-  IconBottleLarge,
-  IconBottleSmall,
-  IconGlassLarge,
-  IconGlassSmall,
-} from "@/components/icons/WaterContainers";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { localApi } from "@/lib/vault/local-api";
 
@@ -27,12 +22,14 @@ const STEP_ML = 25;
 
 // design.md §6.11: no HelloFresh reference for this screen. Four container
 // presets tap-select an ml amount onto the slider below; the slider stays
-// freely adjustable afterwards for a manual amount.
+// freely adjustable afterwards for a manual amount. Presets are labelled in cl
+// but register the exact ml amount. Images are alpha-trimmed PNGs; bottles get
+// a slightly taller box than glasses so they read naturally taller/slimmer.
 const CONTAINERS = [
-  { key: "bottleLarge", ml: 750, Icon: IconBottleLarge },
-  { key: "bottleSmall", ml: 500, Icon: IconBottleSmall },
-  { key: "glassLarge", ml: 500, Icon: IconGlassLarge },
-  { key: "glassSmall", ml: 250, Icon: IconGlassSmall },
+  { key: "bottleLarge", ml: 750, src: "/icons/water/bottle-large.png", width: 75, boxHeight: 56 },
+  { key: "bottleSmall", ml: 500, src: "/icons/water/bottle-small.png", width: 91, boxHeight: 56 },
+  { key: "glassLarge", ml: 330, src: "/icons/water/glass-large.png", width: 113, boxHeight: 46 },
+  { key: "glassSmall", ml: 250, src: "/icons/water/glass-small.png", width: 129, boxHeight: 46 },
 ] as const;
 
 function formatTime(value: string) {
@@ -134,7 +131,7 @@ export default function WaterCreatePage() {
         </div>
 
         <div className="grid grid-cols-4 gap-3">
-          {CONTAINERS.map(({ key, ml, Icon }) => {
+          {CONTAINERS.map(({ key, ml, src, width, boxHeight }) => {
             const isSelected = selectedKey === key;
             return (
               <button
@@ -146,12 +143,22 @@ export default function WaterCreatePage() {
                   background: isSelected ? "var(--hf-green)" : "var(--hf-tan)",
                 }}
               >
-                <Icon size={28} stroke={1.75} color={isSelected ? "var(--hf-white)" : "var(--hf-black)"} />
+                <span className="flex h-14 w-full items-center justify-center">
+                  <Image
+                    src={src}
+                    alt=""
+                    aria-hidden="true"
+                    width={width}
+                    height={240}
+                    className="block w-auto max-w-full object-contain"
+                    style={{ height: boxHeight }}
+                  />
+                </span>
                 <span
                   className="text-[11px] font-semibold"
                   style={{ color: isSelected ? "var(--hf-white)" : "var(--hf-black)" }}
                 >
-                  {ml} ml
+                  {ml / 10}cl
                 </span>
               </button>
             );
