@@ -59,11 +59,12 @@ Ejer: G2-overtagelse, konto C (2026-09-24)
 ## G3 — Produktkategorier + statistikbokse + "Månedens synder"
 Filer: Prisma-skema (kategori), kategori-lib, nye statistikbokse, ny liste-side, knap i kalender (koordinér med G1).
 Ejer: G3-sessionen, konto B (overtaget 2026-09-24)
+Koordinering med G1: G3 skal senere tilføje knappen "Månedens synder" nederst i månedsvisningen i `src/app/calendar/page.tsx` (et `<Link>` til ny side, ingen andre ændringer). G1: skriv her når filen er committet/fri, så G3 kan tilføje knappen oven på jeres version.
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| c0d3a8fa / f5505465 | Ernæringsmæssige produktkategorier (alkohol, fedt, ost, yoghurt, …; ultraforarbejdet som tag) | Venter på bruger | Spørgsmål delvist besvaret i c0d3a8fa — stil de resterende, byg når brugeren siger til |
-| d7f6eb5c / 1578bf02 | Kød/fisk-bokse (g + kcal), sukkerholdige drikke, alkohol, "største syndere", liste-side, "Månedens synder" | Venter på bruger | Spørgsmål stillet (se 1578bf02), ikke besvaret. Afhænger af kategorierne |
+| c0d3a8fa / f5505465 | Ernæringsmæssige produktkategorier (alkohol, fedt, ost, yoghurt, …; ultraforarbejdet som tag) | Venter på bruger | Alt afklaret 2026-09-24, krav i STATUS (G3-afsnit). Grove kategorier nu; 30-listen er en senere, separat opgave. Byg først når brugeren siger "gå i gang" |
+| d7f6eb5c / 1578bf02 | Kød/fisk-bokse (g + kcal), sukkerholdige drikke, alkohol, "største syndere", liste-side, "Månedens synder" | Venter på bruger | Alt afklaret 2026-09-24, krav i STATUS (G3-afsnit). Byg først når brugeren siger "gå i gang" |
 
 ## G4 — Usikkerhed (bølgeikon + Uncertainties-admin)
 Filer: usikkerheds-ikon/komponent, mikronæringsvisning, indstillinger → Visning, admin Uncertainties.
@@ -98,7 +99,7 @@ Ejer: G6-overtagelse, konto B (2026-09-24)
 ## G7 — Profil
 Filer: `src/app/profile/**`.
 Ukendte ændringer: `profile/body-measurements`, `profile/invite`, `profile/photo-diary`, `profile/settings`, `profile/weight-calibration`, `src/lib/body-measurements.ts` er ændret og ikke committet.
-Ejer: —
+Ejer: Profil-gruppen (G7), konto B — overtaget 2026-09-24
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
