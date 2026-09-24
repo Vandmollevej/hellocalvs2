@@ -1246,6 +1246,7 @@
     "loginIntro": "Hello Cal bruger passkeys i stedet for adgangskoder. Du logger ind med Face ID, fingeraftryk eller telefonens kode.",
     "loginPrivacy": "Dine data er krypteret på din enhed. Hverken vi eller andre kan læse dem.",
     "loginButton": "Log ind med passkey",
+    "faceIdLogin": "Log ind med Face ID",
     "loggingIn": "Logger ind…",
     "loginFailed": "Kunne ikke logge ind med passkey",
     "newHere": "Ny her?",
