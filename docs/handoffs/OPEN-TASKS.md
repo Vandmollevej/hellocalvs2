@@ -112,12 +112,12 @@ Ejer: —
 
 ## G9 — Ikoner (forside + vand)
 Filer: forsidens grydeikon, Vand-siden, `public/` assets.
-Ejer: —
+Ejer: G9-overtagelse, konto B
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| b4666faa | Grydeikon: trim `Gryde.png` og erstat på forsiden | Ikke startet | Tjek om allerede lavet, ellers byg |
-| 60e492ca | Vand-siden: 4 PNG'er (75/50/33/25 cl) | Ikke startet | Tjek om allerede lavet, ellers byg |
+| b4666faa | Grydeikon: trim `Gryde.png` og erstat på forsiden | I gang | Tjek om allerede lavet, ellers byg |
+| 60e492ca | Vand-siden: 4 PNG'er (75/50/33/25 cl) | I gang | Tjek om allerede lavet, ellers byg |
 
 ---
 
