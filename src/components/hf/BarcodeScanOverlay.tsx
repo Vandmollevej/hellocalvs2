@@ -1,5 +1,5 @@
 import { formatEan13 } from "@/lib/regions";
-import { toPercentStyle, type FractionRect } from "@/lib/barcode-scan";
+import { toPercentStyle, type BarcodeOrientation, type FractionRect } from "@/lib/barcode-scan";
 
 // Hello Cal-specifik primitiv uden HelloFresh-reference (jf. design.md §1),
 // tilføjet 2026-09-12 til den fiktive stregkode-scanningsguide på
@@ -50,6 +50,7 @@ function FakeBarcodeBars() {
 
 export function BarcodeScanOverlay({
   guideBox,
+  orientation = "horizontal",
   alignment,
   confirmed,
   fakeCode,
@@ -57,6 +58,7 @@ export function BarcodeScanOverlay({
   hintText,
 }: {
   guideBox: FractionRect;
+  orientation?: BarcodeOrientation;
   alignment: BarcodeAlignment;
   confirmed: boolean;
   fakeCode: string;
@@ -68,11 +70,14 @@ export function BarcodeScanOverlay({
   return (
     <div className="pointer-events-none absolute inset-0">
       <div
-        className={`absolute border transition-colors duration-200 ${ALIGNMENT_BORDER_CLASS[alignment]}`}
+        className={`absolute border transition-[color,left,top,width,height] duration-200 ${ALIGNMENT_BORDER_CLASS[alignment]}`}
         style={confirmed ? boxStyle : { ...boxStyle, boxShadow: "0 0 0 999px rgba(0,0,0,0.55)" }}
       >
         {!confirmed && (
-          <div className="flex h-full w-full flex-col items-center justify-center gap-1.5 px-3">
+          <div
+            className="absolute inset-0 flex h-full w-full flex-col items-center justify-center gap-1.5 px-3 transition-transform duration-200"
+            style={orientation === "vertical" ? { transform: "rotate(90deg)" } : undefined}
+          >
             <div className="h-[58%] w-full">
               <FakeBarcodeBars />
             </div>

@@ -12,8 +12,10 @@ import { BarcodeScanOverlay, type BarcodeAlignment } from "@/components/hf/Barco
 import {
   barcodeGuideBoxFraction,
   decodedPointsToFraction,
+  detectBarcodeOrientation,
   pointInRect,
   rectCenter,
+  type BarcodeOrientation,
   type FractionRect,
 } from "@/lib/barcode-scan";
 import { buildFakeBarcodeForRegion } from "@/lib/regions";
@@ -91,7 +93,8 @@ function KameraContent() {
   const [barcodeConfirmed, setBarcodeConfirmed] = useState(false);
   const [decodedBarcodeRect, setDecodedBarcodeRect] = useState<FractionRect | null>(null);
   const [barcodeHint, setBarcodeHint] = useState<string | null>(null);
-  const barcodeGuideBox = useMemo(() => barcodeGuideBoxFraction(), []);
+  const [barcodeOrientation, setBarcodeOrientation] = useState<BarcodeOrientation>("horizontal");
+  const barcodeGuideBox = useMemo(() => barcodeGuideBoxFraction(barcodeOrientation), [barcodeOrientation]);
   const fakeBarcode = useMemo(() => buildFakeBarcodeForRegion(region), [region]);
   const [photo, setPhoto] = useState<string | null>(null);
   const [recognizeStatus, setRecognizeStatus] = useState<RecognizeStatus>("idle");
@@ -155,11 +158,17 @@ function KameraContent() {
               if (result) {
                 if (confirmTriggeredRef.current) return;
                 lastBarcodeDetectionAtRef.current = Date.now();
+                const resultPoints = result.getResultPoints();
+                const detectedOrientation = detectBarcodeOrientation(resultPoints);
+                setBarcodeOrientation((current) =>
+                  current === detectedOrientation ? current : detectedOrientation
+                );
                 const video = videoRef.current;
                 const rect = video
-                  ? decodedPointsToFraction(result.getResultPoints(), video.videoWidth, video.videoHeight)
+                  ? decodedPointsToFraction(resultPoints, video.videoWidth, video.videoHeight)
                   : null;
-                const aligned = rect ? pointInRect(rectCenter(rect), barcodeGuideBox) : false;
+                const guideBoxForOrientation = barcodeGuideBoxFraction(detectedOrientation);
+                const aligned = rect ? pointInRect(rectCenter(rect), guideBoxForOrientation) : false;
                 if (aligned && !lookupInProgressRef.current) {
                   confirmTriggeredRef.current = true;
                   setBarcodeAlignment("aligned");
@@ -250,6 +259,7 @@ function KameraContent() {
     setBarcodeConfirmed(false);
     setDecodedBarcodeRect(null);
     setBarcodeHint(null);
+    setBarcodeOrientation("horizontal");
     setRestartKey((key) => key + 1);
   }
 
@@ -340,11 +350,6 @@ function KameraContent() {
     } catch {
       setMealSaving(false);
     }
-  }
-
-  function submitManualBarcode(event: React.FormEvent) {
-    event.preventDefault();
-    void lookupBarcode(barcode);
   }
 
   useEffect(() => {
@@ -449,6 +454,7 @@ function KameraContent() {
         {!photo && mode === "product" && (
           <BarcodeScanOverlay
             guideBox={barcodeGuideBox}
+            orientation={barcodeOrientation}
             alignment={barcodeAlignment}
             confirmed={barcodeConfirmed}
             fakeCode={fakeBarcode}
@@ -572,7 +578,7 @@ function KameraContent() {
         </div>
       ) : (
         <div className="rounded-[8px] bg-hf-tan p-4">
-          <p className="mb-2 text-xs text-hf-black opacity-70">
+          <p className="text-xs text-hf-black opacity-70">
             {lookupStatus === "loading"
               ? t("camera.lookingUp", { code: barcode })
               : lookupStatus === "not_found"
@@ -581,20 +587,6 @@ function KameraContent() {
                   ? t("camera.barcodeLookupError")
                   : t("camera.autoScanHint")}
           </p>
-          <form onSubmit={submitManualBarcode} className="flex gap-2">
-            <input
-              value={barcode}
-              onChange={(event) => setBarcode(event.target.value.replace(/\D/g, ""))}
-              inputMode="numeric"
-              autoComplete="off"
-              aria-label={t("camera.barcodeNumberAriaLabel")}
-              placeholder={t("camera.barcodeNumberAriaLabel")}
-              className="min-w-0 flex-1 rounded-full bg-hf-white px-3.5 py-2 text-sm text-hf-black outline-none"
-            />
-            <button disabled={!barcode || lookupStatus === "loading"} className="hf-btn-primary px-4 py-2 text-xs disabled:opacity-40">
-              {t("camera.lookUp")}
-            </button>
-          </form>
         </div>
       )}
 

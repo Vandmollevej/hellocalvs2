@@ -12,12 +12,33 @@ export type FractionRect = { left: number; top: number; right: number; bottom: n
 export const BARCODE_GUIDE_ASPECT = 2.2;
 export const BARCODE_GUIDE_WIDTH_FRACTION = 0.78;
 
-export function barcodeGuideBoxFraction(): FractionRect {
-  const width = BARCODE_GUIDE_WIDTH_FRACTION;
-  const height = width / BARCODE_GUIDE_ASPECT;
+// Whether the guide box is laid out for a barcode held normally
+// ("horizontal", long side across) or on its side ("vertical", long side
+// upright) — flipped automatically once a decoded scan line comes in at a
+// steep angle (see `detectBarcodeOrientation`).
+export type BarcodeOrientation = "horizontal" | "vertical";
+
+export function barcodeGuideBoxFraction(orientation: BarcodeOrientation = "horizontal"): FractionRect {
+  const long = BARCODE_GUIDE_WIDTH_FRACTION;
+  const short = long / BARCODE_GUIDE_ASPECT;
+  const width = orientation === "vertical" ? short : long;
+  const height = orientation === "vertical" ? long : short;
   const left = (1 - width) / 2;
   const top = (1 - height) / 2;
   return { left, top, right: left + width, bottom: top + height };
+}
+
+// A decoded 1D scan line's two ResultPoints run along the printed bars'
+// length. If that line sits closer to vertical than horizontal, the phone
+// (or the barcode) is turned on its side, so the guide box should flip to
+// portrait to match.
+export function detectBarcodeOrientation(points: { getX(): number; getY(): number }[]): BarcodeOrientation {
+  if (points.length < 2) return "horizontal";
+  const dx = points[1].getX() - points[0].getX();
+  const dy = points[1].getY() - points[0].getY();
+  if (dx === 0 && dy === 0) return "horizontal";
+  const angleDeg = (Math.abs(Math.atan2(dy, dx)) * 180) / Math.PI;
+  return angleDeg > 45 && angleDeg < 135 ? "vertical" : "horizontal";
 }
 
 // Maps a point in native video-pixel space to a fraction (0..1) of the
