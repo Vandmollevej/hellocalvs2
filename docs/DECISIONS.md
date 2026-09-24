@@ -2,6 +2,45 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-24: Usikkerheds-bølgeikon (afklaret, ikke bygget)
+
+Brugerens krav og valg, punkt for punkt (ikke bygget denne omgang, se
+`docs/STATUS.md` 2026-09-24 for "next work"):
+
+- **Erstatter/supplerer** det grønne "godkendt"-skjold i søgeresultater
+  (MyFitnessPal-reference) med et grønt bølge-/tilde-ikon ("usikkerhedstegnet"),
+  der vises ved fødevarer og ved enkelte mikronæringsstofværdier, som **ikke**
+  stammer fra varedeklarationen.
+- **Datamodel-omfang:** kilde+konfidens-tracking (`*Source`/`*Confidence`,
+  se `ProductFeatureSource` i `prisma/schema.prisma`) findes i dag kun for
+  sukker/fiber/salt/fuldkorn. Brugeren har bekræftet at dette skal **udvides
+  til alle næringsstoffer** — vitaminer, mineraler, natrium, kalium osv.
+- **Udløser for vare-ikon i søgeresultater:** vises kun når producentens egen
+  varedeklaration ikke har udfyldt feltet, og værdien i stedet er hentet/
+  estimeret (AI eller Frida). Ikke en generel konfidens-tærskel, og ikke et
+  manuelt admin-flag.
+- **Frida-integration (ny, stort arbejde):** Frida-importen
+  (`src/lib/generic-ingredient-match.ts`, `frida-agent`) gemmer i dag kun de 4
+  kerne-makronæringsstoffer — vitamin/mineral-estimering fra Frida er
+  ifølge tidligere log (2026-08-27/2026-09-19-afsnit ovenfor) aldrig bygget.
+  Brugeren har bekræftet at denne Frida-vitamin/mineral-estimering **skal
+  bygges som del af denne opgave**, ikke udskydes. Margenen (±-tallet vist i
+  gråt) skal udregnes ud fra Frida's data, når værdien ikke kommer fra
+  varedeklarationen.
+- **Visning i UI:**
+  - Under "Statistik"-boksene (StatCardsGrid, `src/lib/stat-cards.ts`): under
+    værdien (fx "0,5 mg natrium") vises margen-tallet (fx "±0,1 mg") i gråt,
+    med det grønne bølgeikon foran.
+  - Samme mønster i varedeklarationstabellen under "vis mere".
+- **Indstillinger → Visning:** to separate on/off-knapper, efter samme
+  mønster som `src/app/settings/display/limits/page.tsx` (en dedikeret side
+  med ét `User`-boolean-felt via `/api/profile` PATCH):
+  1. Usikkerhedsmarkering på varer/ingredienser i søgeresultater.
+  2. Usikkerhedsmarkering på mikrodata (vitaminer/mineraler).
+  Begge er **slået TIL som standard**, for både nye og eksisterende brugere.
+- Ikke bygget: ingen skema-migration, ingen UI, ingen Frida-vitamin-pipeline.
+  Se `docs/STATUS.md` 2026-09-24 for opgavelisten til senere implementering.
+
 ## 2026-09-24: Delte brugeropskrifter uden kobling til brugeren
 
 Brugerens valg (2026-09-23, punkt for punkt): deling starter ON, kan altid
@@ -59,6 +98,16 @@ Brugerens valg (opgave fra ChatGPT, afklaret punkt for punkt):
   anonym svaradresse (`replyInboxId` = indberetterens `VaultInbox`), og admin
   kan sende en besked, der forsegles med `sealToPublicKey` og kun kan åbnes på
   brugerens enhed.
+
+## 2026-09-23: App-distribution kun i HelloFresh-lande (ikke bygget)
+
+- Appen udgives kun i App Store/Google Play i en fast, manuelt vedligeholdt
+  liste over HelloFresh-lande (låst pr. 2026-09-23, se `docs/STATUS.md`).
+- Kun butiksniveau: ingen geo-blokering i appen, webappen og testversioner
+  er globale, eksisterende brugere kan altid fortsætte.
+- Nye lande kræver manuel godkendelse; HelloFresh-exit ændrer intet.
+- Én central landetabel i databasen er sandheden for landelisten.
+- HelloFresh-indhold: eget land øverst, andre lande kan stadig vises.
 
 ## 2026-09-23: Privacy-by-architecture — Hello Cal må ikke kunne læse brugerdata
 
@@ -140,16 +189,6 @@ brugeren punkt for punkt). Den bindende kontrakt er `docs/PRIVACY.md`.
   kcal-totalen, indtil den er på plads (fx via aktivitetsniveau/mål i
   SPECIFICATION §5 eller forbrænding fra en integration).
 
-## 2026-09-22: Forsidens tilføj-cirkel er lodret flytbar
-
-- Den grønne cirkel kan trækkes lodret (kun Y) ved at tage fat uden for
-  fingeraftryk-knappen; fingeraftrykket bevarer joystick-funktionen.
-  Nederste grænse er altid bundnavigationens målte topkant, øverste grænse
-  er top-baren. Ingen snapping.
-- Y-position = CSS-px-offset fra standardpositionen i hero'en, gemt pr.
-  enhed i localStorage (samme mønster som valg af side), altid re-clampet
-  mod det aktuelle layout.
-
 ## 2026-09-22: Global tilbage-navigation på undersider
 
 - Alle routede undersider viser som standard en tilbagepil i **venstre**
@@ -191,6 +230,16 @@ brugeren punkt for punkt). Den bindende kontrakt er `docs/PRIVACY.md`.
   bruger Profil viser. Skal migreres til rigtig session samtidig med
   `/api/profile` — ikke halvt.
 
+## 2026-09-22: Forsidens tilføj-cirkel er lodret flytbar
+
+- Den grønne cirkel kan trækkes lodret (kun Y) ved at tage fat uden for
+  fingeraftryk-knappen; fingeraftrykket bevarer joystick-funktionen.
+  Nederste grænse er altid bundnavigationens målte topkant, øverste grænse
+  er top-baren. Ingen snapping.
+- Y-position = CSS-px-offset fra standardpositionen i hero'en, gemt pr.
+  enhed i localStorage (samme mønster som valg af side), altid re-clampet
+  mod det aktuelle layout.
+
 ## 2026-09-22: Søvnmønster — separat "Arbejdstider i kalenderen"-toggle fjernet
 
 - Den særskilte brugerindstilling `workHoursInCalendarEnabled` udgår: kortet
@@ -231,6 +280,32 @@ og alle kropsmål nedenunder. `/profile/target-weight` redirecter hertil.
   auto-gem-reglen): det er oprettelse af en samlet, dateret post, ikke
   redigering af en indstilling — samme mønster som opret-ret.
 
+## 2026-09-23: Målsætningsdato på målsætningen
+
+"Opret ny målsætning" har nu en påkrævet målsætningsdato øverst (dato →
+målvægt → kropsmål i 2 kolonner); topbjælken hedder "Opret ny målsætning".
+
+- Datoen gemmes på `Goal.targetDate` (nullable), ikke på `User`: hver
+  historisk målsætning har sin egen dato. Ældre/backfillede målsætninger har
+  ingen dato. Et forslag om `User.targetDate` blev bevidst ikke fulgt.
+- Kalenderdato: klienten sender "YYYY-MM-DD", serveren gemmer kl. 12:00 UTC,
+  så datoen ikke skifter ved tidszonekonvertering. Datoer før i dag afvises
+  (med én dags slæk for tidszoner foran UTC).
+- Native date input; hele feltet åbner vælgeren, tomt felt viser "Vælg dato".
+- Oversigten viser "Nås senest {dato}" under oprettelsesdatoen.
+
+## 2026-09-22: Global tidspunkt-regel — let separator, "Kl." foran tiden
+
+Bindende UI-regel: redigerbare tidspunkt-sektioner vises aldrig mere som den
+tunge beige bjælke ("Tidspunkt 05.28"). De bruger altid den fælles
+`src/components/hf/TimeSection.tsx`: en centreret "TIDSPUNKT"-overskrift
+mellem to ubrudte (ikke stiplede) streger i separatorfarven `hf-tan-dark`,
+ca. 80 % af indholdsbredden, uden baggrund/container, og under den værdien
+som "Kl. 05.28" (ikke fed). Eksisterende tidsformat, state og time-input
+bevares. Gælder ikke historiske timestamps, lister, admin-tabeller,
+"sidst opdateret"-metadata eller felter med egne labels (fx vågen-/sengetid
+på søvnprofilen).
+
 ## 2026-09-22: Skift adgangskode (Profil → Skift adgangskode)
 
 `/profile/change-password` + `POST /api/profile/change-password`. Brugeren
@@ -267,32 +342,6 @@ Samtidig: Hello Cal-logoet på produktcirklen har ikke længere hvid cirkel/skyg
 det ligger i front (`z-10`) med nederste venstre hjørne i cirklens bundpunkt og
 en bredde på én radius (95px).
 
-## 2026-09-23: Målsætningsdato på målsætningen
-
-"Opret ny målsætning" har nu en påkrævet målsætningsdato øverst (dato →
-målvægt → kropsmål i 2 kolonner); topbjælken hedder "Opret ny målsætning".
-
-- Datoen gemmes på `Goal.targetDate` (nullable), ikke på `User`: hver
-  historisk målsætning har sin egen dato. Ældre/backfillede målsætninger har
-  ingen dato. Et forslag om `User.targetDate` blev bevidst ikke fulgt.
-- Kalenderdato: klienten sender "YYYY-MM-DD", serveren gemmer kl. 12:00 UTC,
-  så datoen ikke skifter ved tidszonekonvertering. Datoer før i dag afvises
-  (med én dags slæk for tidszoner foran UTC).
-- Native date input; hele feltet åbner vælgeren, tomt felt viser "Vælg dato".
-- Oversigten viser "Nås senest {dato}" under oprettelsesdatoen.
-
-## 2026-09-22: Global tidspunkt-regel — let separator, "Kl." foran tiden
-
-Bindende UI-regel: redigerbare tidspunkt-sektioner vises aldrig mere som den
-tunge beige bjælke ("Tidspunkt 05.28"). De bruger altid den fælles
-`src/components/hf/TimeSection.tsx`: en centreret "TIDSPUNKT"-overskrift
-mellem to ubrudte (ikke stiplede) streger i separatorfarven `hf-tan-dark`,
-ca. 80 % af indholdsbredden, uden baggrund/container, og under den værdien
-som "Kl. 05.28" (ikke fed). Eksisterende tidsformat, state og time-input
-bevares. Gælder ikke historiske timestamps, lister, admin-tabeller,
-"sidst opdateret"-metadata eller felter med egne labels (fx vågen-/sengetid
-på søvnprofilen).
-
 ## 2026-09-22: Global clipboard-regel — ingen copy, cut eller paste i appen
 
 Bindende produktbeslutning: Hello Cal tillader ikke copy, cut eller paste i
@@ -310,6 +359,16 @@ Almindelig indtastning, markørflytning, sletning og autofill påvirkes ikke;
 derfor bruges `user-select: none` ikke på felter. App-initierede
 "kopiér link"-knapper (`navigator.clipboard.writeText` i invite/forward) er
 ikke brugerens clipboard-handling og er uændrede.
+
+## 2026-09-22: Originale produktimportfelter er permanent skrivebeskyttede
+
+Ved al oprydning, berigelse og efterbehandling af produktfiler må de originale
+kilde- og importfelter kun læses som reference og **aldrig redigeres**. Det
+gælder altid `Product Name`, `Original Title` og `Subtitle` samt tilsvarende
+originale felter med produkt-/kildelinks, billedlinks og billedstier, herunder
+`Source URL`, `Image File` og `Image URL`. Afledte oplysninger skal skrives i
+andre, særskilte kolonner. Reglen gælder globalt på tværs af leverandørfiler,
+også når en ønsket datarensning ellers kunne udføres direkte i et originalfelt.
 
 ## 2026-09-19: Admin "Søgealgoritmer" — tunable ranking weights, region-brand popularity, and personal search/click history (reverses the earlier anonymous-only search-stat principle)
 
