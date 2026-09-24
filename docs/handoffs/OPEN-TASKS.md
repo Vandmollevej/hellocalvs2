@@ -127,8 +127,8 @@ Ejer: G9-overtagelse, konto B
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| b4666faa | Grydeikon: trim `Gryde.png` og erstat på forsiden | I gang | Tjek om allerede lavet, ellers byg |
-| 60e492ca | Vand-siden: 4 PNG'er (75/50/33/25 cl) | I gang | Tjek om allerede lavet, ellers byg |
+| b4666faa | Grydeikon: trim `Gryde.png` og erstat på forsiden | Færdig (f5895a3) | Var allerede lavet: `public/icons/gryde.png` (770×759, trimmet), brugt i `src/lib/add-actions.ts` |
+| 60e492ca | Vand-siden: 4 PNG'er (75/50/33/25 cl) | Færdig (6cf89c5) | Billeder i `public/icons/water/`, registrerer 750/500/330/250 ml. Afventer brugerens godkendelse af udseendet |
 | ea9d1f7c | Dublet af 60e492ca (glas/flaske i række på fire) | Dublet | Luk sammen med 60e492ca |
 
 ## G10 — Bundnavigation + global overskrift-stil
