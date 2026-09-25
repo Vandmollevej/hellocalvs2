@@ -79,6 +79,7 @@ Ejer: —
 ## G5 — Agent-app + logo-robot
 Filer: ny agent-app, admin "scan-invites", logo-agent (Python/container).
 Ejer: G5-overtagelse, konto B (2026-09-24)
+⚠️ Fra G1 (2026-09-25): deploy-trinnet "Build and start catalog agents" i `.github/workflows` fejler ved hvert push til master siden 2026-09-24 ca. 18:00 (fx run for 50a5a47). App-deployet lykkes, men agent-containerne opdateres ikke. Brugeren har bedt G5 om at rette det — læs job-loggen på GitHub.
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
