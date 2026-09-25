@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { IconList, type Icon } from "@tabler/icons-react";
 import {
-  addActionByKey,
+  type AddAction,
   useAddActionsProfile,
   useWheelActionKeys,
   visibleAddActions,
@@ -168,7 +168,7 @@ type Action = {
 function buildActions(
   t: (key: string) => string,
   selectedKeys: AddActionKey[],
-  allowedKeys: Set<AddActionKey>
+  allowed: Map<AddActionKey, AddAction>
 ): Action[] {
   const listAction: Action = {
     key: "list",
@@ -179,8 +179,7 @@ function buildActions(
   };
 
   const selected = selectedKeys
-    .filter((key) => allowedKeys.has(key))
-    .map((key) => addActionByKey(key))
+    .map((key) => allowed.get(key))
     .filter((action): action is NonNullable<typeof action> => Boolean(action))
     .map<Action>((action) => ({
       key: action.key,
@@ -234,8 +233,8 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
   const side = useFabSide();
   const selectedKeys = useWheelActionKeys();
   const profile = useAddActionsProfile();
-  const allowedKeys = new Set(visibleAddActions(profile).map((action) => action.key));
-  const actions = buildActions(t, selectedKeys, allowedKeys);
+  const allowed = new Map(visibleAddActions(profile).map((action) => [action.key, action]));
+  const actions = buildActions(t, selectedKeys, allowed);
   const anglesDeg = computeAngles(actions.length);
   const router = useRouter();
   const [open, setOpen] = useState(false);

@@ -2,6 +2,20 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Kropsmål-ikon — kvinde/mand med målebånd (vektor)
+
+- `src/components/icons/BodyMeasure.tsx`: `IconBodyFemale` / `IconBodyMale`,
+  stroke-tegninger af brugerens to billeder (torso med målebånd om taljen),
+  forenklet til 20–28 px (højere bånd, tre streger i stedet for syv).
+- Erstatter tabler `IconRulerMeasure` overalt for Kropsmål: `/profile`,
+  `/profile/edit` og `add-actions` (hjul, `/add/menu`, Forside-indstillinger).
+  Figuren følger profilens køn; mand ved MALE, ellers kvinden.
+  `visibleAddActions()` bytter ikonet, og hjulet (AddButton) tager nu sine
+  handlinger fra den liste.
+- Kildebillederne ligger i brugerens lokale hovedmappe (ikke i repoet).
+- Lint + build grønne; renderet og tjekket ved 20/28/200 px. Ikke set i den
+  kørende app.
+
 ## 2026-09-25: Profil — Face ID som tekstlink, Skift adgangskode nederst
 
 - `/profile/edit`: "Slå Face ID til" er nu et almindeligt understreget tekstlink

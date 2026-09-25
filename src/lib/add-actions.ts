@@ -4,11 +4,11 @@ import {
   IconCamera,
   IconDroplet,
   IconMicrophone,
-  IconRulerMeasure,
   IconSearch,
   type Icon,
 } from "@tabler/icons-react";
 import { IconBathroomScale } from "@/components/icons/BathroomScale";
+import { bodyMeasureIcon, IconBodyFemale } from "@/components/icons/BodyMeasure";
 import { IconChampagne } from "@/components/icons/Champagne";
 import { IconCookingPot } from "@/components/icons/CookingPot";
 
@@ -100,7 +100,8 @@ export const ADD_ACTIONS: AddAction[] = [
   {
     key: "bodyMeasurements",
     href: "/profile/body-measurements",
-    icon: IconRulerMeasure,
+    // Swapped for the man's figure by visibleAddActions() when sex = MALE.
+    icon: IconBodyFemale,
     labelKey: "profile.row.bodyMeasurements",
     hintKey: "profile.row.bodyMeasurements",
   },
@@ -128,7 +129,9 @@ export function visibleAddActions(profile: { sex?: "FEMALE" | "MALE" | null; cyc
   return ADD_ACTIONS.filter((action) => {
     if (!action.requiresCycleTracking) return true;
     return profile.sex === "FEMALE" && profile.cycleTrackingEnabled === true;
-  });
+  }).map((action) =>
+    action.key === "bodyMeasurements" ? { ...action, icon: bodyMeasureIcon(profile.sex) } : action
+  );
 }
 
 /**

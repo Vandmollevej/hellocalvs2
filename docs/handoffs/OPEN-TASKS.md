@@ -106,7 +106,7 @@ Ejer: Profil-gruppen (G7), konto B — overtaget 2026-09-24
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | 9a0770ce | Ny oversigtsside over målsætninger (historik, grønt flueben, fast knap nederst) | Ikke startet | Tjek om allerede lavet, ellers byg |
-| 8b0a278f | Kropsmål med mand/kvinde-tegninger (fra hovedmappen), kort som på statistik | Ikke startet | Tjek om allerede lavet, ellers byg |
+| 8b0a278f | Kropsmål med mand/kvinde-tegninger (fra hovedmappen), kort som på statistik | I gang | Ikonerne (mand/kvinde) er lavet og bruges overalt (BodyMeasure.tsx). Selve siden/kortene er ikke ændret |
 | d22c7e61 | Invitér en ven: kun visuelt (betingelser som tekstlink, luft, fjern skillelinje, demo-data) | Venter på bruger | E-mail-invitation/venneliste strider mod privacy — kun visuelle rettelser |
 | ef8a5612 | "Skift adgangskode"-side | Blokeret | Strider sandsynligvis mod passkey-only login — spørg brugeren |
 | 60da6b15 | Indstillinger: "Få vist allergener" ind i samme boks + "Vælg alle" ved topknappen | Lavet, ikke verificeret | **Sandsynligvis kilden til diff'en i profile/settings.** Verificér og commit |
