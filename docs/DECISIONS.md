@@ -2,6 +2,29 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-25: Én tekst og ét ikon pr. Tilføj-handling
+
+Brugeren vil have, at tekster og ikoner på Tilføj-skærmen slår igennem på
+forsidehjulet og alle andre steder, handlingen vises. `ADD_ACTIONS` i
+`src/lib/add-actions.ts` har derfor kun én tekst (`labelKey`). Hjulet har
+ikke længere egne kortere hint-tekster. Ikonet for Kropsmål afhænger af køn
+og sættes via `visibleAddActions()` / `addActionByKey(key, sex)`.
+
+## 2026-09-25: Minimum for sundt dagligt indtag i kalenderen
+
+Brugeren ønsker en advarsel, når indtaget er for lavt til at være sundt.
+Minimum = den højeste af:
+1. Hvilestofskiftet (BMR) efter Mifflin-St Jeor (Mifflin et al., *Am J Clin
+   Nutr* 1990), beregnet ud fra seneste vejning, højde, alder og køn i
+   profilen. Det er samme formel, som ugeestimatet allerede bruger.
+2. Et fast gulv på 1.200 kcal for kvinder og 1.500 kcal for mænd. Det er den
+   grænse, der typisk anbefales for slankekur uden lægelig opfølgning (bl.a.
+   Harvard Health Publishing). Er køn ukendt, bruges 1.200.
+Resultatet rundes op til nærmeste 10 kcal. Kun afsluttede dage med
+indtastninger kan markeres. Dagen i dag markeres ikke, fordi den ikke er
+slut, og tomme dage markeres heller ikke. Det er et vejledende skøn, ikke
+medicinsk rådgivning.
+
 ## 2026-09-25: Sektionsoverskrifter, points-banner og "Invitér en ven"
 
 Brugerens krav efter skærmbillede af Invitér en ven:
@@ -73,8 +96,9 @@ apps." De skrappe sikkerhedsforanstaltninger var kun ment til admin.
 - Statistik: 12 nye kort (kød g/kcal ×4, sukkerholdige drikke kcal, alkohol
   kcal/genstande/mængde) som totaler for den valgte periode, egen gruppe under
   "Tilføj kort". Bred boks "Største syndere" (top 5 for Kalorier/Fedt/Sukker,
-  samme vare må gå igen, klik åbner varen) med "Se alle" →
-  `/statistics/sources` ("Største kilder", faner + Produkter/Produkttyper).
+  samme vare må gå igen, klik åbner varen). Siden "Største kilder"
+  (`/statistics/sources`) er fjernet 2026-09-25 efter brugerens ønske, da
+  "Månedens synder" dækker det samme; boksen har derfor intet "Se alle".
 - "Månedens synder": knap under kalenderens månedsvisning →
   `/statistics/month-sinners?month=YYYY-MM`, grupperet efter produkttype med
   "kcal · %", faner Kalorier/Fedt/Sukker.

@@ -40,6 +40,9 @@
   /* Bevidste Hello Cal-undtagelser (ikke fra HelloFresh-referencen) */
   --hf-color-positive: #a3e635;
   --hf-color-danger: #a3271f;
+  /* For lavt indtag: mørk okker til tekst (læsbar på kortfarven), gul til firkanten. */
+  --hf-color-warning: #8a5a00;
+  --hf-color-warning-fill: #f2c230;
   --hf-color-overlay: rgb(35 35 35 / 40%);
 
   /* Legacy-navne — pegede tidligere på ikke-målte farver, peger nu på de
@@ -94,6 +97,8 @@
   --color-hf-gray-border: var(--hf-gray-border);
   --color-hf-fab: var(--hf-fab);
   --color-hf-lime: var(--hf-lime);
+  --color-hf-warning: var(--hf-color-warning);
+  --color-hf-warning-fill: var(--hf-color-warning-fill);
   --font-sans: var(--font-hf-body);
   --font-mono: var(--font-geist-mono);
   --font-hf-heading: var(--font-hf-heading);

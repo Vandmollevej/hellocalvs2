@@ -421,6 +421,9 @@
     "dailyGoalExceeded": "Du har overskredet dagens mål",
     "dailyGoalNone": "Endnu intet registreret",
     "registrations": "Registreringer",
+    "intakeTooLow": "For lavt indtag",
+    "lowIntakeNotice": "Vær opmærksom på, at dit indtag er lavere end hvad der er sundt. Du bør indtage mindst {minimum} kcal om dagen for en person af din statur.",
+    "noEntries": "Ingen indtastninger",
     "noRegistrations": "Ingen registreringer",
     "loadingDayRegistrations": "Henter dagens registreringer…",
     "registrationsLoadError": "Registreringerne kunne ikke hentes",
@@ -1230,7 +1233,7 @@
     "closeMenu": "Luk tilføj-menu",
     "openMenu": "Åbn tilføj-menu",
     "microphone": "Mikrofon",
-    "ownDishes": "Egne retter",
+    "ownDishes": "Retter",
     "search": "Søg",
     "weight": "Vægt",
     "water": "Vand",
@@ -1238,14 +1241,7 @@
     "list": "Se alle",
     "menstrualCycle": "Menstruation",
     "hint": {
-      "microphone": "Indtal",
-      "ownDishes": "Måltid",
-      "search": "Søgning",
-      "weight": "Vægt og mål",
-      "water": "Vandindtag",
-      "camera": "Tag billede",
-      "list": "Se alle",
-      "menstrualCycle": "Log menstruation"
+      "list": "Se alle"
     }
   },
   "onboarding": {
