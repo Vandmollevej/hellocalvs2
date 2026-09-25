@@ -2,6 +2,18 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Kommunikation — fælles kort, sektioner og grå noter
+
+- Dobbelte streger fjernet: `.hf-type-section-title` tegner selv sine streger;
+  den ekstra `SectionDivider` er slettet.
+- Ny fælles `Section` (`src/components/ui/Section.tsx`): overskrift, indhold og
+  grå note (`.hf-section-note`). Ny fælles `.hf-card` i `globals.css`
+  (design.md §6.6). `Toggle`-kortet bruger nu `.hf-card`, og label og kontakt
+  centreres lodret (før stod teksten højere end kontakten) — gælder alle sider.
+- Hver sektion på Kommunikation har en grå note (Lorem ipsum indtil videre:
+  `pushNote`, `emailNote`, `partnerNote`, `specificNote`).
+- Lint + build grønne. Ikke visuelt testet lokalt (kræver login).
+
 ## 2026-09-25: Statistik — redigerbare grafer, søgning og "+ Tilføj" pr. blok
 
 Se `docs/DECISIONS.md` 2026-09-25 "Statistiksidens grafer kan redigeres som

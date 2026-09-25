@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { HfScreen } from "@/components/HfScreen";
+import { Section } from "@/components/ui/Section";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -33,14 +34,6 @@ type CommunicationUser = {
   wantsAdviceEmails: boolean;
   wantsPartnerOffersEmails: boolean;
 };
-
-function SectionTitle({ children }: { children: React.ReactNode }) {
-  return <p className="hf-type-section-title mb-1 mt-2">{children}</p>;
-}
-
-function SectionDivider() {
-  return <div className="border-t" style={{ borderColor: "var(--hf-color-line)" }} />;
-}
 
 export default function CommunicationPage() {
   const { t } = useTranslation();
@@ -84,70 +77,87 @@ export default function CommunicationPage() {
     <HfScreen
       title={t("profile.section.communication")}
     >
-      <div className="flex flex-col gap-4 px-4 pt-4 pb-8">
-        <p className="hf-type-body-sm opacity-70">{t("profile.communication.intro")}</p>
+      <div className="flex flex-col gap-8 px-4 pt-4 pb-8">
+        <p className="hf-section-note">{t("profile.communication.intro")}</p>
 
         {!user ? (
-          <p className="hf-type-body-sm opacity-70">{t("profile.loading")}</p>
+          <p className="hf-section-note">{t("profile.loading")}</p>
         ) : (
           <>
-            <SectionTitle>{t("profile.communication.pushSection")}</SectionTitle>
-            <SectionDivider />
-            <Toggle
-              label={t("profile.communication.push")}
-              checked={user.wantsPushNotifications}
-              onChange={(value) => updateUser("wantsPushNotifications", value)}
-            />
+            <Section
+              title={t("profile.communication.pushSection")}
+              note={t("profile.communication.pushNote")}
+            >
+              <Toggle
+                label={t("profile.communication.push")}
+                checked={user.wantsPushNotifications}
+                onChange={(value) => updateUser("wantsPushNotifications", value)}
+              />
+            </Section>
 
-            <SectionTitle>{t("profile.communication.emailSection")}</SectionTitle>
-            <SectionDivider />
-            <Toggle
-              label={t("profile.communication.updateNews")}
-              checked={user.wantsUpdateNewsEmails}
-              onChange={(value) => updateUser("wantsUpdateNewsEmails", value)}
-            />
-            <Toggle
-              label={t("profile.communication.advice")}
-              checked={user.wantsAdviceEmails}
-              onChange={(value) => updateUser("wantsAdviceEmails", value)}
-            />
+            <Section
+              title={t("profile.communication.emailSection")}
+              note={t("profile.communication.emailNote")}
+            >
+              <Toggle
+                label={t("profile.communication.updateNews")}
+                checked={user.wantsUpdateNewsEmails}
+                onChange={(value) => updateUser("wantsUpdateNewsEmails", value)}
+              />
+              <Toggle
+                label={t("profile.communication.advice")}
+                checked={user.wantsAdviceEmails}
+                onChange={(value) => updateUser("wantsAdviceEmails", value)}
+              />
+            </Section>
 
-            <SectionTitle>{t("profile.communication.partnerSection")}</SectionTitle>
-            <SectionDivider />
-            <Toggle
-              label={t("profile.communication.partnerOffers")}
-              checked={user.wantsPartnerOffersEmails}
-              onChange={(value) => updateUser("wantsPartnerOffersEmails", value)}
-            />
+            <Section
+              title={t("profile.communication.partnerSection")}
+              note={t("profile.communication.partnerNote")}
+            >
+              <Toggle
+                label={t("profile.communication.partnerOffers")}
+                checked={user.wantsPartnerOffersEmails}
+                onChange={(value) => updateUser("wantsPartnerOffersEmails", value)}
+              />
+            </Section>
           </>
         )}
 
-        <SectionTitle>{t("profile.communication.specificSection")}</SectionTitle>
-        <SectionDivider />
-        <p className="hf-type-caption -mt-2 opacity-70">{t("profile.communication.specificHint")}</p>
-        {!preferences ? (
-          <p className="hf-type-body-sm opacity-70">{t("profile.loading")}</p>
-        ) : (
-          <div className="flex flex-col gap-3">
-            {preferences.map((pref) => (
-              <div key={pref.event} className="rounded-[8px] bg-hf-tan p-4">
-                <p className="hf-type-body-sm mb-3 font-bold">
+        <Section
+          title={t("profile.communication.specificSection")}
+          note={t("profile.communication.specificNote")}
+        >
+          {!preferences ? (
+            <p className="hf-section-note">{t("profile.loading")}</p>
+          ) : (
+            preferences.map((pref) => (
+              <div key={pref.event} className="hf-card flex flex-col gap-3">
+                <p className="text-[15px] font-bold text-hf-black">
                   {EVENT_LABELS[pref.event] ?? pref.event}
                 </p>
                 <div className="flex items-center justify-between">
                   <span className="hf-type-body-sm">E-mail</span>
-                  <Toggle checked={pref.email} onChange={(v) => updatePreference(pref.event, "email", v)} />
+                  <Toggle
+                    ariaLabel={`${EVENT_LABELS[pref.event] ?? pref.event} – e-mail`}
+                    checked={pref.email}
+                    onChange={(v) => updatePreference(pref.event, "email", v)}
+                  />
                 </div>
-                <div className="mt-3 flex items-center justify-between">
+                <div className="flex items-center justify-between">
                   <span className="hf-type-body-sm">Push</span>
-                  <Toggle checked={pref.push} onChange={(v) => updatePreference(pref.event, "push", v)} />
+                  <Toggle
+                    ariaLabel={`${EVENT_LABELS[pref.event] ?? pref.event} – push`}
+                    checked={pref.push}
+                    onChange={(v) => updatePreference(pref.event, "push", v)}
+                  />
                 </div>
               </div>
-            ))}
-          </div>
-        )}
+            ))
+          )}
+        </Section>
 
-        <Link href="/betingelser" className="hf-type-body-sm mt-2 text-center underline opacity-70">
+        <Link href="/betingelser" className="hf-section-note text-center underline">
           {t("profile.communication.termsLink")}
         </Link>
       </div>

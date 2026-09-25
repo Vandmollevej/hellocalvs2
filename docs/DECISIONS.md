@@ -1966,3 +1966,10 @@ Normaliserede produkt-søgeparametre (`ProductNutritionFeatures`, 1:1 med
 - Den private ingrediens ligger kun i boksen (samling `privateIngredients`) og vises kun for brugeren selv: øverst i søgningen på Opret ret og på `/ingredients` ("Mine ingredienser": omdøb/slet). I retter bruges produkt-ID `private:<id>`, som aldrig sendes til serveren; retter med egne ingredienser kan ikke deles, før de er gjort globale.
 - Admin varsles: serveren får kun navnet og en anonym engangsindbakke (`IngredientRequest`, ingen bruger-ID) plus e-mail `INGREDIENT_REQUEST_ADMIN`. Admin → "Ønskede ingredienser" kan rette navnet og "Tilføj globalt" (GenericIngredient med Frida-næring) eller afvise.
 - Når admin tilføjer den globalt, overskriver den global brugerens private automatisk (valgt blandt brugerens to muligheder): indbakken leverer den globale ingrediens, og enheden erstatter den private i alle egne retter og sletter den private.
+
+## 2026-09-25: Sektioner, kort og kontakter er fælles klasser
+
+- Sektionsoverskrifter bruges kun via `Section`/`.hf-type-section-title`. Overskriften tegner selv sine streger; der må aldrig lægges en ekstra skillelinje under.
+- Bokse/blokke bruger `.hf-card` (kortfarve, radius 8 px, 16 px padding). Sider må ikke opfinde egen baggrund, radius eller padding for kort.
+- Toggle-rækker: label og kontakt er altid lodret centreret mod hinanden.
+- Sektioner kan have en grå forklaringsnote nederst (`.hf-section-note`, samme stil som sidens intro).

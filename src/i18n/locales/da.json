@@ -797,13 +797,16 @@
       "intro": "Vælg hvilke beskeder du vil have som e-mail og/eller push. Vigtige kontobeskeder (fx verifikation og nulstil kodeord) sendes altid.",
       "pushSection": "Push-beskeder",
       "push": "Jeg ønsker at modtage push-beskeder",
+      "pushNote": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       "emailSection": "E-mails",
       "updateNews": "Jeg vil gerne modtage nyheder om updates",
       "advice": "Jeg vil gerne modtage gode råd pr. mail",
+      "emailNote": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       "partnerSection": "Information fra vores samarbejdspartnere",
       "partnerOffers": "Jeg vil gerne modtage gode tilbud og information fra vores samarbejdspartnere",
+      "partnerNote": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       "specificSection": "Specifikke beskeder",
-      "specificHint": "Finjuster e-mail og push for bestemte hændelser på din konto.",
+      "specificNote": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       "termsLink": "Læs vores betingelser"
     }
   },

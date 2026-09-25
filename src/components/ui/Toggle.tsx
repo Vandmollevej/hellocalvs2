@@ -42,17 +42,19 @@ export function Toggle({
 
   if (!label) return switchEl;
 
+  // Kortet er den fælles .hf-card; labelen og kontakten centreres lodret mod
+  // hinanden, så teksten aldrig står højere end knappen.
   return (
-    <div className="flex items-start gap-3 rounded-2xl bg-hf-tan px-4 py-4">
-      <span className="flex-1">
-        <span className="block text-[15px] font-medium text-hf-black">{label}</span>
-        {description && (
-          <span className="mt-2 block border-t border-hf-gray-light pt-2 text-[12px] text-hf-black opacity-60">
-            {description}
-          </span>
-        )}
-      </span>
-      <span className="pt-0.5">{switchEl}</span>
+    <div className="hf-card">
+      <div className="flex items-center gap-3">
+        <span className="flex-1 text-[15px] font-medium text-hf-black">{label}</span>
+        {switchEl}
+      </div>
+      {description && (
+        <span className="mt-2 block border-t border-hf-gray-light pt-2 text-[12px] text-hf-black opacity-60">
+          {description}
+        </span>
+      )}
     </div>
   );
 }

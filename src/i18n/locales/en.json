@@ -797,13 +797,16 @@
       "intro": "Choose which messages you get as email and/or push. Important account messages (e.g. verification and password reset) are always sent.",
       "pushSection": "Push notifications",
       "push": "I want to receive push notifications",
+      "pushNote": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       "emailSection": "Emails",
       "updateNews": "I want to receive news about updates",
       "advice": "I want to receive helpful advice by email",
+      "emailNote": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       "partnerSection": "Information from our partners",
       "partnerOffers": "I want to receive great offers and information from our partners",
+      "partnerNote": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       "specificSection": "Specific messages",
-      "specificHint": "Fine-tune email and push for particular events on your account.",
+      "specificNote": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       "termsLink": "Read our terms"
     }
   },
