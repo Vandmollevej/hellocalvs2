@@ -12,6 +12,16 @@ opgraderes automatisk). Lint + build grønne. Ikke visuelt testet (kræver
 login) — test på iPhone efter deploy: afstand om overskrifter på alle sider,
 delemenuen og mailens personlige besked.
 
+## 2026-09-25: Profil — tandhjul til app-indstillinger + tilbagepil
+
+- På `/profile` (og kun dér) er profilcirklen øverst til højre skiftet ud
+  med et tandhjul, der åbner `/settings` (app-indstillingerne). Styres af
+  `showAppSettingsButton` på `HfScreen`/`ScreenHeader`.
+- `/profile` viser nu altid tilbagepilen, også når "Profil" ligger i
+  footeren (`alwaysShowBackButton`).
+- Næste: brugeren fortæller, hvilke profilpunkter der flyttes ind under
+  app-indstillingerne.
+
 ## 2026-09-25: Statistik — redigerbare grafer, søgning og "+ Tilføj" pr. blok
 
 Se `docs/DECISIONS.md` 2026-09-25 "Statistiksidens grafer kan redigeres som

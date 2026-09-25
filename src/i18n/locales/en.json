@@ -191,6 +191,7 @@
       }
     },
     "openProfile": "Open my details",
+    "openAppSettings": "Open app settings",
     "back": "Back",
     "loading": "Loading…",
     "loadError": "Could not load settings.",
