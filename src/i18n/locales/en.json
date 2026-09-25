@@ -560,7 +560,7 @@
     "loadError": "Recipes could not be loaded right now",
     "noResults": "No recipes match your search",
     "tabMine": "My dishes",
-    "tabShared": "Search shared dishes",
+    "tabShared": "Shared dishes",
     "sharedSearchPlaceholder": "Search title, ingredients …",
     "sortRelevance": "Relevance",
     "sortPopular": "Popularity",

@@ -44,7 +44,7 @@ function IntegrationerContent() {
   const [tokens, setTokens] = useState<DeviceToken[]>([]);
   const [newToken, setNewToken] = useState<{ raw: string; label: string } | null>(null);
   const [tokenBusy, setTokenBusy] = useState(false);
-  // HelloFresh-opskrifter i "Søg i delte retter" (docs/DECISIONS.md
+  // HelloFresh-opskrifter i "Delte retter" (docs/DECISIONS.md
   // 2026-09-24). Valget ligger i brugerens boks.
   const [helloFresh, setHelloFresh] = useState<boolean | null>(null);
   const autoSynced = useRef(false);

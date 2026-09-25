@@ -86,7 +86,7 @@ dialog.
 - **Koncept**: samme mønster som HelloFresh-integrationen i dag — en
   toggle-boks på `/settings/integrations` (`waldemarsroEnabled` på `User`,
   analogt med `helloFreshEnabled`), der slår Waldemarsro-opskrifter til/fra i
-  "Søg i delte retter". Ikke en OAuth-konto (der er intet at logge ind på)
+  "Delte retter". Ikke en OAuth-konto (der er intet at logge ind på)
   — men den skal *ligge* i `INTEGRATION_CATALOG`-listen som et kort, fordi en
   reel kontoforbindelse kan komme senere.
 - **Region-gating**: kortet vises kun når brugerens region
@@ -484,7 +484,7 @@ Se `docs/DECISIONS.md` (2026-09-24). Bygget efter brugerens afklaring
   "Ingen personlige detaljer deles, når du deler en ret". Efter gem går man
   til Opskrifter → Mine retter.
 - **Opskrifter** (`/profile/recipes`): faner "Mine retter" (egne retter +
-  favoritter fra boksen, mærket Delt/Privat/Favorit) og "Søg i delte retter"
+  favoritter fra boksen, mærket Delt/Privat/Favorit) og "Delte retter"
   (titel/ingredienser, sortering Relevans/Popularitet/Dato som små knapper;
   HelloFresh medtages kun, når det er slået til under Integrationer).
   Detaljeside `/profile/recipes/[id]?kind=own|shared`: deling til/fra for

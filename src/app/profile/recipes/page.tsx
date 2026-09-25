@@ -9,7 +9,7 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 
 // Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24): to faner,
 // "Mine retter" (egne retter og favoritter fra delte retter, fra boksen) og
-// "Søg i delte retter" (andres delte retter, plus HelloFresh-opskrifter når
+// "Delte retter" (andres delte retter, plus HelloFresh-opskrifter når
 // brugeren har slået dem til under Integrationer).
 
 type Tab = "mine" | "shared";
