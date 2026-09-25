@@ -770,6 +770,7 @@
     },
     "row": {
       "subscription": "Subscription",
+      "paymentMethods": "Payment methods",
       "weightCalibration": "Weight calibration",
       "bodyMeasurements": "Body measurements",
       "sleep": "Sleep pattern",
@@ -840,6 +841,8 @@
       "serious": "Serious"
     },
     "activeUntil": "Active until {date}",
+    "nextPayment": "Next payment on {date}",
+    "paymentMethods": "Payment methods",
     "freePlan": {
       "title": "Free",
       "description": "Access to everything in Hello Cal except Hello Doc. Only the last 30 days of history are shown — older data is kept and comes back if you go Serious."

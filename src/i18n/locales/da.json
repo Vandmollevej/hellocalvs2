@@ -770,6 +770,7 @@
     },
     "row": {
       "subscription": "Abonnement",
+      "paymentMethods": "Betalingsmetoder",
       "weightCalibration": "Vægt kalibrering",
       "bodyMeasurements": "Kropsmål",
       "sleep": "Søvnmønster",
@@ -840,6 +841,8 @@
       "serious": "Seriøs"
     },
     "activeUntil": "Aktiv til {date}",
+    "nextPayment": "Næste betaling d. {date}",
+    "paymentMethods": "Betalingsmetoder",
     "freePlan": {
       "title": "Gratis",
       "description": "Adgang til alt i Hello Cal undtagen Hello Doc. Kun de seneste 30 dages historik vises — ældre data gemmes og kommer tilbage, hvis du bliver Seriøs."

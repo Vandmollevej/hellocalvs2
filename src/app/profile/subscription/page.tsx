@@ -14,6 +14,7 @@ const PAYMENT_AVAILABLE = false;
 
 type SubscriptionData = {
   tier: "FREE" | "SERIOUS";
+  status: "INACTIVE" | "ACTIVE" | "TRIALING" | "FREE_MONTH" | "CANCELED";
   currentPeriodEnd: string | null;
   pointsBalance: number;
   freeMonthCost: number;
@@ -138,12 +139,25 @@ export default function SubscriptionPage() {
             </div>
             {data.tier === "SERIOUS" ? (
               <p className="hf-type-body-sm mt-1 opacity-90">
-                {formattedPeriodEnd ? t("subscription.activeUntil", { date: formattedPeriodEnd }) : null}
+                {/* Et løbende betalt abonnement fornyes på periodens slutdato; gavekode/
+                    gratis måned udløber blot. */}
+                {formattedPeriodEnd
+                  ? t(
+                      data.status === "ACTIVE" || data.status === "TRIALING"
+                        ? "subscription.nextPayment"
+                        : "subscription.activeUntil",
+                      { date: formattedPeriodEnd },
+                    )
+                  : null}
               </p>
             ) : (
               <p className="hf-type-body-sm mt-1 opacity-80">{t("subscription.freePlan.description")}</p>
             )}
           </div>
+
+          <Link href="/settings/payment" className="hf-btn-secondary hf-type-button h-12 w-full">
+            {t("subscription.paymentMethods")}
+          </Link>
 
           {data.tier === "FREE" && (
             <div className="rounded-lg border p-4" style={{ borderColor: "var(--hf-color-line)" }}>
@@ -171,9 +185,6 @@ export default function SubscriptionPage() {
 
           <p className="hf-type-caption mt-2 opacity-60">{t("subscription.retentionNote")}</p>
 
-          <Link href="/settings/payment" className="hf-type-body-sm underline opacity-70">
-            {t("payment.title")}
-          </Link>
         </div>
       )}
     </HfScreen>

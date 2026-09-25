@@ -15,6 +15,7 @@ import {
   IconBook2,
   IconRulerMeasure,
   IconCreditCard,
+  IconWallet,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -96,6 +97,11 @@ export default function ProfilePage() {
               icon={<IconCreditCard size={20} />}
               label={t("profile.row.subscription")}
               href="/profile/subscription"
+            />
+            <ChevronRow
+              icon={<IconWallet size={20} />}
+              label={t("profile.row.paymentMethods")}
+              href="/settings/payment"
             />
             <ChevronRow
               icon={<IconBathScale size={20} />}
