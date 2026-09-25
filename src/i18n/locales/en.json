@@ -730,16 +730,10 @@
     "startWeightUpdated": "Updated on {date}",
     "startWeight": {
       "title": "Starting weight",
+      "lockTitle": "Lock",
+      "lockBody": "Your starting weight should not be changed, and it is the basis for all statistics. Instead, change your daily weight here.",
+      "setDailyWeight": "Set daily weight",
       "openLockedInfo": "Open information about locked starting weight",
-      "currentLabel": "Your starting weight",
-      "description1": "Your starting weight is the weight you registered when you created your profile.",
-      "description2": "Your starting weight is locked because it is used as the baseline for your weight progress and statistics.",
-      "description3": "If you want to change your starting weight, the change must first be verified through the email address connected to your account.",
-      "sendEmail": "Send verification email",
-      "sending": "Sending…",
-      "emailSent": "We have sent a verification email to your email address.",
-      "sendError": "Could not send the verification email. Please try again.",
-      "registerDailyWeight": "Register today's weight here",
       "changeTitle": "Change starting weight",
       "fieldLabel": "Starting weight",
       "validating": "Checking verification link…",
@@ -822,7 +816,11 @@
       "genericError": "Could not redeem the gift code right now"
     },
     "redeemPoints": "Redeem points",
-    "redeemPointsHint": "{cost} points can be redeemed for 1 free month of Serious",
+    "pointsEarned": "You have earned {balance} points.",
+    "redeemPage": {
+      "title": "Redeem points",
+      "giftFriend": "Give a friend a free month of Serious access!"
+    },
     "currentPlan": "Your subscription",
     "tier": {
       "free": "Free",

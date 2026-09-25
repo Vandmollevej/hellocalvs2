@@ -730,16 +730,10 @@
     "startWeightUpdated": "Opdateret d. {date}",
     "startWeight": {
       "title": "Startvægt",
+      "lockTitle": "Lås",
+      "lockBody": "Din startvægt bør ikke ændres, og er grundlag for al statistik. Du skal i stedet ændre din dagsvægt her.",
+      "setDailyWeight": "Angiv dagsvægt",
       "openLockedInfo": "Åbn information om låst startvægt",
-      "currentLabel": "Din startvægt",
-      "description1": "Din startvægt er den vægt, du registrerede, da du oprettede din profil.",
-      "description2": "Startvægten er låst, fordi den bruges som udgangspunkt for din vægtudvikling og statistik.",
-      "description3": "Hvis du ønsker at ændre startvægten, skal ændringen først verificeres via den e-mailadresse, der er tilknyttet din konto.",
-      "sendEmail": "Send verificeringsmail",
-      "sending": "Sender…",
-      "emailSent": "Vi har sendt en verificeringsmail til din e-mailadresse.",
-      "sendError": "Kunne ikke sende verificeringsmailen. Prøv igen.",
-      "registerDailyWeight": "Registrer dagsvægten her",
       "changeTitle": "Ændr startvægt",
       "fieldLabel": "Startvægt",
       "validating": "Kontrollerer verificeringslink…",
@@ -822,7 +816,11 @@
       "genericError": "Kunne ikke indløse gavekoden lige nu"
     },
     "redeemPoints": "Indløs points",
-    "redeemPointsHint": "{cost} points kan indløses til 1 gratis måned med Seriøs",
+    "pointsEarned": "Du har optjent {balance} points.",
+    "redeemPage": {
+      "title": "Indløs points",
+      "giftFriend": "Giv en ven en gratis måned med Seriøs adgang!"
+    },
     "currentPlan": "Dit abonnement",
     "tier": {
       "free": "Gratis",
