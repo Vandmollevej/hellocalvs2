@@ -6,10 +6,11 @@ import {
   IconMicrophone,
   IconRulerMeasure,
   IconSearch,
-  IconTarget,
   type Icon,
 } from "@tabler/icons-react";
 import { IconBathroomScale } from "@/components/icons/BathroomScale";
+import { IconChampagne } from "@/components/icons/Champagne";
+import { IconCookingPot } from "@/components/icons/CookingPot";
 
 // Every real "add something" destination in the app — the pool the
 // front-page joystick wheel (AddButton.tsx) can show a subset of, and the
@@ -57,7 +58,7 @@ export const ADD_ACTIONS: AddAction[] = [
   {
     key: "ownDishes",
     href: "/create-dish",
-    imageSrc: "/icons/gryde.png",
+    icon: IconCookingPot,
     labelKey: "addButton.ownDishes",
     hintKey: "addButton.hint.ownDishes",
   },
@@ -92,7 +93,7 @@ export const ADD_ACTIONS: AddAction[] = [
   {
     key: "targetWeight",
     href: "/profile/goals",
-    icon: IconTarget,
+    icon: IconChampagne,
     labelKey: "profile.actions.target",
     hintKey: "profile.actions.target",
   },
