@@ -4,17 +4,12 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   IconMoon,
-  IconPlugConnected,
   IconSettings,
   IconUser,
   IconCamera,
   IconStar,
-  IconBug,
-  IconUserPlus,
-  IconBell,
   IconBook2,
   IconRulerMeasure,
-  IconCreditCard,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -93,11 +88,6 @@ export default function ProfilePage() {
               href="/profile/edit"
             />
             <ChevronRow
-              icon={<IconCreditCard size={20} />}
-              label={t("profile.row.subscription")}
-              href="/profile/subscription"
-            />
-            <ChevronRow
               icon={<IconBathScale size={20} />}
               label={t("profile.row.weightCalibration")}
               href="/profile/weight-calibration"
@@ -117,37 +107,21 @@ export default function ProfilePage() {
               label={t("profile.row.photoDiary")}
               href="/profile/photo-diary"
             />
-            <ChevronRow
-              icon={<IconPlugConnected size={20} />}
-              label={t("profile.row.integrations")}
-              href="/settings/integrations"
-            />
             <ChevronRow icon={<IconStar size={20} />} label={t("profile.row.points")} href="/profile/points" />
             <ChevronRow
               icon={<IconBook2 size={20} />}
               label={t("profile.row.recipes")}
               href="/profile/recipes"
-            />
-            <ChevronRow
-              icon={<IconUserPlus size={20} />}
-              label={t("profile.row.inviteFriend")}
-              href="/profile/invite"
-            />
-            <ChevronRow
-              icon={<IconBell size={20} />}
-              label={t("profile.section.communication")}
-              href="/profile/notifications"
-            />
-            <ChevronRow
-              icon={<IconBug size={20} />}
-              label={t("profile.row.reportBug")}
-              href="/profile/report-bug"
-            />
+              divider={false}
+            />          </AccordionCard>
 
+          {/* App-indstillinger (visning, opsætning, integrationer,
+              kommunikation, abonnement) samles bag tandhjulet. */}
+          <AccordionCard>
             <ChevronRow
               icon={<IconSettings size={20} />}
               label={t("profile.row.settings")}
-              href="/profile/settings"
+              href="/settings"
               divider={false}
             />
           </AccordionCard>

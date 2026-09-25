@@ -17,6 +17,9 @@ import {
   IconCalendarWeek,
   IconAlertTriangle,
   IconLifebuoy,
+  IconAdjustments,
+  IconReceipt,
+  IconBug,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -79,6 +82,16 @@ export default function SettingsPage() {
       <div className="flex flex-col gap-8 p-4">
         <AccordionCard>
           <ChevronRow
+            icon={<IconAdjustments size={20} />}
+            label={t("settings.setupTitle")}
+            href="/profile/settings"
+          />
+          <ChevronRow
+            icon={<IconReceipt size={20} />}
+            label={t("profile.row.subscription")}
+            href="/profile/subscription"
+          />
+          <ChevronRow
             icon={<IconCreditCard size={20} />}
             label={t("settings.payment")}
             href="/settings/payment"
@@ -95,6 +108,11 @@ export default function SettingsPage() {
 
         <AccordionCard>
           <ChevronRow icon={<IconHelp size={20} />} label={t("settings.helpCenter")} />
+          <ChevronRow
+            icon={<IconBug size={20} />}
+            label={t("profile.row.reportBug")}
+            href="/profile/report-bug"
+          />
           <ChevronRow
             icon={<IconRefresh size={20} />}
             label={t("settings.learnTheApp")}

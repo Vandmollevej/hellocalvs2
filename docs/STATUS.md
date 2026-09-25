@@ -2,6 +2,16 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Profil kun personligt, app-indstillinger bag tandhjulet
+
+Se `docs/DECISIONS.md` 2026-09-25 "Profil vs. Indstillinger".
+`src/app/profile/page.tsx` viser nu kun Profil, Vægt kalibrering, Kropsmål,
+Søvnmønster, Billede-dagbog, Points og Opskrifter + et tandhjul
+"Indstillinger", der åbner `/settings` (før ikke linket nogen steder fra).
+`/settings` har fået Opsætning (`/profile/settings`), Abonnement og
+Indberet fejl; Integrationer, Kommunikation og Invitér en ven lå der i
+forvejen. Lint + build grønne. Ikke visuelt testet.
+
 ## 2026-09-25: Statistik — redigerbare grafer, søgning og "+ Tilføj" pr. blok
 
 Se `docs/DECISIONS.md` 2026-09-25 "Statistiksidens grafer kan redigeres som
