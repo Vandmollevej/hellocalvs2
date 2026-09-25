@@ -73,8 +73,8 @@ Ejer: G4-sessionen, konto B (overtaget 2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| d2f522ca / 52205f52 | Globalt bølgeikon for usikre varer + mikrodata, margin i grå, on/off i indstillinger | Færdig på branch (06200f4) | Bygget på `claude/great-booth-2afa0b`, venter på merge til master. Specifikation: samtale ef2ba16f + DECISIONS 2026-09-25 |
-| ff7fc6a5 | Admin "Uncertainties" med 4 faner, rød prik, lightbox med beskåret OCR-billede | Færdig på branch (06200f4) | Samme branch. Natlig AI-robot er en senere fase |
+| d2f522ca / 52205f52 | Globalt bølgeikon for usikre varer + mikrodata, margin i grå, on/off i indstillinger | Færdig (pushet til master 2026-09-25) | Specifikation: samtale ef2ba16f + DECISIONS 2026-09-25. Live-tjek kræver login |
+| ff7fc6a5 | Admin "Uncertainties" (5 faner inkl. Billeder, 70/50 %-tærskler), natlig AI-genkørsel, admin "Cron-jobs" | Færdig (pushet til master 2026-09-25) | Live-tjek kræver admin-login |
 
 ## G5 — Agent-app + logo-robot
 Filer: ny agent-app, admin "scan-invites", logo-agent (Python/container).
