@@ -66,8 +66,6 @@ export default function ProfileEditPage() {
   const [user, setUser] = useState<ProfileUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [trendWeightKg, setTrendWeightKg] = useState<number | null>(null);
-  // Kun brugt når start-vægten endnu ikke er sat (første indtastning).
-  const [initialWeightInput, setInitialWeightInput] = useState("");
   const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -132,33 +130,6 @@ export default function ProfileEditPage() {
     }, 500);
   }
 
-  // Første indtastning af start-vægt; serveren afviser alle senere ændringer
-  // via /api/profile, så herefter er feltet låst.
-  function saveInitialWeight() {
-    const parsed = Number(initialWeightInput.trim().replace(",", "."));
-    if (!initialWeightInput.trim() || !Number.isFinite(parsed) || parsed <= 0) return;
-    fetch("/api/profile", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ weightKg: parsed }),
-    })
-      .then(async (response) => {
-        if (!response.ok) return;
-        const data = (await response.json()) as { user: ProfileUser };
-        setUser((current) =>
-          current
-            ? {
-                ...current,
-                weightKg: data.user.weightKg,
-                startWeightUpdatedAt: data.user.startWeightUpdatedAt,
-              }
-            : current
-        );
-        setInitialWeightInput("");
-      })
-      .catch(() => {});
-  }
-
   function updateNow<K extends keyof ProfileUser>(key: K, value: ProfileUser[K]) {
     setUser((current) => (current ? { ...current, [key]: value } : current));
     fetch("/api/profile", {
@@ -191,40 +162,24 @@ export default function ProfileEditPage() {
           </Field>
 
           <div className="grid grid-cols-2 gap-3">
-            {/* div, ikke label: en label ville sende tryk på feltet videre
-                til hængelås-knappen — kun selve låsen må være klikbar. */}
             <div className="flex flex-col gap-1.5">
-              <span className="flex items-center gap-1.5">
-                <span className="text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
-                  {t("profile.field.weight")}
-                </span>
-                {user.weightKg !== null && (
-                  <button
-                    type="button"
-                    onClick={() => router.push("/profile/start-weight")}
-                    aria-label={t("profile.startWeight.openLockedInfo")}
-                    className="flex h-5 w-5 items-center justify-center text-hf-gray"
-                  >
-                    <IconLock size={16} />
-                  </button>
-                )}
+              <span className="text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
+                {t("profile.field.weight")}
               </span>
-              {user.weightKg !== null ? (
-                // Låst (docs/DECISIONS.md 2026-09-22): ændres kun via
-                // hængelåsen → e-mailverificering. Dagsvægt er "Vægt".
-                <div className={`${inputClass} opacity-60`}>{formatKg(user.weightKg)} KG</div>
-              ) : (
-                <input
-                  type="text"
-                  inputMode="decimal"
-                  className={inputClass}
-                  value={initialWeightInput}
-                  placeholder="KG"
-                  aria-label={t("profile.field.weight")}
-                  onChange={(event) => setInitialWeightInput(event.target.value)}
-                  onBlur={saveInitialWeight}
-                />
-              )}
+              {/* Altid låst (docs/DECISIONS.md 2026-09-25): feltet kan ikke
+                  redigeres; et tryk åbner "Lås"-siden, der henviser til
+                  dagsvægt. Tom start-vægt sættes af første vejning. */}
+              <button
+                type="button"
+                onClick={() => router.push("/profile/start-weight")}
+                aria-label={t("profile.startWeight.openLockedInfo")}
+                className={`${inputClass} flex items-center gap-2 text-left opacity-60`}
+              >
+                <IconLock size={18} className="shrink-0" />
+                <span className="truncate">
+                  {user.weightKg !== null ? `${formatKg(user.weightKg)} KG` : "KG"}
+                </span>
+              </button>
               {trendWeightKg !== null && (
                 <span className="text-[11px] text-hf-black opacity-60">
                   {t("profile.trendWeight", { value: trendWeightKg.toFixed(1) })}

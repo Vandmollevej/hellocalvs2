@@ -165,21 +165,37 @@ select {
   -moz-appearance: none;
 }
 
-/* Knapper må aldrig blive markeret som tekst, fx når man forsøger at trække dem (drag-to-reorder). */
-button,
-[role="button"] {
+/* Global markeringsregel (docs/DECISIONS.md, 2026-09-25): intet i appen kan
+   markeres — tekst, kort, billeder eller knapper — og iOS' long-press-menu
+   (Copy/Look Up/Share) og billed-callout vises ikke. Felter er undtaget nedenfor. */
+html,
+body,
+body * {
   -webkit-user-select: none;
   user-select: none;
   -webkit-touch-callout: none;
 }
+::selection {
+  background: transparent;
+}
 
-/* Global clipboard-regel (docs/DECISIONS.md, 2026-09-22): skjul iOS' long-press-menu
-   (Paste/Copy) på felter. Ingen user-select: none her — markør og redigering skal virke. */
+/* Undtagelse: felter skal kunne markeres, ellers kan iOS Safari ikke fokusere
+   dem, og markør/redigering holder op med at virke. Copy/cut/paste er stadig
+   blokeret af GlobalClipboardGuard. */
 input,
 textarea,
-[contenteditable="true"] {
-  -webkit-touch-callout: none;
+[contenteditable="true"],
+[contenteditable="true"] * {
+  -webkit-user-select: text;
+  user-select: text;
 }
+input::selection,
+textarea::selection,
+[contenteditable="true"]::selection,
+[contenteditable="true"] *::selection {
+  background: highlight;
+}
+
 
 /* Overskrifter: tung, geometrisk grotesk (font-hf-heading). Brødtekst/UI: font-hf-body. */
 .hf-heading {
@@ -219,8 +235,12 @@ textarea,
   text-align: center;
 }
 
+/* Sektionsoverskrift "──── Tekst ────". Afstanden over/under er en del af
+   klassen (design.md §4.3), så den er ens på alle sider: 32 px over, 12 px
+   under; ingen luft over, når overskriften er første element i sin blok.
+   Sider må ikke sætte mt-/mb- på den. */
 .hf-type-section-title {
-  margin: 0;
+  margin: var(--hf-section-title-space-above, 32px) 0 var(--hf-section-title-space-below, 12px);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -230,6 +250,10 @@ textarea,
   line-height: 20px;
   color: var(--hf-color-text);
   text-align: center;
+}
+
+.hf-type-section-title:first-child {
+  margin-top: 0;
 }
 
 .hf-type-section-title::before,

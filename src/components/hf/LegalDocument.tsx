@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 
 export function LegalSection({ id, title, children }: { id?: string; title: string; children: ReactNode }) {
   return (
-    <section id={id} className="mt-6 scroll-mt-20">
+    <section id={id} className="mt-8 scroll-mt-20">
       <h2 className="hf-type-section-title">{title}</h2>
       <div className="hf-type-body-sm mt-2 flex flex-col gap-2 opacity-90">{children}</div>
     </section>
