@@ -2,6 +2,24 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-25: Sektionsoverskrifter, points-banner og "Invitér en ven"
+
+Brugerens krav efter skærmbillede af Invitér en ven:
+
+- `.hf-type-section-title` ejer sin afstand: 32 px over (0 som første
+  element), 12 px under. Årsag: klassens `margin: 0` lå uden for Tailwinds
+  lag og overtrumfede alle sidernes `mt-6`/`mb-2`, så der var ingen luft
+  nogen steder. Sidernes lokale margins er fjernet (design.md §4.3).
+- `PointsPromoBanner`: ingen stor "Læs betingelser"-knap. Overskriften starter
+  med "*", og under kortet står en grå "* Læs betingelser"-linje. Omstøder
+  2026-09-11-varianten med hvid fuldbreddeknap.
+- Invitér en ven: "Dit navn" (forudfyldt med profilnavn) og en 2-linjers
+  personlig besked (maks. 160 tegn) øverst. Standardteksten
+  (`src/lib/invite-message.ts`) vises som forhåndsvisning og deles via
+  telefonens delemenu (Web Share) med dele-ikon på knappen. Navn og besked
+  bruges også i invitationsmailen (`{{personalMessage}}`, HTML-escapet).
+  Kladden huskes kun lokalt i browseren.
+
 ## 2026-09-24: Normalt login — privacy-by-architecture ophævet
 
 Brugerens beslutning: "Man skal bare kunne logge ind som på alle andre
