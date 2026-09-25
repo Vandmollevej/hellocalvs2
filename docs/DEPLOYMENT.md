@@ -223,7 +223,8 @@ sendes videre af `compose.production.yaml`.
 - `USER_SESSION_SECRET` og `APP_BASE_URL` (`https://hellocal.packroff.dk`).
 - SMTP (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`):
   glemt adgangskode og advarsel ved login fra ny enhed/nyt land. Uden SMTP
-  bliver mails liggende i køen.
+  bliver mails liggende i køen. Udbyder: Mailjet (`in-v3.mailjet.com`, port
+  587, API-nøgle som bruger, secret key som adgangskode). Aktiv fra 2026-09-25.
 - Face ID/passkeys kræver HTTPS på det rigtige domæne (Cloudflare Tunnel).
   Ingen nøgler nødvendige.
 - Google: Google Cloud Console → APIs & Services → OAuth consent screen
