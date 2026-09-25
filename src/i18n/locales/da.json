@@ -459,7 +459,7 @@
     "liveViewAriaLabel": "Live kameravisning",
     "notRecognizedRetry": "Produkt ikke genkendt, prøv igen",
     "holdCameraStill": "Hold kameraet stille over stregkoden",
-    "barcodeHintOutsideFrame": "Sørg for at stregkoden er inden for feltet, til rammen lyser grønt.",
+    "barcodeHintOutsideFrame": "Hold hele stregkoden inde i billedet — den må gerne vende lodret.",
     "barcodeHintBlurry": "Stregkoden er sløret? Prøv at holde lidt længere afstand, til den er skarp.",
     "placeProductInCircle": "Placér produktet i cirklen",
     "placePlateInCircle": "Placér tallerkenen i cirklen",

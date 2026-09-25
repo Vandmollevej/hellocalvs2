@@ -173,6 +173,7 @@ Ejer: —
 | b649e8f4 | Anonymitet/kryptering | DECISIONS 117-121 |
 | e542c2f4 | Produkttitel sort + brand grøn | `src/app/add/[id]/page.tsx` |
 | 217a0faf | Stregkode auto-rotation, fjern manuelt felt | commit 1643610 |
+| — | Stregkode: lodret/skæv aflæsning, AR-afkodning, lysere guide (2026-09-25) | DECISIONS 2026-09-25 "Stregkode-scanning" |
 
 ## Ikke fordelt
 Ændret og ikke committet uden kendt ejer: `docs/AI.md`, `src/components/AddButton.tsx`,

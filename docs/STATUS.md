@@ -139,6 +139,19 @@ kort, tekst og tomme flader må ikke markere noget).
   fodspor) i tabler-stil med `currentColor`, så den står skarpt i alle
   størrelser. ViewBox og PNG er trimmet til kanten (ingen luft omkring).
 
+## 2026-09-25: Stregkode-scanner omlagt (lodret/skæv aflæsning, AR-afkodning)
+
+Se docs/DECISIONS.md 2026-09-25 "Stregkode-scanning" og design.md §6.11.
+Nye filer: `src/lib/barcode-frame-scanner.ts`, `src/lib/barcode-pattern.ts`,
+`src/lib/upce-reader.ts` (UPC-E virker nu — bibliotekets egen læser var i stykker);
+omskrevet: `src/components/hf/BarcodeScanOverlay.tsx`,
+`src/lib/barcode-scan.ts`, stregkode-delen af `src/app/camera/page.tsx`.
+Verificeret i Chromium med syntetisk kamera (vandret, lodret, skæv,
+bevægelse, ikke-fundet). Ikke testet på en rigtig iPhone endnu.
+
+Next work:
+1. Test på iPhone efter deploy: vandret + lodret stregkode, skæv, på afstand.
+
 ## 2026-09-25: Mail via Mailjet aktiveret
 
 - SMTP_HOST/PORT/USER/PASS/FROM (Mailjet, in-v3.mailjet.com:587) sat i lokal
