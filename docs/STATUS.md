@@ -2,6 +2,15 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Profil — Face ID som tekstlink, Skift adgangskode nederst
+
+- `/profile/edit`: "Slå Face ID til" er nu et almindeligt understreget tekstlink
+  (ikke sort knap) med luft over og under; "Skift adgangskode" ligger nederst.
+- Face ID tilbydes stadig primært efter login (`/login/face-id`); iOS foreslår
+  ikke selv passkeys til websider, så appen skal selv starte registreringen.
+- De fire genvejsknapper bruger allerede de nye ikoner (vægt-SVG fra
+  0dbb4fb/bc8960b); de ses i drift efter næste deploy.
+
 ## 2026-09-25: Photo diary — passcode toggle now actually locks the photos
 
 User intent: the photos must not flash on screen by accident when the page is

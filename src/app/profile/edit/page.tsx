@@ -177,7 +177,7 @@ export default function ProfileEditPage() {
           {loading ? t("profile.loading") : t("profile.loadError")}
         </p>
       ) : (
-        <div className="flex flex-col gap-4 p-4">
+        <div className="flex min-h-full flex-col gap-4 p-4">
           <Field label={t("profile.field.name")}>
             <input
               className={inputClass}
@@ -317,14 +317,14 @@ export default function ProfileEditPage() {
             </button>
           </div>
 
+          <FaceIdButton />
           <button
             type="button"
             onClick={() => router.push("/profile/change-password")}
-            className="hf-btn-primary hf-type-button mt-4 h-12 w-full px-4"
+            className="hf-btn-primary hf-type-button mt-auto h-12 w-full px-4"
           >
             {t("profile.changePasswordButton")}
           </button>
-          <FaceIdButton />
         </div>
       )}
     </HfScreen>
