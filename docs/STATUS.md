@@ -2,6 +2,16 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Profil — tandhjul til app-indstillinger + tilbagepil
+
+- På `/profile` (og kun dér) er profilcirklen øverst til højre skiftet ud
+  med et tandhjul, der åbner `/settings` (app-indstillingerne). Styres af
+  `showAppSettingsButton` på `HfScreen`/`ScreenHeader`.
+- `/profile` viser nu altid tilbagepilen, også når "Profil" ligger i
+  footeren (`alwaysShowBackButton`).
+- Næste: brugeren fortæller, hvilke profilpunkter der flyttes ind under
+  app-indstillingerne.
+
 ## 2026-09-25: Mail via Mailjet aktiveret
 
 - SMTP_HOST/PORT/USER/PASS/FROM (Mailjet, in-v3.mailjet.com:587) sat i lokal

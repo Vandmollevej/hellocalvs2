@@ -191,6 +191,7 @@
       }
     },
     "openProfile": "Åbn mine oplysninger",
+    "openAppSettings": "Åbn app-indstillinger",
     "back": "Tilbage",
     "loading": "Henter…",
     "loadError": "Kunne ikke hente indstillinger.",
