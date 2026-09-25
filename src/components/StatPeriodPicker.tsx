@@ -68,7 +68,7 @@ export function StatPeriodPicker({
             className="fixed inset-0 z-40 cursor-default"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute right-0 top-11 z-50 w-64 rounded-2xl border border-hf-tan-dark bg-hf-white p-3 text-hf-black shadow-xl">
+          <div className="absolute right-0 top-11 z-50 w-64 rounded-2xl border border-hf-tan-dark bg-hf-white p-4 text-hf-black shadow-xl">
             <div className="flex flex-col gap-1">
               {STAT_PERIODS.map((period) => {
                 const active = selection.kind === "preset" && selection.key === period.key;
@@ -91,7 +91,7 @@ export function StatPeriodPicker({
             </div>
 
             <div className="mt-2 border-t border-hf-tan-dark pt-2">
-              <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide opacity-60">{t("statPeriodPicker.selectPeriod")}</p>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide opacity-60">{t("statPeriodPicker.selectPeriod")}</p>
               <div className="flex items-center gap-2">
                 <input
                   type="date"

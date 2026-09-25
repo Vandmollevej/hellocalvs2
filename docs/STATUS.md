@@ -8,6 +8,18 @@ Last updated: 2026-09-25
 "+ Adskillelseslinje" hedder nu "+ Skillelinje" og vises som en massiv sort
 streg med teksten i midten. De grå hjælpetekster er fjernet.
 
+## 2026-09-25: Global afstandsregel + Abonnement-side
+
+Se `docs/DECISIONS.md` 2026-09-25 "Global lodret rytme". Nye primitiver
+`.hf-page`, `.hf-card`, `.hf-stack`, `.hf-type-card-title` i
+`src/app/globals.css`; 49 sider bruger `.hf-page`, og hele `src/` er
+normaliseret til 4/8/16/32 px og 8 px kort-radius (se DECISIONS). Abonnement: pris uden "Seriøs —",
+sort (også deaktiveret) knap, grå "Indløs points" med hvid tekst, "Gratis" står
+ikke længere indrykket. Visuelt kontrolleret lokalt ved 402 × 874 med
+mockede API-svar (Abonnement, Indstillinger, Statistik, Tilføj, Ny
+målsætning); graf-kortene på Statistik flugter nu med kortene under dem.
+Tjek på iPhone med rigtige data efter deploy.
+
 ## 2026-09-25: Vægtkalibrering omdesignet
 
 Se `docs/DECISIONS.md` 2026-09-25 "Vægtkalibrering — eksplicit

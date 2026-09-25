@@ -52,7 +52,7 @@ export function Toggle({
           </span>
         )}
       </span>
-      <span className="pt-0.5">{switchEl}</span>
+      <span className="pt-1">{switchEl}</span>
     </div>
   );
 }

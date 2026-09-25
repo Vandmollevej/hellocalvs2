@@ -120,7 +120,7 @@ export function OnboardingWizard({
       aria-modal="true"
       aria-labelledby="onboarding-title"
     >
-      <div className="px-5 pb-3 pt-9">
+      <div className="px-4 pb-4 pt-9">
         <p className="text-center text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
           {t("onboarding.stepProgress", { current: stepIndex + 1, total: totalSteps })}
         </p>
@@ -132,7 +132,7 @@ export function OnboardingWizard({
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col justify-center gap-6 px-6">
+      <div className="flex flex-1 flex-col justify-center gap-8 px-4">
         {currentStep === "sleep-pattern" && (
           <YesNoStep
             id="onboarding-title"
@@ -162,7 +162,7 @@ export function OnboardingWizard({
             <h2 id="onboarding-title" className="hf-heading text-xl text-hf-black">
               {t("onboarding.dailyLogQuestion")}
             </h2>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-4">
               <ChoiceButton
                 label={t("onboarding.workHours")}
                 selected={dailyLogPreference === "WORK_HOURS"}
@@ -204,7 +204,7 @@ export function OnboardingWizard({
         )}
       </div>
 
-      <div className="flex flex-col gap-2 px-6 pb-8">
+      <div className="flex flex-col gap-2 px-4 pb-8">
         <button onClick={goNext} className="hf-btn-primary w-full py-3.5 text-[15px]">
           {t("onboarding.next")}
         </button>

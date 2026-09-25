@@ -356,7 +356,7 @@ function WheelItem({
           className={`overflow-hidden text-sm font-medium text-hf-gray-dark ${transition}`}
           style={{ maxHeight: focus * 22, opacity: focus }}
         >
-          <span className="mt-0.5 block">
+          <span className="mt-1 block">
             / {stat.goal} {stat.unit}
           </span>
         </span>

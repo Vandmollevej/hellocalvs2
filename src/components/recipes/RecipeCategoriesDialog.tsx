@@ -55,7 +55,7 @@ export function RecipeCategoriesDialog({
           </p>
           <p className="mt-1 text-[13px] text-hf-black opacity-60">{t("recipeCategories.intro")}</p>
         </div>
-        <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 pb-2">
+        <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 pb-2">
           {groups.map(([group, values]) => {
             const count = values.filter((v) => tags.includes(`${group}:${v}`)).length;
             return (

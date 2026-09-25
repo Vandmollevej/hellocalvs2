@@ -176,7 +176,7 @@ export default function InvitePage() {
         />
 
         <h2 className="hf-type-section-title">Din invitation</h2>
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4">
           <TextField
             variant="standard"
             label="Dit navn"

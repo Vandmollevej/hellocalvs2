@@ -322,6 +322,35 @@ Bindende paddingregler:
 7. Når et ikon ser optisk forskudt ud, justeres ikonets viewbox/komponent — ikke
    hele rækkens padding på én enkelt side.
 
+### 5.4 Global lodret rytme — implementeret (2026-09-25)
+
+Bindende for alle sider. Kun tre afstande styrer den lodrette rytme:
+
+| Afstand | Token | Brug |
+| --- | --- | --- |
+| 8 px | `--hf-space-inline` | Inde i en blok: label→felt, titel→tekst, knap→hjælpetekst |
+| 16 px | `--hf-space-block` | Mellem blokke, kortpadding, sidegutter |
+| 32 px | `--hf-space-section` | Før en ny sektion (sektionsoverskrift) og mellem kortgrupper |
+
+Primitiver i `src/app/globals.css` (`@layer components`, så utilities stadig
+kan overstyre dem):
+
+- `.hf-page` — sideindhold under appbaren: 16 px gutter, 16 px mellem blokke,
+  32 px bundluft. `--sections` giver 32 px mellem grupper, `--list` 8 px
+  mellem ensartede listeelementer.
+- `.hf-type-section-title` som direkte barn af `.hf-page` får automatisk 32 px
+  luft over sig. Sider må ikke selv sætte `mt-*` på sektionsoverskrifter.
+- `.hf-card` — `#EEE9DF`, radius 8, 16 px padding, 8 px mellem indhold.
+  `--form` giver 16 px mellem felter, `--outline` en 1 px linje uden flade,
+  `--brand` grøn flade med hvid tekst.
+- `.hf-stack` — 8 px-stak inde i en blok.
+- `.hf-type-card-title` — 17/24 fed korttitel uden sektionslinjer.
+
+Børn i disse primitiver må ikke have egne `mt-*`/`mb-*`; afstanden kommer
+kun fra `gap`. Primære knapper forbliver sorte, også når de er deaktiveret.
+`rounded-xl`/`rounded-2xl` er i temaet låst til 8 px, så alle kort har samme
+hjørner. Alle lodrette margener/paddings i `src/` ligger på 4/8/16/32 px.
+
 ### 5.3 Radiusfamilie
 
 | Token | Mål | Brug |

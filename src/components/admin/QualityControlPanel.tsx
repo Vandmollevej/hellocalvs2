@@ -93,7 +93,7 @@ function IssueRow({ matchCheck }: { matchCheck: MatchCheck }) {
   }
 
   return (
-    <div className="flex flex-col gap-3 rounded-lg border border-border-strong p-3">
+    <div className="flex flex-col gap-4 rounded-lg border border-border-strong p-4">
       {matchCheck.imageUrl && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -186,7 +186,7 @@ export function QualityControlPanel({ matchChecks }: { matchChecks: MatchCheck[]
   if (matchChecks.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-3 rounded-lg border border-hf-red-dark/40 bg-surface-2 p-3">
+    <div className="flex flex-col gap-4 rounded-lg border border-hf-red-dark/40 bg-surface-2 p-4">
       <h2 className="text-sm font-semibold text-text-primary">Problemer fundet</h2>
       {matchChecks.map((matchCheck) => (
         <IssueRow key={matchCheck.id} matchCheck={matchCheck} />

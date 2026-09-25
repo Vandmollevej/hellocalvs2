@@ -272,7 +272,7 @@ export default function WeightCalibrationPage() {
 
   return (
     <HfScreen title={t("weightCalibration.title")}>
-      <div className="flex flex-col gap-6 p-4">
+      <div className="hf-page hf-page--sections">
         <div className="rounded-2xl bg-hf-tan px-4 py-4">
           <p className="text-[15px] leading-6 text-hf-black">{t("weightCalibration.intro")}</p>
         </div>
@@ -304,7 +304,7 @@ export default function WeightCalibrationPage() {
           </label>
         </section>
 
-        <section className="flex flex-col gap-2 rounded-2xl bg-hf-tan p-3">
+        <section className="flex flex-col gap-2 rounded-2xl bg-hf-tan p-4">
           <IconChoice
             value={shoes}
             onChange={setShoes}

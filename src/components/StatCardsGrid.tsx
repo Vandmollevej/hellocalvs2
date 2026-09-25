@@ -526,10 +526,10 @@ export function StatCardsGrid({
   const itemBase = "relative select-none touch-pan-y [-webkit-touch-callout:none]";
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       <div
         ref={gridRef}
-        className="relative grid grid-cols-2 gap-3"
+        className="relative grid grid-cols-2 gap-4"
         onContextMenu={(event) => {
           if (editMode || pendingRef.current) event.preventDefault();
         }}

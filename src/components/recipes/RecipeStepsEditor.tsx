@@ -109,7 +109,7 @@ export function RecipeStepsEditor({
         renderStatic(step, i)
       ))}
 
-      <div className="my-3 flex gap-3 rounded-2xl bg-hf-tan p-4">
+      <div className="my-4 flex gap-3 rounded-2xl bg-hf-tan p-4">
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <p className="text-[12px] font-bold text-hf-black opacity-60">
             {t("recipeSteps.stepNumber", { number: active + 1 })}
@@ -131,7 +131,7 @@ export function RecipeStepsEditor({
             className="resize-none rounded-[8px] bg-hf-white px-3 py-2.5 text-[15px] text-hf-black outline-none"
           />
         </div>
-        <div className="flex shrink-0 flex-col items-center gap-2 pt-6">
+        <div className="flex shrink-0 flex-col items-center gap-2 pt-8">
           <button
             type="button"
             onClick={() => fileRef.current?.click()}

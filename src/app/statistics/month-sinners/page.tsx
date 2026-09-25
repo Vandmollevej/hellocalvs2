@@ -73,7 +73,7 @@ function MonthSinnersContent() {
   }
 
   return (
-    <div className="flex flex-col gap-4 p-4">
+    <div className="hf-page">
       <div className="flex items-center justify-center gap-3">
         <MonthNavButton direction="previous" onClick={() => moveMonth(-1)} />
         <div className="flex min-h-11 max-w-full items-center justify-center px-3 text-hf-black">
@@ -84,9 +84,9 @@ function MonthSinnersContent() {
       <SourceMetricTabs value={metric} onChange={setMetric} />
 
       {loading ? (
-        <p className="py-6 text-center text-sm text-hf-black opacity-60">Henter…</p>
+        <p className="py-8 text-center text-sm text-hf-black opacity-60">Henter…</p>
       ) : groups.length === 0 ? (
-        <p className="py-6 text-center text-sm text-hf-black opacity-60">Ingen registreringer i denne måned</p>
+        <p className="py-8 text-center text-sm text-hf-black opacity-60">Ingen registreringer i denne måned</p>
       ) : (
         groups.map((group) => (
           <section key={group.productType} className="flex flex-col gap-2">

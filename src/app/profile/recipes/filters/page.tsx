@@ -81,8 +81,8 @@ function RecipeFiltersContent() {
 
   return (
     <HfScreen title={t("recipeFilters.title")}>
-      <div className="flex flex-col gap-4 p-4">
-          <section className="rounded-2xl bg-hf-tan px-4 pt-3">
+      <div className="hf-page">
+          <section className="rounded-2xl bg-hf-tan px-4 pt-4">
             <p className="text-[15px] font-semibold text-hf-black">
               {filters.persons === 1
                 ? t("recipeFilters.personsOne")
@@ -98,7 +98,7 @@ function RecipeFiltersContent() {
               />
             </div>
             {portionKcal !== null && (
-              <p className="border-b border-hf-tan-dark pb-3 text-[12px] text-hf-black opacity-60">
+              <p className="border-b border-hf-tan-dark pb-4 text-[12px] text-hf-black opacity-60">
                 {t("recipeFilters.portionHint", { kcal: portionKcal })}
               </p>
             )}
@@ -115,7 +115,7 @@ function RecipeFiltersContent() {
             />
           </section>
 
-          <section className="rounded-2xl bg-hf-tan px-4 pt-3">
+          <section className="rounded-2xl bg-hf-tan px-4 pt-4">
             <p className="text-sm font-semibold text-hf-black">{t("recipeFilters.sortTitle")}</p>
             {RECIPE_SORTS.map((sort, index) => (
               <Row
