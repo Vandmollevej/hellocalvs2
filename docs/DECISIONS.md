@@ -2,6 +2,36 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-24: Otte sundhedsintegrationer inden for boks-arkitekturen (G8)
+
+Brugerens valg (6068f78a/69a1b2bd, 8d98b548/2c95590f): "Byg alle 8" på den
+låste måde. ChatGPT-opgavens plan (tokens og data åbent i databasen,
+enhedskoder fjernet) blev IKKE fulgt, da den strider mod docs/PRIVACY.md.
+
+- Siden viser: Apple Health, Garmin, Health Connect, Google Health, Polar
+  Flow, Samsung Health, Strava, Withings med brugerens egne logoer
+  (`public/integrations/*.png`, beskåret automatisk).
+- **Cloud (OAuth, virker nu):** Withings (vægt + fedtprocent), Google Health
+  API (vægt, træning, skridt pr. dag), Strava og Polar (træningspas). Én
+  fælles registrering (`src/lib/integrations/registry.ts`) og dynamiske
+  ruter `/api/integrations/[provider]/{connect,callback,sync,disconnect}`.
+  Hentede data forsegles straks til brugerens anonyme indbakke som før.
+  Første synkronisering henter historik (Withings 365 dage, Google/Strava 90,
+  Polar 30). Siden synkroniserer automatisk ved åbning (højst hvert 15. min).
+- **Google Health ≠ Health Connect.** `GOOGLE_HEALTH` betyder nu Google
+  Health API i skyen. Health Connect har fået sin egen værdi
+  (`HEALTH_CONNECT`); ingest-ruten modtager det gamle `GOOGLE_HEALTH` som
+  `HEALTH_CONNECT`. Dette erstatter beslutningen 2026-08-28 om, at Google
+  Health kun kan nås via telefon-app.
+- **Telefon-kort:** Apple Health og Health Connect kræver Hello Cal-appen;
+  enhedskoden er flyttet ind på netop de to kort (ikke én fælles boks).
+  Samsung Health deler via Health Connect. Garmin afventer partneraftale.
+- Fitbit vises kun, hvis brugeren allerede har den forbundet (afløses af
+  Google Health).
+- Redirect-URI: standard `<base>/api/integrations/<slug>/callback`;
+  `<PRÆFIKS>_REDIRECT_URI` kan overstyre, og `/api/withings/callback` og
+  `/api/google-health/callback` virker også.
+
 ## 2026-09-24: Usikkerheds-bølgeikon (afklaret, ikke bygget)
 
 Brugerens krav og valg, punkt for punkt (ikke bygget denne omgang, se

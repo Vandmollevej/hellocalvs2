@@ -556,7 +556,13 @@ enum IntegrationProvider {
   WITHINGS
   GARMIN
   APPLE_HEALTH
+  // 2026-09-24: Google Health API (cloud, OAuth). Tidligere brugt om Health
+  // Connect, som nu har sin egen værdi.
   GOOGLE_HEALTH
+  HEALTH_CONNECT
+  POLAR
+  SAMSUNG_HEALTH
+  STRAVA
 }
 
 enum IntegrationStatus {

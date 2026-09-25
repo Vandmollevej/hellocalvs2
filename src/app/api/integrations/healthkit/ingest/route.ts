@@ -4,7 +4,7 @@ import { hashDeviceToken } from "@/lib/device-tokens";
 import { deliverToInbox, type InboxEnvelope } from "@/lib/vault/inbox-delivery";
 
 type IngestBody = {
-  source?: "APPLE_HEALTH" | "GOOGLE_HEALTH";
+  source?: "APPLE_HEALTH" | "HEALTH_CONNECT" | "GOOGLE_HEALTH";
   metrics?: { type?: string; value?: number; recordedAt?: string }[];
   weights?: { weightKg?: number; weighedAt?: string }[];
   activities?: {
@@ -40,9 +40,11 @@ export async function POST(req: Request) {
   if (!token.inboxId) return NextResponse.json({ message: "Enhedstokenet mangler en indbakke" }, { status: 409 });
 
   const body = (await req.json().catch(() => ({}))) as IngestBody;
-  const source = body.source;
-  if (source !== "APPLE_HEALTH" && source !== "GOOGLE_HEALTH") {
-    return NextResponse.json({ message: "source skal være APPLE_HEALTH eller GOOGLE_HEALTH" }, { status: 400 });
+  // GOOGLE_HEALTH var det tidligere navn for Health Connect; det betyder nu
+  // Google Health API (cloud) og modtages derfor som HEALTH_CONNECT.
+  const source = body.source === "GOOGLE_HEALTH" ? "HEALTH_CONNECT" : body.source;
+  if (source !== "APPLE_HEALTH" && source !== "HEALTH_CONNECT") {
+    return NextResponse.json({ message: "source skal være APPLE_HEALTH eller HEALTH_CONNECT" }, { status: 400 });
   }
 
   const items: InboxEnvelope[] = [];

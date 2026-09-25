@@ -2,6 +2,17 @@
 
 Last updated: 2026-09-24
 
+## 2026-09-24: G8 — otte sundhedsintegrationer bygget (commit 22184fe)
+
+Se docs/DECISIONS.md 2026-09-24 "Otte sundhedsintegrationer". Mangler kun
+nøgler på serveren (`.env.production` på Synology), derefter deploy:
+`WITHINGS_CLIENT_ID/SECRET`, `GOOGLE_HEALTH_CLIENT_ID/SECRET`,
+`STRAVA_CLIENT_ID/SECRET`, `POLAR_CLIENT_ID/SECRET` og evt.
+`WITHINGS_REDIRECT_URI`/`GOOGLE_HEALTH_REDIRECT_URI`. Migration
+`20260924170000_integration_providers` tilføjer enum-værdier. Ikke testet
+mod de rigtige API'er endnu (ingen nøgler lokalt). Waldemarsro: venter på
+brugerens "byg".
+
 ## TODO (2026-09-24): G3 — produktkategorier, nye statistikbokse, "Største kilder" og "Månedens synder" — afklaret, ikke bygget
 
 Brugeren har bedt om IKKE at bygge før de siger "gå i gang". Kilder:

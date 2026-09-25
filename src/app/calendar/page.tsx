@@ -281,11 +281,6 @@ export default function CalendarPage() {
   const [weighIns, setWeighIns] = useState<WeighIn[]>([]);
   const [weekdaySchedules, setWeekdaySchedules] = useState<Record<number, SleepScheduleEntry>>({});
   const [workShifts, setWorkShifts] = useState<Record<string, WorkShiftEntry>>({});
-  const [pendingSleepChange, setPendingSleepChange] = useState<{
-    date: Date;
-    type: SleepAdjustType;
-    minutes: number;
-  } | null>(null);
   const pointerStart = useRef<number | null>(null);
   const isLandscape = useIsLandscape();
   const wasLandscapeRef = useRef(false);
@@ -485,8 +480,21 @@ export default function CalendarPage() {
     return getSleepWindow(date, sleepDefaults, weekdaySchedules, workShifts);
   }
 
+  // A drag on the sleep handle applies straight to that date — no "this date
+  // or standard pattern?" dialog (user request, 116d3656). The standard
+  // pattern is edited under Profil → Søvn.
   function requestSleepAdjust(date: Date, type: SleepAdjustType, minutes: number) {
-    setPendingSleepChange({ date, type, minutes });
+    const iso = isoDate(date);
+    const body = type === "bedtime" ? { bedtime: minutesToTime(minutes) } : { wakeTime: minutesToTime(minutes) };
+    setWorkShifts((current) => ({
+      ...current,
+      [iso]: { ...(current[iso] ?? { date: iso, bedtime: null, wakeTime: null }), ...body },
+    }));
+    localApi(`/api/work-shifts/${iso}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }).catch(() => {});
   }
 
   function handleEntryMoved(registrationId: string, newCreatedAt: Date) {
@@ -501,41 +509,6 @@ export default function CalendarPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ createdAt: iso }),
     }).catch(() => {});
-  }
-
-  function applySleepChange(scope: "date" | "pattern") {
-    if (!pendingSleepChange) return;
-    const { date, type, minutes } = pendingSleepChange;
-    const time = minutesToTime(minutes);
-
-    if (scope === "date") {
-      const iso = isoDate(date);
-      const body = type === "bedtime" ? { bedtime: time } : { wakeTime: time };
-      setWorkShifts((current) => ({
-        ...current,
-        [iso]: { ...(current[iso] ?? { date: iso, bedtime: null, wakeTime: null }), ...body },
-      }));
-      localApi(`/api/work-shifts/${iso}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      }).catch(() => {});
-    } else {
-      const weekday = (date.getDay() + 6) % 7;
-      const existing = weekdaySchedules[weekday];
-      const bedtime = type === "bedtime" ? time : existing?.bedtime || sleepDefaults?.defaultBedtime || null;
-      const wakeTime = type === "wake" ? time : existing?.wakeTime || sleepDefaults?.defaultWakeTime || null;
-      setWeekdaySchedules((current) => ({
-        ...current,
-        [weekday]: { weekday, bedtime: bedtime ?? "", wakeTime: wakeTime ?? "" },
-      }));
-      localApi("/api/sleep-schedule", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ weekday, bedtime, wakeTime }),
-      }).catch(() => {});
-    }
-    setPendingSleepChange(null);
   }
 
   function movePeriod(direction: -1 | 1) {
@@ -772,41 +745,6 @@ export default function CalendarPage() {
         />
       )}
 
-      {pendingSleepChange && (
-        <div className="fixed inset-x-0 bottom-0 z-[60] flex justify-center p-4">
-          <div className="w-full max-w-sm rounded-2xl border border-hf-tan-dark bg-hf-white p-4 text-hf-black shadow-xl">
-            <p className="mb-3 text-sm">
-              {pendingSleepChange.type === "bedtime" ? t("calendar.sleepBedtimeLabel") : t("calendar.sleepWakeTimeLabel")}{" "}
-              {t("calendar.sleepSetToConnector")}{" "}
-              <span className="font-bold">{minutesToTime(pendingSleepChange.minutes)}</span>
-              {t("calendar.sleepSetToSuffix")}
-            </p>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => applySleepChange("date")}
-                className="min-h-11 flex-1 rounded-xl bg-hf-tan px-3 text-sm font-semibold text-hf-black"
-              >
-                {t("calendar.sleepScopeDateOnly")}
-              </button>
-              <button
-                type="button"
-                onClick={() => applySleepChange("pattern")}
-                className="min-h-11 flex-1 rounded-xl bg-hf-green px-3 text-sm font-semibold text-hf-white"
-              >
-                {t("calendar.sleepScopeStandardPattern")}
-              </button>
-            </div>
-            <button
-              type="button"
-              onClick={() => setPendingSleepChange(null)}
-              className="mt-2 min-h-9 w-full text-center text-xs font-semibold opacity-60"
-            >
-              {t("calendar.cancelSleepChange")}
-            </button>
-          </div>
-        </div>
-      )}
     </HfScreen>
   );
 }
@@ -1002,7 +940,7 @@ function WeekView({
             key={date.toISOString()}
             type="button"
             onClick={() => onOpenDate(date)}
-            className="flex min-h-[66px] w-full items-center gap-3 rounded-2xl border border-hf-tan-dark bg-hf-tan px-4 text-left text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
+            className="flex min-h-[66px] w-full items-center justify-between gap-3 rounded-2xl border border-hf-tan-dark bg-hf-tan px-4 text-left text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
           >
             <span className="w-10 text-xs font-bold uppercase opacity-70">{date.toLocaleDateString("da-DK", { weekday: "short" })}</span>
             <span
@@ -1017,14 +955,17 @@ function WeekView({
             ) : (
               <>
                 {met && <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />}
-                <span className="flex-1 text-sm font-semibold">{met ? t("calendar.goalMet") : t("calendar.goalMissed")}</span>
-                <span className={`shrink-0 text-sm font-bold tabular-nums ${met ? "text-hf-green" : "text-hf-red-dark"}`}>
-                  {met ? "+" : "-"}
-                  {diff} kcal
+                <span className="text-sm font-normal">{met ? t("calendar.goalMet") : t("calendar.goalMissed")}</span>
+                <span className="flex shrink-0 items-center gap-1">
+                  <span className={`text-sm font-bold tabular-nums ${met ? "text-hf-green" : "text-hf-red-dark"}`}>
+                    {met ? "+" : "÷"}
+                    {diff} kcal
+                  </span>
+                  <IconChevronRight size={19} className="shrink-0" />
                 </span>
               </>
             )}
-            <IconChevronRight size={19} className="shrink-0" />
+            {future && <IconChevronRight size={19} className="shrink-0" />}
           </button>
         );
       })}
@@ -1159,7 +1100,7 @@ function ListView({
             key={date.toISOString()}
             type="button"
             onClick={() => onOpenDate(date)}
-            className="flex min-h-[66px] w-full shrink-0 items-center gap-3 rounded-2xl border border-hf-tan-dark bg-hf-tan px-4 text-left text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
+            className="flex min-h-[66px] w-full shrink-0 items-center justify-between gap-3 rounded-2xl border border-hf-tan-dark bg-hf-tan px-4 text-left text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
           >
             <span className="w-10 text-xs font-bold uppercase opacity-70">{date.toLocaleDateString("da-DK", { weekday: "short" })}</span>
             <span
@@ -1174,14 +1115,17 @@ function ListView({
             ) : (
               <>
                 {met && <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />}
-                <span className="flex-1 text-sm font-semibold">{met ? t("calendar.goalMet") : t("calendar.goalMissed")}</span>
-                <span className={`shrink-0 text-sm font-bold tabular-nums ${met ? "text-hf-green" : "text-hf-red-dark"}`}>
-                  {met ? "+" : "-"}
-                  {diff} kcal
+                <span className="text-sm font-normal">{met ? t("calendar.goalMet") : t("calendar.goalMissed")}</span>
+                <span className="flex shrink-0 items-center gap-1">
+                  <span className={`text-sm font-bold tabular-nums ${met ? "text-hf-green" : "text-hf-red-dark"}`}>
+                    {met ? "+" : "÷"}
+                    {diff} kcal
+                  </span>
+                  <IconChevronRight size={19} className="shrink-0" />
                 </span>
               </>
             )}
-            <IconChevronRight size={19} className="shrink-0" />
+            {future && <IconChevronRight size={19} className="shrink-0" />}
           </button>
         );
       })}
@@ -1358,6 +1302,19 @@ function WeekTimelineView({
 
 function SleepBands({ window, hourHeight = HOUR_HEIGHT }: { window: SleepWindow | null; hourHeight?: number }) {
   if (!window) return null;
+  const bandClass = "pointer-events-none absolute inset-x-0 border-hf-gray-border/60 bg-hf-gray/15";
+  // Daytime sleep (e.g. after a night shift): bedtime comes before wake time
+  // on the clock, so it is ONE band between them — drawing the two
+  // midnight-crossing bands here made them overlap into two shades of gray.
+  if (window.bedtime < window.wakeTime) {
+    return (
+      <div
+        className={`${bandClass} border-y`}
+        style={{ top: (window.bedtime / 60) * hourHeight, height: ((window.wakeTime - window.bedtime) / 60) * hourHeight }}
+        aria-hidden="true"
+      />
+    );
+  }
   const topHeight = (window.wakeTime / 60) * hourHeight;
   const bottomHeight = ((24 * 60 - window.bedtime) / 60) * hourHeight;
   return (
@@ -1380,11 +1337,14 @@ function SleepBoundaryHandle({
   minutes,
   type,
   onCommit,
+  onDrag,
   hourHeight = HOUR_HEIGHT,
 }: {
   minutes: number;
   type: SleepAdjustType;
   onCommit: (type: SleepAdjustType, minutes: number) => void;
+  /** Live position while dragging (null when released), so the gray band can follow. */
+  onDrag?: (type: SleepAdjustType, minutes: number | null) => void;
   hourHeight?: number;
 }) {
   const { t } = useTranslation();
@@ -1407,17 +1367,21 @@ function SleepBoundaryHandle({
     event.stopPropagation();
     const deltaY = event.clientY - startYRef.current;
     const deltaMinutes = (deltaY / hourHeight) * 60;
-    const next = startMinutesRef.current + deltaMinutes;
+    const next = Math.min(24 * 60 - 1, Math.max(0, startMinutesRef.current + deltaMinutes));
     dragMinutesRef.current = next;
     setDragMinutes(next);
+    onDrag?.(type, next);
   }
 
   function finishDrag() {
-    if (dragMinutesRef.current !== null) {
-      onCommit(type, dragMinutesRef.current);
+    const final = dragMinutesRef.current;
+    // A tap without real movement changes nothing (it used to save and pop a dialog).
+    if (final !== null && Math.round(final / 15) !== Math.round(startMinutesRef.current / 15)) {
+      onCommit(type, final);
     }
     dragMinutesRef.current = null;
     setDragMinutes(null);
+    onDrag?.(type, null);
   }
 
   const displayMinutes = dragMinutes ?? minutes;
@@ -1486,6 +1450,15 @@ function DayDetails({
   const zoomStart = useRef<{ avgY: number; hourHeight: number } | null>(null);
   const mouseDrag = useRef<{ y: number; scrollTop: number } | null>(null);
   const timelineScrollRef = useRef<HTMLDivElement | null>(null);
+  const [sleepDrag, setSleepDrag] = useState<{ type: SleepAdjustType; minutes: number } | null>(null);
+  const liveSleepWindow: SleepWindow = sleepDrag
+    ? sleepDrag.type === "wake"
+      ? { ...sleepWindow, wakeTime: sleepDrag.minutes }
+      : { ...sleepWindow, bedtime: sleepDrag.minutes }
+    : sleepWindow;
+  function handleSleepDrag(type: SleepAdjustType, minutes: number | null) {
+    setSleepDrag(minutes === null ? null : { type, minutes });
+  }
 
   function handleTimelinePointerDown(event: React.PointerEvent<HTMLDivElement>) {
     activeZoomPointers.current.set(event.pointerId, event.clientY);
@@ -1727,18 +1700,20 @@ function DayDetails({
                       ),
                     ),
                   )}
-                <SleepBands window={sleepWindow} hourHeight={hourHeight} />
+                <SleepBands window={liveSleepWindow} hourHeight={hourHeight} />
                 <SleepBoundaryHandle
                   minutes={sleepWindow.wakeTime}
                   type="wake"
                   hourHeight={hourHeight}
                   onCommit={onSleepAdjust}
+                  onDrag={handleSleepDrag}
                 />
                 <SleepBoundaryHandle
                   minutes={sleepWindow.bedtime}
                   type="bedtime"
                   hourHeight={hourHeight}
                   onCommit={onSleepAdjust}
+                  onDrag={handleSleepDrag}
                 />
                 {addBarHour !== null && (
                   <button

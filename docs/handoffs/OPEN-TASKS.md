@@ -29,18 +29,18 @@ Status opdateret: 2026-09-24 (overtaget fra konto A kl. 17:29)
 
 ## G1 — Kalender
 Filer: `src/app/calendar/**`, kalender-komponenter.
-Ukendte ændringer: `src/app/calendar/page.tsx` er ændret og ikke committet.
+Ukendte ændringer: `src/app/calendar/page.tsx` indeholder G3's ikke-committede "Månedens synder"-knap (G3 ejer den del).
 Ejer: G1-overtagelse, konto C (2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 5ac89589 | Flyt "Du er inden for din målsætning" op mellem måned og kalendergitter | Ikke startet | Tjek om allerede lavet, ellers byg |
-| 85b824f8 | Statusfelt nederst: bottom-align, "Tilbage for i dag" ikke fed | Ikke startet | Tjek om allerede lavet, ellers byg |
-| 70e219fb | Dagvisning: fjern dropdown, ugedag-stil, "Kl." over tider, luft | Ikke startet | Tjek om allerede lavet, ellers byg |
-| 9848667e | Ugetal på egen linje under datoen | Ikke startet | Tjek om allerede lavet, ellers byg |
-| 63e9ff5d | Ugesummering (kaloriebalance + estimeret vægt) — kun roadmap-beslutning | Ikke startet | Skriv i docs som roadmap, byg ikke |
-| b4d954bd | Listevisning: fjern +/−, "Mål (ikke) nået" regulær + flyttet, lige afstand | Lavet, ikke verificeret | **Er sandsynligvis kilden til diff'en i calendar/page.tsx.** Verificér visuelt og commit |
-| 116d3656 | Dagvisning: søvn-slider med to grå nuancer kan ikke trækkes + fjern dialogen "Kun denne dato / Standardmønster" | Ikke startet | Læs transcript, find årsag, byg |
+| 5ac89589 | Flyt "Du er inden for din målsætning" op mellem måned og kalendergitter | Færdig (06599b0) | — |
+| 85b824f8 | Statusfelt nederst: bottom-align, "Tilbage for i dag" ikke fed | Færdig (3ab3d8d) | — |
+| 70e219fb | Dagvisning: fjern dropdown, ugedag-stil, "Kl." over tider, luft | Færdig (d0fd708) | — |
+| 9848667e | Ugetal på egen linje under datoen | Færdig (2573548, justeret 7ef4534/9e7e9bb) | — |
+| 63e9ff5d | Ugesummering (kaloriebalance + estimeret vægt) — kun roadmap-beslutning | Færdig (37ee7f4; senere slået til i 7747ea1, DECISIONS 2026-09-23) | — |
+| b4d954bd | Listevisning: fjern +/−, "Mål (ikke) nået" regulær + flyttet, lige afstand | Færdig (se G1-commit) | Minus vises nu som ÷ (brugerens valg: fortegn som symbol, som i månedsgitteret). Afventer brugerens visuelle godkendelse |
+| 116d3656 | Dagvisning: søvn-slider med to grå nuancer kan ikke trækkes + fjern dialogen "Kun denne dato / Standardmønster" | Færdig (se G1-commit) | Ét gråt felt ved dagsøvn, feltet følger håndtaget, tryk uden træk gemmer intet, dialog fjernet (gælder kun datoen). Ikke live-testet: lokal DB mangler |
 
 ## G2 — Statistik-siden (redigering, drag/drop)
 Filer: statistik-siden, `src/components/StatsWheel.tsx`, `src/lib/frontpage-layout.ts`, `src/lib/frontpage-stats.ts`.
@@ -118,8 +118,8 @@ Ejer: G8-sessionen, konto C (overtaget 2026-09-24)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | 69a1b2bd / 2c95590f | Dubletter af 6068f78a og 8d98b548 — læs dem for ekstra svar fra brugeren ("Så byg det, der mangler. Det skal jo bare virke!") | Dublet | Luk sammen med hovedopgaverne |
-| 6068f78a | 8 sundhedsintegrationer + nye ikoner | Venter på bruger | Strider mod vault-arkitekturen. Brugeren svarede "Forstår ikke" — forklar enkelt og spørg |
-| 8d98b548 | Withings + Google Health koblet på, egen data-sync | I gang | Transcript læst. Bygger Google Health inden for vault-arkitekturen, tjekker Withings-flowet. HelloFresh-trin-rettelsen i samme transcript hører til G6, ikke G8 |
+| 6068f78a | 8 sundhedsintegrationer + nye ikoner | Færdig (22184fe) | Brugeren valgte "Byg alle 8" inden for boks-arkitekturen. Mangler kun nøgler på serveren + deploy |
+| 8d98b548 | Withings + Google Health koblet på, egen data-sync | Venter på bruger | Kode færdig (22184fe). Brugeren skal lægge nøglerne i .env.production på Synology, så deployes der. HelloFresh-trin-rettelsen i samme transcript hører til G6 |
 | d0442775 | Waldemarsro (DK-only) + scraper | Venter på bruger | Krav afklaret og committet (ea7843a) — byg når brugeren siger til |
 
 ## G9 — Ikoner (forside + vand)
@@ -135,12 +135,12 @@ Ejer: G9-overtagelse, konto B
 ## G10 — Bundnavigation + global overskrift-stil
 Filer: `src/components/BottomNav.tsx`, `src/app/globals.css`.
 Ukendte ændringer: begge filer er ændret og ikke committet — sandsynligvis fra 5f2ee781.
-Ejer: —
+Ejer: G10-overtagelse, konto D (2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 5f2ee781 | Fjern stregen mellem footer og indhold + sektionsoverskrifter mindre, ikke fed, centreret med streg på hver side | Lavet, ikke verificeret | Verificér visuelt og commit |
-| 6a503586 | Footer-redigering: slette-krydserne er skåret af + ikoner skal kunne trækkes til siden for at bytte rækkefølge | Ikke startet | Tjek om allerede lavet, ellers byg (HelloFresh/knap-delen hører til G6) |
+| 5f2ee781 | Fjern stregen mellem footer og indhold + sektionsoverskrifter mindre, ikke fed, centreret med streg på hver side | I gang | Verificerer visuelt, commit derefter |
+| 6a503586 | Footer-redigering: slette-krydserne er skåret af + ikoner skal kunne trækkes til siden for at bytte rækkefølge | I gang | Transcript læst: ikke løst. Krydser klippes af `overflow-x-hidden`; ombytning hopper frem og tilbage. Bygger fix (HelloFresh/knap-delen hører til G6) |
 
 ## G11 — Næringsdata på produktsiden (E-numre, toksiner, fedt-advarsel)
 Filer: produktsidens næringsvisning, statistik-boks-katalog (koordinér med G2), Opsætning/Visning (koordinér med G7).
