@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { IconChevronDown } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { HfProgressStepper } from "@/components/hf/HfProgressStepper";
 import { ALLERGEN_CATALOG } from "@/lib/allergens";
 import { REGIONS } from "@/lib/regions";
 import { Toggle } from "@/components/ui/Toggle";
@@ -81,19 +82,18 @@ function SetupProgressBar({ weightSet }: { weightSet: boolean }) {
     t("settings.setupProgressStepWeight"),
   ];
   const doneCount = weightSet ? steps.length : steps.length - 1;
+  // Fælles HelloFresh-trinindikator (prik pr. trin, linjer med mellemrum,
+  // label under hver prik) — samme komponent som på Profil.
   return (
     <div className="px-1 pb-1">
-      <p className="text-center text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
-        {t("settings.setupProgress", { done: doneCount, total: steps.length })}
-      </p>
-      <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-hf-tan">
-        <div
-          className="h-full rounded-full bg-hf-green transition-all"
-          style={{ width: `${(doneCount / steps.length) * 100}%` }}
-        />
-      </div>
+      <HfProgressStepper
+        steps={steps}
+        current={Math.min(doneCount, steps.length - 1)}
+        progress={weightSet ? 1 : 0}
+        label={t("settings.setupProgress", { done: doneCount, total: steps.length })}
+      />
       {!weightSet && (
-        <p className="mt-1 text-[12px] text-hf-black opacity-60">{t("settings.setupProgressHint")}</p>
+        <p className="mt-2 text-[12px] text-hf-black opacity-60">{t("settings.setupProgressHint")}</p>
       )}
     </div>
   );

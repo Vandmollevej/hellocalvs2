@@ -73,9 +73,11 @@ function KameraContent() {
   const params = useSearchParams();
   const router = useRouter();
   const modeParam = params.get("mode");
-  const mode: CameraMode =
-    modeParam === "meal" ? "meal" : modeParam === "hellofresh" ? "hellofresh" : "product";
   const forDish = params.get("for") === "ret";
+  // HelloFresh-genkendelse ("Produkt"-fanen) kun under Opret ret
+  // (docs/DECISIONS.md 2026-09-24) — ellers altid stregkode.
+  const mode: CameraMode =
+    modeParam === "meal" ? "meal" : modeParam === "hellofresh" && forDish ? "hellofresh" : "product";
   const returnSuffix = forDish ? "?for=ret" : "";
   const videoRef = useRef<HTMLVideoElement>(null);
   const scannerControlsRef = useRef<IScannerControls | null>(null);
@@ -414,7 +416,7 @@ function KameraContent() {
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-3 p-4">
-      {mode !== "meal" && (
+      {mode !== "meal" && forDish && (
         <div className="flex justify-center gap-2">
           {MODE_TABS.map((tab) => (
             <button
