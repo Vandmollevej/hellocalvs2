@@ -421,6 +421,7 @@
     "dailyGoalExceeded": "Du har overskredet dagens mål",
     "dailyGoalNone": "Endnu intet registreret",
     "registrations": "Registreringer",
+    "noEntries": "Ingen indtastninger",
     "noRegistrations": "Ingen registreringer",
     "loadingDayRegistrations": "Henter dagens registreringer…",
     "registrationsLoadError": "Registreringerne kunne ikke hentes",

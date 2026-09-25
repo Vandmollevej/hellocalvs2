@@ -421,6 +421,7 @@
     "dailyGoalExceeded": "You've exceeded today's goal",
     "dailyGoalNone": "Nothing logged yet",
     "registrations": "Log entries",
+    "noEntries": "No entries",
     "noRegistrations": "No log entries",
     "loadingDayRegistrations": "Loading the day's log entries…",
     "registrationsLoadError": "Could not load the log entries",

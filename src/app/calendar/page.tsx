@@ -879,6 +879,7 @@ function MonthView({
                 {week.map((date, index) => {
                   if (!date) return <div key={`empty-${weekIndex}-${index}`} className="aspect-square" aria-hidden="true" />;
                   const met = dailyGoalMet(dailyTotals, date);
+                  const logged = totalKcalForDate(dailyTotals, date) > 0;
                   const current = isSameDay(date, today);
                   const isOtherMonth = date.getMonth() !== month;
                   return (
@@ -887,7 +888,7 @@ function MonthView({
                       type="button"
                       onClick={() => onOpenDate(date)}
                       aria-label={`${date.toLocaleDateString("da-DK", { dateStyle: "long" })}${current ? t("calendar.todaySuffix") : ""}${
-                        met ? t("calendar.goalMetSuffix") : t("calendar.goalMissedSuffix")
+                        !logged ? "" : met ? t("calendar.goalMetSuffix") : t("calendar.goalMissedSuffix")
                       }`}
                       className={`relative flex aspect-square items-center justify-center rounded-lg border text-sm font-medium focus-visible:outline-2 focus-visible:outline-hf-black ${
                         current
@@ -899,6 +900,7 @@ function MonthView({
                     >
                       {date.getDate()}
                       {!current &&
+                        logged &&
                         (met ? (
                           <IconCheck
                             size={12}
@@ -943,6 +945,10 @@ function WeekView({
       {days.map((date) => {
         const kcal = totalKcalForDate(dailyTotals, date);
         const met = dailyGoalMet(dailyTotals, date);
+        // An unlogged day is not a missed goal: it shows "Ingen indtastninger"
+        // and the full remaining budget, both in gray.
+        const logged = kcal > 0;
+        const over = kcal > DAILY_KCAL_GOAL;
         const diff = Math.round(Math.abs(DAILY_KCAL_GOAL - kcal));
         const current = isSameDay(date, today);
         // Days that haven't happened yet have no status to show.
@@ -952,7 +958,7 @@ function WeekView({
             key={date.toISOString()}
             type="button"
             onClick={() => onOpenDate(date)}
-            className="flex min-h-[66px] w-full items-center justify-between gap-3 rounded-2xl border border-hf-tan-dark bg-hf-tan px-4 text-left text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
+            className="flex min-h-[66px] w-full items-center gap-3 rounded-2xl border border-hf-tan-dark bg-hf-tan px-4 text-left text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
           >
             <span className="w-10 text-xs font-bold uppercase opacity-70">{date.toLocaleDateString("da-DK", { weekday: "short" })}</span>
             <span
@@ -967,10 +973,16 @@ function WeekView({
             ) : (
               <>
                 {met && <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />}
-                <span className="text-sm font-normal">{met ? t("calendar.goalMet") : t("calendar.goalMissed")}</span>
-                <span className="flex shrink-0 items-center gap-1">
-                  <span className={`text-sm font-bold tabular-nums ${met ? "text-hf-green" : "text-hf-red-dark"}`}>
-                    {met ? "+" : "÷"}
+                <span className={`text-sm font-normal ${logged ? "" : "text-hf-gray"}`}>
+                  {!logged ? t("calendar.noEntries") : met ? t("calendar.goalMet") : t("calendar.goalMissed")}
+                </span>
+                <span className="ml-auto flex shrink-0 items-center gap-1">
+                  <span
+                    className={`text-sm font-bold tabular-nums ${
+                      !logged ? "text-hf-gray" : over ? "text-hf-red-dark" : "text-hf-green"
+                    }`}
+                  >
+                    {over ? "÷" : "+"}
                     {diff} kcal
                   </span>
                   <IconChevronRight size={19} className="shrink-0" />
@@ -1103,6 +1115,10 @@ function ListView({
       {days.map((date) => {
         const kcal = totalKcalForDate(dailyTotals, date);
         const met = dailyGoalMet(dailyTotals, date);
+        // An unlogged day is not a missed goal: it shows "Ingen indtastninger"
+        // and the full remaining budget, both in gray.
+        const logged = kcal > 0;
+        const over = kcal > DAILY_KCAL_GOAL;
         const diff = Math.round(Math.abs(DAILY_KCAL_GOAL - kcal));
         const current = isSameDay(date, today);
         // Days that haven't happened yet have no status to show.
@@ -1112,7 +1128,7 @@ function ListView({
             key={date.toISOString()}
             type="button"
             onClick={() => onOpenDate(date)}
-            className="flex min-h-[66px] w-full shrink-0 items-center justify-between gap-3 rounded-2xl border border-hf-tan-dark bg-hf-tan px-4 text-left text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
+            className="flex min-h-[66px] w-full shrink-0 items-center gap-3 rounded-2xl border border-hf-tan-dark bg-hf-tan px-4 text-left text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
           >
             <span className="w-10 text-xs font-bold uppercase opacity-70">{date.toLocaleDateString("da-DK", { weekday: "short" })}</span>
             <span
@@ -1127,10 +1143,16 @@ function ListView({
             ) : (
               <>
                 {met && <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />}
-                <span className="text-sm font-normal">{met ? t("calendar.goalMet") : t("calendar.goalMissed")}</span>
-                <span className="flex shrink-0 items-center gap-1">
-                  <span className={`text-sm font-bold tabular-nums ${met ? "text-hf-green" : "text-hf-red-dark"}`}>
-                    {met ? "+" : "÷"}
+                <span className={`text-sm font-normal ${logged ? "" : "text-hf-gray"}`}>
+                  {!logged ? t("calendar.noEntries") : met ? t("calendar.goalMet") : t("calendar.goalMissed")}
+                </span>
+                <span className="ml-auto flex shrink-0 items-center gap-1">
+                  <span
+                    className={`text-sm font-bold tabular-nums ${
+                      !logged ? "text-hf-gray" : over ? "text-hf-red-dark" : "text-hf-green"
+                    }`}
+                  >
+                    {over ? "÷" : "+"}
                     {diff} kcal
                   </span>
                   <IconChevronRight size={19} className="shrink-0" />
