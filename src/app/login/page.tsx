@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Suspense, useState, useSyncExternalStore } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { SocialLoginButton } from "@/components/hf/SocialLoginButton";
@@ -10,8 +10,6 @@ import { TextField } from "@/components/hf/TextField";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { hasPasskeyOnDevice, loginWithPasskey } from "@/lib/passkey-client";
 import { afterLoginPath, oauthErrorKey, startOAuth } from "@/lib/login-flow";
-
-const noSubscribe = () => () => {};
 
 function LogIndContent() {
   const { t } = useTranslation();
@@ -26,7 +24,11 @@ function LogIndContent() {
   );
   const [submitting, setSubmitting] = useState(false);
   // Face ID kun, når det er slået til på denne enhed efter et almindeligt login.
-  const faceIdOnDevice = useSyncExternalStore(noSubscribe, hasPasskeyOnDevice, () => false);
+  const [faceIdOnDevice, setFaceIdOnDevice] = useState(false);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage findes kun i browseren
+    setFaceIdOnDevice(hasPasskeyOnDevice());
+  }, []);
 
   async function handleFaceId() {
     setError(null);
