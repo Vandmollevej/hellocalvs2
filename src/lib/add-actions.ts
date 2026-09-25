@@ -2,14 +2,14 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import {
   IconCalendarHeart,
   IconCamera,
-  IconDroplet,
   IconMicrophone,
-  IconRulerMeasure,
   IconSearch,
   IconTarget,
   type Icon,
 } from "@tabler/icons-react";
 import { IconBathroomScale } from "@/components/icons/BathroomScale";
+import { IconWaterGlass } from "@/components/icons/WaterGlass";
+import { IconWaistMeasureFemale, IconWaistMeasureMale } from "@/components/icons/WaistMeasure";
 
 // Every real "add something" destination in the app — the pool the
 // front-page joystick wheel (AddButton.tsx) can show a subset of, and the
@@ -31,10 +31,12 @@ export type AddAction = {
   href: string;
   icon?: Icon;
   imageSrc?: string;
-  /** i18n key for the row/aria-label shown on /add/menu and the settings toggle list. */
+  /**
+   * i18n key for the label shown everywhere the action appears: /add/menu,
+   * the green label next to a highlighted wheel icon and the settings toggle
+   * list. One text per action, so the places can't drift apart.
+   */
   labelKey: string;
-  /** i18n key for the short green hint label shown next to a highlighted wheel icon. */
-  hintKey: string;
   /**
    * When true, this action only appears once the user has both sex = FEMALE
    * and User.cycleTrackingEnabled on (Indstillinger → Visning →
@@ -52,69 +54,67 @@ export const ADD_ACTIONS: AddAction[] = [
     href: "/voice",
     icon: IconMicrophone,
     labelKey: "addButton.microphone",
-    hintKey: "addButton.hint.microphone",
   },
   {
     key: "ownDishes",
     href: "/create-dish",
     imageSrc: "/icons/gryde.png",
     labelKey: "addButton.ownDishes",
-    hintKey: "addButton.hint.ownDishes",
   },
   {
     key: "search",
     href: "/search",
     icon: IconSearch,
     labelKey: "addButton.search",
-    hintKey: "addButton.hint.search",
   },
   {
     key: "weight",
     href: "/weight/create",
     icon: IconBathroomScale,
     labelKey: "addButton.weight",
-    hintKey: "addButton.hint.weight",
   },
   {
     key: "water",
     href: "/water/create",
-    icon: IconDroplet,
+    icon: IconWaterGlass,
     labelKey: "addButton.water",
-    hintKey: "addButton.hint.water",
   },
   {
     key: "camera",
     href: "/camera?mode=product",
     icon: IconCamera,
     labelKey: "addButton.camera",
-    hintKey: "addButton.hint.camera",
   },
   {
     key: "targetWeight",
     href: "/profile/goals",
     icon: IconTarget,
     labelKey: "profile.actions.target",
-    hintKey: "profile.actions.target",
   },
   {
     key: "bodyMeasurements",
     href: "/profile/body-measurements",
-    icon: IconRulerMeasure,
+    icon: IconWaistMeasureMale,
     labelKey: "profile.row.bodyMeasurements",
-    hintKey: "profile.row.bodyMeasurements",
   },
   {
     key: "menstrualCycle",
     href: "/period/create",
     icon: IconCalendarHeart,
     labelKey: "addButton.menstrualCycle",
-    hintKey: "addButton.hint.menstrualCycle",
     requiresCycleTracking: true,
   },
 ];
 
-export function addActionByKey(key: AddActionKey) {
-  return ADD_ACTIONS.find((action) => action.key === key);
+export function addActionByKey(key: AddActionKey, sex?: "FEMALE" | "MALE" | null) {
+  const action = ADD_ACTIONS.find((candidate) => candidate.key === key);
+  return action && withProfileIcon(action, sex);
+}
+
+/** "Kropsmål" shows the female waist figure for women, the male one otherwise. */
+function withProfileIcon(action: AddAction, sex?: "FEMALE" | "MALE" | null): AddAction {
+  if (action.key !== "bodyMeasurements" || sex !== "FEMALE") return action;
+  return { ...action, icon: IconWaistMeasureFemale };
 }
 
 /**
@@ -127,7 +127,7 @@ export function visibleAddActions(profile: { sex?: "FEMALE" | "MALE" | null; cyc
   return ADD_ACTIONS.filter((action) => {
     if (!action.requiresCycleTracking) return true;
     return profile.sex === "FEMALE" && profile.cycleTrackingEnabled === true;
-  });
+  }).map((action) => withProfileIcon(action, profile.sex));
 }
 
 /**

@@ -191,6 +191,7 @@
       }
     },
     "openProfile": "Open my details",
+    "openAppSettings": "Open app settings",
     "back": "Back",
     "loading": "Loading…",
     "loadError": "Could not load settings.",
@@ -213,8 +214,7 @@
     "setupProgressStepWeight": "Weight calibration",
     "setupProgressHint": "Complete weight calibration to finish setup.",
     "payment": "Payment",
-    "recipesPromo": "Choose your own recipes and customize your meal box.",
-    "logInOrSignUp": "Log in / sign up",
+    "logOut": "Log out",
     "helpCenter": "Help center",
     "learnTheApp": "Learn the app",
     "integrations": "Integrations",
@@ -415,12 +415,16 @@
     "goalExceededList": "You exceeded your goal",
     "adjustBedtimeAriaLabel": "Adjust bedtime",
     "adjustWakeTimeAriaLabel": "Adjust wake time",
+    "nightSleepDuration": "Last night's sleep: {hours} hours",
     "previousDayAriaLabel": "Previous day",
     "nextDayAriaLabel": "Next day",
     "dailyGoalReached": "You're within today's goal",
     "dailyGoalExceeded": "You've exceeded today's goal",
     "dailyGoalNone": "Nothing logged yet",
     "registrations": "Log entries",
+    "intakeTooLow": "Intake too low",
+    "lowIntakeNotice": "Be aware that your intake is lower than what is healthy. You should eat at least {minimum} kcal a day for a person of your build.",
+    "noEntries": "No entries",
     "noRegistrations": "No log entries",
     "loadingDayRegistrations": "Loading the day's log entries…",
     "registrationsLoadError": "Could not load the log entries",
@@ -456,7 +460,7 @@
     "liveViewAriaLabel": "Live camera view",
     "notRecognizedRetry": "Product not recognized, try again",
     "holdCameraStill": "Hold the camera steady over the barcode",
-    "barcodeHintOutsideFrame": "Make sure the barcode is inside the box, until the frame turns green.",
+    "barcodeHintOutsideFrame": "Keep the whole barcode in the picture — upright or sideways both work.",
     "barcodeHintBlurry": "Barcode blurry? Try holding a bit further back until it's in focus.",
     "placeProductInCircle": "Place the product in the circle",
     "placePlateInCircle": "Place the plate in the circle",
@@ -727,16 +731,10 @@
     "startWeightUpdated": "Updated on {date}",
     "startWeight": {
       "title": "Starting weight",
+      "lockTitle": "Lock",
+      "lockBody": "Your starting weight should not be changed, and it is the basis for all statistics. Instead, change your daily weight here.",
+      "setDailyWeight": "Set daily weight",
       "openLockedInfo": "Open information about locked starting weight",
-      "currentLabel": "Your starting weight",
-      "description1": "Your starting weight is the weight you registered when you created your profile.",
-      "description2": "Your starting weight is locked because it is used as the baseline for your weight progress and statistics.",
-      "description3": "If you want to change your starting weight, the change must first be verified through the email address connected to your account.",
-      "sendEmail": "Send verification email",
-      "sending": "Sending…",
-      "emailSent": "We have sent a verification email to your email address.",
-      "sendError": "Could not send the verification email. Please try again.",
-      "registerDailyWeight": "Register today's weight here",
       "changeTitle": "Change starting weight",
       "fieldLabel": "Starting weight",
       "validating": "Checking verification link…",
@@ -787,7 +785,6 @@
       "loginRequired": "Log in to change your password.",
       "logIn": "Log in"
     },
-    "logOut": "Log out",
     "messages": {
       "title": "Messages",
       "empty": "You have no messages yet.",
@@ -820,7 +817,11 @@
       "genericError": "Could not redeem the gift code right now"
     },
     "redeemPoints": "Redeem points",
-    "redeemPointsHint": "{cost} points can be redeemed for 1 free month of Serious",
+    "pointsEarned": "You have earned {balance} points.",
+    "redeemPage": {
+      "title": "Redeem points",
+      "giftFriend": "Give a friend a free month of Serious access!"
+    },
     "currentPlan": "Your subscription",
     "tier": {
       "free": "Free",
@@ -993,29 +994,16 @@
     "loading": "Loading…",
     "loadError": "Couldn't load photo diary.",
     "requiresPasscode": "Requires phone passcode to view",
-    "requiresPasscodeDescription": "Not yet enforced by the OS — that requires a native app. Just a saved preference for now.",
-    "showPhotos": "Show photos (no real passcode check yet)",
+    "requiresPasscodeDescription": "Photos are only shown after you confirm with Face ID, Touch ID or your phone's passcode.",
+    "showPhotos": "Show photos",
     "takePhoto": "Take photo (full body or stomach)",
-    "takeSelfie": "Take selfie (portrait)",
     "noPhotosYet": "No photos yet — take the first one to compare later.",
     "photoAlt": "Photo diary entry",
     "deleteAria": "Delete photo",
     "previousPhoto": "Previous photo",
     "nextPhoto": "Next photo",
-    "selfiesSectionTitle": "Selfies",
-    "noSelfiesYet": "No selfies yet — take the first one to compare later.",
-    "photosSectionTitle": "Other photos",
-    "currentWeight": "Current weight: {value} kg",
-    "latestWeight": "Latest weight: {value} kg ({date})",
-    "noWeight": "No weight logged yet",
-    "currentMeasurements": "Current measurements: {value}",
-    "latestMeasurements": "Latest measurements: {value} ({date})",
-    "noMeasurements": "No measurements logged yet",
-    "measurementWaist": "Waist {value} cm",
-    "measurementHip": "Hip {value} cm",
-    "measurementChest": "Chest {value} cm",
-    "measurementThigh": "Thigh {value} cm",
-    "measurementUpperArm": "Upper arm {value} cm"
+    "unlocking": "Confirming…",
+    "unlockError": "Couldn't confirm. Try again."
   },
   "registration": {
     "title": "Registration",
@@ -1105,32 +1093,23 @@
     "helloFreshDescription": "Show HelloFresh recipes together with shared dishes under Recipes",
     "title": "Integrations",
     "loading": "Loading…",
-    "status": {
-      "disconnected": "Not connected",
-      "connected": "Connected",
-      "error": "Error",
-      "needsApp": "Needs app",
-      "pending": "Pending"
-    },
     "notice": {
       "connected": "{name} was connected.",
       "failed": "Could not connect {name}. Please try again."
     },
-    "intro": "Connect your health apps so weight, steps and workouts are fetched automatically. Everything goes into your locked vault, which only you can open.",
+    "intro": "Connect your health apps so weight, steps and workouts are fetched automatically.",
     "lastSynced": "Last synced {date}",
-    "syncNow": "Sync now",
-    "syncing": "Syncing…",
     "notConfigured": "Ready in the app, waiting for the server keys.",
-    "disconnect": "Disconnect",
     "connect": "Connect",
-    "deviceTokensTitle": "Device tokens (companion app)",
-    "deviceTokensDescription": "The Hello Cal app uses a device code to send your data securely into your locked vault.",
-    "createdAt": "Created {date}",
-    "lastUsedAt": " · Last used {date}",
     "remove": "Remove",
-    "saveTokenNotice": "Save this value now — it won't be shown again:",
-    "close": "Close",
-    "generateDeviceCode": "Generate device code"
+    "enable": "Turn on",
+    "unavailable": "Not available yet",
+    "sections": {
+      "active": "Active integrations",
+      "popular": "Most used",
+      "recipes": "Recipes",
+      "apps": "Apps"
+    }
   },
   "payment": {
     "title": "Payment",
@@ -1166,9 +1145,28 @@
       "sleep": "Sleep",
       "other": "Other data"
     },
+    "searchPlaceholder": "Search all cards",
+    "searchResults": "Search results",
+    "noSearchResults": "No cards match your search.",
+    "addAll": "+ Add",
     "noCardsYet": "No cards here yet.",
     "addHeading": "+ Heading",
     "addDivider": "+ Divider"
+  },
+  "statUnusedCharts": {
+    "title": "Unused charts",
+    "hint": "Tap a chart to add it to the top of your statistics page.",
+    "searchPlaceholder": "Search all charts",
+    "noSearchResults": "No charts match your search.",
+    "noChartsLeft": "All charts here are already on your statistics page.",
+    "intradayKcal": "Calorie intake during the day",
+    "dayProfile": "Day profile",
+    "category": {
+      "energyWeight": "Energy and weight"
+    }
+  },
+  "statChartsSection": {
+    "removeChart": "Remove chart"
   },
   "statCardsGrid": {
     "exitEditing": "Exit editing",
@@ -1224,23 +1222,16 @@
   "addButton": {
     "closeMenu": "Close add menu",
     "openMenu": "Open add menu",
-    "microphone": "Microphone",
-    "ownDishes": "Own dishes",
+    "microphone": "Speak",
+    "ownDishes": "Dishes",
     "search": "Search",
     "weight": "Weight",
     "water": "Water",
-    "camera": "Camera",
+    "camera": "Scan with camera",
     "list": "See all",
     "menstrualCycle": "Period",
     "hint": {
-      "microphone": "Speak",
-      "ownDishes": "Meal",
-      "search": "Search",
-      "weight": "Weight & measurements",
-      "water": "Water intake",
-      "camera": "Take photo",
-      "list": "See all",
-      "menstrualCycle": "Log period"
+      "list": "See all"
     }
   },
   "onboarding": {

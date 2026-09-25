@@ -4,10 +4,197 @@ Last updated: 2026-09-25
 
 ## 2026-09-25: Ubrugte statistik-kort — "+ Overskrift" og "+ Skillelinje" øverst
 
-`/statistics/unused-cards`: knapperne ligger nu øverst, før accordionerne.
+`/statistics/unused-cards`: knapperne ligger nu lige under søgefeltet, før accordionerne.
 "+ Adskillelseslinje" hedder nu "+ Skillelinje" og vises som en massiv sort
-streg med teksten i midten. De grå hjælpetekster er fjernet. Søgefeltet, som
-en anden session bygger, skal placeres over disse to knapper.
+streg med teksten i midten. De grå hjælpetekster er fjernet.
+
+## 2026-09-25: Integrationssiden ryddet op og sektioneret
+
+Se `docs/DECISIONS.md` 2026-09-25 "Integrationssiden". Sektioner med
+`SectionSeparator`: Aktive integrationer → Oftest anvendt (Apple Health,
+Google Health, Strava) → Opskrifter (HelloFresh) → Apps (Health Connect,
+Withings, Garmin, Samsung Health, Polar Flow nederst). Aktive har grøn prik og
+"Fjern" som almindelig tekst. "Kræver app"-mærker og enhedskode-knapper er
+fjernet fra siden (backend-ruterne findes stadig). Google Health genbruger nu
+`GOOGLE_CLIENT_ID/SECRET`, hvis `GOOGLE_HEALTH_*` ikke er sat; connect-fejl
+sendes tilbage til siden i stedet for rå JSON.
+
+Next work: I Google Cloud-konsollen skal redirect-URI'en
+`https://hellocal.packroff.dk/api/integrations/google-health/callback`
+tilføjes til login-klienten, og Google Health API + scopes aktiveres.
+## 2026-09-25: Tilføj-menu tekster og vandglas-ikon
+
+- "Kamera" → "Scan med kamera", "Mikrofon" → "Indtal" (`addButton.*` i
+  `src/i18n/locales/`).
+- Brugerens vandglas-ikon (`public/icons/water-glass.png`, maske-komponent
+  `src/components/icons/WaterGlass.tsx`) erstatter tabler-dråben overalt hvor
+  det betyder vand. Fedt-statistikkerne beholder dråben.
+
+## 2026-09-25: Kalender-dagvisning — træk søvn-håndtag forbi kanten + "Nattens søvn"
+
+Lavet i en cloud-session på branch `claude/cloud-session-credits-expired-7504pf`, flettet i master.
+
+- Stå-op-/sengetids-håndtaget scroller tidslinjen med, når fingeren når
+  visningens top/bund, så natten kan gøres kortere (før stoppede trækket ved
+  kanten).
+- Ved åbning af en dag vises den sidste hele time af nattens grå felt, med
+  "Nattens søvn: X,XX timer" (gårsdagens sengetid → dagens stå-op-tid; ved
+  dagsøvn dagens eget felt). Teksten står under stregen, mens man trækker.
+- Testet i Chromium med falske API-svar (ingen login/DB i cloud). Ikke testet
+  på telefon.
+- Kendt, ikke rettet: `calendar.remainingToday` mangler i sprogfilerne (vises
+  rå nederst i dagvisningen). Sprogfilerne har ikke-committede lokale
+  ændringer — tjek dem, før nøglen tilføjes.
+
+## 2026-09-25: Tilføj — "Retter", nyt Kropsmål-ikon og samme tekst i hjulet
+
+- "Egne retter" hedder nu "Retter" (`addButton.ownDishes`, en: "Dishes"), også
+  som kategori i statistik (`productTypeLabel` i `food-classification.ts`).
+- Kropsmål bruger brugerens målebånd-figurer i stedet for Tablers lineal:
+  `src/components/icons/WaistMeasure.tsx`, vektorspor af
+  `public/icons/body-measurements/waist-female.png` / `waist-male.png`.
+  Kvindefiguren vises ved køn = FEMALE, mandefiguren ellers (også ved ukendt
+  køn). Bruges på Tilføj-listen, forsidehjulet, indstillingslisten for hjulet,
+  Profil-rækken "Kropsmål" og knappen på Redigér profil.
+- Forsidehjulet viser nu samme tekst som Tilføj-listen (`labelKey`). De
+  separate `addButton.hint.*`-tekster (fx "Måltid", "Vægt og mål") og
+  `AddAction.hintKey` er fjernet. Kun `addButton.hint.list` ("Se alle") er
+  tilbage.
+Verificeret med `npm run lint` og `npm run build`. Ikke set på telefon.
+
+## 2026-09-25: Kalender — tomme dage, tættere rækker og advarsel om for lavt indtag
+
+Uge- og Liste-visningens dagrækker (`src/app/calendar/page.tsx`):
+- En dag uden indtastninger viser "Ingen indtastninger" (`calendar.noEntries`)
+  og det fulde restbudget, begge i gråt, i stedet for "Mål ikke nået" og et
+  rødt tal. Kcal-tallet er grønt med "+", når indtaget er på eller under
+  målet, og kun rødt med "÷", når målet er overskredet. Månedsgitteret viser
+  ikke længere "÷" på tomme dage.
+- Rækkerne bruger ikke længere `justify-between`: afstanden fra ugedag til
+  datoboks er omtrent halveret, og statusteksten står lige efter boksen.
+  Kcal-tallet ligger stadig til højre (`ml-auto`).
+- Ny regel for for lavt indtag, se `docs/DECISIONS.md` 2026-09-25. En afsluttet
+  dag med indtastninger under minimum viser "For lavt indtag" og tallet i
+  mørk okker (`--hf-color-warning`). Nederst i visningen står en gul firkant
+  (`--hf-color-warning-fill`) og en forklaring med personens minimum
+  (`calendar.lowIntakeNotice`). Logikken ligger i `src/lib/healthy-intake.ts`.
+Verificeret med `npm run lint` og `npm run build`. Ikke afprøvet på telefon
+fra denne container.
+
+## 2026-09-25: Profil — start-vægt altid låst + "Lås"-side
+
+Start-vægt på `/profile/edit` er nu altid låst, også når den er tom (før var
+den et redigerbart felt indtil første indtastning). Feltet vises gråt med en
+hængelås til venstre i boksen; tryk åbner `/profile/start-weight`, som nu er
+siden "Lås" med tilbagepil, teksten "Din startvægt bør ikke ændres, og er
+grundlag for al statistik. Du skal i stedet ændre din dagsvægt her." og
+knappen "Angiv dagsvægt" (→ `/profile/weight-calibration`). Knappen "Send
+verificeringsmail" er fjernet fra siden; verify-siden og API'et ligger
+stadig, men har ingen indgang i UI'et. Er start-vægten tom, sætter første
+vejning (`POST /api/weight-entries`) den. Ubrugte i18n-nøgler fjernet.
+Kropsmål er ikke omfattet (brugeren har bekræftet, at kun start-vægt skal låses).
+
+## 2026-09-25: Photo diary — passcode toggle now actually locks the photos
+
+User intent: the photos must not flash on screen by accident when the page is
+opened on the phone (e.g. on the bus). It is a view lock, not encryption.
+When "Kræver telefonens adgangskode for at vise" is on, the page shows only
+"Vis billeder"; tapping it asks for Face ID/Touch ID/the phone's passcode via
+WebAuthn (`confirmOnDevice` in `src/lib/passkey-client.ts`: reauth with the
+existing passkey through `/api/auth/passkey/reauth/*`, or register one if the
+account has none — registration also requires on-device confirmation). The
+page re-locks (and closes the full-screen viewer) when it goes to the
+background (`visibilitychange`). Turning the toggle off while locked requires
+the same confirmation. Browsers without WebAuthn get a plain tap gate. The
+"kræver en native app" note is replaced with a description of the lock.
+Verified with `npm run lint` and `npm run build`; not tested on a real phone
+from this container.
+
+## 2026-09-25: Photo diary — selfie feature removed
+
+The user states they never asked for selfies in Billede-dagbog and asked for
+the feature to be removed. The 2026-09-12 entry below records it as a user
+request, but the user rejects that. Removed from
+`src/app/profile/photo-diary/page.tsx`: the "Tag selfie (portræt)" button
+(`capture="user"`), the "Selfies" section with portrait cards, the
+weight/measurement caption lines under each selfie, and the "Andre billeder"
+heading. The page is back to one "Tag billede (fuld figur eller mave)" button
+and one 2-column grid. Photos saved earlier as selfies in localStorage are not
+deleted; they now show in the same grid (the old `kind` field is ignored).
+Unused `photoDiary.*` i18n keys removed from `da.json`/`en.json`; the
+selfie-portrait-card paragraph removed from `design.md`. `BodyMeasurement`,
+`/api/body-measurements` and `/profile/body-measurements` are unchanged.
+
+## 2026-09-25: Invitér en ven + fast afstand om sektionsoverskrifter
+
+Se `docs/DECISIONS.md` 2026-09-25 "Sektionsoverskrifter, points-banner og
+"Invitér en ven"". Ændret: `globals.css` (`.hf-type-section-title`),
+`PointsPromoBanner`, `profile/invite`, `lib/invite-message.ts`,
+invitations-API'erne og FRIEND_INVITATION-skabelonen (gammel standardtekst
+opgraderes automatisk). Lint + build grønne. Ikke visuelt testet (kræver
+login) — test på iPhone efter deploy: afstand om overskrifter på alle sider,
+delemenuen og mailens personlige besked.
+
+## 2026-09-25: Profil — tandhjul til app-indstillinger + tilbagepil
+
+- På `/profile` (og kun dér) er profilcirklen øverst til højre skiftet ud
+  med et tandhjul, der åbner `/settings` (app-indstillingerne). Styres af
+  `showAppSettingsButton` på `HfScreen`/`ScreenHeader`.
+- `/profile` viser nu altid tilbagepilen, også når "Profil" ligger i
+  footeren (`alwaysShowBackButton`).
+- Profilen rummer kun personlige ting (Profil, Vægt kalibrering, Kropsmål,
+  Søvnmønster, Billede-dagbog, Points, Opskrifter). Abonnement, Opsætning
+  (`/profile/settings`), Indberet fejl og Log ud er flyttet til `/settings`;
+  Integrationer, Kommunikation og Invitér en ven lå der i forvejen. Den
+  gamle "Log ind / tilmeld"-boks er fjernet.
+
+## 2026-09-25: Statistik — redigerbare grafer, søgning og "+ Tilføj" pr. blok
+
+Se `docs/DECISIONS.md` 2026-09-25 "Statistiksidens grafer kan redigeres som
+kortene". Nye filer: `src/lib/stat-charts.ts`,
+`src/components/StatChartsSection.tsx`,
+`src/app/statistics/unused-charts/page.tsx`. `unused-cards` har fået søgefelt
+og "+ Tilføj" pr. blok (`AccordionSection` har fået en `action`-plads).
+Lint + build grønne. Ikke visuelt testet (lokalt kræves login) — test på
+iPhone efter deploy: long-press på grafer, træk/fjern, knapperne kun synlige
+under redigering.
+
+## 2026-09-25: Markering slået helt fra i appen
+
+Se `docs/DECISIONS.md` 2026-09-25 "Global markeringsregel". Global CSS i
+`src/app/globals.css` + `selectstart`-lytter i `GlobalClipboardGuard.tsx`.
+Felter kan stadig redigeres. Skal testes på iPhone efter deploy (long-press på
+kort, tekst og tomme flader må ikke markere noget).
+## 2026-09-25: Abonnement — "Indløs points" som knap + ny side
+
+- Boksen på `/profile/subscription` viser nu "Du har optjent {saldo} points."
+  med en tynd sekundær knap (`hf-button--secondary --compact --full`)
+  "Indløs points", der fører til `/profile/subscription/redeem-points`.
+- Ny side "Indløs points" med tan-liste i samme stil som profil/madvarer.
+  Første række: "Giv en ven en gratis måned med Seriøs adgang!" — endnu uden
+  handling; indholdet kommer senere. Den gamle `/profile/points` er uændret.
+
+## 2026-09-25: Vægt-ikonet tegnet som vektor
+
+- `IconBathroomScale` (`src/components/icons/BathroomScale.tsx`) maskerede
+  256px-PNG'en `public/icons/bathroom-scale.png`; i 20–28px (tilføj-menuen og
+  forsidens +-hjul) smeltede de tykke streger sammen til en uklar klat.
+- Nu en ren SVG-streg-tegning af samme artwork (ramme, skive, to fyldte
+  fodspor) i tabler-stil med `currentColor`, så den står skarpt i alle
+  størrelser. ViewBox og PNG er trimmet til kanten (ingen luft omkring).
+
+## 2026-09-25: Stregkode-scanner omlagt (lodret/skæv aflæsning, AR-afkodning)
+
+Se docs/DECISIONS.md 2026-09-25 "Stregkode-scanning" og design.md §6.11.
+Nye filer: `src/lib/barcode-frame-scanner.ts`, `src/lib/barcode-pattern.ts`,
+`src/lib/upce-reader.ts` (UPC-E virker nu — bibliotekets egen læser var i stykker);
+omskrevet: `src/components/hf/BarcodeScanOverlay.tsx`,
+`src/lib/barcode-scan.ts`, stregkode-delen af `src/app/camera/page.tsx`.
+Verificeret i Chromium med syntetisk kamera (vandret, lodret, skæv,
+bevægelse, ikke-fundet). Ikke testet på en rigtig iPhone endnu.
+
+Next work:
+1. Test på iPhone efter deploy: vandret + lodret stregkode, skæv, på afstand.
 
 ## 2026-09-25: Mail via Mailjet aktiveret
 
@@ -43,6 +230,12 @@ nøgler på serveren (`.env.production` på Synology), derefter deploy:
 `20260924170000_integration_providers` tilføjer enum-værdier. Ikke testet
 mod de rigtige API'er endnu (ingen nøgler lokalt). Waldemarsro: venter på
 brugerens "byg".
+
+## 2026-09-25: "Største kilder"-siden fjernet
+
+Brugerens ønske: `/statistics/sources` (faner + Produkter/Produkttyper) er
+slettet, da "Månedens synder" dækker det samme. Boksen "Største syndere" på
+Statistik-siden beholdes, men uden "Se alle"-link.
 
 ## 2026-09-25: G3 — produktkategorier, kød/drikke-statistik, "Største kilder" og "Månedens synder" — bygget
 

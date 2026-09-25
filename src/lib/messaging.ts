@@ -156,7 +156,7 @@ const DEFAULT_TEMPLATES: Record<MessageEventType, { subject: string; bodyHtml: s
   },
   FRIEND_INVITATION: {
     subject: "{{inviterName}} har inviteret dig til Hello Cal",
-    bodyHtml: "<p>{{inviterName}} synes du skulle prøve Hello Cal.</p><p><a href=\"{{inviteUrl}}\">Opret din konto</a> — I optjener begge 300 points, når du er med. Linket er gyldigt i 7 dage.</p>",
+    bodyHtml: "<p>{{inviterName}} synes du skulle prøve Hello Cal.</p>{{personalMessage}}<p><a href=\"{{inviteUrl}}\">Opret din konto</a> — I optjener begge 300 points, når du er med. Linket er gyldigt i 7 dage.</p>",
     channel: "EMAIL",
   },
   DOCTOR_SHARE_INVITATION: {
@@ -177,7 +177,22 @@ const DEFAULT_TEMPLATES: Record<MessageEventType, { subject: string; bodyHtml: s
   },
 };
 
+// Tidligere standardtekster, der opgraderes automatisk, så længe admin ikke
+// har redigeret dem (fx fik FRIEND_INVITATION {{personalMessage}} 2026-09-25).
+const LEGACY_DEFAULT_BODIES: Partial<Record<MessageEventType, string>> = {
+  FRIEND_INVITATION:
+    "<p>{{inviterName}} synes du skulle prøve Hello Cal.</p><p><a href=\"{{inviteUrl}}\">Opret din konto</a> — I optjener begge 300 points, når du er med. Linket er gyldigt i 7 dage.</p>",
+};
+
 export async function ensureDefaultMessageTemplates() {
+  await Promise.all(
+    (Object.entries(LEGACY_DEFAULT_BODIES) as [MessageEventType, string][]).map(([event, legacyBody]) =>
+      prisma.messageTemplate.updateMany({
+        where: { event, bodyHtml: legacyBody },
+        data: { bodyHtml: DEFAULT_TEMPLATES[event].bodyHtml },
+      })
+    )
+  );
   await Promise.all(
     (Object.entries(DEFAULT_TEMPLATES) as [MessageEventType, (typeof DEFAULT_TEMPLATES)[MessageEventType]][]).map(
       ([event, tpl]) =>
