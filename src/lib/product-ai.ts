@@ -7,6 +7,10 @@ type StructuredVisionArgs = {
   text: string;
   schemaName: string;
   schema: JsonSchema;
+  // Optional overrides for callers that need a faster/cheaper pass (e.g. the
+  // live camera's automatic detection) than the product-creation default.
+  model?: string;
+  detail?: "low" | "high" | "auto";
 };
 
 export function getProductVisionModel() {
@@ -40,6 +44,8 @@ export async function callStructuredVision<T>({
   text,
   schemaName,
   schema,
+  model: modelOverride,
+  detail = "high",
 }: StructuredVisionArgs): Promise<{ value: T; model: string; responseId: string | null }> {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) throw new Error("OPENAI_API_KEY er ikke sat");
@@ -50,7 +56,7 @@ export async function callStructuredVision<T>({
   // docs/PRIVACY.md "AI": ingen metadata og ingen ID'er til OpenAI, og
   // svaret må ikke gemmes hos OpenAI (store: false).
   const cleanPhoto = sanitizeAiPhoto(photo);
-  const model = getProductVisionModel();
+  const model = modelOverride?.trim() || getProductVisionModel();
   const response = await fetch("https://api.openai.com/v1/responses", {
     method: "POST",
     headers: {
@@ -69,7 +75,7 @@ export async function callStructuredVision<T>({
           role: "user",
           content: [
             { type: "input_text", text },
-            { type: "input_image", image_url: cleanPhoto, detail: "high" },
+            { type: "input_image", image_url: cleanPhoto, detail },
           ],
         },
       ],

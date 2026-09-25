@@ -2,6 +2,19 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Kamera "Produkt" — automatisk genkendelse med omrids
+
+Se docs/DECISIONS.md 2026-09-25 "Automatisk produktgenkendelse i kameraet".
+Ingen udløserknap; ring om tallerken / kontur om objekt; liste nedenfor;
+rettet sort kamerabillede ved faneskift. `npm run lint` og `npm run build`
+grønne. Testet i headless Chromium med falsk kamera og mocket AI-svar — ikke
+testet mod rigtig OpenAI eller på iPhone.
+
+Next work:
+1. Test på iPhone efter deploy: sort skærm væk, og rammer omridsene
+   objekterne godt nok? Er de for unøjagtige, så prøv en stærkere model via
+   `OPENAI_CAMERA_VISION_MODEL`.
+
 ## 2026-09-25: Mail via Mailjet aktiveret
 
 - SMTP_HOST/PORT/USER/PASS/FROM (Mailjet, in-v3.mailjet.com:587) sat i lokal

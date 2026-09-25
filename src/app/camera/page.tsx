@@ -7,8 +7,9 @@ import { ChecksumException, FormatException, NotFoundException } from "@zxing/li
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { HfScreen } from "@/components/HfScreen";
-import { HelloFreshMatchReview } from "@/components/HelloFreshMatchReview";
 import { BarcodeScanOverlay, type BarcodeAlignment } from "@/components/hf/BarcodeScanOverlay";
+import { CameraDetectionOverlay } from "@/components/hf/CameraDetectionOverlay";
+import { ScanningOverlay } from "@/components/hf/ScanningOverlay";
 import {
   barcodeGuideBoxFraction,
   decodedPointsToFraction,
@@ -19,20 +20,16 @@ import {
   type FractionRect,
 } from "@/lib/barcode-scan";
 import { buildFakeBarcodeForRegion } from "@/lib/regions";
+import { captureSquareFrame, meanLuma, sampleThumbnail, thumbnailDifference } from "@/lib/camera-frame";
+import type { CameraDetection, CameraDetectionResponse } from "@/lib/camera-detection-types";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 type CameraStatus = "starting" | "active" | "denied" | "unavailable" | "error";
 type LookupStatus = "idle" | "loading" | "not_found" | "error";
-type CameraMode = "product" | "meal" | "hellofresh";
-type RecognizeStatus = "idle" | "processing" | "found" | "not_found" | "failed";
-type MatchedHelloFreshProduct = {
-  id: string;
-  name: string;
-  imageUrl: string | null;
-  kcalPer100g: number;
-  servingSizeGrams: number | null;
-  servingSizeUnitSingular?: string | null;
-};
+// "detect" is the "Produkt" tab: automatic AI detection with outlines
+// (docs/DECISIONS.md 2026-09-25). The legacy `mode=hellofresh` URL maps to it.
+type CameraMode = "product" | "meal" | "detect";
+type DetectStatus = "scanning" | "analyzing" | "nothing" | "error" | "done";
 type MealAnalyzeStatus = "idle" | "done" | "error";
 type MealItem = {
   id: string;
@@ -50,8 +47,26 @@ type MealItem = {
 
 const MODE_TABS: { key: CameraMode; labelKey: string }[] = [
   { key: "product", labelKey: "camera.tabBarcode" },
-  { key: "hellofresh", labelKey: "camera.tabProduct" },
+  { key: "detect", labelKey: "camera.tabProduct" },
 ];
+
+// Automatic capture in the "Produkt" tab: sample the viewfinder a few times a
+// second and send a frame to AI only once the camera has been held still for
+// a moment, the picture isn't black, and the scene differs from the last
+// frame that was sent (or that one is a while ago). A shaky hand never blocks
+// it for good: after FORCE_SEND_AFTER_MS a frame is sent even if not steady.
+const SAMPLE_INTERVAL_MS = 350;
+const STEADY_SAMPLES_NEEDED = 3;
+const STEADY_MAX_DIFFERENCE = 9;
+const FORCE_SEND_AFTER_MS = 4000;
+const SCENE_CHANGED_DIFFERENCE = 12;
+const RESEND_SAME_SCENE_AFTER_MS = 6000;
+const MIN_LUMA = 16;
+// If the video element still has no frames this long after the camera was
+// reported as started, the stream is dead (the "100 % sort" viewfinder) —
+// restart it, a limited number of times.
+const BLACK_VIDEO_TIMEOUT_MS = 2500;
+const MAX_AUTO_RESTARTS = 2;
 
 function cameraMessage(status: CameraStatus, t: (key: string) => string) {
   if (status === "starting") return t("camera.starting");
@@ -74,7 +89,11 @@ function KameraContent() {
   const router = useRouter();
   const modeParam = params.get("mode");
   const mode: CameraMode =
-    modeParam === "meal" ? "meal" : modeParam === "hellofresh" ? "hellofresh" : "product";
+    modeParam === "meal"
+      ? "meal"
+      : modeParam === "detect" || modeParam === "hellofresh"
+        ? "detect"
+        : "product";
   const forDish = params.get("for") === "ret";
   const returnSuffix = forDish ? "?for=ret" : "";
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -83,6 +102,13 @@ function KameraContent() {
   const lookupInProgressRef = useRef(false);
   const confirmTriggeredRef = useRef(false);
   const lastBarcodeDetectionAtRef = useRef(0);
+  // Camera starts are chained so a still-pending start (e.g. the barcode
+  // reader from the tab being left) has finished and released the <video>
+  // before the next one attaches its stream. Without this, @zxing's late
+  // stop() cleared the new stream from the shared element: a black viewfinder.
+  const cameraQueueRef = useRef<Promise<void>>(Promise.resolve());
+  const autoRestartsRef = useRef(0);
+  const listRef = useRef<HTMLDivElement>(null);
   const [cameraStatus, setCameraStatus] = useState<CameraStatus>("starting");
   const [restartKey, setRestartKey] = useState(0);
   const [barcode, setBarcode] = useState("");
@@ -96,8 +122,8 @@ function KameraContent() {
   const barcodeGuideBox = useMemo(() => barcodeGuideBoxFraction(barcodeOrientation), [barcodeOrientation]);
   const fakeBarcode = useMemo(() => buildFakeBarcodeForRegion(region), [region]);
   const [photo, setPhoto] = useState<string | null>(null);
-  const [recognizeStatus, setRecognizeStatus] = useState<RecognizeStatus>("idle");
-  const [matchedProduct, setMatchedProduct] = useState<MatchedHelloFreshProduct | null>(null);
+  const [detectStatus, setDetectStatus] = useState<DetectStatus>("scanning");
+  const [detections, setDetections] = useState<CameraDetection[]>([]);
   const [mealAnalyzeStatus, setMealAnalyzeStatus] = useState<MealAnalyzeStatus>("idle");
   const [mealItems, setMealItems] = useState<MealItem[]>([]);
   const [mealSaving, setMealSaving] = useState(false);
@@ -139,6 +165,7 @@ function KameraContent() {
     let cancelled = false;
 
     async function startCamera() {
+      if (cancelled) return;
       if (!navigator.mediaDevices?.getUserMedia || !videoRef.current) {
         setCameraStatus("unavailable");
         return;
@@ -216,15 +243,20 @@ function KameraContent() {
           return;
         }
         streamRef.current = stream;
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
+        const video = videoRef.current;
+        if (!video) return;
+        video.muted = true;
+        video.srcObject = stream;
+        await video.play();
+        if (cancelled) return;
         setCameraStatus("active");
       } catch (error) {
         if (!cancelled) setCameraStatus(statusFromCameraError(error));
       }
     }
 
-    void startCamera();
+    const run = cameraQueueRef.current.then(startCamera);
+    cameraQueueRef.current = run.catch(() => {});
     return () => {
       cancelled = true;
       stopCamera();
@@ -248,8 +280,8 @@ function KameraContent() {
     setCameraStatus("starting");
     lookupInProgressRef.current = false;
     setLookupStatus("idle");
-    setRecognizeStatus("idle");
-    setMatchedProduct(null);
+    setDetectStatus("scanning");
+    setDetections([]);
     setMealAnalyzeStatus("idle");
     setMealItems([]);
     confirmTriggeredRef.current = false;
@@ -316,16 +348,25 @@ function KameraContent() {
     };
   }, [mode, cameraStatus, restartKey, t]);
 
-  function removeMealItem(id: string) {
+  const detectedItems = useMemo(() => detections.flatMap((detection) => detection.items), [detections]);
+  const listItems = mode === "detect" ? detectedItems : mealItems;
+
+  function removeItem(id: string) {
     setMealItems((current) => current.filter((item) => item.id !== id));
+    setDetections((current) =>
+      current.map((detection) => ({
+        ...detection,
+        items: detection.items.filter((item) => item.id !== id),
+      }))
+    );
   }
 
-  async function saveMeal() {
-    if (mealSaving || mealItems.length === 0) return;
+  async function saveItems() {
+    if (mealSaving || listItems.length === 0) return;
     setMealSaving(true);
     try {
       await Promise.all(
-        mealItems.map((item) =>
+        listItems.map((item) =>
           fetch("/api/registrations", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -352,29 +393,6 @@ function KameraContent() {
   }
 
   useEffect(() => {
-    if (mode !== "hellofresh" || !photo) return;
-    let cancelled = false;
-    fetch("/api/ai/recognize-hellofresh", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ photo }),
-    })
-      .then((res) => res.json())
-      .then((data: { product: MatchedHelloFreshProduct | null }) => {
-        if (cancelled) return;
-        setMatchedProduct(data.product);
-        setRecognizeStatus(data.product ? "found" : "not_found");
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setRecognizeStatus("failed");
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [mode, photo]);
-
-  useEffect(() => {
     if (mode !== "meal" || !photo) return;
     let cancelled = false;
     fetch("/api/ai/analyze-meal-photo", {
@@ -397,18 +415,109 @@ function KameraContent() {
     };
   }, [mode, photo]);
 
+  // Black-viewfinder watchdog: the camera reported "active" but the <video>
+  // never got a frame (stream muted/ended, or detached from the element).
   useEffect(() => {
-    if (recognizeStatus !== "not_found") return;
-    const timer = setTimeout(() => restartCamera(), 1800);
+    if (cameraStatus !== "active" || photo) return;
+    const timer = setTimeout(() => {
+      const video = videoRef.current;
+      const stream = video?.srcObject instanceof MediaStream ? video.srcObject : null;
+      const live = stream?.getVideoTracks().some((track) => track.readyState === "live") ?? false;
+      if (video && video.videoWidth > 0 && live) {
+        autoRestartsRef.current = 0;
+        return;
+      }
+      if (autoRestartsRef.current >= MAX_AUTO_RESTARTS) {
+        setCameraStatus("error");
+        return;
+      }
+      autoRestartsRef.current += 1;
+      restartCamera();
+    }, BLACK_VIDEO_TIMEOUT_MS);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [recognizeStatus]);
+  }, [cameraStatus, photo, restartKey]);
 
-  function confirmHelloFreshMatch() {
-    if (!matchedProduct) return;
-    stopCamera();
-    router.push(`/add/${matchedProduct.id}`);
-  }
+  // "Produkt" tab: no shutter button — watch the viewfinder and send a frame
+  // to AI on its own once the camera is held still over something new. The
+  // first answer with food in it freezes that frame, outlines what was found
+  // and lists it below.
+  useEffect(() => {
+    if (mode !== "detect" || cameraStatus !== "active" || photo) return;
+    const sampleCanvas = document.createElement("canvas");
+    const controller = new AbortController();
+    let previous: Uint8Array | null = null;
+    let lastSent: Uint8Array | null = null;
+    let lastSentAt = Date.now();
+    let steadySamples = 0;
+    let busy = false;
+    let pausedUntil = 0;
+
+    async function analyze(frame: string) {
+      busy = true;
+      setDetectStatus("analyzing");
+      try {
+        const response = await fetch("/api/ai/detect-camera-objects", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ photo: frame, includeHelloFresh: forDish }),
+          signal: controller.signal,
+        });
+        if (!response.ok) throw new Error("Detection failed");
+        const data = (await response.json()) as CameraDetectionResponse;
+        if (controller.signal.aborted) return;
+        const found = data.detections.filter((detection) => detection.items.length > 0);
+        if (found.length === 0) {
+          setDetectStatus("nothing");
+          return;
+        }
+        setDetections(found);
+        setPhoto(frame);
+        setDetectStatus("done");
+        stopCamera();
+      } catch {
+        if (controller.signal.aborted) return;
+        setDetectStatus("error");
+        pausedUntil = Date.now() + 4000;
+      } finally {
+        busy = false;
+      }
+    }
+
+    const interval = setInterval(() => {
+      const video = videoRef.current;
+      if (busy || !video || Date.now() < pausedUntil) return;
+      const thumbnail = sampleThumbnail(video, sampleCanvas);
+      if (!thumbnail) return;
+      const steady = previous !== null && thumbnailDifference(previous, thumbnail) < STEADY_MAX_DIFFERENCE;
+      previous = thumbnail;
+      steadySamples = steady ? steadySamples + 1 : 0;
+      if (meanLuma(thumbnail) < MIN_LUMA) return;
+      if (steadySamples < STEADY_SAMPLES_NEEDED && Date.now() - lastSentAt < FORCE_SEND_AFTER_MS) return;
+
+      const sceneChanged = !lastSent || thumbnailDifference(lastSent, thumbnail) > SCENE_CHANGED_DIFFERENCE;
+      if (!sceneChanged && Date.now() - lastSentAt < RESEND_SAME_SCENE_AFTER_MS) return;
+
+      const frame = captureSquareFrame(video);
+      if (!frame) return;
+      lastSent = thumbnail;
+      lastSentAt = Date.now();
+      steadySamples = 0;
+      void analyze(frame);
+    }, SAMPLE_INTERVAL_MS);
+
+    return () => {
+      clearInterval(interval);
+      controller.abort();
+    };
+  }, [mode, cameraStatus, photo, forDish, stopCamera]);
+
+  // Once results are in, the viewfinder shrinks and the list scrolls into view.
+  useEffect(() => {
+    if (detectStatus !== "done") return;
+    const timer = setTimeout(() => listRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 350);
+    return () => clearTimeout(timer);
+  }, [detectStatus]);
 
   const message = cameraMessage(cameraStatus, t);
 
@@ -436,7 +545,11 @@ function KameraContent() {
         </div>
       )}
 
-      <div className="relative aspect-square w-full overflow-hidden rounded-[12px] bg-hf-black">
+      <div
+        className={`relative aspect-square w-full flex-shrink-0 overflow-hidden rounded-[12px] bg-hf-black transition-[max-height] duration-500 ease-out ${
+          mode === "detect" && detectStatus === "done" ? "max-h-[36vh]" : "max-h-[calc(100vw-2rem)]"
+        }`}
+      >
         {photo ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={photo} alt={t("camera.photoAlt")} className="h-full w-full object-cover" />
@@ -444,7 +557,15 @@ function KameraContent() {
           <video ref={videoRef} className="h-full w-full object-cover" autoPlay muted playsInline aria-label={t("camera.liveViewAriaLabel")} />
         )}
 
-        {!photo && (mode === "meal" || mode === "hellofresh") && (
+        {photo && mode === "detect" && detections.length > 0 && (
+          <CameraDetectionOverlay detections={detections} />
+        )}
+
+        {!photo && mode === "detect" && detectStatus === "analyzing" && (
+          <ScanningOverlay label={t("camera.detectAnalyzing")} />
+        )}
+
+        {!photo && mode === "meal" && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
             <div className="aspect-square w-[68%] rounded-full border-2 border-white/80 shadow-[0_0_0_999px_rgba(0,0,0,0.2)]" />
           </div>
@@ -473,18 +594,14 @@ function KameraContent() {
 
         {cameraStatus === "active" && !photo && mode !== "product" && (
           <p className="absolute inset-x-4 top-4 rounded-full bg-hf-black/60 px-4 py-2 text-center text-xs font-semibold text-white">
-            {mode === "hellofresh" ? t("camera.placeProductInCircle") : t("camera.placePlateInCircle")}
+            {mode === "detect"
+              ? detectStatus === "nothing"
+                ? t("camera.detectNothingYet")
+                : detectStatus === "error"
+                  ? t("camera.detectError")
+                  : t("camera.detectHoldStill")
+              : t("camera.placePlateInCircle")}
           </p>
-        )}
-
-        {mode === "hellofresh" && recognizeStatus === "not_found" && (
-          <button
-            type="button"
-            onClick={restartCamera}
-            className="absolute inset-0 flex items-center justify-center bg-hf-black/75 p-6 text-center"
-          >
-            <p className="max-w-xs text-sm font-semibold text-white">{t("camera.notRecognizedRetry")}</p>
-          </button>
         )}
       </div>
 
@@ -494,20 +611,23 @@ function KameraContent() {
         </p>
       )}
 
-      {mode === "hellofresh" ? (
-        photo ? (
-          recognizeStatus !== "not_found" && (
-            <HelloFreshMatchReview
-              status={recognizeStatus === "idle" ? "processing" : recognizeStatus}
-              product={matchedProduct}
-              onConfirm={confirmHelloFreshMatch}
-              onRetake={restartCamera}
-            />
-          )
-        ) : (
-          <div className="flex justify-center py-1">
-            <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-btn-primary gap-2 px-6 py-3 text-sm disabled:opacity-40">
-              <IconCamera size={19} /> {t("camera.takePhotoOfProduct")}
+      {mode === "detect" ? (
+        photo && (
+          <div ref={listRef} className="flex scroll-mt-4 flex-col gap-3">
+            <p className="text-sm font-bold text-hf-black">{t("camera.detectResultsTitle")}</p>
+            <CameraItemList items={detectedItems} onRemove={removeItem} linkSuffix={returnSuffix} />
+            {detectedItems.length > 0 && (
+              <button
+                type="button"
+                onClick={saveItems}
+                disabled={mealSaving}
+                className="hf-btn-primary justify-center py-3 text-sm disabled:opacity-40"
+              >
+                {mealSaving ? t("camera.savingMeal") : t("camera.registerAll")}
+              </button>
+            )}
+            <button type="button" onClick={restartCamera} className="hf-btn-secondary justify-center py-3 text-sm">
+              {t("camera.scanAgain")}
             </button>
           </div>
         )
@@ -538,35 +658,10 @@ function KameraContent() {
           )}
           {photo && mealAnalyzeStatus === "done" && mealItems.length > 0 && (
             <>
-              <ul className="flex max-h-[38vh] flex-col gap-2 overflow-y-auto">
-                {mealItems.map((item) => (
-                  <li key={item.id} className="flex items-center gap-2.5 rounded-[8px] bg-hf-tan p-3">
-                    <div className="min-w-0 flex-1">
-                      <p className="flex items-center gap-1.5 text-sm font-semibold text-hf-black">
-                        <span className="truncate">{item.title}</span>
-                        {item.estimated && (
-                          <span className="flex-shrink-0 rounded-full bg-hf-white px-1.5 py-0.5 text-[10px] font-bold uppercase text-hf-black opacity-70">
-                            {t("camera.aiEstimateBadge")}
-                          </span>
-                        )}
-                      </p>
-                      <p className="text-xs text-hf-black opacity-60">
-                        {item.amountLabel} · {item.kcal} kcal
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => removeMealItem(item.id)}
-                      className="flex-shrink-0 text-xs font-semibold text-hf-black opacity-60 underline"
-                    >
-                      {t("camera.removeItem")}
-                    </button>
-                  </li>
-                ))}
-              </ul>
+              <CameraItemList items={mealItems} onRemove={removeItem} />
               <button
                 type="button"
-                onClick={saveMeal}
+                onClick={saveItems}
                 disabled={mealSaving}
                 className="hf-btn-primary justify-center py-3 text-sm disabled:opacity-40"
               >
@@ -595,6 +690,62 @@ function KameraContent() {
         </Link>
       )}
     </div>
+  );
+}
+
+type ListItem = Pick<MealItem, "id" | "title" | "amountLabel" | "kcal" | "estimated" | "productId">;
+
+// Recognized foods under the viewfinder (Måltid and Produkt tabs). With
+// `linkSuffix`, a row matched to one of our products opens its normal
+// registration screen, so amount/portion can be adjusted there.
+function CameraItemList({
+  items,
+  onRemove,
+  linkSuffix,
+}: {
+  items: ListItem[];
+  onRemove: (id: string) => void;
+  linkSuffix?: string;
+}) {
+  const { t } = useTranslation();
+  return (
+    <ul className="flex flex-col gap-2">
+      {items.map((item) => {
+        const content = (
+          <>
+            <p className="flex items-center gap-1.5 text-sm font-semibold text-hf-black">
+              <span className="truncate">{item.title}</span>
+              {item.estimated && (
+                <span className="flex-shrink-0 rounded-full bg-hf-white px-1.5 py-0.5 text-[10px] font-bold uppercase text-hf-black opacity-70">
+                  {t("camera.aiEstimateBadge")}
+                </span>
+              )}
+            </p>
+            <p className="text-xs text-hf-black opacity-60">
+              {item.amountLabel} · {item.kcal} kcal
+            </p>
+          </>
+        );
+        return (
+          <li key={item.id} className="flex items-center gap-2.5 rounded-[8px] bg-hf-tan p-3">
+            {linkSuffix !== undefined && item.productId ? (
+              <Link href={`/add/${item.productId}${linkSuffix}`} className="min-w-0 flex-1">
+                {content}
+              </Link>
+            ) : (
+              <div className="min-w-0 flex-1">{content}</div>
+            )}
+            <button
+              type="button"
+              onClick={() => onRemove(item.id)}
+              className="flex-shrink-0 text-xs font-semibold text-hf-black opacity-60 underline"
+            >
+              {t("camera.removeItem")}
+            </button>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
 

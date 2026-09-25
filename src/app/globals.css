@@ -753,3 +753,24 @@ textarea,
     stroke-dashoffset: -35;
   }
 }
+
+/* Omrids af genkendte objekter i kameraets "Produkt"-fane
+   (CameraDetectionOverlay) — tegnes blødt ind, når AI har svaret. */
+@keyframes hf-outline-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.hf-outline-in {
+  animation: hf-outline-in 400ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hf-outline-in {
+    animation: none;
+  }
+}
