@@ -6,6 +6,9 @@ laver hvad.
 
 ## Regler for alle sessioner
 
+0. Hent altid først: commit dit eget arbejde, kør `git pull origin master`,
+   og læs denne fil igen. Cloud-sessioner (claude.ai) arbejder ikke på din PC —
+   deres ændringer og noter kommer kun ind via GitHub.
 1. Læs denne fil før du begynder, og find din opgave/gruppe.
 2. Hvis du fortsætter en opgave: sæt `Ejer` til din sessions titel + konto (fx
    "Kalender-gruppen, konto B") og opdatér `Status` + `Næste skridt` løbende —
@@ -41,6 +44,7 @@ Ejer: G1-overtagelse, konto C (2026-09-24)
 | 63e9ff5d | Ugesummering (kaloriebalance + estimeret vægt) — kun roadmap-beslutning | Færdig (37ee7f4; senere slået til i 7747ea1, DECISIONS 2026-09-23) | — |
 | b4d954bd | Listevisning: fjern +/−, "Mål (ikke) nået" regulær + flyttet, lige afstand | Færdig (se G1-commit) | Minus vises nu som ÷ (brugerens valg: fortegn som symbol, som i månedsgitteret). Afventer brugerens visuelle godkendelse |
 | 116d3656 | Dagvisning: søvn-slider med to grå nuancer kan ikke trækkes + fjern dialogen "Kun denne dato / Standardmønster" | Færdig (se G1-commit) | Ét gråt felt ved dagsøvn, feltet følger håndtaget, tryk uden træk gemmer intet, dialog fjernet (gælder kun datoen). Ikke live-testet: lokal DB mangler |
+| — | Dagvisning: træk søvn-håndtag forbi kanten (scroller med) + "Nattens søvn: X,XX timer" i nattens grå felt | Færdig (flettet i master fra cloud-branch `claude/cloud-session-credits-expired-7504pf`) | Afventer brugerens test på telefon |
 
 ## G2 — Statistik-siden (redigering, drag/drop)
 Filer: statistik-siden, `src/components/StatsWheel.tsx`, `src/lib/frontpage-layout.ts`, `src/lib/frontpage-stats.ts`.
