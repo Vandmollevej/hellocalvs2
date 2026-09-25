@@ -1,6 +1,14 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-24
+Last updated: 2026-09-25
+
+## 2026-09-25: Mail via Mailjet aktiveret
+
+- SMTP_HOST/PORT/USER/PASS/FROM (Mailjet, in-v3.mailjet.com:587) sat i lokal
+  `.env` og i serverens `.env.production` (backup:
+  `.env.production.bak-20260925-smtp`). Ingen kodeændring; `src/lib/mailer.ts`
+  sender nu køen ved næste deploy.
+- Afsenderadressen skal være verificeret i Mailjet, ellers afvises mails.
 
 ## 2026-09-24: Normalt login igen (boksen fjernet)
 
