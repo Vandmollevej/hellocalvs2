@@ -15,6 +15,9 @@ apps." De skrappe sikkerhedsforanstaltninger var kun ment til admin.
 - Login: e-mail + adgangskode (med glemt adgangskode), Face ID (passkey,
   WebAuthn), Google, Apple og Facebook. Samme bekræftede e-mail kobles på
   samme konto. Efter login tilbydes Face ID én gang på enheder, der kan.
+  Face ID er kun hurtig-login på en enhed, der allerede har slået det til
+  efter et almindeligt login — login-siden viser ikke Face ID-knappen på en
+  ny enhed (flag `hc_passkey_on_device` i localStorage).
 - Den delte demo-bruger kommer ikke tilbage: alle private endpoints kræver
   session (`getSessionUser` + `unauthorized()`), `AuthGate` sender
   ikke-indloggede til `/welcome`.
@@ -1933,3 +1936,10 @@ Normaliserede produkt-søgeparametre (`ProductNutritionFeatures`, 1:1 med
 - Den private ingrediens ligger kun i boksen (samling `privateIngredients`) og vises kun for brugeren selv: øverst i søgningen på Opret ret og på `/ingredients` ("Mine ingredienser": omdøb/slet). I retter bruges produkt-ID `private:<id>`, som aldrig sendes til serveren; retter med egne ingredienser kan ikke deles, før de er gjort globale.
 - Admin varsles: serveren får kun navnet og en anonym engangsindbakke (`IngredientRequest`, ingen bruger-ID) plus e-mail `INGREDIENT_REQUEST_ADMIN`. Admin → "Ønskede ingredienser" kan rette navnet og "Tilføj globalt" (GenericIngredient med Frida-næring) eller afvise.
 - Når admin tilføjer den globalt, overskriver den global brugerens private automatisk (valgt blandt brugerens to muligheder): indbakken leverer den globale ingrediens, og enheden erstatter den private i alle egne retter og sletter den private.
+
+## 2026-09-25: Betingelser og Privatlivspolitik omskrevet (Lifesum-analyse)
+
+- `/betingelser` er omskrevet, og der er en ny `/privatlivspolitik` (offentlig, linket fra Indstillinger). Strukturen er inspireret af Lifesums tekster, men indholdet er bevidst mere forbrugervenligt og med en let kæk tone: "Kort fortalt"-boks øverst, ingen annoncesporing/profiler/datasalg, ingen ensidige klausuler (fx lukning "af enhver grund" eller krav om at klage til os først), dansk ret og Forbrugerklagenævnet.
+- Teksten må kun love det, koden faktisk gør (data ligger på serveren efter "Restore normal user login"). Ændres databehandlingen, skal `/privatlivspolitik` opdateres samtidig.
+- Firmanavn, CVR-nr., adresse og kontakt-e-mail står som gule pladsholdere (`Placeholder` i `src/components/hf/LegalDocument.tsx`), indtil ejeren udfylder dem.
+- Åbent: teksten lover et udtrykkeligt samtykke til helbredsdata (GDPR art. 9) ved oprettelse og samtykke til fortrydelsesret-afkald ved køb; ingen af delene er bygget endnu. Konto-sletning sker via Hjælpecenter (ingen selvbetjening). Juridisk gennemlæsning anbefales før lancering.
