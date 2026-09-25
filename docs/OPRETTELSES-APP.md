@@ -201,7 +201,7 @@ lortet". Bygget i denne omgang:
   serverer `/scan`-ruterne (+ de delte AI-/produkt-API'er). Port
   `SCAN_APP_HTTP_PORT` (standard 3101). I den almindelige app giver `/scan`
   404 (undtagen på localhost).
-- **Database**: migration `20260924180000_scan_app` (medarbejdere,
+- **Database**: migration `20260925090000_scan_app` (medarbejdere,
   profilversioner, hyldebilleder, fundne varer, indsendelser, afvisnings-
   årsager med startliste, global sats 1 kr., udbetalinger, beskeder).
 - **Login**: brugernavn + adgangskode + TOTP (`src/lib/scan/auth.ts`),
