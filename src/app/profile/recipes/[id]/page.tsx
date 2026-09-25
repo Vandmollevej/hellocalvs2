@@ -4,13 +4,19 @@ import { Suspense, useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { IconBookmark, IconBookmarkFilled, IconInfoCircle, IconSoup } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { HfSlider } from "@/components/hf/HfSlider";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { loadRecipeFilters, saveRecipeFilters } from "@/lib/recipe-filters";
+import { MAX_RECIPE_PERSONS, portionKcalFor, scaleFactorFor, type PortionProfile } from "@/lib/recipe-portions";
 
 // En ret fra Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24).
 // kind=own: brugerens egen ret fra boksen, med deling til/fra.
 // kind=shared: en andens delte ret — favorit, egen kopi og "Anmeld" (kun
 // indtil admin har godkendt retten). Der vises aldrig noget om udgiveren.
+// Mængderne vises justeret til det valgte antal personer à brugerens
+// anbefalede servering (src/lib/recipe-portions.ts, DECISIONS 2026-09-25);
+// den gemte ret ændres ikke.
 
 type Ingredient = { key: string; name: string; grams: number; imageUrl: string | null; kcal: number; protein: number; carbs: number; fat: number };
 type View = { name: string; ingredients: Ingredient[] };
@@ -65,6 +71,21 @@ function RecipeDetailContent() {
   // Delt ret
   const [isFavorite, setIsFavorite] = useState(false);
   const [canReport, setCanReport] = useState(false);
+  // Justering til antal personer
+  const [persons, setPersons] = useState(() => loadRecipeFilters().persons);
+  const [portionKcal, setPortionKcal] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch("/api/profile")
+      .then(async (res) => (res.ok ? ((await res.json()) as { user?: PortionProfile }) : {}))
+      .then((data) => setPortionKcal(portionKcalFor(data.user)))
+      .catch(() => setPortionKcal(portionKcalFor(null)));
+  }, []);
+
+  function changePersons(next: number) {
+    setPersons(next);
+    saveRecipeFilters({ ...loadRecipeFilters(), persons: next });
+  }
 
   useEffect(() => {
     const url =
@@ -156,7 +177,17 @@ function RecipeDetailContent() {
     setBusy(false);
   }
 
-  const totals = (view?.ingredients ?? []).reduce(
+  const baseKcal = (view?.ingredients ?? []).reduce((sum, i) => sum + i.kcal, 0);
+  const factor = portionKcal === null ? 1 : scaleFactorFor(baseKcal, portionKcal, persons);
+  const ingredients = (view?.ingredients ?? []).map((i) => ({
+    ...i,
+    grams: i.grams * factor,
+    kcal: i.kcal * factor,
+    protein: i.protein * factor,
+    carbs: i.carbs * factor,
+    fat: i.fat * factor,
+  }));
+  const totals = ingredients.reduce(
     (acc, i) => ({
       grams: acc.grams + i.grams,
       kcal: acc.kcal + i.kcal,
@@ -237,10 +268,32 @@ function RecipeDetailContent() {
               </div>
             )}
 
+            {portionKcal !== null && baseKcal > 0 && (
+              <div className="rounded-2xl bg-hf-tan px-4 py-3">
+                <p className="text-[14px] font-semibold text-hf-black">
+                  {persons === 1
+                    ? t("recipeFilters.personsOne")
+                    : t("recipeFilters.persons", { count: persons })}
+                </p>
+                <div className="py-3">
+                  <HfSlider
+                    value={persons}
+                    min={1}
+                    max={MAX_RECIPE_PERSONS}
+                    onChange={changePersons}
+                    aria-label={t("recipeFilters.adjustTitle")}
+                  />
+                </div>
+                <p className="text-[12px] text-hf-black opacity-60">
+                  {t("recipeFilters.kcalPerServing", { kcal: round(totals.kcal / persons) })}
+                </p>
+              </div>
+            )}
+
             <div>
               <p className="mb-2 text-xs font-bold text-hf-black">{t("recipeDetail.ingredients")}</p>
               <div className="overflow-hidden rounded-2xl bg-hf-tan">
-                {view.ingredients.map((ingredient) => (
+                {ingredients.map((ingredient) => (
                   <div
                     key={ingredient.key}
                     className="flex items-center gap-2.5 border-b border-hf-tan-dark px-4 py-3 last:border-b-0"

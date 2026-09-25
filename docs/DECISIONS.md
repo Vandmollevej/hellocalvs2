@@ -2,6 +2,43 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-25: Filtre og portionsjustering på "Delte retter"
+
+Brugerens krav: sorteringsknapperne erstattes af et filterikon til venstre
+for søgefeltet, der åbner skærmen "Filtre" (`/profile/recipes/filters`).
+Fanen hedder nu "Delte retter" (ikke "Søg i delte retter").
+
+- **Rækkefølge på filterskærmen:** Justér retter (1–6 personer, Vis
+  kalorier, Vis energifordeling) · Sorter efter (én ad gangen) · Allergier ·
+  Diæter · Høj på protein · Specialkost · Fokus på makroer · Nulstil.
+  Valgene gemmes i browseren (`localStorage`), ikke på serveren.
+- **Filtrering sker på serveren** (`src/lib/recipe-filter-match.ts`). Alt,
+  der ikke opfylder et valgt filter, sorteres fra — også når data mangler.
+- **Allergier:** EU's 14 plus 15 andre kendte fødevareallergier, alfabetisk.
+  Genkendes via madvarens EU-allergenmærkning og en ordscanning (dansk +
+  engelsk) af rettens navn, ingrediensnavne og varedeklarationer.
+  "Kokosmælk", "muskatnød", "glutenfri pasta" o.l. tæller ikke. Delte retter
+  har ingen beskrivelse/fremgangsmåde endnu, så de kan ikke scannes.
+- **Spor af:** "kan indeholde spor af …" i en varedeklaration og ingredienser,
+  der ofte har spor (chokolade → nødder, havre → gluten osv.) giver en rød
+  advarsel under rettens titel — kun for allergener, brugeren har valgt.
+- **Diæter:** vegansk, vegetarisk, pescetarisk, glutenfri, laktosefri
+  (laktosefri mælkeprodukter tilladt), keto (≤ 10 E% kulhydrat), lavt sukker
+  (EU: ≤ 5 g/100 g).
+- **Makroer (energiprocent):** Høj på protein ≥ 20 E% (EU-forordning
+  1924/2006). Øvrige grænser ligger uden for NNR 2023's intervaller: protein
+  lav < 10, kulhydrat høj > 60 / lav < 26, fedt høj > 40 / lav < 25. Høj og lav
+  udelukker hinanden pr. makro.
+- **Specialkost:** "Højt indhold af" fibre (EU: 3 g/100 kcal), jern, calcium,
+  kalium, A- og C-vitamin (≥ 30 % af EU-referenceindtaget pr. 600 kcal). Data
+  findes kun delvist (Open Food Facts, HelloFresh); ukendt ⇒ frasorteret.
+- **Anbefalet servering** (`src/lib/recipe-portions.ts`): hovedmåltid = 30 %
+  af brugerens dagsbehov (Mifflin-St Jeor × PAL 1,4; uden profildata EU's
+  2000 kcal). Måltidsfordeling: morgenmad 20–25 %, frokost 25–30 %,
+  aftensmad 30–35 %, mellemmåltider 10–20 %. Listen viser kcal pr. servering
+  og antal serveringer; opskriftssiden skalerer ingrediensernes gram til det
+  valgte antal personer (den gemte ret ændres ikke).
+
 ## 2026-09-24: Normalt login — privacy-by-architecture ophævet
 
 Brugerens beslutning: "Man skal bare kunne logge ind som på alle andre

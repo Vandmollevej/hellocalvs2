@@ -485,8 +485,11 @@ Se `docs/DECISIONS.md` (2026-09-24). Bygget efter brugerens afklaring
   til Opskrifter → Mine retter.
 - **Opskrifter** (`/profile/recipes`): faner "Mine retter" (egne retter +
   favoritter fra boksen, mærket Delt/Privat/Favorit) og "Delte retter"
-  (titel/ingredienser, sortering Relevans/Popularitet/Dato som små knapper;
-  HelloFresh medtages kun, når det er slået til under Integrationer).
+  (titel/ingredienser; HelloFresh medtages kun, når det er slået til under
+  Integrationer). Filterikonet åbner `/profile/recipes/filters` (sortering,
+  allergier, diæter, protein, specialkost, makroer, personer 1–6, vis
+  kalorier/energifordeling — se DECISIONS 2026-09-25). Ikke testet mod rigtige
+  data endnu: lokal DB mangler.
   Detaljeside `/profile/recipes/[id]?kind=own|shared`: deling til/fra for
   egne retter; favorit, "Gem som egen kopi" og "Anmeld" (kun før
   godkendelse) for delte.

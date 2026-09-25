@@ -3,9 +3,15 @@
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { IconChevronRight, IconSearch, IconSoup } from "@tabler/icons-react";
+import { IconAdjustmentsHorizontal, IconChevronRight, IconSearch, IconSoup } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import {
+  activeFilterCount,
+  filtersToParams,
+  loadRecipeFilters,
+  type RecipeFilters,
+} from "@/lib/recipe-filters";
 
 // Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24): to faner,
 // "Mine retter" (egne retter og favoritter fra delte retter, fra boksen) og
@@ -13,7 +19,6 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 // brugeren har slået dem til under Integrationer).
 
 type Tab = "mine" | "shared";
-type Sort = "relevance" | "popular" | "date";
 type LoadState = "loading" | "ready" | "error";
 type Translate = (key: string, params?: Record<string, string | number>) => string;
 
@@ -30,7 +35,11 @@ type SearchResult = {
   id: string;
   name: string;
   imageUrl: string | null;
+  // Hele retten (delte retter) eller én servering (HelloFresh).
   kcal: number;
+  servings: number;
+  split: { protein: number; carbs: number; fat: number } | null;
+  warnings: { ingredient: string; allergen: string }[];
 };
 
 type Row = {
@@ -40,6 +49,9 @@ type Row = {
   imageUrl: string | null;
   subtitle: string;
   label?: { text: string; tone: "green" | "muted" };
+  // Rød advarsel under titlen (spor af allergener, docs/DECISIONS.md 2026-09-25).
+  warnings?: string[];
+  extra?: string;
 };
 
 function dishKcal(dish: OwnDish) {
@@ -59,6 +71,11 @@ function RecipeRow({ row }: { row: Row }) {
       </div>
       <div className="min-w-0 flex-1">
         <p className="truncate text-[14px] font-semibold text-hf-black">{row.name}</p>
+        {row.warnings?.map((warning) => (
+          <p key={warning} className="text-[12px] text-hf-red-dark">
+            {warning}
+          </p>
+        ))}
         <p className="text-[12px] text-hf-black opacity-60">
           {row.subtitle}
           {row.label && (
@@ -67,6 +84,7 @@ function RecipeRow({ row }: { row: Row }) {
             </span>
           )}
         </p>
+        {row.extra && <p className="text-[12px] text-hf-black opacity-60">{row.extra}</p>}
       </div>
       <IconChevronRight size={18} className="shrink-0 text-hf-black" />
     </Link>
@@ -135,15 +153,9 @@ function MineTab({ t }: { t: Translate }) {
   );
 }
 
-const SORTS: { value: Sort; key: string }[] = [
-  { value: "relevance", key: "recipes.sortRelevance" },
-  { value: "popular", key: "recipes.sortPopular" },
-  { value: "date", key: "recipes.sortDate" },
-];
-
 function SharedTab({ t }: { t: Translate }) {
   const [query, setQuery] = useState("");
-  const [sort, setSort] = useState<Sort>("relevance");
+  const [filters] = useState<RecipeFilters>(loadRecipeFilters);
   const [helloFresh, setHelloFresh] = useState<boolean | null>(null);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [state, setState] = useState<LoadState>("loading");
@@ -161,7 +173,7 @@ function SharedTab({ t }: { t: Translate }) {
     const timeout = setTimeout(async () => {
       setState("loading");
       try {
-        const params = new URLSearchParams({ sort });
+        const params = filtersToParams(filters);
         if (query.trim()) params.set("q", query.trim());
         if (helloFresh) params.set("hellofresh", "1");
         const res = await fetch(`/api/shared-recipes?${params.toString()}`, { signal: controller.signal });
@@ -176,37 +188,55 @@ function SharedTab({ t }: { t: Translate }) {
       controller.abort();
       clearTimeout(timeout);
     };
-  }, [query, sort, helloFresh]);
+  }, [query, filters, helloFresh]);
+
+  const view = filters;
+  const activeCount = activeFilterCount(view);
+
+  function subtitleFor(result: SearchResult) {
+    if (!view.showKcal) return "";
+    const perServing = Math.round(result.kcal / Math.max(1, result.servings));
+    return result.kind === "shared" && result.servings > 1
+      ? `${t("recipeFilters.kcalPerServing", { kcal: perServing })} · ${t("recipeFilters.servings", { count: result.servings })}`
+      : t("recipeFilters.kcalPerServing", { kcal: perServing });
+  }
+
+  function extrasFor(result: SearchResult) {
+    return {
+      warnings: result.warnings.map((w) =>
+        t("recipeFilters.warning", {
+          ingredient: w.ingredient.toLowerCase(),
+          allergen: t(`recipeFilters.allergens.${w.allergen}`).toLowerCase(),
+        }),
+      ),
+      extra: view.showEnergySplit && result.split ? t("recipeFilters.split", result.split) : undefined,
+    };
+  }
 
   return (
     <div className="flex flex-col gap-2 p-4">
-      <div className="hf-search">
-        <IconSearch size={16} color="var(--hf-black)" />
-        <input
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder={t("recipes.sharedSearchPlaceholder")}
-        />
-      </div>
-
-      {/* Små sorteringsknapper (brugerens valg 2026-09-23): ca. 18 px synlig
-          højde og 11 px tekst; usynligt udvidet trykområde. */}
-      <div className="flex justify-end gap-1">
-        {SORTS.map((option) => (
-          <button
-            key={option.value}
-            type="button"
-            onClick={() => setSort(option.value)}
-            aria-pressed={sort === option.value}
-            className={`relative rounded-[4px] border px-1.5 py-px text-[11px] leading-[14px] after:absolute after:-inset-x-1 after:-inset-y-3 after:content-[''] ${
-              sort === option.value
-                ? "border-hf-black bg-hf-tan font-semibold text-hf-black"
-                : "border-hf-gray-light bg-hf-white text-hf-black opacity-70"
-            }`}
-          >
-            {t(option.key)}
-          </button>
-        ))}
+      <div className="flex gap-2">
+        {/* Filterikon til venstre for søgefeltet (docs/DECISIONS.md
+            2026-09-25); prikken viser, at der er aktive filtre. */}
+        <Link
+          href="/profile/recipes/filters"
+          aria-label={t("recipeFilters.openFilters")}
+          className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-[8px] border border-hf-gray-border bg-hf-white text-hf-black"
+        >
+          <IconAdjustmentsHorizontal size={20} />
+          {activeCount > 0 && (
+            <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-hf-green" aria-hidden="true" />
+          )}
+        </Link>
+        <div className="hf-search min-w-0 flex-1">
+          <IconSearch size={16} color="var(--hf-black)" />
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={t("recipes.sharedSearchPlaceholder")}
+            className="min-w-0"
+          />
+        </div>
       </div>
 
       {state === "loading" && (
@@ -230,15 +260,17 @@ function SharedTab({ t }: { t: Translate }) {
                       href: `/add/${encodeURIComponent(result.id)}`,
                       name: result.name,
                       imageUrl: result.imageUrl,
-                      subtitle: t("recipes.kcalServing", { kcal: result.kcal }),
+                      subtitle: subtitleFor(result),
                       label: { text: t("recipes.helloFresh"), tone: "green" },
+                      ...extrasFor(result),
                     }
                   : {
                       key: result.id,
                       href: `/profile/recipes/${encodeURIComponent(result.id)}?kind=shared`,
                       name: result.name,
                       imageUrl: null,
-                      subtitle: t("recipes.kcalTotal", { kcal: result.kcal }),
+                      subtitle: subtitleFor(result),
+                      ...extrasFor(result),
                     }
               }
             />
