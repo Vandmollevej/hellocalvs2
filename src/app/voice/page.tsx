@@ -7,7 +7,9 @@ import { IconCheck, IconChevronRight, IconRefresh } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { SwipeableRow } from "@/components/SwipeableRow";
 import { regionToSpeechLang } from "@/lib/regions";
+import { InlineGramsInput } from "@/components/hf/InlineGramsInput";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { scaleItemToGrams } from "@/lib/scale-meal-item";
 
 type Item = {
   id: string;
@@ -172,12 +174,15 @@ function VoiceItemRow({
   onFavorite,
   onReportError,
   onDelete,
+  onChangeGrams,
   t,
 }: {
   item: Item;
   onFavorite?: () => void;
   onReportError?: () => void;
   onDelete: () => void;
+  // Kun for endnu ikke gemte forslag: ret mængden før de tilføjes.
+  onChangeGrams?: (grams: number) => void;
   t: T;
 }) {
   const content = (
@@ -195,7 +200,13 @@ function VoiceItemRow({
             <span className="flex-shrink-0 rounded-full bg-hf-tan px-1.5 py-0.5 text-[10px] font-bold uppercase text-hf-black opacity-70">{t("voice.aiEstimate")}</span>
           )}
         </span>
-        <span className="mt-0.5 block text-xs text-hf-black opacity-60">{item.amountLabel}</span>
+        <span className="mt-0.5 block text-xs text-hf-black opacity-60">
+          {!item.saved && onChangeGrams ? (
+            <InlineGramsInput label={item.amountLabel} grams={item.amountGrams} onChange={onChangeGrams} />
+          ) : (
+            item.amountLabel
+          )}
+        </span>
       </div>
       <span className="flex-shrink-0 text-xs text-hf-black opacity-60">{item.kcal} kcal</span>
       {item.saved && <IconChevronRight size={18} className="flex-shrink-0 text-hf-black opacity-40" />}
@@ -658,6 +669,16 @@ export default function VoicePage() {
                   onFavorite={item.productId ? () => void favoriteItem(item.productId as string) : undefined}
                   onReportError={item.saved ? () => router.push(`/registration/${item.id}/report-error`) : undefined}
                   onDelete={() => deleteItem(item)}
+                  onChangeGrams={
+                    item.saved
+                      ? undefined
+                      : (grams) =>
+                          setItems((current) =>
+                            current.map((existing) =>
+                              existing.id === item.id ? scaleItemToGrams(existing, grams) : existing
+                            )
+                          )
+                  }
                   t={t}
                 />
               </li>

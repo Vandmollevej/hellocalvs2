@@ -11,6 +11,10 @@ Last updated: 2026-09-25
   ("personer"/"portioner") kan nu også skrives direkte (fx 1,5); gram/ml-feltet
   var allerede redigerbart og markerer nu indholdet ved fokus.
 - Makro- og søvnslidere havde allerede tryk-for-at-redigere.
+- Kamera (måltidsbillede) og stemme: mængden på endnu ikke gemte forslag kan
+  trykkes på og overskrives i gram (`InlineGramsInput`); kcal og makroer
+  skaleres med (`src/lib/scale-meal-item.ts`). Gemte registreringer er
+  fortsat snapshots og ændres ikke.
 
 ## 2026-09-25: Profil — start-vægt altid låst + "Lås"-side
 

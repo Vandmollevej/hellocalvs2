@@ -19,7 +19,9 @@ import {
   type FractionRect,
 } from "@/lib/barcode-scan";
 import { buildFakeBarcodeForRegion } from "@/lib/regions";
+import { InlineGramsInput } from "@/components/hf/InlineGramsInput";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { scaleItemToGrams } from "@/lib/scale-meal-item";
 
 type CameraStatus = "starting" | "active" | "denied" | "unavailable" | "error";
 type LookupStatus = "idle" | "loading" | "not_found" | "error";
@@ -316,6 +318,10 @@ function KameraContent() {
     };
   }, [mode, cameraStatus, restartKey, t]);
 
+  function setMealItemGrams(id: string, grams: number) {
+    setMealItems((current) => current.map((item) => (item.id === id ? scaleItemToGrams(item, grams) : item)));
+  }
+
   function removeMealItem(id: string) {
     setMealItems((current) => current.filter((item) => item.id !== id));
   }
@@ -551,7 +557,12 @@ function KameraContent() {
                         )}
                       </p>
                       <p className="text-xs text-hf-black opacity-60">
-                        {item.amountLabel} · {item.kcal} kcal
+                        <InlineGramsInput
+                          label={item.amountLabel}
+                          grams={item.amountGrams}
+                          onChange={(grams) => setMealItemGrams(item.id, grams)}
+                        />{" "}
+                        · {item.kcal} kcal
                       </p>
                     </div>
                     <button
