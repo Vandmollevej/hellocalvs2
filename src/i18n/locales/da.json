@@ -1166,6 +1166,10 @@
       "sleep": "Søvn",
       "other": "Øvrige data"
     },
+    "searchPlaceholder": "Søg i alle kort",
+    "searchResults": "Søgeresultater",
+    "noSearchResults": "Ingen kort matcher din søgning.",
+    "addAll": "+ Tilføj",
     "noCardsYet": "Ingen kort her endnu.",
     "addHeading": "+ Overskrift",
     "addHeadingHint": "Tilføjer en sektionsoverskrift til din statistikside, som du selv kan omdøbe.",

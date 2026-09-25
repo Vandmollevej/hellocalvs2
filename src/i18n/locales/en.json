@@ -1166,6 +1166,10 @@
       "sleep": "Sleep",
       "other": "Other data"
     },
+    "searchPlaceholder": "Search all cards",
+    "searchResults": "Search results",
+    "noSearchResults": "No cards match your search.",
+    "addAll": "+ Add",
     "noCardsYet": "No cards here yet.",
     "addHeading": "+ Heading",
     "addHeadingHint": "Adds a section heading to your statistics page, which you can rename yourself.",
