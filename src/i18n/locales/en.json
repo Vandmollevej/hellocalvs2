@@ -1105,32 +1105,23 @@
     "helloFreshDescription": "Show HelloFresh recipes together with shared dishes under Recipes",
     "title": "Integrations",
     "loading": "Loading…",
-    "status": {
-      "disconnected": "Not connected",
-      "connected": "Connected",
-      "error": "Error",
-      "needsApp": "Needs app",
-      "pending": "Pending"
-    },
     "notice": {
       "connected": "{name} was connected.",
       "failed": "Could not connect {name}. Please try again."
     },
-    "intro": "Connect your health apps so weight, steps and workouts are fetched automatically. Everything goes into your locked vault, which only you can open.",
+    "intro": "Connect your health apps so weight, steps and workouts are fetched automatically.",
     "lastSynced": "Last synced {date}",
-    "syncNow": "Sync now",
-    "syncing": "Syncing…",
     "notConfigured": "Ready in the app, waiting for the server keys.",
-    "disconnect": "Disconnect",
     "connect": "Connect",
-    "deviceTokensTitle": "Device tokens (companion app)",
-    "deviceTokensDescription": "The Hello Cal app uses a device code to send your data securely into your locked vault.",
-    "createdAt": "Created {date}",
-    "lastUsedAt": " · Last used {date}",
     "remove": "Remove",
-    "saveTokenNotice": "Save this value now — it won't be shown again:",
-    "close": "Close",
-    "generateDeviceCode": "Generate device code"
+    "enable": "Turn on",
+    "unavailable": "Not available yet",
+    "sections": {
+      "active": "Active integrations",
+      "popular": "Most used",
+      "recipes": "Recipes",
+      "apps": "Apps"
+    }
   },
   "payment": {
     "title": "Payment",
