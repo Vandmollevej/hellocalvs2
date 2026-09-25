@@ -2,6 +2,26 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-25: Familieabonnement og børneprofiler
+
+Brugerens valg efter research (detaljer, kilder og åbne spørgsmål i
+`docs/FAMILY.md`). **Omstøder** `docs/SPECIFICATION.md` §3 "Én profil pr.
+konto. Ingen husstands-/familieprofiler … ingen forældrekontrol".
+
+- Familieabonnement er altid betalt; familieprofiler ser aldrig reklamer eller
+  partnertilbud.
+- Betaleren opsætter familien og bestemmer, hvem der må se og taste ind for et
+  bestemt medlem. Betaleren har adgang til alle familiens profiler.
+- Under 15 år kan man ikke selv oprette en konto; en forælder opretter
+  profilen. Barnet kan få eget login via en engangskode.
+- Barnet kan melde sig ud og låse de andre ude (fortolket: fra 15 år).
+- Barnet ser samme visning som voksne.
+- Alt, hvad andre gør på en profil (åbner, ser, tilføjer, ændrer, sletter),
+  logges og vises for profilens ejer, både som liste og i et panel, der glider
+  ned fra toppen ved nye hændelser.
+- Kun dagbogsdata følger den valgte profil. Login, adgangskode, abonnement,
+  integrationer og familieopsætning hører altid til den, der er logget ind.
+
 ## 2026-09-25: Global lodret rytme (8/16/32) og sorte primærknapper
 
 Brugerens krav: "stringent opsætning på tværs af hele sitet med rene linjer og

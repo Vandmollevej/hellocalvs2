@@ -11,6 +11,12 @@ container-backup"), som deployet lægger samme sted; den gamle gemmes som
 `.orig`. Forventet: ca. 7 GB første gang, derefter kun ændringer. Ikke kørt på
 Synology endnu — kun testet med en falsk `docker` i cloud-sessionen.
 
+## 2026-09-25: Familieabonnement — research og beslutninger
+
+Se `docs/FAMILY.md` (research, beslutninger, åbne spørgsmål, byggeplan) og
+`docs/DECISIONS.md` 2026-09-25 "Familieabonnement". Bygges på branch
+`claude/lucid-bell-s5vyhv`; følg rækken i `docs/handoffs/OPEN-TASKS.md`.
+
 ## 2026-09-25: Ubrugte statistik-kort — "+ Overskrift" og "+ Skillelinje" øverst
 
 `/statistics/unused-cards`: knapperne ligger nu lige under søgefeltet, før accordionerne.

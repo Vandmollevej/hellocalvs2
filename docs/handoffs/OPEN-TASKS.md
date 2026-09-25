@@ -184,3 +184,11 @@ Ejer: —
 Ændret og ikke committet uden kendt ejer: `docs/AI.md`, `src/components/AddButton.tsx`,
 `src/components/hf/PointsPromoBanner.tsx`, `src/i18n/locales/*.json`, `src/lib/vault/webauthn-client.ts`.
 Nogle hører muligvis til login-/Mailjet-sessionerne på konto B. Rør dem ikke uden at læse diff'en først.
+
+## G-FAM — Familieabonnement og børneprofiler
+Filer: `docs/FAMILY.md`, Prisma-skema (Family*, ProfileAccessLog), `src/lib/family*.ts`, `src/lib/session.ts`, `src/app/api/family/**`, `src/app/profile/family/**`, profilvælger/panel-komponenter, dagbogs-API'erne der skal følge den valgte profil.
+Ejer: cloud-session `claude/lucid-bell-s5vyhv` (2026-09-25)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | Familieabonnement: forældre ser/taster for børn, adgangslog til barnet | I gang | Byggeplan i `docs/FAMILY.md`. Åbne spørgsmål (børneberegninger, pris, sletteret, fælles registrering) venter på bruger |
