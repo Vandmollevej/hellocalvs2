@@ -6,7 +6,7 @@ import { completeLogin } from "@/lib/user-login";
 // Svaret fra Google/Facebook (GET) og Apple (POST, form_post).
 async function handle(req: Request, provider: string, fields: URLSearchParams) {
   const fail = (reason: string) => {
-    const response = NextResponse.redirect(appUrl(`/login?error=${reason}`), 303);
+    const response = NextResponse.redirect(appUrl(`/login?error=${reason}`, req), 303);
     response.cookies.set(OAUTH_STATE_COOKIE, "", { path: "/api/auth/oauth", maxAge: 0 });
     return response;
   };
@@ -26,7 +26,7 @@ async function handle(req: Request, provider: string, fields: URLSearchParams) {
     const profile = await fetchProfile(provider, code, state.nonce, fields.get("user"));
     const result = await findOrCreateUser(provider, profile);
     if (!result) return fail("oauth");
-    const response = NextResponse.redirect(appUrl(state.next), 303);
+    const response = NextResponse.redirect(appUrl(state.next, req), 303);
     response.cookies.set(OAUTH_STATE_COOKIE, "", { path: "/api/auth/oauth", maxAge: 0 });
     return completeLogin(req, response, result.user.id, provider);
   } catch (error) {
