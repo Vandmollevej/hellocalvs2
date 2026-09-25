@@ -24,6 +24,7 @@ import {
   IconToolsKitchen2,
   type Icon,
 } from "@tabler/icons-react";
+import { IconWaterGlass } from "@/components/icons/WaterGlass";
 import { DAILY_KCAL_GOAL, DAILY_PROTEIN_GOAL } from "@/lib/goals";
 
 export type FrontpageStatKey =
@@ -202,7 +203,7 @@ export const FRONTPAGE_STAT_DEFS: {
   {
     key: "water",
     labelKey: "frontPageStats.water",
-    icon: IconDroplet,
+    icon: IconWaterGlass,
     // Same "1,6 l" placeholder src/lib/stat-cards.ts has always shown until a
     // HealthKit/Health Connect companion app sends real WATER_ML readings.
     compute: (data) => ({
