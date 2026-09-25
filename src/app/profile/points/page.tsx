@@ -85,7 +85,7 @@ export default function PointsPage() {
           {message && <p className="hf-type-caption mt-2">{message}</p>}
         </div>
 
-        <h2 className="hf-type-section-title mt-6">Historik</h2>
+        <h2 className="hf-type-section-title">Historik</h2>
         {transactions.length === 0 ? (
           <p className="hf-type-body-sm mt-2 opacity-70">Ingen points optjent endnu.</p>
         ) : (

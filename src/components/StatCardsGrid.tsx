@@ -133,10 +133,13 @@ export function StatCardsGrid({
   cards,
   defaultActiveKeys,
   highlightRecommendedLimits = false,
+  onShowAddChange,
 }: {
   cards: StatCardValue[];
   defaultActiveKeys: string[];
   highlightRecommendedLimits?: boolean;
+  /** True while editing — or when the grid is empty, so cards can always be added back. */
+  onShowAddChange?: (show: boolean) => void;
 }) {
   const { t } = useTranslation();
   const cardByKey = useMemo(() => new Map(cards.map((c) => [c.key, c])), [cards]);
@@ -184,6 +187,11 @@ export function StatCardsGrid({
     const insertAt = headingBoundary < starts.length ? starts[headingBoundary] : rest.length;
     return [...rest.slice(0, insertAt), { type: "preview" as const }, ...rest.slice(insertAt)];
   }, [layout, drag, headingBoundary]);
+
+  const hasItems = layout.some((item) => item.type !== "empty");
+  useEffect(() => {
+    onShowAddChange?.(editMode || !hasItems);
+  }, [editMode, hasItems, onShowAddChange]);
 
   useEffect(() => {
     if (isFirstRender.current) {
