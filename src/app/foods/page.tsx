@@ -258,7 +258,7 @@ function MadvarerContent() {
 
   return (
     <HfScreen title={t("foods.title")} icon={<IconApple size={20} stroke={2} />}>
-      <div className="flex flex-col gap-3 p-4">
+      <div className="hf-page">
         <div className="hf-search">
           <IconSearch size={16} color="var(--hf-black)" />
           <input

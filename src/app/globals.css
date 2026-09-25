@@ -432,6 +432,98 @@ textarea::selection,
   white-space: nowrap;
 }
 
+/* ---- Global afstandsregel, jf. design.md §5.4 (bindende, 2026-09-25).
+   Kun tre afstande styrer den lodrette rytme overalt:
+     8px  = inde i en blok (label→felt, titel→tekst, tekst→hjælpetekst)
+     16px = mellem blokke, kortpadding og sidegutter
+     32px = før en ny sektion (sektionsoverskrift)
+   Sider må ikke lægge egne mt-/mb-/gap-værdier ovenpå disse primitiver. ---- */
+:root {
+  --hf-space-inline: 8px;
+  --hf-space-block: 16px;
+  --hf-space-section: 32px;
+  --hf-gutter: 16px;
+  --hf-radius-card: 8px;
+}
+
+@layer components {
+  /* Sideindhold under appbaren: 16px gutter og 16px mellem blokke. */
+  .hf-page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--hf-space-block);
+    padding: var(--hf-space-block) var(--hf-gutter) var(--hf-space-section);
+  }
+
+  /* Sider der kun består af selvstændige sektioner/kortgrupper. */
+  .hf-page--sections {
+    gap: var(--hf-space-section);
+  }
+
+  /* Ensartede lister af kort/rækker. */
+  .hf-page--list {
+    gap: var(--hf-space-inline);
+  }
+
+  /* Kort: 16px padding på alle sider, 8px mellem indholdet. */
+  .hf-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--hf-space-inline);
+    padding: var(--hf-space-block);
+    border-radius: var(--hf-radius-card);
+    background: var(--hf-color-card);
+  }
+
+  /* Kort med formularfelter/flere controls: 16px mellem felterne. */
+  .hf-card--form {
+    gap: var(--hf-space-block);
+  }
+
+  .hf-card--outline {
+    border: 1px solid var(--hf-color-line);
+    background: transparent;
+  }
+
+  .hf-card--brand {
+    background: var(--hf-color-brand);
+    color: var(--hf-color-white);
+  }
+
+  /* Tæt stak (fx felt + hjælpetekst) inde i en blok. */
+  .hf-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--hf-space-inline);
+  }
+
+  /* Korttitel uden sektionslinjer (fx abonnementsnavn i et kort). */
+  .hf-type-card-title {
+    margin: 0;
+    font-family: var(--font-hf-heading);
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 24px;
+    color: var(--hf-color-text);
+  }
+}
+
+/* Følgende regler skal ligge uden for @layer, fordi .hf-type-* også gør. */
+/* En sektionsoverskrift midt på en side får altid 32px luft over sig
+   (16px gap + 16px margin) — aldrig en side-specifik mt-*. */
+.hf-page > .hf-type-section-title:not(:first-child) {
+  margin-top: var(--hf-space-block);
+}
+
+.hf-page--sections > .hf-type-section-title:not(:first-child) {
+  margin-top: 0;
+}
+
+/* Hvid tekst i brand-kort, også i .hf-type-*-tekster. */
+.hf-card--brand * {
+  color: inherit;
+}
+
 /* Knapper */
 /* Padding er ikke sat her med vilje — angiv altid px- og py- på selve elementet,
    så knappen kan bruges i både store (fuld bredde) og små (inline) sammenhænge. */

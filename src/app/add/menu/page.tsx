@@ -34,7 +34,7 @@ function AddMenuContent() {
 
   return (
     <HfScreen title={t("addMenu.title")}>
-      <div className="flex flex-col gap-4 p-4">
+      <div className="hf-page">
         <AccordionCard>
           {actions.map((action, index) => (
             <ChevronRow

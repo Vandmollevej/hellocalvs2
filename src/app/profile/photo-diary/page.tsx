@@ -243,7 +243,7 @@ export default function BilledeDagbogPage() {
           {loading ? t("photoDiary.loading") : t("photoDiary.loadError")}
         </p>
       ) : (
-        <div className="flex flex-col gap-4 p-4">
+        <div className="hf-page">
           <Toggle
             label={t("photoDiary.requiresPasscode")}
             description={t("photoDiary.requiresPasscodeDescription")}

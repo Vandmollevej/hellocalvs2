@@ -49,7 +49,7 @@ export default function MessagesPage() {
 
   return (
     <HfScreen title={t("profile.messages.title")}>
-      <div className="flex flex-col gap-3 px-4 pt-4 pb-8">
+      <div className="hf-page">
         {hasUnread && (
           <button
             type="button"

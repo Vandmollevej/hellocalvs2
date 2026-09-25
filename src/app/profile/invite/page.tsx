@@ -135,7 +135,7 @@ export default function InvitePage() {
           href="/betingelser#pointsystem"
         />
 
-        <h2 className="hf-type-section-title mt-6">Send invitation pr. e-mail</h2>
+        <h2 className="hf-type-section-title">Send invitation pr. e-mail</h2>
         <form onSubmit={sendInvitation} className="mt-2 flex gap-2">
           <input
             type="email"
@@ -156,7 +156,7 @@ export default function InvitePage() {
         </form>
         {inviteError && <p className="hf-type-caption mt-1 text-hf-red-dark">{inviteError}</p>}
 
-        <h2 className="hf-type-section-title mt-6">Afsendte invitationer</h2>
+        <h2 className="hf-type-section-title">Afsendte invitationer</h2>
         {invitations.length === 0 ? (
           <p className="hf-type-body-sm mt-2 opacity-70">Ingen invitationer sendt endnu.</p>
         ) : (
@@ -187,7 +187,7 @@ export default function InvitePage() {
           </div>
         )}
 
-        <h2 className="hf-type-section-title mt-6">Tilmeldte venner</h2>
+        <h2 className="hf-type-section-title">Tilmeldte venner</h2>
         {referrals.length === 0 ? (
           <p className="hf-type-body-sm mt-2 opacity-70">Ingen venner inviteret endnu.</p>
         ) : (

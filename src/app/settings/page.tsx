@@ -76,7 +76,7 @@ export default function SettingsPage() {
         <OnboardingWizard forceVisible onClose={() => setShowOnboarding(false)} />
       )}
 
-      <div className="flex flex-col gap-8 p-4">
+      <div className="hf-page hf-page--sections">
         <AccordionCard>
           <ChevronRow
             icon={<IconCreditCard size={20} />}

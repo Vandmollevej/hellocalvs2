@@ -2,6 +2,22 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-25: Global lodret rytme (8/16/32) og sorte primærknapper
+
+Brugerens krav: "stringent opsætning på tværs af hele sitet med rene linjer og
+globale designregler" — afstande mellem blokke, tekst og knapper var forskellige
+fra side til side.
+
+- Kun 8 px (inde i en blok), 16 px (mellem blokke, kortpadding, gutter) og
+  32 px (før en sektion). Se `design.md` §5.4.
+- Sidecontainere bruger `.hf-page` i stedet for egne `flex flex-col gap-N p-4`;
+  kort bruger `.hf-card`. 49 sider er migreret; resterende kort med egne
+  paddings/radius (statistikkort, accordions) migreres senere, én
+  komponentfamilie ad gangen.
+- Primærknapper forbliver sorte, også når de er deaktiveret (ingen grå
+  opacity). "Indløs points" på Abonnement er bevidst en grå flade med hvid tekst.
+- Abonnement: prislinjen viser kun prisen ("119 kr./måned"), ikke "Seriøs —".
+
 ## 2026-09-24: Normalt login — privacy-by-architecture ophævet
 
 Brugerens beslutning: "Man skal bare kunne logge ind som på alle andre

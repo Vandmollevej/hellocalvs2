@@ -61,7 +61,7 @@ function FaceIdOfferContent() {
         {error && <p className="hf-type-caption text-hf-red-dark">{error}</p>}
       </div>
 
-      <div className="flex flex-col gap-3 px-4 pb-8 pt-4">
+      <div className="hf-page">
         <button
           type="button"
           onClick={enable}

@@ -45,7 +45,7 @@ export default function PaymentPage() {
     <HfScreen
       title={t("payment.title")}
     >
-      <div className="flex flex-col gap-4 p-4">
+      <div className="hf-page">
         <div className="rounded-[8px] p-4" style={{ background: "var(--hf-color-brand)" }}>
           <p className="hf-type-body-sm font-bold" style={{ color: "var(--hf-color-white)" }}>
             {statusLabels(t)[subscription?.status ?? "INACTIVE"]}

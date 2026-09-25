@@ -95,7 +95,7 @@ export default function GoalsPage() {
           </p>
         </div>
       ) : (
-        <div className="flex flex-col gap-4 p-4">
+        <div className="hf-page">
           {goals.map((goal) => (
             <section key={goal.id} className="flex flex-col">
               <DateSeparator label={formatDate(goal.createdAt)} />

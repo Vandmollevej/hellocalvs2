@@ -35,7 +35,7 @@ type CommunicationUser = {
 };
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
-  return <p className="hf-type-section-title mb-1 mt-2">{children}</p>;
+  return <p className="hf-type-section-title">{children}</p>;
 }
 
 function SectionDivider() {
@@ -84,7 +84,7 @@ export default function CommunicationPage() {
     <HfScreen
       title={t("profile.section.communication")}
     >
-      <div className="flex flex-col gap-4 px-4 pt-4 pb-8">
+      <div className="hf-page">
         <p className="hf-type-body-sm opacity-70">{t("profile.communication.intro")}</p>
 
         {!user ? (

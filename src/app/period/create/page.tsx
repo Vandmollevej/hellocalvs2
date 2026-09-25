@@ -75,12 +75,12 @@ export default function PeriodCreatePage() {
 
   return (
     <HfScreen title={t("periodLog.title")} icon={<IconCalendarHeart size={20} stroke={2} />}>
-      <div className="flex flex-col gap-4 p-4">
+      <div className="hf-page">
         <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
           <p className="text-[13px] leading-5">{t("periodLog.intro")}</p>
         </div>
 
-        <div className="flex flex-col gap-3 rounded-2xl bg-hf-tan p-4">
+        <div className="hf-card hf-card--form">
           <label className="flex flex-col gap-1.5">
             <span className="text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
               {t("periodLog.startDate")}

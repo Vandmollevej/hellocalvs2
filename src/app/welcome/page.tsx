@@ -63,7 +63,7 @@ export default function VelkommenPage() {
         <p className="hf-type-body-lg mt-8">{t("welcome.subtext")}</p>
       </div>
 
-      <div className="flex flex-col gap-3 px-4 pb-8 pt-4">
+      <div className="hf-page">
         <Link
           href="/signup"
           className="hf-btn-primary hf-type-button h-12 w-full"

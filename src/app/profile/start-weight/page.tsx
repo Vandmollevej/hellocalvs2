@@ -49,7 +49,7 @@ export default function StartWeightPage() {
 
   return (
     <HfScreen title={t("profile.startWeight.title")} onBack={() => router.back()}>
-      <div className="flex flex-col gap-4 p-4">
+      <div className="hf-page">
         {weightKg !== null && (
           <div className="flex flex-col gap-1.5">
             <span className="text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">

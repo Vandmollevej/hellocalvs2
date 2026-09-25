@@ -40,7 +40,7 @@ function MonthSinnersContent() {
   const monthLabel = range.start.toLocaleDateString("da-DK", { month: "long", year: "numeric" });
 
   return (
-    <div className="flex flex-col gap-4 p-4">
+    <div className="hf-page">
       <p className="text-center text-xs text-hf-black opacity-60">{monthLabel}</p>
       <SourceMetricTabs value={metric} onChange={setMetric} />
 

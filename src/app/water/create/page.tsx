@@ -124,7 +124,7 @@ export default function WaterCreatePage() {
 
   return (
     <HfScreen title={t("waterLog.title")} icon={<IconDroplet size={20} stroke={2} />}>
-      <div className="flex flex-col gap-4 p-4">
+      <div className="hf-page">
         <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
           <p className="text-[13px] leading-5">{t("waterLog.intro")}</p>
         </div>
@@ -164,7 +164,7 @@ export default function WaterCreatePage() {
           })}
         </div>
 
-        <div className="flex flex-col gap-3 rounded-2xl bg-hf-tan p-4">
+        <div className="hf-card hf-card--form">
           <div className="flex items-baseline justify-between">
             <span className="text-[13px] font-semibold text-hf-black">{t("waterLog.amountLabel")}</span>
             <span className="text-[20px] font-bold text-hf-black">{amountMl} ml</span>

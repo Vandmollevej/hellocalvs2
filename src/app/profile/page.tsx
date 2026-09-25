@@ -74,7 +74,7 @@ export default function ProfilePage() {
           {loading ? t("profile.loading") : t("profile.loadError")}
         </p>
       ) : (
-        <div className="flex flex-col gap-4 p-4">
+        <div className="hf-page">
           {/* Statisk indtil guided profilopsætning beregner det dynamisk. */}
           <HfProgressStepper
             steps={[

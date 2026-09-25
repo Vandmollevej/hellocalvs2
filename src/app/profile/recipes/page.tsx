@@ -111,7 +111,7 @@ function MineTab({ t }: { t: Translate }) {
   }, [t]);
 
   return (
-    <div className="flex flex-col gap-3 p-4">
+    <div className="hf-page">
       {state === "loading" && (
         <p className="py-6 text-center text-sm text-hf-black opacity-60">{t("recipes.loading")}</p>
       )}
@@ -179,7 +179,7 @@ function SharedTab({ t }: { t: Translate }) {
   }, [query, sort, helloFresh]);
 
   return (
-    <div className="flex flex-col gap-2 p-4">
+    <div className="hf-page hf-page--list">
       <div className="hf-search">
         <IconSearch size={16} color="var(--hf-black)" />
         <input

@@ -177,7 +177,7 @@ export default function ProfileEditPage() {
           {loading ? t("profile.loading") : t("profile.loadError")}
         </p>
       ) : (
-        <div className="flex flex-col gap-4 p-4">
+        <div className="hf-page">
           <Field label={t("profile.field.name")}>
             <input
               className={inputClass}

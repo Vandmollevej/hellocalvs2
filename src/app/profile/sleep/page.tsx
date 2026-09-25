@@ -175,7 +175,7 @@ export default function SleepSchedulePage() {
           {loading ? t("profileSleep.loading") : t("profileSleep.loadError")}
         </p>
       ) : (
-        <div className="flex flex-col gap-4 p-4">
+        <div className="hf-page">
           <div className="grid grid-cols-2 gap-3">
             <Field label={t("profileSleep.defaultWakeTime")}>
               <input
@@ -223,7 +223,7 @@ export default function SleepSchedulePage() {
           </button>
 
           {perDayOpen && (
-            <div className="flex flex-col gap-3 rounded-2xl bg-hf-tan p-4">
+            <div className="hf-card hf-card--form">
               <p className="text-[12px] text-hf-black opacity-60">
                 {t("profileSleep.perDayHint")}
               </p>

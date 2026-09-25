@@ -125,12 +125,12 @@ export default function NewGoalPage() {
         </div>
       }
     >
-      <div className="flex flex-col gap-4 p-4">
+      <div className="hf-page">
         <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
           <p className="text-[13px] leading-5">{t("goals.intro")}</p>
         </div>
 
-        <div className="rounded-2xl bg-hf-tan p-4">
+        <div className="hf-card">
           <label className="flex flex-col gap-1">
             <span className="text-[13px] font-semibold text-hf-black">{t("goals.targetDate")}</span>
             <span className="relative flex items-end gap-2 border-b border-hf-black/30 pb-1.5">
@@ -163,7 +163,7 @@ export default function NewGoalPage() {
           </label>
         </div>
 
-        <div className="rounded-2xl bg-hf-tan p-4">
+        <div className="hf-card">
           <GoalInput
             label={t("goals.targetWeight")}
             unit="kg"
@@ -173,7 +173,7 @@ export default function NewGoalPage() {
           />
         </div>
 
-        <div className="flex flex-col gap-4 rounded-2xl bg-hf-tan p-4">
+        <div className="hf-card hf-card--form">
           <p className="text-[15px] font-bold text-hf-black">{t("goals.bodyMeasurementsHeading")}</p>
           <div className="grid grid-cols-2 gap-4">
             {BODY_MEASUREMENT_FIELDS.map(({ field, nameKey }) => (

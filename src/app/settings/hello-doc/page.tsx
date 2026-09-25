@@ -50,7 +50,7 @@ export default function HelloDocPage() {
 
   return (
     <HfScreen title={t("helloDoc.title")}>
-      <div className="flex flex-col gap-6 px-4 pb-8 pt-4">
+      <div className="hf-page hf-page--sections">
         <p className="hf-type-body-sm opacity-80">{t("helloDoc.subtitle")}</p>
 
         {isSerious === false ? (

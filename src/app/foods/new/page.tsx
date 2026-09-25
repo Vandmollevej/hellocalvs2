@@ -196,7 +196,7 @@ function NytProduktContent() {
 
   return (
     <HfScreen title={t("foods.newProductTitle")} icon={<IconApple size={20} stroke={2} />} footer={footer}>
-      <div className="flex flex-col gap-3 p-4">
+      <div className="hf-page">
         {kind === null && (
           <div className="flex flex-col gap-2">
             <p className="px-1 text-sm font-medium text-hf-black">{t("foods.manualKindTitle")}</p>
@@ -227,7 +227,7 @@ function NytProduktContent() {
           <form
             id={INGREDIENT_FORM_ID}
             onSubmit={handleSubmitIngredient}
-            className="flex flex-col gap-2 rounded-2xl bg-hf-tan p-4"
+            className="hf-card"
           >
             <input
               value={ingredientName}
@@ -269,7 +269,7 @@ function NytProduktContent() {
             <form
               id={PRODUCT_FORM_ID}
               onSubmit={handleSubmit}
-              className="flex flex-col gap-2 rounded-2xl bg-hf-tan p-4"
+              className="hf-card"
             >
               <label className="text-xs text-hf-black opacity-70">
                 {t("foods.productCategoryLabel")}

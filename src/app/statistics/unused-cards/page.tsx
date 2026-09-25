@@ -270,7 +270,7 @@ export default function UnusedStatCardsPage() {
     <HfScreen
       title={t("statUnusedCards.title")}
     >
-      <div className="flex flex-col gap-2 p-4">
+      <div className="hf-page hf-page--list">
         <p className="text-xs text-hf-black opacity-60">
           {t("statUnusedCards.hint")}
         </p>

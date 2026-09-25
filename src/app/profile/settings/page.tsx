@@ -180,7 +180,7 @@ export default function ProfileSettingsPage() {
           {loading ? t("settings.loading") : t("settings.loadError")}
         </p>
       ) : (
-        <div className="flex flex-col gap-4 p-4">
+        <div className="hf-page">
           <SetupProgressBar weightSet={weightSet} />
 
           <SetupSelectCard

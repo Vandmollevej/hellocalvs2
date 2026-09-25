@@ -148,7 +148,7 @@ export default function SupportSettingsPage() {
 
   return (
     <HfScreen title={t("settings.support.title")}>
-      <div className="flex flex-col gap-8 p-4 pb-8">
+      <div className="hf-page hf-page--sections">
         <div className="flex flex-col gap-3">
           <p className="hf-type-body">{t("settings.support.intro")}</p>
           <p className="hf-type-body">{t("settings.support.description")}</p>

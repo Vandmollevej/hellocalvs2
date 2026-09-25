@@ -295,7 +295,7 @@ export default function WeightCalibrationPage() {
       title={t("weightCalibration.title")}
     >
 
-      <div className="flex flex-col gap-4 p-4">
+      <div className="hf-page">
         <div className="flex flex-col gap-2">
           <h2 className="text-left text-[17px] font-semibold text-hf-black">
             {t("weightCalibration.timeGrid.title")}
@@ -356,7 +356,7 @@ export default function WeightCalibrationPage() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 rounded-2xl bg-hf-tan p-4">
+        <div className="hf-card hf-card--form">
           <Segmented
             value={shoes}
             onChange={setShoes}

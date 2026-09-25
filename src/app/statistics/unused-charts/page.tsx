@@ -136,7 +136,7 @@ export default function UnusedStatChartsPage() {
 
   return (
     <HfScreen title={t("statUnusedCharts.title")}>
-      <div className="flex flex-col gap-2 p-4">
+      <div className="hf-page hf-page--list">
         <p className="text-xs text-hf-black opacity-60">{t("statUnusedCharts.hint")}</p>
 
         <div className="hf-search">

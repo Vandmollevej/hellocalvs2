@@ -2,6 +2,17 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Global afstandsregel + Abonnement-side
+
+Se `docs/DECISIONS.md` 2026-09-25 "Global lodret rytme". Nye primitiver
+`.hf-page`, `.hf-card`, `.hf-stack`, `.hf-type-card-title` i
+`src/app/globals.css`; 49 sider migreret. Abonnement: pris uden "Seriøs —",
+sort (også deaktiveret) knap, grå "Indløs points" med hvid tekst, "Gratis" står
+ikke længere indrykket. Ikke visuelt testet (kræver login) — tjek på iPhone.
+
+Næste: migrér statistikkort, `AccordionCard`/`.hf-accordion` og øvrige
+komponenter med egne `mt-*`/`p-*` til samme primitiver.
+
 ## 2026-09-25: Statistik — redigerbare grafer, søgning og "+ Tilføj" pr. blok
 
 Se `docs/DECISIONS.md` 2026-09-25 "Statistiksidens grafer kan redigeres som

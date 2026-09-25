@@ -103,7 +103,7 @@ function VerifyStartWeightContent() {
       )}
 
       {state === "invalid" && (
-        <div className="flex flex-col gap-4 p-4">
+        <div className="hf-page">
           <h2 className="text-[18px] font-bold text-hf-black">
             {t("profile.startWeight.invalidLinkTitle")}
           </h2>
@@ -117,7 +117,7 @@ function VerifyStartWeightContent() {
       )}
 
       {state === "saved" && (
-        <div className="flex flex-col gap-4 p-4">
+        <div className="hf-page">
           <h2 role="status" className="text-[20px] font-bold text-hf-black">
             {t("profile.startWeight.saved")}
           </h2>
@@ -128,7 +128,7 @@ function VerifyStartWeightContent() {
       )}
 
       {(state === "valid" || state === "saving") && (
-        <form onSubmit={save} noValidate className="flex flex-col gap-4 p-4">
+        <form onSubmit={save} noValidate className="hf-page">
           <label className="flex flex-col gap-1.5">
             <span className="text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
               {t("profile.startWeight.fieldLabel")}

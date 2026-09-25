@@ -72,9 +72,9 @@ export default function SubscriptionPage() {
           {loading ? t("subscription.loading") : t("subscription.loadError")}
         </p>
       ) : (
-        <div className="flex flex-col gap-4 p-4">
-          <div className="rounded-lg bg-hf-tan p-4">
-            <label htmlFor="gift-code" className="hf-type-body-sm mb-1 block opacity-70">
+        <div className="hf-page">
+          <div className="hf-card">
+            <label htmlFor="gift-code" className="hf-type-body-sm block opacity-70">
               {t("subscription.giftCode.label")}
             </label>
             <div className="flex items-center gap-2">
@@ -87,7 +87,7 @@ export default function SubscriptionPage() {
                   if (event.key === "Enter") redeemGiftCode();
                 }}
                 placeholder={t("subscription.giftCode.placeholder")}
-                className="hf-type-body h-11 flex-1 rounded-md bg-hf-white px-3 uppercase tracking-wide"
+                className="hf-type-body h-12 min-w-0 flex-1 rounded-lg bg-hf-white px-4 uppercase tracking-wide"
                 disabled={redeeming}
               />
               <button
@@ -95,66 +95,63 @@ export default function SubscriptionPage() {
                 onClick={redeemGiftCode}
                 disabled={redeeming || !giftCode.trim()}
                 aria-label={t("subscription.giftCode.submitAria")}
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-hf-white disabled:opacity-40"
+                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg text-hf-white"
                 style={{ background: "var(--hf-black)" }}
               >
                 <IconArrowRight size={20} />
               </button>
             </div>
-            {message && <p className="hf-type-caption mt-2">{message}</p>}
+            {message && <p className="hf-type-caption">{message}</p>}
           </div>
 
           <button
             type="button"
             onClick={() => router.push("/profile/points")}
-            className="hf-type-body flex h-12 items-center justify-between rounded-lg bg-hf-tan px-4 text-left"
+            className="hf-card text-left"
+            style={{ background: "var(--hf-color-disabled)" }}
           >
-            <span>{t("subscription.redeemPoints")}</span>
-            <span className="hf-type-caption opacity-70">
+            <span className="hf-type-card-title" style={{ color: "var(--hf-color-white)" }}>
+              {t("subscription.redeemPoints")}
+            </span>
+            <span className="hf-type-body-sm" style={{ color: "var(--hf-color-white)" }}>
               {t("subscription.redeemPointsHint", { cost: data.freeMonthCost })}
             </span>
           </button>
 
-          <h2 className="hf-type-section-title mt-2">{t("subscription.currentPlan")}</h2>
+          <h2 className="hf-type-section-title">{t("subscription.currentPlan")}</h2>
 
-          <div
-            className="rounded-lg p-4"
-            style={{
-              background: data.tier === "SERIOUS" ? "var(--hf-color-brand)" : "var(--hf-tan)",
-              color: data.tier === "SERIOUS" ? "var(--hf-color-white)" : undefined,
-            }}
-          >
+          <div className={data.tier === "SERIOUS" ? "hf-card hf-card--brand" : "hf-card"}>
             <div className="flex items-center gap-2">
               {data.tier === "SERIOUS" && <IconStar size={18} />}
-              <p className="hf-type-section-title">{t(`subscription.tier.${data.tier === "SERIOUS" ? "serious" : "free"}`)}</p>
+              <p className="hf-type-card-title">{t(`subscription.tier.${data.tier === "SERIOUS" ? "serious" : "free"}`)}</p>
             </div>
             {data.tier === "SERIOUS" ? (
-              <p className="hf-type-body-sm mt-1 opacity-90">
-                {formattedPeriodEnd ? t("subscription.activeUntil", { date: formattedPeriodEnd }) : null}
-              </p>
+              formattedPeriodEnd ? (
+                <p className="hf-type-body-sm">{t("subscription.activeUntil", { date: formattedPeriodEnd })}</p>
+              ) : null
             ) : (
-              <p className="hf-type-body-sm mt-1 opacity-80">{t("subscription.freePlan.description")}</p>
+              <p className="hf-type-body-sm">{t("subscription.freePlan.description")}</p>
             )}
           </div>
 
           {data.tier === "FREE" && (
-            <div className="rounded-lg border p-4" style={{ borderColor: "var(--hf-color-line)" }}>
-              <p className="hf-type-section-title">
-                {t("subscription.seriousPlan.title")} — {data.priceDkk} {t("subscription.seriousPlan.priceSuffix")}
-              </p>
-              <p className="hf-type-body-sm mt-1 opacity-70">{t("subscription.seriousPlan.description")}</p>
-              <button
-                type="button"
-                disabled
-                className="hf-btn-primary hf-type-button mt-3 h-12 w-full opacity-40"
-              >
-                {t("subscription.seriousPlan.upgradeCta")}
-              </button>
-              <p className="hf-type-caption mt-2 opacity-70">{t("subscription.seriousPlan.upgradeUnavailable")}</p>
+            <div className="hf-card hf-card--outline hf-card--form">
+              <div className="hf-stack">
+                <p className="hf-type-section-title">
+                  {data.priceDkk} {t("subscription.seriousPlan.priceSuffix")}
+                </p>
+                <p className="hf-type-body-sm">{t("subscription.seriousPlan.description")}</p>
+              </div>
+              <div className="hf-stack">
+                <button type="button" disabled className="hf-btn-primary hf-type-button h-12 w-full px-4">
+                  {t("subscription.seriousPlan.upgradeCta")}
+                </button>
+                <p className="hf-type-caption">{t("subscription.seriousPlan.upgradeUnavailable")}</p>
+              </div>
             </div>
           )}
 
-          <p className="hf-type-caption mt-2 opacity-60">{t("subscription.retentionNote")}</p>
+          <p className="hf-type-caption">{t("subscription.retentionNote")}</p>
 
           <Link href="/settings/payment" className="hf-type-body-sm underline opacity-70">
             {t("payment.title")}

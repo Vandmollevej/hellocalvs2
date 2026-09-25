@@ -182,7 +182,7 @@ function IntegrationerContent() {
 
   return (
     <HfScreen title={t("integrations.title")}>
-      <div className="flex flex-col gap-4 p-4">
+      <div className="hf-page">
         {notice && <p className="rounded-[8px] bg-hf-tan px-4 py-3 text-[13px] text-hf-black">{notice}</p>}
 
         <p className="px-1 text-[13px] leading-relaxed text-hf-black opacity-60">{t("integrations.intro")}</p>

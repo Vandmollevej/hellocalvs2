@@ -189,7 +189,7 @@ function SoegContent() {
 
   return (
     <HfScreen title={t("search.title")}>
-      <div className="flex flex-col gap-3.5 p-4">
+      <div className="hf-page">
         <div className="hf-search">
           <IconSearch size={16} color="var(--hf-black)" />
           <input

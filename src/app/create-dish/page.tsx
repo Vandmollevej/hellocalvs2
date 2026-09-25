@@ -155,7 +155,7 @@ export default function CreateDishPage() {
         </>
       }
     >
-      <div className="flex flex-col gap-4 p-4">
+      <div className="hf-page">
         <input
           value={name}
           onChange={(event) => setName(event.target.value)}
@@ -192,7 +192,7 @@ export default function CreateDishPage() {
         <div>
           <p className="mb-2 text-xs font-bold text-hf-black">{t("createDish.ingredients")}</p>
           {ingredients.length === 0 ? (
-            <div className="rounded-2xl bg-hf-tan p-4 text-center">
+            <div className="hf-card text-center">
               <p className="text-sm text-hf-black opacity-60">{t("createDish.noIngredientsYet")}</p>
             </div>
           ) : (
@@ -234,8 +234,8 @@ export default function CreateDishPage() {
         </div>
 
         {ingredients.length > 0 && (
-          <div className="rounded-2xl bg-hf-tan p-4">
-            <p className="mb-1 text-xs font-bold text-hf-black">{t("createDish.total")}</p>
+          <div className="hf-card">
+            <p className="text-xs font-bold text-hf-black">{t("createDish.total")}</p>
             <p className="text-sm text-hf-black">
               {t("createDish.gramsKcal", { grams: round(totals.grams), kcal: round(totals.kcal) })}
             </p>

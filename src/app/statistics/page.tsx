@@ -298,7 +298,7 @@ export default function StatisticsPage() {
 
   return (
     <HfScreen title={t("statistics.title")} icon={<TrendIcon color="currentColor" size={20} />}>
-      <div className="flex flex-col gap-4 p-4">
+      <div className="hf-page">
         {showAddChart && (
           <div className="flex justify-end">
             <Link

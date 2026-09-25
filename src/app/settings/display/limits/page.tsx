@@ -57,7 +57,7 @@ export default function RecommendedLimitsSettingsPage() {
           {loading ? t("settings.loading") : t("settings.loadError")}
         </p>
       ) : (
-        <div className="flex flex-col gap-4 p-4">
+        <div className="hf-page">
           <Toggle
             label={t("displaySettings.warnOnRecommendedLimits")}
             description={t("displaySettings.warnOnRecommendedLimitsDescription")}

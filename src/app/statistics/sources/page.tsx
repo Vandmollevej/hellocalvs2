@@ -56,7 +56,7 @@ function SourcesContent() {
   const groups = useMemo(() => groupSourcesByProductType(inRange, metric), [inRange, metric]);
 
   return (
-    <div className="flex flex-col gap-4 p-4">
+    <div className="hf-page">
       <p className="text-center text-xs text-hf-black opacity-60">{rangeLabel(range)}</p>
       <SourceMetricTabs value={metric} onChange={setMetric} />
       <SegmentedTabs options={VIEWS} value={view} onChange={setView} />
