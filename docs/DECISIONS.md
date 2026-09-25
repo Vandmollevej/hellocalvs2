@@ -1966,5 +1966,10 @@ den rigtige stregkode.
   koden skal ligge inden i boksen og den røde/grønne kant er fjernet.
 - **Ikke fundet** gemmes pr. kode i sessionen, så samme stregkode i billedet
   ikke looper animation + opslag; en anden kode kan scannes med det samme.
-- UPC-E læses reelt ikke af @zxing/library (fejl i bibliotekets UPC-E-læser;
-  bruges næsten kun i Nordamerika) — uændret i forhold til før.
+- **UPC-E har egen læser** (`src/lib/upce-reader.ts`): @zxing/library's
+  UPC-E-læser returnerer aldrig et resultat (den taber de afkodede cifre,
+  tjekker EAN-kontrolciffer/slutvagt i stedet for UPC-E's og udvider
+  UPC-E→UPC-A forkert). Vores læser genbruger ZXing's række-løkke
+  (`OneDReader`), så position/retning virker som for de øvrige formater.
+  Verificeret i Chromium: EAN-13, UPC-A, EAN-8 og fem UPC-E-koder ved
+  0/90/180/−90/14/−20/75° — alle læst korrekt, vinkel inden for 0,5°.

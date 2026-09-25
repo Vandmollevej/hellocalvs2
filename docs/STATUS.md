@@ -5,7 +5,8 @@ Last updated: 2026-09-25
 ## 2026-09-25: Stregkode-scanner omlagt (lodret/skæv aflæsning, AR-afkodning)
 
 Se docs/DECISIONS.md 2026-09-25 "Stregkode-scanning" og design.md §6.11.
-Nye filer: `src/lib/barcode-frame-scanner.ts`, `src/lib/barcode-pattern.ts`;
+Nye filer: `src/lib/barcode-frame-scanner.ts`, `src/lib/barcode-pattern.ts`,
+`src/lib/upce-reader.ts` (UPC-E virker nu — bibliotekets egen læser var i stykker);
 omskrevet: `src/components/hf/BarcodeScanOverlay.tsx`,
 `src/lib/barcode-scan.ts`, stregkode-delen af `src/app/camera/page.tsx`.
 Verificeret i Chromium med syntetisk kamera (vandret, lodret, skæv,

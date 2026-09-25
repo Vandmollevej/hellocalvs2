@@ -12,9 +12,10 @@
 //   is not used: @zxing/browser's canvas luminance source doesn't update its
 //   width/height when rotating a non-square canvas.
 
-import { BrowserMultiFormatOneDReader } from "@zxing/browser";
+import { BrowserCodeReader, BrowserMultiFormatOneDReader } from "@zxing/browser";
 import { BarcodeFormat, ChecksumException, DecodeHintType, FormatException, NotFoundException } from "@zxing/library";
 import type { BarcodeSymbology } from "@/lib/barcode-pattern";
+import { UpcEReader } from "@/lib/upce-reader";
 
 export type BarcodeRead = {
   text: string;
@@ -51,9 +52,10 @@ type Orientation = "upright" | "sideways";
 // A line parallel to the scan line still counts as "on the bars" while its
 // light/dark transition density stays above this share of the scan line's.
 const BAR_EDGE_DENSITY_RATIO = 0.55;
-// Printed EAN-13 bars are ~0.6–0.75 × the barcode width (EAN-8 up to ~0.95);
-// cap the measurement there so a striped background can't stretch the overlay.
-const MAX_BAR_HEIGHT_TO_WIDTH = 1;
+// Printed EAN-13 bars are ~0.6–0.75 × the barcode width, EAN-8 up to ~0.95
+// and the narrow UPC-E ~1–1.3; cap the measurement there so a striped
+// background can't stretch the overlay.
+const MAX_BAR_HEIGHT_TO_WIDTH = 1.4;
 
 // Largest tilt the correlation below searches; ZXing rarely decodes a row
 // through bars leaning more than this anyway.
@@ -199,8 +201,13 @@ export function startBarcodeFrameScanner(
   onRead: (read: BarcodeRead) => void,
   onFatalError: (error: unknown) => void
 ): () => void {
-  const hints = new Map<DecodeHintType, unknown>([[DecodeHintType.POSSIBLE_FORMATS, [...SYMBOLOGY_BY_FORMAT.keys()]]]);
+  // UPC-E is read by our own UpcEReader — @zxing/library's never returns a
+  // result (see src/lib/upce-reader.ts), so it's left out of the main reader.
+  const hints = new Map<DecodeHintType, unknown>([
+    [DecodeHintType.POSSIBLE_FORMATS, [BarcodeFormat.EAN_13, BarcodeFormat.EAN_8, BarcodeFormat.UPC_A]],
+  ]);
   const reader = new BrowserMultiFormatOneDReader(hints);
+  const upcEReader = new UpcEReader();
   const frame = document.createElement("canvas");
   const turned = document.createElement("canvas");
   const frameContext = frame.getContext("2d", { willReadFrequently: true });
@@ -220,7 +227,14 @@ export function startBarcodeFrameScanner(
       turnedContext.rotate(Math.PI / 2);
       turnedContext.drawImage(frame, 0, 0);
     }
-    const result = reader.decodeFromCanvas(canvas);
+    const bitmap = BrowserCodeReader.createBinaryBitmapFromCanvas(canvas);
+    let result;
+    try {
+      result = reader.decodeBitmap(bitmap);
+    } catch (error) {
+      if (!isExpectedMiss(error)) throw error;
+      result = upcEReader.decode(bitmap);
+    }
     const symbology = SYMBOLOGY_BY_FORMAT.get(result.getBarcodeFormat());
     if (!symbology) return null;
     const points = result.getResultPoints().map((point) =>
