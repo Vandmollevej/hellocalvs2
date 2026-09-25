@@ -63,8 +63,8 @@ Koordinering med G1: G3 skal senere tilføje knappen "Månedens synder" nederst 
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| c0d3a8fa / f5505465 | Ernæringsmæssige produktkategorier (alkohol, fedt, ost, yoghurt, …; ultraforarbejdet som tag) | Venter på bruger | Alt afklaret 2026-09-24, krav i STATUS (G3-afsnit). Grove kategorier nu; 30-listen er en senere, separat opgave. Byg først når brugeren siger "gå i gang" |
-| d7f6eb5c / 1578bf02 | Kød/fisk-bokse (g + kcal), sukkerholdige drikke, alkohol, "største syndere", liste-side, "Månedens synder" | Venter på bruger | Alt afklaret 2026-09-24, krav i STATUS (G3-afsnit). Byg først når brugeren siger "gå i gang" |
+| c0d3a8fa / f5505465 | Ernæringsmæssige produktkategorier (alkohol, fedt, ost, yoghurt, …; ultraforarbejdet som tag) | Færdig (se git log "G3:") | Grove kategorier + klassifikation bygget. 30-listen er separat opgave |
+| d7f6eb5c / 1578bf02 | Kød/fisk-bokse (g + kcal), sukkerholdige drikke, alkohol, "største syndere", liste-side, "Månedens synder" | Færdig (se git log "G3:") | Bygget. Knap i kalender tilføjet (kun én `ActionLink` i månedsvisning) |
 
 ## G4 — Usikkerhed (bølgeikon + Uncertainties-admin)
 Filer: usikkerheds-ikon/komponent, mikronæringsvisning, indstillinger → Visning, admin Uncertainties.

@@ -2,6 +2,39 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-25: G3 — grove produktkategorier, kød/drikke-statistik, "Største kilder" og "Månedens synder"
+
+- `Product.productCategory` bruger brugerens grove regnearks-kategorier:
+  Drikkevarer (DRINK), Grøntsager (ny VEGETABLES, migration
+  `20260924160000_product_category_vegetables`), Råvarer (RAW), Forarbejdede
+  varer (PROCESSED). GENERIC/INGREDIENT bevares. Navne i
+  `PRODUCT_CATEGORY_LABELS` (`src/lib/product-display-unit.ts`). Den 30-delte
+  Hello Cal-kategoriliste + NOVA/ultraforarbejdet er en senere, separat opgave.
+- Klassifikation (`src/lib/food-classification.ts`) læser produktets egne
+  regnearksfelter i `Product.dietaryTags`: `meat` (okse/kalv → oksekød, gris,
+  kylling/kalkun/and/gås → fjerkræ, fisk inkl. skaldyr; flere typer deles
+  ligeligt), `isSugarFree`, `isAlcoholFree`, `pct` (alkohol-%, "x% fedt"
+  ignoreres) samt `productType` og sukker pr. 100 g fra `nutritionExtra`.
+  Sukkerholdig drik = drikkevare med sukker > 0, ikke sukkerfri/light, ikke
+  alkohol (inkl. mælk, smoothie, drikkeyoghurt). Alkohol = drikkevare med
+  alkohol-% > 0,5 (eller alkohol-produkttype, når % mangler). 1 genstand = 12 g
+  ren alkohol.
+- Klassifikationen gemmes som snapshot på registreringen i boksen
+  (`classification`), samme snapshot-princip som kcal/makroer. Ældre
+  registreringer udfyldes én gang lokalt via `POST /api/registrations/classify`,
+  som kun henter de samme offentlige produktsider, registreringen selv hentede.
+- Ikke bygget endnu: Frida-AI-beregning af kødandel i sammensatte retter (i
+  dag tæller hele varens vægt/kcal, hvis varen har en kødtype; egne retter
+  tæller ikke med i kød/drikke-boksene).
+- Statistik: 12 nye kort (kød g/kcal ×4, sukkerholdige drikke kcal, alkohol
+  kcal/genstande/mængde) som totaler for den valgte periode, egen gruppe under
+  "Tilføj kort". Bred boks "Største syndere" (top 5 for Kalorier/Fedt/Sukker,
+  samme vare må gå igen, klik åbner varen) med "Se alle" →
+  `/statistics/sources` ("Største kilder", faner + Produkter/Produkttyper).
+- "Månedens synder": knap under kalenderens månedsvisning →
+  `/statistics/month-sinners?month=YYYY-MM`, grupperet efter produkttype med
+  "kcal · %", faner Kalorier/Fedt/Sukker.
+
 ## 2026-09-24: Otte sundhedsintegrationer inden for boks-arkitekturen (G8)
 
 Brugerens valg (6068f78a/69a1b2bd, 8d98b548/2c95590f): "Byg alle 8" på den

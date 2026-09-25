@@ -1510,6 +1510,7 @@ model ProductIngredient {
 // Se Product.productCategory.
 enum ProductCategory {
   DRINK
+  VEGETABLES
   GENERIC
   PROCESSED
   RAW

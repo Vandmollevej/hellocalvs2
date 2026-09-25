@@ -16,6 +16,7 @@ import {
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { HfChevron } from "@/components/hf/HfChevron";
+import { ActionLink } from "@/components/hf/ActionButton";
 import { FoodRow } from "@/components/FoodRow";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
 import { groupByDay } from "@/lib/daily-totals";
@@ -715,6 +716,18 @@ export default function CalendarPage() {
             )}
           </div>
         </div>
+
+        {/* G3: "Månedens synder" for den viste måned (docs/DECISIONS.md 2026-09-24). */}
+        {view === "month" && (
+          <div className="pt-4">
+            <ActionLink
+              variant="secondary"
+              href={`/statistics/month-sinners?month=${year}-${String(month + 1).padStart(2, "0")}`}
+            >
+              Månedens synder
+            </ActionLink>
+          </div>
+        )}
       </div>
 
       {selectedDate && (
