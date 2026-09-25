@@ -871,7 +871,7 @@
     "weightPlaceholder": "e.g. 78.4",
     "timeGrid": {
       "title": "Weight throughout the day",
-      "placeholder": "–"
+      "placeholder": "Enter weight"
     },
     "clothed": {
       "false": "Without clothes",
@@ -879,9 +879,7 @@
     },
     "shoes": {
       "off": "Without shoes",
-      "on": "With shoes",
-      "unknown": "Don't know",
-      "unknownLabel": "Shoes not specified"
+      "on": "With shoes"
     },
     "timeOfDay": {
       "morning": "Morning",
@@ -889,22 +887,24 @@
     },
     "toilet": {
       "before": "Before toilet",
-      "after": "After toilet",
-      "unknown": "Don't know",
-      "unknownLabel": "Toilet not specified"
+      "after": "After toilet"
     },
     "meal": {
       "before": "Before meal",
-      "after": "After meal",
-      "unknown": "Don't know",
-      "unknownLabel": "Meal not specified"
+      "after": "After meal"
     },
-    "submit": "Log weigh-in",
+    "submit": "Update information",
     "saving": "Saving…",
     "loading": "Loading…",
     "noEntriesYet": "No weigh-ins logged yet.",
     "deleteAria": "Delete weigh-in",
-    "delete": "Delete"
+    "delete": "Delete",
+    "recentTitle": "Recent weigh-ins",
+    "status": {
+      "saved": "Your information has been saved.",
+      "nothing": "There is no weight to save yet.",
+      "error": "Something could not be saved. Please try again."
+    }
   },
   "bodyMeasurements": {
     "title": "Body measurements",

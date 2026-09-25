@@ -2,6 +2,12 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Vægtkalibrering omdesignet
+
+Se `docs/DECISIONS.md` 2026-09-25 "Vægtkalibrering — eksplicit
+Opdatér oplysninger-knap". Lint + build grønne; visuelt tjekket i 402 px
+viewport med mockede API-svar. Test på iPhone efter deploy.
+
 ## 2026-09-25: Statistik — redigerbare grafer, søgning og "+ Tilføj" pr. blok
 
 Se `docs/DECISIONS.md` 2026-09-25 "Statistiksidens grafer kan redigeres som
