@@ -2,6 +2,21 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Mængde-robot + admin "Robotter"
+
+Se `docs/DECISIONS.md` 2026-09-25 "Mængde-robot". Nyt: container
+`amount-suggestion-agent`, migration `20260925150000_amount_suggestion_robot`
+(`robot_configs`, `amount_suggestions`), `GET /api/amount-suggestion`,
+`/admin/robots` og startmængde på `/add/[id]`. Verificeret: `npm test`,
+`npm run lint`, `npm run build`, agenten mod en lokal Postgres med testdata
+(agurk: gennemsnit ~150 g → forslag 100 g; vare med 2 brugere skjult), API
+og admin-panel mod samme database. Ikke testet på Synology.
+
+Next work:
+1. Efter deploy: tjek i `/admin/robots`, at robotten står som "kører", og
+   tryk "Kør nu" én gang.
+2. Justér evt. `minUsers`/`priorStrength`, når der er rigtige data.
+
 ## 2026-09-25: Profil — start-vægt altid låst + "Lås"-side
 
 Start-vægt på `/profile/edit` er nu altid låst, også når den er tom (før var

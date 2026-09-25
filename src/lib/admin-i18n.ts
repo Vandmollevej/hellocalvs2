@@ -17,6 +17,7 @@ const DICTIONARY = {
   nav_duplicate_products: { DA: "Dobbeltoprettelser", EN: "Duplicate creations" },
   nav_search: { DA: "Søg", EN: "Search" },
   nav_search_ranking: { DA: "Søgealgoritmer", EN: "Search ranking" },
+  nav_robots: { DA: "Robotter", EN: "Robots" },
   nav_quality_control: { DA: "Kvalitetskontrol", EN: "Quality control" },
   nav_passkeys: { DA: "Passkeys", EN: "Passkeys" },
   nav_ingredient_requests: { DA: "Ønskede ingredienser", EN: "Requested ingredients" },

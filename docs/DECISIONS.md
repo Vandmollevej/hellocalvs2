@@ -2,6 +2,39 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-25: Mængde-robot — slideren starter på den mest sandsynlige mængde
+
+Brugerens krav: robotten skal regne ud, hvilken mængde folk typisk vælger af
+en vare (fx agurk spist rå eller lagt i en opskrift), så mængde-slideren på
+`/add/[id]` ikke starter på 100 g, og det må ikke være et råt gennemsnit.
+Robotten skal kunne styres fra admins robotpanel.
+
+- Ny container `amount-suggestion-agent` (`scripts/amount-suggestion-agent`,
+  ren Python + SQL, ingen AI, ingen netværk ud). Den skriver
+  `amount_suggestions` og læser/skriver `robot_configs` (key
+  `amount-suggestion`). Den tabel er fælles for fremtidige robotter.
+- To kontekster regnes hver for sig: `EATEN` (registreringer) og `RECIPE`
+  (`dish_ingredients`). `/add/[id]?for=ret` bruger `RECIPE`.
+- Metoden: tidsvægt (halveringstid), loft pr. bruger, trimning af
+  yderpunkter, typetal via vægtet KDE på log-skala (kandidater = faktisk
+  valgte mængder), trukket mod kategoriens median ved få data og en
+  confidence ud fra effektivt antal valg og hvor samlet valgene ligger.
+- App'en (`src/lib/amount-suggestion.ts`) blander robottens tal med
+  brugerens egne seneste valg (vægtet median, log-skala, egen vægt
+  n/(n+personalWeight)), afrunder til pæne tal (1/5/10/50 g) eller hele
+  portioner og bruger kategoriens tal, når varen ikke har sit eget.
+  Uden data starter slideren som før. Robottens svar overskriver aldrig en
+  mængde, brugeren allerede har ændret.
+- Anonymitet: et fælles forslag gemmes kun, når mindst `minUsers` (standard 3)
+  forskellige brugere står bag. Der gemmes kun aggregater, og private
+  ingredienser er udeladt.
+- `/admin/robots` ("Robotter"): til/fra, "Brug forslagene i app'en", alle
+  parametre med grænser (`src/lib/amount-suggestion-config.ts`, samme tal
+  i agentens `LIMITS`), "Kør nu" (virker også når robotten er slået fra),
+  status/heartbeat, test af forslag for vare + bruger og top-40-liste.
+- Deploy-trinnet for robotten kører med `if: !cancelled()`, så det ikke
+  blokeres af de andre agent-trin.
+
 ## 2026-09-25: Sektionsoverskrifter, points-banner og "Invitér en ven"
 
 Brugerens krav efter skærmbillede af Invitér en ven:

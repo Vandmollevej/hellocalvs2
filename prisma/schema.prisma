@@ -2278,3 +2278,60 @@ model UserKnownDevice {
   @@unique([userId, deviceHash])
   @@map("user_known_devices")
 }
+
+// --- Robotter (docs/DECISIONS.md 2026-09-25 "Mængde-robot") ---
+
+// Fælles konfiguration + status for baggrundsrobotterne (scripts/*-agent).
+// Admin skriver `enabled`/`settings`/`runRequestedAt` fra /admin/robots;
+// robotten læser dem i hver runde og skriver status-felterne tilbage.
+// `key` er robottens faste navn, fx "amount-suggestion".
+model RobotConfig {
+  key               String    @id
+  enabled           Boolean   @default(true)
+  settings          Json      @default("{}")
+  runRequestedAt    DateTime?
+  heartbeatAt       DateTime?
+  lastRunStartedAt  DateTime?
+  lastRunFinishedAt DateTime?
+  lastRunStatus     String?
+  lastRunSummary    Json?
+  lastError         String?
+  updatedAt         DateTime  @updatedAt
+  updatedById       String?
+
+  @@map("robot_configs")
+}
+
+// Hvor en mængde blev valgt: spist direkte (Registration) eller lagt i en
+// opskrift/ret (DishIngredient). Samme vare har ofte meget forskellige
+// typiske mængder i de to situationer (en halv agurk i salaten vs. et par
+// skiver som snack).
+enum AmountContext {
+  EATEN
+  RECIPE
+}
+
+// Mængde-robottens resultat (scripts/amount-suggestion-agent): den mest
+// sandsynlige mængde pr. vare og kontekst. itemType er PRODUCT,
+// GENERIC_INGREDIENT, PRODUCT_CATEGORY (itemId = ProductCategory) eller
+// GENERIC_CATEGORY (itemId = GenericIngredientCategory). Kategorirækkerne er
+// fallback for varer med for få data. Hele tabellen erstattes ved hver
+// kørsel, så ingen FK til produkterne. Kun aggregater af mindst `minUsers`
+// forskellige brugere gemmes — aldrig den enkelte brugers mængder.
+model AmountSuggestion {
+  id             String        @id @default(cuid())
+  itemType       String
+  itemId         String
+  context        AmountContext
+  suggestedGrams Float
+  confidence     Float
+  sampleCount    Int
+  userCount      Int
+  p25Grams       Float?
+  p75Grams       Float?
+  method         String
+  computedAt     DateTime      @default(now())
+
+  @@unique([itemType, itemId, context])
+  @@map("amount_suggestions")
+}

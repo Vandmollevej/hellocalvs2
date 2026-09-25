@@ -50,9 +50,10 @@ jobs:
         run: |
           set -euo pipefail
           cp compose.production.yaml /deploy/compose.production.yaml
-          mkdir -p /deploy/scripts/rema1000-import /deploy/scripts/quality-control-agent
+          mkdir -p /deploy/scripts/rema1000-import /deploy/scripts/quality-control-agent /deploy/scripts/amount-suggestion-agent
           cp -R scripts/rema1000-import/. /deploy/scripts/rema1000-import/
           cp -R scripts/quality-control-agent/. /deploy/scripts/quality-control-agent/
+          cp -R scripts/amount-suggestion-agent/. /deploy/scripts/amount-suggestion-agent/
 
       - name: Select release and pull images
         run: |
@@ -82,3 +83,12 @@ jobs:
           set -euo pipefail
           cd /deploy
           docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d --build quality-control-agent
+
+      # Kører også når et tidligere agent-trin fejler — mængde-robotten
+      # afhænger kun af db + migrate (compose depends_on), ikke af de andre.
+      - name: Build and start amount-suggestion agent
+        if: ${{ !cancelled() }}
+        run: |
+          set -euo pipefail
+          cd /deploy
+          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d --build amount-suggestion-agent
