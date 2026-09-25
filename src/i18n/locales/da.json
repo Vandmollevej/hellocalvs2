@@ -191,6 +191,7 @@
       }
     },
     "openProfile": "Åbn mine oplysninger",
+    "openAppSettings": "Åbn app-indstillinger",
     "back": "Tilbage",
     "loading": "Henter…",
     "loadError": "Kunne ikke hente indstillinger.",
@@ -1153,11 +1154,30 @@
       "sleep": "Søvn",
       "other": "Øvrige data"
     },
+    "searchPlaceholder": "Søg i alle kort",
+    "searchResults": "Søgeresultater",
+    "noSearchResults": "Ingen kort matcher din søgning.",
+    "addAll": "+ Tilføj",
     "noCardsYet": "Ingen kort her endnu.",
     "addHeading": "+ Overskrift",
     "addHeadingHint": "Tilføjer en sektionsoverskrift til din statistikside, som du selv kan omdøbe.",
     "addDivider": "+ Adskillelseslinje",
     "addDividerHint": "Tilføjer en sort adskillelseslinje til din statistikside."
+  },
+  "statUnusedCharts": {
+    "title": "Ubrugte grafer",
+    "hint": "Tryk på en graf for at tilføje den øverst på din statistikside.",
+    "searchPlaceholder": "Søg i alle grafer",
+    "noSearchResults": "Ingen grafer matcher din søgning.",
+    "noChartsLeft": "Alle grafer her er allerede på din statistikside.",
+    "intradayKcal": "Kalorieindtag i løbet af dagen",
+    "dayProfile": "Dagsprofil",
+    "category": {
+      "energyWeight": "Energi og vægt"
+    }
+  },
+  "statChartsSection": {
+    "removeChart": "Fjern graf"
   },
   "statCardsGrid": {
     "exitEditing": "Afslut redigering",

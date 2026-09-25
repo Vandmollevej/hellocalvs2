@@ -115,7 +115,7 @@ export default function SubscriptionPage() {
             </span>
           </button>
 
-          <h2 className="hf-type-section-title mt-2">{t("subscription.currentPlan")}</h2>
+          <h2 className="hf-type-section-title">{t("subscription.currentPlan")}</h2>
 
           <div
             className="rounded-lg p-4"

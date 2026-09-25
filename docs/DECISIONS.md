@@ -2,6 +2,24 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-25: Sektionsoverskrifter, points-banner og "Invitér en ven"
+
+Brugerens krav efter skærmbillede af Invitér en ven:
+
+- `.hf-type-section-title` ejer sin afstand: 32 px over (0 som første
+  element), 12 px under. Årsag: klassens `margin: 0` lå uden for Tailwinds
+  lag og overtrumfede alle sidernes `mt-6`/`mb-2`, så der var ingen luft
+  nogen steder. Sidernes lokale margins er fjernet (design.md §4.3).
+- `PointsPromoBanner`: ingen stor "Læs betingelser"-knap. Overskriften starter
+  med "*", og under kortet står en grå "* Læs betingelser"-linje. Omstøder
+  2026-09-11-varianten med hvid fuldbreddeknap.
+- Invitér en ven: "Dit navn" (forudfyldt med profilnavn) og en 2-linjers
+  personlig besked (maks. 160 tegn) øverst. Standardteksten
+  (`src/lib/invite-message.ts`) vises som forhåndsvisning og deles via
+  telefonens delemenu (Web Share) med dele-ikon på knappen. Navn og besked
+  bruges også i invitationsmailen (`{{personalMessage}}`, HTML-escapet).
+  Kladden huskes kun lokalt i browseren.
+
 ## 2026-09-24: Normalt login — privacy-by-architecture ophævet
 
 Brugerens beslutning: "Man skal bare kunne logge ind som på alle andre
@@ -430,6 +448,39 @@ bag — der er ikke opfundet et nyt flow.
 Samtidig: Hello Cal-logoet på produktcirklen har ikke længere hvid cirkel/skygge;
 det ligger i front (`z-10`) med nederste venstre hjørne i cirklens bundpunkt og
 en bredde på én radius (95px).
+
+## 2026-09-25: Statistiksidens grafer kan redigeres som kortene
+
+Graferne øverst på statistiksiden er nu et eget, brugerstyret layout
+(`src/lib/stat-charts.ts`, localStorage-nøgle `hellocal.statistik.charts`,
+standard: "Kalorier og vægt" + "Kalorieindtag i løbet af dagen"). Et langt
+tryk får dem til at vibrere som statistik-kortene; i redigering kan en graf
+fjernes med slette-cirklen og trækkes op/ned (`StatChartsSection.tsx`). Nye
+grafer tilføjes fra `/statistics/unused-charts`, der har samme opbygning som
+`/statistics/unused-cards` (søgefelt på tværs af blokkene, hvis resultater
+står over accordions, og "+ Tilføj" i hver bloks højre hjørne, som tilføjer
+alle blokkens resterende elementer). Der opfindes ingen nye datatyper: de
+ekstra grafer er 7-dages dagsserier af felter, som allerede findes i
+`DailyTotal`, med statistik-kortenes navne og enheder.
+
+"+ Tilføj kort" over hhv. graferne og kortene vises kun, mens den sektion er i
+redigeringstilstand (vibrerer) — eller er helt tom, så brugeren aldrig kan
+låse sig ude.
+
+## 2026-09-25: Global markeringsregel — intet kan markeres i appen
+
+Bindende produktbeslutning: intet i Hello Cal kan markeres — hverken tekst,
+kort, billeder eller knapper — og iOS' long-press-menu (Copy/Look Up/Share,
+billed-callout) må ikke vises. Reglen håndhæves globalt i
+`src/app/globals.css` (`user-select: none` og `-webkit-touch-callout: none` på
+`html`, `body` og alle efterkommere samt en gennemsigtig `::selection`) og
+som sikkerhedsnet af en `selectstart`-lytter i
+`src/components/GlobalClipboardGuard.tsx`. Eneste undtagelse er `input`,
+`textarea` og `[contenteditable="true"]`, som skal kunne markeres, ellers
+virker fokus, markør og redigering ikke på iOS; copy/cut/paste er dér stadig
+blokeret af clipboard-reglen nedenfor. Nye komponenter må ikke slå
+markering til igen (fx med `select-text` uden for felter) uden en eksplicit
+senere produktbeslutning.
 
 ## 2026-09-22: Global clipboard-regel — ingen copy, cut eller paste i appen
 

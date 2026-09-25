@@ -33,6 +33,53 @@ Unused `photoDiary.*` i18n keys removed from `da.json`/`en.json`; the
 selfie-portrait-card paragraph removed from `design.md`. `BodyMeasurement`,
 `/api/body-measurements` and `/profile/body-measurements` are unchanged.
 
+## 2026-09-25: Invitér en ven + fast afstand om sektionsoverskrifter
+
+Se `docs/DECISIONS.md` 2026-09-25 "Sektionsoverskrifter, points-banner og
+"Invitér en ven"". Ændret: `globals.css` (`.hf-type-section-title`),
+`PointsPromoBanner`, `profile/invite`, `lib/invite-message.ts`,
+invitations-API'erne og FRIEND_INVITATION-skabelonen (gammel standardtekst
+opgraderes automatisk). Lint + build grønne. Ikke visuelt testet (kræver
+login) — test på iPhone efter deploy: afstand om overskrifter på alle sider,
+delemenuen og mailens personlige besked.
+
+## 2026-09-25: Profil — tandhjul til app-indstillinger + tilbagepil
+
+- På `/profile` (og kun dér) er profilcirklen øverst til højre skiftet ud
+  med et tandhjul, der åbner `/settings` (app-indstillingerne). Styres af
+  `showAppSettingsButton` på `HfScreen`/`ScreenHeader`.
+- `/profile` viser nu altid tilbagepilen, også når "Profil" ligger i
+  footeren (`alwaysShowBackButton`).
+- Næste: brugeren fortæller, hvilke profilpunkter der flyttes ind under
+  app-indstillingerne.
+
+## 2026-09-25: Statistik — redigerbare grafer, søgning og "+ Tilføj" pr. blok
+
+Se `docs/DECISIONS.md` 2026-09-25 "Statistiksidens grafer kan redigeres som
+kortene". Nye filer: `src/lib/stat-charts.ts`,
+`src/components/StatChartsSection.tsx`,
+`src/app/statistics/unused-charts/page.tsx`. `unused-cards` har fået søgefelt
+og "+ Tilføj" pr. blok (`AccordionSection` har fået en `action`-plads).
+Lint + build grønne. Ikke visuelt testet (lokalt kræves login) — test på
+iPhone efter deploy: long-press på grafer, træk/fjern, knapperne kun synlige
+under redigering.
+
+## 2026-09-25: Markering slået helt fra i appen
+
+Se `docs/DECISIONS.md` 2026-09-25 "Global markeringsregel". Global CSS i
+`src/app/globals.css` + `selectstart`-lytter i `GlobalClipboardGuard.tsx`.
+Felter kan stadig redigeres. Skal testes på iPhone efter deploy (long-press på
+kort, tekst og tomme flader må ikke markere noget).
+
+## 2026-09-25: Vægt-ikonet tegnet som vektor
+
+- `IconBathroomScale` (`src/components/icons/BathroomScale.tsx`) maskerede
+  256px-PNG'en `public/icons/bathroom-scale.png`; i 20–28px (tilføj-menuen og
+  forsidens +-hjul) smeltede de tykke streger sammen til en uklar klat.
+- Nu en ren SVG-streg-tegning af samme artwork (ramme, skive, to fyldte
+  fodspor) i tabler-stil med `currentColor`, så den står skarpt i alle
+  størrelser. ViewBox og PNG er trimmet til kanten (ingen luft omkring).
+
 ## 2026-09-25: Mail via Mailjet aktiveret
 
 - SMTP_HOST/PORT/USER/PASS/FROM (Mailjet, in-v3.mailjet.com:587) sat i lokal
