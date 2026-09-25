@@ -1,20 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   IconMoon,
-  IconPlugConnected,
-  IconSettings,
   IconUser,
   IconCamera,
   IconStar,
-  IconBug,
-  IconUserPlus,
-  IconBell,
   IconBook2,
   IconRulerMeasure,
-  IconCreditCard,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -39,7 +32,6 @@ type ProfileUser = {
 
 export default function ProfilePage() {
   const { t } = useTranslation();
-  const router = useRouter();
   const [user, setUser] = useState<ProfileUser | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -66,9 +58,7 @@ export default function ProfilePage() {
   }, []);
 
   return (
-    <HfScreen
-      title={t("profile.title")}
-    >
+    <HfScreen title={t("profile.title")} alwaysShowBackButton showAppSettingsButton>
       {loading || !user ? (
         <p className="p-6 text-center text-[14px] text-hf-black opacity-60">
           {loading ? t("profile.loading") : t("profile.loadError")}
@@ -93,11 +83,6 @@ export default function ProfilePage() {
               href="/profile/edit"
             />
             <ChevronRow
-              icon={<IconCreditCard size={20} />}
-              label={t("profile.row.subscription")}
-              href="/profile/subscription"
-            />
-            <ChevronRow
               icon={<IconBathScale size={20} />}
               label={t("profile.row.weightCalibration")}
               href="/profile/weight-calibration"
@@ -117,53 +102,14 @@ export default function ProfilePage() {
               label={t("profile.row.photoDiary")}
               href="/profile/photo-diary"
             />
-            <ChevronRow
-              icon={<IconPlugConnected size={20} />}
-              label={t("profile.row.integrations")}
-              href="/settings/integrations"
-            />
             <ChevronRow icon={<IconStar size={20} />} label={t("profile.row.points")} href="/profile/points" />
             <ChevronRow
               icon={<IconBook2 size={20} />}
               label={t("profile.row.recipes")}
               href="/profile/recipes"
-            />
-            <ChevronRow
-              icon={<IconUserPlus size={20} />}
-              label={t("profile.row.inviteFriend")}
-              href="/profile/invite"
-            />
-            <ChevronRow
-              icon={<IconBell size={20} />}
-              label={t("profile.section.communication")}
-              href="/profile/notifications"
-            />
-            <ChevronRow
-              icon={<IconBug size={20} />}
-              label={t("profile.row.reportBug")}
-              href="/profile/report-bug"
-            />
-
-            <ChevronRow
-              icon={<IconSettings size={20} />}
-              label={t("profile.row.settings")}
-              href="/profile/settings"
               divider={false}
             />
           </AccordionCard>
-
-          <button
-            type="button"
-            onClick={() => {
-              fetch("/api/auth/logout", { method: "POST" }).finally(() => {
-                router.push("/login");
-                router.refresh();
-              });
-            }}
-            className="hf-type-body flex h-12 w-full items-center px-4 text-left font-bold"
-          >
-            {t("profile.logOut")}
-          </button>
         </div>
       )}
     </HfScreen>

@@ -154,7 +154,7 @@ export default function SupportSettingsPage() {
           <p className="hf-type-body">{t("settings.support.description")}</p>
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div>
           <h2 className="hf-type-section-title">{t("settings.support.period")}</h2>
           <div className="grid grid-cols-1 gap-3 min-[360px]:grid-cols-2">
             <TextField
@@ -181,7 +181,7 @@ export default function SupportSettingsPage() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div>
           <h2 className="hf-type-section-title">{t("settings.support.dataTitle")}</h2>
           <AccordionCard>
             <PermissionRow

@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { IconPlus } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { TrendIcon } from "@/components/BottomNav";
 import { StatChart, type ChartSeries } from "@/components/StatChart";
 import { StatCardsGrid } from "@/components/StatCardsGrid";
+import { StatChartsSection } from "@/components/StatChartsSection";
 import { StatPeriodPicker } from "@/components/StatPeriodPicker";
 import { IntradayKcalChart } from "@/components/IntradayKcalChart";
 import { TopSinnersCard } from "@/components/TopSinnersCard";
@@ -22,6 +23,7 @@ import { groupByDay, type RegistrationTotals } from "@/lib/daily-totals";
 import { DAILY_KCAL_GOAL, WEIGHT_GOAL_KG } from "@/lib/goals";
 import { DEFAULT_STAT_SELECTION, filterDaysInRange, selectionRange, type StatPeriodSelection } from "@/lib/stat-periods";
 import type { IntegrationCardStatus } from "@/lib/integrations";
+import { dailyChartLabel, statChartDef } from "@/lib/stat-charts";
 import { computeTrendWeight, type WeightSample, type MealSample } from "@/lib/weight-trend";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -106,6 +108,9 @@ export default function StatisticsPage() {
   const [hasConnectedIntegration, setHasConnectedIntegration] = useState(false);
   const [warnOnRecommendedLimits, setWarnOnRecommendedLimits] = useState(false);
   const [loading, setLoading] = useState(true);
+  // "+ Tilføj kort" vises kun, mens hhv. graferne/kortene vibrerer (eller sektionen er tom).
+  const [showAddChart, setShowAddChart] = useState(false);
+  const [showAddCard, setShowAddCard] = useState(false);
   const [periodSelection, setPeriodSelection] = useState<StatPeriodSelection>(DEFAULT_STAT_SELECTION);
   // G3: registreringer med klassifikation til kød/drikke-kortene og "Største syndere".
   const { registrations: sourceRegistrations, loading: sourcesLoading } = useSourceRegistrations();
@@ -262,32 +267,74 @@ export default function StatisticsPage() {
     [registrations, activePeriodRange],
   );
 
+  const renderChart = useCallback(
+    (key: string) => {
+      const def = statChartDef(key);
+      if (!def) return null;
+      if (def.kind === "caloriesAndWeight") {
+        return (
+          <StatChart title={t("statistics.caloriesAndWeightChart")} series={chartSeries} defaultEnabledKeys={["kcal"]} />
+        );
+      }
+      if (def.kind === "intradayKcal") {
+        return <IntradayKcalChart registrations={recentRegistrations} windowDays={activePeriodDays} />;
+      }
+      const label = dailyChartLabel(def.field);
+      const values = dailySeries(
+        allDays.map((d) => ({ dateKey: d.dateKey, value: d[def.field] })),
+        DAY_COUNT,
+      );
+      return (
+        <StatChart
+          title={label}
+          storageKey={`hellocal.statistik.series.${def.key}`}
+          defaultEnabledKeys={[def.field]}
+          series={[{ key: def.field, label, color: "var(--hf-green)", unit: def.unit, values }]}
+        />
+      );
+    },
+    [t, chartSeries, recentRegistrations, activePeriodDays, allDays],
+  );
+
   return (
     <HfScreen title={t("statistics.title")} icon={<TrendIcon color="currentColor" size={20} />}>
       <div className="flex flex-col gap-4 p-4">
-        <StatChart title={t("statistics.caloriesAndWeightChart")} series={chartSeries} defaultEnabledKeys={["kcal"]} />
-
-        <IntradayKcalChart registrations={recentRegistrations} windowDays={activePeriodDays} />
-
-        <div className="flex flex-col gap-3 border-t border-hf-tan-dark pt-4">
-          <div className="relative z-40 flex items-center justify-between gap-2">
-            <StatPeriodPicker selection={periodSelection} onChange={setPeriodSelection} />
+        {showAddChart && (
+          <div className="flex justify-end">
             <Link
-              href="/statistics/unused-cards"
+              href="/statistics/unused-charts"
               className="flex min-h-8 items-center gap-1 text-xs font-semibold text-hf-black"
             >
               <IconPlus size={14} stroke={2.5} />
               {t("statCardsGrid.addCard")}
             </Link>
           </div>
+        )}
+
+        <StatChartsSection renderChart={renderChart} onShowAddChange={setShowAddChart} />
+
+        <div className="flex flex-col gap-3 border-t border-hf-tan-dark pt-4">
+          <div className="relative z-40 flex items-center justify-between gap-2">
+            <StatPeriodPicker selection={periodSelection} onChange={setPeriodSelection} />
+            {showAddCard && (
+              <Link
+                href="/statistics/unused-cards"
+                className="flex min-h-8 items-center gap-1 text-xs font-semibold text-hf-black"
+              >
+                <IconPlus size={14} stroke={2.5} />
+                {t("statCardsGrid.addCard")}
+              </Link>
+            )}
+          </div>
 
           <StatCardsGrid
             cards={statCards}
             defaultActiveKeys={DEFAULT_ACTIVE_STAT_KEYS}
             highlightRecommendedLimits={warnOnRecommendedLimits}
+            onShowAddChange={setShowAddCard}
           />
 
-          <TopSinnersCard registrations={periodSources} range={activePeriodRange} loading={sourcesLoading} />
+          <TopSinnersCard registrations={periodSources} loading={sourcesLoading} />
         </div>
       </div>
     </HfScreen>

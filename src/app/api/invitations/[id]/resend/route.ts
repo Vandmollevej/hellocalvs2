@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
-import { queueMessage } from "@/lib/messaging";
+import { ensureDefaultMessageTemplates, queueMessage } from "@/lib/messaging";
+import { inviteEmailVars } from "@/lib/invite-message";
 
 const INVITATION_VALID_DAYS = 7;
 
@@ -9,8 +10,9 @@ type RouteContext = { params: Promise<{ id: string }> };
 
 // Gensend en allerede sendt invitation: bumper sentAt/expiresAt på den
 // eksisterende række i stedet for at oprette en ny (fejl #12D).
-export async function POST(_req: Request, { params }: RouteContext) {
+export async function POST(req: Request, { params }: RouteContext) {
   const { id } = await params;
+  const body: { name?: unknown; note?: unknown } = await req.json().catch(() => ({}));
   const user = await getSessionUser();
   if (!user) return NextResponse.json({ message: "Log ind for at gensende en invitation" }, { status: 401 });
 
@@ -25,9 +27,10 @@ export async function POST(_req: Request, { params }: RouteContext) {
   });
 
   const inviteUrl = `${process.env.APP_BASE_URL ?? "https://hellocal.packroff.dk"}/signup?ref=${user.referralCode}`;
+  await ensureDefaultMessageTemplates();
   await queueMessage("FRIEND_INVITATION", {
     toEmail: existing.email,
-    vars: { inviterName: user.displayName, inviteUrl },
+    vars: inviteEmailVars({ name: body.name, note: body.note, fallbackName: user.displayName, inviteUrl }),
   });
 
   return NextResponse.json({ invitation });
