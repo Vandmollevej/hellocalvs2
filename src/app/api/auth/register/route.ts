@@ -33,6 +33,14 @@ export async function POST(req: Request) {
     );
   }
 
+  // Udtrykkeligt samtykke til helbredsoplysninger (GDPR art. 9, docs/DECISIONS.md 2026-09-25).
+  if (body.healthDataConsent !== true) {
+    return NextResponse.json(
+      { message: "Du skal give samtykke til behandling af helbredsoplysninger" },
+      { status: 400 }
+    );
+  }
+
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
     return NextResponse.json({ message: "Der findes allerede en konto med den e-mail" }, { status: 409 });
@@ -48,6 +56,7 @@ export async function POST(req: Request) {
       email,
       displayName,
       passwordHash,
+      healthDataConsentAt: new Date(),
       emailVerifiedAt: new Date(),
     },
     select: { id: true, email: true, displayName: true },

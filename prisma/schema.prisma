@@ -137,6 +137,11 @@ model User {
   // (snapshot-princippet), men PII er ryddet — se src/lib/gdpr.ts.
   forgottenAt DateTime?
 
+  // Udtrykkeligt samtykke til behandling af helbredsoplysninger (GDPR art. 9,
+  // docs/DECISIONS.md 2026-09-25). Null = ikke givet endnu; ConsentGate sender
+  // brugeren til /samtykke, før appen kan bruges.
+  healthDataConsentAt DateTime?
+
   // Krydsspærring for "videresend til en ven" (docs/DECISIONS.md, points-
   // system 2026-09-02): sat når to brugere har sendt mere end én tur-retur
   // videresendelse til hinanden inden for 24 timer. Blokerer nye points fra

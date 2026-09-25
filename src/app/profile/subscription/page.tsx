@@ -5,7 +5,12 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { IconArrowRight, IconStar } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
+
+// Ingen betalingsudbyder endnu (docs/DECISIONS.md 2026-09-19); knappen åbnes,
+// når betaling er tilsluttet.
+const PAYMENT_AVAILABLE = false;
 
 type SubscriptionData = {
   tier: "FREE" | "SERIOUS";
@@ -23,6 +28,9 @@ export default function SubscriptionPage() {
   const [giftCode, setGiftCode] = useState("");
   const [redeeming, setRedeeming] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  // Bekræftelse af straks-levering og fortrydelsesret (forbrugeraftaleloven,
+  // docs/DECISIONS.md 2026-09-25) før køb.
+  const [withdrawalAck, setWithdrawalAck] = useState(false);
 
   function load() {
     fetch("/api/subscription")
@@ -143,10 +151,17 @@ export default function SubscriptionPage() {
                 {t("subscription.seriousPlan.title")} — {data.priceDkk} {t("subscription.seriousPlan.priceSuffix")}
               </p>
               <p className="hf-type-body-sm mt-1 opacity-70">{t("subscription.seriousPlan.description")}</p>
+              <div className="mt-3">
+                <Toggle
+                  checked={withdrawalAck}
+                  onChange={setWithdrawalAck}
+                  label={t("subscription.seriousPlan.withdrawalConsent")}
+                />
+              </div>
               <button
                 type="button"
-                disabled
-                className="hf-btn-primary hf-type-button mt-3 h-12 w-full opacity-40"
+                disabled={!PAYMENT_AVAILABLE || !withdrawalAck}
+                className="hf-btn-primary hf-type-button mt-3 h-12 w-full disabled:opacity-40"
               >
                 {t("subscription.seriousPlan.upgradeCta")}
               </button>
