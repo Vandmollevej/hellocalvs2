@@ -230,6 +230,19 @@ En side må ikke vælge `text-[15px]`, `text-sm`, `font-medium` eller en vilkår
 line-height for en ny overskrift. Den skal vælge en af rollerne. Hvis ingen
 rolle passer, skal kontrakten udvides én gang centralt før siden bygges.
 
+### 4.3 Sektionsoverskrift med streger — fast afstand
+
+`.hf-type-section-title` ("──── Tekst ────") ejer selv sin lodrette afstand
+(tilføjet 2026-09-25 efter brugerens krav om ens afstand overalt):
+
+- 32 px over overskriften, 12 px under.
+- 0 px over, når overskriften er første element i sin blok.
+- Sider må ikke sætte `mt-*`/`mb-*` på den; klassen ligger uden for Tailwinds
+  lag og vinder altid. Står overskriften i en `gap`-stak, må stakken ikke have
+  eget `gap` mellem overskrift og indhold.
+- Klassen er kun til sektionsoverskrifter. Navne, appbar-titler o.l. bruger en
+  anden `.hf-type-*`-rolle.
+
 ## 5. Afstands- og geometri-system
 
 ### 5.1 Basisskala
@@ -604,16 +617,14 @@ gult kort med grøn kant (`#FDF3D3` baggrund, `--hf-color-brand` kant, mørk
 rent visuelt — der findes intet pointsystem i datamodellen endnu.
 
 **`PointsPromoBanner`** (`src/components/hf/PointsPromoBanner.tsx`), tilføjet
-2026-09-11 — erstatter de tidligere rene tekstbannere for "optjen X points
-ved at ..." på Invitér en ven og Indberet fejl. Struktur kopieret efter
-brugerreference (HelloFresh-app, "Spar op til ... + Aktivér rabat"-kort på
-Privatlivspolitik-skærmen): grønt kort (`--hf-color-brand`, radius 8 px, 16 px
-padding), en 44×44 luk-knap (`IconX`, hvid) øverst til højre, fed hvid
-overskriftstekst, valgfri hvid brødtekstlinje, og en fuldbredde hvid knap
-(`--hf-color-white` baggrund, `--hf-color-action` tekst) med en handlingslabel
-(fx "Læs betingelser"). Luk skjuler kortet lokalt for resten af sessionen
-(ingen persistering). Erstatter det tidligere mønster med "*" i teksten og en
-separat lysegrå "*Læs betingelser"-linje under kortet.
+2026-09-11, ændret 2026-09-25 efter brugerens krav — bruges til "optjen X
+points ved at ..." på Invitér en ven og Indberet fejl: grønt kort
+(`--hf-color-brand`, radius 8 px, 16 px padding) med en 44×44 luk-knap
+(`IconX`, hvid) øverst til højre, fed hvid overskrift der altid starter med
+"*", og valgfri hvid brødtekstlinje. Under kortet (8 px) står en grå
+`.hf-type-caption`-linje "* Læs betingelser", som linker til betingelserne.
+Betingelserne må aldrig være en stor knap. Luk skjuler kortet og linjen lokalt
+for resten af sessionen (ingen persistering).
 
 **Selfie-portrætkort i Billede-dagbog** (`src/app/profile/photo-diary/page.tsx`),
 tilføjet 2026-09-12 — Hello Cal-specifik variant uden HelloFresh-reference,

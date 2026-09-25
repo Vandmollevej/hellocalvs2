@@ -2,6 +2,16 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Invitér en ven + fast afstand om sektionsoverskrifter
+
+Se `docs/DECISIONS.md` 2026-09-25 "Sektionsoverskrifter, points-banner og
+"Invitér en ven"". Ændret: `globals.css` (`.hf-type-section-title`),
+`PointsPromoBanner`, `profile/invite`, `lib/invite-message.ts`,
+invitations-API'erne og FRIEND_INVITATION-skabelonen (gammel standardtekst
+opgraderes automatisk). Lint + build grønne. Ikke visuelt testet (kræver
+login) — test på iPhone efter deploy: afstand om overskrifter på alle sider,
+delemenuen og mailens personlige besked.
+
 ## 2026-09-25: Profil — tandhjul til app-indstillinger + tilbagepil
 
 - På `/profile` (og kun dér) er profilcirklen øverst til højre skiftet ud
