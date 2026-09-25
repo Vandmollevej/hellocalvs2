@@ -23,6 +23,7 @@ const LINK_DEFS: { href: string; key: AdminI18nKey }[] = [
   { href: "/admin/anonymous-stats", key: "nav_anonymous_stats" },
   { href: "/admin/recovery", key: "nav_recovery" },
   { href: "/admin/passkeys", key: "nav_passkeys" },
+  { href: "/admin/scan-invites", key: "nav_scan_invites" },
 ];
 
 export function AdminNav({ email, locale }: { email: string; locale: Locale }) {

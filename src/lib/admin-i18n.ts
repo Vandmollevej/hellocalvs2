@@ -21,6 +21,7 @@ const DICTIONARY = {
   nav_anonymous_stats: { DA: "Anonym statistik", EN: "Anonymous statistics" },
   nav_recovery: { DA: "Gendannelse", EN: "Recovery" },
   nav_passkeys: { DA: "Passkeys", EN: "Passkeys" },
+  nav_scan_invites: { DA: "scan-invites", EN: "scan-invites" },
   nav_support: { DA: "Support", EN: "Support" },
   support_title: { DA: "Supporthenvendelser", EN: "Support requests" },
   nav_logout: { DA: "Log ud", EN: "Log out" },
