@@ -128,14 +128,14 @@ export default function InvitePage() {
         </button>
       }
     >
-      <div className="px-4 pt-4 pb-8">
+      <div className="px-4 pt-6 pb-8">
         <PointsPromoBanner
           headline="I optjener begge 300 points, når din ven har oprettet en konto"
           subtext="300 points kan indløses til 1 gratis måned under Profil → Points."
           href="/betingelser#pointsystem"
         />
 
-        <h2 className="hf-type-section-title mt-6">Send invitation pr. e-mail</h2>
+        <h2 className="hf-type-section-title mt-8">Send invitation pr. e-mail</h2>
         <form onSubmit={sendInvitation} className="mt-2 flex gap-2">
           <input
             type="email"
@@ -156,11 +156,11 @@ export default function InvitePage() {
         </form>
         {inviteError && <p className="hf-type-caption mt-1 text-hf-red-dark">{inviteError}</p>}
 
-        <h2 className="hf-type-section-title mt-6">Afsendte invitationer</h2>
+        <h2 className="hf-type-section-title mt-8">Afsendte invitationer</h2>
         {invitations.length === 0 ? (
           <p className="hf-type-body-sm mt-2 opacity-70">Ingen invitationer sendt endnu.</p>
         ) : (
-          <div className="mt-2 flex flex-col">
+          <div className="mt-3 flex flex-col">
             {invitations.map((invitation) => (
               <div
                 key={invitation.id}

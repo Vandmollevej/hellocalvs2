@@ -23,7 +23,7 @@ export function PointsPromoBanner({
   if (dismissed) return null;
 
   return (
-    <div className="relative rounded-lg p-4" style={{ background: "var(--hf-color-brand)" }}>
+    <div className="relative rounded-lg p-5" style={{ background: "var(--hf-color-brand)" }}>
       <button
         type="button"
         onClick={() => setDismissed(true)}
@@ -38,15 +38,15 @@ export function PointsPromoBanner({
           {headline}
         </p>
         {subtext && (
-          <p className="hf-type-caption mt-1" style={{ color: "var(--hf-color-white)" }}>
+          <p className="hf-type-caption mt-2" style={{ color: "var(--hf-color-white)" }}>
             {subtext}
           </p>
         )}
       </div>
       <a
         href={href}
-        className="hf-btn-primary hf-type-button mt-3 flex h-12 w-full items-center justify-center"
-        style={{ background: "var(--hf-color-white)", color: "var(--hf-color-action)" }}
+        className="hf-type-caption mt-3 inline-block underline"
+        style={{ color: "var(--hf-color-white)" }}
       >
         {buttonLabel}
       </a>
