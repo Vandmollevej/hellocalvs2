@@ -1232,12 +1232,12 @@
   "addButton": {
     "closeMenu": "Luk tilføj-menu",
     "openMenu": "Åbn tilføj-menu",
-    "microphone": "Mikrofon",
+    "microphone": "Indtal",
     "ownDishes": "Retter",
     "search": "Søg",
     "weight": "Vægt",
     "water": "Vand",
-    "camera": "Kamera",
+    "camera": "Scan med kamera",
     "list": "Se alle",
     "menstrualCycle": "Menstruation",
     "hint": {
