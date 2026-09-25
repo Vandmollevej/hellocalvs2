@@ -35,7 +35,7 @@ type CommunicationUser = {
 };
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
-  return <p className="hf-type-section-title mb-1 mt-2">{children}</p>;
+  return <p className="hf-type-section-title">{children}</p>;
 }
 
 function SectionDivider() {

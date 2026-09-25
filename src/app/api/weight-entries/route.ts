@@ -66,6 +66,20 @@ export async function POST(req: Request) {
       },
     });
 
+    // Start-vægten er låst på Profil (docs/DECISIONS.md 2026-09-25). Er den
+    // endnu tom, bliver første vejning start-vægt; herefter røres den aldrig.
+    await prisma.user.updateMany({
+      where: { id: user.id, weightKg: null },
+      data: { weightKg, startWeightUpdatedAt: new Date() },
+    });
+
+    // Start-vægten er låst på Profil (docs/DECISIONS.md 2026-09-25). Er den
+    // endnu tom, bliver første vejning start-vægt; herefter røres den aldrig.
+    await prisma.user.updateMany({
+      where: { id: user.id, weightKg: null },
+      data: { weightKg, startWeightUpdatedAt: new Date() },
+    });
+
     return NextResponse.json({ entry });
   } catch (error) {
     console.error("Weight entry create failed", error);

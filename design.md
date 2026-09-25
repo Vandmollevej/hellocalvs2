@@ -230,6 +230,19 @@ En side må ikke vælge `text-[15px]`, `text-sm`, `font-medium` eller en vilkår
 line-height for en ny overskrift. Den skal vælge en af rollerne. Hvis ingen
 rolle passer, skal kontrakten udvides én gang centralt før siden bygges.
 
+### 4.3 Sektionsoverskrift med streger — fast afstand
+
+`.hf-type-section-title` ("──── Tekst ────") ejer selv sin lodrette afstand
+(tilføjet 2026-09-25 efter brugerens krav om ens afstand overalt):
+
+- 32 px over overskriften, 12 px under.
+- 0 px over, når overskriften er første element i sin blok.
+- Sider må ikke sætte `mt-*`/`mb-*` på den; klassen ligger uden for Tailwinds
+  lag og vinder altid. Står overskriften i en `gap`-stak, må stakken ikke have
+  eget `gap` mellem overskrift og indhold.
+- Klassen er kun til sektionsoverskrifter. Navne, appbar-titler o.l. bruger en
+  anden `.hf-type-*`-rolle.
+
 ## 5. Afstands- og geometri-system
 
 ### 5.1 Basisskala
@@ -604,37 +617,14 @@ gult kort med grøn kant (`#FDF3D3` baggrund, `--hf-color-brand` kant, mørk
 rent visuelt — der findes intet pointsystem i datamodellen endnu.
 
 **`PointsPromoBanner`** (`src/components/hf/PointsPromoBanner.tsx`), tilføjet
-2026-09-11 — erstatter de tidligere rene tekstbannere for "optjen X points
-ved at ..." på Invitér en ven og Indberet fejl. Struktur kopieret efter
-brugerreference (HelloFresh-app, "Spar op til ... + Aktivér rabat"-kort på
-Privatlivspolitik-skærmen): grønt kort (`--hf-color-brand`, radius 8 px, 16 px
-padding), en 44×44 luk-knap (`IconX`, hvid) øverst til højre, fed hvid
-overskriftstekst, valgfri hvid brødtekstlinje, og en fuldbredde hvid knap
-(`--hf-color-white` baggrund, `--hf-color-action` tekst) med en handlingslabel
-(fx "Læs betingelser"). Luk skjuler kortet lokalt for resten af sessionen
-(ingen persistering). Erstatter det tidligere mønster med "*" i teksten og en
-separat lysegrå "*Læs betingelser"-linje under kortet.
-
-**Selfie-portrætkort i Billede-dagbog** (`src/app/profile/photo-diary/page.tsx`),
-tilføjet 2026-09-12 — Hello Cal-specifik variant uden HelloFresh-reference,
-bygget efter brugerens egen reference (den høje, fuldbredde portrætblok i
-venstre side af Kogebog-startsiden, se sagens vedhæftede skærmbillede):
-selfies (front-kamera, `capture="user"`) vises i én kolonne som fuldbredde
-`aspect-[3/4]` `object-cover`-kort (`rounded-2xl`, `bg-hf-tan`), adskilt fra
-det eksisterende faste 2-kolonne-grid til almindelige billeder (bagkamera,
-`capture="environment"`), som er uændret. Under hvert selfie-kort vises to
-tekstlinjer oven på hinanden: vægt-linjen og mål-linjen. Begge følger samme
-regel — er der en `WeightEntry` hhv. `BodyMeasurement` fra samme kalenderdag
-som billedet, vises "Aktuel vægt"/"Aktuelle mål"; ellers vises den seneste
-værdi før billedet som "Seneste vægt"/"Seneste mål" med dato; findes slet
-ingen data, vises en dæmpet "ingen registreret endnu"-linje. Målene er
-kropsomkreds i cm (talje, hofte, bryst, lår, overarm — de mål en diætist
-typisk følger ud over vægten), lagret i den nye `BodyMeasurement`-model
-(`prisma/schema.prisma`, migration `20260912020000_body_measurements`) og
-læst via `/api/body-measurements`. Indtastningssiden ("måleside") er nu bygget
-på `/profile/body-measurements` (samme session, senere samme dag) — se den
-dedikerede beskrivelse nedenfor. Denne visning tåler stadig altid den tomme
-"ingen mål registreret endnu"-tilstand for brugere, der aldrig har brugt den.
+2026-09-11, ændret 2026-09-25 efter brugerens krav — bruges til "optjen X
+points ved at ..." på Invitér en ven og Indberet fejl: grønt kort
+(`--hf-color-brand`, radius 8 px, 16 px padding) med en 44×44 luk-knap
+(`IconX`, hvid) øverst til højre, fed hvid overskrift der altid starter med
+"*", og valgfri hvid brødtekstlinje. Under kortet (8 px) står en grå
+`.hf-type-caption`-linje "* Læs betingelser", som linker til betingelserne.
+Betingelserne må aldrig være en stor knap. Luk skjuler kortet og linjen lokalt
+for resten af sessionen (ingen persistering).
 
 **Kropsmål-side** (`src/app/profile/body-measurements/page.tsx`), tilføjet
 2026-09-12 — Hello Cal-specifik indtastningsside uden HelloFresh-reference,
@@ -652,42 +642,35 @@ kan vise flere mål sammen for én dag, i stedet for kun det senest indtastede
 enkeltfelt.
 
 **`BarcodeScanOverlay`** (`src/components/hf/BarcodeScanOverlay.tsx`),
-tilføjet 2026-09-12 til den live stregkode-scanning på
-`/camera?mode=product` ("Stregkode"-fanen) — Hello Cal-specifik primitiv
-uden HelloFresh-reference (jf. §1), bygget efter brugerens egen detaljerede
-beskrivelse af en scanningsguide: en 2,2:1 guide-boks centreret i
-kamera-viewfinderet, med samme "hul i mørkt overlay"-teknik som den
-eksisterende cirkel-guide (`box-shadow: 0 0 0 999px rgba(0,0,0,.55)`, clippet
-af forælderens `overflow-hidden`). Boksens 1 px kant er hvid som udgangspunkt,
-`--hf-color-positive` ("hf-lime") når en afkodet stregkode ligger inden i
-boksen, og Hello Cal-undtagelsens danger-token ("hf-red-dark") når kameraet
-har afkodet en stregkode et andet sted i billedet, men uden for boksen.
-Position/justering udregnes i `src/lib/barcode-scan.ts` ud fra @zxing's
-`ResultPoint`-koordinater (bekræftet at være i native `videoWidth`/
-`videoHeight`-pixelrum, jf. `node_modules/@zxing/browser`s
-`BrowserCodeReader.createCaptureCanvas`/`drawImageOnCanvas`), mappet til en
-brøkdel (0..1) af det kvadratiske viewfinder-lærred efter samme
-`object-fit: cover`-beskæring som selve `<video>`-elementet bruger. Kun en
-afkodet kode, hvis centrum falder inden for boksen, udløser det faktiske
-produktopslag — en kode uden for boksen viser kun den røde kant, uden at
-navigere væk.
+tilføjet 2026-09-12 og omlagt 2026-09-25 efter brugerens test på iPhone, til
+den live stregkode-scanning på `/camera?mode=product` ("Stregkode"-fanen) —
+Hello Cal-specifik primitiv uden HelloFresh-reference (jf. §1). To faser:
 
-Så længe koden ikke er bekræftet, viser boksen en fiktiv, aldrig-opslået
-EAN-13 (hvide bjælker + tal, `src/lib/regions.ts`s `buildFakeBarcodeForRegion`/
-`formatEan13`) — koden starter altid med brugerens eget regions rigtige
-3-cifrede GS1-præfix (samme `REGIONS`-liste som `barcodeMatchesRegion`
-bruger), hentet via `GET /api/profile` (falder tilbage til "DK", samme
-default som `User.region`). I det øjeblik en kode bekræftes inden i boksen,
-forsvinder denne fiktive illustration og erstattes et kort øjeblik
-(~450 ms, før det faktiske opslag/navigation) af en grøn (`hf-lime`,
-transparent) markering hen over selve det afkodede bjælkeområde plus en
-tyndere grøn bjælke lige under, som repræsenterer de aflæste cifre — den
-faktiske fysiske stregkode/tal overlejres ikke pixel-præcist, kun det
-omtrentlige, udregnede område. Efter ca. 6 sekunder uden en bekræftet
-aflæsning viser viewfinderet desuden en halvgennemsigtig sort bjælke
-(`bg-black/80`) med hvid hjælpetekst, der roterer mellem to hints ("stregkode
-uden for feltet" / "prøv større afstand, hvis den er sløret") hvert 4.
-sekund, indtil enten en kode bekræftes eller kameraet genstartes.
+1. **Guide** (ingen stregkode i billedet): en 2,2:1-boks centreret i det
+   kvadratiske viewfinder med 1 px `white/80`-kant, radius 6 px og en *let*
+   dæmpning udenom (`box-shadow: 0 0 0 999px rgb(0 0 0 / .28)` — ikke mørkere,
+   brugeren fandt .55 for sort). Inde i boksen tegnes en fiktiv, aldrig
+   opslået EAN-13 med brugerens regions GS1-præfix
+   (`buildFakeBarcodeForRegion`), nu med ægte EAN-13-stregmønster
+   (`src/lib/barcode-pattern.ts`). Har brugeren senest holdt en stregkode på
+   højkant, vender guiden lodret.
+2. **Afkodning** (så snart kameraet har læst en kode, hvor som helst i
+   billedet): guiden og dæmpningen *fader* ud (300 ms — aldrig et brat
+   hop), og ovenpå den fysiske stregkode lægges et AR-lag: en afdæmpet plade
+   (`rgb(0 0 0 / .5)`, radius 4) med den aflæste kodes **rigtige** streger i
+   hvid, tegnet streg for streg fra venstre mod højre (600 ms) med en lys
+   fejelinje, hvorefter cifrene skrives et ad gangen (45 ms pr. ciffer).
+   Laget har stregkodens position, bredde, stregernes målte højde og dens
+   vinkel (også skæv eller på højkant), og følger den, mens den bevæger sig.
+   Produktopslaget starter først, når animationen er færdig (~1,3 s; 0,3 s
+   ved `prefers-reduced-motion`, hvor animationerne er slået fra). Findes
+   produktet ikke, beholder laget den samme rolige plade med en tynd kant i
+   `--hf-color-danger`; der er ingen farvede flader oven på billedet.
+
+Efter ca. 6 sekunder uden en aflæsning roterer en halvgennemsigtig sort
+bjælke (`bg-black/70`) nederst i viewfinderet mellem to hints ("hold hele
+stregkoden inde i billedet — den må gerne vende lodret" / "prøv større
+afstand, hvis den er sløret").
 
 ### 6.12 Produktsidens billedområde — fast geometri, uafhængig af billedet
 
