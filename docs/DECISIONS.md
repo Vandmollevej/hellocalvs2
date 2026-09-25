@@ -14,6 +14,47 @@ stor sort "Opdatér oplysninger"-knap gemmer alt. Siden er dermed en bevidst
 undtagelse fra reglen om automatisk lagring uden "Gem"-knap. Ikoner uden
 tabler-modstykke ligger i `src/components/icons/WeighConditions.tsx`.
 
+## 2026-09-25: Én tekst og ét ikon pr. Tilføj-handling
+
+Brugeren vil have, at tekster og ikoner på Tilføj-skærmen slår igennem på
+forsidehjulet og alle andre steder, handlingen vises. `ADD_ACTIONS` i
+`src/lib/add-actions.ts` har derfor kun én tekst (`labelKey`). Hjulet har
+ikke længere egne kortere hint-tekster. Ikonet for Kropsmål afhænger af køn
+og sættes via `visibleAddActions()` / `addActionByKey(key, sex)`.
+
+## 2026-09-25: Minimum for sundt dagligt indtag i kalenderen
+
+Brugeren ønsker en advarsel, når indtaget er for lavt til at være sundt.
+Minimum = den højeste af:
+1. Hvilestofskiftet (BMR) efter Mifflin-St Jeor (Mifflin et al., *Am J Clin
+   Nutr* 1990), beregnet ud fra seneste vejning, højde, alder og køn i
+   profilen. Det er samme formel, som ugeestimatet allerede bruger.
+2. Et fast gulv på 1.200 kcal for kvinder og 1.500 kcal for mænd. Det er den
+   grænse, der typisk anbefales for slankekur uden lægelig opfølgning (bl.a.
+   Harvard Health Publishing). Er køn ukendt, bruges 1.200.
+Resultatet rundes op til nærmeste 10 kcal. Kun afsluttede dage med
+indtastninger kan markeres. Dagen i dag markeres ikke, fordi den ikke er
+slut, og tomme dage markeres heller ikke. Det er et vejledende skøn, ikke
+medicinsk rådgivning.
+
+## 2026-09-25: Sektionsoverskrifter, points-banner og "Invitér en ven"
+
+Brugerens krav efter skærmbillede af Invitér en ven:
+
+- `.hf-type-section-title` ejer sin afstand: 32 px over (0 som første
+  element), 12 px under. Årsag: klassens `margin: 0` lå uden for Tailwinds
+  lag og overtrumfede alle sidernes `mt-6`/`mb-2`, så der var ingen luft
+  nogen steder. Sidernes lokale margins er fjernet (design.md §4.3).
+- `PointsPromoBanner`: ingen stor "Læs betingelser"-knap. Overskriften starter
+  med "*", og under kortet står en grå "* Læs betingelser"-linje. Omstøder
+  2026-09-11-varianten med hvid fuldbreddeknap.
+- Invitér en ven: "Dit navn" (forudfyldt med profilnavn) og en 2-linjers
+  personlig besked (maks. 160 tegn) øverst. Standardteksten
+  (`src/lib/invite-message.ts`) vises som forhåndsvisning og deles via
+  telefonens delemenu (Web Share) med dele-ikon på knappen. Navn og besked
+  bruges også i invitationsmailen (`{{personalMessage}}`, HTML-escapet).
+  Kladden huskes kun lokalt i browseren.
+
 ## 2026-09-24: Normalt login — privacy-by-architecture ophævet
 
 Brugerens beslutning: "Man skal bare kunne logge ind som på alle andre
@@ -67,8 +108,9 @@ apps." De skrappe sikkerhedsforanstaltninger var kun ment til admin.
 - Statistik: 12 nye kort (kød g/kcal ×4, sukkerholdige drikke kcal, alkohol
   kcal/genstande/mængde) som totaler for den valgte periode, egen gruppe under
   "Tilføj kort". Bred boks "Største syndere" (top 5 for Kalorier/Fedt/Sukker,
-  samme vare må gå igen, klik åbner varen) med "Se alle" →
-  `/statistics/sources` ("Største kilder", faner + Produkter/Produkttyper).
+  samme vare må gå igen, klik åbner varen). Siden "Største kilder"
+  (`/statistics/sources`) er fjernet 2026-09-25 efter brugerens ønske, da
+  "Månedens synder" dækker det samme; boksen har derfor intet "Se alle".
 - "Månedens synder": knap under kalenderens månedsvisning →
   `/statistics/month-sinners?month=YYYY-MM`, grupperet efter produkttype med
   "kcal · %", faner Kalorier/Fedt/Sukker.
@@ -308,6 +350,14 @@ brugeren punkt for punkt). Den bindende kontrakt er `docs/PRIVACY.md`.
   dagsvisning) styrer selv deres lukke-/tilbagehandling.
 - Login-/auth-sider uden profilcirkel (signup, glemt/nulstil adgangskode,
   land) følger samme placering: pil i venstre slot.
+
+## 2026-09-25: Start-vægt kan ikke ændres fra appen
+
+Afløser UI-delen af 2026-09-22-beslutningen: Profil tilbyder ikke længere
+ændring via verificeringsmail. Start-vægtfeltet er altid låst og henviser
+til dagsvægt. En tom start-vægt sættes én gang af første `WeightEntry`
+(betinget `updateMany ... weightKg: null`); derefter ændrer vejninger den
+aldrig. `PATCH /api/profile` og det e-mailverificerede API er uændrede.
 
 ## 2026-09-22: Start-vægt er låst — ændring kun via e-mailverificeret engangslink
 
@@ -1978,3 +2028,12 @@ Normaliserede produkt-søgeparametre (`ProductNutritionFeatures`, 1:1 med
 - Den private ingrediens ligger kun i boksen (samling `privateIngredients`) og vises kun for brugeren selv: øverst i søgningen på Opret ret og på `/ingredients` ("Mine ingredienser": omdøb/slet). I retter bruges produkt-ID `private:<id>`, som aldrig sendes til serveren; retter med egne ingredienser kan ikke deles, før de er gjort globale.
 - Admin varsles: serveren får kun navnet og en anonym engangsindbakke (`IngredientRequest`, ingen bruger-ID) plus e-mail `INGREDIENT_REQUEST_ADMIN`. Admin → "Ønskede ingredienser" kan rette navnet og "Tilføj globalt" (GenericIngredient med Frida-næring) eller afvise.
 - Når admin tilføjer den globalt, overskriver den global brugerens private automatisk (valgt blandt brugerens to muligheder): indbakken leverer den globale ingrediens, og enheden erstatter den private i alle egne retter og sletter den private.
+
+## 2026-09-25: Billede-dagbog-lås via WebAuthn, ikke native app
+
+Kontakten "Kræver telefonens adgangskode for at vise" håndhæves i webappen med
+WebAuthn (Face ID/Touch ID/telefonens kode, `userVerification: "required"`),
+ikke via en native app. Formålet er at billederne ikke vises ved et uheld —
+det er en visningslås, ikke kryptering af billederne. Siden låser igen, når
+den går i baggrunden. Selfie-funktionen er fjernet efter brugerens ønske og
+skal ikke genindføres uden en eksplicit anmodning.

@@ -43,3 +43,13 @@ export async function reauthWithPasskey(): Promise<void> {
   const response = await startAuthentication({ optionsJSON: options });
   await postJson("/api/auth/passkey/reauth/verify", { response });
 }
+
+// Billede-dagbogens lås: bekræft med Face ID/Touch ID/telefonens kode. Har
+// kontoen ingen passkey endnu, oprettes en — det kræver også bekræftelse på
+// enheden, så låsen virker fra første gang.
+export async function confirmOnDevice(): Promise<void> {
+  const res = await fetch("/api/auth/me");
+  const data = (await res.json().catch(() => ({}))) as { user?: { hasPasskey?: boolean } };
+  if (data.user?.hasPasskey) await reauthWithPasskey();
+  else await registerPasskey();
+}

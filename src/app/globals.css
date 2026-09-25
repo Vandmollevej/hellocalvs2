@@ -40,6 +40,9 @@
   /* Bevidste Hello Cal-undtagelser (ikke fra HelloFresh-referencen) */
   --hf-color-positive: #a3e635;
   --hf-color-danger: #a3271f;
+  /* For lavt indtag: mørk okker til tekst (læsbar på kortfarven), gul til firkanten. */
+  --hf-color-warning: #8a5a00;
+  --hf-color-warning-fill: #f2c230;
   --hf-color-overlay: rgb(35 35 35 / 40%);
 
   /* Legacy-navne — pegede tidligere på ikke-målte farver, peger nu på de
@@ -94,6 +97,8 @@
   --color-hf-gray-border: var(--hf-gray-border);
   --color-hf-fab: var(--hf-fab);
   --color-hf-lime: var(--hf-lime);
+  --color-hf-warning: var(--hf-color-warning);
+  --color-hf-warning-fill: var(--hf-color-warning-fill);
   --font-sans: var(--font-hf-body);
   --font-mono: var(--font-geist-mono);
   --font-hf-heading: var(--font-hf-heading);
@@ -235,8 +240,12 @@ textarea::selection,
   text-align: center;
 }
 
+/* Sektionsoverskrift "──── Tekst ────". Afstanden over/under er en del af
+   klassen (design.md §4.3), så den er ens på alle sider: 32 px over, 12 px
+   under; ingen luft over, når overskriften er første element i sin blok.
+   Sider må ikke sætte mt-/mb- på den. */
 .hf-type-section-title {
-  margin: 0;
+  margin: var(--hf-section-title-space-above, 32px) 0 var(--hf-section-title-space-below, 12px);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -246,6 +255,10 @@ textarea::selection,
   line-height: 20px;
   color: var(--hf-color-text);
   text-align: center;
+}
+
+.hf-type-section-title:first-child {
+  margin-top: 0;
 }
 
 .hf-type-section-title::before,
