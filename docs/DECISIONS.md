@@ -315,6 +315,14 @@ brugeren punkt for punkt). Den bindende kontrakt er `docs/PRIVACY.md`.
 - Login-/auth-sider uden profilcirkel (signup, glemt/nulstil adgangskode,
   land) følger samme placering: pil i venstre slot.
 
+## 2026-09-25: Start-vægt kan ikke ændres fra appen
+
+Afløser UI-delen af 2026-09-22-beslutningen: Profil tilbyder ikke længere
+ændring via verificeringsmail. Start-vægtfeltet er altid låst og henviser
+til dagsvægt. En tom start-vægt sættes én gang af første `WeightEntry`
+(betinget `updateMany ... weightKg: null`); derefter ændrer vejninger den
+aldrig. `PATCH /api/profile` og det e-mailverificerede API er uændrede.
+
 ## 2026-09-22: Start-vægt er låst — ændring kun via e-mailverificeret engangslink
 
 - Start-vægt = `User.weightKg` (canonical, ingen parallel kolonne). Dagsvægt

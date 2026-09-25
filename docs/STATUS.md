@@ -11,6 +11,19 @@ Last updated: 2026-09-25
 - De fire genvejsknapper bruger allerede de nye ikoner (vægt-SVG fra
   0dbb4fb/bc8960b); de ses i drift efter næste deploy.
 
+## 2026-09-25: Profil — start-vægt altid låst + "Lås"-side
+
+Start-vægt på `/profile/edit` er nu altid låst, også når den er tom (før var
+den et redigerbart felt indtil første indtastning). Feltet vises gråt med en
+hængelås til venstre i boksen; tryk åbner `/profile/start-weight`, som nu er
+siden "Lås" med tilbagepil, teksten "Din startvægt bør ikke ændres, og er
+grundlag for al statistik. Du skal i stedet ændre din dagsvægt her." og
+knappen "Angiv dagsvægt" (→ `/profile/weight-calibration`). Knappen "Send
+verificeringsmail" er fjernet fra siden; verify-siden og API'et ligger
+stadig, men har ingen indgang i UI'et. Er start-vægten tom, sætter første
+vejning (`POST /api/weight-entries`) den. Ubrugte i18n-nøgler fjernet.
+Kropsmål er ikke omfattet (brugeren har bekræftet, at kun start-vægt skal låses).
+
 ## 2026-09-25: Photo diary — passcode toggle now actually locks the photos
 
 User intent: the photos must not flash on screen by accident when the page is
@@ -82,6 +95,14 @@ Se `docs/DECISIONS.md` 2026-09-25 "Global markeringsregel". Global CSS i
 `src/app/globals.css` + `selectstart`-lytter i `GlobalClipboardGuard.tsx`.
 Felter kan stadig redigeres. Skal testes på iPhone efter deploy (long-press på
 kort, tekst og tomme flader må ikke markere noget).
+## 2026-09-25: Abonnement — "Indløs points" som knap + ny side
+
+- Boksen på `/profile/subscription` viser nu "Du har optjent {saldo} points."
+  med en tynd sekundær knap (`hf-button--secondary --compact --full`)
+  "Indløs points", der fører til `/profile/subscription/redeem-points`.
+- Ny side "Indløs points" med tan-liste i samme stil som profil/madvarer.
+  Første række: "Giv en ven en gratis måned med Seriøs adgang!" — endnu uden
+  handling; indholdet kommer senere. Den gamle `/profile/points` er uændret.
 
 ## 2026-09-25: Vægt-ikonet tegnet som vektor
 
