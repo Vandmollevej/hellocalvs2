@@ -24,6 +24,97 @@ fra side til side.
   "Sektionsoverskrifter, points-banner …" nedenfor til 8/16/32-skalaen). I en
   `.hf-page` trækkes stakkens gap fra, så resultatet er det samme.
 
+## 2026-09-25: Billeder, fremgangsmåde og kategorier i Opret ret
+
+- Nederst i Opret ret: knapperne "Tilføj billeder" og "Tilføj fremgangsmåde".
+- **Billeder:** op til 3 af den færdige ret; det første er forsidebillede i
+  listerne. Nedskaleres i browseren (≤ 1600 px JPEG) og gemmes uden EXIF i
+  `/product-images/recipe-images` (samme volume som produktbilleder).
+- **Fremgangsmåde:** overskrift + tekst pr. trin og et kameraikon i siden
+  (billede pr. trin, vist som thumbnail). Plus gør trinnet statisk (uden
+  redigerbar baggrund), og et nyt, større trin får fokus. Tryk på et statisk
+  trin retter det; × sletter det.
+- **Kategorier:** efter Gem vises et vindue (retten er allerede gemt) med
+  Diæter (forudvalgt ud fra ingredienserne), Måltidstype, Køkken og
+  Tilberedning. LUK gemmer kategorierne en gang til, hvis nogen er valgt.
+  Gemmes som `Dish.tags` ("diet:vegan", "meal:dinner" …).
+- Billeder, fremgangsmåde og kategorier følger med, når retten deles og
+  kopieres. Fremgangsmåden indgår i søgningen og i allergen-/diætfiltrene.
+- Kladden (navn, billeder, trin) ligger i sessionStorage, så den overlever
+  turen ud efter ingredienser.
+- `GET /api/dishes/[id]` kræver nu, at man ejer retten.
+
+## 2026-09-25: Filtre og portionsjustering på "Delte retter"
+
+Brugerens krav: sorteringsknapperne erstattes af et filterikon til venstre
+for søgefeltet, der åbner skærmen "Filtre" (`/profile/recipes/filters`).
+Fanen hedder nu "Delte retter" (ikke "Søg i delte retter").
+
+- **Rækkefølge på filterskærmen:** Justér retter (1–6 personer, Vis
+  kalorier, Vis energifordeling) · Sorter efter (én ad gangen) · Allergier ·
+  Diæter · Høj på protein · Specialkost · Fokus på makroer · Nulstil.
+  Valgene gemmes i browseren (`localStorage`), ikke på serveren.
+- **Filtrering sker på serveren** (`src/lib/recipe-filter-match.ts`). Alt,
+  der ikke opfylder et valgt filter, sorteres fra — også når data mangler.
+- **Allergier:** EU's 14 plus 15 andre kendte fødevareallergier, alfabetisk.
+  Genkendes via madvarens EU-allergenmærkning og en ordscanning (dansk +
+  engelsk) af rettens navn, ingrediensnavne og varedeklarationer.
+  "Kokosmælk", "muskatnød", "glutenfri pasta" o.l. tæller ikke. Delte retter
+  har ingen beskrivelse/fremgangsmåde endnu, så de kan ikke scannes.
+- **Spor af:** "kan indeholde spor af …" i en varedeklaration og ingredienser,
+  der ofte har spor (chokolade → nødder, havre → gluten osv.) giver en rød
+  advarsel under rettens titel — kun for allergener, brugeren har valgt.
+- **Diæter:** vegansk, vegetarisk, pescetarisk, glutenfri, laktosefri
+  (laktosefri mælkeprodukter tilladt), keto (≤ 10 E% kulhydrat), lavt sukker
+  (EU: ≤ 5 g/100 g).
+- **Makroer (energiprocent):** Høj på protein ≥ 20 E% (EU-forordning
+  1924/2006). Øvrige grænser ligger uden for NNR 2023's intervaller: protein
+  lav < 10, kulhydrat høj > 60 / lav < 26, fedt høj > 40 / lav < 25. Høj og lav
+  udelukker hinanden pr. makro.
+- **Specialkost:** "Højt indhold af" fibre (EU: 3 g/100 kcal), jern, calcium,
+  kalium, A- og C-vitamin (≥ 30 % af EU-referenceindtaget pr. 600 kcal). Data
+  findes kun delvist (Open Food Facts, HelloFresh); ukendt ⇒ frasorteret.
+- **Anbefalet servering** (`src/lib/recipe-portions.ts`): hovedmåltid = 30 %
+  af brugerens dagsbehov (Mifflin-St Jeor × PAL 1,4; uden profildata EU's
+  2000 kcal). Måltidsfordeling: morgenmad 20–25 %, frokost 25–30 %,
+  aftensmad 30–35 %, mellemmåltider 10–20 %. Listen viser kcal pr. servering
+  og antal serveringer; opskriftssiden skalerer ingrediensernes gram til det
+  valgte antal personer (den gemte ret ændres ikke).
+## 2026-09-25: Vægtkalibrering — eksplicit "Opdatér oplysninger"-knap
+
+Brugerbeslutning. `src/app/profile/weight-calibration/page.tsx` er
+omdesignet: infotekst øverst i cremefarvet kort (ikke grøn), rigtige
+indtastningsfelter for "Uden tøj"/"Med tøj", forholdsvalg som to-vejs
+ikonknapper (sko/uden sko, morgen/aften, før/efter toilet, før/efter mad) —
+"Ved ikke" er fjernet; et nyt tryk på det valgte felt nulstiller til
+`UNKNOWN`. "Vægt over dagen" vises nederst som linjer (som kalenderen), og en
+stor sort "Opdatér oplysninger"-knap gemmer alt. Siden er dermed en bevidst
+undtagelse fra reglen om automatisk lagring uden "Gem"-knap. Ikoner uden
+tabler-modstykke ligger i `src/components/icons/WeighConditions.tsx`.
+
+## 2026-09-25: Én tekst og ét ikon pr. Tilføj-handling
+
+Brugeren vil have, at tekster og ikoner på Tilføj-skærmen slår igennem på
+forsidehjulet og alle andre steder, handlingen vises. `ADD_ACTIONS` i
+`src/lib/add-actions.ts` har derfor kun én tekst (`labelKey`). Hjulet har
+ikke længere egne kortere hint-tekster. Ikonet for Kropsmål afhænger af køn
+og sættes via `visibleAddActions()` / `addActionByKey(key, sex)`.
+
+## 2026-09-25: Minimum for sundt dagligt indtag i kalenderen
+
+Brugeren ønsker en advarsel, når indtaget er for lavt til at være sundt.
+Minimum = den højeste af:
+1. Hvilestofskiftet (BMR) efter Mifflin-St Jeor (Mifflin et al., *Am J Clin
+   Nutr* 1990), beregnet ud fra seneste vejning, højde, alder og køn i
+   profilen. Det er samme formel, som ugeestimatet allerede bruger.
+2. Et fast gulv på 1.200 kcal for kvinder og 1.500 kcal for mænd. Det er den
+   grænse, der typisk anbefales for slankekur uden lægelig opfølgning (bl.a.
+   Harvard Health Publishing). Er køn ukendt, bruges 1.200.
+Resultatet rundes op til nærmeste 10 kcal. Kun afsluttede dage med
+indtastninger kan markeres. Dagen i dag markeres ikke, fordi den ikke er
+slut, og tomme dage markeres heller ikke. Det er et vejledende skøn, ikke
+medicinsk rådgivning.
+
 ## 2026-09-25: Sektionsoverskrifter, points-banner og "Invitér en ven"
 
 Brugerens krav efter skærmbillede af Invitér en ven:
@@ -101,6 +192,18 @@ apps." De skrappe sikkerhedsforanstaltninger var kun ment til admin.
 - "Månedens synder": knap under kalenderens månedsvisning →
   `/statistics/month-sinners?month=YYYY-MM`, grupperet efter produkttype med
   "kcal · %", faner Kalorier/Fedt/Sukker.
+
+## 2026-09-25: Integrationssiden
+
+Brugerens krav: ingen "Kræver app"-mærker eller "Generér enhedskode"-knapper
+(telefon-integrationerne er ikke sat op). Sektioner i denne rækkefølge:
+Aktive integrationer, Oftest anvendt (Apple Health, Google Health, Strava),
+Opskrifter (HelloFresh), Apps (Health Connect, Withings, Garmin, Samsung
+Health, Polar Flow — Polar Flow nederst). Aktive/forbundne kort får en grøn
+prik foran navnet og "Fjern" som almindelig tekst på egen linje (ingen stor
+knap). Ikke-forbindbare kort viser "Ikke tilgængelig endnu". Google Health
+bruger Google-login-klienten som reserve. Denne afløser "Telefon-kort"-punktet
+i 2026-09-24 "Otte sundhedsintegrationer".
 
 ## 2026-09-24: Otte sundhedsintegrationer inden for boks-arkitekturen (G8)
 
@@ -2024,3 +2127,43 @@ ikke via en native app. Formålet er at billederne ikke vises ved et uheld —
 det er en visningslås, ikke kryptering af billederne. Siden låser igen, når
 den går i baggrunden. Selfie-funktionen er fjernet efter brugerens ønske og
 skal ikke genindføres uden en eksplicit anmodning.
+
+## 2026-09-25: Stregkode-scanning — egen afkodningsløkke, lodret/skæv aflæsning og AR-afkodning
+
+Brugerens test på iPhone (skærmbilleder): dæmpningen om guide-boksen var for
+sort og forsvandt brat; en statisk lysegrøn firkant dukkede op et forkert
+sted og blev stående; lodrette stregkoder kunne ikke læses (at dreje
+telefonen drejer hele webappen, så det er ingen løsning); og ønsket var, at
+afkodningen *ses*: stregerne tegnes, og tallene skrives som overlay oven på
+den rigtige stregkode.
+
+- **Egen afkodningsløkke** (`src/lib/barcode-frame-scanner.ts`) i stedet for
+  @zxing/browser's `decodeFromConstraints`. Kun viewfinderets synlige
+  kvadrat afkodes, så resultat-punkter i canvas-pixels / sidelængde er
+  direkte en brøkdel af viewfinderet (den gamle video→skærm-omregning ramte
+  ved siden af). Hvert billede prøves både som det er og drejet 90°, så en
+  stregkode på højkant læses med telefonen holdt normalt. ZXing's egen
+  TRY_HARDER-rotation bruges ikke: @zxing/browser's canvas-kilde opdaterer
+  ikke bredde/højde ved rotation af et ikke-kvadratisk billede. Formater
+  begrænset til EAN-13/EAN-8/UPC-A/UPC-E.
+- **Stregkodens rigtige vinkel og højde** måles i billedet efter hver
+  aflæsning: ZXing returnerer kun den pixelrække, den læste. Højden findes
+  ved at gå vinkelret ud fra læselinjen, til stregmønstret forsvinder;
+  vinklen ved at sammenligne stregmønstret på to parallelle linjer (trinvis,
+  så gentagne stregmønstre ikke giver en forkert top). Verificeret i
+  Chromium mod tegnede EAN-13/EAN-8 ved 0–180°: vinkel inden for ±0,3°,
+  bredde eksakt.
+- **AR-afkodning**: den aflæste kode gen-kodes til sit ægte stregmønster
+  (`src/lib/barcode-pattern.ts`), og `BarcodeScanOverlay` tegner det streg
+  for streg + ciffer for ciffer oven på den fysiske stregkode (se design.md
+  §6.11). Enhver aflæsning i billedet starter afkodningen — kravet om at
+  koden skal ligge inden i boksen og den røde/grønne kant er fjernet.
+- **Ikke fundet** gemmes pr. kode i sessionen, så samme stregkode i billedet
+  ikke looper animation + opslag; en anden kode kan scannes med det samme.
+- **UPC-E har egen læser** (`src/lib/upce-reader.ts`): @zxing/library's
+  UPC-E-læser returnerer aldrig et resultat (den taber de afkodede cifre,
+  tjekker EAN-kontrolciffer/slutvagt i stedet for UPC-E's og udvider
+  UPC-E→UPC-A forkert). Vores læser genbruger ZXing's række-løkke
+  (`OneDReader`), så position/retning virker som for de øvrige formater.
+  Verificeret i Chromium: EAN-13, UPC-A, EAN-8 og fem UPC-E-koder ved
+  0/90/180/−90/14/−20/75° — alle læst korrekt, vinkel inden for 0,5°.

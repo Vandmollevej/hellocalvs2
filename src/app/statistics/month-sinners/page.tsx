@@ -6,7 +6,8 @@
 // gruppe og fx "4.820 kcal · 18 %" af månedens samlede indtag.
 
 import { Suspense, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { SourceMetricTabs } from "@/components/SourceMetricTabs";
 import { SourceItemList } from "@/components/SourceRows";
@@ -18,6 +19,7 @@ import {
   type SourceMetric,
 } from "@/lib/food-classification";
 import { useSourceRegistrations } from "@/lib/use-source-registrations";
+import { useTranslation } from "@/i18n/LocaleProvider";
 
 function monthRange(param: string | null) {
   const match = param?.match(/^(\d{4})-(\d{2})$/);
@@ -27,7 +29,33 @@ function monthRange(param: string | null) {
   return { start: new Date(year, month, 1), end: new Date(year, month + 1, 1) };
 }
 
+function monthParam(date: Date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+}
+
+// Samme pileknap som kalenderens PeriodButton (src/app/calendar/page.tsx),
+// så datolinjen ser præcis ens ud på begge sider.
+function MonthNavButton({ direction, onClick }: { direction: "previous" | "next"; onClick: () => void }) {
+  const { t } = useTranslation();
+  const Icon = direction === "previous" ? IconChevronLeft : IconChevronRight;
+  return (
+    <button
+      type="button"
+      aria-label={t("calendar.periodNavAriaLabel", {
+        direction: direction === "previous" ? t("calendar.previous") : t("calendar.next"),
+        period: t("calendar.periodMonth"),
+      })}
+      onClick={onClick}
+      className="flex size-11 shrink-0 items-center justify-center rounded-full text-hf-black hover:bg-hf-tan focus-visible:outline-2 focus-visible:outline-hf-black"
+    >
+      <Icon size={22} />
+    </button>
+  );
+}
+
 function MonthSinnersContent() {
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const range = useMemo(() => monthRange(searchParams.get("month")), [searchParams]);
   const { registrations, loading } = useSourceRegistrations();
@@ -39,9 +67,20 @@ function MonthSinnersContent() {
   );
   const monthLabel = range.start.toLocaleDateString("da-DK", { month: "long", year: "numeric" });
 
+  function moveMonth(direction: number) {
+    const target = new Date(range.start.getFullYear(), range.start.getMonth() + direction, 1);
+    router.replace(`${pathname}?month=${monthParam(target)}`, { scroll: false });
+  }
+
   return (
     <div className="hf-page">
-      <p className="text-center text-xs text-hf-black opacity-60">{monthLabel}</p>
+      <div className="flex items-center justify-center gap-3">
+        <MonthNavButton direction="previous" onClick={() => moveMonth(-1)} />
+        <div className="flex min-h-11 max-w-full items-center justify-center px-3 text-hf-black">
+          <span className="whitespace-nowrap text-[15px] font-semibold capitalize">{monthLabel}</span>
+        </div>
+        <MonthNavButton direction="next" onClick={() => moveMonth(1)} />
+      </div>
       <SourceMetricTabs value={metric} onChange={setMetric} />
 
       {loading ? (

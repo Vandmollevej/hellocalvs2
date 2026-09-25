@@ -1,5 +1,7 @@
 import { createHash } from "node:crypto";
 import type { SharedRecipe } from "@prisma/client";
+import { parseRecipeSteps } from "@/lib/recipe-categories";
+import { isRecipeImagePath } from "@/lib/recipe-image-storage";
 
 // Delte brugeropskrifter (docs/DECISIONS.md 2026-09-24). Ejeren gemmes som
 // publisherHash (afledt af bruger-ID), så admin kun ser et pseudonym, og
@@ -76,6 +78,9 @@ export function toPublicRecipe(recipe: SharedRecipe) {
     name: recipe.name,
     language: recipe.language,
     ingredients: recipe.ingredients as SharedIngredient[],
+    images: recipe.images,
+    steps: parseRecipeSteps(recipe.steps, isRecipeImagePath),
+    tags: recipe.tags,
     totalGrams: recipe.totalGrams,
     kcal: recipe.kcal,
     protein: recipe.protein,

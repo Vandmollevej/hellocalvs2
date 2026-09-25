@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { IconDroplet } from "@tabler/icons-react";
+import { IconWaterGlass } from "@/components/icons/WaterGlass";
 import { FoodRow } from "@/components/FoodRow";
 import { HfScreen } from "@/components/HfScreen";
 import { HfSlider } from "@/components/hf/HfSlider";
@@ -123,7 +123,7 @@ export default function WaterCreatePage() {
   }
 
   return (
-    <HfScreen title={t("waterLog.title")} icon={<IconDroplet size={20} stroke={2} />}>
+    <HfScreen title={t("waterLog.title")} icon={<IconWaterGlass size={20} stroke={2} />}>
       <div className="hf-page">
         <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
           <p className="text-[13px] leading-5">{t("waterLog.intro")}</p>
@@ -164,7 +164,7 @@ export default function WaterCreatePage() {
           })}
         </div>
 
-        <div className="hf-card hf-card--form">
+        <div className="flex flex-col gap-4 rounded-2xl bg-hf-tan p-4">
           <div className="flex items-baseline justify-between">
             <span className="text-[13px] font-semibold text-hf-black">{t("waterLog.amountLabel")}</span>
             <span className="text-[20px] font-bold text-hf-black">{amountMl} ml</span>
@@ -215,7 +215,7 @@ export default function WaterCreatePage() {
                     className={i < group.entries.length - 1 ? "border-b border-hf-tan-dark" : ""}
                   >
                     <FoodRow
-                      thumbnail={<IconDroplet size={22} stroke={1.75} className="text-hf-black" />}
+                      thumbnail={<IconWaterGlass size={22} stroke={1.75} className="text-hf-black" />}
                       title={`${entry.amountMl} ml`}
                       right={
                         <span className="text-xs text-hf-black opacity-60">

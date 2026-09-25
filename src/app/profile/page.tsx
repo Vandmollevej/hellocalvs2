@@ -7,11 +7,11 @@ import {
   IconCamera,
   IconStar,
   IconBook2,
-  IconRulerMeasure,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { IconBathScale } from "@/components/hf/IconBathScale";
+import { IconWaistMeasure } from "@/components/icons/WaistMeasure";
 import { HfProgressStepper } from "@/components/hf/HfProgressStepper";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -88,7 +88,7 @@ export default function ProfilePage() {
               href="/profile/weight-calibration"
             />
             <ChevronRow
-              icon={<IconRulerMeasure size={20} />}
+              icon={<IconWaistMeasure size={20} sex={user?.sex} />}
               label={t("profile.row.bodyMeasurements")}
               href="/profile/body-measurements"
             />
