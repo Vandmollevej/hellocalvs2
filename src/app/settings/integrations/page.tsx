@@ -62,7 +62,7 @@ function IntegrationerContent() {
   const [integrations, setIntegrations] = useState<IntegrationCardStatus[]>([]);
   const [loading, setLoading] = useState(true);
   const [busyProvider, setBusyProvider] = useState<string | null>(null);
-  // HelloFresh-opskrifter i "Søg i delte retter" (docs/DECISIONS.md 2026-09-24).
+  // HelloFresh-opskrifter i "Delte retter" (docs/DECISIONS.md 2026-09-24).
   const [helloFresh, setHelloFresh] = useState<boolean | null>(null);
   const autoSynced = useRef(false);
 
