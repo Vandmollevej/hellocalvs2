@@ -29,32 +29,33 @@ Status opdateret: 2026-09-24 (overtaget fra konto A kl. 17:29)
 
 ## G1 — Kalender
 Filer: `src/app/calendar/**`, kalender-komponenter.
-Ukendte ændringer: `src/app/calendar/page.tsx` er ændret og ikke committet.
+Ukendte ændringer: `src/app/calendar/page.tsx` indeholder G3's ikke-committede "Månedens synder"-knap (G3 ejer den del).
 Ejer: G1-overtagelse, konto C (2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 5ac89589 | Flyt "Du er inden for din målsætning" op mellem måned og kalendergitter | Ikke startet | Tjek om allerede lavet, ellers byg |
-| 85b824f8 | Statusfelt nederst: bottom-align, "Tilbage for i dag" ikke fed | Ikke startet | Tjek om allerede lavet, ellers byg |
-| 70e219fb | Dagvisning: fjern dropdown, ugedag-stil, "Kl." over tider, luft | Ikke startet | Tjek om allerede lavet, ellers byg |
-| 9848667e | Ugetal på egen linje under datoen | Ikke startet | Tjek om allerede lavet, ellers byg |
-| 63e9ff5d | Ugesummering (kaloriebalance + estimeret vægt) — kun roadmap-beslutning | Ikke startet | Skriv i docs som roadmap, byg ikke |
-| b4d954bd | Listevisning: fjern +/−, "Mål (ikke) nået" regulær + flyttet, lige afstand | Lavet, ikke verificeret | **Er sandsynligvis kilden til diff'en i calendar/page.tsx.** Verificér visuelt og commit |
-| 116d3656 | Dagvisning: søvn-slider med to grå nuancer kan ikke trækkes + fjern dialogen "Kun denne dato / Standardmønster" | Ikke startet | Læs transcript, find årsag, byg |
+| 5ac89589 | Flyt "Du er inden for din målsætning" op mellem måned og kalendergitter | Færdig (06599b0) | — |
+| 85b824f8 | Statusfelt nederst: bottom-align, "Tilbage for i dag" ikke fed | Færdig (3ab3d8d) | — |
+| 70e219fb | Dagvisning: fjern dropdown, ugedag-stil, "Kl." over tider, luft | Færdig (d0fd708) | — |
+| 9848667e | Ugetal på egen linje under datoen | Færdig (2573548, justeret 7ef4534/9e7e9bb) | — |
+| 63e9ff5d | Ugesummering (kaloriebalance + estimeret vægt) — kun roadmap-beslutning | Færdig (37ee7f4; senere slået til i 7747ea1, DECISIONS 2026-09-23) | — |
+| b4d954bd | Listevisning: fjern +/−, "Mål (ikke) nået" regulær + flyttet, lige afstand | Færdig (se G1-commit) | Minus vises nu som ÷ (brugerens valg: fortegn som symbol, som i månedsgitteret). Afventer brugerens visuelle godkendelse |
+| 116d3656 | Dagvisning: søvn-slider med to grå nuancer kan ikke trækkes + fjern dialogen "Kun denne dato / Standardmønster" | Færdig (se G1-commit) | Ét gråt felt ved dagsøvn, feltet følger håndtaget, tryk uden træk gemmer intet, dialog fjernet (gælder kun datoen). Ikke live-testet: lokal DB mangler |
 
 ## G2 — Statistik-siden (redigering, drag/drop)
 Filer: statistik-siden, `src/components/StatsWheel.tsx`, `src/lib/frontpage-layout.ts`, `src/lib/frontpage-stats.ts`.
-Ukendte ændringer: de tre nævnte filer er ændret og ikke committet.
-Ejer: G2-overtagelse, konto C (2026-09-24)
+Ukendte ændringer: `frontpage-layout.ts` (FAB-side højre) og `frontpage-stats.ts` (kalorie-mål fjernet) er stadig ikke committet — hører ikke til G2's opgaver, ejer ukendt. Rør dem ikke uden at spørge brugeren.
+Ejer: G2-overtagelse, konto C (2026-09-24) — alle G2-opgaver bygget og flettet ind i master (fabba4b).
+Ikke visuelt testet: lokalt sender appen til /welcome uden login. Test på mobil i drift.
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 7fd0a9a3 | Rettelser til kort-redigering: fjern 6 prikker, skillelinje, vibration stop, scroll, slette-cirkel, ét slider-design | I gang | Læser transcript + diff |
-| fb445e0d / 1ac06755 | Drag/drop til frie felter, stiplede rammer, dropzone til overskrift (1ac06755 er samme opgave) | Ikke startet | Tjek om allerede lavet, ellers byg |
-| 2fb90f13 | Dublet af 7fd0a9a3 (samme 6 punkter) | Dublet | Luk sammen med 7fd0a9a3 |
-| 961d7953 | Tal-slider på forsiden: midterste tal 25px indrykket, aftager til 0 som transparensen | Lavet, ikke verificeret | **Er kilden til diff'en i StatsWheel.tsx** (linje ~302-341). Verificér visuelt og commit |
-| 00cf8440 | Gradient i højre side af tallene (synlighed) skal være helt flydende | Venter på bruger | Brugeren præciserede "gradienten i højre side i tallene" — sandsynligvis StatsWheel-fade. Byg |
-| a9819635 | Trinløs størrelse/farve på slider (ingen spring pr. position) | Venter på bruger | Uklart hvilken slider — sandsynligvis samme tal-slider (StatsWheel). Bekræft og byg |
+| 7fd0a9a3 | Rettelser til kort-redigering: fjern 6 prikker, skillelinje, vibration stop, scroll, slette-cirkel, ét slider-design | Færdig (32995ab) | Slider-delen var allerede lavet (23163ec) |
+| fb445e0d / 1ac06755 | Drag/drop til frie felter, stiplede rammer, dropzone til overskrift (1ac06755 er samme opgave) | Færdig (32995ab) | — |
+| 2fb90f13 | Dublet af 7fd0a9a3 (samme 6 punkter) | Færdig (32995ab) | — |
+| 961d7953 | Tal-slider på forsiden: midterste tal 25px indrykket, aftager til 0 som transparensen | Færdig (eba3638) | — |
+| 00cf8440 | Gradient i højre side af tallene (synlighed) skal være helt flydende | Færdig (32995ab) | Opacity går nu lineært til 0 ved kanten |
+| a9819635 | Trinløs størrelse/farve på slider (ingen spring pr. position) | Færdig (32995ab) | Ikonfarve + "/ mål"-linje glider nu trinløst |
 
 ## G3 — Produktkategorier + statistikbokse + "Månedens synder"
 Filer: Prisma-skema (kategori), kategori-lib, nye statistikbokse, ny liste-side, knap i kalender (koordinér med G1).
@@ -63,8 +64,8 @@ Koordinering med G1: G3 skal senere tilføje knappen "Månedens synder" nederst 
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| c0d3a8fa / f5505465 | Ernæringsmæssige produktkategorier (alkohol, fedt, ost, yoghurt, …; ultraforarbejdet som tag) | Venter på bruger | Alt afklaret 2026-09-24, krav i STATUS (G3-afsnit). Grove kategorier nu; 30-listen er en senere, separat opgave. Byg først når brugeren siger "gå i gang" |
-| d7f6eb5c / 1578bf02 | Kød/fisk-bokse (g + kcal), sukkerholdige drikke, alkohol, "største syndere", liste-side, "Månedens synder" | Venter på bruger | Alt afklaret 2026-09-24, krav i STATUS (G3-afsnit). Byg først når brugeren siger "gå i gang" |
+| c0d3a8fa / f5505465 | Ernæringsmæssige produktkategorier (alkohol, fedt, ost, yoghurt, …; ultraforarbejdet som tag) | Færdig (se git log "G3:") | Grove kategorier + klassifikation bygget. 30-listen er separat opgave |
+| d7f6eb5c / 1578bf02 | Kød/fisk-bokse (g + kcal), sukkerholdige drikke, alkohol, "største syndere", liste-side, "Månedens synder" | Færdig (se git log "G3:") | Bygget. Knap i kalender tilføjet (kun én `ActionLink` i månedsvisning) |
 
 ## G4 — Usikkerhed (bølgeikon + Uncertainties-admin)
 Filer: usikkerheds-ikon/komponent, mikronæringsvisning, indstillinger → Visning, admin Uncertainties.
@@ -94,7 +95,7 @@ Ejer: G6-overtagelse, konto B (2026-09-24)
 | 155dc7cf | Forward-ikon i stedet for dele-ikon, "Log ind…"-tekst på linje med ikonet | Færdig (aaed6fb) | — |
 | 56fda7bc | Mængde altid med enhed (g / ml / cl efter produkttype) | Færdig (3264ed1) | Var allerede lavet af anden session |
 | ad648ee7 | HelloFresh kun i Opret ret + global regel: knapper fuld bredde (også bedt om i 6a503586) | Færdig (aaed6fb) | Åbent: kameraets "Produkt"-fane bruger stadig HelloFresh uden for Opret ret (ikke G6's fil) |
-| b309686e | Opret ret: HelloFresh-trin med 3 cirkler, "Tag billede"/"Opret manuelt", tekstlink "Opret egen ingrediens" → ny side for private ingredienser | I gang (afbrudt) | Knap-tekster lavet. **Sandsynligvis kilden til diff'en i create-dish/page.tsx.** Spørgsmål om private ingredienser er besvaret i transcript — byg videre |
+| b309686e | Opret ret: HelloFresh-trin med 3 cirkler, "Tag billede"/"Opret manuelt", tekstlink "Opret egen ingrediens" → ny side for private ingredienser | Færdig (1540198) — undtagen trin-cirklerne | Knap-tekster, tekstlink og private ingredienser (boks + anonym admin-anmodning + auto-erstatning) er committet. Trin-cirklerne (`SetupProgressBar`) ligger færdige men ikke-committede i `src/app/profile/settings/page.tsx` (G7's fil) — G7: tag den hunk med i jeres commit |
 
 ## G7 — Profil
 Filer: `src/app/profile/**`.
@@ -118,8 +119,8 @@ Ejer: G8-sessionen, konto C (overtaget 2026-09-24)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | 69a1b2bd / 2c95590f | Dubletter af 6068f78a og 8d98b548 — læs dem for ekstra svar fra brugeren ("Så byg det, der mangler. Det skal jo bare virke!") | Dublet | Luk sammen med hovedopgaverne |
-| 6068f78a | 8 sundhedsintegrationer + nye ikoner | Venter på bruger | Strider mod vault-arkitekturen. Brugeren svarede "Forstår ikke" — forklar enkelt og spørg |
-| 8d98b548 | Withings + Google Health koblet på, egen data-sync | I gang | Transcript læst. Bygger Google Health inden for vault-arkitekturen, tjekker Withings-flowet. HelloFresh-trin-rettelsen i samme transcript hører til G6, ikke G8 |
+| 6068f78a | 8 sundhedsintegrationer + nye ikoner | Færdig (22184fe) | Brugeren valgte "Byg alle 8" inden for boks-arkitekturen. Mangler kun nøgler på serveren + deploy |
+| 8d98b548 | Withings + Google Health koblet på, egen data-sync | Venter på bruger | Kode færdig (22184fe). Brugeren skal lægge nøglerne i .env.production på Synology, så deployes der. HelloFresh-trin-rettelsen i samme transcript hører til G6 |
 | d0442775 | Waldemarsro (DK-only) + scraper | Venter på bruger | Krav afklaret og committet (ea7843a) — byg når brugeren siger til |
 
 ## G9 — Ikoner (forside + vand)
@@ -134,13 +135,13 @@ Ejer: G9-overtagelse, konto B
 
 ## G10 — Bundnavigation + global overskrift-stil
 Filer: `src/components/BottomNav.tsx`, `src/app/globals.css`.
-Ukendte ændringer: begge filer er ændret og ikke committet — sandsynligvis fra 5f2ee781.
-Ejer: —
+Ukendte ændringer: ingen (alt G10-arbejde committet).
+Ejer: G10-overtagelse, konto D (2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 5f2ee781 | Fjern stregen mellem footer og indhold + sektionsoverskrifter mindre, ikke fed, centreret med streg på hver side | Lavet, ikke verificeret | Verificér visuelt og commit |
-| 6a503586 | Footer-redigering: slette-krydserne er skåret af + ikoner skal kunne trækkes til siden for at bytte rækkefølge | Ikke startet | Tjek om allerede lavet, ellers byg (HelloFresh/knap-delen hører til G6) |
+| 5f2ee781 | Fjern stregen mellem footer og indhold + sektionsoverskrifter mindre, ikke fed, centreret med streg på hver side | Færdig (be3a05d) | Verificeret i preview. Afventer brugerens godkendelse af udseendet |
+| 6a503586 | Footer-redigering: slette-krydserne er skåret af + ikoner skal kunne trækkes til siden for at bytte rækkefølge | Færdig (8d5ba9b) | `overflow-x-clip` så krydserne ikke klippes; ombytning efter pladsen under fingeren (ingen hop) + roligere glide-animation; ikon fra panelet indsættes på den plads, det slippes. Afventer test på telefon (HelloFresh/knap-delen hører til G6) |
 
 ## G11 — Næringsdata på produktsiden (E-numre, toksiner, fedt-advarsel)
 Filer: produktsidens næringsvisning, statistik-boks-katalog (koordinér med G2), Opsætning/Visning (koordinér med G7).

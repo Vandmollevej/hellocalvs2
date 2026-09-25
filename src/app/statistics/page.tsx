@@ -9,6 +9,9 @@ import { StatChart, type ChartSeries } from "@/components/StatChart";
 import { StatCardsGrid } from "@/components/StatCardsGrid";
 import { StatPeriodPicker } from "@/components/StatPeriodPicker";
 import { IntradayKcalChart } from "@/components/IntradayKcalChart";
+import { TopSinnersCard } from "@/components/TopSinnersCard";
+import { filterRegistrationsInRange } from "@/lib/food-classification";
+import { useSourceRegistrations } from "@/lib/use-source-registrations";
 import {
   computeStatCards,
   DEFAULT_ACTIVE_STAT_KEYS,
@@ -105,6 +108,8 @@ export default function StatisticsPage() {
   const [warnOnRecommendedLimits, setWarnOnRecommendedLimits] = useState(false);
   const [loading, setLoading] = useState(true);
   const [periodSelection, setPeriodSelection] = useState<StatPeriodSelection>(DEFAULT_STAT_SELECTION);
+  // G3: registreringer med klassifikation til kød/drikke-kortene og "Største syndere".
+  const { registrations: sourceRegistrations, loading: sourcesLoading } = useSourceRegistrations();
 
   useEffect(() => {
     let cancelled = false;
@@ -232,6 +237,11 @@ export default function StatisticsPage() {
     [activePeriodRange],
   );
 
+  const periodSources = useMemo(
+    () => filterRegistrationsInRange(sourceRegistrations, activePeriodRange),
+    [sourceRegistrations, activePeriodRange],
+  );
+
   // Ét globalt periodevalg (StatPeriodPicker) gælder for både statistik-kortene og
   // dagsprofilen herunder — ikke længere ét periodevalg pr. kort (swipe er fjernet).
   const statCards = useMemo(() => {
@@ -243,9 +253,10 @@ export default function StatisticsPage() {
         const time = new Date(m.recordedAt).getTime();
         return time >= activePeriodRange.start.getTime() && time < activePeriodRange.end.getTime();
       }),
+      sources: sourcesLoading ? undefined : periodSources,
     });
     return cards.map((c) => ({ ...c, value: loading ? "—" : c.value }));
-  }, [allDays, activities, hasConnectedIntegration, metrics, loading, activePeriodRange]);
+  }, [allDays, activities, hasConnectedIntegration, metrics, loading, activePeriodRange, sourcesLoading, periodSources]);
 
   const recentRegistrations = useMemo(
     () => filterActivitiesInRangeRegistrations(registrations, activePeriodRange),
@@ -276,6 +287,8 @@ export default function StatisticsPage() {
             defaultActiveKeys={DEFAULT_ACTIVE_STAT_KEYS}
             highlightRecommendedLimits={warnOnRecommendedLimits}
           />
+
+          <TopSinnersCard registrations={periodSources} range={activePeriodRange} loading={sourcesLoading} />
         </div>
       </div>
     </HfScreen>

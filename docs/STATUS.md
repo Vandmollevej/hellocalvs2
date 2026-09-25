@@ -2,71 +2,30 @@
 
 Last updated: 2026-09-24
 
-## TODO (2026-09-24): G3 — produktkategorier, nye statistikbokse, "Største kilder" og "Månedens synder" — afklaret, ikke bygget
+## 2026-09-24: G8 — otte sundhedsintegrationer bygget (commit 22184fe)
 
-Brugeren har bedt om IKKE at bygge før de siger "gå i gang". Kilder:
-samtalerne c0d3a8fa, f5505465, d7f6eb5c, 1578bf02 + afklaring 2026-09-24
-(G3 i `docs/handoffs/OPEN-TASKS.md`).
+Se docs/DECISIONS.md 2026-09-24 "Otte sundhedsintegrationer". Mangler kun
+nøgler på serveren (`.env.production` på Synology), derefter deploy:
+`WITHINGS_CLIENT_ID/SECRET`, `GOOGLE_HEALTH_CLIENT_ID/SECRET`,
+`STRAVA_CLIENT_ID/SECRET`, `POLAR_CLIENT_ID/SECRET` og evt.
+`WITHINGS_REDIRECT_URI`/`GOOGLE_HEALTH_REDIRECT_URI`. Migration
+`20260924170000_integration_providers` tilføjer enum-værdier. Ikke testet
+mod de rigtige API'er endnu (ingen nøgler lokalt). Waldemarsro: venter på
+brugerens "byg".
 
-**Kategorier**
-- Brug det eksisterende felt `Product.productCategory` (styrer også g/ml).
-  Indholdet omdøbes til brugerens grove regnearks-værdier: Drikkevarer,
-  Grøntsager, Råvarer (inkl. kød), Forarbejdede varer. Ingen opdeling i
-  sukkerholdige/sukkerfri drikke i selve kategorien.
-- Brugeren tildeler selv kategori ud fra regneark + produkttype; vi skal
-  kun gøre opmærksom på varer, der ser forkerte ud.
-- Antagelse (ret hvis forkert): enum-ID'er beholdes (DRINK, RAW, PROCESSED),
-  der tilføjes et ID for Grøntsager, og GENERIC/INGREDIENT bevares til
-  generiske varer/HelloFresh-ingredienser.
-- SENERE, egen opgave (ikke G3): den 30-delte Hello Cal-kategoriliste fra
-  f5505465 med underkategorier + separat `processingLevel` (NOVA,
-  ultraforarbejdet som mærke, ikke kategori), inkl. egne kategorier for Slik
-  og Chips m.m. Butikkens rå kategori bevares som kildedata.
+## 2026-09-25: G3 — produktkategorier, kød/drikke-statistik, "Største kilder" og "Månedens synder" — bygget
 
-**Hvordan en vare genkendes (brugerens svar)**
-- Regnearkene har kolonnerne `is_meat`, `is_sugar_free`, `is_alcohol_free`
-  (+ `Product type`, `Type`), som endnu ikke importeres — skal læses ind.
-  Energi-/næringsfelter fra regnearkene, der ikke er importeret endnu, skal
-  også ind.
-- Sukkerholdig drik = Drikkevare der indeholder sukker (ikke sukkerfri).
-  Omfatter sodavand, energidrik, juice, saftevand, iste OG mælk, smoothie
-  og drikkeyoghurt. Light/zero tæller ikke.
-- Alkohol = drikkevare der ikke er alkoholfri (produkttype øl/vin/spiritus …).
-- Kødtype (okse/gris/fjerkræ/fisk) ud fra `is_meat` + produkttype. Ved
-  sammensatte varer udregner Frida-AI'en kødandelen (fx 18 % oksekød i
-  lasagne) og dermed gram og kcal fra kødet.
+Se docs/DECISIONS.md 2026-09-25 (G3). `npm run lint` (G3-filer) og
+`npm run build` er grønne. Ikke verificeret i browser mod rigtige data
+(kræver login med passkey + boks).
 
-**Statistikbokse (Statistik-siden, følger sidens eksisterende periodevælger)**
-- Oksekød, Gris, Fjerkræ (al fjerkræ samlet), Fisk (inkl. skaldyr) — hver i
-  gram og i kcal (8 bokse). Gram vises som g op til 999, derefter kg.
-- Sukkerholdige drikke: kcal.
-- Alkohol: kcal + genstande (12 g ren alkohol = 1) + mængde (cl/liter).
-
-**"Største syndere"-boks (fuld bredde på Statistik)**
-- Tre områder: Kalorier, Fedt, Sukker. Top 5 i hvert, samme vare må gå igen.
-- Produktbillede som ikon, værdien nedenunder (kcal / g / g). Klik åbner
-  varens almindelige produktside. Summeret indtag pr. vare i perioden.
-- Antagelse: indtag uden produktside (fx fri tekst) vises uden link.
-
-**Ny liste-side (antaget navn "Største kilder", nås via "Se alle" fra boksen)**
-- Samme design som den almindelige madvareliste, pil tilbage uden tekst.
-- Faner Kalorier | Fedt | Sukker; sorteret faldende på valgt værdi, ud fra
-  faktisk spist mængde. Én række pr. vare (sammenlagt). Rækken viser kun den
-  valgte værdi. Gruppering/opsummering sker efter produkttype, ikke kategori.
-
-**"Månedens synder"**
-- Knap nederst under kalenderens månedsvisning (`src/app/calendar/page.tsx`,
-  ejes af G1 — koordineres via OPEN-TASKS). Kun i månedsvisning, analyserer
-  den viste måned, vises også i tomme måneder (tom-tilstand på siden).
-- Ny side med pil tilbage, overskrift "Månedens synder". Grupperet efter
-  produkttype, største øverst, varerne under hver gruppe, fx
-  "4.820 kcal · 18 %". Antagelse: samme faner Kalorier | Fedt | Sukker;
-  klik på vare åbner produktsiden.
-
-Next work (når brugeren siger "gå i gang"): import af regnearksfelterne →
-kategori-omdøbning/migration → beregnings-lib (`src/lib/`) → bokse → liste-
-side → "Månedens synder"-side → knap i kalenderen (efter aftale med G1) →
-`npm run lint` + `npm run build`.
+Mangler (bevidst udskudt):
+- Frida-AI-beregning af kødandel i sammensatte retter.
+- 30-delt Hello Cal-kategoriliste + NOVA/ultraforarbejdet + Slik/Chips.
+- REMA-importen skal køres igen, for at grøntsager/frugt får VEGETABLES
+  (migrationen skal deployes først).
+- Nye kort vises kun automatisk for brugere uden gemt statistik-layout;
+  andre tilføjer dem via "Tilføj kort" → "Kød, fisk og drikke".
 
 ## TODO (2026-09-24): Waldemarsro-integration (dansk opskriftsside) — afklaret, ikke bygget
 

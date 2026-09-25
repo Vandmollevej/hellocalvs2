@@ -144,6 +144,11 @@ const DEFAULT_TEMPLATES: Record<MessageEventType, { subject: string; bodyHtml: s
     bodyHtml: "<p>En fejlrapport fra {{displayName}} har ventet mere end 48 timer.</p><p><a href=\"{{approveLink}}\">Gennemgå direkte</a></p>",
     channel: "EMAIL",
   },
+  INGREDIENT_REQUEST_ADMIN: {
+    subject: "Ny ingrediens ønsket: {{ingredientName}}",
+    bodyHtml: "<p>En bruger har oprettet sin egen ingrediens \"{{ingredientName}}\", som ikke findes i databasen.</p><p><a href=\"{{reviewLink}}\">Tilføj den globalt eller afvis</a></p>",
+    channel: "EMAIL",
+  },
   BUG_REPORT_RESOLVED: {
     subject: "Din fejlrapport er godkendt",
     bodyHtml: "<p>Hej {{displayName}},</p><p>Tak for din fejlrapport — den er godkendt og du har optjent 10 points.</p>",

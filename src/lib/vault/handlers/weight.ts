@@ -14,7 +14,7 @@ export type WeightEntry = {
   toilet: "BEFORE" | "AFTER" | "UNKNOWN";
   meal: "BEFORE" | "AFTER" | "UNKNOWN";
   timeOfDay: "MORNING" | "EVENING" | "UNKNOWN";
-  source: "MANUAL" | "FITBIT" | "WITHINGS" | "APPLE_HEALTH" | "GOOGLE_HEALTH";
+  source: "MANUAL" | "FITBIT" | "WITHINGS" | "APPLE_HEALTH" | "GOOGLE_HEALTH" | "HEALTH_CONNECT";
   note: string | null;
   weighedAt: string;
 };

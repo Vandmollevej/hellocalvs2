@@ -12,6 +12,7 @@ import {
   addHeaderToLayout,
   addStatCardToLayout,
   DEFAULT_ACTIVE_STAT_KEYS,
+  FOOD_SOURCE_STAT_KEYS,
   SPORT_STAT_KEY_PREFIX,
   STAT_WINDOW_DAYS,
   type ActivityTotals,
@@ -24,6 +25,8 @@ import { groupByDay, withinLastDays, type RegistrationTotals } from "@/lib/daily
 import type { IntegrationCardStatus } from "@/lib/integrations";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { localApi } from "@/lib/vault/local-api";
+import { useSourceRegistrations } from "@/lib/use-source-registrations";
+import { registrationsWithinLastDays } from "@/lib/food-classification";
 
 function withinLastDaysActivities(activities: ActivityTotals[], days: number) {
   const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
@@ -78,6 +81,8 @@ function categoryDefs(t: (key: string) => string, region: string): CategoryDef[]
         "vitaminK",
       ],
     },
+    // G3: kød, fisk, sukkerholdige drikke og alkohol (totaler for perioden).
+    { title: "Kød, fisk og drikke", keys: FOOD_SOURCE_STAT_KEYS },
     { title: t("statUnusedCards.category.allergensAdditives"), keys: ["allergens", "additives"] },
     {
       // Sport types are dynamic (one per sport the user actually has data
@@ -114,6 +119,7 @@ export default function UnusedStatCardsPage() {
   const [region, setRegion] = useState("DK");
   const [loading, setLoading] = useState(true);
   const [activeKeys, setActiveKeys] = useState<Set<string>>(() => activeStatKeys(DEFAULT_LAYOUT));
+  const { registrations: sourceRegistrations, loading: sourcesLoading } = useSourceRegistrations();
 
   useEffect(() => {
     let cancelled = false;
@@ -174,8 +180,11 @@ export default function UnusedStatCardsPage() {
       days,
       activities: hasConnectedIntegration ? recentActivities : undefined,
       metrics: recentMetrics,
+      sources: sourcesLoading
+        ? undefined
+        : registrationsWithinLastDays(sourceRegistrations, STAT_WINDOW_DAYS),
     });
-  }, [registrations, activities, metrics, hasConnectedIntegration]);
+  }, [registrations, activities, metrics, hasConnectedIntegration, sourceRegistrations, sourcesLoading]);
 
   const cardByKey = useMemo(() => new Map(allCards.map((c) => [c.key, c])), [allCards]);
 
