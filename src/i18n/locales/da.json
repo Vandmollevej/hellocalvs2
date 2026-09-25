@@ -820,7 +820,11 @@
       "genericError": "Kunne ikke indløse gavekoden lige nu"
     },
     "redeemPoints": "Indløs points",
-    "redeemPointsHint": "{cost} points kan indløses til 1 gratis måned med Seriøs",
+    "pointsEarned": "Du har optjent {balance} points.",
+    "redeemPage": {
+      "title": "Indløs points",
+      "giftFriend": "Giv en ven en gratis måned med Seriøs adgang!"
+    },
     "currentPlan": "Dit abonnement",
     "tier": {
       "free": "Gratis",
