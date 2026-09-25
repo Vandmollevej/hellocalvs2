@@ -30,9 +30,20 @@ export type OAuthProviderAdapter = {
   fetchItems(accessToken: string, since: Date): Promise<IntegrationItem[]>;
 };
 
+// Google Health kan genbruge Google-login-klienten (GOOGLE_CLIENT_ID), når der
+// ikke er sat en særskilt GOOGLE_HEALTH-klient.
+const CREDENTIAL_FALLBACK: Record<string, string> = { GOOGLE_HEALTH: "GOOGLE" };
+
+export function hasClientCredentials(envPrefix: string) {
+  const prefixes = [envPrefix, CREDENTIAL_FALLBACK[envPrefix]].filter(Boolean);
+  return prefixes.some((p) => process.env[`${p}_CLIENT_ID`] && process.env[`${p}_CLIENT_SECRET`]);
+}
+
 export function clientCredentials(envPrefix: string) {
-  const clientId = process.env[`${envPrefix}_CLIENT_ID`];
-  const clientSecret = process.env[`${envPrefix}_CLIENT_SECRET`];
+  const prefix =
+    process.env[`${envPrefix}_CLIENT_ID`] || !CREDENTIAL_FALLBACK[envPrefix] ? envPrefix : CREDENTIAL_FALLBACK[envPrefix];
+  const clientId = process.env[`${prefix}_CLIENT_ID`];
+  const clientSecret = process.env[`${prefix}_CLIENT_SECRET`];
   if (!clientId || !clientSecret) throw new Error(`${envPrefix}_CLIENT_ID/${envPrefix}_CLIENT_SECRET er ikke sat`);
   return { clientId, clientSecret };
 }

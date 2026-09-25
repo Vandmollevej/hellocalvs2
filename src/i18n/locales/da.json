@@ -191,6 +191,7 @@
       }
     },
     "openProfile": "Åbn mine oplysninger",
+    "openAppSettings": "Åbn app-indstillinger",
     "back": "Tilbage",
     "loading": "Henter…",
     "loadError": "Kunne ikke hente indstillinger.",
@@ -213,8 +214,7 @@
     "setupProgressStepWeight": "Vægtkalibrering",
     "setupProgressHint": "Gennemfør vægtkalibrering for at afslutte opsætningen.",
     "payment": "Betaling",
-    "recipesPromo": "Vælg dine egne opskrifter, og skræddersy din måltidskasse.",
-    "logInOrSignUp": "Log ind / tilmeld",
+    "logOut": "Log ud",
     "helpCenter": "Hjælpecenter",
     "learnTheApp": "Lær appen at kende",
     "integrations": "Integrationer",
@@ -415,12 +415,16 @@
     "goalExceededList": "Du overskred dit mål",
     "adjustBedtimeAriaLabel": "Justér sengetid",
     "adjustWakeTimeAriaLabel": "Justér stå-op-tid",
+    "nightSleepDuration": "Nattens søvn: {hours} timer",
     "previousDayAriaLabel": "Forrige dag",
     "nextDayAriaLabel": "Næste dag",
     "dailyGoalReached": "Du er inden for dagens mål",
     "dailyGoalExceeded": "Du har overskredet dagens mål",
     "dailyGoalNone": "Endnu intet registreret",
     "registrations": "Registreringer",
+    "intakeTooLow": "For lavt indtag",
+    "lowIntakeNotice": "Vær opmærksom på, at dit indtag er lavere end hvad der er sundt. Du bør indtage mindst {minimum} kcal om dagen for en person af din statur.",
+    "noEntries": "Ingen indtastninger",
     "noRegistrations": "Ingen registreringer",
     "loadingDayRegistrations": "Henter dagens registreringer…",
     "registrationsLoadError": "Registreringerne kunne ikke hentes",
@@ -456,7 +460,7 @@
     "liveViewAriaLabel": "Live kameravisning",
     "notRecognizedRetry": "Produkt ikke genkendt, prøv igen",
     "holdCameraStill": "Hold kameraet stille over stregkoden",
-    "barcodeHintOutsideFrame": "Sørg for at stregkoden er inden for feltet, til rammen lyser grønt.",
+    "barcodeHintOutsideFrame": "Hold hele stregkoden inde i billedet — den må gerne vende lodret.",
     "barcodeHintBlurry": "Stregkoden er sløret? Prøv at holde lidt længere afstand, til den er skarp.",
     "placeProductInCircle": "Placér produktet i cirklen",
     "placePlateInCircle": "Placér tallerkenen i cirklen",
@@ -727,16 +731,10 @@
     "startWeightUpdated": "Opdateret d. {date}",
     "startWeight": {
       "title": "Startvægt",
+      "lockTitle": "Lås",
+      "lockBody": "Din startvægt bør ikke ændres, og er grundlag for al statistik. Du skal i stedet ændre din dagsvægt her.",
+      "setDailyWeight": "Angiv dagsvægt",
       "openLockedInfo": "Åbn information om låst startvægt",
-      "currentLabel": "Din startvægt",
-      "description1": "Din startvægt er den vægt, du registrerede, da du oprettede din profil.",
-      "description2": "Startvægten er låst, fordi den bruges som udgangspunkt for din vægtudvikling og statistik.",
-      "description3": "Hvis du ønsker at ændre startvægten, skal ændringen først verificeres via den e-mailadresse, der er tilknyttet din konto.",
-      "sendEmail": "Send verificeringsmail",
-      "sending": "Sender…",
-      "emailSent": "Vi har sendt en verificeringsmail til din e-mailadresse.",
-      "sendError": "Kunne ikke sende verificeringsmailen. Prøv igen.",
-      "registerDailyWeight": "Registrer dagsvægten her",
       "changeTitle": "Ændr startvægt",
       "fieldLabel": "Startvægt",
       "validating": "Kontrollerer verificeringslink…",
@@ -787,7 +785,6 @@
       "loginRequired": "Log ind for at ændre din adgangskode.",
       "logIn": "Log ind"
     },
-    "logOut": "Log af",
     "messages": {
       "title": "Beskeder",
       "empty": "Du har ingen beskeder endnu.",
@@ -820,7 +817,11 @@
       "genericError": "Kunne ikke indløse gavekoden lige nu"
     },
     "redeemPoints": "Indløs points",
-    "redeemPointsHint": "{cost} points kan indløses til 1 gratis måned med Seriøs",
+    "pointsEarned": "Du har optjent {balance} points.",
+    "redeemPage": {
+      "title": "Indløs points",
+      "giftFriend": "Giv en ven en gratis måned med Seriøs adgang!"
+    },
     "currentPlan": "Dit abonnement",
     "tier": {
       "free": "Gratis",
@@ -993,29 +994,16 @@
     "loading": "Henter…",
     "loadError": "Kunne ikke hente billede-dagbog.",
     "requiresPasscode": "Kræver telefonens adgangskode for at vise",
-    "requiresPasscodeDescription": "Håndhæves endnu ikke af OS'et — det kræver en native app. Kun en gemt præference i dag.",
-    "showPhotos": "Vis billeder (ingen rigtig adgangskode-kontrol endnu)",
+    "requiresPasscodeDescription": "Billederne vises først, når du har bekræftet med Face ID, Touch ID eller telefonens kode.",
+    "showPhotos": "Vis billeder",
     "takePhoto": "Tag billede (fuld figur eller mave)",
-    "takeSelfie": "Tag selfie (portræt)",
     "noPhotosYet": "Ingen billeder endnu — tag det første for at kunne sammenligne senere.",
     "photoAlt": "Billede-dagbog-optagelse",
     "deleteAria": "Slet billede",
     "previousPhoto": "Forrige billede",
     "nextPhoto": "Næste billede",
-    "selfiesSectionTitle": "Selfies",
-    "noSelfiesYet": "Ingen selfies endnu — tag den første for at kunne sammenligne senere.",
-    "photosSectionTitle": "Andre billeder",
-    "currentWeight": "Aktuel vægt: {value} kg",
-    "latestWeight": "Seneste vægt: {value} kg ({date})",
-    "noWeight": "Ingen vægt registreret endnu",
-    "currentMeasurements": "Aktuelle mål: {value}",
-    "latestMeasurements": "Seneste mål: {value} ({date})",
-    "noMeasurements": "Ingen mål registreret endnu",
-    "measurementWaist": "Talje {value} cm",
-    "measurementHip": "Hofte {value} cm",
-    "measurementChest": "Bryst {value} cm",
-    "measurementThigh": "Lår {value} cm",
-    "measurementUpperArm": "Overarm {value} cm"
+    "unlocking": "Bekræfter…",
+    "unlockError": "Kunne ikke bekræfte. Prøv igen."
   },
   "registration": {
     "title": "Registrering",
@@ -1105,32 +1093,23 @@
     "helloFreshDescription": "Vis HelloFresh-opskrifter sammen med de delte retter under Opskrifter",
     "title": "Integrationer",
     "loading": "Henter…",
-    "status": {
-      "disconnected": "Ikke forbundet",
-      "connected": "Forbundet",
-      "error": "Fejl",
-      "needsApp": "Kræver app",
-      "pending": "Afventer"
-    },
     "notice": {
       "connected": "{name} blev forbundet.",
       "failed": "Kunne ikke forbinde {name}. Prøv igen."
     },
-    "intro": "Forbind dine sundhedsapps, så vægt, skridt og træning hentes automatisk. Alt lægges i din låste boks, som kun du kan åbne.",
+    "intro": "Forbind dine sundhedsapps, så vægt, skridt og træning hentes automatisk.",
     "lastSynced": "Sidst synkroniseret {date}",
-    "syncNow": "Synkroniser nu",
-    "syncing": "Synkroniserer…",
     "notConfigured": "Klar i appen, men venter på nøglerne på serveren.",
-    "disconnect": "Frakobl",
     "connect": "Forbind",
-    "deviceTokensTitle": "Enhedstokens (companion-app)",
-    "deviceTokensDescription": "Hello Cal-appen bruger en enhedskode til at sende dine data sikkert ind i din låste boks.",
-    "createdAt": "Oprettet {date}",
-    "lastUsedAt": " · Sidst brugt {date}",
     "remove": "Fjern",
-    "saveTokenNotice": "Gem denne værdi nu — den vises ikke igen:",
-    "close": "Luk",
-    "generateDeviceCode": "Generér enhedskode"
+    "enable": "Slå til",
+    "unavailable": "Ikke tilgængelig endnu",
+    "sections": {
+      "active": "Aktive integrationer",
+      "popular": "Oftest anvendt",
+      "recipes": "Opskrifter",
+      "apps": "Apps"
+    }
   },
   "payment": {
     "title": "Betaling",
@@ -1166,11 +1145,30 @@
       "sleep": "Søvn",
       "other": "Øvrige data"
     },
+    "searchPlaceholder": "Søg i alle kort",
+    "searchResults": "Søgeresultater",
+    "noSearchResults": "Ingen kort matcher din søgning.",
+    "addAll": "+ Tilføj",
     "noCardsYet": "Ingen kort her endnu.",
     "addHeading": "+ Overskrift",
     "addHeadingHint": "Tilføjer en sektionsoverskrift til din statistikside, som du selv kan omdøbe.",
     "addDivider": "+ Adskillelseslinje",
     "addDividerHint": "Tilføjer en sort adskillelseslinje til din statistikside."
+  },
+  "statUnusedCharts": {
+    "title": "Ubrugte grafer",
+    "hint": "Tryk på en graf for at tilføje den øverst på din statistikside.",
+    "searchPlaceholder": "Søg i alle grafer",
+    "noSearchResults": "Ingen grafer matcher din søgning.",
+    "noChartsLeft": "Alle grafer her er allerede på din statistikside.",
+    "intradayKcal": "Kalorieindtag i løbet af dagen",
+    "dayProfile": "Dagsprofil",
+    "category": {
+      "energyWeight": "Energi og vægt"
+    }
+  },
+  "statChartsSection": {
+    "removeChart": "Fjern graf"
   },
   "statCardsGrid": {
     "exitEditing": "Afslut redigering",
@@ -1226,23 +1224,16 @@
   "addButton": {
     "closeMenu": "Luk tilføj-menu",
     "openMenu": "Åbn tilføj-menu",
-    "microphone": "Mikrofon",
-    "ownDishes": "Egne retter",
+    "microphone": "Indtal",
+    "ownDishes": "Retter",
     "search": "Søg",
     "weight": "Vægt",
     "water": "Vand",
-    "camera": "Kamera",
+    "camera": "Scan med kamera",
     "list": "Se alle",
     "menstrualCycle": "Menstruation",
     "hint": {
-      "microphone": "Indtal",
-      "ownDishes": "Måltid",
-      "search": "Søgning",
-      "weight": "Vægt og mål",
-      "water": "Vandindtag",
-      "camera": "Tag billede",
-      "list": "Se alle",
-      "menstrualCycle": "Log menstruation"
+      "list": "Se alle"
     }
   },
   "onboarding": {
