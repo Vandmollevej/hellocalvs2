@@ -2,6 +2,25 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Admin → API-nøgler
+
+Se `docs/DECISIONS.md` 2026-09-25 "API-nøgler i admin". Ny side
+`/admin/api-keys`: alle tjenester grupperet (login, integrationer, AI, mail,
+push, system), status pr. nøgle (fra .env / rettet i admin / mangler), felt
+til at indtaste/rette, "Brug .env igen", redirect-URI'er til kopiering og
+live-test pr. tjeneste + "Test alle". Migration `20260925120000_app_secrets`.
+
+Live-test af de lokale nøgler 2026-09-25: Facebook, Withings, OpenAI, Google
+Places og Mailjet-SMTP virker. Google-login og Google Health (samme
+OAuth-klient) godkender ID + secret, men klienten har ingen registrerede
+redirect-URI'er (`redirect_uri_mismatch`). Mangler: Apple, Strava, Polar,
+Fitbit, Passio, USDA, VAPID (push). `EMAIL_HASH_PEPPER` bruges ikke længere.
+
+Next work:
+1. Brugeren tilføjer redirect-URI'erne på Google-klienten.
+2. Efter deploy: indtast de nøgler, der mangler i `.env.production`, på
+   `/admin/api-keys` og tryk "Test alle".
+
 ## 2026-09-25: Mail via Mailjet aktiveret
 
 - SMTP_HOST/PORT/USER/PASS/FROM (Mailjet, in-v3.mailjet.com:587) sat i lokal

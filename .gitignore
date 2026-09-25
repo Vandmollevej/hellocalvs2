@@ -44,3 +44,6 @@ next-env.d.ts
 # Frida dataset (large, licensed — download separately, see docs/STATUS.md)
 /scripts/frida-import/data/
 __pycache__/
+
+# Google Cloud service-account-nøgler (fx Google Vision) må aldrig committes.
+/hellocal-*.json

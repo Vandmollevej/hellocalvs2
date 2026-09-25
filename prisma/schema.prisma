@@ -2278,3 +2278,17 @@ model UserKnownDevice {
   @@unique([userId, deviceHash])
   @@map("user_known_devices")
 }
+
+// API-nøgler rettet fra admin → API-nøgler (docs/DECISIONS.md 2026-09-25
+// "API-nøgler i admin"). Værdien er AES-256-GCM-krypteret med en nøgle
+// afledt af ADMIN_SESSION_SECRET, så en databasekopi alene ikke afslører
+// den. Ved opstart lægges værdierne oven på process.env
+// (src/lib/api-keys/store.ts); uden række gælder .env.production.
+model AppSecret {
+  key         String   @id
+  cipherText  String
+  updatedById String?
+  updatedAt   DateTime @updatedAt
+
+  @@map("app_secrets")
+}

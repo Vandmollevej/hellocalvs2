@@ -2,6 +2,17 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-25: Blød e-mailbekræftelse ved tilmelding
+
+Brugerens valg. Tilmelding med e-mail + adgangskode logger ind med det samme,
+men `emailVerifiedAt` sættes først, når linket i bekræftelsesmailen åbnes
+(`/verify-email`, signeret JWT med bruger-ID + e-mail, 7 dage). Indtil da
+viser `AuthGate` en bjælke med "Send igen". Logger nogen ind med
+Google/Apple/Facebook på en e-mail, hvor en eksisterende konto aldrig er
+bekræftet, kobles kontoen på, men dens adgangskode og passkeys fjernes
+først (beskytter mod konti oprettet med en fremmed e-mail). Mails sendes
+nu straks fra `queueMessage()` i stedet for kun ved scheduler-tick (15 min).
+
 ## 2026-09-24: Normalt login — privacy-by-architecture ophævet
 
 Brugerens beslutning: "Man skal bare kunne logge ind som på alle andre

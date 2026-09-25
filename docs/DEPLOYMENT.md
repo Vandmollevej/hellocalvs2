@@ -245,6 +245,14 @@ sendes videre af `compose.production.yaml`.
   øverst til højre på developer.apple.com.
 - En knap, hvis nøgler mangler, viser "Login med X er ikke sat op endnu".
 
+## API-nøgler fra admin
+
+Alle API-nøgler (login, integrationer, OpenAI, SMTP, push m.fl.) kan også
+indtastes og testes på `adminhellocal.packroff.dk/admin/api-keys`. En værdi
+gemt dér vinder over `.env.production` og virker uden genstart. Database,
+sessionsnøgler og adresser ændres stadig kun i `.env.production`
+(docs/DECISIONS.md 2026-09-25 "API-nøgler i admin").
+
 ## Controlled update
 
 1. Confirm GitHub Actions published the intended commit SHA tag.
