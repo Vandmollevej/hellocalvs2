@@ -90,6 +90,7 @@ Ejer: G5-overtagelse, konto B (2026-09-24)
 Filer: `src/app/add/**`, `src/components/ForwardButton.tsx`, Madvarer-siden, fælles knap-komponent.
 Ukendte ændringer: ingen (ForwardButton gjort færdig).
 Ejer: G6-overtagelse, konto B (2026-09-24)
+Deploy (brugerens beslutning 2026-09-25): G6 deployes samlet med alt andet af koordinator-sessionen. Tjekliste: kør migration `20260924180000_ingredient_requests`; efter deploy tjek build, `/ingredients/new`, `/admin/ingredient-requests`, trin-baren på Opsætning (brugeren skal godkende udseendet) og at kameraets "Produkt"-fane kun vises fra Opret ret.
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
