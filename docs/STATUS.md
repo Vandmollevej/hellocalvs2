@@ -2,6 +2,25 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Nyt grydeikon og champagneikon til Målsætning (vektor)
+
+- "Egne retter" bruger nu `IconCookingPot`
+  (`src/components/icons/CookingPot.tsx`) i stedet for `imageSrc:
+  "/icons/gryde.png"` — en stroke-tegning (1,5) af brugerens nye grydebillede
+  med jævne streger. `public/icons/gryde.png` er erstattet af den nye
+  kunst (trimmet, transparent, 512 px) som reference; den bruges ikke
+  længere direkte.
+- "Målsætning" (hjul/`/add/menu` via `add-actions.ts` og knappen på
+  `/profile/edit`) bruger `IconChampagne`
+  (`src/components/icons/Champagne.tsx`) i stedet for tabler `IconTarget`:
+  fyldt silhuet af brugerens champagneflaske, viewBox trimmet til tegningen,
+  etiket/medaljon skåret ud med maske. Stat-kortet "Mål nået" bruger stadig
+  `IconTargetArrow` (kcal-mål, ikke målsætning).
+- Kildebillederne lå i brugerens lokale hovedmappe (ikke i repoet) og skal
+  slettes dér af brugeren/lokal agent.
+- Lint + build grønne; ikonerne renderet og tjekket ved 20/26/48 px, mørk og
+  hvid farve. Ikke set i den kørende app (kræver login).
+
 ## 2026-09-25: Statistik — redigerbare grafer, søgning og "+ Tilføj" pr. blok
 
 Se `docs/DECISIONS.md` 2026-09-25 "Statistiksidens grafer kan redigeres som
