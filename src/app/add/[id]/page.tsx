@@ -120,6 +120,8 @@ export default function AddPage() {
   // er kun en mulighed, når varen faktisk har en defineret portionsstørrelse,
   // og må ikke være default-valget selv når den findes.
   const [amountUnit, setAmountUnit] = useState<"personer" | "gram">("gram");
+  // Rå tekst mens portionsfeltet redigeres, så "1," ikke nulstilles undervejs.
+  const [servingDraft, setServingDraft] = useState<string | null>(null);
   const [time, setTime] = useState(() => searchParams.get("time") ?? currentTimeString());
   const [date] = useState(() => searchParams.get("date") ?? currentDateString());
   const [saving, setSaving] = useState(false);
@@ -220,6 +222,8 @@ export default function AddPage() {
   // +/−; amount er altid i basisenheden (g/ml), cl er kun visning.
   const displayUnit = getProductDisplayUnit(product);
   const displayAmount = toDisplayAmount(amount, displayUnit);
+  // Portionstal kan skrives direkte (fx 1,5); vises med højst én decimal.
+  const servingCount = servingSizeGrams ? Math.round((amount / servingSizeGrams) * 10) / 10 : 0;
   const baseUnitLabel =
     displayUnit === "cl"
       ? t("addProduct.centilitresUnit")
@@ -555,11 +559,32 @@ export default function AddPage() {
                 </button>
                 <div className="flex-1 rounded-2xl bg-hf-tan py-3 text-center text-hf-black">
                   {hasServingUnit && amountUnit === "personer" ? (
-                    <p className="text-xl font-bold capitalize">
-                      {`${Math.round(amount / (servingSizeGrams as number))} ${
-                        amount === servingSizeGrams ? servingSizeUnitSingular : servingSizeUnitPlural
-                      }`}
-                    </p>
+                    <label className="flex items-baseline justify-center text-xl font-bold capitalize text-hf-black">
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        value={servingDraft ?? String(servingCount).replace(".", ",")}
+                        onFocus={(event) => {
+                          setServingDraft(String(servingCount).replace(".", ","));
+                          event.currentTarget.select();
+                        }}
+                        onBlur={() => setServingDraft(null)}
+                        onChange={(event) => {
+                          const raw = event.target.value;
+                          setServingDraft(raw);
+                          const value = Number(raw.replace(",", "."));
+                          if (raw.trim() !== "" && Number.isFinite(value))
+                            setAmount(Math.max(0, Math.round(value * (servingSizeGrams as number))));
+                        }}
+                        style={{
+                          width: `${Math.max(1, (servingDraft ?? String(servingCount)).length) + 0.5}ch`,
+                        }}
+                        className="bg-transparent text-right outline-none"
+                      />
+                      <span>
+                        &nbsp;{amount === servingSizeGrams ? servingSizeUnitSingular : servingSizeUnitPlural}
+                      </span>
+                    </label>
                   ) : (
                     <label className="flex items-baseline justify-center text-xl font-bold text-hf-black">
                       <input
@@ -568,6 +593,7 @@ export default function AddPage() {
                         min={displayUnit === "cl" ? 1 : 10}
                         step={displayUnit === "cl" ? 1 : 10}
                         value={displayAmount}
+                        onFocus={(event) => event.currentTarget.select()}
                         onChange={(event) => {
                           const value = Number(event.target.value);
                           if (Number.isFinite(value)) setAmount(Math.max(0, fromDisplayAmount(value, displayUnit)));

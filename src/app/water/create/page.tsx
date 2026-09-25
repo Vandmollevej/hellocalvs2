@@ -21,7 +21,8 @@ const STEP_ML = 25;
 
 // design.md §6.11: no HelloFresh reference for this screen. Four container
 // presets tap-select an ml amount onto the slider below; the slider stays
-// freely adjustable afterwards for a manual amount. Presets are labelled in cl
+// freely adjustable afterwards for a manual amount. The slider snaps to 25 ml;
+// the amount field can be typed into directly for any other exact amount. Presets are labelled in cl
 // but register the exact ml amount. Images are alpha-trimmed PNGs; bottles get
 // a slightly taller box than glasses so they read naturally taller/slimmer.
 const CONTAINERS = [
@@ -68,6 +69,8 @@ function groupByDate(entries: WaterEntry[]) {
 export default function WaterCreatePage() {
   const { t } = useTranslation();
   const [amountMl, setAmountMl] = useState(250);
+  // Rå tekst mens mængdefeltet redigeres, så et tomt felt ikke tvinges til 0.
+  const [amountDraft, setAmountDraft] = useState<string | null>(null);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -167,11 +170,34 @@ export default function WaterCreatePage() {
         <div className="flex flex-col gap-3 rounded-2xl bg-hf-tan p-4">
           <div className="flex items-baseline justify-between">
             <span className="text-[13px] font-semibold text-hf-black">{t("waterLog.amountLabel")}</span>
-            <span className="text-[20px] font-bold text-hf-black">{amountMl} ml</span>
+            <label className="flex items-baseline text-[20px] font-bold text-hf-black">
+              <input
+                type="text"
+                inputMode="numeric"
+                value={amountDraft ?? String(amountMl)}
+                onFocus={(event) => {
+                  setAmountDraft(String(amountMl));
+                  event.currentTarget.select();
+                }}
+                onBlur={() => setAmountDraft(null)}
+                onChange={(event) => {
+                  const raw = event.target.value.replace(/\D/g, "");
+                  setAmountDraft(raw);
+                  if (raw === "") return;
+                  setAmountMl(Number(raw));
+                  setSelectedKey(null);
+                  setSaved(false);
+                }}
+                aria-label={t("waterLog.amountLabel")}
+                style={{ width: `${Math.max(1, (amountDraft ?? String(amountMl)).length) + 0.5}ch` }}
+                className="bg-transparent text-right outline-none"
+              />
+              <span>&nbsp;ml</span>
+            </label>
           </div>
           <HfSlider
             min={MIN_ML}
-            max={MAX_ML}
+            max={Math.max(MAX_ML, amountMl)}
             step={STEP_ML}
             value={amountMl}
             onChange={(value) => {

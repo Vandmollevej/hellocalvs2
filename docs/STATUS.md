@@ -2,6 +2,16 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Mængdefelter altid direkte redigerbare
+
+- Vand (`src/app/water/create/page.tsx`): mængden ved slideren er nu et
+  tekstfelt man kan trykke i og overskrive med et vilkårligt antal ml; slideren
+  snapper stadig til 25 ml og udvider sit max, hvis der skrives over 1000 ml.
+- Madvarer/ingredienser/retter (`src/app/add/[id]/page.tsx`): portionsvisningen
+  ("personer"/"portioner") kan nu også skrives direkte (fx 1,5); gram/ml-feltet
+  var allerede redigerbart og markerer nu indholdet ved fokus.
+- Makro- og søvnslidere havde allerede tryk-for-at-redigere.
+
 ## 2026-09-25: Profil — start-vægt altid låst + "Lås"-side
 
 Start-vægt på `/profile/edit` er nu altid låst, også når den er tom (før var
