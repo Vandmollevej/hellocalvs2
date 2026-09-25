@@ -2,6 +2,19 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Profil — start-vægt altid låst + "Lås"-side
+
+Start-vægt på `/profile/edit` er nu altid låst, også når den er tom (før var
+den et redigerbart felt indtil første indtastning). Feltet vises gråt med en
+hængelås til venstre i boksen; tryk åbner `/profile/start-weight`, som nu er
+siden "Lås" med tilbagepil, teksten "Din startvægt bør ikke ændres, og er
+grundlag for al statistik. Du skal i stedet ændre din dagsvægt her." og
+knappen "Angiv dagsvægt" (→ `/profile/weight-calibration`). Knappen "Send
+verificeringsmail" er fjernet fra siden; verify-siden og API'et ligger
+stadig, men har ingen indgang i UI'et. Er start-vægten tom, sætter første
+vejning (`POST /api/weight-entries`) den. Ubrugte i18n-nøgler fjernet.
+Kropsmål er ikke omfattet (brugeren har bekræftet, at kun start-vægt skal låses).
+
 ## 2026-09-25: Photo diary — passcode toggle now actually locks the photos
 
 User intent: the photos must not flash on screen by accident when the page is
