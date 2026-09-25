@@ -1176,6 +1176,21 @@
     "addDivider": "+ Divider",
     "addDividerHint": "Adds a black divider line to your statistics page."
   },
+  "statUnusedCharts": {
+    "title": "Unused charts",
+    "hint": "Tap a chart to add it to the top of your statistics page.",
+    "searchPlaceholder": "Search all charts",
+    "noSearchResults": "No charts match your search.",
+    "noChartsLeft": "All charts here are already on your statistics page.",
+    "intradayKcal": "Calorie intake during the day",
+    "dayProfile": "Day profile",
+    "category": {
+      "energyWeight": "Energy and weight"
+    }
+  },
+  "statChartsSection": {
+    "removeChart": "Remove chart"
+  },
   "statCardsGrid": {
     "exitEditing": "Exit editing",
     "heading": "Heading",

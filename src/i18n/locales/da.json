@@ -1176,6 +1176,21 @@
     "addDivider": "+ Adskillelseslinje",
     "addDividerHint": "Tilføjer en sort adskillelseslinje til din statistikside."
   },
+  "statUnusedCharts": {
+    "title": "Ubrugte grafer",
+    "hint": "Tryk på en graf for at tilføje den øverst på din statistikside.",
+    "searchPlaceholder": "Søg i alle grafer",
+    "noSearchResults": "Ingen grafer matcher din søgning.",
+    "noChartsLeft": "Alle grafer her er allerede på din statistikside.",
+    "intradayKcal": "Kalorieindtag i løbet af dagen",
+    "dayProfile": "Dagsprofil",
+    "category": {
+      "energyWeight": "Energi og vægt"
+    }
+  },
+  "statChartsSection": {
+    "removeChart": "Fjern graf"
+  },
   "statCardsGrid": {
     "exitEditing": "Afslut redigering",
     "heading": "Overskrift",
