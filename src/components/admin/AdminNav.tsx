@@ -16,6 +16,7 @@ const LINK_DEFS: { href: string; key: AdminI18nKey }[] = [
   { href: "/admin/messaging", key: "nav_messaging" },
   { href: "/admin/images", key: "nav_images" },
   { href: "/admin/quality-control", key: "nav_quality_control" },
+  { href: "/admin/ingredient-requests", key: "nav_ingredient_requests" },
   { href: "/admin/warnings", key: "nav_warnings" },
   { href: "/admin/duplicate-products", key: "nav_duplicate_products" },
   { href: "/admin/search", key: "nav_search" },

@@ -12,6 +12,14 @@
 import { newRecordId } from "@/lib/vault/client";
 import { json, route } from "@/lib/vault/local-api";
 import { fulfillPendingForward } from "@/lib/vault/handlers/forwards";
+import {
+  PRIVATE_INGREDIENTS,
+  PRIVATE_INGREDIENT_PREFIX,
+  isPrivateIngredientId,
+  privateIngredientProduct,
+  type StoredPrivateIngredient,
+} from "@/lib/vault/handlers/private-ingredients";
+import { classifyProduct, type FoodClassification } from "@/lib/food-classification";
 
 export const REGISTRATIONS = "registrations";
 export const DISHES = "dishes";
@@ -71,6 +79,10 @@ export type Registration = {
     servingSizeUnitSingular: string | null;
     servingSizeUnitPlural: string | null;
   } | null;
+  // G3-snapshot (src/lib/food-classification.ts): kødtype, alkohol og
+  // sukkerholdig drik. undefined på ældre registreringer, indtil
+  // /api/registrations/classify har udfyldt det; null = intet produkt.
+  classification?: FoodClassification | null;
 };
 
 type StoredRegistration = Omit<Registration, "id">;
@@ -132,6 +144,35 @@ route("DELETE", "/api/registrations/:id", async ({ vault, params }) => {
   if (!vault.get(REGISTRATIONS, params.id)) return json({ message: "Registreringen findes ikke" }, 404);
   await vault.remove(REGISTRATIONS, params.id);
   return json({ deleted: true });
+});
+
+// Engangsudfyldning af G3-klassifikationen på registreringer fra før
+// feltet fandtes. Henter kun de samme offentlige produktsider, som selve
+// registreringen i sin tid hentede (docs/DECISIONS.md 2026-09-24).
+route("POST", "/api/registrations/classify", async ({ vault }) => {
+  const pending = listRegistrations(vault).filter((r) => r.classification === undefined);
+  const ids = Array.from(
+    new Set(pending.map((r) => r.productId ?? r.genericIngredientId).filter((id): id is string => Boolean(id))),
+  );
+  const byId = new Map<string, FoodClassification | null>();
+  for (let i = 0; i < ids.length; i += 6) {
+    const chunk = ids.slice(i, i + 6);
+    const products = await Promise.all(chunk.map((id) => fetchProduct(id).catch(() => null)));
+    chunk.forEach((id, index) => {
+      const product = products[index];
+      if (product) byId.set(id, classifyProduct(product));
+    });
+  }
+  let updated = 0;
+  for (const registration of pending) {
+    const { id, ...value } = registration;
+    const productKey = registration.productId ?? registration.genericIngredientId;
+    // Produkt midlertidigt utilgængeligt: prøv igen næste gang.
+    if (productKey && !byId.has(productKey)) continue;
+    await vault.put(REGISTRATIONS, id, { ...value, classification: productKey ? byId.get(productKey)! : null });
+    updated += 1;
+  }
+  return json({ updated });
 });
 
 const EMPTY_EXTRAS = {
@@ -230,6 +271,7 @@ route("POST", "/api/registrations", async ({ vault, body }) => {
             vitaminCSnapshot: scaled(product.vitaminCPer100g),
           }),
       product: productInfo(product),
+      classification: classifyProduct(product),
     };
 
     // Brugerindberetning (docs/DECISIONS.md 2026-09-23): ændrede makroer
@@ -263,6 +305,7 @@ route("POST", "/api/registrations", async ({ vault, body }) => {
       carbsSnapshot: input.carbsSnapshot ?? totals.carbs * scale,
       fatSnapshot: input.fatSnapshot ?? totals.fat * scale,
       product: null,
+      classification: null,
     };
   } else {
     const { titleSnapshot, kcalSnapshot, proteinSnapshot, carbsSnapshot, fatSnapshot } = input;
@@ -299,6 +342,7 @@ route("POST", "/api/registrations", async ({ vault, body }) => {
       carbsSnapshot,
       fatSnapshot,
       product: null,
+      classification: null,
     };
   }
 
@@ -372,7 +416,15 @@ route("POST", "/api/dishes", async ({ vault, body }) => {
   }
   const resolved: DishIngredient[] = [];
   for (const i of ingredients) {
-    const product = await fetchProduct(i.productId as string);
+    // Private ingredienser (boksen) slås op lokalt og sendes aldrig til serveren.
+    const productId = i.productId as string;
+    const privateId = productId.slice(PRIVATE_INGREDIENT_PREFIX.length);
+    const stored = isPrivateIngredientId(productId)
+      ? vault.get<StoredPrivateIngredient>(PRIVATE_INGREDIENTS, privateId)
+      : undefined;
+    const product = isPrivateIngredientId(productId)
+      ? stored && privateIngredientProduct(privateId, stored)
+      : await fetchProduct(productId);
     if (!product) return json({ message: "Produkt ikke fundet" }, 404);
     resolved.push({ id: newRecordId(), productId: product.id, grams: i.grams as number, product });
   }

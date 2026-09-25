@@ -5,16 +5,22 @@ import {
   IconActivity,
   IconApple,
   IconAtom2,
+  IconBeer,
   IconBolt,
   IconBone,
+  IconBottle,
   IconCandy,
   IconCarrot,
   IconDroplet,
   IconEgg,
+  IconFeather,
+  IconFish,
   IconFlame,
   IconHeartbeat,
   IconLeaf,
   IconLemon2,
+  IconMeat,
+  IconPig,
   IconRoute,
   IconSalt,
   IconTargetArrow,
@@ -25,6 +31,16 @@ import {
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
 import type { DailyTotal } from "@/lib/daily-totals";
 import { getSportMeta } from "@/lib/sport-icons";
+import {
+  alcoholTotals,
+  formatAmount,
+  formatGrams,
+  formatVolume,
+  meatTotals,
+  sugaryDrinkKcal,
+  type MeatType,
+  type SourceRegistration,
+} from "@/lib/food-classification";
 
 export const STAT_WINDOW_DAYS = 30;
 
@@ -68,6 +84,10 @@ export type StatCardData = {
   // From a future HealthKit/Health Connect companion app (see
   // docs/HEALTHKIT_COMPANION.md) — empty/undefined until data exists.
   metrics?: HealthMetricTotals[];
+  // G3: periodens registreringer med klassifikation (kødtype, alkohol,
+  // sukkerholdig drik). Kortene nedenfor viser totaler for perioden, ikke
+  // dagsgennemsnit. Udeladt = "—".
+  sources?: SourceRegistration[];
 };
 
 function formatNumber(value: number, maximumFractionDigits = 0) {
@@ -94,6 +114,24 @@ function metricValue(data: StatCardData, type: string, unit = "", maximumFractio
   if (avg === null) return "—";
   const formatted = formatNumber(avg, maximumFractionDigits);
   return unit ? `${formatted} ${unit}` : formatted;
+}
+
+function meatCard(type: MeatType, field: "grams" | "kcal") {
+  return (data: StatCardData) => {
+    if (!data.sources) return "—";
+    const value = meatTotals(data.sources)[type][field];
+    return field === "grams" ? formatGrams(value) : `${formatAmount(value)} kcal`;
+  };
+}
+
+function alcoholCard(field: "kcal" | "units" | "volume") {
+  return (data: StatCardData) => {
+    if (!data.sources) return "—";
+    const totals = alcoholTotals(data.sources);
+    if (field === "kcal") return `${formatAmount(totals.kcal)} kcal`;
+    if (field === "units") return `${formatAmount(totals.units, 1)} genst.`;
+    return formatVolume(totals.volumeMl);
+  };
 }
 
 function metricHoursMinutes(data: StatCardData, type: string): string {
@@ -270,6 +308,24 @@ export const STAT_CARD_DEFS: {
   // break registration snapshot semantics. See docs/DECISIONS.md.
   { key: "allergens", label: "Allergener", icon: IconActivity, compute: () => "—" },
   { key: "additives", label: "E-numre", icon: IconActivity, compute: () => "—" },
+  // G3 (docs/DECISIONS.md 2026-09-24): totaler for perioden.
+  { key: "beefGrams", label: "Oksekød", icon: IconMeat, compute: meatCard("BEEF", "grams") },
+  { key: "beefKcal", label: "Oksekød (kcal)", icon: IconMeat, compute: meatCard("BEEF", "kcal") },
+  { key: "porkGrams", label: "Grisekød", icon: IconPig, compute: meatCard("PORK", "grams") },
+  { key: "porkKcal", label: "Grisekød (kcal)", icon: IconPig, compute: meatCard("PORK", "kcal") },
+  { key: "poultryGrams", label: "Fjerkræ", icon: IconFeather, compute: meatCard("POULTRY", "grams") },
+  { key: "poultryKcal", label: "Fjerkræ (kcal)", icon: IconFeather, compute: meatCard("POULTRY", "kcal") },
+  { key: "fishGrams", label: "Fisk", icon: IconFish, compute: meatCard("FISH", "grams") },
+  { key: "fishKcal", label: "Fisk (kcal)", icon: IconFish, compute: meatCard("FISH", "kcal") },
+  {
+    key: "sugaryDrinks",
+    label: "Sukkerholdige drikke",
+    icon: IconBottle,
+    compute: (data) => (data.sources ? `${formatAmount(sugaryDrinkKcal(data.sources))} kcal` : "—"),
+  },
+  { key: "alcoholKcal", label: "Alkohol", icon: IconBeer, compute: alcoholCard("kcal") },
+  { key: "alcoholUnits", label: "Alkohol (genstande)", icon: IconBeer, compute: alcoholCard("units") },
+  { key: "alcoholVolume", label: "Alkohol (mængde)", icon: IconBeer, compute: alcoholCard("volume") },
   {
     key: "daysLogged",
     label: "Dage logget",
@@ -353,6 +409,12 @@ export const DEFAULT_ACTIVE_STAT_KEYS: string[] = [
   "protein",
   "carbs",
   "fat",
+  "beefGrams",
+  "porkGrams",
+  "poultryGrams",
+  "fishGrams",
+  "sugaryDrinks",
+  "alcoholKcal",
   "daysLogged",
   "goalsMet",
   "steps",
@@ -361,6 +423,12 @@ export const DEFAULT_ACTIVE_STAT_KEYS: string[] = [
 ];
 
 export const SPORT_STAT_KEY_PREFIX = "sport:";
+
+// G3-kortene: vises under "Tilføj kort" i egen gruppe.
+export const FOOD_SOURCE_STAT_KEYS: string[] = [
+  "beefGrams", "beefKcal", "porkGrams", "porkKcal", "poultryGrams", "poultryKcal",
+  "fishGrams", "fishKcal", "sugaryDrinks", "alcoholKcal", "alcoholUnits", "alcoholVolume",
+];
 
 // Always offered as sport cards (per the user's own request), even before any
 // activity data exists for them — shown as an empty "—" placeholder until

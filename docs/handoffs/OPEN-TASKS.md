@@ -63,8 +63,8 @@ Koordinering med G1: G3 skal senere tilføje knappen "Månedens synder" nederst 
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| c0d3a8fa / f5505465 | Ernæringsmæssige produktkategorier (alkohol, fedt, ost, yoghurt, …; ultraforarbejdet som tag) | Venter på bruger | Alt afklaret 2026-09-24, krav i STATUS (G3-afsnit). Grove kategorier nu; 30-listen er en senere, separat opgave. Byg først når brugeren siger "gå i gang" |
-| d7f6eb5c / 1578bf02 | Kød/fisk-bokse (g + kcal), sukkerholdige drikke, alkohol, "største syndere", liste-side, "Månedens synder" | Venter på bruger | Alt afklaret 2026-09-24, krav i STATUS (G3-afsnit). Byg først når brugeren siger "gå i gang" |
+| c0d3a8fa / f5505465 | Ernæringsmæssige produktkategorier (alkohol, fedt, ost, yoghurt, …; ultraforarbejdet som tag) | Færdig (se git log "G3:") | Grove kategorier + klassifikation bygget. 30-listen er separat opgave |
+| d7f6eb5c / 1578bf02 | Kød/fisk-bokse (g + kcal), sukkerholdige drikke, alkohol, "største syndere", liste-side, "Månedens synder" | Færdig (se git log "G3:") | Bygget. Knap i kalender tilføjet (kun én `ActionLink` i månedsvisning) |
 
 ## G4 — Usikkerhed (bølgeikon + Uncertainties-admin)
 Filer: usikkerheds-ikon/komponent, mikronæringsvisning, indstillinger → Visning, admin Uncertainties.
@@ -94,7 +94,7 @@ Ejer: G6-overtagelse, konto B (2026-09-24)
 | 155dc7cf | Forward-ikon i stedet for dele-ikon, "Log ind…"-tekst på linje med ikonet | Færdig (aaed6fb) | — |
 | 56fda7bc | Mængde altid med enhed (g / ml / cl efter produkttype) | Færdig (3264ed1) | Var allerede lavet af anden session |
 | ad648ee7 | HelloFresh kun i Opret ret + global regel: knapper fuld bredde (også bedt om i 6a503586) | Færdig (aaed6fb) | Åbent: kameraets "Produkt"-fane bruger stadig HelloFresh uden for Opret ret (ikke G6's fil) |
-| b309686e | Opret ret: HelloFresh-trin med 3 cirkler, "Tag billede"/"Opret manuelt", tekstlink "Opret egen ingrediens" → ny side for private ingredienser | I gang (afbrudt) | Knap-tekster lavet. **Sandsynligvis kilden til diff'en i create-dish/page.tsx.** Spørgsmål om private ingredienser er besvaret i transcript — byg videre |
+| b309686e | Opret ret: HelloFresh-trin med 3 cirkler, "Tag billede"/"Opret manuelt", tekstlink "Opret egen ingrediens" → ny side for private ingredienser | Færdig (1540198) — undtagen trin-cirklerne | Knap-tekster, tekstlink og private ingredienser (boks + anonym admin-anmodning + auto-erstatning) er committet. Trin-cirklerne (`SetupProgressBar`) ligger færdige men ikke-committede i `src/app/profile/settings/page.tsx` (G7's fil) — G7: tag den hunk med i jeres commit |
 
 ## G7 — Profil
 Filer: `src/app/profile/**`.
@@ -134,13 +134,13 @@ Ejer: G9-overtagelse, konto B
 
 ## G10 — Bundnavigation + global overskrift-stil
 Filer: `src/components/BottomNav.tsx`, `src/app/globals.css`.
-Ukendte ændringer: begge filer er ændret og ikke committet — sandsynligvis fra 5f2ee781.
+Ukendte ændringer: ingen (alt G10-arbejde committet).
 Ejer: G10-overtagelse, konto D (2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 5f2ee781 | Fjern stregen mellem footer og indhold + sektionsoverskrifter mindre, ikke fed, centreret med streg på hver side | I gang | Verificerer visuelt, commit derefter |
-| 6a503586 | Footer-redigering: slette-krydserne er skåret af + ikoner skal kunne trækkes til siden for at bytte rækkefølge | I gang | Transcript læst: ikke løst. Krydser klippes af `overflow-x-hidden`; ombytning hopper frem og tilbage. Bygger fix (HelloFresh/knap-delen hører til G6) |
+| 5f2ee781 | Fjern stregen mellem footer og indhold + sektionsoverskrifter mindre, ikke fed, centreret med streg på hver side | Færdig (be3a05d) | Verificeret i preview. Afventer brugerens godkendelse af udseendet |
+| 6a503586 | Footer-redigering: slette-krydserne er skåret af + ikoner skal kunne trækkes til siden for at bytte rækkefølge | Færdig (8d5ba9b) | `overflow-x-clip` så krydserne ikke klippes; ombytning efter pladsen under fingeren (ingen hop) + roligere glide-animation; ikon fra panelet indsættes på den plads, det slippes. Afventer test på telefon (HelloFresh/knap-delen hører til G6) |
 
 ## G11 — Næringsdata på produktsiden (E-numre, toksiner, fedt-advarsel)
 Filer: produktsidens næringsvisning, statistik-boks-katalog (koordinér med G2), Opsætning/Visning (koordinér med G7).

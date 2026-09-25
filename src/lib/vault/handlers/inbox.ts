@@ -8,6 +8,12 @@
 import type { VaultClient } from "@/lib/vault/client";
 import { WEIGHT } from "@/lib/vault/handlers/weight";
 import { ACTIVITIES, HEALTH } from "@/lib/vault/handlers/tracking";
+import { DISHES } from "@/lib/vault/handlers/meals";
+import {
+  PRIVATE_INGREDIENTS,
+  PRIVATE_INGREDIENT_PREFIX,
+  type StoredPrivateIngredient,
+} from "@/lib/vault/handlers/private-ingredients";
 
 type Payload = Record<string, unknown>;
 
@@ -17,6 +23,31 @@ function stamp(value: unknown): number | null {
 }
 
 const safe = (value: unknown) => String(value).replace(/[^A-Za-z0-9_-]/g, "").slice(0, 40);
+
+type DishLike = { ingredients: { productId: string; product: unknown }[] };
+
+// Admin har oprettet brugerens egen ingrediens globalt (src/lib/ingredient-requests.ts):
+// den globale erstatter den private — også i brugerens egne retter.
+async function replaceWithGlobalIngredient(vault: VaultClient, p: Payload) {
+  if (typeof p.requestId !== "string" || typeof p.productId !== "string") return;
+  const match = vault
+    .list<StoredPrivateIngredient>(PRIVATE_INGREDIENTS)
+    .find(({ value }) => value.requestId === p.requestId);
+  if (!match) return;
+  const res = await fetch(`/api/products/${encodeURIComponent(p.productId)}`);
+  if (!res.ok) throw new Error("Global ingrediens kunne ikke hentes");
+  const { product } = (await res.json()) as { product: { id: string } | null };
+  if (!product) throw new Error("Global ingrediens findes ikke");
+  const privateId = `${PRIVATE_INGREDIENT_PREFIX}${match.id}`;
+  for (const { id, value } of vault.list<DishLike>(DISHES)) {
+    if (!value.ingredients.some((i) => i.productId === privateId)) continue;
+    await vault.put(DISHES, id, {
+      ...value,
+      ingredients: value.ingredients.map((i) => (i.productId === privateId ? { ...i, productId: product.id, product } : i)),
+    });
+  }
+  await vault.remove(PRIVATE_INGREDIENTS, match.id);
+}
 
 export async function drainIntoVault(vault: VaultClient) {
   const now = new Date().toISOString();
@@ -47,6 +78,8 @@ export async function drainIntoVault(vault: VaultClient) {
         caloriesBurned: p.caloriesBurned,
         createdAt: now,
       });
+    } else if (kind === "globalIngredient") {
+      await replaceWithGlobalIngredient(vault, p);
     } else if (kind === "metric") {
       const t = stamp(p.recordedAt);
       if (t === null) return;

@@ -1369,8 +1369,34 @@ model GenericIngredient {
   regionHourStats   GenericIngredientRegionHourStat[]
   personalSearchHistory UserProductSearchHistory[]
   images            GenericIngredientImage[]
+  ingredientRequests IngredientRequest[]
 
   @@map("generic_ingredients")
+}
+
+// "Opret egen ingrediens" (docs/DECISIONS.md 2026-09-24). Selve den private
+// ingrediens ligger kun i brugerens boks (docs/PRIVACY.md); her ligger kun en
+// anonym anmodning til admin om at oprette den globalt. Ingen bruger-ID —
+// kun en engangs-VaultInbox, så admin kan sende den globale ingrediens
+// tilbage uden at vide, hvem der bad om den.
+model IngredientRequest {
+  id                  String                  @id @default(cuid())
+  name                String
+  replyInboxId        String?
+  status              IngredientRequestStatus @default(PENDING)
+  genericIngredient   GenericIngredient?      @relation(fields: [genericIngredientId], references: [id], onDelete: SetNull)
+  genericIngredientId String?
+  createdAt           DateTime                @default(now())
+  reviewedAt          DateTime?
+
+  @@index([status, createdAt])
+  @@map("ingredient_requests")
+}
+
+enum IngredientRequestStatus {
+  PENDING
+  ADDED
+  REJECTED
 }
 
 // Tagged image variants for a GenericIngredient — same shape/purpose as
@@ -1484,6 +1510,7 @@ model ProductIngredient {
 // Se Product.productCategory.
 enum ProductCategory {
   DRINK
+  VEGETABLES
   GENERIC
   PROCESSED
   RAW
@@ -1728,6 +1755,7 @@ enum MessageEvent {
   PRODUCT_REJECTED
   PRODUCT_ESCALATION_ADMIN
   BUG_REPORT_ESCALATION_ADMIN
+  INGREDIENT_REQUEST_ADMIN
   BUG_REPORT_RESOLVED
   BUG_REPORT_REJECTED
   POINTS_AWARDED

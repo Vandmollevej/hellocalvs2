@@ -2,6 +2,39 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-25: G3 — grove produktkategorier, kød/drikke-statistik, "Største kilder" og "Månedens synder"
+
+- `Product.productCategory` bruger brugerens grove regnearks-kategorier:
+  Drikkevarer (DRINK), Grøntsager (ny VEGETABLES, migration
+  `20260924160000_product_category_vegetables`), Råvarer (RAW), Forarbejdede
+  varer (PROCESSED). GENERIC/INGREDIENT bevares. Navne i
+  `PRODUCT_CATEGORY_LABELS` (`src/lib/product-display-unit.ts`). Den 30-delte
+  Hello Cal-kategoriliste + NOVA/ultraforarbejdet er en senere, separat opgave.
+- Klassifikation (`src/lib/food-classification.ts`) læser produktets egne
+  regnearksfelter i `Product.dietaryTags`: `meat` (okse/kalv → oksekød, gris,
+  kylling/kalkun/and/gås → fjerkræ, fisk inkl. skaldyr; flere typer deles
+  ligeligt), `isSugarFree`, `isAlcoholFree`, `pct` (alkohol-%, "x% fedt"
+  ignoreres) samt `productType` og sukker pr. 100 g fra `nutritionExtra`.
+  Sukkerholdig drik = drikkevare med sukker > 0, ikke sukkerfri/light, ikke
+  alkohol (inkl. mælk, smoothie, drikkeyoghurt). Alkohol = drikkevare med
+  alkohol-% > 0,5 (eller alkohol-produkttype, når % mangler). 1 genstand = 12 g
+  ren alkohol.
+- Klassifikationen gemmes som snapshot på registreringen i boksen
+  (`classification`), samme snapshot-princip som kcal/makroer. Ældre
+  registreringer udfyldes én gang lokalt via `POST /api/registrations/classify`,
+  som kun henter de samme offentlige produktsider, registreringen selv hentede.
+- Ikke bygget endnu: Frida-AI-beregning af kødandel i sammensatte retter (i
+  dag tæller hele varens vægt/kcal, hvis varen har en kødtype; egne retter
+  tæller ikke med i kød/drikke-boksene).
+- Statistik: 12 nye kort (kød g/kcal ×4, sukkerholdige drikke kcal, alkohol
+  kcal/genstande/mængde) som totaler for den valgte periode, egen gruppe under
+  "Tilføj kort". Bred boks "Største syndere" (top 5 for Kalorier/Fedt/Sukker,
+  samme vare må gå igen, klik åbner varen) med "Se alle" →
+  `/statistics/sources` ("Største kilder", faner + Produkter/Produkttyper).
+- "Månedens synder": knap under kalenderens månedsvisning →
+  `/statistics/month-sinners?month=YYYY-MM`, grupperet efter produkttype med
+  "kcal · %", faner Kalorier/Fedt/Sukker.
+
 ## 2026-09-24: Otte sundhedsintegrationer inden for boks-arkitekturen (G8)
 
 Brugerens valg (6068f78a/69a1b2bd, 8d98b548/2c95590f): "Byg alle 8" på den
@@ -1867,3 +1900,10 @@ Normaliserede produkt-søgeparametre (`ProductNutritionFeatures`, 1:1 med
 
 - HelloFresh-boksen ("Genkend din ret") er fjernet fra Madvarer-siden. Opret ret når den via kameraet (`/camera?...&for=ret`). HelloFresh må ikke vises på Madvarer, produktsøgning, produkt-/ingrediensoprettelse eller produktvisning. Åbent punkt: kameraets "Produkt"-fane (`mode=hellofresh`) vises også uden for Opret ret; ikke ændret endnu.
 - Almindelige primære/sekundære handlingsknapper fylder altid hele indholdsbredden. Fælles komponent: `ActionButton`/`ActionLink` (`src/components/hf/ActionButton.tsx`); regel i design.md §6.2. Små ikon-/inline-kontroller er undtaget. Eksisterende smalle knapper rettes efterhånden, når deres side alligevel ændres.
+
+## 2026-09-24: Egne, private ingredienser ("Opret egen ingrediens")
+
+- Linket "Opret egen ingrediens" under Opret ret åbner `/ingredients/new`. Brugeren angiver kun et navn (og mængde, når det er fra en ret) — ikke kcal/makroer, som brugeren ikke kan kende. Næringsindholdet står som ukendt, indtil admin har oprettet ingrediensen globalt.
+- Den private ingrediens ligger kun i boksen (samling `privateIngredients`) og vises kun for brugeren selv: øverst i søgningen på Opret ret og på `/ingredients` ("Mine ingredienser": omdøb/slet). I retter bruges produkt-ID `private:<id>`, som aldrig sendes til serveren; retter med egne ingredienser kan ikke deles, før de er gjort globale.
+- Admin varsles: serveren får kun navnet og en anonym engangsindbakke (`IngredientRequest`, ingen bruger-ID) plus e-mail `INGREDIENT_REQUEST_ADMIN`. Admin → "Ønskede ingredienser" kan rette navnet og "Tilføj globalt" (GenericIngredient med Frida-næring) eller afvise.
+- Når admin tilføjer den globalt, overskriver den global brugerens private automatisk (valgt blandt brugerens to muligheder): indbakken leverer den globale ingrediens, og enheden erstatter den private i alle egne retter og sletter den private.
