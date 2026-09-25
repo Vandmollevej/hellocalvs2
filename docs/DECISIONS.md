@@ -2,6 +2,29 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-25: Én tekst og ét ikon pr. Tilføj-handling
+
+Brugeren vil have, at tekster og ikoner på Tilføj-skærmen slår igennem på
+forsidehjulet og alle andre steder, handlingen vises. `ADD_ACTIONS` i
+`src/lib/add-actions.ts` har derfor kun én tekst (`labelKey`). Hjulet har
+ikke længere egne kortere hint-tekster. Ikonet for Kropsmål afhænger af køn
+og sættes via `visibleAddActions()` / `addActionByKey(key, sex)`.
+
+## 2026-09-25: Minimum for sundt dagligt indtag i kalenderen
+
+Brugeren ønsker en advarsel, når indtaget er for lavt til at være sundt.
+Minimum = den højeste af:
+1. Hvilestofskiftet (BMR) efter Mifflin-St Jeor (Mifflin et al., *Am J Clin
+   Nutr* 1990), beregnet ud fra seneste vejning, højde, alder og køn i
+   profilen. Det er samme formel, som ugeestimatet allerede bruger.
+2. Et fast gulv på 1.200 kcal for kvinder og 1.500 kcal for mænd. Det er den
+   grænse, der typisk anbefales for slankekur uden lægelig opfølgning (bl.a.
+   Harvard Health Publishing). Er køn ukendt, bruges 1.200.
+Resultatet rundes op til nærmeste 10 kcal. Kun afsluttede dage med
+indtastninger kan markeres. Dagen i dag markeres ikke, fordi den ikke er
+slut, og tomme dage markeres heller ikke. Det er et vejledende skøn, ikke
+medicinsk rådgivning.
+
 ## 2026-09-25: Sektionsoverskrifter, points-banner og "Invitér en ven"
 
 Brugerens krav efter skærmbillede af Invitér en ven:

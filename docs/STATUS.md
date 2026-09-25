@@ -2,6 +2,41 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Tilføj — "Retter", nyt Kropsmål-ikon og samme tekst i hjulet
+
+- "Egne retter" hedder nu "Retter" (`addButton.ownDishes`, en: "Dishes"), også
+  som kategori i statistik (`productTypeLabel` i `food-classification.ts`).
+- Kropsmål bruger brugerens målebånd-figurer i stedet for Tablers lineal:
+  `src/components/icons/WaistMeasure.tsx`, vektorspor af
+  `public/icons/body-measurements/waist-female.png` / `waist-male.png`.
+  Kvindefiguren vises ved køn = FEMALE, mandefiguren ellers (også ved ukendt
+  køn). Bruges på Tilføj-listen, forsidehjulet, indstillingslisten for hjulet,
+  Profil-rækken "Kropsmål" og knappen på Redigér profil.
+- Forsidehjulet viser nu samme tekst som Tilføj-listen (`labelKey`). De
+  separate `addButton.hint.*`-tekster (fx "Måltid", "Vægt og mål") og
+  `AddAction.hintKey` er fjernet. Kun `addButton.hint.list` ("Se alle") er
+  tilbage.
+Verificeret med `npm run lint` og `npm run build`. Ikke set på telefon.
+
+## 2026-09-25: Kalender — tomme dage, tættere rækker og advarsel om for lavt indtag
+
+Uge- og Liste-visningens dagrækker (`src/app/calendar/page.tsx`):
+- En dag uden indtastninger viser "Ingen indtastninger" (`calendar.noEntries`)
+  og det fulde restbudget, begge i gråt, i stedet for "Mål ikke nået" og et
+  rødt tal. Kcal-tallet er grønt med "+", når indtaget er på eller under
+  målet, og kun rødt med "÷", når målet er overskredet. Månedsgitteret viser
+  ikke længere "÷" på tomme dage.
+- Rækkerne bruger ikke længere `justify-between`: afstanden fra ugedag til
+  datoboks er omtrent halveret, og statusteksten står lige efter boksen.
+  Kcal-tallet ligger stadig til højre (`ml-auto`).
+- Ny regel for for lavt indtag, se `docs/DECISIONS.md` 2026-09-25. En afsluttet
+  dag med indtastninger under minimum viser "For lavt indtag" og tallet i
+  mørk okker (`--hf-color-warning`). Nederst i visningen står en gul firkant
+  (`--hf-color-warning-fill`) og en forklaring med personens minimum
+  (`calendar.lowIntakeNotice`). Logikken ligger i `src/lib/healthy-intake.ts`.
+Verificeret med `npm run lint` og `npm run build`. Ikke afprøvet på telefon
+fra denne container.
+
 ## 2026-09-25: Profil — start-vægt altid låst + "Lås"-side
 
 Start-vægt på `/profile/edit` er nu altid låst, også når den er tom (før var

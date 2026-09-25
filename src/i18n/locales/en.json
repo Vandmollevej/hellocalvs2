@@ -421,6 +421,9 @@
     "dailyGoalExceeded": "You've exceeded today's goal",
     "dailyGoalNone": "Nothing logged yet",
     "registrations": "Log entries",
+    "intakeTooLow": "Intake too low",
+    "lowIntakeNotice": "Be aware that your intake is lower than what is healthy. You should eat at least {minimum} kcal a day for a person of your build.",
+    "noEntries": "No entries",
     "noRegistrations": "No log entries",
     "loadingDayRegistrations": "Loading the day's log entries…",
     "registrationsLoadError": "Could not load the log entries",
@@ -1230,7 +1233,7 @@
     "closeMenu": "Close add menu",
     "openMenu": "Open add menu",
     "microphone": "Microphone",
-    "ownDishes": "Own dishes",
+    "ownDishes": "Dishes",
     "search": "Search",
     "weight": "Weight",
     "water": "Water",
@@ -1238,14 +1241,7 @@
     "list": "See all",
     "menstrualCycle": "Period",
     "hint": {
-      "microphone": "Speak",
-      "ownDishes": "Meal",
-      "search": "Search",
-      "weight": "Weight & measurements",
-      "water": "Water intake",
-      "camera": "Take photo",
-      "list": "See all",
-      "menstrualCycle": "Log period"
+      "list": "See all"
     }
   },
   "onboarding": {

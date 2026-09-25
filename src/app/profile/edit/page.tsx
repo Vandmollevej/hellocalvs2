@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconCamera, IconLock, IconRulerMeasure, IconTarget } from "@tabler/icons-react";
+import { IconCamera, IconLock, IconTarget } from "@tabler/icons-react";
+import { IconWaistMeasure } from "@/components/icons/WaistMeasure";
 import { HfScreen } from "@/components/HfScreen";
 import { IconBathScale } from "@/components/hf/IconBathScale";
 import { BIRTH_DATE_MIN_AGE_YEARS, BirthDatePicker } from "@/components/ui/BirthDatePicker";
@@ -267,7 +268,7 @@ export default function ProfileEditPage() {
               onClick={() => router.push("/profile/body-measurements")}
               className="flex flex-1 flex-col items-center gap-1.5 rounded-xl bg-hf-tan px-2 py-3 text-center text-[13px] font-semibold text-hf-black"
             >
-              <IconRulerMeasure size={20} />
+              <IconWaistMeasure size={20} sex={user?.sex} />
               {t("profile.actions.bodyMeasurements")}
             </button>
           </div>
