@@ -61,12 +61,12 @@ Ejer: —
 
 ## G4 — Usikkerhed (bølgeikon + Uncertainties-admin)
 Filer: usikkerheds-ikon/komponent, mikronæringsvisning, indstillinger → Visning, admin Uncertainties.
-Ejer: —
+Ejer: G4-sessionen, konto B (overtaget 2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| d2f522ca / 52205f52 | Globalt bølgeikon for usikre varer + mikrodata, margin i grå, on/off i indstillinger | Venter på bruger | Krav i STATUS (commit 1beb7a8). Mangler: ikon som tekst-tilde eller SVG? Frida-vitaminer skal evt. bygges først |
-| ff7fc6a5 | Admin "Uncertainties" med 4 faner, rød prik, lightbox med beskåret OCR-billede | Venter på bruger | Krav i STATUS punkt 15. Brugeren sagde "Udfør" til sidst — bekræft om det betyder byg nu |
+| d2f522ca / 52205f52 | Globalt bølgeikon for usikre varer + mikrodata, margin i grå, on/off i indstillinger | Færdig på branch (06200f4) | Bygget på `claude/great-booth-2afa0b`, venter på merge til master. Specifikation: samtale ef2ba16f + DECISIONS 2026-09-25 |
+| ff7fc6a5 | Admin "Uncertainties" med 4 faner, rød prik, lightbox med beskåret OCR-billede | Færdig på branch (06200f4) | Samme branch. Natlig AI-robot er en senere fase |
 
 ## G5 — Agent-app + logo-robot
 Filer: ny agent-app, admin "scan-invites", logo-agent (Python/container).
