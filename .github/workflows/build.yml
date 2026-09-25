@@ -62,6 +62,8 @@ jobs:
             mkdir -p /volume1/docker/App
             ln -s /deploy /volume1/docker/App/hellocal-v2
           fi
+          # Bind mount-mapper i compose.production.yaml skal findes, før containerne starter.
+          mkdir -p /deploy/data/product-images /deploy/data/hellofresh-images /deploy/data/quality-control-model-cache
 
       - name: Select release and pull images
         run: |
