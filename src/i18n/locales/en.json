@@ -415,12 +415,16 @@
     "goalExceededList": "You exceeded your goal",
     "adjustBedtimeAriaLabel": "Adjust bedtime",
     "adjustWakeTimeAriaLabel": "Adjust wake time",
+    "nightSleepDuration": "Last night's sleep: {hours} hours",
     "previousDayAriaLabel": "Previous day",
     "nextDayAriaLabel": "Next day",
     "dailyGoalReached": "You're within today's goal",
     "dailyGoalExceeded": "You've exceeded today's goal",
     "dailyGoalNone": "Nothing logged yet",
     "registrations": "Log entries",
+    "intakeTooLow": "Intake too low",
+    "lowIntakeNotice": "Be aware that your intake is lower than what is healthy. You should eat at least {minimum} kcal a day for a person of your build.",
+    "noEntries": "No entries",
     "noRegistrations": "No log entries",
     "loadingDayRegistrations": "Loading the day's log entries…",
     "registrationsLoadError": "Could not load the log entries",
@@ -456,7 +460,7 @@
     "liveViewAriaLabel": "Live camera view",
     "notRecognizedRetry": "Product not recognized, try again",
     "holdCameraStill": "Hold the camera steady over the barcode",
-    "barcodeHintOutsideFrame": "Make sure the barcode is inside the box, until the frame turns green.",
+    "barcodeHintOutsideFrame": "Keep the whole barcode in the picture — upright or sideways both work.",
     "barcodeHintBlurry": "Barcode blurry? Try holding a bit further back until it's in focus.",
     "placeProductInCircle": "Place the product in the circle",
     "placePlateInCircle": "Place the plate in the circle",
@@ -1089,32 +1093,23 @@
     "helloFreshDescription": "Show HelloFresh recipes together with shared dishes under Recipes",
     "title": "Integrations",
     "loading": "Loading…",
-    "status": {
-      "disconnected": "Not connected",
-      "connected": "Connected",
-      "error": "Error",
-      "needsApp": "Needs app",
-      "pending": "Pending"
-    },
     "notice": {
       "connected": "{name} was connected.",
       "failed": "Could not connect {name}. Please try again."
     },
-    "intro": "Connect your health apps so weight, steps and workouts are fetched automatically. Everything goes into your locked vault, which only you can open.",
+    "intro": "Connect your health apps so weight, steps and workouts are fetched automatically.",
     "lastSynced": "Last synced {date}",
-    "syncNow": "Sync now",
-    "syncing": "Syncing…",
     "notConfigured": "Ready in the app, waiting for the server keys.",
-    "disconnect": "Disconnect",
     "connect": "Connect",
-    "deviceTokensTitle": "Device tokens (companion app)",
-    "deviceTokensDescription": "The Hello Cal app uses a device code to send your data securely into your locked vault.",
-    "createdAt": "Created {date}",
-    "lastUsedAt": " · Last used {date}",
     "remove": "Remove",
-    "saveTokenNotice": "Save this value now — it won't be shown again:",
-    "close": "Close",
-    "generateDeviceCode": "Generate device code"
+    "enable": "Turn on",
+    "unavailable": "Not available yet",
+    "sections": {
+      "active": "Active integrations",
+      "popular": "Most used",
+      "recipes": "Recipes",
+      "apps": "Apps"
+    }
   },
   "payment": {
     "title": "Payment",
@@ -1229,23 +1224,16 @@
   "addButton": {
     "closeMenu": "Close add menu",
     "openMenu": "Open add menu",
-    "microphone": "Microphone",
-    "ownDishes": "Own dishes",
+    "microphone": "Speak",
+    "ownDishes": "Dishes",
     "search": "Search",
     "weight": "Weight",
     "water": "Water",
-    "camera": "Camera",
+    "camera": "Scan with camera",
     "list": "See all",
     "menstrualCycle": "Period",
     "hint": {
-      "microphone": "Speak",
-      "ownDishes": "Meal",
-      "search": "Search",
-      "weight": "Weight & measurements",
-      "water": "Water intake",
-      "camera": "Take photo",
-      "list": "See all",
-      "menstrualCycle": "Log period"
+      "list": "See all"
     }
   },
   "onboarding": {

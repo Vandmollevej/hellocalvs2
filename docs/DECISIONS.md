@@ -2,6 +2,29 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-25: Én tekst og ét ikon pr. Tilføj-handling
+
+Brugeren vil have, at tekster og ikoner på Tilføj-skærmen slår igennem på
+forsidehjulet og alle andre steder, handlingen vises. `ADD_ACTIONS` i
+`src/lib/add-actions.ts` har derfor kun én tekst (`labelKey`). Hjulet har
+ikke længere egne kortere hint-tekster. Ikonet for Kropsmål afhænger af køn
+og sættes via `visibleAddActions()` / `addActionByKey(key, sex)`.
+
+## 2026-09-25: Minimum for sundt dagligt indtag i kalenderen
+
+Brugeren ønsker en advarsel, når indtaget er for lavt til at være sundt.
+Minimum = den højeste af:
+1. Hvilestofskiftet (BMR) efter Mifflin-St Jeor (Mifflin et al., *Am J Clin
+   Nutr* 1990), beregnet ud fra seneste vejning, højde, alder og køn i
+   profilen. Det er samme formel, som ugeestimatet allerede bruger.
+2. Et fast gulv på 1.200 kcal for kvinder og 1.500 kcal for mænd. Det er den
+   grænse, der typisk anbefales for slankekur uden lægelig opfølgning (bl.a.
+   Harvard Health Publishing). Er køn ukendt, bruges 1.200.
+Resultatet rundes op til nærmeste 10 kcal. Kun afsluttede dage med
+indtastninger kan markeres. Dagen i dag markeres ikke, fordi den ikke er
+slut, og tomme dage markeres heller ikke. Det er et vejledende skøn, ikke
+medicinsk rådgivning.
+
 ## 2026-09-25: Sektionsoverskrifter, points-banner og "Invitér en ven"
 
 Brugerens krav efter skærmbillede af Invitér en ven:
@@ -82,6 +105,18 @@ apps." De skrappe sikkerhedsforanstaltninger var kun ment til admin.
 - "Månedens synder": knap under kalenderens månedsvisning →
   `/statistics/month-sinners?month=YYYY-MM`, grupperet efter produkttype med
   "kcal · %", faner Kalorier/Fedt/Sukker.
+
+## 2026-09-25: Integrationssiden
+
+Brugerens krav: ingen "Kræver app"-mærker eller "Generér enhedskode"-knapper
+(telefon-integrationerne er ikke sat op). Sektioner i denne rækkefølge:
+Aktive integrationer, Oftest anvendt (Apple Health, Google Health, Strava),
+Opskrifter (HelloFresh), Apps (Health Connect, Withings, Garmin, Samsung
+Health, Polar Flow — Polar Flow nederst). Aktive/forbundne kort får en grøn
+prik foran navnet og "Fjern" som almindelig tekst på egen linje (ingen stor
+knap). Ikke-forbindbare kort viser "Ikke tilgængelig endnu". Google Health
+bruger Google-login-klienten som reserve. Denne afløser "Telefon-kort"-punktet
+i 2026-09-24 "Otte sundhedsintegrationer".
 
 ## 2026-09-24: Otte sundhedsintegrationer inden for boks-arkitekturen (G8)
 
@@ -2012,3 +2047,43 @@ ikke via en native app. Formålet er at billederne ikke vises ved et uheld —
 det er en visningslås, ikke kryptering af billederne. Siden låser igen, når
 den går i baggrunden. Selfie-funktionen er fjernet efter brugerens ønske og
 skal ikke genindføres uden en eksplicit anmodning.
+
+## 2026-09-25: Stregkode-scanning — egen afkodningsløkke, lodret/skæv aflæsning og AR-afkodning
+
+Brugerens test på iPhone (skærmbilleder): dæmpningen om guide-boksen var for
+sort og forsvandt brat; en statisk lysegrøn firkant dukkede op et forkert
+sted og blev stående; lodrette stregkoder kunne ikke læses (at dreje
+telefonen drejer hele webappen, så det er ingen løsning); og ønsket var, at
+afkodningen *ses*: stregerne tegnes, og tallene skrives som overlay oven på
+den rigtige stregkode.
+
+- **Egen afkodningsløkke** (`src/lib/barcode-frame-scanner.ts`) i stedet for
+  @zxing/browser's `decodeFromConstraints`. Kun viewfinderets synlige
+  kvadrat afkodes, så resultat-punkter i canvas-pixels / sidelængde er
+  direkte en brøkdel af viewfinderet (den gamle video→skærm-omregning ramte
+  ved siden af). Hvert billede prøves både som det er og drejet 90°, så en
+  stregkode på højkant læses med telefonen holdt normalt. ZXing's egen
+  TRY_HARDER-rotation bruges ikke: @zxing/browser's canvas-kilde opdaterer
+  ikke bredde/højde ved rotation af et ikke-kvadratisk billede. Formater
+  begrænset til EAN-13/EAN-8/UPC-A/UPC-E.
+- **Stregkodens rigtige vinkel og højde** måles i billedet efter hver
+  aflæsning: ZXing returnerer kun den pixelrække, den læste. Højden findes
+  ved at gå vinkelret ud fra læselinjen, til stregmønstret forsvinder;
+  vinklen ved at sammenligne stregmønstret på to parallelle linjer (trinvis,
+  så gentagne stregmønstre ikke giver en forkert top). Verificeret i
+  Chromium mod tegnede EAN-13/EAN-8 ved 0–180°: vinkel inden for ±0,3°,
+  bredde eksakt.
+- **AR-afkodning**: den aflæste kode gen-kodes til sit ægte stregmønster
+  (`src/lib/barcode-pattern.ts`), og `BarcodeScanOverlay` tegner det streg
+  for streg + ciffer for ciffer oven på den fysiske stregkode (se design.md
+  §6.11). Enhver aflæsning i billedet starter afkodningen — kravet om at
+  koden skal ligge inden i boksen og den røde/grønne kant er fjernet.
+- **Ikke fundet** gemmes pr. kode i sessionen, så samme stregkode i billedet
+  ikke looper animation + opslag; en anden kode kan scannes med det samme.
+- **UPC-E har egen læser** (`src/lib/upce-reader.ts`): @zxing/library's
+  UPC-E-læser returnerer aldrig et resultat (den taber de afkodede cifre,
+  tjekker EAN-kontrolciffer/slutvagt i stedet for UPC-E's og udvider
+  UPC-E→UPC-A forkert). Vores læser genbruger ZXing's række-løkke
+  (`OneDReader`), så position/retning virker som for de øvrige formater.
+  Verificeret i Chromium: EAN-13, UPC-A, EAN-8 og fem UPC-E-koder ved
+  0/90/180/−90/14/−20/75° — alle læst korrekt, vinkel inden for 0,5°.
