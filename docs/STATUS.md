@@ -17,6 +17,7 @@ Lavet i en cloud-session på branch `claude/cloud-session-credits-expired-7504pf
 - Kendt, ikke rettet: `calendar.remainingToday` mangler i sprogfilerne (vises
   rå nederst i dagvisningen). Sprogfilerne har ikke-committede lokale
   ændringer — tjek dem, før nøglen tilføjes.
+
 ## 2026-09-25: Tilføj — "Retter", nyt Kropsmål-ikon og samme tekst i hjulet
 
 - "Egne retter" hedder nu "Retter" (`addButton.ownDishes`, en: "Dishes"), også
