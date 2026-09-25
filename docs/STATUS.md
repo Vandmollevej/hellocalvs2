@@ -4,7 +4,7 @@ Last updated: 2026-09-25
 
 ## 2026-09-25: Kalender-dagvisning — træk søvn-håndtag forbi kanten + "Nattens søvn"
 
-Branch `claude/cloud-session-credits-expired-7504pf` (ikke flettet i master).
+Lavet i en cloud-session på branch `claude/cloud-session-credits-expired-7504pf`, flettet i master.
 
 - Stå-op-/sengetids-håndtaget scroller tidslinjen med, når fingeren når
   visningens top/bund, så natten kan gøres kortere (før stoppede trækket ved
