@@ -626,27 +626,6 @@ points ved at ..." på Invitér en ven og Indberet fejl: grønt kort
 Betingelserne må aldrig være en stor knap. Luk skjuler kortet og linjen lokalt
 for resten af sessionen (ingen persistering).
 
-**Selfie-portrætkort i Billede-dagbog** (`src/app/profile/photo-diary/page.tsx`),
-tilføjet 2026-09-12 — Hello Cal-specifik variant uden HelloFresh-reference,
-bygget efter brugerens egen reference (den høje, fuldbredde portrætblok i
-venstre side af Kogebog-startsiden, se sagens vedhæftede skærmbillede):
-selfies (front-kamera, `capture="user"`) vises i én kolonne som fuldbredde
-`aspect-[3/4]` `object-cover`-kort (`rounded-2xl`, `bg-hf-tan`), adskilt fra
-det eksisterende faste 2-kolonne-grid til almindelige billeder (bagkamera,
-`capture="environment"`), som er uændret. Under hvert selfie-kort vises to
-tekstlinjer oven på hinanden: vægt-linjen og mål-linjen. Begge følger samme
-regel — er der en `WeightEntry` hhv. `BodyMeasurement` fra samme kalenderdag
-som billedet, vises "Aktuel vægt"/"Aktuelle mål"; ellers vises den seneste
-værdi før billedet som "Seneste vægt"/"Seneste mål" med dato; findes slet
-ingen data, vises en dæmpet "ingen registreret endnu"-linje. Målene er
-kropsomkreds i cm (talje, hofte, bryst, lår, overarm — de mål en diætist
-typisk følger ud over vægten), lagret i den nye `BodyMeasurement`-model
-(`prisma/schema.prisma`, migration `20260912020000_body_measurements`) og
-læst via `/api/body-measurements`. Indtastningssiden ("måleside") er nu bygget
-på `/profile/body-measurements` (samme session, senere samme dag) — se den
-dedikerede beskrivelse nedenfor. Denne visning tåler stadig altid den tomme
-"ingen mål registreret endnu"-tilstand for brugere, der aldrig har brugt den.
-
 **Kropsmål-side** (`src/app/profile/body-measurements/page.tsx`), tilføjet
 2026-09-12 — Hello Cal-specifik indtastningsside uden HelloFresh-reference,
 bygget efter samme visuelle mønster som den eksisterende `/profile/weight-
