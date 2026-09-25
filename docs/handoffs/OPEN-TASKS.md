@@ -44,17 +44,18 @@ Ejer: G1-overtagelse, konto C (2026-09-24)
 
 ## G2 — Statistik-siden (redigering, drag/drop)
 Filer: statistik-siden, `src/components/StatsWheel.tsx`, `src/lib/frontpage-layout.ts`, `src/lib/frontpage-stats.ts`.
-Ukendte ændringer: de tre nævnte filer er ændret og ikke committet.
-Ejer: G2-overtagelse, konto C (2026-09-24)
+Ukendte ændringer: `frontpage-layout.ts` (FAB-side højre) og `frontpage-stats.ts` (kalorie-mål fjernet) er stadig ikke committet — hører ikke til G2's opgaver, ejer ukendt. Rør dem ikke uden at spørge brugeren.
+Ejer: G2-overtagelse, konto C (2026-09-24) — alle G2-opgaver bygget og flettet ind i master (fabba4b).
+Ikke visuelt testet: lokalt sender appen til /welcome uden login. Test på mobil i drift.
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 7fd0a9a3 | Rettelser til kort-redigering: fjern 6 prikker, skillelinje, vibration stop, scroll, slette-cirkel, ét slider-design | I gang | Læser transcript + diff |
-| fb445e0d / 1ac06755 | Drag/drop til frie felter, stiplede rammer, dropzone til overskrift (1ac06755 er samme opgave) | Ikke startet | Tjek om allerede lavet, ellers byg |
-| 2fb90f13 | Dublet af 7fd0a9a3 (samme 6 punkter) | Dublet | Luk sammen med 7fd0a9a3 |
-| 961d7953 | Tal-slider på forsiden: midterste tal 25px indrykket, aftager til 0 som transparensen | Lavet, ikke verificeret | **Er kilden til diff'en i StatsWheel.tsx** (linje ~302-341). Verificér visuelt og commit |
-| 00cf8440 | Gradient i højre side af tallene (synlighed) skal være helt flydende | Venter på bruger | Brugeren præciserede "gradienten i højre side i tallene" — sandsynligvis StatsWheel-fade. Byg |
-| a9819635 | Trinløs størrelse/farve på slider (ingen spring pr. position) | Venter på bruger | Uklart hvilken slider — sandsynligvis samme tal-slider (StatsWheel). Bekræft og byg |
+| 7fd0a9a3 | Rettelser til kort-redigering: fjern 6 prikker, skillelinje, vibration stop, scroll, slette-cirkel, ét slider-design | Færdig (32995ab) | Slider-delen var allerede lavet (23163ec) |
+| fb445e0d / 1ac06755 | Drag/drop til frie felter, stiplede rammer, dropzone til overskrift (1ac06755 er samme opgave) | Færdig (32995ab) | — |
+| 2fb90f13 | Dublet af 7fd0a9a3 (samme 6 punkter) | Færdig (32995ab) | — |
+| 961d7953 | Tal-slider på forsiden: midterste tal 25px indrykket, aftager til 0 som transparensen | Færdig (eba3638) | — |
+| 00cf8440 | Gradient i højre side af tallene (synlighed) skal være helt flydende | Færdig (32995ab) | Opacity går nu lineært til 0 ved kanten |
+| a9819635 | Trinløs størrelse/farve på slider (ingen spring pr. position) | Færdig (32995ab) | Ikonfarve + "/ mål"-linje glider nu trinløst |
 
 ## G3 — Produktkategorier + statistikbokse + "Månedens synder"
 Filer: Prisma-skema (kategori), kategori-lib, nye statistikbokse, ny liste-side, knap i kalender (koordinér med G1).
