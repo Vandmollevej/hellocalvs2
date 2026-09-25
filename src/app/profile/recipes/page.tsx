@@ -27,6 +27,7 @@ type OwnDish = {
   name: string;
   createdAt: string;
   sharedRecipeId?: string | null;
+  images?: string[];
   ingredients: { grams: number; product: { kcalPer100g: number } }[];
 };
 type FavoriteRecipe = { id: string; name: string; kcal: number };
@@ -108,7 +109,7 @@ function MineTab({ t }: { t: Translate }) {
             key: `own-${dish.id}`,
             href: `/profile/recipes/${encodeURIComponent(dish.id)}?kind=own`,
             name: dish.name,
-            imageUrl: null,
+            imageUrl: dish.images?.[0] ?? null,
             subtitle: t("recipes.kcalTotal", { kcal: dishKcal(dish) }),
             label: dish.sharedRecipeId
               ? { text: t("recipes.statusShared"), tone: "green" as const }
@@ -268,7 +269,7 @@ function SharedTab({ t }: { t: Translate }) {
                       key: result.id,
                       href: `/profile/recipes/${encodeURIComponent(result.id)}?kind=shared`,
                       name: result.name,
-                      imageUrl: null,
+                      imageUrl: result.imageUrl,
                       subtitle: subtitleFor(result),
                       ...extrasFor(result),
                     }

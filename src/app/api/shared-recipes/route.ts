@@ -18,6 +18,8 @@ import {
   type RecipeWarning,
 } from "@/lib/recipe-filter-match";
 import { portionKcalFor, servingsFor } from "@/lib/recipe-portions";
+import { parseRecipeSteps, stepsText } from "@/lib/recipe-categories";
+import { isRecipeImagePath } from "@/lib/recipe-image-storage";
 
 // Delte brugeropskrifter (docs/DECISIONS.md 2026-09-24).
 //
@@ -144,14 +146,18 @@ export async function GET(req: Request) {
       const sugar = withIngredientData ? totalOf(parts, "sugar") : null;
       const facts: RecipeFacts = {
         title: r.name,
-        segments: ingredients.map((i) => {
-          const product = productById.get(i.productId);
-          return {
-            name: i.name,
-            text: product ? `${product.name} ${product.ingredientsText ?? ""}` : "",
-            allergens: product?.allergens ?? [],
-          };
-        }),
+        segments: [
+          ...ingredients.map((i) => {
+            const product = productById.get(i.productId);
+            return {
+              name: i.name,
+              text: product ? `${product.name} ${product.ingredientsText ?? ""}` : "",
+              allergens: product?.allergens ?? [],
+            };
+          }),
+          // Fremgangsmåden scannes også for allergener og diæter.
+          { name: "", text: stepsText(parseRecipeSteps(r.steps, isRecipeImagePath)), allergens: [] },
+        ],
         kcal: r.kcal,
         proteinG: r.protein,
         carbsG: r.carbs,
@@ -168,7 +174,7 @@ export async function GET(req: Request) {
         kind: "shared",
         id: r.id,
         name: r.name,
-        imageUrl: null,
+        imageUrl: r.images[0] ?? null,
         kcal: Math.round(r.kcal),
         servings: servingsFor(r.kcal, portionKcal),
         split: energyPercents(facts),

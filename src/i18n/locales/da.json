@@ -650,6 +650,65 @@
       "fat-low": "Lavt på fedt"
     }
   },
+  "recipeSteps": {
+    "title": "Fremgangsmåde",
+    "hint": "Overskrift + tekst for hvert trin. Tryk på plus for at tilføje næste trin; tryk på et trin for at rette det.",
+    "addButton": "Tilføj fremgangsmåde",
+    "stepNumber": "Trin {number}",
+    "titlePlaceholder": "Overskrift",
+    "textPlaceholder": "Tekst",
+    "addStep": "Tilføj trin",
+    "addPhoto": "Tag billede til trinnet",
+    "removePhoto": "Fjern billedet",
+    "remove": "Slet trin"
+  },
+  "recipeImages": {
+    "title": "Billeder af retten",
+    "addButton": "Tilføj billeder",
+    "add": "Tilføj billede",
+    "remove": "Fjern billede",
+    "count": "{count}/{max}"
+  },
+  "recipeCategories": {
+    "title": "Vælg kategorier",
+    "intro": "Retten er gemt. Diæterne er foreslået ud fra ingredienserne — ret dem, og vælg gerne flere kategorier.",
+    "close": "LUK",
+    "groups": {
+      "diet": "Diæter",
+      "meal": "Måltidstype",
+      "cuisine": "Køkken",
+      "method": "Tilberedning"
+    },
+    "meal": {
+      "breakfast": "Morgenmad",
+      "lunch": "Frokost",
+      "dinner": "Aftensmad",
+      "snack": "Mellemmåltid",
+      "dessert": "Dessert"
+    },
+    "cuisine": {
+      "danish": "Dansk",
+      "nordic": "Nordisk",
+      "italian": "Italiensk",
+      "french": "Fransk",
+      "spanish": "Spansk",
+      "greek": "Græsk",
+      "middleEastern": "Mellemøstlig",
+      "indian": "Indisk",
+      "asian": "Asiatisk",
+      "mexican": "Mexicansk",
+      "american": "Amerikansk"
+    },
+    "method": {
+      "quick": "Hurtig (under 30 min.)",
+      "oven": "Ovnret",
+      "stew": "Gryderet",
+      "salad": "Salat",
+      "soup": "Suppe",
+      "grill": "Grill",
+      "noCook": "Uden tilberedning"
+    }
+  },
   "recipeDetail": {
     "loading": "Henter retten …",
     "notFound": "Retten findes ikke længere",

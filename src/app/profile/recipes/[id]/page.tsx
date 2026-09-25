@@ -19,11 +19,14 @@ import { MAX_RECIPE_PERSONS, portionKcalFor, scaleFactorFor, type PortionProfile
 // den gemte ret ændres ikke.
 
 type Ingredient = { key: string; name: string; grams: number; imageUrl: string | null; kcal: number; protein: number; carbs: number; fat: number };
-type View = { name: string; ingredients: Ingredient[] };
+type Step = { title: string; text: string; image: string | null };
+type View = { name: string; ingredients: Ingredient[]; images: string[]; steps: Step[] };
 
 type OwnDish = {
   name: string;
   sharedRecipeId?: string | null;
+  images?: string[];
+  steps?: Step[] | null;
   ingredients: {
     id: string;
     grams: number;
@@ -34,6 +37,8 @@ type SharedRecipe = {
   id: string;
   name: string;
   canReport: boolean;
+  images?: string[];
+  steps?: Step[];
   ingredients: {
     productId: string;
     name: string;
@@ -98,6 +103,8 @@ function RecipeDetailContent() {
           setShared(Boolean(dish.sharedRecipeId));
           setView({
             name: dish.name,
+            images: dish.images ?? [],
+            steps: Array.isArray(dish.steps) ? dish.steps : [],
             ingredients: dish.ingredients.map((i) => ({
               key: i.id,
               name: i.product.name,
@@ -117,6 +124,8 @@ function RecipeDetailContent() {
           setCanReport(data.recipe.canReport);
           setView({
             name: data.recipe.name,
+            images: data.recipe.images ?? [],
+            steps: data.recipe.steps ?? [],
             ingredients: data.recipe.ingredients.map((i, index) => ({
               key: `${i.productId}-${index}`,
               name: i.name,
@@ -221,6 +230,22 @@ function RecipeDetailContent() {
         {state === "ready" && view && (
           <>
             {notice && <p className="rounded-[8px] bg-hf-tan px-4 py-3 text-[13px] text-hf-black">{notice}</p>}
+
+            {view.images.length > 0 && (
+              <div className="no-scrollbar -mx-4 flex snap-x gap-2 overflow-x-auto px-4">
+                {view.images.map((image) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={image}
+                    src={image}
+                    alt=""
+                    className={`aspect-[4/3] shrink-0 snap-center rounded-2xl object-cover ${
+                      view.images.length === 1 ? "w-full" : "w-[85%]"
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
 
             {kind === "own" && (
               <div>
@@ -328,6 +353,29 @@ function RecipeDetailContent() {
                 })}
               </p>
             </div>
+
+            {view.steps.length > 0 && (
+              <div>
+                <p className="mb-2 text-xs font-bold text-hf-black">{t("recipeSteps.title")}</p>
+                <div className="overflow-hidden rounded-2xl bg-hf-tan">
+                  {view.steps.map((step, index) => (
+                    <div key={index} className="flex items-start gap-3 border-b border-hf-tan-dark px-4 py-3 last:border-b-0">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[12px] font-bold text-hf-black opacity-60">
+                          {t("recipeSteps.stepNumber", { number: index + 1 })}
+                        </p>
+                        {step.title && <p className="text-[14px] font-semibold text-hf-black">{step.title}</p>}
+                        {step.text && <p className="whitespace-pre-line text-[13px] text-hf-black">{step.text}</p>}
+                      </div>
+                      {step.image && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={step.image} alt="" className="h-16 w-16 shrink-0 rounded-[8px] object-cover" />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>

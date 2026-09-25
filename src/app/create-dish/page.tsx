@@ -3,15 +3,30 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { IconCamera, IconHandClick, IconInfoCircle, IconSearch, IconX, IconSoup } from "@tabler/icons-react";
+import {
+  IconCamera,
+  IconHandClick,
+  IconInfoCircle,
+  IconListNumbers,
+  IconPhoto,
+  IconSearch,
+  IconX,
+  IconSoup,
+} from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import {
   readDishDraft,
   removeDishDraftIngredient,
   clearDishDraft,
+  readDishDraftDetails,
+  writeDishDraftDetails,
+  type DishDraftDetails,
   type DishDraftIngredient,
 } from "@/lib/dish-draft";
+import { RecipeImagesPicker } from "@/components/recipes/RecipeImagesPicker";
+import { RecipeStepsEditor, isEmptyStep } from "@/components/recipes/RecipeStepsEditor";
+import { RecipeCategoriesDialog } from "@/components/recipes/RecipeCategoriesDialog";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { isPrivateIngredientId } from "@/lib/private-ingredient-ids";
 
@@ -23,7 +38,12 @@ function round(value: number, decimals = 0) {
 export default function CreateDishPage() {
   const { t, locale } = useTranslation();
   const router = useRouter();
-  const [name, setName] = useState("");
+  // Navn, billeder og fremgangsmåde gemmes i kladden, så de overlever
+  // turen ud efter ingredienser (docs/DECISIONS.md 2026-09-25).
+  const [details, setDetails] = useState<DishDraftDetails>(readDishDraftDetails);
+  const { name, images, steps, showImages, showSteps } = details;
+  // Vindue med kategorier efter Gem.
+  const [savedDish, setSavedDish] = useState<{ id: string; tags: string[] } | null>(null);
   // Deling starter slået til (docs/DECISIONS.md 2026-09-24).
   const [shared, setShared] = useState(true);
   const [showShareInfo, setShowShareInfo] = useState(false);
@@ -84,6 +104,22 @@ export default function CreateDishPage() {
     [ingredients]
   );
 
+  function updateDetails(patch: Partial<DishDraftDetails>) {
+    setDetails((current) => {
+      const next = { ...current, ...patch };
+      writeDishDraftDetails(next);
+      return next;
+    });
+  }
+
+  function setName(value: string) {
+    updateDetails({ name: value });
+  }
+
+  function finish() {
+    router.push("/profile/recipes?tab=mine");
+  }
+
   function handleRemove(index: number) {
     removeDishDraftIngredient(index);
     setIngredients(readDishDraft());
@@ -107,6 +143,8 @@ export default function CreateDishPage() {
         body: JSON.stringify({
           name: name.trim(),
           ingredients: ingredients.map((i) => ({ productId: i.productId, grams: i.grams })),
+          images,
+          steps: steps.filter((step) => !isEmptyStep(step)),
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -124,11 +162,14 @@ export default function CreateDishPage() {
         if (!shareRes?.ok) {
           // Retten er gemt privat; delingen kan slås til senere under Mine retter.
           setSaveError(t("createDish.shareError"));
-          setTimeout(() => router.push("/profile/recipes?tab=mine"), 1500);
-          return;
         }
       }
-      router.push("/profile/recipes?tab=mine");
+      // Retten er gemt; vinduet giver mulighed for at vælge kategorier.
+      if (data.dish?.id) {
+        setSavedDish({ id: data.dish.id, tags: Array.isArray(data.suggestedTags) ? data.suggestedTags : [] });
+      } else {
+        finish();
+      }
     } catch {
       setSaveError(t("createDish.saveError"));
     } finally {
@@ -147,7 +188,7 @@ export default function CreateDishPage() {
           )}
           <button
             onClick={handleSave}
-            disabled={saving}
+            disabled={saving || savedDish !== null}
             className="hf-btn-primary w-full py-3.5 text-[15px] disabled:opacity-60"
           >
             {saving ? t("createDish.saving") : t("createDish.saveDish")}
@@ -336,7 +377,53 @@ export default function CreateDishPage() {
           </Link>
         </div>
 
+        {showImages && (
+          <div>
+            <p className="mb-2 text-xs font-bold text-hf-black">{t("recipeImages.title")}</p>
+            <RecipeImagesPicker images={images} onChange={(next) => updateDetails({ images: next })} />
+          </div>
+        )}
+
+        {showSteps && (
+          <div>
+            <p className="mb-1 text-xs font-bold text-hf-black">{t("recipeSteps.title")}</p>
+            <p className="text-[12px] text-hf-black opacity-60">{t("recipeSteps.hint")}</p>
+            <RecipeStepsEditor steps={steps} onChange={(next) => updateDetails({ steps: next })} />
+          </div>
+        )}
+
+        {(!showImages || !showSteps) && (
+          <div className="grid grid-cols-2 gap-2">
+            {!showImages && (
+              <button
+                type="button"
+                onClick={() => updateDetails({ showImages: true })}
+                className={`flex flex-col items-center gap-1.5 rounded-2xl bg-hf-tan py-3 text-center ${
+                  showSteps ? "col-span-2" : ""
+                }`}
+              >
+                <IconPhoto size={20} color="var(--hf-black)" />
+                <span className="text-xs font-medium text-hf-black">{t("recipeImages.addButton")}</span>
+              </button>
+            )}
+            {!showSteps && (
+              <button
+                type="button"
+                onClick={() => updateDetails({ showSteps: true })}
+                className={`flex flex-col items-center gap-1.5 rounded-2xl bg-hf-tan py-3 text-center ${
+                  showImages ? "col-span-2" : ""
+                }`}
+              >
+                <IconListNumbers size={20} color="var(--hf-black)" />
+                <span className="text-xs font-medium text-hf-black">{t("recipeSteps.addButton")}</span>
+              </button>
+            )}
+          </div>
+        )}
       </div>
+      {savedDish && (
+        <RecipeCategoriesDialog dishId={savedDish.id} initialTags={savedDish.tags} onClose={finish} />
+      )}
     </HfScreen>
   );
 }

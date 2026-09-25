@@ -490,6 +490,10 @@ Se `docs/DECISIONS.md` (2026-09-24). Bygget efter brugerens afklaring
   allergier, diæter, protein, specialkost, makroer, personer 1–6, vis
   kalorier/energifordeling — se DECISIONS 2026-09-25). Ikke testet mod rigtige
   data endnu: lokal DB mangler.
+- **Opret ret**: billeder (op til 3), fremgangsmåde (trin med overskrift,
+  tekst og billede) og kategorivindue efter Gem (DECISIONS 2026-09-25).
+  Kræver migrationen `20260925120000_recipe_images_steps_tags`. Flowet er
+  testet i browser med mockede API-svar, ikke mod en rigtig database.
   Detaljeside `/profile/recipes/[id]?kind=own|shared`: deling til/fra for
   egne retter; favorit, "Gem som egen kopi" og "Anmeld" (kun før
   godkendelse) for delte.

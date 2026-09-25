@@ -650,6 +650,65 @@
       "fat-low": "Low in fat"
     }
   },
+  "recipeSteps": {
+    "title": "Method",
+    "hint": "A heading + text for each step. Tap plus to add the next step; tap a step to edit it.",
+    "addButton": "Add method",
+    "stepNumber": "Step {number}",
+    "titlePlaceholder": "Heading",
+    "textPlaceholder": "Text",
+    "addStep": "Add step",
+    "addPhoto": "Take a photo for this step",
+    "removePhoto": "Remove photo",
+    "remove": "Delete step"
+  },
+  "recipeImages": {
+    "title": "Photos of the dish",
+    "addButton": "Add photos",
+    "add": "Add photo",
+    "remove": "Remove photo",
+    "count": "{count}/{max}"
+  },
+  "recipeCategories": {
+    "title": "Choose categories",
+    "intro": "The dish is saved. Diets are suggested from the ingredients — adjust them and add more categories if you like.",
+    "close": "CLOSE",
+    "groups": {
+      "diet": "Diets",
+      "meal": "Meal type",
+      "cuisine": "Cuisine",
+      "method": "Cooking method"
+    },
+    "meal": {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "snack": "Snack",
+      "dessert": "Dessert"
+    },
+    "cuisine": {
+      "danish": "Danish",
+      "nordic": "Nordic",
+      "italian": "Italian",
+      "french": "French",
+      "spanish": "Spanish",
+      "greek": "Greek",
+      "middleEastern": "Middle Eastern",
+      "indian": "Indian",
+      "asian": "Asian",
+      "mexican": "Mexican",
+      "american": "American"
+    },
+    "method": {
+      "quick": "Quick (under 30 min)",
+      "oven": "Oven dish",
+      "stew": "Stew",
+      "salad": "Salad",
+      "soup": "Soup",
+      "grill": "Grill",
+      "noCook": "No cooking"
+    }
+  },
   "recipeDetail": {
     "loading": "Loading dish …",
     "notFound": "This dish no longer exists",

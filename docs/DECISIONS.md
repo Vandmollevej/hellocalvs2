@@ -2,6 +2,26 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-25: Billeder, fremgangsmåde og kategorier i Opret ret
+
+- Nederst i Opret ret: knapperne "Tilføj billeder" og "Tilføj fremgangsmåde".
+- **Billeder:** op til 3 af den færdige ret; det første er forsidebillede i
+  listerne. Nedskaleres i browseren (≤ 1600 px JPEG) og gemmes uden EXIF i
+  `/product-images/recipe-images` (samme volume som produktbilleder).
+- **Fremgangsmåde:** overskrift + tekst pr. trin og et kameraikon i siden
+  (billede pr. trin, vist som thumbnail). Plus gør trinnet statisk (uden
+  redigerbar baggrund), og et nyt, større trin får fokus. Tryk på et statisk
+  trin retter det; × sletter det.
+- **Kategorier:** efter Gem vises et vindue (retten er allerede gemt) med
+  Diæter (forudvalgt ud fra ingredienserne), Måltidstype, Køkken og
+  Tilberedning. LUK gemmer kategorierne en gang til, hvis nogen er valgt.
+  Gemmes som `Dish.tags` ("diet:vegan", "meal:dinner" …).
+- Billeder, fremgangsmåde og kategorier følger med, når retten deles og
+  kopieres. Fremgangsmåden indgår i søgningen og i allergen-/diætfiltrene.
+- Kladden (navn, billeder, trin) ligger i sessionStorage, så den overlever
+  turen ud efter ingredienser.
+- `GET /api/dishes/[id]` kræver nu, at man ejer retten.
+
 ## 2026-09-25: Filtre og portionsjustering på "Delte retter"
 
 Brugerens krav: sorteringsknapperne erstattes af et filterikon til venstre
