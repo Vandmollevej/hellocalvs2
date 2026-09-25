@@ -2,6 +2,18 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-25: Vægtkalibrering — eksplicit "Opdatér oplysninger"-knap
+
+Brugerbeslutning. `src/app/profile/weight-calibration/page.tsx` er
+omdesignet: infotekst øverst i cremefarvet kort (ikke grøn), rigtige
+indtastningsfelter for "Uden tøj"/"Med tøj", forholdsvalg som to-vejs
+ikonknapper (sko/uden sko, morgen/aften, før/efter toilet, før/efter mad) —
+"Ved ikke" er fjernet; et nyt tryk på det valgte felt nulstiller til
+`UNKNOWN`. "Vægt over dagen" vises nederst som linjer (som kalenderen), og en
+stor sort "Opdatér oplysninger"-knap gemmer alt. Siden er dermed en bevidst
+undtagelse fra reglen om automatisk lagring uden "Gem"-knap. Ikoner uden
+tabler-modstykke ligger i `src/components/icons/WeighConditions.tsx`.
+
 ## 2026-09-25: Én tekst og ét ikon pr. Tilføj-handling
 
 Brugeren vil have, at tekster og ikoner på Tilføj-skærmen slår igennem på
