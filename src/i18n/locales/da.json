@@ -214,8 +214,7 @@
     "setupProgressStepWeight": "Vægtkalibrering",
     "setupProgressHint": "Gennemfør vægtkalibrering for at afslutte opsætningen.",
     "payment": "Betaling",
-    "recipesPromo": "Vælg dine egne opskrifter, og skræddersy din måltidskasse.",
-    "logInOrSignUp": "Log ind / tilmeld",
+    "logOut": "Log ud",
     "helpCenter": "Hjælpecenter",
     "learnTheApp": "Lær appen at kende",
     "integrations": "Integrationer",
@@ -788,7 +787,6 @@
       "loginRequired": "Log ind for at ændre din adgangskode.",
       "logIn": "Log ind"
     },
-    "logOut": "Log af",
     "messages": {
       "title": "Beskeder",
       "empty": "Du har ingen beskeder endnu.",

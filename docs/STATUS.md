@@ -9,8 +9,11 @@ Last updated: 2026-09-25
   `showAppSettingsButton` på `HfScreen`/`ScreenHeader`.
 - `/profile` viser nu altid tilbagepilen, også når "Profil" ligger i
   footeren (`alwaysShowBackButton`).
-- Næste: brugeren fortæller, hvilke profilpunkter der flyttes ind under
-  app-indstillingerne.
+- Profilen rummer kun personlige ting (Profil, Vægt kalibrering, Kropsmål,
+  Søvnmønster, Billede-dagbog, Points, Opskrifter). Abonnement, Opsætning
+  (`/profile/settings`), Indberet fejl og Log ud er flyttet til `/settings`;
+  Integrationer, Kommunikation og Invitér en ven lå der i forvejen. Den
+  gamle "Log ind / tilmeld"-boks er fjernet.
 
 ## 2026-09-25: Statistik — redigerbare grafer, søgning og "+ Tilføj" pr. blok
 

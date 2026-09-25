@@ -214,8 +214,7 @@
     "setupProgressStepWeight": "Weight calibration",
     "setupProgressHint": "Complete weight calibration to finish setup.",
     "payment": "Payment",
-    "recipesPromo": "Choose your own recipes and customize your meal box.",
-    "logInOrSignUp": "Log in / sign up",
+    "logOut": "Log out",
     "helpCenter": "Help center",
     "learnTheApp": "Learn the app",
     "integrations": "Integrations",
@@ -788,7 +787,6 @@
       "loginRequired": "Log in to change your password.",
       "logIn": "Log in"
     },
-    "logOut": "Log out",
     "messages": {
       "title": "Messages",
       "empty": "You have no messages yet.",
