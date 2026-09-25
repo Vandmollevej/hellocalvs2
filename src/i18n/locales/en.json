@@ -415,6 +415,7 @@
     "goalExceededList": "You exceeded your goal",
     "adjustBedtimeAriaLabel": "Adjust bedtime",
     "adjustWakeTimeAriaLabel": "Adjust wake time",
+    "nightSleepDuration": "Last night's sleep: {hours} hours",
     "previousDayAriaLabel": "Previous day",
     "nextDayAriaLabel": "Next day",
     "dailyGoalReached": "You're within today's goal",

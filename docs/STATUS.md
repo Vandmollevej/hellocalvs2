@@ -2,6 +2,22 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Kalender-dagvisning — træk søvn-håndtag forbi kanten + "Nattens søvn"
+
+Branch `claude/cloud-session-credits-expired-7504pf` (ikke flettet i master).
+
+- Stå-op-/sengetids-håndtaget scroller tidslinjen med, når fingeren når
+  visningens top/bund, så natten kan gøres kortere (før stoppede trækket ved
+  kanten).
+- Ved åbning af en dag vises den sidste hele time af nattens grå felt, med
+  "Nattens søvn: X,XX timer" (gårsdagens sengetid → dagens stå-op-tid; ved
+  dagsøvn dagens eget felt). Teksten står under stregen, mens man trækker.
+- Testet i Chromium med falske API-svar (ingen login/DB i cloud). Ikke testet
+  på telefon.
+- Kendt, ikke rettet: `calendar.remainingToday` mangler i sprogfilerne (vises
+  rå nederst i dagvisningen). Sprogfilerne har ikke-committede lokale
+  ændringer — tjek dem, før nøglen tilføjes.
+
 ## 2026-09-25: Mail via Mailjet aktiveret
 
 - SMTP_HOST/PORT/USER/PASS/FROM (Mailjet, in-v3.mailjet.com:587) sat i lokal

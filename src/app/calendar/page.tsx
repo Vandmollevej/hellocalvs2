@@ -741,6 +741,7 @@ export default function CalendarPage() {
           loading={registrationsLoading}
           error={registrationsError}
           sleepWindow={resolveSleepWindow(selectedDate)}
+          previousSleepWindow={resolveSleepWindow(addDays(selectedDate, -1))}
           onEntryMoved={handleEntryMoved}
           onSleepAdjust={(type, minutes) => requestSleepAdjust(selectedDate, type, minutes)}
           onClose={() => setSelectedDate(null)}
@@ -1345,12 +1346,19 @@ function SleepBands({ window, hourHeight = HOUR_HEIGHT }: { window: SleepWindow 
   );
 }
 
+// Hvor tæt på visningens kant (px) fingeren skal være, før tidslinjen
+// begynder at scrolle med under et træk i søvn-håndtaget, og hvor hurtigt
+// (px pr. frame) den scroller helt ude ved kanten.
+const SLEEP_DRAG_EDGE_PX = 48;
+const SLEEP_DRAG_MAX_SCROLL_PX = 5;
+
 function SleepBoundaryHandle({
   minutes,
   type,
   onCommit,
   onDrag,
   hourHeight = HOUR_HEIGHT,
+  scrollRef,
 }: {
   minutes: number;
   type: SleepAdjustType;
@@ -1358,16 +1366,65 @@ function SleepBoundaryHandle({
   /** Live position while dragging (null when released), so the gray band can follow. */
   onDrag?: (type: SleepAdjustType, minutes: number | null) => void;
   hourHeight?: number;
+  /** The timeline's scroll container — scrolled along when the finger reaches its edge. */
+  scrollRef?: React.RefObject<HTMLDivElement | null>;
 }) {
   const { t } = useTranslation();
   const [dragMinutes, setDragMinutes] = useState<number | null>(null);
   const startYRef = useRef(0);
+  const startScrollTopRef = useRef(0);
+  const lastYRef = useRef(0);
   const startMinutesRef = useRef(minutes);
   const dragMinutesRef = useRef<number | null>(null);
+  const autoScrollFrame = useRef<number | null>(null);
+
+  useEffect(() => () => stopAutoScroll(), []);
+
+  function stopAutoScroll() {
+    if (autoScrollFrame.current !== null) cancelAnimationFrame(autoScrollFrame.current);
+    autoScrollFrame.current = null;
+  }
+
+  // Minutterne følger fingeren OG det, tidslinjen er scrollet siden trækket
+  // startede — så håndtaget bliver under fingeren, mens visningen ruller med.
+  function updateFromPointer() {
+    const scrollDelta = (scrollRef?.current?.scrollTop ?? 0) - startScrollTopRef.current;
+    const deltaY = lastYRef.current - startYRef.current + scrollDelta;
+    const deltaMinutes = (deltaY / hourHeight) * 60;
+    const next = Math.min(24 * 60 - 1, Math.max(0, startMinutesRef.current + deltaMinutes));
+    dragMinutesRef.current = next;
+    setDragMinutes(next);
+    onDrag?.(type, next);
+  }
+
+  // Træk mod toppen/bunden af visningen scroller den med, ligesom et
+  // almindeligt scroll — ellers kunne natten ikke gøres kortere, når
+  // håndtaget allerede stod øverst i det synlige udsnit.
+  function autoScrollStep() {
+    autoScrollFrame.current = null;
+    const node = scrollRef?.current;
+    if (!node || dragMinutesRef.current === null) return;
+    const rect = node.getBoundingClientRect();
+    const y = lastYRef.current;
+    let speed = 0;
+    if (y < rect.top + SLEEP_DRAG_EDGE_PX) {
+      speed = -Math.min(1, (rect.top + SLEEP_DRAG_EDGE_PX - y) / SLEEP_DRAG_EDGE_PX) * SLEEP_DRAG_MAX_SCROLL_PX;
+    } else if (y > rect.bottom - SLEEP_DRAG_EDGE_PX) {
+      speed = Math.min(1, (y - (rect.bottom - SLEEP_DRAG_EDGE_PX)) / SLEEP_DRAG_EDGE_PX) * SLEEP_DRAG_MAX_SCROLL_PX;
+    }
+    if (speed === 0) return;
+    const before = node.scrollTop;
+    node.scrollTop = before + speed;
+    if (node.scrollTop === before) return;
+    updateFromPointer();
+    autoScrollFrame.current = requestAnimationFrame(autoScrollStep);
+  }
 
   function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
     event.stopPropagation();
     startYRef.current = event.clientY;
+    lastYRef.current = event.clientY;
+    startScrollTopRef.current = scrollRef?.current?.scrollTop ?? 0;
     startMinutesRef.current = minutes;
     dragMinutesRef.current = minutes;
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -1377,15 +1434,13 @@ function SleepBoundaryHandle({
   function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
     if (dragMinutesRef.current === null) return;
     event.stopPropagation();
-    const deltaY = event.clientY - startYRef.current;
-    const deltaMinutes = (deltaY / hourHeight) * 60;
-    const next = Math.min(24 * 60 - 1, Math.max(0, startMinutesRef.current + deltaMinutes));
-    dragMinutesRef.current = next;
-    setDragMinutes(next);
-    onDrag?.(type, next);
+    lastYRef.current = event.clientY;
+    updateFromPointer();
+    if (autoScrollFrame.current === null) autoScrollFrame.current = requestAnimationFrame(autoScrollStep);
   }
 
   function finishDrag() {
+    stopAutoScroll();
     const final = dragMinutesRef.current;
     // A tap without real movement changes nothing (it used to save and pop a dialog).
     if (final !== null && Math.round(final / 15) !== Math.round(startMinutesRef.current / 15)) {
@@ -1416,6 +1471,35 @@ function SleepBoundaryHandle({
   );
 }
 
+// "Nattens søvn: 7,50 timer" nederst i det grå felt, der slutter ved
+// stå-op-tiden, så man ved første blik kan se, om natten ser rigtig ud.
+// Mens stå-op-håndtaget trækkes, står teksten lige under stregen i stedet, så
+// timetallet stadig kan ses, når håndtaget er trukket helt op til kanten.
+function SleepDurationLabel({
+  wakeTime,
+  durationMinutes,
+  hourHeight,
+  belowLine = false,
+}: {
+  wakeTime: number;
+  durationMinutes: number;
+  hourHeight: number;
+  belowLine?: boolean;
+}) {
+  const { t, locale } = useTranslation();
+  const hours = new Intl.NumberFormat(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
+    durationMinutes / 60,
+  );
+  return (
+    <p
+      className="hf-type-caption pointer-events-none absolute left-2 whitespace-nowrap"
+      style={{ top: (wakeTime / 60) * hourHeight + (belowLine ? 12 : -22) }}
+    >
+      {t("calendar.nightSleepDuration", { hours })}
+    </p>
+  );
+}
+
 function DayDetails({
   date,
   today,
@@ -1424,6 +1508,7 @@ function DayDetails({
   loading,
   error,
   sleepWindow,
+  previousSleepWindow,
   onSleepAdjust,
   onEntryMoved,
   onClose,
@@ -1441,6 +1526,8 @@ function DayDetails({
   loading: boolean;
   error: boolean;
   sleepWindow: SleepWindow;
+  /** The day before's window — its bedtime starts the night that ends this morning. */
+  previousSleepWindow: SleepWindow;
   onSleepAdjust: (type: SleepAdjustType, minutes: number) => void;
   onEntryMoved: (registrationId: string, newCreatedAt: Date) => void;
   onClose: () => void;
@@ -1468,6 +1555,15 @@ function DayDetails({
       ? { ...sleepWindow, wakeTime: sleepDrag.minutes }
       : { ...sleepWindow, bedtime: sleepDrag.minutes }
     : sleepWindow;
+  // Nattens søvn = fra aftenen før (gårsdagens sengetid) til dagens
+  // stå-op-tid. Sover man om dagen (sengetid før stå-op-tid på samme dato),
+  // er det i stedet dagens eget grå felt, der tælles.
+  const nightStart =
+    liveSleepWindow.bedtime < liveSleepWindow.wakeTime ||
+    previousSleepWindow.bedtime < previousSleepWindow.wakeTime
+      ? liveSleepWindow.bedtime
+      : previousSleepWindow.bedtime;
+  const nightSleepMinutes = (liveSleepWindow.wakeTime - nightStart + 1440) % 1440;
   function handleSleepDrag(type: SleepAdjustType, minutes: number | null) {
     setSleepDrag(minutes === null ? null : { type, minutes });
   }
@@ -1518,18 +1614,18 @@ function DayDetails({
   const minuteStep = hourHeight >= HOUR_HEIGHT * 3 ? 5 : 15;
 
   // Tidslinjen løber altid fra 00:00 (top) til 24:00 (bund) — ikke roteret om
-  // stå-op-tiden. Ved åbning scroller vi ned, så kun en kort flig (~80% af en
-  // time) af nattens grå felt er synlig lige over stå-op-håndtaget, og resten
-  // af visningen er dagens indhold — håndtaget er dermed altid synligt uden
-  // scroll, men brugeren kan stadig scrolle helt op til 00:00
-  // (Fejlretninger/FEJLLISTE.md #27-opfølgning).
+  // stå-op-tiden. Ved åbning af en dag scroller vi ned, så den sidste hele
+  // time af nattens grå felt (med "Nattens søvn: …") er synlig lige over
+  // stå-op-håndtaget, og resten af visningen er dagens indhold. Brugeren kan
+  // stadig scrolle helt op til 00:00 (Fejlretninger/FEJLLISTE.md #27-opfølgning).
+  const dateKey = dayKey(date);
   useEffect(() => {
     const node = timelineScrollRef.current;
     if (!node) return;
     const wakeHour = sleepWindow.wakeTime / 60;
-    node.scrollTop = Math.max(0, (wakeHour - 0.8) * hourHeight);
+    node.scrollTop = Math.max(0, (wakeHour - 1) * hourHeight);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [loading, dateKey]);
 
   const dayKcal = registrations.reduce((sum, registration) => sum + registration.kcalSnapshot, 0);
   const remaining = DAILY_KCAL_GOAL - dayKcal;
@@ -1713,10 +1809,17 @@ function DayDetails({
                     ),
                   )}
                 <SleepBands window={liveSleepWindow} hourHeight={hourHeight} />
+                <SleepDurationLabel
+                  wakeTime={liveSleepWindow.wakeTime}
+                  durationMinutes={nightSleepMinutes}
+                  hourHeight={hourHeight}
+                  belowLine={sleepDrag?.type === "wake"}
+                />
                 <SleepBoundaryHandle
                   minutes={sleepWindow.wakeTime}
                   type="wake"
                   hourHeight={hourHeight}
+                  scrollRef={timelineScrollRef}
                   onCommit={onSleepAdjust}
                   onDrag={handleSleepDrag}
                 />
@@ -1724,6 +1827,7 @@ function DayDetails({
                   minutes={sleepWindow.bedtime}
                   type="bedtime"
                   hourHeight={hourHeight}
+                  scrollRef={timelineScrollRef}
                   onCommit={onSleepAdjust}
                   onDrag={handleSleepDrag}
                 />
