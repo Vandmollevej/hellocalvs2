@@ -18,6 +18,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ## Working rules
 
 - Preserve unrelated and uncommitted user changes.
+- Always ask the user questions through the AskUserQuestion tool (a question box). Questions written only in plain reply text are not seen by the user.
 - The Windows workstation does not have local administrator access. Do not install software or propose workflows that require local admin rights; prefer existing built-in tools and remote server capabilities.
 - Keep business logic out of UI components and prefer small, focused modules.
 - Never commit secrets or print values from `.env`.

@@ -1948,6 +1948,8 @@ Direkte brugerønske (erstatter "Hello Doc kræver Seriøs" fra 2026-09-19):
   token-visning — så en Gratis-bruger aldrig deler ældre data end de selv
   kan se. Grænsen beregnes ved hver visning, så en opgradering straks
   udvider det delte vindue.
-- **Ikke bygget endnu, flagget som opfølgning:** selve reklamevisningen.
-  Der findes ingen reklameudbyder eller placering i appen; det kræver
-  brugerens valg af udbyder og placering.
+- **Reklamer er egne reklamer** (brugerbeslutning): ingen tredjepart som
+  AdSense — egne bannere (fx "Opgradér til Seriøs" eller partnere), som
+  administreres i appen. Derfor intet krav om cookie-samtykke til reklamer.
+- **Ikke bygget endnu:** placeringen i appen defineres senere af brugeren.
+  Byg ikke reklamevisningen, før placeringen er besluttet.

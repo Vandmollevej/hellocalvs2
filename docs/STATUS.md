@@ -9,8 +9,8 @@ Last updated: 2026-09-25
   (`applyRetentionCutoff` i `src/lib/subscription.ts`).
 - Abonnementssiden: Gratis = "alt, med reklamer"; Seriøs = "ingen reklamer
   og fuld historik".
-- Åbent: selve reklamevisningen er ikke bygget — kræver valg af udbyder og
-  placering (docs/DECISIONS.md 2026-09-25).
+- Reklamer bliver egne reklamer (ingen tredjepart). Venter på bruger:
+  placeringen i appen er ikke besluttet, så visningen er ikke bygget.
 
 ## 2026-09-25: Vægt-ikonet tegnet som vektor
 
