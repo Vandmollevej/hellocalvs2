@@ -2,6 +2,44 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Integrationssiden ryddet op og sektioneret
+
+Se `docs/DECISIONS.md` 2026-09-25 "Integrationssiden". Sektioner med
+`SectionSeparator`: Aktive integrationer → Oftest anvendt (Apple Health,
+Google Health, Strava) → Opskrifter (HelloFresh) → Apps (Health Connect,
+Withings, Garmin, Samsung Health, Polar Flow nederst). Aktive har grøn prik og
+"Fjern" som almindelig tekst. "Kræver app"-mærker og enhedskode-knapper er
+fjernet fra siden (backend-ruterne findes stadig). Google Health genbruger nu
+`GOOGLE_CLIENT_ID/SECRET`, hvis `GOOGLE_HEALTH_*` ikke er sat; connect-fejl
+sendes tilbage til siden i stedet for rå JSON.
+
+Next work: I Google Cloud-konsollen skal redirect-URI'en
+`https://hellocal.packroff.dk/api/integrations/google-health/callback`
+tilføjes til login-klienten, og Google Health API + scopes aktiveres.
+## 2026-09-25: Tilføj-menu tekster og vandglas-ikon
+
+- "Kamera" → "Scan med kamera", "Mikrofon" → "Indtal" (`addButton.*` i
+  `src/i18n/locales/`).
+- Brugerens vandglas-ikon (`public/icons/water-glass.png`, maske-komponent
+  `src/components/icons/WaterGlass.tsx`) erstatter tabler-dråben overalt hvor
+  det betyder vand. Fedt-statistikkerne beholder dråben.
+
+## 2026-09-25: Kalender-dagvisning — træk søvn-håndtag forbi kanten + "Nattens søvn"
+
+Lavet i en cloud-session på branch `claude/cloud-session-credits-expired-7504pf`, flettet i master.
+
+- Stå-op-/sengetids-håndtaget scroller tidslinjen med, når fingeren når
+  visningens top/bund, så natten kan gøres kortere (før stoppede trækket ved
+  kanten).
+- Ved åbning af en dag vises den sidste hele time af nattens grå felt, med
+  "Nattens søvn: X,XX timer" (gårsdagens sengetid → dagens stå-op-tid; ved
+  dagsøvn dagens eget felt). Teksten står under stregen, mens man trækker.
+- Testet i Chromium med falske API-svar (ingen login/DB i cloud). Ikke testet
+  på telefon.
+- Kendt, ikke rettet: `calendar.remainingToday` mangler i sprogfilerne (vises
+  rå nederst i dagvisningen). Sprogfilerne har ikke-committede lokale
+  ændringer — tjek dem, før nøglen tilføjes.
+
 ## 2026-09-25: Tilføj — "Retter", nyt Kropsmål-ikon og samme tekst i hjulet
 
 - "Egne retter" hedder nu "Retter" (`addButton.ownDishes`, en: "Dishes"), også
@@ -167,6 +205,19 @@ kort, tekst og tomme flader må ikke markere noget).
 - Nu en ren SVG-streg-tegning af samme artwork (ramme, skive, to fyldte
   fodspor) i tabler-stil med `currentColor`, så den står skarpt i alle
   størrelser. ViewBox og PNG er trimmet til kanten (ingen luft omkring).
+
+## 2026-09-25: Stregkode-scanner omlagt (lodret/skæv aflæsning, AR-afkodning)
+
+Se docs/DECISIONS.md 2026-09-25 "Stregkode-scanning" og design.md §6.11.
+Nye filer: `src/lib/barcode-frame-scanner.ts`, `src/lib/barcode-pattern.ts`,
+`src/lib/upce-reader.ts` (UPC-E virker nu — bibliotekets egen læser var i stykker);
+omskrevet: `src/components/hf/BarcodeScanOverlay.tsx`,
+`src/lib/barcode-scan.ts`, stregkode-delen af `src/app/camera/page.tsx`.
+Verificeret i Chromium med syntetisk kamera (vandret, lodret, skæv,
+bevægelse, ikke-fundet). Ikke testet på en rigtig iPhone endnu.
+
+Next work:
+1. Test på iPhone efter deploy: vandret + lodret stregkode, skæv, på afstand.
 
 ## 2026-09-25: Mail via Mailjet aktiveret
 

@@ -415,6 +415,7 @@
     "goalExceededList": "Du overskred dit mål",
     "adjustBedtimeAriaLabel": "Justér sengetid",
     "adjustWakeTimeAriaLabel": "Justér stå-op-tid",
+    "nightSleepDuration": "Nattens søvn: {hours} timer",
     "previousDayAriaLabel": "Forrige dag",
     "nextDayAriaLabel": "Næste dag",
     "dailyGoalReached": "Du er inden for dagens mål",
@@ -459,7 +460,7 @@
     "liveViewAriaLabel": "Live kameravisning",
     "notRecognizedRetry": "Produkt ikke genkendt, prøv igen",
     "holdCameraStill": "Hold kameraet stille over stregkoden",
-    "barcodeHintOutsideFrame": "Sørg for at stregkoden er inden for feltet, til rammen lyser grønt.",
+    "barcodeHintOutsideFrame": "Hold hele stregkoden inde i billedet — den må gerne vende lodret.",
     "barcodeHintBlurry": "Stregkoden er sløret? Prøv at holde lidt længere afstand, til den er skarp.",
     "placeProductInCircle": "Placér produktet i cirklen",
     "placePlateInCircle": "Placér tallerkenen i cirklen",
@@ -1092,32 +1093,23 @@
     "helloFreshDescription": "Vis HelloFresh-opskrifter sammen med de delte retter under Opskrifter",
     "title": "Integrationer",
     "loading": "Henter…",
-    "status": {
-      "disconnected": "Ikke forbundet",
-      "connected": "Forbundet",
-      "error": "Fejl",
-      "needsApp": "Kræver app",
-      "pending": "Afventer"
-    },
     "notice": {
       "connected": "{name} blev forbundet.",
       "failed": "Kunne ikke forbinde {name}. Prøv igen."
     },
-    "intro": "Forbind dine sundhedsapps, så vægt, skridt og træning hentes automatisk. Alt lægges i din låste boks, som kun du kan åbne.",
+    "intro": "Forbind dine sundhedsapps, så vægt, skridt og træning hentes automatisk.",
     "lastSynced": "Sidst synkroniseret {date}",
-    "syncNow": "Synkroniser nu",
-    "syncing": "Synkroniserer…",
     "notConfigured": "Klar i appen, men venter på nøglerne på serveren.",
-    "disconnect": "Frakobl",
     "connect": "Forbind",
-    "deviceTokensTitle": "Enhedstokens (companion-app)",
-    "deviceTokensDescription": "Hello Cal-appen bruger en enhedskode til at sende dine data sikkert ind i din låste boks.",
-    "createdAt": "Oprettet {date}",
-    "lastUsedAt": " · Sidst brugt {date}",
     "remove": "Fjern",
-    "saveTokenNotice": "Gem denne værdi nu — den vises ikke igen:",
-    "close": "Luk",
-    "generateDeviceCode": "Generér enhedskode"
+    "enable": "Slå til",
+    "unavailable": "Ikke tilgængelig endnu",
+    "sections": {
+      "active": "Aktive integrationer",
+      "popular": "Oftest anvendt",
+      "recipes": "Opskrifter",
+      "apps": "Apps"
+    }
   },
   "payment": {
     "title": "Betaling",
@@ -1232,12 +1224,12 @@
   "addButton": {
     "closeMenu": "Luk tilføj-menu",
     "openMenu": "Åbn tilføj-menu",
-    "microphone": "Mikrofon",
+    "microphone": "Indtal",
     "ownDishes": "Retter",
     "search": "Søg",
     "weight": "Vægt",
     "water": "Vand",
-    "camera": "Kamera",
+    "camera": "Scan med kamera",
     "list": "Se alle",
     "menstrualCycle": "Menstruation",
     "hint": {
