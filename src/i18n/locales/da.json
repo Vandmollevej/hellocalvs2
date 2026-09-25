@@ -872,7 +872,7 @@
     "weightPlaceholder": "fx 78,4",
     "timeGrid": {
       "title": "Vægt over dagen",
-      "placeholder": "–"
+      "placeholder": "Skriv vægt"
     },
     "clothed": {
       "false": "Uden tøj",
@@ -880,9 +880,7 @@
     },
     "shoes": {
       "off": "Uden sko",
-      "on": "Med sko",
-      "unknown": "Ved ikke",
-      "unknownLabel": "Sko ikke angivet"
+      "on": "Med sko"
     },
     "timeOfDay": {
       "morning": "Morgen",
@@ -890,22 +888,24 @@
     },
     "toilet": {
       "before": "Før toilet",
-      "after": "Efter toilet",
-      "unknown": "Ved ikke",
-      "unknownLabel": "Toilet ikke angivet"
+      "after": "Efter toilet"
     },
     "meal": {
       "before": "Før mad",
-      "after": "Efter mad",
-      "unknown": "Ved ikke",
-      "unknownLabel": "Mad ikke angivet"
+      "after": "Efter mad"
     },
-    "submit": "Registrér vejning",
+    "submit": "Opdatér oplysninger",
     "saving": "Gemmer…",
     "loading": "Henter…",
     "noEntriesYet": "Ingen vejninger registreret endnu.",
     "deleteAria": "Slet vejning",
-    "delete": "Slet"
+    "delete": "Slet",
+    "recentTitle": "Seneste vejninger",
+    "status": {
+      "saved": "Oplysningerne er gemt.",
+      "nothing": "Der er ingen vægt at gemme endnu.",
+      "error": "Noget kunne ikke gemmes. Prøv igen."
+    }
   },
   "bodyMeasurements": {
     "title": "Kropsmål",

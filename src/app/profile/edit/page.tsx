@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconCamera, IconLock, IconTarget } from "@tabler/icons-react";
+import { IconCamera, IconLock } from "@tabler/icons-react";
+import { IconChampagne } from "@/components/icons/Champagne";
 import { IconWaistMeasure } from "@/components/icons/WaistMeasure";
 import { HfScreen } from "@/components/HfScreen";
 import { IconBathScale } from "@/components/hf/IconBathScale";
@@ -149,7 +150,7 @@ export default function ProfileEditPage() {
           {loading ? t("profile.loading") : t("profile.loadError")}
         </p>
       ) : (
-        <div className="flex flex-col gap-4 p-4">
+        <div className="flex min-h-full flex-col gap-4 p-4">
           <Field label={t("profile.field.name")}>
             <input
               className={inputClass}
@@ -260,7 +261,7 @@ export default function ProfileEditPage() {
               onClick={() => router.push("/profile/goals")}
               className="flex flex-1 flex-col items-center gap-1.5 rounded-xl bg-hf-tan px-2 py-3 text-center text-[13px] font-semibold text-hf-black"
             >
-              <IconTarget size={20} />
+              <IconChampagne size={20} />
               {t("profile.actions.target")}
             </button>
             <button
@@ -273,14 +274,14 @@ export default function ProfileEditPage() {
             </button>
           </div>
 
+          <FaceIdButton />
           <button
             type="button"
             onClick={() => router.push("/profile/change-password")}
-            className="hf-btn-primary hf-type-button mt-4 h-12 w-full px-4"
+            className="hf-btn-primary hf-type-button mt-auto h-12 w-full px-4"
           >
             {t("profile.changePasswordButton")}
           </button>
-          <FaceIdButton />
         </div>
       )}
     </HfScreen>
