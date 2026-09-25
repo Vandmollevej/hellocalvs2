@@ -2,7 +2,6 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import {
   IconCalendarHeart,
   IconCamera,
-  IconDroplet,
   IconMicrophone,
   IconRulerMeasure,
   IconSearch,
@@ -10,6 +9,7 @@ import {
   type Icon,
 } from "@tabler/icons-react";
 import { IconBathroomScale } from "@/components/icons/BathroomScale";
+import { IconWaterGlass } from "@/components/icons/WaterGlass";
 
 // Every real "add something" destination in the app — the pool the
 // front-page joystick wheel (AddButton.tsx) can show a subset of, and the
@@ -78,7 +78,7 @@ export const ADD_ACTIONS: AddAction[] = [
   {
     key: "water",
     href: "/water/create",
-    icon: IconDroplet,
+    icon: IconWaterGlass,
     labelKey: "addButton.water",
     hintKey: "addButton.hint.water",
   },
