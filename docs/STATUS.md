@@ -2,6 +2,24 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Statistik — redigerbare grafer, søgning og "+ Tilføj" pr. blok
+
+Se `docs/DECISIONS.md` 2026-09-25 "Statistiksidens grafer kan redigeres som
+kortene". Nye filer: `src/lib/stat-charts.ts`,
+`src/components/StatChartsSection.tsx`,
+`src/app/statistics/unused-charts/page.tsx`. `unused-cards` har fået søgefelt
+og "+ Tilføj" pr. blok (`AccordionSection` har fået en `action`-plads).
+Lint + build grønne. Ikke visuelt testet (lokalt kræves login) — test på
+iPhone efter deploy: long-press på grafer, træk/fjern, knapperne kun synlige
+under redigering.
+
+## 2026-09-25: Markering slået helt fra i appen
+
+Se `docs/DECISIONS.md` 2026-09-25 "Global markeringsregel". Global CSS i
+`src/app/globals.css` + `selectstart`-lytter i `GlobalClipboardGuard.tsx`.
+Felter kan stadig redigeres. Skal testes på iPhone efter deploy (long-press på
+kort, tekst og tomme flader må ikke markere noget).
+
 ## 2026-09-25: Vægt-ikonet tegnet som vektor
 
 - `IconBathroomScale` (`src/components/icons/BathroomScale.tsx`) maskerede
