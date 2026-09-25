@@ -431,6 +431,39 @@ Samtidig: Hello Cal-logoet på produktcirklen har ikke længere hvid cirkel/skyg
 det ligger i front (`z-10`) med nederste venstre hjørne i cirklens bundpunkt og
 en bredde på én radius (95px).
 
+## 2026-09-25: Statistiksidens grafer kan redigeres som kortene
+
+Graferne øverst på statistiksiden er nu et eget, brugerstyret layout
+(`src/lib/stat-charts.ts`, localStorage-nøgle `hellocal.statistik.charts`,
+standard: "Kalorier og vægt" + "Kalorieindtag i løbet af dagen"). Et langt
+tryk får dem til at vibrere som statistik-kortene; i redigering kan en graf
+fjernes med slette-cirklen og trækkes op/ned (`StatChartsSection.tsx`). Nye
+grafer tilføjes fra `/statistics/unused-charts`, der har samme opbygning som
+`/statistics/unused-cards` (søgefelt på tværs af blokkene, hvis resultater
+står over accordions, og "+ Tilføj" i hver bloks højre hjørne, som tilføjer
+alle blokkens resterende elementer). Der opfindes ingen nye datatyper: de
+ekstra grafer er 7-dages dagsserier af felter, som allerede findes i
+`DailyTotal`, med statistik-kortenes navne og enheder.
+
+"+ Tilføj kort" over hhv. graferne og kortene vises kun, mens den sektion er i
+redigeringstilstand (vibrerer) — eller er helt tom, så brugeren aldrig kan
+låse sig ude.
+
+## 2026-09-25: Global markeringsregel — intet kan markeres i appen
+
+Bindende produktbeslutning: intet i Hello Cal kan markeres — hverken tekst,
+kort, billeder eller knapper — og iOS' long-press-menu (Copy/Look Up/Share,
+billed-callout) må ikke vises. Reglen håndhæves globalt i
+`src/app/globals.css` (`user-select: none` og `-webkit-touch-callout: none` på
+`html`, `body` og alle efterkommere samt en gennemsigtig `::selection`) og
+som sikkerhedsnet af en `selectstart`-lytter i
+`src/components/GlobalClipboardGuard.tsx`. Eneste undtagelse er `input`,
+`textarea` og `[contenteditable="true"]`, som skal kunne markeres, ellers
+virker fokus, markør og redigering ikke på iOS; copy/cut/paste er dér stadig
+blokeret af clipboard-reglen nedenfor. Nye komponenter må ikke slå
+markering til igen (fx med `select-text` uden for felter) uden en eksplicit
+senere produktbeslutning.
+
 ## 2026-09-22: Global clipboard-regel — ingen copy, cut eller paste i appen
 
 Bindende produktbeslutning: Hello Cal tillader ikke copy, cut eller paste i
