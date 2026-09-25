@@ -1168,9 +1168,7 @@
     },
     "noCardsYet": "No cards here yet.",
     "addHeading": "+ Heading",
-    "addHeadingHint": "Adds a section heading to your statistics page, which you can rename yourself.",
-    "addDivider": "+ Divider",
-    "addDividerHint": "Adds a black divider line to your statistics page."
+    "addDivider": "+ Divider"
   },
   "statCardsGrid": {
     "exitEditing": "Exit editing",

@@ -2,6 +2,13 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Ubrugte statistik-kort — "+ Overskrift" og "+ Skillelinje" øverst
+
+`/statistics/unused-cards`: knapperne ligger nu øverst, før accordionerne.
+"+ Adskillelseslinje" hedder nu "+ Skillelinje" og vises som en massiv sort
+streg med teksten i midten. De grå hjælpetekster er fjernet. Søgefeltet, som
+en anden session bygger, skal placeres over disse to knapper.
+
 ## 2026-09-25: Mail via Mailjet aktiveret
 
 - SMTP_HOST/PORT/USER/PASS/FROM (Mailjet, in-v3.mailjet.com:587) sat i lokal
