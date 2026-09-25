@@ -821,7 +821,11 @@
       "genericError": "Could not redeem the gift code right now"
     },
     "redeemPoints": "Redeem points",
-    "redeemPointsHint": "{cost} points can be redeemed for 1 free month of Serious",
+    "pointsEarned": "You have earned {balance} points.",
+    "redeemPage": {
+      "title": "Redeem points",
+      "giftFriend": "Give a friend a free month of Serious access!"
+    },
     "currentPlan": "Your subscription",
     "tier": {
       "free": "Free",

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { IconArrowRight, IconStar } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
@@ -17,7 +16,6 @@ type SubscriptionData = {
 
 export default function SubscriptionPage() {
   const { t } = useTranslation();
-  const router = useRouter();
   const [data, setData] = useState<SubscriptionData | null>(null);
   const [loading, setLoading] = useState(true);
   const [giftCode, setGiftCode] = useState("");
@@ -104,16 +102,15 @@ export default function SubscriptionPage() {
             {message && <p className="hf-type-caption mt-2">{message}</p>}
           </div>
 
-          <button
-            type="button"
-            onClick={() => router.push("/profile/points")}
-            className="hf-type-body flex h-12 items-center justify-between rounded-lg bg-hf-tan px-4 text-left"
-          >
-            <span>{t("subscription.redeemPoints")}</span>
-            <span className="hf-type-caption opacity-70">
-              {t("subscription.redeemPointsHint", { cost: data.freeMonthCost })}
-            </span>
-          </button>
+          <div className="rounded-lg bg-hf-tan p-4">
+            <p className="hf-type-body">{t("subscription.pointsEarned", { balance: data.pointsBalance })}</p>
+            <Link
+              href="/profile/subscription/redeem-points"
+              className="hf-button hf-button--secondary hf-button--compact hf-button--full mt-3"
+            >
+              <span className="hf-button__label">{t("subscription.redeemPoints")}</span>
+            </Link>
+          </div>
 
           <h2 className="hf-type-section-title mt-2">{t("subscription.currentPlan")}</h2>
 
