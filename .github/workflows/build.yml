@@ -55,6 +55,12 @@ jobs:
             mkdir -p "/deploy/scripts/$agent"
             cp -R "scripts/$agent/." "/deploy/scripts/$agent/"
           done
+          # Backup-scriptet køres manuelt som /volume1/docker/App/hellocal-v2/scripts/backup-all-containers.sh.
+          # Den håndskrevne version, der lå der før, gemmes én gang som .orig.
+          if [ -f /deploy/scripts/backup-all-containers.sh ] && [ ! -f /deploy/scripts/backup-all-containers.sh.orig ]; then
+            cp /deploy/scripts/backup-all-containers.sh /deploy/scripts/backup-all-containers.sh.orig
+          fi
+          install -m 755 scripts/backup/backup-all-containers.sh /deploy/scripts/backup-all-containers.sh
           # Runneren ser serverens app-mappe som /deploy. Compose læser
           # build-konteksterne via --project-directory-stien, så den skal også
           # findes inde i runneren.

@@ -2,6 +2,15 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Backup-scriptet fylder ikke længere 22 GB
+
+`backup-all-containers.sh` lå kun på Synology og kopierede HelloFresh-billederne
+(6,6 GB) tre gange: via app, via hellofresh-agent og via runnerens mount af hele
+`hellocal-v2`. Ny version i `scripts/backup/` (se DEPLOYMENT.md "Fuld
+container-backup"), som deployet lægger samme sted; den gamle gemmes som
+`.orig`. Forventet: ca. 7 GB første gang, derefter kun ændringer. Ikke kørt på
+Synology endnu — kun testet med en falsk `docker` i cloud-sessionen.
+
 ## 2026-09-25: Ubrugte statistik-kort — "+ Overskrift" og "+ Skillelinje" øverst
 
 `/statistics/unused-cards`: knapperne ligger nu lige under søgefeltet, før accordionerne.
