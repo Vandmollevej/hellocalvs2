@@ -103,6 +103,18 @@ apps." De skrappe sikkerhedsforanstaltninger var kun ment til admin.
   `/statistics/month-sinners?month=YYYY-MM`, grupperet efter produkttype med
   "kcal · %", faner Kalorier/Fedt/Sukker.
 
+## 2026-09-25: Integrationssiden
+
+Brugerens krav: ingen "Kræver app"-mærker eller "Generér enhedskode"-knapper
+(telefon-integrationerne er ikke sat op). Sektioner i denne rækkefølge:
+Aktive integrationer, Oftest anvendt (Apple Health, Google Health, Strava),
+Opskrifter (HelloFresh), Apps (Health Connect, Withings, Garmin, Samsung
+Health, Polar Flow — Polar Flow nederst). Aktive/forbundne kort får en grøn
+prik foran navnet og "Fjern" som almindelig tekst på egen linje (ingen stor
+knap). Ikke-forbindbare kort viser "Ikke tilgængelig endnu". Google Health
+bruger Google-login-klienten som reserve. Denne afløser "Telefon-kort"-punktet
+i 2026-09-24 "Otte sundhedsintegrationer".
+
 ## 2026-09-24: Otte sundhedsintegrationer inden for boks-arkitekturen (G8)
 
 Brugerens valg (6068f78a/69a1b2bd, 8d98b548/2c95590f): "Byg alle 8" på den

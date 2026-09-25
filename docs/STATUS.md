@@ -2,6 +2,20 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Integrationssiden ryddet op og sektioneret
+
+Se `docs/DECISIONS.md` 2026-09-25 "Integrationssiden". Sektioner med
+`SectionSeparator`: Aktive integrationer → Oftest anvendt (Apple Health,
+Google Health, Strava) → Opskrifter (HelloFresh) → Apps (Health Connect,
+Withings, Garmin, Samsung Health, Polar Flow nederst). Aktive har grøn prik og
+"Fjern" som almindelig tekst. "Kræver app"-mærker og enhedskode-knapper er
+fjernet fra siden (backend-ruterne findes stadig). Google Health genbruger nu
+`GOOGLE_CLIENT_ID/SECRET`, hvis `GOOGLE_HEALTH_*` ikke er sat; connect-fejl
+sendes tilbage til siden i stedet for rå JSON.
+
+Next work: I Google Cloud-konsollen skal redirect-URI'en
+`https://hellocal.packroff.dk/api/integrations/google-health/callback`
+tilføjes til login-klienten, og Google Health API + scopes aktiveres.
 ## 2026-09-25: Tilføj-menu tekster og vandglas-ikon
 
 - "Kamera" → "Scan med kamera", "Mikrofon" → "Indtal" (`addButton.*` i
