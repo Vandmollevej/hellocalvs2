@@ -2,6 +2,15 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Vægt-ikonet tegnet som vektor
+
+- `IconBathroomScale` (`src/components/icons/BathroomScale.tsx`) maskerede
+  256px-PNG'en `public/icons/bathroom-scale.png`; i 20–28px (tilføj-menuen og
+  forsidens +-hjul) smeltede de tykke streger sammen til en uklar klat.
+- Nu en ren SVG-streg-tegning af samme artwork (ramme, skive, to fyldte
+  fodspor) i tabler-stil med `currentColor`, så den står skarpt i alle
+  størrelser. PNG'en beholdes som reference.
+
 ## 2026-09-25: Mail via Mailjet aktiveret
 
 - SMTP_HOST/PORT/USER/PASS/FROM (Mailjet, in-v3.mailjet.com:587) sat i lokal
