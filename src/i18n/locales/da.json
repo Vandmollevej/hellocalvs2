@@ -428,6 +428,7 @@
     "closeAddAriaLabel": "Luk tilføj",
     "goalLabel": "Mål: {goal} kcal",
     "remainingCalories": "Du har {remaining} kalorier endnu",
+    "remainingToday": "Tilbage for i dag",
     "exceededCalories": "Du er overskredet med {amount} kcal",
     "adjustSleepAriaLabel": "Justér nattesøvn",
     "hourRangeLabel": "Kl. {start}–{end}",
