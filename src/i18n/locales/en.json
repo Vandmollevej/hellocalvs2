@@ -925,6 +925,7 @@
     "saving": "Saving…",
     "loading": "Loading…",
     "noEntriesYet": "No measurements logged yet.",
+    "chooseSexHint": "Choose your sex under Profile → Edit profile to see drawings of where to measure.",
     "deleteAria": "Delete measurement",
     "delete": "Delete"
   },

@@ -925,6 +925,7 @@
     "saving": "Gemmer…",
     "loading": "Henter…",
     "noEntriesYet": "Ingen kropsmål registreret endnu.",
+    "chooseSexHint": "Vælg køn under Profil → Redigér profil for at se tegningerne af, hvor du måler.",
     "deleteAria": "Slet måling",
     "delete": "Slet"
   },
