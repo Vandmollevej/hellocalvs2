@@ -2,6 +2,22 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Photo diary — passcode toggle now actually locks the photos
+
+User intent: the photos must not flash on screen by accident when the page is
+opened on the phone (e.g. on the bus). It is a view lock, not encryption.
+When "Kræver telefonens adgangskode for at vise" is on, the page shows only
+"Vis billeder"; tapping it asks for Face ID/Touch ID/the phone's passcode via
+WebAuthn (`confirmOnDevice` in `src/lib/passkey-client.ts`: reauth with the
+existing passkey through `/api/auth/passkey/reauth/*`, or register one if the
+account has none — registration also requires on-device confirmation). The
+page re-locks (and closes the full-screen viewer) when it goes to the
+background (`visibilitychange`). Turning the toggle off while locked requires
+the same confirmation. Browsers without WebAuthn get a plain tap gate. The
+"kræver en native app" note is replaced with a description of the lock.
+Verified with `npm run lint` and `npm run build`; not tested on a real phone
+from this container.
+
 ## 2026-09-25: Photo diary — selfie feature removed
 
 The user states they never asked for selfies in Billede-dagbog and asked for

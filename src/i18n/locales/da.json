@@ -993,14 +993,16 @@
     "loading": "Henter…",
     "loadError": "Kunne ikke hente billede-dagbog.",
     "requiresPasscode": "Kræver telefonens adgangskode for at vise",
-    "requiresPasscodeDescription": "Håndhæves endnu ikke af OS'et — det kræver en native app. Kun en gemt præference i dag.",
-    "showPhotos": "Vis billeder (ingen rigtig adgangskode-kontrol endnu)",
+    "requiresPasscodeDescription": "Billederne vises først, når du har bekræftet med Face ID, Touch ID eller telefonens kode.",
+    "showPhotos": "Vis billeder",
     "takePhoto": "Tag billede (fuld figur eller mave)",
     "noPhotosYet": "Ingen billeder endnu — tag det første for at kunne sammenligne senere.",
     "photoAlt": "Billede-dagbog-optagelse",
     "deleteAria": "Slet billede",
     "previousPhoto": "Forrige billede",
-    "nextPhoto": "Næste billede"
+    "nextPhoto": "Næste billede",
+    "unlocking": "Bekræfter…",
+    "unlockError": "Kunne ikke bekræfte. Prøv igen."
   },
   "registration": {
     "title": "Registrering",

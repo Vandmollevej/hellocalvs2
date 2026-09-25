@@ -5,6 +5,7 @@ import { IconChevronLeft, IconChevronRight, IconTrash, IconX } from "@tabler/ico
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { confirmOnDevice, isPasskeySupported } from "@/lib/passkey-client";
 
 type DiaryPhoto = {
   id: string;
@@ -21,10 +22,11 @@ type DiaryUser = {
 // projekt (se docs/STATUS.md), så billederne gemmes for nu udelukkende
 // client-side i localStorage — de ryger ikke i databasen og deles ikke
 // mellem enheder. "Kræver telefonens adgangskode for at vise"-kontakten
-// gemmes derimod i databasen (User.photoDiaryRequiresPasscode), men denne
-// side håndhæver den IKKE med et rigtigt OS-lock endnu — det kræver en
-// native app (Face ID/adgangskode-API) og er fremtidigt arbejde. Toggle'en
-// er derfor kun den gemte brugerpræference i dag.
+// gemmes i databasen (User.photoDiaryRequiresPasscode). Er den slået til,
+// vises billederne først efter Face ID/Touch ID/telefonens kode (WebAuthn,
+// se confirmOnDevice), og siden låser igen, når den går i baggrunden — så
+// billederne ikke vises ved et uheld, fx i bussen. Det er en visningslås,
+// ikke kryptering.
 const STORAGE_KEY = "hello-cal:billede-dagbog";
 
 function loadPhotos(): DiaryPhoto[] {
@@ -64,6 +66,8 @@ export default function BilledeDagbogPage() {
   const [loading, setLoading] = useState(true);
   const [photos, setPhotos] = useState<DiaryPhoto[]>(() => loadPhotos());
   const [locked, setLocked] = useState(false);
+  const [unlocking, setUnlocking] = useState(false);
+  const [unlockError, setUnlockError] = useState(false);
   const [viewerIndex, setViewerIndex] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -87,7 +91,43 @@ export default function BilledeDagbogPage() {
     };
   }, []);
 
-  function toggleRequiresPasscode(value: boolean) {
+  // Lås igen, når appen/fanen forlades, så billederne ikke står fremme
+  // næste gang telefonen tages op.
+  useEffect(() => {
+    function onVisibilityChange() {
+      if (document.visibilityState === "hidden") {
+        setLocked(true);
+        setViewerIndex(null);
+      }
+    }
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", onVisibilityChange);
+  }, []);
+
+  async function unlock(): Promise<boolean> {
+    setUnlockError(false);
+    // Uden WebAuthn-understøttelse (fx ældre browser) er låsen blot et ekstra
+    // tryk, så billederne stadig ikke vises med det samme.
+    if (!isPasskeySupported()) {
+      setLocked(false);
+      return true;
+    }
+    setUnlocking(true);
+    try {
+      await confirmOnDevice();
+      setLocked(false);
+      return true;
+    } catch {
+      setUnlockError(true);
+      return false;
+    } finally {
+      setUnlocking(false);
+    }
+  }
+
+  async function toggleRequiresPasscode(value: boolean) {
+    // Låsen må ikke kunne slås fra uden bekræftelse, mens billederne er låst.
+    if (!value && locked && !(await unlock())) return;
     setUser((current) => (current ? { ...current, photoDiaryRequiresPasscode: value } : current));
     fetch("/api/profile", {
       method: "PATCH",
@@ -147,13 +187,19 @@ export default function BilledeDagbogPage() {
           />
 
           {locked && user.photoDiaryRequiresPasscode ? (
-            <button
-              type="button"
-              onClick={() => setLocked(false)}
-              className="hf-btn-primary w-full py-3.5 text-[15px]"
-            >
-              {t("photoDiary.showPhotos")}
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={unlock}
+                disabled={unlocking}
+                className="hf-btn-primary w-full py-3.5 text-[15px] disabled:opacity-40"
+              >
+                {unlocking ? t("photoDiary.unlocking") : t("photoDiary.showPhotos")}
+              </button>
+              {unlockError && (
+                <p className="text-center text-[13px] text-hf-red-dark">{t("photoDiary.unlockError")}</p>
+              )}
+            </>
           ) : (
             <>
               <input
