@@ -106,6 +106,20 @@ formally migrated or archived.
 - `prisma/migrations/`: reviewed SQL migrations applied by the one-shot service.
 - `/api/health`: verifies that both Next.js and PostgreSQL respond.
 
+## Oprettelses-app og logo-robot (2026-09-25)
+
+- `scan-app`: samme image som `app`, men `HELLOCAL_APP_MODE=scan` (kun
+  medarbejder-ruterne). Port `SCAN_APP_HTTP_PORT` (3101). Kræver et eget
+  hostname i Cloudflare Tunnel og `SCAN_APP_BASE_URL`. Deploy-workflowet
+  starter den endnu ikke automatisk — tilføj `scan-app` til
+  `up -d db migrate app`, når brugeren godkender det. Manuelt:
+  `docker compose ... up -d scan-app`.
+- `logo-agent`: lokalt bygget Python-container (`scripts/logo-agent`),
+  kører hver nat kl. `LOGO_AGENT_RUN_HOUR`. Bruger `GOOGLE_VISION_API_KEY`
+  (fallback `GOOGLE_API_KEY`). Ingen `:?`-krav, så en manglende nøgle ikke
+  stopper stakken. Heller ikke med i deploy-workflowet endnu.
+- Se `.env.production.example` for alle nye variabler.
+
 ## First deployment
 
 Do not perform these steps until the image build for the deployment commit has

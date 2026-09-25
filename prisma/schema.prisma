@@ -727,6 +727,7 @@ model Brand {
   createdAt DateTime  @default(now())
   products  Product[]
   regionSearchStats BrandRegionSearchStat[]
+  logoSearches      BrandLogoSearch[]
 
   @@map("brands")
 }
@@ -2678,4 +2679,60 @@ model ScanMessage {
 
   @@index([workerId, createdAt])
   @@map("scan_messages")
+}
+
+// --- Logo-robot (scripts/logo-agent, docs/LOGO-AGENT.md) ---
+//
+// Natlig kørsel: for brands uden logo isoleres logoet fra et produkts
+// forsidefoto (Google Vision LOGO_DETECTION, kun beskåret — ikke fritlagt),
+// og Vision WEB_DETECTION finder lignende billeder på nettet. Op til 10
+// kandidater hentes, konverteres til PNG og vurderes i procent. >= 90 % OG
+// brandnavnet på siden/linket → gemmes automatisk som Brand.logoUrl. Ellers
+// (>= 50 %) → admin-kø "Logoer". Ikke-valgte kandidater slettes (fil + række)
+// 7 dage efter afgørelsen.
+
+enum BrandLogoSearchStatus {
+  PENDING_REVIEW
+  AUTO_ACCEPTED
+  ACCEPTED
+  NO_CANDIDATES
+}
+
+model BrandLogoSearch {
+  id                String                @id @default(cuid())
+  brand             Brand                 @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  brandId           String
+  sourceProductId   String?
+  // Det isolerede (beskårne) logo fra produktets forsidefoto.
+  originalUrl       String
+  status            BrandLogoSearchStatus
+  bestConfidence    Float?
+  chosenCandidateId String?
+  createdAt         DateTime              @default(now())
+  resolvedAt        DateTime?
+  candidates        BrandLogoCandidate[]
+
+  @@index([status, createdAt])
+  @@index([brandId])
+  @@map("brand_logo_searches")
+}
+
+model BrandLogoCandidate {
+  id          String          @id @default(cuid())
+  search      BrandLogoSearch @relation(fields: [searchId], references: [id], onDelete: Cascade)
+  searchId    String
+  imageUrl    String
+  sourceUrl   String
+  pageUrl     String?
+  pageTitle   String?
+  // 0..1 — robottens samlede vurdering af, at dette er det korrekte logo.
+  confidence  Float
+  brandInPage Boolean         @default(false)
+  transparent Boolean         @default(false)
+  width       Int
+  height      Int
+  createdAt   DateTime        @default(now())
+
+  @@index([searchId, confidence])
+  @@map("brand_logo_candidates")
 }
