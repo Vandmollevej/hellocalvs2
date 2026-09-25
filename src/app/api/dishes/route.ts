@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser, unauthorized } from "@/lib/session";
+import { stripPrivatePrefix } from "@/lib/private-ingredient-ids";
+import { privateIngredientsAllowed } from "@/lib/private-ingredients";
 
 // GET /api/dishes — the user's own dishes (newest first).
 export async function GET() {
@@ -58,12 +60,17 @@ export async function POST(req: Request) {
     const user = await getSessionUser();
 
     if (!user) return unauthorized();
+    // Egne ingredienser kommer med "private:"-præfiks fra kladden.
+    const rows = ingredients.map((i) => ({ productId: stripPrivatePrefix(i.productId), grams: i.grams }));
+    if (!(await privateIngredientsAllowed(user.id, rows.map((i) => i.productId)))) {
+      return NextResponse.json({ message: "Ukendt ingrediens" }, { status: 400 });
+    }
     const dish = await prisma.dish.create({
       data: {
         name,
         ownerId: user.id,
         ingredients: {
-          create: ingredients.map((i) => ({ productId: i.productId, grams: i.grams })),
+          create: rows,
         },
       },
       include: { ingredients: { include: { product: true } } },

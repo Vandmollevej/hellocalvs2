@@ -4,6 +4,7 @@ import { getSessionUser, unauthorized } from "@/lib/session";
 import { fulfillMatchingForward } from "@/lib/forwards";
 import { getSubscriptionTier, getRetentionCutoffDate } from "@/lib/subscription";
 import { detectNutritionChanges, USER_EDIT_CONFIDENCE } from "@/lib/nutrition-reports";
+import { classifyProduct } from "@/lib/food-classification";
 
 export async function GET() {
   try {
@@ -19,14 +20,42 @@ export async function GET() {
     const registrations = await prisma.registration.findMany({
       where: { userId: user.id, ...(cutoff ? { createdAt: { gte: cutoff } } : {}) },
       orderBy: { createdAt: "desc" },
-      include: { product: { select: { imageUrl: true } } },
+      include: {
+        product: {
+          select: {
+            imageUrl: true,
+            servingSizeGrams: true,
+            servingSizeUnitSingular: true,
+            servingSizeUnitPlural: true,
+            productCategory: true,
+            productType: true,
+            dietaryTags: true,
+            nutritionExtra: true,
+          },
+        },
+      },
       // 3000 comfortably covers over half a year of history (~4 registrations/day),
       // so statistics/calendar can show the whole trend instead of just the
       // last ~3-4 months.
       take: 3000,
     });
 
-    return NextResponse.json({ registrations });
+    // G3-klassifikation (kødtype, alkohol, sukkerholdig drik) beregnes fra
+    // produktet; kun de visningsfelter, klienten bruger, sendes med.
+    return NextResponse.json({
+      registrations: registrations.map(({ product, ...registration }) => ({
+        ...registration,
+        product: product
+          ? {
+              imageUrl: product.imageUrl,
+              servingSizeGrams: product.servingSizeGrams,
+              servingSizeUnitSingular: product.servingSizeUnitSingular,
+              servingSizeUnitPlural: product.servingSizeUnitPlural,
+            }
+          : null,
+        classification: product ? classifyProduct(product) : null,
+      })),
+    });
   } catch (error) {
     console.error("Registration list failed", error);
     return NextResponse.json(

@@ -8,7 +8,7 @@ export default async function AdminDashboardPage() {
   if (!admin) redirect("/admin/login");
 
   const [pendingProducts, pendingImages] = await Promise.all([
-    prisma.product.count({ where: { status: "PENDING" } }),
+    prisma.product.count({ where: { status: "PENDING", privateOwnerId: null } }),
     prisma.product.count({ where: { imageStatus: "PENDING" } }),
   ]);
 

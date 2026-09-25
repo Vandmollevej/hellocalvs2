@@ -111,6 +111,8 @@ export async function GET(req: Request) {
       prisma.product.findMany({
         where: {
           discontinued: false,
+          // Egne private ingredienser vises kun for ejeren (via /api/private-ingredients).
+          privateOwnerId: null,
           ...(q
             ? {
                 OR: [

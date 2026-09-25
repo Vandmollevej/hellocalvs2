@@ -396,6 +396,12 @@ De faste former er:
   kun til den centrale tilføj-handling.
 - `--full`: fylder den tilgængelige bredde. Ved 402 px viewport og standard
   16 px gutter bliver bredden 370 px.
+- Hello Cal-regel (2026-09-24): almindelige primære og sekundære
+  handlingsknapper (Opret, Gem, Fortsæt, Tilføj, Næste, Bekræft …) er altid
+  `--full` — fra venstre til højre indholdskant, ingen `w-fit`, `self-center`,
+  `max-w-*` eller `sm:w-auto`. Brug `ActionButton`/`ActionLink` fra
+  `src/components/hf/ActionButton.tsx`. Undtaget: ikonknapper, luk/tilbage,
+  +/−, favorit, små inline-/filterkontroller og navigation.
 
 Indhold og states er ligeledes låst:
 

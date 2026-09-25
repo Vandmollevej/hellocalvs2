@@ -170,6 +170,7 @@ model User {
   deviceTokens            DeviceToken[]
   healthMetrics           HealthMetric[]
   passkeys                Passkey[]
+  privateIngredients      Product[]                @relation("PrivateIngredients")
   oauthAccounts           UserOAuthAccount[]
   knownDevices            UserKnownDevice[]
   sharedRecipeFavorites   SharedRecipeFavorite[]
@@ -371,6 +372,7 @@ enum WeightSource {
   WITHINGS
   APPLE_HEALTH
   GOOGLE_HEALTH
+  HEALTH_CONNECT
 }
 
 // --- Body measurements ---
@@ -547,7 +549,13 @@ enum IntegrationProvider {
   WITHINGS
   GARMIN
   APPLE_HEALTH
+  // 2026-09-24: Google Health API (cloud, OAuth). Tidligere brugt om Health
+  // Connect, som nu har sin egen værdi.
   GOOGLE_HEALTH
+  HEALTH_CONNECT
+  POLAR
+  SAMSUNG_HEALTH
+  STRAVA
 }
 
 enum IntegrationStatus {
@@ -579,6 +587,9 @@ enum ActivitySource {
   GARMIN
   APPLE_HEALTH
   GOOGLE_HEALTH
+  HEALTH_CONNECT
+  STRAVA
+  POLAR
 }
 
 // A personal, long-lived access token a future native companion app
@@ -624,6 +635,7 @@ enum HealthMetricSource {
   FITBIT
   WITHINGS
   GARMIN
+  HEALTH_CONNECT
 }
 
 enum HealthMetricType {
@@ -865,6 +877,11 @@ model Product {
   // ved godkendelse — se src/app/api/admin/products/[id]/approve/route.ts.
   createdBy       User?   @relation("ProductsCreatedByUser", fields: [createdByUserId], references: [id])
   createdByUserId String?
+  // "Opret egen ingrediens" (docs/DECISIONS.md 2026-09-24): en privat
+  // ingrediens, kun synlig for ejeren (kun navn, næring ukendt). Udelukkes
+  // fra søgning og admin-lister.
+  privateOwner    User?   @relation("PrivateIngredients", fields: [privateOwnerId], references: [id], onDelete: Cascade)
+  privateOwnerId  String?
 
   // Barcode-first guidet AI-produktoprettelse (2026-09-17, se
   // docs/DECISIONS.md): forsidefotoet skelner eksplicit mellem hovedmærke
@@ -1349,8 +1366,32 @@ model GenericIngredient {
   regionHourStats   GenericIngredientRegionHourStat[]
   personalSearchHistory UserProductSearchHistory[]
   images            GenericIngredientImage[]
+  ingredientRequests IngredientRequest[]
 
   @@map("generic_ingredients")
+}
+
+// Brugerens egen ingrediens sendt til admin (docs/DECISIONS.md 2026-09-24).
+// privateProductId er brugerens private ingrediens (Product.privateOwnerId);
+// tilføjer admin den globalt, erstattes den i brugerens retter.
+model IngredientRequest {
+  id                  String                  @id @default(cuid())
+  name                String
+  privateProductId    String?
+  status              IngredientRequestStatus @default(PENDING)
+  genericIngredient   GenericIngredient?      @relation(fields: [genericIngredientId], references: [id], onDelete: SetNull)
+  genericIngredientId String?
+  createdAt           DateTime                @default(now())
+  reviewedAt          DateTime?
+
+  @@index([status, createdAt])
+  @@map("ingredient_requests")
+}
+
+enum IngredientRequestStatus {
+  PENDING
+  ADDED
+  REJECTED
 }
 
 // Tagged image variants for a GenericIngredient — same shape/purpose as
@@ -1464,6 +1505,7 @@ model ProductIngredient {
 // Se Product.productCategory.
 enum ProductCategory {
   DRINK
+  VEGETABLES
   GENERIC
   PROCESSED
   RAW
@@ -1710,6 +1752,7 @@ enum MessageEvent {
   PRODUCT_REJECTED
   PRODUCT_ESCALATION_ADMIN
   BUG_REPORT_ESCALATION_ADMIN
+  INGREDIENT_REQUEST_ADMIN
   BUG_REPORT_RESOLVED
   BUG_REPORT_REJECTED
   POINTS_AWARDED

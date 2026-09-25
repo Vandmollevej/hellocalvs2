@@ -18,6 +18,31 @@ Next work:
    Apple-nøgler i `.env.production` (docs/DEPLOYMENT.md "Login (brugere)").
 2. Test Face ID og de tre sociale logins på iPhone efter deploy.
 
+## 2026-09-24: G8 — otte sundhedsintegrationer bygget (commit 22184fe)
+
+Se docs/DECISIONS.md 2026-09-24 "Otte sundhedsintegrationer". Mangler kun
+nøgler på serveren (`.env.production` på Synology), derefter deploy:
+`WITHINGS_CLIENT_ID/SECRET`, `GOOGLE_HEALTH_CLIENT_ID/SECRET`,
+`STRAVA_CLIENT_ID/SECRET`, `POLAR_CLIENT_ID/SECRET` og evt.
+`WITHINGS_REDIRECT_URI`/`GOOGLE_HEALTH_REDIRECT_URI`. Migration
+`20260924170000_integration_providers` tilføjer enum-værdier. Ikke testet
+mod de rigtige API'er endnu (ingen nøgler lokalt). Waldemarsro: venter på
+brugerens "byg".
+
+## 2026-09-25: G3 — produktkategorier, kød/drikke-statistik, "Største kilder" og "Månedens synder" — bygget
+
+Se docs/DECISIONS.md 2026-09-25 (G3). `npm run lint` (G3-filer) og
+`npm run build` er grønne. Ikke verificeret i browser mod rigtige data
+(kræver login med passkey + boks).
+
+Mangler (bevidst udskudt):
+- Frida-AI-beregning af kødandel i sammensatte retter.
+- 30-delt Hello Cal-kategoriliste + NOVA/ultraforarbejdet + Slik/Chips.
+- REMA-importen skal køres igen, for at grøntsager/frugt får VEGETABLES
+  (migrationen skal deployes først).
+- Nye kort vises kun automatisk for brugere uden gemt statistik-layout;
+  andre tilføjer dem via "Tilføj kort" → "Kød, fisk og drikke".
+
 ## TODO (2026-09-24): Waldemarsro-integration (dansk opskriftsside) — afklaret, ikke bygget
 
 Brugerens svar (2026-09-24). Tilstrækkeligt til at bygge uden yderligere

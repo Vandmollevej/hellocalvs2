@@ -31,7 +31,8 @@ const LONG_PRESS_MS = 550;
 const READY_MS = 1000;
 const MOVE_CANCEL_PX = 10;
 const SHEET_CLOSE_PX = 60;
-const FLIP_MS = 200;
+const FLIP_MS = 260;
+const FLIP_EASING = "cubic-bezier(0.25, 0.8, 0.25, 1)";
 const PAGE_SIZE = 4;
 const EDGE_ZONE_PX = 36;
 const EDGE_HOLD_MS = 650;
@@ -180,6 +181,18 @@ function overRect(el: HTMLElement | null, clientX: number, clientY: number) {
   return clientX >= r.left && clientX <= r.right && clientY >= r.top && clientY <= r.bottom;
 }
 
+// Pladsen i bundbaren under fingeren (0..PAGE_SIZE-1 på den viste side),
+// omregnet til et indeks i hele listen. Bruges i stedet for "nærmeste andet
+// ikon", som fik det trukne ikon til at hoppe frem og tilbage mellem to
+// naboer ved hver bevægelse (6a503586).
+function slotIndexAt(bar: HTMLElement | null, clientX: number, page: number) {
+  if (!bar) return null;
+  const r = bar.getBoundingClientRect();
+  const slotWidth = r.width / PAGE_SIZE;
+  const slot = Math.min(PAGE_SIZE - 1, Math.max(0, Math.floor((clientX - r.left) / slotWidth)));
+  return page * PAGE_SIZE + slot;
+}
+
 export function BottomNav() {
   const { t } = useTranslation();
   const pathname = usePathname();
@@ -282,7 +295,7 @@ export function BottomNav() {
       el.style.transition = "none";
       el.style.transform = `translate(${dx}px, ${dy}px)`;
       requestAnimationFrame(() => {
-        el.style.transition = `transform ${FLIP_MS}ms ease`;
+        el.style.transition = `transform ${FLIP_MS}ms ${FLIP_EASING}`;
         el.style.transform = "";
       });
     });
@@ -335,8 +348,14 @@ export function BottomNav() {
 
     if (current.source === "inactive") {
       if (overRect(barRef.current, clientX, clientY)) {
+        const target = slotIndexAt(barRef.current, clientX, Math.round(scrollPagesRef.current));
         setInactiveKeys((prev) => prev.filter((k) => k !== current.key));
-        setActiveKeys((prev) => (prev.includes(current.key) ? prev : [...prev, current.key]));
+        setActiveKeys((prev) => {
+          if (prev.includes(current.key)) return prev;
+          const copy = [...prev];
+          copy.splice(Math.min(target ?? copy.length, copy.length), 0, current.key);
+          return copy;
+        });
       }
     }
   }, [clearReadyTimer, clearEdgeHoldTimer]);
@@ -386,25 +405,16 @@ export function BottomNav() {
           }
         }
 
-        const currentPageKeys = new Set(chunk(activeKeysRef.current, PAGE_SIZE)[Math.round(scrollPagesRef.current)] ?? []);
-        let closestKey: string | null = null;
-        let closestDist = Infinity;
-        itemRefs.current.forEach((el, key) => {
-          if (key === current.key) return;
-          if (!currentPageKeys.has(key)) return;
-          const r = el.getBoundingClientRect();
-          const cx = r.left + r.width / 2;
-          const dist = Math.abs(cx - e.clientX);
-          if (dist < closestDist) {
-            closestDist = dist;
-            closestKey = key;
-          }
-        });
-        if (closestKey) {
+        // Kun mens fingeren er over selve baren — trækkes ikonet op mod
+        // panelet, bliver de andre stående, indtil det slippes.
+        const target = overRect(barRef.current, e.clientX, e.clientY)
+          ? slotIndexAt(barRef.current, e.clientX, Math.round(scrollPagesRef.current))
+          : null;
+        if (target !== null) {
           setActiveKeys((prev) => {
             const from = prev.indexOf(current.key);
-            const to = prev.indexOf(closestKey as string);
-            if (from === -1 || to === -1 || from === to) return prev;
+            const to = Math.min(target, prev.length - 1);
+            if (from === -1 || from === to) return prev;
             const copy = [...prev];
             copy.splice(from, 1);
             copy.splice(to, 0, current.key);
@@ -716,9 +726,9 @@ export function BottomNav() {
       <nav
         ref={barRef}
         data-bottom-navigation
-        className={`relative border-t bg-hf-tan-dark ${
+        className={`relative bg-hf-tan-dark ${
           showCollapsedBar ? "py-1" : "pb-[env(safe-area-inset-bottom,0px)] pt-2"
-        } ${draggedOverPanel ? "border-dashed border-hf-gray-dark" : "border-hf-gray-border"}`}
+        } ${draggedOverPanel ? "border border-dashed border-hf-gray-dark" : ""}`}
         aria-label={t("nav.mainNavigationAriaLabel")}
       >
         {showCollapsedBar ? (
@@ -742,7 +752,9 @@ export function BottomNav() {
                 <span className="h-1.5 w-10 rounded-full bg-hf-black/30" />
               </button>
             )}
-        <div className="overflow-x-hidden overflow-y-visible pt-1">
+        {/* overflow-x-clip (ikke -hidden): -hidden tvinger også lodret
+            klipning, så slette-krydserne over ikonerne blev skåret af. */}
+        <div className="overflow-x-clip overflow-y-visible pt-1">
           <div
             className="flex"
             style={{

@@ -28,6 +28,69 @@ apps." De skrappe sikkerhedsforanstaltninger var kun ment til admin.
   (`ADMIN_MESSAGE`).
 - Admin-login (adgangskode + TOTP + passkey) er uændret.
 
+## 2026-09-25: G3 — grove produktkategorier, kød/drikke-statistik, "Største kilder" og "Månedens synder"
+
+- `Product.productCategory` bruger brugerens grove regnearks-kategorier:
+  Drikkevarer (DRINK), Grøntsager (ny VEGETABLES, migration
+  `20260924160000_product_category_vegetables`), Råvarer (RAW), Forarbejdede
+  varer (PROCESSED). GENERIC/INGREDIENT bevares. Navne i
+  `PRODUCT_CATEGORY_LABELS` (`src/lib/product-display-unit.ts`). Den 30-delte
+  Hello Cal-kategoriliste + NOVA/ultraforarbejdet er en senere, separat opgave.
+- Klassifikation (`src/lib/food-classification.ts`) læser produktets egne
+  regnearksfelter i `Product.dietaryTags`: `meat` (okse/kalv → oksekød, gris,
+  kylling/kalkun/and/gås → fjerkræ, fisk inkl. skaldyr; flere typer deles
+  ligeligt), `isSugarFree`, `isAlcoholFree`, `pct` (alkohol-%, "x% fedt"
+  ignoreres) samt `productType` og sukker pr. 100 g fra `nutritionExtra`.
+  Sukkerholdig drik = drikkevare med sukker > 0, ikke sukkerfri/light, ikke
+  alkohol (inkl. mælk, smoothie, drikkeyoghurt). Alkohol = drikkevare med
+  alkohol-% > 0,5 (eller alkohol-produkttype, når % mangler). 1 genstand = 12 g
+  ren alkohol.
+- Klassifikationen gemmes som snapshot på registreringen i boksen
+  (`classification`), samme snapshot-princip som kcal/makroer. Ældre
+  registreringer udfyldes én gang lokalt via `POST /api/registrations/classify`,
+  som kun henter de samme offentlige produktsider, registreringen selv hentede.
+- Ikke bygget endnu: Frida-AI-beregning af kødandel i sammensatte retter (i
+  dag tæller hele varens vægt/kcal, hvis varen har en kødtype; egne retter
+  tæller ikke med i kød/drikke-boksene).
+- Statistik: 12 nye kort (kød g/kcal ×4, sukkerholdige drikke kcal, alkohol
+  kcal/genstande/mængde) som totaler for den valgte periode, egen gruppe under
+  "Tilføj kort". Bred boks "Største syndere" (top 5 for Kalorier/Fedt/Sukker,
+  samme vare må gå igen, klik åbner varen) med "Se alle" →
+  `/statistics/sources` ("Største kilder", faner + Produkter/Produkttyper).
+- "Månedens synder": knap under kalenderens månedsvisning →
+  `/statistics/month-sinners?month=YYYY-MM`, grupperet efter produkttype med
+  "kcal · %", faner Kalorier/Fedt/Sukker.
+
+## 2026-09-24: Otte sundhedsintegrationer inden for boks-arkitekturen (G8)
+
+Brugerens valg (6068f78a/69a1b2bd, 8d98b548/2c95590f): "Byg alle 8" på den
+låste måde. ChatGPT-opgavens plan (tokens og data åbent i databasen,
+enhedskoder fjernet) blev IKKE fulgt, da den strider mod docs/PRIVACY.md.
+
+- Siden viser: Apple Health, Garmin, Health Connect, Google Health, Polar
+  Flow, Samsung Health, Strava, Withings med brugerens egne logoer
+  (`public/integrations/*.png`, beskåret automatisk).
+- **Cloud (OAuth, virker nu):** Withings (vægt + fedtprocent), Google Health
+  API (vægt, træning, skridt pr. dag), Strava og Polar (træningspas). Én
+  fælles registrering (`src/lib/integrations/registry.ts`) og dynamiske
+  ruter `/api/integrations/[provider]/{connect,callback,sync,disconnect}`.
+  Hentede data forsegles straks til brugerens anonyme indbakke som før.
+  Første synkronisering henter historik (Withings 365 dage, Google/Strava 90,
+  Polar 30). Siden synkroniserer automatisk ved åbning (højst hvert 15. min).
+- **Google Health ≠ Health Connect.** `GOOGLE_HEALTH` betyder nu Google
+  Health API i skyen. Health Connect har fået sin egen værdi
+  (`HEALTH_CONNECT`); ingest-ruten modtager det gamle `GOOGLE_HEALTH` som
+  `HEALTH_CONNECT`. Dette erstatter beslutningen 2026-08-28 om, at Google
+  Health kun kan nås via telefon-app.
+- **Telefon-kort:** Apple Health og Health Connect kræver Hello Cal-appen;
+  enhedskoden er flyttet ind på netop de to kort (ikke én fælles boks).
+  Samsung Health deler via Health Connect. Garmin afventer partneraftale.
+- Fitbit vises kun, hvis brugeren allerede har den forbundet (afløses af
+  Google Health).
+- Redirect-URI: standard `<base>/api/integrations/<slug>/callback`;
+  `<PRÆFIKS>_REDIRECT_URI` kan overstyre, og `/api/withings/callback` og
+  `/api/google-health/callback` virker også.
+
 ## 2026-09-24: Usikkerheds-bølgeikon (afklaret, ikke bygget)
 
 Brugerens krav og valg, punkt for punkt (ikke bygget denne omgang, se
@@ -1852,3 +1915,21 @@ Normaliserede produkt-søgeparametre (`ProductNutritionFeatures`, 1:1 med
 - Drikkevarer: cl bevares, når pakningsstørrelsen (`packageSizeText`) er angivet i cl (fx "33cl"); ellers ml (også for liter). Et fejlagtigt "g" på en drikkevare giver aldrig gram.
 - Mængden gemmes fortsat i basisenheden (`amountGrams` = g eller ml, 1:1 mod næringsværdierne pr. 100). cl er kun visning (1 cl = 10 ml), så kcal-beregning og +/− trin (10 g/ml = 1 cl) er uændrede.
 - Én fælles helper: `src/lib/product-display-unit.ts` (tests: `npm test`).
+
+## 2026-09-24: Midlertidigt login med e-mail + kode
+
+- Indtil rigtigt adgangskode-login er bygget, logger ejeren ind på `/login` med e-mail + kode (`src/app/api/auth/code-login/route.ts`). E-mail og kode ligger kun i serverens `.env.production` (`CODE_LOGIN_EMAIL`, `CODE_LOGIN_CODE`); tomme = slået fra.
+- Boksens hovednøgle for denne konto afledes på serveren af `USER_SESSION_SECRET`, så den er den samme på alle enheder. Bevidst, midlertidig undtagelse fra "serveren kan ikke læse data"; fjernes, når rigtigt login findes.
+- Login- og opret-siden viser ingen tekster om databehandling.
+
+## 2026-09-24: HelloFresh kun i Opret ret; handlingsknapper i fuld bredde
+
+- HelloFresh-boksen ("Genkend din ret") er fjernet fra Madvarer-siden. Opret ret når den via kameraet (`/camera?...&for=ret`). HelloFresh må ikke vises på Madvarer, produktsøgning, produkt-/ingrediensoprettelse eller produktvisning. Åbent punkt: kameraets "Produkt"-fane (`mode=hellofresh`) vises også uden for Opret ret; ikke ændret endnu.
+- Almindelige primære/sekundære handlingsknapper fylder altid hele indholdsbredden. Fælles komponent: `ActionButton`/`ActionLink` (`src/components/hf/ActionButton.tsx`); regel i design.md §6.2. Små ikon-/inline-kontroller er undtaget. Eksisterende smalle knapper rettes efterhånden, når deres side alligevel ændres.
+
+## 2026-09-24: Egne, private ingredienser ("Opret egen ingrediens")
+
+- Linket "Opret egen ingrediens" under Opret ret åbner `/ingredients/new`. Brugeren angiver kun et navn (og mængde, når det er fra en ret) — ikke kcal/makroer, som brugeren ikke kan kende. Næringsindholdet står som ukendt, indtil admin har oprettet ingrediensen globalt.
+- Den private ingrediens ligger kun i boksen (samling `privateIngredients`) og vises kun for brugeren selv: øverst i søgningen på Opret ret og på `/ingredients` ("Mine ingredienser": omdøb/slet). I retter bruges produkt-ID `private:<id>`, som aldrig sendes til serveren; retter med egne ingredienser kan ikke deles, før de er gjort globale.
+- Admin varsles: serveren får kun navnet og en anonym engangsindbakke (`IngredientRequest`, ingen bruger-ID) plus e-mail `INGREDIENT_REQUEST_ADMIN`. Admin → "Ønskede ingredienser" kan rette navnet og "Tilføj globalt" (GenericIngredient med Frida-næring) eller afvise.
+- Når admin tilføjer den globalt, overskriver den global brugerens private automatisk (valgt blandt brugerens to muligheder): indbakken leverer den globale ingrediens, og enheden erstatter den private i alle egne retter og sletter den private.

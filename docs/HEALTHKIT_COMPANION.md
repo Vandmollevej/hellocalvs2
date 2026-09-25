@@ -60,7 +60,7 @@ Authorization: Bearer hcal_<64 hex-tegn>
 }
 ```
 
-- `source`: `"APPLE_HEALTH"` eller `"GOOGLE_HEALTH"`.
+- `source`: `"APPLE_HEALTH"` eller `"HEALTH_CONNECT"` (det gamle `"GOOGLE_HEALTH"` modtages som `HEALTH_CONNECT`; `GOOGLE_HEALTH` betyder nu Google Health API i skyen).
 - `metrics[].type`: én af `STEPS`, `ACTIVE_ENERGY_KCAL`, `RESTING_ENERGY_KCAL`,
   `HEART_RATE_BPM`, `SLEEP_MINUTES`, `BODY_FAT_PERCENT`, `HEIGHT_CM`, `BMI`,
   `WATER_ML` (se `HealthMetricType` i `prisma/schema.prisma`). For kumulative
@@ -70,7 +70,7 @@ Authorization: Bearer hcal_<64 hex-tegn>
   nyeste sum for dagen for at overskrive.
 - `weights`/`activities` er valgfrie og lander i de samme `WeightEntry`/
   `Activity`-tabeller som Fitbit/Withings-synkroniseringen bruger, med
-  `source` sat til `APPLE_HEALTH`/`GOOGLE_HEALTH`.
+  `source` sat til `APPLE_HEALTH`/`HEALTH_CONNECT`.
 - Alle tre lister er valgfrie — send kun det du har.
 
 Svar: `{ "ok": true, "metricsCreated": 2, "weightsCreated": 1, "activitiesCreated": 1 }`.

@@ -27,7 +27,7 @@ const globalForScheduler = globalThis as unknown as { hellocalSchedulerStarted?:
 async function escalateStalePendingProducts(now: Date) {
   const cutoff = new Date(now.getTime() - ESCALATION_HOURS * 60 * 60 * 1000);
   const stale = await prisma.product.findMany({
-    where: { status: "PENDING", createdAt: { lt: cutoff }, escalationSentAt: null },
+    where: { status: "PENDING", privateOwnerId: null, createdAt: { lt: cutoff }, escalationSentAt: null },
   });
 
   for (const product of stale) {

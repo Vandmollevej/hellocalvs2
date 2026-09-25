@@ -19,6 +19,7 @@ const DICTIONARY = {
   nav_search_ranking: { DA: "Søgealgoritmer", EN: "Search ranking" },
   nav_quality_control: { DA: "Kvalitetskontrol", EN: "Quality control" },
   nav_passkeys: { DA: "Passkeys", EN: "Passkeys" },
+  nav_ingredient_requests: { DA: "Ønskede ingredienser", EN: "Requested ingredients" },
   nav_support: { DA: "Support", EN: "Support" },
   support_title: { DA: "Supporthenvendelser", EN: "Support requests" },
   nav_logout: { DA: "Log ud", EN: "Log out" },

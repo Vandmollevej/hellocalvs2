@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getSessionUser } from "@/lib/session";
 
 export async function GET(
   _req: Request,
@@ -12,6 +13,11 @@ export async function GET(
       where: { id },
       include: { brand: true, barcodes: true, images: { orderBy: { order: "asc" } } },
     });
+    // En privat ingrediens vises kun for ejeren.
+    if (product && product.privateOwnerId) {
+      const user = await getSessionUser();
+      if (user?.id !== product.privateOwnerId) return NextResponse.json({ message: "Ikke fundet" }, { status: 404 });
+    }
     if (product) {
       return NextResponse.json({ product });
     }

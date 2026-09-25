@@ -13,6 +13,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 3. Read `docs/DEPLOYMENT.md` before changing Docker, GitHub Actions, Synology, networking, or environment configuration.
 4. Use `docs/SPECIFICATION.md` and the focused files in `docs/` as the product contract. Do not infer missing product behavior from placeholder UI.
 5. Read `design.md` before any visual/UI change (colors, typography, spacing, radius, component variants) — it is not needed for backend-only, data, or integration work. This file is intentionally not auto-loaded; fetch it explicitly when the task is visual.
+6. Read `docs/handoffs/OPEN-TASKS.md`. Work is shared across several parallel sessions and Claude accounts: if your task is listed there, follow its rules — claim it, stay inside your group's files, and keep your row's status and next step current (commit it) so another account can resume exactly where you stopped.
 
 ## Working rules
 

@@ -44,6 +44,9 @@ export async function setDishSharing(
   if (shared && !dish.sharedRecipeId) {
     const blocked = await prisma.sharedRecipePublisherBlock.findUnique({ where: { publisherHash } });
     if (blocked) return { error: "Du kan ikke dele retter i øjeblikket", status: 403 };
+    if (dish.ingredients.some((i) => i.product.privateOwnerId)) {
+      return { error: "Retter med egne ingredienser kan ikke deles endnu", status: 409 };
+    }
     const ingredients: SharedIngredient[] = dish.ingredients.map((i) => ({
       productId: i.productId,
       name: i.product.name,

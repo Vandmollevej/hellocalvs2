@@ -301,6 +301,11 @@ function WheelItem({
   const translateY = distance * ITEM_HEIGHT;
   const scale = Math.max(0.62, 1 - absDistance * 0.16);
   const opacity = Math.max(0.18, 1 - absDistance * 0.42);
+  // The centered/active item is inset 25px from the right edge; items further
+  // away ease back out to the edge (0px inset) by the time they reach the
+  // fade-out distance, so the indent fades in step with the opacity.
+  const MAX_INSET = 25;
+  const inset = MAX_INSET * (1 - absDistance / 2.4);
 
   return (
     <button
@@ -319,7 +324,7 @@ function WheelItem({
       } ${isActive ? "cursor-default" : "cursor-pointer"}`}
       style={{
         top: "50%",
-        transform: `translateY(calc(-50% + ${translateY}px)) scale(${scale})`,
+        transform: `translateY(calc(-50% + ${translateY}px)) translateX(-${inset}px) scale(${scale})`,
         opacity,
       }}
     >
