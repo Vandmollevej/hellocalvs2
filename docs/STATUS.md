@@ -2,6 +2,13 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Markering slået helt fra i appen
+
+Se `docs/DECISIONS.md` 2026-09-25 "Global markeringsregel". Global CSS i
+`src/app/globals.css` + `selectstart`-lytter i `GlobalClipboardGuard.tsx`.
+Felter kan stadig redigeres. Skal testes på iPhone efter deploy (long-press på
+kort, tekst og tomme flader må ikke markere noget).
+
 ## 2026-09-25: Mail via Mailjet aktiveret
 
 - SMTP_HOST/PORT/USER/PASS/FROM (Mailjet, in-v3.mailjet.com:587) sat i lokal
