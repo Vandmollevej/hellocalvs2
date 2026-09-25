@@ -13,8 +13,7 @@ knappen "Angiv dagsvægt" (→ `/profile/weight-calibration`). Knappen "Send
 verificeringsmail" er fjernet fra siden; verify-siden og API'et ligger
 stadig, men har ingen indgang i UI'et. Er start-vægten tom, sætter første
 vejning (`POST /api/weight-entries`) den. Ubrugte i18n-nøgler fjernet.
-"Start-mål" findes ikke som et felt: Kropsmål er en liste af målinger —
-afventer brugerens afklaring af, hvad der skal låses dér.
+Kropsmål er ikke omfattet (brugeren har bekræftet, at kun start-vægt skal låses).
 
 ## 2026-09-25: Photo diary — passcode toggle now actually locks the photos
 
