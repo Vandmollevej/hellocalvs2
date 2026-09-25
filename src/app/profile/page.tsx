@@ -21,7 +21,6 @@ import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { IconBathScale } from "@/components/hf/IconBathScale";
 import { HfProgressStepper } from "@/components/hf/HfProgressStepper";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 type Sex = "FEMALE" | "MALE";
 
@@ -46,7 +45,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     let cancelled = false;
-    localApi("/api/profile")
+    fetch("/api/profile")
       .then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente profil");
         return (await response.json()) as { user: ProfileUser };

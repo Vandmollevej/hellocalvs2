@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 type ProfileFlags = {
   sex: "FEMALE" | "MALE" | null;
@@ -23,7 +22,7 @@ export default function MenstrualCycleDisplaySettingsPage() {
 
   useEffect(() => {
     let cancelled = false;
-    localApi("/api/profile")
+    fetch("/api/profile")
       .then(async (response) => {
         if (!response.ok) throw new Error("failed");
         return (await response.json()) as { user: ProfileFlags };
@@ -44,7 +43,7 @@ export default function MenstrualCycleDisplaySettingsPage() {
 
   function toggle(value: boolean) {
     setProfile((current) => (current ? { ...current, cycleTrackingEnabled: value } : current));
-    localApi("/api/profile", {
+    fetch("/api/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ cycleTrackingEnabled: value }),

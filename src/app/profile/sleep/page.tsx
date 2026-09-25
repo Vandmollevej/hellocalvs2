@@ -6,7 +6,6 @@ import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { SleepRangeSlider } from "@/components/hf/SleepRangeSlider";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 type SleepUser = {
   defaultBedtime: string | null;
@@ -68,8 +67,8 @@ export default function SleepSchedulePage() {
     let cancelled = false;
 
     Promise.all([
-      localApi("/api/profile").then((res) => res.json()),
-      localApi("/api/sleep-schedule").then((res) => res.json()),
+      fetch("/api/profile").then((res) => res.json()),
+      fetch("/api/sleep-schedule").then((res) => res.json()),
     ])
       .then(([profileData, scheduleData]) => {
         if (cancelled) return;
@@ -103,7 +102,7 @@ export default function SleepSchedulePage() {
 
     if (saveTimeout.current) clearTimeout(saveTimeout.current);
     saveTimeout.current = setTimeout(() => {
-      localApi("/api/profile", {
+      fetch("/api/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(patch),
@@ -117,7 +116,7 @@ export default function SleepSchedulePage() {
 
   function toggleShiftWork(enabled: boolean) {
     setUser((current) => (current ? { ...current, shiftWorkEnabled: enabled } : current));
-    localApi("/api/profile", {
+    fetch("/api/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ shiftWorkEnabled: enabled }),
@@ -128,7 +127,7 @@ export default function SleepSchedulePage() {
     const existingTimeout = weekdaySaveTimeouts.current[weekday];
     if (existingTimeout) clearTimeout(existingTimeout);
     weekdaySaveTimeouts.current[weekday] = setTimeout(() => {
-      localApi("/api/sleep-schedule", {
+      fetch("/api/sleep-schedule", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

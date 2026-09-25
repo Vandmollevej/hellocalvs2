@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 import { exchangeFitbitCode } from "@/lib/integrations/fitbit";
-import { readOAuthState, saveIntegrationTokens } from "@/lib/integrations-oauth";
+import { getSessionUser, unauthorized } from "@/lib/session";
 
 const STATE_COOKIE = "fitbit_oauth_state";
 const DONE_URL = "/settings/integrations";
@@ -8,7 +9,7 @@ const DONE_URL = "/settings/integrations";
 export async function GET(req: NextRequest) {
   const code = req.nextUrl.searchParams.get("code");
   const state = req.nextUrl.searchParams.get("state");
-  const expected = readOAuthState(req, STATE_COOKIE);
+  const expectedState = req.cookies.get(STATE_COOKIE)?.value;
   const error = req.nextUrl.searchParams.get("error");
 
   function redirectWithClearedState(query?: string) {
@@ -19,14 +20,39 @@ export async function GET(req: NextRequest) {
     return response;
   }
 
-  if (error || !code || !state || !expected || state !== expected.state) {
+  if (error || !code || !state || !expectedState || state !== expectedState) {
     return redirectWithClearedState("error=fitbit_authorize_failed");
   }
 
   try {
-    await saveIntegrationTokens("FITBIT", expected.inboxId, await exchangeFitbitCode(code));
+    const tokens = await exchangeFitbitCode(code);
+    const user = await getSessionUser();
+
+    if (!user) return unauthorized();
+    await prisma.integration.upsert({
+      where: { userId_provider: { userId: user.id, provider: "FITBIT" } },
+      create: {
+        userId: user.id,
+        provider: "FITBIT",
+        status: "CONNECTED",
+        accessToken: tokens.access_token,
+        refreshToken: tokens.refresh_token,
+        expiresAt: new Date(Date.now() + tokens.expires_in * 1000),
+        scope: tokens.scope,
+        connectedAt: new Date(),
+      },
+      update: {
+        status: "CONNECTED",
+        accessToken: tokens.access_token,
+        refreshToken: tokens.refresh_token,
+        expiresAt: new Date(Date.now() + tokens.expires_in * 1000),
+        scope: tokens.scope,
+        connectedAt: new Date(),
+        lastError: null,
+      },
+    });
   } catch (err) {
-    console.error("Fitbit callback failed", err instanceof Error ? err.message : "ukendt");
+    console.error("Fitbit callback failed", err);
     return redirectWithClearedState("error=fitbit_token_exchange_failed");
   }
 

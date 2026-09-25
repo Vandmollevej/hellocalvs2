@@ -1,8 +1,18 @@
 import { SignJWT, jwtVerify } from "jose";
 
-// Session for almindelige brugere (passkey-login, docs/PRIVACY.md). Samme
-// JWT/cookie-mønster som src/lib/admin-auth.ts, men et separat cookie-navn/
-// secret, så en admin-session og en brugersession aldrig kan forveksles.
+// Rigtig session for almindelige brugere — mangler indtil nu (docs/STATUS.md
+// "Next work" #4: "Implement account authentication before inviting other
+// users"). Hele resten af appen har hidtil brugt én delt getDemoUser()
+// (src/lib/demo-user.ts) i stedet for en rigtig session, hvilket ikke kan
+// bære pointsystemet, "videresend til en ven", "invitér en ven" eller
+// notifikationspræferencer — alle kræver at kunne kende to FORSKELLIGE
+// brugere fra hinanden. Samme JWT/cookie-mønster som src/lib/admin-auth.ts,
+// men et separat cookie-navn/secret, så en admin-session og en almindelig
+// brugersession aldrig kan forveksles.
+//
+// Eksisterende ruter der stadig bruger getDemoUser() er bevidst IKKE migreret
+// her — det er en større, separat migrering, se docs/STATUS.md. Denne fil
+// bruges kun af de NYE ruter i pointsystem-batchen (2026-09-02/03).
 
 export const USER_SESSION_COOKIE = "hc_user_session";
 const SESSION_TTL_SECONDS = 30 * 24 * 60 * 60; // 30 dage
@@ -32,6 +42,37 @@ export async function verifyUserSession(token: string): Promise<{ userId: string
     // 2026-09-23). Sessioner, en admin tidligere har udstedt, afvises.
     if (payload.impersonatedBy !== undefined) return null;
     return { userId: payload.sub };
+  } catch {
+    return null;
+  }
+}
+
+// Face ID / passkey for almindelige brugere (WebAuthn). Udfordringen ligger
+// i en kortlivet, signeret cookie mellem options- og verify-kaldet.
+export const USER_WEBAUTHN_REG_COOKIE = "hc_user_webauthn_reg";
+export const USER_WEBAUTHN_AUTH_COOKIE = "hc_user_webauthn_auth";
+export const USER_WEBAUTHN_CHALLENGE_MAX_AGE = 5 * 60;
+
+export async function signUserWebauthnChallenge(purpose: "reg" | "auth", challenge: string, userId?: string) {
+  return new SignJWT({ purpose: `user-webauthn-${purpose}`, challenge, ...(userId ? { userId } : {}) })
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime(`${USER_WEBAUTHN_CHALLENGE_MAX_AGE}s`)
+    .sign(getSecretKey());
+}
+
+export async function verifyUserWebauthnChallenge(
+  purpose: "reg" | "auth",
+  token: string | undefined
+): Promise<{ challenge: string; userId?: string } | null> {
+  if (!token) return null;
+  try {
+    const { payload } = await jwtVerify(token, getSecretKey());
+    if (payload.purpose !== `user-webauthn-${purpose}` || typeof payload.challenge !== "string") return null;
+    return {
+      challenge: payload.challenge,
+      userId: typeof payload.userId === "string" ? payload.userId : undefined,
+    };
   } catch {
     return null;
   }

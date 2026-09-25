@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { IconCalendarHeart } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 type CycleEntry = {
   id: string;
@@ -37,7 +36,7 @@ export default function PeriodCreatePage() {
   const [saveError, setSaveError] = useState<string | null>(null);
 
   function load() {
-    localApi("/api/menstrual-cycle")
+    fetch("/api/menstrual-cycle")
       .then(async (response) => {
         if (!response.ok) throw new Error("failed");
         return (await response.json()) as { entries: CycleEntry[] };
@@ -56,7 +55,7 @@ export default function PeriodCreatePage() {
     setSaveError(null);
     setSaved(false);
     try {
-      const response = await localApi("/api/menstrual-cycle", {
+      const response = await fetch("/api/menstrual-cycle", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ startDate }),

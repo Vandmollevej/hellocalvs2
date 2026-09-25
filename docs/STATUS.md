@@ -2,6 +2,22 @@
 
 Last updated: 2026-09-24
 
+## 2026-09-24: Normalt login igen (boksen fjernet)
+
+Se `docs/DECISIONS.md` 2026-09-24 "Normalt login".
+
+- Privacy-by-architecture rullet tilbage for brugerappen; data server-side.
+- Login: e-mail + adgangskode, Face ID, Google, Apple, Facebook
+  (`src/lib/oauth.ts`, `src/lib/user-passkey.ts`, `src/lib/user-login.ts`).
+- Mail-advarsel ved login fra ny enhed/nyt land.
+- Migration `20260924180000_restore_normal_accounts` (håndskrevet via
+  `prisma migrate diff`, køres af migrate-servicen ved deploy).
+
+Next work:
+1. Sæt `USER_SESSION_SECRET`, `APP_BASE_URL`, SMTP og Google/Facebook/
+   Apple-nøgler i `.env.production` (docs/DEPLOYMENT.md "Login (brugere)").
+2. Test Face ID og de tre sociale logins på iPhone efter deploy.
+
 ## TODO (2026-09-24): Waldemarsro-integration (dansk opskriftsside) — afklaret, ikke bygget
 
 Brugerens svar (2026-09-24). Tilstrækkeligt til at bygge uden yderligere

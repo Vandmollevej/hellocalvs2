@@ -8,7 +8,6 @@ import { REGIONS } from "@/lib/regions";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { DEFAULT_LOCALE, isLocale, type Locale } from "@/i18n";
-import { localApi } from "@/lib/vault/local-api";
 
 type SettingsUser = {
   showAllergens: boolean;
@@ -108,7 +107,7 @@ export default function ProfileSettingsPage() {
 
   useEffect(() => {
     let cancelled = false;
-    localApi("/api/profile")
+    fetch("/api/profile")
       .then((res) => res.json())
       .then((data) => {
         if (!cancelled) {
@@ -134,7 +133,7 @@ export default function ProfileSettingsPage() {
 
   function toggleShowAllergens(value: boolean) {
     setUser((current) => (current ? { ...current, showAllergens: value } : current));
-    localApi("/api/profile", {
+    fetch("/api/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ showAllergens: value }),
@@ -143,7 +142,7 @@ export default function ProfileSettingsPage() {
 
   function toggleShowExtendedNutrition(value: boolean) {
     setUser((current) => (current ? { ...current, showExtendedNutrition: value } : current));
-    localApi("/api/profile", {
+    fetch("/api/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ showExtendedNutrition: value }),
@@ -152,7 +151,7 @@ export default function ProfileSettingsPage() {
 
   function updateRegion(region: string) {
     setUser((current) => (current ? { ...current, region } : current));
-    localApi("/api/profile", {
+    fetch("/api/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ region }),
@@ -163,7 +162,7 @@ export default function ProfileSettingsPage() {
     setUser((current) => {
       if (!current) return current;
       const nextVisibility = { ...(current.allergenVisibility ?? {}), [key]: value };
-      localApi("/api/profile", {
+      fetch("/api/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ allergenVisibility: nextVisibility }),

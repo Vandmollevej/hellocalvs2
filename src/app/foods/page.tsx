@@ -7,7 +7,6 @@ import { IconApple, IconBookmark, IconBookmarkFilled, IconCamera, IconSearch } f
 import { HfScreen } from "@/components/HfScreen";
 import { FoodRow } from "@/components/FoodRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 type Product = {
   id: string;
@@ -116,7 +115,7 @@ function MadvarerContent() {
 
   useEffect(() => {
     const controller = new AbortController();
-    localApi("/api/favorites", { signal: controller.signal })
+    fetch("/api/favorites", { signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) throw new Error("offline");
         return (await response.json()) as { favorites: Array<{ product: { id: string } | null }> };
@@ -135,7 +134,7 @@ function MadvarerContent() {
       else updated.delete(productId);
       return updated;
     });
-    localApi("/api/favorites", {
+    fetch("/api/favorites", {
       method: next ? "POST" : "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ productId }),
@@ -153,7 +152,7 @@ function MadvarerContent() {
       try {
         const [productsResponse, registrationsResponse] = await Promise.all([
           fetch("/api/products", { signal: controller.signal }),
-          localApi("/api/registrations", { signal: controller.signal }),
+          fetch("/api/registrations", { signal: controller.signal }),
         ]);
         if (!productsResponse.ok) throw new Error("Kunne ikke hente madvarer");
         const productsData: { products: Product[] } = await productsResponse.json();
@@ -199,7 +198,7 @@ function MadvarerContent() {
     const timer = window.setTimeout(async () => {
       try {
         const hour = new Date().getHours();
-        const response = await localApi(
+        const response = await fetch(
           `/api/products?q=${encodeURIComponent(q)}&hour=${hour}&take=20`,
           { signal: controller.signal }
         );
@@ -230,12 +229,16 @@ function MadvarerContent() {
       localHour: new Date().getHours(),
     });
 
-    // Klikket gemmes i brugerens krypterede søgehistorik og sendes uden
-    // bruger til den regionale statistik (docs/PRIVACY.md).
-    void localApi("/api/products/search-event", {
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon("/api/products/search-event", new Blob([payload], { type: "application/json" }));
+      return;
+    }
+
+    void fetch("/api/products/search-event", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: payload,
+      keepalive: true,
     });
   }
 

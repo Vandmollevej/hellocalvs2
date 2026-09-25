@@ -5,7 +5,6 @@ import { useParams } from "next/navigation";
 import { MiniLineChart, MiniBarChart, type MiniChartPoint } from "@/components/hf/MiniChart";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { DOCTOR_SHARE_UNAVAILABLE_CATEGORIES, type DoctorShareCategory } from "@/lib/doctor-share";
-import { helloDocFetch } from "@/lib/vault/handlers/doctor-shares";
 
 type TokenStatus = "NOT_FOUND" | "REVOKED" | "EXPIRED" | "PENDING" | "ACTIVE";
 
@@ -75,7 +74,7 @@ export default function HelloDocTokenPage() {
 
   useEffect(() => {
     let cancelled = false;
-    helloDocFetch(token)
+    fetch(`/api/hello-doc/${token}`)
       .then((res) => (res.ok || res.status === 404 ? res.json() : Promise.reject()))
       .then((json: TokenResponse) => {
         if (!cancelled) setData(json);
@@ -94,7 +93,7 @@ export default function HelloDocTokenPage() {
     try {
       const res = await fetch(`/api/hello-doc/${token}`, { method: "POST" });
       if (!res.ok) throw new Error();
-      const refetch = await helloDocFetch(token);
+      const refetch = await fetch(`/api/hello-doc/${token}`);
       if (refetch.ok || refetch.status === 404) {
         setData(await refetch.json());
       }

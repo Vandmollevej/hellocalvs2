@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import type { MessageChannel, MessageEvent as MessageEventType } from "@prisma/client";
+import type { MessageEvent as MessageEventType } from "@prisma/client";
 
 // Besked automatisering (docs/DECISIONS.md 2026-09-02): queueMessage() er
 // den ENESTE indgang til at sende en mail/pushbesked i appen. Den slår
@@ -20,35 +20,27 @@ const USER_TOGGLEABLE_EVENTS: MessageEventType[] = [
   "FRIEND_FORWARD_RECEIVED",
 ];
 
-// docs/PRIVACY.md: serveren kender ikke brugernes navne. Et manglende eller
-// tomt {{displayName}} fjernes, så hilsnen blot bliver "Hej,".
 function renderTemplate(template: string, vars: Record<string, string>): string {
-  return template
-    .replace(/\{\{(\w+)\}\}/g, (match, key) => (key === "displayName" ? vars[key] ?? "" : vars[key] ?? match))
-    .replace(/Hej\s+,/g, "Hej,");
-}
-
-// Almindelige brugere har ingen e-mail på serveren (docs/PRIVACY.md), så
-// e-mail kan ikke sendes til dem: BOTH bliver til PUSH, og ren EMAIL springes over.
-async function channelFor(userId: string | undefined, channel: MessageChannel): Promise<MessageChannel | null> {
-  if (!userId || channel === "PUSH") return channel;
-  const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } });
-  if (user?.email) return channel;
-  return channel === "BOTH" ? "PUSH" : null;
+  return template.replace(/\{\{(\w+)\}\}/g, (match, key) => vars[key] ?? match);
 }
 
 export async function queueMessage(
   event: MessageEventType,
   opts: { userId?: string; toEmail?: string; vars?: Record<string, string> } = {}
 ) {
-  const template = await prisma.messageTemplate.findUnique({ where: { event } });
-  if (!template || !template.enabled) {
+  // Er skabelonen endnu ikke seedet (admin har ikke åbnet "Besked
+  // automatisering"), bruges standardskabelonen, så fx login-advarsler
+  // altid sendes.
+  const template =
+    (await prisma.messageTemplate.findUnique({ where: { event } })) ??
+    ({ ...DEFAULT_TEMPLATES[event], enabled: true } as const);
+  if (!template.enabled) {
     return prisma.outboundMessage.create({
       data: {
         userId: opts.userId,
         toEmail: opts.toEmail,
         event,
-        channel: template?.channel ?? "EMAIL",
+        channel: template.channel,
         status: "SKIPPED",
       },
     });
@@ -67,20 +59,13 @@ export async function queueMessage(
     }
   }
 
-  const channel = opts.toEmail ? template.channel : await channelFor(opts.userId, template.channel);
-  if (!channel) {
-    return prisma.outboundMessage.create({
-      data: { userId: opts.userId, event, channel: template.channel, status: "SKIPPED" },
-    });
-  }
-
   const vars = opts.vars ?? {};
   return prisma.outboundMessage.create({
     data: {
       userId: opts.userId,
       toEmail: opts.toEmail,
       event,
-      channel,
+      channel: template.channel,
       subject: renderTemplate(template.subject, vars),
       bodyHtml: renderTemplate(template.bodyHtml, vars),
       status: "QUEUED",
@@ -172,6 +157,17 @@ const DEFAULT_TEMPLATES: Record<MessageEventType, { subject: string; bodyHtml: s
   DOCTOR_SHARE_INVITATION: {
     subject: "{{ownerName}} har inviteret dig til at følge deres fremgang i Hello Cal",
     bodyHtml: "<p>{{ownerName}} har inviteret dig til at se udvalgte data i Hello Cal.</p><p><a href=\"{{viewUrl}}\">Se oversigten</a> — invitationen er gyldig i 14 dage.</p>",
+    channel: "EMAIL",
+  },
+  NEW_DEVICE_LOGIN: {
+    subject: "Nyt login på din Hello Cal-konto",
+    bodyHtml:
+      "<p>Hej {{displayName}},</p><p>Der er netop logget ind på din Hello Cal-konto fra en ny enhed eller et nyt sted.</p><p><strong>Enhed:</strong> {{device}}<br><strong>Sted:</strong> {{location}}<br><strong>Tidspunkt:</strong> {{time}}<br><strong>Login med:</strong> {{method}}</p><p>Hvis det var dig, behøver du ikke gøre noget.</p><p>Hvis det ikke var dig, bør du straks <a href=\"{{resetLink}}\">skifte din adgangskode</a>.</p><p>Hello Cal</p>",
+    channel: "EMAIL",
+  },
+  ADMIN_MESSAGE: {
+    subject: "Besked fra Hello Cal om {{productName}}",
+    bodyHtml: "<p>Hej {{displayName}},</p><p>Tak for din rettelse af \"{{productName}}\". Vi har en besked til dig:</p><p>{{message}}</p><p>Hello Cal</p>",
     channel: "EMAIL",
   },
 };

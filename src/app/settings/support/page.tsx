@@ -15,7 +15,6 @@ import {
   type SupportPermissionKey,
   type SupportPermissions,
 } from "@/lib/support-permissions";
-import { localApi } from "@/lib/vault/local-api";
 
 // Local calendar date as "YYYY-MM-DD" — the value <input type="date"> uses.
 // Never parsed back into a Date on the client, so no timezone can shift it.
@@ -58,7 +57,7 @@ export default function SupportSettingsPage() {
 
   useEffect(() => {
     let cancelled = false;
-    localApi("/api/profile")
+    fetch("/api/profile")
       .then((response) => (response.ok ? response.json() : null))
       .then((data: { user?: { sex?: string | null } } | null) => {
         if (!cancelled) setIsFemale(data?.user?.sex === "FEMALE");
@@ -122,7 +121,7 @@ export default function SupportSettingsPage() {
       // All off = revoke the current permission (kept as history server-side).
       const visiblePermissions = Object.fromEntries(visibleKeys.map((key) => [key, permissions[key]]));
       const response = anySelected
-        ? await localApi("/api/support/access", {
+        ? await fetch("/api/support/access", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ validFrom, validUntil, permissions: visiblePermissions }),

@@ -10,7 +10,6 @@ import {
   DOCTOR_SHARE_HISTORY_RANGES,
   type DoctorShareHistoryRange,
 } from "@/lib/doctor-share";
-import { localApi } from "@/lib/vault/local-api";
 
 type PreviewData = {
   profile: { displayName: string; email: string; sex: "MALE" | "FEMALE" | null };
@@ -71,7 +70,7 @@ export default function HelloDocPreviewPage() {
 
   useEffect(() => {
     let cancelled = false;
-    localApi(`/api/doctor-shares/preview?range=${range}`)
+    fetch(`/api/doctor-shares/preview?range=${range}`)
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((json) => {
         if (!cancelled) setData(json);

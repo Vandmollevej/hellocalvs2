@@ -21,7 +21,6 @@ import { DEFAULT_STAT_SELECTION, filterDaysInRange, selectionRange, type StatPer
 import type { IntegrationCardStatus } from "@/lib/integrations";
 import { computeTrendWeight, type WeightSample, type MealSample } from "@/lib/weight-trend";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 const DAY_COUNT = 7;
 
@@ -110,15 +109,15 @@ export default function StatisticsPage() {
     let cancelled = false;
 
     Promise.all([
-      localApi("/api/registrations").then(async (response) => {
+      fetch("/api/registrations").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente registreringer");
         return (await response.json()) as { registrations: RegistrationTotals[] };
       }),
-      localApi("/api/weight-entries").then(async (response) => {
+      fetch("/api/weight-entries").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente vejninger");
         return (await response.json()) as { entries: WeightEntry[] };
       }),
-      localApi("/api/activities").then(async (response) => {
+      fetch("/api/activities").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente aktiviteter");
         return (await response.json()) as { activities: ActivityTotals[] };
       }),
@@ -126,11 +125,11 @@ export default function StatisticsPage() {
         if (!response.ok) throw new Error("Kunne ikke hente integrationer");
         return (await response.json()) as { integrations: IntegrationCardStatus[] };
       }),
-      localApi("/api/health-metrics").then(async (response) => {
+      fetch("/api/health-metrics").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente sundhedsdata");
         return (await response.json()) as { metrics: HealthMetricTotals[] };
       }),
-      localApi("/api/profile").then(async (response) => {
+      fetch("/api/profile").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente profil");
         return (await response.json()) as { user: { warnOnRecommendedLimits?: boolean } };
       }),

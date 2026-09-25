@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
-import { TextField } from "@/components/hf/TextField";
-import { localApi } from "@/lib/vault/local-api";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 // Informationsside bag hængelåsen ved start-vægt på Profil
@@ -17,13 +15,10 @@ export default function StartWeightPage() {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState(false);
-  // Hello Cal kender ikke brugerens e-mail (docs/PRIVACY.md) — brugeren
-  // taster den, og serveren tjekker den mod kontoens e-mail-hash.
-  const [email, setEmail] = useState("");
 
   useEffect(() => {
     let cancelled = false;
-    localApi("/api/profile")
+    fetch("/api/profile")
       .then(async (response) => {
         if (!response.ok) throw new Error("profile");
         return (await response.json()) as { user: { weightKg: number | null } };
@@ -42,11 +37,7 @@ export default function StartWeightPage() {
     setSending(true);
     setError(false);
     try {
-      const response = await localApi("/api/profile/start-weight/verification", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
+      const response = await fetch("/api/profile/start-weight/verification", { method: "POST" });
       if (!response.ok) throw new Error("verification_failed");
       setSent(true);
     } catch {
@@ -81,23 +72,14 @@ export default function StartWeightPage() {
             {t("profile.startWeight.emailSent")}
           </p>
         ) : (
-          <>
-            <TextField
-              label={t("account.emailLabel")}
-              type="email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <button
-              type="button"
-              disabled={sending || !email}
-              onClick={sendVerificationEmail}
-              className="hf-type-button mt-2 flex h-12 w-full items-center justify-center rounded-lg bg-hf-green px-4 font-bold text-hf-white disabled:opacity-50"
-            >
-              {sending ? t("profile.startWeight.sending") : t("profile.startWeight.sendEmail")}
-            </button>
-          </>
+          <button
+            type="button"
+            disabled={sending}
+            onClick={sendVerificationEmail}
+            className="hf-type-button mt-2 flex h-12 w-full items-center justify-center rounded-lg bg-hf-green px-4 font-bold text-hf-white disabled:opacity-50"
+          >
+            {sending ? t("profile.startWeight.sending") : t("profile.startWeight.sendEmail")}
+          </button>
         )}
 
         {error && (

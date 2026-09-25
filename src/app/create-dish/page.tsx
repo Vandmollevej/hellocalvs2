@@ -13,7 +13,6 @@ import {
   type DishDraftIngredient,
 } from "@/lib/dish-draft";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 function round(value: number, decimals = 0) {
   const factor = 10 ** decimals;
@@ -40,7 +39,7 @@ export default function CreateDishPage() {
     const timeout = setTimeout(async () => {
       setSearchState("loading");
       try {
-        const res = await localApi(`/api/products?q=${encodeURIComponent(query)}`, {
+        const res = await fetch(`/api/products?q=${encodeURIComponent(query)}`, {
           signal: controller.signal,
         });
         if (!res.ok) throw new Error("offline");
@@ -93,7 +92,7 @@ export default function CreateDishPage() {
     }
     setSaving(true);
     try {
-      const res = await localApi("/api/dishes", {
+      const res = await fetch("/api/dishes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -108,7 +107,7 @@ export default function CreateDishPage() {
       }
       clearDishDraft();
       if (shared && data.dish?.id) {
-        const shareRes = await localApi(`/api/dishes/${encodeURIComponent(data.dish.id)}/share`, {
+        const shareRes = await fetch(`/api/dishes/${encodeURIComponent(data.dish.id)}/share`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ shared: true, language: locale === "en" ? "en" : "da" }),

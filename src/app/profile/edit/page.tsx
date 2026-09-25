@@ -10,7 +10,7 @@ import { WheelPicker } from "@/components/ui/WheelPicker";
 import { latestTrendWeight, type MealSample, type WeightSample } from "@/lib/weight-trend";
 import { computeAge } from "@/lib/age";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
+import { FaceIdButton } from "@/components/FaceIdButton";
 
 type Sex = "FEMALE" | "MALE";
 
@@ -72,7 +72,7 @@ export default function ProfileEditPage() {
 
   useEffect(() => {
     let cancelled = false;
-    localApi("/api/profile")
+    fetch("/api/profile")
       .then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente profil");
         return (await response.json()) as { user: ProfileUser };
@@ -94,7 +94,7 @@ export default function ProfileEditPage() {
 
   useEffect(() => {
     let cancelled = false;
-    localApi("/api/weight-entries")
+    fetch("/api/weight-entries")
       .then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente vejninger");
         return (await response.json()) as { entries: WeightSample[] };
@@ -102,7 +102,7 @@ export default function ProfileEditPage() {
       .then((weightData) => {
         if (cancelled) return;
         const entries = weightData.entries;
-        return localApi("/api/registrations").then(async (response) => {
+        return fetch("/api/registrations").then(async (response) => {
           if (!response.ok) throw new Error("Kunne ikke hente registreringer");
           return (await response.json()) as { registrations: MealSample[] };
         }).then((registrationData) => {
@@ -124,7 +124,7 @@ export default function ProfileEditPage() {
 
     if (saveTimeout.current) clearTimeout(saveTimeout.current);
     saveTimeout.current = setTimeout(() => {
-      localApi("/api/profile", {
+      fetch("/api/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ [key]: value }),
@@ -137,7 +137,7 @@ export default function ProfileEditPage() {
   function saveInitialWeight() {
     const parsed = Number(initialWeightInput.trim().replace(",", "."));
     if (!initialWeightInput.trim() || !Number.isFinite(parsed) || parsed <= 0) return;
-    localApi("/api/profile", {
+    fetch("/api/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ weightKg: parsed }),
@@ -161,7 +161,7 @@ export default function ProfileEditPage() {
 
   function updateNow<K extends keyof ProfileUser>(key: K, value: ProfileUser[K]) {
     setUser((current) => (current ? { ...current, [key]: value } : current));
-    localApi("/api/profile", {
+    fetch("/api/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ [key]: value }),
@@ -184,6 +184,10 @@ export default function ProfileEditPage() {
               value={user.displayName}
               onChange={(event) => update("displayName", event.target.value)}
             />
+          </Field>
+
+          <Field label={t("profile.field.email")}>
+            <input className={`${inputClass} opacity-60`} value={user.email} disabled />
           </Field>
 
           <div className="grid grid-cols-2 gap-3">
@@ -315,11 +319,12 @@ export default function ProfileEditPage() {
 
           <button
             type="button"
-            onClick={() => router.push("/profile/security")}
+            onClick={() => router.push("/profile/change-password")}
             className="hf-btn-primary hf-type-button mt-4 h-12 w-full px-4"
           >
             {t("profile.changePasswordButton")}
           </button>
+          <FaceIdButton />
         </div>
       )}
     </HfScreen>

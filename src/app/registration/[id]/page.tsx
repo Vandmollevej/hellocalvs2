@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 type Registration = {
   id: string;
@@ -46,7 +45,7 @@ export default function RegistrationPage() {
   const [status, setStatus] = useState<"loading" | "not_found" | "error" | "loaded">("loading");
 
   useEffect(() => {
-    localApi(`/api/registrations/${id}`)
+    fetch(`/api/registrations/${id}`)
       .then(async (res) => {
         if (res.status === 404) return setStatus("not_found");
         if (!res.ok) return setStatus("error");

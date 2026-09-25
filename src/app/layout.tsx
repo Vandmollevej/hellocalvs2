@@ -5,7 +5,7 @@ import { PhoneFrame } from "@/components/PhoneFrame";
 import { LocaleProvider } from "@/i18n/LocaleProvider";
 import { OfflineQueueBanner } from "@/components/OfflineQueueBanner";
 import { GlobalClipboardGuard } from "@/components/GlobalClipboardGuard";
-import { VaultGate } from "@/components/account/VaultGate";
+import { AuthGate } from "@/components/AuthGate";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -51,7 +51,7 @@ export default function RootLayout({
       <body className="min-h-full text-text-primary font-sans">
         <GlobalClipboardGuard />
         <LocaleProvider>
-          <VaultGate />
+          <AuthGate />
           <OfflineQueueBanner />
           <PhoneFrame>{children}</PhoneFrame>
         </LocaleProvider>

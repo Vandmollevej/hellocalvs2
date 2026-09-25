@@ -38,7 +38,6 @@ import { computeAge } from "@/lib/age";
 import { getSportMeta } from "@/lib/sport-icons";
 import { useDefaultCalendarView } from "@/lib/calendar-view-pref";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 const WEEKDAY_KEYS = [
   "calendar.weekdayMon",
@@ -395,7 +394,7 @@ export default function CalendarPage() {
 
   useEffect(() => {
     let cancelled = false;
-    localApi("/api/registrations")
+    fetch("/api/registrations")
       .then(async (response) => {
         if (!response.ok) throw new Error("Registreringer kunne ikke hentes");
         return (await response.json()) as { registrations: Registration[] };
@@ -416,7 +415,7 @@ export default function CalendarPage() {
 
   useEffect(() => {
     let cancelled = false;
-    localApi("/api/activities")
+    fetch("/api/activities")
       .then(async (response) => {
         if (!response.ok) throw new Error("Aktiviteter kunne ikke hentes");
         return (await response.json()) as { activities: Activity[] };
@@ -434,7 +433,7 @@ export default function CalendarPage() {
 
   useEffect(() => {
     let cancelled = false;
-    localApi("/api/weight-entries")
+    fetch("/api/weight-entries")
       .then((response) => (response.ok ? response.json() : { entries: [] }))
       .then((data: { entries?: WeighIn[] }) => {
         if (!cancelled) setWeighIns(data.entries ?? []);
@@ -448,9 +447,9 @@ export default function CalendarPage() {
   useEffect(() => {
     let cancelled = false;
     Promise.all([
-      localApi("/api/profile").then((response) => response.json()),
-      localApi("/api/sleep-schedule").then((response) => response.json()),
-      localApi("/api/work-shifts").then((response) => response.json()),
+      fetch("/api/profile").then((response) => response.json()),
+      fetch("/api/sleep-schedule").then((response) => response.json()),
+      fetch("/api/work-shifts").then((response) => response.json()),
     ])
       .then(([profileData, scheduleData, shiftData]) => {
         if (cancelled) return;
@@ -496,7 +495,7 @@ export default function CalendarPage() {
         registration.id === registrationId ? { ...registration, createdAt: iso } : registration,
       ),
     );
-    localApi(`/api/registrations/${registrationId}`, {
+    fetch(`/api/registrations/${registrationId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ createdAt: iso }),
@@ -515,7 +514,7 @@ export default function CalendarPage() {
         ...current,
         [iso]: { ...(current[iso] ?? { date: iso, bedtime: null, wakeTime: null }), ...body },
       }));
-      localApi(`/api/work-shifts/${iso}`, {
+      fetch(`/api/work-shifts/${iso}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -529,7 +528,7 @@ export default function CalendarPage() {
         ...current,
         [weekday]: { weekday, bedtime: bedtime ?? "", wakeTime: wakeTime ?? "" },
       }));
-      localApi("/api/sleep-schedule", {
+      fetch("/api/sleep-schedule", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ weekday, bedtime, wakeTime }),
@@ -951,14 +950,14 @@ function MonthView({
                       {!current &&
                         (met ? (
                           <IconCheck
-                            size={16}
+                            size={12}
                             stroke={3}
                             className="absolute right-0.5 top-0.5 text-hf-lime"
                             aria-hidden="true"
                           />
                         ) : (
                           <span
-                            className="absolute right-1 top-0.5 text-base font-bold leading-none text-hf-red-muted"
+                            className="absolute right-1 top-0.5 text-[11px] font-bold leading-none text-hf-red-muted"
                             aria-hidden="true"
                           >
                             ÷

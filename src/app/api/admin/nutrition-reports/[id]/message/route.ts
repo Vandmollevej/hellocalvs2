@@ -1,14 +1,21 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
-import { sealToPublicKey } from "@/lib/vault/crypto";
+import { queueMessage } from "@/lib/messaging";
 
 const MAX_MESSAGE_CHARS = 2000;
 
-// Besked fra admin til indberetteren af en næringsrettelse (docs/PRIVACY.md,
-// docs/DECISIONS.md 2026-09-23). Beskeden forsegles til indberetterens
-// VaultInbox og kan kun åbnes af brugerens egen enhed. Admin og server ved
-// ikke, hvem modtageren er.
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/\n/g, "<br>");
+}
+
+// Besked fra admin til indberetteren af en næringsrettelse, sendt på mail
+// (ADMIN_MESSAGE-skabelonen).
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const admin = await requireAdminUser();
   if (!admin) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -22,23 +29,20 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
   const report = await prisma.productNutritionReport.findUnique({
     where: { id },
-    select: { replyInboxId: true, product: { select: { name: true } } },
+    select: { reporter: { select: { id: true, displayName: true } }, product: { select: { name: true } } },
   });
   if (!report) return NextResponse.json({ message: "Ikke fundet" }, { status: 404 });
-  if (!report.replyInboxId) {
+  if (!report.reporter) {
     return NextResponse.json({ message: "Indberetteren kan ikke kontaktes" }, { status: 409 });
   }
 
-  const inbox = await prisma.vaultInbox.findUnique({ where: { id: report.replyInboxId } });
-  if (!inbox) return NextResponse.json({ message: "Indberetteren kan ikke kontaktes" }, { status: 409 });
-
-  const sealed = await sealToPublicKey(inbox.publicKey, {
-    kind: "ADMIN_MESSAGE",
-    context: "NUTRITION_REPORT",
-    productName: report.product.name,
-    message,
-    sentAt: new Date().toISOString(),
+  await queueMessage("ADMIN_MESSAGE", {
+    userId: report.reporter.id,
+    vars: {
+      displayName: escapeHtml(report.reporter.displayName),
+      productName: escapeHtml(report.product.name),
+      message: escapeHtml(message),
+    },
   });
-  await prisma.vaultInboxItem.create({ data: { inboxId: inbox.id, ...sealed } });
   return NextResponse.json({ ok: true });
 }

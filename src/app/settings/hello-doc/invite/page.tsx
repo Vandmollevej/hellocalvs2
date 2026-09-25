@@ -6,8 +6,6 @@ import { HfScreen } from "@/components/HfScreen";
 import { DoctorShareEditor } from "@/components/hf/DoctorShareEditor";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { DEFAULT_DOCTOR_SHARE_CATEGORIES, type DoctorShareCategory, type DoctorShareHistoryRange } from "@/lib/doctor-share";
-import { localApi } from "@/lib/vault/local-api";
-import { openInviteMail } from "@/lib/vault/handlers/doctor-shares";
 
 export default function InviteHelloDocUserPage() {
   const { t } = useTranslation();
@@ -24,7 +22,7 @@ export default function InviteHelloDocUserPage() {
     setSending(true);
     setError(null);
     try {
-      const res = await localApi("/api/doctor-shares", {
+      const res = await fetch("/api/doctor-shares", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, categories, historyRange }),
@@ -34,9 +32,6 @@ export default function InviteHelloDocUserPage() {
         setError(data.message ?? t("helloDoc.errorGeneric"));
         return;
       }
-      // docs/PRIVACY.md: invitationen sendes fra brugerens egen mail-app, så
-      // hverken lægens adresse eller linkets nøgle passerer Hello Cal.
-      if (data.share?.inviteLink) openInviteMail(email, "", data.share.inviteLink);
       router.replace("/settings/hello-doc");
     } catch {
       setError(t("helloDoc.errorGeneric"));

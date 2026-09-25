@@ -2,6 +2,32 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-24: Normalt login — privacy-by-architecture ophævet
+
+Brugerens beslutning: "Man skal bare kunne logge ind som på alle andre
+apps." De skrappe sikkerhedsforanstaltninger var kun ment til admin.
+
+- **Omstøder** 2026-09-23 "Privacy-by-architecture" og `docs/PRIVACY.md`
+  helt. Krypteret boks (`src/lib/vault`), passkey-only-login, e-mail som
+  HMAC-hash, gendannelsesfil/-sager, anonym statistik, supportpakker,
+  separat nyhedsbrev og engangs-invitelinks er fjernet (commits rullet
+  tilbage). Brugerdata ligger igen server-side i de almindelige tabeller.
+- Login: e-mail + adgangskode (med glemt adgangskode), Face ID (passkey,
+  WebAuthn), Google, Apple og Facebook. Samme bekræftede e-mail kobles på
+  samme konto. Efter login tilbydes Face ID én gang på enheder, der kan.
+- Den delte demo-bruger kommer ikke tilbage: alle private endpoints kræver
+  session (`getSessionUser` + `unauthorized()`), `AuthGate` sender
+  ikke-indloggede til `/welcome`.
+- Advarsel på mail (`NEW_DEVICE_LOGIN`) ved login fra en ny enhed
+  (langlivet `hc_device`-cookie) eller et nyt land (Cloudflare
+  `cf-ipcountry`). Første login giver ingen advarsel.
+- Delte opskrifter: server-side. Ejer = `publisherHash` afledt af
+  bruger-ID (admin ser stadig kun pseudonym). Favoritter er snapshots i
+  `SharedRecipeFavorite`.
+- Næringsrettelser: `reporterUserId`; admins svar sendes på mail
+  (`ADMIN_MESSAGE`).
+- Admin-login (adgangskode + TOTP + passkey) er uændret.
+
 ## 2026-09-24: Usikkerheds-bølgeikon (afklaret, ikke bygget)
 
 Brugerens krav og valg, punkt for punkt (ikke bygget denne omgang, se

@@ -13,12 +13,9 @@ import {
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { IconBathScale } from "@/components/hf/IconBathScale";
-import { localApi } from "@/lib/vault/local-api";
 import type { IntegrationCardStatus } from "@/lib/integrations";
 import type { IntegrationProvider } from "@prisma/client";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { getVaultClient } from "@/lib/vault/store";
-import { drainIntoVault } from "@/lib/vault/handlers/inbox";
 
 const PROVIDER_ICONS: Record<IntegrationProvider, Icon> = {
   FITBIT: IconRun,
@@ -66,7 +63,7 @@ function IntegrationerContent() {
   const [helloFresh, setHelloFresh] = useState<boolean | null>(null);
 
   useEffect(() => {
-    localApi("/api/profile")
+    fetch("/api/profile")
       .then(async (res) => (res.ok ? ((await res.json()) as { user?: { helloFreshEnabled?: boolean } }) : {}))
       .then((data) => setHelloFresh(Boolean(data.user?.helloFreshEnabled)))
       .catch(() => setHelloFresh(false));
@@ -74,7 +71,7 @@ function IntegrationerContent() {
 
   async function changeHelloFresh(next: boolean) {
     setHelloFresh(next);
-    const res = await localApi("/api/profile", {
+    const res = await fetch("/api/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ helloFreshEnabled: next }),
@@ -127,9 +124,7 @@ function IntegrationerContent() {
       const response = await fetch("/api/integrations/healthkit/tokens", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // docs/PRIVACY.md: data fra companion-appen forsegles til en ny,
-        // anonym indbakke, som kun denne boks kan åbne.
-        body: JSON.stringify({ label: "Companion-app", inboxId: await createInbox() }),
+        body: JSON.stringify({ label: "Companion-app" }),
       });
       if (response.ok) {
         const data = (await response.json()) as { token: string; label: string };
@@ -151,24 +146,6 @@ function IntegrationerContent() {
     }
   }
 
-  // Tilkobling: opret en anonym indbakke, som serveren kan forsegle hentede
-  // data til (docs/PRIVACY.md), og start derefter OAuth.
-  async function connect(provider: string) {
-    setBusyProvider(provider);
-    try {
-      const inboxId = await createInbox();
-      window.location.assign(`/api/integrations/${provider.toLowerCase()}/connect?inbox=${encodeURIComponent(inboxId)}`);
-    } catch {
-      setBusyProvider(null);
-    }
-  }
-
-  async function createInbox(): Promise<string> {
-    const vault = getVaultClient();
-    if (!vault) throw new Error("Boksen er ikke åben");
-    return vault.createInbox();
-  }
-
   async function disconnect(provider: string) {
     setBusyProvider(provider);
     try {
@@ -183,9 +160,6 @@ function IntegrationerContent() {
     setBusyProvider(provider);
     try {
       await fetch(`/api/integrations/${provider.toLowerCase()}/sync`, { method: "POST" });
-      // Serveren har forseglet de hentede data til indbakken; flyt dem ind i boksen.
-      const vault = getVaultClient();
-      if (vault) await drainIntoVault(vault).catch(() => 0);
       load();
     } finally {
       setBusyProvider(null);
@@ -291,14 +265,12 @@ function IntegrationerContent() {
                         </div>
                       </>
                     ) : (
-                      <button
-                        type="button"
-                        disabled={busy}
-                        onClick={() => connect(integration.provider)}
-                        className="hf-btn-primary block w-full py-2.5 text-center text-[13px] disabled:opacity-50"
+                      <a
+                        href={`/api/integrations/${integration.provider.toLowerCase()}/connect`}
+                        className="hf-btn-primary block w-full py-2.5 text-center text-[13px]"
                       >
                         {t("integrations.connect")}
-                      </button>
+                      </a>
                     )}
                   </div>
                 )}

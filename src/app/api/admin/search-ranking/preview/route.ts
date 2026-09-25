@@ -16,9 +16,7 @@ const RESULT_TAKE = 25;
 // ingredienser vs. varer" weight's effect is actually visible (production
 // search still queries them as two separate endpoints — see
 // docs/DECISIONS.md, 2026-09-19).
-// Body: { query: string, region: string, hour?: number, weights: SearchRankingWeights }
-// Personlig historik ligger i brugernes krypterede boks (docs/PRIVACY.md) og
-// kan derfor ikke forhåndsvises for en bestemt bruger her.
+// Body: { query: string, region: string, hour?: number, userId?: string, weights: SearchRankingWeights }
 export async function POST(req: Request) {
   const admin = await requireAdminUser();
   if (!admin) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -37,6 +35,7 @@ export async function POST(req: Request) {
     Number.isInteger(requestedHour) && requestedHour >= 0 && requestedHour <= 23
       ? requestedHour
       : new Date().getHours();
+  const previewUserId = typeof body.userId === "string" && body.userId.trim() ? body.userId.trim() : null;
   const weights = sanitizeWeights(body.weights);
 
   if (query.length < 1) {
@@ -73,6 +72,20 @@ export async function POST(req: Request) {
       }),
     ]);
 
+    const [personalProductHistory, personalIngredientHistory] = previewUserId
+      ? await Promise.all([
+          prisma.userProductSearchHistory.findMany({
+            where: { userId: previewUserId, productId: { in: products.map((p) => p.id) } },
+          }),
+          prisma.userProductSearchHistory.findMany({
+            where: { userId: previewUserId, genericIngredientId: { in: ingredients.map((i) => i.id) } },
+          }),
+        ])
+      : [[], []];
+    const personalByProductId = new Map(personalProductHistory.map((entry) => [entry.productId, entry]));
+    const personalByIngredientId = new Map(
+      personalIngredientHistory.map((entry) => [entry.genericIngredientId, entry])
+    );
 
     type PreviewEntry = RankableProduct & { type: "product" | "genericIngredient"; displayName: string };
 
@@ -90,6 +103,8 @@ export async function POST(req: Request) {
         imageCount: product._count.images,
         aiAnalyses: product.aiAnalyses,
       }),
+      personalSearchCount: personalByProductId.get(product.id)?.searchCount,
+      personalClickCount: personalByProductId.get(product.id)?.clickCount,
       entityBias: -1,
       type: "product",
       displayName: product.brand ? `${product.brand.name} ${product.name}` : product.name,
@@ -102,6 +117,8 @@ export async function POST(req: Request) {
       barcodes: [],
       regionSearchStats: ingredient.regionSearchStats,
       regionHourStats: ingredient.regionHourStats,
+      personalSearchCount: personalByIngredientId.get(ingredient.id)?.searchCount,
+      personalClickCount: personalByIngredientId.get(ingredient.id)?.clickCount,
       entityBias: 1,
       type: "genericIngredient",
       displayName: ingredient.name,

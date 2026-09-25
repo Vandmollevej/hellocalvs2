@@ -23,7 +23,6 @@ import { nutritionSectionLabel } from "@/lib/nutrition-terminology";
 import { groupByDay, withinLastDays, type RegistrationTotals } from "@/lib/daily-totals";
 import type { IntegrationCardStatus } from "@/lib/integrations";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 function withinLastDaysActivities(activities: ActivityTotals[], days: number) {
   const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
@@ -118,11 +117,11 @@ export default function UnusedStatCardsPage() {
   useEffect(() => {
     let cancelled = false;
     Promise.all([
-      localApi("/api/registrations").then(async (response) => {
+      fetch("/api/registrations").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente registreringer");
         return (await response.json()) as { registrations: RegistrationTotals[] };
       }),
-      localApi("/api/activities").then(async (response) => {
+      fetch("/api/activities").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente aktiviteter");
         return (await response.json()) as { activities: ActivityTotals[] };
       }),
@@ -130,11 +129,11 @@ export default function UnusedStatCardsPage() {
         if (!response.ok) throw new Error("Kunne ikke hente integrationer");
         return (await response.json()) as { integrations: IntegrationCardStatus[] };
       }),
-      localApi("/api/health-metrics").then(async (response) => {
+      fetch("/api/health-metrics").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente sundhedsdata");
         return (await response.json()) as { metrics: HealthMetricTotals[] };
       }),
-      localApi("/api/profile").then(async (response) => {
+      fetch("/api/profile").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente profil");
         return (await response.json()) as { user: { region?: string } };
       }),

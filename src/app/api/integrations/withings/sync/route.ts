@@ -1,31 +1,27 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getSessionUser } from "@/lib/session";
 import { shouldSync } from "@/lib/integrations";
 import { fetchWithingsWeightMeasurements, refreshWithingsToken } from "@/lib/integrations/withings";
-import { deliverToInbox } from "@/lib/vault/inbox-delivery";
+import { getSessionUser, unauthorized } from "@/lib/session";
 
 const SYNC_WINDOW_DAYS = 30;
 
-// POST — henter Withings-vejninger og forsegler dem straks til brugerens
-// indbakke (docs/PRIVACY.md). Intet gemmes i klartekst.
 export async function POST() {
-  const user = await getSessionUser();
-  if (!user) return NextResponse.json({ message: "Log ind først" }, { status: 401 });
   try {
+    const user = await getSessionUser();
+
+    if (!user) return unauthorized();
     const integration = await prisma.integration.findUnique({
       where: { userId_provider: { userId: user.id, provider: "WITHINGS" } },
     });
-    if (
-      !integration ||
-      integration.status !== "CONNECTED" ||
-      !integration.accessToken ||
-      !integration.refreshToken ||
-      !integration.inboxId
-    ) {
+
+    if (!integration || integration.status !== "CONNECTED" || !integration.accessToken || !integration.refreshToken) {
       return NextResponse.json({ message: "Withings er ikke tilkoblet" }, { status: 400 });
     }
-    if (!shouldSync(integration.lastSyncedAt)) return NextResponse.json({ ok: true, skipped: "throttled" });
+
+    if (!shouldSync(integration.lastSyncedAt)) {
+      return NextResponse.json({ ok: true, skipped: "throttled" });
+    }
 
     let accessToken = integration.accessToken;
     if (!integration.expiresAt || integration.expiresAt.getTime() < Date.now()) {
@@ -45,27 +41,41 @@ export async function POST() {
       (integration.lastSyncedAt?.getTime() ?? Date.now() - SYNC_WINDOW_DAYS * 24 * 60 * 60 * 1000) / 1000
     );
     const measurements = await fetchWithingsWeightMeasurements(accessToken, sinceUnixSeconds);
-    const delivered = await deliverToInbox(
-      integration.inboxId,
-      measurements.map((m) => ({
-        kind: "weight",
-        payload: { source: "WITHINGS", weightKg: m.weightKg, weighedAt: m.weighedAt.toISOString() },
-      }))
-    );
+
+    let weightEntriesCreated = 0;
+    for (const measurement of measurements) {
+      const existing = await prisma.weightEntry.findFirst({
+        where: { userId: user.id, source: "WITHINGS", weighedAt: measurement.weighedAt },
+      });
+      if (existing) continue;
+      await prisma.weightEntry.create({
+        data: {
+          userId: user.id,
+          weightKg: measurement.weightKg,
+          source: "WITHINGS",
+          weighedAt: measurement.weighedAt,
+        },
+      });
+      weightEntriesCreated += 1;
+    }
 
     await prisma.integration.update({
       where: { id: integration.id },
       data: { lastSyncedAt: new Date(), lastError: null },
     });
-    return NextResponse.json({ ok: true, delivered });
+
+    return NextResponse.json({ ok: true, weightEntriesCreated });
   } catch (error) {
-    console.error("Withings sync failed", error instanceof Error ? error.message : "ukendt");
-    await prisma.integration
-      .updateMany({
-        where: { userId: user.id, provider: "WITHINGS" },
-        data: { status: "ERROR", lastError: error instanceof Error ? error.message : "Ukendt fejl" },
-      })
-      .catch(() => {});
+    console.error("Withings sync failed", error);
+    const user = await getSessionUser().catch(() => null);
+    if (user) {
+      await prisma.integration
+        .updateMany({
+          where: { userId: user.id, provider: "WITHINGS" },
+          data: { status: "ERROR", lastError: error instanceof Error ? error.message : "Ukendt fejl" },
+        })
+        .catch(() => {});
+    }
     return NextResponse.json({ message: "Withings-synkronisering fejlede" }, { status: 502 });
   }
 }

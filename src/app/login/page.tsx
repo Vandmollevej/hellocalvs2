@@ -2,79 +2,156 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Suspense, useState } from "react";
+import { Suspense, useState, useSyncExternalStore } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { AuthError, AuthScreen } from "@/components/account/AuthScreen";
 import { HfChevron } from "@/components/hf/HfChevron";
+import { SocialLoginButton } from "@/components/hf/SocialLoginButton";
+import { TextField } from "@/components/hf/TextField";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { logIn } from "@/lib/vault/store";
-import { isPasskeySupported } from "@/lib/vault/webauthn-client";
+import { isPasskeySupported, loginWithPasskey } from "@/lib/passkey-client";
+import { afterLoginPath, oauthErrorKey, startOAuth } from "@/lib/login-flow";
 
-// Login med passkey (docs/PRIVACY.md "Login og e-mail"). Ingen e-mail og
-// ingen adgangskode: telefonen viser selv de passkeys, den har til Hello Cal.
+const noSubscribe = () => () => {};
+
 function LogIndContent() {
   const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next") ?? "/";
-  const [error, setError] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const oauthError = oauthErrorKey(searchParams.get("error"));
+  const [error, setError] = useState<string | null>(
+    oauthError ? t(oauthError.key, oauthError.vars) : null
+  );
   const [submitting, setSubmitting] = useState(false);
-  const supported = typeof window === "undefined" || isPasskeySupported();
+  const passkeySupported = useSyncExternalStore(noSubscribe, isPasskeySupported, () => false);
 
-  async function handleLogin() {
+  async function handleFaceId() {
     setError(null);
     setSubmitting(true);
     try {
-      const result = await logIn();
-      router.push(result === "ready" ? next : "/gendan?locked=1");
-    } catch (e) {
-      setError(e instanceof Error && e.name !== "NotAllowedError" ? e.message : t("account.loginFailed"));
+      await loginWithPasskey();
+      router.push(next);
+    } catch {
+      setError(t("login.faceIdError"));
+      setSubmitting(false);
+    }
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setSubmitting(true);
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.message ?? t("login.genericError"));
+        setSubmitting(false);
+        return;
+      }
+      router.push(afterLoginPath(next));
+    } catch {
+      setError(t("login.networkError"));
       setSubmitting(false);
     }
   }
 
   return (
-    <AuthScreen
-      title={t("account.loginTitle")}
-      backHref="/welcome"
-      backLabel={t("account.back")}
-      actions={
+    <div className="flex h-full min-h-full flex-col bg-hf-cream">
+      <div
+        className="flex items-center justify-between bg-hf-green px-4 pb-4"
+        style={{ paddingTop: "max(16px, env(safe-area-inset-top, 0px))" }}
+      >
+        <Link href="/welcome" className="hf-type-body" style={{ color: "var(--hf-color-white)" }}>
+          {t("login.cancel")}
+        </Link>
+        <p className="hf-type-nav-title">
+          {t("welcome.signUp")} <span className="opacity-80">/</span> {t("welcome.logIn")}
+        </p>
+        <span className="w-[52px]" aria-hidden="true" />
+      </div>
+
+      <form id="login-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-4 pt-5">
+        <p className="hf-type-body-sm">{t("login.chooseCountry")}</p>
+        <div className="mt-2 h-px bg-hf-gray-border" />
+        <Link
+          href="/login/country"
+          className="flex h-12 items-center justify-between border-b border-hf-gray-border"
+        >
+          <div className="hf-type-body flex items-center gap-3">
+            <Image src="/flag-denmark.png" alt="" width={22} height={16} className="rounded-[2px]" />
+            <span>{t("login.country")}</span>
+          </div>
+          <HfChevron className="text-hf-gray" />
+        </Link>
+
+        <div className="mt-6 flex flex-col gap-3">
+          {passkeySupported && (
+            <button
+              type="button"
+              onClick={handleFaceId}
+              disabled={submitting}
+              className="hf-btn-primary hf-type-button h-12 w-full disabled:opacity-40"
+            >
+              {t("login.continueWithFaceId")}
+            </button>
+          )}
+          <SocialLoginButton provider="google" label={t("login.continueWithGoogle")} onClick={() => startOAuth("google", next)} />
+          <SocialLoginButton provider="apple" label={t("login.continueWithApple")} onClick={() => startOAuth("apple", next)} />
+          <SocialLoginButton
+            provider="facebook"
+            label={t("login.continueWithFacebook")}
+            onClick={() => startOAuth("facebook", next)}
+          />
+        </div>
+
+        <p className="hf-type-body-sm mt-4 text-center opacity-70">{t("common.or")}</p>
+
+        <div className="mt-2 flex flex-col gap-3">
+          <TextField
+            type="email"
+            placeholder={t("login.emailPlaceholder")}
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <TextField
+            type="password"
+            placeholder={t("login.passwordPlaceholder")}
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <p className="hf-type-body-sm mt-2 text-right">
+          <Link href="/forgot-password" className="underline">
+            {t("login.forgotPassword")}
+          </Link>
+        </p>
+        {error && <p className="hf-type-caption mt-2 text-hf-red-dark">{error}</p>}
+
+        <p className="hf-type-body-sm mt-4 text-center">
+          {t("login.newHere")} <Link href="/signup" className="underline">{t("login.createAccount")}</Link>
+        </p>
+      </form>
+
+      <div className="px-4 pb-8 pt-4">
         <button
-          type="button"
-          onClick={handleLogin}
-          disabled={submitting || !supported}
+          type="submit"
+          form="login-form"
+          disabled={submitting || !email || !password}
           className="hf-btn-primary hf-type-button h-12 w-full disabled:opacity-40"
         >
-          {submitting ? t("account.loggingIn") : t("account.loginButton")}
+          {submitting ? t("login.submitting") : t("login.continueButton")}
         </button>
-      }
-    >
-      <p className="hf-type-body-sm">{t("login.chooseCountry")}</p>
-      <Link href="/login/country" className="flex h-12 items-center justify-between border-b border-hf-gray-border">
-        <div className="hf-type-body flex items-center gap-3">
-          <Image src="/flag-denmark.png" alt="" width={22} height={16} className="rounded-[2px]" />
-          <span>{t("login.country")}</span>
-        </div>
-        <HfChevron className="text-hf-gray" />
-      </Link>
-
-      <p className="hf-type-body mt-2">{t("account.loginIntro")}</p>
-      {!supported && <AuthError message={t("account.noPasskeySupport")} />}
-      <AuthError message={error} />
-
-      <p className="hf-type-body-sm mt-4 text-center">
-        {t("account.newHere")}{" "}
-        <Link href="/signup" className="underline">
-          {t("account.createAccount")}
-        </Link>
-      </p>
-      <p className="hf-type-body-sm text-center">
-        {t("account.lostAccess")}{" "}
-        <Link href="/gendan" className="underline">
-          {t("account.recoverAccess")}
-        </Link>
-      </p>
-    </AuthScreen>
+      </div>
+    </div>
   );
 }
 

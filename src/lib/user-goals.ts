@@ -1,3 +1,5 @@
+import type { GoalDirection } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import {
   BODY_MEASUREMENT_FIELDS,
   BODY_MEASUREMENT_UNIT,
@@ -6,15 +8,11 @@ import {
 } from "@/lib/body-measurements";
 
 // Målsætninger (docs/DECISIONS.md, 2026-09-22). En målsætning er et dateret
-// sæt targets — vægt og/eller kropsmål. Gennemført-status beregnes ud fra
-// vejninger og kropsmål og gemmes som completedAt, der aldrig ryddes igen.
-//
-// Ren logik uden database: data ligger krypteret i brugerens boks og
-// beregnes på enheden (docs/PRIVACY.md, src/lib/vault/handlers/goals.ts).
+// sæt targets — vægt og/eller kropsmål. Gennemført-status beregnes her
+// server-side og gemmes som completedAt, der aldrig ryddes igen.
 
 export const WEIGHT_TARGET = "weight";
 export type GoalTargetType = typeof WEIGHT_TARGET | BodyMeasurementField;
-export type GoalDirection = "INCREASE" | "DECREASE" | "MAINTAIN";
 
 // Rækkefølgen målsætningens targets vises i: vægt øverst, derefter kropsmålene
 // i samme rækkefølge som på Kropsmål-siden.
@@ -31,7 +29,7 @@ export function unitForTarget(type: GoalTargetType) {
   return type === WEIGHT_TARGET ? "kg" : BODY_MEASUREMENT_UNIT;
 }
 
-// Floats fra input sammenlignes med en lille tolerance; "fasthold" regnes
+// Floats fra input/DB sammenlignes med en lille tolerance; "fasthold" regnes
 // som nået inden for en halv visningsdecimal.
 const EPSILON = 1e-6;
 const MAINTAIN_TOLERANCE = 0.05;
@@ -53,23 +51,30 @@ export function hasReachedGoal(currentValue: number, targetValue: number, direct
   }
 }
 
-export type Reading = { value: number; at: string };
-export type WeightReading = { weightKg: number; weighedAt: string };
-export type MeasurementReading = Partial<Record<BodyMeasurementField, number | null>> & { measuredAt: string };
+type Reading = { value: number; at: Date };
 
-// Alle registrerede værdier pr. target-type, ældste først.
-export function buildReadings(weights: WeightReading[], measurements: MeasurementReading[]) {
+// Alle registrerede værdier pr. target-type siden `since`, ældste først.
+async function loadReadings(userId: string, since: Date) {
+  const [weights, measurements] = await Promise.all([
+    prisma.weightEntry.findMany({
+      where: { userId, weighedAt: { gte: since } },
+      orderBy: { weighedAt: "asc" },
+      select: { weightKg: true, weighedAt: true },
+    }),
+    prisma.bodyMeasurement.findMany({
+      where: { userId, measuredAt: { gte: since } },
+      orderBy: { measuredAt: "asc" },
+    }),
+  ]);
+
   const readings = new Map<GoalTargetType, Reading[]>();
   readings.set(
     WEIGHT_TARGET,
-    weights
-      .map((entry) => ({ value: entry.weightKg, at: entry.weighedAt }))
-      .sort((a, b) => a.at.localeCompare(b.at))
+    weights.map((entry) => ({ value: entry.weightKg, at: entry.weighedAt })),
   );
-  const sorted = [...measurements].sort((a, b) => a.measuredAt.localeCompare(b.measuredAt));
   for (const { field } of BODY_MEASUREMENT_FIELDS) {
     const list: Reading[] = [];
-    for (const row of sorted) {
+    for (const row of measurements) {
       const value = row[field];
       if (value != null) list.push({ value, at: row.measuredAt });
     }
@@ -79,54 +84,77 @@ export function buildReadings(weights: WeightReading[], measurements: Measuremen
 }
 
 // Seneste registrerede værdi pr. target-type — bruges som startværdi, når en
-// ny målsætning oprettes. fallbackWeight = profilens startvægt.
-export function latestValues(readings: Map<GoalTargetType, Reading[]>, fallbackWeight: number | null) {
+// ny målsætning oprettes.
+export async function getLatestValues(userId: string) {
+  const [latestWeight, user, measurements] = await Promise.all([
+    prisma.weightEntry.findFirst({
+      where: { userId },
+      orderBy: { weighedAt: "desc" },
+      select: { weightKg: true },
+    }),
+    prisma.user.findUnique({ where: { id: userId }, select: { weightKg: true } }),
+    prisma.bodyMeasurement.findMany({
+      where: { userId },
+      orderBy: { measuredAt: "desc" },
+      take: 200,
+    }),
+  ]);
+
   const latest = new Map<GoalTargetType, number>();
-  for (const type of GOAL_TARGET_TYPES) {
-    const list = readings.get(type) ?? [];
-    if (list.length > 0) latest.set(type, list[list.length - 1].value);
+  const weight = latestWeight?.weightKg ?? user?.weightKg ?? null;
+  if (weight != null) latest.set(WEIGHT_TARGET, weight);
+  for (const { field } of BODY_MEASUREMENT_FIELDS) {
+    const row = measurements.find((measurement) => measurement[field] != null);
+    if (row) latest.set(field, row[field] as number);
   }
-  if (!latest.has(WEIGHT_TARGET) && fallbackWeight != null) latest.set(WEIGHT_TARGET, fallbackWeight);
   return latest;
 }
 
-export type StoredGoalTarget = {
-  id: string;
-  type: string;
-  value: number;
-  unit: string;
-  startValue: number | null;
-  direction: GoalDirection | null;
-  completedAt: string | null;
-};
-
-export type StoredGoal = { createdAt: string; targetDate: string | null; targets: StoredGoalTarget[] };
-
 // Markerer åbne targets som nået, hvis en måling registreret efter
 // målsætningens oprettelse opfylder målet i den gemte retning. Et target uden
-// startværdi får sin første efterfølgende måling som startværdi.
-// Returnerer den opdaterede målsætning, eller null hvis intet ændrede sig.
-export function refreshGoal(goal: StoredGoal, readings: Map<GoalTargetType, Reading[]>): StoredGoal | null {
-  let changed = false;
-  const targets = goal.targets.map((target) => {
-    if (target.completedAt || !isGoalTargetType(target.type)) return target;
-    let candidates = (readings.get(target.type) ?? []).filter((reading) => reading.at >= goal.createdAt);
+// startværdi (ingen historik ved oprettelsen) får sin første efterfølgende
+// måling som startværdi, og vurderes derefter på de følgende målinger.
+export async function refreshGoalCompletion(userId: string) {
+  const openTargets = await prisma.goalTarget.findMany({
+    where: { completedAt: null, goal: { userId } },
+    include: { goal: { select: { createdAt: true } } },
+  });
+  if (openTargets.length === 0) return;
+
+  const since = openTargets.reduce(
+    (earliest, target) => (target.goal.createdAt < earliest ? target.goal.createdAt : earliest),
+    openTargets[0].goal.createdAt,
+  );
+  const readings = await loadReadings(userId, since);
+
+  for (const target of openTargets) {
+    if (!isGoalTargetType(target.type)) continue;
+    let candidates = (readings.get(target.type) ?? []).filter(
+      (reading) => reading.at >= target.goal.createdAt,
+    );
 
     let startValue = target.startValue;
     let direction = target.direction;
     if (startValue == null || direction == null) {
-      if (candidates.length === 0) return target;
+      if (candidates.length === 0) continue;
       startValue = candidates[0].value;
       direction = getGoalDirection(startValue, target.value);
       candidates = candidates.slice(1);
     }
-    const reached = candidates.find((reading) => hasReachedGoal(reading.value, target.value, direction!));
+
+    const reached = candidates.find((reading) => hasReachedGoal(reading.value, target.value, direction));
     const directionChanged = startValue !== target.startValue || direction !== target.direction;
-    if (!reached && !directionChanged) return target;
-    changed = true;
-    return { ...target, startValue, direction, completedAt: reached ? reached.at : target.completedAt };
-  });
-  return changed ? { ...goal, targets } : null;
+    if (!reached && !directionChanged) continue;
+
+    await prisma.goalTarget.update({
+      where: { id: target.id },
+      data: {
+        startValue,
+        direction,
+        ...(reached ? { completedAt: reached.at } : {}),
+      },
+    });
+  }
 }
 
 export type GoalTargetDTO = {
@@ -145,20 +173,68 @@ export type GoalDTO = {
   targets: GoalTargetDTO[];
 };
 
-export function toGoalDTO(id: string, goal: StoredGoal): GoalDTO {
-  return {
-    id,
-    createdAt: goal.createdAt,
-    targetDate: goal.targetDate,
+export async function listGoals(userId: string): Promise<GoalDTO[]> {
+  await refreshGoalCompletion(userId);
+  const goals = await prisma.goal.findMany({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+    include: { targets: true },
+  });
+
+  return goals.map((goal) => ({
+    id: goal.id,
+    createdAt: goal.createdAt.toISOString(),
+    targetDate: goal.targetDate?.toISOString().slice(0, 10) ?? null,
     targets: goal.targets
-      .filter((target): target is StoredGoalTarget & { type: GoalTargetType } => isGoalTargetType(target.type))
+      .filter((target): target is typeof target & { type: GoalTargetType } => isGoalTargetType(target.type))
       .sort((a, b) => GOAL_TARGET_TYPES.indexOf(a.type) - GOAL_TARGET_TYPES.indexOf(b.type))
       .map((target) => ({
         id: target.id,
         type: target.type,
         value: target.value,
         unit: target.unit,
-        completedAt: target.completedAt,
+        completedAt: target.completedAt?.toISOString() ?? null,
       })),
-  };
+  }));
+}
+
+export async function createGoal(
+  userId: string,
+  targetDate: Date,
+  values: Partial<Record<GoalTargetType, number>>,
+) {
+  const latest = await getLatestValues(userId);
+  const entries = GOAL_TARGET_TYPES.flatMap((type) => {
+    const value = values[type];
+    return value != null ? [{ type, value }] : [];
+  });
+
+  return prisma.$transaction(async (tx) => {
+    const goal = await tx.goal.create({
+      data: {
+        userId,
+        targetDate,
+        targets: {
+          create: entries.map(({ type, value }) => {
+            const startValue = latest.get(type) ?? null;
+            return {
+              type,
+              value,
+              unit: unitForTarget(type),
+              startValue,
+              direction: startValue != null ? getGoalDirection(startValue, value) : null,
+            };
+          }),
+        },
+      },
+    });
+
+    // Hello Doc og profilen læser stadig User.targetWeightKg — hold det i sync
+    // med den nyeste vægt-målsætning.
+    const weight = values[WEIGHT_TARGET];
+    if (weight != null) {
+      await tx.user.update({ where: { id: userId }, data: { targetWeightKg: weight } });
+    }
+    return goal;
+  });
 }

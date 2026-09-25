@@ -7,7 +7,6 @@ import { IconBookmark, IconBookmarkFilled, IconSearch } from "@tabler/icons-reac
 import { HfScreen } from "@/components/HfScreen";
 import { FoodRow } from "@/components/FoodRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 type Result = { id: string; title: string; image?: string | null };
 
@@ -84,14 +83,14 @@ function SoegContent() {
         const source = [...results, ...recentlyAdded].find((r) => r.id === productId);
         return source ? [...current, source] : current;
       });
-      localApi("/api/favorites", {
+      fetch("/api/favorites", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId }),
       }).catch(() => {});
     } else {
       setFavorites((current) => current.filter((f) => f.id !== productId));
-      localApi("/api/favorites", {
+      fetch("/api/favorites", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId }),
@@ -109,7 +108,7 @@ function SoegContent() {
     const timeout = setTimeout(async () => {
       setResultsState("loading");
       try {
-        const res = await localApi(
+        const res = await fetch(
           `/api/products?q=${encodeURIComponent(query)}`,
           { signal: controller.signal }
         );
@@ -137,7 +136,7 @@ function SoegContent() {
 
   useEffect(() => {
     const controller = new AbortController();
-    localApi("/api/registrations", { signal: controller.signal })
+    fetch("/api/registrations", { signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) throw new Error("offline");
         return (await response.json()) as { registrations: Registration[] };
@@ -164,7 +163,7 @@ function SoegContent() {
 
   useEffect(() => {
     const controller = new AbortController();
-    localApi("/api/favorites", { signal: controller.signal })
+    fetch("/api/favorites", { signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) throw new Error("offline");
         return (await response.json()) as FavoriteResponse;

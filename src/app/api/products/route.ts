@@ -143,14 +143,6 @@ export async function GET(req: Request) {
       });
 
     let products = await findProducts();
-    // docs/PRIVACY.md: personlig søgehistorik ligger i brugerens boks.
-    // Med ?personal=1 returneres dobbelt så mange kandidater med en
-    // rankScore, så enheden selv kan lægge den personlige vægt til og
-    // sortere igen (src/lib/vault/handlers/search.ts). Serveren ser aldrig
-    // historikken.
-    const personalRank = params.get("personal") === "1";
-    let personalHistoryWeight: number | null = null;
-    const scoreById = new Map<string, number>();
 
     if (q.length >= 2 && products.length < 10 && !source) {
       await importMatchingOffProducts(q);
@@ -159,9 +151,17 @@ export async function GET(req: Request) {
 
     if (q && !source) {
       const sessionUser = await getSessionUser();
-      const region = sessionUser?.region ?? "DK";
+      const user = { region: sessionUser?.region ?? "DK" };
       const weights = await getActiveSearchRankingWeights();
-      if (personalRank) personalHistoryWeight = weights.personalHistory;
+
+      // Personlig historik (2026-09-19, se docs/DECISIONS.md) — kun for en
+      // rigtig indlogget bruger, aldrig den delte demo-bruger.
+      const personalHistory = sessionUser
+        ? await prisma.userProductSearchHistory.findMany({
+            where: { userId: sessionUser.id, productId: { in: products.map((p) => p.id) } },
+          })
+        : [];
+      const personalByProductId = new Map(personalHistory.map((entry) => [entry.productId, entry]));
 
       const rankable = products.map((product) => ({
         ...product,
@@ -171,11 +171,12 @@ export async function GET(req: Request) {
           aiAnalyses: product.aiAnalyses,
         }),
         brandRegionStats: product.brand?.regionSearchStats,
+        personalSearchCount: personalByProductId.get(product.id)?.searchCount,
+        personalClickCount: personalByProductId.get(product.id)?.clickCount,
         entityBias: -1, // "Generiske ingredienser vs. varer" — et rigtigt Product
       }));
 
-      const ranked = rankProducts(rankable, q, region, localHour, personalRank ? take * 2 : take, weights);
-      for (const entry of ranked) scoreById.set(entry.product.id, entry.score);
+      const ranked = rankProducts(rankable, q, user.region, localHour, take, weights);
       products = ranked.map((entry) => entry.product);
 
       // Impressions: every ranked result shown to the user counts as a
@@ -186,10 +187,10 @@ export async function GET(req: Request) {
         await prisma.$transaction([
           ...products.map((product) =>
             prisma.productRegionSearchStat.upsert({
-              where: { productId_region: { productId: product.id, region } },
+              where: { productId_region: { productId: product.id, region: user.region } },
               create: {
                 productId: product.id,
-                region,
+                region: user.region,
                 searchCount: 1,
                 lastSearchedAt: now,
               },
@@ -203,16 +204,34 @@ export async function GET(req: Request) {
             .filter((product) => product.brandId)
             .map((product) =>
               prisma.brandRegionSearchStat.upsert({
-                where: { brandId_region: { brandId: product.brandId as string, region } },
+                where: { brandId_region: { brandId: product.brandId as string, region: user.region } },
                 create: {
                   brandId: product.brandId as string,
-                  region,
+                  region: user.region,
                   searchCount: 1,
                   lastSearchedAt: now,
                 },
                 update: { searchCount: { increment: 1 }, lastSearchedAt: now },
               })
             ),
+          // Personlig historik (2026-09-19): kun for rigtige, indloggede
+          // brugere — se User.productSearchHistory og anonymizeUser() i
+          // src/lib/gdpr.ts, som sletter denne igen ved "Ret til at blive
+          // glemt".
+          ...(sessionUser
+            ? products.map((product) =>
+                prisma.userProductSearchHistory.upsert({
+                  where: { userId_productId: { userId: sessionUser.id, productId: product.id } },
+                  create: {
+                    userId: sessionUser.id,
+                    productId: product.id,
+                    searchCount: 1,
+                    lastSearchedAt: now,
+                  },
+                  update: { searchCount: { increment: 1 }, lastSearchedAt: now },
+                })
+              )
+            : []),
         ]);
       }
     } else if (products.length > take) {
@@ -253,14 +272,10 @@ export async function GET(req: Request) {
         ? // eslint-disable-next-line @typescript-eslint/no-unused-vars -- deliberately stripped, never sent to the client
           (({ regionSearchStats, ...publicBrand }) => publicBrand)(publicProduct.brand)
         : publicProduct.brand;
-      return { ...publicProduct, brand, ...(personalRank ? { rankScore: scoreById.get(product.id) ?? 0 } : {}) };
+      return { ...publicProduct, brand };
     });
 
-    return NextResponse.json({
-      products: publicProducts,
-      minQueryLength: 2,
-      ...(personalRank ? { personalHistoryWeight } : {}),
-    });
+    return NextResponse.json({ products: publicProducts, minQueryLength: 2 });
   } catch (error) {
     console.error("Product search failed", error);
     return NextResponse.json(

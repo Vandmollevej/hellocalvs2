@@ -2,20 +2,17 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { localApi } from "@/lib/vault/local-api";
-import { getVaultClient } from "@/lib/vault/store";
-import { rememberForward, type OpenedForward } from "@/lib/vault/handlers/forwards";
 
-// Tilføjer den videresendte vare til modtagerens dag. En delt ret kopieres
-// først ind i modtagerens egen boks. Afsenderen får points, når
-// registreringen er gemt (src/lib/vault/handlers/meals.ts melder linket brugt).
+// Points for afsenderen registreres først, når modtageren rent faktisk
+// tilføjer varen her (src/lib/forwards.ts fulfillMatchingForward, kaldt fra
+// POST /api/registrations) — ikke blot ved at åbne /forward/[token].
 export function AddForwardedItemButton({
-  token,
-  forward,
+  kind,
+  itemId,
   name,
 }: {
-  token: string;
-  forward: OpenedForward;
+  kind: "PRODUCT" | "DISH";
+  itemId: string;
   name: string;
 }) {
   const router = useRouter();
@@ -24,45 +21,24 @@ export function AddForwardedItemButton({
   const [error, setError] = useState<string | null>(null);
 
   async function add() {
-    const vault = getVaultClient();
-    if (!vault) return;
     setSaving(true);
     setError(null);
     try {
-      let body: Record<string, unknown>;
-      if (forward.kind === "DISH" && forward.payload.dish) {
-        const created = await localApi("/api/dishes", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: forward.payload.dish.name,
-            ingredients: forward.payload.dish.ingredients.map((i) => ({ productId: i.productId, grams: i.grams })),
-          }),
-        });
-        const data = (await created.json().catch(() => ({}))) as { dish?: { id: string }; message?: string };
-        if (!created.ok || !data.dish) throw new Error(data.message ?? "Kunne ikke tilføje");
-        await rememberForward(vault, token, "DISH", data.dish.id);
-        body = { dishId: data.dish.id, amountGrams: 100 };
-      } else if (forward.productId) {
-        await rememberForward(vault, token, "PRODUCT", forward.productId);
-        body = { productId: forward.productId, amountGrams: 100 };
-      } else {
-        throw new Error("Varen findes ikke længere.");
-      }
-
-      const res = await localApi("/api/registrations", {
+      const res = await fetch("/api/registrations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: JSON.stringify({
+          [kind === "PRODUCT" ? "productId" : "dishId"]: itemId,
+          amountGrams: 100,
+        }),
       });
       if (!res.ok) {
-        const data = (await res.json().catch(() => ({}))) as { message?: string };
-        throw new Error(data.message ?? "Kunne ikke tilføje");
+        const data = await res.json().catch(() => ({}));
+        setError(data.message ?? "Kunne ikke tilføje");
+        return;
       }
       setDone(true);
       setTimeout(() => router.push("/calendar"), 1200);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Kunne ikke tilføje");
     } finally {
       setSaving(false);
     }

@@ -5,7 +5,6 @@ import { IconChevronLeft, IconChevronRight, IconTrash, IconX } from "@tabler/ico
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 type DiaryPhotoKind = "selfie" | "photo";
 
@@ -137,7 +136,7 @@ export default function BilledeDagbogPage() {
 
   useEffect(() => {
     let cancelled = false;
-    localApi("/api/profile")
+    fetch("/api/profile")
       .then((res) => res.json())
       .then((data) => {
         if (cancelled) return;
@@ -160,13 +159,13 @@ export default function BilledeDagbogPage() {
   // selve billeddagbogen.
   useEffect(() => {
     let cancelled = false;
-    localApi("/api/weight-entries")
+    fetch("/api/weight-entries")
       .then((res) => res.json())
       .then((data) => {
         if (!cancelled) setWeightEntries(Array.isArray(data.entries) ? data.entries : []);
       })
       .catch(() => {});
-    localApi("/api/body-measurements")
+    fetch("/api/body-measurements")
       .then((res) => res.json())
       .then((data) => {
         if (!cancelled) setMeasurements(Array.isArray(data.entries) ? data.entries : []);
@@ -179,7 +178,7 @@ export default function BilledeDagbogPage() {
 
   function toggleRequiresPasscode(value: boolean) {
     setUser((current) => (current ? { ...current, photoDiaryRequiresPasscode: value } : current));
-    localApi("/api/profile", {
+    fetch("/api/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ photoDiaryRequiresPasscode: value }),

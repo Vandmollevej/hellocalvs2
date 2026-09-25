@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 import { exchangeWithingsCode } from "@/lib/integrations/withings";
-import { readOAuthState, saveIntegrationTokens } from "@/lib/integrations-oauth";
+import { getSessionUser, unauthorized } from "@/lib/session";
 
 const STATE_COOKIE = "withings_oauth_state";
 const DONE_URL = "/settings/integrations";
@@ -8,7 +9,7 @@ const DONE_URL = "/settings/integrations";
 export async function GET(req: NextRequest) {
   const code = req.nextUrl.searchParams.get("code");
   const state = req.nextUrl.searchParams.get("state");
-  const expected = readOAuthState(req, STATE_COOKIE);
+  const expectedState = req.cookies.get(STATE_COOKIE)?.value;
   const error = req.nextUrl.searchParams.get("error");
 
   function redirectWithClearedState(query?: string) {
@@ -19,14 +20,39 @@ export async function GET(req: NextRequest) {
     return response;
   }
 
-  if (error || !code || !state || !expected || state !== expected.state) {
+  if (error || !code || !state || !expectedState || state !== expectedState) {
     return redirectWithClearedState("error=withings_authorize_failed");
   }
 
   try {
-    await saveIntegrationTokens("WITHINGS", expected.inboxId, await exchangeWithingsCode(code));
+    const tokens = await exchangeWithingsCode(code);
+    const user = await getSessionUser();
+
+    if (!user) return unauthorized();
+    await prisma.integration.upsert({
+      where: { userId_provider: { userId: user.id, provider: "WITHINGS" } },
+      create: {
+        userId: user.id,
+        provider: "WITHINGS",
+        status: "CONNECTED",
+        accessToken: tokens.access_token,
+        refreshToken: tokens.refresh_token,
+        expiresAt: new Date(Date.now() + tokens.expires_in * 1000),
+        scope: tokens.scope,
+        connectedAt: new Date(),
+      },
+      update: {
+        status: "CONNECTED",
+        accessToken: tokens.access_token,
+        refreshToken: tokens.refresh_token,
+        expiresAt: new Date(Date.now() + tokens.expires_in * 1000),
+        scope: tokens.scope,
+        connectedAt: new Date(),
+        lastError: null,
+      },
+    });
   } catch (err) {
-    console.error("Withings callback failed", err instanceof Error ? err.message : "ukendt");
+    console.error("Withings callback failed", err);
     return redirectWithClearedState("error=withings_token_exchange_failed");
   }
 
