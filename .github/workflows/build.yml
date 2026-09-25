@@ -50,10 +50,11 @@ jobs:
         run: |
           set -euo pipefail
           cp compose.production.yaml /deploy/compose.production.yaml
-          mkdir -p /deploy/scripts/rema1000-import /deploy/scripts/quality-control-agent /deploy/scripts/amount-suggestion-agent
-          cp -R scripts/rema1000-import/. /deploy/scripts/rema1000-import/
-          cp -R scripts/quality-control-agent/. /deploy/scripts/quality-control-agent/
-          cp -R scripts/amount-suggestion-agent/. /deploy/scripts/amount-suggestion-agent/
+          # Alle agenter, som compose.production.yaml bygger lokalt (build: ./scripts/...).
+          for agent in image-agent frida-import hellofresh-import rema1000-import quality-control-agent amount-suggestion-agent; do
+            mkdir -p "/deploy/scripts/$agent"
+            cp -R "scripts/$agent/." "/deploy/scripts/$agent/"
+          done
 
       - name: Select release and pull images
         run: |
