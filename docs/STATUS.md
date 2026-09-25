@@ -2,6 +2,21 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Photo diary — selfie feature removed
+
+The user states they never asked for selfies in Billede-dagbog and asked for
+the feature to be removed. The 2026-09-12 entry below records it as a user
+request, but the user rejects that. Removed from
+`src/app/profile/photo-diary/page.tsx`: the "Tag selfie (portræt)" button
+(`capture="user"`), the "Selfies" section with portrait cards, the
+weight/measurement caption lines under each selfie, and the "Andre billeder"
+heading. The page is back to one "Tag billede (fuld figur eller mave)" button
+and one 2-column grid. Photos saved earlier as selfies in localStorage are not
+deleted; they now show in the same grid (the old `kind` field is ignored).
+Unused `photoDiary.*` i18n keys removed from `da.json`/`en.json`; the
+selfie-portrait-card paragraph removed from `design.md`. `BodyMeasurement`,
+`/api/body-measurements` and `/profile/body-measurements` are unchanged.
+
 ## 2026-09-25: Mail via Mailjet aktiveret
 
 - SMTP_HOST/PORT/USER/PASS/FROM (Mailjet, in-v3.mailjet.com:587) sat i lokal
