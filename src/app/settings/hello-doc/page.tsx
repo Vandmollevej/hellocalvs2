@@ -32,20 +32,12 @@ export default function HelloDocPage() {
   const { t } = useTranslation();
   const [shares, setShares] = useState<DoctorShare[] | null>(null);
   const [error, setError] = useState(false);
-  const [isSerious, setIsSerious] = useState<boolean | null>(null);
 
   useEffect(() => {
     fetch("/api/doctor-shares")
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data) => setShares(data.shares))
       .catch(() => setError(true));
-
-    // Hello Doc kræver Seriøs (docs/DECISIONS.md 2026-09-19) — den eneste
-    // datakategori der er udelukket fra Gratis-versionen.
-    fetch("/api/subscription")
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => setIsSerious(data ? data.tier === "SERIOUS" : true))
-      .catch(() => setIsSerious(true));
   }, []);
 
   return (
@@ -53,18 +45,12 @@ export default function HelloDocPage() {
       <div className="flex flex-col gap-6 px-4 pb-8 pt-4">
         <p className="hf-type-body-sm opacity-80">{t("helloDoc.subtitle")}</p>
 
-        {isSerious === false ? (
-          <Link href="/profile/subscription" className="hf-type-body-sm rounded-lg bg-hf-tan p-4">
-            {t("helloDoc.requiresSerious")}
-          </Link>
-        ) : (
-          <Link
-            href="/settings/hello-doc/invite"
-            className="hf-btn-primary hf-type-button flex h-12 w-full items-center justify-center"
-          >
-            {t("helloDoc.inviteButton")}
-          </Link>
-        )}
+        <Link
+          href="/settings/hello-doc/invite"
+          className="hf-btn-primary hf-type-button flex h-12 w-full items-center justify-center"
+        >
+          {t("helloDoc.inviteButton")}
+        </Link>
 
         <div>
           <h2 className="hf-type-section-title mb-2">{t("helloDoc.invitedUsersTitle")}</h2>

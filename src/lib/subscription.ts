@@ -49,3 +49,17 @@ export function getRetentionCutoffDate(tier: SubscriptionTier, now: Date = new D
   cutoff.setDate(cutoff.getDate() - FREE_TIER_RETENTION_DAYS);
   return cutoff;
 }
+
+// Strammer en vilkårlig historik-grænse (fx Hello Doc's valgte historyRange)
+// ind til abonnementets 30-dages-grænse, så Gratis aldrig kan se — eller dele —
+// data ældre end grænsen. Returnerer den seneste af de to datoer.
+export async function applyRetentionCutoff(
+  userId: string,
+  cutoff: Date | null,
+  now: Date = new Date()
+): Promise<Date | null> {
+  const retention = getRetentionCutoffDate(await getUserSubscriptionTier(userId, now), now);
+  if (!retention) return cutoff;
+  if (!cutoff) return retention;
+  return cutoff.getTime() > retention.getTime() ? cutoff : retention;
+}

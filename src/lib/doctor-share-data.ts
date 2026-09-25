@@ -8,6 +8,7 @@
 import { prisma } from "@/lib/prisma";
 import { groupByDay } from "@/lib/daily-totals";
 import { historyRangeToDays, type DoctorShareHistoryRange } from "@/lib/doctor-share";
+import { applyRetentionCutoff } from "@/lib/subscription";
 
 export type DoctorShareOwnerData = {
   profile: { displayName: string; email: string; sex: "MALE" | "FEMALE" | null };
@@ -38,7 +39,10 @@ export async function fetchDoctorShareOwnerData(
   if (!user) return null;
 
   const days = historyRangeToDays(range);
-  const cutoff = days === null ? null : new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+  const cutoff = await applyRetentionCutoff(
+    ownerId,
+    days === null ? null : new Date(Date.now() - days * 24 * 60 * 60 * 1000)
+  );
 
   const [registrations, weightEntries, waterMetrics] = await Promise.all([
     prisma.registration.findMany({

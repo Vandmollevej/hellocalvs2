@@ -1786,7 +1786,7 @@ build-/verifikationsnoter.
   brugerens gennemgang. Billede-dagbogen er allerede localStorage-only
   (2026-09-02-beslutning) og derfor slet ikke omfattet af denne
   server-side-mekanisme.
-- **Hello Doc kræver Seriøs** — den ene datakategori der eksplicit er
+- ~~**Hello Doc kræver Seriøs**~~ — erstattet 2026-09-25 (se nedenfor). Den ene datakategori der eksplicit er
   udelukket fra Gratis. Håndhævet både server-side (`POST
   /api/doctor-shares` afviser med 403 hvis tier ikke er Seriøs) og i UI'et
   (`/settings/hello-doc` viser et opgraderings-link i stedet for
@@ -1933,3 +1933,21 @@ Normaliserede produkt-søgeparametre (`ProductNutritionFeatures`, 1:1 med
 - Den private ingrediens ligger kun i boksen (samling `privateIngredients`) og vises kun for brugeren selv: øverst i søgningen på Opret ret og på `/ingredients` ("Mine ingredienser": omdøb/slet). I retter bruges produkt-ID `private:<id>`, som aldrig sendes til serveren; retter med egne ingredienser kan ikke deles, før de er gjort globale.
 - Admin varsles: serveren får kun navnet og en anonym engangsindbakke (`IngredientRequest`, ingen bruger-ID) plus e-mail `INGREDIENT_REQUEST_ADMIN`. Admin → "Ønskede ingredienser" kan rette navnet og "Tilføj globalt" (GenericIngredient med Frida-næring) eller afvise.
 - Når admin tilføjer den globalt, overskriver den global brugerens private automatisk (valgt blandt brugerens to muligheder): indbakken leverer den globale ingrediens, og enheden erstatter den private i alle egne retter og sletter den private.
+
+## 2026-09-25: Gratis = alt med reklamer; Seriøs = ingen reklamer + fuld historik
+
+Direkte brugerønske (erstatter "Hello Doc kræver Seriøs" fra 2026-09-19):
+
+- **Gratis har adgang til alt**, også Hello Doc, men vises med reklamer. Den
+  eneste dataforskel er den rullende 30-dages-grænse; ældre data slettes
+  aldrig og bliver synlige ved opgradering.
+- **Seriøs** (119 kr./måned) = ingen reklamer + fuld historik.
+- Hello Doc respekterer 30-dages-grænsen: `applyRetentionCutoff()` i
+  `src/lib/subscription.ts` strammer den valgte `historyRange` ind til
+  ejerens abonnementsgrænse — både i forhåndsvisningen og i den eksterne
+  token-visning — så en Gratis-bruger aldrig deler ældre data end de selv
+  kan se. Grænsen beregnes ved hver visning, så en opgradering straks
+  udvider det delte vindue.
+- **Ikke bygget endnu, flagget som opfølgning:** selve reklamevisningen.
+  Der findes ingen reklameudbyder eller placering i appen; det kræver
+  brugerens valg af udbyder og placering.

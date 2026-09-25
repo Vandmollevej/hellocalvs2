@@ -293,7 +293,6 @@
   "helloDoc": {
     "title": "Hello Doc",
     "subtitle": "Share your progress with your doctor or dietitian",
-    "requiresSerious": "Hello Doc requires the Serious subscription. Tap here to upgrade.",
     "inviteButton": "Invite user",
     "invitedUsersTitle": "Invited users",
     "emptyInvited": "No one invited yet.",
@@ -829,12 +828,12 @@
     "activeUntil": "Active until {date}",
     "freePlan": {
       "title": "Free",
-      "description": "Access to everything in Hello Cal except Hello Doc. Only the last 30 days of history are shown — older data is kept and comes back if you go Serious."
+      "description": "Access to everything in Hello Cal, with ads. Only the last 30 days of history are shown — older data is kept and becomes visible as soon as you upgrade."
     },
     "seriousPlan": {
       "title": "Serious",
       "priceSuffix": "kr./month",
-      "description": "Full history with no 30-day limit, plus access to Hello Doc.",
+      "description": "No ads and full history with no 30-day limit.",
       "upgradeCta": "Upgrade to Serious",
       "upgradeUnavailable": "Payment isn't connected yet — use a gift code or redeem points to go Serious until a payment provider is in place."
     },

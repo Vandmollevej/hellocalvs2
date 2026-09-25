@@ -2,6 +2,16 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Gratis får adgang til alt (med reklamer)
+
+- Hello Doc er ikke længere spærret for Gratis (API + `/settings/hello-doc`).
+- Hello Doc-data begrænses til de seneste 30 dage for Gratis-ejere
+  (`applyRetentionCutoff` i `src/lib/subscription.ts`).
+- Abonnementssiden: Gratis = "alt, med reklamer"; Seriøs = "ingen reklamer
+  og fuld historik".
+- Åbent: selve reklamevisningen er ikke bygget — kræver valg af udbyder og
+  placering (docs/DECISIONS.md 2026-09-25).
+
 ## 2026-09-25: Vægt-ikonet tegnet som vektor
 
 - `IconBathroomScale` (`src/components/icons/BathroomScale.tsx`) maskerede

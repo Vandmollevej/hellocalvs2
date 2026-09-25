@@ -293,7 +293,6 @@
   "helloDoc": {
     "title": "Hello Doc",
     "subtitle": "Del din fremgang med din læge eller diætist",
-    "requiresSerious": "Hello Doc kræver abonnementet Seriøs. Tryk her for at opgradere.",
     "inviteButton": "Inviter bruger",
     "invitedUsersTitle": "Inviterede brugere",
     "emptyInvited": "Ingen inviteret endnu.",
@@ -829,12 +828,12 @@
     "activeUntil": "Aktiv til {date}",
     "freePlan": {
       "title": "Gratis",
-      "description": "Adgang til alt i Hello Cal undtagen Hello Doc. Kun de seneste 30 dages historik vises — ældre data gemmes og kommer tilbage, hvis du bliver Seriøs."
+      "description": "Adgang til alt i Hello Cal, med reklamer. Kun de seneste 30 dages historik vises — ældre data gemmes og bliver synlige, så snart du opgraderer."
     },
     "seriousPlan": {
       "title": "Seriøs",
       "priceSuffix": "kr./måned",
-      "description": "Fuld historik uden 30-dages-grænse, plus adgang til Hello Doc.",
+      "description": "Ingen reklamer og fuld historik uden 30-dages-grænse.",
       "upgradeCta": "Opgradér til Seriøs",
       "upgradeUnavailable": "Betaling er ikke tilsluttet endnu — brug en gavekode eller indløs points for at blive Seriøs, indtil en betalingsudbyder er på plads."
     },

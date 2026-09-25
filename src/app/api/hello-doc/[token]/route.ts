@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { groupByDay } from "@/lib/daily-totals";
 import { historyRangeToDays, isDoctorSharePendingExpired, sanitizeDoctorShareCategories } from "@/lib/doctor-share";
+import { applyRetentionCutoff } from "@/lib/subscription";
 
 // The real, login-free view a doctor/dietitian opens from the invitation
 // e-mail's link (docs/STATUS.md "Next work" #12A, docs/DECISIONS.md
@@ -52,8 +53,12 @@ export async function GET(request: Request, { params }: { params: Promise<{ toke
   // owner's full history, and never a category they didn't select.
   const categories = sanitizeDoctorShareCategories(share.categories);
   const days = historyRangeToDays(share.historyRange);
-  const cutoff = days === null ? null : new Date(Date.now() - days * 24 * 60 * 60 * 1000);
   const owner = share.owner;
+  // Gratis-ejere deler højst de seneste 30 dage (docs/DECISIONS.md 2026-09-25).
+  const cutoff = await applyRetentionCutoff(
+    owner.id,
+    days === null ? null : new Date(Date.now() - days * 24 * 60 * 60 * 1000)
+  );
 
   const needsNutrition = categories.includes("foodAndCalories") || categories.includes("vitaminsMinerals");
   const needsWeight = categories.includes("weight");
