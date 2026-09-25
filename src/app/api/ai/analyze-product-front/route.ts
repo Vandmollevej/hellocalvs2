@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { REGION_PROMPT, REGION_SCHEMA_PROPERTIES, REGION_SCHEMA_REQUIRED, readRegions } from "@/lib/ai-regions";
 import { buildBarcodeContext } from "@/lib/barcode-context";
 import { callStructuredVision } from "@/lib/product-ai";
 import type { ProductFrontAnalysis } from "@/lib/product-analysis-types";
 
-const PROMPT_VERSION = "front-v1-2026-09-16";
+const PROMPT_VERSION = "front-v1-2026-09-24-regions";
 
 const FRONT_SCHEMA = {
   type: "object",
@@ -31,6 +32,7 @@ const FRONT_SCHEMA = {
       required: ["brand", "subbrand", "productName", "variant", "packageSizeText"],
       additionalProperties: false,
     },
+    ...REGION_SCHEMA_PROPERTIES,
   },
   required: [
     "brand",
@@ -43,6 +45,7 @@ const FRONT_SCHEMA = {
     "language",
     "overallConfidence",
     "fieldConfidence",
+    ...REGION_SCHEMA_REQUIRED,
   ],
   additionalProperties: false,
 };
@@ -88,6 +91,7 @@ export async function POST(req: Request) {
         "Brug ikke producentens juridiske firmanavn fra småt bagsidetekst som brand, medmindre det også tydeligt er mærket på forsiden.",
         "Prioritér de oplyste sprog, men de er IKKE en whitelist. Genkend andre sprog hvis emballagen kræver det.",
         "Hvis et felt ikke kan afgøres, returnér null og lav confidence lavere. Gæt ikke.",
+        REGION_PROMPT,
       ].join(" "),
       text: [
         `Stregkode: ${barcode}.`,
@@ -112,6 +116,7 @@ export async function POST(req: Request) {
         promptVersion: PROMPT_VERSION,
         prediction: value as unknown as Prisma.InputJsonValue,
         confidence: value.overallConfidence,
+        regions: readRegions(value) as unknown as Prisma.InputJsonValue,
       },
       select: { id: true },
     });

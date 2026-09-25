@@ -1,6 +1,37 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-24
+Last updated: 2026-09-25
+
+## 2026-09-25: Usikkerheds-~ + admin "Uncertainties" — bygget (G4)
+
+Beslutninger i `docs/DECISIONS.md` 2026-09-25 (erstatter afklaringen
+2026-09-24 hvor de er i modstrid). Bygget på branch
+`claude/great-booth-2afa0b` (worktree), ikke merget til master endnu.
+
+- Grønt tastatur-`~` (`UncertaintyTilde`) + grå linje (`UncertaintyLine`)
+  i "Vis mere"-tabellen på `/add/[id]`, i Statistik-kortene (næringsstoffer)
+  og foran kcal i søgeresultater. Kontakt under Indstillinger → Visning →
+  Usikkerhed (`/settings/display/uncertainty`, standard fra).
+- `src/lib/nutrients.ts` (katalog, Frida-id'er), `src/lib/nutrient-resolution.ts`
+  (egne tal / Frida-reference / lånt estimat), `/api/products/[id]` sender
+  `nutrients`, registreringer gemmer næringsstof-snapshots, `daily-totals` +
+  `stat-cards` bruger dem.
+- Frida-agenten importerer alle mikrodata og genimporterer den nuværende
+  version én gang; generiske ingredienser får mikrodata kopieret.
+- Migration `20260924150000_nutrient_uncertainty` (3 JSON-kolonner på
+  products, 1 på generic_ingredients, `regions` på ai_product_analyses).
+- Admin `/admin/uncertainties` (4 faner, sortering, rød prik i menuen,
+  produkt-overlay, lightbox med beskåret foto + røde rammer, rettelse →
+  produkt). AI-ruterne for forside/næring/ingredienser returnerer nu
+  koordinater (nye prompt-versioner `*-2026-09-24-regions`).
+
+Kræver ved deploy: `prisma migrate deploy`, genstart af frida-agent-
+containeren (for at hente mikrodata). Åbent: natlig AI-robot (senere fase),
+evt. lavere minimumstærskel, producent-± udfyldes endnu ikke af nogen kilde
+(AI'en læser den ikke fra deklarationen endnu), og makro-kilden
+(`nutrientSources.kcal` osv.) sættes endnu ikke af nogen import — ~ i
+søgeresultater vises derfor først, når en kilde markerer makroer som
+estimerede.
 
 ## TODO (2026-09-24): Waldemarsro-integration (dansk opskriftsside) — afklaret, ikke bygget
 
@@ -3293,7 +3324,8 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
     per-category data plumbing (`src/lib/doctor-share-data.ts`) is next
     touched.
 
-15. **New admin "Uncertainties" page** (requested 2026-09-20, not yet designed
+15. **BUILT 2026-09-25** (see top entry; nightly robot still open).
+    **New admin "Uncertainties" page** (requested 2026-09-20, not yet designed
     or built — direct user request, open questions pending, see
     `docs/DECISIONS.md` 2026-09-20 for items to clarify before starting):
     - New admin nav item "Uncertainties" (may end up being a rename/merge of

@@ -166,6 +166,16 @@ export default function SettingsPage() {
               divider
             />
             <ChevronRow
+              icon={
+                <span aria-hidden="true" className="w-5 text-center text-[22px] font-bold leading-none text-hf-green">
+                  ~
+                </span>
+              }
+              label={t("displaySettings.uncertainty")}
+              href="/settings/display/uncertainty"
+              divider
+            />
+            <ChevronRow
               icon={<IconCalendarWeek size={20} />}
               label={t("settings.calendarView")}
               href="/settings/display/calendar-view"

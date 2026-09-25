@@ -238,7 +238,10 @@
   "displaySettings": {
     "title": "Recommended limits",
     "warnOnRecommendedLimits": "Highlight values above/below the recommended normal range",
-    "warnOnRecommendedLimitsDescription": "Shows a 1 px dark-red border around statistic cards when a documented recommendation for your region and profile is exceeded. Missing data is never flagged."
+    "warnOnRecommendedLimitsDescription": "Shows a 1 px dark-red border around statistic cards when a documented recommendation for your region and profile is exceeded. Missing data is never flagged.",
+    "uncertainty": "Uncertainty",
+    "autoExpandUncertainty": "Expand uncertainty automatically",
+    "autoExpandUncertaintyDescription": "A green ~ always appears in front of values we have estimated because the manufacturer does not state them. Turn this on to show the grey uncertainty line under the value without tapping."
   },
   "menstrualCycleSettings": {
     "intro": "Log your menstrual cycle and get it as an option in the add menu.",
@@ -1027,7 +1030,26 @@
       "vitaminA": "Vitamin A",
       "vitaminC": "Vitamin C",
       "calcium": "Calcium",
-      "iron": "Iron"
+      "iron": "Iron",
+      "salt": "Salt",
+      "magnesium": "Magnesium",
+      "zinc": "Zinc",
+      "copper": "Copper",
+      "manganese": "Manganese",
+      "selenium": "Selenium",
+      "phosphorus": "Phosphorus",
+      "iodine": "Iodine",
+      "vitaminD": "Vitamin D",
+      "vitaminE": "Vitamin E",
+      "vitaminK": "Vitamin K",
+      "vitaminB1": "Vitamin B1 (thiamine)",
+      "vitaminB2": "Vitamin B2 (riboflavin)",
+      "vitaminB3": "Vitamin B3 (niacin)",
+      "vitaminB5": "Vitamin B5 (pantothenic acid)",
+      "vitaminB6": "Vitamin B6",
+      "vitaminB7": "Vitamin B7 (biotin)",
+      "vitaminB9": "Vitamin B9 (folate)",
+      "vitaminB12": "Vitamin B12"
     }
   },
   "photoAward": {

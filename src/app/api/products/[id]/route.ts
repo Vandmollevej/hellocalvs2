@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { resolveGenericIngredientNutrients, resolveProductNutrients } from "@/lib/nutrient-resolution";
 
 export async function GET(
   _req: Request,
@@ -10,10 +11,30 @@ export async function GET(
   try {
     const product = await prisma.product.findUnique({
       where: { id },
-      include: { brand: true, barcodes: true, images: { orderBy: { order: "asc" } } },
+      include: {
+        brand: true,
+        barcodes: true,
+        images: { orderBy: { order: "asc" } },
+        nutritionFeatures: {
+          select: {
+            sugarsPer100g: true,
+            sugarSource: true,
+            fiberPer100g: true,
+            fiberSource: true,
+            saltPer100g: true,
+            saltSource: true,
+          },
+        },
+      },
     });
     if (product) {
-      return NextResponse.json({ product });
+      // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24): alle næringsstoffer
+      // ud over makroerne, pr. 100 g, med estimeret-flag.
+      const nutrients = await resolveProductNutrients(product).catch((error) => {
+        console.error("Nutrient resolution failed", error);
+        return [];
+      });
+      return NextResponse.json({ product: { ...product, nutrients } });
     }
 
     // Not a Product — try the separate GenericIngredient table (loose
@@ -27,6 +48,7 @@ export async function GET(
       include: { images: { orderBy: { order: "asc" } } },
     });
     if (ingredient) {
+      const nutrients = await resolveGenericIngredientNutrients(ingredient).catch(() => []);
       return NextResponse.json({
         product: {
           id: ingredient.id,
@@ -53,6 +75,7 @@ export async function GET(
           // Uden et Frida-match har ingrediensen ingen kendt næringsværdi —
           // UI skal vise "–", ikke lade som om 0 er en rigtig målt værdi.
           hasKnownNutrition: ingredient.kcalPer100g !== null,
+          nutrients,
         },
       });
     }

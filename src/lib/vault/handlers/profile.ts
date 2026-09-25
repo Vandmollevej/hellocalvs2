@@ -37,6 +37,9 @@ export const PRIVATE_PROFILE_DEFAULTS = {
   // HelloFresh-opskrifter i "Søg i delte retter" (Indstillinger → Integrationer).
   helloFreshEnabled: false,
   warnOnRecommendedLimits: false,
+  // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24): ~ vises altid; denne
+  // bestemmer kun, om den grå usikkerhedslinje er foldet ud automatisk.
+  autoExpandUncertainty: false,
   photoDiaryRequiresPasscode: false,
   cycleTrackingEnabled: false,
   averageCycleLengthDays: 28,

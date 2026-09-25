@@ -12,6 +12,7 @@
 import { newRecordId } from "@/lib/vault/client";
 import { json, route } from "@/lib/vault/local-api";
 import { fulfillPendingForward } from "@/lib/vault/handlers/forwards";
+import type { ResolvedNutrient } from "@/lib/nutrients";
 
 export const REGISTRATIONS = "registrations";
 export const DISHES = "dishes";
@@ -36,8 +37,24 @@ type PublicProduct = {
   vitaminAPer100g?: number | null;
   vitaminCPer100g?: number | null;
   isGenericIngredient?: boolean;
+  nutrients?: ResolvedNutrient[];
   [key: string]: unknown;
 };
+
+// Skalerer /api/products/[id]'s opløste næringsstoffer til den registrerede
+// mængde (snapshot — ændres aldrig senere).
+function nutrientSnapshots(nutrients: ResolvedNutrient[] | undefined, factor: number) {
+  if (!nutrients?.length) return {};
+  const nutrientSnapshot: Record<string, number> = {};
+  const nutrientEstimatedSnapshot: Record<string, number> = {};
+  const nutrientToleranceSnapshot: Record<string, number> = {};
+  for (const n of nutrients) {
+    nutrientSnapshot[n.key] = n.per100g * factor;
+    if (n.estimated) nutrientEstimatedSnapshot[n.key] = n.per100g * factor;
+    if (n.tolerancePer100g !== null) nutrientToleranceSnapshot[n.key] = n.tolerancePer100g * factor;
+  }
+  return { nutrientSnapshot, nutrientEstimatedSnapshot, nutrientToleranceSnapshot };
+}
 
 export type Registration = {
   id: string;
@@ -62,6 +79,12 @@ export type Registration = {
   cholesterolSnapshot: number | null;
   vitaminASnapshot: number | null;
   vitaminCSnapshot: number | null;
+  // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24): alle næringsstoffer fra
+  // src/lib/nutrients.ts for den registrerede mængde, hvor meget af hver der
+  // er estimeret, og producentens egen ±. Mangler på ældre registreringer.
+  nutrientSnapshot?: Record<string, number>;
+  nutrientEstimatedSnapshot?: Record<string, number>;
+  nutrientToleranceSnapshot?: Record<string, number>;
   createdAt: string;
   // Produktets billede og portionsenhed på registreringstidspunktet, så
   // listen kan vises uden at spørge serveren om hver registrering.
@@ -229,6 +252,7 @@ route("POST", "/api/registrations", async ({ vault, body }) => {
             vitaminASnapshot: scaled(product.vitaminAPer100g),
             vitaminCSnapshot: scaled(product.vitaminCPer100g),
           }),
+      ...nutrientSnapshots(product.nutrients, factor),
       product: productInfo(product),
     };
 

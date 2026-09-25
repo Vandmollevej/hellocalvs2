@@ -129,7 +129,15 @@ export async function POST(req: Request) {
 
     const fridaCandidates = await prisma.product.findMany({
       where: { externalSource: "FRIDA" },
-      select: { id: true, name: true, kcalPer100g: true, proteinPer100g: true, carbsPer100g: true, fatPer100g: true },
+      select: {
+        id: true,
+        name: true,
+        kcalPer100g: true,
+        proteinPer100g: true,
+        carbsPer100g: true,
+        fatPer100g: true,
+        micronutrientsPer100g: true,
+      },
     });
     const match = matchFridaProduct(name, fridaCandidates);
 
@@ -143,6 +151,8 @@ export async function POST(req: Request) {
         proteinPer100g: match?.proteinPer100g,
         carbsPer100g: match?.carbsPer100g,
         fatPer100g: match?.fatPer100g,
+        // Frida-mikrodata kopieres med (docs/DECISIONS.md 2026-09-24).
+        micronutrientsPer100g: match?.micronutrientsPer100g ?? undefined,
         createdByUserId: sessionUser?.id,
       },
     });

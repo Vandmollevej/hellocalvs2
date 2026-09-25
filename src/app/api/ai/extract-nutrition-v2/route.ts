@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { REGION_PROMPT, REGION_SCHEMA_PROPERTIES, REGION_SCHEMA_REQUIRED, readRegions } from "@/lib/ai-regions";
 import { buildBarcodeContext } from "@/lib/barcode-context";
 import { callStructuredVision } from "@/lib/product-ai";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
 import { deriveFiberPercent } from "@/lib/nutrition-normalize";
 import type { NutritionAiResult, NutritionAnalysis } from "@/lib/product-analysis-types";
 
-const PROMPT_VERSION = "nutrition-v2-2026-09-16";
+const PROMPT_VERSION = "nutrition-v2-2026-09-24-regions";
 
 const NULLABLE_NUMBER = { type: ["number", "null"] };
 
@@ -42,6 +43,7 @@ const NUTRITION_SCHEMA = {
       },
     },
     confidence: { type: "number" },
+    ...REGION_SCHEMA_PROPERTIES,
   },
   required: [
     "basis",
@@ -58,6 +60,7 @@ const NUTRITION_SCHEMA = {
     "language",
     "alternativeServings",
     "confidence",
+    ...REGION_SCHEMA_REQUIRED,
   ],
   additionalProperties: false,
 };
@@ -91,6 +94,7 @@ export async function POST(req: Request) {
         "Find også alternative portionsangivelser såsom pr. glas, skive, stk. eller portion, når de faktisk står på emballagen.",
         "Prioritér de oplyste sprog, men de er ikke en whitelist.",
         "Gæt aldrig tal.",
+        REGION_PROMPT,
       ].join(" "),
       text: [
         `Stregkode: ${barcode}.`,
@@ -125,6 +129,7 @@ export async function POST(req: Request) {
         promptVersion: PROMPT_VERSION,
         prediction: value as unknown as Prisma.InputJsonValue,
         confidence: value.confidence,
+        regions: readRegions(value) as unknown as Prisma.InputJsonValue,
         imageUrl,
       },
       select: { id: true },

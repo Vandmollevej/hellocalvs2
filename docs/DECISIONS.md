@@ -2,6 +2,52 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-25: Usikkerheds-~ + admin "Uncertainties" (bygget)
+
+Erstatter punkterne i "Usikkerheds-bølgeikon (afklaret, ikke bygget)" nedenfor,
+hvor de er i modstrid. Kilden er brugerens svar i samtale ef2ba16f (fire
+runder + godkendt mockup v4, 2026-09-23) og svarene 2026-09-24 ved
+overtagelsen af G4 ("Tegn", Frida-datadumpet er fuldt, admin-siden bygges nu).
+
+- **Tegnet:** et grønt tastatur-`~` (ikke en tegnet SVG), ca. 2,4 × tekstens
+  størrelse med tynd kontur (0,75 px; 0,5 px i den grå linje) — målene fra
+  mockup v4. Komponent: `src/components/ui/UncertaintyTilde.tsx`.
+- **Hvad er sikkert:** producentens egne tal (varedeklaration, producent-/
+  kædedata, Open Food Facts) og Frida på selve den generiske vare. **Estimeret
+  (~):** når en mærkevare mangler et felt, og værdien lånes fra den nærmeste
+  Frida-vare, eller et felt er AI-udfyldt (`nutrientSources` = ESTIMATED/AI).
+  Admin-godkendelse fjerner ikke ~ — kun kilden afgør det.
+- **±:** vises kun, når producenten selv oplyser den, og da 1:1
+  (`Product.nutrientTolerances`). Vi beregner aldrig selv en ±; estimater får
+  kun ~. (Erstatter det tidligere "margen ud fra Frida".)
+- **Grå linje:** producentens ± og/eller `~ <estimeret mængde>` efter hinanden,
+  fx `±0,5 mg  ~ 1,1 mg`. Altid foldet ind; tryk på rækken/pilen folder ud.
+- **Indstillinger → Visning → Usikkerhed:** én kontakt, "Fold usikkerhed ud
+  automatisk", **slået fra** som standard, gemt privat i boksen
+  (`autoExpandUncertainty`). Ingrediens-kontakten er droppet. (Erstatter de
+  to kontakter "slået til som standard".)
+- **Søgeresultater:** `~` foran kalorietallet, kun når kcal/protein/kulhydrat/
+  fedt er estimeret (`nutrientSources`).
+- **Frida:** agenten importerer nu alle vitaminer, mineraler, fedtsyresummer,
+  kolesterol, kostfibre, sukkerarter og salt (`Product.micronutrientsPer100g`,
+  nøgler og ParameterID'er i `src/lib/nutrients.ts`). En allerede importeret
+  version genimporteres én gang (markør i `frida_import_state.title`), og
+  generiske ingredienser får mikrodata kopieret fra deres Frida-match.
+- **Snapshot:** registreringer gemmer `nutrientSnapshot` +
+  `nutrientEstimatedSnapshot` + `nutrientToleranceSnapshot`, så statistik viser
+  hvor meget af et gennemsnit der er estimeret uden at genberegne senere.
+- **Admin "Uncertainties"** erstatter "Advarsler" (gamle sektioner vises
+  nederst, `/admin/warnings` viderestiller). Datakilden er `AiProductAnalysis`
+  (ikke BugReport som noteret 2026-09-24 — BugReport har ingen confidence,
+  mens analyserne har confidence + foto pr. type): Produkt = FRONT, Energi =
+  NUTRITION, Indhold = INGREDIENTS, EAN = BARCODE. Åben = ikke rettet og
+  confidence under 90 % (EAN: forkert GS1-kontrolciffer = 100 %). Usikkerhed
+  = 100 − confidence. AI'en returnerer nu `ocrRegion` + `uncertainRegions`
+  (`AiProductAnalysis.regions`, normaliseret 0–1) til beskæring og røde
+  rammer; ældre analyser vises med hele fotoet. Rettelsen skrives til
+  produktet og gemmes som `correction`. Den natlige AI-robot er stadig en
+  senere fase; en lavere minimumstærskel er stadig uafklaret.
+
 ## 2026-09-24: Usikkerheds-bølgeikon (afklaret, ikke bygget)
 
 Brugerens krav og valg, punkt for punkt (ikke bygget denne omgang, se

@@ -10,6 +10,8 @@ import {
 } from "@/lib/stat-cards";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { StatCardIcon } from "@/components/StatCardIcon";
+import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
+import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
 
 function layoutItemId(item: LayoutItem) {
   if (item.type === "stat") return `stat:${item.key}`;
@@ -63,9 +65,38 @@ function CardTile({
       <p className="text-xs text-hf-black opacity-60">{card.label}</p>
       <p className="hf-heading mt-1 flex items-center gap-1.5 text-xl text-hf-black">
         <StatCardIcon icon={card.icon} iconSrc={card.iconSrc} />
-        {card.value}
+        <span>
+          {card.uncertainty?.estimated ? <UncertaintyTilde /> : null}
+          {card.value}
+        </span>
       </p>
     </div>
+  );
+}
+
+// Usikkerheds-~ (docs/DECISIONS.md 2026-09-24): den grå linje under et
+// næringsstof-kort, foldet ind indtil brugeren trykker på pilen (eller har
+// slået automatisk udfoldning til). Pilen stopper pointerdown, så et tryk
+// aldrig starter kortets træk-og-slip.
+function CardUncertainty({ card, expanded, onToggle }: { card: StatCardValue; expanded: boolean; onToggle: () => void }) {
+  const u = card.uncertainty;
+  if (!u) return null;
+  return (
+    <>
+      {expanded && (
+        <UncertaintyLine className="mt-2" estimated={u.estimated} tolerance={u.tolerance} unit={u.unit} digits={u.digits} />
+      )}
+      <button
+        type="button"
+        aria-expanded={expanded}
+        aria-label={card.label}
+        onPointerDown={(e) => e.stopPropagation()}
+        onClick={onToggle}
+        className="mt-1 text-[12px] text-hf-black/40"
+      >
+        {expanded ? "▴" : "▾"}
+      </button>
+    </>
   );
 }
 
@@ -73,11 +104,24 @@ export function StatCardsGrid({
   cards,
   defaultActiveKeys,
   highlightRecommendedLimits = false,
+  autoExpandUncertainty = false,
 }: {
   cards: StatCardValue[];
   defaultActiveKeys: string[];
   highlightRecommendedLimits?: boolean;
+  autoExpandUncertainty?: boolean;
 }) {
+  // Kort hvor brugeren har vendt den grå usikkerhedslinje i forhold til
+  // udgangspunktet (autoExpandUncertainty).
+  const [uncertaintyToggled, setUncertaintyToggled] = useState<Set<string>>(() => new Set());
+  function toggleUncertainty(key: string) {
+    setUncertaintyToggled((current) => {
+      const next = new Set(current);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  }
   const { t } = useTranslation();
   const cardByKey = useMemo(() => new Map(cards.map((c) => [c.key, c])), [cards]);
 
@@ -487,8 +531,18 @@ export function StatCardsGrid({
               <p className="text-xs text-hf-black opacity-60">{card.label}</p>
               <p className="hf-heading mt-1 flex items-center gap-1.5 text-xl text-hf-black">
                 <StatCardIcon icon={card.icon} iconSrc={card.iconSrc} />
-                {card.value}
+                <span>
+                  {card.uncertainty?.estimated ? <UncertaintyTilde /> : null}
+                  {card.value}
+                </span>
               </p>
+              {!editMode && (
+                <CardUncertainty
+                  card={card}
+                  expanded={autoExpandUncertainty !== uncertaintyToggled.has(card.key)}
+                  onToggle={() => toggleUncertainty(card.key)}
+                />
+              )}
             </div>
           );
         })}

@@ -16,7 +16,7 @@ const LINK_DEFS: { href: string; key: AdminI18nKey }[] = [
   { href: "/admin/messaging", key: "nav_messaging" },
   { href: "/admin/images", key: "nav_images" },
   { href: "/admin/quality-control", key: "nav_quality_control" },
-  { href: "/admin/warnings", key: "nav_warnings" },
+  { href: "/admin/uncertainties", key: "nav_uncertainties" },
   { href: "/admin/duplicate-products", key: "nav_duplicate_products" },
   { href: "/admin/search", key: "nav_search" },
   { href: "/admin/search-ranking", key: "nav_search_ranking" },
@@ -25,7 +25,18 @@ const LINK_DEFS: { href: string; key: AdminI18nKey }[] = [
   { href: "/admin/passkeys", key: "nav_passkeys" },
 ];
 
-export function AdminNav({ email, locale }: { email: string; locale: Locale }) {
+// hasOpenUncertainties: rød prik ved "Uncertainties", når der er usikre
+// produkter at gennemgå (docs/DECISIONS.md 2026-09-24) — samme prik-
+// konvention som ved talebobler/beskeder.
+export function AdminNav({
+  email,
+  locale,
+  hasOpenUncertainties = false,
+}: {
+  email: string;
+  locale: Locale;
+  hasOpenUncertainties?: boolean;
+}) {
   const pathname = usePathname();
   const router = useRouter();
   const [currentLocale, setCurrentLocale] = useState(locale);
@@ -65,6 +76,12 @@ export function AdminNav({ email, locale }: { email: string; locale: Locale }) {
               }
             >
               {t(currentLocale, link.key)}
+              {link.href === "/admin/uncertainties" && hasOpenUncertainties && (
+                <span
+                  aria-label="Usikre produkter"
+                  className="ml-1 inline-block h-2 w-2 rounded-full bg-hf-red-dark align-top"
+                />
+              )}
             </Link>
           ))}
         </nav>

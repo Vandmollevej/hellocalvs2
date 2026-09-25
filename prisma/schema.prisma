@@ -856,6 +856,17 @@ model Product {
   // (BugReport.source = AI) i stedet for at blive gættet eller vist forkert.
   alternativeServings Json?
 
+  // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24). Alle nøgler følger
+  // src/lib/nutrients.ts. micronutrientsPer100g: vitaminer/mineraler/fedt-
+  // syrer m.m. pr. 100 g i katalogets enhed (Frida-importen udfylder den for
+  // externalSource=FRIDA). nutrientSources: { <nøgle eller kcal/protein/
+  // carbs/fat>: "LABEL" | "REFERENCE" | "ESTIMATED" | "AI" } — ~ vises kun
+  // ved ESTIMATED/AI. nutrientTolerances: producentens egen ± pr. 100 g,
+  // kun når producenten selv oplyser den.
+  micronutrientsPer100g Json?
+  nutrientSources       Json?
+  nutrientTolerances    Json?
+
   status           ProductStatus          @default(PENDING)
   discontinued     Boolean                @default(false)
   createdAt        DateTime               @default(now())
@@ -1026,6 +1037,11 @@ model AiProductAnalysis {
   productId     String?        @map("product_id")
   createdAt     DateTime       @default(now()) @map("created_at")
   correctedAt   DateTime?      @map("corrected_at")
+  // Admin "Uncertainties" (docs/DECISIONS.md 2026-09-24): AI'ens egne
+  // koordinater, normaliseret 0–1 i forhold til billedet —
+  // { ocrRegion: {x,y,w,h} | null, uncertainRegions: [{field,x,y,w,h,reason}] }.
+  // Null for analyser fra før felterne fandtes.
+  regions       Json?
   matchCheck    ProductMatchCheck?
 
   @@index([kind, correctedAt])
@@ -1353,6 +1369,10 @@ model GenericIngredient {
   proteinPer100g Float?
   carbsPer100g   Float?
   fatPer100g     Float?
+  // Frida-mikrodata kopieret fra fridaProduct (samme snapshot-princip som
+  // makroerne ovenfor), nøgler fra src/lib/nutrients.ts. Frida på selve den
+  // generiske vare regnes som sikre data (ingen ~).
+  micronutrientsPer100g Json?
 
   createdBy       User?    @relation("GenericIngredientsCreatedByUser", fields: [createdByUserId], references: [id])
   createdByUserId String?

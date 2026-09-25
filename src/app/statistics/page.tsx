@@ -103,6 +103,7 @@ export default function StatisticsPage() {
   const [metrics, setMetrics] = useState<HealthMetricTotals[]>([]);
   const [hasConnectedIntegration, setHasConnectedIntegration] = useState(false);
   const [warnOnRecommendedLimits, setWarnOnRecommendedLimits] = useState(false);
+  const [autoExpandUncertainty, setAutoExpandUncertainty] = useState(false);
   const [loading, setLoading] = useState(true);
   const [periodSelection, setPeriodSelection] = useState<StatPeriodSelection>(DEFAULT_STAT_SELECTION);
 
@@ -132,7 +133,7 @@ export default function StatisticsPage() {
       }),
       localApi("/api/profile").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente profil");
-        return (await response.json()) as { user: { warnOnRecommendedLimits?: boolean } };
+        return (await response.json()) as { user: { warnOnRecommendedLimits?: boolean; autoExpandUncertainty?: boolean } };
       }),
     ])
       .then(([registrationData, weightData, activityData, integrationData, metricData, profileData]) => {
@@ -145,6 +146,7 @@ export default function StatisticsPage() {
         );
         setMetrics(metricData.metrics);
         setWarnOnRecommendedLimits(Boolean(profileData.user.warnOnRecommendedLimits));
+        setAutoExpandUncertainty(Boolean(profileData.user.autoExpandUncertainty));
       })
       .catch(() => {
         if (!cancelled) {
@@ -275,6 +277,7 @@ export default function StatisticsPage() {
             cards={statCards}
             defaultActiveKeys={DEFAULT_ACTIVE_STAT_KEYS}
             highlightRecommendedLimits={warnOnRecommendedLimits}
+            autoExpandUncertainty={autoExpandUncertainty}
           />
         </div>
       </div>
