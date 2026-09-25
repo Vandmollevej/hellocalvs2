@@ -16,6 +16,30 @@ sendes tilbage til siden i stedet for rå JSON.
 Next work: I Google Cloud-konsollen skal redirect-URI'en
 `https://hellocal.packroff.dk/api/integrations/google-health/callback`
 tilføjes til login-klienten, og Google Health API + scopes aktiveres.
+## 2026-09-25: Tilføj-menu tekster og vandglas-ikon
+
+- "Kamera" → "Scan med kamera", "Mikrofon" → "Indtal" (`addButton.*` i
+  `src/i18n/locales/`).
+- Brugerens vandglas-ikon (`public/icons/water-glass.png`, maske-komponent
+  `src/components/icons/WaterGlass.tsx`) erstatter tabler-dråben overalt hvor
+  det betyder vand. Fedt-statistikkerne beholder dråben.
+
+## 2026-09-25: Kalender-dagvisning — træk søvn-håndtag forbi kanten + "Nattens søvn"
+
+Lavet i en cloud-session på branch `claude/cloud-session-credits-expired-7504pf`, flettet i master.
+
+- Stå-op-/sengetids-håndtaget scroller tidslinjen med, når fingeren når
+  visningens top/bund, så natten kan gøres kortere (før stoppede trækket ved
+  kanten).
+- Ved åbning af en dag vises den sidste hele time af nattens grå felt, med
+  "Nattens søvn: X,XX timer" (gårsdagens sengetid → dagens stå-op-tid; ved
+  dagsøvn dagens eget felt). Teksten står under stregen, mens man trækker.
+- Testet i Chromium med falske API-svar (ingen login/DB i cloud). Ikke testet
+  på telefon.
+- Kendt, ikke rettet: `calendar.remainingToday` mangler i sprogfilerne (vises
+  rå nederst i dagvisningen). Sprogfilerne har ikke-committede lokale
+  ændringer — tjek dem, før nøglen tilføjes.
+
 ## 2026-09-25: Tilføj — "Retter", nyt Kropsmål-ikon og samme tekst i hjulet
 
 - "Egne retter" hedder nu "Retter" (`addButton.ownDishes`, en: "Dishes"), også
