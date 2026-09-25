@@ -191,6 +191,7 @@
       }
     },
     "openProfile": "Åbn mine oplysninger",
+    "openAppSettings": "Åbn app-indstillinger",
     "back": "Tilbage",
     "loading": "Henter…",
     "loadError": "Kunne ikke hente indstillinger.",
@@ -213,8 +214,7 @@
     "setupProgressStepWeight": "Vægtkalibrering",
     "setupProgressHint": "Gennemfør vægtkalibrering for at afslutte opsætningen.",
     "payment": "Betaling",
-    "recipesPromo": "Vælg dine egne opskrifter, og skræddersy din måltidskasse.",
-    "logInOrSignUp": "Log ind / tilmeld",
+    "logOut": "Log ud",
     "helpCenter": "Hjælpecenter",
     "learnTheApp": "Lær appen at kende",
     "integrations": "Integrationer",
@@ -421,6 +421,9 @@
     "dailyGoalExceeded": "Du har overskredet dagens mål",
     "dailyGoalNone": "Endnu intet registreret",
     "registrations": "Registreringer",
+    "intakeTooLow": "For lavt indtag",
+    "lowIntakeNotice": "Vær opmærksom på, at dit indtag er lavere end hvad der er sundt. Du bør indtage mindst {minimum} kcal om dagen for en person af din statur.",
+    "noEntries": "Ingen indtastninger",
     "noRegistrations": "Ingen registreringer",
     "loadingDayRegistrations": "Henter dagens registreringer…",
     "registrationsLoadError": "Registreringerne kunne ikke hentes",
@@ -727,16 +730,10 @@
     "startWeightUpdated": "Opdateret d. {date}",
     "startWeight": {
       "title": "Startvægt",
+      "lockTitle": "Lås",
+      "lockBody": "Din startvægt bør ikke ændres, og er grundlag for al statistik. Du skal i stedet ændre din dagsvægt her.",
+      "setDailyWeight": "Angiv dagsvægt",
       "openLockedInfo": "Åbn information om låst startvægt",
-      "currentLabel": "Din startvægt",
-      "description1": "Din startvægt er den vægt, du registrerede, da du oprettede din profil.",
-      "description2": "Startvægten er låst, fordi den bruges som udgangspunkt for din vægtudvikling og statistik.",
-      "description3": "Hvis du ønsker at ændre startvægten, skal ændringen først verificeres via den e-mailadresse, der er tilknyttet din konto.",
-      "sendEmail": "Send verificeringsmail",
-      "sending": "Sender…",
-      "emailSent": "Vi har sendt en verificeringsmail til din e-mailadresse.",
-      "sendError": "Kunne ikke sende verificeringsmailen. Prøv igen.",
-      "registerDailyWeight": "Registrer dagsvægten her",
       "changeTitle": "Ændr startvægt",
       "fieldLabel": "Startvægt",
       "validating": "Kontrollerer verificeringslink…",
@@ -787,7 +784,6 @@
       "loginRequired": "Log ind for at ændre din adgangskode.",
       "logIn": "Log ind"
     },
-    "logOut": "Log af",
     "messages": {
       "title": "Beskeder",
       "empty": "Du har ingen beskeder endnu.",
@@ -820,7 +816,11 @@
       "genericError": "Kunne ikke indløse gavekoden lige nu"
     },
     "redeemPoints": "Indløs points",
-    "redeemPointsHint": "{cost} points kan indløses til 1 gratis måned med Seriøs",
+    "pointsEarned": "Du har optjent {balance} points.",
+    "redeemPage": {
+      "title": "Indløs points",
+      "giftFriend": "Giv en ven en gratis måned med Seriøs adgang!"
+    },
     "currentPlan": "Dit abonnement",
     "tier": {
       "free": "Gratis",
@@ -993,29 +993,16 @@
     "loading": "Henter…",
     "loadError": "Kunne ikke hente billede-dagbog.",
     "requiresPasscode": "Kræver telefonens adgangskode for at vise",
-    "requiresPasscodeDescription": "Håndhæves endnu ikke af OS'et — det kræver en native app. Kun en gemt præference i dag.",
-    "showPhotos": "Vis billeder (ingen rigtig adgangskode-kontrol endnu)",
+    "requiresPasscodeDescription": "Billederne vises først, når du har bekræftet med Face ID, Touch ID eller telefonens kode.",
+    "showPhotos": "Vis billeder",
     "takePhoto": "Tag billede (fuld figur eller mave)",
-    "takeSelfie": "Tag selfie (portræt)",
     "noPhotosYet": "Ingen billeder endnu — tag det første for at kunne sammenligne senere.",
     "photoAlt": "Billede-dagbog-optagelse",
     "deleteAria": "Slet billede",
     "previousPhoto": "Forrige billede",
     "nextPhoto": "Næste billede",
-    "selfiesSectionTitle": "Selfies",
-    "noSelfiesYet": "Ingen selfies endnu — tag den første for at kunne sammenligne senere.",
-    "photosSectionTitle": "Andre billeder",
-    "currentWeight": "Aktuel vægt: {value} kg",
-    "latestWeight": "Seneste vægt: {value} kg ({date})",
-    "noWeight": "Ingen vægt registreret endnu",
-    "currentMeasurements": "Aktuelle mål: {value}",
-    "latestMeasurements": "Seneste mål: {value} ({date})",
-    "noMeasurements": "Ingen mål registreret endnu",
-    "measurementWaist": "Talje {value} cm",
-    "measurementHip": "Hofte {value} cm",
-    "measurementChest": "Bryst {value} cm",
-    "measurementThigh": "Lår {value} cm",
-    "measurementUpperArm": "Overarm {value} cm"
+    "unlocking": "Bekræfter…",
+    "unlockError": "Kunne ikke bekræfte. Prøv igen."
   },
   "registration": {
     "title": "Registrering",
@@ -1237,7 +1224,7 @@
     "closeMenu": "Luk tilføj-menu",
     "openMenu": "Åbn tilføj-menu",
     "microphone": "Mikrofon",
-    "ownDishes": "Egne retter",
+    "ownDishes": "Retter",
     "search": "Søg",
     "weight": "Vægt",
     "water": "Vand",
@@ -1245,14 +1232,7 @@
     "list": "Se alle",
     "menstrualCycle": "Menstruation",
     "hint": {
-      "microphone": "Indtal",
-      "ownDishes": "Måltid",
-      "search": "Søgning",
-      "weight": "Vægt og mål",
-      "water": "Vandindtag",
-      "camera": "Tag billede",
-      "list": "Se alle",
-      "menstrualCycle": "Log menstruation"
+      "list": "Se alle"
     }
   },
   "onboarding": {
