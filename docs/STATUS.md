@@ -288,7 +288,7 @@ dialog.
 - **Koncept**: samme mønster som HelloFresh-integrationen i dag — en
   toggle-boks på `/settings/integrations` (`waldemarsroEnabled` på `User`,
   analogt med `helloFreshEnabled`), der slår Waldemarsro-opskrifter til/fra i
-  "Søg i delte retter". Ikke en OAuth-konto (der er intet at logge ind på)
+  "Delte retter". Ikke en OAuth-konto (der er intet at logge ind på)
   — men den skal *ligge* i `INTEGRATION_CATALOG`-listen som et kort, fordi en
   reel kontoforbindelse kan komme senere.
 - **Region-gating**: kortet vises kun når brugerens region
@@ -686,9 +686,16 @@ Se `docs/DECISIONS.md` (2026-09-24). Bygget efter brugerens afklaring
   "Ingen personlige detaljer deles, når du deler en ret". Efter gem går man
   til Opskrifter → Mine retter.
 - **Opskrifter** (`/profile/recipes`): faner "Mine retter" (egne retter +
-  favoritter fra boksen, mærket Delt/Privat/Favorit) og "Søg i delte retter"
-  (titel/ingredienser, sortering Relevans/Popularitet/Dato som små knapper;
-  HelloFresh medtages kun, når det er slået til under Integrationer).
+  favoritter fra boksen, mærket Delt/Privat/Favorit) og "Delte retter"
+  (titel/ingredienser; HelloFresh medtages kun, når det er slået til under
+  Integrationer). Filterikonet åbner `/profile/recipes/filters` (sortering,
+  allergier, diæter, protein, specialkost, makroer, personer 1–6, vis
+  kalorier/energifordeling — se DECISIONS 2026-09-25). Ikke testet mod rigtige
+  data endnu: lokal DB mangler.
+- **Opret ret**: billeder (op til 3), fremgangsmåde (trin med overskrift,
+  tekst og billede) og kategorivindue efter Gem (DECISIONS 2026-09-25).
+  Kræver migrationen `20260925120000_recipe_images_steps_tags`. Flowet er
+  testet i browser med mockede API-svar, ikke mod en rigtig database.
   Detaljeside `/profile/recipes/[id]?kind=own|shared`: deling til/fra for
   egne retter; favorit, "Gem som egen kopi" og "Anmeld" (kun før
   godkendelse) for delte.
