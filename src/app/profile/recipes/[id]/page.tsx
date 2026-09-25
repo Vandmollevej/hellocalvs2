@@ -181,10 +181,10 @@ function RecipeDetailContent() {
     >
       <div className="hf-page">
         {state === "loading" && (
-          <p className="py-6 text-center text-sm text-hf-black opacity-60">{t("recipeDetail.loading")}</p>
+          <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipeDetail.loading")}</p>
         )}
         {state === "missing" && (
-          <p className="py-6 text-center text-sm text-hf-black opacity-60">{t("recipeDetail.notFound")}</p>
+          <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipeDetail.notFound")}</p>
         )}
 
         {state === "ready" && view && (

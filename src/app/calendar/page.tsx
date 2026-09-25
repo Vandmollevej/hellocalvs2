@@ -801,7 +801,7 @@ function MonthPicker({
 }) {
   const { t } = useTranslation();
   return (
-    <div className="absolute left-1/2 top-12 z-40 w-[310px] max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-3xl border border-hf-tan-dark bg-hf-white p-3 shadow-xl">
+    <div className="absolute left-1/2 top-12 z-40 w-[310px] max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-lg border border-hf-tan-dark bg-hf-white p-4 shadow-xl">
       <div className="mb-2 flex items-center justify-between">
         <button type="button" aria-label={t("calendar.previousYearAriaLabel")} onClick={() => onYearChange(new Date(year - 1, month, 1))} className="flex size-10 items-center justify-center rounded-full hover:bg-hf-cream">
           <IconChevronLeft size={20} />
@@ -811,7 +811,7 @@ function MonthPicker({
           <IconChevronRight size={20} />
         </button>
       </div>
-      <div role="listbox" aria-label={t("calendar.selectMonthAriaLabel", { year })} className="grid grid-cols-3 gap-1.5">
+      <div role="listbox" aria-label={t("calendar.selectMonthAriaLabel", { year })} className="grid grid-cols-3 gap-2">
         {MONTHS.map((label, index) => (
           <button
             key={label}
@@ -863,7 +863,7 @@ function MonthView({
           {weekdays.map((day) => <span key={day} className="text-xs font-medium opacity-60">{day}</span>)}
         </div>
       </div>
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-2">
         {weeks.map((week, weekIndex) => {
           const anchor = week.find((date): date is Date => date !== null);
           const weekNumber = anchor ? getIsoWeek(anchor) : null;
@@ -1655,11 +1655,11 @@ function DayDetails({
         }}
       >
         {loading ? (
-          <div className="rounded-2xl bg-hf-white p-5 text-center text-sm opacity-60">
+          <div className="rounded-2xl bg-hf-white p-4 text-center text-sm opacity-60">
             {t("calendar.loadingDayRegistrations")}
           </div>
         ) : error ? (
-          <div className="rounded-2xl bg-hf-white p-5 text-center">
+          <div className="rounded-2xl bg-hf-white p-4 text-center">
             <p className="font-semibold text-hf-black">{t("calendar.registrationsLoadError")}</p>
             <p className="mt-1 text-sm text-hf-black opacity-60">{t("calendar.registrationsLoadErrorHint")}</p>
           </div>
@@ -1777,7 +1777,7 @@ function DayDetails({
           </>
         )}
 
-        <div className="mt-3 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-x-2 gap-y-1 pr-1">
+        <div className="mt-4 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-x-2 gap-y-1 pr-1">
           <div className="flex min-w-0 items-center gap-2">
             <span
               className={`flex size-5 shrink-0 items-center justify-center rounded-full ${
@@ -2141,9 +2141,9 @@ function MonthlyStatus({ status }: { status: MonthlyStatusData }) {
   const withinGoal = remaining >= 0;
 
   return (
-    <div className="mb-6 mt-2 space-y-1.5 text-center">
+    <div className="mb-8 mt-2 space-y-2 text-center">
       {streak >= 5 && (
-        <div className="mb-3 flex flex-col items-center gap-1">
+        <div className="mb-4 flex flex-col items-center gap-1">
           <span className="relative flex size-9 items-center justify-center" aria-label={t("calendar.streakAriaLabel", { streak })}>
             <IconStarFilled size={36} className="text-hf-green" aria-hidden="true" />
             <span className="absolute text-xs font-bold text-hf-white">{streak}</span>
@@ -2154,7 +2154,7 @@ function MonthlyStatus({ status }: { status: MonthlyStatusData }) {
 
       <div className="flex items-start justify-start gap-2 text-left">
         <span
-          className={`mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full ${
+          className={`mt-1 flex size-5 shrink-0 items-center justify-center rounded-full ${
             withinGoal ? "bg-hf-green" : "bg-hf-red-muted"
           }`}
         >

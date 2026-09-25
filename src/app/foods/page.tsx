@@ -277,10 +277,10 @@ function MadvarerContent() {
 
         <div className="max-h-[60vh] overflow-y-auto overflow-x-hidden rounded-[8px] bg-hf-tan">
           {state === "loading" && (
-            <p className="px-4 py-6 text-center text-sm text-hf-black opacity-60">{t("foods.loading")}</p>
+            <p className="px-4 py-8 text-center text-sm text-hf-black opacity-60">{t("foods.loading")}</p>
           )}
           {state === "error" && (
-            <p className="px-4 py-6 text-center text-sm text-hf-black opacity-60">
+            <p className="px-4 py-8 text-center text-sm text-hf-black opacity-60">
               {t("foods.loadError")}
             </p>
           )}
@@ -297,7 +297,7 @@ function MadvarerContent() {
               />
             ))}
           {state === "ready" && visibleProducts.length === 0 && (
-            <p className="px-4 py-6 text-center text-sm text-hf-black opacity-60">
+            <p className="px-4 py-8 text-center text-sm text-hf-black opacity-60">
               {isSearching ? t("foods.noSearchMatches") : t("foods.noFavoritesYet")}
             </p>
           )}

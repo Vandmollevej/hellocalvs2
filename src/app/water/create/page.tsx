@@ -129,7 +129,7 @@ export default function WaterCreatePage() {
           <p className="text-[13px] leading-5">{t("waterLog.intro")}</p>
         </div>
 
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-4 gap-4">
           {CONTAINERS.map(({ key, ml, src, width, boxHeight }) => {
             const isSelected = selectedKey === key;
             return (

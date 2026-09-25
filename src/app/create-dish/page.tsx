@@ -312,17 +312,17 @@ export default function CreateDishPage() {
             </div>
           )}
 
-          <div className="mt-3 grid grid-cols-2 gap-2">
+          <div className="mt-4 grid grid-cols-2 gap-2">
             <a
               href="/camera?mode=product&for=ret"
-              className="flex flex-col items-center gap-1.5 rounded-2xl bg-hf-tan py-3 text-center"
+              className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center"
             >
               <IconCamera size={20} color="var(--hf-black)" />
               <span className="text-xs font-medium text-hf-black">{t("createDish.scan")}</span>
             </a>
             <a
               href="/foods/new?for=ret"
-              className="flex flex-col items-center gap-1.5 rounded-2xl bg-hf-tan py-3 text-center"
+              className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center"
             >
               <IconHandClick size={20} color="var(--hf-black)" />
               <span className="text-xs font-medium text-hf-black">{t("createDish.manually")}</span>

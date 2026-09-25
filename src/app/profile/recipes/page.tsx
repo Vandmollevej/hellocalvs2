@@ -113,13 +113,13 @@ function MineTab({ t }: { t: Translate }) {
   return (
     <div className="hf-page">
       {state === "loading" && (
-        <p className="py-6 text-center text-sm text-hf-black opacity-60">{t("recipes.loading")}</p>
+        <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipes.loading")}</p>
       )}
       {state === "error" && (
-        <p className="py-6 text-center text-sm text-hf-black opacity-60">{t("recipes.loadError")}</p>
+        <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipes.loadError")}</p>
       )}
       {state === "ready" && rows.length === 0 && (
-        <p className="py-6 text-center text-sm text-hf-black opacity-60">{t("recipes.mineEmpty")}</p>
+        <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipes.mineEmpty")}</p>
       )}
       {state === "ready" && rows.length > 0 && (
         <div>
@@ -210,13 +210,13 @@ function SharedTab({ t }: { t: Translate }) {
       </div>
 
       {state === "loading" && (
-        <p className="py-6 text-center text-sm text-hf-black opacity-60">{t("recipes.loading")}</p>
+        <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipes.loading")}</p>
       )}
       {state === "error" && (
-        <p className="py-6 text-center text-sm text-hf-black opacity-60">{t("recipes.loadError")}</p>
+        <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipes.loadError")}</p>
       )}
       {state === "ready" && results.length === 0 && (
-        <p className="py-6 text-center text-sm text-hf-black opacity-60">{t("recipes.noResults")}</p>
+        <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipes.noResults")}</p>
       )}
       {state === "ready" && results.length > 0 && (
         <div>

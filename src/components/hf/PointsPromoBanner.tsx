@@ -45,7 +45,7 @@ export function PointsPromoBanner({
       </div>
       <a
         href={href}
-        className="hf-btn-primary hf-type-button mt-3 flex h-12 w-full items-center justify-center"
+        className="hf-btn-primary hf-type-button mt-4 flex h-12 w-full items-center justify-center"
         style={{ background: "var(--hf-color-white)", color: "var(--hf-color-action)" }}
       >
         {buttonLabel}

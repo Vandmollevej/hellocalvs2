@@ -71,7 +71,7 @@ export function DoctorShareEditor({
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-4">
         <NotchedTextField
           label={t("helloDoc.nameLabel")}
@@ -96,7 +96,7 @@ export function DoctorShareEditor({
       </Link>
 
       <div>
-        <h2 className="hf-type-section-title mb-3">{t("helloDoc.shareDataTitle")}</h2>
+        <h2 className="hf-type-section-title mb-4">{t("helloDoc.shareDataTitle")}</h2>
         <div className="flex flex-col gap-2">
           {DOCTOR_SHARE_CATEGORIES.map((category) => {
             const unavailable = DOCTOR_SHARE_UNAVAILABLE_CATEGORIES.includes(category);
@@ -115,7 +115,7 @@ export function DoctorShareEditor({
       </div>
 
       <div>
-        <h2 className="hf-type-section-title mb-3">{t("helloDoc.historyTitle")}</h2>
+        <h2 className="hf-type-section-title mb-4">{t("helloDoc.historyTitle")}</h2>
         <div className="relative">
           <select
             className="hf-type-input h-12 w-full appearance-none rounded-[8px] border bg-hf-cream pl-4 pr-10 outline-none"

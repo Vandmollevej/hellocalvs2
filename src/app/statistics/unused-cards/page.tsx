@@ -237,7 +237,7 @@ export default function UnusedStatCardsPage() {
 
   function renderCardGrid(cards: StatCardValue[]) {
     return (
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-4">
         {cards.map((card) => (
           <button
             key={card.key}
@@ -292,7 +292,7 @@ export default function UnusedStatCardsPage() {
               {t("statUnusedCards.searchResults")}
             </p>
             {searchResults.length === 0 ? (
-              <p className="rounded-2xl bg-hf-tan/60 p-3 text-xs text-hf-black opacity-50">
+              <p className="rounded-2xl bg-hf-tan/60 p-4 text-xs text-hf-black opacity-50">
                 {t("statUnusedCards.noSearchResults")}
               </p>
             ) : (
@@ -322,7 +322,7 @@ export default function UnusedStatCardsPage() {
             }
           >
             {category.cards.length === 0 ? (
-              <p className="rounded-2xl bg-hf-tan/60 p-3 text-xs text-hf-black opacity-50">
+              <p className="rounded-2xl bg-hf-tan/60 p-4 text-xs text-hf-black opacity-50">
                 {t("statUnusedCards.noCardsYet")}
               </p>
             ) : (
@@ -339,18 +339,18 @@ export default function UnusedStatCardsPage() {
           >
             {t("statUnusedCards.addHeading")}
           </button>
-          <p className="mt-1.5 text-center text-xs text-hf-black opacity-50">
+          <p className="mt-2 text-center text-xs text-hf-black opacity-50">
             {t("statUnusedCards.addHeadingHint")}
           </p>
 
           <button
             type="button"
             onClick={addDivider}
-            className="mt-3 flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-hf-black/30 text-sm font-semibold text-hf-black opacity-80 active:opacity-100"
+            className="mt-4 flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-hf-black/30 text-sm font-semibold text-hf-black opacity-80 active:opacity-100"
           >
             {t("statUnusedCards.addDivider")}
           </button>
-          <p className="mt-1.5 text-center text-xs text-hf-black opacity-50">
+          <p className="mt-2 text-center text-xs text-hf-black opacity-50">
             {t("statUnusedCards.addDividerHint")}
           </p>
         </div>

@@ -239,7 +239,7 @@ export default function BilledeDagbogPage() {
     >
 
       {loading || !user ? (
-        <p className="p-6 text-center text-[14px] text-hf-black opacity-60">
+        <p className="p-4 text-center text-[14px] text-hf-black opacity-60">
           {loading ? t("photoDiary.loading") : t("photoDiary.loadError")}
         </p>
       ) : (
@@ -293,7 +293,7 @@ export default function BilledeDagbogPage() {
                 {t("photoDiary.takePhoto")}
               </button>
 
-              <section className="flex flex-col gap-3">
+              <section className="flex flex-col gap-4">
                 <h2 className="text-[15px] font-semibold text-hf-black">
                   {t("photoDiary.selfiesSectionTitle")}
                 </h2>
@@ -330,7 +330,7 @@ export default function BilledeDagbogPage() {
                 )}
               </section>
 
-              <section className="flex flex-col gap-3">
+              <section className="flex flex-col gap-4">
                 <h2 className="text-[15px] font-semibold text-hf-black">
                   {t("photoDiary.photosSectionTitle")}
                 </h2>
@@ -339,7 +339,7 @@ export default function BilledeDagbogPage() {
                     {t("photoDiary.noPhotosYet")}
                   </p>
                 ) : (
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     {regularPhotos.map((photo, index) => (
                       <button
                         key={photo.id}

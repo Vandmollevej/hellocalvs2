@@ -62,9 +62,9 @@ function SourcesContent() {
       <SegmentedTabs options={VIEWS} value={view} onChange={setView} />
 
       {loading ? (
-        <p className="py-6 text-center text-sm text-hf-black opacity-60">Henter…</p>
+        <p className="py-8 text-center text-sm text-hf-black opacity-60">Henter…</p>
       ) : items.length === 0 ? (
-        <p className="py-6 text-center text-sm text-hf-black opacity-60">Ingen registreringer i perioden</p>
+        <p className="py-8 text-center text-sm text-hf-black opacity-60">Ingen registreringer i perioden</p>
       ) : view === "products" ? (
         <SourceItemList items={items} metric={metric} />
       ) : (

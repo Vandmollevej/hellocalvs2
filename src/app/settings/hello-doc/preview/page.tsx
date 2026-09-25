@@ -156,7 +156,7 @@ export default function HelloDocPreviewPage() {
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-        <p className="hf-type-caption mx-4 mt-3 rounded-lg p-3 opacity-80" style={{ background: "var(--hf-color-card)" }}>
+        <p className="hf-type-caption mx-4 mt-4 rounded-lg p-4 opacity-80" style={{ background: "var(--hf-color-card)" }}>
           {t("helloDoc.preview.disclaimer")}
         </p>
 
@@ -175,7 +175,7 @@ export default function HelloDocPreviewPage() {
                 <p className="hf-type-caption opacity-70">{data.profile.email}</p>
               </div>
 
-              <div className="flex flex-col gap-3 border-t pt-3" style={{ borderColor: "var(--hf-color-line)" }}>
+              <div className="flex flex-col gap-4 border-t pt-4" style={{ borderColor: "var(--hf-color-line)" }}>
                 <div>
                   <p className="hf-type-caption opacity-70">{t("helloDoc.preview.startWeight")}</p>
                   <p className="hf-type-body font-bold">{data.startWeightKg != null ? `${data.startWeightKg} kg` : "—"}</p>

@@ -70,7 +70,7 @@ export default function ProfilePage() {
       title={t("profile.title")}
     >
       {loading || !user ? (
-        <p className="p-6 text-center text-[14px] text-hf-black opacity-60">
+        <p className="p-4 text-center text-[14px] text-hf-black opacity-60">
           {loading ? t("profile.loading") : t("profile.loadError")}
         </p>
       ) : (

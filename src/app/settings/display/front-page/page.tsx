@@ -68,7 +68,7 @@ export default function FrontPageDisplaySettingsPage() {
         <p className="hf-heading px-1 text-xs font-bold uppercase tracking-wide text-hf-black opacity-60">
           {t("frontPageSettings.sideSectionTitle")}
         </p>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-4">
           {(["left", "right"] as FabSide[]).map((side) => {
             const isSelected = fabSide === side;
             return (

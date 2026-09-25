@@ -31,7 +31,7 @@ export default async function AdminBugReportsPage() {
       {reports.length === 0 ? (
         <p className="text-sm text-text-secondary">Ingen fejlrapporter afventer gennemgang.</p>
       ) : (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4">
           {reports.map((report) => (
             <PendingBugReportCard
               key={report.id}

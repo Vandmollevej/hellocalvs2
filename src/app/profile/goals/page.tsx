@@ -40,7 +40,7 @@ function GoalTargetRow({ target }: { target: GoalTargetDTO }) {
           </span>
         )}
       </div>
-      <p className="mt-0.5 text-[15px] text-hf-black opacity-60">
+      <p className="mt-1 text-[15px] text-hf-black opacity-60">
         {formatValue(target.value)} {target.unit}
       </p>
     </div>

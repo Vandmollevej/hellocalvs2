@@ -189,14 +189,14 @@ function IntegrationerContent() {
 
         {helloFresh !== null && (
           <div className="flex items-start gap-3 rounded-[8px] bg-hf-tan p-4">
-            <span className="mt-0.5 text-hf-black">
+            <span className="mt-1 text-hf-black">
               <IconChefHat size={22} />
             </span>
             <div className="flex-1">
               <p className="text-[15px] font-bold text-hf-black">{t("integrations.helloFreshTitle")}</p>
               <p className="text-[12px] text-hf-black opacity-70">{t("integrations.helloFreshDescription")}</p>
             </div>
-            <span className="pt-0.5">
+            <span className="pt-1">
               <Toggle checked={helloFresh} onChange={changeHelloFresh} />
             </span>
           </div>
@@ -214,7 +214,7 @@ function IntegrationerContent() {
             return (
               <div
                 key={integration.provider}
-                className={`flex flex-col gap-3 rounded-[8px] bg-hf-tan p-4 ${
+                className={`flex flex-col gap-4 rounded-[8px] bg-hf-tan p-4 ${
                   integration.kind === "unavailable" ? "opacity-60" : ""
                 }`}
               >
@@ -283,7 +283,7 @@ function IntegrationerContent() {
                 )}
 
                 {integration.issuesDeviceTokens && (
-                  <div className="flex flex-col gap-2 border-t border-hf-tan-dark pt-3">
+                  <div className="flex flex-col gap-2 border-t border-hf-tan-dark pt-4">
                     <p className="text-[12px] text-hf-black opacity-70">{t("integrations.deviceTokensDescription")}</p>
 
                     {cardTokens.map((token) => (

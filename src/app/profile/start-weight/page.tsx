@@ -51,7 +51,7 @@ export default function StartWeightPage() {
     <HfScreen title={t("profile.startWeight.title")} onBack={() => router.back()}>
       <div className="hf-page">
         {weightKg !== null && (
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-2">
             <span className="text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
               {t("profile.startWeight.currentLabel")}
             </span>
@@ -61,7 +61,7 @@ export default function StartWeightPage() {
           </div>
         )}
 
-        <div className="flex flex-col gap-3 text-[15px] leading-6 text-hf-black">
+        <div className="flex flex-col gap-4 text-[15px] leading-6 text-hf-black">
           <p>{t("profile.startWeight.description1")}</p>
           <p>{t("profile.startWeight.description2")}</p>
           <p>{t("profile.startWeight.description3")}</p>

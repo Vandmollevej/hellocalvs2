@@ -42,7 +42,7 @@ function GoalInput({
   return (
     <label className="flex min-w-0 flex-col gap-1">
       <span className="text-[13px] font-semibold text-hf-black">{label}</span>
-      <span className="flex items-end gap-2 border-b border-hf-black/30 pb-1.5">
+      <span className="flex items-end gap-2 border-b border-hf-black/30 pb-2">
         <input
           type="text"
           inputMode="decimal"
@@ -51,7 +51,7 @@ function GoalInput({
           className="w-full min-w-0 bg-transparent text-[17px] text-hf-black outline-none"
           placeholder={placeholder}
         />
-        <span className="pb-0.5 text-[13px] font-semibold text-hf-black opacity-60">{unit}</span>
+        <span className="pb-1 text-[13px] font-semibold text-hf-black opacity-60">{unit}</span>
       </span>
     </label>
   );
@@ -133,7 +133,7 @@ export default function NewGoalPage() {
         <div className="hf-card">
           <label className="flex flex-col gap-1">
             <span className="text-[13px] font-semibold text-hf-black">{t("goals.targetDate")}</span>
-            <span className="relative flex items-end gap-2 border-b border-hf-black/30 pb-1.5">
+            <span className="relative flex items-end gap-2 border-b border-hf-black/30 pb-2">
               <input
                 type="date"
                 value={targetDate}
@@ -158,7 +158,7 @@ export default function NewGoalPage() {
                   {t("goals.targetDatePlaceholder")}
                 </span>
               )}
-              <IconCalendar size={18} aria-hidden="true" className="mb-0.5 shrink-0 text-hf-black opacity-60" />
+              <IconCalendar size={18} aria-hidden="true" className="mb-1 shrink-0 text-hf-black opacity-60" />
             </span>
           </label>
         </div>

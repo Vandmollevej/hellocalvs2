@@ -68,7 +68,7 @@ export default function SubscriptionPage() {
   return (
     <HfScreen title={t("subscription.title")}>
       {loading || !data ? (
-        <p className="p-6 text-center text-[14px] text-hf-black opacity-60">
+        <p className="p-4 text-center text-[14px] text-hf-black opacity-60">
           {loading ? t("subscription.loading") : t("subscription.loadError")}
         </p>
       ) : (

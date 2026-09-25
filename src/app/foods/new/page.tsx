@@ -204,7 +204,7 @@ function NytProduktContent() {
               <button
                 type="button"
                 onClick={() => setKind("ingredient")}
-                className="flex flex-col items-center gap-1.5 rounded-2xl bg-hf-tan p-4 text-center"
+                className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan p-4 text-center"
               >
                 <IconCarrot size={22} color="var(--hf-black)" />
                 <span className="text-sm font-semibold text-hf-black">{t("foods.manualKindIngredient")}</span>
@@ -213,7 +213,7 @@ function NytProduktContent() {
               <button
                 type="button"
                 onClick={() => setKind("product")}
-                className="flex flex-col items-center gap-1.5 rounded-2xl bg-hf-tan p-4 text-center"
+                className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan p-4 text-center"
               >
                 <IconApple size={22} color="var(--hf-black)" />
                 <span className="text-sm font-semibold text-hf-black">{t("foods.manualKindProduct")}</span>

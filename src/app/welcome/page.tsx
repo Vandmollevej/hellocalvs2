@@ -17,7 +17,7 @@ export default function VelkommenPage() {
 
   if (loading) {
     return (
-      <div className="flex h-full min-h-full flex-col items-center justify-center gap-8 bg-hf-green px-6">
+      <div className="flex h-full min-h-full flex-col items-center justify-center gap-8 bg-hf-green px-4">
         <Image src="/hello-cal-logo-white.png" alt="Hello Cal" width={280} height={90} priority />
         <svg className="hf-loader h-9 w-9" viewBox="0 0 50 50">
           <circle

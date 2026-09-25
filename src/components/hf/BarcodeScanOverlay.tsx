@@ -75,7 +75,7 @@ export function BarcodeScanOverlay({
       >
         {!confirmed && (
           <div
-            className="absolute inset-0 flex h-full w-full flex-col items-center justify-center gap-1.5 px-3 transition-transform duration-200"
+            className="absolute inset-0 flex h-full w-full flex-col items-center justify-center gap-2 px-3 transition-transform duration-200"
             style={orientation === "vertical" ? { transform: "rotate(90deg)" } : undefined}
           >
             <div className="h-[58%] w-full">

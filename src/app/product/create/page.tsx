@@ -294,7 +294,7 @@ function OpretProduktContent() {
             placeholder={t("productCreate.barcodePlaceholder")}
           />
 
-          <div className="flex flex-col gap-3 rounded-[8px] p-4" style={{ background: "var(--hf-color-card)" }}>
+          <div className="flex flex-col gap-4 rounded-[8px] p-4" style={{ background: "var(--hf-color-card)" }}>
             <TextField
               variant="standard"
               value={form.brand}

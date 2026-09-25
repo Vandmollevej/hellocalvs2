@@ -300,7 +300,7 @@ export default function WeightCalibrationPage() {
           <h2 className="text-left text-[17px] font-semibold text-hf-black">
             {t("weightCalibration.timeGrid.title")}
           </h2>
-          <div className="grid grid-cols-4 gap-x-3 gap-y-3">
+          <div className="grid grid-cols-4 gap-x-3 gap-y-4">
             {TIME_GRID_HOURS.map((hour) => (
               <div key={hour} className="flex flex-col gap-0.5 text-left">
                 <span className="text-[13px] font-medium text-hf-black opacity-60">

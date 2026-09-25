@@ -81,7 +81,7 @@ export default function PeriodCreatePage() {
         </div>
 
         <div className="hf-card hf-card--form">
-          <label className="flex flex-col gap-1.5">
+          <label className="flex flex-col gap-2">
             <span className="text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
               {t("periodLog.startDate")}
             </span>

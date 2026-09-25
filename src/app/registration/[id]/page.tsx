@@ -25,7 +25,7 @@ function MacroBar({ label, grams, max }: { label: string; grams: number; max: nu
   const pct = Math.min(100, (grams / max) * 100);
   return (
     <div>
-      <div className="mb-1.5 flex items-center justify-between">
+      <div className="mb-2 flex items-center justify-between">
         <span className="text-[13px] text-hf-black opacity-70">{label}</span>
         <span className="min-w-[36px] text-right text-base font-bold text-hf-black">
           {Math.round(grams * 10) / 10} g

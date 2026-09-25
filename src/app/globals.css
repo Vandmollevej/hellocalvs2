@@ -98,6 +98,11 @@
   --font-mono: var(--font-geist-mono);
   --font-hf-heading: var(--font-hf-heading);
   --font-hf-body: var(--font-hf-body);
+  /* Radiusfamilie, jf. design.md §5.3/§5.4: kort, felter og knapper er 8px
+     overalt. rounded-xl/2xl var tidligere 12/16px og gav forskellige hjørner
+     fra side til side. */
+  --radius-xl: 8px;
+  --radius-2xl: 8px;
 }
 
 /* Låser hele dokumentet (html/body) mod scroll og bounce/rubber-band —
@@ -538,6 +543,12 @@ textarea::selection,
   font-weight: 700;
 }
 
+/* Primærknapper forbliver sorte, også deaktiveret (DECISIONS 2026-09-25) —
+   ingen grå opacity. !important overstyrer ældre disabled:opacity-*-klasser. */
+.hf-btn-primary:disabled {
+  opacity: 1 !important;
+}
+
 /* Favorit/bookmark-overlay på produktbilleder (design.md §6.8/§9.7): 44x44 px
    rund mørk overlay-knap, 8px fra top og højre billedkant. */
 .hf-favorite-button {
@@ -607,11 +618,11 @@ textarea::selection,
 /* Valg-chip/kort (fx "Hvad er dine mål?") */
 .hf-chip {
   font-family: var(--font-hf-body);
-  border-radius: 1.1rem;
+  border-radius: 12px;
   background: var(--hf-tan);
   color: var(--hf-black);
   font-weight: 700;
-  padding: 1.1rem 1.25rem;
+  padding: 16px;
   text-align: left;
 }
 
@@ -651,7 +662,7 @@ textarea::selection,
 
 /* Accordion-kort (udvidelig varerække) */
 .hf-accordion {
-  border-radius: 1.1rem;
+  border-radius: var(--hf-radius-card);
   background: var(--hf-tan);
   overflow: hidden;
 }
@@ -659,8 +670,8 @@ textarea::selection,
 .hf-accordion-row {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
-  padding: 0.75rem 1rem;
+  gap: 12px;
+  padding: 12px 16px;
 }
 
 .hf-accordion-row + .hf-accordion-row {
@@ -670,12 +681,12 @@ textarea::selection,
 .hf-accordion-toggle {
   display: flex;
   justify-content: center;
-  padding: 0.35rem 0;
+  padding: 8px 0;
   border-top: 1px solid var(--hf-tan-dark);
 }
 
 .hf-accordion-body {
-  padding: 0 1rem 1rem;
+  padding: 0 16px 16px;
   border-top: 1px solid var(--hf-tan-dark);
 }
 

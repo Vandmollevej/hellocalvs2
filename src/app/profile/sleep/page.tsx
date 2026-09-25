@@ -45,7 +45,7 @@ function minutesToTime(minutes: number) {
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="flex flex-col gap-1.5">
+    <label className="flex flex-col gap-2">
       <span className="text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
         {label}
       </span>
@@ -171,12 +171,12 @@ export default function SleepSchedulePage() {
       title={t("profileSleep.title")}
     >
       {loading || !user ? (
-        <p className="p-6 text-center text-[14px] text-hf-black opacity-60">
+        <p className="p-4 text-center text-[14px] text-hf-black opacity-60">
           {loading ? t("profileSleep.loading") : t("profileSleep.loadError")}
         </p>
       ) : (
         <div className="hf-page">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             <Field label={t("profileSleep.defaultWakeTime")}>
               <input
                 type="time"
@@ -239,7 +239,7 @@ export default function SleepSchedulePage() {
                 const bedtimeMinutes =
                   timeToMinutes(schedule?.bedtime) ?? timeToMinutes(user.defaultBedtime) ?? 23 * 60;
                 return (
-                  <div key={label} className="flex flex-col gap-1.5">
+                  <div key={label} className="flex flex-col gap-2">
                     <span className="text-[13px] font-semibold text-hf-black">{label}</span>
                     <SleepRangeSlider
                       wakeMinutes={wakeMinutes}

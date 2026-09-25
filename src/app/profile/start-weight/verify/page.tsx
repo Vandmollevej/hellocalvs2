@@ -97,7 +97,7 @@ function VerifyStartWeightContent() {
   return (
     <HfScreen title={title} onBack={() => router.replace(PROFILE_HREF)}>
       {state === "loading" && (
-        <p className="p-6 text-center text-[14px] text-hf-black opacity-60">
+        <p className="p-4 text-center text-[14px] text-hf-black opacity-60">
           {t("profile.startWeight.validating")}
         </p>
       )}
@@ -129,7 +129,7 @@ function VerifyStartWeightContent() {
 
       {(state === "valid" || state === "saving") && (
         <form onSubmit={save} noValidate className="hf-page">
-          <label className="flex flex-col gap-1.5">
+          <label className="flex flex-col gap-2">
             <span className="text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
               {t("profile.startWeight.fieldLabel")}
             </span>

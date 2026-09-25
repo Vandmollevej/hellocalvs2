@@ -127,12 +127,12 @@ export default function HelloDocTokenPage() {
         )}
 
         {data && data.status === "PENDING" && (
-          <div className="mx-auto mt-6 max-w-md rounded-xl p-6 text-center" style={{ background: "var(--hf-color-card)" }}>
+          <div className="mx-auto mt-8 max-w-md rounded-xl p-4 text-center" style={{ background: "var(--hf-color-card)" }}>
             <h1 className="hf-type-page-title">{t("helloDoc.token.pendingTitle", { ownerName: data.ownerName })}</h1>
-            <p className="hf-type-body mt-3 opacity-80">{t("helloDoc.token.pendingBody", { ownerName: data.ownerName })}</p>
+            <p className="hf-type-body mt-4 opacity-80">{t("helloDoc.token.pendingBody", { ownerName: data.ownerName })}</p>
 
             {data.categories && data.categories.length > 0 && (
-              <div className="mt-4 rounded-lg bg-hf-white p-3 text-left">
+              <div className="mt-4 rounded-lg bg-hf-white p-4 text-left">
                 <p className="hf-type-caption opacity-70">{t("helloDoc.token.pendingSharedListTitle")}</p>
                 <ul className="mt-1 flex flex-col gap-1">
                   {data.categories
@@ -147,18 +147,18 @@ export default function HelloDocTokenPage() {
             )}
 
             {data.expiresAt && (
-              <p className="hf-type-caption mt-3 opacity-60">
+              <p className="hf-type-caption mt-4 opacity-60">
                 {t("helloDoc.token.expiresHint", { date: formatDate(data.expiresAt, locale) })}
               </p>
             )}
 
-            {acceptError && <p className="hf-type-body-sm mt-3 text-hf-red-dark">{t("helloDoc.token.acceptError")}</p>}
+            {acceptError && <p className="hf-type-body-sm mt-4 text-hf-red-dark">{t("helloDoc.token.acceptError")}</p>}
 
             <button
               type="button"
               onClick={accept}
               disabled={accepting}
-              className="hf-btn-primary hf-type-button mt-5 h-14 w-full text-[17px] disabled:opacity-40"
+              className="hf-btn-primary hf-type-button mt-4 h-14 w-full text-[17px] disabled:opacity-40"
               style={{ borderRadius: 8 }}
             >
               {accepting ? t("helloDoc.token.accepting") : t("helloDoc.token.acceptButton")}
@@ -180,9 +180,9 @@ export default function HelloDocTokenPage() {
 
 function StatusCard({ title, body }: { title: string; body: string }) {
   return (
-    <div className="mx-auto mt-10 max-w-md rounded-xl p-6 text-center" style={{ background: "var(--hf-color-card)" }}>
+    <div className="mx-auto mt-8 max-w-md rounded-xl p-4 text-center" style={{ background: "var(--hf-color-card)" }}>
       <h1 className="hf-type-page-title">{title}</h1>
-      <p className="hf-type-body mt-3 opacity-80">{body}</p>
+      <p className="hf-type-body mt-4 opacity-80">{body}</p>
     </div>
   );
 }
@@ -226,7 +226,7 @@ function ActiveView({
     : [];
 
   return (
-    <div className="flex flex-col gap-6 md:flex-row md:items-start">
+    <div className="flex flex-col gap-8 md:flex-row md:items-start">
       <aside className="flex flex-col gap-4 rounded-xl p-4 md:w-64 md:shrink-0" style={{ background: "var(--hf-color-card)" }}>
         <p className="hf-type-body-sm">{t("helloDoc.token.greeting", { name: data.doctorName })}</p>
 
@@ -241,7 +241,7 @@ function ActiveView({
         )}
 
         {(data.weight || data.goals || data.sleep) && (
-          <div className="flex flex-col gap-3 border-t pt-3" style={{ borderColor: "var(--hf-color-line)" }}>
+          <div className="flex flex-col gap-4 border-t pt-4" style={{ borderColor: "var(--hf-color-line)" }}>
             {data.weight && (
               <div>
                 <p className="hf-type-caption opacity-70">{t("helloDoc.preview.startWeight")}</p>

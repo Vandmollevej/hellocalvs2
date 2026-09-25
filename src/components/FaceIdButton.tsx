@@ -21,7 +21,7 @@ export function FaceIdButton() {
   }, []);
 
   if (state === "hidden") return null;
-  if (state === "done") return <p className="hf-type-body-sm mt-3 text-center">{t("faceIdOffer.enabled")}</p>;
+  if (state === "done") return <p className="hf-type-body-sm mt-4 text-center">{t("faceIdOffer.enabled")}</p>;
 
   async function enable() {
     setState("busy");
@@ -39,7 +39,7 @@ export function FaceIdButton() {
         type="button"
         onClick={enable}
         disabled={state === "busy"}
-        className="hf-btn-primary hf-type-button mt-3 h-12 w-full px-4 disabled:opacity-40"
+        className="hf-btn-primary hf-type-button mt-4 h-12 w-full px-4 disabled:opacity-40"
       >
         {state === "busy" ? t("faceIdOffer.enabling") : t("faceIdOffer.enable")}
       </button>

@@ -45,9 +45,9 @@ function MonthSinnersContent() {
       <SourceMetricTabs value={metric} onChange={setMetric} />
 
       {loading ? (
-        <p className="py-6 text-center text-sm text-hf-black opacity-60">Henter…</p>
+        <p className="py-8 text-center text-sm text-hf-black opacity-60">Henter…</p>
       ) : groups.length === 0 ? (
-        <p className="py-6 text-center text-sm text-hf-black opacity-60">Ingen registreringer i denne måned</p>
+        <p className="py-8 text-center text-sm text-hf-black opacity-60">Ingen registreringer i denne måned</p>
       ) : (
         groups.map((group) => (
           <section key={group.productType} className="flex flex-col gap-2">

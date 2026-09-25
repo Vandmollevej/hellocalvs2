@@ -535,7 +535,7 @@ function KameraOpretContent() {
           : t("cameraCreate.stageNutrition");
 
   return (
-    <div className="flex h-full min-h-0 flex-col gap-3 p-4">
+    <div className="flex h-full min-h-0 flex-col gap-4 p-4">
       <p className="hf-type-caption text-center">{stageLabel}</p>
 
       <div className="relative aspect-square w-full overflow-hidden rounded-[12px] bg-hf-black">

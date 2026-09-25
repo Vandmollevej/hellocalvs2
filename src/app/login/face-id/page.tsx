@@ -56,7 +56,7 @@ function FaceIdOfferContent() {
         <span className="hf-appbar__slot" aria-hidden="true" />
       </div>
 
-      <div className="flex flex-1 flex-col gap-4 px-4 pt-6">
+      <div className="flex flex-1 flex-col gap-4 px-4 pt-8">
         <p className="hf-type-body">{t("faceIdOffer.intro")}</p>
         {error && <p className="hf-type-caption text-hf-red-dark">{error}</p>}
       </div>

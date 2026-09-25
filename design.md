@@ -335,6 +335,8 @@ kan overstyre dem):
 
 Børn i disse primitiver må ikke have egne `mt-*`/`mb-*`; afstanden kommer
 kun fra `gap`. Primære knapper forbliver sorte, også når de er deaktiveret.
+`rounded-xl`/`rounded-2xl` er i temaet låst til 8 px, så alle kort har samme
+hjørner. Alle lodrette margener/paddings i `src/` ligger på 4/8/16/32 px.
 
 ### 5.3 Radiusfamilie
 

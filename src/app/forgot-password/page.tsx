@@ -53,14 +53,14 @@ export default function ForgotPasswordPage() {
       </div>
 
       {sent ? (
-        <div className="flex flex-1 flex-col gap-4 px-4 pt-6">
+        <div className="flex flex-1 flex-col gap-4 px-4 pt-8">
           <p className="hf-type-body">{t("forgotPassword.sentMessage")}</p>
           <Link href="/login" className="hf-btn-primary hf-type-button mt-2 flex h-12 w-full items-center justify-center">
             {t("forgotPassword.backToLogin")}
           </Link>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4 px-4 pt-6">
+        <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4 px-4 pt-8">
           <p className="hf-type-body-sm">{t("forgotPassword.instructions")}</p>
 
           <TextField
