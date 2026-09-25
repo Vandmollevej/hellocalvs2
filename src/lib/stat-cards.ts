@@ -420,38 +420,114 @@ export function computeStatCards(data: StatCardData): StatCardValue[] {
 export type StatLayoutItem = { type: "stat"; key: string };
 export type StatHeaderLayoutItem = { type: "header"; id: string; text: string };
 export type StatDividerLayoutItem = { type: "divider"; id: string };
-export type StatGridLayoutItem = StatLayoutItem | StatHeaderLayoutItem | StatDividerLayoutItem;
+/**
+ * An explicitly empty half-width slot. The grid is two columns of physical
+ * slots, so a gap the user leaves (e.g. a card moved to the right column) is
+ * part of the saved layout and must never be compacted away.
+ */
+export type StatEmptyLayoutItem = { type: "empty"; id: string };
+export type StatGridLayoutItem =
+  | StatLayoutItem
+  | StatHeaderLayoutItem
+  | StatDividerLayoutItem
+  | StatEmptyLayoutItem;
 
 export const STAT_LAYOUT_STORAGE_KEY = "hellocal.statistik.layout";
 
+function makeLayoutId() {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
+  return `id-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+export function makeEmptyStatSlot(): StatEmptyLayoutItem {
+  return { type: "empty", id: makeLayoutId() };
+}
+
+/** Half-width items occupy one of the two column slots; headers/dividers span the full row. */
+export function isHalfWidthStatItem(item: StatGridLayoutItem): item is StatLayoutItem | StatEmptyLayoutItem {
+  return item.type === "stat" || item.type === "empty";
+}
+
+function trailingRunLength(layout: StatGridLayoutItem[]) {
+  let count = 0;
+  for (let i = layout.length - 1; i >= 0 && isHalfWidthStatItem(layout[i]); i -= 1) count += 1;
+  return count;
+}
+
+/**
+ * Makes every run of half-width slots between full-width items an even length
+ * (so each row has exactly a left and a right slot) and drops completely empty
+ * rows at the very end. Empty slots anywhere else are kept — they are the
+ * user's layout. Older saved layouts without empty slots migrate through this.
+ */
+export function normalizeStatLayout(layout: StatGridLayoutItem[]): StatGridLayoutItem[] {
+  const usedIds = new Set(layout.map((item) => ("id" in item ? item.id : item.key)));
+  // Deterministic ids for filler slots, so the server render and the client's
+  // first render of the same layout agree (no hydration mismatch).
+  function filler(): StatEmptyLayoutItem {
+    let n = next.length;
+    while (usedIds.has(`pad-${n}`)) n += 1;
+    usedIds.add(`pad-${n}`);
+    return { type: "empty", id: `pad-${n}` };
+  }
+  const next: StatGridLayoutItem[] = [];
+  let runLength = 0;
+  for (const item of layout) {
+    if (isHalfWidthStatItem(item)) {
+      next.push(item);
+      runLength += 1;
+      continue;
+    }
+    if (runLength % 2 !== 0) next.push(filler());
+    runLength = 0;
+    next.push(item);
+  }
+  if (runLength % 2 !== 0) next.push(filler());
+
+  while (
+    trailingRunLength(next) >= 2 &&
+    next[next.length - 1].type === "empty" &&
+    next[next.length - 2].type === "empty"
+  ) {
+    next.splice(-2, 2);
+  }
+  return next;
+}
+
 export function loadStatLayout(defaultLayout: StatGridLayoutItem[]): StatGridLayoutItem[] {
-  if (typeof window === "undefined") return defaultLayout;
+  if (typeof window === "undefined") return normalizeStatLayout(defaultLayout);
   try {
     const raw = window.localStorage.getItem(STAT_LAYOUT_STORAGE_KEY);
-    if (!raw) return defaultLayout;
+    if (!raw) return normalizeStatLayout(defaultLayout);
     const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed)) return parsed;
-    return defaultLayout;
+    if (Array.isArray(parsed)) return normalizeStatLayout(parsed);
+    return normalizeStatLayout(defaultLayout);
   } catch {
-    return defaultLayout;
+    return normalizeStatLayout(defaultLayout);
   }
 }
 
 export function saveStatLayout(layout: StatGridLayoutItem[]) {
   try {
-    window.localStorage.setItem(STAT_LAYOUT_STORAGE_KEY, JSON.stringify(layout));
+    window.localStorage.setItem(STAT_LAYOUT_STORAGE_KEY, JSON.stringify(normalizeStatLayout(layout)));
   } catch {
     // localStorage unavailable — ignore.
   }
 }
 
-/** Adds a stat card to the bottom of the active layout if it isn't already there. */
+/**
+ * Adds a stat card at the bottom of the active layout if it isn't already
+ * there — into the free right slot of the last row when there is one.
+ */
 export function addStatCardToLayout(defaultLayout: StatGridLayoutItem[], key: string): StatGridLayoutItem[] {
   const current = loadStatLayout(defaultLayout);
   const alreadyActive = current.some((item) => item.type === "stat" && item.key === key);
-  const next = alreadyActive ? current : [...current, { type: "stat" as const, key }];
+  if (alreadyActive) return current;
+  const card = { type: "stat" as const, key };
+  const last = current[current.length - 1];
+  const next = last?.type === "empty" ? [...current.slice(0, -1), card] : [...current, card];
   saveStatLayout(next);
-  return next;
+  return normalizeStatLayout(next);
 }
 
 /** Which card keys are active in the saved layout (or the default layout, if nothing is saved yet). */
