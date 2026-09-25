@@ -2,6 +2,20 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Stregkode-scanner omlagt (lodret/skæv aflæsning, AR-afkodning)
+
+Se docs/DECISIONS.md 2026-09-25 "Stregkode-scanning" og design.md §6.11.
+Nye filer: `src/lib/barcode-frame-scanner.ts`, `src/lib/barcode-pattern.ts`;
+omskrevet: `src/components/hf/BarcodeScanOverlay.tsx`,
+`src/lib/barcode-scan.ts`, stregkode-delen af `src/app/camera/page.tsx`.
+Verificeret i Chromium med syntetisk kamera (vandret, lodret, skæv,
+bevægelse, ikke-fundet). Ikke testet på en rigtig iPhone endnu.
+
+Next work:
+1. Test på iPhone efter deploy: vandret + lodret stregkode, skæv, på afstand.
+2. Stregkoden 5713221084203 (fra brugerens test) findes ikke i databasen/OFF
+   — separat sag om produktdækning, ikke en scannerfejl.
+
 ## 2026-09-25: Mail via Mailjet aktiveret
 
 - SMTP_HOST/PORT/USER/PASS/FROM (Mailjet, in-v3.mailjet.com:587) sat i lokal

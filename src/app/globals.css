@@ -710,6 +710,72 @@ textarea,
   }
 }
 
+/* Live stregkode-afkodning, jf. design.md §6.11 — BarcodeScanOverlay tegner
+   den aflæste kodes rigtige streger én for én, en lyslinje fejer hen over,
+   og cifrene skrives bagefter. Forsinkelser sættes inline pr. streg/ciffer. */
+@keyframes hf-barcode-bar-in {
+  from {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes hf-barcode-digit-in {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hf-barcode-sweep {
+  0% {
+    opacity: 0.9;
+    transform: translateX(0);
+  }
+  90% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(var(--hf-barcode-sweep-distance));
+  }
+}
+
+.hf-barcode-bar {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hf-barcode-bar-in 160ms ease-out both;
+}
+
+.hf-barcode-digit {
+  transform-box: fill-box;
+  animation: hf-barcode-digit-in 140ms ease-out both;
+}
+
+.hf-barcode-sweep {
+  opacity: 0;
+  animation: hf-barcode-sweep 600ms linear both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hf-barcode-bar,
+  .hf-barcode-digit {
+    animation: none;
+  }
+
+  .hf-barcode-sweep {
+    display: none;
+  }
+}
+
 /* HelloFresh-stil splash-loader: ringen roterer konstant, mens buelængden
    trækker sig fra kort til næsten hel og tilbage igen (Material-mønster). */
 @keyframes hf-loader-rotate {

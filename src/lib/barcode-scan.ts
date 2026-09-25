@@ -14,8 +14,8 @@ export const BARCODE_GUIDE_WIDTH_FRACTION = 0.78;
 
 // Whether the guide box is laid out for a barcode held normally
 // ("horizontal", long side across) or on its side ("vertical", long side
-// upright) — flipped automatically once a decoded scan line comes in at a
-// steep angle (see `detectBarcodeOrientation`).
+// upright) — flipped automatically once a barcode is read on its side
+// (see `orientationFromPose`).
 export type BarcodeOrientation = "horizontal" | "vertical";
 
 export function barcodeGuideBoxFraction(orientation: BarcodeOrientation = "horizontal"): FractionRect {
@@ -28,65 +28,51 @@ export function barcodeGuideBoxFraction(orientation: BarcodeOrientation = "horiz
   return { left, top, right: left + width, bottom: top + height };
 }
 
-// A decoded 1D scan line's two ResultPoints run along the printed bars'
-// length. If that line sits closer to vertical than horizontal, the phone
-// (or the barcode) is turned on its side, so the guide box should flip to
-// portrait to match.
-export function detectBarcodeOrientation(points: { getX(): number; getY(): number }[]): BarcodeOrientation {
-  if (points.length < 2) return "horizontal";
-  const dx = points[1].getX() - points[0].getX();
-  const dy = points[1].getY() - points[0].getY();
-  if (dx === 0 && dy === 0) return "horizontal";
-  const angleDeg = (Math.abs(Math.atan2(dy, dx)) * 180) / Math.PI;
-  return angleDeg > 45 && angleDeg < 135 ? "vertical" : "horizontal";
+// Where a decoded barcode sits in the square viewfinder, for the live AR
+// overlay: `cx`/`cy`/`length` are fractions (0..1) of the viewfinder side,
+// `angleDeg` the direction of the scan line (the barcode's own left→right),
+// so the overlay can be rotated to lie exactly on the physical barcode —
+// also when it is held on its side.
+// `barsBefore`/`barsAfter` (same fraction unit, null when unknown) are how
+// far the printed bars reach from that scan line towards the barcode's top
+// and towards its digits.
+export type BarcodePose = {
+  cx: number;
+  cy: number;
+  length: number;
+  angleDeg: number;
+  barsBefore: number | null;
+  barsAfter: number | null;
+};
+
+// `points` are the two ZXing result points (centres of the start/end guard
+// patterns) in the pixel space of the square decode canvas of side `side`.
+export function barcodePoseFromPoints(
+  points: { x: number; y: number }[],
+  side: number,
+  barExtent: { before: number; after: number } | null = null,
+  tiltDeg = 0
+): BarcodePose | null {
+  if (points.length < 2 || !side) return null;
+  const [start, end] = points;
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
+  // A scan line crossing tilted bars is longer than the barcode itself.
+  const length = (Math.hypot(dx, dy) / side) * Math.cos((tiltDeg * Math.PI) / 180);
+  if (!length) return null;
+  return {
+    cx: (start.x + end.x) / 2 / side,
+    cy: (start.y + end.y) / 2 / side,
+    length,
+    angleDeg: (Math.atan2(dy, dx) * 180) / Math.PI + tiltDeg,
+    barsBefore: barExtent ? barExtent.before / side : null,
+    barsAfter: barExtent ? barExtent.after / side : null,
+  };
 }
 
-// Maps a point in native video-pixel space to a fraction (0..1) of the
-// square viewfinder container, accounting for the same object-fit: cover
-// crop the <video> element renders with. Confirmed against
-// node_modules/@zxing/browser's BrowserCodeReader.createCaptureCanvas/
-// drawImageOnCanvas: the decode capture canvas is drawn at native
-// videoWidth/videoHeight with no extra scaling, so a decoded result's
-// ResultPoint coordinates are already in that same native pixel space.
-export function videoPointToFraction(
-  x: number,
-  y: number,
-  videoWidth: number,
-  videoHeight: number
-): { x: number; y: number } {
-  const scale = Math.max(1 / videoWidth, 1 / videoHeight);
-  const offsetX = (1 - videoWidth * scale) / 2;
-  const offsetY = (1 - videoHeight * scale) / 2;
-  return { x: offsetX + x * scale, y: offsetY + y * scale };
-}
-
-// A decoded 1D barcode only yields points along its scan line, not its full
-// printed height — approximate the height from the decoded width using the
-// physical EAN-13 print ratio (22.85mm tall / ~37mm wide at 100%).
-const DECODED_HEIGHT_FROM_WIDTH_RATIO = 0.6;
-
-export function decodedPointsToFraction(
-  points: { getX(): number; getY(): number }[],
-  videoWidth: number,
-  videoHeight: number
-): FractionRect | null {
-  if (points.length === 0 || !videoWidth || !videoHeight) return null;
-  const mapped = points.map((p) => videoPointToFraction(p.getX(), p.getY(), videoWidth, videoHeight));
-  const xs = mapped.map((p) => p.x);
-  const ys = mapped.map((p) => p.y);
-  const left = Math.min(...xs);
-  const right = Math.max(...xs);
-  const centerY = ys.reduce((sum, y) => sum + y, 0) / ys.length;
-  const halfHeight = ((right - left) * DECODED_HEIGHT_FROM_WIDTH_RATIO) / 2;
-  return { left, right, top: centerY - halfHeight, bottom: centerY + halfHeight };
-}
-
-export function rectCenter(rect: FractionRect): { x: number; y: number } {
-  return { x: (rect.left + rect.right) / 2, y: (rect.top + rect.bottom) / 2 };
-}
-
-export function pointInRect(point: { x: number; y: number }, rect: FractionRect): boolean {
-  return point.x >= rect.left && point.x <= rect.right && point.y >= rect.top && point.y <= rect.bottom;
+export function orientationFromPose(pose: BarcodePose): BarcodeOrientation {
+  const angle = Math.abs(pose.angleDeg);
+  return angle > 45 && angle < 135 ? "vertical" : "horizontal";
 }
 
 export function toPercentStyle(rect: FractionRect): {

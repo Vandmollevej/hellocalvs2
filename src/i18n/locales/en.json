@@ -456,7 +456,7 @@
     "liveViewAriaLabel": "Live camera view",
     "notRecognizedRetry": "Product not recognized, try again",
     "holdCameraStill": "Hold the camera steady over the barcode",
-    "barcodeHintOutsideFrame": "Make sure the barcode is inside the box, until the frame turns green.",
+    "barcodeHintOutsideFrame": "Keep the whole barcode in the picture — upright or sideways both work.",
     "barcodeHintBlurry": "Barcode blurry? Try holding a bit further back until it's in focus.",
     "placeProductInCircle": "Place the product in the circle",
     "placePlateInCircle": "Place the plate in the circle",
