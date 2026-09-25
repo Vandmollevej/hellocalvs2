@@ -2,6 +2,22 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Tilføj — "Retter", nyt Kropsmål-ikon og samme tekst i hjulet
+
+- "Egne retter" hedder nu "Retter" (`addButton.ownDishes`, en: "Dishes"), også
+  som kategori i statistik (`productTypeLabel` i `food-classification.ts`).
+- Kropsmål bruger brugerens målebånd-figurer i stedet for Tablers lineal:
+  `src/components/icons/WaistMeasure.tsx`, vektorspor af
+  `public/icons/body-measurements/waist-female.png` / `waist-male.png`.
+  Kvindefiguren vises ved køn = FEMALE, mandefiguren ellers (også ved ukendt
+  køn). Bruges på Tilføj-listen, forsidehjulet, indstillingslisten for hjulet,
+  Profil-rækken "Kropsmål" og knappen på Redigér profil.
+- Forsidehjulet viser nu samme tekst som Tilføj-listen (`labelKey`). De
+  separate `addButton.hint.*`-tekster (fx "Måltid", "Vægt og mål") og
+  `AddAction.hintKey` er fjernet. Kun `addButton.hint.list` ("Se alle") er
+  tilbage.
+Verificeret med `npm run lint` og `npm run build`. Ikke set på telefon.
+
 ## 2026-09-25: Kalender — tomme dage, tættere rækker og advarsel om for lavt indtag
 
 Uge- og Liste-visningens dagrækker (`src/app/calendar/page.tsx`):

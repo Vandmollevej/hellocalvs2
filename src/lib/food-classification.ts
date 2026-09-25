@@ -233,7 +233,7 @@ export type SourceItem = {
 export function productTypeLabel(registration: SourceRegistration): string {
   const type = registration.classification?.productType;
   if (type) return type;
-  if (registration.dishId) return "Egne retter";
+  if (registration.dishId) return "Retter";
   return "Andet";
 }
 

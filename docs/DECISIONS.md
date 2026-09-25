@@ -2,6 +2,14 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-25: Én tekst og ét ikon pr. Tilføj-handling
+
+Brugeren vil have, at tekster og ikoner på Tilføj-skærmen slår igennem på
+forsidehjulet og alle andre steder, handlingen vises. `ADD_ACTIONS` i
+`src/lib/add-actions.ts` har derfor kun én tekst (`labelKey`). Hjulet har
+ikke længere egne kortere hint-tekster. Ikonet for Kropsmål afhænger af køn
+og sættes via `visibleAddActions()` / `addActionByKey(key, sex)`.
+
 ## 2026-09-25: Minimum for sundt dagligt indtag i kalenderen
 
 Brugeren ønsker en advarsel, når indtaget er for lavt til at være sundt.

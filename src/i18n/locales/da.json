@@ -1233,7 +1233,7 @@
     "closeMenu": "Luk tilføj-menu",
     "openMenu": "Åbn tilføj-menu",
     "microphone": "Mikrofon",
-    "ownDishes": "Egne retter",
+    "ownDishes": "Retter",
     "search": "Søg",
     "weight": "Vægt",
     "water": "Vand",
@@ -1241,14 +1241,7 @@
     "list": "Se alle",
     "menstrualCycle": "Menstruation",
     "hint": {
-      "microphone": "Indtal",
-      "ownDishes": "Måltid",
-      "search": "Søgning",
-      "weight": "Vægt og mål",
-      "water": "Vandindtag",
-      "camera": "Tag billede",
-      "list": "Se alle",
-      "menstrualCycle": "Log menstruation"
+      "list": "Se alle"
     }
   },
   "onboarding": {
