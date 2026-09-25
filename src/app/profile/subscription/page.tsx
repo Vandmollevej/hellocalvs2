@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { IconArrowRight, IconStar } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
@@ -17,7 +16,6 @@ type SubscriptionData = {
 
 export default function SubscriptionPage() {
   const { t } = useTranslation();
-  const router = useRouter();
   const [data, setData] = useState<SubscriptionData | null>(null);
   const [loading, setLoading] = useState(true);
   const [giftCode, setGiftCode] = useState("");
@@ -104,19 +102,18 @@ export default function SubscriptionPage() {
             {message && <p className="hf-type-caption">{message}</p>}
           </div>
 
-          <button
-            type="button"
-            onClick={() => router.push("/profile/points")}
-            className="hf-card text-left"
+          <Link
+            href="/profile/subscription/redeem-points"
+            className="hf-card"
             style={{ background: "var(--hf-color-disabled)" }}
           >
             <span className="hf-type-card-title" style={{ color: "var(--hf-color-white)" }}>
               {t("subscription.redeemPoints")}
             </span>
             <span className="hf-type-body-sm" style={{ color: "var(--hf-color-white)" }}>
-              {t("subscription.redeemPointsHint", { cost: data.freeMonthCost })}
+              {t("subscription.pointsEarned", { balance: data.pointsBalance })}
             </span>
-          </button>
+          </Link>
 
           <h2 className="hf-type-section-title">{t("subscription.currentPlan")}</h2>
 
@@ -137,7 +134,7 @@ export default function SubscriptionPage() {
           {data.tier === "FREE" && (
             <div className="hf-card hf-card--outline hf-card--form">
               <div className="hf-stack">
-                <p className="hf-type-section-title">
+                <p className="hf-type-section-title" style={{ margin: 0 }}>
                   {data.priceDkk} {t("subscription.seriousPlan.priceSuffix")}
                 </p>
                 <p className="hf-type-body-sm">{t("subscription.seriousPlan.description")}</p>

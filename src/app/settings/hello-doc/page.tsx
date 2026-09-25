@@ -67,7 +67,7 @@ export default function HelloDocPage() {
         )}
 
         <div>
-          <h2 className="hf-type-section-title mb-2">{t("helloDoc.invitedUsersTitle")}</h2>
+          <h2 className="hf-type-section-title">{t("helloDoc.invitedUsersTitle")}</h2>
 
           {error && <p className="hf-type-body-sm text-hf-red-dark">{t("helloDoc.loadError")}</p>}
 

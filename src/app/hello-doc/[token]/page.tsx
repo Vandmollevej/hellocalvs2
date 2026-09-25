@@ -235,7 +235,7 @@ function ActiveView({
             <span className="flex h-24 w-24 items-center justify-center rounded-full bg-hf-tan-dark text-2xl font-bold text-hf-black">
               {initials(data.profile.displayName)}
             </span>
-            <p className="hf-type-section-title">{data.profile.displayName}</p>
+            <p className="hf-type-category-title">{data.profile.displayName}</p>
             <p className="hf-type-caption opacity-70">{data.profile.email}</p>
           </div>
         )}
@@ -276,14 +276,14 @@ function ActiveView({
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {data.weight && (
             <section className="rounded-xl border p-4" style={{ borderColor: "var(--hf-color-line)" }}>
-              <h3 className="hf-type-section-title mb-2">{t("helloDoc.preview.weightSection")}</h3>
+              <h3 className="hf-type-section-title">{t("helloDoc.preview.weightSection")}</h3>
               <MiniLineChart points={weightPoints} unit=" kg" emptyLabel={t("helloDoc.preview.noChartData")} />
             </section>
           )}
 
           {categories.includes("foodAndCalories") && (
             <section className="rounded-xl border p-4" style={{ borderColor: "var(--hf-color-line)" }}>
-              <h3 className="hf-type-section-title mb-2">{t("helloDoc.preview.foodSection")}</h3>
+              <h3 className="hf-type-section-title">{t("helloDoc.preview.foodSection")}</h3>
               <MiniBarChart points={kcalPoints} emptyLabel={t("helloDoc.preview.noChartData")} />
               <p className="hf-type-caption mt-1 text-right opacity-60">{t("helloDoc.preview.kcalUnit")}/dag</p>
             </section>
@@ -291,14 +291,14 @@ function ActiveView({
 
           {categories.includes("vitaminsMinerals") && (
             <section className="rounded-xl border p-4" style={{ borderColor: "var(--hf-color-line)" }}>
-              <h3 className="hf-type-section-title mb-2">{t("helloDoc.preview.vitaminsSection")}</h3>
+              <h3 className="hf-type-section-title">{t("helloDoc.preview.vitaminsSection")}</h3>
               <MiniBarChart points={vitaminPoints} color="var(--hf-color-appbar)" emptyLabel={t("helloDoc.preview.noChartData")} />
             </section>
           )}
 
           {data.fluidHistory && (
             <section className="rounded-xl border p-4" style={{ borderColor: "var(--hf-color-line)" }}>
-              <h3 className="hf-type-section-title mb-2">{t("helloDoc.preview.fluidSection")}</h3>
+              <h3 className="hf-type-section-title">{t("helloDoc.preview.fluidSection")}</h3>
               <MiniBarChart points={fluidPoints} color="var(--hf-color-google)" emptyLabel={t("helloDoc.preview.noChartData")} />
             </section>
           )}
