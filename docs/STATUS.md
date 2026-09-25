@@ -2,6 +2,47 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Photo diary — passcode toggle now actually locks the photos
+
+User intent: the photos must not flash on screen by accident when the page is
+opened on the phone (e.g. on the bus). It is a view lock, not encryption.
+When "Kræver telefonens adgangskode for at vise" is on, the page shows only
+"Vis billeder"; tapping it asks for Face ID/Touch ID/the phone's passcode via
+WebAuthn (`confirmOnDevice` in `src/lib/passkey-client.ts`: reauth with the
+existing passkey through `/api/auth/passkey/reauth/*`, or register one if the
+account has none — registration also requires on-device confirmation). The
+page re-locks (and closes the full-screen viewer) when it goes to the
+background (`visibilitychange`). Turning the toggle off while locked requires
+the same confirmation. Browsers without WebAuthn get a plain tap gate. The
+"kræver en native app" note is replaced with a description of the lock.
+Verified with `npm run lint` and `npm run build`; not tested on a real phone
+from this container.
+
+## 2026-09-25: Photo diary — selfie feature removed
+
+The user states they never asked for selfies in Billede-dagbog and asked for
+the feature to be removed. The 2026-09-12 entry below records it as a user
+request, but the user rejects that. Removed from
+`src/app/profile/photo-diary/page.tsx`: the "Tag selfie (portræt)" button
+(`capture="user"`), the "Selfies" section with portrait cards, the
+weight/measurement caption lines under each selfie, and the "Andre billeder"
+heading. The page is back to one "Tag billede (fuld figur eller mave)" button
+and one 2-column grid. Photos saved earlier as selfies in localStorage are not
+deleted; they now show in the same grid (the old `kind` field is ignored).
+Unused `photoDiary.*` i18n keys removed from `da.json`/`en.json`; the
+selfie-portrait-card paragraph removed from `design.md`. `BodyMeasurement`,
+`/api/body-measurements` and `/profile/body-measurements` are unchanged.
+
+## 2026-09-25: Invitér en ven + fast afstand om sektionsoverskrifter
+
+Se `docs/DECISIONS.md` 2026-09-25 "Sektionsoverskrifter, points-banner og
+"Invitér en ven"". Ændret: `globals.css` (`.hf-type-section-title`),
+`PointsPromoBanner`, `profile/invite`, `lib/invite-message.ts`,
+invitations-API'erne og FRIEND_INVITATION-skabelonen (gammel standardtekst
+opgraderes automatisk). Lint + build grønne. Ikke visuelt testet (kræver
+login) — test på iPhone efter deploy: afstand om overskrifter på alle sider,
+delemenuen og mailens personlige besked.
+
 ## 2026-09-25: Profil — tandhjul til app-indstillinger + tilbagepil
 
 - På `/profile` (og kun dér) er profilcirklen øverst til højre skiftet ud
@@ -9,8 +50,11 @@ Last updated: 2026-09-25
   `showAppSettingsButton` på `HfScreen`/`ScreenHeader`.
 - `/profile` viser nu altid tilbagepilen, også når "Profil" ligger i
   footeren (`alwaysShowBackButton`).
-- Næste: brugeren fortæller, hvilke profilpunkter der flyttes ind under
-  app-indstillingerne.
+- Profilen rummer kun personlige ting (Profil, Vægt kalibrering, Kropsmål,
+  Søvnmønster, Billede-dagbog, Points, Opskrifter). Abonnement, Opsætning
+  (`/profile/settings`), Indberet fejl og Log ud er flyttet til `/settings`;
+  Integrationer, Kommunikation og Invitér en ven lå der i forvejen. Den
+  gamle "Log ind / tilmeld"-boks er fjernet.
 
 ## 2026-09-25: Statistik — redigerbare grafer, søgning og "+ Tilføj" pr. blok
 

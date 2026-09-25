@@ -2,6 +2,24 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-25: Sektionsoverskrifter, points-banner og "Invitér en ven"
+
+Brugerens krav efter skærmbillede af Invitér en ven:
+
+- `.hf-type-section-title` ejer sin afstand: 32 px over (0 som første
+  element), 12 px under. Årsag: klassens `margin: 0` lå uden for Tailwinds
+  lag og overtrumfede alle sidernes `mt-6`/`mb-2`, så der var ingen luft
+  nogen steder. Sidernes lokale margins er fjernet (design.md §4.3).
+- `PointsPromoBanner`: ingen stor "Læs betingelser"-knap. Overskriften starter
+  med "*", og under kortet står en grå "* Læs betingelser"-linje. Omstøder
+  2026-09-11-varianten med hvid fuldbreddeknap.
+- Invitér en ven: "Dit navn" (forudfyldt med profilnavn) og en 2-linjers
+  personlig besked (maks. 160 tegn) øverst. Standardteksten
+  (`src/lib/invite-message.ts`) vises som forhåndsvisning og deles via
+  telefonens delemenu (Web Share) med dele-ikon på knappen. Navn og besked
+  bruges også i invitationsmailen (`{{personalMessage}}`, HTML-escapet).
+  Kladden huskes kun lokalt i browseren.
+
 ## 2026-09-24: Normalt login — privacy-by-architecture ophævet
 
 Brugerens beslutning: "Man skal bare kunne logge ind som på alle andre
@@ -1966,3 +1984,12 @@ Normaliserede produkt-søgeparametre (`ProductNutritionFeatures`, 1:1 med
 - Den private ingrediens ligger kun i boksen (samling `privateIngredients`) og vises kun for brugeren selv: øverst i søgningen på Opret ret og på `/ingredients` ("Mine ingredienser": omdøb/slet). I retter bruges produkt-ID `private:<id>`, som aldrig sendes til serveren; retter med egne ingredienser kan ikke deles, før de er gjort globale.
 - Admin varsles: serveren får kun navnet og en anonym engangsindbakke (`IngredientRequest`, ingen bruger-ID) plus e-mail `INGREDIENT_REQUEST_ADMIN`. Admin → "Ønskede ingredienser" kan rette navnet og "Tilføj globalt" (GenericIngredient med Frida-næring) eller afvise.
 - Når admin tilføjer den globalt, overskriver den global brugerens private automatisk (valgt blandt brugerens to muligheder): indbakken leverer den globale ingrediens, og enheden erstatter den private i alle egne retter og sletter den private.
+
+## 2026-09-25: Billede-dagbog-lås via WebAuthn, ikke native app
+
+Kontakten "Kræver telefonens adgangskode for at vise" håndhæves i webappen med
+WebAuthn (Face ID/Touch ID/telefonens kode, `userVerification: "required"`),
+ikke via en native app. Formålet er at billederne ikke vises ved et uheld —
+det er en visningslås, ikke kryptering af billederne. Siden låser igen, når
+den går i baggrunden. Selfie-funktionen er fjernet efter brugerens ønske og
+skal ikke genindføres uden en eksplicit anmodning.
