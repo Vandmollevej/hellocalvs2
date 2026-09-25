@@ -308,11 +308,14 @@ function WheelItem({
   // the moment an item becomes active.
   const focus = Math.max(0, 1 - absDistance);
   const transition = animate ? "transition-[transform,opacity,color,max-height] duration-300 ease-out" : "";
-  // The centered/active item is inset 25px from the right edge; items further
-  // away ease back out to the edge (0px inset) by the time they reach the
-  // fade-out distance, so the indent fades in step with the opacity.
+  // The items sit on a circular arc like the rim of a wheel: the centered item
+  // is inset 25px from the right edge and the others curve back out to the
+  // edge (0px) at the fade-out distance. Radius solved so both ends hold.
   const MAX_INSET = 25;
-  const inset = MAX_INSET * (1 - absDistance / 2.4);
+  const EDGE_Y = 2.4 * ITEM_HEIGHT;
+  const RADIUS = (EDGE_Y * EDGE_Y + MAX_INSET * MAX_INSET) / (2 * MAX_INSET);
+  const y = absDistance * ITEM_HEIGHT;
+  const inset = Math.sqrt(RADIUS * RADIUS - y * y) - (RADIUS - MAX_INSET);
 
   return (
     <button
