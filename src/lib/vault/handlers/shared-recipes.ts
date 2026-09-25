@@ -12,6 +12,7 @@
 import { newRecordId } from "@/lib/vault/client";
 import { json, route } from "@/lib/vault/local-api";
 import { DISHES } from "@/lib/vault/handlers/meals";
+import { isPrivateIngredientId } from "@/lib/vault/handlers/private-ingredients";
 import type { VaultClient } from "@/lib/vault/client";
 
 export const RECIPE_FAVORITES = "recipeFavorites";
@@ -98,6 +99,11 @@ route("PATCH", "/api/dishes/:id/share", async ({ vault, params, body }) => {
   const token = await publisherToken(vault);
 
   if (shared === true && !dish.sharedRecipeId) {
+    // Egne ingredienser forlader aldrig enheden — retten kan først deles, når
+    // admin har gjort dem globale (docs/DECISIONS.md 2026-09-24).
+    if (dish.ingredients.some((i) => isPrivateIngredientId(i.productId))) {
+      return json({ message: "Retten indeholder egne ingredienser og kan deles, når de er godkendt" }, 409);
+    }
     const res = await fetch("/api/shared-recipes", {
       method: "POST",
       headers: { "Content-Type": "application/json", [PUBLISHER_HEADER]: token },

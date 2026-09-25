@@ -12,6 +12,13 @@
 import { newRecordId } from "@/lib/vault/client";
 import { json, route } from "@/lib/vault/local-api";
 import { fulfillPendingForward } from "@/lib/vault/handlers/forwards";
+import {
+  PRIVATE_INGREDIENTS,
+  PRIVATE_INGREDIENT_PREFIX,
+  isPrivateIngredientId,
+  privateIngredientProduct,
+  type StoredPrivateIngredient,
+} from "@/lib/vault/handlers/private-ingredients";
 
 export const REGISTRATIONS = "registrations";
 export const DISHES = "dishes";
@@ -372,7 +379,15 @@ route("POST", "/api/dishes", async ({ vault, body }) => {
   }
   const resolved: DishIngredient[] = [];
   for (const i of ingredients) {
-    const product = await fetchProduct(i.productId as string);
+    // Private ingredienser (boksen) slås op lokalt og sendes aldrig til serveren.
+    const productId = i.productId as string;
+    const privateId = productId.slice(PRIVATE_INGREDIENT_PREFIX.length);
+    const stored = isPrivateIngredientId(productId)
+      ? vault.get<StoredPrivateIngredient>(PRIVATE_INGREDIENTS, privateId)
+      : undefined;
+    const product = isPrivateIngredientId(productId)
+      ? stored && privateIngredientProduct(privateId, stored)
+      : await fetchProduct(productId);
     if (!product) return json({ message: "Produkt ikke fundet" }, 404);
     resolved.push({ id: newRecordId(), productId: product.id, grams: i.grams as number, product });
   }

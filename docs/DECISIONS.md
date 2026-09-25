@@ -1867,3 +1867,10 @@ Normaliserede produkt-søgeparametre (`ProductNutritionFeatures`, 1:1 med
 
 - HelloFresh-boksen ("Genkend din ret") er fjernet fra Madvarer-siden. Opret ret når den via kameraet (`/camera?...&for=ret`). HelloFresh må ikke vises på Madvarer, produktsøgning, produkt-/ingrediensoprettelse eller produktvisning. Åbent punkt: kameraets "Produkt"-fane (`mode=hellofresh`) vises også uden for Opret ret; ikke ændret endnu.
 - Almindelige primære/sekundære handlingsknapper fylder altid hele indholdsbredden. Fælles komponent: `ActionButton`/`ActionLink` (`src/components/hf/ActionButton.tsx`); regel i design.md §6.2. Små ikon-/inline-kontroller er undtaget. Eksisterende smalle knapper rettes efterhånden, når deres side alligevel ændres.
+
+## 2026-09-24: Egne, private ingredienser ("Opret egen ingrediens")
+
+- Linket "Opret egen ingrediens" under Opret ret åbner `/ingredients/new`. Brugeren angiver kun et navn (og mængde, når det er fra en ret) — ikke kcal/makroer, som brugeren ikke kan kende. Næringsindholdet står som ukendt, indtil admin har oprettet ingrediensen globalt.
+- Den private ingrediens ligger kun i boksen (samling `privateIngredients`) og vises kun for brugeren selv: øverst i søgningen på Opret ret og på `/ingredients` ("Mine ingredienser": omdøb/slet). I retter bruges produkt-ID `private:<id>`, som aldrig sendes til serveren; retter med egne ingredienser kan ikke deles, før de er gjort globale.
+- Admin varsles: serveren får kun navnet og en anonym engangsindbakke (`IngredientRequest`, ingen bruger-ID) plus e-mail `INGREDIENT_REQUEST_ADMIN`. Admin → "Ønskede ingredienser" kan rette navnet og "Tilføj globalt" (GenericIngredient med Frida-næring) eller afvise.
+- Når admin tilføjer den globalt, overskriver den global brugerens private automatisk (valgt blandt brugerens to muligheder): indbakken leverer den globale ingrediens, og enheden erstatter den private i alle egne retter og sletter den private.
