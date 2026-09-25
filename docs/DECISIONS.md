@@ -2,6 +2,39 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-25: Uncertainties-tærskler, billed-fane, natlig robot og admin "Cron-jobs"
+
+Brugerens svar 2026-09-25 (G4, runde 2):
+
+- **Tærskler** (`src/lib/uncertainty-thresholds.ts`): under 90 % vises på
+  Uncertainties (vejledende mål); under 70 % rød ramme og altid øverst;
+  under 50 % skjules produktet i søgningen, indtil en admin har gennemgået
+  analysen (`AiProductAnalysis.reviewedAt`). `reviewedAt` er adskilt fra
+  `correctedAt`, fordi `correctedAt` allerede sættes, når brugeren bekræfter
+  værdierne ved oprettelsen.
+- **Billeder**: femte fane med den lokale billedrobots match mellem et
+  oprettelsesfoto og forsidefotoet (`ProductMatchCheck`, PENDING, under 90).
+  Afgørelsen gemmes via Kvalitetskontrols route (træningsdata).
+- **Natlig AI-genkørsel** (job `uncertainty-rerun`, standard kl. 03:00):
+  samme skema/prompt som oprettelsen (`src/lib/product-ai-tasks.ts`), højst
+  100 analyser pr. nat. Mere sikkert svar erstatter det gamle; når det når
+  90 %, skrives værdierne til produktet.
+- **Én container til robotter?** Nej: app-jobs kører i app-processens
+  scheduler, og hver Python-agent beholder sin egen container (forskellige
+  tunge afhængigheder, fx torch/rembg). Nye natlige robotter i TypeScript
+  tilføjes som app-jobs; kun robotter med egne tunge afhængigheder får en
+  container. Alle styres fra samme tabel.
+- **Admin "Cron-jobs"** (`/admin/cron-jobs`, tabel `scheduled_jobs`, register
+  `src/lib/jobs/registry.ts`): liste med beskrivelse, seneste kørsel/status/
+  varighed, pause/genoptag, "kør nu" og plan (dagligt kl. TT:MM dansk tid,
+  hvert N. minut, eller kun manuelt). App-jobs og Python-agenterne
+  (`scripts/*/job_control.py`, én kopi pr. agent) tjekker tabellen hvert
+  minut. REMA-importen kører stadig ved hver container-start.
+- **Fra deklarationen**: næringsaflæsningen læser nu også øvrige
+  næringsstoffer og producentens egen ± (gemmes som producentdata ved
+  oprettelsen). Produkter oprettet uden aflæst næringsdeklaration får
+  makroerne markeret som estimerede (~ ved kcal i søgningen).
+
 ## 2026-09-25: Usikkerheds-~ + admin "Uncertainties" (bygget)
 
 Erstatter punkterne i "Usikkerheds-bølgeikon (afklaret, ikke bygget)" nedenfor,

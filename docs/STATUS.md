@@ -25,13 +25,16 @@ Beslutninger i `docs/DECISIONS.md` 2026-09-25 (erstatter afklaringen
   produkt). AI-ruterne for forside/næring/ingredienser returnerer nu
   koordinater (nye prompt-versioner `*-2026-09-24-regions`).
 
-Kræver ved deploy: `prisma migrate deploy`, genstart af frida-agent-
-containeren (for at hente mikrodata). Åbent: natlig AI-robot (senere fase),
-evt. lavere minimumstærskel, producent-± udfyldes endnu ikke af nogen kilde
-(AI'en læser den ikke fra deklarationen endnu), og makro-kilden
-(`nutrientSources.kcal` osv.) sættes endnu ikke af nogen import — ~ i
-søgeresultater vises derfor først, når en kilde markerer makroer som
-estimerede.
+Runde 2 (samme dag, DECISIONS 2026-09-25 "Uncertainties-tærskler …"):
+70 %-/50 %-tærskler, fanen Billeder, natlig AI-genkørsel (job
+`uncertainty-rerun`), admin `/admin/cron-jobs` med jobtabellen
+`scheduled_jobs` (app-jobs + alle Python-agenter via `job_control.py`),
+± og mikrodata aflæst fra deklarationen, og makroer markeres estimerede,
+når der ikke er aflæst en deklaration.
+
+Deploy: migrationen kører automatisk (`migrate`-servicen), og agent-
+containerne genbygges af deploy-jobbet. Live-verifikation efter deploy
+kræver admin-login.
 
 ## TODO (2026-09-24): Waldemarsro-integration (dansk opskriftsside) — afklaret, ikke bygget
 

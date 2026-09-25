@@ -126,6 +126,25 @@ export function hasEstimatedMacros(nutrientSources: unknown): boolean {
   return MACRO_SOURCE_KEYS.some((key) => isEstimatedSource(sources[key] as string | undefined));
 }
 
+// Næringsstoffer aflæst fra producentens egen næringsdeklaration
+// (NutritionAnalysis.micronutrients) → produktets felter. Alt herfra er
+// producentdata (LABEL, intet ~); ± kun når producenten selv oplyser den.
+export function labelNutrientsFromPrediction(prediction: unknown) {
+  const list = (prediction as { micronutrients?: unknown } | null)?.micronutrients;
+  const micronutrientsPer100g: Record<string, number> = {};
+  const nutrientTolerances: Record<string, number> = {};
+  if (Array.isArray(list)) {
+    for (const item of list) {
+      const { key, per100g, tolerance } = (item ?? {}) as { key?: unknown; per100g?: unknown; tolerance?: unknown };
+      if (typeof key !== "string" || !isNutrientKey(key)) continue;
+      if (typeof per100g !== "number" || !Number.isFinite(per100g) || per100g < 0) continue;
+      micronutrientsPer100g[key] = per100g;
+      if (typeof tolerance === "number" && Number.isFinite(tolerance) && tolerance > 0) nutrientTolerances[key] = tolerance;
+    }
+  }
+  return { micronutrientsPer100g, nutrientTolerances };
+}
+
 export function asNumberRecord(value: unknown): Record<string, number> {
   if (!value || typeof value !== "object" || Array.isArray(value)) return {};
   return Object.fromEntries(

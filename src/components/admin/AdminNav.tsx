@@ -17,6 +17,7 @@ const LINK_DEFS: { href: string; key: AdminI18nKey }[] = [
   { href: "/admin/images", key: "nav_images" },
   { href: "/admin/quality-control", key: "nav_quality_control" },
   { href: "/admin/uncertainties", key: "nav_uncertainties" },
+  { href: "/admin/cron-jobs", key: "nav_cron_jobs" },
   { href: "/admin/duplicate-products", key: "nav_duplicate_products" },
   { href: "/admin/search", key: "nav_search" },
   { href: "/admin/search-ranking", key: "nav_search_ranking" },

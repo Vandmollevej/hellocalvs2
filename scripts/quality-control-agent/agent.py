@@ -22,6 +22,8 @@ import time
 import cv2
 import numpy as np
 import psycopg2
+
+from job_control import run_forever
 import requests
 import torch
 from PIL import Image
@@ -167,13 +169,9 @@ def run_once(conn):
 
 def main():
     log.info("quality-control agent started, polling every %ss", POLL_INTERVAL_SECONDS)
-    while True:
-        try:
-            with psycopg2.connect(DATABASE_URL) as conn:
-                run_once(conn)
-        except Exception:  # noqa: BLE001 - a broken cycle must not kill the service
-            log.exception("cycle failed")
-        time.sleep(POLL_INTERVAL_SECONDS)
+    # Planlægning/pause/"kør nu" styres fra admin "Cron-jobs" (job_control.py);
+    # POLL_INTERVAL_SECONDS er kun standard-intervallet første gang.
+    run_forever(DATABASE_URL, "quality-control-agent", run_once, interval_minutes=max(1, POLL_INTERVAL_SECONDS // 60))
 
 
 if __name__ == "__main__":

@@ -1042,6 +1042,10 @@ model AiProductAnalysis {
   // { ocrRegion: {x,y,w,h} | null, uncertainRegions: [{field,x,y,w,h,reason}] }.
   // Null for analyser fra før felterne fandtes.
   regions       Json?
+  // Sat når en admin har gennemgået/rettet analysen på "Uncertainties".
+  // Adskilt fra correctedAt, som sættes allerede når brugeren bekræfter
+  // værdierne ved produktoprettelse.
+  reviewedAt    DateTime?      @map("reviewed_at")
   matchCheck    ProductMatchCheck?
 
   @@index([kind, correctedAt])
@@ -1260,6 +1264,28 @@ model Additive {
 
 // Which Frida release (DTU's Figshare dataset) was most recently imported,
 // so frida-agent (scripts/frida-import) doesn't re-import the same version.
+// Admin "Cron-jobs" (docs/DECISIONS.md 2026-09-25): én række pr. baggrundsjob
+// (nøgle fra src/lib/jobs/registry.ts). Både jobs i app-processen
+// (src/lib/scheduler.ts) og Python-agenterne i egne containere læser rækken:
+// pause (enabled=false), fast klokkeslæt (runAtTime "HH:MM", dansk tid) eller
+// interval (intervalMinutes), og "kør nu" (runRequestedAt). Jobbet skriver
+// selv lastRunAt/lastStatus/lastMessage tilbage.
+model ScheduledJob {
+  key             String    @id
+  enabled         Boolean   @default(true)
+  runAtTime       String?
+  intervalMinutes Int?
+  runRequestedAt  DateTime?
+  lastStartedAt   DateTime?
+  lastRunAt       DateTime?
+  lastStatus      String?
+  lastMessage     String?
+  lastDurationMs  Int?
+  updatedAt       DateTime  @default(now()) @updatedAt
+
+  @@map("scheduled_jobs")
+}
+
 model FridaImportState {
   id                Int      @id @default(autoincrement())
   figshareArticleId Int      @unique
