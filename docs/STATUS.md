@@ -174,6 +174,12 @@ nøgler på serveren (`.env.production` på Synology), derefter deploy:
 mod de rigtige API'er endnu (ingen nøgler lokalt). Waldemarsro: venter på
 brugerens "byg".
 
+## 2026-09-25: "Største kilder"-siden fjernet
+
+Brugerens ønske: `/statistics/sources` (faner + Produkter/Produkttyper) er
+slettet, da "Månedens synder" dækker det samme. Boksen "Største syndere" på
+Statistik-siden beholdes, men uden "Se alle"-link.
+
 ## 2026-09-25: G3 — produktkategorier, kød/drikke-statistik, "Største kilder" og "Månedens synder" — bygget
 
 Se docs/DECISIONS.md 2026-09-25 (G3). `npm run lint` (G3-filer) og

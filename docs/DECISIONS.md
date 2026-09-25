@@ -96,8 +96,9 @@ apps." De skrappe sikkerhedsforanstaltninger var kun ment til admin.
 - Statistik: 12 nye kort (kød g/kcal ×4, sukkerholdige drikke kcal, alkohol
   kcal/genstande/mængde) som totaler for den valgte periode, egen gruppe under
   "Tilføj kort". Bred boks "Største syndere" (top 5 for Kalorier/Fedt/Sukker,
-  samme vare må gå igen, klik åbner varen) med "Se alle" →
-  `/statistics/sources` ("Største kilder", faner + Produkter/Produkttyper).
+  samme vare må gå igen, klik åbner varen). Siden "Største kilder"
+  (`/statistics/sources`) er fjernet 2026-09-25 efter brugerens ønske, da
+  "Månedens synder" dækker det samme; boksen har derfor intet "Se alle".
 - "Månedens synder": knap under kalenderens månedsvisning →
   `/statistics/month-sinners?month=YYYY-MM`, grupperet efter produkttype med
   "kcal · %", faner Kalorier/Fedt/Sukker.

@@ -334,7 +334,7 @@ export default function StatisticsPage() {
             onShowAddChange={setShowAddCard}
           />
 
-          <TopSinnersCard registrations={periodSources} range={activePeriodRange} loading={sourcesLoading} />
+          <TopSinnersCard registrations={periodSources} loading={sourcesLoading} />
         </div>
       </div>
     </HfScreen>

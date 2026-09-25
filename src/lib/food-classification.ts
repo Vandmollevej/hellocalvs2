@@ -1,6 +1,6 @@
 // G3 (docs/DECISIONS.md 2026-09-24): klassifikation af hvad en registrering
 // ernæringsmæssigt er — kødtype, alkohol og sukkerholdig drik — til
-// statistikboksene, "Største kilder" og "Månedens synder".
+// statistikboksene, "Største syndere" og "Månedens synder".
 //
 // Kilden er produktets egne felter fra regnearkene (REMA-importen gemmer dem i
 // Product.dietaryTags): `meat` (fx "Kylling", "Gris, Okse"), `isSugarFree`,
@@ -219,7 +219,7 @@ export function alcoholTotals(registrations: SourceRegistration[]) {
   return { kcal, volumeMl, units };
 }
 
-// --- Største kilder (samlet pr. vare / pr. produkttype) ---
+// --- Største syndere (samlet pr. vare / pr. produkttype) ---
 
 export type SourceItem = {
   key: string;
