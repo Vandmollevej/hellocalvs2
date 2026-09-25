@@ -286,6 +286,24 @@ export default function UnusedStatCardsPage() {
           />
         </div>
 
+        <button
+          type="button"
+          onClick={addHeader}
+          className="flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-hf-black/30 text-sm font-semibold text-hf-black opacity-80 active:opacity-100"
+        >
+          {t("statUnusedCards.addHeading")}
+        </button>
+
+        <button
+          type="button"
+          onClick={addDivider}
+          className="flex min-h-11 w-full items-center gap-2 text-sm font-semibold text-hf-black active:opacity-60"
+        >
+          <span aria-hidden className="h-0.5 flex-1 bg-hf-black" />
+          {t("statUnusedCards.addDivider")}
+          <span aria-hidden className="h-0.5 flex-1 bg-hf-black" />
+        </button>
+
         {normalizedQuery && (
           <section className="flex flex-col gap-2 pb-2">
             <p className="px-1 text-sm font-semibold text-hf-black">
@@ -331,29 +349,6 @@ export default function UnusedStatCardsPage() {
           </AccordionSection>
         ))}
 
-        <div className="mt-2 border-t border-hf-tan-dark pt-4">
-          <button
-            type="button"
-            onClick={addHeader}
-            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-hf-black/30 text-sm font-semibold text-hf-black opacity-80 active:opacity-100"
-          >
-            {t("statUnusedCards.addHeading")}
-          </button>
-          <p className="mt-2 text-center text-xs text-hf-black opacity-50">
-            {t("statUnusedCards.addHeadingHint")}
-          </p>
-
-          <button
-            type="button"
-            onClick={addDivider}
-            className="mt-4 flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-hf-black/30 text-sm font-semibold text-hf-black opacity-80 active:opacity-100"
-          >
-            {t("statUnusedCards.addDivider")}
-          </button>
-          <p className="mt-2 text-center text-xs text-hf-black opacity-50">
-            {t("statUnusedCards.addDividerHint")}
-          </p>
-        </div>
       </div>
     </HfScreen>
   );

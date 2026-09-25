@@ -2,6 +2,12 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Ubrugte statistik-kort — "+ Overskrift" og "+ Skillelinje" øverst
+
+`/statistics/unused-cards`: knapperne ligger nu lige under søgefeltet, før accordionerne.
+"+ Adskillelseslinje" hedder nu "+ Skillelinje" og vises som en massiv sort
+streg med teksten i midten. De grå hjælpetekster er fjernet.
+
 ## 2026-09-25: Global afstandsregel + Abonnement-side
 
 Se `docs/DECISIONS.md` 2026-09-25 "Global lodret rytme". Nye primitiver
