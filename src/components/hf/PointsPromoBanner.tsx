@@ -5,9 +5,10 @@ import { IconX } from "@tabler/icons-react";
 
 // Delt points-promo-kort, brugt hvor et grønt "optjen X points ved at..."-banner
 // forekommer (Invitér en ven, Indberet fejl). Struktur er bevidst kopieret fra
-// design.md §6.11-stilen: luk-X øverst til højre, fed overskrift og en
-// fuldbredde-knap, jf. bruger-reference "Spar op til ... + Aktivér rabat"
-// (HelloFresh privatlivspolitik-skærmbillede).
+// design.md §6.11-stilen: luk-X øverst til højre og fed overskrift, jf.
+// bruger-reference "Spar op til ... + Aktivér rabat" (HelloFresh
+// privatlivspolitik-skærmbillede). Betingelser er altid et rent tekstlink,
+// aldrig en knap (brugerkrav 2026-09-24).
 export function PointsPromoBanner({
   headline,
   subtext,

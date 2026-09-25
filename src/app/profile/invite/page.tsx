@@ -164,7 +164,7 @@ export default function InvitePage() {
             {invitations.map((invitation) => (
               <div
                 key={invitation.id}
-                className="flex items-center justify-between border-b py-3"
+                className="flex items-center justify-between border-b py-3 last:border-b-0"
                 style={{ borderColor: "var(--hf-color-line)" }}
               >
                 <div className="min-w-0 flex-1">
@@ -187,15 +187,15 @@ export default function InvitePage() {
           </div>
         )}
 
-        <h2 className="hf-type-section-title mt-6">Tilmeldte venner</h2>
+        <h2 className="hf-type-section-title mt-8">Tilmeldte venner</h2>
         {referrals.length === 0 ? (
           <p className="hf-type-body-sm mt-2 opacity-70">Ingen venner inviteret endnu.</p>
         ) : (
-          <div className="mt-2 flex flex-col">
+          <div className="mt-3 flex flex-col">
             {referrals.map((r) => (
               <div
                 key={r.id}
-                className="flex items-center justify-between border-b py-3"
+                className="flex items-center justify-between border-b py-3 last:border-b-0"
                 style={{ borderColor: "var(--hf-color-line)" }}
               >
                 <span className="hf-type-body">{r.referredUser.displayName}</span>
