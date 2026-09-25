@@ -134,13 +134,13 @@ Ejer: G9-overtagelse, konto B
 
 ## G10 — Bundnavigation + global overskrift-stil
 Filer: `src/components/BottomNav.tsx`, `src/app/globals.css`.
-Ukendte ændringer: begge filer er ændret og ikke committet — sandsynligvis fra 5f2ee781.
+Ukendte ændringer: ingen (alt G10-arbejde committet).
 Ejer: G10-overtagelse, konto D (2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 5f2ee781 | Fjern stregen mellem footer og indhold + sektionsoverskrifter mindre, ikke fed, centreret med streg på hver side | I gang | Verificerer visuelt, commit derefter |
-| 6a503586 | Footer-redigering: slette-krydserne er skåret af + ikoner skal kunne trækkes til siden for at bytte rækkefølge | I gang | Transcript læst: ikke løst. Krydser klippes af `overflow-x-hidden`; ombytning hopper frem og tilbage. Bygger fix (HelloFresh/knap-delen hører til G6) |
+| 5f2ee781 | Fjern stregen mellem footer og indhold + sektionsoverskrifter mindre, ikke fed, centreret med streg på hver side | Færdig (be3a05d) | Verificeret i preview. Afventer brugerens godkendelse af udseendet |
+| 6a503586 | Footer-redigering: slette-krydserne er skåret af + ikoner skal kunne trækkes til siden for at bytte rækkefølge | Færdig (se git log "6a503586") | `overflow-x-clip` så krydserne ikke klippes; ombytning efter pladsen under fingeren (ingen hop) + roligere glide-animation; ikon fra panelet indsættes på den plads, det slippes. Afventer test på telefon (HelloFresh/knap-delen hører til G6) |
 
 ## G11 — Næringsdata på produktsiden (E-numre, toksiner, fedt-advarsel)
 Filer: produktsidens næringsvisning, statistik-boks-katalog (koordinér med G2), Opsætning/Visning (koordinér med G7).
