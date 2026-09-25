@@ -1,10 +1,10 @@
 import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { USER_SESSION_COOKIE, verifyUserSession } from "@/lib/user-auth";
 
-// Den indloggede bruger (passkey-session, docs/PRIVACY.md). Der findes ikke
-// længere en delt demo-bruger: private data ligger i brugerens krypterede
-// boks, og serverruter kræver en rigtig session.
+// Den indloggede bruger ud fra session-cookien (src/lib/user-auth.ts), eller
+// null. Alle private endpoints bruger denne og svarer 401 uden session.
 export async function getSessionUser() {
   const store = await cookies();
   const token = store.get(USER_SESSION_COOKIE)?.value;
@@ -18,3 +18,6 @@ export async function getSessionUser() {
   return user;
 }
 
+export function unauthorized() {
+  return NextResponse.json({ message: "Log ind for at fortsætte" }, { status: 401 });
+}

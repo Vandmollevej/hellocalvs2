@@ -1,0 +1,87 @@
+"use client";
+
+import { Suspense, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslation } from "@/i18n/LocaleProvider";
+import { registerPasskey } from "@/lib/passkey-client";
+import { markFaceIdDeclined } from "@/lib/login-flow";
+
+// Tilbud efter login: slå Face ID til, så næste login kun kræver ansigtet.
+function FaceIdOfferContent() {
+  const { t } = useTranslation();
+  const router = useRouter();
+  const rawNext = useSearchParams().get("next") ?? "/";
+  const next = rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/";
+  const [ready, setReady] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then(async (res) => {
+        const data = res.ok ? ((await res.json()) as { user: { hasPasskey: boolean } }) : null;
+        if (!data || data.user.hasPasskey) router.replace(next);
+        else setReady(true);
+      })
+      .catch(() => router.replace(next));
+  }, [next, router]);
+
+  async function enable() {
+    setBusy(true);
+    setError(null);
+    try {
+      await registerPasskey();
+      router.replace(next);
+    } catch {
+      setError(t("faceIdOffer.error"));
+      setBusy(false);
+    }
+  }
+
+  function skip() {
+    markFaceIdDeclined();
+    router.replace(next);
+  }
+
+  if (!ready) return null;
+
+  return (
+    <div className="flex h-full min-h-full flex-col bg-hf-cream">
+      <div
+        className="hf-appbar hf-appbar--brand"
+        style={{ paddingTop: "max(16px, env(safe-area-inset-top, 0px))" }}
+      >
+        <span className="hf-appbar__slot" aria-hidden="true" />
+        <h1 className="hf-type-nav-title hf-appbar__title">{t("faceIdOffer.title")}</h1>
+        <span className="hf-appbar__slot" aria-hidden="true" />
+      </div>
+
+      <div className="flex flex-1 flex-col gap-4 px-4 pt-6">
+        <p className="hf-type-body">{t("faceIdOffer.intro")}</p>
+        {error && <p className="hf-type-caption text-hf-red-dark">{error}</p>}
+      </div>
+
+      <div className="flex flex-col gap-3 px-4 pb-8 pt-4">
+        <button
+          type="button"
+          onClick={enable}
+          disabled={busy}
+          className="hf-btn-primary hf-type-button h-12 w-full disabled:opacity-40"
+        >
+          {busy ? t("faceIdOffer.enabling") : t("faceIdOffer.enable")}
+        </button>
+        <button type="button" onClick={skip} disabled={busy} className="hf-type-body h-12 w-full underline">
+          {t("faceIdOffer.skip")}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default function FaceIdOfferPage() {
+  return (
+    <Suspense fallback={null}>
+      <FaceIdOfferContent />
+    </Suspense>
+  );
+}

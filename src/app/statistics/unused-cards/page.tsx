@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionSection } from "@/components/hf/AccordionSection";
 import { StatCardIcon } from "@/components/StatCardIcon";
@@ -12,6 +13,7 @@ import {
   addHeaderToLayout,
   addStatCardToLayout,
   DEFAULT_ACTIVE_STAT_KEYS,
+  FOOD_SOURCE_STAT_KEYS,
   SPORT_STAT_KEY_PREFIX,
   STAT_WINDOW_DAYS,
   type ActivityTotals,
@@ -23,7 +25,8 @@ import { nutritionSectionLabel } from "@/lib/nutrition-terminology";
 import { groupByDay, withinLastDays, type RegistrationTotals } from "@/lib/daily-totals";
 import type { IntegrationCardStatus } from "@/lib/integrations";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
+import { useSourceRegistrations } from "@/lib/use-source-registrations";
+import { registrationsWithinLastDays } from "@/lib/food-classification";
 
 function withinLastDaysActivities(activities: ActivityTotals[], days: number) {
   const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
@@ -78,6 +81,8 @@ function categoryDefs(t: (key: string) => string, region: string): CategoryDef[]
         "vitaminK",
       ],
     },
+    // G3: kød, fisk, sukkerholdige drikke og alkohol (totaler for perioden).
+    { title: "Kød, fisk og drikke", keys: FOOD_SOURCE_STAT_KEYS },
     { title: t("statUnusedCards.category.allergensAdditives"), keys: ["allergens", "additives"] },
     {
       // Sport types are dynamic (one per sport the user actually has data
@@ -114,15 +119,17 @@ export default function UnusedStatCardsPage() {
   const [region, setRegion] = useState("DK");
   const [loading, setLoading] = useState(true);
   const [activeKeys, setActiveKeys] = useState<Set<string>>(() => activeStatKeys(DEFAULT_LAYOUT));
+  const { registrations: sourceRegistrations, loading: sourcesLoading } = useSourceRegistrations();
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     let cancelled = false;
     Promise.all([
-      localApi("/api/registrations").then(async (response) => {
+      fetch("/api/registrations").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente registreringer");
         return (await response.json()) as { registrations: RegistrationTotals[] };
       }),
-      localApi("/api/activities").then(async (response) => {
+      fetch("/api/activities").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente aktiviteter");
         return (await response.json()) as { activities: ActivityTotals[] };
       }),
@@ -130,11 +137,11 @@ export default function UnusedStatCardsPage() {
         if (!response.ok) throw new Error("Kunne ikke hente integrationer");
         return (await response.json()) as { integrations: IntegrationCardStatus[] };
       }),
-      localApi("/api/health-metrics").then(async (response) => {
+      fetch("/api/health-metrics").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente sundhedsdata");
         return (await response.json()) as { metrics: HealthMetricTotals[] };
       }),
-      localApi("/api/profile").then(async (response) => {
+      fetch("/api/profile").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente profil");
         return (await response.json()) as { user: { region?: string } };
       }),
@@ -174,15 +181,79 @@ export default function UnusedStatCardsPage() {
       days,
       activities: hasConnectedIntegration ? recentActivities : undefined,
       metrics: recentMetrics,
+      sources: sourcesLoading
+        ? undefined
+        : registrationsWithinLastDays(sourceRegistrations, STAT_WINDOW_DAYS),
     });
-  }, [registrations, activities, metrics, hasConnectedIntegration]);
+  }, [registrations, activities, metrics, hasConnectedIntegration, sourceRegistrations, sourcesLoading]);
 
   const cardByKey = useMemo(() => new Map(allCards.map((c) => [c.key, c])), [allCards]);
+
+  const categories = useMemo(
+    () =>
+      categoryDefs(t, region).map((category) => {
+        const categoryCards = category.keys
+          .map((key) => cardByKey.get(key))
+          .filter((c): c is StatCardValue => Boolean(c));
+        const sportCards = category.includeSportCards
+          ? allCards.filter((c) => c.key.startsWith(SPORT_STAT_KEY_PREFIX))
+          : [];
+        const cards = [...categoryCards, ...sportCards].filter((c) => !activeKeys.has(c.key));
+        return { title: category.title, cards };
+      }),
+    [t, region, cardByKey, allCards, activeKeys],
+  );
+
+  // Søgning på tværs af alle blokke: matcher kortets navn eller blokkens titel.
+  const normalizedQuery = query.trim().toLocaleLowerCase("da");
+  const searchResults = useMemo(() => {
+    if (!normalizedQuery) return [];
+    const seen = new Set<string>();
+    const results: StatCardValue[] = [];
+    for (const category of categories) {
+      const categoryMatches = category.title.toLocaleLowerCase("da").includes(normalizedQuery);
+      for (const card of category.cards) {
+        if (seen.has(card.key)) continue;
+        if (categoryMatches || card.label.toLocaleLowerCase("da").includes(normalizedQuery)) {
+          seen.add(card.key);
+          results.push(card);
+        }
+      }
+    }
+    return results;
+  }, [categories, normalizedQuery]);
 
   function addCard(key: string) {
     addStatCardToLayout(DEFAULT_LAYOUT, key);
     setActiveKeys((prev) => new Set(prev).add(key));
     router.back();
+  }
+
+  function addAllCards(cards: StatCardValue[]) {
+    for (const card of cards) addStatCardToLayout(DEFAULT_LAYOUT, card.key);
+    setActiveKeys((prev) => new Set([...prev, ...cards.map((card) => card.key)]));
+    router.back();
+  }
+
+  function renderCardGrid(cards: StatCardValue[]) {
+    return (
+      <div className="grid grid-cols-2 gap-3">
+        {cards.map((card) => (
+          <button
+            key={card.key}
+            type="button"
+            onClick={() => addCard(card.key)}
+            className="rounded-2xl bg-hf-tan p-4 text-left active:opacity-80"
+          >
+            <p className="text-xs text-hf-black opacity-60">{card.label}</p>
+            <p className="hf-heading mt-1 flex items-center gap-1.5 text-xl text-hf-black">
+              <StatCardIcon icon={card.icon} iconSrc={card.iconSrc} />
+              {loading ? "—" : card.value}
+            </p>
+          </button>
+        ))}
+      </div>
+    );
   }
 
   function addHeader() {
@@ -204,52 +275,61 @@ export default function UnusedStatCardsPage() {
           {t("statUnusedCards.hint")}
         </p>
 
-        {categoryDefs(t, region).map((category, index) => {
-          const categoryCards = category.keys
-            .map((key) => cardByKey.get(key))
-            .filter((c): c is StatCardValue => Boolean(c));
+        <div className="hf-search">
+          <IconSearch size={16} color="var(--hf-black)" />
+          <input
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={t("statUnusedCards.searchPlaceholder")}
+            aria-label={t("statUnusedCards.searchPlaceholder")}
+          />
+        </div>
 
-          const sportCards = category.includeSportCards
-            ? allCards.filter((c) => c.key.startsWith(SPORT_STAT_KEY_PREFIX))
-            : [];
+        {normalizedQuery && (
+          <section className="flex flex-col gap-2 pb-2">
+            <p className="px-1 text-sm font-semibold text-hf-black">
+              {t("statUnusedCards.searchResults")}
+            </p>
+            {searchResults.length === 0 ? (
+              <p className="rounded-2xl bg-hf-tan/60 p-3 text-xs text-hf-black opacity-50">
+                {t("statUnusedCards.noSearchResults")}
+              </p>
+            ) : (
+              renderCardGrid(searchResults)
+            )}
+          </section>
+        )}
 
-          const cards = [...categoryCards, ...sportCards].filter((c) => !activeKeys.has(c.key));
-
-          return (
-            // Only the first group (Næringsindhold) starts open.
-            <AccordionSection
-              key={category.title}
-              title={category.title}
-              count={cards.length}
-              defaultOpen={index === 0}
-            >
-              {cards.length === 0 ? (
-                <p className="rounded-2xl bg-hf-tan/60 p-3 text-xs text-hf-black opacity-50">
-                  {t("statUnusedCards.noCardsYet")}
-                </p>
-              ) : (
-                <div className="grid grid-cols-2 gap-3">
-                  {cards.map((card) => {
-                    return (
-                      <button
-                        key={card.key}
-                        type="button"
-                        onClick={() => addCard(card.key)}
-                        className="rounded-2xl bg-hf-tan p-4 text-left active:opacity-80"
-                      >
-                        <p className="text-xs text-hf-black opacity-60">{card.label}</p>
-                        <p className="hf-heading mt-1 flex items-center gap-1.5 text-xl text-hf-black">
-                          <StatCardIcon icon={card.icon} iconSrc={card.iconSrc} />
-                          {loading ? "—" : card.value}
-                        </p>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </AccordionSection>
-          );
-        })}
+        {categories.map((category, index) => (
+          // Only the first group (Næringsindhold) starts open.
+          <AccordionSection
+            key={category.title}
+            title={category.title}
+            count={category.cards.length}
+            defaultOpen={index === 0}
+            action={
+              category.cards.length > 0 ? (
+                <button
+                  type="button"
+                  onClick={() => addAllCards(category.cards)}
+                  aria-label={`${t("statUnusedCards.addAll")} ${category.title}`}
+                  className="shrink-0 py-3 pr-4 pl-1 text-sm font-semibold text-hf-black active:opacity-60"
+                >
+                  {t("statUnusedCards.addAll")}
+                </button>
+              ) : undefined
+            }
+          >
+            {category.cards.length === 0 ? (
+              <p className="rounded-2xl bg-hf-tan/60 p-3 text-xs text-hf-black opacity-50">
+                {t("statUnusedCards.noCardsYet")}
+              </p>
+            ) : (
+              renderCardGrid(category.cards)
+            )}
+          </AccordionSection>
+        ))}
 
         <div className="mt-2 border-t border-hf-tan-dark pt-4">
           <button

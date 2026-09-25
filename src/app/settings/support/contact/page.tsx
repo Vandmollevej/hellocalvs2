@@ -6,7 +6,6 @@ import { HfScreen } from "@/components/HfScreen";
 import { TextField } from "@/components/hf/TextField";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { SUPPORT_REQUEST_CATEGORIES, type SupportRequestCategoryKey } from "@/lib/support-permissions";
-import { localApi } from "@/lib/vault/local-api";
 
 // "Kontakt os" (docs/DECISIONS.md 2026-09-23): internal support request, not
 // mailto:. Works without any data permission; if the user has an active
@@ -29,7 +28,7 @@ export default function SupportContactPage() {
     }
     setSending(true);
     try {
-      const response = await localApi("/api/support/requests", {
+      const response = await fetch("/api/support/requests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ category, subject, message }),

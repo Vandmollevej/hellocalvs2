@@ -6,7 +6,6 @@ import { IconBookmark, IconBookmarkFilled, IconInfoCircle, IconSoup } from "@tab
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 // En ret fra Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24).
 // kind=own: brugerens egen ret fra boksen, med deling til/fra.
@@ -70,7 +69,7 @@ function RecipeDetailContent() {
   useEffect(() => {
     const url =
       kind === "own" ? `/api/dishes/${encodeURIComponent(id)}` : `/api/shared-recipes/${encodeURIComponent(id)}`;
-    localApi(url)
+    fetch(url)
       .then(async (res) => {
         if (!res.ok) throw new Error("missing");
         if (kind === "own") {
@@ -115,7 +114,7 @@ function RecipeDetailContent() {
     setBusy(true);
     setNotice(null);
     setShared(next);
-    const res = await localApi(`/api/dishes/${encodeURIComponent(id)}/share`, {
+    const res = await fetch(`/api/dishes/${encodeURIComponent(id)}/share`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ shared: next, language: locale === "en" ? "en" : "da" }),
@@ -130,7 +129,7 @@ function RecipeDetailContent() {
   async function toggleFavorite() {
     const next = !isFavorite;
     setIsFavorite(next);
-    const res = await localApi("/api/recipe-favorites", {
+    const res = await fetch("/api/recipe-favorites", {
       method: next ? "POST" : "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ recipeId: id }),
@@ -140,7 +139,7 @@ function RecipeDetailContent() {
 
   async function saveCopy() {
     setBusy(true);
-    const res = await localApi(`/api/shared-recipes/${encodeURIComponent(id)}/copy`, { method: "POST" }).catch(
+    const res = await fetch(`/api/shared-recipes/${encodeURIComponent(id)}/copy`, { method: "POST" }).catch(
       () => null
     );
     setNotice(t(res?.ok ? "recipeDetail.copySaved" : "recipeDetail.copyError"));

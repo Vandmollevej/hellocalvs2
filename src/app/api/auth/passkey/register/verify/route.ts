@@ -1,23 +1,28 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { verifyRegistrationResponse } from "@simplewebauthn/server";
 import type { RegistrationResponseJSON } from "@simplewebauthn/server";
 import { prisma } from "@/lib/prisma";
-import { consumeEmailLinkToken } from "@/lib/email-link";
-import { setUserSessionCookie } from "@/lib/user-session-cookie";
-import { redeemInviteOnSignup } from "@/lib/invite-links";
-import { clearPendingCeremony, getUserRelyingParty, readPendingCeremony } from "@/lib/user-webauthn";
+import { getSessionUser, unauthorized } from "@/lib/session";
+import { USER_WEBAUTHN_REG_COOKIE, verifyUserWebauthnChallenge } from "@/lib/user-auth";
+import { getWebauthnRelyingParty } from "@/lib/admin-webauthn";
+import { describeDevice } from "@/lib/user-login";
 
-// POST /api/auth/passkey/register/verify — { response }
-// Afslutter en ceremoni startet i ../options. Opretter kontoen ved signup,
-// afslutter gendannelsessagen ved recovery, og logger brugeren ind.
+// Trin 2: gem den nye passkey på brugerens konto.
 export async function POST(req: Request) {
+  const user = await getSessionUser();
+  if (!user) return unauthorized();
+
   const body = (await req.json().catch(() => null)) as { response?: RegistrationResponseJSON } | null;
   if (!body?.response) return NextResponse.json({ message: "Ugyldig anmodning" }, { status: 400 });
 
-  const pending = await readPendingCeremony("reg");
-  if (!pending) return NextResponse.json({ message: "Registreringen er udløbet, prøv igen" }, { status: 400 });
+  const store = await cookies();
+  const pending = await verifyUserWebauthnChallenge("reg", store.get(USER_WEBAUTHN_REG_COOKIE)?.value);
+  if (!pending || pending.userId !== user.id) {
+    return NextResponse.json({ message: "Forsøget er udløbet, prøv igen" }, { status: 400 });
+  }
 
-  const { rpID, origin } = getUserRelyingParty(req);
+  const { rpID, origin } = getWebauthnRelyingParty(req);
   let verification;
   try {
     verification = await verifyRegistrationResponse({
@@ -25,62 +30,29 @@ export async function POST(req: Request) {
       expectedChallenge: pending.challenge,
       expectedOrigin: origin,
       expectedRPID: rpID,
-      requireUserVerification: true,
     });
   } catch {
-    return NextResponse.json({ message: "Kunne ikke verificere passkey" }, { status: 400 });
+    return NextResponse.json({ message: "Kunne ikke slå Face ID til" }, { status: 400 });
   }
   if (!verification.verified || !verification.registrationInfo) {
-    return NextResponse.json({ message: "Kunne ikke verificere passkey" }, { status: 400 });
+    return NextResponse.json({ message: "Kunne ikke slå Face ID til" }, { status: 400 });
   }
+
   const { credential, credentialDeviceType, credentialBackedUp } = verification.registrationInfo;
-  const passkeyData = {
-    credentialId: credential.id,
-    publicKey: Buffer.from(credential.publicKey),
-    counter: credential.counter,
-    transports: credential.transports ?? [],
-    deviceType: credentialDeviceType,
-    backedUp: credentialBackedUp,
-    name: "Passkey",
-  };
+  await prisma.passkey.create({
+    data: {
+      userId: user.id,
+      credentialId: credential.id,
+      publicKey: Buffer.from(credential.publicKey),
+      counter: credential.counter,
+      transports: credential.transports ?? [],
+      deviceType: credentialDeviceType,
+      backedUp: credentialBackedUp,
+      name: describeDevice(req.headers.get("user-agent")),
+    },
+  });
 
-  if (pending.mode === "signup") {
-    const token = pending.refId ? await prisma.emailLinkToken.findUnique({ where: { id: pending.refId } }) : null;
-    if (!token || token.usedAt || token.expiresAt < new Date() || !(await consumeEmailLinkToken(token.id))) {
-      return NextResponse.json({ message: "Linket er udløbet. Start forfra." }, { status: 400 });
-    }
-    const taken = await prisma.user.findUnique({ where: { emailHash: token.emailHash }, select: { id: true } });
-    if (taken) return NextResponse.json({ message: "Der findes allerede en konto" }, { status: 409 });
-
-    await prisma.user.create({
-      data: {
-        id: pending.userId,
-        emailHash: token.emailHash,
-        emailVerifiedAt: new Date(),
-        passkeys: { create: passkeyData },
-      },
-    });
-    if (pending.referralCode) await redeemInviteOnSignup(pending.referralCode, pending.userId);
-  } else if (pending.mode === "recovery") {
-    const request = pending.refId ? await prisma.recoveryRequest.findUnique({ where: { id: pending.refId } }) : null;
-    if (!request || request.status !== "APPROVED" || request.expiresAt < new Date()) {
-      return NextResponse.json({ message: "Gendannelsen er udløbet" }, { status: 403 });
-    }
-    // Kuverterne for gamle passkeys beholdes: enheder, brugeren stadig har,
-    // virker fortsat. Klienten lægger en ny kuvert for den nye passkey.
-    await prisma.$transaction([
-      prisma.passkey.create({ data: { userId: pending.userId, ...passkeyData } }),
-      prisma.recoveryRequest.update({
-        where: { id: request.id },
-        data: { status: "COMPLETED", completedAt: new Date() },
-      }),
-    ]);
-  } else {
-    await prisma.passkey.create({ data: { userId: pending.userId, ...passkeyData } });
-  }
-
-  const response = NextResponse.json({ ok: true, credentialId: credential.id, userId: pending.userId });
-  clearPendingCeremony(response);
-  await setUserSessionCookie(response, pending.userId);
+  const response = NextResponse.json({ ok: true });
+  response.cookies.delete(USER_WEBAUTHN_REG_COOKIE);
   return response;
 }

@@ -23,6 +23,8 @@ export default async function AdminProductsPage({
   const products = await prisma.product.findMany({
     where: {
       status: "PENDING",
+      // Brugeres egne private ingredienser er ikke til godkendelse.
+      privateOwnerId: null,
       externalSource: tab === "auto" ? { not: null } : null,
     },
     include: { brand: true, images: true },

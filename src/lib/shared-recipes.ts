@@ -1,11 +1,9 @@
 import { createHash } from "node:crypto";
 import type { SharedRecipe } from "@prisma/client";
 
-// Delte brugeropskrifter (docs/DECISIONS.md 2026-09-24). Serveren kender
-// aldrig ejeren: ejerskab bevises med et udgivertoken fra ejerens boks, og
-// kun SHA-256(token) gemmes. Offentlige svar indeholder aldrig publisherHash.
-
-export const PUBLISHER_HEADER = "x-recipe-publisher";
+// Delte brugeropskrifter (docs/DECISIONS.md 2026-09-24). Ejeren gemmes som
+// publisherHash (afledt af bruger-ID), så admin kun ser et pseudonym, og
+// offentlige svar aldrig viser, hvem der har delt retten.
 
 export type SharedIngredient = {
   productId: string;
@@ -18,15 +16,8 @@ export type SharedIngredient = {
   fatPer100g: number;
 };
 
-export function hashPublisherToken(token: string): string {
-  return createHash("sha256").update(token).digest("hex");
-}
-
-export function publisherHashFrom(req: Request): string | null {
-  const token = req.headers.get(PUBLISHER_HEADER)?.trim();
-  // Tokenet er 32 tilfældige bytes i base64url (43 tegn).
-  if (!token || token.length < 32 || token.length > 128) return null;
-  return hashPublisherToken(token);
+export function publisherHashForUser(userId: string): string {
+  return createHash("sha256").update(`recipe-publisher:${userId}`).digest("hex");
 }
 
 // Pseudonym til admin (GDPR): stabilt pr. udgiver, men uden sammenhæng med

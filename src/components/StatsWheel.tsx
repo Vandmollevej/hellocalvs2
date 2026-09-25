@@ -9,7 +9,6 @@ import {
   type FrontpageNutritionTotals,
 } from "@/lib/frontpage-stats";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 type Registration = {
   kcalSnapshot: number;
@@ -107,11 +106,11 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
   useEffect(() => {
     let cancelled = false;
     Promise.all([
-      localApi("/api/registrations").then(async (response) => {
+      fetch("/api/registrations").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente dagens nøgletal");
         return (await response.json()) as { registrations: Registration[] };
       }),
-      localApi("/api/health-metrics").then(async (response) => {
+      fetch("/api/health-metrics").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente dagens måltal");
         return (await response.json()) as { metrics: HealthMetric[] };
       }),
@@ -301,7 +300,22 @@ function WheelItem({
   // below, so they snapped instantly instead of easing.
   const translateY = distance * ITEM_HEIGHT;
   const scale = Math.max(0.62, 1 - absDistance * 0.16);
-  const opacity = Math.max(0.18, 1 - absDistance * 0.42);
+  // One continuous ramp all the way to 0 exactly at the render cutoff (2.4),
+  // so an item never pops in or out at a leftover opacity at the edge.
+  const opacity = 1 - absDistance / 2.4;
+  // 1 at the center, 0 one full step away. Drives the icon's green tint and the
+  // goal line so they blend in/out with the motion instead of switching on/off
+  // the moment an item becomes active.
+  const focus = Math.max(0, 1 - absDistance);
+  const transition = animate ? "transition-[transform,opacity,color,max-height] duration-300 ease-out" : "";
+  // The items sit on a circular arc like the rim of a wheel: the centered item
+  // is inset 25px from the right edge and the others curve back out to the
+  // edge (0px) at the fade-out distance. Radius solved so both ends hold.
+  const MAX_INSET = 25;
+  const EDGE_Y = 2.4 * ITEM_HEIGHT;
+  const RADIUS = (EDGE_Y * EDGE_Y + MAX_INSET * MAX_INSET) / (2 * MAX_INSET);
+  const y = absDistance * ITEM_HEIGHT;
+  const inset = Math.sqrt(RADIUS * RADIUS - y * y) - (RADIUS - MAX_INSET);
 
   return (
     <button
@@ -315,25 +329,36 @@ function WheelItem({
           : `Vis ${stat.label.toLowerCase()}: ${stat.value}${stat.unit ? ` ${stat.unit}` : ""}`
       }
       aria-live={isActive ? "polite" : undefined}
-      className={`absolute left-2 right-2 flex origin-right flex-col items-end whitespace-nowrap text-hf-black ${
-        animate ? "transition-[transform,opacity] duration-300 ease-out" : ""
-      } ${isActive ? "cursor-default" : "cursor-pointer"}`}
+      className={`absolute left-2 right-2 flex origin-right flex-col items-end whitespace-nowrap text-hf-black ${transition} ${
+        isActive ? "cursor-default" : "cursor-pointer"
+      }`}
       style={{
         top: "50%",
-        transform: `translateY(calc(-50% + ${translateY}px)) scale(${scale})`,
+        transform: `translateY(calc(-50% + ${translateY}px)) translateX(-${inset}px) scale(${scale})`,
         opacity,
       }}
     >
       <span className="flex items-center gap-2">
-        <StatIcon size={21} color={isActive ? "var(--hf-green)" : "currentColor"} stroke={2.2} aria-hidden="true" />
+        <span
+          className={`flex ${transition}`}
+          style={{ color: `color-mix(in srgb, var(--hf-green) ${Math.round(focus * 100)}%, var(--hf-black))` }}
+        >
+          <StatIcon size={21} color="currentColor" stroke={2.2} aria-hidden="true" />
+        </span>
         <span className="font-extrabold leading-none" style={{ fontSize: 27 }}>
           {stat.value}
           {stat.unit && <span className="font-semibold"> {stat.unit}</span>}
         </span>
       </span>
-      {isActive && stat.goal != null && (
-        <span className="mt-0.5 text-sm font-medium text-hf-gray-dark">
-          / {stat.goal} {stat.unit}
+      {stat.goal != null && (
+        <span
+          aria-hidden={!isActive || undefined}
+          className={`overflow-hidden text-sm font-medium text-hf-gray-dark ${transition}`}
+          style={{ maxHeight: focus * 22, opacity: focus }}
+        >
+          <span className="mt-0.5 block">
+            / {stat.goal} {stat.unit}
+          </span>
         </span>
       )}
     </button>

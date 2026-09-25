@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getSessionUser } from "@/lib/session";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
+import { getSessionUser, unauthorized } from "@/lib/session";
 
 // Bruger-indsendelse af et erstatningsbillede for en åben Award
 // (docs/DECISIONS.md, 2026-09-19). Erstatter IKKE selv det gamle billede —
@@ -26,9 +26,11 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     return NextResponse.json({ message: "Kunne ikke gemme billedet" }, { status: 503 });
   }
 
-  // Indsendelsen krediteres den indloggede bruger (points).
+  // Der er stadig intet generelt brugerlogin i denne app (se docs/STATUS.md) —
+  // samme delte demo-bruger andre uautentificerede skriveveje bruger.
   const user = await getSessionUser();
-  if (!user) return NextResponse.json({ message: "Log ind først" }, { status: 401 });
+
+  if (!user) return unauthorized();
   const updated = await prisma.productPhotoAward.update({
     where: { id },
     data: {

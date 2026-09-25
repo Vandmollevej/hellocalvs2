@@ -6,8 +6,19 @@
 // næringsværdierne pr. 100 er regnet ud fra — cl er kun en visning (1 cl =
 // 10 ml), så kcal-beregningen er uændret.
 
-export const PRODUCT_CATEGORIES = ["DRINK", "GENERIC", "PROCESSED", "RAW", "INGREDIENT"] as const;
+export const PRODUCT_CATEGORIES = ["DRINK", "VEGETABLES", "GENERIC", "PROCESSED", "RAW", "INGREDIENT"] as const;
 export type ProductCategory = (typeof PRODUCT_CATEGORIES)[number];
+
+// Brugerens grove regnearks-kategorier (docs/DECISIONS.md 2026-09-24, G3).
+// ID'erne er uændrede; kun de viste navne følger regnearket.
+export const PRODUCT_CATEGORY_LABELS: Record<ProductCategory, string> = {
+  DRINK: "Drikkevarer",
+  VEGETABLES: "Grøntsager",
+  RAW: "Råvarer",
+  PROCESSED: "Forarbejdede varer",
+  GENERIC: "Generisk",
+  INGREDIENT: "Ingrediens",
+};
 
 export type ProductDisplayUnit = "g" | "ml" | "cl";
 

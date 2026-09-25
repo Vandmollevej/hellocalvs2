@@ -3,11 +3,11 @@
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { IconApple, IconBookmark, IconBookmarkFilled, IconCamera, IconSearch } from "@tabler/icons-react";
+import { IconApple, IconBookmark, IconBookmarkFilled, IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { FoodRow } from "@/components/FoodRow";
+import { ActionLink } from "@/components/hf/ActionButton";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 type Product = {
   id: string;
@@ -116,7 +116,7 @@ function MadvarerContent() {
 
   useEffect(() => {
     const controller = new AbortController();
-    localApi("/api/favorites", { signal: controller.signal })
+    fetch("/api/favorites", { signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) throw new Error("offline");
         return (await response.json()) as { favorites: Array<{ product: { id: string } | null }> };
@@ -135,7 +135,7 @@ function MadvarerContent() {
       else updated.delete(productId);
       return updated;
     });
-    localApi("/api/favorites", {
+    fetch("/api/favorites", {
       method: next ? "POST" : "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ productId }),
@@ -153,7 +153,7 @@ function MadvarerContent() {
       try {
         const [productsResponse, registrationsResponse] = await Promise.all([
           fetch("/api/products", { signal: controller.signal }),
-          localApi("/api/registrations", { signal: controller.signal }),
+          fetch("/api/registrations", { signal: controller.signal }),
         ]);
         if (!productsResponse.ok) throw new Error("Kunne ikke hente madvarer");
         const productsData: { products: Product[] } = await productsResponse.json();
@@ -199,7 +199,7 @@ function MadvarerContent() {
     const timer = window.setTimeout(async () => {
       try {
         const hour = new Date().getHours();
-        const response = await localApi(
+        const response = await fetch(
           `/api/products?q=${encodeURIComponent(q)}&hour=${hour}&take=20`,
           { signal: controller.signal }
         );
@@ -230,12 +230,16 @@ function MadvarerContent() {
       localHour: new Date().getHours(),
     });
 
-    // Klikket gemmes i brugerens krypterede søgehistorik og sendes uden
-    // bruger til den regionale statistik (docs/PRIVACY.md).
-    void localApi("/api/products/search-event", {
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon("/api/products/search-event", new Blob([payload], { type: "application/json" }));
+      return;
+    }
+
+    void fetch("/api/products/search-event", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: payload,
+      keepalive: true,
     });
   }
 
@@ -255,21 +259,6 @@ function MadvarerContent() {
   return (
     <HfScreen title={t("foods.title")} icon={<IconApple size={20} stroke={2} />}>
       <div className="flex flex-col gap-3 p-4">
-        <Link
-          href="/camera?mode=hellofresh"
-          className="flex items-center gap-3 rounded-[8px] bg-hf-tan px-4 py-3"
-        >
-          <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-hf-green text-hf-white">
-            <IconCamera size={17} stroke={2} />
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-xs font-semibold uppercase tracking-[0.06em] text-hf-black opacity-60">
-              HelloFresh
-            </span>
-            <span className="block text-sm font-medium text-hf-black">{t("foods.recognizeDish")}</span>
-          </span>
-        </Link>
-
         <div className="hf-search">
           <IconSearch size={16} color="var(--hf-black)" />
           <input
@@ -314,9 +303,9 @@ function MadvarerContent() {
           )}
         </div>
 
-        <Link href="/foods/new" className="hf-btn-secondary self-center px-4 py-2 text-xs">
+        <ActionLink href="/foods/new" variant="secondary" className="px-4 py-2 text-xs">
           {t("foods.createManually")}
-        </Link>
+        </ActionLink>
       </div>
     </HfScreen>
   );

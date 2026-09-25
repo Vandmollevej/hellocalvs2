@@ -38,7 +38,13 @@
     "networkError": "Could not log in — check your connection and try again",
     "newHere": "New here?",
     "createAccount": "Create account",
-    "forgotPassword": "Forgot password?"
+    "forgotPassword": "Forgot password?",
+    "continueWithFaceId": "Log in with Face ID",
+    "faceIdError": "Could not log in with Face ID. Try again or use another method.",
+    "errorOauth": "Login failed. Please try again.",
+    "errorOauthCancelled": "Login was cancelled.",
+    "errorOauthExpired": "The login attempt expired. Please try again.",
+    "errorNotConfigured": "Login with {provider} is not set up yet."
   },
   "forgotPassword": {
     "title": "Forgot password",
@@ -185,6 +191,7 @@
       }
     },
     "openProfile": "Open my details",
+    "openAppSettings": "Open app settings",
     "back": "Back",
     "loading": "Loading…",
     "loadError": "Could not load settings.",
@@ -193,6 +200,7 @@
     "showAllergens": "Show allergens",
     "setupTitle": "Setup",
     "showAllergensDescription": "Show an allergen line on foods when data is available.",
+    "showAllergensSelectAll": "Select all",
     "showExtendedNutrition": "Show extended nutrition info",
     "showExtendedNutritionDescription": "Shows a \"Show more\" section below the nutrition table with saturated/unsaturated/trans fat, cholesterol, sodium, potassium, fibre, sugar, vitamin A and C, calcium, and iron, when data is available.",
     "thirdPartyDisclaimer": "We fetch data from third parties and take no responsibility for missing data.",
@@ -206,8 +214,7 @@
     "setupProgressStepWeight": "Weight calibration",
     "setupProgressHint": "Complete weight calibration to finish setup.",
     "payment": "Payment",
-    "recipesPromo": "Choose your own recipes and customize your meal box.",
-    "logInOrSignUp": "Log in / sign up",
+    "logOut": "Log out",
     "helpCenter": "Help center",
     "learnTheApp": "Learn the app",
     "integrations": "Integrations",
@@ -423,7 +430,7 @@
     "registrationsLoadErrorHint": "Try again once the database connection is back.",
     "closeAddAriaLabel": "Close add",
     "goalLabel": "Goal: {goal} kcal",
-    "remainingToday": "Left for today",
+    "remainingCalories": "You have {remaining} calories left",
     "exceededCalories": "You're over by {amount} kcal",
     "adjustSleepAriaLabel": "Adjust night sleep",
     "hourRangeLabel": "{start}–{end}",
@@ -611,8 +618,36 @@
     "searchPlaceholder": "Search for ingredient",
     "searching": "Searching...",
     "noResults": "No products match your search",
-    "scan": "Scan",
-    "manually": "Manually"
+    "scan": "Take photo",
+    "manually": "Create manually",
+    "createOwnIngredient": "Create your own ingredient",
+    "kcalUnknown": "{grams} g · kcal unknown",
+    "ownTag": "Own",
+    "shareBlockedPrivate": "Dishes with your own ingredients can be shared once the ingredients are approved."
+  },
+  "privateIngredients": {
+    "title": "Create your own ingredient",
+    "listTitle": "My ingredients",
+    "intro": "Can’t find an ingredient? Create it yourself. Only you can see it. We let the team know so it can be added with nutrition for everyone — then yours is replaced automatically.",
+    "nameLabel": "Ingredient name",
+    "namePlaceholder": "E.g. homemade chilli sauce",
+    "amountLabel": "Amount in the dish (g)",
+    "create": "Create ingredient",
+    "addToDish": "Add to dish",
+    "saving": "Saving...",
+    "saveError": "Could not save the ingredient",
+    "nameRequired": "Give the ingredient a name",
+    "amountRequired": "Enter an amount above 0 g",
+    "pending": "Awaiting approval · nutrition unknown",
+    "empty": "You haven’t created any ingredients yet",
+    "rename": "Rename",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "deleteConfirm": "Delete {name}?",
+    "seeList": "See my ingredients",
+    "createNew": "Create new ingredient",
+    "notFound": "The ingredient no longer exists"
   },
   "productCreate": {
     "title": "Create product",
@@ -695,16 +730,10 @@
     "startWeightUpdated": "Updated on {date}",
     "startWeight": {
       "title": "Starting weight",
+      "lockTitle": "Lock",
+      "lockBody": "Your starting weight should not be changed, and it is the basis for all statistics. Instead, change your daily weight here.",
+      "setDailyWeight": "Set daily weight",
       "openLockedInfo": "Open information about locked starting weight",
-      "currentLabel": "Your starting weight",
-      "description1": "Your starting weight is the weight you registered when you created your profile.",
-      "description2": "Your starting weight is locked because it is used as the baseline for your weight progress and statistics.",
-      "description3": "If you want to change your starting weight, the change must first be verified through the email address connected to your account.",
-      "sendEmail": "Send verification email",
-      "sending": "Sending…",
-      "emailSent": "We have sent a verification email to your email address.",
-      "sendError": "Could not send the verification email. Please try again.",
-      "registerDailyWeight": "Register today's weight here",
       "changeTitle": "Change starting weight",
       "fieldLabel": "Starting weight",
       "validating": "Checking verification link…",
@@ -737,7 +766,7 @@
       "recipes": "Recipes",
       "settings": "Settings"
     },
-    "changePasswordButton": "Login and recovery",
+    "changePasswordButton": "Change password",
     "changePassword": {
       "title": "Change password",
       "currentLabel": "Current password",
@@ -755,7 +784,6 @@
       "loginRequired": "Log in to change your password.",
       "logIn": "Log in"
     },
-    "logOut": "Log out",
     "messages": {
       "title": "Messages",
       "empty": "You have no messages yet.",
@@ -788,7 +816,11 @@
       "genericError": "Could not redeem the gift code right now"
     },
     "redeemPoints": "Redeem points",
-    "redeemPointsHint": "{cost} points can be redeemed for 1 free month of Serious",
+    "pointsEarned": "You have earned {balance} points.",
+    "redeemPage": {
+      "title": "Redeem points",
+      "giftFriend": "Give a friend a free month of Serious access!"
+    },
     "currentPlan": "Your subscription",
     "tier": {
       "free": "Free",
@@ -812,7 +844,15 @@
     "title": "Sleep pattern",
     "loading": "Loading…",
     "loadError": "Couldn't load sleep pattern.",
-    "weekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "weekdays": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday"
+    ],
     "defaultBedtime": "Usual bedtime",
     "defaultWakeTime": "Usual wake-up time",
     "defaultTimesHint": "(Default shown in the calendar, can be changed per day)",
@@ -953,29 +993,16 @@
     "loading": "Loading…",
     "loadError": "Couldn't load photo diary.",
     "requiresPasscode": "Requires phone passcode to view",
-    "requiresPasscodeDescription": "Not yet enforced by the OS — that requires a native app. Just a saved preference for now.",
-    "showPhotos": "Show photos (no real passcode check yet)",
+    "requiresPasscodeDescription": "Photos are only shown after you confirm with Face ID, Touch ID or your phone's passcode.",
+    "showPhotos": "Show photos",
     "takePhoto": "Take photo (full body or stomach)",
-    "takeSelfie": "Take selfie (portrait)",
     "noPhotosYet": "No photos yet — take the first one to compare later.",
     "photoAlt": "Photo diary entry",
     "deleteAria": "Delete photo",
     "previousPhoto": "Previous photo",
     "nextPhoto": "Next photo",
-    "selfiesSectionTitle": "Selfies",
-    "noSelfiesYet": "No selfies yet — take the first one to compare later.",
-    "photosSectionTitle": "Other photos",
-    "currentWeight": "Current weight: {value} kg",
-    "latestWeight": "Latest weight: {value} kg ({date})",
-    "noWeight": "No weight logged yet",
-    "currentMeasurements": "Current measurements: {value}",
-    "latestMeasurements": "Latest measurements: {value} ({date})",
-    "noMeasurements": "No measurements logged yet",
-    "measurementWaist": "Waist {value} cm",
-    "measurementHip": "Hip {value} cm",
-    "measurementChest": "Chest {value} cm",
-    "measurementThigh": "Thigh {value} cm",
-    "measurementUpperArm": "Upper arm {value} cm"
+    "unlocking": "Confirming…",
+    "unlockError": "Couldn't confirm. Try again."
   },
   "registration": {
     "title": "Registration",
@@ -1087,21 +1114,23 @@
     "status": {
       "disconnected": "Not connected",
       "connected": "Connected",
-      "error": "Error"
+      "error": "Error",
+      "needsApp": "Needs app",
+      "pending": "Pending"
     },
     "notice": {
-      "fitbitConnected": "Fitbit was connected.",
-      "withingsConnected": "Withings was connected.",
-      "fitbitFailed": "Couldn't connect Fitbit. Please try again.",
-      "withingsFailed": "Couldn't connect Withings. Please try again."
+      "connected": "{name} was connected.",
+      "failed": "Could not connect {name}. Please try again."
     },
-    "intro": "Connect Fitbit or Withings to automatically fetch exercise, calorie burn and weight. The others require either a companion app or a third-party subscription — not connected yet.",
+    "intro": "Connect your health apps so weight, steps and workouts are fetched automatically. Everything goes into your locked vault, which only you can open.",
     "lastSynced": "Last synced {date}",
     "syncNow": "Sync now",
+    "syncing": "Syncing…",
+    "notConfigured": "Ready in the app, waiting for the server keys.",
     "disconnect": "Disconnect",
     "connect": "Connect",
     "deviceTokensTitle": "Device tokens (companion app)",
-    "deviceTokensDescription": "Used by a future iOS/Android app to send Apple Health/Google Health data to Hello Cal — see docs/HEALTHKIT_COMPANION.md. No app exists yet, but the code can be generated and saved ready.",
+    "deviceTokensDescription": "The Hello Cal app uses a device code to send your data securely into your locked vault.",
     "createdAt": "Created {date}",
     "lastUsedAt": " · Last used {date}",
     "remove": "Remove",
@@ -1143,11 +1172,30 @@
       "sleep": "Sleep",
       "other": "Other data"
     },
+    "searchPlaceholder": "Search all cards",
+    "searchResults": "Search results",
+    "noSearchResults": "No cards match your search.",
+    "addAll": "+ Add",
     "noCardsYet": "No cards here yet.",
     "addHeading": "+ Heading",
     "addHeadingHint": "Adds a section heading to your statistics page, which you can rename yourself.",
     "addDivider": "+ Divider",
     "addDividerHint": "Adds a black divider line to your statistics page."
+  },
+  "statUnusedCharts": {
+    "title": "Unused charts",
+    "hint": "Tap a chart to add it to the top of your statistics page.",
+    "searchPlaceholder": "Search all charts",
+    "noSearchResults": "No charts match your search.",
+    "noChartsLeft": "All charts here are already on your statistics page.",
+    "intradayKcal": "Calorie intake during the day",
+    "dayProfile": "Day profile",
+    "category": {
+      "energyWeight": "Energy and weight"
+    }
+  },
+  "statChartsSection": {
+    "removeChart": "Remove chart"
   },
   "statCardsGrid": {
     "exitEditing": "Exit editing",
@@ -1268,6 +1316,7 @@
     "loginIntro": "Hello Cal uses passkeys instead of passwords. You log in with Face ID, fingerprint or your device PIN.",
     "loginPrivacy": "Your data is encrypted on your device. Neither we nor anyone else can read it.",
     "loginButton": "Log in with passkey",
+    "faceIdLogin": "Log in with Face ID",
     "loggingIn": "Logging in…",
     "loginFailed": "Could not log in with passkey",
     "newHere": "New here?",
@@ -1334,5 +1383,14 @@
     "deleteAccount": "Delete account and all data",
     "deleteAccountConfirm": "Are you sure? Your data is deleted permanently and cannot be recovered.",
     "lastUsed": "Last used"
+  },
+  "faceIdOffer": {
+    "title": "Log in with Face ID",
+    "intro": "Do you want to log in with Face ID next time? Then you won't have to type your password.",
+    "enable": "Turn on Face ID",
+    "skip": "Not now",
+    "enabling": "Turning on…",
+    "error": "Face ID could not be turned on. You can try again in Settings.",
+    "enabled": "Face ID is turned on for login."
   }
 }

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   IconHelp,
   IconFileText,
@@ -17,15 +18,17 @@ import {
   IconCalendarWeek,
   IconAlertTriangle,
   IconLifebuoy,
+  IconWallet,
+  IconAdjustments,
+  IconBug,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 function resetOnboardingProgress() {
-  return localApi("/api/profile", {
+  return fetch("/api/profile", {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -39,6 +42,7 @@ function resetOnboardingProgress() {
 
 export default function SettingsPage() {
   const { t } = useTranslation();
+  const router = useRouter();
   const [showOnboarding, setShowOnboarding] = useState(false);
   // "Menstruationscyklus" (Visning) only shows up for sex = FEMALE, per
   // docs/DECISIONS.md 2026-09-19 — fetched once here rather than blocking
@@ -48,7 +52,7 @@ export default function SettingsPage() {
 
   useEffect(() => {
     let cancelled = false;
-    localApi("/api/profile")
+    fetch("/api/profile")
       .then(async (response) => {
         if (!response.ok) throw new Error("failed");
         return (await response.json()) as { user: { sex: "FEMALE" | "MALE" | null } };
@@ -81,18 +85,25 @@ export default function SettingsPage() {
         <AccordionCard>
           <ChevronRow
             icon={<IconCreditCard size={20} />}
+            label={t("profile.row.subscription")}
+            href="/profile/subscription"
+          />
+          <ChevronRow
+            icon={<IconWallet size={20} />}
             label={t("settings.payment")}
             href="/settings/payment"
             divider={false}
           />
         </AccordionCard>
 
-        <div className="rounded-[8px] bg-hf-tan p-4 text-center">
-          <p className="hf-type-body-sm font-bold">{t("settings.recipesPromo")}</p>
-          <button className="hf-btn-primary mt-4 h-12 w-full text-[17px]">
-            {t("settings.logInOrSignUp")}
-          </button>
-        </div>
+        <AccordionCard>
+          <ChevronRow
+            icon={<IconAdjustments size={20} />}
+            label={t("settings.setupTitle")}
+            href="/profile/settings"
+            divider={false}
+          />
+        </AccordionCard>
 
         <AccordionCard>
           <ChevronRow icon={<IconHelp size={20} />} label={t("settings.helpCenter")} />
@@ -144,6 +155,11 @@ export default function SettingsPage() {
             icon={<IconLifebuoy size={20} />}
             label={t("settings.support.title")}
             href="/settings/support"
+          />
+          <ChevronRow
+            icon={<IconBug size={20} />}
+            label={t("profile.row.reportBug")}
+            href="/profile/report-bug"
             divider={false}
           />
         </AccordionCard>
@@ -213,6 +229,19 @@ export default function SettingsPage() {
             {t("settings.invitePointsDescription")}
           </p>
         </Link>
+
+        <button
+          type="button"
+          onClick={() => {
+            fetch("/api/auth/logout", { method: "POST" }).finally(() => {
+              router.push("/login");
+              router.refresh();
+            });
+          }}
+          className="hf-type-body flex h-12 w-full items-center px-4 text-left font-bold"
+        >
+          {t("settings.logOut")}
+        </button>
       </div>
     </HfScreen>
   );

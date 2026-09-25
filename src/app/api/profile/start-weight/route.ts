@@ -1,29 +1,61 @@
 import { NextResponse } from "next/server";
-import { getSessionUser } from "@/lib/session";
-import { consumeStartWeightToken, isStartWeightTokenValid } from "@/lib/start-weight-verification";
+import {
+  changeStartWeightWithToken,
+  inspectStartWeightChangeToken,
+  isValidStartWeight,
+  parseWeightInput,
+} from "@/lib/start-weight-verification";
 
-// Start-vægt-verificeringen (docs/DECISIONS.md 2026-09-22). Selve vægten
-// ligger i brugerens krypterede boks; serveren validerer og forbruger kun
-// engangslinket (docs/PRIVACY.md). Fejlsvar er bevidst generiske.
+// Offentlig ende af start-vægt-verificeringen (docs/DECISIONS.md 2026-09-22):
+// selve engangstokenet fra mailen er autorisationen, ligesom ved
+// /api/auth/reset-password. Fejlsvar er bevidst generiske.
 const INVALID_LINK = "Verificeringslinket er ugyldigt, udløbet eller allerede brugt.";
 
 // GET ?token=… — kontrollerer linket uden at forbruge det.
 export async function GET(req: Request) {
-  const user = await getSessionUser();
   const token = new URL(req.url).searchParams.get("token") ?? "";
-  if (!user || !(await isStartWeightTokenValid(token, user.id))) {
-    return NextResponse.json({ valid: false }, { status: 400 });
+  try {
+    const result = await inspectStartWeightChangeToken(token);
+    if (!result) {
+      return NextResponse.json({ valid: false }, { status: 400 });
+    }
+    return NextResponse.json({ valid: true, currentWeightKg: result.currentWeightKg });
+  } catch {
+    console.error("Start-weight token validation failed");
+    return NextResponse.json({ valid: false }, { status: 500 });
   }
-  return NextResponse.json({ valid: true });
 }
 
-// POST { token } — forbruger linket. Klienten skriver derefter vægten i boksen.
+// POST { token, weightKg } — gemmer ny start-vægt og forbruger tokenet atomisk.
 export async function POST(req: Request) {
-  const user = await getSessionUser();
-  const body = (await req.json().catch(() => null)) as { token?: unknown } | null;
-  const token = typeof body?.token === "string" ? body.token : "";
-  if (!user || !(await consumeStartWeightToken(token, user.id))) {
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ message: "Ugyldig anmodning" }, { status: 400 });
+  }
+
+  const token = typeof body.token === "string" ? body.token : "";
+  const weightKg = parseWeightInput(body.weightKg);
+  if (!token) {
     return NextResponse.json({ message: INVALID_LINK, code: "invalid_token" }, { status: 400 });
   }
-  return NextResponse.json({ ok: true });
+  if (!isValidStartWeight(weightKg)) {
+    return NextResponse.json({ message: "Angiv en gyldig startvægt.", code: "invalid_weight" }, { status: 400 });
+  }
+
+  try {
+    const result = await changeStartWeightWithToken(token, weightKg);
+    if (!result) {
+      return NextResponse.json({ message: INVALID_LINK, code: "invalid_token" }, { status: 400 });
+    }
+    return NextResponse.json({
+      ok: true,
+      weightKg: result.weightKg,
+      startWeightUpdatedAt: result.startWeightUpdatedAt,
+    });
+  } catch {
+    console.error("Start-weight update failed");
+    return NextResponse.json({ message: "Kunne ikke gemme startvægten" }, { status: 500 });
+  }
 }

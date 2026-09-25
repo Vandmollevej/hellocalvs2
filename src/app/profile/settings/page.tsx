@@ -8,7 +8,6 @@ import { REGIONS } from "@/lib/regions";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { DEFAULT_LOCALE, isLocale, type Locale } from "@/i18n";
-import { localApi } from "@/lib/vault/local-api";
 
 type SettingsUser = {
   showAllergens: boolean;
@@ -108,7 +107,7 @@ export default function ProfileSettingsPage() {
 
   useEffect(() => {
     let cancelled = false;
-    localApi("/api/profile")
+    fetch("/api/profile")
       .then((res) => res.json())
       .then((data) => {
         if (!cancelled) {
@@ -134,7 +133,7 @@ export default function ProfileSettingsPage() {
 
   function toggleShowAllergens(value: boolean) {
     setUser((current) => (current ? { ...current, showAllergens: value } : current));
-    localApi("/api/profile", {
+    fetch("/api/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ showAllergens: value }),
@@ -143,7 +142,7 @@ export default function ProfileSettingsPage() {
 
   function toggleShowExtendedNutrition(value: boolean) {
     setUser((current) => (current ? { ...current, showExtendedNutrition: value } : current));
-    localApi("/api/profile", {
+    fetch("/api/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ showExtendedNutrition: value }),
@@ -152,7 +151,7 @@ export default function ProfileSettingsPage() {
 
   function updateRegion(region: string) {
     setUser((current) => (current ? { ...current, region } : current));
-    localApi("/api/profile", {
+    fetch("/api/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ region }),
@@ -163,7 +162,7 @@ export default function ProfileSettingsPage() {
     setUser((current) => {
       if (!current) return current;
       const nextVisibility = { ...(current.allergenVisibility ?? {}), [key]: value };
-      localApi("/api/profile", {
+      fetch("/api/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ allergenVisibility: nextVisibility }),
@@ -200,31 +199,47 @@ export default function ProfileSettingsPage() {
             onChange={(value) => setLocale(isLocale(value) ? value : DEFAULT_LOCALE)}
           />
 
-          <Toggle
-            label={t("settings.showAllergens")}
-            description={t("settings.showAllergensDescription")}
-            checked={user.showAllergens}
-            onChange={toggleShowAllergens}
-          />
-
-          {user.showAllergens && (
-            <div className="-mt-2 flex flex-col gap-1 overflow-hidden rounded-b-2xl border-t border-hf-gray-light bg-hf-tan">
-              {ALLERGEN_CATALOG.map((allergen, index) => (
-                <div
-                  key={allergen.key}
-                  className={`flex items-center gap-3 px-4 py-2.5 ${
-                    index < ALLERGEN_CATALOG.length - 1 ? "border-b border-hf-tan-dark" : ""
-                  }`}
-                >
-                  <span className="flex-1 text-[14px] text-hf-black">{allergen.label}</span>
-                  <Toggle
-                    checked={isAllergenVisible(allergen.key)}
-                    onChange={(value) => toggleAllergen(allergen.key, value)}
-                  />
-                </div>
-              ))}
+          <div className="flex flex-col overflow-hidden rounded-2xl bg-hf-tan">
+            <div className="flex items-start gap-3 px-4 py-4">
+              <span className="flex-1">
+                <span className="block text-[15px] font-medium text-hf-black">
+                  {t("settings.showAllergens")}
+                </span>
+                <span className="mt-2 block border-t border-hf-gray-light pt-2 text-[12px] text-hf-black opacity-60">
+                  {t("settings.showAllergensDescription")}
+                </span>
+              </span>
+              <span className="flex items-center gap-2 pt-0.5">
+                <span className="text-[12px] text-hf-black opacity-60">
+                  {t("settings.showAllergensSelectAll")}
+                </span>
+                <Toggle
+                  checked={user.showAllergens}
+                  onChange={toggleShowAllergens}
+                  ariaLabel={t("settings.showAllergens")}
+                />
+              </span>
             </div>
-          )}
+
+            {user.showAllergens && (
+              <div className="flex flex-col gap-1 border-t border-hf-gray-light">
+                {ALLERGEN_CATALOG.map((allergen, index) => (
+                  <div
+                    key={allergen.key}
+                    className={`flex items-center gap-3 px-4 py-2.5 ${
+                      index < ALLERGEN_CATALOG.length - 1 ? "border-b border-hf-tan-dark" : ""
+                    }`}
+                  >
+                    <span className="flex-1 text-[14px] text-hf-black">{allergen.label}</span>
+                    <Toggle
+                      checked={isAllergenVisible(allergen.key)}
+                      onChange={(value) => toggleAllergen(allergen.key, value)}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
           <Toggle
             label={t("settings.showExtendedNutrition")}

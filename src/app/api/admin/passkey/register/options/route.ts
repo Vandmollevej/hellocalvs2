@@ -23,8 +23,8 @@ export async function POST(req: Request) {
   const options = await generateRegistrationOptions({
     rpName: WEBAUTHN_RP_NAME,
     rpID,
-    userName: admin.email ?? admin.id,
-    userDisplayName: admin.displayName || admin.email || "Admin",
+    userName: admin.email,
+    userDisplayName: admin.displayName || admin.email,
     attestationType: "none",
     excludeCredentials: existing.map((p) => ({
       id: p.credentialId,

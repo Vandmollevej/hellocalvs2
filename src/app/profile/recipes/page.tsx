@@ -6,7 +6,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { IconChevronRight, IconSearch, IconSoup } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 // Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24): to faner,
 // "Mine retter" (egne retter og favoritter fra delte retter, fra boksen) og
@@ -79,7 +78,7 @@ function MineTab({ t }: { t: Translate }) {
   const [state, setState] = useState<LoadState>("loading");
 
   useEffect(() => {
-    Promise.all([localApi("/api/dishes"), localApi("/api/recipe-favorites")])
+    Promise.all([fetch("/api/dishes"), fetch("/api/recipe-favorites")])
       .then(async ([dishesRes, favoritesRes]) => {
         if (!dishesRes.ok) throw new Error("offline");
         const { dishes } = (await dishesRes.json()) as { dishes: OwnDish[] };
@@ -150,7 +149,7 @@ function SharedTab({ t }: { t: Translate }) {
   const [state, setState] = useState<LoadState>("loading");
 
   useEffect(() => {
-    localApi("/api/profile")
+    fetch("/api/profile")
       .then(async (res) => (res.ok ? ((await res.json()) as { user?: { helloFreshEnabled?: boolean } }) : {}))
       .then((data) => setHelloFresh(Boolean(data.user?.helloFreshEnabled)))
       .catch(() => setHelloFresh(false));

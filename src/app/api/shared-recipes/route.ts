@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import {
   parseIngredients,
-  publisherHashFrom,
+  publisherHashForUser,
   searchTextFor,
   toPublicRecipe,
   totalsFor,
@@ -95,13 +95,13 @@ export async function GET(req: Request) {
       });
       const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
       const usage = products.length
-        ? await prisma.productUsageDaily.groupBy({
+        ? await prisma.registration.groupBy({
             by: ["productId"],
-            where: { productId: { in: products.map((p) => p.id) }, day: { gte: cutoff } },
-            _sum: { count: true },
+            where: { productId: { in: products.map((p) => p.id) }, createdAt: { gte: cutoff } },
+            _count: { _all: true },
           })
         : [];
-      const usageById = new Map(usage.map((u) => [u.productId, u._sum.count ?? 0]));
+      const usageById = new Map(usage.map((u) => [u.productId, u._count._all]));
       for (const p of products) {
         items.push({
           kind: "hellofresh",
@@ -138,13 +138,13 @@ export async function GET(req: Request) {
   }
 }
 
-// POST { name, language, ingredients } + udgivertoken i headeren — del en ret.
-// Kræver en session (mod spam), men hverken bruger- eller sessions-ID gemmes.
-// Retten er synlig med det samme og venter på admin-godkendelse.
+// POST { name, language, ingredients } — del en ret direkte (bruges af
+// PATCH /api/dishes/[id]/share). Retten er synlig med det samme og venter
+// på admin-godkendelse.
 export async function POST(req: Request) {
-  if (!(await getSessionUser())) return NextResponse.json({ message: "Ikke logget ind" }, { status: 401 });
-  const publisherHash = publisherHashFrom(req);
-  if (!publisherHash) return NextResponse.json({ message: "Udgivertoken mangler" }, { status: 400 });
+  const user = await getSessionUser();
+  if (!user) return NextResponse.json({ message: "Ikke logget ind" }, { status: 401 });
+  const publisherHash = publisherHashForUser(user.id);
 
   const blocked = await prisma.sharedRecipePublisherBlock.findUnique({ where: { publisherHash } });
   if (blocked) return NextResponse.json({ message: "Du kan ikke dele retter i øjeblikket" }, { status: 403 });

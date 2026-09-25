@@ -1,14 +1,18 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { IconPlus } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { TrendIcon } from "@/components/BottomNav";
 import { StatChart, type ChartSeries } from "@/components/StatChart";
 import { StatCardsGrid } from "@/components/StatCardsGrid";
+import { StatChartsSection } from "@/components/StatChartsSection";
 import { StatPeriodPicker } from "@/components/StatPeriodPicker";
 import { IntradayKcalChart } from "@/components/IntradayKcalChart";
+import { TopSinnersCard } from "@/components/TopSinnersCard";
+import { filterRegistrationsInRange } from "@/lib/food-classification";
+import { useSourceRegistrations } from "@/lib/use-source-registrations";
 import {
   computeStatCards,
   DEFAULT_ACTIVE_STAT_KEYS,
@@ -19,9 +23,9 @@ import { groupByDay, type RegistrationTotals } from "@/lib/daily-totals";
 import { DAILY_KCAL_GOAL, WEIGHT_GOAL_KG } from "@/lib/goals";
 import { DEFAULT_STAT_SELECTION, filterDaysInRange, selectionRange, type StatPeriodSelection } from "@/lib/stat-periods";
 import type { IntegrationCardStatus } from "@/lib/integrations";
+import { dailyChartLabel, statChartDef } from "@/lib/stat-charts";
 import { computeTrendWeight, type WeightSample, type MealSample } from "@/lib/weight-trend";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 const DAY_COUNT = 7;
 
@@ -105,21 +109,26 @@ export default function StatisticsPage() {
   const [warnOnRecommendedLimits, setWarnOnRecommendedLimits] = useState(false);
   const [autoExpandUncertainty, setAutoExpandUncertainty] = useState(false);
   const [loading, setLoading] = useState(true);
+  // "+ Tilføj kort" vises kun, mens hhv. graferne/kortene vibrerer (eller sektionen er tom).
+  const [showAddChart, setShowAddChart] = useState(false);
+  const [showAddCard, setShowAddCard] = useState(false);
   const [periodSelection, setPeriodSelection] = useState<StatPeriodSelection>(DEFAULT_STAT_SELECTION);
+  // G3: registreringer med klassifikation til kød/drikke-kortene og "Største syndere".
+  const { registrations: sourceRegistrations, loading: sourcesLoading } = useSourceRegistrations();
 
   useEffect(() => {
     let cancelled = false;
 
     Promise.all([
-      localApi("/api/registrations").then(async (response) => {
+      fetch("/api/registrations").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente registreringer");
         return (await response.json()) as { registrations: RegistrationTotals[] };
       }),
-      localApi("/api/weight-entries").then(async (response) => {
+      fetch("/api/weight-entries").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente vejninger");
         return (await response.json()) as { entries: WeightEntry[] };
       }),
-      localApi("/api/activities").then(async (response) => {
+      fetch("/api/activities").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente aktiviteter");
         return (await response.json()) as { activities: ActivityTotals[] };
       }),
@@ -127,11 +136,11 @@ export default function StatisticsPage() {
         if (!response.ok) throw new Error("Kunne ikke hente integrationer");
         return (await response.json()) as { integrations: IntegrationCardStatus[] };
       }),
-      localApi("/api/health-metrics").then(async (response) => {
+      fetch("/api/health-metrics").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente sundhedsdata");
         return (await response.json()) as { metrics: HealthMetricTotals[] };
       }),
-      localApi("/api/profile").then(async (response) => {
+      fetch("/api/profile").then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente profil");
         return (await response.json()) as { user: { warnOnRecommendedLimits?: boolean; autoExpandUncertainty?: boolean } };
       }),
@@ -234,6 +243,11 @@ export default function StatisticsPage() {
     [activePeriodRange],
   );
 
+  const periodSources = useMemo(
+    () => filterRegistrationsInRange(sourceRegistrations, activePeriodRange),
+    [sourceRegistrations, activePeriodRange],
+  );
+
   // Ét globalt periodevalg (StatPeriodPicker) gælder for både statistik-kortene og
   // dagsprofilen herunder — ikke længere ét periodevalg pr. kort (swipe er fjernet).
   const statCards = useMemo(() => {
@@ -245,32 +259,74 @@ export default function StatisticsPage() {
         const time = new Date(m.recordedAt).getTime();
         return time >= activePeriodRange.start.getTime() && time < activePeriodRange.end.getTime();
       }),
+      sources: sourcesLoading ? undefined : periodSources,
     });
     return cards.map((c) => ({ ...c, value: loading ? "—" : c.value }));
-  }, [allDays, activities, hasConnectedIntegration, metrics, loading, activePeriodRange]);
+  }, [allDays, activities, hasConnectedIntegration, metrics, loading, activePeriodRange, sourcesLoading, periodSources]);
 
   const recentRegistrations = useMemo(
     () => filterActivitiesInRangeRegistrations(registrations, activePeriodRange),
     [registrations, activePeriodRange],
   );
 
+  const renderChart = useCallback(
+    (key: string) => {
+      const def = statChartDef(key);
+      if (!def) return null;
+      if (def.kind === "caloriesAndWeight") {
+        return (
+          <StatChart title={t("statistics.caloriesAndWeightChart")} series={chartSeries} defaultEnabledKeys={["kcal"]} />
+        );
+      }
+      if (def.kind === "intradayKcal") {
+        return <IntradayKcalChart registrations={recentRegistrations} windowDays={activePeriodDays} />;
+      }
+      const label = dailyChartLabel(def.field);
+      const values = dailySeries(
+        allDays.map((d) => ({ dateKey: d.dateKey, value: d[def.field] })),
+        DAY_COUNT,
+      );
+      return (
+        <StatChart
+          title={label}
+          storageKey={`hellocal.statistik.series.${def.key}`}
+          defaultEnabledKeys={[def.field]}
+          series={[{ key: def.field, label, color: "var(--hf-green)", unit: def.unit, values }]}
+        />
+      );
+    },
+    [t, chartSeries, recentRegistrations, activePeriodDays, allDays],
+  );
+
   return (
     <HfScreen title={t("statistics.title")} icon={<TrendIcon color="currentColor" size={20} />}>
       <div className="flex flex-col gap-4 p-4">
-        <StatChart title={t("statistics.caloriesAndWeightChart")} series={chartSeries} defaultEnabledKeys={["kcal"]} />
-
-        <IntradayKcalChart registrations={recentRegistrations} windowDays={activePeriodDays} />
-
-        <div className="flex flex-col gap-3 border-t border-hf-tan-dark pt-4">
-          <div className="relative z-40 flex items-center justify-between gap-2">
-            <StatPeriodPicker selection={periodSelection} onChange={setPeriodSelection} />
+        {showAddChart && (
+          <div className="flex justify-end">
             <Link
-              href="/statistics/unused-cards"
+              href="/statistics/unused-charts"
               className="flex min-h-8 items-center gap-1 text-xs font-semibold text-hf-black"
             >
               <IconPlus size={14} stroke={2.5} />
               {t("statCardsGrid.addCard")}
             </Link>
+          </div>
+        )}
+
+        <StatChartsSection renderChart={renderChart} onShowAddChange={setShowAddChart} />
+
+        <div className="flex flex-col gap-3 border-t border-hf-tan-dark pt-4">
+          <div className="relative z-40 flex items-center justify-between gap-2">
+            <StatPeriodPicker selection={periodSelection} onChange={setPeriodSelection} />
+            {showAddCard && (
+              <Link
+                href="/statistics/unused-cards"
+                className="flex min-h-8 items-center gap-1 text-xs font-semibold text-hf-black"
+              >
+                <IconPlus size={14} stroke={2.5} />
+                {t("statCardsGrid.addCard")}
+              </Link>
+            )}
           </div>
 
           <StatCardsGrid
@@ -278,7 +334,10 @@ export default function StatisticsPage() {
             defaultActiveKeys={DEFAULT_ACTIVE_STAT_KEYS}
             highlightRecommendedLimits={warnOnRecommendedLimits}
             autoExpandUncertainty={autoExpandUncertainty}
+            onShowAddChange={setShowAddCard}
           />
+
+          <TopSinnersCard registrations={periodSources} loading={sourcesLoading} />
         </div>
       </div>
     </HfScreen>

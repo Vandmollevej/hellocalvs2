@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 type DoctorShare = {
   id: string;
@@ -36,7 +35,7 @@ export default function HelloDocPage() {
   const [isSerious, setIsSerious] = useState<boolean | null>(null);
 
   useEffect(() => {
-    localApi("/api/doctor-shares")
+    fetch("/api/doctor-shares")
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data) => setShares(data.shares))
       .catch(() => setError(true));
@@ -68,7 +67,7 @@ export default function HelloDocPage() {
         )}
 
         <div>
-          <h2 className="hf-type-section-title mb-2">{t("helloDoc.invitedUsersTitle")}</h2>
+          <h2 className="hf-type-section-title">{t("helloDoc.invitedUsersTitle")}</h2>
 
           {error && <p className="hf-type-body-sm text-hf-red-dark">{t("helloDoc.loadError")}</p>}
 

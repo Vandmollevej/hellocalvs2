@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
-import { getSessionUser } from "@/lib/session";
 import { listIntegrationStatuses } from "@/lib/integrations";
+import { getSessionUser, unauthorized } from "@/lib/session";
 
 export async function GET() {
   try {
     const user = await getSessionUser();
-    if (!user) return NextResponse.json({ message: "Log ind først" }, { status: 401 });
+
+    if (!user) return unauthorized();
     const integrations = await listIntegrationStatuses(user.id);
     return NextResponse.json({ integrations });
   } catch (error) {

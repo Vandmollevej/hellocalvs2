@@ -99,6 +99,7 @@ export function SearchRankingTuner({
   const [query, setQuery] = useState("");
   const [region, setRegion] = useState<string>("DK");
   const [hour, setHour] = useState(new Date().getHours());
+  const [previewUserId, setPreviewUserId] = useState("");
   const [results, setResults] = useState<PreviewResult[]>([]);
   const [previewLoading, setPreviewLoading] = useState(false);
   const [previewError, setPreviewError] = useState<string | null>(null);
@@ -120,7 +121,7 @@ export function SearchRankingTuner({
         const res = await fetch("/api/admin/search-ranking/preview", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query, region, hour, weights }),
+          body: JSON.stringify({ query, region, hour, userId: previewUserId || undefined, weights }),
           signal: controller?.signal,
         });
         const data = await res.json();
@@ -133,7 +134,7 @@ export function SearchRankingTuner({
         setPreviewLoading(false);
       }
     },
-    [query, region, hour, weights]
+    [query, region, hour, previewUserId, weights]
   );
 
   useEffect(() => {
@@ -144,7 +145,7 @@ export function SearchRankingTuner({
       controller.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- runPreview already depends on every input it reads
-  }, [query, region, hour, weights]);
+  }, [query, region, hour, previewUserId, weights]);
 
   function updateWeight(key: keyof SearchRankingWeights, value: number) {
     setWeights((prev) => ({ ...prev, [key]: value }));
@@ -249,6 +250,15 @@ export function SearchRankingTuner({
               </option>
             ))}
           </select>
+        </label>
+        <label className="flex flex-col gap-1 text-sm">
+          <span className="text-text-secondary">Bruger-id (personlig historik, valgfrit)</span>
+          <input
+            value={previewUserId}
+            onChange={(e) => setPreviewUserId(e.target.value)}
+            placeholder="cly..."
+            className="rounded-md border border-border-strong px-3 py-2 text-sm"
+          />
         </label>
       </div>
 

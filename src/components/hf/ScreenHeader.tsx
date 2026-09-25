@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { IconSettings } from "@tabler/icons-react";
 import { isMainFooterRoute, useFooterRootHrefs } from "@/lib/navigation";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -23,6 +24,8 @@ export function ScreenHeader({
   hideBackButton = false,
   variant = "brand",
   titleClassName,
+  alwaysShowBackButton = false,
+  showAppSettingsButton = false,
 }: {
   title: string;
   icon?: React.ReactNode;
@@ -30,13 +33,18 @@ export function ScreenHeader({
   hideBackButton?: boolean;
   variant?: "brand" | "main";
   titleClassName?: string;
+  // Profilsiden viser altid tilbagepilen, også når "Profil" ligger i footeren.
+  alwaysShowBackButton?: boolean;
+  // Kun profilsiden: tandhjul til app-indstillingerne i stedet for profilcirklen.
+  showAppSettingsButton?: boolean;
 }) {
   const { t } = useTranslation();
   const isCompact = useIsCompactLandscape();
   const router = useRouter();
   const pathname = usePathname();
   const footerRoots = useFooterRootHrefs();
-  const showBack = !hideBackButton && !isMainFooterRoute(pathname, footerRoots);
+  const showBack =
+    !hideBackButton && (alwaysShowBackButton || !isMainFooterRoute(pathname, footerRoots));
 
   function handleBack() {
     if (onBack) {
@@ -79,11 +87,21 @@ export function ScreenHeader({
         {icon && <span className="h-6 w-6 shrink-0" aria-hidden="true" />}
       </div>
       <div className="hf-appbar__slot">
-        <Link href="/profile" aria-label={t("settings.openProfile")}>
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-hf-tan text-xs font-bold text-hf-black">
-            PT
-          </span>
-        </Link>
+        {showAppSettingsButton ? (
+          <Link
+            href="/settings"
+            aria-label={t("settings.openAppSettings")}
+            className="flex h-full w-full items-center justify-center text-hf-white focus-visible:outline-2 focus-visible:outline-hf-white"
+          >
+            <IconSettings size={24} />
+          </Link>
+        ) : (
+          <Link href="/profile" aria-label={t("settings.openProfile")}>
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-hf-tan text-xs font-bold text-hf-black">
+              PT
+            </span>
+          </Link>
+        )}
       </div>
     </div>
   );

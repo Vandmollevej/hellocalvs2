@@ -51,7 +51,7 @@ export default async function AdminProductDetailPage({ params }: { params: Promi
           confidence: report.confidence,
           amountGrams: report.amountGrams,
           createdAt: report.createdAt.toISOString(),
-          canReply: report.replyInboxId !== null,
+          canReply: report.reporterUserId !== null,
           changes: parseNutritionReportChanges(report.changes),
         }))}
       />

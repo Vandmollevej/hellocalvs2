@@ -213,24 +213,37 @@ Restoration is intentionally not automated. A restore replaces database state
 and must be planned against a stopped application after the exact backup and
 target database have been verified.
 
-## Privacy (docs/PRIVACY.md)
+## Login (brugere)
 
-- `EMAIL_HASH_PEPPER` (mindst 32 tegn) SKAL sættes i `.env.production`, før
-  den første bruger opretter sig, og må aldrig ændres bagefter. Ellers kan
-  ingen brugere findes via e-mail ved gendannelse.
-- `USER_SESSION_SECRET` og `APP_BASE_URL` sættes som i
-  `.env.production.example`.
-- SMTP (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`)
-  er påkrævet: tilmelding, gendannelse, start-vægt og nyhedsbrev sender mails
-  direkte uden at gemme adressen. Uden SMTP svarer de med 503 i produktion.
-- Passkeys kræver HTTPS på det rigtige domæne (Cloudflare Tunnel leverer det).
-- Reverse proxy/Cloudflare må ikke logge IP for `/api/analytics`,
-  `/api/analytics/product-usage` og `/api/vault/*` til persistens.
-- Backups taget FØR overgangen indeholder brugerdata i klartekst og skal
-  slettes (inkl. kopier på andet lager), når overgangen er bekræftet.
-  Nye backups indeholder kun ID'er og ciphertext for private data.
-- Supportnøglen laves på `/admin/support` i admins browser. Backupfilen skal
-  opbevares sikkert og uden for serveren.
+Almindelige brugere logger ind med e-mail + adgangskode, Face ID (passkey),
+Google, Apple eller Facebook (docs/DECISIONS.md 2026-09-24 "Normalt login").
+Alle variabler sættes i `.env.production` (se `.env.production.example`) og
+sendes videre af `compose.production.yaml`.
+
+- `USER_SESSION_SECRET` og `APP_BASE_URL` (`https://hellocal.packroff.dk`).
+- SMTP (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`):
+  glemt adgangskode og advarsel ved login fra ny enhed/nyt land. Uden SMTP
+  bliver mails liggende i køen. Udbyder: Mailjet (`in-v3.mailjet.com`, port
+  587, API-nøgle som bruger, secret key som adgangskode). Aktiv fra 2026-09-25.
+- Face ID/passkeys kræver HTTPS på det rigtige domæne (Cloudflare Tunnel).
+  Ingen nøgler nødvendige.
+- Google: Google Cloud Console → APIs & Services → OAuth consent screen
+  (External) → Credentials → OAuth client ID (Web application). Authorized
+  redirect URI: `<APP_BASE_URL>/api/auth/oauth/google/callback`.
+  → `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`.
+- Facebook: developers.facebook.com → Create App (Consumer) → Facebook Login
+  → Valid OAuth Redirect URI: `<APP_BASE_URL>/api/auth/oauth/facebook/callback`.
+  Appen skal i "Live"-tilstand (kræver privatlivspolitik-URL).
+  → `FACEBOOK_APP_ID`, `FACEBOOK_APP_SECRET`.
+- Apple (kræver betalt Apple Developer-konto): Identifiers → App ID med
+  "Sign in with Apple" → Services ID (= `APPLE_CLIENT_ID`), konfigurér domæne
+  `hellocal.packroff.dk` og Return URL
+  `<APP_BASE_URL>/api/auth/oauth/apple/callback` → Keys → ny nøgle med
+  "Sign in with Apple" (`APPLE_KEY_ID`, .p8-indholdet som
+  `APPLE_PRIVATE_KEY` med linjeskift skrevet som `
+`), `APPLE_TEAM_ID`
+  øverst til højre på developer.apple.com.
+- En knap, hvis nøgler mangler, viser "Login med X er ikke sat op endnu".
 
 ## Controlled update
 

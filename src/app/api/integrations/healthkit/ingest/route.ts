@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashDeviceToken } from "@/lib/device-tokens";
-import { deliverToInbox, type InboxEnvelope } from "@/lib/vault/inbox-delivery";
+import { storeIntegrationItems, type IntegrationItem } from "@/lib/integrations/store-items";
 
 type IngestBody = {
-  source?: "APPLE_HEALTH" | "GOOGLE_HEALTH";
+  source?: "APPLE_HEALTH" | "HEALTH_CONNECT" | "GOOGLE_HEALTH";
   metrics?: { type?: string; value?: number; recordedAt?: string }[];
   weights?: { weightKg?: number; weighedAt?: string }[];
   activities?: {
@@ -32,20 +32,20 @@ function validDate(value: unknown): string | null {
 }
 
 // POST — companion-appen (HealthKit/Health Connect) sender data med sit
-// enhedstoken. Data forsegles straks til brugerens indbakke og gemmes aldrig
-// i klartekst (docs/PRIVACY.md). Klienten flytter dem ind i boksen.
+// enhedstoken. Data gemmes direkte på tokenets bruger.
 export async function POST(req: Request) {
   const token = await authenticate(req);
   if (!token) return NextResponse.json({ message: "Ugyldigt eller manglende enhedstoken" }, { status: 401 });
-  if (!token.inboxId) return NextResponse.json({ message: "Enhedstokenet mangler en indbakke" }, { status: 409 });
 
   const body = (await req.json().catch(() => ({}))) as IngestBody;
-  const source = body.source;
-  if (source !== "APPLE_HEALTH" && source !== "GOOGLE_HEALTH") {
-    return NextResponse.json({ message: "source skal være APPLE_HEALTH eller GOOGLE_HEALTH" }, { status: 400 });
+  // GOOGLE_HEALTH var det tidligere navn for Health Connect; det betyder nu
+  // Google Health API (cloud) og modtages derfor som HEALTH_CONNECT.
+  const source = body.source === "GOOGLE_HEALTH" ? "HEALTH_CONNECT" : body.source;
+  if (source !== "APPLE_HEALTH" && source !== "HEALTH_CONNECT") {
+    return NextResponse.json({ message: "source skal være APPLE_HEALTH eller HEALTH_CONNECT" }, { status: 400 });
   }
 
-  const items: InboxEnvelope[] = [];
+  const items: IntegrationItem[] = [];
   for (const m of body.metrics ?? []) {
     const recordedAt = validDate(m.recordedAt);
     if (m.type && typeof m.value === "number" && recordedAt) {
@@ -67,7 +67,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const delivered = await deliverToInbox(token.inboxId, items);
+    const delivered = await storeIntegrationItems(token.userId, items);
     return NextResponse.json({ ok: true, delivered });
   } catch (error) {
     console.error("HealthKit ingest failed", error instanceof Error ? error.message : "ukendt");

@@ -13,7 +13,7 @@ import {
   type DishDraftIngredient,
 } from "@/lib/dish-draft";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
+import { isPrivateIngredientId } from "@/lib/private-ingredient-ids";
 
 function round(value: number, decimals = 0) {
   const factor = 10 ** decimals;
@@ -31,7 +31,7 @@ export default function CreateDishPage() {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<{ id: string; name: string; imageUrl?: string | null }[]>([]);
+  const [results, setResults] = useState<{ id: string; name: string; imageUrl?: string | null; isPrivate?: boolean }[]>([]);
   const [searchState, setSearchState] = useState<"idle" | "loading" | "ready" | "error">("idle");
 
   useEffect(() => {
@@ -40,12 +40,18 @@ export default function CreateDishPage() {
     const timeout = setTimeout(async () => {
       setSearchState("loading");
       try {
-        const res = await localApi(`/api/products?q=${encodeURIComponent(query)}`, {
-          signal: controller.signal,
-        });
+        const [res, own] = await Promise.all([
+          fetch(`/api/products?q=${encodeURIComponent(query)}`, { signal: controller.signal }),
+          // Egne ingredienser (kun i boksen) vises øverst — aldrig for andre.
+          fetch(`/api/private-ingredients?q=${encodeURIComponent(query)}`).catch(() => null),
+        ]);
         if (!res.ok) throw new Error("offline");
         const data = await res.json();
-        setResults(data.products ?? []);
+        const ownData = own?.ok ? await own.json() : { ingredients: [] };
+        setResults([
+          ...(ownData.ingredients ?? []).map((i: { id: string; name: string }) => ({ ...i, isPrivate: true })),
+          ...(data.products ?? []),
+        ]);
         setSearchState("ready");
       } catch {
         setSearchState("error");
@@ -58,6 +64,8 @@ export default function CreateDishPage() {
       clearTimeout(timeout);
     };
   }, [query]);
+
+  const hasPrivateIngredient = ingredients.some((i) => isPrivateIngredientId(i.productId));
 
   const totals = useMemo(
     () =>
@@ -93,7 +101,7 @@ export default function CreateDishPage() {
     }
     setSaving(true);
     try {
-      const res = await localApi("/api/dishes", {
+      const res = await fetch("/api/dishes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -107,8 +115,8 @@ export default function CreateDishPage() {
         return;
       }
       clearDishDraft();
-      if (shared && data.dish?.id) {
-        const shareRes = await localApi(`/api/dishes/${encodeURIComponent(data.dish.id)}/share`, {
+      if (shared && !hasPrivateIngredient && data.dish?.id) {
+        const shareRes = await fetch(`/api/dishes/${encodeURIComponent(data.dish.id)}/share`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ shared: true, language: locale === "en" ? "en" : "da" }),
@@ -169,8 +177,11 @@ export default function CreateDishPage() {
             >
               <IconInfoCircle size={20} />
             </button>
-            <Toggle checked={shared} onChange={setShared} />
+            <Toggle checked={shared && !hasPrivateIngredient} onChange={setShared} disabled={hasPrivateIngredient} />
           </div>
+          {hasPrivateIngredient && (
+            <p className="mt-2 px-1 text-[13px] text-hf-black opacity-60">{t("createDish.shareBlockedPrivate")}</p>
+          )}
           {showShareInfo && (
             <p className="mt-2 rounded-[8px] border border-hf-gray-light bg-hf-white px-3 py-2 text-[13px] text-hf-black">
               {t("createDish.shareInfo")}
@@ -200,10 +211,12 @@ export default function CreateDishPage() {
                   <div className="flex-1">
                     <p className="text-[14px] font-medium text-hf-black">{ingredient.name}</p>
                     <p className="text-xs text-hf-black opacity-60">
-                      {t("createDish.gramsKcal", {
-                        grams: ingredient.grams,
-                        kcal: round((ingredient.kcalPer100g * ingredient.grams) / 100),
-                      })}
+                      {isPrivateIngredientId(ingredient.productId)
+                        ? t("createDish.kcalUnknown", { grams: ingredient.grams })
+                        : t("createDish.gramsKcal", {
+                            grams: ingredient.grams,
+                            kcal: round((ingredient.kcalPer100g * ingredient.grams) / 100),
+                          })}
                     </p>
                   </div>
                   <button
@@ -275,7 +288,11 @@ export default function CreateDishPage() {
                 results.slice(0, 6).map((product, index) => (
                   <Link
                     key={product.id}
-                    href={`/add/${product.id}?for=ret`}
+                    href={
+                      product.isPrivate
+                        ? `/ingredients/new?for=ret&use=${encodeURIComponent(product.id)}`
+                        : `/add/${product.id}?for=ret`
+                    }
                     className={`flex items-center gap-2.5 px-4 py-3 ${
                       index < Math.min(results.length, 6) - 1 ? "border-b border-hf-tan-dark" : ""
                     }`}
@@ -287,6 +304,9 @@ export default function CreateDishPage() {
                       )}
                     </div>
                     <span className="flex-1 text-[14px] font-medium text-hf-black">{product.name}</span>
+                    {product.isPrivate && (
+                      <span className="text-xs font-medium text-hf-black opacity-60">{t("createDish.ownTag")}</span>
+                    )}
                   </Link>
                 ))}
             </div>
@@ -308,6 +328,12 @@ export default function CreateDishPage() {
               <span className="text-xs font-medium text-hf-black">{t("createDish.manually")}</span>
             </a>
           </div>
+          <Link
+            href="/ingredients/new?for=ret"
+            className="mt-2 block text-center text-xs font-medium text-hf-black underline underline-offset-2 opacity-70"
+          >
+            {t("createDish.createOwnIngredient")}
+          </Link>
         </div>
 
       </div>

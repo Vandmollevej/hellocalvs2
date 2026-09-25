@@ -7,7 +7,6 @@ import { IconChevronRight } from "@tabler/icons-react";
 import { SwipeableRow } from "@/components/SwipeableRow";
 import { FoodRow } from "@/components/FoodRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 type Entry = {
   id: string;
@@ -55,7 +54,7 @@ export function DailyList() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    localApi("/api/registrations")
+    fetch("/api/registrations")
       .then(async (res) => {
         if (!res.ok) throw new Error("Kunne ikke hente registreringer");
         const data = (await res.json()) as RegistrationResponse;
@@ -82,7 +81,7 @@ export function DailyList() {
   async function favoriteEntry(productId: string | null) {
     if (!productId) return;
     try {
-      await localApi("/api/favorites", {
+      await fetch("/api/favorites", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId }),
@@ -97,7 +96,7 @@ export function DailyList() {
     setEntries((current) => current.filter((entry) => entry.id !== id));
 
     try {
-      const res = await localApi(`/api/registrations/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/registrations/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Kunne ikke slette registreringen");
     } catch {
       setEntries(previousEntries);

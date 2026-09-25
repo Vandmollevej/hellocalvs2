@@ -2,10 +2,10 @@ import { prisma } from "@/lib/prisma";
 import { queueMessage } from "@/lib/messaging";
 import { flushQueuedEmails } from "@/lib/mailer";
 import { flushQueuedPush } from "@/lib/push";
-import { grantDueInviteRewards } from "@/lib/invite-links";
 import { backfillMissingProductNutritionFeatures } from "@/lib/product-nutrition-features";
 import { runDueAppJobs } from "@/lib/jobs/runner";
 import { rerunUncertainAnalyses } from "@/lib/uncertainty-rerun";
+import { grantEligibleReferralRewards } from "@/lib/referrals";
 
 // In-process baggrundsjob (docs/DECISIONS.md 2026-09-02): DB-drevet, kører i
 // selve Next.js-serverprocessen uanset hvor den hostes (Synology i dag,
@@ -32,7 +32,7 @@ const globalForScheduler = globalThis as unknown as { hellocalSchedulerStarted?:
 async function escalateStalePendingProducts(now: Date) {
   const cutoff = new Date(now.getTime() - ESCALATION_HOURS * 60 * 60 * 1000);
   const stale = await prisma.product.findMany({
-    where: { status: "PENDING", createdAt: { lt: cutoff }, escalationSentAt: null },
+    where: { status: "PENDING", privateOwnerId: null, createdAt: { lt: cutoff }, escalationSentAt: null },
   });
 
   for (const product of stale) {
@@ -79,11 +79,7 @@ async function escalateStaleBugReports(now: Date) {
 export async function runSchedulerTick(now: Date = new Date()) {
   await escalateStalePendingProducts(now);
   await escalateStaleBugReports(now);
-  await grantDueInviteRewards(now);
-  // docs/PRIVACY.md "Support": pakker for udløbne tilladelser slettes.
-  await prisma.supportPackage.deleteMany({
-    where: { grant: { OR: [{ validUntil: { lt: now } }, { revokedAt: { not: null } }] } },
-  });
+  await grantEligibleReferralRewards(now);
   await flushQueuedEmails();
   await flushQueuedPush();
   // Fiber-/sukker-/salt-/fuldkornsfelter for produkter uden dem endnu

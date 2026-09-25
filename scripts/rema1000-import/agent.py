@@ -42,7 +42,9 @@ DATA_PATH = os.environ.get("REMA1000_DATA_PATH", "/app/data/rema1000_products.js
 STORE_NAME = "Rema 1000"
 
 # Excel/JSON-kolonnen "Type" -> Product.productCategory (docs/DECISIONS.md
-# 2026-09-24). Kun DRINK styrer noget i UI'et (ml/cl i stedet for g); ukendte
+# 2026-09-24). Grøntsager/frugt -> VEGETABLES (G3, brugerens grove
+# regnearks-kategorier: Drikkevarer, Grøntsager, Råvarer, Forarbejdede varer).
+# Kun DRINK styrer noget i UI'et (ml/cl i stedet for g); ukendte
 # typer gemmes som NULL (= g) i stedet for at blive gættet.
 PRODUCT_CATEGORY_BY_TYPE = {
     "drikkevare": "DRINK",
@@ -52,10 +54,10 @@ PRODUCT_CATEGORY_BY_TYPE = {
     "pålægssalat": "PROCESSED",
     "salater": "PROCESSED",
     "råvarer": "RAW",
-    "grøntsager": "RAW",
-    "grøntsager og frugt": "RAW",
-    "frisk frugt m.m.": "RAW",
-    "frisk grønt": "RAW",
+    "grøntsager": "VEGETABLES",
+    "grøntsager og frugt": "VEGETABLES",
+    "frisk frugt m.m.": "VEGETABLES",
+    "frisk grønt": "VEGETABLES",
 }
 
 

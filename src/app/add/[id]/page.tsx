@@ -25,7 +25,6 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 import { isAlternativeServingConfident } from "@/lib/alternative-servings";
 import type { AlternativeServing } from "@/lib/product-analysis-types";
 import { fromDisplayAmount, getProductDisplayUnit, toDisplayAmount } from "@/lib/product-display-unit";
-import { localApi } from "@/lib/vault/local-api";
 import { NUTRIENT_BY_KEY, type ResolvedNutrient } from "@/lib/nutrients";
 import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
 import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
@@ -173,12 +172,12 @@ export default function AddPage() {
       })
       .catch(() => setState({ status: "error" }));
 
-    localApi("/api/profile")
+    fetch("/api/profile")
       .then((res) => res.json())
       .then((data) => setProfile(data.user ?? null))
       .catch(() => setProfile(null));
 
-    localApi("/api/favorites")
+    fetch("/api/favorites")
       .then((res) => res.json())
       .then((data) => {
         const favorites = (data.favorites ?? []) as { product: { id: string } | null }[];
@@ -198,7 +197,7 @@ export default function AddPage() {
     setIsFavorite(next);
     setFavoritePending(true);
     try {
-      await localApi("/api/favorites", {
+      await fetch("/api/favorites", {
         method: next ? "POST" : "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId: id }),
@@ -365,7 +364,7 @@ export default function AddPage() {
       const [hours, minutes] = time.split(":").map(Number);
       const createdAt = new Date(year, month - 1, day, hours, minutes, 0, 0);
 
-      const res = await localApi("/api/registrations", {
+      const res = await fetch("/api/registrations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

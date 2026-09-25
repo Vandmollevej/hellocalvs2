@@ -10,13 +10,8 @@ datasource db {
 
 model User {
   id          String   @id @default(cuid())
-  // docs/PRIVACY.md: almindelige brugere har INGEN klartekst-e-mail og intet
-  // navn på serveren. email bruges kun af admin/personale; brugere findes via
-  // emailHash (HMAC-SHA256 med EMAIL_HASH_PEPPER, src/lib/email-hash.ts).
-  // displayName er tom for almindelige brugere — navnet ligger i boksen.
-  email       String?  @unique
-  emailHash   String?  @unique
-  displayName String   @default("")
+  email       String   @unique
+  displayName String
   role        Role     @default(USER)
   weightKg    Float?
   heightCm    Float?
@@ -96,6 +91,9 @@ model User {
   // inferred from missing data, and this app does not yet ship such an
   // evaluator — see src/lib/stat-cards.ts's StatCardValue.outsideRecommendedRange.
   warnOnRecommendedLimits Boolean @default(false)
+  // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24/25): ~ vises altid; denne
+  // bestemmer kun, om den grå usikkerhedslinje er foldet ud automatisk.
+  autoExpandUncertainty   Boolean @default(false)
 
   // Region (ISO 3166-1 alpha-2), used to prioritize product search results
   // by the country's GS1 barcode prefix (see src/lib/regions.ts). Denmark is
@@ -175,12 +173,11 @@ model User {
   deviceTokens            DeviceToken[]
   healthMetrics           HealthMetric[]
   passkeys                Passkey[]
-  keyEnvelopes            KeyEnvelope[]
-  recoveryShare           RecoveryShare?
-  recoveryRequests        RecoveryRequest[]        @relation("RecoveryRequestUser")
-  recoveryRequestsApproved RecoveryRequest[]       @relation("RecoveryRequestApprover")
-  inviteLinks             InviteLink[]
-  inviteRewards           InviteReward[]
+  privateIngredients      Product[]                @relation("PrivateIngredients")
+  oauthAccounts           UserOAuthAccount[]
+  knownDevices            UserKnownDevice[]
+  sharedRecipeFavorites   SharedRecipeFavorite[]
+  nutritionReportsFiled   ProductNutritionReport[] @relation("NutritionReportReporter")
   referralsMade           Referral[]               @relation("ReferralsMade")
   referralReceived        Referral?                @relation("ReferralReceived")
   sentInvitations         SentInvitation[]
@@ -189,6 +186,7 @@ model User {
   notificationPreferences NotificationPreference[]
   pushSubscriptions       PushSubscription[]
   forwardsSent            Forward[]                @relation("ForwardSender")
+  forwardsReceived        Forward[]                @relation("ForwardRecipient")
   outboundMessages        OutboundMessage[]
   doctorShares            DoctorShare[]
   subscription            Subscription?
@@ -377,6 +375,7 @@ enum WeightSource {
   WITHINGS
   APPLE_HEALTH
   GOOGLE_HEALTH
+  HEALTH_CONNECT
 }
 
 // --- Body measurements ---
@@ -542,9 +541,6 @@ model Integration {
   connectedAt  DateTime?
   lastSyncedAt DateTime?
   lastError    String?
-  // docs/PRIVACY.md: hentede data forsegles straks til denne indbakke
-  // (VaultInbox.id). Serveren gemmer dem aldrig i klartekst.
-  inboxId      String?
   createdAt    DateTime            @default(now())
 
   @@unique([userId, provider])
@@ -556,7 +552,13 @@ enum IntegrationProvider {
   WITHINGS
   GARMIN
   APPLE_HEALTH
+  // 2026-09-24: Google Health API (cloud, OAuth). Tidligere brugt om Health
+  // Connect, som nu har sin egen værdi.
   GOOGLE_HEALTH
+  HEALTH_CONNECT
+  POLAR
+  SAMSUNG_HEALTH
+  STRAVA
 }
 
 enum IntegrationStatus {
@@ -588,6 +590,9 @@ enum ActivitySource {
   GARMIN
   APPLE_HEALTH
   GOOGLE_HEALTH
+  HEALTH_CONNECT
+  STRAVA
+  POLAR
 }
 
 // A personal, long-lived access token a future native companion app
@@ -603,8 +608,6 @@ model DeviceToken {
   label      String
   createdAt  DateTime  @default(now())
   lastUsedAt DateTime?
-  // docs/PRIVACY.md: indsendte data forsegles til denne indbakke.
-  inboxId    String?
 
   @@map("device_tokens")
 }
@@ -635,6 +638,7 @@ enum HealthMetricSource {
   FITBIT
   WITHINGS
   GARMIN
+  HEALTH_CONNECT
 }
 
 enum HealthMetricType {
@@ -887,6 +891,11 @@ model Product {
   // ved godkendelse — se src/app/api/admin/products/[id]/approve/route.ts.
   createdBy       User?   @relation("ProductsCreatedByUser", fields: [createdByUserId], references: [id])
   createdByUserId String?
+  // "Opret egen ingrediens" (docs/DECISIONS.md 2026-09-24): en privat
+  // ingrediens, kun synlig for ejeren (kun navn, næring ukendt). Udelukkes
+  // fra søgning og admin-lister.
+  privateOwner    User?   @relation("PrivateIngredients", fields: [privateOwnerId], references: [id], onDelete: Cascade)
+  privateOwnerId  String?
 
   // Barcode-first guidet AI-produktoprettelse (2026-09-17, se
   // docs/DECISIONS.md): forsidefotoet skelner eksplicit mellem hovedmærke
@@ -1103,13 +1112,10 @@ model ProductNutritionReport {
   id               String                @id @default(cuid())
   product          Product               @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId        String
-  // Privacy (docs/PRIVACY.md): ingen User- eller Registration-reference —
-  // rapporten må ikke afsløre, hvem der har spist varen. I stedet en anonym
-  // svaradresse: indberetterens VaultInbox-id (SHA-256 af et token, der kun
-  // ligger i brugerens boks). Admin kan forsegle en besked dertil
-  // (sealToPublicKey) uden at kunne se, hvem modtageren er. Null, når
-  // klienten ikke har en indbakke endnu.
-  replyInboxId     String?
+  // Indberetteren, så admin kan svare på mail (POST
+  // /api/admin/nutrition-reports/[id]/message). Null efter kontosletning.
+  reporter         User?                 @relation("NutritionReportReporter", fields: [reporterUserId], references: [id], onDelete: SetNull)
+  reporterUserId   String?
   source           FoodChangeSource      @default(USER_EDIT)
   amountGrams      Float
   // Kun de felter der faktisk er ændret, omregnet til pr. 100 g:
@@ -1409,8 +1415,32 @@ model GenericIngredient {
   regionHourStats   GenericIngredientRegionHourStat[]
   personalSearchHistory UserProductSearchHistory[]
   images            GenericIngredientImage[]
+  ingredientRequests IngredientRequest[]
 
   @@map("generic_ingredients")
+}
+
+// Brugerens egen ingrediens sendt til admin (docs/DECISIONS.md 2026-09-24).
+// privateProductId er brugerens private ingrediens (Product.privateOwnerId);
+// tilføjer admin den globalt, erstattes den i brugerens retter.
+model IngredientRequest {
+  id                  String                  @id @default(cuid())
+  name                String
+  privateProductId    String?
+  status              IngredientRequestStatus @default(PENDING)
+  genericIngredient   GenericIngredient?      @relation(fields: [genericIngredientId], references: [id], onDelete: SetNull)
+  genericIngredientId String?
+  createdAt           DateTime                @default(now())
+  reviewedAt          DateTime?
+
+  @@index([status, createdAt])
+  @@map("ingredient_requests")
+}
+
+enum IngredientRequestStatus {
+  PENDING
+  ADDED
+  REJECTED
 }
 
 // Tagged image variants for a GenericIngredient — same shape/purpose as
@@ -1524,6 +1554,7 @@ model ProductIngredient {
 // Se Product.productCategory.
 enum ProductCategory {
   DRINK
+  VEGETABLES
   GENERIC
   PROCESSED
   RAW
@@ -1566,6 +1597,8 @@ model Dish {
   category       Category? @relation(fields: [categoryId], references: [id])
   categoryId     String?
   externalSource String?
+  // Offentligt ID på den delte udgave (SharedRecipe), når retten er delt.
+  sharedRecipeId String?
   createdAt      DateTime  @default(now())
 
   ingredients   DishIngredient[]
@@ -1633,6 +1666,12 @@ model Registration {
   cholesterolSnapshot    Float?
   vitaminASnapshot       Float?
   vitaminCSnapshot       Float?
+  // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24/25): alle næringsstoffer
+  // fra src/lib/nutrients.ts for den registrerede mængde, hvor meget af hver
+  // der er estimeret, og producentens egen ±. Null på ældre registreringer.
+  nutrientSnapshot          Json?
+  nutrientEstimatedSnapshot Json?
+  nutrientToleranceSnapshot Json?
 
   createdAt DateTime @default(now())
 
@@ -1768,12 +1807,15 @@ enum MessageEvent {
   PRODUCT_REJECTED
   PRODUCT_ESCALATION_ADMIN
   BUG_REPORT_ESCALATION_ADMIN
+  INGREDIENT_REQUEST_ADMIN
   BUG_REPORT_RESOLVED
   BUG_REPORT_REJECTED
   POINTS_AWARDED
   FRIEND_FORWARD_RECEIVED
   FRIEND_INVITATION
   DOCTOR_SHARE_INVITATION
+  NEW_DEVICE_LOGIN
+  ADMIN_MESSAGE
 }
 
 enum MessageChannel {
@@ -1875,11 +1917,8 @@ model Forward {
   token       String        @unique @default(cuid())
   sender      User          @relation("ForwardSender", fields: [senderId], references: [id])
   senderId    String
-  // docs/PRIVACY.md: modtageren gemmes ikke. Afsenderens navn og en delt
-  // egen ret ligger krypteret i payload; nøglen findes kun i linkets
-  // URL-fragment (#k=…), som serveren aldrig ser.
-  payloadIv         String?
-  payloadCiphertext String?
+  recipient   User?         @relation("ForwardRecipient", fields: [recipientId], references: [id])
+  recipientId String?
   kind        ForwardKind
   product     Product?      @relation(fields: [productId], references: [id])
   productId   String?
@@ -1893,6 +1932,7 @@ model Forward {
   pointsTransactions PointsTransaction[]
 
   @@index([senderId])
+  @@index([recipientId])
   @@map("forwards")
 }
 
@@ -2009,10 +2049,8 @@ model DoctorShare {
   id     String            @id @default(cuid())
   owner  User              @relation(fields: [ownerId], references: [id])
   ownerId String
-  // docs/PRIVACY.md: modtagerens navn og e-mail ligger i ejerens boks, ikke
-  // her. Felterne er kun bevaret for ældre rækker.
-  name   String?
-  email  String?
+  name   String
+  email  String
   status DoctorShareStatus @default(PENDING)
   token  String            @unique @default(cuid())
 
@@ -2029,12 +2067,6 @@ model DoctorShare {
   expiresAt  DateTime?
   acceptedAt DateTime?
   revokedAt  DateTime?
-
-  // Rapporten, krypteret på ejerens enhed med en nøgle, der kun står i
-  // lægens link (#k=…). Opdateres af ejerens enhed; serveren kan ikke læse den.
-  snapshotIv         String?
-  snapshotCiphertext String?
-  snapshotUpdatedAt  DateTime?
 
   @@index([ownerId])
   @@map("doctor_shares")
@@ -2061,184 +2093,6 @@ model AdminAuditLog {
   @@map("admin_audit_logs")
 }
 
-// ===================================================================
-// Privacy-by-architecture (docs/PRIVACY.md, 2026-09-23)
-// ===================================================================
-
-// ---- Identitet: nøglekuverter og gendannelse ----
-
-enum KeyEnvelopeKind {
-  PASSKEY_PRF
-  RECOVERY
-}
-
-// Brugerens hovednøgle (MK), krypteret på enheden. Serveren kan ikke åbne
-// den: PASSKEY_PRF kræver passkeyens PRF-output, RECOVERY kræver både
-// brugerens gendannelsesfil (F) og RecoveryShare.serverShare (S).
-model KeyEnvelope {
-  id         String          @id @default(cuid())
-  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId     String
-  kind       KeyEnvelopeKind
-  // Passkey.credentialId for PASSKEY_PRF; null for RECOVERY.
-  credentialId String?       @unique
-  // PRF-salt (base64url) for PASSKEY_PRF.
-  prfSalt    String?
-  iv         String
-  ciphertext String
-  createdAt  DateTime        @default(now())
-
-  @@index([userId, kind])
-  @@map("key_envelopes")
-}
-
-// Hello Cals halvdel (S) af gendannelsesnøglen. fileHash = SHA-256(F), så
-// serveren kan se, at brugeren har filen, uden at kende F.
-model RecoveryShare {
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String   @id
-  serverShare String
-  fileHash    String
-  createdAt   DateTime @default(now())
-
-  @@map("recovery_shares")
-}
-
-enum RecoveryRequestStatus {
-  PENDING
-  APPROVED
-  REJECTED
-  COMPLETED
-  EXPIRED
-}
-
-// Gendannelsessag: oprettes efter e-mailbekræftelse + upload af filens hash.
-// Support bekræfter identiteten personligt og godkender; først da frigives S
-// én gang via releaseTokenHash.
-model RecoveryRequest {
-  id               String                @id @default(cuid())
-  user             User                  @relation("RecoveryRequestUser", fields: [userId], references: [id], onDelete: Cascade)
-  userId           String
-  caseCode         String                @unique
-  status           RecoveryRequestStatus @default(PENDING)
-  releaseTokenHash String?               @unique
-  approvedBy       User?                 @relation("RecoveryRequestApprover", fields: [approvedById], references: [id])
-  approvedById     String?
-  approvedAt       DateTime?
-  expiresAt        DateTime
-  completedAt      DateTime?
-  createdAt        DateTime              @default(now())
-
-  @@index([status])
-  @@map("recovery_requests")
-}
-
-enum EmailLinkPurpose {
-  SIGNUP
-  RECOVERY
-}
-
-// Engangslinks sendt til en e-mail, som brugeren netop har tastet. Kun
-// e-mailens hash gemmes — aldrig adressen.
-model EmailLinkToken {
-  id        String           @id @default(cuid())
-  purpose   EmailLinkPurpose
-  emailHash String
-  tokenHash String           @unique
-  expiresAt DateTime
-  usedAt    DateTime?
-  createdAt DateTime         @default(now())
-
-  @@index([emailHash])
-  @@map("email_link_tokens")
-}
-
-// ---- Boks: INGEN relation til User ----
-
-// id = SHA-256(vaultToken). vaultToken afledes af brugerens hovednøgle, så
-// serveren kan ikke finde en brugers boks ud fra kontoen.
-model Vault {
-  id           String        @id
-  // X25519-offentlig nøgle (base64url) til forsegling af data til boksen.
-  publicKey    String
-  createdAt    DateTime      @default(now())
-  // Opdateres højst én gang i døgnet; bruges til at rydde forældreløse bokse.
-  lastAccessAt DateTime      @default(now())
-  records      VaultRecord[]
-
-  @@map("vaults")
-}
-
-// Én krypteret post. tag = HMAC af samlingsnavnet, recordId = klientens
-// tilfældige ID. Indholdet er AES-256-GCM med AAD "<tag>/<recordId>".
-model VaultRecord {
-  id         String   @id @default(cuid())
-  vault      Vault    @relation(fields: [vaultId], references: [id], onDelete: Cascade)
-  vaultId    String
-  tag        String
-  recordId   String
-  iv         String
-  ciphertext String
-  deleted    Boolean  @default(false)
-  updatedAt  DateTime @updatedAt
-
-  @@unique([vaultId, tag, recordId])
-  @@index([vaultId, updatedAt])
-  @@map("vault_records")
-}
-
-// Indbakke for data, som serveren forsegler til boksen (import fra
-// integrationer). id = SHA-256(inboxToken); tokenet ligger i boksen.
-model VaultInbox {
-  id        String           @id
-  publicKey String
-  createdAt DateTime         @default(now())
-  items     VaultInboxItem[]
-
-  @@map("vault_inboxes")
-}
-
-model VaultInboxItem {
-  id         String     @id @default(cuid())
-  inbox      VaultInbox @relation(fields: [inboxId], references: [id], onDelete: Cascade)
-  inboxId    String
-  epk        String
-  iv         String
-  ciphertext String
-  createdAt  DateTime   @default(now())
-
-  @@index([inboxId, createdAt])
-  @@map("vault_inbox_items")
-}
-
-// ---- Invitér en ven uden gemt kobling (docs/PRIVACY.md "Sociale funktioner") ----
-
-// Engangslink oprettet af afsenderen. Rækken SLETTES, når linket bruges, så
-// der aldrig findes en række, der kobler afsender og modtager.
-model InviteLink {
-  id        String   @id @default(cuid())
-  inviter   User     @relation(fields: [inviterId], references: [id], onDelete: Cascade)
-  inviterId String
-  codeHash  String   @unique
-  expiresAt DateTime
-
-  @@index([inviterId])
-  @@map("invite_links")
-}
-
-// Ventende belønning for én bruger. Afsender og modtager får hver sin række
-// uden fælles ID; kun datoen (ikke tidspunktet) gemmes.
-model InviteReward {
-  id          String    @id @default(cuid())
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String
-  eligibleOn  DateTime  @db.Date
-  grantedAt   DateTime?
-
-  @@index([eligibleOn])
-  @@map("invite_rewards")
-}
-
 // --- Support: tidsbegrænset, brugerstyret dataadgang (docs/DECISIONS.md 2026-09-23) ---
 
 // Brugeren bestemmer selv under Indstillinger → Support, hvilke datakategorier
@@ -2260,7 +2114,6 @@ model SupportAccessGrant {
   updatedAt   DateTime  @updatedAt
 
   supportRequests SupportRequest[]
-  packages        SupportPackage[]
 
   @@index([userId, revokedAt])
   @@index([validUntil])
@@ -2375,77 +2228,6 @@ model ProductNutritionFeatures {
   @@map("product_nutrition_features")
 }
 
-// Nyhedsbrev: separat, frivillig tilmelding (docs/PRIVACY.md "Sociale funktioner").
-// Ingen relation til User — tilmeldingen kan ikke kobles til en konto.
-model NewsletterSubscription {
-  id          String    @id @default(cuid())
-  email       String    @unique
-  // Emner: UPDATES, ADVICE, PARTNER_OFFERS.
-  topics      String[]  @default([])
-  // Engangstoken til bekræftelse og afmelding (kun hash gemmes).
-  tokenHash   String    @unique
-  confirmedAt DateTime?
-  createdAt   DateTime  @default(now())
-
-  @@map("newsletter_subscriptions")
-}
-
-// Supportpakker (docs/PRIVACY.md "Support"). Supports nøglepar laves i
-// admins browser; kun den offentlige nøgle ligger her. Brugerens enhed
-// forsegler de valgte data til den, og kun admins browser kan åbne dem.
-model SupportKey {
-  id        String   @id @default(cuid())
-  publicKey String
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
-
-  @@map("support_keys")
-}
-
-// Én forseglet pakke pr. tilladelse. Slettes, når tilladelsen tilbagekaldes
-// eller udløber.
-model SupportPackage {
-  id         String             @id @default(cuid())
-  grant      SupportAccessGrant @relation(fields: [grantId], references: [id], onDelete: Cascade)
-  grantId    String             @unique
-  keyId      String
-  epk        String
-  iv         String
-  ciphertext String
-  createdAt  DateTime           @default(now())
-
-  @@map("support_packages")
-}
-
-// Anonym statistik (docs/PRIVACY.md "Statistik"). Kun grupperede tællinger
-// og summer — intet bruger-, konto-, boks- eller enheds-ID og ingen IP.
-model AnalyticsBucket {
-  id          String   @id @default(cuid())
-  day         DateTime @db.Date
-  country     String
-  ageBand     String
-  sex         String
-  metric      String
-  bucket      String
-  count       Int      @default(0)
-  sum         Float    @default(0)
-
-  @@unique([day, country, ageBand, sex, metric, bucket])
-  @@index([metric, day])
-  @@map("analytics_buckets")
-}
-
-// Anonym brug af produkter pr. dag (Kvalitetskontrol). Ingen bruger.
-model ProductUsageDaily {
-  day       DateTime @db.Date
-  productId String
-  count     Int      @default(0)
-
-  @@id([day, productId])
-  @@index([productId, day])
-  @@map("product_usage_daily")
-}
-
 // Delte brugeropskrifter (docs/DECISIONS.md 2026-09-24). Offentlig verden
 // (docs/PRIVACY.md): ingen reference til User eller Vault. Ejeren beviser
 // ejerskab med et hemmeligt udgivertoken, der kun ligger i ejerens boks;
@@ -2496,4 +2278,58 @@ model SharedRecipePublisherBlock {
   createdAt     DateTime @default(now())
 
   @@map("shared_recipe_publisher_blocks")
+}
+
+// Favorit på en andens delte ret. Gemmes som snapshot, så favoritten
+// overlever, at ejeren sletter retten eller stopper delingen.
+model SharedRecipeFavorite {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  recipeId  String
+  recipe    Json
+  createdAt DateTime @default(now())
+
+  @@unique([userId, recipeId])
+  @@map("shared_recipe_favorites")
+}
+
+// Login med Google, Apple eller Facebook (docs/DECISIONS.md 2026-09-24).
+// providerAccountId er udbyderens stabile bruger-ID ("sub"/"id").
+enum OAuthProvider {
+  GOOGLE
+  APPLE
+  FACEBOOK
+}
+
+model UserOAuthAccount {
+  id                String        @id @default(cuid())
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            String
+  provider          OAuthProvider
+  providerAccountId String
+  email             String?
+  createdAt         DateTime      @default(now())
+  lastUsedAt        DateTime?
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("user_oauth_accounts")
+}
+
+// Enheder og lande, brugeren har logget ind fra. Et login fra en ny enhed
+// eller et nyt land giver en advarsel på mail (NEW_DEVICE_LOGIN).
+// deviceHash = SHA-256 af den tilfældige, langlivede enheds-cookie.
+model UserKnownDevice {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  deviceHash  String
+  label       String
+  country     String?
+  firstSeenAt DateTime @default(now())
+  lastSeenAt  DateTime @default(now())
+
+  @@unique([userId, deviceHash])
+  @@map("user_known_devices")
 }

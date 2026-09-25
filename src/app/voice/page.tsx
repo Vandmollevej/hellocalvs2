@@ -8,7 +8,6 @@ import { HfScreen } from "@/components/HfScreen";
 import { SwipeableRow } from "@/components/SwipeableRow";
 import { regionToSpeechLang } from "@/lib/regions";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 type Item = {
   id: string;
@@ -250,7 +249,7 @@ export default function VoicePage() {
 
   useEffect(() => {
     let cancelled = false;
-    localApi("/api/profile")
+    fetch("/api/profile")
       .then((response) => (response.ok ? response.json() : null))
       .then((data: { user?: { region?: string } } | null) => {
         if (!cancelled && data?.user?.region) regionRef.current = data.user.region;
@@ -524,7 +523,7 @@ export default function VoicePage() {
     const results = await Promise.all(
       pending.map(async (item) => {
         try {
-          const saveRes = await localApi("/api/registrations", {
+          const saveRes = await fetch("/api/registrations", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(
@@ -565,13 +564,13 @@ export default function VoicePage() {
   function deleteItem(item: Item) {
     setItems((current) => current.filter((existing) => existing.id !== item.id));
     if (item.saved) {
-      localApi(`/api/registrations/${item.id}`, { method: "DELETE" }).catch(() => {});
+      fetch(`/api/registrations/${item.id}`, { method: "DELETE" }).catch(() => {});
     }
   }
 
   async function favoriteItem(productId: string) {
     try {
-      await localApi("/api/favorites", {
+      await fetch("/api/favorites", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId }),

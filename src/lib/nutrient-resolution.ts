@@ -178,6 +178,21 @@ export async function resolveProductNutrients(product: ProductForResolution): Pr
   return resolved;
 }
 
+// Registreringens næringsstof-snapshots (docs/DECISIONS.md 2026-09-24/25):
+// skaleret til den registrerede mængde og gemt uændret derefter.
+export function nutrientSnapshotData(nutrients: ResolvedNutrient[], factor: number) {
+  if (!nutrients.length) return {};
+  const nutrientSnapshot: Record<string, number> = {};
+  const nutrientEstimatedSnapshot: Record<string, number> = {};
+  const nutrientToleranceSnapshot: Record<string, number> = {};
+  for (const n of nutrients) {
+    nutrientSnapshot[n.key] = n.per100g * factor;
+    if (n.estimated) nutrientEstimatedSnapshot[n.key] = n.per100g * factor;
+    if (n.tolerancePer100g !== null) nutrientToleranceSnapshot[n.key] = n.tolerancePer100g * factor;
+  }
+  return { nutrientSnapshot, nutrientEstimatedSnapshot, nutrientToleranceSnapshot };
+}
+
 // Generisk ingrediens: Frida-data på selve varen er sikre (ingen ~).
 export async function resolveGenericIngredientNutrients(ingredient: {
   micronutrientsPer100g?: unknown;

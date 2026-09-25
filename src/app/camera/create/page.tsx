@@ -18,7 +18,6 @@ import type {
   ProductFrontAnalysis,
 } from "@/lib/product-analysis-types";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 // Bindende flow (docs/DECISIONS.md, 2026-09-17):
 // STREGKODE ALTID FØRST -> forside -> ingredienser -> næring -> produkt-create.
@@ -89,7 +88,7 @@ function KameraOpretContent() {
   // stregkoden fastfryser den i draften.
   useEffect(() => {
     let cancelled = false;
-    localApi("/api/profile")
+    fetch("/api/profile")
       .then((response) => (response.ok ? response.json() : null))
       .then((data: { user?: { region?: string } } | null) => {
         if (!cancelled && data?.user?.region) setRegion(data.user.region);

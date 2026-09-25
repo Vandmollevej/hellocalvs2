@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { resolveGenericIngredientNutrients, resolveProductNutrients } from "@/lib/nutrient-resolution";
+import { getSessionUser } from "@/lib/session";
 
 export async function GET(
   _req: Request,
@@ -27,6 +28,11 @@ export async function GET(
         },
       },
     });
+    // En privat ingrediens vises kun for ejeren.
+    if (product && product.privateOwnerId) {
+      const user = await getSessionUser();
+      if (user?.id !== product.privateOwnerId) return NextResponse.json({ message: "Ikke fundet" }, { status: 404 });
+    }
     if (product) {
       // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24): alle næringsstoffer
       // ud over makroerne, pr. 100 g, med estimeret-flag.

@@ -52,7 +52,7 @@ export default async function AdminUsersPage() {
                 user={{
                   id: user.id,
                   displayName: user.displayName,
-                  email: user.email ?? "",
+                  email: user.email,
                   createdAt: user.createdAt.toISOString(),
                   pointsBalance: balanceByUser.get(user.id) ?? 0,
                   subscriptionStatus: user.subscription?.status ?? "INACTIVE",

@@ -8,7 +8,6 @@ import { DateSeparator } from "@/components/hf/DateSeparator";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { BODY_MEASUREMENT_FIELDS } from "@/lib/body-measurements";
 import type { GoalDTO, GoalTargetDTO } from "@/lib/user-goals";
-import { localApi } from "@/lib/vault/local-api";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("da-DK", { day: "2-digit", month: "2-digit", year: "numeric" })
@@ -57,7 +56,7 @@ export default function GoalsPage() {
 
   useEffect(() => {
     let cancelled = false;
-    localApi("/api/goals")
+    fetch("/api/goals")
       .then(async (response) => {
         if (!response.ok) throw new Error("Kunne ikke hente målsætninger");
         return (await response.json()) as { goals: GoalDTO[] };

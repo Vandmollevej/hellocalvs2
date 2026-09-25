@@ -5,7 +5,6 @@ import Link from "next/link";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 // Kommunikation (Fejlretninger/FEJLLISTE.md #13/#16, 2026-09-06): erstatter
 // den tidligere separate "Notifikationer"-side. De fire generelle
@@ -30,18 +29,13 @@ const EVENT_LABELS: Record<string, string> = {
 
 type CommunicationUser = {
   wantsPushNotifications: boolean;
+  wantsUpdateNewsEmails: boolean;
+  wantsAdviceEmails: boolean;
+  wantsPartnerOffersEmails: boolean;
 };
 
-// docs/PRIVACY.md: Hello Cal kender ikke brugerens e-mail. Nyhedsbreve
-// kræver derfor en separat tilmelding, som ikke er koblet til kontoen.
-const NEWSLETTER_TOPICS = [
-  { key: "UPDATES", label: "account.newsletterTopicUpdates" },
-  { key: "ADVICE", label: "account.newsletterTopicAdvice" },
-  { key: "PARTNER_OFFERS", label: "account.newsletterTopicPartners" },
-] as const;
-
 function SectionTitle({ children }: { children: React.ReactNode }) {
-  return <p className="hf-type-section-title mb-1 mt-2">{children}</p>;
+  return <p className="hf-type-section-title">{children}</p>;
 }
 
 function SectionDivider() {
@@ -52,26 +46,9 @@ export default function CommunicationPage() {
   const { t } = useTranslation();
   const [user, setUser] = useState<CommunicationUser | null>(null);
   const [preferences, setPreferences] = useState<Preference[] | null>(null);
-  const [newsletterEmail, setNewsletterEmail] = useState("");
-  const [newsletterTopics, setNewsletterTopics] = useState<string[]>(["UPDATES"]);
-  const [newsletterState, setNewsletterState] = useState<"idle" | "sending" | "sent" | "error">("idle");
-
-  async function signUpNewsletter() {
-    setNewsletterState("sending");
-    try {
-      const res = await fetch("/api/newsletter", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: newsletterEmail, topics: newsletterTopics }),
-      });
-      setNewsletterState(res.ok ? "sent" : "error");
-    } catch {
-      setNewsletterState("error");
-    }
-  }
 
   useEffect(() => {
-    localApi("/api/profile")
+    fetch("/api/profile")
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data) setUser(data.user);
@@ -85,7 +62,7 @@ export default function CommunicationPage() {
 
   function updateUser<K extends keyof CommunicationUser>(key: K, value: CommunicationUser[K]) {
     setUser((current) => (current ? { ...current, [key]: value } : current));
-    localApi("/api/profile", {
+    fetch("/api/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ [key]: value }),
@@ -122,57 +99,32 @@ export default function CommunicationPage() {
               onChange={(value) => updateUser("wantsPushNotifications", value)}
             />
 
-            <SectionTitle>{t("account.newsletterTitle")}</SectionTitle>
+            <SectionTitle>{t("profile.communication.emailSection")}</SectionTitle>
             <SectionDivider />
-            <p className="hf-type-caption -mt-2 opacity-70">{t("account.newsletterIntro")}</p>
-            {newsletterState === "sent" ? (
-              <p role="status" className="hf-type-body-sm rounded-[8px] bg-hf-tan p-4">
-                {t("account.newsletterSent")}
-              </p>
-            ) : (
-              <>
-                {NEWSLETTER_TOPICS.map((topic) => (
-                  <Toggle
-                    key={topic.key}
-                    label={t(topic.label)}
-                    checked={newsletterTopics.includes(topic.key)}
-                    onChange={(value) =>
-                      setNewsletterTopics((current) =>
-                        value ? [...current, topic.key] : current.filter((key) => key !== topic.key)
-                      )
-                    }
-                  />
-                ))}
-                <div className="flex gap-2">
-                  <input
-                    type="email"
-                    autoComplete="email"
-                    value={newsletterEmail}
-                    onChange={(event) => setNewsletterEmail(event.target.value)}
-                    placeholder={t("account.emailLabel")}
-                    className="hf-type-input h-12 min-w-0 flex-1 rounded-[8px] border bg-hf-cream px-4 outline-none"
-                    style={{ borderColor: "var(--hf-color-field-border)" }}
-                  />
-                  <button
-                    type="button"
-                    onClick={signUpNewsletter}
-                    disabled={newsletterState === "sending" || !newsletterEmail || newsletterTopics.length === 0}
-                    className="hf-btn-primary px-4 text-[15px] disabled:opacity-50"
-                  >
-                    {t("account.newsletterSignup")}
-                  </button>
-                </div>
-                {newsletterState === "error" && (
-                  <p className="hf-type-caption text-hf-red-dark">{t("account.networkError")}</p>
-                )}
-              </>
-            )}
+            <Toggle
+              label={t("profile.communication.updateNews")}
+              checked={user.wantsUpdateNewsEmails}
+              onChange={(value) => updateUser("wantsUpdateNewsEmails", value)}
+            />
+            <Toggle
+              label={t("profile.communication.advice")}
+              checked={user.wantsAdviceEmails}
+              onChange={(value) => updateUser("wantsAdviceEmails", value)}
+            />
+
+            <SectionTitle>{t("profile.communication.partnerSection")}</SectionTitle>
+            <SectionDivider />
+            <Toggle
+              label={t("profile.communication.partnerOffers")}
+              checked={user.wantsPartnerOffersEmails}
+              onChange={(value) => updateUser("wantsPartnerOffersEmails", value)}
+            />
           </>
         )}
 
         <SectionTitle>{t("profile.communication.specificSection")}</SectionTitle>
         <SectionDivider />
-        <p className="hf-type-caption -mt-2 opacity-70">{t("account.pushOnlyHint")}</p>
+        <p className="hf-type-caption -mt-2 opacity-70">{t("profile.communication.specificHint")}</p>
         {!preferences ? (
           <p className="hf-type-body-sm opacity-70">{t("profile.loading")}</p>
         ) : (
@@ -183,6 +135,10 @@ export default function CommunicationPage() {
                   {EVENT_LABELS[pref.event] ?? pref.event}
                 </p>
                 <div className="flex items-center justify-between">
+                  <span className="hf-type-body-sm">E-mail</span>
+                  <Toggle checked={pref.email} onChange={(v) => updatePreference(pref.event, "email", v)} />
+                </div>
+                <div className="mt-3 flex items-center justify-between">
                   <span className="hf-type-body-sm">Push</span>
                   <Toggle checked={pref.push} onChange={(v) => updatePreference(pref.event, "push", v)} />
                 </div>

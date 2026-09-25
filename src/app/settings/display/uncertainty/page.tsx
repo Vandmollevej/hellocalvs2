@@ -6,12 +6,11 @@ import { Toggle } from "@/components/ui/Toggle";
 import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
 import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { localApi } from "@/lib/vault/local-api";
 
 // Settings → Visning → Usikkerhed (docs/DECISIONS.md 2026-09-24): én kontakt,
 // der bestemmer om den grå usikkerhedslinje under estimerede værdier er
 // foldet ud automatisk. Selve ~ vises altid. Standard: slået fra. Feltet
-// ligger privat i boksen (src/lib/vault/handlers/profile.ts), samme mønster
+// ligger på User.autoExpandUncertainty (/api/profile), samme mønster
 // som limits/page.tsx.
 type DisplaySettingsUser = {
   autoExpandUncertainty: boolean;
@@ -24,7 +23,7 @@ export default function UncertaintySettingsPage() {
 
   useEffect(() => {
     let cancelled = false;
-    localApi("/api/profile")
+    fetch("/api/profile")
       .then(async (response) => {
         if (!response.ok) throw new Error("profile");
         return (await response.json()) as { user: DisplaySettingsUser };
@@ -45,7 +44,7 @@ export default function UncertaintySettingsPage() {
 
   function setAutoExpand(value: boolean) {
     setUser((current) => (current ? { ...current, autoExpandUncertainty: value } : current));
-    localApi("/api/profile", {
+    fetch("/api/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ autoExpandUncertainty: value }),

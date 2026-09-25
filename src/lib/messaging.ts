@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import type { MessageChannel, MessageEvent as MessageEventType } from "@prisma/client";
+import type { MessageEvent as MessageEventType } from "@prisma/client";
 
 // Besked automatisering (docs/DECISIONS.md 2026-09-02): queueMessage() er
 // den ENESTE indgang til at sende en mail/pushbesked i appen. Den slår
@@ -20,35 +20,27 @@ const USER_TOGGLEABLE_EVENTS: MessageEventType[] = [
   "FRIEND_FORWARD_RECEIVED",
 ];
 
-// docs/PRIVACY.md: serveren kender ikke brugernes navne. Et manglende eller
-// tomt {{displayName}} fjernes, så hilsnen blot bliver "Hej,".
 function renderTemplate(template: string, vars: Record<string, string>): string {
-  return template
-    .replace(/\{\{(\w+)\}\}/g, (match, key) => (key === "displayName" ? vars[key] ?? "" : vars[key] ?? match))
-    .replace(/Hej\s+,/g, "Hej,");
-}
-
-// Almindelige brugere har ingen e-mail på serveren (docs/PRIVACY.md), så
-// e-mail kan ikke sendes til dem: BOTH bliver til PUSH, og ren EMAIL springes over.
-async function channelFor(userId: string | undefined, channel: MessageChannel): Promise<MessageChannel | null> {
-  if (!userId || channel === "PUSH") return channel;
-  const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } });
-  if (user?.email) return channel;
-  return channel === "BOTH" ? "PUSH" : null;
+  return template.replace(/\{\{(\w+)\}\}/g, (match, key) => vars[key] ?? match);
 }
 
 export async function queueMessage(
   event: MessageEventType,
   opts: { userId?: string; toEmail?: string; vars?: Record<string, string> } = {}
 ) {
-  const template = await prisma.messageTemplate.findUnique({ where: { event } });
-  if (!template || !template.enabled) {
+  // Er skabelonen endnu ikke seedet (admin har ikke åbnet "Besked
+  // automatisering"), bruges standardskabelonen, så fx login-advarsler
+  // altid sendes.
+  const template =
+    (await prisma.messageTemplate.findUnique({ where: { event } })) ??
+    ({ ...DEFAULT_TEMPLATES[event], enabled: true } as const);
+  if (!template.enabled) {
     return prisma.outboundMessage.create({
       data: {
         userId: opts.userId,
         toEmail: opts.toEmail,
         event,
-        channel: template?.channel ?? "EMAIL",
+        channel: template.channel,
         status: "SKIPPED",
       },
     });
@@ -67,20 +59,13 @@ export async function queueMessage(
     }
   }
 
-  const channel = opts.toEmail ? template.channel : await channelFor(opts.userId, template.channel);
-  if (!channel) {
-    return prisma.outboundMessage.create({
-      data: { userId: opts.userId, event, channel: template.channel, status: "SKIPPED" },
-    });
-  }
-
   const vars = opts.vars ?? {};
   return prisma.outboundMessage.create({
     data: {
       userId: opts.userId,
       toEmail: opts.toEmail,
       event,
-      channel,
+      channel: template.channel,
       subject: renderTemplate(template.subject, vars),
       bodyHtml: renderTemplate(template.bodyHtml, vars),
       status: "QUEUED",
@@ -144,6 +129,11 @@ const DEFAULT_TEMPLATES: Record<MessageEventType, { subject: string; bodyHtml: s
     bodyHtml: "<p>En fejlrapport fra {{displayName}} har ventet mere end 48 timer.</p><p><a href=\"{{approveLink}}\">Gennemgå direkte</a></p>",
     channel: "EMAIL",
   },
+  INGREDIENT_REQUEST_ADMIN: {
+    subject: "Ny ingrediens ønsket: {{ingredientName}}",
+    bodyHtml: "<p>En bruger har oprettet sin egen ingrediens \"{{ingredientName}}\", som ikke findes i databasen.</p><p><a href=\"{{reviewLink}}\">Tilføj den globalt eller afvis</a></p>",
+    channel: "EMAIL",
+  },
   BUG_REPORT_RESOLVED: {
     subject: "Din fejlrapport er godkendt",
     bodyHtml: "<p>Hej {{displayName}},</p><p>Tak for din fejlrapport — den er godkendt og du har optjent 10 points.</p>",
@@ -166,7 +156,7 @@ const DEFAULT_TEMPLATES: Record<MessageEventType, { subject: string; bodyHtml: s
   },
   FRIEND_INVITATION: {
     subject: "{{inviterName}} har inviteret dig til Hello Cal",
-    bodyHtml: "<p>{{inviterName}} synes du skulle prøve Hello Cal.</p><p><a href=\"{{inviteUrl}}\">Opret din konto</a> — I optjener begge 300 points, når du er med. Linket er gyldigt i 7 dage.</p>",
+    bodyHtml: "<p>{{inviterName}} synes du skulle prøve Hello Cal.</p>{{personalMessage}}<p><a href=\"{{inviteUrl}}\">Opret din konto</a> — I optjener begge 300 points, når du er med. Linket er gyldigt i 7 dage.</p>",
     channel: "EMAIL",
   },
   DOCTOR_SHARE_INVITATION: {
@@ -174,9 +164,35 @@ const DEFAULT_TEMPLATES: Record<MessageEventType, { subject: string; bodyHtml: s
     bodyHtml: "<p>{{ownerName}} har inviteret dig til at se udvalgte data i Hello Cal.</p><p><a href=\"{{viewUrl}}\">Se oversigten</a> — invitationen er gyldig i 14 dage.</p>",
     channel: "EMAIL",
   },
+  NEW_DEVICE_LOGIN: {
+    subject: "Nyt login på din Hello Cal-konto",
+    bodyHtml:
+      "<p>Hej {{displayName}},</p><p>Der er netop logget ind på din Hello Cal-konto fra en ny enhed eller et nyt sted.</p><p><strong>Enhed:</strong> {{device}}<br><strong>Sted:</strong> {{location}}<br><strong>Tidspunkt:</strong> {{time}}<br><strong>Login med:</strong> {{method}}</p><p>Hvis det var dig, behøver du ikke gøre noget.</p><p>Hvis det ikke var dig, bør du straks <a href=\"{{resetLink}}\">skifte din adgangskode</a>.</p><p>Hello Cal</p>",
+    channel: "EMAIL",
+  },
+  ADMIN_MESSAGE: {
+    subject: "Besked fra Hello Cal om {{productName}}",
+    bodyHtml: "<p>Hej {{displayName}},</p><p>Tak for din rettelse af \"{{productName}}\". Vi har en besked til dig:</p><p>{{message}}</p><p>Hello Cal</p>",
+    channel: "EMAIL",
+  },
+};
+
+// Tidligere standardtekster, der opgraderes automatisk, så længe admin ikke
+// har redigeret dem (fx fik FRIEND_INVITATION {{personalMessage}} 2026-09-25).
+const LEGACY_DEFAULT_BODIES: Partial<Record<MessageEventType, string>> = {
+  FRIEND_INVITATION:
+    "<p>{{inviterName}} synes du skulle prøve Hello Cal.</p><p><a href=\"{{inviteUrl}}\">Opret din konto</a> — I optjener begge 300 points, når du er med. Linket er gyldigt i 7 dage.</p>",
 };
 
 export async function ensureDefaultMessageTemplates() {
+  await Promise.all(
+    (Object.entries(LEGACY_DEFAULT_BODIES) as [MessageEventType, string][]).map(([event, legacyBody]) =>
+      prisma.messageTemplate.updateMany({
+        where: { event, bodyHtml: legacyBody },
+        data: { bodyHtml: DEFAULT_TEMPLATES[event].bodyHtml },
+      })
+    )
+  );
   await Promise.all(
     (Object.entries(DEFAULT_TEMPLATES) as [MessageEventType, (typeof DEFAULT_TEMPLATES)[MessageEventType]][]).map(
       ([event, tpl]) =>

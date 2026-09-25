@@ -6,7 +6,7 @@ Last updated: 2026-09-25
 
 Beslutninger i `docs/DECISIONS.md` 2026-09-25 (erstatter afklaringen
 2026-09-24 hvor de er i modstrid). Bygget på branch
-`claude/great-booth-2afa0b` (worktree), ikke merget til master endnu.
+`claude/great-booth-2afa0b` og merget til master.
 
 - Grønt tastatur-`~` (`UncertaintyTilde`) + grå linje (`UncertaintyLine`)
   i "Vis mere"-tabellen på `/add/[id]`, i Statistik-kortene (næringsstoffer)
@@ -18,8 +18,8 @@ Beslutninger i `docs/DECISIONS.md` 2026-09-25 (erstatter afklaringen
   `stat-cards` bruger dem.
 - Frida-agenten importerer alle mikrodata og genimporterer den nuværende
   version én gang; generiske ingredienser får mikrodata kopieret.
-- Migration `20260924150000_nutrient_uncertainty` (3 JSON-kolonner på
-  products, 1 på generic_ingredients, `regions` på ai_product_analyses).
+- Migration `20260925120000_nutrient_uncertainty` (products, users,
+  registrations, generic_ingredients, ai_product_analyses, scheduled_jobs).
 - Admin `/admin/uncertainties` (4 faner, sortering, rød prik i menuen,
   produkt-overlay, lightbox med beskåret foto + røde rammer, rettelse →
   produkt). AI-ruterne for forside/næring/ingredienser returnerer nu
@@ -35,6 +35,163 @@ når der ikke er aflæst en deklaration.
 Deploy: migrationen kører automatisk (`migrate`-servicen), og agent-
 containerne genbygges af deploy-jobbet. Live-verifikation efter deploy
 kræver admin-login.
+
+## 2026-09-25: Profil — start-vægt altid låst + "Lås"-side
+
+Start-vægt på `/profile/edit` er nu altid låst, også når den er tom (før var
+den et redigerbart felt indtil første indtastning). Feltet vises gråt med en
+hængelås til venstre i boksen; tryk åbner `/profile/start-weight`, som nu er
+siden "Lås" med tilbagepil, teksten "Din startvægt bør ikke ændres, og er
+grundlag for al statistik. Du skal i stedet ændre din dagsvægt her." og
+knappen "Angiv dagsvægt" (→ `/profile/weight-calibration`). Knappen "Send
+verificeringsmail" er fjernet fra siden; verify-siden og API'et ligger
+stadig, men har ingen indgang i UI'et. Er start-vægten tom, sætter første
+vejning (`POST /api/weight-entries`) den. Ubrugte i18n-nøgler fjernet.
+Kropsmål er ikke omfattet (brugeren har bekræftet, at kun start-vægt skal låses).
+
+## 2026-09-25: Photo diary — passcode toggle now actually locks the photos
+
+User intent: the photos must not flash on screen by accident when the page is
+opened on the phone (e.g. on the bus). It is a view lock, not encryption.
+When "Kræver telefonens adgangskode for at vise" is on, the page shows only
+"Vis billeder"; tapping it asks for Face ID/Touch ID/the phone's passcode via
+WebAuthn (`confirmOnDevice` in `src/lib/passkey-client.ts`: reauth with the
+existing passkey through `/api/auth/passkey/reauth/*`, or register one if the
+account has none — registration also requires on-device confirmation). The
+page re-locks (and closes the full-screen viewer) when it goes to the
+background (`visibilitychange`). Turning the toggle off while locked requires
+the same confirmation. Browsers without WebAuthn get a plain tap gate. The
+"kræver en native app" note is replaced with a description of the lock.
+Verified with `npm run lint` and `npm run build`; not tested on a real phone
+from this container.
+
+## 2026-09-25: Photo diary — selfie feature removed
+
+The user states they never asked for selfies in Billede-dagbog and asked for
+the feature to be removed. The 2026-09-12 entry below records it as a user
+request, but the user rejects that. Removed from
+`src/app/profile/photo-diary/page.tsx`: the "Tag selfie (portræt)" button
+(`capture="user"`), the "Selfies" section with portrait cards, the
+weight/measurement caption lines under each selfie, and the "Andre billeder"
+heading. The page is back to one "Tag billede (fuld figur eller mave)" button
+and one 2-column grid. Photos saved earlier as selfies in localStorage are not
+deleted; they now show in the same grid (the old `kind` field is ignored).
+Unused `photoDiary.*` i18n keys removed from `da.json`/`en.json`; the
+selfie-portrait-card paragraph removed from `design.md`. `BodyMeasurement`,
+`/api/body-measurements` and `/profile/body-measurements` are unchanged.
+
+## 2026-09-25: Invitér en ven + fast afstand om sektionsoverskrifter
+
+Se `docs/DECISIONS.md` 2026-09-25 "Sektionsoverskrifter, points-banner og
+"Invitér en ven"". Ændret: `globals.css` (`.hf-type-section-title`),
+`PointsPromoBanner`, `profile/invite`, `lib/invite-message.ts`,
+invitations-API'erne og FRIEND_INVITATION-skabelonen (gammel standardtekst
+opgraderes automatisk). Lint + build grønne. Ikke visuelt testet (kræver
+login) — test på iPhone efter deploy: afstand om overskrifter på alle sider,
+delemenuen og mailens personlige besked.
+
+## 2026-09-25: Profil — tandhjul til app-indstillinger + tilbagepil
+
+- På `/profile` (og kun dér) er profilcirklen øverst til højre skiftet ud
+  med et tandhjul, der åbner `/settings` (app-indstillingerne). Styres af
+  `showAppSettingsButton` på `HfScreen`/`ScreenHeader`.
+- `/profile` viser nu altid tilbagepilen, også når "Profil" ligger i
+  footeren (`alwaysShowBackButton`).
+- Profilen rummer kun personlige ting (Profil, Vægt kalibrering, Kropsmål,
+  Søvnmønster, Billede-dagbog, Points, Opskrifter). Abonnement, Opsætning
+  (`/profile/settings`), Indberet fejl og Log ud er flyttet til `/settings`;
+  Integrationer, Kommunikation og Invitér en ven lå der i forvejen. Den
+  gamle "Log ind / tilmeld"-boks er fjernet.
+
+## 2026-09-25: Statistik — redigerbare grafer, søgning og "+ Tilføj" pr. blok
+
+Se `docs/DECISIONS.md` 2026-09-25 "Statistiksidens grafer kan redigeres som
+kortene". Nye filer: `src/lib/stat-charts.ts`,
+`src/components/StatChartsSection.tsx`,
+`src/app/statistics/unused-charts/page.tsx`. `unused-cards` har fået søgefelt
+og "+ Tilføj" pr. blok (`AccordionSection` har fået en `action`-plads).
+Lint + build grønne. Ikke visuelt testet (lokalt kræves login) — test på
+iPhone efter deploy: long-press på grafer, træk/fjern, knapperne kun synlige
+under redigering.
+
+## 2026-09-25: Markering slået helt fra i appen
+
+Se `docs/DECISIONS.md` 2026-09-25 "Global markeringsregel". Global CSS i
+`src/app/globals.css` + `selectstart`-lytter i `GlobalClipboardGuard.tsx`.
+Felter kan stadig redigeres. Skal testes på iPhone efter deploy (long-press på
+kort, tekst og tomme flader må ikke markere noget).
+## 2026-09-25: Abonnement — "Indløs points" som knap + ny side
+
+- Boksen på `/profile/subscription` viser nu "Du har optjent {saldo} points."
+  med en tynd sekundær knap (`hf-button--secondary --compact --full`)
+  "Indløs points", der fører til `/profile/subscription/redeem-points`.
+- Ny side "Indløs points" med tan-liste i samme stil som profil/madvarer.
+  Første række: "Giv en ven en gratis måned med Seriøs adgang!" — endnu uden
+  handling; indholdet kommer senere. Den gamle `/profile/points` er uændret.
+
+## 2026-09-25: Vægt-ikonet tegnet som vektor
+
+- `IconBathroomScale` (`src/components/icons/BathroomScale.tsx`) maskerede
+  256px-PNG'en `public/icons/bathroom-scale.png`; i 20–28px (tilføj-menuen og
+  forsidens +-hjul) smeltede de tykke streger sammen til en uklar klat.
+- Nu en ren SVG-streg-tegning af samme artwork (ramme, skive, to fyldte
+  fodspor) i tabler-stil med `currentColor`, så den står skarpt i alle
+  størrelser. ViewBox og PNG er trimmet til kanten (ingen luft omkring).
+
+## 2026-09-25: Mail via Mailjet aktiveret
+
+- SMTP_HOST/PORT/USER/PASS/FROM (Mailjet, in-v3.mailjet.com:587) sat i lokal
+  `.env` og i serverens `.env.production` (backup:
+  `.env.production.bak-20260925-smtp`). Ingen kodeændring; `src/lib/mailer.ts`
+  sender nu køen ved næste deploy.
+- Afsenderadressen skal være verificeret i Mailjet, ellers afvises mails.
+
+## 2026-09-24: Normalt login igen (boksen fjernet)
+
+Se `docs/DECISIONS.md` 2026-09-24 "Normalt login".
+
+- Privacy-by-architecture rullet tilbage for brugerappen; data server-side.
+- Login: e-mail + adgangskode, Face ID, Google, Apple, Facebook
+  (`src/lib/oauth.ts`, `src/lib/user-passkey.ts`, `src/lib/user-login.ts`).
+- Mail-advarsel ved login fra ny enhed/nyt land.
+- Migration `20260924180000_restore_normal_accounts` (håndskrevet via
+  `prisma migrate diff`, køres af migrate-servicen ved deploy).
+
+Next work:
+1. Sæt `USER_SESSION_SECRET`, `APP_BASE_URL`, SMTP og Google/Facebook/
+   Apple-nøgler i `.env.production` (docs/DEPLOYMENT.md "Login (brugere)").
+2. Test Face ID og de tre sociale logins på iPhone efter deploy.
+
+## 2026-09-24: G8 — otte sundhedsintegrationer bygget (commit 22184fe)
+
+Se docs/DECISIONS.md 2026-09-24 "Otte sundhedsintegrationer". Mangler kun
+nøgler på serveren (`.env.production` på Synology), derefter deploy:
+`WITHINGS_CLIENT_ID/SECRET`, `GOOGLE_HEALTH_CLIENT_ID/SECRET`,
+`STRAVA_CLIENT_ID/SECRET`, `POLAR_CLIENT_ID/SECRET` og evt.
+`WITHINGS_REDIRECT_URI`/`GOOGLE_HEALTH_REDIRECT_URI`. Migration
+`20260924170000_integration_providers` tilføjer enum-værdier. Ikke testet
+mod de rigtige API'er endnu (ingen nøgler lokalt). Waldemarsro: venter på
+brugerens "byg".
+
+## 2026-09-25: "Største kilder"-siden fjernet
+
+Brugerens ønske: `/statistics/sources` (faner + Produkter/Produkttyper) er
+slettet, da "Månedens synder" dækker det samme. Boksen "Største syndere" på
+Statistik-siden beholdes, men uden "Se alle"-link.
+
+## 2026-09-25: G3 — produktkategorier, kød/drikke-statistik, "Største kilder" og "Månedens synder" — bygget
+
+Se docs/DECISIONS.md 2026-09-25 (G3). `npm run lint` (G3-filer) og
+`npm run build` er grønne. Ikke verificeret i browser mod rigtige data
+(kræver login med passkey + boks).
+
+Mangler (bevidst udskudt):
+- Frida-AI-beregning af kødandel i sammensatte retter.
+- 30-delt Hello Cal-kategoriliste + NOVA/ultraforarbejdet + Slik/Chips.
+- REMA-importen skal køres igen, for at grøntsager/frugt får VEGETABLES
+  (migrationen skal deployes først).
+- Nye kort vises kun automatisk for brugere uden gemt statistik-layout;
+  andre tilføjer dem via "Tilføj kort" → "Kød, fisk og drikke".
 
 ## TODO (2026-09-24): Waldemarsro-integration (dansk opskriftsside) — afklaret, ikke bygget
 
