@@ -4,7 +4,8 @@ import type { Icon } from "@tabler/icons-react";
 /**
  * Bathroom scale, a vector trace of the user's approved artwork
  * (public/icons/bathroom-scale.png: rounded frame, dial with needle, two
- * footprints). Drawn as a tabler-style stroke icon (24×24 viewBox,
+ * footprints). Drawn as a tabler-style stroke icon (viewBox trimmed to the
+ * frame's outer edge so the icon fills its box without margin,
  * `currentColor`) instead of masking the PNG, because the 256px bitmap's
  * heavy lines blur into blobs at the 20–28px sizes the icon is used at.
  */
@@ -20,7 +21,7 @@ export function IconBathroomScale({
       xmlns="http://www.w3.org/2000/svg"
       width={size}
       height={size}
-      viewBox="0 0 24 24"
+      viewBox="2 2 20 20"
       fill="none"
       stroke={color}
       strokeWidth={stroke}

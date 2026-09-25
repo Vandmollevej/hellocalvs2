@@ -9,7 +9,7 @@ Last updated: 2026-09-25
   forsidens +-hjul) smeltede de tykke streger sammen til en uklar klat.
 - Nu en ren SVG-streg-tegning af samme artwork (ramme, skive, to fyldte
   fodspor) i tabler-stil med `currentColor`, så den står skarpt i alle
-  størrelser. PNG'en beholdes som reference.
+  størrelser. ViewBox og PNG er trimmet til kanten (ingen luft omkring).
 
 ## 2026-09-25: Mail via Mailjet aktiveret
 
