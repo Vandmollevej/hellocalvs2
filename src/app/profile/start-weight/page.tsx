@@ -12,7 +12,7 @@ export default function StartWeightLockPage() {
 
   return (
     <HfScreen title={t("profile.startWeight.lockTitle")} onBack={() => router.back()}>
-      <div className="flex flex-col gap-4 p-4">
+      <div className="hf-page">
         <p className="text-[15px] leading-6 text-hf-black">{t("profile.startWeight.lockBody")}</p>
         <button
           type="button"

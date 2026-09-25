@@ -219,12 +219,12 @@ function RecipeDetailContent() {
         ) : undefined
       }
     >
-      <div className="flex flex-col gap-4 p-4">
+      <div className="hf-page">
         {state === "loading" && (
-          <p className="py-6 text-center text-sm text-hf-black opacity-60">{t("recipeDetail.loading")}</p>
+          <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipeDetail.loading")}</p>
         )}
         {state === "missing" && (
-          <p className="py-6 text-center text-sm text-hf-black opacity-60">{t("recipeDetail.notFound")}</p>
+          <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipeDetail.notFound")}</p>
         )}
 
         {state === "ready" && view && (
@@ -340,8 +340,8 @@ function RecipeDetailContent() {
               </div>
             </div>
 
-            <div className="rounded-2xl bg-hf-tan p-4">
-              <p className="mb-1 text-xs font-bold text-hf-black">{t("recipeDetail.total")}</p>
+            <div className="hf-card">
+              <p className="text-xs font-bold text-hf-black">{t("recipeDetail.total")}</p>
               <p className="text-sm text-hf-black">
                 {t("recipeDetail.gramsKcal", { grams: round(totals.grams), kcal: round(totals.kcal) })}
               </p>

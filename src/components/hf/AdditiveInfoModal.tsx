@@ -50,7 +50,7 @@ export function AdditiveInfoModal({
           {!info ? (
             <p className="text-[14px] text-hf-black opacity-60">Henter...</p>
           ) : (
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-4">
               {info.danishName && (
                 <p className="text-[13px] text-hf-black opacity-70">{info.danishName}</p>
               )}

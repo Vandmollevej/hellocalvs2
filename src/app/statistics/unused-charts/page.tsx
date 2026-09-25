@@ -115,7 +115,7 @@ export default function UnusedStatChartsPage() {
 
   function renderGrid(options: ChartOption[]) {
     return (
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-4">
         {options.map((option) => (
           <button
             key={option.key}
@@ -136,7 +136,7 @@ export default function UnusedStatChartsPage() {
 
   return (
     <HfScreen title={t("statUnusedCharts.title")}>
-      <div className="flex flex-col gap-2 p-4">
+      <div className="hf-page hf-page--list">
         <p className="text-xs text-hf-black opacity-60">{t("statUnusedCharts.hint")}</p>
 
         <div className="hf-search">
@@ -154,7 +154,7 @@ export default function UnusedStatChartsPage() {
           <section className="flex flex-col gap-2 pb-2">
             <p className="px-1 text-sm font-semibold text-hf-black">{t("statUnusedCards.searchResults")}</p>
             {searchResults.length === 0 ? (
-              <p className="rounded-2xl bg-hf-tan/60 p-3 text-xs text-hf-black opacity-50">
+              <p className="rounded-2xl bg-hf-tan/60 p-4 text-xs text-hf-black opacity-50">
                 {t("statUnusedCharts.noSearchResults")}
               </p>
             ) : (
@@ -183,7 +183,7 @@ export default function UnusedStatChartsPage() {
             }
           >
             {category.options.length === 0 ? (
-              <p className="rounded-2xl bg-hf-tan/60 p-3 text-xs text-hf-black opacity-50">
+              <p className="rounded-2xl bg-hf-tan/60 p-4 text-xs text-hf-black opacity-50">
                 {t("statUnusedCharts.noChartsLeft")}
               </p>
             ) : (

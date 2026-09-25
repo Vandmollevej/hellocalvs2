@@ -34,7 +34,7 @@ export default function AdminVerifyPage() {
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center px-4">
       <h1 className="mb-1 text-xl font-semibold text-text-primary">Bekræftelseskode</h1>
-      <p className="mb-6 text-sm text-text-secondary">
+      <p className="mb-8 text-sm text-text-secondary">
         Indtast den 6-cifrede kode fra din authenticator-app.
       </p>
       <form onSubmit={onSubmit} className="flex flex-col gap-4">

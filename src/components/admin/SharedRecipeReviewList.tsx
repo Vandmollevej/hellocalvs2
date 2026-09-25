@@ -46,11 +46,11 @@ export function SharedRecipeReviewList({ rows, locale }: { rows: SharedRecipeRev
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       {visible.map((row) => (
         <div
           key={row.id}
-          className={`rounded-lg border bg-surface-2 p-3 ${row.reportCount > 0 ? "border-red-600" : "border-border-strong"}`}
+          className={`rounded-lg border bg-surface-2 p-4 ${row.reportCount > 0 ? "border-red-600" : "border-border-strong"}`}
         >
           <div className="flex items-baseline justify-between gap-3">
             <p className="font-medium text-text-primary">{row.name}</p>

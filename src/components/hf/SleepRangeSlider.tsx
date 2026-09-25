@@ -100,7 +100,7 @@ export function SleepRangeSlider({
   const wrapsMidnight = bedtimePct > wakePct;
 
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between px-0.5">
         {editing === "wake" ? (
           <input

@@ -176,11 +176,11 @@ export default function ProfileSettingsPage() {
       title={t("settings.setupTitle")}
     >
       {loading || !user ? (
-        <p className="p-6 text-center text-[14px] text-hf-black opacity-60">
+        <p className="p-4 text-center text-[14px] text-hf-black opacity-60">
           {loading ? t("settings.loading") : t("settings.loadError")}
         </p>
       ) : (
-        <div className="flex flex-col gap-4 p-4">
+        <div className="hf-page">
           <SetupProgressBar weightSet={weightSet} />
 
           <SetupSelectCard
@@ -209,7 +209,7 @@ export default function ProfileSettingsPage() {
                   {t("settings.showAllergensDescription")}
                 </span>
               </span>
-              <span className="flex items-center gap-2 pt-0.5">
+              <span className="flex items-center gap-2 pt-1">
                 <span className="text-[12px] text-hf-black opacity-60">
                   {t("settings.showAllergensSelectAll")}
                 </span>

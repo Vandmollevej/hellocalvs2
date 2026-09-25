@@ -18,14 +18,14 @@ export default async function AdminDashboardPage() {
       <div className="grid gap-4 sm:grid-cols-2">
         <Link
           href="/admin/products"
-          className="rounded-lg border border-border-strong bg-surface-2 p-5 hover:border-hf-green"
+          className="rounded-lg border border-border-strong bg-surface-2 p-4 hover:border-hf-green"
         >
           <p className="text-3xl font-semibold text-hf-green-dark">{pendingProducts}</p>
           <p className="mt-1 text-sm text-text-secondary">Nye produkter afventer godkendelse</p>
         </Link>
         <Link
           href="/admin/images"
-          className="rounded-lg border border-border-strong bg-surface-2 p-5 hover:border-hf-green"
+          className="rounded-lg border border-border-strong bg-surface-2 p-4 hover:border-hf-green"
         >
           <p className="text-3xl font-semibold text-hf-green-dark">{pendingImages}</p>
           <p className="mt-1 text-sm text-text-secondary">Billedforslag afventer godkendelse</p>

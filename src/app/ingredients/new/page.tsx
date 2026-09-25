@@ -81,7 +81,7 @@ function NewIngredientContent() {
 
   return (
     <HfScreen title={t("privateIngredients.title")} icon={<IconCarrot size={20} stroke={2} />}>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4">
+      <form onSubmit={handleSubmit} className="hf-page">
         <p className="text-[14px] text-hf-black">{t("privateIngredients.intro")}</p>
         <TextField
           variant="standard"

@@ -2,6 +2,28 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-25: Global lodret rytme (8/16/32) og sorte primærknapper
+
+Brugerens krav: "stringent opsætning på tværs af hele sitet med rene linjer og
+globale designregler" — afstande mellem blokke, tekst og knapper var forskellige
+fra side til side.
+
+- Kun 8 px (inde i en blok), 16 px (mellem blokke, kortpadding, gutter) og
+  32 px (før en sektion). Se `design.md` §5.4.
+- Sidecontainere bruger `.hf-page` i stedet for egne `flex flex-col gap-N p-4`;
+  kort bruger `.hf-card`. Hele `src/` er normaliseret: alle lodrette
+  margener/paddings (`mt/mb/my/pt/pb/space-y`) og stablede gaps ligger på
+  4/8/16/32 px, kort har 16 px padding, og `rounded-xl`/`rounded-2xl` er låst
+  til 8 px i temaet. Accordion og chip følger samme mål. Undtagelser: vandrette
+  gaps i rækker (ikon/tekst), knappers interne padding, kalenderens 7-kolonne
+  dagsgitter (6 px) og enkelte special-offsets (`pt-9`, `mt-10`, `mt-20`).
+- Primærknapper forbliver sorte, også når de er deaktiveret (ingen grå
+  opacity). "Indløs points" på Abonnement er bevidst en grå flade med hvid tekst.
+- Abonnement: prislinjen viser kun prisen ("119 kr./måned"), ikke "Seriøs —".
+- Sektionsoverskrifter: 32 px over og 16 px under (justerer 12 px fra
+  "Sektionsoverskrifter, points-banner …" nedenfor til 8/16/32-skalaen). I en
+  `.hf-page` trækkes stakkens gap fra, så resultatet er det samme.
+
 ## 2026-09-25: Billeder, fremgangsmåde og kategorier i Opret ret
 
 - Nederst i Opret ret: knapperne "Tilføj billeder" og "Tilføj fremgangsmåde".

@@ -45,12 +45,12 @@ export default async function TokenApprovePage({ params }: { params: Promise<{ t
                 ? `Fra ${bugReport.user.displayName} (${bugReport.user.email})`
                 : "AI-genereret (ingen bruger)"}
             </p>
-            <p className="mt-3 whitespace-pre-wrap text-sm text-text-primary">{bugReport.description}</p>
+            <p className="mt-4 whitespace-pre-wrap text-sm text-text-primary">{bugReport.description}</p>
           </>
         )
       )}
 
-      <div className="mt-6">
+      <div className="mt-8">
         <TokenApprovalActions token={token} />
       </div>
     </div>

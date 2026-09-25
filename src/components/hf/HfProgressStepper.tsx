@@ -47,7 +47,7 @@ export function HfProgressStepper({
           </div>
         ))}
       </div>
-      <div aria-hidden="true" className="relative mt-3 h-[18px]">
+      <div aria-hidden="true" className="relative mt-4 h-[18px]">
         {steps.map((step, index) => {
           const position =
             index === 0
