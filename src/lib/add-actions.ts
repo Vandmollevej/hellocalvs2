@@ -2,13 +2,13 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import {
   IconCalendarHeart,
   IconCamera,
-  IconDroplet,
   IconMicrophone,
   IconSearch,
   IconTarget,
   type Icon,
 } from "@tabler/icons-react";
 import { IconBathroomScale } from "@/components/icons/BathroomScale";
+import { IconWaterGlass } from "@/components/icons/WaterGlass";
 import { IconWaistMeasureFemale, IconWaistMeasureMale } from "@/components/icons/WaistMeasure";
 
 // Every real "add something" destination in the app — the pool the
@@ -76,7 +76,7 @@ export const ADD_ACTIONS: AddAction[] = [
   {
     key: "water",
     href: "/water/create",
-    icon: IconDroplet,
+    icon: IconWaterGlass,
     labelKey: "addButton.water",
   },
   {

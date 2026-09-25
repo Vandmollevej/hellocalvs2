@@ -2,6 +2,14 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Tilføj-menu tekster og vandglas-ikon
+
+- "Kamera" → "Scan med kamera", "Mikrofon" → "Indtal" (`addButton.*` i
+  `src/i18n/locales/`).
+- Brugerens vandglas-ikon (`public/icons/water-glass.png`, maske-komponent
+  `src/components/icons/WaterGlass.tsx`) erstatter tabler-dråben overalt hvor
+  det betyder vand. Fedt-statistikkerne beholder dråben.
+
 ## 2026-09-25: Kalender-dagvisning — træk søvn-håndtag forbi kanten + "Nattens søvn"
 
 Lavet i en cloud-session på branch `claude/cloud-session-credits-expired-7504pf`, flettet i master.

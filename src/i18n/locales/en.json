@@ -1233,12 +1233,12 @@
   "addButton": {
     "closeMenu": "Close add menu",
     "openMenu": "Open add menu",
-    "microphone": "Microphone",
+    "microphone": "Speak",
     "ownDishes": "Dishes",
     "search": "Search",
     "weight": "Weight",
     "water": "Water",
-    "camera": "Camera",
+    "camera": "Scan with camera",
     "list": "See all",
     "menstrualCycle": "Period",
     "hint": {
