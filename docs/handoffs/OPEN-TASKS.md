@@ -158,8 +158,8 @@ Ejer: G11-overtagelse, konto C (2026-09-24). Arbejder i worktree `gifted-hofstad
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 03b329f3 / 5a3cdd2b | E-numre + toksiner som valgfri statistik-bokse og til/fra i Opsætning, vist på produktsiden; "udvidet næringsindhold" åben som standard | I gang | Datakilde afklaret 2026-09-24: kurateret liste (Fødevarestyrelsen + EFSA) matchet mod indholdsfortegnelsen, med særligt fokus på graviditet, amning og fertilitet. Bygger |
-| 56f30763 | Advarselstrekant med udråbstegn ved mættet/usundt fedt | I gang | Ikke lavet endnu. Bygger på statistik-boksene (mættet fedt, transfedt) og produktsiden |
+| 03b329f3 / 5a3cdd2b | E-numre + toksiner som valgfri statistik-bokse og til/fra i Opsætning, vist på produktsiden; "udvidet næringsindhold" åben som standard | Færdig (5cea433) | Kontakter i Opsætning, toksinliste (FVST + EFSA, graviditet/amning/fertilitet først), produktside. Flettes ind i master, når G7 har committet profile/settings |
+| 56f30763 | Advarselstrekant med udråbstegn ved mættet/usundt fedt | Færdig (5cea433) | Trekant på statistik-bokse + produktside. **G2:** forsidens tal-slider (`frontpage-stats.ts`) mangler samme ikon — G11 rører ikke filen |
 
 ## Venter på dig (ingen gruppe)
 | Id | Opgave | Status | Næste skridt |

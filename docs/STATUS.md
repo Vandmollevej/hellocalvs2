@@ -321,6 +321,12 @@ Brugerens ønske: `/statistics/sources` (faner + Produkter/Produkttyper) er
 slettet, da "Månedens synder" dækker det samme. Boksen "Største syndere" på
 Statistik-siden beholdes, men uden "Se alle"-link.
 
+## Færdig (2026-09-24): G11 — E-numre, toksiner, fedt-advarsel
+
+- Opsætning: "Vis E-numre" og "Vis toksiner" (fra som standard). Produktsiden viser E-numre og en ny Toksiner-sektion med info-vindue og kildelinks. Se DECISIONS 2026-09-24 (G11).
+- Udvidet næringsindhold er åben som standard; beskrivelsen i Opsætning er opdateret.
+- Advarselstrekant på mættet fedt og transfedt (statistik-bokse og produktsiden). Forsidens tal-slider (`src/lib/frontpage-stats.ts`, G2) har stadig dråbe-ikon — G2 kan skifte til `IconAlertTriangle`.
+
 ## 2026-09-25: G3 — produktkategorier, kød/drikke-statistik, "Største kilder" og "Månedens synder" — bygget
 
 Se docs/DECISIONS.md 2026-09-25 (G3). `npm run lint` (G3-filer) og
