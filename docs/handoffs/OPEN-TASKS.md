@@ -122,7 +122,7 @@ Ejer: G8-sessionen, konto C (overtaget 2026-09-24)
 | 69a1b2bd / 2c95590f | Dubletter af 6068f78a og 8d98b548 — læs dem for ekstra svar fra brugeren ("Så byg det, der mangler. Det skal jo bare virke!") | Dublet | Luk sammen med hovedopgaverne |
 | 6068f78a | 8 sundhedsintegrationer + nye ikoner | Færdig (22184fe) | Brugeren valgte "Byg alle 8" inden for boks-arkitekturen. Mangler kun nøgler på serveren + deploy |
 | 8d98b548 | Withings + Google Health koblet på, egen data-sync | Venter på bruger | Kode færdig (22184fe). Brugeren skal lægge nøglerne i .env.production på Synology, så deployes der. HelloFresh-trin-rettelsen i samme transcript hører til G6 |
-| d0442775 | Waldemarsro (DK-only) + scraper | Venter på bruger | Krav afklaret og committet (ea7843a) — byg når brugeren siger til |
+| d0442775 | Waldemarsro (DK-only) + scraper | I gang | Brugeren sagde byg (2026-09-25). Sitet hedder Valdemarsro (valdemarsro.dk). Scraper + kalorie-matcher ligger i Productdatabase/Valdemarsro (valdemarsro.py, valdemarsro_match.py — ikke i git). Næring er Premium-låst og hentes ikke; kalorier beregnes fra Frida + butiksdata. Brugeren kører scraperen selv i VS Code |
 
 ## G9 — Ikoner (forside + vand)
 Filer: forsidens grydeikon, Vand-siden, `public/` assets.
