@@ -2,6 +2,25 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Kalender — tomme dage, tættere rækker og advarsel om for lavt indtag
+
+Uge- og Liste-visningens dagrækker (`src/app/calendar/page.tsx`):
+- En dag uden indtastninger viser "Ingen indtastninger" (`calendar.noEntries`)
+  og det fulde restbudget, begge i gråt, i stedet for "Mål ikke nået" og et
+  rødt tal. Kcal-tallet er grønt med "+", når indtaget er på eller under
+  målet, og kun rødt med "÷", når målet er overskredet. Månedsgitteret viser
+  ikke længere "÷" på tomme dage.
+- Rækkerne bruger ikke længere `justify-between`: afstanden fra ugedag til
+  datoboks er omtrent halveret, og statusteksten står lige efter boksen.
+  Kcal-tallet ligger stadig til højre (`ml-auto`).
+- Ny regel for for lavt indtag, se `docs/DECISIONS.md` 2026-09-25. En afsluttet
+  dag med indtastninger under minimum viser "For lavt indtag" og tallet i
+  mørk okker (`--hf-color-warning`). Nederst i visningen står en gul firkant
+  (`--hf-color-warning-fill`) og en forklaring med personens minimum
+  (`calendar.lowIntakeNotice`). Logikken ligger i `src/lib/healthy-intake.ts`.
+Verificeret med `npm run lint` og `npm run build`. Ikke afprøvet på telefon
+fra denne container.
+
 ## 2026-09-25: Photo diary — passcode toggle now actually locks the photos
 
 User intent: the photos must not flash on screen by accident when the page is

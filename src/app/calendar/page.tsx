@@ -19,6 +19,7 @@ import { HfChevron } from "@/components/hf/HfChevron";
 import { ActionLink } from "@/components/hf/ActionButton";
 import { FoodRow } from "@/components/FoodRow";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
+import { isIntakeTooLow, minimumHealthyKcal } from "@/lib/healthy-intake";
 import { groupByDay } from "@/lib/daily-totals";
 import {
   ENABLE_WEEKLY_ENERGY_SUMMARY,
@@ -323,6 +324,21 @@ export default function CalendarPage() {
     for (const day of groupByDay(registrations)) map.set(day.dateKey, day.kcal);
     return map;
   }, [registrations]);
+
+  const minimumKcal = useMemo(
+    () =>
+      minimumHealthyKcal(
+        energyProfile && { ...energyProfile, weightKg: weightAt(weighIns, today, energyProfile.weightKg) },
+      ),
+    [energyProfile, weighIns, today],
+  );
+  const hasLowIntakeDay = weekDays.some((date) =>
+    isIntakeTooLow(
+      totalKcalForDate(dailyTotals, date),
+      minimumKcal,
+      stripTime(date).getTime() < stripTime(today).getTime(),
+    ),
+  );
 
   const weeklyWeightEstimate = useMemo(() => {
     if (!energyProfile) return null;
@@ -685,7 +701,13 @@ export default function CalendarPage() {
                   onSleepAdjust={requestSleepAdjust}
                 />
               ) : (
-                <WeekView days={weekDays} today={today} dailyTotals={dailyTotals} onOpenDate={openDate} />
+                <WeekView
+                  days={weekDays}
+                  today={today}
+                  dailyTotals={dailyTotals}
+                  minimumKcal={minimumKcal}
+                  onOpenDate={openDate}
+                />
               ))}
             {ENABLE_WEEKLY_ENERGY_SUMMARY && view === "week" && !showWeekTimeline && (
               <WeeklyEnergySummaryRow
@@ -700,6 +722,7 @@ export default function CalendarPage() {
                 days={weekDays}
                 today={today}
                 dailyTotals={dailyTotals}
+                minimumKcal={minimumKcal}
                 onOpenDate={openDate}
                 onPrevWeek={() => movePeriod(-1)}
                 onNextWeek={() => movePeriod(1)}
@@ -712,6 +735,9 @@ export default function CalendarPage() {
                 dailyTotals={dailyTotals}
                 weightEstimate={weeklyWeightEstimate}
               />
+            )}
+            {hasLowIntakeDay && (view === "list" || (view === "week" && !showWeekTimeline)) && (
+              <LowIntakeNotice minimumKcal={minimumKcal} />
             )}
           </div>
         </div>
@@ -932,11 +958,13 @@ function WeekView({
   days,
   today,
   dailyTotals,
+  minimumKcal,
   onOpenDate,
 }: {
   days: Date[];
   today: Date;
   dailyTotals: Map<string, number>;
+  minimumKcal: number;
   onOpenDate: (date: Date) => void;
 }) {
   const { t } = useTranslation();
@@ -953,6 +981,7 @@ function WeekView({
         const current = isSameDay(date, today);
         // Days that haven't happened yet have no status to show.
         const future = stripTime(date).getTime() > stripTime(today).getTime();
+        const tooLow = isIntakeTooLow(kcal, minimumKcal, stripTime(date).getTime() < stripTime(today).getTime());
         return (
           <button
             key={date.toISOString()}
@@ -972,14 +1001,24 @@ function WeekView({
               <span className="flex-1" />
             ) : (
               <>
-                {met && <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />}
-                <span className={`text-sm font-normal ${logged ? "" : "text-hf-gray"}`}>
-                  {!logged ? t("calendar.noEntries") : met ? t("calendar.goalMet") : t("calendar.goalMissed")}
+                {met && !tooLow && (
+                  <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />
+                )}
+                <span
+                  className={`text-sm ${tooLow ? "font-medium text-hf-warning" : logged ? "font-normal" : "font-normal text-hf-gray"}`}
+                >
+                  {!logged
+                    ? t("calendar.noEntries")
+                    : tooLow
+                      ? t("calendar.intakeTooLow")
+                      : met
+                        ? t("calendar.goalMet")
+                        : t("calendar.goalMissed")}
                 </span>
                 <span className="ml-auto flex shrink-0 items-center gap-1">
                   <span
                     className={`text-sm font-bold tabular-nums ${
-                      !logged ? "text-hf-gray" : over ? "text-hf-red-dark" : "text-hf-green"
+                      !logged ? "text-hf-gray" : tooLow ? "text-hf-warning" : over ? "text-hf-red-dark" : "text-hf-green"
                     }`}
                   >
                     {over ? "÷" : "+"}
@@ -994,6 +1033,16 @@ function WeekView({
         );
       })}
     </div>
+  );
+}
+
+function LowIntakeNotice({ minimumKcal }: { minimumKcal: number }) {
+  const { t } = useTranslation();
+  return (
+    <p className="mt-4 flex items-start gap-2.5 text-sm text-hf-black">
+      <span className="mt-0.5 size-4 shrink-0 rounded-sm bg-hf-warning-fill" aria-hidden="true" />
+      <span>{t("calendar.lowIntakeNotice", { minimum: minimumKcal.toLocaleString("da-DK") })}</span>
+    </p>
   );
 }
 
@@ -1041,6 +1090,7 @@ function ListView({
   days,
   today,
   dailyTotals,
+  minimumKcal,
   onOpenDate,
   onPrevWeek,
   onNextWeek,
@@ -1048,6 +1098,7 @@ function ListView({
   days: Date[];
   today: Date;
   dailyTotals: Map<string, number>;
+  minimumKcal: number;
   onOpenDate: (date: Date) => void;
   onPrevWeek: () => void;
   onNextWeek: () => void;
@@ -1123,6 +1174,7 @@ function ListView({
         const current = isSameDay(date, today);
         // Days that haven't happened yet have no status to show.
         const future = stripTime(date).getTime() > stripTime(today).getTime();
+        const tooLow = isIntakeTooLow(kcal, minimumKcal, stripTime(date).getTime() < stripTime(today).getTime());
         return (
           <button
             key={date.toISOString()}
@@ -1142,14 +1194,24 @@ function ListView({
               <span className="flex-1" />
             ) : (
               <>
-                {met && <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />}
-                <span className={`text-sm font-normal ${logged ? "" : "text-hf-gray"}`}>
-                  {!logged ? t("calendar.noEntries") : met ? t("calendar.goalMet") : t("calendar.goalMissed")}
+                {met && !tooLow && (
+                  <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />
+                )}
+                <span
+                  className={`text-sm ${tooLow ? "font-medium text-hf-warning" : logged ? "font-normal" : "font-normal text-hf-gray"}`}
+                >
+                  {!logged
+                    ? t("calendar.noEntries")
+                    : tooLow
+                      ? t("calendar.intakeTooLow")
+                      : met
+                        ? t("calendar.goalMet")
+                        : t("calendar.goalMissed")}
                 </span>
                 <span className="ml-auto flex shrink-0 items-center gap-1">
                   <span
                     className={`text-sm font-bold tabular-nums ${
-                      !logged ? "text-hf-gray" : over ? "text-hf-red-dark" : "text-hf-green"
+                      !logged ? "text-hf-gray" : tooLow ? "text-hf-warning" : over ? "text-hf-red-dark" : "text-hf-green"
                     }`}
                   >
                     {over ? "÷" : "+"}

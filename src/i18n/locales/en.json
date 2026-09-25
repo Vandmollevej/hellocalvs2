@@ -421,6 +421,8 @@
     "dailyGoalExceeded": "You've exceeded today's goal",
     "dailyGoalNone": "Nothing logged yet",
     "registrations": "Log entries",
+    "intakeTooLow": "Intake too low",
+    "lowIntakeNotice": "Be aware that your intake is lower than what is healthy. You should eat at least {minimum} kcal a day for a person of your build.",
     "noEntries": "No entries",
     "noRegistrations": "No log entries",
     "loadingDayRegistrations": "Loading the day's log entries…",

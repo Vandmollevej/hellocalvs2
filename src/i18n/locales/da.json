@@ -421,6 +421,8 @@
     "dailyGoalExceeded": "Du har overskredet dagens mål",
     "dailyGoalNone": "Endnu intet registreret",
     "registrations": "Registreringer",
+    "intakeTooLow": "For lavt indtag",
+    "lowIntakeNotice": "Vær opmærksom på, at dit indtag er lavere end hvad der er sundt. Du bør indtage mindst {minimum} kcal om dagen for en person af din statur.",
     "noEntries": "Ingen indtastninger",
     "noRegistrations": "Ingen registreringer",
     "loadingDayRegistrations": "Henter dagens registreringer…",
