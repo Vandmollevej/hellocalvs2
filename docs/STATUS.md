@@ -2,6 +2,13 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Profilcirklen ("PT") er én fælles komponent
+
+`src/components/ProfileAvatarLink.tsx` bruges nu af både forsidens `TopBar` og
+`ScreenHeader`; udseendet ligger kun i `.hf-avatar` og placeringen i
+`.hf-appbar__slot`/`.hf-topbar` (`src/app/globals.css`). Før var cirklen
+hardcodet to steder og sad forskudt på forsiden. Afventer brugerens test på telefon.
+
 ## 2026-09-25: Mail via Mailjet aktiveret
 
 - SMTP_HOST/PORT/USER/PASS/FROM (Mailjet, in-v3.mailjet.com:587) sat i lokal

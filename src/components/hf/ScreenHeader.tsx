@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { isMainFooterRoute, useFooterRootHrefs } from "@/lib/navigation";
 import { HfChevron } from "@/components/hf/HfChevron";
+import { ProfileAvatarLink } from "@/components/ProfileAvatarLink";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { useIsCompactLandscape } from "@/hooks/useIsCompactLandscape";
 
@@ -78,13 +78,7 @@ export function ScreenHeader({
         <h1 className={`hf-type-nav-title hf-appbar__title ${titleClassName ?? ""}`}>{title}</h1>
         {icon && <span className="h-6 w-6 shrink-0" aria-hidden="true" />}
       </div>
-      <div className="hf-appbar__slot">
-        <Link href="/profile" aria-label={t("settings.openProfile")}>
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-hf-tan text-xs font-bold text-hf-black">
-            PT
-          </span>
-        </Link>
-      </div>
+      <ProfileAvatarLink />
     </div>
   );
 }
