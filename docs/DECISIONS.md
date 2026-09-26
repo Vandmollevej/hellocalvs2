@@ -2242,6 +2242,17 @@ Normaliserede produkt-søgeparametre (`ProductNutritionFeatures`, 1:1 med
 - HelloFresh-boksen ("Genkend din ret") er fjernet fra Madvarer-siden. Opret ret når den via kameraet (`/camera?...&for=ret`). HelloFresh må ikke vises på Madvarer, produktsøgning, produkt-/ingrediensoprettelse eller produktvisning. Kameraets "Produkt"-fane (`mode=hellofresh`) vises kun med `for=ret`; ellers er kameraet altid stregkode.
 - Almindelige primære/sekundære handlingsknapper fylder altid hele indholdsbredden. Fælles komponent: `ActionButton`/`ActionLink` (`src/components/hf/ActionButton.tsx`); regel i design.md §6.2. Små ikon-/inline-kontroller er undtaget. Eksisterende smalle knapper rettes efterhånden, når deres side alligevel ændres.
 
+## 2026-09-25: Oprettelses-app som egen container fra samme image
+
+- Medarbejder-hyldeappen (docs/OPRETTELSES-APP.md) bruger samme Postgres/Prisma-skema som Hello Cal og kører som sin egen container (`scan-app`) fra det samme Docker-image med `HELLOCAL_APP_MODE=scan`. `middleware.ts` serverer dér kun `/scan`, `/api/scan` og de delte AI-/produkt-API'er; i den almindelige app er `/scan` 404 (undtagen localhost). Valgt frem for et separat Next-projekt, så designet er 1:1 Hello Cal, og "Opret vare" genbruger `POST /api/products` uændret (produkter synlige i Hello Cal med det samme).
+- Medarbejdere er `ScanWorker`-rækker, ikke `User`: eget login (brugernavn + adgangskode + TOTP) og egne cookies. Privacy-/vault-arkitekturen gælder ikke for ansatte (brugerbeslutning 2026-09-24); CPR og bank-reg.nr./konto krypteres server-side (AES-256-GCM, `SCAN_PII_KEY`), så admin kan afregne.
+- Hyldegenkendelse: OpenAI Vision finder varer + afgrænsningsbokse; match mod databasen sker på navn/logo (stregkoder kan ikke ses på en hylde): tekstsøgning efter kandidater, derefter AI-vurdering med billedet. ≥ 80 % = findes, 50–80 % = usikkert. Medarbejderen kan rette tildelingen manuelt.
+- Aflønning: én global sats, fastfrosset på hver indsendelse. Supplering af et eksisterende produkt betales som en hel vare, undtagen når medarbejderen selv oprettede det. Admin afgør altid accept/afvisning.
+
+## 2026-09-25: Logo-robot bruger Google Vision, ikke Custom Search
+
+- `scripts/logo-agent` (docs/LOGO-AGENT.md) isolerer logoet med Vision `LOGO_DETECTION` og finder kandidater med Vision `WEB_DETECTION`. Googles Custom Search JSON API er lukket for nye kunder og stopper 2027-01-01, så det mønster (image-agent) genbruges ikke til søgningen — kun container-/databasemønstret. Besluttet af brugeren 2026-09-24.
+- ≥ 90 % og brandnavn på siden/linket → automatisk logo; ellers admin-kø "Logoer" (≥ 50 %). Hentede kandidater slettes 7 dage efter afgørelsen.
 ## 2026-09-24: Egne, private ingredienser ("Opret egen ingrediens")
 
 - Linket "Opret egen ingrediens" under Opret ret åbner `/ingredients/new`. Brugeren angiver kun et navn (og mængde, når det er fra en ret) — ikke kcal/makroer, som brugeren ikke kan kende. Næringsindholdet står som ukendt, indtil admin har oprettet ingrediensen globalt.

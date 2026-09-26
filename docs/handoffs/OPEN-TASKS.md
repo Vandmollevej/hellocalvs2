@@ -87,8 +87,8 @@ Ejer: G5-overtagelse, konto B (2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 548ca51e | Ny invite-only agent-app (hyldebillede, opret vare, 2FA, admin-oversigt, aflønnings-backend) | I gang | Bruger sagde 2026-09-24 "byg det hele, ny container". Bygger: Prisma-modeller → admin scan-invites/medarbejdersider → agent-app-container |
-| 850e575e / 0669f736 | Logo-robot: isolér logo ved scanning, match mod DB, natlig Google-søgning, admin-kø under 90 % | I gang | Besluttet: Google Vision API Web Detection (ikke Custom Search/CSE, lukker 2027-01-01). Bygges efter agent-appens datamodel |
+| 548ca51e | Ny invite-only agent-app (hyldebillede, opret vare, 2FA, admin-oversigt, aflønnings-backend) | Bygget, venter på bruger | Bygget + committet (docs/OPRETTELSES-APP.md "Implementeringsstatus"). Mangler: brugerens OK til at tilføje `scan-app` i deploy-workflowet, Cloudflare-hostname + `SCAN_APP_BASE_URL`/`SCAN_PII_KEY` i .env.production. Passkey som 2. faktor ikke bygget |
+| 850e575e / 0669f736 | Logo-robot: isolér logo ved scanning, match mod DB, natlig Google-søgning, admin-kø under 90 % | Bygget, venter på bruger | Bygget (scripts/logo-agent, /admin/logos, docs/LOGO-AGENT.md). Mangler: `GOOGLE_VISION_API_KEY` i .env.production og `logo-agent` i deploy-workflowet. Logo-match i selve scanningen hører til kamera-flowet (ikke G5) |
 
 ## G6 — Madvare-flow (Tilføj madvare, Madvarer-siden)
 Filer: `src/app/add/**`, `src/components/ForwardButton.tsx`, Madvarer-siden, fælles knap-komponent.
