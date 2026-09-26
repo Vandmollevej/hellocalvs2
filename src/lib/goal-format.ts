@@ -1,4 +1,5 @@
 import { BODY_MEASUREMENT_FIELDS } from "@/lib/body-measurements";
+import { isNutritionGoalField, NUTRITION_GOAL_FIELDS } from "@/lib/goal-nutrition";
 import type { GoalDTO, GoalTargetDTO } from "@/lib/user-goals";
 
 // Visningshjælpere til målsætningssiderne (ingen forretningslogik).
@@ -15,11 +16,18 @@ export function formatGoalValue(value: number) {
 
 export function goalTargetNameKey(type: GoalTargetDTO["type"]) {
   if (type === "weight") return "goals.weight";
-  return BODY_MEASUREMENT_FIELDS.find(({ field }) => field === type)?.nameKey ?? type;
+  return (
+    BODY_MEASUREMENT_FIELDS.find(({ field }) => field === type)?.nameKey ??
+    NUTRITION_GOAL_FIELDS.find(({ field }) => field === type)?.nameKey ??
+    type
+  );
 }
 
+// Ernæringsmål er daglige rettesnore og bliver aldrig "nået" af en måling, så
+// kun vægt og kropsmål afgør, om målsætningen er nået.
 export function isGoalCompleted(goal: GoalDTO) {
-  return goal.targets.length > 0 && goal.targets.every((target) => target.completedAt);
+  const measurable = goal.targets.filter((target) => !isNutritionGoalField(target.type));
+  return measurable.length > 0 && measurable.every((target) => target.completedAt);
 }
 
 // "YYYY-MM-DD" → lokal Date kl. 12, så dagen ikke skifter med tidszonen.
@@ -27,8 +35,7 @@ export function goalDisplayDate(goal: GoalDTO) {
   return goal.targetDate ? new Date(`${goal.targetDate}T12:00:00`) : new Date(goal.createdAt);
 }
 
-// Ikonkategori pr. target: vægt, kropsmål eller ernæring. Ernæringsmål findes
-// endnu ikke i datamodellen; kategorien er klar, når de kommer.
+// Ikonkategori pr. target: vægt, kropsmål eller ernæring (kcal/makroer).
 export type GoalTargetCategory = "weight" | "body" | "nutrition";
 
 export function goalTargetCategory(type: string): GoalTargetCategory {

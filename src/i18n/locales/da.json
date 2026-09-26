@@ -1248,6 +1248,19 @@
       "weight": "Vægt",
       "body": "Kropsmål",
       "nutrition": "Ernæring"
+    },
+    "nutritionHeading": "Ernæring pr. dag",
+    "nutrition": {
+      "kcal": "Kalorier",
+      "proteinG": "Protein",
+      "carbsG": "Kulhydrat",
+      "fatG": "Fedt"
+    },
+    "nutritionPlaceholder": {
+      "kcal": "fx 2000",
+      "proteinG": "fx 120",
+      "carbsG": "fx 200",
+      "fatG": "fx 70"
     }
   },
   "weightLog": {

@@ -49,6 +49,7 @@ om skifteholdsarbejde i onboarding-guiden er ikke rørt. Lint og build kørt.
 - Ny side `/profile/goals/upcoming` (knap på Målsætning-siden): én fold-ud-bjælke pr. kommende målsætning (ikke nået, dato fra i dag), nærmeste først. Ikoner til venstre: badevægt (vægt), målebånd (kropsmål), kyllingelår (ernæring — findes ikke i datamodellen endnu).
 - Hvert mål i dropdownen åbner `/profile/goals/[id]/edit?focus=<type>`; "Åbn målsætningen" går til målsætningens egen side `/profile/goals/[id]`.
 - `PATCH /api/goals/[id]` + `updateGoal`; formularen er fælles (`src/components/hf/GoalForm.tsx`) for opret og redigér.
+- Ernæringsmål pr. dag (kcal, protein, kulhydrat, fedt) kan nu sættes i målsætningen (`src/lib/goal-nutrition.ts`); de giver kyllingelår-ikonet på bjælken.
 
 ## 2026-09-26: Opret vare — logo, fritskrabning og samme-foto-flueben
 

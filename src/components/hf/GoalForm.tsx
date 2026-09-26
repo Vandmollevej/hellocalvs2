@@ -10,18 +10,21 @@ import {
   emptyBodyMeasurementValues,
   type BodyMeasurementField,
 } from "@/lib/body-measurements";
+import { emptyNutritionGoalValues, NUTRITION_GOAL_FIELDS, type NutritionGoalField } from "@/lib/goal-nutrition";
 
-// Formularen til at oprette og redigere en målsætning (dato, vægt, kropsmål).
+// Formularen til at oprette og redigere en målsætning (dato, vægt, kropsmål,
+// ernæring).
 // Selve gemningen (POST/PATCH) ligger hos siden, der bruger den.
 
 export type GoalFormValues = {
   targetDate: string;
   weight: string;
   measurements: Record<BodyMeasurementField, string>;
+  nutrition: Record<NutritionGoalField, string>;
 };
 
 export function emptyGoalFormValues(): GoalFormValues {
-  return { targetDate: "", weight: "", measurements: emptyBodyMeasurementValues() };
+  return { targetDate: "", weight: "", measurements: emptyBodyMeasurementValues(), nutrition: emptyNutritionGoalValues() };
 }
 
 // "" = tomt felt (ignoreres), null = ugyldig værdi, ellers det parsede tal.
@@ -96,12 +99,14 @@ export function GoalForm({
   const [targetDate, setTargetDate] = useState(initial.targetDate);
   const [weight, setWeight] = useState(initial.weight);
   const [measurements, setMeasurements] = useState(initial.measurements);
+  const [nutrition, setNutrition] = useState(initial.nutrition);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
 
   const parsed = {
     weight: parseValue(weight),
     ...Object.fromEntries(BODY_MEASUREMENT_FIELDS.map(({ field }) => [field, parseValue(measurements[field])])),
+    ...Object.fromEntries(NUTRITION_GOAL_FIELDS.map(({ field }) => [field, parseValue(nutrition[field])])),
   } as Record<string, number | "" | null>;
   const hasInvalid = Object.values(parsed).some((value) => value === null);
   const hasAny = Object.values(parsed).some((value) => typeof value === "number");
@@ -210,6 +215,23 @@ export function GoalForm({
                 placeholder={t("goals.measurementPlaceholder")}
                 autoFocus={focus === field}
                 onChange={(value) => setMeasurements((current) => ({ ...current, [field]: value }))}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-4 rounded-2xl bg-hf-tan p-4">
+          <p className="hf-type-body hf-type-strong text-hf-black">{t("goals.nutritionHeading")}</p>
+          <div className="grid grid-cols-2 gap-4">
+            {NUTRITION_GOAL_FIELDS.map(({ field, unit, nameKey }) => (
+              <GoalInput
+                key={field}
+                label={t(nameKey)}
+                unit={unit}
+                value={nutrition[field]}
+                placeholder={t(`goals.nutritionPlaceholder.${field}`)}
+                autoFocus={focus === field}
+                onChange={(value) => setNutrition((current) => ({ ...current, [field]: value }))}
               />
             ))}
           </div>

@@ -1248,6 +1248,19 @@
       "weight": "Weight",
       "body": "Body measurements",
       "nutrition": "Nutrition"
+    },
+    "nutritionHeading": "Nutrition per day",
+    "nutrition": {
+      "kcal": "Calories",
+      "proteinG": "Protein",
+      "carbsG": "Carbohydrates",
+      "fatG": "Fat"
+    },
+    "nutritionPlaceholder": {
+      "kcal": "e.g. 2000",
+      "proteinG": "e.g. 120",
+      "carbsG": "e.g. 200",
+      "fatG": "e.g. 70"
     }
   },
   "weightLog": {

@@ -6,6 +6,7 @@ import { HfScreen } from "@/components/HfScreen";
 import { GoalForm, emptyGoalFormValues, type GoalFormValues } from "@/components/hf/GoalForm";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { isBodyMeasurementField } from "@/lib/body-measurements";
+import { isNutritionGoalField } from "@/lib/goal-nutrition";
 import type { GoalDTO } from "@/lib/user-goals";
 
 // Tal → formularens tekstformat (dansk decimalkomma).
@@ -19,6 +20,7 @@ function toFormValues(goal: GoalDTO): GoalFormValues {
   for (const target of goal.targets) {
     if (target.type === "weight") values.weight = toInput(target.value);
     else if (isBodyMeasurementField(target.type)) values.measurements[target.type] = toInput(target.value);
+    else if (isNutritionGoalField(target.type)) values.nutrition[target.type] = toInput(target.value);
   }
   return values;
 }
