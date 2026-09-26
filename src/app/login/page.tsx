@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { SocialLoginButton } from "@/components/hf/SocialLoginButton";
 import { TextField } from "@/components/hf/TextField";
+import { FaceIdAnimation, type FaceIdPhase } from "@/components/FaceIdAnimation";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { hasPasskeyOnDevice, loginWithPasskey } from "@/lib/passkey-client";
 import { afterLoginPath, oauthErrorKey, startOAuth } from "@/lib/login-flow";
@@ -30,15 +31,22 @@ function LogIndContent() {
     setFaceIdOnDevice(hasPasskeyOnDevice());
   }, []);
 
+  const [faceIdPhase, setFaceIdPhase] = useState<FaceIdPhase | null>(null);
+
   async function handleFaceId() {
     setError(null);
     setSubmitting(true);
+    setFaceIdPhase("scanning");
     try {
       await loginWithPasskey();
-      router.push(afterLoginPath(next));
+      setFaceIdPhase("success"); // navigerer, når animationen er færdig
     } catch {
-      setError(t("login.faceIdError"));
-      setSubmitting(false);
+      setFaceIdPhase("failed");
+      window.setTimeout(() => {
+        setFaceIdPhase(null);
+        setError(t("login.faceIdError"));
+        setSubmitting(false);
+      }, 600);
     }
   }
 
@@ -154,6 +162,14 @@ function LogIndContent() {
           {submitting ? t("login.submitting") : t("login.continueButton")}
         </button>
       </div>
+
+      {faceIdPhase && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="flex h-44 w-44 items-center justify-center rounded-[28px] bg-hf-cream shadow-xl">
+            <FaceIdAnimation phase={faceIdPhase} onDone={() => router.push(afterLoginPath(next))} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
