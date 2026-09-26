@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { IconSettings } from "@tabler/icons-react";
 import { isMainFooterRoute, useFooterRootHrefs } from "@/lib/navigation";
 import { HfChevron } from "@/components/hf/HfChevron";
+import { ProfileAvatarLink } from "@/components/ProfileAvatarLink";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { useIsCompactLandscape } from "@/hooks/useIsCompactLandscape";
 
@@ -100,11 +101,7 @@ export function ScreenHeader({
             <IconSettings size={39} stroke={1.54} />
           </Link>
         ) : (
-          <Link href="/profile" aria-label={t("settings.openProfile")}>
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-hf-tan text-xs font-bold text-hf-black">
-              PT
-            </span>
-          </Link>
+          <ProfileAvatarLink />
         )}
       </div>
     </div>

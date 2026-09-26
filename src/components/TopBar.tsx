@@ -1,15 +1,11 @@
-import Link from "next/link";
+import { ProfileAvatarLink } from "@/components/ProfileAvatarLink";
 
+// Samme højde, sidemargin og 44 px-slot som .hf-appbar, så profilcirklen
+// står præcis samme sted og har samme størrelse som på sider med ScreenHeader.
 export function TopBar() {
   return (
-    <div data-top-bar className="flex items-center justify-end px-4 pt-4">
-      <Link
-        href="/profile"
-        aria-label="Åbn mine oplysninger"
-        className="flex h-8 w-8 items-center justify-center rounded-full border border-hf-tan-dark bg-hf-tan text-xs font-bold text-hf-black"
-      >
-        PT
-      </Link>
+    <div data-top-bar className="hf-topbar">
+      <ProfileAvatarLink outlined />
     </div>
   );
 }
