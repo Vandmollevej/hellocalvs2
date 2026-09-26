@@ -2,6 +2,21 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Backup-scriptet fylder ikke længere 22 GB
+
+`backup-all-containers.sh` lå kun på Synology og kopierede HelloFresh-billederne
+(6,6 GB) tre gange: via app, via hellofresh-agent og via runnerens mount af hele
+`hellocal-v2`. Ny version i `scripts/backup/` (se DEPLOYMENT.md "Fuld
+container-backup"), som deployet lægger samme sted; den gamle gemmes som
+`.orig`. Forventet: ca. 7 GB første gang, derefter kun ændringer. Ikke kørt på
+Synology endnu — kun testet med en falsk `docker` i cloud-sessionen.
+
+## 2026-09-25: Ubrugte statistik-kort — "+ Overskrift" og "+ Skillelinje" øverst
+
+`/statistics/unused-cards`: knapperne ligger nu lige under søgefeltet, før accordionerne.
+"+ Adskillelseslinje" hedder nu "+ Skillelinje" og vises som en massiv sort
+streg med teksten i midten. De grå hjælpetekster er fjernet.
+
 ## 2026-09-25: Global afstandsregel + Abonnement-side
 
 Se `docs/DECISIONS.md` 2026-09-25 "Global lodret rytme". Nye primitiver
@@ -236,6 +251,24 @@ bevægelse, ikke-fundet). Ikke testet på en rigtig iPhone endnu.
 
 Next work:
 1. Test på iPhone efter deploy: vandret + lodret stregkode, skæv, på afstand.
+## 2026-09-25: Admin → API-nøgler
+
+Se `docs/DECISIONS.md` 2026-09-25 "API-nøgler i admin". Ny side
+`/admin/api-keys`: alle tjenester grupperet (login, integrationer, AI, mail,
+push, system), status pr. nøgle (fra .env / rettet i admin / mangler), felt
+til at indtaste/rette, "Brug .env igen", redirect-URI'er til kopiering og
+live-test pr. tjeneste + "Test alle". Migration `20260925120000_app_secrets`.
+
+Live-test af de lokale nøgler 2026-09-25: Facebook, Withings, OpenAI, Google
+Places og Mailjet-SMTP virker. Google-login og Google Health (samme
+OAuth-klient) godkender ID + secret, men klienten har ingen registrerede
+redirect-URI'er (`redirect_uri_mismatch`). Mangler: Apple, Strava, Polar,
+Fitbit, Passio, USDA, VAPID (push). `EMAIL_HASH_PEPPER` bruges ikke længere.
+
+Next work:
+1. Brugeren tilføjer redirect-URI'erne på Google-klienten.
+2. Efter deploy: indtast de nøgler, der mangler i `.env.production`, på
+   `/admin/api-keys` og tryk "Test alle".
 
 ## 2026-09-25: Mail via Mailjet aktiveret
 

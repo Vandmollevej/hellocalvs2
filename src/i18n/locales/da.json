@@ -1286,9 +1286,7 @@
     "addAll": "+ Tilføj",
     "noCardsYet": "Ingen kort her endnu.",
     "addHeading": "+ Overskrift",
-    "addHeadingHint": "Tilføjer en sektionsoverskrift til din statistikside, som du selv kan omdøbe.",
-    "addDivider": "+ Adskillelseslinje",
-    "addDividerHint": "Tilføjer en sort adskillelseslinje til din statistikside."
+    "addDivider": "+ Skillelinje"
   },
   "statUnusedCharts": {
     "title": "Ubrugte grafer",
@@ -1313,7 +1311,7 @@
     "renameHeading": "Omdøb overskrift",
     "removeHeading": "Fjern overskrift",
     "dragHeading": "Flyt overskrift",
-    "removeDivider": "Fjern adskillelseslinje",
+    "removeDivider": "Fjern skillelinje",
     "noData": "Ingen data i perioden"
   },
   "statChart": {

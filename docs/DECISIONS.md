@@ -91,6 +91,30 @@ ikonknapper (sko/uden sko, morgen/aften, før/efter toilet, før/efter mad) —
 stor sort "Opdatér oplysninger"-knap gemmer alt. Siden er dermed en bevidst
 undtagelse fra reglen om automatisk lagring uden "Gem"-knap. Ikoner uden
 tabler-modstykke ligger i `src/components/icons/WeighConditions.tsx`.
+## 2026-09-25: API-nøgler i admin
+
+Brugerens ønske: en admin-side med overblik over alle API-nøgler og et felt
+til at rette dem, "hvis det er sikkert".
+
+- Side `/admin/api-keys` (kataloget i `src/lib/api-keys/catalog.ts`).
+  Hemmelige værdier forlader aldrig serveren — kun de sidste fire tegn og
+  længden. Client ID'er, adresser og lignende vises i klar tekst.
+- En rettet nøgle gemmes i `app_secrets`, AES-256-GCM-krypteret med en
+  nøgle afledt (HKDF) af `ADMIN_SESSION_SECRET`. Ved opstart
+  (`instrumentation.ts`) lægges værdierne oven på `process.env`, så al
+  eksisterende kode virker uændret, og en rettelse slår igennem med det
+  samme uden genstart. "Brug .env igen" sletter rækken.
+- Skiftes `ADMIN_SESSION_SECRET`, kan de gemte værdier ikke længere læses;
+  siden viser det, og .env-værdien gælder, til nøglen gemmes igen.
+- Database, sessionsnøgler og adresser (`APP_BASE_URL` m.fl.) kan kun
+  ændres i `.env.production` — de læses ved opstart og er vist som
+  skrivebeskyttet status.
+- "Test" kalder udbyderen med de aktive nøgler (OAuth med bevidst ugyldig
+  kode: "ugyldig kode" = nøglerne er godkendt). For Google tjekkes også, om
+  redirect-URI'en er registreret.
+- Den globale copy/paste-blokering (2026-09-22) undtager indhold under
+  `[data-allow-clipboard]` — kun brugt på denne admin-side, så nøgler kan
+  indsættes.
 
 ## 2026-09-25: Én tekst og ét ikon pr. Tilføj-handling
 
