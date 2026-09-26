@@ -2,6 +2,22 @@
 
 Last updated: 2026-09-26
 
+## 2026-09-26: Billede-dagbog — vandret karrusel i loop
+
+Brugerens krav (skærmbillede af HelloFreshs "Kogebog"-karrusel): billederne
+vises ikke længere i et 2-kolonne-grid, men i en vandret karrusel med høje
+kort i samme mål som HelloFreshs høje kort (160 × 333 pt ved 393 pt skærm,
+dvs. 44 % af karrusellens bredde, 16 px mellemrum). Ældste til venstre,
+nyeste til højre; det nyeste står i midten ved start, og med 3+ billeder
+kører den i loop (til højre for det nyeste kommer det ældste). Dato og
+klokkeslæt står under billedet, ikke som overlay. Tryk åbner fuldskærm med
+16 px luft om billedet og datoen nederst; fuldskærm swiper/looper i samme
+retning. Bygget oven på IndexedDB-lagringen (commit ec1732e). Kode:
+`src/components/photo-diary/PhotoCarousel.tsx`, `PhotoViewer.tsx`,
+`src/lib/photo-diary.ts` og `src/app/profile/photo-diary/page.tsx` (lås og
+lagring uændret). Verificeret med lint + tsc; ikke set visuelt (brugerregel
+2026-09-26: brugeren tjekker selv udseendet).
+
 ## 2026-09-26: Vægt kalibrering — ét kg-felt pr. forhold, parvis side om side
 
 Tænd/sluk-knapperne (sko, morgen/aften, toilet, mad) er fjernet. Alle fem

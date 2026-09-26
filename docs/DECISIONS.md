@@ -2344,3 +2344,7 @@ den rigtige stregkode.
 - Statistik-boksen "Toksiner" er en pladsholder ("—") ligesom E-numre, fordi registreringer ikke har et snapshot af indholdsstoffer.
 - "Vis udvidet næringsindhold" er åben som standard på produktsiden, og beskrivelsen i Opsætning siger, at værdierne står nederst på produktsiden.
 - Mættet fedt og transfedt vises med en advarselstrekant (statistik-bokse og produktsidens udvidede næringsindhold). Umættet fedt får ingen advarsel.
+
+## 2026-09-26: Billede-dagbog som loop-karrusel
+
+Billeder vises i en vandret karrusel (ikke grid, ikke 1:1), ældste til venstre og nyeste til højre, nyeste i midten ved start. Loop kun ved 3+ billeder, så samme billede aldrig står på begge sider samtidig; ved 2 billeder stopper den ved kanterne. Kun et vindue på 7 kort renderes, så loopet ikke kræver kopier af hele listen. Dato/tid står under billedet, aldrig som overlay.
