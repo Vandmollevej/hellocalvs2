@@ -940,7 +940,9 @@
     "chest": "Bryst (cm)",
     "thigh": "Lår (cm)",
     "upperArm": "Overarm (cm)",
+    "neck": "Hals (cm)",
     "names": {
+      "neck": "Hals",
       "waist": "Talje",
       "hip": "Hofte",
       "chest": "Bryst",
@@ -1042,7 +1044,8 @@
     "measurementHip": "Hofte {value} cm",
     "measurementChest": "Bryst {value} cm",
     "measurementThigh": "Lår {value} cm",
-    "measurementUpperArm": "Overarm {value} cm"
+    "measurementUpperArm": "Overarm {value} cm",
+    "measurementNeck": "Hals {value} cm"
   },
   "registration": {
     "title": "Registrering",

@@ -940,7 +940,9 @@
     "chest": "Chest (cm)",
     "thigh": "Thigh (cm)",
     "upperArm": "Upper arm (cm)",
+    "neck": "Neck (cm)",
     "names": {
+      "neck": "Neck",
       "waist": "Waist",
       "hip": "Hip",
       "chest": "Chest",
@@ -1042,7 +1044,8 @@
     "measurementHip": "Hip {value} cm",
     "measurementChest": "Chest {value} cm",
     "measurementThigh": "Thigh {value} cm",
-    "measurementUpperArm": "Upper arm {value} cm"
+    "measurementUpperArm": "Upper arm {value} cm",
+    "measurementNeck": "Neck {value} cm"
   },
   "registration": {
     "title": "Registration",

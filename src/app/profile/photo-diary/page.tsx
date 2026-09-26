@@ -32,6 +32,7 @@ type BodyMeasurementLite = {
   chestCm: number | null;
   thighCm: number | null;
   upperArmCm: number | null;
+  neckCm: number | null;
   measuredAt: string;
 };
 
@@ -113,6 +114,7 @@ function matchForDate<T>(
 
 function formatMeasurement(entry: BodyMeasurementLite, t: (key: string, params?: Record<string, string | number>) => string) {
   const parts: string[] = [];
+  if (entry.neckCm != null) parts.push(t("photoDiary.measurementNeck", { value: entry.neckCm }));
   if (entry.waistCm != null) parts.push(t("photoDiary.measurementWaist", { value: entry.waistCm }));
   if (entry.hipCm != null) parts.push(t("photoDiary.measurementHip", { value: entry.hipCm }));
   if (entry.chestCm != null) parts.push(t("photoDiary.measurementChest", { value: entry.chestCm }));

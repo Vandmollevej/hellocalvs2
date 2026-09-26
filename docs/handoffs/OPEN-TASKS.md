@@ -101,18 +101,18 @@ Deploy (brugerens beslutning 2026-09-25): G6 deployes samlet med alt andet af ko
 
 ## G7 — Profil
 Filer: `src/app/profile/**`.
-Ukendte ændringer: `profile/body-measurements`, `profile/invite`, `profile/photo-diary`, `profile/settings`, `profile/weight-calibration`, `src/lib/body-measurements.ts` er ændret og ikke committet.
+Ukendte ændringer: `profile/photo-diary` og `profile/weight-calibration` har ikke-committede ændringer fra andre sessioner (passkey-lås / vægt-kalibrering) — ikke G7's, rør dem ikke.
 Ejer: Profil-gruppen (G7), konto B — overtaget 2026-09-24
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 9a0770ce | Ny oversigtsside over målsætninger (historik, grønt flueben, fast knap nederst) | Ikke startet | Tjek om allerede lavet, ellers byg |
-| 8b0a278f | Kropsmål med mand/kvinde-tegninger (fra hovedmappen), kort som på statistik | Ikke startet | Tjek om allerede lavet, ellers byg |
-| d22c7e61 | Invitér en ven: kun visuelt (betingelser som tekstlink, luft, fjern skillelinje, demo-data) | Venter på bruger | E-mail-invitation/venneliste strider mod privacy — kun visuelle rettelser |
-| ef8a5612 | "Skift adgangskode"-side | Blokeret | Strider sandsynligvis mod passkey-only login — spørg brugeren |
-| 60da6b15 | Indstillinger: "Få vist allergener" ind i samme boks + "Vælg alle" ved topknappen | Lavet, ikke verificeret | **Sandsynligvis kilden til diff'en i profile/settings.** Verificér og commit |
-| bc01cd73 | Højde-vælger fryser, "Færdig" virker ikke, aktuel højde vises ikke i scrolleren | Lavet?, ikke verificeret | **Sandsynligvis kilden til diff'en i `src/components/ui/WheelPicker.tsx`.** Tjek, verificér og commit |
-| 26393cba | Demo-bruger med abonnement "Seriøs", næste betalingsdato, "Betalingsmetoder"-knap + profilpunkt | Blokeret | Demo-brugeren blev bevidst fjernet (commit e2c0a83). Spørg: byg kun abonnement/betalingsmetoder-UI? |
+| 9a0770ce | Ny oversigtsside over målsætninger (historik, grønt flueben, fast knap nederst) | Færdig (2a119d8, 737783e) | Var allerede bygget og opfylder kravene |
+| 8b0a278f | Kropsmål med mand/kvinde-tegninger, kort som på statistik | Færdig (8649ac8 + Hals-commit) | Hals tilføjet efter brugerens ja (ny migration 20260926090000 — skal deployes). Ikke set i browser (kræver login) |
+| d22c7e61 | Invitér en ven: betingelser som tekstlink, luft, fjern skillelinje | Færdig (6ab6eca, 62708b7) | Demo-data kan ikke laves: demo-brugeren er fjernet |
+| ef8a5612 | "Skift adgangskode"-side | Færdig | Fandtes allerede (/profile/change-password) og passer med det gendannede adgangskode-login |
+| 60da6b15 | Indstillinger: allergener i samme boks + "Vælg alle" | Færdig | Committet af en anden session |
+| bc01cd73 | Højde-vælger fryser / "Færdig" / aktuel højde vises ikke | Færdig (6ab6eca) | Ikke testet i browser (kræver login) |
+| 26393cba | Abonnement "Seriøs": næste betalingsdato, "Betalingsmetoder"-knap + profilpunkt | Færdig (a764b4d) | Demo-brugeren oprettes ikke (fjernet bevidst, DECISIONS 2026-09-25) |
 
 ## G8 — Integrationer
 Filer: `src/lib/integrations.ts`, integrationssiden, `/api/withings/**`, Google Health.

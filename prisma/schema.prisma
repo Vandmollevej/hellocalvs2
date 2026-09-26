@@ -396,6 +396,8 @@ model BodyMeasurement {
   chestCm      Float?
   thighCm      Float?
   upperArmCm   Float?
+  // Halsmål (2026-09-26), så alle brugerens fem kropsmålstegninger har et felt.
+  neckCm       Float?
   note         String?
   measuredAt   DateTime @default(now())
 

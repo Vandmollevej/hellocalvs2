@@ -18,6 +18,7 @@ type BodyMeasurementEntry = {
   chestCm: number | null;
   thighCm: number | null;
   upperArmCm: number | null;
+  neckCm: number | null;
   measuredAt: string;
 };
 

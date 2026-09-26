@@ -2,6 +2,17 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-26: Kropsmål med brugerens tegninger + halsmål
+
+Kropsmål vises som ét kort pr. mål (Statistik-kortenes stil): brugerens egne
+tegninger (`Icons/Kropsmål`, kopieret uændret til `public/body-measurements`)
+til venstre, titel + felt til højre. Tegningen vælges ud fra `User.sex`;
+uden valgt køn gættes der ikke (kort uden tegning + hint om at vælge køn).
+Brugeren valgte at få Hals med: nyt valgfrit felt `BodyMeasurement.neckCm`
+(migration `20260926090000_body_measurement_neck`). Hofte har ingen tegning
+og vises uden billede. Listen i `src/lib/body-measurements.ts` er fortsat
+eneste kilde, så Hals også kan bruges som målsætning.
+
 ## 2026-09-25: Blød e-mailbekræftelse ved tilmelding
 
 Brugerens valg. Tilmelding med e-mail + adgangskode logger ind med det samme,
