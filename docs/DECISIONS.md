@@ -372,6 +372,7 @@ overtagelsen af G4 ("Tegn", Frida-datadumpet er fuldt, admin-siden bygges nu).
 - En målsætning kan redigeres (dato og targets) via `PATCH /api/goals/[id]`, kun for Seriøs (samme gating som delmål).
 - Uændrede targets beholder startværdi og gennemført-status. Et target med ny værdi regnes som et nyt mål: ny startværdi (seneste måling), ny retning og nulstillet `completedAt`. Fjernede targets slettes.
 - `User.targetWeightKg` opdateres kun, hvis den redigerede målsætning er den nyeste med et vægtmål.
+- Målsætninger kan indeholde daglige ernæringsmål (target-typerne `kcal`, `proteinG`, `carbsG`, `fatG`; ingen migration, `GoalTarget.type` er fri tekst). De er rettesnore og markeres aldrig som nået; kun vægt og kropsmål afgør, om en målsætning er nået.
 
 ## 2026-09-26: Oplevelse af søvn
 
