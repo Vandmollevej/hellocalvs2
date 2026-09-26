@@ -259,7 +259,21 @@
     "frontPage": "Front page",
     "recommendedLimits": "Recommended limits",
     "menstrualCycle": "Menstrual cycle",
-    "calendarView": "Calendar view"
+    "calendarView": "Calendar view",
+    "displayHelpTip": "Here you decide how the front page, the calendar and warnings look on this device.",
+    "showTooltips": "Show tooltips",
+    "showTooltipsDescription": "Shows a small help text under the various settings and windows.",
+    "showStartupTips": "Show start-up tips",
+    "showStartupTipsDescription": "Shows a short full-screen tip when you open the app, about features you have not used yet."
+  },
+  "startupTips": {
+    "close": "Close",
+    "disable": "Turn off",
+    "privacy": {
+      "title": "Your data is yours",
+      "body": "Hello Cal stores the information you record yourself — such as meals, weight, goals and health data — so we can calculate your intake and show your results. We never sell your data, and you can view, export or have it deleted at any time.",
+      "action": "Read more"
+    }
   },
   "calendarViewSettings": {
     "title": "Calendar view",

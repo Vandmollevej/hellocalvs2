@@ -259,7 +259,21 @@
     "frontPage": "Forside",
     "recommendedLimits": "Anbefalede grænser",
     "menstrualCycle": "Menstruationscyklus",
-    "calendarView": "Kalendervisning"
+    "calendarView": "Kalendervisning",
+    "displayHelpTip": "Her bestemmer du, hvordan forsiden, kalenderen og advarsler ser ud på denne enhed.",
+    "showTooltips": "Vis tooltips",
+    "showTooltipsDescription": "Viser en lille hjælpetekst under de forskellige indstillinger og vinduer.",
+    "showStartupTips": "Vis start-up tips",
+    "showStartupTipsDescription": "Viser et kort tip på hele skærmen, når du åbner appen, om funktioner, du endnu ikke har brugt."
+  },
+  "startupTips": {
+    "close": "Luk",
+    "disable": "Slå fra",
+    "privacy": {
+      "title": "Dine data er dine",
+      "body": "Hello Cal gemmer de oplysninger, du selv registrerer — fx måltider, vægt, mål og helbredsdata — så vi kan beregne dit forbrug og vise dine resultater. Vi sælger aldrig dine data, og du kan til enhver tid se, eksportere eller få dem slettet.",
+      "action": "Læs mere"
+    }
   },
   "calendarViewSettings": {
     "title": "Kalendervisning",
