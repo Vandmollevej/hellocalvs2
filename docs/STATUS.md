@@ -54,9 +54,18 @@ fjernet fra siden (backend-ruterne findes stadig). Google Health genbruger nu
 `GOOGLE_CLIENT_ID/SECRET`, hvis `GOOGLE_HEALTH_*` ikke er sat; connect-fejl
 sendes tilbage til siden i stedet for rå JSON.
 
-Next work: I Google Cloud-konsollen skal redirect-URI'en
-`https://hellocal.packroff.dk/api/integrations/google-health/callback`
-tilføjes til login-klienten, og Google Health API + scopes aktiveres.
+2026-09-26: Google Health gav `redirect_uri_mismatch`, fordi
+`GOOGLE_HEALTH_REDIRECT_URI` i `.env.production` peger på
+`https://hellocal.packroff.dk/api/google-health/callback`, mens OAuth-klienten
+(projekt `hellocal-506810`) kun har `…/api/integrations/google-health/callback`.
+Google Health API og scopes er aktiveret, men appen står i Testing uden
+testbrugere. Connect/callback sendte desuden brugeren til
+`https://0.0.0.0:3000/…` (req.url i containeren); redirects bygges nu fra
+`INTEGRATIONS_REDIRECT_BASE_URL` (`publicUrl` i `src/lib/integrations/registry.ts`).
+
+Next work: Brugeren tilføjer `https://hellocal.packroff.dk/api/google-health/callback`
+som redirect-URI på klienten og `packroff@gmail.com` som testbruger (Google Auth
+Platform → Audience). Test derefter forbindelsen på iPhone.
 ## 2026-09-25: Tilføj-menu tekster og vandglas-ikon
 
 - "Kamera" → "Scan med kamera", "Mikrofon" → "Indtal" (`addButton.*` i
