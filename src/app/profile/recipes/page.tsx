@@ -6,6 +6,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { IconChevronRight, IconSearch, IconSoup } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { PremiumBadge } from "@/components/PremiumGate";
+import { useIsSerious } from "@/lib/use-subscription-tier";
 
 // Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24): to faner,
 // "Mine retter" (egne retter og favoritter fra delte retter, fra boksen) og
@@ -145,6 +147,9 @@ function SharedTab({ t }: { t: Translate }) {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("relevance");
   const [helloFresh, setHelloFresh] = useState<boolean | null>(null);
+  // Filtre/sortering og HelloFresh (en integration) er kun for Seriøs
+  // (docs/DECISIONS.md 2026-09-26); Gratis sorteres altid efter relevans.
+  const isSerious = useIsSerious();
   const [results, setResults] = useState<SearchResult[]>([]);
   const [state, setState] = useState<LoadState>("loading");
 
@@ -156,14 +161,14 @@ function SharedTab({ t }: { t: Translate }) {
   }, []);
 
   useEffect(() => {
-    if (helloFresh === null) return;
+    if (helloFresh === null || isSerious === null) return;
     const controller = new AbortController();
     const timeout = setTimeout(async () => {
       setState("loading");
       try {
-        const params = new URLSearchParams({ sort });
+        const params = new URLSearchParams({ sort: isSerious ? sort : "relevance" });
         if (query.trim()) params.set("q", query.trim());
-        if (helloFresh) params.set("hellofresh", "1");
+        if (helloFresh && isSerious) params.set("hellofresh", "1");
         const res = await fetch(`/api/shared-recipes?${params.toString()}`, { signal: controller.signal });
         if (!res.ok) throw new Error("offline");
         setResults(((await res.json()) as { recipes: SearchResult[] }).recipes);
@@ -176,7 +181,7 @@ function SharedTab({ t }: { t: Translate }) {
       controller.abort();
       clearTimeout(timeout);
     };
-  }, [query, sort, helloFresh]);
+  }, [query, sort, helloFresh, isSerious]);
 
   return (
     <div className="flex flex-col gap-2 p-4">
@@ -191,6 +196,11 @@ function SharedTab({ t }: { t: Translate }) {
 
       {/* Små sorteringsknapper (brugerens valg 2026-09-23): ca. 18 px synlig
           højde og 11 px tekst; usynligt udvidet trykområde. */}
+      {isSerious === false ? (
+        <Link href="/profile/subscription/serious" className="flex justify-end" aria-label={t("premium.filtersLocked")}>
+          <PremiumBadge />
+        </Link>
+      ) : (
       <div className="flex justify-end gap-1">
         {SORTS.map((option) => (
           <button
@@ -208,6 +218,7 @@ function SharedTab({ t }: { t: Translate }) {
           </button>
         ))}
       </div>
+      )}
 
       {state === "loading" && (
         <p className="py-6 text-center text-sm text-hf-black opacity-60">{t("recipes.loading")}</p>

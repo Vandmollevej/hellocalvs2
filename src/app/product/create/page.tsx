@@ -6,11 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { IconApple } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { TextField } from "@/components/hf/TextField";
-import {
-  CreateProductMediaGrid,
-  type MediaGridValue,
-  type MediaGridVerified,
-} from "@/components/hf/CreateProductMediaGrid";
+import { CreateProductMediaGrid, type MediaGridValue } from "@/components/hf/CreateProductMediaGrid";
 import type { ParsedNutrition } from "@/lib/product-ocr";
 import { PRODUCT_DRAFT_STORAGE_KEY, type ProductCreateDraft } from "@/lib/product-draft";
 import type { AlternativeServing, AnalysisIds } from "@/lib/product-analysis-types";
@@ -53,7 +49,6 @@ type DraftState = {
   form: FormValues;
   media: MediaGridValue;
   analysisIds: AnalysisIds;
-  verified?: MediaGridVerified;
   marketRegion?: string;
   gs1Regions?: string[];
   alternativeServings?: AlternativeServing[];
@@ -101,7 +96,6 @@ function readDraft(): DraftState {
         sideImages: draft.sideImages ?? [undefined, undefined, undefined],
       },
       analysisIds: draft.analysisIds ?? {},
-      verified: draft.verified,
       marketRegion: draft.marketRegion,
       gs1Regions: draft.gs1Regions,
       alternativeServings: draft.alternativeServings,
@@ -289,7 +283,6 @@ function OpretProduktContent() {
             uiLang={locale}
             onNutritionExtracted={applyExtractedNutrition}
             onIngredientsExtracted={applyExtractedIngredients}
-            initialVerified={initial.verified}
           />
 
           <TextField

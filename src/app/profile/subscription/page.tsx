@@ -3,14 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { IconArrowRight, IconStar } from "@tabler/icons-react";
+import { IconArrowRight, IconChevronRight, IconStar } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
-import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
-
-// Ingen betalingsudbyder endnu (docs/DECISIONS.md 2026-09-19); knappen åbnes,
-// når betaling er tilsluttet.
-const PAYMENT_AVAILABLE = false;
+import { SUBSCRIPTION_PLANS } from "@/lib/subscription-plans";
 
 type SubscriptionData = {
   tier: "FREE" | "SERIOUS";
@@ -29,9 +25,6 @@ export default function SubscriptionPage() {
   const [giftCode, setGiftCode] = useState("");
   const [redeeming, setRedeeming] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  // Bekræftelse af straks-levering og fortrydelsesret (forbrugeraftaleloven,
-  // docs/DECISIONS.md 2026-09-25) før køb.
-  const [withdrawalAck, setWithdrawalAck] = useState(false);
 
   function load() {
     fetch("/api/subscription")
@@ -159,29 +152,23 @@ export default function SubscriptionPage() {
             {t("subscription.paymentMethods")}
           </Link>
 
-          {data.tier === "FREE" && (
-            <div className="rounded-lg border p-4" style={{ borderColor: "var(--hf-color-line)" }}>
-              <p className="hf-type-section-title">
-                {t("subscription.seriousPlan.title")} — {data.priceDkk} {t("subscription.seriousPlan.priceSuffix")}
-              </p>
-              <p className="hf-type-body-sm mt-1 opacity-70">{t("subscription.seriousPlan.description")}</p>
-              <div className="mt-3">
-                <Toggle
-                  checked={withdrawalAck}
-                  onChange={setWithdrawalAck}
-                  label={t("subscription.seriousPlan.withdrawalConsent")}
-                />
+          {/* Seriøs og Seriøs Familie har hver deres side med periodevalg og
+              køb (docs/DECISIONS.md 2026-09-26). */}
+          <h2 className="hf-type-section-title mt-2">{t("subscription.plansHeading")}</h2>
+          {SUBSCRIPTION_PLANS.map((plan) => (
+            <Link
+              key={plan}
+              href={`/profile/subscription/${plan}`}
+              className="flex items-center gap-3 rounded-lg border p-4"
+              style={{ borderColor: "var(--hf-color-line)" }}
+            >
+              <div className="min-w-0 flex-1">
+                <p className="hf-type-section-title">{t(`subscription.plans.${plan}.title`)}</p>
+                <p className="hf-type-body mt-1 opacity-70">{t(`subscription.plans.${plan}.teaser`)}</p>
               </div>
-              <button
-                type="button"
-                disabled={!PAYMENT_AVAILABLE || !withdrawalAck}
-                className="hf-btn-primary hf-type-button mt-3 h-12 w-full disabled:opacity-40"
-              >
-                {t("subscription.seriousPlan.upgradeCta")}
-              </button>
-              <p className="hf-type-caption mt-2 opacity-70">{t("subscription.seriousPlan.upgradeUnavailable")}</p>
-            </div>
-          )}
+              <IconChevronRight size={20} aria-hidden="true" className="shrink-0 opacity-60" />
+            </Link>
+          ))}
 
           <p className="hf-type-caption mt-2 opacity-60">{t("subscription.retentionNote")}</p>
 

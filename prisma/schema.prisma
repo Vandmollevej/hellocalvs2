@@ -758,7 +758,6 @@ model Brand {
   createdAt DateTime  @default(now())
   products  Product[]
   regionSearchStats BrandRegionSearchStat[]
-  cutoutJobs ImageCutoutJob[]
 
   @@map("brands")
 }
@@ -945,7 +944,6 @@ model Product {
   duplicateLinksAsA  ProductDuplicateLink[] @relation("ProductDuplicateLinkA")
   duplicateLinksAsB  ProductDuplicateLink[] @relation("ProductDuplicateLinkB")
   aiAnalyses         AiProductAnalysis[]
-  cutoutJobs         ImageCutoutJob[]
   matchChecks        ProductMatchCheck[]
   photoAwards        ProductPhotoAward[]
   regionSearchStats  ProductRegionSearchStat[]
@@ -1055,16 +1053,16 @@ model AiProductAnalysis {
   prediction    Json
   correction    Json?
   confidence    Float?
-  // The guided-flow photo itself. FRONT analyses store it too since
-  // 2026-09-26 — it is the source for the logo/product cutout jobs
-  // (ImageCutoutJob). Null for analyses created before this field existed.
+  // The guided-flow photo itself (BARCODE/NUTRITION/INGREDIENTS only — a
+  // FRONT analysis has no image here, since the front photo becomes
+  // Product.imageUrl directly). Null for analyses created before this field
+  // existed.
   imageUrl      String?        @map("image_url")
   product       Product?       @relation(fields: [productId], references: [id], onDelete: SetNull)
   productId     String?        @map("product_id")
   createdAt     DateTime       @default(now()) @map("created_at")
   correctedAt   DateTime?      @map("corrected_at")
   matchCheck    ProductMatchCheck?
-  cutoutJobs    ImageCutoutJob[]
 
   @@index([kind, correctedAt])
   @@index([productId])
@@ -1076,59 +1074,6 @@ enum AiAnalysisKind {
   INGREDIENTS
   NUTRITION
   BARCODE
-}
-
-// Fritskrabning (docs/DECISIONS.md 2026-09-26): forsidefotoet fra det guidede
-// kamera-flow giver to jobs — logoet (beskåret efter OpenAI's logoBox) og
-// selve produktet (productBox). scripts/image-agent beskærer, fjerner
-// baggrunden med rembg og gemmer et transparent PNG under
-// /product-images/cutouts. Et BRAND_LOGO-job er logo-kandidaten, der holdes
-// op mod Brand-tabellen (brandId = matchet brand); det bliver kun selv
-// Brand.logoUrl, når brandet intet logo har og match + AI-sikkerhed er høje
-// (appliedAt). PRODUCT_FRONT lander som Product.pendingImageUrl og venter på
-// den eksisterende admin-godkendelse — aldrig direkte som imageUrl.
-model ImageCutoutJob {
-  id             String             @id @default(cuid())
-  kind           ImageCutoutKind
-  status         ImageCutoutStatus  @default(PENDING)
-  // Originalt foto (public-sti under /product-images).
-  sourceUrl      String
-  // Beskæring i 0-1 af billedets bredde/højde: { x, y, width, height }.
-  // Null = hele billedet.
-  cropBox        Json?
-  resultUrl      String?
-  error          String?
-  // Navnet, som OpenAI læste det på logoet (BRAND_LOGO).
-  recognizedText String?
-  confidence     Float?
-  // Match mod Brand-tabellen (0-1, 1 = normaliseret identisk navn).
-  matchScore     Float?
-  brand          Brand?             @relation(fields: [brandId], references: [id], onDelete: SetNull)
-  brandId        String?
-  product        Product?           @relation(fields: [productId], references: [id], onDelete: SetNull)
-  productId      String?
-  analysis       AiProductAnalysis? @relation(fields: [analysisId], references: [id], onDelete: SetNull)
-  analysisId     String?
-  createdAt      DateTime           @default(now())
-  processedAt    DateTime?
-  // Sat når resultatet er skrevet videre (Brand.logoUrl / Product.pendingImageUrl).
-  appliedAt      DateTime?
-
-  @@index([status, createdAt])
-  @@index([brandId])
-  @@index([analysisId])
-  @@map("image_cutout_jobs")
-}
-
-enum ImageCutoutKind {
-  BRAND_LOGO
-  PRODUCT_FRONT
-}
-
-enum ImageCutoutStatus {
-  PENDING
-  DONE
-  FAILED
 }
 
 // Kvalitetskontrol / billed-match (2026-09-19, se docs/DECISIONS.md): en

@@ -2,13 +2,17 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isValidStartWeight, parseWeightInput } from "@/lib/start-weight-verification";
 import { getSessionUser, unauthorized } from "@/lib/session";
+import { getUserSubscriptionTier } from "@/lib/subscription";
 
 export async function GET() {
   try {
     const user = await getSessionUser();
 
     if (!user) return unauthorized();
-    return NextResponse.json({ user });
+    // Allergenvisning er kun for Seriøs (docs/DECISIONS.md 2026-09-26); den
+    // gemte præference bevares og virker igen ved opgradering.
+    const tier = await getUserSubscriptionTier(user.id);
+    return NextResponse.json({ user: tier === "SERIOUS" ? user : { ...user, showAllergens: false } });
   } catch (error) {
     console.error("Profile fetch failed", error);
     return NextResponse.json(

@@ -8,7 +8,6 @@ import { ChecksumException, FormatException, NotFoundException } from "@zxing/li
 import { HfScreen } from "@/components/HfScreen";
 import { ScanningOverlay } from "@/components/hf/ScanningOverlay";
 import { HfBarcodeIcon } from "@/components/hf/HfBarcodeIcon";
-import { CaptureCheckOverlay } from "@/components/hf/CaptureCheckOverlay";
 import { parseNutritionText } from "@/lib/product-ocr";
 import { extractTextPrioritized } from "@/lib/product-ocr-prioritized";
 import { buildBarcodeContext } from "@/lib/barcode-context";
@@ -20,11 +19,8 @@ import type {
 } from "@/lib/product-analysis-types";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
-// Bindende flow (docs/DECISIONS.md, 2026-09-17, rækkefølge ændret 2026-09-26):
-// STREGKODE ALTID FØRST -> forside -> energi (næring) -> indhold
-// (ingredienser) -> produkt-create. Næring og ingredienser står ofte side om
-// side, så energifotoet tjekkes også for ingredienslisten; findes den, får
-// begge trin flueben, og ingrediens-trinnet springes over.
+// Bindende flow (docs/DECISIONS.md, 2026-09-17):
+// STREGKODE ALTID FØRST -> forside -> ingredienser -> næring -> produkt-create.
 // Senere billeder må aldrig ændre markedsregion/GS1-signalet fra barcode-trinnet.
 //
 // Hvert kamera-capture gemmer altid HELE videobilledet (capturePhotoFromVideo
@@ -35,16 +31,7 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 // af det brugeren fotograferede kasseres før produktet er gemt.
 
 type CameraStatus = "starting" | "active" | "denied" | "unavailable" | "error";
-type Stage = "stregkode" | "foto" | "naering" | "ingredienser";
-
-const STAGE_ORDER: Stage[] = ["stregkode", "foto", "naering", "ingredienser"];
-
-// Hvor sikker ingrediens-aflæsningen af energifotoet skal være, før
-// ingrediens-trinnet regnes for klaret og springes over.
-const INGREDIENTS_ON_NUTRITION_PHOTO_MIN_CONFIDENCE = 0.6;
-
-// Så længe begge flueben vises, før opret-siden åbnes.
-const BOTH_CHECKED_PAUSE_MS = 1200;
+type Stage = "stregkode" | "foto" | "ingredienser" | "naering";
 
 function cameraMessage(status: CameraStatus, t: (key: string) => string) {
   if (status === "starting") return t("camera.starting");
@@ -90,7 +77,6 @@ function KameraOpretContent() {
   const [manualBarcode, setManualBarcode] = useState("");
   const [barcodeLookupFailed, setBarcodeLookupFailed] = useState(false);
   const [region, setRegion] = useState("DK");
-  const [doneStages, setDoneStages] = useState<Partial<Record<Stage, boolean>>>({});
 
   const draftRef = useRef<ProductCreateDraft>({
     sideImages: [undefined, undefined, undefined],
@@ -127,20 +113,7 @@ function KameraOpretContent() {
     router.push("/product/create?fromFailedAdd=1");
   }, [router, stopCamera]);
 
-  function markDone(...stages: Stage[]) {
-    setDoneStages((prev) => ({ ...prev, ...Object.fromEntries(stages.map((item) => [item, true])) }));
-    const verified = { ...draftRef.current.verified };
-    for (const item of stages) {
-      if (item === "stregkode") verified.barcode = true;
-      if (item === "foto") verified.front = true;
-      if (item === "naering") verified.nutrition = true;
-      if (item === "ingredienser") verified.ingredients = true;
-    }
-    draftRef.current.verified = verified;
-  }
-
   function storeBarcodeContext(code: string) {
-    markDone("stregkode");
     const context = buildBarcodeContext(code, region);
     draftRef.current.barcodeValue = context.barcode;
     draftRef.current.marketRegion = context.marketRegion;
@@ -369,7 +342,6 @@ function KameraOpretContent() {
         const data = (await response.json()) as {
           analysisId: string | null;
           result: ProductFrontAnalysis | null;
-          brandMatch: { id: string; name: string; score: number } | null;
         };
         if (cancelled) return;
 
@@ -377,10 +349,7 @@ function KameraOpretContent() {
           draftRef.current.analysisIds = { ...draftRef.current.analysisIds, front: data.analysisId };
         }
         if (data.result) {
-          markDone("foto");
-          // Logonavnet er holdt op mod brand-databasen; et match giver
-          // databasens stavemåde, så der ikke oprettes en næsten-dublet.
-          draftRef.current.brand = data.brandMatch?.name ?? data.result.brand ?? data.result.logoText ?? undefined;
+          draftRef.current.brand = data.result.brand ?? undefined;
           draftRef.current.subbrand = data.result.subbrand ?? undefined;
           draftRef.current.name = data.result.productName ?? undefined;
           draftRef.current.variant = data.result.variant ?? undefined;
@@ -391,7 +360,7 @@ function KameraOpretContent() {
       } finally {
         if (!cancelled && shouldAdvance) {
           draftRef.current.mainImage = photo!;
-          nextStage("naering");
+          nextStage("ingredienser");
         }
       }
     }
@@ -442,14 +411,13 @@ function KameraOpretContent() {
         if (data.analysisId) {
           draftRef.current.analysisIds = { ...draftRef.current.analysisIds, ingredients: data.analysisId };
         }
-        if (data.result?.ingredientsText) markDone("ingredienser");
         draftRef.current.ingredientsText = data.result?.ingredientsText || localOcr.text || undefined;
       } catch {
         if (localOcrText) draftRef.current.ingredientsText = localOcrText;
       } finally {
         if (!cancelled) {
           draftRef.current.ingredientsImage = photo!;
-          goToCreatePage();
+          nextStage("naering");
         }
       }
     }
@@ -477,62 +445,30 @@ function KameraOpretContent() {
       const context = buildBarcodeContext(barcode, draftRef.current.marketRegion ?? region);
 
       let localParsed: ReturnType<typeof parseNutritionText> = null;
-      let ingredientsOnSamePhoto = false;
 
       try {
         const localOcr = await extractTextPrioritized(photo!, context.primaryOcrLanguages);
         localParsed = parseNutritionText(localOcr.text);
 
         setAnalyzingLabel(t("cameraCreate.analyzingWithAi"));
-        const requestBody = JSON.stringify({
-          photo,
-          barcode,
-          marketRegion: context.marketRegion,
-          ocrText: localOcr.text,
+        const response = await fetch("/api/ai/extract-nutrition-v2", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            photo,
+            barcode,
+            marketRegion: context.marketRegion,
+            ocrText: localOcr.text,
+          }),
         });
-        // Samme foto aflæses også som ingrediensliste, parallelt — står den
-        // ved siden af næringstabellen, er ingrediens-trinnet klaret.
-        const [data, ingredientsData] = await Promise.all([
-          fetch("/api/ai/extract-nutrition-v2", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: requestBody,
-          }).then(
-            (response) =>
-              response.json() as Promise<{ analysisId: string | null; result: NutritionAnalysis | null }>,
-          ),
-          fetch("/api/ai/extract-ingredients-photo", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: requestBody,
-          })
-            .then(
-              (response) =>
-                response.json() as Promise<{ analysisId: string | null; result: IngredientsAnalysis | null }>,
-            )
-            .catch(() => null),
-        ]);
+        const data = (await response.json()) as {
+          analysisId: string | null;
+          result: NutritionAnalysis | null;
+        };
         if (cancelled) return;
 
         if (data.analysisId) {
           draftRef.current.analysisIds = { ...draftRef.current.analysisIds, nutrition: data.analysisId };
-        }
-
-        const ingredients = ingredientsData?.result;
-        if (
-          ingredients?.ingredientsText &&
-          ingredients.confidence >= INGREDIENTS_ON_NUTRITION_PHOTO_MIN_CONFIDENCE
-        ) {
-          ingredientsOnSamePhoto = true;
-          draftRef.current.ingredientsText = ingredients.ingredientsText;
-          draftRef.current.ingredientsImage = photo!;
-          draftRef.current.ingredientsFromNutritionPhoto = true;
-          if (ingredientsData?.analysisId) {
-            draftRef.current.analysisIds = {
-              ...draftRef.current.analysisIds,
-              ingredients: ingredientsData.analysisId,
-            };
-          }
         }
 
         const ai = data.result;
@@ -552,7 +488,6 @@ function KameraOpretContent() {
           : localParsed;
 
         if (selected) {
-          markDone("naering");
           draftRef.current.kcalPer100g = String(selected.kcalPer100g);
           draftRef.current.proteinPer100g = String(selected.proteinPer100g);
           draftRef.current.carbsPer100g = String(selected.carbsPer100g);
@@ -571,16 +506,7 @@ function KameraOpretContent() {
       } finally {
         if (!cancelled) {
           draftRef.current.nutritionImage = photo!;
-          if (ingredientsOnSamePhoto) {
-            // Vis begge flueben et øjeblik, før opret-siden åbnes.
-            markDone("ingredienser");
-            setAnalyzingLabel(t("cameraCreate.bothFound"));
-            window.setTimeout(() => {
-              if (!cancelled) goToCreatePage();
-            }, BOTH_CHECKED_PAUSE_MS);
-          } else {
-            nextStage("ingredienser");
-          }
+          goToCreatePage();
         }
       }
     }
@@ -599,42 +525,18 @@ function KameraOpretContent() {
   }
 
   const message = cameraMessage(cameraStatus, t);
-  const stageLabels: Record<Stage, string> = {
-    stregkode: t("cameraCreate.stageBarcode"),
-    foto: t("cameraCreate.stagePhoto"),
-    naering: t("cameraCreate.stageNutrition"),
-    ingredienser: t("cameraCreate.stageIngredients"),
-  };
-  const stepLabels: Record<Stage, string> = {
-    stregkode: t("cameraCreate.stepBarcode"),
-    foto: t("cameraCreate.stepFront"),
-    naering: t("cameraCreate.stepNutrition"),
-    ingredienser: t("cameraCreate.stepIngredients"),
-  };
+  const stageLabel =
+    stage === "stregkode"
+      ? t("cameraCreate.stageBarcode")
+      : stage === "foto"
+        ? t("cameraCreate.stagePhoto")
+        : stage === "ingredienser"
+          ? t("cameraCreate.stageIngredients")
+          : t("cameraCreate.stageNutrition");
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-3 p-4">
-      <ol className="grid grid-cols-4 gap-2">
-        {STAGE_ORDER.map((item) => (
-          <li
-            key={item}
-            className="relative flex h-12 items-center justify-center overflow-hidden rounded-[8px] px-1 text-center"
-            style={{
-              background: "var(--hf-color-card)",
-              outline: item === stage ? "2px solid var(--hf-color-brand)" : undefined,
-              outlineOffset: -2,
-            }}
-            aria-current={item === stage ? "step" : undefined}
-          >
-            <span className="hf-type-caption">{stepLabels[item]}</span>
-            {doneStages[item] && (
-              <CaptureCheckOverlay label={t("cameraCreate.stepDone", { step: stepLabels[item] })} size={24} />
-            )}
-          </li>
-        ))}
-      </ol>
-
-      <p className="hf-type-caption text-center">{stageLabels[stage]}</p>
+      <p className="hf-type-caption text-center">{stageLabel}</p>
 
       <div className="relative aspect-square w-full overflow-hidden rounded-[12px] bg-hf-black">
         {photo ? (

@@ -6,8 +6,6 @@ docs/AI.md), finder det bedste kandidatbillede via Google Custom Search,
 fjerner baggrunden og gemmer det som et transparent PNG. Resultatet skrives
 som "pendingImageUrl" med imageStatus=PENDING og venter på admin-godkendelse
 (docs/ADMIN.md) — det bliver aldrig automatisk det officielle imageUrl.
-
-Fritskrabning af logo + forside fra kamera-flowet ligger i cutout.py.
 """
 
 import io
@@ -20,8 +18,6 @@ import requests
 from PIL import Image
 from rembg import remove
 
-from cutout import run_cutouts
-
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger("image-agent")
 
@@ -33,9 +29,6 @@ GOOGLE_CSE_ID = os.environ["GOOGLE_CSE_ID"]
 OUTPUT_DIR = os.environ.get("IMAGE_OUTPUT_DIR", "/images")
 PUBLIC_PATH_PREFIX = os.environ.get("PUBLIC_PATH_PREFIX", "/product-images")
 POLL_INTERVAL_SECONDS = int(os.environ.get("POLL_INTERVAL_SECONDS", "300"))
-# Fritskrabning af forsidefotos (cutout.py) skal føles hurtig for brugeren,
-# så den kører langt oftere end den dyre Google-søgning.
-CUTOUT_POLL_INTERVAL_SECONDS = int(os.environ.get("CUTOUT_POLL_INTERVAL_SECONDS", "15"))
 BATCH_SIZE = int(os.environ.get("BATCH_SIZE", "5"))
 MIN_SIDE_PX = int(os.environ.get("MIN_SIDE_PX", "600"))
 
@@ -152,23 +145,15 @@ def run_once(conn):
 
 def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    log.info(
-        "image agent started, searching every %ss, cutouts every %ss",
-        POLL_INTERVAL_SECONDS,
-        CUTOUT_POLL_INTERVAL_SECONDS,
-    )
+    log.info("image agent started, polling every %ss", POLL_INTERVAL_SECONDS)
 
-    last_search = float("-inf")
     while True:
         try:
             with psycopg2.connect(DATABASE_URL) as conn:
-                run_cutouts(conn)
-                if time.monotonic() - last_search >= POLL_INTERVAL_SECONDS:
-                    last_search = time.monotonic()
-                    run_once(conn)
+                run_once(conn)
         except Exception:  # noqa: BLE001 - a broken cycle must not kill the service
             log.exception("cycle failed")
-        time.sleep(CUTOUT_POLL_INTERVAL_SECONDS)
+        time.sleep(POLL_INTERVAL_SECONDS)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createGoal, GOAL_TARGET_TYPES, listGoals, type GoalTargetType } from "@/lib/user-goals";
 import { getSessionUser, unauthorized } from "@/lib/session";
+import { getUserSubscriptionTier } from "@/lib/subscription";
 
 export async function GET() {
   try {
@@ -61,6 +62,11 @@ export async function POST(req: Request) {
     const user = await getSessionUser();
 
     if (!user) return unauthorized();
+    // Delmål er kun for Seriøs; Gratis har én målsætning i alt (målvægten)
+    // og ingen delmål (docs/DECISIONS.md 2026-09-26).
+    if ((await getUserSubscriptionTier(user.id)) !== "SERIOUS") {
+      return NextResponse.json({ code: "PREMIUM_REQUIRED", message: "Delmål kræver Seriøs" }, { status: 403 });
+    }
     const goal = await createGoal(user.id, targetDate, values);
     return NextResponse.json({ goal: { id: goal.id } });
   } catch (error) {

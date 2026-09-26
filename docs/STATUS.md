@@ -2,20 +2,18 @@
 
 Last updated: 2026-09-26
 
-## 2026-09-26: Opret vare — logo, fritskrabning og samme-foto-flueben
+## 2026-09-26: Seriøs-låse + egne abonnementssider
 
-Se docs/DECISIONS.md 2026-09-26 "Opret vare — rækkefølge …". Kamera-flowet er
-stregkode → forside → energi → indhold med flueben pr. trin; energi + indhold på
-samme foto giver begge flueben. OpenAI læser logonavn + logo-/produktboks;
-navnet matches mod Brand-tabellen; `scripts/image-agent` fritskraber logo og
-produkt (`ImageCutoutJob`, migration `20260926140000_image_cutout_jobs`).
-Lint + typecheck grønne for de ændrede filer. Ikke testet mod OpenAI/rembg
-(ingen lokal DB/Python).
+Gratis: 3 måneders historik, én målsætning (målvægt), ingen delmål. Låst til
+Seriøs: statistik, fotodagbog, bundmenu-omarrangering, visningsindstillinger,
+allergenvisning, opskriftsfiltre/HelloFresh og integrationer (se DECISIONS
+2026-09-26). Nye sider `/profile/subscription/serious` og `/family` med 1/3/12
+mdr.-bokse. Lint + typecheck grønne for de ændrede filer; fuld build ikke kørt
+(anden sessions ufærdige `FrontPagePreview`-import fejler typecheck).
 
 Next work:
-1. Deploy: migrationen + genbyg `image-agent` (deploy-trinnet for agenterne
-   fejler pt., se G5 i OPEN-TASKS).
-2. Test på telefon med en rigtig vare (fx næring + ingredienser på samme side).
+1. Endelige priser og hvordan Seriøs Familie fungerer (antal medlemmer).
+2. Købsknappen åbner, når MobilePay-sessionens aftale-API er deployet.
 
 
 ## 2026-09-26: Oplevelse af søvn

@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
+import { getUserSubscriptionTier } from "@/lib/subscription";
 import { shouldSync } from "@/lib/integrations";
 import { newOAuthState, readOAuthState, saveIntegrationTokens, setOAuthCookie } from "@/lib/integrations-oauth";
 import { storeIntegrationItems } from "@/lib/integrations/store-items";
@@ -29,7 +30,12 @@ export async function connect(_req: NextRequest, adapter: OAuthProviderAdapter) 
       { status: 503 }
     );
   }
-  if (!(await getSessionUser())) return NextResponse.json({ message: "Log ind først" }, { status: 401 });
+  const user = await getSessionUser();
+  if (!user) return NextResponse.json({ message: "Log ind først" }, { status: 401 });
+  // Integrationer er kun for Seriøs (docs/DECISIONS.md 2026-09-26).
+  if ((await getUserSubscriptionTier(user.id)) !== "SERIOUS") {
+    return NextResponse.json({ message: "Integrationer kræver Seriøs" }, { status: 403 });
+  }
 
   const state = newOAuthState();
   const response = NextResponse.redirect(adapter.buildAuthorizeUrl(state, redirectUri(adapter)));

@@ -72,23 +72,3 @@ export function parseNutritionText(rawText: string): ParsedNutrition | null {
   }
   return { kcalPer100g, proteinPer100g, carbsPer100g, fatPer100g };
 }
-
-// Næring og ingredienser står ofte side om side på emballagen
-// (docs/DECISIONS.md 2026-09-26). Finder ingredienslisten i OCR-teksten fra
-// næringsfotoet: teksten efter en "Ingredienser:"-overskrift, frem til
-// næringstabellen eller slutningen. null hvis der ikke er en tydelig liste.
-const INGREDIENTS_HEADING =
-  /(?:ingredienser|ingredients|ingrediensar|zutaten|ingrédients|ingrediënten|ainesosat|składniki)\s*:?/i;
-const INGREDIENTS_END =
-  /(?:næringsindhold|næringsdeklaration|næringsværdi|nutrition|näringsvärde|nährwert|valeurs nutritionnelles|voedingswaarde)/i;
-
-export function findIngredientsSection(rawText: string): string | null {
-  const text = rawText.replace(/\s+/g, " ");
-  const heading = INGREDIENTS_HEADING.exec(text);
-  if (!heading) return null;
-  let section = text.slice(heading.index + heading[0].length);
-  const end = INGREDIENTS_END.exec(section);
-  if (end) section = section.slice(0, end.index);
-  section = section.trim();
-  return section.replace(/[^\p{L}]/gu, "").length >= 12 ? section : null;
-}

@@ -550,13 +550,7 @@
     "stageIngredients": "Ingredienser",
     "readingIngredients": "Læser ingredienslisten...",
     "continueWithBarcode": "Fortsæt med denne stregkode",
-    "barcodeLookupFailedContinue": "Opslaget fejlede. Du kan fortsætte med den scannede stregkode.",
-    "stepBarcode": "Stregkode",
-    "stepFront": "Forside",
-    "stepNutrition": "Energi",
-    "stepIngredients": "Indhold",
-    "stepDone": "{step}: taget og aflæst",
-    "bothFound": "Energi og indhold fundet på samme billede"
+    "barcodeLookupFailedContinue": "Opslaget fejlede. Du kan fortsætte med den scannede stregkode."
   },
   "foods": {
     "title": "Madvarer",
@@ -749,7 +743,6 @@
     "mediaScanFailedBarcode": "Kunne ikke læse stregkoden — indtast den nedenfor",
     "mediaScanFailedNutrition": "Kunne ikke læse næringsindholdet — udfyld det nedenfor",
     "mediaScanFailedIngredients": "Kunne ikke læse indholdsfortegnelsen — udfyld den nedenfor",
-    "mediaVerified": "{box}: taget og aflæst korrekt",
     "savedOffline": "Ingen forbindelse — produktet er gemt på enheden og uploades automatisk, når du har netværk igen."
   },
   "offlineQueue": {
@@ -890,17 +883,56 @@
     "activeUntil": "Aktiv til {date}",
     "freePlan": {
       "title": "Gratis",
-      "description": "Adgang til alt i Hello Cal undtagen Hello Doc. Kun de seneste 30 dages historik vises — ældre data gemmes og kommer tilbage, hvis du bliver Seriøs."
+      "description": "Registrering, kalender og din målsætning. Kun de seneste 3 måneders historik vises — ældre data gemmes og kommer tilbage, hvis du bliver Seriøs."
     },
     "seriousPlan": {
       "title": "Seriøs",
       "priceSuffix": "kr./måned",
-      "description": "Fuld historik uden 30-dages-grænse, plus adgang til Hello Doc.",
+      "description": "Fuld historik uden 3-måneders-grænse, statistik, fotodagbog, delmål, integrationer og Hello Doc.",
       "upgradeCta": "Opgradér til Seriøs",
       "upgradeUnavailable": "Betaling er ikke tilsluttet endnu — brug en gavekode eller indløs points for at blive Seriøs, indtil en betalingsudbyder er på plads.",
       "withdrawalConsent": "Jeg ønsker, at abonnementet starter med det samme, og er klar over, at jeg ved fortrydelse inden for 14 dage kun får refunderet den del af perioden, jeg ikke har brugt."
     },
-    "retentionNote": "Data ældre end 30 dage slettes aldrig — det gemmes og vises igen, så snart du bliver Seriøs."
+    "retentionNote": "Data ældre end 3 måneder slettes aldrig — det gemmes og vises igen, så snart du bliver Seriøs.",
+    "plansHeading": "Abonnementer",
+    "plans": {
+      "serious": {
+        "title": "Seriøs",
+        "teaser": "Fuld adgang til alt i Hello Cal — for dig.",
+        "description": "Til dig, der vil helt i dybden. Seriøs giver dig hele din historik, hele statistikmodulet og alle værktøjerne til at følge, forstå og tilpasse din kost og dine mål — uden begrænsninger."
+      },
+      "family": {
+        "title": "Seriøs Familie",
+        "teaser": "Fuld adgang til alt i Hello Cal — for hele familien.",
+        "description": "Alt fra Seriøs til hele familien på ét abonnement. Hver person har sin egen private konto, og ingen kan se de andres data."
+      }
+    },
+    "features": {
+      "history": "Hele din historik — ingen 3-måneders grænse",
+      "statistics": "Hele statistikmodulet",
+      "photoDiary": "Fotodagbog",
+      "customize": "Omarrangér statistik og ikonerne i bundmenuen",
+      "display": "Alle visningsindstillinger til og fra",
+      "allergens": "Allergener, specialdiæter og filtre på retter",
+      "integrations": "Alle integrationer",
+      "subGoals": "Delmål ud over din målsætning",
+      "helloDoc": "Hello Doc — del med din læge eller diætist"
+    },
+    "planPage": {
+      "includesHeading": "Det får du",
+      "periodHeading": "Vælg periode",
+      "period": {
+        "1": "1 måned",
+        "3": "3 måneder",
+        "12": "1 år"
+      },
+      "price": "{price} kr.",
+      "perMonth": "{price} kr./md.",
+      "save": "Spar {pct} %",
+      "renewalNote": "Abonnementet fornyes automatisk for samme periode, indtil du opsiger det. Du kan opsige når som helst.",
+      "buyCta": "Køb — {price} kr.",
+      "buyError": "Købet kunne ikke startes lige nu"
+    }
   },
   "profileSleep": {
     "title": "Søvnmønster",
@@ -1441,5 +1473,12 @@
     "enabled": "Face ID er slået til for login.",
     "active": "Face ID aktiveret",
     "activate": "Aktivér Face ID"
+  },
+  "premium": {
+    "title": "Kun med Seriøs",
+    "description": "Denne funktion er en del af Seriøs. Med Seriøs får du hele statistikmodulet, fotodagbog, delmål, allergener og filtre, integrationer og fuld frihed til at tilpasse appen.",
+    "cta": "Se Seriøs",
+    "badge": "Seriøs",
+    "filtersLocked": "Filtre og sortering kræver Seriøs"
   }
 }

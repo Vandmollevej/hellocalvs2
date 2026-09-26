@@ -4,15 +4,8 @@ import { useState } from "react";
 import { IconClipboardText, IconList, IconPhoto } from "@tabler/icons-react";
 import { BrowserMultiFormatReader } from "@zxing/browser";
 import { NumberedBadge } from "@/components/hf/NumberedBadge";
-import { CaptureCheckOverlay } from "@/components/hf/CaptureCheckOverlay";
 import { HfBarcodeIcon } from "@/components/hf/HfBarcodeIcon";
-import {
-  extractText,
-  findIngredientsSection,
-  hasMeaningfulText,
-  parseNutritionText,
-  type ParsedNutrition,
-} from "@/lib/product-ocr";
+import { extractText, hasMeaningfulText, parseNutritionText, type ParsedNutrition } from "@/lib/product-ocr";
 import { regionToOcrLanguage } from "@/lib/regions";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -34,10 +27,7 @@ function readAsDataUrl(file: File): Promise<string> {
   });
 }
 
-// "done" = taget og aflæst korrekt -> flueben-overlay (docs/DECISIONS.md 2026-09-26).
-type BoxStatus = "idle" | "working" | "failed" | "done";
-
-export type MediaGridVerified = { barcode?: boolean; nutrition?: boolean; ingredients?: boolean };
+type BoxStatus = "idle" | "working" | "failed";
 
 function MediaBox({
   number,
@@ -47,7 +37,6 @@ function MediaBox({
   status,
   workingLabel,
   failedLabel,
-  doneLabel,
   onPick,
 }: {
   number: number;
@@ -57,7 +46,6 @@ function MediaBox({
   status: BoxStatus;
   workingLabel: string;
   failedLabel: string;
-  doneLabel: string;
   onPick: (file: File) => void;
 }) {
   return (
@@ -80,7 +68,6 @@ function MediaBox({
           <span className="hf-type-caption text-white">{workingLabel}</span>
         </div>
       )}
-      {status === "done" && <CaptureCheckOverlay label={doneLabel} />}
       {status === "failed" && (
         <div className="absolute inset-x-0 bottom-0 bg-black/60 px-1.5 py-1 text-center">
           <span className="hf-type-caption text-white">{failedLabel}</span>
@@ -154,7 +141,6 @@ export function CreateProductMediaGrid({
   uiLang,
   onNutritionExtracted,
   onIngredientsExtracted,
-  initialVerified,
 }: {
   value: MediaGridValue;
   onChange: (next: MediaGridValue) => void;
@@ -162,19 +148,11 @@ export function CreateProductMediaGrid({
   uiLang: "da" | "en";
   onNutritionExtracted: (values: ParsedNutrition) => void;
   onIngredientsExtracted: (text: string) => void;
-  // Trin kamera-flowet allerede har aflæst korrekt — vises med flueben.
-  initialVerified?: MediaGridVerified;
 }) {
   const { t } = useTranslation();
-  const [barcodeStatus, setBarcodeStatus] = useState<BoxStatus>(
-    initialVerified?.barcode && value.barcodeImage ? "done" : "idle",
-  );
-  const [nutritionStatus, setNutritionStatus] = useState<BoxStatus>(
-    initialVerified?.nutrition && value.nutritionImage ? "done" : "idle",
-  );
-  const [ingredientsStatus, setIngredientsStatus] = useState<BoxStatus>(
-    initialVerified?.ingredients && value.ingredientsImage ? "done" : "idle",
-  );
+  const [barcodeStatus, setBarcodeStatus] = useState<BoxStatus>("idle");
+  const [nutritionStatus, setNutritionStatus] = useState<BoxStatus>("idle");
+  const [ingredientsStatus, setIngredientsStatus] = useState<BoxStatus>("idle");
 
   async function setSideImage(index: 0 | 1 | 2, file: File) {
     const sideImages = [...value.sideImages] as [string?, string?, string?];
@@ -194,7 +172,7 @@ export function CreateProductMediaGrid({
       const reader = new BrowserMultiFormatReader();
       const result = await reader.decodeFromImageUrl(dataUrl);
       barcodeValue = result.getText();
-      setBarcodeStatus("done");
+      setBarcodeStatus("idle");
     } catch {
       // ZXing kunne ikke afkode billedet (sløret/vinklet/intet stregkode-
       // mønster fundet) — den eksisterende manuelle stregkode-tekstfelt
@@ -207,22 +185,9 @@ export function CreateProductMediaGrid({
   async function pickNutritionImage(file: File) {
     const dataUrl = await readAsDataUrl(file);
     setNutritionStatus("working");
-    let ingredientsImage = value.ingredientsImage;
     try {
-      const ocrLang = regionToOcrLanguage(region);
-      const ocrText = await extractText(dataUrl, ocrLang);
+      const ocrText = await extractText(dataUrl, regionToOcrLanguage(region));
       let parsed = parseNutritionText(ocrText);
-
-      // Står ingredienslisten ved siden af næringstabellen, er den boks
-      // også klaret med samme foto.
-      const ingredientsSection = findIngredientsSection(ocrText);
-      if (ingredientsSection) {
-        const previousStatus = ingredientsStatus;
-        setIngredientsStatus("working");
-        const ok = await applyIngredientsText(ingredientsSection, ocrLang).catch(() => false);
-        if (ok) ingredientsImage = dataUrl;
-        setIngredientsStatus(ok ? "done" : previousStatus);
-      }
 
       if (!parsed) {
         const aiRes = await fetch("/api/ai/extract-nutrition", {
@@ -244,35 +209,14 @@ export function CreateProductMediaGrid({
 
       if (parsed) {
         onNutritionExtracted(parsed);
-        setNutritionStatus("done");
+        setNutritionStatus("idle");
       } else {
         setNutritionStatus("failed");
       }
     } catch {
       setNutritionStatus("failed");
     }
-    onChange({ ...value, nutritionImage: dataUrl, ingredientsImage });
-  }
-
-  // Lokal OCR-tekst -> ingrediensfeltet. AI'ens ENESTE rolle her er at
-  // oversætte til UI-sproget, når kildesproget er et andet.
-  async function applyIngredientsText(text: string, ocrLang: string): Promise<boolean> {
-    const cleaned = text.replace(/\s+/g, " ").trim();
-    const primarySource = ocrLang.split("+")[0];
-    const sourceIsUiLang =
-      (primarySource === "dan" && uiLang === "da") || (primarySource === "eng" && uiLang === "en");
-    if (sourceIsUiLang) {
-      onIngredientsExtracted(cleaned);
-      return true;
-    }
-    const res = await fetch("/api/ai/extract-ingredients", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: cleaned, targetLang: uiLang }),
-    });
-    const data = (await res.json()) as { text: string | null };
-    onIngredientsExtracted(data.text ?? cleaned);
-    return Boolean(data.text);
+    onChange({ ...value, nutritionImage: dataUrl });
   }
 
   async function pickIngredientsImage(file: File) {
@@ -282,7 +226,24 @@ export function CreateProductMediaGrid({
       const ocrLang = regionToOcrLanguage(region);
       const ocrText = await extractText(dataUrl, ocrLang);
       if (hasMeaningfulText(ocrText)) {
-        setIngredientsStatus((await applyIngredientsText(ocrText, ocrLang)) ? "done" : "failed");
+        const cleaned = ocrText.replace(/\s+/g, " ").trim();
+        const primarySource = ocrLang.split("+")[0];
+        const sourceIsUiLang =
+          (primarySource === "dan" && uiLang === "da") || (primarySource === "eng" && uiLang === "en");
+
+        if (sourceIsUiLang) {
+          onIngredientsExtracted(cleaned);
+          setIngredientsStatus("idle");
+        } else {
+          const res = await fetch("/api/ai/extract-ingredients", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: cleaned, targetLang: uiLang }),
+          });
+          const data = (await res.json()) as { text: string | null };
+          onIngredientsExtracted(data.text ?? cleaned);
+          setIngredientsStatus(data.text ? "idle" : "failed");
+        }
       } else {
         setIngredientsStatus("failed");
       }
@@ -302,7 +263,6 @@ export function CreateProductMediaGrid({
         status={barcodeStatus}
         workingLabel={t("productCreate.mediaScanningBarcode")}
         failedLabel={t("productCreate.mediaScanFailedBarcode")}
-        doneLabel={t("productCreate.mediaVerified", { box: t("productCreate.mediaBarcode") })}
         onPick={pickBarcodeImage}
       />
       <MediaBox
@@ -313,7 +273,6 @@ export function CreateProductMediaGrid({
         status={nutritionStatus}
         workingLabel={t("productCreate.mediaScanningNutrition")}
         failedLabel={t("productCreate.mediaScanFailedNutrition")}
-        doneLabel={t("productCreate.mediaVerified", { box: t("productCreate.mediaNutrition") })}
         onPick={pickNutritionImage}
       />
       <MediaBox
@@ -324,7 +283,6 @@ export function CreateProductMediaGrid({
         status={ingredientsStatus}
         workingLabel={t("productCreate.mediaScanningIngredients")}
         failedLabel={t("productCreate.mediaScanFailedIngredients")}
-        doneLabel={t("productCreate.mediaVerified", { box: t("productCreate.mediaIngredients") })}
         onPick={pickIngredientsImage}
       />
       <div className="relative aspect-square rounded-[12px] p-1.5" style={{ background: "var(--hf-color-card)" }}>

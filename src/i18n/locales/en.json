@@ -550,13 +550,7 @@
     "stageIngredients": "Ingredients",
     "readingIngredients": "Reading ingredients...",
     "continueWithBarcode": "Continue with this barcode",
-    "barcodeLookupFailedContinue": "The lookup failed. You can continue with the scanned barcode.",
-    "stepBarcode": "Barcode",
-    "stepFront": "Front",
-    "stepNutrition": "Energy",
-    "stepIngredients": "Contents",
-    "stepDone": "{step}: captured and read",
-    "bothFound": "Energy and contents found in the same photo"
+    "barcodeLookupFailedContinue": "The lookup failed. You can continue with the scanned barcode."
   },
   "foods": {
     "title": "Foods",
@@ -749,7 +743,6 @@
     "mediaScanFailedBarcode": "Couldn't read the barcode — enter it below",
     "mediaScanFailedNutrition": "Couldn't read the nutrition facts — fill them in below",
     "mediaScanFailedIngredients": "Couldn't read the ingredients list — fill it in below",
-    "mediaVerified": "{box}: captured and read correctly",
     "savedOffline": "No connection — the product is saved on this device and will upload automatically once you're back online."
   },
   "offlineQueue": {
@@ -890,17 +883,56 @@
     "activeUntil": "Active until {date}",
     "freePlan": {
       "title": "Free",
-      "description": "Access to everything in Hello Cal except Hello Doc. Only the last 30 days of history are shown — older data is kept and comes back if you go Serious."
+      "description": "Logging, calendar and your goal. Only the last 3 months of history are shown — older data is kept and comes back if you go Serious."
     },
     "seriousPlan": {
       "title": "Serious",
       "priceSuffix": "kr./month",
-      "description": "Full history with no 30-day limit, plus access to Hello Doc.",
+      "description": "Full history with no 3-month limit, statistics, photo diary, sub-goals, integrations and Hello Doc.",
       "upgradeCta": "Upgrade to Serious",
       "upgradeUnavailable": "Payment isn't connected yet — use a gift code or redeem points to go Serious until a payment provider is in place.",
       "withdrawalConsent": "I want the subscription to start right away, and I understand that if I withdraw within 14 days, I will only be refunded for the part of the period I haven't used."
     },
-    "retentionNote": "Data older than 30 days is never deleted — it's kept and shown again as soon as you go Serious."
+    "retentionNote": "Data older than 3 months is never deleted — it's kept and shown again as soon as you go Serious.",
+    "plansHeading": "Subscriptions",
+    "plans": {
+      "serious": {
+        "title": "Serious",
+        "teaser": "Full access to everything in Hello Cal — for you.",
+        "description": "For those who want to go all in. Serious gives you your full history, the whole statistics module and every tool to track, understand and tailor your diet and goals — without limits."
+      },
+      "family": {
+        "title": "Serious Family",
+        "teaser": "Full access to everything in Hello Cal — for the whole family.",
+        "description": "Everything in Serious for the whole family on one subscription. Everyone has their own private account, and no one can see the others' data."
+      }
+    },
+    "features": {
+      "history": "Your full history — no 3-month limit",
+      "statistics": "The full statistics module",
+      "photoDiary": "Photo diary",
+      "customize": "Rearrange statistics and the bottom-bar icons",
+      "display": "All display settings on and off",
+      "allergens": "Allergens, special diets and dish filters",
+      "integrations": "All integrations",
+      "subGoals": "Sub-goals on top of your goal",
+      "helloDoc": "Hello Doc — share with your doctor or dietitian"
+    },
+    "planPage": {
+      "includesHeading": "What you get",
+      "periodHeading": "Choose period",
+      "period": {
+        "1": "1 month",
+        "3": "3 months",
+        "12": "1 year"
+      },
+      "price": "{price} kr.",
+      "perMonth": "{price} kr./mo.",
+      "save": "Save {pct}%",
+      "renewalNote": "The subscription renews automatically for the same period until you cancel. You can cancel at any time.",
+      "buyCta": "Buy — {price} kr.",
+      "buyError": "The purchase couldn't be started right now"
+    }
   },
   "profileSleep": {
     "title": "Sleep pattern",
@@ -1441,5 +1473,12 @@
     "enabled": "Face ID is turned on for login.",
     "active": "Face ID enabled",
     "activate": "Enable Face ID"
+  },
+  "premium": {
+    "title": "Serious only",
+    "description": "This feature is part of Serious. With Serious you get the full statistics module, photo diary, sub-goals, allergens and filters, integrations and full freedom to customise the app.",
+    "cta": "See Serious",
+    "badge": "Serious",
+    "filtersLocked": "Filters and sorting require Serious"
   }
 }
