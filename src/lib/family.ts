@@ -285,3 +285,69 @@ export async function removeFamilyMember(ownerId: string, memberUserId: string) 
   if (!user?.passwordHash && !user?.oauthAccounts.length) throw new FamilyError("profileWithoutLogin", 409);
   await detachMember(family.id, memberUserId);
 }
+
+// Betaleren sletter en profil uden eget login, fx et barns (brugerens valg
+// 2026-09-26: "slet alt"). Alle dagbogsdata slettes; selve User-rækken
+// anonymiseres som ved kontosletning (src/lib/gdpr.ts), fordi andre tabeller
+// kan pege på den. Kræver, at man har skrevet SLET i klienten.
+export async function deleteFamilyProfile(ownerId: string, profileId: string) {
+  const family = await prisma.family.findUnique({ where: { ownerId }, include: { members: true } });
+  if (!family) throw new FamilyError("notOwner", 403);
+  if (profileId === ownerId || !family.members.some((m) => m.userId === profileId)) {
+    throw new FamilyError("notMember", 404);
+  }
+  const user = await prisma.user.findUnique({
+    where: { id: profileId },
+    select: { passwordHash: true, oauthAccounts: { select: { id: true } } },
+  });
+  if (user?.passwordHash || user?.oauthAccounts.length) throw new FamilyError("profileHasLogin", 409);
+
+  const where = { userId: profileId };
+  await prisma.$transaction([
+    prisma.registration.deleteMany({ where }),
+    prisma.weightEntry.deleteMany({ where }),
+    prisma.bodyMeasurement.deleteMany({ where }),
+    prisma.goal.deleteMany({ where }),
+    prisma.waterEntry.deleteMany({ where }),
+    prisma.menstrualCycleEntry.deleteMany({ where }),
+    prisma.sleepSchedule.deleteMany({ where }),
+    prisma.workShift.deleteMany({ where }),
+    prisma.activity.deleteMany({ where }),
+    prisma.healthMetric.deleteMany({ where }),
+    prisma.favorite.deleteMany({ where }),
+    prisma.sharedRecipeFavorite.deleteMany({ where }),
+    prisma.notificationPreference.deleteMany({ where }),
+    prisma.userProductSearchHistory.deleteMany({ where }),
+    prisma.familyAccessGrant.deleteMany({ where: { OR: [{ granteeId: profileId }, { subjectId: profileId }] } }),
+    prisma.familyLoginCode.deleteMany({ where: { profileId } }),
+    prisma.profileAccessLog.deleteMany({ where: { subjectId: profileId } }),
+    prisma.familyMember.delete({ where: { userId: profileId } }),
+    prisma.user.update({
+      where: { id: profileId },
+      data: {
+        email: `slettet-${profileId}@hellocal.invalid`,
+        displayName: "Slettet bruger",
+        weightKg: null,
+        heightCm: null,
+        birthDate: null,
+        sex: null,
+        targetWeightKg: null,
+        forgottenAt: new Date(),
+      },
+    }),
+  ]);
+}
+
+// Betalerens konto slettes: familien opløses, og hvert medlem beholder sine
+// egne data (brugerens valg 2026-09-26). Profiler uden eget login ligger
+// fortsat med deres data, men kan ikke åbnes af nogen, før support hjælper.
+export async function dissolveFamilyOf(userId: string) {
+  const family = await prisma.family.findUnique({ where: { ownerId: userId }, select: { id: true } });
+  if (family) {
+    // Medlemmer, tildelinger og koder følger med (onDelete: Cascade).
+    await prisma.family.delete({ where: { id: family.id } });
+    return;
+  }
+  const member = await prisma.familyMember.findUnique({ where: { userId }, select: { familyId: true } });
+  if (member) await detachMember(member.familyId, userId);
+}

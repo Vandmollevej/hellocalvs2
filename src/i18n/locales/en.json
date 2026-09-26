@@ -1617,7 +1617,9 @@
       "isChild": "Child",
       "createLoginCode": "Create login code",
       "remove": "Remove from family",
-      "removeConfirm": "Remove {name} from the family? The profile becomes a regular account without the family subscription."
+      "removeConfirm": "Remove {name} from the family? The profile becomes a regular account without the family subscription.",
+      "deleteProfile": "Delete profile and all data",
+      "deleteProfileConfirm": "Everything on {name}'s profile is deleted and cannot be restored. Type SLET to confirm."
     },
     "code": {
       "claimHelp": "The person opens Hello Cal, chooses \"Got a family code?\" on the login page and enters the code. Valid until {date}.",
@@ -1676,7 +1678,9 @@
       "tooManyAttempts": "Too many attempts. Try again later.",
       "invalidRequest": "Invalid request.",
       "notFound": "Not found.",
-      "unknown": "Something went wrong. Try again."
+      "unknown": "Something went wrong. Try again.",
+      "profileHasLogin": "The profile has its own login. Remove it from the family instead.",
+      "confirmRequired": "Type SLET to confirm."
     },
     "deletePermissions": {
       "title": "Deleting entries",

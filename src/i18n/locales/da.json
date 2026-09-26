@@ -1617,7 +1617,9 @@
       "isChild": "Barn",
       "createLoginCode": "Lav login-kode",
       "remove": "Fjern fra familien",
-      "removeConfirm": "Fjern {name} fra familien? Profilen bliver en almindelig konto uden familieabonnement."
+      "removeConfirm": "Fjern {name} fra familien? Profilen bliver en almindelig konto uden familieabonnement.",
+      "deleteProfile": "Slet profil og alle data",
+      "deleteProfileConfirm": "Alt på {name}s profil slettes og kan ikke gendannes. Skriv SLET for at bekræfte."
     },
     "code": {
       "claimHelp": "Personen åbner Hello Cal, vælger \"Har du fået en familiekode?\" på login-siden og indtaster koden. Gælder til {date}.",
@@ -1676,7 +1678,9 @@
       "tooManyAttempts": "For mange forsøg. Prøv igen senere.",
       "invalidRequest": "Ugyldig anmodning.",
       "notFound": "Ikke fundet.",
-      "unknown": "Noget gik galt. Prøv igen."
+      "unknown": "Noget gik galt. Prøv igen.",
+      "profileHasLogin": "Profilen har sit eget login. Fjern den fra familien i stedet.",
+      "confirmRequired": "Skriv SLET for at bekræfte."
     },
     "deletePermissions": {
       "title": "Sletning af registreringer",

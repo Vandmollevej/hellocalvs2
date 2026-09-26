@@ -223,6 +223,21 @@ function FamilyPageContent() {
                         </button>
                       )}
                       {codeBox(member.userId)}
+                      {!member.hasLogin && (
+                        <button
+                          type="button"
+                          disabled={busy}
+                          onClick={() => {
+                            const typed = window.prompt(t("family.members.deleteProfileConfirm", { name: member.displayName }));
+                            if (typed?.trim().toUpperCase() === "SLET") {
+                              void run(`/api/family/members/${member.userId}?deleteProfile=1`, "DELETE", { confirm: "SLET" });
+                            }
+                          }}
+                          className="hf-type-body-sm self-start text-hf-red-dark underline"
+                        >
+                          {t("family.members.deleteProfile")}
+                        </button>
+                      )}
                       {member.hasLogin && (
                         <button
                           type="button"

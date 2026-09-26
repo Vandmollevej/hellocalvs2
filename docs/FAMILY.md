@@ -69,6 +69,13 @@ hvornår andre har været inde, hvad de har set, og hvad de har ændret.
   slette registreringer, som andre har tastet ind. Børn starter med fra.
   Registreringer gemmer nu `createdById`. Gælder registreringer (mad), ikke
   vand/vægt m.m. endnu.
+- **Slet profil:** betaleren kan slette en profil uden eget login ("Slet
+  profil og alle data", bekræftes med SLET). Alle dagbogsdata slettes, og
+  User-rækken anonymiseres som ved kontosletning. Egne retter bliver liggende
+  anonymt, fordi andres registreringer kan pege på dem.
+- **Betaleren slettes:** familien opløses, og alle beholder deres egne data
+  (`dissolveFamilyOf` kaldes fra `anonymizeUser`). Profiler uden eget login
+  ligger stadig med deres data, men kan kun åbnes igen via support.
 - **Fælles måltid:** "Til:"-rækken øverst på Tilføj og over "Tilføj"-knappen
   på produktsiden. De valgte profiler får en kopi med hver deres portion
   (¼–2 × din mængde). Virker fra produktsiden, kamera, tale og videresendte
@@ -152,8 +159,10 @@ Kilder:
 - Tilmelding spørger ikke om fødselsdato, så appen kan endnu ikke afvise, at
   en under 15-årig selv opretter en konto (kræver et nyt felt ved tilmelding
   og ved Google/Apple/Facebook-login).
-- Profiler uden eget login kan ikke slettes fra familien endnu.
-- Betalerens kontosletning (`src/lib/gdpr.ts`) rører ikke familien endnu.
+- **Næste skridt (brugerens valg 2026-09-26):** et oprettelsesflow ved
+  starten, der blandt andet spørger om alder, så en under 15-årig ikke selv
+  kan oprette en konto. Der var tidligere bygget på et, som brugeren ikke var
+  tilfreds med — afklar det med brugeren, før der bygges.
 - Indstillinger som sprog og notifikationer på Profil følger den valgte
   profil, når man ser en andens profil.
 

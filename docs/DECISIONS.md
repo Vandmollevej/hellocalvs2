@@ -31,6 +31,9 @@ konto. Ingen husstands-/familieprofiler … ingen forældrekontrol".
   intet voksengulv), 179 kr./md. for op til 5 profiler, sletteret pr. profil
   styret af profilens opretter (børn starter med nej), og fælles måltid med
   portion pr. person. Detaljer i `docs/FAMILY.md` "Afklaret 2026-09-26".
+- (2026-09-26) Betaleren kan slette en profil uden login ("slet alt"). Slettes
+  betalerens konto, opløses familien, og alle beholder deres egne data. Alder
+  ved tilmelding løses i et kommende oprettelsesflow.
 
 
 
