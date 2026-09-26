@@ -87,8 +87,8 @@ Ejer: G5-overtagelse, konto B (2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 548ca51e | Ny invite-only agent-app (hyldebillede, opret vare, 2FA, admin-oversigt, aflønnings-backend) | Bygget, venter på bruger | Bygget + committet (docs/OPRETTELSES-APP.md "Implementeringsstatus"). Mangler: brugerens OK til at tilføje `scan-app` i deploy-workflowet, Cloudflare-hostname + `SCAN_APP_BASE_URL`/`SCAN_PII_KEY` i .env.production. Passkey som 2. faktor ikke bygget |
-| 850e575e / 0669f736 | Logo-robot: isolér logo ved scanning, match mod DB, natlig Google-søgning, admin-kø under 90 % | Bygget, venter på bruger | Bygget (scripts/logo-agent, /admin/logos, docs/LOGO-AGENT.md). Mangler: `GOOGLE_VISION_API_KEY` i .env.production og `logo-agent` i deploy-workflowet. Logo-match i selve scanningen hører til kamera-flowet (ikke G5) |
+| 548ca51e | Ny invite-only agent-app (hyldebillede, opret vare, 2FA, admin-oversigt, aflønnings-backend) | Deployet (2026-09-26) | Merget til master (29b7f28); `scan-app` (port 3101) startes i deploy-workflowet. Mangler: brugeren opretter Cloudflare *Published application route* `scanhellocal.packroff.dk` → `http://192.168.1.90:3101`. `SCAN_PII_KEY`/`SCAN_APP_BASE_URL` valgfri (fallback: ADMIN_SESSION_SECRET / scanhellocal-adressen). Passkey som 2. faktor ikke bygget |
+| 850e575e / 0669f736 | Logo-robot: isolér logo ved scanning, match mod DB, natlig Google-søgning, admin-kø under 90 % | Deployet (2026-09-26) | `logo-agent` i deploy-workflowet; bruger eksisterende `GOOGLE_API_KEY` (Cloud Vision API skal være slået til på nøglens Google-projekt). Logo-match i selve scanningen hører til kamera-flowet (ikke G5) |
 
 ## G6 — Madvare-flow (Tilføj madvare, Madvarer-siden)
 Filer: `src/app/add/**`, `src/components/ForwardButton.tsx`, Madvarer-siden, fælles knap-komponent.
