@@ -14,6 +14,8 @@ type SettingsUser = {
   showAllergens: boolean;
   allergenVisibility: Record<string, boolean> | null;
   showExtendedNutrition: boolean;
+  showAdditives: boolean;
+  showToxins: boolean;
   region: string;
 };
 
@@ -149,6 +151,15 @@ export default function ProfileSettingsPage() {
     }).catch(() => {});
   }
 
+  function toggleProductFlag(key: "showAdditives" | "showToxins", value: boolean) {
+    setUser((current) => (current ? { ...current, [key]: value } : current));
+    fetch("/api/profile", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ [key]: value }),
+    }).catch(() => {});
+  }
+
   function updateRegion(region: string) {
     setUser((current) => (current ? { ...current, region } : current));
     fetch("/api/profile", {
@@ -246,6 +257,20 @@ export default function ProfileSettingsPage() {
             description={t("settings.showExtendedNutritionDescription")}
             checked={user.showExtendedNutrition}
             onChange={toggleShowExtendedNutrition}
+          />
+
+          <Toggle
+            label={t("settings.showAdditives")}
+            description={t("settings.showAdditivesDescription")}
+            checked={user.showAdditives}
+            onChange={(value) => toggleProductFlag("showAdditives", value)}
+          />
+
+          <Toggle
+            label={t("settings.showToxins")}
+            description={t("settings.showToxinsDescription")}
+            checked={user.showToxins}
+            onChange={(value) => toggleProductFlag("showToxins", value)}
           />
 
           <p className="px-1 text-[12px] leading-relaxed text-hf-black opacity-60">

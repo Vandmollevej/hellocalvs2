@@ -92,6 +92,7 @@ bekræftet, kobles kontoen på, men dens adgangskode og passkeys fjernes
 først (beskytter mod konti oprettet med en fremmed e-mail). Mails sendes
 nu straks fra `queueMessage()` i stedet for kun ved scheduler-tick (15 min).
 
+
 ## 2026-09-25: Global lodret rytme (8/16/32) og sorte primærknapper
 
 Brugerens krav: "stringent opsætning på tværs af hele sitet med rene linjer og
@@ -2321,3 +2322,12 @@ den rigtige stregkode.
   (`OneDReader`), så position/retning virker som for de øvrige formater.
   Verificeret i Chromium: EAN-13, UPC-A, EAN-8 og fem UPC-E-koder ved
   0/90/180/−90/14/−20/75° — alle læst korrekt, vinkel inden for 0,5°.
+
+## 2026-09-24: G11 — E-numre, toksiner og advarsel ved usundt fedt
+
+- Opsætning har to nye kontakter, "Vis E-numre" og "Vis toksiner" (felterne `User.showAdditives`/`User.showToxins`, fra som standard; migration `20260925120000_product_additives_toxins_toggles`). E-numre-sektionen på produktsiden vises nu kun, når kontakten er slået til.
+- Toksiner er en kurateret, statisk liste i `src/lib/toxins.ts` (ca. 23 stoffer: plantegifte, skimmelgifte, tungmetaller, akrylamid, alkohol, koffein m.fl.). Hver post har kildelinks til Fødevarestyrelsen/EFSA. Råd til gravide/ammende og fertilitet står kun, hvor Fødevarestyrelsen selv giver et råd, og vises først (brugerens ønske: særligt vigtigt ved graviditet, amning og fertilitet).
+- Matchning sker mod produktnavn + `Product.ingredientsText`. Et fund betyder "fødevaretypen er kendt for stoffet", ikke en måling af produktet; det står i UI'et.
+- Statistik-boksen "Toksiner" er en pladsholder ("—") ligesom E-numre, fordi registreringer ikke har et snapshot af indholdsstoffer.
+- "Vis udvidet næringsindhold" er åben som standard på produktsiden, og beskrivelsen i Opsætning siger, at værdierne står nederst på produktsiden.
+- Mættet fedt og transfedt vises med en advarselstrekant (statistik-bokse og produktsidens udvidede næringsindhold). Umættet fedt får ingen advarsel.

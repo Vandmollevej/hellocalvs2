@@ -84,6 +84,11 @@ model User {
   // screen. Off by default — see design.md's product-detail contract.
   showExtendedNutrition Boolean @default(false)
 
+  // G11 (2026-09-24): E-numre og toksiner (src/lib/toxins.ts) på produktsiden.
+  // Fra som standard.
+  showAdditives Boolean @default(false)
+  showToxins    Boolean @default(false)
+
   // Statistics display preference (2026-09-19): when enabled, a stat card
   // that a separately validated, region/profile-aware recommendation
   // evaluator has marked as outside the applicable normal range gets a

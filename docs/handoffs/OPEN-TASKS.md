@@ -94,7 +94,7 @@ Ejer: G5-overtagelse, konto B (2026-09-24)
 Filer: `src/app/add/**`, `src/components/ForwardButton.tsx`, Madvarer-siden, fælles knap-komponent.
 Ukendte ændringer: ingen (ForwardButton gjort færdig).
 Ejer: G6-overtagelse, konto B (2026-09-24)
-Deploy (brugerens beslutning 2026-09-25): G6 deployes samlet med alt andet af koordinator-sessionen. Tjekliste: kør migration `20260924180000_ingredient_requests`; efter deploy tjek build, `/ingredients/new`, `/admin/ingredient-requests`, trin-baren på Opsætning (brugeren skal godkende udseendet) og at kameraets "Produkt"-fane kun vises fra Opret ret.
+Deploy: G6 deployet 2026-09-26 (1ca9c65, GitHub Actions grøn; `/api/private-ingredients` og admin-siden svarer live). Egne ingredienser er siden flyttet fra boksen til serveren af login-sessionen (33cd88b). Mangler kun brugerens visuelle godkendelse af trin-baren på Opsætning.
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
@@ -127,7 +127,7 @@ Ejer: G8-sessionen, konto C (overtaget 2026-09-24)
 | --- | --- | --- | --- |
 | 69a1b2bd / 2c95590f | Dubletter af 6068f78a og 8d98b548 — læs dem for ekstra svar fra brugeren ("Så byg det, der mangler. Det skal jo bare virke!") | Dublet | Luk sammen med hovedopgaverne |
 | 6068f78a | 8 sundhedsintegrationer + nye ikoner | Færdig (22184fe) | Brugeren valgte "Byg alle 8" inden for boks-arkitekturen. Mangler kun nøgler på serveren + deploy |
-| 8d98b548 | Withings + Google Health koblet på, egen data-sync | Venter på bruger | Kode færdig (22184fe). Brugeren skal lægge nøglerne i .env.production på Synology, så deployes der. HelloFresh-trin-rettelsen i samme transcript hører til G6 |
+| 8d98b548 | Withings + Google Health koblet på, egen data-sync | Venter på bruger | Nøglerne ligger på serveren. 2026-09-26 (session d83284ca, med brugerens OK): 0.0.0.0-redirects i `handlers.ts` rettet. Brugeren tilføjer redirect-URI + testbruger i Google Cloud (se STATUS "Integrationssiden"). HelloFresh-trin-rettelsen i samme transcript hører til G6 |
 | d0442775 | Waldemarsro (DK-only) + scraper | Venter på bruger | Scraper + kalorie-matcher færdige og gemt i scripts/valdemarsro-import (157cff9); brugeren kører scraperen selv (output i Productdatabase/Valdemarsro). IKKE bygget: import til appen + Valdemarsro-kort/toggle på Integrationer (krav i STATUS, ea7843a) — byg når brugeren siger til |
 | 5c45b0d7 | Opskrift-scrapere som Valdemarsro: Arla, Coop, REMA 1000, MENY, Hjerteforeningen, TV2 (+ Børnevenlig og måltidstype) | I gang | Bygges i scripts/recipe-sites-import (fælles motor + ét script pr. side). Brugeren kører selv scraperne i VS Code |
 
@@ -154,12 +154,12 @@ Ejer: G10-overtagelse, konto D (2026-09-24)
 
 ## G11 — Næringsdata på produktsiden (E-numre, toksiner, fedt-advarsel)
 Filer: produktsidens næringsvisning, statistik-boks-katalog (koordinér med G2), Opsætning/Visning (koordinér med G7).
-Ejer: —
+Ejer: G11-overtagelse, konto C (2026-09-24). Arbejder i worktree `gifted-hofstadter-894e70`, fletter ind i master
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 03b329f3 / 5a3cdd2b | E-numre + toksiner som valgfri statistik-bokse og til/fra i Opsætning, vist på produktsiden; "udvidet næringsindhold" åben som standard | Venter på bruger | E-numre findes allerede. Toksiner: brugeren sagde de gælder indholdsfortegnelsen og kendte toksiner i bestemte grøntsager — afklar datakilde og byg |
-| 56f30763 | Advarselstrekant med udråbstegn ved mættet/usundt fedt | Ikke startet | Tjek om allerede lavet, ellers byg |
+| 03b329f3 / 5a3cdd2b | E-numre + toksiner som valgfri statistik-bokse og til/fra i Opsætning, vist på produktsiden; "udvidet næringsindhold" åben som standard | Færdig (5cea433) | Kontakter i Opsætning, toksinliste (FVST + EFSA, graviditet/amning/fertilitet først), produktside. Flettes ind i master, når G7 har committet profile/settings |
+| 56f30763 | Advarselstrekant med udråbstegn ved mættet/usundt fedt | Færdig (5cea433) | Trekant på statistik-bokse + produktside. **G2:** forsidens tal-slider (`frontpage-stats.ts`) mangler samme ikon — G11 rører ikke filen |
 
 ## Venter på dig (ingen gruppe)
 | Id | Opgave | Status | Næste skridt |

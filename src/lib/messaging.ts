@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { flushQueuedEmails } from "@/lib/mailer";
 import type { MessageEvent as MessageEventType } from "@prisma/client";
 
 // Besked automatisering (docs/DECISIONS.md 2026-09-02): queueMessage() er
@@ -60,7 +61,7 @@ export async function queueMessage(
   }
 
   const vars = opts.vars ?? {};
-  return prisma.outboundMessage.create({
+  const message = await prisma.outboundMessage.create({
     data: {
       userId: opts.userId,
       toEmail: opts.toEmail,
@@ -71,6 +72,13 @@ export async function queueMessage(
       status: "QUEUED",
     },
   });
+
+  // Send med det samme i stedet for at vente op til 15 min på scheduleren —
+  // fx glemt adgangskode skal komme frem, mens brugeren venter.
+  if (template.channel !== "PUSH") {
+    void flushQueuedEmails().catch((error) => console.error("[mailer] flush fejlede", error));
+  }
+  return message;
 }
 
 // Standardskabeloner, seedet (upsert, aldrig overskriver en admin-redigeret
@@ -84,12 +92,12 @@ const DEFAULT_TEMPLATES: Record<MessageEventType, { subject: string; bodyHtml: s
   },
   EMAIL_VERIFICATION: {
     subject: "Bekræft din e-mail",
-    bodyHtml: "<p>Hej {{displayName}},</p><p>Bekræft din e-mail her: {{verificationLink}}</p>",
+    bodyHtml: "<p>Hej {{displayName}},</p><p><a href=\"{{verificationLink}}\">Bekræft din e-mail</a></p><p>Virker knappen ikke, så kopiér dette link: {{verificationLink}}</p>",
     channel: "EMAIL",
   },
   PASSWORD_RESET: {
     subject: "Nulstil din adgangskode",
-    bodyHtml: "<p>Hej {{displayName}},</p><p>Nulstil din adgangskode her: {{resetLink}}</p>",
+    bodyHtml: "<p>Hej {{displayName}},</p><p><a href=\"{{resetLink}}\">Nulstil din adgangskode</a> (linket virker i 1 time).</p><p>Virker linket ikke, så kopiér dette: {{resetLink}}</p><p>Har du ikke bedt om det, kan du se bort fra mailen.</p>",
     channel: "EMAIL",
   },
   PASSWORD_CHANGED: {

@@ -4,7 +4,7 @@ import { getSessionUser } from "@/lib/session";
 import { shouldSync } from "@/lib/integrations";
 import { newOAuthState, readOAuthState, saveIntegrationTokens, setOAuthCookie } from "@/lib/integrations-oauth";
 import { storeIntegrationItems } from "@/lib/integrations/store-items";
-import { adapterBySlug, isConfigured, redirectUri } from "./registry";
+import { adapterBySlug, isConfigured, publicUrl, redirectUri } from "./registry";
 import { DAY_MS, type OAuthProviderAdapter } from "./types";
 
 // Fælles route-logik for alle OAuth-integrationer (/api/integrations/<slug>/…).
@@ -23,13 +23,13 @@ export function resolveAdapter(slug: string) {
 
 // GET — starter OAuth for den indloggede bruger.
 // Fejl sendes tilbage til siden som ?error=<slug>, ikke som rå JSON.
-export async function connect(req: NextRequest, adapter: OAuthProviderAdapter) {
-  const failed = () => NextResponse.redirect(new URL(`${DONE_URL}?error=${adapter.slug}`, req.url));
+export async function connect(_req: NextRequest, adapter: OAuthProviderAdapter) {
+  const failed = () => NextResponse.redirect(publicUrl(`${DONE_URL}?error=${adapter.slug}`));
   if (!isConfigured(adapter)) {
     console.error(`${adapter.label} connect: ${adapter.envPrefix}_CLIENT_ID/_CLIENT_SECRET er ikke sat`);
     return failed();
   }
-  if (!(await getSessionUser())) return NextResponse.redirect(new URL("/welcome", req.url));
+  if (!(await getSessionUser())) return NextResponse.redirect(publicUrl("/welcome"));
 
   const state = newOAuthState();
   const response = NextResponse.redirect(adapter.buildAuthorizeUrl(state, redirectUri(adapter)));
@@ -43,7 +43,7 @@ export async function callback(req: NextRequest, adapter: OAuthProviderAdapter) 
   const expected = readOAuthState(req, stateCookie(adapter));
 
   function done(query: string) {
-    const url = new URL(DONE_URL, req.url);
+    const url = publicUrl(DONE_URL);
     url.search = query;
     const response = NextResponse.redirect(url);
     response.cookies.delete(stateCookie(adapter));
