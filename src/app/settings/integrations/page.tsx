@@ -4,7 +4,6 @@ import { Suspense, useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { IconChefHat, IconChevronRight } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
-import { SectionSeparator } from "@/components/hf/SectionSeparator";
 import type { IntegrationCardStatus } from "@/lib/integrations";
 import type { IntegrationProvider } from "@prisma/client";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -201,7 +200,7 @@ function IntegrationerContent() {
   const section = (label: string, cards: ReactNode[]) =>
     cards.length > 0 && (
       <>
-        <SectionSeparator label={label} className="mt-2" />
+        <h2 className="hf-type-section-title">{label}</h2>
         {cards}
       </>
     );

@@ -311,14 +311,13 @@ export default function UnusedStatCardsPage() {
           {t("statUnusedCards.addHeading")}
         </button>
 
+        {/* Samme overskrift med streger som alle andre sider (.hf-type-section-title). */}
         <button
           type="button"
           onClick={addDivider}
-          className="flex min-h-11 w-full items-center gap-2 text-sm font-semibold text-hf-black active:opacity-60"
+          className="hf-type-section-title min-h-11 w-full active:opacity-60"
         >
-          <span aria-hidden className="h-0.5 flex-1 bg-hf-black" />
           {t("statUnusedCards.addDivider")}
-          <span aria-hidden className="h-0.5 flex-1 bg-hf-black" />
         </button>
 
         {categories.map((category, index) => (

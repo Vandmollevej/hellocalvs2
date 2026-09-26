@@ -6,6 +6,7 @@ import { backfillMissingProductNutritionFeatures } from "@/lib/product-nutrition
 import { runDueAppJobs } from "@/lib/jobs/runner";
 import { rerunUncertainAnalyses } from "@/lib/uncertainty-rerun";
 import { grantEligibleReferralRewards } from "@/lib/referrals";
+import { alertOverdueSupportRequests } from "@/lib/support-inbox";
 import { syncAllIntegrations } from "@/lib/integrations/handlers";
 
 // In-process baggrundsjob (docs/DECISIONS.md 2026-09-02): DB-drevet, kører i
@@ -81,6 +82,8 @@ export async function runSchedulerTick(now: Date = new Date()) {
   await escalateStalePendingProducts(now);
   await escalateStaleBugReports(now);
   await grantEligibleReferralRewards(now);
+  // Support-indbakke: advar admin om beskeder uden svar i 24 timer (docs/DECISIONS.md 2026-09-26).
+  await alertOverdueSupportRequests(now).catch((error) => console.error("[scheduler] support-advarsel fejlede", error));
   await flushQueuedEmails();
   await flushQueuedPush();
   // Fiber-/sukker-/salt-/fuldkornsfelter for produkter uden dem endnu

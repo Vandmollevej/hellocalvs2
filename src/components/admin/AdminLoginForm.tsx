@@ -69,13 +69,11 @@ export function AdminLoginForm() {
         type="button"
         onClick={loginWithPasskey}
         disabled={passkeyBusy}
-        className="mb-4 rounded-md border border-hf-green-dark px-4 py-2.5 text-sm font-medium text-hf-green-dark disabled:opacity-60"
+        className="rounded-md border border-hf-green-dark px-4 py-2.5 text-sm font-medium text-hf-green-dark disabled:opacity-60"
       >
         {passkeyBusy ? "Venter på Face ID…" : "Log ind med Face ID / passkey"}
       </button>
-      <div className="mb-4 flex items-center gap-3 text-xs text-text-muted">
-        <span className="h-px flex-1 bg-border-strong" /> eller <span className="h-px flex-1 bg-border-strong" />
-      </div>
+      <p className="hf-type-section-title">eller</p>
 
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <label className="flex flex-col gap-1 text-sm">

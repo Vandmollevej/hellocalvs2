@@ -115,8 +115,9 @@ export async function GET(req: Request) {
           discontinued: false,
           // Egne private ingredienser vises kun for ejeren (via /api/private-ingredients).
           privateOwnerId: null,
-          // Tekstfilter og kildefilter er begge OR-betingelser, så de skal
-          // ligge under AND — ellers overskriver den ene nøgle den anden.
+          // Ét samlet AND: en objekt-literal må kun have én AND-nøgle, og
+          // tekstfilter og kildefilter er begge OR-betingelser, som ellers
+          // ville overskrive hinanden.
           AND: [
             // Admin "Uncertainties" (docs/DECISIONS.md 2026-09-25): et produkt,
             // hvor AI'en var under 50 % sikker på en aflæsning, skjules i
@@ -524,6 +525,25 @@ export async function POST(req: Request) {
           correctedAt,
         },
       });
+      // Mættet fedt aflæses fra samme energi-foto, men opret-siden har intet
+      // felt til det — gem det direkte på varen, når tabellen er pr. 100 g/ml.
+      const nutritionAnalysis = await prisma.aiProductAnalysis.findFirst({
+        where: { id: analysisIds.nutrition, kind: "NUTRITION" },
+        select: { prediction: true },
+      });
+      const prediction = (nutritionAnalysis?.prediction ?? null) as Record<string, unknown> | null;
+      const saturatedFat = prediction?.saturatedFatPer100g;
+      if (
+        (prediction?.basis === "100g" || prediction?.basis === "100ml") &&
+        typeof saturatedFat === "number" &&
+        saturatedFat >= 0 &&
+        saturatedFat <= fatPer100g
+      ) {
+        await prisma.product.update({
+          where: { id: product.id },
+          data: { saturatedFatPer100g: saturatedFat },
+        });
+      }
     }
 
     // Stregkode-fotoet har ingen AI-korrektion (ingen AI-kald involveret, se
