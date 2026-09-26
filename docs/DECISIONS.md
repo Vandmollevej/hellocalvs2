@@ -2,6 +2,83 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-25: Uncertainties-tærskler, billed-fane, natlig robot og admin "Cron-jobs"
+
+Brugerens svar 2026-09-25 (G4, runde 2):
+
+- **Tærskler** (`src/lib/uncertainty-thresholds.ts`): under 90 % vises på
+  Uncertainties (vejledende mål); under 70 % rød ramme og altid øverst;
+  under 50 % skjules produktet i søgningen, indtil en admin har gennemgået
+  analysen (`AiProductAnalysis.reviewedAt`). `reviewedAt` er adskilt fra
+  `correctedAt`, fordi `correctedAt` allerede sættes, når brugeren bekræfter
+  værdierne ved oprettelsen.
+- **Billeder**: femte fane med den lokale billedrobots match mellem et
+  oprettelsesfoto og forsidefotoet (`ProductMatchCheck`, PENDING, under 90).
+  Afgørelsen gemmes via Kvalitetskontrols route (træningsdata).
+- **Natlig AI-genkørsel** (job `uncertainty-rerun`, standard kl. 03:00):
+  samme skema/prompt som oprettelsen (`src/lib/product-ai-tasks.ts`), højst
+  100 analyser pr. nat. Mere sikkert svar erstatter det gamle; når det når
+  90 %, skrives værdierne til produktet.
+- **Én container til robotter?** Nej: app-jobs kører i app-processens
+  scheduler, og hver Python-agent beholder sin egen container (forskellige
+  tunge afhængigheder, fx torch/rembg). Nye natlige robotter i TypeScript
+  tilføjes som app-jobs; kun robotter med egne tunge afhængigheder får en
+  container. Alle styres fra samme tabel.
+- **Admin "Cron-jobs"** (`/admin/cron-jobs`, tabel `scheduled_jobs`, register
+  `src/lib/jobs/registry.ts`): liste med beskrivelse, seneste kørsel/status/
+  varighed, pause/genoptag, "kør nu" og plan (dagligt kl. TT:MM dansk tid,
+  hvert N. minut, eller kun manuelt). App-jobs og Python-agenterne
+  (`scripts/*/job_control.py`, én kopi pr. agent) tjekker tabellen hvert
+  minut. REMA-importen kører stadig ved hver container-start.
+- **Fra deklarationen**: næringsaflæsningen læser nu også øvrige
+  næringsstoffer og producentens egen ± (gemmes som producentdata ved
+  oprettelsen). Produkter oprettet uden aflæst næringsdeklaration får
+  makroerne markeret som estimerede (~ ved kcal i søgningen).
+
+## 2026-09-25: Usikkerheds-~ + admin "Uncertainties" (bygget)
+
+Erstatter punkterne i "Usikkerheds-bølgeikon (afklaret, ikke bygget)" nedenfor,
+hvor de er i modstrid. Kilden er brugerens svar i samtale ef2ba16f (fire
+runder + godkendt mockup v4, 2026-09-23) og svarene 2026-09-24 ved
+overtagelsen af G4 ("Tegn", Frida-datadumpet er fuldt, admin-siden bygges nu).
+
+- **Tegnet:** et grønt tastatur-`~` (ikke en tegnet SVG), ca. 2,4 × tekstens
+  størrelse med tynd kontur (0,75 px; 0,5 px i den grå linje) — målene fra
+  mockup v4. Komponent: `src/components/ui/UncertaintyTilde.tsx`.
+- **Hvad er sikkert:** producentens egne tal (varedeklaration, producent-/
+  kædedata, Open Food Facts) og Frida på selve den generiske vare. **Estimeret
+  (~):** når en mærkevare mangler et felt, og værdien lånes fra den nærmeste
+  Frida-vare, eller et felt er AI-udfyldt (`nutrientSources` = ESTIMATED/AI).
+  Admin-godkendelse fjerner ikke ~ — kun kilden afgør det.
+- **±:** vises kun, når producenten selv oplyser den, og da 1:1
+  (`Product.nutrientTolerances`). Vi beregner aldrig selv en ±; estimater får
+  kun ~. (Erstatter det tidligere "margen ud fra Frida".)
+- **Grå linje:** producentens ± og/eller `~ <estimeret mængde>` efter hinanden,
+  fx `±0,5 mg  ~ 1,1 mg`. Altid foldet ind; tryk på rækken/pilen folder ud.
+- **Indstillinger → Visning → Usikkerhed:** én kontakt, "Fold usikkerhed ud
+  automatisk", **slået fra** som standard (`User.autoExpandUncertainty`). Ingrediens-kontakten er droppet. (Erstatter de
+  to kontakter "slået til som standard".)
+- **Søgeresultater:** `~` foran kalorietallet, kun når kcal/protein/kulhydrat/
+  fedt er estimeret (`nutrientSources`).
+- **Frida:** agenten importerer nu alle vitaminer, mineraler, fedtsyresummer,
+  kolesterol, kostfibre, sukkerarter og salt (`Product.micronutrientsPer100g`,
+  nøgler og ParameterID'er i `src/lib/nutrients.ts`). En allerede importeret
+  version genimporteres én gang (markør i `frida_import_state.title`), og
+  generiske ingredienser får mikrodata kopieret fra deres Frida-match.
+- **Snapshot:** registreringer gemmer `nutrientSnapshot` +
+  `nutrientEstimatedSnapshot` + `nutrientToleranceSnapshot`, så statistik viser
+  hvor meget af et gennemsnit der er estimeret uden at genberegne senere.
+- **Admin "Uncertainties"** erstatter "Advarsler" (gamle sektioner vises
+  nederst, `/admin/warnings` viderestiller). Datakilden er `AiProductAnalysis`
+  (ikke BugReport som noteret 2026-09-24 — BugReport har ingen confidence,
+  mens analyserne har confidence + foto pr. type): Produkt = FRONT, Energi =
+  NUTRITION, Indhold = INGREDIENTS, EAN = BARCODE. Åben = ikke rettet og
+  confidence under 90 % (EAN: forkert GS1-kontrolciffer = 100 %). Usikkerhed
+  = 100 − confidence. AI'en returnerer nu `ocrRegion` + `uncertainRegions`
+  (`AiProductAnalysis.regions`, normaliseret 0–1) til beskæring og røde
+  rammer; ældre analyser vises med hele fotoet. Rettelsen skrives til
+  produktet og gemmes som `correction`. Den natlige AI-robot er stadig en
+  senere fase; en lavere minimumstærskel er stadig uafklaret.
 
 
 ## 2026-09-25: Blød e-mailbekræftelse ved tilmelding
@@ -2273,3 +2350,7 @@ den rigtige stregkode.
 - Statistik-boksen "Toksiner" er en pladsholder ("—") ligesom E-numre, fordi registreringer ikke har et snapshot af indholdsstoffer.
 - "Vis udvidet næringsindhold" er åben som standard på produktsiden, og beskrivelsen i Opsætning siger, at værdierne står nederst på produktsiden.
 - Mættet fedt og transfedt vises med en advarselstrekant (statistik-bokse og produktsidens udvidede næringsindhold). Umættet fedt får ingen advarsel.
+
+## 2026-09-26: Billede-dagbog som loop-karrusel
+
+Billeder vises i en vandret karrusel (ikke grid, ikke 1:1), ældste til venstre og nyeste til højre, nyeste i midten ved start. Loop kun ved 3+ billeder, så samme billede aldrig står på begge sider samtidig; ved 2 billeder stopper den ved kanterne. Kun et vindue på 7 kort renderes, så loopet ikke kræver kopier af hele listen. Dato/tid står under billedet, aldrig som overlay.

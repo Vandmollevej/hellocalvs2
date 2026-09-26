@@ -7,8 +7,20 @@ import { IconBookmark, IconBookmarkFilled, IconSearch } from "@tabler/icons-reac
 import { HfScreen } from "@/components/HfScreen";
 import { FoodRow } from "@/components/FoodRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { hasEstimatedMacros } from "@/lib/nutrients";
+import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
 
-type Result = { id: string; title: string; image?: string | null };
+// kcal/brand/macrosEstimated findes kun på søgeresultater fra /api/products
+// (ikke på seneste/favoritter). macrosEstimated = usikkerheds-~ foran
+// kalorietallet (docs/DECISIONS.md 2026-09-24).
+type Result = {
+  id: string;
+  title: string;
+  image?: string | null;
+  brand?: string | null;
+  kcal?: number;
+  macrosEstimated?: boolean;
+};
 
 type Registration = {
   productId: string | null;
@@ -27,13 +39,16 @@ function ResultRow({
   id,
   title,
   image,
+  brand,
+  kcal,
+  macrosEstimated,
   forDish,
   t,
   isFavorite,
   onToggleFavorite,
 }: Result & {
   forDish: boolean;
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, string | number>) => string;
   isFavorite: boolean;
   onToggleFavorite: (id: string, next: boolean) => void;
 }) {
@@ -42,6 +57,15 @@ function ResultRow({
       <FoodRow
         image={image}
         title={title}
+        subtitle={
+          kcal !== undefined ? (
+            <p className="truncate text-xs text-hf-black opacity-60">
+              {brand ? `${brand} · ` : ""}
+              {macrosEstimated && <UncertaintyTilde />}
+              {t("foods.kcalPer100g", { kcal: Math.round(kcal) })}
+            </p>
+          ) : undefined
+        }
         right={
           <>
             <button
@@ -115,11 +139,23 @@ function SoegContent() {
         if (!res.ok) throw new Error("offline");
         const data = await res.json();
         setResults(
-          data.products.map((p: { id: string; name: string; imageUrl?: string | null }) => ({
-            id: p.id,
-            title: p.name,
-            image: p.imageUrl,
-          }))
+          data.products.map(
+            (p: {
+              id: string;
+              name: string;
+              imageUrl?: string | null;
+              kcalPer100g?: number;
+              brand?: { name: string } | null;
+              nutrientSources?: unknown;
+            }) => ({
+              id: p.id,
+              title: p.name,
+              image: p.imageUrl,
+              brand: p.brand?.name ?? null,
+              kcal: p.kcalPer100g,
+              macrosEstimated: hasEstimatedMacros(p.nutrientSources),
+            })
+          )
         );
         setResultsState("ready");
       } catch {
@@ -262,6 +298,9 @@ function SoegContent() {
                   id={r.id}
                   title={r.title}
                   image={r.image}
+                  brand={r.brand}
+                  kcal={r.kcal}
+                  macrosEstimated={r.macrosEstimated}
                   forDish={forDish}
                   t={t}
                   isFavorite={favoriteIds.has(r.id)}

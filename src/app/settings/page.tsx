@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   IconHelp,
@@ -82,6 +81,10 @@ export default function SettingsPage() {
       )}
 
       <div className="hf-page hf-page--sections">
+        <AccordionCard>
+          <ChevronRow icon={<IconWorld size={20} />} label={t("settings.languageAndRegion")} divider={false} />
+        </AccordionCard>
+
         <AccordionCard>
           <ChevronRow
             icon={<IconCreditCard size={20} />}
@@ -182,6 +185,16 @@ export default function SettingsPage() {
               divider
             />
             <ChevronRow
+              icon={
+                <span aria-hidden="true" className="w-5 text-center text-[22px] font-bold leading-none text-hf-green">
+                  ~
+                </span>
+              }
+              label={t("displaySettings.uncertainty")}
+              href="/settings/display/uncertainty"
+              divider
+            />
+            <ChevronRow
               icon={<IconCalendarWeek size={20} />}
               label={t("settings.calendarView")}
               href="/settings/display/calendar-view"
@@ -203,22 +216,6 @@ export default function SettingsPage() {
           <ChevronRow icon={<IconFileText size={20} />} label={t("settings.privacyPolicy")} href="/privatlivspolitik" />
           <ChevronRow icon={<IconFileText size={20} />} label={t("settings.dataTracking")} divider={false} />
         </AccordionCard>
-
-        <AccordionCard>
-          <ChevronRow icon={<IconWorld size={20} />} label={t("settings.chooseCountry")} divider={false} />
-        </AccordionCard>
-
-        <Link
-          href="/profile/invite"
-          className="block rounded-[8px] bg-hf-green p-4 text-left text-hf-white"
-        >
-          <p className="hf-type-body-sm font-bold" style={{ color: "var(--hf-color-white)" }}>
-            {t("settings.inviteFriend")}
-          </p>
-          <p className="hf-type-caption mt-1 opacity-90" style={{ color: "var(--hf-color-white)" }}>
-            {t("settings.invitePointsDescription")}
-          </p>
-        </Link>
 
         <button
           type="button"

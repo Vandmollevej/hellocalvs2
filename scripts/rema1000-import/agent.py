@@ -28,6 +28,8 @@ import logging
 import os
 
 import psycopg2
+
+from job_control import run_forever
 import psycopg2.extras
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -256,4 +258,7 @@ def run():
 
 
 if __name__ == "__main__":
-    run()
+    # Kører som før ved hver container-start (nye data efter en deploy), og
+    # derudover på "kør nu" eller et tidspunkt/interval sat i admin
+    # "Cron-jobs" (job_control.py). Pause i admin springer også start-kørslen over.
+    run_forever(DATABASE_URL, "rema1000-import", lambda _conn: run(), run_on_start=True)

@@ -18,12 +18,15 @@ Fødevareinstituttet, Danmarks Tekniske Universitet".
 """
 
 import io
+import json
 import logging
 import os
 import time
 
 import openpyxl
 import psycopg2
+
+from job_control import run_forever
 import requests
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -43,7 +46,50 @@ PARAM_KCAL = 356
 PARAM_PROTEIN = 218
 PARAM_CARBS = 170  # "Kulhydrat difference" — svarer til USDA's "Carbohydrate, by difference".
 PARAM_FAT = 141
-WANTED_PARAMS = {PARAM_KCAL, PARAM_PROTEIN, PARAM_CARBS, PARAM_FAT}
+MACRO_PARAMS = {PARAM_KCAL, PARAM_PROTEIN, PARAM_CARBS, PARAM_FAT}
+
+# Mikrodata til usikkerheds-~ (docs/DECISIONS.md 2026-09-24): nøgle i
+# products."micronutrientsPer100g" → Frida ParameterID'er (lægges sammen).
+# Holdes i sync med NUTRIENTS i src/lib/nutrients.ts.
+MICRO_PARAMS = {
+    "saturatedFat": [248],
+    "unsaturatedFat": [247, 251],
+    "transFat": [261],
+    "cholesterol": [115],
+    "sugar": [245],
+    "fiber": [168],
+    "salt": [327],
+    "sodium": [201],
+    "potassium": [165],
+    "calcium": [108],
+    "magnesium": [184],
+    "iron": [162],
+    "zinc": [274],
+    "copper": [166],
+    "manganese": [187],
+    "selenium": [230],
+    "phosphorus": [214],
+    "iodine": [163],
+    "vitaminA": [12],
+    "vitaminC": [47],
+    "vitaminD": [126],
+    "vitaminE": [135],
+    "vitaminK": [442],
+    "vitaminB1": [37],
+    "vitaminB2": [39],
+    "vitaminB3": [294],
+    "vitaminB5": [210],
+    "vitaminB6": [40],
+    "vitaminB7": [42],
+    "vitaminB9": [143],
+    "vitaminB12": [38],
+}
+WANTED_PARAMS = MACRO_PARAMS | {pid for ids in MICRO_PARAMS.values() for pid in ids}
+
+# En allerede importeret Frida-version genimporteres én gang, når denne
+# markør mangler i frida_import_state.title — så mikrodata også kommer ind
+# for versioner, der blev importeret, før agenten kunne gemme dem.
+IMPORT_MARKER = "[micronutrients-v1]"
 
 
 def find_latest_article():
@@ -97,11 +143,17 @@ def parse_foods(workbook):
 
     foods = []
     for food_id, params in values.items():
-        if not WANTED_PARAMS.issubset(params):
+        if not MACRO_PARAMS.issubset(params):
             continue
         name_dk, _name_en = names.get(food_id, (None, None))
         if not name_dk:
             continue
+        micros = {}
+        for key, param_ids in MICRO_PARAMS.items():
+            # Kun når alle delparametre er målt — en sum af en delvis måling
+            # ville være et gæt.
+            if all(pid in params for pid in param_ids):
+                micros[key] = round(sum(params[pid] for pid in param_ids), 4)
         foods.append(
             {
                 "external_id": str(food_id),
@@ -110,6 +162,7 @@ def parse_foods(workbook):
                 "protein": round(params[PARAM_PROTEIN], 2),
                 "carbs": round(params[PARAM_CARBS], 2),
                 "fat": round(params[PARAM_FAT], 2),
+                "micros": micros,
             }
         )
     return foods
@@ -117,8 +170,9 @@ def parse_foods(workbook):
 
 def already_imported(conn, article_id):
     with conn.cursor() as cur:
-        cur.execute("SELECT 1 FROM frida_import_state WHERE \"figshareArticleId\" = %s", (article_id,))
-        return cur.fetchone() is not None
+        cur.execute("SELECT title FROM frida_import_state WHERE \"figshareArticleId\" = %s", (article_id,))
+        row = cur.fetchone()
+        return row is not None and IMPORT_MARKER in (row[0] or "")
 
 
 def upsert_foods(conn, foods):
@@ -131,15 +185,17 @@ def upsert_foods(conn, foods):
             )
             existing = cur.fetchone()
 
+            micros = json.dumps(food["micros"])
             if existing:
                 cur.execute(
                     """
                     UPDATE products
                     SET name = %s, "kcalPer100g" = %s, "proteinPer100g" = %s,
-                        "carbsPer100g" = %s, "fatPer100g" = %s, "sourceCheckedAt" = NOW()
+                        "carbsPer100g" = %s, "fatPer100g" = %s,
+                        "micronutrientsPer100g" = %s::jsonb, "sourceCheckedAt" = NOW()
                     WHERE id = %s
                     """,
-                    (food["name"], food["kcal"], food["protein"], food["carbs"], food["fat"], existing[0]),
+                    (food["name"], food["kcal"], food["protein"], food["carbs"], food["fat"], micros, existing[0]),
                 )
                 updated += 1
             else:
@@ -147,9 +203,10 @@ def upsert_foods(conn, foods):
                     """
                     INSERT INTO products
                         (id, name, "kcalPer100g", "proteinPer100g", "carbsPer100g", "fatPer100g",
+                         "micronutrientsPer100g",
                          "externalSource", "externalId", "sourceCheckedAt", status, discontinued, "createdAt")
                     VALUES
-                        (%s, %s, %s, %s, %s, %s, 'FRIDA', %s, NOW(), 'APPROVED', false, NOW())
+                        (%s, %s, %s, %s, %s, %s, %s::jsonb, 'FRIDA', %s, NOW(), 'APPROVED', false, NOW())
                     """,
                     (
                         f"frida_{food['external_id']}",
@@ -158,6 +215,7 @@ def upsert_foods(conn, foods):
                         food["protein"],
                         food["carbs"],
                         food["fat"],
+                        micros,
                         food["external_id"],
                     ),
                 )
@@ -165,11 +223,34 @@ def upsert_foods(conn, foods):
     return inserted, updated
 
 
+def backfill_generic_ingredients(conn):
+    """Kopierer Frida-mikrodata til generiske ingredienser, der mangler dem.
+
+    Samme snapshot-princip som makroerne: kun rækker uden mikrodata udfyldes,
+    så en senere Frida-version aldrig ændrer allerede kopierede tal.
+    """
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            UPDATE generic_ingredients g
+            SET "micronutrientsPer100g" = p."micronutrientsPer100g"
+            FROM products p
+            WHERE g."fridaProductId" = p.id
+              AND g."micronutrientsPer100g" IS NULL
+              AND p."micronutrientsPer100g" IS NOT NULL
+            """
+        )
+        return cur.rowcount
+
+
 def mark_imported(conn, article_id, title):
     with conn.cursor() as cur:
         cur.execute(
-            """INSERT INTO frida_import_state ("figshareArticleId", title) VALUES (%s, %s)""",
-            (article_id, title),
+            """
+            INSERT INTO frida_import_state ("figshareArticleId", title) VALUES (%s, %s)
+            ON CONFLICT ("figshareArticleId") DO UPDATE SET title = EXCLUDED.title, "importedAt" = NOW()
+            """,
+            (article_id, f"{title} {IMPORT_MARKER}"),
         )
 
 
@@ -195,20 +276,22 @@ def run_once(conn):
     log.info("parsed %d foods with all four macros", len(foods))
 
     inserted, updated = upsert_foods(conn, foods)
+    backfilled = backfill_generic_ingredients(conn)
     mark_imported(conn, article_id, title)
     conn.commit()
-    log.info("import complete — inserted: %d, updated: %d", inserted, updated)
+    log.info(
+        "import complete — inserted: %d, updated: %d, generic ingredients backfilled: %d",
+        inserted,
+        updated,
+        backfilled,
+    )
 
 
 def main():
     log.info("frida agent started, polling every %ss", POLL_INTERVAL_SECONDS)
-    while True:
-        try:
-            with psycopg2.connect(DATABASE_URL) as conn:
-                run_once(conn)
-        except Exception:  # noqa: BLE001 - a broken cycle must not kill the service
-            log.exception("cycle failed")
-        time.sleep(POLL_INTERVAL_SECONDS)
+    # Planlægning/pause/"kør nu" styres fra admin "Cron-jobs" (job_control.py);
+    # POLL_INTERVAL_SECONDS er kun standard-intervallet første gang.
+    run_forever(DATABASE_URL, "frida-import", run_once, interval_minutes=max(1, POLL_INTERVAL_SECONDS // 60))
 
 
 if __name__ == "__main__":

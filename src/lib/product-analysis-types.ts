@@ -68,6 +68,10 @@ export type NutritionAiResult = {
   sugarsPer100g: number | null;
   fiberPer100g: number | null;
   saltPer100g: number | null;
+  // Øvrige næringsstoffer fra tabellen (nøgler/enheder fra src/lib/nutrients.ts)
+  // + producentens egen ± (docs/DECISIONS.md 2026-09-25). Mangler på
+  // analyser fra før prompt-versionen nutrition-v2-2026-09-25-micros.
+  micronutrients?: { key: string; per100g: number; tolerance: number | null }[];
   rawText: string;
   language: string | null;
   alternativeServings: AlternativeServing[];

@@ -46,6 +46,7 @@ export async function PATCH(req: Request) {
     showAdditives,
     showToxins,
     warnOnRecommendedLimits,
+    autoExpandUncertainty,
     region,
     appLocale,
     photoDiaryRequiresPasscode,
@@ -78,6 +79,7 @@ export async function PATCH(req: Request) {
     showAdditives?: boolean;
     showToxins?: boolean;
     warnOnRecommendedLimits?: boolean;
+    autoExpandUncertainty?: boolean;
     region?: string;
     appLocale?: "da" | "en";
     photoDiaryRequiresPasscode?: boolean;
@@ -149,6 +151,7 @@ export async function PATCH(req: Request) {
         showAdditives,
         showToxins,
         warnOnRecommendedLimits,
+        autoExpandUncertainty,
         region,
         appLocale,
         photoDiaryRequiresPasscode,

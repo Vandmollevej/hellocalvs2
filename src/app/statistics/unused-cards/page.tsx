@@ -286,6 +286,22 @@ export default function UnusedStatCardsPage() {
           />
         </div>
 
+        {/* Søgeresultater står lige under søgefeltet, før Overskrift/Skillelinje. */}
+        {normalizedQuery && (
+          <section className="flex flex-col gap-2 pb-2">
+            <p className="px-1 text-sm font-semibold text-hf-black">
+              {t("statUnusedCards.searchResults")}
+            </p>
+            {searchResults.length === 0 ? (
+              <p className="rounded-2xl bg-hf-tan/60 p-4 text-xs text-hf-black opacity-50">
+                {t("statUnusedCards.noSearchResults")}
+              </p>
+            ) : (
+              renderCardGrid(searchResults)
+            )}
+          </section>
+        )}
+
         <button
           type="button"
           onClick={addHeader}
@@ -303,21 +319,6 @@ export default function UnusedStatCardsPage() {
           {t("statUnusedCards.addDivider")}
           <span aria-hidden className="h-0.5 flex-1 bg-hf-black" />
         </button>
-
-        {normalizedQuery && (
-          <section className="flex flex-col gap-2 pb-2">
-            <p className="px-1 text-sm font-semibold text-hf-black">
-              {t("statUnusedCards.searchResults")}
-            </p>
-            {searchResults.length === 0 ? (
-              <p className="rounded-2xl bg-hf-tan/60 p-4 text-xs text-hf-black opacity-50">
-                {t("statUnusedCards.noSearchResults")}
-              </p>
-            ) : (
-              renderCardGrid(searchResults)
-            )}
-          </section>
-        )}
 
         {categories.map((category, index) => (
           // Only the first group (Næringsindhold) starts open.

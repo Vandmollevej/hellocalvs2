@@ -6,7 +6,7 @@ export function TopBar() {
       <Link
         href="/profile"
         aria-label="Åbn mine oplysninger"
-        className="flex h-8 w-8 items-center justify-center rounded-full bg-hf-tan text-xs font-bold text-hf-black"
+        className="flex h-8 w-8 items-center justify-center rounded-full border border-hf-tan-dark bg-hf-tan text-xs font-bold text-hf-black"
       >
         PT
       </Link>

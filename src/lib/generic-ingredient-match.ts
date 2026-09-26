@@ -19,14 +19,14 @@ export type FridaCandidate = {
   fatPer100g: number;
 };
 
-export function matchFridaProduct(
+export function matchFridaProduct<T extends FridaCandidate>(
   query: string,
-  candidates: FridaCandidate[]
-): FridaCandidate | null {
+  candidates: T[]
+): T | null {
   const normalizedQuery = query.trim().toLowerCase();
   if (!normalizedQuery) return null;
 
-  let best: { candidate: FridaCandidate; score: number } | null = null;
+  let best: { candidate: T; score: number } | null = null;
   for (const candidate of candidates) {
     const candidateFirstSegment = candidate.name.split(",")[0]?.trim() ?? candidate.name;
     // Prefer matching just the first comma-separated segment ("Æble" vs.

@@ -12,6 +12,8 @@ import { flagUncertainAlternativeServings } from "@/lib/alternative-servings-rev
 import { syncProductNutritionFeaturesSafely } from "@/lib/product-nutrition-features";
 import { composeProductName } from "@/lib/product-naming";
 import { isProductCategory } from "@/lib/product-display-unit";
+import { MACRO_SOURCE_KEYS, labelNutrientsFromPrediction } from "@/lib/nutrients";
+import { HIDE_FROM_SEARCH_BELOW } from "@/lib/uncertainty-thresholds";
 
 // Fetches Open Food Facts products globally live for search terms without enough local
 // results, and saves them as PENDING (same pattern as the barcode lookup in
@@ -111,6 +113,16 @@ export async function GET(req: Request) {
       prisma.product.findMany({
         where: {
           discontinued: false,
+          // Admin "Uncertainties" (docs/DECISIONS.md 2026-09-25): et produkt,
+          // hvor AI'en var under 50 % sikker på en aflæsning, skjules i
+          // søgningen, indtil en admin har gennemgået den.
+          AND: [
+            {
+              NOT: {
+                aiAnalyses: { some: { reviewedAt: null, confidence: { lt: HIDE_FROM_SEARCH_BELOW } } },
+              },
+            },
+          ],
           // Egne private ingredienser vises kun for ejeren (via /api/private-ingredients).
           privateOwnerId: null,
           ...(q
@@ -300,6 +312,34 @@ function cleanOptionalString(value: unknown) {
 // src/lib/product-draft.ts) — id'er på de AiProductAnalysis-rækker, der blev
 // oprettet ved hver AI-analyse (forside/ingredienser/næring). Kun kendte
 // nøgler/streng-værdier accepteres fra klienten.
+// Usikkerheds-~ (docs/DECISIONS.md 2026-09-25): hvor et nyt produkts
+// næringstal kommer fra. Fejl må aldrig stoppe selve produktoprettelsen.
+async function recordNutrientSources(productId: string, nutritionAnalysisId: string | null) {
+  try {
+    const analysis = nutritionAnalysisId
+      ? await prisma.aiProductAnalysis.findUnique({
+          where: { id: nutritionAnalysisId },
+          select: { kind: true, prediction: true },
+        })
+      : null;
+    const macroSource = analysis?.kind === "NUTRITION" ? "LABEL" : "ESTIMATED";
+    const sources: Record<string, string> = Object.fromEntries(MACRO_SOURCE_KEYS.map((key) => [key, macroSource]));
+    const { micronutrientsPer100g, nutrientTolerances } =
+      analysis?.kind === "NUTRITION" ? labelNutrientsFromPrediction(analysis.prediction) : { micronutrientsPer100g: {}, nutrientTolerances: {} };
+    for (const key of Object.keys(micronutrientsPer100g)) sources[key] = "LABEL";
+    await prisma.product.update({
+      where: { id: productId },
+      data: {
+        nutrientSources: sources,
+        ...(Object.keys(micronutrientsPer100g).length ? { micronutrientsPer100g } : {}),
+        ...(Object.keys(nutrientTolerances).length ? { nutrientTolerances } : {}),
+      },
+    });
+  } catch (error) {
+    console.error("Recording nutrient sources failed", error);
+  }
+}
+
 function cleanAnalysisIds(value: unknown) {
   if (!value || typeof value !== "object" || Array.isArray(value)) return {} as Record<string, string>;
   const source = value as Record<string, unknown>;
@@ -491,6 +531,12 @@ export async function POST(req: Request) {
         data: { productId: product.id, correctedAt },
       });
     }
+
+    // Usikkerheds-~ (docs/DECISIONS.md 2026-09-25): med en aflæst
+    // næringsdeklaration er makroerne producentdata, og øvrige næringsstoffer
+    // + producentens egen ± fra tabellen gemmes med. Uden en aflæst
+    // deklaration er makroerne ikke bekræftet fra emballagen → estimerede.
+    await recordNutrientSources(product.id, analysisIds.nutrition ?? null);
 
     // Normaliserede søgeparametre (fiber-%, sukker-%, fuldkorn …) ud fra den
     // nu tilknyttede næringsanalyse og ingredienslisten (docs/DECISIONS.md
