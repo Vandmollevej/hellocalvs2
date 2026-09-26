@@ -4,20 +4,29 @@ import { Suspense, useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { IconBookmark, IconBookmarkFilled, IconInfoCircle, IconSoup } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { HfSlider } from "@/components/hf/HfSlider";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { loadRecipeFilters, saveRecipeFilters } from "@/lib/recipe-filters";
+import { MAX_RECIPE_PERSONS, portionKcalFor, scaleFactorFor, type PortionProfile } from "@/lib/recipe-portions";
 
 // En ret fra Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24).
 // kind=own: brugerens egen ret fra boksen, med deling til/fra.
 // kind=shared: en andens delte ret — favorit, egen kopi og "Anmeld" (kun
 // indtil admin har godkendt retten). Der vises aldrig noget om udgiveren.
+// Mængderne vises justeret til det valgte antal personer à brugerens
+// anbefalede servering (src/lib/recipe-portions.ts, DECISIONS 2026-09-25);
+// den gemte ret ændres ikke.
 
 type Ingredient = { key: string; name: string; grams: number; imageUrl: string | null; kcal: number; protein: number; carbs: number; fat: number };
-type View = { name: string; ingredients: Ingredient[] };
+type Step = { title: string; text: string; image: string | null };
+type View = { name: string; ingredients: Ingredient[]; images: string[]; steps: Step[] };
 
 type OwnDish = {
   name: string;
   sharedRecipeId?: string | null;
+  images?: string[];
+  steps?: Step[] | null;
   ingredients: {
     id: string;
     grams: number;
@@ -28,6 +37,8 @@ type SharedRecipe = {
   id: string;
   name: string;
   canReport: boolean;
+  images?: string[];
+  steps?: Step[];
   ingredients: {
     productId: string;
     name: string;
@@ -65,6 +76,21 @@ function RecipeDetailContent() {
   // Delt ret
   const [isFavorite, setIsFavorite] = useState(false);
   const [canReport, setCanReport] = useState(false);
+  // Justering til antal personer
+  const [persons, setPersons] = useState(() => loadRecipeFilters().persons);
+  const [portionKcal, setPortionKcal] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch("/api/profile")
+      .then(async (res) => (res.ok ? ((await res.json()) as { user?: PortionProfile }) : {}))
+      .then((data) => setPortionKcal(portionKcalFor(data.user)))
+      .catch(() => setPortionKcal(portionKcalFor(null)));
+  }, []);
+
+  function changePersons(next: number) {
+    setPersons(next);
+    saveRecipeFilters({ ...loadRecipeFilters(), persons: next });
+  }
 
   useEffect(() => {
     const url =
@@ -77,6 +103,8 @@ function RecipeDetailContent() {
           setShared(Boolean(dish.sharedRecipeId));
           setView({
             name: dish.name,
+            images: dish.images ?? [],
+            steps: Array.isArray(dish.steps) ? dish.steps : [],
             ingredients: dish.ingredients.map((i) => ({
               key: i.id,
               name: i.product.name,
@@ -96,6 +124,8 @@ function RecipeDetailContent() {
           setCanReport(data.recipe.canReport);
           setView({
             name: data.recipe.name,
+            images: data.recipe.images ?? [],
+            steps: data.recipe.steps ?? [],
             ingredients: data.recipe.ingredients.map((i, index) => ({
               key: `${i.productId}-${index}`,
               name: i.name,
@@ -156,7 +186,17 @@ function RecipeDetailContent() {
     setBusy(false);
   }
 
-  const totals = (view?.ingredients ?? []).reduce(
+  const baseKcal = (view?.ingredients ?? []).reduce((sum, i) => sum + i.kcal, 0);
+  const factor = portionKcal === null ? 1 : scaleFactorFor(baseKcal, portionKcal, persons);
+  const ingredients = (view?.ingredients ?? []).map((i) => ({
+    ...i,
+    grams: i.grams * factor,
+    kcal: i.kcal * factor,
+    protein: i.protein * factor,
+    carbs: i.carbs * factor,
+    fat: i.fat * factor,
+  }));
+  const totals = ingredients.reduce(
     (acc, i) => ({
       grams: acc.grams + i.grams,
       kcal: acc.kcal + i.kcal,
@@ -179,17 +219,33 @@ function RecipeDetailContent() {
         ) : undefined
       }
     >
-      <div className="flex flex-col gap-4 p-4">
+      <div className="hf-page">
         {state === "loading" && (
-          <p className="py-6 text-center text-sm text-hf-black opacity-60">{t("recipeDetail.loading")}</p>
+          <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipeDetail.loading")}</p>
         )}
         {state === "missing" && (
-          <p className="py-6 text-center text-sm text-hf-black opacity-60">{t("recipeDetail.notFound")}</p>
+          <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipeDetail.notFound")}</p>
         )}
 
         {state === "ready" && view && (
           <>
             {notice && <p className="rounded-[8px] bg-hf-tan px-4 py-3 text-[13px] text-hf-black">{notice}</p>}
+
+            {view.images.length > 0 && (
+              <div className="no-scrollbar -mx-4 flex snap-x gap-2 overflow-x-auto px-4">
+                {view.images.map((image) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={image}
+                    src={image}
+                    alt=""
+                    className={`aspect-[4/3] shrink-0 snap-center rounded-2xl object-cover ${
+                      view.images.length === 1 ? "w-full" : "w-[85%]"
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
 
             {kind === "own" && (
               <div>
@@ -237,10 +293,32 @@ function RecipeDetailContent() {
               </div>
             )}
 
+            {portionKcal !== null && baseKcal > 0 && (
+              <div className="rounded-2xl bg-hf-tan px-4 py-3">
+                <p className="text-[14px] font-semibold text-hf-black">
+                  {persons === 1
+                    ? t("recipeFilters.personsOne")
+                    : t("recipeFilters.persons", { count: persons })}
+                </p>
+                <div className="py-3">
+                  <HfSlider
+                    value={persons}
+                    min={1}
+                    max={MAX_RECIPE_PERSONS}
+                    onChange={changePersons}
+                    aria-label={t("recipeFilters.adjustTitle")}
+                  />
+                </div>
+                <p className="text-[12px] text-hf-black opacity-60">
+                  {t("recipeFilters.kcalPerServing", { kcal: round(totals.kcal / persons) })}
+                </p>
+              </div>
+            )}
+
             <div>
               <p className="mb-2 text-xs font-bold text-hf-black">{t("recipeDetail.ingredients")}</p>
               <div className="overflow-hidden rounded-2xl bg-hf-tan">
-                {view.ingredients.map((ingredient) => (
+                {ingredients.map((ingredient) => (
                   <div
                     key={ingredient.key}
                     className="flex items-center gap-2.5 border-b border-hf-tan-dark px-4 py-3 last:border-b-0"
@@ -262,8 +340,8 @@ function RecipeDetailContent() {
               </div>
             </div>
 
-            <div className="rounded-2xl bg-hf-tan p-4">
-              <p className="mb-1 text-xs font-bold text-hf-black">{t("recipeDetail.total")}</p>
+            <div className="hf-card">
+              <p className="text-xs font-bold text-hf-black">{t("recipeDetail.total")}</p>
               <p className="text-sm text-hf-black">
                 {t("recipeDetail.gramsKcal", { grams: round(totals.grams), kcal: round(totals.kcal) })}
               </p>
@@ -275,6 +353,29 @@ function RecipeDetailContent() {
                 })}
               </p>
             </div>
+
+            {view.steps.length > 0 && (
+              <div>
+                <p className="mb-2 text-xs font-bold text-hf-black">{t("recipeSteps.title")}</p>
+                <div className="overflow-hidden rounded-2xl bg-hf-tan">
+                  {view.steps.map((step, index) => (
+                    <div key={index} className="flex items-start gap-3 border-b border-hf-tan-dark px-4 py-3 last:border-b-0">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[12px] font-bold text-hf-black opacity-60">
+                          {t("recipeSteps.stepNumber", { number: index + 1 })}
+                        </p>
+                        {step.title && <p className="text-[14px] font-semibold text-hf-black">{step.title}</p>}
+                        {step.text && <p className="whitespace-pre-line text-[13px] text-hf-black">{step.text}</p>}
+                      </div>
+                      {step.image && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={step.image} alt="" className="h-16 w-16 shrink-0 rounded-[8px] object-cover" />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>

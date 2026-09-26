@@ -2,6 +2,24 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Global afstandsregel + Abonnement-side
+
+Se `docs/DECISIONS.md` 2026-09-25 "Global lodret rytme". Nye primitiver
+`.hf-page`, `.hf-card`, `.hf-stack`, `.hf-type-card-title` i
+`src/app/globals.css`; 49 sider bruger `.hf-page`, og hele `src/` er
+normaliseret til 4/8/16/32 px og 8 px kort-radius (se DECISIONS). Abonnement: pris uden "Seriøs —",
+sort (også deaktiveret) knap, grå "Indløs points" med hvid tekst, "Gratis" står
+ikke længere indrykket. Visuelt kontrolleret lokalt ved 402 × 874 med
+mockede API-svar (Abonnement, Indstillinger, Statistik, Tilføj, Ny
+målsætning); graf-kortene på Statistik flugter nu med kortene under dem.
+Tjek på iPhone med rigtige data efter deploy.
+
+## 2026-09-25: Vægtkalibrering omdesignet
+
+Se `docs/DECISIONS.md` 2026-09-25 "Vægtkalibrering — eksplicit
+Opdatér oplysninger-knap". Lint + build grønne; visuelt tjekket i 402 px
+viewport med mockede API-svar. Test på iPhone efter deploy.
+
 ## 2026-09-25: Integrationssiden ryddet op og sektioneret
 
 Se `docs/DECISIONS.md` 2026-09-25 "Integrationssiden". Sektioner med
@@ -75,6 +93,16 @@ Uge- og Liste-visningens dagrækker (`src/app/calendar/page.tsx`):
 Verificeret med `npm run lint` og `npm run build`. Ikke afprøvet på telefon
 fra denne container.
 
+## 2026-09-25: Profil — Face ID som tekstlink, Skift adgangskode nederst
+
+- `/profile/edit`: "Slå Face ID til" er nu et almindeligt understreget tekstlink
+  (ikke sort knap) med luft over og under; "Skift adgangskode" ligger nederst.
+- Face ID tilbydes stadig primært efter login (`/login/face-id`); iOS foreslår
+  ikke selv passkeys til websider, så appen skal selv starte registreringen.
+- Genvejsknapperne bruger de nye vektor-ikoner: vægt (0dbb4fb/bc8960b) og
+  champagne til Målsætning; gryden i hjulet/`/add/menu` er ny. Flettet ind fra
+  `claude/trusting-meitner-eqqmu9` (18ad2e1), som ikke var i master.
+
 ## 2026-09-25: Profil — start-vægt altid låst + "Lås"-side
 
 Start-vægt på `/profile/edit` er nu altid låst, også når den er tom (før var
@@ -141,6 +169,25 @@ delemenuen og mailens personlige besked.
   (`/profile/settings`), Indberet fejl og Log ud er flyttet til `/settings`;
   Integrationer, Kommunikation og Invitér en ven lå der i forvejen. Den
   gamle "Log ind / tilmeld"-boks er fjernet.
+
+## 2026-09-25: Nyt grydeikon og champagneikon til Målsætning (vektor)
+
+- "Egne retter" bruger nu `IconCookingPot`
+  (`src/components/icons/CookingPot.tsx`) i stedet for `imageSrc:
+  "/icons/gryde.png"` — en stroke-tegning (1,5) af brugerens nye grydebillede
+  med jævne streger. `public/icons/gryde.png` er erstattet af den nye
+  kunst (trimmet, transparent, 512 px) som reference; den bruges ikke
+  længere direkte.
+- "Målsætning" (hjul/`/add/menu` via `add-actions.ts` og knappen på
+  `/profile/edit`) bruger `IconChampagne`
+  (`src/components/icons/Champagne.tsx`) i stedet for tabler `IconTarget`:
+  fyldt silhuet af brugerens champagneflaske, viewBox trimmet til tegningen,
+  etiket/medaljon skåret ud med maske. Stat-kortet "Mål nået" bruger stadig
+  `IconTargetArrow` (kcal-mål, ikke målsætning).
+- Kildebillederne lå i brugerens lokale hovedmappe (ikke i repoet) og skal
+  slettes dér af brugeren/lokal agent.
+- Lint + build grønne; ikonerne renderet og tjekket ved 20/26/48 px, mørk og
+  hvid farve. Ikke set i den kørende app (kræver login).
 
 ## 2026-09-25: Statistik — redigerbare grafer, søgning og "+ Tilføj" pr. blok
 
@@ -253,7 +300,7 @@ dialog.
 - **Koncept**: samme mønster som HelloFresh-integrationen i dag — en
   toggle-boks på `/settings/integrations` (`waldemarsroEnabled` på `User`,
   analogt med `helloFreshEnabled`), der slår Waldemarsro-opskrifter til/fra i
-  "Søg i delte retter". Ikke en OAuth-konto (der er intet at logge ind på)
+  "Delte retter". Ikke en OAuth-konto (der er intet at logge ind på)
   — men den skal *ligge* i `INTEGRATION_CATALOG`-listen som et kort, fordi en
   reel kontoforbindelse kan komme senere.
 - **Region-gating**: kortet vises kun når brugerens region
@@ -651,9 +698,16 @@ Se `docs/DECISIONS.md` (2026-09-24). Bygget efter brugerens afklaring
   "Ingen personlige detaljer deles, når du deler en ret". Efter gem går man
   til Opskrifter → Mine retter.
 - **Opskrifter** (`/profile/recipes`): faner "Mine retter" (egne retter +
-  favoritter fra boksen, mærket Delt/Privat/Favorit) og "Søg i delte retter"
-  (titel/ingredienser, sortering Relevans/Popularitet/Dato som små knapper;
-  HelloFresh medtages kun, når det er slået til under Integrationer).
+  favoritter fra boksen, mærket Delt/Privat/Favorit) og "Delte retter"
+  (titel/ingredienser; HelloFresh medtages kun, når det er slået til under
+  Integrationer). Filterikonet åbner `/profile/recipes/filters` (sortering,
+  allergier, diæter, protein, specialkost, makroer, personer 1–6, vis
+  kalorier/energifordeling — se DECISIONS 2026-09-25). Ikke testet mod rigtige
+  data endnu: lokal DB mangler.
+- **Opret ret**: billeder (op til 3), fremgangsmåde (trin med overskrift,
+  tekst og billede) og kategorivindue efter Gem (DECISIONS 2026-09-25).
+  Kræver migrationen `20260925120000_recipe_images_steps_tags`. Flowet er
+  testet i browser med mockede API-svar, ikke mod en rigtig database.
   Detaljeside `/profile/recipes/[id]?kind=own|shared`: deling til/fra for
   egne retter; favorit, "Gem som egen kopi" og "Anmeld" (kun før
   godkendelse) for delte.

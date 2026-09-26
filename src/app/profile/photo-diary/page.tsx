@@ -174,11 +174,11 @@ export default function BilledeDagbogPage() {
     >
 
       {loading || !user ? (
-        <p className="p-6 text-center text-[14px] text-hf-black opacity-60">
+        <p className="p-4 text-center text-[14px] text-hf-black opacity-60">
           {loading ? t("photoDiary.loading") : t("photoDiary.loadError")}
         </p>
       ) : (
-        <div className="flex flex-col gap-4 p-4">
+        <div className="hf-page">
           <Toggle
             label={t("photoDiary.requiresPasscode")}
             description={t("photoDiary.requiresPasscodeDescription")}
@@ -218,13 +218,13 @@ export default function BilledeDagbogPage() {
                 {t("photoDiary.takePhoto")}
               </button>
 
-              <section className="flex flex-col gap-3">
+              <section className="flex flex-col gap-4">
                 {photos.length === 0 ? (
                   <p className="text-center text-[13px] text-hf-black opacity-60">
                     {t("photoDiary.noPhotosYet")}
                   </p>
                 ) : (
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     {photos.map((photo, index) => (
                       <button
                         key={photo.id}

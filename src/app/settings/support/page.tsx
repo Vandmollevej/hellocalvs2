@@ -148,15 +148,15 @@ export default function SupportSettingsPage() {
 
   return (
     <HfScreen title={t("settings.support.title")}>
-      <div className="flex flex-col gap-8 p-4 pb-8">
-        <div className="flex flex-col gap-3">
+      <div className="hf-page hf-page--sections">
+        <div className="flex flex-col gap-4">
           <p className="hf-type-body">{t("settings.support.intro")}</p>
           <p className="hf-type-body">{t("settings.support.description")}</p>
         </div>
 
         <div>
           <h2 className="hf-type-section-title">{t("settings.support.period")}</h2>
-          <div className="grid grid-cols-1 gap-3 min-[360px]:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 min-[360px]:grid-cols-2">
             <TextField
               variant="standard"
               type="date"
@@ -204,7 +204,7 @@ export default function SupportSettingsPage() {
           </AccordionCard>
         </div>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4">
           {error && (
             <p role="alert" className="hf-type-caption text-hf-red-dark">
               {error}

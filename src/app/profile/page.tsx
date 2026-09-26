@@ -60,11 +60,11 @@ export default function ProfilePage() {
   return (
     <HfScreen title={t("profile.title")} alwaysShowBackButton showAppSettingsButton>
       {loading || !user ? (
-        <p className="p-6 text-center text-[14px] text-hf-black opacity-60">
+        <p className="p-4 text-center text-[14px] text-hf-black opacity-60">
           {loading ? t("profile.loading") : t("profile.loadError")}
         </p>
       ) : (
-        <div className="flex flex-col gap-4 p-4">
+        <div className="hf-page">
           {/* Statisk indtil guided profilopsætning beregner det dynamisk. */}
           <HfProgressStepper
             steps={[

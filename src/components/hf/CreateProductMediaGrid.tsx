@@ -287,7 +287,7 @@ export function CreateProductMediaGrid({
       />
       <div className="relative aspect-square rounded-[12px] p-1.5" style={{ background: "var(--hf-color-card)" }}>
         <NumberedBadge number={4} />
-        <div className="grid h-full grid-cols-2 gap-1.5">
+        <div className="grid h-full grid-cols-2 gap-2">
           <ImageSubCell label={t("productCreate.mediaMainImage")} image={value.mainImage} onPick={setMainImage} />
           <ImageSubCell label={t("productCreate.mediaSideImage1")} image={value.sideImages[0]} onPick={(file) => setSideImage(0, file)} />
           <ImageSubCell label={t("productCreate.mediaSideImage2")} image={value.sideImages[1]} onPick={(file) => setSideImage(1, file)} />

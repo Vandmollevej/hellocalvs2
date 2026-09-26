@@ -564,7 +564,7 @@
     "loadError": "Opskrifter kunne ikke hentes lige nu",
     "noResults": "Ingen opskrifter matcher din søgning",
     "tabMine": "Mine retter",
-    "tabShared": "Søg i delte retter",
+    "tabShared": "Delte retter",
     "sharedSearchPlaceholder": "Søg i titel, ingredienser …",
     "sortRelevance": "Relevans",
     "sortPopular": "Popularitet",
@@ -577,6 +577,141 @@
     "helloFresh": "HelloFresh",
     "kcalTotal": "{kcal} kcal i alt",
     "kcalServing": "{kcal} kcal pr. portion"
+  },
+  "recipeFilters": {
+    "title": "Filtre",
+    "openFilters": "Filtre",
+    "adjustTitle": "Justér retter",
+    "persons": "Justér retter til: {count} personer",
+    "personsOne": "Justér retter til: 1 person",
+    "portionHint": "Anbefalet servering til dig: ca. {kcal} kcal",
+    "showKcal": "Vis kalorier",
+    "showEnergySplit": "Vis energifordeling",
+    "sortTitle": "Sorter efter",
+    "allergiesTitle": "Allergier",
+    "dietsTitle": "Diæter",
+    "highProtein": "Høj på protein",
+    "specialTitle": "Specialkost",
+    "macrosTitle": "Fokus på makroer",
+    "reset": "Nulstil filtre",
+    "kcalPerServing": "{kcal} kcal pr. servering",
+    "servings": "{count} serveringer",
+    "split": "Protein {protein} % · Kulhydrat {carbs} % · Fedt {fat} %",
+    "warning": "Vær opmærksom på {ingredient}, hvor der ofte findes spor af {allergen}",
+    "allergens": {
+      "gluten": "Gluten",
+      "crustaceans": "Skaldyr",
+      "eggs": "Æg",
+      "fish": "Fisk",
+      "peanuts": "Jordnødder",
+      "soybeans": "Soja",
+      "milk": "Mælk",
+      "nuts": "Nødder",
+      "celery": "Selleri",
+      "mustard": "Sennep",
+      "sesame-seeds": "Sesamfrø",
+      "sulphur-dioxide-and-sulphites": "Svovldioxid og sulfitter",
+      "lupin": "Lupin",
+      "molluscs": "Bløddyr",
+      "apple": "Æble",
+      "avocado": "Avocado",
+      "banana": "Banan",
+      "citrus": "Citrusfrugter",
+      "garlic": "Hvidløg",
+      "kiwi": "Kiwi",
+      "coconut": "Kokos",
+      "onion": "Løg",
+      "corn": "Majs",
+      "legumes": "Bælgfrugter (ærter, bønner, linser)",
+      "red-meat": "Rødt kød (alfa-gal)",
+      "mushrooms": "Svampe",
+      "stone-fruit": "Stenfrugter (fersken, blomme, kirsebær)",
+      "strawberry": "Jordbær",
+      "tomato": "Tomat"
+    },
+    "diets": {
+      "vegan": "Vegansk",
+      "vegetarian": "Vegetarisk",
+      "pescetarian": "Pescetarisk",
+      "glutenFree": "Glutenfri",
+      "lactoseFree": "Laktosefri",
+      "keto": "Keto",
+      "lowSugar": "Lavt sukker"
+    },
+    "nutrients": {
+      "fiber": "Højt indhold af fibre",
+      "iron": "Højt indhold af jern",
+      "calcium": "Højt indhold af calcium",
+      "potassium": "Højt indhold af kalium",
+      "vitaminA": "Højt indhold af A-vitamin",
+      "vitaminC": "Højt indhold af C-vitamin"
+    },
+    "macros": {
+      "protein-low": "Lavt på protein",
+      "carbs-high": "Højt på kulhydrat",
+      "carbs-low": "Lavt på kulhydrat",
+      "fat-high": "Højt på fedt",
+      "fat-low": "Lavt på fedt"
+    }
+  },
+  "recipeSteps": {
+    "title": "Fremgangsmåde",
+    "hint": "Overskrift + tekst for hvert trin. Tryk på plus for at tilføje næste trin; tryk på et trin for at rette det.",
+    "addButton": "Tilføj fremgangsmåde",
+    "stepNumber": "Trin {number}",
+    "titlePlaceholder": "Overskrift",
+    "textPlaceholder": "Tekst",
+    "addStep": "Tilføj trin",
+    "addPhoto": "Tag billede til trinnet",
+    "removePhoto": "Fjern billedet",
+    "remove": "Slet trin"
+  },
+  "recipeImages": {
+    "title": "Billeder af retten",
+    "addButton": "Tilføj billeder",
+    "add": "Tilføj billede",
+    "remove": "Fjern billede",
+    "count": "{count}/{max}"
+  },
+  "recipeCategories": {
+    "title": "Vælg kategorier",
+    "intro": "Retten er gemt. Diæterne er foreslået ud fra ingredienserne — ret dem, og vælg gerne flere kategorier.",
+    "close": "LUK",
+    "groups": {
+      "diet": "Diæter",
+      "meal": "Måltidstype",
+      "cuisine": "Køkken",
+      "method": "Tilberedning"
+    },
+    "meal": {
+      "breakfast": "Morgenmad",
+      "lunch": "Frokost",
+      "dinner": "Aftensmad",
+      "snack": "Mellemmåltid",
+      "dessert": "Dessert"
+    },
+    "cuisine": {
+      "danish": "Dansk",
+      "nordic": "Nordisk",
+      "italian": "Italiensk",
+      "french": "Fransk",
+      "spanish": "Spansk",
+      "greek": "Græsk",
+      "middleEastern": "Mellemøstlig",
+      "indian": "Indisk",
+      "asian": "Asiatisk",
+      "mexican": "Mexicansk",
+      "american": "Amerikansk"
+    },
+    "method": {
+      "quick": "Hurtig (under 30 min.)",
+      "oven": "Ovnret",
+      "stew": "Gryderet",
+      "salad": "Salat",
+      "soup": "Suppe",
+      "grill": "Grill",
+      "noCook": "Uden tilberedning"
+    }
   },
   "recipeDetail": {
     "loading": "Henter retten …",
@@ -872,7 +1007,7 @@
     "weightPlaceholder": "fx 78,4",
     "timeGrid": {
       "title": "Vægt over dagen",
-      "placeholder": "–"
+      "placeholder": "Skriv vægt"
     },
     "clothed": {
       "false": "Uden tøj",
@@ -880,9 +1015,7 @@
     },
     "shoes": {
       "off": "Uden sko",
-      "on": "Med sko",
-      "unknown": "Ved ikke",
-      "unknownLabel": "Sko ikke angivet"
+      "on": "Med sko"
     },
     "timeOfDay": {
       "morning": "Morgen",
@@ -890,22 +1023,24 @@
     },
     "toilet": {
       "before": "Før toilet",
-      "after": "Efter toilet",
-      "unknown": "Ved ikke",
-      "unknownLabel": "Toilet ikke angivet"
+      "after": "Efter toilet"
     },
     "meal": {
       "before": "Før mad",
-      "after": "Efter mad",
-      "unknown": "Ved ikke",
-      "unknownLabel": "Mad ikke angivet"
+      "after": "Efter mad"
     },
-    "submit": "Registrér vejning",
+    "submit": "Opdatér oplysninger",
     "saving": "Gemmer…",
     "loading": "Henter…",
     "noEntriesYet": "Ingen vejninger registreret endnu.",
     "deleteAria": "Slet vejning",
-    "delete": "Slet"
+    "delete": "Slet",
+    "recentTitle": "Seneste vejninger",
+    "status": {
+      "saved": "Oplysningerne er gemt.",
+      "nothing": "Der er ingen vægt at gemme endnu.",
+      "error": "Noget kunne ikke gemmes. Prøv igen."
+    }
   },
   "bodyMeasurements": {
     "title": "Kropsmål",

@@ -2,6 +2,96 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-25: Global lodret rytme (8/16/32) og sorte primærknapper
+
+Brugerens krav: "stringent opsætning på tværs af hele sitet med rene linjer og
+globale designregler" — afstande mellem blokke, tekst og knapper var forskellige
+fra side til side.
+
+- Kun 8 px (inde i en blok), 16 px (mellem blokke, kortpadding, gutter) og
+  32 px (før en sektion). Se `design.md` §5.4.
+- Sidecontainere bruger `.hf-page` i stedet for egne `flex flex-col gap-N p-4`;
+  kort bruger `.hf-card`. Hele `src/` er normaliseret: alle lodrette
+  margener/paddings (`mt/mb/my/pt/pb/space-y`) og stablede gaps ligger på
+  4/8/16/32 px, kort har 16 px padding, og `rounded-xl`/`rounded-2xl` er låst
+  til 8 px i temaet. Accordion og chip følger samme mål. Undtagelser: vandrette
+  gaps i rækker (ikon/tekst), knappers interne padding, kalenderens 7-kolonne
+  dagsgitter (6 px) og enkelte special-offsets (`pt-9`, `mt-10`, `mt-20`).
+- Primærknapper forbliver sorte, også når de er deaktiveret (ingen grå
+  opacity). "Indløs points" på Abonnement er bevidst en grå flade med hvid tekst.
+- Abonnement: prislinjen viser kun prisen ("119 kr./måned"), ikke "Seriøs —".
+- Sektionsoverskrifter: 32 px over og 16 px under (justerer 12 px fra
+  "Sektionsoverskrifter, points-banner …" nedenfor til 8/16/32-skalaen). I en
+  `.hf-page` trækkes stakkens gap fra, så resultatet er det samme.
+
+## 2026-09-25: Billeder, fremgangsmåde og kategorier i Opret ret
+
+- Nederst i Opret ret: knapperne "Tilføj billeder" og "Tilføj fremgangsmåde".
+- **Billeder:** op til 3 af den færdige ret; det første er forsidebillede i
+  listerne. Nedskaleres i browseren (≤ 1600 px JPEG) og gemmes uden EXIF i
+  `/product-images/recipe-images` (samme volume som produktbilleder).
+- **Fremgangsmåde:** overskrift + tekst pr. trin og et kameraikon i siden
+  (billede pr. trin, vist som thumbnail). Plus gør trinnet statisk (uden
+  redigerbar baggrund), og et nyt, større trin får fokus. Tryk på et statisk
+  trin retter det; × sletter det.
+- **Kategorier:** efter Gem vises et vindue (retten er allerede gemt) med
+  Diæter (forudvalgt ud fra ingredienserne), Måltidstype, Køkken og
+  Tilberedning. LUK gemmer kategorierne en gang til, hvis nogen er valgt.
+  Gemmes som `Dish.tags` ("diet:vegan", "meal:dinner" …).
+- Billeder, fremgangsmåde og kategorier følger med, når retten deles og
+  kopieres. Fremgangsmåden indgår i søgningen og i allergen-/diætfiltrene.
+- Kladden (navn, billeder, trin) ligger i sessionStorage, så den overlever
+  turen ud efter ingredienser.
+- `GET /api/dishes/[id]` kræver nu, at man ejer retten.
+
+## 2026-09-25: Filtre og portionsjustering på "Delte retter"
+
+Brugerens krav: sorteringsknapperne erstattes af et filterikon til venstre
+for søgefeltet, der åbner skærmen "Filtre" (`/profile/recipes/filters`).
+Fanen hedder nu "Delte retter" (ikke "Søg i delte retter").
+
+- **Rækkefølge på filterskærmen:** Justér retter (1–6 personer, Vis
+  kalorier, Vis energifordeling) · Sorter efter (én ad gangen) · Allergier ·
+  Diæter · Høj på protein · Specialkost · Fokus på makroer · Nulstil.
+  Valgene gemmes i browseren (`localStorage`), ikke på serveren.
+- **Filtrering sker på serveren** (`src/lib/recipe-filter-match.ts`). Alt,
+  der ikke opfylder et valgt filter, sorteres fra — også når data mangler.
+- **Allergier:** EU's 14 plus 15 andre kendte fødevareallergier, alfabetisk.
+  Genkendes via madvarens EU-allergenmærkning og en ordscanning (dansk +
+  engelsk) af rettens navn, ingrediensnavne og varedeklarationer.
+  "Kokosmælk", "muskatnød", "glutenfri pasta" o.l. tæller ikke. Delte retter
+  har ingen beskrivelse/fremgangsmåde endnu, så de kan ikke scannes.
+- **Spor af:** "kan indeholde spor af …" i en varedeklaration og ingredienser,
+  der ofte har spor (chokolade → nødder, havre → gluten osv.) giver en rød
+  advarsel under rettens titel — kun for allergener, brugeren har valgt.
+- **Diæter:** vegansk, vegetarisk, pescetarisk, glutenfri, laktosefri
+  (laktosefri mælkeprodukter tilladt), keto (≤ 10 E% kulhydrat), lavt sukker
+  (EU: ≤ 5 g/100 g).
+- **Makroer (energiprocent):** Høj på protein ≥ 20 E% (EU-forordning
+  1924/2006). Øvrige grænser ligger uden for NNR 2023's intervaller: protein
+  lav < 10, kulhydrat høj > 60 / lav < 26, fedt høj > 40 / lav < 25. Høj og lav
+  udelukker hinanden pr. makro.
+- **Specialkost:** "Højt indhold af" fibre (EU: 3 g/100 kcal), jern, calcium,
+  kalium, A- og C-vitamin (≥ 30 % af EU-referenceindtaget pr. 600 kcal). Data
+  findes kun delvist (Open Food Facts, HelloFresh); ukendt ⇒ frasorteret.
+- **Anbefalet servering** (`src/lib/recipe-portions.ts`): hovedmåltid = 30 %
+  af brugerens dagsbehov (Mifflin-St Jeor × PAL 1,4; uden profildata EU's
+  2000 kcal). Måltidsfordeling: morgenmad 20–25 %, frokost 25–30 %,
+  aftensmad 30–35 %, mellemmåltider 10–20 %. Listen viser kcal pr. servering
+  og antal serveringer; opskriftssiden skalerer ingrediensernes gram til det
+  valgte antal personer (den gemte ret ændres ikke).
+## 2026-09-25: Vægtkalibrering — eksplicit "Opdatér oplysninger"-knap
+
+Brugerbeslutning. `src/app/profile/weight-calibration/page.tsx` er
+omdesignet: infotekst øverst i cremefarvet kort (ikke grøn), rigtige
+indtastningsfelter for "Uden tøj"/"Med tøj", forholdsvalg som to-vejs
+ikonknapper (sko/uden sko, morgen/aften, før/efter toilet, før/efter mad) —
+"Ved ikke" er fjernet; et nyt tryk på det valgte felt nulstiller til
+`UNKNOWN`. "Vægt over dagen" vises nederst som linjer (som kalenderen), og en
+stor sort "Opdatér oplysninger"-knap gemmer alt. Siden er dermed en bevidst
+undtagelse fra reglen om automatisk lagring uden "Gem"-knap. Ikoner uden
+tabler-modstykke ligger i `src/components/icons/WeighConditions.tsx`.
+
 ## 2026-09-25: Én tekst og ét ikon pr. Tilføj-handling
 
 Brugeren vil have, at tekster og ikoner på Tilføj-skærmen slår igennem på

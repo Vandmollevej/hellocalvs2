@@ -40,7 +40,7 @@ function Card({
   children?: ReactNode;
 }) {
   return (
-    <div className={`flex flex-col gap-3 rounded-[8px] bg-hf-tan p-4 ${dimmed ? "opacity-60" : ""}`}>
+    <div className={`flex flex-col gap-4 rounded-[8px] bg-hf-tan p-4 ${dimmed ? "opacity-60" : ""}`}>
       <div className="flex items-start gap-3">
         {icon}
         <div className="min-w-0 flex-1">
@@ -62,7 +62,7 @@ function IntegrationerContent() {
   const [integrations, setIntegrations] = useState<IntegrationCardStatus[]>([]);
   const [loading, setLoading] = useState(true);
   const [busyProvider, setBusyProvider] = useState<string | null>(null);
-  // HelloFresh-opskrifter i "Søg i delte retter" (docs/DECISIONS.md 2026-09-24).
+  // HelloFresh-opskrifter i "Delte retter" (docs/DECISIONS.md 2026-09-24).
   const [helloFresh, setHelloFresh] = useState<boolean | null>(null);
   const autoSynced = useRef(false);
 
@@ -214,7 +214,7 @@ function IntegrationerContent() {
         title={t("integrations.helloFreshTitle")}
         description={t("integrations.helloFreshDescription")}
         icon={
-          <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center text-hf-black">
+          <span className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center text-hf-black">
             <IconChefHat size={24} />
           </span>
         }
@@ -248,7 +248,7 @@ function IntegrationerContent() {
 
   return (
     <HfScreen title={t("integrations.title")}>
-      <div className="flex flex-col gap-4 p-4">
+      <div className="hf-page">
         {notice && <p className="rounded-[8px] bg-hf-tan px-4 py-3 text-[13px] text-hf-black">{notice}</p>}
 
         <p className="px-1 text-[13px] leading-relaxed text-hf-black opacity-60">{t("integrations.intro")}</p>

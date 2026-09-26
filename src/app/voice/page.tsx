@@ -140,7 +140,7 @@ const WAVEFORM_BAR_COUNT = 28;
 
 function Waveform({ barRefs }: { barRefs: React.MutableRefObject<(HTMLDivElement | null)[]> }) {
   return (
-    <div className="mt-3 flex h-8 w-full max-w-[280px] items-end gap-[3px]" aria-hidden="true">
+    <div className="mt-4 flex h-8 w-full max-w-[280px] items-end gap-[3px]" aria-hidden="true">
       {Array.from({ length: WAVEFORM_BAR_COUNT }).map((_, index) => (
         <div
           key={index}
@@ -195,7 +195,7 @@ function VoiceItemRow({
             <span className="flex-shrink-0 rounded-full bg-hf-tan px-1.5 py-0.5 text-[10px] font-bold uppercase text-hf-black opacity-70">{t("voice.aiEstimate")}</span>
           )}
         </span>
-        <span className="mt-0.5 block text-xs text-hf-black opacity-60">{item.amountLabel}</span>
+        <span className="mt-1 block text-xs text-hf-black opacity-60">{item.amountLabel}</span>
       </div>
       <span className="flex-shrink-0 text-xs text-hf-black opacity-60">{item.kcal} kcal</span>
       {item.saved && <IconChevronRight size={18} className="flex-shrink-0 text-hf-black opacity-40" />}
@@ -584,7 +584,7 @@ export default function VoicePage() {
 
   return (
     <HfScreen title={isListening ? t("voice.listeningTitle") : ""}>
-      <div className="flex flex-col px-4 pb-6 pt-5">
+      <div className="flex flex-col px-4 pb-8 pt-4">
         <section className="flex flex-col items-center" aria-live="polite">
           <button
             ref={micButtonRef}
@@ -648,7 +648,7 @@ export default function VoicePage() {
           )}
         </section>
 
-        <section className="mt-5">
+        <section className="mt-4">
           <h2 className="hf-heading mb-1 text-base text-hf-black">{t("voice.added")}</h2>
           <ul className="max-h-[45vh] overflow-y-auto">
             {items.map((item) => (

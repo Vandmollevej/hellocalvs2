@@ -212,7 +212,7 @@ export function SearchRankingTuner({
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-8">
       <div className="flex flex-wrap items-end gap-3 rounded-md border border-border-strong bg-surface-2 p-4">
         <label className="flex flex-1 min-w-[200px] flex-col gap-1 text-sm">
           <span className="text-text-secondary">Testsøgning</span>
@@ -262,8 +262,8 @@ export function SearchRankingTuner({
         </label>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_1.1fr]">
-        <div className="flex flex-col gap-3">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
+        <div className="flex flex-col gap-4">
           {CATEGORIES.map((category) => (
             <details key={category.key} className="rounded-md border border-border-strong bg-surface-2" open>
               <summary className="cursor-pointer select-none px-4 py-3 text-sm font-medium text-text-primary">

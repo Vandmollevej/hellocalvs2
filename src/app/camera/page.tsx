@@ -417,7 +417,7 @@ function KameraContent() {
   const message = cameraMessage(cameraStatus, t);
 
   return (
-    <div className="flex h-full min-h-0 flex-col gap-3 p-4">
+    <div className="flex h-full min-h-0 flex-col gap-4 p-4">
       {mode !== "meal" && forDish && (
         <div className="flex justify-center gap-2">
           {MODE_TABS.map((tab) => (
@@ -514,7 +514,7 @@ function KameraContent() {
           </div>
         )
       ) : mode === "meal" ? (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4">
           <div className="flex justify-center py-1">
             {photo ? (
               <button onClick={restartCamera} className="hf-btn-secondary gap-2 px-5 py-3 text-sm">
@@ -542,7 +542,7 @@ function KameraContent() {
             <>
               <ul className="flex max-h-[38vh] flex-col gap-2 overflow-y-auto">
                 {mealItems.map((item) => (
-                  <li key={item.id} className="flex items-center gap-2.5 rounded-[8px] bg-hf-tan p-3">
+                  <li key={item.id} className="flex items-center gap-2.5 rounded-[8px] bg-hf-tan p-4">
                     <div className="min-w-0 flex-1">
                       <p className="flex items-center gap-1.5 text-sm font-semibold text-hf-black">
                         <span className="truncate">{item.title}</span>

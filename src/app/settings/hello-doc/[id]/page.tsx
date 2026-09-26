@@ -142,7 +142,7 @@ export default function EditHelloDocUserPage() {
         </div>
       }
     >
-      <div className="flex flex-col gap-6 px-4 pb-8 pt-4">
+      <div className="hf-page hf-page--sections">
         <div className="flex items-center justify-between">
           <span className="hf-type-caption opacity-70">{statusLabel}</span>
           {share.status === "PENDING" && (

@@ -58,7 +58,7 @@ export default function PrivateIngredientsPage() {
 
   return (
     <HfScreen title={t("privateIngredients.listTitle")} icon={<IconCarrot size={20} stroke={2} />}>
-      <div className="flex flex-col gap-4 p-4">
+      <div className="hf-page">
         {ingredients !== null && ingredients.length === 0 && (
           <p className="text-center text-sm text-hf-black opacity-60">{t("privateIngredients.empty")}</p>
         )}

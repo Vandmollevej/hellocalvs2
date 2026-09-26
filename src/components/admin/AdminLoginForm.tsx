@@ -63,7 +63,7 @@ export function AdminLoginForm() {
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center px-4">
       <h1 className="mb-1 text-xl font-semibold text-text-primary">Admin-login</h1>
-      <p className="mb-6 text-sm text-text-secondary">Log ind for at godkende nye produkter og billeder.</p>
+      <p className="mb-8 text-sm text-text-secondary">Log ind for at godkende nye produkter og billeder.</p>
 
       <button
         type="button"

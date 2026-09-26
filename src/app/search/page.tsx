@@ -189,7 +189,7 @@ function SoegContent() {
 
   return (
     <HfScreen title={t("search.title")}>
-      <div className="flex flex-col gap-3.5 p-4">
+      <div className="hf-page">
         <div className="hf-search">
           <IconSearch size={16} color="var(--hf-black)" />
           <input
@@ -249,10 +249,10 @@ function SoegContent() {
             <p className="text-xs font-bold text-hf-black">{t("search.searchResults")}</p>
             <div className="overflow-hidden rounded-[8px] bg-hf-tan">
               {resultsState === "loading" && (
-                <p className="px-4 py-6 text-center text-sm text-hf-black opacity-60">{t("search.searching")}</p>
+                <p className="px-4 py-8 text-center text-sm text-hf-black opacity-60">{t("search.searching")}</p>
               )}
               {resultsState === "error" && (
-                <p className="px-4 py-6 text-center text-sm text-hf-black opacity-60">
+                <p className="px-4 py-8 text-center text-sm text-hf-black opacity-60">
                   {t("foods.loadError")}
                 </p>
               )}
