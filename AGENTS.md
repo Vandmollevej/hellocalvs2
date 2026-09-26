@@ -28,6 +28,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Work continuously through the active checkpoint: after each successful step,
   immediately start the next safe in-scope step. Stop only for a material user
   decision, required authorization, or an exact external blocker.
+- Ask the user questions only in the big question box (the AskUserQuestion
+  tool), never as plain text at the end of a reply — the user does not see
+  them otherwise (user rule 2026-09-26).
 - Update `docs/STATUS.md` after material work and add durable architectural or product decisions to `docs/DECISIONS.md`.
 
 ## Verification

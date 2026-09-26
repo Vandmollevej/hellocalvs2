@@ -1,5 +1,6 @@
 "use client";
 
+import { mealShareBody } from "@/lib/meal-share";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -13,6 +14,7 @@ import {
   IconRefresh,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { MealShareBar } from "@/components/family/MealShareBar";
 import { ForwardButton } from "@/components/ForwardButton";
 import { appendDishDraftIngredient } from "@/lib/dish-draft";
 import { selectRawContextImageUrl } from "@/lib/image-tags";
@@ -356,6 +358,8 @@ export default function AddPage() {
           proteinSnapshot: macros.protein,
           carbsSnapshot: macros.carbs,
           fatSnapshot: macros.fat,
+          // Fælles måltid (docs/FAMILY.md).
+          ...mealShareBody(),
         }),
       });
       if (!res.ok) {
@@ -395,6 +399,11 @@ export default function AddPage() {
       footer={
         state.status === "loaded" ? (
           <>
+            {!forDish && (
+              <div className="mb-4">
+                <MealShareBar />
+              </div>
+            )}
             {saveError && (
               <p className="mb-2 text-center text-sm text-hf-black opacity-70">{saveError}</p>
             )}

@@ -56,20 +56,23 @@ hvornår andre har været inde, hvad de har set, og hvad de har ændret.
 - Voksne, der er inviteret ind i en familie, kan også se loggen over, hvem der
   har været inde på deres profil (samme regel for alle, ikke kun børn).
 
-## Åbne spørgsmål
+## Afklaret 2026-09-26
 
-- **Beregninger for børn.** Mifflin-St Jeor, underskud/målvægt og advarslen
-  "for lavt indtag" (`src/lib/healthy-intake.ts`) er lavet til voksne. Børn
-  vokser, og energibehovet beregnes normalt med Schofield-ligningen og et
-  aktivitetsniveau på 1,6–1,8 (EFSA). Målet for børn er som regel stabil vægt,
-  så BMI falder med højden. Skal børneprofiler (under 18) bruge andre
-  beregninger?
-- **Pris og antal profiler.** Forslag: 179 kr./md. for op til 6 profiler
-  (Seriøs koster 119 kr./md.; familieplaner ligger typisk på 1,4–1,7 × enkeltpris).
-- **Hvem må slette hvad?** Må barnet slette en registrering, som forælderen har
-  lavet, og omvendt?
-- **Registrering for flere på én gang.** Aftensmad tastes én gang med en
-  portion pr. person ("Til: Mig · Emma · Oscar" øverst på Tilføj). Ønskes det?
+- **Børneberegning:** under 18 år bruges Schofield-ligningen (EFSA) i stedet
+  for Mifflin-St Jeor, EFSA's aktivitetsniveau (1,4 / 1,6 / 1,8) til
+  portionsberegning og intet voksengulv (1.200/1.500 kcal) i advarslen om for
+  lavt indtag — grænsen er hvilestofskiftet. Se `estimateBmr` i
+  `src/lib/weekly-energy-summary.ts`.
+- **Pris:** 179 kr./md. for op til 5 profiler.
+- **Sletteret:** den, der har oprettet en profil (ellers betaleren), slår under
+  Indstillinger → "Sletning af registreringer" til/fra, om profilens ejer må
+  slette registreringer, som andre har tastet ind. Børn starter med fra.
+  Registreringer gemmer nu `createdById`. Gælder registreringer (mad), ikke
+  vand/vægt m.m. endnu.
+- **Fælles måltid:** "Til:"-rækken øverst på Tilføj og over "Tilføj"-knappen
+  på produktsiden. De valgte profiler får en kopi med hver deres portion
+  (¼–2 × din mængde). Virker fra produktsiden, kamera, tale og videresendte
+  varer. Sletter man sin egen registrering bagefter, bliver kopierne liggende.
 
 ## Research (resumé)
 
@@ -151,7 +154,6 @@ Kilder:
   og ved Google/Apple/Facebook-login).
 - Profiler uden eget login kan ikke slettes fra familien endnu.
 - Betalerens kontosletning (`src/lib/gdpr.ts`) rører ikke familien endnu.
-- Børneberegninger (se Åbne spørgsmål) er ikke ændret.
 - Indstillinger som sprog og notifikationer på Profil følger den valgte
   profil, når man ser en andens profil.
 

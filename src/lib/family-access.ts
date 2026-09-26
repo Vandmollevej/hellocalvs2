@@ -113,20 +113,94 @@ export async function logProfileAccess(
   await prisma.profileAccessLog.create({ data: { subjectId, actorId, action, area } });
 }
 
-// Den valgte profil (eller den indloggede selv). Når profilen tilhører en
-// anden, logges handlingen, så profilens ejer kan se den i Kontrol-loggen.
-export async function getProfileUser(area: ProfileArea, action: ProfileAccessAction): Promise<User | null> {
+// Den valgte profil (eller den indloggede selv) plus den indloggede. Når
+// profilen tilhører en anden, logges handlingen, så profilens ejer kan se den
+// i Kontrol-loggen.
+export async function getProfileContext(
+  area: ProfileArea,
+  action: ProfileAccessAction
+): Promise<{ login: User; profile: User } | null> {
   const login = await getSessionUser();
   if (!login) return null;
 
   const store = await cookies();
   const activeId = store.get(ACTIVE_PROFILE_COOKIE)?.value;
-  if (!activeId || activeId === login.id) return login;
-  if (!(await canActFor(login.id, activeId))) return login;
+  if (!activeId || activeId === login.id) return { login, profile: login };
+  if (!(await canActFor(login.id, activeId))) return { login, profile: login };
 
   const profile = await prisma.user.findUnique({ where: { id: activeId } });
-  if (!profile || profile.forgottenAt) return login;
+  if (!profile || profile.forgottenAt) return { login, profile: login };
 
   await logProfileAccess(profile.id, login.id, action, area);
-  return profile;
+  return { login, profile };
+}
+
+export async function getProfileUser(area: ProfileArea, action: ProfileAccessAction): Promise<User | null> {
+  return (await getProfileContext(area, action))?.profile ?? null;
+}
+
+// Må den indloggede slette en registrering på den viste profil? Profilens
+// ejer må ikke slette det, andre har tastet ind, hvis den, der oprettede
+// profilen, har slået det fra (FamilyMember.canDeleteOthersEntries).
+export async function mayDeleteRegistration(loginId: string, profileId: string, createdById: string | null) {
+  if (!createdById || createdById === loginId || loginId !== profileId) return true;
+  const member = await prisma.familyMember.findUnique({
+    where: { userId: profileId },
+    select: { canDeleteOthersEntries: true },
+  });
+  return member?.canDeleteOthersEntries ?? true;
+}
+
+type ShareTarget = { profileId: string; factor: number };
+
+// Fælles måltid (docs/FAMILY.md): samme registrering kopieres til de valgte
+// profiler med hver deres portion (factor × den registrerede mængde). Hver
+// kopi er et selvstændigt snapshot.
+export async function shareRegistration(
+  registration: Record<string, unknown> & { id: string; userId: string },
+  shareWith: unknown,
+  loginId: string
+): Promise<number> {
+  if (!Array.isArray(shareWith)) return 0;
+  const targets: ShareTarget[] = shareWith
+    .filter(
+      (item): item is ShareTarget =>
+        Boolean(item) &&
+        typeof item.profileId === "string" &&
+        typeof item.factor === "number" &&
+        Number.isFinite(item.factor) &&
+        item.factor >= 0.1 &&
+        item.factor <= 3
+    )
+    .filter((item, index, all) => item.profileId !== registration.userId && all.findIndex((o) => o.profileId === item.profileId) === index)
+    .slice(0, 10);
+  if (targets.length === 0) return 0;
+
+  const source = await prisma.registration.findUnique({ where: { id: registration.id } });
+  if (!source) return 0;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { id, userId, createdById, ...snapshot } = source;
+  const scaleKeys = Object.keys(snapshot).filter(
+    (key) => key === "amountGrams" || key.endsWith("Snapshot")
+  ) as (keyof typeof snapshot)[];
+
+  let count = 0;
+  for (const target of targets) {
+    if (!(await canActFor(loginId, target.profileId))) continue;
+    const data: Record<string, unknown> = { ...snapshot };
+    for (const key of scaleKeys) {
+      const value = snapshot[key];
+      if (typeof value === "number") data[key] = value * target.factor;
+    }
+    await prisma.registration.create({
+      data: {
+        ...(data as typeof snapshot),
+        userId: target.profileId,
+        createdById: target.profileId === loginId ? null : loginId,
+      },
+    });
+    if (target.profileId !== loginId) await logProfileAccess(target.profileId, loginId, "CREATED", "registrations");
+    count += 1;
+  }
+  return count;
 }

@@ -27,6 +27,10 @@ konto. Ingen husstands-/familieprofiler … ingen forældrekontrol".
   initialer til venstre for profilcirklen og 1 px blå ramme rundt om skærmen,
   mens en anden er på kontoen (ny token `--hf-color-watch: #2f80ed`);
   "Kontrol-log" under Indstillinger på den kontrollerede konto.
+- (2026-09-26, senere) Børneberegning under 18 år (Schofield + EFSA-PAL,
+  intet voksengulv), 179 kr./md. for op til 5 profiler, sletteret pr. profil
+  styret af profilens opretter (børn starter med nej), og fælles måltid med
+  portion pr. person. Detaljer i `docs/FAMILY.md` "Afklaret 2026-09-26".
 
 
 

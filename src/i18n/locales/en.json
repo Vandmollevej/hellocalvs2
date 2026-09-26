@@ -1677,6 +1677,19 @@
       "invalidRequest": "Invalid request.",
       "notFound": "Not found.",
       "unknown": "Something went wrong. Try again."
+    },
+    "deletePermissions": {
+      "title": "Deleting entries",
+      "intro": "For each profile you created, decide whether the profile's owner may delete entries that others (e.g. you) have logged. Children start with no. Everything is in the control log.",
+      "none": "You have not created any profiles yet.",
+      "notAllowed": "You cannot delete an entry someone else made."
+    },
+    "share": {
+      "title": "For:",
+      "me": "Me",
+      "portionHelp": "Portion compared with your amount:",
+      "portionFor": "{name}",
+      "portionOption": "{factor} portion"
     }
   }
 }

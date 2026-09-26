@@ -225,6 +225,7 @@ model User {
   familyLoginCodes        FamilyLoginCode[]   @relation("FamilyLoginCodeProfile")
   profileAccessLogAbout   ProfileAccessLog[]  @relation("ProfileAccessSubject")
   profileAccessLogAsActor ProfileAccessLog[]  @relation("ProfileAccessActor")
+  registrationsCreatedForOthers Registration[] @relation("RegistrationCreatedBy")
   // Hvornår brugeren sidst lukkede panelet med nye adgangshændelser. Kun
   // hændelser efter dette tidspunkt vises i panelet, der glider ned.
   accessLogSeenAt         DateTime?
@@ -1653,6 +1654,11 @@ model Registration {
   vitaminASnapshot       Float?
   vitaminCSnapshot       Float?
 
+  // Hvem der tastede registreringen ind, når det ikke var profilens ejer selv
+  // (familieabonnement, docs/FAMILY.md). Null = profilens ejer.
+  createdBy   User?   @relation("RegistrationCreatedBy", fields: [createdById], references: [id])
+  createdById String?
+
   createdAt DateTime @default(now())
 
   @@map("registrations")
@@ -2360,6 +2366,10 @@ model FamilyMember {
   user        User     @relation("FamilyMembership", fields: [userId], references: [id])
   userId      String   @unique
   isChild     Boolean  @default(false)
+  // Må medlemmet selv slette registreringer, som andre har tastet ind på
+  // profilen? Styres af den, der oprettede profilen (ellers betaleren).
+  // Børn starter med nej (brugerens valg 2026-09-26).
+  canDeleteOthersEntries Boolean @default(true)
   // Sat for profiler, betaleren selv har oprettet (null = eksisterende bruger,
   // der er koblet på familien).
   createdBy   User?    @relation("FamilyMemberCreatedBy", fields: [createdById], references: [id])

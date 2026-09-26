@@ -10,8 +10,8 @@ import type { Subscription, SubscriptionStatus } from "@prisma/client";
 // (src/lib/points.ts) — alle tre bruger samme status/currentPeriodEnd-felter.
 
 export const SERIOUS_MONTHLY_PRICE_DKK = 119;
-// Familieplan (docs/FAMILY.md): op til 6 profiler, altid betalt. Foreslået
-// pris, ikke endeligt godkendt af brugeren.
+// Familieplan (docs/FAMILY.md): op til 5 profiler, altid betalt (brugerens
+// valg 2026-09-26).
 export const FAMILY_MONTHLY_PRICE_DKK = 179;
 export const FREE_TIER_RETENTION_DAYS = 30;
 

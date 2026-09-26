@@ -19,6 +19,12 @@ container-backup"), som deployet lægger samme sted; den gamle gemmes som
 `.orig`. Forventet: ca. 7 GB første gang, derefter kun ændringer. Ikke kørt på
 Synology endnu — kun testet med en falsk `docker` i cloud-sessionen.
 
+## 2026-09-26: Familieabonnement — børneberegning, sletteret, fælles måltid
+
+Se `docs/FAMILY.md` "Afklaret 2026-09-26". Ny migration
+`20260926100000_family_delete_permission`. Lint og build grønne; ikke testet
+mod database eller på telefon.
+
 ## 2026-09-26: Familieabonnement — første version bygget
 
 Branch `claude/lucid-bell-s5vyhv`. Se `docs/FAMILY.md` "Sådan virker den

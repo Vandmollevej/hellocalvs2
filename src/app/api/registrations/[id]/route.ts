@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { unauthorized } from "@/lib/session";
-import { getProfileUser } from "@/lib/family-access";
+import { getProfileContext, getProfileUser, mayDeleteRegistration } from "@/lib/family-access";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -81,9 +81,19 @@ export async function DELETE(_req: Request, { params }: RouteContext) {
   const { id } = await params;
 
   try {
-    const user = await getProfileUser("registrations", "DELETED");
-
-    if (!user) return unauthorized();
+    const context = await getProfileContext("registrations", "DELETED");
+    if (!context) return unauthorized();
+    const user = context.profile;
+    const existing = await prisma.registration.findFirst({
+      where: { id, userId: user.id },
+      select: { createdById: true },
+    });
+    if (existing && !(await mayDeleteRegistration(context.login.id, user.id, existing.createdById))) {
+      return NextResponse.json(
+        { message: "Du kan ikke slette en registrering, som en anden har lavet.", code: "deleteNotAllowed" },
+        { status: 403 }
+      );
+    }
     const result = await prisma.registration.deleteMany({
       where: { id, userId: user.id },
     });

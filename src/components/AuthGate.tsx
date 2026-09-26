@@ -54,5 +54,5 @@ export function AuthGate() {
     };
   }, [pathname, router]);
 
-  return emailUnverified && !isPublic(pathname) ? <EmailVerifyBanner /> : null;
+  return emailUnverified && !isPublicPath(pathname) ? <EmailVerifyBanner /> : null;
 }

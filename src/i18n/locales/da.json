@@ -1677,6 +1677,19 @@
       "invalidRequest": "Ugyldig anmodning.",
       "notFound": "Ikke fundet.",
       "unknown": "Noget gik galt. Prøv igen."
+    },
+    "deletePermissions": {
+      "title": "Sletning af registreringer",
+      "intro": "Her bestemmer du for hver profil, du har oprettet, om profilens ejer selv må slette registreringer, som andre (fx du) har tastet ind. Børn starter med nej. Alt står i Kontrol-loggen.",
+      "none": "Du har ikke oprettet nogen profiler endnu.",
+      "notAllowed": "Du kan ikke slette en registrering, som en anden har lavet."
+    },
+    "share": {
+      "title": "Til:",
+      "me": "Mig",
+      "portionHelp": "Portion i forhold til din mængde:",
+      "portionFor": "{name}",
+      "portionOption": "{factor} portion"
     }
   }
 }

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { unauthorized } from "@/lib/session";
-import { getProfileUser } from "@/lib/family-access";
+import { getProfileContext, getProfileUser, shareRegistration } from "@/lib/family-access";
 import { fulfillMatchingForward } from "@/lib/forwards";
 import { getUserSubscriptionTier, getRetentionCutoffDate } from "@/lib/subscription";
 import { detectNutritionChanges, USER_EDIT_CONFIDENCE } from "@/lib/nutrition-reports";
@@ -91,6 +91,7 @@ export async function POST(req: Request) {
     carbsSnapshot,
     fatSnapshot,
     createdAt,
+    shareWith,
   } = body as {
     productId?: string;
     dishId?: string;
@@ -105,6 +106,9 @@ export async function POST(req: Request) {
     carbsSnapshot?: number;
     fatSnapshot?: number;
     createdAt?: string;
+    // Fælles måltid: kopier også til disse profiler med hver deres portion
+    // (docs/FAMILY.md).
+    shareWith?: unknown;
   };
 
   if (!amountGrams || amountGrams <= 0) {
@@ -120,9 +124,13 @@ export async function POST(req: Request) {
   }
 
   try {
-    const user = await getProfileUser("registrations", "CREATED");
-
-    if (!user) return unauthorized();
+    const context = await getProfileContext("registrations", "CREATED");
+    if (!context) return unauthorized();
+    const user = context.profile;
+    // Hvem der tastede ind, når det ikke er profilens ejer (docs/FAMILY.md).
+    const createdById = context.login.id !== user.id ? context.login.id : null;
+    const share = async (registration: { id: string; userId: string }) =>
+      shareRegistration(registration, shareWith, context.login.id);
 
     if (productId) {
       const product = await prisma.product.findUnique({ where: { id: productId } });
@@ -160,6 +168,7 @@ export async function POST(req: Request) {
         const created = await tx.registration.create({
           data: {
             userId: user.id,
+            createdById,
             productId: product.id,
             titleSnapshot: product.name,
             kcalSnapshot: kcalSnapshot ?? product.kcalPer100g * factor,
@@ -203,7 +212,7 @@ export async function POST(req: Request) {
       });
 
       await fulfillMatchingForward(user.id, "PRODUCT", product.id);
-      return NextResponse.json({ registration });
+      return NextResponse.json({ registration, sharedCount: await share(registration) });
     }
 
     if (genericIngredientId) {
@@ -216,6 +225,7 @@ export async function POST(req: Request) {
       const registration = await prisma.registration.create({
         data: {
           userId: user.id,
+          createdById,
           genericIngredientId: ingredient.id,
           titleSnapshot: ingredient.name,
           kcalSnapshot: kcalSnapshot ?? (ingredient.kcalPer100g ?? 0) * factor,
@@ -227,7 +237,7 @@ export async function POST(req: Request) {
         },
       });
 
-      return NextResponse.json({ registration });
+      return NextResponse.json({ registration, sharedCount: await share(registration) });
     }
 
     if (dishId) {
@@ -256,6 +266,7 @@ export async function POST(req: Request) {
       const registration = await prisma.registration.create({
         data: {
           userId: user.id,
+          createdById,
           dishId: dish.id,
           titleSnapshot: dish.name,
           kcalSnapshot: kcalSnapshot ?? totals.kcal * scale,
@@ -268,7 +279,7 @@ export async function POST(req: Request) {
       });
 
       await fulfillMatchingForward(user.id, "DISH", dish.id);
-      return NextResponse.json({ registration });
+      return NextResponse.json({ registration, sharedCount: await share(registration) });
     }
 
     if (
@@ -299,6 +310,7 @@ export async function POST(req: Request) {
     const registration = await prisma.registration.create({
       data: {
         userId: user.id,
+        createdById,
         productId: product.id,
         titleSnapshot,
         kcalSnapshot,
@@ -309,7 +321,7 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json({ registration });
+    return NextResponse.json({ registration, sharedCount: await share(registration) });
   } catch (error) {
     console.error("Registration create failed", error);
     return NextResponse.json(

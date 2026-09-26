@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSessionUser, unauthorized } from "@/lib/session";
-import { removeFamilyMember, setMemberIsChild } from "@/lib/family";
+import { removeFamilyMember, setMemberDeletePermission, setMemberIsChild } from "@/lib/family";
 import { familyErrorResponse, readJson } from "@/lib/family-api";
 
 type RouteContext = { params: Promise<{ userId: string }> };
@@ -12,6 +12,9 @@ export async function PATCH(req: Request, { params }: RouteContext) {
   const body = await readJson(req);
   try {
     if (typeof body.isChild === "boolean") await setMemberIsChild(login.id, userId, body.isChild);
+    if (typeof body.canDeleteOthersEntries === "boolean") {
+      await setMemberDeletePermission(login.id, userId, body.canDeleteOthersEntries);
+    }
     return NextResponse.json({ ok: true });
   } catch (error) {
     return familyErrorResponse(error);

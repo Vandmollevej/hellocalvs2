@@ -1,4 +1,4 @@
-import { estimateBmr } from "@/lib/weekly-energy-summary";
+import { childPhysicalActivityLevel, estimateBmr } from "@/lib/weekly-energy-summary";
 
 // Anbefalet serveringsstørrelse for en ret (docs/DECISIONS.md 2026-09-25).
 // Delte retter har ingen personantal, kun gram. En servering er derfor en
@@ -38,15 +38,18 @@ function ageFrom(birthDate: string | Date | null | undefined, now = new Date()) 
 }
 
 export function dailyKcalFor(profile: PortionProfile | null | undefined) {
+  const age = profile ? ageFrom(profile.birthDate) : null;
   const bmr = profile
     ? estimateBmr({
         weightKg: profile.weightKg ?? null,
         heightCm: profile.heightCm ?? null,
-        age: ageFrom(profile.birthDate),
+        age,
         sex: profile.sex ?? null,
       })
     : null;
-  return bmr ? bmr * PHYSICAL_ACTIVITY_LEVEL : REFERENCE_DAILY_KCAL;
+  // Børn: EFSA's aktivitetsniveau for alderen (docs/FAMILY.md).
+  const pal = childPhysicalActivityLevel(age) ?? PHYSICAL_ACTIVITY_LEVEL;
+  return bmr ? bmr * pal : REFERENCE_DAILY_KCAL;
 }
 
 // kcal i én anbefalet servering (hovedmåltid) for brugeren.

@@ -8,7 +8,7 @@ import { prisma } from "@/lib/prisma";
 import { computeAge } from "@/lib/age";
 import { getSubscriptionTier } from "@/lib/subscription";
 
-export const MAX_FAMILY_PROFILES = 6;
+export const MAX_FAMILY_PROFILES = 5;
 // Under denne alder kan man ikke selv oprette en konto eller melde sig ud af
 // familien (databeskyttelsesloven § 6, stk. 2, se docs/FAMILY.md).
 export const FAMILY_SELF_CONSENT_AGE = 15;
@@ -70,6 +70,9 @@ export async function getFamilyOverview(userId: string) {
       age: computeAge(member.user.birthDate),
       hasLogin: Boolean(member.user.passwordHash) || member.user.oauthAccounts.length > 0,
       createdByOwner: member.createdById === family.ownerId,
+      // Den, der styrer medlemmets sletteret: profilens opretter, ellers betaleren.
+      controllerId: member.createdById ?? family.ownerId,
+      canDeleteOthersEntries: member.canDeleteOthersEntries,
     })),
     grants: family.grants,
   };
@@ -138,7 +141,14 @@ export async function createFamilyProfile(
       },
     });
     await tx.familyMember.create({
-      data: { familyId: family.id, userId: user.id, isChild: input.isChild, createdById: ownerId },
+      data: {
+        familyId: family.id,
+        userId: user.id,
+        isChild: input.isChild,
+        createdById: ownerId,
+        // Børn kan som udgangspunkt ikke slette det, andre har tastet ind.
+        canDeleteOthersEntries: !input.isChild,
+      },
     });
     return user;
   });
@@ -150,6 +160,19 @@ export async function setMemberIsChild(ownerId: string, memberUserId: string, is
   const member = family.members.find((m) => m.userId === memberUserId);
   if (!member) throw new FamilyError("notMember", 404);
   await prisma.familyMember.update({ where: { id: member.id }, data: { isChild } });
+}
+
+// Må medlemmet slette registreringer, som andre har tastet ind? Kun den, der
+// oprettede profilen (ellers betaleren), kan ændre det.
+export async function setMemberDeletePermission(actorId: string, memberUserId: string, allowed: boolean) {
+  const member = await prisma.familyMember.findUnique({
+    where: { userId: memberUserId },
+    include: { family: { select: { ownerId: true } } },
+  });
+  if (!member) throw new FamilyError("notMember", 404);
+  const controllerId = member.createdById ?? member.family.ownerId;
+  if (controllerId !== actorId || memberUserId === actorId) throw new FamilyError("notAllowed", 403);
+  await prisma.familyMember.update({ where: { id: member.id }, data: { canDeleteOthersEntries: allowed } });
 }
 
 export async function setAccessGrant(ownerId: string, granteeId: string, subjectId: string, allowed: boolean) {

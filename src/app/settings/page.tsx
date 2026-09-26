@@ -23,6 +23,7 @@ import {
   IconBug,
   IconUsers,
   IconHistory,
+  IconTrashOff,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -56,6 +57,12 @@ export default function SettingsPage() {
   // Kontrol-loggen vises for den, der er med i en andens familie (barn,
   // partner — den, der kontrolleres), se docs/FAMILY.md.
   const isControlled = Boolean(familyStatus?.family && !familyStatus.family.isOwner);
+  // Sletteret vises for den, der har oprettet (eller styrer) andre profiler.
+  const controlsOthers = Boolean(
+    familyStatus?.family?.members.some(
+      (member) => member.controllerId === familyStatus.me.id && member.userId !== familyStatus.me.id
+    )
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -108,8 +115,16 @@ export default function SettingsPage() {
             icon={<IconUsers size={20} />}
             label={t("family.title")}
             href="/profile/family"
-            divider={isControlled}
+            divider={isControlled || controlsOthers}
           />
+          {controlsOthers && (
+            <ChevronRow
+              icon={<IconTrashOff size={20} />}
+              label={t("family.deletePermissions.title")}
+              href="/settings/delete-permissions"
+              divider={isControlled}
+            />
+          )}
           {isControlled && (
             <ChevronRow
               icon={<IconHistory size={20} />}

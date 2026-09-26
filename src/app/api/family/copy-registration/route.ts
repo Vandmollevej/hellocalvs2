@@ -24,8 +24,10 @@ export async function POST(req: Request) {
   if (!source || source.userId !== login.id) return NextResponse.json({ code: "notFound" }, { status: 404 });
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { id, userId, ...snapshot } = source;
-  const copy = await prisma.registration.create({ data: { ...snapshot, userId: targetProfileId } });
+  const { id, userId, createdById, ...snapshot } = source;
+  const copy = await prisma.registration.create({
+    data: { ...snapshot, userId: targetProfileId, createdById: login.id },
+  });
   await logProfileAccess(targetProfileId, login.id, "CREATED", "registrations");
   return NextResponse.json({ registration: { id: copy.id } }, { status: 201 });
 }

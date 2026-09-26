@@ -17,6 +17,8 @@ export type FamilyMemberInfo = {
   age: number | null;
   hasLogin: boolean;
   createdByOwner: boolean;
+  controllerId: string;
+  canDeleteOthersEntries: boolean;
 };
 
 export type FamilyStatus = {

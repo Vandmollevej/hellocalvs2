@@ -124,6 +124,12 @@ export function DailyList() {
 
     try {
       const res = await fetch(`/api/registrations/${id}`, { method: "DELETE" });
+      if (res.status === 403) {
+        // Familieabonnement: en anden har tastet den ind (docs/FAMILY.md).
+        setEntries(previousEntries);
+        setError(t("family.deletePermissions.notAllowed"));
+        return;
+      }
       if (!res.ok) throw new Error("Kunne ikke slette registreringen");
     } catch {
       setEntries(previousEntries);

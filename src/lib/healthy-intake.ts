@@ -1,4 +1,4 @@
-import { estimateBmr, type EnergyProfile } from "@/lib/weekly-energy-summary";
+import { CHILD_AGE_LIMIT, estimateBmr, type EnergyProfile } from "@/lib/weekly-energy-summary";
 
 // Absolute daily floors for eating without medical supervision, commonly cited
 // by Harvard Health Publishing ("Calorie counting made easy"): women should not
@@ -13,7 +13,11 @@ const FLOOR_MALE_KCAL = 1500;
  * sex-based floor above. Rounded up to the nearest 10 kcal.
  */
 export function minimumHealthyKcal(profile: EnergyProfile | null): number {
-  const floor = profile?.sex === "MALE" ? FLOOR_MALE_KCAL : FLOOR_FEMALE_KCAL;
+  // Voksengulvene gælder ikke børn: under 18 er grænsen hvilestofskiftet
+  // (Schofield, se estimateBmr). Mangler data, bruges intet gulv frem for et
+  // voksent, så et barn aldrig får en forkert advarsel.
+  const isChild = profile?.age !== null && profile?.age !== undefined && profile.age < CHILD_AGE_LIMIT;
+  const floor = isChild ? 0 : profile?.sex === "MALE" ? FLOOR_MALE_KCAL : FLOOR_FEMALE_KCAL;
   const bmr = profile ? estimateBmr(profile) : null;
   return Math.ceil(Math.max(floor, bmr ?? 0) / 10) * 10;
 }
