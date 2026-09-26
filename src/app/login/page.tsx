@@ -2,16 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Suspense, useState, useSyncExternalStore } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { SocialLoginButton } from "@/components/hf/SocialLoginButton";
 import { TextField } from "@/components/hf/TextField";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { isPasskeySupported, loginWithPasskey } from "@/lib/passkey-client";
+import { hasPasskeyOnDevice, loginWithPasskey } from "@/lib/passkey-client";
 import { afterLoginPath, oauthErrorKey, startOAuth } from "@/lib/login-flow";
-
-const noSubscribe = () => () => {};
 
 function LogIndContent() {
   const { t } = useTranslation();
@@ -25,14 +23,19 @@ function LogIndContent() {
     oauthError ? t(oauthError.key, oauthError.vars) : null
   );
   const [submitting, setSubmitting] = useState(false);
-  const passkeySupported = useSyncExternalStore(noSubscribe, isPasskeySupported, () => false);
+  // Face ID kun, når det er slået til på denne enhed efter et almindeligt login.
+  const [faceIdOnDevice, setFaceIdOnDevice] = useState(false);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage findes kun i browseren
+    setFaceIdOnDevice(hasPasskeyOnDevice());
+  }, []);
 
   async function handleFaceId() {
     setError(null);
     setSubmitting(true);
     try {
       await loginWithPasskey();
-      router.push(next);
+      router.push(afterLoginPath(next));
     } catch {
       setError(t("login.faceIdError"));
       setSubmitting(false);
@@ -92,7 +95,7 @@ function LogIndContent() {
         </Link>
 
         <div className="mt-6 flex flex-col gap-3">
-          {passkeySupported && (
+          {faceIdOnDevice && (
             <button
               type="button"
               onClick={handleFaceId}

@@ -20,6 +20,17 @@ Brugerens krav efter skærmbillede af Invitér en ven:
   bruges også i invitationsmailen (`{{personalMessage}}`, HTML-escapet).
   Kladden huskes kun lokalt i browseren.
 
+## 2026-09-25: Blød e-mailbekræftelse ved tilmelding
+
+Brugerens valg. Tilmelding med e-mail + adgangskode logger ind med det samme,
+men `emailVerifiedAt` sættes først, når linket i bekræftelsesmailen åbnes
+(`/verify-email`, signeret JWT med bruger-ID + e-mail, 7 dage). Indtil da
+viser `AuthGate` en bjælke med "Send igen". Logger nogen ind med
+Google/Apple/Facebook på en e-mail, hvor en eksisterende konto aldrig er
+bekræftet, kobles kontoen på, men dens adgangskode og passkeys fjernes
+først (beskytter mod konti oprettet med en fremmed e-mail). Mails sendes
+nu straks fra `queueMessage()` i stedet for kun ved scheduler-tick (15 min).
+
 ## 2026-09-24: Normalt login — privacy-by-architecture ophævet
 
 Brugerens beslutning: "Man skal bare kunne logge ind som på alle andre
@@ -2012,3 +2023,7 @@ ikke via en native app. Formålet er at billederne ikke vises ved et uheld —
 det er en visningslås, ikke kryptering af billederne. Siden låser igen, når
 den går i baggrunden. Selfie-funktionen er fjernet efter brugerens ønske og
 skal ikke genindføres uden en eksplicit anmodning.
+
+- Samtykke til helbredsoplysninger (GDPR art. 9) gemmes som `User.healthDataConsentAt` (migration `20260925150000_health_data_consent`). E-mail-tilmelding kræver vippekontakten slået til (`HealthConsentToggle`); alle andre indloggede brugere uden samtykke (Google/Apple/Facebook, ældre konti) sendes af `ConsentGate` til `/samtykke`. Juridiske sider og admin er undtaget.
+- Køb af Seriøs kræver en vippekontakt, der bekræfter straks-levering og forholdsmæssig refusion ved fortrydelse (forbrugeraftaleloven). Knappen er fortsat lukket, indtil en betalingsudbyder findes (`PAYMENT_AVAILABLE`).
+- Åbent: konto-sletning sker via Hjælpecenter (ingen selvbetjening), og tilbagetrækning af samtykke sker via support. Juridisk gennemlæsning anbefales før lancering.

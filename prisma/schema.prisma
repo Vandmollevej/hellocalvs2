@@ -137,6 +137,11 @@ model User {
   // (snapshot-princippet), men PII er ryddet — se src/lib/gdpr.ts.
   forgottenAt DateTime?
 
+  // Udtrykkeligt samtykke til behandling af helbredsoplysninger (GDPR art. 9,
+  // docs/DECISIONS.md 2026-09-25). Null = ikke givet endnu; ConsentGate sender
+  // brugeren til /samtykke, før appen kan bruges.
+  healthDataConsentAt DateTime?
+
   // Krydsspærring for "videresend til en ven" (docs/DECISIONS.md, points-
   // system 2026-09-02): sat når to brugere har sendt mere end én tur-retur
   // videresendelse til hinanden inden for 24 timer. Blokerer nye points fra
@@ -2277,4 +2282,18 @@ model UserKnownDevice {
 
   @@unique([userId, deviceHash])
   @@map("user_known_devices")
+}
+
+// API-nøgler rettet fra admin → API-nøgler (docs/DECISIONS.md 2026-09-25
+// "API-nøgler i admin"). Værdien er AES-256-GCM-krypteret med en nøgle
+// afledt af ADMIN_SESSION_SECRET, så en databasekopi alene ikke afslører
+// den. Ved opstart lægges værdierne oven på process.env
+// (src/lib/api-keys/store.ts); uden række gælder .env.production.
+model AppSecret {
+  key         String   @id
+  cipherText  String
+  updatedById String?
+  updatedAt   DateTime @updatedAt
+
+  @@map("app_secrets")
 }

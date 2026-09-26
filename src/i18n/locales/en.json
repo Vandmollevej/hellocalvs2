@@ -95,6 +95,15 @@
       "oestrig": "Austria"
     }
   },
+  "consent": {
+    "title": "Your consent",
+    "intro": "A calorie counter can't count without knowing what you eat and weigh. That is health data, and we may only process it with your explicit consent.",
+    "submit": "Give consent and continue",
+    "submitting": "Saving…",
+    "declineNote": "If you don't consent, you can't use Hello Cal. You can log out or ask for your account to be deleted via the Help center.",
+    "logout": "Log out",
+    "error": "Your consent couldn't be saved. Please try again."
+  },
   "signup": {
     "title": "Create account",
     "back": "Back",
@@ -106,7 +115,11 @@
     "submit": "Create account",
     "submitting": "Creating account…",
     "genericError": "Something went wrong — try again",
-    "networkError": "Could not create the account — check your connection and try again"
+    "networkError": "Could not create the account — check your connection and try again",
+    "healthConsent": "I explicitly consent to Hello Cal processing my health data (such as food, weight and body measurements) to provide the app. I accept the Terms.",
+    "legalLinksTerms": "Terms",
+    "legalLinksPrivacy": "Privacy policy",
+    "consentRequired": "Turn on your consent before creating the account."
   },
   "nav": {
     "add": "Add",
@@ -751,6 +764,7 @@
     },
     "row": {
       "subscription": "Subscription",
+      "paymentMethods": "Payment methods",
       "weightCalibration": "Weight calibration",
       "bodyMeasurements": "Body measurements",
       "sleep": "Sleep pattern",
@@ -824,6 +838,8 @@
       "serious": "Serious"
     },
     "activeUntil": "Active until {date}",
+    "nextPayment": "Next payment on {date}",
+    "paymentMethods": "Payment methods",
     "freePlan": {
       "title": "Free",
       "description": "Access to everything in Hello Cal except Hello Doc. Only the last 30 days of history are shown — older data is kept and comes back if you go Serious."
@@ -833,7 +849,8 @@
       "priceSuffix": "kr./month",
       "description": "Full history with no 30-day limit, plus access to Hello Doc.",
       "upgradeCta": "Upgrade to Serious",
-      "upgradeUnavailable": "Payment isn't connected yet — use a gift code or redeem points to go Serious until a payment provider is in place."
+      "upgradeUnavailable": "Payment isn't connected yet — use a gift code or redeem points to go Serious until a payment provider is in place.",
+      "withdrawalConsent": "I want the subscription to start right away, and I understand that if I withdraw within 14 days, I will only be refunded for the part of the period I haven't used."
     },
     "retentionNote": "Data older than 30 days is never deleted — it's kept and shown again as soon as you go Serious."
   },
@@ -922,6 +939,7 @@
     "saving": "Saving…",
     "loading": "Loading…",
     "noEntriesYet": "No measurements logged yet.",
+    "chooseSexHint": "Choose your sex under Profile → Edit profile to see drawings of where to measure.",
     "deleteAria": "Delete measurement",
     "delete": "Delete"
   },

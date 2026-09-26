@@ -95,6 +95,15 @@
       "oestrig": "Østrig"
     }
   },
+  "consent": {
+    "title": "Dit samtykke",
+    "intro": "En kalorietæller kan ikke tælle uden at kende det, du spiser og vejer. Det er helbredsoplysninger, og dem må vi kun behandle med dit udtrykkelige samtykke.",
+    "submit": "Giv samtykke og fortsæt",
+    "submitting": "Gemmer…",
+    "declineNote": "Vil du ikke give samtykke, kan du ikke bruge Hello Cal. Du kan logge ud eller bede om at få kontoen slettet via Hjælpecenter.",
+    "logout": "Log ud",
+    "error": "Samtykket kunne ikke gemmes. Prøv igen."
+  },
   "signup": {
     "title": "Opret konto",
     "back": "Tilbage",
@@ -106,7 +115,11 @@
     "submit": "Opret konto",
     "submitting": "Opretter konto…",
     "genericError": "Noget gik galt — prøv igen",
-    "networkError": "Kunne ikke oprette kontoen — tjek din forbindelse og prøv igen"
+    "networkError": "Kunne ikke oprette kontoen — tjek din forbindelse og prøv igen",
+    "healthConsent": "Jeg giver udtrykkeligt samtykke til, at Hello Cal behandler mine helbredsoplysninger (fx kost, vægt og kropsmål) for at levere appen. Jeg accepterer Betingelserne.",
+    "legalLinksTerms": "Betingelser",
+    "legalLinksPrivacy": "Privatlivspolitik",
+    "consentRequired": "Slå samtykket til, før du opretter kontoen."
   },
   "nav": {
     "add": "Tilføj",
@@ -751,6 +764,7 @@
     },
     "row": {
       "subscription": "Abonnement",
+      "paymentMethods": "Betalingsmetoder",
       "weightCalibration": "Vægt kalibrering",
       "bodyMeasurements": "Kropsmål",
       "sleep": "Søvnmønster",
@@ -824,6 +838,8 @@
       "serious": "Seriøs"
     },
     "activeUntil": "Aktiv til {date}",
+    "nextPayment": "Næste betaling d. {date}",
+    "paymentMethods": "Betalingsmetoder",
     "freePlan": {
       "title": "Gratis",
       "description": "Adgang til alt i Hello Cal undtagen Hello Doc. Kun de seneste 30 dages historik vises — ældre data gemmes og kommer tilbage, hvis du bliver Seriøs."
@@ -833,7 +849,8 @@
       "priceSuffix": "kr./måned",
       "description": "Fuld historik uden 30-dages-grænse, plus adgang til Hello Doc.",
       "upgradeCta": "Opgradér til Seriøs",
-      "upgradeUnavailable": "Betaling er ikke tilsluttet endnu — brug en gavekode eller indløs points for at blive Seriøs, indtil en betalingsudbyder er på plads."
+      "upgradeUnavailable": "Betaling er ikke tilsluttet endnu — brug en gavekode eller indløs points for at blive Seriøs, indtil en betalingsudbyder er på plads.",
+      "withdrawalConsent": "Jeg ønsker, at abonnementet starter med det samme, og er klar over, at jeg ved fortrydelse inden for 14 dage kun får refunderet den del af perioden, jeg ikke har brugt."
     },
     "retentionNote": "Data ældre end 30 dage slettes aldrig — det gemmes og vises igen, så snart du bliver Seriøs."
   },
@@ -922,6 +939,7 @@
     "saving": "Gemmer…",
     "loading": "Henter…",
     "noEntriesYet": "Ingen kropsmål registreret endnu.",
+    "chooseSexHint": "Vælg køn under Profil → Redigér profil for at se tegningerne af, hvor du måler.",
     "deleteAria": "Slet måling",
     "delete": "Slet"
   },

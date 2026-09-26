@@ -8,6 +8,6 @@ export async function GET() {
   if (!user) return unauthorized();
   const passkeys = await prisma.passkey.count({ where: { userId: user.id } });
   return NextResponse.json({
-    user: { id: user.id, email: user.email, displayName: user.displayName, hasPasskey: passkeys > 0 },
+    user: { id: user.id, email: user.email, displayName: user.displayName, hasPasskey: passkeys > 0, hasHealthDataConsent: user.healthDataConsentAt !== null },
   });
 }

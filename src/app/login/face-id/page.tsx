@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { registerPasskey } from "@/lib/passkey-client";
+import { hasPasskeyOnDevice, registerPasskey } from "@/lib/passkey-client";
 import { markFaceIdDeclined } from "@/lib/login-flow";
 
 // Tilbud efter login: slå Face ID til, så næste login kun kræver ansigtet.
@@ -16,13 +16,15 @@ function FaceIdOfferContent() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Kun for indloggede brugere, og kun hvis denne enhed ikke allerede har Face ID
+  // (kontoen kan godt have Face ID på en anden enhed).
   useEffect(() => {
+    if (hasPasskeyOnDevice()) {
+      router.replace(next);
+      return;
+    }
     fetch("/api/auth/me")
-      .then(async (res) => {
-        const data = res.ok ? ((await res.json()) as { user: { hasPasskey: boolean } }) : null;
-        if (!data || data.user.hasPasskey) router.replace(next);
-        else setReady(true);
-      })
+      .then((res) => (res.ok ? setReady(true) : router.replace(next)))
       .catch(() => router.replace(next));
   }, [next, router]);
 
