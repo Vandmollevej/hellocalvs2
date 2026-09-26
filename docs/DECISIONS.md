@@ -139,6 +139,40 @@ overtagelsen af G4 ("Tegn", Frida-datadumpet er fuldt, admin-siden bygges nu).
   produktet og gemmes som `correction`. Den natlige AI-robot er stadig en
   senere fase; en lavere minimumstærskel er stadig uafklaret.
 
+## 2026-09-25: Familieabonnement og børneprofiler
+
+Brugerens valg efter research (detaljer, kilder og åbne spørgsmål i
+`docs/FAMILY.md`). **Omstøder** `docs/SPECIFICATION.md` §3 "Én profil pr.
+konto. Ingen husstands-/familieprofiler … ingen forældrekontrol".
+
+- Familieabonnement er altid betalt; familieprofiler ser aldrig reklamer eller
+  partnertilbud.
+- Betaleren opsætter familien og bestemmer, hvem der må se og taste ind for et
+  bestemt medlem. Betaleren har adgang til alle familiens profiler.
+- Under 15 år kan man ikke selv oprette en konto; en forælder opretter
+  profilen. Barnet kan få eget login via en engangskode.
+- Barnet kan melde sig ud og låse de andre ude (fortolket: fra 15 år).
+- Barnet ser samme visning som voksne.
+- Alt, hvad andre gør på en profil (åbner, ser, tilføjer, ændrer, sletter),
+  logges og vises for profilens ejer, både som liste og i et panel, der glider
+  ned fra toppen ved nye hændelser.
+- Kun dagbogsdata følger den valgte profil. Login, adgangskode, abonnement,
+  integrationer og familieopsætning hører altid til den, der er logget ind.
+- (2026-09-26) "Skift profil" øverst på Profil med overlappende
+  initialcirkler; "Kopier til konto" ved swipe fra venstre på egne
+  indtastninger, når man styrer en anden profil; blåt telefonikon med
+  initialer til venstre for profilcirklen og 1 px blå ramme rundt om skærmen,
+  mens en anden er på kontoen (ny token `--hf-color-watch: #2f80ed`);
+  "Kontrol-log" under Indstillinger på den kontrollerede konto.
+- (2026-09-26, senere) Børneberegning under 18 år (Schofield + EFSA-PAL,
+  intet voksengulv), 179 kr./md. for op til 5 profiler, sletteret pr. profil
+  styret af profilens opretter (børn starter med nej), og fælles måltid med
+  portion pr. person. Detaljer i `docs/FAMILY.md` "Afklaret 2026-09-26".
+- (2026-09-26) Betaleren kan slette en profil uden login ("slet alt"). Slettes
+  betalerens konto, opløses familien, og alle beholder deres egne data. Alder
+  ved tilmelding løses i et kommende oprettelsesflow.
+
+
 
 ## 2026-09-25: Blød e-mailbekræftelse ved tilmelding
 

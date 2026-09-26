@@ -1,14 +1,19 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isValidStartWeight, parseWeightInput } from "@/lib/start-weight-verification";
-import { getSessionUser, unauthorized } from "@/lib/session";
+import { unauthorized } from "@/lib/session";
+import { getProfileUser } from "@/lib/family-access";
 
 export async function GET() {
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("profile", "VIEWED");
 
     if (!user) return unauthorized();
-    return NextResponse.json({ user });
+    // Loginhemmeligheder sendes aldrig til klienten — heller ikke når en
+    // forælder ser et barns profil (docs/FAMILY.md).
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { passwordHash, totpSecret, ...safeUser } = user;
+    return NextResponse.json({ user: safeUser });
   } catch (error) {
     console.error("Profile fetch failed", error);
     return NextResponse.json(
@@ -90,7 +95,7 @@ export async function PATCH(req: Request) {
   };
 
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("profile", "UPDATED");
 
     if (!user) return unauthorized();
 
@@ -162,7 +167,9 @@ export async function PATCH(req: Request) {
       },
     });
 
-    return NextResponse.json({ user: updated });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { passwordHash, totpSecret, ...safeUpdated } = updated;
+    return NextResponse.json({ user: safeUpdated });
   } catch (error) {
     console.error("Profile update failed", error);
     return NextResponse.json(

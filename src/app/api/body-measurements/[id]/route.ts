@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getSessionUser, unauthorized } from "@/lib/session";
+import { unauthorized } from "@/lib/session";
+import { getProfileUser } from "@/lib/family-access";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -16,7 +17,7 @@ export async function PATCH(req: Request, { params }: RouteContext) {
   };
 
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("bodyMeasurements", "UPDATED");
 
     if (!user) return unauthorized();
     const result = await prisma.bodyMeasurement.updateMany({
@@ -49,7 +50,7 @@ export async function DELETE(_req: Request, { params }: RouteContext) {
   const { id } = await params;
 
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("bodyMeasurements", "DELETED");
 
     if (!user) return unauthorized();
     const result = await prisma.bodyMeasurement.deleteMany({

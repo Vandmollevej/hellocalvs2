@@ -10,6 +10,9 @@ import type { Subscription, SubscriptionStatus } from "@prisma/client";
 // (src/lib/points.ts) — alle tre bruger samme status/currentPeriodEnd-felter.
 
 export const SERIOUS_MONTHLY_PRICE_DKK = 119;
+// Familieplan (docs/FAMILY.md): op til 5 profiler, altid betalt (brugerens
+// valg 2026-09-26).
+export const FAMILY_MONTHLY_PRICE_DKK = 179;
 export const FREE_TIER_RETENTION_DAYS = 30;
 
 export type SubscriptionTier = "FREE" | "SERIOUS";
@@ -34,7 +37,21 @@ export function getSubscriptionTier(
 
 export async function getUserSubscriptionTier(userId: string, now: Date = new Date()): Promise<SubscriptionTier> {
   const subscription = await prisma.subscription.findUnique({ where: { userId } });
-  return getSubscriptionTier(subscription, now);
+  if (getSubscriptionTier(subscription, now) === "SERIOUS") return "SERIOUS";
+  return (await isCoveredByFamilyPlan(userId, now)) ? "SERIOUS" : "FREE";
+}
+
+// Alle medlemmer af en familie, hvis betaler har et aktivt familieabonnement,
+// er Seriøs (docs/FAMILY.md punkt 1).
+export async function isCoveredByFamilyPlan(userId: string, now: Date = new Date()): Promise<boolean> {
+  const membership = await prisma.familyMember.findUnique({
+    where: { userId },
+    select: { family: { select: { owner: { select: { subscription: true } } } } },
+  });
+  const ownerSubscription = membership?.family.owner.subscription ?? null;
+  return Boolean(
+    ownerSubscription && ownerSubscription.plan === "FAMILY" && getSubscriptionTier(ownerSubscription, now) === "SERIOUS"
+  );
 }
 
 // Rullende 30-dages historik for gratisbrugere (docs/DECISIONS.md

@@ -44,7 +44,8 @@
     "errorOauth": "Login failed. Please try again.",
     "errorOauthCancelled": "Login was cancelled.",
     "errorOauthExpired": "The login attempt expired. Please try again.",
-    "errorNotConfigured": "Login with {provider} is not set up yet."
+    "errorNotConfigured": "Login with {provider} is not set up yet.",
+    "haveFamilyCode": "Got a family code?"
   },
   "forgotPassword": {
     "title": "Forgot password",
@@ -1642,5 +1643,170 @@
     "enabled": "Face ID is turned on for login.",
     "active": "Face ID enabled",
     "activate": "Enable Face ID"
+  },
+  "family": {
+    "title": "Family",
+    "child": "Child",
+    "switcher": {
+      "title": "Switch profile",
+      "you": "Your own profile",
+      "managing": "You are entering data for this profile",
+      "meLabel": "{name} (you)",
+      "active": "Selected",
+      "addProfile": "Add profile",
+      "manage": "Family and access"
+    },
+    "watch": {
+      "onAccount": "{name} is on the account"
+    },
+    "panel": {
+      "title": "Someone has been on your account",
+      "intro": "{count} new events since last time.",
+      "seeAll": "See the full control log",
+      "ok": "OK"
+    },
+    "log": {
+      "title": "Control log",
+      "you": "You",
+      "ownLogin": "Logged in",
+      "whoHasAccess": "Who has access",
+      "nobody": "No one else has access to your account.",
+      "payer": "Payer",
+      "granted": "Has been given access",
+      "manage": "See the family",
+      "eventsTitle": "Logins and actions",
+      "empty": "No events yet.",
+      "loadError": "The control log could not be loaded.",
+      "action": {
+        "OPENED": "Opened your account",
+        "VIEWED": "Viewed",
+        "CREATED": "Added",
+        "UPDATED": "Changed",
+        "DELETED": "Deleted"
+      },
+      "area": {
+        "profile": "Profile",
+        "registrations": "Entries",
+        "water": "Water",
+        "weight": "Weight",
+        "activities": "Activity",
+        "bodyMeasurements": "Body measurements",
+        "goals": "Goals",
+        "healthMetrics": "Health data",
+        "menstrualCycle": "Period",
+        "sleep": "Sleep",
+        "workShifts": "Work hours",
+        "favorites": "Favourites",
+        "recipeFavorites": "Recipe favourites",
+        "login": "Log in"
+      }
+    },
+    "plan": {
+      "title": "Family subscription",
+      "intro": "With a family subscription you can create up to {max} profiles, e.g. for your children, and view and log for them yourself. The family subscription is always paid, so no one in the family sees ads.",
+      "create": "Create family",
+      "requiresPlan": "See family subscription"
+    },
+    "join": {
+      "title": "Did you get a code?",
+      "intro": "If someone in your family sent you a code, you can link your account to their family.",
+      "codeLabel": "Family code",
+      "submit": "Link me to the family",
+      "confirm": "The person paying for the family can see and change everything on your profile while you are a member. Continue?"
+    },
+    "member": {
+      "title": "Your family",
+      "intro": "You are part of {owner}'s family subscription. {owner} manages the family and can see and change everything on your profile. Everything others do on your profile is in your control log.",
+      "seeLog": "See control log",
+      "leave": "Leave the family",
+      "leaveConfirm": "Leave the family? {owner} and others in the family lose access to your profile, and you lose the family subscription."
+    },
+    "members": {
+      "title": "Profiles ({count} of {max})",
+      "payer": "Payer",
+      "hasLogin": "Has own login",
+      "noLogin": "No own login yet",
+      "age": "{age} years",
+      "isChild": "Child",
+      "createLoginCode": "Create login code",
+      "remove": "Remove from family",
+      "removeConfirm": "Remove {name} from the family? The profile becomes a regular account without the family subscription.",
+      "deleteProfile": "Delete profile and all data",
+      "deleteProfileConfirm": "Everything on {name}'s profile is deleted and cannot be restored. Type SLET to confirm."
+    },
+    "code": {
+      "claimHelp": "The person opens Hello Cal, chooses \"Got a family code?\" on the login page and enters the code. Valid until {date}.",
+      "joinHelp": "The person logs in to their own account and enters the code under Settings → Family. Valid until {date}."
+    },
+    "add": {
+      "title": "Add profile",
+      "newProfile": "Create new profile",
+      "inviteExisting": "Invite someone with their own account",
+      "name": "Name",
+      "birthDate": "Date of birth",
+      "sex": "Sex",
+      "sexUnknown": "Not specified",
+      "sexFemale": "Female",
+      "sexMale": "Male",
+      "heightCm": "Height (cm)",
+      "weightKg": "Weight (kg)",
+      "isChild": "Is this a child?",
+      "isChildHelp": "Under 15 you cannot create an account yourself.",
+      "submit": "Add profile"
+    },
+    "access": {
+      "title": "Access",
+      "intro": "You always have access to every profile. Here you decide who else may view and log for whom.",
+      "who": "May view and log for {name}"
+    },
+    "claim": {
+      "title": "Family code",
+      "intro": "Did you get a code from your parent or someone else in the family? Enter it here and choose your own email and password.",
+      "code": "Code",
+      "email": "Email",
+      "password": "Password (at least 8 characters)",
+      "submit": "Create my login"
+    },
+    "copy": {
+      "action": "Copy to account",
+      "title": "Copy to which account?",
+      "done": "Copied to {name}",
+      "failed": "Could not copy"
+    },
+    "error": {
+      "familyPlanRequired": "This requires an active family subscription.",
+      "alreadyInFamily": "You are already in a family.",
+      "notOwner": "Only the payer can change the family.",
+      "familyFull": "The family already has the maximum number of profiles.",
+      "nameRequired": "Enter a name.",
+      "notMember": "The person is not in the family.",
+      "notAllowed": "Not allowed.",
+      "invalidCode": "The code is invalid or has expired.",
+      "emailTaken": "The email is already used by another account.",
+      "ownerCannotLeave": "The payer cannot leave the family.",
+      "tooYoungToLeave": "You can leave the family once you are 15.",
+      "profileWithoutLogin": "The profile has no login of its own and cannot be removed yet.",
+      "invalidEmail": "Enter a valid email.",
+      "passwordTooShort": "The password must be at least 8 characters.",
+      "tooManyAttempts": "Too many attempts. Try again later.",
+      "invalidRequest": "Invalid request.",
+      "notFound": "Not found.",
+      "unknown": "Something went wrong. Try again.",
+      "profileHasLogin": "The profile has its own login. Remove it from the family instead.",
+      "confirmRequired": "Type SLET to confirm."
+    },
+    "deletePermissions": {
+      "title": "Deleting entries",
+      "intro": "For each profile you created, decide whether the profile's owner may delete entries that others (e.g. you) have logged. Children start with no. Everything is in the control log.",
+      "none": "You have not created any profiles yet.",
+      "notAllowed": "You cannot delete an entry someone else made."
+    },
+    "share": {
+      "title": "For:",
+      "me": "Me",
+      "portionHelp": "Portion compared with your amount:",
+      "portionFor": "{name}",
+      "portionOption": "{factor} portion"
+    }
   }
 }

@@ -83,11 +83,43 @@ export type WeighIn = { weightKg: number; weighedAt: string };
 
 export type ActivityBurn = { startedAt: string; caloriesBurned: number };
 
-/** Mifflin-St Jeor resting metabolic rate, or null when a field is missing. */
+// Under denne alder bruges børneberegningen (docs/FAMILY.md, DECISIONS
+// 2026-09-26 "Børneberegning").
+export const CHILD_AGE_LIMIT = 18;
+
+/**
+ * Resting metabolic rate, or null when a field is missing. Adults:
+ * Mifflin-St Jeor. Under 18: Schofield (1985) weight + height equations,
+ * which EFSA recommends for children (Mifflin-St Jeor is an adult formula).
+ */
 export function estimateBmr({ weightKg, heightCm, age, sex }: EnergyProfile): number | null {
   if (!weightKg || !heightCm || age === null || !sex) return null;
+  if (age < CHILD_AGE_LIMIT) return schofieldBmr(weightKg, heightCm / 100, age, sex);
   const base = 10 * weightKg + 6.25 * heightCm - 5 * age;
   return sex === "MALE" ? base + 5 : base - 161;
+}
+
+// Schofield WH-ligninger, kcal/døgn (W i kg, H i meter).
+function schofieldBmr(w: number, h: number, age: number, sex: "MALE" | "FEMALE"): number {
+  if (sex === "MALE") {
+    if (age < 3) return 0.167 * w + 1517.4 * h - 617.6;
+    if (age < 10) return 19.59 * w + 130.3 * h + 414.9;
+    return 16.25 * w + 137.2 * h + 515.5;
+  }
+  if (age < 3) return 16.252 * w + 1023.2 * h - 413.5;
+  if (age < 10) return 16.97 * w + 161.8 * h + 371.2;
+  return 8.365 * w + 465 * h + 200;
+}
+
+/**
+ * Physical activity level for children when nothing is measured (EFSA):
+ * 1–3 år 1,4, 4–9 år 1,6, 10–17 år 1,8. Null for adults.
+ */
+export function childPhysicalActivityLevel(age: number | null): number | null {
+  if (age === null || age >= CHILD_AGE_LIMIT) return null;
+  if (age < 4) return 1.4;
+  if (age < 10) return 1.6;
+  return 1.8;
 }
 
 /** Latest weigh-in on or before `onOrBefore`, falling back to the profile weight. */

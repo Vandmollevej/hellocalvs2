@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getSessionUser, unauthorized } from "@/lib/session";
+import { unauthorized } from "@/lib/session";
+import { getProfileUser } from "@/lib/family-access";
 
 // Favorites (fejl #31/#33/#36 i Fejlretninger/FEJLLISTE.md): en bruger kan
 // markere et produkt som favorit fra en swipe-handling på en registrerings-
@@ -9,7 +10,7 @@ import { getSessionUser, unauthorized } from "@/lib/session";
 // Dish-favoritter, som ikke bruges endnu — ingen UI for det i dag).
 export async function GET() {
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("favorites", "VIEWED");
 
     if (!user) return unauthorized();
     const favorites = await prisma.favorite.findMany({
@@ -31,7 +32,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("favorites", "CREATED");
 
     if (!user) return unauthorized();
     const body = await request.json();
@@ -57,7 +58,7 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("favorites", "DELETED");
 
     if (!user) return unauthorized();
     const body = await request.json();

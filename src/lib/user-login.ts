@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { queueMessage } from "@/lib/messaging";
 import { USER_SESSION_COOKIE, USER_SESSION_MAX_AGE, signUserSession } from "@/lib/user-auth";
+import { ACTIVE_PROFILE_COOKIE, logProfileAccess } from "@/lib/family-access";
 
 // Fælles afslutning på alle login-metoder (e-mail + adgangskode, Face ID/
 // passkey, Google, Apple, Facebook): sætter session-cookien og genkender
@@ -157,9 +158,19 @@ export async function completeLogin<T extends NextResponse>(
     maxAge: DEVICE_COOKIE_MAX_AGE,
   });
 
+  // Et nyt login starter altid på brugerens egen profil (docs/FAMILY.md).
+  response.cookies.set(ACTIVE_PROFILE_COOKIE, "", { path: "/", maxAge: 0 });
+
   // En fejl i enhedssporing/mail må aldrig blokere selve login.
   await trackDevice(req, userId, deviceId, method).catch((error) =>
     console.error("Login device tracking failed", error)
   );
+  // Familiemedlemmer ser deres egne login-tidspunkter i Kontrol-loggen.
+  await logOwnLoginForFamilyMember(userId).catch((error) => console.error("Family login log failed", error));
   return response;
+}
+
+async function logOwnLoginForFamilyMember(userId: string) {
+  const member = await prisma.familyMember.findUnique({ where: { userId }, select: { id: true } });
+  if (member) await logProfileAccess(userId, userId, "OPENED", "login");
 }

@@ -44,6 +44,10 @@
   --hf-color-warning: #8a5a00;
   --hf-color-warning-fill: #f2c230;
   --hf-color-overlay: rgb(35 35 35 / 40%);
+  /* Familieabonnement (docs/FAMILY.md): "en anden er på kontoen" —
+     telefonikonet i topbjælken og 1 px-rammen rundt om skærmen. Blå, så den
+     aldrig forveksles med brand-grøn; hvid kant gør den læsbar på grøn. */
+  --hf-color-watch: #2f80ed;
 
   /* Legacy-navne — pegede tidligere på ikke-målte farver, peger nu på de
      korrekte tokens ovenfor, så eksisterende kode ikke skal migreres på én gang. */
@@ -98,6 +102,7 @@
   --color-hf-fab: var(--hf-fab);
   --color-hf-lime: var(--hf-lime);
   --color-hf-warning: var(--hf-color-warning);
+  --color-hf-watch: var(--hf-color-watch);
   --color-hf-warning-fill: var(--hf-color-warning-fill);
   --font-sans: var(--font-hf-body);
   --font-mono: var(--font-geist-mono);

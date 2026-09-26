@@ -150,6 +150,9 @@ function LogIndContent() {
         <p className="hf-type-body-sm mt-4 text-center">
           {t("login.newHere")} <Link href="/signup" className="underline">{t("login.createAccount")}</Link>
         </p>
+        <p className="hf-type-body-sm mt-2 text-center">
+          <Link href="/family-code" className="underline">{t("login.haveFamilyCode")}</Link>
+        </p>
       </form>
 
       <div className="px-4 pb-8 pt-4">

@@ -20,11 +20,15 @@ import {
   IconWallet,
   IconAdjustments,
   IconBug,
+  IconUsers,
+  IconHistory,
+  IconTrashOff,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 import { Toggle } from "@/components/ui/Toggle";
 import { HelpTip } from "@/components/hf/HelpTip";
 import { saveShowStartupTips, saveShowTooltips, useShowStartupTips, useShowTooltips } from "@/lib/help-prefs";
@@ -53,6 +57,16 @@ export default function SettingsPage() {
   // the rest of the settings page on it.
   const [isFemale, setIsFemale] = useState(false);
   const [unreadMessages, setUnreadMessages] = useState(0);
+  const { status: familyStatus } = useFamilyStatus();
+  // Kontrol-loggen vises for den, der er med i en andens familie (barn,
+  // partner — den, der kontrolleres), se docs/FAMILY.md.
+  const isControlled = Boolean(familyStatus?.family && !familyStatus.family.isOwner);
+  // Sletteret vises for den, der har oprettet (eller styrer) andre profiler.
+  const controlsOthers = Boolean(
+    familyStatus?.family?.members.some(
+      (member) => member.controllerId === familyStatus.me.id && member.userId !== familyStatus.me.id
+    )
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -102,6 +116,32 @@ export default function SettingsPage() {
             href="/settings/payment"
             divider={false}
           />
+        </AccordionCard>
+
+        <AccordionCard>
+          <ChevronRow
+            icon={<IconUsers size={20} />}
+            label={t("family.title")}
+            href="/profile/family"
+            divider={isControlled || controlsOthers}
+          />
+          {controlsOthers && (
+            <ChevronRow
+              icon={<IconTrashOff size={20} />}
+              label={t("family.deletePermissions.title")}
+              href="/settings/delete-permissions"
+              divider={isControlled}
+            />
+          )}
+          {isControlled && (
+            <ChevronRow
+              icon={<IconHistory size={20} />}
+              label={t("family.log.title")}
+              href="/settings/control-log"
+              badgeCount={familyStatus?.unseenCount}
+              divider={false}
+            />
+          )}
         </AccordionCard>
 
         <AccordionCard>

@@ -219,6 +219,20 @@ model User {
   productSearchHistory    UserProductSearchHistory[]
   nutritionReportsReviewed ProductNutritionReport[] @relation("NutritionReportReviewer")
 
+  // Familieabonnement (docs/FAMILY.md, docs/DECISIONS.md 2026-09-25).
+  familyOwned             Family?             @relation("FamilyOwner")
+  familyMembership        FamilyMember?       @relation("FamilyMembership")
+  familyMembersCreated    FamilyMember[]      @relation("FamilyMemberCreatedBy")
+  familyGrantsReceived    FamilyAccessGrant[] @relation("FamilyGrantGrantee")
+  familyGrantsAbout       FamilyAccessGrant[] @relation("FamilyGrantSubject")
+  familyLoginCodes        FamilyLoginCode[]   @relation("FamilyLoginCodeProfile")
+  profileAccessLogAbout   ProfileAccessLog[]  @relation("ProfileAccessSubject")
+  profileAccessLogAsActor ProfileAccessLog[]  @relation("ProfileAccessActor")
+  registrationsCreatedForOthers Registration[] @relation("RegistrationCreatedBy")
+  // Hvornår brugeren sidst lukkede panelet med nye adgangshændelser. Kun
+  // hændelser efter dette tidspunkt vises i panelet, der glider ned.
+  accessLogSeenAt         DateTime?
+
   @@map("users")
 }
 
@@ -1700,6 +1714,11 @@ model Registration {
   nutrientEstimatedSnapshot Json?
   nutrientToleranceSnapshot Json?
 
+  // Hvem der tastede registreringen ind, når det ikke var profilens ejer selv
+  // (familieabonnement, docs/FAMILY.md). Null = profilens ejer.
+  createdBy   User?   @relation("RegistrationCreatedBy", fields: [createdById], references: [id])
+  createdById String?
+
   createdAt DateTime @default(now())
 
   @@map("registrations")
@@ -1981,6 +2000,13 @@ enum SubscriptionStatus {
   CANCELED
 }
 
+// Familieplan (docs/FAMILY.md): betaleren er Seriøs, og alle familiens
+// medlemmer arver Seriøs. Kun betalt — gavekoder og points giver ikke FAMILY.
+enum SubscriptionPlan {
+  INDIVIDUAL
+  FAMILY
+}
+
 enum PaymentProvider {
   REEPAY
   QUICKPAY
@@ -2001,6 +2027,7 @@ model Subscription {
   user                   User               @relation(fields: [userId], references: [id])
   userId                 String             @unique
   status                 SubscriptionStatus @default(INACTIVE)
+  plan                   SubscriptionPlan   @default(INDIVIDUAL)
   provider               PaymentProvider?
   providerCustomerId     String?
   providerSubscriptionId String?
@@ -2446,6 +2473,107 @@ model UserKnownDevice {
 
   @@unique([userId, deviceHash])
   @@map("user_known_devices")
+}
+
+// --- Familieabonnement (docs/FAMILY.md, docs/DECISIONS.md 2026-09-25) ---
+// Betaleren (ownerId) opsætter familien og bestemmer, hvem der må se og taste
+// ind for hvem. En bruger kan kun være med i én familie ad gangen. Profiler,
+// betaleren opretter (fx børn under 15), er almindelige User-rækker uden
+// login, indtil barnet får en engangskode (FamilyLoginCode).
+
+enum ProfileAccessAction {
+  OPENED
+  VIEWED
+  CREATED
+  UPDATED
+  DELETED
+}
+
+model Family {
+  id        String              @id @default(cuid())
+  owner     User                @relation("FamilyOwner", fields: [ownerId], references: [id])
+  ownerId   String              @unique
+  createdAt DateTime            @default(now())
+  members   FamilyMember[]
+  grants    FamilyAccessGrant[]
+  codes     FamilyLoginCode[]
+
+  @@map("families")
+}
+
+model FamilyMember {
+  id          String   @id @default(cuid())
+  family      Family   @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  familyId    String
+  user        User     @relation("FamilyMembership", fields: [userId], references: [id])
+  userId      String   @unique
+  isChild     Boolean  @default(false)
+  // Må medlemmet selv slette registreringer, som andre har tastet ind på
+  // profilen? Styres af den, der oprettede profilen (ellers betaleren).
+  // Børn starter med nej (brugerens valg 2026-09-26).
+  canDeleteOthersEntries Boolean @default(true)
+  // Sat for profiler, betaleren selv har oprettet (null = eksisterende bruger,
+  // der er koblet på familien).
+  createdBy   User?    @relation("FamilyMemberCreatedBy", fields: [createdById], references: [id])
+  createdById String?
+  createdAt   DateTime @default(now())
+
+  @@index([familyId])
+  @@map("family_members")
+}
+
+// Betaleren giver grantee adgang til at se og taste ind for subject.
+// Betaleren selv har altid adgang til alle familiens profiler og har ingen
+// rækker her.
+model FamilyAccessGrant {
+  id        String   @id @default(cuid())
+  family    Family   @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  familyId  String
+  grantee   User     @relation("FamilyGrantGrantee", fields: [granteeId], references: [id])
+  granteeId String
+  subject   User     @relation("FamilyGrantSubject", fields: [subjectId], references: [id])
+  subjectId String
+  createdAt DateTime @default(now())
+
+  @@unique([granteeId, subjectId])
+  @@index([subjectId])
+  @@map("family_access_grants")
+}
+
+// Engangskode fra betaleren. Med profileId: et familiemedlem uden login
+// sætter e-mail og adgangskode på sin profil. Uden profileId: en eksisterende
+// bruger kobler sig på familien. Kun SHA-256 af koden gemmes.
+model FamilyLoginCode {
+  id        String    @id @default(cuid())
+  family    Family    @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  familyId  String
+  profile   User?     @relation("FamilyLoginCodeProfile", fields: [profileId], references: [id])
+  profileId String?
+  codeHash  String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([profileId])
+  @@map("family_login_codes")
+}
+
+// Alt, hvad en anden person gør på en profil: åbner den, ser data, tilføjer,
+// ændrer eller sletter. Vises for profilens ejer (docs/FAMILY.md punkt 6).
+// Rækkerne slettes ikke, når nogen forlader familien.
+model ProfileAccessLog {
+  id        String              @id @default(cuid())
+  subject   User                @relation("ProfileAccessSubject", fields: [subjectId], references: [id])
+  subjectId String
+  actor     User                @relation("ProfileAccessActor", fields: [actorId], references: [id])
+  actorId   String
+  action    ProfileAccessAction
+  // Område, fx "registrations", "weight", "water" (src/lib/family-access.ts).
+  area      String
+  createdAt DateTime            @default(now())
+
+  @@index([subjectId, createdAt])
+  @@map("profile_access_logs")
 }
 
 // --- Oprettelses-app (medarbejder-hyldescanning), docs/OPRETTELSES-APP.md ---

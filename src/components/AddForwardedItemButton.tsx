@@ -1,5 +1,6 @@
 "use client";
 
+import { mealShareBody } from "@/lib/meal-share";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -30,6 +31,7 @@ export function AddForwardedItemButton({
         body: JSON.stringify({
           [kind === "PRODUCT" ? "productId" : "dishId"]: itemId,
           amountGrams: 100,
+          ...mealShareBody(),
         }),
       });
       if (!res.ok) {

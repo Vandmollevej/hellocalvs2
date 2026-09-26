@@ -1,5 +1,6 @@
 "use client";
 
+import { mealShareBody } from "@/lib/meal-share";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { IconCamera } from "@tabler/icons-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -333,8 +334,8 @@ function KameraContent() {
           fetch("/api/registrations", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(
-              item.productId
+            body: JSON.stringify({
+              ...(item.productId
                 ? { productId: item.productId, amountGrams: item.amountGrams }
                 : {
                     amountGrams: item.amountGrams,
@@ -343,8 +344,10 @@ function KameraContent() {
                     proteinSnapshot: item.protein,
                     carbsSnapshot: item.carbs,
                     fatSnapshot: item.fat,
-                  }
-            ),
+                  }),
+              // Fælles måltid (docs/FAMILY.md).
+              ...mealShareBody(),
+            }),
           })
         )
       );

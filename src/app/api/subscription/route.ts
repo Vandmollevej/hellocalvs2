@@ -3,7 +3,14 @@ import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { getPointsBalance } from "@/lib/points";
 import { FREE_MONTH_COST } from "@/lib/points-constants";
-import { getSubscriptionTier, FREE_TIER_RETENTION_DAYS, SERIOUS_MONTHLY_PRICE_DKK } from "@/lib/subscription";
+import {
+  getSubscriptionTier,
+  isCoveredByFamilyPlan,
+  FAMILY_MONTHLY_PRICE_DKK,
+  FREE_TIER_RETENTION_DAYS,
+  SERIOUS_MONTHLY_PRICE_DKK,
+} from "@/lib/subscription";
+import { MAX_FAMILY_PROFILES } from "@/lib/family";
 
 export async function GET() {
   const user = await getSessionUser();
@@ -15,7 +22,9 @@ export async function GET() {
     getPointsBalance(user.id),
   ]);
 
-  const tier = getSubscriptionTier(subscription);
+  const ownTier = getSubscriptionTier(subscription);
+  const coveredByFamily = ownTier === "FREE" && (await isCoveredByFamilyPlan(user.id));
+  const tier = coveredByFamily ? "SERIOUS" : ownTier;
 
   return NextResponse.json({
     // Nyere felter, brugt af /profile/subscription (docs/DECISIONS.md 2026-09-19).
@@ -25,6 +34,11 @@ export async function GET() {
     pointsBalance,
     freeMonthCost: FREE_MONTH_COST,
     priceDkk: SERIOUS_MONTHLY_PRICE_DKK,
+    // Familieabonnement (docs/FAMILY.md).
+    plan: subscription?.plan ?? "INDIVIDUAL",
+    coveredByFamily,
+    familyPriceDkk: FAMILY_MONTHLY_PRICE_DKK,
+    familyMaxProfiles: MAX_FAMILY_PROFILES,
     retentionDays: FREE_TIER_RETENTION_DAYS,
     // Ældre felter, allerede forventet af /settings/payment
     // (docs/DECISIONS.md 2026-09-02/03) — denne route fandtes ikke før nu, så
