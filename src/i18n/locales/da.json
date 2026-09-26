@@ -1178,7 +1178,11 @@
     "previousPhoto": "Forrige billede",
     "nextPhoto": "Næste billede",
     "unlocking": "Bekræfter…",
-    "unlockError": "Kunne ikke bekræfte. Prøv igen."
+    "unlockError": "Kunne ikke bekræfte. Prøv igen.",
+    "saving": "Gemmer billede…",
+    "saveError": "Billedet kunne ikke gemmes på telefonen. Prøv igen.",
+    "deleteError": "Billedet kunne ikke slettes. Prøv igen.",
+    "storageLoadError": "Billederne kunne ikke hentes fra telefonen."
   },
   "registration": {
     "title": "Registrering",

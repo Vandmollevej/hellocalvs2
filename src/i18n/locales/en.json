@@ -1178,7 +1178,11 @@
     "previousPhoto": "Previous photo",
     "nextPhoto": "Next photo",
     "unlocking": "Confirming…",
-    "unlockError": "Couldn't confirm. Try again."
+    "unlockError": "Couldn't confirm. Try again.",
+    "saving": "Saving photo…",
+    "saveError": "The photo couldn't be saved on this phone. Try again.",
+    "deleteError": "The photo couldn't be deleted. Try again.",
+    "storageLoadError": "The photos couldn't be loaded from this phone."
   },
   "registration": {
     "title": "Registration",

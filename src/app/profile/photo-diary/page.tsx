@@ -6,10 +6,19 @@ import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { confirmOnDevice, isPasskeySupported } from "@/lib/passkey-client";
+import {
+  addDiaryPhoto,
+  deleteDiaryPhoto,
+  listDiaryPhotos,
+  migrateLegacyDiaryPhotos,
+  prepareDiaryPhoto,
+  type StoredDiaryPhoto,
+} from "@/lib/photo-diary-store";
 
 type DiaryPhoto = {
   id: string;
-  dataUrl: string;
+  /** Object URL for the stored Blob — revoked when the photo leaves the page. */
+  url: string;
   takenAt: string;
 };
 
@@ -18,37 +27,19 @@ type DiaryUser = {
 };
 
 // Item 2 (2026-09-02): billede-dagbog til at sammenligne fuld figur/mave over
-// tid. Der findes endnu ingen billede-upload-/blob-infrastruktur i dette
-// projekt (se docs/STATUS.md), så billederne gemmes for nu udelukkende
-// client-side i localStorage — de ryger ikke i databasen og deles ikke
+// tid. Billederne gemmes kun på enheden (IndexedDB, se
+// src/lib/photo-diary-store.ts) — de ryger ikke i databasen og deles ikke
 // mellem enheder. "Kræver telefonens adgangskode for at vise"-kontakten
 // gemmes i databasen (User.photoDiaryRequiresPasscode). Er den slået til,
 // vises billederne først efter Face ID/Touch ID/telefonens kode (WebAuthn,
 // se confirmOnDevice), og siden låser igen, når den går i baggrunden — så
 // billederne ikke vises ved et uheld, fx i bussen. Det er en visningslås,
 // ikke kryptering.
-const STORAGE_KEY = "hello-cal:billede-dagbog";
 
-function loadPhotos(): DiaryPhoto[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    // Tidligere gemte selfies (fjernet 2026-09-25) har stadig et `kind`-felt;
-    // det ignoreres, så de blot vises sammen med de øvrige billeder.
-    return JSON.parse(raw) as DiaryPhoto[];
-  } catch {
-    return [];
-  }
-}
-
-function savePhotos(photos: DiaryPhoto[]) {
-  try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(photos));
-  } catch {
-    // Utilgængeligt lager (privat browsing e.l.) — ignorér.
-  }
-}
+// Kameraet åbnet fra "Tag billede" kan få siden til at gå i baggrunden. Det
+// må ikke låse siden, ellers ligger det nye billede skjult bag låsen, så det
+// ligner, at det forsvandt.
+const CAMERA_HIDE_GRACE_MS = 3000;
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("da-DK", {
@@ -60,16 +51,49 @@ function formatDate(value: string) {
   }).format(new Date(value));
 }
 
+function toView(photo: StoredDiaryPhoto, urls: Set<string>): DiaryPhoto {
+  const url = URL.createObjectURL(photo.blob);
+  urls.add(url);
+  return { id: photo.id, takenAt: photo.takenAt, url };
+}
+
 export default function BilledeDagbogPage() {
   const { t } = useTranslation();
   const [user, setUser] = useState<DiaryUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const [photos, setPhotos] = useState<DiaryPhoto[]>(() => loadPhotos());
+  const [photos, setPhotos] = useState<DiaryPhoto[]>([]);
+  const [photosLoaded, setPhotosLoaded] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [storageError, setStorageError] = useState<"load" | "save" | "delete" | null>(null);
   const [locked, setLocked] = useState(false);
   const [unlocking, setUnlocking] = useState(false);
   const [unlockError, setUnlockError] = useState(false);
   const [viewerIndex, setViewerIndex] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const cameraOpenedAt = useRef(0);
+  const objectUrls = useRef(new Set<string>());
+
+  useEffect(() => {
+    const urls = objectUrls.current;
+    let cancelled = false;
+    migrateLegacyDiaryPhotos()
+      .catch(() => {})
+      .then(() => listDiaryPhotos())
+      .then((stored) => {
+        if (!cancelled) setPhotos(stored.map((photo) => toView(photo, urls)));
+      })
+      .catch(() => {
+        if (!cancelled) setStorageError("load");
+      })
+      .finally(() => {
+        if (!cancelled) setPhotosLoaded(true);
+      });
+    return () => {
+      cancelled = true;
+      urls.forEach((url) => URL.revokeObjectURL(url));
+      urls.clear();
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -95,10 +119,10 @@ export default function BilledeDagbogPage() {
   // næste gang telefonen tages op.
   useEffect(() => {
     function onVisibilityChange() {
-      if (document.visibilityState === "hidden") {
-        setLocked(true);
-        setViewerIndex(null);
-      }
+      if (document.visibilityState !== "hidden") return;
+      if (Date.now() - cameraOpenedAt.current < CAMERA_HIDE_GRACE_MS) return;
+      setLocked(true);
+      setViewerIndex(null);
     }
     document.addEventListener("visibilitychange", onVisibilityChange);
     return () => document.removeEventListener("visibilitychange", onVisibilityChange);
@@ -136,33 +160,57 @@ export default function BilledeDagbogPage() {
     }).catch(() => {});
   }
 
-  function onFileSelected(event: React.ChangeEvent<HTMLInputElement>) {
+  function openCamera() {
+    cameraOpenedAt.current = Date.now();
+    fileInputRef.current?.click();
+  }
+
+  // Billedet vises først, når det er gemt — slår gemningen fejl, siges det
+  // højt i stedet for at vise et billede, der forsvinder igen.
+  async function onFileSelected(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     event.target.value = "";
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const next = [
-        { id: crypto.randomUUID(), dataUrl: String(reader.result), takenAt: new Date().toISOString() },
-        ...photos,
-      ];
-      setPhotos(next);
-      savePhotos(next);
-    };
-    reader.readAsDataURL(file);
+    setSaving(true);
+    setStorageError(null);
+    try {
+      const photo = {
+        id: crypto.randomUUID(),
+        takenAt: new Date().toISOString(),
+        blob: await prepareDiaryPhoto(file),
+      };
+      await addDiaryPhoto(photo);
+      const view = toView(photo, objectUrls.current);
+      setPhotos((current) => [view, ...current]);
+    } catch {
+      setStorageError("save");
+    } finally {
+      setSaving(false);
+    }
   }
 
-  function remove(id: string) {
-    const next = photos.filter((photo) => photo.id !== id);
-    setPhotos(next);
-    savePhotos(next);
+  async function remove(id: string): Promise<boolean> {
+    setStorageError(null);
+    try {
+      await deleteDiaryPhoto(id);
+    } catch {
+      setStorageError("delete");
+      return false;
+    }
+    const photo = photos.find((entry) => entry.id === id);
+    if (photo) {
+      URL.revokeObjectURL(photo.url);
+      objectUrls.current.delete(photo.url);
+    }
+    setPhotos((current) => current.filter((entry) => entry.id !== id));
+    return true;
   }
 
-  function onViewerDelete(id: string) {
-    remove(id);
+  async function onViewerDelete(id: string) {
+    const remaining = photos.length - 1;
+    if (!(await remove(id))) return;
     setViewerIndex((current) => {
       if (current === null) return current;
-      const remaining = photos.length - 1;
       if (remaining <= 0) return null;
       return Math.min(current, remaining - 1);
     });
@@ -212,14 +260,26 @@ export default function BilledeDagbogPage() {
               />
               <button
                 type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="hf-btn-primary w-full py-3.5 text-[15px]"
+                onClick={openCamera}
+                disabled={saving}
+                className="hf-btn-primary w-full py-3.5 text-[15px] disabled:opacity-40"
               >
-                {t("photoDiary.takePhoto")}
+                {saving ? t("photoDiary.saving") : t("photoDiary.takePhoto")}
               </button>
+              {storageError && (
+                <p className="text-center text-[13px] text-hf-red-dark">
+                  {t(
+                    storageError === "load"
+                      ? "photoDiary.storageLoadError"
+                      : storageError === "save"
+                        ? "photoDiary.saveError"
+                        : "photoDiary.deleteError"
+                  )}
+                </p>
+              )}
 
               <section className="flex flex-col gap-4">
-                {photos.length === 0 ? (
+                {!photosLoaded ? null : photos.length === 0 ? (
                   <p className="text-center text-[13px] text-hf-black opacity-60">
                     {t("photoDiary.noPhotosYet")}
                   </p>
@@ -234,7 +294,7 @@ export default function BilledeDagbogPage() {
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                          src={photo.dataUrl}
+                          src={photo.url}
                           alt={t("photoDiary.photoAlt")}
                           className="h-40 w-full object-cover"
                         />
@@ -333,7 +393,7 @@ function PhotoViewer({
         )}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={photo.dataUrl}
+          src={photo.url}
           alt={t("photoDiary.photoAlt")}
           className="h-full w-full object-contain"
         />
