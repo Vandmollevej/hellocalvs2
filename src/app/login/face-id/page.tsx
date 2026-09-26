@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { hasPasskeyOnDevice, registerPasskey } from "@/lib/passkey-client";
 import { markFaceIdDeclined } from "@/lib/login-flow";
+import { FaceIdAnimation, type FaceIdPhase } from "@/components/FaceIdAnimation";
 
 // Tilbud efter login: slå Face ID til, så næste login kun kræver ansigtet.
 function FaceIdOfferContent() {
@@ -28,13 +29,17 @@ function FaceIdOfferContent() {
       .catch(() => router.replace(next));
   }, [next, router]);
 
+  const [phase, setPhase] = useState<FaceIdPhase>("idle");
+
   async function enable() {
     setBusy(true);
     setError(null);
+    setPhase("scanning");
     try {
       await registerPasskey();
-      router.replace(next);
+      setPhase("success"); // videre, når animationen er færdig
     } catch {
+      setPhase("failed");
       setError(t("faceIdOffer.error"));
       setBusy(false);
     }
@@ -59,6 +64,9 @@ function FaceIdOfferContent() {
       </div>
 
       <div className="flex flex-1 flex-col gap-4 px-4 pt-6">
+        <div className="flex justify-center py-4">
+          <FaceIdAnimation phase={phase} size={112} onDone={() => router.replace(next)} />
+        </div>
         <p className="hf-type-body">{t("faceIdOffer.intro")}</p>
         {error && <p className="hf-type-caption text-hf-red-dark">{error}</p>}
       </div>

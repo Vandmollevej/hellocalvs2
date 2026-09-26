@@ -7,9 +7,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { SocialLoginButton } from "@/components/hf/SocialLoginButton";
 import { TextField } from "@/components/hf/TextField";
+import { FaceIdAnimation, type FaceIdPhase } from "@/components/FaceIdAnimation";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { hasPasskeyOnDevice, loginWithPasskey } from "@/lib/passkey-client";
 import { afterLoginPath, oauthErrorKey, startOAuth } from "@/lib/login-flow";
+import { findLoginCountry, readLoginCountry, type LoginCountry } from "@/lib/login-country";
 
 function LogIndContent() {
   const { t } = useTranslation();
@@ -25,20 +27,29 @@ function LogIndContent() {
   const [submitting, setSubmitting] = useState(false);
   // Face ID kun, når det er slået til på denne enhed efter et almindeligt login.
   const [faceIdOnDevice, setFaceIdOnDevice] = useState(false);
+  const [country, setCountry] = useState<LoginCountry>(() => findLoginCountry(null));
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage findes kun i browseren
     setFaceIdOnDevice(hasPasskeyOnDevice());
+    setCountry(readLoginCountry());
   }, []);
+
+  const [faceIdPhase, setFaceIdPhase] = useState<FaceIdPhase | null>(null);
 
   async function handleFaceId() {
     setError(null);
     setSubmitting(true);
+    setFaceIdPhase("scanning");
     try {
       await loginWithPasskey();
-      router.push(afterLoginPath(next));
+      setFaceIdPhase("success"); // navigerer, når animationen er færdig
     } catch {
-      setError(t("login.faceIdError"));
-      setSubmitting(false);
+      setFaceIdPhase("failed");
+      window.setTimeout(() => {
+        setFaceIdPhase(null);
+        setError(t("login.faceIdError"));
+        setSubmitting(false);
+      }, 600);
     }
   }
 
@@ -81,15 +92,15 @@ function LogIndContent() {
       </div>
 
       <form id="login-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-4 pt-5">
-        <p className="hf-type-body-sm">{t("login.chooseCountry")}</p>
+        <p className="hf-type-body">{t("login.chooseCountry")}</p>
         <div className="mt-2 h-px bg-hf-gray-border" />
         <Link
           href="/login/country"
           className="flex h-12 items-center justify-between border-b border-hf-gray-border"
         >
           <div className="hf-type-body flex items-center gap-3">
-            <Image src="/flag-denmark.png" alt="" width={22} height={16} className="rounded-[2px]" />
-            <span>{t("login.country")}</span>
+            <Image src={`/flags/${country.flag}.png`} alt="" width={22} height={16} className="rounded-[2px]" />
+            <span>{t(`country.countries.${country.key}`)}</span>
           </div>
           <HfChevron className="text-hf-gray" />
         </Link>
@@ -114,7 +125,7 @@ function LogIndContent() {
           />
         </div>
 
-        <p className="hf-type-body-sm mt-4 text-center opacity-70">{t("common.or")}</p>
+        <p className="hf-type-body mt-4 text-center opacity-70">{t("common.or")}</p>
 
         <div className="mt-2 flex flex-col gap-3">
           <TextField
@@ -132,14 +143,14 @@ function LogIndContent() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <p className="hf-type-body-sm mt-2 text-right">
+        <p className="hf-type-body mt-2 text-right">
           <Link href="/forgot-password" className="underline">
             {t("login.forgotPassword")}
           </Link>
         </p>
         {error && <p className="hf-type-caption mt-2 text-hf-red-dark">{error}</p>}
 
-        <p className="hf-type-body-sm mt-4 text-center">
+        <p className="hf-type-body mt-4 text-center">
           {t("login.newHere")} <Link href="/signup" className="underline">{t("login.createAccount")}</Link>
         </p>
       </form>
@@ -154,6 +165,14 @@ function LogIndContent() {
           {submitting ? t("login.submitting") : t("login.continueButton")}
         </button>
       </div>
+
+      {faceIdPhase && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="flex h-44 w-44 items-center justify-center rounded-[28px] bg-hf-cream shadow-xl">
+            <FaceIdAnimation phase={faceIdPhase} onDone={() => router.push(afterLoginPath(next))} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
