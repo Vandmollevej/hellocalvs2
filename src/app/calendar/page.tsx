@@ -654,7 +654,7 @@ export default function CalendarPage() {
                       setView(option.value);
                       setViewMenuOpen(false);
                     }}
-                    className="flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold hover:bg-hf-cream focus-visible:outline-2 focus-visible:outline-hf-black"
+                    className="hf-control-row flex w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold hover:bg-hf-cream focus-visible:outline-2 focus-visible:outline-hf-black"
                   >
                     <OptionIcon size={20} stroke={1.8} />
                     <span className="flex-1">{option.label}</span>
@@ -1897,7 +1897,7 @@ function DayDetails({
                       key={option.value}
                       type="button"
                       onClick={() => onSelectView(option.value)}
-                      className="flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold hover:bg-hf-cream focus-visible:outline-2 focus-visible:outline-hf-black"
+                      className="hf-control-row flex w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold hover:bg-hf-cream focus-visible:outline-2 focus-visible:outline-hf-black"
                     >
                       <OptionIcon size={20} stroke={1.8} />
                       <span className="flex-1">{option.label}</span>
@@ -2426,7 +2426,7 @@ function GoalAccordion({ goal }: { goal: GoalDTO }) {
         type="button"
         onClick={() => setOpen((current) => !current)}
         aria-expanded={open}
-        className="grid w-full grid-cols-[1fr_auto_1fr] items-center gap-2 px-4 py-3 text-left focus-visible:outline-2 focus-visible:outline-hf-black"
+        className="hf-control-row grid w-full grid-cols-[1fr_auto_1fr] items-center gap-2 px-4 text-left focus-visible:outline-2 focus-visible:outline-hf-black"
       >
         <span className="hf-type-body font-semibold flex min-w-0 items-center gap-2 text-hf-black">
           <IconPartyPopper size={18} className="shrink-0" />
@@ -2447,7 +2447,7 @@ function GoalAccordion({ goal }: { goal: GoalDTO }) {
           ))}
           <Link
             href="/profile/goals"
-            className="hf-type-body font-semibold flex items-center justify-between py-3 text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
+            className="hf-control-row hf-type-body font-semibold flex items-center justify-between text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
           >
             {t("calendar.openTargetDate")}
             <IconChevronRight size={18} className="shrink-0" />
@@ -2529,7 +2529,7 @@ function HourEntriesOverlay({
                 type="button"
                 onClick={() => toggleGroup(group.key)}
                 aria-expanded={isOpen}
-                className="flex w-full items-center justify-between px-4 py-3 text-left focus-visible:outline-2 focus-visible:outline-hf-black"
+                className="hf-control-row flex w-full items-center justify-between px-4 text-left focus-visible:outline-2 focus-visible:outline-hf-black"
               >
                 <span className="text-sm font-semibold text-hf-black">
                   {new Intl.DateTimeFormat("da-DK", { hour: "2-digit", minute: "2-digit" }).format(group.time)}

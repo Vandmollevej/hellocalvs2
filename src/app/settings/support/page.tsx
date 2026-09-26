@@ -225,19 +225,19 @@ export default function SupportSettingsPage() {
             type="button"
             onClick={save}
             disabled={saving || loading}
-            className="hf-btn-primary hf-type-button h-12 w-full disabled:opacity-50"
+            className="hf-control hf-btn-primary hf-type-button w-full disabled:opacity-50"
           >
             {saving ? t("settings.support.saving") : t("settings.support.saveAccess")}
           </button>
           <Link
             href="/settings/support/contact"
-            className="hf-btn-primary hf-type-button flex h-12 w-full items-center justify-center"
+            className="hf-control hf-btn-primary hf-type-button flex w-full items-center justify-center"
           >
             {t("settings.support.contact")}
           </Link>
           <Link
             href="/settings/support/requests"
-            className="hf-btn-secondary hf-type-button flex h-12 w-full items-center justify-center"
+            className="hf-control hf-btn-secondary hf-type-button flex w-full items-center justify-center"
           >
             {t("settings.support.myRequests")}
           </Link>
@@ -261,7 +261,7 @@ function PermissionRow({
   divider: boolean;
 }) {
   return (
-    <div className={`flex h-12 items-center gap-4 px-4 ${divider ? "border-b border-hf-tan-dark" : ""}`}>
+    <div className={`hf-control-row flex items-center gap-4 px-4 ${divider ? "border-b border-hf-tan-dark" : ""}`}>
       <span className="hf-type-body flex-1 truncate">{label}</span>
       <Toggle checked={checked} onChange={onChange} disabled={disabled} ariaLabel={label} />
     </div>

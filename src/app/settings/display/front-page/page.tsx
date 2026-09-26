@@ -115,7 +115,7 @@ export default function FrontPageDisplaySettingsPage() {
             return (
               <div
                 key={action.key}
-                className={`flex items-center gap-3 px-4 py-3 ${
+                className={`hf-control-row flex items-center gap-3 px-4 ${
                   index < actions.length - 1 ? "border-b border-hf-tan-dark" : ""
                 }`}
               >
@@ -155,7 +155,7 @@ export default function FrontPageDisplaySettingsPage() {
             return (
               <div
                 key={def.key}
-                className={`flex items-center gap-3 px-4 py-3 ${
+                className={`hf-control-row flex items-center gap-3 px-4 ${
                   index < FRONTPAGE_STAT_DEFS.length - 1 ? "border-b border-hf-tan-dark" : ""
                 }`}
               >

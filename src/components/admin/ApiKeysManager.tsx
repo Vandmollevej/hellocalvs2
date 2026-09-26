@@ -254,7 +254,7 @@ function FieldRow({ field, onChanged }: { field: FieldStatus; onChanged: (servic
   }
 
   const inputClass =
-    "w-full rounded-md border border-border-strong bg-hf-white px-3 py-2 font-mono text-sm text-text-primary";
+    "hf-field w-full rounded-md border border-border-strong bg-hf-white px-3 font-mono text-sm text-text-primary";
 
   return (
     <div className="flex flex-col gap-2 py-2.5">
