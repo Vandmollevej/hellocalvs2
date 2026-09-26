@@ -13,6 +13,10 @@ type SleepUser = {
   shiftWorkEnabled: boolean;
 };
 
+// "Skiftende arbejdstider" er skjult indtil videre; koden bevares til senere.
+// Sæt til true for at vise kontakten igen.
+const SHOW_SHIFT_WORK = false;
+
 type SleepSchedule = {
   weekday: number;
   bedtime: string;
@@ -253,14 +257,16 @@ export default function SleepSchedulePage() {
             </div>
           )}
 
-          <Toggle
-            label={t("profileSleep.shiftWork")}
-            description={t("profileSleep.shiftWorkDescription")}
-            checked={user.shiftWorkEnabled}
-            onChange={toggleShiftWork}
-          />
+          {SHOW_SHIFT_WORK && (
+            <Toggle
+              label={t("profileSleep.shiftWork")}
+              description={t("profileSleep.shiftWorkDescription")}
+              checked={user.shiftWorkEnabled}
+              onChange={toggleShiftWork}
+            />
+          )}
 
-          {user.shiftWorkEnabled && (
+          {SHOW_SHIFT_WORK && user.shiftWorkEnabled && (
             <p className="text-[13px] text-hf-black opacity-70">
               {t("profileSleep.shiftWorkHint")}
             </p>

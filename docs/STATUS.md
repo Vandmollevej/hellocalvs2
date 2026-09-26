@@ -2,6 +2,13 @@
 
 Last updated: 2026-09-26
 
+## 2026-09-26: "Skiftende arbejdstider" skjult på Søvnmønster
+
+Kontakten og hint-teksten på `/profile/sleep` er skjult bag
+`SHOW_SHIFT_WORK = false` i `src/app/profile/sleep/page.tsx`. Koden, feltet
+`shiftWorkEnabled`, API'et og oversættelserne er bevaret til senere. Spørgsmålet
+om skifteholdsarbejde i onboarding-guiden er ikke rørt. Lint og build kørt.
+
 ## 2026-09-26: Alle overskrifter med streger bruger samme klasse
 
 Se DECISIONS 2026-09-26 "Én overskrift med streger". `SectionSeparator` og
