@@ -7,7 +7,7 @@
 // integrationer og familieopsætning bruger altid getSessionUser().
 
 import { cookies } from "next/headers";
-import type { ProfileAccessAction, User } from "@prisma/client";
+import type { Prisma, ProfileAccessAction, Registration, User } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 
@@ -178,23 +178,13 @@ export async function shareRegistration(
 
   const source = await prisma.registration.findUnique({ where: { id: registration.id } });
   if (!source) return 0;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { id, userId, createdById, ...snapshot } = source;
-  const scaleKeys = Object.keys(snapshot).filter(
-    (key) => key === "amountGrams" || key.endsWith("Snapshot")
-  ) as (keyof typeof snapshot)[];
 
   let count = 0;
   for (const target of targets) {
     if (!(await canActFor(loginId, target.profileId))) continue;
-    const data: Record<string, unknown> = { ...snapshot };
-    for (const key of scaleKeys) {
-      const value = snapshot[key];
-      if (typeof value === "number") data[key] = value * target.factor;
-    }
     await prisma.registration.create({
       data: {
-        ...(data as typeof snapshot),
+        ...registrationCopyData(source, target.factor),
         userId: target.profileId,
         createdById: target.profileId === loginId ? null : loginId,
       },
@@ -203,4 +193,29 @@ export async function shareRegistration(
     count += 1;
   }
   return count;
+}
+
+// Et nyt snapshot af en registrering til en anden profil ("Kopier til konto"
+// og fælles måltid). Alle mængder og næringsværdier ganges med factor —
+// også de næringsstof-JSON-snapshots (Record<nøgle, tal>). Tomme JSON-felter
+// udelades, så de bliver null som på ældre registreringer.
+export function registrationCopyData(source: Registration, factor: number) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { id, userId, createdById, ...snapshot } = source;
+  const data: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(snapshot)) {
+    if (value === null || value === undefined) continue;
+    if (typeof value === "number" && (key === "amountGrams" || key.endsWith("Snapshot"))) {
+      data[key] = value * factor;
+    } else if (key.endsWith("Snapshot") && typeof value === "object" && !Array.isArray(value)) {
+      const scaled: Record<string, unknown> = {};
+      for (const [nutrient, amount] of Object.entries(value as Record<string, unknown>)) {
+        scaled[nutrient] = typeof amount === "number" ? amount * factor : amount;
+      }
+      data[key] = scaled;
+    } else {
+      data[key] = value;
+    }
+  }
+  return data as Omit<Prisma.RegistrationUncheckedCreateInput, "userId">;
 }

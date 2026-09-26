@@ -251,7 +251,7 @@
     "terms": "Betingelser",
     "privacyPolicy": "Privatlivspolitik",
     "dataTracking": "Datasporing",
-    "chooseCountry": "Vælg dit land",
+    "languageAndRegion": "Sprog og region",
     "messages": "Beskeder",
     "notifications": "Kommunikation",
     "inviteFriend": "Invitér en ven",
@@ -275,7 +275,10 @@
   "displaySettings": {
     "title": "Anbefalede grænser",
     "warnOnRecommendedLimits": "Gør opmærksom på grænseværdier over/under anbefalet normal",
-    "warnOnRecommendedLimitsDescription": "Viser en 1 px mørkerød kant omkring statistikbokse, når en dokumenteret anbefalet grænse for din region og profil er overskredet. Manglende data markeres ikke."
+    "warnOnRecommendedLimitsDescription": "Viser en 1 px mørkerød kant omkring statistikbokse, når en dokumenteret anbefalet grænse for din region og profil er overskredet. Manglende data markeres ikke.",
+    "uncertainty": "Usikkerhed",
+    "autoExpandUncertainty": "Fold usikkerhed ud automatisk",
+    "autoExpandUncertaintyDescription": "Et grønt ~ står altid foran værdier, vi har estimeret, fordi producenten ikke selv oplyser dem. Slår du dette til, vises den grå linje med usikkerheden under værdien uden at du skal trykke."
   },
   "menstrualCycleSettings": {
     "intro": "Log din menstruationscyklus og få den som en mulighed i tilføj-menuen.",
@@ -606,7 +609,11 @@
     "statusFavorite": "Favorit",
     "helloFresh": "HelloFresh",
     "kcalTotal": "{kcal} kcal i alt",
-    "kcalServing": "{kcal} kcal pr. portion"
+    "kcalServing": "{kcal} kcal pr. portion",
+    "trendingTitle": "Trender netop nu",
+    "trendingEmpty": "Der er ingen delte retter endnu",
+    "favoritesTitle": "Mine favoritter",
+    "favoritesEmpty": "Du har endnu ingen favoritter"
   },
   "recipeFilters": {
     "title": "Filtre",
@@ -620,7 +627,9 @@
     "sortTitle": "Sorter efter",
     "allergiesTitle": "Allergier",
     "dietsTitle": "Diæter",
-    "highProtein": "Høj på protein",
+    "personsTitle": "Antal personer",
+    "personsLabel": "Personer",
+    "displayTitle": "Visning på resultater",
     "specialTitle": "Specialkost",
     "macrosTitle": "Fokus på makroer",
     "reset": "Nulstil filtre",
@@ -677,6 +686,7 @@
       "vitaminC": "Højt indhold af C-vitamin"
     },
     "macros": {
+      "protein-high": "Højt på protein",
       "protein-low": "Lavt på protein",
       "carbs-high": "Højt på kulhydrat",
       "carbs-low": "Lavt på kulhydrat",
@@ -915,7 +925,7 @@
     "actions": {
       "photoDiary": "Fotodagbog",
       "newWeight": "Vægt",
-      "target": "Målsætning",
+      "target": "Mål",
       "bodyMeasurements": "Kropsmål"
     },
     "row": {
@@ -1173,7 +1183,11 @@
     "previousPhoto": "Forrige billede",
     "nextPhoto": "Næste billede",
     "unlocking": "Bekræfter…",
-    "unlockError": "Kunne ikke bekræfte. Prøv igen."
+    "unlockError": "Kunne ikke bekræfte. Prøv igen.",
+    "saving": "Gemmer billede…",
+    "saveError": "Billedet kunne ikke gemmes på telefonen. Prøv igen.",
+    "deleteError": "Billedet kunne ikke slettes. Prøv igen.",
+    "storageLoadError": "Billederne kunne ikke hentes fra telefonen."
   },
   "registration": {
     "title": "Registrering",
@@ -1232,7 +1246,26 @@
       "vitaminA": "Vitamin A",
       "vitaminC": "Vitamin C",
       "calcium": "Calcium",
-      "iron": "Jern"
+      "iron": "Jern",
+      "salt": "Salt",
+      "magnesium": "Magnesium",
+      "zinc": "Zink",
+      "copper": "Kobber",
+      "manganese": "Mangan",
+      "selenium": "Selen",
+      "phosphorus": "Fosfor",
+      "iodine": "Jod",
+      "vitaminD": "Vitamin D",
+      "vitaminE": "Vitamin E",
+      "vitaminK": "Vitamin K",
+      "vitaminB1": "Vitamin B1 (thiamin)",
+      "vitaminB2": "Vitamin B2 (riboflavin)",
+      "vitaminB3": "Vitamin B3 (niacin)",
+      "vitaminB5": "Vitamin B5 (pantotensyre)",
+      "vitaminB6": "Vitamin B6",
+      "vitaminB7": "Vitamin B7 (biotin)",
+      "vitaminB9": "Vitamin B9 (folat)",
+      "vitaminB12": "Vitamin B12"
     }
   },
   "photoAward": {
@@ -1322,7 +1355,7 @@
     "searchPlaceholder": "Søg i alle kort",
     "searchResults": "Søgeresultater",
     "noSearchResults": "Ingen kort matcher din søgning.",
-    "addAll": "+ Tilføj",
+    "add": "+ Tilføj",
     "noCardsYet": "Ingen kort her endnu.",
     "addHeading": "+ Overskrift",
     "addDivider": "+ Skillelinje"

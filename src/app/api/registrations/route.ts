@@ -6,6 +6,11 @@ import { fulfillMatchingForward } from "@/lib/forwards";
 import { getUserSubscriptionTier, getRetentionCutoffDate } from "@/lib/subscription";
 import { detectNutritionChanges, USER_EDIT_CONFIDENCE } from "@/lib/nutrition-reports";
 import { classifyProduct } from "@/lib/food-classification";
+import {
+  nutrientSnapshotData,
+  resolveGenericIngredientNutrients,
+  resolveProductNutrients,
+} from "@/lib/nutrient-resolution";
 
 export async function GET() {
   try {
@@ -133,7 +138,22 @@ export async function POST(req: Request) {
       shareRegistration(registration, shareWith, context.login.id);
 
     if (productId) {
-      const product = await prisma.product.findUnique({ where: { id: productId } });
+      const product = await prisma.product.findUnique({
+        where: { id: productId },
+        include: {
+          brand: { select: { name: true } },
+          nutritionFeatures: {
+            select: {
+              sugarsPer100g: true,
+              sugarSource: true,
+              fiberPer100g: true,
+              fiberSource: true,
+              saltPer100g: true,
+              saltSource: true,
+            },
+          },
+        },
+      });
       if (!product) {
         return NextResponse.json({ message: "Produkt ikke fundet" }, { status: 404 });
       }
@@ -161,6 +181,9 @@ export async function POST(req: Request) {
               carbsPer100g: carbsSnapshot,
               fatPer100g: fatSnapshot,
             });
+
+      // Usikkerheds-~: alle næringsstoffer + estimeret andel som snapshot.
+      const nutrients = await resolveProductNutrients(product).catch(() => []);
 
       // Registrering og kontrolsag i samme transaktion: én rapport pr. gem,
       // aldrig en halv tilstand.
@@ -192,6 +215,7 @@ export async function POST(req: Request) {
             cholesterolSnapshot: product.cholesterolPer100g !== null ? product.cholesterolPer100g * factor : undefined,
             vitaminASnapshot: product.vitaminAPer100g !== null ? product.vitaminAPer100g * factor : undefined,
             vitaminCSnapshot: product.vitaminCPer100g !== null ? product.vitaminCPer100g * factor : undefined,
+            ...nutrientSnapshotData(nutrients, factor),
             amountGrams,
           },
         });
@@ -222,11 +246,13 @@ export async function POST(req: Request) {
       }
 
       const factor = amountGrams / 100;
+      const nutrients = await resolveGenericIngredientNutrients(ingredient).catch(() => []);
       const registration = await prisma.registration.create({
         data: {
           userId: user.id,
           createdById,
           genericIngredientId: ingredient.id,
+          ...nutrientSnapshotData(nutrients, factor),
           titleSnapshot: ingredient.name,
           kcalSnapshot: kcalSnapshot ?? (ingredient.kcalPer100g ?? 0) * factor,
           proteinSnapshot: proteinSnapshot ?? (ingredient.proteinPer100g ?? 0) * factor,

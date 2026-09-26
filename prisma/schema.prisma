@@ -96,6 +96,9 @@ model User {
   // inferred from missing data, and this app does not yet ship such an
   // evaluator — see src/lib/stat-cards.ts's StatCardValue.outsideRecommendedRange.
   warnOnRecommendedLimits Boolean @default(false)
+  // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24/25): ~ vises altid; denne
+  // bestemmer kun, om den grå usikkerhedslinje er foldet ud automatisk.
+  autoExpandUncertainty   Boolean @default(false)
 
   // Region (ISO 3166-1 alpha-2), used to prioritize product search results
   // by the country's GS1 barcode prefix (see src/lib/regions.ts). Denmark is
@@ -882,6 +885,17 @@ model Product {
   // (BugReport.source = AI) i stedet for at blive gættet eller vist forkert.
   alternativeServings Json?
 
+  // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24). Alle nøgler følger
+  // src/lib/nutrients.ts. micronutrientsPer100g: vitaminer/mineraler/fedt-
+  // syrer m.m. pr. 100 g i katalogets enhed (Frida-importen udfylder den for
+  // externalSource=FRIDA). nutrientSources: { <nøgle eller kcal/protein/
+  // carbs/fat>: "LABEL" | "REFERENCE" | "ESTIMATED" | "AI" } — ~ vises kun
+  // ved ESTIMATED/AI. nutrientTolerances: producentens egen ± pr. 100 g,
+  // kun når producenten selv oplyser den.
+  micronutrientsPer100g Json?
+  nutrientSources       Json?
+  nutrientTolerances    Json?
+
   status           ProductStatus          @default(PENDING)
   discontinued     Boolean                @default(false)
   createdAt        DateTime               @default(now())
@@ -1059,6 +1073,15 @@ model AiProductAnalysis {
   productId     String?        @map("product_id")
   createdAt     DateTime       @default(now()) @map("created_at")
   correctedAt   DateTime?      @map("corrected_at")
+  // Admin "Uncertainties" (docs/DECISIONS.md 2026-09-24): AI'ens egne
+  // koordinater, normaliseret 0–1 i forhold til billedet —
+  // { ocrRegion: {x,y,w,h} | null, uncertainRegions: [{field,x,y,w,h,reason}] }.
+  // Null for analyser fra før felterne fandtes.
+  regions       Json?
+  // Sat når en admin har gennemgået/rettet analysen på "Uncertainties".
+  // Adskilt fra correctedAt, som sættes allerede når brugeren bekræfter
+  // værdierne ved produktoprettelse.
+  reviewedAt    DateTime?      @map("reviewed_at")
   matchCheck    ProductMatchCheck?
 
   @@index([kind, correctedAt])
@@ -1274,6 +1297,28 @@ model Additive {
 
 // Which Frida release (DTU's Figshare dataset) was most recently imported,
 // so frida-agent (scripts/frida-import) doesn't re-import the same version.
+// Admin "Cron-jobs" (docs/DECISIONS.md 2026-09-25): én række pr. baggrundsjob
+// (nøgle fra src/lib/jobs/registry.ts). Både jobs i app-processen
+// (src/lib/scheduler.ts) og Python-agenterne i egne containere læser rækken:
+// pause (enabled=false), fast klokkeslæt (runAtTime "HH:MM", dansk tid) eller
+// interval (intervalMinutes), og "kør nu" (runRequestedAt). Jobbet skriver
+// selv lastRunAt/lastStatus/lastMessage tilbage.
+model ScheduledJob {
+  key             String    @id
+  enabled         Boolean   @default(true)
+  runAtTime       String?
+  intervalMinutes Int?
+  runRequestedAt  DateTime?
+  lastStartedAt   DateTime?
+  lastRunAt       DateTime?
+  lastStatus      String?
+  lastMessage     String?
+  lastDurationMs  Int?
+  updatedAt       DateTime  @default(now()) @updatedAt
+
+  @@map("scheduled_jobs")
+}
+
 model FridaImportState {
   id                Int      @id @default(autoincrement())
   figshareArticleId Int      @unique
@@ -1383,6 +1428,10 @@ model GenericIngredient {
   proteinPer100g Float?
   carbsPer100g   Float?
   fatPer100g     Float?
+  // Frida-mikrodata kopieret fra fridaProduct (samme snapshot-princip som
+  // makroerne ovenfor), nøgler fra src/lib/nutrients.ts. Frida på selve den
+  // generiske vare regnes som sikre data (ingen ~).
+  micronutrientsPer100g Json?
 
   createdBy       User?    @relation("GenericIngredientsCreatedByUser", fields: [createdByUserId], references: [id])
   createdByUserId String?
@@ -1653,6 +1702,12 @@ model Registration {
   cholesterolSnapshot    Float?
   vitaminASnapshot       Float?
   vitaminCSnapshot       Float?
+  // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24/25): alle næringsstoffer
+  // fra src/lib/nutrients.ts for den registrerede mængde, hvor meget af hver
+  // der er estimeret, og producentens egen ±. Null på ældre registreringer.
+  nutrientSnapshot          Json?
+  nutrientEstimatedSnapshot Json?
+  nutrientToleranceSnapshot Json?
 
   // Hvem der tastede registreringen ind, når det ikke var profilens ejer selv
   // (familieabonnement, docs/FAMILY.md). Null = profilens ejer.

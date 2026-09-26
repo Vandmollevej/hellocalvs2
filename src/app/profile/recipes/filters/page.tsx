@@ -2,9 +2,18 @@
 
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
+import {
+  IconArrowsSort,
+  IconEye,
+  IconLeaf,
+  IconList,
+  IconMeat,
+  IconMedicalCross,
+  IconUsersGroup,
+} from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionSection } from "@/components/hf/AccordionSection";
-import { HfSlider } from "@/components/hf/HfSlider";
+import { PersonsSlider } from "@/components/hf/PersonsSlider";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import {
@@ -27,6 +36,7 @@ import { MAX_RECIPE_PERSONS, portionKcalFor, type PortionProfile } from "@/lib/r
 
 const SORT_KEYS = { relevance: "recipes.sortRelevance", popular: "recipes.sortPopular", date: "recipes.sortDate" };
 const MACRO_OPTIONS: { key: MacroKey; level: MacroLevel }[] = [
+  { key: "protein", level: "high" },
   { key: "protein", level: "low" },
   { key: "carbs", level: "high" },
   { key: "carbs", level: "low" },
@@ -82,54 +92,62 @@ function RecipeFiltersContent() {
   return (
     <HfScreen title={t("recipeFilters.title")}>
       <div className="hf-page">
-          <section className="rounded-2xl bg-hf-tan px-4 pt-4">
-            <p className="text-[15px] font-semibold text-hf-black">
-              {filters.persons === 1
-                ? t("recipeFilters.personsOne")
-                : t("recipeFilters.persons", { count: filters.persons })}
-            </p>
-            <div className="py-3">
-              <HfSlider
+          <AccordionSection
+            title={t("recipeFilters.personsTitle")}
+            icon={<IconUsersGroup size={20} stroke={1.75} />}
+            count={filters.persons}
+          >
+            <div className="bg-hf-cream px-4 py-2">
+              <PersonsSlider
+                label={t("recipeFilters.personsLabel")}
                 value={filters.persons}
-                min={1}
                 max={MAX_RECIPE_PERSONS}
                 onChange={(persons) => update({ ...filters, persons })}
-                aria-label={t("recipeFilters.adjustTitle")}
+              />
+              {portionKcal !== null && (
+                <p className="pt-3 text-[12px] text-hf-black opacity-60">
+                  {t("recipeFilters.portionHint", { kcal: portionKcal })}
+                </p>
+              )}
+            </div>
+          </AccordionSection>
+
+          <AccordionSection title={t("recipeFilters.displayTitle")} icon={<IconEye size={20} stroke={1.75} />}>
+            <div className="bg-hf-cream px-4">
+              <Row
+                label={t("recipeFilters.showKcal")}
+                checked={filters.showKcal}
+                onChange={(showKcal) => update({ ...filters, showKcal })}
+              />
+              <Row
+                label={t("recipeFilters.showEnergySplit")}
+                checked={filters.showEnergySplit}
+                onChange={(showEnergySplit) => update({ ...filters, showEnergySplit })}
+                divider={false}
               />
             </div>
-            {portionKcal !== null && (
-              <p className="border-b border-hf-tan-dark pb-4 text-[12px] text-hf-black opacity-60">
-                {t("recipeFilters.portionHint", { kcal: portionKcal })}
-              </p>
-            )}
-            <Row
-              label={t("recipeFilters.showKcal")}
-              checked={filters.showKcal}
-              onChange={(showKcal) => update({ ...filters, showKcal })}
-            />
-            <Row
-              label={t("recipeFilters.showEnergySplit")}
-              checked={filters.showEnergySplit}
-              onChange={(showEnergySplit) => update({ ...filters, showEnergySplit })}
-              divider={false}
-            />
-          </section>
+          </AccordionSection>
 
-          <section className="rounded-2xl bg-hf-tan px-4 pt-4">
-            <p className="text-sm font-semibold text-hf-black">{t("recipeFilters.sortTitle")}</p>
-            {RECIPE_SORTS.map((sort, index) => (
-              <Row
-                key={sort}
-                label={t(SORT_KEYS[sort])}
-                checked={filters.sort === sort}
-                // Kun én sortering ad gangen; slås den valgte fra, gælder Relevans.
-                onChange={(on) => update({ ...filters, sort: on ? sort : "relevance" })}
-                divider={index < RECIPE_SORTS.length - 1}
-              />
-            ))}
-          </section>
+          <AccordionSection title={t("recipeFilters.sortTitle")} icon={<IconArrowsSort size={20} stroke={1.75} />}>
+            <div className="bg-hf-cream px-4">
+              {RECIPE_SORTS.map((sort, index) => (
+                <Row
+                  key={sort}
+                  label={t(SORT_KEYS[sort])}
+                  checked={filters.sort === sort}
+                  // Kun én sortering ad gangen; slås den valgte fra, gælder Relevans.
+                  onChange={(on) => update({ ...filters, sort: on ? sort : "relevance" })}
+                  divider={index < RECIPE_SORTS.length - 1}
+                />
+              ))}
+            </div>
+          </AccordionSection>
 
-          <AccordionSection title={t("recipeFilters.allergiesTitle")} count={filters.allergens.length || undefined}>
+          <AccordionSection
+            title={t("recipeFilters.allergiesTitle")}
+            icon={<IconMedicalCross size={20} stroke={1.75} />}
+            count={filters.allergens.length || undefined}
+          >
             <div className="bg-hf-cream px-4">
               {allergens.map(({ key, label }, index) => (
                 <Row
@@ -143,7 +161,11 @@ function RecipeFiltersContent() {
             </div>
           </AccordionSection>
 
-          <AccordionSection title={t("recipeFilters.dietsTitle")} count={filters.diets.length || undefined}>
+          <AccordionSection
+            title={t("recipeFilters.dietsTitle")}
+            icon={<IconMeat size={20} stroke={1.75} />}
+            count={filters.diets.length || undefined}
+          >
             <div className="bg-hf-cream px-4">
               {RECIPE_DIETS.map((key, index) => (
                 <Row
@@ -157,16 +179,11 @@ function RecipeFiltersContent() {
             </div>
           </AccordionSection>
 
-          <section className="rounded-2xl bg-hf-tan px-4">
-            <Row
-              label={t("recipeFilters.highProtein")}
-              checked={filters.macros.protein === "high"}
-              onChange={(on) => setMacro("protein", "high", on)}
-              divider={false}
-            />
-          </section>
-
-          <AccordionSection title={t("recipeFilters.specialTitle")} count={filters.nutrients.length || undefined}>
+          <AccordionSection
+            title={t("recipeFilters.specialTitle")}
+            icon={<IconLeaf size={20} stroke={1.75} />}
+            count={filters.nutrients.length || undefined}
+          >
             <div className="bg-hf-cream px-4">
               {RECIPE_NUTRIENTS.map((key, index) => (
                 <Row
@@ -182,6 +199,7 @@ function RecipeFiltersContent() {
 
           <AccordionSection
             title={t("recipeFilters.macrosTitle")}
+            icon={<IconList size={20} stroke={1.75} />}
             count={MACRO_OPTIONS.filter((o) => filters.macros[o.key] === o.level).length || undefined}
           >
             <div className="bg-hf-cream px-4">

@@ -21,6 +21,12 @@ export type RegistrationTotals = {
   cholesterolSnapshot?: number | null;
   vitaminASnapshot?: number | null;
   vitaminCSnapshot?: number | null;
+  // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24): alle næringsstoffer fra
+  // src/lib/nutrients.ts, estimeret andel og producentens ±. Når de findes,
+  // har de forrang for de enkelte *Snapshot-felter ovenfor.
+  nutrientSnapshot?: Record<string, number>;
+  nutrientEstimatedSnapshot?: Record<string, number>;
+  nutrientToleranceSnapshot?: Record<string, number>;
   createdAt: string;
 };
 
@@ -42,7 +48,36 @@ export type DailyTotal = {
   cholesterol: number;
   vitaminA: number;
   vitaminC: number;
+  // Summer pr. næringsstof-nøgle (src/lib/nutrients.ts) — inkl. de navngivne
+  // felter ovenfor — samt hvor meget af summen der er estimeret, og summen
+  // af producenternes egne ±.
+  nutrients: Record<string, number>;
+  nutrientsEstimated: Record<string, number>;
+  nutrientsTolerance: Record<string, number>;
 };
+
+// Ældre registreringers enkeltfelter → næringsstof-nøgle.
+const LEGACY_SNAPSHOT_FIELDS = {
+  sugar: "sugarSnapshot",
+  fiber: "fiberSnapshot",
+  salt: "saltSnapshot",
+  potassium: "potassiumSnapshot",
+  calcium: "calciumSnapshot",
+  iron: "ironSnapshot",
+  saturatedFat: "saturatedFatSnapshot",
+  unsaturatedFat: "unsaturatedFatSnapshot",
+  transFat: "transFatSnapshot",
+  cholesterol: "cholesterolSnapshot",
+  vitaminA: "vitaminASnapshot",
+  vitaminC: "vitaminCSnapshot",
+} as const satisfies Record<string, keyof RegistrationTotals>;
+
+type LegacyKey = keyof typeof LEGACY_SNAPSHOT_FIELDS;
+
+function add(target: Record<string, number>, key: string, value: number | null | undefined) {
+  if (typeof value !== "number" || !Number.isFinite(value)) return;
+  target[key] = (target[key] ?? 0) + value;
+}
 
 function dateKey(dateString: string) {
   const date = new Date(dateString);
@@ -68,6 +103,9 @@ function emptyTotal(key: string): DailyTotal {
     cholesterol: 0,
     vitaminA: 0,
     vitaminC: 0,
+    nutrients: {},
+    nutrientsEstimated: {},
+    nutrientsTolerance: {},
   };
 }
 
@@ -81,19 +119,28 @@ export function groupByDay(registrations: RegistrationTotals[]): DailyTotal[] {
     total.protein += registration.proteinSnapshot;
     total.carbs += registration.carbsSnapshot ?? 0;
     total.fat += registration.fatSnapshot ?? 0;
-    total.sugar += registration.sugarSnapshot ?? 0;
-    total.fiber += registration.fiberSnapshot ?? 0;
-    total.salt += registration.saltSnapshot ?? 0;
-    total.potassium += registration.potassiumSnapshot ?? 0;
-    total.calcium += registration.calciumSnapshot ?? 0;
-    total.iron += registration.ironSnapshot ?? 0;
-    total.saturatedFat += registration.saturatedFatSnapshot ?? 0;
-    total.unsaturatedFat += registration.unsaturatedFatSnapshot ?? 0;
-    total.transFat += registration.transFatSnapshot ?? 0;
-    total.cholesterol += registration.cholesterolSnapshot ?? 0;
-    total.vitaminA += registration.vitaminASnapshot ?? 0;
-    total.vitaminC += registration.vitaminCSnapshot ?? 0;
+    const snapshot = registration.nutrientSnapshot;
+    const legacyKeys = new Set<string>(Object.keys(LEGACY_SNAPSHOT_FIELDS));
+    for (const key of legacyKeys) {
+      const legacy = registration[LEGACY_SNAPSHOT_FIELDS[key as LegacyKey]] as number | null | undefined;
+      add(total.nutrients, key, snapshot && key in snapshot ? snapshot[key] : legacy);
+    }
+    for (const [key, value] of Object.entries(snapshot ?? {})) {
+      if (!legacyKeys.has(key)) add(total.nutrients, key, value);
+    }
+    for (const [key, value] of Object.entries(registration.nutrientEstimatedSnapshot ?? {})) {
+      add(total.nutrientsEstimated, key, value);
+    }
+    for (const [key, value] of Object.entries(registration.nutrientToleranceSnapshot ?? {})) {
+      add(total.nutrientsTolerance, key, value);
+    }
     byDay.set(key, total);
+  }
+
+  for (const total of byDay.values()) {
+    for (const key of Object.keys(LEGACY_SNAPSHOT_FIELDS) as LegacyKey[]) {
+      total[key] = total.nutrients[key] ?? 0;
+    }
   }
 
   return Array.from(byDay.values());

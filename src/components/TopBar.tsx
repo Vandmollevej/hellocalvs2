@@ -16,7 +16,7 @@ export function TopBar() {
         <WatchPhoneIcon name={watcher.displayName} title={t("family.watch.onAccount", { name: watcher.displayName })} />
       )}
       <Link href="/profile" aria-label={t("settings.openProfile")}>
-        <ProfileCircle name={status?.activeProfile.displayName ?? ""} />
+        <ProfileCircle name={status?.activeProfile.displayName ?? ""} className="border border-hf-tan-dark" />
       </Link>
     </div>
   );

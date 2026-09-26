@@ -1,6 +1,102 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-25
+Last updated: 2026-09-26
+
+## 2026-09-26: Statistik — kort flyttes rigtigt (intet spøgelse)
+
+`src/components/StatCardsGrid.tsx`: det løftede kort (med stiplet ramme og
+kryds) følger fingeren; der efterlades ingen gennemsigtig kopi. Gitteret viser
+løbende resultatet (landingsfelt markeret, kortet der byttes med står allerede
+på den gamle plads). Ved slip glider kortet kun fra fingeren ind på pladsen —
+ingen efter-animation fra den gamle plads. Samme for overskrifter/skillelinjer.
+Reflow-animationen måles nu lige før DOM-ændringen (scroll-uafhængig).
+Kun lint/build — ikke visuelt testet (brugerens regel 2026-09-26).
+
+## 2026-09-26: Ubrugte kort/grafer — "+ Tilføj" på hvert kort, ikke på blokken
+
+Brugeren afviste "+ Tilføj" pr. accordion (tilføjede hele blokken på én gang).
+`/statistics/unused-cards` og `/statistics/unused-charts`: hvert kort/graf har
+nu "+ Tilføj" i øverste højre hjørne og tilføjes ét ad gangen; knappen på
+accordion-overskrifterne og `AccordionSection`s `action`-plads er fjernet.
+Se DECISIONS 2026-09-25 "Statistiksidens grafer kan redigeres som kortene".
+Lint grøn; `next build` kompilerer, men det lokale typetjek fejler kun i
+ret/opskrift-filerne (`tags`/`images`/`steps`), fordi den delte Prisma-klient
+i `node_modules` er genereret fra et ældre skema — ingen fejl i de ændrede filer.
+
+## 2026-09-26: Billede-dagbog mistede billeder — gemmes nu i IndexedDB
+
+Brugeren tog 5 billeder, efter at have forladt siden var der 2. Billederne lå
+i localStorage (~5 MB på iPhone), så kun de første to blev gemt. Nu IndexedDB
++ nedskalering, fejl vises i stedet for at blive slugt, gamle billeder flyttes
+automatisk. Se `docs/DECISIONS.md` 2026-09-25 "Billede-dagbogens billeder i
+IndexedDB". Pushet sammen med karrusellen (44f7b58). Test på iPhone: tag
+flere billeder, forlad siden, kom tilbage.
+
+## 2026-09-26: Forsidens tal-hjul — ikon til højre, én linje, 7 rækker, vifte
+
+Se `docs/DECISIONS.md` 2026-09-25 "Forsidens tal-hjul" og `docs/UI.md`.
+Ingen "/ mål"-linje, jævn luft, 2 opfundne eksempeltal (søvn, puls) til
+pladserne brugeren ikke har udfyldt, 2° hældning pr. række, ingen beskæring.
+Et tal, der drejer rundt om enden, toner nu ud/ind i stedet for at fare tværs
+hen over hjulet. Test på iPhone efter deploy.
+
+## 2026-09-26: Billede-dagbog — vandret karrusel i loop
+
+Brugerens krav (skærmbillede af HelloFreshs "Kogebog"-karrusel): billederne
+vises ikke længere i et 2-kolonne-grid, men i en vandret karrusel med høje
+kort i samme mål som HelloFreshs høje kort (160 × 333 pt ved 393 pt skærm,
+dvs. 44 % af karrusellens bredde, 16 px mellemrum). Ældste til venstre,
+nyeste til højre; det nyeste står i midten ved start, og med 3+ billeder
+kører den i loop (til højre for det nyeste kommer det ældste). Dato og
+klokkeslæt står under billedet, ikke som overlay. Tryk åbner fuldskærm med
+16 px luft om billedet og datoen nederst; fuldskærm swiper/looper i samme
+retning. Bygget oven på IndexedDB-lagringen (commit ec1732e). Kode:
+`src/components/photo-diary/PhotoCarousel.tsx`, `PhotoViewer.tsx`,
+`src/lib/photo-diary.ts` og `src/app/profile/photo-diary/page.tsx` (lås og
+lagring uændret). Verificeret med lint + tsc; ikke set visuelt (brugerregel
+2026-09-26: brugeren tjekker selv udseendet).
+
+## 2026-09-26: Vægt kalibrering — ét kg-felt pr. forhold, parvis side om side
+
+Tænd/sluk-knapperne (sko, morgen/aften, toilet, mad) er fjernet. Alle fem
+forhold er nu par af modsætninger side om side (Uden/Med tøj, Uden/Med sko,
+Morgen/Aften, Før/Efter toilet, Før/Efter mad), hver med sit eget kg-felt.
+"Opdatér oplysninger" gemmer én vejning pr. udfyldt felt med netop dét
+forhold sat. Rækker uden tøj-valg får databasens standard `clothed = true`.
+
+## 2026-09-25: Usikkerheds-~ + admin "Uncertainties" — bygget (G4)
+
+Beslutninger i `docs/DECISIONS.md` 2026-09-25 (erstatter afklaringen
+2026-09-24 hvor de er i modstrid). Bygget på branch
+`claude/great-booth-2afa0b` og merget til master.
+
+- Grønt tastatur-`~` (`UncertaintyTilde`) + grå linje (`UncertaintyLine`)
+  i "Vis mere"-tabellen på `/add/[id]`, i Statistik-kortene (næringsstoffer)
+  og foran kcal i søgeresultater. Kontakt under Indstillinger → Visning →
+  Usikkerhed (`/settings/display/uncertainty`, standard fra).
+- `src/lib/nutrients.ts` (katalog, Frida-id'er), `src/lib/nutrient-resolution.ts`
+  (egne tal / Frida-reference / lånt estimat), `/api/products/[id]` sender
+  `nutrients`, registreringer gemmer næringsstof-snapshots, `daily-totals` +
+  `stat-cards` bruger dem.
+- Frida-agenten importerer alle mikrodata og genimporterer den nuværende
+  version én gang; generiske ingredienser får mikrodata kopieret.
+- Migration `20260926090000_nutrient_uncertainty` (products, users,
+  registrations, generic_ingredients, ai_product_analyses, scheduled_jobs).
+- Admin `/admin/uncertainties` (4 faner, sortering, rød prik i menuen,
+  produkt-overlay, lightbox med beskåret foto + røde rammer, rettelse →
+  produkt). AI-ruterne for forside/næring/ingredienser returnerer nu
+  koordinater (nye prompt-versioner `*-2026-09-24-regions`).
+
+Runde 2 (samme dag, DECISIONS 2026-09-25 "Uncertainties-tærskler …"):
+70 %-/50 %-tærskler, fanen Billeder, natlig AI-genkørsel (job
+`uncertainty-rerun`), admin `/admin/cron-jobs` med jobtabellen
+`scheduled_jobs` (app-jobs + alle Python-agenter via `job_control.py`),
+± og mikrodata aflæst fra deklarationen, og makroer markeres estimerede,
+når der ikke er aflæst en deklaration.
+
+Deploy: migrationen kører automatisk (`migrate`-servicen), og agent-
+containerne genbygges af deploy-jobbet. Live-verifikation efter deploy
+kræver admin-login.
 
 ## 2026-09-25: Mailflow med Mailjet gennemgået
 
@@ -3667,7 +3763,8 @@ Pr. 2026-08-27, mod den udvidede UI-tjekliste i `docs/DESIGN_V2.md`:
     per-category data plumbing (`src/lib/doctor-share-data.ts`) is next
     touched.
 
-15. **New admin "Uncertainties" page** (requested 2026-09-20, not yet designed
+15. **BUILT 2026-09-25** (see top entry; nightly robot still open).
+    **New admin "Uncertainties" page** (requested 2026-09-20, not yet designed
     or built — direct user request, open questions pending, see
     `docs/DECISIONS.md` 2026-09-20 for items to clarify before starting):
     - New admin nav item "Uncertainties" (may end up being a rename/merge of

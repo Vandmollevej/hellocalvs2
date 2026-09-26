@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { requireAdminUser } from "@/lib/require-admin";
 import { AdminNav } from "@/components/admin/AdminNav";
+import { hasOpenUncertainties } from "@/lib/uncertainties";
 
 export const metadata: Metadata = {
   title: "HELLO CAL — Admin",
@@ -9,10 +10,11 @@ export const metadata: Metadata = {
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const admin = await requireAdminUser();
+  const uncertaintiesDot = admin ? await hasOpenUncertainties().catch(() => false) : false;
 
   return (
     <div className="min-h-dvh bg-page-bg text-text-primary">
-      {admin && <AdminNav email={admin.email} locale={admin.locale} />}
+      {admin && <AdminNav email={admin.email} locale={admin.locale} hasOpenUncertainties={uncertaintiesDot} />}
       <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-8">{children}</main>
     </div>
   );

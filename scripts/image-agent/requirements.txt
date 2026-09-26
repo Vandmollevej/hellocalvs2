@@ -3,3 +3,4 @@ psycopg2-binary==2.9.9
 rembg==2.0.59
 Pillow==10.4.0
 onnxruntime==1.19.2
+tzdata==2024.2

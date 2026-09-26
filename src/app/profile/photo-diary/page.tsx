@@ -1,75 +1,98 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { IconChevronLeft, IconChevronRight, IconTrash, IconX } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { PhotoCarousel } from "@/components/photo-diary/PhotoCarousel";
+import { PhotoViewer } from "@/components/photo-diary/PhotoViewer";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { confirmOnDevice, isPasskeySupported } from "@/lib/passkey-client";
-
-type DiaryPhoto = {
-  id: string;
-  dataUrl: string;
-  takenAt: string;
-};
+import { sortOldestFirst, wrapIndex, type DiaryPhoto } from "@/lib/photo-diary";
+import {
+  addDiaryPhoto,
+  deleteDiaryPhoto,
+  listDiaryPhotos,
+  migrateLegacyDiaryPhotos,
+  prepareDiaryPhoto,
+  type StoredDiaryPhoto,
+} from "@/lib/photo-diary-store";
 
 type DiaryUser = {
   photoDiaryRequiresPasscode: boolean;
 };
 
 // Item 2 (2026-09-02): billede-dagbog til at sammenligne fuld figur/mave over
-// tid. Der findes endnu ingen billede-upload-/blob-infrastruktur i dette
-// projekt (se docs/STATUS.md), så billederne gemmes for nu udelukkende
-// client-side i localStorage — de ryger ikke i databasen og deles ikke
+// tid. Billederne gemmes kun på enheden (IndexedDB, se
+// src/lib/photo-diary-store.ts) — de ryger ikke i databasen og deles ikke
 // mellem enheder. "Kræver telefonens adgangskode for at vise"-kontakten
 // gemmes i databasen (User.photoDiaryRequiresPasscode). Er den slået til,
 // vises billederne først efter Face ID/Touch ID/telefonens kode (WebAuthn,
 // se confirmOnDevice), og siden låser igen, når den går i baggrunden — så
 // billederne ikke vises ved et uheld, fx i bussen. Det er en visningslås,
 // ikke kryptering.
-const STORAGE_KEY = "hello-cal:billede-dagbog";
 
-function loadPhotos(): DiaryPhoto[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    // Tidligere gemte selfies (fjernet 2026-09-25) har stadig et `kind`-felt;
-    // det ignoreres, så de blot vises sammen med de øvrige billeder.
-    return JSON.parse(raw) as DiaryPhoto[];
-  } catch {
-    return [];
-  }
-}
+// Kameraet åbnet fra "Tag billede" kan få siden til at gå i baggrunden. Det
+// må ikke låse siden, ellers ligger det nye billede skjult bag låsen, så det
+// ligner, at det forsvandt.
+const CAMERA_HIDE_GRACE_MS = 3000;
 
-function savePhotos(photos: DiaryPhoto[]) {
-  try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(photos));
-  } catch {
-    // Utilgængeligt lager (privat browsing e.l.) — ignorér.
-  }
-}
-
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat("da-DK", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(value));
+function toView(photo: StoredDiaryPhoto, urls: Set<string>): DiaryPhoto {
+  const url = URL.createObjectURL(photo.blob);
+  urls.add(url);
+  return { id: photo.id, takenAt: photo.takenAt, url };
 }
 
 export default function BilledeDagbogPage() {
   const { t } = useTranslation();
   const [user, setUser] = useState<DiaryUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const [photos, setPhotos] = useState<DiaryPhoto[]>(() => loadPhotos());
+  const [photos, setPhotos] = useState<DiaryPhoto[]>([]);
+  const [photosLoaded, setPhotosLoaded] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [storageError, setStorageError] = useState<"load" | "save" | "delete" | null>(null);
   const [locked, setLocked] = useState(false);
   const [unlocking, setUnlocking] = useState(false);
   const [unlockError, setUnlockError] = useState(false);
-  const [viewerIndex, setViewerIndex] = useState<number | null>(null);
+  // Billedet i karrusellens midte (og i fuldskærm). null = det nyeste.
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [viewerOpen, setViewerOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const cameraOpenedAt = useRef(0);
+  const objectUrls = useRef(new Set<string>());
+
+  const ordered = sortOldestFirst(photos);
+  const activeIndex = Math.max(
+    0,
+    activeId ? ordered.findIndex((photo) => photo.id === activeId) : ordered.length - 1
+  );
+
+  useEffect(() => {
+    const urls = objectUrls.current;
+    let cancelled = false;
+    let migrationFailed = false;
+    migrateLegacyDiaryPhotos()
+      .catch(() => {
+        // De gamle billeder bliver liggende i localStorage til næste forsøg.
+        migrationFailed = true;
+      })
+      .then(() => listDiaryPhotos())
+      .then((stored) => {
+        if (cancelled) return;
+        setPhotos(stored.map((photo) => toView(photo, urls)));
+        if (migrationFailed) setStorageError("load");
+      })
+      .catch(() => {
+        if (!cancelled) setStorageError("load");
+      })
+      .finally(() => {
+        if (!cancelled) setPhotosLoaded(true);
+      });
+    return () => {
+      cancelled = true;
+      urls.forEach((url) => URL.revokeObjectURL(url));
+      urls.clear();
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -95,10 +118,10 @@ export default function BilledeDagbogPage() {
   // næste gang telefonen tages op.
   useEffect(() => {
     function onVisibilityChange() {
-      if (document.visibilityState === "hidden") {
-        setLocked(true);
-        setViewerIndex(null);
-      }
+      if (document.visibilityState !== "hidden") return;
+      if (Date.now() - cameraOpenedAt.current < CAMERA_HIDE_GRACE_MS) return;
+      setLocked(true);
+      setViewerOpen(false);
     }
     document.addEventListener("visibilitychange", onVisibilityChange);
     return () => document.removeEventListener("visibilitychange", onVisibilityChange);
@@ -136,36 +159,75 @@ export default function BilledeDagbogPage() {
     }).catch(() => {});
   }
 
-  function onFileSelected(event: React.ChangeEvent<HTMLInputElement>) {
+  function openCamera() {
+    cameraOpenedAt.current = Date.now();
+    fileInputRef.current?.click();
+  }
+
+  // Billedet vises først, når det er gemt — slår gemningen fejl, siges det
+  // højt i stedet for at vise et billede, der forsvinder igen.
+  async function onFileSelected(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     event.target.value = "";
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const next = [
-        { id: crypto.randomUUID(), dataUrl: String(reader.result), takenAt: new Date().toISOString() },
-        ...photos,
-      ];
-      setPhotos(next);
-      savePhotos(next);
-    };
-    reader.readAsDataURL(file);
+    setSaving(true);
+    setStorageError(null);
+    try {
+      const photo = {
+        id: crypto.randomUUID(),
+        takenAt: new Date().toISOString(),
+        blob: await prepareDiaryPhoto(file),
+      };
+      await addDiaryPhoto(photo);
+      const view = toView(photo, objectUrls.current);
+      setPhotos((current) => [view, ...current]);
+      // Et nyt billede er det nyeste og står derfor i midten.
+      setActiveId(null);
+    } catch {
+      setStorageError("save");
+    } finally {
+      setSaving(false);
+    }
   }
 
-  function remove(id: string) {
-    const next = photos.filter((photo) => photo.id !== id);
-    setPhotos(next);
-    savePhotos(next);
+  async function remove(id: string): Promise<boolean> {
+    setStorageError(null);
+    try {
+      await deleteDiaryPhoto(id);
+    } catch {
+      setStorageError("delete");
+      return false;
+    }
+    const photo = photos.find((entry) => entry.id === id);
+    if (photo) {
+      URL.revokeObjectURL(photo.url);
+      objectUrls.current.delete(photo.url);
+    }
+    setPhotos((current) => current.filter((entry) => entry.id !== id));
+    return true;
   }
 
-  function onViewerDelete(id: string) {
-    remove(id);
-    setViewerIndex((current) => {
-      if (current === null) return current;
-      const remaining = photos.length - 1;
-      if (remaining <= 0) return null;
-      return Math.min(current, remaining - 1);
-    });
+  function selectIndex(index: number) {
+    setActiveId(ordered[index]?.id ?? null);
+  }
+
+  function openViewer(index: number) {
+    selectIndex(index);
+    setViewerOpen(true);
+  }
+
+  async function onViewerDelete(id: string) {
+    const deletedIndex = ordered.findIndex((photo) => photo.id === id);
+    const remaining = ordered.filter((photo) => photo.id !== id);
+    if (!(await remove(id))) return;
+    if (remaining.length === 0) {
+      setActiveId(null);
+      setViewerOpen(false);
+      return;
+    }
+    // Vis det forrige (ældre) billede; slettes det ældste, fortsætter loopet
+    // bagfra til det nyeste.
+    setActiveId(remaining[wrapIndex(deletedIndex - 1, remaining.length)].id);
   }
 
   return (
@@ -212,144 +274,50 @@ export default function BilledeDagbogPage() {
               />
               <button
                 type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="hf-btn-primary w-full py-3.5 text-[15px]"
+                onClick={openCamera}
+                disabled={saving}
+                className="hf-btn-primary w-full py-3.5 text-[15px] disabled:opacity-40"
               >
-                {t("photoDiary.takePhoto")}
+                {saving ? t("photoDiary.saving") : t("photoDiary.takePhoto")}
               </button>
+              {storageError && (
+                <p className="text-center text-[13px] text-hf-red-dark">
+                  {t(
+                    storageError === "load"
+                      ? "photoDiary.storageLoadError"
+                      : storageError === "save"
+                        ? "photoDiary.saveError"
+                        : "photoDiary.deleteError"
+                  )}
+                </p>
+              )}
 
-              <section className="flex flex-col gap-4">
-                {photos.length === 0 ? (
-                  <p className="text-center text-[13px] text-hf-black opacity-60">
-                    {t("photoDiary.noPhotosYet")}
-                  </p>
-                ) : (
-                  <div className="grid grid-cols-2 gap-4">
-                    {photos.map((photo, index) => (
-                      <button
-                        key={photo.id}
-                        type="button"
-                        onClick={() => setViewerIndex(index)}
-                        className="relative overflow-hidden rounded-2xl bg-hf-tan text-left"
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={photo.dataUrl}
-                          alt={t("photoDiary.photoAlt")}
-                          className="h-40 w-full object-cover"
-                        />
-                        <span className="absolute bottom-1 left-1 rounded bg-black/50 px-1.5 py-0.5 text-[10px] text-white">
-                          {formatDate(photo.takenAt)}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </section>
+              {!photosLoaded ? null : ordered.length === 0 ? (
+                <p className="text-center text-[13px] text-hf-black opacity-60">
+                  {t("photoDiary.noPhotosYet")}
+                </p>
+              ) : (
+                <PhotoCarousel
+                  photos={ordered}
+                  index={activeIndex}
+                  onIndexChange={selectIndex}
+                  onOpen={openViewer}
+                />
+              )}
             </>
           )}
         </div>
       )}
 
-      {viewerIndex !== null && photos[viewerIndex] && (
+      {viewerOpen && ordered[activeIndex] && (
         <PhotoViewer
-          photos={photos}
-          index={viewerIndex}
-          onIndexChange={setViewerIndex}
-          onClose={() => setViewerIndex(null)}
+          photos={ordered}
+          index={activeIndex}
+          onIndexChange={selectIndex}
+          onClose={() => setViewerOpen(false)}
           onDelete={onViewerDelete}
-          t={t}
         />
       )}
     </HfScreen>
-  );
-}
-
-// Fejlretninger/FEJLLISTE.md #21: fuld-højde portræt-visning med swipe frem/
-// tilbage og dato under billedet, i stedet for kun det faste 2-kolonne-grid.
-function PhotoViewer({
-  photos,
-  index,
-  onIndexChange,
-  onClose,
-  onDelete,
-  t,
-}: {
-  photos: DiaryPhoto[];
-  index: number;
-  onIndexChange: (index: number) => void;
-  onClose: () => void;
-  onDelete: (id: string) => void;
-  t: (key: string) => string;
-}) {
-  const startX = useRef<number | null>(null);
-  const photo = photos[index];
-
-  function handlePointerDown(event: React.PointerEvent) {
-    startX.current = event.clientX;
-  }
-
-  function handlePointerUp(event: React.PointerEvent) {
-    if (startX.current === null) return;
-    const delta = event.clientX - startX.current;
-    startX.current = null;
-    const SWIPE_THRESHOLD = 50;
-    if (delta < -SWIPE_THRESHOLD && index < photos.length - 1) onIndexChange(index + 1);
-    else if (delta > SWIPE_THRESHOLD && index > 0) onIndexChange(index - 1);
-  }
-
-  if (!photo) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-black">
-      <div className="flex items-center justify-between px-4 py-3">
-        <button type="button" onClick={onClose} aria-label={t("common.close")} className="text-white">
-          <IconX size={24} />
-        </button>
-        <button
-          type="button"
-          onClick={() => onDelete(photo.id)}
-          aria-label={t("photoDiary.deleteAria")}
-          className="text-white"
-        >
-          <IconTrash size={20} />
-        </button>
-      </div>
-
-      <div
-        className="relative flex flex-1 items-center justify-center overflow-hidden"
-        onPointerDown={handlePointerDown}
-        onPointerUp={handlePointerUp}
-      >
-        {index > 0 && (
-          <button
-            type="button"
-            onClick={() => onIndexChange(index - 1)}
-            aria-label={t("photoDiary.previousPhoto")}
-            className="absolute left-2 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-white"
-          >
-            <IconChevronLeft size={20} />
-          </button>
-        )}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={photo.dataUrl}
-          alt={t("photoDiary.photoAlt")}
-          className="h-full w-full object-contain"
-        />
-        {index < photos.length - 1 && (
-          <button
-            type="button"
-            onClick={() => onIndexChange(index + 1)}
-            aria-label={t("photoDiary.nextPhoto")}
-            className="absolute right-2 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-white"
-          >
-            <IconChevronRight size={20} />
-          </button>
-        )}
-      </div>
-
-      <p className="px-4 py-4 text-center text-[13px] text-white/80">{formatDate(photo.takenAt)}</p>
-    </div>
   );
 }

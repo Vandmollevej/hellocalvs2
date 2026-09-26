@@ -251,7 +251,7 @@
     "terms": "Terms",
     "privacyPolicy": "Privacy policy",
     "dataTracking": "Data tracking",
-    "chooseCountry": "Choose your country",
+    "languageAndRegion": "Language and region",
     "messages": "Messages",
     "notifications": "Communication",
     "inviteFriend": "Invite a friend",
@@ -275,7 +275,10 @@
   "displaySettings": {
     "title": "Recommended limits",
     "warnOnRecommendedLimits": "Highlight values above/below the recommended normal range",
-    "warnOnRecommendedLimitsDescription": "Shows a 1 px dark-red border around statistic cards when a documented recommendation for your region and profile is exceeded. Missing data is never flagged."
+    "warnOnRecommendedLimitsDescription": "Shows a 1 px dark-red border around statistic cards when a documented recommendation for your region and profile is exceeded. Missing data is never flagged.",
+    "uncertainty": "Uncertainty",
+    "autoExpandUncertainty": "Expand uncertainty automatically",
+    "autoExpandUncertaintyDescription": "A green ~ always appears in front of values we have estimated because the manufacturer does not state them. Turn this on to show the grey uncertainty line under the value without tapping."
   },
   "menstrualCycleSettings": {
     "intro": "Log your menstrual cycle and get it as an option in the add menu.",
@@ -606,7 +609,11 @@
     "statusFavorite": "Favourite",
     "helloFresh": "HelloFresh",
     "kcalTotal": "{kcal} kcal in total",
-    "kcalServing": "{kcal} kcal per serving"
+    "kcalServing": "{kcal} kcal per serving",
+    "trendingTitle": "Trending right now",
+    "trendingEmpty": "There are no shared dishes yet",
+    "favoritesTitle": "My favourites",
+    "favoritesEmpty": "You have no favourites yet"
   },
   "recipeFilters": {
     "title": "Filters",
@@ -620,7 +627,9 @@
     "sortTitle": "Sort by",
     "allergiesTitle": "Allergies",
     "dietsTitle": "Diets",
-    "highProtein": "High in protein",
+    "personsTitle": "Number of people",
+    "personsLabel": "People",
+    "displayTitle": "Results display",
     "specialTitle": "Special diet",
     "macrosTitle": "Macro focus",
     "reset": "Reset filters",
@@ -677,6 +686,7 @@
       "vitaminC": "High in vitamin C"
     },
     "macros": {
+      "protein-high": "High in protein",
       "protein-low": "Low in protein",
       "carbs-high": "High in carbs",
       "carbs-low": "Low in carbs",
@@ -915,7 +925,7 @@
     "actions": {
       "photoDiary": "Photo diary",
       "newWeight": "Enter new weight",
-      "target": "Enter goal",
+      "target": "Goal",
       "bodyMeasurements": "Body measurements"
     },
     "row": {
@@ -1173,7 +1183,11 @@
     "previousPhoto": "Previous photo",
     "nextPhoto": "Next photo",
     "unlocking": "Confirming…",
-    "unlockError": "Couldn't confirm. Try again."
+    "unlockError": "Couldn't confirm. Try again.",
+    "saving": "Saving photo…",
+    "saveError": "The photo couldn't be saved on this phone. Try again.",
+    "deleteError": "The photo couldn't be deleted. Try again.",
+    "storageLoadError": "The photos couldn't be loaded from this phone."
   },
   "registration": {
     "title": "Registration",
@@ -1232,7 +1246,26 @@
       "vitaminA": "Vitamin A",
       "vitaminC": "Vitamin C",
       "calcium": "Calcium",
-      "iron": "Iron"
+      "iron": "Iron",
+      "salt": "Salt",
+      "magnesium": "Magnesium",
+      "zinc": "Zinc",
+      "copper": "Copper",
+      "manganese": "Manganese",
+      "selenium": "Selenium",
+      "phosphorus": "Phosphorus",
+      "iodine": "Iodine",
+      "vitaminD": "Vitamin D",
+      "vitaminE": "Vitamin E",
+      "vitaminK": "Vitamin K",
+      "vitaminB1": "Vitamin B1 (thiamine)",
+      "vitaminB2": "Vitamin B2 (riboflavin)",
+      "vitaminB3": "Vitamin B3 (niacin)",
+      "vitaminB5": "Vitamin B5 (pantothenic acid)",
+      "vitaminB6": "Vitamin B6",
+      "vitaminB7": "Vitamin B7 (biotin)",
+      "vitaminB9": "Vitamin B9 (folate)",
+      "vitaminB12": "Vitamin B12"
     }
   },
   "photoAward": {
@@ -1322,7 +1355,7 @@
     "searchPlaceholder": "Search all cards",
     "searchResults": "Search results",
     "noSearchResults": "No cards match your search.",
-    "addAll": "+ Add",
+    "add": "+ Add",
     "noCardsYet": "No cards here yet.",
     "addHeading": "+ Heading",
     "addDivider": "+ Divider"

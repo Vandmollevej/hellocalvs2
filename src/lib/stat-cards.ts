@@ -33,6 +33,7 @@ import { IconWaterGlass } from "@/components/icons/WaterGlass";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
 import type { DailyTotal } from "@/lib/daily-totals";
 import { getSportMeta } from "@/lib/sport-icons";
+import { NUTRIENT_BY_KEY, isNutrientKey, type NutrientKey } from "@/lib/nutrients";
 import {
   alcoholTotals,
   formatAmount,
@@ -61,6 +62,10 @@ export type StatCardValue = {
   // (gated behind User.warnOnRecommendedLimits) has something real to read
   // once one exists, instead of inventing thresholds now.
   outsideRecommendedRange?: boolean;
+  // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24): sat på næringsstof-kort,
+  // når en del af gennemsnittet er estimeret og/eller producenterne selv
+  // oplyser en ±. StatCardsGrid viser ~ foran værdien og en grå linje.
+  uncertainty?: { estimated: number | null; tolerance: number | null; unit: string; digits: number };
 };
 
 export type ActivityTotals = {
@@ -476,14 +481,34 @@ function computeSportStatCards(activities: ActivityTotals[]): StatCardValue[] {
   });
 }
 
+// Næringsstof-kort beregnes ud fra registreringernes næringsstof-snapshots
+// (src/lib/daily-totals.ts), når der findes nogen for nøglen — ellers bevares
+// kortets egen værdi (fx en HealthMetric fra en companion-app eller "—").
+function nutrientCardValue(data: StatCardData, key: NutrientKey, fallback: string) {
+  if (!data.days.some((d) => d.nutrients?.[key] !== undefined)) return { value: fallback };
+  const def = NUTRIENT_BY_KEY[key];
+  const estimated = average(data.days, (d) => d.nutrientsEstimated?.[key] ?? 0);
+  const tolerance = average(data.days, (d) => d.nutrientsTolerance?.[key] ?? 0);
+  return {
+    value: `${formatNumber(average(data.days, (d) => d.nutrients?.[key] ?? 0), def.digits)} ${def.unit}`,
+    uncertainty:
+      estimated > 0 || tolerance > 0
+        ? { estimated: estimated > 0 ? estimated : null, tolerance: tolerance > 0 ? tolerance : null, unit: def.unit, digits: def.digits }
+        : undefined,
+  };
+}
+
 export function computeStatCards(data: StatCardData): StatCardValue[] {
-  const staticCards = STAT_CARD_DEFS.map((def) => ({
-    key: def.key,
-    label: def.label,
-    icon: def.icon,
-    iconSrc: def.iconSrc,
-    value: def.compute(data),
-  }));
+  const staticCards = STAT_CARD_DEFS.map((def) => {
+    const value = def.compute(data);
+    return {
+      key: def.key,
+      label: def.label,
+      icon: def.icon,
+      iconSrc: def.iconSrc,
+      ...(isNutrientKey(def.key) ? nutrientCardValue(data, def.key, value) : { value }),
+    };
+  });
   const sportCards = data.activities ? computeSportStatCards(data.activities) : [];
   return [...staticCards, ...sportCards];
 }

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser, unauthorized } from "@/lib/session";
-import { canActFor, logProfileAccess } from "@/lib/family-access";
+import { canActFor, logProfileAccess, registrationCopyData } from "@/lib/family-access";
 import { readJson } from "@/lib/family-api";
 
 // "Kopier til konto": en af den indloggedes egne registreringer kopieres til
@@ -23,10 +23,8 @@ export async function POST(req: Request) {
   const source = await prisma.registration.findUnique({ where: { id: registrationId } });
   if (!source || source.userId !== login.id) return NextResponse.json({ code: "notFound" }, { status: 404 });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { id, userId, createdById, ...snapshot } = source;
   const copy = await prisma.registration.create({
-    data: { ...snapshot, userId: targetProfileId, createdById: login.id },
+    data: { ...registrationCopyData(source, 1), userId: targetProfileId, createdById: login.id },
   });
   await logProfileAccess(targetProfileId, login.id, "CREATED", "registrations");
   return NextResponse.json({ registration: { id: copy.id } }, { status: 201 });

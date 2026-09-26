@@ -29,6 +29,9 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 import { isAlternativeServingConfident } from "@/lib/alternative-servings";
 import type { AlternativeServing } from "@/lib/product-analysis-types";
 import { fromDisplayAmount, getProductDisplayUnit, toDisplayAmount } from "@/lib/product-display-unit";
+import { NUTRIENT_BY_KEY, type ResolvedNutrient } from "@/lib/nutrients";
+import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
+import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
 
 const PHOTO_AWARD_TYPE_KEY: Record<string, "photoAward.photoTypeBarcode" | "photoAward.photoTypeNutrition" | "photoAward.photoTypeIngredients"> = {
   BARCODE: "photoAward.photoTypeBarcode",
@@ -96,6 +99,9 @@ type Product = {
   // som ikke understøtter ingredienser endnu.
   isGenericIngredient?: boolean;
   hasKnownNutrition?: boolean;
+  // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24): alle næringsstoffer ud
+  // over makroerne pr. 100 g fra /api/products/[id], med estimeret-flag.
+  nutrients?: ResolvedNutrient[];
 };
 
 type ProfileUser = {
@@ -103,6 +109,8 @@ type ProfileUser = {
   showAllergens: boolean;
   allergenVisibility: Record<string, boolean> | null;
   showExtendedNutrition: boolean;
+  // Indstillinger → Visning → Usikkerhed: fold de grå linjer ud automatisk.
+  autoExpandUncertainty?: boolean;
   showAdditives: boolean;
   showToxins: boolean;
 };
@@ -139,6 +147,9 @@ export default function AddPage() {
   const [extendedNutritionOpen, setExtendedNutritionOpen] = useState(true);
   const [toxinsOpen, setToxinsOpen] = useState(false);
   const [openToxin, setOpenToxin] = useState<ToxinInfo | null>(null);
+  // Rækker hvor brugeren selv har vendt den grå usikkerhedslinje i forhold
+  // til udgangspunktet (profilens autoExpandUncertainty).
+  const [uncertaintyToggled, setUncertaintyToggled] = useState<Set<string>>(() => new Set());
   const [additiveNames, setAdditiveNames] = useState<Record<string, string>>({});
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoritePending, setFavoritePending] = useState(false);
@@ -299,6 +310,23 @@ export default function AddPage() {
     const fromPer100g = (value: number | null | undefined) =>
       typeof value === "number" ? value * factor : null;
 
+    // Opløste næringsstoffer fra serveren (varedeklaration/Frida/estimat) —
+    // de gamle felter nedenfor er kun fallback for et ældre API-svar.
+    if (product.nutrients?.length) {
+      return product.nutrients.map((n) => {
+        const def = NUTRIENT_BY_KEY[n.key];
+        return {
+          key: n.key,
+          value: n.per100g * factor,
+          unit: def.unit,
+          digits: def.digits,
+          estimated: n.estimated,
+          tolerance: n.tolerancePer100g !== null ? n.tolerancePer100g * factor : null,
+          label: t(`addProduct.nutrient.${n.key}`),
+        };
+      });
+    }
+
     const rows: { key: string; value: number | null; unit: string; digits?: number }[] = [
       { key: "saturatedFat", value: fromPer100g(product.saturatedFatPer100g), unit: "g", digits: 1 },
       { key: "unsaturatedFat", value: fromPer100g(product.unsaturatedFatPer100g), unit: "g", digits: 1 },
@@ -316,7 +344,12 @@ export default function AddPage() {
 
     return rows
       .filter((row): row is { key: string; value: number; unit: string; digits?: number } => row.value !== null)
-      .map((row) => ({ ...row, label: t(`addProduct.nutrient.${row.key}`) }));
+      .map((row) => ({
+        ...row,
+        estimated: false,
+        tolerance: null as number | null,
+        label: t(`addProduct.nutrient.${row.key}`),
+      }));
   }, [product, amount, factor, t]);
 
   const visibleAllergens = useMemo(() => {
@@ -806,24 +839,70 @@ export default function AddPage() {
                   </button>
                   {extendedNutritionOpen && (
                     <div className="mt-4 flex flex-col overflow-hidden rounded-2xl bg-hf-tan">
-                      {extendedNutrition.map((row, index) => (
-                        <div
-                          key={row.key}
-                          className={`flex items-center justify-between px-4 py-2.5 text-[13px] text-hf-black ${
-                            index < extendedNutrition.length - 1 ? "border-b border-hf-tan-dark" : ""
-                          }`}
-                        >
-                          <span className="flex items-center gap-1.5">
-                            {UNHEALTHY_FAT_KEYS.has(row.key) && (
-                              <IconAlertTriangle size={15} className="shrink-0" aria-label={t("addProduct.unhealthyFat")} />
+                      {extendedNutrition.map((row, index) => {
+                        // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24): ~ vises
+                        // altid ved estimerede værdier; den grå linje er foldet
+                        // ind, medmindre brugeren har slået automatisk udfoldning
+                        // til — et tryk på rækken vender det.
+                        const hasUncertainty = row.estimated || (row.tolerance ?? 0) > 0;
+                        const expanded =
+                          hasUncertainty &&
+                          Boolean(profile?.autoExpandUncertainty) !== uncertaintyToggled.has(row.key);
+                        const rowClass = `flex w-full flex-wrap items-center justify-between px-4 py-2.5 text-left text-[13px] text-hf-black ${
+                          index < extendedNutrition.length - 1 ? "border-b border-hf-tan-dark" : ""
+                        }`;
+                        const content = (
+                          <>
+                            <span className="flex items-center gap-1">
+                              {UNHEALTHY_FAT_KEYS.has(row.key) && (
+                                <IconAlertTriangle size={15} className="shrink-0" aria-label={t("addProduct.unhealthyFat")} />
+                              )}
+                              <span className="opacity-70">{row.label}</span>
+                              {hasUncertainty && (
+                                <IconChevronDown
+                                  size={13}
+                                  className={`transition-transform ${expanded ? "rotate-180" : ""}`}
+                                />
+                              )}
+                            </span>
+                            <span className="font-medium">
+                              {row.estimated && <UncertaintyTilde />}
+                              {formatDaNumber(row.value, row.digits ?? 0)} {row.unit}
+                            </span>
+                            {expanded && (
+                              <UncertaintyLine
+                                className="mt-1 w-full text-right"
+                                estimated={row.estimated ? row.value : null}
+                                tolerance={row.tolerance}
+                                unit={row.unit}
+                                digits={row.digits ?? 0}
+                              />
                             )}
-                            <span className="opacity-70">{row.label}</span>
-                          </span>
-                          <span className="font-medium">
-                            {formatDaNumber(row.value, row.digits ?? 0)} {row.unit}
-                          </span>
-                        </div>
-                      ))}
+                          </>
+                        );
+                        return hasUncertainty ? (
+                          <button
+                            key={row.key}
+                            type="button"
+                            className={rowClass}
+                            aria-expanded={expanded}
+                            onClick={() =>
+                              setUncertaintyToggled((current) => {
+                                const next = new Set(current);
+                                if (next.has(row.key)) next.delete(row.key);
+                                else next.add(row.key);
+                                return next;
+                              })
+                            }
+                          >
+                            {content}
+                          </button>
+                        ) : (
+                          <div key={row.key} className={rowClass}>
+                            {content}
+                          </div>
+                        );
+                      })}
                       <p className="px-4 py-2.5 text-[11px] text-hf-black opacity-50">
                         {t("addProduct.extendedNutritionDisclaimer")}
                       </p>

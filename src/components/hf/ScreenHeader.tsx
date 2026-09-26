@@ -107,7 +107,11 @@ export function ScreenHeader({
             aria-label={t("settings.openAppSettings")}
             className="flex h-full w-full items-center justify-center text-hf-white focus-visible:outline-2 focus-visible:outline-hf-white"
           >
-            <IconSettings size={24} />
+            {/* Samme størrelse som profilcirklen (h-8 = 32 px). Tabler-
+                tandhjulets ydre kant fylder ca. 19,5 af ikonets 24 enheder,
+                så 39 px giver et tandhjul på ~32 px; stroke 1.54 holder
+                stregen på 2,5 px som tilbagepilen (HfChevron). */}
+            <IconSettings size={39} stroke={1.54} />
           </Link>
         ) : (
           <Link href="/profile" aria-label={t("settings.openProfile")}>

@@ -5,3 +5,4 @@ numpy==1.26.4
 opencv-python-headless==4.10.0.84
 scikit-image==0.24.0
 transformers==4.44.2
+tzdata==2024.2
