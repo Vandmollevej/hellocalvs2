@@ -576,7 +576,11 @@
     "statusFavorite": "Favorit",
     "helloFresh": "HelloFresh",
     "kcalTotal": "{kcal} kcal i alt",
-    "kcalServing": "{kcal} kcal pr. portion"
+    "kcalServing": "{kcal} kcal pr. portion",
+    "trendingTitle": "Trender netop nu",
+    "trendingEmpty": "Der er ingen delte retter endnu",
+    "favoritesTitle": "Mine favoritter",
+    "favoritesEmpty": "Du har endnu ingen favoritter"
   },
   "recipeFilters": {
     "title": "Filtre",

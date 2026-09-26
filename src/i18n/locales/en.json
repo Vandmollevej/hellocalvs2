@@ -576,7 +576,11 @@
     "statusFavorite": "Favourite",
     "helloFresh": "HelloFresh",
     "kcalTotal": "{kcal} kcal in total",
-    "kcalServing": "{kcal} kcal per serving"
+    "kcalServing": "{kcal} kcal per serving",
+    "trendingTitle": "Trending right now",
+    "trendingEmpty": "There are no shared dishes yet",
+    "favoritesTitle": "My favourites",
+    "favoritesEmpty": "You have no favourites yet"
   },
   "recipeFilters": {
     "title": "Filters",
