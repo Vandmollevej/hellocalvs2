@@ -70,6 +70,18 @@
     "missingToken": "Nulstillingslinket mangler eller er ugyldigt.",
     "requestNewLink": "Anmod om et nyt link"
   },
+  "verifyEmail": {
+    "title": "Bekræft e-mail",
+    "checking": "Bekræfter din e-mail…",
+    "success": "Tak! Din e-mail er bekræftet.",
+    "invalid": "Linket er ugyldigt eller udløbet. Log ind og tryk \"Send igen\" i bjælken øverst for at få et nyt.",
+    "continue": "Fortsæt til Hello Cal",
+    "banner": "Bekræft din e-mail via linket, vi har sendt dig.",
+    "bannerSent": "Ny mail sendt — tjek også spam.",
+    "bannerError": "Kunne ikke sende mailen. Prøv igen om lidt.",
+    "resend": "Send igen",
+    "dismiss": "Luk"
+  },
   "country": {
     "title": "Vælg dit land",
     "back": "Tilbage",

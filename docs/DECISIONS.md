@@ -15,6 +15,7 @@ bekræftet, kobles kontoen på, men dens adgangskode og passkeys fjernes
 først (beskytter mod konti oprettet med en fremmed e-mail). Mails sendes
 nu straks fra `queueMessage()` i stedet for kun ved scheduler-tick (15 min).
 
+
 ## 2026-09-25: Global lodret rytme (8/16/32) og sorte primærknapper
 
 Brugerens krav: "stringent opsætning på tværs af hele sitet med rene linjer og

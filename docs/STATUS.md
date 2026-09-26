@@ -2,7 +2,13 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Mailflow med Mailjet gennemgået
 
+- Glemt adgangskode: virkede allerede; mail sendes nu med det samme og har
+  et klikbart link.
+- Tilmelding: sender nu bekræftelsesmail (blød model, se DECISIONS).
+- Mailjet-afsender `peter@packroff.com` er aktiv, men SPF/DKIM mangler i
+  DNS (GoDaddy) → mails kan lande i spam.
 
 ## 2026-09-25: Backup-scriptet fylder ikke længere 22 GB
 
