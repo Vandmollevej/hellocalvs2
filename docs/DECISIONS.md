@@ -2425,3 +2425,10 @@ både når integrationen slås til og bagefter.
   `GET /api/integrations/healthkit/export` giver brugerens valg og de data,
   der skal skrives; ingest filtrerer efter valget
   (docs/HEALTHKIT_COMPANION.md). Den native app er stadig ikke bygget.
+
+## 2026-09-26: Integrationer: start-vægt og målingstidspunkt
+
+- Vejninger fra Withings, Google Health, Fitbit, Apple Health/Health Connect tilføjes altid som nye vejninger med målingens eget tidspunkt (`weighedAt`), aldrig synkroniseringstidspunktet. "Aktuel vægt" er dermed seneste vejning (SPECIFICATION §4).
+- Start-vægten (`User.weightKg`) overskrives aldrig af en integration; er den tom, bliver den ældste synkroniserede vejning start-vægt.
+- Samme vejning (±2 min, ±0,05 kg) eller træning (samme sport, ±5 min) fra to kilder gemmes kun én gang.
+- Sportstyper normaliseres til Statistik-nøglerne (`normalizeSportType` i `src/lib/sport-icons.ts`); dagssummer (fx skridt) opdateres ved næste synkronisering. Kode: `src/lib/integrations/store-items.ts`.
