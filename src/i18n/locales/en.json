@@ -775,7 +775,7 @@
       "backToApp": "Go back to the app"
     },
     "actions": {
-      "photoDiary": "Photo diary",
+      "photoDiary": "Diary",
       "newWeight": "Enter new weight",
       "target": "Enter goal",
       "bodyMeasurements": "Body measurements"
@@ -1396,6 +1396,8 @@
     "skip": "Not now",
     "enabling": "Turning on…",
     "error": "Face ID could not be turned on. You can try again in Settings.",
-    "enabled": "Face ID is turned on for login."
+    "enabled": "Face ID is turned on for login.",
+    "active": "Face ID enabled",
+    "activate": "Enable Face ID"
   }
 }

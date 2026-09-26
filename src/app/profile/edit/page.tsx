@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconCamera, IconLock, IconRulerMeasure, IconTarget } from "@tabler/icons-react";
+import { IconCamera, IconLock, IconTarget } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { IconBathScale } from "@/components/hf/IconBathScale";
 import { BIRTH_DATE_MIN_AGE_YEARS, BirthDatePicker } from "@/components/ui/BirthDatePicker";
@@ -11,6 +11,7 @@ import { latestTrendWeight, type MealSample, type WeightSample } from "@/lib/wei
 import { computeAge } from "@/lib/age";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { FaceIdButton } from "@/components/FaceIdButton";
+import { IconBody } from "@/components/icons/IconBody";
 
 type Sex = "FEMALE" | "MALE";
 
@@ -56,6 +57,9 @@ function Field({
     </label>
   );
 }
+
+const tileClass =
+  "flex aspect-square min-w-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-hf-tan px-1 text-center text-[12px] font-semibold leading-tight text-hf-black";
 
 const inputClass =
   "rounded-xl bg-hf-tan px-4 py-3 text-[15px] text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green";
@@ -171,6 +175,17 @@ export default function ProfileEditPage() {
   return (
     <HfScreen
       title={t("profile.section.profile")}
+      footer={
+        user ? (
+          <button
+            type="button"
+            onClick={() => router.push("/profile/change-password")}
+            className="hf-btn-primary hf-type-button h-12 w-full px-4"
+          >
+            {t("profile.changePasswordButton")}
+          </button>
+        ) : undefined
+      }
     >
       {loading || !user ? (
         <p className="p-6 text-center text-[14px] text-hf-black opacity-60">
@@ -282,49 +297,29 @@ export default function ProfileEditPage() {
             </Field>
           </div>
 
-          <div className="flex gap-3">
-            <button
-              type="button"
-              onClick={() => router.push("/profile/photo-diary")}
-              className="flex flex-1 flex-col items-center gap-1.5 rounded-xl bg-hf-tan px-2 py-3 text-center text-[13px] font-semibold text-hf-black"
-            >
-              <IconCamera size={20} />
+          {/* Fire ens, kvadratiske genveje (1:1) — teksten må ikke gøre en kasse større. */}
+          <div className="mt-2 grid grid-cols-4 gap-2.5">
+            <button type="button" onClick={() => router.push("/profile/photo-diary")} className={tileClass}>
+              <IconCamera size={34} stroke={1.6} />
               {t("profile.actions.photoDiary")}
             </button>
-            <button
-              type="button"
-              onClick={() => router.push("/profile/weight-calibration")}
-              className="flex flex-1 flex-col items-center gap-1.5 rounded-xl bg-hf-tan px-2 py-3 text-center text-[13px] font-semibold text-hf-black"
-            >
-              <IconBathScale size={20} />
+            <button type="button" onClick={() => router.push("/profile/weight-calibration")} className={tileClass}>
+              <IconBathScale size={34} />
               {t("profile.actions.newWeight")}
             </button>
-            <button
-              type="button"
-              onClick={() => router.push("/profile/goals")}
-              className="flex flex-1 flex-col items-center gap-1.5 rounded-xl bg-hf-tan px-2 py-3 text-center text-[13px] font-semibold text-hf-black"
-            >
-              <IconTarget size={20} />
+            <button type="button" onClick={() => router.push("/profile/goals")} className={tileClass}>
+              <IconTarget size={34} stroke={1.6} />
               {t("profile.actions.target")}
             </button>
-            <button
-              type="button"
-              onClick={() => router.push("/profile/body-measurements")}
-              className="flex flex-1 flex-col items-center gap-1.5 rounded-xl bg-hf-tan px-2 py-3 text-center text-[13px] font-semibold text-hf-black"
-            >
-              <IconRulerMeasure size={20} />
+            <button type="button" onClick={() => router.push("/profile/body-measurements")} className={tileClass}>
+              <IconBody size={34} sex={user.sex} />
               {t("profile.actions.bodyMeasurements")}
             </button>
           </div>
 
-          <button
-            type="button"
-            onClick={() => router.push("/profile/change-password")}
-            className="hf-btn-primary hf-type-button mt-4 h-12 w-full px-4"
-          >
-            {t("profile.changePasswordButton")}
-          </button>
-          <FaceIdButton />
+          <div className="mt-4">
+            <FaceIdButton />
+          </div>
         </div>
       )}
     </HfScreen>
