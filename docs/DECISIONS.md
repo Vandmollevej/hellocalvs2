@@ -2,6 +2,31 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-26: Support-indbakke (beskedtjeneste i admin)
+
+- "Kontakt os"-henvendelser er nu tråde: `SupportMessage` (USER / SUPPORT /
+  NOTE). Den første besked ligger både i `SupportRequest.message` (historik)
+  og som første `SupportMessage`. Interne noter (NOTE) vises aldrig for brugeren.
+- Prioritet `HIGH/NORMAL/LOW` sættes af admin; nye sager er `NORMAL`.
+- "Ikke besvaret" = `awaitingReply` (seneste besked er fra brugeren).
+  Admin kan også markere besvaret/ikke besvaret manuelt. En brugerbesked i en
+  løst sag genåbner den.
+- Admin `/admin/support`: standard = åbne sager, ældste øverst (efter
+  brugerens seneste besked); "Senest modtaget øverst" som alternativ.
+  Filtre: status (Åbne/Ikke besvaret/Løste/Alle), 3 prioritets-flueben,
+  søgning (emne, navn, e-mail, sagsnr.). Filteret ligger i URL'en.
+  Sagen åbnes på `/admin/support/[id]` med svar, intern note,
+  "Send og marker som løst", prioritet og status.
+- Svar sendes via `queueMessage("SUPPORT_REPLY")` (mail + push + brugerens
+  indbakke, ikke fravælgelig) med link til `/settings/support/requests/[id]`,
+  hvor brugeren ser tråden og kan svare.
+- 24-timers-regel: scheduleren (hvert 15. min) sender én samlet mail
+  (`SUPPORT_OVERDUE_ADMIN`) til `ADMIN_NOTIFICATION_EMAIL` med alle sager,
+  der netop har passeret 24 timer uden svar. `overdueAlertSentAt` sikrer én
+  advarsel pr. ubesvaret besked; nulstilles ved svar/ny brugerbesked.
+  Eksisterende åbne sager markeres som allerede advaret ved migrationen.
+
+## 2026-09-26: Redigering af målsætninger
 ## 2026-09-26: Én overskrift med streger — kun `.hf-type-section-title`
 
 Brugerens krav (gentaget): alle overskrifter med streger ("──── Tekst ────")

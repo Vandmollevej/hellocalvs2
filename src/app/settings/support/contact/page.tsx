@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { IconChevronDown } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { TextField } from "@/components/hf/TextField";
@@ -17,7 +18,7 @@ export default function SupportContactPage() {
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [sentCase, setSentCase] = useState<string | null>(null);
+  const [sentId, setSentId] = useState<string | null>(null);
 
   async function send(event: React.FormEvent) {
     event.preventDefault();
@@ -38,7 +39,7 @@ export default function SupportContactPage() {
         setError(t("settings.support.contactError"));
         return;
       }
-      setSentCase(data.request.id.slice(-8).toUpperCase());
+      setSentId(data.request.id);
     } catch {
       setError(t("settings.support.contactError"));
     } finally {
@@ -49,10 +50,18 @@ export default function SupportContactPage() {
   return (
     <HfScreen title={t("settings.support.contact")}>
       <div className="hf-page hf-page--sections">
-        {sentCase ? (
-          <p role="status" className="hf-type-body">
-            {t("settings.support.contactSent", { caseCode: sentCase })}
-          </p>
+        {sentId ? (
+          <>
+            <p role="status" className="hf-type-body">
+              {t("settings.support.contactSent", { caseCode: sentId.slice(-8).toUpperCase() })}
+            </p>
+            <Link
+              href={`/settings/support/requests/${sentId}`}
+              className="hf-btn-primary hf-type-button flex h-12 w-full items-center justify-center"
+            >
+              {t("settings.support.openCase")}
+            </Link>
+          </>
         ) : (
           <form onSubmit={send} className="flex flex-col gap-4">
             <label className="flex flex-col gap-1">

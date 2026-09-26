@@ -2,6 +2,17 @@
 
 Last updated: 2026-09-26
 
+## 2026-09-26: Support-indbakke i admin
+
+Se DECISIONS 2026-09-26 "Support-indbakke". Tråde, svar, interne noter,
+prioritet (3 niveauer), filtre/sortering, "Ikke besvaret"-markering og
+24-timers-mail til admin. Brugeren ser svar under Indstillinger → Support →
+Mine henvendelser. Migration `20260926150000_support_inbox`. Lint +
+typecheck + build grønne. Ikke testet mod rigtig DB/mail.
+
+Next work:
+1. Deploy med migrationen.
+
 ## 2026-09-26: Alle overskrifter med streger bruger samme klasse
 
 Se DECISIONS 2026-09-26 "Én overskrift med streger". `SectionSeparator` og

@@ -1843,6 +1843,9 @@ enum MessageEvent {
   DOCTOR_SHARE_INVITATION
   NEW_DEVICE_LOGIN
   ADMIN_MESSAGE
+  // Beskedtjeneste (docs/DECISIONS.md 2026-09-26 "Support-indbakke").
+  SUPPORT_REPLY
+  SUPPORT_OVERDUE_ADMIN
 }
 
 enum MessageChannel {
@@ -2161,24 +2164,71 @@ enum SupportRequestStatus {
   RESOLVED
 }
 
+// Beskedtjeneste (docs/DECISIONS.md 2026-09-26 "Support-indbakke"): admin
+// sætter prioritet; alle nye sager starter som NORMAL.
+enum SupportPriority {
+  HIGH
+  NORMAL
+  LOW
+}
+
+// USER = brugerens besked, SUPPORT = svar til brugeren, NOTE = intern note
+// (vises aldrig for brugeren).
+enum SupportMessageAuthor {
+  USER
+  SUPPORT
+  NOTE
+}
+
 // "Kontakt os" fra Support-siden. Kobles til brugerens aktive grant på
 // oprettelsestidspunktet (kan være null — man kan skrive uden at give adgang).
+// `message` er den oprindelige første besked; hele tråden (inkl. den første)
+// ligger i SupportMessage.
 model SupportRequest {
-  id             String                 @id @default(cuid())
-  user           User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId         String
-  category       SupportRequestCategory @default(OTHER)
-  subject        String
-  message        String
-  supportGrant   SupportAccessGrant?    @relation(fields: [supportGrantId], references: [id], onDelete: SetNull)
-  supportGrantId String?
-  status         SupportRequestStatus   @default(OPEN)
-  createdAt      DateTime               @default(now())
-  resolvedAt     DateTime?
+  id                 String                 @id @default(cuid())
+  user               User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             String
+  category           SupportRequestCategory @default(OTHER)
+  subject            String
+  message            String
+  supportGrant       SupportAccessGrant?    @relation(fields: [supportGrantId], references: [id], onDelete: SetNull)
+  supportGrantId     String?
+  status             SupportRequestStatus   @default(OPEN)
+  priority           SupportPriority        @default(NORMAL)
+  // true = seneste besked er fra brugeren og er ikke besvaret endnu.
+  awaitingReply      Boolean                @default(true)
+  // Brugerens seneste besked (sortering + 24-timers-fristen).
+  lastUserMessageAt  DateTime               @default(now())
+  lastSupportReplyAt DateTime?
+  // Sat når admin har fået 24-timers-advarslen for den nuværende ubesvarede
+  // besked; nulstilles ved svar og ved ny brugerbesked.
+  overdueAlertSentAt DateTime?
+  // Brugeren har et svar fra Support, som ikke er åbnet i appen endnu.
+  userUnread         Boolean                @default(false)
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @default(now()) @updatedAt
+  resolvedAt         DateTime?
+
+  messages SupportMessage[]
 
   @@index([status, createdAt])
+  @@index([status, awaitingReply, lastUserMessageAt])
   @@index([userId])
   @@map("support_requests")
+}
+
+model SupportMessage {
+  id         String               @id @default(cuid())
+  request    SupportRequest       @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  requestId  String
+  author     SupportMessageAuthor
+  // Admins visningsnavn for SUPPORT/NOTE; null for brugerbeskeder.
+  authorName String?
+  body       String
+  createdAt  DateTime             @default(now())
+
+  @@index([requestId, createdAt])
+  @@map("support_messages")
 }
 
 // --- Normaliserede produkt-søgeparametre (docs/DECISIONS.md 2026-09-23) ---
