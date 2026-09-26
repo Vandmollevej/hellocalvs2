@@ -46,9 +46,15 @@ fra side til side.
 
 ## 2026-09-25: Filtre og portionsjustering på "Delte retter"
 
-Brugerens krav: sorteringsknapperne erstattes af et filterikon til venstre
-for søgefeltet, der åbner skærmen "Filtre" (`/profile/recipes/filters`).
-Fanen hedder nu "Delte retter" (ikke "Søg i delte retter").
+Brugerens krav: sorteringsknapperne erstattes af et filterikon, der åbner
+skærmen "Filtre" (`/profile/recipes/filters`). Fanen hedder nu "Delte retter"
+(ikke "Søg i delte retter").
+
+- **Opdateret 2026-09-26:** Filterikonet står til højre for søgefeltet, sort
+  direkte på baggrunden (ingen ramme). Før brugeren søger, viser fanen
+  "Trender netop nu" (de 3 mest populære retter) og derunder "Mine
+  favoritter" ("Du har endnu ingen favoritter", hvis tom). "Ingen opskrifter
+  matcher din søgning" vises kun efter en søgning.
 
 - **Rækkefølge på filterskærmen:** Justér retter (1–6 personer, Vis
   kalorier, Vis energifordeling) · Sorter efter (én ad gangen) · Allergier ·
