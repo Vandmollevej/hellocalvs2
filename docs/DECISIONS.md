@@ -2,6 +2,133 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+
+
+## 2026-09-25: Blød e-mailbekræftelse ved tilmelding
+
+Brugerens valg. Tilmelding med e-mail + adgangskode logger ind med det samme,
+men `emailVerifiedAt` sættes først, når linket i bekræftelsesmailen åbnes
+(`/verify-email`, signeret JWT med bruger-ID + e-mail, 7 dage). Indtil da
+viser `AuthGate` en bjælke med "Send igen". Logger nogen ind med
+Google/Apple/Facebook på en e-mail, hvor en eksisterende konto aldrig er
+bekræftet, kobles kontoen på, men dens adgangskode og passkeys fjernes
+først (beskytter mod konti oprettet med en fremmed e-mail). Mails sendes
+nu straks fra `queueMessage()` i stedet for kun ved scheduler-tick (15 min).
+
+## 2026-09-25: Global lodret rytme (8/16/32) og sorte primærknapper
+
+Brugerens krav: "stringent opsætning på tværs af hele sitet med rene linjer og
+globale designregler" — afstande mellem blokke, tekst og knapper var forskellige
+fra side til side.
+
+- Kun 8 px (inde i en blok), 16 px (mellem blokke, kortpadding, gutter) og
+  32 px (før en sektion). Se `design.md` §5.4.
+- Sidecontainere bruger `.hf-page` i stedet for egne `flex flex-col gap-N p-4`;
+  kort bruger `.hf-card`. Hele `src/` er normaliseret: alle lodrette
+  margener/paddings (`mt/mb/my/pt/pb/space-y`) og stablede gaps ligger på
+  4/8/16/32 px, kort har 16 px padding, og `rounded-xl`/`rounded-2xl` er låst
+  til 8 px i temaet. Accordion og chip følger samme mål. Undtagelser: vandrette
+  gaps i rækker (ikon/tekst), knappers interne padding, kalenderens 7-kolonne
+  dagsgitter (6 px) og enkelte special-offsets (`pt-9`, `mt-10`, `mt-20`).
+- Primærknapper forbliver sorte, også når de er deaktiveret (ingen grå
+  opacity). "Indløs points" på Abonnement er bevidst en grå flade med hvid tekst.
+- Abonnement: prislinjen viser kun prisen ("119 kr./måned"), ikke "Seriøs —".
+- Sektionsoverskrifter: 32 px over og 16 px under (justerer 12 px fra
+  "Sektionsoverskrifter, points-banner …" nedenfor til 8/16/32-skalaen). I en
+  `.hf-page` trækkes stakkens gap fra, så resultatet er det samme.
+
+## 2026-09-25: Billeder, fremgangsmåde og kategorier i Opret ret
+
+- Nederst i Opret ret: knapperne "Tilføj billeder" og "Tilføj fremgangsmåde".
+- **Billeder:** op til 3 af den færdige ret; det første er forsidebillede i
+  listerne. Nedskaleres i browseren (≤ 1600 px JPEG) og gemmes uden EXIF i
+  `/product-images/recipe-images` (samme volume som produktbilleder).
+- **Fremgangsmåde:** overskrift + tekst pr. trin og et kameraikon i siden
+  (billede pr. trin, vist som thumbnail). Plus gør trinnet statisk (uden
+  redigerbar baggrund), og et nyt, større trin får fokus. Tryk på et statisk
+  trin retter det; × sletter det.
+- **Kategorier:** efter Gem vises et vindue (retten er allerede gemt) med
+  Diæter (forudvalgt ud fra ingredienserne), Måltidstype, Køkken og
+  Tilberedning. LUK gemmer kategorierne en gang til, hvis nogen er valgt.
+  Gemmes som `Dish.tags` ("diet:vegan", "meal:dinner" …).
+- Billeder, fremgangsmåde og kategorier følger med, når retten deles og
+  kopieres. Fremgangsmåden indgår i søgningen og i allergen-/diætfiltrene.
+- Kladden (navn, billeder, trin) ligger i sessionStorage, så den overlever
+  turen ud efter ingredienser.
+- `GET /api/dishes/[id]` kræver nu, at man ejer retten.
+
+## 2026-09-25: Filtre og portionsjustering på "Delte retter"
+
+Brugerens krav: sorteringsknapperne erstattes af et filterikon til venstre
+for søgefeltet, der åbner skærmen "Filtre" (`/profile/recipes/filters`).
+Fanen hedder nu "Delte retter" (ikke "Søg i delte retter").
+
+- **Rækkefølge på filterskærmen:** Justér retter (1–6 personer, Vis
+  kalorier, Vis energifordeling) · Sorter efter (én ad gangen) · Allergier ·
+  Diæter · Høj på protein · Specialkost · Fokus på makroer · Nulstil.
+  Valgene gemmes i browseren (`localStorage`), ikke på serveren.
+- **Filtrering sker på serveren** (`src/lib/recipe-filter-match.ts`). Alt,
+  der ikke opfylder et valgt filter, sorteres fra — også når data mangler.
+- **Allergier:** EU's 14 plus 15 andre kendte fødevareallergier, alfabetisk.
+  Genkendes via madvarens EU-allergenmærkning og en ordscanning (dansk +
+  engelsk) af rettens navn, ingrediensnavne og varedeklarationer.
+  "Kokosmælk", "muskatnød", "glutenfri pasta" o.l. tæller ikke. Delte retter
+  har ingen beskrivelse/fremgangsmåde endnu, så de kan ikke scannes.
+- **Spor af:** "kan indeholde spor af …" i en varedeklaration og ingredienser,
+  der ofte har spor (chokolade → nødder, havre → gluten osv.) giver en rød
+  advarsel under rettens titel — kun for allergener, brugeren har valgt.
+- **Diæter:** vegansk, vegetarisk, pescetarisk, glutenfri, laktosefri
+  (laktosefri mælkeprodukter tilladt), keto (≤ 10 E% kulhydrat), lavt sukker
+  (EU: ≤ 5 g/100 g).
+- **Makroer (energiprocent):** Høj på protein ≥ 20 E% (EU-forordning
+  1924/2006). Øvrige grænser ligger uden for NNR 2023's intervaller: protein
+  lav < 10, kulhydrat høj > 60 / lav < 26, fedt høj > 40 / lav < 25. Høj og lav
+  udelukker hinanden pr. makro.
+- **Specialkost:** "Højt indhold af" fibre (EU: 3 g/100 kcal), jern, calcium,
+  kalium, A- og C-vitamin (≥ 30 % af EU-referenceindtaget pr. 600 kcal). Data
+  findes kun delvist (Open Food Facts, HelloFresh); ukendt ⇒ frasorteret.
+- **Anbefalet servering** (`src/lib/recipe-portions.ts`): hovedmåltid = 30 %
+  af brugerens dagsbehov (Mifflin-St Jeor × PAL 1,4; uden profildata EU's
+  2000 kcal). Måltidsfordeling: morgenmad 20–25 %, frokost 25–30 %,
+  aftensmad 30–35 %, mellemmåltider 10–20 %. Listen viser kcal pr. servering
+  og antal serveringer; opskriftssiden skalerer ingrediensernes gram til det
+  valgte antal personer (den gemte ret ændres ikke).
+## 2026-09-25: Vægtkalibrering — eksplicit "Opdatér oplysninger"-knap
+
+Brugerbeslutning. `src/app/profile/weight-calibration/page.tsx` er
+omdesignet: infotekst øverst i cremefarvet kort (ikke grøn), rigtige
+indtastningsfelter for "Uden tøj"/"Med tøj", forholdsvalg som to-vejs
+ikonknapper (sko/uden sko, morgen/aften, før/efter toilet, før/efter mad) —
+"Ved ikke" er fjernet; et nyt tryk på det valgte felt nulstiller til
+`UNKNOWN`. "Vægt over dagen" vises nederst som linjer (som kalenderen), og en
+stor sort "Opdatér oplysninger"-knap gemmer alt. Siden er dermed en bevidst
+undtagelse fra reglen om automatisk lagring uden "Gem"-knap. Ikoner uden
+tabler-modstykke ligger i `src/components/icons/WeighConditions.tsx`.
+## 2026-09-25: API-nøgler i admin
+
+Brugerens ønske: en admin-side med overblik over alle API-nøgler og et felt
+til at rette dem, "hvis det er sikkert".
+
+- Side `/admin/api-keys` (kataloget i `src/lib/api-keys/catalog.ts`).
+  Hemmelige værdier forlader aldrig serveren — kun de sidste fire tegn og
+  længden. Client ID'er, adresser og lignende vises i klar tekst.
+- En rettet nøgle gemmes i `app_secrets`, AES-256-GCM-krypteret med en
+  nøgle afledt (HKDF) af `ADMIN_SESSION_SECRET`. Ved opstart
+  (`instrumentation.ts`) lægges værdierne oven på `process.env`, så al
+  eksisterende kode virker uændret, og en rettelse slår igennem med det
+  samme uden genstart. "Brug .env igen" sletter rækken.
+- Skiftes `ADMIN_SESSION_SECRET`, kan de gemte værdier ikke længere læses;
+  siden viser det, og .env-værdien gælder, til nøglen gemmes igen.
+- Database, sessionsnøgler og adresser (`APP_BASE_URL` m.fl.) kan kun
+  ændres i `.env.production` — de læses ved opstart og er vist som
+  skrivebeskyttet status.
+- "Test" kalder udbyderen med de aktive nøgler (OAuth med bevidst ugyldig
+  kode: "ugyldig kode" = nøglerne er godkendt). For Google tjekkes også, om
+  redirect-URI'en er registreret.
+- Den globale copy/paste-blokering (2026-09-22) undtager indhold under
+  `[data-allow-clipboard]` — kun brugt på denne admin-side, så nøgler kan
+  indsættes.
+
 ## 2026-09-25: Én tekst og ét ikon pr. Tilføj-handling
 
 Brugeren vil have, at tekster og ikoner på Tilføj-skærmen slår igennem på
@@ -43,6 +170,18 @@ Brugerens krav efter skærmbillede af Invitér en ven:
   bruges også i invitationsmailen (`{{personalMessage}}`, HTML-escapet).
   Kladden huskes kun lokalt i browseren.
 
+## 2026-09-25: Blød e-mailbekræftelse ved tilmelding
+
+Brugerens valg. Tilmelding med e-mail + adgangskode logger ind med det samme,
+men `emailVerifiedAt` sættes først, når linket i bekræftelsesmailen åbnes
+(`/verify-email`, signeret JWT med bruger-ID + e-mail, 7 dage). Indtil da
+viser `AuthGate` en bjælke med "Send igen". Logger nogen ind med
+Google/Apple/Facebook på en e-mail, hvor en eksisterende konto aldrig er
+bekræftet, kobles kontoen på, men dens adgangskode og passkeys fjernes
+først (beskytter mod konti oprettet med en fremmed e-mail). Mails sendes
+nu straks fra `queueMessage()` i stedet for kun ved scheduler-tick (15 min).
+
+
 ## 2026-09-24: Normalt login — privacy-by-architecture ophævet
 
 Brugerens beslutning: "Man skal bare kunne logge ind som på alle andre
@@ -56,6 +195,9 @@ apps." De skrappe sikkerhedsforanstaltninger var kun ment til admin.
 - Login: e-mail + adgangskode (med glemt adgangskode), Face ID (passkey,
   WebAuthn), Google, Apple og Facebook. Samme bekræftede e-mail kobles på
   samme konto. Efter login tilbydes Face ID én gang på enheder, der kan.
+  Face ID er kun hurtig-login på en enhed, der allerede har slået det til
+  efter et almindeligt login — login-siden viser ikke Face ID-knappen på en
+  ny enhed (flag `hc_passkey_on_device` i localStorage).
 - Den delte demo-bruger kommer ikke tilbage: alle private endpoints kræver
   session (`getSessionUser` + `unauthorized()`), `AuthGate` sender
   ikke-indloggede til `/welcome`.
@@ -102,6 +244,18 @@ apps." De skrappe sikkerhedsforanstaltninger var kun ment til admin.
 - "Månedens synder": knap under kalenderens månedsvisning →
   `/statistics/month-sinners?month=YYYY-MM`, grupperet efter produkttype med
   "kcal · %", faner Kalorier/Fedt/Sukker.
+
+## 2026-09-25: Integrationssiden
+
+Brugerens krav: ingen "Kræver app"-mærker eller "Generér enhedskode"-knapper
+(telefon-integrationerne er ikke sat op). Sektioner i denne rækkefølge:
+Aktive integrationer, Oftest anvendt (Apple Health, Google Health, Strava),
+Opskrifter (HelloFresh), Apps (Health Connect, Withings, Garmin, Samsung
+Health, Polar Flow — Polar Flow nederst). Aktive/forbundne kort får en grøn
+prik foran navnet og "Fjern" som almindelig tekst på egen linje (ingen stor
+knap). Ikke-forbindbare kort viser "Ikke tilgængelig endnu". Google Health
+bruger Google-login-klienten som reserve. Denne afløser "Telefon-kort"-punktet
+i 2026-09-24 "Otte sundhedsintegrationer".
 
 ## 2026-09-24: Otte sundhedsintegrationer inden for boks-arkitekturen (G8)
 
@@ -2007,7 +2161,7 @@ Normaliserede produkt-søgeparametre (`ProductNutritionFeatures`, 1:1 med
 
 ## 2026-09-24: HelloFresh kun i Opret ret; handlingsknapper i fuld bredde
 
-- HelloFresh-boksen ("Genkend din ret") er fjernet fra Madvarer-siden. Opret ret når den via kameraet (`/camera?...&for=ret`). HelloFresh må ikke vises på Madvarer, produktsøgning, produkt-/ingrediensoprettelse eller produktvisning. Åbent punkt: kameraets "Produkt"-fane (`mode=hellofresh`) vises også uden for Opret ret; ikke ændret endnu.
+- HelloFresh-boksen ("Genkend din ret") er fjernet fra Madvarer-siden. Opret ret når den via kameraet (`/camera?...&for=ret`). HelloFresh må ikke vises på Madvarer, produktsøgning, produkt-/ingrediensoprettelse eller produktvisning. Kameraets "Produkt"-fane (`mode=hellofresh`) vises kun med `for=ret`; ellers er kameraet altid stregkode.
 - Almindelige primære/sekundære handlingsknapper fylder altid hele indholdsbredden. Fælles komponent: `ActionButton`/`ActionLink` (`src/components/hf/ActionButton.tsx`); regel i design.md §6.2. Små ikon-/inline-kontroller er undtaget. Eksisterende smalle knapper rettes efterhånden, når deres side alligevel ændres.
 
 ## 2026-09-25: Oprettelses-app som egen container fra samme image
@@ -2028,6 +2182,13 @@ Normaliserede produkt-søgeparametre (`ProductNutritionFeatures`, 1:1 med
 - Admin varsles: serveren får kun navnet og en anonym engangsindbakke (`IngredientRequest`, ingen bruger-ID) plus e-mail `INGREDIENT_REQUEST_ADMIN`. Admin → "Ønskede ingredienser" kan rette navnet og "Tilføj globalt" (GenericIngredient med Frida-næring) eller afvise.
 - Når admin tilføjer den globalt, overskriver den global brugerens private automatisk (valgt blandt brugerens to muligheder): indbakken leverer den globale ingrediens, og enheden erstatter den private i alle egne retter og sletter den private.
 
+## 2026-09-25: Betingelser og Privatlivspolitik omskrevet (Lifesum-analyse)
+
+- `/betingelser` er omskrevet, og der er en ny `/privatlivspolitik` (offentlig, linket fra Indstillinger). Strukturen er inspireret af Lifesums tekster, men indholdet er bevidst mere forbrugervenligt og med en let kæk tone: "Kort fortalt"-boks øverst, ingen annoncesporing/profiler/datasalg, ingen ensidige klausuler (fx lukning "af enhver grund" eller krav om at klage til os først), dansk ret og Forbrugerklagenævnet.
+- Teksten må kun love det, koden faktisk gør (data ligger på serveren efter "Restore normal user login"). Ændres databehandlingen, skal `/privatlivspolitik` opdateres samtidig.
+- Firmanavn, CVR-nr., adresse og kontakt-e-mail står som gule pladsholdere (`Placeholder` i `src/components/hf/LegalDocument.tsx`), indtil ejeren udfylder dem.
+- Åbent: teksten lover et udtrykkeligt samtykke til helbredsdata (GDPR art. 9) ved oprettelse og samtykke til fortrydelsesret-afkald ved køb; ingen af delene er bygget endnu. Konto-sletning sker via Hjælpecenter (ingen selvbetjening). Juridisk gennemlæsning anbefales før lancering.
+
 ## 2026-09-25: Billede-dagbog-lås via WebAuthn, ikke native app
 
 Kontakten "Kræver telefonens adgangskode for at vise" håndhæves i webappen med
@@ -2036,3 +2197,61 @@ ikke via en native app. Formålet er at billederne ikke vises ved et uheld —
 det er en visningslås, ikke kryptering af billederne. Siden låser igen, når
 den går i baggrunden. Selfie-funktionen er fjernet efter brugerens ønske og
 skal ikke genindføres uden en eksplicit anmodning.
+
+
+- Samtykke til helbredsoplysninger (GDPR art. 9) gemmes som `User.healthDataConsentAt` (migration `20260925150000_health_data_consent`). E-mail-tilmelding kræver vippekontakten slået til (`HealthConsentToggle`); alle andre indloggede brugere uden samtykke (Google/Apple/Facebook, ældre konti) sendes af `ConsentGate` til `/samtykke`. Juridiske sider og admin er undtaget.
+- Køb af Seriøs kræver en vippekontakt, der bekræfter straks-levering og forholdsmæssig refusion ved fortrydelse (forbrugeraftaleloven). Knappen er fortsat lukket, indtil en betalingsudbyder findes (`PAYMENT_AVAILABLE`).
+- Åbent: konto-sletning sker via Hjælpecenter (ingen selvbetjening), og tilbagetrækning af samtykke sker via support. Juridisk gennemlæsning anbefales før lancering.
+
+
+
+- Åbent: teksten lover et udtrykkeligt samtykke til helbredsdata (GDPR art. 9) ved oprettelse og samtykke til fortrydelsesret-afkald ved køb; ingen af delene er bygget endnu. Konto-sletning sker via Hjælpecenter (ingen selvbetjening). Juridisk gennemlæsning anbefales før lancering.
+
+## 2026-09-25: Billede-dagbog-lås via WebAuthn, ikke native app
+
+Kontakten "Kræver telefonens adgangskode for at vise" håndhæves i webappen med
+WebAuthn (Face ID/Touch ID/telefonens kode, `userVerification: "required"`),
+ikke via en native app. Formålet er at billederne ikke vises ved et uheld —
+det er en visningslås, ikke kryptering af billederne. Siden låser igen, når
+den går i baggrunden. Selfie-funktionen er fjernet efter brugerens ønske og
+skal ikke genindføres uden en eksplicit anmodning.
+
+## 2026-09-25: Stregkode-scanning — egen afkodningsløkke, lodret/skæv aflæsning og AR-afkodning
+
+Brugerens test på iPhone (skærmbilleder): dæmpningen om guide-boksen var for
+sort og forsvandt brat; en statisk lysegrøn firkant dukkede op et forkert
+sted og blev stående; lodrette stregkoder kunne ikke læses (at dreje
+telefonen drejer hele webappen, så det er ingen løsning); og ønsket var, at
+afkodningen *ses*: stregerne tegnes, og tallene skrives som overlay oven på
+den rigtige stregkode.
+
+- **Egen afkodningsløkke** (`src/lib/barcode-frame-scanner.ts`) i stedet for
+  @zxing/browser's `decodeFromConstraints`. Kun viewfinderets synlige
+  kvadrat afkodes, så resultat-punkter i canvas-pixels / sidelængde er
+  direkte en brøkdel af viewfinderet (den gamle video→skærm-omregning ramte
+  ved siden af). Hvert billede prøves både som det er og drejet 90°, så en
+  stregkode på højkant læses med telefonen holdt normalt. ZXing's egen
+  TRY_HARDER-rotation bruges ikke: @zxing/browser's canvas-kilde opdaterer
+  ikke bredde/højde ved rotation af et ikke-kvadratisk billede. Formater
+  begrænset til EAN-13/EAN-8/UPC-A/UPC-E.
+- **Stregkodens rigtige vinkel og højde** måles i billedet efter hver
+  aflæsning: ZXing returnerer kun den pixelrække, den læste. Højden findes
+  ved at gå vinkelret ud fra læselinjen, til stregmønstret forsvinder;
+  vinklen ved at sammenligne stregmønstret på to parallelle linjer (trinvis,
+  så gentagne stregmønstre ikke giver en forkert top). Verificeret i
+  Chromium mod tegnede EAN-13/EAN-8 ved 0–180°: vinkel inden for ±0,3°,
+  bredde eksakt.
+- **AR-afkodning**: den aflæste kode gen-kodes til sit ægte stregmønster
+  (`src/lib/barcode-pattern.ts`), og `BarcodeScanOverlay` tegner det streg
+  for streg + ciffer for ciffer oven på den fysiske stregkode (se design.md
+  §6.11). Enhver aflæsning i billedet starter afkodningen — kravet om at
+  koden skal ligge inden i boksen og den røde/grønne kant er fjernet.
+- **Ikke fundet** gemmes pr. kode i sessionen, så samme stregkode i billedet
+  ikke looper animation + opslag; en anden kode kan scannes med det samme.
+- **UPC-E har egen læser** (`src/lib/upce-reader.ts`): @zxing/library's
+  UPC-E-læser returnerer aldrig et resultat (den taber de afkodede cifre,
+  tjekker EAN-kontrolciffer/slutvagt i stedet for UPC-E's og udvider
+  UPC-E→UPC-A forkert). Vores læser genbruger ZXing's række-løkke
+  (`OneDReader`), så position/retning virker som for de øvrige formater.
+  Verificeret i Chromium: EAN-13, UPC-A, EAN-8 og fem UPC-E-koder ved
+  0/90/180/−90/14/−20/75° — alle læst korrekt, vinkel inden for 0,5°.

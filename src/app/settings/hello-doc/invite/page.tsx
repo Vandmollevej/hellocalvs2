@@ -65,7 +65,7 @@ export default function InviteHelloDocUserPage() {
             2026-09-12), deliberately departing from the standard page-title
             treatment for this one screen. */}
         <h1 className="mb-2 text-[28px] font-bold leading-[34px] text-hf-black">{t("helloDoc.inviteHeading")}</h1>
-        <p className="hf-type-body-lg mb-6 opacity-80">{t("helloDoc.inviteHeadingDescription")}</p>
+        <p className="hf-type-body-lg mb-8 opacity-80">{t("helloDoc.inviteHeadingDescription")}</p>
 
         <DoctorShareEditor
           name={name}

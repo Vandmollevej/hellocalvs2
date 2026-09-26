@@ -14,7 +14,7 @@ export default function Home() {
 
       <div className="mx-4 h-px bg-hf-tan-dark" />
 
-      <div className="min-h-0 flex-1 overflow-hidden pt-1.5">
+      <div className="min-h-0 flex-1 overflow-hidden pt-2">
         <DailyList />
       </div>
 

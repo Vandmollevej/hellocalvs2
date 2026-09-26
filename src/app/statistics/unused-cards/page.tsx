@@ -237,7 +237,7 @@ export default function UnusedStatCardsPage() {
 
   function renderCardGrid(cards: StatCardValue[]) {
     return (
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-4">
         {cards.map((card) => (
           <button
             key={card.key}
@@ -270,7 +270,7 @@ export default function UnusedStatCardsPage() {
     <HfScreen
       title={t("statUnusedCards.title")}
     >
-      <div className="flex flex-col gap-2 p-4">
+      <div className="hf-page hf-page--list">
         <p className="text-xs text-hf-black opacity-60">
           {t("statUnusedCards.hint")}
         </p>
@@ -286,13 +286,31 @@ export default function UnusedStatCardsPage() {
           />
         </div>
 
+        <button
+          type="button"
+          onClick={addHeader}
+          className="flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-hf-black/30 text-sm font-semibold text-hf-black opacity-80 active:opacity-100"
+        >
+          {t("statUnusedCards.addHeading")}
+        </button>
+
+        <button
+          type="button"
+          onClick={addDivider}
+          className="flex min-h-11 w-full items-center gap-2 text-sm font-semibold text-hf-black active:opacity-60"
+        >
+          <span aria-hidden className="h-0.5 flex-1 bg-hf-black" />
+          {t("statUnusedCards.addDivider")}
+          <span aria-hidden className="h-0.5 flex-1 bg-hf-black" />
+        </button>
+
         {normalizedQuery && (
           <section className="flex flex-col gap-2 pb-2">
             <p className="px-1 text-sm font-semibold text-hf-black">
               {t("statUnusedCards.searchResults")}
             </p>
             {searchResults.length === 0 ? (
-              <p className="rounded-2xl bg-hf-tan/60 p-3 text-xs text-hf-black opacity-50">
+              <p className="rounded-2xl bg-hf-tan/60 p-4 text-xs text-hf-black opacity-50">
                 {t("statUnusedCards.noSearchResults")}
               </p>
             ) : (
@@ -322,7 +340,7 @@ export default function UnusedStatCardsPage() {
             }
           >
             {category.cards.length === 0 ? (
-              <p className="rounded-2xl bg-hf-tan/60 p-3 text-xs text-hf-black opacity-50">
+              <p className="rounded-2xl bg-hf-tan/60 p-4 text-xs text-hf-black opacity-50">
                 {t("statUnusedCards.noCardsYet")}
               </p>
             ) : (
@@ -331,29 +349,6 @@ export default function UnusedStatCardsPage() {
           </AccordionSection>
         ))}
 
-        <div className="mt-2 border-t border-hf-tan-dark pt-4">
-          <button
-            type="button"
-            onClick={addHeader}
-            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-hf-black/30 text-sm font-semibold text-hf-black opacity-80 active:opacity-100"
-          >
-            {t("statUnusedCards.addHeading")}
-          </button>
-          <p className="mt-1.5 text-center text-xs text-hf-black opacity-50">
-            {t("statUnusedCards.addHeadingHint")}
-          </p>
-
-          <button
-            type="button"
-            onClick={addDivider}
-            className="mt-3 flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-hf-black/30 text-sm font-semibold text-hf-black opacity-80 active:opacity-100"
-          >
-            {t("statUnusedCards.addDivider")}
-          </button>
-          <p className="mt-1.5 text-center text-xs text-hf-black opacity-50">
-            {t("statUnusedCards.addDividerHint")}
-          </p>
-        </div>
       </div>
     </HfScreen>
   );

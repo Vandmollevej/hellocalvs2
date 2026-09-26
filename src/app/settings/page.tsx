@@ -81,7 +81,7 @@ export default function SettingsPage() {
         <OnboardingWizard forceVisible onClose={() => setShowOnboarding(false)} />
       )}
 
-      <div className="flex flex-col gap-8 p-4">
+      <div className="hf-page hf-page--sections">
         <AccordionCard>
           <ChevronRow
             icon={<IconCreditCard size={20} />}
@@ -200,7 +200,7 @@ export default function SettingsPage() {
 
         <AccordionCard>
           <ChevronRow icon={<IconFileText size={20} />} label={t("settings.terms")} href="/betingelser" />
-          <ChevronRow icon={<IconFileText size={20} />} label={t("settings.privacyPolicy")} />
+          <ChevronRow icon={<IconFileText size={20} />} label={t("settings.privacyPolicy")} href="/privatlivspolitik" />
           <ChevronRow icon={<IconFileText size={20} />} label={t("settings.dataTracking")} divider={false} />
         </AccordionCard>
 
@@ -215,7 +215,7 @@ export default function SettingsPage() {
           <p className="hf-type-body-sm font-bold" style={{ color: "var(--hf-color-white)" }}>
             {t("settings.inviteFriend")}
           </p>
-          <p className="hf-type-caption mt-0.5 opacity-90" style={{ color: "var(--hf-color-white)" }}>
+          <p className="hf-type-caption mt-1 opacity-90" style={{ color: "var(--hf-color-white)" }}>
             {t("settings.invitePointsDescription")}
           </p>
         </Link>

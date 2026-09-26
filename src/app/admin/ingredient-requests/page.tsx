@@ -16,7 +16,7 @@ export default async function AdminIngredientRequestsPage() {
   });
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-8">
       <div>
         <h1 className="text-lg font-semibold text-text-primary">Ønskede ingredienser</h1>
         <p className="text-sm text-text-secondary">
@@ -27,7 +27,7 @@ export default async function AdminIngredientRequestsPage() {
       {requests.length === 0 ? (
         <p className="text-sm text-text-secondary">Intet afventer.</p>
       ) : (
-        <ul className="flex flex-col gap-3">
+        <ul className="flex flex-col gap-4">
           {requests.map((request) => (
             <li key={request.id} className="rounded-lg border border-border-strong bg-surface-2 p-4">
               <p className="text-xs text-text-secondary">{request.createdAt.toLocaleString("da-DK")}</p>

@@ -17,6 +17,7 @@ const PUBLIC_PREFIXES = [
   "/hello-doc",
   "/forward",
   "/betingelser",
+  "/privatlivspolitik",
   "/admin",
   // Oprettelses-appen har eget medarbejder-login og ingen klient-boks.
   "/scan",

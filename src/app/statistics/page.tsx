@@ -298,7 +298,7 @@ export default function StatisticsPage() {
 
   return (
     <HfScreen title={t("statistics.title")} icon={<TrendIcon color="currentColor" size={20} />}>
-      <div className="flex flex-col gap-4 p-4">
+      <div className="hf-page">
         {showAddChart && (
           <div className="flex justify-end">
             <Link
@@ -313,7 +313,7 @@ export default function StatisticsPage() {
 
         <StatChartsSection renderChart={renderChart} onShowAddChange={setShowAddChart} />
 
-        <div className="flex flex-col gap-3 border-t border-hf-tan-dark pt-4">
+        <div className="flex flex-col gap-4 border-t border-hf-tan-dark pt-4">
           <div className="relative z-40 flex items-center justify-between gap-2">
             <StatPeriodPicker selection={periodSelection} onChange={setPeriodSelection} />
             {showAddCard && (

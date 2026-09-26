@@ -22,11 +22,11 @@ export function HelloFreshMatchReview({ status, product, onConfirm, onRetake }: 
   return (
     <div className="rounded-2xl bg-hf-tan p-4">
       {status === "processing" && (
-        <p className="mb-3 text-xs text-hf-black opacity-70">Genkender retten...</p>
+        <p className="mb-4 text-xs text-hf-black opacity-70">Genkender retten...</p>
       )}
 
       {status === "found" && product && (
-        <div className="mb-3 flex items-center gap-3">
+        <div className="mb-4 flex items-center gap-3">
           <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-hf-white/40">
             {product.imageUrl && (
               // eslint-disable-next-line @next/next/no-img-element
@@ -45,13 +45,13 @@ export function HelloFreshMatchReview({ status, product, onConfirm, onRetake }: 
       )}
 
       {status === "not_found" && (
-        <p className="mb-3 text-xs font-semibold text-hf-black">
+        <p className="mb-4 text-xs font-semibold text-hf-black">
           Kunne ikke genkende retten. Prøv et andet billede, eller søg den manuelt under Madvarer.
         </p>
       )}
 
       {status === "failed" && (
-        <p className="mb-3 text-xs font-semibold text-hf-black">Genkendelsen slog fejl. Prøv igen.</p>
+        <p className="mb-4 text-xs font-semibold text-hf-black">Genkendelsen slog fejl. Prøv igen.</p>
       )}
 
       <div className="flex gap-2">

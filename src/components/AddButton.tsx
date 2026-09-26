@@ -78,6 +78,10 @@ const LIGHT_CIRCLE_SIZE = 40;
 // it) and is a bit larger than the old 40px light circle.
 const FINGERPRINT_SIZE = 52;
 const FINGERPRINT_TILT_DEG = 35;
+// Visual-only nudge of the fingerprint toward the screen edge: the bounding-box
+// center still read as too far inward on the phone. Hit-area and drag math
+// keep using the FAB center.
+const FINGERPRINT_EDGE_NUDGE = 15;
 const LIGHT_CIRCLE_TRAVEL = HALF_CIRCLE_RADIUS - LIGHT_CIRCLE_SIZE / 2 - 6;
 const BULGE_MAX = 20;
 // How tightly the bulge concentrates around the drag angle (in degrees) —
@@ -536,7 +540,7 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
           style={{
             width: FINGERPRINT_SIZE,
             height: FINGERPRINT_SIZE,
-            transform: dragOffset ? `translate(${dragOffset.x}px, ${dragOffset.y}px)` : undefined,
+            transform: `translate(${(dragOffset?.x ?? 0) + (side === "left" ? -FINGERPRINT_EDGE_NUDGE : FINGERPRINT_EDGE_NUDGE)}px, ${dragOffset?.y ?? 0}px)`,
             transitionDuration: dragOffset ? "0ms" : "150ms",
           }}
         >

@@ -1,6 +1,6 @@
 "use client";
 
-import { isPasskeySupported } from "@/lib/passkey-client";
+import { hasPasskeyOnDevice, isPasskeySupported } from "@/lib/passkey-client";
 
 // Små klient-hjælpere til login-siderne.
 
@@ -25,11 +25,10 @@ function faceIdDeclined() {
 }
 
 // Efter login med adgangskode/Google/Apple/Facebook tilbydes Face ID én gang
-// på enheder, der understøtter det (siden springer selv over, hvis kontoen
-// allerede har Face ID).
+// på enheder, der understøtter det, men endnu ikke har det slået til.
 export function afterLoginPath(next: string) {
   const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/";
-  if (!isPasskeySupported() || faceIdDeclined()) return safeNext;
+  if (!isPasskeySupported() || hasPasskeyOnDevice() || faceIdDeclined()) return safeNext;
   return `/login/face-id?next=${encodeURIComponent(safeNext)}`;
 }
 

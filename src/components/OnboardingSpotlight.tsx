@@ -37,7 +37,7 @@ export function OnboardingSpotlight({
         </p>
         <button
           onClick={onLater}
-          className="mt-3 text-sm font-bold text-hf-black underline underline-offset-2"
+          className="mt-4 text-sm font-bold text-hf-black underline underline-offset-2"
         >
           Vis senere
         </button>

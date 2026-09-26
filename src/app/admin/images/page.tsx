@@ -19,7 +19,7 @@ export default async function AdminImagesPage() {
       {products.length === 0 ? (
         <p className="text-sm text-text-secondary">Ingen billedforslag afventer godkendelse.</p>
       ) : (
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2">
           {products.map((product) => (
             <PendingImageCard key={product.id} product={product} />
           ))}

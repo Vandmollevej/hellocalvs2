@@ -6,6 +6,9 @@ laver hvad.
 
 ## Regler for alle sessioner
 
+0. Hent altid først: commit dit eget arbejde, kør `git pull origin master`,
+   og læs denne fil igen. Cloud-sessioner (claude.ai) arbejder ikke på din PC —
+   deres ændringer og noter kommer kun ind via GitHub.
 1. Læs denne fil før du begynder, og find din opgave/gruppe.
 2. Hvis du fortsætter en opgave: sæt `Ejer` til din sessions titel + konto (fx
    "Kalender-gruppen, konto B") og opdatér `Status` + `Næste skridt` løbende —
@@ -41,6 +44,7 @@ Ejer: G1-overtagelse, konto C (2026-09-24)
 | 63e9ff5d | Ugesummering (kaloriebalance + estimeret vægt) — kun roadmap-beslutning | Færdig (37ee7f4; senere slået til i 7747ea1, DECISIONS 2026-09-23) | — |
 | b4d954bd | Listevisning: fjern +/−, "Mål (ikke) nået" regulær + flyttet, lige afstand | Færdig (se G1-commit) | Minus vises nu som ÷ (brugerens valg: fortegn som symbol, som i månedsgitteret). Afventer brugerens visuelle godkendelse |
 | 116d3656 | Dagvisning: søvn-slider med to grå nuancer kan ikke trækkes + fjern dialogen "Kun denne dato / Standardmønster" | Færdig (se G1-commit) | Ét gråt felt ved dagsøvn, feltet følger håndtaget, tryk uden træk gemmer intet, dialog fjernet (gælder kun datoen). Ikke live-testet: lokal DB mangler |
+| — | Dagvisning: træk søvn-håndtag forbi kanten (scroller med) + "Nattens søvn: X,XX timer" i nattens grå felt | Færdig (flettet i master fra cloud-branch `claude/cloud-session-credits-expired-7504pf`) | Afventer brugerens test på telefon |
 
 ## G2 — Statistik-siden (redigering, drag/drop)
 Filer: statistik-siden, `src/components/StatsWheel.tsx`, `src/lib/frontpage-layout.ts`, `src/lib/frontpage-stats.ts`.
@@ -90,13 +94,14 @@ Ejer: G5-overtagelse, konto B (2026-09-24)
 Filer: `src/app/add/**`, `src/components/ForwardButton.tsx`, Madvarer-siden, fælles knap-komponent.
 Ukendte ændringer: ingen (ForwardButton gjort færdig).
 Ejer: G6-overtagelse, konto B (2026-09-24)
+Deploy (brugerens beslutning 2026-09-25): G6 deployes samlet med alt andet af koordinator-sessionen. Tjekliste: kør migration `20260924180000_ingredient_requests`; efter deploy tjek build, `/ingredients/new`, `/admin/ingredient-requests`, trin-baren på Opsætning (brugeren skal godkende udseendet) og at kameraets "Produkt"-fane kun vises fra Opret ret.
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | 155dc7cf | Forward-ikon i stedet for dele-ikon, "Log ind…"-tekst på linje med ikonet | Færdig (aaed6fb) | — |
 | 56fda7bc | Mængde altid med enhed (g / ml / cl efter produkttype) | Færdig (3264ed1) | Var allerede lavet af anden session |
-| ad648ee7 | HelloFresh kun i Opret ret + global regel: knapper fuld bredde (også bedt om i 6a503586) | Færdig (aaed6fb) | Åbent: kameraets "Produkt"-fane bruger stadig HelloFresh uden for Opret ret (ikke G6's fil) |
-| b309686e | Opret ret: HelloFresh-trin med 3 cirkler, "Tag billede"/"Opret manuelt", tekstlink "Opret egen ingrediens" → ny side for private ingredienser | Færdig (1540198) — undtagen trin-cirklerne | Knap-tekster, tekstlink og private ingredienser (boks + anonym admin-anmodning + auto-erstatning) er committet. Trin-cirklerne (`SetupProgressBar`) ligger færdige men ikke-committede i `src/app/profile/settings/page.tsx` (G7's fil) — G7: tag den hunk med i jeres commit |
+| ad648ee7 | HelloFresh kun i Opret ret + global regel: knapper fuld bredde (også bedt om i 6a503586) | Færdig (aaed6fb + trin-commit) | Kameraets "Produkt"-fane vises nu kun fra Opret ret |
+| b309686e | Opret ret: HelloFresh-trin med 3 cirkler, "Tag billede"/"Opret manuelt", tekstlink "Opret egen ingrediens" → ny side for private ingredienser | Færdig (1540198 + trin-commit) | Trin-baren på Opsætning bruger nu den fælles HfProgressStepper (HelloFresh-stil). Venter på deploy sammen med alt andet (brugerens beslutning) |
 
 ## G7 — Profil
 Filer: `src/app/profile/**`.
@@ -106,7 +111,7 @@ Ejer: Profil-gruppen (G7), konto B — overtaget 2026-09-24
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | 9a0770ce | Ny oversigtsside over målsætninger (historik, grønt flueben, fast knap nederst) | Ikke startet | Tjek om allerede lavet, ellers byg |
-| 8b0a278f | Kropsmål med mand/kvinde-tegninger (fra hovedmappen), kort som på statistik | Ikke startet | Tjek om allerede lavet, ellers byg |
+| 8b0a278f | Kropsmål med mand/kvinde-tegninger (fra hovedmappen), kort som på statistik | Ikke startet | Ikonerne er færdige (`WaistMeasure.tsx`, 93715be). Mangler: Kropsmål-siden med kort som på statistik |
 | d22c7e61 | Invitér en ven: kun visuelt (betingelser som tekstlink, luft, fjern skillelinje, demo-data) | Venter på bruger | E-mail-invitation/venneliste strider mod privacy — kun visuelle rettelser |
 | ef8a5612 | "Skift adgangskode"-side | Blokeret | Strider sandsynligvis mod passkey-only login — spørg brugeren |
 | 60da6b15 | Indstillinger: "Få vist allergener" ind i samme boks + "Vælg alle" ved topknappen | Lavet, ikke verificeret | **Sandsynligvis kilden til diff'en i profile/settings.** Verificér og commit |
@@ -123,7 +128,8 @@ Ejer: G8-sessionen, konto C (overtaget 2026-09-24)
 | 69a1b2bd / 2c95590f | Dubletter af 6068f78a og 8d98b548 — læs dem for ekstra svar fra brugeren ("Så byg det, der mangler. Det skal jo bare virke!") | Dublet | Luk sammen med hovedopgaverne |
 | 6068f78a | 8 sundhedsintegrationer + nye ikoner | Færdig (22184fe) | Brugeren valgte "Byg alle 8" inden for boks-arkitekturen. Mangler kun nøgler på serveren + deploy |
 | 8d98b548 | Withings + Google Health koblet på, egen data-sync | Venter på bruger | Kode færdig (22184fe). Brugeren skal lægge nøglerne i .env.production på Synology, så deployes der. HelloFresh-trin-rettelsen i samme transcript hører til G6 |
-| d0442775 | Waldemarsro (DK-only) + scraper | Venter på bruger | Krav afklaret og committet (ea7843a) — byg når brugeren siger til |
+| d0442775 | Waldemarsro (DK-only) + scraper | Venter på bruger | Scraper + kalorie-matcher færdige og gemt i scripts/valdemarsro-import (157cff9); brugeren kører scraperen selv (output i Productdatabase/Valdemarsro). IKKE bygget: import til appen + Valdemarsro-kort/toggle på Integrationer (krav i STATUS, ea7843a) — byg når brugeren siger til |
+| 5c45b0d7 | Opskrift-scrapere som Valdemarsro: Arla, Coop, REMA 1000, MENY, Hjerteforeningen, TV2 (+ Børnevenlig og måltidstype) | I gang | Bygges i scripts/recipe-sites-import (fælles motor + ét script pr. side). Brugeren kører selv scraperne i VS Code |
 
 ## G9 — Ikoner (forside + vand)
 Filer: forsidens grydeikon, Vand-siden, `public/` assets.
@@ -132,6 +138,7 @@ Ejer: G9-overtagelse, konto B
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | b4666faa | Grydeikon: trim `Gryde.png` og erstat på forsiden | Færdig (f5895a3) | Var allerede lavet: `public/icons/gryde.png` (770×759, trimmet), brugt i `src/lib/add-actions.ts` |
+| 8f42a331 | Nyt grydeikon (jævne streger) + champagneikon til Målsætning | Færdig | SVG-ikoner i `src/components/icons/`. Brugeren sletter kildebillederne i sin lokale hovedmappe |
 | 60e492ca | Vand-siden: 4 PNG'er (75/50/33/25 cl) | Færdig (6cf89c5) | Billeder i `public/icons/water/`, registrerer 750/500/330/250 ml. Afventer brugerens godkendelse af udseendet |
 | ea9d1f7c | Dublet af 60e492ca (glas/flaske i række på fire) | Færdig (6cf89c5) | Lukket af G9: spørgsmålet om billede↔størrelse er besvaret af filnavnene i 60e492ca |
 
@@ -173,6 +180,7 @@ Ejer: —
 | b649e8f4 | Anonymitet/kryptering | DECISIONS 117-121 |
 | e542c2f4 | Produkttitel sort + brand grøn | `src/app/add/[id]/page.tsx` |
 | 217a0faf | Stregkode auto-rotation, fjern manuelt felt | commit 1643610 |
+| — | Stregkode: lodret/skæv aflæsning, AR-afkodning, lysere guide (2026-09-25) | DECISIONS 2026-09-25 "Stregkode-scanning" |
 
 ## Ikke fordelt
 Ændret og ikke committet uden kendt ejer: `docs/AI.md`, `src/components/AddButton.tsx`,

@@ -24,6 +24,7 @@ const LINK_DEFS: { href: string; key: AdminI18nKey }[] = [
   { href: "/admin/passkeys", key: "nav_passkeys" },
   { href: "/admin/scan-invites", key: "nav_scan_invites" },
   { href: "/admin/logos", key: "nav_logos" },
+  { href: "/admin/api-keys", key: "nav_api_keys" },
 ];
 
 export function AdminNav({ email, locale }: { email: string; locale: Locale }) {

@@ -21,7 +21,7 @@ export default function CalendarViewDisplaySettingsPage() {
 
   return (
     <HfScreen title={t("calendarViewSettings.title")}>
-      <div className="flex flex-col gap-4 p-4">
+      <div className="hf-page">
         <p className="px-1 text-[13px] leading-5 text-hf-black opacity-70">
           {t("calendarViewSettings.intro")}
         </p>

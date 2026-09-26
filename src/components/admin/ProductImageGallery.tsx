@@ -93,7 +93,7 @@ export function ProductImageGallery({
 
   return (
     <div className="rounded-lg border border-border-strong bg-surface-2 p-4">
-      <p className="mb-3 text-xs font-medium uppercase tracking-wide text-text-muted">
+      <p className="mb-4 text-xs font-medium uppercase tracking-wide text-text-muted">
         Billeder — ét hovedbillede + op til {MAX_SECONDARY} øvrige (fx en æskes andre sider)
       </p>
       <div className="flex flex-wrap gap-4">
@@ -178,7 +178,7 @@ export function ProductImageGallery({
       </div>
 
       {images.length < MAX_SECONDARY && (
-        <div className="mt-3 flex flex-wrap items-end gap-3">
+        <div className="mt-4 flex flex-wrap items-end gap-3">
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
             Tilføj øvrigt billede (URL)
             <input

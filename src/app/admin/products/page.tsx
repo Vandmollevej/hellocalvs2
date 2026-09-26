@@ -49,7 +49,7 @@ export default async function AdminProductsPage({
       {products.length === 0 ? (
         <p className="text-sm text-text-secondary">Ingen produkter afventer godkendelse i denne fane.</p>
       ) : (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4">
           {products.map((product) => (
             <PendingProductCard
               key={product.id}

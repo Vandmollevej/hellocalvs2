@@ -48,7 +48,7 @@ export default function SupportContactPage() {
 
   return (
     <HfScreen title={t("settings.support.contact")}>
-      <div className="flex flex-col gap-6 p-4 pb-8">
+      <div className="hf-page hf-page--sections">
         {sentCase ? (
           <p role="status" className="hf-type-body">
             {t("settings.support.contactSent", { caseCode: sentCase })}
