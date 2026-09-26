@@ -619,7 +619,9 @@
     "sortTitle": "Sorter efter",
     "allergiesTitle": "Allergier",
     "dietsTitle": "Diæter",
-    "highProtein": "Høj på protein",
+    "personsTitle": "Antal personer",
+    "personsLabel": "Personer",
+    "displayTitle": "Visning på resultater",
     "specialTitle": "Specialkost",
     "macrosTitle": "Fokus på makroer",
     "reset": "Nulstil filtre",
@@ -676,6 +678,7 @@
       "vitaminC": "Højt indhold af C-vitamin"
     },
     "macros": {
+      "protein-high": "Højt på protein",
       "protein-low": "Lavt på protein",
       "carbs-high": "Højt på kulhydrat",
       "carbs-low": "Lavt på kulhydrat",

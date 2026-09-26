@@ -619,7 +619,9 @@
     "sortTitle": "Sort by",
     "allergiesTitle": "Allergies",
     "dietsTitle": "Diets",
-    "highProtein": "High in protein",
+    "personsTitle": "Number of people",
+    "personsLabel": "People",
+    "displayTitle": "Results display",
     "specialTitle": "Special diet",
     "macrosTitle": "Macro focus",
     "reset": "Reset filters",
@@ -676,6 +678,7 @@
       "vitaminC": "High in vitamin C"
     },
     "macros": {
+      "protein-high": "High in protein",
       "protein-low": "Low in protein",
       "carbs-high": "High in carbs",
       "carbs-low": "Low in carbs",
