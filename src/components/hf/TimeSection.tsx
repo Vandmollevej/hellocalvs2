@@ -1,11 +1,11 @@
 "use client";
 
-import { SectionSeparator } from "@/components/hf/SectionSeparator";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
-// Global Hello Cal-regel for redigerbart tidspunkt: let separator
-// "──── TIDSPUNKT ────" (ca. 80 % bredde, ubrudte streger) med "Kl. 05.28"
-// under. Erstatter den tidligere tunge beige bjælke — brug altid denne.
+// Global Hello Cal-regel for redigerbart tidspunkt: overskriften "Tidspunkt"
+// er den ene fælles overskrift med streger (.hf-type-section-title, design.md
+// §4.3) med "Kl. 05.28" under. Erstatter den tidligere tunge beige bjælke —
+// brug altid denne.
 export function TimeSection({
   value,
   onChange,
@@ -19,8 +19,8 @@ export function TimeSection({
 
   return (
     <section className={`w-full ${className}`}>
-      <SectionSeparator label={t("common.timeHeading")} />
-      <div className="mt-2 flex justify-center">
+      <h2 className="hf-type-section-title">{t("common.timeHeading")}</h2>
+      <div className="flex justify-center">
         <label className="inline-flex min-h-11 items-center gap-1 px-4 text-[16px] font-normal text-hf-black">
           <span>{t("common.clockPrefix")}</span>
           <input

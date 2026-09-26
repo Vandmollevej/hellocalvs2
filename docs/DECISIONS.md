@@ -2,6 +2,26 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-26: Én overskrift med streger — kun `.hf-type-section-title`
+
+Brugerens krav (gentaget): alle overskrifter med streger ("──── Tekst ────")
+skal være samme klasse på alle sider. `.hf-type-section-title` er den eneste.
+
+- "Tidspunkt" (`TimeSection`), datogrupperne på Vand og Målsætning,
+  Integrationer-sektionerne, brugerens egne overskrifter på statistiksiden,
+  "+ Skillelinje" på Ubrugte statistik-kort og "eller" på admin-login bruger
+  nu klassen direkte.
+- `SectionSeparator` og `DateSeparator` (tan-streger, 80 % bredde, versaler)
+  er slettet. Det omstøder udseendet i 2026-09-22 "Global tidspunkt-regel";
+  selve reglen (Tidspunkt-overskrift med "Kl. 05.28" under, ingen beige
+  bjælke) består.
+- Ingen side eller komponent må tegne egne streger, bredder, farver eller
+  versaler ved en overskrift — ret kun klassen. Hvor et gitter selv styrer
+  afstanden (statistik-gitteret), nulstilles luften via klassens variabler
+  `--hf-section-title-space-above/-below`, aldrig med `mt-*`/`mb-*`.
+- Statistiksidens tekstløse sorte skillelinje er ikke en overskrift og er
+  uændret.
+
 ## 2026-09-25: Uncertainties-tærskler, billed-fane, natlig robot og admin "Cron-jobs"
 
 Brugerens svar 2026-09-25 (G4, runde 2):

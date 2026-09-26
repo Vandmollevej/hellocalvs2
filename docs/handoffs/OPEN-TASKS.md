@@ -153,6 +153,7 @@ Ejer: G10-overtagelse, konto D (2026-09-24)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | 5f2ee781 | Fjern stregen mellem footer og indhold + sektionsoverskrifter mindre, ikke fed, centreret med streg på hver side | Færdig (be3a05d) | Verificeret i preview. Afventer brugerens godkendelse af udseendet |
+| a83d7a5a | Alle overskrifter med streger skal være samme klasse (Tidspunkt, datogrupper, statistik, "+ Skillelinje", Historik) | Venter på bruger | Committet på branch `claude/unify-section-title` (session "Overskrifter med streger"). Pushes/deployes, når brugeren siger ok |
 | 6a503586 | Footer-redigering: slette-krydserne er skåret af + ikoner skal kunne trækkes til siden for at bytte rækkefølge | Færdig (8d5ba9b) | `overflow-x-clip` så krydserne ikke klippes; ombytning efter pladsen under fingeren (ingen hop) + roligere glide-animation; ikon fra panelet indsættes på den plads, det slippes. Afventer test på telefon (HelloFresh/knap-delen hører til G6) |
 
 ## G11 — Næringsdata på produktsiden (E-numre, toksiner, fedt-advarsel)

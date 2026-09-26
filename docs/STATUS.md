@@ -2,6 +2,14 @@
 
 Last updated: 2026-09-26
 
+## 2026-09-26: Alle overskrifter med streger bruger samme klasse
+
+Se DECISIONS 2026-09-26 "Én overskrift med streger". `SectionSeparator` og
+`DateSeparator` er slettet; Tidspunkt, datogrupper (Vand, Målsætning),
+Integrationer, statistikkens egne overskrifter, "+ Skillelinje" og
+admin-login "eller" bruger `.hf-type-section-title` direkte. Lint og build
+kørt; ikke visuelt tjekket (brugerens regel: brugeren tjekker selv).
+
 ## 2026-09-26: Integrationer — til/fra pr. datatype + push
 
 Egen side pr. app (`/settings/integrations/<app>`) med "Hent til Hello Cal" og
