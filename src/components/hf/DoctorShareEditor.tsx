@@ -90,7 +90,7 @@ export function DoctorShareEditor({
 
       <Link
         href={previewHref}
-        className="hf-btn-secondary hf-type-button flex h-12 w-full items-center justify-center bg-hf-white"
+        className="hf-btn-secondary flex h-12 w-full items-center justify-center bg-hf-white"
       >
         {t("helloDoc.previewButton")}
       </Link>

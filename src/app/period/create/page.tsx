@@ -77,17 +77,17 @@ export default function PeriodCreatePage() {
     <HfScreen title={t("periodLog.title")} icon={<IconCalendarHeart size={20} stroke={2} />}>
       <div className="hf-page">
         <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
-          <p className="text-[13px] leading-5">{t("periodLog.intro")}</p>
+          <p className="hf-type-small">{t("periodLog.intro")}</p>
         </div>
 
         <div className="hf-card hf-card--form">
           <label className="flex flex-col gap-2">
-            <span className="text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
+            <span className="hf-type-small hf-type-strong text-text-secondary uppercase tracking-[0.06em]">
               {t("periodLog.startDate")}
             </span>
             <input
               type="date"
-              className="rounded-xl bg-hf-white px-4 py-3 text-[15px] text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green"
+              className="hf-type-body rounded-xl bg-hf-white px-4 py-3 text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green"
               value={startDate}
               max={todayIso()}
               onChange={(event) => {
@@ -99,7 +99,7 @@ export default function PeriodCreatePage() {
 
           {saveError && <p className="hf-type-caption text-center">{saveError}</p>}
           {saved && !saveError && (
-            <p className="text-center text-[13px] font-semibold text-hf-green">{t("periodLog.saved")}</p>
+            <p className="hf-type-small hf-type-strong text-center text-hf-green">{t("periodLog.saved")}</p>
           )}
 
           <button
@@ -114,13 +114,13 @@ export default function PeriodCreatePage() {
 
         <div className="flex flex-col gap-2">
           {!loading && entries.length > 0 && <p className="hf-type-caption px-1">{t("periodLog.recentTitle")}</p>}
-          {loading && <p className="text-center text-[13px] text-hf-black opacity-60">{t("periodLog.loading")}</p>}
+          {loading && <p className="hf-type-small text-text-secondary text-center">{t("periodLog.loading")}</p>}
           {!loading && entries.length === 0 && (
-            <p className="text-center text-[13px] text-hf-black opacity-60">{t("periodLog.noEntriesYet")}</p>
+            <p className="hf-type-small text-text-secondary text-center">{t("periodLog.noEntriesYet")}</p>
           )}
           {entries.map((entry) => (
             <div key={entry.id} className="flex items-center justify-between rounded-2xl bg-hf-tan px-4 py-3">
-              <p className="text-[16px] font-bold text-hf-black">{formatDate(entry.startDate)}</p>
+              <p className="hf-type-body hf-type-strong text-hf-black">{formatDate(entry.startDate)}</p>
             </div>
           ))}
         </div>

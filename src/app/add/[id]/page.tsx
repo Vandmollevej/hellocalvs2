@@ -429,12 +429,12 @@ export default function AddPage() {
         state.status === "loaded" ? (
           <>
             {saveError && (
-              <p className="mb-2 text-center text-sm text-hf-black opacity-70">{saveError}</p>
+              <p className="hf-type-body text-text-secondary mb-2 text-center">{saveError}</p>
             )}
             <button
               onClick={forDish ? handleAddToDish : handleAdd}
               disabled={saving}
-              className="hf-btn-primary w-full py-3.5 text-[15px] disabled:opacity-60"
+              className="hf-btn-primary w-full py-3.5 disabled:opacity-60"
             >
               {forDish ? t("addProduct.addToDish") : saving ? t("createDish.saving") : t("addProduct.add")}
             </button>
@@ -444,12 +444,12 @@ export default function AddPage() {
     >
       <div className="flex h-full flex-col overflow-y-auto">
         {state.status === "loading" && (
-          <p className="p-4 text-center text-sm text-hf-black opacity-60">{t("addProduct.loading")}</p>
+          <p className="hf-type-body text-text-secondary p-4 text-center">{t("addProduct.loading")}</p>
         )}
 
         {(state.status === "not_found" || state.status === "error") && (
           <div className="m-4 rounded-2xl bg-hf-tan p-4 text-center">
-            <p className="text-sm text-hf-black opacity-70">
+            <p className="hf-type-body text-text-secondary">
               {state.status === "not_found"
                 ? t("addProduct.notFound")
                 : t("addProduct.error")}
@@ -462,7 +462,7 @@ export default function AddPage() {
             {!forDish && photoAwards.length > 0 && (
               <Link
                 href={`/add/${id}/photo-award`}
-                className="block bg-hf-black px-4 py-3 text-center text-[13px] font-medium text-hf-white"
+                className="hf-type-small hf-type-strong block bg-hf-black px-4 py-3 text-center text-hf-white"
               >
                 {photoAwards.length === 1
                   ? t("photoAward.bannerSingle", {
@@ -517,19 +517,19 @@ export default function AddPage() {
                 {!!state.product.barcodes?.length && state.product.createdByUserId !== profile?.id && (
                   <Link
                     href={`/profile/report-bug?productId=${id}`}
-                    className="flex items-center gap-1 self-start text-[13px] font-medium text-hf-black opacity-70"
+                    className="hf-type-small hf-type-strong text-text-secondary flex items-center gap-1 self-start"
                   >
                     <IconAlertTriangle size={16} />
                     {t("swipeableRow.reportError")}
                   </Link>
                 )}
-                <p className="hf-heading text-lg text-hf-black">{state.product.name}</p>
+                <p className="hf-type-body-lg hf-heading text-hf-black">{state.product.name}</p>
                 {state.product.brand && (
-                  <p className="text-sm font-bold text-hf-green">
+                  <p className="hf-type-body hf-type-strong text-hf-green">
                     {state.product.brand.name}
                   </p>
                 )}
-                <p className="text-sm font-bold text-hf-black">
+                <p className="hf-type-body hf-type-strong text-hf-black">
                   {state.product.isGenericIngredient && state.product.hasKnownNutrition === false
                     ? t("addProduct.nutritionUnknown")
                     : servingSizeGrams && hasServingUnit
@@ -544,7 +544,7 @@ export default function AddPage() {
                 {!!confidentAlternativeServings.length && (
                   <div className="mt-1 flex flex-col items-center gap-0.5">
                     {confidentAlternativeServings.map((serving: AlternativeServing, index: number) => (
-                      <p key={`${serving.label}-${index}`} className="text-xs text-hf-black opacity-60">
+                      <p key={`${serving.label}-${index}`} className="hf-type-small text-text-secondary">
                         {t("addProduct.alternativeServing", { label: serving.label, kcal: Math.round(serving.kcal as number) })}
                       </p>
                     ))}
@@ -555,7 +555,7 @@ export default function AddPage() {
                   <button
                     type="button"
                     onClick={scrollToDetails}
-                    className="flex items-center gap-1 text-[13px] font-medium text-hf-black underline underline-offset-2"
+                    className="hf-btn-text flex items-center gap-1 text-hf-black"
                   >
                     {t("addProduct.details")}
                     <IconChevronDown size={15} />
@@ -574,8 +574,8 @@ export default function AddPage() {
                     onClick={() => setAmountUnit("personer")}
                     className={
                       amountUnit === "personer"
-                        ? "hf-btn-primary px-4 py-1.5 text-xs"
-                        : "hf-btn-secondary px-4 py-1.5 text-xs"
+                        ? "hf-btn-primary px-4 py-1.5"
+                        : "hf-btn-secondary px-4 py-1.5"
                     }
                   >
                     <span className="capitalize">{servingSizeUnitPlural}</span>
@@ -585,8 +585,8 @@ export default function AddPage() {
                     onClick={() => setAmountUnit("gram")}
                     className={
                       amountUnit === "gram"
-                        ? "hf-btn-primary px-4 py-1.5 text-xs"
-                        : "hf-btn-secondary px-4 py-1.5 text-xs"
+                        ? "hf-btn-primary px-4 py-1.5"
+                        : "hf-btn-secondary px-4 py-1.5"
                     }
                   >
                     {baseUnitLabel}
@@ -597,19 +597,19 @@ export default function AddPage() {
               <div className="mb-4 flex items-center gap-2">
                 <button
                   onClick={() => setAmount((a) => Math.max(step, a - step))}
-                  className="h-11 w-11 rounded-full bg-hf-tan text-lg font-bold text-hf-black"
+                  className="hf-type-title h-11 w-11 rounded-full bg-hf-tan text-hf-black"
                 >
                   −
                 </button>
                 <div className="flex-1 rounded-2xl bg-hf-tan py-3 text-center text-hf-black">
                   {hasServingUnit && amountUnit === "personer" ? (
-                    <p className="text-xl font-bold capitalize">
+                    <p className="hf-type-title capitalize">
                       {`${Math.round(amount / (servingSizeGrams as number))} ${
                         amount === servingSizeGrams ? servingSizeUnitSingular : servingSizeUnitPlural
                       }`}
                     </p>
                   ) : (
-                    <label className="flex items-baseline justify-center text-xl font-bold text-hf-black">
+                    <label className="hf-type-title flex items-baseline justify-center text-hf-black">
                       <input
                         type="number"
                         inputMode="numeric"
@@ -626,7 +626,7 @@ export default function AddPage() {
                       <span>&nbsp;{displayUnit}</span>
                     </label>
                   )}
-                  <p className="text-xs opacity-70">
+                  <p className="hf-type-small text-text-secondary">
                     {state.product.isGenericIngredient && state.product.hasKnownNutrition === false
                       ? t("addProduct.nutritionUnknown")
                       : `${Math.round((state.product.kcalPer100g * amount) / 100)} kcal`}
@@ -634,7 +634,7 @@ export default function AddPage() {
                 </div>
                 <button
                   onClick={() => setAmount((a) => a + step)}
-                  className="h-11 w-11 rounded-full bg-hf-tan text-lg font-bold text-hf-black"
+                  className="hf-type-title h-11 w-11 rounded-full bg-hf-tan text-hf-black"
                 >
                   +
                 </button>
@@ -645,14 +645,14 @@ export default function AddPage() {
             <div ref={detailsRef} className="flex flex-col gap-8 border-t border-hf-tan-dark p-4">
               <div>
                 <div className="mb-4 flex items-center justify-between">
-                  <p className="hf-heading text-[15px] text-hf-black">{t("common.macroBreakdown")}</p>
+                  <p className="hf-type-body hf-heading text-hf-black">{t("common.macroBreakdown")}</p>
                   <div className="-my-3 -mr-3 flex items-center">
                     {isProductEditingUnlocked && (
                       <button
                         type="button"
                         onClick={() => setMacroOverride(macroOverrideSnapshot)}
                         aria-label={t("addProduct.resetChanges")}
-                        className="flex h-11 w-11 items-center justify-center rounded-full text-hf-black"
+                        className="hf-btn-icon text-hf-black"
                       >
                         <IconRefresh size={20} />
                       </button>
@@ -662,7 +662,7 @@ export default function AddPage() {
                       onClick={handleToggleEditLock}
                       aria-label={t(isProductEditingUnlocked ? "addProduct.lockEditing" : "addProduct.unlockEditing")}
                       aria-pressed={isProductEditingUnlocked}
-                      className="flex h-11 w-11 items-center justify-center rounded-full text-hf-black"
+                      className="hf-btn-icon text-hf-black"
                     >
                       {isProductEditingUnlocked ? <IconLockOpen size={20} /> : <IconLock size={20} />}
                     </button>
@@ -700,7 +700,7 @@ export default function AddPage() {
                     onClick={() => setAdditivesOpen((open) => !open)}
                     className="mb-4 flex w-full items-center justify-between"
                   >
-                    <p className="hf-heading text-[15px] text-hf-black">{t("addProduct.additives")}</p>
+                    <p className="hf-type-body hf-heading text-hf-black">{t("addProduct.additives")}</p>
                     <IconChevronDown
                       size={18}
                       className={`text-hf-black transition-transform ${additivesOpen ? "rotate-180" : ""}`}
@@ -721,10 +721,10 @@ export default function AddPage() {
                               : ""
                           }`}
                         >
-                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-hf-green text-[11px] font-bold text-hf-white">
+                          <span className="hf-type-micro hf-type-strong flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-hf-green text-hf-white">
                             E
                           </span>
-                          <span className="text-[13px] text-hf-black opacity-70">
+                          <span className="hf-type-small text-text-secondary">
                             ({code.toUpperCase()}){" "}
                             <span className="underline underline-offset-2">{name}</span>
                           </span>
@@ -745,7 +745,7 @@ export default function AddPage() {
                     onClick={() => setToxinsOpen((open) => !open)}
                     className="mb-3 flex w-full items-center justify-between"
                   >
-                    <p className="hf-heading text-[15px] text-hf-black">{t("addProduct.toxins")}</p>
+                    <p className="hf-type-body hf-heading text-hf-black">{t("addProduct.toxins")}</p>
                     <IconChevronDown
                       size={18}
                       className={`text-hf-black transition-transform ${toxinsOpen ? "rotate-180" : ""}`}
@@ -763,18 +763,18 @@ export default function AddPage() {
                           }`}
                         >
                           <IconAlertTriangle size={18} className="shrink-0 text-hf-black" />
-                          <span className="flex-1 text-[13px] text-hf-black opacity-70">
+                          <span className="hf-type-small text-text-secondary flex-1">
                             <span className="underline underline-offset-2">{toxin.name}</span>{" "}
                             ({matchedTerm})
                           </span>
                           {(toxin.pregnancy || toxin.fertility) && (
-                            <span className="shrink-0 rounded-full bg-hf-white px-2 py-0.5 text-[11px] text-hf-black">
+                            <span className="hf-type-micro shrink-0 rounded-full bg-hf-white px-2 py-0.5 text-hf-black">
                               {t("addProduct.toxinPregnancyBadge")}
                             </span>
                           )}
                         </button>
                       ))}
-                      <p className="px-4 py-2.5 text-[11px] text-hf-black opacity-50">
+                      <p className="hf-type-micro text-text-secondary px-4 py-2.5">
                         {t("addProduct.toxinsDisclaimer")}
                       </p>
                     </div>
@@ -784,16 +784,16 @@ export default function AddPage() {
 
               {!!visibleAllergens.length && (
                 <div>
-                  <p className="hf-heading mb-2 flex items-center gap-2 text-[15px] text-hf-black">
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-hf-green text-[12px] font-bold text-hf-white">
+                  <p className="hf-type-body hf-heading mb-2 flex items-center gap-2 text-hf-black">
+                    <span className="hf-type-small hf-type-strong flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-hf-green text-hf-white">
                       !
                     </span>
                     {t("addProduct.allergens")}
                   </p>
-                  <p className="text-[13px] text-hf-black opacity-70">
+                  <p className="hf-type-small text-text-secondary">
                     {visibleAllergens.map((key) => labelForAllergen(key)).join(", ")}
                   </p>
-                  <p className="mt-2 text-[11px] text-hf-black opacity-50">
+                  <p className="hf-type-micro text-text-secondary mt-2">
                     {t("addProduct.allergenDisclaimer")}
                   </p>
                 </div>
@@ -801,8 +801,8 @@ export default function AddPage() {
 
               {!!state.product.ingredientsText && (
                 <div>
-                  <p className="hf-heading mb-2 text-[15px] text-hf-black">{t("createDish.ingredients")}</p>
-                  <p className="text-[13px] leading-relaxed text-hf-black opacity-70">
+                  <p className="hf-type-body hf-heading mb-2 text-hf-black">{t("createDish.ingredients")}</p>
+                  <p className="hf-type-small text-text-secondary">
                     {state.product.ingredientsText}
                   </p>
                 </div>
@@ -819,8 +819,8 @@ export default function AddPage() {
                     onClick={() => setExtendedNutritionOpen((open) => !open)}
                     className="flex w-full items-center justify-between"
                   >
-                    <p className="hf-heading text-[15px] text-hf-black">{t("addProduct.extendedNutrition")}</p>
-                    <span className="flex items-center gap-1 text-[13px] font-medium text-hf-black underline underline-offset-2">
+                    <p className="hf-type-body hf-heading text-hf-black">{t("addProduct.extendedNutrition")}</p>
+                    <span className="hf-type-small hf-type-strong flex items-center gap-1 text-hf-black underline underline-offset-2">
                       {extendedNutritionOpen ? t("addProduct.showLess") : t("addProduct.showMore")}
                       <IconChevronDown
                         size={15}
@@ -839,7 +839,7 @@ export default function AddPage() {
                         const expanded =
                           hasUncertainty &&
                           Boolean(profile?.autoExpandUncertainty) !== uncertaintyToggled.has(row.key);
-                        const rowClass = `flex w-full flex-wrap items-center justify-between px-4 py-2.5 text-left text-[13px] text-hf-black ${
+                        const rowClass = `hf-type-small flex w-full flex-wrap items-center justify-between px-4 py-2.5 text-left text-hf-black ${
                           index < extendedNutrition.length - 1 ? "border-b border-hf-tan-dark" : ""
                         }`;
                         const content = (
@@ -856,7 +856,7 @@ export default function AddPage() {
                                 />
                               )}
                             </span>
-                            <span className="font-medium">
+                            <span className="hf-type-strong">
                               {row.estimated && <UncertaintyTilde />}
                               {formatDaNumber(row.value, row.digits ?? 0)} {row.unit}
                             </span>
@@ -894,7 +894,7 @@ export default function AddPage() {
                           </div>
                         );
                       })}
-                      <p className="px-4 py-2.5 text-[11px] text-hf-black opacity-50">
+                      <p className="hf-type-micro text-text-secondary px-4 py-2.5">
                         {t("addProduct.extendedNutritionDisclaimer")}
                       </p>
                     </div>

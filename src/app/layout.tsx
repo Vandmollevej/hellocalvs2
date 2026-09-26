@@ -49,7 +49,7 @@ export default function RootLayout({
       lang="da"
       className={`${geistSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full text-text-primary font-sans">
+      <body className="min-h-full text-hf-black font-sans">
         <GlobalClipboardGuard />
         <LocaleProvider>
           <AuthGate />

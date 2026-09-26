@@ -74,14 +74,14 @@ export function BirthDatePicker({
       <button
         type="button"
         onClick={() => setDraft(normalize(saved ?? { year: DEFAULT_YEAR, month: 1, day: 1 }))}
-        className="flex items-center rounded-xl bg-hf-tan px-4 py-3 text-left text-[15px] text-hf-black"
+        className="hf-type-body flex items-center rounded-xl bg-hf-tan px-4 py-3 text-left text-hf-black"
       >
         {saved ? `${saved.day}. ${MONTHS[saved.month - 1]} ${saved.year}` : "Vælg"}
       </button>
 
       {draft && (
         <div
-          className="fixed inset-0 z-[70] flex flex-col justify-end bg-black/40"
+          className="fixed inset-0 z-[70] flex flex-col justify-end bg-hf-black/40"
           role="dialog"
           aria-modal="true"
         >
@@ -93,14 +93,14 @@ export function BirthDatePicker({
           />
           <div className="rounded-t-2xl bg-hf-cream pb-[max(16px,env(safe-area-inset-bottom))]">
             <div className="flex items-center justify-between px-4 py-3">
-              <span className="text-[15px] font-bold text-hf-black">{label}</span>
+              <span className="hf-type-body hf-type-strong text-hf-black">{label}</span>
               <button
                 type="button"
                 onClick={() => {
                   onChange(format(draft));
                   setDraft(null);
                 }}
-                className="text-[15px] font-semibold text-hf-green"
+                className="hf-type-body hf-type-strong text-hf-green"
               >
                 Færdig
               </button>
@@ -184,8 +184,8 @@ function WheelColumn({
       {options.map((option) => (
         <div
           key={option}
-          className={`flex h-10 snap-center items-center justify-center text-[17px] ${
-            option === selected ? "font-bold text-hf-black" : "text-hf-black opacity-50"
+          className={`hf-type-body-lg flex h-10 snap-center items-center justify-center ${
+            option === selected ? "hf-type-strong text-hf-black" : "text-hf-black opacity-50"
           }`}
         >
           {render(option)}

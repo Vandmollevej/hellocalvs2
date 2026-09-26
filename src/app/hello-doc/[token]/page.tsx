@@ -113,8 +113,8 @@ export default function HelloDocTokenPage() {
       </header>
 
       <main className="mx-auto w-full max-w-3xl flex-1 p-4">
-        {!data && !loadError && <p className="hf-type-body-sm p-4 text-center opacity-70">{t("helloDoc.token.loading")}</p>}
-        {!data && loadError && <p className="hf-type-body-sm p-4 text-center text-hf-red-dark">{t("helloDoc.token.loadError")}</p>}
+        {!data && !loadError && <p className="text-text-secondary hf-type-body p-4 text-center">{t("helloDoc.token.loading")}</p>}
+        {!data && loadError && <p className="hf-type-body p-4 text-center text-hf-red-dark">{t("helloDoc.token.loadError")}</p>}
 
         {data && data.status === "NOT_FOUND" && (
           <StatusCard title={t("helloDoc.token.notFoundTitle")} body={t("helloDoc.token.notFoundBody")} />
@@ -129,16 +129,16 @@ export default function HelloDocTokenPage() {
         {data && data.status === "PENDING" && (
           <div className="mx-auto mt-8 max-w-md rounded-xl p-4 text-center" style={{ background: "var(--hf-color-card)" }}>
             <h1 className="hf-type-page-title">{t("helloDoc.token.pendingTitle", { ownerName: data.ownerName })}</h1>
-            <p className="hf-type-body mt-4 opacity-80">{t("helloDoc.token.pendingBody", { ownerName: data.ownerName })}</p>
+            <p className="text-text-secondary hf-type-body mt-4">{t("helloDoc.token.pendingBody", { ownerName: data.ownerName })}</p>
 
             {data.categories && data.categories.length > 0 && (
               <div className="mt-4 rounded-lg bg-hf-white p-4 text-left">
-                <p className="hf-type-caption opacity-70">{t("helloDoc.token.pendingSharedListTitle")}</p>
+                <p className="text-text-secondary hf-type-caption">{t("helloDoc.token.pendingSharedListTitle")}</p>
                 <ul className="mt-1 flex flex-col gap-1">
                   {data.categories
                     .filter((category) => !DOCTOR_SHARE_UNAVAILABLE_CATEGORIES.includes(category))
                     .map((category) => (
-                      <li key={category} className="hf-type-body-sm">
+                      <li key={category} className="hf-type-body">
                         {t(CATEGORY_LABEL_KEY[category])}
                       </li>
                     ))}
@@ -147,18 +147,18 @@ export default function HelloDocTokenPage() {
             )}
 
             {data.expiresAt && (
-              <p className="hf-type-caption mt-4 opacity-60">
+              <p className="text-text-secondary hf-type-caption mt-4">
                 {t("helloDoc.token.expiresHint", { date: formatDate(data.expiresAt, locale) })}
               </p>
             )}
 
-            {acceptError && <p className="hf-type-body-sm mt-4 text-hf-red-dark">{t("helloDoc.token.acceptError")}</p>}
+            {acceptError && <p className="hf-type-body mt-4 text-hf-red-dark">{t("helloDoc.token.acceptError")}</p>}
 
             <button
               type="button"
               onClick={accept}
               disabled={accepting}
-              className="hf-btn-primary hf-type-button mt-4 h-14 w-full text-[17px] disabled:opacity-40"
+              className="hf-btn-primary mt-4 h-14 w-full disabled:opacity-40"
               style={{ borderRadius: 8 }}
             >
               {accepting ? t("helloDoc.token.accepting") : t("helloDoc.token.acceptButton")}
@@ -171,7 +171,7 @@ export default function HelloDocTokenPage() {
 
       {data && data.status === "ACTIVE" && (
         <footer className="mx-auto w-full max-w-3xl p-4">
-          <p className="hf-type-caption text-center opacity-60">{t("helloDoc.token.disclaimer", { ownerName: data.ownerName })}</p>
+          <p className="text-text-secondary hf-type-caption text-center">{t("helloDoc.token.disclaimer", { ownerName: data.ownerName })}</p>
         </footer>
       )}
     </div>
@@ -182,7 +182,7 @@ function StatusCard({ title, body }: { title: string; body: string }) {
   return (
     <div className="mx-auto mt-8 max-w-md rounded-xl p-4 text-center" style={{ background: "var(--hf-color-card)" }}>
       <h1 className="hf-type-page-title">{title}</h1>
-      <p className="hf-type-body mt-4 opacity-80">{body}</p>
+      <p className="text-text-secondary hf-type-body mt-4">{body}</p>
     </div>
   );
 }
@@ -228,15 +228,15 @@ function ActiveView({
   return (
     <div className="flex flex-col gap-8 md:flex-row md:items-start">
       <aside className="flex flex-col gap-4 rounded-xl p-4 md:w-64 md:shrink-0" style={{ background: "var(--hf-color-card)" }}>
-        <p className="hf-type-body-sm">{t("helloDoc.token.greeting", { name: data.doctorName })}</p>
+        <p className="hf-type-body">{t("helloDoc.token.greeting", { name: data.doctorName })}</p>
 
         {data.profile && (
           <div className="flex flex-col items-center gap-2 text-center">
-            <span className="flex h-24 w-24 items-center justify-center rounded-full bg-hf-tan-dark text-2xl font-bold text-hf-black">
+            <span className="hf-type-page-title flex h-24 w-24 items-center justify-center rounded-full bg-hf-tan-dark text-hf-black">
               {initials(data.profile.displayName)}
             </span>
             <p className="hf-type-category-title">{data.profile.displayName}</p>
-            <p className="hf-type-caption opacity-70">{data.profile.email}</p>
+            <p className="text-text-secondary hf-type-caption">{data.profile.email}</p>
           </div>
         )}
 
@@ -244,22 +244,22 @@ function ActiveView({
           <div className="flex flex-col gap-4 border-t pt-4" style={{ borderColor: "var(--hf-color-line)" }}>
             {data.weight && (
               <div>
-                <p className="hf-type-caption opacity-70">{t("helloDoc.preview.startWeight")}</p>
-                <p className="hf-type-body font-bold">{data.weight.startWeightKg != null ? `${data.weight.startWeightKg} kg` : "—"}</p>
-                <p className="hf-type-caption opacity-60">
+                <p className="text-text-secondary hf-type-caption">{t("helloDoc.preview.startWeight")}</p>
+                <p className="hf-type-body">{data.weight.startWeightKg != null ? `${data.weight.startWeightKg} kg` : "—"}</p>
+                <p className="text-text-secondary hf-type-caption">
                   {t("helloDoc.preview.recordedOn", { date: formatDate(data.weight.startWeightRecordedAt, locale) })}
                 </p>
               </div>
             )}
             {data.goals && (
               <div>
-                <p className="hf-type-caption opacity-70">{t("helloDoc.preview.startGoal")}</p>
-                <p className="hf-type-body font-bold">{data.goals.targetWeightKg != null ? `${data.goals.targetWeightKg} kg` : "—"}</p>
+                <p className="text-text-secondary hf-type-caption">{t("helloDoc.preview.startGoal")}</p>
+                <p className="hf-type-body">{data.goals.targetWeightKg != null ? `${data.goals.targetWeightKg} kg` : "—"}</p>
               </div>
             )}
             {data.sleep && (
               <div>
-                <p className="hf-type-caption opacity-70">{t("helloDoc.preview.sleepSection")}</p>
+                <p className="text-text-secondary hf-type-caption">{t("helloDoc.preview.sleepSection")}</p>
                 <p className="hf-type-body">
                   {t("helloDoc.preview.sleepBedtime")}: {data.sleep.defaultBedtime ?? t("helloDoc.preview.sleepNotSet")}
                 </p>
@@ -285,7 +285,7 @@ function ActiveView({
             <section className="rounded-xl border p-4" style={{ borderColor: "var(--hf-color-line)" }}>
               <h3 className="hf-type-section-title">{t("helloDoc.preview.foodSection")}</h3>
               <MiniBarChart points={kcalPoints} emptyLabel={t("helloDoc.preview.noChartData")} />
-              <p className="hf-type-caption mt-1 text-right opacity-60">{t("helloDoc.preview.kcalUnit")}/dag</p>
+              <p className="text-text-secondary hf-type-caption mt-1 text-right">{t("helloDoc.preview.kcalUnit")}/dag</p>
             </section>
           )}
 

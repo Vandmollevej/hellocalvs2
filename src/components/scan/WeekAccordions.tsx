@@ -20,7 +20,7 @@ export type WeekGroup = { week: IsoWeek; rows: WeekRow[]; amountOre: number; amo
 export function WeekAccordions({ groups, showStore, emptyText }: { groups: WeekGroup[]; showStore?: boolean; emptyText: string }) {
   if (!groups.length) {
     return (
-      <p className="hf-type-body-sm p-4 text-center" style={{ color: "var(--hf-color-text-secondary)" }}>
+      <p className="hf-type-body p-4 text-center" style={{ color: "var(--hf-color-text-secondary)" }}>
         {emptyText}
       </p>
     );
@@ -31,8 +31,8 @@ export function WeekAccordions({ groups, showStore, emptyText }: { groups: WeekG
       {groups.map((group, index) => (
         <details key={group.week.key} open={index === 0} className="group overflow-hidden rounded-[8px]" style={{ background: "var(--hf-color-card)" }}>
           <summary className="flex h-12 cursor-pointer list-none items-center gap-4 px-4">
-            <span className="hf-type-body w-16 font-semibold">Uge {group.week.week}</span>
-            <span className="hf-type-body-sm flex-1" style={{ color: "var(--hf-color-text-secondary)" }}>
+            <span className="hf-type-body w-16">Uge {group.week.week}</span>
+            <span className="hf-type-body flex-1" style={{ color: "var(--hf-color-text-secondary)" }}>
               {formatWeekPeriod(group.week)}
             </span>
             <span className="transition-transform group-open:rotate-90">
@@ -40,8 +40,8 @@ export function WeekAccordions({ groups, showStore, emptyText }: { groups: WeekG
             </span>
           </summary>
           <div className="flex justify-between border-t px-4 py-3" style={{ borderColor: "var(--hf-color-line)" }}>
-            <span className="hf-type-body-sm">{group.rows.length} billeder</span>
-            <span className="hf-type-body-sm font-semibold">
+            <span className="hf-type-body">{group.rows.length} billeder</span>
+            <span className="hf-type-body">
               {group.amountLabel}: {formatKroner(group.amountOre)}
             </span>
           </div>
@@ -55,7 +55,7 @@ export function WeekAccordions({ groups, showStore, emptyText }: { groups: WeekG
                   <span className="h-12 w-12 rounded-[8px] bg-hf-white" />
                 )}
                 <span className="min-w-0 flex-1">
-                  <span className="hf-type-body-sm block truncate">
+                  <span className="hf-type-body block truncate">
                     {row.brandName ? `${row.brandName} ` : ""}
                     {row.productName}
                   </span>

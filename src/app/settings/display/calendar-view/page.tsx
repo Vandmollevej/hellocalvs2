@@ -22,7 +22,7 @@ export default function CalendarViewDisplaySettingsPage() {
   return (
     <HfScreen title={t("calendarViewSettings.title")}>
       <div className="hf-page">
-        <p className="px-1 text-[13px] leading-5 text-hf-black opacity-70">
+        <p className="hf-type-small text-text-secondary px-1">
           {t("calendarViewSettings.intro")}
         </p>
 
@@ -36,7 +36,7 @@ export default function CalendarViewDisplaySettingsPage() {
                 role="radio"
                 aria-checked={isSelected}
                 onClick={() => saveDefaultCalendarView(option.value)}
-                className={`flex min-h-12 items-center px-4 text-left text-[14px] font-medium ${
+                className={`hf-type-body hf-type-strong flex min-h-12 items-center px-4 text-left ${
                   index < OPTIONS.length - 1 ? "border-b border-hf-tan-dark" : ""
                 } ${isSelected ? "text-hf-green" : "text-hf-black"}`}
               >

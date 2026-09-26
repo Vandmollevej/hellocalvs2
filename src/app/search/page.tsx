@@ -59,7 +59,7 @@ function ResultRow({
         title={title}
         subtitle={
           kcal !== undefined ? (
-            <p className="truncate text-xs text-hf-black opacity-60">
+            <p className="hf-type-small text-text-secondary truncate">
               {brand ? `${brand} · ` : ""}
               {macrosEstimated && <UncertaintyTilde />}
               {t("foods.kcalPer100g", { kcal: Math.round(kcal) })}
@@ -78,7 +78,7 @@ function ResultRow({
             </button>
             <Link
               href={forDish ? `/add/${id}?for=ret` : `/add/${id}`}
-              className="hf-btn-primary px-4 py-1.5 text-xs"
+              className="hf-btn-primary px-4 py-1.5"
             >
               {t("search.add")}
             </Link>
@@ -238,7 +238,7 @@ function SoegContent() {
 
         {showFavorites && (
           <>
-            <p className="text-xs font-bold text-hf-black">{t("search.favorites")}</p>
+            <p className="hf-type-small hf-type-strong text-hf-black">{t("search.favorites")}</p>
             <div className="overflow-hidden rounded-[8px] bg-hf-tan">
               {favorites.map((r) => (
                 <ResultRow
@@ -258,7 +258,7 @@ function SoegContent() {
 
         {showRecentlyAdded && (
           <>
-            <p className="text-xs font-bold text-hf-black">{t("search.recentlyAdded")}</p>
+            <p className="hf-type-small hf-type-strong text-hf-black">{t("search.recentlyAdded")}</p>
             <div className="overflow-hidden rounded-[8px] bg-hf-tan">
               {recentlyAdded.map((r) => (
                 <ResultRow
@@ -277,18 +277,18 @@ function SoegContent() {
         )}
 
         {!query.trim() && !showFavorites && !showRecentlyAdded && (
-          <p className="px-1 text-center text-sm text-hf-black opacity-60">{t("search.emptyState")}</p>
+          <p className="hf-type-body text-text-secondary px-1 text-center">{t("search.emptyState")}</p>
         )}
 
         {query.trim() && (
           <>
-            <p className="text-xs font-bold text-hf-black">{t("search.searchResults")}</p>
+            <p className="hf-type-small hf-type-strong text-hf-black">{t("search.searchResults")}</p>
             <div className="overflow-hidden rounded-[8px] bg-hf-tan">
               {resultsState === "loading" && (
-                <p className="px-4 py-8 text-center text-sm text-hf-black opacity-60">{t("search.searching")}</p>
+                <p className="hf-type-body text-text-secondary px-4 py-8 text-center">{t("search.searching")}</p>
               )}
               {resultsState === "error" && (
-                <p className="px-4 py-8 text-center text-sm text-hf-black opacity-60">
+                <p className="hf-type-body text-text-secondary px-4 py-8 text-center">
                   {t("foods.loadError")}
                 </p>
               )}
@@ -308,7 +308,7 @@ function SoegContent() {
                 />
               ))}
               {resultsState === "ready" && results.length === 0 && (
-                <p className="px-4 py-4 text-center text-sm text-hf-black opacity-60">
+                <p className="hf-type-body text-text-secondary px-4 py-4 text-center">
                   {t("search.noResults")}
                 </p>
               )}

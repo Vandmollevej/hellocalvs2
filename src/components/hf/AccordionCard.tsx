@@ -33,7 +33,7 @@ export function ChevronRow({
       <span className="hf-type-body flex-1 truncate">{label}</span>
       {!!badgeCount && badgeCount > 0 && (
         <span
-          className="hf-type-caption flex h-5 min-w-5 items-center justify-center rounded-full px-1 font-bold"
+          className="hf-type-caption flex h-5 min-w-5 items-center justify-center rounded-full px-1"
           style={{ background: "var(--hf-black)", color: "var(--hf-color-white)" }}
           aria-label={`${badgeCount} ulæste`}
         >

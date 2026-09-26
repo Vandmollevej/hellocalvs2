@@ -41,17 +41,17 @@ function GoalInput({
 }) {
   return (
     <label className="flex min-w-0 flex-col gap-1">
-      <span className="text-[13px] font-semibold text-hf-black">{label}</span>
+      <span className="hf-type-small hf-type-strong text-hf-black">{label}</span>
       <span className="flex items-end gap-2 border-b border-hf-black/30 pb-2">
         <input
           type="text"
           inputMode="decimal"
           value={value}
           onChange={(event) => onChange(event.target.value)}
-          className="w-full min-w-0 bg-transparent text-[17px] text-hf-black outline-none"
+          className="hf-type-body-lg w-full min-w-0 bg-transparent text-hf-black outline-none"
           placeholder={placeholder}
         />
-        <span className="pb-1 text-[13px] font-semibold text-hf-black opacity-60">{unit}</span>
+        <span className="hf-type-small hf-type-strong text-text-secondary pb-1">{unit}</span>
       </span>
     </label>
   );
@@ -108,17 +108,17 @@ export default function NewGoalPage() {
       footer={
         <div className="flex flex-col gap-2">
           {(!hasDate || !hasAny) && (
-            <p className="text-center text-[13px] text-hf-black opacity-60">
+            <p className="hf-type-small text-text-secondary text-center">
               {!hasDate ? t("goals.dateRequired") : t("goals.atLeastOne")}
             </p>
           )}
-          {saveError && <p className="text-center text-[13px] text-hf-red-dark">{t("goals.saveError")}</p>}
+          {saveError && <p className="hf-type-small text-center text-hf-red-dark">{t("goals.saveError")}</p>}
           <button
             type="button"
             onClick={save}
             disabled={!canSave}
             aria-busy={saving}
-            className="hf-btn-primary hf-type-button h-12 w-full disabled:opacity-40"
+            className="hf-btn-primary h-12 w-full disabled:opacity-40"
           >
             {saving ? t("goals.saving") : t("goals.save")}
           </button>
@@ -127,12 +127,12 @@ export default function NewGoalPage() {
     >
       <div className="hf-page">
         <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
-          <p className="text-[13px] leading-5">{t("goals.intro")}</p>
+          <p className="hf-type-small">{t("goals.intro")}</p>
         </div>
 
         <div className="hf-card">
           <label className="flex flex-col gap-1">
-            <span className="text-[13px] font-semibold text-hf-black">{t("goals.targetDate")}</span>
+            <span className="hf-type-small hf-type-strong text-hf-black">{t("goals.targetDate")}</span>
             <span className="relative flex items-end gap-2 border-b border-hf-black/30 pb-2">
               <input
                 type="date"
@@ -149,12 +149,12 @@ export default function NewGoalPage() {
                   }
                 }}
                 // Tomt felt: skjul browserens "dd.mm.åååå"-maske bag pladsholderen.
-                className={`min-h-[26px] w-full appearance-none bg-transparent text-left text-[17px] outline-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-date-and-time-value]:text-left ${
+                className={`hf-type-body-lg min-h-[26px] w-full appearance-none bg-transparent text-left outline-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-date-and-time-value]:text-left ${
                   targetDate === "" ? "text-transparent" : "text-hf-black"
                 }`}
               />
               {targetDate === "" && (
-                <span className="pointer-events-none absolute left-0 top-0 text-[17px] text-hf-black opacity-40">
+                <span className="hf-type-body-lg text-text-muted pointer-events-none absolute left-0 top-0">
                   {t("goals.targetDatePlaceholder")}
                 </span>
               )}
@@ -174,7 +174,7 @@ export default function NewGoalPage() {
         </div>
 
         <div className="hf-card hf-card--form">
-          <p className="text-[15px] font-bold text-hf-black">{t("goals.bodyMeasurementsHeading")}</p>
+          <p className="hf-type-body hf-type-strong text-hf-black">{t("goals.bodyMeasurementsHeading")}</p>
           <div className="grid grid-cols-2 gap-4">
             {BODY_MEASUREMENT_FIELDS.map(({ field, nameKey }) => (
               <GoalInput

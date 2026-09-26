@@ -8,8 +8,8 @@ export default async function AdminSearchPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-lg font-semibold text-text-primary">Søg</h1>
-      <p className="text-sm text-text-secondary">Søg i den godkendte database og ret eksisterende produkter.</p>
+      <h1 className="hf-type-title text-hf-black">Søg</h1>
+      <p className="hf-type-body text-text-secondary">Søg i den godkendte database og ret eksisterende produkter.</p>
       <AdminProductSearch />
     </div>
   );

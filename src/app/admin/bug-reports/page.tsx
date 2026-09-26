@@ -24,12 +24,12 @@ export default async function AdminBugReportsPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-lg font-semibold text-text-primary">{t(admin.locale, "bug_reports_title")}</h1>
-      <p className="text-sm text-text-secondary">
+      <h1 className="hf-type-title text-hf-black">{t(admin.locale, "bug_reports_title")}</h1>
+      <p className="hf-type-body text-text-secondary">
         Godkendelse giver brugeren 10 points (gælder ikke AI-genererede rapporter). Nyeste øverst.
       </p>
       {reports.length === 0 ? (
-        <p className="text-sm text-text-secondary">Ingen fejlrapporter afventer gennemgang.</p>
+        <p className="hf-type-body text-text-secondary">Ingen fejlrapporter afventer gennemgang.</p>
       ) : (
         <div className="flex flex-col gap-4">
           {reports.map((report) => (

@@ -190,14 +190,14 @@ function VoiceItemRow({
       </div>
       <div className="min-w-0 flex-1">
         <span className="flex items-center gap-1.5">
-          <span className="block truncate text-sm font-semibold text-hf-black">{item.title}</span>
+          <span className="hf-type-body hf-type-strong block truncate text-hf-black">{item.title}</span>
           {item.estimated && (
-            <span className="flex-shrink-0 rounded-full bg-hf-tan px-1.5 py-0.5 text-[10px] font-bold uppercase text-hf-black opacity-70">{t("voice.aiEstimate")}</span>
+            <span className="hf-type-micro hf-type-strong flex-shrink-0 rounded-full bg-hf-tan px-1.5 py-0.5 uppercase text-hf-black opacity-70">{t("voice.aiEstimate")}</span>
           )}
         </span>
-        <span className="mt-1 block text-xs text-hf-black opacity-60">{item.amountLabel}</span>
+        <span className="hf-type-small text-text-secondary mt-1 block">{item.amountLabel}</span>
       </div>
-      <span className="flex-shrink-0 text-xs text-hf-black opacity-60">{item.kcal} kcal</span>
+      <span className="hf-type-small text-text-secondary flex-shrink-0">{item.kcal} kcal</span>
       {item.saved && <IconChevronRight size={18} className="flex-shrink-0 text-hf-black opacity-40" />}
     </div>
   );
@@ -599,7 +599,7 @@ export default function VoicePage() {
               {hasAdded ? <IconCheck size={44} stroke={2.5} /> : <StandMicrophone />}
             </span>
           </button>
-          <p className="mt-2 text-xs font-bold text-hf-green">
+          <p className="hf-type-small hf-type-strong mt-2 text-hf-green">
             {isListening
               ? t("voice.listeningStatus")
               : isProcessing
@@ -611,7 +611,7 @@ export default function VoicePage() {
                     : t("voice.tapToTalk")}
           </p>
           {isListening && <Waveform barRefs={barRefs} />}
-          {errorMessage && <p className="mt-2 max-w-[310px] text-center text-xs leading-4 text-red-700">{errorMessage}</p>}
+          {errorMessage && <p className="hf-type-small mt-2 max-w-[310px] text-center text-hf-red-dark">{errorMessage}</p>}
         </section>
 
         <section className="relative mt-4">
@@ -625,7 +625,7 @@ export default function VoicePage() {
             <IconRefresh size={16} />
           </button>
           {isListening ? (
-            <div className="mt-2 min-h-[72px] w-full rounded-2xl border border-hf-tan-dark bg-hf-white px-4 py-3 text-sm leading-5 text-hf-black">
+            <div className="hf-type-body mt-2 min-h-[72px] w-full rounded-2xl border border-hf-tan-dark bg-hf-white px-4 py-3 text-hf-black">
               <span>{transcript || t("voice.sayNothingYet")}</span>
               <TypingDots />
             </div>
@@ -643,13 +643,13 @@ export default function VoicePage() {
               }}
               placeholder={t("voice.speechPlaceholder")}
               rows={3}
-              className="mt-2 w-full resize-none rounded-2xl border border-hf-tan-dark bg-hf-white px-4 py-3 text-sm leading-5 text-hf-black outline-none focus:border-hf-green"
+              className="hf-type-body mt-2 w-full resize-none rounded-2xl border border-hf-tan-dark bg-hf-white px-4 py-3 text-hf-black outline-none focus:border-hf-green"
             />
           )}
         </section>
 
         <section className="mt-4">
-          <h2 className="hf-heading mb-1 text-base text-hf-black">{t("voice.added")}</h2>
+          <h2 className="hf-type-body hf-heading mb-1 text-hf-black">{t("voice.added")}</h2>
           <ul className="max-h-[45vh] overflow-y-auto">
             {items.map((item) => (
               <li key={item.id} className="border-b border-hf-tan-dark last:border-b-0">
@@ -668,7 +668,7 @@ export default function VoicePage() {
               type="button"
               onClick={() => void addShownItems()}
               disabled={isAdding}
-              className="mt-4 flex h-12 w-full items-center justify-center rounded-xl bg-hf-green text-base font-bold text-hf-white disabled:opacity-60"
+              className="hf-btn-primary mt-4 h-12 w-full"
             >
               {isAdding ? t("voice.adding") : t("voice.addShownItems")}
             </button>

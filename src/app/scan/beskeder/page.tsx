@@ -58,14 +58,14 @@ export default function ScanBeskederPage() {
     >
       <ul className="flex flex-col gap-3 p-4">
         {messages.length === 0 && (
-          <li className="hf-type-body-sm text-center" style={{ color: "var(--hf-color-text-secondary)" }}>
+          <li className="hf-type-body text-center" style={{ color: "var(--hf-color-text-secondary)" }}>
             Ingen beskeder endnu. Skriv, hvis du har spørgsmål.
           </li>
         )}
         {messages.map((message) => (
           <li
             key={message.id}
-            className={`hf-type-body-sm max-w-[80%] rounded-[12px] px-4 py-2 ${message.fromAdmin ? "self-start" : "self-end"}`}
+            className={`hf-type-body max-w-[80%] rounded-[12px] px-4 py-2 ${message.fromAdmin ? "self-start" : "self-end"}`}
             style={
               message.fromAdmin
                 ? { background: "var(--hf-color-card)" }

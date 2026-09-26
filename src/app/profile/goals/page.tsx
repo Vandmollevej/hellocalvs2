@@ -29,7 +29,7 @@ function GoalTargetRow({ target }: { target: GoalTargetDTO }) {
   return (
     <div className="py-3">
       <div className="flex items-center justify-between gap-4">
-        <p className="min-w-0 text-[15px] font-semibold text-hf-black">{t(targetNameKey(target.type))}</p>
+        <p className="hf-type-body hf-type-strong min-w-0 text-hf-black">{t(targetNameKey(target.type))}</p>
         {target.completedAt && (
           <span
             role="img"
@@ -40,7 +40,7 @@ function GoalTargetRow({ target }: { target: GoalTargetDTO }) {
           </span>
         )}
       </div>
-      <p className="mt-1 text-[15px] text-hf-black opacity-60">
+      <p className="hf-type-body text-text-secondary mt-1">
         {formatValue(target.value)} {target.unit}
       </p>
     </div>
@@ -82,7 +82,7 @@ export default function GoalsPage() {
         <button
           type="button"
           onClick={() => router.push("/profile/goals/new")}
-          className="hf-btn-primary hf-type-button h-12 w-full"
+          className="hf-btn-primary h-12 w-full"
         >
           {t("goals.create")}
         </button>
@@ -90,7 +90,7 @@ export default function GoalsPage() {
     >
       {loading || error || goals.length === 0 ? (
         <div className="flex h-full items-center justify-center px-8">
-          <p className="max-w-xs text-center text-[15px] font-normal leading-6 text-hf-black opacity-60">
+          <p className="hf-type-body text-text-secondary max-w-xs text-center">
             {loading ? t("goals.loading") : error ? t("goals.loadError") : t("goals.empty")}
           </p>
         </div>
@@ -100,7 +100,7 @@ export default function GoalsPage() {
             <section key={goal.id} className="flex flex-col">
               <DateSeparator label={formatDate(goal.createdAt)} />
               {goal.targetDate && (
-                <p className="pt-2 text-[13px] font-semibold text-hf-black opacity-60">
+                <p className="hf-type-small hf-type-strong text-text-secondary pt-2">
                   {t("goals.targetDateLabel", { date: formatDate(goal.targetDate) })}
                 </p>
               )}

@@ -82,7 +82,7 @@ function NewIngredientContent() {
   return (
     <HfScreen title={t("privateIngredients.title")} icon={<IconCarrot size={20} stroke={2} />}>
       <form onSubmit={handleSubmit} className="hf-page">
-        <p className="text-[14px] text-hf-black">{t("privateIngredients.intro")}</p>
+        <p className="hf-type-body text-hf-black">{t("privateIngredients.intro")}</p>
         <TextField
           variant="standard"
           label={t("privateIngredients.nameLabel")}
@@ -102,7 +102,7 @@ function NewIngredientContent() {
             onChange={(event) => setGrams(event.target.value)}
           />
         )}
-        {error && <p className="text-[13px] text-hf-red-dark">{error}</p>}
+        {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}
         <ActionButton type="submit" disabled={saving} className="hf-type-button h-12 disabled:opacity-40">
           {saving
             ? t("privateIngredients.saving")
@@ -112,7 +112,7 @@ function NewIngredientContent() {
         </ActionButton>
         <Link
           href="/ingredients"
-          className="text-center text-xs font-medium text-hf-black underline underline-offset-2"
+          className="hf-type-small hf-type-strong text-center text-hf-black underline underline-offset-2"
         >
           {t("privateIngredients.seeList")}
         </Link>

@@ -75,13 +75,13 @@ export default function SubscriptionPage() {
   return (
     <HfScreen title={t("subscription.title")}>
       {loading || !data ? (
-        <p className="p-4 text-center text-[14px] text-hf-black opacity-60">
+        <p className="hf-type-body text-text-secondary p-4 text-center">
           {loading ? t("subscription.loading") : t("subscription.loadError")}
         </p>
       ) : (
         <div className="hf-page">
           <div className="hf-card">
-            <label htmlFor="gift-code" className="hf-type-body-sm block opacity-70">
+            <label htmlFor="gift-code" className="text-text-secondary hf-type-body block">
               {t("subscription.giftCode.label")}
             </label>
             <div className="flex items-center gap-2">
@@ -102,8 +102,7 @@ export default function SubscriptionPage() {
                 onClick={redeemGiftCode}
                 disabled={redeeming || !giftCode.trim()}
                 aria-label={t("subscription.giftCode.submitAria")}
-                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg text-hf-white"
-                style={{ background: "var(--hf-black)" }}
+                className="hf-btn-primary h-12 w-12 shrink-0"
               >
                 <IconArrowRight size={20} />
               </button>
@@ -119,7 +118,7 @@ export default function SubscriptionPage() {
             <span className="hf-type-card-title" style={{ color: "var(--hf-color-white)" }}>
               {t("subscription.redeemPoints")}
             </span>
-            <span className="hf-type-body-sm" style={{ color: "var(--hf-color-white)" }}>
+            <span className="hf-type-body" style={{ color: "var(--hf-color-white)" }}>
               {t("subscription.pointsEarned", { balance: data.pointsBalance })}
             </span>
           </Link>
@@ -135,7 +134,7 @@ export default function SubscriptionPage() {
               formattedPeriodEnd ? (
                 // Et løbende betalt abonnement fornyes på periodens slutdato; gavekode/
                 // gratis måned udløber blot.
-                <p className="hf-type-body-sm">
+                <p className="hf-type-body">
                   {t(
                     data.status === "ACTIVE" || data.status === "TRIALING"
                       ? "subscription.nextPayment"
@@ -145,11 +144,11 @@ export default function SubscriptionPage() {
                 </p>
               ) : null
             ) : (
-              <p className="hf-type-body-sm">{t("subscription.freePlan.description")}</p>
+              <p className="hf-type-body">{t("subscription.freePlan.description")}</p>
             )}
           </div>
 
-          <Link href="/settings/payment" className="hf-btn-secondary hf-type-button h-12 w-full">
+          <Link href="/settings/payment" className="hf-btn-secondary h-12 w-full">
             {t("subscription.paymentMethods")}
           </Link>
 
@@ -159,7 +158,7 @@ export default function SubscriptionPage() {
                 <p className="hf-type-section-title" style={{ margin: 0 }}>
                   {data.priceDkk} {t("subscription.seriousPlan.priceSuffix")}
                 </p>
-                <p className="hf-type-body-sm">{t("subscription.seriousPlan.description")}</p>
+                <p className="hf-type-body">{t("subscription.seriousPlan.description")}</p>
               </div>
               <Toggle
                 checked={withdrawalAck}
@@ -170,7 +169,7 @@ export default function SubscriptionPage() {
                 <button
                   type="button"
                   disabled={!PAYMENT_AVAILABLE || !withdrawalAck}
-                  className="hf-btn-primary hf-type-button h-12 w-full px-4 disabled:opacity-40"
+                  className="hf-btn-primary h-12 w-full px-4 disabled:opacity-40"
                 >
                   {t("subscription.seriousPlan.upgradeCta")}
                 </button>

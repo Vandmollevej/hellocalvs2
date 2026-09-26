@@ -44,7 +44,7 @@ export default function VelkommenPage() {
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 pt-4">
-        <div className="hf-type-body-sm flex items-center gap-1.5 font-semibold">
+        <div className="hf-type-body flex items-center gap-1.5">
           <Image src="/flag-denmark.png" alt="" width={22} height={16} className="rounded-[2px]" />
           <span>DK</span>
           <HfChevron direction="down" compact className="text-hf-black opacity-60" />
@@ -66,13 +66,13 @@ export default function VelkommenPage() {
       <div className="hf-page">
         <Link
           href="/signup"
-          className="hf-btn-primary hf-type-button h-12 w-full"
+          className="hf-btn-primary h-12 w-full"
         >
           {t("welcome.signUp")}
         </Link>
         <Link
           href="/login"
-          className="hf-btn-secondary hf-type-button h-12 w-full"
+          className="hf-btn-secondary h-12 w-full"
         >
           {t("welcome.logIn")}
         </Link>

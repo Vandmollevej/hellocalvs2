@@ -20,8 +20,8 @@ export default async function AdminCronJobsPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-lg font-semibold text-text-primary">Cron-jobs</h1>
-        <p className="text-sm text-text-secondary">
+        <h1 className="hf-type-title text-hf-black">Cron-jobs</h1>
+        <p className="hf-type-body text-text-secondary">
           Baggrundsjob i appen og i robot-containerne. Ændringer slår igennem inden for et minut. Tider er dansk tid.
         </p>
       </div>

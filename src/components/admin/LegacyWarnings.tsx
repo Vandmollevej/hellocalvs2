@@ -48,20 +48,20 @@ export async function LegacyWarnings() {
   return (
     <div className="flex flex-col gap-8">
       <section className="flex flex-col gap-4">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-text-muted">
+        <h2 className="hf-type-body hf-type-strong uppercase tracking-wide text-text-muted">
           Mulige dubletter ({duplicateGroups.length})
         </h2>
         {duplicateGroups.length === 0 ? (
-          <p className="text-sm text-text-secondary">Ingen produkter med samme navn fundet.</p>
+          <p className="hf-type-body text-text-secondary">Ingen produkter med samme navn fundet.</p>
         ) : (
           duplicateGroups.map((group) => {
             const conflict = group.some((p, i) => i > 0 && macrosDiffer(group[0], p));
             return (
-              <div key={group[0].name} className="rounded-lg border border-border-strong bg-surface-2 p-4">
-                <p className="mb-2 flex items-center gap-2 font-medium text-text-primary">
+              <div key={group[0].name} className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+                <p className="hf-type-strong mb-2 flex items-center gap-2 text-hf-black">
                   {group[0].name}
                   {conflict && (
-                    <span className="rounded-full bg-hf-red-dark px-2 py-0.5 text-xs text-hf-white">
+                    <span className="hf-type-small rounded-full bg-hf-red-dark px-2 py-0.5 text-hf-white">
                       Data matcher ikke
                     </span>
                   )}
@@ -71,14 +71,14 @@ export async function LegacyWarnings() {
                     <Link
                       key={p.id}
                       href={`/admin/products/${p.id}`}
-                      className="flex items-center justify-between rounded-md border border-border-strong px-3 py-2 text-sm hover:border-hf-green"
+                      className="hf-type-body flex items-center justify-between rounded-md border border-hf-tan-dark px-3 py-2 hover:border-hf-green"
                     >
                       <span>
                         {p.brand?.name ? `${p.brand.name} · ` : ""}
                         {p.status} · {Math.round(p.kcalPer100g)} kcal · P {p.proteinPer100g}g · K {p.carbsPer100g}g · F{" "}
                         {p.fatPer100g}g
                       </span>
-                      <span className="text-xs text-hf-green-dark underline">Åbn / merge</span>
+                      <span className="hf-type-small text-hf-green-dark underline">Åbn / merge</span>
                     </Link>
                   ))}
                 </div>
@@ -89,11 +89,11 @@ export async function LegacyWarnings() {
       </section>
 
       <section className="flex flex-col gap-4">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-text-muted">
+        <h2 className="hf-type-body hf-type-strong uppercase tracking-wide text-text-muted">
           Billeder til godkendelse ({pendingImages.length})
         </h2>
         {pendingImages.length === 0 ? (
-          <p className="text-sm text-text-secondary">Ingen billeder afventer godkendelse.</p>
+          <p className="hf-type-body text-text-secondary">Ingen billeder afventer godkendelse.</p>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">
             {pendingImages.map((product) => (
@@ -104,25 +104,25 @@ export async function LegacyWarnings() {
       </section>
 
       <section className="flex flex-col gap-4">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-text-muted">
+        <h2 className="hf-type-body hf-type-strong uppercase tracking-wide text-text-muted">
           Videresend-misbrug ({forwardAbuseUsers.length})
         </h2>
-        <p className="text-sm text-text-secondary">
+        <p className="hf-type-body text-text-secondary">
           Brugere flagget for mere end én tur-retur videresendelse med samme person på 24 timer.
           Flaget blokerer nye forward-points for brugeren, indtil det ryddes.
         </p>
         {forwardAbuseUsers.length === 0 ? (
-          <p className="text-sm text-text-secondary">Ingen aktive flag.</p>
+          <p className="hf-type-body text-text-secondary">Ingen aktive flag.</p>
         ) : (
           <div className="flex flex-col gap-2">
             {forwardAbuseUsers.map((user) => (
               <div
                 key={user.id}
-                className="flex items-center justify-between rounded-lg border border-border-strong bg-surface-2 p-4"
+                className="flex items-center justify-between rounded-lg border border-hf-tan-dark bg-hf-white p-4"
               >
                 <div>
-                  <p className="text-sm font-medium text-text-primary">{user.displayName}</p>
-                  <p className="text-xs text-text-muted">
+                  <p className="hf-type-body hf-type-strong text-hf-black">{user.displayName}</p>
+                  <p className="hf-type-small text-text-muted">
                     {user.email} · flagget {user.forwardAbuseFlaggedAt?.toLocaleString("da-DK")}
                   </p>
                 </div>

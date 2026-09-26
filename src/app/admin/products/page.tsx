@@ -32,11 +32,11 @@ export default async function AdminProductsPage({
   });
 
   const tabClass = (active: boolean) =>
-    `rounded-md px-3 py-1.5 text-sm ${active ? "bg-hf-green-dark text-hf-white" : "border border-border-strong text-text-secondary"}`;
+    `hf-type-body rounded-md px-3 py-1.5 ${active ? "bg-hf-green-dark text-hf-white" : "border border-hf-tan-dark text-text-secondary"}`;
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-lg font-semibold text-text-primary">{t(admin.locale, "products_title")}</h1>
+      <h1 className="hf-type-title text-hf-black">{t(admin.locale, "products_title")}</h1>
       <div className="flex gap-2">
         <Link href="/admin/products?tab=user" className={tabClass(tab === "user")}>
           {t(admin.locale, "products_tab_user")}
@@ -45,9 +45,9 @@ export default async function AdminProductsPage({
           {t(admin.locale, "products_tab_auto")}
         </Link>
       </div>
-      <p className="text-sm text-text-secondary">Nyeste øverst.</p>
+      <p className="hf-type-body text-text-secondary">Nyeste øverst.</p>
       {products.length === 0 ? (
-        <p className="text-sm text-text-secondary">Ingen produkter afventer godkendelse i denne fane.</p>
+        <p className="hf-type-body text-text-secondary">Ingen produkter afventer godkendelse i denne fane.</p>
       ) : (
         <div className="flex flex-col gap-4">
           {products.map((product) => (

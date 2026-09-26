@@ -2,6 +2,31 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-26: EN fast designregel for skrift, farver og knapper
+
+Brugerens krav (2026-09-26, med skærmbillede af Points-siden): "Du arbejder
+altid på lappeløsninger og fragmenteret på side til side … lav EN FAST
+designregel med faste klasser", og det samme for knapper, farver og
+tekstfarver. Revisionen fandt 21 forskellige skriftstørrelser, 5 vægte, to
+parallelle grå/beige paletter, ~400 steder med grå tekst lavet via
+`opacity-*` og ~200 knapper uden knapklasse.
+
+- **Skrift**: kun 6 størrelser (32 · 22 · 17 · 15 · 13 · 11 px) og 2 vægte
+  (400 · 700), som `.hf-type-*`-roller i `globals.css` (`@layer components`)
+  og design.md §4.2. Brødtekst er 15 px (var 17). Klasserne sætter kun skrift,
+  aldrig farve/justering. Alle ad-hoc `text-[Npx]`, `text-sm`, `font-semibold`
+  osv. er migreret automatisk efter størrelse (≤11 → micro, 12–13 → small,
+  14–16 → body, 17–20 → title/body-lg, 22–26 → page-title, ≥28 → hero).
+- **Farver**: én palette (design.md §3 "Faste tekst- og fladefarver"). De gamle
+  generiske tokens peger nu på HelloFresh-værdierne. Grå tekst via opacity er
+  erstattet af `text-text-secondary`/`text-text-muted`; Tailwind-
+  standardfarver og hex er erstattet af tokens.
+- **Knapper**: seks klasser — `.hf-btn-primary`, `-secondary`, `-danger`,
+  `-text`, `-icon` og `.hf-choice` — med indbygget skrift (design.md §6.2).
+  Grønne handlingsknapper (bl.a. admin, stemme-siden) er nu sorte primære.
+  Rækker, valgkort, fliser, kalenderceller og overlays er bevidst ikke knapper.
+- Foreslået `.hf-button`-system i design.md §6.2 er erstattet af ovenstående.
+
 ## 2026-09-25: Uncertainties-tærskler, billed-fane, natlig robot og admin "Cron-jobs"
 
 Brugerens svar 2026-09-25 (G4, runde 2):

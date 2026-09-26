@@ -25,9 +25,7 @@ export function SegmentedTabs<T extends string>({
             role="tab"
             aria-selected={active}
             onClick={() => onChange(option.key)}
-            className={`flex h-9 flex-1 items-center justify-center rounded-full border border-hf-black px-3 text-[13px] font-semibold leading-[18px] ${
-              active ? "bg-hf-black text-hf-white" : "bg-transparent text-hf-black"
-            }`}
+            className="hf-choice flex-1"
           >
             {option.label}
           </button>

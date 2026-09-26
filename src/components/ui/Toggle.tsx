@@ -33,7 +33,7 @@ export function Toggle({
       }`}
     >
       <span
-        className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
+        className={`absolute top-0.5 h-5 w-5 rounded-full bg-hf-white shadow transition-transform ${
           checked ? "translate-x-[18px]" : "translate-x-0.5"
         }`}
       />
@@ -45,9 +45,9 @@ export function Toggle({
   return (
     <div className="flex items-start gap-3 rounded-2xl bg-hf-tan px-4 py-4">
       <span className="flex-1">
-        <span className="block text-[15px] font-medium text-hf-black">{label}</span>
+        <span className="hf-type-body hf-type-strong block text-hf-black">{label}</span>
         {description && (
-          <span className="mt-2 block border-t border-hf-gray-light pt-2 text-[12px] text-hf-black opacity-60">
+          <span className="hf-type-small text-text-secondary mt-2 block border-t border-hf-tan-dark pt-2">
             {description}
           </span>
         )}

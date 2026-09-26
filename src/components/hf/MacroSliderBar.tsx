@@ -83,9 +83,9 @@ export function MacroSliderBar({
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-[13px] text-hf-black opacity-70">{label}</span>
+        <span className="hf-type-small text-text-secondary">{label}</span>
         {disabled ? (
-          <span className="min-w-[36px] px-1 text-right text-base font-bold text-hf-black">{grams} g</span>
+          <span className="hf-type-body hf-type-strong min-w-[36px] px-1 text-right text-hf-black">{grams} g</span>
         ) : editing ? (
           <span className="flex items-center gap-1 rounded bg-hf-white px-1">
             <input
@@ -99,15 +99,15 @@ export function MacroSliderBar({
               onKeyDown={(event) => {
                 if (event.key === "Enter") event.currentTarget.blur();
               }}
-              className="w-12 text-right text-base font-bold text-hf-black outline-none"
+              className="hf-type-body hf-type-strong w-12 text-right text-hf-black outline-none"
             />
-            <span className="text-base font-bold text-hf-black">g</span>
+            <span className="hf-type-body hf-type-strong text-hf-black">g</span>
           </span>
         ) : (
           <button
             type="button"
             onClick={openEditor}
-            className="min-w-[36px] rounded px-1 text-right text-base font-bold text-hf-black active:bg-hf-tan-dark"
+            className="hf-type-body hf-type-strong min-w-[36px] rounded px-1 text-right text-hf-black active:bg-hf-tan-dark"
           >
             {grams} g
           </button>

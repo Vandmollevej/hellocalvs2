@@ -50,7 +50,7 @@ function VerifyEmailContent() {
         <div className="flex-1" />
 
         {state !== "checking" && (
-          <Link href="/" className="hf-btn-primary hf-type-button mb-8 flex h-12 w-full items-center justify-center">
+          <Link href="/" className="hf-btn-primary mb-8 flex h-12 w-full items-center justify-center">
             {t("verifyEmail.continue")}
           </Link>
         )}

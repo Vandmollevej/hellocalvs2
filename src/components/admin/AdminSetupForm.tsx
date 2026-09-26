@@ -69,12 +69,12 @@ export function AdminSetupForm() {
           <img src={qrCodeDataUrl} alt="QR-kode til authenticator-app" className="mx-auto h-48 w-48" />
         )}
         {secret && (
-          <p className="break-all rounded-md bg-surface-2 px-3 py-2 text-center text-xs text-text-muted">
+          <p className="hf-type-small break-all rounded-md bg-hf-white px-3 py-2 text-center text-text-muted">
             Kan ikke scanne? Indtast koden manuelt: <span className="font-mono">{secret}</span>
           </p>
         )}
         <form onSubmit={onSubmitConfirm} className="flex flex-col gap-4">
-          <label className="flex flex-col gap-1 text-sm">
+          <label className="hf-type-body flex flex-col gap-1">
             Bekræftelseskode fra appen
             <input
               type="text"
@@ -85,14 +85,14 @@ export function AdminSetupForm() {
               required
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-              className="rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-center text-2xl tracking-[0.4em]"
+              className="hf-type-page-title rounded-md border border-hf-tan-dark bg-hf-white px-3 py-2 text-center tracking-[0.4em]"
             />
           </label>
-          {error && <p className="text-sm text-hf-red-dark">{error}</p>}
+          {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
           <button
             type="submit"
             disabled={loading || code.length !== 6}
-            className="rounded-md bg-hf-green-dark px-4 py-2.5 text-sm font-medium text-hf-white disabled:opacity-60"
+            className="hf-btn-primary px-4 py-2.5 disabled:opacity-60"
           >
             {loading ? "Bekræfter…" : "Bekræft og opret"}
           </button>
@@ -103,7 +103,7 @@ export function AdminSetupForm() {
 
   return (
     <form onSubmit={onSubmitCredentials} className="flex flex-col gap-4">
-      <label className="flex flex-col gap-1 text-sm">
+      <label className="hf-type-body flex flex-col gap-1">
         Email
         <input
           type="email"
@@ -111,10 +111,10 @@ export function AdminSetupForm() {
           autoComplete="username"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-base"
+          className="hf-type-body rounded-md border border-hf-tan-dark bg-hf-white px-3 py-2"
         />
       </label>
-      <label className="flex flex-col gap-1 text-sm">
+      <label className="hf-type-body flex flex-col gap-1">
         Password (mindst 12 tegn)
         <input
           type="password"
@@ -123,14 +123,14 @@ export function AdminSetupForm() {
           autoComplete="new-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-base"
+          className="hf-type-body rounded-md border border-hf-tan-dark bg-hf-white px-3 py-2"
         />
       </label>
-      {error && <p className="text-sm text-hf-red-dark">{error}</p>}
+      {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
       <button
         type="submit"
         disabled={loading}
-        className="rounded-md bg-hf-green-dark px-4 py-2.5 text-sm font-medium text-hf-white disabled:opacity-60"
+        className="hf-btn-primary px-4 py-2.5 disabled:opacity-60"
       >
         {loading ? "Genererer…" : "Fortsæt til QR-kode"}
       </button>

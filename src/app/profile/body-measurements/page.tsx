@@ -69,7 +69,7 @@ function InlineMeasurementInput({
       onChange={(event) => onChange(event.target.value)}
       onBlur={onCommit}
       placeholder={placeholder}
-      className="w-full border-b border-transparent bg-transparent px-0 py-0.5 text-left text-[17px] font-medium text-black outline-none focus:border-hf-black/30"
+      className="hf-type-title w-full border-b border-transparent bg-transparent px-0 py-0.5 text-left text-hf-black outline-none focus:border-hf-black/30"
     />
   );
 }
@@ -172,11 +172,11 @@ export default function BodyMeasurementsPage() {
     <HfScreen title={t("bodyMeasurements.title")}>
       <div className="hf-page">
         <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
-          <p className="text-[13px] leading-5">{t("bodyMeasurements.intro")}</p>
+          <p className="hf-type-small">{t("bodyMeasurements.intro")}</p>
         </div>
 
         {sexLoaded && sex === null && (
-          <p className="text-center text-[13px] text-hf-black opacity-60">
+          <p className="hf-type-small text-text-secondary text-center">
             {t("bodyMeasurements.chooseSexHint")}
           </p>
         )}
@@ -198,7 +198,7 @@ export default function BodyMeasurementsPage() {
                 )}
               </span>
               <span className="flex min-w-0 flex-1 flex-col gap-1">
-                <span className="text-[15px] font-semibold text-hf-black">{t(labelKey)}</span>
+                <span className="hf-type-body hf-type-strong text-hf-black">{t(labelKey)}</span>
                 <span className="flex items-baseline gap-2">
                   <InlineMeasurementInput
                     value={values[field]}
@@ -206,33 +206,33 @@ export default function BodyMeasurementsPage() {
                     onCommit={() => commitField(field)}
                     placeholder={t("bodyMeasurements.placeholder")}
                   />
-                  <span className="shrink-0 text-[15px] text-hf-black opacity-60">cm</span>
+                  <span className="hf-type-body text-text-secondary shrink-0">cm</span>
                 </span>
               </span>
             </label>
           ))}
         </div>
         {saving && (
-          <p className="text-center text-[11px] text-hf-black opacity-50">
+          <p className="hf-type-micro text-text-secondary text-center">
             {t("bodyMeasurements.saving")}
           </p>
         )}
 
         <div className="flex flex-col gap-2">
           {loading && (
-            <p className="text-center text-[13px] text-hf-black opacity-60">{t("bodyMeasurements.loading")}</p>
+            <p className="hf-type-small text-text-secondary text-center">{t("bodyMeasurements.loading")}</p>
           )}
           {!loading && entries.length === 0 && (
-            <p className="text-center text-[13px] text-hf-black opacity-60">
+            <p className="hf-type-small text-text-secondary text-center">
               {t("bodyMeasurements.noEntriesYet")}
             </p>
           )}
           {entries.map((entry) => (
             <div key={entry.id} className="flex items-center justify-between rounded-2xl bg-hf-tan px-4 py-3">
               <div>
-                <p className="text-[13px] font-bold text-hf-black">
+                <p className="hf-type-small hf-type-strong text-hf-black">
                   {formatEntrySummary(entry, t)}
-                  <span className="ml-2 text-[12px] font-normal opacity-60">
+                  <span className="hf-type-small text-text-secondary ml-2">
                     {formatDateTime(entry.measuredAt)}
                   </span>
                 </p>
@@ -241,7 +241,7 @@ export default function BodyMeasurementsPage() {
                 type="button"
                 onClick={() => remove(entry.id)}
                 aria-label={t("bodyMeasurements.deleteAria")}
-                className="px-2 text-[13px] font-semibold text-hf-black opacity-50"
+                className="hf-type-small hf-type-strong text-text-secondary px-2"
               >
                 {t("bodyMeasurements.delete")}
               </button>

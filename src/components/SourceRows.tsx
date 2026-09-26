@@ -14,7 +14,7 @@ export function SourceItemRow({ item, metric, isLast }: { item: SourceItem; metr
       image={item.imageUrl}
       thumbnail={item.imageUrl ? undefined : <IconToolsKitchen2 size={20} />}
       title={item.title}
-      right={<span className="text-sm font-semibold text-hf-black">{formatMetric(item.value, metric)}</span>}
+      right={<span className="hf-type-body hf-type-strong text-hf-black">{formatMetric(item.value, metric)}</span>}
     />
   );
   return (

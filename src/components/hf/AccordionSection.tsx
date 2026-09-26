@@ -37,9 +37,9 @@ export function AccordionSection({
           className="flex min-w-0 flex-1 items-center gap-2 px-4 py-3 text-left focus-visible:outline-2 focus-visible:outline-hf-black"
         >
           {icon && <span className="flex shrink-0 text-hf-black">{icon}</span>}
-          <span className="flex-1 text-sm font-semibold text-hf-black">{title}</span>
+          <span className="hf-type-body hf-type-strong flex-1 text-hf-black">{title}</span>
           {typeof count === "number" && (
-            <span className="text-xs text-hf-black opacity-60">{count}</span>
+            <span className="hf-type-small text-text-secondary">{count}</span>
           )}
           <HfChevron direction={open ? "down" : "right"} className="text-hf-black" />
         </button>

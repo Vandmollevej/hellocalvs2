@@ -113,13 +113,13 @@ export function SleepRangeSlider({
             onKeyDown={(event) => {
               if (event.key === "Enter") event.currentTarget.blur();
             }}
-            className="w-12 rounded bg-hf-white text-center text-[13px] font-bold text-hf-black outline-none"
+            className="hf-type-small hf-type-strong w-12 rounded bg-hf-white text-center text-hf-black outline-none"
           />
         ) : (
           <button
             type="button"
             onClick={() => startEditing("wake")}
-            className="rounded px-1 text-[13px] font-bold text-hf-black active:bg-hf-tan-dark"
+            className="hf-type-small hf-type-strong rounded px-1 text-hf-black active:bg-hf-tan-dark"
           >
             {formatTime(wakeMinutes)}
           </button>
@@ -135,13 +135,13 @@ export function SleepRangeSlider({
             onKeyDown={(event) => {
               if (event.key === "Enter") event.currentTarget.blur();
             }}
-            className="w-12 rounded bg-hf-white text-center text-[13px] font-bold text-hf-black outline-none"
+            className="hf-type-small hf-type-strong w-12 rounded bg-hf-white text-center text-hf-black outline-none"
           />
         ) : (
           <button
             type="button"
             onClick={() => startEditing("bedtime")}
-            className="rounded px-1 text-[13px] font-bold text-hf-black active:bg-hf-tan-dark"
+            className="hf-type-small hf-type-strong rounded px-1 text-hf-black active:bg-hf-tan-dark"
           >
             {formatTime(bedtimeMinutes)}
           </button>

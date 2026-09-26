@@ -430,8 +430,8 @@ function KameraContent() {
               }}
               className={
                 tab.key === mode
-                  ? "hf-btn-primary px-4 py-1.5 text-xs"
-                  : "hf-btn-secondary px-4 py-1.5 text-xs"
+                  ? "hf-btn-primary px-4 py-1.5"
+                  : "hf-btn-secondary px-4 py-1.5"
               }
             >
               {t(tab.labelKey)}
@@ -450,7 +450,7 @@ function KameraContent() {
 
         {!photo && (mode === "meal" || mode === "hellofresh") && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-            <div className="aspect-square w-[68%] rounded-full border-2 border-white/80 shadow-[0_0_0_999px_rgba(0,0,0,0.2)]" />
+            <div className="aspect-square w-[68%] rounded-full border-2 border-hf-white/80 shadow-[0_0_0_999px_rgba(0,0,0,0.2)]" />
           </div>
         )}
 
@@ -469,12 +469,12 @@ function KameraContent() {
             className="absolute inset-0 flex items-center justify-center bg-hf-black/75 p-6 text-center"
             onClick={cameraStatus === "denied" || cameraStatus === "error" ? restartCamera : undefined}
           >
-            <p className="max-w-xs text-sm font-semibold text-white">{message}</p>
+            <p className="hf-type-body hf-type-strong max-w-xs text-hf-white">{message}</p>
           </div>
         )}
 
         {cameraStatus === "active" && !photo && mode !== "product" && (
-          <p className="absolute inset-x-4 top-4 rounded-full bg-hf-black/60 px-4 py-2 text-center text-xs font-semibold text-white">
+          <p className="hf-type-small hf-type-strong absolute inset-x-4 top-4 rounded-full bg-hf-black/60 px-4 py-2 text-center text-hf-white">
             {mode === "hellofresh" ? t("camera.placeProductInCircle") : t("camera.placePlateInCircle")}
           </p>
         )}
@@ -485,13 +485,13 @@ function KameraContent() {
             onClick={restartCamera}
             className="absolute inset-0 flex items-center justify-center bg-hf-black/75 p-6 text-center"
           >
-            <p className="max-w-xs text-sm font-semibold text-white">{t("camera.notRecognizedRetry")}</p>
+            <p className="hf-type-body hf-type-strong max-w-xs text-hf-white">{t("camera.notRecognizedRetry")}</p>
           </button>
         )}
       </div>
 
       {mode === "product" && !photo && (
-        <p className="text-center text-xs font-semibold text-hf-black opacity-70">
+        <p className="hf-type-small hf-type-strong text-text-secondary text-center">
           {t("camera.holdCameraStill")}
         </p>
       )}
@@ -508,7 +508,7 @@ function KameraContent() {
           )
         ) : (
           <div className="flex justify-center py-1">
-            <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-btn-primary gap-2 px-6 py-3 text-sm disabled:opacity-40">
+            <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-btn-primary gap-2 px-6 py-3 disabled:opacity-40">
               <IconCamera size={19} /> {t("camera.takePhotoOfProduct")}
             </button>
           </div>
@@ -517,24 +517,24 @@ function KameraContent() {
         <div className="flex flex-col gap-4">
           <div className="flex justify-center py-1">
             {photo ? (
-              <button onClick={restartCamera} className="hf-btn-secondary gap-2 px-5 py-3 text-sm">
+              <button onClick={restartCamera} className="hf-btn-secondary gap-2 px-5 py-3">
                 {t("camera.retakePhoto")}
               </button>
             ) : (
-              <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-btn-primary gap-2 px-6 py-3 text-sm disabled:opacity-40">
+              <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-btn-primary gap-2 px-6 py-3 disabled:opacity-40">
                 <IconCamera size={19} /> {t("camera.takePhoto")}
               </button>
             )}
           </div>
 
           {photo && mealAnalyzeStatus === "idle" && (
-            <p className="text-center text-xs font-semibold text-hf-black opacity-70">{t("camera.analyzingMeal")}</p>
+            <p className="hf-type-small hf-type-strong text-text-secondary text-center">{t("camera.analyzingMeal")}</p>
           )}
           {photo && mealAnalyzeStatus === "error" && (
-            <p className="text-center text-xs font-semibold text-red-700">{t("camera.mealAnalyzeError")}</p>
+            <p className="hf-type-small hf-type-strong text-center text-hf-red-dark">{t("camera.mealAnalyzeError")}</p>
           )}
           {photo && mealAnalyzeStatus === "done" && mealItems.length === 0 && (
-            <p className="text-center text-xs font-semibold text-hf-black opacity-70">
+            <p className="hf-type-small hf-type-strong text-text-secondary text-center">
               {t("camera.noMealItemsFound")}
             </p>
           )}
@@ -544,22 +544,22 @@ function KameraContent() {
                 {mealItems.map((item) => (
                   <li key={item.id} className="flex items-center gap-2.5 rounded-[8px] bg-hf-tan p-4">
                     <div className="min-w-0 flex-1">
-                      <p className="flex items-center gap-1.5 text-sm font-semibold text-hf-black">
+                      <p className="hf-type-body hf-type-strong flex items-center gap-1.5 text-hf-black">
                         <span className="truncate">{item.title}</span>
                         {item.estimated && (
-                          <span className="flex-shrink-0 rounded-full bg-hf-white px-1.5 py-0.5 text-[10px] font-bold uppercase text-hf-black opacity-70">
+                          <span className="hf-type-micro hf-type-strong flex-shrink-0 rounded-full bg-hf-white px-1.5 py-0.5 uppercase text-hf-black opacity-70">
                             {t("camera.aiEstimateBadge")}
                           </span>
                         )}
                       </p>
-                      <p className="text-xs text-hf-black opacity-60">
+                      <p className="hf-type-small text-text-secondary">
                         {item.amountLabel} · {item.kcal} kcal
                       </p>
                     </div>
                     <button
                       type="button"
                       onClick={() => removeMealItem(item.id)}
-                      className="flex-shrink-0 text-xs font-semibold text-hf-black opacity-60 underline"
+                      className="hf-btn-text text-text-secondary flex-shrink-0"
                     >
                       {t("camera.removeItem")}
                     </button>
@@ -570,7 +570,7 @@ function KameraContent() {
                 type="button"
                 onClick={saveMeal}
                 disabled={mealSaving}
-                className="hf-btn-primary justify-center py-3 text-sm disabled:opacity-40"
+                className="hf-btn-primary justify-center py-3 disabled:opacity-40"
               >
                 {mealSaving ? t("camera.savingMeal") : t("camera.saveMeal")}
               </button>
@@ -579,7 +579,7 @@ function KameraContent() {
         </div>
       ) : (
         <div className="rounded-[8px] bg-hf-tan p-4">
-          <p className="text-xs text-hf-black opacity-70">
+          <p className="hf-type-small text-text-secondary">
             {lookupStatus === "loading"
               ? t("camera.lookingUp", { code: barcode })
               : lookupStatus === "not_found"
@@ -592,7 +592,7 @@ function KameraContent() {
       )}
 
       {mode !== "meal" && (
-        <Link href={`/foods/new${returnSuffix}`} className="hf-btn-secondary justify-center py-2.5 text-xs">
+        <Link href={`/foods/new${returnSuffix}`} className="hf-btn-secondary justify-center py-2.5">
           {t("camera.addManually")}
         </Link>
       )}

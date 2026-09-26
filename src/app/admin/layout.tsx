@@ -13,7 +13,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const uncertaintiesDot = admin ? await hasOpenUncertainties().catch(() => false) : false;
 
   return (
-    <div className="min-h-dvh bg-page-bg text-text-primary">
+    <div className="min-h-dvh bg-page-bg text-hf-black">
       {admin && <AdminNav email={admin.email} locale={admin.locale} hasOpenUncertainties={uncertaintiesDot} />}
       <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-8">{children}</main>
     </div>

@@ -9,7 +9,7 @@ export function InfoRows({ rows, note }: { rows: [string, string | null][]; note
             className="flex min-h-12 items-center justify-between gap-4 border-b px-4 py-2 last:border-b-0"
             style={{ borderColor: "var(--hf-color-line)" }}
           >
-            <span className="hf-type-body-sm" style={{ color: "var(--hf-color-text-secondary)" }}>
+            <span className="hf-type-body" style={{ color: "var(--hf-color-text-secondary)" }}>
               {label}
             </span>
             <span className="hf-type-body text-right">{value || "—"}</span>

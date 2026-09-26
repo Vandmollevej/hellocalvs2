@@ -28,7 +28,7 @@ function SinnerTile({ item, metric }: { item: SourceItem; metric: SourceMetric }
           <IconToolsKitchen2 size={20} aria-label={item.title} />
         )}
       </span>
-      <span className="text-center text-[11px] leading-[14px] text-hf-black">{formatMetric(item.value, metric)}</span>
+      <span className="hf-type-micro text-center text-hf-black">{formatMetric(item.value, metric)}</span>
     </>
   );
   const className = "flex min-w-0 flex-col items-center gap-1";
@@ -52,15 +52,15 @@ export function TopSinnersCard({
 }) {
   return (
     <section className="flex flex-col gap-4 rounded-2xl bg-hf-tan p-4">
-      <h2 className="hf-heading text-sm text-hf-black">Største syndere</h2>
+      <h2 className="hf-type-body hf-heading text-hf-black">Største syndere</h2>
 
       {SOURCE_METRICS.map((metric) => {
         const items = loading ? [] : aggregateSources(registrations, metric.key).slice(0, TOP_COUNT);
         return (
           <div key={metric.key} className="flex flex-col gap-2">
-            <p className="text-xs font-semibold text-hf-black">{metric.label}</p>
+            <p className="hf-type-small hf-type-strong text-hf-black">{metric.label}</p>
             {items.length === 0 ? (
-              <p className="text-xs text-hf-black opacity-60">{loading ? "—" : "Ingen registreringer i perioden"}</p>
+              <p className="hf-type-small text-text-secondary">{loading ? "—" : "Ingen registreringer i perioden"}</p>
             ) : (
               <div className="grid grid-cols-5 gap-2">
                 {items.map((item) => (

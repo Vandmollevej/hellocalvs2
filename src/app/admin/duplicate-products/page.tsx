@@ -27,15 +27,15 @@ export default async function AdminDuplicateProductsPage() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h1 className="text-lg font-semibold text-text-primary">Dobbeltoprettelser</h1>
-        <p className="text-sm text-text-secondary">
+        <h1 className="hf-type-title text-hf-black">Dobbeltoprettelser</h1>
+        <p className="hf-type-body text-text-secondary">
           Produkter der er oprettet med samme navn næsten samtidig. Sammenlign billedkvaliteten, vælg hvilke
           billeder der skal bruges, og flet parret til ét produkt.
         </p>
       </div>
 
       {links.length === 0 ? (
-        <p className="text-sm text-text-secondary">Ingen dobbeltoprettelser afventer gennemgang.</p>
+        <p className="hf-type-body text-text-secondary">Ingen dobbeltoprettelser afventer gennemgang.</p>
       ) : (
         <div className="flex flex-col gap-4">
           {links.map((link) => (

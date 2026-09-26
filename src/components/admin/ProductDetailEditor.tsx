@@ -97,60 +97,60 @@ export function ProductDetailEditor({ product }: { product: Product }) {
     <div className="flex flex-col gap-4">
       <ProductImageGallery productId={product.id} imageUrl={product.imageUrl} images={product.images} />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_200px]">
-      <div className="rounded-lg border border-border-strong bg-surface-2 p-4">
+      <div className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
         <div className="grid grid-cols-2 gap-4">
-          <label className="flex flex-col gap-1 text-xs text-text-secondary">
+          <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
             Navn
             <input
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
+              className="hf-type-body rounded-md border border-hf-tan-dark px-2 py-1.5"
             />
           </label>
-          <label className="flex flex-col gap-1 text-xs text-text-secondary">
+          <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
             Producent
             <input
               value={form.brand}
               onChange={(e) => setForm({ ...form, brand: e.target.value })}
-              className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
+              className="hf-type-body rounded-md border border-hf-tan-dark px-2 py-1.5"
             />
           </label>
         </div>
         <div className="mt-4 grid grid-cols-4 gap-4">
-          <label className="flex flex-col gap-1 text-xs text-text-secondary">
+          <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
             Kcal / 100 g
             <input
               type="number"
               value={form.kcalPer100g}
               onChange={(e) => setForm({ ...form, kcalPer100g: e.target.value })}
-              className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
+              className="hf-type-body rounded-md border border-hf-tan-dark px-2 py-1.5"
             />
           </label>
-          <label className="flex flex-col gap-1 text-xs text-text-secondary">
+          <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
             Protein (g)
             <input
               type="number"
               value={form.proteinPer100g}
               onChange={(e) => setForm({ ...form, proteinPer100g: e.target.value })}
-              className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
+              className="hf-type-body rounded-md border border-hf-tan-dark px-2 py-1.5"
             />
           </label>
-          <label className="flex flex-col gap-1 text-xs text-text-secondary">
+          <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
             Kulhydrat (g)
             <input
               type="number"
               value={form.carbsPer100g}
               onChange={(e) => setForm({ ...form, carbsPer100g: e.target.value })}
-              className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
+              className="hf-type-body rounded-md border border-hf-tan-dark px-2 py-1.5"
             />
           </label>
-          <label className="flex flex-col gap-1 text-xs text-text-secondary">
+          <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
             Fedt (g)
             <input
               type="number"
               value={form.fatPer100g}
               onChange={(e) => setForm({ ...form, fatPer100g: e.target.value })}
-              className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
+              className="hf-type-body rounded-md border border-hf-tan-dark px-2 py-1.5"
             />
           </label>
         </div>
@@ -159,32 +159,32 @@ export function ProductDetailEditor({ product }: { product: Product }) {
             type="button"
             onClick={save}
             disabled={saving}
-            className="rounded-md bg-hf-green-dark px-4 py-1.5 text-sm text-hf-white disabled:opacity-60"
+            className="hf-btn-primary px-4 py-1.5 disabled:opacity-60"
           >
             {saving ? "Gemmer…" : "Gem ændringer"}
           </button>
-          {saved && <span className="text-sm text-hf-green-dark">Gemt ✓</span>}
-          {error && <span className="text-sm text-hf-red-dark">{error}</span>}
+          {saved && <span className="hf-type-body text-hf-green-dark">Gemt ✓</span>}
+          {error && <span className="hf-type-body text-hf-red-dark">{error}</span>}
         </div>
-        <p className="mt-4 border-t border-border-strong pt-4 text-xs text-text-muted">
+        <p className="hf-type-small mt-4 border-t border-hf-tan-dark pt-4 text-text-muted">
           Ændringer påvirker kun produktets fremtidige visning — brugere, der allerede har registreret
           dette produkt, beholder deres oprindelige værdier (snapshot).
         </p>
       </div>
 
       <div className="flex flex-col gap-2">
-        <p className="text-xs font-medium uppercase tracking-wide text-text-muted">Handlinger</p>
+        <p className="hf-type-small hf-type-strong uppercase tracking-wide text-text-muted">Handlinger</p>
         <button
           type="button"
           onClick={() => setMergeOpen((v) => !v)}
-          className="rounded-md border border-hf-green-dark px-3 py-1.5 text-sm text-hf-green-dark hover:bg-hf-cream"
+          className="hf-btn-secondary px-3 py-1.5"
         >
           Merge
         </button>
 
         {mergeOpen && (
-          <div className="rounded-lg border border-border-strong bg-surface-2 p-4">
-            <p className="mb-2 text-xs text-text-secondary">
+          <div className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+            <p className="hf-type-small mb-2 text-text-secondary">
               Flet dette produkt ind i et andet — alle registreringer, favoritter og stregkoder flyttes,
               og dette produkt slettes.
             </p>
@@ -193,7 +193,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
               value={mergeQuery}
               onChange={(e) => searchMergeTargets(e.target.value)}
               placeholder="Søg efter produkt at flette ind i…"
-              className="w-full rounded-md border border-border-strong px-2 py-1.5 text-sm"
+              className="hf-type-body w-full rounded-md border border-hf-tan-dark px-2 py-1.5"
             />
             <div className="mt-2 flex flex-col gap-1">
               {mergeResults.map((r) => (
@@ -202,8 +202,8 @@ export function ProductDetailEditor({ product }: { product: Product }) {
                   type="button"
                   onClick={() => setMergeTarget(r)}
                   className={
-                    "rounded-md border px-2 py-1 text-left text-xs " +
-                    (mergeTarget?.id === r.id ? "border-hf-green-dark bg-hf-cream" : "border-border-strong")
+                    "hf-type-small rounded-md border px-2 py-1 text-left " +
+                    (mergeTarget?.id === r.id ? "border-hf-green-dark bg-hf-cream" : "border-hf-tan-dark")
                   }
                 >
                   {r.name}
@@ -216,12 +216,12 @@ export function ProductDetailEditor({ product }: { product: Product }) {
                 type="button"
                 onClick={confirmMerge}
                 disabled={mergeBusy}
-                className="mt-4 w-full rounded-md bg-hf-red-dark px-3 py-1.5 text-sm text-hf-white disabled:opacity-60"
+                className="hf-btn-danger mt-4 w-full px-3 py-1.5 disabled:opacity-60"
               >
                 {mergeBusy ? "Fletter…" : `Flet ind i "${mergeTarget.name}"`}
               </button>
             )}
-            {mergeError && <p className="mt-2 text-xs text-hf-red-dark">{mergeError}</p>}
+            {mergeError && <p className="hf-type-small mt-2 text-hf-red-dark">{mergeError}</p>}
           </div>
         )}
       </div>

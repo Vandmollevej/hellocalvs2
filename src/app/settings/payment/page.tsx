@@ -47,7 +47,7 @@ export default function PaymentPage() {
     >
       <div className="hf-page">
         <div className="rounded-[8px] p-4" style={{ background: "var(--hf-color-brand)" }}>
-          <p className="hf-type-body-sm font-bold" style={{ color: "var(--hf-color-white)" }}>
+          <p className="hf-type-body" style={{ color: "var(--hf-color-white)" }}>
             {statusLabels(t)[subscription?.status ?? "INACTIVE"]}
           </p>
           {subscription && subscription.freeMonthsRemaining > 0 && (
@@ -61,10 +61,10 @@ export default function PaymentPage() {
           <p className="hf-type-section-title">{t("payment.paymentMethodsTitle")}</p>
           {paymentMethods.length === 0 ? (
             <div className="mt-2 rounded-[8px] bg-hf-tan p-4 text-center">
-              <p className="hf-type-body-sm font-bold text-hf-black">
+              <p className="hf-type-body text-hf-black">
                 {t("payment.noPaymentMethod")}
               </p>
-              <p className="hf-type-caption mt-1 text-hf-black opacity-60">
+              <p className="text-text-secondary hf-type-caption mt-1">
                 {t("payment.noPaymentMethodHint")}
               </p>
             </div>
@@ -77,7 +77,7 @@ export default function PaymentPage() {
                   style={{ borderColor: "var(--hf-color-line)" }}
                 >
                   <span className="hf-type-body">{pm.brand}</span>
-                  {pm.last4 && <span className="hf-type-body-sm opacity-70">•••• {pm.last4}</span>}
+                  {pm.last4 && <span className="text-text-secondary hf-type-body">•••• {pm.last4}</span>}
                 </div>
               ))}
             </div>
@@ -93,7 +93,7 @@ export default function PaymentPage() {
                 className="rounded-[8px] border p-3 text-center opacity-60"
                 style={{ borderColor: "var(--hf-color-line)" }}
               >
-                <span className="hf-type-body-sm">{method}</span>
+                <span className="hf-type-body">{method}</span>
               </div>
             ))}
           </div>

@@ -51,7 +51,7 @@ function Field({
 }) {
   return (
     <label className="flex flex-col gap-2">
-      <span className="text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
+      <span className="hf-type-small hf-type-strong text-text-secondary uppercase tracking-[0.06em]">
         {label}
       </span>
       {children}
@@ -60,7 +60,7 @@ function Field({
 }
 
 const inputClass =
-  "rounded-xl bg-hf-tan px-4 py-3 text-[15px] text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green";
+  "hf-type-body rounded-xl bg-hf-tan px-4 py-3 text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green";
 
 export default function ProfileEditPage() {
   const { t } = useTranslation();
@@ -146,7 +146,7 @@ export default function ProfileEditPage() {
       title={t("profile.section.profile")}
     >
       {loading || !user ? (
-        <p className="p-4 text-center text-[14px] text-hf-black opacity-60">
+        <p className="hf-type-body text-text-secondary p-4 text-center">
           {loading ? t("profile.loading") : t("profile.loadError")}
         </p>
       ) : (
@@ -165,7 +165,7 @@ export default function ProfileEditPage() {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col gap-2">
-              <span className="text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
+              <span className="hf-type-small hf-type-strong text-text-secondary uppercase tracking-[0.06em]">
                 {t("profile.field.weight")}
               </span>
               {/* Altid låst (docs/DECISIONS.md 2026-09-25): feltet kan ikke
@@ -183,12 +183,12 @@ export default function ProfileEditPage() {
                 </span>
               </button>
               {trendWeightKg !== null && (
-                <span className="text-[11px] text-hf-black opacity-60">
+                <span className="hf-type-micro text-text-secondary">
                   {t("profile.trendWeight", { value: trendWeightKg.toFixed(1) })}
                 </span>
               )}
               {user.weightKg !== null && (
-                <span className="text-[11px] text-hf-black opacity-60">
+                <span className="hf-type-micro text-text-secondary">
                   {t("profile.startWeightUpdated", {
                     date: formatUpdatedDate(user.startWeightUpdatedAt ?? user.createdAt),
                   })}
@@ -217,7 +217,7 @@ export default function ProfileEditPage() {
               {(() => {
                 const age = computeAge(user.birthDate);
                 return age !== null && age >= BIRTH_DATE_MIN_AGE_YEARS ? (
-                  <span className="text-[11px] text-hf-black opacity-60">
+                  <span className="hf-type-micro text-text-secondary">
                     {t("profile.age", { age })}
                   </span>
                 ) : null;
@@ -243,7 +243,7 @@ export default function ProfileEditPage() {
             <button
               type="button"
               onClick={() => router.push("/profile/photo-diary")}
-              className="flex min-w-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-hf-tan px-1 py-3 text-center text-[13px] font-semibold text-hf-black"
+              className="hf-type-small hf-type-strong flex min-w-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-hf-tan px-1 py-3 text-center text-hf-black"
             >
               <IconCamera size={20} />
               {t("profile.actions.photoDiary")}
@@ -251,7 +251,7 @@ export default function ProfileEditPage() {
             <button
               type="button"
               onClick={() => router.push("/profile/weight-calibration")}
-              className="flex min-w-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-hf-tan px-1 py-3 text-center text-[13px] font-semibold text-hf-black"
+              className="hf-type-small hf-type-strong flex min-w-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-hf-tan px-1 py-3 text-center text-hf-black"
             >
               <IconBathScale size={20} />
               {t("profile.actions.newWeight")}
@@ -259,7 +259,7 @@ export default function ProfileEditPage() {
             <button
               type="button"
               onClick={() => router.push("/profile/goals")}
-              className="flex min-w-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-hf-tan px-1 py-3 text-center text-[13px] font-semibold text-hf-black"
+              className="hf-type-small hf-type-strong flex min-w-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-hf-tan px-1 py-3 text-center text-hf-black"
             >
               <IconChampagne size={20} />
               {t("profile.actions.target")}
@@ -267,7 +267,7 @@ export default function ProfileEditPage() {
             <button
               type="button"
               onClick={() => router.push("/profile/body-measurements")}
-              className="flex min-w-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-hf-tan px-1 py-3 text-center text-[13px] font-semibold text-hf-black"
+              className="hf-type-small hf-type-strong flex min-w-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-hf-tan px-1 py-3 text-center text-hf-black"
             >
               <IconWaistMeasure size={20} sex={user?.sex} />
               {t("profile.actions.bodyMeasurements")}
@@ -278,7 +278,7 @@ export default function ProfileEditPage() {
           <button
             type="button"
             onClick={() => router.push("/profile/change-password")}
-            className="hf-btn-primary hf-type-button mt-auto h-12 w-full px-4"
+            className="hf-btn-primary mt-auto h-12 w-full px-4"
           >
             {t("profile.changePasswordButton")}
           </button>

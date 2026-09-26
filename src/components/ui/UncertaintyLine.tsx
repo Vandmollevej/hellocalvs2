@@ -25,7 +25,7 @@ export function UncertaintyLine({
   const hasTolerance = tolerance !== null && tolerance > 0;
   if (!hasEstimate && !hasTolerance) return null;
   return (
-    <p className={`text-[12px] text-hf-black/60 ${className}`}>
+    <p className={`hf-type-small text-hf-black/60 ${className}`}>
       {hasTolerance && (
         <span>
           ±{format(tolerance, digits)} {unit}

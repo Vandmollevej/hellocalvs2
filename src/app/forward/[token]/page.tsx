@@ -62,7 +62,7 @@ export default async function ForwardPage({ params }: { params: Promise<{ token:
 
   return (
     <div className="mx-auto max-w-sm p-4 text-center">
-      <p className="hf-type-body-sm opacity-70">{sender?.displayName ?? "En ven"} har sendt dig</p>
+      <p className="text-text-secondary hf-type-body">{sender?.displayName ?? "En ven"} har sendt dig</p>
       <h1 className="hf-type-page-title mt-1">{item.name}</h1>
       <div className="mt-8">
         <AddForwardedItemButton kind={forward.kind} itemId={item.id} name={item.name} />

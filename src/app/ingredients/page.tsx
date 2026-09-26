@@ -60,7 +60,7 @@ export default function PrivateIngredientsPage() {
     <HfScreen title={t("privateIngredients.listTitle")} icon={<IconCarrot size={20} stroke={2} />}>
       <div className="hf-page">
         {ingredients !== null && ingredients.length === 0 && (
-          <p className="text-center text-sm text-hf-black opacity-60">{t("privateIngredients.empty")}</p>
+          <p className="hf-type-body text-text-secondary text-center">{t("privateIngredients.empty")}</p>
         )}
         {ingredients && ingredients.length > 0 && (
           <div className="overflow-hidden rounded-2xl bg-hf-tan">
@@ -73,19 +73,19 @@ export default function PrivateIngredientsPage() {
                       onChange={(event) => setDraftName(event.target.value)}
                       maxLength={80}
                       aria-label={t("privateIngredients.nameLabel")}
-                      className="min-w-0 flex-1 rounded-[8px] bg-hf-white px-3 py-2 text-[14px] text-hf-black outline-none"
+                      className="hf-type-body min-w-0 flex-1 rounded-[8px] bg-hf-white px-3 py-2 text-hf-black outline-none"
                     />
                     <button
                       type="button"
                       onClick={() => saveName(ingredient.id)}
-                      className="text-xs font-bold text-hf-black"
+                      className="hf-type-small hf-type-strong text-hf-black"
                     >
                       {t("privateIngredients.save")}
                     </button>
                     <button
                       type="button"
                       onClick={() => setEditingId(null)}
-                      className="text-xs text-hf-black opacity-60"
+                      className="hf-type-small text-text-secondary"
                     >
                       {t("privateIngredients.cancel")}
                     </button>
@@ -93,8 +93,8 @@ export default function PrivateIngredientsPage() {
                 ) : (
                   <div className="flex items-center gap-3">
                     <div className="min-w-0 flex-1">
-                      <p className="text-[14px] font-medium text-hf-black">{ingredient.name}</p>
-                      <p className="text-xs text-hf-black opacity-60">{t("privateIngredients.pending")}</p>
+                      <p className="hf-type-body hf-type-strong text-hf-black">{ingredient.name}</p>
+                      <p className="hf-type-small text-text-secondary">{t("privateIngredients.pending")}</p>
                     </div>
                     <button
                       type="button"
@@ -102,14 +102,14 @@ export default function PrivateIngredientsPage() {
                         setEditingId(ingredient.id);
                         setDraftName(ingredient.name);
                       }}
-                      className="text-xs font-medium text-hf-black underline underline-offset-2"
+                      className="hf-btn-text text-hf-black"
                     >
                       {t("privateIngredients.rename")}
                     </button>
                     <button
                       type="button"
                       onClick={() => remove(ingredient)}
-                      className="text-xs font-medium text-hf-red-dark underline underline-offset-2"
+                      className="hf-btn-text text-hf-red-dark"
                     >
                       {t("privateIngredients.delete")}
                     </button>

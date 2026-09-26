@@ -15,9 +15,9 @@ export default async function AdminImagesPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-lg font-semibold text-text-primary">Billedforslag</h1>
+      <h1 className="hf-type-title text-hf-black">Billedforslag</h1>
       {products.length === 0 ? (
-        <p className="text-sm text-text-secondary">Ingen billedforslag afventer godkendelse.</p>
+        <p className="hf-type-body text-text-secondary">Ingen billedforslag afventer godkendelse.</p>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {products.map((product) => (

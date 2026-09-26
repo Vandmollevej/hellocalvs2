@@ -101,7 +101,7 @@ export function ScreenHeader({
           </Link>
         ) : (
           <Link href="/profile" aria-label={t("settings.openProfile")}>
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-hf-tan text-xs font-bold text-hf-black">
+            <span className="hf-type-small hf-type-strong flex h-8 w-8 items-center justify-center rounded-full bg-hf-tan text-hf-black">
               PT
             </span>
           </Link>

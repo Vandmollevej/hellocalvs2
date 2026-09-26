@@ -30,7 +30,7 @@ export default function ScanVerifyPage() {
   return (
     <ScanAuthScreen title="Tofaktor-godkendelse">
       <form onSubmit={submit} className="flex flex-col gap-4">
-        <p className="hf-type-body-sm">Indtast koden fra din autenticator-app.</p>
+        <p className="hf-type-body">Indtast koden fra din autenticator-app.</p>
         <TextField label="Kode" value={code} onChange={(e) => setCode(e.target.value)} inputMode="numeric" autoComplete="one-time-code" maxLength={6} required />
         {error && <p className="hf-type-caption text-center">{error}</p>}
         <ActionButton type="submit" disabled={busy} className="h-12 disabled:opacity-40">

@@ -68,7 +68,7 @@ function ProductRow({
           image={product.imageUrl}
           title={product.name}
           subtitle={
-            <p className="truncate text-xs text-hf-black opacity-60">
+            <p className="hf-type-small text-text-secondary truncate">
               {[product.brand?.name, t("foods.kcalPer100g", { kcal: Math.round(product.kcalPer100g) })]
                 .filter(Boolean)
                 .join(" · ")}
@@ -270,17 +270,17 @@ function MadvarerContent() {
         </div>
 
         {!isSearching && state === "ready" && favorites.length > 0 && (
-          <p className="px-1 text-xs font-semibold uppercase tracking-[0.08em] text-hf-black opacity-60">
+          <p className="hf-type-small hf-type-strong text-text-secondary px-1 uppercase tracking-[0.08em]">
             {t("foods.mostUsed")}
           </p>
         )}
 
         <div className="max-h-[60vh] overflow-y-auto overflow-x-hidden rounded-[8px] bg-hf-tan">
           {state === "loading" && (
-            <p className="px-4 py-8 text-center text-sm text-hf-black opacity-60">{t("foods.loading")}</p>
+            <p className="hf-type-body text-text-secondary px-4 py-8 text-center">{t("foods.loading")}</p>
           )}
           {state === "error" && (
-            <p className="px-4 py-8 text-center text-sm text-hf-black opacity-60">
+            <p className="hf-type-body text-text-secondary px-4 py-8 text-center">
               {t("foods.loadError")}
             </p>
           )}
@@ -297,13 +297,13 @@ function MadvarerContent() {
               />
             ))}
           {state === "ready" && visibleProducts.length === 0 && (
-            <p className="px-4 py-8 text-center text-sm text-hf-black opacity-60">
+            <p className="hf-type-body text-text-secondary px-4 py-8 text-center">
               {isSearching ? t("foods.noSearchMatches") : t("foods.noFavoritesYet")}
             </p>
           )}
         </div>
 
-        <ActionLink href="/foods/new" variant="secondary" className="px-4 py-2 text-xs">
+        <ActionLink href="/foods/new" variant="secondary" className="hf-type-small px-4 py-2">
           {t("foods.createManually")}
         </ActionLink>
       </div>

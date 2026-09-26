@@ -54,11 +54,11 @@ export function EmailVerifyBanner() {
         {status === "sent" ? t("verifyEmail.bannerSent") : status === "error" ? t("verifyEmail.bannerError") : t("verifyEmail.banner")}
       </span>
       {status !== "sent" && (
-        <button type="button" onClick={resend} disabled={status === "sending"} className="font-bold underline disabled:opacity-60">
+        <button type="button" onClick={resend} disabled={status === "sending"} className="hf-btn-text disabled:opacity-60">
           {t("verifyEmail.resend")}
         </button>
       )}
-      <button type="button" onClick={dismiss} aria-label={t("verifyEmail.dismiss")} className="px-1 font-bold">
+      <button type="button" onClick={dismiss} aria-label={t("verifyEmail.dismiss")} className="hf-type-strong px-1">
         ×
       </button>
     </div>

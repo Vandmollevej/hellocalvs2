@@ -11,8 +11,8 @@ export function HealthConsentToggle({ checked, onChange }: { checked: boolean; o
   return (
     <div className="flex items-start gap-3 rounded-2xl bg-hf-tan px-4 py-4">
       <span className="flex-1">
-        <span className="hf-type-body-sm block">{t("signup.healthConsent")}</span>
-        <span className="hf-type-caption mt-2 flex gap-3 border-t border-hf-gray-light pt-2">
+        <span className="hf-type-body block">{t("signup.healthConsent")}</span>
+        <span className="hf-type-caption mt-2 flex gap-3 border-t border-hf-tan-dark pt-2">
           <Link href="/betingelser" target="_blank" className="underline">
             {t("signup.legalLinksTerms")}
           </Link>

@@ -15,7 +15,7 @@ export default async function TokenApprovePage({ params }: { params: Promise<{ t
   if (!product && !bugReport) {
     return (
       <div className="mx-auto max-w-md p-6 text-center">
-        <p className="text-sm text-text-secondary">
+        <p className="hf-type-body text-text-secondary">
           Linket er ikke gyldigt eller er allerede brugt.
         </p>
       </div>
@@ -26,26 +26,26 @@ export default async function TokenApprovePage({ params }: { params: Promise<{ t
     <div className="mx-auto max-w-md p-6">
       {product ? (
         <>
-          <h1 className="text-lg font-semibold text-text-primary">{product.name}</h1>
-          <p className="mt-1 text-sm text-text-secondary">
+          <h1 className="hf-type-title text-hf-black">{product.name}</h1>
+          <p className="hf-type-body mt-1 text-text-secondary">
             {[product.brand?.name, `${Math.round(product.kcalPer100g)} kcal / 100 g`]
               .filter(Boolean)
               .join(" · ")}
           </p>
-          <p className="mt-1 text-xs text-text-muted">
+          <p className="hf-type-small mt-1 text-text-muted">
             Indsendt: {product.createdAt.toLocaleDateString("da-DK")}
           </p>
         </>
       ) : (
         bugReport && (
           <>
-            <h1 className="text-lg font-semibold text-text-primary">Fejlrapport</h1>
-            <p className="mt-1 text-sm text-text-secondary">
+            <h1 className="hf-type-title text-hf-black">Fejlrapport</h1>
+            <p className="hf-type-body mt-1 text-text-secondary">
               {bugReport.user
                 ? `Fra ${bugReport.user.displayName} (${bugReport.user.email})`
                 : "AI-genereret (ingen bruger)"}
             </p>
-            <p className="mt-4 whitespace-pre-wrap text-sm text-text-primary">{bugReport.description}</p>
+            <p className="hf-type-body mt-4 whitespace-pre-wrap text-hf-black">{bugReport.description}</p>
           </>
         )
       )}

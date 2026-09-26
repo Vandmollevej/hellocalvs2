@@ -53,7 +53,7 @@ export function RecipeImagesPicker({
           className="flex aspect-square flex-col items-center justify-center gap-1 rounded-[8px] bg-hf-tan text-hf-black"
         >
           <IconCamera size={24} />
-          <span className="text-[11px] opacity-70">
+          <span className="hf-type-micro text-text-secondary">
             {t("recipeImages.count", { count: images.length, max: MAX_RECIPE_IMAGES })}
           </span>
         </button>

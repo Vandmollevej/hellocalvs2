@@ -95,7 +95,7 @@ function ResetPasswordContent() {
           <button
             type="submit"
             disabled={submitting || !password || !confirmPassword}
-            className="hf-btn-primary hf-type-button mb-8 h-12 w-full disabled:opacity-50"
+            className="hf-btn-primary mb-8 h-12 w-full disabled:opacity-50"
           >
             {submitting ? t("resetPassword.submitting") : t("resetPassword.submit")}
           </button>

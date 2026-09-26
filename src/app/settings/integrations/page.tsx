@@ -44,11 +44,11 @@ function Card({
       <div className="flex items-start gap-3">
         {icon}
         <div className="min-w-0 flex-1">
-          <p className="flex items-center gap-2 text-[15px] font-bold text-hf-black">
+          <p className="hf-type-body hf-type-strong flex items-center gap-2 text-hf-black">
             {active && <span aria-hidden="true" className="h-2.5 w-2.5 shrink-0 rounded-full bg-hf-green" />}
             {title}
           </p>
-          <p className="text-[12px] text-hf-black opacity-70">{description}</p>
+          <p className="hf-type-small text-text-secondary">{description}</p>
         </div>
       </div>
       {children}
@@ -148,7 +148,7 @@ function IntegrationerContent() {
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className="self-start text-[13px] text-hf-red-dark disabled:opacity-50"
+      className="hf-type-small self-start text-hf-red-dark disabled:opacity-50"
     >
       {t("integrations.remove")}
     </button>
@@ -181,15 +181,15 @@ function IntegrationerContent() {
         }
       >
         {!isOAuth ? (
-          <p className="text-[12px] text-hf-gray-dark">{t("integrations.unavailable")}</p>
+          <p className="hf-type-small text-text-secondary">{t("integrations.unavailable")}</p>
         ) : active ? (
           <div className="flex flex-col gap-1">
             {integration.lastSyncedAt && (
-              <p className="text-[11px] text-hf-black opacity-60">
+              <p className="hf-type-micro text-text-secondary">
                 {t("integrations.lastSynced", { date: formatDateTime(integration.lastSyncedAt) })}
               </p>
             )}
-            {integration.lastError && <p className="text-[11px] text-red-600">{integration.lastError}</p>}
+            {integration.lastError && <p className="hf-type-micro text-hf-red-dark">{integration.lastError}</p>}
             {removeLink(() => disconnect(slug), busy)}
           </div>
         ) : (
@@ -197,7 +197,7 @@ function IntegrationerContent() {
             type="button"
             disabled={busy || !integration.configured}
             onClick={() => connect(slug)}
-            className="hf-btn-primary block w-full py-2.5 text-center text-[13px] disabled:opacity-50"
+            className="hf-btn-primary block w-full py-2.5 text-center disabled:opacity-50"
           >
             {t("integrations.connect")}
           </button>
@@ -225,7 +225,7 @@ function IntegrationerContent() {
           <button
             type="button"
             onClick={() => changeHelloFresh(true)}
-            className="hf-btn-primary block w-full py-2.5 text-center text-[13px]"
+            className="hf-btn-primary block w-full py-2.5 text-center"
           >
             {t("integrations.enable")}
           </button>
@@ -249,12 +249,12 @@ function IntegrationerContent() {
   return (
     <HfScreen title={t("integrations.title")}>
       <div className="hf-page">
-        {notice && <p className="rounded-[8px] bg-hf-tan px-4 py-3 text-[13px] text-hf-black">{notice}</p>}
+        {notice && <p className="hf-type-small rounded-[8px] bg-hf-tan px-4 py-3 text-hf-black">{notice}</p>}
 
-        <p className="px-1 text-[13px] leading-relaxed text-hf-black opacity-60">{t("integrations.intro")}</p>
+        <p className="hf-type-small text-text-secondary px-1">{t("integrations.intro")}</p>
 
         {loading ? (
-          <p className="text-center text-[13px] text-hf-black opacity-60">{t("integrations.loading")}</p>
+          <p className="hf-type-small text-text-secondary text-center">{t("integrations.loading")}</p>
         ) : (
           <>
             {section(t("integrations.sections.active"), [

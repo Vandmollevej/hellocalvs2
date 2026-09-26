@@ -168,7 +168,7 @@ export default function SettingsPage() {
         </AccordionCard>
 
         <div className="flex flex-col gap-2">
-          <p className="hf-heading px-1 text-xs font-bold uppercase tracking-wide text-hf-black opacity-60">
+          <p className="hf-type-small hf-type-strong text-text-secondary hf-heading px-1 uppercase tracking-wide">
             {t("settings.display")}
           </p>
           <AccordionCard>
@@ -186,7 +186,7 @@ export default function SettingsPage() {
             />
             <ChevronRow
               icon={
-                <span aria-hidden="true" className="w-5 text-center text-[22px] font-bold leading-none text-hf-green">
+                <span aria-hidden="true" className="hf-type-page-title w-5 text-center leading-none text-hf-green">
                   ~
                 </span>
               }
@@ -225,7 +225,7 @@ export default function SettingsPage() {
               router.refresh();
             });
           }}
-          className="hf-type-body flex h-12 w-full items-center px-4 text-left font-bold"
+          className="hf-type-body flex h-12 w-full items-center px-4 text-left"
         >
           {t("settings.logOut")}
         </button>

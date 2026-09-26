@@ -17,8 +17,8 @@ export default async function AdminUncertaintiesPage() {
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <h1 className="text-lg font-semibold text-text-primary">Uncertainties</h1>
-        <p className="text-sm text-text-secondary">
+        <h1 className="hf-type-title text-hf-black">Uncertainties</h1>
+        <p className="hf-type-body text-text-secondary">
           Produkter hvor AI&apos;en var mindre end {Math.round(UNCERTAINTY_TARGET * 100)} % sikker på forside,
           næringsindhold, ingrediensliste eller EAN, og fotos hvor billedrobotten er usikker på, om de hører til
           produktet. Ret værdierne i lightboxen — rettelsen skrives til produktet
@@ -35,8 +35,8 @@ export default async function AdminUncertaintiesPage() {
         hideBelow={HIDE_FROM_SEARCH_BELOW}
       />
 
-      <div className="flex flex-col gap-8 border-t border-border-strong pt-6">
-        <h2 className="text-base font-semibold text-text-primary">Øvrige advarsler</h2>
+      <div className="flex flex-col gap-8 border-t border-hf-tan-dark pt-6">
+        <h2 className="hf-type-body hf-type-strong text-hf-black">Øvrige advarsler</h2>
         <LegacyWarnings />
       </div>
     </div>

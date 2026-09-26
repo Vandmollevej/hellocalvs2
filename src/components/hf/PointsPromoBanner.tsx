@@ -29,13 +29,13 @@ export function PointsPromoBanner({
           type="button"
           onClick={() => setDismissed(true)}
           aria-label="Luk"
-          className="absolute right-1 top-1 flex h-11 w-11 items-center justify-center"
+          className="hf-btn-icon absolute right-1 top-1"
           style={{ color: "var(--hf-color-white)" }}
         >
           <IconX size={20} />
         </button>
         <div className="pr-8">
-          <p className="hf-type-body-sm font-bold" style={{ color: "var(--hf-color-white)" }}>
+          <p className="hf-type-body" style={{ color: "var(--hf-color-white)" }}>
             *{headline}
           </p>
           {subtext && (

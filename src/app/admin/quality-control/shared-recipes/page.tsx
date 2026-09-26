@@ -31,11 +31,11 @@ export default async function AdminSharedRecipesPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-lg font-semibold text-text-primary">{t(admin.locale, "quality_control_title")}</h1>
+      <h1 className="hf-type-title text-hf-black">{t(admin.locale, "quality_control_title")}</h1>
       <QualityControlTabs active="sharedRecipes" locale={admin.locale} />
-      <p className="text-xs text-text-secondary">{t(admin.locale, "shared_recipes_hint")}</p>
+      <p className="hf-type-small text-text-secondary">{t(admin.locale, "shared_recipes_hint")}</p>
       {rows.length === 0 ? (
-        <p className="text-sm text-text-secondary">{t(admin.locale, "quality_control_empty")}</p>
+        <p className="hf-type-body text-text-secondary">{t(admin.locale, "quality_control_empty")}</p>
       ) : (
         <SharedRecipeReviewList rows={rows} locale={admin.locale} />
       )}

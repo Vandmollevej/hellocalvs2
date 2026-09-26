@@ -29,7 +29,7 @@ export function FoodRow({
         )}
       </div>
       <div className="min-w-0 flex-1">
-        <p className="line-clamp-2 text-sm text-hf-black">{title}</p>
+        <p className="hf-type-body line-clamp-2 text-hf-black">{title}</p>
         {subtitle}
       </div>
       {right && <div className="flex flex-shrink-0 items-center gap-2">{right}</div>}

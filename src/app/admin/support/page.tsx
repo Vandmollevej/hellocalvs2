@@ -35,14 +35,14 @@ export default async function AdminSupportPage() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h1 className="text-lg font-semibold text-text-primary">{t(admin.locale, "support_title")}</h1>
-        <p className="text-sm text-text-secondary">
+        <h1 className="hf-type-title text-hf-black">{t(admin.locale, "support_title")}</h1>
+        <p className="hf-type-body text-text-secondary">
           {requests.filter((r) => r.status === "OPEN").length} åbne. Tilladelsen viser, hvilke datatyper brugeren
           har givet Support lov til at se, og i hvilken periode.
         </p>
       </div>
 
-      {requests.length === 0 && <p className="py-4 text-sm text-text-secondary">Ingen henvendelser endnu.</p>}
+      {requests.length === 0 && <p className="hf-type-body py-4 text-text-secondary">Ingen henvendelser endnu.</p>}
 
       <div className="flex flex-col gap-4">
         {requests.map((request) => {
@@ -51,18 +51,18 @@ export default async function AdminSupportPage() {
           const allowed = permissions ? SUPPORT_PERMISSION_KEYS.filter((key) => permissions[key]) : [];
           const grantActive = grant ? isSupportGrantActive(grant) : false;
           return (
-            <div key={request.id} className="rounded-lg border border-border-strong bg-surface-2 p-4">
+            <div key={request.id} className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
-                  <p className="font-medium text-text-primary">{request.subject}</p>
-                  <p className="text-xs text-text-muted">
+                  <p className="hf-type-strong text-hf-black">{request.subject}</p>
+                  <p className="hf-type-small text-text-muted">
                     Sag {request.id.slice(-8).toUpperCase()} · {CATEGORY_LABELS[request.category]} ·{" "}
                     {request.createdAt.toLocaleString("da-DK", { timeZone: "Europe/Copenhagen" })}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <span
-                    className={`rounded-full px-2 py-0.5 text-xs ${
+                    className={`hf-type-small rounded-full px-2 py-0.5 ${
                       request.status === "OPEN" ? "bg-hf-green-dark text-hf-white" : "bg-hf-tan text-text-secondary"
                     }`}
                   >
@@ -71,8 +71,8 @@ export default async function AdminSupportPage() {
                   <SupportRequestStatusButton id={request.id} status={request.status} />
                 </div>
               </div>
-              <p className="mt-4 whitespace-pre-wrap text-sm text-text-primary">{request.message}</p>
-              <div className="mt-4 border-t border-border-strong pt-2 text-xs text-text-secondary">
+              <p className="hf-type-body mt-4 whitespace-pre-wrap text-hf-black">{request.message}</p>
+              <div className="hf-type-small mt-4 border-t border-hf-tan-dark pt-2 text-text-secondary">
                 {!grant && "Ingen dataadgang givet."}
                 {grant && (
                   <>

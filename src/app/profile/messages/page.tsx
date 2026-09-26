@@ -54,16 +54,16 @@ export default function MessagesPage() {
           <button
             type="button"
             onClick={markAllRead}
-            className="hf-type-body-sm self-end font-semibold underline"
+            className="hf-btn-text self-end"
           >
             {t("profile.messages.markAllRead")}
           </button>
         )}
 
         {!messages ? (
-          <p className="hf-type-body-sm opacity-70">{t("profile.loading")}</p>
+          <p className="text-text-secondary hf-type-body">{t("profile.loading")}</p>
         ) : messages.length === 0 ? (
-          <p className="hf-type-body-sm opacity-70">{t("profile.messages.empty")}</p>
+          <p className="text-text-secondary hf-type-body">{t("profile.messages.empty")}</p>
         ) : (
           messages.map((message) => (
             <button
@@ -73,7 +73,7 @@ export default function MessagesPage() {
               className="rounded-[8px] bg-hf-tan p-4 text-left"
             >
               <div className="flex items-start justify-between gap-2">
-                <p className="hf-type-body-sm font-bold">{message.subject}</p>
+                <p className="hf-type-body">{message.subject}</p>
                 {!message.readAt && (
                   <span
                     className="mt-1 h-2.5 w-2.5 flex-none rounded-full"
@@ -84,11 +84,11 @@ export default function MessagesPage() {
               </div>
               {message.bodyHtml && (
                 <div
-                  className="hf-type-caption mt-2 opacity-80"
+                  className="text-text-secondary hf-type-caption mt-2"
                   dangerouslySetInnerHTML={{ __html: message.bodyHtml }}
                 />
               )}
-              <p className="hf-type-caption mt-2 opacity-50">
+              <p className="text-text-secondary hf-type-caption mt-2">
                 {new Date(message.createdAt).toLocaleString()}
               </p>
             </button>

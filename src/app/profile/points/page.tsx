@@ -64,9 +64,9 @@ export default function PointsPage() {
     >
       <div className="px-4 pt-4 pb-8">
         <div className="rounded-lg p-4 text-center" style={{ background: "var(--hf-color-brand)" }}>
-          <p className="hf-type-caption opacity-80" style={{ color: "var(--hf-color-white)" }}>Din saldo</p>
+          <p className="text-text-secondary hf-type-caption" style={{ color: "var(--hf-color-white)" }}>Din saldo</p>
           <p className="hf-type-hero" style={{ color: "var(--hf-color-white)" }}>{balance ?? "…"}</p>
-          <p className="hf-type-caption opacity-80" style={{ color: "var(--hf-color-white)" }}>points</p>
+          <p className="text-text-secondary hf-type-caption" style={{ color: "var(--hf-color-white)" }}>points</p>
         </div>
 
         <div className="mt-4 rounded-lg border p-4" style={{ borderColor: "var(--hf-color-line)" }}>
@@ -78,7 +78,7 @@ export default function PointsPage() {
             type="button"
             onClick={redeem}
             disabled={redeeming || (balance ?? 0) < FREE_MONTH_COST}
-            className="hf-btn-primary hf-type-button mt-4 h-12 w-full disabled:opacity-40"
+            className="hf-btn-primary mt-4 h-12 w-full disabled:opacity-40"
           >
             {redeeming ? "Indløser…" : `Indløs ${FREE_MONTH_COST} points til 1 gratis måned`}
           </button>
@@ -87,7 +87,7 @@ export default function PointsPage() {
 
         <h2 className="hf-type-section-title">Historik</h2>
         {transactions.length === 0 ? (
-          <p className="hf-type-body-sm mt-2 opacity-70">Ingen points optjent endnu.</p>
+          <p className="text-text-secondary hf-type-body mt-2">Ingen points optjent endnu.</p>
         ) : (
           <div className="mt-2 flex flex-col">
             {transactions.map((tx) => (
@@ -98,7 +98,7 @@ export default function PointsPage() {
               >
                 <div>
                   <p className="hf-type-body">{REASON_LABELS[tx.reason] ?? tx.reason}</p>
-                  <p className="hf-type-caption opacity-70">
+                  <p className="text-text-secondary hf-type-caption">
                     {new Date(tx.createdAt).toLocaleDateString("da-DK")}
                   </p>
                 </div>

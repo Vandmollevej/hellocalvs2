@@ -113,7 +113,7 @@ export function DuplicateProductCard({ link }: { link: DuplicateLink }) {
   if (done) return null;
 
   return (
-    <div className="flex flex-col gap-4 rounded-lg border border-border-strong bg-surface-2 p-4">
+    <div className="flex flex-col gap-4 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
       <div className="grid gap-4 sm:grid-cols-2">
         {products.map((product) => (
           <button
@@ -121,42 +121,42 @@ export function DuplicateProductCard({ link }: { link: DuplicateLink }) {
             type="button"
             onClick={() => setKeepProductId(product.id)}
             className={`flex flex-col gap-1 rounded-md border px-3 py-2 text-left ${
-              keepProductId === product.id ? "border-hf-green-dark bg-hf-tan/40" : "border-border-strong"
+              keepProductId === product.id ? "border-hf-green-dark bg-hf-tan/40" : "border-hf-tan-dark"
             }`}
           >
             <span className="flex items-center gap-2">
               <span
                 aria-hidden
                 className={`h-3 w-3 flex-none rounded-full border ${
-                  keepProductId === product.id ? "border-hf-green-dark bg-hf-green-dark" : "border-border-strong"
+                  keepProductId === product.id ? "border-hf-green-dark bg-hf-green-dark" : "border-hf-tan-dark"
                 }`}
               />
-              <span className="font-medium text-text-primary">{product.name}</span>
+              <span className="hf-type-strong text-hf-black">{product.name}</span>
             </span>
-            {product.brand?.name && <span className="text-xs text-text-secondary">{product.brand.name}</span>}
-            <span className="text-xs text-text-secondary">{formatMacros(product)}</span>
-            <span className="text-xs text-text-muted">
+            {product.brand?.name && <span className="hf-type-small text-text-secondary">{product.brand.name}</span>}
+            <span className="hf-type-small text-text-secondary">{formatMacros(product)}</span>
+            <span className="hf-type-small text-text-muted">
               {product.status} · oprettet {new Date(product.createdAt).toLocaleString("da-DK")}
             </span>
           </button>
         ))}
       </div>
-      <p className="text-xs text-text-muted">
+      <p className="hf-type-small text-text-muted">
         Den valgte (grønne) beholdes som produktet — det andet slettes, og alle registreringer, favoritter,
         stregkoder m.m. flyttes automatisk over. Tidligere registreringer bruger stadig deres egen gemte snapshot.
       </p>
 
       <div>
-        <p className="mb-2 text-sm font-medium text-text-primary">Billeder — vælg hvilke der skal bruges</p>
+        <p className="hf-type-body hf-type-strong mb-2 text-hf-black">Billeder — vælg hvilke der skal bruges</p>
         {images.length === 0 ? (
-          <p className="text-xs text-text-muted">Ingen billeder på nogen af de to produkter.</p>
+          <p className="hf-type-small text-text-muted">Ingen billeder på nogen af de to produkter.</p>
         ) : (
           <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
             {images.map((img) => (
               <label
                 key={img.key}
                 className={`relative flex h-24 items-center justify-center overflow-hidden rounded-md border bg-hf-tan ${
-                  img.checked ? "border-hf-green-dark" : "border-border-strong opacity-50"
+                  img.checked ? "border-hf-green-dark" : "border-hf-tan-dark opacity-50"
                 }`}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -173,14 +173,14 @@ export function DuplicateProductCard({ link }: { link: DuplicateLink }) {
         )}
       </div>
 
-      {error && <p className="text-xs text-hf-red-dark">{error}</p>}
+      {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}
 
       <div className="flex justify-end gap-2">
         <button
           type="button"
           onClick={dismiss}
           disabled={busy !== null}
-          className="rounded-md border border-border-strong px-3 py-1.5 text-sm text-text-secondary disabled:opacity-60"
+          className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-1.5 text-text-secondary disabled:opacity-60"
         >
           {busy === "dismiss" ? "…" : "Ikke en dublet"}
         </button>
@@ -188,7 +188,7 @@ export function DuplicateProductCard({ link }: { link: DuplicateLink }) {
           type="button"
           onClick={merge}
           disabled={busy !== null}
-          className="rounded-md bg-hf-green-dark px-4 py-1.5 text-sm font-medium text-hf-white disabled:opacity-60"
+          className="hf-btn-primary px-4 py-1.5 disabled:opacity-60"
         >
           {busy === "merge" ? "Fletter…" : "Merge"}
         </button>

@@ -29,7 +29,7 @@ export function TokenApprovalActions({ token }: { token: string }) {
 
   if (done) {
     return (
-      <p className="text-sm text-hf-green-dark">
+      <p className="hf-type-body text-hf-green-dark">
         {done === "approve" ? "Godkendt." : "Afvist."} Du kan lukke denne side.
       </p>
     );
@@ -42,7 +42,7 @@ export function TokenApprovalActions({ token }: { token: string }) {
           type="button"
           onClick={() => act("reject")}
           disabled={loading !== null}
-          className="rounded-md border border-border-strong px-4 py-2 text-sm text-hf-red-dark disabled:opacity-60"
+          className="hf-type-body rounded-md border border-hf-tan-dark px-4 py-2 text-hf-red-dark disabled:opacity-60"
         >
           {loading === "reject" ? "…" : "Afvis"}
         </button>
@@ -50,12 +50,12 @@ export function TokenApprovalActions({ token }: { token: string }) {
           type="button"
           onClick={() => act("approve")}
           disabled={loading !== null}
-          className="rounded-md bg-hf-green-dark px-4 py-2 text-sm text-hf-white disabled:opacity-60"
+          className="hf-btn-primary px-4 py-2 disabled:opacity-60"
         >
           {loading === "approve" ? "…" : "Godkend"}
         </button>
       </div>
-      {error && <p className="text-sm text-hf-red-dark">{error}</p>}
+      {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
     </div>
   );
 }

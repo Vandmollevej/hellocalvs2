@@ -54,7 +54,7 @@ export default function UncertaintySettingsPage() {
   return (
     <HfScreen title={t("displaySettings.uncertainty")}>
       {loading || !user ? (
-        <p className="p-6 text-center text-[14px] text-hf-black opacity-60">
+        <p className="hf-type-body text-text-secondary p-6 text-center">
           {loading ? t("settings.loading") : t("settings.loadError")}
         </p>
       ) : (
@@ -66,10 +66,10 @@ export default function UncertaintySettingsPage() {
             onChange={setAutoExpand}
           />
           {/* Lille eksempel, så brugeren kan se hvad kontakten styrer. */}
-          <div className="rounded-2xl bg-hf-tan px-4 py-3 text-[13px] text-hf-black">
+          <div className="hf-type-small rounded-2xl bg-hf-tan px-4 py-3 text-hf-black">
             <div className="flex items-center justify-between">
               <span className="opacity-70">{t("addProduct.nutrient.iron")}</span>
-              <span className="font-medium">
+              <span className="hf-type-strong">
                 <UncertaintyTilde />
                 2,1 mg
               </span>

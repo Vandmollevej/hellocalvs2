@@ -32,12 +32,12 @@ export function OnboardingSpotlight({
         className="absolute z-50 rounded-2xl bg-hf-tan p-4 shadow-lg"
         style={{ left: 16, right: 16, top: "calc(100% + 12px)" }}
       >
-        <p className="text-sm font-medium text-hf-black">
+        <p className="hf-type-body hf-type-strong text-hf-black">
           Tryk her for at tilføje din første registrering — med kamera, mikrofon eller søgning.
         </p>
         <button
           onClick={onLater}
-          className="mt-4 text-sm font-bold text-hf-black underline underline-offset-2"
+          className="hf-btn-text mt-4 text-hf-black"
         >
           Vis senere
         </button>

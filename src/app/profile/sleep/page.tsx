@@ -29,7 +29,7 @@ function addMinutes(time: string, minutes: number) {
 }
 
 const timeInputClass =
-  "rounded-xl bg-hf-tan px-4 py-3 text-[15px] text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green";
+  "hf-type-body rounded-xl bg-hf-tan px-4 py-3 text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green";
 
 function timeToMinutes(time: string | null | undefined): number | null {
   if (!time) return null;
@@ -46,7 +46,7 @@ function minutesToTime(minutes: number) {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="flex flex-col gap-2">
-      <span className="text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
+      <span className="hf-type-small hf-type-strong text-text-secondary uppercase tracking-[0.06em]">
         {label}
       </span>
       {children}
@@ -171,7 +171,7 @@ export default function SleepSchedulePage() {
       title={t("profileSleep.title")}
     >
       {loading || !user ? (
-        <p className="p-4 text-center text-[14px] text-hf-black opacity-60">
+        <p className="hf-type-body text-text-secondary p-4 text-center">
           {loading ? t("profileSleep.loading") : t("profileSleep.loadError")}
         </p>
       ) : (
@@ -207,7 +207,7 @@ export default function SleepSchedulePage() {
               />
             </Field>
           </div>
-          <p className="-mt-2 text-[13px] text-hf-black opacity-60">
+          <p className="hf-type-small text-text-secondary -mt-2">
             {t("profileSleep.defaultTimesHint")}
           </p>
 
@@ -216,7 +216,7 @@ export default function SleepSchedulePage() {
             onClick={() => setPerDayOpen((open) => !open)}
             className="flex w-full items-center gap-2 rounded-2xl bg-hf-tan px-4 py-3 text-left"
           >
-            <span className="flex-1 text-[15px] font-medium text-hf-black">
+            <span className="hf-type-body hf-type-strong flex-1 text-hf-black">
               {t("profileSleep.perDayToggle")}
             </span>
             <IconChevronDown size={18} className={perDayOpen ? "rotate-180" : ""} />
@@ -224,7 +224,7 @@ export default function SleepSchedulePage() {
 
           {perDayOpen && (
             <div className="hf-card hf-card--form">
-              <p className="text-[12px] text-hf-black opacity-60">
+              <p className="hf-type-small text-text-secondary">
                 {t("profileSleep.perDayHint")}
               </p>
               {[0, 1, 2, 3, 4, 5, 6].map((weekday) => {
@@ -240,7 +240,7 @@ export default function SleepSchedulePage() {
                   timeToMinutes(schedule?.bedtime) ?? timeToMinutes(user.defaultBedtime) ?? 23 * 60;
                 return (
                   <div key={label} className="flex flex-col gap-2">
-                    <span className="text-[13px] font-semibold text-hf-black">{label}</span>
+                    <span className="hf-type-small hf-type-strong text-hf-black">{label}</span>
                     <SleepRangeSlider
                       wakeMinutes={wakeMinutes}
                       bedtimeMinutes={bedtimeMinutes}
@@ -261,7 +261,7 @@ export default function SleepSchedulePage() {
           />
 
           {user.shiftWorkEnabled && (
-            <p className="text-[13px] text-hf-black opacity-70">
+            <p className="hf-type-small text-text-secondary">
               {t("profileSleep.shiftWorkHint")}
             </p>
           )}

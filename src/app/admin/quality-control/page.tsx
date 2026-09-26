@@ -93,10 +93,10 @@ export default async function AdminQualityControlPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-lg font-semibold text-text-primary">{t(admin.locale, "quality_control_title")}</h1>
+      <h1 className="hf-type-title text-hf-black">{t(admin.locale, "quality_control_title")}</h1>
       <QualityControlTabs active="products" locale={admin.locale} />
       {rows.length === 0 ? (
-        <p className="text-sm text-text-secondary">{t(admin.locale, "quality_control_empty")}</p>
+        <p className="hf-type-body text-text-secondary">{t(admin.locale, "quality_control_empty")}</p>
       ) : (
         <QualityControlTable rows={rows} locale={admin.locale} />
       )}

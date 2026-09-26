@@ -11,7 +11,7 @@ export default function RegistrationReportErrorPage() {
 
   return (
     <HfScreen title={t("registrationReportError.title")}>
-      <p className="p-4 text-center text-sm text-hf-black opacity-60">
+      <p className="hf-type-body text-text-secondary p-4 text-center">
         {t("registrationReportError.placeholder")}
       </p>
     </HfScreen>

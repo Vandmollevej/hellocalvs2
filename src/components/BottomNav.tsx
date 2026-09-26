@@ -649,7 +649,7 @@ export function BottomNav() {
 
           <div className="mb-2 flex items-center justify-between">
             <span
-              className="text-[13px] font-medium"
+              className="hf-type-small hf-type-strong"
               style={{ color: "var(--hf-black)", fontFamily: "var(--font-hf-body)" }}
             >
               Træk et ikon ned i menuen
@@ -657,7 +657,7 @@ export function BottomNav() {
             <button
               type="button"
               onClick={closePanel}
-              className="text-[13px] font-semibold"
+              className="hf-type-small hf-type-strong"
               style={{ color: "var(--hf-green)", fontFamily: "var(--font-hf-body)" }}
             >
               Færdig
@@ -683,15 +683,15 @@ export function BottomNav() {
                     isPlaceholder
                       ? "border-dashed border-hf-gray-dark bg-transparent"
                       : isReady
-                        ? "border-dashed border-hf-gray-dark bg-hf-gray-light"
-                        : "border-hf-gray-light bg-hf-gray-light"
+                        ? "border-dashed border-hf-gray-dark bg-hf-tan-dark"
+                        : "border-hf-tan-dark bg-hf-tan-dark"
                   }`}
                   aria-label={t("nav.addItemAriaLabel", { item: t(`nav.${item.labelKey}`) })}
                 >
                   <span className={`flex flex-col items-center gap-1 ${isPlaceholder ? "invisible" : ""}`}>
                     {item.render("var(--hf-black)", PANEL_ICON_SIZE)}
                     <span
-                      className="text-[10px] leading-tight text-center"
+                      className="hf-type-micro text-center"
                       style={{ color: "var(--hf-black)", fontFamily: "var(--font-hf-body)" }}
                     >
                       {t(`nav.${item.labelKey}`)}
@@ -702,7 +702,7 @@ export function BottomNav() {
             })}
             {inactiveKeys.length === 0 && (
               <span
-                className="text-[12px]"
+                className="hf-type-small"
                 style={{ color: "var(--hf-gray-dark)", fontFamily: "var(--font-hf-body)" }}
               >
                 {t("nav.allIconsInUse")}
@@ -715,7 +715,7 @@ export function BottomNav() {
               type="button"
               onClick={resetLayout}
               aria-label={t("nav.resetMenuAriaLabel")}
-              className="flex h-11 w-11 items-center justify-center rounded-full text-hf-black"
+              className="hf-btn-icon text-hf-black"
             >
               <IconRefresh size={20} />
             </button>
@@ -805,7 +805,7 @@ export function BottomNav() {
                         isReady || isPlaceholder
                           ? "border-dashed border-hf-gray-dark"
                           : editMode
-                            ? "border-hf-gray-light"
+                            ? "border-hf-tan-dark"
                             : ""
                       } ${editMode && !isPlaceholder && !isReady ? "hf-nav-jiggle" : ""}`}
                     >

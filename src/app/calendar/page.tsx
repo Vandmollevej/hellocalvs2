@@ -567,7 +567,7 @@ export default function CalendarPage() {
               setViewMenuOpen((open) => !open);
               setMonthMenuOpen(false);
             }}
-            className="relative flex h-6 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-white"
+            className="relative flex h-6 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-hf-white"
           >
             <IconCalendar size={24} stroke={1.6} />
             <IconChevronDown
@@ -588,7 +588,7 @@ export default function CalendarPage() {
                       setView(option.value);
                       setViewMenuOpen(false);
                     }}
-                    className="flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold hover:bg-hf-cream focus-visible:outline-2 focus-visible:outline-hf-black"
+                    className="hf-type-body hf-type-strong flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left hover:bg-hf-cream focus-visible:outline-2 focus-visible:outline-hf-black"
                   >
                     <OptionIcon size={20} stroke={1.8} />
                     <span className="flex-1">{option.label}</span>
@@ -629,7 +629,7 @@ export default function CalendarPage() {
                   }}
                   className="flex min-h-11 max-w-full items-center justify-center rounded-full px-3 text-hf-black hover:bg-hf-tan focus-visible:outline-2 focus-visible:outline-hf-black"
                 >
-                  <span className="whitespace-nowrap text-[15px] font-semibold capitalize">
+                  <span className="hf-type-body hf-type-strong whitespace-nowrap capitalize">
                     {periodLabel}
                   </span>
                 </button>
@@ -643,7 +643,7 @@ export default function CalendarPage() {
                 datoen og statuslinjen nedenunder — absolut placeret, så det
                 hverken forlænger datolinjen eller gør området højere. */}
             {view === "week" && (
-              <p className="pointer-events-none absolute inset-x-0 top-[calc(100%+2px)] -translate-y-1/2 text-center text-[13px] font-normal leading-none lowercase text-hf-black opacity-60">
+              <p className="hf-type-small text-text-secondary pointer-events-none absolute inset-x-0 top-[calc(100%+2px)] -translate-y-1/2 text-center leading-none lowercase">
                 {t("calendar.weekNumberLabel", { number: weekNumber })}
               </p>
             )}
@@ -808,7 +808,7 @@ function PeriodButton({
         period,
       })}
       onClick={onClick}
-      className="flex size-11 shrink-0 items-center justify-center rounded-full text-hf-black hover:bg-hf-tan focus-visible:outline-2 focus-visible:outline-hf-black"
+      className="hf-btn-icon text-hf-black hover:bg-hf-tan focus-visible:outline-2 focus-visible:outline-hf-black"
     >
       <Icon size={22} />
     </button>
@@ -830,11 +830,11 @@ function MonthPicker({
   return (
     <div className="absolute left-1/2 top-12 z-40 w-[310px] max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-lg border border-hf-tan-dark bg-hf-white p-4 shadow-xl">
       <div className="mb-2 flex items-center justify-between">
-        <button type="button" aria-label={t("calendar.previousYearAriaLabel")} onClick={() => onYearChange(new Date(year - 1, month, 1))} className="flex size-10 items-center justify-center rounded-full hover:bg-hf-cream">
+        <button type="button" aria-label={t("calendar.previousYearAriaLabel")} onClick={() => onYearChange(new Date(year - 1, month, 1))} className="hf-btn-icon hover:bg-hf-cream">
           <IconChevronLeft size={20} />
         </button>
         <span className="hf-heading">{year}</span>
-        <button type="button" aria-label={t("calendar.nextYearAriaLabel")} onClick={() => onYearChange(new Date(year + 1, month, 1))} className="flex size-10 items-center justify-center rounded-full hover:bg-hf-cream">
+        <button type="button" aria-label={t("calendar.nextYearAriaLabel")} onClick={() => onYearChange(new Date(year + 1, month, 1))} className="hf-btn-icon hover:bg-hf-cream">
           <IconChevronRight size={20} />
         </button>
       </div>
@@ -846,8 +846,8 @@ function MonthPicker({
             role="option"
             aria-selected={index === month}
             onClick={() => onSelect(index)}
-            className={`min-h-11 rounded-xl px-2 text-sm capitalize focus-visible:outline-2 focus-visible:outline-hf-black ${
-              index === month ? "bg-hf-green font-bold text-hf-white" : "bg-hf-cream hover:bg-hf-tan"
+            className={`hf-choice min-h-11 capitalize focus-visible:outline-2 focus-visible:outline-hf-black ${
+              index === month ? "is-selected" : ""
             }`}
           >
             {label}
@@ -887,7 +887,7 @@ function MonthView({
       <div className="mb-2 flex items-center gap-1.5">
         <span className="w-3.5 shrink-0" aria-hidden="true" />
         <div className="grid flex-1 grid-cols-7 text-center">
-          {weekdays.map((day) => <span key={day} className="text-xs font-medium opacity-60">{day}</span>)}
+          {weekdays.map((day) => <span key={day} className="hf-type-small hf-type-strong text-text-secondary">{day}</span>)}
         </div>
       </div>
       <div className="flex flex-col gap-2">
@@ -897,7 +897,7 @@ function MonthView({
           return (
             <div key={weekIndex} className="flex items-center gap-1.5">
               <span
-                className="-ml-2.5 w-3.5 shrink-0 text-right text-[9px] font-medium leading-none opacity-45"
+                className="hf-type-micro hf-type-strong text-text-muted -ml-2.5 w-3.5 shrink-0 text-right leading-none"
                 aria-hidden="true"
               >
                 {weekNumber ?? ""}
@@ -917,11 +917,11 @@ function MonthView({
                       aria-label={`${date.toLocaleDateString("da-DK", { dateStyle: "long" })}${current ? t("calendar.todaySuffix") : ""}${
                         !logged ? "" : met ? t("calendar.goalMetSuffix") : t("calendar.goalMissedSuffix")
                       }`}
-                      className={`relative flex aspect-square items-center justify-center rounded-lg border text-sm font-medium focus-visible:outline-2 focus-visible:outline-hf-black ${
+                      className={`hf-type-body hf-type-strong relative flex aspect-square items-center justify-center rounded-lg border focus-visible:outline-2 focus-visible:outline-hf-black ${
                         current
                           ? "border-hf-green bg-hf-green text-hf-white"
                           : isOtherMonth
-                            ? "border-hf-gray-border bg-transparent text-hf-gray"
+                            ? "border-hf-gray-border bg-transparent text-text-muted"
                             : "border-transparent bg-hf-tan text-hf-black"
                       }`}
                     >
@@ -937,7 +937,7 @@ function MonthView({
                           />
                         ) : (
                           <span
-                            className="absolute right-1 top-0.5 text-[11px] font-bold leading-none text-hf-red-muted"
+                            className="hf-type-micro hf-type-strong absolute right-1 top-0.5 leading-none text-hf-red-muted"
                             aria-hidden="true"
                           >
                             ÷
@@ -990,9 +990,9 @@ function WeekView({
             onClick={() => onOpenDate(date)}
             className="flex min-h-[66px] w-full items-center gap-3 rounded-2xl border border-hf-tan-dark bg-hf-tan px-4 text-left text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
           >
-            <span className="w-10 text-xs font-bold uppercase opacity-70">{date.toLocaleDateString("da-DK", { weekday: "short" })}</span>
+            <span className="hf-type-small hf-type-strong text-text-secondary w-10 uppercase">{date.toLocaleDateString("da-DK", { weekday: "short" })}</span>
             <span
-              className={`flex size-9 shrink-0 items-center justify-center rounded-lg border text-sm font-bold ${
+              className={`hf-type-body hf-type-strong flex size-9 shrink-0 items-center justify-center rounded-lg border ${
                 current ? "border-hf-green bg-hf-green text-hf-white" : "border-hf-gray bg-hf-white text-hf-black"
               }`}
             >
@@ -1006,7 +1006,7 @@ function WeekView({
                   <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />
                 )}
                 <span
-                  className={`text-sm ${tooLow ? "font-medium text-hf-warning" : logged ? "font-normal" : "font-normal text-hf-gray"}`}
+                  className={`hf-type-body ${tooLow ? "hf-type-strong text-hf-warning" : logged ? "font-normal" : "font-normal text-text-muted"}`}
                 >
                   {!logged
                     ? t("calendar.noEntries")
@@ -1018,8 +1018,8 @@ function WeekView({
                 </span>
                 <span className="ml-auto flex shrink-0 items-center gap-1">
                   <span
-                    className={`text-sm font-bold tabular-nums ${
-                      !logged ? "text-hf-gray" : tooLow ? "text-hf-warning" : over ? "text-hf-red-dark" : "text-hf-green"
+                    className={`hf-type-body hf-type-strong tabular-nums ${
+                      !logged ? "text-text-muted" : tooLow ? "text-hf-warning" : over ? "text-hf-red-dark" : "text-hf-green"
                     }`}
                   >
                     {over ? "÷" : "+"}
@@ -1040,7 +1040,7 @@ function WeekView({
 function LowIntakeNotice({ minimumKcal }: { minimumKcal: number }) {
   const { t } = useTranslation();
   return (
-    <p className="mt-4 flex items-start gap-2.5 text-sm text-hf-black">
+    <p className="hf-type-body mt-4 flex items-start gap-2.5 text-hf-black">
       <span className="mt-1 size-4 shrink-0 rounded-sm bg-hf-warning-fill" aria-hidden="true" />
       <span>{t("calendar.lowIntakeNotice", { minimum: minimumKcal.toLocaleString("da-DK") })}</span>
     </p>
@@ -1069,17 +1069,17 @@ function WeeklyEnergySummaryRow({
   // chevron so the total sits directly under the kcal column.
   return (
     <div className="mt-2 flex items-center gap-3 px-4">
-      <span className="flex min-w-0 flex-1 items-center gap-1.5 text-sm font-normal">
+      <span className="hf-type-body flex min-w-0 flex-1 items-center gap-1.5">
         {weightEstimate !== null && (
           <>
-            <span className="text-base leading-none text-hf-green" aria-hidden="true">∼</span>
+            <span className="hf-type-body leading-none text-hf-green" aria-hidden="true">∼</span>
             <span className="text-hf-black opacity-60">
               {t("calendar.weeklyEstimatedWeight", { value: formatEstimatedWeight(weightEstimate.grams) })}
             </span>
           </>
         )}
       </span>
-      <span className={`shrink-0 text-sm font-bold tabular-nums ${withinGoal ? "text-hf-green" : "text-hf-red-dark"}`}>
+      <span className={`hf-type-body hf-type-strong shrink-0 tabular-nums ${withinGoal ? "text-hf-green" : "text-hf-red-dark"}`}>
         {formatSignedKcal(goalBalance)}
       </span>
       <span className="w-[19px] shrink-0" aria-hidden="true" />
@@ -1183,9 +1183,9 @@ function ListView({
             onClick={() => onOpenDate(date)}
             className="flex min-h-[66px] w-full shrink-0 items-center gap-3 rounded-2xl border border-hf-tan-dark bg-hf-tan px-4 text-left text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
           >
-            <span className="w-10 text-xs font-bold uppercase opacity-70">{date.toLocaleDateString("da-DK", { weekday: "short" })}</span>
+            <span className="hf-type-small hf-type-strong text-text-secondary w-10 uppercase">{date.toLocaleDateString("da-DK", { weekday: "short" })}</span>
             <span
-              className={`flex size-9 shrink-0 items-center justify-center rounded-lg border text-sm font-bold ${
+              className={`hf-type-body hf-type-strong flex size-9 shrink-0 items-center justify-center rounded-lg border ${
                 current ? "border-hf-green bg-hf-green text-hf-white" : "border-hf-gray bg-hf-white text-hf-black"
               }`}
             >
@@ -1199,7 +1199,7 @@ function ListView({
                   <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />
                 )}
                 <span
-                  className={`text-sm ${tooLow ? "font-medium text-hf-warning" : logged ? "font-normal" : "font-normal text-hf-gray"}`}
+                  className={`hf-type-body ${tooLow ? "hf-type-strong text-hf-warning" : logged ? "font-normal" : "font-normal text-text-muted"}`}
                 >
                   {!logged
                     ? t("calendar.noEntries")
@@ -1211,8 +1211,8 @@ function ListView({
                 </span>
                 <span className="ml-auto flex shrink-0 items-center gap-1">
                   <span
-                    className={`text-sm font-bold tabular-nums ${
-                      !logged ? "text-hf-gray" : tooLow ? "text-hf-warning" : over ? "text-hf-red-dark" : "text-hf-green"
+                    className={`hf-type-body hf-type-strong tabular-nums ${
+                      !logged ? "text-text-muted" : tooLow ? "text-hf-warning" : over ? "text-hf-red-dark" : "text-hf-green"
                     }`}
                   >
                     {over ? "÷" : "+"}
@@ -1315,10 +1315,10 @@ function WeekTimelineView({
                 current ? "bg-hf-green text-hf-white" : "text-hf-black"
               }`}
             >
-              <span className="text-[10px] font-bold uppercase opacity-70">
+              <span className="hf-type-micro hf-type-strong text-text-secondary uppercase">
                 {date.toLocaleDateString("da-DK", { weekday: "short" })}
               </span>
-              <span className="hf-heading flex items-center gap-2 text-sm">
+              <span className="hf-type-body hf-heading flex items-center gap-2">
                 {date.getDate()}
                 {met && <IconCheck size={15} stroke={3.5} className="text-hf-lime" aria-hidden="true" />}
               </span>
@@ -1339,7 +1339,7 @@ function WeekTimelineView({
             {HOUR_MARKS.map((hour) => (
               <span
                 key={hour}
-                className="absolute right-1.5 -translate-y-1/2 text-[10px] font-medium opacity-50"
+                className="hf-type-micro hf-type-strong text-text-secondary absolute right-1.5 -translate-y-1/2"
                 style={{ top: hour * HOUR_HEIGHT }}
               >
                 {String(hour).padStart(2, "0")}
@@ -1380,7 +1380,7 @@ function WeekTimelineView({
                   return (
                     <div
                       key={registration.id}
-                      className="absolute left-0.5 right-0.5 truncate rounded-md bg-hf-green px-1 text-[10px] font-semibold text-hf-white"
+                      className="hf-type-micro hf-type-strong absolute left-0.5 right-0.5 truncate rounded-md bg-hf-green px-1 text-hf-white"
                       style={{ top: (minutesFromMidnight(time) / 60) * HOUR_HEIGHT, minHeight: 18 }}
                       title={`${registration.titleSnapshot} · ${Math.round(registration.kcalSnapshot)} kcal`}
                     >
@@ -1744,7 +1744,7 @@ function DayDetails({
               aria-haspopup="listbox"
               aria-expanded={viewMenuOpen}
               onClick={onToggleViewMenu}
-              className="relative flex h-6 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-white"
+              className="relative flex h-6 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-hf-white"
             >
               <IconCalendar size={24} stroke={1.6} className="text-hf-white" />
               <IconChevronDown
@@ -1762,7 +1762,7 @@ function DayDetails({
                       key={option.value}
                       type="button"
                       onClick={() => onSelectView(option.value)}
-                      className="flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold hover:bg-hf-cream focus-visible:outline-2 focus-visible:outline-hf-black"
+                      className="hf-type-body hf-type-strong flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left hover:bg-hf-cream focus-visible:outline-2 focus-visible:outline-hf-black"
                     >
                       <OptionIcon size={20} stroke={1.8} />
                       <span className="flex-1">{option.label}</span>
@@ -1792,13 +1792,13 @@ function DayDetails({
           type="button"
           onClick={() => onNavigate(-1)}
           aria-label={t("calendar.previousDayAriaLabel")}
-          className="flex size-11 shrink-0 items-center justify-center rounded-full text-hf-black hover:bg-hf-tan focus-visible:outline-2 focus-visible:outline-hf-black"
+          className="hf-btn-icon text-hf-black hover:bg-hf-tan focus-visible:outline-2 focus-visible:outline-hf-black"
         >
           <IconChevronLeft size={22} />
         </button>
         <h2
           id="day-title"
-          className="flex min-h-11 min-w-0 items-center justify-center px-3 text-[15px] font-semibold text-hf-black"
+          className="hf-type-body hf-type-strong flex min-h-11 min-w-0 items-center justify-center px-3 text-hf-black"
         >
           <span className="truncate first-letter:uppercase">
             {date.toLocaleDateString("da-DK", { weekday: "long", day: "numeric", month: "long" })}
@@ -1809,7 +1809,7 @@ function DayDetails({
           onClick={() => canGoForward && onNavigate(1)}
           disabled={!canGoForward}
           aria-label={t("calendar.nextDayAriaLabel")}
-          className="flex size-11 shrink-0 items-center justify-center rounded-full text-hf-black hover:bg-hf-tan focus-visible:outline-2 focus-visible:outline-hf-black disabled:opacity-30"
+          className="hf-btn-icon text-hf-black hover:bg-hf-tan focus-visible:outline-2 focus-visible:outline-hf-black disabled:opacity-30"
         >
           <IconChevronRight size={22} />
         </button>
@@ -1835,19 +1835,19 @@ function DayDetails({
         }}
       >
         {loading ? (
-          <div className="rounded-2xl bg-hf-white p-4 text-center text-sm opacity-60">
+          <div className="hf-type-body rounded-2xl bg-hf-white p-4 text-center opacity-60">
             {t("calendar.loadingDayRegistrations")}
           </div>
         ) : error ? (
           <div className="rounded-2xl bg-hf-white p-4 text-center">
-            <p className="font-semibold text-hf-black">{t("calendar.registrationsLoadError")}</p>
-            <p className="mt-1 text-sm text-hf-black opacity-60">{t("calendar.registrationsLoadErrorHint")}</p>
+            <p className="hf-type-strong text-hf-black">{t("calendar.registrationsLoadError")}</p>
+            <p className="hf-type-body text-text-secondary mt-1">{t("calendar.registrationsLoadErrorHint")}</p>
           </div>
         ) : (
           <>
             <div className="mb-1 flex pl-px" aria-hidden="true">
               <span
-                className="shrink-0 text-center text-[10px] font-medium opacity-50"
+                className="hf-type-micro hf-type-strong text-text-secondary shrink-0 text-center"
                 style={{ width: DAY_TIME_GUTTER_WIDTH }}
               >
                 {t("calendar.hourColumnLabel")}
@@ -1870,7 +1870,7 @@ function DayDetails({
                   {HOUR_MARKS.map((mark) => (
                     <span
                       key={mark}
-                      className="absolute inset-x-0 -translate-y-1/2 text-center text-[10px] font-medium opacity-50"
+                      className="hf-type-micro hf-type-strong text-text-secondary absolute inset-x-0 -translate-y-1/2 text-center"
                       style={{ top: mark * hourHeight }}
                     >
                       {String(mark % 24).padStart(2, "0")}
@@ -1978,7 +1978,7 @@ function DayDetails({
                 <span className="size-2 rounded-full bg-hf-white" aria-hidden="true" />
               )}
             </span>
-            <p className="min-w-0 truncate text-sm font-semibold text-hf-black">
+            <p className="hf-type-body hf-type-strong min-w-0 truncate text-hf-black">
               {hasEntries
                 ? met
                   ? t("calendar.dailyGoalReached")
@@ -1986,16 +1986,16 @@ function DayDetails({
                 : t("calendar.dailyGoalNone")}
             </p>
           </div>
-          <p className="whitespace-nowrap text-right text-sm text-hf-gray">
+          <p className="hf-type-body whitespace-nowrap text-right text-text-muted">
             {t("calendar.goalLabel", { goal: DAILY_KCAL_GOAL })}
           </p>
           <div aria-hidden="true" />
           {remaining >= 0 ? (
-            <p className="whitespace-nowrap text-right text-sm font-normal text-hf-black">
+            <p className="hf-type-body whitespace-nowrap text-right text-hf-black">
               {t("calendar.remainingToday")}
             </p>
           ) : (
-            <p className="whitespace-nowrap text-right text-sm font-semibold text-hf-red-dark">
+            <p className="hf-type-body hf-type-strong whitespace-nowrap text-right text-hf-red-dark">
               {t("calendar.exceededCalories", { amount: Math.round(Math.abs(remaining)) })}
             </p>
           )}
@@ -2081,14 +2081,14 @@ function HourRow({
             const { icon: SportIcon, label } = getSportMeta(activity.sportType);
             return <SportIcon key={activity.id} size={16} className="text-hf-black opacity-70" aria-label={label} />;
           })}
-          <span className="text-xs font-bold text-hf-green">+{Math.round(bonusKcal)} kcal</span>
+          <span className="hf-type-small hf-type-strong text-hf-green">+{Math.round(bonusKcal)} kcal</span>
         </div>
       )}
       {hasEntries && (
         <button
           type="button"
           onClick={() => onOpenDetails(hour)}
-          className="absolute inset-y-0 right-1 z-[5] flex items-center gap-1 pl-2 text-xs font-bold text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
+          className="hf-type-small hf-type-strong absolute inset-y-0 right-1 z-[5] flex items-center gap-1 pl-2 text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
         >
           <span>{Math.round(kcalTotal)} kalorier</span>
           <IconChevronRight size={16} className="opacity-50" />
@@ -2098,7 +2098,7 @@ function HourRow({
         <button
           type="button"
           onClick={() => onTapAddBar(hour)}
-          className="absolute inset-x-1 inset-y-0.5 z-20 flex items-center justify-center rounded-md bg-hf-black text-xs font-semibold text-hf-white"
+          className="hf-type-small hf-type-strong absolute inset-x-1 inset-y-0.5 z-20 flex items-center justify-center rounded-md bg-hf-black text-hf-white"
         >
           {t("nav.add")}
         </button>
@@ -2195,7 +2195,7 @@ function DraggableEntryMarker({
       onPointerMove={handlePointerMove}
       onPointerUp={finish}
       onPointerCancel={finish}
-      className={`absolute left-1 right-14 z-[6] touch-none truncate rounded-md px-1.5 text-[10px] font-semibold text-hf-white ${
+      className={`hf-type-micro hf-type-strong absolute left-1 right-14 z-[6] touch-none truncate rounded-md px-1.5 text-hf-white ${
         dragMinutes !== null ? "bg-hf-black" : "bg-hf-green"
       }`}
       style={{ top, height: 16, lineHeight: "16px" }}
@@ -2252,11 +2252,11 @@ function HourEntriesOverlay({
           type="button"
           onClick={onClose}
           aria-label={t("common.back")}
-          className="absolute bottom-3 left-3 flex size-11 items-center justify-center rounded-full hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white"
+          className="hf-btn-icon absolute bottom-3 left-3 hover:bg-hf-white/10 focus-visible:outline-2 focus-visible:outline-hf-white"
         >
           <HfChevron direction="left" className="text-hf-white" />
         </button>
-        <h2 className="hf-heading text-lg">
+        <h2 className="hf-type-body-lg hf-heading">
           {t("calendar.hourRangeLabel", {
             start: String(hour).padStart(2, "0"),
             end: String((hour + 1) % 24).padStart(2, "0"),
@@ -2275,10 +2275,10 @@ function HourEntriesOverlay({
                 aria-expanded={isOpen}
                 className="flex w-full items-center justify-between px-4 py-3 text-left focus-visible:outline-2 focus-visible:outline-hf-black"
               >
-                <span className="text-sm font-semibold text-hf-black">
+                <span className="hf-type-body hf-type-strong text-hf-black">
                   {new Intl.DateTimeFormat("da-DK", { hour: "2-digit", minute: "2-digit" }).format(group.time)}
                 </span>
-                <span className="flex items-center gap-1 text-sm font-bold text-hf-black">
+                <span className="hf-type-body hf-type-strong flex items-center gap-1 text-hf-black">
                   {Math.round(groupKcal)} kalorier
                   <HfChevron direction={isOpen ? "down" : "right"} className="text-hf-black" />
                 </span>
@@ -2297,7 +2297,7 @@ function HourEntriesOverlay({
                         image={registration.product?.imageUrl}
                         title={registration.titleSnapshot}
                         right={
-                          <span className="text-sm font-bold text-hf-black">
+                          <span className="hf-type-body hf-type-strong text-hf-black">
                             {Math.round(registration.kcalSnapshot)} kcal
                           </span>
                         }
@@ -2334,9 +2334,9 @@ function MonthlyStatus({ status }: { status: MonthlyStatusData }) {
         <div className="mb-4 flex flex-col items-center gap-1">
           <span className="relative flex size-9 items-center justify-center" aria-label={t("calendar.streakAriaLabel", { streak })}>
             <IconStarFilled size={36} className="text-hf-green" aria-hidden="true" />
-            <span className="absolute text-xs font-bold text-hf-white">{streak}</span>
+            <span className="hf-type-small hf-type-strong absolute text-hf-white">{streak}</span>
           </span>
-          <p className="text-sm font-semibold text-hf-black">{t("calendar.streakMessage", { streak })}</p>
+          <p className="hf-type-body hf-type-strong text-hf-black">{t("calendar.streakMessage", { streak })}</p>
         </div>
       )}
 
@@ -2349,12 +2349,12 @@ function MonthlyStatus({ status }: { status: MonthlyStatusData }) {
           {withinGoal ? (
             <IconCheck size={13} stroke={3} className="text-hf-white" aria-hidden="true" />
           ) : (
-            <span className="text-[11px] font-bold leading-none text-hf-white" aria-hidden="true">
+            <span className="hf-type-micro hf-type-strong leading-none text-hf-white" aria-hidden="true">
               ÷
             </span>
           )}
         </span>
-        <p className="text-base font-semibold text-hf-black">
+        <p className="hf-type-body hf-type-strong text-hf-black">
           {withinGoal ? t("calendar.withinGoal") : t("calendar.notWithinGoal")}
         </p>
       </div>

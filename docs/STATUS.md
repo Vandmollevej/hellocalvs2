@@ -2,6 +2,14 @@
 
 Last updated: 2026-09-26
 
+## 2026-09-26: Én fast regel for skrift, farver og knapper i hele appen
+
+Branch `claude/typography-system` (ud fra origin/master). Se DECISIONS
+2026-09-26 og design.md §3, §4.2, §6.2. ~190 filer migreret; lint, typecheck
+og `next build` er grønne. Filer, der kun findes lokalt på den divergerede
+`master` i hovedmappen (fx forsidens knap-indstillinger), migreres, når
+`master` er synkroniseret med origin. Brugeren tjekker udseendet selv.
+
 ## 2026-09-26: Billede-dagbog mistede billeder — gemmes nu i IndexedDB
 
 Brugeren tog 5 billeder, efter at have forladt siden var der 2. Billederne lå

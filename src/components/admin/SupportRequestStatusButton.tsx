@@ -27,7 +27,7 @@ export function SupportRequestStatusButton({ id, status }: { id: string; status:
       type="button"
       onClick={toggle}
       disabled={busy}
-      className="rounded-md border border-border-strong px-2 py-1 text-xs text-text-secondary hover:bg-hf-tan disabled:opacity-50"
+      className="hf-type-small rounded-md border border-hf-tan-dark px-2 py-1 text-text-secondary hover:bg-hf-tan disabled:opacity-50"
     >
       {status === "OPEN" ? "Marker som løst" : "Genåbn"}
     </button>

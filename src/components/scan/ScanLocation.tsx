@@ -54,7 +54,7 @@ export function ScanLocationGate({ children }: { children: React.ReactNode }) {
       <h1 className="hf-type-page-title">
         {state.status === "waiting" ? "Finder din placering…" : "Slå lokation til"}
       </h1>
-      <p className="hf-type-body-sm">
+      <p className="hf-type-body">
         {state.status === "waiting"
           ? "Appen kan kun bruges, når lokation er slået til."
           : "Oprettelses-appen kræver lokation, fordi hvert billede gemmes med butikkens placering. Tillad lokation for denne side i telefonens indstillinger og prøv igen."}

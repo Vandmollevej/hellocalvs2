@@ -80,9 +80,9 @@ export function RecipeStepsEditor({
     return (
       <div key={index} className="flex items-start gap-3 border-b border-hf-tan-dark py-3">
         <button type="button" onClick={() => edit(index)} className="min-w-0 flex-1 text-left">
-          <p className="text-[12px] font-bold text-hf-black opacity-60">{t("recipeSteps.stepNumber", { number: index + 1 })}</p>
-          {step.title && <p className="text-[14px] font-semibold text-hf-black">{step.title}</p>}
-          {step.text && <p className="whitespace-pre-line text-[13px] text-hf-black">{step.text}</p>}
+          <p className="hf-type-small hf-type-strong text-text-secondary">{t("recipeSteps.stepNumber", { number: index + 1 })}</p>
+          {step.title && <p className="hf-type-body hf-type-strong text-hf-black">{step.title}</p>}
+          {step.text && <p className="hf-type-small whitespace-pre-line text-hf-black">{step.text}</p>}
         </button>
         {step.image && (
           // eslint-disable-next-line @next/next/no-img-element
@@ -111,7 +111,7 @@ export function RecipeStepsEditor({
 
       <div className="my-4 flex gap-3 rounded-2xl bg-hf-tan p-4">
         <div className="flex min-w-0 flex-1 flex-col gap-2">
-          <p className="text-[12px] font-bold text-hf-black opacity-60">
+          <p className="hf-type-small hf-type-strong text-text-secondary">
             {t("recipeSteps.stepNumber", { number: active + 1 })}
           </p>
           <input
@@ -120,7 +120,7 @@ export function RecipeStepsEditor({
             onChange={(event) => publish({ ...draft, title: event.target.value })}
             placeholder={t("recipeSteps.titlePlaceholder")}
             aria-label={t("recipeSteps.titlePlaceholder")}
-            className="rounded-[8px] bg-hf-white px-3 py-2.5 text-[16px] font-semibold text-hf-black outline-none"
+            className="hf-type-body hf-type-strong rounded-[8px] bg-hf-white px-3 py-2.5 text-hf-black outline-none"
           />
           <textarea
             value={draft.text}
@@ -128,7 +128,7 @@ export function RecipeStepsEditor({
             placeholder={t("recipeSteps.textPlaceholder")}
             aria-label={t("recipeSteps.textPlaceholder")}
             rows={4}
-            className="resize-none rounded-[8px] bg-hf-white px-3 py-2.5 text-[15px] text-hf-black outline-none"
+            className="hf-type-body resize-none rounded-[8px] bg-hf-white px-3 py-2.5 text-hf-black outline-none"
           />
         </div>
         <div className="flex shrink-0 flex-col items-center gap-2 pt-8">

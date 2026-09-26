@@ -32,10 +32,10 @@ export function PendingImageCard({ product }: { product: Product }) {
   if (done) return null;
 
   return (
-    <div className="flex flex-col gap-4 rounded-lg border border-border-strong bg-surface-2 p-4">
+    <div className="flex flex-col gap-4 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
       <div>
-        <p className="font-medium text-text-primary">{product.name}</p>
-        {product.brand?.name && <p className="text-xs text-text-secondary">{product.brand.name}</p>}
+        <p className="hf-type-strong text-hf-black">{product.name}</p>
+        {product.brand?.name && <p className="hf-type-small text-text-secondary">{product.brand.name}</p>}
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col items-center gap-1">
@@ -44,10 +44,10 @@ export function PendingImageCard({ product }: { product: Product }) {
               // eslint-disable-next-line @next/next/no-img-element
               <img src={product.imageUrl} alt="" className="h-full w-full object-cover" />
             ) : (
-              <span className="text-xs text-text-muted">Intet billede</span>
+              <span className="hf-type-small text-text-muted">Intet billede</span>
             )}
           </div>
-          <span className="text-xs text-text-muted">Nuværende</span>
+          <span className="hf-type-small text-text-muted">Nuværende</span>
         </div>
         <div className="flex flex-col items-center gap-1">
           <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-lg bg-hf-tan">
@@ -55,10 +55,10 @@ export function PendingImageCard({ product }: { product: Product }) {
               // eslint-disable-next-line @next/next/no-img-element
               <img src={product.pendingImageUrl} alt="" className="h-full w-full object-cover" />
             ) : (
-              <span className="text-xs text-text-muted">Intet forslag</span>
+              <span className="hf-type-small text-text-muted">Intet forslag</span>
             )}
           </div>
-          <span className="text-xs text-text-muted">Forslag (Google)</span>
+          <span className="hf-type-small text-text-muted">Forslag (Google)</span>
         </div>
       </div>
       <div className="flex gap-2">
@@ -66,7 +66,7 @@ export function PendingImageCard({ product }: { product: Product }) {
           type="button"
           onClick={() => act("reject")}
           disabled={loading !== null}
-          className="flex-1 rounded-md border border-border-strong px-3 py-1.5 text-sm text-hf-red-dark disabled:opacity-60"
+          className="hf-type-body flex-1 rounded-md border border-hf-tan-dark px-3 py-1.5 text-hf-red-dark disabled:opacity-60"
         >
           {loading === "reject" ? "…" : "Afvis"}
         </button>
@@ -74,7 +74,7 @@ export function PendingImageCard({ product }: { product: Product }) {
           type="button"
           onClick={() => act("accept")}
           disabled={loading !== null}
-          className="flex-1 rounded-md bg-hf-green-dark px-3 py-1.5 text-sm text-hf-white disabled:opacity-60"
+          className="hf-btn-primary flex-1 px-3 py-1.5 disabled:opacity-60"
         >
           {loading === "accept" ? "…" : "Godkend forslag"}
         </button>

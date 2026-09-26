@@ -12,7 +12,7 @@ type TestState = CheckResult | "running";
 
 const RESULT_STYLE: Record<CheckResult["status"], string> = {
   ok: "bg-hf-green-light/40 text-hf-green-dark",
-  warn: "bg-amber-100 text-amber-800",
+  warn: "bg-hf-warning-bg text-hf-warning",
   fail: "bg-hf-red-muted/30 text-hf-red-dark",
   missing: "bg-hf-tan text-text-secondary",
 };
@@ -85,32 +85,32 @@ export function ApiKeysManager({
 
   return (
     <div className="flex flex-col gap-6" data-allow-clipboard>
-      <div className="flex flex-col gap-3 rounded-lg border border-border-strong bg-surface-2 p-4">
+      <div className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm font-medium text-text-primary">Status</p>
+          <p className="hf-type-body hf-type-strong text-hf-black">Status</p>
           <button
             type="button"
             onClick={testAll}
-            className="rounded-md bg-hf-green-dark px-3 py-1.5 text-sm font-medium text-hf-white"
+            className="hf-btn-primary px-3 py-1.5"
           >
             Test alle
           </button>
         </div>
         {incomplete.length === 0 && problems.length === 0 ? (
-          <p className="text-sm text-text-secondary">Alle tjenester har deres nøgler.</p>
+          <p className="hf-type-body text-text-secondary">Alle tjenester har deres nøgler.</p>
         ) : (
-          <ul className="flex flex-col gap-1 text-sm">
+          <ul className="hf-type-body flex flex-col gap-1">
             {problems.map((s) => {
               const test = tests[s.id] as CheckResult;
               return (
-                <li key={`p-${s.id}`} className={test.status === "fail" ? "text-hf-red-dark" : "text-amber-800"}>
-                  <span className="font-medium">{s.name}:</span> {test.message}
+                <li key={`p-${s.id}`} className={test.status === "fail" ? "text-hf-red-dark" : "text-hf-warning"}>
+                  <span className="hf-type-strong">{s.name}:</span> {test.message}
                 </li>
               );
             })}
             {incomplete.map((s) => (
               <li key={`m-${s.id}`} className="text-text-secondary">
-                <span className="font-medium text-text-primary">{s.name}</span> mangler{" "}
+                <span className="hf-type-strong text-hf-black">{s.name}</span> mangler{" "}
                 {missingFields(s)
                   .map((f) => f.label)
                   .join(", ")}
@@ -125,7 +125,7 @@ export function ApiKeysManager({
         if (groupServices.length === 0) return null;
         return (
           <section key={group.id} className="flex flex-col gap-3">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-text-muted">{group.title}</h2>
+            <h2 className="hf-type-body hf-type-strong uppercase tracking-wide text-text-muted">{group.title}</h2>
             {groupServices.map((service) => (
               <ServiceCard
                 key={service.id}
@@ -154,15 +154,15 @@ function ServiceCard({
   onChanged: (service: ServiceStatus) => void;
 }) {
   return (
-    <div className="flex flex-col gap-3 rounded-lg border border-border-strong bg-surface-2 p-4">
+    <div className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <p className="font-medium text-text-primary">{service.name}</p>
-          <p className="text-sm text-text-secondary">{service.purpose}</p>
+          <p className="hf-type-strong text-hf-black">{service.name}</p>
+          <p className="hf-type-body text-text-secondary">{service.purpose}</p>
         </div>
         <div className="flex items-center gap-2">
           {test && test !== "running" && (
-            <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${RESULT_STYLE[test.status]}`}>
+            <span className={`hf-type-small hf-type-strong rounded-full px-2 py-0.5 ${RESULT_STYLE[test.status]}`}>
               {RESULT_LABEL[test.status]}
             </span>
           )}
@@ -171,7 +171,7 @@ function ServiceCard({
               type="button"
               onClick={onTest}
               disabled={test === "running"}
-              className="rounded-md border border-hf-green-dark px-3 py-1 text-sm text-hf-green-dark disabled:opacity-50"
+              className="hf-type-body rounded-md border border-hf-green-dark px-3 py-1 text-hf-green-dark disabled:opacity-50"
             >
               {test === "running" ? "Tester…" : "Test"}
             </button>
@@ -179,7 +179,7 @@ function ServiceCard({
         </div>
       </div>
 
-      {test && test !== "running" && <p className="text-sm text-text-secondary">{test.message}</p>}
+      {test && test !== "running" && <p className="hf-type-body text-text-secondary">{test.message}</p>}
 
       <div className="flex flex-col divide-y divide-border-strong/60">
         {service.fields.map((field) => (
@@ -188,7 +188,7 @@ function ServiceCard({
       </div>
 
       {service.redirectUris.length > 0 && (
-        <div className="flex flex-col gap-1 text-sm">
+        <div className="hf-type-body flex flex-col gap-1">
           <p className="text-text-muted">Redirect-URI, der skal være registreret hos udbyderen:</p>
           {service.redirectUris.map((uri) => (
             <CopyValue key={uri} value={uri} />
@@ -197,7 +197,7 @@ function ServiceCard({
       )}
 
       {(service.note || service.setupUrl) && (
-        <p className="text-xs text-text-muted">
+        <p className="hf-type-small text-text-muted">
           {service.note}
           {service.note && service.setupUrl && " "}
           {service.setupUrl && (
@@ -213,14 +213,14 @@ function ServiceCard({
 
 function SourceTag({ field }: { field: FieldStatus }) {
   if (field.unreadable) {
-    return <span className="text-xs text-hf-red-dark">Admin-værdien kan ikke læses — gem den igen</span>;
+    return <span className="hf-type-small text-hf-red-dark">Admin-værdien kan ikke læses — gem den igen</span>;
   }
   if (field.source === "admin") {
-    return <span className="text-xs text-hf-green-dark">Rettet i admin {field.updatedAt && formatDate(field.updatedAt)}</span>;
+    return <span className="hf-type-small text-hf-green-dark">Rettet i admin {field.updatedAt && formatDate(field.updatedAt)}</span>;
   }
-  if (field.source === "env") return <span className="text-xs text-text-muted">Fra .env</span>;
+  if (field.source === "env") return <span className="hf-type-small text-text-muted">Fra .env</span>;
   return (
-    <span className={`text-xs ${field.optional ? "text-text-muted" : "text-hf-red-dark"}`}>
+    <span className={`hf-type-small ${field.optional ? "text-text-muted" : "text-hf-red-dark"}`}>
       {field.optional ? "Ikke sat (valgfri)" : "Mangler"}
     </span>
   );
@@ -254,19 +254,19 @@ function FieldRow({ field, onChanged }: { field: FieldStatus; onChanged: (servic
   }
 
   const inputClass =
-    "w-full rounded-md border border-border-strong bg-hf-white px-3 py-2 font-mono text-sm text-text-primary";
+    "hf-type-body w-full rounded-md border border-hf-tan-dark bg-hf-white px-3 py-2 font-mono text-hf-black";
 
   return (
     <div className="flex flex-col gap-2 py-2.5">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
         <div className="min-w-0">
-          <p className="text-sm text-text-primary">{field.label}</p>
-          <p className="font-mono text-xs text-text-muted">{field.key}</p>
+          <p className="hf-type-body text-hf-black">{field.label}</p>
+          <p className="hf-type-small font-mono text-text-muted">{field.key}</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <SourceTag field={field} />
           {field.editable && !editing && (
-            <button type="button" onClick={startEdit} className="text-sm text-hf-green-dark underline">
+            <button type="button" onClick={startEdit} className="hf-btn-text text-hf-green-dark">
               {field.display ? "Ret" : "Indtast"}
             </button>
           )}
@@ -275,7 +275,7 @@ function FieldRow({ field, onChanged }: { field: FieldStatus; onChanged: (servic
               type="button"
               disabled={busy}
               onClick={() => run(() => send("DELETE", { key: field.key }))}
-              className="text-sm text-text-secondary underline"
+              className="hf-btn-text text-text-secondary"
             >
               Brug .env igen
             </button>
@@ -284,7 +284,7 @@ function FieldRow({ field, onChanged }: { field: FieldStatus; onChanged: (servic
       </div>
 
       {field.display && !editing && (
-        <p className="break-all font-mono text-sm text-text-secondary">{field.display}</p>
+        <p className="hf-type-body break-all font-mono text-text-secondary">{field.display}</p>
       )}
 
       {editing && (
@@ -314,27 +314,27 @@ function FieldRow({ field, onChanged }: { field: FieldStatus; onChanged: (servic
               className={inputClass}
             />
           )}
-          {field.hint && <p className="text-xs text-text-muted">{field.hint}</p>}
-          {error && <p className="text-sm text-hf-red-dark">{error}</p>}
+          {field.hint && <p className="hf-type-small text-text-muted">{field.hint}</p>}
+          {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
           <div className="flex gap-2">
             <button
               type="submit"
               disabled={busy || !value.trim()}
-              className="rounded-md bg-hf-green-dark px-3 py-1.5 text-sm font-medium text-hf-white disabled:opacity-50"
+              className="hf-btn-primary px-3 py-1.5 disabled:opacity-50"
             >
               {busy ? "Gemmer…" : "Gem"}
             </button>
             <button
               type="button"
               onClick={() => setEditing(false)}
-              className="rounded-md px-3 py-1.5 text-sm text-text-secondary"
+              className="hf-type-body rounded-md px-3 py-1.5 text-text-secondary"
             >
               Annullér
             </button>
           </div>
         </form>
       )}
-      {!editing && error && <p className="text-sm text-hf-red-dark">{error}</p>}
+      {!editing && error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
     </div>
   );
 }
@@ -343,7 +343,7 @@ function CopyValue({ value }: { value: string }) {
   const [copied, setCopied] = useState(false);
   return (
     <div className="flex items-center gap-2">
-      <code className="min-w-0 flex-1 break-all rounded bg-hf-tan px-2 py-1 font-mono text-xs text-text-primary">
+      <code className="hf-type-small min-w-0 flex-1 break-all rounded bg-hf-tan px-2 py-1 font-mono text-hf-black">
         {value}
       </code>
       <button
@@ -353,7 +353,7 @@ function CopyValue({ value }: { value: string }) {
           setCopied(true);
           setTimeout(() => setCopied(false), 1500);
         }}
-        className="shrink-0 text-xs text-hf-green-dark underline"
+        className="hf-btn-text shrink-0 text-hf-green-dark"
       >
         {copied ? "Kopieret" : "Kopiér"}
       </button>

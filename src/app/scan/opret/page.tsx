@@ -158,7 +158,7 @@ function OpretContent() {
   if (done) {
     return (
       <div className="flex flex-col gap-4 p-4">
-        <div className="hf-type-body-sm rounded-[8px] p-4 text-center" style={{ background: "var(--hf-color-brand)", color: "var(--hf-color-white)" }}>
+        <div className="hf-type-body rounded-[8px] p-4 text-center" style={{ background: "var(--hf-color-brand)", color: "var(--hf-color-white)" }}>
           {done.kind === "SUPPLEMENT" ? "Varen fandtes allerede og er nu suppleret." : "Varen er oprettet og kan ses i Hello Cal."}
           {!done.payable && " Du oprettede selv varen tidligere, så suppleringen tæller ikke med i afregningen."}
         </div>

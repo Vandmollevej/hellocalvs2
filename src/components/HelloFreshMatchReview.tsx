@@ -22,7 +22,7 @@ export function HelloFreshMatchReview({ status, product, onConfirm, onRetake }: 
   return (
     <div className="rounded-2xl bg-hf-tan p-4">
       {status === "processing" && (
-        <p className="mb-4 text-xs text-hf-black opacity-70">Genkender retten...</p>
+        <p className="hf-type-small text-text-secondary mb-4">Genkender retten...</p>
       )}
 
       {status === "found" && product && (
@@ -34,8 +34,8 @@ export function HelloFreshMatchReview({ status, product, onConfirm, onRetake }: 
             )}
           </div>
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-hf-black">{product.name}</p>
-            <p className="text-xs text-hf-black opacity-60">
+            <p className="hf-type-body hf-type-strong truncate text-hf-black">{product.name}</p>
+            <p className="hf-type-small text-text-secondary">
               {product.servingSizeGrams && product.servingSizeUnitSingular
                 ? `${Math.round((product.kcalPer100g * product.servingSizeGrams) / 100)} kcal / ${product.servingSizeUnitSingular}`
                 : `${Math.round(product.kcalPer100g)} kcal/100g`}
@@ -45,21 +45,21 @@ export function HelloFreshMatchReview({ status, product, onConfirm, onRetake }: 
       )}
 
       {status === "not_found" && (
-        <p className="mb-4 text-xs font-semibold text-hf-black">
+        <p className="hf-type-small hf-type-strong mb-4 text-hf-black">
           Kunne ikke genkende retten. Prøv et andet billede, eller søg den manuelt under Madvarer.
         </p>
       )}
 
       {status === "failed" && (
-        <p className="mb-4 text-xs font-semibold text-hf-black">Genkendelsen slog fejl. Prøv igen.</p>
+        <p className="hf-type-small hf-type-strong mb-4 text-hf-black">Genkendelsen slog fejl. Prøv igen.</p>
       )}
 
       <div className="flex gap-2">
-        <button type="button" onClick={onRetake} className="hf-btn-secondary flex-1 py-2.5 text-xs">
+        <button type="button" onClick={onRetake} className="hf-btn-secondary flex-1 py-2.5">
           Tag billedet om
         </button>
         {status === "found" && (
-          <button type="button" onClick={onConfirm} className="hf-btn-primary flex-1 py-2.5 text-xs">
+          <button type="button" onClick={onConfirm} className="hf-btn-primary flex-1 py-2.5">
             Er det denne ret?
           </button>
         )}

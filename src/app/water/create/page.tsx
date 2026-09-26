@@ -126,7 +126,7 @@ export default function WaterCreatePage() {
     <HfScreen title={t("waterLog.title")} icon={<IconWaterGlass size={20} stroke={2} />}>
       <div className="hf-page">
         <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
-          <p className="text-[13px] leading-5">{t("waterLog.intro")}</p>
+          <p className="hf-type-small">{t("waterLog.intro")}</p>
         </div>
 
         <div className="grid grid-cols-4 gap-4">
@@ -154,7 +154,7 @@ export default function WaterCreatePage() {
                   />
                 </span>
                 <span
-                  className="text-[11px] font-semibold"
+                  className="hf-type-micro hf-type-strong"
                   style={{ color: isSelected ? "var(--hf-white)" : "var(--hf-black)" }}
                 >
                   {ml / 10}cl
@@ -166,8 +166,8 @@ export default function WaterCreatePage() {
 
         <div className="flex flex-col gap-4 rounded-2xl bg-hf-tan p-4">
           <div className="flex items-baseline justify-between">
-            <span className="text-[13px] font-semibold text-hf-black">{t("waterLog.amountLabel")}</span>
-            <span className="text-[20px] font-bold text-hf-black">{amountMl} ml</span>
+            <span className="hf-type-small hf-type-strong text-hf-black">{t("waterLog.amountLabel")}</span>
+            <span className="hf-type-title text-hf-black">{amountMl} ml</span>
           </div>
           <HfSlider
             min={MIN_ML}
@@ -184,7 +184,7 @@ export default function WaterCreatePage() {
 
           {saveError && <p className="hf-type-caption text-center">{saveError}</p>}
           {saved && !saveError && (
-            <p className="text-center text-[13px] font-semibold text-hf-green">{t("waterLog.saved")}</p>
+            <p className="hf-type-small hf-type-strong text-center text-hf-green">{t("waterLog.saved")}</p>
           )}
 
           <button
@@ -201,9 +201,9 @@ export default function WaterCreatePage() {
           {!loading && entries.length > 0 && (
             <p className="hf-type-caption px-1">{t("waterLog.recentTitle")}</p>
           )}
-          {loading && <p className="text-center text-[13px] text-hf-black opacity-60">{t("waterLog.loading")}</p>}
+          {loading && <p className="hf-type-small text-text-secondary text-center">{t("waterLog.loading")}</p>}
           {!loading && entries.length === 0 && (
-            <p className="text-center text-[13px] text-hf-black opacity-60">{t("waterLog.noEntriesYet")}</p>
+            <p className="hf-type-small text-text-secondary text-center">{t("waterLog.noEntriesYet")}</p>
           )}
           {groupByDate(entries).map((group) => (
             <div key={group.key}>
@@ -218,7 +218,7 @@ export default function WaterCreatePage() {
                       thumbnail={<IconWaterGlass size={22} stroke={1.75} className="text-hf-black" />}
                       title={`${entry.amountMl} ml`}
                       right={
-                        <span className="text-xs text-hf-black opacity-60">
+                        <span className="hf-type-small text-text-secondary">
                           {t("common.clockPrefix")} {formatTime(entry.loggedAt)}
                         </span>
                       }

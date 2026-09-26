@@ -14,7 +14,7 @@ export default function BetingelserPage() {
       <ScreenHeader title="Betingelser" />
 
       <div className="flex-1 overflow-y-auto px-4 pb-10 pt-4">
-        <p className="hf-type-caption opacity-70">Senest opdateret: 2026-09-25</p>
+        <p className="text-text-secondary hf-type-caption">Senest opdateret: 2026-09-25</p>
 
         <LegalSummary
           title="Kort fortalt"

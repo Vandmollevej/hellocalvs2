@@ -51,16 +51,16 @@ export default function HelloDocPage() {
   return (
     <HfScreen title={t("helloDoc.title")}>
       <div className="hf-page hf-page--sections">
-        <p className="hf-type-body-sm opacity-80">{t("helloDoc.subtitle")}</p>
+        <p className="text-text-secondary hf-type-body">{t("helloDoc.subtitle")}</p>
 
         {isSerious === false ? (
-          <Link href="/profile/subscription" className="hf-type-body-sm rounded-lg bg-hf-tan p-4">
+          <Link href="/profile/subscription" className="hf-type-body rounded-lg bg-hf-tan p-4">
             {t("helloDoc.requiresSerious")}
           </Link>
         ) : (
           <Link
             href="/settings/hello-doc/invite"
-            className="hf-btn-primary hf-type-button flex h-12 w-full items-center justify-center"
+            className="hf-btn-primary flex h-12 w-full items-center justify-center"
           >
             {t("helloDoc.inviteButton")}
           </Link>
@@ -69,12 +69,12 @@ export default function HelloDocPage() {
         <div>
           <h2 className="hf-type-section-title">{t("helloDoc.invitedUsersTitle")}</h2>
 
-          {error && <p className="hf-type-body-sm text-hf-red-dark">{t("helloDoc.loadError")}</p>}
+          {error && <p className="hf-type-body text-hf-red-dark">{t("helloDoc.loadError")}</p>}
 
-          {!error && shares === null && <p className="hf-type-body-sm opacity-70">{t("common.loading")}</p>}
+          {!error && shares === null && <p className="text-text-secondary hf-type-body">{t("common.loading")}</p>}
 
           {!error && shares !== null && shares.length === 0 && (
-            <p className="hf-type-body-sm opacity-70">{t("helloDoc.emptyInvited")}</p>
+            <p className="text-text-secondary hf-type-body">{t("helloDoc.emptyInvited")}</p>
           )}
 
           {!error && shares !== null && shares.length > 0 && (
@@ -87,10 +87,10 @@ export default function HelloDocPage() {
                   style={{ borderColor: "var(--hf-color-line)" }}
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="hf-type-body truncate font-bold">{share.name}</p>
-                    <p className="hf-type-caption truncate opacity-70">{share.email}</p>
+                    <p className="hf-type-body truncate">{share.name}</p>
+                    <p className="text-text-secondary hf-type-caption truncate">{share.email}</p>
                   </div>
-                  <span className="hf-type-caption ml-3 shrink-0 opacity-70">{expiryLabel(share, t)}</span>
+                  <span className="text-text-secondary hf-type-caption ml-3 shrink-0">{expiryLabel(share, t)}</span>
                 </Link>
               ))}
             </div>

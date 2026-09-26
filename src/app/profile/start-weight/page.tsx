@@ -13,11 +13,11 @@ export default function StartWeightLockPage() {
   return (
     <HfScreen title={t("profile.startWeight.lockTitle")} onBack={() => router.back()}>
       <div className="hf-page">
-        <p className="text-[15px] leading-6 text-hf-black">{t("profile.startWeight.lockBody")}</p>
+        <p className="hf-type-body text-hf-black">{t("profile.startWeight.lockBody")}</p>
         <button
           type="button"
           onClick={() => router.push("/profile/weight-calibration")}
-          className="hf-btn-primary hf-type-button h-12 w-full px-4"
+          className="hf-btn-primary h-12 w-full px-4"
         >
           {t("profile.startWeight.setDailyWeight")}
         </button>

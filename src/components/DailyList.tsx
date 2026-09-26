@@ -123,10 +123,10 @@ export function DailyList() {
                   title={entry.title}
                   subtitle={
                     <div className="mt-1 flex justify-between">
-                      <span className="text-xs text-hf-black opacity-60">
+                      <span className="hf-type-small text-text-secondary">
                         {Math.round(entry.kcalPer100g)} kcal / 100 g
                       </span>
-                      <span className="text-xs text-hf-black opacity-60">{t("dailyList.atTime", { time: formatTime(entry.createdAt) })}</span>
+                      <span className="hf-type-small text-text-secondary">{t("dailyList.atTime", { time: formatTime(entry.createdAt) })}</span>
                     </div>
                   }
                   right={<IconChevronRight size={18} className="text-hf-black opacity-40" />}
@@ -136,14 +136,14 @@ export function DailyList() {
           </li>
         ))}
         {loading && (
-          <li className="py-8 text-center text-sm text-hf-black opacity-60">{t("dailyList.loading")}</li>
+          <li className="hf-type-body text-text-secondary py-8 text-center">{t("dailyList.loading")}</li>
         )}
         {!loading && entries.length === 0 && (
-          <li className="py-8 text-center text-sm text-hf-black opacity-60">
+          <li className="hf-type-body text-text-secondary py-8 text-center">
             {t("dailyList.noEntriesToday")}
           </li>
         )}
-        {error && <li className="pb-4 text-center text-xs text-red-700">{error}</li>}
+        {error && <li className="hf-type-small pb-4 text-center text-hf-red-dark">{error}</li>}
       </ul>
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0 h-9"

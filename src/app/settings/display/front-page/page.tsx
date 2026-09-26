@@ -62,10 +62,10 @@ export default function FrontPageDisplaySettingsPage() {
     <HfScreen title={t("settings.frontPage")}>
       <div className="hf-page">
         <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
-          <p className="text-[13px] leading-5">{t("frontPageSettings.intro")}</p>
+          <p className="hf-type-small">{t("frontPageSettings.intro")}</p>
         </div>
 
-        <p className="hf-heading px-1 text-xs font-bold uppercase tracking-wide text-hf-black opacity-60">
+        <p className="hf-type-small hf-type-strong text-text-secondary hf-heading px-1 uppercase tracking-wide">
           {t("frontPageSettings.sideSectionTitle")}
         </p>
         <div className="grid grid-cols-2 gap-4">
@@ -76,7 +76,7 @@ export default function FrontPageDisplaySettingsPage() {
                 key={side}
                 type="button"
                 onClick={() => saveFabSide(side)}
-                className="flex h-12 items-center justify-center rounded-2xl text-[14px] font-semibold transition-colors"
+                className="hf-type-body hf-type-strong flex h-12 items-center justify-center rounded-2xl transition-colors"
                 style={{
                   background: isSelected ? "var(--hf-green)" : "var(--hf-tan)",
                   color: isSelected ? "var(--hf-white)" : "var(--hf-black)",
@@ -88,16 +88,16 @@ export default function FrontPageDisplaySettingsPage() {
             );
           })}
         </div>
-        <p className="px-1 text-[12px] text-hf-black opacity-60">
+        <p className="hf-type-small text-text-secondary px-1">
           {t("frontPageSettings.sideHint", {
             side: t(oppositeSide(fabSide) === "left" ? "frontPageSettings.sideLeft" : "frontPageSettings.sideRight"),
           })}
         </p>
 
-        <p className="hf-heading px-1 text-xs font-bold uppercase tracking-wide text-hf-black opacity-60">
+        <p className="hf-type-small hf-type-strong text-text-secondary hf-heading px-1 uppercase tracking-wide">
           {t("frontPageSettings.buttonsSectionTitle")}
         </p>
-        <p className="px-1 text-[13px] font-semibold text-hf-black opacity-70">
+        <p className="hf-type-small hf-type-strong text-text-secondary px-1">
           {t("frontPageSettings.selectedCount", { count: selectedKeys.length, max: MAX_WHEEL_ACTIONS })}
         </p>
 
@@ -119,7 +119,7 @@ export default function FrontPageDisplaySettingsPage() {
                     <Image src={action.imageSrc!} alt="" width={20} height={20} className="object-contain" />
                   )}
                 </span>
-                <span className="flex-1 text-[14px] text-hf-black">{t(action.labelKey)}</span>
+                <span className="hf-type-body flex-1 text-hf-black">{t(action.labelKey)}</span>
                 <Toggle
                   checked={checked}
                   disabled={!checked && atMax}
@@ -131,13 +131,13 @@ export default function FrontPageDisplaySettingsPage() {
         </div>
 
         {atMax && (
-          <p className="px-1 text-[12px] text-hf-black opacity-60">{t("frontPageSettings.maxReachedHint")}</p>
+          <p className="hf-type-small text-text-secondary px-1">{t("frontPageSettings.maxReachedHint")}</p>
         )}
 
-        <p className="hf-heading px-1 text-xs font-bold uppercase tracking-wide text-hf-black opacity-60">
+        <p className="hf-type-small hf-type-strong text-text-secondary hf-heading px-1 uppercase tracking-wide">
           {t("frontPageSettings.statsSectionTitle")}
         </p>
-        <p className="px-1 text-[13px] leading-5 text-hf-black opacity-70">
+        <p className="hf-type-small text-text-secondary px-1">
           {t("frontPageSettings.statsIntro")}
         </p>
 
@@ -155,7 +155,7 @@ export default function FrontPageDisplaySettingsPage() {
                 <span className="flex h-5 w-5 items-center justify-center text-hf-black">
                   <Icon size={20} />
                 </span>
-                <span className="flex-1 text-[14px] text-hf-black">{t(def.labelKey)}</span>
+                <span className="hf-type-body flex-1 text-hf-black">{t(def.labelKey)}</span>
                 <Toggle checked={checked} onChange={(value) => toggleStat(def.key, value)} />
               </div>
             );

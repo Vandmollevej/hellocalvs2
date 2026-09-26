@@ -16,7 +16,7 @@ const MIN_KG = 25;
 const MAX_KG = 400;
 
 const primaryButtonClass =
-  "hf-type-button flex h-12 w-full items-center justify-center rounded-lg bg-hf-green px-4 font-bold text-hf-white disabled:opacity-50";
+  "hf-type-button flex h-12 w-full items-center justify-center rounded-lg bg-hf-green px-4 text-hf-white disabled:opacity-50";
 
 function VerifyStartWeightContent() {
   const { t } = useTranslation();
@@ -97,17 +97,17 @@ function VerifyStartWeightContent() {
   return (
     <HfScreen title={title} onBack={() => router.replace(PROFILE_HREF)}>
       {state === "loading" && (
-        <p className="p-4 text-center text-[14px] text-hf-black opacity-60">
+        <p className="hf-type-body text-text-secondary p-4 text-center">
           {t("profile.startWeight.validating")}
         </p>
       )}
 
       {state === "invalid" && (
         <div className="hf-page">
-          <h2 className="text-[18px] font-bold text-hf-black">
+          <h2 className="hf-type-title text-hf-black">
             {t("profile.startWeight.invalidLinkTitle")}
           </h2>
-          <p className="text-[15px] leading-6 text-hf-black">
+          <p className="hf-type-body text-hf-black">
             {t("profile.startWeight.invalidLinkBody")}
           </p>
           <Link href={PROFILE_HREF} replace className={`${primaryButtonClass} mt-2`}>
@@ -118,7 +118,7 @@ function VerifyStartWeightContent() {
 
       {state === "saved" && (
         <div className="hf-page">
-          <h2 role="status" className="text-[20px] font-bold text-hf-black">
+          <h2 role="status" className="hf-type-title text-hf-black">
             {t("profile.startWeight.saved")}
           </h2>
           <Link href={PROFILE_HREF} replace className={`${primaryButtonClass} mt-2`}>
@@ -130,7 +130,7 @@ function VerifyStartWeightContent() {
       {(state === "valid" || state === "saving") && (
         <form onSubmit={save} noValidate className="hf-page">
           <label className="flex flex-col gap-2">
-            <span className="text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
+            <span className="hf-type-small hf-type-strong text-text-secondary uppercase tracking-[0.06em]">
               {t("profile.startWeight.fieldLabel")}
             </span>
             <span className="flex items-center rounded-xl bg-hf-tan px-4 focus-within:ring-2 focus-within:ring-hf-green">
@@ -141,9 +141,9 @@ function VerifyStartWeightContent() {
                 value={weight}
                 disabled={state === "saving"}
                 onChange={(event) => setWeight(event.target.value)}
-                className="min-w-0 flex-1 bg-transparent py-3 text-[15px] text-hf-black outline-none"
+                className="hf-type-body min-w-0 flex-1 bg-transparent py-3 text-hf-black outline-none"
               />
-              <span className="ml-2 text-[15px] text-hf-black">KG</span>
+              <span className="hf-type-body ml-2 text-hf-black">KG</span>
             </span>
           </label>
 

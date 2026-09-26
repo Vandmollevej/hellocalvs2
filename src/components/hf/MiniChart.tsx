@@ -97,7 +97,7 @@ export function MiniBarChart({
 function EmptyChart({ height, label }: { height: number; label: string }) {
   return (
     <div
-      className="hf-type-caption flex w-full items-center justify-center opacity-60"
+      className="text-text-secondary hf-type-caption flex w-full items-center justify-center"
       style={{ height }}
     >
       {label}

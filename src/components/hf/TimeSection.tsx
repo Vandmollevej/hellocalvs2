@@ -21,14 +21,14 @@ export function TimeSection({
     <section className={`w-full ${className}`}>
       <SectionSeparator label={t("common.timeHeading")} />
       <div className="mt-2 flex justify-center">
-        <label className="inline-flex min-h-11 items-center gap-1 px-4 text-[16px] font-normal text-hf-black">
+        <label className="hf-type-body inline-flex min-h-11 items-center gap-1 px-4 text-hf-black">
           <span>{t("common.clockPrefix")}</span>
           <input
             type="time"
             value={value}
             onChange={(event) => onChange(event.target.value)}
             aria-label={t("common.timeHeading")}
-            className="appearance-none border-0 bg-transparent p-0 text-[16px] font-normal text-hf-black outline-none"
+            className="hf-type-body appearance-none border-0 bg-transparent p-0 text-hf-black outline-none"
           />
         </label>
       </div>

@@ -47,12 +47,12 @@ function SetupSelectCard({
   return (
     <label className="flex items-center justify-between gap-3 rounded-2xl bg-hf-tan px-4 py-4">
       <span className="min-w-0 flex-1">
-        <span className="block text-[15px] font-medium text-hf-black">{label}</span>
-        <span className="block text-[12px] text-hf-black opacity-60">{description}</span>
+        <span className="hf-type-body hf-type-strong block text-hf-black">{label}</span>
+        <span className="hf-type-small text-text-secondary block">{description}</span>
       </span>
       <div className="relative shrink-0">
         <select
-          className="appearance-none rounded-xl border border-hf-tan-dark bg-white py-2 pl-3 pr-8 text-[14px] text-hf-black"
+          className="hf-type-body appearance-none rounded-xl border border-hf-tan-dark bg-hf-white py-2 pl-3 pr-8 text-hf-black"
           value={value}
           onChange={(event) => onChange(event.target.value)}
         >
@@ -95,7 +95,7 @@ function SetupProgressBar({ weightSet }: { weightSet: boolean }) {
         label={t("settings.setupProgress", { done: doneCount, total: steps.length })}
       />
       {!weightSet && (
-        <p className="mt-2 text-[12px] text-hf-black opacity-60">{t("settings.setupProgressHint")}</p>
+        <p className="hf-type-small text-text-secondary mt-2">{t("settings.setupProgressHint")}</p>
       )}
     </div>
   );
@@ -187,7 +187,7 @@ export default function ProfileSettingsPage() {
       title={t("settings.setupTitle")}
     >
       {loading || !user ? (
-        <p className="p-4 text-center text-[14px] text-hf-black opacity-60">
+        <p className="hf-type-body text-text-secondary p-4 text-center">
           {loading ? t("settings.loading") : t("settings.loadError")}
         </p>
       ) : (
@@ -213,15 +213,15 @@ export default function ProfileSettingsPage() {
           <div className="flex flex-col overflow-hidden rounded-2xl bg-hf-tan">
             <div className="flex items-start gap-3 px-4 py-4">
               <span className="flex-1">
-                <span className="block text-[15px] font-medium text-hf-black">
+                <span className="hf-type-body hf-type-strong block text-hf-black">
                   {t("settings.showAllergens")}
                 </span>
-                <span className="mt-2 block border-t border-hf-gray-light pt-2 text-[12px] text-hf-black opacity-60">
+                <span className="hf-type-small text-text-secondary mt-2 block border-t border-hf-tan-dark pt-2">
                   {t("settings.showAllergensDescription")}
                 </span>
               </span>
               <span className="flex items-center gap-2 pt-1">
-                <span className="text-[12px] text-hf-black opacity-60">
+                <span className="hf-type-small text-text-secondary">
                   {t("settings.showAllergensSelectAll")}
                 </span>
                 <Toggle
@@ -233,7 +233,7 @@ export default function ProfileSettingsPage() {
             </div>
 
             {user.showAllergens && (
-              <div className="flex flex-col gap-1 border-t border-hf-gray-light">
+              <div className="flex flex-col gap-1 border-t border-hf-tan-dark">
                 {ALLERGEN_CATALOG.map((allergen, index) => (
                   <div
                     key={allergen.key}
@@ -241,7 +241,7 @@ export default function ProfileSettingsPage() {
                       index < ALLERGEN_CATALOG.length - 1 ? "border-b border-hf-tan-dark" : ""
                     }`}
                   >
-                    <span className="flex-1 text-[14px] text-hf-black">{allergen.label}</span>
+                    <span className="hf-type-body flex-1 text-hf-black">{allergen.label}</span>
                     <Toggle
                       checked={isAllergenVisible(allergen.key)}
                       onChange={(value) => toggleAllergen(allergen.key, value)}
@@ -273,7 +273,7 @@ export default function ProfileSettingsPage() {
             onChange={(value) => toggleProductFlag("showToxins", value)}
           />
 
-          <p className="px-1 text-[12px] leading-relaxed text-hf-black opacity-60">
+          <p className="hf-type-small text-text-secondary px-1">
             {t("settings.thirdPartyDisclaimer")}
           </p>
         </div>

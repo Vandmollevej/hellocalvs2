@@ -85,7 +85,7 @@ export default function WeightCreatePage() {
     >
       <div className="hf-page">
         <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
-          <p className="text-[13px] leading-5">{t("weightLog.intro")}</p>
+          <p className="hf-type-small">{t("weightLog.intro")}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="hf-card hf-card--form">
@@ -102,7 +102,7 @@ export default function WeightCreatePage() {
 
           {saveError && <p className="hf-type-caption text-center">{saveError}</p>}
           {saved && !saveError && (
-            <p className="text-center text-[13px] font-semibold text-hf-green">{t("weightLog.saved")}</p>
+            <p className="hf-type-small hf-type-strong text-center text-hf-green">{t("weightLog.saved")}</p>
           )}
 
           <button type="submit" disabled={saving} className="hf-btn-primary h-12 disabled:opacity-40">
@@ -110,7 +110,7 @@ export default function WeightCreatePage() {
           </button>
         </form>
 
-        <Link href="/profile/weight-calibration" className="text-center text-[13px] font-semibold text-hf-black underline opacity-70">
+        <Link href="/profile/weight-calibration" className="hf-type-small hf-type-strong text-text-secondary text-center underline">
           {t("weightLog.moreDetailsLink")}
         </Link>
 
@@ -118,15 +118,15 @@ export default function WeightCreatePage() {
           {!loading && entries.length > 0 && (
             <p className="hf-type-caption px-1">{t("weightLog.recentTitle")}</p>
           )}
-          {loading && <p className="text-center text-[13px] text-hf-black opacity-60">{t("weightLog.loading")}</p>}
+          {loading && <p className="hf-type-small text-text-secondary text-center">{t("weightLog.loading")}</p>}
           {!loading && entries.length === 0 && (
-            <p className="text-center text-[13px] text-hf-black opacity-60">{t("weightLog.noEntriesYet")}</p>
+            <p className="hf-type-small text-text-secondary text-center">{t("weightLog.noEntriesYet")}</p>
           )}
           {entries.map((entry) => (
             <div key={entry.id} className="flex items-center justify-between rounded-2xl bg-hf-tan px-4 py-3">
-              <p className="text-[16px] font-bold text-hf-black">
+              <p className="hf-type-body hf-type-strong text-hf-black">
                 {formatKg(entry.weightKg)} kg
-                <span className="ml-2 text-[12px] font-normal opacity-60">{formatDateTime(entry.weighedAt)}</span>
+                <span className="hf-type-small text-text-secondary ml-2">{formatDateTime(entry.weighedAt)}</span>
               </p>
             </div>
           ))}

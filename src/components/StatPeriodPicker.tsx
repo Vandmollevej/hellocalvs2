@@ -48,13 +48,13 @@ export function StatPeriodPicker({
 
   return (
     <div className="relative z-50 flex items-center gap-1.5">
-      <span className="text-sm font-semibold text-hf-black">{t("statPeriodPicker.showLabel")}</span>
+      <span className="hf-type-body hf-type-strong text-hf-black">{t("statPeriodPicker.showLabel")}</span>
       <button
         type="button"
         aria-haspopup="true"
         aria-expanded={open}
         onClick={() => setOpen((current) => !current)}
-        className="flex min-h-9 items-center gap-1.5 border-b border-hf-black px-0 text-sm font-semibold text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
+        className="hf-type-body hf-type-strong flex min-h-9 items-center gap-1.5 border-b border-hf-black px-0 text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
       >
         {selectionLabel(selection)}
         <IconChevronDown size={16} stroke={2.5} className={open ? "rotate-180" : ""} />
@@ -80,7 +80,7 @@ export function StatPeriodPicker({
                       onChange({ kind: "preset", key: period.key });
                       setOpen(false);
                     }}
-                    className={`min-h-9 rounded-xl px-3 text-left text-sm font-semibold ${
+                    className={`hf-type-body hf-type-strong min-h-9 rounded-xl px-3 text-left ${
                       active ? "bg-hf-green text-hf-white" : "hover:bg-hf-cream"
                     }`}
                   >
@@ -91,28 +91,28 @@ export function StatPeriodPicker({
             </div>
 
             <div className="mt-2 border-t border-hf-tan-dark pt-2">
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wide opacity-60">{t("statPeriodPicker.selectPeriod")}</p>
+              <p className="hf-type-small hf-type-strong text-text-secondary mb-2 uppercase tracking-wide">{t("statPeriodPicker.selectPeriod")}</p>
               <div className="flex items-center gap-2">
                 <input
                   type="date"
                   aria-label={t("statPeriodPicker.fromDateAria")}
                   value={customFrom}
                   onChange={(event) => setCustomFrom(event.target.value)}
-                  className="min-h-9 flex-1 rounded-xl border border-hf-tan-dark bg-hf-cream px-2 text-sm"
+                  className="hf-type-body min-h-9 flex-1 rounded-xl border border-hf-tan-dark bg-hf-cream px-2"
                 />
-                <span className="text-xs opacity-60">{t("statPeriodPicker.to")}</span>
+                <span className="hf-type-small text-text-secondary">{t("statPeriodPicker.to")}</span>
                 <input
                   type="date"
                   aria-label={t("statPeriodPicker.toDateAria")}
                   value={customTo}
                   onChange={(event) => setCustomTo(event.target.value)}
-                  className="min-h-9 flex-1 rounded-xl border border-hf-tan-dark bg-hf-cream px-2 text-sm"
+                  className="hf-type-body min-h-9 flex-1 rounded-xl border border-hf-tan-dark bg-hf-cream px-2"
                 />
               </div>
               <button
                 type="button"
                 onClick={applyCustomRange}
-                className="hf-btn-primary mt-2 flex min-h-9 w-full items-center justify-center text-sm"
+                className="hf-btn-primary mt-2 flex min-h-9 w-full items-center justify-center"
               >
                 {t("statPeriodPicker.usePeriod")}
               </button>

@@ -113,8 +113,8 @@ function CardTile({
         showLimitWarning ? "border border-hf-red-dark" : "border border-transparent"
       } ${floating ? "shadow-xl" : ""}`}
     >
-      <p className="text-xs text-hf-black opacity-60">{card.label}</p>
-      <p className="hf-heading mt-1 flex items-center gap-1.5 text-xl text-hf-black">
+      <p className="hf-type-small text-text-secondary">{card.label}</p>
+      <p className="hf-type-body-lg hf-heading mt-1 flex items-center gap-1.5 text-hf-black">
         <StatCardIcon icon={card.icon} iconSrc={card.iconSrc} />
         <span>
           {card.uncertainty?.estimated ? <UncertaintyTilde /> : null}
@@ -143,7 +143,7 @@ function CardUncertainty({ card, expanded, onToggle }: { card: StatCardValue; ex
         aria-label={card.label}
         onPointerDown={(e) => e.stopPropagation()}
         onClick={onToggle}
-        className="mt-1 text-[12px] text-hf-black/40"
+        className="hf-type-small mt-1 text-hf-black/40"
       >
         {expanded ? "▴" : "▾"}
       </button>
@@ -154,7 +154,7 @@ function CardUncertainty({ card, expanded, onToggle }: { card: StatCardValue; ex
 function HeadingContent({ text }: { text: string }) {
   return (
     <>
-      <p className="hf-heading text-sm text-hf-black">{text}</p>
+      <p className="hf-type-body hf-heading text-hf-black">{text}</p>
       <div className="mt-2 h-px w-full bg-hf-gray-border" />
     </>
   );
@@ -599,7 +599,7 @@ export function StatCardsGrid({
                   }
                 }}
                 aria-hidden="true"
-                className={`col-span-2 flex items-center justify-center overflow-hidden rounded-2xl text-xs text-hf-black/50 ${EDIT_OUTLINE}`}
+                className={`hf-type-small col-span-2 flex items-center justify-center overflow-hidden rounded-2xl text-hf-black/50 ${EDIT_OUTLINE}`}
                 style={{ height: drag?.height ?? 48 }}
               >
                 {drag?.content.kind === "header" ? drag.content.text : null}
@@ -656,7 +656,7 @@ export function StatCardsGrid({
                       onKeyDown={(e) => {
                         if (e.key === "Enter") e.currentTarget.blur();
                       }}
-                      className="hf-heading w-full select-text bg-transparent text-sm text-hf-black outline-none"
+                      className="hf-type-body hf-heading w-full select-text bg-transparent text-hf-black outline-none"
                       aria-label={t("statCardsGrid.renameHeading")}
                     />
                     <div className="mt-2 h-px w-full bg-hf-gray-border" />
@@ -721,8 +721,8 @@ export function StatCardsGrid({
               )}
               {card ? (
                 <>
-                  <p className="text-xs text-hf-black opacity-60">{card.label}</p>
-                  <p className="hf-heading mt-1 flex items-center gap-1.5 text-xl text-hf-black">
+                  <p className="hf-type-small text-text-secondary">{card.label}</p>
+                  <p className="hf-type-body-lg hf-heading mt-1 flex items-center gap-1.5 text-hf-black">
                     <StatCardIcon icon={card.icon} iconSrc={card.iconSrc} />
                     <span>
                       {card.uncertainty?.estimated ? <UncertaintyTilde /> : null}
@@ -740,7 +740,7 @@ export function StatCardsGrid({
               ) : (
                 // The key is a real, saved part of the layout (e.g. a sport-activity
                 // card with no data in the currently selected period) — keep its slot.
-                <p className="text-xs text-hf-black opacity-40">{t("statCardsGrid.noData")}</p>
+                <p className="hf-type-small text-text-muted">{t("statCardsGrid.noData")}</p>
               )}
             </div>
           );
@@ -773,7 +773,7 @@ export function StatCardsGrid({
               <div className="h-0.5 w-[80%] bg-hf-black" />
             </div>
           ) : (
-            <div className="flex h-full w-full items-center justify-center rounded-2xl bg-hf-tan/80 p-4 text-xs text-hf-black shadow-xl">
+            <div className="hf-type-small flex h-full w-full items-center justify-center rounded-2xl bg-hf-tan/80 p-4 text-hf-black shadow-xl">
               {drag.content.label}
             </div>
           )}

@@ -161,7 +161,7 @@ export default function InvitePage() {
           type="button"
           onClick={share}
           disabled={!shareUrl}
-          className="hf-btn-primary hf-type-button flex h-12 w-full items-center justify-center gap-2 disabled:opacity-40"
+          className="hf-btn-primary flex h-12 w-full items-center justify-center gap-2 disabled:opacity-40"
         >
           <IconShare3 size={24} aria-hidden="true" />
           <span>{copied ? "Tekst og link kopieret!" : "Del dit invite-link"}</span>
@@ -204,7 +204,7 @@ export default function InvitePage() {
 
         <h2 className="hf-type-section-title">Sådan ser beskeden ud</h2>
         <div className="rounded-lg p-4" style={{ background: "var(--hf-color-card)" }}>
-          <p className="hf-type-body-sm whitespace-pre-line">{shareText}</p>
+          <p className="hf-type-body whitespace-pre-line">{shareText}</p>
           <p className="hf-type-caption mt-2 break-all">{shareUrl ?? "Henter dit link…"}</p>
         </div>
 
@@ -222,7 +222,7 @@ export default function InvitePage() {
           <button
             type="submit"
             disabled={sendingInvite}
-            className="hf-btn-primary hf-type-button h-12 px-4 disabled:opacity-50"
+            className="hf-btn-primary h-12 px-4 disabled:opacity-50"
           >
             {sendingInvite ? "Sender…" : "Send"}
           </button>
@@ -231,7 +231,7 @@ export default function InvitePage() {
 
         <h2 className="hf-type-section-title">Afsendte invitationer</h2>
         {invitations.length === 0 ? (
-          <p className="hf-type-body-sm" style={{ color: "var(--hf-color-text-secondary)" }}>Ingen invitationer sendt endnu.</p>
+          <p className="hf-type-body" style={{ color: "var(--hf-color-text-secondary)" }}>Ingen invitationer sendt endnu.</p>
         ) : (
           <div className="flex flex-col">
             {invitations.map((invitation) => (
@@ -242,7 +242,7 @@ export default function InvitePage() {
               >
                 <div className="min-w-0 flex-1">
                   <p className="hf-type-body truncate">{invitation.email}</p>
-                  <p className="hf-type-caption opacity-70">
+                  <p className="text-text-secondary hf-type-caption">
                     {formatDateTime(invitation.sentAt)} · {expiryLabel(invitation.expiresAt)}
                   </p>
                 </div>
@@ -251,7 +251,7 @@ export default function InvitePage() {
                   onClick={() => resendInvitation(invitation.id)}
                   disabled={resendingId === invitation.id}
                   aria-label={`Send invitation til ${invitation.email} igen`}
-                  className="ml-2 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-hf-green disabled:opacity-50"
+                  className="hf-btn-icon ml-2 text-hf-green disabled:opacity-50"
                 >
                   <IconRefresh size={18} />
                 </button>
@@ -262,7 +262,7 @@ export default function InvitePage() {
 
         <h2 className="hf-type-section-title">Tilmeldte venner</h2>
         {referrals.length === 0 ? (
-          <p className="hf-type-body-sm" style={{ color: "var(--hf-color-text-secondary)" }}>Ingen venner inviteret endnu.</p>
+          <p className="hf-type-body" style={{ color: "var(--hf-color-text-secondary)" }}>Ingen venner inviteret endnu.</p>
         ) : (
           <div className="flex flex-col">
             {referrals.map((r) => (
@@ -272,7 +272,7 @@ export default function InvitePage() {
                 style={{ borderColor: "var(--hf-color-line)" }}
               >
                 <span className="hf-type-body">{r.referredUser.displayName}</span>
-                <span className="hf-type-caption opacity-70">
+                <span className="text-text-secondary hf-type-caption">
                   {r.rewardGrantedAt ? "300 points givet" : "Venter (min. 3 måneder)"}
                 </span>
               </div>

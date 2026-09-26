@@ -599,7 +599,7 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
             </Link>
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute flex items-center whitespace-nowrap bg-hf-tan font-bold transition-opacity duration-150"
+              className="hf-type-strong pointer-events-none absolute flex items-center whitespace-nowrap bg-hf-tan transition-opacity duration-150"
               style={{
                 [side === "left" ? "left" : "right"]: LABEL_OFFSET,
                 top: CIRCLE / 2,

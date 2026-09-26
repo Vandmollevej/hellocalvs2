@@ -49,12 +49,12 @@ export default function InviteHelloDocUserPage() {
             type="button"
             onClick={sendInvitation}
             disabled={sending || !name.trim() || !email.trim()}
-            className="hf-btn-primary hf-type-button h-16 w-full text-[19px] disabled:opacity-40"
+            className="hf-btn-primary h-16 w-full disabled:opacity-40"
             style={{ borderRadius: 12 }}
           >
             {sending ? t("helloDoc.sending") : t("helloDoc.sendInvitation")}
           </button>
-          <p className="hf-type-caption text-center opacity-60">{t("helloDoc.invitationExpiryHint")}</p>
+          <p className="text-text-secondary hf-type-caption text-center">{t("helloDoc.invitationExpiryHint")}</p>
           {error && <p className="hf-type-caption text-center text-hf-red-dark">{error}</p>}
         </div>
       }
@@ -64,8 +64,8 @@ export default function InviteHelloDocUserPage() {
             checkout reference the user supplied (docs/DECISIONS.md
             2026-09-12), deliberately departing from the standard page-title
             treatment for this one screen. */}
-        <h1 className="mb-2 text-[28px] font-bold leading-[34px] text-hf-black">{t("helloDoc.inviteHeading")}</h1>
-        <p className="hf-type-body-lg mb-8 opacity-80">{t("helloDoc.inviteHeadingDescription")}</p>
+        <h1 className="hf-type-hero mb-2 text-hf-black">{t("helloDoc.inviteHeading")}</h1>
+        <p className="text-text-secondary hf-type-body-lg mb-8">{t("helloDoc.inviteHeadingDescription")}</p>
 
         <DoctorShareEditor
           name={name}

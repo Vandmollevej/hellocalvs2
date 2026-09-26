@@ -188,6 +188,36 @@ ikke bruges Tailwind-standarder som `red-500`, `red-600` og `red-700` direkte.
 - Hover- og active-farverne ovenfor må kun bruges til deres navngivne state.
   De er ikke alternative mørke gråtoner til statisk tekst, ikoner eller kort.
 
+### Faste tekst- og fladefarver i koden (implementeret 2026-09-26)
+
+Kun disse klasser bruges til farve i sider/komponenter:
+
+| Rolle | Klasse | Værdi |
+| --- | --- | --- |
+| Tekst | `text-hf-black` | #232323 |
+| Sekundær tekst | `text-text-secondary` | #656565 |
+| Dæmpet tekst | `text-text-muted` | #828282 |
+| Tekst på mørk/grøn flade | `text-hf-white` | #FFFFFF |
+| Brandgrøn / mørk grøn tekst | `text-hf-green` / `text-hf-green-dark` | #067A46 / #035624 |
+| Fejl/fare | `text-hf-red-dark` | #A3271F |
+| Advarsel (tekst / flade) | `text-hf-warning` / `bg-hf-warning-bg` | #8A5A00 / #FDF3D3 |
+| Side | `bg-hf-cream` | #FAF8F3 |
+| Felt/modal | `bg-hf-white` | #FFFFFF |
+| Kort | `bg-hf-tan` | #EEE9DF |
+| Bundmenu, kortkant, linje | `bg-/border-hf-tan-dark` | #DFD9CC |
+| Separator | `border-hf-gray-border` | #AFADAA |
+
+- De gamle generiske tokens (`--page-bg`, `--surface-*`, `--border-strong`,
+  `--text-primary/secondary/muted`, `--hf-gray-light`) peger nu på værdierne
+  ovenfor, så der ikke længere findes to næsten ens grå/beige paletter.
+- Grå tekst må ikke laves med `opacity-50/60/70/80`; brug
+  `text-text-secondary` (eller `text-text-muted` for 25–45 %).
+- Tailwind-standardfarver (`text-white`, `bg-black/40`, `text-red-700`,
+  `bg-amber-100` …) og hex i klasser/inline-styles er forbudt.
+- Undtagelser: grafer (`--hf-green-light`, `--hf-green-muted`,
+  `--hf-red-muted`, `--hf-lime`), social login-brandfarver og
+  foto-overlays (`bg-hf-black/40` o.l.).
+
 ## 4. Typografisk system
 
 ### 4.1 Fontfamilie
@@ -200,35 +230,45 @@ Primær UI-font er SF Pro/systemfont:
 
 - Display-roller bruger SF Pro Display først.
 - Brødtekst, inputs, knapper, links og labels bruger SF Pro Text først.
-- Tilladte weights er 400, 600 og 700.
+- Tilladte weights er 400 og 700 (se 4.2).
 - Italic anvendes ikke i referencegrundlaget.
 - Geist må ikke være standardfont i den brugerrettede app. En adminflade kan
   kun afvige, hvis det besluttes eksplicit.
 
-### 4.2 Bindende tekstroller
+### 4.2 Bindende tekstroller — EN fast regel (implementeret 2026-09-26)
 
-| Klasse/token | Størrelse / line-height | Weight | Farve | Justering | Brug |
-| --- | --- | --- | --- | --- | --- |
-| `.hf-type-hero` | 32 / 38 px | 700 | tekst eller brandgrøn | venstre | Stor start-/marketingoverskrift |
-| `.hf-type-page-title` | 24 / 29 px | 700 | tekst | centreret | Primær indholdsoverskrift, alle skærme |
-| `.hf-type-nav-title` | 20 / 24 px | 700 | hvid | centreret | Appbar-titel |
-| `.hf-type-section-title` | 20 / 24 px | 700 | tekst | venstre | Sektionstitel |
-| `.hf-type-category-title` | 18 / 22 px | 700 | `#464646` | centreret | Kategorikort |
-| `.hf-type-body-lg` | 20 / 29 px | 400 | tekst | venstre | Stor introduktionstekst |
-| `.hf-type-body` | 17 / 25 px | 400 | tekst | venstre | Standard UI- og brødtekst |
-| `.hf-type-body-sm` | 15 / 22 px | 400 | tekst | venstre | Sekundær brødtekst |
-| `.hf-type-caption` | 13 / 18 px | 400 | sekundær/inaktiv | venstre | Generelle captions |
-| `.hf-type-progress-active` | 13 / 18 px | 600 | `#035624` | venstre | Aktivt trin i progress-indikator |
-| `.hf-type-progress-inactive` | 13 / 18 px | 400 | `#828282` | venstre | Inaktivt trin i progress-indikator |
-| `.hf-type-label` | 12 / 16 px | 400 | tekst | venstre | Floating input-label |
-| `.hf-type-button` | 17 / 24 px | 700 | kontekst | centreret | Primær/sekundær knap |
-| `.hf-type-input` | 17 / 24 px | 400 | tekst | venstre | Inputværdi |
-| `.hf-type-placeholder` | 16 / 24 px | 400 | placeholder | venstre | Placeholder |
-| `.hf-type-tab` | 12 / 16 px | 400 | action/sekundær | centreret | Bundnavigation. Aktiv/inaktiv adskilles KUN på farve, aldrig vægt (bekræftet mod `Startside.png`: "Bestil" har samme vægt som "Opdag"/"Kogebog"/"Profil"). |
+Brugerens krav (2026-09-26): én fast designregel med faste klasser — ingen
+side-for-side lappeløsninger. Hele appen bruger **kun 6 størrelser** og **kun
+2 vægte**:
 
-En side må ikke vælge `text-[15px]`, `text-sm`, `font-medium` eller en vilkårlig
-line-height for en ny overskrift. Den skal vælge en af rollerne. Hvis ingen
-rolle passer, skal kontrakten udvides én gang centralt før siden bygges.
+| Størrelse | Klasse | Line-height | Vægt | Brug |
+| --- | --- | --- | --- | --- |
+| 32 px | `.hf-type-hero` | 38 | 700 | Stort tal/velkomst (fx points-saldo) |
+| 22 px | `.hf-type-page-title` | 28 | 700 | Sidens indholdsoverskrift |
+| 17 px | `.hf-type-title` (= `.hf-type-card-title`) | 22 | 700 | Kort-, række- og dialogtitel |
+| 17 px | `.hf-type-nav-title` | 22 | 700 | Titel i grøn appbar (hvid) |
+| 17 px | `.hf-type-body-lg` | 24 | 400 | Stor introtekst |
+| 17 px | `.hf-type-button` | 22 | 700 | Knaptekst (indbygget i `.hf-btn-*`) |
+| 17 px | `.hf-type-input` | 24 | 400 | Inputværdi (≥16 px, så iOS ikke zoomer) |
+| 15 px | `.hf-type-body` | 22 | 400 | Standard brødtekst og UI-tekst |
+| 15 px | `.hf-type-section-title` | 20 | 700 | "──── Tekst ────" (se 4.3) |
+| 13 px | `.hf-type-small` | 18 | 400 | Småtekst, arver farve |
+| 13 px | `.hf-type-caption` | 18 | 400 | Småtekst i sekundær grå (#656565) |
+| 13 px | `.hf-type-label` | 18 | 400 | Label over felt |
+| 13 px | `.hf-type-progress-active` / `-inactive` | 18 | 700 / 400 | Trin-viser |
+| 11 px | `.hf-type-micro` | 14 | 400 | Badges, akse- og mini-labels |
+| 11 px | `.hf-type-tab` | 14 | 400 | Bundmenu |
+
+- Eneste vægt-modifier: `.hf-type-strong` (700) på en af rollerne ovenfor.
+- Klasserne sætter KUN skrift. Farve sættes med en farvetoken-klasse (afsnit 3)
+  eller arves; justering styres af containeren. Klasserne ligger i
+  `@layer components`, så `mt-*`, `text-hf-white` osv. kan supplere dem.
+- Forbudt i sider/komponenter: `text-[Npx]`, `text-xs/sm/base/lg/xl/2xl/3xl`,
+  `font-medium/semibold/bold`, `leading-*` til tekst og inline `fontSize`.
+  Undtaget: SVG-grafer (akse-tal i `<text fontSize>`).
+- `.hf-type-body-sm`, `.hf-type-category-title` og `.hf-type-placeholder`
+  er fjernet (body-sm er gået op i `.hf-type-body`).
+- Mangler en rolle, udvides tabellen her og i `globals.css` én gang centralt.
 
 ### 4.3 Sektionsoverskrift med streger — fast afstand
 
@@ -237,8 +277,8 @@ rolle passer, skal kontrakten udvides én gang centralt før siden bygges.
 
 - 32 px over overskriften, 12 px under.
 - 0 px over, når overskriften er første element i sin blok.
-- Sider må ikke sætte `mt-*`/`mb-*` på den; klassen ligger uden for Tailwinds
-  lag og vinder altid. Står overskriften i en `gap`-stak, må stakken ikke have
+- Sider må ikke sætte `mt-*`/`mb-*` på den. Klassen ligger i `@layer components`;
+  `.hf-page`-reglerne ligger uden for lag og vinder over den. Står overskriften i en `gap`-stak, må stakken ikke have
   eget `gap` mellem overskrift og indhold.
 - Klassen er kun til sektionsoverskrifter. Navne, appbar-titler o.l. bruger en
   anden `.hf-type-*`-rolle.
@@ -392,99 +432,31 @@ disse roller frem for egne styles.
   ikke flytter sig, når én side får et ikon.
 - Hello Cal-reglen om profil venstre/luk højre har forrang på appskærme.
 
-### 6.2 Knapper
+### 6.2 Knapper — EN fast regel (implementeret 2026-09-26)
 
-**`.hf-button`** er obligatorisk baseklasse. En knap sammensættes af højst én
-variant fra hver af disse tre akser:
+Enhver `<button>`, der ligner en knap, bruger præcis én af disse klasser.
+Skrift, farve, radius og kant er indbygget; siden må kun sætte højde, bredde og
+placering (standard `h-12 w-full` for handlingsknapper, jf. Hello Cal-reglen om
+fuld bredde).
 
-1. **Udseende** (præcis én): `--primary`, `--brand`, `--secondary`, `--ghost`,
-   `--danger`, `--danger-secondary` eller `--text`.
-2. **Størrelse** (højst én): standard 48 px, `--compact` 40 px eller `--small`
-   36 px. `--small` må kun bruges til lokale værktøjs-/filterhandlinger, aldrig
-   til en hoved-CTA.
-3. **Layout/form** (valgfri): `--full`, `--pill` eller `--icon`. `--pill` og
-   `--icon` er indbyrdes eksklusive.
+| Klasse | Udseende | Skrift | Brug |
+| --- | --- | --- | --- |
+| `.hf-btn-primary` | Sort flade #232323, hvid tekst, radius 8 | 17/22 700 | Hovedhandling (Gem, Fortsæt, Indløs). Forbliver sort når deaktiveret |
+| `.hf-btn-secondary` | Transparent, 1,5 px sort kant | 17/22 700 | Sekundær handling |
+| `.hf-btn-danger` | Transparent, 1,5 px rød kant, rød tekst | 17/22 700 | Slet, tilbagekald, log ud af alt |
+| `.hf-btn-text` | Ingen flade, understreget, arver farve | 15/22 700 | Link-lignende handling ("Spring over", "Omdøb") |
+| `.hf-btn-icon` | 44 × 44 rund, gennemsigtig, arver farve | — | Pile, luk, menu, favorit |
+| `.hf-choice` | Beige flade; valgt = sort flade, hvid tekst | 13/18 700 | Segment-/filter-/periodevalg. Valgt via `aria-pressed`, `aria-selected`, `aria-checked` eller `.is-selected` |
 
-`--fab` er en komplet, produktbestemt undtagelse, som selv fastlægger
-udseende, størrelse og form. Den kombineres kun med `.hf-button`, ikke med
-andre modifiers.
-
-De faste udseender er:
-
-- `--primary`: `#232323`, hvid tekst; standard hoved-CTA i HelloFresh-flowet.
-- `--brand`: `#067A46`, hvid tekst; kun en dokumenteret brand-/onboarding-CTA.
-- `--secondary`: transparent/hvid overflade, 1 px `#232323` kant og `#242424`
-  tekst.
-- `--ghost`: ingen flade eller kant; bruges til diskrete selvstændige
-  handlinger med normal hit area.
-- `--text`: inline teksthandling med understregning; må ikke bruges som
-  erstatning for en hoved- eller sekundær CTA. Farve er altid `#242424`
-  (primær tekst) — der findes ikke en separat grå/dæmpet linkvariant, heller
-  ikke til "gå tilbage"-lignende handlinger.
-- `--danger`: Hello Cal-undtagelsens danger-token som flade med hvid tekst.
-- `--danger-secondary`: transparent flade med danger-kant og danger-tekst.
-
-De faste former er:
-
-- Standard: højde 48 px, radius 8 px, 16 px horisontal padding og 17/24 bold
-  tekst.
-- `--compact`: højde 40 px, 12 px horisontal padding og 15/20 semibold tekst.
-- `--small`: højde 36 px, 12 px horisontal padding og 13/18 semibold tekst.
-- `--pill`: kun til filter-/modekontroller og altid sammen med `--compact` eller
-  `--small`; aldrig som standard CTA.
-- `--icon`: 44 × 44 px hit area, 24 × 24 px synligt ikon og ingen lokal
-  padding. En mindre synlig ikonknap skal stadig bevare 44 × 44 px hit area.
-- `--fab`: 56 × 56 px, radius 14 px, Hello Cal positive-flade og mørkt ikon;
-  kun til den centrale tilføj-handling.
-- `--full`: fylder den tilgængelige bredde. Ved 402 px viewport og standard
-  16 px gutter bliver bredden 370 px.
-- Hello Cal-regel (2026-09-24): almindelige primære og sekundære
-  handlingsknapper (Opret, Gem, Fortsæt, Tilføj, Næste, Bekræft …) er altid
-  `--full` — fra venstre til højre indholdskant, ingen `w-fit`, `self-center`,
-  `max-w-*` eller `sm:w-auto`. Brug `ActionButton`/`ActionLink` fra
-  `src/components/hf/ActionButton.tsx`. Undtaget: ikonknapper, luk/tilbage,
-  +/−, favorit, små inline-/filterkontroller og navigation.
-
-Indhold og states er ligeledes låst:
-
-- Ikoner bruger `.hf-button__icon`; ikon/label-gap er 8 px og må ikke ændres på
-  siden.
-- Label bruger `.hf-button__label`. Loading bruger `aria-busy="true"` og
-  `.hf-button__spinner`; knappen beholder samme bredde og højde.
-- Disabled styres med native `disabled` eller `aria-disabled="true"`, ikke en
-  sideopfundet opacity-klasse. Geometrien ændres aldrig i disabled/loading.
-- Mørk primary bruger kun de officielt målte webstates på en web-enhed:
-  `#353535` ved hover og `#4B4B4B` ved active. Secondary bruger `#E3E3E3` og
-  `#D2D2D2`. Mobile hvilestates forbliver uændrede.
-- Ikonknapper skal have et `aria-label`. Links, der navigerer, skal fortsat
-  renderes semantisk som links, men kan bruge samme klasser.
-- En knaprække bruger `.hf-button-group`; sider må ikke skabe nye gaps og
-  breddeforhold med lokale flex-/margin-klasser.
-
-Primære CTA'er er 370 px brede ved 402 px viewport (16 px gutter på hver side).
-Knaptekst må ikke falde til 12, 13, 14 eller 15 px, blot fordi knappen er på en
-anden side.
-
-Tilladte kombinationer:
-
-| Formål | Klasser |
-| --- | --- |
-| Hoved-CTA | `.hf-button .hf-button--primary .hf-button--full` |
-| Brand-CTA | `.hf-button .hf-button--brand .hf-button--full` |
-| Sekundær CTA | `.hf-button .hf-button--secondary .hf-button--full` |
-| Kompakt lokal handling | `.hf-button .hf-button--secondary .hf-button--compact` |
-| Filter/mode | `.hf-button .hf-button--secondary .hf-button--small .hf-button--pill` |
-| Diskret handling | `.hf-button .hf-button--ghost` |
-| Inline teksthandling | `.hf-button .hf-button--text` |
-| Bekræft destruktiv handling | `.hf-button .hf-button--danger` |
-| Afvis/alternativ destruktiv | `.hf-button .hf-button--danger-secondary` |
-| Ikonhandling | `.hf-button .hf-button--ghost .hf-button--icon` |
-| Central tilføj-knap | `.hf-button .hf-button--fab` |
-
-Social login er en separat primitive i afsnit 6.3. Bundnavigation, appbar-
-slots, kalenderceller, valgkort og swipe-actions er heller ikke almindelige
-`.hf-button`-varianter; de skal eje deres geometri i deres respektive
-komponenter.
+- Grønne handlingsknapper er udfaset; brand-grøn bruges kun til flader
+  (appbar, brandkort), ikke til knapper.
+- `ActionButton`/`ActionLink` (`src/components/hf/ActionButton.tsx`) tager
+  `variant="primary" | "secondary" | "danger"`.
+- Ikke knapper i denne forstand (egen geometri i deres komponent): listerækker
+  og accordion-overskrifter (`.hf-control-row`), valgkort (`.hf-chip`),
+  fliser med ikon, kalenderceller, bundmenu, swipe-actions, social login,
+  FAB og usynlige lukke-flader bag menuer.
+- `.hf-favorite-button` er uændret (foto-overlay).
 
 ### 6.3 Social login
 

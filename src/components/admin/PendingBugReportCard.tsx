@@ -37,26 +37,26 @@ export function PendingBugReportCard({ report }: { report: BugReport }) {
   if (done) return null;
 
   return (
-    <div className="rounded-lg border border-border-strong bg-surface-2 p-4">
+    <div className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 flex-1">
-          <p className="text-xs text-text-muted">
+          <p className="hf-type-small text-text-muted">
             {report.user ? `${report.user.displayName} · ${report.user.email}` : "AI-genereret (ingen bruger)"} ·{" "}
             {new Date(report.createdAt).toLocaleDateString("da-DK")}
           </p>
           {report.product && (
-            <p className="mt-1 text-xs font-medium text-hf-green-dark">
+            <p className="hf-type-small hf-type-strong mt-1 text-hf-green-dark">
               Produktrettelse: {report.product.brand?.name ? `${report.product.brand.name} ` : ""}
               {report.product.name}
             </p>
           )}
-          <p className="mt-1 whitespace-pre-wrap text-sm text-text-primary">{report.description}</p>
+          <p className="hf-type-body mt-1 whitespace-pre-wrap text-hf-black">{report.description}</p>
           {report.screenshotUrl && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={report.screenshotUrl}
               alt="Screenshot"
-              className="mt-2 max-h-48 rounded-md border border-border-strong"
+              className="mt-2 max-h-48 rounded-md border border-hf-tan-dark"
             />
           )}
         </div>
@@ -65,7 +65,7 @@ export function PendingBugReportCard({ report }: { report: BugReport }) {
             type="button"
             onClick={() => act("reject")}
             disabled={loading !== null}
-            className="rounded-md border border-border-strong px-3 py-1.5 text-sm text-hf-red-dark disabled:opacity-60"
+            className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-1.5 text-hf-red-dark disabled:opacity-60"
           >
             {loading === "reject" ? "…" : "Afvis"}
           </button>
@@ -73,7 +73,7 @@ export function PendingBugReportCard({ report }: { report: BugReport }) {
             type="button"
             onClick={() => act("approve")}
             disabled={loading !== null}
-            className="rounded-md bg-hf-green-dark px-3 py-1.5 text-sm text-hf-white disabled:opacity-60"
+            className="hf-btn-primary px-3 py-1.5 disabled:opacity-60"
           >
             {loading === "approve" ? "…" : report.source === "AI" ? "Godkend" : "Godkend (+10 points)"}
           </button>

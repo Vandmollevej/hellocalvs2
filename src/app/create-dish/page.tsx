@@ -184,12 +184,12 @@ export default function CreateDishPage() {
       footer={
         <>
           {saveError && (
-            <p className="mb-2 text-center text-sm text-hf-black opacity-70">{saveError}</p>
+            <p className="hf-type-body text-text-secondary mb-2 text-center">{saveError}</p>
           )}
           <button
             onClick={handleSave}
             disabled={saving || savedDish !== null}
-            className="hf-btn-primary w-full py-3.5 text-[15px] disabled:opacity-60"
+            className="hf-btn-primary w-full py-3.5 disabled:opacity-60"
           >
             {saving ? t("createDish.saving") : t("createDish.saveDish")}
           </button>
@@ -203,12 +203,12 @@ export default function CreateDishPage() {
           autoComplete="off"
           aria-label={t("createDish.nameAriaLabel")}
           placeholder={t("createDish.namePlaceholder")}
-          className="min-w-0 rounded-full bg-hf-tan px-4 py-2.5 text-sm text-hf-black outline-none"
+          className="hf-type-body min-w-0 rounded-full bg-hf-tan px-4 py-2.5 text-hf-black outline-none"
         />
 
         <div>
           <div className="flex items-center gap-3 rounded-2xl bg-hf-tan px-4 py-3">
-            <span className="flex-1 text-[14px] font-medium text-hf-black">{t("createDish.shareLabel")}</span>
+            <span className="hf-type-body hf-type-strong flex-1 text-hf-black">{t("createDish.shareLabel")}</span>
             <button
               type="button"
               onClick={() => setShowShareInfo((open) => !open)}
@@ -221,20 +221,20 @@ export default function CreateDishPage() {
             <Toggle checked={shared && !hasPrivateIngredient} onChange={setShared} disabled={hasPrivateIngredient} />
           </div>
           {hasPrivateIngredient && (
-            <p className="mt-2 px-1 text-[13px] text-hf-black opacity-60">{t("createDish.shareBlockedPrivate")}</p>
+            <p className="hf-type-small text-text-secondary mt-2 px-1">{t("createDish.shareBlockedPrivate")}</p>
           )}
           {showShareInfo && (
-            <p className="mt-2 rounded-[8px] border border-hf-gray-light bg-hf-white px-3 py-2 text-[13px] text-hf-black">
+            <p className="hf-type-small mt-2 rounded-[8px] border border-hf-tan-dark bg-hf-white px-3 py-2 text-hf-black">
               {t("createDish.shareInfo")}
             </p>
           )}
         </div>
 
         <div>
-          <p className="mb-2 text-xs font-bold text-hf-black">{t("createDish.ingredients")}</p>
+          <p className="hf-type-small hf-type-strong mb-2 text-hf-black">{t("createDish.ingredients")}</p>
           {ingredients.length === 0 ? (
             <div className="hf-card text-center">
-              <p className="text-sm text-hf-black opacity-60">{t("createDish.noIngredientsYet")}</p>
+              <p className="hf-type-body text-text-secondary">{t("createDish.noIngredientsYet")}</p>
             </div>
           ) : (
             <div className="overflow-hidden rounded-2xl bg-hf-tan">
@@ -250,8 +250,8 @@ export default function CreateDishPage() {
                     )}
                   </div>
                   <div className="flex-1">
-                    <p className="text-[14px] font-medium text-hf-black">{ingredient.name}</p>
-                    <p className="text-xs text-hf-black opacity-60">
+                    <p className="hf-type-body hf-type-strong text-hf-black">{ingredient.name}</p>
+                    <p className="hf-type-small text-text-secondary">
                       {isPrivateIngredientId(ingredient.productId)
                         ? t("createDish.kcalUnknown", { grams: ingredient.grams })
                         : t("createDish.gramsKcal", {
@@ -276,11 +276,11 @@ export default function CreateDishPage() {
 
         {ingredients.length > 0 && (
           <div className="hf-card">
-            <p className="text-xs font-bold text-hf-black">{t("createDish.total")}</p>
-            <p className="text-sm text-hf-black">
+            <p className="hf-type-small hf-type-strong text-hf-black">{t("createDish.total")}</p>
+            <p className="hf-type-body text-hf-black">
               {t("createDish.gramsKcal", { grams: round(totals.grams), kcal: round(totals.kcal) })}
             </p>
-            <p className="text-xs text-hf-black opacity-60">
+            <p className="hf-type-small text-text-secondary">
               {t("createDish.macrosSummary", {
                 protein: round(totals.protein, 1),
                 carbs: round(totals.carbs, 1),
@@ -291,7 +291,7 @@ export default function CreateDishPage() {
         )}
 
         <div>
-          <p className="mb-2 text-xs font-bold text-hf-black">{t("createDish.addIngredient")}</p>
+          <p className="hf-type-small hf-type-strong mb-2 text-hf-black">{t("createDish.addIngredient")}</p>
           <div className="hf-search">
             <IconSearch size={16} color="var(--hf-black)" />
             <input
@@ -311,17 +311,17 @@ export default function CreateDishPage() {
           {query.trim() && (
             <div className="mt-2 overflow-hidden rounded-[8px] bg-hf-tan">
               {searchState === "loading" && (
-                <p className="px-4 py-4 text-center text-sm text-hf-black opacity-60">
+                <p className="hf-type-body text-text-secondary px-4 py-4 text-center">
                   {t("createDish.searching")}
                 </p>
               )}
               {searchState === "error" && (
-                <p className="px-4 py-4 text-center text-sm text-hf-black opacity-60">
+                <p className="hf-type-body text-text-secondary px-4 py-4 text-center">
                   {t("createDish.noResults")}
                 </p>
               )}
               {searchState === "ready" && results.length === 0 && (
-                <p className="px-4 py-4 text-center text-sm text-hf-black opacity-60">
+                <p className="hf-type-body text-text-secondary px-4 py-4 text-center">
                   {t("createDish.noResults")}
                 </p>
               )}
@@ -344,9 +344,9 @@ export default function CreateDishPage() {
                         <img src={product.imageUrl} alt="" className="h-full w-full object-contain" />
                       )}
                     </div>
-                    <span className="flex-1 text-[14px] font-medium text-hf-black">{product.name}</span>
+                    <span className="hf-type-body hf-type-strong flex-1 text-hf-black">{product.name}</span>
                     {product.isPrivate && (
-                      <span className="text-xs font-medium text-hf-black opacity-60">{t("createDish.ownTag")}</span>
+                      <span className="hf-type-small hf-type-strong text-text-secondary">{t("createDish.ownTag")}</span>
                     )}
                   </Link>
                 ))}
@@ -359,19 +359,19 @@ export default function CreateDishPage() {
               className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center"
             >
               <IconCamera size={20} color="var(--hf-black)" />
-              <span className="text-xs font-medium text-hf-black">{t("createDish.scan")}</span>
+              <span className="hf-type-small hf-type-strong text-hf-black">{t("createDish.scan")}</span>
             </a>
             <a
               href="/foods/new?for=ret"
               className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan py-3 text-center"
             >
               <IconHandClick size={20} color="var(--hf-black)" />
-              <span className="text-xs font-medium text-hf-black">{t("createDish.manually")}</span>
+              <span className="hf-type-small hf-type-strong text-hf-black">{t("createDish.manually")}</span>
             </a>
           </div>
           <Link
             href="/ingredients/new?for=ret"
-            className="mt-2 block text-center text-xs font-medium text-hf-black underline underline-offset-2 opacity-70"
+            className="hf-type-small hf-type-strong text-text-secondary mt-2 block text-center underline underline-offset-2"
           >
             {t("createDish.createOwnIngredient")}
           </Link>
@@ -379,15 +379,15 @@ export default function CreateDishPage() {
 
         {showImages && (
           <div>
-            <p className="mb-2 text-xs font-bold text-hf-black">{t("recipeImages.title")}</p>
+            <p className="hf-type-small hf-type-strong mb-2 text-hf-black">{t("recipeImages.title")}</p>
             <RecipeImagesPicker images={images} onChange={(next) => updateDetails({ images: next })} />
           </div>
         )}
 
         {showSteps && (
           <div>
-            <p className="mb-1 text-xs font-bold text-hf-black">{t("recipeSteps.title")}</p>
-            <p className="text-[12px] text-hf-black opacity-60">{t("recipeSteps.hint")}</p>
+            <p className="hf-type-small hf-type-strong mb-1 text-hf-black">{t("recipeSteps.title")}</p>
+            <p className="hf-type-small text-text-secondary">{t("recipeSteps.hint")}</p>
             <RecipeStepsEditor steps={steps} onChange={(next) => updateDetails({ steps: next })} />
           </div>
         )}
@@ -403,7 +403,7 @@ export default function CreateDishPage() {
                 }`}
               >
                 <IconPhoto size={20} color="var(--hf-black)" />
-                <span className="text-xs font-medium text-hf-black">{t("recipeImages.addButton")}</span>
+                <span className="hf-type-small hf-type-strong text-hf-black">{t("recipeImages.addButton")}</span>
               </button>
             )}
             {!showSteps && (
@@ -415,7 +415,7 @@ export default function CreateDishPage() {
                 }`}
               >
                 <IconListNumbers size={20} color="var(--hf-black)" />
-                <span className="text-xs font-medium text-hf-black">{t("recipeSteps.addButton")}</span>
+                <span className="hf-type-small hf-type-strong text-hf-black">{t("recipeSteps.addButton")}</span>
               </button>
             )}
           </div>

@@ -10,14 +10,14 @@ export function QualityControlTabs({ active, locale }: { active: "products" | "s
     { key: "sharedRecipes", href: "/admin/quality-control/shared-recipes", label: t(locale, "quality_control_tab_shared_recipes") },
   ] as const;
   return (
-    <div className="flex gap-4 border-b border-border-strong text-sm">
+    <div className="hf-type-body flex gap-4 border-b border-hf-tan-dark">
       {tabs.map((tab) => (
         <Link
           key={tab.key}
           href={tab.href}
           className={`-mb-px border-b-2 pb-2 ${
             active === tab.key
-              ? "border-hf-green-dark font-medium text-hf-green-dark"
+              ? "hf-type-strong border-hf-green-dark text-hf-green-dark"
               : "border-transparent text-text-secondary hover:text-text-primary"
           }`}
         >

@@ -157,7 +157,7 @@ function DecodeOverlay({ detection }: { detection: BarcodeDetection }) {
         barHeight={barHeight}
         animated
         plate={detection.tone}
-        className="absolute max-w-none text-white transition-[left,top,width,height] duration-150 ease-linear"
+        className="absolute max-w-none text-hf-white transition-[left,top,width,height] duration-150 ease-linear"
         style={{
           width: `${svgWidth}cqw`,
           height: `${svgHeight}cqw`,
@@ -192,7 +192,7 @@ export function BarcodeScanOverlay({
       {/* Guide box + light dim around it. Fades (never snaps) away once a
           real barcode is being decoded, and back when it's gone. */}
       <div
-        className="absolute rounded-[6px] border border-white/80 transition-[opacity,left,top,width,height] duration-300"
+        className="absolute rounded-[6px] border border-hf-white/80 transition-[opacity,left,top,width,height] duration-300"
         style={{
           ...toPercentStyle(guideBox),
           boxShadow: "0 0 0 999px rgb(0 0 0 / 0.28)",
@@ -208,7 +208,7 @@ export function BarcodeScanOverlay({
               transform: `translate(-50%, -50%) rotate(${orientation === "vertical" ? 90 : 0}deg)`,
             }}
           >
-            <BarcodeSvg pattern={guidePattern} animated={false} className="h-full w-full text-white/85" />
+            <BarcodeSvg pattern={guidePattern} animated={false} className="h-full w-full text-hf-white/85" />
           </div>
         )}
       </div>
@@ -216,7 +216,7 @@ export function BarcodeScanOverlay({
       {detection && <DecodeOverlay key={detection.code} detection={detection} />}
 
       {hintText && !detection && (
-        <p className="absolute inset-x-4 bottom-4 rounded-full bg-black/70 px-4 py-2 text-center text-xs font-semibold text-white">
+        <p className="hf-type-small hf-type-strong absolute inset-x-4 bottom-4 rounded-full bg-hf-black/70 px-4 py-2 text-center text-hf-white">
           {hintText}
         </p>
       )}

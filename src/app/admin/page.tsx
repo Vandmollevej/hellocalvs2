@@ -14,21 +14,21 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-lg font-semibold text-text-primary">Oversigt</h1>
+      <h1 className="hf-type-title text-hf-black">Oversigt</h1>
       <div className="grid gap-4 sm:grid-cols-2">
         <Link
           href="/admin/products"
-          className="rounded-lg border border-border-strong bg-surface-2 p-4 hover:border-hf-green"
+          className="rounded-lg border border-hf-tan-dark bg-hf-white p-4 hover:border-hf-green"
         >
-          <p className="text-3xl font-semibold text-hf-green-dark">{pendingProducts}</p>
-          <p className="mt-1 text-sm text-text-secondary">Nye produkter afventer godkendelse</p>
+          <p className="hf-type-hero text-hf-green-dark">{pendingProducts}</p>
+          <p className="hf-type-body mt-1 text-text-secondary">Nye produkter afventer godkendelse</p>
         </Link>
         <Link
           href="/admin/images"
-          className="rounded-lg border border-border-strong bg-surface-2 p-4 hover:border-hf-green"
+          className="rounded-lg border border-hf-tan-dark bg-hf-white p-4 hover:border-hf-green"
         >
-          <p className="text-3xl font-semibold text-hf-green-dark">{pendingImages}</p>
-          <p className="mt-1 text-sm text-text-secondary">Billedforslag afventer godkendelse</p>
+          <p className="hf-type-hero text-hf-green-dark">{pendingImages}</p>
+          <p className="hf-type-body mt-1 text-text-secondary">Billedforslag afventer godkendelse</p>
         </Link>
       </div>
     </div>

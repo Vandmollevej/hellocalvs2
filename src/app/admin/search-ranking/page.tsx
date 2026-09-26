@@ -19,8 +19,8 @@ export default async function AdminSearchRankingPage() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h1 className="text-lg font-semibold text-text-primary">Søgealgoritmer</h1>
-        <p className="text-sm text-text-secondary">
+        <h1 className="hf-type-title text-hf-black">Søgealgoritmer</h1>
+        <p className="hf-type-body text-text-secondary">
           Justér prioriteringen af søgerangeringens parametre og test live, hvordan ændringerne påvirker
           søgeresultatet, før du committer dem. Tekstmatch er altid grundlaget og kan ikke justeres her — det
           er en fast produktbeslutning (docs/DECISIONS.md), så et forkert produkt aldrig kan vinde over et

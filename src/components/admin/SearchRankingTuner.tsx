@@ -213,22 +213,22 @@ export function SearchRankingTuner({
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex flex-wrap items-end gap-3 rounded-md border border-border-strong bg-surface-2 p-4">
-        <label className="flex flex-1 min-w-[200px] flex-col gap-1 text-sm">
+      <div className="flex flex-wrap items-end gap-3 rounded-md border border-hf-tan-dark bg-hf-white p-4">
+        <label className="hf-type-body flex flex-1 min-w-[200px] flex-col gap-1">
           <span className="text-text-secondary">Testsøgning</span>
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Skriv en søgning for at teste live..."
-            className="rounded-md border border-border-strong px-3 py-2 text-sm"
+            className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-2"
           />
         </label>
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="hf-type-body flex flex-col gap-1">
           <span className="text-text-secondary">Region</span>
           <select
             value={region}
             onChange={(e) => setRegion(e.target.value)}
-            className="rounded-md border border-border-strong px-3 py-2 text-sm"
+            className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-2"
           >
             {REGIONS.map((r) => (
               <option key={r.code} value={r.code}>
@@ -237,12 +237,12 @@ export function SearchRankingTuner({
             ))}
           </select>
         </label>
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="hf-type-body flex flex-col gap-1">
           <span className="text-text-secondary">Klokken (test)</span>
           <select
             value={hour}
             onChange={(e) => setHour(Number(e.target.value))}
-            className="rounded-md border border-border-strong px-3 py-2 text-sm"
+            className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-2"
           >
             {Array.from({ length: 24 }, (_, h) => (
               <option key={h} value={h}>
@@ -251,13 +251,13 @@ export function SearchRankingTuner({
             ))}
           </select>
         </label>
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="hf-type-body flex flex-col gap-1">
           <span className="text-text-secondary">Bruger-id (personlig historik, valgfrit)</span>
           <input
             value={previewUserId}
             onChange={(e) => setPreviewUserId(e.target.value)}
             placeholder="cly..."
-            className="rounded-md border border-border-strong px-3 py-2 text-sm"
+            className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-2"
           />
         </label>
       </div>
@@ -265,13 +265,13 @@ export function SearchRankingTuner({
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.1fr]">
         <div className="flex flex-col gap-4">
           {CATEGORIES.map((category) => (
-            <details key={category.key} className="rounded-md border border-border-strong bg-surface-2" open>
-              <summary className="cursor-pointer select-none px-4 py-3 text-sm font-medium text-text-primary">
+            <details key={category.key} className="rounded-md border border-hf-tan-dark bg-hf-white" open>
+              <summary className="hf-type-body hf-type-strong cursor-pointer select-none px-4 py-3 text-hf-black">
                 {category.title}
-                <span className="ml-2 text-xs font-normal text-text-muted">({weights[category.key]})</span>
+                <span className="hf-type-small ml-2 text-text-muted">({weights[category.key]})</span>
               </summary>
-              <div className="flex flex-col gap-2 border-t border-border-strong px-4 py-3">
-                <p className="text-xs text-text-secondary">{category.description}</p>
+              <div className="flex flex-col gap-2 border-t border-hf-tan-dark px-4 py-3">
+                <p className="hf-type-small text-text-secondary">{category.description}</p>
                 <input
                   type="range"
                   min={-100}
@@ -280,7 +280,7 @@ export function SearchRankingTuner({
                   onChange={(e) => updateWeight(category.key, Number(e.target.value))}
                   className="w-full"
                 />
-                <div className="flex justify-between text-xs text-text-muted">
+                <div className="hf-type-small flex justify-between text-text-muted">
                   <span>{category.signed ? category.negativeLabel : "Ingen effekt (0)"}</span>
                   <span>{category.signed ? category.positiveLabel : "Maksimal effekt (100)"}</span>
                 </div>
@@ -288,8 +288,8 @@ export function SearchRankingTuner({
             </details>
           ))}
 
-          <div className="flex flex-col gap-2 rounded-md border border-border-strong bg-surface-2 p-4">
-            <p className="text-sm text-text-secondary">
+          <div className="flex flex-col gap-2 rounded-md border border-hf-tan-dark bg-hf-white p-4">
+            <p className="hf-type-body text-text-secondary">
               Ændringerne herover testes kun live i panelet til højre, indtil du klikker &quot;Commit&quot;. Den rigtige
               søgning i appen bruger stadig den senest aktiverede version.
             </p>
@@ -297,38 +297,38 @@ export function SearchRankingTuner({
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="Valgfri note til denne version..."
-              className="rounded-md border border-border-strong px-3 py-2 text-sm"
+              className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-2"
             />
             <div className="flex items-center gap-3">
               <button
                 type="button"
                 onClick={commit}
                 disabled={committing || !isDirty}
-                className="rounded-md bg-hf-green-dark px-4 py-2 text-sm font-medium text-hf-white disabled:opacity-50"
+                className="hf-btn-primary px-4 py-2 disabled:opacity-50"
               >
                 {committing ? "Gemmer..." : "Commit — gør denne version aktiv"}
               </button>
               <button
                 type="button"
                 onClick={() => setWeights(defaultWeights)}
-                className="rounded-md border border-border-strong px-3 py-2 text-sm text-text-secondary hover:bg-hf-tan"
+                className="hf-btn-secondary px-3 py-2"
               >
                 Nulstil til standard
               </button>
-              {commitMessage && <span className="text-sm text-text-secondary">{commitMessage}</span>}
+              {commitMessage && <span className="hf-type-body text-text-secondary">{commitMessage}</span>}
             </div>
           </div>
 
-          <div className="flex flex-col gap-2 rounded-md border border-border-strong bg-surface-2 p-4">
-            <h2 className="text-sm font-medium text-text-primary">Tidligere versioner (backup)</h2>
+          <div className="flex flex-col gap-2 rounded-md border border-hf-tan-dark bg-hf-white p-4">
+            <h2 className="hf-type-body hf-type-strong text-hf-black">Tidligere versioner (backup)</h2>
             <ul className="flex flex-col gap-2">
               {history.map((entry) => (
                 <li
                   key={entry.id}
-                  className="flex items-center justify-between gap-3 rounded-md border border-border-strong px-3 py-2 text-xs"
+                  className="hf-type-small flex items-center justify-between gap-3 rounded-md border border-hf-tan-dark px-3 py-2"
                 >
                   <div>
-                    <div className={entry.isActive ? "font-medium text-hf-green-dark" : "text-text-secondary"}>
+                    <div className={entry.isActive ? "hf-type-strong text-hf-green-dark" : "text-text-secondary"}>
                       {entry.isActive ? "Aktiv" : "Inaktiv"} — {formatDate(entry.createdAt)}
                     </div>
                     {entry.note && <div className="text-text-muted">{entry.note}</div>}
@@ -338,30 +338,30 @@ export function SearchRankingTuner({
                       type="button"
                       onClick={() => restore(entry.id)}
                       disabled={committing}
-                      className="rounded-md border border-border-strong px-2 py-1 text-text-secondary hover:bg-hf-tan"
+                      className="hf-btn-secondary px-2 py-1"
                     >
                       Gendan
                     </button>
                   )}
                 </li>
               ))}
-              {history.length === 0 && <li className="text-xs text-text-muted">Ingen versioner committet endnu.</li>}
+              {history.length === 0 && <li className="hf-type-small text-text-muted">Ingen versioner committet endnu.</li>}
             </ul>
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 rounded-md border border-border-strong bg-surface-2 p-4">
-          <h2 className="text-sm font-medium text-text-primary">Live testresultat</h2>
-          {previewLoading && <p className="text-xs text-text-muted">Søger...</p>}
-          {previewError && <p className="text-xs text-hf-red-dark">{previewError}</p>}
+        <div className="flex flex-col gap-2 rounded-md border border-hf-tan-dark bg-hf-white p-4">
+          <h2 className="hf-type-body hf-type-strong text-hf-black">Live testresultat</h2>
+          {previewLoading && <p className="hf-type-small text-text-muted">Søger...</p>}
+          {previewError && <p className="hf-type-small text-hf-red-dark">{previewError}</p>}
           {!previewLoading && !previewError && query.trim() === "" && (
-            <p className="text-xs text-text-muted">Skriv en testsøgning ovenfor for at se resultatet.</p>
+            <p className="hf-type-small text-text-muted">Skriv en testsøgning ovenfor for at se resultatet.</p>
           )}
           <ul className="flex flex-col gap-2">
             {results.map((result, index) => (
-              <li key={`${result.type}-${result.id}`} className="rounded-md border border-border-strong px-3 py-2 text-xs">
+              <li key={`${result.type}-${result.id}`} className="hf-type-small rounded-md border border-hf-tan-dark px-3 py-2">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="font-medium text-text-primary">
+                  <span className="hf-type-strong text-hf-black">
                     {index + 1}. {result.name}
                   </span>
                   <span className="text-text-muted">

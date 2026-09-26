@@ -114,9 +114,9 @@ function KgField({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        className="min-w-0 flex-1 bg-transparent text-[17px] font-medium text-hf-black outline-none placeholder:text-hf-black/35"
+        className="hf-type-title min-w-0 flex-1 bg-transparent text-hf-black outline-none placeholder:text-hf-black/35"
       />
-      <span className="text-[15px] font-medium text-hf-black/60">kg</span>
+      <span className="hf-type-body hf-type-strong text-hf-black/60">kg</span>
     </div>
   );
 }
@@ -263,7 +263,7 @@ export default function WeightCalibrationPage() {
     <HfScreen title={t("weightCalibration.title")}>
       <div className="hf-page hf-page--sections">
         <div className="rounded-2xl bg-hf-tan px-4 py-4">
-          <p className="text-[15px] leading-6 text-hf-black">{t("weightCalibration.intro")}</p>
+          <p className="hf-type-body text-hf-black">{t("weightCalibration.intro")}</p>
         </div>
 
         <section className="flex flex-col gap-4">
@@ -271,7 +271,7 @@ export default function WeightCalibrationPage() {
             <div key={pair[0].key} className="grid grid-cols-2 gap-3">
               {pair.map((condition) => (
                 <label key={condition.key} htmlFor={`weight-${condition.key}`} className="flex min-w-0 flex-col gap-2">
-                  <span className="flex items-center gap-2 text-[15px] font-semibold text-hf-black">
+                  <span className="hf-type-body hf-type-strong flex items-center gap-2 text-hf-black">
                     <span className="shrink-0">{condition.icon}</span>
                     <span className="truncate">{condition.label}</span>
                   </span>
@@ -288,7 +288,7 @@ export default function WeightCalibrationPage() {
         </section>
 
         <section className="flex flex-col">
-          <h2 className="pb-2 text-left text-[17px] font-semibold text-hf-black">
+          <h2 className="hf-type-title pb-2 text-left text-hf-black">
             {t("weightCalibration.timeGrid.title")}
           </h2>
           <div className="border-t border-hf-tan-dark">
@@ -298,7 +298,7 @@ export default function WeightCalibrationPage() {
                 htmlFor={`weight-slot-${hour}`}
                 className="flex h-16 items-center gap-4 border-b border-hf-tan-dark"
               >
-                <span className="w-12 shrink-0 text-[15px] font-medium text-hf-black/60">
+                <span className="hf-type-body hf-type-strong w-12 shrink-0 text-hf-black/60">
                   {String(hour).padStart(2, "0")}:00
                 </span>
                 <input
@@ -310,9 +310,9 @@ export default function WeightCalibrationPage() {
                     setGridValues((current) => ({ ...current, [hour]: event.target.value }))
                   }
                   placeholder={t("weightCalibration.timeGrid.placeholder")}
-                  className="h-full min-w-0 flex-1 bg-transparent text-[17px] font-medium text-hf-black outline-none placeholder:text-hf-black/30"
+                  className="hf-type-title h-full min-w-0 flex-1 bg-transparent text-hf-black outline-none placeholder:text-hf-black/30"
                 />
-                <span className="text-[15px] font-medium text-hf-black/60">kg</span>
+                <span className="hf-type-body hf-type-strong text-hf-black/60">kg</span>
               </label>
             ))}
           </div>
@@ -320,26 +320,26 @@ export default function WeightCalibrationPage() {
 
         {(loading || recentEntries.length > 0) && (
           <section className="flex flex-col gap-2">
-            <h2 className="text-left text-[17px] font-semibold text-hf-black">
+            <h2 className="hf-type-title text-left text-hf-black">
               {t("weightCalibration.recentTitle")}
             </h2>
-            {loading && <p className="text-[13px] text-hf-black opacity-60">{t("weightCalibration.loading")}</p>}
+            {loading && <p className="hf-type-small text-text-secondary">{t("weightCalibration.loading")}</p>}
             {recentEntries.map((entry) => (
               <div key={entry.id} className="flex items-center justify-between rounded-2xl bg-hf-tan px-4 py-3">
                 <div>
-                  <p className="text-[16px] font-bold text-hf-black">
+                  <p className="hf-type-body hf-type-strong text-hf-black">
                     {formatKg(entry.weightKg)} kg
-                    <span className="ml-2 text-[12px] font-normal opacity-60">
+                    <span className="hf-type-small text-text-secondary ml-2">
                       {formatDateTime(entry.weighedAt)}
                     </span>
                   </p>
-                  <p className="text-[12px] text-hf-black opacity-60">{describeEntry(entry, t)}</p>
+                  <p className="hf-type-small text-text-secondary">{describeEntry(entry, t)}</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => remove(entry.id)}
                   aria-label={t("weightCalibration.deleteAria")}
-                  className="px-2 text-[13px] font-semibold text-hf-black opacity-50"
+                  className="hf-type-small hf-type-strong text-text-secondary px-2"
                 >
                   {t("weightCalibration.delete")}
                 </button>
@@ -350,7 +350,7 @@ export default function WeightCalibrationPage() {
 
         <div className="flex flex-col gap-2">
           {status !== "idle" && !saving && (
-            <p role="status" className="text-center text-[13px] text-hf-black opacity-70">
+            <p role="status" className="hf-type-small text-text-secondary text-center">
               {t(`weightCalibration.status.${status}`)}
             </p>
           )}

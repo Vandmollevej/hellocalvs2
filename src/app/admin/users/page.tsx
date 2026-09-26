@@ -27,16 +27,16 @@ export default async function AdminUsersPage() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h1 className="text-lg font-semibold text-text-primary">{t(admin.locale, "users_title")}</h1>
-        <p className="text-sm text-text-secondary">
+        <h1 className="hf-type-title text-hf-black">{t(admin.locale, "users_title")}</h1>
+        <p className="hf-type-body text-text-secondary">
           {users.length} registranter. Klik ikonet for at anonymisere kontoen.
         </p>
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm">
+        <table className="hf-type-body w-full text-left">
           <thead>
-            <tr className="border-b border-border-strong text-xs uppercase tracking-wide text-text-muted">
+            <tr className="hf-type-small border-b border-hf-tan-dark uppercase tracking-wide text-text-muted">
               <th className="py-2 pr-3">{t(admin.locale, "users_col_user")}</th>
               <th className="py-2 pr-3">{t(admin.locale, "users_col_payment")}</th>
               <th className="py-2 pr-3">{t(admin.locale, "users_col_points")}</th>
@@ -65,7 +65,7 @@ export default async function AdminUsersPage() {
             ))}
           </tbody>
         </table>
-        {users.length === 0 && <p className="py-4 text-sm text-text-secondary">Ingen brugere endnu.</p>}
+        {users.length === 0 && <p className="hf-type-body py-4 text-text-secondary">Ingen brugere endnu.</p>}
       </div>
     </div>
   );

@@ -75,7 +75,7 @@ function TilmeldContent() {
             onClick={() => startOAuth("facebook", "/")}
           />
         </div>
-        <p className="hf-type-body-sm text-center opacity-70">{t("common.or")}</p>
+        <p className="text-text-secondary hf-type-body text-center">{t("common.or")}</p>
 
         <TextField
           label={t("signup.nameLabel")}
@@ -104,7 +104,7 @@ function TilmeldContent() {
           placeholder={t("signup.passwordPlaceholder")}
         />
 
-        <p className="hf-type-body-sm text-right">
+        <p className="hf-type-body text-right">
           <Link href="/forgot-password" className="underline">
             {t("login.forgotPassword")}
           </Link>
@@ -119,7 +119,7 @@ function TilmeldContent() {
         <button
           type="submit"
           disabled={submitting}
-          className="hf-btn-primary hf-type-button mb-8 h-12 w-full disabled:opacity-50"
+          className="hf-btn-primary mb-8 h-12 w-full disabled:opacity-50"
         >
           {submitting ? t("signup.submitting") : t("signup.submit")}
         </button>

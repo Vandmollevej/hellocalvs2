@@ -71,21 +71,21 @@ function RecipeRow({ row }: { row: Row }) {
         )}
       </div>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-[14px] font-semibold text-hf-black">{row.name}</p>
+        <p className="hf-type-body hf-type-strong truncate text-hf-black">{row.name}</p>
         {row.warnings?.map((warning) => (
-          <p key={warning} className="text-[12px] text-hf-red-dark">
+          <p key={warning} className="hf-type-small text-hf-red-dark">
             {warning}
           </p>
         ))}
-        <p className="text-[12px] text-hf-black opacity-60">
+        <p className="hf-type-small text-text-secondary">
           {row.subtitle}
           {row.label && (
-            <span className={`ml-2 font-semibold ${row.label.tone === "green" ? "text-hf-green" : "text-hf-black"}`}>
+            <span className={`hf-type-strong ml-2 ${row.label.tone === "green" ? "text-hf-green" : "text-hf-black"}`}>
               {row.label.text}
             </span>
           )}
         </p>
-        {row.extra && <p className="text-[12px] text-hf-black opacity-60">{row.extra}</p>}
+        {row.extra && <p className="hf-type-small text-text-secondary">{row.extra}</p>}
       </div>
       <IconChevronRight size={18} className="shrink-0 text-hf-black" />
     </Link>
@@ -132,13 +132,13 @@ function MineTab({ t }: { t: Translate }) {
   return (
     <div className="hf-page">
       {state === "loading" && (
-        <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipes.loading")}</p>
+        <p className="hf-type-body text-text-secondary py-8 text-center">{t("recipes.loading")}</p>
       )}
       {state === "error" && (
-        <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipes.loadError")}</p>
+        <p className="hf-type-body text-text-secondary py-8 text-center">{t("recipes.loadError")}</p>
       )}
       {state === "ready" && rows.length === 0 && (
-        <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipes.mineEmpty")}</p>
+        <p className="hf-type-body text-text-secondary py-8 text-center">{t("recipes.mineEmpty")}</p>
       )}
       {state === "ready" && rows.length > 0 && (
         <div>
@@ -147,7 +147,7 @@ function MineTab({ t }: { t: Translate }) {
           ))}
         </div>
       )}
-      <Link href="/create-dish" className="hf-btn-secondary w-full py-3 text-[14px]">
+      <Link href="/create-dish" className="hf-btn-secondary w-full py-3">
         {t("recipes.createDish")}
       </Link>
     </div>
@@ -249,7 +249,7 @@ function SharedTab({ t }: { t: Translate }) {
         };
   }
 
-  const status = (text: string) => <p className="text-center text-sm text-hf-black opacity-60">{text}</p>;
+  const status = (text: string) => <p className="hf-type-body text-text-secondary text-center">{text}</p>;
   const trending = results.slice(0, TRENDING_COUNT);
 
   return (
@@ -350,7 +350,7 @@ function RecipesContent() {
             role="tab"
             aria-selected={tab === value}
             onClick={() => selectTab(value)}
-            className={`flex-1 border-b-2 py-3 text-[13px] font-semibold ${
+            className={`hf-type-small hf-type-strong flex-1 border-b-2 py-3 ${
               tab === value ? "border-hf-black text-hf-black" : "border-transparent text-hf-black opacity-60"
             }`}
           >

@@ -25,7 +25,7 @@ export function AdditiveInfoModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-hf-black/40 p-4"
       onClick={onClose}
     >
       <div
@@ -33,7 +33,7 @@ export function AdditiveInfoModal({
         onClick={(event) => event.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b border-hf-tan-dark px-4 py-3">
-          <p className="hf-heading text-[15px] text-hf-black">
+          <p className="hf-type-body hf-heading text-hf-black">
             {code.toUpperCase()}
             {info?.internationalName ? ` · ${info.internationalName}` : ""}
           </p>
@@ -48,29 +48,29 @@ export function AdditiveInfoModal({
         </div>
         <div className="overflow-y-auto p-4">
           {!info ? (
-            <p className="text-[14px] text-hf-black opacity-60">Henter...</p>
+            <p className="hf-type-body text-text-secondary">Henter...</p>
           ) : (
             <div className="flex flex-col gap-4">
               {info.danishName && (
-                <p className="text-[13px] text-hf-black opacity-70">{info.danishName}</p>
+                <p className="hf-type-small text-text-secondary">{info.danishName}</p>
               )}
               {info.function && (
-                <p className="text-[14px] leading-relaxed text-hf-black">{info.function}</p>
+                <p className="hf-type-body text-hf-black">{info.function}</p>
               )}
               {info.risks && (
                 <div>
-                  <p className="hf-heading text-[12px] uppercase text-hf-black opacity-50">
+                  <p className="hf-type-small text-text-secondary hf-heading uppercase">
                     Risici
                   </p>
-                  <p className="text-[14px] leading-relaxed text-hf-black">{info.risks}</p>
+                  <p className="hf-type-body text-hf-black">{info.risks}</p>
                 </div>
               )}
               {info.research && (
                 <div>
-                  <p className="hf-heading text-[12px] uppercase text-hf-black opacity-50">
+                  <p className="hf-type-small text-text-secondary hf-heading uppercase">
                     Forskning
                   </p>
-                  <p className="text-[14px] leading-relaxed text-hf-black">{info.research}</p>
+                  <p className="hf-type-body text-hf-black">{info.research}</p>
                 </div>
               )}
               {info.link && (
@@ -78,14 +78,14 @@ export function AdditiveInfoModal({
                   href={info.link}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-[13px] text-hf-green underline underline-offset-2"
+                  className="hf-type-small text-hf-green underline underline-offset-2"
                 >
                   Læs mere ({info.source || "kilde"})
                 </a>
               )}
             </div>
           )}
-          <p className="mt-4 text-[12px] leading-relaxed text-hf-black opacity-50">
+          <p className="hf-type-small text-text-secondary mt-4">
             Generel baggrundsinformation baseret på EFSA/EU-kilder — ikke personlig
             kostrådgivning.
           </p>

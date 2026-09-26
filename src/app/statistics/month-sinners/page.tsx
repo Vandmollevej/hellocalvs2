@@ -46,7 +46,7 @@ function MonthNavButton({ direction, onClick }: { direction: "previous" | "next"
         period: t("calendar.periodMonth"),
       })}
       onClick={onClick}
-      className="flex size-11 shrink-0 items-center justify-center rounded-full text-hf-black hover:bg-hf-tan focus-visible:outline-2 focus-visible:outline-hf-black"
+      className="hf-btn-icon text-hf-black hover:bg-hf-tan focus-visible:outline-2 focus-visible:outline-hf-black"
     >
       <Icon size={22} />
     </button>
@@ -77,22 +77,22 @@ function MonthSinnersContent() {
       <div className="flex items-center justify-center gap-3">
         <MonthNavButton direction="previous" onClick={() => moveMonth(-1)} />
         <div className="flex min-h-11 max-w-full items-center justify-center px-3 text-hf-black">
-          <span className="whitespace-nowrap text-[15px] font-semibold capitalize">{monthLabel}</span>
+          <span className="hf-type-body hf-type-strong whitespace-nowrap capitalize">{monthLabel}</span>
         </div>
         <MonthNavButton direction="next" onClick={() => moveMonth(1)} />
       </div>
       <SourceMetricTabs value={metric} onChange={setMetric} />
 
       {loading ? (
-        <p className="py-8 text-center text-sm text-hf-black opacity-60">Henter…</p>
+        <p className="hf-type-body text-text-secondary py-8 text-center">Henter…</p>
       ) : groups.length === 0 ? (
-        <p className="py-8 text-center text-sm text-hf-black opacity-60">Ingen registreringer i denne måned</p>
+        <p className="hf-type-body text-text-secondary py-8 text-center">Ingen registreringer i denne måned</p>
       ) : (
         groups.map((group) => (
           <section key={group.productType} className="flex flex-col gap-2">
             <div className="flex items-baseline justify-between gap-2 px-1">
-              <h2 className="hf-heading min-w-0 truncate text-sm text-hf-black">{group.productType}</h2>
-              <span className="shrink-0 text-xs font-semibold text-hf-black">
+              <h2 className="hf-type-body hf-heading min-w-0 truncate text-hf-black">{group.productType}</h2>
+              <span className="hf-type-small hf-type-strong shrink-0 text-hf-black">
                 {formatMetric(group.value, metric)} · {formatShare(group.share)}
               </span>
             </div>

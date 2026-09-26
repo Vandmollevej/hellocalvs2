@@ -407,9 +407,9 @@ function WheelItem({
         opacity,
       }}
     >
-      <span className="font-extrabold leading-none" style={{ fontSize: FONT_SIZE }}>
+      <span className="hf-type-strong leading-none" style={{ fontSize: FONT_SIZE }}>
         {stat.value}
-        {stat.unit && <span className="font-semibold"> {stat.unit}</span>}
+        {stat.unit && <span className="hf-type-strong"> {stat.unit}</span>}
       </span>
       <span
         className={`flex ${transition}`}

@@ -64,13 +64,13 @@ function MediaBox({
         </>
       )}
       {status === "working" && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/55 p-2 text-center">
-          <span className="hf-type-caption text-white">{workingLabel}</span>
+        <div className="absolute inset-0 flex items-center justify-center bg-hf-black/55 p-2 text-center">
+          <span className="hf-type-caption text-hf-white">{workingLabel}</span>
         </div>
       )}
       {status === "failed" && (
-        <div className="absolute inset-x-0 bottom-0 bg-black/60 px-1.5 py-1 text-center">
-          <span className="hf-type-caption text-white">{failedLabel}</span>
+        <div className="absolute inset-x-0 bottom-0 bg-hf-black/60 px-1.5 py-1 text-center">
+          <span className="hf-type-caption text-hf-white">{failedLabel}</span>
         </div>
       )}
       <input

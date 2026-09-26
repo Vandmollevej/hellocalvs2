@@ -85,7 +85,7 @@ export function ChangePasswordForm({ loggedIn }: { loggedIn: boolean }) {
           <p className="hf-type-body">{t("profile.changePassword.loginRequired")}</p>
           <Link
             href="/login?next=/profile/change-password"
-            className="hf-btn-primary hf-type-button h-12 w-full px-4"
+            className="hf-btn-primary h-12 w-full px-4"
           >
             {t("profile.changePassword.logIn")}
           </Link>
@@ -139,7 +139,7 @@ export function ChangePasswordForm({ loggedIn }: { loggedIn: boolean }) {
             type="submit"
             disabled={submitting}
             aria-busy={submitting}
-            className="hf-btn-primary hf-type-button mt-4 h-12 w-full px-4 disabled:opacity-50"
+            className="hf-btn-primary mt-4 h-12 w-full px-4 disabled:opacity-50"
           >
             {submitting ? t("profile.changePassword.submitting") : t("profile.changePassword.submit")}
           </button>

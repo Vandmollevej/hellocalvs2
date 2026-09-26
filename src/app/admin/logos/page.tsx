@@ -22,8 +22,8 @@ export default async function AdminLogosPage() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h1 className="text-lg font-semibold text-text-primary">Logoer</h1>
-        <p className="text-sm text-text-secondary">
+        <h1 className="hf-type-title text-hf-black">Logoer</h1>
+        <p className="hf-type-body text-text-secondary">
           {searches.length} brands venter. Robotten gemmer selv logoer over 90 %, når brandnavnet også står på siden. Klik en række for at
           sammenligne og vælge. Hentede billeder slettes 7 dage efter valget.
         </p>

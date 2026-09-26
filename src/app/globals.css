@@ -1,13 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --page-bg: #f0f0ee;
-  --surface-1: #f0f0ee;
-  --surface-2: #ffffff;
-  --border-strong: #d4d3ce;
-  --text-primary: #1f1f1d;
-  --text-secondary: #6b6a65;
-  --text-muted: #a3a29c;
+  /* Gamle generiske navne — peger nu på den faste palette nedenfor
+     (én tekstfarve, én sekundær, én dæmpet; én side-, kort- og linjefarve). */
+  --page-bg: var(--hf-color-page);
+  --surface-1: var(--hf-color-page);
+  --surface-2: var(--hf-color-surface);
+  --border-strong: var(--hf-color-nav);
+  --text-primary: var(--hf-color-text);
+  --text-secondary: var(--hf-color-text-secondary);
+  --text-muted: var(--hf-color-inactive);
 
   /* Målt HelloFresh-palette, jf. design.md afsnit 3. */
   --hf-color-page: #faf8f3;
@@ -43,6 +45,8 @@
   /* For lavt indtag: mørk okker til tekst (læsbar på kortfarven), gul til firkanten. */
   --hf-color-warning: #8a5a00;
   --hf-color-warning-fill: #f2c230;
+  /* Lys advarselsflade (bannere) med --hf-color-warning som tekst. */
+  --hf-color-warning-bg: #fdf3d3;
   --hf-color-overlay: rgb(35 35 35 / 40%);
 
   /* Legacy-navne — pegede tidligere på ikke-målte farver, peger nu på de
@@ -55,7 +59,7 @@
   --hf-tan-dark: var(--hf-color-nav);
   --hf-black: var(--hf-color-action);
   --hf-white: var(--hf-color-white, #ffffff);
-  --hf-gray-light: #e4e2d8;
+  --hf-gray-light: var(--hf-color-nav);
   --hf-gray: var(--hf-color-inactive);
   --hf-gray-dark: var(--hf-color-text-secondary);
   --hf-red-dark: var(--hf-color-danger);
@@ -99,8 +103,9 @@
   --color-hf-lime: var(--hf-lime);
   --color-hf-warning: var(--hf-color-warning);
   --color-hf-warning-fill: var(--hf-color-warning-fill);
+  --color-hf-warning-bg: var(--hf-color-warning-bg);
   --font-sans: var(--font-hf-body);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --font-hf-heading: var(--font-hf-heading);
   --font-hf-body: var(--font-hf-body);
   /* Radiusfamilie, jf. design.md §5.3/§5.4: kort, felter og knapper er 8px
@@ -207,185 +212,188 @@ textarea::selection,
 }
 
 
-/* Overskrifter: tung, geometrisk grotesk (font-hf-heading). Brødtekst/UI: font-hf-body. */
-.hf-heading {
-  font-family: var(--font-hf-heading);
-  font-weight: 700;
-}
+/* ---- EN fast typografi-regel, jf. design.md §4.2 (2026-09-26). ----
+   Kun 6 størrelser (32 · 22 · 17 · 15 · 13 · 11 px) og kun 2 vægte (400 · 700).
+   Klasserne sætter KUN skrift (familie, størrelse, linjehøjde, vægt) — farve
+   arves eller sættes med en farveklasse, og justering styres af containeren.
+   Ligger i @layer components, så Tailwind-utilities (mt-*, text-white …) kan
+   supplere dem uden !important. Ingen side må vælge text-[Npx], text-sm,
+   font-semibold o.l. selv — vælg en rolle herunder. */
+@layer components {
+  .hf-heading {
+    font-family: var(--font-hf-heading);
+    font-weight: 700;
+  }
 
-/* ---- Bindende tekstroller, jf. design.md §4.2. Nye klasser — erstatter
-   gradvist ad-hoc text-[Npx]/font-medium-brug pr. side, én skærm ad gangen. ---- */
-.hf-type-hero {
-  margin: 0;
-  font-family: var(--font-hf-heading);
-  font-size: 32px;
-  font-weight: 700;
-  line-height: 38px;
-  color: var(--hf-color-text);
-  text-align: left;
-}
+  /* 32 px */
+  .hf-type-hero {
+    margin: 0;
+    font-family: var(--font-hf-heading);
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 38px;
+  }
 
-.hf-type-page-title {
-  margin: 0;
-  font-family: var(--font-hf-heading);
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 29px;
-  color: var(--hf-color-text);
-  text-align: center;
-}
+  /* 22 px */
+  .hf-type-page-title {
+    margin: 0;
+    font-family: var(--font-hf-heading);
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 28px;
+  }
 
-.hf-type-nav-title {
-  margin: 0;
-  font-family: var(--font-hf-heading);
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 24px;
-  color: var(--hf-color-white, #ffffff);
-  text-align: center;
-}
+  /* 17 px */
+  /* .hf-type-card-title er samme rolle (korttitel). */
+  .hf-type-title,
+  .hf-type-card-title {
+    margin: 0;
+    font-family: var(--font-hf-heading);
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 22px;
+  }
 
-/* Sektionsoverskrift "──── Tekst ────". Afstanden over/under er en del af
-   klassen (design.md §4.3), så den er ens på alle sider: 32 px over, 12 px
-   under; ingen luft over, når overskriften er første element i sin blok.
-   Sider må ikke sætte mt-/mb- på den. */
-.hf-type-section-title {
-  margin: var(--hf-section-title-space-above, 32px) 0 var(--hf-section-title-space-below, 16px);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-hf-heading);
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 20px;
-  color: var(--hf-color-text);
-  text-align: center;
-}
+  .hf-type-nav-title {
+    margin: 0;
+    font-family: var(--font-hf-heading);
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 22px;
+    color: var(--hf-color-white, #ffffff);
+    text-align: center;
+  }
 
-.hf-type-section-title:first-child {
-  margin-top: 0;
-}
+  .hf-type-body-lg {
+    margin: 0;
+    font-family: var(--font-hf-body);
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 24px;
+  }
 
-.hf-type-section-title::before,
-.hf-type-section-title::after {
-  content: "";
-  flex: 1 1 auto;
-  height: 1px;
-  background-color: var(--hf-color-line);
-}
+  .hf-type-button {
+    margin: 0;
+    font-family: var(--font-hf-body);
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 22px;
+    text-align: center;
+  }
 
-.hf-type-category-title {
-  margin: 0;
-  font-family: var(--font-hf-heading);
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 22px;
-  color: #464646;
-  text-align: center;
-}
+  .hf-type-input {
+    margin: 0;
+    font-family: var(--font-hf-body);
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 24px;
+  }
 
-.hf-type-body-lg {
-  margin: 0;
-  font-family: var(--font-hf-body);
-  font-size: 20px;
-  font-weight: 400;
-  line-height: 29px;
-  color: var(--hf-color-text);
-}
+  .hf-type-input::placeholder {
+    color: var(--hf-color-placeholder);
+    opacity: 1;
+  }
 
-.hf-type-body {
-  margin: 0;
-  font-family: var(--font-hf-body);
-  font-size: 17px;
-  font-weight: 400;
-  line-height: 25px;
-  color: var(--hf-color-text);
-}
+  /* 15 px */
+  .hf-type-body {
+    margin: 0;
+    font-family: var(--font-hf-body);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 22px;
+  }
 
-.hf-type-body-sm {
-  margin: 0;
-  font-family: var(--font-hf-body);
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 22px;
-  color: var(--hf-color-text);
-}
+  .hf-type-section-title {
+    margin: var(--hf-section-title-space-above, 32px) 0 var(--hf-section-title-space-below, 16px);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-hf-heading);
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 20px;
+    text-align: center;
+  }
 
-.hf-type-caption {
-  margin: 0;
-  font-family: var(--font-hf-body);
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 18px;
-  color: var(--hf-color-text-secondary);
-}
+  .hf-type-section-title:first-child {
+    margin-top: 0;
+  }
 
-.hf-type-progress-active {
-  margin: 0;
-  font-family: var(--font-hf-body);
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 18px;
-  color: var(--hf-color-progress-dark);
-}
+  .hf-type-section-title::before,
+  .hf-type-section-title::after {
+    content: "";
+    flex: 1 1 auto;
+    height: 1px;
+    background-color: var(--hf-color-line);
+  }
 
-.hf-type-progress-inactive {
-  margin: 0;
-  font-family: var(--font-hf-body);
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 18px;
-  color: var(--hf-color-inactive);
-}
+  /* 13 px */
+  .hf-type-small {
+    margin: 0;
+    font-family: var(--font-hf-body);
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 18px;
+  }
 
-.hf-type-label {
-  margin: 0;
-  font-family: var(--font-hf-body);
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 16px;
-  color: var(--hf-color-text);
-}
+  /* Småtekst i sekundær grå — samme størrelse som .hf-type-small. */
+  .hf-type-caption {
+    margin: 0;
+    font-family: var(--font-hf-body);
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 18px;
+    color: var(--hf-color-text-secondary);
+  }
 
-.hf-type-button {
-  margin: 0;
-  font-family: var(--font-hf-body);
-  font-size: 17px;
-  font-weight: 700;
-  line-height: 24px;
-  text-align: center;
-}
+  .hf-type-label {
+    margin: 0;
+    font-family: var(--font-hf-body);
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 18px;
+  }
 
-.hf-type-input {
-  margin: 0;
-  font-family: var(--font-hf-body);
-  font-size: 17px;
-  font-weight: 400;
-  line-height: 24px;
-  color: var(--hf-color-text);
-}
+  .hf-type-progress-active {
+    margin: 0;
+    font-family: var(--font-hf-body);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 18px;
+    color: var(--hf-color-progress-dark);
+  }
 
-.hf-type-input::placeholder {
-  color: var(--hf-color-placeholder);
-  opacity: 1;
-}
+  .hf-type-progress-inactive {
+    margin: 0;
+    font-family: var(--font-hf-body);
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 18px;
+    color: var(--hf-color-inactive);
+  }
 
-.hf-type-placeholder {
-  margin: 0;
-  font-family: var(--font-hf-body);
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 24px;
-  color: var(--hf-color-placeholder);
-}
+  /* 11 px */
+  .hf-type-micro {
+    margin: 0;
+    font-family: var(--font-hf-body);
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 14px;
+  }
 
-.hf-type-tab {
-  margin: 0;
-  font-family: var(--font-hf-body);
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 16px;
-  text-align: center;
+  .hf-type-tab {
+    margin: 0;
+    font-family: var(--font-hf-body);
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 14px;
+    text-align: center;
+  }
+
+  /* Eneste vægt-modifier: fed (700) på en af rollerne ovenfor. */
+  .hf-type-strong {
+    font-weight: 700;
+  }
 }
 
 /* ---- Appbar-shell, jf. design.md §6.1/§9.3. Fast 44/1fr/44px-slotgrid, så
@@ -515,18 +523,9 @@ textarea::selection,
     gap: var(--hf-space-inline);
   }
 
-  /* Korttitel uden sektionslinjer (fx abonnementsnavn i et kort). */
-  .hf-type-card-title {
-    margin: 0;
-    font-family: var(--font-hf-heading);
-    font-size: 17px;
-    font-weight: 700;
-    line-height: 24px;
-    color: var(--hf-color-text);
-  }
 }
 
-/* Følgende regler skal ligge uden for @layer, fordi .hf-type-* også gør. */
+/* Følgende regler ligger uden for @layer, så de vinder over .hf-type-section-title (som ligger i @layer components). */
 /* I en .hf-page kommer en del af luften fra stakkens gap (16px), så
    overskriftens egne margener trækkes fra: resultatet er stadig 32px over
    og 16px under — aldrig en side-specifik mt-/mb-. */
@@ -551,24 +550,110 @@ textarea::selection,
   color: inherit;
 }
 
-/* Knapper */
-/* Padding er ikke sat her med vilje — angiv altid px- og py- på selve elementet,
-   så knappen kan bruges i både store (fuld bredde) og små (inline) sammenhænge. */
-.hf-btn-primary {
-  font-family: var(--font-hf-body);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  background: var(--hf-black);
-  color: var(--hf-white);
-  font-weight: 700;
-}
+/* ---- Knapper: EN fast regel (2026-09-26), jf. design.md §6.
+   Seks varianter — ingen side må style en <button> med egen baggrund,
+   kant, radius eller skrift. Alle har skriften indbygget (17 px fed for
+   handlingsknapper, 15 px fed for tekstknapper, 13 px fed for valgknapper).
+   Padding/højde sættes stadig på elementet (h-12 + px-4 er standard). ---- */
+@layer components {
+  .hf-btn-primary,
+  .hf-btn-secondary,
+  .hf-btn-danger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 8px;
+    font-family: var(--font-hf-body);
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 22px;
+    text-align: center;
+  }
 
-/* Primærknapper forbliver sorte, også deaktiveret (DECISIONS 2026-09-25) —
-   ingen grå opacity. !important overstyrer ældre disabled:opacity-*-klasser. */
-.hf-btn-primary:disabled {
-  opacity: 1 !important;
+  /* Hovedhandling: sort flade, hvid tekst. */
+  .hf-btn-primary {
+    background: var(--hf-color-action);
+    color: var(--hf-color-white);
+  }
+
+  /* Sekundær handling: sort kant, sort tekst. */
+  .hf-btn-secondary {
+    background: transparent;
+    border: 1.5px solid var(--hf-color-action);
+    color: var(--hf-color-action);
+  }
+
+  /* Farlig handling (slet, tilbagekald): rød kant, rød tekst. */
+  .hf-btn-danger {
+    background: transparent;
+    border: 1.5px solid var(--hf-color-danger);
+    color: var(--hf-color-danger);
+  }
+
+  .hf-btn-secondary:disabled,
+  .hf-btn-danger:disabled,
+  .hf-btn-text:disabled,
+  .hf-btn-icon:disabled,
+  .hf-choice:disabled {
+    opacity: 0.4;
+  }
+
+  /* Primærknapper forbliver sorte, også deaktiveret (DECISIONS 2026-09-25). */
+  .hf-btn-primary:disabled {
+    opacity: 1 !important;
+  }
+
+  /* Tekstknap/link-knap: 15 px fed, understreget, arver farve. */
+  .hf-btn-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: transparent;
+    font-family: var(--font-hf-body);
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 22px;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  /* Ikonknap: 44x44 rund, gennemsigtig, arver farve. */
+  .hf-btn-icon {
+    display: inline-flex;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background: transparent;
+  }
+
+  /* Valgknap (segment/filter/periode): beige flade; valgt = sort flade, hvid tekst. */
+  .hf-choice {
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 12px;
+    border-radius: 8px;
+    background: var(--hf-color-card);
+    color: var(--hf-color-text);
+    font-family: var(--font-hf-body);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 18px;
+  }
+
+  .hf-choice[aria-pressed="true"],
+  .hf-choice[aria-checked="true"],
+  .hf-choice[aria-selected="true"],
+  .hf-choice.is-selected {
+    background: var(--hf-color-action);
+    color: var(--hf-color-white);
+  }
 }
 
 /* Favorit/bookmark-overlay på produktbilleder (design.md §6.8/§9.7): 44x44 px
@@ -589,18 +674,6 @@ textarea::selection,
   color: var(--hf-white);
 }
 
-.hf-btn-secondary {
-  font-family: var(--font-hf-body);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  background: transparent;
-  border: 1.5px solid var(--hf-black);
-  color: var(--hf-black);
-  font-weight: 700;
-}
-
 /* "Notched" felt (border-kant med indlejret label), Hello Doc — bevidst
    afvigelse fra den generelle .hf-field-kontrakt, matcher direkte det
    HelloFresh-checkout-skærmbillede brugeren gav som reference for
@@ -619,7 +692,7 @@ textarea::selection,
   padding: 0 6px;
   color: var(--hf-color-text-secondary);
   font-family: var(--font-hf-body);
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .hd-notched-field input {
@@ -630,7 +703,7 @@ textarea::selection,
   outline: none;
   color: var(--hf-color-text);
   font-family: var(--font-hf-body);
-  font-size: 19px;
+  font-size: 17px;
 }
 
 .hd-notched-field input::placeholder {

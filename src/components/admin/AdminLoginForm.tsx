@@ -62,23 +62,23 @@ export function AdminLoginForm() {
 
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center px-4">
-      <h1 className="mb-1 text-xl font-semibold text-text-primary">Admin-login</h1>
-      <p className="mb-8 text-sm text-text-secondary">Log ind for at godkende nye produkter og billeder.</p>
+      <h1 className="hf-type-title mb-1 text-hf-black">Admin-login</h1>
+      <p className="hf-type-body mb-8 text-text-secondary">Log ind for at godkende nye produkter og billeder.</p>
 
       <button
         type="button"
         onClick={loginWithPasskey}
         disabled={passkeyBusy}
-        className="mb-4 rounded-md border border-hf-green-dark px-4 py-2.5 text-sm font-medium text-hf-green-dark disabled:opacity-60"
+        className="hf-type-body hf-type-strong mb-4 rounded-md border border-hf-green-dark px-4 py-2.5 text-hf-green-dark disabled:opacity-60"
       >
         {passkeyBusy ? "Venter på Face ID…" : "Log ind med Face ID / passkey"}
       </button>
-      <div className="mb-4 flex items-center gap-3 text-xs text-text-muted">
-        <span className="h-px flex-1 bg-border-strong" /> eller <span className="h-px flex-1 bg-border-strong" />
+      <div className="hf-type-small mb-4 flex items-center gap-3 text-text-muted">
+        <span className="h-px flex-1 bg-hf-tan-dark" /> eller <span className="h-px flex-1 bg-hf-tan-dark" />
       </div>
 
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="hf-type-body flex flex-col gap-1">
           Email
           <input
             type="email"
@@ -86,10 +86,10 @@ export function AdminLoginForm() {
             autoComplete="username webauthn"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-base"
+            className="hf-type-body rounded-md border border-hf-tan-dark bg-hf-white px-3 py-2"
           />
         </label>
-        <label className="flex flex-col gap-1 text-sm">
+        <label className="hf-type-body flex flex-col gap-1">
           Password
           <input
             type="password"
@@ -97,14 +97,14 @@ export function AdminLoginForm() {
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-base"
+            className="hf-type-body rounded-md border border-hf-tan-dark bg-hf-white px-3 py-2"
           />
         </label>
-        {error && <p className="text-sm text-hf-red-dark">{error}</p>}
+        {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
         <button
           type="submit"
           disabled={loading}
-          className="rounded-md bg-hf-green-dark px-4 py-2.5 text-sm font-medium text-hf-white disabled:opacity-60"
+          className="hf-btn-primary px-4 py-2.5 disabled:opacity-60"
         >
           {loading ? "Logger ind…" : "Fortsæt"}
         </button>

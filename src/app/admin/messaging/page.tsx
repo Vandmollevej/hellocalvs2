@@ -36,11 +36,11 @@ export default async function AdminMessagingPage() {
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <h1 className="text-lg font-semibold text-text-primary">{t(admin.locale, "messaging_title")}</h1>
-        <p className="mt-1 text-sm text-text-secondary">
+        <h1 className="hf-type-title text-hf-black">{t(admin.locale, "messaging_title")}</h1>
+        <p className="hf-type-body mt-1 text-text-secondary">
           Styr indhold og kanal for automatiske mails og pushbeskeder.
         </p>
-        <p className="mt-2 text-xs text-text-muted">
+        <p className="hf-type-small mt-2 text-text-muted">
           SMTP: {smtpConfigured ? "opsat" : "IKKE opsat — beskeder lægges i kø, men sendes ikke"} ·
           Web Push: {pushConfigured ? "opsat" : "IKKE opsat — beskeder lægges i kø, men sendes ikke"}
         </p>
@@ -62,13 +62,13 @@ export default async function AdminMessagingPage() {
       </section>
 
       <section>
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-text-muted">
+        <h2 className="hf-type-body hf-type-strong uppercase tracking-wide text-text-muted">
           Seneste beskeder
         </h2>
         <div className="mt-2 overflow-x-auto">
-          <table className="w-full text-left text-sm">
+          <table className="hf-type-body w-full text-left">
             <thead>
-              <tr className="border-b border-border-strong text-xs uppercase tracking-wide text-text-muted">
+              <tr className="hf-type-small border-b border-hf-tan-dark uppercase tracking-wide text-text-muted">
                 <th className="py-2 pr-3">Event</th>
                 <th className="py-2 pr-3">Til</th>
                 <th className="py-2 pr-3">Kanal</th>
@@ -78,12 +78,12 @@ export default async function AdminMessagingPage() {
             </thead>
             <tbody>
               {recentMessages.map((m) => (
-                <tr key={m.id} className="border-b border-border-strong">
+                <tr key={m.id} className="border-b border-hf-tan-dark">
                   <td className="py-2 pr-3">{m.event}</td>
                   <td className="py-2 pr-3 text-text-secondary">{m.toEmail ?? m.user?.email ?? "—"}</td>
                   <td className="py-2 pr-3 text-text-secondary">{m.channel}</td>
                   <td className="py-2 pr-3 text-text-secondary">{STATUS_LABELS[m.status] ?? m.status}</td>
-                  <td className="py-2 text-xs text-text-muted">
+                  <td className="hf-type-small py-2 text-text-muted">
                     {m.createdAt.toLocaleString("da-DK")}
                   </td>
                 </tr>
@@ -91,7 +91,7 @@ export default async function AdminMessagingPage() {
             </tbody>
           </table>
           {recentMessages.length === 0 && (
-            <p className="py-4 text-sm text-text-secondary">Ingen beskeder sendt endnu.</p>
+            <p className="hf-type-body py-4 text-text-secondary">Ingen beskeder sendt endnu.</p>
           )}
         </div>
       </section>

@@ -103,7 +103,7 @@ export default function SupportContactPage() {
             <button
               type="submit"
               disabled={sending}
-              className="hf-btn-primary hf-type-button h-12 w-full disabled:opacity-50"
+              className="hf-btn-primary h-12 w-full disabled:opacity-50"
             >
               {sending ? t("settings.support.contactSending") : t("settings.support.contactSend")}
             </button>

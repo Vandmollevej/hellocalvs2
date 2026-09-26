@@ -121,7 +121,7 @@ export function OnboardingWizard({
       aria-labelledby="onboarding-title"
     >
       <div className="px-4 pb-4 pt-9">
-        <p className="text-center text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
+        <p className="hf-type-small hf-type-strong text-text-secondary text-center uppercase tracking-[0.06em]">
           {t("onboarding.stepProgress", { current: stepIndex + 1, total: totalSteps })}
         </p>
         <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-hf-tan">
@@ -159,7 +159,7 @@ export function OnboardingWizard({
 
         {currentStep === "daily-log-preference" && (
           <div className="flex flex-col gap-4">
-            <h2 id="onboarding-title" className="hf-heading text-xl text-hf-black">
+            <h2 id="onboarding-title" className="hf-type-body-lg hf-heading text-hf-black">
               {t("onboarding.dailyLogQuestion")}
             </h2>
             <div className="flex flex-col gap-4">
@@ -185,10 +185,10 @@ export function OnboardingWizard({
 
         {currentStep === "health-import" && (
           <div className="flex flex-col gap-4">
-            <h2 id="onboarding-title" className="hf-heading text-xl text-hf-black">
+            <h2 id="onboarding-title" className="hf-type-body-lg hf-heading text-hf-black">
               {t("onboarding.healthImportQuestion")}
             </h2>
-            <p className="text-[14px] text-hf-black opacity-70">
+            <p className="hf-type-body text-text-secondary">
               {t("onboarding.healthImportHint")}
             </p>
             <button
@@ -196,7 +196,7 @@ export function OnboardingWizard({
                 save({ healthImportRequested: true });
                 goNext();
               }}
-              className="hf-btn-primary w-full py-3.5 text-[15px]"
+              className="hf-btn-primary w-full py-3.5"
             >
               {t("onboarding.setUpNow")}
             </button>
@@ -205,20 +205,20 @@ export function OnboardingWizard({
       </div>
 
       <div className="flex flex-col gap-2 px-4 pb-8">
-        <button onClick={goNext} className="hf-btn-primary w-full py-3.5 text-[15px]">
+        <button onClick={goNext} className="hf-btn-primary w-full py-3.5">
           {t("onboarding.next")}
         </button>
         <div className="flex justify-center gap-4 pt-1">
           <button
             onClick={remindLater}
-            className="text-[13px] font-medium text-hf-black opacity-60"
+            className="hf-type-small hf-type-strong text-text-secondary"
           >
             {t("onboarding.remindLater")}
           </button>
           {canDismissPermanently && (
             <button
               onClick={dontShowAgain}
-              className="text-[13px] font-medium text-hf-black opacity-60"
+              className="hf-type-small hf-type-strong text-text-secondary"
             >
               {t("onboarding.doNotShowAgain")}
             </button>
@@ -243,7 +243,7 @@ function YesNoStep({
   const { t } = useTranslation();
   return (
     <div className="flex flex-col gap-4">
-      <h2 id={id} className="hf-heading text-xl text-hf-black">
+      <h2 id={id} className="hf-type-body-lg hf-heading text-hf-black">
         {question}
       </h2>
       <div className="flex gap-3">
@@ -266,9 +266,8 @@ function ChoiceButton({
   return (
     <button
       onClick={onClick}
-      className={`flex-1 rounded-xl px-4 py-3.5 text-[15px] font-semibold transition-colors ${
-        selected ? "bg-hf-green text-hf-white" : "bg-hf-tan text-hf-black"
-      }`}
+      aria-pressed={selected}
+      className="hf-choice min-h-12 flex-1"
     >
       {label}
     </button>

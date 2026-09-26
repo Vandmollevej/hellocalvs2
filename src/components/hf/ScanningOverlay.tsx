@@ -4,9 +4,9 @@
 // i /camera/create.
 export function ScanningOverlay({ label }: { label: string }) {
   return (
-    <div className="absolute inset-0 overflow-hidden bg-black/55">
+    <div className="absolute inset-0 overflow-hidden bg-hf-black/55">
       <div className="hf-scan-line" />
-      <p className="absolute inset-x-4 bottom-4 rounded-full bg-black/50 px-4 py-2 text-center text-xs font-semibold text-white">
+      <p className="hf-type-small hf-type-strong absolute inset-x-4 bottom-4 rounded-full bg-hf-black/50 px-4 py-2 text-center text-hf-white">
         {label}
       </p>
     </div>

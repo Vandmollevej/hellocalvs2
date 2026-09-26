@@ -305,7 +305,7 @@ export default function StatisticsPage() {
           <div className="flex justify-end">
             <Link
               href="/statistics/unused-charts"
-              className="flex min-h-8 items-center gap-1 text-xs font-semibold text-hf-black"
+              className="hf-type-small hf-type-strong flex min-h-8 items-center gap-1 text-hf-black"
             >
               <IconPlus size={14} stroke={2.5} />
               {t("statCardsGrid.addCard")}
@@ -321,7 +321,7 @@ export default function StatisticsPage() {
             {showAddCard && (
               <Link
                 href="/statistics/unused-cards"
-                className="flex min-h-8 items-center gap-1 text-xs font-semibold text-hf-black"
+                className="hf-type-small hf-type-strong flex min-h-8 items-center gap-1 text-hf-black"
               >
                 <IconPlus size={14} stroke={2.5} />
                 {t("statCardsGrid.addCard")}

@@ -236,7 +236,7 @@ export default function BilledeDagbogPage() {
     >
 
       {loading || !user ? (
-        <p className="p-4 text-center text-[14px] text-hf-black opacity-60">
+        <p className="hf-type-body text-text-secondary p-4 text-center">
           {loading ? t("photoDiary.loading") : t("photoDiary.loadError")}
         </p>
       ) : (
@@ -254,12 +254,12 @@ export default function BilledeDagbogPage() {
                 type="button"
                 onClick={unlock}
                 disabled={unlocking}
-                className="hf-btn-primary w-full py-3.5 text-[15px] disabled:opacity-40"
+                className="hf-btn-primary w-full py-3.5 disabled:opacity-40"
               >
                 {unlocking ? t("photoDiary.unlocking") : t("photoDiary.showPhotos")}
               </button>
               {unlockError && (
-                <p className="text-center text-[13px] text-hf-red-dark">{t("photoDiary.unlockError")}</p>
+                <p className="hf-type-small text-center text-hf-red-dark">{t("photoDiary.unlockError")}</p>
               )}
             </>
           ) : (
@@ -276,12 +276,12 @@ export default function BilledeDagbogPage() {
                 type="button"
                 onClick={openCamera}
                 disabled={saving}
-                className="hf-btn-primary w-full py-3.5 text-[15px] disabled:opacity-40"
+                className="hf-btn-primary w-full py-3.5 disabled:opacity-40"
               >
                 {saving ? t("photoDiary.saving") : t("photoDiary.takePhoto")}
               </button>
               {storageError && (
-                <p className="text-center text-[13px] text-hf-red-dark">
+                <p className="hf-type-small text-center text-hf-red-dark">
                   {t(
                     storageError === "load"
                       ? "photoDiary.storageLoadError"
@@ -293,7 +293,7 @@ export default function BilledeDagbogPage() {
               )}
 
               {!photosLoaded ? null : ordered.length === 0 ? (
-                <p className="text-center text-[13px] text-hf-black opacity-60">
+                <p className="hf-type-small text-text-secondary text-center">
                   {t("photoDiary.noPhotosYet")}
                 </p>
               ) : (

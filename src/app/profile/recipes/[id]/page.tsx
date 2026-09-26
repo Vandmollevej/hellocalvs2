@@ -213,7 +213,7 @@ function RecipeDetailContent() {
       icon={<IconSoup size={20} stroke={2} />}
       footer={
         state === "ready" && kind === "shared" ? (
-          <button type="button" onClick={saveCopy} disabled={busy} className="hf-btn-primary w-full py-3.5 text-[15px] disabled:opacity-60">
+          <button type="button" onClick={saveCopy} disabled={busy} className="hf-btn-primary w-full py-3.5 disabled:opacity-60">
             {t("recipeDetail.saveCopy")}
           </button>
         ) : undefined
@@ -221,15 +221,15 @@ function RecipeDetailContent() {
     >
       <div className="hf-page">
         {state === "loading" && (
-          <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipeDetail.loading")}</p>
+          <p className="hf-type-body text-text-secondary py-8 text-center">{t("recipeDetail.loading")}</p>
         )}
         {state === "missing" && (
-          <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipeDetail.notFound")}</p>
+          <p className="hf-type-body text-text-secondary py-8 text-center">{t("recipeDetail.notFound")}</p>
         )}
 
         {state === "ready" && view && (
           <>
-            {notice && <p className="rounded-[8px] bg-hf-tan px-4 py-3 text-[13px] text-hf-black">{notice}</p>}
+            {notice && <p className="hf-type-small rounded-[8px] bg-hf-tan px-4 py-3 text-hf-black">{notice}</p>}
 
             {view.images.length > 0 && (
               <div className="no-scrollbar -mx-4 flex snap-x gap-2 overflow-x-auto px-4">
@@ -250,7 +250,7 @@ function RecipeDetailContent() {
             {kind === "own" && (
               <div>
                 <div className="flex items-center gap-3 rounded-2xl bg-hf-tan px-4 py-3">
-                  <span className="flex-1 text-[14px] font-medium text-hf-black">{t("createDish.shareLabel")}</span>
+                  <span className="hf-type-body hf-type-strong flex-1 text-hf-black">{t("createDish.shareLabel")}</span>
                   <button
                     type="button"
                     onClick={() => setShowShareInfo((open) => !open)}
@@ -263,7 +263,7 @@ function RecipeDetailContent() {
                   <Toggle checked={shared} onChange={changeSharing} disabled={busy} />
                 </div>
                 {showShareInfo && (
-                  <p className="mt-2 rounded-[8px] border border-hf-gray-light bg-hf-white px-3 py-2 text-[13px] text-hf-black">
+                  <p className="hf-type-small mt-2 rounded-[8px] border border-hf-tan-dark bg-hf-white px-3 py-2 text-hf-black">
                     {t("createDish.shareInfo")}
                   </p>
                 )}
@@ -275,7 +275,7 @@ function RecipeDetailContent() {
                 <button
                   type="button"
                   onClick={toggleFavorite}
-                  className="flex h-11 items-center gap-2 text-[14px] font-semibold text-hf-black"
+                  className="hf-type-body hf-type-strong flex h-11 items-center gap-2 text-hf-black"
                 >
                   {isFavorite ? <IconBookmarkFilled size={20} /> : <IconBookmark size={20} />}
                   {t(isFavorite ? "recipeDetail.removeFavorite" : "recipeDetail.addFavorite")}
@@ -285,7 +285,7 @@ function RecipeDetailContent() {
                     type="button"
                     onClick={report}
                     disabled={busy}
-                    className="flex h-11 items-center text-[12px] text-hf-black underline opacity-70 disabled:opacity-40"
+                    className="hf-btn-text text-text-secondary flex h-11 items-center disabled:opacity-40"
                   >
                     {t("recipeDetail.report")}
                   </button>
@@ -301,14 +301,14 @@ function RecipeDetailContent() {
                   max={MAX_RECIPE_PERSONS}
                   onChange={changePersons}
                 />
-                <p className="pt-3 text-[12px] text-hf-black opacity-60">
+                <p className="hf-type-small text-text-secondary pt-3">
                   {t("recipeFilters.kcalPerServing", { kcal: round(totals.kcal / persons) })}
                 </p>
               </div>
             )}
 
             <div>
-              <p className="mb-2 text-xs font-bold text-hf-black">{t("recipeDetail.ingredients")}</p>
+              <p className="hf-type-small hf-type-strong mb-2 text-hf-black">{t("recipeDetail.ingredients")}</p>
               <div className="overflow-hidden rounded-2xl bg-hf-tan">
                 {ingredients.map((ingredient) => (
                   <div
@@ -322,8 +322,8 @@ function RecipeDetailContent() {
                       )}
                     </div>
                     <div className="flex-1">
-                      <p className="text-[14px] font-medium text-hf-black">{ingredient.name}</p>
-                      <p className="text-xs text-hf-black opacity-60">
+                      <p className="hf-type-body hf-type-strong text-hf-black">{ingredient.name}</p>
+                      <p className="hf-type-small text-text-secondary">
                         {t("recipeDetail.gramsKcal", { grams: round(ingredient.grams), kcal: round(ingredient.kcal) })}
                       </p>
                     </div>
@@ -333,11 +333,11 @@ function RecipeDetailContent() {
             </div>
 
             <div className="hf-card">
-              <p className="text-xs font-bold text-hf-black">{t("recipeDetail.total")}</p>
-              <p className="text-sm text-hf-black">
+              <p className="hf-type-small hf-type-strong text-hf-black">{t("recipeDetail.total")}</p>
+              <p className="hf-type-body text-hf-black">
                 {t("recipeDetail.gramsKcal", { grams: round(totals.grams), kcal: round(totals.kcal) })}
               </p>
-              <p className="text-xs text-hf-black opacity-60">
+              <p className="hf-type-small text-text-secondary">
                 {t("recipeDetail.macrosSummary", {
                   protein: round(totals.protein, 1),
                   carbs: round(totals.carbs, 1),
@@ -348,16 +348,16 @@ function RecipeDetailContent() {
 
             {view.steps.length > 0 && (
               <div>
-                <p className="mb-2 text-xs font-bold text-hf-black">{t("recipeSteps.title")}</p>
+                <p className="hf-type-small hf-type-strong mb-2 text-hf-black">{t("recipeSteps.title")}</p>
                 <div className="overflow-hidden rounded-2xl bg-hf-tan">
                   {view.steps.map((step, index) => (
                     <div key={index} className="flex items-start gap-3 border-b border-hf-tan-dark px-4 py-3 last:border-b-0">
                       <div className="min-w-0 flex-1">
-                        <p className="text-[12px] font-bold text-hf-black opacity-60">
+                        <p className="hf-type-small hf-type-strong text-text-secondary">
                           {t("recipeSteps.stepNumber", { number: index + 1 })}
                         </p>
-                        {step.title && <p className="text-[14px] font-semibold text-hf-black">{step.title}</p>}
-                        {step.text && <p className="whitespace-pre-line text-[13px] text-hf-black">{step.text}</p>}
+                        {step.title && <p className="hf-type-body hf-type-strong text-hf-black">{step.title}</p>}
+                        {step.text && <p className="hf-type-small whitespace-pre-line text-hf-black">{step.text}</p>}
                       </div>
                       {step.image && (
                         // eslint-disable-next-line @next/next/no-img-element

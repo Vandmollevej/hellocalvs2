@@ -42,7 +42,7 @@ export function RecipeCategoriesDialog({
   const groups = Object.entries(RECIPE_CATEGORY_GROUPS) as [RecipeCategoryGroup, readonly string[]][];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-hf-black/40 sm:items-center">
       <div
         role="dialog"
         aria-modal="true"
@@ -50,10 +50,10 @@ export function RecipeCategoriesDialog({
         className="flex max-h-[85vh] w-full max-w-md flex-col rounded-t-2xl bg-hf-cream sm:rounded-2xl"
       >
         <div className="p-4 pb-2">
-          <p id="recipe-categories-title" className="text-[17px] font-semibold text-hf-black">
+          <p id="recipe-categories-title" className="hf-type-title text-hf-black">
             {t("recipeCategories.title")}
           </p>
-          <p className="mt-1 text-[13px] text-hf-black opacity-60">{t("recipeCategories.intro")}</p>
+          <p className="hf-type-small text-text-secondary mt-1">{t("recipeCategories.intro")}</p>
         </div>
         <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 pb-2">
           {groups.map(([group, values]) => {
@@ -78,7 +78,7 @@ export function RecipeCategoriesDialog({
                           index < values.length - 1 ? "border-b border-hf-tan-dark" : ""
                         }`}
                       >
-                        <span className="flex-1 text-[15px] text-hf-black">{label}</span>
+                        <span className="hf-type-body flex-1 text-hf-black">{label}</span>
                         <Toggle checked={tags.includes(tag)} onChange={(on) => toggle(tag, on)} ariaLabel={label} />
                       </div>
                     );
@@ -93,7 +93,7 @@ export function RecipeCategoriesDialog({
             type="button"
             onClick={close}
             disabled={busy}
-            className="hf-btn-primary w-full py-3.5 text-[15px] disabled:opacity-60"
+            className="hf-btn-primary w-full py-3.5 disabled:opacity-60"
           >
             {t("recipeCategories.close")}
           </button>

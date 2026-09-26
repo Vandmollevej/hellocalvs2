@@ -69,27 +69,27 @@ export function PendingProductCard({ product, hasExtra }: { product: Product; ha
   if (done) return null;
 
   return (
-    <div className="rounded-lg border border-border-strong bg-surface-2">
+    <div className="rounded-lg border border-hf-tan-dark bg-hf-white">
       <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center">
         <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-hf-tan">
           {product.imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={product.imageUrl} alt="" className="h-full w-full object-cover" />
           ) : (
-            <span className="text-xs text-text-muted">Intet billede</span>
+            <span className="hf-type-small text-text-muted">Intet billede</span>
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="truncate font-medium text-text-primary">{product.name}</p>
-          <p className="truncate text-xs text-text-secondary">
+          <p className="hf-type-strong truncate text-hf-black">{product.name}</p>
+          <p className="hf-type-small truncate text-text-secondary">
             {[product.brand?.name, product.externalSource, `${Math.round(product.kcalPer100g)} kcal / 100 g`]
               .filter(Boolean)
               .join(" · ")}
           </p>
-          <p className="text-xs text-text-muted">
+          <p className="hf-type-small text-text-muted">
             P {product.proteinPer100g}g · K {product.carbsPer100g}g · F {product.fatPer100g}g
           </p>
-          <p className="text-xs text-text-muted">
+          <p className="hf-type-small text-text-muted">
             Dato: {new Date(product.createdAt).toLocaleDateString("da-DK")}
           </p>
         </div>
@@ -119,7 +119,7 @@ export function PendingProductCard({ product, hasExtra }: { product: Product; ha
             type="button"
             onClick={() => act("reject")}
             disabled={loading !== null}
-            className="rounded-md border border-border-strong px-3 py-1.5 text-sm text-hf-red-dark disabled:opacity-60"
+            className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-1.5 text-hf-red-dark disabled:opacity-60"
           >
             {loading === "reject" ? "…" : "Afvis"}
           </button>
@@ -127,7 +127,7 @@ export function PendingProductCard({ product, hasExtra }: { product: Product; ha
             type="button"
             onClick={() => act("approve")}
             disabled={loading !== null}
-            className="rounded-md bg-hf-green-dark px-3 py-1.5 text-sm text-hf-white disabled:opacity-60"
+            className="hf-btn-primary px-3 py-1.5 disabled:opacity-60"
           >
             {loading === "approve" ? "…" : "Godkend"}
           </button>
@@ -135,65 +135,65 @@ export function PendingProductCard({ product, hasExtra }: { product: Product; ha
       </div>
 
       {expanded && (
-        <div className="border-t border-border-strong p-4">
+        <div className="border-t border-hf-tan-dark p-4">
           <div className="mb-4 flex justify-end">
-            <a href={`/admin/products/${product.id}`} className="text-xs text-hf-green-dark underline">
+            <a href={`/admin/products/${product.id}`} className="hf-type-small text-hf-green-dark underline">
               Åbn produktside (merge m.m.)
             </a>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <label className="flex flex-col gap-1 text-xs text-text-secondary">
+            <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
               Navn
               <input
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
+                className="hf-type-body rounded-md border border-hf-tan-dark px-2 py-1.5"
               />
             </label>
-            <label className="flex flex-col gap-1 text-xs text-text-secondary">
+            <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
               Producent
               <input
                 value={form.brand}
                 onChange={(e) => setForm({ ...form, brand: e.target.value })}
-                className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
+                className="hf-type-body rounded-md border border-hf-tan-dark px-2 py-1.5"
               />
             </label>
           </div>
           <div className="mt-4 grid grid-cols-4 gap-4">
-            <label className="flex flex-col gap-1 text-xs text-text-secondary">
+            <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
               Kcal / 100 g
               <input
                 type="number"
                 value={form.kcalPer100g}
                 onChange={(e) => setForm({ ...form, kcalPer100g: e.target.value })}
-                className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
+                className="hf-type-body rounded-md border border-hf-tan-dark px-2 py-1.5"
               />
             </label>
-            <label className="flex flex-col gap-1 text-xs text-text-secondary">
+            <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
               Protein (g)
               <input
                 type="number"
                 value={form.proteinPer100g}
                 onChange={(e) => setForm({ ...form, proteinPer100g: e.target.value })}
-                className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
+                className="hf-type-body rounded-md border border-hf-tan-dark px-2 py-1.5"
               />
             </label>
-            <label className="flex flex-col gap-1 text-xs text-text-secondary">
+            <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
               Kulhydrat (g)
               <input
                 type="number"
                 value={form.carbsPer100g}
                 onChange={(e) => setForm({ ...form, carbsPer100g: e.target.value })}
-                className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
+                className="hf-type-body rounded-md border border-hf-tan-dark px-2 py-1.5"
               />
             </label>
-            <label className="flex flex-col gap-1 text-xs text-text-secondary">
+            <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
               Fedt (g)
               <input
                 type="number"
                 value={form.fatPer100g}
                 onChange={(e) => setForm({ ...form, fatPer100g: e.target.value })}
-                className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
+                className="hf-type-body rounded-md border border-hf-tan-dark px-2 py-1.5"
               />
             </label>
           </div>
@@ -202,12 +202,12 @@ export function PendingProductCard({ product, hasExtra }: { product: Product; ha
               type="button"
               onClick={save}
               disabled={saving}
-              className="rounded-md bg-hf-green-dark px-4 py-1.5 text-sm text-hf-white disabled:opacity-60"
+              className="hf-btn-primary px-4 py-1.5 disabled:opacity-60"
             >
               {saving ? "Gemmer…" : "Gem ændringer"}
             </button>
-            {saved && <span className="text-sm text-hf-green-dark">Gemt ✓</span>}
-            {error && <span className="text-sm text-hf-red-dark">{error}</span>}
+            {saved && <span className="hf-type-body text-hf-green-dark">Gemt ✓</span>}
+            {error && <span className="hf-type-body text-hf-red-dark">{error}</span>}
           </div>
         </div>
       )}

@@ -138,8 +138,8 @@ export function StatChart({
   return (
     <div className="relative rounded-2xl bg-hf-tan p-4">
       <div className="mb-4 flex items-baseline justify-between">
-        <p className="text-sm font-bold text-hf-black">{title}</p>
-        <p className="text-[11px] text-hf-black opacity-50">{t("statChart.last7Days")}</p>
+        <p className="hf-type-body hf-type-strong text-hf-black">{title}</p>
+        <p className="hf-type-micro text-text-secondary">{t("statChart.last7Days")}</p>
       </div>
 
       <svg viewBox="0 0 280 90" className="w-full overflow-visible" aria-hidden="true">
@@ -239,7 +239,7 @@ export function StatChart({
         >
           <span className="flex flex-wrap items-center gap-3">
             {visibleSeries.map((s) => (
-              <span key={s.key} className="flex items-center gap-1.5 text-xs">
+              <span key={s.key} className="hf-type-small flex items-center gap-1.5">
                 <span
                   aria-hidden="true"
                   className="inline-block size-2 rounded-full"
@@ -268,7 +268,7 @@ export function StatChart({
               return (
                 <div
                   key={s.key}
-                  className="flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold hover:bg-hf-cream"
+                  className="hf-type-body hf-type-strong flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left hover:bg-hf-cream"
                 >
                   <span
                     aria-hidden="true"

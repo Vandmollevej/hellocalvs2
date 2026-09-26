@@ -85,10 +85,10 @@ export default function CommunicationPage() {
       title={t("profile.section.communication")}
     >
       <div className="hf-page">
-        <p className="hf-type-body-sm opacity-70">{t("profile.communication.intro")}</p>
+        <p className="text-text-secondary hf-type-body">{t("profile.communication.intro")}</p>
 
         {!user ? (
-          <p className="hf-type-body-sm opacity-70">{t("profile.loading")}</p>
+          <p className="text-text-secondary hf-type-body">{t("profile.loading")}</p>
         ) : (
           <>
             <SectionTitle>{t("profile.communication.pushSection")}</SectionTitle>
@@ -124,22 +124,22 @@ export default function CommunicationPage() {
 
         <SectionTitle>{t("profile.communication.specificSection")}</SectionTitle>
         <SectionDivider />
-        <p className="hf-type-caption -mt-2 opacity-70">{t("profile.communication.specificHint")}</p>
+        <p className="text-text-secondary hf-type-caption -mt-2">{t("profile.communication.specificHint")}</p>
         {!preferences ? (
-          <p className="hf-type-body-sm opacity-70">{t("profile.loading")}</p>
+          <p className="text-text-secondary hf-type-body">{t("profile.loading")}</p>
         ) : (
           <div className="flex flex-col gap-4">
             {preferences.map((pref) => (
               <div key={pref.event} className="rounded-[8px] bg-hf-tan p-4">
-                <p className="hf-type-body-sm mb-4 font-bold">
+                <p className="hf-type-body mb-4">
                   {EVENT_LABELS[pref.event] ?? pref.event}
                 </p>
                 <div className="flex items-center justify-between">
-                  <span className="hf-type-body-sm">E-mail</span>
+                  <span className="hf-type-body">E-mail</span>
                   <Toggle checked={pref.email} onChange={(v) => updatePreference(pref.event, "email", v)} />
                 </div>
                 <div className="mt-4 flex items-center justify-between">
-                  <span className="hf-type-body-sm">Push</span>
+                  <span className="hf-type-body">Push</span>
                   <Toggle checked={pref.push} onChange={(v) => updatePreference(pref.event, "push", v)} />
                 </div>
               </div>
@@ -147,7 +147,7 @@ export default function CommunicationPage() {
           </div>
         )}
 
-        <Link href="/betingelser" className="hf-type-body-sm mt-2 text-center underline opacity-70">
+        <Link href="/betingelser" className="text-text-secondary hf-type-body mt-2 text-center underline">
           {t("profile.communication.termsLink")}
         </Link>
       </div>

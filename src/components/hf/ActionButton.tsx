@@ -5,8 +5,8 @@ import type { ComponentProps } from "react";
 // handlinger fylder altid hele indholdsbredden — ingen smalle, centrerede
 // knapper. Ikonknapper, +/−, luk/tilbage og små inline-kontroller bruger ikke
 // denne komponent. Udseendet (højde, kant, radius, typografi) er uændret og
-// kommer fra .hf-btn-primary/.hf-btn-secondary samt `className`.
-type Variant = "primary" | "secondary";
+// kommer fra .hf-btn-primary/.hf-btn-secondary/.hf-btn-danger samt `className`.
+type Variant = "primary" | "secondary" | "danger";
 
 function actionClass(variant: Variant, className?: string) {
   return `hf-btn-${variant} w-full ${className ?? ""}`.trim();

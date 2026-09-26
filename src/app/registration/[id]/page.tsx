@@ -26,8 +26,8 @@ function MacroBar({ label, grams, max }: { label: string; grams: number; max: nu
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-[13px] text-hf-black opacity-70">{label}</span>
-        <span className="min-w-[36px] text-right text-base font-bold text-hf-black">
+        <span className="hf-type-small text-text-secondary">{label}</span>
+        <span className="hf-type-body hf-type-strong min-w-[36px] text-right text-hf-black">
           {Math.round(grams * 10) / 10} g
         </span>
       </div>
@@ -66,7 +66,7 @@ export default function RegistrationPage() {
 
     return (
       <HfScreen title={t("addProduct.title")}>
-        <p className="p-4 text-center text-sm text-hf-black opacity-60">{message}</p>
+        <p className="hf-type-body text-text-secondary p-4 text-center">{message}</p>
       </HfScreen>
     );
   }
@@ -81,8 +81,8 @@ export default function RegistrationPage() {
       </div>
 
       <div className="hf-page">
-        <h1 className="hf-heading text-lg text-hf-black">{registration.titleSnapshot}</h1>
-        <p className="text-sm text-hf-black opacity-70">
+        <h1 className="hf-type-body-lg hf-heading text-hf-black">{registration.titleSnapshot}</h1>
+        <p className="hf-type-body text-text-secondary">
           {registration.amountGrams > 0
             ? Math.round((registration.kcalSnapshot / registration.amountGrams) * 100)
             : Math.round(registration.kcalSnapshot)}{" "}
@@ -98,14 +98,14 @@ export default function RegistrationPage() {
           const roundedCount = Math.round(count * 10) / 10;
           const kcalForCount = Math.round(registration.kcalSnapshot);
           return (
-            <p className="text-sm text-hf-black opacity-70">
+            <p className="hf-type-body text-text-secondary">
               {kcalForCount} kcal {t("registration.perUnit", { unit: `${roundedCount} ${unitLabel}` })}
             </p>
           );
         })()}
 
         <div className="hf-card hf-card--form">
-          <p className="hf-heading text-[15px] text-hf-black">{t("common.macroBreakdown")}</p>
+          <p className="hf-type-body hf-heading text-hf-black">{t("common.macroBreakdown")}</p>
           <MacroBar label={t("common.protein")} grams={registration.proteinSnapshot} max={40} />
           <MacroBar label={t("common.carbs")} grams={registration.carbsSnapshot} max={80} />
           <MacroBar label={t("common.fat")} grams={registration.fatSnapshot} max={30} />

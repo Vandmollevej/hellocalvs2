@@ -89,7 +89,7 @@ function LogIndContent() {
       </div>
 
       <form id="login-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-4 pt-4">
-        <p className="hf-type-body-sm">{t("login.chooseCountry")}</p>
+        <p className="hf-type-body">{t("login.chooseCountry")}</p>
         <div className="mt-2 h-px bg-hf-gray-border" />
         <Link
           href="/login/country"
@@ -99,7 +99,7 @@ function LogIndContent() {
             <Image src="/flag-denmark.png" alt="" width={22} height={16} className="rounded-[2px]" />
             <span>{t("login.country")}</span>
           </div>
-          <HfChevron className="text-hf-gray" />
+          <HfChevron className="text-text-muted" />
         </Link>
 
         <div className="mt-8 flex flex-col gap-4">
@@ -108,7 +108,7 @@ function LogIndContent() {
               type="button"
               onClick={handleFaceId}
               disabled={submitting}
-              className="hf-btn-primary hf-type-button h-12 w-full disabled:opacity-40"
+              className="hf-btn-primary h-12 w-full disabled:opacity-40"
             >
               {t("login.continueWithFaceId")}
             </button>
@@ -122,7 +122,7 @@ function LogIndContent() {
           />
         </div>
 
-        <p className="hf-type-body-sm mt-4 text-center opacity-70">{t("common.or")}</p>
+        <p className="text-text-secondary hf-type-body mt-4 text-center">{t("common.or")}</p>
 
         <div className="mt-2 flex flex-col gap-4">
           <TextField
@@ -140,14 +140,14 @@ function LogIndContent() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <p className="hf-type-body-sm mt-2 text-right">
+        <p className="hf-type-body mt-2 text-right">
           <Link href="/forgot-password" className="underline">
             {t("login.forgotPassword")}
           </Link>
         </p>
         {error && <p className="hf-type-caption mt-2 text-hf-red-dark">{error}</p>}
 
-        <p className="hf-type-body-sm mt-4 text-center">
+        <p className="hf-type-body mt-4 text-center">
           {t("login.newHere")} <Link href="/signup" className="underline">{t("login.createAccount")}</Link>
         </p>
       </form>
@@ -157,14 +157,14 @@ function LogIndContent() {
           type="submit"
           form="login-form"
           disabled={submitting || !email || !password}
-          className="hf-btn-primary hf-type-button h-12 w-full disabled:opacity-40"
+          className="hf-btn-primary h-12 w-full disabled:opacity-40"
         >
           {submitting ? t("login.submitting") : t("login.continueButton")}
         </button>
       </div>
 
       {faceIdPhase && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-hf-black/40 p-4">
           <div className="flex h-44 w-44 items-center justify-center rounded-[28px] bg-hf-cream shadow-xl">
             <FaceIdAnimation phase={faceIdPhase} onDone={() => router.push(afterLoginPath(next))} />
           </div>

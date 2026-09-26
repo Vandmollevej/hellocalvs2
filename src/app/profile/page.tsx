@@ -62,7 +62,7 @@ export default function ProfilePage() {
   return (
     <HfScreen title={t("profile.title")} alwaysShowBackButton showAppSettingsButton>
       {loading || !user ? (
-        <p className="p-4 text-center text-[14px] text-hf-black opacity-60">
+        <p className="hf-type-body text-text-secondary p-4 text-center">
           {loading ? t("profile.loading") : t("profile.loadError")}
         </p>
       ) : (

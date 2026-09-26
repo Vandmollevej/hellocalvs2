@@ -47,7 +47,7 @@ const MACRO_OPTIONS: { key: MacroKey; level: MacroLevel }[] = [
 function Row({ label, checked, onChange, divider = true }: { label: string; checked: boolean; onChange: (value: boolean) => void; divider?: boolean }) {
   return (
     <div className={`flex min-h-12 items-center gap-3 py-2 ${divider ? "border-b border-hf-tan-dark" : ""}`}>
-      <span className="flex-1 text-[15px] text-hf-black">{label}</span>
+      <span className="hf-type-body flex-1 text-hf-black">{label}</span>
       <Toggle checked={checked} onChange={onChange} ariaLabel={label} />
     </div>
   );
@@ -105,7 +105,7 @@ function RecipeFiltersContent() {
                 onChange={(persons) => update({ ...filters, persons })}
               />
               {portionKcal !== null && (
-                <p className="pt-3 text-[12px] text-hf-black opacity-60">
+                <p className="hf-type-small text-text-secondary pt-3">
                   {t("recipeFilters.portionHint", { kcal: portionKcal })}
                 </p>
               )}
@@ -226,7 +226,7 @@ function RecipeFiltersContent() {
                 showEnergySplit: filters.showEnergySplit,
               })
             }
-            className="hf-btn-secondary w-full py-3 text-[14px]"
+            className="hf-btn-secondary w-full py-3"
           >
             {t("recipeFilters.reset")}
           </button>

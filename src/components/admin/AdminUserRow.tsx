@@ -46,7 +46,7 @@ export function AdminUserRow({ user }: { user: AdminUserRowData }) {
 
   if (user.forgottenAt) {
     return (
-      <tr className="border-b border-border-strong text-text-muted">
+      <tr className="border-b border-hf-tan-dark text-text-muted">
         <td className="py-2 pr-3">Slettet bruger</td>
         <td className="py-2 pr-3" colSpan={5}>
           Anonymiseret {new Date(user.forgottenAt).toLocaleDateString("da-DK")}
@@ -56,22 +56,22 @@ export function AdminUserRow({ user }: { user: AdminUserRowData }) {
   }
 
   return (
-    <tr className="border-b border-border-strong">
+    <tr className="border-b border-hf-tan-dark">
       <td className="py-2 pr-3">
-        <p className="font-medium text-text-primary">{user.displayName}</p>
-        <p className="text-xs text-text-muted">{user.email}</p>
+        <p className="hf-type-strong text-hf-black">{user.displayName}</p>
+        <p className="hf-type-small text-text-muted">{user.email}</p>
       </td>
       <td className="py-2 pr-3">
         <span
-          className={`rounded-full px-2 py-0.5 text-xs ${
+          className={`hf-type-small rounded-full px-2 py-0.5 ${
             isActive ? "bg-hf-green-dark text-hf-white" : "bg-hf-tan text-text-secondary"
           }`}
         >
           {SUBSCRIPTION_LABELS[user.subscriptionStatus] ?? user.subscriptionStatus}
         </span>
       </td>
-      <td className="py-2 pr-3 text-sm text-text-secondary">{user.pointsBalance}</td>
-      <td className="py-2 pr-3 text-xs text-text-secondary">
+      <td className="hf-type-body py-2 pr-3 text-text-secondary">{user.pointsBalance}</td>
+      <td className="hf-type-small py-2 pr-3 text-text-secondary">
         {[
           user.wantsUpdateNewsEmails && "Nyheder",
           user.wantsAdviceEmails && "Gode råd",
@@ -80,7 +80,7 @@ export function AdminUserRow({ user }: { user: AdminUserRowData }) {
           .filter(Boolean)
           .join(", ") || "Ingen"}
       </td>
-      <td className="py-2 pr-3 text-xs text-text-muted">
+      <td className="hf-type-small py-2 pr-3 text-text-muted">
         {new Date(user.createdAt).toLocaleDateString("da-DK")}
       </td>
       <td className="py-2">

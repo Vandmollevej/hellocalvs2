@@ -42,13 +42,13 @@ export function ForwardButton({ kind, itemId, name }: { kind: "PRODUCT" | "DISH"
 
   return (
     <div className="flex min-w-0 items-center justify-end gap-2">
-      {error && <span className="whitespace-nowrap text-[13px] text-hf-red-dark">{error}</span>}
+      {error && <span className="hf-type-small whitespace-nowrap text-hf-red-dark">{error}</span>}
       <button
         type="button"
         onClick={share}
         disabled={sending}
         aria-label="Videresend til en ven"
-        className="flex h-11 w-11 shrink-0 items-center justify-center text-hf-black disabled:opacity-50"
+        className="hf-btn-icon text-hf-black disabled:opacity-50"
       >
         <IconShare3 size={24} />
       </button>

@@ -104,7 +104,7 @@ export default function EditHelloDocUserPage() {
   if (loadError) {
     return (
       <HfScreen title={t("helloDoc.editTitle")}>
-        <p className="hf-type-body-sm p-4 text-hf-red-dark">{t("helloDoc.loadError")}</p>
+        <p className="hf-type-body p-4 text-hf-red-dark">{t("helloDoc.loadError")}</p>
       </HfScreen>
     );
   }
@@ -112,7 +112,7 @@ export default function EditHelloDocUserPage() {
   if (!share) {
     return (
       <HfScreen title={t("helloDoc.editTitle")}>
-        <p className="hf-type-body-sm p-4 opacity-70">{t("common.loading")}</p>
+        <p className="text-text-secondary hf-type-body p-4">{t("common.loading")}</p>
       </HfScreen>
     );
   }
@@ -133,7 +133,7 @@ export default function EditHelloDocUserPage() {
             type="button"
             onClick={saveChanges}
             disabled={saving || !name.trim() || !email.trim()}
-            className="hf-btn-primary hf-type-button h-16 w-full text-[19px] disabled:opacity-40"
+            className="hf-btn-primary h-16 w-full disabled:opacity-40"
             style={{ borderRadius: 12 }}
           >
             {saving ? t("helloDoc.sending") : t("helloDoc.saveChanges")}
@@ -144,13 +144,13 @@ export default function EditHelloDocUserPage() {
     >
       <div className="hf-page hf-page--sections">
         <div className="flex items-center justify-between">
-          <span className="hf-type-caption opacity-70">{statusLabel}</span>
+          <span className="text-text-secondary hf-type-caption">{statusLabel}</span>
           {share.status === "PENDING" && (
             <button
               type="button"
               onClick={resend}
               disabled={resending}
-              className="hf-type-caption font-bold text-hf-green disabled:opacity-50"
+              className="hf-type-caption text-hf-green disabled:opacity-50"
             >
               {resending ? t("helloDoc.resending") : t("helloDoc.resend")}
             </button>
@@ -172,8 +172,7 @@ export default function EditHelloDocUserPage() {
         <button
           type="button"
           onClick={revoke}
-          className="hf-type-button h-12 w-full rounded-[8px] border text-hf-red-dark"
-          style={{ borderColor: "var(--hf-color-danger)" }}
+          className="hf-btn-danger h-12 w-full"
         >
           {t("helloDoc.revoke")}
         </button>

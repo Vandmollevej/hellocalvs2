@@ -229,7 +229,7 @@ function OpretProduktContent() {
       <HfScreen title={t("productCreate.title")} icon={<IconApple size={20} stroke={2} />}>
         <div className="hf-page">
           <div
-            className="hf-type-body-sm rounded-[8px] p-4 text-center"
+            className="hf-type-body rounded-[8px] p-4 text-center"
             style={{ background: "var(--hf-color-brand)", color: "var(--hf-color-white)" }}
           >
             {t("productCreate.savedOffline")}
@@ -250,7 +250,7 @@ function OpretProduktContent() {
       <div className="hf-page">
         {fromFailedAdd && (
           <div
-            className="hf-type-body-sm rounded-[8px] p-4 text-center"
+            className="hf-type-body rounded-[8px] p-4 text-center"
             style={{ background: "var(--hf-color-brand)", color: "var(--hf-color-white)" }}
           >
             {t("productCreate.failedAddBanner")}
@@ -260,9 +260,9 @@ function OpretProduktContent() {
         {fromFailedAdd && (
           <div>
             <div
-              className="hf-type-body-sm rounded-[8px] border-2 p-4 text-center"
+              className="hf-type-body rounded-[8px] border-2 p-4 text-center"
               style={{
-                background: "#FDF3D3",
+                background: "var(--hf-color-warning-bg)",
                 borderColor: "var(--hf-color-brand)",
                 color: "var(--hf-color-text)",
               }}

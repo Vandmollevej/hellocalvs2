@@ -92,8 +92,8 @@ export function ProductImageGallery({
   }
 
   return (
-    <div className="rounded-lg border border-border-strong bg-surface-2 p-4">
-      <p className="mb-4 text-xs font-medium uppercase tracking-wide text-text-muted">
+    <div className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+      <p className="hf-type-small hf-type-strong mb-4 uppercase tracking-wide text-text-muted">
         Billeder — ét hovedbillede + op til {MAX_SECONDARY} øvrige (fx en æskes andre sider)
       </p>
       <div className="flex flex-wrap gap-4">
@@ -114,16 +114,16 @@ export function ProductImageGallery({
               label="Øvrigt billede"
             />
             <div className="flex gap-1">
-              <button type="button" onClick={() => move(img.id, "up")} className="rounded border border-border-strong px-1.5 text-xs">
+              <button type="button" onClick={() => move(img.id, "up")} className="hf-type-small rounded border border-hf-tan-dark px-1.5">
                 ↑
               </button>
-              <button type="button" onClick={() => move(img.id, "down")} className="rounded border border-border-strong px-1.5 text-xs">
+              <button type="button" onClick={() => move(img.id, "down")} className="hf-type-small rounded border border-hf-tan-dark px-1.5">
                 ↓
               </button>
               <button
                 type="button"
                 onClick={() => removeSecondary(img.id)}
-                className="rounded border border-border-strong px-1.5 text-xs text-hf-red-dark"
+                className="hf-type-small rounded border border-hf-tan-dark px-1.5 text-hf-red-dark"
               >
                 Slet
               </button>
@@ -137,10 +137,10 @@ export function ProductImageGallery({
                     type="button"
                     onClick={() => toggleTag(img, tag)}
                     className={
-                      "rounded-full border px-1.5 py-0.5 text-[10px] " +
+                      "hf-type-micro rounded-full border px-1.5 py-0.5 " +
                       (active
                         ? "border-hf-green-dark bg-hf-green-dark text-hf-white"
-                        : "border-border-strong text-text-muted")
+                        : "border-hf-tan-dark text-text-muted")
                     }
                   >
                     {label}
@@ -151,27 +151,27 @@ export function ProductImageGallery({
           </div>
         ))}
         {images.length < MAX_SECONDARY && (
-          <div className="flex h-28 w-28 flex-shrink-0 items-center justify-center rounded-lg border-2 border-dashed border-border-strong text-3xl text-text-muted">
+          <div className="hf-type-hero flex h-28 w-28 flex-shrink-0 items-center justify-center rounded-lg border-2 border-dashed border-hf-tan-dark text-text-muted">
             +
           </div>
         )}
       </div>
 
       <div className="mt-4 flex flex-wrap items-end gap-3">
-        <label className="flex flex-col gap-1 text-xs text-text-secondary">
+        <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
           Hovedbillede-URL
           <input
             value={primaryUrl}
             onChange={(e) => setPrimaryUrl(e.target.value)}
             placeholder="https://…"
-            className="w-64 rounded-md border border-border-strong px-2 py-1.5 text-sm"
+            className="hf-type-body w-64 rounded-md border border-hf-tan-dark px-2 py-1.5"
           />
         </label>
         <button
           type="button"
           onClick={savePrimary}
           disabled={savingPrimary}
-          className="rounded-md bg-hf-green-dark px-3 py-1.5 text-sm text-hf-white disabled:opacity-60"
+          className="hf-btn-primary px-3 py-1.5 disabled:opacity-60"
         >
           {savingPrimary ? "Gemmer…" : "Gem hovedbillede"}
         </button>
@@ -179,26 +179,26 @@ export function ProductImageGallery({
 
       {images.length < MAX_SECONDARY && (
         <div className="mt-4 flex flex-wrap items-end gap-3">
-          <label className="flex flex-col gap-1 text-xs text-text-secondary">
+          <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
             Tilføj øvrigt billede (URL)
             <input
               value={newUrl}
               onChange={(e) => setNewUrl(e.target.value)}
               placeholder="https://…"
-              className="w-64 rounded-md border border-border-strong px-2 py-1.5 text-sm"
+              className="hf-type-body w-64 rounded-md border border-hf-tan-dark px-2 py-1.5"
             />
           </label>
           <button
             type="button"
             onClick={addSecondary}
             disabled={adding}
-            className="rounded-md border border-hf-green-dark px-3 py-1.5 text-sm text-hf-green-dark disabled:opacity-60"
+            className="hf-type-body rounded-md border border-hf-green-dark px-3 py-1.5 text-hf-green-dark disabled:opacity-60"
           >
             {adding ? "Tilføjer…" : "Tilføj"}
           </button>
         </div>
       )}
-      {error && <p className="mt-2 text-xs text-hf-red-dark">{error}</p>}
+      {error && <p className="hf-type-small mt-2 text-hf-red-dark">{error}</p>}
     </div>
   );
 }
@@ -229,12 +229,12 @@ function Thumb({
           // eslint-disable-next-line @next/next/no-img-element
           <img src={url} alt="" className="h-full w-full object-cover" />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-center text-[10px] text-text-muted">
+          <div className="hf-type-micro flex h-full w-full items-center justify-center text-center text-text-muted">
             Intet billede
           </div>
         )}
       </div>
-      <p className="mt-1 text-center text-[10px] text-text-muted">{label}</p>
+      <p className="hf-type-micro mt-1 text-center text-text-muted">{label}</p>
     </div>
   );
 }

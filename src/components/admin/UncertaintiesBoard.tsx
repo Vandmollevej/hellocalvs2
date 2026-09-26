@@ -56,7 +56,7 @@ export function UncertaintiesBoard({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-2 border-b border-border-strong">
+      <div className="flex flex-wrap items-center gap-2 border-b border-hf-tan-dark">
         {tabs.map((t) => {
           const count = rows.filter((r) => r.tab === t.key).length;
           return (
@@ -64,9 +64,9 @@ export function UncertaintiesBoard({
               key={t.key}
               type="button"
               onClick={() => setTab(t.key)}
-              className={`-mb-px border-b-2 px-3 py-2 text-sm ${
+              className={`hf-type-body -mb-px border-b-2 px-3 py-2 ${
                 tab === t.key
-                  ? "border-hf-green-dark font-medium text-hf-green-dark"
+                  ? "hf-type-strong border-hf-green-dark text-hf-green-dark"
                   : "border-transparent text-text-secondary hover:text-text-primary"
               }`}
             >
@@ -76,7 +76,7 @@ export function UncertaintiesBoard({
         })}
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 text-xs text-text-muted">
+      <div className="hf-type-small flex flex-wrap items-center gap-2 text-text-muted">
         Sortér:
         {SORTS.map((s) => (
           <button
@@ -86,7 +86,7 @@ export function UncertaintiesBoard({
             className={`rounded-full border px-2.5 py-1 ${
               sort === s.key
                 ? "border-hf-green-dark bg-hf-green-dark text-hf-white"
-                : "border-border-strong text-text-secondary hover:bg-hf-tan"
+                : "border-hf-tan-dark text-text-secondary hover:bg-hf-tan"
             }`}
           >
             {s.label}
@@ -99,14 +99,14 @@ export function UncertaintiesBoard({
       </div>
 
       {visible.length === 0 ? (
-        <p className="text-sm text-text-secondary">Ingen usikre produkter i denne fane.</p>
+        <p className="hf-type-body text-text-secondary">Ingen usikre produkter i denne fane.</p>
       ) : (
         <div className="flex flex-col gap-2">
           {visible.map((row) => (
             <div
               key={row.id}
-              className={`flex items-center gap-3 rounded-lg border bg-surface-2 p-3 ${
-                row.urgent ? "border-2 border-hf-red-dark" : "border-border-strong"
+              className={`flex items-center gap-3 rounded-lg border bg-hf-white p-3 ${
+                row.urgent ? "border-2 border-hf-red-dark" : "border-hf-tan-dark"
               }`}
             >
               <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-md bg-hf-tan">
@@ -116,15 +116,15 @@ export function UncertaintiesBoard({
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-text-primary">{row.productName}</p>
-                <p className="text-xs text-text-muted">
+                <p className="hf-type-body hf-type-strong truncate text-hf-black">{row.productName}</p>
+                <p className="hf-type-small text-text-muted">
                   {row.photoTypeLabel && row.tab === "images" ? `${row.photoTypeLabel} · ` : ""}
                   {row.brandName ? `${row.brandName} · ` : ""}
                   oprettet {new Date(row.productCreatedAt).toLocaleDateString("da-DK")} ·{" "}
                   <button
                     type="button"
                     onClick={() => setProductOverlay(row.productId)}
-                    className="text-hf-green-dark underline"
+                    className="hf-btn-text text-hf-green-dark"
                   >
                     Se produkt
                   </button>
@@ -133,13 +133,13 @@ export function UncertaintiesBoard({
               <button
                 type="button"
                 onClick={() => setEditing(row)}
-                className="rounded-md border border-border-strong px-2.5 py-1 text-xs text-text-secondary hover:bg-hf-tan"
+                className="hf-btn-secondary px-2.5 py-1"
               >
                 Rediger
               </button>
               <span
-                className={`w-14 text-right text-sm font-semibold ${
-                  row.urgent ? "text-hf-red-dark" : "text-text-primary"
+                className={`hf-type-body hf-type-strong w-14 text-right ${
+                  row.urgent ? "text-hf-red-dark" : "text-hf-black"
                 }`}
               >
                 {row.uncertaintyPercent} %
@@ -192,17 +192,17 @@ function Overlay({ children, onClose }: { children: React.ReactNode; onClose: ()
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/60 p-4 sm:p-8"
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-hf-black/60 p-4 sm:p-8"
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-3xl rounded-lg bg-surface-2 p-4 shadow-xl"
+        className="relative w-full max-w-3xl rounded-lg bg-hf-white p-4 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-3 top-2 text-xl text-text-muted hover:text-text-primary"
+          className="hf-type-body-lg absolute right-3 top-2 text-text-muted hover:text-text-primary"
           aria-label="Luk"
         >
           ×
@@ -285,8 +285,8 @@ function EditLightbox({ row, fields, onSaved }: { row: UncertaintyRow; fields: F
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <p className="pr-8 font-medium text-text-primary">{row.productName}</p>
-        <p className="text-xs text-text-muted">{row.uncertaintyPercent} % usikkerhed</p>
+        <p className="hf-type-strong pr-8 text-hf-black">{row.productName}</p>
+        <p className="hf-type-small text-text-muted">{row.uncertaintyPercent} % usikkerhed</p>
       </div>
 
       {row.photoUrl ? (
@@ -296,10 +296,10 @@ function EditLightbox({ row, fields, onSaved }: { row: UncertaintyRow; fields: F
           marks={row.regions.uncertainRegions}
         />
       ) : (
-        <p className="text-sm text-text-secondary">Intet foto gemt for denne analyse.</p>
+        <p className="hf-type-body text-text-secondary">Intet foto gemt for denne analyse.</p>
       )}
       {row.photoUrl && !row.regions.ocrRegion && (
-        <p className="text-xs text-text-muted">
+        <p className="hf-type-small text-text-muted">
           Analysen er fra før AI&apos;en returnerede koordinater — hele fotoet vises uden røde rammer.
         </p>
       )}
@@ -307,12 +307,12 @@ function EditLightbox({ row, fields, onSaved }: { row: UncertaintyRow; fields: F
       <div className={fields.length > 1 ? "grid gap-3 sm:grid-cols-2" : "flex flex-col gap-3"}>
         {fields.map((field) => {
           const uncertain = uncertainByField.get(field.key);
-          const inputClass = `w-full rounded-md border bg-page-bg px-2.5 py-1.5 text-sm text-text-primary ${
-            uncertain ? "border-2 border-hf-red-dark" : "border-border-strong"
+          const inputClass = `hf-type-body w-full rounded-md border bg-page-bg px-2.5 py-1.5 text-hf-black ${
+            uncertain ? "border-2 border-hf-red-dark" : "border-hf-tan-dark"
           }`;
           const aiValue = row.aiValues[field.key];
           return (
-            <label key={field.key} className="flex flex-col gap-1 text-xs text-text-secondary">
+            <label key={field.key} className="hf-type-small flex flex-col gap-1 text-text-secondary">
               {field.label}
               {field.kind === "textarea" ? (
                 <textarea
@@ -338,13 +338,13 @@ function EditLightbox({ row, fields, onSaved }: { row: UncertaintyRow; fields: F
         })}
       </div>
 
-      {error && <p className="text-sm text-hf-red-dark">{error}</p>}
+      {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
       <div className="flex justify-end">
         <button
           type="button"
           disabled={saving}
           onClick={save}
-          className="rounded-md bg-hf-green-dark px-4 py-2 text-sm text-hf-white disabled:opacity-50"
+          className="hf-btn-primary px-4 py-2 disabled:opacity-50"
         >
           {saving ? "Gemmer…" : "Gem rettelse"}
         </button>
@@ -386,33 +386,33 @@ function ImageLightbox({ row, onSaved }: { row: UncertaintyRow; onSaved: () => v
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <p className="pr-8 font-medium text-text-primary">{row.productName}</p>
-        <p className="text-xs text-text-muted">
+        <p className="hf-type-strong pr-8 text-hf-black">{row.productName}</p>
+        <p className="hf-type-small text-text-muted">
           {row.uncertaintyPercent} % usikkerhed på, at fotoet hører til produktet
         </p>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         {photos.map((photo) => (
           <div key={photo.label} className="flex flex-col gap-1">
-            <p className="text-xs text-text-secondary">{photo.label}</p>
+            <p className="hf-type-small text-text-secondary">{photo.label}</p>
             <div className="flex aspect-square items-center justify-center overflow-hidden rounded-md bg-hf-tan">
               {photo.url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={photo.url} alt="" className="h-full w-full object-contain" />
               ) : (
-                <span className="text-xs text-text-muted">Intet foto</span>
+                <span className="hf-type-small text-text-muted">Intet foto</span>
               )}
             </div>
           </div>
         ))}
       </div>
-      {error && <p className="text-sm text-hf-red-dark">{error}</p>}
+      {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
       <div className="flex flex-wrap justify-end gap-2">
         <button
           type="button"
           disabled={saving}
           onClick={() => decide("WRONG")}
-          className="rounded-md border border-hf-red-dark px-3 py-2 text-sm text-hf-red-dark disabled:opacity-50"
+          className="hf-type-body rounded-md border border-hf-red-dark px-3 py-2 text-hf-red-dark disabled:opacity-50"
         >
           Forkert produkt
         </button>
@@ -420,7 +420,7 @@ function ImageLightbox({ row, onSaved }: { row: UncertaintyRow; onSaved: () => v
           type="button"
           disabled={saving}
           onClick={() => decide("UNCERTAIN")}
-          className="rounded-md border border-border-strong px-3 py-2 text-sm text-text-secondary disabled:opacity-50"
+          className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-2 text-text-secondary disabled:opacity-50"
         >
           Usikker
         </button>
@@ -428,7 +428,7 @@ function ImageLightbox({ row, onSaved }: { row: UncertaintyRow; onSaved: () => v
           type="button"
           disabled={saving}
           onClick={() => decide("CORRECT")}
-          className="rounded-md bg-hf-green-dark px-3 py-2 text-sm text-hf-white disabled:opacity-50"
+          className="hf-btn-primary px-3 py-2 disabled:opacity-50"
         >
           Samme produkt
         </button>

@@ -93,22 +93,22 @@ function IssueRow({ matchCheck }: { matchCheck: MatchCheck }) {
   }
 
   return (
-    <div className="flex flex-col gap-4 rounded-lg border border-border-strong p-4">
+    <div className="flex flex-col gap-4 rounded-lg border border-hf-tan-dark p-4">
       {matchCheck.imageUrl && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={matchCheck.imageUrl}
           alt={PHOTO_TYPE_LABEL[matchCheck.photoType]}
-          className="h-40 w-40 self-start rounded-md border border-border-strong object-contain"
+          className="h-40 w-40 self-start rounded-md border border-hf-tan-dark object-contain"
         />
       )}
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-text-primary">{PHOTO_TYPE_LABEL[matchCheck.photoType]}</span>
-        <span className="rounded-full bg-hf-tan px-2 py-0.5 text-xs font-medium text-text-primary">
+        <span className="hf-type-body hf-type-strong text-hf-black">{PHOTO_TYPE_LABEL[matchCheck.photoType]}</span>
+        <span className="hf-type-small hf-type-strong rounded-full bg-hf-tan px-2 py-0.5 text-hf-black">
           Match-sikkerhed {matchCheck.confidence === null ? "—" : `${Math.round(matchCheck.confidence)}%`}
         </span>
       </div>
-      <p className="text-xs text-text-secondary">
+      <p className="hf-type-small text-text-secondary">
         Visuel lighed {matchCheck.visualScore ?? "—"}% · Farve {matchCheck.colorScore ?? "—"}% · Struktur{" "}
         {matchCheck.structuralScore ?? "—"}%
       </p>
@@ -120,10 +120,10 @@ function IssueRow({ matchCheck }: { matchCheck: MatchCheck }) {
             type="button"
             disabled={busy}
             onClick={() => setMatchVerdict(option)}
-            className={`rounded-md border px-2.5 py-1 text-xs ${
+            className={`hf-type-small rounded-md border px-2.5 py-1 ${
               verdict === option
                 ? "border-hf-green-dark bg-hf-green-dark text-hf-white"
-                : "border-border-strong text-text-secondary hover:bg-hf-tan"
+                : "border-hf-tan-dark text-text-secondary hover:bg-hf-tan"
             }`}
           >
             {option === "CORRECT" ? "Korrekt match" : option === "WRONG" ? "Forkert match" : "Usikker"}
@@ -131,7 +131,7 @@ function IssueRow({ matchCheck }: { matchCheck: MatchCheck }) {
         ))}
       </div>
 
-      <div className="flex items-center gap-2 border-t border-border-strong pt-2">
+      <div className="flex items-center gap-2 border-t border-hf-tan-dark pt-2">
         <input
           type="checkbox"
           checked={awardEnabled}
@@ -139,7 +139,7 @@ function IssueRow({ matchCheck }: { matchCheck: MatchCheck }) {
           onChange={(event) => saveAward(event.target.checked)}
           className="h-4 w-4"
         />
-        <span className="text-xs text-text-secondary">Award — antal points:</span>
+        <span className="hf-type-small text-text-secondary">Award — antal points:</span>
         <input
           type="number"
           min={1}
@@ -147,13 +147,13 @@ function IssueRow({ matchCheck }: { matchCheck: MatchCheck }) {
           disabled={busy}
           onChange={(event) => setPoints(event.target.value)}
           onBlur={() => awardEnabled && saveAward(true)}
-          className="w-20 rounded-md border border-border-strong px-2 py-1 text-xs"
+          className="hf-type-small w-20 rounded-md border border-hf-tan-dark px-2 py-1"
         />
       </div>
 
       {matchCheck.award?.status === "SUBMITTED" && matchCheck.award.submittedImageUrl && (
         <div className="flex flex-col gap-2 rounded-md bg-hf-tan p-2">
-          <p className="text-xs font-medium text-text-primary">Nyt billede indsendt af bruger — afventer godkendelse</p>
+          <p className="hf-type-small hf-type-strong text-hf-black">Nyt billede indsendt af bruger — afventer godkendelse</p>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={matchCheck.award.submittedImageUrl} alt="" className="h-32 w-32 rounded-md object-contain" />
           <div className="flex gap-2">
@@ -161,7 +161,7 @@ function IssueRow({ matchCheck }: { matchCheck: MatchCheck }) {
               type="button"
               disabled={busy}
               onClick={() => resolveSubmission(true)}
-              className="hf-btn-primary px-3 py-1 text-xs"
+              className="hf-btn-primary px-3 py-1"
             >
               Godkend nyt billede
             </button>
@@ -169,7 +169,7 @@ function IssueRow({ matchCheck }: { matchCheck: MatchCheck }) {
               type="button"
               disabled={busy}
               onClick={() => resolveSubmission(false)}
-              className="hf-btn-secondary px-3 py-1 text-xs"
+              className="hf-btn-secondary px-3 py-1"
             >
               Afvis
             </button>
@@ -177,7 +177,7 @@ function IssueRow({ matchCheck }: { matchCheck: MatchCheck }) {
         </div>
       )}
 
-      {error && <p className="text-xs text-hf-red-dark">{error}</p>}
+      {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}
     </div>
   );
 }
@@ -186,8 +186,8 @@ export function QualityControlPanel({ matchChecks }: { matchChecks: MatchCheck[]
   if (matchChecks.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-4 rounded-lg border border-hf-red-dark/40 bg-surface-2 p-4">
-      <h2 className="text-sm font-semibold text-text-primary">Problemer fundet</h2>
+    <div className="flex flex-col gap-4 rounded-lg border border-hf-red-dark/40 bg-hf-white p-4">
+      <h2 className="hf-type-body hf-type-strong text-hf-black">Problemer fundet</h2>
       {matchChecks.map((matchCheck) => (
         <IssueRow key={matchCheck.id} matchCheck={matchCheck} />
       ))}

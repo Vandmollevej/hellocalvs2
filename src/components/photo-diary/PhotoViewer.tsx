@@ -61,14 +61,14 @@ export function PhotoViewer({
       role="dialog"
       aria-modal="true"
       aria-label={t("photoDiary.title")}
-      className="fixed inset-0 z-50 flex flex-col bg-black"
+      className="fixed inset-0 z-50 flex flex-col bg-hf-black"
     >
       <div className="flex items-center justify-between px-4 pb-2 pt-[max(12px,env(safe-area-inset-top))]">
         <button
           type="button"
           onClick={onClose}
           aria-label={t("common.close")}
-          className="flex h-11 w-11 items-center justify-center text-white"
+          className="hf-btn-icon text-hf-white"
         >
           <IconX size={24} />
         </button>
@@ -76,7 +76,7 @@ export function PhotoViewer({
           type="button"
           onClick={() => onDelete(photo.id)}
           aria-label={t("photoDiary.deleteAria")}
-          className="flex h-11 w-11 items-center justify-center text-white"
+          className="hf-btn-icon text-hf-white"
         >
           <IconTrash size={20} />
         </button>
@@ -105,7 +105,7 @@ export function PhotoViewer({
               type="button"
               onClick={() => go(-1)}
               aria-label={t("photoDiary.previousPhoto")}
-              className="absolute left-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-white"
+              className="absolute left-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-hf-black/40 text-hf-white"
             >
               <IconChevronLeft size={20} />
             </button>
@@ -113,7 +113,7 @@ export function PhotoViewer({
               type="button"
               onClick={() => go(1)}
               aria-label={t("photoDiary.nextPhoto")}
-              className="absolute right-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-white"
+              className="absolute right-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-hf-black/40 text-hf-white"
             >
               <IconChevronRight size={20} />
             </button>
@@ -122,8 +122,8 @@ export function PhotoViewer({
       </div>
 
       <div className="px-4 pt-2 pb-[max(16px,env(safe-area-inset-bottom))] text-center">
-        <p className="hf-type-card-title text-white">{formatPhotoDay(photo.takenAt)}</p>
-        <p className="text-[13px] leading-[18px] text-white/70">
+        <p className="hf-type-card-title text-hf-white">{formatPhotoDay(photo.takenAt)}</p>
+        <p className="hf-type-small text-hf-white/70">
           {t("common.clockPrefix")} {formatPhotoTime(photo.takenAt)}
         </p>
       </div>

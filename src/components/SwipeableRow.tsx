@@ -61,7 +61,7 @@ export function SwipeableRow({
               setDragX(0);
             }}
             aria-label={t("swipeableRow.saveAsFavorite")}
-            className="flex flex-col items-center gap-1 text-xs font-bold text-hf-white"
+            className="hf-type-small hf-type-strong flex flex-col items-center gap-1 text-hf-white"
           >
             <IconBookmark size={18} />
             {t("swipeableRow.favorite")}
@@ -76,7 +76,7 @@ export function SwipeableRow({
               setDragX(0);
             }}
             aria-label={t("swipeableRow.reportErrorAria")}
-            className="flex flex-col items-center gap-1 text-xs font-bold text-hf-white"
+            className="hf-type-small hf-type-strong flex flex-col items-center gap-1 text-hf-white"
           >
             <IconAlertTriangle size={18} />
             {t("swipeableRow.reportError")}
@@ -90,7 +90,7 @@ export function SwipeableRow({
             setDragX(0);
           }}
           aria-label={t("swipeableRow.delete")}
-          className="text-xs font-bold text-hf-white"
+          className="hf-type-small hf-type-strong text-hf-white"
         >
           {t("swipeableRow.delete")}
         </button>

@@ -223,7 +223,7 @@ function ShelfContent() {
         <div className="absolute inset-0 z-20 flex items-end bg-hf-black/40" onClick={() => setConfirmDelete(false)}>
           <div className="flex w-full flex-col gap-3 rounded-t-[12px] bg-hf-cream p-4" onClick={(event) => event.stopPropagation()}>
             <h2 className="hf-type-section-title">Slet billedet?</h2>
-            <p className="hf-type-body-sm">Billedet slettes helt og kan ikke gendannes. Oprettede varer bevares.</p>
+            <p className="hf-type-body">Billedet slettes helt og kan ikke gendannes. Oprettede varer bevares.</p>
             <button type="button" className="hf-btn-primary h-12 w-full" onClick={() => void deleteCurrent()}>
               <span className="hf-type-button">Slet billede</span>
             </button>

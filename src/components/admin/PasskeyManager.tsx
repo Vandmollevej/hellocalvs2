@@ -67,32 +67,32 @@ export function PasskeyManager() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-3">
-        <p className="text-sm text-text-secondary">
+        <p className="hf-type-body text-text-secondary">
           Log ind med Face ID/Touch ID i stedet for password + kode — fx på din iPhone via iCloud-nøglering.
         </p>
         <button
           type="button"
           onClick={addPasskey}
           disabled={busy}
-          className="flex-shrink-0 rounded-md bg-hf-green-dark px-3 py-1.5 text-sm text-hf-white disabled:opacity-60"
+          className="hf-btn-primary flex-shrink-0 px-3 py-1.5 disabled:opacity-60"
         >
           {busy ? "…" : "Tilføj passkey"}
         </button>
       </div>
-      {error && <p className="text-sm text-hf-red-dark">{error}</p>}
+      {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
 
       {passkeys === null ? null : passkeys.length === 0 ? (
-        <p className="text-sm text-text-muted">Ingen passkeys endnu.</p>
+        <p className="hf-type-body text-text-muted">Ingen passkeys endnu.</p>
       ) : (
         <div className="flex flex-col gap-2">
           {passkeys.map((p) => (
             <div
               key={p.id}
-              className="flex items-center justify-between rounded-lg border border-border-strong bg-surface-2 px-4 py-3"
+              className="flex items-center justify-between rounded-lg border border-hf-tan-dark bg-hf-white px-4 py-3"
             >
               <div>
-                <p className="font-medium text-text-primary">{p.name || "Passkey"}</p>
-                <p className="text-xs text-text-muted">
+                <p className="hf-type-strong text-hf-black">{p.name || "Passkey"}</p>
+                <p className="hf-type-small text-text-muted">
                   Oprettet {new Date(p.createdAt).toLocaleDateString("da-DK")}
                   {p.lastUsedAt ? ` · Sidst brugt ${new Date(p.lastUsedAt).toLocaleDateString("da-DK")}` : ""}
                 </p>
@@ -100,7 +100,7 @@ export function PasskeyManager() {
               <button
                 type="button"
                 onClick={() => removePasskey(p.id)}
-                className="rounded-md border border-border-strong px-2.5 py-1 text-xs text-hf-red-dark"
+                className="hf-type-small rounded-md border border-hf-tan-dark px-2.5 py-1 text-hf-red-dark"
               >
                 Fjern
               </button>

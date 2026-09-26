@@ -219,13 +219,13 @@ export default function SupportSettingsPage() {
             type="button"
             onClick={save}
             disabled={saving || loading}
-            className="hf-btn-primary hf-type-button h-12 w-full disabled:opacity-50"
+            className="hf-btn-primary h-12 w-full disabled:opacity-50"
           >
             {saving ? t("settings.support.saving") : t("settings.support.saveAccess")}
           </button>
           <Link
             href="/settings/support/contact"
-            className="hf-btn-primary hf-type-button flex h-12 w-full items-center justify-center"
+            className="hf-btn-primary flex h-12 w-full items-center justify-center"
           >
             {t("settings.support.contact")}
           </Link>

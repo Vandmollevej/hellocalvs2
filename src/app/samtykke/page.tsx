@@ -52,7 +52,7 @@ function SamtykkeContent() {
       <div className="flex flex-1 flex-col gap-4 px-4 pt-6">
         <p className="hf-type-body">{t("consent.intro")}</p>
         <HealthConsentToggle checked={consent} onChange={setConsent} />
-        <p className="hf-type-caption opacity-70">{t("consent.declineNote")}</p>
+        <p className="text-text-secondary hf-type-caption">{t("consent.declineNote")}</p>
         {error && <p className="hf-type-caption text-hf-red-dark">{error}</p>}
 
         <div className="flex-1" />
@@ -61,11 +61,11 @@ function SamtykkeContent() {
           type="button"
           onClick={submit}
           disabled={!consent || submitting}
-          className="hf-btn-primary hf-type-button h-12 w-full disabled:opacity-50"
+          className="hf-btn-primary h-12 w-full disabled:opacity-50"
         >
           {submitting ? t("consent.submitting") : t("consent.submit")}
         </button>
-        <button type="button" onClick={logout} className="hf-type-body-sm mb-8 underline">
+        <button type="button" onClick={logout} className="hf-btn-text mb-8">
           {t("consent.logout")}
         </button>
       </div>

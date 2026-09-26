@@ -61,7 +61,7 @@ export function IntradayKcalChart({
 
   return (
     <div className="rounded-2xl bg-hf-tan p-4">
-      <p className="mb-4 text-sm font-bold text-hf-black">Kalorieindtag i løbet af dagen</p>
+      <p className="hf-type-body hf-type-strong mb-4 text-hf-black">Kalorieindtag i løbet af dagen</p>
 
       <svg viewBox="0 0 280 90" className="w-full overflow-visible" aria-hidden="true">
         <polygon points={areaPoints} fill="var(--hf-green)" opacity="0.15" />
@@ -88,7 +88,7 @@ export function IntradayKcalChart({
         ))}
       </svg>
 
-      <div className="mt-1 flex justify-between text-[10px] text-hf-black opacity-50">
+      <div className="hf-type-micro text-text-secondary mt-1 flex justify-between">
         {HOUR_LABELS.map((hour) => (
           <span key={hour}>{String(hour).padStart(2, "0")}</span>
         ))}

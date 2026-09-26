@@ -18,7 +18,7 @@ type BaseRow = {
 };
 
 function confidenceBadgeClasses(confidence: number | null) {
-  if (confidence === null) return "bg-hf-gray-light text-hf-gray-dark";
+  if (confidence === null) return "bg-hf-tan-dark text-text-secondary";
   if (confidence < 50) return "bg-hf-red-muted text-hf-white";
   if (confidence < 80) return "bg-hf-tan-dark text-hf-black";
   return "bg-hf-green-light text-hf-green-dark";
@@ -31,12 +31,12 @@ function IssueThumbnail({ imageUrl, confidence }: { imageUrl: string | null; con
     <div className="relative h-10 w-10 shrink-0">
       {imageUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={imageUrl} alt="" className="h-10 w-10 rounded-md border border-border-strong object-cover" />
+        <img src={imageUrl} alt="" className="h-10 w-10 rounded-md border border-hf-tan-dark object-cover" />
       ) : (
-        <div className="h-10 w-10 rounded-md border border-border-strong bg-hf-gray-light" />
+        <div className="h-10 w-10 rounded-md border border-hf-tan-dark bg-hf-tan-dark" />
       )}
       <span
-        className={`absolute -bottom-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full border border-surface-2 text-[9px] font-semibold leading-none ${confidenceBadgeClasses(
+        className={`hf-type-micro hf-type-strong absolute -bottom-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full border border-surface-2 leading-none ${confidenceBadgeClasses(
           confidence
         )}`}
       >
@@ -116,7 +116,7 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex gap-2 text-xs">
+      <div className="hf-type-small flex gap-2">
         {(["under80", "0-50", "50-80", "80-100", "all"] as ConfidenceFilter[]).map((option) => (
           <button
             key={option}
@@ -125,7 +125,7 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
             className={`rounded-md border px-2.5 py-1 ${
               filter === option
                 ? "border-hf-green-dark bg-hf-green-dark text-hf-white"
-                : "border-border-strong text-text-secondary hover:bg-hf-tan"
+                : "border-hf-tan-dark text-text-secondary hover:bg-hf-tan"
             }`}
           >
             {option === "under80" ? "< 80%" : option === "all" ? t(locale, "quality_control_filter_all") : option}
@@ -133,9 +133,9 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
         ))}
       </div>
 
-      <div className="overflow-hidden rounded-lg border border-border-strong">
-        <table className="w-full text-left text-sm">
-          <thead className="bg-surface-2 text-xs text-text-secondary">
+      <div className="overflow-hidden rounded-lg border border-hf-tan-dark">
+        <table className="hf-type-body w-full text-left">
+          <thead className="hf-type-small bg-hf-white text-text-secondary">
             <tr>
               <th className="cursor-pointer px-3 py-2" onClick={() => toggleSort("date")}>
                 {t(locale, "quality_control_col_date")}
@@ -156,7 +156,7 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
               <tr
                 key={row.id}
                 onClick={() => router.push(`/admin/products/${row.productId}`)}
-                className="cursor-pointer border-t border-border-strong hover:bg-hf-tan"
+                className="cursor-pointer border-t border-hf-tan-dark hover:bg-hf-tan"
               >
                 <td className="px-3 py-2 text-text-secondary">
                   {new Date(row.createdAt).toLocaleDateString("da-DK")}
@@ -164,7 +164,7 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
                 <td className="px-3 py-2">
                   <IssueThumbnail imageUrl={row.imageUrl} confidence={row.confidence} />
                 </td>
-                <td className="px-3 py-2 font-medium text-text-primary">
+                <td className="hf-type-strong px-3 py-2 text-hf-black">
                   {row.brandName ? `${row.brandName} ${row.productName}` : row.productName}
                 </td>
                 <td className="px-3 py-2 text-text-secondary">
@@ -173,11 +173,11 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
                   ) : (
                     <span className="flex flex-wrap items-center gap-1.5">
                       {t(locale, "quality_control_issue_nutrition")}
-                      <span className="rounded-full bg-hf-gray-light px-2 py-0.5 text-xs font-medium text-hf-gray-dark">
+                      <span className="hf-type-small hf-type-strong rounded-full bg-hf-tan-dark px-2 py-0.5 text-text-secondary">
                         {t(locale, "quality_control_user_reported")}
                       </span>
                       {row.reportCount > 1 && (
-                        <span className="text-xs">
+                        <span className="hf-type-small">
                           {row.reportCount} {t(locale, "quality_control_user_report_count")}
                         </span>
                       )}
@@ -185,7 +185,7 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
                   )}
                 </td>
                 <td className="px-3 py-2">
-                  <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${confidenceBadgeClasses(row.confidence)}`}>
+                  <span className={`hf-type-small hf-type-strong rounded-full px-2 py-0.5 ${confidenceBadgeClasses(row.confidence)}`}>
                     {row.confidence === null ? "—" : `${Math.round(row.confidence)}%`}
                   </span>
                 </td>

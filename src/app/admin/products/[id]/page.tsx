@@ -38,7 +38,7 @@ export default async function AdminProductDetailPage({ params }: { params: Promi
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-lg font-semibold text-text-primary">{product.name}</h1>
+      <h1 className="hf-type-title text-hf-black">{product.name}</h1>
       <QualityControlPanel
         matchChecks={matchChecks.filter(hasQualityControlPhotoType).map((check) => ({
           ...check,

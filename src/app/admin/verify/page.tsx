@@ -33,8 +33,8 @@ export default function AdminVerifyPage() {
 
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center px-4">
-      <h1 className="mb-1 text-xl font-semibold text-text-primary">Bekræftelseskode</h1>
-      <p className="mb-8 text-sm text-text-secondary">
+      <h1 className="hf-type-title mb-1 text-hf-black">Bekræftelseskode</h1>
+      <p className="hf-type-body mb-8 text-text-secondary">
         Indtast den 6-cifrede kode fra din authenticator-app.
       </p>
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
@@ -48,13 +48,13 @@ export default function AdminVerifyPage() {
           required
           value={code}
           onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-          className="rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-center text-2xl tracking-[0.4em]"
+          className="hf-type-page-title rounded-md border border-hf-tan-dark bg-hf-white px-3 py-2 text-center tracking-[0.4em]"
         />
-        {error && <p className="text-sm text-hf-red-dark">{error}</p>}
+        {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
         <button
           type="submit"
           disabled={loading || code.length !== 6}
-          className="rounded-md bg-hf-green-dark px-4 py-2.5 text-sm font-medium text-hf-white disabled:opacity-60"
+          className="hf-btn-primary px-4 py-2.5 disabled:opacity-60"
         >
           {loading ? "Bekræfter…" : "Log ind"}
         </button>

@@ -55,13 +55,13 @@ export default function ForgotPasswordPage() {
       {sent ? (
         <div className="flex flex-1 flex-col gap-4 px-4 pt-8">
           <p className="hf-type-body">{t("forgotPassword.sentMessage")}</p>
-          <Link href="/login" className="hf-btn-primary hf-type-button mt-2 flex h-12 w-full items-center justify-center">
+          <Link href="/login" className="hf-btn-primary mt-2 flex h-12 w-full items-center justify-center">
             {t("forgotPassword.backToLogin")}
           </Link>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4 px-4 pt-8">
-          <p className="hf-type-body-sm">{t("forgotPassword.instructions")}</p>
+          <p className="hf-type-body">{t("forgotPassword.instructions")}</p>
 
           <TextField
             label={t("forgotPassword.emailLabel")}
@@ -79,7 +79,7 @@ export default function ForgotPasswordPage() {
           <button
             type="submit"
             disabled={submitting || !email}
-            className="hf-btn-primary hf-type-button mb-8 h-12 w-full disabled:opacity-50"
+            className="hf-btn-primary mb-8 h-12 w-full disabled:opacity-50"
           >
             {submitting ? t("forgotPassword.submitting") : t("forgotPassword.submit")}
           </button>

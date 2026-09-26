@@ -54,11 +54,11 @@ export default function MenstrualCycleDisplaySettingsPage() {
     <HfScreen title={t("settings.menstrualCycle")}>
       <div className="hf-page">
         <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
-          <p className="text-[13px] leading-5">{t("menstrualCycleSettings.intro")}</p>
+          <p className="hf-type-small">{t("menstrualCycleSettings.intro")}</p>
         </div>
 
         {loading || !profile ? (
-          <p className="text-center text-[14px] text-hf-black opacity-60">{t("profile.loading")}</p>
+          <p className="hf-type-body text-text-secondary text-center">{t("profile.loading")}</p>
         ) : (
           <Toggle
             checked={profile.cycleTrackingEnabled}

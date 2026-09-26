@@ -50,17 +50,17 @@ export function MessageTemplateRow({ template }: { template: MessageTemplateData
   }
 
   return (
-    <div className="rounded-lg border border-border-strong bg-surface-2">
+    <div className="rounded-lg border border-hf-tan-dark bg-hf-white">
       <div className="flex items-center justify-between gap-3 p-4">
         <div className="min-w-0">
-          <p className="font-medium text-text-primary">{EVENT_LABELS[template.event] ?? template.event}</p>
-          <p className="truncate text-xs text-text-muted">{form.subject}</p>
+          <p className="hf-type-strong text-hf-black">{EVENT_LABELS[template.event] ?? template.event}</p>
+          <p className="hf-type-small truncate text-text-muted">{form.subject}</p>
         </div>
         <div className="flex flex-shrink-0 items-center gap-3">
           <select
             value={form.channel}
             onChange={(e) => save({ channel: e.target.value })}
-            className="rounded-md border border-border-strong px-2 py-1 text-xs"
+            className="hf-type-small rounded-md border border-hf-tan-dark px-2 py-1"
           >
             <option value="EMAIL">E-mail</option>
             <option value="PUSH">Push</option>
@@ -74,7 +74,7 @@ export function MessageTemplateRow({ template }: { template: MessageTemplateData
             className={`relative h-6 w-10 rounded-full transition-colors ${form.enabled ? "bg-hf-green" : "bg-hf-tan-dark"}`}
           >
             <span
-              className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
+              className={`absolute top-0.5 h-5 w-5 rounded-full bg-hf-white shadow transition-transform ${
                 form.enabled ? "translate-x-[18px]" : "translate-x-0.5"
               }`}
             />
@@ -82,7 +82,7 @@ export function MessageTemplateRow({ template }: { template: MessageTemplateData
           <button
             type="button"
             onClick={() => setExpanded((v) => !v)}
-            className="text-xs text-hf-green-dark underline"
+            className="hf-btn-text text-hf-green-dark"
           >
             {expanded ? "Luk" : "Rediger"}
           </button>
@@ -90,28 +90,28 @@ export function MessageTemplateRow({ template }: { template: MessageTemplateData
       </div>
 
       {expanded && (
-        <div className="flex flex-col gap-2 border-t border-border-strong p-4">
-          <label className="flex flex-col gap-1 text-xs text-text-secondary">
+        <div className="flex flex-col gap-2 border-t border-hf-tan-dark p-4">
+          <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
             Emne
             <input
               value={form.subject}
               onChange={(e) => setForm({ ...form, subject: e.target.value })}
               onBlur={() => save({ subject: form.subject })}
-              className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
+              className="hf-type-body rounded-md border border-hf-tan-dark px-2 py-1.5"
             />
           </label>
-          <label className="flex flex-col gap-1 text-xs text-text-secondary">
+          <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
             Indhold (HTML, {"{{variabel}}"} erstattes ved afsendelse)
             <textarea
               rows={5}
               value={form.bodyHtml}
               onChange={(e) => setForm({ ...form, bodyHtml: e.target.value })}
               onBlur={() => save({ bodyHtml: form.bodyHtml })}
-              className="rounded-md border border-border-strong px-2 py-1.5 font-mono text-xs"
+              className="hf-type-small rounded-md border border-hf-tan-dark px-2 py-1.5 font-mono"
             />
           </label>
-          {saving && <span className="text-xs text-text-muted">Gemmer…</span>}
-          {saved && !saving && <span className="text-xs text-hf-green-dark">Gemt ✓</span>}
+          {saving && <span className="hf-type-small text-text-muted">Gemmer…</span>}
+          {saved && !saving && <span className="hf-type-small text-hf-green-dark">Gemt ✓</span>}
         </div>
       )}
     </div>

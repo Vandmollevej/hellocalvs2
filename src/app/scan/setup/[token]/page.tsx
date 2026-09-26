@@ -43,7 +43,7 @@ export default function ScanSetupPage({ params }: { params: Promise<{ token: str
     <ScanAuthScreen title="Opret adgang">
       {!qr ? (
         <form onSubmit={start} className="flex flex-col gap-4">
-          <p className="hf-type-body-sm">Vælg det brugernavn og den adgangskode, du vil logge ind med.</p>
+          <p className="hf-type-body">Vælg det brugernavn og den adgangskode, du vil logge ind med.</p>
           <TextField label="Brugernavn" value={username} onChange={(e) => setUsername(e.target.value)} autoComplete="username" autoCapitalize="none" required />
           <TextField label="Adgangskode (mindst 10 tegn)" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" minLength={10} required />
           {error && <p className="hf-type-caption text-center">{error}</p>}
@@ -53,7 +53,7 @@ export default function ScanSetupPage({ params }: { params: Promise<{ token: str
         </form>
       ) : (
         <form onSubmit={confirm} className="flex flex-col gap-4">
-          <p className="hf-type-body-sm">
+          <p className="hf-type-body">
             Scan koden med en autenticator-app (fx Google Authenticator eller Microsoft Authenticator), og indtast den 6-cifrede kode.
           </p>
           {/* eslint-disable-next-line @next/next/no-img-element */}

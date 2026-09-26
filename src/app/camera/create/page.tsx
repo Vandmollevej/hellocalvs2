@@ -554,18 +554,18 @@ function KameraOpretContent() {
         )}
 
         {!photo && stage !== "stregkode" && (
-          <div className="pointer-events-none absolute inset-[12%] rounded-[12px] border-2 border-white/80 shadow-[0_0_0_999px_rgba(0,0,0,0.2)]" />
+          <div className="pointer-events-none absolute inset-[12%] rounded-[12px] border-2 border-hf-white/80 shadow-[0_0_0_999px_rgba(0,0,0,0.2)]" />
         )}
 
         {!photo && stage === "stregkode" && (
-          <div className="pointer-events-none absolute inset-[18%] border-2 border-white/80">
+          <div className="pointer-events-none absolute inset-[18%] border-2 border-hf-white/80">
             <span className="absolute -inset-0.5 border-[6px] border-transparent border-t-hf-green" />
           </div>
         )}
 
         {message && (
           <div className="absolute inset-0 flex items-center justify-center bg-hf-black/75 p-6 text-center">
-            <p className="max-w-xs text-sm font-semibold text-white">{message}</p>
+            <p className="hf-type-body hf-type-strong max-w-xs text-hf-white">{message}</p>
           </div>
         )}
 
@@ -586,9 +586,9 @@ function KameraOpretContent() {
               autoComplete="off"
               aria-label={t("camera.barcodeNumberAriaLabel")}
               placeholder={t("camera.barcodeNumberAriaLabel")}
-              className="min-w-0 flex-1 rounded-full bg-hf-white px-3.5 py-2 text-sm text-hf-black outline-none"
+              className="hf-type-body min-w-0 flex-1 rounded-full bg-hf-white px-3.5 py-2 text-hf-black outline-none"
             />
-            <button disabled={!manualBarcode} className="hf-btn-primary px-4 py-2 text-xs disabled:opacity-40">
+            <button disabled={!manualBarcode} className="hf-btn-primary px-4 py-2 disabled:opacity-40">
               {t("camera.lookUp")}
             </button>
           </form>
@@ -596,7 +596,7 @@ function KameraOpretContent() {
             <button
               type="button"
               onClick={() => continueAfterUnknownBarcode(manualBarcode)}
-              className="hf-btn-secondary w-full justify-center py-2 text-xs"
+              className="hf-btn-secondary w-full justify-center py-2"
             >
               {t("cameraCreate.continueWithBarcode")}
             </button>
@@ -608,7 +608,7 @@ function KameraOpretContent() {
         <div className="flex justify-center py-1">
           {photo ? (
             !analyzing && (
-              <button onClick={retake} className="hf-btn-secondary gap-2 px-5 py-3 text-sm">
+              <button onClick={retake} className="hf-btn-secondary gap-2 px-5 py-3">
                 {t("camera.retakePhoto")}
               </button>
             )
@@ -616,7 +616,7 @@ function KameraOpretContent() {
             <button
               onClick={capturePhoto}
               disabled={cameraStatus !== "active"}
-              className="hf-btn-primary gap-2 px-6 py-3 text-sm disabled:opacity-40"
+              className="hf-btn-primary gap-2 px-6 py-3 disabled:opacity-40"
             >
               <IconCamera size={19} /> {t("camera.takePhoto")}
             </button>

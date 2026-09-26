@@ -63,30 +63,30 @@ function ReportRow({ report }: { report: NutritionReport }) {
   }
 
   return (
-    <div className="flex flex-col gap-4 rounded-lg border border-border-strong p-4">
+    <div className="flex flex-col gap-4 rounded-lg border border-hf-tan-dark p-4">
       <div className="flex items-center justify-between gap-2">
-        <span className="flex items-center gap-1.5 text-sm font-medium text-text-primary">
+        <span className="hf-type-body hf-type-strong flex items-center gap-1.5 text-hf-black">
           Næringsindhold
-          <span className="rounded-full bg-hf-gray-light px-2 py-0.5 text-xs font-medium text-hf-gray-dark">
+          <span className="hf-type-small hf-type-strong rounded-full bg-hf-tan-dark px-2 py-0.5 text-text-secondary">
             Brugerindberettet
           </span>
         </span>
-        <span className="rounded-full bg-hf-tan px-2 py-0.5 text-xs font-medium text-text-primary">
+        <span className="hf-type-small hf-type-strong rounded-full bg-hf-tan px-2 py-0.5 text-hf-black">
           Confidence {Math.round(report.confidence)}%
         </span>
       </div>
-      <p className="text-xs text-text-secondary">
+      <p className="hf-type-small text-text-secondary">
         Anonym bruger · {new Date(report.createdAt).toLocaleString("da-DK")} · registreret{" "}
         {Math.round(report.amountGrams)} g · værdier pr. 100 g
       </p>
 
       <div className="flex flex-col gap-2">
         {report.changes.map((change) => (
-          <div key={change.field} className="flex items-baseline justify-between gap-2 text-sm">
-            <span className="text-text-primary">{NUTRITION_REPORT_FIELD_LABEL[change.field]}</span>
+          <div key={change.field} className="hf-type-body flex items-baseline justify-between gap-2">
+            <span className="text-hf-black">{NUTRITION_REPORT_FIELD_LABEL[change.field]}</span>
             <span className="text-text-secondary">
               Før: {formatGrams(change.before)} · Bruger:{" "}
-              <span className="font-medium text-text-primary">{formatGrams(change.reported)}</span>
+              <span className="hf-type-strong text-hf-black">{formatGrams(change.reported)}</span>
             </span>
           </div>
         ))}
@@ -97,7 +97,7 @@ function ReportRow({ report }: { report: NutritionReport }) {
           type="button"
           disabled={busy}
           onClick={() => decide("APPROVE")}
-          className="hf-btn-primary px-3 py-1 text-xs"
+          className="hf-btn-primary px-3 py-1"
         >
           Godkend
         </button>
@@ -105,13 +105,13 @@ function ReportRow({ report }: { report: NutritionReport }) {
           type="button"
           disabled={busy}
           onClick={() => decide("REJECT")}
-          className="hf-btn-secondary px-3 py-1 text-xs"
+          className="hf-btn-secondary px-3 py-1"
         >
           Afvis
         </button>
       </div>
 
-      <div className="flex flex-col gap-2 border-t border-border-strong pt-2">
+      <div className="flex flex-col gap-2 border-t border-hf-tan-dark pt-2">
         {report.canReply ? (
           <>
             <textarea
@@ -121,26 +121,26 @@ function ReportRow({ report }: { report: NutritionReport }) {
               onChange={(event) => setMessage(event.target.value)}
               placeholder="Besked til indberetteren"
               rows={2}
-              className="rounded-md border border-border-strong px-2 py-1 text-xs"
+              className="hf-type-small rounded-md border border-hf-tan-dark px-2 py-1"
             />
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 disabled={busy || !message.trim()}
                 onClick={sendMessage}
-                className="hf-btn-secondary px-3 py-1 text-xs"
+                className="hf-btn-secondary px-3 py-1"
               >
                 Send besked
               </button>
-              {messageSent && <span className="text-xs text-text-secondary">Besked sendt krypteret</span>}
+              {messageSent && <span className="hf-type-small text-text-secondary">Besked sendt krypteret</span>}
             </div>
           </>
         ) : (
-          <p className="text-xs text-text-secondary">Indberetteren kan ikke kontaktes.</p>
+          <p className="hf-type-small text-text-secondary">Indberetteren kan ikke kontaktes.</p>
         )}
       </div>
 
-      {error && <p className="text-xs text-hf-red-dark">{error}</p>}
+      {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}
     </div>
   );
 }
@@ -152,8 +152,8 @@ export function NutritionReportPanel({ reports }: { reports: NutritionReport[] }
   if (reports.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-4 rounded-lg border border-border-strong bg-surface-2 p-4">
-      <h2 className="text-sm font-semibold text-text-primary">
+    <div className="flex flex-col gap-4 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
+      <h2 className="hf-type-body hf-type-strong text-hf-black">
         {reports.length === 1 ? "1 brugerindberetning" : `${reports.length} brugerindberetninger`}
       </h2>
       {reports.map((report) => (

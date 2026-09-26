@@ -107,7 +107,7 @@ function ReportBugContent() {
         />
 
         {pending === undefined ? (
-          <p className="hf-type-body mt-8 opacity-70">Henter…</p>
+          <p className="text-text-secondary hf-type-body mt-8">Henter…</p>
         ) : showOverlay ? (
           <div className="mt-8 flex flex-col items-center gap-4 text-center">
             <p className="hf-type-body">
@@ -116,7 +116,7 @@ function ReportBugContent() {
             <button
               type="button"
               onClick={() => startEditing(pending)}
-              className="hf-btn-secondary hf-type-button h-12 w-full"
+              className="hf-btn-secondary h-12 w-full"
             >
               Redigér
             </button>
@@ -162,7 +162,7 @@ function ReportBugContent() {
             <button
               type="submit"
               disabled={submitting}
-              className="hf-btn-primary hf-type-button mb-8 mt-2 h-12 w-full disabled:opacity-50"
+              className="hf-btn-primary mb-8 mt-2 h-12 w-full disabled:opacity-50"
             >
               {submitting ? "Sender…" : "Send indberetning"}
             </button>

@@ -8,7 +8,7 @@ export default async function AdminPasskeysPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-lg font-semibold text-text-primary">Passkeys</h1>
+      <h1 className="hf-type-title text-hf-black">Passkeys</h1>
       <PasskeyManager />
     </div>
   );

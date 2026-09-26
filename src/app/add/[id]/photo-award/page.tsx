@@ -88,17 +88,17 @@ export default function PhotoAwardPage() {
           const submitted = submittedIds.includes(award.id);
           return (
             <div key={award.id} className="hf-card">
-              <p className="text-sm font-medium text-hf-black">
+              <p className="hf-type-body hf-type-strong text-hf-black">
                 {t("photoAward.pointsForPhoto", { points: award.points, photoType: t(PHOTO_TYPE_KEY[award.photoType]) })}
               </p>
               {submitted ? (
-                <p className="text-[13px] text-hf-black opacity-70">{t("photoAward.submitted")}</p>
+                <p className="hf-type-small text-text-secondary">{t("photoAward.submitted")}</p>
               ) : (
                 <button
                   type="button"
                   disabled={submittingId === award.id}
                   onClick={() => startCapture(award.id)}
-                  className="hf-btn-primary w-full py-2.5 text-[14px] disabled:opacity-60"
+                  className="hf-btn-primary w-full py-2.5 disabled:opacity-60"
                 >
                   {submittingId === award.id ? t("photoAward.submitting") : t("photoAward.takePhoto")}
                 </button>
@@ -106,7 +106,7 @@ export default function PhotoAwardPage() {
             </div>
           );
         })}
-        {error && <p className="text-center text-sm text-hf-black opacity-70">{error}</p>}
+        {error && <p className="hf-type-body text-text-secondary text-center">{error}</p>}
       </div>
     </HfScreen>
   );

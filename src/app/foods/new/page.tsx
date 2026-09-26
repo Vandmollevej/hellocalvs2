@@ -8,7 +8,7 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 import { PACKAGE_SIZE_UNITS, formatPackageSize, type PackageSizeUnit } from "@/lib/product-naming";
 import type { ProductCategory } from "@/lib/product-display-unit";
 
-export const OCR_DRAFT_STORAGE_KEY = "hellocal-ocr-product-draft";
+const OCR_DRAFT_STORAGE_KEY = "hellocal-ocr-product-draft";
 
 export type ProductDraft = {
   kcalPer100g?: string;
@@ -62,7 +62,7 @@ const PRODUCT_FORM_ID = "create-product-form";
 const INGREDIENT_FORM_ID = "create-ingredient-form";
 
 const numberInputClass =
-  "min-w-0 flex-1 rounded-full bg-hf-white px-3.5 py-2 text-sm text-hf-black outline-none";
+  "hf-type-body min-w-0 flex-1 rounded-full bg-hf-white px-3.5 py-2 text-hf-black outline-none";
 
 function readOcrDraft(): { values: FormValues; fromOcr: boolean } {
   if (typeof window === "undefined") return { values: EMPTY_VALUES, fromOcr: false };
@@ -180,7 +180,7 @@ function NytProduktContent() {
   // formularen via form-attributten.
   const footer =
     kind === "product" ? (
-      <button type="submit" form={PRODUCT_FORM_ID} disabled={saving} className="hf-btn-primary w-full py-2.5 text-xs disabled:opacity-40">
+      <button type="submit" form={PRODUCT_FORM_ID} disabled={saving} className="hf-btn-primary w-full py-2.5 disabled:opacity-40">
         {saving ? t("foods.saving") : t("foods.createProduct")}
       </button>
     ) : kind === "ingredient" ? (
@@ -188,7 +188,7 @@ function NytProduktContent() {
         type="submit"
         form={INGREDIENT_FORM_ID}
         disabled={ingredientSaving}
-        className="hf-btn-primary w-full py-2.5 text-xs disabled:opacity-40"
+        className="hf-btn-primary w-full py-2.5 disabled:opacity-40"
       >
         {ingredientSaving ? t("foods.saving") : t("foods.createIngredient")}
       </button>
@@ -199,7 +199,7 @@ function NytProduktContent() {
       <div className="hf-page">
         {kind === null && (
           <div className="flex flex-col gap-2">
-            <p className="px-1 text-sm font-medium text-hf-black">{t("foods.manualKindTitle")}</p>
+            <p className="hf-type-body hf-type-strong px-1 text-hf-black">{t("foods.manualKindTitle")}</p>
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
@@ -207,8 +207,8 @@ function NytProduktContent() {
                 className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan p-4 text-center"
               >
                 <IconCarrot size={22} color="var(--hf-black)" />
-                <span className="text-sm font-semibold text-hf-black">{t("foods.manualKindIngredient")}</span>
-                <span className="text-xs text-hf-black opacity-60">{t("foods.manualKindIngredientHint")}</span>
+                <span className="hf-type-body hf-type-strong text-hf-black">{t("foods.manualKindIngredient")}</span>
+                <span className="hf-type-small text-text-secondary">{t("foods.manualKindIngredientHint")}</span>
               </button>
               <button
                 type="button"
@@ -216,8 +216,8 @@ function NytProduktContent() {
                 className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan p-4 text-center"
               >
                 <IconApple size={22} color="var(--hf-black)" />
-                <span className="text-sm font-semibold text-hf-black">{t("foods.manualKindProduct")}</span>
-                <span className="text-xs text-hf-black opacity-60">{t("foods.manualKindProductHint")}</span>
+                <span className="hf-type-body hf-type-strong text-hf-black">{t("foods.manualKindProduct")}</span>
+                <span className="hf-type-small text-text-secondary">{t("foods.manualKindProductHint")}</span>
               </button>
             </div>
           </div>
@@ -238,7 +238,7 @@ function NytProduktContent() {
               className={numberInputClass}
               required
             />
-            <label className="text-xs text-hf-black opacity-70">
+            <label className="hf-type-small text-text-secondary">
               {t("foods.ingredientCategoryLabel")}
               <select
                 value={ingredientCategory}
@@ -253,7 +253,7 @@ function NytProduktContent() {
             </label>
 
             {ingredientSaveError && (
-              <p className="text-center text-xs text-hf-black opacity-70">{ingredientSaveError}</p>
+              <p className="hf-type-small text-text-secondary text-center">{ingredientSaveError}</p>
             )}
           </form>
         )}
@@ -261,7 +261,7 @@ function NytProduktContent() {
         {kind === "product" && (
           <>
             {fromOcr && (
-              <p className="px-1 text-xs text-hf-black opacity-70">
+              <p className="hf-type-small text-text-secondary px-1">
                 {t("foods.ocrHint")}
               </p>
             )}
@@ -271,7 +271,7 @@ function NytProduktContent() {
               onSubmit={handleSubmit}
               className="hf-card"
             >
-              <label className="text-xs text-hf-black opacity-70">
+              <label className="hf-type-small text-text-secondary">
                 {t("foods.productCategoryLabel")}
                 <select
                   value={values.productCategory}
@@ -321,7 +321,7 @@ function NytProduktContent() {
                 placeholder={t("foods.variantLabel")}
                 className={numberInputClass}
               />
-              <label className="text-xs text-hf-black opacity-70">
+              <label className="hf-type-small text-text-secondary">
                 {t("foods.packageSizeLabel")}
                 <span className="mt-1 flex gap-2">
                   <input
@@ -350,7 +350,7 @@ function NytProduktContent() {
                 </span>
               </label>
               <div className="flex gap-2">
-                <label className="flex-1 text-xs text-hf-black opacity-70">
+                <label className="hf-type-small text-text-secondary flex-1">
                   {t("foods.caloriesLabel")}
                   <input
                     value={values.kcalPer100g}
@@ -361,7 +361,7 @@ function NytProduktContent() {
                     required
                   />
                 </label>
-                <label className="flex-1 text-xs text-hf-black opacity-70">
+                <label className="hf-type-small text-text-secondary flex-1">
                   {t("foods.proteinLabel")}
                   <input
                     value={values.proteinPer100g}
@@ -374,7 +374,7 @@ function NytProduktContent() {
                 </label>
               </div>
               <div className="flex gap-2">
-                <label className="flex-1 text-xs text-hf-black opacity-70">
+                <label className="hf-type-small text-text-secondary flex-1">
                   {t("foods.carbsLabel")}
                   <input
                     value={values.carbsPer100g}
@@ -385,7 +385,7 @@ function NytProduktContent() {
                     required
                   />
                 </label>
-                <label className="flex-1 text-xs text-hf-black opacity-70">
+                <label className="hf-type-small text-text-secondary flex-1">
                   {t("foods.fatLabel")}
                   <input
                     value={values.fatPer100g}
@@ -398,7 +398,7 @@ function NytProduktContent() {
                 </label>
               </div>
 
-              {saveError && <p className="text-center text-xs text-hf-black opacity-70">{saveError}</p>}
+              {saveError && <p className="hf-type-small text-text-secondary text-center">{saveError}</p>}
             </form>
           </>
         )}

@@ -245,8 +245,8 @@ export default function UnusedStatCardsPage() {
             onClick={() => addCard(card.key)}
             className="rounded-2xl bg-hf-tan p-4 text-left active:opacity-80"
           >
-            <p className="text-xs text-hf-black opacity-60">{card.label}</p>
-            <p className="hf-heading mt-1 flex items-center gap-1.5 text-xl text-hf-black">
+            <p className="hf-type-small text-text-secondary">{card.label}</p>
+            <p className="hf-type-body-lg hf-heading mt-1 flex items-center gap-1.5 text-hf-black">
               <StatCardIcon icon={card.icon} iconSrc={card.iconSrc} />
               {loading ? "—" : card.value}
             </p>
@@ -271,7 +271,7 @@ export default function UnusedStatCardsPage() {
       title={t("statUnusedCards.title")}
     >
       <div className="hf-page hf-page--list">
-        <p className="text-xs text-hf-black opacity-60">
+        <p className="hf-type-small text-text-secondary">
           {t("statUnusedCards.hint")}
         </p>
 
@@ -289,11 +289,11 @@ export default function UnusedStatCardsPage() {
         {/* Søgeresultater står lige under søgefeltet, før Overskrift/Skillelinje. */}
         {normalizedQuery && (
           <section className="flex flex-col gap-2 pb-2">
-            <p className="px-1 text-sm font-semibold text-hf-black">
+            <p className="hf-type-body hf-type-strong px-1 text-hf-black">
               {t("statUnusedCards.searchResults")}
             </p>
             {searchResults.length === 0 ? (
-              <p className="rounded-2xl bg-hf-tan/60 p-4 text-xs text-hf-black opacity-50">
+              <p className="hf-type-small rounded-2xl bg-hf-tan/60 p-4 text-hf-black opacity-50">
                 {t("statUnusedCards.noSearchResults")}
               </p>
             ) : (
@@ -305,7 +305,7 @@ export default function UnusedStatCardsPage() {
         <button
           type="button"
           onClick={addHeader}
-          className="flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-hf-black/30 text-sm font-semibold text-hf-black opacity-80 active:opacity-100"
+          className="hf-type-body hf-type-strong text-text-secondary flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-hf-black/30 active:opacity-100"
         >
           {t("statUnusedCards.addHeading")}
         </button>
@@ -313,7 +313,7 @@ export default function UnusedStatCardsPage() {
         <button
           type="button"
           onClick={addDivider}
-          className="flex min-h-11 w-full items-center gap-2 text-sm font-semibold text-hf-black active:opacity-60"
+          className="hf-type-body hf-type-strong flex min-h-11 w-full items-center gap-2 text-hf-black active:opacity-60"
         >
           <span aria-hidden className="h-0.5 flex-1 bg-hf-black" />
           {t("statUnusedCards.addDivider")}
@@ -333,7 +333,7 @@ export default function UnusedStatCardsPage() {
                   type="button"
                   onClick={() => addAllCards(category.cards)}
                   aria-label={`${t("statUnusedCards.addAll")} ${category.title}`}
-                  className="shrink-0 py-3 pr-4 pl-1 text-sm font-semibold text-hf-black active:opacity-60"
+                  className="hf-type-body hf-type-strong shrink-0 py-3 pr-4 pl-1 text-hf-black active:opacity-60"
                 >
                   {t("statUnusedCards.addAll")}
                 </button>
@@ -341,7 +341,7 @@ export default function UnusedStatCardsPage() {
             }
           >
             {category.cards.length === 0 ? (
-              <p className="rounded-2xl bg-hf-tan/60 p-4 text-xs text-hf-black opacity-50">
+              <p className="hf-type-small rounded-2xl bg-hf-tan/60 p-4 text-hf-black opacity-50">
                 {t("statUnusedCards.noCardsYet")}
               </p>
             ) : (
