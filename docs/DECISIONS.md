@@ -21,6 +21,12 @@ konto. Ingen husstands-/familieprofiler … ingen forældrekontrol".
   ned fra toppen ved nye hændelser.
 - Kun dagbogsdata følger den valgte profil. Login, adgangskode, abonnement,
   integrationer og familieopsætning hører altid til den, der er logget ind.
+- (2026-09-26) "Skift profil" øverst på Profil med overlappende
+  initialcirkler; "Kopier til konto" ved swipe fra venstre på egne
+  indtastninger, når man styrer en anden profil; blåt telefonikon med
+  initialer til venstre for profilcirklen og 1 px blå ramme rundt om skærmen,
+  mens en anden er på kontoen (ny token `--hf-color-watch: #2f80ed`);
+  "Kontrol-log" under Indstillinger på den kontrollerede konto.
 
 ## 2026-09-25: Global lodret rytme (8/16/32) og sorte primærknapper
 

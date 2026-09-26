@@ -14,6 +14,7 @@ import { IconBathScale } from "@/components/hf/IconBathScale";
 import { IconWaistMeasure } from "@/components/icons/WaistMeasure";
 import { HfProgressStepper } from "@/components/hf/HfProgressStepper";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { ProfileSwitcher } from "@/components/family/ProfileSwitcher";
 
 type Sex = "FEMALE" | "MALE";
 
@@ -65,6 +66,7 @@ export default function ProfilePage() {
         </p>
       ) : (
         <div className="hf-page">
+          <ProfileSwitcher />
           {/* Statisk indtil guided profilopsætning beregner det dynamisk. */}
           <HfProgressStepper
             steps={[

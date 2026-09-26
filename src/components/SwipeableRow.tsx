@@ -1,24 +1,29 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { IconBookmark, IconAlertTriangle } from "@tabler/icons-react";
+import { IconBookmark, IconAlertTriangle, IconCopy } from "@tabler/icons-react";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 const ACTION_WIDTH = 80;
 
 export function SwipeableRow({
   onFavorite,
+  onCopyToAccount,
   onReportError,
   onDelete,
   children,
 }: {
   onFavorite?: () => void;
+  // Familieabonnement (docs/FAMILY.md): kun når man styrer en anden profil.
+  // Ligger til venstre ved siden af Favorit.
+  onCopyToAccount?: () => void;
   onReportError?: () => void;
   onDelete: () => void;
   children: React.ReactNode;
 }) {
   const { t } = useTranslation();
   const rightActionsWidth = onReportError ? ACTION_WIDTH * 2 : ACTION_WIDTH; // (Fejl +) Slet
+  const leftActionsWidth = (onFavorite ? ACTION_WIDTH : 0) + (onCopyToAccount ? ACTION_WIDTH : 0); // Favorit (+ Kopier)
   const [dragX, setDragX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const startX = useRef<number | null>(null);
@@ -34,7 +39,7 @@ export function SwipeableRow({
     if (!dragging.current || startX.current === null) return;
     const delta = e.clientX - startX.current;
     const minimum = -rightActionsWidth;
-    const maximum = onFavorite ? ACTION_WIDTH : 0;
+    const maximum = leftActionsWidth;
     const clamped = Math.max(minimum, Math.min(maximum, delta));
     setDragX(clamped);
   }
@@ -45,7 +50,7 @@ export function SwipeableRow({
     startX.current = null;
     // Snap to a fully open/closed position instead of a random in-between one.
     setDragX((x) => {
-      if (onFavorite && x > ACTION_WIDTH / 2) return ACTION_WIDTH;
+      if (leftActionsWidth > 0 && x > leftActionsWidth / 2) return leftActionsWidth;
       if (x < -rightActionsWidth / 2) return -rightActionsWidth;
       return 0;
     });
@@ -65,6 +70,23 @@ export function SwipeableRow({
           >
             <IconBookmark size={18} />
             {t("swipeableRow.favorite")}
+          </button>
+        </div>
+      )}
+      {onCopyToAccount && (
+        <div
+          className={`absolute inset-y-0 flex w-20 items-center justify-center bg-hf-watch ${onFavorite ? "left-20" : "left-0"}`}
+        >
+          <button
+            onClick={() => {
+              onCopyToAccount();
+              setDragX(0);
+            }}
+            aria-label={t("family.copy.action")}
+            className="flex flex-col items-center gap-1 text-center text-xs font-bold leading-tight text-hf-white"
+          >
+            <IconCopy size={18} />
+            {t("family.copy.action")}
           </button>
         </div>
       )}

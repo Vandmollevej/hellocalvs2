@@ -191,4 +191,4 @@ Ejer: cloud-session `claude/lucid-bell-s5vyhv` (2026-09-25)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| — | Familieabonnement: forældre ser/taster for børn, adgangslog til barnet | I gang | Byggeplan i `docs/FAMILY.md`. Åbne spørgsmål (børneberegninger, pris, sletteret, fælles registrering) venter på bruger |
+| — | Familieabonnement: forældre ser/taster for børn, adgangslog til barnet | I gang | Første version bygget og pushet (branch `claude/lucid-bell-s5vyhv`, ikke flettet). Næste: brugerens test, "Mangler" og "Åbne spørgsmål" i `docs/FAMILY.md` |

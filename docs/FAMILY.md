@@ -1,6 +1,6 @@
 # Familieabonnement og børneprofiler
 
-Status: afklaret 2026-09-25, under opbygning. Beslutningerne står også i
+Status: første version bygget 2026-09-26 (branch `claude/lucid-bell-s5vyhv`), ikke testet mod en rigtig database. Beslutningerne står også i
 `docs/DECISIONS.md` 2026-09-25 "Familieabonnement". Denne fil samler
 research, brugerens svar, åbne spørgsmål og byggeplanen.
 
@@ -30,6 +30,21 @@ hvornår andre har været inde, hvad de har set, og hvad de har ændret.
    har ændret. Nye hændelser vises i et panel, der glider ned fra toppen.
 7. **Profilvælger.** Øverst i profilvælgeren vælger man profil og kan tilføje
    en ny ("Er det et barn?").
+
+8. **Skift profil (2026-09-26).** Øverst på Profil står "Skift profil" med
+   overlappende cirkler med egne initialer og initialerne på de profiler, man
+   styrer. Med familieabonnement kan man skifte til de profiler, man har
+   oprettet. Om en inviteret person siger ja, er op til personen selv.
+9. **Kopier til konto (2026-09-26).** Swipe fra venstre mod højre på en af
+   ens egne indtastninger giver normalt kun Favorit. Styrer man en anden
+   profil, kommer "Kopier til konto" også frem.
+10. **Blåt telefonikon og blå ramme (2026-09-26).** Til venstre for
+    profilcirklen i topbjælken vises en blå smartphone med initialerne på den
+    person, der er på kontoen, og der er en 1 px blå ramme rundt om hele
+    skærmen, så det er tydeligt for barnet, at nogen er på kontoen.
+11. **Kontrol-log (2026-09-26).** På den kontrollerede konto (barn, partner)
+    ligger "Kontrol-log" under Indstillinger med log-ins (tidspunkter) og
+    handlinger udført på kontoen.
 
 ### Min fortolkning (bekræft eller ret)
 
@@ -101,6 +116,44 @@ Kilder:
 [ICO standard 11](https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/childrens-information/childrens-code-guidance-and-resources/age-appropriate-design-a-code-of-practice-for-online-services/11-parental-controls/) ·
 [EU DSA-retningslinjer](https://digital-strategy.ec.europa.eu/en/library/commission-publishes-guidelines-protection-minors) ·
 [Apple Familiedeling](https://developer.apple.com/app-store/subscriptions/)
+
+## Sådan virker den første version
+
+- **Datamodel:** `Family`, `FamilyMember`, `FamilyAccessGrant`,
+  `FamilyLoginCode`, `ProfileAccessLog`, `Subscription.plan` (INDIVIDUAL/FAMILY)
+  og `User.accessLogSeenAt`. Migration `20260925200000_family_subscription`.
+- **Aktiv profil:** cookien `hc_active_profile`. `getProfileUser(område,
+  handling)` i `src/lib/family-access.ts` tjekker adgang ved hvert kald og
+  logger alt, hvad en anden gør. Bruges af dagbogsruterne (registreringer,
+  vand, vægt, aktivitet, kropsmål, mål, sundhedsdata, menstruation, søvn,
+  arbejdstider, favoritter, opskriftsfavoritter, profil). Alt andet bruger
+  stadig den indloggede.
+- **Tilstedeværelse:** blå ramme + telefonikon, når en anden har gjort noget
+  på den viste profil inden for 5 minutter (`GET /api/family`, hentes hvert
+  halve minut). Et "set"-opslag logges højst én gang pr. 10 minutter pr.
+  område.
+- **Sider:** `/profile` (Skift profil), `/profile/family` (familie, profiler,
+  koder, adgang, udmelding), `/settings/control-log`, `/family-code` (barnet
+  sætter sit eget login med en kode; link fra login-siden).
+- **Kopier til konto:** `POST /api/family/copy-registration` kopierer en egen
+  registrering som nyt snapshot til en profil, man styrer. Findes indtil
+  videre kun på forsidens dagsliste (`DailyList`).
+- **Abonnement:** medlemmer af en familie, hvis betaler har `plan = FAMILY` og
+  er Seriøs, er Seriøs. Betaling er ikke koblet på endnu, så for at teste skal
+  betalerens række sættes manuelt i databasen:
+  `UPDATE subscriptions SET plan='FAMILY', status='ACTIVE', "currentPeriodEnd"=NULL WHERE "userId"='<id>';`
+  (findes rækken ikke, skal den oprettes).
+
+## Mangler / kendte begrænsninger
+
+- Tilmelding spørger ikke om fødselsdato, så appen kan endnu ikke afvise, at
+  en under 15-årig selv opretter en konto (kræver et nyt felt ved tilmelding
+  og ved Google/Apple/Facebook-login).
+- Profiler uden eget login kan ikke slettes fra familien endnu.
+- Betalerens kontosletning (`src/lib/gdpr.ts`) rører ikke familien endnu.
+- Børneberegninger (se Åbne spørgsmål) er ikke ændret.
+- Indstillinger som sprog og notifikationer på Profil følger den valgte
+  profil, når man ser en andens profil.
 
 ## Byggeplan
 

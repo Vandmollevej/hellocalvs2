@@ -21,11 +21,14 @@ import {
   IconWallet,
   IconAdjustments,
   IconBug,
+  IconUsers,
+  IconHistory,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 
 function resetOnboardingProgress() {
   return fetch("/api/profile", {
@@ -49,6 +52,10 @@ export default function SettingsPage() {
   // the rest of the settings page on it.
   const [isFemale, setIsFemale] = useState(false);
   const [unreadMessages, setUnreadMessages] = useState(0);
+  const { status: familyStatus } = useFamilyStatus();
+  // Kontrol-loggen vises for den, der er med i en andens familie (barn,
+  // partner — den, der kontrolleres), se docs/FAMILY.md.
+  const isControlled = Boolean(familyStatus?.family && !familyStatus.family.isOwner);
 
   useEffect(() => {
     let cancelled = false;
@@ -94,6 +101,24 @@ export default function SettingsPage() {
             href="/settings/payment"
             divider={false}
           />
+        </AccordionCard>
+
+        <AccordionCard>
+          <ChevronRow
+            icon={<IconUsers size={20} />}
+            label={t("family.title")}
+            href="/profile/family"
+            divider={isControlled}
+          />
+          {isControlled && (
+            <ChevronRow
+              icon={<IconHistory size={20} />}
+              label={t("family.log.title")}
+              href="/settings/control-log"
+              badgeCount={familyStatus?.unseenCount}
+              divider={false}
+            />
+          )}
         </AccordionCard>
 
         <AccordionCard>

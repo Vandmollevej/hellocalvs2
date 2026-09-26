@@ -7,6 +7,8 @@ import { IconChevronRight } from "@tabler/icons-react";
 import { SwipeableRow } from "@/components/SwipeableRow";
 import { FoodRow } from "@/components/FoodRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { useFamilyStatus, type FamilyProfile } from "@/components/family/FamilyStatusProvider";
+import { CopyToAccountSheet } from "@/components/family/CopyToAccountSheet";
 
 type Entry = {
   id: string;
@@ -52,6 +54,15 @@ export function DailyList() {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [copyingId, setCopyingId] = useState<string | null>(null);
+  const { status } = useFamilyStatus();
+  // "Kopier til konto" kun på egne indtastninger, og kun når man styrer
+  // andre profiler (docs/FAMILY.md).
+  const copyTargets =
+    status && status.activeProfile.id === status.me.id
+      ? status.profiles.filter((profile) => profile.id !== status.me.id)
+      : [];
 
   useEffect(() => {
     fetch("/api/registrations")
@@ -91,6 +102,22 @@ export function DailyList() {
     }
   }
 
+  async function copyEntry(registrationId: string, target: FamilyProfile) {
+    setCopyingId(null);
+    const res = await fetch("/api/family/copy-registration", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ registrationId, targetProfileId: target.id }),
+    }).catch(() => null);
+    setNotice(res?.ok ? t("family.copy.done", { name: target.displayName }) : t("family.copy.failed"));
+    window.setTimeout(() => setNotice(null), 2500);
+  }
+
+  function startCopy(registrationId: string) {
+    if (copyTargets.length === 1) void copyEntry(registrationId, copyTargets[0]);
+    else setCopyingId(registrationId);
+  }
+
   async function deleteEntry(id: string) {
     const previousEntries = entries;
     setEntries((current) => current.filter((entry) => entry.id !== id));
@@ -114,6 +141,7 @@ export function DailyList() {
           >
             <SwipeableRow
               onFavorite={entry.productId ? () => void favoriteEntry(entry.productId) : undefined}
+              onCopyToAccount={copyTargets.length > 0 ? () => startCopy(entry.id) : undefined}
               onReportError={() => router.push(`/registration/${entry.id}/report-error`)}
               onDelete={() => void deleteEntry(entry.id)}
             >
@@ -145,6 +173,18 @@ export function DailyList() {
         )}
         {error && <li className="pb-4 text-center text-xs text-red-700">{error}</li>}
       </ul>
+      {notice && (
+        <p role="status" className="hf-type-body-sm absolute inset-x-4 bottom-10 rounded-[8px] bg-hf-black px-4 py-2 text-center text-hf-white">
+          {notice}
+        </p>
+      )}
+      {copyingId && (
+        <CopyToAccountSheet
+          profiles={copyTargets}
+          onChoose={(profile) => void copyEntry(copyingId, profile)}
+          onClose={() => setCopyingId(null)}
+        />
+      )}
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0 h-9"
         style={{ background: "linear-gradient(to bottom, transparent, var(--hf-cream))" }}

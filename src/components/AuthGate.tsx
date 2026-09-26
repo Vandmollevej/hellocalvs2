@@ -18,9 +18,11 @@ const PUBLIC_PREFIXES = [
   "/forward",
   "/betingelser",
   "/admin",
+  // Familiemedlem sætter sit eget login med en kode fra betaleren (docs/FAMILY.md).
+  "/family-code",
 ];
 
-function isPublic(pathname: string) {
+export function isPublicPath(pathname: string) {
   return PUBLIC_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
@@ -29,7 +31,7 @@ export function AuthGate() {
   const router = useRouter();
 
   useEffect(() => {
-    if (isPublic(pathname)) return;
+    if (isPublicPath(pathname)) return;
     let cancelled = false;
     fetch("/api/auth/me")
       .then((res) => {

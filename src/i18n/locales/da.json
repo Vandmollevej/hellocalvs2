@@ -44,7 +44,8 @@
     "errorOauth": "Login mislykkedes. Prøv igen.",
     "errorOauthCancelled": "Login blev afbrudt.",
     "errorOauthExpired": "Login-forsøget udløb. Prøv igen.",
-    "errorNotConfigured": "Login med {provider} er ikke sat op endnu."
+    "errorNotConfigured": "Login med {provider} er ikke sat op endnu.",
+    "haveFamilyCode": "Har du fået en familiekode?"
   },
   "forgotPassword": {
     "title": "Glemt adgangskode",
@@ -1491,5 +1492,153 @@
     "enabling": "Slår til…",
     "error": "Face ID kunne ikke slås til. Du kan prøve igen under Indstillinger.",
     "enabled": "Face ID er slået til for login."
+  },
+  "family": {
+    "title": "Familie",
+    "child": "Barn",
+    "switcher": {
+      "title": "Skift profil",
+      "you": "Din egen profil",
+      "managing": "Du taster ind for denne profil",
+      "meLabel": "{name} (dig)",
+      "active": "Valgt",
+      "addProfile": "Tilføj profil",
+      "manage": "Familie og adgang"
+    },
+    "watch": {
+      "onAccount": "{name} er på kontoen"
+    },
+    "panel": {
+      "title": "Nogen har været på din konto",
+      "intro": "{count} nye hændelser siden sidst.",
+      "seeAll": "Se hele Kontrol-loggen",
+      "ok": "OK"
+    },
+    "log": {
+      "title": "Kontrol-log",
+      "you": "Dig",
+      "ownLogin": "Loggede ind",
+      "whoHasAccess": "Hvem har adgang",
+      "nobody": "Ingen andre har adgang til din konto.",
+      "payer": "Betaler",
+      "granted": "Har fået adgang",
+      "manage": "Se familien",
+      "eventsTitle": "Log-ins og handlinger",
+      "empty": "Ingen hændelser endnu.",
+      "loadError": "Kontrol-loggen kunne ikke hentes.",
+      "action": {
+        "OPENED": "Åbnede din konto",
+        "VIEWED": "Så",
+        "CREATED": "Tilføjede",
+        "UPDATED": "Ændrede",
+        "DELETED": "Slettede"
+      },
+      "area": {
+        "profile": "Profil",
+        "registrations": "Registreringer",
+        "water": "Vand",
+        "weight": "Vægt",
+        "activities": "Aktivitet",
+        "bodyMeasurements": "Kropsmål",
+        "goals": "Målsætning",
+        "healthMetrics": "Sundhedsdata",
+        "menstrualCycle": "Menstruation",
+        "sleep": "Søvn",
+        "workShifts": "Arbejdstider",
+        "favorites": "Favoritter",
+        "recipeFavorites": "Opskriftsfavoritter",
+        "login": "Log ind"
+      }
+    },
+    "plan": {
+      "title": "Familieabonnement",
+      "intro": "Med et familieabonnement kan du oprette op til {max} profiler, fx til dine børn, og selv se og taste ind for dem. Familieabonnementet er altid betalt, så ingen i familien ser reklamer.",
+      "create": "Opret familie",
+      "requiresPlan": "Se familieabonnement"
+    },
+    "join": {
+      "title": "Har du fået en kode?",
+      "intro": "Har en anden i familien sendt dig en kode, kan du koble din konto på deres familie.",
+      "codeLabel": "Familiekode",
+      "submit": "Kobl mig på familien",
+      "confirm": "Den, der betaler for familien, kan se og ændre alt på din profil, så længe du er med. Vil du fortsætte?"
+    },
+    "member": {
+      "title": "Din familie",
+      "intro": "Du er med i {owner}s familieabonnement. {owner} bestemmer over familien og kan se og ændre alt på din profil. Alt, hvad andre gør på din profil, står i din Kontrol-log.",
+      "seeLog": "Se Kontrol-log",
+      "leave": "Meld dig ud af familien",
+      "leaveConfirm": "Vil du melde dig ud? {owner} og andre i familien mister adgangen til din profil, og du mister familieabonnementet."
+    },
+    "members": {
+      "title": "Profiler ({count} af {max})",
+      "payer": "Betaler",
+      "hasLogin": "Har eget login",
+      "noLogin": "Intet eget login endnu",
+      "age": "{age} år",
+      "isChild": "Barn",
+      "createLoginCode": "Lav login-kode",
+      "remove": "Fjern fra familien",
+      "removeConfirm": "Fjern {name} fra familien? Profilen bliver en almindelig konto uden familieabonnement."
+    },
+    "code": {
+      "claimHelp": "Personen åbner Hello Cal, vælger \"Har du fået en familiekode?\" på login-siden og indtaster koden. Gælder til {date}.",
+      "joinHelp": "Personen logger ind på sin egen konto og indtaster koden under Indstillinger → Familie. Gælder til {date}."
+    },
+    "add": {
+      "title": "Tilføj profil",
+      "newProfile": "Opret ny profil",
+      "inviteExisting": "Inviter en med egen konto",
+      "name": "Navn",
+      "birthDate": "Fødselsdato",
+      "sex": "Køn",
+      "sexUnknown": "Ikke angivet",
+      "sexFemale": "Kvinde",
+      "sexMale": "Mand",
+      "heightCm": "Højde (cm)",
+      "weightKg": "Vægt (kg)",
+      "isChild": "Er det et barn?",
+      "isChildHelp": "Under 15 år kan man ikke selv oprette en konto.",
+      "submit": "Tilføj profil"
+    },
+    "access": {
+      "title": "Adgang",
+      "intro": "Du har altid adgang til alle profiler. Her bestemmer du, hvem andre der må se og taste ind for hvem.",
+      "who": "Må se og taste ind for {name}"
+    },
+    "claim": {
+      "title": "Familiekode",
+      "intro": "Har du fået en kode fra din forælder eller en anden i familien? Indtast den her, og vælg din egen e-mail og adgangskode.",
+      "code": "Kode",
+      "email": "E-mail",
+      "password": "Adgangskode (mindst 8 tegn)",
+      "submit": "Opret mit login"
+    },
+    "copy": {
+      "action": "Kopier til konto",
+      "title": "Kopier til hvilken konto?",
+      "done": "Kopieret til {name}",
+      "failed": "Kunne ikke kopieres"
+    },
+    "error": {
+      "familyPlanRequired": "Det kræver et aktivt familieabonnement.",
+      "alreadyInFamily": "Du er allerede med i en familie.",
+      "notOwner": "Kun den, der betaler, kan ændre familien.",
+      "familyFull": "Familien har allerede det maksimale antal profiler.",
+      "nameRequired": "Skriv et navn.",
+      "notMember": "Personen er ikke med i familien.",
+      "notAllowed": "Det er ikke tilladt.",
+      "invalidCode": "Koden er ugyldig eller udløbet.",
+      "emailTaken": "E-mailen bruges allerede af en anden konto.",
+      "ownerCannotLeave": "Den, der betaler, kan ikke melde sig ud.",
+      "tooYoungToLeave": "Du kan først melde dig ud af familien, når du er fyldt 15.",
+      "profileWithoutLogin": "Profilen har intet eget login og kan ikke fjernes endnu.",
+      "invalidEmail": "Skriv en gyldig e-mail.",
+      "passwordTooShort": "Adgangskoden skal være mindst 8 tegn.",
+      "tooManyAttempts": "For mange forsøg. Prøv igen senere.",
+      "invalidRequest": "Ugyldig anmodning.",
+      "notFound": "Ikke fundet.",
+      "unknown": "Noget gik galt. Prøv igen."
+    }
   }
 }
