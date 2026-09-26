@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { Icon } from "@tabler/icons-react";
+import { IconHeartbeat, IconMoon, type Icon } from "@tabler/icons-react";
 import {
   FRONTPAGE_STAT_DEFS,
   useFrontpageStatKeys,
@@ -38,9 +38,6 @@ type Stat = {
   icon: Icon;
   value: string;
   unit: string;
-  /** Dagens mål, jf. docs/UI.md:63 — vises som en mindre "/ mål" linje under
-   * det store centrale tal. Udeladt for nøgletal uden et defineret mål. */
-  goal?: number;
 };
 
 function isToday(dateString: string) {
@@ -81,15 +78,52 @@ function sumMetricToday(metrics: HealthMetric[], type: string): number | null {
   return matching.reduce((sum, m) => sum + m.value, 0);
 }
 
-/** Shortest signed distance from `index` to `from` around a circular list of `length`. */
-function circularDistance(index: number, from: number, length: number) {
-  let diff = (index - from) % length;
-  if (diff > length / 2) diff -= length;
-  if (diff < -length / 2) diff += length;
-  return diff;
+// Wheel geometry (user's requests 2026-09-25): every stat on one line with the
+// icon to the right of the number, up to 3 rows above and below the center,
+// the same empty space between all neighbouring rows, a slight fan tilt, and
+// nothing clipped.
+const SIDE_ROWS = 3;
+const FONT_SIZE = 27;
+const ICON_SIZE = 21;
+/** Empty space between two neighbouring rows, whatever their size. */
+const ROW_GAP = 15;
+const SCALE_STEP = 0.12;
+const MIN_SCALE = 0.6;
+/** Degrees per row away from the center: rows above tilt clockwise (left end up), rows below counter-clockwise. */
+const TILT_PER_ROW = 2;
+/** How far the centered row is pushed in from the edge; the others curve back out along an arc. */
+const MAX_INSET = 25;
+/** Pointer travel that moves the wheel one row. */
+const DRAG_STEP = 38;
+const WHEEL_HEIGHT = 2 * (offsetAt(SIDE_ROWS) + FONT_SIZE);
+
+// Temporary made-up numbers (user 2026-09-25: "opfind et indtil jeg har dem
+// alle opsat") so the wheel can show all its rows while the visuals are tuned.
+// They only fill the slots the user's own fields (Indstillinger → Visning →
+// Forside) leave empty, and drop out by themselves as more fields are enabled.
+const PLACEHOLDER_STATS: Stat[] = [
+  { key: "placeholder-sleep", label: "Søvn (eksempel)", icon: IconMoon, value: "7,5", unit: "t" },
+  { key: "placeholder-pulse", label: "Puls (eksempel)", icon: IconHeartbeat, value: "62", unit: "bpm" },
+];
+
+function scaleAt(absDistance: number) {
+  return Math.max(MIN_SCALE, 1 - absDistance * SCALE_STEP);
 }
 
-const ITEM_HEIGHT = 34;
+// Distance from the wheel's center to a row's center. A row is FONT_SIZE × its
+// scale tall, so adding up that height along the way (plus ROW_GAP per row)
+// leaves exactly ROW_GAP of empty space between any two neighbouring rows —
+// the rows shrink towards the ends without bunching up near the center.
+function offsetAt(absDistance: number) {
+  const knee = (1 - MIN_SCALE) / SCALE_STEP;
+  const shrinking = Math.min(absDistance, knee);
+  const flat = Math.max(0, absDistance - knee);
+  return (
+    ROW_GAP * absDistance +
+    FONT_SIZE * (shrinking - (SCALE_STEP / 2) * shrinking * shrinking) +
+    FONT_SIZE * MIN_SCALE * flat
+  );
+}
 
 export function StatsWheel({ side }: { side: "left" | "right" }) {
   const { t } = useTranslation();
@@ -163,25 +197,34 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
       distanceKm: sumMetricToday(metrics, "DISTANCE_KM"),
     };
 
-    return activeKeys
+    const own = activeKeys
       .map((key) => FRONTPAGE_STAT_DEFS.find((def) => def.key === key))
       .filter((def): def is NonNullable<typeof def> => Boolean(def))
       .map((def) => {
-        const { value, unit, goal } = def.compute({ totals, metrics: metricTotals });
+        const { value, unit } = def.compute({ totals, metrics: metricTotals });
         return {
           key: def.key,
           label: t(def.labelKey),
           icon: def.icon,
           value: loading ? "—" : value,
           unit,
-          goal,
         };
       });
+    const missing = Math.max(0, SIDE_ROWS * 2 + 1 - own.length);
+    return [...own, ...PLACEHOLDER_STATS.slice(0, missing)];
   }, [activeKeys, loading, metrics, registrations, t]);
+
+  // Rows fade out half a row past the outermost visible one. With too few
+  // stats for all 7 rows, the range shrinks so the item that wraps from the
+  // bottom to the top of the wheel is always fully faded out when it jumps.
+  const visibleRange = Math.min(SIDE_ROWS, Math.floor((stats.length - 1) / 2)) + 0.5;
 
   function move(direction: -1 | 1) {
     if (stats.length === 0) return;
-    setActiveIndex((current) => (current + direction + stats.length) % stats.length);
+    // Deliberately not wrapped to the list length: every rendered row keys on
+    // its lap around the wheel (see below), so turning past the end never
+    // makes a row jump.
+    setActiveIndex((current) => current + direction);
   }
 
   function handleWheel(event: React.WheelEvent<HTMLDivElement>) {
@@ -197,7 +240,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
   // Continuous "virtual" index: the exact fractional position of the wheel,
   // combining the committed active index with the in-progress drag offset
   // (in pixels, positive when the pointer has moved up towards the next item).
-  const floatIndex = activeIndex + dragPixels / ITEM_HEIGHT;
+  const floatIndex = activeIndex + dragPixels / DRAG_STEP;
 
   return (
     <div
@@ -226,7 +269,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
       }}
       onPointerUp={(event) => {
         if (pointerStartY.current !== null) {
-          const steps = Math.round((pointerStartY.current - event.clientY) / ITEM_HEIGHT);
+          const steps = Math.round((pointerStartY.current - event.clientY) / DRAG_STEP);
           if (steps !== 0) move(steps > 0 ? 1 : -1);
         }
         pointerStartY.current = null;
@@ -239,33 +282,47 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
         setDragging(false);
         setDragPixels(0);
       }}
-      className="absolute flex w-[178px] touch-pan-x flex-col items-end justify-center overflow-hidden rounded-3xl px-2 py-3 text-right transition-[left,right] duration-300 ease-out focus-visible:outline-2 focus-visible:outline-hf-green focus-visible:outline-offset-2"
+      // No overflow clipping: a long number simply extends further left
+      // instead of being cut off in the middle of the screen. The box itself
+      // stays narrow on the right so it never covers the add-button's fan.
+      className="absolute touch-pan-x rounded-3xl text-right transition-[left,right] duration-300 ease-out focus-visible:outline-2 focus-visible:outline-hf-green focus-visible:outline-offset-2"
       style={
         {
           [side]: 22,
           top: "50%",
-          height: 190,
+          width: side === "right" ? 178 : 200,
+          height: WHEEL_HEIGHT,
           transform: "translateY(-50%)",
         } as React.CSSProperties
       }
     >
-      {stats.map((stat, index) => {
-        const distance = circularDistance(index, floatIndex, stats.length);
-        // Only render items close enough to be visible; keeps the DOM small
-        // and avoids animating items that are fully faded out anyway.
-        if (Math.abs(distance) > 2.4) return null;
-        return (
-          <WheelItem
-            key={stat.key}
-            stat={stat}
-            distance={distance}
-            animate={!dragging}
-            onClick={() => {
-              if (distance === 0) return;
-              move(distance > 0 ? 1 : -1);
-            }}
-          />
-        );
+      {stats.flatMap((stat, index) => {
+        // One row per lap of the wheel on which this stat is within a row of
+        // the visible range. A row turning out at one end fades to nothing
+        // while the stat's next lap fades in at the other end — instead of a
+        // single row sweeping across the whole wheel when it wraps around.
+        const reach = visibleRange + 1;
+        const offset = index - floatIndex;
+        const firstLap = Math.ceil((-reach - offset) / stats.length);
+        const lastLap = Math.floor((reach - offset) / stats.length);
+        const rows = [];
+        for (let lap = firstLap; lap <= lastLap; lap++) {
+          const distance = offset + lap * stats.length;
+          rows.push(
+            <WheelItem
+              key={`${stat.key}@${lap}`}
+              stat={stat}
+              distance={distance}
+              visibleRange={visibleRange}
+              animate={!dragging}
+              onClick={() => {
+                if (distance === 0) return;
+                move(distance > 0 ? 1 : -1);
+              }}
+            />
+          );
+        }
+        return rows;
       })}
     </div>
   );
@@ -274,50 +331,58 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
 function WheelItem({
   stat,
   distance,
+  visibleRange,
   animate,
   onClick,
 }: {
   stat: Stat;
   /** Signed distance from the active/center position, in whole-item units. Can be fractional while dragging. */
   distance: number;
+  /** Distance at which an item has faded out completely. */
+  visibleRange: number;
   /** Whether the transform/opacity change should animate (disabled while actively dragging so the item follows the pointer 1:1). */
   animate: boolean;
   onClick?: () => void;
 }) {
   const StatIcon = stat.icon;
-  const absDistance = Math.min(Math.abs(distance), 2.4);
+  const absDistance = Math.min(Math.abs(distance), visibleRange);
   const isActive = absDistance < 0.05;
+  // Fully faded out (a lap that is just turning in or out): not tappable or focusable.
+  const hidden = absDistance >= visibleRange;
 
   // Progressive size: items shrink the further they sit from the centered,
-  // active stat — no 3D tilt/carousel effect, just a flat right-aligned list.
-  // Everything here (position, scale, opacity) is driven by ONE CSS
-  // transform + opacity, exactly like an iOS picker wheel: the value text and
-  // icon keep a fixed font-size/icon-size and shrink together as one rigid
-  // unit via `scale()`, instead of also separately resizing the font/icon on
-  // every render. Mixing those two mechanisms is what previously made the
-  // motion look like it "jumped" in discrete pixel steps — font-size and
-  // icon-size changes aren't picked up by the transform/opacity transition
-  // below, so they snapped instantly instead of easing.
-  const translateY = distance * ITEM_HEIGHT;
-  const scale = Math.max(0.62, 1 - absDistance * 0.16);
-  // One continuous ramp all the way to 0 exactly at the render cutoff (2.4),
-  // so an item never pops in or out at a leftover opacity at the edge.
-  // 1 at the center, 0 one full step away. Drives the icon's green tint and the
-  // goal line so they blend in/out with the motion instead of switching on/off
-  // the moment an item becomes active.
+  // active stat. Everything here (position, tilt, scale, opacity) is driven by
+  // ONE CSS transform + opacity, exactly like an iOS picker wheel: the value
+  // text and icon keep a fixed font-size/icon-size and shrink together as one
+  // rigid unit via `scale()`, instead of also separately resizing the
+  // font/icon on every render. Mixing those two mechanisms is what previously
+  // made the motion look like it "jumped" in discrete pixel steps — font-size
+  // and icon-size changes aren't picked up by the transform/opacity
+  // transition below, so they snapped instantly instead of easing.
+  const y = offsetAt(absDistance);
+  const translateY = distance < 0 ? -y : y;
+  const scale = scaleAt(absDistance);
+  // A slight fan, like spokes of a wheel whose hub sits beyond the right
+  // edge: the center row is level, rows above tilt their left end up and rows
+  // below tilt it down, a little more per row. Pivots on the icon (the right
+  // end), so the icons stay on the arc.
+  const tilt = (distance < 0 ? 1 : -1) * absDistance * TILT_PER_ROW;
+  // 1 at the center, 0 one full step away. Drives the icon's green tint so it
+  // blends in/out with the motion instead of switching on/off the moment an
+  // item becomes active.
   const focus = Math.max(0, 1 - absDistance);
-  // Neighbours are dimmed an extra 30% so the centered stat stands out; the
-  // factor eases in with `focus`, so the fade stays continuous while dragging.
-  const opacity = (1 - absDistance / 2.4) * (0.7 + 0.3 * focus);
-  const transition = animate ? "transition-[transform,opacity,color,max-height] duration-300 ease-out" : "";
+  // One continuous ramp all the way to 0 exactly at the render cutoff, so an
+  // item never pops in or out at a leftover opacity at the edge. Neighbours
+  // are dimmed an extra 30% so the centered stat stands out; the factor eases
+  // in with `focus`, so the fade stays continuous while dragging.
+  const opacity = (1 - absDistance / visibleRange) * (0.7 + 0.3 * focus);
+  const transition = animate ? "transition-[transform,opacity,color] duration-300 ease-out" : "";
   // The items sit on a circular arc like the rim of a wheel: the centered item
-  // is inset 25px from the right edge and the others curve back out to the
-  // edge (0px) at the fade-out distance. Radius solved so both ends hold.
-  const MAX_INSET = 25;
-  const EDGE_Y = 2.4 * ITEM_HEIGHT;
-  const RADIUS = (EDGE_Y * EDGE_Y + MAX_INSET * MAX_INSET) / (2 * MAX_INSET);
-  const y = absDistance * ITEM_HEIGHT;
-  const inset = Math.sqrt(RADIUS * RADIUS - y * y) - (RADIUS - MAX_INSET);
+  // is inset MAX_INSET from the right edge and the others curve back out to
+  // the edge (0px) at the fade-out distance. Radius solved so both ends hold.
+  const edgeY = offsetAt(visibleRange);
+  const radius = (edgeY * edgeY + MAX_INSET * MAX_INSET) / (2 * MAX_INSET);
+  const inset = Math.sqrt(Math.max(0, radius * radius - y * y)) - (radius - MAX_INSET);
 
   return (
     <button
@@ -331,38 +396,27 @@ function WheelItem({
           : `Vis ${stat.label.toLowerCase()}: ${stat.value}${stat.unit ? ` ${stat.unit}` : ""}`
       }
       aria-live={isActive ? "polite" : undefined}
-      className={`absolute left-2 right-2 flex origin-right flex-col items-end whitespace-nowrap text-hf-black ${transition} ${
-        isActive ? "cursor-default" : "cursor-pointer"
+      aria-hidden={hidden || undefined}
+      tabIndex={hidden ? -1 : undefined}
+      className={`absolute right-2 flex origin-right items-center gap-2 whitespace-nowrap text-hf-black ${transition} ${
+        hidden ? "pointer-events-none" : isActive ? "cursor-default" : "cursor-pointer"
       }`}
       style={{
         top: "50%",
-        transform: `translateY(calc(-50% + ${translateY}px)) translateX(-${inset}px) scale(${scale})`,
+        transform: `translateY(calc(-50% + ${translateY}px)) translateX(-${inset}px) rotate(${tilt}deg) scale(${scale})`,
         opacity,
       }}
     >
-      <span className="flex items-center gap-2">
-        <span
-          className={`flex ${transition}`}
-          style={{ color: `color-mix(in srgb, var(--hf-green) ${Math.round(focus * 100)}%, var(--hf-black))` }}
-        >
-          <StatIcon size={21} color="currentColor" stroke={2.2} aria-hidden="true" />
-        </span>
-        <span className="font-extrabold leading-none" style={{ fontSize: 27 }}>
-          {stat.value}
-          {stat.unit && <span className="font-semibold"> {stat.unit}</span>}
-        </span>
+      <span className="font-extrabold leading-none" style={{ fontSize: FONT_SIZE }}>
+        {stat.value}
+        {stat.unit && <span className="font-semibold"> {stat.unit}</span>}
       </span>
-      {stat.goal != null && (
-        <span
-          aria-hidden={!isActive || undefined}
-          className={`overflow-hidden text-sm font-medium leading-none text-hf-gray-dark ${transition}`}
-          style={{ maxHeight: focus * 16, opacity: focus }}
-        >
-          <span className="mt-1 block">
-            / {stat.goal} {stat.unit}
-          </span>
-        </span>
-      )}
+      <span
+        className={`flex ${transition}`}
+        style={{ color: `color-mix(in srgb, var(--hf-green) ${Math.round(focus * 100)}%, var(--hf-black))` }}
+      >
+        <StatIcon size={ICON_SIZE} color="currentColor" stroke={2.2} aria-hidden="true" />
+      </span>
     </button>
   );
 }

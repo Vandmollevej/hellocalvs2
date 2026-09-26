@@ -60,6 +60,7 @@ Ikke visuelt testet: lokalt sender appen til /welcome uden login. Test på mobil
 | 961d7953 | Tal-slider på forsiden: midterste tal 25px indrykket, aftager til 0 som transparensen | Færdig (eba3638) | — |
 | 00cf8440 | Gradient i højre side af tallene (synlighed) skal være helt flydende | Færdig (32995ab) | Opacity går nu lineært til 0 ved kanten |
 | a9819635 | Trinløs størrelse/farve på slider (ingen spring pr. position) | Færdig (32995ab) | Ikonfarve + "/ mål"-linje glider nu trinløst |
+| 65efa293 | Tal-hjulet: én linje uden "/ mål", ikon til HØJRE, jævn luft, 7 rækker (2 opfundne), 2° vifte pr. række, ingen beskæring | Færdig (8009704, pushet til master) | Konflikter med 0d21a46 (lokal master): behold denne version, den har 0d21a46's dæmpning med. Brugeren tester på iPhone |
 
 ## G3 — Produktkategorier + statistikbokse + "Månedens synder"
 Filer: Prisma-skema (kategori), kategori-lib, nye statistikbokse, ny liste-side, knap i kalender (koordinér med G1).
@@ -73,12 +74,12 @@ Koordinering med G1: G3 skal senere tilføje knappen "Månedens synder" nederst 
 
 ## G4 — Usikkerhed (bølgeikon + Uncertainties-admin)
 Filer: usikkerheds-ikon/komponent, mikronæringsvisning, indstillinger → Visning, admin Uncertainties.
-Ejer: —
+Ejer: G4-sessionen, konto B (overtaget 2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| d2f522ca / 52205f52 | Globalt bølgeikon for usikre varer + mikrodata, margin i grå, on/off i indstillinger | Venter på bruger | Krav i STATUS (commit 1beb7a8). Mangler: ikon som tekst-tilde eller SVG? Frida-vitaminer skal evt. bygges først |
-| ff7fc6a5 | Admin "Uncertainties" med 4 faner, rød prik, lightbox med beskåret OCR-billede | Venter på bruger | Krav i STATUS punkt 15. Brugeren sagde "Udfør" til sidst — bekræft om det betyder byg nu |
+| d2f522ca / 52205f52 | Globalt bølgeikon for usikre varer + mikrodata, margin i grå, on/off i indstillinger | Færdig (pushet til master 2026-09-25) | Specifikation: samtale ef2ba16f + DECISIONS 2026-09-25. Live-tjek kræver login |
+| ff7fc6a5 | Admin "Uncertainties" (5 faner inkl. Billeder, 70/50 %-tærskler), natlig AI-genkørsel, admin "Cron-jobs" | Færdig (pushet til master 2026-09-25) | Live-tjek kræver admin-login |
 
 ## G5 — Agent-app + logo-robot
 Filer: ny agent-app, admin "scan-invites", logo-agent (Python/container).
@@ -119,6 +120,7 @@ Ejer: Profil-gruppen (G7), konto B — overtaget 2026-09-24
 | bc01cd73 | Højde-vælger fryser / "Færdig" / aktuel højde vises ikke | Færdig (6ab6eca) | Ikke testet i browser (kræver login) |
 | 26393cba | Abonnement "Seriøs": næste betalingsdato, "Betalingsmetoder"-knap + profilpunkt | Færdig (a764b4d) | Demo-brugeren oprettes ikke (fjernet bevidst, DECISIONS 2026-09-25) |
 | gear-appsettings | Profil: tandhjul (kun på /profile) → app-indstillinger (`/settings`) + tilbagepil på profilsiden | Færdig | App-punkter flyttet fra profil til `/settings`, log ud flyttet med |
+| 65efa293 | Billede-dagbog mistede billeder (5 → 2): lager flyttet fra localStorage til IndexedDB | Færdig (44f7b58, pushet sammen med karrusellen 2c8b608) | Brugeren tester på iPhone: tag flere billeder, forlad siden, kom tilbage |
 
 ## G8 — Integrationer
 Filer: `src/lib/integrations.ts`, integrationssiden, `/api/withings/**`, Google Health.

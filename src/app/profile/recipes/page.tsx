@@ -156,6 +156,11 @@ function MineTab({ t }: { t: Translate }) {
   );
 }
 
+// Antal retter under "Trender netop nu", før brugeren har søgt.
+const TRENDING_COUNT = 3;
+
+type FavoriteSnapshot = { id: string; name: string; kcal: number; images?: string[] };
+
 function SharedTab({ t }: { t: Translate }) {
   const [query, setQuery] = useState("");
   const [filters] = useState<RecipeFilters>(loadRecipeFilters);
@@ -165,14 +170,22 @@ function SharedTab({ t }: { t: Translate }) {
   const isSerious = useIsSerious();
   const [results, setResults] = useState<SearchResult[]>([]);
   const [state, setState] = useState<LoadState>("loading");
+  const [favorites, setFavorites] = useState<FavoriteSnapshot[] | null>(null);
+  const searching = query.trim().length > 0;
 
   useEffect(() => {
     fetch("/api/profile")
       .then(async (res) => (res.ok ? ((await res.json()) as { user?: { helloFreshEnabled?: boolean } }) : {}))
       .then((data) => setHelloFresh(Boolean(data.user?.helloFreshEnabled)))
       .catch(() => setHelloFresh(false));
+    fetch("/api/recipe-favorites")
+      .then(async (res) => (res.ok ? ((await res.json()) as { favorites: FavoriteSnapshot[] }).favorites : []))
+      .then(setFavorites)
+      .catch(() => setFavorites([]));
   }, []);
 
+  // Uden søgning hentes de mest populære retter til "Trender netop nu";
+  // med søgning hentes resultaterne i den valgte sortering.
   useEffect(() => {
     if (helloFresh === null || isSerious === null) return;
     const controller = new AbortController();
@@ -181,6 +194,7 @@ function SharedTab({ t }: { t: Translate }) {
       try {
         const params = isSerious ? filtersToParams(filters) : new URLSearchParams({ sort: "relevance" });
         if (query.trim()) params.set("q", query.trim());
+        else params.set("sort", "popular");
         if (helloFresh && isSerious) params.set("hellofresh", "1");
         const res = await fetch(`/api/shared-recipes?${params.toString()}`, { signal: controller.signal });
         if (!res.ok) throw new Error("offline");
@@ -219,31 +233,33 @@ function SharedTab({ t }: { t: Translate }) {
     };
   }
 
+  function rowFor(result: SearchResult): Row {
+    return result.kind === "hellofresh"
+      ? {
+          key: result.id,
+          href: `/add/${encodeURIComponent(result.id)}`,
+          name: result.name,
+          imageUrl: result.imageUrl,
+          subtitle: subtitleFor(result),
+          label: { text: t("recipes.helloFresh"), tone: "green" },
+          ...extrasFor(result),
+        }
+      : {
+          key: result.id,
+          href: `/profile/recipes/${encodeURIComponent(result.id)}?kind=shared`,
+          name: result.name,
+          imageUrl: result.imageUrl,
+          subtitle: subtitleFor(result),
+          ...extrasFor(result),
+        };
+  }
+
+  const status = (text: string) => <p className="text-center text-sm text-hf-black opacity-60">{text}</p>;
+  const trending = results.slice(0, TRENDING_COUNT);
+
   return (
-    <div className="hf-page hf-page--list">
-      <div className="flex gap-2">
-        {/* Filterikon til venstre for søgefeltet (docs/DECISIONS.md
-            2026-09-25); prikken viser, at der er aktive filtre. */}
-        {isSerious === false ? (
-          <Link
-            href="/profile/subscription/serious"
-            aria-label={t("premium.filtersLocked")}
-            className="flex h-12 shrink-0 items-center"
-          >
-            <PremiumBadge />
-          </Link>
-        ) : (
-        <Link
-          href="/profile/recipes/filters"
-          aria-label={t("recipeFilters.openFilters")}
-          className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-[8px] border border-hf-gray-border bg-hf-white text-hf-black"
-        >
-          <IconAdjustmentsHorizontal size={20} />
-          {activeCount > 0 && (
-            <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-hf-green" aria-hidden="true" />
-          )}
-        </Link>
-        )}
+    <div className="hf-page">
+      <div className="flex items-center gap-2">
         <div className="hf-search min-w-0 flex-1">
           <IconSearch size={16} color="var(--hf-black)" />
           <input
@@ -253,45 +269,77 @@ function SharedTab({ t }: { t: Translate }) {
             className="min-w-0"
           />
         </div>
+        {/* Filterikon til højre for søgefeltet, uden ramme (brugerens valg
+            2026-09-26); prikken viser, at der er aktive filtre. */}
+        {isSerious === false ? (
+          <Link
+            href="/profile/subscription/serious"
+            aria-label={t("premium.filtersLocked")}
+            className="flex h-12 shrink-0 items-center"
+          >
+            <PremiumBadge />
+          </Link>
+        ) : (
+          <Link
+            href="/profile/recipes/filters"
+            aria-label={t("recipeFilters.openFilters")}
+            className="relative flex h-12 w-10 shrink-0 items-center justify-center text-hf-black"
+          >
+            <IconAdjustmentsHorizontal size={26} />
+            {activeCount > 0 && (
+              <span className="absolute right-0.5 top-2.5 h-2 w-2 rounded-full bg-hf-green" aria-hidden="true" />
+            )}
+          </Link>
+        )}
       </div>
 
-      {state === "loading" && (
-        <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipes.loading")}</p>
-      )}
-      {state === "error" && (
-        <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipes.loadError")}</p>
-      )}
-      {state === "ready" && results.length === 0 && (
-        <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipes.noResults")}</p>
-      )}
-      {state === "ready" && results.length > 0 && (
-        <div>
-          {results.map((result) => (
-            <RecipeRow
-              key={`${result.kind}-${result.id}`}
-              row={
-                result.kind === "hellofresh"
-                  ? {
-                      key: result.id,
-                      href: `/add/${encodeURIComponent(result.id)}`,
-                      name: result.name,
-                      imageUrl: result.imageUrl,
-                      subtitle: subtitleFor(result),
-                      label: { text: t("recipes.helloFresh"), tone: "green" },
-                      ...extrasFor(result),
-                    }
-                  : {
-                      key: result.id,
-                      href: `/profile/recipes/${encodeURIComponent(result.id)}?kind=shared`,
-                      name: result.name,
-                      imageUrl: result.imageUrl,
-                      subtitle: subtitleFor(result),
-                      ...extrasFor(result),
-                    }
-              }
-            />
-          ))}
-        </div>
+      {searching ? (
+        <>
+          {state === "loading" && status(t("recipes.loading"))}
+          {state === "error" && status(t("recipes.loadError"))}
+          {state === "ready" && results.length === 0 && status(t("recipes.noResults"))}
+          {state === "ready" && results.length > 0 && (
+            <div>
+              {results.map((result) => (
+                <RecipeRow key={`${result.kind}-${result.id}`} row={rowFor(result)} />
+              ))}
+            </div>
+          )}
+        </>
+      ) : (
+        <>
+          <h2 className="hf-type-section-title">{t("recipes.trendingTitle")}</h2>
+          {state === "loading" && status(t("recipes.loading"))}
+          {state === "error" && status(t("recipes.loadError"))}
+          {state === "ready" && trending.length === 0 && status(t("recipes.trendingEmpty"))}
+          {state === "ready" && trending.length > 0 && (
+            <div>
+              {trending.map((result) => (
+                <RecipeRow key={`${result.kind}-${result.id}`} row={rowFor(result)} />
+              ))}
+            </div>
+          )}
+
+          <h2 className="hf-type-section-title">{t("recipes.favoritesTitle")}</h2>
+          {favorites === null && status(t("recipes.loading"))}
+          {favorites?.length === 0 && status(t("recipes.favoritesEmpty"))}
+          {favorites && favorites.length > 0 && (
+            <div>
+              {favorites.map((recipe) => (
+                <RecipeRow
+                  key={`fav-${recipe.id}`}
+                  row={{
+                    key: recipe.id,
+                    href: `/profile/recipes/${encodeURIComponent(recipe.id)}?kind=shared`,
+                    name: recipe.name,
+                    imageUrl: recipe.images?.[0] ?? null,
+                    subtitle: t("recipes.kcalTotal", { kcal: Math.round(recipe.kcal) }),
+                  }}
+                />
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   );

@@ -9,7 +9,11 @@
 import type { DailyTotal } from "@/lib/daily-totals";
 import { STAT_CARD_DEFS } from "@/lib/stat-cards";
 
-export type DailyChartField = Exclude<keyof DailyTotal, "dateKey" | "kcal">;
+// Kun talfelter (ikke dateKey eller næringsstof-maps som nutrients).
+export type DailyChartField = Exclude<
+  { [K in keyof DailyTotal]: DailyTotal[K] extends number ? K : never }[keyof DailyTotal],
+  "kcal"
+>;
 
 export type StatChartDef =
   | { key: "caloriesAndWeight"; kind: "caloriesAndWeight" }

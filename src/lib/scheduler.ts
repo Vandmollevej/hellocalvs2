@@ -3,6 +3,8 @@ import { queueMessage } from "@/lib/messaging";
 import { flushQueuedEmails } from "@/lib/mailer";
 import { flushQueuedPush } from "@/lib/push";
 import { backfillMissingProductNutritionFeatures } from "@/lib/product-nutrition-features";
+import { runDueAppJobs } from "@/lib/jobs/runner";
+import { rerunUncertainAnalyses } from "@/lib/uncertainty-rerun";
 import { grantEligibleReferralRewards } from "@/lib/referrals";
 import { runMobilePayTick } from "@/lib/payments/mobilepay-subscription";
 
@@ -15,7 +17,10 @@ import { runMobilePayTick } from "@/lib/payments/mobilepay-subscription";
 // starte flere parallelle intervaller ved Next.js' dev-hot-reload.
 
 const ESCALATION_HOURS = 48;
-const TICK_INTERVAL_MS = 15 * 60 * 1000;
+// Jobs styres fra admin "Cron-jobs" (docs/DECISIONS.md 2026-09-25): hvert
+// minut tjekkes jobtabellen for forfaldne jobs; selve intervallet/tidspunktet
+// pr. job står i scheduled_jobs (standard 15 min for vedligeholdet).
+const TICK_INTERVAL_MS = 60 * 1000;
 
 const ADMIN_NOTIFICATION_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL || "peter@packroff.dk";
 // Samme faste admin-hostname som middleware.ts (ADMIN_HOST) — godkendelseslinket
@@ -91,12 +96,18 @@ export function startScheduler() {
   globalForScheduler.hellocalSchedulerStarted = true;
 
   const tick = () => {
-    runSchedulerTick().catch((error) => {
+    runDueAppJobs({
+      maintenance: async () => {
+        await runSchedulerTick();
+        return null;
+      },
+      "uncertainty-rerun": rerunUncertainAnalyses,
+    }).catch((error) => {
       console.error("[scheduler] tick fejlede", error);
     });
   };
 
-  // Første kørsel kort efter opstart, derefter hvert 15. minut.
+  // Første tjek kort efter opstart, derefter hvert minut.
   setTimeout(tick, 30_000);
   setInterval(tick, TICK_INTERVAL_MS);
 }

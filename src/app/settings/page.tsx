@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   IconHelp,
   IconFileText,
@@ -44,6 +45,7 @@ function resetOnboardingProgress() {
 
 export default function SettingsPage() {
   const { t } = useTranslation();
+  const router = useRouter();
   const [showOnboarding, setShowOnboarding] = useState(false);
   const showTooltips = useShowTooltips();
   const showStartupTips = useShowStartupTips();
@@ -189,6 +191,16 @@ export default function SettingsPage() {
               divider
             />
             <ChevronRow
+              icon={
+                <span aria-hidden="true" className="w-5 text-center text-[22px] font-bold leading-none text-hf-green">
+                  ~
+                </span>
+              }
+              label={t("displaySettings.uncertainty")}
+              href="/settings/display/uncertainty"
+              divider
+            />
+            <ChevronRow
               icon={<IconCalendarWeek size={20} />}
               label={t("settings.calendarView")}
               href="/settings/display/calendar-view"
@@ -229,6 +241,19 @@ export default function SettingsPage() {
           <ChevronRow icon={<IconFileText size={20} />} label={t("settings.privacyPolicy")} href="/privatlivspolitik" />
           <ChevronRow icon={<IconFileText size={20} />} label={t("settings.dataTracking")} href="/privatlivspolitik#datasporing" divider={false} />
         </AccordionCard>
+
+        <button
+          type="button"
+          onClick={() => {
+            fetch("/api/auth/logout", { method: "POST" }).finally(() => {
+              router.push("/login");
+              router.refresh();
+            });
+          }}
+          className="hf-type-body flex h-12 w-full items-center px-4 text-left font-bold"
+        >
+          {t("settings.logOut")}
+        </button>
       </div>
     </HfScreen>
   );

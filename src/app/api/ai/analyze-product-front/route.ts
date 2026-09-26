@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { readRegions } from "@/lib/ai-regions";
 import { buildBarcodeContext } from "@/lib/barcode-context";
 import { callStructuredVision } from "@/lib/product-ai";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
@@ -177,6 +178,7 @@ export async function POST(req: Request) {
         prediction: { ...value, brandMatch } as unknown as Prisma.InputJsonValue,
         confidence: value.overallConfidence,
         imageUrl,
+        regions: readRegions(value) as unknown as Prisma.InputJsonValue,
       },
       select: { id: true },
     });

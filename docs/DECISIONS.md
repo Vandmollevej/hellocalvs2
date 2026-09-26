@@ -2,6 +2,83 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-25: Uncertainties-tærskler, billed-fane, natlig robot og admin "Cron-jobs"
+
+Brugerens svar 2026-09-25 (G4, runde 2):
+
+- **Tærskler** (`src/lib/uncertainty-thresholds.ts`): under 90 % vises på
+  Uncertainties (vejledende mål); under 70 % rød ramme og altid øverst;
+  under 50 % skjules produktet i søgningen, indtil en admin har gennemgået
+  analysen (`AiProductAnalysis.reviewedAt`). `reviewedAt` er adskilt fra
+  `correctedAt`, fordi `correctedAt` allerede sættes, når brugeren bekræfter
+  værdierne ved oprettelsen.
+- **Billeder**: femte fane med den lokale billedrobots match mellem et
+  oprettelsesfoto og forsidefotoet (`ProductMatchCheck`, PENDING, under 90).
+  Afgørelsen gemmes via Kvalitetskontrols route (træningsdata).
+- **Natlig AI-genkørsel** (job `uncertainty-rerun`, standard kl. 03:00):
+  samme skema/prompt som oprettelsen (`src/lib/product-ai-tasks.ts`), højst
+  100 analyser pr. nat. Mere sikkert svar erstatter det gamle; når det når
+  90 %, skrives værdierne til produktet.
+- **Én container til robotter?** Nej: app-jobs kører i app-processens
+  scheduler, og hver Python-agent beholder sin egen container (forskellige
+  tunge afhængigheder, fx torch/rembg). Nye natlige robotter i TypeScript
+  tilføjes som app-jobs; kun robotter med egne tunge afhængigheder får en
+  container. Alle styres fra samme tabel.
+- **Admin "Cron-jobs"** (`/admin/cron-jobs`, tabel `scheduled_jobs`, register
+  `src/lib/jobs/registry.ts`): liste med beskrivelse, seneste kørsel/status/
+  varighed, pause/genoptag, "kør nu" og plan (dagligt kl. TT:MM dansk tid,
+  hvert N. minut, eller kun manuelt). App-jobs og Python-agenterne
+  (`scripts/*/job_control.py`, én kopi pr. agent) tjekker tabellen hvert
+  minut. REMA-importen kører stadig ved hver container-start.
+- **Fra deklarationen**: næringsaflæsningen læser nu også øvrige
+  næringsstoffer og producentens egen ± (gemmes som producentdata ved
+  oprettelsen). Produkter oprettet uden aflæst næringsdeklaration får
+  makroerne markeret som estimerede (~ ved kcal i søgningen).
+
+## 2026-09-25: Usikkerheds-~ + admin "Uncertainties" (bygget)
+
+Erstatter punkterne i "Usikkerheds-bølgeikon (afklaret, ikke bygget)" nedenfor,
+hvor de er i modstrid. Kilden er brugerens svar i samtale ef2ba16f (fire
+runder + godkendt mockup v4, 2026-09-23) og svarene 2026-09-24 ved
+overtagelsen af G4 ("Tegn", Frida-datadumpet er fuldt, admin-siden bygges nu).
+
+- **Tegnet:** et grønt tastatur-`~` (ikke en tegnet SVG), ca. 2,4 × tekstens
+  størrelse med tynd kontur (0,75 px; 0,5 px i den grå linje) — målene fra
+  mockup v4. Komponent: `src/components/ui/UncertaintyTilde.tsx`.
+- **Hvad er sikkert:** producentens egne tal (varedeklaration, producent-/
+  kædedata, Open Food Facts) og Frida på selve den generiske vare. **Estimeret
+  (~):** når en mærkevare mangler et felt, og værdien lånes fra den nærmeste
+  Frida-vare, eller et felt er AI-udfyldt (`nutrientSources` = ESTIMATED/AI).
+  Admin-godkendelse fjerner ikke ~ — kun kilden afgør det.
+- **±:** vises kun, når producenten selv oplyser den, og da 1:1
+  (`Product.nutrientTolerances`). Vi beregner aldrig selv en ±; estimater får
+  kun ~. (Erstatter det tidligere "margen ud fra Frida".)
+- **Grå linje:** producentens ± og/eller `~ <estimeret mængde>` efter hinanden,
+  fx `±0,5 mg  ~ 1,1 mg`. Altid foldet ind; tryk på rækken/pilen folder ud.
+- **Indstillinger → Visning → Usikkerhed:** én kontakt, "Fold usikkerhed ud
+  automatisk", **slået fra** som standard (`User.autoExpandUncertainty`). Ingrediens-kontakten er droppet. (Erstatter de
+  to kontakter "slået til som standard".)
+- **Søgeresultater:** `~` foran kalorietallet, kun når kcal/protein/kulhydrat/
+  fedt er estimeret (`nutrientSources`).
+- **Frida:** agenten importerer nu alle vitaminer, mineraler, fedtsyresummer,
+  kolesterol, kostfibre, sukkerarter og salt (`Product.micronutrientsPer100g`,
+  nøgler og ParameterID'er i `src/lib/nutrients.ts`). En allerede importeret
+  version genimporteres én gang (markør i `frida_import_state.title`), og
+  generiske ingredienser får mikrodata kopieret fra deres Frida-match.
+- **Snapshot:** registreringer gemmer `nutrientSnapshot` +
+  `nutrientEstimatedSnapshot` + `nutrientToleranceSnapshot`, så statistik viser
+  hvor meget af et gennemsnit der er estimeret uden at genberegne senere.
+- **Admin "Uncertainties"** erstatter "Advarsler" (gamle sektioner vises
+  nederst, `/admin/warnings` viderestiller). Datakilden er `AiProductAnalysis`
+  (ikke BugReport som noteret 2026-09-24 — BugReport har ingen confidence,
+  mens analyserne har confidence + foto pr. type): Produkt = FRONT, Energi =
+  NUTRITION, Indhold = INGREDIENTS, EAN = BARCODE. Åben = ikke rettet og
+  confidence under 90 % (EAN: forkert GS1-kontrolciffer = 100 %). Usikkerhed
+  = 100 − confidence. AI'en returnerer nu `ocrRegion` + `uncertainRegions`
+  (`AiProductAnalysis.regions`, normaliseret 0–1) til beskæring og røde
+  rammer; ældre analyser vises med hele fotoet. Rettelsen skrives til
+  produktet og gemmes som `correction`. Den natlige AI-robot er stadig en
+  senere fase; en lavere minimumstærskel er stadig uafklaret.
 ## 2026-09-26: Oplevelse af søvn
 
 - Ny række under Indstillinger → Visning: "Oplevelse af søvn"
@@ -85,13 +162,21 @@ fra side til side.
 
 ## 2026-09-25: Filtre og portionsjustering på "Delte retter"
 
-Brugerens krav: sorteringsknapperne erstattes af et filterikon til venstre
-for søgefeltet, der åbner skærmen "Filtre" (`/profile/recipes/filters`).
-Fanen hedder nu "Delte retter" (ikke "Søg i delte retter").
+Brugerens krav: sorteringsknapperne erstattes af et filterikon, der åbner
+skærmen "Filtre" (`/profile/recipes/filters`). Fanen hedder nu "Delte retter"
+(ikke "Søg i delte retter").
 
-- **Rækkefølge på filterskærmen:** Justér retter (1–6 personer, Vis
+- **Opdateret 2026-09-26:** Filterikonet står til højre for søgefeltet, sort
+  direkte på baggrunden (ingen ramme). Før brugeren søger, viser fanen
+  "Trender netop nu" (de 3 mest populære retter) og derunder "Mine
+  favoritter" ("Du har endnu ingen favoritter", hvis tom). "Ingen opskrifter
+  matcher din søgning" vises kun efter en søgning.
+
+- **Rækkefølge på filterskærmen (2026-09-26):** alle grupper er accordions
+  med sort ikon foran: Antal personer (1–6; tallet kan trykkes og skrives,
+  som gram-tallene i energifordelingen) · Visning på resultater (Vis
   kalorier, Vis energifordeling) · Sorter efter (én ad gangen) · Allergier ·
-  Diæter · Høj på protein · Specialkost · Fokus på makroer · Nulstil.
+  Diæter · Specialkost · Fokus på makroer (inkl. Højt på protein) · Nulstil.
   Valgene gemmes i browseren (`localStorage`), ikke på serveren.
 - **Filtrering sker på serveren** (`src/lib/recipe-filter-match.ts`). Alt,
   der ikke opfylder et valgt filter, sorteres fra — også når data mangler.
@@ -679,8 +764,10 @@ tryk får dem til at vibrere som statistik-kortene; i redigering kan en graf
 fjernes med slette-cirklen og trækkes op/ned (`StatChartsSection.tsx`). Nye
 grafer tilføjes fra `/statistics/unused-charts`, der har samme opbygning som
 `/statistics/unused-cards` (søgefelt på tværs af blokkene, hvis resultater
-står over accordions, og "+ Tilføj" i hver bloks højre hjørne, som tilføjer
-alle blokkens resterende elementer). Der opfindes ingen nye datatyper: de
+står over accordions, og "+ Tilføj" i højre hjørne af hvert enkelt kort/graf,
+som tilføjer netop det ene element). Rettet 2026-09-26 efter brugerens
+afvisning: der er ingen "tilføj alle"-knap på accordion-overskrifterne —
+elementer tilføjes kun ét ad gangen. Der opfindes ingen nye datatyper: de
 ekstra grafer er 7-dages dagsserier af felter, som allerede findes i
 `DailyTotal`, med statistik-kortenes navne og enheder.
 
@@ -2284,6 +2371,36 @@ det er en visningslås, ikke kryptering af billederne. Siden låser igen, når
 den går i baggrunden. Selfie-funktionen er fjernet efter brugerens ønske og
 skal ikke genindføres uden en eksplicit anmodning.
 
+## 2026-09-25: Billede-dagbogens billeder i IndexedDB, ikke localStorage
+
+Brugeren tog 5 billeder; efter at have forladt siden var der 2 tilbage.
+Årsag: billederne lå som fulde data:-URL'er i localStorage, som på iPhone kun
+har ~5 MB pr. side — det tredje billede kunne ikke gemmes, fejlen blev slugt,
+og billedet stod kun i hukommelsen, til siden blev forladt. Nu:
+
+- Billederne gemmes som Blobs i IndexedDB (`src/lib/photo-diary-store.ts`),
+  skaleret ned til højst 1600 px på den længste side (JPEG 0,85).
+- Et nyt billede vises først, når det faktisk er gemt; slår det fejl, vises en
+  fejltekst i stedet for et billede, der forsvinder igen.
+- Gamle billeder i localStorage flyttes automatisk over og nøglen ryddes.
+- Kameraet må ikke udløse låsen (den låser ellers, når siden kortvarigt
+  skjules af kameraet, og det nye billede ligner så et tabt billede).
+- Billederne ligger fortsat kun på enheden (ingen server-upload) — samme
+  produktvalg som før. Browseren bedes om vedvarende lager
+  (`navigator.storage.persist()`), men sletter brugeren Safaris websitedata,
+  eller skifter telefon, er billederne væk.
+
+## 2026-09-25: Forsidens tal-hjul — ikon til højre, én linje, vifte
+
+Brugerens krav (gentaget flere gange): ikonet står til HØJRE for tallet, hvert
+tal på én linje uden "/ mål"-linje, samme luft mellem alle rækker, op til 3
+tal over og 3 under midten, en svag vifte-hældning (2° pr. række: rækker over
+midten med venstre ende opad, rækker under med venstre ende nedad) og ingen
+beskæring af lange tal. `docs/UI.md` er rettet tilsvarende; den gamle regel om
+ikon foran tallet gælder ikke længere. Indtil brugeren har slået nok felter
+til, fylder to opfundne eksempeltal (søvn, puls) de tomme pladser — de
+forsvinder af sig selv, når flere rigtige felter vælges.
+
 ## 2026-09-25: Stregkode-scanning — egen afkodningsløkke, lodret/skæv aflæsning og AR-afkodning
 
 Brugerens test på iPhone (skærmbilleder): dæmpningen om guide-boksen var for
@@ -2332,3 +2449,13 @@ den rigtige stregkode.
 - Statistik-boksen "Toksiner" er en pladsholder ("—") ligesom E-numre, fordi registreringer ikke har et snapshot af indholdsstoffer.
 - "Vis udvidet næringsindhold" er åben som standard på produktsiden, og beskrivelsen i Opsætning siger, at værdierne står nederst på produktsiden.
 - Mættet fedt og transfedt vises med en advarselstrekant (statistik-bokse og produktsidens udvidede næringsindhold). Umættet fedt får ingen advarsel.
+
+## 2026-09-26: Billede-dagbog som loop-karrusel
+
+Billeder vises i en vandret karrusel (ikke grid, ikke 1:1), ældste til venstre og nyeste til højre, nyeste i midten ved start. Loop kun ved 3+ billeder, så samme billede aldrig står på begge sider samtidig; ved 2 billeder stopper den ved kanterne. Kun et vindue på 7 kort renderes, så loopet ikke kræver kopier af hele listen. Dato/tid står under billedet, aldrig som overlay.
+
+## 2026-09-26: Tooltips og start-up tips (Indstillinger → Visning)
+
+- To vippekontakter under Visning: "Vis tooltips" (små hjælpetekster via `HelpTip`, `src/components/hf/HelpTip.tsx`) og "Vis start-up tips". Begge er slået til som standard og gemmes pr. enhed i localStorage (`src/lib/help-prefs.ts`), samme mønster som Kalendervisning.
+- Start-up tips er 1-sides overlays med én fast standard (`StartupTipOverlay`): "Luk" øverst til højre, ikon + titel + tekst, evt. én stor knap, og "Slå fra" nederst til højre (slår alle start-up tips fra). Højst ét tip pr. besøg, kun for indloggede brugere med samtykke, aldrig på login-, samtykke-, juridiske eller admin-sider (`StartupTipsGate` i root layout).
+- Tips står i `STARTUP_TIPS` (`src/lib/startup-tips.ts`) og vises i rækkefølge. Et tip er færdigt, når det lukkes, eller når funktionen bruges (`markStartupTipSeen(id)` kaldes fra funktionens egen kode). Første tip er altid "Dine data er dine" med "Læs mere" til `/privatlivspolitik`.

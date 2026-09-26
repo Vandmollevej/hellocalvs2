@@ -229,12 +229,8 @@ export default function UnusedStatCardsPage() {
     router.back();
   }
 
-  function addAllCards(cards: StatCardValue[]) {
-    for (const card of cards) addStatCardToLayout(DEFAULT_LAYOUT, card.key);
-    setActiveKeys((prev) => new Set([...prev, ...cards.map((card) => card.key)]));
-    router.back();
-  }
-
+  // Kortene tilføjes ét ad gangen: hvert kort har sit eget "+ Tilføj"
+  // (hele kortet er knappen), ingen "tilføj alle" pr. blok.
   function renderCardGrid(cards: StatCardValue[]) {
     return (
       <div className="grid grid-cols-2 gap-4">
@@ -243,13 +239,18 @@ export default function UnusedStatCardsPage() {
             key={card.key}
             type="button"
             onClick={() => addCard(card.key)}
-            className="rounded-2xl bg-hf-tan p-4 text-left active:opacity-80"
+            className="flex flex-col justify-between gap-1 rounded-2xl bg-hf-tan p-4 text-left active:opacity-80"
           >
-            <p className="text-xs text-hf-black opacity-60">{card.label}</p>
-            <p className="hf-heading mt-1 flex items-center gap-1.5 text-xl text-hf-black">
+            <span className="flex items-start justify-between gap-2">
+              <span className="min-w-0 text-xs text-hf-black opacity-60">{card.label}</span>
+              <span className="shrink-0 whitespace-nowrap text-xs font-semibold text-hf-black">
+                {t("statUnusedCards.add")}
+              </span>
+            </span>
+            <span className="hf-heading flex items-center gap-1.5 text-xl text-hf-black">
               <StatCardIcon icon={card.icon} iconSrc={card.iconSrc} />
               {loading ? "—" : card.value}
-            </p>
+            </span>
           </button>
         ))}
       </div>
@@ -286,6 +287,22 @@ export default function UnusedStatCardsPage() {
           />
         </div>
 
+        {/* Søgeresultater står lige under søgefeltet, før Overskrift/Skillelinje. */}
+        {normalizedQuery && (
+          <section className="flex flex-col gap-2 pb-2">
+            <p className="px-1 text-sm font-semibold text-hf-black">
+              {t("statUnusedCards.searchResults")}
+            </p>
+            {searchResults.length === 0 ? (
+              <p className="rounded-2xl bg-hf-tan/60 p-4 text-xs text-hf-black opacity-50">
+                {t("statUnusedCards.noSearchResults")}
+              </p>
+            ) : (
+              renderCardGrid(searchResults)
+            )}
+          </section>
+        )}
+
         <button
           type="button"
           onClick={addHeader}
@@ -304,21 +321,6 @@ export default function UnusedStatCardsPage() {
           <span aria-hidden className="h-0.5 flex-1 bg-hf-black" />
         </button>
 
-        {normalizedQuery && (
-          <section className="flex flex-col gap-2 pb-2">
-            <p className="px-1 text-sm font-semibold text-hf-black">
-              {t("statUnusedCards.searchResults")}
-            </p>
-            {searchResults.length === 0 ? (
-              <p className="rounded-2xl bg-hf-tan/60 p-4 text-xs text-hf-black opacity-50">
-                {t("statUnusedCards.noSearchResults")}
-              </p>
-            ) : (
-              renderCardGrid(searchResults)
-            )}
-          </section>
-        )}
-
         {categories.map((category, index) => (
           // Only the first group (Næringsindhold) starts open.
           <AccordionSection
@@ -326,18 +328,6 @@ export default function UnusedStatCardsPage() {
             title={category.title}
             count={category.cards.length}
             defaultOpen={index === 0}
-            action={
-              category.cards.length > 0 ? (
-                <button
-                  type="button"
-                  onClick={() => addAllCards(category.cards)}
-                  aria-label={`${t("statUnusedCards.addAll")} ${category.title}`}
-                  className="shrink-0 py-3 pr-4 pl-1 text-sm font-semibold text-hf-black active:opacity-60"
-                >
-                  {t("statUnusedCards.addAll")}
-                </button>
-              ) : undefined
-            }
           >
             {category.cards.length === 0 ? (
               <p className="rounded-2xl bg-hf-tan/60 p-4 text-xs text-hf-black opacity-50">

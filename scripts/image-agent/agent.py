@@ -13,9 +13,12 @@ Fritskrabning af logo + forside fra kamera-flowet ligger i cutout.py.
 import io
 import logging
 import os
+import threading
 import time
 
 import psycopg2
+
+from job_control import run_forever
 import requests
 from PIL import Image
 from rembg import remove
@@ -150,6 +153,16 @@ def run_once(conn):
             log.exception("failed to process %s (%s)", name, product_id)
 
 
+def cutout_loop():
+    while True:
+        try:
+            with psycopg2.connect(DATABASE_URL) as conn:
+                run_cutouts(conn)
+        except Exception:  # noqa: BLE001 - a broken cycle must not kill the service
+            log.exception("cutout cycle failed")
+        time.sleep(CUTOUT_POLL_INTERVAL_SECONDS)
+
+
 def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     log.info(
@@ -158,17 +171,11 @@ def main():
         CUTOUT_POLL_INTERVAL_SECONDS,
     )
 
-    last_search = float("-inf")
-    while True:
-        try:
-            with psycopg2.connect(DATABASE_URL) as conn:
-                run_cutouts(conn)
-                if time.monotonic() - last_search >= POLL_INTERVAL_SECONDS:
-                    last_search = time.monotonic()
-                    run_once(conn)
-        except Exception:  # noqa: BLE001 - a broken cycle must not kill the service
-            log.exception("cycle failed")
-        time.sleep(CUTOUT_POLL_INTERVAL_SECONDS)
+    # Fritskrabning (ImageCutoutJob) kører i sin egen tråd hvert
+    # CUTOUT_POLL_INTERVAL_SECONDS; logosøgningen styres fra admin "Cron-jobs"
+    # (job_control.py), hvor POLL_INTERVAL_SECONDS kun er standard-intervallet.
+    threading.Thread(target=cutout_loop, name="cutouts", daemon=True).start()
+    run_forever(DATABASE_URL, "image-agent", run_once, interval_minutes=max(1, POLL_INTERVAL_SECONDS // 60))
 
 
 if __name__ == "__main__":
