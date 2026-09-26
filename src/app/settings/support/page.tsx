@@ -150,16 +150,19 @@ export default function SupportSettingsPage() {
     <HfScreen title={t("settings.support.title")}>
       <div className="flex flex-col gap-8 p-4 pb-8">
         <div className="flex flex-col gap-3">
-          <p className="hf-type-body">{t("settings.support.intro")}</p>
-          <p className="hf-type-body">{t("settings.support.description")}</p>
+          <p className="hf-type-body-sm opacity-70">{t("settings.support.intro")}</p>
+          <p className="hf-type-body-sm opacity-70">{t("settings.support.description")}</p>
         </div>
 
         <div className="flex flex-col gap-2">
-          <h2 className="hf-type-section-title">{t("settings.support.period")}</h2>
-          <div className="grid grid-cols-1 gap-3 min-[360px]:grid-cols-2">
+          <p className="hf-heading px-1 text-xs font-bold uppercase tracking-wide text-hf-black opacity-60">
+            {t("settings.support.period")}
+          </p>
+          <div className="grid grid-cols-2 gap-3 [&>*]:min-w-0">
             <TextField
               variant="standard"
               type="date"
+              className="hf-date-input"
               label={t("settings.support.from")}
               value={validFrom}
               onChange={(event) => {
@@ -170,6 +173,7 @@ export default function SupportSettingsPage() {
             <TextField
               variant="standard"
               type="date"
+              className="hf-date-input"
               label={t("settings.support.until")}
               value={validUntil}
               min={validFrom || undefined}
@@ -182,7 +186,9 @@ export default function SupportSettingsPage() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <h2 className="hf-type-section-title">{t("settings.support.dataTitle")}</h2>
+          <p className="hf-heading px-1 text-xs font-bold uppercase tracking-wide text-hf-black opacity-60">
+            {t("settings.support.dataTitle")}
+          </p>
           <AccordionCard>
             <PermissionRow
               label={t("settings.support.selectAll")}

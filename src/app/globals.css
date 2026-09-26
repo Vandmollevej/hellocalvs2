@@ -165,6 +165,29 @@ select {
   -moz-appearance: none;
 }
 
+/* iOS giver <input type="date"> en indbygget min-bredde og centreret tekst,
+   så feltet flyder ud over sin kolonne. Tving det ind i kolonnen og venstrestil. */
+input[type="date"] {
+  -webkit-appearance: none;
+  appearance: none;
+  min-width: 0;
+  max-width: 100%;
+}
+input[type="date"]::-webkit-date-and-time-value {
+  text-align: left;
+}
+
+/* Global lås: ingen skærm må kunne skubbes fra side til side. Alle lodrette
+   scroll-containere får vandret overflow skjult. Ligger i @layer base, så en
+   bevidst vandret scroller (fx `overflow-x-auto`) stadig virker. */
+@layer base {
+  .overflow-y-auto,
+  .overflow-y-scroll {
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+  }
+}
+
 /* Knapper må aldrig blive markeret som tekst, fx når man forsøger at trække dem (drag-to-reorder). */
 button,
 [role="button"] {
