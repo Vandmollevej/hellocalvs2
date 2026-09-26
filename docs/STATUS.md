@@ -1,6 +1,14 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-25
+Last updated: 2026-09-26
+
+## 2026-09-26: Vægt kalibrering — ét kg-felt pr. forhold, parvis side om side
+
+Tænd/sluk-knapperne (sko, morgen/aften, toilet, mad) er fjernet. Alle fem
+forhold er nu par af modsætninger side om side (Uden/Med tøj, Uden/Med sko,
+Morgen/Aften, Før/Efter toilet, Før/Efter mad), hver med sit eget kg-felt.
+"Opdatér oplysninger" gemmer én vejning pr. udfyldt felt med netop dét
+forhold sat. Rækker uden tøj-valg får databasens standard `clothed = true`.
 
 ## 2026-09-25: Usikkerheds-~ + admin "Uncertainties" — bygget (G4)
 
