@@ -2,39 +2,35 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { IconCheck } from "@tabler/icons-react";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { useTranslation } from "@/i18n/LocaleProvider";
-
-// Purely visually prepared list — no language/country selection logic yet.
-// The order follows the flag images supplied in "Billeder til brug".
-// "Denmark" is marked as the selected country until real country selection is built.
-const SELECTED_COUNTRY = "denmark";
-
-const COUNTRIES = [
-  { key: "australien", flag: "australia" },
-  { key: "belgien", flag: "belgium" },
-  { key: "canada", flag: "canada" },
-  { key: "danmark", flag: "denmark" },
-  { key: "frankrig", flag: "france" },
-  { key: "hollandEngelsk", flag: "netherlands-english" },
-  { key: "irland", flag: "ireland" },
-  { key: "italien", flag: "italy" },
-  { key: "luxembourg", flag: "luxembourg" },
-  { key: "nederlandene", flag: "netherlands" },
-  { key: "newZealand", flag: "new-zealand" },
-  { key: "norge", flag: "norway" },
-  { key: "schweiz", flag: "switzerland" },
-  { key: "spanien", flag: "spain" },
-  { key: "storbritannien", flag: "united-kingdom" },
-  { key: "sverige", flag: "sweden" },
-  { key: "tyskland", flag: "germany" },
-  { key: "usa", flag: "usa" },
-  { key: "oestrig", flag: "austria" },
-];
+import {
+  DEFAULT_LOGIN_COUNTRY,
+  LOGIN_COUNTRIES,
+  localeForCountry,
+  readLoginCountry,
+  storeLoginCountry,
+} from "@/lib/login-country";
 
 export default function CountryPickerPage() {
-  const { t } = useTranslation();
+  const { t, setLocale } = useTranslation();
+  const router = useRouter();
+  const [selected, setSelected] = useState<string>(DEFAULT_LOGIN_COUNTRY);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage findes kun i browseren
+    setSelected(readLoginCountry().flag);
+  }, []);
+
+  function choose(flag: string) {
+    setSelected(flag);
+    storeLoginCountry(flag);
+    setLocale(localeForCountry(flag));
+    router.push("/login");
+  }
+
   return (
     <div className="flex h-full min-h-full flex-col bg-hf-cream">
       <div
@@ -51,12 +47,15 @@ export default function CountryPickerPage() {
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        {COUNTRIES.map((country) => {
-          const selected = country.flag === SELECTED_COUNTRY;
+        {LOGIN_COUNTRIES.map((country) => {
+          const isSelected = country.flag === selected;
           return (
-            <div
+            <button
+              type="button"
               key={country.flag}
-              className="flex h-14 items-center gap-3 border-b border-hf-gray-border px-4"
+              onClick={() => choose(country.flag)}
+              aria-pressed={isSelected}
+              className="flex h-14 w-full items-center gap-3 border-b border-hf-gray-border px-4 text-left"
             >
               <Image
                 src={`/flags/${country.flag}.png`}
@@ -66,10 +65,10 @@ export default function CountryPickerPage() {
                 className="rounded-[2px]"
               />
               <span className="hf-type-body flex-1">{t(`country.countries.${country.key}`)}</span>
-              {selected && (
+              {isSelected && (
                 <IconCheck size={20} stroke={2.5} className="text-hf-green" aria-hidden="true" />
               )}
-            </div>
+            </button>
           );
         })}
       </div>
