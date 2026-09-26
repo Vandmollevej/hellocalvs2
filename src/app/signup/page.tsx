@@ -65,8 +65,8 @@ function TilmeldContent() {
         <span className="hf-appbar__slot" aria-hidden="true" />
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4 px-4 pt-6">
-        <div className="flex flex-col gap-3">
+      <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4 px-4 pt-8">
+        <div className="flex flex-col gap-4">
           <SocialLoginButton provider="google" label={t("login.continueWithGoogle")} onClick={() => startOAuth("google", "/")} />
           <SocialLoginButton provider="apple" label={t("login.continueWithApple")} onClick={() => startOAuth("apple", "/")} />
           <SocialLoginButton

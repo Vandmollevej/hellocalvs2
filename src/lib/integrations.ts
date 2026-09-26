@@ -23,45 +23,24 @@ export type IntegrationMeta = {
   ingestOnly?: boolean;
   // Companion-kort, der selv udsteder enhedskoder (Samsung Health går via Health Connect).
   issuesDeviceTokens?: boolean;
-  unavailableReason?: string;
   // Vises kun, hvis brugeren allerede har den forbundet (Fitbit afløses af Google Health).
   legacy?: boolean;
 };
 
 const icon = (slug: string) => `/integrations/${slug}.png`;
 
+// Rækkefølgen er visningsrækkefølgen (docs/DECISIONS.md 2026-09-25).
 export const INTEGRATION_CATALOG: IntegrationMeta[] = [
   {
     provider: "APPLE_HEALTH",
     label: "Apple Health",
     icon: icon("apple-health"),
     kind: "companion",
-    description: "Apple tillader kun apps på iPhone at læse Apple Health.",
+    description: "Vægt, skridt og træning fra Apple Health på din iPhone.",
     connectable: false,
     ingestOnly: true,
     issuesDeviceTokens: true,
-    unavailableReason: "Kræver Hello Cal-appen til iPhone. Enhedskoden er klar, så appen kan sende dine data ind.",
-  },
-  {
-    provider: "GARMIN",
-    label: "Garmin",
-    icon: icon("garmin"),
-    kind: "unavailable",
-    description: "Garmin Connect.",
-    connectable: false,
-    unavailableReason: "Afventer Garmins godkendelse af Hello Cal som partner.",
-  },
-  {
-    provider: "HEALTH_CONNECT",
-    label: "Health Connect",
-    icon: icon("health-connect"),
-    kind: "companion",
-    description: "Android-telefonens egen sundhedsdatabase.",
-    connectable: false,
-    ingestOnly: true,
-    issuesDeviceTokens: true,
-    unavailableReason: "Kræver Hello Cal-appen til Android. Enhedskoden er klar, så appen kan sende dine data ind.",
-  },
+      },
   {
     provider: "GOOGLE_HEALTH",
     label: "Google Health",
@@ -69,24 +48,6 @@ export const INTEGRATION_CATALOG: IntegrationMeta[] = [
     kind: "oauth",
     description: "Vægt, skridt og træning fra Fitbit, Pixel Watch og Google Health.",
     connectable: true,
-  },
-  {
-    provider: "POLAR",
-    label: "Polar Flow",
-    icon: icon("polar-flow"),
-    kind: "oauth",
-    description: "Træningspas og forbrænding fra Polar Flow.",
-    connectable: true,
-  },
-  {
-    provider: "SAMSUNG_HEALTH",
-    label: "Samsung Health",
-    icon: icon("samsung-health"),
-    kind: "companion",
-    description: "Samsung Health deler data via Health Connect på telefonen.",
-    connectable: false,
-    ingestOnly: true,
-    unavailableReason: "Slå deling til Health Connect til i Samsung Health. Kræver Hello Cal-appen til Android.",
   },
   {
     provider: "STRAVA",
@@ -97,13 +58,15 @@ export const INTEGRATION_CATALOG: IntegrationMeta[] = [
     connectable: true,
   },
   {
-    provider: "WITHINGS",
-    label: "Withings",
-    icon: icon("withings"),
-    kind: "oauth",
-    description: "Vægt og fedtprocent fra din Withings-vægt.",
-    connectable: true,
-  },
+    provider: "HEALTH_CONNECT",
+    label: "Health Connect",
+    icon: icon("health-connect"),
+    kind: "companion",
+    description: "Vægt, skridt og træning fra Android-telefonen.",
+    connectable: false,
+    ingestOnly: true,
+    issuesDeviceTokens: true,
+      },
   {
     provider: "FITBIT",
     label: "Fitbit",
@@ -112,6 +75,39 @@ export const INTEGRATION_CATALOG: IntegrationMeta[] = [
     description: "Fitbit flytter til Google Health. Forbind Google Health i stedet.",
     connectable: true,
     legacy: true,
+  },
+  {
+    provider: "WITHINGS",
+    label: "Withings",
+    icon: icon("withings"),
+    kind: "oauth",
+    description: "Vægt og fedtprocent fra din Withings-vægt.",
+    connectable: true,
+  },
+  {
+    provider: "GARMIN",
+    label: "Garmin",
+    icon: icon("garmin"),
+    kind: "unavailable",
+    description: "Træning og skridt fra Garmin Connect.",
+    connectable: false,
+  },
+  {
+    provider: "SAMSUNG_HEALTH",
+    label: "Samsung Health",
+    icon: icon("samsung-health"),
+    kind: "companion",
+    description: "Vægt, skridt og træning fra Samsung Health.",
+    connectable: false,
+    ingestOnly: true,
+      },
+  {
+    provider: "POLAR",
+    label: "Polar Flow",
+    icon: icon("polar-flow"),
+    kind: "oauth",
+    description: "Træningspas og forbrænding fra Polar Flow.",
+    connectable: true,
   },
 ];
 

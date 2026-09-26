@@ -1,11 +1,12 @@
 "use client";
 
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState, type ReactNode } from "react";
 import { useSearchParams } from "next/navigation";
 import { IconChefHat } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
-import { Toggle } from "@/components/ui/Toggle";
+import { SectionSeparator } from "@/components/hf/SectionSeparator";
 import type { IntegrationCardStatus } from "@/lib/integrations";
+import type { IntegrationProvider } from "@prisma/client";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 function formatDateTime(value: string) {
@@ -17,21 +18,41 @@ function formatDateTime(value: string) {
   }).format(new Date(value));
 }
 
-type DeviceToken = {
-  id: string;
-  label: string;
-  createdAt: string;
-  lastUsedAt: string | null;
-};
+// Sektioner og rækkefølge (docs/DECISIONS.md 2026-09-25 "Integrationssiden"):
+// Aktive integrationer → Oftest anvendt → Opskrifter → Apps.
+const POPULAR: IntegrationProvider[] = ["APPLE_HEALTH", "GOOGLE_HEALTH", "STRAVA"];
 
-// Ældre enhedskoder fra før kortene fik hver deres (docs/DECISIONS.md 2026-09-24).
-const LEGACY_TOKEN_LABEL = "Companion-app";
+const isActive = (integration: IntegrationCardStatus) => integration.status !== "DISCONNECTED";
 
-function tokensFor(tokens: DeviceToken[], integration: IntegrationCardStatus) {
-  return tokens.filter(
-    (token) =>
-      token.label === integration.label ||
-      (integration.provider === "APPLE_HEALTH" && token.label === LEGACY_TOKEN_LABEL)
+function Card({
+  icon,
+  title,
+  description,
+  active,
+  dimmed,
+  children,
+}: {
+  icon: ReactNode;
+  title: string;
+  description: string;
+  active: boolean;
+  dimmed?: boolean;
+  children?: ReactNode;
+}) {
+  return (
+    <div className={`flex flex-col gap-4 rounded-[8px] bg-hf-tan p-4 ${dimmed ? "opacity-60" : ""}`}>
+      <div className="flex items-start gap-3">
+        {icon}
+        <div className="min-w-0 flex-1">
+          <p className="flex items-center gap-2 text-[15px] font-bold text-hf-black">
+            {active && <span aria-hidden="true" className="h-2.5 w-2.5 shrink-0 rounded-full bg-hf-green" />}
+            {title}
+          </p>
+          <p className="text-[12px] text-hf-black opacity-70">{description}</p>
+        </div>
+      </div>
+      {children}
+    </div>
   );
 }
 
@@ -41,11 +62,7 @@ function IntegrationerContent() {
   const [integrations, setIntegrations] = useState<IntegrationCardStatus[]>([]);
   const [loading, setLoading] = useState(true);
   const [busyProvider, setBusyProvider] = useState<string | null>(null);
-  const [tokens, setTokens] = useState<DeviceToken[]>([]);
-  const [newToken, setNewToken] = useState<{ raw: string; label: string } | null>(null);
-  const [tokenBusy, setTokenBusy] = useState(false);
-  // HelloFresh-opskrifter i "Søg i delte retter" (docs/DECISIONS.md
-  // 2026-09-24). Valget ligger i brugerens boks.
+  // HelloFresh-opskrifter i "Delte retter" (docs/DECISIONS.md 2026-09-24).
   const [helloFresh, setHelloFresh] = useState<boolean | null>(null);
   const autoSynced = useRef(false);
 
@@ -75,6 +92,15 @@ function IntegrationerContent() {
       ? t("integrations.notice.failed", { name: noticeName(failedSlug) ?? "" })
       : null;
 
+  async function sync(slug: string) {
+    try {
+      await fetch(`/api/integrations/${slug}/sync`, { method: "POST" });
+      load();
+    } catch {
+      // Status og fejl vises fra næste load.
+    }
+  }
+
   function load() {
     fetch("/api/integrations")
       .then(async (response) => {
@@ -97,49 +123,10 @@ function IntegrationerContent() {
       .finally(() => setLoading(false));
   }
 
-  function loadTokens() {
-    fetch("/api/integrations/healthkit/tokens")
-      .then(async (response) => {
-        if (!response.ok) throw new Error("Kunne ikke hente enhedskoder");
-        return (await response.json()) as { tokens: DeviceToken[] };
-      })
-      .then((data) => setTokens(data.tokens))
-      .catch(() => setTokens([]));
-  }
-
   useEffect(() => {
     load();
-    loadTokens();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  async function createToken(label: string) {
-    setTokenBusy(true);
-    try {
-      const response = await fetch("/api/integrations/healthkit/tokens", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ label }),
-      });
-      if (response.ok) {
-        const data = (await response.json()) as { token: string; label: string };
-        setNewToken({ raw: data.token, label: data.label });
-        loadTokens();
-      }
-    } finally {
-      setTokenBusy(false);
-    }
-  }
-
-  async function revokeToken(id: string) {
-    setTokenBusy(true);
-    try {
-      await fetch(`/api/integrations/healthkit/tokens/${id}`, { method: "DELETE" });
-      loadTokens();
-    } finally {
-      setTokenBusy(false);
-    }
-  }
 
   function connect(slug: string) {
     setBusyProvider(slug);
@@ -156,183 +143,129 @@ function IntegrationerContent() {
     }
   }
 
-  async function sync(slug: string) {
-    setBusyProvider(slug);
-    try {
-      await fetch(`/api/integrations/${slug}/sync`, { method: "POST" });
-      load();
-    } finally {
-      setBusyProvider(null);
-    }
+  const removeLink = (onClick: () => void, disabled = false) => (
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={onClick}
+      className="self-start text-[13px] text-hf-red-dark disabled:opacity-50"
+    >
+      {t("integrations.remove")}
+    </button>
+  );
+
+  function integrationCard(integration: IntegrationCardStatus) {
+    const slug = integration.slug;
+    const busy = busyProvider === slug;
+    const isOAuth = integration.kind === "oauth" && slug !== null;
+    const active = isActive(integration);
+    const description =
+      isOAuth && !integration.configured && !active ? t("integrations.notConfigured") : integration.description;
+
+    return (
+      <Card
+        key={integration.provider}
+        active={active}
+        dimmed={!isOAuth}
+        title={integration.label}
+        description={description}
+        icon={
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={integration.icon}
+            alt=""
+            width={36}
+            height={36}
+            className="h-9 w-9 shrink-0 rounded-[8px] object-contain"
+          />
+        }
+      >
+        {!isOAuth ? (
+          <p className="text-[12px] text-hf-gray-dark">{t("integrations.unavailable")}</p>
+        ) : active ? (
+          <div className="flex flex-col gap-1">
+            {integration.lastSyncedAt && (
+              <p className="text-[11px] text-hf-black opacity-60">
+                {t("integrations.lastSynced", { date: formatDateTime(integration.lastSyncedAt) })}
+              </p>
+            )}
+            {integration.lastError && <p className="text-[11px] text-red-600">{integration.lastError}</p>}
+            {removeLink(() => disconnect(slug), busy)}
+          </div>
+        ) : (
+          <button
+            type="button"
+            disabled={busy || !integration.configured}
+            onClick={() => connect(slug)}
+            className="hf-btn-primary block w-full py-2.5 text-center text-[13px] disabled:opacity-50"
+          >
+            {t("integrations.connect")}
+          </button>
+        )}
+      </Card>
+    );
   }
 
-  function statusBadge(integration: IntegrationCardStatus) {
-    const [label, style] =
-      integration.kind === "companion"
-        ? [t("integrations.status.needsApp"), "bg-hf-tan-dark text-hf-black"]
-        : integration.kind === "unavailable"
-          ? [t("integrations.status.pending"), "bg-hf-tan-dark text-hf-black"]
-          : integration.status === "CONNECTED"
-            ? [t("integrations.status.connected"), "bg-hf-green text-hf-white"]
-            : integration.status === "ERROR"
-              ? [t("integrations.status.error"), "bg-red-500 text-hf-white"]
-              : [t("integrations.status.disconnected"), "bg-hf-tan-dark text-hf-black"];
-    return <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold ${style}`}>{label}</span>;
-  }
+  const helloFreshCard =
+    helloFresh === null ? null : (
+      <Card
+        key="hellofresh"
+        active={helloFresh}
+        title={t("integrations.helloFreshTitle")}
+        description={t("integrations.helloFreshDescription")}
+        icon={
+          <span className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center text-hf-black">
+            <IconChefHat size={24} />
+          </span>
+        }
+      >
+        {helloFresh ? (
+          removeLink(() => changeHelloFresh(false))
+        ) : (
+          <button
+            type="button"
+            onClick={() => changeHelloFresh(true)}
+            className="hf-btn-primary block w-full py-2.5 text-center text-[13px]"
+          >
+            {t("integrations.enable")}
+          </button>
+        )}
+      </Card>
+    );
+
+  const activeIntegrations = integrations.filter(isActive);
+  const inactive = integrations.filter((i) => !isActive(i));
+  const popular = POPULAR.flatMap((provider) => inactive.filter((i) => i.provider === provider));
+  const apps = inactive.filter((i) => !POPULAR.includes(i.provider));
+
+  const section = (label: string, cards: ReactNode[]) =>
+    cards.length > 0 && (
+      <>
+        <SectionSeparator label={label} className="mt-2" />
+        {cards}
+      </>
+    );
 
   return (
     <HfScreen title={t("integrations.title")}>
-      <div className="flex flex-col gap-4 p-4">
+      <div className="hf-page">
         {notice && <p className="rounded-[8px] bg-hf-tan px-4 py-3 text-[13px] text-hf-black">{notice}</p>}
 
         <p className="px-1 text-[13px] leading-relaxed text-hf-black opacity-60">{t("integrations.intro")}</p>
 
-        {helloFresh !== null && (
-          <div className="flex items-start gap-3 rounded-[8px] bg-hf-tan p-4">
-            <span className="mt-0.5 text-hf-black">
-              <IconChefHat size={22} />
-            </span>
-            <div className="flex-1">
-              <p className="text-[15px] font-bold text-hf-black">{t("integrations.helloFreshTitle")}</p>
-              <p className="text-[12px] text-hf-black opacity-70">{t("integrations.helloFreshDescription")}</p>
-            </div>
-            <span className="pt-0.5">
-              <Toggle checked={helloFresh} onChange={changeHelloFresh} />
-            </span>
-          </div>
+        {loading ? (
+          <p className="text-center text-[13px] text-hf-black opacity-60">{t("integrations.loading")}</p>
+        ) : (
+          <>
+            {section(t("integrations.sections.active"), [
+              ...activeIntegrations.map(integrationCard),
+              ...(helloFresh ? [helloFreshCard] : []),
+            ])}
+            {section(t("integrations.sections.popular"), popular.map(integrationCard))}
+            {section(t("integrations.sections.recipes"), helloFresh === false ? [helloFreshCard] : [])}
+            {section(t("integrations.sections.apps"), apps.map(integrationCard))}
+          </>
         )}
-
-        {loading && <p className="text-center text-[13px] text-hf-black opacity-60">{t("integrations.loading")}</p>}
-
-        {!loading &&
-          integrations.map((integration) => {
-            const slug = integration.slug;
-            const busy = busyProvider === slug;
-            const isOAuth = integration.kind === "oauth" && slug !== null;
-            const cardTokens = tokensFor(tokens, integration);
-
-            return (
-              <div
-                key={integration.provider}
-                className={`flex flex-col gap-3 rounded-[8px] bg-hf-tan p-4 ${
-                  integration.kind === "unavailable" ? "opacity-60" : ""
-                }`}
-              >
-                <div className="flex items-start gap-3">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={integration.icon}
-                    alt=""
-                    width={36}
-                    height={36}
-                    className="h-9 w-9 shrink-0 rounded-[8px] object-contain"
-                  />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[15px] font-bold text-hf-black">{integration.label}</p>
-                    <p className="text-[12px] text-hf-black opacity-70">
-                      {isOAuth && !integration.configured && integration.status !== "CONNECTED"
-                        ? t("integrations.notConfigured")
-                        : isOAuth
-                          ? integration.description
-                          : integration.unavailableReason}
-                    </p>
-                  </div>
-                  {statusBadge(integration)}
-                </div>
-
-                {isOAuth && (
-                  <div className="flex flex-col gap-2">
-                    {integration.status !== "DISCONNECTED" ? (
-                      <>
-                        {integration.lastSyncedAt && (
-                          <p className="text-[11px] text-hf-black opacity-60">
-                            {t("integrations.lastSynced", { date: formatDateTime(integration.lastSyncedAt) })}
-                          </p>
-                        )}
-                        {integration.lastError && <p className="text-[11px] text-red-600">{integration.lastError}</p>}
-                        <div className="flex gap-2">
-                          <button
-                            type="button"
-                            disabled={busy}
-                            onClick={() => sync(slug)}
-                            className="hf-btn-primary flex-1 py-2.5 text-[13px] disabled:opacity-50"
-                          >
-                            {busy ? t("integrations.syncing") : t("integrations.syncNow")}
-                          </button>
-                          <button
-                            type="button"
-                            disabled={busy}
-                            onClick={() => disconnect(slug)}
-                            className="flex-1 rounded-full bg-hf-cream py-2.5 text-[13px] font-semibold text-hf-black disabled:opacity-50"
-                          >
-                            {t("integrations.disconnect")}
-                          </button>
-                        </div>
-                      </>
-                    ) : (
-                      <button
-                        type="button"
-                        disabled={busy || !integration.configured}
-                        onClick={() => connect(slug)}
-                        className="hf-btn-primary block w-full py-2.5 text-center text-[13px] disabled:opacity-50"
-                      >
-                        {t("integrations.connect")}
-                      </button>
-                    )}
-                  </div>
-                )}
-
-                {integration.issuesDeviceTokens && (
-                  <div className="flex flex-col gap-2 border-t border-hf-tan-dark pt-3">
-                    <p className="text-[12px] text-hf-black opacity-70">{t("integrations.deviceTokensDescription")}</p>
-
-                    {cardTokens.map((token) => (
-                      <div
-                        key={token.id}
-                        className="flex items-center justify-between gap-2 rounded-[8px] bg-hf-cream px-3 py-2"
-                      >
-                        <p className="min-w-0 truncate text-[11px] text-hf-black opacity-60">
-                          {t("integrations.createdAt", { date: formatDateTime(token.createdAt) })}
-                          {token.lastUsedAt ? t("integrations.lastUsedAt", { date: formatDateTime(token.lastUsedAt) }) : ""}
-                        </p>
-                        <button
-                          type="button"
-                          disabled={tokenBusy}
-                          onClick={() => revokeToken(token.id)}
-                          className="shrink-0 text-[12px] font-semibold text-hf-red-dark disabled:opacity-50"
-                        >
-                          {t("integrations.remove")}
-                        </button>
-                      </div>
-                    ))}
-
-                    {newToken?.label === integration.label ? (
-                      <div className="rounded-[8px] bg-hf-black p-3 text-hf-white">
-                        <p className="text-[12px] font-semibold">{t("integrations.saveTokenNotice")}</p>
-                        <p className="mt-1 break-all font-mono text-[12px]">{newToken.raw}</p>
-                        <button
-                          type="button"
-                          onClick={() => setNewToken(null)}
-                          className="mt-2 text-[12px] font-semibold underline"
-                        >
-                          {t("integrations.close")}
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        type="button"
-                        disabled={tokenBusy}
-                        onClick={() => createToken(integration.label)}
-                        className="w-full rounded-full bg-hf-cream py-2.5 text-[13px] font-semibold text-hf-black disabled:opacity-50"
-                      >
-                        {t("integrations.generateDeviceCode")}
-                      </button>
-                    )}
-                  </div>
-                )}
-              </div>
-            );
-          })}
       </div>
     </HfScreen>
   );

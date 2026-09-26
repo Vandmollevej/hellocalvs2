@@ -5,7 +5,7 @@
 // periode. Samme vare må gå igen. Klik på et billede åbner varen.
 
 import Link from "next/link";
-import { IconChevronRight, IconToolsKitchen2 } from "@tabler/icons-react";
+import { IconToolsKitchen2 } from "@tabler/icons-react";
 import {
   aggregateSources,
   formatMetric,
@@ -45,26 +45,14 @@ function SinnerTile({ item, metric }: { item: SourceItem; metric: SourceMetric }
 
 export function TopSinnersCard({
   registrations,
-  range,
   loading,
 }: {
   registrations: SourceRegistration[];
-  range: { start: Date; end: Date };
   loading?: boolean;
 }) {
-  const href = `/statistics/sources?from=${encodeURIComponent(range.start.toISOString())}&to=${encodeURIComponent(
-    range.end.toISOString(),
-  )}`;
-
   return (
     <section className="flex flex-col gap-4 rounded-2xl bg-hf-tan p-4">
-      <div className="flex items-center justify-between gap-2">
-        <h2 className="hf-heading text-sm text-hf-black">Største syndere</h2>
-        <Link href={href} className="flex min-h-8 items-center gap-0.5 text-xs font-semibold text-hf-black">
-          Se alle
-          <IconChevronRight size={14} stroke={2.5} />
-        </Link>
-      </div>
+      <h2 className="hf-heading text-sm text-hf-black">Største syndere</h2>
 
       {SOURCE_METRICS.map((metric) => {
         const items = loading ? [] : aggregateSources(registrations, metric.key).slice(0, TOP_COUNT);

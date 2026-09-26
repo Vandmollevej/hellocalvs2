@@ -172,7 +172,8 @@ type Action = {
 function buildActions(
   t: (key: string) => string,
   selectedKeys: AddActionKey[],
-  allowedKeys: Set<AddActionKey>
+  allowedKeys: Set<AddActionKey>,
+  sex: "FEMALE" | "MALE" | null
 ): Action[] {
   const listAction: Action = {
     key: "list",
@@ -184,7 +185,7 @@ function buildActions(
 
   const selected = selectedKeys
     .filter((key) => allowedKeys.has(key))
-    .map((key) => addActionByKey(key))
+    .map((key) => addActionByKey(key, sex))
     .filter((action): action is NonNullable<typeof action> => Boolean(action))
     .map<Action>((action) => ({
       key: action.key,
@@ -192,7 +193,7 @@ function buildActions(
       icon: action.icon,
       imageSrc: action.imageSrc,
       label: t(action.labelKey),
-      hint: t(action.hintKey),
+      hint: t(action.labelKey),
     }));
 
   return [listAction, ...selected];
@@ -239,7 +240,7 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
   const selectedKeys = useWheelActionKeys();
   const profile = useAddActionsProfile();
   const allowedKeys = new Set(visibleAddActions(profile).map((action) => action.key));
-  const actions = buildActions(t, selectedKeys, allowedKeys);
+  const actions = buildActions(t, selectedKeys, allowedKeys, profile.sex);
   const anglesDeg = computeAngles(actions.length);
   const router = useRouter();
   const [open, setOpen] = useState(false);

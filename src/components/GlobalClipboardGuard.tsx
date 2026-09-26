@@ -5,6 +5,8 @@ import { useEffect } from "react";
 // Global produktregel (docs/DECISIONS.md, 2026-09-22): copy, cut og paste er
 // blokeret i hele appen. Monteres én gang i root-layoutet, så alle nuværende
 // og fremtidige felter følger reglen uden lokale onPaste/onCopy/onCut.
+// Markeringsreglen (2026-09-25): tekstmarkering uden for felter afbrydes også
+// her som sikkerhedsnet oven på user-select: none i globals.css.
 // Undtagelse: indhold under [data-allow-clipboard] (kun admin → API-nøgler,
 // hvor nøgler skal kunne indsættes, docs/DECISIONS.md 2026-09-25).
 function isAllowed(event: Event) {
@@ -38,6 +40,14 @@ export function GlobalClipboardGuard() {
       }
     };
 
+    const handleSelectStart = (event: Event) => {
+      const target = event.target;
+      const element = target instanceof Element ? target : (target as Node | null)?.parentElement;
+      if (!element?.closest("input, textarea, [contenteditable='true']")) {
+        event.preventDefault();
+      }
+    };
+
     const handleBeforeInput = (event: Event) => {
       if (isAllowed(event)) return;
       if (BLOCKED_INPUT_TYPES.has((event as InputEvent).inputType)) {
@@ -52,6 +62,7 @@ export function GlobalClipboardGuard() {
       ["drop", prevent],
       ["keydown", handleKeyDown as EventListener],
       ["beforeinput", handleBeforeInput],
+      ["selectstart", handleSelectStart],
     ];
     events.forEach(([type, listener]) => document.addEventListener(type, listener, true));
     return () => {

@@ -35,7 +35,7 @@ type CommunicationUser = {
 };
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
-  return <p className="hf-type-section-title mb-1 mt-2">{children}</p>;
+  return <p className="hf-type-section-title">{children}</p>;
 }
 
 function SectionDivider() {
@@ -84,7 +84,7 @@ export default function CommunicationPage() {
     <HfScreen
       title={t("profile.section.communication")}
     >
-      <div className="flex flex-col gap-4 px-4 pt-4 pb-8">
+      <div className="hf-page">
         <p className="hf-type-body-sm opacity-70">{t("profile.communication.intro")}</p>
 
         {!user ? (
@@ -128,17 +128,17 @@ export default function CommunicationPage() {
         {!preferences ? (
           <p className="hf-type-body-sm opacity-70">{t("profile.loading")}</p>
         ) : (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-4">
             {preferences.map((pref) => (
               <div key={pref.event} className="rounded-[8px] bg-hf-tan p-4">
-                <p className="hf-type-body-sm mb-3 font-bold">
+                <p className="hf-type-body-sm mb-4 font-bold">
                   {EVENT_LABELS[pref.event] ?? pref.event}
                 </p>
                 <div className="flex items-center justify-between">
                   <span className="hf-type-body-sm">E-mail</span>
                   <Toggle checked={pref.email} onChange={(v) => updatePreference(pref.event, "email", v)} />
                 </div>
-                <div className="mt-3 flex items-center justify-between">
+                <div className="mt-4 flex items-center justify-between">
                   <span className="hf-type-body-sm">Push</span>
                   <Toggle checked={pref.push} onChange={(v) => updatePreference(pref.event, "push", v)} />
                 </div>

@@ -133,10 +133,13 @@ export function StatCardsGrid({
   cards,
   defaultActiveKeys,
   highlightRecommendedLimits = false,
+  onShowAddChange,
 }: {
   cards: StatCardValue[];
   defaultActiveKeys: string[];
   highlightRecommendedLimits?: boolean;
+  /** True while editing — or when the grid is empty, so cards can always be added back. */
+  onShowAddChange?: (show: boolean) => void;
 }) {
   const { t } = useTranslation();
   const cardByKey = useMemo(() => new Map(cards.map((c) => [c.key, c])), [cards]);
@@ -184,6 +187,11 @@ export function StatCardsGrid({
     const insertAt = headingBoundary < starts.length ? starts[headingBoundary] : rest.length;
     return [...rest.slice(0, insertAt), { type: "preview" as const }, ...rest.slice(insertAt)];
   }, [layout, drag, headingBoundary]);
+
+  const hasItems = layout.some((item) => item.type !== "empty");
+  useEffect(() => {
+    onShowAddChange?.(editMode || !hasItems);
+  }, [editMode, hasItems, onShowAddChange]);
 
   useEffect(() => {
     if (isFirstRender.current) {
@@ -518,10 +526,10 @@ export function StatCardsGrid({
   const itemBase = "relative select-none touch-pan-y [-webkit-touch-callout:none]";
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       <div
         ref={gridRef}
-        className="relative grid grid-cols-2 gap-3"
+        className="relative grid grid-cols-2 gap-4"
         onContextMenu={(event) => {
           if (editMode || pendingRef.current) event.preventDefault();
         }}

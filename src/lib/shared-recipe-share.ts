@@ -7,6 +7,8 @@ import {
   type PublicSharedRecipe,
   type SharedIngredient,
 } from "@/lib/shared-recipes";
+import { parseRecipeSteps, stepsText } from "@/lib/recipe-categories";
+import { isRecipeImagePath } from "@/lib/recipe-image-storage";
 
 // Deling, favoritter og kopier af brugeropskrifter på serveren
 // (docs/DECISIONS.md 2026-09-24).
@@ -64,7 +66,13 @@ export async function setDishSharing(
         name: dish.name,
         language,
         ingredients,
-        searchText: searchTextFor(dish.name, ingredients),
+        // Billeder, fremgangsmåde og kategorier deles med (DECISIONS 2026-09-25).
+        images: dish.images,
+        steps: dish.steps ?? undefined,
+        tags: dish.tags,
+        searchText: `${searchTextFor(dish.name, ingredients)} ${stepsText(parseRecipeSteps(dish.steps, isRecipeImagePath))}`
+          .trim()
+          .toLowerCase(),
         ...totalsFor(ingredients),
       },
     });

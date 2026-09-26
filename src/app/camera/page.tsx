@@ -2,22 +2,18 @@
 
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { IconCamera } from "@tabler/icons-react";
-import { BrowserMultiFormatOneDReader, type IScannerControls } from "@zxing/browser";
-import { ChecksumException, FormatException, NotFoundException } from "@zxing/library";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { HfScreen } from "@/components/HfScreen";
 import { HelloFreshMatchReview } from "@/components/HelloFreshMatchReview";
-import { BarcodeScanOverlay, type BarcodeAlignment } from "@/components/hf/BarcodeScanOverlay";
+import { BarcodeScanOverlay, type BarcodeDetection } from "@/components/hf/BarcodeScanOverlay";
 import {
   barcodeGuideBoxFraction,
-  decodedPointsToFraction,
-  detectBarcodeOrientation,
-  pointInRect,
-  rectCenter,
+  barcodePoseFromPoints,
+  orientationFromPose,
   type BarcodeOrientation,
-  type FractionRect,
 } from "@/lib/barcode-scan";
+import { startBarcodeFrameScanner, type BarcodeRead } from "@/lib/barcode-frame-scanner";
 import { buildFakeBarcodeForRegion } from "@/lib/regions";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -47,6 +43,13 @@ type MealItem = {
   image: string | null;
   estimated: boolean;
 };
+
+// How long the bar-by-bar / digit-by-digit decode animation runs before the
+// product lookup starts (BarcodeScanOverlay's BAR_DRAW_MS + digits).
+const DECODE_ANIMATION_MS = 1300;
+const DECODE_ANIMATION_REDUCED_MS = 300;
+// A detection with no fresh read for this long is treated as gone.
+const DETECTION_STALE_MS = 1200;
 
 const MODE_TABS: { key: CameraMode; labelKey: string }[] = [
   { key: "product", labelKey: "camera.tabBarcode" },
@@ -80,19 +83,19 @@ function KameraContent() {
     modeParam === "meal" ? "meal" : modeParam === "hellofresh" && forDish ? "hellofresh" : "product";
   const returnSuffix = forDish ? "?for=ret" : "";
   const videoRef = useRef<HTMLVideoElement>(null);
-  const scannerControlsRef = useRef<IScannerControls | null>(null);
+  const stopScannerRef = useRef<(() => void) | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const lookupInProgressRef = useRef(false);
-  const confirmTriggeredRef = useRef(false);
-  const lastBarcodeDetectionAtRef = useRef(0);
+  const activeCodeRef = useRef<string | null>(null);
+  const lookupTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastBarcodeSeenAtRef = useRef(0);
+  const notFoundCodesRef = useRef(new Set<string>());
   const [cameraStatus, setCameraStatus] = useState<CameraStatus>("starting");
   const [restartKey, setRestartKey] = useState(0);
   const [barcode, setBarcode] = useState("");
   const [lookupStatus, setLookupStatus] = useState<LookupStatus>("idle");
   const [region, setRegion] = useState("DK");
-  const [barcodeAlignment, setBarcodeAlignment] = useState<BarcodeAlignment>("idle");
-  const [barcodeConfirmed, setBarcodeConfirmed] = useState(false);
-  const [decodedBarcodeRect, setDecodedBarcodeRect] = useState<FractionRect | null>(null);
+  const [barcodeDetection, setBarcodeDetection] = useState<BarcodeDetection | null>(null);
   const [barcodeHint, setBarcodeHint] = useState<string | null>(null);
   const [barcodeOrientation, setBarcodeOrientation] = useState<BarcodeOrientation>("horizontal");
   const barcodeGuideBox = useMemo(() => barcodeGuideBoxFraction(barcodeOrientation), [barcodeOrientation]);
@@ -104,8 +107,10 @@ function KameraContent() {
   const [mealItems, setMealItems] = useState<MealItem[]>([]);
   const [mealSaving, setMealSaving] = useState(false);
   const stopCamera = useCallback(() => {
-    scannerControlsRef.current?.stop();
-    scannerControlsRef.current = null;
+    stopScannerRef.current?.();
+    stopScannerRef.current = null;
+    if (lookupTimerRef.current) clearTimeout(lookupTimerRef.current);
+    lookupTimerRef.current = null;
     streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;
     if (videoRef.current) videoRef.current.srcObject = null;
@@ -122,7 +127,12 @@ function KameraContent() {
     try {
       const response = await fetch(`/api/products/lookup/${encodeURIComponent(cleanedCode)}`);
       if (response.status === 404) {
+        // Remember it, so holding the same barcode in view doesn't loop the
+        // animation + lookup; its overlay turns red instead (see handleBarcodeRead).
+        notFoundCodesRef.current.add(cleanedCode);
+        setBarcodeDetection((current) => (current?.code === cleanedCode ? { ...current, tone: "failed" } : current));
         setLookupStatus("not_found");
+        activeCodeRef.current = null;
         lookupInProgressRef.current = false;
         return;
       }
@@ -133,9 +143,51 @@ function KameraContent() {
       router.push(`/add/${data.product.id}${returnSuffix}`);
     } catch {
       setLookupStatus("error");
+      activeCodeRef.current = null;
       lookupInProgressRef.current = false;
     }
   }, [router, stopCamera, returnSuffix]);
+
+  // Every successful frame read: start the decode animation on a new code
+  // (and the lookup once it has played), or just move the overlay along with
+  // a code that's already being decoded, so it stays on the physical barcode.
+  const handleBarcodeRead = useCallback((read: BarcodeRead) => {
+    const pose = barcodePoseFromPoints(read.points, read.side, read.barExtent, read.tiltDeg);
+    if (!pose) return;
+    const { text: code, symbology } = read;
+    if (lookupInProgressRef.current && code !== activeCodeRef.current) return;
+
+    lastBarcodeSeenAtRef.current = Date.now();
+    const orientation = orientationFromPose(pose);
+    setBarcodeOrientation((current) => (current === orientation ? current : orientation));
+
+    if (notFoundCodesRef.current.has(code)) {
+      setBarcodeDetection({ code, symbology, pose, tone: "failed" });
+      return;
+    }
+    if (activeCodeRef.current === code) {
+      setBarcodeDetection((current) => (current?.code === code ? { ...current, pose } : current));
+      return;
+    }
+
+    if (lookupTimerRef.current) clearTimeout(lookupTimerRef.current);
+    activeCodeRef.current = code;
+    setLookupStatus("idle");
+    setBarcodeDetection({ code, symbology, pose, tone: "reading" });
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    lookupTimerRef.current = setTimeout(
+      () => {
+        lookupTimerRef.current = null;
+        void lookupBarcode(code);
+      },
+      reducedMotion ? DECODE_ANIMATION_REDUCED_MS : DECODE_ANIMATION_MS
+    );
+  }, [lookupBarcode]);
+  // Read through a ref so a new handler identity never restarts the camera.
+  const handleBarcodeReadRef = useRef(handleBarcodeRead);
+  useEffect(() => {
+    handleBarcodeReadRef.current = handleBarcodeRead;
+  }, [handleBarcodeRead]);
 
   useEffect(() => {
     let cancelled = false;
@@ -147,71 +199,13 @@ function KameraContent() {
       }
 
       try {
-        if (mode === "product") {
-          const reader = new BrowserMultiFormatOneDReader(undefined, {
-            delayBetweenScanAttempts: 250,
-            delayBetweenScanSuccess: 1000,
-          });
-          const controls = await reader.decodeFromConstraints(
-            { audio: false, video: { facingMode: { ideal: "environment" } } },
-            videoRef.current,
-            (result, error) => {
-              if (result) {
-                if (confirmTriggeredRef.current) return;
-                lastBarcodeDetectionAtRef.current = Date.now();
-                const resultPoints = result.getResultPoints();
-                const detectedOrientation = detectBarcodeOrientation(resultPoints);
-                setBarcodeOrientation((current) =>
-                  current === detectedOrientation ? current : detectedOrientation
-                );
-                const video = videoRef.current;
-                const rect = video
-                  ? decodedPointsToFraction(resultPoints, video.videoWidth, video.videoHeight)
-                  : null;
-                const guideBoxForOrientation = barcodeGuideBoxFraction(detectedOrientation);
-                const aligned = rect ? pointInRect(rectCenter(rect), guideBoxForOrientation) : false;
-                if (aligned && !lookupInProgressRef.current) {
-                  confirmTriggeredRef.current = true;
-                  setBarcodeAlignment("aligned");
-                  setDecodedBarcodeRect(rect);
-                  setBarcodeConfirmed(true);
-                  setBarcodeHint(null);
-                  const code = result.getText();
-                  // Brief pause so the green "read" highlight is actually visible
-                  // before navigating away, per the requested scan feedback.
-                  setTimeout(() => void lookupBarcode(code), 450);
-                } else {
-                  setBarcodeAlignment("misaligned");
-                  setDecodedBarcodeRect(null);
-                }
-                return;
-              }
-              // NotFoundException/ChecksumException/FormatException fire on every
-              // frame that doesn't contain a readable barcode yet — expected noise
-              // during normal scanning, not a failure. Anything else means the
-              // decode loop has stopped for good, so surface it instead of leaving
-              // a frozen, silently-broken camera view.
-              if (
-                error &&
-                !(error instanceof NotFoundException) &&
-                !(error instanceof ChecksumException) &&
-                !(error instanceof FormatException)
-              ) {
-                setCameraStatus("error");
-              }
-            },
-          );
-          if (cancelled) controls.stop();
-          else {
-            scannerControlsRef.current = controls;
-            setCameraStatus("active");
-          }
-          return;
-        }
-
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: false,
-          video: { facingMode: { ideal: "environment" } },
+          video:
+            mode === "product"
+              ? // Higher resolution than the photo modes: thin bars need pixels.
+                { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } }
+              : { facingMode: { ideal: "environment" } },
         });
         if (cancelled) {
           stream.getTracks().forEach((track) => track.stop());
@@ -220,7 +214,18 @@ function KameraContent() {
         streamRef.current = stream;
         videoRef.current.srcObject = stream;
         await videoRef.current.play();
+        if (cancelled) return;
+        if (mode === "product") {
+          stopScannerRef.current = startBarcodeFrameScanner(
+            videoRef.current,
+            (read) => handleBarcodeReadRef.current(read),
+            () => {
+              if (!cancelled) setCameraStatus("error");
+            }
+          );
+        }
         setCameraStatus("active");
+
       } catch (error) {
         if (!cancelled) setCameraStatus(statusFromCameraError(error));
       }
@@ -231,7 +236,7 @@ function KameraContent() {
       cancelled = true;
       stopCamera();
     };
-  }, [barcodeGuideBox, lookupBarcode, mode, restartKey, stopCamera]);
+  }, [mode, restartKey, stopCamera]);
 
   function capturePhoto() {
     const video = videoRef.current;
@@ -254,11 +259,10 @@ function KameraContent() {
     setMatchedProduct(null);
     setMealAnalyzeStatus("idle");
     setMealItems([]);
-    confirmTriggeredRef.current = false;
-    lastBarcodeDetectionAtRef.current = 0;
-    setBarcodeAlignment("idle");
-    setBarcodeConfirmed(false);
-    setDecodedBarcodeRect(null);
+    activeCodeRef.current = null;
+    lastBarcodeSeenAtRef.current = 0;
+    notFoundCodesRef.current.clear();
+    setBarcodeDetection(null);
     setBarcodeHint(null);
     setBarcodeOrientation("horizontal");
     setRestartKey((key) => key + 1);
@@ -280,19 +284,17 @@ function KameraContent() {
     };
   }, []);
 
-  // Decays a stale "aligned"/"misaligned" barcode-frame state back to "idle"
-  // once no barcode has been detected anywhere in frame for a while (e.g. the
-  // user moved the camera away entirely), so the frame doesn't stay red/green
-  // forever from a single old detection.
+  // Clears the decode overlay once its barcode has left the picture — but
+  // never while its animation or lookup is still running.
   useEffect(() => {
     if (mode !== "product") return;
     const interval = setInterval(() => {
-      if (confirmTriggeredRef.current) return;
-      if (Date.now() - lastBarcodeDetectionAtRef.current > 900) {
-        setBarcodeAlignment("idle");
-        setDecodedBarcodeRect(null);
+      if (lookupInProgressRef.current || lookupTimerRef.current) return;
+      if (Date.now() - lastBarcodeSeenAtRef.current > DETECTION_STALE_MS) {
+        activeCodeRef.current = null;
+        setBarcodeDetection((current) => (current ? null : current));
       }
-    }, 400);
+    }, 300);
     return () => clearInterval(interval);
   }, [mode, restartKey]);
 
@@ -415,7 +417,7 @@ function KameraContent() {
   const message = cameraMessage(cameraStatus, t);
 
   return (
-    <div className="flex h-full min-h-0 flex-col gap-3 p-4">
+    <div className="flex h-full min-h-0 flex-col gap-4 p-4">
       {mode !== "meal" && forDish && (
         <div className="flex justify-center gap-2">
           {MODE_TABS.map((tab) => (
@@ -456,10 +458,8 @@ function KameraContent() {
           <BarcodeScanOverlay
             guideBox={barcodeGuideBox}
             orientation={barcodeOrientation}
-            alignment={barcodeAlignment}
-            confirmed={barcodeConfirmed}
             fakeCode={fakeBarcode}
-            decodedRect={decodedBarcodeRect}
+            detection={barcodeDetection}
             hintText={barcodeHint}
           />
         )}
@@ -514,7 +514,7 @@ function KameraContent() {
           </div>
         )
       ) : mode === "meal" ? (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4">
           <div className="flex justify-center py-1">
             {photo ? (
               <button onClick={restartCamera} className="hf-btn-secondary gap-2 px-5 py-3 text-sm">
@@ -542,7 +542,7 @@ function KameraContent() {
             <>
               <ul className="flex max-h-[38vh] flex-col gap-2 overflow-y-auto">
                 {mealItems.map((item) => (
-                  <li key={item.id} className="flex items-center gap-2.5 rounded-[8px] bg-hf-tan p-3">
+                  <li key={item.id} className="flex items-center gap-2.5 rounded-[8px] bg-hf-tan p-4">
                     <div className="min-w-0 flex-1">
                       <p className="flex items-center gap-1.5 text-sm font-semibold text-hf-black">
                         <span className="truncate">{item.title}</span>

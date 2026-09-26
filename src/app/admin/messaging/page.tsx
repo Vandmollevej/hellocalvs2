@@ -34,7 +34,7 @@ export default async function AdminMessagingPage() {
   ]);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-8">
       <div>
         <h1 className="text-lg font-semibold text-text-primary">{t(admin.locale, "messaging_title")}</h1>
         <p className="mt-1 text-sm text-text-secondary">
@@ -46,7 +46,7 @@ export default async function AdminMessagingPage() {
         </p>
       </div>
 
-      <section className="flex flex-col gap-3">
+      <section className="flex flex-col gap-4">
         {templates.map((t) => (
           <MessageTemplateRow
             key={t.event}
