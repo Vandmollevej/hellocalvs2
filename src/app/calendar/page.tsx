@@ -1107,7 +1107,12 @@ function ListView({
   const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const overscroll = useRef(0);
-  const touchStartY = useRef<number | null>(null);
+  const wheelLockedUntil = useRef(0);
+  // Where the finger went down, and whether the list was already resting at
+  // its top/bottom edge then. Only a fresh drag that starts at an edge may
+  // change week — and only once the finger lifts — so an ordinary scroll that
+  // runs into the edge never swaps the week (and resets scrollTop) mid-swipe.
+  const touchStart = useRef<{ y: number; atTop: boolean; atBottom: boolean } | null>(null);
 
   useEffect(() => {
     const node = scrollRef.current;
@@ -1115,19 +1120,28 @@ function ListView({
     node.scrollTop = 0;
   }, [days]);
 
+  function edges(node: HTMLDivElement) {
+    return {
+      atTop: node.scrollTop <= 0,
+      atBottom: node.scrollTop + node.clientHeight >= node.scrollHeight - 1,
+    };
+  }
+
   function handleWheel(event: React.WheelEvent<HTMLDivElement>) {
     const node = scrollRef.current;
     if (!node) return;
-    const atTop = node.scrollTop <= 0;
-    const atBottom = node.scrollTop + node.clientHeight >= node.scrollHeight - 1;
+    // Trackpad momentum keeps firing wheel events after a week change; ignore
+    // them briefly so one flick can't skip several weeks.
+    if (event.timeStamp < wheelLockedUntil.current) return;
+    const { atTop, atBottom } = edges(node);
     if ((atTop && event.deltaY < 0) || (atBottom && event.deltaY > 0)) {
       overscroll.current += event.deltaY;
-      if (overscroll.current > 80) {
+      if (Math.abs(overscroll.current) > 80) {
+        const next = overscroll.current > 0;
         overscroll.current = 0;
-        onNextWeek();
-      } else if (overscroll.current < -80) {
-        overscroll.current = 0;
-        onPrevWeek();
+        wheelLockedUntil.current = event.timeStamp + 600;
+        if (next) onNextWeek();
+        else onPrevWeek();
       }
     } else {
       overscroll.current = 0;
@@ -1135,22 +1149,20 @@ function ListView({
   }
 
   function handleTouchStart(event: React.TouchEvent<HTMLDivElement>) {
-    touchStartY.current = event.touches[0].clientY;
+    const node = scrollRef.current;
+    if (!node) return;
+    touchStart.current = { y: event.touches[0].clientY, ...edges(node) };
   }
 
-  function handleTouchMove(event: React.TouchEvent<HTMLDivElement>) {
+  function handleTouchEnd(event: React.TouchEvent<HTMLDivElement>) {
     const node = scrollRef.current;
-    if (!node || touchStartY.current === null) return;
-    const deltaY = touchStartY.current - event.touches[0].clientY;
-    const atTop = node.scrollTop <= 0;
-    const atBottom = node.scrollTop + node.clientHeight >= node.scrollHeight - 1;
-    if ((atTop && deltaY < 0) || (atBottom && deltaY > 0)) {
-      if (Math.abs(deltaY) > 60) {
-        touchStartY.current = event.touches[0].clientY;
-        if (deltaY > 0) onNextWeek();
-        else onPrevWeek();
-      }
-    }
+    const start = touchStart.current;
+    touchStart.current = null;
+    if (!node || !start) return;
+    const deltaY = start.y - event.changedTouches[0].clientY;
+    const now = edges(node);
+    if (start.atBottom && now.atBottom && deltaY > 60) onNextWeek();
+    else if (start.atTop && now.atTop && deltaY < -60) onPrevWeek();
   }
 
   return (
@@ -1158,9 +1170,9 @@ function ListView({
       ref={scrollRef}
       onWheel={handleWheel}
       onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={() => {
-        touchStartY.current = null;
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={() => {
+        touchStart.current = null;
       }}
       className="max-h-[min(60vh,420px)] space-y-2 overflow-y-auto overscroll-contain"
     >

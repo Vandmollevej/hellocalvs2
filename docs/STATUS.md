@@ -2,6 +2,14 @@
 
 Last updated: 2026-09-26
 
+## 2026-09-26: Kalender-listevisning hakkede og sprang ved scroll
+
+Listevisningens touch-handler målte trækket fra fingerens startpunkt og skiftede
+uge midt i et swipe, så snart listen ramte bunden/toppen — ugen blev byttet og
+`scrollTop` nulstillet under fingeren. Nu skifter uge kun, når trækket *startede*
+med listen hvilende ved kanten, og først når fingeren slippes (>60 px). Hjul/
+trackpad får 600 ms pause efter et ugeskift, så momentum ikke springer flere uger.
+
 ## 2026-09-26: Alle overskrifter med streger bruger samme klasse
 
 Se DECISIONS 2026-09-26 "Én overskrift med streger". `SectionSeparator` og
