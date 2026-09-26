@@ -51,6 +51,16 @@ om skifteholdsarbejde i onboarding-guiden er ikke rørt. Lint og build kørt.
 - `PATCH /api/goals/[id]` + `updateGoal`; formularen er fælles (`src/components/hf/GoalForm.tsx`) for opret og redigér.
 - Ernæringsmål pr. dag (kcal, protein, kulhydrat, fedt) kan nu sættes i målsætningen (`src/lib/goal-nutrition.ts`); de giver kyllingelår-ikonet på bjælken.
 
+## 2026-09-26: Widgets til iPhone/Android — design-fase
+
+Katalog `src/lib/widgets.ts`, data `GET /api/widgets/snapshot`
+(`src/lib/widget-data.ts`), forhåndsvisning på `/widgets` (ikke linket).
+Se `docs/WIDGETS.md` og DECISIONS 2026-09-26.
+
+Next work:
+1. Brugeren godkender/retter designet på `/widgets`.
+2. Native widgets bygges, når Mac + Apple Developer-konto er klar.
+
 ## 2026-09-26: Opret vare — logo, fritskrabning og samme-foto-flueben
 
 Se docs/DECISIONS.md 2026-09-26 "Opret vare — rækkefølge …". Kamera-flowet er

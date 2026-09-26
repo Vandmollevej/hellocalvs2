@@ -2622,3 +2622,20 @@ både når integrationen slås til og bagefter.
 - `/admin/page-tree` viser samtlige sider i appen som et træ med pile fra side til underside, grupperet efter indgang (velkomst/login, forside/bundmenu, profil, indstillinger, links, oprettelses-app, admin).
 - Træet er håndholdt i `src/lib/page-tree.ts` (danske navne + hvor man kommer ind). `src/lib/page-tree.test.mjs` fejler, hvis en `page.tsx` mangler eller står der to gange — ny side ⇒ tilføj den i træet.
 - Statiske sider åbnes i ny fane; dynamiske (`[id]`, `[token]`) markeres "kræver id". Flueben "testet" gemmes kun i admins egen browser (localStorage), ikke i databasen.
+## 2026-09-26: Hjemmeskærm-widgets — forberedt før den native app
+
+Brugerens krav: seks widgets (plus-knap, hurtig-tilføj-række, swipebar
+statistik-graf, 2×2 statistik-boks, tryk åbner Statistik, seneste
+registreringer). Afklaret med brugeren:
+- Appen bliver **helt native** på sigt (Swift/WidgetKit + Kotlin/Glance) —
+  ikke en web-app i en app-skal.
+- iPhone-widgets kan ikke swipes internt → statistik-grafen er **én widget pr.
+  graf i en Smart Stack** på iPhone; Android swiper mellem graferne i én widget.
+- iPhone har kun faste størrelser → "seneste registreringer" findes som
+  **mellem (3) + stor (8)**; Android er frit justerbar i højden.
+- Designet godkendes på en web-forhåndsvisning (`/widgets`) med rigtige data,
+  før der lejes en Mac.
+- Al widget-data kommer fra ét endpoint, `GET /api/widgets/snapshot`
+  (enhedstoken eller login-cookie); widgetvalg (knapper, boks) gemmes lokalt
+  på telefonen i widgettens egne indstillinger, ikke på serveren.
+Se `docs/WIDGETS.md`.
