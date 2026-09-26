@@ -2,6 +2,124 @@
 
 Last updated: 2026-09-25
 
+
+
+## 2026-09-25: Backup-scriptet fylder ikke længere 22 GB
+
+`backup-all-containers.sh` lå kun på Synology og kopierede HelloFresh-billederne
+(6,6 GB) tre gange: via app, via hellofresh-agent og via runnerens mount af hele
+`hellocal-v2`. Ny version i `scripts/backup/` (se DEPLOYMENT.md "Fuld
+container-backup"), som deployet lægger samme sted; den gamle gemmes som
+`.orig`. Forventet: ca. 7 GB første gang, derefter kun ændringer. Ikke kørt på
+Synology endnu — kun testet med en falsk `docker` i cloud-sessionen.
+
+## 2026-09-25: Ubrugte statistik-kort — "+ Overskrift" og "+ Skillelinje" øverst
+
+`/statistics/unused-cards`: knapperne ligger nu lige under søgefeltet, før accordionerne.
+"+ Adskillelseslinje" hedder nu "+ Skillelinje" og vises som en massiv sort
+streg med teksten i midten. De grå hjælpetekster er fjernet.
+
+## 2026-09-25: Global afstandsregel + Abonnement-side
+
+Se `docs/DECISIONS.md` 2026-09-25 "Global lodret rytme". Nye primitiver
+`.hf-page`, `.hf-card`, `.hf-stack`, `.hf-type-card-title` i
+`src/app/globals.css`; 49 sider bruger `.hf-page`, og hele `src/` er
+normaliseret til 4/8/16/32 px og 8 px kort-radius (se DECISIONS). Abonnement: pris uden "Seriøs —",
+sort (også deaktiveret) knap, grå "Indløs points" med hvid tekst, "Gratis" står
+ikke længere indrykket. Visuelt kontrolleret lokalt ved 402 × 874 med
+mockede API-svar (Abonnement, Indstillinger, Statistik, Tilføj, Ny
+målsætning); graf-kortene på Statistik flugter nu med kortene under dem.
+Tjek på iPhone med rigtige data efter deploy.
+
+## 2026-09-25: Vægtkalibrering omdesignet
+
+Se `docs/DECISIONS.md` 2026-09-25 "Vægtkalibrering — eksplicit
+Opdatér oplysninger-knap". Lint + build grønne; visuelt tjekket i 402 px
+viewport med mockede API-svar. Test på iPhone efter deploy.
+
+## 2026-09-25: Integrationssiden ryddet op og sektioneret
+
+Se `docs/DECISIONS.md` 2026-09-25 "Integrationssiden". Sektioner med
+`SectionSeparator`: Aktive integrationer → Oftest anvendt (Apple Health,
+Google Health, Strava) → Opskrifter (HelloFresh) → Apps (Health Connect,
+Withings, Garmin, Samsung Health, Polar Flow nederst). Aktive har grøn prik og
+"Fjern" som almindelig tekst. "Kræver app"-mærker og enhedskode-knapper er
+fjernet fra siden (backend-ruterne findes stadig). Google Health genbruger nu
+`GOOGLE_CLIENT_ID/SECRET`, hvis `GOOGLE_HEALTH_*` ikke er sat; connect-fejl
+sendes tilbage til siden i stedet for rå JSON.
+
+Next work: I Google Cloud-konsollen skal redirect-URI'en
+`https://hellocal.packroff.dk/api/integrations/google-health/callback`
+tilføjes til login-klienten, og Google Health API + scopes aktiveres.
+## 2026-09-25: Tilføj-menu tekster og vandglas-ikon
+
+- "Kamera" → "Scan med kamera", "Mikrofon" → "Indtal" (`addButton.*` i
+  `src/i18n/locales/`).
+- Brugerens vandglas-ikon (`public/icons/water-glass.png`, maske-komponent
+  `src/components/icons/WaterGlass.tsx`) erstatter tabler-dråben overalt hvor
+  det betyder vand. Fedt-statistikkerne beholder dråben.
+
+## 2026-09-25: Kalender-dagvisning — træk søvn-håndtag forbi kanten + "Nattens søvn"
+
+Lavet i en cloud-session på branch `claude/cloud-session-credits-expired-7504pf`, flettet i master.
+
+- Stå-op-/sengetids-håndtaget scroller tidslinjen med, når fingeren når
+  visningens top/bund, så natten kan gøres kortere (før stoppede trækket ved
+  kanten).
+- Ved åbning af en dag vises den sidste hele time af nattens grå felt, med
+  "Nattens søvn: X,XX timer" (gårsdagens sengetid → dagens stå-op-tid; ved
+  dagsøvn dagens eget felt). Teksten står under stregen, mens man trækker.
+- Testet i Chromium med falske API-svar (ingen login/DB i cloud). Ikke testet
+  på telefon.
+- Kendt, ikke rettet: `calendar.remainingToday` mangler i sprogfilerne (vises
+  rå nederst i dagvisningen). Sprogfilerne har ikke-committede lokale
+  ændringer — tjek dem, før nøglen tilføjes.
+
+## 2026-09-25: Tilføj — "Retter", nyt Kropsmål-ikon og samme tekst i hjulet
+
+- "Egne retter" hedder nu "Retter" (`addButton.ownDishes`, en: "Dishes"), også
+  som kategori i statistik (`productTypeLabel` i `food-classification.ts`).
+- Kropsmål bruger brugerens målebånd-figurer i stedet for Tablers lineal:
+  `src/components/icons/WaistMeasure.tsx`, vektorspor af
+  `public/icons/body-measurements/waist-female.png` / `waist-male.png`.
+  Kvindefiguren vises ved køn = FEMALE, mandefiguren ellers (også ved ukendt
+  køn). Bruges på Tilføj-listen, forsidehjulet, indstillingslisten for hjulet,
+  Profil-rækken "Kropsmål" og knappen på Redigér profil.
+- Forsidehjulet viser nu samme tekst som Tilføj-listen (`labelKey`). De
+  separate `addButton.hint.*`-tekster (fx "Måltid", "Vægt og mål") og
+  `AddAction.hintKey` er fjernet. Kun `addButton.hint.list` ("Se alle") er
+  tilbage.
+Verificeret med `npm run lint` og `npm run build`. Ikke set på telefon.
+
+## 2026-09-25: Kalender — tomme dage, tættere rækker og advarsel om for lavt indtag
+
+Uge- og Liste-visningens dagrækker (`src/app/calendar/page.tsx`):
+- En dag uden indtastninger viser "Ingen indtastninger" (`calendar.noEntries`)
+  og det fulde restbudget, begge i gråt, i stedet for "Mål ikke nået" og et
+  rødt tal. Kcal-tallet er grønt med "+", når indtaget er på eller under
+  målet, og kun rødt med "÷", når målet er overskredet. Månedsgitteret viser
+  ikke længere "÷" på tomme dage.
+- Rækkerne bruger ikke længere `justify-between`: afstanden fra ugedag til
+  datoboks er omtrent halveret, og statusteksten står lige efter boksen.
+  Kcal-tallet ligger stadig til højre (`ml-auto`).
+- Ny regel for for lavt indtag, se `docs/DECISIONS.md` 2026-09-25. En afsluttet
+  dag med indtastninger under minimum viser "For lavt indtag" og tallet i
+  mørk okker (`--hf-color-warning`). Nederst i visningen står en gul firkant
+  (`--hf-color-warning-fill`) og en forklaring med personens minimum
+  (`calendar.lowIntakeNotice`). Logikken ligger i `src/lib/healthy-intake.ts`.
+Verificeret med `npm run lint` og `npm run build`. Ikke afprøvet på telefon
+fra denne container.
+
+## 2026-09-25: Profil — Face ID som tekstlink, Skift adgangskode nederst
+
+- `/profile/edit`: "Slå Face ID til" er nu et almindeligt understreget tekstlink
+  (ikke sort knap) med luft over og under; "Skift adgangskode" ligger nederst.
+- Face ID tilbydes stadig primært efter login (`/login/face-id`); iOS foreslår
+  ikke selv passkeys til websider, så appen skal selv starte registreringen.
+- Genvejsknapperne bruger de nye vektor-ikoner: vægt (0dbb4fb/bc8960b) og
+  champagne til Målsætning; gryden i hjulet/`/add/menu` er ny. Flettet ind fra
+  `claude/trusting-meitner-eqqmu9` (18ad2e1), som ikke var i master.
+
 ## 2026-09-25: Profil — start-vægt altid låst + "Lås"-side
 
 Start-vægt på `/profile/edit` er nu altid låst, også når den er tom (før var
@@ -69,6 +187,25 @@ delemenuen og mailens personlige besked.
   Integrationer, Kommunikation og Invitér en ven lå der i forvejen. Den
   gamle "Log ind / tilmeld"-boks er fjernet.
 
+## 2026-09-25: Nyt grydeikon og champagneikon til Målsætning (vektor)
+
+- "Egne retter" bruger nu `IconCookingPot`
+  (`src/components/icons/CookingPot.tsx`) i stedet for `imageSrc:
+  "/icons/gryde.png"` — en stroke-tegning (1,5) af brugerens nye grydebillede
+  med jævne streger. `public/icons/gryde.png` er erstattet af den nye
+  kunst (trimmet, transparent, 512 px) som reference; den bruges ikke
+  længere direkte.
+- "Målsætning" (hjul/`/add/menu` via `add-actions.ts` og knappen på
+  `/profile/edit`) bruger `IconChampagne`
+  (`src/components/icons/Champagne.tsx`) i stedet for tabler `IconTarget`:
+  fyldt silhuet af brugerens champagneflaske, viewBox trimmet til tegningen,
+  etiket/medaljon skåret ud med maske. Stat-kortet "Mål nået" bruger stadig
+  `IconTargetArrow` (kcal-mål, ikke målsætning).
+- Kildebillederne lå i brugerens lokale hovedmappe (ikke i repoet) og skal
+  slettes dér af brugeren/lokal agent.
+- Lint + build grønne; ikonerne renderet og tjekket ved 20/26/48 px, mørk og
+  hvid farve. Ikke set i den kørende app (kræver login).
+
 ## 2026-09-25: Statistik — redigerbare grafer, søgning og "+ Tilføj" pr. blok
 
 Se `docs/DECISIONS.md` 2026-09-25 "Statistiksidens grafer kan redigeres som
@@ -104,6 +241,20 @@ kort, tekst og tomme flader må ikke markere noget).
   fodspor) i tabler-stil med `currentColor`, så den står skarpt i alle
   størrelser. ViewBox og PNG er trimmet til kanten (ingen luft omkring).
 
+
+
+## 2026-09-25: Stregkode-scanner omlagt (lodret/skæv aflæsning, AR-afkodning)
+
+Se docs/DECISIONS.md 2026-09-25 "Stregkode-scanning" og design.md §6.11.
+Nye filer: `src/lib/barcode-frame-scanner.ts`, `src/lib/barcode-pattern.ts`,
+`src/lib/upce-reader.ts` (UPC-E virker nu — bibliotekets egen læser var i stykker);
+omskrevet: `src/components/hf/BarcodeScanOverlay.tsx`,
+`src/lib/barcode-scan.ts`, stregkode-delen af `src/app/camera/page.tsx`.
+Verificeret i Chromium med syntetisk kamera (vandret, lodret, skæv,
+bevægelse, ikke-fundet). Ikke testet på en rigtig iPhone endnu.
+
+Next work:
+1. Test på iPhone efter deploy: vandret + lodret stregkode, skæv, på afstand.
 ## 2026-09-25: Admin → API-nøgler
 
 Se `docs/DECISIONS.md` 2026-09-25 "API-nøgler i admin". Ny side
@@ -186,7 +337,7 @@ dialog.
 - **Koncept**: samme mønster som HelloFresh-integrationen i dag — en
   toggle-boks på `/settings/integrations` (`waldemarsroEnabled` på `User`,
   analogt med `helloFreshEnabled`), der slår Waldemarsro-opskrifter til/fra i
-  "Søg i delte retter". Ikke en OAuth-konto (der er intet at logge ind på)
+  "Delte retter". Ikke en OAuth-konto (der er intet at logge ind på)
   — men den skal *ligge* i `INTEGRATION_CATALOG`-listen som et kort, fordi en
   reel kontoforbindelse kan komme senere.
 - **Region-gating**: kortet vises kun når brugerens region
@@ -584,9 +735,16 @@ Se `docs/DECISIONS.md` (2026-09-24). Bygget efter brugerens afklaring
   "Ingen personlige detaljer deles, når du deler en ret". Efter gem går man
   til Opskrifter → Mine retter.
 - **Opskrifter** (`/profile/recipes`): faner "Mine retter" (egne retter +
-  favoritter fra boksen, mærket Delt/Privat/Favorit) og "Søg i delte retter"
-  (titel/ingredienser, sortering Relevans/Popularitet/Dato som små knapper;
-  HelloFresh medtages kun, når det er slået til under Integrationer).
+  favoritter fra boksen, mærket Delt/Privat/Favorit) og "Delte retter"
+  (titel/ingredienser; HelloFresh medtages kun, når det er slået til under
+  Integrationer). Filterikonet åbner `/profile/recipes/filters` (sortering,
+  allergier, diæter, protein, specialkost, makroer, personer 1–6, vis
+  kalorier/energifordeling — se DECISIONS 2026-09-25). Ikke testet mod rigtige
+  data endnu: lokal DB mangler.
+- **Opret ret**: billeder (op til 3), fremgangsmåde (trin med overskrift,
+  tekst og billede) og kategorivindue efter Gem (DECISIONS 2026-09-25).
+  Kræver migrationen `20260925120000_recipe_images_steps_tags`. Flowet er
+  testet i browser med mockede API-svar, ikke mod en rigtig database.
   Detaljeside `/profile/recipes/[id]?kind=own|shared`: deling til/fra for
   egne retter; favorit, "Gem som egen kopi" og "Anmeld" (kun før
   godkendelse) for delte.

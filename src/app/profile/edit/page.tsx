@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconCamera, IconLock, IconRulerMeasure, IconTarget } from "@tabler/icons-react";
+import { IconCamera, IconLock } from "@tabler/icons-react";
+import { IconChampagne } from "@/components/icons/Champagne";
+import { IconWaistMeasure } from "@/components/icons/WaistMeasure";
 import { HfScreen } from "@/components/HfScreen";
 import { IconBathScale } from "@/components/hf/IconBathScale";
 import { BIRTH_DATE_MIN_AGE_YEARS, BirthDatePicker } from "@/components/ui/BirthDatePicker";
@@ -48,7 +50,7 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <label className="flex flex-col gap-1.5">
+    <label className="flex flex-col gap-2">
       <span className="text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
         {label}
       </span>
@@ -144,11 +146,11 @@ export default function ProfileEditPage() {
       title={t("profile.section.profile")}
     >
       {loading || !user ? (
-        <p className="p-6 text-center text-[14px] text-hf-black opacity-60">
+        <p className="p-4 text-center text-[14px] text-hf-black opacity-60">
           {loading ? t("profile.loading") : t("profile.loadError")}
         </p>
       ) : (
-        <div className="flex flex-col gap-4 p-4">
+        <div className="flex min-h-full flex-col gap-4 p-4">
           <Field label={t("profile.field.name")}>
             <input
               className={inputClass}
@@ -161,8 +163,8 @@ export default function ProfileEditPage() {
             <input className={`${inputClass} opacity-60`} value={user.email} disabled />
           </Field>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col gap-1.5">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-2">
               <span className="text-[12px] font-bold uppercase tracking-[0.06em] text-hf-black opacity-60">
                 {t("profile.field.weight")}
               </span>
@@ -241,7 +243,7 @@ export default function ProfileEditPage() {
             <button
               type="button"
               onClick={() => router.push("/profile/photo-diary")}
-              className="flex flex-1 flex-col items-center gap-1.5 rounded-xl bg-hf-tan px-2 py-3 text-center text-[13px] font-semibold text-hf-black"
+              className="flex flex-1 flex-col items-center gap-2 rounded-xl bg-hf-tan px-2 py-3 text-center text-[13px] font-semibold text-hf-black"
             >
               <IconCamera size={20} />
               {t("profile.actions.photoDiary")}
@@ -249,7 +251,7 @@ export default function ProfileEditPage() {
             <button
               type="button"
               onClick={() => router.push("/profile/weight-calibration")}
-              className="flex flex-1 flex-col items-center gap-1.5 rounded-xl bg-hf-tan px-2 py-3 text-center text-[13px] font-semibold text-hf-black"
+              className="flex flex-1 flex-col items-center gap-2 rounded-xl bg-hf-tan px-2 py-3 text-center text-[13px] font-semibold text-hf-black"
             >
               <IconBathScale size={20} />
               {t("profile.actions.newWeight")}
@@ -257,29 +259,29 @@ export default function ProfileEditPage() {
             <button
               type="button"
               onClick={() => router.push("/profile/goals")}
-              className="flex flex-1 flex-col items-center gap-1.5 rounded-xl bg-hf-tan px-2 py-3 text-center text-[13px] font-semibold text-hf-black"
+              className="flex flex-1 flex-col items-center gap-2 rounded-xl bg-hf-tan px-2 py-3 text-center text-[13px] font-semibold text-hf-black"
             >
-              <IconTarget size={20} />
+              <IconChampagne size={20} />
               {t("profile.actions.target")}
             </button>
             <button
               type="button"
               onClick={() => router.push("/profile/body-measurements")}
-              className="flex flex-1 flex-col items-center gap-1.5 rounded-xl bg-hf-tan px-2 py-3 text-center text-[13px] font-semibold text-hf-black"
+              className="flex flex-1 flex-col items-center gap-2 rounded-xl bg-hf-tan px-2 py-3 text-center text-[13px] font-semibold text-hf-black"
             >
-              <IconRulerMeasure size={20} />
+              <IconWaistMeasure size={20} sex={user?.sex} />
               {t("profile.actions.bodyMeasurements")}
             </button>
           </div>
 
+          <FaceIdButton />
           <button
             type="button"
             onClick={() => router.push("/profile/change-password")}
-            className="hf-btn-primary hf-type-button mt-4 h-12 w-full px-4"
+            className="hf-btn-primary hf-type-button mt-auto h-12 w-full px-4"
           >
             {t("profile.changePasswordButton")}
           </button>
-          <FaceIdButton />
         </div>
       )}
     </HfScreen>

@@ -114,7 +114,7 @@ export function DuplicateProductCard({ link }: { link: DuplicateLink }) {
 
   return (
     <div className="flex flex-col gap-4 rounded-lg border border-border-strong bg-surface-2 p-4">
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2">
         {products.map((product) => (
           <button
             key={product.id}

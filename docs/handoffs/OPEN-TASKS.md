@@ -6,6 +6,9 @@ laver hvad.
 
 ## Regler for alle sessioner
 
+0. Hent altid først: commit dit eget arbejde, kør `git pull origin master`,
+   og læs denne fil igen. Cloud-sessioner (claude.ai) arbejder ikke på din PC —
+   deres ændringer og noter kommer kun ind via GitHub.
 1. Læs denne fil før du begynder, og find din opgave/gruppe.
 2. Hvis du fortsætter en opgave: sæt `Ejer` til din sessions titel + konto (fx
    "Kalender-gruppen, konto B") og opdatér `Status` + `Næste skridt` løbende —
@@ -41,6 +44,7 @@ Ejer: G1-overtagelse, konto C (2026-09-24)
 | 63e9ff5d | Ugesummering (kaloriebalance + estimeret vægt) — kun roadmap-beslutning | Færdig (37ee7f4; senere slået til i 7747ea1, DECISIONS 2026-09-23) | — |
 | b4d954bd | Listevisning: fjern +/−, "Mål (ikke) nået" regulær + flyttet, lige afstand | Færdig (se G1-commit) | Minus vises nu som ÷ (brugerens valg: fortegn som symbol, som i månedsgitteret). Afventer brugerens visuelle godkendelse |
 | 116d3656 | Dagvisning: søvn-slider med to grå nuancer kan ikke trækkes + fjern dialogen "Kun denne dato / Standardmønster" | Færdig (se G1-commit) | Ét gråt felt ved dagsøvn, feltet følger håndtaget, tryk uden træk gemmer intet, dialog fjernet (gælder kun datoen). Ikke live-testet: lokal DB mangler |
+| — | Dagvisning: træk søvn-håndtag forbi kanten (scroller med) + "Nattens søvn: X,XX timer" i nattens grå felt | Færdig (flettet i master fra cloud-branch `claude/cloud-session-credits-expired-7504pf`) | Afventer brugerens test på telefon |
 
 ## G2 — Statistik-siden (redigering, drag/drop)
 Filer: statistik-siden, `src/components/StatsWheel.tsx`, `src/lib/frontpage-layout.ts`, `src/lib/frontpage-stats.ts`.
@@ -107,7 +111,7 @@ Ejer: Profil-gruppen (G7), konto B — overtaget 2026-09-24
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | 9a0770ce | Ny oversigtsside over målsætninger (historik, grønt flueben, fast knap nederst) | Ikke startet | Tjek om allerede lavet, ellers byg |
-| 8b0a278f | Kropsmål med mand/kvinde-tegninger (fra hovedmappen), kort som på statistik | Ikke startet | Tjek om allerede lavet, ellers byg |
+| 8b0a278f | Kropsmål med mand/kvinde-tegninger (fra hovedmappen), kort som på statistik | Ikke startet | Ikonerne er færdige (`WaistMeasure.tsx`, 93715be). Mangler: Kropsmål-siden med kort som på statistik |
 | d22c7e61 | Invitér en ven: kun visuelt (betingelser som tekstlink, luft, fjern skillelinje, demo-data) | Venter på bruger | E-mail-invitation/venneliste strider mod privacy — kun visuelle rettelser |
 | ef8a5612 | "Skift adgangskode"-side | Blokeret | Strider sandsynligvis mod passkey-only login — spørg brugeren |
 | 60da6b15 | Indstillinger: "Få vist allergener" ind i samme boks + "Vælg alle" ved topknappen | Lavet, ikke verificeret | **Sandsynligvis kilden til diff'en i profile/settings.** Verificér og commit |
@@ -134,6 +138,7 @@ Ejer: G9-overtagelse, konto B
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | b4666faa | Grydeikon: trim `Gryde.png` og erstat på forsiden | Færdig (f5895a3) | Var allerede lavet: `public/icons/gryde.png` (770×759, trimmet), brugt i `src/lib/add-actions.ts` |
+| 8f42a331 | Nyt grydeikon (jævne streger) + champagneikon til Målsætning | Færdig | SVG-ikoner i `src/components/icons/`. Brugeren sletter kildebillederne i sin lokale hovedmappe |
 | 60e492ca | Vand-siden: 4 PNG'er (75/50/33/25 cl) | Færdig (6cf89c5) | Billeder i `public/icons/water/`, registrerer 750/500/330/250 ml. Afventer brugerens godkendelse af udseendet |
 | ea9d1f7c | Dublet af 60e492ca (glas/flaske i række på fire) | Færdig (6cf89c5) | Lukket af G9: spørgsmålet om billede↔størrelse er besvaret af filnavnene i 60e492ca |
 
@@ -175,6 +180,7 @@ Ejer: —
 | b649e8f4 | Anonymitet/kryptering | DECISIONS 117-121 |
 | e542c2f4 | Produkttitel sort + brand grøn | `src/app/add/[id]/page.tsx` |
 | 217a0faf | Stregkode auto-rotation, fjern manuelt felt | commit 1643610 |
+| — | Stregkode: lodret/skæv aflæsning, AR-afkodning, lysere guide (2026-09-25) | DECISIONS 2026-09-25 "Stregkode-scanning" |
 
 ## Ikke fordelt
 Ændret og ikke committet uden kendt ejer: `docs/AI.md`, `src/components/AddButton.tsx`,

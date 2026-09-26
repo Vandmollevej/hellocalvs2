@@ -1555,6 +1555,15 @@ model Dish {
   externalSource String?
   // Offentligt ID på den delte udgave (SharedRecipe), når retten er delt.
   sharedRecipeId String?
+  // Op til 3 billeder af den færdige ret (offentlige stier under
+  // /product-images/recipe-images). Det første er forsidebillede.
+  images         String[]  @default([])
+  // Fremgangsmåde: [{ title, text, image }] i rækkefølge. image er null
+  // eller en sti som i images. Se docs/DECISIONS.md 2026-09-25.
+  steps          Json?
+  // Kategorier valgt efter gem ("diet:vegan", "meal:dinner",
+  // "cuisine:italian", "method:oven"), jf. src/lib/recipe-categories.ts.
+  tags           String[]  @default([])
   createdAt      DateTime  @default(now())
 
   ingredients   DishIngredient[]
@@ -2200,6 +2209,11 @@ model SharedRecipe {
   // [{ productId, name, grams, imageUrl, kcalPer100g, proteinPer100g,
   //    carbsPer100g, fatPer100g }] — snapshot af ingredienserne.
   ingredients   Json
+  // Snapshot af rettens billeder, fremgangsmåde og kategorier ved deling
+  // (samme format som Dish.images/steps/tags).
+  images        String[]           @default([])
+  steps         Json?
+  tags          String[]           @default([])
   // Titel + ingrediensnavne i små bogstaver, til søgning.
   searchText    String
   totalGrams    Float

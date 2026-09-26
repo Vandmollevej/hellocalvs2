@@ -40,6 +40,9 @@
   /* Bevidste Hello Cal-undtagelser (ikke fra HelloFresh-referencen) */
   --hf-color-positive: #a3e635;
   --hf-color-danger: #a3271f;
+  /* For lavt indtag: mørk okker til tekst (læsbar på kortfarven), gul til firkanten. */
+  --hf-color-warning: #8a5a00;
+  --hf-color-warning-fill: #f2c230;
   --hf-color-overlay: rgb(35 35 35 / 40%);
 
   /* Legacy-navne — pegede tidligere på ikke-målte farver, peger nu på de
@@ -94,10 +97,17 @@
   --color-hf-gray-border: var(--hf-gray-border);
   --color-hf-fab: var(--hf-fab);
   --color-hf-lime: var(--hf-lime);
+  --color-hf-warning: var(--hf-color-warning);
+  --color-hf-warning-fill: var(--hf-color-warning-fill);
   --font-sans: var(--font-hf-body);
   --font-mono: var(--font-geist-mono);
   --font-hf-heading: var(--font-hf-heading);
   --font-hf-body: var(--font-hf-body);
+  /* Radiusfamilie, jf. design.md §5.3/§5.4: kort, felter og knapper er 8px
+     overalt. rounded-xl/2xl var tidligere 12/16px og gav forskellige hjørner
+     fra side til side. */
+  --radius-xl: 8px;
+  --radius-2xl: 8px;
 }
 
 /* Låser hele dokumentet (html/body) mod scroll og bounce/rubber-band —
@@ -240,7 +250,7 @@ textarea::selection,
    under; ingen luft over, når overskriften er første element i sin blok.
    Sider må ikke sætte mt-/mb- på den. */
 .hf-type-section-title {
-  margin: var(--hf-section-title-space-above, 32px) 0 var(--hf-section-title-space-below, 12px);
+  margin: var(--hf-section-title-space-above, 32px) 0 var(--hf-section-title-space-below, 16px);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -440,6 +450,107 @@ textarea::selection,
   white-space: nowrap;
 }
 
+/* ---- Global afstandsregel, jf. design.md §5.4 (bindende, 2026-09-25).
+   Kun tre afstande styrer den lodrette rytme overalt:
+     8px  = inde i en blok (label→felt, titel→tekst, tekst→hjælpetekst)
+     16px = mellem blokke, kortpadding og sidegutter
+     32px = før en ny sektion (sektionsoverskrift)
+   Sider må ikke lægge egne mt-/mb-/gap-værdier ovenpå disse primitiver. ---- */
+:root {
+  --hf-space-inline: 8px;
+  --hf-space-block: 16px;
+  --hf-space-section: 32px;
+  --hf-gutter: 16px;
+  --hf-radius-card: 8px;
+}
+
+@layer components {
+  /* Sideindhold under appbaren: 16px gutter og 16px mellem blokke. */
+  .hf-page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--hf-space-block);
+    padding: var(--hf-space-block) var(--hf-gutter) var(--hf-space-section);
+  }
+
+  /* Sider der kun består af selvstændige sektioner/kortgrupper. */
+  .hf-page--sections {
+    gap: var(--hf-space-section);
+  }
+
+  /* Ensartede lister af kort/rækker. */
+  .hf-page--list {
+    gap: var(--hf-space-inline);
+  }
+
+  /* Kort: 16px padding på alle sider, 8px mellem indholdet. */
+  .hf-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--hf-space-inline);
+    padding: var(--hf-space-block);
+    border-radius: var(--hf-radius-card);
+    background: var(--hf-color-card);
+  }
+
+  /* Kort med formularfelter/flere controls: 16px mellem felterne. */
+  .hf-card--form {
+    gap: var(--hf-space-block);
+  }
+
+  .hf-card--outline {
+    border: 1px solid var(--hf-color-line);
+    background: transparent;
+  }
+
+  .hf-card--brand {
+    background: var(--hf-color-brand);
+    color: var(--hf-color-white);
+  }
+
+  /* Tæt stak (fx felt + hjælpetekst) inde i en blok. */
+  .hf-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--hf-space-inline);
+  }
+
+  /* Korttitel uden sektionslinjer (fx abonnementsnavn i et kort). */
+  .hf-type-card-title {
+    margin: 0;
+    font-family: var(--font-hf-heading);
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 24px;
+    color: var(--hf-color-text);
+  }
+}
+
+/* Følgende regler skal ligge uden for @layer, fordi .hf-type-* også gør. */
+/* I en .hf-page kommer en del af luften fra stakkens gap (16px), så
+   overskriftens egne margener trækkes fra: resultatet er stadig 32px over
+   og 16px under — aldrig en side-specifik mt-/mb-. */
+.hf-page > .hf-type-section-title {
+  margin-bottom: 0;
+}
+
+.hf-page > .hf-type-section-title:not(:first-child) {
+  margin-top: var(--hf-space-block);
+}
+
+.hf-page--sections > .hf-type-section-title:not(:first-child) {
+  margin-top: 0;
+}
+
+.hf-page--sections > .hf-type-section-title {
+  margin-bottom: calc(var(--hf-space-block) - var(--hf-space-section));
+}
+
+/* Hvid tekst i brand-kort, også i .hf-type-*-tekster. */
+.hf-card--brand * {
+  color: inherit;
+}
+
 /* Knapper */
 /* Padding er ikke sat her med vilje — angiv altid px- og py- på selve elementet,
    så knappen kan bruges i både store (fuld bredde) og små (inline) sammenhænge. */
@@ -452,6 +563,12 @@ textarea::selection,
   background: var(--hf-black);
   color: var(--hf-white);
   font-weight: 700;
+}
+
+/* Primærknapper forbliver sorte, også deaktiveret (DECISIONS 2026-09-25) —
+   ingen grå opacity. !important overstyrer ældre disabled:opacity-*-klasser. */
+.hf-btn-primary:disabled {
+  opacity: 1 !important;
 }
 
 /* Favorit/bookmark-overlay på produktbilleder (design.md §6.8/§9.7): 44x44 px
@@ -523,11 +640,11 @@ textarea::selection,
 /* Valg-chip/kort (fx "Hvad er dine mål?") */
 .hf-chip {
   font-family: var(--font-hf-body);
-  border-radius: 1.1rem;
+  border-radius: 12px;
   background: var(--hf-tan);
   color: var(--hf-black);
   font-weight: 700;
-  padding: 1.1rem 1.25rem;
+  padding: 16px;
   text-align: left;
 }
 
@@ -567,7 +684,7 @@ textarea::selection,
 
 /* Accordion-kort (udvidelig varerække) */
 .hf-accordion {
-  border-radius: 1.1rem;
+  border-radius: var(--hf-radius-card);
   background: var(--hf-tan);
   overflow: hidden;
 }
@@ -575,8 +692,8 @@ textarea::selection,
 .hf-accordion-row {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
-  padding: 0.75rem 1rem;
+  gap: 12px;
+  padding: 12px 16px;
 }
 
 .hf-accordion-row + .hf-accordion-row {
@@ -586,12 +703,12 @@ textarea::selection,
 .hf-accordion-toggle {
   display: flex;
   justify-content: center;
-  padding: 0.35rem 0;
+  padding: 8px 0;
   border-top: 1px solid var(--hf-tan-dark);
 }
 
 .hf-accordion-body {
-  padding: 0 1rem 1rem;
+  padding: 0 16px 16px;
   border-top: 1px solid var(--hf-tan-dark);
 }
 
@@ -731,6 +848,72 @@ textarea::selection,
   .hf-scan-line {
     animation: none;
     left: 50%;
+  }
+}
+
+/* Live stregkode-afkodning, jf. design.md §6.11 — BarcodeScanOverlay tegner
+   den aflæste kodes rigtige streger én for én, en lyslinje fejer hen over,
+   og cifrene skrives bagefter. Forsinkelser sættes inline pr. streg/ciffer. */
+@keyframes hf-barcode-bar-in {
+  from {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes hf-barcode-digit-in {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hf-barcode-sweep {
+  0% {
+    opacity: 0.9;
+    transform: translateX(0);
+  }
+  90% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(var(--hf-barcode-sweep-distance));
+  }
+}
+
+.hf-barcode-bar {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hf-barcode-bar-in 160ms ease-out both;
+}
+
+.hf-barcode-digit {
+  transform-box: fill-box;
+  animation: hf-barcode-digit-in 140ms ease-out both;
+}
+
+.hf-barcode-sweep {
+  opacity: 0;
+  animation: hf-barcode-sweep 600ms linear both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hf-barcode-bar,
+  .hf-barcode-digit {
+    animation: none;
+  }
+
+  .hf-barcode-sweep {
+    display: none;
   }
 }
 

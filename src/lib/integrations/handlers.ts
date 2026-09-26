@@ -22,14 +22,14 @@ export function resolveAdapter(slug: string) {
 }
 
 // GET — starter OAuth for den indloggede bruger.
-export async function connect(_req: NextRequest, adapter: OAuthProviderAdapter) {
+// Fejl sendes tilbage til siden som ?error=<slug>, ikke som rå JSON.
+export async function connect(req: NextRequest, adapter: OAuthProviderAdapter) {
+  const failed = () => NextResponse.redirect(new URL(`${DONE_URL}?error=${adapter.slug}`, req.url));
   if (!isConfigured(adapter)) {
-    return NextResponse.json(
-      { message: `${adapter.envPrefix}_CLIENT_ID/${adapter.envPrefix}_CLIENT_SECRET er ikke sat på serveren endnu` },
-      { status: 503 }
-    );
+    console.error(`${adapter.label} connect: ${adapter.envPrefix}_CLIENT_ID/_CLIENT_SECRET er ikke sat`);
+    return failed();
   }
-  if (!(await getSessionUser())) return NextResponse.json({ message: "Log ind først" }, { status: 401 });
+  if (!(await getSessionUser())) return NextResponse.redirect(new URL("/welcome", req.url));
 
   const state = newOAuthState();
   const response = NextResponse.redirect(adapter.buildAuthorizeUrl(state, redirectUri(adapter)));

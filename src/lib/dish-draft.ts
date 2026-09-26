@@ -47,9 +47,50 @@ export function removeDishDraftIngredient(index: number) {
   writeDishDraft(current.filter((_, i) => i !== index));
 }
 
+// Navn, billeder og fremgangsmåde overlever også turen ud efter
+// ingredienser (docs/DECISIONS.md 2026-09-25). Billeder er nedskalerede
+// data-URL'er; bliver kladden for stor til sessionStorage, mistes kun den.
+const DETAILS_KEY = "hellocal.dishDraftDetails";
+
+export type DishDraftStep = { title: string; text: string; image: string | null };
+export type DishDraftDetails = {
+  name: string;
+  images: string[];
+  steps: DishDraftStep[];
+  showImages: boolean;
+  showSteps: boolean;
+};
+
+export const EMPTY_DISH_DRAFT_DETAILS: DishDraftDetails = {
+  name: "",
+  images: [],
+  steps: [],
+  showImages: false,
+  showSteps: false,
+};
+
+export function readDishDraftDetails(): DishDraftDetails {
+  if (typeof window === "undefined") return EMPTY_DISH_DRAFT_DETAILS;
+  try {
+    const raw = sessionStorage.getItem(DETAILS_KEY);
+    return raw ? { ...EMPTY_DISH_DRAFT_DETAILS, ...(JSON.parse(raw) as Partial<DishDraftDetails>) } : EMPTY_DISH_DRAFT_DETAILS;
+  } catch {
+    return EMPTY_DISH_DRAFT_DETAILS;
+  }
+}
+
+export function writeDishDraftDetails(details: DishDraftDetails) {
+  try {
+    sessionStorage.setItem(DETAILS_KEY, JSON.stringify(details));
+  } catch {
+    // Ignore (quota, private browsing).
+  }
+}
+
 export function clearDishDraft() {
   try {
     sessionStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(DETAILS_KEY);
   } catch {
     // Ignore.
   }

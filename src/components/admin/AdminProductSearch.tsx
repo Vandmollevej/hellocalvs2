@@ -114,12 +114,12 @@ export function AdminProductSearch() {
 
       {activeId && (
         <div className="rounded-lg border border-border-strong bg-surface-2 p-4">
-          <div className="mb-3 flex justify-end">
+          <div className="mb-4 flex justify-end">
             <a href={`/admin/products/${activeId}`} className="text-xs text-hf-green-dark underline">
               Åbn produktside (merge m.m.)
             </a>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             <label className="flex flex-col gap-1 text-xs text-text-secondary">
               Navn
               <input
@@ -137,7 +137,7 @@ export function AdminProductSearch() {
               />
             </label>
           </div>
-          <div className="mt-3 grid grid-cols-4 gap-3">
+          <div className="mt-4 grid grid-cols-4 gap-4">
             <label className="flex flex-col gap-1 text-xs text-text-secondary">
               Kcal / 100 g
               <input
@@ -175,14 +175,14 @@ export function AdminProductSearch() {
               />
             </label>
           </div>
-          <div className="mt-3 flex items-center gap-3">
+          <div className="mt-4 flex items-center gap-3">
             <button type="button" onClick={save} className="rounded-md bg-hf-green-dark px-4 py-1.5 text-sm text-hf-white">
               Gem ændringer
             </button>
             {saved && <span className="text-sm text-hf-green-dark">Gemt ✓</span>}
             {error && <span className="text-sm text-hf-red-dark">{error}</span>}
           </div>
-          <p className="mt-3 border-t border-border-strong pt-3 text-xs text-text-muted">
+          <p className="mt-4 border-t border-border-strong pt-4 text-xs text-text-muted">
             Ændringer påvirker kun produktets fremtidige visning — brugere, der allerede har registreret
             dette produkt, beholder deres oprindelige værdier (snapshot).
           </p>

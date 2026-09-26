@@ -115,7 +115,7 @@ export function QualityControlTable({ rows, locale }: { rows: Row[]; locale: Loc
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       <div className="flex gap-2 text-xs">
         {(["under80", "0-50", "50-80", "80-100", "all"] as ConfidenceFilter[]).map((option) => (
           <button

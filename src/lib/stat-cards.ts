@@ -28,6 +28,7 @@ import {
   IconWalk,
   type Icon,
 } from "@tabler/icons-react";
+import { IconWaterGlass } from "@/components/icons/WaterGlass";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
 import type { DailyTotal } from "@/lib/daily-totals";
 import { getSportMeta } from "@/lib/sport-icons";
@@ -349,7 +350,7 @@ export const STAT_CARD_DEFS: {
   {
     key: "water",
     label: "Vand",
-    icon: IconDroplet,
+    icon: IconWaterGlass,
     compute: (data) => {
       const avg = averageMetric(data.metrics, "WATER_ML");
       return avg !== null ? `${(avg / 1000).toFixed(1).replace(".", ",")} l` : "—";

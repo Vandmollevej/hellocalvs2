@@ -322,6 +322,35 @@ Bindende paddingregler:
 7. Når et ikon ser optisk forskudt ud, justeres ikonets viewbox/komponent — ikke
    hele rækkens padding på én enkelt side.
 
+### 5.4 Global lodret rytme — implementeret (2026-09-25)
+
+Bindende for alle sider. Kun tre afstande styrer den lodrette rytme:
+
+| Afstand | Token | Brug |
+| --- | --- | --- |
+| 8 px | `--hf-space-inline` | Inde i en blok: label→felt, titel→tekst, knap→hjælpetekst |
+| 16 px | `--hf-space-block` | Mellem blokke, kortpadding, sidegutter |
+| 32 px | `--hf-space-section` | Før en ny sektion (sektionsoverskrift) og mellem kortgrupper |
+
+Primitiver i `src/app/globals.css` (`@layer components`, så utilities stadig
+kan overstyre dem):
+
+- `.hf-page` — sideindhold under appbaren: 16 px gutter, 16 px mellem blokke,
+  32 px bundluft. `--sections` giver 32 px mellem grupper, `--list` 8 px
+  mellem ensartede listeelementer.
+- `.hf-type-section-title` som direkte barn af `.hf-page` får automatisk 32 px
+  luft over sig. Sider må ikke selv sætte `mt-*` på sektionsoverskrifter.
+- `.hf-card` — `#EEE9DF`, radius 8, 16 px padding, 8 px mellem indhold.
+  `--form` giver 16 px mellem felter, `--outline` en 1 px linje uden flade,
+  `--brand` grøn flade med hvid tekst.
+- `.hf-stack` — 8 px-stak inde i en blok.
+- `.hf-type-card-title` — 17/24 fed korttitel uden sektionslinjer.
+
+Børn i disse primitiver må ikke have egne `mt-*`/`mb-*`; afstanden kommer
+kun fra `gap`. Primære knapper forbliver sorte, også når de er deaktiveret.
+`rounded-xl`/`rounded-2xl` er i temaet låst til 8 px, så alle kort har samme
+hjørner. Alle lodrette margener/paddings i `src/` ligger på 4/8/16/32 px.
+
 ### 5.3 Radiusfamilie
 
 | Token | Mål | Brug |
@@ -642,42 +671,35 @@ kan vise flere mål sammen for én dag, i stedet for kun det senest indtastede
 enkeltfelt.
 
 **`BarcodeScanOverlay`** (`src/components/hf/BarcodeScanOverlay.tsx`),
-tilføjet 2026-09-12 til den live stregkode-scanning på
-`/camera?mode=product` ("Stregkode"-fanen) — Hello Cal-specifik primitiv
-uden HelloFresh-reference (jf. §1), bygget efter brugerens egen detaljerede
-beskrivelse af en scanningsguide: en 2,2:1 guide-boks centreret i
-kamera-viewfinderet, med samme "hul i mørkt overlay"-teknik som den
-eksisterende cirkel-guide (`box-shadow: 0 0 0 999px rgba(0,0,0,.55)`, clippet
-af forælderens `overflow-hidden`). Boksens 1 px kant er hvid som udgangspunkt,
-`--hf-color-positive` ("hf-lime") når en afkodet stregkode ligger inden i
-boksen, og Hello Cal-undtagelsens danger-token ("hf-red-dark") når kameraet
-har afkodet en stregkode et andet sted i billedet, men uden for boksen.
-Position/justering udregnes i `src/lib/barcode-scan.ts` ud fra @zxing's
-`ResultPoint`-koordinater (bekræftet at være i native `videoWidth`/
-`videoHeight`-pixelrum, jf. `node_modules/@zxing/browser`s
-`BrowserCodeReader.createCaptureCanvas`/`drawImageOnCanvas`), mappet til en
-brøkdel (0..1) af det kvadratiske viewfinder-lærred efter samme
-`object-fit: cover`-beskæring som selve `<video>`-elementet bruger. Kun en
-afkodet kode, hvis centrum falder inden for boksen, udløser det faktiske
-produktopslag — en kode uden for boksen viser kun den røde kant, uden at
-navigere væk.
+tilføjet 2026-09-12 og omlagt 2026-09-25 efter brugerens test på iPhone, til
+den live stregkode-scanning på `/camera?mode=product` ("Stregkode"-fanen) —
+Hello Cal-specifik primitiv uden HelloFresh-reference (jf. §1). To faser:
 
-Så længe koden ikke er bekræftet, viser boksen en fiktiv, aldrig-opslået
-EAN-13 (hvide bjælker + tal, `src/lib/regions.ts`s `buildFakeBarcodeForRegion`/
-`formatEan13`) — koden starter altid med brugerens eget regions rigtige
-3-cifrede GS1-præfix (samme `REGIONS`-liste som `barcodeMatchesRegion`
-bruger), hentet via `GET /api/profile` (falder tilbage til "DK", samme
-default som `User.region`). I det øjeblik en kode bekræftes inden i boksen,
-forsvinder denne fiktive illustration og erstattes et kort øjeblik
-(~450 ms, før det faktiske opslag/navigation) af en grøn (`hf-lime`,
-transparent) markering hen over selve det afkodede bjælkeområde plus en
-tyndere grøn bjælke lige under, som repræsenterer de aflæste cifre — den
-faktiske fysiske stregkode/tal overlejres ikke pixel-præcist, kun det
-omtrentlige, udregnede område. Efter ca. 6 sekunder uden en bekræftet
-aflæsning viser viewfinderet desuden en halvgennemsigtig sort bjælke
-(`bg-black/80`) med hvid hjælpetekst, der roterer mellem to hints ("stregkode
-uden for feltet" / "prøv større afstand, hvis den er sløret") hvert 4.
-sekund, indtil enten en kode bekræftes eller kameraet genstartes.
+1. **Guide** (ingen stregkode i billedet): en 2,2:1-boks centreret i det
+   kvadratiske viewfinder med 1 px `white/80`-kant, radius 6 px og en *let*
+   dæmpning udenom (`box-shadow: 0 0 0 999px rgb(0 0 0 / .28)` — ikke mørkere,
+   brugeren fandt .55 for sort). Inde i boksen tegnes en fiktiv, aldrig
+   opslået EAN-13 med brugerens regions GS1-præfix
+   (`buildFakeBarcodeForRegion`), nu med ægte EAN-13-stregmønster
+   (`src/lib/barcode-pattern.ts`). Har brugeren senest holdt en stregkode på
+   højkant, vender guiden lodret.
+2. **Afkodning** (så snart kameraet har læst en kode, hvor som helst i
+   billedet): guiden og dæmpningen *fader* ud (300 ms — aldrig et brat
+   hop), og ovenpå den fysiske stregkode lægges et AR-lag: en afdæmpet plade
+   (`rgb(0 0 0 / .5)`, radius 4) med den aflæste kodes **rigtige** streger i
+   hvid, tegnet streg for streg fra venstre mod højre (600 ms) med en lys
+   fejelinje, hvorefter cifrene skrives et ad gangen (45 ms pr. ciffer).
+   Laget har stregkodens position, bredde, stregernes målte højde og dens
+   vinkel (også skæv eller på højkant), og følger den, mens den bevæger sig.
+   Produktopslaget starter først, når animationen er færdig (~1,3 s; 0,3 s
+   ved `prefers-reduced-motion`, hvor animationerne er slået fra). Findes
+   produktet ikke, beholder laget den samme rolige plade med en tynd kant i
+   `--hf-color-danger`; der er ingen farvede flader oven på billedet.
+
+Efter ca. 6 sekunder uden en aflæsning roterer en halvgennemsigtig sort
+bjælke (`bg-black/70`) nederst i viewfinderet mellem to hints ("hold hele
+stregkoden inde i billedet — den må gerne vende lodret" / "prøv større
+afstand, hvis den er sløret").
 
 ### 6.12 Produktsidens billedområde — fast geometri, uafhængig af billedet
 

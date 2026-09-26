@@ -7,13 +7,13 @@ import {
   IconCamera,
   IconStar,
   IconBook2,
-  IconRulerMeasure,
   IconCreditCard,
   IconWallet,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { IconBathScale } from "@/components/hf/IconBathScale";
+import { IconWaistMeasure } from "@/components/icons/WaistMeasure";
 import { HfProgressStepper } from "@/components/hf/HfProgressStepper";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -62,11 +62,11 @@ export default function ProfilePage() {
   return (
     <HfScreen title={t("profile.title")} alwaysShowBackButton showAppSettingsButton>
       {loading || !user ? (
-        <p className="p-6 text-center text-[14px] text-hf-black opacity-60">
+        <p className="p-4 text-center text-[14px] text-hf-black opacity-60">
           {loading ? t("profile.loading") : t("profile.loadError")}
         </p>
       ) : (
-        <div className="flex flex-col gap-4 p-4">
+        <div className="hf-page">
           {/* Statisk indtil guided profilopsætning beregner det dynamisk. */}
           <HfProgressStepper
             steps={[
@@ -100,7 +100,7 @@ export default function ProfilePage() {
               href="/profile/weight-calibration"
             />
             <ChevronRow
-              icon={<IconRulerMeasure size={20} />}
+              icon={<IconWaistMeasure size={20} sex={user?.sex} />}
               label={t("profile.row.bodyMeasurements")}
               href="/profile/body-measurements"
             />

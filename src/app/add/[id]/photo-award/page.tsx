@@ -83,11 +83,11 @@ export default function PhotoAwardPage() {
         className="hidden"
         onChange={handleFileChange}
       />
-      <div className="flex flex-col gap-3 p-4">
+      <div className="hf-page">
         {awards.map((award) => {
           const submitted = submittedIds.includes(award.id);
           return (
-            <div key={award.id} className="flex flex-col gap-2 rounded-2xl bg-hf-tan p-4">
+            <div key={award.id} className="hf-card">
               <p className="text-sm font-medium text-hf-black">
                 {t("photoAward.pointsForPhoto", { points: award.points, photoType: t(PHOTO_TYPE_KEY[award.photoType]) })}
               </p>

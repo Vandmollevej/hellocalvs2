@@ -98,7 +98,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
       <ProductImageGallery productId={product.id} imageUrl={product.imageUrl} images={product.images} />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_200px]">
       <div className="rounded-lg border border-border-strong bg-surface-2 p-4">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-4">
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
             Navn
             <input
@@ -116,7 +116,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
             />
           </label>
         </div>
-        <div className="mt-3 grid grid-cols-4 gap-3">
+        <div className="mt-4 grid grid-cols-4 gap-4">
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
             Kcal / 100 g
             <input
@@ -154,7 +154,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
             />
           </label>
         </div>
-        <div className="mt-3 flex items-center gap-3">
+        <div className="mt-4 flex items-center gap-3">
           <button
             type="button"
             onClick={save}
@@ -166,7 +166,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
           {saved && <span className="text-sm text-hf-green-dark">Gemt ✓</span>}
           {error && <span className="text-sm text-hf-red-dark">{error}</span>}
         </div>
-        <p className="mt-3 border-t border-border-strong pt-3 text-xs text-text-muted">
+        <p className="mt-4 border-t border-border-strong pt-4 text-xs text-text-muted">
           Ændringer påvirker kun produktets fremtidige visning — brugere, der allerede har registreret
           dette produkt, beholder deres oprindelige værdier (snapshot).
         </p>
@@ -183,7 +183,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
         </button>
 
         {mergeOpen && (
-          <div className="rounded-lg border border-border-strong bg-surface-2 p-3">
+          <div className="rounded-lg border border-border-strong bg-surface-2 p-4">
             <p className="mb-2 text-xs text-text-secondary">
               Flet dette produkt ind i et andet — alle registreringer, favoritter og stregkoder flyttes,
               og dette produkt slettes.
@@ -216,7 +216,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
                 type="button"
                 onClick={confirmMerge}
                 disabled={mergeBusy}
-                className="mt-3 w-full rounded-md bg-hf-red-dark px-3 py-1.5 text-sm text-hf-white disabled:opacity-60"
+                className="mt-4 w-full rounded-md bg-hf-red-dark px-3 py-1.5 text-sm text-hf-white disabled:opacity-60"
               >
                 {mergeBusy ? "Fletter…" : `Flet ind i "${mergeTarget.name}"`}
               </button>
