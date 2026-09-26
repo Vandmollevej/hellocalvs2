@@ -80,6 +80,16 @@ Mangler (bevidst udskudt):
 - Nye kort vises kun automatisk for brugere uden gemt statistik-layout;
   andre tilføjer dem via "Tilføj kort" → "Kød, fisk og drikke".
 
+## 2026-09-26: Opskrift-scrapere som Valdemarsro (Arla, Coop, REMA 1000, MENY, Hjerteforeningen, TV 2)
+
+`scripts/recipe-sites-import` (se README): fælles motor + ét script pr. side,
+samme struktur som Valdemarsro-scraperen. Hver opskrift får "Meal Type"
+(Frokost/Aftensmad/Fin middag/Mellemmåltid/Dessert) og "Børnevenlig" (børn/barn/unger
+i tekst, kategorier eller temaside). `recipe_sites_match.py <site>` beregner kalorier
+via Valdemarsro-matcheren; Hjerteforeningens egne kcal pr. person bruges direkte.
+Output i `Productdatabase/Opskrifter/<Site>`. Brugeren kører selv scraperne.
+Ikke bygget: import i appen (følger Valdemarsro-integrationens TODO).
+
 ## TODO (2026-09-24): Waldemarsro-integration (dansk opskriftsside) — afklaret, ikke bygget
 
 Brugerens svar (2026-09-24). Tilstrækkeligt til at bygge uden yderligere
