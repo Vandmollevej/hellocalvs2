@@ -6,11 +6,12 @@ import { FREE_MONTH_COST } from "@/lib/points-constants";
 import {
   getSubscriptionTier,
   isCoveredByFamilyPlan,
-  FAMILY_MONTHLY_PRICE_DKK,
   FREE_TIER_RETENTION_DAYS,
   SERIOUS_MONTHLY_PRICE_DKK,
+  SUBSCRIPTION_PRICES_DKK,
 } from "@/lib/subscription";
 import { MAX_FAMILY_PROFILES } from "@/lib/family";
+import { isMobilePayConfigured } from "@/lib/payments/mobilepay-client";
 
 export async function GET() {
   const user = await getSessionUser();
@@ -37,9 +38,12 @@ export async function GET() {
     // Familieabonnement (docs/FAMILY.md).
     plan: subscription?.plan ?? "INDIVIDUAL",
     coveredByFamily,
-    familyPriceDkk: FAMILY_MONTHLY_PRICE_DKK,
+    familyPriceDkk: SUBSCRIPTION_PRICES_DKK.family[1],
     familyMaxProfiles: MAX_FAMILY_PROFILES,
     retentionDays: FREE_TIER_RETENTION_DAYS,
+    // MobilePay-nøgler er sat op (admin → API-nøgler), så køb kan gennemføres.
+    mobilePayAvailable: isMobilePayConfigured(),
+    mobilePayPending: Boolean(subscription?.pendingAgreementId),
     // Ældre felter, allerede forventet af /settings/payment
     // (docs/DECISIONS.md 2026-09-02/03) — denne route fandtes ikke før nu, så
     // den side har hidtil kørt mod et 404-svar. Bevaret her for ikke at

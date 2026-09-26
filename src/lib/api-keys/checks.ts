@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 import webpush from "web-push";
 import { importPKCS8 } from "jose";
+import { getAccessToken, listWebhooks, MobilePayError } from "@/lib/payments/mobilepay-client";
 
 // Live-test af API-nøgler (admin → API-nøgler → "Test"). Hver test kalder
 // udbyderen med de nøgler, serveren bruger lige nu, uden at logge nogen
@@ -230,6 +231,23 @@ async function checkPush(): Promise<CheckResult> {
   return { status: "ok", message: "Nøgleparret er gyldigt." };
 }
 
+// Henter et adgangstoken og læser webhook-listen — virker begge, er nøglerne
+// og salgsstedet (MSN) i orden.
+async function checkMobilePay(): Promise<CheckResult> {
+  try {
+    await getAccessToken();
+  } catch (error) {
+    return { status: "fail", message: error instanceof MobilePayError ? `MobilePay afviser nøglerne (${error.status}).` : "MobilePay svarer ikke." };
+  }
+  try {
+    await listWebhooks();
+  } catch (error) {
+    const status = error instanceof MobilePayError ? error.status : 0;
+    return { status: "warn", message: `Nøglerne virker, men Webhooks API afviser salgsstedet (${status}). Tjek MSN.` };
+  }
+  return { status: "ok", message: env("MOBILEPAY_ENV") === "test" ? "Nøglerne virker (testmiljø)." : "Nøglerne virker (produktion)." };
+}
+
 // requiredKeys: de ikke-valgfrie felter fra kataloget.
 export async function runCheck(serviceId: string, requiredKeys: string[], redirectUris: string[]): Promise<CheckResult> {
   const absent = missing(requiredKeys);
@@ -264,6 +282,8 @@ export async function runCheck(serviceId: string, requiredKeys: string[], redire
         return await checkSmtp();
       case "push":
         return await checkPush();
+      case "mobilepay":
+        return await checkMobilePay();
       default:
         return { status: "missing", message: "Ingen test for denne tjeneste." };
     }

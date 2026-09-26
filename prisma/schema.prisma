@@ -168,6 +168,11 @@ model User {
   averageCycleLengthDays  Int     @default(28)
   averagePeriodLengthDays Int     @default(5)
 
+  // "Oplevelse af søvn" (docs/DECISIONS.md 2026-09-26): Indstillinger →
+  // Visning. Slået til som standard — dagens første app-åbning viser et
+  // overlay, hvor nattens søvn vurderes 1–5 (SleepQualityEntry).
+  sleepQualityPromptEnabled Boolean @default(true)
+
   registrations           Registration[]
   favorites               Favorite[]
   dishes                  Dish[]
@@ -177,6 +182,7 @@ model User {
   waterEntries            WaterEntry[]
   menstrualCycleEntries   MenstrualCycleEntry[]
   sleepSchedules          SleepSchedule[]
+  sleepQualityEntries     SleepQualityEntry[]
   workShifts              WorkShift[]
   integrations            Integration[]
   activities              Activity[]
@@ -201,6 +207,7 @@ model User {
   doctorShares            DoctorShare[]
   subscription            Subscription?
   paymentMethods          PaymentMethod[]
+  paymentCharges          PaymentCharge[]
   giftCodesRedeemed       GiftCode[]
   adminAuditLogsAsActor   AdminAuditLog[]          @relation("AdminAuditActor")
   adminAuditLogsAsTarget  AdminAuditLog[]          @relation("AdminAuditTarget")
@@ -418,6 +425,8 @@ model BodyMeasurement {
   chestCm      Float?
   thighCm      Float?
   upperArmCm   Float?
+  // Halsmål (2026-09-26), så alle brugerens fem kropsmålstegninger har et felt.
+  neckCm       Float?
   note         String?
   measuredAt   DateTime @default(now())
 
@@ -520,6 +529,22 @@ model SleepSchedule {
 
   @@unique([userId, weekday])
   @@map("sleep_schedules")
+}
+
+// Oplevet søvnkvalitet (docs/DECISIONS.md 2026-09-26): én vurdering 1–5 pr.
+// dag (datoen man vågnede), fra dagens første app-åbning. Vises øverst i
+// kalenderens dagvisning og sammen med kalorieindtaget på Statistik.
+model SleepQualityEntry {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  date      DateTime @db.Date
+  rating    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, date])
+  @@map("sleep_quality_entries")
 }
 
 // Work days/hours logged directly in the calendar (e.g. shift work/
@@ -760,6 +785,7 @@ model Brand {
   createdAt DateTime  @default(now())
   products  Product[]
   regionSearchStats BrandRegionSearchStat[]
+  cutoutJobs ImageCutoutJob[]
   logoSearches      BrandLogoSearch[]
 
   @@map("brands")
@@ -958,6 +984,7 @@ model Product {
   duplicateLinksAsA  ProductDuplicateLink[] @relation("ProductDuplicateLinkA")
   duplicateLinksAsB  ProductDuplicateLink[] @relation("ProductDuplicateLinkB")
   aiAnalyses         AiProductAnalysis[]
+  cutoutJobs         ImageCutoutJob[]
   matchChecks        ProductMatchCheck[]
   photoAwards        ProductPhotoAward[]
   regionSearchStats  ProductRegionSearchStat[]
@@ -1069,10 +1096,9 @@ model AiProductAnalysis {
   prediction    Json
   correction    Json?
   confidence    Float?
-  // The guided-flow photo itself (BARCODE/NUTRITION/INGREDIENTS only — a
-  // FRONT analysis has no image here, since the front photo becomes
-  // Product.imageUrl directly). Null for analyses created before this field
-  // existed.
+  // The guided-flow photo itself. FRONT analyses store it too since
+  // 2026-09-26 — it is the source for the logo/product cutout jobs
+  // (ImageCutoutJob). Null for analyses created before this field existed.
   imageUrl      String?        @map("image_url")
   product       Product?       @relation(fields: [productId], references: [id], onDelete: SetNull)
   productId     String?        @map("product_id")
@@ -1088,6 +1114,7 @@ model AiProductAnalysis {
   // værdierne ved produktoprettelse.
   reviewedAt    DateTime?      @map("reviewed_at")
   matchCheck    ProductMatchCheck?
+  cutoutJobs    ImageCutoutJob[]
 
   @@index([kind, correctedAt])
   @@index([productId])
@@ -1099,6 +1126,59 @@ enum AiAnalysisKind {
   INGREDIENTS
   NUTRITION
   BARCODE
+}
+
+// Fritskrabning (docs/DECISIONS.md 2026-09-26): forsidefotoet fra det guidede
+// kamera-flow giver to jobs — logoet (beskåret efter OpenAI's logoBox) og
+// selve produktet (productBox). scripts/image-agent beskærer, fjerner
+// baggrunden med rembg og gemmer et transparent PNG under
+// /product-images/cutouts. Et BRAND_LOGO-job er logo-kandidaten, der holdes
+// op mod Brand-tabellen (brandId = matchet brand); det bliver kun selv
+// Brand.logoUrl, når brandet intet logo har og match + AI-sikkerhed er høje
+// (appliedAt). PRODUCT_FRONT lander som Product.pendingImageUrl og venter på
+// den eksisterende admin-godkendelse — aldrig direkte som imageUrl.
+model ImageCutoutJob {
+  id             String             @id @default(cuid())
+  kind           ImageCutoutKind
+  status         ImageCutoutStatus  @default(PENDING)
+  // Originalt foto (public-sti under /product-images).
+  sourceUrl      String
+  // Beskæring i 0-1 af billedets bredde/højde: { x, y, width, height }.
+  // Null = hele billedet.
+  cropBox        Json?
+  resultUrl      String?
+  error          String?
+  // Navnet, som OpenAI læste det på logoet (BRAND_LOGO).
+  recognizedText String?
+  confidence     Float?
+  // Match mod Brand-tabellen (0-1, 1 = normaliseret identisk navn).
+  matchScore     Float?
+  brand          Brand?             @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  brandId        String?
+  product        Product?           @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productId      String?
+  analysis       AiProductAnalysis? @relation(fields: [analysisId], references: [id], onDelete: SetNull)
+  analysisId     String?
+  createdAt      DateTime           @default(now())
+  processedAt    DateTime?
+  // Sat når resultatet er skrevet videre (Brand.logoUrl / Product.pendingImageUrl).
+  appliedAt      DateTime?
+
+  @@index([status, createdAt])
+  @@index([brandId])
+  @@index([analysisId])
+  @@map("image_cutout_jobs")
+}
+
+enum ImageCutoutKind {
+  BRAND_LOGO
+  PRODUCT_FRONT
+}
+
+enum ImageCutoutStatus {
+  PENDING
+  DONE
+  FAILED
 }
 
 // Kvalitetskontrol / billed-match (2026-09-19, se docs/DECISIONS.md): en
@@ -2036,6 +2116,10 @@ model Subscription {
   // points, se PointsReason FREE_MONTH_REDEEMED), ventende på at blive
   // anvendt på næste faktureringsperiode.
   freeMonthsRemaining    Int                @default(0)
+  // MobilePay (Vipps MobilePay Recurring, docs/DECISIONS.md 2026-09-26): en
+  // aftale, brugeren endnu ikke har godkendt i MobilePay-appen. Flyttes til
+  // providerSubscriptionId, når aftalen bliver aktiv.
+  pendingAgreementId     String?
   createdAt              DateTime           @default(now())
   updatedAt              DateTime           @default(now()) @updatedAt
 
@@ -2870,4 +2954,44 @@ model AppSecret {
   updatedAt   DateTime @updatedAt
 
   @@map("app_secrets")
+}
+
+// Træk på en betalingsaftale (MobilePay Recurring, docs/DECISIONS.md
+// 2026-09-26): ét pr. abonnementsperiode. Status spejler udbyderens
+// (PENDING, DUE, RESERVED, CHARGED, FAILED, CANCELLED, REFUNDED, …) og
+// hentes altid fra udbyderen — webhooks bruges kun som vækning.
+model PaymentCharge {
+  id                  String          @id @default(cuid())
+  user                User            @relation(fields: [userId], references: [id])
+  userId              String
+  provider            PaymentProvider
+  providerAgreementId String
+  providerChargeId    String          @unique
+  amountOre           Int
+  status              String
+  dueDate             DateTime
+  periodStart         DateTime
+  periodEnd           DateTime
+  // Sat når perioden er lagt på abonnementet, så den kun lægges på én gang.
+  appliedAt           DateTime?
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @default(now()) @updatedAt
+
+  @@unique([providerAgreementId, periodStart])
+  @@index([status])
+  @@map("payment_charges")
+}
+
+// Webhook registreret hos en betalingsudbyder. Hemmeligheden (til at
+// verificere afsenderen) gemmes krypteret som app_secrets.
+model PaymentWebhook {
+  id                String          @id @default(cuid())
+  provider          PaymentProvider
+  providerWebhookId String
+  url               String
+  secretCipher      String
+  createdAt         DateTime        @default(now())
+
+  @@unique([provider, url])
+  @@map("payment_webhooks")
 }

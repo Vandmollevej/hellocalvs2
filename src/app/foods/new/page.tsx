@@ -8,7 +8,7 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 import { PACKAGE_SIZE_UNITS, formatPackageSize, type PackageSizeUnit } from "@/lib/product-naming";
 import type { ProductCategory } from "@/lib/product-display-unit";
 
-export const OCR_DRAFT_STORAGE_KEY = "hellocal-ocr-product-draft";
+const OCR_DRAFT_STORAGE_KEY = "hellocal-ocr-product-draft";
 
 export type ProductDraft = {
   kcalPer100g?: string;

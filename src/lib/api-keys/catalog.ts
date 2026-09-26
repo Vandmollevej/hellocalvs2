@@ -17,7 +17,7 @@ export type KeyField = {
   hint?: string;
 };
 
-export type KeyGroupId = "login" | "integrations" | "ai" | "mail" | "push" | "system";
+export type KeyGroupId = "login" | "integrations" | "ai" | "payment" | "mail" | "push" | "system";
 
 export type KeyService = {
   id: string;
@@ -36,6 +36,7 @@ export const KEY_GROUPS: { id: KeyGroupId; title: string }[] = [
   { id: "login", title: "Log ind" },
   { id: "integrations", title: "Sundhedsintegrationer" },
   { id: "ai", title: "AI og fødevaredata" },
+  { id: "payment", title: "Betaling" },
   { id: "mail", title: "E-mail" },
   { id: "push", title: "Push-notifikationer" },
   { id: "system", title: "System (kun .env.production)" },
@@ -228,6 +229,28 @@ export const KEY_SERVICES: KeyService[] = [
     fields: [{ key: "GOOGLE_PLACES_API_KEY", label: "API-nøgle", kind: "secret" }],
     setupUrl: "https://console.cloud.google.com/google/maps-apis/credentials",
     testable: true,
+  },
+  {
+    id: "mobilepay",
+    name: "MobilePay (Vipps MobilePay Recurring)",
+    group: "payment",
+    purpose: "Abonnementsbetaling med MobilePay: aftaler, månedlige træk og opsigelse.",
+    fields: [
+      { key: "MOBILEPAY_CLIENT_ID", label: "client_id", kind: "id" },
+      { key: "MOBILEPAY_CLIENT_SECRET", label: "client_secret", kind: "secret" },
+      { key: "MOBILEPAY_SUBSCRIPTION_KEY", label: "Ocp-Apim-Subscription-Key", kind: "secret" },
+      { key: "MOBILEPAY_MERCHANT_SERIAL_NUMBER", label: "Merchant Serial Number (MSN)", kind: "id" },
+      {
+        key: "MOBILEPAY_ENV",
+        label: "Miljø",
+        kind: "text",
+        optional: true,
+        hint: "Skriv “test” for testmiljøet. Tomt = produktion.",
+      },
+    ],
+    setupUrl: "https://portal.vippsmobilepay.com",
+    testable: true,
+    note: "Kræver at “Recurring API” er slået til på salgsstedet. Webhooken registreres automatisk af serveren.",
   },
   {
     id: "smtp",

@@ -149,8 +149,9 @@ Kilder:
   registrering som nyt snapshot til en profil, man styrer. Findes indtil
   videre kun på forsidens dagsliste (`DailyList`).
 - **Abonnement:** medlemmer af en familie, hvis betaler har `plan = FAMILY` og
-  er Seriøs, er Seriøs. Betaling er ikke koblet på endnu, så for at teste skal
-  betalerens række sættes manuelt i databasen:
+  er Seriøs, er Seriøs. Køb af "Seriøs Familie" med MobilePay (masters
+  betalingsflow, 2026-09-26) sætter `plan = FAMILY`. Uden MobilePay-nøgler kan
+  betalerens række sættes manuelt i databasen for at teste:
   `UPDATE subscriptions SET plan='FAMILY', status='ACTIVE', "currentPeriodEnd"=NULL WHERE "userId"='<id>';`
   (findes rækken ikke, skal den oprettes).
 

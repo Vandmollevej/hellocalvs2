@@ -2,6 +2,44 @@
 
 Last updated: 2026-09-26
 
+## 2026-09-26: Opret vare — logo, fritskrabning og samme-foto-flueben
+
+Se docs/DECISIONS.md 2026-09-26 "Opret vare — rækkefølge …". Kamera-flowet er
+stregkode → forside → energi → indhold med flueben pr. trin; energi + indhold på
+samme foto giver begge flueben. OpenAI læser logonavn + logo-/produktboks;
+navnet matches mod Brand-tabellen; `scripts/image-agent` fritskraber logo og
+produkt (`ImageCutoutJob`, migration `20260926140000_image_cutout_jobs`).
+Lint + typecheck grønne for de ændrede filer. Ikke testet mod OpenAI/rembg
+(ingen lokal DB/Python).
+
+Next work:
+1. Deploy: migrationen + genbyg `image-agent` (deploy-trinnet for agenterne
+   fejler pt., se G5 i OPEN-TASKS).
+2. Test på telefon med en rigtig vare (fx næring + ingredienser på samme side).
+
+
+## 2026-09-26: Seriøs-låse + egne abonnementssider
+
+Gratis: 3 måneders historik, én målsætning (målvægt), ingen delmål. Låst til
+Seriøs: statistik, fotodagbog, bundmenu-omarrangering, visningsindstillinger,
+allergenvisning, opskriftsfiltre/HelloFresh og integrationer (se DECISIONS
+2026-09-26). Nye sider `/profile/subscription/serious` og `/family` med 1/3/12
+mdr.-bokse. Lint + typecheck grønne for de ændrede filer; fuld build ikke kørt
+(anden sessions ufærdige `FrontPagePreview`-import fejler typecheck).
+
+Next work:
+1. Endelige priser og hvordan Seriøs Familie fungerer (antal medlemmer).
+2. Købsknappen åbner, når MobilePay-sessionens aftale-API er deployet.
+
+
+## 2026-09-26: Oplevelse af søvn
+
+Dagligt søvn-overlay (1–5), indstilling under Visning, sort bjælke i
+kalenderens dagvisning og graf "Søvnkvalitet og kalorier" på Statistik. Se
+DECISIONS 2026-09-26. Kræver migration `20260926130000_sleep_quality` ved
+deploy. Ikke visuelt testet (brugeren tjekker selv).
+
+Last updated: 2026-09-26
 ## 2026-09-26: Support-indbakke i admin
 
 Se DECISIONS 2026-09-26 "Support-indbakke". Tråde, svar, interne noter,
@@ -501,6 +539,16 @@ Mangler (bevidst udskudt):
   (migrationen skal deployes først).
 - Nye kort vises kun automatisk for brugere uden gemt statistik-layout;
   andre tilføjer dem via "Tilføj kort" → "Kød, fisk og drikke".
+
+## 2026-09-26: Opskrift-scrapere som Valdemarsro (Arla, Coop, REMA 1000, MENY, Hjerteforeningen, TV 2)
+
+`scripts/recipe-sites-import` (se README): fælles motor + ét script pr. side,
+samme struktur som Valdemarsro-scraperen. Hver opskrift får "Meal Type"
+(Frokost/Aftensmad/Fin middag/Mellemmåltid/Dessert) og "Børnevenlig" (børn/barn/unger
+i tekst, kategorier eller temaside). `recipe_sites_match.py <site>` beregner kalorier
+via Valdemarsro-matcheren; Hjerteforeningens egne kcal pr. person bruges direkte.
+Output i `Productdatabase/Opskrifter/<Site>`. Brugeren kører selv scraperne.
+Ikke bygget: import i appen (følger Valdemarsro-integrationens TODO).
 
 ## TODO (2026-09-24): Waldemarsro-integration (dansk opskriftsside) — afklaret, ikke bygget
 
