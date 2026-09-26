@@ -12,6 +12,7 @@ import { flagUncertainAlternativeServings } from "@/lib/alternative-servings-rev
 import { syncProductNutritionFeaturesSafely } from "@/lib/product-nutrition-features";
 import { composeProductName } from "@/lib/product-naming";
 import { isProductCategory } from "@/lib/product-display-unit";
+import { linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
 
 // Fetches Open Food Facts products globally live for search terms without enough local
 // results, and saves them as PENDING (same pattern as the barcode lookup in
@@ -458,6 +459,13 @@ export async function POST(req: Request) {
           correctedAt,
         },
       });
+      // Fritskrabet forside/logo (docs/DECISIONS.md 2026-09-26) — må aldrig
+      // stoppe selve oprettelsen.
+      await linkCutoutJobsToProduct({
+        frontAnalysisId: analysisIds.front,
+        productId: product.id,
+        brand: brand ? { id: brand.id, name: brand.name } : null,
+      }).catch((error) => console.error("Could not link cutout jobs", error));
     }
 
     if (analysisIds.ingredients) {

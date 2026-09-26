@@ -19,6 +19,12 @@ export type ProductCreateDraft = {
   fatPer100g?: string;
   servingSizeGrams?: string;
   ingredientsText?: string;
+  // Sat når næringsfotoet også indeholdt ingredienslisten (de står ofte side
+  // om side) — så er ingrediens-trinnet sprunget over og begge bokse på
+  // opret-siden får flueben.
+  ingredientsFromNutritionPhoto?: boolean;
+  // Hvilke trin AI/OCR aflæste korrekt (flueben på opret-siden).
+  verified?: { barcode?: boolean; front?: boolean; nutrition?: boolean; ingredients?: boolean };
 
   // Alternative kalorievisninger fra selve emballagen (per glas/skive/stk.
   // osv.), udtrukket af /api/ai/extract-nutrition-v2 — se

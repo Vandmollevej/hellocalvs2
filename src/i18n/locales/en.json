@@ -550,7 +550,13 @@
     "stageIngredients": "Ingredients",
     "readingIngredients": "Reading ingredients...",
     "continueWithBarcode": "Continue with this barcode",
-    "barcodeLookupFailedContinue": "The lookup failed. You can continue with the scanned barcode."
+    "barcodeLookupFailedContinue": "The lookup failed. You can continue with the scanned barcode.",
+    "stepBarcode": "Barcode",
+    "stepFront": "Front",
+    "stepNutrition": "Energy",
+    "stepIngredients": "Contents",
+    "stepDone": "{step}: captured and read",
+    "bothFound": "Energy and contents found in the same photo"
   },
   "foods": {
     "title": "Foods",
@@ -743,6 +749,7 @@
     "mediaScanFailedBarcode": "Couldn't read the barcode — enter it below",
     "mediaScanFailedNutrition": "Couldn't read the nutrition facts — fill them in below",
     "mediaScanFailedIngredients": "Couldn't read the ingredients list — fill it in below",
+    "mediaVerified": "{box}: captured and read correctly",
     "savedOffline": "No connection — the product is saved on this device and will upload automatically once you're back online."
   },
   "offlineQueue": {

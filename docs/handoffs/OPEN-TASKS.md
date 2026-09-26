@@ -79,6 +79,7 @@ Ejer: —
 ## G5 — Agent-app + logo-robot
 Filer: ny agent-app, admin "scan-invites", logo-agent (Python/container).
 Ejer: G5-overtagelse, konto B (2026-09-24)
+ℹ️ Fra opret-vare-sessionen (2026-09-26): logo-isolering ved scanning + match mod DB er bygget i kamera-flowet (`ImageCutoutJob` BRAND_LOGO, `src/lib/brand-match.ts`, fritskrabning i `scripts/image-agent/cutout.py`, DECISIONS 2026-09-26). Logo-kandidater under 0,9 ligger klar til G5's admin-kø; natlig Google-søgning er ikke lavet.
 ⚠️ Fra G1 (2026-09-25): deploy-trinnet "Build and start catalog agents" i `.github/workflows` fejler ved hvert push til master siden 2026-09-24 ca. 18:00 (fx run for 50a5a47). App-deployet lykkes, men agent-containerne opdateres ikke. Brugeren har bedt G5 om at rette det — læs job-loggen på GitHub.
 
 | Id | Opgave | Status | Næste skridt |

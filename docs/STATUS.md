@@ -2,6 +2,22 @@
 
 Last updated: 2026-09-26
 
+## 2026-09-26: Opret vare — logo, fritskrabning og samme-foto-flueben
+
+Se docs/DECISIONS.md 2026-09-26 "Opret vare — rækkefølge …". Kamera-flowet er
+stregkode → forside → energi → indhold med flueben pr. trin; energi + indhold på
+samme foto giver begge flueben. OpenAI læser logonavn + logo-/produktboks;
+navnet matches mod Brand-tabellen; `scripts/image-agent` fritskraber logo og
+produkt (`ImageCutoutJob`, migration `20260926140000_image_cutout_jobs`).
+Lint + typecheck grønne for de ændrede filer. Ikke testet mod OpenAI/rembg
+(ingen lokal DB/Python).
+
+Next work:
+1. Deploy: migrationen + genbyg `image-agent` (deploy-trinnet for agenterne
+   fejler pt., se G5 i OPEN-TASKS).
+2. Test på telefon med en rigtig vare (fx næring + ingredienser på samme side).
+
+
 ## 2026-09-26: Oplevelse af søvn
 
 Dagligt søvn-overlay (1–5), indstilling under Visning, sort bjælke i
