@@ -525,6 +525,25 @@ export async function POST(req: Request) {
           correctedAt,
         },
       });
+      // Mættet fedt aflæses fra samme energi-foto, men opret-siden har intet
+      // felt til det — gem det direkte på varen, når tabellen er pr. 100 g/ml.
+      const nutritionAnalysis = await prisma.aiProductAnalysis.findFirst({
+        where: { id: analysisIds.nutrition, kind: "NUTRITION" },
+        select: { prediction: true },
+      });
+      const prediction = (nutritionAnalysis?.prediction ?? null) as Record<string, unknown> | null;
+      const saturatedFat = prediction?.saturatedFatPer100g;
+      if (
+        (prediction?.basis === "100g" || prediction?.basis === "100ml") &&
+        typeof saturatedFat === "number" &&
+        saturatedFat >= 0 &&
+        saturatedFat <= fatPer100g
+      ) {
+        await prisma.product.update({
+          where: { id: product.id },
+          data: { saturatedFatPer100g: saturatedFat },
+        });
+      }
     }
 
     // Stregkode-fotoet har ingen AI-korrektion (ingen AI-kald involveret, se
