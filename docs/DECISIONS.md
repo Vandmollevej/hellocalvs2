@@ -368,6 +368,15 @@ brugeren punkt for punkt). Den bindende kontrakt er `docs/PRIVACY.md`.
 - DB-kolonnen `users.workHoursInCalendarEnabled` står midlertidigt tilbage
   (ubrugt); fjernes i en senere migration.
 
+## 2026-09-26: Målsætning-oversigt som liste af delmål med egen side
+
+`/profile/goals` viser nu hver målsætning som en blok (som kalenderens
+dagsliste): kalender-firkant til venstre med måldatoen (dag + måned, grøn når
+alle targets er nået), i midten hvad målet indebærer, pil til højre. Klik
+åbner den unikke side `/profile/goals/[id]` (API `GET /api/goals/[id]`, kun
+egne mål). Øverst en omridsknap "+ Opret nyt delmål" (`hf-btn-secondary`, ingen
+fyldfarve); formularen har dato-vælgeren øverst.
+
 ## 2026-09-22: Målsætning — historiske, daterede målsætninger for vægt og kropsmål
 
 "Mål" hedder nu "Målsætning" (for ikke at forveksle med Kropsmål). Profilens

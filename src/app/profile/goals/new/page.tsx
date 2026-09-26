@@ -104,7 +104,7 @@ export default function NewGoalPage() {
 
   return (
     <HfScreen
-      title={t("goals.create")}
+      title={t("goals.createSubGoal")}
       footer={
         <div className="flex flex-col gap-2">
           {(!hasDate || !hasAny) && (
@@ -126,9 +126,7 @@ export default function NewGoalPage() {
       }
     >
       <div className="flex flex-col gap-4 p-4">
-        <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
-          <p className="text-[13px] leading-5">{t("goals.intro")}</p>
-        </div>
+        {/* Dato-vælgeren står øverst på siden. */}
 
         <div className="rounded-2xl bg-hf-tan p-4">
           <label className="flex flex-col gap-1">
@@ -161,6 +159,10 @@ export default function NewGoalPage() {
               <IconCalendar size={18} aria-hidden="true" className="mb-0.5 shrink-0 text-hf-black opacity-60" />
             </span>
           </label>
+        </div>
+
+        <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
+          <p className="text-[13px] leading-5">{t("goals.intro")}</p>
         </div>
 
         <div className="rounded-2xl bg-hf-tan p-4">

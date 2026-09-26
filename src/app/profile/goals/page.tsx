@@ -2,48 +2,46 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconCheck } from "@tabler/icons-react";
+import { IconCheck, IconChevronRight, IconPlus } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
-import { DateSeparator } from "@/components/hf/DateSeparator";
+import { GoalDateSquare } from "@/components/hf/GoalDateSquare";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { BODY_MEASUREMENT_FIELDS } from "@/lib/body-measurements";
-import type { GoalDTO, GoalTargetDTO } from "@/lib/user-goals";
+import {
+  formatGoalDate,
+  formatGoalValue,
+  goalDisplayDate,
+  goalTargetNameKey,
+  isGoalCompleted,
+} from "@/lib/goal-format";
+import type { GoalDTO } from "@/lib/user-goals";
 
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat("da-DK", { day: "2-digit", month: "2-digit", year: "numeric" })
-    .format(new Date(value))
-    .replace(/[/-]/g, ".");
-}
-
-function formatValue(value: number) {
-  return new Intl.NumberFormat("da-DK", { minimumFractionDigits: 0, maximumFractionDigits: 1 }).format(value);
-}
-
-function targetNameKey(type: GoalTargetDTO["type"]) {
-  if (type === "weight") return "goals.weight";
-  return BODY_MEASUREMENT_FIELDS.find(({ field }) => field === type)?.nameKey ?? type;
-}
-
-function GoalTargetRow({ target }: { target: GoalTargetDTO }) {
+function GoalRow({ goal, onOpen }: { goal: GoalDTO; onOpen: () => void }) {
   const { t } = useTranslation();
+  const completed = isGoalCompleted(goal);
+  const summary = goal.targets
+    .map((target) => `${t(goalTargetNameKey(target.type))} ${formatGoalValue(target.value)} ${target.unit}`)
+    .join(" · ");
+
   return (
-    <div className="py-3">
-      <div className="flex items-center justify-between gap-4">
-        <p className="min-w-0 text-[15px] font-semibold text-hf-black">{t(targetNameKey(target.type))}</p>
-        {target.completedAt && (
-          <span
-            role="img"
-            aria-label={t("goals.completedAria")}
-            className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-hf-green text-hf-white"
-          >
-            <IconCheck size={16} stroke={3} aria-hidden="true" />
-          </span>
-        )}
-      </div>
-      <p className="mt-0.5 text-[15px] text-hf-black opacity-60">
-        {formatValue(target.value)} {target.unit}
-      </p>
-    </div>
+    <button
+      type="button"
+      onClick={onOpen}
+      className="flex min-h-[66px] w-full items-center gap-3 rounded-2xl border border-hf-tan-dark bg-hf-tan px-4 py-3 text-left text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
+    >
+      <GoalDateSquare date={goalDisplayDate(goal)} completed={completed} />
+      <span className="flex min-w-0 flex-1 flex-col">
+        <span className="hf-type-body hf-type-strong line-clamp-2">{summary}</span>
+        <span className="hf-type-small flex items-center gap-1 opacity-60">
+          {completed && <IconCheck size={14} stroke={3} className="shrink-0 text-hf-green" aria-hidden="true" />}
+          {completed
+            ? t("goals.completedAria")
+            : goal.targetDate
+              ? t("goals.targetDateLabel", { date: formatGoalDate(goal.targetDate) })
+              : t("goals.createdLabel", { date: formatGoalDate(goal.createdAt) })}
+        </span>
+      </span>
+      <IconChevronRight size={19} className="shrink-0" aria-hidden="true" />
+    </button>
   );
 }
 
@@ -76,43 +74,30 @@ export default function GoalsPage() {
   }, []);
 
   return (
-    <HfScreen
-      title={t("goals.title")}
-      footer={
+    <HfScreen title={t("goals.title")}>
+      <div className="flex flex-col gap-4 p-4">
+        {/* Kun omkreds — baggrunden er sidens egen cremefarve. */}
         <button
           type="button"
           onClick={() => router.push("/profile/goals/new")}
-          className="hf-btn-primary hf-type-button h-12 w-full"
+          className="hf-btn-secondary hf-type-button h-12 w-full gap-2"
         >
-          {t("goals.create")}
+          <IconPlus size={18} stroke={2.5} aria-hidden="true" />
+          {t("goals.createSubGoal")}
         </button>
-      }
-    >
-      {loading || error || goals.length === 0 ? (
-        <div className="flex h-full items-center justify-center px-8">
-          <p className="max-w-xs text-center text-[15px] font-normal leading-6 text-hf-black opacity-60">
+
+        {loading || error || goals.length === 0 ? (
+          <p className="hf-type-body mx-auto max-w-xs px-4 pt-8 text-center text-hf-black opacity-60">
             {loading ? t("goals.loading") : error ? t("goals.loadError") : t("goals.empty")}
           </p>
-        </div>
-      ) : (
-        <div className="flex flex-col gap-4 p-4">
-          {goals.map((goal) => (
-            <section key={goal.id} className="flex flex-col">
-              <DateSeparator label={formatDate(goal.createdAt)} />
-              {goal.targetDate && (
-                <p className="pt-2 text-[13px] font-semibold text-hf-black opacity-60">
-                  {t("goals.targetDateLabel", { date: formatDate(goal.targetDate) })}
-                </p>
-              )}
-              <div className="flex flex-col divide-y divide-hf-gray-border pt-1">
-                {goal.targets.map((target) => (
-                  <GoalTargetRow key={target.id} target={target} />
-                ))}
-              </div>
-            </section>
-          ))}
-        </div>
-      )}
+        ) : (
+          <div className="flex flex-col gap-2">
+            {goals.map((goal) => (
+              <GoalRow key={goal.id} goal={goal} onOpen={() => router.push(`/profile/goals/${goal.id}`)} />
+            ))}
+          </div>
+        )}
+      </div>
     </HfScreen>
   );
 }
