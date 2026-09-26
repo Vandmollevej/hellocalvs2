@@ -216,6 +216,7 @@ Ejer: ed3c2525 (2026-09-27)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | ed3c2525 | HelloFresh-opskrifter vises præcis som i HelloFresh-appen, fælles `.rv-*`-klasser (ikke egne retter) | Færdig (se git log "HelloFresh recipe view") | Deploy: migration 20260927100000 + genstart hellofresh-agent (genhenter alle opskrifter én gang). Afventer brugerens visuelle godkendelse |
+| — | Sidste 5 filer: `calendar/page.tsx`, `settings/page.tsx`, `settings/support/page.tsx`, `settings/display/front-page/page.tsx`, `admin/ApiKeysManager.tsx` | Blokeret | Andre sessioner har ikke-committede ændringer i dem. Når de er committet: kalender-rækker (min-h-11/py-3 → `hf-control-row`), support-rækker (h-12 → `hf-control-row`), knapper (h-12 → `hf-control`), front-page-rækker (py-3 → `hf-control-row`), ApiKeysManager `inputClass` (py-2 → `hf-field`) |
 
 ## G12 — Ens 48 px-højde på felter, dropdowns, knapper og rækker
 Filer: `.hf-field` / `.hf-control` / `.hf-control-row` + `--hf-control-height` i `src/app/globals.css`.
