@@ -235,6 +235,21 @@ function getSleepWindow(
   return { bedtime: 23 * 60, wakeTime: (23 * 60 + FALLBACK_SLEEP_MINUTES) % 1440 };
 }
 
+// En sengetid lige efter midnat (00:00-03:59) før stå-op-tiden er stadig en
+// NAT-søvn — ikke dagsøvn efter en nattevagt. Den hører til aftenen, så
+// sengetids-håndtaget står altid nederst (ved 24:00) på dagens tidslinje, og
+// der tegnes ikke ét samlet dagsøvn-felt fra 00:00.
+const LATE_BEDTIME_CUTOFF_MINUTES = 4 * 60;
+
+function isDaytimeSleep(window: SleepWindow) {
+  return window.bedtime < window.wakeTime && window.bedtime >= LATE_BEDTIME_CUTOFF_MINUTES;
+}
+
+/** Where the bedtime handle sits on the 00-24 timeline: after-midnight bedtimes pin to the bottom. */
+function bedtimeDisplayMinutes(window: SleepWindow) {
+  return window.bedtime < LATE_BEDTIME_CUTOFF_MINUTES && !isDaytimeSleep(window) ? 24 * 60 : window.bedtime;
+}
+
 function useIsLandscape() {
   const [isLandscape, setIsLandscape] = useState(false);
   useEffect(() => {
@@ -1369,7 +1384,7 @@ function WeekTimelineView({
                       onCommit={(type, minutes) => onSleepAdjust(date, type, minutes)}
                     />
                     <SleepBoundaryHandle
-                      minutes={sleepWindow.bedtime}
+                      minutes={bedtimeDisplayMinutes(sleepWindow)}
                       type="bedtime"
                       onCommit={(type, minutes) => onSleepAdjust(date, type, minutes)}
                     />
@@ -1403,7 +1418,7 @@ function SleepBands({ window, hourHeight = HOUR_HEIGHT }: { window: SleepWindow 
   // Daytime sleep (e.g. after a night shift): bedtime comes before wake time
   // on the clock, so it is ONE band between them — drawing the two
   // midnight-crossing bands here made them overlap into two shades of gray.
-  if (window.bedtime < window.wakeTime) {
+  if (isDaytimeSleep(window)) {
     return (
       <div
         className={`${bandClass} border-y`}
@@ -1413,7 +1428,7 @@ function SleepBands({ window, hourHeight = HOUR_HEIGHT }: { window: SleepWindow 
     );
   }
   const topHeight = (window.wakeTime / 60) * hourHeight;
-  const bottomHeight = ((24 * 60 - window.bedtime) / 60) * hourHeight;
+  const bottomHeight = ((24 * 60 - bedtimeDisplayMinutes(window)) / 60) * hourHeight;
   return (
     <>
       <div
@@ -1475,7 +1490,11 @@ function SleepBoundaryHandle({
     const scrollDelta = (scrollRef?.current?.scrollTop ?? 0) - startScrollTopRef.current;
     const deltaY = lastYRef.current - startYRef.current + scrollDelta;
     const deltaMinutes = (deltaY / hourHeight) * 60;
-    const next = Math.min(24 * 60 - 1, Math.max(0, startMinutesRef.current + deltaMinutes));
+    // Sengetid kan trækkes helt ned til 24:00 (gemmes som 00:00), men ikke op
+    // i nattetimerne, hvor den ville blive vist nederst igen.
+    const min = type === "bedtime" ? LATE_BEDTIME_CUTOFF_MINUTES : 0;
+    const max = type === "bedtime" ? 24 * 60 : 24 * 60 - 1;
+    const next = Math.min(max, Math.max(min, startMinutesRef.current + deltaMinutes));
     dragMinutesRef.current = next;
     setDragMinutes(next);
     onDrag?.(type, next);
@@ -1643,8 +1662,7 @@ function DayDetails({
   // stå-op-tid. Sover man om dagen (sengetid før stå-op-tid på samme dato),
   // er det i stedet dagens eget grå felt, der tælles.
   const nightStart =
-    liveSleepWindow.bedtime < liveSleepWindow.wakeTime ||
-    previousSleepWindow.bedtime < previousSleepWindow.wakeTime
+    isDaytimeSleep(liveSleepWindow) || isDaytimeSleep(previousSleepWindow)
       ? liveSleepWindow.bedtime
       : previousSleepWindow.bedtime;
   const nightSleepMinutes = (liveSleepWindow.wakeTime - nightStart + 1440) % 1440;
@@ -1908,7 +1926,7 @@ function DayDetails({
                   onDrag={handleSleepDrag}
                 />
                 <SleepBoundaryHandle
-                  minutes={sleepWindow.bedtime}
+                  minutes={bedtimeDisplayMinutes(sleepWindow)}
                   type="bedtime"
                   hourHeight={hourHeight}
                   scrollRef={timelineScrollRef}
@@ -1992,7 +2010,7 @@ function DayDetails({
           <div aria-hidden="true" />
           {remaining >= 0 ? (
             <p className="whitespace-nowrap text-right text-sm font-normal text-hf-black">
-              {t("calendar.remainingToday")}
+              {t("calendar.remainingToday", { amount: Math.round(remaining) })}
             </p>
           ) : (
             <p className="whitespace-nowrap text-right text-sm font-semibold text-hf-red-dark">

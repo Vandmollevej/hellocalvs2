@@ -192,6 +192,18 @@ Platform → Audience). Test derefter forbindelsen på iPhone.
   `src/components/icons/WaterGlass.tsx`) erstatter tabler-dråben overalt hvor
   det betyder vand. Fedt-statistikkerne beholder dråben.
 
+## 2026-09-26: Kalender-dagvisning — sengetid altid nederst + "Tilbage for i dag"
+
+- Sengetid 00:00-03:59 (før stå-op-tid) regnes nu som NAT-søvn, ikke dagsøvn.
+  Sengetids-håndtaget står derfor altid nederst (24:00) på dagens tidslinje —
+  før stod det øverst ved 00, og hele natten blev tegnet som ét dagsøvn-felt.
+  Stå-op-håndtaget er øverst, sengetid nederst, også på dage uden søvn endnu.
+- Sengetid kan trækkes ned til 24:00 (gemmes som 00:00), men ikke op i
+  nattetimerne før 04:00. Gælder også ugevisningen.
+- `calendar.remainingToday` tilføjet ("Tilbage for i dag: {amount} kcal") —
+  vistes før som rå nøgle.
+- Lint og build grønne. Ikke testet på telefon (ingen login/DB i cloud).
+
 ## 2026-09-25: Kalender-dagvisning — træk søvn-håndtag forbi kanten + "Nattens søvn"
 
 Lavet i en cloud-session på branch `claude/cloud-session-credits-expired-7504pf`, flettet i master.

@@ -478,6 +478,7 @@
     "closeAddAriaLabel": "Close add",
     "goalLabel": "Goal: {goal} kcal",
     "remainingCalories": "You have {remaining} calories left",
+    "remainingToday": "Left for today: {amount} kcal",
     "exceededCalories": "You're over by {amount} kcal",
     "adjustSleepAriaLabel": "Adjust night sleep",
     "hourRangeLabel": "{start}–{end}",
