@@ -2,6 +2,7 @@
 
 import { IconShieldLock } from "@tabler/icons-react";
 import { ActionLink } from "@/components/hf/ActionButton";
+import { OverlayCloseControl, OverlayDisableToggle, useDisableCountdown } from "@/components/hf/OverlayFrameControls";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import type { StartupTip, StartupTipIcon } from "@/lib/startup-tips";
 
@@ -11,7 +12,8 @@ const ICONS: Record<StartupTipIcon, typeof IconShieldLock> = {
 
 // The fixed standard for every start-up tip: "Luk" top right, icon + title +
 // text in the middle, an optional big button, and "Slå fra" bottom right
-// (turns start-up tips off entirely).
+// (plain text + switch; switching it off counts "Luk" down 3–1, then turns
+// start-up tips off entirely).
 export function StartupTipOverlay({
   tip,
   onClose,
@@ -23,6 +25,7 @@ export function StartupTipOverlay({
 }) {
   const { t } = useTranslation();
   const Icon = ICONS[tip.icon];
+  const disable = useDisableCountdown(onDisable);
 
   return (
     <div
@@ -32,9 +35,12 @@ export function StartupTipOverlay({
       aria-labelledby="startup-tip-title"
     >
       <div className="flex justify-end px-5 pt-9">
-        <button type="button" onClick={onClose} className="hf-type-body hf-type-strong py-2 text-hf-green">
-          {t("startupTips.close")}
-        </button>
+        <OverlayCloseControl
+          label={t("startupTips.close")}
+          counting={disable.counting}
+          secondsLeft={disable.secondsLeft}
+          onClose={onClose}
+        />
       </div>
 
       <div className="flex flex-1 flex-col items-center justify-center gap-5 px-6 text-center">
@@ -53,9 +59,7 @@ export function StartupTipOverlay({
       </div>
 
       <div className="flex justify-end px-5 pb-8">
-        <button type="button" onClick={onDisable} className="hf-type-body py-2 text-hf-black opacity-60">
-          {t("startupTips.disable")}
-        </button>
+        <OverlayDisableToggle label={t("startupTips.disable")} enabled={disable.enabled} onChange={disable.setEnabled} />
       </div>
     </div>
   );
