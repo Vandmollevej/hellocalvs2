@@ -49,7 +49,7 @@ export const WIDGET_DEFINITIONS: WidgetDefinition[] = [
     kind: "statChart",
     title: "Statistik-graf",
     description:
-      "Graf fra Statistik over 2 rækker. iPhone: én widget pr. graf, som stables og swipes i en Smart Stack. Android: swipe mellem graferne i samme widget.",
+      "Graf fra Statistik over 2 rækker. iPhone: én widget pr. graf, som stables og swipes i en Smart Stack. Android: swipe op/ned mellem graferne i samme widget.",
     ios: ["systemMedium"],
     android: { cols: 4, rows: 2, resizable: "horizontal" },
     tapPath: "/statistics",

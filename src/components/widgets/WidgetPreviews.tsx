@@ -217,11 +217,9 @@ function latestValue(chart: WidgetSnapshot["charts"][number]) {
 export function StatChartCard({
   chart,
   size,
-  platform,
 }: {
   chart: WidgetSnapshot["charts"][number];
   size: Size;
-  platform: WidgetPlatform;
 }) {
   return (
     <Link href={chart.path} className="flex h-full w-full shrink-0 snap-start flex-col p-3" style={{ width: size.width, height: size.height }}>
@@ -230,23 +228,27 @@ export function StatChartCard({
         <span className="hf-type-caption text-text-secondary">{latestValue(chart)}</span>
       </div>
       <div className="flex-1 pt-1">
-        <ChartBody chart={chart} width={size.width - 24} height={size.height - 24 - 18 - (platform === "android" ? 10 : 0)} />
+        <ChartBody chart={chart} width={size.width - 24} height={size.height - 24 - 18} />
       </div>
     </Link>
   );
 }
 
-/** Android: one widget, swipe sideways between the charts (dots show position). */
+/**
+ * Android: one widget, swipe up/down between the charts (a RemoteViews
+ * StackView — the only swipeable container Android widgets allow, and the
+ * same gesture as the iPhone Smart Stack).
+ */
 export function AndroidChartWidget({ snapshot }: { snapshot: WidgetSnapshot }) {
   const size = widgetSize("android", "systemMedium", { cols: 4, rows: 2 });
   return (
     <WidgetFrame platform="android" size={size}>
-      <div className="flex h-full snap-x snap-mandatory overflow-x-auto [scrollbar-width:none]">
+      <div className="h-full snap-y snap-mandatory overflow-y-auto [scrollbar-width:none]">
         {snapshot.charts.map((chart) => (
-          <StatChartCard key={chart.key} chart={chart} size={size} platform="android" />
+          <StatChartCard key={chart.key} chart={chart} size={size} />
         ))}
       </div>
-      <div className="pointer-events-none absolute inset-x-0 bottom-1 flex justify-center gap-1">
+      <div className="pointer-events-none absolute right-1.5 top-1/2 flex -translate-y-1/2 flex-col gap-1">
         {snapshot.charts.map((chart) => (
           <span key={chart.key} className="h-1.5 w-1.5 rounded-full bg-hf-gray" />
         ))}
@@ -262,7 +264,7 @@ export function IosChartStack({ snapshot }: { snapshot: WidgetSnapshot }) {
     <WidgetFrame platform="ios" size={size}>
       <div className="h-full snap-y snap-mandatory overflow-y-auto [scrollbar-width:none]">
         {snapshot.charts.map((chart) => (
-          <StatChartCard key={chart.key} chart={chart} size={size} platform="ios" />
+          <StatChartCard key={chart.key} chart={chart} size={size} />
         ))}
       </div>
       <div className="pointer-events-none absolute right-1.5 top-1/2 flex -translate-y-1/2 flex-col gap-1">

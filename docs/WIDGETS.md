@@ -1,6 +1,7 @@
 # Hjemmeskærm-widgets (iPhone + Android) — forberedelse
 
-Status: **design-fase**. Den native app findes ikke endnu (kræver Mac + Xcode
+Status: **design-fase + native kildekode skrevet** (`native/`, se `native/README.md`),
+ikke kompileret endnu. Den native app findes ikke endnu (kræver Mac + Xcode
 og Apple Developer-medlemskab, se `docs/DECISIONS.md` 2026-08-28 og
 2026-09-26). Det, der er klar nu:
 
@@ -19,7 +20,7 @@ widgets (SwiftUI/WidgetKit og Jetpack Glance) 1:1 efter forhåndsvisningen.
 | --- | --- | --- | --- | --- |
 | 1 | **Tilføj** — én knap med plus | lille (2×2) | 1×1 | `/add/menu` (listen over alt man kan tracke) |
 | 2 | **Hurtig-tilføj** — række af knapper (søg, kamera, vand, vægt …) | mellem (4×2), op til 4 knapper | 4×1, kan trækkes bredere (op til 5) | hver knap åbner sin egen side |
-| 3 | **Statistik-graf** — samme grafer som Statistik, 2 rækker høj | mellem; **én widget pr. graf**, som brugeren stabler i en Smart Stack og swiper op/ned | 4×2; **swipe til siden** mellem graferne i samme widget | `/statistics` |
+| 3 | **Statistik-graf** — samme grafer som Statistik, 2 rækker høj | mellem; **én widget pr. graf**, som brugeren stabler i en Smart Stack og swiper op/ned | 4×2; **swipe op/ned** mellem graferne i samme widget (Androids StackView — samme bevægelse som Smart Stack) | `/statistics` |
 | 4 | **Statistik-boks** — én boks, 2×2 | lille | 2×2 | `/statistics` |
 | 5 | Tryk på statistik åbner Statistik — swipe gør ikke | ✓ (swipe i Smart Stack er systemets egen) | ✓ (swipe skifter kun graf) | |
 | 6 | **Seneste registreringer** | mellem (3 rækker) eller stor (8 rækker) | 4×2, trækkes frit i højden; antal rækker følger højden | række → `/registration/[id]`, overskrift → `/calendar` |

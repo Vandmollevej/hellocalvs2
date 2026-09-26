@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_open_app_to_log_in">Åbn Hello Cal for at logge ind</string>
+    <string name="widget_quick_add_description">Én knap, der åbner listen over alt, du kan registrere.</string>
+    <string name="widget_add_row_description">Genvejsknapper — vælg selv hvilke.</string>
+    <string name="widget_chart_description">Grafer fra Statistik — swipe op/ned mellem dem.</string>
+    <string name="widget_stat_box_description">Én boks fra Statistik, fx kalorier tilbage.</string>
+    <string name="widget_recent_description">Dine seneste madregistreringer. Træk i højden for flere.</string>
+</resources>
