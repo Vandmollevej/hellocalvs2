@@ -9,6 +9,9 @@ Brugeren afviste "+ Tilføj" pr. accordion (tilføjede hele blokken på én gang
 nu "+ Tilføj" i øverste højre hjørne og tilføjes ét ad gangen; knappen på
 accordion-overskrifterne og `AccordionSection`s `action`-plads er fjernet.
 Se DECISIONS 2026-09-25 "Statistiksidens grafer kan redigeres som kortene".
+Lint grøn; `next build` kompilerer, men det lokale typetjek fejler kun i
+ret/opskrift-filerne (`tags`/`images`/`steps`), fordi den delte Prisma-klient
+i `node_modules` er genereret fra et ældre skema — ingen fejl i de ændrede filer.
 
 ## 2026-09-26: Billede-dagbog mistede billeder — gemmes nu i IndexedDB
 
