@@ -115,3 +115,13 @@ export function keySource(key: string): { source: KeySource; updatedAt: Date | n
   if (override) return { source: "admin", updatedAt: override.updatedAt, unreadable: false };
   return { source: process.env[key] ? "env" : "missing", updatedAt: null, unreadable: s.unreadable.has(key) };
 }
+
+// Samme kryptering til andre hemmeligheder, appen selv modtager fra en
+// udbyder (fx MobilePay's webhook-hemmelighed, src/lib/payments).
+export function encryptAppSecret(value: string) {
+  return encrypt(value);
+}
+
+export function decryptAppSecret(cipherText: string) {
+  return decrypt(cipherText);
+}

@@ -4,6 +4,7 @@ import { flushQueuedEmails } from "@/lib/mailer";
 import { flushQueuedPush } from "@/lib/push";
 import { backfillMissingProductNutritionFeatures } from "@/lib/product-nutrition-features";
 import { grantEligibleReferralRewards } from "@/lib/referrals";
+import { runMobilePayTick } from "@/lib/payments/mobilepay-subscription";
 
 // In-process baggrundsjob (docs/DECISIONS.md 2026-09-02): DB-drevet, kører i
 // selve Next.js-serverprocessen uanset hvor den hostes (Synology i dag,
@@ -80,6 +81,8 @@ export async function runSchedulerTick(now: Date = new Date()) {
   // Fiber-/sukker-/salt-/fuldkornsfelter for produkter uden dem endnu
   // (docs/DECISIONS.md 2026-09-23) — 500 pr. tick, ingen OCR/AI-kald.
   await backfillMissingProductNutritionFeatures();
+  // MobilePay: synk aftaler/træk og opret fornyelsestræk (docs/DECISIONS.md 2026-09-26).
+  await runMobilePayTick(now).catch((error) => console.error("[scheduler] MobilePay fejlede", error));
 }
 
 export function startScheduler() {
