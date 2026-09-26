@@ -2,6 +2,22 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-26: Oplevelse af søvn
+
+- Ny række under Indstillinger → Visning: "Oplevelse af søvn"
+  (`/settings/display/sleep-quality`). `User.sleepQualityPromptEnabled`,
+  slået TIL som standard (bevidst undtagelse fra "vis aldrig som standard").
+- Første app-åbning hver dag (logget ind, samtykke givet, ingen vurdering
+  for i dag) viser et cremefarvet fuldskærms-overlay: "Hvordan oplever du at
+  din nat har været?" med store, understregede 1–5. Tryk → animeret cirkel →
+  overlayet lukker. "Luk" øverst til højre, "Slå fra" nederst til højre,
+  info-ikon nederst til venstre med forklaring i gråt felt.
+  "Vist i dag" huskes pr. enhed (localStorage), så lukning ikke spørger igen.
+- Én vurdering pr. dato (datoen man vågnede) i `SleepQualityEntry`
+  (`/api/sleep-quality`). Vises som sort bjælke med hvid tekst øverst i
+  kalenderens dagvisning, og som graf "Søvnkvalitet og kalorier" øverst på
+  Statistik. Senere: sammenhæng med kalorieindtag/kostomlægning.
+
 ## 2026-09-26: Kropsmål med brugerens tegninger + halsmål
 
 Kropsmål vises som ét kort pr. mål (Statistik-kortenes stil): brugerens egne

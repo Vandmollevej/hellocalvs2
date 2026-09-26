@@ -8,6 +8,7 @@ import { GlobalClipboardGuard } from "@/components/GlobalClipboardGuard";
 import { AuthGate } from "@/components/AuthGate";
 import { ConsentGate } from "@/components/ConsentGate";
 import { StartupTipsGate } from "@/components/StartupTipsGate";
+import { SleepQualityGate } from "@/components/SleepQualityGate";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -56,6 +57,7 @@ export default function RootLayout({
           <AuthGate />
           <ConsentGate />
           <StartupTipsGate />
+          <SleepQualityGate />
           <OfflineQueueBanner />
           <PhoneFrame>{children}</PhoneFrame>
         </LocaleProvider>

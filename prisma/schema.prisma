@@ -160,6 +160,11 @@ model User {
   averageCycleLengthDays  Int     @default(28)
   averagePeriodLengthDays Int     @default(5)
 
+  // "Oplevelse af søvn" (docs/DECISIONS.md 2026-09-26): Indstillinger →
+  // Visning. Slået til som standard — dagens første app-åbning viser et
+  // overlay, hvor nattens søvn vurderes 1–5 (SleepQualityEntry).
+  sleepQualityPromptEnabled Boolean @default(true)
+
   registrations           Registration[]
   favorites               Favorite[]
   dishes                  Dish[]
@@ -169,6 +174,7 @@ model User {
   waterEntries            WaterEntry[]
   menstrualCycleEntries   MenstrualCycleEntry[]
   sleepSchedules          SleepSchedule[]
+  sleepQualityEntries     SleepQualityEntry[]
   workShifts              WorkShift[]
   integrations            Integration[]
   activities              Activity[]
@@ -501,6 +507,22 @@ model SleepSchedule {
 
   @@unique([userId, weekday])
   @@map("sleep_schedules")
+}
+
+// Oplevet søvnkvalitet (docs/DECISIONS.md 2026-09-26): én vurdering 1–5 pr.
+// dag (datoen man vågnede), fra dagens første app-åbning. Vises øverst i
+// kalenderens dagvisning og sammen med kalorieindtaget på Statistik.
+model SleepQualityEntry {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  date      DateTime @db.Date
+  rating    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, date])
+  @@map("sleep_quality_entries")
 }
 
 // Work days/hours logged directly in the calendar (e.g. shift work/

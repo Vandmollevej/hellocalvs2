@@ -36,10 +36,10 @@ const CHART_BOTTOM = 75;
 const CHART_CENTER = (CHART_TOP + CHART_BOTTOM) / 2;
 const CHART_HALF_RANGE = CHART_BOTTOM - CHART_CENTER;
 
-function loadEnabledKeys(defaultKeys: string[]): string[] {
+function loadEnabledKeys(storageKey: string, defaultKeys: string[]): string[] {
   if (typeof window === "undefined") return defaultKeys;
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+    const raw = window.localStorage.getItem(storageKey);
     if (!raw) return defaultKeys;
     const parsed = JSON.parse(raw);
     if (Array.isArray(parsed)) return parsed;
@@ -97,13 +97,16 @@ export function StatChart({
   title,
   series,
   defaultEnabledKeys,
+  storageKey = STORAGE_KEY,
 }: {
   title: string;
   series: ChartSeries[];
   defaultEnabledKeys: string[];
+  /** localStorage key for the chosen series — each chart needs its own. */
+  storageKey?: string;
 }) {
   const { t } = useTranslation();
-  const [enabledKeys, setEnabledKeys] = useState<string[]>(() => loadEnabledKeys(defaultEnabledKeys));
+  const [enabledKeys, setEnabledKeys] = useState<string[]>(() => loadEnabledKeys(storageKey, defaultEnabledKeys));
   const [menuOpen, setMenuOpen] = useState(false);
   const isFirstRender = useRef(true);
 
@@ -113,11 +116,11 @@ export function StatChart({
       return;
     }
     try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(enabledKeys));
+      window.localStorage.setItem(storageKey, JSON.stringify(enabledKeys));
     } catch {
       // localStorage unavailable (private browsing etc.) — ignore.
     }
-  }, [enabledKeys]);
+  }, [enabledKeys, storageKey]);
 
   function toggleSeries(key: string) {
     setEnabledKeys((current) =>

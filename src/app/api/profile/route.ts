@@ -29,6 +29,7 @@ export async function PATCH(req: Request) {
     birthDate,
     sex,
     cycleTrackingEnabled,
+    sleepQualityPromptEnabled,
     averageCycleLengthDays,
     averagePeriodLengthDays,
     defaultBedtime,
@@ -59,6 +60,7 @@ export async function PATCH(req: Request) {
     birthDate?: string | null;
     sex?: "FEMALE" | "MALE" | null;
     cycleTrackingEnabled?: boolean;
+    sleepQualityPromptEnabled?: boolean;
     averageCycleLengthDays?: number;
     averagePeriodLengthDays?: number;
     defaultBedtime?: string | null;
@@ -118,6 +120,7 @@ export async function PATCH(req: Request) {
           birthDate === undefined ? undefined : birthDate === null ? null : new Date(birthDate),
         sex,
         cycleTrackingEnabled,
+        sleepQualityPromptEnabled,
         averageCycleLengthDays,
         averagePeriodLengthDays,
         defaultBedtime,

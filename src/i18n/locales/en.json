@@ -259,6 +259,7 @@
     "frontPage": "Front page",
     "recommendedLimits": "Recommended limits",
     "menstrualCycle": "Menstrual cycle",
+    "sleepQuality": "Sleep experience",
     "calendarView": "Calendar view",
     "displayHelpTip": "Here you decide how the front page, the calendar and warnings look on this device.",
     "showTooltips": "Show tooltips",
@@ -286,6 +287,19 @@
     "title": "Recommended limits",
     "warnOnRecommendedLimits": "Highlight values above/below the recommended normal range",
     "warnOnRecommendedLimitsDescription": "Shows a 1 px dark-red border around statistic cards when a documented recommendation for your region and profile is exceeded. Missing data is never flagged."
+  },
+  "sleepQualitySettings": {
+    "toggleLabel": "Ask about last night's sleep",
+    "toggleDescription": "The first time you open the app each day, you are asked to rate last night's sleep from 1 to 5. The rating is shown on the day in the calendar and in the statistics."
+  },
+  "sleepQuality": {
+    "question": "How do you feel your night was?",
+    "close": "Close",
+    "disable": "Turn off",
+    "ratingAriaLabel": "Rate last night's sleep {rating} out of 5",
+    "infoAriaLabel": "What is this used for?",
+    "info": "Rate how you slept last night — 1 is very poor and 5 is really good. Once enough data has been collected, you can see your sleep quality compared with your calorie intake and any changes to your diet. You can turn the question off under Settings → Sleep experience.",
+    "calendarBar": "Sleep quality: {rating} of 5"
   },
   "menstrualCycleSettings": {
     "intro": "Log your menstrual cycle and get it as an option in the add menu.",
@@ -1201,7 +1215,9 @@
     "calories": "Calories",
     "weight": "Weight",
     "trendWeight": "Trend weight (AI estimate)",
-    "caloriesAndWeightChart": "Calories and weight"
+    "caloriesAndWeightChart": "Calories and weight",
+    "sleepQuality": "Sleep quality",
+    "sleepQualityChart": "Sleep quality and calories"
   },
   "statUnusedCards": {
     "title": "Unused stat cards",

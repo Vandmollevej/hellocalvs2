@@ -259,6 +259,7 @@
     "frontPage": "Forside",
     "recommendedLimits": "Anbefalede grænser",
     "menstrualCycle": "Menstruationscyklus",
+    "sleepQuality": "Oplevelse af søvn",
     "calendarView": "Kalendervisning",
     "displayHelpTip": "Her bestemmer du, hvordan forsiden, kalenderen og advarsler ser ud på denne enhed.",
     "showTooltips": "Vis tooltips",
@@ -286,6 +287,19 @@
     "title": "Anbefalede grænser",
     "warnOnRecommendedLimits": "Gør opmærksom på grænseværdier over/under anbefalet normal",
     "warnOnRecommendedLimitsDescription": "Viser en 1 px mørkerød kant omkring statistikbokse, når en dokumenteret anbefalet grænse for din region og profil er overskredet. Manglende data markeres ikke."
+  },
+  "sleepQualitySettings": {
+    "toggleLabel": "Spørg om nattens søvn",
+    "toggleDescription": "Første gang du åbner appen hver dag, bliver du bedt om at vurdere nattens søvn fra 1 til 5. Vurderingen vises på dagen i kalenderen og i statistikken."
+  },
+  "sleepQuality": {
+    "question": "Hvordan oplever du at din nat har været?",
+    "close": "Luk",
+    "disable": "Slå fra",
+    "ratingAriaLabel": "Vurdér nattens søvn til {rating} af 5",
+    "infoAriaLabel": "Hvad bruges det til?",
+    "info": "Vurdér hvordan du har sovet i nat — 1 er meget dårligt og 5 er rigtig godt. Når der er samlet nok data, kan du se din søvnkvalitet i forhold til dit kalorieindtag og eventuelle ændringer i din kost. Du kan slå spørgsmålet fra under Indstillinger → Oplevelse af søvn.",
+    "calendarBar": "Søvnkvalitet: {rating} af 5"
   },
   "menstrualCycleSettings": {
     "intro": "Log din menstruationscyklus og få den som en mulighed i tilføj-menuen.",
@@ -1201,7 +1215,9 @@
     "calories": "Kalorier",
     "weight": "Vægt",
     "trendWeight": "Trendvægt (AI-estimat)",
-    "caloriesAndWeightChart": "Kalorier og vægt"
+    "caloriesAndWeightChart": "Kalorier og vægt",
+    "sleepQuality": "Søvnkvalitet",
+    "sleepQualityChart": "Søvnkvalitet og kalorier"
   },
   "statUnusedCards": {
     "title": "Ubrugte statistik-kort",

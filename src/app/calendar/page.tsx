@@ -39,6 +39,7 @@ import { computeAge } from "@/lib/age";
 import { getSportMeta } from "@/lib/sport-icons";
 import { useDefaultCalendarView } from "@/lib/calendar-view-pref";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { fetchSleepQuality, localDateKey } from "@/lib/sleep-quality";
 
 const WEEKDAY_KEYS = [
   "calendar.weekdayMon",
@@ -1463,6 +1464,21 @@ function DayDetails({
   const mouseDrag = useRef<{ y: number; scrollTop: number } | null>(null);
   const timelineScrollRef = useRef<HTMLDivElement | null>(null);
   const [sleepDrag, setSleepDrag] = useState<{ type: SleepAdjustType; minutes: number } | null>(null);
+  // Oplevelse af søvn (docs/DECISIONS.md 2026-09-26): the day's 1–5 rating,
+  // shown as a black bar at the top. DayDetails is keyed by date, so this
+  // runs once per day shown.
+  const [sleepRating, setSleepRating] = useState<number | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    fetchSleepQuality(localDateKey(date))
+      .then((entries) => {
+        if (!cancelled) setSleepRating(entries[0]?.rating ?? null);
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [date]);
   const liveSleepWindow: SleepWindow = sleepDrag
     ? sleepDrag.type === "wake"
       ? { ...sleepWindow, wakeTime: sleepDrag.minutes }
@@ -1634,6 +1650,13 @@ function DayDetails({
           <IconChevronRight size={22} />
         </button>
       </div>
+      {sleepRating !== null && (
+        <div className="px-4 pt-4">
+          <p className="hf-type-body hf-type-strong rounded-lg bg-hf-black px-4 py-2 text-center text-hf-white">
+            {t("sleepQuality.calendarBar", { rating: sleepRating })}
+          </p>
+        </div>
+      )}
       <div
         className="flex-1 overflow-y-auto p-4 touch-pan-y"
         onPointerDown={(event) => {

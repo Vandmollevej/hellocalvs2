@@ -2,6 +2,15 @@
 
 Last updated: 2026-09-26
 
+## 2026-09-26: Oplevelse af søvn
+
+Dagligt søvn-overlay (1–5), indstilling under Visning, sort bjælke i
+kalenderens dagvisning og graf "Søvnkvalitet og kalorier" på Statistik. Se
+DECISIONS 2026-09-26. Kræver migration `20260926130000_sleep_quality` ved
+deploy. Ikke visuelt testet (brugeren tjekker selv).
+
+Last updated: 2026-09-26
+
 ## 2026-09-26: Statistik — kort flyttes rigtigt (intet spøgelse)
 
 `src/components/StatCardsGrid.tsx`: det løftede kort (med stiplet ramme og

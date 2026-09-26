@@ -16,6 +16,7 @@ import {
   IconCalendarWeek,
   IconAlertTriangle,
   IconLifebuoy,
+  IconMoon,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -176,6 +177,12 @@ export default function SettingsPage() {
               icon={<IconCalendarWeek size={20} />}
               label={t("settings.calendarView")}
               href="/settings/display/calendar-view"
+              divider
+            />
+            <ChevronRow
+              icon={<IconMoon size={20} />}
+              label={t("settings.sleepQuality")}
+              href="/settings/display/sleep-quality"
               divider={isFemale}
             />
             {isFemale && (
