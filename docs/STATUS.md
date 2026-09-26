@@ -2,6 +2,16 @@
 
 Last updated: 2026-09-26
 
+## 2026-09-26: Statistik — kort flyttes rigtigt (intet spøgelse)
+
+`src/components/StatCardsGrid.tsx`: det løftede kort (med stiplet ramme og
+kryds) følger fingeren; der efterlades ingen gennemsigtig kopi. Gitteret viser
+løbende resultatet (landingsfelt markeret, kortet der byttes med står allerede
+på den gamle plads). Ved slip glider kortet kun fra fingeren ind på pladsen —
+ingen efter-animation fra den gamle plads. Samme for overskrifter/skillelinjer.
+Reflow-animationen måles nu lige før DOM-ændringen (scroll-uafhængig).
+Kun lint/build — ikke visuelt testet (brugerens regel 2026-09-26).
+
 ## 2026-09-26: Ubrugte kort/grafer — "+ Tilføj" på hvert kort, ikke på blokken
 
 Brugeren afviste "+ Tilføj" pr. accordion (tilføjede hele blokken på én gang).
