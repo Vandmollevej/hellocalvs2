@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import {
   IconHelp,
   IconFileText,
@@ -77,6 +76,10 @@ export default function SettingsPage() {
       )}
 
       <div className="flex flex-col gap-8 p-4">
+        <AccordionCard>
+          <ChevronRow icon={<IconWorld size={20} />} label={t("settings.languageAndRegion")} divider={false} />
+        </AccordionCard>
+
         <AccordionCard>
           <ChevronRow
             icon={<IconCreditCard size={20} />}
@@ -186,22 +189,6 @@ export default function SettingsPage() {
           <ChevronRow icon={<IconFileText size={20} />} label={t("settings.privacyPolicy")} href="/privatlivspolitik" />
           <ChevronRow icon={<IconFileText size={20} />} label={t("settings.dataTracking")} divider={false} />
         </AccordionCard>
-
-        <AccordionCard>
-          <ChevronRow icon={<IconWorld size={20} />} label={t("settings.chooseCountry")} divider={false} />
-        </AccordionCard>
-
-        <Link
-          href="/profile/invite"
-          className="block rounded-[8px] bg-hf-green p-4 text-left text-hf-white"
-        >
-          <p className="hf-type-body-sm font-bold" style={{ color: "var(--hf-color-white)" }}>
-            {t("settings.inviteFriend")}
-          </p>
-          <p className="hf-type-caption mt-0.5 opacity-90" style={{ color: "var(--hf-color-white)" }}>
-            {t("settings.invitePointsDescription")}
-          </p>
-        </Link>
       </div>
     </HfScreen>
   );
