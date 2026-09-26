@@ -2,11 +2,29 @@
 // Env: STRAVA_CLIENT_ID/STRAVA_CLIENT_SECRET.
 
 import type { IntegrationItem } from "@/lib/integrations/store-items";
+import { getSportMeta } from "@/lib/sport-icons";
 import { clientCredentials, getJson, postForm, type OAuthProviderAdapter, type OAuthTokens } from "./types";
 
 const AUTHORIZE_URL = "https://www.strava.com/oauth/authorize";
 const TOKEN_URL = "https://www.strava.com/oauth/token";
 const API = "https://www.strava.com/api/v3";
+// Hello Cal-sportstyper (src/lib/sport-icons.ts) → Stravas sport_type.
+const STRAVA_SPORT: Record<string, string> = {
+  running: "Run",
+  cycling: "Ride",
+  walking: "Walk",
+  swimming: "Swim",
+  ski: "NordicSki",
+  strength: "WeightTraining",
+  yoga: "Yoga",
+  football: "Soccer",
+  cardio: "Workout",
+};
+// Strava vil have lokal tid uden zone; Hello Cal er en dansk app.
+const localTime = (iso: string) =>
+  new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Copenhagen", dateStyle: "short", timeStyle: "medium" })
+    .format(new Date(iso))
+    .replace(" ", "T");
 // Strava tillader 100 kald pr. 15 min; detaljeopslag for kalorier begrænses.
 const MAX_DETAIL_LOOKUPS = 20;
 
@@ -30,13 +48,13 @@ export const strava: OAuthProviderAdapter = {
   label: "Strava",
   envPrefix: "STRAVA",
   initialDays: 90,
-  buildAuthorizeUrl(state, redirectUri) {
+  buildAuthorizeUrl(state, redirectUri, settings) {
     const url = new URL(AUTHORIZE_URL);
     url.searchParams.set("client_id", clientCredentials("STRAVA").clientId);
     url.searchParams.set("redirect_uri", redirectUri);
     url.searchParams.set("response_type", "code");
     url.searchParams.set("approval_prompt", "auto");
-    url.searchParams.set("scope", "activity:read_all");
+    url.searchParams.set("scope", settings.write.activities ? "activity:read_all,activity:write" : "activity:read_all");
     url.searchParams.set("state", state);
     return url.toString();
   },
@@ -83,5 +101,27 @@ export const strava: OAuthProviderAdapter = {
       });
     }
     return items;
+  },
+  writeScopes: { activities: "activity:write" },
+  // Træning, brugeren har registreret i Hello Cal, oprettes som manuelle
+  // aktiviteter i Strava (POST /activities).
+  async push(accessToken, data) {
+    let sent = 0;
+    for (const a of data.activities) {
+      const response = await fetch(`${API}/activities`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          name: `${getSportMeta(a.sportType).label} (Hello Cal)`,
+          sport_type: STRAVA_SPORT[a.sportType] ?? "Workout",
+          start_date_local: localTime(a.startedAt),
+          elapsed_time: String(Math.max(60, a.durationMinutes * 60)),
+          description: `${a.caloriesBurned} kcal · registreret i Hello Cal`,
+        }),
+      });
+      if (!response.ok) throw new Error(`Strava aktivitets-oprettelse fejlede (${response.status}): ${(await response.text()).slice(0, 300)}`);
+      sent++;
+    }
+    return sent;
   },
 };

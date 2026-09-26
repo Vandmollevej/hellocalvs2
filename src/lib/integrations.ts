@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import type { Integration, IntegrationProvider } from "@prisma/client";
 import { adapterByProvider, isConfigured } from "@/lib/integrations/registry";
+import { capabilitiesFor, missingWriteScopes, resolveSyncSettings, type ProviderSyncCapabilities, type SyncSettings, type WriteType } from "@/lib/integrations/sync-settings";
 
 // Katalog over integrationerne på siden Integrationer (docs/DECISIONS.md
 // 2026-09-24). Alle data forsegles til brugerens boks (docs/PRIVACY.md).
@@ -111,8 +112,24 @@ export const INTEGRATION_CATALOG: IntegrationMeta[] = [
   },
 ];
 
+// Adresse-segment for integrationens egen side, fx APPLE_HEALTH → "apple-health".
+export function integrationSlug(provider: IntegrationProvider) {
+  return provider.toLowerCase().replace(/_/g, "-");
+}
+
+export function metaBySlug(slug: string) {
+  return INTEGRATION_CATALOG.find((meta) => integrationSlug(meta.provider) === slug) ?? null;
+}
+
 export type IntegrationCardStatus = IntegrationMeta & {
+  // Slug til OAuth-ruterne (kun "oauth"); pageSlug til integrationens side.
   slug: string | null;
+  pageSlug: string;
+  capabilities: ProviderSyncCapabilities;
+  settings: SyncSettings;
+  // Skrivetyper, der er slået til, men kræver at brugeren forbinder igen.
+  needsReconnect: WriteType[];
+  lastPushedAt: string | null;
   // Om serverens nøgler til integrationen er sat (kun "oauth").
   configured: boolean;
   status: "DISCONNECTED" | "CONNECTED" | "ERROR";
@@ -132,6 +149,12 @@ export async function listIntegrationStatuses(userId: string): Promise<Integrati
       return {
         ...meta,
         slug: adapter?.slug ?? null,
+        pageSlug: integrationSlug(meta.provider),
+        capabilities: capabilitiesFor(meta.provider),
+        settings: resolveSyncSettings(meta.provider, row?.syncSettings),
+        needsReconnect:
+          adapter && row?.status && row.status !== "DISCONNECTED" ? missingWriteScopes(meta.provider, adapter.writeScopes, row.syncSettings, row.scope) : [],
+        lastPushedAt: row?.lastPushedAt?.toISOString() ?? null,
         configured: adapter ? isConfigured(adapter) : false,
         status: row?.status ?? "DISCONNECTED",
         connectedAt: row?.connectedAt?.toISOString() ?? null,

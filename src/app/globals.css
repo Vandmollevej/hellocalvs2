@@ -965,3 +965,35 @@ textarea::selection,
     stroke-dashoffset: -35;
   }
 }
+
+/* Face ID-ikonet på profilen: når Face ID ikke er slået til, laver det med
+   mellemrum Face ID's egen scanne-bevægelse (hjørnerne trækker sig sammen,
+   ansigtet kigger fra side til side). */
+.hf-faceid-frame,
+.hf-faceid-face {
+  transform-box: view-box;
+  transform-origin: 600px 600px;
+}
+.hf-faceid--animate .hf-faceid-frame {
+  animation: hf-faceid-frame 5s ease-in-out infinite;
+}
+.hf-faceid--animate .hf-faceid-face {
+  animation: hf-faceid-face 5s ease-in-out infinite;
+}
+@keyframes hf-faceid-frame {
+  0%, 60%, 100% { transform: scale(1); }
+  70% { transform: scale(0.86); }
+  85% { transform: scale(0.86); }
+}
+@keyframes hf-faceid-face {
+  0%, 60%, 100% { transform: translateX(0) scale(1); opacity: 1; }
+  66% { transform: translateX(-70px) scale(0.86); opacity: 0.6; }
+  74% { transform: translateX(70px) scale(0.86); opacity: 0.6; }
+  82% { transform: translateX(0) scale(0.86); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hf-faceid--animate .hf-faceid-frame,
+  .hf-faceid--animate .hf-faceid-face {
+    animation: none;
+  }
+}

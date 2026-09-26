@@ -132,6 +132,7 @@ Ejer: G8-sessionen, konto C (overtaget 2026-09-24)
 | 8d98b548 | Withings + Google Health koblet på, egen data-sync | Venter på bruger | Nøglerne ligger på serveren. 2026-09-26 (session d83284ca, med brugerens OK): 0.0.0.0-redirects i `handlers.ts` rettet. Brugeren tilføjer redirect-URI + testbruger i Google Cloud (se STATUS "Integrationssiden"). HelloFresh-trin-rettelsen i samme transcript hører til G6 |
 | d0442775 | Waldemarsro (DK-only) + scraper | Venter på bruger | Scraper + kalorie-matcher færdige og gemt i scripts/valdemarsro-import (157cff9); brugeren kører scraperen selv (output i Productdatabase/Valdemarsro). IKKE bygget: import til appen + Valdemarsro-kort/toggle på Integrationer (krav i STATUS, ea7843a) — byg når brugeren siger til |
 | 5c45b0d7 | Opskrift-scrapere som Valdemarsro: Arla, Coop, REMA 1000, MENY, Hjerteforeningen, TV2 (+ Børnevenlig og måltidstype) | I gang | Bygges i scripts/recipe-sites-import (fælles motor + ét script pr. side). Brugeren kører selv scraperne i VS Code |
+| 300489b5 | Push til Health/integrationer + egen side pr. app med til/fra (hent/send) ved tilkobling og bagefter | Færdig (kode) | Mangler deploy + migration 20260926190000, skriveadgang i Google Cloud-klienten og Strava-appen, native app til Apple Health/Health Connect |
 
 ## G9 — Ikoner (forside + vand)
 Filer: forsidens grydeikon, Vand-siden, `public/` assets.

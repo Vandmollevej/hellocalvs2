@@ -108,7 +108,17 @@ export default function PrivatlivspolitikPage() {
           </p>
         </Section>
 
-        <Section title="8. Statistik">
+        <Section id="datasporing" title="8. Datasporing, cookies og statistik">
+          <p>
+            Hello Cal bruger kun cookies og lokal lagring, der er nødvendige for, at Tjenesten virker:
+            at holde dig logget ind, genkende din enhed ved sikkerhedsadvarsler og beskytte login mod
+            misbrug. Derfor beder vi dig ikke om at klikke &quot;accepter alle&quot;. Der er intet at
+            acceptere.
+          </p>
+          <LegalPromise>
+            Ingen reklamecookies, ingen sporingspixels, ingen tredjeparts-analyseværktøjer og ingen
+            sporing af dig på tværs af apps og hjemmesider.
+          </LegalPromise>
           <p>
             Vi laver samlet statistik om brugen af Hello Cal for at forbedre Tjenesten. Statistikken
             viser kun grupper, aldrig enkeltpersoner, og vi sælger eller udgiver den ikke som

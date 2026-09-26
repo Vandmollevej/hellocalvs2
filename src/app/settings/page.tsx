@@ -154,7 +154,12 @@ export default function SettingsPage() {
         </AccordionCard>
 
         <AccordionCard>
-          <ChevronRow icon={<IconHelp size={20} />} label={t("settings.helpCenter")} />
+          {/* Statisk hjælpeside i public/ — fuld sideindlæsning, ikke en app-route. */}
+          <ChevronRow
+            icon={<IconHelp size={20} />}
+            label={t("settings.helpCenter")}
+            onClick={() => window.location.assign("/hjaelp.html")}
+          />
           <ChevronRow
             icon={<IconRefresh size={20} />}
             label={t("settings.learnTheApp")}
@@ -272,7 +277,7 @@ export default function SettingsPage() {
         <AccordionCard>
           <ChevronRow icon={<IconFileText size={20} />} label={t("settings.terms")} href="/betingelser" />
           <ChevronRow icon={<IconFileText size={20} />} label={t("settings.privacyPolicy")} href="/privatlivspolitik" />
-          <ChevronRow icon={<IconFileText size={20} />} label={t("settings.dataTracking")} divider={false} />
+          <ChevronRow icon={<IconFileText size={20} />} label={t("settings.dataTracking")} href="/privatlivspolitik#datasporing" divider={false} />
         </AccordionCard>
 
         <button

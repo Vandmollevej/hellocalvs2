@@ -2426,3 +2426,43 @@ Billeder vises i en vandret karrusel (ikke grid, ikke 1:1), ældste til venstre 
 - To vippekontakter under Visning: "Vis tooltips" (små hjælpetekster via `HelpTip`, `src/components/hf/HelpTip.tsx`) og "Vis start-up tips". Begge er slået til som standard og gemmes pr. enhed i localStorage (`src/lib/help-prefs.ts`), samme mønster som Kalendervisning.
 - Start-up tips er 1-sides overlays med én fast standard (`StartupTipOverlay`): "Luk" øverst til højre, ikon + titel + tekst, evt. én stor knap, og "Slå fra" nederst til højre (slår alle start-up tips fra). Højst ét tip pr. besøg, kun for indloggede brugere med samtykke, aldrig på login-, samtykke-, juridiske eller admin-sider (`StartupTipsGate` i root layout).
 - Tips står i `STARTUP_TIPS` (`src/lib/startup-tips.ts`) og vises i rækkefølge. Et tip er færdigt, når det lukkes, eller når funktionen bruges (`markStartupTipSeen(id)` kaldes fra funktionens egen kode). Første tip er altid "Dine data er dine" med "Læs mere" til `/privatlivspolitik`.
+
+## 2026-09-26: Integrationer — egen side pr. app, til/fra pr. datatype, og push
+
+Brugerens krav: appen skal også kunne *sende* data til Health og de øvrige
+integrationer, og brugeren skal kunne vælge til/fra, hvad der synkroniseres —
+både når integrationen slås til og bagefter.
+- Hver app har sin egen side `/settings/integrations/<app>` (fx
+  `apple-health`, `google-health`, `strava`). Oversigten er nu kun kort, der
+  linker dertil. Siden har to grupper kontakter: "Hent til Hello Cal" og
+  "Send fra Hello Cal til <app>". Valget gemmes med det samme
+  (`PUT /api/integrations/<app>/settings`) på `Integration.syncSettings`
+  (migration `20260926190000_integration_sync_settings`). Alt, appen kan, er
+  slået til, indtil brugeren slår det fra.
+- Valget kan træffes før "Forbind": OAuth beder kun om skriveadgang til de
+  typer, der er slået til. Slår man senere en skrivetype til, som adgangen
+  ikke dækker, viser siden "Forbind igen".
+- Hvad hver app kan (`src/lib/integrations/sync-settings.ts`):
+  Apple Health/Health Connect henter vægt, fedt%, træning, skridt, kalorier,
+  puls, søvn, vand, højde/BMI og modtager måltider, vand, vægt og træning.
+  Google Health henter vægt/træning/skridt og modtager måltider
+  (nutrition-log), vand (hydration-log) og vægt. Strava henter og modtager
+  træning. Withings, Polar og Fitbit tager ikke imod data (kun hent).
+  Samsung Health går via Health Connect.
+- Kun data, brugeren selv har lavet i Hello Cal, sendes (registreringer,
+  vand, manuelle vejninger, manuel træning) — aldrig data hentet fra en
+  integration, så intet sendes i ring. Kun data lavet efter tilkoblingen.
+  Rettelser/sletninger i Hello Cal sendes ikke videre.
+- Cloud-integrationerne synkroniseres (hent + send) automatisk hvert 15.
+  minut i scheduleren, ikke kun når siden åbnes.
+- Apple Health/Health Connect skrives af Hello Cal-appen på telefonen:
+  `GET /api/integrations/healthkit/export` giver brugerens valg og de data,
+  der skal skrives; ingest filtrerer efter valget
+  (docs/HEALTHKIT_COMPANION.md). Den native app er stadig ikke bygget.
+
+## 2026-09-26: Integrationer: start-vægt og målingstidspunkt
+
+- Vejninger fra Withings, Google Health, Fitbit, Apple Health/Health Connect tilføjes altid som nye vejninger med målingens eget tidspunkt (`weighedAt`), aldrig synkroniseringstidspunktet. "Aktuel vægt" er dermed seneste vejning (SPECIFICATION §4).
+- Start-vægten (`User.weightKg`) overskrives aldrig af en integration; er den tom, bliver den ældste synkroniserede vejning start-vægt.
+- Samme vejning (±2 min, ±0,05 kg) eller træning (samme sport, ±5 min) fra to kilder gemmes kun én gang.
+- Sportstyper normaliseres til Statistik-nøglerne (`normalizeSportType` i `src/lib/sport-icons.ts`); dagssummer (fx skridt) opdateres ved næste synkronisering. Kode: `src/lib/integrations/store-items.ts`.

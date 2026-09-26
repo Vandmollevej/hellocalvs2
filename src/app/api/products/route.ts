@@ -113,29 +113,33 @@ export async function GET(req: Request) {
       prisma.product.findMany({
         where: {
           discontinued: false,
-          // Admin "Uncertainties" (docs/DECISIONS.md 2026-09-25): et produkt,
-          // hvor AI'en var under 50 % sikker på en aflæsning, skjules i
-          // søgningen, indtil en admin har gennemgået den.
+          // Egne private ingredienser vises kun for ejeren (via /api/private-ingredients).
+          privateOwnerId: null,
+          // Tekstfilter og kildefilter er begge OR-betingelser, så de skal
+          // ligge under AND — ellers overskriver den ene nøgle den anden.
           AND: [
+            // Admin "Uncertainties" (docs/DECISIONS.md 2026-09-25): et produkt,
+            // hvor AI'en var under 50 % sikker på en aflæsning, skjules i
+            // søgningen, indtil en admin har gennemgået den.
             {
               NOT: {
                 aiAnalyses: { some: { reviewedAt: null, confidence: { lt: HIDE_FROM_SEARCH_BELOW } } },
               },
             },
+            ...(q
+              ? [
+                  {
+                    OR: [
+                      { name: { contains: q, mode: "insensitive" } },
+                      { brand: { name: { contains: q, mode: "insensitive" } } },
+                    ],
+                  } satisfies Prisma.ProductWhereInput,
+                ]
+              : []),
+            source
+              ? { externalSource: source }
+              : { OR: [{ externalSource: null }, { externalSource: { not: "HELLOFRESH" } }] },
           ],
-          // Egne private ingredienser vises kun for ejeren (via /api/private-ingredients).
-          privateOwnerId: null,
-          ...(q
-            ? {
-                OR: [
-                  { name: { contains: q, mode: "insensitive" } },
-                  { brand: { name: { contains: q, mode: "insensitive" } } },
-                ],
-              }
-            : {}),
-          ...(source
-            ? { externalSource: source }
-            : { OR: [{ externalSource: null }, { externalSource: { not: "HELLOFRESH" } }] }),
         },
         include: {
           // Altid samme include-form (ikke betinget på q/source), så Prisma's

@@ -565,6 +565,11 @@ model Integration {
   connectedAt  DateTime?
   lastSyncedAt DateTime?
   lastError    String?
+  // 2026-09-26: brugerens til/fra-valg pr. datatype, { read: {...}, write: {...} }
+  // (src/lib/integrations/sync-settings.ts). Tom = alt, appen kan, er slået til.
+  syncSettings Json?
+  // Seneste gang Hello Cal-data blev sendt til appen (push).
+  lastPushedAt DateTime?
   createdAt    DateTime            @default(now())
 
   @@unique([userId, provider])
