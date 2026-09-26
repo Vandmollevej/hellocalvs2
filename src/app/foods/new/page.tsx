@@ -8,7 +8,7 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 import { PACKAGE_SIZE_UNITS, formatPackageSize, type PackageSizeUnit } from "@/lib/product-naming";
 import type { ProductCategory } from "@/lib/product-display-unit";
 
-export const OCR_DRAFT_STORAGE_KEY = "hellocal-ocr-product-draft";
+const OCR_DRAFT_STORAGE_KEY = "hellocal-ocr-product-draft";
 
 export type ProductDraft = {
   kcalPer100g?: string;
@@ -196,7 +196,7 @@ function NytProduktContent() {
 
   return (
     <HfScreen title={t("foods.newProductTitle")} icon={<IconApple size={20} stroke={2} />} footer={footer}>
-      <div className="flex flex-col gap-3 p-4">
+      <div className="hf-page">
         {kind === null && (
           <div className="flex flex-col gap-2">
             <p className="px-1 text-sm font-medium text-hf-black">{t("foods.manualKindTitle")}</p>
@@ -204,7 +204,7 @@ function NytProduktContent() {
               <button
                 type="button"
                 onClick={() => setKind("ingredient")}
-                className="flex flex-col items-center gap-1.5 rounded-2xl bg-hf-tan p-4 text-center"
+                className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan p-4 text-center"
               >
                 <IconCarrot size={22} color="var(--hf-black)" />
                 <span className="text-sm font-semibold text-hf-black">{t("foods.manualKindIngredient")}</span>
@@ -213,7 +213,7 @@ function NytProduktContent() {
               <button
                 type="button"
                 onClick={() => setKind("product")}
-                className="flex flex-col items-center gap-1.5 rounded-2xl bg-hf-tan p-4 text-center"
+                className="flex flex-col items-center gap-2 rounded-2xl bg-hf-tan p-4 text-center"
               >
                 <IconApple size={22} color="var(--hf-black)" />
                 <span className="text-sm font-semibold text-hf-black">{t("foods.manualKindProduct")}</span>
@@ -227,7 +227,7 @@ function NytProduktContent() {
           <form
             id={INGREDIENT_FORM_ID}
             onSubmit={handleSubmitIngredient}
-            className="flex flex-col gap-2 rounded-2xl bg-hf-tan p-4"
+            className="hf-card"
           >
             <input
               value={ingredientName}
@@ -269,7 +269,7 @@ function NytProduktContent() {
             <form
               id={PRODUCT_FORM_ID}
               onSubmit={handleSubmit}
-              className="flex flex-col gap-2 rounded-2xl bg-hf-tan p-4"
+              className="hf-card"
             >
               <label className="text-xs text-hf-black opacity-70">
                 {t("foods.productCategoryLabel")}

@@ -25,7 +25,7 @@ function MacroBar({ label, grams, max }: { label: string; grams: number; max: nu
   const pct = Math.min(100, (grams / max) * 100);
   return (
     <div>
-      <div className="mb-1.5 flex items-center justify-between">
+      <div className="mb-2 flex items-center justify-between">
         <span className="text-[13px] text-hf-black opacity-70">{label}</span>
         <span className="min-w-[36px] text-right text-base font-bold text-hf-black">
           {Math.round(grams * 10) / 10} g
@@ -80,7 +80,7 @@ export default function RegistrationPage() {
         )}
       </div>
 
-      <div className="flex flex-col gap-4 p-4">
+      <div className="hf-page">
         <h1 className="hf-heading text-lg text-hf-black">{registration.titleSnapshot}</h1>
         <p className="text-sm text-hf-black opacity-70">
           {registration.amountGrams > 0
@@ -104,7 +104,7 @@ export default function RegistrationPage() {
           );
         })()}
 
-        <div className="flex flex-col gap-4 rounded-2xl bg-hf-tan p-4">
+        <div className="hf-card hf-card--form">
           <p className="hf-heading text-[15px] text-hf-black">{t("common.macroBreakdown")}</p>
           <MacroBar label={t("common.protein")} grams={registration.proteinSnapshot} max={40} />
           <MacroBar label={t("common.carbs")} grams={registration.carbsSnapshot} max={80} />

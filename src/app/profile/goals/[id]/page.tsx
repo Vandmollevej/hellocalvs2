@@ -74,7 +74,7 @@ export default function GoalDetailPage() {
           {status === "loading" ? t("goals.loading") : status === "notFound" ? t("goals.notFound") : t("goals.loadError")}
         </p>
       ) : (
-        <div className="flex flex-col gap-4 p-4">
+        <div className="hf-page">
           <div className="flex items-center gap-3 rounded-2xl border border-hf-tan-dark bg-hf-tan px-4 py-3 text-hf-black">
             <GoalDateSquare date={goalDisplayDate(goal)} completed={isGoalCompleted(goal)} />
             <div className="min-w-0">

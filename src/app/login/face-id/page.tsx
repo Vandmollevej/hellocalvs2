@@ -63,7 +63,7 @@ function FaceIdOfferContent() {
         <span className="hf-appbar__slot" aria-hidden="true" />
       </div>
 
-      <div className="flex flex-1 flex-col gap-4 px-4 pt-6">
+      <div className="flex flex-1 flex-col gap-4 px-4 pt-8">
         <div className="flex justify-center py-4">
           <FaceIdAnimation phase={phase} size={112} onDone={() => router.replace(next)} />
         </div>
@@ -71,7 +71,7 @@ function FaceIdOfferContent() {
         {error && <p className="hf-type-caption text-hf-red-dark">{error}</p>}
       </div>
 
-      <div className="flex flex-col gap-3 px-4 pb-8 pt-4">
+      <div className="hf-page">
         <button
           type="button"
           onClick={enable}

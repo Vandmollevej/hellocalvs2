@@ -61,7 +61,7 @@ export function IntradayKcalChart({
 
   return (
     <div className="rounded-2xl bg-hf-tan p-4">
-      <p className="mb-3 text-sm font-bold text-hf-black">Kalorieindtag i løbet af dagen</p>
+      <p className="mb-4 text-sm font-bold text-hf-black">Kalorieindtag i løbet af dagen</p>
 
       <svg viewBox="0 0 280 90" className="w-full overflow-visible" aria-hidden="true">
         <polygon points={areaPoints} fill="var(--hf-green)" opacity="0.15" />

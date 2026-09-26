@@ -78,14 +78,14 @@ export default function PointsPage() {
             type="button"
             onClick={redeem}
             disabled={redeeming || (balance ?? 0) < FREE_MONTH_COST}
-            className="hf-btn-primary hf-type-button mt-3 h-12 w-full disabled:opacity-40"
+            className="hf-btn-primary hf-type-button mt-4 h-12 w-full disabled:opacity-40"
           >
             {redeeming ? "Indløser…" : `Indløs ${FREE_MONTH_COST} points til 1 gratis måned`}
           </button>
           {message && <p className="hf-type-caption mt-2">{message}</p>}
         </div>
 
-        <h2 className="hf-type-section-title mt-6">Historik</h2>
+        <h2 className="hf-type-section-title">Historik</h2>
         {transactions.length === 0 ? (
           <p className="hf-type-body-sm mt-2 opacity-70">Ingen points optjent endnu.</p>
         ) : (

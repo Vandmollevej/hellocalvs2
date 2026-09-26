@@ -261,6 +261,18 @@ export async function findOrCreateUser(provider: ProviderSlug, profile: Provider
     profile.email && profile.emailVerified ? await prisma.user.findUnique({ where: { email: profile.email } }) : null;
   if (existing?.forgottenAt) return null;
 
+  // Eksisterende konto, hvis e-mail aldrig er bekræftet: udbyderen beviser nu,
+  // at e-mailen tilhører denne person. Kontoen kan være oprettet af en anden
+  // med en fremmed e-mail, så adgangskode og Face ID fjernes, før den kobles
+  // på (ejeren kan vælge ny adgangskode via "Glemt adgangskode").
+  if (existing && !existing.emailVerifiedAt) {
+    await prisma.passkey.deleteMany({ where: { userId: existing.id } });
+    await prisma.user.update({
+      where: { id: existing.id },
+      data: { emailVerifiedAt: now, passwordHash: null },
+    });
+  }
+
   const user =
     existing ??
     (await prisma.user.create({

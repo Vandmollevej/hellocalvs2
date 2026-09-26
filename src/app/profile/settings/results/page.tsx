@@ -10,6 +10,8 @@ type ResultsUser = {
   showAllergens: boolean;
   allergenVisibility: Record<string, boolean> | null;
   showExtendedNutrition: boolean;
+  showAdditives: boolean;
+  showToxins: boolean;
 };
 
 function patchProfile(body: Record<string, unknown>) {
@@ -60,6 +62,11 @@ export default function ResultsDisplayPage() {
     patchProfile({ showExtendedNutrition: value });
   }
 
+  function toggleProductFlag(key: "showAdditives" | "showToxins", value: boolean) {
+    setUser((current) => (current ? { ...current, [key]: value } : current));
+    patchProfile({ [key]: value });
+  }
+
   function toggleAllergen(key: string, value: boolean) {
     setUser((current) => {
       if (!current) return current;
@@ -76,7 +83,7 @@ export default function ResultsDisplayPage() {
           {loading ? t("settings.loading") : t("settings.loadError")}
         </p>
       ) : (
-        <div className="flex flex-col gap-4 p-4">
+        <div className="hf-page">
           <div className="flex flex-col overflow-hidden rounded-2xl bg-hf-tan">
             <div className="flex items-start gap-3 px-4 py-4">
               <span className="flex-1">
@@ -124,6 +131,20 @@ export default function ResultsDisplayPage() {
             description={t("settings.showExtendedNutritionDescription")}
             checked={user.showExtendedNutrition}
             onChange={toggleShowExtendedNutrition}
+          />
+
+          <Toggle
+            label={t("settings.showAdditives")}
+            description={t("settings.showAdditivesDescription")}
+            checked={user.showAdditives}
+            onChange={(value) => toggleProductFlag("showAdditives", value)}
+          />
+
+          <Toggle
+            label={t("settings.showToxins")}
+            description={t("settings.showToxinsDescription")}
+            checked={user.showToxins}
+            onChange={(value) => toggleProductFlag("showToxins", value)}
           />
 
           <p className="hf-type-small px-1 text-hf-black opacity-60">

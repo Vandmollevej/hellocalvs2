@@ -171,7 +171,7 @@ export default function BodyMeasurementsPage() {
 
   return (
     <HfScreen title={t("bodyMeasurements.title")}>
-      <div className="flex flex-col gap-4 p-4">
+      <div className="hf-page">
         <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
           <p className="text-[13px] leading-5">{t("bodyMeasurements.intro")}</p>
         </div>

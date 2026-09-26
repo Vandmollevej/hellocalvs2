@@ -613,7 +613,7 @@ function KameraOpretContent() {
   };
 
   return (
-    <div className="flex h-full min-h-0 flex-col gap-3 p-4">
+    <div className="flex h-full min-h-0 flex-col gap-4 p-4">
       <ol className="grid grid-cols-4 gap-2">
         {STAGE_ORDER.map((item) => (
           <li

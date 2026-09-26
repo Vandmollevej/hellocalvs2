@@ -233,7 +233,7 @@ function OpretProduktContent() {
   if (savedOffline) {
     return (
       <HfScreen title={t("productCreate.title")} icon={<IconApple size={20} stroke={2} />}>
-        <div className="flex flex-col gap-4 p-4">
+        <div className="hf-page">
           <div
             className="hf-type-body-sm rounded-[8px] p-4 text-center"
             style={{ background: "var(--hf-color-brand)", color: "var(--hf-color-white)" }}
@@ -253,7 +253,7 @@ function OpretProduktContent() {
       title={t("productCreate.title")}
       icon={<IconApple size={20} stroke={2} />}
     >
-      <div className="flex flex-col gap-4 p-4">
+      <div className="hf-page">
         {fromFailedAdd && (
           <div
             className="hf-type-body-sm rounded-[8px] p-4 text-center"
@@ -301,7 +301,7 @@ function OpretProduktContent() {
             placeholder={t("productCreate.barcodePlaceholder")}
           />
 
-          <div className="flex flex-col gap-3 rounded-[8px] p-4" style={{ background: "var(--hf-color-card)" }}>
+          <div className="flex flex-col gap-4 rounded-[8px] p-4" style={{ background: "var(--hf-color-card)" }}>
             <TextField
               variant="standard"
               value={form.brand}

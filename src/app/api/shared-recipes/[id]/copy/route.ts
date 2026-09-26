@@ -32,6 +32,9 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     data: {
       name: recipe.name,
       ownerId: user.id,
+      images: recipe.images,
+      steps: recipe.steps,
+      tags: recipe.tags,
       ingredients: { create: ingredients.map((i) => ({ productId: i.productId, grams: i.grams })) },
     },
     include: { ingredients: { include: { product: true } } },

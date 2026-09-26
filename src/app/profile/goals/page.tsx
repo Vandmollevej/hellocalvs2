@@ -75,7 +75,7 @@ export default function GoalsPage() {
 
   return (
     <HfScreen title={t("goals.title")}>
-      <div className="flex flex-col gap-4 p-4">
+      <div className="hf-page">
         {/* Kun omkreds — baggrunden er sidens egen cremefarve. */}
         <button
           type="button"

@@ -1,5 +1,5 @@
 import type { IntegrationProvider } from "@prisma/client";
-import type { OAuthProviderAdapter } from "./types";
+import { hasClientCredentials, type OAuthProviderAdapter } from "./types";
 import { fitbit } from "./fitbit";
 import { googleHealth } from "./google-health";
 import { polar } from "./polar";
@@ -18,7 +18,19 @@ export function adapterByProvider(provider: IntegrationProvider) {
 }
 
 export function isConfigured(adapter: OAuthProviderAdapter) {
-  return Boolean(process.env[`${adapter.envPrefix}_CLIENT_ID`] && process.env[`${adapter.envPrefix}_CLIENT_SECRET`]);
+  return hasClientCredentials(adapter.envPrefix);
+}
+
+function publicBase() {
+  const base =
+    process.env.INTEGRATIONS_REDIRECT_BASE_URL || process.env.APP_BASE_URL || "https://hellocal.packroff.dk";
+  return base.replace(/\/$/, "");
+}
+
+// Adresse til redirects tilbage i appen. Bag Synology-proxyen peger req.url på
+// containerens interne adresse (https://0.0.0.0:3000), så den kan ikke bruges.
+export function publicUrl(path: string) {
+  return new URL(path, publicBase());
 }
 
 // <PRÆFIKS>_REDIRECT_URI vinder, hvis den er sat (fx den URI, der er
@@ -26,7 +38,5 @@ export function isConfigured(adapter: OAuthProviderAdapter) {
 export function redirectUri(adapter: OAuthProviderAdapter) {
   const explicit = process.env[`${adapter.envPrefix}_REDIRECT_URI`];
   if (explicit) return explicit;
-  const base = process.env.INTEGRATIONS_REDIRECT_BASE_URL || process.env.APP_BASE_URL;
-  if (!base) throw new Error("INTEGRATIONS_REDIRECT_BASE_URL er ikke sat");
-  return `${base.replace(/\/$/, "")}/api/integrations/${adapter.slug}/callback`;
+  return `${publicBase()}/api/integrations/${adapter.slug}/callback`;
 }

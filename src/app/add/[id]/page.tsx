@@ -21,6 +21,8 @@ import { AdditiveInfoModal } from "@/components/hf/AdditiveInfoModal";
 import { TimeSection } from "@/components/hf/TimeSection";
 import { getAdditiveInfo } from "@/lib/additives";
 import { labelForAllergen } from "@/lib/allergens";
+import { matchToxins, type ToxinInfo } from "@/lib/toxins";
+import { ToxinInfoModal } from "@/components/hf/ToxinInfoModal";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { isAlternativeServingConfident } from "@/lib/alternative-servings";
 import type { AlternativeServing } from "@/lib/product-analysis-types";
@@ -99,7 +101,12 @@ type ProfileUser = {
   showAllergens: boolean;
   allergenVisibility: Record<string, boolean> | null;
   showExtendedNutrition: boolean;
+  showAdditives: boolean;
+  showToxins: boolean;
 };
+
+// Mættet fedt og transfedt får en advarselstrekant (G11, 56f30763).
+const UNHEALTHY_FAT_KEYS = new Set(["saturatedFat", "transFat"]);
 
 type LoadState =
   | { status: "loading" }
@@ -126,7 +133,10 @@ export default function AddPage() {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [openAdditive, setOpenAdditive] = useState<string | null>(null);
   const [additivesOpen, setAdditivesOpen] = useState(false);
-  const [extendedNutritionOpen, setExtendedNutritionOpen] = useState(false);
+  // Åben som standard (G11, 2026-09-24) — brugeren har selv slået panelet til.
+  const [extendedNutritionOpen, setExtendedNutritionOpen] = useState(true);
+  const [toxinsOpen, setToxinsOpen] = useState(false);
+  const [openToxin, setOpenToxin] = useState<ToxinInfo | null>(null);
   const [additiveNames, setAdditiveNames] = useState<Record<string, string>>({});
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoritePending, setFavoritePending] = useState(false);
@@ -313,6 +323,11 @@ export default function AddPage() {
       (key) => !profile.allergenVisibility || profile.allergenVisibility[key] !== false
     );
   }, [product, profile]);
+
+  const toxinMatches = useMemo(
+    () => (product && profile?.showToxins ? matchToxins(product.name, product.ingredientsText) : []),
+    [product, profile?.showToxins]
+  );
 
   function handleToggleEditLock() {
     if (!isProductEditingUnlocked) setMacroOverrideSnapshot(macroOverride);
@@ -516,11 +531,11 @@ export default function AddPage() {
               </div>
 
               {!forDish && (
-                <TimeSection value={time} onChange={setTime} className="mb-3 mt-6" />
+                <TimeSection value={time} onChange={setTime} className="mb-4 mt-8" />
               )}
 
               {hasServingUnit && (
-                <div className="mb-3 flex justify-center gap-2">
+                <div className="mb-4 flex justify-center gap-2">
                   <button
                     type="button"
                     onClick={() => setAmountUnit("personer")}
@@ -594,7 +609,7 @@ export default function AddPage() {
 
             </div>
 
-            <div ref={detailsRef} className="flex flex-col gap-6 border-t border-hf-tan-dark p-4">
+            <div ref={detailsRef} className="flex flex-col gap-8 border-t border-hf-tan-dark p-4">
               <div>
                 <div className="mb-4 flex items-center justify-between">
                   <p className="hf-heading text-[15px] text-hf-black">{t("common.macroBreakdown")}</p>
@@ -645,12 +660,12 @@ export default function AddPage() {
                 </div>
               </div>
 
-              {!!state.product.additives?.length && (
+              {profile?.showAdditives && !!state.product.additives?.length && (
                 <div>
                   <button
                     type="button"
                     onClick={() => setAdditivesOpen((open) => !open)}
-                    className="mb-3 flex w-full items-center justify-between"
+                    className="mb-4 flex w-full items-center justify-between"
                   >
                     <p className="hf-heading text-[15px] text-hf-black">{t("addProduct.additives")}</p>
                     <IconChevronDown
@@ -684,6 +699,52 @@ export default function AddPage() {
                       );
                     })}
                   </div>
+                  )}
+                </div>
+              )}
+
+              {/* Toksiner (G11): kendte stoffer ud fra navn + indholdsfortegnelse,
+                  kun når brugeren har slået det til i Opsætning. */}
+              {!!toxinMatches.length && (
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setToxinsOpen((open) => !open)}
+                    className="mb-3 flex w-full items-center justify-between"
+                  >
+                    <p className="hf-heading text-[15px] text-hf-black">{t("addProduct.toxins")}</p>
+                    <IconChevronDown
+                      size={18}
+                      className={`text-hf-black transition-transform ${toxinsOpen ? "rotate-180" : ""}`}
+                    />
+                  </button>
+                  {toxinsOpen && (
+                    <div className="flex flex-col overflow-hidden rounded-2xl bg-hf-tan">
+                      {toxinMatches.map(({ toxin, matchedTerm }, index) => (
+                        <button
+                          key={toxin.key}
+                          type="button"
+                          onClick={() => setOpenToxin(toxin)}
+                          className={`flex items-center gap-3 px-4 py-3 text-left ${
+                            index < toxinMatches.length - 1 ? "border-b border-hf-tan-dark" : ""
+                          }`}
+                        >
+                          <IconAlertTriangle size={18} className="shrink-0 text-hf-black" />
+                          <span className="flex-1 text-[13px] text-hf-black opacity-70">
+                            <span className="underline underline-offset-2">{toxin.name}</span>{" "}
+                            ({matchedTerm})
+                          </span>
+                          {(toxin.pregnancy || toxin.fertility) && (
+                            <span className="shrink-0 rounded-full bg-hf-white px-2 py-0.5 text-[11px] text-hf-black">
+                              {t("addProduct.toxinPregnancyBadge")}
+                            </span>
+                          )}
+                        </button>
+                      ))}
+                      <p className="px-4 py-2.5 text-[11px] text-hf-black opacity-50">
+                        {t("addProduct.toxinsDisclaimer")}
+                      </p>
+                    </div>
                   )}
                 </div>
               )}
@@ -735,7 +796,7 @@ export default function AddPage() {
                     </span>
                   </button>
                   {extendedNutritionOpen && (
-                    <div className="mt-3 flex flex-col overflow-hidden rounded-2xl bg-hf-tan">
+                    <div className="mt-4 flex flex-col overflow-hidden rounded-2xl bg-hf-tan">
                       {extendedNutrition.map((row, index) => (
                         <div
                           key={row.key}
@@ -743,7 +804,12 @@ export default function AddPage() {
                             index < extendedNutrition.length - 1 ? "border-b border-hf-tan-dark" : ""
                           }`}
                         >
-                          <span className="opacity-70">{row.label}</span>
+                          <span className="flex items-center gap-1.5">
+                            {UNHEALTHY_FAT_KEYS.has(row.key) && (
+                              <IconAlertTriangle size={15} className="shrink-0" aria-label={t("addProduct.unhealthyFat")} />
+                            )}
+                            <span className="opacity-70">{row.label}</span>
+                          </span>
                           <span className="font-medium">
                             {formatDaNumber(row.value, row.digits ?? 0)} {row.unit}
                           </span>
@@ -764,6 +830,7 @@ export default function AddPage() {
       {openAdditive && (
         <AdditiveInfoModal code={openAdditive} onClose={() => setOpenAdditive(null)} />
       )}
+      {openToxin && <ToxinInfoModal toxin={openToxin} onClose={() => setOpenToxin(null)} />}
     </HfScreen>
   );
 }

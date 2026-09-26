@@ -210,7 +210,7 @@ export default function SupportSettingsPage() {
           </AccordionCard>
         </div>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4">
           {error && (
             <p role="alert" className="hf-type-caption text-hf-red-dark">
               {error}

@@ -44,7 +44,7 @@ export default async function AdminSupportPage() {
 
       {requests.length === 0 && <p className="py-4 text-sm text-text-secondary">Ingen henvendelser endnu.</p>}
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-4">
         {requests.map((request) => {
           const grant = request.supportGrant;
           const permissions = grant ? readSupportPermissions(grant.permissions) : null;
@@ -71,8 +71,8 @@ export default async function AdminSupportPage() {
                   <SupportRequestStatusButton id={request.id} status={request.status} />
                 </div>
               </div>
-              <p className="mt-3 whitespace-pre-wrap text-sm text-text-primary">{request.message}</p>
-              <div className="mt-3 border-t border-border-strong pt-2 text-xs text-text-secondary">
+              <p className="mt-4 whitespace-pre-wrap text-sm text-text-primary">{request.message}</p>
+              <div className="mt-4 border-t border-border-strong pt-2 text-xs text-text-secondary">
                 {!grant && "Ingen dataadgang givet."}
                 {grant && (
                   <>

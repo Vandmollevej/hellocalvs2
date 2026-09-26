@@ -1,6 +1,6 @@
 "use client";
 
-// Rækker til "Største kilder" og "Månedens synder" (G3): samme FoodRow som
+// Rækker til "Månedens synder" (G3): samme FoodRow som
 // den almindelige madvareliste, men kun den valgte værdi til højre.
 
 import Link from "next/link";

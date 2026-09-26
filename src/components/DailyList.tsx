@@ -122,7 +122,7 @@ export function DailyList() {
                   image={entry.image}
                   title={entry.title}
                   subtitle={
-                    <div className="mt-0.5 flex justify-between">
+                    <div className="mt-1 flex justify-between">
                       <span className="text-xs text-hf-black opacity-60">
                         {Math.round(entry.kcalPer100g)} kcal / 100 g
                       </span>
@@ -136,14 +136,14 @@ export function DailyList() {
           </li>
         ))}
         {loading && (
-          <li className="py-6 text-center text-sm text-hf-black opacity-60">{t("dailyList.loading")}</li>
+          <li className="py-8 text-center text-sm text-hf-black opacity-60">{t("dailyList.loading")}</li>
         )}
         {!loading && entries.length === 0 && (
-          <li className="py-6 text-center text-sm text-hf-black opacity-60">
+          <li className="py-8 text-center text-sm text-hf-black opacity-60">
             {t("dailyList.noEntriesToday")}
           </li>
         )}
-        {error && <li className="pb-3 text-center text-xs text-red-700">{error}</li>}
+        {error && <li className="pb-4 text-center text-xs text-red-700">{error}</li>}
       </ul>
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0 h-9"

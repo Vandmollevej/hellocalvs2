@@ -5,35 +5,16 @@ import { IconChevronLeft, IconChevronRight, IconTrash, IconX } from "@tabler/ico
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
-
-type DiaryPhotoKind = "selfie" | "photo";
+import { confirmOnDevice, isPasskeySupported } from "@/lib/passkey-client";
 
 type DiaryPhoto = {
   id: string;
   dataUrl: string;
   takenAt: string;
-  // Missing on entries saved before 2026-09-12 — treated as "photo" (the
-  // original full-body/stomach grid) so existing local data keeps working.
-  kind?: DiaryPhotoKind;
 };
 
 type DiaryUser = {
   photoDiaryRequiresPasscode: boolean;
-};
-
-type WeightEntryLite = {
-  weightKg: number;
-  weighedAt: string;
-};
-
-type BodyMeasurementLite = {
-  waistCm: number | null;
-  hipCm: number | null;
-  chestCm: number | null;
-  thighCm: number | null;
-  upperArmCm: number | null;
-  neckCm: number | null;
-  measuredAt: string;
 };
 
 // Item 2 (2026-09-02): billede-dagbog til at sammenligne fuld figur/mave over
@@ -41,10 +22,11 @@ type BodyMeasurementLite = {
 // projekt (se docs/STATUS.md), så billederne gemmes for nu udelukkende
 // client-side i localStorage — de ryger ikke i databasen og deles ikke
 // mellem enheder. "Kræver telefonens adgangskode for at vise"-kontakten
-// gemmes derimod i databasen (User.photoDiaryRequiresPasscode), men denne
-// side håndhæver den IKKE med et rigtigt OS-lock endnu — det kræver en
-// native app (Face ID/adgangskode-API) og er fremtidigt arbejde. Toggle'en
-// er derfor kun den gemte brugerpræference i dag.
+// gemmes i databasen (User.photoDiaryRequiresPasscode). Er den slået til,
+// vises billederne først efter Face ID/Touch ID/telefonens kode (WebAuthn,
+// se confirmOnDevice), og siden låser igen, når den går i baggrunden — så
+// billederne ikke vises ved et uheld, fx i bussen. Det er en visningslås,
+// ikke kryptering.
 const STORAGE_KEY = "hello-cal:billede-dagbog";
 
 function loadPhotos(): DiaryPhoto[] {
@@ -52,8 +34,9 @@ function loadPhotos(): DiaryPhoto[] {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
-    const parsed = JSON.parse(raw) as DiaryPhoto[];
-    return parsed.map((photo) => ({ ...photo, kind: photo.kind ?? "photo" }));
+    // Tidligere gemte selfies (fjernet 2026-09-25) har stadig et `kind`-felt;
+    // det ignoreres, så de blot vises sammen med de øvrige billeder.
+    return JSON.parse(raw) as DiaryPhoto[];
   } catch {
     return [];
   }
@@ -77,63 +60,15 @@ function formatDate(value: string) {
   }).format(new Date(value));
 }
 
-function formatDateShort(value: string) {
-  return new Intl.DateTimeFormat("da-DK", {
-    day: "numeric",
-    month: "short",
-  }).format(new Date(value));
-}
-
-function isSameLocalDay(isoA: string, isoB: string) {
-  const a = new Date(isoA);
-  const b = new Date(isoB);
-  return (
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate()
-  );
-}
-
-// weightEntries/measurements come from the API already sorted newest-first
-// (weighedAt/measuredAt desc), so the first match found here is always the
-// most recent qualifying one.
-function matchForDate<T>(
-  photoTakenAt: string,
-  entries: T[],
-  dateOf: (entry: T) => string
-): { entry: T; isSameDay: boolean } | null {
-  const sameDay = entries.find((entry) => isSameLocalDay(dateOf(entry), photoTakenAt));
-  if (sameDay) return { entry: sameDay, isSameDay: true };
-
-  const photoTime = new Date(photoTakenAt).getTime();
-  const before = entries.find((entry) => new Date(dateOf(entry)).getTime() <= photoTime);
-  if (before) return { entry: before, isSameDay: false };
-
-  return null;
-}
-
-function formatMeasurement(entry: BodyMeasurementLite, t: (key: string, params?: Record<string, string | number>) => string) {
-  const parts: string[] = [];
-  if (entry.neckCm != null) parts.push(t("photoDiary.measurementNeck", { value: entry.neckCm }));
-  if (entry.waistCm != null) parts.push(t("photoDiary.measurementWaist", { value: entry.waistCm }));
-  if (entry.hipCm != null) parts.push(t("photoDiary.measurementHip", { value: entry.hipCm }));
-  if (entry.chestCm != null) parts.push(t("photoDiary.measurementChest", { value: entry.chestCm }));
-  if (entry.thighCm != null) parts.push(t("photoDiary.measurementThigh", { value: entry.thighCm }));
-  if (entry.upperArmCm != null) parts.push(t("photoDiary.measurementUpperArm", { value: entry.upperArmCm }));
-  return parts.join(" · ");
-}
-
 export default function BilledeDagbogPage() {
   const { t } = useTranslation();
   const [user, setUser] = useState<DiaryUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [photos, setPhotos] = useState<DiaryPhoto[]>(() => loadPhotos());
-  const [weightEntries, setWeightEntries] = useState<WeightEntryLite[]>([]);
-  const [measurements, setMeasurements] = useState<BodyMeasurementLite[]>([]);
   const [locked, setLocked] = useState(false);
-  const [viewerSection, setViewerSection] = useState<DiaryPhotoKind | null>(null);
+  const [unlocking, setUnlocking] = useState(false);
+  const [unlockError, setUnlockError] = useState(false);
   const [viewerIndex, setViewerIndex] = useState<number | null>(null);
-  const selfieInputRef = useRef<HTMLInputElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -156,29 +91,43 @@ export default function BilledeDagbogPage() {
     };
   }, []);
 
-  // Vægt/mål-billedtekst er kun til visning her — hentes bedst-effort og
-  // fejler stille (fx uden database-forbindelse), da den ikke må blokere
-  // selve billeddagbogen.
+  // Lås igen, når appen/fanen forlades, så billederne ikke står fremme
+  // næste gang telefonen tages op.
   useEffect(() => {
-    let cancelled = false;
-    fetch("/api/weight-entries")
-      .then((res) => res.json())
-      .then((data) => {
-        if (!cancelled) setWeightEntries(Array.isArray(data.entries) ? data.entries : []);
-      })
-      .catch(() => {});
-    fetch("/api/body-measurements")
-      .then((res) => res.json())
-      .then((data) => {
-        if (!cancelled) setMeasurements(Array.isArray(data.entries) ? data.entries : []);
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
+    function onVisibilityChange() {
+      if (document.visibilityState === "hidden") {
+        setLocked(true);
+        setViewerIndex(null);
+      }
+    }
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", onVisibilityChange);
   }, []);
 
-  function toggleRequiresPasscode(value: boolean) {
+  async function unlock(): Promise<boolean> {
+    setUnlockError(false);
+    // Uden WebAuthn-understøttelse (fx ældre browser) er låsen blot et ekstra
+    // tryk, så billederne stadig ikke vises med det samme.
+    if (!isPasskeySupported()) {
+      setLocked(false);
+      return true;
+    }
+    setUnlocking(true);
+    try {
+      await confirmOnDevice();
+      setLocked(false);
+      return true;
+    } catch {
+      setUnlockError(true);
+      return false;
+    } finally {
+      setUnlocking(false);
+    }
+  }
+
+  async function toggleRequiresPasscode(value: boolean) {
+    // Låsen må ikke kunne slås fra uden bekræftelse, mens billederne er låst.
+    if (!value && locked && !(await unlock())) return;
     setUser((current) => (current ? { ...current, photoDiaryRequiresPasscode: value } : current));
     fetch("/api/profile", {
       method: "PATCH",
@@ -187,22 +136,20 @@ export default function BilledeDagbogPage() {
     }).catch(() => {});
   }
 
-  function onFileSelected(kind: DiaryPhotoKind) {
-    return (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      event.target.value = "";
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        const next = [
-          { id: crypto.randomUUID(), dataUrl: String(reader.result), takenAt: new Date().toISOString(), kind },
-          ...photos,
-        ];
-        setPhotos(next);
-        savePhotos(next);
-      };
-      reader.readAsDataURL(file);
+  function onFileSelected(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const next = [
+        { id: crypto.randomUUID(), dataUrl: String(reader.result), takenAt: new Date().toISOString() },
+        ...photos,
+      ];
+      setPhotos(next);
+      savePhotos(next);
     };
+    reader.readAsDataURL(file);
   }
 
   function remove(id: string) {
@@ -211,25 +158,11 @@ export default function BilledeDagbogPage() {
     savePhotos(next);
   }
 
-  const selfies = photos.filter((photo) => photo.kind === "selfie");
-  const regularPhotos = photos.filter((photo) => photo.kind !== "selfie");
-  const viewerPhotos = viewerSection === "selfie" ? selfies : regularPhotos;
-
-  function openViewer(section: DiaryPhotoKind, index: number) {
-    setViewerSection(section);
-    setViewerIndex(index);
-  }
-
-  function closeViewer() {
-    setViewerSection(null);
-    setViewerIndex(null);
-  }
-
   function onViewerDelete(id: string) {
     remove(id);
     setViewerIndex((current) => {
       if (current === null) return current;
-      const remaining = viewerPhotos.length - 1;
+      const remaining = photos.length - 1;
       if (remaining <= 0) return null;
       return Math.min(current, remaining - 1);
     });
@@ -241,11 +174,11 @@ export default function BilledeDagbogPage() {
     >
 
       {loading || !user ? (
-        <p className="p-6 text-center text-[14px] text-hf-black opacity-60">
+        <p className="p-4 text-center text-[14px] text-hf-black opacity-60">
           {loading ? t("photoDiary.loading") : t("photoDiary.loadError")}
         </p>
       ) : (
-        <div className="flex flex-col gap-4 p-4">
+        <div className="hf-page">
           <Toggle
             label={t("photoDiary.requiresPasscode")}
             description={t("photoDiary.requiresPasscodeDescription")}
@@ -254,99 +187,49 @@ export default function BilledeDagbogPage() {
           />
 
           {locked && user.photoDiaryRequiresPasscode ? (
-            <button
-              type="button"
-              onClick={() => setLocked(false)}
-              className="hf-btn-primary w-full py-3.5 text-[15px]"
-            >
-              {t("photoDiary.showPhotos")}
-            </button>
-          ) : (
             <>
-              <input
-                ref={selfieInputRef}
-                type="file"
-                accept="image/*"
-                capture="user"
-                className="hidden"
-                onChange={onFileSelected("selfie")}
-              />
               <button
                 type="button"
-                onClick={() => selfieInputRef.current?.click()}
-                className="hf-btn-primary w-full py-3.5 text-[15px]"
+                onClick={unlock}
+                disabled={unlocking}
+                className="hf-btn-primary w-full py-3.5 text-[15px] disabled:opacity-40"
               >
-                {t("photoDiary.takeSelfie")}
+                {unlocking ? t("photoDiary.unlocking") : t("photoDiary.showPhotos")}
               </button>
-
+              {unlockError && (
+                <p className="text-center text-[13px] text-hf-red-dark">{t("photoDiary.unlockError")}</p>
+              )}
+            </>
+          ) : (
+            <>
               <input
                 ref={fileInputRef}
                 type="file"
                 accept="image/*"
                 capture="environment"
                 className="hidden"
-                onChange={onFileSelected("photo")}
+                onChange={onFileSelected}
               />
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="hf-btn-secondary w-full py-3.5 text-[15px]"
+                className="hf-btn-primary w-full py-3.5 text-[15px]"
               >
                 {t("photoDiary.takePhoto")}
               </button>
 
-              <section className="flex flex-col gap-3">
-                <h2 className="text-[15px] font-semibold text-hf-black">
-                  {t("photoDiary.selfiesSectionTitle")}
-                </h2>
-                {selfies.length === 0 ? (
-                  <p className="text-center text-[13px] text-hf-black opacity-60">
-                    {t("photoDiary.noSelfiesYet")}
-                  </p>
-                ) : (
-                  <div className="flex flex-col gap-4">
-                    {selfies.map((photo, index) => (
-                      <div key={photo.id} className="flex flex-col gap-2">
-                        <button
-                          type="button"
-                          onClick={() => openViewer("selfie", index)}
-                          className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl bg-hf-tan text-left"
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={photo.dataUrl}
-                            alt={t("photoDiary.photoAlt")}
-                            className="h-full w-full object-cover"
-                          />
-                          <span className="absolute bottom-2 left-2 rounded bg-black/50 px-1.5 py-0.5 text-[10px] text-white">
-                            {formatDate(photo.takenAt)}
-                          </span>
-                        </button>
-                        <div className="flex flex-col gap-0.5 px-1 text-[13px] text-hf-black">
-                          <WeightCaptionLine photo={photo} weightEntries={weightEntries} t={t} />
-                          <MeasurementCaptionLine photo={photo} measurements={measurements} t={t} />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </section>
-
-              <section className="flex flex-col gap-3">
-                <h2 className="text-[15px] font-semibold text-hf-black">
-                  {t("photoDiary.photosSectionTitle")}
-                </h2>
-                {regularPhotos.length === 0 ? (
+              <section className="flex flex-col gap-4">
+                {photos.length === 0 ? (
                   <p className="text-center text-[13px] text-hf-black opacity-60">
                     {t("photoDiary.noPhotosYet")}
                   </p>
                 ) : (
-                  <div className="grid grid-cols-2 gap-3">
-                    {regularPhotos.map((photo, index) => (
+                  <div className="grid grid-cols-2 gap-4">
+                    {photos.map((photo, index) => (
                       <button
                         key={photo.id}
                         type="button"
-                        onClick={() => openViewer("photo", index)}
+                        onClick={() => setViewerIndex(index)}
                         className="relative overflow-hidden rounded-2xl bg-hf-tan text-left"
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -368,65 +251,17 @@ export default function BilledeDagbogPage() {
         </div>
       )}
 
-      {viewerSection !== null && viewerIndex !== null && viewerPhotos[viewerIndex] && (
+      {viewerIndex !== null && photos[viewerIndex] && (
         <PhotoViewer
-          photos={viewerPhotos}
+          photos={photos}
           index={viewerIndex}
           onIndexChange={setViewerIndex}
-          onClose={closeViewer}
+          onClose={() => setViewerIndex(null)}
           onDelete={onViewerDelete}
           t={t}
         />
       )}
     </HfScreen>
-  );
-}
-
-// Under selfien: hvis der er logget vægt samme kalenderdag som billedet,
-// vises "Aktuel vægt"; ellers den seneste vejning før billedet som
-// "Seneste vægt". Mål-linjen (WeightCaptionLine's søster nedenfor) følger
-// samme regel for kropsmål.
-function WeightCaptionLine({
-  photo,
-  weightEntries,
-  t,
-}: {
-  photo: DiaryPhoto;
-  weightEntries: WeightEntryLite[];
-  t: (key: string, params?: Record<string, string | number>) => string;
-}) {
-  const match = matchForDate(photo.takenAt, weightEntries, (entry) => entry.weighedAt);
-  if (!match) return <p className="opacity-60">{t("photoDiary.noWeight")}</p>;
-  return (
-    <p>
-      {match.isSameDay
-        ? t("photoDiary.currentWeight", { value: match.entry.weightKg })
-        : t("photoDiary.latestWeight", {
-            value: match.entry.weightKg,
-            date: formatDateShort(match.entry.weighedAt),
-          })}
-    </p>
-  );
-}
-
-function MeasurementCaptionLine({
-  photo,
-  measurements,
-  t,
-}: {
-  photo: DiaryPhoto;
-  measurements: BodyMeasurementLite[];
-  t: (key: string, params?: Record<string, string | number>) => string;
-}) {
-  const match = matchForDate(photo.takenAt, measurements, (entry) => entry.measuredAt);
-  if (!match) return <p className="opacity-60">{t("photoDiary.noMeasurements")}</p>;
-  const value = formatMeasurement(match.entry, t);
-  return (
-    <p className="opacity-70">
-      {match.isSameDay
-        ? t("photoDiary.currentMeasurements", { value })
-        : t("photoDiary.latestMeasurements", { value, date: formatDateShort(match.entry.measuredAt) })}
-    </p>
   );
 }
 

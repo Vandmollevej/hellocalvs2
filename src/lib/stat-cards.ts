@@ -3,6 +3,7 @@
 
 import {
   IconActivity,
+  IconAlertTriangle,
   IconApple,
   IconAtom2,
   IconBeer,
@@ -28,6 +29,7 @@ import {
   IconWalk,
   type Icon,
 } from "@tabler/icons-react";
+import { IconWaterGlass } from "@/components/icons/WaterGlass";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
 import type { DailyTotal } from "@/lib/daily-totals";
 import { getSportMeta } from "@/lib/sport-icons";
@@ -252,7 +254,8 @@ export const STAT_CARD_DEFS: {
   {
     key: "saturatedFat",
     label: "Mættet fedt",
-    icon: IconDroplet,
+    // Advarselstrekant på de usunde fedttyper (G11, 2026-09-24).
+    icon: IconAlertTriangle,
     compute: (data) => `${formatNumber(average(data.days, (d) => d.saturatedFat), 1)} g`,
   },
   {
@@ -264,7 +267,7 @@ export const STAT_CARD_DEFS: {
   {
     key: "transFat",
     label: "Transfedt",
-    icon: IconDroplet,
+    icon: IconAlertTriangle,
     compute: (data) => `${formatNumber(average(data.days, (d) => d.transFat), 2)} g`,
   },
   {
@@ -326,6 +329,9 @@ export const STAT_CARD_DEFS: {
   { key: "alcoholKcal", label: "Alkohol", icon: IconBeer, compute: alcoholCard("kcal") },
   { key: "alcoholUnits", label: "Alkohol (genstande)", icon: IconBeer, compute: alcoholCard("units") },
   { key: "alcoholVolume", label: "Alkohol (mængde)", icon: IconBeer, compute: alcoholCard("volume") },
+  // Toksiner (src/lib/toxins.ts) matches Product.ingredientsText — same
+  // missing registration snapshot as E-numre, so same placeholder.
+  { key: "toxins", label: "Toksiner", icon: IconAlertTriangle, compute: () => "—" },
   {
     key: "daysLogged",
     label: "Dage logget",
@@ -349,7 +355,7 @@ export const STAT_CARD_DEFS: {
   {
     key: "water",
     label: "Vand",
-    icon: IconDroplet,
+    icon: IconWaterGlass,
     compute: (data) => {
       const avg = averageMetric(data.metrics, "WATER_ML");
       return avg !== null ? `${(avg / 1000).toFixed(1).replace(".", ",")} l` : "—";

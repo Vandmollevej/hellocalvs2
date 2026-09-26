@@ -91,7 +91,7 @@ function LogIndContent() {
         <span className="w-[52px]" aria-hidden="true" />
       </div>
 
-      <form id="login-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-4 pt-5">
+      <form id="login-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-4 pt-4">
         <p className="hf-type-body">{t("login.chooseCountry")}</p>
         <div className="mt-2 h-px bg-hf-gray-border" />
         <Link
@@ -105,7 +105,7 @@ function LogIndContent() {
           <HfChevron className="text-hf-gray" />
         </Link>
 
-        <div className="mt-6 flex flex-col gap-3">
+        <div className="mt-8 flex flex-col gap-4">
           {faceIdOnDevice && (
             <button
               type="button"
@@ -127,7 +127,7 @@ function LogIndContent() {
 
         <p className="hf-type-body mt-4 text-center opacity-70">{t("common.or")}</p>
 
-        <div className="mt-2 flex flex-col gap-3">
+        <div className="mt-2 flex flex-col gap-4">
           <TextField
             type="email"
             placeholder={t("login.emailPlaceholder")}

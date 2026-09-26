@@ -107,9 +107,9 @@ function ReportBugContent() {
         />
 
         {pending === undefined ? (
-          <p className="hf-type-body mt-6 opacity-70">Henter…</p>
+          <p className="hf-type-body mt-8 opacity-70">Henter…</p>
         ) : showOverlay ? (
-          <div className="mt-6 flex flex-col items-center gap-4 text-center">
+          <div className="mt-8 flex flex-col items-center gap-4 text-center">
             <p className="hf-type-body">
               Vi har modtaget din rettelse som afventer gennemgang
             </p>
@@ -122,7 +122,7 @@ function ReportBugContent() {
             </button>
           </div>
         ) : showForm ? (
-          <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-3">
+          <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
             <label className="flex flex-col gap-1">
               <span className="hf-type-label">Beskriv fejlen</span>
               <textarea

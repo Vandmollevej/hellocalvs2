@@ -17,6 +17,9 @@ import {
   IconAlertTriangle,
   IconLifebuoy,
   IconMoon,
+  IconWallet,
+  IconAdjustments,
+  IconBug,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
@@ -81,7 +84,7 @@ export default function SettingsPage() {
         <OnboardingWizard forceVisible onClose={() => setShowOnboarding(false)} />
       )}
 
-      <div className="flex flex-col gap-8 p-4">
+      <div className="hf-page hf-page--sections">
         <AccordionCard>
           <ChevronRow icon={<IconWorld size={20} />} label={t("settings.languageAndRegion")} href="/profile/settings/language-region" divider={false} />
         </AccordionCard>
@@ -89,18 +92,25 @@ export default function SettingsPage() {
         <AccordionCard>
           <ChevronRow
             icon={<IconCreditCard size={20} />}
+            label={t("profile.row.subscription")}
+            href="/profile/subscription"
+          />
+          <ChevronRow
+            icon={<IconWallet size={20} />}
             label={t("settings.payment")}
             href="/settings/payment"
             divider={false}
           />
         </AccordionCard>
 
-        <div className="rounded-[8px] bg-hf-tan p-4 text-center">
-          <p className="hf-type-body-sm font-bold">{t("settings.recipesPromo")}</p>
-          <button className="hf-btn-primary mt-4 h-12 w-full text-[17px]">
-            {t("settings.logInOrSignUp")}
-          </button>
-        </div>
+        <AccordionCard>
+          <ChevronRow
+            icon={<IconAdjustments size={20} />}
+            label={t("settings.setupTitle")}
+            href="/profile/settings"
+            divider={false}
+          />
+        </AccordionCard>
 
         <AccordionCard>
           <ChevronRow icon={<IconHelp size={20} />} label={t("settings.helpCenter")} />
@@ -152,6 +162,11 @@ export default function SettingsPage() {
             icon={<IconLifebuoy size={20} />}
             label={t("settings.support.title")}
             href="/settings/support"
+          />
+          <ChevronRow
+            icon={<IconBug size={20} />}
+            label={t("profile.row.reportBug")}
+            href="/profile/report-bug"
             divider={false}
           />
         </AccordionCard>

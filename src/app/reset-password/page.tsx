@@ -62,14 +62,14 @@ function ResetPasswordContent() {
       </div>
 
       {!token ? (
-        <div className="flex flex-1 flex-col gap-4 px-4 pt-6">
+        <div className="flex flex-1 flex-col gap-4 px-4 pt-8">
           <p className="hf-type-caption text-hf-red-dark">{t("resetPassword.missingToken")}</p>
           <Link href="/forgot-password" className="hf-type-body underline">
             {t("resetPassword.requestNewLink")}
           </Link>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4 px-4 pt-6">
+        <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4 px-4 pt-8">
           <TextField
             label={t("resetPassword.newPasswordLabel")}
             type="password"
