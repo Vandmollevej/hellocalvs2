@@ -137,7 +137,7 @@ export function StatChart({
 
   return (
     <div className="relative rounded-2xl bg-hf-tan p-4">
-      <div className="mb-3 flex items-baseline justify-between">
+      <div className="mb-4 flex items-baseline justify-between">
         <p className="text-sm font-bold text-hf-black">{title}</p>
         <p className="text-[11px] text-hf-black opacity-50">{t("statChart.last7Days")}</p>
       </div>

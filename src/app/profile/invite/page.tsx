@@ -168,7 +168,7 @@ export default function InvitePage() {
         </button>
       }
     >
-      <div className="px-4 pt-4 pb-8">
+      <div className="px-4 pt-6 pb-8">
         <PointsPromoBanner
           headline="I optjener begge 300 points, når din ven har oprettet en konto"
           subtext="300 points kan indløses til 1 gratis måned under Profil → Points."
@@ -176,7 +176,7 @@ export default function InvitePage() {
         />
 
         <h2 className="hf-type-section-title">Din invitation</h2>
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4">
           <TextField
             variant="standard"
             label="Dit navn"
@@ -237,7 +237,7 @@ export default function InvitePage() {
             {invitations.map((invitation) => (
               <div
                 key={invitation.id}
-                className="flex items-center justify-between border-b py-3"
+                className="flex items-center justify-between border-b py-3 last:border-b-0"
                 style={{ borderColor: "var(--hf-color-line)" }}
               >
                 <div className="min-w-0 flex-1">
@@ -268,7 +268,7 @@ export default function InvitePage() {
             {referrals.map((r) => (
               <div
                 key={r.id}
-                className="flex items-center justify-between border-b py-3"
+                className="flex items-center justify-between border-b py-3 last:border-b-0"
                 style={{ borderColor: "var(--hf-color-line)" }}
               >
                 <span className="hf-type-body">{r.referredUser.displayName}</span>

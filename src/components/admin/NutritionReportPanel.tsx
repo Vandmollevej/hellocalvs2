@@ -63,7 +63,7 @@ function ReportRow({ report }: { report: NutritionReport }) {
   }
 
   return (
-    <div className="flex flex-col gap-3 rounded-lg border border-border-strong p-3">
+    <div className="flex flex-col gap-4 rounded-lg border border-border-strong p-4">
       <div className="flex items-center justify-between gap-2">
         <span className="flex items-center gap-1.5 text-sm font-medium text-text-primary">
           Næringsindhold
@@ -80,7 +80,7 @@ function ReportRow({ report }: { report: NutritionReport }) {
         {Math.round(report.amountGrams)} g · værdier pr. 100 g
       </p>
 
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-2">
         {report.changes.map((change) => (
           <div key={change.field} className="flex items-baseline justify-between gap-2 text-sm">
             <span className="text-text-primary">{NUTRITION_REPORT_FIELD_LABEL[change.field]}</span>
@@ -152,7 +152,7 @@ export function NutritionReportPanel({ reports }: { reports: NutritionReport[] }
   if (reports.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-3 rounded-lg border border-border-strong bg-surface-2 p-3">
+    <div className="flex flex-col gap-4 rounded-lg border border-border-strong bg-surface-2 p-4">
       <h2 className="text-sm font-semibold text-text-primary">
         {reports.length === 1 ? "1 brugerindberetning" : `${reports.length} brugerindberetninger`}
       </h2>

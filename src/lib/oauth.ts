@@ -27,8 +27,9 @@ export function redirectUri(provider: ProviderSlug) {
   return `${APP_BASE_URL}/api/auth/oauth/${provider}/callback`;
 }
 
-export function appUrl(path: string) {
-  return `${APP_BASE_URL}${path}`;
+// Uden APP_BASE_URL (fx lokalt) sendes brugeren tilbage til samme adresse.
+export function appUrl(path: string, req: Request) {
+  return process.env.APP_BASE_URL ? `${APP_BASE_URL}${path}` : new URL(path, req.url).toString();
 }
 
 export function isProviderConfigured(provider: ProviderSlug): boolean {

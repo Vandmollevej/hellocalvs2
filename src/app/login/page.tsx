@@ -2,16 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Suspense, useState, useSyncExternalStore } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { SocialLoginButton } from "@/components/hf/SocialLoginButton";
 import { TextField } from "@/components/hf/TextField";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { isPasskeySupported, loginWithPasskey } from "@/lib/passkey-client";
+import { hasPasskeyOnDevice, loginWithPasskey } from "@/lib/passkey-client";
 import { afterLoginPath, oauthErrorKey, startOAuth } from "@/lib/login-flow";
-
-const noSubscribe = () => () => {};
 
 function LogIndContent() {
   const { t } = useTranslation();
@@ -25,14 +23,19 @@ function LogIndContent() {
     oauthError ? t(oauthError.key, oauthError.vars) : null
   );
   const [submitting, setSubmitting] = useState(false);
-  const passkeySupported = useSyncExternalStore(noSubscribe, isPasskeySupported, () => false);
+  // Face ID kun, når det er slået til på denne enhed efter et almindeligt login.
+  const [faceIdOnDevice, setFaceIdOnDevice] = useState(false);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage findes kun i browseren
+    setFaceIdOnDevice(hasPasskeyOnDevice());
+  }, []);
 
   async function handleFaceId() {
     setError(null);
     setSubmitting(true);
     try {
       await loginWithPasskey();
-      router.push(next);
+      router.push(afterLoginPath(next));
     } catch {
       setError(t("login.faceIdError"));
       setSubmitting(false);
@@ -77,7 +80,7 @@ function LogIndContent() {
         <span className="w-[52px]" aria-hidden="true" />
       </div>
 
-      <form id="login-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-4 pt-5">
+      <form id="login-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-4 pt-4">
         <p className="hf-type-body-sm">{t("login.chooseCountry")}</p>
         <div className="mt-2 h-px bg-hf-gray-border" />
         <Link
@@ -91,8 +94,8 @@ function LogIndContent() {
           <HfChevron className="text-hf-gray" />
         </Link>
 
-        <div className="mt-6 flex flex-col gap-3">
-          {passkeySupported && (
+        <div className="mt-8 flex flex-col gap-4">
+          {faceIdOnDevice && (
             <button
               type="button"
               onClick={handleFaceId}
@@ -113,7 +116,7 @@ function LogIndContent() {
 
         <p className="hf-type-body-sm mt-4 text-center opacity-70">{t("common.or")}</p>
 
-        <div className="mt-2 flex flex-col gap-3">
+        <div className="mt-2 flex flex-col gap-4">
           <TextField
             type="email"
             placeholder={t("login.emailPlaceholder")}

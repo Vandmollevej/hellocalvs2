@@ -140,6 +140,11 @@ model User {
   // (snapshot-princippet), men PII er ryddet — se src/lib/gdpr.ts.
   forgottenAt DateTime?
 
+  // Udtrykkeligt samtykke til behandling af helbredsoplysninger (GDPR art. 9,
+  // docs/DECISIONS.md 2026-09-25). Null = ikke givet endnu; ConsentGate sender
+  // brugeren til /samtykke, før appen kan bruges.
+  healthDataConsentAt DateTime?
+
   // Krydsspærring for "videresend til en ven" (docs/DECISIONS.md, points-
   // system 2026-09-02): sat når to brugere har sendt mere end én tur-retur
   // videresendelse til hinanden inden for 24 timer. Blokerer nye points fra
@@ -1599,6 +1604,15 @@ model Dish {
   externalSource String?
   // Offentligt ID på den delte udgave (SharedRecipe), når retten er delt.
   sharedRecipeId String?
+  // Op til 3 billeder af den færdige ret (offentlige stier under
+  // /product-images/recipe-images). Det første er forsidebillede.
+  images         String[]  @default([])
+  // Fremgangsmåde: [{ title, text, image }] i rækkefølge. image er null
+  // eller en sti som i images. Se docs/DECISIONS.md 2026-09-25.
+  steps          Json?
+  // Kategorier valgt efter gem ("diet:vegan", "meal:dinner",
+  // "cuisine:italian", "method:oven"), jf. src/lib/recipe-categories.ts.
+  tags           String[]  @default([])
   createdAt      DateTime  @default(now())
 
   ingredients   DishIngredient[]
@@ -2250,6 +2264,11 @@ model SharedRecipe {
   // [{ productId, name, grams, imageUrl, kcalPer100g, proteinPer100g,
   //    carbsPer100g, fatPer100g }] — snapshot af ingredienserne.
   ingredients   Json
+  // Snapshot af rettens billeder, fremgangsmåde og kategorier ved deling
+  // (samme format som Dish.images/steps/tags).
+  images        String[]           @default([])
+  steps         Json?
+  tags          String[]           @default([])
   // Titel + ingrediensnavne i små bogstaver, til søgning.
   searchText    String
   totalGrams    Float
@@ -2332,4 +2351,18 @@ model UserKnownDevice {
 
   @@unique([userId, deviceHash])
   @@map("user_known_devices")
+}
+
+// API-nøgler rettet fra admin → API-nøgler (docs/DECISIONS.md 2026-09-25
+// "API-nøgler i admin"). Værdien er AES-256-GCM-krypteret med en nøgle
+// afledt af ADMIN_SESSION_SECRET, så en databasekopi alene ikke afslører
+// den. Ved opstart lægges værdierne oven på process.env
+// (src/lib/api-keys/store.ts); uden række gælder .env.production.
+model AppSecret {
+  key         String   @id
+  cipherText  String
+  updatedById String?
+  updatedAt   DateTime @updatedAt
+
+  @@map("app_secrets")
 }

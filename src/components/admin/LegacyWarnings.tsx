@@ -47,7 +47,7 @@ export async function LegacyWarnings() {
 
   return (
     <div className="flex flex-col gap-8">
-      <section className="flex flex-col gap-3">
+      <section className="flex flex-col gap-4">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-text-muted">
           Mulige dubletter ({duplicateGroups.length})
         </h2>
@@ -88,14 +88,14 @@ export async function LegacyWarnings() {
         )}
       </section>
 
-      <section className="flex flex-col gap-3">
+      <section className="flex flex-col gap-4">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-text-muted">
           Billeder til godkendelse ({pendingImages.length})
         </h2>
         {pendingImages.length === 0 ? (
           <p className="text-sm text-text-secondary">Ingen billeder afventer godkendelse.</p>
         ) : (
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2">
             {pendingImages.map((product) => (
               <PendingImageCard key={product.id} product={product} />
             ))}
@@ -103,7 +103,7 @@ export async function LegacyWarnings() {
         )}
       </section>
 
-      <section className="flex flex-col gap-3">
+      <section className="flex flex-col gap-4">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-text-muted">
           Videresend-misbrug ({forwardAbuseUsers.length})
         </h2>
@@ -118,7 +118,7 @@ export async function LegacyWarnings() {
             {forwardAbuseUsers.map((user) => (
               <div
                 key={user.id}
-                className="flex items-center justify-between rounded-lg border border-border-strong bg-surface-2 p-3"
+                className="flex items-center justify-between rounded-lg border border-border-strong bg-surface-2 p-4"
               >
                 <div>
                   <p className="text-sm font-medium text-text-primary">{user.displayName}</p>

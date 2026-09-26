@@ -259,8 +259,8 @@ export function StatChartsSection({
           >
             <div
               style={{ animationDelay: `${(index % 3) * 60}ms` }}
-              className={`relative rounded-2xl border-[1.5px] ${
-                editMode ? "border-dashed border-hf-black/40" : "border-transparent"
+              className={`relative rounded-2xl ${
+                editMode ? "outline-[1.5px] -outline-offset-[1.5px] outline-dashed outline-hf-black/40" : ""
               } ${editMode && !isDragged ? "stat-card-editing" : ""} ${isDragged ? "shadow-xl" : ""}`}
             >
               {editMode && (

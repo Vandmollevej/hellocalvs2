@@ -6,6 +6,7 @@ import { LocaleProvider } from "@/i18n/LocaleProvider";
 import { OfflineQueueBanner } from "@/components/OfflineQueueBanner";
 import { GlobalClipboardGuard } from "@/components/GlobalClipboardGuard";
 import { AuthGate } from "@/components/AuthGate";
+import { ConsentGate } from "@/components/ConsentGate";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,6 +53,7 @@ export default function RootLayout({
         <GlobalClipboardGuard />
         <LocaleProvider>
           <AuthGate />
+          <ConsentGate />
           <OfflineQueueBanner />
           <PhoneFrame>{children}</PhoneFrame>
         </LocaleProvider>

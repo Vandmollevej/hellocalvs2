@@ -17,6 +17,7 @@ const PUBLIC_PREFIXES = [
   "/hello-doc",
   "/forward",
   "/betingelser",
+  "/privatlivspolitik",
   "/admin",
 ];
 

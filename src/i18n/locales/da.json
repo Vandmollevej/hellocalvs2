@@ -95,6 +95,15 @@
       "oestrig": "Østrig"
     }
   },
+  "consent": {
+    "title": "Dit samtykke",
+    "intro": "En kalorietæller kan ikke tælle uden at kende det, du spiser og vejer. Det er helbredsoplysninger, og dem må vi kun behandle med dit udtrykkelige samtykke.",
+    "submit": "Giv samtykke og fortsæt",
+    "submitting": "Gemmer…",
+    "declineNote": "Vil du ikke give samtykke, kan du ikke bruge Hello Cal. Du kan logge ud eller bede om at få kontoen slettet via Hjælpecenter.",
+    "logout": "Log ud",
+    "error": "Samtykket kunne ikke gemmes. Prøv igen."
+  },
   "signup": {
     "title": "Opret konto",
     "back": "Tilbage",
@@ -106,7 +115,11 @@
     "submit": "Opret konto",
     "submitting": "Opretter konto…",
     "genericError": "Noget gik galt — prøv igen",
-    "networkError": "Kunne ikke oprette kontoen — tjek din forbindelse og prøv igen"
+    "networkError": "Kunne ikke oprette kontoen — tjek din forbindelse og prøv igen",
+    "healthConsent": "Jeg giver udtrykkeligt samtykke til, at Hello Cal behandler mine helbredsoplysninger (fx kost, vægt og kropsmål) for at levere appen. Jeg accepterer Betingelserne.",
+    "legalLinksTerms": "Betingelser",
+    "legalLinksPrivacy": "Privatlivspolitik",
+    "consentRequired": "Slå samtykket til, før du opretter kontoen."
   },
   "nav": {
     "add": "Tilføj",
@@ -418,12 +431,16 @@
     "goalExceededList": "Du overskred dit mål",
     "adjustBedtimeAriaLabel": "Justér sengetid",
     "adjustWakeTimeAriaLabel": "Justér stå-op-tid",
+    "nightSleepDuration": "Nattens søvn: {hours} timer",
     "previousDayAriaLabel": "Forrige dag",
     "nextDayAriaLabel": "Næste dag",
     "dailyGoalReached": "Du er inden for dagens mål",
     "dailyGoalExceeded": "Du har overskredet dagens mål",
     "dailyGoalNone": "Endnu intet registreret",
     "registrations": "Registreringer",
+    "intakeTooLow": "For lavt indtag",
+    "lowIntakeNotice": "Vær opmærksom på, at dit indtag er lavere end hvad der er sundt. Du bør indtage mindst {minimum} kcal om dagen for en person af din statur.",
+    "noEntries": "Ingen indtastninger",
     "noRegistrations": "Ingen registreringer",
     "loadingDayRegistrations": "Henter dagens registreringer…",
     "registrationsLoadError": "Registreringerne kunne ikke hentes",
@@ -459,7 +476,7 @@
     "liveViewAriaLabel": "Live kameravisning",
     "notRecognizedRetry": "Produkt ikke genkendt, prøv igen",
     "holdCameraStill": "Hold kameraet stille over stregkoden",
-    "barcodeHintOutsideFrame": "Sørg for at stregkoden er inden for feltet, til rammen lyser grønt.",
+    "barcodeHintOutsideFrame": "Hold hele stregkoden inde i billedet — den må gerne vende lodret.",
     "barcodeHintBlurry": "Stregkoden er sløret? Prøv at holde lidt længere afstand, til den er skarp.",
     "placeProductInCircle": "Placér produktet i cirklen",
     "placePlateInCircle": "Placér tallerkenen i cirklen",
@@ -563,7 +580,7 @@
     "loadError": "Opskrifter kunne ikke hentes lige nu",
     "noResults": "Ingen opskrifter matcher din søgning",
     "tabMine": "Mine retter",
-    "tabShared": "Søg i delte retter",
+    "tabShared": "Delte retter",
     "sharedSearchPlaceholder": "Søg i titel, ingredienser …",
     "sortRelevance": "Relevans",
     "sortPopular": "Popularitet",
@@ -576,6 +593,141 @@
     "helloFresh": "HelloFresh",
     "kcalTotal": "{kcal} kcal i alt",
     "kcalServing": "{kcal} kcal pr. portion"
+  },
+  "recipeFilters": {
+    "title": "Filtre",
+    "openFilters": "Filtre",
+    "adjustTitle": "Justér retter",
+    "persons": "Justér retter til: {count} personer",
+    "personsOne": "Justér retter til: 1 person",
+    "portionHint": "Anbefalet servering til dig: ca. {kcal} kcal",
+    "showKcal": "Vis kalorier",
+    "showEnergySplit": "Vis energifordeling",
+    "sortTitle": "Sorter efter",
+    "allergiesTitle": "Allergier",
+    "dietsTitle": "Diæter",
+    "highProtein": "Høj på protein",
+    "specialTitle": "Specialkost",
+    "macrosTitle": "Fokus på makroer",
+    "reset": "Nulstil filtre",
+    "kcalPerServing": "{kcal} kcal pr. servering",
+    "servings": "{count} serveringer",
+    "split": "Protein {protein} % · Kulhydrat {carbs} % · Fedt {fat} %",
+    "warning": "Vær opmærksom på {ingredient}, hvor der ofte findes spor af {allergen}",
+    "allergens": {
+      "gluten": "Gluten",
+      "crustaceans": "Skaldyr",
+      "eggs": "Æg",
+      "fish": "Fisk",
+      "peanuts": "Jordnødder",
+      "soybeans": "Soja",
+      "milk": "Mælk",
+      "nuts": "Nødder",
+      "celery": "Selleri",
+      "mustard": "Sennep",
+      "sesame-seeds": "Sesamfrø",
+      "sulphur-dioxide-and-sulphites": "Svovldioxid og sulfitter",
+      "lupin": "Lupin",
+      "molluscs": "Bløddyr",
+      "apple": "Æble",
+      "avocado": "Avocado",
+      "banana": "Banan",
+      "citrus": "Citrusfrugter",
+      "garlic": "Hvidløg",
+      "kiwi": "Kiwi",
+      "coconut": "Kokos",
+      "onion": "Løg",
+      "corn": "Majs",
+      "legumes": "Bælgfrugter (ærter, bønner, linser)",
+      "red-meat": "Rødt kød (alfa-gal)",
+      "mushrooms": "Svampe",
+      "stone-fruit": "Stenfrugter (fersken, blomme, kirsebær)",
+      "strawberry": "Jordbær",
+      "tomato": "Tomat"
+    },
+    "diets": {
+      "vegan": "Vegansk",
+      "vegetarian": "Vegetarisk",
+      "pescetarian": "Pescetarisk",
+      "glutenFree": "Glutenfri",
+      "lactoseFree": "Laktosefri",
+      "keto": "Keto",
+      "lowSugar": "Lavt sukker"
+    },
+    "nutrients": {
+      "fiber": "Højt indhold af fibre",
+      "iron": "Højt indhold af jern",
+      "calcium": "Højt indhold af calcium",
+      "potassium": "Højt indhold af kalium",
+      "vitaminA": "Højt indhold af A-vitamin",
+      "vitaminC": "Højt indhold af C-vitamin"
+    },
+    "macros": {
+      "protein-low": "Lavt på protein",
+      "carbs-high": "Højt på kulhydrat",
+      "carbs-low": "Lavt på kulhydrat",
+      "fat-high": "Højt på fedt",
+      "fat-low": "Lavt på fedt"
+    }
+  },
+  "recipeSteps": {
+    "title": "Fremgangsmåde",
+    "hint": "Overskrift + tekst for hvert trin. Tryk på plus for at tilføje næste trin; tryk på et trin for at rette det.",
+    "addButton": "Tilføj fremgangsmåde",
+    "stepNumber": "Trin {number}",
+    "titlePlaceholder": "Overskrift",
+    "textPlaceholder": "Tekst",
+    "addStep": "Tilføj trin",
+    "addPhoto": "Tag billede til trinnet",
+    "removePhoto": "Fjern billedet",
+    "remove": "Slet trin"
+  },
+  "recipeImages": {
+    "title": "Billeder af retten",
+    "addButton": "Tilføj billeder",
+    "add": "Tilføj billede",
+    "remove": "Fjern billede",
+    "count": "{count}/{max}"
+  },
+  "recipeCategories": {
+    "title": "Vælg kategorier",
+    "intro": "Retten er gemt. Diæterne er foreslået ud fra ingredienserne — ret dem, og vælg gerne flere kategorier.",
+    "close": "LUK",
+    "groups": {
+      "diet": "Diæter",
+      "meal": "Måltidstype",
+      "cuisine": "Køkken",
+      "method": "Tilberedning"
+    },
+    "meal": {
+      "breakfast": "Morgenmad",
+      "lunch": "Frokost",
+      "dinner": "Aftensmad",
+      "snack": "Mellemmåltid",
+      "dessert": "Dessert"
+    },
+    "cuisine": {
+      "danish": "Dansk",
+      "nordic": "Nordisk",
+      "italian": "Italiensk",
+      "french": "Fransk",
+      "spanish": "Spansk",
+      "greek": "Græsk",
+      "middleEastern": "Mellemøstlig",
+      "indian": "Indisk",
+      "asian": "Asiatisk",
+      "mexican": "Mexicansk",
+      "american": "Amerikansk"
+    },
+    "method": {
+      "quick": "Hurtig (under 30 min.)",
+      "oven": "Ovnret",
+      "stew": "Gryderet",
+      "salad": "Salat",
+      "soup": "Suppe",
+      "grill": "Grill",
+      "noCook": "Uden tilberedning"
+    }
   },
   "recipeDetail": {
     "loading": "Henter retten …",
@@ -754,6 +906,7 @@
     },
     "row": {
       "subscription": "Abonnement",
+      "paymentMethods": "Betalingsmetoder",
       "weightCalibration": "Vægt kalibrering",
       "bodyMeasurements": "Kropsmål",
       "sleep": "Søvnmønster",
@@ -827,6 +980,8 @@
       "serious": "Seriøs"
     },
     "activeUntil": "Aktiv til {date}",
+    "nextPayment": "Næste betaling d. {date}",
+    "paymentMethods": "Betalingsmetoder",
     "freePlan": {
       "title": "Gratis",
       "description": "Adgang til alt i Hello Cal undtagen Hello Doc. Kun de seneste 30 dages historik vises — ældre data gemmes og kommer tilbage, hvis du bliver Seriøs."
@@ -836,7 +991,8 @@
       "priceSuffix": "kr./måned",
       "description": "Fuld historik uden 30-dages-grænse, plus adgang til Hello Doc.",
       "upgradeCta": "Opgradér til Seriøs",
-      "upgradeUnavailable": "Betaling er ikke tilsluttet endnu — brug en gavekode eller indløs points for at blive Seriøs, indtil en betalingsudbyder er på plads."
+      "upgradeUnavailable": "Betaling er ikke tilsluttet endnu — brug en gavekode eller indløs points for at blive Seriøs, indtil en betalingsudbyder er på plads.",
+      "withdrawalConsent": "Jeg ønsker, at abonnementet starter med det samme, og er klar over, at jeg ved fortrydelse inden for 14 dage kun får refunderet den del af perioden, jeg ikke har brugt."
     },
     "retentionNote": "Data ældre end 30 dage slettes aldrig — det gemmes og vises igen, så snart du bliver Seriøs."
   },
@@ -871,7 +1027,7 @@
     "weightPlaceholder": "fx 78,4",
     "timeGrid": {
       "title": "Vægt over dagen",
-      "placeholder": "–"
+      "placeholder": "Skriv vægt"
     },
     "clothed": {
       "false": "Uden tøj",
@@ -879,9 +1035,7 @@
     },
     "shoes": {
       "off": "Uden sko",
-      "on": "Med sko",
-      "unknown": "Ved ikke",
-      "unknownLabel": "Sko ikke angivet"
+      "on": "Med sko"
     },
     "timeOfDay": {
       "morning": "Morgen",
@@ -889,22 +1043,24 @@
     },
     "toilet": {
       "before": "Før toilet",
-      "after": "Efter toilet",
-      "unknown": "Ved ikke",
-      "unknownLabel": "Toilet ikke angivet"
+      "after": "Efter toilet"
     },
     "meal": {
       "before": "Før mad",
-      "after": "Efter mad",
-      "unknown": "Ved ikke",
-      "unknownLabel": "Mad ikke angivet"
+      "after": "Efter mad"
     },
-    "submit": "Registrér vejning",
+    "submit": "Opdatér oplysninger",
     "saving": "Gemmer…",
     "loading": "Henter…",
     "noEntriesYet": "Ingen vejninger registreret endnu.",
     "deleteAria": "Slet vejning",
-    "delete": "Slet"
+    "delete": "Slet",
+    "recentTitle": "Seneste vejninger",
+    "status": {
+      "saved": "Oplysningerne er gemt.",
+      "nothing": "Der er ingen vægt at gemme endnu.",
+      "error": "Noget kunne ikke gemmes. Prøv igen."
+    }
   },
   "bodyMeasurements": {
     "title": "Kropsmål",
@@ -925,6 +1081,7 @@
     "saving": "Gemmer…",
     "loading": "Henter…",
     "noEntriesYet": "Ingen kropsmål registreret endnu.",
+    "chooseSexHint": "Vælg køn under Profil → Redigér profil for at se tegningerne af, hvor du måler.",
     "deleteAria": "Slet måling",
     "delete": "Slet"
   },
@@ -1111,32 +1268,23 @@
     "helloFreshDescription": "Vis HelloFresh-opskrifter sammen med de delte retter under Opskrifter",
     "title": "Integrationer",
     "loading": "Henter…",
-    "status": {
-      "disconnected": "Ikke forbundet",
-      "connected": "Forbundet",
-      "error": "Fejl",
-      "needsApp": "Kræver app",
-      "pending": "Afventer"
-    },
     "notice": {
       "connected": "{name} blev forbundet.",
       "failed": "Kunne ikke forbinde {name}. Prøv igen."
     },
-    "intro": "Forbind dine sundhedsapps, så vægt, skridt og træning hentes automatisk. Alt lægges i din låste boks, som kun du kan åbne.",
+    "intro": "Forbind dine sundhedsapps, så vægt, skridt og træning hentes automatisk.",
     "lastSynced": "Sidst synkroniseret {date}",
-    "syncNow": "Synkroniser nu",
-    "syncing": "Synkroniserer…",
     "notConfigured": "Klar i appen, men venter på nøglerne på serveren.",
-    "disconnect": "Frakobl",
     "connect": "Forbind",
-    "deviceTokensTitle": "Enhedstokens (companion-app)",
-    "deviceTokensDescription": "Hello Cal-appen bruger en enhedskode til at sende dine data sikkert ind i din låste boks.",
-    "createdAt": "Oprettet {date}",
-    "lastUsedAt": " · Sidst brugt {date}",
     "remove": "Fjern",
-    "saveTokenNotice": "Gem denne værdi nu — den vises ikke igen:",
-    "close": "Luk",
-    "generateDeviceCode": "Generér enhedskode"
+    "enable": "Slå til",
+    "unavailable": "Ikke tilgængelig endnu",
+    "sections": {
+      "active": "Aktive integrationer",
+      "popular": "Oftest anvendt",
+      "recipes": "Opskrifter",
+      "apps": "Apps"
+    }
   },
   "payment": {
     "title": "Betaling",
@@ -1178,9 +1326,7 @@
     "addAll": "+ Tilføj",
     "noCardsYet": "Ingen kort her endnu.",
     "addHeading": "+ Overskrift",
-    "addHeadingHint": "Tilføjer en sektionsoverskrift til din statistikside, som du selv kan omdøbe.",
-    "addDivider": "+ Adskillelseslinje",
-    "addDividerHint": "Tilføjer en sort adskillelseslinje til din statistikside."
+    "addDivider": "+ Skillelinje"
   },
   "statUnusedCharts": {
     "title": "Ubrugte grafer",
@@ -1205,7 +1351,7 @@
     "renameHeading": "Omdøb overskrift",
     "removeHeading": "Fjern overskrift",
     "dragHeading": "Flyt overskrift",
-    "removeDivider": "Fjern adskillelseslinje",
+    "removeDivider": "Fjern skillelinje",
     "noData": "Ingen data i perioden"
   },
   "statChart": {
@@ -1251,23 +1397,16 @@
   "addButton": {
     "closeMenu": "Luk tilføj-menu",
     "openMenu": "Åbn tilføj-menu",
-    "microphone": "Mikrofon",
-    "ownDishes": "Egne retter",
+    "microphone": "Indtal",
+    "ownDishes": "Retter",
     "search": "Søg",
     "weight": "Vægt",
     "water": "Vand",
-    "camera": "Kamera",
+    "camera": "Scan med kamera",
     "list": "Se alle",
     "menstrualCycle": "Menstruation",
     "hint": {
-      "microphone": "Indtal",
-      "ownDishes": "Måltid",
-      "search": "Søgning",
-      "weight": "Vægt og mål",
-      "water": "Vandindtag",
-      "camera": "Tag billede",
-      "list": "Se alle",
-      "menstrualCycle": "Log menstruation"
+      "list": "Se alle"
     }
   },
   "onboarding": {

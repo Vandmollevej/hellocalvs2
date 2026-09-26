@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -7,6 +8,7 @@ import {
   BODY_MEASUREMENT_FIELDS,
   emptyBodyMeasurementValues,
   type BodyMeasurementField,
+  type BodyMeasurementSex,
 } from "@/lib/body-measurements";
 
 type BodyMeasurementEntry = {
@@ -84,6 +86,23 @@ export default function BodyMeasurementsPage() {
   // denne ene række i stedet for at oprette en ny måling pr. felt, så
   // billede-dagbogens "Aktuelle mål" kan vise dem samlet.
   const todaysEntryId = useRef<string | null>(null);
+  // Køn læses fra profilen og styrer kun, hvilke tegninger der vises. Uden
+  // valgt køn gættes der ikke — kortene vises da uden tegning.
+  const [sex, setSex] = useState<BodyMeasurementSex | null>(null);
+  const [sexLoaded, setSexLoaded] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/profile")
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Kunne ikke hente profil");
+        return (await response.json()) as { user: { sex: BodyMeasurementSex | null } };
+      })
+      .then((data) => {
+        setSex(data.user.sex ?? null);
+        setSexLoaded(true);
+      })
+      .catch(() => {});
+  }, []);
 
   function load() {
     fetch("/api/body-measurements")
@@ -151,29 +170,53 @@ export default function BodyMeasurementsPage() {
 
   return (
     <HfScreen title={t("bodyMeasurements.title")}>
-      <div className="flex flex-col gap-4 p-4">
+      <div className="hf-page">
         <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
           <p className="text-[13px] leading-5">{t("bodyMeasurements.intro")}</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 rounded-2xl bg-hf-tan p-4">
-          {BODY_MEASUREMENT_FIELDS.map(({ field, labelKey }) => (
-            <label key={field} className="flex flex-col gap-1 text-left">
-              <span className="text-[13px] font-semibold text-hf-black">{t(labelKey)}</span>
-              <InlineMeasurementInput
-                value={values[field]}
-                onChange={(value) => setValues((current) => ({ ...current, [field]: value }))}
-                onCommit={() => commitField(field)}
-                placeholder={t("bodyMeasurements.placeholder")}
-              />
+        {sexLoaded && sex === null && (
+          <p className="text-center text-[13px] text-hf-black opacity-60">
+            {t("bodyMeasurements.chooseSexHint")}
+          </p>
+        )}
+
+        {/* Ét kort pr. mål i Statistik-kortenes stil: tegning til venstre i fast
+            bredde (så titlerne flugter), titel + felt til højre. */}
+        <div className="flex flex-col gap-3">
+          {BODY_MEASUREMENT_FIELDS.map(({ field, labelKey, image }) => (
+            <label key={field} className="flex items-center gap-4 rounded-2xl bg-hf-tan p-4 text-left">
+              <span className="flex h-[108px] w-20 shrink-0 items-center justify-center">
+                {image && sex && (
+                  <Image
+                    src={image[sex]}
+                    alt=""
+                    width={80}
+                    height={108}
+                    className="h-full w-full object-contain"
+                  />
+                )}
+              </span>
+              <span className="flex min-w-0 flex-1 flex-col gap-1">
+                <span className="text-[15px] font-semibold text-hf-black">{t(labelKey)}</span>
+                <span className="flex items-baseline gap-2">
+                  <InlineMeasurementInput
+                    value={values[field]}
+                    onChange={(value) => setValues((current) => ({ ...current, [field]: value }))}
+                    onCommit={() => commitField(field)}
+                    placeholder={t("bodyMeasurements.placeholder")}
+                  />
+                  <span className="shrink-0 text-[15px] text-hf-black opacity-60">cm</span>
+                </span>
+              </span>
             </label>
           ))}
-          {saving && (
-            <p className="col-span-2 text-center text-[11px] text-hf-black opacity-50">
-              {t("bodyMeasurements.saving")}
-            </p>
-          )}
         </div>
+        {saving && (
+          <p className="text-center text-[11px] text-hf-black opacity-50">
+            {t("bodyMeasurements.saving")}
+          </p>
+        )}
 
         <div className="flex flex-col gap-2">
           {loading && (

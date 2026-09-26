@@ -209,6 +209,21 @@ Confirm that the dump exists and is non-empty. Backups must also be copied to a
 second storage location; a file beside the live database is not sufficient as
 the only backup.
 
+### Fuld container-backup
+
+`scripts/backup/backup-all-containers.sh` kopieres af deployet til
+`/volume1/docker/App/hellocal-v2/scripts/backup-all-containers.sh` og køres manuelt:
+
+```sh
+ssh -t Peter@192.168.1.90 "sudo bash /volume1/docker/App/hellocal-v2/scripts/backup-all-containers.sh"
+```
+
+Den dumper Postgres/MySQL i stedet for at kopiere deres rå datamapper, kopierer
+hver mount-mappe én gang (også når flere containere deler den, og ikke
+runnerens /deploy, der indeholder alle de andre), og hardlinker uændrede filer
+mod forrige backup med `rsync --link-dest`. Docker-images tages kun med
+`--with-images`. Resultatet lægges i `/volume1/docker/App/backups/containers-<tid>`.
+
 Restoration is intentionally not automated. A restore replaces database state
 and must be planned against a stopped application after the exact backup and
 target database have been verified.
@@ -244,6 +259,14 @@ sendes videre af `compose.production.yaml`.
 `), `APPLE_TEAM_ID`
   øverst til højre på developer.apple.com.
 - En knap, hvis nøgler mangler, viser "Login med X er ikke sat op endnu".
+
+## API-nøgler fra admin
+
+Alle API-nøgler (login, integrationer, OpenAI, SMTP, push m.fl.) kan også
+indtastes og testes på `adminhellocal.packroff.dk/admin/api-keys`. En værdi
+gemt dér vinder over `.env.production` og virker uden genstart. Database,
+sessionsnøgler og adresser ændres stadig kun i `.env.production`
+(docs/DECISIONS.md 2026-09-25 "API-nøgler i admin").
 
 ## Controlled update
 

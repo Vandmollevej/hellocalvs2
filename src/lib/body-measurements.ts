@@ -2,12 +2,50 @@
 // Kropsmål-siden og Målsætning bygger deres felter herfra, så de to lister
 // aldrig kan komme ud af sync.
 
+// Illustrationerne er brugerens egne tegninger (Icons/Kropsmål), kopieret
+// uændret til public/body-measurements (2026-09-25). Billedet vælges ud fra
+// profilens køn (User.sex) — aldrig gemt på selve målingen. Hofte har ingen
+// godkendt tegning og vises derfor uden billede.
+export type BodyMeasurementSex = "FEMALE" | "MALE";
+
+function drawing(name: string): Record<BodyMeasurementSex, string> {
+  return {
+    FEMALE: `/body-measurements/female-${name}.png`,
+    MALE: `/body-measurements/male-${name}.png`,
+  };
+}
+
 export const BODY_MEASUREMENT_FIELDS = [
-  { field: "waistCm", labelKey: "bodyMeasurements.waist", nameKey: "bodyMeasurements.names.waist" },
-  { field: "hipCm", labelKey: "bodyMeasurements.hip", nameKey: "bodyMeasurements.names.hip" },
-  { field: "chestCm", labelKey: "bodyMeasurements.chest", nameKey: "bodyMeasurements.names.chest" },
-  { field: "thighCm", labelKey: "bodyMeasurements.thigh", nameKey: "bodyMeasurements.names.thigh" },
-  { field: "upperArmCm", labelKey: "bodyMeasurements.upperArm", nameKey: "bodyMeasurements.names.upperArm" },
+  {
+    field: "chestCm",
+    labelKey: "bodyMeasurements.chest",
+    nameKey: "bodyMeasurements.names.chest",
+    image: drawing("chest"),
+  },
+  {
+    field: "waistCm",
+    labelKey: "bodyMeasurements.waist",
+    nameKey: "bodyMeasurements.names.waist",
+    image: drawing("waist"),
+  },
+  {
+    field: "hipCm",
+    labelKey: "bodyMeasurements.hip",
+    nameKey: "bodyMeasurements.names.hip",
+    image: null,
+  },
+  {
+    field: "upperArmCm",
+    labelKey: "bodyMeasurements.upperArm",
+    nameKey: "bodyMeasurements.names.upperArm",
+    image: drawing("arm"),
+  },
+  {
+    field: "thighCm",
+    labelKey: "bodyMeasurements.thigh",
+    nameKey: "bodyMeasurements.names.thigh",
+    image: drawing("leg"),
+  },
 ] as const;
 
 export type BodyMeasurementField = (typeof BODY_MEASUREMENT_FIELDS)[number]["field"];

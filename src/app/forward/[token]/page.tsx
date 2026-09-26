@@ -14,7 +14,7 @@ export default async function ForwardPage({ params }: { params: Promise<{ token:
 
   if (!user) {
     return (
-      <div className="mx-auto max-w-sm p-6 text-center">
+      <div className="mx-auto max-w-sm p-4 text-center">
         <p className="hf-type-body">Log ind for at se hvad din ven har sendt dig.</p>
         <Link href={`/login?next=/forward/${token}`} className="hf-btn-primary mt-4 inline-block h-12 px-6 leading-[48px]">
           Log ind
@@ -28,7 +28,7 @@ export default async function ForwardPage({ params }: { params: Promise<{ token:
     forward = await claimForward(token, user.id);
   } catch (error) {
     return (
-      <div className="mx-auto max-w-sm p-6 text-center">
+      <div className="mx-auto max-w-sm p-4 text-center">
         <p className="hf-type-body text-hf-red-dark">
           {error instanceof ForwardAbuseError ? error.message : "Kunne ikke åbne linket."}
         </p>
@@ -38,7 +38,7 @@ export default async function ForwardPage({ params }: { params: Promise<{ token:
 
   if (!forward) {
     return (
-      <div className="mx-auto max-w-sm p-6 text-center">
+      <div className="mx-auto max-w-sm p-4 text-center">
         <p className="hf-type-body">Linket er ikke gyldigt.</p>
       </div>
     );
@@ -54,17 +54,17 @@ export default async function ForwardPage({ params }: { params: Promise<{ token:
 
   if (!item) {
     return (
-      <div className="mx-auto max-w-sm p-6 text-center">
+      <div className="mx-auto max-w-sm p-4 text-center">
         <p className="hf-type-body">Varen findes ikke længere.</p>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-sm p-6 text-center">
+    <div className="mx-auto max-w-sm p-4 text-center">
       <p className="hf-type-body-sm opacity-70">{sender?.displayName ?? "En ven"} har sendt dig</p>
       <h1 className="hf-type-page-title mt-1">{item.name}</h1>
-      <div className="mt-6">
+      <div className="mt-8">
         <AddForwardedItemButton kind={forward.kind} itemId={item.id} name={item.name} />
       </div>
     </div>

@@ -23,6 +23,7 @@ const LINK_DEFS: { href: string; key: AdminI18nKey }[] = [
   { href: "/admin/search", key: "nav_search" },
   { href: "/admin/search-ranking", key: "nav_search_ranking" },
   { href: "/admin/passkeys", key: "nav_passkeys" },
+  { href: "/admin/api-keys", key: "nav_api_keys" },
 ];
 
 // hasOpenUncertainties: rød prik ved "Uncertainties", når der er usikre

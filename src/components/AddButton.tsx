@@ -78,6 +78,10 @@ const LIGHT_CIRCLE_SIZE = 40;
 // it) and is a bit larger than the old 40px light circle.
 const FINGERPRINT_SIZE = 52;
 const FINGERPRINT_TILT_DEG = 35;
+// Visual-only nudge of the fingerprint toward the screen edge: the bounding-box
+// center still read as too far inward on the phone. Hit-area and drag math
+// keep using the FAB center.
+const FINGERPRINT_EDGE_NUDGE = 15;
 const LIGHT_CIRCLE_TRAVEL = HALF_CIRCLE_RADIUS - LIGHT_CIRCLE_SIZE / 2 - 6;
 const BULGE_MAX = 20;
 // How tightly the bulge concentrates around the drag angle (in degrees) —
@@ -168,7 +172,8 @@ type Action = {
 function buildActions(
   t: (key: string) => string,
   selectedKeys: AddActionKey[],
-  allowedKeys: Set<AddActionKey>
+  allowedKeys: Set<AddActionKey>,
+  sex: "FEMALE" | "MALE" | null
 ): Action[] {
   const listAction: Action = {
     key: "list",
@@ -180,7 +185,7 @@ function buildActions(
 
   const selected = selectedKeys
     .filter((key) => allowedKeys.has(key))
-    .map((key) => addActionByKey(key))
+    .map((key) => addActionByKey(key, sex))
     .filter((action): action is NonNullable<typeof action> => Boolean(action))
     .map<Action>((action) => ({
       key: action.key,
@@ -188,7 +193,7 @@ function buildActions(
       icon: action.icon,
       imageSrc: action.imageSrc,
       label: t(action.labelKey),
-      hint: t(action.hintKey),
+      hint: t(action.labelKey),
     }));
 
   return [listAction, ...selected];
@@ -235,7 +240,7 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
   const selectedKeys = useWheelActionKeys();
   const profile = useAddActionsProfile();
   const allowedKeys = new Set(visibleAddActions(profile).map((action) => action.key));
-  const actions = buildActions(t, selectedKeys, allowedKeys);
+  const actions = buildActions(t, selectedKeys, allowedKeys, profile.sex);
   const anglesDeg = computeAngles(actions.length);
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -535,7 +540,7 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
           style={{
             width: FINGERPRINT_SIZE,
             height: FINGERPRINT_SIZE,
-            transform: dragOffset ? `translate(${dragOffset.x}px, ${dragOffset.y}px)` : undefined,
+            transform: `translate(${(dragOffset?.x ?? 0) + (side === "left" ? -FINGERPRINT_EDGE_NUDGE : FINGERPRINT_EDGE_NUDGE)}px, ${dragOffset?.y ?? 0}px)`,
             transitionDuration: dragOffset ? "0ms" : "150ms",
           }}
         >

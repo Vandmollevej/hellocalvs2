@@ -549,11 +549,11 @@ export default function AddPage() {
               </div>
 
               {!forDish && (
-                <TimeSection value={time} onChange={setTime} className="mb-3 mt-6" />
+                <TimeSection value={time} onChange={setTime} className="mb-4 mt-8" />
               )}
 
               {hasServingUnit && (
-                <div className="mb-3 flex justify-center gap-2">
+                <div className="mb-4 flex justify-center gap-2">
                   <button
                     type="button"
                     onClick={() => setAmountUnit("personer")}
@@ -627,7 +627,7 @@ export default function AddPage() {
 
             </div>
 
-            <div ref={detailsRef} className="flex flex-col gap-6 border-t border-hf-tan-dark p-4">
+            <div ref={detailsRef} className="flex flex-col gap-8 border-t border-hf-tan-dark p-4">
               <div>
                 <div className="mb-4 flex items-center justify-between">
                   <p className="hf-heading text-[15px] text-hf-black">{t("common.macroBreakdown")}</p>
@@ -683,7 +683,7 @@ export default function AddPage() {
                   <button
                     type="button"
                     onClick={() => setAdditivesOpen((open) => !open)}
-                    className="mb-3 flex w-full items-center justify-between"
+                    className="mb-4 flex w-full items-center justify-between"
                   >
                     <p className="hf-heading text-[15px] text-hf-black">{t("addProduct.additives")}</p>
                     <IconChevronDown
@@ -768,7 +768,7 @@ export default function AddPage() {
                     </span>
                   </button>
                   {extendedNutritionOpen && (
-                    <div className="mt-3 flex flex-col overflow-hidden rounded-2xl bg-hf-tan">
+                    <div className="mt-4 flex flex-col overflow-hidden rounded-2xl bg-hf-tan">
                       {extendedNutrition.map((row, index) => {
                         // Usikkerheds-~ (docs/DECISIONS.md 2026-09-24): ~ vises
                         // altid ved estimerede værdier; den grå linje er foldet

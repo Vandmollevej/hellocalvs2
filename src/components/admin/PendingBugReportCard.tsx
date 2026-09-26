@@ -38,7 +38,7 @@ export function PendingBugReportCard({ report }: { report: BugReport }) {
 
   return (
     <div className="rounded-lg border border-border-strong bg-surface-2 p-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 flex-1">
           <p className="text-xs text-text-muted">
             {report.user ? `${report.user.displayName} · ${report.user.email}` : "AI-genereret (ingen bruger)"} ·{" "}
