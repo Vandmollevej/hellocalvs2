@@ -755,8 +755,10 @@ tryk får dem til at vibrere som statistik-kortene; i redigering kan en graf
 fjernes med slette-cirklen og trækkes op/ned (`StatChartsSection.tsx`). Nye
 grafer tilføjes fra `/statistics/unused-charts`, der har samme opbygning som
 `/statistics/unused-cards` (søgefelt på tværs af blokkene, hvis resultater
-står over accordions, og "+ Tilføj" i hver bloks højre hjørne, som tilføjer
-alle blokkens resterende elementer). Der opfindes ingen nye datatyper: de
+står over accordions, og "+ Tilføj" i højre hjørne af hvert enkelt kort/graf,
+som tilføjer netop det ene element). Rettet 2026-09-26 efter brugerens
+afvisning: der er ingen "tilføj alle"-knap på accordion-overskrifterne —
+elementer tilføjes kun ét ad gangen. Der opfindes ingen nye datatyper: de
 ekstra grafer er 7-dages dagsserier af felter, som allerede findes i
 `DailyTotal`, med statistik-kortenes navne og enheder.
 
@@ -2409,3 +2411,9 @@ den rigtige stregkode.
 ## 2026-09-26: Billede-dagbog som loop-karrusel
 
 Billeder vises i en vandret karrusel (ikke grid, ikke 1:1), ældste til venstre og nyeste til højre, nyeste i midten ved start. Loop kun ved 3+ billeder, så samme billede aldrig står på begge sider samtidig; ved 2 billeder stopper den ved kanterne. Kun et vindue på 7 kort renderes, så loopet ikke kræver kopier af hele listen. Dato/tid står under billedet, aldrig som overlay.
+
+## 2026-09-26: Tooltips og start-up tips (Indstillinger → Visning)
+
+- To vippekontakter under Visning: "Vis tooltips" (små hjælpetekster via `HelpTip`, `src/components/hf/HelpTip.tsx`) og "Vis start-up tips". Begge er slået til som standard og gemmes pr. enhed i localStorage (`src/lib/help-prefs.ts`), samme mønster som Kalendervisning.
+- Start-up tips er 1-sides overlays med én fast standard (`StartupTipOverlay`): "Luk" øverst til højre, ikon + titel + tekst, evt. én stor knap, og "Slå fra" nederst til højre (slår alle start-up tips fra). Højst ét tip pr. besøg, kun for indloggede brugere med samtykke, aldrig på login-, samtykke-, juridiske eller admin-sider (`StartupTipsGate` i root layout).
+- Tips står i `STARTUP_TIPS` (`src/lib/startup-tips.ts`) og vises i rækkefølge. Et tip er færdigt, når det lukkes, eller når funktionen bruges (`markStartupTipSeen(id)` kaldes fra funktionens egen kode). Første tip er altid "Dine data er dine" med "Læs mere" til `/privatlivspolitik`.

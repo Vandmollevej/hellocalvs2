@@ -9,6 +9,26 @@ Branch `claude/typography-system` (ud fra origin/master). Se DECISIONS
 og `next build` er grønne. Filer, der kun findes lokalt på den divergerede
 `master` i hovedmappen (fx forsidens knap-indstillinger), migreres, når
 `master` er synkroniseret med origin. Brugeren tjekker udseendet selv.
+## 2026-09-26: Statistik — kort flyttes rigtigt (intet spøgelse)
+
+`src/components/StatCardsGrid.tsx`: det løftede kort (med stiplet ramme og
+kryds) følger fingeren; der efterlades ingen gennemsigtig kopi. Gitteret viser
+løbende resultatet (landingsfelt markeret, kortet der byttes med står allerede
+på den gamle plads). Ved slip glider kortet kun fra fingeren ind på pladsen —
+ingen efter-animation fra den gamle plads. Samme for overskrifter/skillelinjer.
+Reflow-animationen måles nu lige før DOM-ændringen (scroll-uafhængig).
+Kun lint/build — ikke visuelt testet (brugerens regel 2026-09-26).
+
+## 2026-09-26: Ubrugte kort/grafer — "+ Tilføj" på hvert kort, ikke på blokken
+
+Brugeren afviste "+ Tilføj" pr. accordion (tilføjede hele blokken på én gang).
+`/statistics/unused-cards` og `/statistics/unused-charts`: hvert kort/graf har
+nu "+ Tilføj" i øverste højre hjørne og tilføjes ét ad gangen; knappen på
+accordion-overskrifterne og `AccordionSection`s `action`-plads er fjernet.
+Se DECISIONS 2026-09-25 "Statistiksidens grafer kan redigeres som kortene".
+Lint grøn; `next build` kompilerer, men det lokale typetjek fejler kun i
+ret/opskrift-filerne (`tags`/`images`/`steps`), fordi den delte Prisma-klient
+i `node_modules` er genereret fra et ældre skema — ingen fejl i de ændrede filer.
 
 ## 2026-09-26: Billede-dagbog mistede billeder — gemmes nu i IndexedDB
 

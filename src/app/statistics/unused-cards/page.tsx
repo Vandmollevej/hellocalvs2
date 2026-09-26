@@ -229,12 +229,8 @@ export default function UnusedStatCardsPage() {
     router.back();
   }
 
-  function addAllCards(cards: StatCardValue[]) {
-    for (const card of cards) addStatCardToLayout(DEFAULT_LAYOUT, card.key);
-    setActiveKeys((prev) => new Set([...prev, ...cards.map((card) => card.key)]));
-    router.back();
-  }
-
+  // Kortene tilføjes ét ad gangen: hvert kort har sit eget "+ Tilføj"
+  // (hele kortet er knappen), ingen "tilføj alle" pr. blok.
   function renderCardGrid(cards: StatCardValue[]) {
     return (
       <div className="grid grid-cols-2 gap-4">
@@ -243,13 +239,18 @@ export default function UnusedStatCardsPage() {
             key={card.key}
             type="button"
             onClick={() => addCard(card.key)}
-            className="rounded-2xl bg-hf-tan p-4 text-left active:opacity-80"
+            className="flex flex-col justify-between gap-1 rounded-2xl bg-hf-tan p-4 text-left active:opacity-80"
           >
-            <p className="hf-type-small text-text-secondary">{card.label}</p>
-            <p className="hf-type-body-lg hf-heading mt-1 flex items-center gap-1.5 text-hf-black">
+            <span className="flex items-start justify-between gap-2">
+              <span className="hf-type-small text-text-secondary min-w-0">{card.label}</span>
+              <span className="hf-type-small hf-type-strong shrink-0 whitespace-nowrap text-hf-black">
+                {t("statUnusedCards.add")}
+              </span>
+            </span>
+            <span className="hf-type-body-lg hf-heading flex items-center gap-1.5 text-hf-black">
               <StatCardIcon icon={card.icon} iconSrc={card.iconSrc} />
               {loading ? "—" : card.value}
-            </p>
+            </span>
           </button>
         ))}
       </div>
@@ -327,18 +328,6 @@ export default function UnusedStatCardsPage() {
             title={category.title}
             count={category.cards.length}
             defaultOpen={index === 0}
-            action={
-              category.cards.length > 0 ? (
-                <button
-                  type="button"
-                  onClick={() => addAllCards(category.cards)}
-                  aria-label={`${t("statUnusedCards.addAll")} ${category.title}`}
-                  className="hf-type-body hf-type-strong shrink-0 py-3 pr-4 pl-1 text-hf-black active:opacity-60"
-                >
-                  {t("statUnusedCards.addAll")}
-                </button>
-              ) : undefined
-            }
           >
             {category.cards.length === 0 ? (
               <p className="hf-type-small rounded-2xl bg-hf-tan/60 p-4 text-hf-black opacity-50">

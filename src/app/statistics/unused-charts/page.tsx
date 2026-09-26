@@ -18,7 +18,8 @@ import {
 } from "@/lib/stat-charts";
 
 // Samme opbygning som /statistics/unused-cards, men for graferne øverst på
-// statistiksiden: søgning på tværs af blokkene og "+ Tilføj" pr. blok.
+// statistiksiden: søgning på tværs af blokkene og "+ Tilføj" på hver graf
+// (én ad gangen, ingen "tilføj alle" pr. blok).
 
 type ChartOption = { key: string; label: string; subtitle: string };
 type CategoryDef = { title: string; keys: string[] };
@@ -121,13 +122,18 @@ export default function UnusedStatChartsPage() {
             key={option.key}
             type="button"
             onClick={() => addCharts([option.key])}
-            className="rounded-2xl bg-hf-tan p-4 text-left active:opacity-80"
+            className="flex flex-col justify-between gap-1 rounded-2xl bg-hf-tan p-4 text-left active:opacity-80"
           >
-            <p className="hf-type-small text-text-secondary">{option.subtitle}</p>
-            <p className="hf-type-body hf-heading mt-1 flex items-center gap-1.5 text-hf-black">
+            <span className="flex items-start justify-between gap-2">
+              <span className="hf-type-small text-text-secondary min-w-0">{option.subtitle}</span>
+              <span className="hf-type-small hf-type-strong shrink-0 whitespace-nowrap text-hf-black">
+                {t("statUnusedCards.add")}
+              </span>
+            </span>
+            <span className="hf-type-body hf-heading flex items-center gap-1.5 text-hf-black">
               <TrendIcon color="currentColor" size={16} />
               {option.label}
-            </p>
+            </span>
           </button>
         ))}
       </div>
@@ -169,18 +175,6 @@ export default function UnusedStatChartsPage() {
             title={category.title}
             count={category.options.length}
             defaultOpen={index === 0}
-            action={
-              category.options.length > 0 ? (
-                <button
-                  type="button"
-                  onClick={() => addCharts(category.options.map((option) => option.key))}
-                  aria-label={`${t("statUnusedCards.addAll")} ${category.title}`}
-                  className="hf-type-body hf-type-strong shrink-0 py-3 pr-4 pl-1 text-hf-black active:opacity-60"
-                >
-                  {t("statUnusedCards.addAll")}
-                </button>
-              ) : undefined
-            }
           >
             {category.options.length === 0 ? (
               <p className="hf-type-small rounded-2xl bg-hf-tan/60 p-4 text-hf-black opacity-50">
