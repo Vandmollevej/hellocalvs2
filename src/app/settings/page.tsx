@@ -25,6 +25,9 @@ import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { Toggle } from "@/components/ui/Toggle";
+import { HelpTip } from "@/components/hf/HelpTip";
+import { saveShowStartupTips, saveShowTooltips, useShowStartupTips, useShowTooltips } from "@/lib/help-prefs";
 
 function resetOnboardingProgress() {
   return fetch("/api/profile", {
@@ -43,6 +46,8 @@ export default function SettingsPage() {
   const { t } = useTranslation();
   const router = useRouter();
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const showTooltips = useShowTooltips();
+  const showStartupTips = useShowStartupTips();
   // "Menstruationscyklus" (Visning) only shows up for sex = FEMALE, per
   // docs/DECISIONS.md 2026-09-19 — fetched once here rather than blocking
   // the rest of the settings page on it.
@@ -209,6 +214,19 @@ export default function SettingsPage() {
               />
             )}
           </AccordionCard>
+          <HelpTip>{t("settings.displayHelpTip")}</HelpTip>
+          <Toggle
+            label={t("settings.showTooltips")}
+            description={t("settings.showTooltipsDescription")}
+            checked={showTooltips}
+            onChange={saveShowTooltips}
+          />
+          <Toggle
+            label={t("settings.showStartupTips")}
+            description={t("settings.showStartupTipsDescription")}
+            checked={showStartupTips}
+            onChange={saveShowStartupTips}
+          />
         </div>
 
         <AccordionCard>
