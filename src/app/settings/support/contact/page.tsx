@@ -58,7 +58,7 @@ export default function SupportContactPage() {
             </p>
             <Link
               href={`/settings/support/requests/${sentId}`}
-              className="hf-btn-primary hf-type-button flex h-12 w-full items-center justify-center"
+              className="hf-control hf-btn-primary hf-type-button flex w-full items-center justify-center"
             >
               {t("settings.support.openCase")}
             </Link>

@@ -104,7 +104,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
             <input
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
+              className="hf-field rounded-md border border-border-strong px-2 text-sm"
             />
           </label>
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
@@ -112,7 +112,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
             <input
               value={form.brand}
               onChange={(e) => setForm({ ...form, brand: e.target.value })}
-              className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
+              className="hf-field rounded-md border border-border-strong px-2 text-sm"
             />
           </label>
         </div>
@@ -123,7 +123,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
               type="number"
               value={form.kcalPer100g}
               onChange={(e) => setForm({ ...form, kcalPer100g: e.target.value })}
-              className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
+              className="hf-field rounded-md border border-border-strong px-2 text-sm"
             />
           </label>
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
@@ -132,7 +132,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
               type="number"
               value={form.proteinPer100g}
               onChange={(e) => setForm({ ...form, proteinPer100g: e.target.value })}
-              className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
+              className="hf-field rounded-md border border-border-strong px-2 text-sm"
             />
           </label>
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
@@ -141,7 +141,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
               type="number"
               value={form.carbsPer100g}
               onChange={(e) => setForm({ ...form, carbsPer100g: e.target.value })}
-              className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
+              className="hf-field rounded-md border border-border-strong px-2 text-sm"
             />
           </label>
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
@@ -150,7 +150,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
               type="number"
               value={form.fatPer100g}
               onChange={(e) => setForm({ ...form, fatPer100g: e.target.value })}
-              className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
+              className="hf-field rounded-md border border-border-strong px-2 text-sm"
             />
           </label>
         </div>
@@ -193,7 +193,7 @@ export function ProductDetailEditor({ product }: { product: Product }) {
               value={mergeQuery}
               onChange={(e) => searchMergeTargets(e.target.value)}
               placeholder="Søg efter produkt at flette ind i…"
-              className="w-full rounded-md border border-border-strong px-2 py-1.5 text-sm"
+              className="hf-field w-full rounded-md border border-border-strong px-2 text-sm"
             />
             <div className="mt-2 flex flex-col gap-1">
               {mergeResults.map((r) => (

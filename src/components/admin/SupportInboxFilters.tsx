@@ -64,7 +64,7 @@ export function SupportInboxFilters({ filter }: { filter: SupportInboxFilter }) 
           <select
             value={filter.sort}
             onChange={(event) => apply({ sort: event.target.value === "newest" ? "newest" : "oldest" })}
-            className="rounded-md border border-border-strong bg-surface-1 px-2 py-1 text-text-primary"
+            className="hf-field rounded-md border border-border-strong bg-surface-1 px-2 text-text-primary"
           >
             <option value="oldest">Ældste øverst</option>
             <option value="newest">Senest modtaget øverst</option>
@@ -97,7 +97,7 @@ export function SupportInboxFilters({ filter }: { filter: SupportInboxFilter }) 
             value={q}
             onChange={(event) => setQ(event.target.value)}
             placeholder="Søg emne, navn, e-mail, sagsnr."
-            className="min-w-0 flex-1 rounded-md border border-border-strong bg-surface-1 px-2 py-1 text-text-primary"
+            className="hf-field min-w-0 flex-1 rounded-md border border-border-strong bg-surface-1 px-2 text-text-primary"
           />
         </form>
       </div>

@@ -268,7 +268,7 @@ export function StatChart({
               return (
                 <div
                   key={s.key}
-                  className="flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold hover:bg-hf-cream"
+                  className="hf-control-row flex w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold hover:bg-hf-cream"
                 >
                   <span
                     aria-hidden="true"

@@ -98,7 +98,7 @@ export function StatPeriodPicker({
                   aria-label={t("statPeriodPicker.fromDateAria")}
                   value={customFrom}
                   onChange={(event) => setCustomFrom(event.target.value)}
-                  className="min-h-9 flex-1 rounded-xl border border-hf-tan-dark bg-hf-cream px-2 text-sm"
+                  className="hf-field flex-1 rounded-xl border border-hf-tan-dark bg-hf-cream px-2 text-sm"
                 />
                 <span className="text-xs opacity-60">{t("statPeriodPicker.to")}</span>
                 <input
@@ -106,13 +106,13 @@ export function StatPeriodPicker({
                   aria-label={t("statPeriodPicker.toDateAria")}
                   value={customTo}
                   onChange={(event) => setCustomTo(event.target.value)}
-                  className="min-h-9 flex-1 rounded-xl border border-hf-tan-dark bg-hf-cream px-2 text-sm"
+                  className="hf-field flex-1 rounded-xl border border-hf-tan-dark bg-hf-cream px-2 text-sm"
                 />
               </div>
               <button
                 type="button"
                 onClick={applyCustomRange}
-                className="hf-btn-primary mt-2 flex min-h-9 w-full items-center justify-center text-sm"
+                className="hf-control hf-btn-primary mt-2 flex w-full items-center justify-center text-sm"
               >
                 {t("statPeriodPicker.usePeriod")}
               </button>

@@ -103,7 +103,7 @@ function NewIngredientContent() {
           />
         )}
         {error && <p className="text-[13px] text-hf-red-dark">{error}</p>}
-        <ActionButton type="submit" disabled={saving} className="hf-type-button h-12 disabled:opacity-40">
+        <ActionButton type="submit" disabled={saving} className="hf-control hf-type-button disabled:opacity-40">
           {saving
             ? t("privateIngredients.saving")
             : forDish

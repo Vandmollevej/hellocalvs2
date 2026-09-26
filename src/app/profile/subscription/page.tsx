@@ -89,7 +89,7 @@ export default function SubscriptionPage() {
                   if (event.key === "Enter") redeemGiftCode();
                 }}
                 placeholder={t("subscription.giftCode.placeholder")}
-                className="hf-type-body h-12 min-w-0 flex-1 rounded-lg bg-hf-white px-4 uppercase tracking-wide"
+                className="hf-field hf-type-body min-w-0 flex-1 rounded-lg bg-hf-white px-4 uppercase tracking-wide"
                 disabled={redeeming}
               />
               <button
@@ -149,7 +149,7 @@ export default function SubscriptionPage() {
           {(data.plan === "FAMILY" || data.coveredByFamily) && (
             <Link
               href="/profile/family"
-              className="hf-type-body flex h-12 items-center gap-3 rounded-lg bg-hf-tan px-4"
+              className="hf-control-row hf-type-body flex items-center gap-3 rounded-lg bg-hf-tan px-4"
             >
               <IconUsers size={20} aria-hidden="true" />
               <span className="min-w-0 flex-1">{t("family.switcher.manage")}</span>
@@ -157,7 +157,7 @@ export default function SubscriptionPage() {
             </Link>
           )}
 
-          <Link href="/settings/payment" className="hf-btn-secondary hf-type-button h-12 w-full">
+          <Link href="/settings/payment" className="hf-control hf-btn-secondary hf-type-button w-full">
             {t("subscription.paymentMethods")}
           </Link>
 

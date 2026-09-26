@@ -87,7 +87,7 @@ export default function PeriodCreatePage() {
             </span>
             <input
               type="date"
-              className="rounded-xl bg-hf-white px-4 py-3 text-[15px] text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green"
+              className="hf-field rounded-xl bg-hf-white px-4 text-[15px] text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green"
               value={startDate}
               max={todayIso()}
               onChange={(event) => {
@@ -106,7 +106,7 @@ export default function PeriodCreatePage() {
             type="button"
             onClick={handleSubmit}
             disabled={saving}
-            className="hf-btn-primary h-12 disabled:opacity-40"
+            className="hf-control hf-btn-primary disabled:opacity-40"
           >
             <span className="hf-type-button">{saving ? t("periodLog.saving") : t("periodLog.add")}</span>
           </button>
@@ -119,7 +119,7 @@ export default function PeriodCreatePage() {
             <p className="text-center text-[13px] text-hf-black opacity-60">{t("periodLog.noEntriesYet")}</p>
           )}
           {entries.map((entry) => (
-            <div key={entry.id} className="flex items-center justify-between rounded-2xl bg-hf-tan px-4 py-3">
+            <div key={entry.id} className="hf-control-row flex items-center justify-between rounded-2xl bg-hf-tan px-4">
               <p className="text-[16px] font-bold text-hf-black">{formatDate(entry.startDate)}</p>
             </div>
           ))}

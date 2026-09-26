@@ -158,7 +158,7 @@ export default function HelloDocTokenPage() {
               type="button"
               onClick={accept}
               disabled={accepting}
-              className="hf-btn-primary hf-type-button mt-4 h-14 w-full text-[17px] disabled:opacity-40"
+              className="hf-control hf-btn-primary hf-type-button mt-4 w-full text-[17px] disabled:opacity-40"
               style={{ borderRadius: 8 }}
             >
               {accepting ? t("helloDoc.token.accepting") : t("helloDoc.token.acceptButton")}

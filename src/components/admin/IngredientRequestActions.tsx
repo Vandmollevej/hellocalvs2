@@ -33,7 +33,7 @@ export function IngredientRequestActions({ id, name: initialName }: { id: string
         onChange={(event) => setName(event.target.value)}
         maxLength={80}
         aria-label="Ingrediensens navn"
-        className="flex-1 rounded border border-border-strong bg-white px-3 py-2 text-sm text-text-primary"
+        className="hf-field flex-1 rounded border border-border-strong bg-white px-3 text-sm text-text-primary"
       />
       <button
         type="button"

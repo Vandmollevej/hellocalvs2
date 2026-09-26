@@ -84,7 +84,7 @@ export function AdminLoginForm() {
             autoComplete="username webauthn"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-base"
+            className="hf-field rounded-md border border-border-strong bg-surface-2 px-3 text-base"
           />
         </label>
         <label className="flex flex-col gap-1 text-sm">
@@ -95,7 +95,7 @@ export function AdminLoginForm() {
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-base"
+            className="hf-field rounded-md border border-border-strong bg-surface-2 px-3 text-base"
           />
         </label>
         {error && <p className="text-sm text-hf-red-dark">{error}</p>}

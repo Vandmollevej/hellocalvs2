@@ -240,7 +240,7 @@ function OpretProduktContent() {
           >
             {t("productCreate.savedOffline")}
           </div>
-          <button type="button" onClick={() => router.push("/foods")} className="hf-btn-primary h-12">
+          <button type="button" onClick={() => router.push("/foods")} className="hf-control hf-btn-primary">
             <span className="hf-type-button">{t("common.continue")}</span>
           </button>
         </div>
@@ -429,7 +429,7 @@ function OpretProduktContent() {
 
           {saveError && <p className="hf-type-caption text-center">{saveError}</p>}
 
-          <button type="submit" disabled={saving} className="hf-btn-primary h-12 disabled:opacity-40">
+          <button type="submit" disabled={saving} className="hf-control hf-btn-primary disabled:opacity-40">
             <span className="hf-type-button">{saving ? t("productCreate.saving") : t("productCreate.createProduct")}</span>
           </button>
         </form>

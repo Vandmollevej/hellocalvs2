@@ -119,7 +119,7 @@ function TilmeldContent() {
         <button
           type="submit"
           disabled={submitting}
-          className="hf-btn-primary hf-type-button mb-8 h-12 w-full disabled:opacity-50"
+          className="hf-control hf-btn-primary hf-type-button mb-8 w-full disabled:opacity-50"
         >
           {submitting ? t("signup.submitting") : t("signup.submit")}
         </button>

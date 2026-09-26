@@ -147,7 +147,7 @@ function IssueRow({ matchCheck }: { matchCheck: MatchCheck }) {
           disabled={busy}
           onChange={(event) => setPoints(event.target.value)}
           onBlur={() => awardEnabled && saveAward(true)}
-          className="w-20 rounded-md border border-border-strong px-2 py-1 text-xs"
+          className="hf-field w-20 rounded-md border border-border-strong px-2 text-xs"
         />
       </div>
 

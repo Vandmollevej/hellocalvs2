@@ -85,7 +85,7 @@ export function AdminSetupForm() {
               required
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-              className="rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-center text-2xl tracking-[0.4em]"
+              className="hf-field rounded-md border border-border-strong bg-surface-2 px-3 text-center text-2xl tracking-[0.4em]"
             />
           </label>
           {error && <p className="text-sm text-hf-red-dark">{error}</p>}
@@ -111,7 +111,7 @@ export function AdminSetupForm() {
           autoComplete="username"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-base"
+          className="hf-field rounded-md border border-border-strong bg-surface-2 px-3 text-base"
         />
       </label>
       <label className="flex flex-col gap-1 text-sm">
@@ -123,7 +123,7 @@ export function AdminSetupForm() {
           autoComplete="new-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-base"
+          className="hf-field rounded-md border border-border-strong bg-surface-2 px-3 text-base"
         />
       </label>
       {error && <p className="text-sm text-hf-red-dark">{error}</p>}

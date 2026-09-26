@@ -63,7 +63,7 @@ const tileClass =
   "flex aspect-square min-w-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-hf-tan px-1 text-center text-[12px] font-semibold leading-tight text-hf-black";
 
 const inputClass =
-  "rounded-xl bg-hf-tan px-4 py-3 text-[15px] text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green";
+  "hf-field rounded-xl bg-hf-tan px-4 text-[15px] text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green";
 
 export default function ProfileEditPage() {
   const { t } = useTranslation();
@@ -152,7 +152,7 @@ export default function ProfileEditPage() {
           <button
             type="button"
             onClick={() => router.push("/profile/change-password")}
-            className="hf-btn-primary hf-type-button h-12 w-full px-4"
+            className="hf-control hf-btn-primary hf-type-button w-full px-4"
           >
             {t("profile.changePasswordButton")}
           </button>

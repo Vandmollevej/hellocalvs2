@@ -60,7 +60,7 @@ export default function HelloDocPage() {
         ) : (
           <Link
             href="/settings/hello-doc/invite"
-            className="hf-btn-primary hf-type-button flex h-12 w-full items-center justify-center"
+            className="hf-control hf-btn-primary hf-type-button flex w-full items-center justify-center"
           >
             {t("helloDoc.inviteButton")}
           </Link>
@@ -83,7 +83,7 @@ export default function HelloDocPage() {
                 <Link
                   key={share.id}
                   href={`/settings/hello-doc/${share.id}`}
-                  className="flex items-center justify-between border-b py-3 text-left"
+                  className="hf-control-row flex items-center justify-between border-b text-left"
                   style={{ borderColor: "var(--hf-color-line)" }}
                 >
                   <div className="min-w-0 flex-1">

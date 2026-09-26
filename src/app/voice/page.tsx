@@ -671,7 +671,7 @@ export default function VoicePage() {
               type="button"
               onClick={() => void addShownItems()}
               disabled={isAdding}
-              className="mt-4 flex h-12 w-full items-center justify-center rounded-xl bg-hf-green text-base font-bold text-hf-white disabled:opacity-60"
+              className="hf-control mt-4 flex w-full items-center justify-center rounded-xl bg-hf-green text-base font-bold text-hf-white disabled:opacity-60"
             >
               {isAdding ? t("voice.adding") : t("voice.addShownItems")}
             </button>

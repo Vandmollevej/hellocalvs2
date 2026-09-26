@@ -189,7 +189,7 @@ export default function CreateDishPage() {
           <button
             onClick={handleSave}
             disabled={saving || savedDish !== null}
-            className="hf-btn-primary w-full py-3.5 text-[15px] disabled:opacity-60"
+            className="hf-control hf-btn-primary w-full text-[15px] disabled:opacity-60"
           >
             {saving ? t("createDish.saving") : t("createDish.saveDish")}
           </button>
@@ -203,11 +203,11 @@ export default function CreateDishPage() {
           autoComplete="off"
           aria-label={t("createDish.nameAriaLabel")}
           placeholder={t("createDish.namePlaceholder")}
-          className="min-w-0 rounded-full bg-hf-tan px-4 py-2.5 text-sm text-hf-black outline-none"
+          className="hf-field min-w-0 rounded-full bg-hf-tan px-4 text-sm text-hf-black outline-none"
         />
 
         <div>
-          <div className="flex items-center gap-3 rounded-2xl bg-hf-tan px-4 py-3">
+          <div className="hf-control-row flex items-center gap-3 rounded-2xl bg-hf-tan px-4">
             <span className="flex-1 text-[14px] font-medium text-hf-black">{t("createDish.shareLabel")}</span>
             <button
               type="button"

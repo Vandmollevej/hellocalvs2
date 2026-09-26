@@ -684,9 +684,9 @@ function KameraOpretContent() {
               autoComplete="off"
               aria-label={t("camera.barcodeNumberAriaLabel")}
               placeholder={t("camera.barcodeNumberAriaLabel")}
-              className="min-w-0 flex-1 rounded-full bg-hf-white px-3.5 py-2 text-sm text-hf-black outline-none"
+              className="hf-field min-w-0 flex-1 rounded-full bg-hf-white px-3.5 text-sm text-hf-black outline-none"
             />
-            <button disabled={!manualBarcode} className="hf-btn-primary px-4 py-2 text-xs disabled:opacity-40">
+            <button disabled={!manualBarcode} className="hf-control hf-btn-primary px-4 text-xs disabled:opacity-40">
               {t("camera.lookUp")}
             </button>
           </form>
@@ -694,7 +694,7 @@ function KameraOpretContent() {
             <button
               type="button"
               onClick={() => continueAfterUnknownBarcode(manualBarcode)}
-              className="hf-btn-secondary w-full justify-center py-2 text-xs"
+              className="hf-control hf-btn-secondary w-full justify-center text-xs"
             >
               {t("cameraCreate.continueWithBarcode")}
             </button>
@@ -706,7 +706,7 @@ function KameraOpretContent() {
         <div className="flex justify-center py-1">
           {photo ? (
             !analyzing && (
-              <button onClick={retake} className="hf-btn-secondary gap-2 px-5 py-3 text-sm">
+              <button onClick={retake} className="hf-control hf-btn-secondary gap-2 px-5 text-sm">
                 {t("camera.retakePhoto")}
               </button>
             )
@@ -714,7 +714,7 @@ function KameraOpretContent() {
             <button
               onClick={capturePhoto}
               disabled={cameraStatus !== "active"}
-              className="hf-btn-primary gap-2 px-6 py-3 text-sm disabled:opacity-40"
+              className="hf-control hf-btn-primary gap-2 px-6 text-sm disabled:opacity-40"
             >
               <IconCamera size={19} /> {t("camera.takePhoto")}
             </button>

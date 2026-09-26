@@ -164,7 +164,7 @@ export function ProductImageGallery({
             value={primaryUrl}
             onChange={(e) => setPrimaryUrl(e.target.value)}
             placeholder="https://…"
-            className="w-64 rounded-md border border-border-strong px-2 py-1.5 text-sm"
+            className="hf-field w-64 rounded-md border border-border-strong px-2 text-sm"
           />
         </label>
         <button
@@ -185,7 +185,7 @@ export function ProductImageGallery({
               value={newUrl}
               onChange={(e) => setNewUrl(e.target.value)}
               placeholder="https://…"
-              className="w-64 rounded-md border border-border-strong px-2 py-1.5 text-sm"
+              className="hf-field w-64 rounded-md border border-border-strong px-2 text-sm"
             />
           </label>
           <button

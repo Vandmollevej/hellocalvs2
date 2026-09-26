@@ -220,7 +220,7 @@ export function SearchRankingTuner({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Skriv en søgning for at teste live..."
-            className="rounded-md border border-border-strong px-3 py-2 text-sm"
+            className="hf-field rounded-md border border-border-strong px-3 text-sm"
           />
         </label>
         <label className="flex flex-col gap-1 text-sm">
@@ -228,7 +228,7 @@ export function SearchRankingTuner({
           <select
             value={region}
             onChange={(e) => setRegion(e.target.value)}
-            className="rounded-md border border-border-strong px-3 py-2 text-sm"
+            className="hf-field rounded-md border border-border-strong px-3 text-sm"
           >
             {REGIONS.map((r) => (
               <option key={r.code} value={r.code}>
@@ -242,7 +242,7 @@ export function SearchRankingTuner({
           <select
             value={hour}
             onChange={(e) => setHour(Number(e.target.value))}
-            className="rounded-md border border-border-strong px-3 py-2 text-sm"
+            className="hf-field rounded-md border border-border-strong px-3 text-sm"
           >
             {Array.from({ length: 24 }, (_, h) => (
               <option key={h} value={h}>
@@ -257,7 +257,7 @@ export function SearchRankingTuner({
             value={previewUserId}
             onChange={(e) => setPreviewUserId(e.target.value)}
             placeholder="cly..."
-            className="rounded-md border border-border-strong px-3 py-2 text-sm"
+            className="hf-field rounded-md border border-border-strong px-3 text-sm"
           />
         </label>
       </div>
@@ -297,7 +297,7 @@ export function SearchRankingTuner({
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="Valgfri note til denne version..."
-              className="rounded-md border border-border-strong px-3 py-2 text-sm"
+              className="hf-field rounded-md border border-border-strong px-3 text-sm"
             />
             <div className="flex items-center gap-3">
               <button

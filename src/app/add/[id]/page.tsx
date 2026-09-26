@@ -443,7 +443,7 @@ export default function AddPage() {
             <button
               onClick={forDish ? handleAddToDish : handleAdd}
               disabled={saving}
-              className="hf-btn-primary w-full py-3.5 text-[15px] disabled:opacity-60"
+              className="hf-control hf-btn-primary w-full text-[15px] disabled:opacity-60"
             >
               {forDish ? t("addProduct.addToDish") : saving ? t("createDish.saving") : t("addProduct.add")}
             </button>
@@ -471,7 +471,7 @@ export default function AddPage() {
             {!forDish && photoAwards.length > 0 && (
               <Link
                 href={`/add/${id}/photo-award`}
-                className="block bg-hf-black px-4 py-3 text-center text-[13px] font-medium text-hf-white"
+                className="hf-control flex items-center justify-center bg-hf-black px-4 text-center text-[13px] font-medium text-hf-white"
               >
                 {photoAwards.length === 1
                   ? t("photoAward.bannerSingle", {
@@ -724,7 +724,7 @@ export default function AddPage() {
                           key={code}
                           type="button"
                           onClick={() => setOpenAdditive(code)}
-                          className={`flex items-center gap-3 px-4 py-3 text-left ${
+                          className={`hf-control-row flex items-center gap-3 px-4 text-left ${
                             index < (state.product.additives?.length ?? 0) - 1
                               ? "border-b border-hf-tan-dark"
                               : ""

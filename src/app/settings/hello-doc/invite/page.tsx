@@ -49,7 +49,7 @@ export default function InviteHelloDocUserPage() {
             type="button"
             onClick={sendInvitation}
             disabled={sending || !name.trim() || !email.trim()}
-            className="hf-btn-primary hf-type-button h-16 w-full text-[19px] disabled:opacity-40"
+            className="hf-control hf-btn-primary hf-type-button w-full text-[19px] disabled:opacity-40"
             style={{ borderRadius: 12 }}
           >
             {sending ? t("helloDoc.sending") : t("helloDoc.sendInvitation")}

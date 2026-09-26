@@ -73,7 +73,7 @@ export default function PrivateIngredientsPage() {
                       onChange={(event) => setDraftName(event.target.value)}
                       maxLength={80}
                       aria-label={t("privateIngredients.nameLabel")}
-                      className="min-w-0 flex-1 rounded-[8px] bg-hf-white px-3 py-2 text-[14px] text-hf-black outline-none"
+                      className="hf-field min-w-0 flex-1 rounded-[8px] bg-hf-white px-3 text-[14px] text-hf-black outline-none"
                     />
                     <button
                       type="button"
@@ -119,7 +119,7 @@ export default function PrivateIngredientsPage() {
             ))}
           </div>
         )}
-        <ActionLink href="/ingredients/new" className="hf-type-button h-12">
+        <ActionLink href="/ingredients/new" className="hf-control hf-type-button">
           {t("privateIngredients.createNew")}
         </ActionLink>
       </div>

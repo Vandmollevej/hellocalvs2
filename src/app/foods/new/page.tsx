@@ -62,7 +62,7 @@ const PRODUCT_FORM_ID = "create-product-form";
 const INGREDIENT_FORM_ID = "create-ingredient-form";
 
 const numberInputClass =
-  "min-w-0 flex-1 rounded-full bg-hf-white px-3.5 py-2 text-sm text-hf-black outline-none";
+  "min-w-0 flex-1 hf-field rounded-full bg-hf-white px-3.5 text-sm text-hf-black outline-none";
 
 function readOcrDraft(): { values: FormValues; fromOcr: boolean } {
   if (typeof window === "undefined") return { values: EMPTY_VALUES, fromOcr: false };
@@ -180,7 +180,7 @@ function NytProduktContent() {
   // formularen via form-attributten.
   const footer =
     kind === "product" ? (
-      <button type="submit" form={PRODUCT_FORM_ID} disabled={saving} className="hf-btn-primary w-full py-2.5 text-xs disabled:opacity-40">
+      <button type="submit" form={PRODUCT_FORM_ID} disabled={saving} className="hf-control hf-btn-primary w-full text-xs disabled:opacity-40">
         {saving ? t("foods.saving") : t("foods.createProduct")}
       </button>
     ) : kind === "ingredient" ? (
@@ -188,7 +188,7 @@ function NytProduktContent() {
         type="submit"
         form={INGREDIENT_FORM_ID}
         disabled={ingredientSaving}
-        className="hf-btn-primary w-full py-2.5 text-xs disabled:opacity-40"
+        className="hf-control hf-btn-primary w-full text-xs disabled:opacity-40"
       >
         {ingredientSaving ? t("foods.saving") : t("foods.createIngredient")}
       </button>

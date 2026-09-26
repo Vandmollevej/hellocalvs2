@@ -60,7 +60,7 @@ export function MessageTemplateRow({ template }: { template: MessageTemplateData
           <select
             value={form.channel}
             onChange={(e) => save({ channel: e.target.value })}
-            className="rounded-md border border-border-strong px-2 py-1 text-xs"
+            className="hf-field rounded-md border border-border-strong px-2 text-xs"
           >
             <option value="EMAIL">E-mail</option>
             <option value="PUSH">Push</option>
@@ -97,7 +97,7 @@ export function MessageTemplateRow({ template }: { template: MessageTemplateData
               value={form.subject}
               onChange={(e) => setForm({ ...form, subject: e.target.value })}
               onBlur={() => save({ subject: form.subject })}
-              className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
+              className="hf-field rounded-md border border-border-strong px-2 text-sm"
             />
           </label>
           <label className="flex flex-col gap-1 text-xs text-text-secondary">

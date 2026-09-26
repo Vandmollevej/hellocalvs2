@@ -190,7 +190,7 @@ export default function WaterCreatePage() {
             type="button"
             onClick={handleSubmit}
             disabled={saving || amountMl <= 0}
-            className="hf-btn-primary h-12 disabled:opacity-40"
+            className="hf-control hf-btn-primary disabled:opacity-40"
           >
             <span className="hf-type-button">{saving ? t("waterLog.saving") : t("waterLog.add")}</span>
           </button>

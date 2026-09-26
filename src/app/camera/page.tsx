@@ -511,7 +511,7 @@ function KameraContent() {
           )
         ) : (
           <div className="flex justify-center py-1">
-            <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-btn-primary gap-2 px-6 py-3 text-sm disabled:opacity-40">
+            <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-control hf-btn-primary gap-2 px-6 text-sm disabled:opacity-40">
               <IconCamera size={19} /> {t("camera.takePhotoOfProduct")}
             </button>
           </div>
@@ -520,11 +520,11 @@ function KameraContent() {
         <div className="flex flex-col gap-4">
           <div className="flex justify-center py-1">
             {photo ? (
-              <button onClick={restartCamera} className="hf-btn-secondary gap-2 px-5 py-3 text-sm">
+              <button onClick={restartCamera} className="hf-control hf-btn-secondary gap-2 px-5 text-sm">
                 {t("camera.retakePhoto")}
               </button>
             ) : (
-              <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-btn-primary gap-2 px-6 py-3 text-sm disabled:opacity-40">
+              <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-control hf-btn-primary gap-2 px-6 text-sm disabled:opacity-40">
                 <IconCamera size={19} /> {t("camera.takePhoto")}
               </button>
             )}
@@ -573,7 +573,7 @@ function KameraContent() {
                 type="button"
                 onClick={saveMeal}
                 disabled={mealSaving}
-                className="hf-btn-primary justify-center py-3 text-sm disabled:opacity-40"
+                className="hf-control hf-btn-primary justify-center text-sm disabled:opacity-40"
               >
                 {mealSaving ? t("camera.savingMeal") : t("camera.saveMeal")}
               </button>
@@ -595,7 +595,7 @@ function KameraContent() {
       )}
 
       {mode !== "meal" && (
-        <Link href={`/foods/new${returnSuffix}`} className="hf-btn-secondary justify-center py-2.5 text-xs">
+        <Link href={`/foods/new${returnSuffix}`} className="hf-control hf-btn-secondary justify-center text-xs">
           {t("camera.addManually")}
         </Link>
       )}

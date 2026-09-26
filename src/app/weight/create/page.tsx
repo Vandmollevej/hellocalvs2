@@ -105,7 +105,7 @@ export default function WeightCreatePage() {
             <p className="text-center text-[13px] font-semibold text-hf-green">{t("weightLog.saved")}</p>
           )}
 
-          <button type="submit" disabled={saving} className="hf-btn-primary h-12 disabled:opacity-40">
+          <button type="submit" disabled={saving} className="hf-control hf-btn-primary disabled:opacity-40">
             <span className="hf-type-button">{saving ? t("weightLog.saving") : t("weightLog.save")}</span>
           </button>
         </form>
@@ -123,7 +123,7 @@ export default function WeightCreatePage() {
             <p className="text-center text-[13px] text-hf-black opacity-60">{t("weightLog.noEntriesYet")}</p>
           )}
           {entries.map((entry) => (
-            <div key={entry.id} className="flex items-center justify-between rounded-2xl bg-hf-tan px-4 py-3">
+            <div key={entry.id} className="hf-control-row flex items-center justify-between rounded-2xl bg-hf-tan px-4">
               <p className="text-[16px] font-bold text-hf-black">
                 {formatKg(entry.weightKg)} kg
                 <span className="ml-2 text-[12px] font-normal opacity-60">{formatDateTime(entry.weighedAt)}</span>

@@ -213,7 +213,7 @@ function RecipeDetailContent() {
       icon={<IconSoup size={20} stroke={2} />}
       footer={
         state === "ready" && kind === "shared" ? (
-          <button type="button" onClick={saveCopy} disabled={busy} className="hf-btn-primary w-full py-3.5 text-[15px] disabled:opacity-60">
+          <button type="button" onClick={saveCopy} disabled={busy} className="hf-control hf-btn-primary w-full text-[15px] disabled:opacity-60">
             {t("recipeDetail.saveCopy")}
           </button>
         ) : undefined
@@ -249,7 +249,7 @@ function RecipeDetailContent() {
 
             {kind === "own" && (
               <div>
-                <div className="flex items-center gap-3 rounded-2xl bg-hf-tan px-4 py-3">
+                <div className="hf-control-row flex items-center gap-3 rounded-2xl bg-hf-tan px-4">
                   <span className="flex-1 text-[14px] font-medium text-hf-black">{t("createDish.shareLabel")}</span>
                   <button
                     type="button"

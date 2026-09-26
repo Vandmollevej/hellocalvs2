@@ -66,13 +66,13 @@ export default function VelkommenPage() {
       <div className="hf-page">
         <Link
           href="/signup"
-          className="hf-btn-primary hf-type-button h-12 w-full"
+          className="hf-control hf-btn-primary hf-type-button w-full"
         >
           {t("welcome.signUp")}
         </Link>
         <Link
           href="/login"
-          className="hf-btn-secondary hf-type-button h-12 w-full"
+          className="hf-control hf-btn-secondary hf-type-button w-full"
         >
           {t("welcome.logIn")}
         </Link>

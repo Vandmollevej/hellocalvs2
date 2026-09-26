@@ -149,7 +149,7 @@ function MineTab({ t }: { t: Translate }) {
           ))}
         </div>
       )}
-      <Link href="/create-dish" className="hf-btn-secondary w-full py-3 text-[14px]">
+      <Link href="/create-dish" className="hf-control hf-btn-secondary w-full text-[14px]">
         {t("recipes.createDish")}
       </Link>
     </div>

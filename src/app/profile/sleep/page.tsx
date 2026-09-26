@@ -33,7 +33,7 @@ function addMinutes(time: string, minutes: number) {
 }
 
 const timeInputClass =
-  "rounded-xl bg-hf-tan px-4 py-3 text-[15px] text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green";
+  "hf-field rounded-xl bg-hf-tan px-4 text-[15px] text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green";
 
 function timeToMinutes(time: string | null | undefined): number | null {
   if (!time) return null;
@@ -218,7 +218,7 @@ export default function SleepSchedulePage() {
           <button
             type="button"
             onClick={() => setPerDayOpen((open) => !open)}
-            className="flex w-full items-center gap-2 rounded-2xl bg-hf-tan px-4 py-3 text-left"
+            className="hf-control-row flex w-full items-center gap-2 rounded-2xl bg-hf-tan px-4 text-left"
           >
             <span className="flex-1 text-[15px] font-medium text-hf-black">
               {t("profileSleep.perDayToggle")}
