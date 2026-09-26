@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
+import { FrontPagePreview, WheelIcon } from "@/components/FrontPagePreview";
 import {
   MAX_WHEEL_ACTIONS,
   saveWheelActionKeys,
@@ -76,13 +77,14 @@ export default function FrontPageDisplaySettingsPage() {
                 key={side}
                 type="button"
                 onClick={() => saveFabSide(side)}
-                className="flex h-12 items-center justify-center rounded-2xl text-[14px] font-semibold transition-colors"
+                className="flex flex-col items-center justify-center gap-2 rounded-2xl py-3 text-[14px] font-semibold transition-colors"
                 style={{
                   background: isSelected ? "var(--hf-green)" : "var(--hf-tan)",
                   color: isSelected ? "var(--hf-white)" : "var(--hf-black)",
                 }}
                 aria-pressed={isSelected}
               >
+                <FrontPagePreview side={side} selected={isSelected} />
                 {t(side === "left" ? "frontPageSettings.sideLeft" : "frontPageSettings.sideRight")}
               </button>
             );
@@ -94,10 +96,15 @@ export default function FrontPageDisplaySettingsPage() {
           })}
         </p>
 
-        <p className="hf-heading px-1 text-xs font-bold uppercase tracking-wide text-hf-black opacity-60">
-          {t("frontPageSettings.buttonsSectionTitle")}
-        </p>
-        <p className="px-1 text-[13px] font-semibold text-hf-black opacity-70">
+        <div className="mt-2 flex items-center gap-3 px-1">
+          <WheelIcon />
+          <span aria-hidden="true" className="h-px flex-1 bg-hf-black opacity-25" />
+          <p className="hf-heading text-xs font-bold uppercase tracking-wide text-hf-black opacity-60">
+            {t("frontPageSettings.buttonsSectionTitle")}
+          </p>
+          <span aria-hidden="true" className="h-px flex-1 bg-hf-black opacity-25" />
+        </div>
+        <p className="px-1 text-right text-[13px] font-semibold text-hf-black opacity-70">
           {t("frontPageSettings.selectedCount", { count: selectedKeys.length, max: MAX_WHEEL_ACTIONS })}
         </p>
 
