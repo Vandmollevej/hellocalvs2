@@ -936,7 +936,7 @@
       "backToApp": "Gå tilbage til appen"
     },
     "actions": {
-      "photoDiary": "Fotodagbog",
+      "photoDiary": "Dagbog",
       "newWeight": "Vægt",
       "target": "Mål",
       "bodyMeasurements": "Kropsmål"
@@ -1619,6 +1619,8 @@
     "skip": "Ikke nu",
     "enabling": "Slår til…",
     "error": "Face ID kunne ikke slås til. Du kan prøve igen under Indstillinger.",
-    "enabled": "Face ID er slået til for login."
+    "enabled": "Face ID er slået til for login.",
+    "active": "Face ID aktiveret",
+    "activate": "Aktivér Face ID"
   }
 }
