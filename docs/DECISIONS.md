@@ -2700,3 +2700,15 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
 - Status, "Synkroniser nu", "Frakobl" og enhedskoder ligger som ekstra grupper
   i samme stil. Valgene gemmes stadig med det samme; datatyperne er uændrede.
 - Designmanualen har afsnit 9 "Adgangsark (integrationer)" med live eksempel.
+## 2026-09-26: Fælles 48 px-højde på felter, dropdowns, knapper og rækker
+
+- Brugerens beslutning: alle enkeltlinje-felter, dropdowns, madindtastninger,
+  fuldbredde-knapper, listerækker og statistik-sektionsoverskrifter er 48 px
+  (`--hf-control-height`), også på admin-siderne.
+- Højden ejes af tre klasser i `globals.css` (uden for `@layer`, så de vinder
+  over Tailwind): `.hf-field` (input/select/felt-wrapper), `.hf-control`
+  (knap/link, fast højde) og `.hf-control-row` (række, min. 48 px, 8 px
+  lodret padding). Sider må ikke sætte `h-*`/`py-*`/`min-h-*` ved siden af.
+- Bevidst undtaget: footer, fliser, statistik-kort, ikonknapper (44 px), små
+  filter-/periodeknapper og textarea. Hello Docs notched felt følger nu også
+  48 px (før 60 px).

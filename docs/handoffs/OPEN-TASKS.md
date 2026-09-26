@@ -205,7 +205,8 @@ Brugerens valg: 48 px overalt. Kun enkeltlinje-felter, dropdowns, madindtastning
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | — | Klasser + første 16 filer (login, betaling, TextField m.fl.) | Færdig (64c5125, d7b4ec3) | — |
-| — | Resten (~65 filer: profil, kalender, statistik, admin, kamera …) | Blokeret | Venter på at "Typografi og designsystem" committer sin migrering, som overskrev klassebyttene. Kør derefter `apply.js`-reglerne igen (dry først) + de manuelle steder: `inputClass` (profile/edit), `timeInputClass` (sleep), `numberInputClass` (foods/new), ApiKeysManager, `.hd-notched-field` 60 px, block-links i add/[id] og hello-doc/preview |
+| — | Resten (62 filer: profil, statistik, admin, kamera, hello-doc …) | Færdig (bdc754d) | — |
+| — | Sidste 5 filer: `calendar/page.tsx`, `settings/page.tsx`, `settings/support/page.tsx`, `settings/display/front-page/page.tsx`, `admin/ApiKeysManager.tsx` | Blokeret | Andre sessioner har ikke-committede ændringer i dem. Når de er committet: kalender-rækker (min-h-11/py-3 → `hf-control-row`), support-rækker (h-12 → `hf-control-row`), knapper (h-12 → `hf-control`), front-page-rækker (py-3 → `hf-control-row`), ApiKeysManager `inputClass` (py-2 → `hf-field`) |
 
 ## Ikke fordelt
 Ændret og ikke committet uden kendt ejer: `docs/AI.md`, `src/components/AddButton.tsx`,
