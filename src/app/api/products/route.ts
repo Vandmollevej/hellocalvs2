@@ -125,17 +125,23 @@ export async function GET(req: Request) {
           ],
           // Egne private ingredienser vises kun for ejeren (via /api/private-ingredients).
           privateOwnerId: null,
-          ...(q
-            ? {
-                OR: [
-                  { name: { contains: q, mode: "insensitive" } },
-                  { brand: { name: { contains: q, mode: "insensitive" } } },
-                ],
-              }
-            : {}),
-          ...(source
-            ? { externalSource: source }
-            : { OR: [{ externalSource: null }, { externalSource: { not: "HELLOFRESH" } }] }),
+          // Tekstfilter og kildefilter er begge OR-betingelser, så de skal
+          // ligge under AND — ellers overskriver den ene nøgle den anden.
+          AND: [
+            ...(q
+              ? [
+                  {
+                    OR: [
+                      { name: { contains: q, mode: "insensitive" } },
+                      { brand: { name: { contains: q, mode: "insensitive" } } },
+                    ],
+                  } satisfies Prisma.ProductWhereInput,
+                ]
+              : []),
+            source
+              ? { externalSource: source }
+              : { OR: [{ externalSource: null }, { externalSource: { not: "HELLOFRESH" } }] },
+          ],
         },
         include: {
           // Altid samme include-form (ikke betinget på q/source), så Prisma's
