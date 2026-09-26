@@ -1354,7 +1354,7 @@
     "searchPlaceholder": "Search all cards",
     "searchResults": "Search results",
     "noSearchResults": "No cards match your search.",
-    "addAll": "+ Add",
+    "add": "+ Add",
     "noCardsYet": "No cards here yet.",
     "addHeading": "+ Heading",
     "addDivider": "+ Divider"

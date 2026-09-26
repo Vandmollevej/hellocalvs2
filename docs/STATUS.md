@@ -2,6 +2,14 @@
 
 Last updated: 2026-09-26
 
+## 2026-09-26: Ubrugte kort/grafer — "+ Tilføj" på hvert kort, ikke på blokken
+
+Brugeren afviste "+ Tilføj" pr. accordion (tilføjede hele blokken på én gang).
+`/statistics/unused-cards` og `/statistics/unused-charts`: hvert kort/graf har
+nu "+ Tilføj" i øverste højre hjørne og tilføjes ét ad gangen; knappen på
+accordion-overskrifterne og `AccordionSection`s `action`-plads er fjernet.
+Se DECISIONS 2026-09-25 "Statistiksidens grafer kan redigeres som kortene".
+
 ## 2026-09-26: Billede-dagbog mistede billeder — gemmes nu i IndexedDB
 
 Brugeren tog 5 billeder, efter at have forladt siden var der 2. Billederne lå

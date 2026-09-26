@@ -730,8 +730,10 @@ tryk får dem til at vibrere som statistik-kortene; i redigering kan en graf
 fjernes med slette-cirklen og trækkes op/ned (`StatChartsSection.tsx`). Nye
 grafer tilføjes fra `/statistics/unused-charts`, der har samme opbygning som
 `/statistics/unused-cards` (søgefelt på tværs af blokkene, hvis resultater
-står over accordions, og "+ Tilføj" i hver bloks højre hjørne, som tilføjer
-alle blokkens resterende elementer). Der opfindes ingen nye datatyper: de
+står over accordions, og "+ Tilføj" i højre hjørne af hvert enkelt kort/graf,
+som tilføjer netop det ene element). Rettet 2026-09-26 efter brugerens
+afvisning: der er ingen "tilføj alle"-knap på accordion-overskrifterne —
+elementer tilføjes kun ét ad gangen. Der opfindes ingen nye datatyper: de
 ekstra grafer er 7-dages dagsserier af felter, som allerede findes i
 `DailyTotal`, med statistik-kortenes navne og enheder.
 

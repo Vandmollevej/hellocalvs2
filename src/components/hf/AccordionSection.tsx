@@ -5,14 +5,12 @@ import { HfChevron } from "@/components/hf/HfChevron";
 
 // Fold-out group: tan header row + cream body, same geometry as the
 // calendar's hour groups (src/app/calendar/page.tsx). Several may be open
-// at once; each keeps its own open state. `action` renders in the header's
-// top-right corner as a sibling of the toggle (never nested inside it).
+// at once; each keeps its own open state.
 export function AccordionSection({
   title,
   icon,
   count,
   defaultOpen = false,
-  action,
   children,
 }: {
   title: string;
@@ -20,7 +18,6 @@ export function AccordionSection({
   icon?: React.ReactNode;
   count?: number;
   defaultOpen?: boolean;
-  action?: React.ReactNode;
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -43,7 +40,6 @@ export function AccordionSection({
           )}
           <HfChevron direction={open ? "down" : "right"} className="text-hf-black" />
         </button>
-        {action}
       </div>
       <div id={panelId} hidden={!open} className="bg-hf-cream p-3">
         {children}
