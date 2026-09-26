@@ -58,10 +58,11 @@ export async function POST(req: Request) {
   }
   for (const a of body.activities ?? []) {
     const startedAt = validDate(a.startedAt);
-    if (a.sportType && startedAt && a.durationMinutes && a.caloriesBurned) {
+    // 0 kcal er gyldigt (fx gåture uden pulsmåler); kun varighed er påkrævet.
+    if (a.sportType && startedAt && a.durationMinutes && a.durationMinutes > 0) {
       items.push({
         kind: "activity",
-        payload: { source, sportType: a.sportType, startedAt, durationMinutes: a.durationMinutes, caloriesBurned: a.caloriesBurned },
+        payload: { source, sportType: a.sportType, startedAt, durationMinutes: a.durationMinutes, caloriesBurned: a.caloriesBurned ?? 0 },
       });
     }
   }
