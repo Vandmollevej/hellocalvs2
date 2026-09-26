@@ -924,7 +924,7 @@
     "actions": {
       "photoDiary": "Photo diary",
       "newWeight": "Enter new weight",
-      "target": "Enter goal",
+      "target": "Goal",
       "bodyMeasurements": "Body measurements"
     },
     "row": {

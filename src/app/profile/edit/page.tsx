@@ -239,11 +239,11 @@ export default function ProfileEditPage() {
             </Field>
           </div>
 
-          <div className="flex gap-3">
+          <div className="grid grid-cols-4 gap-3">
             <button
               type="button"
               onClick={() => router.push("/profile/photo-diary")}
-              className="flex flex-1 flex-col items-center gap-2 rounded-xl bg-hf-tan px-2 py-3 text-center text-[13px] font-semibold text-hf-black"
+              className="flex min-w-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-hf-tan px-1 py-3 text-center text-[13px] font-semibold text-hf-black"
             >
               <IconCamera size={20} />
               {t("profile.actions.photoDiary")}
@@ -251,7 +251,7 @@ export default function ProfileEditPage() {
             <button
               type="button"
               onClick={() => router.push("/profile/weight-calibration")}
-              className="flex flex-1 flex-col items-center gap-2 rounded-xl bg-hf-tan px-2 py-3 text-center text-[13px] font-semibold text-hf-black"
+              className="flex min-w-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-hf-tan px-1 py-3 text-center text-[13px] font-semibold text-hf-black"
             >
               <IconBathScale size={20} />
               {t("profile.actions.newWeight")}
@@ -259,7 +259,7 @@ export default function ProfileEditPage() {
             <button
               type="button"
               onClick={() => router.push("/profile/goals")}
-              className="flex flex-1 flex-col items-center gap-2 rounded-xl bg-hf-tan px-2 py-3 text-center text-[13px] font-semibold text-hf-black"
+              className="flex min-w-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-hf-tan px-1 py-3 text-center text-[13px] font-semibold text-hf-black"
             >
               <IconChampagne size={20} />
               {t("profile.actions.target")}
@@ -267,7 +267,7 @@ export default function ProfileEditPage() {
             <button
               type="button"
               onClick={() => router.push("/profile/body-measurements")}
-              className="flex flex-1 flex-col items-center gap-2 rounded-xl bg-hf-tan px-2 py-3 text-center text-[13px] font-semibold text-hf-black"
+              className="flex min-w-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-hf-tan px-1 py-3 text-center text-[13px] font-semibold text-hf-black"
             >
               <IconWaistMeasure size={20} sex={user?.sex} />
               {t("profile.actions.bodyMeasurements")}
