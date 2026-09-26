@@ -60,6 +60,7 @@ Ikke visuelt testet: lokalt sender appen til /welcome uden login. Test på mobil
 | 961d7953 | Tal-slider på forsiden: midterste tal 25px indrykket, aftager til 0 som transparensen | Færdig (eba3638) | — |
 | 00cf8440 | Gradient i højre side af tallene (synlighed) skal være helt flydende | Færdig (32995ab) | Opacity går nu lineært til 0 ved kanten |
 | a9819635 | Trinløs størrelse/farve på slider (ingen spring pr. position) | Færdig (32995ab) | Ikonfarve + "/ mål"-linje glider nu trinløst |
+| 65efa293 | Tal-hjulet: én linje uden "/ mål", ikon til HØJRE, jævn luft, 7 rækker (2 opfundne), 2° vifte pr. række, ingen beskæring | Færdig (gren `claude/photo-diary-and-wheel`), venter på "ok" til push | Konflikter med 0d21a46 (lokal master): behold denne version, den har 0d21a46's dæmpning med |
 
 ## G3 — Produktkategorier + statistikbokse + "Månedens synder"
 Filer: Prisma-skema (kategori), kategori-lib, nye statistikbokse, ny liste-side, knap i kalender (koordinér med G1).
@@ -118,6 +119,7 @@ Ejer: Profil-gruppen (G7), konto B — overtaget 2026-09-24
 | bc01cd73 | Højde-vælger fryser, "Færdig" virker ikke, aktuel højde vises ikke i scrolleren | Lavet?, ikke verificeret | **Sandsynligvis kilden til diff'en i `src/components/ui/WheelPicker.tsx`.** Tjek, verificér og commit |
 | 26393cba | Demo-bruger med abonnement "Seriøs", næste betalingsdato, "Betalingsmetoder"-knap + profilpunkt | Blokeret | Demo-brugeren blev bevidst fjernet (commit e2c0a83). Spørg: byg kun abonnement/betalingsmetoder-UI? |
 | gear-appsettings | Profil: tandhjul (kun på /profile) → app-indstillinger (`/settings`) + tilbagepil på profilsiden | Færdig | App-punkter flyttet fra profil til `/settings`, log ud flyttet med |
+| 65efa293 | Billede-dagbog mistede billeder (5 → 2): lager flyttet fra localStorage til IndexedDB | Færdig (gren `claude/photo-diary-and-wheel`), venter på "ok" til push | Karrusel-sessionen (`claude/photo-diary-carousel`, ikke committet) skal bygges ovenpå: brug `src/lib/photo-diary-store.ts`, `url` i stedet for `dataUrl` |
 
 ## G8 — Integrationer
 Filer: `src/lib/integrations.ts`, integrationssiden, `/api/withings/**`, Google Health.

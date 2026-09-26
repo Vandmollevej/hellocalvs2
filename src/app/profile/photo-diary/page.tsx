@@ -69,11 +69,17 @@ export default function BilledeDagbogPage() {
   useEffect(() => {
     const urls = objectUrls.current;
     let cancelled = false;
+    let migrationFailed = false;
     migrateLegacyDiaryPhotos()
-      .catch(() => {})
+      .catch(() => {
+        // De gamle billeder bliver liggende i localStorage til næste forsøg.
+        migrationFailed = true;
+      })
       .then(() => listDiaryPhotos())
       .then((stored) => {
-        if (!cancelled) setPhotos(stored.map((photo) => toView(photo, urls)));
+        if (cancelled) return;
+        setPhotos(stored.map((photo) => toView(photo, urls)));
+        if (migrationFailed) setStorageError("load");
       })
       .catch(() => {
         if (!cancelled) setStorageError("load");
