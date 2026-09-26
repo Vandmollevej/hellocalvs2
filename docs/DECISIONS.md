@@ -28,6 +28,20 @@ konto. Ingen husstands-/familieprofiler … ingen forældrekontrol".
   mens en anden er på kontoen (ny token `--hf-color-watch: #2f80ed`);
   "Kontrol-log" under Indstillinger på den kontrollerede konto.
 
+
+
+## 2026-09-25: Blød e-mailbekræftelse ved tilmelding
+
+Brugerens valg. Tilmelding med e-mail + adgangskode logger ind med det samme,
+men `emailVerifiedAt` sættes først, når linket i bekræftelsesmailen åbnes
+(`/verify-email`, signeret JWT med bruger-ID + e-mail, 7 dage). Indtil da
+viser `AuthGate` en bjælke med "Send igen". Logger nogen ind med
+Google/Apple/Facebook på en e-mail, hvor en eksisterende konto aldrig er
+bekræftet, kobles kontoen på, men dens adgangskode og passkeys fjernes
+først (beskytter mod konti oprettet med en fremmed e-mail). Mails sendes
+nu straks fra `queueMessage()` i stedet for kun ved scheduler-tick (15 min).
+
+
 ## 2026-09-25: Global lodret rytme (8/16/32) og sorte primærknapper
 
 Brugerens krav: "stringent opsætning på tværs af hele sitet med rene linjer og
@@ -117,6 +131,30 @@ ikonknapper (sko/uden sko, morgen/aften, før/efter toilet, før/efter mad) —
 stor sort "Opdatér oplysninger"-knap gemmer alt. Siden er dermed en bevidst
 undtagelse fra reglen om automatisk lagring uden "Gem"-knap. Ikoner uden
 tabler-modstykke ligger i `src/components/icons/WeighConditions.tsx`.
+## 2026-09-25: API-nøgler i admin
+
+Brugerens ønske: en admin-side med overblik over alle API-nøgler og et felt
+til at rette dem, "hvis det er sikkert".
+
+- Side `/admin/api-keys` (kataloget i `src/lib/api-keys/catalog.ts`).
+  Hemmelige værdier forlader aldrig serveren — kun de sidste fire tegn og
+  længden. Client ID'er, adresser og lignende vises i klar tekst.
+- En rettet nøgle gemmes i `app_secrets`, AES-256-GCM-krypteret med en
+  nøgle afledt (HKDF) af `ADMIN_SESSION_SECRET`. Ved opstart
+  (`instrumentation.ts`) lægges værdierne oven på `process.env`, så al
+  eksisterende kode virker uændret, og en rettelse slår igennem med det
+  samme uden genstart. "Brug .env igen" sletter rækken.
+- Skiftes `ADMIN_SESSION_SECRET`, kan de gemte værdier ikke længere læses;
+  siden viser det, og .env-værdien gælder, til nøglen gemmes igen.
+- Database, sessionsnøgler og adresser (`APP_BASE_URL` m.fl.) kan kun
+  ændres i `.env.production` — de læses ved opstart og er vist som
+  skrivebeskyttet status.
+- "Test" kalder udbyderen med de aktive nøgler (OAuth med bevidst ugyldig
+  kode: "ugyldig kode" = nøglerne er godkendt). For Google tjekkes også, om
+  redirect-URI'en er registreret.
+- Den globale copy/paste-blokering (2026-09-22) undtager indhold under
+  `[data-allow-clipboard]` — kun brugt på denne admin-side, så nøgler kan
+  indsættes.
 
 ## 2026-09-25: Én tekst og ét ikon pr. Tilføj-handling
 
@@ -159,6 +197,18 @@ Brugerens krav efter skærmbillede af Invitér en ven:
   bruges også i invitationsmailen (`{{personalMessage}}`, HTML-escapet).
   Kladden huskes kun lokalt i browseren.
 
+## 2026-09-25: Blød e-mailbekræftelse ved tilmelding
+
+Brugerens valg. Tilmelding med e-mail + adgangskode logger ind med det samme,
+men `emailVerifiedAt` sættes først, når linket i bekræftelsesmailen åbnes
+(`/verify-email`, signeret JWT med bruger-ID + e-mail, 7 dage). Indtil da
+viser `AuthGate` en bjælke med "Send igen". Logger nogen ind med
+Google/Apple/Facebook på en e-mail, hvor en eksisterende konto aldrig er
+bekræftet, kobles kontoen på, men dens adgangskode og passkeys fjernes
+først (beskytter mod konti oprettet med en fremmed e-mail). Mails sendes
+nu straks fra `queueMessage()` i stedet for kun ved scheduler-tick (15 min).
+
+
 ## 2026-09-24: Normalt login — privacy-by-architecture ophævet
 
 Brugerens beslutning: "Man skal bare kunne logge ind som på alle andre
@@ -172,6 +222,9 @@ apps." De skrappe sikkerhedsforanstaltninger var kun ment til admin.
 - Login: e-mail + adgangskode (med glemt adgangskode), Face ID (passkey,
   WebAuthn), Google, Apple og Facebook. Samme bekræftede e-mail kobles på
   samme konto. Efter login tilbydes Face ID én gang på enheder, der kan.
+  Face ID er kun hurtig-login på en enhed, der allerede har slået det til
+  efter et almindeligt login — login-siden viser ikke Face ID-knappen på en
+  ny enhed (flag `hc_passkey_on_device` i localStorage).
 - Den delte demo-bruger kommer ikke tilbage: alle private endpoints kræver
   session (`getSessionUser` + `unauthorized()`), `AuthGate` sender
   ikke-indloggede til `/welcome`.
@@ -2135,15 +2188,51 @@ Normaliserede produkt-søgeparametre (`ProductNutritionFeatures`, 1:1 med
 
 ## 2026-09-24: HelloFresh kun i Opret ret; handlingsknapper i fuld bredde
 
-- HelloFresh-boksen ("Genkend din ret") er fjernet fra Madvarer-siden. Opret ret når den via kameraet (`/camera?...&for=ret`). HelloFresh må ikke vises på Madvarer, produktsøgning, produkt-/ingrediensoprettelse eller produktvisning. Åbent punkt: kameraets "Produkt"-fane (`mode=hellofresh`) vises også uden for Opret ret; ikke ændret endnu.
+- HelloFresh-boksen ("Genkend din ret") er fjernet fra Madvarer-siden. Opret ret når den via kameraet (`/camera?...&for=ret`). HelloFresh må ikke vises på Madvarer, produktsøgning, produkt-/ingrediensoprettelse eller produktvisning. Kameraets "Produkt"-fane (`mode=hellofresh`) vises kun med `for=ret`; ellers er kameraet altid stregkode.
 - Almindelige primære/sekundære handlingsknapper fylder altid hele indholdsbredden. Fælles komponent: `ActionButton`/`ActionLink` (`src/components/hf/ActionButton.tsx`); regel i design.md §6.2. Små ikon-/inline-kontroller er undtaget. Eksisterende smalle knapper rettes efterhånden, når deres side alligevel ændres.
 
+## 2026-09-25: Oprettelses-app som egen container fra samme image
+
+- Medarbejder-hyldeappen (docs/OPRETTELSES-APP.md) bruger samme Postgres/Prisma-skema som Hello Cal og kører som sin egen container (`scan-app`) fra det samme Docker-image med `HELLOCAL_APP_MODE=scan`. `middleware.ts` serverer dér kun `/scan`, `/api/scan` og de delte AI-/produkt-API'er; i den almindelige app er `/scan` 404 (undtagen localhost). Valgt frem for et separat Next-projekt, så designet er 1:1 Hello Cal, og "Opret vare" genbruger `POST /api/products` uændret (produkter synlige i Hello Cal med det samme).
+- Medarbejdere er `ScanWorker`-rækker, ikke `User`: eget login (brugernavn + adgangskode + TOTP) og egne cookies. Privacy-/vault-arkitekturen gælder ikke for ansatte (brugerbeslutning 2026-09-24); CPR og bank-reg.nr./konto krypteres server-side (AES-256-GCM, `SCAN_PII_KEY`), så admin kan afregne.
+- Hyldegenkendelse: OpenAI Vision finder varer + afgrænsningsbokse; match mod databasen sker på navn/logo (stregkoder kan ikke ses på en hylde): tekstsøgning efter kandidater, derefter AI-vurdering med billedet. ≥ 80 % = findes, 50–80 % = usikkert. Medarbejderen kan rette tildelingen manuelt.
+- Aflønning: én global sats, fastfrosset på hver indsendelse. Supplering af et eksisterende produkt betales som en hel vare, undtagen når medarbejderen selv oprettede det. Admin afgør altid accept/afvisning.
+
+## 2026-09-25: Logo-robot bruger Google Vision, ikke Custom Search
+
+- `scripts/logo-agent` (docs/LOGO-AGENT.md) isolerer logoet med Vision `LOGO_DETECTION` og finder kandidater med Vision `WEB_DETECTION`. Googles Custom Search JSON API er lukket for nye kunder og stopper 2027-01-01, så det mønster (image-agent) genbruges ikke til søgningen — kun container-/databasemønstret. Besluttet af brugeren 2026-09-24.
+- ≥ 90 % og brandnavn på siden/linket → automatisk logo; ellers admin-kø "Logoer" (≥ 50 %). Hentede kandidater slettes 7 dage efter afgørelsen.
 ## 2026-09-24: Egne, private ingredienser ("Opret egen ingrediens")
 
 - Linket "Opret egen ingrediens" under Opret ret åbner `/ingredients/new`. Brugeren angiver kun et navn (og mængde, når det er fra en ret) — ikke kcal/makroer, som brugeren ikke kan kende. Næringsindholdet står som ukendt, indtil admin har oprettet ingrediensen globalt.
 - Den private ingrediens ligger kun i boksen (samling `privateIngredients`) og vises kun for brugeren selv: øverst i søgningen på Opret ret og på `/ingredients` ("Mine ingredienser": omdøb/slet). I retter bruges produkt-ID `private:<id>`, som aldrig sendes til serveren; retter med egne ingredienser kan ikke deles, før de er gjort globale.
 - Admin varsles: serveren får kun navnet og en anonym engangsindbakke (`IngredientRequest`, ingen bruger-ID) plus e-mail `INGREDIENT_REQUEST_ADMIN`. Admin → "Ønskede ingredienser" kan rette navnet og "Tilføj globalt" (GenericIngredient med Frida-næring) eller afvise.
 - Når admin tilføjer den globalt, overskriver den global brugerens private automatisk (valgt blandt brugerens to muligheder): indbakken leverer den globale ingrediens, og enheden erstatter den private i alle egne retter og sletter den private.
+
+## 2026-09-25: Betingelser og Privatlivspolitik omskrevet (Lifesum-analyse)
+
+- `/betingelser` er omskrevet, og der er en ny `/privatlivspolitik` (offentlig, linket fra Indstillinger). Strukturen er inspireret af Lifesums tekster, men indholdet er bevidst mere forbrugervenligt og med en let kæk tone: "Kort fortalt"-boks øverst, ingen annoncesporing/profiler/datasalg, ingen ensidige klausuler (fx lukning "af enhver grund" eller krav om at klage til os først), dansk ret og Forbrugerklagenævnet.
+- Teksten må kun love det, koden faktisk gør (data ligger på serveren efter "Restore normal user login"). Ændres databehandlingen, skal `/privatlivspolitik` opdateres samtidig.
+- Firmanavn, CVR-nr., adresse og kontakt-e-mail står som gule pladsholdere (`Placeholder` i `src/components/hf/LegalDocument.tsx`), indtil ejeren udfylder dem.
+- Åbent: teksten lover et udtrykkeligt samtykke til helbredsdata (GDPR art. 9) ved oprettelse og samtykke til fortrydelsesret-afkald ved køb; ingen af delene er bygget endnu. Konto-sletning sker via Hjælpecenter (ingen selvbetjening). Juridisk gennemlæsning anbefales før lancering.
+
+## 2026-09-25: Billede-dagbog-lås via WebAuthn, ikke native app
+
+Kontakten "Kræver telefonens adgangskode for at vise" håndhæves i webappen med
+WebAuthn (Face ID/Touch ID/telefonens kode, `userVerification: "required"`),
+ikke via en native app. Formålet er at billederne ikke vises ved et uheld —
+det er en visningslås, ikke kryptering af billederne. Siden låser igen, når
+den går i baggrunden. Selfie-funktionen er fjernet efter brugerens ønske og
+skal ikke genindføres uden en eksplicit anmodning.
+
+
+- Samtykke til helbredsoplysninger (GDPR art. 9) gemmes som `User.healthDataConsentAt` (migration `20260925150000_health_data_consent`). E-mail-tilmelding kræver vippekontakten slået til (`HealthConsentToggle`); alle andre indloggede brugere uden samtykke (Google/Apple/Facebook, ældre konti) sendes af `ConsentGate` til `/samtykke`. Juridiske sider og admin er undtaget.
+- Køb af Seriøs kræver en vippekontakt, der bekræfter straks-levering og forholdsmæssig refusion ved fortrydelse (forbrugeraftaleloven). Knappen er fortsat lukket, indtil en betalingsudbyder findes (`PAYMENT_AVAILABLE`).
+- Åbent: konto-sletning sker via Hjælpecenter (ingen selvbetjening), og tilbagetrækning af samtykke sker via support. Juridisk gennemlæsning anbefales før lancering.
+
+
+
+- Åbent: teksten lover et udtrykkeligt samtykke til helbredsdata (GDPR art. 9) ved oprettelse og samtykke til fortrydelsesret-afkald ved køb; ingen af delene er bygget endnu. Konto-sletning sker via Hjælpecenter (ingen selvbetjening). Juridisk gennemlæsning anbefales før lancering.
 
 ## 2026-09-25: Billede-dagbog-lås via WebAuthn, ikke native app
 
@@ -2193,3 +2282,12 @@ den rigtige stregkode.
   (`OneDReader`), så position/retning virker som for de øvrige formater.
   Verificeret i Chromium: EAN-13, UPC-A, EAN-8 og fem UPC-E-koder ved
   0/90/180/−90/14/−20/75° — alle læst korrekt, vinkel inden for 0,5°.
+
+## 2026-09-24: G11 — E-numre, toksiner og advarsel ved usundt fedt
+
+- Opsætning har to nye kontakter, "Vis E-numre" og "Vis toksiner" (felterne `User.showAdditives`/`User.showToxins`, fra som standard; migration `20260925120000_product_additives_toxins_toggles`). E-numre-sektionen på produktsiden vises nu kun, når kontakten er slået til.
+- Toksiner er en kurateret, statisk liste i `src/lib/toxins.ts` (ca. 23 stoffer: plantegifte, skimmelgifte, tungmetaller, akrylamid, alkohol, koffein m.fl.). Hver post har kildelinks til Fødevarestyrelsen/EFSA. Råd til gravide/ammende og fertilitet står kun, hvor Fødevarestyrelsen selv giver et råd, og vises først (brugerens ønske: særligt vigtigt ved graviditet, amning og fertilitet).
+- Matchning sker mod produktnavn + `Product.ingredientsText`. Et fund betyder "fødevaretypen er kendt for stoffet", ikke en måling af produktet; det står i UI'et.
+- Statistik-boksen "Toksiner" er en pladsholder ("—") ligesom E-numre, fordi registreringer ikke har et snapshot af indholdsstoffer.
+- "Vis udvidet næringsindhold" er åben som standard på produktsiden, og beskrivelsen i Opsætning siger, at værdierne står nederst på produktsiden.
+- Mættet fedt og transfedt vises med en advarselstrekant (statistik-bokse og produktsidens udvidede næringsindhold). Umættet fedt får ingen advarsel.

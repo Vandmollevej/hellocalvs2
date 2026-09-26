@@ -2,6 +2,14 @@
 
 Last updated: 2026-09-25
 
+## 2026-09-25: Mailflow med Mailjet gennemgået
+
+- Glemt adgangskode: virkede allerede; mail sendes nu med det samme og har
+  et klikbart link.
+- Tilmelding: sender nu bekræftelsesmail (blød model, se DECISIONS).
+- Mailjet-afsender `peter@packroff.com` er aktiv, men SPF/DKIM mangler i
+  DNS (GoDaddy) → mails kan lande i spam.
+
 ## 2026-09-25: Backup-scriptet fylder ikke længere 22 GB
 
 `backup-all-containers.sh` lå kun på Synology og kopierede HelloFresh-billederne
@@ -59,9 +67,18 @@ fjernet fra siden (backend-ruterne findes stadig). Google Health genbruger nu
 `GOOGLE_CLIENT_ID/SECRET`, hvis `GOOGLE_HEALTH_*` ikke er sat; connect-fejl
 sendes tilbage til siden i stedet for rå JSON.
 
-Next work: I Google Cloud-konsollen skal redirect-URI'en
-`https://hellocal.packroff.dk/api/integrations/google-health/callback`
-tilføjes til login-klienten, og Google Health API + scopes aktiveres.
+2026-09-26: Google Health gav `redirect_uri_mismatch`, fordi
+`GOOGLE_HEALTH_REDIRECT_URI` i `.env.production` peger på
+`https://hellocal.packroff.dk/api/google-health/callback`, mens OAuth-klienten
+(projekt `hellocal-506810`) kun har `…/api/integrations/google-health/callback`.
+Google Health API og scopes er aktiveret, men appen står i Testing uden
+testbrugere. Connect/callback sendte desuden brugeren til
+`https://0.0.0.0:3000/…` (req.url i containeren); redirects bygges nu fra
+`INTEGRATIONS_REDIRECT_BASE_URL` (`publicUrl` i `src/lib/integrations/registry.ts`).
+
+Next work: Brugeren tilføjer `https://hellocal.packroff.dk/api/google-health/callback`
+som redirect-URI på klienten og `packroff@gmail.com` som testbruger (Google Auth
+Platform → Audience). Test derefter forbindelsen på iPhone.
 ## 2026-09-25: Tilføj-menu tekster og vandglas-ikon
 
 - "Kamera" → "Scan med kamera", "Mikrofon" → "Indtal" (`addButton.*` i
@@ -252,6 +269,8 @@ kort, tekst og tomme flader må ikke markere noget).
   fodspor) i tabler-stil med `currentColor`, så den står skarpt i alle
   størrelser. ViewBox og PNG er trimmet til kanten (ingen luft omkring).
 
+
+
 ## 2026-09-25: Stregkode-scanner omlagt (lodret/skæv aflæsning, AR-afkodning)
 
 Se docs/DECISIONS.md 2026-09-25 "Stregkode-scanning" og design.md §6.11.
@@ -264,6 +283,24 @@ bevægelse, ikke-fundet). Ikke testet på en rigtig iPhone endnu.
 
 Next work:
 1. Test på iPhone efter deploy: vandret + lodret stregkode, skæv, på afstand.
+## 2026-09-25: Admin → API-nøgler
+
+Se `docs/DECISIONS.md` 2026-09-25 "API-nøgler i admin". Ny side
+`/admin/api-keys`: alle tjenester grupperet (login, integrationer, AI, mail,
+push, system), status pr. nøgle (fra .env / rettet i admin / mangler), felt
+til at indtaste/rette, "Brug .env igen", redirect-URI'er til kopiering og
+live-test pr. tjeneste + "Test alle". Migration `20260925120000_app_secrets`.
+
+Live-test af de lokale nøgler 2026-09-25: Facebook, Withings, OpenAI, Google
+Places og Mailjet-SMTP virker. Google-login og Google Health (samme
+OAuth-klient) godkender ID + secret, men klienten har ingen registrerede
+redirect-URI'er (`redirect_uri_mismatch`). Mangler: Apple, Strava, Polar,
+Fitbit, Passio, USDA, VAPID (push). `EMAIL_HASH_PEPPER` bruges ikke længere.
+
+Next work:
+1. Brugeren tilføjer redirect-URI'erne på Google-klienten.
+2. Efter deploy: indtast de nøgler, der mangler i `.env.production`, på
+   `/admin/api-keys` og tryk "Test alle".
 
 ## 2026-09-25: Mail via Mailjet aktiveret
 
@@ -305,6 +342,12 @@ brugerens "byg".
 Brugerens ønske: `/statistics/sources` (faner + Produkter/Produkttyper) er
 slettet, da "Månedens synder" dækker det samme. Boksen "Største syndere" på
 Statistik-siden beholdes, men uden "Se alle"-link.
+
+## Færdig (2026-09-24): G11 — E-numre, toksiner, fedt-advarsel
+
+- Opsætning: "Vis E-numre" og "Vis toksiner" (fra som standard). Produktsiden viser E-numre og en ny Toksiner-sektion med info-vindue og kildelinks. Se DECISIONS 2026-09-24 (G11).
+- Udvidet næringsindhold er åben som standard; beskrivelsen i Opsætning er opdateret.
+- Advarselstrekant på mættet fedt og transfedt (statistik-bokse og produktsiden). Forsidens tal-slider (`src/lib/frontpage-stats.ts`, G2) har stadig dråbe-ikon — G2 kan skifte til `IconAlertTriangle`.
 
 ## 2026-09-25: G3 — produktkategorier, kød/drikke-statistik, "Største kilder" og "Månedens synder" — bygget
 

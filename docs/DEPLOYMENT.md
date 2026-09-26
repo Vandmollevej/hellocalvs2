@@ -106,6 +106,20 @@ formally migrated or archived.
 - `prisma/migrations/`: reviewed SQL migrations applied by the one-shot service.
 - `/api/health`: verifies that both Next.js and PostgreSQL respond.
 
+## Oprettelses-app og logo-robot (2026-09-25)
+
+- `scan-app`: samme image som `app`, men `HELLOCAL_APP_MODE=scan` (kun
+  medarbejder-ruterne). Port `SCAN_APP_HTTP_PORT` (3101). Kræver et eget
+  hostname i Cloudflare Tunnel og `SCAN_APP_BASE_URL`. Deploy-workflowet
+  starter den endnu ikke automatisk — tilføj `scan-app` til
+  `up -d db migrate app`, når brugeren godkender det. Manuelt:
+  `docker compose ... up -d scan-app`.
+- `logo-agent`: lokalt bygget Python-container (`scripts/logo-agent`),
+  kører hver nat kl. `LOGO_AGENT_RUN_HOUR`. Bruger `GOOGLE_VISION_API_KEY`
+  (fallback `GOOGLE_API_KEY`). Ingen `:?`-krav, så en manglende nøgle ikke
+  stopper stakken. Heller ikke med i deploy-workflowet endnu.
+- Se `.env.production.example` for alle nye variabler.
+
 ## First deployment
 
 Do not perform these steps until the image build for the deployment commit has
@@ -259,6 +273,14 @@ sendes videre af `compose.production.yaml`.
 `), `APPLE_TEAM_ID`
   øverst til højre på developer.apple.com.
 - En knap, hvis nøgler mangler, viser "Login med X er ikke sat op endnu".
+
+## API-nøgler fra admin
+
+Alle API-nøgler (login, integrationer, OpenAI, SMTP, push m.fl.) kan også
+indtastes og testes på `adminhellocal.packroff.dk/admin/api-keys`. En værdi
+gemt dér vinder over `.env.production` og virker uden genstart. Database,
+sessionsnøgler og adresser ændres stadig kun i `.env.production`
+(docs/DECISIONS.md 2026-09-25 "API-nøgler i admin").
 
 ## Controlled update
 

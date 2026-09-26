@@ -87,20 +87,21 @@ Ejer: G5-overtagelse, konto B (2026-09-24)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 548ca51e | Ny invite-only agent-app (hyldebillede, opret vare, 2FA, admin-oversigt, aflønnings-backend) | I gang | Bruger sagde 2026-09-24 "byg det hele, ny container". Bygger: Prisma-modeller → admin scan-invites/medarbejdersider → agent-app-container |
-| 850e575e / 0669f736 | Logo-robot: isolér logo ved scanning, match mod DB, natlig Google-søgning, admin-kø under 90 % | I gang | Besluttet: Google Vision API Web Detection (ikke Custom Search/CSE, lukker 2027-01-01). Bygges efter agent-appens datamodel |
+| 548ca51e | Ny invite-only agent-app (hyldebillede, opret vare, 2FA, admin-oversigt, aflønnings-backend) | Deployet (2026-09-26) | Merget til master (29b7f28); `scan-app` (port 3101) startes i deploy-workflowet. Mangler: brugeren opretter Cloudflare *Published application route* `scanhellocal.packroff.dk` → `http://192.168.1.90:3101`. `SCAN_PII_KEY`/`SCAN_APP_BASE_URL` valgfri (fallback: ADMIN_SESSION_SECRET / scanhellocal-adressen). Passkey som 2. faktor ikke bygget |
+| 850e575e / 0669f736 | Logo-robot: isolér logo ved scanning, match mod DB, natlig Google-søgning, admin-kø under 90 % | Deployet (2026-09-26) | `logo-agent` i deploy-workflowet; bruger eksisterende `GOOGLE_API_KEY` (Cloud Vision API skal være slået til på nøglens Google-projekt). Logo-match i selve scanningen hører til kamera-flowet (ikke G5) |
 
 ## G6 — Madvare-flow (Tilføj madvare, Madvarer-siden)
 Filer: `src/app/add/**`, `src/components/ForwardButton.tsx`, Madvarer-siden, fælles knap-komponent.
 Ukendte ændringer: ingen (ForwardButton gjort færdig).
 Ejer: G6-overtagelse, konto B (2026-09-24)
+Deploy: G6 deployet 2026-09-26 (1ca9c65, GitHub Actions grøn; `/api/private-ingredients` og admin-siden svarer live). Egne ingredienser er siden flyttet fra boksen til serveren af login-sessionen (33cd88b). Mangler kun brugerens visuelle godkendelse af trin-baren på Opsætning.
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | 155dc7cf | Forward-ikon i stedet for dele-ikon, "Log ind…"-tekst på linje med ikonet | Færdig (aaed6fb) | — |
 | 56fda7bc | Mængde altid med enhed (g / ml / cl efter produkttype) | Færdig (3264ed1) | Var allerede lavet af anden session |
-| ad648ee7 | HelloFresh kun i Opret ret + global regel: knapper fuld bredde (også bedt om i 6a503586) | Færdig (aaed6fb) | Åbent: kameraets "Produkt"-fane bruger stadig HelloFresh uden for Opret ret (ikke G6's fil) |
-| b309686e | Opret ret: HelloFresh-trin med 3 cirkler, "Tag billede"/"Opret manuelt", tekstlink "Opret egen ingrediens" → ny side for private ingredienser | Færdig (1540198) — undtagen trin-cirklerne | Knap-tekster, tekstlink og private ingredienser (boks + anonym admin-anmodning + auto-erstatning) er committet. Trin-cirklerne (`SetupProgressBar`) ligger færdige men ikke-committede i `src/app/profile/settings/page.tsx` (G7's fil) — G7: tag den hunk med i jeres commit |
+| ad648ee7 | HelloFresh kun i Opret ret + global regel: knapper fuld bredde (også bedt om i 6a503586) | Færdig (aaed6fb + trin-commit) | Kameraets "Produkt"-fane vises nu kun fra Opret ret |
+| b309686e | Opret ret: HelloFresh-trin med 3 cirkler, "Tag billede"/"Opret manuelt", tekstlink "Opret egen ingrediens" → ny side for private ingredienser | Færdig (1540198 + trin-commit) | Trin-baren på Opsætning bruger nu den fælles HfProgressStepper (HelloFresh-stil). Venter på deploy sammen med alt andet (brugerens beslutning) |
 
 ## G7 — Profil
 Filer: `src/app/profile/**`.
@@ -126,8 +127,9 @@ Ejer: G8-sessionen, konto C (overtaget 2026-09-24)
 | --- | --- | --- | --- |
 | 69a1b2bd / 2c95590f | Dubletter af 6068f78a og 8d98b548 — læs dem for ekstra svar fra brugeren ("Så byg det, der mangler. Det skal jo bare virke!") | Dublet | Luk sammen med hovedopgaverne |
 | 6068f78a | 8 sundhedsintegrationer + nye ikoner | Færdig (22184fe) | Brugeren valgte "Byg alle 8" inden for boks-arkitekturen. Mangler kun nøgler på serveren + deploy |
-| 8d98b548 | Withings + Google Health koblet på, egen data-sync | Venter på bruger | Kode færdig (22184fe). Brugeren skal lægge nøglerne i .env.production på Synology, så deployes der. HelloFresh-trin-rettelsen i samme transcript hører til G6 |
-| d0442775 | Waldemarsro (DK-only) + scraper | Venter på bruger | Krav afklaret og committet (ea7843a) — byg når brugeren siger til |
+| 8d98b548 | Withings + Google Health koblet på, egen data-sync | Venter på bruger | Nøglerne ligger på serveren. 2026-09-26 (session d83284ca, med brugerens OK): 0.0.0.0-redirects i `handlers.ts` rettet. Brugeren tilføjer redirect-URI + testbruger i Google Cloud (se STATUS "Integrationssiden"). HelloFresh-trin-rettelsen i samme transcript hører til G6 |
+| d0442775 | Waldemarsro (DK-only) + scraper | Venter på bruger | Scraper + kalorie-matcher færdige og gemt i scripts/valdemarsro-import (157cff9); brugeren kører scraperen selv (output i Productdatabase/Valdemarsro). IKKE bygget: import til appen + Valdemarsro-kort/toggle på Integrationer (krav i STATUS, ea7843a) — byg når brugeren siger til |
+| 5c45b0d7 | Opskrift-scrapere som Valdemarsro: Arla, Coop, REMA 1000, MENY, Hjerteforeningen, TV2 (+ Børnevenlig og måltidstype) | I gang | Bygges i scripts/recipe-sites-import (fælles motor + ét script pr. side). Brugeren kører selv scraperne i VS Code |
 
 ## G9 — Ikoner (forside + vand)
 Filer: forsidens grydeikon, Vand-siden, `public/` assets.
@@ -152,12 +154,12 @@ Ejer: G10-overtagelse, konto D (2026-09-24)
 
 ## G11 — Næringsdata på produktsiden (E-numre, toksiner, fedt-advarsel)
 Filer: produktsidens næringsvisning, statistik-boks-katalog (koordinér med G2), Opsætning/Visning (koordinér med G7).
-Ejer: —
+Ejer: G11-overtagelse, konto C (2026-09-24). Arbejder i worktree `gifted-hofstadter-894e70`, fletter ind i master
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 03b329f3 / 5a3cdd2b | E-numre + toksiner som valgfri statistik-bokse og til/fra i Opsætning, vist på produktsiden; "udvidet næringsindhold" åben som standard | Venter på bruger | E-numre findes allerede. Toksiner: brugeren sagde de gælder indholdsfortegnelsen og kendte toksiner i bestemte grøntsager — afklar datakilde og byg |
-| 56f30763 | Advarselstrekant med udråbstegn ved mættet/usundt fedt | Ikke startet | Tjek om allerede lavet, ellers byg |
+| 03b329f3 / 5a3cdd2b | E-numre + toksiner som valgfri statistik-bokse og til/fra i Opsætning, vist på produktsiden; "udvidet næringsindhold" åben som standard | Færdig (5cea433) | Kontakter i Opsætning, toksinliste (FVST + EFSA, graviditet/amning/fertilitet først), produktside. Flettes ind i master, når G7 har committet profile/settings |
+| 56f30763 | Advarselstrekant med udråbstegn ved mættet/usundt fedt | Færdig (5cea433) | Trekant på statistik-bokse + produktside. **G2:** forsidens tal-slider (`frontpage-stats.ts`) mangler samme ikon — G11 rører ikke filen |
 
 ## Venter på dig (ingen gruppe)
 | Id | Opgave | Status | Næste skridt |

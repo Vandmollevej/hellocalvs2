@@ -25,9 +25,34 @@ function getTransport() {
 // Sender alle QUEUED e-mail/BOTH-beskeder. Kaldes fra scheduleren
 // (src/lib/scheduler.ts). Er SMTP ikke opsat, rører den ikke ved køen —
 // beskederne forbliver QUEUED til senere.
-export async function flushQueuedEmails(limit = 25) {
+// Kun én afsendelse ad gangen i processen, så samme besked ikke sendes to
+// gange, når queueMessage() og scheduleren flusher samtidig. Kommer der
+// nye beskeder under en kørsel, køres der én gang til bagefter.
+let flushing: Promise<{ sent: number }> | null = null;
+let flushAgain = false;
+
+export async function flushQueuedEmails(limit = 25): Promise<{ sent: number; skipped?: "smtp_not_configured" }> {
+  if (!getTransport()) return { sent: 0, skipped: "smtp_not_configured" };
+  if (flushing) {
+    flushAgain = true;
+    return flushing;
+  }
+  flushing = (async () => {
+    let total = 0;
+    do {
+      flushAgain = false;
+      total += (await flushOnce(limit)).sent;
+    } while (flushAgain);
+    return { sent: total };
+  })().finally(() => {
+    flushing = null;
+  });
+  return flushing;
+}
+
+async function flushOnce(limit: number) {
   const transport = getTransport();
-  if (!transport) return { sent: 0, skipped: "smtp_not_configured" as const };
+  if (!transport) return { sent: 0 };
 
   const fromAddress = process.env.SMTP_FROM || "Hello Cal <no-reply@hellocal.local>";
   const pending = await prisma.outboundMessage.findMany({

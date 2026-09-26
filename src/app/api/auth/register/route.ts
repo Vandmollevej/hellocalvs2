@@ -2,11 +2,11 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { completeLogin } from "@/lib/user-login";
+import { sendEmailVerification } from "@/lib/email-verification";
 
-// Rigtig e-mail-tilmelding (kalder ikke admin-login-koden). Der er endnu ikke
-// sat SMTP op til at sende en verifikationsmail (se docs/STATUS.md "Next
-// work"), så kontoen registreres og markeres som verificeret med det samme —
-// den rigtige verifikationsmail eftermonteres, når SMTP findes.
+// Rigtig e-mail-tilmelding (kalder ikke admin-login-koden). Blød bekræftelse
+// (docs/DECISIONS.md 2026-09-25): brugeren logges ind med det samme, men
+// emailVerifiedAt sættes først, når linket i bekræftelsesmailen er åbnet.
 export async function POST(req: Request) {
   let body: Record<string, unknown>;
   try {
@@ -33,6 +33,14 @@ export async function POST(req: Request) {
     );
   }
 
+  // Udtrykkeligt samtykke til helbredsoplysninger (GDPR art. 9, docs/DECISIONS.md 2026-09-25).
+  if (body.healthDataConsent !== true) {
+    return NextResponse.json(
+      { message: "Du skal give samtykke til behandling af helbredsoplysninger" },
+      { status: 400 }
+    );
+  }
+
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
     return NextResponse.json({ message: "Der findes allerede en konto med den e-mail" }, { status: 409 });
@@ -48,7 +56,7 @@ export async function POST(req: Request) {
       email,
       displayName,
       passwordHash,
-      emailVerifiedAt: new Date(),
+      healthDataConsentAt: new Date(),
     },
     select: { id: true, email: true, displayName: true },
   });
@@ -61,6 +69,8 @@ export async function POST(req: Request) {
       data: { referrerId: referrer.id, referredUserId: user.id, referredRegisteredAt: new Date() },
     });
   }
+
+  await sendEmailVerification(user);
 
   const response = NextResponse.json({ user }, { status: 201 });
   return completeLogin(req, response, user.id, "signup");
