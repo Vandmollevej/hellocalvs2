@@ -322,3 +322,10 @@ explicitly approved.
 7. Verify migrations, health, persistence, restart, product lookup, and
    registration.
 8. Verify the temporary Cloudflare route, backup, and rollback procedure.
+
+## MobilePay (betaling)
+
+- Kræver en MobilePay-salgsstedsaftale med **Recurring API** slået til (portal.vippsmobilepay.com).
+- Læg nøglerne i admin → API-nøgler → Betaling → MobilePay (eller i `.env.production`): `MOBILEPAY_CLIENT_ID`, `MOBILEPAY_CLIENT_SECRET`, `MOBILEPAY_SUBSCRIPTION_KEY`, `MOBILEPAY_MERCHANT_SERIAL_NUMBER`. `MOBILEPAY_ENV=test` bruger testmiljøet; tomt = produktion. Tryk "Test".
+- Webhooken (`APP_BASE_URL/api/payments/mobilepay/webhook`) registreres automatisk ved første scheduler-kørsel efter nøglerne er sat. Adressen skal kunne nås udefra.
+- Migration: `20260926120000_mobilepay_recurring`.
