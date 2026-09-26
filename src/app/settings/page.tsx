@@ -77,7 +77,7 @@ export default function SettingsPage() {
 
       <div className="flex flex-col gap-8 p-4">
         <AccordionCard>
-          <ChevronRow icon={<IconWorld size={20} />} label={t("settings.languageAndRegion")} divider={false} />
+          <ChevronRow icon={<IconWorld size={20} />} label={t("settings.languageAndRegion")} href="/profile/settings/language-region" divider={false} />
         </AccordionCard>
 
         <AccordionCard>
@@ -187,7 +187,7 @@ export default function SettingsPage() {
         <AccordionCard>
           <ChevronRow icon={<IconFileText size={20} />} label={t("settings.terms")} href="/betingelser" />
           <ChevronRow icon={<IconFileText size={20} />} label={t("settings.privacyPolicy")} href="/privatlivspolitik" />
-          <ChevronRow icon={<IconFileText size={20} />} label={t("settings.dataTracking")} divider={false} />
+          <ChevronRow icon={<IconFileText size={20} />} label={t("settings.dataTracking")} href="/privatlivspolitik#datasporing" divider={false} />
         </AccordionCard>
       </div>
     </HfScreen>
