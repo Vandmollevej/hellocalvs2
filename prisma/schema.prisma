@@ -193,6 +193,7 @@ model User {
   doctorShares            DoctorShare[]
   subscription            Subscription?
   paymentMethods          PaymentMethod[]
+  paymentCharges          PaymentCharge[]
   giftCodesRedeemed       GiftCode[]
   adminAuditLogsAsActor   AdminAuditLog[]          @relation("AdminAuditActor")
   adminAuditLogsAsTarget  AdminAuditLog[]          @relation("AdminAuditTarget")
@@ -1930,6 +1931,10 @@ model Subscription {
   // points, se PointsReason FREE_MONTH_REDEEMED), ventende på at blive
   // anvendt på næste faktureringsperiode.
   freeMonthsRemaining    Int                @default(0)
+  // MobilePay (Vipps MobilePay Recurring, docs/DECISIONS.md 2026-09-26): en
+  // aftale, brugeren endnu ikke har godkendt i MobilePay-appen. Flyttes til
+  // providerSubscriptionId, når aftalen bliver aktiv.
+  pendingAgreementId     String?
   createdAt              DateTime           @default(now())
   updatedAt              DateTime           @default(now()) @updatedAt
 
@@ -2298,4 +2303,44 @@ model AppSecret {
   updatedAt   DateTime @updatedAt
 
   @@map("app_secrets")
+}
+
+// Træk på en betalingsaftale (MobilePay Recurring, docs/DECISIONS.md
+// 2026-09-26): ét pr. abonnementsperiode. Status spejler udbyderens
+// (PENDING, DUE, RESERVED, CHARGED, FAILED, CANCELLED, REFUNDED, …) og
+// hentes altid fra udbyderen — webhooks bruges kun som vækning.
+model PaymentCharge {
+  id                  String          @id @default(cuid())
+  user                User            @relation(fields: [userId], references: [id])
+  userId              String
+  provider            PaymentProvider
+  providerAgreementId String
+  providerChargeId    String          @unique
+  amountOre           Int
+  status              String
+  dueDate             DateTime
+  periodStart         DateTime
+  periodEnd           DateTime
+  // Sat når perioden er lagt på abonnementet, så den kun lægges på én gang.
+  appliedAt           DateTime?
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @default(now()) @updatedAt
+
+  @@unique([providerAgreementId, periodStart])
+  @@index([status])
+  @@map("payment_charges")
+}
+
+// Webhook registreret hos en betalingsudbyder. Hemmeligheden (til at
+// verificere afsenderen) gemmes krypteret som app_secrets.
+model PaymentWebhook {
+  id                String          @id @default(cuid())
+  provider          PaymentProvider
+  providerWebhookId String
+  url               String
+  secretCipher      String
+  createdAt         DateTime        @default(now())
+
+  @@unique([provider, url])
+  @@map("payment_webhooks")
 }
