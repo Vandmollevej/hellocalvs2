@@ -986,6 +986,7 @@
     "shoes": {
       "off": "Uden sko",
       "on": "Med sko",
+      "unknown": "Ved ikke",
       "unknownLabel": "Sko ikke angivet"
     },
     "timeOfDay": {
@@ -995,11 +996,13 @@
     "toilet": {
       "before": "Før toilet",
       "after": "Efter toilet",
+      "unknown": "Ved ikke",
       "unknownLabel": "Toilet ikke angivet"
     },
     "meal": {
       "before": "Før mad",
       "after": "Efter mad",
+      "unknown": "Ved ikke",
       "unknownLabel": "Mad ikke angivet"
     },
     "save": "Gem",

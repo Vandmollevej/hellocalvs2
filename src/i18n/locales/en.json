@@ -986,6 +986,7 @@
     "shoes": {
       "off": "Without shoes",
       "on": "With shoes",
+      "unknown": "Don't know",
       "unknownLabel": "Shoes not specified"
     },
     "timeOfDay": {
@@ -995,11 +996,13 @@
     "toilet": {
       "before": "Before toilet",
       "after": "After toilet",
+      "unknown": "Don't know",
       "unknownLabel": "Toilet not specified"
     },
     "meal": {
       "before": "Before meal",
       "after": "After meal",
+      "unknown": "Don't know",
       "unknownLabel": "Meal not specified"
     },
     "save": "Save",
