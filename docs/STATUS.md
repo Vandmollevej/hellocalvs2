@@ -2,6 +2,23 @@
 
 Last updated: 2026-09-26
 
+## 2026-09-26: Billede-dagbog mistede billeder — gemmes nu i IndexedDB
+
+Brugeren tog 5 billeder, efter at have forladt siden var der 2. Billederne lå
+i localStorage (~5 MB på iPhone), så kun de første to blev gemt. Nu IndexedDB
++ nedskalering, fejl vises i stedet for at blive slugt, gamle billeder flyttes
+automatisk. Se `docs/DECISIONS.md` 2026-09-25 "Billede-dagbogens billeder i
+IndexedDB". Pushet sammen med karrusellen (44f7b58). Test på iPhone: tag
+flere billeder, forlad siden, kom tilbage.
+
+## 2026-09-26: Forsidens tal-hjul — ikon til højre, én linje, 7 rækker, vifte
+
+Se `docs/DECISIONS.md` 2026-09-25 "Forsidens tal-hjul" og `docs/UI.md`.
+Ingen "/ mål"-linje, jævn luft, 2 opfundne eksempeltal (søvn, puls) til
+pladserne brugeren ikke har udfyldt, 2° hældning pr. række, ingen beskæring.
+Et tal, der drejer rundt om enden, toner nu ud/ind i stedet for at fare tværs
+hen over hjulet. Test på iPhone efter deploy.
+
 ## 2026-09-26: Billede-dagbog — vandret karrusel i loop
 
 Brugerens krav (skærmbillede af HelloFreshs "Kogebog"-karrusel): billederne

@@ -2302,6 +2302,36 @@ det er en visningslås, ikke kryptering af billederne. Siden låser igen, når
 den går i baggrunden. Selfie-funktionen er fjernet efter brugerens ønske og
 skal ikke genindføres uden en eksplicit anmodning.
 
+## 2026-09-25: Billede-dagbogens billeder i IndexedDB, ikke localStorage
+
+Brugeren tog 5 billeder; efter at have forladt siden var der 2 tilbage.
+Årsag: billederne lå som fulde data:-URL'er i localStorage, som på iPhone kun
+har ~5 MB pr. side — det tredje billede kunne ikke gemmes, fejlen blev slugt,
+og billedet stod kun i hukommelsen, til siden blev forladt. Nu:
+
+- Billederne gemmes som Blobs i IndexedDB (`src/lib/photo-diary-store.ts`),
+  skaleret ned til højst 1600 px på den længste side (JPEG 0,85).
+- Et nyt billede vises først, når det faktisk er gemt; slår det fejl, vises en
+  fejltekst i stedet for et billede, der forsvinder igen.
+- Gamle billeder i localStorage flyttes automatisk over og nøglen ryddes.
+- Kameraet må ikke udløse låsen (den låser ellers, når siden kortvarigt
+  skjules af kameraet, og det nye billede ligner så et tabt billede).
+- Billederne ligger fortsat kun på enheden (ingen server-upload) — samme
+  produktvalg som før. Browseren bedes om vedvarende lager
+  (`navigator.storage.persist()`), men sletter brugeren Safaris websitedata,
+  eller skifter telefon, er billederne væk.
+
+## 2026-09-25: Forsidens tal-hjul — ikon til højre, én linje, vifte
+
+Brugerens krav (gentaget flere gange): ikonet står til HØJRE for tallet, hvert
+tal på én linje uden "/ mål"-linje, samme luft mellem alle rækker, op til 3
+tal over og 3 under midten, en svag vifte-hældning (2° pr. række: rækker over
+midten med venstre ende opad, rækker under med venstre ende nedad) og ingen
+beskæring af lange tal. `docs/UI.md` er rettet tilsvarende; den gamle regel om
+ikon foran tallet gælder ikke længere. Indtil brugeren har slået nok felter
+til, fylder to opfundne eksempeltal (søvn, puls) de tomme pladser — de
+forsvinder af sig selv, når flere rigtige felter vælges.
+
 ## 2026-09-25: Stregkode-scanning — egen afkodningsløkke, lodret/skæv aflæsning og AR-afkodning
 
 Brugerens test på iPhone (skærmbilleder): dæmpningen om guide-boksen var for
