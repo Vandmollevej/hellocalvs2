@@ -308,7 +308,7 @@
   },
   "frontPageSettings": {
     "intro": "Choose which fields should appear in the wheel on the front page. The top field always shows a list of every add-element.",
-    "sideSectionTitle": "Side layout",
+    "sideSectionTitle": "Front page layout",
     "sideLeft": "Left",
     "sideRight": "Right",
     "sideHint": "The number slider always shows on the opposite side: {side}.",
@@ -813,11 +813,12 @@
     "actions": {
       "photoDiary": "Diary",
       "newWeight": "Enter new weight",
-      "target": "Enter goal",
+      "target": "Goal",
       "bodyMeasurements": "Body measurements"
     },
     "row": {
       "subscription": "Subscription",
+      "paymentMethods": "Payment methods",
       "weightCalibration": "Weight calibration",
       "bodyMeasurements": "Body measurements",
       "sleep": "Sleep pattern",
@@ -888,6 +889,8 @@
       "serious": "Serious"
     },
     "activeUntil": "Active until {date}",
+    "nextPayment": "Next payment on {date}",
+    "paymentMethods": "Payment methods",
     "freePlan": {
       "title": "Free",
       "description": "Logging, calendar and your goal. Only the last 3 months of history are shown — older data is kept and comes back if you go Serious."
@@ -967,6 +970,8 @@
   },
   "weightCalibration": {
     "title": "Weight calibration",
+    "lastCalibrated": "Last calibrated on {date}",
+    "neverCalibrated": "Not calibrated yet",
     "intro": "Weigh yourself at different times and under different conditions — this gives you a sense of your fluctuation throughout the day, without having to weigh yourself naked every time.",
     "weightLabel": "Weight (kg)",
     "weightPlaceholder": "e.g. 78.4",
@@ -981,7 +986,6 @@
     "shoes": {
       "off": "Without shoes",
       "on": "With shoes",
-      "unknown": "Don't know",
       "unknownLabel": "Shoes not specified"
     },
     "timeOfDay": {
@@ -991,15 +995,14 @@
     "toilet": {
       "before": "Before toilet",
       "after": "After toilet",
-      "unknown": "Don't know",
       "unknownLabel": "Toilet not specified"
     },
     "meal": {
       "before": "Before meal",
       "after": "After meal",
-      "unknown": "Don't know",
       "unknownLabel": "Meal not specified"
     },
+    "save": "Save",
     "submit": "Log weigh-in",
     "saving": "Saving…",
     "loading": "Loading…",
@@ -1101,8 +1104,11 @@
     "loading": "Loading…",
     "loadError": "Couldn't load photo diary.",
     "requiresPasscode": "Requires phone passcode to view",
-    "requiresPasscodeDescription": "Not yet enforced by the OS — that requires a native app. Just a saved preference for now.",
-    "showPhotos": "Show photos (no real passcode check yet)",
+    "requiresPasscodeDescription": "Confirm with Face ID, Touch ID, Windows Hello, or your screen-lock PIN before photos are shown.",
+    "showPhotos": "Show photos",
+    "unlocking": "Confirming…",
+    "passcodeFailed": "Couldn't confirm. Try again.",
+    "passcodeUnsupported": "This device doesn't support passcode confirmation.",
     "takePhoto": "Take photo (full body or stomach)",
     "takeSelfie": "Take selfie (portrait)",
     "noPhotosYet": "No photos yet — take the first one to compare later.",
@@ -1253,7 +1259,25 @@
     "freeMonthsRemaining": "{count} free month(s) queued",
     "paymentMethodsTitle": "Payment methods",
     "noPaymentMethod": "No payment method added yet",
-    "noPaymentMethodHint": "Coming once Hello Cal has a payment provider connected. Supports Visa, Apple Pay, Google Pay and MobilePay when it's ready.",
+    "nextPayment": "Next payment on {date}",
+    "canceledUntil": "Seriøs until {date}",
+    "mobilePayAgreement": "Agreement active",
+    "pendingApproval": "Waiting for approval in the MobilePay app",
+    "chooseSubscription": "Choose subscription",
+    "stopAgreement": "Stop MobilePay agreement",
+    "keepAgreement": "Keep",
+    "stopping": "Stopping…",
+    "stopConfirm": "The agreement is stopped and no further payments are taken.",
+    "stopConfirmUntil": "The agreement is stopped and no further payments are taken. You keep Seriøs until {date}.",
+    "stopError": "Could not stop the agreement. Please try again shortly.",
+    "mobilePayReturn": {
+      "title": "MobilePay",
+      "checking": "Checking status with MobilePay…",
+      "active": "Thank you! Your subscription is active.",
+      "pending": "The agreement has not been approved yet. Approve it in the MobilePay app — this page updates by itself.",
+      "none": "The agreement was not approved. You can try again from Subscription.",
+      "back": "Go to Payment"
+    },
     "supportedMethodsTitle": "Supported methods"
   },
   "statistics": {

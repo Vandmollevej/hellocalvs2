@@ -308,7 +308,7 @@
   },
   "frontPageSettings": {
     "intro": "Vælg hvilke felter, der skal vises i hjulet på forsiden. Det øverste felt viser altid en liste med samtlige tilføj-elementer.",
-    "sideSectionTitle": "Sidevisning",
+    "sideSectionTitle": "Forsidevisning",
     "sideLeft": "Venstre",
     "sideRight": "Højre",
     "sideHint": "Tal-slideren vises altid i den modsatte side: {side}.",
@@ -813,11 +813,12 @@
     "actions": {
       "photoDiary": "Dagbog",
       "newWeight": "Vægt",
-      "target": "Målsætning",
+      "target": "Mål",
       "bodyMeasurements": "Kropsmål"
     },
     "row": {
       "subscription": "Abonnement",
+      "paymentMethods": "Betalingsmetoder",
       "weightCalibration": "Vægt kalibrering",
       "bodyMeasurements": "Kropsmål",
       "sleep": "Søvnmønster",
@@ -888,6 +889,8 @@
       "serious": "Seriøs"
     },
     "activeUntil": "Aktiv til {date}",
+    "nextPayment": "Næste betaling d. {date}",
+    "paymentMethods": "Betalingsmetoder",
     "freePlan": {
       "title": "Gratis",
       "description": "Registrering, kalender og din målsætning. Kun de seneste 3 måneders historik vises — ældre data gemmes og kommer tilbage, hvis du bliver Seriøs."
@@ -967,6 +970,8 @@
   },
   "weightCalibration": {
     "title": "Vægt kalibrering",
+    "lastCalibrated": "Senest kalibreret d. {date}",
+    "neverCalibrated": "Ikke kalibreret endnu",
     "intro": "Vej dig på forskellige tidspunkter og under forskellige forhold — så får du en fornemmelse af dit udsving i løbet af dagen, uden at skulle veje dig nøgen hver gang.",
     "weightLabel": "Vægt (kg)",
     "weightPlaceholder": "fx 78,4",
@@ -981,7 +986,6 @@
     "shoes": {
       "off": "Uden sko",
       "on": "Med sko",
-      "unknown": "Ved ikke",
       "unknownLabel": "Sko ikke angivet"
     },
     "timeOfDay": {
@@ -991,15 +995,14 @@
     "toilet": {
       "before": "Før toilet",
       "after": "Efter toilet",
-      "unknown": "Ved ikke",
       "unknownLabel": "Toilet ikke angivet"
     },
     "meal": {
       "before": "Før mad",
       "after": "Efter mad",
-      "unknown": "Ved ikke",
       "unknownLabel": "Mad ikke angivet"
     },
+    "save": "Gem",
     "submit": "Registrér vejning",
     "saving": "Gemmer…",
     "loading": "Henter…",
@@ -1101,8 +1104,11 @@
     "loading": "Henter…",
     "loadError": "Kunne ikke hente billede-dagbog.",
     "requiresPasscode": "Kræver telefonens adgangskode for at vise",
-    "requiresPasscodeDescription": "Håndhæves endnu ikke af OS'et — det kræver en native app. Kun en gemt præference i dag.",
-    "showPhotos": "Vis billeder (ingen rigtig adgangskode-kontrol endnu)",
+    "requiresPasscodeDescription": "Bekræft med Face ID, Touch ID, Windows Hello eller skærmlås-PIN, før billederne vises.",
+    "showPhotos": "Vis billeder",
+    "unlocking": "Bekræfter…",
+    "passcodeFailed": "Kunne ikke bekræfte. Prøv igen.",
+    "passcodeUnsupported": "Denne enhed understøtter ikke adgangskode-bekræftelse.",
     "takePhoto": "Tag billede (fuld figur eller mave)",
     "takeSelfie": "Tag selfie (portræt)",
     "noPhotosYet": "Ingen billeder endnu — tag det første for at kunne sammenligne senere.",
@@ -1253,7 +1259,25 @@
     "freeMonthsRemaining": "{count} gratis måned(er) i kø",
     "paymentMethodsTitle": "Betalingsmetoder",
     "noPaymentMethod": "Ingen betalingsmetode tilføjet endnu",
-    "noPaymentMethodHint": "Kommer, når Hello Cal har en betalingsudbyder tilknyttet. Understøtter Visa, Apple Pay, Google Pay og MobilePay, når det er klar.",
+    "nextPayment": "Næste betaling d. {date}",
+    "canceledUntil": "Seriøs til og med d. {date}",
+    "mobilePayAgreement": "Aftale aktiv",
+    "pendingApproval": "Afventer godkendelse i MobilePay-appen",
+    "chooseSubscription": "Vælg abonnement",
+    "stopAgreement": "Stop MobilePay-aftale",
+    "keepAgreement": "Behold",
+    "stopping": "Stopper…",
+    "stopConfirm": "Aftalen stoppes, og der trækkes ikke flere penge.",
+    "stopConfirmUntil": "Aftalen stoppes, og der trækkes ikke flere penge. Du beholder Seriøs til og med d. {date}.",
+    "stopError": "Kunne ikke stoppe aftalen. Prøv igen om lidt.",
+    "mobilePayReturn": {
+      "title": "MobilePay",
+      "checking": "Henter status fra MobilePay…",
+      "active": "Tak! Dit abonnement er aktivt.",
+      "pending": "Aftalen er endnu ikke godkendt. Godkend den i MobilePay-appen — siden opdateres af sig selv.",
+      "none": "Aftalen blev ikke godkendt. Du kan prøve igen fra Abonnement.",
+      "back": "Til Betaling"
+    },
     "supportedMethodsTitle": "Understøttede metoder"
   },
   "statistics": {
