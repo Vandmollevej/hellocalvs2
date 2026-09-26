@@ -70,9 +70,11 @@ skærmen "Filtre" (`/profile/recipes/filters`). Fanen hedder nu "Delte retter"
   favoritter" ("Du har endnu ingen favoritter", hvis tom). "Ingen opskrifter
   matcher din søgning" vises kun efter en søgning.
 
-- **Rækkefølge på filterskærmen:** Justér retter (1–6 personer, Vis
+- **Rækkefølge på filterskærmen (2026-09-26):** alle grupper er accordions
+  med sort ikon foran: Antal personer (1–6; tallet kan trykkes og skrives,
+  som gram-tallene i energifordelingen) · Visning på resultater (Vis
   kalorier, Vis energifordeling) · Sorter efter (én ad gangen) · Allergier ·
-  Diæter · Høj på protein · Specialkost · Fokus på makroer · Nulstil.
+  Diæter · Specialkost · Fokus på makroer (inkl. Højt på protein) · Nulstil.
   Valgene gemmes i browseren (`localStorage`), ikke på serveren.
 - **Filtrering sker på serveren** (`src/lib/recipe-filter-match.ts`). Alt,
   der ikke opfylder et valgt filter, sorteres fra — også når data mangler.
