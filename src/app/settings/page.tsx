@@ -232,7 +232,7 @@ export default function SettingsPage() {
         <AccordionCard>
           <ChevronRow icon={<IconFileText size={20} />} label={t("settings.terms")} href="/betingelser" />
           <ChevronRow icon={<IconFileText size={20} />} label={t("settings.privacyPolicy")} href="/privatlivspolitik" />
-          <ChevronRow icon={<IconFileText size={20} />} label={t("settings.dataTracking")} divider={false} />
+          <ChevronRow icon={<IconFileText size={20} />} label={t("settings.dataTracking")} href="/privatlivspolitik#datasporing" divider={false} />
         </AccordionCard>
 
         <button
