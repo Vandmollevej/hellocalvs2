@@ -10,9 +10,9 @@ export function TextField({
   const input = (
     <input
       {...props}
-      className={`hf-type-input w-full border bg-hf-cream outline-none ${
-        variant === "auth" ? "h-12 rounded-[4px] px-3" : "h-12 rounded-[8px] px-4"
-      } ${className}`}
+      className={`hf-field hf-type-input w-full border bg-hf-cream outline-none ${
+ variant === "auth" ? "h-12 rounded-[4px] px-3" : "h-12 rounded-[8px] px-4"
+ } ${className}`}
       style={{ borderColor: "var(--hf-color-field-border)" }}
     />
   );

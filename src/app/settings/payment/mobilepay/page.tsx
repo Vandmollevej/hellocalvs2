@@ -46,7 +46,7 @@ export default function MobilePayReturnPage() {
         <img src="/payment/mobilepay.svg" alt="MobilePay" className="h-16 w-16" />
         <p className="hf-type-body">{t(`payment.mobilePayReturn.${state}`)}</p>
         {state !== "checking" && (
-          <Link href="/settings/payment" className="hf-btn-primary hf-type-button h-12 w-full">
+          <Link href="/settings/payment" className="hf-control hf-btn-primary hf-type-button w-full">
             {t("payment.mobilePayReturn.back")}
           </Link>
         )}

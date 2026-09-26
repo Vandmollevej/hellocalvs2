@@ -31,7 +31,7 @@ export function PremiumUpsell() {
         <p className="hf-type-section-title">{t("premium.title")}</p>
         <p className="hf-type-body-sm opacity-80">{t("premium.description")}</p>
       </div>
-      <Link href="/profile/subscription/serious" className="hf-btn-primary hf-type-button h-12 w-full">
+      <Link href="/profile/subscription/serious" className="hf-control hf-btn-primary hf-type-button w-full">
         {t("premium.cta")}
       </Link>
     </div>

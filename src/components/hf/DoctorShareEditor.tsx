@@ -90,7 +90,7 @@ export function DoctorShareEditor({
 
       <Link
         href={previewHref}
-        className="hf-btn-secondary hf-type-button flex h-12 w-full items-center justify-center bg-hf-white"
+        className="hf-control hf-btn-secondary hf-type-button flex w-full items-center justify-center bg-hf-white"
       >
         {t("helloDoc.previewButton")}
       </Link>
@@ -118,7 +118,7 @@ export function DoctorShareEditor({
         <h2 className="hf-type-section-title">{t("helloDoc.historyTitle")}</h2>
         <div className="relative">
           <select
-            className="hf-type-input h-12 w-full appearance-none rounded-[8px] border bg-hf-cream pl-4 pr-10 outline-none"
+            className="hf-field hf-type-input w-full appearance-none rounded-[8px] border bg-hf-cream pl-4 pr-10 outline-none"
             style={{ borderColor: "var(--hf-color-field-border)" }}
             value={historyRange}
             onChange={(event) => onHistoryRangeChange(event.target.value as DoctorShareHistoryRange)}

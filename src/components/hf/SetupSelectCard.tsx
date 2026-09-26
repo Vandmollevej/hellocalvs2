@@ -23,7 +23,7 @@ export function SetupSelectCard({
       </span>
       <div className="relative shrink-0">
         <select
-          className="hf-type-body appearance-none rounded-xl border border-hf-tan-dark bg-white py-2 pl-3 pr-8 text-hf-black"
+          className="hf-field hf-type-body appearance-none rounded-xl border border-hf-tan-dark bg-white pl-3 pr-8 text-hf-black"
           value={value}
           onChange={(event) => onChange(event.target.value)}
         >

@@ -55,7 +55,7 @@ export default function CountryPickerPage() {
               key={country.flag}
               onClick={() => choose(country.flag)}
               aria-pressed={isSelected}
-              className="flex h-14 w-full items-center gap-3 border-b border-hf-gray-border px-4 text-left"
+              className="hf-control-row flex w-full items-center gap-3 border-b border-hf-gray-border px-4 text-left"
             >
               <Image
                 src={`/flags/${country.flag}.png`}

@@ -130,7 +130,7 @@ export default function PaymentPage() {
                       <button
                         type="button"
                         onClick={() => setConfirmStop(false)}
-                        className="hf-btn-secondary hf-type-button h-12 flex-1"
+                        className="hf-control hf-btn-secondary hf-type-button flex-1"
                         disabled={stopping}
                       >
                         {t("payment.keepAgreement")}
@@ -138,7 +138,7 @@ export default function PaymentPage() {
                       <button
                         type="button"
                         onClick={stopAgreement}
-                        className="hf-btn-primary hf-type-button h-12 flex-1 disabled:opacity-40"
+                        className="hf-control hf-btn-primary hf-type-button flex-1 disabled:opacity-40"
                         disabled={stopping}
                       >
                         {stopping ? t("payment.stopping") : t("payment.stopAgreement")}
@@ -149,7 +149,7 @@ export default function PaymentPage() {
                   <button
                     type="button"
                     onClick={() => setConfirmStop(true)}
-                    className="hf-btn-secondary hf-type-button h-12 w-full"
+                    className="hf-control hf-btn-secondary hf-type-button w-full"
                   >
                     {t("payment.stopAgreement")}
                   </button>
@@ -178,7 +178,7 @@ export default function PaymentPage() {
             )}
 
             {data && !mobilePayMethod && !data.mobilePayPending && data.mobilePayAvailable && (
-              <Link href="/profile/subscription" className="hf-btn-primary hf-type-button h-12 w-full">
+              <Link href="/profile/subscription" className="hf-control hf-btn-primary hf-type-button w-full">
                 {t("payment.chooseSubscription")}
               </Link>
             )}

@@ -97,7 +97,7 @@ export default function SubscriptionPlanPage() {
             onClick={buy}
             disabled={!paymentAvailable || !withdrawalAck || buying}
             aria-busy={buying}
-            className="hf-btn-primary hf-type-button h-12 w-full disabled:opacity-40"
+            className="hf-control hf-btn-primary hf-type-button w-full disabled:opacity-40"
           >
             {t("subscription.planPage.buyCta", { price: formatDkk(price) })}
           </button>

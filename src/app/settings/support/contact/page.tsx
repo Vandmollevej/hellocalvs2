@@ -70,7 +70,7 @@ export default function SupportContactPage() {
               <span className="hf-type-label">{t("settings.support.contactCategory")}</span>
               <span className="relative">
                 <select
-                  className="hf-type-input h-12 w-full appearance-none rounded-[8px] border bg-hf-cream pl-4 pr-10 outline-none"
+                  className="hf-field hf-type-input w-full appearance-none rounded-[8px] border bg-hf-cream pl-4 pr-10 outline-none"
                   style={{ borderColor: "var(--hf-color-field-border)" }}
                   value={category}
                   onChange={(event) => setCategory(event.target.value as SupportRequestCategoryKey)}
@@ -115,7 +115,7 @@ export default function SupportContactPage() {
             <button
               type="submit"
               disabled={sending}
-              className="hf-btn-primary hf-type-button h-12 w-full disabled:opacity-50"
+              className="hf-control hf-btn-primary hf-type-button w-full disabled:opacity-50"
             >
               {sending ? t("settings.support.contactSending") : t("settings.support.contactSend")}
             </button>

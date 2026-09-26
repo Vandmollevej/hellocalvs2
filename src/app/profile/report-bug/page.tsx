@@ -116,7 +116,7 @@ function ReportBugContent() {
             <button
               type="button"
               onClick={() => startEditing(pending)}
-              className="hf-btn-secondary hf-type-button h-12 w-full"
+              className="hf-control hf-btn-secondary hf-type-button w-full"
             >
               Redigér
             </button>
@@ -162,7 +162,7 @@ function ReportBugContent() {
             <button
               type="submit"
               disabled={submitting}
-              className="hf-btn-primary hf-type-button mb-8 mt-2 h-12 w-full disabled:opacity-50"
+              className="hf-control hf-btn-primary hf-type-button mb-8 mt-2 w-full disabled:opacity-50"
             >
               {submitting ? "Sender…" : "Send indberetning"}
             </button>

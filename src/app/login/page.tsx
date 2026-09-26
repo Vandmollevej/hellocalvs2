@@ -96,7 +96,7 @@ function LogIndContent() {
         <div className="mt-2 h-px bg-hf-gray-border" />
         <Link
           href="/login/country"
-          className="flex h-12 items-center justify-between border-b border-hf-gray-border"
+          className="hf-control-row flex items-center justify-between border-b border-hf-gray-border"
         >
           <div className="hf-type-body flex items-center gap-3">
             <Image src={`/flags/${country.flag}.png`} alt="" width={22} height={16} className="rounded-[2px]" />
@@ -111,7 +111,7 @@ function LogIndContent() {
               type="button"
               onClick={handleFaceId}
               disabled={submitting}
-              className="hf-btn-primary hf-type-button h-12 w-full disabled:opacity-40"
+              className="hf-control hf-btn-primary hf-type-button w-full disabled:opacity-40"
             >
               {t("login.continueWithFaceId")}
             </button>
@@ -163,7 +163,7 @@ function LogIndContent() {
           type="submit"
           form="login-form"
           disabled={submitting || !email || !password}
-          className="hf-btn-primary hf-type-button h-12 w-full disabled:opacity-40"
+          className="hf-control hf-btn-primary hf-type-button w-full disabled:opacity-40"
         >
           {submitting ? t("login.submitting") : t("login.continueButton")}
         </button>
