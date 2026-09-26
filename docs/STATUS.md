@@ -2,6 +2,20 @@
 
 Last updated: 2026-09-26
 
+## 2026-09-26: Integrationer — til/fra pr. datatype + push
+
+Egen side pr. app (`/settings/integrations/<app>`) med "Hent til Hello Cal" og
+"Send fra Hello Cal". Push virker til Google Health (måltider, vand, vægt) og
+Strava (træning) via serveren, og automatisk hvert 15. min. Apple Health/Health
+Connect: backend klar (`/api/integrations/healthkit/export`), native app mangler.
+Se DECISIONS 2026-09-26.
+
+Next work:
+1. Deploy med migration `20260926190000_integration_sync_settings`.
+2. Google Cloud-OAuth-klienten skal have nutrition.writeonly og
+   health_metrics_and_measurements.writeonly tilføjet; Strava-appen skal
+   tillade activity:write. Allerede forbundne brugere skal trykke "Forbind igen".
+
 ## 2026-09-26: Statistik — kort flyttes rigtigt (intet spøgelse)
 
 `src/components/StatCardsGrid.tsx`: det løftede kort (med stiplet ramme og

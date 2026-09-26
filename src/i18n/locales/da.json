@@ -1329,6 +1329,50 @@
       "popular": "Oftest anvendt",
       "recipes": "Opskrifter",
       "apps": "Apps"
+    },
+    "saveTokenNotice": "Gem denne værdi nu — den vises ikke igen:",
+    "close": "Luk",
+    "generateDeviceCode": "Generér enhedskode",
+    "manage": "Vælg data",
+    "syncing": "Synkroniserer…",
+    "syncNow": "Synkroniser nu",
+    "disconnect": "Frakobl",
+    "createdAt": "Oprettet {date}",
+    "lastUsedAt": " · Sidst brugt {date}",
+    "status": {
+      "disconnected": "Ikke forbundet",
+      "connected": "Forbundet",
+      "error": "Fejl",
+      "needsApp": "Kræver app",
+      "pending": "Afventer"
+    },
+    "readTitle": "Hent til Hello Cal",
+    "writeTitle": "Send fra Hello Cal til {name}",
+    "writeNone": "{name} tager ikke imod data fra andre apps, så Hello Cal kan kun hente herfra.",
+    "chooseFirst": "Vælg, hvad der skal hentes og sendes, før du forbinder. Du kan altid ændre det her bagefter.",
+    "needsReconnect": "Du har slået noget til, som {name} endnu ikke har givet Hello Cal lov til. Forbind igen for at give adgang.",
+    "reconnect": "Forbind igen",
+    "lastPushed": "Sidst sendt {date}",
+    "samsungViaHealthConnect": "Samsung Health deler sine data via Health Connect. Slå deling til Health Connect til i Samsung Health, og vælg dine data under Health Connect.",
+    "openHealthConnect": "Åbn Health Connect",
+    "companionHowTo": "Hello Cal-appen på telefonen henter og skriver dine data efter valgene ovenfor. Den bruger en enhedskode til at logge ind.",
+    "saveError": "Kunne ikke gemme valget. Prøv igen.",
+    "readTypes": {
+      "weight": "Vægt",
+      "bodyFat": "Fedtprocent",
+      "activities": "Træning",
+      "steps": "Skridt og distance",
+      "energy": "Forbrændte kalorier",
+      "heart": "Puls og kondition",
+      "sleep": "Søvn",
+      "water": "Vand",
+      "body": "Højde og BMI"
+    },
+    "writeTypes": {
+      "nutrition": "Måltider (kalorier, protein, kulhydrat, fedt)",
+      "water": "Vand",
+      "weight": "Vægt (dine egne vejninger)",
+      "activities": "Træning registreret i Hello Cal"
     }
   },
   "payment": {
