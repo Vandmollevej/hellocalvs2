@@ -197,6 +197,16 @@ Ejer: Widget-sessionen (2026-09-26)
 | 217a0faf | Stregkode auto-rotation, fjern manuelt felt | commit 1643610 |
 | — | Stregkode: lodret/skæv aflæsning, AR-afkodning, lysere guide (2026-09-25) | DECISIONS 2026-09-25 "Stregkode-scanning" |
 
+## G12 — Ens 48 px-højde på felter, dropdowns, knapper og rækker
+Filer: `.hf-field` / `.hf-control` / `.hf-control-row` + `--hf-control-height` i `src/app/globals.css` (blokken over `.hf-search`), og klassebyt i de enkelte .tsx-filer.
+Ejer: "Ensartet højde på inputfelter og knapper" (2026-09-26)
+Brugerens valg: 48 px overalt. Kun enkeltlinje-felter, dropdowns, madindtastning, fuldbredde-knapper, listerækker og statistik-sektionsoverskrifter + admin. Ikke med: footer, fliser, statistik-kort, ikonknapper, små filter-/periodeknapper, textarea.
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | Klasser + første 16 filer (login, betaling, TextField m.fl.) | Færdig (64c5125, d7b4ec3) | — |
+| — | Resten (~65 filer: profil, kalender, statistik, admin, kamera …) | Blokeret | Venter på at "Typografi og designsystem" committer sin migrering, som overskrev klassebyttene. Kør derefter `apply.js`-reglerne igen (dry først) + de manuelle steder: `inputClass` (profile/edit), `timeInputClass` (sleep), `numberInputClass` (foods/new), ApiKeysManager, `.hd-notched-field` 60 px, block-links i add/[id] og hello-doc/preview |
+
 ## Ikke fordelt
 Ændret og ikke committet uden kendt ejer: `docs/AI.md`, `src/components/AddButton.tsx`,
 `src/components/hf/PointsPromoBanner.tsx`, `src/i18n/locales/*.json`, `src/lib/vault/webauthn-client.ts`.
