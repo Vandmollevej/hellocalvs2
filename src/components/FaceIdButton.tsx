@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { isPasskeySupported, registerPasskey } from "@/lib/passkey-client";
+import { hasPasskeyOnDevice, isPasskeySupported, registerPasskey } from "@/lib/passkey-client";
 
 // "Slå Face ID til" på profilen, når enheden kan og kontoen ikke har det endnu.
 // Almindeligt tekstlink (ikke knap): tilbuddet vises primært efter login.
@@ -12,13 +12,8 @@ export function FaceIdButton() {
 
   useEffect(() => {
     if (!isPasskeySupported()) return;
-    fetch("/api/auth/me")
-      .then(async (res) => {
-        if (!res.ok) return;
-        const { user } = (await res.json()) as { user: { hasPasskey: boolean } };
-        setState(user.hasPasskey ? "done" : "offer");
-      })
-      .catch(() => undefined);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage findes kun i browseren
+    setState(hasPasskeyOnDevice() ? "done" : "offer");
   }, []);
 
   if (state === "hidden") return null;

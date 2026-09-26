@@ -70,6 +70,18 @@
     "missingToken": "The reset link is missing or invalid.",
     "requestNewLink": "Request a new link"
   },
+  "verifyEmail": {
+    "title": "Confirm email",
+    "checking": "Confirming your email…",
+    "success": "Thanks! Your email is confirmed.",
+    "invalid": "The link is invalid or has expired. Log in and tap \"Resend\" in the bar at the top to get a new one.",
+    "continue": "Continue to Hello Cal",
+    "banner": "Confirm your email using the link we sent you.",
+    "bannerSent": "New email sent — check spam too.",
+    "bannerError": "Could not send the email. Try again shortly.",
+    "resend": "Resend",
+    "dismiss": "Close"
+  },
   "country": {
     "title": "Choose your country",
     "back": "Back",
@@ -95,6 +107,15 @@
       "oestrig": "Austria"
     }
   },
+  "consent": {
+    "title": "Your consent",
+    "intro": "A calorie counter can't count without knowing what you eat and weigh. That is health data, and we may only process it with your explicit consent.",
+    "submit": "Give consent and continue",
+    "submitting": "Saving…",
+    "declineNote": "If you don't consent, you can't use Hello Cal. You can log out or ask for your account to be deleted via the Help center.",
+    "logout": "Log out",
+    "error": "Your consent couldn't be saved. Please try again."
+  },
   "signup": {
     "title": "Create account",
     "back": "Back",
@@ -106,7 +127,11 @@
     "submit": "Create account",
     "submitting": "Creating account…",
     "genericError": "Something went wrong — try again",
-    "networkError": "Could not create the account — check your connection and try again"
+    "networkError": "Could not create the account — check your connection and try again",
+    "healthConsent": "I explicitly consent to Hello Cal processing my health data (such as food, weight and body measurements) to provide the app. I accept the Terms.",
+    "legalLinksTerms": "Terms",
+    "legalLinksPrivacy": "Privacy policy",
+    "consentRequired": "Turn on your consent before creating the account."
   },
   "nav": {
     "add": "Add",
@@ -202,7 +227,11 @@
     "showAllergensDescription": "Show an allergen line on foods when data is available.",
     "showAllergensSelectAll": "Select all",
     "showExtendedNutrition": "Show extended nutrition info",
-    "showExtendedNutritionDescription": "Shows a \"Show more\" section below the nutrition table with saturated/unsaturated/trans fat, cholesterol, sodium, potassium, fibre, sugar, vitamin A and C, calcium, and iron, when data is available.",
+    "showExtendedNutritionDescription": "At the bottom of each product page you can see the extended nutrition values (saturated/unsaturated/trans fat, cholesterol, sodium, potassium, fibre, sugar, vitamin A and C, calcium and iron). The section is open by default and shown when data exists.",
+    "showAdditives": "Show E-numbers",
+    "showAdditivesDescription": "Shows the product's E-numbers (additives) on the product page. Tap an E-number to read what it is and what research says.",
+    "showToxins": "Show toxins",
+    "showToxinsDescription": "Shows known unwanted substances on the product page based on the ingredient list — e.g. solanine in potatoes, coumarin in cinnamon and mercury in tuna. Advice for pregnant, breastfeeding and those trying to conceive is shown first. Sources: Danish Veterinary and Food Administration and EFSA.",
     "thirdPartyDisclaimer": "We fetch data from third parties and take no responsibility for missing data.",
     "languageLabel": "Language",
     "languageDescription": "Choose which language the app is shown in.",
@@ -894,6 +923,7 @@
     },
     "row": {
       "subscription": "Subscription",
+      "paymentMethods": "Payment methods",
       "weightCalibration": "Weight calibration",
       "bodyMeasurements": "Body measurements",
       "sleep": "Sleep pattern",
@@ -967,6 +997,8 @@
       "serious": "Serious"
     },
     "activeUntil": "Active until {date}",
+    "nextPayment": "Next payment on {date}",
+    "paymentMethods": "Payment methods",
     "freePlan": {
       "title": "Free",
       "description": "Access to everything in Hello Cal except Hello Doc. Only the last 30 days of history are shown — older data is kept and comes back if you go Serious."
@@ -976,7 +1008,8 @@
       "priceSuffix": "kr./month",
       "description": "Full history with no 30-day limit, plus access to Hello Doc.",
       "upgradeCta": "Upgrade to Serious",
-      "upgradeUnavailable": "Payment isn't connected yet — use a gift code or redeem points to go Serious until a payment provider is in place."
+      "upgradeUnavailable": "Payment isn't connected yet — use a gift code or redeem points to go Serious until a payment provider is in place.",
+      "withdrawalConsent": "I want the subscription to start right away, and I understand that if I withdraw within 14 days, I will only be refunded for the part of the period I haven't used."
     },
     "retentionNote": "Data older than 30 days is never deleted — it's kept and shown again as soon as you go Serious."
   },
@@ -1065,6 +1098,7 @@
     "saving": "Saving…",
     "loading": "Loading…",
     "noEntriesYet": "No measurements logged yet.",
+    "chooseSexHint": "Choose your sex under Profile → Edit profile to see drawings of where to measure.",
     "deleteAria": "Delete measurement",
     "delete": "Delete"
   },
@@ -1185,6 +1219,10 @@
     "showLess": "Show less",
     "extendedNutrition": "Nutrition facts",
     "extendedNutritionDisclaimer": "Only shown when data is available for this product.",
+    "toxins": "Toxins",
+    "toxinPregnancyBadge": "Pregnant/breastfeeding",
+    "toxinsDisclaimer": "Based on the ingredient list — not a measurement of this specific product. Sources: Danish Veterinary and Food Administration and EFSA.",
+    "unhealthyFat": "Unhealthy fat",
     "nutrient": {
       "saturatedFat": "Saturated fat",
       "unsaturatedFat": "Unsaturated fat",
@@ -1279,7 +1317,7 @@
       "carbsFibre": "Carb types and fibre",
       "minerals": "Minerals",
       "vitamins": "Vitamins",
-      "allergensAdditives": "Allergens and E-numbers",
+      "allergensAdditives": "Allergens, E-numbers and toxins",
       "sportActivity": "Sport and activity",
       "sleep": "Sleep",
       "other": "Other data"

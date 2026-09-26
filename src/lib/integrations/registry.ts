@@ -21,12 +21,22 @@ export function isConfigured(adapter: OAuthProviderAdapter) {
   return hasClientCredentials(adapter.envPrefix);
 }
 
+function publicBase() {
+  const base =
+    process.env.INTEGRATIONS_REDIRECT_BASE_URL || process.env.APP_BASE_URL || "https://hellocal.packroff.dk";
+  return base.replace(/\/$/, "");
+}
+
+// Adresse til redirects tilbage i appen. Bag Synology-proxyen peger req.url på
+// containerens interne adresse (https://0.0.0.0:3000), så den kan ikke bruges.
+export function publicUrl(path: string) {
+  return new URL(path, publicBase());
+}
+
 // <PRÆFIKS>_REDIRECT_URI vinder, hvis den er sat (fx den URI, der er
 // registreret hos Withings/Google). Ellers bruges standardstien.
 export function redirectUri(adapter: OAuthProviderAdapter) {
   const explicit = process.env[`${adapter.envPrefix}_REDIRECT_URI`];
   if (explicit) return explicit;
-  const base =
-    process.env.INTEGRATIONS_REDIRECT_BASE_URL || process.env.APP_BASE_URL || "https://hellocal.packroff.dk";
-  return `${base.replace(/\/$/, "")}/api/integrations/${adapter.slug}/callback`;
+  return `${publicBase()}/api/integrations/${adapter.slug}/callback`;
 }

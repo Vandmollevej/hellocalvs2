@@ -15,7 +15,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ provider
   const { provider } = await params;
   if (!isProviderSlug(provider)) return NextResponse.json({ message: "Ukendt udbyder" }, { status: 404 });
   if (!isProviderConfigured(provider)) {
-    return NextResponse.redirect(appUrl(`/login?error=${provider}-not-configured`));
+    return NextResponse.redirect(appUrl(`/login?error=${provider}-not-configured`, req));
   }
 
   const next = new URL(req.url).searchParams.get("next") ?? "/";

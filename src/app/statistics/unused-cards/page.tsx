@@ -83,7 +83,7 @@ function categoryDefs(t: (key: string) => string, region: string): CategoryDef[]
     },
     // G3: kød, fisk, sukkerholdige drikke og alkohol (totaler for perioden).
     { title: "Kød, fisk og drikke", keys: FOOD_SOURCE_STAT_KEYS },
-    { title: t("statUnusedCards.category.allergensAdditives"), keys: ["allergens", "additives"] },
+    { title: t("statUnusedCards.category.allergensAdditives"), keys: ["allergens", "additives", "toxins"] },
     {
       // Sport types are dynamic (one per sport the user actually has data
       // for, plus five pinned types even before there's any data), and only

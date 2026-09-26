@@ -25,6 +25,12 @@ export function WheelPicker({
   onChange: (value: number) => void;
 }) {
   const [open, setOpen] = useState(false);
+  // Værdien der er centreret i hjulet lige nu. Bruges til fed fremhævning
+  // mens brugeren scroller, og sendes videre til `onChange` først når
+  // arket lukkes (2026-09-24: hvert scroll-stop kaldte før `onChange` med
+  // det samme, hvilket gemte til boksen for hver rotation og gjorde arket
+  // sløvt/uresponsivt under scroll).
+  const [pendingValue, setPendingValue] = useState<number | null>(value);
   const options: number[] = [];
   for (let n = max; n >= min; n -= 1) options.push(n);
 
@@ -34,9 +40,13 @@ export function WheelPicker({
   useEffect(() => {
     if (!open || !scrollRef.current) return;
     const target = value ?? initialScrollValue ?? options[Math.floor(options.length / 2)];
+    setPendingValue(target);
     const index = options.indexOf(target);
     if (index >= 0) {
-      scrollRef.current.scrollTop = index * ITEM_HEIGHT;
+      const raf = requestAnimationFrame(() => {
+        if (scrollRef.current) scrollRef.current.scrollTop = index * ITEM_HEIGHT;
+      });
+      return () => cancelAnimationFrame(raf);
     }
   }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -44,7 +54,12 @@ export function WheelPicker({
     if (!scrollRef.current) return;
     const index = Math.round(scrollRef.current.scrollTop / ITEM_HEIGHT);
     const clamped = Math.max(0, Math.min(options.length - 1, index));
-    onChange(options[clamped]);
+    setPendingValue(options[clamped]);
+  }
+
+  function handleDone() {
+    if (pendingValue !== null) onChange(pendingValue);
+    setOpen(false);
   }
 
   return (
@@ -74,7 +89,7 @@ export function WheelPicker({
               <span className="text-[15px] font-bold text-hf-black">{label}</span>
               <button
                 type="button"
-                onClick={() => setOpen(false)}
+                onClick={handleDone}
                 className="text-[15px] font-semibold text-hf-green"
               >
                 Færdig
@@ -82,7 +97,7 @@ export function WheelPicker({
             </div>
             <div className="relative">
               <div
-                className="pointer-events-none absolute inset-x-0 top-1/2 h-10 -translate-y-1/2 rounded-lg bg-hf-tan"
+                className="pointer-events-none absolute inset-x-0 top-1/2 z-0 h-10 -translate-y-1/2 rounded-lg bg-hf-tan"
                 aria-hidden="true"
               />
               <div
@@ -91,7 +106,7 @@ export function WheelPicker({
                   if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
                   scrollTimeout.current = setTimeout(commitFromScroll, 120);
                 }}
-                className="h-[200px] snap-y snap-mandatory overflow-y-auto"
+                className="relative z-10 h-[200px] snap-y snap-mandatory overflow-y-auto"
                 style={{ scrollPaddingTop: 80, scrollPaddingBottom: 80 }}
               >
                 <div style={{ height: 80 }} />
@@ -99,7 +114,7 @@ export function WheelPicker({
                   <div
                     key={option}
                     className={`flex h-10 snap-center items-center justify-center text-[17px] ${
-                      option === value ? "font-bold text-hf-black" : "text-hf-black opacity-50"
+                      option === pendingValue ? "font-bold text-hf-black" : "text-hf-black opacity-50"
                     }`}
                   >
                     {option}

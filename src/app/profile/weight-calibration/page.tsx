@@ -121,38 +121,40 @@ function KgField({
   );
 }
 
-// Two-way choice with an icon per option. Tapping the selected option again
-// clears it, so "not specified" needs no separate button.
-function IconChoice<V extends string>({
-  value,
-  onChange,
-  options,
-}: {
-  value: V | "UNKNOWN";
-  onChange: (value: V | "UNKNOWN") => void;
-  options: { value: V; label: string; icon: ReactNode }[];
-}) {
-  return (
-    <div className="grid grid-cols-2 gap-2">
-      {options.map((option) => {
-        const selected = value === option.value;
-        return (
-          <button
-            key={option.value}
-            type="button"
-            aria-pressed={selected}
-            onClick={() => onChange(selected ? "UNKNOWN" : option.value)}
-            className={`flex h-14 items-center gap-3 rounded-lg px-3 text-left text-[15px] font-semibold ${
-              selected ? "bg-hf-green text-hf-white" : "bg-hf-white text-hf-black"
-            }`}
-          >
-            {option.icon}
-            <span>{option.label}</span>
-          </button>
-        );
-      })}
-    </div>
-  );
+// Every condition is a pair of opposites shown side by side, each with its
+// own weight field (user feedback 2026-09-26: on/off toggles meant nothing
+// without a number, and clothes vs. shoes are the same kind of condition).
+// A filled field becomes one weigh-in with exactly that condition set.
+type Condition = {
+  key: string;
+  label: string;
+  icon: ReactNode;
+  fields: Partial<Pick<WeightEntry, "clothed" | "shoes" | "toilet" | "meal" | "timeOfDay">>;
+};
+
+function conditionPairs(t: T): [Condition, Condition][] {
+  return [
+    [
+      { key: "unclothed", label: t("weightCalibration.clothed.false"), icon: <IconPersonUnclothed size={24} />, fields: { clothed: false } },
+      { key: "clothed", label: t("weightCalibration.clothed.true"), icon: <IconPersonClothed size={24} />, fields: { clothed: true } },
+    ],
+    [
+      { key: "shoesOff", label: t("weightCalibration.shoes.off"), icon: <IconShoeOff size={24} />, fields: { shoes: "OFF" } },
+      { key: "shoesOn", label: t("weightCalibration.shoes.on"), icon: <IconShoe size={24} />, fields: { shoes: "ON" } },
+    ],
+    [
+      { key: "morning", label: t("weightCalibration.timeOfDay.morning"), icon: <IconSun size={24} />, fields: { timeOfDay: "MORNING" } },
+      { key: "evening", label: t("weightCalibration.timeOfDay.evening"), icon: <IconMoon size={24} />, fields: { timeOfDay: "EVENING" } },
+    ],
+    [
+      { key: "toiletBefore", label: t("weightCalibration.toilet.before"), icon: <IconToiletOff size={24} />, fields: { toilet: "BEFORE" } },
+      { key: "toiletAfter", label: t("weightCalibration.toilet.after"), icon: <IconToiletCheck size={24} />, fields: { toilet: "AFTER" } },
+    ],
+    [
+      { key: "mealBefore", label: t("weightCalibration.meal.before"), icon: <IconPlateFull size={24} />, fields: { meal: "BEFORE" } },
+      { key: "mealAfter", label: t("weightCalibration.meal.after"), icon: <IconPlateEmpty size={24} />, fields: { meal: "AFTER" } },
+    ],
+  ];
 }
 
 export default function WeightCalibrationPage() {
@@ -160,17 +162,13 @@ export default function WeightCalibrationPage() {
   const [entries, setEntries] = useState<WeightEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [weightWithoutClothes, setWeightWithoutClothes] = useState("");
-  const [weightWithClothes, setWeightWithClothes] = useState("");
-  const [shoes, setShoes] = useState<ShoesState>("UNKNOWN");
-  const [toilet, setToilet] = useState<RelativeTime>("UNKNOWN");
-  const [meal, setMeal] = useState<RelativeTime>("UNKNOWN");
-  const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>("UNKNOWN");
+  const [conditionValues, setConditionValues] = useState<Record<string, string>>({});
   const [gridValues, setGridValues] = useState<Record<number, string>>({});
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<"idle" | "saved" | "nothing" | "error">("idle");
 
   const slotEntries = useMemo(() => todaysSlotEntries(entries), [entries]);
+  const pairs = conditionPairs(t);
 
   function load() {
     return fetch("/api/weight-entries")
@@ -196,23 +194,19 @@ export default function WeightCalibrationPage() {
   }, []);
 
   // Explicit save (user decision 2026-09-25): one "Opdatér oplysninger" button
-  // saves the weigh-ins with the chosen conditions plus every changed slot in
+  // saves one weigh-in per filled condition field plus every changed slot in
   // the day list, instead of posting half-filled rows on blur.
   async function save() {
     const requests: Promise<Response>[] = [];
-    const conditions = { shoes, toilet, meal, timeOfDay };
 
-    for (const [clothed, raw] of [
-      [false, weightWithoutClothes],
-      [true, weightWithClothes],
-    ] as const) {
-      const weightKg = parseKg(raw);
+    for (const condition of pairs.flat()) {
+      const weightKg = parseKg(conditionValues[condition.key] ?? "");
       if (weightKg === null) continue;
       requests.push(
         fetch("/api/weight-entries", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ weightKg, clothed, ...conditions }),
+          body: JSON.stringify({ weightKg, ...condition.fields }),
         }),
       );
     }
@@ -245,12 +239,7 @@ export default function WeightCalibrationPage() {
     try {
       const responses = await Promise.all(requests);
       if (responses.every((response) => response.ok)) {
-        setWeightWithoutClothes("");
-        setWeightWithClothes("");
-        setShoes("UNKNOWN");
-        setToilet("UNKNOWN");
-        setMeal("UNKNOWN");
-        setTimeOfDay("UNKNOWN");
+        setConditionValues({});
         setStatus("saved");
       } else {
         setStatus("error");
@@ -278,65 +267,24 @@ export default function WeightCalibrationPage() {
         </div>
 
         <section className="flex flex-col gap-4">
-          <label htmlFor="weight-unclothed" className="flex flex-col gap-2">
-            <span className="flex items-center gap-2 text-[17px] font-semibold text-hf-black">
-              <IconPersonUnclothed size={24} />
-              {t("weightCalibration.clothed.false")}
-            </span>
-            <KgField
-              id="weight-unclothed"
-              value={weightWithoutClothes}
-              onChange={setWeightWithoutClothes}
-              placeholder={t("weightCalibration.weightPlaceholder")}
-            />
-          </label>
-          <label htmlFor="weight-clothed" className="flex flex-col gap-2">
-            <span className="flex items-center gap-2 text-[17px] font-semibold text-hf-black">
-              <IconPersonClothed size={24} />
-              {t("weightCalibration.clothed.true")}
-            </span>
-            <KgField
-              id="weight-clothed"
-              value={weightWithClothes}
-              onChange={setWeightWithClothes}
-              placeholder={t("weightCalibration.weightPlaceholder")}
-            />
-          </label>
-        </section>
-
-        <section className="flex flex-col gap-2 rounded-2xl bg-hf-tan p-4">
-          <IconChoice
-            value={shoes}
-            onChange={setShoes}
-            options={[
-              { value: "OFF", label: t("weightCalibration.shoes.off"), icon: <IconShoeOff size={24} /> },
-              { value: "ON", label: t("weightCalibration.shoes.on"), icon: <IconShoe size={24} /> },
-            ]}
-          />
-          <IconChoice
-            value={timeOfDay}
-            onChange={setTimeOfDay}
-            options={[
-              { value: "MORNING", label: t("weightCalibration.timeOfDay.morning"), icon: <IconSun size={24} /> },
-              { value: "EVENING", label: t("weightCalibration.timeOfDay.evening"), icon: <IconMoon size={24} /> },
-            ]}
-          />
-          <IconChoice
-            value={toilet}
-            onChange={setToilet}
-            options={[
-              { value: "BEFORE", label: t("weightCalibration.toilet.before"), icon: <IconToiletOff size={24} /> },
-              { value: "AFTER", label: t("weightCalibration.toilet.after"), icon: <IconToiletCheck size={24} /> },
-            ]}
-          />
-          <IconChoice
-            value={meal}
-            onChange={setMeal}
-            options={[
-              { value: "BEFORE", label: t("weightCalibration.meal.before"), icon: <IconPlateFull size={24} /> },
-              { value: "AFTER", label: t("weightCalibration.meal.after"), icon: <IconPlateEmpty size={24} /> },
-            ]}
-          />
+          {pairs.map((pair) => (
+            <div key={pair[0].key} className="grid grid-cols-2 gap-3">
+              {pair.map((condition) => (
+                <label key={condition.key} htmlFor={`weight-${condition.key}`} className="flex min-w-0 flex-col gap-2">
+                  <span className="flex items-center gap-2 text-[15px] font-semibold text-hf-black">
+                    <span className="shrink-0">{condition.icon}</span>
+                    <span className="truncate">{condition.label}</span>
+                  </span>
+                  <KgField
+                    id={`weight-${condition.key}`}
+                    value={conditionValues[condition.key] ?? ""}
+                    onChange={(value) => setConditionValues((current) => ({ ...current, [condition.key]: value }))}
+                    placeholder={t("weightCalibration.weightPlaceholder")}
+                  />
+                </label>
+              ))}
+            </div>
+          ))}
         </section>
 
         <section className="flex flex-col">

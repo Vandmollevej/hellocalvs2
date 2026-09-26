@@ -6,6 +6,7 @@ import { Suspense, useState } from "react";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { TextField } from "@/components/hf/TextField";
 import { SocialLoginButton } from "@/components/hf/SocialLoginButton";
+import { HealthConsentToggle } from "@/components/hf/HealthConsentToggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { afterLoginPath, startOAuth } from "@/lib/login-flow";
 
@@ -17,19 +18,24 @@ function TilmeldContent() {
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [healthDataConsent, setHealthDataConsent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    if (!healthDataConsent) {
+      setError(t("signup.consentRequired"));
+      return;
+    }
     setSubmitting(true);
 
     try {
       const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ displayName, email, password, referralCode }),
+        body: JSON.stringify({ displayName, email, password, referralCode, healthDataConsent }),
       });
       const data = await response.json();
       if (!response.ok) {
@@ -103,6 +109,8 @@ function TilmeldContent() {
             {t("login.forgotPassword")}
           </Link>
         </p>
+
+        <HealthConsentToggle checked={healthDataConsent} onChange={setHealthDataConsent} />
 
         {error && <p className="hf-type-caption text-hf-red-dark">{error}</p>}
 

@@ -43,6 +43,8 @@ export async function PATCH(req: Request) {
     showAllergens,
     allergenVisibility,
     showExtendedNutrition,
+    showAdditives,
+    showToxins,
     warnOnRecommendedLimits,
     region,
     appLocale,
@@ -73,6 +75,8 @@ export async function PATCH(req: Request) {
     showAllergens?: boolean;
     allergenVisibility?: Record<string, boolean>;
     showExtendedNutrition?: boolean;
+    showAdditives?: boolean;
+    showToxins?: boolean;
     warnOnRecommendedLimits?: boolean;
     region?: string;
     appLocale?: "da" | "en";
@@ -142,6 +146,8 @@ export async function PATCH(req: Request) {
         showAllergens,
         allergenVisibility,
         showExtendedNutrition,
+        showAdditives,
+        showToxins,
         warnOnRecommendedLimits,
         region,
         appLocale,
