@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getSessionUser, unauthorized } from "@/lib/session";
+import { unauthorized } from "@/lib/session";
+import { getProfileUser } from "@/lib/family-access";
 
 // :date is "YYYY-MM-DD".
 
@@ -8,7 +9,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ date: s
   const { date } = await params;
 
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("workShifts", "VIEWED");
 
     if (!user) return unauthorized();
     const shift = await prisma.workShift.findUnique({
@@ -37,7 +38,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ date: st
   };
 
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("workShifts", "UPDATED");
 
     if (!user) return unauthorized();
     const shift = await prisma.workShift.upsert({
@@ -67,7 +68,7 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ date
   const { date } = await params;
 
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("workShifts", "DELETED");
 
     if (!user) return unauthorized();
     await prisma.workShift.deleteMany({

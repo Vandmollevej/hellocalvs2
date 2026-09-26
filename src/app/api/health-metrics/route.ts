@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getSessionUser, unauthorized } from "@/lib/session";
+import { unauthorized } from "@/lib/session";
+import { getProfileUser } from "@/lib/family-access";
 
 // GET /api/health-metrics — reads data submitted via
 // POST /api/integrations/healthkit/ingest (see docs/HEALTHKIT_COMPANION.md).
 // Used by Statistics for the steps/water/burned cards (src/lib/stat-cards.ts).
 export async function GET() {
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("healthMetrics", "VIEWED");
 
     if (!user) return unauthorized();
     const metrics = await prisma.healthMetric.findMany({

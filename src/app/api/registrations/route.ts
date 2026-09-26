@@ -1,22 +1,22 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getSessionUser, unauthorized } from "@/lib/session";
+import { unauthorized } from "@/lib/session";
+import { getProfileUser } from "@/lib/family-access";
 import { fulfillMatchingForward } from "@/lib/forwards";
-import { getSubscriptionTier, getRetentionCutoffDate } from "@/lib/subscription";
+import { getUserSubscriptionTier, getRetentionCutoffDate } from "@/lib/subscription";
 import { detectNutritionChanges, USER_EDIT_CONFIDENCE } from "@/lib/nutrition-reports";
 import { classifyProduct } from "@/lib/food-classification";
 
 export async function GET() {
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("registrations", "VIEWED");
 
     if (!user) return unauthorized();
-    const subscription = await prisma.subscription.findUnique({ where: { userId: user.id } });
     // Rullende 30-dages historik for gratisbrugere (docs/DECISIONS.md
     // 2026-09-19) — data ældre end grænsen skjules her ved en ren
     // forespørgselsgrænse, ikke ved at slette eller markere rækkerne, så det
     // med det samme kommer tilbage hvis brugeren bliver Seriøs.
-    const cutoff = getRetentionCutoffDate(getSubscriptionTier(subscription));
+    const cutoff = getRetentionCutoffDate(await getUserSubscriptionTier(user.id));
     const registrations = await prisma.registration.findMany({
       where: { userId: user.id, ...(cutoff ? { createdAt: { gte: cutoff } } : {}) },
       orderBy: { createdAt: "desc" },
@@ -120,7 +120,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("registrations", "CREATED");
 
     if (!user) return unauthorized();
 

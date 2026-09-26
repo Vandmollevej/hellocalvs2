@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getSessionUser, unauthorized } from "@/lib/session";
+import { unauthorized } from "@/lib/session";
+import { getProfileUser } from "@/lib/family-access";
 
 // docs/DECISIONS.md 2026-09-19. Same session-user pattern as the other
 // personal-tracking routes (water-entries, weight-entries) — no real
 // per-request session on these yet, see docs/STATUS.md "Next work".
 export async function GET() {
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("menstrualCycle", "VIEWED");
 
     if (!user) return unauthorized();
     const entries = await prisma.menstrualCycleEntry.findMany({
@@ -40,7 +41,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("menstrualCycle", "CREATED");
 
     if (!user) return unauthorized();
     const entry = await prisma.menstrualCycleEntry.create({

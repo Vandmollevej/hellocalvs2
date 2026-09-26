@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getSessionUser, unauthorized } from "@/lib/session";
+import { unauthorized } from "@/lib/session";
+import { getProfileUser } from "@/lib/family-access";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -8,7 +9,7 @@ export async function GET(_req: Request, { params }: RouteContext) {
   const { id } = await params;
 
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("registrations", "VIEWED");
 
     if (!user) return unauthorized();
     const registration = await prisma.registration.findFirst({
@@ -57,7 +58,7 @@ export async function PATCH(req: Request, { params }: RouteContext) {
   }
 
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("registrations", "UPDATED");
 
     if (!user) return unauthorized();
     const result = await prisma.registration.updateMany({
@@ -80,7 +81,7 @@ export async function DELETE(_req: Request, { params }: RouteContext) {
   const { id } = await params;
 
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("registrations", "DELETED");
 
     if (!user) return unauthorized();
     const result = await prisma.registration.deleteMany({
