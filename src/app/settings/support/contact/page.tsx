@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { IconChevronDown } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { SupportScreenshotPicker } from "@/components/SupportScreenshotPicker";
@@ -20,7 +19,7 @@ export default function SupportContactPage() {
   const [images, setImages] = useState<string[]>([]);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [sentId, setSentId] = useState<string | null>(null);
+  const [sentCase, setSentCase] = useState<string | null>(null);
 
   async function send(event: React.FormEvent) {
     event.preventDefault();
@@ -41,7 +40,7 @@ export default function SupportContactPage() {
         setError(t("settings.support.contactError"));
         return;
       }
-      setSentId(data.request.id);
+      setSentCase(data.request.id.slice(-8).toUpperCase());
     } catch {
       setError(t("settings.support.contactError"));
     } finally {
