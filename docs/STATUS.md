@@ -283,6 +283,12 @@ allergenvisning, opskriftsfiltre/HelloFresh og integrationer (se DECISIONS
 2026-09-26). Nye sider `/profile/subscription/serious` og `/family` med 1/3/12
 mdr.-bokse (et helt år = 25 % rabat). Familien følger docs/FAMILY.md; købet
 virker, så snart MobilePay-nøglerne er lagt ind. Lint + fuld build grønne.
+mdr.-bokse. Lint + typecheck grønne for de ændrede filer; fuld build ikke kørt
+(anden sessions ufærdige `FrontPagePreview`-import fejler typecheck).
+
+Next work:
+1. Invitation/kobling af op til 5 familiemedlemmer til Seriøs Familie.
+2. Købsknappen åbner, når MobilePay-sessionens aftale-API er deployet.
 
 
 ## 2026-09-26: Oplevelse af søvn
