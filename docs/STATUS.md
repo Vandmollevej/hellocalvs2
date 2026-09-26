@@ -53,7 +53,7 @@ mdr.-bokse. Lint + typecheck grønne for de ændrede filer; fuld build ikke kør
 (anden sessions ufærdige `FrontPagePreview`-import fejler typecheck).
 
 Next work:
-1. Endelige priser og hvordan Seriøs Familie fungerer (antal medlemmer).
+1. Invitation/kobling af op til 5 familiemedlemmer til Seriøs Familie.
 2. Købsknappen åbner, når MobilePay-sessionens aftale-API er deployet.
 
 

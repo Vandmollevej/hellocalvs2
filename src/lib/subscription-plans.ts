@@ -11,10 +11,12 @@ export type SubscriptionPlan = (typeof SUBSCRIPTION_PLANS)[number];
 export const SUBSCRIPTION_PERIODS = [1, 3, 12] as const;
 export type SubscriptionPeriodMonths = (typeof SUBSCRIPTION_PERIODS)[number];
 
-// Samlet pris for hele perioden (ikke pr. måned).
+// Samlet pris for hele perioden (ikke pr. måned). Et helt år giver 25 % rabat
+// i forhold til 12 enkeltmåneder (brugerens valg 2026-09-26). Seriøs Familie
+// dækker op til 5 personer, hver med egen konto.
 export const SUBSCRIPTION_PRICES_DKK: Record<SubscriptionPlan, Record<SubscriptionPeriodMonths, number>> = {
-  serious: { 1: SERIOUS_MONTHLY_PRICE_DKK, 3: 299, 12: 899 },
-  family: { 1: 179, 3: 449, 12: 1349 },
+  serious: { 1: SERIOUS_MONTHLY_PRICE_DKK, 3: 299, 12: 1071 },
+  family: { 1: 179, 3: 449, 12: 1611 },
 };
 
 export function isSubscriptionPlan(value: string): value is SubscriptionPlan {
