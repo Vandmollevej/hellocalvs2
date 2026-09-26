@@ -18,6 +18,8 @@ const PUBLIC_PREFIXES = [
   "/forward",
   "/betingelser",
   "/admin",
+  // Oprettelses-appen har eget medarbejder-login og ingen klient-boks.
+  "/scan",
 ];
 
 function isPublic(pathname: string) {

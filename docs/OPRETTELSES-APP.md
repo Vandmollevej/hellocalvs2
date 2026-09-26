@@ -1,9 +1,8 @@
-# Oprettelses-app — planlægning (krav afklaret, IKKE implementeret)
+# Oprettelses-app — krav og implementering
 
-Dato: 2026-09-24. Dette er en kravsamling og spørgsmålsliste, ikke en
-implementeringsstatus. Ingen kode, database eller deployment er ændret som
-del af dette dokument. Intet i dette dokument må sættes i produktion, før
-spørgsmålene nedenfor er besvaret og brugeren har bedt om implementering.
+Dato: 2026-09-24 (krav), 2026-09-25 (bygget). Alle spørgsmål er besvaret, og
+appen er bygget — se "Implementeringsstatus" nederst for hvad der mangler,
+før den kan bruges i drift.
 
 Dette bygger videre på den tidligere afklaring i
 [`PROJECT-BOUNDARIES.md`](PROJECT-BOUNDARIES.md) (2026-09-14), som allerede
@@ -192,9 +191,46 @@ der stod her før.
 - Usikkert markerede produkter på et hyldebillede forbliver markeret, indtil
   de oprettes/rettes eller billedet slettes; intet automatisk udløb.
 
-## Næste skridt
+## Implementeringsstatus (2026-09-25)
 
-Alle spørgsmål er besvaret. Implementering kan starte, når brugeren siger
-til. Ifølge den oprindelige brief må intet sættes i produktion: den nye
-container må derfor **ikke** tilføjes `compose.production.yaml` (som deployes
-automatisk ved push til `master`), før brugeren eksplicit godkender det.
+Brugeren sagde 2026-09-24: "Ja kør det hele og byg det. Ny container og hele
+lortet". Bygget i denne omgang:
+
+- **Container**: `scan-app` i `compose.production.yaml` — samme image og
+  database som `app`, men `HELLOCAL_APP_MODE=scan`, så `middleware.ts` kun
+  serverer `/scan`-ruterne (+ de delte AI-/produkt-API'er). Port
+  `SCAN_APP_HTTP_PORT` (standard 3101). I den almindelige app giver `/scan`
+  404 (undtagen på localhost).
+- **Database**: migration `20260925090000_scan_app` (medarbejdere,
+  profilversioner, hyldebilleder, fundne varer, indsendelser, afvisnings-
+  årsager med startliste, global sats 1 kr., udbetalinger, beskeder).
+- **Login**: brugernavn + adgangskode + TOTP (`src/lib/scan/auth.ts`),
+  invitation via tidsbegrænset link (7 dage) sendt med
+  `sendTransientMail`; kan mailen ikke sendes, vises linket én gang for
+  admin. Passkey/Face ID som alternativ 2. faktor er **ikke** bygget endnu.
+- **App** (`src/app/scan/**`): Billede af hylde (overlay med ✓/−/?, 1 px
+  kant, swipe, kamera-cirkel, tandhjul = slet helt, "Opret denne vare",
+  "Ret tildeling"), Opret vare (Hello Cals fire bokse + felter, sendes
+  uændret videre til `POST /api/products`; eksisterende stregkode =
+  supplering), menu med Profil, Bankoplysninger (read-only), Historik,
+  Ikke afregnet (butik til højre), Beskeder/Kontakt (samme tovejs-tråd),
+  Log ud. Hele appen spærres uden lokation (efter login).
+- **Admin**: `/admin/scan-invites` (invitér, oversigt, sats, redigerbare
+  afvisningsårsager) og `/admin/scan-invites/[id]` (profil + bank med
+  versionering, ugevis godkend/afvis med årsag + kommentar, ekstra tydelig
+  advarsel ved manglende energitabel/ingrediensliste, registrér udbetaling,
+  beskeder).
+- **Butik**: udledes af koordinaterne via Google Places, hvis
+  `GOOGLE_PLACES_API_KEY` er sat; ellers "ukendt butik".
+
+Mangler før den kan bruges i drift (kræver brugeren/serveren):
+
+1. `scan-app` startes ikke automatisk af GitHub-deployet endnu: linjen
+   `up -d db migrate app` i `.github/workflows` skal have `scan-app` tilføjet
+   (en ændring af produktionsdeployet, som kræver brugerens godkendelse).
+2. Et hostname (fx `scanhellocal.packroff.dk`) i Cloudflare Tunnel → NAS-port
+   3101, og `SCAN_APP_BASE_URL` i `.env.production`.
+3. Anbefalet: egne hemmeligheder `SCAN_SESSION_SECRET` og `SCAN_PII_KEY`
+   (ellers bruges `ADMIN_SESSION_SECRET`). `SCAN_PII_KEY` må ikke ændres
+   senere — så kan gemte CPR-/bankfelter ikke længere læses.
+4. Valgfrit: `GOOGLE_PLACES_API_KEY` til butiksnavn.

@@ -728,6 +728,7 @@ model Brand {
   createdAt DateTime  @default(now())
   products  Product[]
   regionSearchStats BrandRegionSearchStat[]
+  logoSearches      BrandLogoSearch[]
 
   @@map("brands")
 }
@@ -923,6 +924,8 @@ model Product {
   stores             ProductStore[]
   personalSearchHistory UserProductSearchHistory[]
   nutritionReports   ProductNutritionReport[]
+  shelfPhotoItems    ShelfPhotoItem[]
+  scanSubmissions    ScanSubmission[]
 
   @@index([externalSource, externalId])
   @@map("products")
@@ -2277,4 +2280,286 @@ model UserKnownDevice {
 
   @@unique([userId, deviceHash])
   @@map("user_known_devices")
+}
+
+// --- Oprettelses-app (medarbejder-hyldescanning), docs/OPRETTELSES-APP.md ---
+//
+// Invite-only medarbejdere er bevidst IKKE User-rækker: de har eget login
+// (brugernavn + adgangskode + TOTP) i den separate scan-app-container, og
+// privacy-/vault-arkitekturen gælder ikke for ansatte (brugerbeslutning
+// 2026-09-24). CPR og bank-reg.nr./konto krypteres i hvile
+// (src/lib/scan/pii.ts).
+
+enum ScanWorkerStatus {
+  INVITED
+  ACTIVE
+  DISABLED
+}
+
+model ScanWorker {
+  id              String           @id @default(cuid())
+  email           String           @unique
+  name            String
+  username        String?          @unique
+  status          ScanWorkerStatus @default(INVITED)
+  passwordHash    String?
+  totpSecret      String?
+  // Kun hash af opsætningslinkets token gemmes (samme mønster som
+  // PasswordResetToken); den rå værdi findes kun i mailen/admin-kopien.
+  inviteTokenHash String?          @unique
+  inviteExpiresAt DateTime?
+  invitedAt       DateTime         @default(now())
+  activatedAt     DateTime?
+  lastLoginAt     DateTime?
+
+  // Profil (kun admin redigerer; medarbejderen ser read-only). Hver ændring
+  // gemmer et snapshot i ScanWorkerProfileVersion.
+  phone          String?
+  address        String?
+  birthDate      DateTime?
+  gender         String?
+  cprEnc         String?
+  // Bank: enten reg.nr. + konto eller PayPal.
+  bankName       String?
+  bankRegNoEnc   String?
+  bankAccountEnc String?
+  paypalEmail    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  profileVersions ScanWorkerProfileVersion[]
+  shelfPhotos     ShelfPhoto[]
+  submissions     ScanSubmission[]
+  payouts         ScanPayout[]
+  messages        ScanMessage[]
+
+  @@map("scan_workers")
+}
+
+model ScanWorkerProfileVersion {
+  id               String     @id @default(cuid())
+  worker           ScanWorker @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  workerId         String
+  // Snapshot af profil + bankfelter EFTER ændringen (krypterede felter
+  // forbliver krypterede i snapshottet).
+  snapshot         Json
+  changedByAdminId String?
+  createdAt        DateTime   @default(now())
+
+  @@index([workerId, createdAt])
+  @@map("scan_worker_profile_versions")
+}
+
+enum ShelfAnalysisStatus {
+  PENDING
+  DONE
+  FAILED
+}
+
+enum ShelfItemStatus {
+  MISSING
+  EXISTS
+  UNCERTAIN
+}
+
+// Hyldebillede. Sletning via tandhjulet sletter rækken OG filen helt
+// (brugerbeslutning 2026-09-24), også for admin.
+model ShelfPhoto {
+  id             String              @id @default(cuid())
+  worker         ScanWorker          @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  workerId       String
+  imageUrl       String
+  latitude       Float
+  longitude      Float
+  accuracyM      Float?
+  storeName      String?
+  capturedAt     DateTime
+  createdAt      DateTime            @default(now())
+  analysisStatus ShelfAnalysisStatus @default(PENDING)
+  analysisError  String?
+  items          ShelfPhotoItem[]
+
+  @@index([workerId, capturedAt])
+  @@map("shelf_photos")
+}
+
+// Et produkt fundet på hyldebilledet. Boksen er normaliseret 0..1 i forhold
+// til billedets bredde/højde, så overlayet kan tegnes i enhver skærmstørrelse.
+model ShelfPhotoItem {
+  id               String           @id @default(cuid())
+  shelfPhoto       ShelfPhoto       @relation(fields: [shelfPhotoId], references: [id], onDelete: Cascade)
+  shelfPhotoId     String
+  x                Float
+  y                Float
+  w                Float
+  h                Float
+  detectedName     String
+  detectedBrand    String?
+  detectedText     String?
+  product          Product?         @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productId        String?
+  matchConfidence  Float?
+  status           ShelfItemStatus  @default(MISSING)
+  // Medarbejderen har selv rettet tildelingen ("ret tildeling").
+  manuallyAssigned Boolean          @default(false)
+  updatedAt        DateTime         @default(now()) @updatedAt
+  submissions      ScanSubmission[]
+
+  @@index([shelfPhotoId])
+  @@map("shelf_photo_items")
+}
+
+enum ScanSubmissionKind {
+  NEW_PRODUCT
+  SUPPLEMENT
+}
+
+enum ScanReviewStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+// Én oprettet/suppleret vare = én aflønningsenhed. Produktets datakvalitet
+// og arbejdets accept holdes adskilt (docs/OPRETTELSES-APP.md).
+model ScanSubmission {
+  id                 String               @id @default(cuid())
+  worker             ScanWorker           @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  workerId           String
+  product            Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId          String
+  shelfPhotoItem     ShelfPhotoItem?      @relation(fields: [shelfPhotoItemId], references: [id], onDelete: SetNull)
+  shelfPhotoItemId   String?
+  kind               ScanSubmissionKind
+  // false = supplering af medarbejderens egen tidligere mangelfulde vare.
+  payable            Boolean              @default(true)
+  missingEnergy      Boolean              @default(false)
+  missingIngredients Boolean              @default(false)
+  latitude           Float
+  longitude          Float
+  accuracyM          Float?
+  storeName          String?
+  // Tidspunkt for billedet vs. createdAt = tidspunkt for produktoprettelsen.
+  capturedAt         DateTime
+  createdAt          DateTime             @default(now())
+  // Satsen fastfryses ved oprettelsen (snapshot-semantik).
+  amountOre          Int
+  reviewStatus       ScanReviewStatus     @default(PENDING)
+  rejectionReason    ScanRejectionReason? @relation(fields: [rejectionReasonId], references: [id], onDelete: SetNull)
+  rejectionReasonId  String?
+  rejectionComment   String?
+  reviewedAt         DateTime?
+  reviewedByAdminId  String?
+  payout             ScanPayout?          @relation(fields: [payoutId], references: [id], onDelete: SetNull)
+  payoutId           String?
+
+  @@index([workerId, createdAt])
+  @@index([reviewStatus])
+  @@map("scan_submissions")
+}
+
+// Admin-redigerbar liste over afvisningsårsager (seedet i migrationen).
+model ScanRejectionReason {
+  id          String           @id @default(cuid())
+  label       String
+  active      Boolean          @default(true)
+  sortOrder   Int              @default(0)
+  createdAt   DateTime         @default(now())
+  submissions ScanSubmission[]
+
+  @@map("scan_rejection_reasons")
+}
+
+// Singleton (id = 1): én global sats for alle medarbejdere.
+model ScanSettings {
+  id            Int      @id @default(1)
+  payPerItemOre Int      @default(100)
+  updatedAt     DateTime @default(now()) @updatedAt
+
+  @@map("scan_settings")
+}
+
+// Registrering af en udbetaling. Selve pengeoverførslen bygges ikke endnu.
+model ScanPayout {
+  id          String           @id @default(cuid())
+  worker      ScanWorker       @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  workerId    String
+  amountOre   Int
+  paidAt      DateTime         @default(now())
+  note        String?
+  submissions ScanSubmission[]
+
+  @@index([workerId, paidAt])
+  @@map("scan_payouts")
+}
+
+// Tovejs beskedtråd medarbejder <-> admin ("Beskeder"/"Kontakt").
+model ScanMessage {
+  id        String     @id @default(cuid())
+  worker    ScanWorker @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  workerId  String
+  fromAdmin Boolean
+  body      String
+  createdAt DateTime   @default(now())
+  readAt    DateTime?
+
+  @@index([workerId, createdAt])
+  @@map("scan_messages")
+}
+
+// --- Logo-robot (scripts/logo-agent, docs/LOGO-AGENT.md) ---
+//
+// Natlig kørsel: for brands uden logo isoleres logoet fra et produkts
+// forsidefoto (Google Vision LOGO_DETECTION, kun beskåret — ikke fritlagt),
+// og Vision WEB_DETECTION finder lignende billeder på nettet. Op til 10
+// kandidater hentes, konverteres til PNG og vurderes i procent. >= 90 % OG
+// brandnavnet på siden/linket → gemmes automatisk som Brand.logoUrl. Ellers
+// (>= 50 %) → admin-kø "Logoer". Ikke-valgte kandidater slettes (fil + række)
+// 7 dage efter afgørelsen.
+
+enum BrandLogoSearchStatus {
+  PENDING_REVIEW
+  AUTO_ACCEPTED
+  ACCEPTED
+  NO_CANDIDATES
+}
+
+model BrandLogoSearch {
+  id                String                @id @default(cuid())
+  brand             Brand                 @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  brandId           String
+  sourceProductId   String?
+  // Det isolerede (beskårne) logo fra produktets forsidefoto.
+  originalUrl       String
+  status            BrandLogoSearchStatus
+  bestConfidence    Float?
+  chosenCandidateId String?
+  createdAt         DateTime              @default(now())
+  resolvedAt        DateTime?
+  candidates        BrandLogoCandidate[]
+
+  @@index([status, createdAt])
+  @@index([brandId])
+  @@map("brand_logo_searches")
+}
+
+model BrandLogoCandidate {
+  id          String          @id @default(cuid())
+  search      BrandLogoSearch @relation(fields: [searchId], references: [id], onDelete: Cascade)
+  searchId    String
+  imageUrl    String
+  sourceUrl   String
+  pageUrl     String?
+  pageTitle   String?
+  // 0..1 — robottens samlede vurdering af, at dette er det korrekte logo.
+  confidence  Float
+  brandInPage Boolean         @default(false)
+  transparent Boolean         @default(false)
+  width       Int
+  height      Int
+  createdAt   DateTime        @default(now())
+
+  @@index([searchId, confidence])
+  @@map("brand_logo_candidates")
 }
