@@ -41,6 +41,9 @@ import { getSportMeta } from "@/lib/sport-icons";
 import { useDefaultCalendarView } from "@/lib/calendar-view-pref";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { fetchSleepQuality, localDateKey } from "@/lib/sleep-quality";
+import { IconChampagneBottle } from "@/components/icons/ChampagneBottle";
+import { BODY_MEASUREMENT_FIELDS } from "@/lib/body-measurements";
+import type { GoalDTO, GoalTargetDTO } from "@/lib/user-goals";
 
 const WEEKDAY_KEYS = [
   "calendar.weekdayMon",
@@ -93,6 +96,30 @@ type WorkShiftEntry = {
 };
 
 type SleepWindow = { bedtime: number; wakeTime: number };
+
+// Målsætninger i kalenderen: en målsætning har kun en dato (ingen tid), så i
+// dagvisningen ligger den på kl. 12 — samme middagstid som goalDisplayDate.
+const GOAL_HOUR = 12;
+type GoalsByDate = Map<string, GoalDTO[]>;
+
+function goalsForDate(goalsByDate: GoalsByDate, date: Date) {
+  return goalsByDate.get(isoDate(date)) ?? [];
+}
+
+function formatGoalValue(value: number) {
+  return new Intl.NumberFormat("da-DK", { minimumFractionDigits: 0, maximumFractionDigits: 1 }).format(value);
+}
+
+function goalTargetNameKey(type: GoalTargetDTO["type"]) {
+  if (type === "weight") return "goals.weight";
+  return BODY_MEASUREMENT_FIELDS.find(({ field }) => field === type)?.nameKey ?? type;
+}
+
+// Den target, der vises i cirklen/overlayet: vægten hvis målsætningen har en,
+// ellers det første kropsmål.
+function primaryGoalTarget(goal: GoalDTO): GoalTargetDTO | null {
+  return goal.targets.find((target) => target.type === "weight") ?? goal.targets[0] ?? null;
+}
 
 type SleepAdjustType = "bedtime" | "wake";
 
@@ -283,6 +310,7 @@ export default function CalendarPage() {
   const [weighIns, setWeighIns] = useState<WeighIn[]>([]);
   const [weekdaySchedules, setWeekdaySchedules] = useState<Record<number, SleepScheduleEntry>>({});
   const [workShifts, setWorkShifts] = useState<Record<string, WorkShiftEntry>>({});
+  const [goals, setGoals] = useState<GoalDTO[]>([]);
   const pointerStart = useRef<number | null>(null);
   const isLandscape = useIsLandscape();
   const wasLandscapeRef = useRef(false);
@@ -443,6 +471,28 @@ export default function CalendarPage() {
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/goals")
+      .then((response) => (response.ok ? response.json() : { goals: [] }))
+      .then((data: { goals?: GoalDTO[] }) => {
+        if (!cancelled) setGoals(data.goals ?? []);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const goalsByDate = useMemo(() => {
+    const map: GoalsByDate = new Map();
+    for (const goal of goals) {
+      if (!goal.targetDate) continue;
+      map.set(goal.targetDate, [...(map.get(goal.targetDate) ?? []), goal]);
+    }
+    return map;
+  }, [goals]);
 
   useEffect(() => {
     let cancelled = false;
@@ -686,6 +736,7 @@ export default function CalendarPage() {
                 month={month}
                 today={today}
                 dailyTotals={dailyTotals}
+                goalsByDate={goalsByDate}
                 onOpenDate={openDate}
                 weekdays={WEEKDAYS}
               />
@@ -697,6 +748,7 @@ export default function CalendarPage() {
                   today={today}
                   dailyTotals={dailyTotals}
                   registrations={registrations}
+                  goalsByDate={goalsByDate}
                   onOpenDate={openDate}
                   getSleepWindow={resolveSleepWindow}
                   onSleepAdjust={requestSleepAdjust}
@@ -707,6 +759,7 @@ export default function CalendarPage() {
                   today={today}
                   dailyTotals={dailyTotals}
                   minimumKcal={minimumKcal}
+                  goalsByDate={goalsByDate}
                   onOpenDate={openDate}
                 />
               ))}
@@ -724,6 +777,7 @@ export default function CalendarPage() {
                 today={today}
                 dailyTotals={dailyTotals}
                 minimumKcal={minimumKcal}
+                goalsByDate={goalsByDate}
                 onOpenDate={openDate}
                 onPrevWeek={() => movePeriod(-1)}
                 onNextWeek={() => movePeriod(1)}
@@ -765,6 +819,7 @@ export default function CalendarPage() {
             isSameDay(new Date(registration.createdAt), selectedDate),
           )}
           activities={activities.filter((activity) => isSameDay(new Date(activity.startedAt), selectedDate))}
+          goals={goalsForDate(goalsByDate, selectedDate)}
           loading={registrationsLoading}
           error={registrationsError}
           sleepWindow={resolveSleepWindow(selectedDate)}
@@ -864,6 +919,7 @@ function MonthView({
   month,
   today,
   dailyTotals,
+  goalsByDate,
   onOpenDate,
   weekdays,
 }: {
@@ -871,6 +927,7 @@ function MonthView({
   month: number;
   today: Date;
   dailyTotals: Map<string, number>;
+  goalsByDate: GoalsByDate;
   onOpenDate: (date: Date) => void;
   weekdays: string[];
 }) {
@@ -910,6 +967,7 @@ function MonthView({
                   const logged = totalKcalForDate(dailyTotals, date) > 0;
                   const current = isSameDay(date, today);
                   const isOtherMonth = date.getMonth() !== month;
+                  const hasGoal = goalsForDate(goalsByDate, date).length > 0;
                   return (
                     <button
                       key={date.toISOString()}
@@ -917,7 +975,7 @@ function MonthView({
                       onClick={() => onOpenDate(date)}
                       aria-label={`${date.toLocaleDateString("da-DK", { dateStyle: "long" })}${current ? t("calendar.todaySuffix") : ""}${
                         !logged ? "" : met ? t("calendar.goalMetSuffix") : t("calendar.goalMissedSuffix")
-                      }`}
+                      }${hasGoal ? t("calendar.targetDateSuffix") : ""}`}
                       className={`relative flex aspect-square items-center justify-center rounded-lg border text-sm font-medium focus-visible:outline-2 focus-visible:outline-hf-black ${
                         current
                           ? "border-hf-green bg-hf-green text-hf-white"
@@ -927,6 +985,15 @@ function MonthView({
                       }`}
                     >
                       {date.getDate()}
+                      {/* Målsætningsdato: champagneflasken i øverste venstre
+                          hjørne, modsat ✓/÷ i højre. */}
+                      {hasGoal && (
+                        <IconChampagneBottle
+                          size={12}
+                          stroke={2.2}
+                          className={`absolute left-0.5 top-0.5 ${current ? "text-hf-white" : "text-hf-black"}`}
+                        />
+                      )}
                       {!current &&
                         logged &&
                         (met ? (
@@ -961,12 +1028,14 @@ function WeekView({
   today,
   dailyTotals,
   minimumKcal,
+  goalsByDate,
   onOpenDate,
 }: {
   days: Date[];
   today: Date;
   dailyTotals: Map<string, number>;
   minimumKcal: number;
+  goalsByDate: GoalsByDate;
   onOpenDate: (date: Date) => void;
 }) {
   const { t } = useTranslation();
@@ -984,6 +1053,7 @@ function WeekView({
         // Days that haven't happened yet have no status to show.
         const future = stripTime(date).getTime() > stripTime(today).getTime();
         const tooLow = isIntakeTooLow(kcal, minimumKcal, stripTime(date).getTime() < stripTime(today).getTime());
+        const hasGoal = goalsForDate(goalsByDate, date).length > 0;
         return (
           <button
             key={date.toISOString()}
@@ -1000,14 +1070,16 @@ function WeekView({
               {date.getDate()}
             </span>
             {future ? (
-              <span className="flex-1" />
+              <span className="flex flex-1 items-center">
+                {hasGoal && <IconChampagneBottle size={18} className="shrink-0 text-hf-black" />}
+              </span>
             ) : (
               <>
                 {met && !tooLow && (
                   <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />
                 )}
                 <span
-                  className={`text-sm ${tooLow ? "font-medium text-hf-warning" : logged ? "font-normal" : "font-normal text-hf-gray"}`}
+                  className={`flex items-center gap-1.5 text-sm ${tooLow ? "font-medium text-hf-warning" : logged ? "font-normal" : "font-normal text-hf-gray"}`}
                 >
                   {!logged
                     ? t("calendar.noEntries")
@@ -1016,6 +1088,8 @@ function WeekView({
                       : met
                         ? t("calendar.goalMet")
                         : t("calendar.goalMissed")}
+                  {/* Målsætningsdato: champagneflasken efter teksten. */}
+                  {hasGoal && <IconChampagneBottle size={18} className="shrink-0 text-hf-black" />}
                 </span>
                 <span className="ml-auto flex shrink-0 items-center gap-1">
                   <span
@@ -1093,6 +1167,7 @@ function ListView({
   today,
   dailyTotals,
   minimumKcal,
+  goalsByDate,
   onOpenDate,
   onPrevWeek,
   onNextWeek,
@@ -1101,6 +1176,7 @@ function ListView({
   today: Date;
   dailyTotals: Map<string, number>;
   minimumKcal: number;
+  goalsByDate: GoalsByDate;
   onOpenDate: (date: Date) => void;
   onPrevWeek: () => void;
   onNextWeek: () => void;
@@ -1177,6 +1253,7 @@ function ListView({
         // Days that haven't happened yet have no status to show.
         const future = stripTime(date).getTime() > stripTime(today).getTime();
         const tooLow = isIntakeTooLow(kcal, minimumKcal, stripTime(date).getTime() < stripTime(today).getTime());
+        const hasGoal = goalsForDate(goalsByDate, date).length > 0;
         return (
           <button
             key={date.toISOString()}
@@ -1193,14 +1270,16 @@ function ListView({
               {date.getDate()}
             </span>
             {future ? (
-              <span className="flex-1" />
+              <span className="flex flex-1 items-center">
+                {hasGoal && <IconChampagneBottle size={18} className="shrink-0 text-hf-black" />}
+              </span>
             ) : (
               <>
                 {met && !tooLow && (
                   <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />
                 )}
                 <span
-                  className={`text-sm ${tooLow ? "font-medium text-hf-warning" : logged ? "font-normal" : "font-normal text-hf-gray"}`}
+                  className={`flex items-center gap-1.5 text-sm ${tooLow ? "font-medium text-hf-warning" : logged ? "font-normal" : "font-normal text-hf-gray"}`}
                 >
                   {!logged
                     ? t("calendar.noEntries")
@@ -1209,6 +1288,8 @@ function ListView({
                       : met
                         ? t("calendar.goalMet")
                         : t("calendar.goalMissed")}
+                  {/* Målsætningsdato: champagneflasken efter teksten. */}
+                  {hasGoal && <IconChampagneBottle size={18} className="shrink-0 text-hf-black" />}
                 </span>
                 <span className="ml-auto flex shrink-0 items-center gap-1">
                   <span
@@ -1236,6 +1317,7 @@ function WeekTimelineView({
   today,
   dailyTotals,
   registrations,
+  goalsByDate,
   onOpenDate,
   getSleepWindow,
   onSleepAdjust,
@@ -1244,6 +1326,7 @@ function WeekTimelineView({
   today: Date;
   dailyTotals: Map<string, number>;
   registrations: Registration[];
+  goalsByDate: GoalsByDate;
   onOpenDate: (date: Date) => void;
   getSleepWindow: (date: Date) => SleepWindow | null;
   onSleepAdjust: (date: Date, type: SleepAdjustType, minutes: number) => void;
@@ -1322,6 +1405,7 @@ function WeekTimelineView({
               <span className="hf-heading flex items-center gap-2 text-sm">
                 {date.getDate()}
                 {met && <IconCheck size={15} stroke={3.5} className="text-hf-lime" aria-hidden="true" />}
+                {goalsForDate(goalsByDate, date).length > 0 && <IconChampagneBottle size={15} />}
               </span>
             </button>
           );
@@ -1590,6 +1674,7 @@ function DayDetails({
   today,
   registrations,
   activities,
+  goals,
   loading,
   error,
   sleepWindow,
@@ -1608,6 +1693,7 @@ function DayDetails({
   today: Date;
   registrations: Registration[];
   activities: Activity[];
+  goals: GoalDTO[];
   loading: boolean;
   error: boolean;
   sleepWindow: SleepWindow;
@@ -1629,6 +1715,10 @@ function DayDetails({
   const pointerStart = useRef<number | null>(null);
   const [addBarHour, setAddBarHour] = useState<number | null>(null);
   const [openHour, setOpenHour] = useState<number | null>(null);
+  // Målsætningscirklen vises hver gang en dag med en målsætning åbnes
+  // (DayDetails er keyed på datoen); et tryk udenfor lukker den, og derefter
+  // står kun det lille ikon ud for kl. GOAL_HOUR.
+  const [goalPopupDismissed, setGoalPopupDismissed] = useState(false);
   const [hourHeight, setHourHeight] = useState(() => loadStoredHourHeight());
   const activeZoomPointers = useRef(new Map<number, number>());
   const zoomStart = useRef<{ avgY: number; hourHeight: number } | null>(null);
@@ -1963,6 +2053,7 @@ function DayDetails({
                       kcalTotal={kcalTotal}
                       activities={hourActivities}
                       hasEntries={hourRegistrations.length > 0}
+                      hasGoal={hour === GOAL_HOUR && goals.length > 0}
                       showAddBar={addBarHour === hour}
                       onOpenDetails={setOpenHour}
                       onLongPress={setAddBarHour}
@@ -2025,10 +2116,15 @@ function DayDetails({
         </div>
       </div>
 
+      {!goalPopupDismissed && goals.length > 0 && (
+        <GoalPopup goal={goals[0]} onOpen={() => router.push("/profile/goals")} onClose={() => setGoalPopupDismissed(true)} />
+      )}
+
       {openHour !== null && (
         <HourEntriesOverlay
           hour={openHour}
           registrations={registrations.filter((registration) => new Date(registration.createdAt).getHours() === openHour)}
+          goals={openHour === GOAL_HOUR ? goals : []}
           onClose={() => setOpenHour(null)}
         />
       )}
@@ -2043,6 +2139,7 @@ function HourRow({
   kcalTotal,
   activities,
   hasEntries,
+  hasGoal,
   showAddBar,
   onOpenDetails,
   onLongPress,
@@ -2054,6 +2151,7 @@ function HourRow({
   kcalTotal: number;
   activities: Activity[];
   hasEntries: boolean;
+  hasGoal: boolean;
   showAddBar: boolean;
   onOpenDetails: (hour: number) => void;
   onLongPress: (hour: number) => void;
@@ -2063,6 +2161,7 @@ function HourRow({
   const bonusKcal = activities.reduce((sum, activity) => sum + activity.caloriesBurned, 0);
   const pressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const movedRef = useRef(false);
+  const longPressedRef = useRef(false);
   const startRef = useRef({ x: 0, y: 0 });
 
   function clearTimer() {
@@ -2074,9 +2173,13 @@ function HourRow({
 
   function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
     movedRef.current = false;
+    longPressedRef.current = false;
     startRef.current = { x: event.clientX, y: event.clientY };
     pressTimer.current = setTimeout(() => {
-      if (!movedRef.current) onLongPress(hour);
+      if (!movedRef.current) {
+        longPressedRef.current = true;
+        onLongPress(hour);
+      }
     }, ADD_BAR_HOLD_MS);
   }
 
@@ -2098,13 +2201,29 @@ function HourRow({
       onPointerUp={clearTimer}
       onPointerCancel={clearTimer}
     >
-      {activities.length > 0 && (
-        <div className="absolute inset-y-0 left-1 z-[5] flex items-center gap-1">
+      {/* Timen med en målsætning kan trykkes på i hele sin bredde og åbner
+          timens oversigt med målsætningen øverst (men ikke lige efter et
+          langt tryk, der viser "Tilføj"-baren). */}
+      {hasGoal && (
+        <button
+          type="button"
+          aria-label={t("calendar.openTargetDateAriaLabel")}
+          onClick={() => {
+            if (!longPressedRef.current && !movedRef.current) onOpenDetails(hour);
+          }}
+          className="absolute inset-0 z-[4] focus-visible:outline-2 focus-visible:outline-hf-black"
+        />
+      )}
+      {(activities.length > 0 || hasGoal) && (
+        <div className="pointer-events-none absolute inset-y-0 left-1 z-[5] flex items-center gap-1">
+          {hasGoal && <IconChampagneBottle size={16} className="text-hf-black" />}
           {activities.map((activity) => {
             const { icon: SportIcon, label } = getSportMeta(activity.sportType);
             return <SportIcon key={activity.id} size={16} className="text-hf-black opacity-70" aria-label={label} />;
           })}
-          <span className="text-xs font-bold text-hf-green">+{Math.round(bonusKcal)} kcal</span>
+          {activities.length > 0 && (
+            <span className="text-xs font-bold text-hf-green">+{Math.round(bonusKcal)} kcal</span>
+          )}
         </div>
       )}
       {hasEntries && (
@@ -2230,13 +2349,95 @@ function DraggableEntryMarker({
   );
 }
 
+// Målsætningscirklen midt på dagvisningen: samme størrelse og tan-baggrund
+// som produktbilledet på produktsiden (190px), med champagneflasken og målet.
+// Tryk på cirklen åbner målsætningen; tryk udenfor lukker den.
+function GoalPopup({ goal, onOpen, onClose }: { goal: GoalDTO; onOpen: () => void; onClose: () => void }) {
+  const { t } = useTranslation();
+  const target = primaryGoalTarget(goal);
+  return (
+    <div className="absolute inset-0 z-[55] flex items-center justify-center">
+      <button
+        type="button"
+        aria-label={t("calendar.closeTargetDateAriaLabel")}
+        className="absolute inset-0 cursor-default"
+        onClick={onClose}
+      />
+      <button
+        type="button"
+        onClick={onOpen}
+        aria-label={t("calendar.openTargetDateAriaLabel")}
+        className="relative flex size-[190px] flex-col items-center justify-center gap-2 rounded-full bg-hf-tan text-hf-black shadow-xl focus-visible:outline-2 focus-visible:outline-hf-black"
+      >
+        <IconChampagneBottle size={56} stroke={1.6} />
+        {target && <GoalTargetValue target={target} className="hf-type-body-lg hf-heading" />}
+      </button>
+    </div>
+  );
+}
+
+// Målværdien: grøn når målet er nået, ellers grå.
+function GoalTargetValue({ target, className = "" }: { target: GoalTargetDTO; className?: string }) {
+  return (
+    <span className={`tabular-nums ${target.completedAt ? "text-hf-green" : "text-hf-gray"} ${className}`}>
+      {formatGoalValue(target.value)} {target.unit}
+    </span>
+  );
+}
+
+// Målsætningen øverst i timens oversigt: foldbar som tidsgrupperne under den.
+// Er det et vægtmål, står målvægten i midten af rækken.
+function GoalAccordion({ goal }: { goal: GoalDTO }) {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const weight = goal.targets.find((target) => target.type === "weight") ?? null;
+  return (
+    <div className="mb-2 overflow-hidden rounded-2xl bg-hf-tan">
+      <button
+        type="button"
+        onClick={() => setOpen((current) => !current)}
+        aria-expanded={open}
+        className="grid w-full grid-cols-[1fr_auto_1fr] items-center gap-2 px-4 py-3 text-left focus-visible:outline-2 focus-visible:outline-hf-black"
+      >
+        <span className="hf-type-body font-semibold flex min-w-0 items-center gap-2 text-hf-black">
+          <IconChampagneBottle size={18} className="shrink-0" />
+          <span className="truncate">{t("goals.title")}</span>
+        </span>
+        {weight ? <GoalTargetValue target={weight} className="hf-type-body font-semibold" /> : <span />}
+        <span className="flex justify-end">
+          <HfChevron direction={open ? "down" : "right"} className="text-hf-black" />
+        </span>
+      </button>
+      {open && (
+        <div className="bg-hf-cream px-4">
+          {goal.targets.map((target) => (
+            <div key={target.id} className="flex items-center justify-between gap-4 border-b border-hf-tan-dark py-3">
+              <span className="hf-type-body text-hf-black">{t(goalTargetNameKey(target.type))}</span>
+              <GoalTargetValue target={target} className="hf-type-body font-semibold" />
+            </div>
+          ))}
+          <Link
+            href="/profile/goals"
+            className="hf-type-body font-semibold flex items-center justify-between py-3 text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
+          >
+            {t("calendar.openTargetDate")}
+            <IconChevronRight size={18} className="shrink-0" />
+          </Link>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function HourEntriesOverlay({
   hour,
   registrations,
+  goals,
   onClose,
 }: {
   hour: number;
   registrations: Registration[];
+  goals: GoalDTO[];
   onClose: () => void;
 }) {
   const { t } = useTranslation();
@@ -2287,6 +2488,9 @@ function HourEntriesOverlay({
         </h2>
       </div>
       <div className="flex-1 overflow-y-auto p-4">
+        {goals.map((goal) => (
+          <GoalAccordion key={goal.id} goal={goal} />
+        ))}
         {groups.map((group) => {
           const isOpen = openKeys.has(group.key);
           const groupKcal = group.items.reduce((sum, registration) => sum + registration.kcalSnapshot, 0);
