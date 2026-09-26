@@ -2420,3 +2420,9 @@ den rigtige stregkode.
 ## 2026-09-26: Billede-dagbog som loop-karrusel
 
 Billeder vises i en vandret karrusel (ikke grid, ikke 1:1), ældste til venstre og nyeste til højre, nyeste i midten ved start. Loop kun ved 3+ billeder, så samme billede aldrig står på begge sider samtidig; ved 2 billeder stopper den ved kanterne. Kun et vindue på 7 kort renderes, så loopet ikke kræver kopier af hele listen. Dato/tid står under billedet, aldrig som overlay.
+
+## 2026-09-26: Tooltips og start-up tips (Indstillinger → Visning)
+
+- To vippekontakter under Visning: "Vis tooltips" (små hjælpetekster via `HelpTip`, `src/components/hf/HelpTip.tsx`) og "Vis start-up tips". Begge er slået til som standard og gemmes pr. enhed i localStorage (`src/lib/help-prefs.ts`), samme mønster som Kalendervisning.
+- Start-up tips er 1-sides overlays med én fast standard (`StartupTipOverlay`): "Luk" øverst til højre, ikon + titel + tekst, evt. én stor knap, og "Slå fra" nederst til højre (slår alle start-up tips fra). Højst ét tip pr. besøg, kun for indloggede brugere med samtykke, aldrig på login-, samtykke-, juridiske eller admin-sider (`StartupTipsGate` i root layout).
+- Tips står i `STARTUP_TIPS` (`src/lib/startup-tips.ts`) og vises i rækkefølge. Et tip er færdigt, når det lukkes, eller når funktionen bruges (`markStartupTipSeen(id)` kaldes fra funktionens egen kode). Første tip er altid "Dine data er dine" med "Læs mere" til `/privatlivspolitik`.

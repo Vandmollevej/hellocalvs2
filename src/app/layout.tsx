@@ -10,6 +10,7 @@ import { FamilyStatusProvider } from "@/components/family/FamilyStatusProvider";
 import { FamilyWatchFrame } from "@/components/family/FamilyWatchFrame";
 import { AccessLogPanel } from "@/components/family/AccessLogPanel";
 import { ConsentGate } from "@/components/ConsentGate";
+import { StartupTipsGate } from "@/components/StartupTipsGate";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -57,6 +58,7 @@ export default function RootLayout({
         <LocaleProvider>
           <AuthGate />
           <ConsentGate />
+          <StartupTipsGate />
           <OfflineQueueBanner />
           <FamilyStatusProvider>
             <PhoneFrame>
