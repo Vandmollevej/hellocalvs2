@@ -1238,7 +1238,17 @@
     "save": "Gem målsætning",
     "saving": "Gemmer…",
     "saveError": "Kunne ikke gemme målsætningen.",
-    "atLeastOne": "Udfyld mindst ét mål for at gemme."
+    "atLeastOne": "Udfyld mindst ét mål for at gemme.",
+    "editTitle": "Redigér målsætning",
+    "upcomingTitle": "Kommende målsætninger",
+    "upcomingEmpty": "Du har ingen kommende målsætninger.",
+    "openGoal": "Åbn målsætningen",
+    "editTargetAria": "Redigér {name}",
+    "category": {
+      "weight": "Vægt",
+      "body": "Kropsmål",
+      "nutrition": "Ernæring"
+    }
   },
   "weightLog": {
     "title": "Vægt",

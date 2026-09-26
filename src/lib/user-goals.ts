@@ -253,3 +253,71 @@ export async function createGoal(
     return goal;
   });
 }
+
+// Redigering af en eksisterende målsætning. Uændrede targets beholder deres
+// startværdi og gennemført-status; et ændret mål er et nyt mål og får ny
+// startværdi (seneste måling) og nulstillet completedAt. False hvis
+// målsætningen ikke tilhører brugeren.
+export async function updateGoal(
+  userId: string,
+  goalId: string,
+  targetDate: Date,
+  values: Partial<Record<GoalTargetType, number>>,
+) {
+  const goal = await prisma.goal.findFirst({ where: { id: goalId, userId }, include: { targets: true } });
+  if (!goal) return false;
+  const latest = await getLatestValues(userId);
+
+  await prisma.$transaction(async (tx) => {
+    await tx.goal.update({ where: { id: goalId }, data: { targetDate } });
+
+    for (const target of goal.targets) {
+      const value = isGoalTargetType(target.type) ? values[target.type] : undefined;
+      if (value == null) {
+        await tx.goalTarget.delete({ where: { id: target.id } });
+      } else if (Math.abs(value - target.value) > EPSILON) {
+        const startValue = latest.get(target.type as GoalTargetType) ?? null;
+        await tx.goalTarget.update({
+          where: { id: target.id },
+          data: {
+            value,
+            startValue,
+            direction: startValue != null ? getGoalDirection(startValue, value) : null,
+            completedAt: null,
+          },
+        });
+      }
+    }
+
+    const existing = new Set(goal.targets.map((target) => target.type));
+    for (const type of GOAL_TARGET_TYPES) {
+      const value = values[type];
+      if (value == null || existing.has(type)) continue;
+      const startValue = latest.get(type) ?? null;
+      await tx.goalTarget.create({
+        data: {
+          goalId,
+          type,
+          value,
+          unit: unitForTarget(type),
+          startValue,
+          direction: startValue != null ? getGoalDirection(startValue, value) : null,
+        },
+      });
+    }
+
+    // User.targetWeightKg følger den nyeste vægt-målsætning (jf. createGoal).
+    const weight = values[WEIGHT_TARGET];
+    if (weight != null) {
+      const newestWeightGoal = await tx.goal.findFirst({
+        where: { userId, targets: { some: { type: WEIGHT_TARGET } } },
+        orderBy: { createdAt: "desc" },
+        select: { id: true },
+      });
+      if (newestWeightGoal?.id === goalId) {
+        await tx.user.update({ where: { id: userId }, data: { targetWeightKg: weight } });
+      }
+    }
+  });
+  return true;
+}

@@ -26,3 +26,26 @@ export function isGoalCompleted(goal: GoalDTO) {
 export function goalDisplayDate(goal: GoalDTO) {
   return goal.targetDate ? new Date(`${goal.targetDate}T12:00:00`) : new Date(goal.createdAt);
 }
+
+// Ikonkategori pr. target: vægt, kropsmål eller ernæring. Ernæringsmål findes
+// endnu ikke i datamodellen; kategorien er klar, når de kommer.
+export type GoalTargetCategory = "weight" | "body" | "nutrition";
+
+export function goalTargetCategory(type: string): GoalTargetCategory {
+  if (type === "weight") return "weight";
+  if (BODY_MEASUREMENT_FIELDS.some(({ field }) => field === type)) return "body";
+  return "nutrition";
+}
+
+// De kategorier, en målsætning indeholder, i fast rækkefølge.
+export function goalCategories(goal: GoalDTO): GoalTargetCategory[] {
+  const present = new Set(goal.targets.map((target) => goalTargetCategory(target.type)));
+  return (["weight", "body", "nutrition"] as const).filter((category) => present.has(category));
+}
+
+// Kommende = ikke nået og med en målsætningsdato fra i dag og frem; nærmeste først.
+export function upcomingGoals(goals: GoalDTO[], todayIso: string) {
+  return goals
+    .filter((goal) => !isGoalCompleted(goal) && goal.targetDate != null && goal.targetDate >= todayIso)
+    .sort((a, b) => (a.targetDate as string).localeCompare(b.targetDate as string));
+}

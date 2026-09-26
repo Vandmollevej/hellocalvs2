@@ -31,7 +31,7 @@ function GoalRow({ goal, onOpen }: { goal: GoalDTO; onOpen: () => void }) {
       <GoalDateSquare date={goalDisplayDate(goal)} completed={completed} />
       <span className="flex min-w-0 flex-1 flex-col">
         <span className="hf-type-body hf-type-strong line-clamp-2">{summary}</span>
-        <span className="hf-type-small flex items-center gap-1 opacity-60">
+        <span className="text-text-secondary hf-type-small flex items-center gap-1">
           {completed && <IconCheck size={14} stroke={3} className="shrink-0 text-hf-green" aria-hidden="true" />}
           {completed
             ? t("goals.completedAria")
@@ -80,14 +80,23 @@ export default function GoalsPage() {
         <button
           type="button"
           onClick={() => router.push("/profile/goals/new")}
-          className="hf-btn-secondary hf-type-button h-12 w-full gap-2"
+          className="hf-control hf-btn-secondary w-full gap-2"
         >
           <IconPlus size={18} stroke={2.5} aria-hidden="true" />
           {t("goals.createSubGoal")}
         </button>
 
+        <button
+          type="button"
+          onClick={() => router.push("/profile/goals/upcoming")}
+          className="hf-control-row flex w-full items-center gap-2 rounded-2xl bg-hf-tan px-4 text-left text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
+        >
+          <span className="hf-type-body hf-type-strong flex-1">{t("goals.upcomingTitle")}</span>
+          <IconChevronRight size={19} className="shrink-0" aria-hidden="true" />
+        </button>
+
         {loading || error || goals.length === 0 ? (
-          <p className="hf-type-body mx-auto max-w-xs px-4 pt-8 text-center text-hf-black opacity-60">
+          <p className="text-text-secondary hf-type-body mx-auto max-w-xs px-4 pt-8 text-center">
             {loading ? t("goals.loading") : error ? t("goals.loadError") : t("goals.empty")}
           </p>
         ) : (

@@ -1238,7 +1238,17 @@
     "save": "Save goal",
     "saving": "Saving…",
     "saveError": "Couldn't save the goal.",
-    "atLeastOne": "Fill in at least one target to save."
+    "atLeastOne": "Fill in at least one target to save.",
+    "editTitle": "Edit goal",
+    "upcomingTitle": "Upcoming goals",
+    "upcomingEmpty": "You have no upcoming goals.",
+    "openGoal": "Open the goal",
+    "editTargetAria": "Edit {name}",
+    "category": {
+      "weight": "Weight",
+      "body": "Body measurements",
+      "nutrition": "Nutrition"
+    }
   },
   "weightLog": {
     "title": "Weight",

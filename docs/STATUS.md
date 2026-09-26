@@ -44,6 +44,11 @@ Kontakten og hint-teksten på `/profile/sleep` er skjult bag
 `SHOW_SHIFT_WORK = false` i `src/app/profile/sleep/page.tsx`. Koden, feltet
 `shiftWorkEnabled`, API'et og oversættelserne er bevaret til senere. Spørgsmålet
 om skifteholdsarbejde i onboarding-guiden er ikke rørt. Lint og build kørt.
+## 2026-09-26: Kommende målsætninger + redigering af målsætning
+
+- Ny side `/profile/goals/upcoming` (knap på Målsætning-siden): én fold-ud-bjælke pr. kommende målsætning (ikke nået, dato fra i dag), nærmeste først. Ikoner til venstre: badevægt (vægt), målebånd (kropsmål), kyllingelår (ernæring — findes ikke i datamodellen endnu).
+- Hvert mål i dropdownen åbner `/profile/goals/[id]/edit?focus=<type>`; "Åbn målsætningen" går til målsætningens egen side `/profile/goals/[id]`.
+- `PATCH /api/goals/[id]` + `updateGoal`; formularen er fælles (`src/components/hf/GoalForm.tsx`) for opret og redigér.
 
 ## 2026-09-26: Opret vare — logo, fritskrabning og samme-foto-flueben
 
