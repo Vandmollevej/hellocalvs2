@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
+import { SupportScreenshotPicker } from "@/components/SupportScreenshotPicker";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 type Thread = {
@@ -10,7 +11,13 @@ type Thread = {
   subject: string;
   status: "OPEN" | "RESOLVED";
   awaitingReply: boolean;
-  messages: { id: string; author: "USER" | "SUPPORT"; body: string; createdAt: string }[];
+  messages: {
+    id: string;
+    author: "USER" | "SUPPORT";
+    body: string;
+    createdAt: string;
+    attachments: { id: string }[];
+  }[];
 };
 
 // Én supporthenvendelse som samtale (docs/DECISIONS.md 2026-09-26
@@ -21,6 +28,7 @@ export default function SupportRequestThreadPage() {
   const [thread, setThread] = useState<Thread | null>(null);
   const [loadError, setLoadError] = useState(false);
   const [reply, setReply] = useState("");
+  const [images, setImages] = useState<string[]>([]);
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState(false);
 
@@ -44,13 +52,14 @@ export default function SupportRequestThreadPage() {
       const response = await fetch(`/api/support/requests/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: reply }),
+        body: JSON.stringify({ message: reply, attachments: images }),
       });
       if (!response.ok) {
         setSendError(true);
         return;
       }
       setReply("");
+      setImages([]);
       await load();
     } catch {
       setSendError(true);
@@ -84,6 +93,22 @@ export default function SupportRequestThreadPage() {
                     {new Date(message.createdAt).toLocaleString()}
                   </p>
                   <p className="hf-type-body mt-1 whitespace-pre-wrap">{message.body}</p>
+                  {message.attachments.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {message.attachments.map((attachment) => (
+                        <a
+                          key={attachment.id}
+                          href={`/api/support/attachments/${attachment.id}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="block h-20 w-20 overflow-hidden rounded-[8px] bg-hf-cream"
+                        >
+                          {/* eslint-disable-next-line @next/next/no-img-element -- beskyttet route, ikke next/image */}
+                          <img src={`/api/support/attachments/${attachment.id}`} alt="" className="h-full w-full object-cover" />
+                        </a>
+                      ))}
+                    </div>
+                  )}
                 </li>
               ))}
             </ol>
@@ -103,6 +128,7 @@ export default function SupportRequestThreadPage() {
                   style={{ borderColor: "var(--hf-color-field-border)" }}
                 />
               </label>
+              <SupportScreenshotPicker images={images} onChange={setImages} disabled={sending} />
               {sendError && (
                 <p role="alert" className="hf-type-caption text-hf-red-dark">
                   {t("settings.support.replyError")}

@@ -185,11 +185,19 @@ const DEFAULT_TEMPLATES: Record<MessageEventType, { subject: string; bodyHtml: s
   },
   // Support-indbakke (docs/DECISIONS.md 2026-09-26). Variablerne er allerede
   // HTML-escaped i src/lib/support-inbox.ts.
+  // Svaret læses i appen (push + indbakke, ingen mail). {{reply}} er også
+  // tilgængelig, hvis admin vil vise svaret direkte i beskeden.
   SUPPORT_REPLY: {
     subject: "Svar fra Hello Cal Support: {{subject}}",
     bodyHtml:
-      "<p>Hej {{displayName}},</p><p>Vi har svaret på din henvendelse (sag {{caseCode}}):</p><blockquote>{{reply}}</blockquote><p><a href=\"{{threadLink}}\">Se hele samtalen og svar i appen</a></p><p>Hello Cal Support</p>",
-    channel: "BOTH",
+      "<p>Support har svaret på din henvendelse (sag {{caseCode}}).</p><p><a href=\"{{threadLink}}\">Åbn samtalen</a></p>",
+    channel: "PUSH",
+  },
+  SUPPORT_RECEIVED: {
+    subject: "Vi har modtaget din henvendelse (sag {{caseCode}})",
+    bodyHtml:
+      "<p>Hej {{displayName}},</p><p>Tak for din henvendelse \"{{subject}}\". Dit sagsnummer er <strong>{{caseCode}}</strong>.</p><p>Vi svarer dig i Hello Cal-appen under Indstillinger → Support → Mine henvendelser, og du får besked, når der er et svar.</p><p><a href=\"{{threadLink}}\">Se din henvendelse</a></p><p>Hello Cal Support</p>",
+    channel: "EMAIL",
   },
   SUPPORT_OVERDUE_ADMIN: {
     subject: "{{count}} supportbesked(er) ikke besvaret i 24 timer",

@@ -195,6 +195,10 @@
       "replyError": "The reply could not be sent. Please try again.",
       "replyReopens": "This case is resolved. If you write again, it will be reopened.",
       "openCase": "View your request",
+      "attachScreenshots": "Attach screenshots",
+      "attachHint": "You can attach up to 3 screenshots.",
+      "removeAttachment": "Remove image",
+      "attachmentError": "One of the images could not be used.",
       "categories": {
         "ACCOUNT": "Account and login",
         "DATA": "My data",

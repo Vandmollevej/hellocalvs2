@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/session";
 import { isSupportRequestCategory } from "@/lib/support-permissions";
+import { parseSupportAttachments } from "@/lib/support-attachments";
 import {
   SUPPORT_MESSAGE_MAX,
   SUPPORT_SUBJECT_MAX,
@@ -31,7 +32,9 @@ export async function POST(request: Request) {
   if (!subject || !message) {
     return NextResponse.json({ error: "SUBJECT_AND_MESSAGE_REQUIRED" }, { status: 400 });
   }
+  const attachments = parseSupportAttachments(body?.attachments);
+  if (!attachments) return NextResponse.json({ error: "INVALID_ATTACHMENTS" }, { status: 400 });
 
-  const supportRequest = await createSupportRequest({ userId: user.id, category, subject, message });
+  const supportRequest = await createSupportRequest({ userId: user.id, category, subject, message, attachments });
   return NextResponse.json({ request: supportRequest }, { status: 201 });
 }

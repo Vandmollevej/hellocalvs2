@@ -25,6 +25,20 @@ This file records durable decisions. Add a dated entry when a later decision cha
   der netop har passeret 24 timer uden svar. `overdueAlertSentAt` sikrer én
   advarsel pr. ubesvaret besked; nulstilles ved svar/ny brugerbesked.
   Eksisterende åbne sager markeres som allerede advaret ved migrationen.
+- Brugerens valg 2026-09-26: samtalen foregår i appen, ikke på mail.
+  `SUPPORT_REPLY` er derfor kun push + indbakke (ingen mail); brugeren får
+  en kvitteringsmail med sagsnummer (`SUPPORT_RECEIVED`), når sagen oprettes.
+- Startprioritet efter kategori: Abonnement/betaling og Konto/login = Høj,
+  Fejl/Mine data/Produkter = Normal, Andet = Lav. Admin kan ændre den.
+- Brugeren kan vedhæfte op til 3 skærmbilleder pr. besked. De skaleres til
+  maks. 1600 px JPEG i telefonen, typen tjekkes på serveren ud fra filens
+  bytes, EXIF fjernes, og de gemmes i databasen (`SupportAttachment`) —
+  aldrig under /public. Kun ejeren og admin kan hente dem.
+- Svarskabeloner (`SupportReplyTemplate`) på `/admin/support/templates`;
+  `{{navn}}` erstattes med brugerens navn ved indsættelse.
+- Admin-menuen viser "Support (n)" med antal ubesvarede sager (rød ved
+  sager over 24 timer).
+- 24-timers-advarslen sendes én gang pr. ubesvaret besked (brugerens valg).
 
 ## 2026-09-26: Redigering af målsætninger
 ## 2026-09-26: Én overskrift med streger — kun `.hf-type-section-title`

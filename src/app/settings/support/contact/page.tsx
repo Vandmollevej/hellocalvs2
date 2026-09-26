@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { IconChevronDown } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { SupportScreenshotPicker } from "@/components/SupportScreenshotPicker";
 import { TextField } from "@/components/hf/TextField";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { SUPPORT_REQUEST_CATEGORIES, type SupportRequestCategoryKey } from "@/lib/support-permissions";
@@ -16,6 +17,7 @@ export default function SupportContactPage() {
   const [category, setCategory] = useState<SupportRequestCategoryKey>("OTHER");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
+  const [images, setImages] = useState<string[]>([]);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sentId, setSentId] = useState<string | null>(null);
@@ -32,7 +34,7 @@ export default function SupportContactPage() {
       const response = await fetch("/api/support/requests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ category, subject, message }),
+        body: JSON.stringify({ category, subject, message, attachments: images }),
       });
       const data = (await response.json().catch(() => ({}))) as { request?: { id: string } };
       if (!response.ok || !data.request) {
@@ -104,6 +106,7 @@ export default function SupportContactPage() {
                 style={{ borderColor: "var(--hf-color-field-border)" }}
               />
             </label>
+            <SupportScreenshotPicker images={images} onChange={setImages} disabled={sending} />
             {error && (
               <p role="alert" className="hf-type-caption text-hf-red-dark">
                 {error}

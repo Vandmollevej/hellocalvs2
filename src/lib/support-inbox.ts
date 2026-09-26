@@ -2,6 +2,7 @@ import type { Prisma, SupportPriority, SupportRequestCategory } from "@prisma/cl
 import { prisma } from "@/lib/prisma";
 import { queueMessage } from "@/lib/messaging";
 import { findActiveSupportGrant } from "@/lib/support-access";
+import { type SupportAttachmentInput, supportAttachmentCreateData } from "@/lib/support-attachments";
 
 // Support-indbakke (docs/DECISIONS.md 2026-09-26): én sag = én tråd af
 // beskeder mellem bruger og Support. "Ikke besvaret" = seneste besked er fra
@@ -51,6 +52,19 @@ export function cleanSupportText(value: unknown, max: number) {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
 }
 
+// Startprioritet ud fra brugerens kategori (brugerens valg 2026-09-26);
+// admin kan altid ændre den bagefter.
+export const SUPPORT_PRIORITY_BY_CATEGORY: Record<SupportRequestCategory, SupportPriority> = {
+  PAYMENT: "HIGH",
+  ACCOUNT: "HIGH",
+  BUG: "NORMAL",
+  DATA: "NORMAL",
+  PRODUCTS: "NORMAL",
+  OTHER: "LOW",
+};
+
+const attachmentIds = { select: { id: true } } as const;
+
 // --- Brugersiden ---
 
 export async function createSupportRequest(input: {
@@ -58,31 +72,67 @@ export async function createSupportRequest(input: {
   category: SupportRequestCategory;
   subject: string;
   message: string;
+  attachments?: SupportAttachmentInput[];
 }) {
   const grant = await findActiveSupportGrant(input.userId);
   const now = new Date();
-  return prisma.supportRequest.create({
+  const created = await prisma.supportRequest.create({
     data: {
       userId: input.userId,
       category: input.category,
+      priority: SUPPORT_PRIORITY_BY_CATEGORY[input.category],
       subject: input.subject,
       message: input.message,
       supportGrantId: grant?.id,
       lastUserMessageAt: now,
-      messages: { create: { author: "USER", body: input.message, createdAt: now } },
+      messages: {
+        create: {
+          author: "USER",
+          body: input.message,
+          createdAt: now,
+          attachments: { create: supportAttachmentCreateData(input.attachments ?? []) },
+        },
+      },
     },
-    select: { id: true, createdAt: true },
+    select: { id: true, createdAt: true, user: { select: { displayName: true } } },
   });
+
+  // Kvitteringsmail med sagsnummer (brugerens valg 2026-09-26). Selve
+  // samtalen foregår i appen.
+  await queueMessage("SUPPORT_RECEIVED", {
+    userId: input.userId,
+    vars: {
+      displayName: escapeHtml(created.user.displayName),
+      subject: escapeHtml(input.subject),
+      caseCode: supportCaseCode(created.id),
+      threadLink: `${APP_BASE_URL}/settings/support/requests/${created.id}`,
+    },
+  });
+
+  return { id: created.id, createdAt: created.createdAt };
 }
 
 // Brugerens svar i en eksisterende tråd. En løst sag genåbnes, og
 // 24-timers-fristen starter forfra.
-export async function addUserSupportMessage(userId: string, requestId: string, body: string) {
+export async function addUserSupportMessage(
+  userId: string,
+  requestId: string,
+  body: string,
+  attachments: SupportAttachmentInput[] = []
+) {
   const request = await prisma.supportRequest.findFirst({ where: { id: requestId, userId }, select: { id: true } });
   if (!request) return null;
   const now = new Date();
   const [message] = await prisma.$transaction([
-    prisma.supportMessage.create({ data: { requestId, author: "USER", body, createdAt: now } }),
+    prisma.supportMessage.create({
+      data: {
+        requestId,
+        author: "USER",
+        body,
+        createdAt: now,
+        attachments: { create: supportAttachmentCreateData(attachments) },
+      },
+    }),
     prisma.supportRequest.update({
       where: { id: requestId },
       data: {
@@ -129,7 +179,7 @@ export async function getUserSupportThread(userId: string, requestId: string) {
       messages: {
         where: { author: { in: ["USER", "SUPPORT"] } },
         orderBy: { createdAt: "asc" },
-        select: { id: true, author: true, body: true, createdAt: true },
+        select: { id: true, author: true, body: true, createdAt: true, attachments: attachmentIds },
       },
     },
   });
@@ -226,13 +276,14 @@ export async function getAdminSupportThread(requestId: string) {
     include: {
       user: { select: { id: true, displayName: true, email: true, createdAt: true } },
       supportGrant: true,
-      messages: { orderBy: { createdAt: "asc" } },
+      messages: { orderBy: { createdAt: "asc" }, include: { attachments: attachmentIds } },
     },
   });
 }
 
-// Svar til brugeren (eller intern note). Et svar lægges i brugerens
-// indbakke + mail/push (SUPPORT_REPLY) og fjerner "ikke besvaret".
+// Svar til brugeren (eller intern note). Svaret læses i appen; brugeren får
+// en push + besked i indbakken (SUPPORT_REPLY, ingen mail — brugerens valg
+// 2026-09-26), og "ikke besvaret" fjernes.
 export async function addSupportReply(input: {
   requestId: string;
   adminName: string;
@@ -342,4 +393,37 @@ export async function alertOverdueSupportRequests(now: Date = new Date()) {
   });
 
   return { alerted: overdue.length };
+}
+
+// --- Skærmbilleder ---
+
+// Brugeren må kun se billeder i egne sager; admin (uden userId) ser alle.
+export async function getSupportAttachment(attachmentId: string, userId?: string) {
+  return prisma.supportAttachment.findFirst({
+    where: { id: attachmentId, ...(userId ? { message: { author: "USER", request: { userId } } } : {}) },
+    select: { mimeType: true, data: true },
+  });
+}
+
+// --- Svarskabeloner ---
+
+export const SUPPORT_TEMPLATE_TITLE_MAX = 100;
+
+export async function listSupportReplyTemplates() {
+  return prisma.supportReplyTemplate.findMany({ orderBy: [{ sortOrder: "asc" }, { title: "asc" }] });
+}
+
+export async function saveSupportReplyTemplate(input: { id?: string; title: string; body: string; sortOrder: number }) {
+  const data = { title: input.title, body: input.body, sortOrder: input.sortOrder };
+  if (input.id) {
+    const updated = await prisma.supportReplyTemplate.updateMany({ where: { id: input.id }, data });
+    return updated.count > 0;
+  }
+  await prisma.supportReplyTemplate.create({ data });
+  return true;
+}
+
+export async function deleteSupportReplyTemplate(id: string) {
+  const deleted = await prisma.supportReplyTemplate.deleteMany({ where: { id } });
+  return deleted.count > 0;
 }

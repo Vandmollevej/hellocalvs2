@@ -195,6 +195,10 @@
       "replyError": "Svaret kunne ikke sendes. Prøv igen.",
       "replyReopens": "Sagen er løst. Skriver du igen, åbnes den på ny.",
       "openCase": "Se din henvendelse",
+      "attachScreenshots": "Vedhæft skærmbilleder",
+      "attachHint": "Du kan vedhæfte op til 3 skærmbilleder.",
+      "removeAttachment": "Fjern billede",
+      "attachmentError": "Et af billederne kunne ikke bruges.",
       "categories": {
         "ACCOUNT": "Konto og login",
         "DATA": "Mine data",

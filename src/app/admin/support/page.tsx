@@ -31,7 +31,12 @@ export default async function AdminSupportPage({
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h1 className="hf-type-title text-text-primary">{t(admin.locale, "support_title")}</h1>
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h1 className="hf-type-title text-text-primary">{t(admin.locale, "support_title")}</h1>
+          <Link href="/admin/support/templates" className="hf-type-small text-text-secondary underline hover:text-text-primary">
+            Svarskabeloner
+          </Link>
+        </div>
         <p className="hf-type-body text-text-secondary">
           {counts.unanswered} ikke besvaret
           {counts.overdue > 0 && (

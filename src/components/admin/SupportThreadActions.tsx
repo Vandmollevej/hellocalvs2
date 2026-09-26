@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { PriorityDot } from "@/components/admin/SupportInboxFilters";
 
 type Priority = "HIGH" | "NORMAL" | "LOW";
+type Template = { id: string; title: string; body: string };
 
 const PRIORITIES: { key: Priority; label: string }[] = [
   { key: "HIGH", label: "Høj" },
@@ -19,11 +21,15 @@ export function SupportThreadActions({
   status,
   priority,
   awaitingReply,
+  userName,
+  templates,
 }: {
   id: string;
   status: "OPEN" | "RESOLVED";
   priority: Priority;
   awaitingReply: boolean;
+  userName: string;
+  templates: Template[];
 }) {
   const router = useRouter();
   const [text, setText] = useState("");
@@ -45,6 +51,16 @@ export function SupportThreadActions({
     } finally {
       setBusy(false);
     }
+  }
+
+  // Skabelonen tilføjes efter den tekst, der allerede står; {{navn}} bliver
+  // til brugerens navn.
+  function insertTemplate(templateId: string) {
+    const template = templates.find((item) => item.id === templateId);
+    if (!template) return;
+    const snippet = template.body.replace(/\{\{\s*navn\s*\}\}/gi, userName);
+    setKind("REPLY");
+    setText((current) => (current.trim() ? `${current.trimEnd()}\n\n${snippet}` : snippet));
   }
 
   async function send(resolve: boolean) {
@@ -114,7 +130,8 @@ export function SupportThreadActions({
       </div>
 
       <div className="flex flex-col gap-2 border-t border-border-strong pt-3">
-        <div className="flex overflow-hidden self-start rounded-md border border-border-strong">
+        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex overflow-hidden rounded-md border border-border-strong">
           {(["REPLY", "NOTE"] as const).map((option) => (
             <button
               key={option}
@@ -127,6 +144,23 @@ export function SupportThreadActions({
               {option === "REPLY" ? "Svar til bruger" : "Intern note"}
             </button>
           ))}
+        </div>
+        <select
+          value=""
+          onChange={(event) => insertTemplate(event.target.value)}
+          className="rounded-md border border-border-strong bg-surface-1 px-2 py-1 text-text-primary"
+          aria-label="Indsæt svarskabelon"
+        >
+          <option value="">{templates.length ? "Indsæt skabelon…" : "Ingen skabeloner endnu"}</option>
+          {templates.map((template) => (
+            <option key={template.id} value={template.id}>
+              {template.title}
+            </option>
+          ))}
+        </select>
+        <Link href="/admin/support/templates" className="text-text-secondary underline hover:text-text-primary">
+          Rediger skabeloner
+        </Link>
         </div>
         <textarea
           rows={6}

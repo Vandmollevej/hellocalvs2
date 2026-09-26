@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { requireAdminUser } from "@/lib/require-admin";
-import { getAdminSupportThread, isSupportOverdue, supportCaseCode } from "@/lib/support-inbox";
+import {
+  getAdminSupportThread,
+  isSupportOverdue,
+  listSupportReplyTemplates,
+  supportCaseCode,
+} from "@/lib/support-inbox";
 import { instantToDateKey, isSupportGrantActive } from "@/lib/support-access";
 import { SUPPORT_PERMISSION_KEYS, readSupportPermissions } from "@/lib/support-permissions";
 import { SUPPORT_CATEGORY_LABELS, formatAdminTime, formatWaiting } from "@/lib/support-labels";
@@ -18,7 +23,7 @@ export default async function AdminSupportThreadPage({ params }: { params: Promi
   if (!admin) redirect("/admin/login");
 
   const { id } = await params;
-  const request = await getAdminSupportThread(id);
+  const [request, templates] = await Promise.all([getAdminSupportThread(id), listSupportReplyTemplates()]);
   if (!request) notFound();
 
   const now = new Date();
@@ -56,6 +61,8 @@ export default async function AdminSupportThreadPage({ params }: { params: Promi
         status={request.status}
         priority={request.priority}
         awaitingReply={request.awaitingReply}
+        userName={request.user.displayName}
+        templates={templates.map((template) => ({ id: template.id, title: template.title, body: template.body }))}
       />
 
       <ol className="flex flex-col gap-3">
@@ -78,6 +85,26 @@ export default async function AdminSupportThreadPage({ params }: { params: Promi
                 {who} · {formatAdminTime(message.createdAt)}
               </p>
               <p className="hf-type-body mt-1 whitespace-pre-wrap text-text-primary">{message.body}</p>
+              {message.attachments.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {message.attachments.map((attachment) => (
+                    <a
+                      key={attachment.id}
+                      href={`/api/admin/support/attachments/${attachment.id}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="block h-24 w-24 overflow-hidden rounded-md border border-border-strong bg-surface-1"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element -- beskyttet admin-route, ikke next/image */}
+                      <img
+                        src={`/api/admin/support/attachments/${attachment.id}`}
+                        alt="Skærmbillede fra brugeren"
+                        className="h-full w-full object-cover"
+                      />
+                    </a>
+                  ))}
+                </div>
+              )}
             </li>
           );
         })}

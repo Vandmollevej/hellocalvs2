@@ -11,7 +11,11 @@ Mine henvendelser. Migration `20260926150000_support_inbox`. Lint +
 typecheck + build grønne. Ikke testet mod rigtig DB/mail.
 
 Next work:
-1. Deploy med migrationen.
+Tilføjet: kvitteringsmail, svar kun i appen (push), auto-prioritet efter
+kategori, skærmbilleder, svarskabeloner og tæller i admin-menuen.
+
+1. Deploy med migrationerne `20260926150000_support_inbox` og
+   `20260926220000_support_inbox_extras`.
 
 ## 2026-09-26: Alle overskrifter med streger bruger samme klasse
 

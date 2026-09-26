@@ -1846,6 +1846,7 @@ enum MessageEvent {
   // Beskedtjeneste (docs/DECISIONS.md 2026-09-26 "Support-indbakke").
   SUPPORT_REPLY
   SUPPORT_OVERDUE_ADMIN
+  SUPPORT_RECEIVED
 }
 
 enum MessageChannel {
@@ -2227,8 +2228,39 @@ model SupportMessage {
   body       String
   createdAt  DateTime             @default(now())
 
+  attachments SupportAttachment[]
+
   @@index([requestId, createdAt])
   @@map("support_messages")
+}
+
+// Skærmbilleder fra brugeren (docs/DECISIONS.md 2026-09-26). Gemmes i
+// databasen — private data, aldrig under /public — og vises kun for ejeren
+// og admin via beskyttede routes. Slettes sammen med beskeden/sagen.
+model SupportAttachment {
+  id        String         @id @default(cuid())
+  message   SupportMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  messageId String
+  mimeType  String
+  sizeBytes Int
+  data      Bytes
+  createdAt DateTime       @default(now())
+
+  @@index([messageId])
+  @@map("support_attachments")
+}
+
+// Admins standardsvar til Support-indbakken. {{navn}} erstattes med
+// brugerens navn, når skabelonen indsættes.
+model SupportReplyTemplate {
+  id        String   @id @default(cuid())
+  title     String
+  body      String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("support_reply_templates")
 }
 
 // --- Normaliserede produkt-søgeparametre (docs/DECISIONS.md 2026-09-23) ---
