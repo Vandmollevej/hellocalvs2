@@ -70,6 +70,18 @@
     "missingToken": "The reset link is missing or invalid.",
     "requestNewLink": "Request a new link"
   },
+  "verifyEmail": {
+    "title": "Confirm email",
+    "checking": "Confirming your email…",
+    "success": "Thanks! Your email is confirmed.",
+    "invalid": "The link is invalid or has expired. Log in and tap \"Resend\" in the bar at the top to get a new one.",
+    "continue": "Continue to Hello Cal",
+    "banner": "Confirm your email using the link we sent you.",
+    "bannerSent": "New email sent — check spam too.",
+    "bannerError": "Could not send the email. Try again shortly.",
+    "resend": "Resend",
+    "dismiss": "Close"
+  },
   "country": {
     "title": "Choose your country",
     "back": "Back",
@@ -770,7 +782,6 @@
     },
     "row": {
       "subscription": "Subscription",
-      "paymentMethods": "Payment methods",
       "weightCalibration": "Weight calibration",
       "bodyMeasurements": "Body measurements",
       "sleep": "Sleep pattern",
@@ -841,8 +852,6 @@
       "serious": "Serious"
     },
     "activeUntil": "Active until {date}",
-    "nextPayment": "Next payment on {date}",
-    "paymentMethods": "Payment methods",
     "freePlan": {
       "title": "Free",
       "description": "Access to everything in Hello Cal except Hello Doc. Only the last 30 days of history are shown — older data is kept and comes back if you go Serious."

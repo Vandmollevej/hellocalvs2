@@ -302,11 +302,13 @@ function WheelItem({
   const scale = Math.max(0.62, 1 - absDistance * 0.16);
   // One continuous ramp all the way to 0 exactly at the render cutoff (2.4),
   // so an item never pops in or out at a leftover opacity at the edge.
-  const opacity = 1 - absDistance / 2.4;
   // 1 at the center, 0 one full step away. Drives the icon's green tint and the
   // goal line so they blend in/out with the motion instead of switching on/off
   // the moment an item becomes active.
   const focus = Math.max(0, 1 - absDistance);
+  // Neighbours are dimmed an extra 30% so the centered stat stands out; the
+  // factor eases in with `focus`, so the fade stays continuous while dragging.
+  const opacity = (1 - absDistance / 2.4) * (0.7 + 0.3 * focus);
   const transition = animate ? "transition-[transform,opacity,color,max-height] duration-300 ease-out" : "";
   // The items sit on a circular arc like the rim of a wheel: the centered item
   // is inset 25px from the right edge and the others curve back out to the
@@ -353,10 +355,10 @@ function WheelItem({
       {stat.goal != null && (
         <span
           aria-hidden={!isActive || undefined}
-          className={`overflow-hidden text-sm font-medium text-hf-gray-dark ${transition}`}
-          style={{ maxHeight: focus * 22, opacity: focus }}
+          className={`overflow-hidden text-sm font-medium leading-none text-hf-gray-dark ${transition}`}
+          style={{ maxHeight: focus * 16, opacity: focus }}
         >
-          <span className="mt-0.5 block">
+          <span className="block">
             / {stat.goal} {stat.unit}
           </span>
         </span>
