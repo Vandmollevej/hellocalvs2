@@ -115,7 +115,12 @@ export default function SettingsPage() {
         </AccordionCard>
 
         <AccordionCard>
-          <ChevronRow icon={<IconHelp size={20} />} label={t("settings.helpCenter")} />
+          {/* Statisk hjælpeside i public/ — fuld sideindlæsning, ikke en app-route. */}
+          <ChevronRow
+            icon={<IconHelp size={20} />}
+            label={t("settings.helpCenter")}
+            onClick={() => window.location.assign("/hjaelp.html")}
+          />
           <ChevronRow
             icon={<IconRefresh size={20} />}
             label={t("settings.learnTheApp")}

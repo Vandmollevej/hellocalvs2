@@ -1,25 +1,19 @@
 "use client";
 
 import { Suspense, useEffect, useRef, useState, type ReactNode } from "react";
-import { useSearchParams } from "next/navigation";
-import { IconChefHat } from "@tabler/icons-react";
+import Link from "next/link";
+import { IconChefHat, IconChevronRight } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
-import { SectionSeparator } from "@/components/hf/SectionSeparator";
 import type { IntegrationCardStatus } from "@/lib/integrations";
 import type { IntegrationProvider } from "@prisma/client";
 import { useTranslation } from "@/i18n/LocaleProvider";
-
-function formatDateTime(value: string) {
-  return new Intl.DateTimeFormat("da-DK", {
-    day: "numeric",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(value));
-}
+import { formatDateTime } from "./status-badge";
 
 // Sektioner og rækkefølge (docs/DECISIONS.md 2026-09-25 "Integrationssiden"):
 // Aktive integrationer → Oftest anvendt → Opskrifter → Apps.
+// Hver app har sin egen side (/settings/integrations/<app>), hvor brugeren
+// vælger til/fra, hvad der hentes og sendes, og forbinder/frakobler
+// (docs/DECISIONS.md 2026-09-26).
 const POPULAR: IntegrationProvider[] = ["APPLE_HEALTH", "GOOGLE_HEALTH", "STRAVA"];
 
 const isActive = (integration: IntegrationCardStatus) => integration.status !== "DISCONNECTED";
@@ -30,6 +24,7 @@ function Card({
   description,
   active,
   dimmed,
+  chevron,
   children,
 }: {
   icon: ReactNode;
@@ -37,6 +32,7 @@ function Card({
   description: string;
   active: boolean;
   dimmed?: boolean;
+  chevron?: boolean;
   children?: ReactNode;
 }) {
   return (
@@ -50,6 +46,7 @@ function Card({
           </p>
           <p className="text-[12px] text-hf-black opacity-70">{description}</p>
         </div>
+        {chevron && <IconChevronRight size={18} className="mt-1 shrink-0 text-hf-black opacity-40" />}
       </div>
       {children}
     </div>
@@ -58,10 +55,8 @@ function Card({
 
 function IntegrationerContent() {
   const { t } = useTranslation();
-  const searchParams = useSearchParams();
   const [integrations, setIntegrations] = useState<IntegrationCardStatus[]>([]);
   const [loading, setLoading] = useState(true);
-  const [busyProvider, setBusyProvider] = useState<string | null>(null);
   // HelloFresh-opskrifter i "Delte retter" (docs/DECISIONS.md 2026-09-24).
   const [helloFresh, setHelloFresh] = useState<boolean | null>(null);
   const autoSynced = useRef(false);
@@ -83,24 +78,6 @@ function IntegrationerContent() {
     if (!res?.ok) setHelloFresh(!next);
   }
 
-  const connectedSlug = searchParams.get("connected");
-  const failedSlug = searchParams.get("error");
-  const noticeName = (slug: string | null) => integrations.find((i) => i.slug === slug)?.label ?? slug;
-  const notice = connectedSlug
-    ? t("integrations.notice.connected", { name: noticeName(connectedSlug) ?? "" })
-    : failedSlug
-      ? t("integrations.notice.failed", { name: noticeName(failedSlug) ?? "" })
-      : null;
-
-  async function sync(slug: string) {
-    try {
-      await fetch(`/api/integrations/${slug}/sync`, { method: "POST" });
-      load();
-    } catch {
-      // Status og fejl vises fra næste load.
-    }
-  }
-
   function load() {
     fetch("/api/integrations")
       .then(async (response) => {
@@ -109,15 +86,16 @@ function IntegrationerContent() {
       })
       .then((data) => {
         setIntegrations(data.integrations);
-        // Forbundne cloud-integrationer synkroniseres automatisk første gang
-        // siden åbnes (serveren springer over, hvis det er sket for nylig).
+        // Forbundne cloud-integrationer synkroniseres, når siden åbnes
+        // (serveren springer over, hvis det er sket for nylig; ellers sørger
+        // baggrundsjobbet for det hvert 15. minut).
         if (autoSynced.current) return;
         autoSynced.current = true;
-        for (const integration of data.integrations) {
-          if (integration.kind === "oauth" && integration.slug && integration.status === "CONNECTED") {
-            void sync(integration.slug);
-          }
-        }
+        const toSync = data.integrations.filter((i) => i.kind === "oauth" && i.slug && i.status === "CONNECTED");
+        if (toSync.length === 0) return;
+        void Promise.all(toSync.map((i) => fetch(`/api/integrations/${i.slug}/sync`, { method: "POST" }).catch(() => null))).then(
+          load
+        );
       })
       .catch(() => setIntegrations([]))
       .finally(() => setLoading(false));
@@ -128,45 +106,18 @@ function IntegrationerContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function connect(slug: string) {
-    setBusyProvider(slug);
-    window.location.assign(`/api/integrations/${slug}/connect`);
-  }
-
-  async function disconnect(slug: string) {
-    setBusyProvider(slug);
-    try {
-      await fetch(`/api/integrations/${slug}/disconnect`, { method: "POST" });
-      load();
-    } finally {
-      setBusyProvider(null);
-    }
-  }
-
-  const removeLink = (onClick: () => void, disabled = false) => (
-    <button
-      type="button"
-      disabled={disabled}
-      onClick={onClick}
-      className="self-start text-[13px] text-hf-red-dark disabled:opacity-50"
-    >
-      {t("integrations.remove")}
-    </button>
-  );
-
   function integrationCard(integration: IntegrationCardStatus) {
-    const slug = integration.slug;
-    const busy = busyProvider === slug;
-    const isOAuth = integration.kind === "oauth" && slug !== null;
+    const isOAuth = integration.kind === "oauth" && integration.slug !== null;
     const active = isActive(integration);
+    const unavailable = integration.kind === "unavailable";
     const description =
       isOAuth && !integration.configured && !active ? t("integrations.notConfigured") : integration.description;
 
-    return (
+    const card = (
       <Card
-        key={integration.provider}
         active={active}
-        dimmed={!isOAuth}
+        dimmed={unavailable}
+        chevron={!unavailable}
         title={integration.label}
         description={description}
         icon={
@@ -180,7 +131,7 @@ function IntegrationerContent() {
           />
         }
       >
-        {!isOAuth ? (
+        {unavailable ? (
           <p className="text-[12px] text-hf-gray-dark">{t("integrations.unavailable")}</p>
         ) : active ? (
           <div className="flex flex-col gap-1">
@@ -190,19 +141,21 @@ function IntegrationerContent() {
               </p>
             )}
             {integration.lastError && <p className="text-[11px] text-red-600">{integration.lastError}</p>}
-            {removeLink(() => disconnect(slug), busy)}
           </div>
         ) : (
-          <button
-            type="button"
-            disabled={busy || !integration.configured}
-            onClick={() => connect(slug)}
-            className="hf-btn-primary block w-full py-2.5 text-center text-[13px] disabled:opacity-50"
-          >
-            {t("integrations.connect")}
-          </button>
+          <span className="hf-btn-primary block w-full py-2.5 text-center text-[13px]">
+            {integration.kind === "companion" ? t("integrations.manage") : t("integrations.connect")}
+          </span>
         )}
       </Card>
+    );
+
+    // Garmin afventer partneraftale og har intet at vælge endnu.
+    if (unavailable) return <div key={integration.provider}>{card}</div>;
+    return (
+      <Link key={integration.provider} href={`/settings/integrations/${integration.pageSlug}`} className="block">
+        {card}
+      </Link>
     );
   }
 
@@ -220,7 +173,13 @@ function IntegrationerContent() {
         }
       >
         {helloFresh ? (
-          removeLink(() => changeHelloFresh(false))
+          <button
+            type="button"
+            onClick={() => changeHelloFresh(false)}
+            className="self-start text-[13px] text-hf-red-dark"
+          >
+            {t("integrations.remove")}
+          </button>
         ) : (
           <button
             type="button"
@@ -241,7 +200,7 @@ function IntegrationerContent() {
   const section = (label: string, cards: ReactNode[]) =>
     cards.length > 0 && (
       <>
-        <SectionSeparator label={label} className="mt-2" />
+        <h2 className="hf-type-section-title">{label}</h2>
         {cards}
       </>
     );
@@ -249,8 +208,6 @@ function IntegrationerContent() {
   return (
     <HfScreen title={t("integrations.title")}>
       <div className="hf-page">
-        {notice && <p className="rounded-[8px] bg-hf-tan px-4 py-3 text-[13px] text-hf-black">{notice}</p>}
-
         <p className="px-1 text-[13px] leading-relaxed text-hf-black opacity-60">{t("integrations.intro")}</p>
 
         {loading ? (

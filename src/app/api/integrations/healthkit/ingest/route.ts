@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { hashDeviceToken } from "@/lib/device-tokens";
 import { storeIntegrationItems, type IntegrationItem } from "@/lib/integrations/store-items";
+import { authenticateDeviceToken, companionIntegration, companionSource } from "@/lib/integrations/companion";
+import { filterItemsBySettings } from "@/lib/integrations/sync-settings";
 
 type IngestBody = {
   source?: "APPLE_HEALTH" | "HEALTH_CONNECT" | "GOOGLE_HEALTH";
@@ -15,16 +16,6 @@ type IngestBody = {
   }[];
 };
 
-async function authenticate(req: Request) {
-  const auth = req.headers.get("authorization");
-  const raw = auth?.startsWith("Bearer ") ? auth.slice("Bearer ".length) : null;
-  if (!raw) return null;
-  const token = await prisma.deviceToken.findUnique({ where: { tokenHash: hashDeviceToken(raw) } });
-  if (!token) return null;
-  await prisma.deviceToken.update({ where: { id: token.id }, data: { lastUsedAt: new Date() } });
-  return token;
-}
-
 function validDate(value: unknown): string | null {
   if (typeof value !== "string") return null;
   const d = new Date(value);
@@ -34,14 +25,12 @@ function validDate(value: unknown): string | null {
 // POST — companion-appen (HealthKit/Health Connect) sender data med sit
 // enhedstoken. Data gemmes direkte på tokenets bruger.
 export async function POST(req: Request) {
-  const token = await authenticate(req);
+  const token = await authenticateDeviceToken(req);
   if (!token) return NextResponse.json({ message: "Ugyldigt eller manglende enhedstoken" }, { status: 401 });
 
   const body = (await req.json().catch(() => ({}))) as IngestBody;
-  // GOOGLE_HEALTH var det tidligere navn for Health Connect; det betyder nu
-  // Google Health API (cloud) og modtages derfor som HEALTH_CONNECT.
-  const source = body.source === "GOOGLE_HEALTH" ? "HEALTH_CONNECT" : body.source;
-  if (source !== "APPLE_HEALTH" && source !== "HEALTH_CONNECT") {
+  const source = companionSource(body.source);
+  if (!source) {
     return NextResponse.json({ message: "source skal være APPLE_HEALTH eller HEALTH_CONNECT" }, { status: 400 });
   }
 
@@ -68,7 +57,13 @@ export async function POST(req: Request) {
   }
 
   try {
-    const delivered = await storeIntegrationItems(token.userId, items);
+    // Kun de datatyper, brugeren har slået til under "Hent fra" på appens side.
+    const integration = await companionIntegration(token.userId, source);
+    const delivered = await storeIntegrationItems(token.userId, filterItemsBySettings(source, integration.syncSettings, items));
+    await prisma.integration.update({
+      where: { id: integration.id },
+      data: { status: "CONNECTED", connectedAt: integration.connectedAt ?? new Date(), lastSyncedAt: new Date(), lastError: null },
+    });
     return NextResponse.json({ ok: true, delivered });
   } catch (error) {
     console.error("HealthKit ingest failed", error instanceof Error ? error.message : "ukendt");

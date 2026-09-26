@@ -4,15 +4,19 @@
 // Env: GOOGLE_HEALTH_CLIENT_ID/GOOGLE_HEALTH_CLIENT_SECRET (Google Cloud OAuth-klient).
 
 import type { IntegrationItem } from "@/lib/integrations/store-items";
-import { DAY_MS, clientCredentials, getJson, postForm, type OAuthProviderAdapter, type OAuthTokens } from "./types";
+import { DAY_MS, clientCredentials, getJson, postForm, postJson, type OAuthProviderAdapter, type OAuthTokens } from "./types";
 
 const AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/v2/auth";
 const TOKEN_URL = "https://oauth2.googleapis.com/token";
 const API = "https://health.googleapis.com/v4/users/me/dataTypes";
-const SCOPES = [
-  "https://www.googleapis.com/auth/googlehealth.activity_and_fitness.readonly",
-  "https://www.googleapis.com/auth/googlehealth.health_metrics_and_measurements.readonly",
-].join(" ");
+const SCOPE = "https://www.googleapis.com/auth/googlehealth";
+const READ_SCOPES = [`${SCOPE}.activity_and_fitness.readonly`, `${SCOPE}.health_metrics_and_measurements.readonly`];
+// Skriveadgang pr. datatype, der sendes fra Hello Cal (developers.google.com/health/scopes).
+const WRITE_SCOPES = {
+  nutrition: `${SCOPE}.nutrition.writeonly`,
+  water: `${SCOPE}.nutrition.writeonly`,
+  weight: `${SCOPE}.health_metrics_and_measurements.writeonly`,
+};
 
 type Interval = { startTime: string; endTime: string; startUtcOffset?: string };
 type DataPoint = {
@@ -123,12 +127,13 @@ export const googleHealth: OAuthProviderAdapter = {
   label: "Google Health",
   envPrefix: "GOOGLE_HEALTH",
   initialDays: 90,
-  buildAuthorizeUrl(state, redirectUri) {
+  buildAuthorizeUrl(state, redirectUri, settings) {
     const url = new URL(AUTHORIZE_URL);
     url.searchParams.set("client_id", clientCredentials("GOOGLE_HEALTH").clientId);
     url.searchParams.set("redirect_uri", redirectUri);
     url.searchParams.set("response_type", "code");
-    url.searchParams.set("scope", SCOPES);
+    const writes = Object.entries(WRITE_SCOPES).filter(([type]) => settings.write[type as keyof typeof WRITE_SCOPES]);
+    url.searchParams.set("scope", [...new Set([...READ_SCOPES, ...writes.map(([, scope]) => scope)])].join(" "));
     url.searchParams.set("access_type", "offline");
     url.searchParams.set("include_granted_scopes", "true");
     url.searchParams.set("prompt", "consent");
@@ -163,5 +168,43 @@ export const googleHealth: OAuthProviderAdapter = {
     const ok = results.filter((r): r is PromiseFulfilledResult<IntegrationItem[]> => r.status === "fulfilled");
     if (ok.length === 0) throw (results[0] as PromiseRejectedResult).reason;
     return ok.flatMap((r) => r.value);
+  },
+  writeScopes: WRITE_SCOPES,
+  // Måltider som nutrition-log, vand som hydration-log og manuelle
+  // vejninger som weight (developers.google.com/health/data-types/nutrition).
+  async push(accessToken, data) {
+    const post = (dataType: string, body: unknown) =>
+      postJson(`${API}/${dataType}/dataPoints`, accessToken, body, `Google Health ${dataType}-skrivning`);
+    let sent = 0;
+    for (const n of data.nutrition) {
+      const start = new Date(n.loggedAt);
+      await post("nutrition-log", {
+        nutritionLog: {
+          interval: { startTime: start.toISOString(), endTime: new Date(start.getTime() + 1000).toISOString() },
+          foodDisplayName: n.title,
+          energy: { kcal: n.kcal },
+          totalCarbohydrate: { grams: n.carbsG },
+          totalFat: { grams: n.fatG },
+          nutrients: [{ nutrient: "PROTEIN", quantity: { grams: n.proteinG } }],
+          serving: { amount: 1 },
+        },
+      });
+      sent++;
+    }
+    for (const w of data.water) {
+      const start = new Date(w.loggedAt);
+      await post("hydration-log", {
+        hydrationLog: {
+          interval: { startTime: start.toISOString(), endTime: new Date(start.getTime() + 1000).toISOString() },
+          amountConsumed: { milliliters: w.ml },
+        },
+      });
+      sent++;
+    }
+    for (const w of data.weights) {
+      await post("weight", { weight: { sampleTime: { physicalTime: w.weighedAt }, weightGrams: Math.round(w.weightKg * 1000) } });
+      sent++;
+    }
+    return sent;
   },
 };

@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconCamera, IconLock, IconTarget } from "@tabler/icons-react";
+import { IconCamera, IconLock } from "@tabler/icons-react";
+import { IconChampagne } from "@/components/icons/Champagne";
+import { IconWaistMeasure } from "@/components/icons/WaistMeasure";
 import { HfScreen } from "@/components/HfScreen";
 import { IconBathScale } from "@/components/hf/IconBathScale";
 import { BIRTH_DATE_MIN_AGE_YEARS, BirthDatePicker } from "@/components/ui/BirthDatePicker";
@@ -11,7 +13,6 @@ import { latestTrendWeight, type MealSample, type WeightSample } from "@/lib/wei
 import { computeAge } from "@/lib/age";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { FaceIdButton } from "@/components/FaceIdButton";
-import { IconBody } from "@/components/icons/IconBody";
 
 type Sex = "FEMALE" | "MALE";
 
@@ -263,11 +264,11 @@ export default function ProfileEditPage() {
               {t("profile.actions.newWeight")}
             </button>
             <button type="button" onClick={() => router.push("/profile/goals")} className={tileClass}>
-              <IconTarget size={34} stroke={1.6} />
+              <IconChampagne size={34} />
               {t("profile.actions.target")}
             </button>
             <button type="button" onClick={() => router.push("/profile/body-measurements")} className={tileClass}>
-              <IconBody size={34} sex={user.sex} />
+              <IconWaistMeasure size={34} sex={user.sex} />
               {t("profile.actions.bodyMeasurements")}
             </button>
           </div>

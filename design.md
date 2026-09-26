@@ -242,6 +242,13 @@ rolle passer, skal kontrakten udvides én gang centralt før siden bygges.
   eget `gap` mellem overskrift og indhold.
 - Klassen er kun til sektionsoverskrifter. Navne, appbar-titler o.l. bruger en
   anden `.hf-type-*`-rolle.
+- Det er den ENESTE overskrift med streger i appen (også "Tidspunkt",
+  datogrupper, statistikkens egne overskrifter og "+ Skillelinje"). Ingen side
+  eller komponent må tegne egne streger, bredder, farver eller versaler til en
+  overskrift — ret kun klassen (besluttet 2026-09-26).
+- Hvor et gitter selv styrer afstanden, nulstilles luften via
+  `--hf-section-title-space-above`/`--hf-section-title-space-below`, aldrig
+  med `mt-*`/`mb-*`.
 
 ## 5. Afstands- og geometri-system
 

@@ -22,6 +22,22 @@ export function getPublicVapidKey(): string | null {
   return process.env.VAPID_PUBLIC_KEY ?? null;
 }
 
+// Skabelonerne er HTML (samme tekst vises i indbakken); en push-notifikation
+// kan kun vise ren tekst.
+function htmlToPushText(html: string) {
+  return html
+    .replace(/<br\s*\/?>|<\/p>/gi, " ")
+    .replace(/<[^>]*>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&amp;/g, "&")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 // Sender alle QUEUED push/BOTH-beskeder. Kaldes fra scheduleren. Er VAPID
 // ikke opsat, rører den ikke ved køen.
 export async function flushQueuedPush(limit = 25) {
@@ -57,7 +73,7 @@ export async function flushQueuedPush(limit = 25) {
       try {
         await webpush.sendNotification(
           { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
-          JSON.stringify({ title: message.subject ?? "Hello Cal", body: message.bodyHtml ?? "" })
+          JSON.stringify({ title: message.subject ?? "Hello Cal", body: htmlToPushText(message.bodyHtml ?? "") })
         );
         anySent = true;
       } catch {

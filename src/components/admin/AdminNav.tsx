@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import type { Locale } from "@prisma/client";
 import { t, type AdminI18nKey } from "@/lib/admin-i18n";
@@ -43,6 +43,22 @@ export function AdminNav({
   const pathname = usePathname();
   const router = useRouter();
   const [currentLocale, setCurrentLocale] = useState(locale);
+  // "Support (3)": ubesvarede supportsager, rød ved sager over 24 timer
+  // (docs/DECISIONS.md 2026-09-26). Hentes igen ved hvert sideskift.
+  const [support, setSupport] = useState<{ unanswered: number; overdue: number } | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/admin/support/count", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!cancelled && data) setSupport(data);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [pathname]);
 
   async function logout() {
     await fetch("/api/admin/logout", { method: "POST" });
@@ -84,6 +100,9 @@ export function AdminNav({
                   aria-label="Usikre produkter"
                   className="ml-1 inline-block h-2 w-2 rounded-full bg-hf-red-dark align-top"
                 />
+              )}
+              {link.href === "/admin/support" && support && support.unanswered > 0 && (
+                <span className={support.overdue > 0 ? "text-hf-red-dark" : undefined}> ({support.unanswered})</span>
               )}
             </Link>
           ))}

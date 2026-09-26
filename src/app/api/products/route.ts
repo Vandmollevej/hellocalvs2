@@ -114,29 +114,34 @@ export async function GET(req: Request) {
       prisma.product.findMany({
         where: {
           discontinued: false,
-          // Admin "Uncertainties" (docs/DECISIONS.md 2026-09-25): et produkt,
-          // hvor AI'en var under 50 % sikker på en aflæsning, skjules i
-          // søgningen, indtil en admin har gennemgået den.
+          // Egne private ingredienser vises kun for ejeren (via /api/private-ingredients).
+          privateOwnerId: null,
+          // Ét samlet AND: en objekt-literal må kun have én AND-nøgle, og
+          // tekstfilter og kildefilter er begge OR-betingelser, som ellers
+          // ville overskrive hinanden.
           AND: [
+            // Admin "Uncertainties" (docs/DECISIONS.md 2026-09-25): et produkt,
+            // hvor AI'en var under 50 % sikker på en aflæsning, skjules i
+            // søgningen, indtil en admin har gennemgået den.
             {
               NOT: {
                 aiAnalyses: { some: { reviewedAt: null, confidence: { lt: HIDE_FROM_SEARCH_BELOW } } },
               },
             },
+            ...(q
+              ? [
+                  {
+                    OR: [
+                      { name: { contains: q, mode: "insensitive" } },
+                      { brand: { name: { contains: q, mode: "insensitive" } } },
+                    ],
+                  } satisfies Prisma.ProductWhereInput,
+                ]
+              : []),
+            source
+              ? { externalSource: source }
+              : { OR: [{ externalSource: null }, { externalSource: { not: "HELLOFRESH" } }] },
           ],
-          // Egne private ingredienser vises kun for ejeren (via /api/private-ingredients).
-          privateOwnerId: null,
-          ...(q
-            ? {
-                OR: [
-                  { name: { contains: q, mode: "insensitive" } },
-                  { brand: { name: { contains: q, mode: "insensitive" } } },
-                ],
-              }
-            : {}),
-          ...(source
-            ? { externalSource: source }
-            : { OR: [{ externalSource: null }, { externalSource: { not: "HELLOFRESH" } }] }),
         },
         include: {
           // Altid samme include-form (ikke betinget på q/source), så Prisma's
@@ -528,6 +533,25 @@ export async function POST(req: Request) {
           correctedAt,
         },
       });
+      // Mættet fedt aflæses fra samme energi-foto, men opret-siden har intet
+      // felt til det — gem det direkte på varen, når tabellen er pr. 100 g/ml.
+      const nutritionAnalysis = await prisma.aiProductAnalysis.findFirst({
+        where: { id: analysisIds.nutrition, kind: "NUTRITION" },
+        select: { prediction: true },
+      });
+      const prediction = (nutritionAnalysis?.prediction ?? null) as Record<string, unknown> | null;
+      const saturatedFat = prediction?.saturatedFatPer100g;
+      if (
+        (prediction?.basis === "100g" || prediction?.basis === "100ml") &&
+        typeof saturatedFat === "number" &&
+        saturatedFat >= 0 &&
+        saturatedFat <= fatPer100g
+      ) {
+        await prisma.product.update({
+          where: { id: product.id },
+          data: { saturatedFatPer100g: saturatedFat },
+        });
+      }
     }
 
     // Stregkode-fotoet har ingen AI-korrektion (ingen AI-kald involveret, se

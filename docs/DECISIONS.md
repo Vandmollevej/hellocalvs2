@@ -2,6 +2,65 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-26: Support-indbakke (beskedtjeneste i admin)
+
+- "Kontakt os"-henvendelser er nu tråde: `SupportMessage` (USER / SUPPORT /
+  NOTE). Den første besked ligger både i `SupportRequest.message` (historik)
+  og som første `SupportMessage`. Interne noter (NOTE) vises aldrig for brugeren.
+- Prioritet `HIGH/NORMAL/LOW` sættes af admin; nye sager er `NORMAL`.
+- "Ikke besvaret" = `awaitingReply` (seneste besked er fra brugeren).
+  Admin kan også markere besvaret/ikke besvaret manuelt. En brugerbesked i en
+  løst sag genåbner den.
+- Admin `/admin/support`: standard = åbne sager, ældste øverst (efter
+  brugerens seneste besked); "Senest modtaget øverst" som alternativ.
+  Filtre: status (Åbne/Ikke besvaret/Løste/Alle), 3 prioritets-flueben,
+  søgning (emne, navn, e-mail, sagsnr.). Filteret ligger i URL'en.
+  Sagen åbnes på `/admin/support/[id]` med svar, intern note,
+  "Send og marker som løst", prioritet og status.
+- Svar sendes via `queueMessage("SUPPORT_REPLY")` (mail + push + brugerens
+  indbakke, ikke fravælgelig) med link til `/settings/support/requests/[id]`,
+  hvor brugeren ser tråden og kan svare.
+- 24-timers-regel: scheduleren (hvert 15. min) sender én samlet mail
+  (`SUPPORT_OVERDUE_ADMIN`) til `ADMIN_NOTIFICATION_EMAIL` med alle sager,
+  der netop har passeret 24 timer uden svar. `overdueAlertSentAt` sikrer én
+  advarsel pr. ubesvaret besked; nulstilles ved svar/ny brugerbesked.
+  Eksisterende åbne sager markeres som allerede advaret ved migrationen.
+- Brugerens valg 2026-09-26: samtalen foregår i appen, ikke på mail.
+  `SUPPORT_REPLY` er derfor kun push + indbakke (ingen mail); brugeren får
+  en kvitteringsmail med sagsnummer (`SUPPORT_RECEIVED`), når sagen oprettes.
+- Startprioritet efter kategori: Abonnement/betaling og Konto/login = Høj,
+  Fejl/Mine data/Produkter = Normal, Andet = Lav. Admin kan ændre den.
+- Brugeren kan vedhæfte op til 3 skærmbilleder pr. besked. De skaleres til
+  maks. 1600 px JPEG i telefonen, typen tjekkes på serveren ud fra filens
+  bytes, EXIF fjernes, og de gemmes i databasen (`SupportAttachment`) —
+  aldrig under /public. Kun ejeren og admin kan hente dem.
+- Svarskabeloner (`SupportReplyTemplate`) på `/admin/support/templates`;
+  `{{navn}}` erstattes med brugerens navn ved indsættelse.
+- Admin-menuen viser "Support (n)" med antal ubesvarede sager (rød ved
+  sager over 24 timer).
+- 24-timers-advarslen sendes én gang pr. ubesvaret besked (brugerens valg).
+
+## 2026-09-26: Redigering af målsætninger
+## 2026-09-26: Én overskrift med streger — kun `.hf-type-section-title`
+
+Brugerens krav (gentaget): alle overskrifter med streger ("──── Tekst ────")
+skal være samme klasse på alle sider. `.hf-type-section-title` er den eneste.
+
+- "Tidspunkt" (`TimeSection`), datogrupperne på Vand og Målsætning,
+  Integrationer-sektionerne, brugerens egne overskrifter på statistiksiden,
+  "+ Skillelinje" på Ubrugte statistik-kort og "eller" på admin-login bruger
+  nu klassen direkte.
+- `SectionSeparator` og `DateSeparator` (tan-streger, 80 % bredde, versaler)
+  er slettet. Det omstøder udseendet i 2026-09-22 "Global tidspunkt-regel";
+  selve reglen (Tidspunkt-overskrift med "Kl. 05.28" under, ingen beige
+  bjælke) består.
+- Ingen side eller komponent må tegne egne streger, bredder, farver eller
+  versaler ved en overskrift — ret kun klassen. Hvor et gitter selv styrer
+  afstanden (statistik-gitteret), nulstilles luften via klassens variabler
+  `--hf-section-title-space-above/-below`, aldrig med `mt-*`/`mb-*`.
+- Statistiksidens tekstløse sorte skillelinje er ikke en overskrift og er
+  uændret.
+
 ## 2026-09-25: Uncertainties-tærskler, billed-fane, natlig robot og admin "Cron-jobs"
 
 Brugerens svar 2026-09-25 (G4, runde 2):
@@ -2459,3 +2518,43 @@ Billeder vises i en vandret karrusel (ikke grid, ikke 1:1), ældste til venstre 
 - To vippekontakter under Visning: "Vis tooltips" (små hjælpetekster via `HelpTip`, `src/components/hf/HelpTip.tsx`) og "Vis start-up tips". Begge er slået til som standard og gemmes pr. enhed i localStorage (`src/lib/help-prefs.ts`), samme mønster som Kalendervisning.
 - Start-up tips er 1-sides overlays med én fast standard (`StartupTipOverlay`): "Luk" øverst til højre, ikon + titel + tekst, evt. én stor knap, og "Slå fra" nederst til højre (slår alle start-up tips fra). Højst ét tip pr. besøg, kun for indloggede brugere med samtykke, aldrig på login-, samtykke-, juridiske eller admin-sider (`StartupTipsGate` i root layout).
 - Tips står i `STARTUP_TIPS` (`src/lib/startup-tips.ts`) og vises i rækkefølge. Et tip er færdigt, når det lukkes, eller når funktionen bruges (`markStartupTipSeen(id)` kaldes fra funktionens egen kode). Første tip er altid "Dine data er dine" med "Læs mere" til `/privatlivspolitik`.
+
+## 2026-09-26: Integrationer — egen side pr. app, til/fra pr. datatype, og push
+
+Brugerens krav: appen skal også kunne *sende* data til Health og de øvrige
+integrationer, og brugeren skal kunne vælge til/fra, hvad der synkroniseres —
+både når integrationen slås til og bagefter.
+- Hver app har sin egen side `/settings/integrations/<app>` (fx
+  `apple-health`, `google-health`, `strava`). Oversigten er nu kun kort, der
+  linker dertil. Siden har to grupper kontakter: "Hent til Hello Cal" og
+  "Send fra Hello Cal til <app>". Valget gemmes med det samme
+  (`PUT /api/integrations/<app>/settings`) på `Integration.syncSettings`
+  (migration `20260926190000_integration_sync_settings`). Alt, appen kan, er
+  slået til, indtil brugeren slår det fra.
+- Valget kan træffes før "Forbind": OAuth beder kun om skriveadgang til de
+  typer, der er slået til. Slår man senere en skrivetype til, som adgangen
+  ikke dækker, viser siden "Forbind igen".
+- Hvad hver app kan (`src/lib/integrations/sync-settings.ts`):
+  Apple Health/Health Connect henter vægt, fedt%, træning, skridt, kalorier,
+  puls, søvn, vand, højde/BMI og modtager måltider, vand, vægt og træning.
+  Google Health henter vægt/træning/skridt og modtager måltider
+  (nutrition-log), vand (hydration-log) og vægt. Strava henter og modtager
+  træning. Withings, Polar og Fitbit tager ikke imod data (kun hent).
+  Samsung Health går via Health Connect.
+- Kun data, brugeren selv har lavet i Hello Cal, sendes (registreringer,
+  vand, manuelle vejninger, manuel træning) — aldrig data hentet fra en
+  integration, så intet sendes i ring. Kun data lavet efter tilkoblingen.
+  Rettelser/sletninger i Hello Cal sendes ikke videre.
+- Cloud-integrationerne synkroniseres (hent + send) automatisk hvert 15.
+  minut i scheduleren, ikke kun når siden åbnes.
+- Apple Health/Health Connect skrives af Hello Cal-appen på telefonen:
+  `GET /api/integrations/healthkit/export` giver brugerens valg og de data,
+  der skal skrives; ingest filtrerer efter valget
+  (docs/HEALTHKIT_COMPANION.md). Den native app er stadig ikke bygget.
+
+## 2026-09-26: Integrationer: start-vægt og målingstidspunkt
+
+- Vejninger fra Withings, Google Health, Fitbit, Apple Health/Health Connect tilføjes altid som nye vejninger med målingens eget tidspunkt (`weighedAt`), aldrig synkroniseringstidspunktet. "Aktuel vægt" er dermed seneste vejning (SPECIFICATION §4).
+- Start-vægten (`User.weightKg`) overskrives aldrig af en integration; er den tom, bliver den ældste synkroniserede vejning start-vægt.
+- Samme vejning (±2 min, ±0,05 kg) eller træning (samme sport, ±5 min) fra to kilder gemmes kun én gang.
+- Sportstyper normaliseres til Statistik-nøglerne (`normalizeSportType` i `src/lib/sport-icons.ts`); dagssummer (fx skridt) opdateres ved næste synkronisering. Kode: `src/lib/integrations/store-items.ts`.

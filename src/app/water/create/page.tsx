@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Image from "next/image";
 import { IconWaterGlass } from "@/components/icons/WaterGlass";
 import { FoodRow } from "@/components/FoodRow";
 import { HfScreen } from "@/components/HfScreen";
 import { HfSlider } from "@/components/hf/HfSlider";
-import { SectionSeparator } from "@/components/hf/SectionSeparator";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 type WaterEntry = {
@@ -205,29 +204,35 @@ export default function WaterCreatePage() {
           {!loading && entries.length === 0 && (
             <p className="text-center text-[13px] text-hf-black opacity-60">{t("waterLog.noEntriesYet")}</p>
           )}
-          {groupByDate(entries).map((group) => (
-            <div key={group.key}>
-              <SectionSeparator label={group.label} className="my-2" />
-              <ul>
-                {group.entries.map((entry, i) => (
-                  <li
-                    key={entry.id}
-                    className={i < group.entries.length - 1 ? "border-b border-hf-tan-dark" : ""}
-                  >
-                    <FoodRow
-                      thumbnail={<IconWaterGlass size={22} stroke={1.75} className="text-hf-black" />}
-                      title={`${entry.amountMl} ml`}
-                      right={
-                        <span className="text-xs text-hf-black opacity-60">
-                          {t("common.clockPrefix")} {formatTime(entry.loggedAt)}
-                        </span>
-                      }
-                    />
-                  </li>
-                ))}
-              </ul>
+          {entries.length > 0 && (
+            // Datogrupperne bruger den ene fælles overskrift med streger
+            // (.hf-type-section-title); den første har ingen luft over sig.
+            <div>
+              {groupByDate(entries).map((group) => (
+                <Fragment key={group.key}>
+                  <h2 className="hf-type-section-title">{group.label}</h2>
+                  <ul>
+                    {group.entries.map((entry, i) => (
+                      <li
+                        key={entry.id}
+                        className={i < group.entries.length - 1 ? "border-b border-hf-tan-dark" : ""}
+                      >
+                        <FoodRow
+                          thumbnail={<IconWaterGlass size={22} stroke={1.75} className="text-hf-black" />}
+                          title={`${entry.amountMl} ml`}
+                          right={
+                            <span className="text-xs text-hf-black opacity-60">
+                              {t("common.clockPrefix")} {formatTime(entry.loggedAt)}
+                            </span>
+                          }
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                </Fragment>
+              ))}
             </div>
-          ))}
+          )}
         </div>
       </div>
     </HfScreen>

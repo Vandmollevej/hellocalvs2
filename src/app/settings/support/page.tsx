@@ -235,6 +235,12 @@ export default function SupportSettingsPage() {
           >
             {t("settings.support.contact")}
           </Link>
+          <Link
+            href="/settings/support/requests"
+            className="hf-btn-secondary hf-type-button flex h-12 w-full items-center justify-center"
+          >
+            {t("settings.support.myRequests")}
+          </Link>
         </div>
       </div>
     </HfScreen>
