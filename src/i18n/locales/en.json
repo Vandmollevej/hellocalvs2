@@ -70,6 +70,18 @@
     "missingToken": "The reset link is missing or invalid.",
     "requestNewLink": "Request a new link"
   },
+  "verifyEmail": {
+    "title": "Confirm email",
+    "checking": "Confirming your email…",
+    "success": "Thanks! Your email is confirmed.",
+    "invalid": "The link is invalid or has expired. Log in and tap \"Resend\" in the bar at the top to get a new one.",
+    "continue": "Continue to Hello Cal",
+    "banner": "Confirm your email using the link we sent you.",
+    "bannerSent": "New email sent — check spam too.",
+    "bannerError": "Could not send the email. Try again shortly.",
+    "resend": "Resend",
+    "dismiss": "Close"
+  },
   "country": {
     "title": "Choose your country",
     "back": "Back",
@@ -215,7 +227,11 @@
     "showAllergensDescription": "Show an allergen line on foods when data is available.",
     "showAllergensSelectAll": "Select all",
     "showExtendedNutrition": "Show extended nutrition info",
-    "showExtendedNutritionDescription": "Shows a \"Show more\" section below the nutrition table with saturated/unsaturated/trans fat, cholesterol, sodium, potassium, fibre, sugar, vitamin A and C, calcium, and iron, when data is available.",
+    "showExtendedNutritionDescription": "At the bottom of each product page you can see the extended nutrition values (saturated/unsaturated/trans fat, cholesterol, sodium, potassium, fibre, sugar, vitamin A and C, calcium and iron). The section is open by default and shown when data exists.",
+    "showAdditives": "Show E-numbers",
+    "showAdditivesDescription": "Shows the product's E-numbers (additives) on the product page. Tap an E-number to read what it is and what research says.",
+    "showToxins": "Show toxins",
+    "showToxinsDescription": "Shows known unwanted substances on the product page based on the ingredient list — e.g. solanine in potatoes, coumarin in cinnamon and mercury in tuna. Advice for pregnant, breastfeeding and those trying to conceive is shown first. Sources: Danish Veterinary and Food Administration and EFSA.",
     "thirdPartyDisclaimer": "We fetch data from third parties and take no responsibility for missing data.",
     "languageLabel": "Language",
     "languageDescription": "Choose which language the app is shown in.",
@@ -1199,6 +1215,10 @@
     "showLess": "Show less",
     "extendedNutrition": "Nutrition facts",
     "extendedNutritionDisclaimer": "Only shown when data is available for this product.",
+    "toxins": "Toxins",
+    "toxinPregnancyBadge": "Pregnant/breastfeeding",
+    "toxinsDisclaimer": "Based on the ingredient list — not a measurement of this specific product. Sources: Danish Veterinary and Food Administration and EFSA.",
+    "unhealthyFat": "Unhealthy fat",
     "nutrient": {
       "saturatedFat": "Saturated fat",
       "unsaturatedFat": "Unsaturated fat",
@@ -1293,7 +1313,7 @@
       "carbsFibre": "Carb types and fibre",
       "minerals": "Minerals",
       "vitamins": "Vitamins",
-      "allergensAdditives": "Allergens and E-numbers",
+      "allergensAdditives": "Allergens, E-numbers and toxins",
       "sportActivity": "Sport and activity",
       "sleep": "Sleep",
       "other": "Other data"
