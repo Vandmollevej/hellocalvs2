@@ -219,13 +219,14 @@ function CardUncertainty({ card, expanded, onToggle }: { card: StatCardValue; ex
   );
 }
 
+// Brugerens egne overskrifter er den ene fælles overskrift med streger
+// (.hf-type-section-title). Gitteret styrer selv afstanden mellem felterne,
+// så klassens luft over/under nulstilles via dens egne variabler.
+const GRID_SECTION_TITLE =
+  "hf-type-section-title [--hf-section-title-space-above:0px] [--hf-section-title-space-below:0px]";
+
 function HeadingContent({ text }: { text: string }) {
-  return (
-    <>
-      <p className="hf-type-body hf-heading text-hf-black">{text}</p>
-      <div className="mt-2 h-px w-full bg-hf-gray-border" />
-    </>
-  );
+  return <h2 className={GRID_SECTION_TITLE}>{text}</h2>;
 }
 
 export function StatCardsGrid({
@@ -764,20 +765,20 @@ export function StatCardsGrid({
                     <RemoveCircleButton ariaLabel={t("statCardsGrid.removeHeading")} onRemove={() => removeItem(id)} />
                   )}
                   {editingHeaderId === item.id ? (
-                    <>
+                    <div className={GRID_SECTION_TITLE}>
                       <input
                         autoFocus
                         value={item.text}
+                        size={Math.max(item.text.length, 1)}
                         onChange={(e) => updateHeaderText(item.id, e.target.value)}
                         onBlur={() => setEditingHeaderId(null)}
                         onKeyDown={(e) => {
                           if (e.key === "Enter") e.currentTarget.blur();
                         }}
-                        className="hf-type-body hf-heading w-full select-text bg-transparent text-hf-black outline-none"
+                        className="min-w-0 max-w-full select-text bg-transparent text-center outline-none"
                         aria-label={t("statCardsGrid.renameHeading")}
                       />
-                      <div className="mt-2 h-px w-full bg-hf-gray-border" />
-                    </>
+                    </div>
                   ) : (
                     <HeadingContent text={item.text} />
                   )}

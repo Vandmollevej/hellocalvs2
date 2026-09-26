@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { IconCheck } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
-import { DateSeparator } from "@/components/hf/DateSeparator";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { BODY_MEASUREMENT_FIELDS } from "@/lib/body-measurements";
 import type { GoalDTO, GoalTargetDTO } from "@/lib/user-goals";
@@ -97,19 +96,23 @@ export default function GoalsPage() {
       ) : (
         <div className="hf-page">
           {goals.map((goal) => (
-            <section key={goal.id} className="flex flex-col">
-              <DateSeparator label={formatDate(goal.createdAt)} />
-              {goal.targetDate && (
-                <p className="hf-type-small hf-type-strong text-text-secondary pt-2">
-                  {t("goals.targetDateLabel", { date: formatDate(goal.targetDate) })}
-                </p>
-              )}
-              <div className="flex flex-col divide-y divide-hf-gray-border pt-1">
-                {goal.targets.map((target) => (
-                  <GoalTargetRow key={target.id} target={target} />
-                ))}
-              </div>
-            </section>
+            // Datoen er den ene fælles overskrift med streger; som direkte
+            // barn af .hf-page får den selv 32 px luft over og 16 px under.
+            <Fragment key={goal.id}>
+              <h2 className="hf-type-section-title">{formatDate(goal.createdAt)}</h2>
+              <section className="flex flex-col">
+                {goal.targetDate && (
+                  <p className="hf-type-small hf-type-strong text-text-secondary">
+                    {t("goals.targetDateLabel", { date: formatDate(goal.targetDate) })}
+                  </p>
+                )}
+                <div className="flex flex-col divide-y divide-hf-gray-border pt-1">
+                  {goal.targets.map((target) => (
+                    <GoalTargetRow key={target.id} target={target} />
+                  ))}
+                </div>
+              </section>
+            </Fragment>
           ))}
         </div>
       )}

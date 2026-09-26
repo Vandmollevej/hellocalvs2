@@ -1,5 +1,7 @@
 import type { IntegrationProvider } from "@prisma/client";
 import type { IntegrationItem } from "@/lib/integrations/store-items";
+import type { SyncSettings, WriteType } from "@/lib/integrations/sync-settings";
+import type { PushData } from "@/lib/integrations/push";
 
 // Fælles kontrakt for cloud-integrationer med OAuth (Withings, Google Health,
 // Strava, Polar, Fitbit). Serveren henter data og gemmer dem på brugeren
@@ -22,12 +24,18 @@ export type OAuthProviderAdapter = {
   envPrefix: string;
   // Hvor langt tilbage første synkronisering henter.
   initialDays: number;
-  buildAuthorizeUrl(state: string, redirectUri: string): string;
+  // settings: brugerens til/fra-valg, så der kun bedes om skriveadgang til det valgte.
+  buildAuthorizeUrl(state: string, redirectUri: string, settings: SyncSettings): string;
   exchangeCode(code: string, redirectUri: string): Promise<OAuthTokens>;
   refresh?(refreshToken: string): Promise<OAuthTokens>;
   // Kører én gang efter tilkobling (Polar kræver brugerregistrering).
   afterConnect?(tokens: OAuthTokens): Promise<void>;
   fetchItems(accessToken: string, since: Date): Promise<IntegrationItem[]>;
+  // Skriveadgang pr. datatype (OAuth-scope). Mangler scopet i det, brugeren
+  // gav ved tilkobling, skal der forbindes igen, før data kan sendes.
+  writeScopes?: Partial<Record<WriteType, string>>;
+  // Sender Hello Cal-data til appen (push). Returnerer antal sendte poster.
+  push?(accessToken: string, data: PushData): Promise<number>;
 };
 
 // Google Health kan genbruge Google-login-klienten (GOOGLE_CLIENT_ID), når der
@@ -37,6 +45,17 @@ const CREDENTIAL_FALLBACK: Record<string, string> = { GOOGLE_HEALTH: "GOOGLE" };
 export function hasClientCredentials(envPrefix: string) {
   const prefixes = [envPrefix, CREDENTIAL_FALLBACK[envPrefix]].filter(Boolean);
   return prefixes.some((p) => process.env[`${p}_CLIENT_ID`] && process.env[`${p}_CLIENT_SECRET`]);
+}
+
+// Til POST-kald med JSON (push).
+export async function postJson<T>(url: string, accessToken: string, body: unknown, what: string): Promise<T> {
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) throw new Error(`${what} fejlede (${response.status}): ${(await response.text()).slice(0, 300)}`);
+  return (await response.json().catch(() => ({}))) as T;
 }
 
 export function clientCredentials(envPrefix: string) {

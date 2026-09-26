@@ -113,21 +113,20 @@ export async function GET(req: Request) {
       prisma.product.findMany({
         where: {
           discontinued: false,
-          // Admin "Uncertainties" (docs/DECISIONS.md 2026-09-25): et produkt,
-          // hvor AI'en var under 50 % sikker på en aflæsning, skjules i
-          // søgningen, indtil en admin har gennemgået den.
+          // Egne private ingredienser vises kun for ejeren (via /api/private-ingredients).
+          privateOwnerId: null,
+          // Ét samlet AND: en objekt-literal må kun have én AND-nøgle, og
+          // tekstfilter og kildefilter er begge OR-betingelser, som ellers
+          // ville overskrive hinanden.
           AND: [
+            // Admin "Uncertainties" (docs/DECISIONS.md 2026-09-25): et produkt,
+            // hvor AI'en var under 50 % sikker på en aflæsning, skjules i
+            // søgningen, indtil en admin har gennemgået den.
             {
               NOT: {
                 aiAnalyses: { some: { reviewedAt: null, confidence: { lt: HIDE_FROM_SEARCH_BELOW } } },
               },
             },
-          ],
-          // Egne private ingredienser vises kun for ejeren (via /api/private-ingredients).
-          privateOwnerId: null,
-          // Tekstfilter og kildefilter er begge OR-betingelser, så de skal
-          // ligge under AND — ellers overskriver den ene nøgle den anden.
-          AND: [
             ...(q
               ? [
                   {

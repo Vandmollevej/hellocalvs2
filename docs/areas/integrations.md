@@ -3,7 +3,10 @@
 Læs [fælles kort](README.md). Området er ikke tomt: kode findes allerede,
 men drift og fuldstændighed er ikke verificeret i denne kortlægning.
 
-- UI: `src/app/settings/integrations/page.tsx`.
+- UI: `src/app/settings/integrations/page.tsx` (oversigt) og
+  `src/app/settings/integrations/[app]/page.tsx` (én side pr. app med til/fra).
+- Til/fra pr. datatype og push: `src/lib/integrations/sync-settings.ts`,
+  `src/lib/integrations/push.ts`, `Integration.syncSettings`/`lastPushedAt`.
 - Katalog/status: `src/lib/integrations.ts`.
 - Tjenester: `src/lib/integrations/fitbit.ts`,
   `src/lib/integrations/withings.ts`.

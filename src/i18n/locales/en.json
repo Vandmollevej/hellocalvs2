@@ -936,7 +936,7 @@
       "backToApp": "Go back to the app"
     },
     "actions": {
-      "photoDiary": "Photo diary",
+      "photoDiary": "Diary",
       "newWeight": "Enter new weight",
       "target": "Goal",
       "bodyMeasurements": "Body measurements"
@@ -1329,6 +1329,50 @@
       "popular": "Most used",
       "recipes": "Recipes",
       "apps": "Apps"
+    },
+    "saveTokenNotice": "Save this value now — it won't be shown again:",
+    "close": "Close",
+    "generateDeviceCode": "Generate device code",
+    "manage": "Choose data",
+    "syncing": "Syncing…",
+    "syncNow": "Sync now",
+    "disconnect": "Disconnect",
+    "createdAt": "Created {date}",
+    "lastUsedAt": " · Last used {date}",
+    "status": {
+      "disconnected": "Not connected",
+      "connected": "Connected",
+      "error": "Error",
+      "needsApp": "Needs app",
+      "pending": "Pending"
+    },
+    "readTitle": "Import to Hello Cal",
+    "writeTitle": "Send from Hello Cal to {name}",
+    "writeNone": "{name} doesn't accept data from other apps, so Hello Cal can only import from it.",
+    "chooseFirst": "Choose what to import and send before you connect. You can always change it here later.",
+    "needsReconnect": "You turned on something {name} hasn't allowed Hello Cal to do yet. Connect again to grant access.",
+    "reconnect": "Connect again",
+    "lastPushed": "Last sent {date}",
+    "samsungViaHealthConnect": "Samsung Health shares its data through Health Connect. Turn on sharing to Health Connect in Samsung Health, and choose your data under Health Connect.",
+    "openHealthConnect": "Open Health Connect",
+    "companionHowTo": "The Hello Cal phone app reads and writes your data according to the choices above. It signs in with a device code.",
+    "saveError": "Couldn't save your choice. Try again.",
+    "readTypes": {
+      "weight": "Weight",
+      "bodyFat": "Body fat",
+      "activities": "Workouts",
+      "steps": "Steps and distance",
+      "energy": "Calories burned",
+      "heart": "Heart rate and fitness",
+      "sleep": "Sleep",
+      "water": "Water",
+      "body": "Height and BMI"
+    },
+    "writeTypes": {
+      "nutrition": "Meals (calories, protein, carbs, fat)",
+      "water": "Water",
+      "weight": "Weight (your own weigh-ins)",
+      "activities": "Workouts logged in Hello Cal"
     }
   },
   "payment": {
@@ -1575,6 +1619,8 @@
     "skip": "Not now",
     "enabling": "Turning on…",
     "error": "Face ID could not be turned on. You can try again in Settings.",
-    "enabled": "Face ID is turned on for login."
+    "enabled": "Face ID is turned on for login.",
+    "active": "Face ID enabled",
+    "activate": "Enable Face ID"
   }
 }

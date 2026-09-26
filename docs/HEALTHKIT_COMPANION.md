@@ -84,6 +84,42 @@ curl -X POST https://hellocal.packroff.dk/api/integrations/healthkit/ingest \
   -d '{"source":"APPLE_HEALTH","metrics":[{"type":"STEPS","value":8426,"recordedAt":"2026-08-28T00:00:00Z"}]}'
 ```
 
+## Brugerens til/fra-valg og push (2026-09-26)
+
+Brugeren vælger på `/settings/integrations/apple-health` (eller
+`health-connect`), hvad der hentes til Hello Cal, og hvad Hello Cal sender til
+Apple Health/Health Connect. Ingest gemmer kun de slåede-til typer.
+
+Appen henter valget og de data, den skal **skrive** til telefonen, her:
+
+`GET /api/integrations/healthkit/export?source=APPLE_HEALTH&since=<cursor>`
+
+```json
+{
+  "settings": {
+    "read": { "weight": true, "steps": true, "sleep": false, "...": true },
+    "write": { "nutrition": true, "water": true, "weight": false, "activities": true }
+  },
+  "cursor": "2026-09-26T18:00:00.000Z",
+  "nutrition": [{ "id": "…", "title": "Havregryn", "loggedAt": "…", "kcal": 350, "proteinG": 12, "carbsG": 58, "fatG": 7 }],
+  "water": [{ "id": "…", "ml": 250, "loggedAt": "…" }],
+  "weights": [{ "id": "…", "weightKg": 78.4, "weighedAt": "…" }],
+  "activities": [{ "id": "…", "sportType": "running", "startedAt": "…", "durationMinutes": 30, "caloriesBurned": 300 }]
+}
+```
+
+- Bed kun HealthKit/Health Connect om læseadgang til `settings.read`-typer og
+  skriveadgang til `settings.write`-typer, der er `true`.
+- Skriv posterne (HealthKit: `dietaryEnergyConsumed`, `dietaryProtein`,
+  `dietaryCarbohydrates`, `dietaryFatTotal`, `dietaryWater`, `bodyMass`,
+  `HKWorkout`; Health Connect: `NutritionRecord`, `HydrationRecord`,
+  `WeightRecord`, `ExerciseSessionRecord`). Brug `id` som
+  `HKMetadataKeyExternalUUID`/`clientRecordId`, så intet skrives to gange.
+- Gem `cursor` og send den som `since` næste gang, når skrivningen er lykkedes.
+  Uden `since` fortsætter serveren fra sidste bekræftede cursor.
+- Kun data, brugeren selv har lavet i Hello Cal, kommer med — aldrig data, der
+  er hentet fra Apple Health/Health Connect.
+
 ## HealthKit-typer at bede om adgang til (iOS)
 
 | HealthKit-type | → HealthMetricType |

@@ -59,6 +59,9 @@ function Field({
   );
 }
 
+const tileClass =
+  "hf-type-small hf-type-strong flex aspect-square min-w-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-hf-tan px-1 text-center text-hf-black";
+
 const inputClass =
   "hf-type-body rounded-xl bg-hf-tan px-4 py-3 text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green";
 
@@ -144,6 +147,17 @@ export default function ProfileEditPage() {
   return (
     <HfScreen
       title={t("profile.section.profile")}
+      footer={
+        user ? (
+          <button
+            type="button"
+            onClick={() => router.push("/profile/change-password")}
+            className="hf-btn-primary h-12 w-full px-4"
+          >
+            {t("profile.changePasswordButton")}
+          </button>
+        ) : undefined
+      }
     >
       {loading || !user ? (
         <p className="hf-type-body text-text-secondary p-4 text-center">
@@ -239,49 +253,29 @@ export default function ProfileEditPage() {
             </Field>
           </div>
 
-          <div className="grid grid-cols-4 gap-3">
-            <button
-              type="button"
-              onClick={() => router.push("/profile/photo-diary")}
-              className="hf-type-small hf-type-strong flex min-w-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-hf-tan px-1 py-3 text-center text-hf-black"
-            >
-              <IconCamera size={20} />
+          {/* Fire ens, kvadratiske genveje (1:1) — teksten må ikke gøre en kasse større. */}
+          <div className="mt-2 grid grid-cols-4 gap-2.5">
+            <button type="button" onClick={() => router.push("/profile/photo-diary")} className={tileClass}>
+              <IconCamera size={34} stroke={1.6} />
               {t("profile.actions.photoDiary")}
             </button>
-            <button
-              type="button"
-              onClick={() => router.push("/profile/weight-calibration")}
-              className="hf-type-small hf-type-strong flex min-w-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-hf-tan px-1 py-3 text-center text-hf-black"
-            >
-              <IconBathScale size={20} />
+            <button type="button" onClick={() => router.push("/profile/weight-calibration")} className={tileClass}>
+              <IconBathScale size={34} />
               {t("profile.actions.newWeight")}
             </button>
-            <button
-              type="button"
-              onClick={() => router.push("/profile/goals")}
-              className="hf-type-small hf-type-strong flex min-w-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-hf-tan px-1 py-3 text-center text-hf-black"
-            >
-              <IconChampagne size={20} />
+            <button type="button" onClick={() => router.push("/profile/goals")} className={tileClass}>
+              <IconChampagne size={34} />
               {t("profile.actions.target")}
             </button>
-            <button
-              type="button"
-              onClick={() => router.push("/profile/body-measurements")}
-              className="hf-type-small hf-type-strong flex min-w-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-hf-tan px-1 py-3 text-center text-hf-black"
-            >
-              <IconWaistMeasure size={20} sex={user?.sex} />
+            <button type="button" onClick={() => router.push("/profile/body-measurements")} className={tileClass}>
+              <IconWaistMeasure size={34} sex={user.sex} />
               {t("profile.actions.bodyMeasurements")}
             </button>
           </div>
 
-          <FaceIdButton />
-          <button
-            type="button"
-            onClick={() => router.push("/profile/change-password")}
-            className="hf-btn-primary mt-auto h-12 w-full px-4"
-          >
-            {t("profile.changePasswordButton")}
-          </button>
+          <div className="mt-4">
+            <FaceIdButton />
+          </div>
         </div>
       )}
     </HfScreen>

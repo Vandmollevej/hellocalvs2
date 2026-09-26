@@ -1,0 +1,576 @@
+<!doctype html>
+<!--
+  Hello Cal hjælpeside (statisk, kun til mobilvisning). Serveres på /hjaelp.html.
+  Ikke indekserbar: meta robots her + global X-Robots-Tag i next.config.ts.
+
+  Link direkte til et emne fra appen med et anchor, fx /hjaelp.html#scan-stregkode.
+  Emnet foldes automatisk ud og scrolles frem. Hvert emnes anchor er dets id="...".
+  Et sektions-anchor (fx #konto) scroller til sektionen uden at folde noget ud.
+-->
+<html lang="da">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+  <meta name="googlebot" content="noindex, nofollow" />
+  <meta name="theme-color" content="#faf8f3" />
+  <title>Hjælp – Hello Cal</title>
+  <style>
+    :root {
+      --page: #faf8f3;
+      --white: #ffffff;
+      --card: #eee9df;
+      --card-line: #dfd9cc;
+      --text: #242424;
+      --black: #232323;
+      --text-secondary: #656565;
+      --line: #afadaa;
+      --brand: #067a46;
+      --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+      --font-heading: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; scroll-padding-top: 88px; }
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 17px;
+      line-height: 24px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 0 16px calc(32px + env(safe-area-inset-bottom));
+    }
+
+    /* Søgefelt — samme udtryk som .hf-search (retter) */
+    .search-bar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--page);
+      padding: calc(12px + env(safe-area-inset-top)) 0 12px;
+    }
+    .hf-search {
+      display: flex;
+      height: 48px;
+      align-items: center;
+      gap: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--white);
+      color: var(--black);
+      padding: 0 16px;
+    }
+    .hf-search svg { flex: none; }
+    .hf-search input {
+      flex: 1;
+      min-width: 0;
+      height: 100%;
+      border: 0;
+      background: transparent;
+      outline: none;
+      color: var(--black);
+      font: inherit;
+      font-size: 17px;
+      line-height: 24px;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .hf-search input::placeholder { color: var(--black); opacity: 0.5; }
+    .hf-search input::-webkit-search-cancel-button { display: none; }
+    .clear {
+      display: none;
+      flex: none;
+      border: 0;
+      background: none;
+      padding: 4px;
+      margin-right: -4px;
+      color: var(--black);
+      cursor: pointer;
+    }
+    .clear.visible { display: flex; }
+
+    h1 {
+      font-family: var(--font-heading);
+      font-size: 28px;
+      line-height: 34px;
+      font-weight: 700;
+      margin: 8px 0 4px;
+    }
+    .intro { margin: 0 0 8px; color: var(--text-secondary); font-size: 15px; line-height: 20px; }
+
+    section { margin-top: 24px; }
+    section[hidden] { display: none; }
+    h2 {
+      font-family: var(--font-heading);
+      font-size: 20px;
+      line-height: 25px;
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+
+    /* Accordion-kort — samme udtryk som .hf-accordion */
+    .accordion { border-radius: 1.1rem; background: var(--card); overflow: hidden; }
+    details + details { border-top: 1px solid var(--card-line); }
+    details[hidden] { display: none; }
+    summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 48px;
+      padding: 12px 16px;
+      font-weight: 600;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary span { flex: 1; }
+    summary .chev { flex: none; transition: transform 0.2s ease; }
+    details[open] summary .chev { transform: rotate(180deg); }
+    .answer { padding: 0 16px 16px; font-size: 15px; line-height: 22px; }
+    .answer p { margin: 0 0 8px; }
+    .answer p:last-child, .answer ol:last-child, .answer ul:last-child { margin-bottom: 0; }
+    .answer ol, .answer ul { margin: 0 0 8px; padding-left: 20px; }
+    .answer li + li { margin-top: 4px; }
+    .answer a { color: var(--brand); }
+    mark { background: #d9ecb0; color: inherit; border-radius: 2px; }
+
+    .empty { display: none; text-align: center; color: var(--text-secondary); margin: 40px 0; }
+    .empty.visible { display: block; }
+
+    .contact {
+      margin-top: 32px;
+      border-radius: 8px;
+      background: var(--card);
+      padding: 16px;
+      text-align: center;
+    }
+    .contact p { margin: 0; font-size: 15px; line-height: 22px; }
+    .contact strong { display: block; margin-bottom: 4px; font-size: 17px; }
+    .contact .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 48px;
+      margin-top: 12px;
+      border-radius: 999px;
+      background: var(--black);
+      color: var(--white);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin: 0 0 12px -4px;
+      padding: 4px;
+      border: 0;
+      background: none;
+      color: var(--black);
+      font: inherit;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .go {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      margin-top: 4px;
+      font-weight: 600;
+      color: var(--brand);
+      text-decoration: none;
+    }
+    .go::after { content: "\203A"; font-size: 20px; line-height: 1; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="search-bar">
+      <button class="back" id="back" type="button">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6l6 6"/></svg>
+        Tilbage
+      </button>
+      <label class="hf-search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"/><path d="M21 21l-6 -6"/></svg>
+        <input id="q" type="search" placeholder="Søg i hjælp" autocomplete="off" enterkeyhint="search" aria-label="Søg i hjælp" />
+        <button class="clear" id="clear" type="button" aria-label="Ryd søgning">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg>
+        </button>
+      </label>
+    </div>
+
+    <h1>Hjælpecenter</h1>
+    <p class="intro">Find svar på de mest almindelige spørgsmål om Hello Cal.</p>
+
+    <p class="empty" id="empty">Ingen svar matcher din søgning.</p>
+
+    <section id="kom-i-gang">
+      <h2>Kom i gang</h2>
+      <div class="accordion">
+        <details id="hvad-er-hello-cal">
+          <summary><span>Hvad er Hello Cal?</span></summary>
+          <div class="answer">
+            <p>Hello Cal hjælper dig med at holde styr på det, du spiser og drikker, så du kan følge kalorier og næringsstoffer dag for dag – sammen med fx vægt, vand, søvn og kropsmål.</p>
+          </div>
+        </details>
+        <details id="maal">
+          <summary><span>Hvordan ændrer jeg mine mål?</span></summary>
+          <div class="answer">
+            <p>Under Mål kan du se dine mål, oprette et nyt og se kommende mål.</p>
+            <a class="go" href="/profile/goals">Gå til Mål</a>
+          </div>
+        </details>
+        <details id="laer-appen">
+          <summary><span>Kan jeg se introduktionen igen?</span></summary>
+          <div class="answer">
+            <p>Ja. Gå til Indstillinger og tryk på <strong>Lær appen at kende</strong>.</p>
+            <a class="go" href="/settings">Gå til Indstillinger</a>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="registrering">
+      <h2>Registrering af mad</h2>
+      <div class="accordion">
+        <details id="tilfoej-mad">
+          <summary><span>Hvordan tilføjer jeg mad?</span></summary>
+          <div class="answer">
+            <p>Tryk på plus-knappen på forsiden. Her kan du søge efter en madvare, scanne med kameraet, indtale med mikrofonen eller vælge en af dine egne retter.</p>
+            <a class="go" href="/search">Søg efter en madvare</a>
+          </div>
+        </details>
+        <details id="scan-stregkode">
+          <summary><span>Hvordan scanner jeg en stregkode?</span></summary>
+          <div class="answer">
+            <ol>
+              <li>Tryk på plus-knappen og vælg kameraet.</li>
+              <li>Hold stregkoden inden for rammen, indtil den er læst.</li>
+              <li>Kontrollér mængden og gem.</li>
+            </ol>
+            <p>Driller scanningen, så sørg for godt lys og hold telefonen roligt.</p>
+            <a class="go" href="/camera?mode=product">Åbn kameraet</a>
+          </div>
+        </details>
+        <details id="stemme">
+          <summary><span>Hvordan registrerer jeg med stemmen?</span></summary>
+          <div class="answer">
+            <p>Tryk på plus-knappen og vælg mikrofonen. Sig, hvad du har spist, så finder appen madvarerne.</p>
+            <a class="go" href="/voice">Åbn mikrofonen</a>
+          </div>
+        </details>
+        <details id="produkt-findes-ikke">
+          <summary><span>Varen findes ikke – hvad gør jeg?</span></summary>
+          <div class="answer">
+            <p>Du kan selv oprette varen ved at tage billeder af emballagen og næringsdeklarationen.</p>
+            <a class="go" href="/camera/create">Opret en vare</a>
+          </div>
+        </details>
+        <details id="slet-registrering">
+          <summary><span>Hvordan sletter jeg en registrering?</span></summary>
+          <div class="answer">
+            <p>Swipe på registreringen i dagens liste. Her kan du slette den, gemme varen som favorit eller melde en fejl i varens data.</p>
+          </div>
+        </details>
+        <details id="flyt-registrering">
+          <summary><span>Kan jeg flytte en registrering til et andet tidspunkt?</span></summary>
+          <div class="answer">
+            <p>Ja. I Kalenderen kan du trække registreringen hen til det rigtige tidspunkt.</p>
+            <a class="go" href="/calendar">Gå til Kalender</a>
+          </div>
+        </details>
+        <details id="offline">
+          <summary><span>Virker appen uden internet?</span></summary>
+          <div class="answer">
+            <p>Opretter du en vare uden forbindelse, gemmer appen den og sender den automatisk, så snart du er online igen.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="retter">
+      <h2>Retter</h2>
+      <div class="accordion">
+        <details id="opret-ret">
+          <summary><span>Hvordan opretter jeg en ret?</span></summary>
+          <div class="answer">
+            <p>Tilføj ingredienserne og antal portioner, så beregner appen næringsindholdet.</p>
+            <a class="go" href="/create-dish">Opret en ret</a>
+          </div>
+        </details>
+        <details id="del-ret">
+          <summary><span>Kan jeg dele mine retter med andre?</span></summary>
+          <div class="answer">
+            <p>Ja. Når du opretter retten, kan du vælge at dele den med andre brugere. Ingen personlige oplysninger deles. Indeholder retten dine egne ingredienser, kan den deles, når ingredienserne er godkendt.</p>
+            <a class="go" href="/create-dish">Opret en ret</a>
+          </div>
+        </details>
+        <details id="find-retter">
+          <summary><span>Hvor finder jeg mine og andres retter?</span></summary>
+          <div class="answer">
+            <p>Under Retter finder du både delte retter og dine egne.</p>
+            <a class="go" href="/profile/recipes">Gå til Retter</a>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="maaling">
+      <h2>Vægt, vand og statistik</h2>
+      <div class="accordion">
+        <details id="vaegt">
+          <summary><span>Hvordan registrerer jeg min vægt?</span></summary>
+          <div class="answer">
+            <p>Tryk på plus-knappen og vælg vægt.</p>
+            <a class="go" href="/weight/create">Registrér vægt</a>
+          </div>
+        </details>
+        <details id="vand">
+          <summary><span>Hvordan registrerer jeg vand?</span></summary>
+          <div class="answer">
+            <p>Tryk på plus-knappen og vælg vand.</p>
+            <a class="go" href="/water/create">Registrér vand</a>
+          </div>
+        </details>
+        <details id="kropsmaal">
+          <summary><span>Hvordan registrerer jeg kropsmål?</span></summary>
+          <div class="answer">
+            <p>Kropsmål finder du under Profil.</p>
+            <a class="go" href="/profile/body-measurements">Gå til Kropsmål</a>
+          </div>
+        </details>
+        <details id="statistik">
+          <summary><span>Hvor ser jeg min udvikling?</span></summary>
+          <div class="answer">
+            <p>Under Statistik ser du din udvikling over tid. I Kalenderen ser du dine dage.</p>
+            <a class="go" href="/statistics">Gå til Statistik</a>
+          </div>
+        </details>
+        <details id="forside-genveje">
+          <summary><span>Kan jeg ændre, hvad der vises på forsiden?</span></summary>
+          <div class="answer">
+            <p>Ja, under Indstillinger → Forside.</p>
+            <a class="go" href="/settings/display/front-page">Tilpas forsiden</a>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="konto">
+      <h2>Konto og login</h2>
+      <div class="accordion">
+        <details id="glemt-adgangskode">
+          <summary><span>Jeg har glemt min adgangskode</span></summary>
+          <div class="answer">
+            <p>Du får en e-mail med et link til at vælge en ny adgangskode.</p>
+            <a class="go" href="/forgot-password">Nulstil adgangskode</a>
+          </div>
+        </details>
+        <details id="skift-adgangskode">
+          <summary><span>Hvordan skifter jeg adgangskode?</span></summary>
+          <div class="answer">
+            <p>Er du logget ind, kan du skifte den under Profil.</p>
+            <a class="go" href="/profile/change-password">Skift adgangskode</a>
+          </div>
+        </details>
+        <details id="bekraeft-email">
+          <summary><span>Jeg har ikke fået bekræftelsesmailen</span></summary>
+          <div class="answer">
+            <p>Tjek din spam-mappe. Du kan få mailen sendt igen via <strong>Send igen</strong> i banneret øverst i appen.</p>
+          </div>
+        </details>
+        <details id="face-id">
+          <summary><span>Hvordan slår jeg Face ID til?</span></summary>
+          <div class="answer">
+            <p>Efter et almindeligt login bliver du tilbudt Face ID. Du kan også slå det til under Rediger profil. Face ID gælder kun den enhed, du slår det til på.</p>
+            <a class="go" href="/profile/edit">Gå til Rediger profil</a>
+          </div>
+        </details>
+        <details id="sprog">
+          <summary><span>Hvordan skifter jeg sprog?</span></summary>
+          <div class="answer">
+            <p>Under Indstillinger → Sprog og region.</p>
+            <a class="go" href="/profile/settings/language-region">Gå til Sprog og region</a>
+          </div>
+        </details>
+        <details id="notifikationer">
+          <summary><span>Hvordan styrer jeg notifikationer?</span></summary>
+          <div class="answer">
+            <p>Under Indstillinger → Notifikationer.</p>
+            <a class="go" href="/profile/notifications">Gå til Notifikationer</a>
+          </div>
+        </details>
+        <details id="slet-konto">
+          <summary><span>Hvordan sletter jeg min konto?</span></summary>
+          <div class="answer">
+            <p>Send os en henvendelse via Kontakt os, så sletter vi din konto. I privatlivspolitikken kan du læse, hvad der sker med dine data.</p>
+            <a class="go" href="/settings/support/contact">Kontakt os</a>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="abonnement">
+      <h2>Abonnement og betaling</h2>
+      <div class="accordion">
+        <details id="se-abonnement">
+          <summary><span>Hvor kan jeg se mit abonnement?</span></summary>
+          <div class="answer">
+            <p>Her ser du dit abonnement og, for løbende abonnementer, datoen for næste betaling.</p>
+            <a class="go" href="/profile/subscription">Gå til Abonnement</a>
+          </div>
+        </details>
+        <details id="betalingsmetode">
+          <summary><span>Hvordan ændrer jeg betalingsmetode?</span></summary>
+          <div class="answer">
+            <p>Under Betalingsmetoder kan du se og ændre, hvordan du betaler.</p>
+            <a class="go" href="/settings/payment">Gå til Betalingsmetoder</a>
+          </div>
+        </details>
+        <details id="opsig-abonnement">
+          <summary><span>Hvordan stopper jeg mit abonnement?</span></summary>
+          <div class="answer">
+            <p>Betaler du med MobilePay, kan du stoppe aftalen under Betalingsmetoder. Ellers send os en henvendelse via Kontakt os.</p>
+            <a class="go" href="/settings/payment">Gå til Betalingsmetoder</a><br />
+            <a class="go" href="/settings/support/contact">Kontakt os</a>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="data">
+      <h2>Data og privatliv</h2>
+      <div class="accordion">
+        <details id="helbredsdata">
+          <summary><span>Hvordan bruges mine helbredsdata?</span></summary>
+          <div class="answer">
+            <p>Det står i privatlivspolitikken, herunder hvordan du trækker dit samtykke tilbage.</p>
+            <a class="go" href="/privatlivspolitik">Læs privatlivspolitikken</a>
+          </div>
+        </details>
+        <details id="del-med-laege">
+          <summary><span>Kan jeg dele mine data med min læge?</span></summary>
+          <div class="answer">
+            <p>Ja. Med Hello Doc kan du invitere din læge eller diætist til at se dine data.</p>
+            <a class="go" href="/settings/hello-doc">Gå til Hello Doc</a>
+          </div>
+        </details>
+        <details id="support-adgang">
+          <summary><span>Hvad kan Support se?</span></summary>
+          <div class="answer">
+            <p>Intet, medmindre du selv giver lov. Du vælger, hvilke data Support må se, og i hvilken periode.</p>
+            <a class="go" href="/settings/support">Gå til Support</a>
+          </div>
+        </details>
+        <details id="integrationer">
+          <summary><span>Kan jeg forbinde andre apps?</span></summary>
+          <div class="answer">
+            <p>Under Integrationer ser du, hvilke apps og enheder du kan forbinde.</p>
+            <a class="go" href="/settings/integrations">Gå til Integrationer</a>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="fejl">
+      <h2>Fejl i appen</h2>
+      <div class="accordion">
+        <details id="meld-fejl">
+          <summary><span>Hvordan melder jeg en fejl?</span></summary>
+          <div class="answer">
+            <p>Fejl i en vares data: swipe på registreringen og vælg at melde fejl. Andre fejl i appen kan du melde her.</p>
+            <a class="go" href="/profile/report-bug">Meld en fejl</a>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <div class="contact" id="kontakt">
+      <p><strong>Fandt du ikke svaret?</strong>Skriv til os, så vender vi tilbage hurtigst muligt.</p>
+      <a class="btn" href="/settings/support/contact">Kontakt os</a>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var chevron = '<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6l6 -6"/></svg>';
+      var items = Array.prototype.slice.call(document.querySelectorAll("details[id]"));
+      var sections = Array.prototype.slice.call(document.querySelectorAll("section"));
+      var input = document.getElementById("q");
+      var clearBtn = document.getElementById("clear");
+      var empty = document.getElementById("empty");
+
+      items.forEach(function (d) {
+        var s = d.querySelector("summary");
+        s.insertAdjacentHTML("beforeend", chevron);
+        d._title = s.querySelector("span").textContent;
+        d._text = norm(d.textContent);
+        // Opdatér adresselinjen, så et åbnet emne kan deles/linkes.
+        d.addEventListener("toggle", function () {
+          if (d.open && !input.value) history.replaceState(null, "", "#" + d.id);
+        });
+      });
+
+      function norm(s) {
+        return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\s+/g, " ");
+      }
+
+      function escapeHtml(s) {
+        return s.replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; });
+      }
+
+      function highlight(d, q) {
+        var span = d.querySelector("summary span");
+        var t = d._title;
+        var i = q ? norm(t).indexOf(q) : -1;
+        span.innerHTML = i < 0 ? escapeHtml(t)
+          : escapeHtml(t.slice(0, i)) + "<mark>" + escapeHtml(t.slice(i, i + q.length)) + "</mark>" + escapeHtml(t.slice(i + q.length));
+      }
+
+      function filter() {
+        var q = norm(input.value.trim());
+        clearBtn.classList.toggle("visible", input.value.length > 0);
+        var terms = q ? q.split(" ") : [];
+        var any = false;
+        items.forEach(function (d) {
+          var hit = terms.every(function (w) { return d._text.indexOf(w) >= 0; });
+          d.hidden = !hit;
+          if (hit) any = true;
+          highlight(d, terms.length === 1 ? q : "");
+        });
+        sections.forEach(function (s) {
+          s.hidden = !s.querySelector("details:not([hidden])");
+        });
+        empty.classList.toggle("visible", !any);
+      }
+
+      function openFromHash() {
+        var id = decodeURIComponent(location.hash.slice(1));
+        if (!id) return;
+        var el = document.getElementById(id);
+        if (!el) return;
+        if (input.value) { input.value = ""; filter(); }
+        if (el.tagName === "DETAILS") el.open = true;
+        requestAnimationFrame(function () { el.scrollIntoView({ block: "start" }); });
+      }
+
+      // Tilbage til appen: forrige side, eller Indstillinger hvis siden blev åbnet direkte.
+      document.getElementById("back").addEventListener("click", function () {
+        if (document.referrer && new URL(document.referrer).origin === location.origin && history.length > 1) history.back();
+        else location.href = "/settings";
+      });
+
+      input.addEventListener("input", filter);
+      clearBtn.addEventListener("click", function () { input.value = ""; filter(); input.focus(); });
+      window.addEventListener("hashchange", openFromHash);
+      openFromHash();
+    })();
+  </script>
+</body>
+</html>
