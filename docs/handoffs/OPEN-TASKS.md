@@ -110,6 +110,7 @@ Deploy: G6 deployet 2026-09-26 (1ca9c65, GitHub Actions grøn; `/api/private-ing
 Filer: `src/app/profile/**`.
 Ukendte ændringer: `profile/photo-diary` og `profile/weight-calibration` har ikke-committede ændringer fra andre sessioner (passkey-lås / vægt-kalibrering) — ikke G7's, rør dem ikke.
 Ejer: Profil-gruppen (G7), konto B — overtaget 2026-09-24
+Deploy (brugerens valg 2026-09-26): G7 er committet lokalt og venter på den samlede deploy. Migration 20260926090000_body_measurement_neck skal med.
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
