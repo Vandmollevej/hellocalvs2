@@ -550,7 +550,13 @@
     "stageIngredients": "Ingredienser",
     "readingIngredients": "Læser ingredienslisten...",
     "continueWithBarcode": "Fortsæt med denne stregkode",
-    "barcodeLookupFailedContinue": "Opslaget fejlede. Du kan fortsætte med den scannede stregkode."
+    "barcodeLookupFailedContinue": "Opslaget fejlede. Du kan fortsætte med den scannede stregkode.",
+    "stepBarcode": "Stregkode",
+    "stepFront": "Forside",
+    "stepNutrition": "Energi",
+    "stepIngredients": "Indhold",
+    "stepDone": "{step}: taget og aflæst",
+    "bothFound": "Energi og indhold fundet på samme billede"
   },
   "foods": {
     "title": "Madvarer",
@@ -743,6 +749,7 @@
     "mediaScanFailedBarcode": "Kunne ikke læse stregkoden — indtast den nedenfor",
     "mediaScanFailedNutrition": "Kunne ikke læse næringsindholdet — udfyld det nedenfor",
     "mediaScanFailedIngredients": "Kunne ikke læse indholdsfortegnelsen — udfyld den nedenfor",
+    "mediaVerified": "{box}: taget og aflæst korrekt",
     "savedOffline": "Ingen forbindelse — produktet er gemt på enheden og uploades automatisk, når du har netværk igen."
   },
   "offlineQueue": {
