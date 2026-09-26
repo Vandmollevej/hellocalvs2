@@ -226,6 +226,14 @@ mål og tekstplacering; stiplede zoner viser, hvor tekst står
 (`src/app/admin/designmanual/BoxOverview.tsx`).
 
 ## 2026-09-26: Profilcirklen ("PT") er én fælles komponent
+## 2026-09-26: MobilePay-betaling + Opsætning delt op
+
+- Opsætning er nu en oversigt med undersiderne "Sprog og region" (også fra Indstillinger) og "Resultatvisning" (allergener + udvidet næringsindhold).
+- Betaling: sort statusboks, ingen "kommer snart"-tekst, rigtige logoer, MobilePay-aftale kan stoppes.
+- Fuld MobilePay Recurring-integration bygget (aftale, første træk, fornyelser via scheduler, webhook, opsigelse). Se DECISIONS/DEPLOYMENT 2026-09-26.
+- Mangler for at gå live: MobilePay-salgsstedsaftale med Recurring API + nøglerne i admin → API-nøgler, migration `20260926120000_mobilepay_recurring`, deploy. Ikke testet mod MobilePay (ingen nøgler endnu).
+
+## 2026-09-26: Support-indbakke i admin
 
 Brugeren så profilcirklen som mindre på forsiden. Målt i Chromium ved 402 px
 var begge 32 px, men forsidens 1 px `border` lå inden i de 32 px (farvet flade
