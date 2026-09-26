@@ -175,6 +175,7 @@ Ejer: Widget-sessionen (2026-09-26)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | c4b41bf9 | Forbered widgets: plus-knap, hurtig-tilføj, statistik-graf (Smart Stack/swipe), 2×2 boks, seneste registreringer | Færdig (kode) — venter på Mac | Web-preview `/widgets` + native kildekode i `native/` (Swift + Kotlin, ukompileret). Næste: kompilér på Mac/Android Studio efter `native/README.md` |
+| c4b41bf9 | Forbered widgets: plus-knap, hurtig-tilføj, statistik-graf (Smart Stack/swipe), 2×2 boks, seneste registreringer | Venter på bruger | Brugeren godkender designet på `/widgets`; derefter native (Swift/Kotlin) når Mac er lejet |
 
 ## Venter på dig (ingen gruppe)
 | Id | Opgave | Status | Næste skridt |

@@ -367,7 +367,6 @@ overtagelsen af G4 ("Tegn", Frida-datadumpet er fuldt, admin-siden bygges nu).
   rammer; ældre analyser vises med hele fotoet. Rettelsen skrives til
   produktet og gemmes som `correction`. Den natlige AI-robot er stadig en
   senere fase; en lavere minimumstærskel er stadig uafklaret.
-=======
 ## 2026-09-26: Redigering af målsætninger
 
 - En målsætning kan redigeres (dato og targets) via `PATCH /api/goals/[id]`, kun for Seriøs (samme gating som delmål).
