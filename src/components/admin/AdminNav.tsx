@@ -26,6 +26,7 @@ const LINK_DEFS: { href: string; key: AdminI18nKey }[] = [
   { href: "/admin/scan-invites", key: "nav_scan_invites" },
   { href: "/admin/logos", key: "nav_logos" },
   { href: "/admin/api-keys", key: "nav_api_keys" },
+  { href: "/admin/designmanual", key: "nav_design_manual" },
 ];
 
 // hasOpenUncertainties: rød prik ved "Uncertainties", når der er usikre
