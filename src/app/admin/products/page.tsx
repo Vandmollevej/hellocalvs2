@@ -2,8 +2,26 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
-import { PendingProductCard } from "@/components/admin/PendingProductCard";
+import { PendingProductCard, type PendingProduct } from "@/components/admin/PendingProductCard";
+import { productConfidencePercent } from "@/lib/pending-product-confidence";
+import { asNumberRecord } from "@/lib/nutrients";
 import { t } from "@/lib/admin-i18n";
+
+const SORTS = [
+  { key: "time", label: "Tidspunkt (nyeste øverst)" },
+  { key: "alpha", label: "Alfabetisk" },
+  { key: "confidence", label: "Sikkerhedsmargin (laveste øverst)" },
+] as const;
+type SortKey = (typeof SORTS)[number]["key"];
+
+const createdAtFormat = new Intl.DateTimeFormat("da-DK", {
+  timeZone: "Europe/Copenhagen",
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+});
 
 // Adskilt visning af bruger-indsendte vs. auto-importerede (AI/API/DB)
 // produkter (docs/DECISIONS.md 2026-09-02) — filter/faner, ikke en ny side.
@@ -12,53 +30,140 @@ import { t } from "@/lib/admin-i18n";
 export default async function AdminProductsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string }>;
+  searchParams: Promise<{ tab?: string; sort?: string }>;
 }) {
   const admin = await requireAdminUser();
   if (!admin) redirect("/admin/login");
 
-  const { tab: tabParam } = await searchParams;
+  const { tab: tabParam, sort: sortParam } = await searchParams;
   const tab = tabParam === "auto" ? "auto" : "user";
+  const sort: SortKey = SORTS.some((s) => s.key === sortParam) ? (sortParam as SortKey) : "time";
 
-  const products = await prisma.product.findMany({
+  const rows = await prisma.product.findMany({
     where: {
       status: "PENDING",
       // Brugeres egne private ingredienser er ikke til godkendelse.
       privateOwnerId: null,
       externalSource: tab === "auto" ? { not: null } : null,
     },
-    include: { brand: true, images: true },
+    include: {
+      brand: true,
+      category: { select: { name: true } },
+      barcodes: { select: { code: true } },
+      nutritionFeatures: { select: { sugarsPer100g: true, fiberPer100g: true, saltPer100g: true } },
+      createdBy: { select: { displayName: true, email: true } },
+      aiAnalyses: { select: { kind: true, confidence: true, prediction: true } },
+      matchChecks: { select: { confidence: true } },
+    },
     orderBy: { createdAt: "desc" },
+  });
+
+  const products: PendingProduct[] = rows.map((p) => ({
+    id: p.id,
+    name: p.name,
+    productType: p.productType,
+    subbrand: p.subbrand,
+    variant: p.variant,
+    brand: p.brand ? { name: p.brand.name, logoUrl: p.brand.logoUrl } : null,
+    imageUrl: p.imageUrl,
+    kcalPer100g: p.kcalPer100g,
+    proteinPer100g: p.proteinPer100g,
+    carbsPer100g: p.carbsPer100g,
+    fatPer100g: p.fatPer100g,
+    externalSource: p.externalSource,
+    createdAtLabel: createdAtFormat.format(p.createdAt),
+    confidencePercent: productConfidencePercent(p.aiAnalyses, p.matchChecks),
+    packageSizeText: p.packageSizeText,
+    productCategory: p.productCategory,
+    categoryName: p.category?.name ?? null,
+    barcodes: p.barcodes.map((b) => b.code),
+    servingSizeGrams: p.servingSizeGrams,
+    servingSizeUnitSingular: p.servingSizeUnitSingular,
+    ingredientsText: p.ingredientsText,
+    allergens: p.allergens,
+    additives: p.additives,
+    createdBy: p.createdBy ? p.createdBy.displayName || p.createdBy.email : null,
+    extended: {
+      saturatedFat: p.saturatedFatPer100g,
+      unsaturatedFat: p.unsaturatedFatPer100g,
+      transFat: p.transFatPer100g,
+      cholesterol: p.cholesterolPer100g,
+      vitaminA: p.vitaminAPer100g,
+      vitaminC: p.vitaminCPer100g,
+      sugar: p.nutritionFeatures?.sugarsPer100g ?? null,
+      fiber: p.nutritionFeatures?.fiberPer100g ?? null,
+      salt: p.nutritionFeatures?.saltPer100g ?? null,
+    },
+    micronutrients: asNumberRecord(p.micronutrientsPer100g),
+    dietaryTags: Object.values(asStringRecord(p.dietaryTags)),
+  }));
+
+  const createdAtMs = new Map(rows.map((p) => [p.id, p.createdAt.getTime()]));
+  products.sort((a, b) => {
+    if (sort === "alpha") return a.name.localeCompare(b.name, "da");
+    if (sort === "confidence") {
+      // Uden måling nederst.
+      const ca = a.confidencePercent ?? Infinity;
+      const cb = b.confidencePercent ?? Infinity;
+      if (ca !== cb) return ca - cb;
+    }
+    return createdAtMs.get(b.id)! - createdAtMs.get(a.id)!;
   });
 
   const tabClass = (active: boolean) =>
     `rounded-md px-3 py-1.5 text-sm ${active ? "bg-hf-green-dark text-hf-white" : "border border-border-strong text-text-secondary"}`;
+  const activeSort = SORTS.find((s) => s.key === sort)!;
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-lg font-semibold text-text-primary">{t(admin.locale, "products_title")}</h1>
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="text-lg font-semibold text-text-primary">{t(admin.locale, "products_title")}</h1>
+        <details className="relative">
+          <summary className="flex cursor-pointer list-none items-center gap-2 rounded-md border border-border-strong bg-surface-2 px-3 py-1.5 text-sm text-text-secondary [&::-webkit-details-marker]:hidden">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <path d="M3 6h18M6 12h12M10 18h4" />
+            </svg>
+            Sortér: {activeSort.label}
+          </summary>
+          <div className="absolute right-0 z-10 mt-1 flex min-w-[240px] flex-col rounded-md border border-border-strong bg-surface-2 py-1 shadow-lg">
+            {SORTS.map((s) => (
+              <Link
+                key={s.key}
+                href={`/admin/products?tab=${tab}&sort=${s.key}`}
+                className={`px-3 py-1.5 text-sm hover:bg-hf-tan ${s.key === sort ? "font-medium text-hf-green-dark" : "text-text-secondary"}`}
+              >
+                {s.label}
+              </Link>
+            ))}
+          </div>
+        </details>
+      </div>
       <div className="flex gap-2">
-        <Link href="/admin/products?tab=user" className={tabClass(tab === "user")}>
+        <Link href={`/admin/products?tab=user&sort=${sort}`} className={tabClass(tab === "user")}>
           {t(admin.locale, "products_tab_user")}
         </Link>
-        <Link href="/admin/products?tab=auto" className={tabClass(tab === "auto")}>
+        <Link href={`/admin/products?tab=auto&sort=${sort}`} className={tabClass(tab === "auto")}>
           {t(admin.locale, "products_tab_auto")}
         </Link>
       </div>
-      <p className="text-sm text-text-secondary">Nyeste øverst.</p>
       {products.length === 0 ? (
         <p className="text-sm text-text-secondary">Ingen produkter afventer godkendelse i denne fane.</p>
       ) : (
         <div className="flex flex-col gap-4">
           {products.map((product) => (
-            <PendingProductCard
-              key={product.id}
-              product={{ ...product, createdAt: product.createdAt.toISOString() }}
-              hasExtra={Boolean(product.servingSizeGrams || product.ingredientsText || product.allergens.length)}
-            />
+            <PendingProductCard key={product.id} product={product} />
           ))}
         </div>
       )}
     </div>
+  );
+}
+
+function asStringRecord(value: unknown): Record<string, string> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+  return Object.fromEntries(
+    Object.entries(value as Record<string, unknown>).filter(
+      (entry): entry is [string, string] => typeof entry[1] === "string" && entry[1].trim() !== "",
+    ),
   );
 }

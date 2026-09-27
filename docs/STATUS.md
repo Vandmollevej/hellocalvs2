@@ -23,6 +23,15 @@ Last updated: 2026-09-27
 
 - Hver integrations side er nu en kopi af iOS' Health-adgangsark (Tillad/Tillad ikke, Slå alle til, skrive-/læse-grupper med kategoriikoner). Designmanualen har nyt afsnit 9 med live eksempel. Mangler brugerens visuelle godkendelse.
 
+## 2026-09-27: Admin "Nye produkter" — fuldt produktkort
+
+- Kortet foldes ud i 3 sektioner: Produkt (logo, produkttype, brand, subbrand,
+  variant), Energifordeling (makroer + fordelingsbjælke), Produktdetaljer (alt øvrigt).
+- Sikkerheds-% (laveste AI-/billedsikkerhed, `src/lib/pending-product-confidence.ts`)
+  ved fold-ud-pilen; "Oprettet: dato, kl." over knapperne; større billeder; ringen om pilen fjernet.
+- Sortering øverst til højre: tidspunkt, alfabetisk, sikkerhedsmargin (`?sort=`).
+- PATCH `/api/admin/products/[id]` gemmer nu også produkttype/subbrand/variant.
+
 ## 2026-09-27: Admin-menu efter brugerens struktur + agenter/jobs/roadmap/MCP
 
 - Sidebjælken i `AdminShell` følger nu brugerens grupper (DECISIONS 2026-09-27).
