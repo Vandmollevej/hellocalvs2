@@ -21,11 +21,37 @@ function contextLines({ barcode, context }: ContextLines, languageLabel = "Prior
 
 // --- Forside ---------------------------------------------------------------
 
-export const FRONT_PROMPT_VERSION = "front-v1-2026-09-24-regions";
+// front-v3 (2026-09-27): logo-felterne fra front-v2-2026-09-26 lå kun i
+// forside-rutens egen kopi af prompten, så forsiden fik ingen usikkerheds-
+// rammer, og den natlige genkørsel spurgte uden logo-felter. Nu én prompt.
+export const FRONT_PROMPT_VERSION = "front-v3-2026-09-27";
+
+// Logo-/produktboks i ImageBox-format ({ x, y, width, height }, 0-1), som
+// fritskrabningen (src/lib/image-cutout-jobs.ts) bruger.
+const IMAGE_BOX_SCHEMA = {
+  anyOf: [
+    {
+      type: "object",
+      properties: {
+        x: { type: "number" },
+        y: { type: "number" },
+        width: { type: "number" },
+        height: { type: "number" },
+      },
+      required: ["x", "y", "width", "height"],
+      additionalProperties: false,
+    },
+    { type: "null" },
+  ],
+};
 
 export const FRONT_SCHEMA = {
   type: "object",
   properties: {
+    logoText: { type: ["string", "null"] },
+    logoConfidence: { type: "number" },
+    logoBox: IMAGE_BOX_SCHEMA,
+    productBox: IMAGE_BOX_SCHEMA,
     brand: { type: ["string", "null"] },
     subbrand: { type: ["string", "null"] },
     productName: { type: ["string", "null"] },
@@ -50,6 +76,10 @@ export const FRONT_SCHEMA = {
     ...REGION_SCHEMA_PROPERTIES,
   },
   required: [
+    "logoText",
+    "logoConfidence",
+    "logoBox",
+    "productBox",
     "brand",
     "subbrand",
     "productName",
@@ -73,7 +103,11 @@ export const FRONT_SYSTEM = [
   "productName = hvad varen faktisk er, fx Letmælk.",
   "variant = smag/type/styrke/fedtprocent eller anden variant, når den tydeligt er en variant.",
   "packageSizeText = synlig mængde/størrelse, fx 1 L eller 500 g.",
-  "Genkend logo visuelt; stol ikke kun på almindelig OCR.",
+  "Genkend logo visuelt; stol ikke kun på almindelig OCR. Logoer kan være stiliserede, skrå, håndskrevne eller grafiske.",
+  "logoText = navnet som hovedlogoet viser, stavet som mærket selv staver det (uden ® og ™). null hvis intet logo ses.",
+  "logoConfidence = 0-1 hvor sikker du er på logoText.",
+  "logoBox = rektangel om hovedlogoet (kun logoet, ikke hele emballagen) i brøkdele 0-1 af billedets bredde/højde: x,y = øverste venstre hjørne. null hvis intet logo ses.",
+  "productBox = rektangel om hele den fysiske vare/emballage i billedet, samme format. null hvis varen ikke kan afgrænses.",
   "Brug ikke producentens juridiske firmanavn fra småt bagsidetekst som brand, medmindre det også tydeligt er mærket på forsiden.",
   "Prioritér de oplyste sprog, men de er IKKE en whitelist. Genkend andre sprog hvis emballagen kræver det.",
   "Hvis et felt ikke kan afgøres, returnér null og lav confidence lavere. Gæt ikke.",
@@ -93,7 +127,10 @@ export function frontText(input: ContextLines & { knownBrands: string[] }) {
 
 // --- Næringsdeklaration -----------------------------------------------------
 
-export const NUTRITION_PROMPT_VERSION = "nutrition-v2-2026-09-25-micros";
+// v3 (2026-09-27): pakningens samlede indhold er ikke en portion — test med
+// en 1 L mælkekarton gav "1 Liter" som alternativ portion uden kcal, hvilket
+// ellers bliver til en admin-fejlrapport ved hver oprettelse.
+export const NUTRITION_PROMPT_VERSION = "nutrition-v3-2026-09-27";
 
 const NULLABLE_NUMBER = { type: ["number", "null"] };
 
@@ -174,6 +211,7 @@ export const NUTRITION_SYSTEM = [
   "kcalPer100g/proteinPer100g/carbsPer100g/fatPer100g skal være null hvis korrekt pr.100-værdi ikke kan læses.",
   "Hvis tabellen kun viser pr. portion, sæt basis=portion og lad pr.100-felter være null.",
   "Find også alternative portionsangivelser såsom pr. glas, skive, stk. eller portion, når de faktisk står på emballagen.",
+  "Pakningens samlede indhold (fx 1 Liter eller 500 g) er ikke en portion og skal ikke med i alternativeServings.",
   `micronutrients: alle øvrige næringsstoffer der faktisk står i tabellen (vitaminer, mineraler, fedtsyrer, kolesterol osv.), pr. 100 g/ml omregnet til disse enheder: ${MICRO_UNITS}.`,
   "tolerance = producentens egen ± for netop den værdi, når den står på emballagen (samme enhed), ellers null. Beregn aldrig selv en ±.",
   "Tom micronutrients-liste hvis tabellen ikke viser flere næringsstoffer.",

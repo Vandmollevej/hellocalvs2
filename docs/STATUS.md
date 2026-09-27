@@ -2,6 +2,47 @@
 
 Last updated: 2026-09-27
 
+## 2026-09-27: Opret vare — end-to-end-test med rigtig vare (EDEKA H-Milch) + rettelser
+
+Testet uden DB mod OpenAI med de live prompter, rembg via
+`scripts/image-agent/cutout.py` og tesseract.js (Node) på to fotos af en
+tysk mælkekarton. Testscripts ligger kun i sessionens scratchpad.
+
+- Virker: forside (EDEKA / Herzstücke / Fettarme H-Milch / 1 Liter, logo- og
+  produktboks rigtige, brand-match 1,0), energi og indhold (alle værdier
+  præcist som kartonen, ingredienser "Fettarme Milch, Laktase", begge
+  flueben på ét foto), fritskrabning af logo og produkt (proportioner
+  bevaret). Ca. 12.400 tokens pr. vare (forside ~4.300, energi ~4.500,
+  indhold ~3.700).
+- Fejlede og er rettet:
+  - Lokal OCR på hele kamerabilledet gav volapyk (~47 %), som blev sendt til
+    AI'en som "støtte" og kunne ende i ingredienslisten. Nu bruges lokal
+    tekst kun, når den er læsbar (`usableOcrText`), og næring/indhold læses
+    med tesseracts tabel-tilstand.
+  - `parseNutritionText` kendte kun dansk/engelsk og ikke "kJ/kcal 198/47".
+    Ny linjebaseret parser: alle regionernes sprog, "g" læst som 9/0 rettes
+    efter EU's afrundingsregler, og tallene skal passe med fedt×9 +
+    kulhydrat×4 + protein×4. Test på rigtig OCR-tekst + etiketter på flere
+    sprog: 27/28 præcise, 1 afvist (AI overtager), 0 forkerte (før: 7/28).
+  - Forside-ruten havde sin egen prompt uden usikkerheds-regions, og den
+    natlige genkørsel brugte en ældre prompt uden logo-felter. Nu én prompt
+    (`front-v3-2026-09-27` i `src/lib/product-ai-tasks.ts`).
+  - AI'en lagde "1 Liter" ind som alternativ portion uden kcal (gav en
+    admin-fejlrapport pr. vare). Prompt `nutrition-v3-2026-09-27`.
+  - rembg-modellen (176 MB) hentes nu ved build af image-agent i stedet for
+    ved første fritskrabning efter hver genstart.
+  - Det fritskrabede logo fik et stykke af "Herzstücke"-teksten med. Nu
+    fjerner `drop_edge_fragments` (kun BRAND_LOGO) stumper, som
+    beskæringskanten har skåret over, samt bittesmå løse stumper.
+- Ikke testet: Google Vision (den lokale Google-nøgle må ikke kalde Vision;
+  der mangler en `GOOGLE_VISION_API_KEY`). Geo-position fra fotoet findes
+  ikke: EXIF fjernes bevidst (docs/PRIVACY.md).
+- Farvekorrektion: AI foreslår kun parametre, sharp anvender dem lokalt —
+  1500×2000 før og efter. Ikke bygget ind i appen (afventer brugeren).
+- Lokal OCR læser et nærbillede af deklarationen med ~90 %, men intet på et
+  foto taget på afstand. "Lokal først, ChatGPT kun ved usikkerhed" er
+  derfor muligt, men ikke slået til (afventer brugeren).
+
 ## 2026-09-27: Guide-builder (startup-guide + tooltips) i admin
 
 - Ny side `/admin/guide-builder` (menu: Design og opbygning; link fra

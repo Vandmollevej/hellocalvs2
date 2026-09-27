@@ -18,6 +18,8 @@ import io
 import logging
 import os
 
+import cv2  # følger med rembg (opencv-python-headless)
+import numpy as np
 from PIL import Image
 from rembg import remove
 
@@ -54,12 +56,53 @@ def crop(image, box):
     return image.crop((left, top, right, bottom))
 
 
-def make_cutout(source_path, box):
+def drop_edge_fragments(cutout):
+    """Fjerner forgrundsstumper, som beskæringskanten har skåret over.
+
+    Logo-boksen får luft om sig, og så kommer der tit et stykke af teksten
+    under/ved siden af logoet med (test 2026-09-27: "Herzstücke" under
+    EDEKA-logoet). Fjernes: stumper, der rører kanten, og bittesmå stumper
+    (under 1 % af den største del) uden for den største dels område, fx
+    prikkerne over et afskåret "ü". Den største del fjernes aldrig, så et
+    logo, der selv rører kanten, bevares. Ordlogoer med separate bogstaver
+    rører ikke kanten, og deres bogstaver er ikke bittesmå, så de bevares.
+    """
+    alpha = np.array(cutout.getchannel("A"))
+    mask = (alpha > 16).astype(np.uint8)
+    count, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
+    if count <= 2:
+        return cutout
+    height, width = mask.shape
+    largest = 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
+    lx, ly, lw, lh, larea = (int(v) for v in stats[largest])
+    drop = np.zeros(mask.shape, dtype=bool)
+    for index in range(1, count):
+        if index == largest:
+            continue
+        x, y, w, h, area = (int(v) for v in stats[index])
+        touches_edge = x == 0 or y == 0 or x + w >= width or y + h >= height
+        cx, cy = centroids[index]
+        outside_largest = not (lx <= cx <= lx + lw and ly <= cy <= ly + lh)
+        if touches_edge or (area < larea * 0.01 and outside_largest):
+            drop |= labels == index
+    if not drop.any():
+        return cutout
+    # Næsten usynlig "tåge" (alpha <= 16) omkring de fjernede stumper ville
+    # ellers holde den efterfølgende beskæring (getbbox) lige så stor.
+    alpha[drop | (mask == 0)] = 0
+    cleaned = cutout.copy()
+    cleaned.putalpha(Image.fromarray(alpha))
+    return cleaned
+
+
+def make_cutout(source_path, box, drop_fragments=False):
     with Image.open(source_path) as source:
         cropped = crop(source.convert("RGB"), box)
     buffer = io.BytesIO()
     cropped.save(buffer, format="PNG")
     cutout = Image.open(io.BytesIO(remove(buffer.getvalue()))).convert("RGBA")
+    if drop_fragments:
+        cutout = drop_edge_fragments(cutout)
     bbox = cutout.getbbox()
     if not bbox:
         raise ValueError("background removal left nothing")
@@ -70,7 +113,7 @@ def fetch_pending_jobs(conn):
     with conn.cursor() as cur:
         cur.execute(
             """
-            SELECT id, "sourceUrl", "cropBox"
+            SELECT id, "sourceUrl", "cropBox", kind
             FROM image_cutout_jobs
             WHERE status = 'PENDING'
             ORDER BY "createdAt" ASC
@@ -81,9 +124,9 @@ def fetch_pending_jobs(conn):
         return cur.fetchall()
 
 
-def process_job(conn, job_id, source_url, crop_box):
+def process_job(conn, job_id, source_url, crop_box, kind):
     try:
-        cutout = make_cutout(local_path(source_url), crop_box)
+        cutout = make_cutout(local_path(source_url), crop_box, drop_fragments=kind == "BRAND_LOGO")
         os.makedirs(os.path.join(OUTPUT_DIR, CUTOUT_DIR), exist_ok=True)
         cutout.save(os.path.join(OUTPUT_DIR, CUTOUT_DIR, f"{job_id}.png"), format="PNG")
         result_url = f"{PUBLIC_PATH_PREFIX}/{CUTOUT_DIR}/{job_id}.png"
@@ -169,6 +212,6 @@ def apply_finished_jobs(conn):
 
 
 def run_cutouts(conn):
-    for job_id, source_url, crop_box in fetch_pending_jobs(conn):
-        process_job(conn, job_id, source_url, crop_box)
+    for job_id, source_url, crop_box, kind in fetch_pending_jobs(conn):
+        process_job(conn, job_id, source_url, crop_box, kind)
     apply_finished_jobs(conn)

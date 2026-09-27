@@ -9,8 +9,8 @@ import { HfScreen } from "@/components/HfScreen";
 import { ScanningOverlay } from "@/components/hf/ScanningOverlay";
 import { HfBarcodeIcon } from "@/components/hf/HfBarcodeIcon";
 import { CaptureCheckOverlay } from "@/components/hf/CaptureCheckOverlay";
-import { parseNutritionText } from "@/lib/product-ocr";
-import { extractTextPrioritized } from "@/lib/product-ocr-prioritized";
+import { findIngredientsSection, parseNutritionText } from "@/lib/product-ocr";
+import { extractTextPrioritized, usableOcrText } from "@/lib/product-ocr-prioritized";
 import { buildBarcodeContext } from "@/lib/barcode-context";
 import { PRODUCT_DRAFT_STORAGE_KEY, type ProductCreateDraft } from "@/lib/product-draft";
 import type {
@@ -337,13 +337,14 @@ function KameraOpretContent() {
       try {
         const localOcr = await extractTextPrioritized(photo!, context.primaryOcrLanguages);
         if (cancelled) return;
+        const usable = usableOcrText(localOcr);
 
-        if (localOcr.text) {
+        if (usable) {
           setAnalyzingLabel(t("cameraCreate.searchingDatabase"));
           const duplicateResponse = await fetch("/api/products/recognize-text", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text: localOcr.text }),
+            body: JSON.stringify({ text: usable }),
           });
           if (duplicateResponse.ok) {
             const duplicate = (await duplicateResponse.json()) as { product: { id: string } | null };
@@ -416,12 +417,18 @@ function KameraOpretContent() {
       const barcode = draftRef.current.barcodeValue;
       if (!barcode) return;
       const context = buildBarcodeContext(barcode, draftRef.current.marketRegion ?? region);
+      // Kun læsbar lokal OCR-tekst bruges — som støtte til AI'en og som
+      // reserve. Ulæselig tekst (fx fra et foto med meget baggrund) må
+      // aldrig ende i ingredienslisten (test 2026-09-27).
       let localOcrText = "";
 
       try {
-        const localOcr = await extractTextPrioritized(photo!, context.primaryOcrLanguages);
+        const localOcr = await extractTextPrioritized(photo!, context.primaryOcrLanguages, undefined, {
+          tableLayout: true,
+        });
         if (cancelled) return;
-        localOcrText = localOcr.text;
+        const usable = usableOcrText(localOcr);
+        localOcrText = usable ? findIngredientsSection(usable) ?? usable : "";
 
         const response = await fetch("/api/ai/extract-ingredients-photo", {
           method: "POST",
@@ -430,7 +437,7 @@ function KameraOpretContent() {
             photo,
             barcode,
             marketRegion: context.marketRegion,
-            ocrText: localOcr.text,
+            ocrText: usable,
           }),
         });
         const data = (await response.json()) as {
@@ -443,7 +450,7 @@ function KameraOpretContent() {
           draftRef.current.analysisIds = { ...draftRef.current.analysisIds, ingredients: data.analysisId };
         }
         if (data.result?.ingredientsText) markDone("ingredienser");
-        draftRef.current.ingredientsText = data.result?.ingredientsText || localOcr.text || undefined;
+        draftRef.current.ingredientsText = data.result?.ingredientsText || localOcrText || undefined;
       } catch {
         if (localOcrText) draftRef.current.ingredientsText = localOcrText;
       } finally {
@@ -480,15 +487,18 @@ function KameraOpretContent() {
       let ingredientsOnSamePhoto = false;
 
       try {
-        const localOcr = await extractTextPrioritized(photo!, context.primaryOcrLanguages);
-        localParsed = parseNutritionText(localOcr.text);
+        const localOcr = await extractTextPrioritized(photo!, context.primaryOcrLanguages, undefined, {
+          tableLayout: true,
+        });
+        const usable = usableOcrText(localOcr);
+        localParsed = usable ? parseNutritionText(usable) : null;
 
         setAnalyzingLabel(t("cameraCreate.analyzingWithAi"));
         const requestBody = JSON.stringify({
           photo,
           barcode,
           marketRegion: context.marketRegion,
-          ocrText: localOcr.text,
+          ocrText: usable,
         });
         // Samme foto aflæses også som ingrediensliste, parallelt — står den
         // ved siden af næringstabellen, er ingrediens-trinnet klaret.

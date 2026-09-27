@@ -31,43 +31,176 @@ export function hasMeaningfulText(text: string): boolean {
   return letters.length >= 4;
 }
 
-// Matcher både danske og engelske næringsdeklarationslabels, pr. 100 g/ml.
-// Kun linjer med et eksplicit "pr. 100g/100ml"-tal accepteres — ellers kan en
-// portionsstørrelse fejlagtigt blive læst som pr.-100g-værdi.
-const PATTERNS: Record<keyof ParsedNutrition, RegExp[]> = {
-  kcalPer100g: [
-    /energi[^0-9]{0,20}([0-9]+(?:[.,][0-9]+)?)\s*kcal/i,
-    /(?:^|\s)([0-9]+(?:[.,][0-9]+)?)\s*kcal/i,
-  ],
-  proteinPer100g: [/protein[^0-9]{0,10}([0-9]+(?:[.,][0-9]+)?)\s*g/i],
-  carbsPer100g: [
-    /kulhydrat(?:er)?[^0-9]{0,10}([0-9]+(?:[.,][0-9]+)?)\s*g/i,
-    /carbohydrate[s]?[^0-9]{0,10}([0-9]+(?:[.,][0-9]+)?)\s*g/i,
-  ],
-  fatPer100g: [/fedt[^0-9]{0,10}([0-9]+(?:[.,][0-9]+)?)\s*g/i, /fat[^0-9]{0,10}([0-9]+(?:[.,][0-9]+)?)\s*g/i],
+// Næringstabellens hovedlinjer på regionernes sprog (src/lib/regions.ts) +
+// engelsk, inkl. typiske OCR-læsninger (ß -> B). Linjen skal STARTE med
+// labelen, så underposter som "heraf mættede fedtsyrer" / "davon Zucker" /
+// "of which saturates" aldrig læses som fedt eller kulhydrat, og
+// "fettarme Milch" ikke er "Fett" (ordgrænse efter labelen).
+const LABELS = {
+  energy: ["energi", "energie", "energy", "brennwert", "énergie", "energia", "valor energético", "valor energetico", "energetische waarde"],
+  fat: ["fedt", "fett", "fat", "vet", "vetten", "matières grasses", "matieres grasses", "lipides", "grassi", "grasas"],
+  carbs: ["kulhydrat", "kulhydrater", "kolhydrat", "kolhydrater", "karbohydrat", "karbohydrater", "kohlenhydrate", "kohlenhydrat", "carbohydrate", "carbohydrates", "koolhydraten", "koolhydraat", "glucides", "carboidrati", "hidratos de carbono"],
+  protein: ["protein", "proteiner", "eiweiß", "eiweiss", "eiweis", "eiweib", "eiwit", "eiwitten", "protéines", "proteines", "proteine", "proteínas", "proteinas"],
+} as const;
+
+type MacroKey = "fat" | "carbs" | "protein";
+
+const NUMBER = "(\\d+(?:[.,]\\d+)?)";
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+// Tabelkanter giver ofte et kort støjord foran labelen ("Så Fett 1,50",
+// "3 Kohlenhydrate"), så ét ord på højst 3 tegn tillades først. Underposter
+// starter med længere ord (heraf/davon/varav/dont/waarvan) eller ord, der
+// ikke er labels ("of which", "di cui"), og rammes derfor ikke.
+function lineStartPattern(labels: readonly string[]) {
+  return new RegExp(
+    `^[\\s\\-–•*·|]*(?:\\S{1,3}\\s+)?(?:${labels.map(escapeRegExp).join("|")})(?![\\p{L}])`,
+    "iu",
+  );
+}
+
+const LINE_START: Record<keyof typeof LABELS, RegExp> = {
+  energy: lineStartPattern(LABELS.energy),
+  fat: lineStartPattern(LABELS.fat),
+  carbs: lineStartPattern(LABELS.carbs),
+  protein: lineStartPattern(LABELS.protein),
 };
 
-function matchFirst(text: string, patterns: RegExp[]): number | null {
-  for (const pattern of patterns) {
-    const match = text.match(pattern);
-    if (match) {
-      const value = parseFloat(match[1].replace(",", "."));
-      if (Number.isFinite(value)) return value;
+function toNumber(text: string) {
+  const value = parseFloat(text.replace(",", "."));
+  return Number.isFinite(value) ? value : null;
+}
+
+// Tesseract læser ofte enheden "g" som 9 eller 0 ("1,5g" -> "1,50",
+// "3,4g" -> "3,49"). Uden enhed og med flere decimaler end EU's
+// afrundingsregler tillader for makroer (højst én), eller over 100 g pr.
+// 100 g, er sidste ciffer derfor enheden og fjernes.
+function readMacroValue(rest: string): { value: number; corrected: boolean } | null {
+  const match = new RegExp(`^[^0-9<]*?(<\\s*)?${NUMBER}\\s*(mg|g)?`, "iu").exec(rest);
+  if (!match || match[1]) return null; // "<0,5 g" er en grænse, ikke en værdi
+  let digits = match[2];
+  const hasUnit = Boolean(match[3]);
+  if (match[3]?.toLowerCase() === "mg") return null;
+  let corrected = false;
+  if (!hasUnit && /[90]$/.test(digits)) {
+    const decimals = digits.split(/[.,]/)[1]?.length ?? 0;
+    const whole = toNumber(digits) ?? 0;
+    if (decimals >= 2 || (decimals === 0 && whole > 100)) {
+      digits = digits.slice(0, -1).replace(/[.,]$/, "");
+      corrected = true;
     }
+  }
+  const value = toNumber(digits);
+  return value === null || value > 100 ? null : { value, corrected };
+}
+
+// "Energi 198 kJ / 47 kcal", "Brennwert kJ/kcal 198/47", "47 kcal" eller
+// kun kJ (omregnes med EU's faktor 4,184).
+function readEnergy(text: string): { kcal: number; kj: number | null } | null {
+  const kcal = new RegExp(`${NUMBER}\\s*kcal`, "i").exec(text);
+  const kjBefore = new RegExp(`${NUMBER}\\s*kj`, "i").exec(text);
+  if (kcal) return { kcal: toNumber(kcal[1])!, kj: kjBefore ? toNumber(kjBefore[1]) : null };
+  if (/kj\s*\/\s*kcal/i.test(text)) {
+    const pair = new RegExp(`${NUMBER}\\s*/\\s*${NUMBER}`).exec(text.replace(/kj\s*\/\s*kcal/i, ""));
+    if (pair) return { kcal: toNumber(pair[2])!, kj: toNumber(pair[1]) };
+  }
+  if (kjBefore) {
+    const kj = toNumber(kjBefore[1])!;
+    return { kcal: Math.round(kj / 4.184), kj };
   }
   return null;
 }
 
-// Returnerer alle fire pr.-100g-værdier, eller null hvis blot ét af dem ikke
-// kunne udledes med sikkerhed af den rå OCR-tekst (jf. krav om at AI-vision
-// kun steppes ind når regex-parsingen fejler).
-export function parseNutritionText(rawText: string): ParsedNutrition | null {
-  const kcalPer100g = matchFirst(rawText, PATTERNS.kcalPer100g);
-  const proteinPer100g = matchFirst(rawText, PATTERNS.proteinPer100g);
-  const carbsPer100g = matchFirst(rawText, PATTERNS.carbsPer100g);
-  const fatPer100g = matchFirst(rawText, PATTERNS.fatPer100g);
+export type DetailedNutritionParse = {
+  values: Partial<ParsedNutrition> & { energyKj?: number | null };
+  // Felter hvor et "g" læst som ciffer er fjernet — skal vises/tjekkes.
+  corrected: MacroKey[];
+  // Fedt x 9 + kulhydrat x 4 + protein x 4 ligger tæt på den læste kcal.
+  plausible: boolean;
+};
 
-  if (kcalPer100g === null || proteinPer100g === null || carbsPer100g === null || fatPer100g === null) {
+// Linjebaseret aflæsning af en næringstabel (pr. 100 g/ml-kolonnen er
+// første tal efter labelen). Ren funktion — bruges af parseNutritionText og
+// kan testes direkte mod rå OCR-tekst.
+export function parseNutritionDetailed(rawText: string): DetailedNutritionParse {
+  const lines = rawText
+    .split(/\r?\n/)
+    .map((line) => line.replace(/\s+/g, " ").trim())
+    .filter(Boolean);
+  const values: DetailedNutritionParse["values"] = {};
+  const corrected: MacroKey[] = [];
+
+  lines.forEach((line, index) => {
+    if (values.kcalPer100g === undefined && (LINE_START.energy.test(line) || /kj\s*\/\s*kcal/i.test(line))) {
+      // kcal står nogle gange på linjen under kJ — den oplyste kcal vinder
+      // over en omregning fra kJ.
+      const withNext = `${line} ${lines[index + 1] ?? ""}`;
+      const energy = /kcal/i.test(line) ? readEnergy(line) : readEnergy(/kcal/i.test(withNext) ? withNext : line);
+      if (energy && energy.kcal <= 900) {
+        values.kcalPer100g = energy.kcal;
+        values.energyKj = energy.kj;
+      }
+      return;
+    }
+    const macros: [MacroKey, keyof ParsedNutrition][] = [
+      ["fat", "fatPer100g"],
+      ["carbs", "carbsPer100g"],
+      ["protein", "proteinPer100g"],
+    ];
+    for (const [key, field] of macros) {
+      if (values[field] !== undefined) continue;
+      const start = LINE_START[key].exec(line);
+      if (!start) continue;
+      const read = readMacroValue(line.slice(start[0].length));
+      if (read) {
+        values[field] = read.value;
+        if (read.corrected) corrected.push(key);
+      }
+      break;
+    }
+  });
+
+  // Reserve, når OCR har tabt "Energi"-labelen: første linje med kcal, som
+  // ikke er referenceindtaget ("8400 kJ/2000 kcal").
+  if (values.kcalPer100g === undefined) {
+    const line = lines.find(
+      (candidate) => /\d\s*kcal/i.test(candidate) && !/refer|erwachsen|voksen|vuxen|adult|\bri\b/i.test(candidate),
+    );
+    const energy = line ? readEnergy(line) : null;
+    if (energy && energy.kcal <= 900) {
+      values.kcalPer100g = energy.kcal;
+      values.energyKj = energy.kj;
+    }
+  }
+
+  const { kcalPer100g, fatPer100g, carbsPer100g, proteinPer100g } = values;
+  let plausible = false;
+  if (kcalPer100g !== undefined && fatPer100g !== undefined && carbsPer100g !== undefined && proteinPer100g !== undefined) {
+    const atwater = 9 * fatPer100g + 4 * carbsPer100g + 4 * proteinPer100g;
+    plausible =
+      fatPer100g + carbsPer100g + proteinPer100g <= 102 &&
+      Math.abs(atwater - kcalPer100g) <= Math.max(20, kcalPer100g * 0.2);
+  }
+  return { values, corrected, plausible };
+}
+
+// Returnerer alle fire pr.-100g-værdier, eller null hvis blot ét af dem ikke
+// kunne udledes af den rå OCR-tekst, eller hvis tallene ikke hænger sammen
+// (fedt x 9 + kulhydrat x 4 + protein x 4 skal ramme kcal inden for 20 %) —
+// så overtager AI-vision.
+export function parseNutritionText(rawText: string): ParsedNutrition | null {
+  const { values, plausible } = parseNutritionDetailed(rawText);
+  const { kcalPer100g, proteinPer100g, carbsPer100g, fatPer100g } = values;
+  if (
+    !plausible ||
+    kcalPer100g === undefined ||
+    proteinPer100g === undefined ||
+    carbsPer100g === undefined ||
+    fatPer100g === undefined
+  ) {
     return null;
   }
   return { kcalPer100g, proteinPer100g, carbsPer100g, fatPer100g };
@@ -78,9 +211,11 @@ export function parseNutritionText(rawText: string): ParsedNutrition | null {
 // næringsfotoet: teksten efter en "Ingredienser:"-overskrift, frem til
 // næringstabellen eller slutningen. null hvis der ikke er en tydelig liste.
 const INGREDIENTS_HEADING =
-  /(?:ingredienser|ingredients|ingrediensar|zutaten|ingrédients|ingrediënten|ainesosat|składniki)\s*:?/i;
+  /(?:ingredienser|ingredients|ingrediensar|zutaten|ingrédients|ingrediënten|ingredienti|ingredientes|ainesosat|składniki)\s*:?/i;
+// Næringstabellens start. Tesseract læser tit "Ä" som "Å" ("NÅHRWERTE"), og
+// tyske tabeller starter med "Durchschnittliche Nährwerte".
 const INGREDIENTS_END =
-  /(?:næringsindhold|næringsdeklaration|næringsværdi|nutrition|näringsvärde|nährwert|valeurs nutritionnelles|voedingswaarde)/i;
+  /(?:næringsindhold|næringsdeklaration|næringsværdi|nutrition|näringsvärde|n[äåa]hrwert|durchschnittliche|brennwert|valeurs nutritionnelles|voedingswaarde|valori nutrizionali|informaci[óo]n nutricional)/i;
 
 export function findIngredientsSection(rawText: string): string | null {
   const text = rawText.replace(/\s+/g, " ");
@@ -89,6 +224,7 @@ export function findIngredientsSection(rawText: string): string | null {
   let section = text.slice(heading.index + heading[0].length);
   const end = INGREDIENTS_END.exec(section);
   if (end) section = section.slice(0, end.index);
-  section = section.trim();
+  // OCR-støj efter listens afsluttende punktum ("Laktase. 1 ww") fjernes.
+  section = section.trim().replace(/\.(?:\s+\S{1,2}){1,3}$/u, ".");
   return section.replace(/[^\p{L}]/gu, "").length >= 12 ? section : null;
 }

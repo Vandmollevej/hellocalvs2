@@ -2,6 +2,21 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-27: Lokal OCR bruges kun, når den er læsbar; én forside-prompt
+
+- Lokal OCR-tekst (tesseract.js) sendes kun med som støtte til AI'en og
+  bruges kun som reserve, når den er læsbar (`usableOcrText`: sikkerhed
+  ≥ 72 % og mindst 4 tegn). Ulæselig tekst må aldrig ende i et felt.
+- `parseNutritionText` accepterer kun tal, der hænger sammen (fedt×9 +
+  kulhydrat×4 + protein×4 inden for 20 % af kcal); ellers overtager AI.
+  Et "g" læst som ciffer fjernes kun, når tallet ellers bryder EU's
+  afrundingsregler (flere end én decimal for makroer, eller over 100 g).
+- Forsidens prompt, skema og version ligger ét sted
+  (`src/lib/product-ai-tasks.ts`) og bruges af både ruten og den natlige
+  genkørsel.
+- Den midlertidige AI-først-dispensation fra 2026-09-17 gælder stadig.
+  Testen viste, at lokal OCR kun kan bære et nærbillede af deklarationen.
+
 ## 2026-09-26: EN fast designregel for skrift, farver og knapper
 
 Brugerens krav (2026-09-26, med skærmbillede af Points-siden): "Du arbejder
