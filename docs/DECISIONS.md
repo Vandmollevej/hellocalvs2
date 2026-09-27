@@ -2953,3 +2953,21 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
 - Bevidst undtaget: footer, fliser, statistik-kort, ikonknapper (44 px), små
   filter-/periodeknapper og textarea. Hello Docs notched felt følger nu også
   48 px (før 60 px).
+## 2026-09-27: Admin: Statistik
+
+- Nyt hovedpunkt "Statistik" i admin (`/admin/statistics`): periode (i dag,
+  denne uge, 7 dage, denne/sidste måned, 3/6/12 måneder, for evigt eller
+  valgfri fra/til), land/region (lande + regioner som Skandinavien, DACH …)
+  og abonnementstype (Alle/Gratis/Seriøs/Seriøs Familie) i URL'en. Alle
+  ændringer sammenlignes med en lige så lang periode lige før. Dansk tid.
+- Abonnementstype og land er brugerens *nuværende* værdi (`User.region`).
+  "Betalende" = Seriøs med en betalingsudbyder (ACTIVE/CANCELED); gave-,
+  points-, prøve- og familiemedlemsperioder vises separat.
+- Nye tabeller: `login_events` (én række pr. gennemført login via
+  `completeLogin`) og `search_misses` (produktsøgninger ≥ 3 tegn uden hit;
+  kun søgetekst + region, intet bruger-id). Data findes kun fra 2026-09-27.
+- "Aktiv" = har logget mindst ét produkt. Fastholdelse = nye brugere i
+  perioden, der har logget ≥ 7/30 dage efter oprettelse.
+- Trends beregnes gratis; "Analysér med AI" sender kun aggregater (ingen
+  navne/e-mails/id'er, `store: false`) til OpenAI (`OPENAI_STATS_MODEL`,
+  ellers produktmodellen). Kode: `src/lib/admin-stats*.ts`.

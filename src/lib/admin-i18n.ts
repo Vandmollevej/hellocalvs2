@@ -26,6 +26,7 @@ const DICTIONARY = {
   nav_api_keys: { DA: "API-nøgler", EN: "API keys" },
   nav_design_manual: { DA: "Designmanual", EN: "Design manual" },
   nav_page_tree: { DA: "Sidetræ", EN: "Page tree" },
+  nav_statistics: { DA: "Statistik", EN: "Statistics" },
   nav_ingredient_requests: { DA: "Ønskede ingredienser", EN: "Requested ingredients" },
   nav_support: { DA: "Beskeder", EN: "Messages" },
   support_title: { DA: "Supporthenvendelser", EN: "Support requests" },

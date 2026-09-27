@@ -232,6 +232,11 @@ uændrede. Mangler brugerens visuelle godkendelse.
 
 - `/camera?mode=product`: Stregkode/Forside/Energi/Indhold under kameraet, flueben, hvidt overlay + load-cirkel mens OCR kører. Varen oprettes efter OCR (`POST /api/products/quick`) og OpenAI udfylder navn/brand/næring/indhold i baggrunden (`Product.pendingFields`, migration `20260927100000_product_pending_fields`). `/add/[id]` viser grønne load-cirkler og den fritlagte forside, når den er klar. Hele søgelinjen er klikbar. Se DECISIONS 2026-09-27.
 
+## 2026-09-27: Admin → Statistik
+
+- Nyt admin-hovedpunkt "Statistik" med periode-, land/region- og abonnementsfilter: nøgletal, nye oprettelser, betalende vs. gratis, log-ins, loggede produkter, trends (beregnet + "Analysér med AI"), HelloFresh-menuer, fastholdelse/churn, omsætning, top-produkter/søgninger og support/fejl. Se DECISIONS 2026-09-27.
+- Migration `20260927120000_admin_statistics` (login_events, search_misses) køres automatisk ved deploy; log-ins og søgninger uden resultat tælles først fra deploy.
+
 ## 2026-09-26: MobilePay-betaling + Opsætning delt op
 
 - Opsætning er nu en oversigt med undersiderne "Sprog og region" (også fra Indstillinger) og "Resultatvisning" (allergener + udvidet næringsindhold).

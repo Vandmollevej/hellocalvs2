@@ -165,6 +165,10 @@ export async function completeLogin<T extends NextResponse>(
   await trackDevice(req, userId, deviceId, method).catch((error) =>
     console.error("Login device tracking failed", error)
   );
+  // Admin-statistikken tæller log-ins over tid (/admin/statistics).
+  await prisma.loginEvent
+    .create({ data: { userId, method, country: requestCountry(req) } })
+    .catch((error) => console.error("Login event logging failed", error));
   // Familiemedlemmer ser deres egne login-tidspunkter i Kontrol-loggen.
   await logOwnLoginForFamilyMember(userId).catch((error) => console.error("Family login log failed", error));
   return response;

@@ -192,6 +192,7 @@ model User {
   privateIngredients      Product[]                @relation("PrivateIngredients")
   oauthAccounts           UserOAuthAccount[]
   knownDevices            UserKnownDevice[]
+  loginEvents             LoginEvent[]
   sharedRecipeFavorites   SharedRecipeFavorite[]
   recipeCookbookPhotos    RecipeCookbookPhoto[]
   nutritionReportsFiled   ProductNutritionReport[] @relation("NutritionReportReporter")
@@ -3168,6 +3169,33 @@ model RoadmapItem {
 
   @@index([status, sortOrder])
   @@map("roadmap_items")
+// Admin-statistik (docs/DECISIONS.md 2026-09-27 "Admin: Statistik"): ét
+// rækkeelement pr. gennemført login (alle metoder via completeLogin i
+// src/lib/user-login.ts), så /admin/statistics kan tælle log-ins over tid.
+model LoginEvent {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  method    String
+  country   String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([userId, createdAt])
+  @@map("login_events")
+}
+
+// Produktsøgninger uden et eneste produkt-hit (GET /api/products), til
+// "Søgninger uden resultat" i admin-statistikken. Kun søgeteksten og
+// brugerens region gemmes — ingen bruger-id.
+model SearchMiss {
+  id        String   @id @default(cuid())
+  query     String
+  region    String
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@map("search_misses")
 }
 
 // Admin guide-builder (docs/DECISIONS.md 2026-09-27): én række pr. slags

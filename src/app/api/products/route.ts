@@ -198,6 +198,12 @@ export async function GET(req: Request) {
 
       const ranked = rankProducts(rankable, q, user.region, localHour, take, weights);
       products = ranked.map((entry) => entry.product);
+      // "Søgninger uden resultat" i admin-statistikken (/admin/statistics).
+      if (products.length === 0 && q.length >= 3) {
+        await prisma.searchMiss
+          .create({ data: { query: q.toLowerCase().slice(0, 120), region: user.region } })
+          .catch((error) => console.error("Search miss logging failed", error));
+      }
 
       // Impressions: every ranked result shown to the user counts as a
       // regional "search" for that product/brand, feeding the popularity
