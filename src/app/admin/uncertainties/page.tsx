@@ -17,7 +17,7 @@ export default async function AdminUncertaintiesPage() {
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <h1 className="text-lg font-semibold text-text-primary">Uncertainties</h1>
+        <h1 className="text-lg font-semibold text-text-primary">Usikkerheder</h1>
         <p className="text-sm text-text-secondary">
           Produkter hvor AI&apos;en var mindre end {Math.round(UNCERTAINTY_TARGET * 100)} % sikker på forside,
           næringsindhold, ingrediensliste eller EAN, og fotos hvor billedrobotten er usikker på, om de hører til

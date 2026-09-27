@@ -317,7 +317,7 @@ export const PAGE_TREE: PageArea[] = [
           { path: "/admin/ingredient-requests", label: "Ønskede ingredienser" },
           {
             path: "/admin/uncertainties",
-            label: "Uncertainties",
+            label: "Usikkerheder",
             children: [{ path: "/admin/warnings", label: "Advarsler", note: "Gammel adresse — sender videre" }],
           },
           { path: "/admin/cron-jobs", label: "Cron-jobs" },
