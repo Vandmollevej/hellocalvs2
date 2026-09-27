@@ -2735,3 +2735,13 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
 - Bevidst undtaget: footer, fliser, statistik-kort, ikonknapper (44 px), små
   filter-/periodeknapper og textarea. Hello Docs notched felt følger nu også
   48 px (før 60 px).
+
+
+## 2026-09-27: HelloFresh-opskrifter vises som i HelloFresh-appen
+
+- Brugerens krav: når man åbner en HelloFresh-opskrift for inspiration, skal den se præcis ud som i HelloFresh-appen (skærmbilleder i chatten 2026-09-27), bygget med fælles klasser. Det gælder KUN HelloFresh-opskrifter — brugerens egne og delte retter beholder deres eget design (`/profile/recipes/[id]`).
+- Side: `/profile/recipes/hellofresh/[id]` (tidligere gik HelloFresh-rækker direkte til registrering `/add/[id]`). Klasser `.rv-*` i `src/components/recipe-view/recipe-view.css` + komponenterne i samme mappe.
+- Data: ny kolonne `Product.recipeDetails` (JSON) fyldt af hellofresh-agenten med HelloFreshs egne værdier uændret (undertitel, beskrivelse, tid, sværhedsgrad, tags, allergen-navne, ingredienser med mængde/enhed i rækkefølge, trin, næringsværdier pr. portion). Tal vises som HelloFresh (punktum som decimaltegn). Rækker uden recipeDetails genhentes én gang; indtil da vises fallback fra de gamle kolonner.
+- Knapper: "Gem" = favorit (samme tabel som delte retters favoritter, snapshot); kurv = del indkøbsliste via telefonens del-menu; printer = udskriv; "Markér som tilberedt" og "Tilføj i sundhedsapp" = registrér retten (`/add/[id]`), som også sender til tilkoblede sundhedsapps; "Lad os lave mad" folder Fremgangsmåde ud og scroller dertil; "Mine kogebogsbilleder" = egne fotos (ny tabel `recipe_cookbook_photos`, maks 12).
+- Ingen bundnavigation på siden (som HelloFresh). Fuldbredde-knapper følger 48 px-reglen.
+

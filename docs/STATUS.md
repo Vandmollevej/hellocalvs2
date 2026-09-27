@@ -39,6 +39,12 @@ Last updated: 2026-09-27
 - Sidebjælken går nu i ét stykke fra top til bund med logo og "Gå til…"-søgning øverst (som Cloudflare). Topbaren ligger kun over indholdet med brødkrummer og brugermenu.
 - `/admin` er et widget-dashboard: 4 tællerkasser (ubesvarede beskeder, nye produkter, Usikkerheder, fejlrapporter) med links, derunder større bokse med seneste beskeder, seneste produkter, seneste fejlrapporter og øvrige opgaver med tal. Data: `src/lib/admin-dashboard.ts`.
 
+## 2026-09-27: HelloFresh-opskrifter vist som i HelloFresh-appen
+
+- Ny side `/profile/recipes/hellofresh/[id]` (fra "Delte retter" og favoritter): stort billede, titel + undertitel, I alt/Protein/Sværhedsgrad, tags, Gem/indkøbsliste/udskriv, Beskrivelse med "Læs mere", allergener, foldbare Ingredienser, Fremgangsmåde (+ "Markér som tilberedt"), Næringsværdier (+ "Tilføj i sundhedsapp") og "Mine kogebogsbilleder", fast "Lad os lave mad"-knap.
+- Fælles klasser `.rv-*` i `src/components/recipe-view/` — ingen opskrift har eget design. Brugerens egne/delte retter er uændrede.
+- Kræver migration `20260927100000_hellofresh_recipe_details` og genstart af hellofresh-agenten: den genhenter alle opskrifter én gang for at gemme beskrivelse, tid, trin m.m. Indtil da vises de gamle data (uden beskrivelse/trin).
+
 ## 2026-09-27: Admin "Page tree"
 
 - Ny admin-side `/admin/page-tree`: alle 128 sider som træ med pile, søgning, spring til område og "testet"-flueben med fremdriftsbjælke. Test sikrer at listen følger `src/app` (docs/DECISIONS.md 2026-09-27).

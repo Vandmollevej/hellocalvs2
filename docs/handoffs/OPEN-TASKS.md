@@ -208,6 +208,14 @@ Brugerens valg: 48 px overalt. Kun enkeltlinje-felter, dropdowns, madindtastning
 | — | Resten (62 filer: profil, statistik, admin, kamera, hello-doc …) | Færdig (bdc754d) | — |
 | — | Sidste 5 filer: kalender, Indstillinger, Support, Forside-visning, admin/API-nøgler | Færdig (3a3b398) | — |
 
+## G13 — HelloFresh-opskriftsvisning (som i HelloFresh-appen)
+Filer: `src/app/profile/recipes/hellofresh/**`, `src/components/recipe-view/**`, `src/lib/hellofresh-recipe.ts`, `src/app/api/hellofresh-recipes/**`, `scripts/hellofresh-import/agent.py`.
+Ejer: ed3c2525 (2026-09-27)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| ed3c2525 | HelloFresh-opskrifter vises præcis som i HelloFresh-appen, fælles `.rv-*`-klasser (ikke egne retter) | Færdig (se git log "HelloFresh recipe view") | Deploy: migration 20260927100000 + genstart hellofresh-agent (genhenter alle opskrifter én gang). Afventer brugerens visuelle godkendelse |
+
 ## Ikke fordelt
 Ændret og ikke committet uden kendt ejer: `docs/AI.md`, `src/components/AddButton.tsx`,
 `src/components/hf/PointsPromoBanner.tsx`, `src/i18n/locales/*.json`, `src/lib/vault/webauthn-client.ts`.

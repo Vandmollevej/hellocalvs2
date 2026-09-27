@@ -193,6 +193,7 @@ model User {
   oauthAccounts           UserOAuthAccount[]
   knownDevices            UserKnownDevice[]
   sharedRecipeFavorites   SharedRecipeFavorite[]
+  recipeCookbookPhotos    RecipeCookbookPhoto[]
   nutritionReportsFiled   ProductNutritionReport[] @relation("NutritionReportReporter")
   referralsMade           Referral[]               @relation("ReferralsMade")
   referralReceived        Referral?                @relation("ReferralReceived")
@@ -883,6 +884,12 @@ model Product {
   // (e.g. HelloFresh recipes' fiber/sugar/salt/potassium/calcium/iron per
   // serving size). See docs/DECISIONS.md (2026-08-29).
   nutritionExtra   Json?
+  // HelloFresh-opskriftens visningsdata (docs/DECISIONS.md 2026-09-27):
+  // undertitel, beskrivelse, tid, sværhedsgrad, tags, allergen-navne,
+  // ingredienser med mængde/enhed i HelloFreshs rækkefølge, fremgangsmåde og
+  // næringsværdier pr. portion præcis som HelloFresh viser dem. Udfyldes af
+  // scripts/hellofresh-import/agent.py; null for alle andre produkter.
+  recipeDetails    Json?
 
   // Free-text dietary/label claims (2026-09-19, see docs/DECISIONS.md), e.g.
   // { isVegan: "Vegansk", isLactoseFree: "Laktosefri", isSugarFree: "Sukkerfri" }.
@@ -978,6 +985,7 @@ model Product {
   favorites          Favorite[]
   dishIngredients    DishIngredient[]
   ingredients        ProductIngredient[]
+  cookbookPhotos     RecipeCookbookPhoto[]
   images             ProductImage[]
   pointsTransactions PointsTransaction[]
   forwards           Forward[]
@@ -2507,6 +2515,21 @@ model SharedRecipePublisherBlock {
 
 // Favorit på en andens delte ret. Gemmes som snapshot, så favoritten
 // overlever, at ejeren sletter retten eller stopper delingen.
+// "Mine kogebogsbilleder" på en HelloFresh-opskrift (docs/DECISIONS.md
+// 2026-09-27): brugerens egne fotos af retten, kun synlige for brugeren.
+model RecipeCookbookPhoto {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  image     String
+  createdAt DateTime @default(now())
+
+  @@index([userId, productId])
+  @@map("recipe_cookbook_photos")
+}
+
 model SharedRecipeFavorite {
   id        String   @id @default(cuid())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)

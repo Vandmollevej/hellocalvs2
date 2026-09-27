@@ -160,11 +160,12 @@ def already_up_to_date(conn, recipe_id, lastmod):
         return False
     with conn.cursor() as cur:
         cur.execute(
-            """SELECT "sourceCheckedAt" FROM products WHERE "externalSource" = 'HELLOFRESH' AND "externalId" = %s""",
+            """SELECT "sourceCheckedAt", "recipeDetails" IS NOT NULL FROM products WHERE "externalSource" = 'HELLOFRESH' AND "externalId" = %s""",
             (recipe_id,),
         )
         row = cur.fetchone()
-    if not row or not row[0]:
+    # Rækker importeret før recipeDetails fandtes hentes igen én gang.
+    if not row or not row[0] or not row[1]:
         return False
     try:
         lastmod_dt = datetime.fromisoformat(lastmod)
@@ -220,6 +221,67 @@ def reference_yield(recipe):
     return min(yields, key=lambda y: y.get("yields", 0))
 
 
+def text_or_none(value):
+    if not isinstance(value, str):
+        return None
+    value = value.strip()
+    return value or None
+
+
+def build_recipe_details(conn, recipe):
+    """Visningsdata til opskriftssiden (docs/DECISIONS.md 2026-09-27).
+
+    Gemmer HelloFreshs egne værdier uændret (tekst, tal og enheder), så appen
+    kan vise opskriften præcis som HelloFresh — kun ingrediensbilleder peger
+    på vores eget Ingredient-katalog.
+    """
+    ref = reference_yield(recipe) or {}
+    amounts = {item["id"]: (item.get("amount"), item.get("unit")) for item in ref.get("ingredients", [])}
+
+    ingredients = []
+    for ingredient in recipe.get("ingredients", []):
+        if ingredient["id"] not in amounts:
+            continue
+        amount, unit = amounts[ingredient["id"]]
+        ingredients.append(
+            {
+                "ingredientId": ensure_ingredient(conn, ingredient),
+                "name": ingredient["name"],
+                "amount": amount,
+                "unit": text_or_none(unit),
+            }
+        )
+
+    steps = []
+    for step in sorted(recipe.get("steps") or [], key=lambda s: s.get("index", 0)):
+        text = text_or_none(step.get("instructions"))
+        if text:
+            steps.append({"text": text})
+
+    nutrition = [
+        {"name": item["name"], "amount": item["amount"], "unit": text_or_none(item.get("unit"))}
+        for item in recipe.get("nutrition", [])
+        if item.get("name") and isinstance(item.get("amount"), (int, float))
+    ]
+
+    return {
+        "headline": text_or_none(recipe.get("headline")),
+        "description": text_or_none(recipe.get("description")),
+        "totalTime": text_or_none(recipe.get("totalTime")),
+        "prepTime": text_or_none(recipe.get("prepTime")),
+        "difficulty": recipe.get("difficulty") if isinstance(recipe.get("difficulty"), int) else None,
+        "tags": [t["name"] for t in recipe.get("tags", []) if text_or_none(t.get("name"))],
+        "allergens": [
+            a["name"] for a in recipe.get("allergens", []) if not a.get("tracesOf") and text_or_none(a.get("name"))
+        ],
+        "yields": ref.get("yields"),
+        "ingredients": ingredients,
+        "steps": steps,
+        "nutrition": nutrition,
+        "websiteUrl": text_or_none(recipe.get("websiteUrl")),
+    }
+
+
 def upsert_recipe(conn, recipe, retter_category_id):
     recipe_id = recipe["recipeId"]
     nutrition = {item["name"]: item["amount"] for item in recipe.get("nutrition", [])}
@@ -254,6 +316,7 @@ def upsert_recipe(conn, recipe, retter_category_id):
         }
     )
     ingredients_text = ", ".join(i["name"] for i in recipe.get("ingredients", []))
+    recipe_details = build_recipe_details(conn, recipe)
 
     product_id = f"hf_{recipe_id}"
     with conn.cursor() as cur:
@@ -263,10 +326,10 @@ def upsert_recipe(conn, recipe, retter_category_id):
                 (id, name, "categoryId", "imageUrl", "kcalPer100g", "proteinPer100g",
                  "carbsPer100g", "fatPer100g", "servingSizeGrams",
                  "servingSizeUnitSingular", "servingSizeUnitPlural", "ingredientsText",
-                 allergens, "nutritionExtra", "externalSource", "externalId",
+                 allergens, "nutritionExtra", "recipeDetails", "externalSource", "externalId",
                  "sourceCheckedAt", status, discontinued, "createdAt")
             VALUES
-                (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'HELLOFRESH', %s, NOW(), 'APPROVED', false, NOW())
+                (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'HELLOFRESH', %s, NOW(), 'APPROVED', false, NOW())
             ON CONFLICT (id) DO UPDATE SET
                 name = EXCLUDED.name,
                 "imageUrl" = COALESCE(EXCLUDED."imageUrl", products."imageUrl"),
@@ -280,6 +343,7 @@ def upsert_recipe(conn, recipe, retter_category_id):
                 "ingredientsText" = EXCLUDED."ingredientsText",
                 allergens = EXCLUDED.allergens,
                 "nutritionExtra" = EXCLUDED."nutritionExtra",
+                "recipeDetails" = EXCLUDED."recipeDetails",
                 "sourceCheckedAt" = NOW()
             """,
             (
@@ -297,6 +361,7 @@ def upsert_recipe(conn, recipe, retter_category_id):
                 ingredients_text,
                 allergen_keys,
                 json.dumps(extra) if extra else None,
+                json.dumps(recipe_details),
                 recipe_id,
             ),
         )
@@ -315,6 +380,8 @@ def upsert_recipe_ingredients(conn, product_id, recipe):
         if amount_unit is None:
             continue
         raw_amount, raw_unit = amount_unit
+        if raw_amount is None or not raw_unit:
+            continue
         ingredient_db_id = ensure_ingredient(conn, ingredient)
         amount_grams = raw_amount if raw_unit == "g" else None
         proportion = (raw_amount / gram_total) if (raw_unit == "g" and gram_total) else None

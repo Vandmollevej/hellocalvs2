@@ -58,6 +58,15 @@ type Row = {
   extra?: string;
 };
 
+// HelloFresh-opskrifter (Product-id "hf_…") har deres egen side i
+// HelloFresh-stil (docs/DECISIONS.md 2026-09-27); det gælder også, når de
+// er gemt som favorit.
+function recipeHref(id: string) {
+  return id.startsWith("hf_")
+    ? `/profile/recipes/hellofresh/${encodeURIComponent(id)}`
+    : `/profile/recipes/${encodeURIComponent(id)}?kind=shared`;
+}
+
 function dishKcal(dish: OwnDish) {
   return Math.round(dish.ingredients.reduce((sum, i) => sum + (i.product.kcalPer100g * i.grams) / 100, 0));
 }
@@ -120,7 +129,7 @@ function MineTab({ t }: { t: Translate }) {
           })),
           ...favorites.map((recipe) => ({
             key: `fav-${recipe.id}`,
-            href: `/profile/recipes/${encodeURIComponent(recipe.id)}?kind=shared`,
+            href: recipeHref(recipe.id),
             name: recipe.name,
             imageUrl: null,
             subtitle: t("recipes.kcalTotal", { kcal: Math.round(recipe.kcal) }),
@@ -240,7 +249,7 @@ function SharedTab({ t }: { t: Translate }) {
     return result.kind === "hellofresh"
       ? {
           key: result.id,
-          href: `/add/${encodeURIComponent(result.id)}`,
+          href: recipeHref(result.id),
           name: result.name,
           imageUrl: result.imageUrl,
           subtitle: subtitleFor(result),
@@ -338,7 +347,7 @@ function SharedTab({ t }: { t: Translate }) {
                   key={`fav-${recipe.id}`}
                   row={{
                     key: recipe.id,
-                    href: `/profile/recipes/${encodeURIComponent(recipe.id)}?kind=shared`,
+                    href: recipeHref(recipe.id),
                     name: recipe.name,
                     imageUrl: recipe.images?.[0] ?? null,
                     subtitle: t("recipes.kcalTotal", { kcal: Math.round(recipe.kcal) }),
