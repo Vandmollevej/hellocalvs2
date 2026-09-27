@@ -13,7 +13,7 @@ export type SubscriptionPeriodMonths = (typeof SUBSCRIPTION_PERIODS)[number];
 
 // Samlet pris for hele perioden (ikke pr. måned). Et helt år giver 25 % rabat
 // i forhold til 12 enkeltmåneder (brugerens valg 2026-09-26). Seriøs Familie
-// dækker op til 5 personer, hver med egen konto.
+// dækker op til 5 personer (se docs/FAMILY.md).
 export const SUBSCRIPTION_PRICES_DKK: Record<SubscriptionPlan, Record<SubscriptionPeriodMonths, number>> = {
   serious: { 1: SERIOUS_MONTHLY_PRICE_DKK, 3: 299, 12: 1071 },
   family: { 1: 179, 3: 449, 12: 1611 },
