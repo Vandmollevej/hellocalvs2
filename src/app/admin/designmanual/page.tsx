@@ -17,6 +17,7 @@ import { HfChevron } from "@/components/hf/HfChevron";
 import { NumberedBadge } from "@/components/hf/NumberedBadge";
 import { CalorieBadge } from "@/components/hf/CalorieBadge";
 import { OverlayDemo } from "./OverlayDemo";
+import { BoxOverview } from "./BoxOverview";
 
 // Designmanual i admin: levende oversigt over Hello Cals visuelle system.
 // Alle eksempler bruger de rigtige klasser/tokens fra globals.css og
@@ -31,6 +32,7 @@ const SECTIONS = [
   { id: "teksttyper", label: "Teksttyper og fonte" },
   { id: "grafiske-elementer", label: "Grafiske elementer" },
   { id: "sidestruktur", label: "Sidestruktur" },
+  { id: "bokse", label: "Bokse" },
 ] as const;
 
 type Swatch = { token: string; hex: string; name: string; use: string };
@@ -494,6 +496,11 @@ export default async function DesignManualPage() {
                 />
               </div>
             </div>
+          </Section>
+
+          {/* 8. Bokse */}
+          <Section id="bokse" number={8} title="Bokse" intro="Samtlige bokstyper i appen på én skærm med lorem ipsum. De grønne numre matcher listen med farver, mål og tekstplacering. Billeder er appens egne filer.">
+            <BoxOverview />
           </Section>
         </div>
       </div>

@@ -26,6 +26,15 @@ uændrede. Mangler brugerens visuelle godkendelse.
 - Betaling: sort statusboks, ingen "kommer snart"-tekst, rigtige logoer, MobilePay-aftale kan stoppes.
 - Fuld MobilePay Recurring-integration bygget (aftale, første træk, fornyelser via scheduler, webhook, opsigelse). Se DECISIONS/DEPLOYMENT 2026-09-26.
 - Mangler for at gå live: MobilePay-salgsstedsaftale med Recurring API + nøglerne i admin → API-nøgler, migration `20260926120000_mobilepay_recurring`, deploy. Ikke testet mod MobilePay (ingen nøgler endnu).
+## 2026-09-27: Designmanual → "Bokse"
+
+`/admin/designmanual#bokse` viser samtlige bokstyper (statistikkort, kort,
+indstillingsgruppe, foldbar sektion, til/fra-, valg- og billedgitter-kort,
+rækker, produktbillede, banner, infoboks, toast, bundark, appbar, bundmenu) i en
+telefonramme på 402 px (HelloFresh-skærmbillederne 1206 px ÷ 3) med lorem
+ipsum og appens egne billeder. Nummererede nåle matcher en liste med farver,
+mål og tekstplacering; stiplede zoner viser, hvor tekst står
+(`src/app/admin/designmanual/BoxOverview.tsx`).
 
 ## 2026-09-26: Profilcirklen ("PT") er én fælles komponent
 
