@@ -34,7 +34,9 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/profile")
+    // /api/auth/me er altid den indloggede — /api/profile følger den valgte
+    // familieprofil (docs/FAMILY.md), og sproget hører til personen.
+    fetch("/api/auth/me")
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (cancelled) return;
