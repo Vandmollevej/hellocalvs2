@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
+import { MealShareBar } from "@/components/family/MealShareBar";
 import { AccordionCard, ChevronRow } from "@/components/hf/AccordionCard";
 import { useAddActionsProfile, visibleAddActions } from "@/lib/add-actions";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -35,6 +36,7 @@ function AddMenuContent() {
   return (
     <HfScreen title={t("addMenu.title")}>
       <div className="hf-page">
+        <MealShareBar />
         <AccordionCard>
           {actions.map((action, index) => (
             <ChevronRow

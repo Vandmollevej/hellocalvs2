@@ -2,6 +2,13 @@
 
 Last updated: 2026-09-26
 
+## 2026-09-26: "Skiftende arbejdstider" skjult på Søvnmønster
+
+Kontakten og hint-teksten på `/profile/sleep` er skjult bag
+`SHOW_SHIFT_WORK = false` i `src/app/profile/sleep/page.tsx`. Koden, feltet
+`shiftWorkEnabled`, API'et og oversættelserne er bevaret til senere. Spørgsmålet
+om skifteholdsarbejde i onboarding-guiden er ikke rørt. Lint og build kørt.
+
 ## 2026-09-26: Opret vare — logo, fritskrabning og samme-foto-flueben
 
 Se docs/DECISIONS.md 2026-09-26 "Opret vare — rækkefølge …". Kamera-flowet er
@@ -189,6 +196,25 @@ kræver admin-login.
 container-backup"), som deployet lægger samme sted; den gamle gemmes som
 `.orig`. Forventet: ca. 7 GB første gang, derefter kun ændringer. Ikke kørt på
 Synology endnu — kun testet med en falsk `docker` i cloud-sessionen.
+
+## 2026-09-26: Familieabonnement — børneberegning, sletteret, fælles måltid
+
+Se `docs/FAMILY.md` "Afklaret 2026-09-26". Ny migration
+`20260926100000_family_delete_permission`. Lint og build grønne; ikke testet
+mod database eller på telefon.
+
+## 2026-09-26: Familieabonnement — første version bygget
+
+Branch `claude/lucid-bell-s5vyhv`. Se `docs/FAMILY.md` "Sådan virker den
+første version" og "Mangler". Lint, typetjek og build er grønne. Ikke testet
+mod en rigtig database eller på telefon. Kræver migration
+`20260925200000_family_subscription` ved deploy.
+
+## 2026-09-25: Familieabonnement — research og beslutninger
+
+Se `docs/FAMILY.md` (research, beslutninger, åbne spørgsmål, byggeplan) og
+`docs/DECISIONS.md` 2026-09-25 "Familieabonnement". Bygges på branch
+`claude/lucid-bell-s5vyhv`; følg rækken i `docs/handoffs/OPEN-TASKS.md`.
 
 ## 2026-09-25: Ubrugte statistik-kort — "+ Overskrift" og "+ Skillelinje" øverst
 

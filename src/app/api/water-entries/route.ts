@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getSessionUser, unauthorized } from "@/lib/session";
+import { unauthorized } from "@/lib/session";
+import { getProfileUser } from "@/lib/family-access";
 
 export async function GET() {
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("water", "VIEWED");
 
     if (!user) return unauthorized();
     const entries = await prisma.waterEntry.findMany({
@@ -41,7 +42,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("water", "CREATED");
 
     if (!user) return unauthorized();
     const entry = await prisma.waterEntry.create({

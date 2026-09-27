@@ -42,7 +42,21 @@ export function getSubscriptionTier(
 
 export async function getUserSubscriptionTier(userId: string, now: Date = new Date()): Promise<SubscriptionTier> {
   const subscription = await prisma.subscription.findUnique({ where: { userId } });
-  return getSubscriptionTier(subscription, now);
+  if (getSubscriptionTier(subscription, now) === "SERIOUS") return "SERIOUS";
+  return (await isCoveredByFamilyPlan(userId, now)) ? "SERIOUS" : "FREE";
+}
+
+// Alle medlemmer af en familie, hvis betaler har et aktivt familieabonnement,
+// er Seriøs (docs/FAMILY.md punkt 1).
+export async function isCoveredByFamilyPlan(userId: string, now: Date = new Date()): Promise<boolean> {
+  const membership = await prisma.familyMember.findUnique({
+    where: { userId },
+    select: { family: { select: { owner: { select: { subscription: true } } } } },
+  });
+  const ownerSubscription = membership?.family.owner.subscription ?? null;
+  return Boolean(
+    ownerSubscription && ownerSubscription.plan === "FAMILY" && getSubscriptionTier(ownerSubscription, now) === "SERIOUS"
+  );
 }
 
 // Rullende 3 måneders (90 dage) historik for gratisbrugere (docs/DECISIONS.md

@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getSessionUser, unauthorized } from "@/lib/session";
+import { unauthorized } from "@/lib/session";
+import { getProfileContext, getProfileUser, shareRegistration } from "@/lib/family-access";
 import { fulfillMatchingForward } from "@/lib/forwards";
-import { getSubscriptionTier, getRetentionCutoffDate } from "@/lib/subscription";
+import { getUserSubscriptionTier, getRetentionCutoffDate } from "@/lib/subscription";
 import { detectNutritionChanges, USER_EDIT_CONFIDENCE } from "@/lib/nutrition-reports";
 import { classifyProduct } from "@/lib/food-classification";
 import {
@@ -13,15 +14,14 @@ import {
 
 export async function GET() {
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("registrations", "VIEWED");
 
     if (!user) return unauthorized();
-    const subscription = await prisma.subscription.findUnique({ where: { userId: user.id } });
     // Rullende 30-dages historik for gratisbrugere (docs/DECISIONS.md
     // 2026-09-19) — data ældre end grænsen skjules her ved en ren
     // forespørgselsgrænse, ikke ved at slette eller markere rækkerne, så det
     // med det samme kommer tilbage hvis brugeren bliver Seriøs.
-    const cutoff = getRetentionCutoffDate(getSubscriptionTier(subscription));
+    const cutoff = getRetentionCutoffDate(await getUserSubscriptionTier(user.id));
     const registrations = await prisma.registration.findMany({
       where: { userId: user.id, ...(cutoff ? { createdAt: { gte: cutoff } } : {}) },
       orderBy: { createdAt: "desc" },
@@ -96,6 +96,7 @@ export async function POST(req: Request) {
     carbsSnapshot,
     fatSnapshot,
     createdAt,
+    shareWith,
   } = body as {
     productId?: string;
     dishId?: string;
@@ -110,6 +111,9 @@ export async function POST(req: Request) {
     carbsSnapshot?: number;
     fatSnapshot?: number;
     createdAt?: string;
+    // Fælles måltid: kopier også til disse profiler med hver deres portion
+    // (docs/FAMILY.md).
+    shareWith?: unknown;
   };
 
   if (!amountGrams || amountGrams <= 0) {
@@ -125,9 +129,13 @@ export async function POST(req: Request) {
   }
 
   try {
-    const user = await getSessionUser();
-
-    if (!user) return unauthorized();
+    const context = await getProfileContext("registrations", "CREATED");
+    if (!context) return unauthorized();
+    const user = context.profile;
+    // Hvem der tastede ind, når det ikke er profilens ejer (docs/FAMILY.md).
+    const createdById = context.login.id !== user.id ? context.login.id : null;
+    const share = async (registration: { id: string; userId: string }) =>
+      shareRegistration(registration, shareWith, context.login.id);
 
     if (productId) {
       const product = await prisma.product.findUnique({
@@ -183,6 +191,7 @@ export async function POST(req: Request) {
         const created = await tx.registration.create({
           data: {
             userId: user.id,
+            createdById,
             productId: product.id,
             titleSnapshot: product.name,
             kcalSnapshot: kcalSnapshot ?? product.kcalPer100g * factor,
@@ -227,7 +236,7 @@ export async function POST(req: Request) {
       });
 
       await fulfillMatchingForward(user.id, "PRODUCT", product.id);
-      return NextResponse.json({ registration });
+      return NextResponse.json({ registration, sharedCount: await share(registration) });
     }
 
     if (genericIngredientId) {
@@ -241,6 +250,7 @@ export async function POST(req: Request) {
       const registration = await prisma.registration.create({
         data: {
           userId: user.id,
+          createdById,
           genericIngredientId: ingredient.id,
           ...nutrientSnapshotData(nutrients, factor),
           titleSnapshot: ingredient.name,
@@ -253,7 +263,7 @@ export async function POST(req: Request) {
         },
       });
 
-      return NextResponse.json({ registration });
+      return NextResponse.json({ registration, sharedCount: await share(registration) });
     }
 
     if (dishId) {
@@ -282,6 +292,7 @@ export async function POST(req: Request) {
       const registration = await prisma.registration.create({
         data: {
           userId: user.id,
+          createdById,
           dishId: dish.id,
           titleSnapshot: dish.name,
           kcalSnapshot: kcalSnapshot ?? totals.kcal * scale,
@@ -294,7 +305,7 @@ export async function POST(req: Request) {
       });
 
       await fulfillMatchingForward(user.id, "DISH", dish.id);
-      return NextResponse.json({ registration });
+      return NextResponse.json({ registration, sharedCount: await share(registration) });
     }
 
     if (
@@ -325,6 +336,7 @@ export async function POST(req: Request) {
     const registration = await prisma.registration.create({
       data: {
         userId: user.id,
+        createdById,
         productId: product.id,
         titleSnapshot,
         kcalSnapshot,
@@ -335,7 +347,7 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json({ registration });
+    return NextResponse.json({ registration, sharedCount: await share(registration) });
   } catch (error) {
     console.error("Registration create failed", error);
     return NextResponse.json(

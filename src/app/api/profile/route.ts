@@ -1,18 +1,23 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isValidStartWeight, parseWeightInput } from "@/lib/start-weight-verification";
-import { getSessionUser, unauthorized } from "@/lib/session";
+import { unauthorized } from "@/lib/session";
+import { getProfileUser } from "@/lib/family-access";
 import { getUserSubscriptionTier } from "@/lib/subscription";
 
 export async function GET() {
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("profile", "VIEWED");
 
     if (!user) return unauthorized();
+    // Loginhemmeligheder sendes aldrig til klienten — heller ikke når en
+    // forælder ser et barns profil (docs/FAMILY.md).
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { passwordHash, totpSecret, ...safeUser } = user;
     // Allergenvisning er kun for Seriøs (docs/DECISIONS.md 2026-09-26); den
     // gemte præference bevares og virker igen ved opgradering.
     const tier = await getUserSubscriptionTier(user.id);
-    return NextResponse.json({ user: tier === "SERIOUS" ? user : { ...user, showAllergens: false } });
+    return NextResponse.json({ user: tier === "SERIOUS" ? safeUser : { ...safeUser, showAllergens: false } });
   } catch (error) {
     console.error("Profile fetch failed", error);
     return NextResponse.json(
@@ -96,7 +101,7 @@ export async function PATCH(req: Request) {
   };
 
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("profile", "UPDATED");
 
     if (!user) return unauthorized();
 
@@ -169,7 +174,9 @@ export async function PATCH(req: Request) {
       },
     });
 
-    return NextResponse.json({ user: updated });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { passwordHash, totpSecret, ...safeUpdated } = updated;
+    return NextResponse.json({ user: safeUpdated });
   } catch (error) {
     console.error("Profile update failed", error);
     return NextResponse.json(
