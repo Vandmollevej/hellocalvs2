@@ -104,7 +104,7 @@ export default function NewGoalPage() {
 
   return (
     <HfScreen
-      title={t("goals.create")}
+      title={t("goals.createSubGoal")}
       footer={
         <div className="flex flex-col gap-2">
           {(!hasDate || !hasAny) && (
@@ -126,9 +126,7 @@ export default function NewGoalPage() {
       }
     >
       <div className="hf-page">
-        <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
-          <p className="text-[13px] leading-5">{t("goals.intro")}</p>
-        </div>
+        {/* Dato-vælgeren står øverst på siden. */}
 
         <div className="hf-card">
           <label className="flex flex-col gap-1">
@@ -163,7 +161,11 @@ export default function NewGoalPage() {
           </label>
         </div>
 
-        <div className="hf-card">
+        <div className="rounded-2xl bg-hf-green px-4 py-4 text-hf-white">
+          <p className="text-[13px] leading-5">{t("goals.intro")}</p>
+        </div>
+
+        <div className="rounded-2xl bg-hf-tan p-4">
           <GoalInput
             label={t("goals.targetWeight")}
             unit="kg"

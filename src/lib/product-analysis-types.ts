@@ -9,7 +9,17 @@ export type AnalysisIds = {
   barcode?: string;
 };
 
+// Område i billedet, 0-1 af bredde/højde fra øverste venstre hjørne.
+export type ImageBox = { x: number; y: number; width: number; height: number };
+
 export type ProductFrontAnalysis = {
+  // Navnet på logoet, læst visuelt af AI'en (logoer er ofte for kreative til
+  // almindelig OCR), og hvor logoet/produktet står i fotoet — bruges til
+  // fritskrabning (docs/DECISIONS.md 2026-09-26).
+  logoText: string | null;
+  logoConfidence: number;
+  logoBox: ImageBox | null;
+  productBox: ImageBox | null;
   brand: string | null;
   subbrand: string | null;
   productName: string | null;

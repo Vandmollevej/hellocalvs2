@@ -102,7 +102,7 @@ export function StatChart({
   title: string;
   series: ChartSeries[];
   defaultEnabledKeys: string[];
-  /** Separate key per chart when several StatCharts are shown at once. */
+  /** localStorage key for the chosen series — each chart needs its own. */
   storageKey?: string;
 }) {
   const { t } = useTranslation();
