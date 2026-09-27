@@ -107,6 +107,9 @@ export function AdminLoginForm() {
           {loading ? "Logger ind…" : "Fortsæt"}
         </button>
       </form>
+      <a href="/admin/forgot-password" className="hf-type-body mt-4 text-center text-hf-green-dark underline">
+        Glemt adgangskode?
+      </a>
     </div>
   );
 }
