@@ -95,6 +95,34 @@ def drop_edge_fragments(cutout):
     return cleaned
 
 
+def level_lighting(cutout, strength=0.35, max_gain=1.6):
+    """Udjævner ujævnt lys på varen: skyggesider løftes op mod de bedst
+    belyste dele (brugerens ønske 2026-09-27: EDEKA-kartonen var lys foroven
+    og mørk på resten af fladen).
+
+    Belysningen skønnes som varens lysstyrke udglattet over ca. 1/8 af
+    billedet — kun varens egne pixels tæller, så den gennemsigtige baggrund
+    ikke trækker ned. Hver pixel løftes med (bedste lys / eget lys) ^ strength,
+    højst max_gain gange og aldrig mørkere. strength 0.35 = et moderat trin
+    (brugeren bad om "lidt lysere"), så mørkt tryk (fx et mørkt logo) stadig
+    er mørkt, bare ikke i skygge. Køres efter auto_exposure.
+    """
+    rgba = np.array(cutout).astype(np.float32)
+    visible = rgba[..., 3] > 128
+    if visible.sum() < 100:
+        return cutout
+    rgb = rgba[..., :3]
+    luminance = (rgb[..., 0] * 0.2126 + rgb[..., 1] * 0.7152 + rgb[..., 2] * 0.0722) / 255.0
+    height, width = luminance.shape
+    sigma = max(height, width) / 8.0
+    weight = visible.astype(np.float32)
+    lit = cv2.GaussianBlur(luminance * weight, (0, 0), sigma) / np.maximum(cv2.GaussianBlur(weight, (0, 0), sigma), 1e-3)
+    best = float(np.percentile(lit[visible], 90))
+    gain = np.clip(np.power(best / np.maximum(lit, 1e-3), strength), 1.0, max_gain)
+    rgba[..., :3] = np.clip(rgb * gain[..., None], 0, 255)
+    return Image.fromarray(rgba.astype(np.uint8), "RGBA")
+
+
 def auto_exposure(cutout, lift_midtones):
     """Gør et for mørkt fritskrabet billede lysere uden at ændre størrelsen.
 
@@ -118,8 +146,10 @@ def auto_exposure(cutout, lift_midtones):
     if lift_midtones:
         luminance = rgb[..., 0] * 0.2126 + rgb[..., 1] * 0.7152 + rgb[..., 2] * 0.0722
         median = float(np.median(luminance[visible])) / 255.0
-        if 0.02 < median < 0.45:
-            gamma = min(1.0, max(0.65, np.log(0.45) / np.log(median)))
+        # Mellemtonerne løftes mod 50 % (brugerens ønske 2026-09-27: "de
+        # mørke toner lidt lysere"). Gamma under 1 løfter mørke toner mest.
+        if 0.02 < median < 0.5:
+            gamma = min(1.0, max(0.6, np.log(0.5) / np.log(median)))
             rgb = 255.0 * np.power(rgb / 255.0, gamma)
     rgba[..., :3] = rgb
     return Image.fromarray(np.clip(rgba, 0, 255).astype(np.uint8), "RGBA")
@@ -254,8 +284,10 @@ def make_cutout(source_path, box, kind="PRODUCT_FRONT"):
         raise ValueError("background removal left nothing")
     cutout = cutout.crop(bbox)
     if kind == "PRODUCT_FRONT":
-        cutout = straighten(cutout)
-    return auto_exposure(cutout, lift_midtones=kind == "PRODUCT_FRONT")
+        # Ret op -> lys op -> udjævn skygger (i den rækkefølge: udjævning
+        # først ville svække den samlede lysning, test 2026-09-27).
+        return level_lighting(auto_exposure(straighten(cutout), lift_midtones=True))
+    return auto_exposure(cutout, lift_midtones=False)
 
 
 def fetch_pending_jobs(conn):
