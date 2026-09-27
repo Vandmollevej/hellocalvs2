@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { consumePasswordResetToken } from "@/lib/password-reset";
+import { ADMIN_PASSWORD_REQUIREMENTS_MESSAGE, isAdminPasswordValid } from "@/lib/admin-password-policy";
 import { createTotpQrCode, createTotpSecret } from "@/lib/admin-totp";
 import { ADMIN_SETUP_COOKIE, ADMIN_SETUP_MAX_AGE, signAdminSetupPending } from "@/lib/admin-auth";
 
@@ -20,8 +21,8 @@ export async function POST(req: Request) {
   if (!token) {
     return NextResponse.json({ message: "Nulstillingslinket er ugyldigt" }, { status: 400 });
   }
-  if (password.length < 12) {
-    return NextResponse.json({ message: "Adgangskoden skal være mindst 12 tegn" }, { status: 400 });
+  if (!isAdminPasswordValid(password)) {
+    return NextResponse.json({ message: ADMIN_PASSWORD_REQUIREMENTS_MESSAGE }, { status: 400 });
   }
 
   const user = await consumePasswordResetToken(token);

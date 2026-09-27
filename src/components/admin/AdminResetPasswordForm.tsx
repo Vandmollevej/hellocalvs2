@@ -3,10 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { AdminNewPasswordFields } from "@/components/admin/AdminNewPasswordFields";
+import { ADMIN_PASSWORD_REQUIREMENTS_MESSAGE, isAdminPasswordValid } from "@/lib/admin-password-policy";
 
 export function AdminResetPasswordForm({ token }: { token: string }) {
   const router = useRouter();
   const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
   const [code, setCode] = useState("");
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string | null>(null);
   const [secret, setSecret] = useState<string | null>(null);
@@ -16,6 +19,14 @@ export function AdminResetPasswordForm({ token }: { token: string }) {
   async function onSubmitPassword(event: React.FormEvent) {
     event.preventDefault();
     setError(null);
+    if (!isAdminPasswordValid(password)) {
+      setError(ADMIN_PASSWORD_REQUIREMENTS_MESSAGE);
+      return;
+    }
+    if (password !== passwordConfirm) {
+      setError("Adgangskoderne er ikke ens");
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch("/api/admin/reset-password", {
@@ -107,22 +118,17 @@ export function AdminResetPasswordForm({ token }: { token: string }) {
         </>
       ) : (
         <form onSubmit={onSubmitPassword} className="mt-4 flex flex-col gap-4">
-          <label className="hf-type-body flex flex-col gap-1">
-            Ny adgangskode (mindst 12 tegn)
-            <input
-              type="password"
-              required
-              minLength={12}
-              autoComplete="new-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="hf-type-body hf-field rounded-md border border-hf-tan-dark bg-hf-white px-3"
-            />
-          </label>
+          <AdminNewPasswordFields
+            label="Ny adgangskode"
+            password={password}
+            confirm={passwordConfirm}
+            onPasswordChange={setPassword}
+            onConfirmChange={setPasswordConfirm}
+          />
           {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !isAdminPasswordValid(password) || password !== passwordConfirm}
             className="hf-type-body hf-type-strong rounded-md bg-hf-green-dark px-4 py-2.5 text-hf-white disabled:opacity-60"
           >
             {loading ? "Gemmer…" : "Fortsæt til QR-kode"}

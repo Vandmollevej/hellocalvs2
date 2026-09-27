@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { ADMIN_PASSWORD_REQUIREMENTS_MESSAGE, isAdminPasswordValid } from "@/lib/admin-password-policy";
 import { createTotpQrCode, createTotpSecret } from "@/lib/admin-totp";
 import { ADMIN_SETUP_COOKIE, ADMIN_SETUP_MAX_AGE, signAdminSetupPending } from "@/lib/admin-auth";
 
@@ -18,11 +19,11 @@ export async function POST(req: Request) {
 
   const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
   const password = typeof body.password === "string" ? body.password : "";
-  if (!email || !email.includes("@") || password.length < 12) {
-    return NextResponse.json(
-      { message: "Angiv en gyldig email og et password på mindst 12 tegn" },
-      { status: 400 }
-    );
+  if (!email || !email.includes("@")) {
+    return NextResponse.json({ message: "Angiv en gyldig email" }, { status: 400 });
+  }
+  if (!isAdminPasswordValid(password)) {
+    return NextResponse.json({ message: ADMIN_PASSWORD_REQUIREMENTS_MESSAGE }, { status: 400 });
   }
 
   const existingAdmin = await prisma.user.findFirst({ where: { role: "ADMIN", passwordHash: { not: null } } });
