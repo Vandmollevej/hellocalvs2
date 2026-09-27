@@ -12,6 +12,7 @@ header. `src/components/ProfileAvatarLink.tsx` bruges nu af både `TopBar` og
 `.hf-appbar__slot`/`.hf-topbar` (`globals.css`). Forsidens ring er en
 `box-shadow` uden for cirklen (`.hf-avatar--outlined`). Genmålt: 32×32 px ved
 (348, 10) på `/`, `/calendar` og `/statistics`. Mangler test på telefon.
+
 ## 2026-09-26: Opret vare — logo, fritskrabning og samme-foto-flueben
 
 Se docs/DECISIONS.md 2026-09-26 "Opret vare — rækkefølge …". Kamera-flowet er
