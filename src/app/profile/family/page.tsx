@@ -127,7 +127,7 @@ function FamilyPageContent() {
             const result = await run("/api/family/join", "POST", { code: joinCode });
             if (result.ok) setJoinCode("");
           }}
-          className="hf-btn-primary h-12 w-full px-4"
+          className="hf-control hf-btn-primary w-full px-4"
         >
           {t("family.join.submit")}
         </button>
@@ -154,12 +154,12 @@ function FamilyPageContent() {
                   type="button"
                   disabled={busy}
                   onClick={() => run("/api/family", "POST")}
-                  className="hf-btn-primary h-12 w-full px-4"
+                  className="hf-control hf-btn-primary w-full px-4"
                 >
                   {t("family.plan.create")}
                 </button>
               ) : (
-                <Link href="/profile/subscription" className="hf-btn-primary h-12 w-full px-4">
+                <Link href="/profile/subscription" className="hf-control hf-btn-primary w-full px-4">
                   {t("family.plan.requiresPlan")}
                 </Link>
               )}
@@ -185,7 +185,7 @@ function FamilyPageContent() {
                   void run("/api/family/leave", "POST");
                 }
               }}
-              className="hf-btn-secondary h-12 w-full px-4"
+              className="hf-control hf-btn-secondary w-full px-4"
             >
               {t("family.member.leave")}
             </button>
@@ -229,7 +229,7 @@ function FamilyPageContent() {
                           type="button"
                           disabled={busy}
                           onClick={() => createCode(member.userId)}
-                          className="hf-btn-secondary h-12 w-full px-4"
+                          className="hf-control hf-btn-secondary w-full px-4"
                         >
                           {t("family.members.createLoginCode")}
                         </button>
@@ -279,7 +279,7 @@ function FamilyPageContent() {
                   <button
                     type="button"
                     onClick={() => setShowAdd(true)}
-                    className="hf-btn-primary h-12 w-full px-4"
+                    className="hf-control hf-btn-primary w-full px-4"
                   >
                     {t("family.add.newProfile")}
                   </button>
@@ -287,7 +287,7 @@ function FamilyPageContent() {
                     type="button"
                     disabled={busy}
                     onClick={() => createCode(null)}
-                    className="hf-btn-secondary h-12 w-full px-4"
+                    className="hf-control hf-btn-secondary w-full px-4"
                   >
                     {t("family.add.inviteExisting")}
                   </button>
@@ -344,7 +344,7 @@ function FamilyPageContent() {
                     type="button"
                     disabled={busy || !form.displayName.trim()}
                     onClick={addProfile}
-                    className="hf-btn-primary h-12 w-full px-4"
+                    className="hf-control hf-btn-primary w-full px-4"
                   >
                     {t("family.add.submit")}
                   </button>

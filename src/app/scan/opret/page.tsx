@@ -162,12 +162,12 @@ function OpretContent() {
           {done.kind === "SUPPLEMENT" ? "Varen fandtes allerede og er nu suppleret." : "Varen er oprettet og kan ses i Hello Cal."}
           {!done.payable && " Du oprettede selv varen tidligere, så suppleringen tæller ikke med i afregningen."}
         </div>
-        <ActionButton className="h-12" onClick={() => router.push("/scan")}>
+        <ActionButton className="hf-control" onClick={() => router.push("/scan")}>
           <span className="hf-type-button">Tilbage til hylden</span>
         </ActionButton>
         <ActionButton
           variant="secondary"
-          className="h-12"
+          className="hf-control"
           onClick={() => {
             setDone(null);
             setForm(EMPTY_FORM);
@@ -231,7 +231,7 @@ function OpretContent() {
 
       {error && <p className="hf-type-caption text-center">{error}</p>}
 
-      <ActionButton type="submit" disabled={saving || !position} className="h-12 disabled:opacity-40">
+      <ActionButton type="submit" disabled={saving || !position} className="hf-control disabled:opacity-40">
         <span className="hf-type-button">{saving ? "Opretter…" : "Opret"}</span>
       </ActionButton>
     </form>

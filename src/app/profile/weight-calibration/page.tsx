@@ -330,7 +330,7 @@ export default function WeightCalibrationPage() {
               </SkeletonScreen>
             )}
             {recentEntries.map((entry) => (
-              <div key={entry.id} className="flex items-center justify-between rounded-2xl bg-hf-tan px-4 py-3">
+              <div key={entry.id} className="hf-control-row flex items-center justify-between rounded-2xl bg-hf-tan px-4">
                 <div>
                   <p className="hf-type-body hf-type-strong text-hf-black">
                     {formatKg(entry.weightKg)} kg

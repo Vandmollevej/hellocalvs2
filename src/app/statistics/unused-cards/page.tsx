@@ -306,7 +306,7 @@ export default function UnusedStatCardsPage() {
         <button
           type="button"
           onClick={addHeader}
-          className="hf-type-body hf-type-strong text-text-secondary flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-hf-black/30 active:opacity-100"
+          className="hf-control hf-type-body hf-type-strong text-text-secondary flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-hf-black/30 active:opacity-100"
         >
           {t("statUnusedCards.addHeading")}
         </button>

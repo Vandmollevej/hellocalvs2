@@ -216,6 +216,14 @@ Ejer: ed3c2525 (2026-09-27)
 | --- | --- | --- | --- |
 | ed3c2525 | HelloFresh-opskrifter vises præcis som i HelloFresh-appen, fælles `.rv-*`-klasser (ikke egne retter) | Færdig (se git log "HelloFresh recipe view") | Deploy: migration 20260927100000 + genstart hellofresh-agent (genhenter alle opskrifter én gang). Afventer brugerens visuelle godkendelse |
 
+## G12 — Ens 48 px-højde på felter, dropdowns, knapper og rækker
+Filer: `.hf-field` / `.hf-control` / `.hf-control-row` + `--hf-control-height` i `src/app/globals.css`.
+Ejer: "Ensartet højde på inputfelter og knapper" (2026-09-26)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | 48 px på alle enkeltlinje-felter, dropdowns, fuldbredde-knapper, rækker (inkl. admin) | Færdig | — |
+
 ## Ikke fordelt
 Ændret og ikke committet uden kendt ejer: `docs/AI.md`, `src/components/AddButton.tsx`,
 `src/components/hf/PointsPromoBanner.tsx`, `src/i18n/locales/*.json`, `src/lib/vault/webauthn-client.ts`.

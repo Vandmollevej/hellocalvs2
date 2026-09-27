@@ -60,7 +60,7 @@ export function ScanLocationGate({ children }: { children: React.ReactNode }) {
           : "Oprettelses-appen kræver lokation, fordi hvert billede gemmes med butikkens placering. Tillad lokation for denne side i telefonens indstillinger og prøv igen."}
       </p>
       {state.status !== "waiting" && (
-        <button type="button" className="hf-btn-primary h-12 w-full" onClick={() => setAttempt((n) => n + 1)}>
+        <button type="button" className="hf-control hf-btn-primary w-full" onClick={() => setAttempt((n) => n + 1)}>
           <span className="hf-type-button">Prøv igen</span>
         </button>
       )}

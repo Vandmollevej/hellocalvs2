@@ -50,7 +50,7 @@ export default function ScanBeskederPage() {
             className="hf-type-input w-full rounded-[8px] border bg-hf-cream px-4 py-3 outline-none"
             style={{ borderColor: "var(--hf-color-field-border)" }}
           />
-          <ActionButton type="submit" disabled={sending || !draft.trim()} className="h-12 disabled:opacity-40">
+          <ActionButton type="submit" disabled={sending || !draft.trim()} className="hf-control disabled:opacity-40">
             <span className="hf-type-button">Send</span>
           </ActionButton>
         </form>

@@ -261,7 +261,7 @@ export default function BilledeDagbogPage() {
                 type="button"
                 onClick={unlock}
                 disabled={unlocking}
-                className="hf-btn-primary w-full py-3.5 disabled:opacity-40"
+                className="hf-control hf-btn-primary w-full disabled:opacity-40"
               >
                 {unlocking ? t("photoDiary.unlocking") : t("photoDiary.showPhotos")}
               </button>
@@ -283,7 +283,7 @@ export default function BilledeDagbogPage() {
                 type="button"
                 onClick={openCamera}
                 disabled={saving}
-                className="hf-btn-primary w-full py-3.5 disabled:opacity-40"
+                className="hf-control hf-btn-primary w-full disabled:opacity-40"
               >
                 {saving ? t("photoDiary.saving") : t("photoDiary.takePhoto")}
               </button>

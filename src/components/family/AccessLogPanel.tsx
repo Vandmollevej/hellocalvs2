@@ -62,7 +62,7 @@ export function AccessLogPanel() {
           <Link href="/settings/control-log" onClick={dismiss} className="hf-type-body underline">
             {t("family.panel.seeAll")}
           </Link>
-          <button type="button" onClick={dismiss} className="hf-btn-primary h-12 px-6">
+          <button type="button" onClick={dismiss} className="hf-control hf-btn-primary px-6">
             {t("family.panel.ok")}
           </button>
         </div>

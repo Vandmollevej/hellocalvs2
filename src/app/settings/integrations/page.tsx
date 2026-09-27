@@ -185,7 +185,7 @@ function IntegrationerContent() {
           <button
             type="button"
             onClick={() => changeHelloFresh(true)}
-            className="hf-btn-primary block w-full py-2.5 text-center"
+            className="hf-control hf-btn-primary block w-full text-center"
           >
             {t("integrations.enable")}
           </button>

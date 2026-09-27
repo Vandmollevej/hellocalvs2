@@ -34,7 +34,7 @@ export default function ScanLoginPage() {
         <TextField label="Brugernavn" value={username} onChange={(e) => setUsername(e.target.value)} autoComplete="username" autoCapitalize="none" required />
         <TextField label="Adgangskode" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" required />
         {error && <p className="hf-type-caption text-center">{error}</p>}
-        <ActionButton type="submit" disabled={busy} className="h-12 disabled:opacity-40">
+        <ActionButton type="submit" disabled={busy} className="hf-control disabled:opacity-40">
           <span className="hf-type-button">Log ind</span>
         </ActionButton>
         <p className="hf-type-caption text-center" style={{ color: "var(--hf-color-text-secondary)" }}>

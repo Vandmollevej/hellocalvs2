@@ -35,7 +35,7 @@ export function CopyToAccountSheet({
             </li>
           ))}
         </ul>
-        <button type="button" onClick={onClose} className="hf-btn-secondary mt-4 h-12 w-full px-4">
+        <button type="button" onClick={onClose} className="hf-control hf-btn-secondary mt-4 w-full px-4">
           {t("common.cancel")}
         </button>
       </div>

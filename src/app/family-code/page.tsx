@@ -72,7 +72,7 @@ export default function FamilyCodePage() {
             {error}
           </p>
         )}
-        <button type="submit" disabled={busy} className="hf-btn-primary h-12 w-full px-4">
+        <button type="submit" disabled={busy} className="hf-control hf-btn-primary w-full px-4">
           {t("family.claim.submit")}
         </button>
       </form>

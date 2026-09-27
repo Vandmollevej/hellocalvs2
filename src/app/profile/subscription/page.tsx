@@ -108,7 +108,7 @@ export default function SubscriptionPage() {
                 onClick={redeemGiftCode}
                 disabled={redeeming || !giftCode.trim()}
                 aria-label={t("subscription.giftCode.submitAria")}
-                className="hf-btn-primary h-12 w-12 shrink-0"
+                className="hf-control hf-btn-primary w-12 shrink-0"
               >
                 <IconArrowRight size={20} />
               </button>

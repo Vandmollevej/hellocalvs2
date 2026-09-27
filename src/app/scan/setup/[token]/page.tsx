@@ -47,7 +47,7 @@ export default function ScanSetupPage({ params }: { params: Promise<{ token: str
           <TextField label="Brugernavn" value={username} onChange={(e) => setUsername(e.target.value)} autoComplete="username" autoCapitalize="none" required />
           <TextField label="Adgangskode (mindst 10 tegn)" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" minLength={10} required />
           {error && <p className="hf-type-caption text-center">{error}</p>}
-          <ActionButton type="submit" disabled={busy} className="h-12 disabled:opacity-40">
+          <ActionButton type="submit" disabled={busy} className="hf-control disabled:opacity-40">
             <span className="hf-type-button">Fortsæt</span>
           </ActionButton>
         </form>
@@ -61,7 +61,7 @@ export default function ScanSetupPage({ params }: { params: Promise<{ token: str
           <p className="hf-type-caption break-all text-center">{qr.secret}</p>
           <TextField label="Kode" value={code} onChange={(e) => setCode(e.target.value)} inputMode="numeric" autoComplete="one-time-code" maxLength={6} required />
           {error && <p className="hf-type-caption text-center">{error}</p>}
-          <ActionButton type="submit" disabled={busy} className="h-12 disabled:opacity-40">
+          <ActionButton type="submit" disabled={busy} className="hf-control disabled:opacity-40">
             <span className="hf-type-button">Aktivér</span>
           </ActionButton>
         </form>

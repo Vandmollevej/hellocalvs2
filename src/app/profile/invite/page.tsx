@@ -222,7 +222,7 @@ export default function InvitePage() {
           <button
             type="submit"
             disabled={sendingInvite}
-            className="hf-btn-primary h-12 px-4 disabled:opacity-50"
+            className="hf-control hf-btn-primary px-4 disabled:opacity-50"
           >
             {sendingInvite ? "Sender…" : "Send"}
           </button>

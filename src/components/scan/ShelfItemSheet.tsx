@@ -75,13 +75,13 @@ export function ShelfItemSheet({ item, onClose, onChanged }: { item: ShelfItem; 
         </div>
 
         {item.status !== "EXISTS" && (
-          <ActionLink href={`/scan/opret?item=${item.id}`} className="h-12">
+          <ActionLink href={`/scan/opret?item=${item.id}`} className="hf-control">
             <span className="hf-type-button">Opret denne vare</span>
           </ActionLink>
         )}
 
         {!reassigning ? (
-          <button type="button" className="hf-btn-secondary h-12 w-full" onClick={() => setReassigning(true)}>
+          <button type="button" className="hf-control hf-btn-secondary w-full" onClick={() => setReassigning(true)}>
             <span className="hf-type-button">Ret tildeling</span>
           </button>
         ) : (
@@ -96,7 +96,7 @@ export function ShelfItemSheet({ item, onClose, onChanged }: { item: ShelfItem; 
                 </li>
               ))}
             </ul>
-            <button type="button" className="hf-btn-secondary h-12 w-full" onClick={() => void assign(null)}>
+            <button type="button" className="hf-control hf-btn-secondary w-full" onClick={() => void assign(null)}>
               <span className="hf-type-button">Varen er ikke oprettet</span>
             </button>
           </div>

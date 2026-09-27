@@ -226,7 +226,7 @@ function RecipeFiltersContent() {
                 showEnergySplit: filters.showEnergySplit,
               })
             }
-            className="hf-btn-secondary w-full py-3"
+            className="hf-control hf-btn-secondary w-full"
           >
             {t("recipeFilters.reset")}
           </button>

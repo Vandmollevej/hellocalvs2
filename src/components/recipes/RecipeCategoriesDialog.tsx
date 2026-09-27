@@ -93,7 +93,7 @@ export function RecipeCategoriesDialog({
             type="button"
             onClick={close}
             disabled={busy}
-            className="hf-btn-primary w-full py-3.5 disabled:opacity-60"
+            className="hf-control hf-btn-primary w-full disabled:opacity-60"
           >
             {t("recipeCategories.close")}
           </button>
