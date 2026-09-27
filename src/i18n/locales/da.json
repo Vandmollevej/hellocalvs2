@@ -179,6 +179,26 @@
       "contactRequired": "Udfyld både emne og besked.",
       "contactError": "Beskeden kunne ikke sendes. Prøv igen.",
       "contactSent": "Tak, vi har modtaget din henvendelse. Dit sagsnummer er {caseCode}.",
+      "myRequests": "Mine henvendelser",
+      "requestsEmpty": "Du har ingen henvendelser endnu.",
+      "requestsLoadError": "Dine henvendelser kunne ikke hentes.",
+      "statusAwaiting": "Afventer svar",
+      "statusAnswered": "Besvaret",
+      "statusResolved": "Løst",
+      "newReply": "Nyt svar",
+      "caseLabel": "Sag {caseCode}",
+      "threadYou": "Dig",
+      "threadSupport": "Hello Cal Support",
+      "replyLabel": "Skriv et svar",
+      "replySend": "Send svar",
+      "replySending": "Sender…",
+      "replyError": "Svaret kunne ikke sendes. Prøv igen.",
+      "replyReopens": "Sagen er løst. Skriver du igen, åbnes den på ny.",
+      "openCase": "Se din henvendelse",
+      "attachScreenshots": "Vedhæft skærmbilleder",
+      "attachHint": "Du kan vedhæfte op til 3 skærmbilleder.",
+      "removeAttachment": "Fjern billede",
+      "attachmentError": "Et af billederne kunne ikke bruges.",
       "categories": {
         "ACCOUNT": "Konto og login",
         "DATA": "Mine data",
@@ -251,6 +271,7 @@
     "privacyPolicy": "Privatlivspolitik",
     "dataTracking": "Datasporing",
     "languageAndRegion": "Sprog og region",
+    "resultsDisplay": "Resultatvisning",
     "messages": "Beskeder",
     "notifications": "Kommunikation",
     "inviteFriend": "Invitér en ven",
@@ -262,6 +283,7 @@
     "frontPage": "Forside",
     "recommendedLimits": "Anbefalede grænser",
     "menstrualCycle": "Menstruationscyklus",
+    "sleepQuality": "Oplevelse af søvn",
     "calendarView": "Kalendervisning",
     "displayHelpTip": "Her bestemmer du, hvordan forsiden, kalenderen og advarsler ser ud på denne enhed.",
     "showTooltips": "Vis tooltips",
@@ -293,6 +315,19 @@
     "autoExpandUncertainty": "Fold usikkerhed ud automatisk",
     "autoExpandUncertaintyDescription": "Et grønt ~ står altid foran værdier, vi har estimeret, fordi producenten ikke selv oplyser dem. Slår du dette til, vises den grå linje med usikkerheden under værdien uden at du skal trykke."
   },
+  "sleepQualitySettings": {
+    "toggleLabel": "Spørg om nattens søvn",
+    "toggleDescription": "Første gang du åbner appen hver dag, bliver du bedt om at vurdere nattens søvn fra 1 til 5. Vurderingen vises på dagen i kalenderen og i statistikken."
+  },
+  "sleepQuality": {
+    "question": "Hvordan oplever du at din nat har været?",
+    "close": "Luk",
+    "disable": "Slå fra",
+    "ratingAriaLabel": "Vurdér nattens søvn til {rating} af 5",
+    "infoAriaLabel": "Hvad bruges det til?",
+    "info": "Vurdér hvordan du har sovet i nat — 1 er meget dårligt og 5 er rigtig godt. Når der er samlet nok data, kan du se din søvnkvalitet i forhold til dit kalorieindtag og eventuelle ændringer i din kost. Du kan slå spørgsmålet fra under Indstillinger → Oplevelse af søvn.",
+    "calendarBar": "Søvnkvalitet: {rating} af 5"
+  },
   "menstrualCycleSettings": {
     "intro": "Log din menstruationscyklus og få den som en mulighed i tilføj-menuen.",
     "toggleLabel": "Vis menstruationscyklus",
@@ -300,7 +335,7 @@
   },
   "frontPageSettings": {
     "intro": "Vælg hvilke felter, der skal vises i hjulet på forsiden. Det øverste felt viser altid en liste med samtlige tilføj-elementer.",
-    "sideSectionTitle": "Sidevisning",
+    "sideSectionTitle": "Forsidevisning",
     "sideLeft": "Venstre",
     "sideRight": "Højre",
     "sideHint": "Tal-slideren vises altid i den modsatte side: {side}.",
@@ -481,6 +516,10 @@
     "exceededCalories": "Du er overskredet med {amount} kcal",
     "adjustSleepAriaLabel": "Justér nattesøvn",
     "hourRangeLabel": "Kl. {start}–{end}",
+    "targetDateSuffix": ", målsætningsdato",
+    "openTargetDate": "Åbn målsætning",
+    "openTargetDateAriaLabel": "Åbn målsætningen for denne dag",
+    "closeTargetDateAriaLabel": "Luk målsætningen",
     "streakAriaLabel": "{streak} dages stribe i træk",
     "streakMessage": "Flot! {streak} dage i træk har du nået dit mål!",
     "withinGoal": "Du er inden for din målsætning",
@@ -546,7 +585,13 @@
     "stageIngredients": "Ingredienser",
     "readingIngredients": "Læser ingredienslisten...",
     "continueWithBarcode": "Fortsæt med denne stregkode",
-    "barcodeLookupFailedContinue": "Opslaget fejlede. Du kan fortsætte med den scannede stregkode."
+    "barcodeLookupFailedContinue": "Opslaget fejlede. Du kan fortsætte med den scannede stregkode.",
+    "stepBarcode": "Stregkode",
+    "stepFront": "Forside",
+    "stepNutrition": "Energi",
+    "stepIngredients": "Indhold",
+    "stepDone": "{step}: taget og aflæst",
+    "bothFound": "Energi og indhold fundet på samme billede"
   },
   "foods": {
     "title": "Madvarer",
@@ -881,6 +926,7 @@
     "mediaScanFailedBarcode": "Kunne ikke læse stregkoden — indtast den nedenfor",
     "mediaScanFailedNutrition": "Kunne ikke læse næringsindholdet — udfyld det nedenfor",
     "mediaScanFailedIngredients": "Kunne ikke læse indholdsfortegnelsen — udfyld den nedenfor",
+    "mediaVerified": "{box}: taget og aflæst korrekt",
     "savedOffline": "Ingen forbindelse — produktet er gemt på enheden og uploades automatisk, når du har netværk igen."
   },
   "offlineQueue": {
@@ -1021,17 +1067,56 @@
     "paymentMethods": "Betalingsmetoder",
     "freePlan": {
       "title": "Gratis",
-      "description": "Adgang til alt i Hello Cal undtagen Hello Doc. Kun de seneste 30 dages historik vises — ældre data gemmes og kommer tilbage, hvis du bliver Seriøs."
+      "description": "Registrering, kalender og din målsætning. Kun de seneste 3 måneders historik vises — ældre data gemmes og kommer tilbage, hvis du bliver Seriøs."
     },
     "seriousPlan": {
       "title": "Seriøs",
       "priceSuffix": "kr./måned",
-      "description": "Fuld historik uden 30-dages-grænse, plus adgang til Hello Doc.",
+      "description": "Fuld historik uden 3-måneders-grænse, statistik, fotodagbog, delmål, integrationer og Hello Doc.",
       "upgradeCta": "Opgradér til Seriøs",
       "upgradeUnavailable": "Betaling er ikke tilsluttet endnu — brug en gavekode eller indløs points for at blive Seriøs, indtil en betalingsudbyder er på plads.",
       "withdrawalConsent": "Jeg ønsker, at abonnementet starter med det samme, og er klar over, at jeg ved fortrydelse inden for 14 dage kun får refunderet den del af perioden, jeg ikke har brugt."
     },
-    "retentionNote": "Data ældre end 30 dage slettes aldrig — det gemmes og vises igen, så snart du bliver Seriøs."
+    "retentionNote": "Data ældre end 3 måneder slettes aldrig — det gemmes og vises igen, så snart du bliver Seriøs.",
+    "plansHeading": "Abonnementer",
+    "plans": {
+      "serious": {
+        "title": "Seriøs",
+        "teaser": "Fuld adgang til alt i Hello Cal — for dig.",
+        "description": "Til dig, der vil helt i dybden. Seriøs giver dig hele din historik, hele statistikmodulet og alle værktøjerne til at følge, forstå og tilpasse din kost og dine mål — uden begrænsninger."
+      },
+      "family": {
+        "title": "Seriøs Familie",
+        "teaser": "Fuld adgang til alt i Hello Cal — for hele familien.",
+        "description": "Alt fra Seriøs til hele familien på ét abonnement. Hver person har sin egen private konto, og ingen kan se de andres data."
+      }
+    },
+    "features": {
+      "history": "Hele din historik — ingen 3-måneders grænse",
+      "statistics": "Hele statistikmodulet",
+      "photoDiary": "Fotodagbog",
+      "customize": "Omarrangér statistik og ikonerne i bundmenuen",
+      "display": "Alle visningsindstillinger til og fra",
+      "allergens": "Allergener, specialdiæter og filtre på retter",
+      "integrations": "Alle integrationer",
+      "subGoals": "Delmål ud over din målsætning",
+      "helloDoc": "Hello Doc — del med din læge eller diætist"
+    },
+    "planPage": {
+      "includesHeading": "Det får du",
+      "periodHeading": "Vælg periode",
+      "period": {
+        "1": "1 måned",
+        "3": "3 måneder",
+        "12": "1 år"
+      },
+      "price": "{price} kr.",
+      "perMonth": "{price} kr./md.",
+      "save": "Spar {pct} %",
+      "renewalNote": "Abonnementet fornyes automatisk for samme periode, indtil du opsiger det. Du kan opsige når som helst.",
+      "buyCta": "Køb — {price} kr.",
+      "buyError": "Købet kunne ikke startes lige nu"
+    }
   },
   "profileSleep": {
     "title": "Søvnmønster",
@@ -1059,6 +1144,8 @@
   },
   "weightCalibration": {
     "title": "Vægt kalibrering",
+    "lastCalibrated": "Senest kalibreret d. {date}",
+    "neverCalibrated": "Ikke kalibreret endnu",
     "intro": "Vej dig på forskellige tidspunkter og under forskellige forhold — så får du en fornemmelse af dit udsving i løbet af dagen, uden at skulle veje dig nøgen hver gang.",
     "weightLabel": "Vægt (kg)",
     "weightPlaceholder": "fx 78,4",
@@ -1086,7 +1173,8 @@
       "before": "Før mad",
       "after": "Efter mad"
     },
-    "submit": "Opdatér oplysninger",
+    "save": "Gem",
+    "submit": "Registrér vejning",
     "saving": "Gemmer…",
     "loading": "Henter…",
     "noEntriesYet": "Ingen vejninger registreret endnu.",
@@ -1107,7 +1195,9 @@
     "chest": "Bryst (cm)",
     "thigh": "Lår (cm)",
     "upperArm": "Overarm (cm)",
+    "neck": "Hals (cm)",
     "names": {
+      "neck": "Hals",
       "waist": "Talje",
       "hip": "Hofte",
       "chest": "Bryst",
@@ -1126,8 +1216,12 @@
     "title": "Målsætning",
     "loading": "Henter…",
     "loadError": "Kunne ikke hente målsætninger.",
-    "empty": "Du har ikke oprettet nogen målsætninger endnu. Opret på knappen nedenfor",
+    "empty": "Du har ikke oprettet nogen målsætninger endnu. Opret på knappen ovenfor",
     "create": "Opret ny målsætning",
+    "createSubGoal": "Opret nyt delmål",
+    "createdLabel": "Oprettet {date}",
+    "detailTitle": "Delmål",
+    "notFound": "Målsætningen findes ikke.",
     "completedAria": "Målsætning nået",
     "intro": "Sæt den dato, vægt og de kropsmål, du sigter efter. Bruges til at følge din fremgang i statistikken.",
     "targetDate": "Målsætningsdato",
@@ -1187,15 +1281,32 @@
     "loading": "Henter…",
     "loadError": "Kunne ikke hente billede-dagbog.",
     "requiresPasscode": "Kræver telefonens adgangskode for at vise",
-    "requiresPasscodeDescription": "Billederne vises først, når du har bekræftet med Face ID, Touch ID eller telefonens kode.",
+    "requiresPasscodeDescription": "Bekræft med Face ID, Touch ID, Windows Hello eller skærmlås-PIN, før billederne vises.",
     "showPhotos": "Vis billeder",
+    "unlocking": "Bekræfter…",
+    "passcodeFailed": "Kunne ikke bekræfte. Prøv igen.",
+    "passcodeUnsupported": "Denne enhed understøtter ikke adgangskode-bekræftelse.",
     "takePhoto": "Tag billede (fuld figur eller mave)",
     "noPhotosYet": "Ingen billeder endnu — tag det første for at kunne sammenligne senere.",
     "photoAlt": "Billede-dagbog-optagelse",
     "deleteAria": "Slet billede",
     "previousPhoto": "Forrige billede",
     "nextPhoto": "Næste billede",
-    "unlocking": "Bekræfter…",
+    "selfiesSectionTitle": "Selfies",
+    "noSelfiesYet": "Ingen selfies endnu — tag den første for at kunne sammenligne senere.",
+    "photosSectionTitle": "Andre billeder",
+    "currentWeight": "Aktuel vægt: {value} kg",
+    "latestWeight": "Seneste vægt: {value} kg ({date})",
+    "noWeight": "Ingen vægt registreret endnu",
+    "currentMeasurements": "Aktuelle mål: {value}",
+    "latestMeasurements": "Seneste mål: {value} ({date})",
+    "noMeasurements": "Ingen mål registreret endnu",
+    "measurementWaist": "Talje {value} cm",
+    "measurementHip": "Hofte {value} cm",
+    "measurementChest": "Bryst {value} cm",
+    "measurementThigh": "Lår {value} cm",
+    "measurementUpperArm": "Overarm {value} cm",
+    "measurementNeck": "Hals {value} cm",
     "unlockError": "Kunne ikke bekræfte. Prøv igen.",
     "saving": "Gemmer billede…",
     "saveError": "Billedet kunne ikke gemmes på telefonen. Prøv igen.",
@@ -1387,7 +1498,25 @@
     "freeMonthsRemaining": "{count} gratis måned(er) i kø",
     "paymentMethodsTitle": "Betalingsmetoder",
     "noPaymentMethod": "Ingen betalingsmetode tilføjet endnu",
-    "noPaymentMethodHint": "Kommer, når Hello Cal har en betalingsudbyder tilknyttet. Understøtter Visa, Apple Pay, Google Pay og MobilePay, når det er klar.",
+    "nextPayment": "Næste betaling d. {date}",
+    "canceledUntil": "Seriøs til og med d. {date}",
+    "mobilePayAgreement": "Aftale aktiv",
+    "pendingApproval": "Afventer godkendelse i MobilePay-appen",
+    "chooseSubscription": "Vælg abonnement",
+    "stopAgreement": "Stop MobilePay-aftale",
+    "keepAgreement": "Behold",
+    "stopping": "Stopper…",
+    "stopConfirm": "Aftalen stoppes, og der trækkes ikke flere penge.",
+    "stopConfirmUntil": "Aftalen stoppes, og der trækkes ikke flere penge. Du beholder Seriøs til og med d. {date}.",
+    "stopError": "Kunne ikke stoppe aftalen. Prøv igen om lidt.",
+    "mobilePayReturn": {
+      "title": "MobilePay",
+      "checking": "Henter status fra MobilePay…",
+      "active": "Tak! Dit abonnement er aktivt.",
+      "pending": "Aftalen er endnu ikke godkendt. Godkend den i MobilePay-appen — siden opdateres af sig selv.",
+      "none": "Aftalen blev ikke godkendt. Du kan prøve igen fra Abonnement.",
+      "back": "Til Betaling"
+    },
     "supportedMethodsTitle": "Understøttede metoder"
   },
   "statistics": {
@@ -1395,7 +1524,9 @@
     "calories": "Kalorier",
     "weight": "Vægt",
     "trendWeight": "Trendvægt (AI-estimat)",
-    "caloriesAndWeightChart": "Kalorier og vægt"
+    "caloriesAndWeightChart": "Kalorier og vægt",
+    "sleepQuality": "Søvnkvalitet",
+    "sleepQualityChart": "Søvnkvalitet og kalorier"
   },
   "statUnusedCards": {
     "title": "Ubrugte statistik-kort",
@@ -1622,5 +1753,12 @@
     "enabled": "Face ID er slået til for login.",
     "active": "Face ID aktiveret",
     "activate": "Aktivér Face ID"
+  },
+  "premium": {
+    "title": "Kun med Seriøs",
+    "description": "Denne funktion er en del af Seriøs. Med Seriøs får du hele statistikmodulet, fotodagbog, delmål, allergener og filtre, integrationer og fuld frihed til at tilpasse appen.",
+    "cta": "Se Seriøs",
+    "badge": "Seriøs",
+    "filtersLocked": "Filtre og sortering kræver Seriøs"
   }
 }

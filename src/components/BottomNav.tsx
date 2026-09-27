@@ -15,6 +15,7 @@ import {
 } from "@tabler/icons-react";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { useIsCompactLandscape } from "@/hooks/useIsCompactLandscape";
+import { useIsSerious } from "@/lib/use-subscription-tier";
 import {
   BOTTOM_NAV_CHANGED_EVENT,
   BOTTOM_NAV_HREFS,
@@ -201,6 +202,8 @@ export function BottomNav() {
   const [activeKeys, setActiveKeys] = useState<string[]>(DEFAULT_ACTIVE);
   const [inactiveKeys, setInactiveKeys] = useState<string[]>(DEFAULT_INACTIVE);
   const [editMode, setEditMode] = useState(false);
+  // Omarrangering af ikonerne er kun for Seriøs (docs/DECISIONS.md 2026-09-26).
+  const isSerious = useIsSerious();
   const [drag, setDrag] = useState<DragState | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const [sheetOffset, setSheetOffset] = useState(0);
@@ -521,6 +524,8 @@ export function BottomNav() {
     pressStart.current = { x: e.clientX, y: e.clientY };
     clearLongPress();
     longPressTimer.current = setTimeout(() => {
+      // Gratis: langt tryk åbner ikke redigering; slip navigerer som et tryk.
+      if (!isSerious) return;
       setEditMode(true);
       beginDrag(key, "active", e.nativeEvent as unknown as React.PointerEvent);
     }, LONG_PRESS_MS);

@@ -6,12 +6,13 @@ type RouteContext = { params: Promise<{ id: string }> };
 
 export async function PATCH(req: Request, { params }: RouteContext) {
   const { id } = await params;
-  const { waistCm, hipCm, chestCm, thighCm, upperArmCm, note } = (await req.json()) as {
+  const { waistCm, hipCm, chestCm, thighCm, upperArmCm, neckCm, note } = (await req.json()) as {
     waistCm?: number | null;
     hipCm?: number | null;
     chestCm?: number | null;
     thighCm?: number | null;
     upperArmCm?: number | null;
+    neckCm?: number | null;
     note?: string | null;
   };
 
@@ -27,6 +28,7 @@ export async function PATCH(req: Request, { params }: RouteContext) {
         ...(chestCm !== undefined ? { chestCm } : {}),
         ...(thighCm !== undefined ? { thighCm } : {}),
         ...(upperArmCm !== undefined ? { upperArmCm } : {}),
+        ...(neckCm !== undefined ? { neckCm } : {}),
         ...(note !== undefined ? { note: note || null } : {}),
       },
     });

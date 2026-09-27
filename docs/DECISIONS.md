@@ -2,6 +2,45 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-26: Support-indbakke (beskedtjeneste i admin)
+
+- "Kontakt os"-henvendelser er nu tråde: `SupportMessage` (USER / SUPPORT /
+  NOTE). Den første besked ligger både i `SupportRequest.message` (historik)
+  og som første `SupportMessage`. Interne noter (NOTE) vises aldrig for brugeren.
+- Prioritet `HIGH/NORMAL/LOW` sættes af admin; nye sager er `NORMAL`.
+- "Ikke besvaret" = `awaitingReply` (seneste besked er fra brugeren).
+  Admin kan også markere besvaret/ikke besvaret manuelt. En brugerbesked i en
+  løst sag genåbner den.
+- Admin `/admin/support`: standard = åbne sager, ældste øverst (efter
+  brugerens seneste besked); "Senest modtaget øverst" som alternativ.
+  Filtre: status (Åbne/Ikke besvaret/Løste/Alle), 3 prioritets-flueben,
+  søgning (emne, navn, e-mail, sagsnr.). Filteret ligger i URL'en.
+  Sagen åbnes på `/admin/support/[id]` med svar, intern note,
+  "Send og marker som løst", prioritet og status.
+- Svar sendes via `queueMessage("SUPPORT_REPLY")` (mail + push + brugerens
+  indbakke, ikke fravælgelig) med link til `/settings/support/requests/[id]`,
+  hvor brugeren ser tråden og kan svare.
+- 24-timers-regel: scheduleren (hvert 15. min) sender én samlet mail
+  (`SUPPORT_OVERDUE_ADMIN`) til `ADMIN_NOTIFICATION_EMAIL` med alle sager,
+  der netop har passeret 24 timer uden svar. `overdueAlertSentAt` sikrer én
+  advarsel pr. ubesvaret besked; nulstilles ved svar/ny brugerbesked.
+  Eksisterende åbne sager markeres som allerede advaret ved migrationen.
+- Brugerens valg 2026-09-26: samtalen foregår i appen, ikke på mail.
+  `SUPPORT_REPLY` er derfor kun push + indbakke (ingen mail); brugeren får
+  en kvitteringsmail med sagsnummer (`SUPPORT_RECEIVED`), når sagen oprettes.
+- Startprioritet efter kategori: Abonnement/betaling og Konto/login = Høj,
+  Fejl/Mine data/Produkter = Normal, Andet = Lav. Admin kan ændre den.
+- Brugeren kan vedhæfte op til 3 skærmbilleder pr. besked. De skaleres til
+  maks. 1600 px JPEG i telefonen, typen tjekkes på serveren ud fra filens
+  bytes, EXIF fjernes, og de gemmes i databasen (`SupportAttachment`) —
+  aldrig under /public. Kun ejeren og admin kan hente dem.
+- Svarskabeloner (`SupportReplyTemplate`) på `/admin/support/templates`;
+  `{{navn}}` erstattes med brugerens navn ved indsættelse.
+- Admin-menuen viser "Support (n)" med antal ubesvarede sager (rød ved
+  sager over 24 timer).
+- 24-timers-advarslen sendes én gang pr. ubesvaret besked (brugerens valg).
+
+## 2026-09-26: Redigering af målsætninger
 ## 2026-09-26: Én overskrift med streger — kun `.hf-type-section-title`
 
 Brugerens krav (gentaget): alle overskrifter med streger ("──── Tekst ────")
@@ -99,7 +138,32 @@ overtagelsen af G4 ("Tegn", Frida-datadumpet er fuldt, admin-siden bygges nu).
   rammer; ældre analyser vises med hele fotoet. Rettelsen skrives til
   produktet og gemmes som `correction`. Den natlige AI-robot er stadig en
   senere fase; en lavere minimumstærskel er stadig uafklaret.
+## 2026-09-26: Oplevelse af søvn
 
+- Ny række under Indstillinger → Visning: "Oplevelse af søvn"
+  (`/settings/display/sleep-quality`). `User.sleepQualityPromptEnabled`,
+  slået TIL som standard (bevidst undtagelse fra "vis aldrig som standard").
+- Første app-åbning hver dag (logget ind, samtykke givet, ingen vurdering
+  for i dag) viser et cremefarvet fuldskærms-overlay: "Hvordan oplever du at
+  din nat har været?" med store, understregede 1–5. Tryk → animeret cirkel →
+  overlayet lukker. "Luk" øverst til højre, "Slå fra" nederst til højre,
+  info-ikon nederst til venstre med forklaring i gråt felt.
+  "Vist i dag" huskes pr. enhed (localStorage), så lukning ikke spørger igen.
+- Én vurdering pr. dato (datoen man vågnede) i `SleepQualityEntry`
+  (`/api/sleep-quality`). Vises som sort bjælke med hvid tekst øverst i
+  kalenderens dagvisning, og som graf "Søvnkvalitet og kalorier" øverst på
+  Statistik. Senere: sammenhæng med kalorieindtag/kostomlægning.
+
+## 2026-09-26: Kropsmål med brugerens tegninger + halsmål
+
+Kropsmål vises som ét kort pr. mål (Statistik-kortenes stil): brugerens egne
+tegninger (`Icons/Kropsmål`, kopieret uændret til `public/body-measurements`)
+til venstre, titel + felt til højre. Tegningen vælges ud fra `User.sex`;
+uden valgt køn gættes der ikke (kort uden tegning + hint om at vælge køn).
+Brugeren valgte at få Hals med: nyt valgfrit felt `BodyMeasurement.neckCm`
+(migration `20260926090000_body_measurement_neck`). Hofte har ingen tegning
+og vises uden billede. Listen i `src/lib/body-measurements.ts` er fortsat
+eneste kilde, så Hals også kan bruges som målsætning.
 
 ## 2026-09-25: Blød e-mailbekræftelse ved tilmelding
 
@@ -652,6 +716,15 @@ aldrig. `PATCH /api/profile` og det e-mailverificerede API er uændrede.
   kan ændres per dag)" under begge felter samlet.
 - DB-kolonnen `users.workHoursInCalendarEnabled` står midlertidigt tilbage
   (ubrugt); fjernes i en senere migration.
+
+## 2026-09-26: Målsætning-oversigt som liste af delmål med egen side
+
+`/profile/goals` viser nu hver målsætning som en blok (som kalenderens
+dagsliste): kalender-firkant til venstre med måldatoen (dag + måned, grøn når
+alle targets er nået), i midten hvad målet indebærer, pil til højre. Klik
+åbner den unikke side `/profile/goals/[id]` (API `GET /api/goals/[id]`, kun
+egne mål). Øverst en omridsknap "+ Opret nyt delmål" (`hf-btn-secondary`, ingen
+fyldfarve); formularen har dato-vælgeren øverst.
 
 ## 2026-09-22: Målsætning — historiske, daterede målsætninger for vægt og kropsmål
 
@@ -2311,6 +2384,39 @@ skal ikke genindføres uden en eksplicit anmodning.
 - Køb af Seriøs kræver en vippekontakt, der bekræfter straks-levering og forholdsmæssig refusion ved fortrydelse (forbrugeraftaleloven). Knappen er fortsat lukket, indtil en betalingsudbyder findes (`PAYMENT_AVAILABLE`).
 - Åbent: konto-sletning sker via Hjælpecenter (ingen selvbetjening), og tilbagetrækning af samtykke sker via support. Juridisk gennemlæsning anbefales før lancering.
 
+## 2026-09-26: Tooltips og start-up tips (Indstillinger → Visning)
+
+- To vippekontakter under Visning: "Vis tooltips" (små hjælpetekster via `HelpTip`, `src/components/hf/HelpTip.tsx`) og "Vis start-up tips". Begge er slået til som standard og gemmes pr. enhed i localStorage (`src/lib/help-prefs.ts`), samme mønster som Kalendervisning.
+- Start-up tips er 1-sides overlays med én fast standard (`StartupTipOverlay`): "Luk" øverst til højre, ikon + titel + tekst, evt. én stor knap, og "Slå fra" nederst til højre (slår alle start-up tips fra). Højst ét tip pr. besøg, kun for indloggede brugere med samtykke, aldrig på login-, samtykke-, juridiske eller admin-sider (`StartupTipsGate` i root layout).
+- Tips står i `STARTUP_TIPS` (`src/lib/startup-tips.ts`) og vises i rækkefølge. Et tip er færdigt, når det lukkes, eller når funktionen bruges (`markStartupTipSeen(id)` kaldes fra funktionens egen kode). Første tip er altid "Dine data er dine" med "Læs mere" til `/privatlivspolitik`.
+
+## 2026-09-26: Gratis vs. Seriøs — hvad er låst, og egne abonnementssider
+
+- Gratis viser nu rullende 3 måneders historik (`FREE_TIER_RETENTION_DAYS = 90`, før 30). Stadig kun en forespørgselsgrænse — intet slettes.
+- Kun for Seriøs: hele statistikmodulet (`/statistics/**`, inkl. omarrangering af kort), fotodagbogen, omarrangering af ikonerne i bundmenuen (langt tryk åbner ikke redigering for Gratis), visningsindstillingerne under `/settings/display/**`, allergen-/resultatvisning (`/profile/settings/results`; `GET /api/profile` returnerer `showAllergens: false` for Gratis), sortering/filtre og HelloFresh under Opskrifter → delte retter, og alle integrationer (`/settings/integrations` + `connect` afviser Gratis med 403).
+- Målsætning: Gratis har én målsætning i alt (målvægten) og ingen delmål — `/profile/goals/new` er låst, og `POST /api/goals` afviser Gratis med 403 (`PREMIUM_REQUIRED`).
+- Låste sider låses via en route-`layout.tsx` med `PremiumGate` (`src/components/PremiumGate.tsx`), så selve siden ikke renderes; klienten læser niveau via `useSubscriptionTier()` (`src/lib/use-subscription-tier.ts`). Serveren håndhæver, hvor data ellers kunne hentes/skrives udenom.
+- Seriøs og Seriøs Familie har hver deres side, `/profile/subscription/serious` og `/profile/subscription/family`, med tre vandrette periodebokse: 1 måned, 3 måneder, 1 år. Priser (samlet pr. periode) i `SUBSCRIPTION_PRICES_DKK` (`src/lib/subscription-plans.ts`, Prisma-fri så klienten kan bruge den): Seriøs 119/299/899 kr., Familie 179/449/1349 kr. — foreløbige, afventer ejerens endelige priser. Købsknappen kalder MobilePay-aftalen (`POST /api/payments/mobilepay/agreement`, bygget af MobilePay-sessionen) og er lukket, indtil `mobilePayAvailable` er sand.
+- Åbent: hvordan Seriøs Familie fungerer teknisk (antal medlemmer, invitation af familiemedlemmer) er ikke besluttet; SPECIFICATION siger stadig "ingen husstandsprofiler" — hver person har egen konto.
+
+## 2026-09-26: Opret vare — rækkefølge, samme-foto-flueben, logo-genkendelse og fritskrabning
+
+- Kamera-flowet (`/camera/create`) er nu: stregkode → forside → energi (næring) → indhold (ingredienser). En række med fire bokse øverst viser trinnene; et trin, der er taget og aflæst korrekt, får flueben-overlay (`CaptureCheckOverlay`).
+- Næring og ingredienser står ofte side om side. Energifotoet sendes derfor parallelt til både næring- og ingrediens-aflæsningen. Findes ingredienslisten (confidence ≥ 0,6), får begge bokse flueben, ingrediens-trinnet springes over, og begge AiProductAnalysis-rækker kobles til produktet. Opret-sidens 2×2-grid viser samme flueben (draftens `verified`); vælges et næringsfoto manuelt dér, finder lokal OCR (`findIngredientsSection`) også ingredienslisten.
+- Logoets navn læses af OpenAI (logoer er ofte for kreative til almindelig OCR): forside-analysen returnerer `logoText`, `logoConfidence`, `logoBox` og `productBox` (prompt `front-v2-2026-09-26`). Navnet holdes op mod Brand-tabellen (`src/lib/brand-match.ts`: normaliseret navn + Levenshtein, match ≥ 0,85); et match giver databasens stavemåde, så der ikke opstår næsten-dubletter.
+- Fritskrabning: forsidefotoet gemmes (`AiProductAnalysis.imageUrl`, nu også for FRONT), og der oprettes `ImageCutoutJob`s (BRAND_LOGO + PRODUCT_FRONT). Den eksisterende `scripts/image-agent` (rembg) beskærer efter boksen, fjerner baggrunden og gemmer PNG under `/product-images/cutouts` (hvert 15. sek.). Ingen ny container. OpenAI's billedredigering blev fravalgt: den kan ændre selve logoet.
+- Produktets fritskrabede forside bliver `Product.pendingImageUrl` og venter på den eksisterende admin-godkendelse. Logoet bliver kun selv `Brand.logoUrl`, når brandet intet logo har, og både AI-sikkerhed og brand-match er ≥ 0,9. Ellers ligger det som logo-kandidat på brandet (til G5's admin-kø).
+
+## 2026-09-26: MobilePay-betaling (Vipps MobilePay Recurring) + Opsætning delt op
+
+- **Betaling kører via Vipps MobilePay Recurring API v3** (`src/lib/payments/`). Brugeren godkender en aftale i MobilePay-appen; Hello Cal gemmer kun aftale- og træk-id'er, aldrig kortdata. Aftalen oprettes med planens samlede pris og interval (1/3/12 mdr., `SUBSCRIPTION_PRICES_DKK`) — prisen slås altid op på serveren.
+- Første periode trækkes straks (initialCharge). Kører der allerede en Seriøs-periode (gavekode/points/opsagt), trækkes først ved udløb.
+- Fornyelse: den indbyggede scheduler (`runMobilePayTick`, hvert 15. min.) opretter næste træk 5 dage før udløb med forfald på udløbsdatoen (5 genforsøgsdage). Beløb/interval læses fra aftalen hos MobilePay. En gratis måned fra points bruges i stedet for et træk. Et træk, der endeligt fejler, stopper aftalen; Seriøs udløber med den betalte periode.
+- `ACTIVE` har 6 dages henstand efter `currentPeriodEnd` (mens MobilePay trækker/genforsøger). `CANCELED` = opsagt, men Seriøs løber perioden ud.
+- Status hentes altid fra MobilePay. Webhooks (registreres automatisk af serveren, hemmelighed krypteret i `payment_webhooks`) er kun et signal om at hente; scheduleren synker også uden webhooks.
+- Nøgler: admin → API-nøgler → Betaling → MobilePay (`MOBILEPAY_CLIENT_ID`, `MOBILEPAY_CLIENT_SECRET`, `MOBILEPAY_SUBSCRIPTION_KEY`, `MOBILEPAY_MERCHANT_SERIAL_NUMBER`, valgfri `MOBILEPAY_ENV=test`). Uden nøgler er købsknappen lukket (`mobilePayAvailable`).
+- Betalingssiden viser ingen "kommer snart"-tekster (ejerens krav). Visa/Apple Pay/Google Pay-logoer er fra simple-icons (CC0), MobilePay-ikonet fra Vipps MobilePays udviklerside (`public/payment/`).
+- Opsætning (`/profile/settings`) er nu en oversigt med trin-baren og to undersider: "Sprog og region" (`/profile/settings/language-region`, også linket fra Indstillinger) og "Resultatvisning" (`/profile/settings/results`: allergener + udvidet næringsindhold).
 
 
 - Åbent: teksten lover et udtrykkeligt samtykke til helbredsdata (GDPR art. 9) ved oprettelse og samtykke til fortrydelsesret-afkald ved køb; ingen af delene er bygget endnu. Konto-sletning sker via Hjælpecenter (ingen selvbetjening). Juridisk gennemlæsning anbefales før lancering.

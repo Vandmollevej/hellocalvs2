@@ -6,6 +6,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { IconAdjustmentsHorizontal, IconChevronRight, IconSearch, IconSoup } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { PremiumBadge } from "@/components/PremiumGate";
+import { useIsSerious } from "@/lib/use-subscription-tier";
 import {
   activeFilterCount,
   filtersToParams,
@@ -163,6 +165,9 @@ function SharedTab({ t }: { t: Translate }) {
   const [query, setQuery] = useState("");
   const [filters] = useState<RecipeFilters>(loadRecipeFilters);
   const [helloFresh, setHelloFresh] = useState<boolean | null>(null);
+  // Filtre/sortering og HelloFresh (en integration) er kun for Seriøs
+  // (docs/DECISIONS.md 2026-09-26); Gratis sorteres altid efter relevans.
+  const isSerious = useIsSerious();
   const [results, setResults] = useState<SearchResult[]>([]);
   const [state, setState] = useState<LoadState>("loading");
   const [favorites, setFavorites] = useState<FavoriteSnapshot[] | null>(null);
@@ -182,15 +187,15 @@ function SharedTab({ t }: { t: Translate }) {
   // Uden søgning hentes de mest populære retter til "Trender netop nu";
   // med søgning hentes resultaterne i den valgte sortering.
   useEffect(() => {
-    if (helloFresh === null) return;
+    if (helloFresh === null || isSerious === null) return;
     const controller = new AbortController();
     const timeout = setTimeout(async () => {
       setState("loading");
       try {
-        const params = filtersToParams(filters);
+        const params = isSerious ? filtersToParams(filters) : new URLSearchParams({ sort: "relevance" });
         if (query.trim()) params.set("q", query.trim());
         else params.set("sort", "popular");
-        if (helloFresh) params.set("hellofresh", "1");
+        if (helloFresh && isSerious) params.set("hellofresh", "1");
         const res = await fetch(`/api/shared-recipes?${params.toString()}`, { signal: controller.signal });
         if (!res.ok) throw new Error("offline");
         setResults(((await res.json()) as { recipes: SearchResult[] }).recipes);
@@ -203,7 +208,7 @@ function SharedTab({ t }: { t: Translate }) {
       controller.abort();
       clearTimeout(timeout);
     };
-  }, [query, filters, helloFresh]);
+  }, [query, filters, helloFresh, isSerious]);
 
   const view = filters;
   const activeCount = activeFilterCount(view);
@@ -266,16 +271,26 @@ function SharedTab({ t }: { t: Translate }) {
         </div>
         {/* Filterikon til højre for søgefeltet, uden ramme (brugerens valg
             2026-09-26); prikken viser, at der er aktive filtre. */}
-        <Link
-          href="/profile/recipes/filters"
-          aria-label={t("recipeFilters.openFilters")}
-          className="relative flex h-12 w-10 shrink-0 items-center justify-center text-hf-black"
-        >
-          <IconAdjustmentsHorizontal size={26} />
-          {activeCount > 0 && (
-            <span className="absolute right-0.5 top-2.5 h-2 w-2 rounded-full bg-hf-green" aria-hidden="true" />
-          )}
-        </Link>
+        {isSerious === false ? (
+          <Link
+            href="/profile/subscription/serious"
+            aria-label={t("premium.filtersLocked")}
+            className="flex h-12 shrink-0 items-center"
+          >
+            <PremiumBadge />
+          </Link>
+        ) : (
+          <Link
+            href="/profile/recipes/filters"
+            aria-label={t("recipeFilters.openFilters")}
+            className="relative flex h-12 w-10 shrink-0 items-center justify-center text-hf-black"
+          >
+            <IconAdjustmentsHorizontal size={26} />
+            {activeCount > 0 && (
+              <span className="absolute right-0.5 top-2.5 h-2 w-2 rounded-full bg-hf-green" aria-hidden="true" />
+            )}
+          </Link>
+        )}
       </div>
 
       {searching ? (

@@ -1,4 +1,4 @@
-import type { GoalDirection } from "@prisma/client";
+import type { GoalDirection, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import {
   BODY_MEASUREMENT_FIELDS,
@@ -173,15 +173,10 @@ export type GoalDTO = {
   targets: GoalTargetDTO[];
 };
 
-export async function listGoals(userId: string): Promise<GoalDTO[]> {
-  await refreshGoalCompletion(userId);
-  const goals = await prisma.goal.findMany({
-    where: { userId },
-    orderBy: { createdAt: "desc" },
-    include: { targets: true },
-  });
+type GoalWithTargets = Prisma.GoalGetPayload<{ include: { targets: true } }>;
 
-  return goals.map((goal) => ({
+function toGoalDTO(goal: GoalWithTargets): GoalDTO {
+  return {
     id: goal.id,
     createdAt: goal.createdAt.toISOString(),
     targetDate: goal.targetDate?.toISOString().slice(0, 10) ?? null,
@@ -195,7 +190,27 @@ export async function listGoals(userId: string): Promise<GoalDTO[]> {
         unit: target.unit,
         completedAt: target.completedAt?.toISOString() ?? null,
       })),
-  }));
+  };
+}
+
+export async function listGoals(userId: string): Promise<GoalDTO[]> {
+  await refreshGoalCompletion(userId);
+  const goals = await prisma.goal.findMany({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+    include: { targets: true },
+  });
+  return goals.map(toGoalDTO);
+}
+
+// Én målsætning — kun hvis den tilhører brugeren.
+export async function getGoal(userId: string, goalId: string): Promise<GoalDTO | null> {
+  await refreshGoalCompletion(userId);
+  const goal = await prisma.goal.findFirst({
+    where: { id: goalId, userId },
+    include: { targets: true },
+  });
+  return goal ? toGoalDTO(goal) : null;
 }
 
 export async function createGoal(

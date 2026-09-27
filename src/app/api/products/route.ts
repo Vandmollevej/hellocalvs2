@@ -12,6 +12,7 @@ import { flagUncertainAlternativeServings } from "@/lib/alternative-servings-rev
 import { syncProductNutritionFeaturesSafely } from "@/lib/product-nutrition-features";
 import { composeProductName } from "@/lib/product-naming";
 import { isProductCategory } from "@/lib/product-display-unit";
+import { linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
 import { MACRO_SOURCE_KEYS, labelNutrientsFromPrediction } from "@/lib/nutrients";
 import { HIDE_FROM_SEARCH_BELOW } from "@/lib/uncertainty-thresholds";
 
@@ -503,6 +504,13 @@ export async function POST(req: Request) {
           correctedAt,
         },
       });
+      // Fritskrabet forside/logo (docs/DECISIONS.md 2026-09-26) — må aldrig
+      // stoppe selve oprettelsen.
+      await linkCutoutJobsToProduct({
+        frontAnalysisId: analysisIds.front,
+        productId: product.id,
+        brand: brand ? { id: brand.id, name: brand.name } : null,
+      }).catch((error) => console.error("Could not link cutout jobs", error));
     }
 
     if (analysisIds.ingredients) {
@@ -525,6 +533,25 @@ export async function POST(req: Request) {
           correctedAt,
         },
       });
+      // Mættet fedt aflæses fra samme energi-foto, men opret-siden har intet
+      // felt til det — gem det direkte på varen, når tabellen er pr. 100 g/ml.
+      const nutritionAnalysis = await prisma.aiProductAnalysis.findFirst({
+        where: { id: analysisIds.nutrition, kind: "NUTRITION" },
+        select: { prediction: true },
+      });
+      const prediction = (nutritionAnalysis?.prediction ?? null) as Record<string, unknown> | null;
+      const saturatedFat = prediction?.saturatedFatPer100g;
+      if (
+        (prediction?.basis === "100g" || prediction?.basis === "100ml") &&
+        typeof saturatedFat === "number" &&
+        saturatedFat >= 0 &&
+        saturatedFat <= fatPer100g
+      ) {
+        await prisma.product.update({
+          where: { id: product.id },
+          data: { saturatedFatPer100g: saturatedFat },
+        });
+      }
     }
 
     // Stregkode-fotoet har ingen AI-korrektion (ingen AI-kald involveret, se

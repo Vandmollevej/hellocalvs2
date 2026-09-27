@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import type { Integration } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
+import { getUserSubscriptionTier } from "@/lib/subscription";
 import { shouldSync } from "@/lib/integrations";
 import { newOAuthState, readOAuthState, saveIntegrationTokens, setOAuthCookie } from "@/lib/integrations-oauth";
 import { storeIntegrationItems } from "@/lib/integrations/store-items";
@@ -36,6 +37,8 @@ export async function connect(_req: NextRequest, adapter: OAuthProviderAdapter) 
   }
   const user = await getSessionUser();
   if (!user) return NextResponse.redirect(publicUrl("/welcome"));
+  // Integrationer er kun for Seriøs (docs/DECISIONS.md 2026-09-26).
+  if ((await getUserSubscriptionTier(user.id)) !== "SERIOUS") return failed();
 
   // Brugerens til/fra-valg (gemt på integrationens side før tilkobling)
   // afgør, hvilken skriveadgang der bedes om.

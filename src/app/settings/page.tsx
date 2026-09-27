@@ -17,6 +17,7 @@ import {
   IconCalendarWeek,
   IconAlertTriangle,
   IconLifebuoy,
+  IconMoon,
   IconWallet,
   IconAdjustments,
   IconBug,
@@ -87,7 +88,7 @@ export default function SettingsPage() {
 
       <div className="hf-page hf-page--sections">
         <AccordionCard>
-          <ChevronRow icon={<IconWorld size={20} />} label={t("settings.languageAndRegion")} divider={false} />
+          <ChevronRow icon={<IconWorld size={20} />} label={t("settings.languageAndRegion")} href="/profile/settings/language-region" divider={false} />
         </AccordionCard>
 
         <AccordionCard>
@@ -208,6 +209,12 @@ export default function SettingsPage() {
               icon={<IconCalendarWeek size={20} />}
               label={t("settings.calendarView")}
               href="/settings/display/calendar-view"
+              divider
+            />
+            <ChevronRow
+              icon={<IconMoon size={20} />}
+              label={t("settings.sleepQuality")}
+              href="/settings/display/sleep-quality"
               divider={isFemale}
             />
             {isFemale && (

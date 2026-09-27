@@ -26,6 +26,7 @@ import type { IntegrationCardStatus } from "@/lib/integrations";
 import { dailyChartLabel, statChartDef } from "@/lib/stat-charts";
 import { computeTrendWeight, type WeightSample, type MealSample } from "@/lib/weight-trend";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { fetchSleepQuality, localDateKey } from "@/lib/sleep-quality";
 
 const DAY_COUNT = 7;
 
@@ -115,6 +116,24 @@ export default function StatisticsPage() {
   const [periodSelection, setPeriodSelection] = useState<StatPeriodSelection>(DEFAULT_STAT_SELECTION);
   // G3: registreringer med klassifikation til kød/drikke-kortene og "Største syndere".
   const { registrations: sourceRegistrations, loading: sourcesLoading } = useSourceRegistrations();
+  // Oplevelse af søvn (docs/DECISIONS.md 2026-09-26): 1–5 per day, plotted
+  // next to the calorie intake.
+  const [sleepEntries, setSleepEntries] = useState<{ date: string; rating: number }[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const today = new Date();
+    const from = new Date(today);
+    from.setDate(from.getDate() - (DAY_COUNT - 1));
+    fetchSleepQuality(localDateKey(from), localDateKey(today))
+      .then((entries) => {
+        if (!cancelled) setSleepEntries(entries);
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -236,6 +255,32 @@ export default function StatisticsPage() {
     [kcalDaily, weightDaily, weightTrendDaily, t],
   );
 
+  const sleepChartSeries = useMemo<ChartSeries[]>(() => {
+    const sleepDaily = dailySeries(
+      sleepEntries.map((entry) => {
+        const [y, m, d] = entry.date.split("-").map(Number);
+        return { dateKey: dateKeyFromDate(new Date(y, m - 1, d)), value: entry.rating };
+      }),
+      DAY_COUNT,
+    );
+    return [
+      {
+        key: "sleepQuality",
+        label: t("statistics.sleepQuality"),
+        color: "var(--hf-black)",
+        unit: "1–5",
+        values: sleepDaily,
+      },
+      {
+        key: "kcal",
+        label: t("statistics.calories"),
+        color: "var(--hf-green)",
+        unit: "kcal",
+        values: kcalDaily,
+      },
+    ];
+  }, [sleepEntries, kcalDaily, t]);
+
   const activePeriodRange = useMemo(() => selectionRange(periodSelection), [periodSelection]);
 
   const activePeriodDays = useMemo(
@@ -301,6 +346,13 @@ export default function StatisticsPage() {
   return (
     <HfScreen title={t("statistics.title")} icon={<TrendIcon color="currentColor" size={20} />}>
       <div className="hf-page">
+        <StatChart
+          title={t("statistics.sleepQualityChart")}
+          series={sleepChartSeries}
+          defaultEnabledKeys={["sleepQuality", "kcal"]}
+          storageKey="hellocal.statistik.sleepSeries"
+        />
+
         {showAddChart && (
           <div className="flex justify-end">
             <Link
