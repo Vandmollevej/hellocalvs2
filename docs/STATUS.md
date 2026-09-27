@@ -106,6 +106,12 @@ tysk mælkekarton. Testscripts ligger kun i sessionens scratchpad.
 - Sortering øverst til højre: tidspunkt, alfabetisk, sikkerhedsmargin (`?sort=`).
 - PATCH `/api/admin/products/[id]` gemmer nu også produkttype/subbrand/variant.
 
+## 2026-09-27: "Vilkår og betingelser"-bjælke (startguide, abonnementer, integrationer)
+
+- Ny `TermsSheet` nederst på hvert startguide-trin, abonnementsoversigten, Seriøs/Seriøs Familie, points-indløsning og hver integrationsside. Åbner et halvskærms-ark med unik tekst og "Gå til vilkår og betingelser" til det relevante afsnit (DECISIONS 2026-09-27).
+- Betingelser: ankre på alle afsnit + nyt afsnit 7 om forbindelser til andre apps. Mangler brugerens visuelle godkendelse.
+- Guide-builderen: vilkårstekst + afsnit pr. startup-trin (kort "Vilkår og betingelser"), vist over Tilbage/Næste i preview og overlay.
+
 ## 2026-09-27: Admin-menu efter brugerens struktur + agenter/jobs/roadmap/MCP
 
 - Sidebjælken i `AdminShell` følger nu brugerens grupper (DECISIONS 2026-09-27).

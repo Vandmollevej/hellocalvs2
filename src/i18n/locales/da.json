@@ -324,7 +324,9 @@
     "tipOf": "Tip {current} af {total}",
     "decrease": "Færre",
     "increase": "Flere",
-    "imageAlt": "Illustration"
+    "imageAlt": "Illustration",
+    "terms": "Vilkår og betingelser",
+    "termsGoTo": "Gå til vilkår og betingelser"
   },
   "startupTips": {
     "close": "Luk",

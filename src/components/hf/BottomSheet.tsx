@@ -114,13 +114,14 @@ export function BottomSheet({
   ariaLabel?: string;
   footer?: React.ReactNode;
   children: React.ReactNode;
-  /** "full" = næsten hele skærmhøjden (som referencebilledet), "auto" = indholdets højde. */
-  size?: "auto" | "full";
+  /** "full" = næsten hele skærmhøjden (som referencebilledet), "half" = halv skærmhøjde (vilkårsarket), "auto" = indholdets højde. */
+  size?: "auto" | "half" | "full";
   className?: string;
   /** Fx en anden baggrund (guidens skærmfarve). */
   panelStyle?: React.CSSProperties;
 }) {
   const titleId = useId();
+  const rootRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const grabRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -153,7 +154,12 @@ export function BottomSheet({
 
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
-      if (event.key === "Escape") close();
+      if (event.key !== "Escape") return;
+      // Kun det øverste ark lukker, når ark ligger oven på hinanden (fx
+      // vilkårsarket over startguiden).
+      const sheets = document.querySelectorAll(".hf-bottom-sheet");
+      if (sheets[sheets.length - 1] !== rootRef.current) return;
+      close();
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -265,7 +271,8 @@ export function BottomSheet({
       {/* React-events bobler gennem portaler til forælderens komponenttræ
           (fx kalenderens swipe/zoom-håndtering) — stop dem ved arkets rod. */}
       <div
-        className={`hf-bottom-sheet ${size === "full" ? "hf-bottom-sheet--full" : ""} ${className}`}
+        ref={rootRef}
+        className={`hf-bottom-sheet ${size === "auto" ? "" : `hf-bottom-sheet--${size}`} ${className}`}
         onClick={stopPropagation}
         onPointerDown={stopPropagation}
         onPointerMove={stopPropagation}

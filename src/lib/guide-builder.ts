@@ -4,6 +4,8 @@
 // Alt visuelt vælges KUN fra design.md's faste tokens og tekstroller — en
 // opsætning kan aldrig indeholde en fri hex-farve eller en fri fontstørrelse.
 
+import { TERMS_ANCHOR_IDS, type TermsAnchor } from "@/lib/terms-hints";
+
 export type GuideKind = "startup" | "tooltips";
 export const GUIDE_KINDS: GuideKind[] = ["startup", "tooltips"];
 
@@ -70,6 +72,12 @@ export type GuideSettingElement = {
 
 export type GuideElement = GuideTextElement | GuideSettingElement;
 
+// "Vilkår og betingelser"-bjælken under hvert startup-trin
+// (docs/DECISIONS.md 2026-09-27): egen tekst pr. trin + det afsnit i
+// /betingelser, som "Gå til vilkår og betingelser" fører til. Tomme linjer
+// i teksten adskiller afsnit.
+export type GuideTerms = { text: LocalizedText; anchor: TermsAnchor };
+
 export type GuideScreen = {
   id: string;
   // null = temaets baggrund.
@@ -80,6 +88,8 @@ export type GuideScreen = {
   // skiftet billede aldrig ændrer layoutet.
   image: string | null;
   elements: GuideElement[];
+  // Kun startup-guiden; altid null for tooltips.
+  terms: GuideTerms | null;
 };
 
 export type GuideConfig = {
@@ -99,6 +109,18 @@ export const GUIDE_IMAGE_SIZE = {
 export const GUIDE_MAX_SCREENS = 12;
 export const GUIDE_MAX_ELEMENTS = 12;
 const MAX_TEXT = 600;
+const MAX_TERMS_TEXT = 3000;
+
+// Standardtekst til et nyt startup-trin, så bjælken aldrig står tom.
+export function defaultGuideTerms(): GuideTerms {
+  return {
+    anchor: "hvad-er-hello-cal",
+    text: {
+      da: "Dine svar i startguiden bruges kun til at tilpasse Hello Cal til dig og hører til din egen konto. Du kan altid ændre dem senere under Indstillinger.\n\nHello Cal er et værktøj, ikke en læge. Tal og beregninger er vejledende og erstatter ikke rådgivning fra en sundhedsperson.",
+      en: "Your answers in the startup guide are only used to tailor Hello Cal to you and belong to your own account. You can always change them later in Settings.\n\nHello Cal is a tool, not a doctor. Numbers and calculations are guidance and do not replace advice from a health professional.",
+    },
+  };
+}
 const MAX_IMAGE = 400_000;
 
 export function backgroundById(id: GuideBackgroundId) {
@@ -147,10 +169,18 @@ export function newScreen(kind: GuideKind, index: number): GuideScreen {
     stepLabel: kind === "startup" ? { da: `Trin ${index + 1}`, en: `Step ${index + 1}` } : { da: `Tip ${index + 1}`, en: `Tip ${index + 1}` },
     image: null,
     elements: [],
+    terms: kind === "startup" ? defaultGuideTerms() : null,
   };
 }
 
-function sampleScreen(id: string, stepLabel: LocalizedText, heading: LocalizedText, body: LocalizedText, headingRole: GuideTextRoleId): GuideScreen {
+function sampleScreen(
+  id: string,
+  stepLabel: LocalizedText,
+  heading: LocalizedText,
+  body: LocalizedText,
+  headingRole: GuideTextRoleId,
+  terms: GuideTerms | null = null,
+): GuideScreen {
   return {
     id,
     background: "page",
@@ -160,6 +190,7 @@ function sampleScreen(id: string, stepLabel: LocalizedText, heading: LocalizedTe
       { id: `${id}-h`, type: "text", role: headingRole, align: "left", text: heading },
       { id: `${id}-b`, type: "text", role: headingRole === "hero" ? "body-lg" : "body", align: "left", text: body },
     ],
+    terms,
   };
 }
 
@@ -186,9 +217,42 @@ export function defaultGuideConfig(kind: GuideKind): GuideConfig {
             { id: "set-a1", type: "setting", label: { da: "Antal voksne", en: "Adults" }, hint: { da: "", en: "" }, value: 2, min: 1, max: 10 },
             { id: "set-a2", type: "setting", label: { da: "Børn", en: "Children" }, hint: { da: "(alder 0-12 år)", en: "(age 0-12)" }, value: 0, min: 0, max: 10 },
           ],
+          terms: {
+            anchor: "hvad-er-hello-cal",
+            text: {
+              da: "Antallet bruges kun til at beregne portioner i Hello Cal. Det hører til din egen konto og deles ikke med andre.\n\nDu kan altid ændre det senere under Indstillinger.",
+              en: "The number is only used to calculate portions in Hello Cal. It belongs to your own account and is not shared with anyone.\n\nYou can always change it later in Settings.",
+            },
+          },
         },
-        sampleScreen("scr-goal", { da: "Mål", en: "Goal" }, { da: "Hvad er dit mål?", en: "What is your goal?" }, { da: "Vi tilpasser dagens kalorier til dit mål.", en: "We adjust your daily calories to your goal." }, "page-title"),
-        sampleScreen("scr-done", { da: "Klar", en: "Ready" }, { da: "Du er klar", en: "You are all set" }, { da: "Du kan altid ændre det under Indstillinger.", en: "You can always change this in Settings." }, "page-title"),
+        sampleScreen(
+          "scr-goal",
+          { da: "Mål", en: "Goal" },
+          { da: "Hvad er dit mål?", en: "What is your goal?" },
+          { da: "Vi tilpasser dagens kalorier til dit mål.", en: "We adjust your daily calories to your goal." },
+          "page-title",
+          {
+            anchor: "ansvar",
+            text: {
+              da: "Dit kaloriemål er beregnet ud fra de oplysninger, du giver. Det er vejledende og kan indeholde fejl, og vi kan ikke love et bestemt resultat.\n\nEr du gravid, ammer, har en spiseforstyrrelse, diabetes eller en anden tilstand, hvor kost og vægt betyder noget for dit helbred, så tal med din læge, før du ændrer din kost.",
+              en: "Your calorie goal is calculated from the information you provide. It is guidance, may contain errors, and we cannot promise a specific result.\n\nIf you are pregnant, breastfeeding, have an eating disorder, diabetes or another condition where diet and weight matter for your health, talk to your doctor before changing your diet.",
+            },
+          },
+        ),
+        sampleScreen(
+          "scr-done",
+          { da: "Klar", en: "Ready" },
+          { da: "Du er klar", en: "You are all set" },
+          { da: "Du kan altid ændre det under Indstillinger.", en: "You can always change this in Settings." },
+          "page-title",
+          {
+            anchor: "parterne",
+            text: {
+              da: "Når du bruger Hello Cal, gælder vores betingelser. Dansk ret og danske forbrugerregler gælder fuldt ud.\n\nDine data er dine. Vi bruger dem til at levere Hello Cal til dig og ikke til annoncer. Hvordan vi behandler dine oplysninger, står i privatlivspolitikken.",
+              en: "When you use Hello Cal, our terms apply. Danish law and Danish consumer rules apply in full.\n\nYour data is yours. We use it to provide Hello Cal to you, not for ads. How we process your information is described in the privacy policy.",
+            },
+          },
+        ),
       ],
     };
   }
@@ -211,6 +275,7 @@ export function defaultGuideConfig(kind: GuideKind): GuideConfig {
             text: { da: "Scan stregkoden, så finder vi resten.", en: "Scan the barcode and we'll find the rest." },
           },
         ],
+        terms: null,
       },
       sampleScreen("scr-tip2", { da: "Tip 2", en: "Tip 2" }, { da: "Se hele dagen på ét blik", en: "Your whole day at a glance" }, { da: "Kalenderen viser, om du holder dit mål.", en: "The calendar shows whether you are on target." }, "hero"),
     ],
@@ -270,6 +335,16 @@ function sanitizeElement(value: unknown, kind: GuideKind): GuideElement | null {
   return null;
 }
 
+// Ældre opsætninger uden vilkår får standardteksten, så hvert startup-trin
+// altid har bjælken.
+function sanitizeTerms(value: unknown): GuideTerms {
+  if (!value || typeof value !== "object") return defaultGuideTerms();
+  const record = value as Record<string, unknown>;
+  const raw = (record.text && typeof record.text === "object" ? record.text : {}) as Record<string, unknown>;
+  const text = { da: str(raw.da, MAX_TERMS_TEXT), en: str(raw.en, MAX_TERMS_TEXT) };
+  return { text, anchor: oneOf(record.anchor, TERMS_ANCHOR_IDS, "hvad-er-hello-cal") };
+}
+
 // Saniterer en opsætning fra klient eller database: ukendte farver/roller
 // falder tilbage til standard, lister beskæres, billeder skal være relative,
 // https eller en lille data-URL.
@@ -290,6 +365,7 @@ export function sanitizeGuideConfig(kind: GuideKind, value: unknown): GuideConfi
         stepLabel: stepLabel.da || stepLabel.en ? stepLabel : { da: `Trin ${index + 1}`, en: `Step ${index + 1}` },
         image: sanitizeImage(screen.image),
         elements,
+        terms: kind === "startup" ? sanitizeTerms(screen.terms) : null,
       },
     ];
   });

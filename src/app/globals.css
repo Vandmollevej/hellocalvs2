@@ -1316,6 +1316,11 @@ textarea::selection,
   height: calc(100dvh - max(16px, env(safe-area-inset-top, 0px)) - 24px);
 }
 
+/* Halv skærmhøjde — "Vilkår og betingelser"-arket (docs/DECISIONS.md 2026-09-27). */
+.hf-bottom-sheet--half .hf-bottom-sheet__panel {
+  height: 50dvh;
+}
+
 .hf-bottom-sheet__grab {
   display: flex;
   flex-shrink: 0;

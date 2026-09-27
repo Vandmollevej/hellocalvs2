@@ -2872,3 +2872,14 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
 - Indhold der vises på telefonen (mails, notifikationer, svarskabeloner, flow-sider) redigeres i ét fælles vindue: `src/components/admin/PhonePreviewEditor.tsx`. Venstre halvdel: sort iPhone 17 i præcis 402 × 874 CSS-px (1206 × 2622 @3x), placeret i højre side af halvdelen; højre halvdel: redigering. HTML vises i en sandboxed iframe (ingen scripts), og `{{variabler}}` får eksempelværdier.
 - Notifikationer vises som en låseskærm-notifikation med emnet som titel og teksten uden HTML.
 - "Flows" er et hovedmenupunkt (gruppe) i admin. "Flow-sider" (`/admin/flows`) gemmer flows i `flows`/`flow_pages`; et flow gemmes altid samlet (`PUT /api/admin/flows/[id]`). Tooltip-popups (Guide-builderen, `/admin/guide-builder`) ligger i samme gruppe.
+
+
+## 2026-09-27: "Vilkår og betingelser"-bjælke på startguide, abonnementer og integrationer
+
+- Forbillede: HelloFreshs bestillingsflow. Nederst på skærmen står en bjælke med dokumentikon, fed "Vilkår og betingelser" og en 32 × 32 cirkulær pil-op-knap (design.md §6.7).
+- Tryk åbner bundarket (KRAV.md "Bundark", ny størrelse `size="half"` = 50 % af skærmen) med scrollbar tekst og et fedt, sort, højrestillet link "Gå til vilkår og betingelser" nederst, som går til det relevante afsnit i `/betingelser#<anker>`.
+- Samme komponent overalt: `src/components/hf/TermsSheet.tsx`. Teksterne ligger ét sted, `src/lib/terms-hints.ts`: unik tekst pr. startguide-trin, abonnementsoversigt, hvert abonnement (Seriøs, Seriøs Familie), points-indløsning og hver integration.
+- Guide-builderen (`/admin/guide-builder`): hvert startup-trin har sin egen vilkårstekst (da/en) og sit eget afsnit i betingelserne (`GuideScreen.terms`), redigeres i kortet "Vilkår og betingelser" og vises som bjælke over Tilbage/Næste. Ældre opsætninger får en standardtekst. Tooltips har ingen bjælke.
+- Integrationssiderne (iOS-adgangsarket) viser bjælken over "Tillad"/"Tillad ikke" via `HfAccessSheet`s `terms`-slot.
+- Ligger bundark oven på hinanden (vilkårsarket over startguiden), lukker Escape kun det øverste.
+- Betingelserne har fået ankre på alle afsnit og et nyt afsnit 7 "Forbindelser til andre apps og enheder" (`#integrationer`); de følgende afsnit er rykket ét nummer.

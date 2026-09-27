@@ -4,7 +4,9 @@ import { IconGift } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard } from "@/components/hf/AccordionCard";
 import { HfChevron } from "@/components/hf/HfChevron";
+import { TermsSheet } from "@/components/hf/TermsSheet";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { REDEEM_POINTS_TERMS } from "@/lib/terms-hints";
 
 // Indløsningsmuligheder for points. Første mulighed er sat op som række;
 // indhold og handling bag hver mulighed kommer senere.
@@ -12,7 +14,7 @@ export default function RedeemPointsPage() {
   const { t } = useTranslation();
 
   return (
-    <HfScreen title={t("subscription.redeemPage.title")}>
+    <HfScreen title={t("subscription.redeemPage.title")} footer={<TermsSheet hint={REDEEM_POINTS_TERMS} />}>
       <div className="p-4">
         <AccordionCard>
           {/* Samme række som ChevronRow, men teksten må ombrydes, da den er for lang til én linje. */}

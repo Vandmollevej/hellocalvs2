@@ -312,3 +312,8 @@
 .deny:disabled {
   opacity: 0.5;
 }
+
+/* Plads til "Vilkår og betingelser"-bjælken over knapperne. */
+.withTerms .scroll {
+  padding-bottom: 260px;
+}

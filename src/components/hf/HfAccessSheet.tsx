@@ -168,6 +168,7 @@ export function HfAccessSheet({
   onAllow,
   onDeny,
   onDismiss,
+  terms,
   embedded = false,
 }: {
   title: string;
@@ -184,6 +185,8 @@ export function HfAccessSheet({
   onAllow: () => void;
   onDeny: () => void;
   onDismiss?: () => void;
+  // "Vilkår og betingelser"-bjælken over knapperne (docs/DECISIONS.md 2026-09-27).
+  terms?: ReactNode;
   // Vist inde i en ramme (designmanualen) i stedet for over hele skærmen.
   embedded?: boolean;
 }) {
@@ -192,7 +195,7 @@ export function HfAccessSheet({
       <div className={styles.frame}>
         {onDismiss && <div className={styles.dismissArea} onClick={onDismiss} aria-hidden="true" />}
         <div className={styles.peek} aria-hidden="true" />
-        <div className={styles.sheet} role="dialog" aria-modal={!embedded} aria-label={title}>
+        <div className={`${styles.sheet} ${terms ? styles.withTerms : ""}`} role="dialog" aria-modal={!embedded} aria-label={title}>
           <h1 className={styles.titleBar}>{title}</h1>
           <div className={styles.scroll}>
             {icon && <div className={styles.appIcon}>{icon}</div>}
@@ -206,6 +209,7 @@ export function HfAccessSheet({
             {children}
           </div>
           <div className={styles.actions}>
+            {terms}
             <button type="button" disabled={allowDisabled} onClick={onAllow} className={`${styles.button} ${styles.allow}`}>
               {allowLabel}
             </button>

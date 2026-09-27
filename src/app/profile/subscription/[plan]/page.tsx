@@ -6,6 +6,8 @@ import { IconCheck, IconStar } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { TermsSheet } from "@/components/hf/TermsSheet";
+import { SUBSCRIPTION_PLAN_TERMS } from "@/lib/terms-hints";
 import {
   isSubscriptionPlan,
   SUBSCRIPTION_PERIODS,
@@ -87,6 +89,7 @@ export default function SubscriptionPlanPage() {
       title={t(`subscription.plans.${plan}.title`)}
       footer={
         <div className="flex flex-col gap-2">
+          <TermsSheet hint={SUBSCRIPTION_PLAN_TERMS[plan]} />
           <Toggle
             checked={withdrawalAck}
             onChange={setWithdrawalAck}

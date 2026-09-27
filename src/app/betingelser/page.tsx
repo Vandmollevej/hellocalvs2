@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { ScreenHeader } from "@/components/hf/ScreenHeader";
 import { LegalPromise, LegalSection as Section, LegalSummary, Placeholder } from "@/components/hf/LegalDocument";
@@ -7,14 +8,22 @@ import { LegalPromise, LegalSection as Section, LegalSummary, Placeholder } from
 // Betingelser (docs/DECISIONS.md 2026-09-02 og 2026-09-25): egne vilkår for en
 // kalorietæller-app. Struktur inspireret af branchens standardvilkår, men
 // bevidst mere forbrugervenlige. #pointsystem-ankeret linkes til fra bannere
-// ved produkt-/fejlindberetnings-points.
+// ved produkt-/fejlindberetnings-points; de øvrige ankre linkes til fra
+// "Vilkår og betingelser"-bjælken (src/lib/terms-hints.ts).
 export default function BetingelserPage() {
+  // Siden scroller i en indre container, så afsnittet fra #anker hentes
+  // selv frem efter navigation.
+  useEffect(() => {
+    const id = decodeURIComponent(window.location.hash.slice(1));
+    if (id) document.getElementById(id)?.scrollIntoView({ block: "start" });
+  }, []);
+
   return (
     <div className="flex h-full min-h-full flex-col bg-hf-cream">
       <ScreenHeader title="Betingelser" />
 
       <div className="flex-1 overflow-y-auto px-4 pb-10 pt-4">
-        <p className="text-text-secondary hf-type-caption">Senest opdateret: 2026-09-25</p>
+        <p className="text-text-secondary hf-type-caption">Senest opdateret: 2026-09-27</p>
 
         <LegalSummary
           title="Kort fortalt"
@@ -26,7 +35,7 @@ export default function BetingelserPage() {
           ]}
         />
 
-        <Section title="1. Parterne og aftalen">
+        <Section id="parterne" title="1. Parterne og aftalen">
           <p>
             Disse betingelser (&quot;Betingelserne&quot;) udgør aftalen mellem dig (&quot;Brugeren&quot;)
             og <Placeholder>Firmanavn</Placeholder>, CVR-nr. <Placeholder>CVR-nr.</Placeholder>,{" "}
@@ -44,7 +53,7 @@ export default function BetingelserPage() {
           </p>
         </Section>
 
-        <Section title="2. Hvad Hello Cal er og ikke er">
+        <Section id="hvad-er-hello-cal" title="2. Hvad Hello Cal er og ikke er">
           <p>
             Tjenesten hjælper dig med at registrere kost, væske, aktivitet, vægt og kropsmål og med at
             følge din udvikling over tid.
@@ -62,14 +71,14 @@ export default function BetingelserPage() {
           </p>
         </Section>
 
-        <Section title="3. Alder">
+        <Section id="alder" title="3. Alder">
           <p>
             Du skal være mindst 13 år for at oprette en konto. Er du under 18 år, anbefaler vi, at du
             bruger Tjenesten sammen med en forælder eller værge.
           </p>
         </Section>
 
-        <Section title="4. Din konto">
+        <Section id="konto" title="4. Din konto">
           <p>
             Kontoen er personlig og må ikke overdrages. Du logger ind med e-mail og adgangskode, Face
             ID/passkey eller via Google, Apple eller Facebook. Du skal holde dine loginoplysninger
@@ -82,7 +91,7 @@ export default function BetingelserPage() {
           </p>
         </Section>
 
-        <Section title="5. God opførsel">
+        <Section id="opfoersel" title="5. God opførsel">
           <p>Når du bruger Tjenesten, må du ikke:</p>
           <ul className="list-disc pl-5">
             <li>indsende oplysninger, du ved er forkerte, eller billeder, du ikke har ret til at bruge,</li>
@@ -97,7 +106,7 @@ export default function BetingelserPage() {
           </p>
         </Section>
 
-        <Section title="6. Indhold du bidrager med">
+        <Section id="indhold" title="6. Indhold du bidrager med">
           <p>
             Når du opretter et produkt, indberetter en fejl, uploader billeder eller deler en opskrift,
             indestår du for, at oplysningerne efter bedste evne er korrekte, og at du har ret til
@@ -116,7 +125,22 @@ export default function BetingelserPage() {
           </p>
         </Section>
 
-        <Section id="pointsystem" title="7. Pointsystem">
+        <Section id="integrationer" title="7. Forbindelser til andre apps og enheder">
+          <p>
+            Du kan forbinde Hello Cal med andre apps og enheder, fx Apple Sundhed, Health Connect,
+            Google Health, Fitbit, Garmin, Withings, Polar og Strava. Du vælger selv pr. datatype, hvad
+            der hentes til Hello Cal, og hvad der sendes fra Hello Cal, og du kan ændre valget eller
+            afbryde forbindelsen når som helst under Indstillinger. Når du afbryder, henter og sender
+            vi ikke flere data.
+          </p>
+          <p>
+            Data fra andre tjenester kan være forkerte, forsinkede eller mangle, og Hello Cal kan ikke
+            stå inde for dem. Den anden tjeneste har sine egne vilkår og sin egen privatlivspolitik, som
+            gælder for din brug af den.
+          </p>
+        </Section>
+
+        <Section id="pointsystem" title="8. Pointsystem">
           <p>Du kan optjene points på følgende måder:</p>
           <ul className="list-disc pl-5">
             <li>10 points, når et nyt produkt, du har oprettet (titel, producent, næringsindhold og billede), bliver godkendt.</li>
@@ -136,7 +160,7 @@ export default function BetingelserPage() {
           </p>
         </Section>
 
-        <Section title="8. Abonnement og betaling">
+        <Section id="abonnement" title="9. Abonnement og betaling">
           <p>
             Tjenesten findes i en gratis udgave og et betalt abonnement. Pris, indhold og
             betalingsmåde står tydeligt, før du køber. Abonnementet betales forud og fornyes
@@ -154,7 +178,7 @@ export default function BetingelserPage() {
           </p>
         </Section>
 
-        <Section title="9. Fortrydelsesret">
+        <Section id="fortrydelsesret" title="10. Fortrydelsesret">
           <p>
             Efter forbrugeraftaleloven har du 14 dages fortrydelsesret fra købet. Tager du det
             betalte abonnement i brug inden for fristen, beder vi dig udtrykkeligt bekræfte det ved
@@ -166,7 +190,7 @@ export default function BetingelserPage() {
           </p>
         </Section>
 
-        <Section title="10. Ansvar">
+        <Section id="ansvar" title="11. Ansvar">
           <p>
             Vi gør vores bedste for, at Tjenesten virker og at data er korrekte, men vi kan ikke love
             fejlfri drift eller fejlfri næringsdata. Mange produktdata kommer fra brugere, producenter
@@ -180,7 +204,7 @@ export default function BetingelserPage() {
           </p>
         </Section>
 
-        <Section title="11. Ophør">
+        <Section id="ophoer" title="12. Ophør">
           <p>
             Du kan til enhver tid lukke din konto via Hjælpecenter. Hvad der sker med dine data, står
             i Privatlivspolitikken.
@@ -192,7 +216,7 @@ export default function BetingelserPage() {
           </p>
         </Section>
 
-        <Section title="12. Ændringer">
+        <Section id="aendringer" title="13. Ændringer">
           <p>
             Vi kan ændre Betingelserne. Væsentlige ændringer til ugunst for dig varsler vi mindst 30
             dage i forvejen i appen eller pr. e-mail. Har du et betalt abonnement, kan du opsige det
@@ -200,7 +224,7 @@ export default function BetingelserPage() {
           </p>
         </Section>
 
-        <Section title="13. Lovvalg og tvister">
+        <Section id="lovvalg" title="14. Lovvalg og tvister">
           <p>
             Betingelserne er underlagt dansk ret. Kan vi ikke blive enige, kan du klage til
             Nævnenes Hus (Forbrugerklagenævnet) eller via EU&apos;s klageportal for onlinekøb. Sager ved
@@ -209,7 +233,7 @@ export default function BetingelserPage() {
           <LegalPromise>Vi har ikke gemt nogen voldgiftsklausuler eller udenlandske domstole i det med småt.</LegalPromise>
         </Section>
 
-        <Section title="14. Kontakt">
+        <Section id="kontakt" title="15. Kontakt">
           <p>
             <Placeholder>Firmanavn</Placeholder>, <Placeholder>Adresse</Placeholder>, e-mail:{" "}
             <a href="mailto:support@hellocal.io">support@hellocal.io</a>. Du kan også skrive via appens Hjælpecenter.

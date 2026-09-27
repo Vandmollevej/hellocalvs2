@@ -16,6 +16,8 @@ import {
 import type { IntegrationCardStatus } from "@/lib/integrations";
 import type { ReadType, SyncSettings, WriteType } from "@/lib/integrations/sync-settings";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { TermsSheet } from "@/components/hf/TermsSheet";
+import { integrationTerms } from "@/lib/terms-hints";
 import { formatDateTime, integrationStatusKey } from "../status-badge";
 
 // Én side pr. integration (docs/DECISIONS.md 2026-09-26), vist som iOS'
@@ -261,6 +263,7 @@ function IntegrationContent() {
       onAllow={allow}
       onDeny={deny}
       onDismiss={close}
+      terms={<TermsSheet hint={integrationTerms(integration.provider)} />}
     >
       {writeTypes.length > 0 && (
         <AccessToggleGroup title={t("integrations.access.writeTitle")} rows={rows("write", writeTypes)} />

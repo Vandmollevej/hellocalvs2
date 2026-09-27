@@ -4,7 +4,9 @@ import { useEffect, useRef, type CSSProperties, type HTMLAttributes, type ReactN
 import { IconMinus, IconPhoto, IconPlus } from "@tabler/icons-react";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { HfProgressStepper } from "@/components/hf/HfProgressStepper";
+import { TermsSheet } from "@/components/hf/TermsSheet";
 import { translate } from "@/i18n";
+import { termsParagraphs } from "@/lib/terms-hints";
 import {
   GUIDE_IMAGE_SIZE,
   backgroundById,
@@ -215,9 +217,10 @@ export function StartupGuideView({
   const palette = paletteFor(config, screen);
   const accent = accentFor(config, palette);
   const last = index >= config.screens.length - 1;
+  const termsText = screen.terms ? pick(screen.terms.text, lang) : "";
 
   return (
-    <div className="flex h-full min-h-0 flex-col" style={{ background: palette.background, color: palette.text }}>
+    <div className="relative flex h-full min-h-0 flex-col" style={{ background: palette.background, color: palette.text }}>
       {topSlot}
       <div
         className="shrink-0 px-4 pb-4 pt-4"
@@ -242,6 +245,16 @@ export function StartupGuideView({
           <Elements screen={screen} lang={lang} palette={palette} hooks={hooks} onSettingChange={onSettingChange} />
         </div>
       </div>
+      {/* Vilkår og betingelser under hvert trin (docs/DECISIONS.md 2026-09-27). */}
+      {screen.terms && termsText && (
+        <div className="shrink-0 px-4 py-2" style={palette.dark ? ({ "--hf-black": "#FFFFFF" } as CSSProperties) : undefined}>
+          <TermsSheet
+            key={screen.id}
+            hint={{ anchor: screen.terms.anchor, paragraphs: termsParagraphs(termsText) }}
+            labels={{ title: t(lang, "terms"), goTo: t(lang, "termsGoTo") }}
+          />
+        </div>
+      )}
       <div className="shrink-0 bg-hf-tan-dark px-4 pb-4 pt-4">
         <div className="flex gap-3">
           <button

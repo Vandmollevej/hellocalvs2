@@ -14,6 +14,7 @@ import {
   GUIDE_THEMES,
   backgroundById,
   defaultGuideConfig,
+  defaultGuideTerms,
   newScreen,
   newSettingElement,
   newTextElement,
@@ -28,6 +29,7 @@ import {
   type GuideThemeId,
   type LocalizedText,
 } from "@/lib/guide-builder";
+import { TERMS_ANCHORS, type TermsAnchor } from "@/lib/terms-hints";
 import { OverlayCloseControl } from "@/components/hf/OverlayFrameControls";
 import { StartupGuideView, TooltipsView, type GuideEditorHooks } from "@/components/guide/GuideScreenView";
 import { GuideOverlay } from "@/components/guide/GuideOverlay";
@@ -666,6 +668,39 @@ export function GuideBuilder({
               />
             </div>
           </Card>
+
+          {kind === "startup" && (
+            <Card title={tr("gb_terms_title")}>
+              {localizedInput(
+                "gb_terms_da",
+                screen.terms?.text.da ?? "",
+                (v) => updateScreen((s) => ({ ...s, terms: { ...(s.terms ?? defaultGuideTerms()), text: setLocalized((s.terms ?? defaultGuideTerms()).text, "da", v) } })),
+                true,
+              )}
+              {localizedInput(
+                "gb_terms_en",
+                screen.terms?.text.en ?? "",
+                (v) => updateScreen((s) => ({ ...s, terms: { ...(s.terms ?? defaultGuideTerms()), text: setLocalized((s.terms ?? defaultGuideTerms()).text, "en", v) } })),
+                true,
+              )}
+              <Field label={tr("gb_terms_anchor")}>
+                <select
+                  value={screen.terms?.anchor ?? "hvad-er-hello-cal"}
+                  onChange={(e) =>
+                    updateScreen((s) => ({ ...s, terms: { ...(s.terms ?? defaultGuideTerms()), anchor: e.target.value as TermsAnchor } }))
+                  }
+                  className={inputClass}
+                >
+                  {TERMS_ANCHORS.map((anchor) => (
+                    <option key={anchor.id} value={anchor.id}>
+                      {anchor.label}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              <p className="text-xs text-text-muted">{tr("gb_terms_note")}</p>
+            </Card>
+          )}
 
           <Card title={tr("gb_selected")}>
             {!selected ? (

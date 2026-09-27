@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { IconArrowRight, IconChevronRight, IconStar, IconUsers } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { TermsSheet } from "@/components/hf/TermsSheet";
+import { SUBSCRIPTION_OVERVIEW_TERMS } from "@/lib/terms-hints";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { SUBSCRIPTION_PLANS } from "@/lib/subscription-plans";
 import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
@@ -69,7 +71,7 @@ export default function SubscriptionPage() {
     data?.currentPeriodEnd ? new Date(data.currentPeriodEnd).toLocaleDateString("da-DK") : null;
 
   return (
-    <HfScreen title={t("subscription.title")}>
+    <HfScreen title={t("subscription.title")} footer={<TermsSheet hint={SUBSCRIPTION_OVERVIEW_TERMS} />}>
       {loading || !data ? (
         loading ? (
           <SkeletonScreen>

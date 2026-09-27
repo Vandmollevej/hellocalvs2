@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { BottomSheet, BottomSheetCloseButton, BottomSheetDots, useBottomSheetClose } from "@/components/hf/BottomSheet";
+import { TermsSheet } from "@/components/hf/TermsSheet";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { ONBOARDING_TERMS } from "@/lib/terms-hints";
 
 // Hvordan arket blev lukket — bestemmer hvad der gemmes, når glid-ud-
 // animationen er færdig. Træk ned/scrim/Escape tæller som "Påmind mig senere".
@@ -121,6 +123,7 @@ export function OnboardingWizard({
       onClose={handleSheetClosed}
       footer={
         <>
+          {currentStep && <TermsSheet key={currentStep} hint={ONBOARDING_TERMS[currentStep]} />}
           <div className="pb-4">
             <BottomSheetDots count={totalSteps} active={stepIndex} label={progressLabel} />
           </div>
