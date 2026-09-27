@@ -9,7 +9,6 @@ Kontakten og hint-teksten på `/profile/sleep` er skjult bag
 `shiftWorkEnabled`, API'et og oversættelserne er bevaret til senere. Spørgsmålet
 om skifteholdsarbejde i onboarding-guiden er ikke rørt. Lint og build kørt.
 
-
 ## 2026-09-26: Opret vare — logo, fritskrabning og samme-foto-flueben
 
 Se docs/DECISIONS.md 2026-09-26 "Opret vare — rækkefølge …". Kamera-flowet er
