@@ -10,7 +10,7 @@ ikke lokal database-adgang (se `docs/STATUS.md`), så de to nye migrationer
 `.../20260902040000_*`) er hånd-skrevet og kun schema-valideret, ikke kørt
 mod en rigtig database endnu. `[x]` betyder derfor "kodet", ikke "afprøvet i
 browseren" — sæt kun `[x]` → reelt afkrydset/streget efter en live
-gennemgang på `hellocal.packroff.dk`/`adminhellocal.packroff.dk` efter
+gennemgang på `hellocal.io`/`admin.hellocal.io` efter
 deploy, jf. `AGENTS.md`/`design.md` §12.
 
 ## Points — optjening

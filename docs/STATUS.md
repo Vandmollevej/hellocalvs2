@@ -27,6 +27,12 @@ uændrede. Mangler brugerens visuelle godkendelse.
 - Målene er fundet med script på billedets pixels (farveskift/afgrænsning), ikke aflæst. Data: `src/app/admin/designmanual/skitser/sketch-data.ts`.
 - Kun eksemplet IMG_2274 (Log ind) er bygget. De øvrige billeder bygges, når brugeren har godkendt eksemplet.
 
+## 2026-09-27: Domæne hellocal.io
+
+- Kode, `.env.production.example` og docs peger på `hellocal.io` / `admin.hellocal.io` / `scan.hellocal.io` (DECISIONS 2026-09-27, DEPLOYMENT "Domæne hellocal.io").
+- Kontakt-e-mail i betingelser/privatlivspolitik: `support@hellocal.io`.
+- Mangler: Cloudflare-tunnelruter + DNS for hellocal.io, Email Routing, Mailjet-domæne, server-`.env.production`, OAuth-redirects hos udbyderne.
+
 ## 2026-09-26: MobilePay-betaling + Opsætning delt op
 
 - Opsætning er nu en oversigt med undersiderne "Sprog og region" (også fra Indstillinger) og "Resultatvisning" (allergener + udvidet næringsindhold).

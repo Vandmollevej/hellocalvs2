@@ -2663,3 +2663,9 @@ registreringer). Afklaret med brugeren:
   (enhedstoken eller login-cookie); widgetvalg (knapper, boks) gemmes lokalt
   på telefonen i widgettens egne indstillinger, ikke på serveren.
 Se `docs/WIDGETS.md`.
+
+## 2026-09-27: Domæne hellocal.io
+
+- App: `hellocal.io`, admin: `admin.hellocal.io`, oprettelses-app: `scan.hellocal.io`. Kodens standardværdier og `.env.production.example` peger nu dertil.
+- Gamle `*.packroff.dk`-hostnavne virker under overgangen (tunnel-ruter bevares, `middleware.ts` kender begge admin-hostnavne).
+- Afsender: `no-reply@hellocal.io` (Mailjet). Kontakt i betingelser/privatlivspolitik: `support@hellocal.io`. Admin-notifikationer går fortsat til `ADMIN_NOTIFICATION_EMAIL`.

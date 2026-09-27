@@ -23,7 +23,7 @@ export function isConfigured(adapter: OAuthProviderAdapter) {
 
 function publicBase() {
   const base =
-    process.env.INTEGRATIONS_REDIRECT_BASE_URL || process.env.APP_BASE_URL || "https://hellocal.packroff.dk";
+    process.env.INTEGRATIONS_REDIRECT_BASE_URL || process.env.APP_BASE_URL || "https://hellocal.io";
   return base.replace(/\/$/, "");
 }
 

@@ -59,7 +59,7 @@ SITEMAP_URL = f"{SITE}/sitemap_recipe_pages.xml"
 IMAGE_WIDTH = 2000
 USER_AGENT = (
     "HelloCalRecipeCatalogBot/1.0 "
-    "(+https://hellocal.packroff.dk; personal recipe-catalog import for a private app; "
+    "(+https://hellocal.io; personal recipe-catalog import for a private app; "
     "contact: pep@sydtrafik.dk)"
 )
 

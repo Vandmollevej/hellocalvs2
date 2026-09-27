@@ -10,7 +10,7 @@ import nodemailer from "nodemailer";
 
 export class MailNotConfiguredError extends Error {}
 
-export const APP_BASE_URL = process.env.APP_BASE_URL || "https://hellocal.packroff.dk";
+export const APP_BASE_URL = process.env.APP_BASE_URL || "https://hellocal.io";
 
 export async function sendTransientMail({
   to,

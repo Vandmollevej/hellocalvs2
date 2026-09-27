@@ -67,7 +67,7 @@ formally migrated or archived.
   `node`, `npm`, and `node_modules/.bin/prisma` (2026-09-12).
 - There is no local dev server or local database on this machine. The only
   running instance of HELLO CAL is the **production Synology deployment**,
-  reachable at `https://hellocal.packroff.dk` (`/api/health` → `{"status":"ok"}`
+  reachable at `https://hellocal.io` (old `https://hellocal.packroff.dk` still routed) (`/api/health` → `{"status":"ok"}`
   when it is up).
 - Consequence for verification: `npm run lint` and `npm run build` are the
   verification bar reachable from this workstation (per `docs/DECISIONS.md`
@@ -201,6 +201,28 @@ second public hostname on the same existing tunnel, the same way
 dashboard login and was not done as part of adding the admin UI's code —
 see `docs/STATUS.md`.
 
+### Domæne hellocal.io (2026-09-27)
+
+Produktdomænet er nu `hellocal.io` (Cloudflare-zone, samme konto). Mål i
+tunnellen `Server`:
+
+| Hostname | Mål |
+| --- | --- |
+| `hellocal.io` (+ `www.hellocal.io`) | `http://192.168.1.90:3100` |
+| `admin.hellocal.io` | `http://192.168.1.90:3100` |
+| `scan.hellocal.io` | `http://192.168.1.90:3101` |
+
+De gamle `*.packroff.dk`-hostnavne bliver liggende i tunnellen under
+overgangen; `middleware.ts` accepterer begge admin-hostnavne. Server-
+`.env.production` skal have `APP_BASE_URL`/`INTEGRATIONS_REDIRECT_BASE_URL=https://hellocal.io`,
+`ADMIN_BASE_URL=https://admin.hellocal.io`, `SCAN_APP_BASE_URL=https://scan.hellocal.io`
+og `SMTP_FROM=Hello Cal <no-reply@hellocal.io>` (kræver at `hellocal.io` er
+verificeret afsenderdomæne i Mailjet: SPF + DKIM-TXT i Cloudflare-zonen).
+Kontaktadresse `support@hellocal.io` videresendes med Cloudflare Email
+Routing. OAuth-redirect-URI'er hos Google, Facebook, Apple, Strava, Withings,
+Polar m.fl. og MobilePay-webhooken skal pege på `hellocal.io`. Passkeys er
+bundet til hostnavnet og skal oprettes igen på det nye domæne.
+
 ## Search indexing
 
 The application adds `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet,
@@ -249,7 +271,7 @@ Google, Apple eller Facebook (docs/DECISIONS.md 2026-09-24 "Normalt login").
 Alle variabler sættes i `.env.production` (se `.env.production.example`) og
 sendes videre af `compose.production.yaml`.
 
-- `USER_SESSION_SECRET` og `APP_BASE_URL` (`https://hellocal.packroff.dk`).
+- `USER_SESSION_SECRET` og `APP_BASE_URL` (`https://hellocal.io`).
 - SMTP (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`):
   glemt adgangskode og advarsel ved login fra ny enhed/nyt land. Uden SMTP
   bliver mails liggende i køen. Udbyder: Mailjet (`in-v3.mailjet.com`, port
@@ -266,7 +288,7 @@ sendes videre af `compose.production.yaml`.
   → `FACEBOOK_APP_ID`, `FACEBOOK_APP_SECRET`.
 - Apple (kræver betalt Apple Developer-konto): Identifiers → App ID med
   "Sign in with Apple" → Services ID (= `APPLE_CLIENT_ID`), konfigurér domæne
-  `hellocal.packroff.dk` og Return URL
+  `hellocal.io` og Return URL
   `<APP_BASE_URL>/api/auth/oauth/apple/callback` → Keys → ny nøgle med
   "Sign in with Apple" (`APPLE_KEY_ID`, .p8-indholdet som
   `APPLE_PRIVATE_KEY` med linjeskift skrevet som `
@@ -277,7 +299,7 @@ sendes videre af `compose.production.yaml`.
 ## API-nøgler fra admin
 
 Alle API-nøgler (login, integrationer, OpenAI, SMTP, push m.fl.) kan også
-indtastes og testes på `adminhellocal.packroff.dk/admin/api-keys`. En værdi
+indtastes og testes på `admin.hellocal.io/admin/api-keys`. En værdi
 gemt dér vinder over `.env.production` og virker uden genstart. Database,
 sessionsnøgler og adresser ændres stadig kun i `.env.production`
 (docs/DECISIONS.md 2026-09-25 "API-nøgler i admin").

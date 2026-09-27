@@ -212,7 +212,7 @@ export default function BetingelserPage() {
         <Section title="14. Kontakt">
           <p>
             <Placeholder>Firmanavn</Placeholder>, <Placeholder>Adresse</Placeholder>, e-mail:{" "}
-            <Placeholder>kontakt-e-mail</Placeholder>. Du kan også skrive via appens Hjælpecenter.
+            <a href="mailto:support@hellocal.io">support@hellocal.io</a>. Du kan også skrive via appens Hjælpecenter.
           </p>
         </Section>
       </div>

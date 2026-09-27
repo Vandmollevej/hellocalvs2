@@ -128,7 +128,7 @@ export default function InvitePage() {
     }
   }
 
-  const shareUrl = referralCode ? `https://hellocal.packroff.dk/signup?ref=${referralCode}` : null;
+  const shareUrl = referralCode ? `https://hellocal.io/signup?ref=${referralCode}` : null;
   const shareText = buildInviteMessage({ name: senderName, note });
 
   // Åbner telefonens standard-delemenu (SMS, e-mail, beskeder …) med

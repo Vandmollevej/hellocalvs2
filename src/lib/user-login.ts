@@ -25,7 +25,7 @@ const METHOD_LABEL: Record<LoginMethod, string> = {
   signup: "ny konto",
 };
 
-const APP_BASE_URL = process.env.APP_BASE_URL || "https://hellocal.packroff.dk";
+const APP_BASE_URL = process.env.APP_BASE_URL || "https://hellocal.io";
 
 function readCookie(req: Request, name: string): string | null {
   const header = req.headers.get("cookie") ?? "";

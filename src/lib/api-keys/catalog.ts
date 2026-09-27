@@ -43,7 +43,7 @@ export const KEY_GROUPS: { id: KeyGroupId; title: string }[] = [
 ];
 
 function appBase() {
-  return (process.env.APP_BASE_URL || "https://hellocal.packroff.dk").replace(/\/$/, "");
+  return (process.env.APP_BASE_URL || "https://hellocal.io").replace(/\/$/, "");
 }
 
 function loginRedirect(provider: string) {
@@ -163,7 +163,7 @@ export const KEY_SERVICES: KeyService[] = [
     setupUrl: "https://www.strava.com/settings/api",
     redirectUris: integrationRedirect("strava"),
     testable: true,
-    note: "Hos Strava angives kun domænet (hellocal.packroff.dk) som “Authorization Callback Domain”.",
+    note: "Hos Strava angives kun domænet (hellocal.io) som “Authorization Callback Domain”.",
   },
   {
     id: "polar",
@@ -266,7 +266,7 @@ export const KEY_SERVICES: KeyService[] = [
         key: "SMTP_FROM",
         label: "Afsender",
         kind: "text",
-        hint: "Fx Hello Cal <no-reply@packroff.dk>. Domænet skal være verificeret i Mailjet.",
+        hint: "Fx Hello Cal <no-reply@hellocal.io>. Domænet skal være verificeret i Mailjet.",
       },
     ],
     setupUrl: "https://app.mailjet.com/account/apikeys",
@@ -285,7 +285,7 @@ export const KEY_SERVICES: KeyService[] = [
         label: "Kontakt (valgfri)",
         kind: "text",
         optional: true,
-        hint: "Fx mailto:peter@packroff.dk",
+        hint: "Fx mailto:support@hellocal.io",
       },
     ],
     testable: true,

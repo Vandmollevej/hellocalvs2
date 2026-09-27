@@ -78,7 +78,7 @@ Svar: `{ "ok": true, "metricsCreated": 2, "weightsCreated": 1, "activitiesCreate
 Eksempel:
 
 ```bash
-curl -X POST https://hellocal.packroff.dk/api/integrations/healthkit/ingest \
+curl -X POST https://hellocal.io/api/integrations/healthkit/ingest \
   -H "Authorization: Bearer hcal_..." \
   -H "Content-Type: application/json" \
   -d '{"source":"APPLE_HEALTH","metrics":[{"type":"STEPS","value":8426,"recordedAt":"2026-08-28T00:00:00Z"}]}'
@@ -147,7 +147,7 @@ import HealthKit
 
 final class HealthKitManager {
     private let healthStore = HKHealthStore()
-    private let ingestURL = URL(string: "https://hellocal.packroff.dk/api/integrations/healthkit/ingest")!
+    private let ingestURL = URL(string: "https://hellocal.io/api/integrations/healthkit/ingest")!
     private let deviceToken = "hcal_..." // fra Keychain, ikke hardkodet i en rigtig app
 
     func requestAuthorization() async throws {

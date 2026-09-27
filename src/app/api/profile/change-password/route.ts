@@ -5,7 +5,7 @@ import { getSessionUser } from "@/lib/session";
 import { queueMessage } from "@/lib/messaging";
 import { isLocked, recordFailure, recordSuccess } from "@/lib/rate-limit";
 
-const APP_BASE_URL = process.env.APP_BASE_URL || "https://hellocal.packroff.dk";
+const APP_BASE_URL = process.env.APP_BASE_URL || "https://hellocal.io";
 
 // Skift adgangskode for den indloggede bruger (docs/DECISIONS.md 2026-09-22).
 // Brugeren findes udelukkende via sessionen — body indeholder kun de to

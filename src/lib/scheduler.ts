@@ -28,7 +28,7 @@ const ADMIN_NOTIFICATION_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL || "peter@
 // Samme faste admin-hostname som middleware.ts (ADMIN_HOST) — godkendelseslinket
 // skal pege på admin-domænet, ikke det almindelige brugerdomæne, ellers
 // afviser middleware'en siden med 404.
-const ADMIN_BASE_URL = process.env.ADMIN_BASE_URL || "https://adminhellocal.packroff.dk";
+const ADMIN_BASE_URL = process.env.ADMIN_BASE_URL || "https://admin.hellocal.io";
 
 const globalForScheduler = globalThis as unknown as { hellocalSchedulerStarted?: boolean };
 

@@ -31,7 +31,7 @@ export default function PrivatlivspolitikPage() {
             <Placeholder>Firmanavn</Placeholder>, CVR-nr. <Placeholder>CVR-nr.</Placeholder>,{" "}
             <Placeholder>Adresse</Placeholder>, er dataansvarlig for behandlingen af dine
             personoplysninger i Hello Cal. Kontakt os om alt, der vedrører dine data, på{" "}
-            <Placeholder>kontakt-e-mail</Placeholder> eller via appens Hjælpecenter.
+            <a href="mailto:support@hellocal.io">support@hellocal.io</a> eller via appens Hjælpecenter.
           </p>
         </Section>
 
@@ -144,7 +144,7 @@ export default function PrivatlivspolitikPage() {
             <li>trække et samtykke tilbage når som helst, uden at det påvirker lovligheden af behandlingen forud for tilbagetrækningen.</li>
           </ul>
           <p>
-            Skriv til os via Hjælpecenter eller <Placeholder>kontakt-e-mail</Placeholder>. Vi svarer
+            Skriv til os via Hjælpecenter eller <a href="mailto:support@hellocal.io">support@hellocal.io</a>. Vi svarer
             senest inden for en måned. Du kan altid klage til Datatilsynet, Carl Jacobsens Vej 35, 2500
             Valby, www.datatilsynet.dk.
           </p>

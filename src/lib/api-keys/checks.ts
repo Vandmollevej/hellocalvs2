@@ -106,7 +106,7 @@ async function checkFacebook(): Promise<CheckResult> {
     `https://graph.facebook.com/v19.0/${env("FACEBOOK_APP_ID")}?fields=name,app_domains&access_token=${encodeURIComponent(data.access_token)}`
   );
   const app = (await info.json().catch(() => ({}))) as { name?: string; app_domains?: string[] };
-  const domain = new URL(process.env.APP_BASE_URL || "https://hellocal.packroff.dk").hostname;
+  const domain = new URL(process.env.APP_BASE_URL || "https://hellocal.io").hostname;
   if (app.app_domains && !app.app_domains.includes(domain)) {
     return {
       status: "warn",

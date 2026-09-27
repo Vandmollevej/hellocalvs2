@@ -3,7 +3,7 @@ import { ensureDefaultMessageTemplates, queueMessage } from "@/lib/messaging";
 import { createStartWeightChangeToken } from "@/lib/start-weight-verification";
 import { getSessionUser, unauthorized } from "@/lib/session";
 
-const APP_BASE_URL = process.env.APP_BASE_URL || "https://hellocal.packroff.dk";
+const APP_BASE_URL = process.env.APP_BASE_URL || "https://hellocal.io";
 
 // Sender verificeringsmail til ændring af den låste start-vægt
 // (docs/DECISIONS.md 2026-09-22). Brugeren findes server-side — body læses

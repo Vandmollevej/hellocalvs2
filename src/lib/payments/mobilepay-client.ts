@@ -27,7 +27,7 @@ function apiBase() {
 }
 
 export function appBaseUrl() {
-  return (process.env.APP_BASE_URL || "https://hellocal.packroff.dk").replace(/\/$/, "");
+  return (process.env.APP_BASE_URL || "https://hellocal.io").replace(/\/$/, "");
 }
 
 export class MobilePayError extends Error {

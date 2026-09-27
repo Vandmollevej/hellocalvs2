@@ -8,7 +8,7 @@ import { matchFridaProduct } from "@/lib/generic-ingredient-match";
 // brugerens retter.
 
 const ADMIN_NOTIFICATION_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL || "peter@packroff.dk";
-const ADMIN_BASE_URL = process.env.ADMIN_BASE_URL || "https://adminhellocal.packroff.dk";
+const ADMIN_BASE_URL = process.env.ADMIN_BASE_URL || "https://admin.hellocal.io";
 
 export const INGREDIENT_NAME_MAX = 80;
 

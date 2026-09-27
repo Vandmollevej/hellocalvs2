@@ -20,8 +20,8 @@ export function isSupportPriority(value: unknown): value is SupportPriority {
 }
 
 const ADMIN_NOTIFICATION_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL || "peter@packroff.dk";
-const ADMIN_BASE_URL = process.env.ADMIN_BASE_URL || "https://adminhellocal.packroff.dk";
-const APP_BASE_URL = process.env.APP_BASE_URL || "https://hellocal.packroff.dk";
+const ADMIN_BASE_URL = process.env.ADMIN_BASE_URL || "https://admin.hellocal.io";
+const APP_BASE_URL = process.env.APP_BASE_URL || "https://hellocal.io";
 
 export function supportCaseCode(id: string) {
   return id.slice(-8).toUpperCase();

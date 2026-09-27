@@ -228,7 +228,7 @@ Mangler før den kan bruges i drift (kræver brugeren/serveren):
 1. `scan-app` startes ikke automatisk af GitHub-deployet endnu: linjen
    `up -d db migrate app` i `.github/workflows` skal have `scan-app` tilføjet
    (en ændring af produktionsdeployet, som kræver brugerens godkendelse).
-2. Et hostname (fx `scanhellocal.packroff.dk`) i Cloudflare Tunnel → NAS-port
+2. Et hostname (fx `scan.hellocal.io`) i Cloudflare Tunnel → NAS-port
    3101, og `SCAN_APP_BASE_URL` i `.env.production`.
 3. Anbefalet: egne hemmeligheder `SCAN_SESSION_SECRET` og `SCAN_PII_KEY`
    (ellers bruges `ADMIN_SESSION_SECRET`). `SCAN_PII_KEY` må ikke ændres

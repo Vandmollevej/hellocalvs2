@@ -60,7 +60,7 @@ export async function POST(request: Request) {
     data: { ownerId: user.id, name, email, categories, historyRange, sentAt: now, expiresAt },
   });
 
-  const viewUrl = `${process.env.APP_BASE_URL ?? "https://hellocal.packroff.dk"}/hello-doc/${share.token}`;
+  const viewUrl = `${process.env.APP_BASE_URL ?? "https://hellocal.io"}/hello-doc/${share.token}`;
   await queueMessage("DOCTOR_SHARE_INVITATION", {
     toEmail: email,
     vars: { ownerName: user.displayName, viewUrl },
