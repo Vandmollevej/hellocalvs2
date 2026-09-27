@@ -28,10 +28,11 @@ export const PRODUCT_STATUS_LABELS: Record<ProductDatabaseStatus, string> = {
 };
 
 // "USER" = externalSource null (oprettet af en bruger).
-export const PRODUCT_SOURCES = ["USER", "REMA1000", "HELLOFRESH", "OPEN_FOOD_FACTS", "FRIDA", "USDA"] as const;
+export const PRODUCT_SOURCES = ["USER", "BILKA", "REMA1000", "HELLOFRESH", "OPEN_FOOD_FACTS", "FRIDA", "USDA"] as const;
 export type ProductDatabaseSource = (typeof PRODUCT_SOURCES)[number];
 export const PRODUCT_SOURCE_LABELS: Record<ProductDatabaseSource, string> = {
   USER: "Oprettet af bruger",
+  BILKA: "Bilka-import",
   REMA1000: "REMA 1000-import",
   HELLOFRESH: "HelloFresh",
   OPEN_FOOD_FACTS: "Open Food Facts",

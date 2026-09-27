@@ -981,11 +981,20 @@ model Product {
   // DRINK vises i ml/cl, alt andet i g (src/lib/product-display-unit.ts).
   // Null = ukendt → g.
   productCategory ProductCategory?
+  // Butiksvarer (docs/DECISIONS.md 2026-09-27 "Butiksvarer i tre tabeller"):
+  // smag (adskilt fra variant), antal i pakken ("6-pak" → 6) og frie
+  // nøgleord fra produktarkene ("i Skiver", "Tilsat kulsyre" …).
+  flavor          String?
+  packCount       Int?
+  keywords        String[]         @default([])
 
   barcodes           Barcode[]
   // Normaliserede søge-/ernæringsparametre (fiber-%, sukker-%, fuldkorn …),
   // docs/DECISIONS.md 2026-09-23. Højst én række pr. produkt.
   nutritionFeatures  ProductNutritionFeatures?
+  // Filtertabellen (økologisk, glutenfri, kødtype, nøglehul …), højst én
+  // række pr. produkt — docs/DECISIONS.md 2026-09-27.
+  filters            ProductFilters?
   registrations      Registration[]
   favorites          Favorite[]
   dishIngredients    DishIngredient[]
@@ -1375,6 +1384,7 @@ enum ExternalProductSource {
   FRIDA
   HELLOFRESH
   REMA1000
+  BILKA
 }
 
 // Reference database of EU-approved E-number additives (E100-E1521),
@@ -2448,6 +2458,19 @@ model ProductNutritionFeatures {
   // Tekststumper fra deklarationen som begrundelse (admin/debug).
   wholeGrainEvidence   String[] @default([])
 
+  // Øvrige makro-/mikroværdier pr. 100 g/ml fra butikkernes
+  // næringsdeklaration (docs/DECISIONS.md 2026-09-27 "Butiksvarer i tre
+  // tabeller"). Én typet kolonne pr. værdi; null = ukendt.
+  energyKjPer100g           Float?
+  monounsaturatedFatPer100g Float?
+  polyunsaturatedFatPer100g Float?
+  sodiumPer100g             Float?
+  alcoholPer100g            Float?
+  vitaminB2MgPer100g        Float?
+  vitaminB12UgPer100g       Float?
+  calciumMgPer100g          Float?
+  phosphorusMgPer100g       Float?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -2459,6 +2482,66 @@ model ProductNutritionFeatures {
   @@index([wholeGrainPercent])
   @@index([isWholeGrain])
   @@map("product_nutrition_features")
+}
+
+// Filtertabel til lynhurtig filtrering (docs/DECISIONS.md 2026-09-27
+// "Butiksvarer i tre tabeller"), 1:1 med Product. Ikke ja/nej: null =
+// nej/ukendt, udfyldt = ja, og teksten er det ord/logo der vises (fx
+// "Økologisk", i Tyskland "Biologisch"). Procenter er tal 0–100.
+model ProductFilters {
+  id        String  @id @default(cuid())
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String  @unique
+
+  organic         String?
+  glutenFree      String?
+  lactoseFree     String?
+  sugarFree       String?
+  sweeteners      String?
+  vegan           String?
+  vegetarian      String?
+  // Kødtype: "Kylling", "Gris", "Okse", "Fisk", "Laks" …
+  meatType        String?
+  // "Alkoholfri" / "Indeholder alkohol".
+  alcohol         String?
+  alcoholPercent  Float?
+  fatPercent      Float?
+  countryOfOrigin String?
+  wholeGrain      String?
+  keyhole         String?
+  // "Bedre Dyrevelfærd 3", "Anbefalet af Dyrenes Beskyttelse" …
+  animalWelfare   String[] @default([])
+  // "MSC", "ASC", "Fairtrade", "Rainforest Alliance Certified" …
+  certifications  String[] @default([])
+  // "Frost", "Konserves".
+  storage         String?
+  // Størrelse, fx æg "Str. M/L".
+  size            String?
+  // Punkter under "Toxiner", fx "Overfladebehandlet".
+  toxins          String[] @default([])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organic])
+  @@index([glutenFree])
+  @@index([lactoseFree])
+  @@index([sugarFree])
+  @@index([sweeteners])
+  @@index([vegan])
+  @@index([vegetarian])
+  @@index([meatType])
+  @@index([alcohol])
+  @@index([alcoholPercent])
+  @@index([fatPercent])
+  @@index([countryOfOrigin])
+  @@index([wholeGrain])
+  @@index([keyhole])
+  @@index([storage])
+  @@index([animalWelfare], type: Gin)
+  @@index([certifications], type: Gin)
+  @@index([toxins], type: Gin)
+  @@map("product_filters")
 }
 
 // Delte brugeropskrifter (docs/DECISIONS.md 2026-09-24). Offentlig verden

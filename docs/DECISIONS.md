@@ -2,6 +2,18 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-27: Butiksvarer i tre tabeller (Bilka + REMA 1000)
+
+- Varer fra butikkernes produktark ligger i tre tabeller:
+  1. **Basisinfo** – `products` (+ `barcodes`, `product_stores`, `product_images`). Nye felter: `flavor` (smag, adskilt fra variant), `packCount` ("6-pak" → 6), `keywords` (frie nøgleord).
+  2. **Makro/mikro** – `product_nutrition_features` udvidet med én talkolonne pr. værdi: kJ, enkelt-/flerumættet fedt, natrium, alkohol, B2, B12, calcium, fosfor. kcal/protein/kulhydrat/fedt/mættet fedt bliver på `products`, fordi appen læser dem dér.
+  3. **Filtre** – ny `product_filters` (1:1), én indekseret kolonne pr. filter. Ikke ja/nej: tom = nej/ukendt, udfyldt = ja, og teksten er det ord/logo der vises ("Økologisk", i Tyskland "Biologisch"). Procenter er tal. Lister (GIN-index) for dyrevelfærd, certificeringer og toxiner.
+- "Overfladebehandlet" er et punkt under toxiner (brugerens beslutning).
+- Én vare pr. EAN; findes varen i begge kæder, vinder Bilka, og REMA udfylder tomme felter. Eksisterende vare med samme stregkode opdateres.
+- Mængdeenhed: alle drikkevarer inkl. alkohol i ml, undtagen drikkeyoghurt; alt andet i gram.
+- Billeder: fritlagt > Bilka-original > REMA-original. Ikke-fritlagte bruges nu og erstattes senere. Filer bruges uændret (retina) bag produktcirklens maske; fritlagte får tag "Cutout". Senere må fritlagte PNG'er bryde cirklen: portræt 10 % over toppen, vandrette 10 % ud til højre.
+- Kolonne-mapping: `docs/PRODUCT_IMPORT_MAPPING.md`. Import: `scripts/store-products-import` (`build_data.py` lokalt → `data/store_products.json` + billeder; `store-products-agent` i compose skriver til databasen efter `rema1000-agent`).
+- Første kørsel er bevidst kun 50 varer (20 i begge kæder, 20 kun Bilka, 10 kun REMA), så strukturen kan ses i admin (`/admin/products/[id]` viser de tre tabeller) før resten importeres.
 ## 2026-09-27: Admin "Produkt-database"
 
 - Menupunktet "Produkt-database" (tidligere "Produktdatabase" → `/admin/search`) åbner nu `/admin/product-database`: alle produkter (private ingredienser udeladt) med søgning (navn, mærke, sub brand, variant, produkttype, stregkode; hvert ord skal matche), filtre for kæde (`ProductStore`, fx Rema 1000, eller "ikke tilknyttet"), mærke, sub brand (forslag indsnævres til valgt mærke), kategori, varetype, kilde, status, billede med/uden og stregkode med/uden, samt sortering (navn, dato, med/uden billede først, mærke, kcal).

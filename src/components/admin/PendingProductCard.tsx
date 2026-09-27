@@ -78,6 +78,7 @@ const SOURCE_LABEL: Record<string, string> = {
   FRIDA: "Frida (DTU)",
   HELLOFRESH: "HelloFresh",
   REMA1000: "REMA 1000",
+  BILKA: "Bilka",
 };
 
 const number = new Intl.NumberFormat("da-DK", { maximumFractionDigits: 2 });

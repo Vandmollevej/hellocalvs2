@@ -255,6 +255,24 @@ services:
     networks:
       - backend
 
+  # Bilka + REMA 1000 butiksvarer i tre tabeller (docs/DECISIONS.md
+  # 2026-09-27): data/store_products.json bygges lokalt af build_data.py.
+  # Kører efter rema1000-agent (START_DELAY_SECONDS), så Bilka-data vinder.
+  store-products-agent:
+    build: ./scripts/store-products-import
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env.production}
+    volumes:
+      - ./data/product-images:/images
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - backend
+
   # Umami-analyse (docs/DECISIONS.md 2026-09-27 "Umami-analyse"): selv-hostet,
   # cookiefri besøgsstatistik vist i admin → Analyse. Egen database "umami" i
   # samme PostgreSQL (oprettes af umami-db-init). Kun på det interne netværk:

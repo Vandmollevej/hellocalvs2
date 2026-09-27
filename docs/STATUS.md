@@ -6,6 +6,13 @@ Last updated: 2026-09-27
 
 - Alle filtre på `/admin/product-database` er nu dropdowns; mærke, sub brand, kategori, varetype og kilde kan vælge flere på én gang (afkrydsning + søgning). Én chip pr. valgt værdi. Lint, typecheck og build kørt.
 
+## 2026-09-27: Bilka + REMA 1000 i tre tabeller — første 50 varer
+
+- Ny migration `20260927190000_store_product_tables` (filtertabel, mikro-kolonner, `flavor`/`packCount`/`keywords`, kilde BILKA). Køres af deploy.
+- Ny `store-products-agent` importerer 50 prøvevarer med billeder; produktets admin-side viser nu "1 · Basisinfo", "2 · Næring", "3 · Filtre".
+- Mangler: resten af varerne (ca. 10.900) + deres billeder. Billederne er for mange til git; de skal op på NAS'ens `data/product-images/store/` på anden vis (SSH-skrivning fra agenten var ikke tilladt).
+- `rema1000-agent` overskriver stadig sine egne felter ved hver start; store-products-agent kører 3 min. efter og retter tilbage. Når alle varer er importeret, bør rema1000-agent udfases.
+- Lint, typecheck og build kørt; ikke testet mod en database (lokalt er der ingen DB).
 ## 2026-09-27: Admin "Produkt-database"
 
 - Ny side `/admin/product-database` (menupunktet "Produkt-database"): søg, filtrér (kæde fx Rema 1000, mærke, sub brand, kategori, varetype, kilde, status, billede, stregkode) og sortér alle produkter; liste/galleri; klik åbner produktets admin-side. `/admin/search` sender videre. Ingen migration.

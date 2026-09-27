@@ -4,6 +4,7 @@ import { requireAdminUser } from "@/lib/require-admin";
 import { ProductDetailEditor } from "@/components/admin/ProductDetailEditor";
 import { QualityControlPanel } from "@/components/admin/QualityControlPanel";
 import { NutritionReportPanel } from "@/components/admin/NutritionReportPanel";
+import { ProductTablesPanel } from "@/components/admin/ProductTablesPanel";
 import { parseNutritionReportChanges } from "@/lib/nutrition-reports";
 import { hasQualityControlPhotoType, QUALITY_CONTROL_PHOTO_TYPES } from "@/lib/quality-control-photo-types";
 
@@ -15,7 +16,15 @@ export default async function AdminProductDetailPage({ params }: { params: Promi
   const [product, matchChecks, nutritionReports] = await Promise.all([
     prisma.product.findUnique({
       where: { id },
-      include: { brand: true, images: { orderBy: { order: "asc" } } },
+      include: {
+        brand: true,
+        images: { orderBy: { order: "asc" } },
+        category: { select: { name: true } },
+        barcodes: { select: { code: true } },
+        stores: { select: { store: { select: { name: true } } } },
+        nutritionFeatures: true,
+        filters: true,
+      },
     }),
     // Kvalitetskontrol (docs/DECISIONS.md, 2026-09-19): "Problemer fundet"
     // vises kun for stadig-uafklarede issues — enten aldrig gennemgået, eller
@@ -54,6 +63,30 @@ export default async function AdminProductDetailPage({ params }: { params: Promi
           canReply: report.reporterUserId !== null,
           changes: parseNutritionReportChanges(report.changes),
         }))}
+      />
+      <ProductTablesPanel
+        basics={{
+          name: product.name,
+          brand: product.brand?.name ?? null,
+          subbrand: product.subbrand,
+          productType: product.productType,
+          variant: product.variant,
+          flavor: product.flavor,
+          packageSizeText: product.packageSizeText,
+          packCount: product.packCount,
+          productCategory: product.productCategory,
+          category: product.category?.name ?? null,
+          barcodes: product.barcodes.map((barcode) => barcode.code),
+          stores: product.stores.map((entry) => entry.store.name),
+          keywords: product.keywords,
+          externalSource: product.externalSource,
+          ingredientsText: product.ingredientsText,
+          allergens: product.allergens,
+          additives: product.additives,
+        }}
+        macros={product}
+        nutrition={product.nutritionFeatures}
+        filters={product.filters}
       />
       <ProductDetailEditor product={product} />
     </div>
