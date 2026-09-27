@@ -48,6 +48,15 @@ tysk mælkekarton. Testscripts ligger kun i sessionens scratchpad.
 - Lokal OCR læser et nærbillede af deklarationen med ~90 %, men intet på et
   foto taget på afstand. "Lokal først, ChatGPT kun ved usikkerhed" er
   derfor muligt, men ikke slået til (afventer brugeren).
+## 2026-09-27: Bundark til alle screen-overlays/popups
+
+- Nyt `BottomSheet` (`.hf-bottom-sheet`): glider op, trækstreg, træk ned /
+  hurtigt swipe lukker. Regel i KRAV.md, beslutning i DECISIONS, live-demo i
+  admin → Designmanual → Overlay.
+- Bruges nu af: velkomst efter kontooprettelse (forsiden, erstatter dummy-
+  spotlight), guiden (onboarding + guidebyggerens preview), e-mailbekræftelse,
+  søgelistens "Tilføj", kalenderens "Tilføj" og hjulets "Se alle".
+- Lint + build grønne. Ikke visuelt testet (brugeren tester på mobil).
 
 ## 2026-09-27: Guide-builder (startup-guide + tooltips) i admin
 

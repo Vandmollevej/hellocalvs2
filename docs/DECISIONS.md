@@ -16,6 +16,27 @@ This file records durable decisions. Add a dated entry when a later decision cha
   genkørsel.
 - Den midlertidige AI-først-dispensation fra 2026-09-17 gælder stadig.
   Testen viste, at lokal OCR kun kan bære et nærbillede af deklarationen.
+## 2026-09-27: Bundark er standard for alle screen-overlays/popups
+
+Brugerens krav (2026-09-27, med skærmbillede af HelloFresh' "Velkommen til
+Discover"): "når jeg omtaler screen-overlay eller popup, åbner det i dette type
+vindue". Reglen står i KRAV.md "Bundark".
+
+- Ny komponent `BottomSheet` (`src/components/hf/BottomSheet.tsx`) med fast
+  klasse `.hf-bottom-sheet`. Portal til body, z-index 200. Træk: touch på hele
+  arket (indhold kun når det er scrollet helt op), mus kun på stregen. Lukker
+  ved fart > 0,5 px/ms eller træk > 30 % af højden.
+- Taget i brug: `WelcomeSheet` (erstatter prototype-spotlighten
+  `OnboardingSpotlight`, samme localStorage-nøgle), `OnboardingWizard`,
+  admin-guidebyggerens `GuideOverlay`, `EmailVerifySheet` (erstatter bjælken
+  `EmailVerifyBanner`), `AddMenuSheet` (kalenderens "Tilføj" og hjulets
+  "Se alle" — /add/menu findes kun som direkte link) og `AddProductView` i
+  ark fra søgelistens "Tilføj" (/add/[id] er stadig egen side fra andre
+  indgange).
+- Fuldskærms-overlay (opstartstips) og dialog på scrim er uændrede, men nye
+  overlays/popups bygges som bundark.
+- Radius 16 px foroven er en bevidst undtagelse fra radiusfamilien (design.md
+  §6.13), målt på referencebilledet.
 
 ## 2026-09-26: EN fast designregel for skrift, farver og knapper
 

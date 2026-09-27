@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { EmailVerifyBanner } from "@/components/EmailVerifyBanner";
+import { EmailVerifySheet } from "@/components/EmailVerifySheet";
 
 // Private sider kræver login. Uden session sendes brugeren til velkomst-
 // siden; efter login kommer de tilbage via ?next=.
@@ -54,5 +54,5 @@ export function AuthGate() {
     };
   }, [pathname, router]);
 
-  return emailUnverified && !isPublicPath(pathname) ? <EmailVerifyBanner /> : null;
+  return emailUnverified && !isPublicPath(pathname) ? <EmailVerifySheet /> : null;
 }

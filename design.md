@@ -680,6 +680,21 @@ bjælke (`bg-black/70`) nederst i viewfinderet mellem to hints ("hold hele
 stregkoden inde i billedet — den må gerne vende lodret" / "prøv større
 afstand, hvis den er sløret").
 
+### 6.13 Bundark (screen-overlay/popup) — tilføjet 2026-09-27
+
+Standard for alle screen-overlays og popups (KRAV.md "Bundark"). Klasse
+`.hf-bottom-sheet`, komponent `BottomSheet`.
+
+- Scrim `--hf-color-overlay`; panel `--hf-color-page`, radius 16 px foroven
+  (bevidst undtagelse fra §5.3), maks. højde = skærm − safe-area − 24 px;
+  `--full` fylder den højde.
+- Trækstreg: 40 × 4 px, `--hf-gray`, rund, 12 px over / 16 px under — samme
+  streg som kalenderens nat/dag-håndtag.
+- Titel (valgfri) `.hf-type-page-title`, centreret. Fast bund med 16 px
+  padding: prikker 8 px (aktiv brand-grøn), primær knap i fuld bredde og
+  tekstknap `.hf-bottom-sheet__skip` (48 px, fed).
+- Træk ned flytter arket; hurtigt swipe eller > 30 % lukker, ellers tilbage.
+
 ### 6.12 Produktsidens billedområde — fast geometri, uafhængig af billedet
 
 Tilføjet 2026-09-14 efter brugerens eksplicitte krav (relayeret fra en

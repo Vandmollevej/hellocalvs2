@@ -1,7 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { BottomSheet, BottomSheetCloseButton, BottomSheetDots, useBottomSheetClose } from "@/components/hf/BottomSheet";
 import { useTranslation } from "@/i18n/LocaleProvider";
+
+// Hvordan arket blev lukket — bestemmer hvad der gemmes, når glid-ud-
+// animationen er færdig. Træk ned/scrim/Escape tæller som "Påmind mig senere".
+type ExitReason = "remind" | "dismiss" | "complete";
 
 type DailyLogPreference = "WORK_HOURS" | "SLEEP_TIMES";
 
@@ -52,6 +57,7 @@ export function OnboardingWizard({
   const [dailyLogPreference, setDailyLogPreference] = useState<DailyLogPreference | null>(null);
   const [stepIndex, setStepIndex] = useState(0);
   const [canDismissPermanently, setCanDismissPermanently] = useState(false);
+  const exitRef = useRef<ExitReason>("remind");
 
   useEffect(() => {
     let cancelled = false;
@@ -89,50 +95,62 @@ export function OnboardingWizard({
     }).catch(() => {});
   }
 
+  // Guiden vises i bundarket (KRAV.md "Bundark"): kaldes når arket er gledet ud.
+  function handleSheetClosed() {
+    const reason = exitRef.current;
+    if (reason === "complete") save({ onboardingCompletedAt: new Date().toISOString() });
+    else if (reason === "dismiss") save({ onboardingDismissed: true });
+    else save({ onboardingRemindLaterAt: new Date().toISOString() });
+    setVisible(false);
+    onClose?.();
+  }
+
   function goNext() {
-    if (stepIndex + 1 < steps.length) {
-      const nextIndex = stepIndex + 1;
-      setStepIndex(nextIndex);
-      save({ onboardingStep: nextIndex });
-    } else {
-      save({ onboardingCompletedAt: new Date().toISOString() });
-      setVisible(false);
-      onClose?.();
-    }
+    const nextIndex = stepIndex + 1;
+    setStepIndex(nextIndex);
+    save({ onboardingStep: nextIndex });
   }
 
-  function remindLater() {
-    save({ onboardingRemindLaterAt: new Date().toISOString() });
-    setVisible(false);
-    onClose?.();
-  }
-
-  function dontShowAgain() {
-    save({ onboardingDismissed: true });
-    setVisible(false);
-    onClose?.();
-  }
+  const isLastStep = stepIndex + 1 >= totalSteps;
+  const progressLabel = t("onboarding.stepProgress", { current: stepIndex + 1, total: totalSteps });
 
   return (
-    <div
-      className="fixed inset-0 z-[60] flex flex-col bg-hf-cream"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="onboarding-title"
+    <BottomSheet
+      size="full"
+      ariaLabel={progressLabel}
+      onClose={handleSheetClosed}
+      footer={
+        <>
+          <div className="pb-4">
+            <BottomSheetDots count={totalSteps} active={stepIndex} label={progressLabel} />
+          </div>
+          {isLastStep ? (
+            <BottomSheetCloseButton
+              onClick={() => (exitRef.current = "complete")}
+              className="hf-control hf-btn-primary w-full"
+            >
+              {t("onboarding.next")}
+            </BottomSheetCloseButton>
+          ) : (
+            <button type="button" onClick={goNext} className="hf-control hf-btn-primary w-full">
+              {t("onboarding.next")}
+            </button>
+          )}
+          <BottomSheetCloseButton onClick={() => (exitRef.current = "remind")} className="hf-bottom-sheet__skip">
+            {t("onboarding.remindLater")}
+          </BottomSheetCloseButton>
+          {canDismissPermanently && (
+            <BottomSheetCloseButton
+              onClick={() => (exitRef.current = "dismiss")}
+              className="hf-type-small hf-type-strong text-text-secondary h-10 w-full"
+            >
+              {t("onboarding.doNotShowAgain")}
+            </BottomSheetCloseButton>
+          )}
+        </>
+      }
     >
-      <div className="px-4 pb-4 pt-9">
-        <p className="hf-type-small hf-type-strong text-text-secondary text-center uppercase tracking-[0.06em]">
-          {t("onboarding.stepProgress", { current: stepIndex + 1, total: totalSteps })}
-        </p>
-        <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-hf-tan">
-          <div
-            className="h-full rounded-full bg-hf-green transition-all"
-            style={{ width: `${((stepIndex + 1) / totalSteps) * 100}%` }}
-          />
-        </div>
-      </div>
-
-      <div className="flex flex-1 flex-col justify-center gap-8 px-4">
+      <div className="flex min-h-full flex-col justify-center gap-8 px-4">
         {currentStep === "sleep-pattern" && (
           <YesNoStep
             id="onboarding-title"
@@ -191,41 +209,37 @@ export function OnboardingWizard({
             <p className="hf-type-body text-text-secondary">
               {t("onboarding.healthImportHint")}
             </p>
-            <button
-              onClick={() => {
+            <SetUpNowButton
+              isLastStep={isLastStep}
+              onSetUp={() => {
                 save({ healthImportRequested: true });
-                goNext();
+                if (isLastStep) exitRef.current = "complete";
+                else goNext();
               }}
-              className="hf-control hf-btn-primary w-full"
-            >
-              {t("onboarding.setUpNow")}
-            </button>
+            />
           </div>
         )}
       </div>
 
-      <div className="flex flex-col gap-2 px-4 pb-8">
-        <button onClick={goNext} className="hf-control hf-btn-primary w-full">
-          {t("onboarding.next")}
-        </button>
-        <div className="flex justify-center gap-4 pt-1">
-          <button
-            onClick={remindLater}
-            className="hf-type-small hf-type-strong text-text-secondary"
-          >
-            {t("onboarding.remindLater")}
-          </button>
-          {canDismissPermanently && (
-            <button
-              onClick={dontShowAgain}
-              className="hf-type-small hf-type-strong text-text-secondary"
-            >
-              {t("onboarding.doNotShowAgain")}
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
+    </BottomSheet>
+  );
+}
+
+// "Opsæt nu" på sidste trin fuldfører guiden og lukker arket med animation.
+function SetUpNowButton({ isLastStep, onSetUp }: { isLastStep: boolean; onSetUp: () => void }) {
+  const { t } = useTranslation();
+  const close = useBottomSheetClose();
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        onSetUp();
+        if (isLastStep) close();
+      }}
+      className="hf-control hf-btn-secondary w-full"
+    >
+      {t("onboarding.setUpNow")}
+    </button>
   );
 }
 

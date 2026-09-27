@@ -75,13 +75,30 @@
     "title": "Bekræft e-mail",
     "checking": "Bekræfter din e-mail…",
     "success": "Tak! Din e-mail er bekræftet.",
-    "invalid": "Linket er ugyldigt eller udløbet. Log ind og tryk \"Send igen\" i bjælken øverst for at få et nyt.",
+    "invalid": "Linket er ugyldigt eller udløbet. Log ind og tryk \"Send igen\" for at få et nyt.",
     "continue": "Fortsæt til Hello Cal",
     "banner": "Bekræft din e-mail via linket, vi har sendt dig.",
     "bannerSent": "Ny mail sendt — tjek også spam.",
     "bannerError": "Kunne ikke sende mailen. Prøv igen om lidt.",
     "resend": "Send igen",
-    "dismiss": "Luk"
+    "dismiss": "Luk",
+    "sheetTitle": "Bekræft din e-mail",
+    "sheetText": "Vi har sendt dig en mail med et link. Tryk på linket for at aktivere din konto.",
+    "later": "Senere"
+  },
+  "welcomeSheet": {
+    "slide1Title": "Velkommen til Hello Cal",
+    "slide1Text": "Hold styr på kalorier, vand, vægt og søvn — samlet ét sted.",
+    "slide2Title": "Tilføj på få sekunder",
+    "slide2Text": "Tryk på den grønne knap på forsiden for at registrere med kamera, mikrofon eller søgning.",
+    "slide3Title": "Din kalender",
+    "slide3Text": "Se dine dage, uger og måneder, og tilføj direkte på et bestemt tidspunkt.",
+    "slide4Title": "Følg udviklingen",
+    "slide4Text": "Statistikken viser, hvordan det går med dine mål over tid.",
+    "progress": "Side {current} af {total}",
+    "nextSlide": "Næste side",
+    "startGuide": "Start guiden",
+    "skip": "Spring over"
   },
   "country": {
     "title": "Vælg dit land",

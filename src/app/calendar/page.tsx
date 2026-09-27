@@ -15,6 +15,7 @@ import {
   IconStarFilled,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { AddMenuSheet } from "@/components/add/AddMenuSheet";
 import { HfChevron } from "@/components/hf/HfChevron";
 import { ActionLink } from "@/components/hf/ActionButton";
 import { FoodRow } from "@/components/FoodRow";
@@ -1746,6 +1747,8 @@ function DayDetails({
   const pointerStart = useRef<number | null>(null);
   const [addBarHour, setAddBarHour] = useState<number | null>(null);
   const [openHour, setOpenHour] = useState<number | null>(null);
+  // Timen, hvis "Tilføj" har åbnet tilføj-menuen i bundarket (KRAV.md "Bundark").
+  const [addSheetHour, setAddSheetHour] = useState<number | null>(null);
   // Målsætningscirklen vises hver gang en dag med en målsætning åbnes
   // (DayDetails er keyed på datoen); et tryk udenfor lukker den, og derefter
   // står kun det lille ikon ud for kl. GOAL_HOUR.
@@ -1854,14 +1857,11 @@ function DayDetails({
 
   function goToAddFlow(hour: number) {
     // Opens the same "everything you can add" menu as the front page's
-    // joystick "list" slot (/add/menu), per explicit user request — not the
-    // old direct jump to /foods. date/time are forwarded so the food-search
-    // path still lands the registration at the tapped hour.
-    const params = new URLSearchParams({
-      date: isoDate(date),
-      time: `${String(hour).padStart(2, "0")}:00`,
-    });
-    router.push(`/add/menu?${params.toString()}`);
+    // joystick "Se alle" slot, per explicit user request — since 2026-09-27
+    // in the bottom sheet instead of the /add/menu page with a back arrow.
+    // date/time are forwarded so the food-search path still lands the
+    // registration at the tapped hour.
+    setAddSheetHour(hour);
   }
 
   return (
@@ -2157,6 +2157,14 @@ function DayDetails({
           registrations={registrations.filter((registration) => new Date(registration.createdAt).getHours() === openHour)}
           goals={openHour === GOAL_HOUR ? goals : []}
           onClose={() => setOpenHour(null)}
+        />
+      )}
+
+      {addSheetHour !== null && (
+        <AddMenuSheet
+          date={isoDate(date)}
+          time={`${String(addSheetHour).padStart(2, "0")}:00`}
+          onClose={() => setAddSheetHour(null)}
         />
       )}
     </div>

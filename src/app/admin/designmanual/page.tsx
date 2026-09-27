@@ -226,9 +226,26 @@ export default async function DesignManualPage() {
           </Section>
 
           {/* 3. Overlay */}
-          <Section id="overlay" number={3} title="Overlay" intro="To godkendte typer: fuldskærms-overlay (opstartstips, søvnoplevelse) og centreret dialog på mørk scrim. Prøv dem live:">
+          <Section id="overlay" number={3} title="Overlay" intro="Tre godkendte typer. Bundarket er standard for alle screen-overlays og popups (KRAV.md, afsnit Bundark); fuldskærms-overlay (opstartstips, søvnoplevelse) og centreret dialog på mørk scrim bruges kun hvor de allerede står. Prøv dem live:">
             <OverlayDemo />
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-3">
+              <Mock label="Bundark (.hf-bottom-sheet)">
+                <div className="flex h-full flex-col justify-end" style={{ background: "var(--hf-color-overlay)" }}>
+                  <div className="flex h-[88%] flex-col rounded-t-[10px] bg-hf-cream px-3 pb-3 pt-2">
+                    <span className="mx-auto h-1 w-8 rounded-full bg-hf-gray" />
+                    <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
+                      <span className="flex size-10 items-center justify-center rounded-full bg-hf-tan text-hf-green">
+                        <IconInfoCircle size={20} />
+                      </span>
+                      <p className="hf-type-small hf-type-strong text-hf-black">Titel</p>
+                      <p className="hf-type-micro text-hf-black">Tekst</p>
+                    </div>
+                    <p className="hf-type-micro mb-1 text-center text-hf-green">● ● ● ●</p>
+                    <div className="h-4 rounded bg-hf-black" />
+                    <p className="hf-type-micro hf-type-strong mt-1 text-center text-hf-black">Spring over</p>
+                  </div>
+                </div>
+              </Mock>
               <Mock label="Fuldskærms-overlay">
                 <div className="flex h-full flex-col bg-hf-cream p-3">
                   <p className="hf-type-micro hf-type-strong self-end text-hf-black">Luk</p>
@@ -257,6 +274,11 @@ export default async function DesignManualPage() {
             </div>
             <Rules
               items={[
+                "Bundark (standard): klassen .hf-bottom-sheet, komponenten BottomSheet (src/components/hf/BottomSheet.tsx). Glider op nedefra på scrim, 16 px radius foroven, baggrund #FAF8F3.",
+                "Trækstregen øverst (.hf-bottom-sheet__handle) er samme streg som kalenderens nat/dag-håndtag: 40 × 4 px, grå, rund.",
+                "Arket kan trækkes ned. Et hurtigt swipe ned eller et træk forbi 30 % af højden lukker det; ellers glider det tilbage. Klik på scrim og Escape lukker også.",
+                "Fast bund: prikker (aktiv = brand-grøn) og pil ved flere sider, primær knap i fuld bredde og tekstknappen \"Spring over\" (.hf-bottom-sheet__skip), som lukker med samme animation.",
+                "Bruges ved velkomst efter kontooprettelse, guiden, e-mailbekræftelse, \"Tilføj\" ud for et produkt, kalenderens \"Tilføj\" og \"Se alle\" i tilføj-hjulet.",
                 "Fuldskærm: baggrund #FAF8F3, \"Luk\" øverst til højre, ikon + titel + tekst centreret, \"Slå fra\" nederst til højre.",
                 "Slår man \"Slå fra\" fra, tæller \"Luk\" ned 3–1 før overlayet lukker og slås fra.",
                 "Dialog: scrim --hf-color-overlay, hvid flade, 12 px radius, 16 px padding. Klik udenfor lukker.",

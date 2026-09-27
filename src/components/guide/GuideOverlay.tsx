@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, type CSSProperties } from "react";
-import { OverlayCloseControl } from "@/components/hf/OverlayFrameControls";
+import { useState } from "react";
+import { BottomSheet, useBottomSheetClose } from "@/components/hf/BottomSheet";
 import { translate } from "@/i18n";
 import { screenBackground, type GuideConfig, type GuideLang } from "@/lib/guide-builder";
 import { StartupGuideView, TooltipsView } from "./GuideScreenView";
 
-// Startup-guiden og tooltips i det fælles fuldskærms-overlay (samme skal som
-// StartupTipOverlay/designmanualens overlay-demo: fixed, z-55, "Luk" øverst
-// til højre via OverlayCloseControl).
+// Startup-guiden og tooltips i bundarket (KRAV.md "Bundark", 2026-09-27):
+// glider op nedefra, trækstreg øverst, træk ned/hurtigt swipe lukker. Arket
+// får skærmens baggrund, så trækstregen står på samme flade som guiden.
 export function GuideOverlay({
   config,
   lang,
@@ -21,9 +21,34 @@ export function GuideOverlay({
   onClose: () => void;
 }) {
   const [index, setIndex] = useState(Math.min(startIndex, config.screens.length - 1));
-  const [values, setValues] = useState<Record<string, number>>({});
   const screen = config.screens[index] ?? config.screens[0];
-  const dark = screenBackground(config, screen).dark;
+  const background = screenBackground(config, screen);
+
+  return (
+    <BottomSheet
+      size="full"
+      ariaLabel={translate(lang, "guide.progress")}
+      panelStyle={{ background: `var(${background.token})` }}
+      onClose={onClose}
+    >
+      <GuideSheetContent config={config} lang={lang} index={index} onIndexChange={setIndex} />
+    </BottomSheet>
+  );
+}
+
+function GuideSheetContent({
+  config,
+  lang,
+  index,
+  onIndexChange,
+}: {
+  config: GuideConfig;
+  lang: GuideLang;
+  index: number;
+  onIndexChange: (index: number) => void;
+}) {
+  const close = useBottomSheetClose();
+  const [values, setValues] = useState<Record<string, number>>({});
 
   // Stepper-værdier lever kun i overlayet (preview) — ikke i opsætningen.
   const live: GuideConfig = {
@@ -34,33 +59,21 @@ export function GuideOverlay({
     })),
   };
 
-  const topSlot = (
-    <div
-      className="flex shrink-0 justify-end px-4 pt-9"
-      style={dark ? ({ "--hf-black": "#FFFFFF" } as CSSProperties) : undefined}
-    >
-      <OverlayCloseControl label={translate(lang, "guide.close")} counting={false} secondsLeft={0} onClose={onClose} />
-    </div>
-  );
-
   return (
-    <div className="fixed inset-0 z-[55] flex justify-center bg-hf-cream" role="dialog" aria-modal="true">
-      <div className="h-full w-full max-w-[430px]">
-        {config.kind === "startup" ? (
-          <StartupGuideView
-            config={live}
-            index={index}
-            lang={lang}
-            topSlot={topSlot}
-            onBack={() => setIndex((i) => Math.max(0, i - 1))}
-            onNext={() => (index >= config.screens.length - 1 ? onClose() : setIndex(index + 1))}
-            onAskLater={onClose}
-            onSettingChange={(id, value) => setValues((prev) => ({ ...prev, [id]: value }))}
-          />
-        ) : (
-          <TooltipsView config={live} index={index} lang={lang} topSlot={topSlot} onIndexChange={setIndex} onDone={onClose} onSkip={onClose} />
-        )}
-      </div>
+    <div className="mx-auto h-full w-full max-w-[430px]">
+      {config.kind === "startup" ? (
+        <StartupGuideView
+          config={live}
+          index={index}
+          lang={lang}
+          onBack={() => onIndexChange(Math.max(0, index - 1))}
+          onNext={() => (index >= config.screens.length - 1 ? close() : onIndexChange(index + 1))}
+          onAskLater={close}
+          onSettingChange={(id, value) => setValues((prev) => ({ ...prev, [id]: value }))}
+        />
+      ) : (
+        <TooltipsView config={live} index={index} lang={lang} onIndexChange={onIndexChange} onDone={close} onSkip={close} />
+      )}
     </div>
   );
 }

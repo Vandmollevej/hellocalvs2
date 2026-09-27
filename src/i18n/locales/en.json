@@ -75,13 +75,30 @@
     "title": "Confirm email",
     "checking": "Confirming your email…",
     "success": "Thanks! Your email is confirmed.",
-    "invalid": "The link is invalid or has expired. Log in and tap \"Resend\" in the bar at the top to get a new one.",
+    "invalid": "The link is invalid or has expired. Log in and tap \"Resend\" to get a new one.",
     "continue": "Continue to Hello Cal",
     "banner": "Confirm your email using the link we sent you.",
     "bannerSent": "New email sent — check spam too.",
     "bannerError": "Could not send the email. Try again shortly.",
     "resend": "Resend",
-    "dismiss": "Close"
+    "dismiss": "Close",
+    "sheetTitle": "Confirm your email",
+    "sheetText": "We sent you an email with a link. Tap the link to activate your account.",
+    "later": "Later"
+  },
+  "welcomeSheet": {
+    "slide1Title": "Welcome to Hello Cal",
+    "slide1Text": "Keep track of calories, water, weight and sleep — all in one place.",
+    "slide2Title": "Add in seconds",
+    "slide2Text": "Tap the green button on the front page to log with the camera, microphone or search.",
+    "slide3Title": "Your calendar",
+    "slide3Text": "See your days, weeks and months, and add directly at a specific time.",
+    "slide4Title": "Follow your progress",
+    "slide4Text": "Statistics show how you are doing with your goals over time.",
+    "progress": "Page {current} of {total}",
+    "nextSlide": "Next page",
+    "startGuide": "Start the guide",
+    "skip": "Skip"
   },
   "country": {
     "title": "Choose your country",

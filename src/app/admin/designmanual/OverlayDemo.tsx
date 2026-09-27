@@ -1,18 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { IconInfoCircle, IconShieldLock, IconX } from "@tabler/icons-react";
+import { IconChevronRight, IconInfoCircle, IconShieldLock, IconX } from "@tabler/icons-react";
+import { BottomSheet, BottomSheetCloseButton, BottomSheetDots } from "@/components/hf/BottomSheet";
 import { OverlayCloseControl, OverlayDisableToggle, useDisableCountdown } from "@/components/hf/OverlayFrameControls";
 
-// Live eksempler til designmanualen: åbner de to godkendte overlay-typer
-// (fuldskærms-overlay som StartupTipOverlay og centreret dialog på scrim),
+// Live eksempler til designmanualen: åbner de godkendte overlay-typer
+// (bundarket — standard for screen-overlays/popups, KRAV.md "Bundark" —
+// fuldskærms-overlay som StartupTipOverlay og centreret dialog på scrim),
 // så admin kan se dem i den rigtige størrelse og opførsel.
 export function OverlayDemo() {
-  const [open, setOpen] = useState<"fullscreen" | "dialog" | null>(null);
+  const [open, setOpen] = useState<"sheet" | "fullscreen" | "dialog" | null>(null);
 
   return (
     <>
       <div className="flex flex-wrap gap-3">
+        <button type="button" onClick={() => setOpen("sheet")} className="hf-btn-primary h-12 px-4">
+          Åbn bundark
+        </button>
         <button type="button" onClick={() => setOpen("fullscreen")} className="hf-btn-primary h-12 px-4">
           Åbn fuldskærms-overlay
         </button>
@@ -20,9 +25,50 @@ export function OverlayDemo() {
           Åbn dialog på scrim
         </button>
       </div>
+      {open === "sheet" && <SheetDemo onClose={() => setOpen(null)} />}
       {open === "fullscreen" && <FullscreenDemo onClose={() => setOpen(null)} />}
       {open === "dialog" && <DialogDemo onClose={() => setOpen(null)} />}
     </>
+  );
+}
+
+function SheetDemo({ onClose }: { onClose: () => void }) {
+  const [index, setIndex] = useState(0);
+  return (
+    <BottomSheet
+      size="full"
+      ariaLabel="Bundark"
+      onClose={onClose}
+      footer={
+        <>
+          <div className="relative flex h-10 items-center justify-center">
+            <BottomSheetDots count={4} active={index} label={`Side ${index + 1} af 4`} onSelect={setIndex} />
+            {index < 3 && (
+              <button
+                type="button"
+                onClick={() => setIndex(index + 1)}
+                aria-label="Næste side"
+                className="absolute right-[20%] flex size-10 items-center justify-center text-hf-black"
+              >
+                <IconChevronRight size={24} />
+              </button>
+            )}
+          </div>
+          <BottomSheetCloseButton className="hf-control hf-btn-primary mt-4 w-full">Primær handling</BottomSheetCloseButton>
+          <BottomSheetCloseButton className="hf-bottom-sheet__skip">Spring over</BottomSheetCloseButton>
+        </>
+      }
+    >
+      <div className="flex min-h-full flex-col items-center justify-center gap-6 px-4 text-center">
+        <span className="flex size-40 items-center justify-center rounded-full bg-hf-tan text-hf-green">
+          <IconInfoCircle size={72} stroke={1.4} />
+        </span>
+        <h2 className="hf-type-page-title text-center">Overskrift i bundark</h2>
+        <p className="hf-type-body-lg">
+          Træk i stregen for oven: et hurtigt swipe ned lukker arket, et langsomt træk under 30 % glider tilbage.
+        </p>
+      </div>
+    </BottomSheet>
   );
 }
 

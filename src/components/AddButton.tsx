@@ -14,6 +14,7 @@ import {
 } from "@/lib/add-actions";
 import { loadFabOffsetY, saveFabOffsetY, useFabSide, type FabSide } from "@/lib/frontpage-layout";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { AddMenuSheet } from "@/components/add/AddMenuSheet";
 
 export const HERO_HEIGHT = 300;
 const CENTER_Y = HERO_HEIGHT / 2;
@@ -165,8 +166,9 @@ type Action = {
   imageSrc?: string;
 };
 
-// The top wheel slot is always this fixed "list" action — it opens the new
-// /add/menu screen with every add-element, and is not part of the
+// The top wheel slot is always this fixed "list" action ("Se alle") — it
+// opens AddMenuSheet, the bottom sheet with every add-element (KRAV.md
+// "Bundark"; href is only the no-JS fallback), and is not part of the
 // user-configurable set below (src/lib/add-actions.ts, settings → Visning →
 // Forside).
 function buildActions(
@@ -244,6 +246,7 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
   const anglesDeg = computeAngles(actions.length);
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [menuSheetOpen, setMenuSheetOpen] = useState(false);
   const [highlightedKey, setHighlightedKey] = useState<string | null>(null);
   const [dragOffset, setDragOffset] = useState<{ x: number; y: number } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -455,7 +458,8 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
       setOpen(false);
       if (key) {
         const action = actions.find((a) => a.key === key);
-        if (action) router.push(action.href);
+        if (action?.key === "list") setMenuSheetOpen(true);
+        else if (action) router.push(action.href);
       }
       return true;
     }
@@ -572,6 +576,12 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
           >
             <Link
               href={action.href}
+              onClick={(event) => {
+                if (action.key !== "list") return;
+                event.preventDefault();
+                setOpen(false);
+                setMenuSheetOpen(true);
+              }}
               aria-label={action.label}
               className="absolute flex items-center justify-center rounded-full bg-hf-tan transition-all duration-150"
               style={{
@@ -617,6 +627,8 @@ export function AddButton({ onOpen }: { onOpen?: () => void }) {
           </div>
         );
       })}
+
+      {menuSheetOpen && <AddMenuSheet onClose={() => setMenuSheetOpen(false)} />}
     </div>
   );
 }

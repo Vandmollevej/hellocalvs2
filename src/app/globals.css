@@ -1278,3 +1278,106 @@ textarea::selection,
     animation: none;
   }
 }
+
+/* Bundark (KRAV.md "Bundark"): det faste vindue til alle screen-overlays og
+   popups, der glider op nedefra. Trækhåndtaget er samme streg som
+   kalenderens nat/dag-håndtag (4 × 40 px, grå, rund). Komponent:
+   src/components/hf/BottomSheet.tsx. */
+.hf-bottom-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.hf-bottom-sheet__scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--hf-color-overlay);
+  transition: opacity 280ms ease;
+}
+
+.hf-bottom-sheet__panel {
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-width: 560px;
+  max-height: calc(100dvh - max(16px, env(safe-area-inset-top, 0px)) - 24px);
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 16px 16px 0 0;
+  background: var(--hf-color-page);
+  box-shadow: 0 -4px 24px rgb(35 35 35 / 12%);
+}
+
+.hf-bottom-sheet--full .hf-bottom-sheet__panel {
+  height: calc(100dvh - max(16px, env(safe-area-inset-top, 0px)) - 24px);
+}
+
+.hf-bottom-sheet__grab {
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  padding: 12px 0 16px;
+  cursor: grab;
+  touch-action: none;
+}
+
+.hf-bottom-sheet__handle {
+  display: block;
+  width: 40px;
+  height: 4px;
+  border-radius: 9999px;
+  background: var(--hf-gray);
+}
+
+.hf-bottom-sheet__title {
+  flex-shrink: 0;
+  padding: 0 16px 16px;
+  text-align: center;
+}
+
+.hf-bottom-sheet__body {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.hf-bottom-sheet__footer {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 16px max(16px, env(safe-area-inset-bottom, 0px));
+}
+
+.hf-bottom-sheet__dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.hf-bottom-sheet__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--hf-gray);
+}
+
+.hf-bottom-sheet__dot--active {
+  background: var(--hf-color-brand);
+}
+
+/* Tekstknap under den primære knap ("Spring over", "Påmind mig senere"). */
+.hf-bottom-sheet__skip {
+  height: var(--hf-control-height);
+  width: 100%;
+  font-family: var(--font-hf-heading);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--hf-color-text);
+}

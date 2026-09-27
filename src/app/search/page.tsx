@@ -1,10 +1,10 @@
 "use client";
 
 import { Suspense, useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { IconBookmark, IconBookmarkFilled, IconSearch } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { AddProductView } from "@/components/add/AddProductView";
 import { FoodRow } from "@/components/FoodRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { hasEstimatedMacros } from "@/lib/nutrients";
@@ -43,12 +43,12 @@ function ResultRow({
   brand,
   kcal,
   macrosEstimated,
-  forDish,
+  onAdd,
   t,
   isFavorite,
   onToggleFavorite,
 }: Result & {
-  forDish: boolean;
+  onAdd: (id: string) => void;
   t: (key: string, params?: Record<string, string | number>) => string;
   isFavorite: boolean;
   onToggleFavorite: (id: string, next: boolean) => void;
@@ -77,12 +77,10 @@ function ResultRow({
             >
               {isFavorite ? <IconBookmarkFilled size={20} /> : <IconBookmark size={20} />}
             </button>
-            <Link
-              href={forDish ? `/add/${id}?for=ret` : `/add/${id}`}
-              className="hf-btn-primary px-4 py-1.5"
-            >
+            {/* Åbner "Tilføj produkt" i bundarket (KRAV.md "Bundark"). */}
+            <button type="button" onClick={() => onAdd(id)} className="hf-btn-primary px-4 py-1.5">
               {t("search.add")}
-            </Link>
+            </button>
           </>
         }
       />
@@ -99,6 +97,7 @@ function SoegContent() {
   const [resultsState, setResultsState] = useState<LoadState>("loading");
   const [recentlyAdded, setRecentlyAdded] = useState<Result[]>([]);
   const [favorites, setFavorites] = useState<Result[]>([]);
+  const [addId, setAddId] = useState<string | null>(null);
   const favoriteIds = useMemo(() => new Set(favorites.map((f) => f.id)), [favorites]);
 
   function toggleFavorite(productId: string, next: boolean) {
@@ -247,7 +246,7 @@ function SoegContent() {
                   id={r.id}
                   title={r.title}
                   image={r.image}
-                  forDish={forDish}
+                  onAdd={setAddId}
                   t={t}
                   isFavorite={favoriteIds.has(r.id)}
                   onToggleFavorite={toggleFavorite}
@@ -267,7 +266,7 @@ function SoegContent() {
                   id={r.id}
                   title={r.title}
                   image={r.image}
-                  forDish={forDish}
+                  onAdd={setAddId}
                   t={t}
                   isFavorite={favoriteIds.has(r.id)}
                   onToggleFavorite={toggleFavorite}
@@ -304,7 +303,7 @@ function SoegContent() {
                   brand={r.brand}
                   kcal={r.kcal}
                   macrosEstimated={r.macrosEstimated}
-                  forDish={forDish}
+                  onAdd={setAddId}
                   t={t}
                   isFavorite={favoriteIds.has(r.id)}
                   onToggleFavorite={toggleFavorite}
@@ -319,6 +318,10 @@ function SoegContent() {
           </>
         )}
       </div>
+
+      {addId && (
+        <AddProductView key={addId} id={addId} forDish={forDish} inSheet onClose={() => setAddId(null)} />
+      )}
     </HfScreen>
   );
 }

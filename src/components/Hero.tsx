@@ -3,9 +3,14 @@
 import { useEffect, useState } from "react";
 import { AddButton, HERO_HEIGHT } from "./AddButton";
 import { StatsWheel } from "./StatsWheel";
-import { OnboardingSpotlight } from "./OnboardingSpotlight";
+import { WelcomeSheet } from "./WelcomeSheet";
+import { OnboardingWizard } from "./OnboardingWizard";
 import { oppositeSide, useFabSide } from "@/lib/frontpage-layout";
 
+// Siden 2026-09-27 er den gamle spotlight-prototype erstattet af
+// velkomst-bundarket (WelcomeSheet, KRAV.md "Bundark"); samme gemte nøgle,
+// så brugere der allerede har lukket spotlighten ikke får velkomsten igen.
+//
 // Denne overlay har hidtil altid vist sig igen ved hvert genbesøg — den var
 // hardkodet til IS_NEW_USER = true og aldrig forbundet til rigtig gemt
 // tilstand ("Assumption for the prototype", stod der). Fundet 2026-09-07
@@ -27,6 +32,7 @@ function loadDismissed() {
 export function Hero() {
   const fabSide = useFabSide();
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
 
   useEffect(() => {
     // Samme "hydrer fra localStorage efter mount"-mønster som BottomNav —
@@ -48,7 +54,8 @@ export function Hero() {
     <div className="relative" style={{ height: HERO_HEIGHT }}>
       <AddButton onOpen={dismiss} />
       <StatsWheel side={oppositeSide(fabSide)} />
-      {showOnboarding && <OnboardingSpotlight side={fabSide} onLater={dismiss} />}
+      {showOnboarding && <WelcomeSheet onClose={dismiss} onStartGuide={() => setShowGuide(true)} />}
+      {showGuide && <OnboardingWizard forceVisible onClose={() => setShowGuide(false)} />}
     </div>
   );
 }
