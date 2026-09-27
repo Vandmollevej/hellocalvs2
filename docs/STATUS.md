@@ -9,6 +9,20 @@ Last updated: 2026-09-27
 - Migration `20260927090000_admin_agents_roadmap` køres af deploy.
 - MCP ikke testet mod Claude.ai (ingen lokal DB). Lint, typecheck og page-tree-test grønne.
 
+## 2026-09-27: Ikoner tilbage til brugerens PNG'er (SVG-sporinger fjernet)
+
+- De fire ikoner, der 25/9 blev tegnet om som SVG (badevægt, gryde,
+  champagne/Målsætning, taljemål), viser nu igen brugerens egne PNG'er,
+  skaleret til 256 px og gengivet som CSS-maske (følger `currentColor`):
+  `public/icons/bathroom-scale.png` (den oprindelige 256 px-fil fra ae1c88d1),
+  `public/icons/gryde.png` (256 px af den uploadede gryde.png),
+  `public/icons/champagne.png` (256 px af Målsætning.png, beskåret til
+  tegningen) og `public/icons/body-measurements/waist-female.png` /
+  `waist-male.png` (256 px af brugerens taljetegninger).
+- Komponentnavne og props er uændrede (`IconBathroomScale`, `IconCookingPot`,
+  `IconChampagne`, `IconWaistMeasure*`), så alle brugssteder virker som før.
+- Se DECISIONS 2026-09-27 "Brugerens billeder bruges som PNG".
+
 ## 2026-09-27: Admin "Page tree"
 
 - Ny admin-side `/admin/page-tree`: alle 128 sider som træ med pile, søgning, spring til område og "testet"-flueben med fremdriftsbjælke. Test sikrer at listen følger `src/app` (docs/DECISIONS.md 2026-09-27).

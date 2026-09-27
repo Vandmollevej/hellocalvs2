@@ -26,6 +26,16 @@ Erstatter gruppelisten i punktet nedenfor (skallen er uændret).
   hostnavnet omskriver alle stier til /admin.
 - Partnere: kun menupunkt + tom side; indholdet er ikke specificeret.
 
+## 2026-09-27: Brugerens billeder bruges som PNG — aldrig omtegnet som SVG
+
+- Når brugeren leverer et billede (PNG) til et ikon eller en illustration,
+  bruges præcis det billede: skaleret (typisk 256 px for ikoner, beskåret til
+  tegningen) og gengivet som CSS-maske, når det skal følge tekstfarven.
+- Billedet må ikke spores, omtegnes som SVG eller "forbedres". Brugeren
+  afviste SVG-udgaverne fra 25/9 (badevægt, gryde, champagne, taljemål) og
+  bad om de originale PNG'er tilbage.
+- Ønskes en anden gengivelse (f.eks. vektor), spørges brugeren først.
+
 ## 2026-09-27: Admin-skal efter Cloudflare-dashboardets struktur
 
 - Kun struktur/opbygning fra Cloudflare — farverne er fortsat Hello Cals tokens.
