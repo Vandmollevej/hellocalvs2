@@ -8,6 +8,8 @@ import { HfChevron } from "@/components/hf/HfChevron";
 import { ProfileAvatarLink } from "@/components/ProfileAvatarLink";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { useIsCompactLandscape } from "@/hooks/useIsCompactLandscape";
+import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
+import { WatchPhoneIcon } from "@/components/family/WatchPhoneIcon";
 
 // Tilbagepilen sidder altid til venstre, profilcirklen altid til højre —
 // magen til Hello Fresh, ikke omvendt (rettet 2026-09-06, se
@@ -44,6 +46,12 @@ export function ScreenHeader({
   const router = useRouter();
   const pathname = usePathname();
   const footerRoots = useFooterRootHrefs();
+  const { status } = useFamilyStatus();
+  // Profilcirklen viser initialerne på den profil, der vises. Telefonikonet
+  // til venstre for den viser, hvem der ellers er på profilen lige nu
+  // (docs/FAMILY.md) — på barnets telefon forælderen, på forælderens egen
+  // telefon forælderen selv, mens den ser barnets profil.
+  const watcher = status?.presence[0] ?? null;
   const showBack =
     !hideBackButton && (alwaysShowBackButton || !isMainFooterRoute(pathname, footerRoots));
 
@@ -87,7 +95,12 @@ export function ScreenHeader({
         <h1 className={`hf-type-nav-title hf-appbar__title ${titleClassName ?? ""}`}>{title}</h1>
         {icon && <span className="h-6 w-6 shrink-0" aria-hidden="true" />}
       </div>
-      <div className="hf-appbar__slot">
+      <div className="hf-appbar__slot relative">
+        {watcher && (
+          <span className="absolute right-full mr-1 flex items-center">
+            <WatchPhoneIcon name={watcher.displayName} title={t("family.watch.onAccount", { name: watcher.displayName })} />
+          </span>
+        )}
         {showAppSettingsButton ? (
           <Link
             href="/settings"

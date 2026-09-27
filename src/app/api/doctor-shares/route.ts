@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { queueMessage } from "@/lib/messaging";
-import { getSubscriptionTier } from "@/lib/subscription";
+import { getUserSubscriptionTier } from "@/lib/subscription";
 import {
   DOCTOR_SHARE_INVITATION_VALID_DAYS,
   sanitizeDoctorShareCategories,
@@ -32,8 +32,7 @@ export async function POST(request: Request) {
 
   // Hello Doc kræver Seriøs (docs/DECISIONS.md 2026-09-19) — den eneste
   // datakategori der ikke er med i Gratis-versionen.
-  const subscription = await prisma.subscription.findUnique({ where: { userId: user.id } });
-  if (getSubscriptionTier(subscription) !== "SERIOUS") {
+  if ((await getUserSubscriptionTier(user.id)) !== "SERIOUS") {
     return NextResponse.json({ message: "Hello Doc kræver abonnementet Seriøs" }, { status: 403 });
   }
 

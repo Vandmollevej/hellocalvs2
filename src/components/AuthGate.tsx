@@ -21,11 +21,13 @@ const PUBLIC_PREFIXES = [
   "/betingelser",
   "/privatlivspolitik",
   "/admin",
+  // Familiemedlem sætter sit eget login med en kode fra betaleren (docs/FAMILY.md).
+  "/family-code",
   // Oprettelses-appen har eget medarbejder-login og ingen klient-boks.
   "/scan",
 ];
 
-function isPublic(pathname: string) {
+export function isPublicPath(pathname: string) {
   return PUBLIC_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
@@ -35,7 +37,7 @@ export function AuthGate() {
   const [emailUnverified, setEmailUnverified] = useState(false);
 
   useEffect(() => {
-    if (isPublic(pathname)) return;
+    if (isPublicPath(pathname)) return;
     let cancelled = false;
     fetch("/api/auth/me")
       .then((res) => {
@@ -52,5 +54,5 @@ export function AuthGate() {
     };
   }, [pathname, router]);
 
-  return emailUnverified && !isPublic(pathname) ? <EmailVerifyBanner /> : null;
+  return emailUnverified && !isPublicPath(pathname) ? <EmailVerifyBanner /> : null;
 }

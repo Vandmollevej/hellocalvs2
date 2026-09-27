@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { createGoal, GOAL_TARGET_TYPES, listGoals, type GoalTargetType } from "@/lib/user-goals";
-import { getSessionUser, unauthorized } from "@/lib/session";
+import { unauthorized } from "@/lib/session";
+import { getProfileUser } from "@/lib/family-access";
 import { getUserSubscriptionTier } from "@/lib/subscription";
 
 export async function GET() {
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("goals", "VIEWED");
 
     if (!user) return unauthorized();
     const goals = await listGoals(user.id);
@@ -59,7 +60,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("goals", "CREATED");
 
     if (!user) return unauthorized();
     // Delmål er kun for Seriøs; Gratis har én målsætning i alt (målvægten)

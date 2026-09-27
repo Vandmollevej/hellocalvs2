@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { dissolveFamilyOf } from "@/lib/family";
 
 // "Ret til at blive glemt" (docs/DECISIONS.md 2026-09-02). Brugeren
 // hård-slettes IKKE: mange tabeller (Registration, Dish, Referral m.fl.)
@@ -10,6 +11,10 @@ export async function anonymizeUser(targetUserId: string, adminId: string) {
   if (target.role === "ADMIN") {
     throw new Error("Kan ikke anonymisere en administratorkonto");
   }
+
+  // Familieabonnement (docs/FAMILY.md): er brugeren betaler, opløses
+  // familien; ellers meldes brugeren ud. Alle beholder deres egne data.
+  await dissolveFamilyOf(targetUserId);
 
   await prisma.$transaction([
     prisma.user.update({

@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { getSessionUser, unauthorized } from "@/lib/session";
+import { unauthorized } from "@/lib/session";
+import { getProfileUser } from "@/lib/family-access";
 import { findVisibleSharedRecipe, markSharedRecipeUsed } from "@/lib/shared-recipe-share";
 import type { PublicSharedRecipe } from "@/lib/shared-recipes";
 
@@ -9,7 +10,7 @@ import type { PublicSharedRecipe } from "@/lib/shared-recipes";
 // selvom ejeren sletter retten eller stopper delingen.
 
 export async function GET() {
-  const user = await getSessionUser();
+  const user = await getProfileUser("recipeFavorites", "VIEWED");
   if (!user) return unauthorized();
   const favorites = await prisma.sharedRecipeFavorite.findMany({
     where: { userId: user.id },
@@ -24,7 +25,7 @@ async function recipeIdFrom(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const user = await getSessionUser();
+  const user = await getProfileUser("recipeFavorites", "CREATED");
   if (!user) return unauthorized();
   const recipeId = await recipeIdFrom(req);
   if (!recipeId) return NextResponse.json({ message: "recipeId mangler" }, { status: 400 });
@@ -44,7 +45,7 @@ export async function POST(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const user = await getSessionUser();
+  const user = await getProfileUser("recipeFavorites", "DELETED");
   if (!user) return unauthorized();
   const recipeId = await recipeIdFrom(req);
   if (!recipeId) return NextResponse.json({ message: "recipeId mangler" }, { status: 400 });

@@ -263,6 +263,21 @@ function getSleepWindow(
   return { bedtime: 23 * 60, wakeTime: (23 * 60 + FALLBACK_SLEEP_MINUTES) % 1440 };
 }
 
+// En sengetid lige efter midnat (00:00-03:59) før stå-op-tiden er stadig en
+// NAT-søvn — ikke dagsøvn efter en nattevagt. Den hører til aftenen, så
+// sengetids-håndtaget står altid nederst (ved 24:00) på dagens tidslinje, og
+// der tegnes ikke ét samlet dagsøvn-felt fra 00:00.
+const LATE_BEDTIME_CUTOFF_MINUTES = 4 * 60;
+
+function isDaytimeSleep(window: SleepWindow) {
+  return window.bedtime < window.wakeTime && window.bedtime >= LATE_BEDTIME_CUTOFF_MINUTES;
+}
+
+/** Where the bedtime handle sits on the 00-24 timeline: after-midnight bedtimes pin to the bottom. */
+function bedtimeDisplayMinutes(window: SleepWindow) {
+  return window.bedtime < LATE_BEDTIME_CUTOFF_MINUTES && !isDaytimeSleep(window) ? 24 * 60 : window.bedtime;
+}
+
 function useIsLandscape() {
   const [isLandscape, setIsLandscape] = useState(false);
   useEffect(() => {
@@ -1184,7 +1199,12 @@ function ListView({
   const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const overscroll = useRef(0);
-  const touchStartY = useRef<number | null>(null);
+  const wheelLockedUntil = useRef(0);
+  // Where the finger went down, and whether the list was already resting at
+  // its top/bottom edge then. Only a fresh drag that starts at an edge may
+  // change week — and only once the finger lifts — so an ordinary scroll that
+  // runs into the edge never swaps the week (and resets scrollTop) mid-swipe.
+  const touchStart = useRef<{ y: number; atTop: boolean; atBottom: boolean } | null>(null);
 
   useEffect(() => {
     const node = scrollRef.current;
@@ -1192,19 +1212,28 @@ function ListView({
     node.scrollTop = 0;
   }, [days]);
 
+  function edges(node: HTMLDivElement) {
+    return {
+      atTop: node.scrollTop <= 0,
+      atBottom: node.scrollTop + node.clientHeight >= node.scrollHeight - 1,
+    };
+  }
+
   function handleWheel(event: React.WheelEvent<HTMLDivElement>) {
     const node = scrollRef.current;
     if (!node) return;
-    const atTop = node.scrollTop <= 0;
-    const atBottom = node.scrollTop + node.clientHeight >= node.scrollHeight - 1;
+    // Trackpad momentum keeps firing wheel events after a week change; ignore
+    // them briefly so one flick can't skip several weeks.
+    if (event.timeStamp < wheelLockedUntil.current) return;
+    const { atTop, atBottom } = edges(node);
     if ((atTop && event.deltaY < 0) || (atBottom && event.deltaY > 0)) {
       overscroll.current += event.deltaY;
-      if (overscroll.current > 80) {
+      if (Math.abs(overscroll.current) > 80) {
+        const next = overscroll.current > 0;
         overscroll.current = 0;
-        onNextWeek();
-      } else if (overscroll.current < -80) {
-        overscroll.current = 0;
-        onPrevWeek();
+        wheelLockedUntil.current = event.timeStamp + 600;
+        if (next) onNextWeek();
+        else onPrevWeek();
       }
     } else {
       overscroll.current = 0;
@@ -1212,22 +1241,20 @@ function ListView({
   }
 
   function handleTouchStart(event: React.TouchEvent<HTMLDivElement>) {
-    touchStartY.current = event.touches[0].clientY;
+    const node = scrollRef.current;
+    if (!node) return;
+    touchStart.current = { y: event.touches[0].clientY, ...edges(node) };
   }
 
-  function handleTouchMove(event: React.TouchEvent<HTMLDivElement>) {
+  function handleTouchEnd(event: React.TouchEvent<HTMLDivElement>) {
     const node = scrollRef.current;
-    if (!node || touchStartY.current === null) return;
-    const deltaY = touchStartY.current - event.touches[0].clientY;
-    const atTop = node.scrollTop <= 0;
-    const atBottom = node.scrollTop + node.clientHeight >= node.scrollHeight - 1;
-    if ((atTop && deltaY < 0) || (atBottom && deltaY > 0)) {
-      if (Math.abs(deltaY) > 60) {
-        touchStartY.current = event.touches[0].clientY;
-        if (deltaY > 0) onNextWeek();
-        else onPrevWeek();
-      }
-    }
+    const start = touchStart.current;
+    touchStart.current = null;
+    if (!node || !start) return;
+    const deltaY = start.y - event.changedTouches[0].clientY;
+    const now = edges(node);
+    if (start.atBottom && now.atBottom && deltaY > 60) onNextWeek();
+    else if (start.atTop && now.atTop && deltaY < -60) onPrevWeek();
   }
 
   return (
@@ -1235,9 +1262,9 @@ function ListView({
       ref={scrollRef}
       onWheel={handleWheel}
       onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={() => {
-        touchStartY.current = null;
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={() => {
+        touchStart.current = null;
       }}
       className="max-h-[min(60vh,420px)] space-y-2 overflow-y-auto overscroll-contain"
     >
@@ -1454,7 +1481,7 @@ function WeekTimelineView({
                       onCommit={(type, minutes) => onSleepAdjust(date, type, minutes)}
                     />
                     <SleepBoundaryHandle
-                      minutes={sleepWindow.bedtime}
+                      minutes={bedtimeDisplayMinutes(sleepWindow)}
                       type="bedtime"
                       onCommit={(type, minutes) => onSleepAdjust(date, type, minutes)}
                     />
@@ -1488,7 +1515,7 @@ function SleepBands({ window, hourHeight = HOUR_HEIGHT }: { window: SleepWindow 
   // Daytime sleep (e.g. after a night shift): bedtime comes before wake time
   // on the clock, so it is ONE band between them — drawing the two
   // midnight-crossing bands here made them overlap into two shades of gray.
-  if (window.bedtime < window.wakeTime) {
+  if (isDaytimeSleep(window)) {
     return (
       <div
         className={`${bandClass} border-y`}
@@ -1498,7 +1525,7 @@ function SleepBands({ window, hourHeight = HOUR_HEIGHT }: { window: SleepWindow 
     );
   }
   const topHeight = (window.wakeTime / 60) * hourHeight;
-  const bottomHeight = ((24 * 60 - window.bedtime) / 60) * hourHeight;
+  const bottomHeight = ((24 * 60 - bedtimeDisplayMinutes(window)) / 60) * hourHeight;
   return (
     <>
       <div
@@ -1560,7 +1587,11 @@ function SleepBoundaryHandle({
     const scrollDelta = (scrollRef?.current?.scrollTop ?? 0) - startScrollTopRef.current;
     const deltaY = lastYRef.current - startYRef.current + scrollDelta;
     const deltaMinutes = (deltaY / hourHeight) * 60;
-    const next = Math.min(24 * 60 - 1, Math.max(0, startMinutesRef.current + deltaMinutes));
+    // Sengetid kan trækkes helt ned til 24:00 (gemmes som 00:00), men ikke op
+    // i nattetimerne, hvor den ville blive vist nederst igen.
+    const min = type === "bedtime" ? LATE_BEDTIME_CUTOFF_MINUTES : 0;
+    const max = type === "bedtime" ? 24 * 60 : 24 * 60 - 1;
+    const next = Math.min(max, Math.max(min, startMinutesRef.current + deltaMinutes));
     dragMinutesRef.current = next;
     setDragMinutes(next);
     onDrag?.(type, next);
@@ -1749,8 +1780,7 @@ function DayDetails({
   // stå-op-tid. Sover man om dagen (sengetid før stå-op-tid på samme dato),
   // er det i stedet dagens eget grå felt, der tælles.
   const nightStart =
-    liveSleepWindow.bedtime < liveSleepWindow.wakeTime ||
-    previousSleepWindow.bedtime < previousSleepWindow.wakeTime
+    isDaytimeSleep(liveSleepWindow) || isDaytimeSleep(previousSleepWindow)
       ? liveSleepWindow.bedtime
       : previousSleepWindow.bedtime;
   const nightSleepMinutes = (liveSleepWindow.wakeTime - nightStart + 1440) % 1440;
@@ -2021,7 +2051,7 @@ function DayDetails({
                   onDrag={handleSleepDrag}
                 />
                 <SleepBoundaryHandle
-                  minutes={sleepWindow.bedtime}
+                  minutes={bedtimeDisplayMinutes(sleepWindow)}
                   type="bedtime"
                   hourHeight={hourHeight}
                   scrollRef={timelineScrollRef}
@@ -2106,7 +2136,7 @@ function DayDetails({
           <div aria-hidden="true" />
           {remaining >= 0 ? (
             <p className="whitespace-nowrap text-right text-sm font-normal text-hf-black">
-              {t("calendar.remainingToday")}
+              {t("calendar.remainingToday", { amount: Math.round(remaining) })}
             </p>
           ) : (
             <p className="whitespace-nowrap text-right text-sm font-semibold text-hf-red-dark">

@@ -8,10 +8,17 @@ Brugeren så profilcirklen som mindre på forsiden. Målt i Chromium ved 402 px
 var begge 32 px, men forsidens 1 px `border` lå inden i de 32 px (farvet flade
 kun 30 px), og cirklen sad 6 px længere inde og længere nede end i den grønne
 header. `src/components/ProfileAvatarLink.tsx` bruges nu af både `TopBar` og
-`ScreenHeader`; udseendet ligger i `.hf-avatar` og placeringen i
+`ScreenHeader` (cirklen selv er master's `ProfileCircle`) og placeringen i
 `.hf-appbar__slot`/`.hf-topbar` (`globals.css`). Forsidens ring er en
 `box-shadow` uden for cirklen (`.hf-avatar--outlined`). Genmålt: 32×32 px ved
 (348, 10) på `/`, `/calendar` og `/statistics`. Mangler test på telefon.
+
+## 2026-09-26: "Skiftende arbejdstider" skjult på Søvnmønster
+
+Kontakten og hint-teksten på `/profile/sleep` er skjult bag
+`SHOW_SHIFT_WORK = false` i `src/app/profile/sleep/page.tsx`. Koden, feltet
+`shiftWorkEnabled`, API'et og oversættelserne er bevaret til senere. Spørgsmålet
+om skifteholdsarbejde i onboarding-guiden er ikke rørt. Lint og build kørt.
 
 ## 2026-09-26: Opret vare — logo, fritskrabning og samme-foto-flueben
 
@@ -65,6 +72,13 @@ kategori, skærmbilleder, svarskabeloner og tæller i admin-menuen.
 
 1. Deploy med migrationerne `20260926150000_support_inbox` og
    `20260926220000_support_inbox_extras`.
+## 2026-09-26: Kalender-listevisning hakkede og sprang ved scroll
+
+Listevisningens touch-handler målte trækket fra fingerens startpunkt og skiftede
+uge midt i et swipe, så snart listen ramte bunden/toppen — ugen blev byttet og
+`scrollTop` nulstillet under fingeren. Nu skifter uge kun, når trækket *startede*
+med listen hvilende ved kanten, og først når fingeren slippes (>60 px). Hjul/
+trackpad får 600 ms pause efter et ugeskift, så momentum ikke springer flere uger.
 
 ## 2026-09-26: Alle overskrifter med streger bruger samme klasse
 
@@ -201,6 +215,25 @@ container-backup"), som deployet lægger samme sted; den gamle gemmes som
 `.orig`. Forventet: ca. 7 GB første gang, derefter kun ændringer. Ikke kørt på
 Synology endnu — kun testet med en falsk `docker` i cloud-sessionen.
 
+## 2026-09-26: Familieabonnement — børneberegning, sletteret, fælles måltid
+
+Se `docs/FAMILY.md` "Afklaret 2026-09-26". Ny migration
+`20260926100000_family_delete_permission`. Lint og build grønne; ikke testet
+mod database eller på telefon.
+
+## 2026-09-26: Familieabonnement — første version bygget
+
+Branch `claude/lucid-bell-s5vyhv`. Se `docs/FAMILY.md` "Sådan virker den
+første version" og "Mangler". Lint, typetjek og build er grønne. Ikke testet
+mod en rigtig database eller på telefon. Kræver migration
+`20260925200000_family_subscription` ved deploy.
+
+## 2026-09-25: Familieabonnement — research og beslutninger
+
+Se `docs/FAMILY.md` (research, beslutninger, åbne spørgsmål, byggeplan) og
+`docs/DECISIONS.md` 2026-09-25 "Familieabonnement". Bygges på branch
+`claude/lucid-bell-s5vyhv`; følg rækken i `docs/handoffs/OPEN-TASKS.md`.
+
 ## 2026-09-25: Ubrugte statistik-kort — "+ Overskrift" og "+ Skillelinje" øverst
 
 `/statistics/unused-cards`: knapperne ligger nu lige under søgefeltet, før accordionerne.
@@ -255,6 +288,18 @@ Platform → Audience). Test derefter forbindelsen på iPhone.
 - Brugerens vandglas-ikon (`public/icons/water-glass.png`, maske-komponent
   `src/components/icons/WaterGlass.tsx`) erstatter tabler-dråben overalt hvor
   det betyder vand. Fedt-statistikkerne beholder dråben.
+
+## 2026-09-26: Kalender-dagvisning — sengetid altid nederst + "Tilbage for i dag"
+
+- Sengetid 00:00-03:59 (før stå-op-tid) regnes nu som NAT-søvn, ikke dagsøvn.
+  Sengetids-håndtaget står derfor altid nederst (24:00) på dagens tidslinje —
+  før stod det øverst ved 00, og hele natten blev tegnet som ét dagsøvn-felt.
+  Stå-op-håndtaget er øverst, sengetid nederst, også på dage uden søvn endnu.
+- Sengetid kan trækkes ned til 24:00 (gemmes som 00:00), men ikke op i
+  nattetimerne før 04:00. Gælder også ugevisningen.
+- `calendar.remainingToday` tilføjet ("Tilbage for i dag: {amount} kcal") —
+  vistes før som rå nøgle.
+- Lint og build grønne. Ikke testet på telefon (ingen login/DB i cloud).
 
 ## 2026-09-25: Kalender-dagvisning — træk søvn-håndtag forbi kanten + "Nattens søvn"
 
