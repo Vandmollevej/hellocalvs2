@@ -1,4 +1,4 @@
-// Genereret af skitse-scriptet ud fra "Hello Fresh inspiration/Design af liste-visning.png". Ret ikke i hånden.
+// Genereret af scripts/design-sketches/build.mjs ud fra "Hello Fresh inspiration/Design af liste-visning.png". Ret ikke i hånden.
 import type { Sketch } from "../sketch-types";
 
 const sketch: Sketch = {
@@ -62,7 +62,8 @@ const sketch: Sketch = {
     {name: "Tekst",kind: "text",x: 243,y: 1456,w: 140,h: 47,fill: "#242424"},
     {name: "Ikon",kind: "icon",x: 85,y: 1695,w: 115,h: 95,fill: "#FF9259"},
     {name: "Tekst",kind: "text",x: 243,y: 1720,w: 86,h: 37,fill: "#242424"},
-    {name: "Tekst",kind: "text",x: 85,y: 1960,w: 316,h: 95,fill: "#542A04"},
+    {name: "Ikon",kind: "icon",x: 85,y: 1960,w: 117,h: 95,fill: "#542A04"},
+    {name: "Tekst",kind: "text",x: 241,y: 1984,w: 160,h: 47,fill: "#242424"},
     {name: "Ikon",kind: "icon",x: 89,y: 2223,w: 111,h: 91,fill: "#E6965F"},
     {name: "Tekst",kind: "text",x: 240,y: 2248,w: 470,h: 46,fill: "#242424"},
   ],

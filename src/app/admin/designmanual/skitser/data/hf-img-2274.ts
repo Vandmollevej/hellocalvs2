@@ -1,4 +1,4 @@
-// Genereret af skitse-scriptet ud fra "Hello Fresh inspiration/IMG_2274.png". Ret ikke i hånden.
+// Genereret af scripts/design-sketches/build.mjs ud fra "Hello Fresh inspiration/IMG_2274.png". Ret ikke i hånden.
 import type { Sketch } from "../sketch-types";
 
 const sketch: Sketch = {
@@ -16,9 +16,8 @@ const sketch: Sketch = {
     {name: "Statuslinje, ikoner",kind: "icon",x: 865,y: 77,w: 235,h: 41,fill: "#000000"},
     {name: "Ikon",kind: "icon",x: 28,y: 206,w: 33,h: 57,fill: "#FFFFFF"},
     {name: "Tekst",kind: "text",x: 433,y: 208,w: 341,h: 59,fill: "#FFFFFF"},
-    {name: "Flade",kind: "surface",x: 464,y: 346,w: 106,h: 90,fill: "#96DB12"},
-    {name: "Ikon",kind: "icon",x: 548,y: 362,w: 14,h: 10,fill: "#6FC322"},
-    {name: "Tekst",kind: "text",x: 472,y: 400,w: 69,h: 30,fill: "#46A830"},
+    {name: "Flade",kind: "surface",x: 470,y: 346,w: 94,h: 84,fill: "#96DB12",radius: 14},
+    {name: "Tekst",kind: "text",x: 476,y: 400,w: 65,h: 24,fill: "#55B22A"},
     {name: "Flade",kind: "surface",x: 399,y: 721,w: 405,h: 135,fill: "#000000",border: "#A8A8A8",radius: 8},
     {name: "Tekst",kind: "text",x: 431,y: 747,w: 339,h: 88,fill: "#FFFFFF"},
     {name: "Kantboks",kind: "outline",x: 72,y: 1000,w: 1062,h: 144,border: "#7D7561",radius: 4},

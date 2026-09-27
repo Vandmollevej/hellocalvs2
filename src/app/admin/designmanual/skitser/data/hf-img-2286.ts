@@ -1,4 +1,4 @@
-// Genereret af skitse-scriptet ud fra "Hello Fresh inspiration/IMG_2286.png". Ret ikke i hånden.
+// Genereret af scripts/design-sketches/build.mjs ud fra "Hello Fresh inspiration/IMG_2286.png". Ret ikke i hånden.
 import type { Sketch } from "../sketch-types";
 
 const sketch: Sketch = {
@@ -35,7 +35,8 @@ const sketch: Sketch = {
     {name: "Tekst",kind: "text",x: 52,y: 1202,w: 245,h: 38,fill: "#242424"},
     {name: "Tekst",kind: "text",x: 1054,y: 1204,w: 99,h: 45,fill: "#242424"},
     {name: "Tekst",kind: "text",x: 52,y: 1323,w: 194,h: 47,fill: "#242424"},
-    {name: "Tekst",kind: "text",x: 974,y: 1324,w: 179,h: 45,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 974,y: 1324,w: 67,h: 36,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 1064,y: 1324,w: 89,h: 45,fill: "#242424"},
     {name: "Tekst",kind: "text",x: 49,y: 1443,w: 143,h: 37,fill: "#242424"},
     {name: "Tekst",kind: "text",x: 1028,y: 1444,w: 125,h: 45,fill: "#242424"},
     {name: "Tekst",kind: "text",x: 52,y: 1562,w: 186,h: 38,fill: "#242424"},
@@ -44,9 +45,10 @@ const sketch: Sketch = {
     {name: "Tekst",kind: "text",x: 999,y: 1684,w: 154,h: 45,fill: "#242424"},
     {name: "Tekst",kind: "text",x: 49,y: 1803,w: 79,h: 37,fill: "#242424"},
     {name: "Tekst",kind: "text",x: 1053,y: 1804,w: 100,h: 45,fill: "#242424"},
-    {name: "Tekst",kind: "text",x: 52,y: 1920,w: 898,h: 49,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 507,y: 1920,w: 443,h: 40,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 52,y: 1923,w: 430,h: 46,fill: "#242424"},
     {name: "Tekst",kind: "text",x: 51,y: 1992,w: 1050,h: 50,fill: "#242424"},
-    {name: "Tekst",kind: "text",x: 51,y: 2067,w: 891,h: 46,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 51,y: 2067,w: 881,h: 46,fill: "#242424"},
     {name: "Ikon",kind: "icon",x: 344,y: 2218,w: 54,h: 54,fill: "#232323"},
     {name: "Tekst",kind: "text",x: 431,y: 2225,w: 437,h: 48,fill: "#232323"},
   ],

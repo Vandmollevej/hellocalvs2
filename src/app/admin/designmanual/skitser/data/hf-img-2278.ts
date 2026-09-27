@@ -1,4 +1,4 @@
-// Genereret af skitse-scriptet ud fra "Hello Fresh inspiration/IMG_2278.png". Ret ikke i hånden.
+// Genereret af scripts/design-sketches/build.mjs ud fra "Hello Fresh inspiration/IMG_2278.png". Ret ikke i hånden.
 import type { Sketch } from "../sketch-types";
 
 const sketch: Sketch = {
@@ -25,7 +25,7 @@ const sketch: Sketch = {
     {name: "Tekst",kind: "text",x: 526,y: 2255,w: 154,h: 46,fill: "#232323"},
     {name: "Bundbar",kind: "surface",x: 0,y: 2373,w: 1206,h: 249,fill: "#E0D9CB"},
     {name: "Linje",kind: "line",x: 0,y: 2372,w: 1206,h: 1,fill: "#AFADAA"},
-    {name: "Flade",kind: "surface",x: 127,y: 2400,w: 48,h: 60,fill: "#232323"},
+    {name: "Flade",kind: "surface",x: 128,y: 2400,w: 46,h: 60,fill: "#232323"},
     {name: "Ikon",kind: "icon",x: 423,y: 2400,w: 60,h: 60,fill: "#656565"},
     {name: "Ikon",kind: "icon",x: 1026,y: 2400,w: 60,h: 60,fill: "#656565"},
     {name: "Ikon",kind: "icon",x: 732,y: 2403,w: 42,h: 54,fill: "#656565"},
@@ -37,7 +37,9 @@ const sketch: Sketch = {
     {name: "Ikon",kind: "icon",x: 228,y: 429,w: 36,h: 22,fill: "#000000"},
     {name: "Tekst",kind: "text",x: 48,y: 1224,w: 1032,h: 95,fill: "#242424"},
     {name: "Tekst",kind: "text",x: 48,y: 1378,w: 1032,h: 61,fill: "#242424"},
-    {name: "Tekst",kind: "text",x: 50,y: 1477,w: 707,h: 58,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 50,y: 1477,w: 401,h: 58,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 532,y: 1477,w: 217,h: 46,fill: "#242424"},
+    {name: "Ikon",kind: "icon",x: 470,y: 1490,w: 38,h: 32,fill: "#242424"},
     {name: "Ikon",kind: "icon",x: 1104,y: 1928,w: 36,h: 37,fill: "#232323"},
     {name: "Ikon",kind: "icon",x: 387,y: 1929,w: 21,h: 36,fill: "#232323"},
     {name: "Ikon",kind: "icon",x: 795,y: 1929,w: 21,h: 36,fill: "#232323"},

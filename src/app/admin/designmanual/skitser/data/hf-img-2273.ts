@@ -1,4 +1,4 @@
-// Genereret af skitse-scriptet ud fra "Hello Fresh inspiration/IMG_2273.png". Ret ikke i hånden.
+// Genereret af scripts/design-sketches/build.mjs ud fra "Hello Fresh inspiration/IMG_2273.png". Ret ikke i hånden.
 import type { Sketch } from "../sketch-types";
 
 const sketch: Sketch = {
@@ -17,9 +17,8 @@ const sketch: Sketch = {
     {name: "Tekst",kind: "text",x: 433,y: 208,w: 341,h: 59,fill: "#FFFFFF"},
     {name: "Linje",kind: "line",x: 0,y: 301,w: 1206,h: 1,fill: "#AFADAA"},
     {name: "Flade",kind: "surface",x: 0,y: 302,w: 1206,h: 178,fill: "#FAF8F3"},
-    {name: "Flade",kind: "surface",x: 464,y: 345,w: 106,h: 90,fill: "#96DB12"},
-    {name: "Ikon",kind: "icon",x: 548,y: 361,w: 14,h: 10,fill: "#6FC322"},
-    {name: "Tekst",kind: "text",x: 472,y: 399,w: 69,h: 30,fill: "#54AF28"},
+    {name: "Flade",kind: "surface",x: 470,y: 345,w: 94,h: 84,fill: "#96DB12",radius: 14},
+    {name: "Tekst",kind: "text",x: 476,y: 399,w: 65,h: 24,fill: "#55B22A"},
     {name: "Tekst",kind: "text",x: 585,y: 351,w: 157,h: 78,fill: "#232323"},
     {name: "Billede",kind: "image",x: 0,y: 480,w: 1206,h: 109,fill: "#B1A28C"},
     {name: "Flade",kind: "surface",x: 48,y: 793,w: 1110,h: 300,fill: "#F7F7F7",border: "#242424",radius: 4},
@@ -30,8 +29,10 @@ const sketch: Sketch = {
     {name: "Tekst",kind: "text",x: 422,y: 1360,w: 361,h: 31,fill: "#232323"},
     {name: "Flade",kind: "surface",x: 48,y: 1489,w: 1110,h: 300,fill: "#FFFFFF",border: "#242424",radius: 4},
     {name: "Kantboks",kind: "outline",x: 543,y: 1565,w: 120,h: 94,border: "#000000",borderWidth: 7,radius: 5},
-    {name: "Ikon",kind: "icon",x: 566,y: 1588,w: 55,h: 48,fill: "#000000"},
-    {name: "Ikon",kind: "icon",x: 543,y: 1582,w: 78,h: 61,fill: "#000000"},
+    {name: "Ikon",kind: "icon",x: 590,y: 1588,w: 31,h: 48,fill: "#000000"},
+    {name: "Ikon",kind: "icon",x: 566,y: 1594,w: 13,h: 10,fill: "#000000"},
+    {name: "Ikon",kind: "icon",x: 590,y: 1582,w: 31,h: 61,fill: "#000000"},
+    {name: "Ikon",kind: "icon",x: 543,y: 1594,w: 36,h: 10,fill: "#000000"},
     {name: "Tekst",kind: "text",x: 357,y: 1700,w: 490,h: 39,fill: "#232323"},
     {name: "Flade",kind: "surface",x: 48,y: 1837,w: 1110,h: 300,fill: "#FFFFFF",border: "#242424",radius: 4},
     {name: "Ikon",kind: "icon",x: 543,y: 1905,w: 120,h: 107,fill: "#343434"},

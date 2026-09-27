@@ -1,4 +1,4 @@
-// Genereret af skitse-scriptet ud fra "Hello Fresh inspiration/Log-ind konto.png". Ret ikke i hånden.
+// Genereret af scripts/design-sketches/build.mjs ud fra "Hello Fresh inspiration/Log-ind konto.png". Ret ikke i hånden.
 import type { Sketch } from "../sketch-types";
 
 const sketch: Sketch = {
@@ -31,7 +31,8 @@ const sketch: Sketch = {
     {name: "Billede",kind: "image",x: 66,y: 1903,w: 428,h: 624,fill: "#9D6F53"},
     {name: "Tekst",kind: "text",x: 543,y: 1974,w: 224,h: 48,fill: "#242424"},
     {name: "Ikon",kind: "icon",x: 546,y: 2092,w: 42,h: 42,fill: "#242424"},
-    {name: "Tekst",kind: "text",x: 615,y: 2101,w: 369,h: 42,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 749,y: 2101,w: 235,h: 42,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 615,y: 2103,w: 113,h: 31,fill: "#242424"},
     {name: "Tekst",kind: "text",x: 616,y: 2163,w: 277,h: 32,fill: "#242424"},
     {name: "Ikon",kind: "icon",x: 546,y: 2248,w: 42,h: 42,fill: "#242424"},
     {name: "Tekst",kind: "text",x: 615,y: 2258,w: 420,h: 41,fill: "#242424"},

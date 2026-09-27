@@ -1,4 +1,4 @@
-// Genereret af skitse-scriptet ud fra "Hello Fresh inspiration/IMG_1247.PNG". Ret ikke i hånden.
+// Genereret af scripts/design-sketches/build.mjs ud fra "Hello Fresh inspiration/IMG_1247.PNG". Ret ikke i hånden.
 import type { Sketch } from "../sketch-types";
 
 const sketch: Sketch = {
@@ -25,8 +25,10 @@ const sketch: Sketch = {
     {name: "Billede",kind: "image",x: 96,y: 889,w: 965,h: 1023,fill: "#463B36"},
     {name: "Flade",kind: "surface",x: 1109,y: 1840,w: 49,h: 72,fill: "#EEE9DF",radius: 4},
     {name: "Ikon",kind: "icon",x: 1133,y: 1852,w: 19,h: 48,fill: "#9B21E7"},
-    {name: "Flade",kind: "surface",x: 48,y: 2004,w: 1126,h: 352,fill: "#EEE9DF",radius: 38},
-    {name: "Ikon",kind: "icon",x: 96,y: 2010,w: 1072,h: 315,fill: "#242424"},
+    {name: "Flade",kind: "surface",x: 48,y: 2032,w: 1110,h: 324,fill: "#EEE9DF",radius: 12},
+    {name: "Ikon",kind: "icon",x: 859,y: 2038,w: 293,h: 287,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 96,y: 2109,w: 336,h: 38,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 96,y: 2230,w: 741,h: 41,fill: "#232323"},
     {name: "Bundbar",kind: "surface",x: 0,y: 2373,w: 1206,h: 249,fill: "#DFD9CC"},
     {name: "Linje",kind: "line",x: 0,y: 2372,w: 1206,h: 1,fill: "#AFADAA"},
     {name: "Ikon",kind: "icon",x: 127,y: 2400,w: 48,h: 60,fill: "#656565"},
@@ -40,8 +42,9 @@ const sketch: Sketch = {
     {name: "Tekst",kind: "text",x: 96,y: 385,w: 826,h: 88,fill: "#242424"},
     {name: "Tekst",kind: "text",x: 97,y: 503,w: 567,h: 76,fill: "#242424"},
     {name: "Tekst",kind: "text",x: 98,y: 650,w: 867,h: 41,fill: "#242424"},
-    {name: "Tekst",kind: "text",x: 96,y: 710,w: 777,h: 41,fill: "#242424"},
-    {name: "Tekst",kind: "text",x: 98,y: 770,w: 236,h: 41,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 96,y: 710,w: 721,h: 41,fill: "#242424"},
+    {name: "Ikon",kind: "icon",x: 831,y: 719,w: 42,h: 24,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 98,y: 770,w: 225,h: 41,fill: "#242424"},
     {name: "Ikon",kind: "icon",x: 1109,y: 889,w: 49,h: 735,fill: "#0C0606"},
     {name: "Ikon",kind: "icon",x: 1111,y: 1674,w: 47,h: 32,fill: "#242424"},
   ],

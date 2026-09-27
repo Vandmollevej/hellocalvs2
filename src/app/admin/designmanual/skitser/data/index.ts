@@ -1,4 +1,4 @@
-// Genereret af skitse-scriptet. Rækkefølgen er visningsrækkefølgen.
+// Genereret af scripts/design-sketches/build.mjs. Rækkefølgen er visningsrækkefølgen.
 import type { Sketch } from "../sketch-types";
 import s0 from "./hf-startside";
 import s1 from "./hf-loaderbillede";

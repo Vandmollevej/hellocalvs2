@@ -1,4 +1,4 @@
-// Genereret af skitse-scriptet ud fra "Hello Fresh inspiration/Hellofresh.png". Ret ikke i hånden.
+// Genereret af scripts/design-sketches/build.mjs ud fra "Hello Fresh inspiration/Hellofresh.png". Ret ikke i hånden.
 import type { Sketch } from "../sketch-types";
 
 const sketch: Sketch = {
@@ -10,10 +10,10 @@ const sketch: Sketch = {
   height: 832,
   background: "#47704C",
   boxes: [
-    {name: "Flade",kind: "surface",x: 1461,y: 77,w: 233,h: 320,fill: "#222222",radius: 2},
-    {name: "Flade",kind: "surface",x: 1688,y: 436,w: 232,h: 319,fill: "#222222",radius: 4},
+    {name: "Flade",kind: "surface",x: 1461,y: 77,w: 233,h: 320,fill: "#222222"},
+    {name: "Flade",kind: "surface",x: 1688,y: 436,w: 232,h: 319,fill: "#222222"},
     {name: "Linje",kind: "line",x: 1688,y: 435,w: 232,h: 1,fill: "#3D5320"},
-    {name: "Flade",kind: "surface",x: 1378,y: 436,w: 276,h: 323,fill: "#222222",radius: 27},
+    {name: "Flade",kind: "surface",x: 1378,y: 436,w: 276,h: 323,fill: "#222222"},
     {name: "Flade",kind: "surface",x: 1472,y: 503,w: 88,h: 79,fill: "#47704C",radius: 10},
     {name: "Ikon",kind: "icon",x: 0,y: 0,w: 973,h: 832,fill: "#97DD14"},
     {name: "Ikon",kind: "icon",x: 1726,y: 69,w: 834,h: 337,fill: "#222222"},

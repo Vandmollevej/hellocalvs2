@@ -1,4 +1,4 @@
-// Genereret af skitse-scriptet ud fra "Hello Fresh inspiration/IMG_2318.PNG". Ret ikke i hånden.
+// Genereret af scripts/design-sketches/build.mjs ud fra "Hello Fresh inspiration/IMG_2318.PNG". Ret ikke i hånden.
 import type { Sketch } from "../sketch-types";
 
 const sketch: Sketch = {
@@ -10,15 +10,17 @@ const sketch: Sketch = {
   height: 2622,
   background: "#FFFFFF",
   boxes: [
-    {name: "Topbar",kind: "surface",x: 0,y: 0,w: 1206,h: 240,fill: "#242424"},
+    {name: "Topbar",kind: "surface",x: 0,y: 0,w: 1206,h: 221,fill: "#242424"},
     {name: "Statuslinje, klokkeslæt",kind: "icon",x: 127,y: 78,w: 191,h: 41,fill: "#FFFFFF"},
     {name: "Statuslinje, ikoner",kind: "icon",x: 865,y: 77,w: 235,h: 41,fill: "#FFFFFF"},
-    {name: "Tekst",kind: "text",x: 48,y: 186,w: 1110,h: 32,fill: "#DCDAD6"},
+    {name: "Tekst",kind: "text",x: 48,y: 186,w: 1110,h: 29,fill: "#DCDAD6"},
     {name: "Ikon",kind: "icon",x: 0,y: 226,w: 7,h: 34,fill: "#CECECE"},
     {name: "Ikon",kind: "icon",x: 1199,y: 226,w: 7,h: 34,fill: "#CECECE"},
     {name: "Flade",kind: "surface",x: 66,y: 444,w: 1074,h: 1404,fill: "#F2F2F7",radius: 26},
     {name: "Flade",kind: "surface",x: 903,y: 480,w: 189,h: 84,fill: "#FFFFFF",border: "#BCBCC1",radius: 14},
-    {name: "Tekst",kind: "text",x: 947,y: 486,w: 139,h: 72,fill: "#BCBCC1"},
+    {name: "Ikon",kind: "icon",x: 947,y: 486,w: 11,h: 1,fill: "#E7E7E9"},
+    {name: "Ikon",kind: "icon",x: 971,y: 486,w: 115,h: 72,fill: "#BCBCC1"},
+    {name: "Ikon",kind: "icon",x: 947,y: 557,w: 11,h: 1,fill: "#E6E6E8"},
     {name: "Flade",kind: "surface",x: 903,y: 636,w: 189,h: 84,fill: "#BCBCC1",radius: 14},
     {name: "Flade",kind: "surface",x: 909,y: 642,w: 111,h: 72,fill: "#FFFFFF",radius: 12},
     {name: "Flade",kind: "surface",x: 903,y: 792,w: 189,h: 84,fill: "#BCBCC1",radius: 14},
@@ -81,9 +83,16 @@ const sketch: Sketch = {
     {name: "Ikon",kind: "icon",x: 138,y: 1766,w: 24,h: 17,fill: "#BCBCC1"},
     {name: "Tekst",kind: "text",x: 436,y: 311,w: 335,h: 39,fill: "#000000"},
     {name: "Tekst",kind: "text",x: 115,y: 373,w: 643,h: 44,fill: "#C5C5C7"},
-    {name: "Tekst",kind: "text",x: 115,y: 1879,w: 949,h: 37,fill: "#8A8A8D"},
-    {name: "Tekst",kind: "text",x: 116,y: 1927,w: 918,h: 37,fill: "#8A8A8D"},
-    {name: "Tekst",kind: "text",x: 115,y: 1975,w: 192,h: 36,fill: "#8A8A8D"},
+    {name: "Tekst",kind: "text",x: 115,y: 1879,w: 290,h: 36,fill: "#8A8A8D"},
+    {name: "Tekst",kind: "text",x: 431,y: 1879,w: 155,h: 30,fill: "#8A8A8D"},
+    {name: "Tekst",kind: "text",x: 738,y: 1879,w: 326,h: 37,fill: "#8A8A8D"},
+    {name: "Tekst",kind: "text",x: 600,y: 1887,w: 125,h: 22,fill: "#8A8A8D"},
+    {name: "Tekst",kind: "text",x: 307,y: 1927,w: 727,h: 37,fill: "#8A8A8D"},
+    {name: "Ikon",kind: "icon",x: 116,y: 1935,w: 39,h: 22,fill: "#8A8A8D"},
+    {name: "Tekst",kind: "text",x: 168,y: 1935,w: 49,h: 22,fill: "#8A8A8D"},
+    {name: "Tekst",kind: "text",x: 231,y: 1935,w: 61,h: 22,fill: "#8A8A8D"},
+    {name: "Tekst",kind: "text",x: 196,y: 1975,w: 111,h: 36,fill: "#8A8A8D"},
+    {name: "Tekst",kind: "text",x: 115,y: 1983,w: 65,h: 28,fill: "#8A8A8D"},
     {name: "Ikon",kind: "icon",x: 97,y: 2166,w: 1012,h: 383,fill: "#9A9A9C"},
     {name: "Tekst",kind: "text",x: 470,y: 2410,w: 269,h: 39,fill: "#191919"},
   ],

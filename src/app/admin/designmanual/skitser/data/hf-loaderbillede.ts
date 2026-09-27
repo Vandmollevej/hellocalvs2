@@ -1,4 +1,4 @@
-// Genereret af skitse-scriptet ud fra "Hello Fresh inspiration/Loaderbillede.png". Ret ikke i hånden.
+// Genereret af scripts/design-sketches/build.mjs ud fra "Hello Fresh inspiration/Loaderbillede.png". Ret ikke i hånden.
 import type { Sketch } from "../sketch-types";
 
 const sketch: Sketch = {
@@ -12,9 +12,9 @@ const sketch: Sketch = {
   boxes: [
     {name: "Flade",kind: "surface",x: 674,y: 738,w: 87,h: 120,fill: "#FFFFFF"},
     {name: "Linje",kind: "line",x: 674,y: 858,w: 87,h: 1,fill: "#62AB8A"},
-    {name: "Flade",kind: "surface",x: 758,y: 873,w: 86,h: 120,fill: "#FFFFFF",radius: 2},
+    {name: "Flade",kind: "surface",x: 758,y: 873,w: 86,h: 120,fill: "#FFFFFF"},
     {name: "Linje",kind: "line",x: 758,y: 993,w: 86,h: 1,fill: "#54A380"},
-    {name: "Flade",kind: "surface",x: 640,y: 874,w: 104,h: 121,fill: "#FFFFFF",radius: 14},
+    {name: "Flade",kind: "surface",x: 640,y: 874,w: 103,h: 120,fill: "#FFFFFF"},
     {name: "Ikon",kind: "icon",x: 674,y: 897,w: 35,h: 32,fill: "#067A46"},
     {name: "Ikon",kind: "icon",x: 117,y: 707,w: 392,h: 312,fill: "#96DC14"},
     {name: "Ikon",kind: "icon",x: 774,y: 734,w: 316,h: 128,fill: "#FFFFFF"},

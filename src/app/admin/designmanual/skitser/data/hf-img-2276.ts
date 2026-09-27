@@ -1,4 +1,4 @@
-// Genereret af skitse-scriptet ud fra "Hello Fresh inspiration/IMG_2276.png". Ret ikke i hånden.
+// Genereret af scripts/design-sketches/build.mjs ud fra "Hello Fresh inspiration/IMG_2276.png". Ret ikke i hånden.
 import type { Sketch } from "../sketch-types";
 
 const sketch: Sketch = {
@@ -17,9 +17,8 @@ const sketch: Sketch = {
     {name: "Tekst",kind: "text",x: 433,y: 208,w: 341,h: 59,fill: "#FFFFFF"},
     {name: "Linje",kind: "line",x: 0,y: 301,w: 1206,h: 1,fill: "#AFADAA"},
     {name: "Flade",kind: "surface",x: 0,y: 302,w: 1206,h: 179,fill: "#FAF8F3"},
-    {name: "Flade",kind: "surface",x: 464,y: 346,w: 106,h: 90,fill: "#96DB12"},
-    {name: "Ikon",kind: "icon",x: 548,y: 362,w: 14,h: 10,fill: "#6FC322"},
-    {name: "Tekst",kind: "text",x: 472,y: 400,w: 69,h: 30,fill: "#46A830"},
+    {name: "Flade",kind: "surface",x: 470,y: 346,w: 94,h: 84,fill: "#96DB12",radius: 14},
+    {name: "Tekst",kind: "text",x: 476,y: 400,w: 65,h: 24,fill: "#55B22A"},
     {name: "Tekst",kind: "text",x: 585,y: 352,w: 157,h: 78,fill: "#232323"},
     {name: "Billede",kind: "image",x: 0,y: 481,w: 1206,h: 1230,fill: "#A3A79B"},
     {name: "Flade",kind: "surface",x: 48,y: 1915,w: 1110,h: 300,fill: "#FFFFFF",border: "#242424",radius: 4},

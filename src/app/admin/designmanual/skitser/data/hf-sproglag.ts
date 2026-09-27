@@ -1,4 +1,4 @@
-// Genereret af skitse-scriptet ud fra "Hello Fresh inspiration/Sproglag.png". Ret ikke i hånden.
+// Genereret af scripts/design-sketches/build.mjs ud fra "Hello Fresh inspiration/Sproglag.png". Ret ikke i hånden.
 import type { Sketch } from "../sketch-types";
 
 const sketch: Sketch = {
@@ -31,7 +31,7 @@ const sketch: Sketch = {
     {name: "Flade",kind: "surface",x: 30,y: 1933,w: 108,h: 82,fill: "#BA0C2F",border: "#00205B"},
     {name: "Ikon",kind: "icon",x: 36,y: 1939,w: 96,h: 70,fill: "#00205B"},
     {name: "Flade",kind: "surface",x: 30,y: 2105,w: 108,h: 80,fill: "#00018D",radius: 4},
-    {name: "Ikon",kind: "icon",x: 36,y: 2110,w: 53,h: 40,fill: "#FF0000"},
+    {name: "Ikon",kind: "icon",x: 36,y: 2111,w: 53,h: 39,fill: "#FF0000"},
     {name: "Ikon",kind: "icon",x: 95,y: 2113,w: 37,h: 38,fill: "#A18EC1"},
     {name: "Ikon",kind: "icon",x: 108,y: 2158,w: 15,h: 16,fill: "#A65182"},
     {name: "Flade",kind: "surface",x: 30,y: 2275,w: 108,h: 82,fill: "#157CBB",border: "#FFD34D"},

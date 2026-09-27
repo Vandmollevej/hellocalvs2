@@ -1,4 +1,4 @@
-// Genereret af skitse-scriptet ud fra "Hello Fresh inspiration/IMG_2282.png". Ret ikke i hånden.
+// Genereret af scripts/design-sketches/build.mjs ud fra "Hello Fresh inspiration/IMG_2282.png". Ret ikke i hånden.
 import type { Sketch } from "../sketch-types";
 
 const sketch: Sketch = {
@@ -13,10 +13,9 @@ const sketch: Sketch = {
     {name: "Billede",kind: "image",x: 59,y: 1509,w: 98,h: 98,fill: "#7F7662"},
     {name: "Billede",kind: "image",x: 63,y: 1693,w: 90,h: 90,fill: "#CC5241"},
     {name: "Billede",kind: "image",x: 60,y: 1870,w: 96,h: 96,fill: "#C4A171"},
-    {name: "Bundbar",kind: "surface",x: 0,y: 2253,w: 1206,h: 369,fill: "#E0D9CB",radius: 58},
+    {name: "Bundbar",kind: "surface",x: 0,y: 2304,w: 1206,h: 318,fill: "#E0D9CB"},
     {name: "Flade",kind: "surface",x: 48,y: 2376,w: 1110,h: 144,fill: "#232323",radius: 8},
     {name: "Tekst",kind: "text",x: 431,y: 2429,w: 343,h: 37,fill: "#FFFFFF"},
-    {name: "Tekst",kind: "text",x: 55,y: 2255,w: 106,h: 49,fill: "#3E582F"},
     {name: "Statuslinje, klokkeslæt",kind: "icon",x: 131,y: 78,w: 182,h: 41,fill: "#000000"},
     {name: "Statuslinje, ikoner",kind: "icon",x: 865,y: 77,w: 235,h: 41,fill: "#000000"},
     {name: "Ikon",kind: "icon",x: 90,y: 231,w: 60,h: 54,fill: "#000000"},
@@ -25,13 +24,20 @@ const sketch: Sketch = {
     {name: "Tekst",kind: "text",x: 50,y: 405,w: 290,h: 47,fill: "#242424"},
     {name: "Tekst",kind: "text",x: 52,y: 490,w: 1050,h: 45,fill: "#242424"},
     {name: "Tekst",kind: "text",x: 52,y: 562,w: 1015,h: 45,fill: "#242424"},
-    {name: "Tekst",kind: "text",x: 49,y: 634,w: 880,h: 45,fill: "#242424"},
-    {name: "Tekst",kind: "text",x: 50,y: 706,w: 700,h: 45,fill: "#242424"},
-    {name: "Tekst",kind: "text",x: 50,y: 775,w: 184,h: 31,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 183,y: 634,w: 746,h: 45,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 49,y: 644,w: 116,h: 27,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 50,y: 706,w: 665,h: 45,fill: "#242424"},
+    {name: "Ikon",kind: "icon",x: 717,y: 736,w: 33,h: 7,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 50,y: 775,w: 76,h: 31,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 140,y: 782,w: 94,h: 24,fill: "#242424"},
     {name: "Tekst",kind: "text",x: 48,y: 885,w: 223,h: 46,fill: "#242424"},
-    {name: "Tekst",kind: "text",x: 301,y: 885,w: 465,h: 37,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 301,y: 885,w: 115,h: 37,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 459,y: 885,w: 130,h: 37,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 632,y: 885,w: 134,h: 37,fill: "#242424"},
+    {name: "Ikon",kind: "icon",x: 430,y: 898,w: 10,h: 11,fill: "#242424"},
+    {name: "Ikon",kind: "icon",x: 605,y: 898,w: 10,h: 11,fill: "#242424"},
     {name: "Tekst",kind: "text",x: 51,y: 991,w: 1049,h: 43,fill: "#242424"},
-    {name: "Tekst",kind: "text",x: 48,y: 1042,w: 981,h: 40,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 48,y: 1042,w: 970,h: 40,fill: "#242424"},
     {name: "Tekst",kind: "text",x: 50,y: 1161,w: 321,h: 60,fill: "#242424"},
     {name: "Ikon",kind: "icon",x: 1092,y: 1179,w: 36,h: 22,fill: "#232323"},
     {name: "Ikon",kind: "icon",x: 57,y: 1327,w: 102,h: 102,fill: "#B7664D"},

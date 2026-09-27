@@ -1,4 +1,4 @@
-// Genereret af skitse-scriptet ud fra "Hello Fresh inspiration/IMG_2300.png". Ret ikke i hånden.
+// Genereret af scripts/design-sketches/build.mjs ud fra "Hello Fresh inspiration/IMG_2300.png". Ret ikke i hånden.
 import type { Sketch } from "../sketch-types";
 
 const sketch: Sketch = {
@@ -29,15 +29,21 @@ const sketch: Sketch = {
     {name: "Tekst",kind: "text",x: 521,y: 418,w: 124,h: 35,fill: "#656565"},
     {name: "Tekst",kind: "text",x: 61,y: 430,w: 112,h: 35,fill: "#035624"},
     {name: "Tekst",kind: "text",x: 51,y: 622,w: 1095,h: 73,fill: "#232323"},
-    {name: "Tekst",kind: "text",x: 50,y: 718,w: 181,h: 59,fill: "#232323"},
-    {name: "Tekst",kind: "text",x: 51,y: 871,w: 1050,h: 46,fill: "#242424"},
-    {name: "Tekst",kind: "text",x: 50,y: 943,w: 620,h: 46,fill: "#242424"},
-    {name: "Tekst",kind: "text",x: 51,y: 1059,w: 507,h: 47,fill: "#232323"},
+    {name: "Tekst",kind: "text",x: 50,y: 718,w: 165,h: 59,fill: "#232323"},
+    {name: "Ikon",kind: "icon",x: 217,y: 763,w: 14,h: 13,fill: "#232323"},
+    {name: "Tekst",kind: "text",x: 51,y: 871,w: 737,h: 46,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 917,y: 871,w: 184,h: 37,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 815,y: 881,w: 86,h: 27,fill: "#242424"},
+    {name: "Ikon",kind: "icon",x: 791,y: 901,w: 8,h: 13,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 50,y: 943,w: 614,h: 46,fill: "#242424"},
+    {name: "Tekst",kind: "text",x: 330,y: 1059,w: 228,h: 38,fill: "#232323"},
+    {name: "Tekst",kind: "text",x: 51,y: 1060,w: 255,h: 46,fill: "#232323"},
     {name: "Ikon",kind: "icon",x: 48,y: 1153,w: 1110,h: 126,fill: "#232323"},
-    {name: "Tekst",kind: "text",x: 51,y: 1342,w: 342,h: 46,fill: "#232323"},
+    {name: "Tekst",kind: "text",x: 51,y: 1342,w: 240,h: 46,fill: "#232323"},
+    {name: "Tekst",kind: "text",x: 316,y: 1352,w: 77,h: 36,fill: "#232323"},
     {name: "Ikon",kind: "icon",x: 48,y: 1435,w: 1110,h: 126,fill: "#232323"},
-    {name: "Tekst",kind: "text",x: 50,y: 1644,w: 569,h: 46,fill: "#232323"},
-    {name: "Tekst",kind: "text",x: 633,y: 1644,w: 182,h: 45,fill: "#B30000"},
+    {name: "Tekst",kind: "text",x: 50,y: 1644,w: 569,h: 46,fill: "#454545"},
+    {name: "Tekst",kind: "text",x: 633,y: 1644,w: 174,h: 45,fill: "#B30000"},
     {name: "Ikon",kind: "icon",x: 832,y: 1654,w: 49,h: 36,fill: "#232323"},
     {name: "Tekst",kind: "text",x: 50,y: 1716,w: 151,h: 46,fill: "#232323"},
     {name: "Ikon",kind: "icon",x: 1002,y: 2277,w: 96,h: 96,fill: "#232323"},

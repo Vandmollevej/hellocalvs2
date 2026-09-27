@@ -1,4 +1,4 @@
-// Genereret af skitse-scriptet ud fra "Hello Fresh inspiration/IMG_2271.png". Ret ikke i hånden.
+// Genereret af scripts/design-sketches/build.mjs ud fra "Hello Fresh inspiration/IMG_2271.png". Ret ikke i hånden.
 import type { Sketch } from "../sketch-types";
 
 const sketch: Sketch = {
@@ -17,10 +17,10 @@ const sketch: Sketch = {
     {name: "Tekst",kind: "text",x: 504,y: 199,w: 197,h: 71,fill: "#FFFFFF"},
     {name: "Flade",kind: "surface",x: 48,y: 373,w: 1110,h: 120,fill: "#EFE9DE",radius: 12},
     {name: "Flade",kind: "surface",x: 628,y: 379,w: 524,h: 108,fill: "#E0D9CB"},
-    {name: "Billede",kind: "image",x: 604,y: 385,w: 116,h: 96,fill: "#E7E1D4"},
+    {name: "Billede",kind: "image",x: 634,y: 385,w: 86,h: 96,fill: "#E7E0D4"},
     {name: "Flade",kind: "surface",x: 48,y: 517,w: 575,h: 120,fill: "#EFE9DE",radius: 12},
-    {name: "Flade",kind: "surface",x: 376,y: 523,w: 241,h: 108,fill: "#E0D9CB",radius: 18},
-    {name: "Billede",kind: "image",x: 361,y: 529,w: 81,h: 96,fill: "#E7E1D4"},
+    {name: "Flade",kind: "surface",x: 376,y: 523,w: 241,h: 108,fill: "#E0D9CB"},
+    {name: "Billede",kind: "image",x: 382,y: 529,w: 60,h: 96,fill: "#E7E0D4"},
     {name: "Billede",kind: "image",x: 48,y: 661,w: 1110,h: 120,fill: "#E8E2D5"},
     {name: "Flade",kind: "surface",x: 48,y: 901,w: 216,h: 192,fill: "#E0D9CB",radius: 12},
     {name: "Flade",kind: "surface",x: 312,y: 901,w: 216,h: 192,fill: "#E0D9CB",radius: 12},
@@ -34,21 +34,15 @@ const sketch: Sketch = {
     {name: "Flade",kind: "surface",x: 1104,y: 1129,w: 102,h: 72,fill: "#E0D9CB",radius: 12},
     {name: "Billede",kind: "image",x: 48,y: 1345,w: 300,h: 120,fill: "#E8E2D5"},
     {name: "Flade",kind: "surface",x: 128,y: 1501,w: 412,h: 480,fill: "#E0D9CB",radius: 8},
-    {name: "Billede",kind: "image",x: 54,y: 1507,w: 114,h: 468,fill: "#EAE4D8"},
     {name: "Flade",kind: "surface",x: 668,y: 1501,w: 412,h: 480,fill: "#E0D9CB",radius: 8},
-    {name: "Billede",kind: "image",x: 594,y: 1507,w: 114,h: 468,fill: "#EAE4D8"},
     {name: "Billede",kind: "image",x: 1128,y: 1501,w: 78,h: 480,fill: "#ECE6DB"},
     {name: "Flade",kind: "surface",x: 128,y: 2017,w: 412,h: 72,fill: "#E0D9CB",radius: 12},
-    {name: "Billede",kind: "image",x: 54,y: 2023,w: 114,h: 60,fill: "#EAE3D7"},
     {name: "Flade",kind: "surface",x: 668,y: 2017,w: 412,h: 72,fill: "#E0D9CB",radius: 12},
-    {name: "Billede",kind: "image",x: 594,y: 2023,w: 115,h: 60,fill: "#EAE3D8"},
     {name: "Billede",kind: "image",x: 1128,y: 2017,w: 78,h: 72,fill: "#ECE6DB"},
     {name: "Flade",kind: "surface",x: 128,y: 2125,w: 196,h: 72,fill: "#E0D9CB",radius: 12},
-    {name: "Billede",kind: "image",x: 54,y: 2131,w: 114,h: 60,fill: "#EAE3D7"},
     {name: "Flade",kind: "surface",x: 668,y: 2125,w: 196,h: 72,fill: "#E0D9CB",radius: 12},
-    {name: "Billede",kind: "image",x: 594,y: 2131,w: 115,h: 60,fill: "#EAE4D8"},
     {name: "Billede",kind: "image",x: 1128,y: 2125,w: 78,h: 72,fill: "#ECE6DB"},
-    {name: "Bundbar",kind: "surface",x: 0,y: 2317,w: 1206,h: 305,fill: "#E0D9CB",radius: 51},
+    {name: "Bundbar",kind: "surface",x: 0,y: 2317,w: 1206,h: 305,fill: "#E0D9CB"},
     {name: "Tekst",kind: "text",x: 54,y: 2323,w: 288,h: 50,fill: "#A7A39B"},
     {name: "Ikon",kind: "icon",x: 127,y: 2400,w: 48,h: 60,fill: "#656565"},
     {name: "Ikon",kind: "icon",x: 423,y: 2400,w: 60,h: 60,fill: "#232323"},

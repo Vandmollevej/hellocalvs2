@@ -1,4 +1,4 @@
-// Genereret af skitse-scriptet ud fra "Hello Fresh inspiration/Sådan skal alle bokse være i farve og billeder vises.jpg". Ret ikke i hånden.
+// Genereret af scripts/design-sketches/build.mjs ud fra "Hello Fresh inspiration/Sådan skal alle bokse være i farve og billeder vises.jpg". Ret ikke i hånden.
 import type { Sketch } from "../sketch-types";
 
 const sketch: Sketch = {
@@ -10,7 +10,7 @@ const sketch: Sketch = {
   height: 345,
   background: "#F9F9F1",
   boxes: [
-    {name: "Flade",kind: "surface",x: 10,y: 22,w: 216,h: 216,fill: "#EDE9DD",radius: 37},
+    {name: "Flade",kind: "surface",x: 10,y: 22,w: 216,h: 216,fill: "#EDE9DD",radius: 36},
     {name: "Ikon",kind: "icon",x: 41,y: 48,w: 169,h: 164,fill: "#8F4E26"},
     {name: "Ikon",kind: "icon",x: 274,y: 45,w: 3,h: 169,fill: "#ECE8DD"},
     {name: "Tekst",kind: "text",x: 16,y: 256,w: 204,h: 32,fill: "#4C4A4B"},

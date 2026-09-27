@@ -1,4 +1,4 @@
-// Genereret af skitse-scriptet ud fra "Hello Fresh inspiration/Log-in.png". Ret ikke i hånden.
+// Genereret af scripts/design-sketches/build.mjs ud fra "Hello Fresh inspiration/Log-in.png". Ret ikke i hånden.
 import type { Sketch } from "../sketch-types";
 
 const sketch: Sketch = {
@@ -11,7 +11,7 @@ const sketch: Sketch = {
   background: "#FAF8F3",
   boxes: [
     {name: "Topbar",kind: "surface",x: 0,y: 0,w: 1206,h: 301,fill: "#067A46"},
-    {name: "Statuslinje, klokkeslæt",kind: "icon",x: 128,y: 79,w: 186,h: 38,fill: "#F1F1F1"},
+    {name: "Statuslinje, klokkeslæt",kind: "icon",x: 128,y: 79,w: 186,h: 38,fill: "#FFFFFF"},
     {name: "Statuslinje, ikoner",kind: "icon",x: 865,y: 77,w: 235,h: 41,fill: "#FFFFFF"},
     {name: "Tekst",kind: "text",x: 363,y: 208,w: 478,h: 60,fill: "#FFFFFF"},
     {name: "Tekst",kind: "text",x: 48,y: 216,w: 137,h: 48,fill: "#FFFFFF"},
