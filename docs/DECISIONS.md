@@ -2,6 +2,25 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-27: Admin-skal efter Cloudflare-dashboardets struktur
+
+- Kun struktur/opbygning fra Cloudflare — farverne er fortsat Hello Cals tokens.
+- Fast topbar: menuknap (mobil), logo + "Admin", "Gå til…"-søgning (Ctrl/Cmd+K,
+  springer til enhver admin-side), brugermenu (e-mail, DA/EN, Log ud).
+- Venstre sidebjælke med ikoner og sammenfoldelige grupper: Oversigt ·
+  Produkter (nye produkter, billedforslag, logoer, kvalitetskontrol,
+  Uncertainties, dobbeltoprettelser, ønskede ingredienser) · Brugere & support
+  (brugere, support, fejlrapporter, besked automatisering, scan-invites) ·
+  Søgning (søg, søgealgoritmer) · Sikkerhed (passkeys, API-nøgler) ·
+  System (cron-jobs, designmanual). Gruppen med den aktive side åbnes automatisk; åbne
+  grupper og sammenklappet ikon-skinne huskes i localStorage.
+- Brødkrummer (Admin / gruppe / side) over indholdet; indholdsbredde max-w-6xl.
+- Under lg: sidebjælken er en skuffe fra venstre bag menuknappen; søgning
+  som ikon. Support-tæller og Uncertainties-prik vises i menuen (prik på
+  gruppen, når den er lukket).
+- Login/opsætning/bekræftelse vises uden skal. Komponent: `src/components/admin/AdminShell.tsx`
+  (erstatter AdminNav).
+
 ## 2026-09-26: Support-indbakke (beskedtjeneste i admin)
 
 - "Kontakt os"-henvendelser er nu tråde: `SupportMessage` (USER / SUPPORT /

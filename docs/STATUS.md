@@ -1,6 +1,14 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-26
+Last updated: 2026-09-27
+
+## 2026-09-27: Admin i Cloudflare-struktur
+
+Hele admin har fået ny skal (`AdminShell`): topbar med "Gå til…"-søgning
+(Ctrl+K) og brugermenu, grupperet venstre sidebjælke med ikoner (kan klappes
+sammen til ikon-skinne), brødkrummer og bredere indhold. Mobil: skuffe-menu
+fra venstre. Menupunkter er omgrupperet (se DECISIONS 2026-09-27). Farver
+uændrede. Mangler brugerens visuelle godkendelse.
 
 ## 2026-09-26: MobilePay-betaling + Opsætning delt op
 
