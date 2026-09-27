@@ -18,6 +18,10 @@ const PUBLIC_ADMIN_PATHS = [
   // sikkerheden kommer fra det unikke, uigætlige token i URL'en, ikke fra
   // en admin-session — se src/app/admin/approve/[token]/page.tsx.
   "/admin/approve",
+  // Glemt adgangskode: sker per definition uden session; nulstillingen
+  // sikres af engangstokenet i mail-linket.
+  "/admin/forgot-password",
+  "/admin/reset-password",
 ];
 const PUBLIC_ADMIN_API_PATHS = [
   "/api/admin/login",
@@ -27,6 +31,8 @@ const PUBLIC_ADMIN_API_PATHS = [
   // by definition happens before there is any session.
   "/api/admin/passkey/authenticate",
   "/api/admin/approve",
+  "/api/admin/forgot-password",
+  "/api/admin/reset-password",
 ];
 
 // Admin IP-spærre (docs/DECISIONS.md 2026-09-27): /admin og /api/admin kan
