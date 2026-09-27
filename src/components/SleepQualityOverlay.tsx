@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { IconInfoCircle } from "@tabler/icons-react";
+import { OverlayCloseControl, OverlayDisableToggle, useDisableCountdown } from "@/components/hf/OverlayFrameControls";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { SLEEP_QUALITY_RATINGS } from "@/lib/sleep-quality";
 
@@ -23,6 +24,7 @@ export function SleepQualityOverlay({
   const { t } = useTranslation();
   const [selected, setSelected] = useState<number | null>(null);
   const [infoOpen, setInfoOpen] = useState(false);
+  const disable = useDisableCountdown(onDisable);
 
   function choose(rating: number) {
     if (selected !== null) return;
@@ -39,9 +41,12 @@ export function SleepQualityOverlay({
       aria-labelledby="sleep-quality-title"
     >
       <div className="flex justify-end px-5 pt-9">
-        <button type="button" onClick={onClose} className="hf-type-body hf-type-strong py-2 text-hf-black">
-          {t("sleepQuality.close")}
-        </button>
+        <OverlayCloseControl
+          label={t("sleepQuality.close")}
+          counting={disable.counting}
+          secondsLeft={disable.secondsLeft}
+          onClose={onClose}
+        />
       </div>
 
       <div className="flex flex-1 flex-col items-center justify-center gap-8 px-6 text-center">
@@ -98,9 +103,7 @@ export function SleepQualityOverlay({
             {t("sleepQuality.info")}
           </p>
         )}
-        <button type="button" onClick={onDisable} className="hf-type-body hf-type-strong py-2 text-hf-black">
-          {t("sleepQuality.disable")}
-        </button>
+        <OverlayDisableToggle label={t("sleepQuality.disable")} enabled={disable.enabled} onChange={disable.setEnabled} />
       </div>
     </div>
   );
