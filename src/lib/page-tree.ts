@@ -335,6 +335,7 @@ export const PAGE_TREE: PageArea[] = [
           { path: "/admin/designmanual", label: "Designmanual" },
           { path: "/admin/page-tree", label: "Sidetræ", note: "Denne side" },
           { path: "/admin/partners", label: "Partnere" },
+          { path: "/admin/analytics", label: "Analyse", note: "Besøgsstatistik fra Umami" },
           { path: "/admin/jobs", label: "Jobs", note: "Jobs sat op af AI-agenter (åbne/afsluttede)" },
           { path: "/admin/agents", label: "Agenter", note: "AI-agenter med MCP-adgang" },
           { path: "/admin/roadmap", label: "Roadmap" },

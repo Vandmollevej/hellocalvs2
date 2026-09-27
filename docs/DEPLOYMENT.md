@@ -120,6 +120,22 @@ formally migrated or archived.
   stopper stakken. Heller ikke med i deploy-workflowet endnu.
 - Se `.env.production.example` for alle nye variabler.
 
+## Umami (analyse, 2026-09-27)
+
+- Services `umami-db-init` (opretter databasen `umami` i `db`, hvis den
+  mangler) og `umami` (`ghcr.io/umami-software/umami:${UMAMI_TAG:-3.4.0}`).
+  Deploy-workflowet starter dem som sidste trin; manuelt:
+  `docker compose ... up -d umami-db-init umami`.
+- Kun på det interne `backend`-netværk: ingen port og intet tunnel-hostnavn.
+  Appen sender `/umami/script.js` og `/umami/api/send` videre til
+  `http://umami:3000` (`UMAMI_URL`).
+- Login: Umami opretter `admin`/`umami` ved første start, og appen bruger det.
+  Skiftes koden i Umami, sættes den nye i `UMAMI_PASSWORD` i `.env.production`.
+- `UMAMI_APP_SECRET` er valgfri; tom = Umami udleder nøglen af sin
+  `DATABASE_URL`. Kræver URL-sikker `POSTGRES_PASSWORD` (som i forvejen).
+- Backup: databasen `umami` ligger i samme PostgreSQL; `pg_dump -d hellocal`
+  tager den ikke med. Tag `pg_dump -d umami` med, hvis statistikken skal bevares.
+
 ## First deployment
 
 Do not perform these steps until the image build for the deployment commit has

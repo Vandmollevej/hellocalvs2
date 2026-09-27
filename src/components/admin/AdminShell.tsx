@@ -13,7 +13,7 @@ import { t, type AdminI18nKey } from "@/lib/admin-i18n";
 // brødkrummer og brugermenu. Under lg bliver sidebjælken en skuffe bag en menuknap.
 // Farverne er de eksisterende Hello Cal-tokens.
 
-type IconName = "home" | "box" | "database" | "users" | "handshake" | "shield" | "cog" | "palette" | "road";
+type IconName = "home" | "chart" | "box" | "database" | "users" | "handshake" | "shield" | "cog" | "palette" | "road";
 type NavLink = { href: string; key: AdminI18nKey };
 type NavEntry =
   | { kind: "link"; href: string; key: AdminI18nKey; icon: IconName }
@@ -24,6 +24,7 @@ type NavEntry =
 // Søgealgoritmer) er lagt i den gruppe de hører til.
 const NAV: NavEntry[] = [
   { kind: "link", href: "/admin", key: "nav_overview", icon: "home" },
+  { kind: "link", href: "/admin/analytics", key: "nav_analytics", icon: "chart" },
   {
     kind: "group",
     id: "approval",
@@ -142,6 +143,7 @@ function writeStorage(key: string, value: string) {
 function Icon({ name, className = "h-5 w-5" }: { name: IconName | "search" | "chevron" | "menu" | "close" | "collapse"; className?: string }) {
   const paths: Record<typeof name, React.ReactNode> = {
     home: <path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />,
+    chart: <path d="M4 20V10M10 20V4M16 20v-7M22 20H2" />,
     box: (
       <>
         <path d="M21 8 12 3 3 8v8l9 5 9-5z" />

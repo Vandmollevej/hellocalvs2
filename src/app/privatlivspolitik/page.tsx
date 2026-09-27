@@ -13,7 +13,7 @@ export default function PrivatlivspolitikPage() {
       <ScreenHeader title="Privatlivspolitik" />
 
       <div className="flex-1 overflow-y-auto px-4 pb-10 pt-4">
-        <p className="hf-type-caption opacity-70">Senest opdateret: 2026-09-25</p>
+        <p className="hf-type-caption opacity-70">Senest opdateret: 2026-09-27</p>
 
         <LegalSummary
           title="Kort fortalt"
@@ -123,6 +123,11 @@ export default function PrivatlivspolitikPage() {
             Vi laver samlet statistik om brugen af Hello Cal for at forbedre Tjenesten. Statistikken
             viser kun grupper, aldrig enkeltpersoner, og vi sælger eller udgiver den ikke som
             &quot;trendrapporter&quot; om, hvad du spiser.
+          </p>
+          <p>
+            Besøgsstatistikken (fx hvor mange der åbner hvilke sider) laves med Umami, som kører på
+            vores egen server. Den bruger ingen cookies, gemmer ikke din IP-adresse, sender intet til
+            tredjepart og tæller kun sidevisninger — ikke hvad du registrerer.
           </p>
         </Section>
 

@@ -2,6 +2,26 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-27: Umami-analyse (admin → Analyse)
+
+- Besøgsstatistik laves med selv-hostet Umami (v3, image fastlåst til
+  `3.4.0` via `UMAMI_TAG`) — brugerens valg frem for Plausible/PostHog/Matomo.
+- Umami kører i `compose.production.yaml` på det interne backend-netværk med
+  egen database `umami` i den eksisterende PostgreSQL (oprettes af
+  `umami-db-init`). Ingen port, intet Cloudflare-hostnavn.
+- Browserne når Umami via appens egne stier: `/umami/script.js` og
+  `/umami/api/send` (route handlers, der sender videre). Kun disse to stier
+  er udstillet — Umamis login/UI er ikke.
+- Websitet har et fast id (`src/lib/umami-config.ts`); appen opretter det selv
+  i Umami første gang, så intet skal sættes op i hånden.
+- Kun den brugerrettede app spores (hellocal.io + gammel packroff-adresse), ikke
+  admin, Oprettelses-appen eller localhost. Forespørgselsstrenge og #-dele
+  sendes ikke med (fx nulstillingslinks).
+- Admin → Analyse (`/admin/analytics`, øverst i menuen under Oversigt) henter
+  tallene server-side via Umamis API med Umamis admin-login
+  (`UMAMI_USERNAME`/`UMAMI_PASSWORD`, standard admin/umami).
+- Privatlivspolitikken §8 nævner Umami (ingen cookies, ingen tredjepart).
+
 ## 2026-09-27: Skelet-loading i stedet for "Henter…"
 
 - Alle brugerrettede sider viser en skitse af indholdet med løbende gradient,

@@ -12,6 +12,7 @@ import { AccessLogPanel } from "@/components/family/AccessLogPanel";
 import { ConsentGate } from "@/components/ConsentGate";
 import { StartupTipsGate } from "@/components/StartupTipsGate";
 import { SleepQualityGate } from "@/components/SleepQualityGate";
+import { UmamiTracker } from "@/components/UmamiTracker";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -56,6 +57,7 @@ export default function RootLayout({
     >
       <body className="min-h-full text-text-primary font-sans">
         <GlobalClipboardGuard />
+        <UmamiTracker />
         <LocaleProvider>
           <AuthGate />
           <ConsentGate />

@@ -8,6 +8,7 @@ import type { Locale } from "@prisma/client";
 
 const DICTIONARY = {
   nav_overview: { DA: "Oversigt", EN: "Overview" },
+  nav_analytics: { DA: "Analyse", EN: "Analytics" },
   nav_products: { DA: "Nye produkter", EN: "New products" },
   nav_users: { DA: "Brugere", EN: "Users" },
   nav_bug_reports: { DA: "Fejlrapporter", EN: "Bug reports" },

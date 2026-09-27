@@ -2,6 +2,16 @@
 
 Last updated: 2026-09-27
 
+## 2026-09-27: Umami-analyse i admin
+
+- Ny admin-side `/admin/analytics` ("Analyse", øverst i menuen): besøgende,
+  besøg, sidevisninger, afvisningsrate, besøgstid, trafikgraf og toplister
+  (sider, henvisninger, lande, enheder, browsere, styresystemer) for 24 t/7/30/90 dage.
+- Umami-container + `umami-db-init` i `compose.production.yaml`; deploy-workflowet
+  starter dem som sidste trin. Sporing via `src/components/UmamiTracker.tsx`.
+- Ikke testet mod en kørende Umami (ingen lokal Docker/DB); lint + typecheck
+  + build grønne. Første deploy afgør, om containeren starter.
+
 ## 2026-09-27: Skelet-loading
 
 - `src/components/hf/Skeleton.tsx` + `.hf-skeleton`/`[data-hf-loading]` i
