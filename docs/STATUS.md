@@ -58,7 +58,9 @@ tysk mælkekarton. Testscripts ligger kun i sessionens scratchpad.
     sekundære sprog til AI'en (grænsehandel); lokal OCR får dem kun via
     stregkoden (`CROSS_BORDER_REGIONS`).
   - **Produktbilledet** rettes ud (skrå sider fra perspektiv gøres lodrette,
-    `straighten`) og lysnes (`auto_exposure`) lokalt i image-agent. Logoer
+    og en skrå bund gøres vandret, `straighten`) og lysnes (`auto_exposure`)
+    lokalt i image-agent. Kun varer med rette sider rettes; test med
+    kunstige former: kasse rettet, kyllingelår, buet flaske og æble urørt. Logoer
     lysnes uden at sort bliver gråt. Ingen AI-billedredigering: OpenAI's
     billedmodeller returnerede andre formater end fotoet (test 2026-09-18).
 - Pris pr. vare: forside ~4.300 tokens + enten 0 (lokalt læst) eller ~4.800

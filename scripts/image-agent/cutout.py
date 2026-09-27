@@ -125,15 +125,52 @@ def auto_exposure(cutout, lift_midtones):
     return Image.fromarray(np.clip(rgba, 0, 255).astype(np.uint8), "RGBA")
 
 
-def straighten(cutout):
-    """Retter skrå sider ud, når varen har lige sider (karton, kasse, dåse).
+def _bottom_line(alpha, left_fit, right_fit, bottom_row):
+    """Bundkanten som ret linje y = s*x + c, målt mellem siderne.
 
-    Et foto taget lidt oppefra gør varen bredere foroven end forneden
-    (perspektiv). Venstre og højre kant af den fritskrabede vare måles på
-    kroppen (30-95 % af højden, så låg/top og skygge ikke tæller), og en
-    perspektivrettelse gør kanterne lodrette. Bredden bliver gennemsnittet af
-    top og bund og højden bevares, så proportionerne holdes. Varer uden lige
-    sider (flaske, pose) røres ikke. Test 2026-09-27: EDEKA-kartonen.
+    Laveste synlige pixel pr. kolonne i de midterste 70 % af bunden. None,
+    hvis bunden ikke er en ret linje (fx en rund flaskebund eller en pose) —
+    så bruges en vandret bund, og kun siderne rettes.
+    """
+    height, width = alpha.shape
+    left, right = np.polyval(left_fit, bottom_row), np.polyval(right_fit, bottom_row)
+    span = right - left
+    xs, ys = [], []
+    for x in range(max(0, int(left + span * 0.15)), min(width, int(right - span * 0.15))):
+        column = np.flatnonzero(alpha[:, x] > 128)
+        if column.size:
+            xs.append(x)
+            ys.append(column[-1])
+    if len(xs) < max(10, span * 0.3):
+        return None
+    xs, ys = np.array(xs, dtype=np.float64), np.array(ys, dtype=np.float64)
+    fit = np.polyfit(xs, ys, 1)
+    if np.percentile(np.abs(np.polyval(fit, xs) - ys), 90) > width * 0.015 or abs(fit[0]) > 0.2:
+        return None
+    return fit
+
+
+def _meet(side_fit, slope, offset):
+    """Skæring mellem en side (x = a*y + b) og en linje (y = slope*x + offset)."""
+    a, b = side_fit
+    x = (a * offset + b) / (1 - a * slope)
+    return x, slope * x + offset
+
+
+def straighten(cutout):
+    """Retter varen op, når den har lige sider (karton, kasse, dåse).
+
+    Et foto taget lidt oppefra gør varen bredere foroven end forneden, og en
+    let skæv telefon gør bunden skrå (perspektiv). Venstre og højre kant måles
+    på kroppen (30-95 % af højden, så låg/top og skygge ikke tæller), og
+    bundkanten måles mellem siderne. En perspektivrettelse gør siderne
+    lodrette og bunden vandret. Bredden bliver gennemsnittet af top og bund
+    og højden bevares, så proportionerne holdes.
+
+    Formen afgør, om der rettes: siderne skal være rette linjer (højst 2 % af
+    bredden i afvigelse). En flaske med buet krop, en pose, frugt eller et
+    kyllingelår har ikke rette sider og røres derfor ikke. Test 2026-09-27:
+    EDEKA-kartonen + kunstige former.
     """
     alpha = np.array(cutout.getchannel("A"))
     height, width = alpha.shape
@@ -155,16 +192,32 @@ def straighten(cutout):
         or np.percentile(np.abs(np.polyval(right_fit, ys) - rights), 90) > tolerance
     ):
         return cutout  # siderne er ikke rette linjer
-    top, bottom = ys[0], ys[-1]
-    tl, tr = np.polyval(left_fit, top), np.polyval(right_fit, top)
-    bl, br = np.polyval(left_fit, bottom), np.polyval(right_fit, bottom)
-    if abs((tr - tl) - (br - bl)) < width * 0.01 and abs(tl - bl) < width * 0.01:
+    top = ys[0]
+    bottom_fit = _bottom_line(alpha, left_fit, right_fit, ys[-1])
+    slope, offset = (bottom_fit[0], bottom_fit[1]) if bottom_fit is not None else (0.0, ys[-1])
+    bl, br = _meet(left_fit, slope, offset), _meet(right_fit, slope, offset)
+    center = (bl[0] + br[0]) / 2
+    # Toppen af firkanten: parallel med bunden gennem kroppens øverste række.
+    top_offset = top - slope * center
+    tl, tr = _meet(left_fit, slope, top_offset), _meet(right_fit, slope, top_offset)
+    top_width = np.hypot(tr[0] - tl[0], tr[1] - tl[1])
+    bottom_width = np.hypot(br[0] - bl[0], br[1] - bl[1])
+    if (
+        abs(top_width - bottom_width) < width * 0.01
+        and abs(tl[0] - bl[0]) < width * 0.01
+        and abs(slope) < 0.005
+    ):
         return cutout  # allerede lige
-    target = ((tr - tl) + (br - bl)) / 2
-    center = (tl + tr + bl + br) / 4
-    src = np.float32([[tl, top], [tr, top], [br, bottom], [bl, bottom]])
+    target = (top_width + bottom_width) / 2
+    top_y, bottom_y = top, slope * center + offset
+    src = np.float32([tl, tr, br, bl])
     dst = np.float32(
-        [[center - target / 2, top], [center + target / 2, top], [center + target / 2, bottom], [center - target / 2, bottom]]
+        [
+            [center - target / 2, top_y],
+            [center + target / 2, top_y],
+            [center + target / 2, bottom_y],
+            [center - target / 2, bottom_y],
+        ]
     )
     matrix = cv2.getPerspectiveTransform(src, dst)
     corners = cv2.perspectiveTransform(np.float32([[[0, 0]], [[width, 0]], [[width, height]], [[0, height]]]), matrix)
