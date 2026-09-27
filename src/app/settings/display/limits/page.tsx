@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SkeletonScreen, SkeletonToggle } from "@/components/hf/Skeleton";
 
 // Settings → Visning → Anbefalede grænser: a single toggle for
 // User.warnOnRecommendedLimits (src/lib/stat-cards.ts /
@@ -53,9 +54,13 @@ export default function RecommendedLimitsSettingsPage() {
   return (
     <HfScreen title={t("settings.recommendedLimits")}>
       {loading || !user ? (
-        <p className="p-4 text-center text-[14px] text-hf-black opacity-60">
-          {loading ? t("settings.loading") : t("settings.loadError")}
-        </p>
+        loading ? (
+          <SkeletonScreen>
+            <SkeletonToggle />
+          </SkeletonScreen>
+        ) : (
+          <p className="p-4 text-center text-[14px] text-hf-black opacity-60">{t("settings.loadError")}</p>
+        )
       ) : (
         <div className="hf-page">
           <Toggle

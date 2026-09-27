@@ -55,6 +55,9 @@ export type StatCardValue = {
   // vitamins). When set, StatCardIcon renders this instead of `icon`.
   iconSrc?: string;
   value: string;
+  // Sand mens værdien hentes: kortet viser et skelet i stedet for tallet
+  // (design.md §6.14).
+  loading?: boolean;
   // True only when a separately validated, region/profile-aware recommendation
   // evaluator has determined the value is outside the applicable normal
   // range. This app does not ship such an evaluator yet, so no compute()

@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { MiniLineChart, MiniBarChart, type MiniChartPoint } from "@/components/hf/MiniChart";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { DOCTOR_SHARE_UNAVAILABLE_CATEGORIES, type DoctorShareCategory } from "@/lib/doctor-share";
+import { Skeleton, SkeletonCards, SkeletonScreen, SkeletonText } from "@/components/hf/Skeleton";
 
 type TokenStatus = "NOT_FOUND" | "REVOKED" | "EXPIRED" | "PENDING" | "ACTIVE";
 
@@ -113,7 +114,13 @@ export default function HelloDocTokenPage() {
       </header>
 
       <main className="mx-auto w-full max-w-3xl flex-1 p-4">
-        {!data && !loadError && <p className="hf-type-body-sm p-4 text-center opacity-70">{t("helloDoc.token.loading")}</p>}
+        {!data && !loadError && (
+          <SkeletonScreen className="flex flex-col gap-4">
+            <Skeleton type="page-title" width="60%" />
+            <SkeletonText lines={2} />
+            <SkeletonCards count={3} height={140} gap={16} />
+          </SkeletonScreen>
+        )}
         {!data && loadError && <p className="hf-type-body-sm p-4 text-center text-hf-red-dark">{t("helloDoc.token.loadError")}</p>}
 
         {data && data.status === "NOT_FOUND" && (

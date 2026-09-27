@@ -14,6 +14,7 @@ import {
   isGoalCompleted,
 } from "@/lib/goal-format";
 import type { GoalDTO, GoalTargetDTO } from "@/lib/user-goals";
+import { SkeletonCards, SkeletonScreen, SkeletonText } from "@/components/hf/Skeleton";
 
 function GoalTargetRow({ target }: { target: GoalTargetDTO }) {
   const { t } = useTranslation();
@@ -69,9 +70,15 @@ export default function GoalDetailPage() {
 
   return (
     <HfScreen title={t("goals.detailTitle")}>
-      {status !== "ready" || !goal ? (
+      {status === "loading" ? (
+        <SkeletonScreen>
+          <SkeletonCards count={1} height={68} radius={16} />
+          <SkeletonText lines={2} />
+          <SkeletonCards count={2} height={120} gap={16} radius={16} />
+        </SkeletonScreen>
+      ) : status !== "ready" || !goal ? (
         <p className="hf-type-body mx-auto max-w-xs px-8 pt-12 text-center text-hf-black opacity-60">
-          {status === "loading" ? t("goals.loading") : status === "notFound" ? t("goals.notFound") : t("goals.loadError")}
+          {status === "notFound" ? t("goals.notFound") : t("goals.loadError")}
         </p>
       ) : (
         <div className="hf-page">

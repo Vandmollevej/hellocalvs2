@@ -9,6 +9,7 @@ import { FoodRow } from "@/components/FoodRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { useFamilyStatus, type FamilyProfile } from "@/components/family/FamilyStatusProvider";
 import { CopyToAccountSheet } from "@/components/family/CopyToAccountSheet";
+import { SkeletonMediaRows } from "@/components/hf/Skeleton";
 
 type Entry = {
   id: string;
@@ -170,7 +171,9 @@ export function DailyList() {
           </li>
         ))}
         {loading && (
-          <li className="py-8 text-center text-sm text-hf-black opacity-60">{t("dailyList.loading")}</li>
+          <li role="status" aria-busy="true" aria-label={t("dailyList.loading")}>
+            <SkeletonMediaRows rows={4} />
+          </li>
         )}
         {!loading && entries.length === 0 && (
           <li className="py-8 text-center text-sm text-hf-black opacity-60">

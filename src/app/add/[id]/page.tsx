@@ -32,6 +32,7 @@ import { fromDisplayAmount, getProductDisplayUnit, toDisplayAmount } from "@/lib
 import { NUTRIENT_BY_KEY, type ResolvedNutrient } from "@/lib/nutrients";
 import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
 import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
+import { SkeletonDetail, SkeletonScreen } from "@/components/hf/Skeleton";
 
 const PHOTO_AWARD_TYPE_KEY: Record<string, "photoAward.photoTypeBarcode" | "photoAward.photoTypeNutrition" | "photoAward.photoTypeIngredients"> = {
   BARCODE: "photoAward.photoTypeBarcode",
@@ -453,7 +454,9 @@ export default function AddPage() {
     >
       <div className="flex h-full flex-col overflow-y-auto">
         {state.status === "loading" && (
-          <p className="p-4 text-center text-sm text-hf-black opacity-60">{t("addProduct.loading")}</p>
+          <SkeletonScreen>
+            <SkeletonDetail />
+          </SkeletonScreen>
         )}
 
         {(state.status === "not_found" || state.status === "error") && (

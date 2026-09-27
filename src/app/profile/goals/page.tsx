@@ -14,6 +14,7 @@ import {
   isGoalCompleted,
 } from "@/lib/goal-format";
 import type { GoalDTO } from "@/lib/user-goals";
+import { SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
 function GoalRow({ goal, onOpen }: { goal: GoalDTO; onOpen: () => void }) {
   const { t } = useTranslation();
@@ -94,10 +95,13 @@ export default function GoalsPage() {
           <span className="hf-type-body hf-type-strong flex-1">{t("goals.upcomingTitle")}</span>
           <IconChevronRight size={19} className="shrink-0" aria-hidden="true" />
         </button>
-
-        {loading || error || goals.length === 0 ? (
+        {loading ? (
+          <SkeletonScreen className="">
+            <SkeletonCards count={4} height={68} radius={16} />
+          </SkeletonScreen>
+        ) : error || goals.length === 0 ? (
           <p className="text-text-secondary hf-type-body mx-auto max-w-xs px-4 pt-8 text-center">
-            {loading ? t("goals.loading") : error ? t("goals.loadError") : t("goals.empty")}
+            {error ? t("goals.loadError") : t("goals.empty")}
           </p>
         ) : (
           <div className="flex flex-col gap-2">

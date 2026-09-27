@@ -13,6 +13,7 @@ import { latestTrendWeight, type MealSample, type WeightSample } from "@/lib/wei
 import { computeAge } from "@/lib/age";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { FaceIdButton } from "@/components/FaceIdButton";
+import { SkeletonForm, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type Sex = "FEMALE" | "MALE";
 
@@ -160,9 +161,17 @@ export default function ProfileEditPage() {
       }
     >
       {loading || !user ? (
-        <p className="p-4 text-center text-[14px] text-hf-black opacity-60">
-          {loading ? t("profile.loading") : t("profile.loadError")}
-        </p>
+        loading ? (
+          <SkeletonScreen className="flex flex-col gap-4 p-4">
+            <SkeletonForm fields={2} />
+            <div className="grid grid-cols-2 gap-4">
+              <SkeletonForm fields={2} />
+              <SkeletonForm fields={2} />
+            </div>
+          </SkeletonScreen>
+        ) : (
+          <p className="p-4 text-center text-[14px] text-hf-black opacity-60">{t("profile.loadError")}</p>
+        )
       ) : (
         <div className="flex min-h-full flex-col gap-4 p-4">
           <Field label={t("profile.field.name")}>

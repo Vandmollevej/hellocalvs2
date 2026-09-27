@@ -10,6 +10,7 @@ import { Toggle } from "@/components/ui/Toggle";
 import { ProfileCircle } from "@/components/family/ProfileCircle";
 import { useFamilyStatus, type FamilyMemberInfo } from "@/components/family/FamilyStatusProvider";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SkeletonCards, SkeletonList, SkeletonScreen, SkeletonSectionTitle } from "@/components/hf/Skeleton";
 
 // Familien (docs/FAMILY.md): betaleren opretter profiler, markerer børn,
 // laver login-koder og bestemmer, hvem der må se og taste ind for hvem.
@@ -73,7 +74,18 @@ function FamilyPageContent() {
   }
 
   if (!status) {
-    return <p className="p-4 text-center hf-type-body-sm">{t("common.loading")}</p>;
+    return (
+      <SkeletonScreen className="hf-page hf-page--sections">
+        <section>
+          <SkeletonSectionTitle />
+          <SkeletonList rows={3} />
+        </section>
+        <section>
+          <SkeletonSectionTitle />
+          <SkeletonCards count={1} height={120} />
+        </section>
+      </SkeletonScreen>
+    );
   }
 
   const family = status.family;

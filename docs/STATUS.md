@@ -2,6 +2,13 @@
 
 Last updated: 2026-09-27
 
+## 2026-09-27: Skelet-loading
+
+- `src/components/hf/Skeleton.tsx` + `.hf-skeleton`/`[data-hf-loading]` i
+  globals.css (design.md §6.14).
+- "Henter…"-tekster erstattet med skitser på ~40 steder: profil, indstillinger,
+  Hello Doc, integrationer, support, opskrifter, madvarer, søgning, vægt/vand/
+  menstruation, kalenderens dagvisning, statistikkort, registrering og produkt.
 ## 2026-09-27: Integrationer som Apple Health-adgangsark
 
 - Hver integrations side er nu en kopi af iOS' Health-adgangsark (Tillad/Tillad ikke, Slå alle til, skrive-/læse-grupper med kategoriikoner). Designmanualen har nyt afsnit 9 med live eksempel. Mangler brugerens visuelle godkendelse.

@@ -17,6 +17,7 @@ import { IconWaistMeasure } from "@/components/icons/WaistMeasure";
 import { HfProgressStepper } from "@/components/hf/HfProgressStepper";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { ProfileSwitcher } from "@/components/family/ProfileSwitcher";
+import { SkeletonCards, SkeletonList, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type Sex = "FEMALE" | "MALE";
 
@@ -63,9 +64,14 @@ export default function ProfilePage() {
   return (
     <HfScreen title={t("profile.title")} alwaysShowBackButton showAppSettingsButton>
       {loading || !user ? (
-        <p className="p-4 text-center text-[14px] text-hf-black opacity-60">
-          {loading ? t("profile.loading") : t("profile.loadError")}
-        </p>
+        loading ? (
+          <SkeletonScreen>
+            <SkeletonCards count={1} height={64} />
+            <SkeletonList rows={9} />
+          </SkeletonScreen>
+        ) : (
+          <p className="p-4 text-center text-[14px] text-hf-black opacity-60">{t("profile.loadError")}</p>
+        )
       ) : (
         <div className="hf-page">
           <ProfileSwitcher />

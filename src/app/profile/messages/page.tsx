@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type Message = {
   id: string;
@@ -61,7 +62,9 @@ export default function MessagesPage() {
         )}
 
         {!messages ? (
-          <p className="hf-type-body-sm opacity-70">{t("profile.loading")}</p>
+          <SkeletonScreen className="contents">
+            <SkeletonCards count={4} height={84} />
+          </SkeletonScreen>
         ) : messages.length === 0 ? (
           <p className="hf-type-body-sm opacity-70">{t("profile.messages.empty")}</p>
         ) : (

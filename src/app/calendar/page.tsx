@@ -44,6 +44,7 @@ import { fetchSleepQuality, localDateKey } from "@/lib/sleep-quality";
 import { IconPartyPopper, PartyPopperImage } from "@/components/icons/PartyPopper";
 import { BODY_MEASUREMENT_FIELDS } from "@/lib/body-measurements";
 import type { GoalDTO, GoalTargetDTO } from "@/lib/user-goals";
+import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
 const WEEKDAY_KEYS = [
   "calendar.weekdayMon",
@@ -1977,9 +1978,10 @@ function DayDetails({
         }}
       >
         {loading ? (
-          <div className="rounded-2xl bg-hf-white p-4 text-center text-sm opacity-60">
-            {t("calendar.loadingDayRegistrations")}
-          </div>
+          <SkeletonScreen className="flex flex-col gap-2">
+            <Skeleton type="caption" width={40} height={12} />
+            <SkeletonCards count={6} height={52} gap={6} radius={16} />
+          </SkeletonScreen>
         ) : error ? (
           <div className="rounded-2xl bg-hf-white p-4 text-center">
             <p className="font-semibold text-hf-black">{t("calendar.registrationsLoadError")}</p>

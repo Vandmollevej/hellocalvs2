@@ -6,6 +6,7 @@ import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { SleepRangeSlider } from "@/components/hf/SleepRangeSlider";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SkeletonForm, SkeletonScreen, SkeletonToggle } from "@/components/hf/Skeleton";
 
 type SleepUser = {
   defaultBedtime: string | null;
@@ -175,9 +176,17 @@ export default function SleepSchedulePage() {
       title={t("profileSleep.title")}
     >
       {loading || !user ? (
-        <p className="p-4 text-center text-[14px] text-hf-black opacity-60">
-          {loading ? t("profileSleep.loading") : t("profileSleep.loadError")}
-        </p>
+        loading ? (
+          <SkeletonScreen>
+            <div className="grid grid-cols-2 gap-4">
+              <SkeletonForm fields={1} />
+              <SkeletonForm fields={1} />
+            </div>
+            <SkeletonToggle count={2} />
+          </SkeletonScreen>
+        ) : (
+          <p className="p-4 text-center text-[14px] text-hf-black opacity-60">{t("profileSleep.loadError")}</p>
+        )
       ) : (
         <div className="hf-page">
           <div className="grid grid-cols-2 gap-4">

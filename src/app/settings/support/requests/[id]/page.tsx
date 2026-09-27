@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { SupportScreenshotPicker } from "@/components/SupportScreenshotPicker";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type Thread = {
   id: string;
@@ -76,7 +77,12 @@ export default function SupportRequestThreadPage() {
             {t("settings.support.requestsLoadError")}
           </p>
         )}
-        {!thread && !loadError && <p className="hf-type-body opacity-70">{t("profile.loading")}</p>}
+        {!thread && !loadError && (
+          <SkeletonScreen className="flex flex-col gap-3">
+            <Skeleton type="caption" width={110} />
+            <SkeletonCards count={3} height={96} gap={12} />
+          </SkeletonScreen>
+        )}
         {thread && (
           <>
             <p className="hf-type-caption opacity-60">

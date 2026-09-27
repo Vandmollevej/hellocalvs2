@@ -5,6 +5,7 @@ import Link from "next/link";
 import { HfScreen } from "@/components/HfScreen";
 import { AccordionCard } from "@/components/hf/AccordionCard";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type SupportRequestSummary = {
   id: string;
@@ -42,7 +43,13 @@ export default function SupportRequestsPage() {
             {t("settings.support.requestsLoadError")}
           </p>
         )}
-        {!requests && !error && <p className="hf-type-body opacity-70">{t("profile.loading")}</p>}
+        {!requests && !error && (
+          <SkeletonScreen className="">
+            <div className="overflow-hidden rounded-[8px] bg-hf-tan px-4">
+              <SkeletonMediaRows rows={4} thumb={false} />
+            </div>
+          </SkeletonScreen>
+        )}
         {requests?.length === 0 && <p className="hf-type-body opacity-70">{t("settings.support.requestsEmpty")}</p>}
         {requests && requests.length > 0 && (
           <AccordionCard>

@@ -10,6 +10,7 @@ import {
   type BodyMeasurementField,
   type BodyMeasurementSex,
 } from "@/lib/body-measurements";
+import { SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type BodyMeasurementEntry = {
   id: string;
@@ -221,7 +222,9 @@ export default function BodyMeasurementsPage() {
 
         <div className="flex flex-col gap-2">
           {loading && (
-            <p className="text-center text-[13px] text-hf-black opacity-60">{t("bodyMeasurements.loading")}</p>
+            <SkeletonScreen className="flex flex-col gap-2">
+              <SkeletonCards count={3} height={48} radius={16} />
+            </SkeletonScreen>
           )}
           {!loading && entries.length === 0 && (
             <p className="text-center text-[13px] text-hf-black opacity-60">

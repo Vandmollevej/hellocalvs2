@@ -29,6 +29,7 @@ import { RecipeStepsEditor, isEmptyStep } from "@/components/recipes/RecipeSteps
 import { RecipeCategoriesDialog } from "@/components/recipes/RecipeCategoriesDialog";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { isPrivateIngredientId } from "@/lib/private-ingredient-ids";
+import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
 
 function round(value: number, decimals = 0) {
   const factor = 10 ** decimals;
@@ -311,9 +312,9 @@ export default function CreateDishPage() {
           {query.trim() && (
             <div className="mt-2 overflow-hidden rounded-[8px] bg-hf-tan">
               {searchState === "loading" && (
-                <p className="px-4 py-4 text-center text-sm text-hf-black opacity-60">
-                  {t("createDish.searching")}
-                </p>
+                <SkeletonScreen className="px-4">
+                  <SkeletonMediaRows rows={4} />
+                </SkeletonScreen>
               )}
               {searchState === "error" && (
                 <p className="px-4 py-4 text-center text-sm text-hf-black opacity-60">

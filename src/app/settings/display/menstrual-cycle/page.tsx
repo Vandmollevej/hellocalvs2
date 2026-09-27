@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SkeletonScreen, SkeletonToggle } from "@/components/hf/Skeleton";
 
 type ProfileFlags = {
   sex: "FEMALE" | "MALE" | null;
@@ -58,7 +59,9 @@ export default function MenstrualCycleDisplaySettingsPage() {
         </div>
 
         {loading || !profile ? (
-          <p className="text-center text-[14px] text-hf-black opacity-60">{t("profile.loading")}</p>
+          <SkeletonScreen className="">
+            <SkeletonToggle />
+          </SkeletonScreen>
         ) : (
           <Toggle
             checked={profile.cycleTrackingEnabled}

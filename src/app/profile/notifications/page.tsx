@@ -5,6 +5,7 @@ import Link from "next/link";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SkeletonCards, SkeletonScreen, SkeletonSectionTitle, SkeletonToggle } from "@/components/hf/Skeleton";
 
 // Kommunikation (Fejlretninger/FEJLLISTE.md #13/#16, 2026-09-06): erstatter
 // den tidligere separate "Notifikationer"-side. De fire generelle
@@ -88,7 +89,12 @@ export default function CommunicationPage() {
         <p className="hf-type-body-sm opacity-70">{t("profile.communication.intro")}</p>
 
         {!user ? (
-          <p className="hf-type-body-sm opacity-70">{t("profile.loading")}</p>
+          <SkeletonScreen className="contents">
+            <SkeletonSectionTitle />
+            <SkeletonToggle />
+            <SkeletonSectionTitle />
+            <SkeletonToggle count={2} />
+          </SkeletonScreen>
         ) : (
           <>
             <SectionTitle>{t("profile.communication.pushSection")}</SectionTitle>
@@ -126,7 +132,9 @@ export default function CommunicationPage() {
         <SectionDivider />
         <p className="hf-type-caption -mt-2 opacity-70">{t("profile.communication.specificHint")}</p>
         {!preferences ? (
-          <p className="hf-type-body-sm opacity-70">{t("profile.loading")}</p>
+          <SkeletonScreen className="">
+            <SkeletonCards count={3} height={104} gap={16} />
+          </SkeletonScreen>
         ) : (
           <div className="flex flex-col gap-4">
             {preferences.map((pref) => (

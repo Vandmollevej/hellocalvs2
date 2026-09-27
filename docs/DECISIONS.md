@@ -2,6 +2,14 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-27: Skelet-loading i stedet for "Henter…"
+
+- Alle brugerrettede sider viser en skitse af indholdet med løbende gradient,
+  mens data hentes (HelloFresh "Opdag"-mønster, design.md §6.14). Ingen
+  "Henter…"/"Indlæser…"-tekster som loading-tilstand.
+- Fælles ur for animationen; gradienten er relativ til boksens bredde.
+- Nye sider skal bruge `src/components/hf/Skeleton.tsx` eller `LoadingScope`.
+- Admin-sider og forsidens drejehjul er ikke omfattet.
 ## 2026-09-27: Admin-menuens grupper + agenter, jobs, roadmap og Claude-MCP
 
 Erstatter gruppelisten i punktet nedenfor (skallen er uændret).

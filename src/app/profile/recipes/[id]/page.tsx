@@ -9,6 +9,7 @@ import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { loadRecipeFilters, saveRecipeFilters } from "@/lib/recipe-filters";
 import { MAX_RECIPE_PERSONS, portionKcalFor, scaleFactorFor, type PortionProfile } from "@/lib/recipe-portions";
+import { SkeletonDetail, SkeletonScreen } from "@/components/hf/Skeleton";
 
 // En ret fra Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24).
 // kind=own: brugerens egen ret fra boksen, med deling til/fra.
@@ -221,7 +222,9 @@ function RecipeDetailContent() {
     >
       <div className="hf-page">
         {state === "loading" && (
-          <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipeDetail.loading")}</p>
+          <SkeletonScreen className="contents">
+            <SkeletonDetail />
+          </SkeletonScreen>
         )}
         {state === "missing" && (
           <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipeDetail.notFound")}</p>

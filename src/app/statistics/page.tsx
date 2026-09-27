@@ -306,7 +306,7 @@ export default function StatisticsPage() {
       }),
       sources: sourcesLoading ? undefined : periodSources,
     });
-    return cards.map((c) => ({ ...c, value: loading ? "—" : c.value }));
+    return cards.map((c) => ({ ...c, value: loading ? "—" : c.value, loading }));
   }, [allDays, activities, hasConnectedIntegration, metrics, loading, activePeriodRange, sourcesLoading, periodSources]);
 
   const recentRegistrations = useMemo(

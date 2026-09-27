@@ -7,6 +7,7 @@ import { FoodRow } from "@/components/FoodRow";
 import { HfScreen } from "@/components/HfScreen";
 import { HfSlider } from "@/components/hf/HfSlider";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SkeletonCards, SkeletonScreen, SkeletonSectionTitle } from "@/components/hf/Skeleton";
 
 type WaterEntry = {
   id: string;
@@ -200,7 +201,12 @@ export default function WaterCreatePage() {
           {!loading && entries.length > 0 && (
             <p className="hf-type-caption px-1">{t("waterLog.recentTitle")}</p>
           )}
-          {loading && <p className="text-center text-[13px] text-hf-black opacity-60">{t("waterLog.loading")}</p>}
+          {loading && (
+            <SkeletonScreen className="flex flex-col gap-2">
+              <SkeletonSectionTitle />
+              <SkeletonCards count={3} height={48} radius={16} />
+            </SkeletonScreen>
+          )}
           {!loading && entries.length === 0 && (
             <p className="text-center text-[13px] text-hf-black opacity-60">{t("waterLog.noEntriesYet")}</p>
           )}

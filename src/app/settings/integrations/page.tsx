@@ -8,6 +8,7 @@ import type { IntegrationCardStatus } from "@/lib/integrations";
 import type { IntegrationProvider } from "@prisma/client";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { formatDateTime } from "./status-badge";
+import { SkeletonCards, SkeletonScreen, SkeletonSectionTitle } from "@/components/hf/Skeleton";
 
 // Sektioner og rækkefølge (docs/DECISIONS.md 2026-09-25 "Integrationssiden"):
 // Aktive integrationer → Oftest anvendt → Opskrifter → Apps.
@@ -211,7 +212,12 @@ function IntegrationerContent() {
         <p className="px-1 text-[13px] leading-relaxed text-hf-black opacity-60">{t("integrations.intro")}</p>
 
         {loading ? (
-          <p className="text-center text-[13px] text-hf-black opacity-60">{t("integrations.loading")}</p>
+          <SkeletonScreen className="contents">
+            <SkeletonSectionTitle />
+            <SkeletonCards count={2} height={84} />
+            <SkeletonSectionTitle />
+            <SkeletonCards count={3} height={84} />
+          </SkeletonScreen>
         ) : (
           <>
             {section(t("integrations.sections.active"), [

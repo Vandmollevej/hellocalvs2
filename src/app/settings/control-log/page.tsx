@@ -6,6 +6,7 @@ import { HfScreen } from "@/components/HfScreen";
 import { ProfileCircle } from "@/components/family/ProfileCircle";
 import { AccessLogEntryRow, type AccessLogEntry } from "@/components/family/AccessLogEntryRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SkeletonList, SkeletonScreen, SkeletonSectionTitle } from "@/components/hf/Skeleton";
 
 type ControlLog = {
   meId: string;
@@ -41,7 +42,20 @@ export default function ControlLogPage() {
     <HfScreen title={t("family.log.title")}>
       <div className="hf-page hf-page--sections">
         {!log ? (
-          <p className="hf-type-body-sm text-center">{failed ? t("family.log.loadError") : t("common.loading")}</p>
+          failed ? (
+            <p className="hf-type-body-sm text-center">{t("family.log.loadError")}</p>
+          ) : (
+            <SkeletonScreen className="contents">
+              <section>
+                <SkeletonSectionTitle />
+                <SkeletonList rows={2} />
+              </section>
+              <section>
+                <SkeletonSectionTitle />
+                <SkeletonList rows={4} icons={false} />
+              </section>
+            </SkeletonScreen>
+          )
         ) : (
           <>
             <section>

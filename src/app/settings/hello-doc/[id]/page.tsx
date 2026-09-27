@@ -11,6 +11,7 @@ import {
   type DoctorShareCategory,
   type DoctorShareHistoryRange,
 } from "@/lib/doctor-share";
+import { Skeleton, SkeletonForm, SkeletonList, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type DoctorShare = {
   id: string;
@@ -112,7 +113,11 @@ export default function EditHelloDocUserPage() {
   if (!share) {
     return (
       <HfScreen title={t("helloDoc.editTitle")}>
-        <p className="hf-type-body-sm p-4 opacity-70">{t("common.loading")}</p>
+        <SkeletonScreen className="hf-page hf-page--sections">
+          <Skeleton type="caption" width={90} />
+          <SkeletonForm fields={2} />
+          <SkeletonList rows={5} icons={false} />
+        </SkeletonScreen>
       </HfScreen>
     );
   }

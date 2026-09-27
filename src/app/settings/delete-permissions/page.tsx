@@ -5,6 +5,7 @@ import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SkeletonScreen, SkeletonToggle } from "@/components/hf/Skeleton";
 
 // Sletteret pr. profil (docs/FAMILY.md): den, der har oprettet en profil,
 // bestemmer, om profilens ejer selv må slette registreringer, som andre har
@@ -42,7 +43,9 @@ export default function DeletePermissionsPage() {
           </p>
         )}
         {!status ? (
-          <p className="hf-type-body-sm text-center">{t("common.loading")}</p>
+          <SkeletonScreen className="">
+            <SkeletonToggle count={2} />
+          </SkeletonScreen>
         ) : controlled.length === 0 ? (
           <p className="hf-type-body-sm">{t("family.deletePermissions.none")}</p>
         ) : (

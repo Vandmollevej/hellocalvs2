@@ -6,6 +6,7 @@ import { SetupSelectCard } from "@/components/hf/SetupSelectCard";
 import { REGIONS } from "@/lib/regions";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { DEFAULT_LOCALE, isLocale, type Locale } from "@/i18n";
+import { SkeletonScreen, SkeletonToggle } from "@/components/hf/Skeleton";
 
 // Language names are shown in their own language, so they are not translated.
 const LANGUAGE_OPTIONS: Array<{ value: Locale; label: string }> = [
@@ -47,9 +48,13 @@ export default function LanguageRegionPage() {
   return (
     <HfScreen title={t("settings.languageAndRegion")}>
       {loading || region === null ? (
-        <p className="hf-type-body p-6 text-center text-hf-black opacity-60">
-          {loading ? t("settings.loading") : t("settings.loadError")}
-        </p>
+        loading ? (
+          <SkeletonScreen className="flex flex-col gap-4 p-4">
+            <SkeletonToggle count={2} />
+          </SkeletonScreen>
+        ) : (
+          <p className="hf-type-body p-6 text-center text-hf-black opacity-60">{t("settings.loadError")}</p>
+        )
       ) : (
         <div className="flex flex-col gap-4 p-4">
           <SetupSelectCard

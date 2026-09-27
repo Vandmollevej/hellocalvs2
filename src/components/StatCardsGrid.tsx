@@ -15,6 +15,7 @@ import { StatCardIcon } from "@/components/StatCardIcon";
 import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
 import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
 import { RemoveCircleButton } from "@/components/ui/RemoveCircleButton";
+import { Skeleton } from "@/components/hf/Skeleton";
 
 // The grid is two columns of physical slots: a run of half-width items (cards
 // and explicit empty slots) always has an even length, so every item's index
@@ -184,10 +185,14 @@ function StatCardFace({ card, noDataText }: { card: StatCardValue | undefined; n
       <p className="text-xs text-hf-black opacity-60">{card.label}</p>
       <p className="hf-heading mt-1 flex items-center gap-1.5 text-xl text-hf-black">
         <StatCardIcon icon={card.icon} iconSrc={card.iconSrc} />
-        <span>
-          {card.uncertainty?.estimated ? <UncertaintyTilde /> : null}
-          {card.value}
-        </span>
+        {card.loading ? (
+          <Skeleton type="body" width={56} height={20} />
+        ) : (
+          <span>
+            {card.uncertainty?.estimated ? <UncertaintyTilde /> : null}
+            {card.value}
+          </span>
+        )}
       </p>
     </>
   );

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SkeletonScreen, SkeletonToggle } from "@/components/hf/Skeleton";
 
 // Settings → Visning → Oplevelse af søvn (docs/DECISIONS.md 2026-09-26): on by
 // default. When on, the first app opening each day asks for a 1–5 rating of
@@ -41,7 +42,9 @@ export default function SleepQualityDisplaySettingsPage() {
     <HfScreen title={t("settings.sleepQuality")}>
       <div className="flex flex-col gap-4 p-4">
         {enabled === null ? (
-          <p className="text-center text-[14px] text-hf-black opacity-60">{t("profile.loading")}</p>
+          <SkeletonScreen className="">
+            <SkeletonToggle />
+          </SkeletonScreen>
         ) : (
           <Toggle
             checked={enabled}

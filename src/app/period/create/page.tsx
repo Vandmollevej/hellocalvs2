@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { IconCalendarHeart } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type CycleEntry = {
   id: string;
@@ -114,7 +115,12 @@ export default function PeriodCreatePage() {
 
         <div className="flex flex-col gap-2">
           {!loading && entries.length > 0 && <p className="hf-type-caption px-1">{t("periodLog.recentTitle")}</p>}
-          {loading && <p className="text-center text-[13px] text-hf-black opacity-60">{t("periodLog.loading")}</p>}
+          {loading && (
+            <SkeletonScreen className="flex flex-col gap-2">
+              <Skeleton type="caption" width={96} />
+              <SkeletonCards count={3} height={48} radius={16} />
+            </SkeletonScreen>
+          )}
           {!loading && entries.length === 0 && (
             <p className="text-center text-[13px] text-hf-black opacity-60">{t("periodLog.noEntriesYet")}</p>
           )}

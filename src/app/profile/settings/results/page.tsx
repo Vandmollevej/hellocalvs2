@@ -5,6 +5,7 @@ import { HfScreen } from "@/components/HfScreen";
 import { ALLERGEN_CATALOG } from "@/lib/allergens";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SkeletonScreen, SkeletonToggle } from "@/components/hf/Skeleton";
 
 type ResultsUser = {
   showAllergens: boolean;
@@ -79,9 +80,13 @@ export default function ResultsDisplayPage() {
   return (
     <HfScreen title={t("settings.resultsDisplay")}>
       {loading || !user ? (
-        <p className="hf-type-body p-6 text-center text-hf-black opacity-60">
-          {loading ? t("settings.loading") : t("settings.loadError")}
-        </p>
+        loading ? (
+          <SkeletonScreen>
+            <SkeletonToggle count={3} />
+          </SkeletonScreen>
+        ) : (
+          <p className="hf-type-body p-6 text-center text-hf-black opacity-60">{t("settings.loadError")}</p>
+        )
       ) : (
         <div className="hf-page">
           <div className="flex flex-col overflow-hidden rounded-2xl bg-hf-tan">

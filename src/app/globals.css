@@ -1037,6 +1037,143 @@ textarea::selection,
   }
 }
 
+/* ---- Skelet-loading (HelloFresh "Opdag"-mønster, design.md §6.14) ----
+   Mens en side henter data, tegnes indholdets form som grå/brune flader, og
+   en lys gradient løber konstant hen over dem. Alle skeletter på skærmen
+   står i samme fase (fælles ur via --hf-skeleton-delay, sat af
+   src/components/hf/Skeleton.tsx), så ens bokse i en række glimter ens.
+   Gradienten er relativ til boksens egen bredde: forskellige boksetyper ser
+   forskellige ud, samme type ser ens ud. */
+:root {
+  --hf-color-skeleton: #e2dacb;
+  --hf-color-skeleton-highlight: #f2eee6;
+  /* Skal matche SKELETON_SHIMMER_MS i src/components/hf/Skeleton.tsx. */
+  --hf-skeleton-duration: 1400ms;
+}
+
+@keyframes hf-skeleton-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+.hf-skeleton,
+[data-hf-loading="true"] :is(
+    .hf-type-hero,
+    .hf-type-page-title,
+    .hf-type-card-title,
+    .hf-type-category-title,
+    .hf-type-body-lg,
+    .hf-type-body,
+    .hf-type-body-sm,
+    .hf-type-caption,
+    .hf-type-label,
+    .hf-type-button,
+    .hf-btn-primary,
+    .hf-btn-secondary,
+    [data-skeleton]
+  ),
+[data-hf-loading="true"] .hf-type-section-title > * {
+  border-color: transparent !important;
+  border-radius: 8px;
+  background-color: var(--hf-color-skeleton);
+  background-image: linear-gradient(
+    90deg,
+    var(--hf-color-skeleton) 0%,
+    var(--hf-color-skeleton) 30%,
+    var(--hf-color-skeleton-highlight) 50%,
+    var(--hf-color-skeleton) 70%,
+    var(--hf-color-skeleton) 100%
+  );
+  background-size: 300% 100%;
+  box-shadow: none !important;
+  animation: hf-skeleton-shimmer var(--hf-skeleton-duration) linear infinite;
+  animation-delay: var(--hf-skeleton-delay, 0ms);
+}
+
+.hf-skeleton {
+  display: block;
+  flex: none;
+  max-width: 100%;
+}
+
+/* Tekstlinjer er piller med præcis tekstrollens linjehøjde. */
+.hf-skeleton--text {
+  border-radius: 9999px;
+}
+
+.hf-skeleton--circle {
+  border-radius: 9999px;
+}
+
+/* LoadingScope: siden tegner sin rigtige struktur med pladsholdertekst, og
+   hver tekstrolle/knap/[data-skeleton] bliver automatisk til en skitse. */
+[data-hf-loading="true"] {
+  pointer-events: none;
+  user-select: none;
+}
+
+[data-hf-loading="true"] :is(
+    .hf-type-hero,
+    .hf-type-page-title,
+    .hf-type-card-title,
+    .hf-type-category-title,
+    .hf-type-body-lg,
+    .hf-type-body,
+    .hf-type-body-sm,
+    .hf-type-caption,
+    .hf-type-label,
+    .hf-type-button,
+    .hf-btn-primary,
+    .hf-btn-secondary,
+    [data-skeleton]
+  ),
+[data-hf-loading="true"] .hf-type-section-title > * {
+  color: transparent !important;
+}
+
+[data-hf-loading="true"] :is(.hf-type-hero, .hf-type-card-title, .hf-type-body-lg, .hf-type-body, .hf-type-body-sm, .hf-type-caption, .hf-type-label) {
+  width: fit-content;
+  max-width: 100%;
+}
+
+[data-hf-loading="true"] :is(.hf-type-page-title, .hf-type-category-title) {
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+[data-hf-loading="true"] :is(.hf-type-hero, .hf-type-page-title, .hf-type-card-title, .hf-type-category-title, .hf-type-body-lg, .hf-type-body, .hf-type-body-sm, .hf-type-caption, .hf-type-label, .hf-type-button, .hf-btn-primary, .hf-btn-secondary, [data-skeleton]) *,
+[data-hf-loading="true"] .hf-type-section-title > * * {
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hf-skeleton,
+  [data-hf-loading="true"] :is(
+      .hf-type-hero,
+      .hf-type-page-title,
+      .hf-type-card-title,
+      .hf-type-category-title,
+      .hf-type-body-lg,
+      .hf-type-body,
+      .hf-type-body-sm,
+      .hf-type-caption,
+      .hf-type-label,
+      .hf-type-button,
+      .hf-btn-primary,
+      .hf-btn-secondary,
+      [data-skeleton]
+    ),
+  [data-hf-loading="true"] .hf-type-section-title > * {
+    animation: none;
+    background-image: none;
+  }
+}
+
 /* Face ID-ikonet på profilen: når Face ID ikke er slået til, laver det med
    mellemrum Face ID's egen scanne-bevægelse (hjørnerne trækker sig sammen,
    ansigtet kigger fra side til side). */

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type DoctorShare = {
   id: string;
@@ -71,7 +72,11 @@ export default function HelloDocPage() {
 
           {error && <p className="hf-type-body-sm text-hf-red-dark">{t("helloDoc.loadError")}</p>}
 
-          {!error && shares === null && <p className="hf-type-body-sm opacity-70">{t("common.loading")}</p>}
+          {!error && shares === null && (
+            <SkeletonScreen className="">
+              <SkeletonMediaRows rows={3} thumb={false} />
+            </SkeletonScreen>
+          )}
 
           {!error && shares !== null && shares.length === 0 && (
             <p className="hf-type-body-sm opacity-70">{t("helloDoc.emptyInvited")}</p>

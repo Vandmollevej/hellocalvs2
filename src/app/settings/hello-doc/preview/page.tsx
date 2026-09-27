@@ -10,6 +10,7 @@ import {
   DOCTOR_SHARE_HISTORY_RANGES,
   type DoctorShareHistoryRange,
 } from "@/lib/doctor-share";
+import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type PreviewData = {
   profile: { displayName: string; email: string; sex: "MALE" | "FEMALE" | null };
@@ -162,7 +163,16 @@ export default function HelloDocPreviewPage() {
 
         {error && <p className="hf-type-body-sm p-4 text-hf-red-dark">{t("helloDoc.loadError")}</p>}
 
-        {!error && !data && <p className="hf-type-body-sm p-4 opacity-70">{t("common.loading")}</p>}
+        {!error && !data && (
+          <SkeletonScreen className="hf-page hf-page--sections">
+            <div className="flex flex-col items-center gap-2 rounded-xl bg-hf-tan p-4">
+              <Skeleton type="circle" height={96} />
+              <Skeleton type="card-title" width="50%" />
+              <Skeleton type="caption" width="40%" />
+            </div>
+            <SkeletonCards count={3} height={140} gap={16} />
+          </SkeletonScreen>
+        )}
 
         {data && (
           <div className="hf-page hf-page--sections md:flex-row md:items-start">

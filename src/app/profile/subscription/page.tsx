@@ -6,6 +6,7 @@ import { IconArrowRight, IconChevronRight, IconStar, IconUsers } from "@tabler/i
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { SUBSCRIPTION_PLANS } from "@/lib/subscription-plans";
+import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type SubscriptionData = {
   tier: "FREE" | "SERIOUS";
@@ -70,9 +71,17 @@ export default function SubscriptionPage() {
   return (
     <HfScreen title={t("subscription.title")}>
       {loading || !data ? (
-        <p className="p-4 text-center text-[14px] text-hf-black opacity-60">
-          {loading ? t("subscription.loading") : t("subscription.loadError")}
-        </p>
+        loading ? (
+          <SkeletonScreen>
+            <div className="hf-card">
+              <Skeleton type="body-sm" width="40%" />
+              <Skeleton type="field" />
+            </div>
+            <SkeletonCards count={2} height={140} gap={16} />
+          </SkeletonScreen>
+        ) : (
+          <p className="p-4 text-center text-[14px] text-hf-black opacity-60">{t("subscription.loadError")}</p>
+        )
       ) : (
         <div className="hf-page">
           <div className="hf-card">

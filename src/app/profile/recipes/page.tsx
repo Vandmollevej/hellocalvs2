@@ -14,6 +14,7 @@ import {
   loadRecipeFilters,
   type RecipeFilters,
 } from "@/lib/recipe-filters";
+import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
 
 // Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24): to faner,
 // "Mine retter" (egne retter og favoritter fra delte retter, fra boksen) og
@@ -134,7 +135,9 @@ function MineTab({ t }: { t: Translate }) {
   return (
     <div className="hf-page">
       {state === "loading" && (
-        <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipes.loading")}</p>
+        <SkeletonScreen className="">
+          <SkeletonMediaRows rows={5} />
+        </SkeletonScreen>
       )}
       {state === "error" && (
         <p className="py-8 text-center text-sm text-hf-black opacity-60">{t("recipes.loadError")}</p>
@@ -255,6 +258,11 @@ function SharedTab({ t }: { t: Translate }) {
   }
 
   const status = (text: string) => <p className="text-center text-sm text-hf-black opacity-60">{text}</p>;
+  const loadingRows = (
+    <SkeletonScreen className="">
+      <SkeletonMediaRows rows={4} />
+    </SkeletonScreen>
+  );
   const trending = results.slice(0, TRENDING_COUNT);
 
   return (
@@ -295,7 +303,7 @@ function SharedTab({ t }: { t: Translate }) {
 
       {searching ? (
         <>
-          {state === "loading" && status(t("recipes.loading"))}
+          {state === "loading" && loadingRows}
           {state === "error" && status(t("recipes.loadError"))}
           {state === "ready" && results.length === 0 && status(t("recipes.noResults"))}
           {state === "ready" && results.length > 0 && (
@@ -309,7 +317,7 @@ function SharedTab({ t }: { t: Translate }) {
       ) : (
         <>
           <h2 className="hf-type-section-title">{t("recipes.trendingTitle")}</h2>
-          {state === "loading" && status(t("recipes.loading"))}
+          {state === "loading" && loadingRows}
           {state === "error" && status(t("recipes.loadError"))}
           {state === "ready" && trending.length === 0 && status(t("recipes.trendingEmpty"))}
           {state === "ready" && trending.length > 0 && (
@@ -321,7 +329,7 @@ function SharedTab({ t }: { t: Translate }) {
           )}
 
           <h2 className="hf-type-section-title">{t("recipes.favoritesTitle")}</h2>
-          {favorites === null && status(t("recipes.loading"))}
+          {favorites === null && loadingRows}
           {favorites?.length === 0 && status(t("recipes.favoritesEmpty"))}
           {favorites && favorites.length > 0 && (
             <div>
