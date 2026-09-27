@@ -2,6 +2,10 @@
 
 Last updated: 2026-09-27
 
+## 2026-09-27: Integrationer som Apple Health-adgangsark
+
+- Hver integrations side er nu en kopi af iOS' Health-adgangsark (Tillad/Tillad ikke, Slå alle til, skrive-/læse-grupper med kategoriikoner). Designmanualen har nyt afsnit 9 med live eksempel. Mangler brugerens visuelle godkendelse.
+
 ## 2026-09-27: Admin-menu efter brugerens struktur + agenter/jobs/roadmap/MCP
 
 - Sidebjælken i `AdminShell` følger nu brugerens grupper (DECISIONS 2026-09-27).

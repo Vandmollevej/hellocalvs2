@@ -1509,6 +1509,38 @@
       "water": "Vand",
       "weight": "Vægt (dine egne vejninger)",
       "activities": "Træning registreret i Hello Cal"
+    },
+    "access": {
+      "title": "Adgang til {name}",
+      "messageReadWrite": "“Hello Cal” vil gerne have adgang til og opdatere dine {name}-data.",
+      "messageRead": "“Hello Cal” vil gerne have adgang til dine {name}-data.",
+      "turnOnAll": "Slå alle til",
+      "turnOffAll": "Slå alle fra",
+      "writeTitle": "Tillad “Hello Cal” at skrive",
+      "readTitle": "Tillad “Hello Cal” at læse",
+      "explanationReadWrite": "Appens forklaring: Vi skal have adgang til dine sundhedsdata, så vi kan hente din aktivitet og vægt og opdatere næringsindholdet i din {name}-profil.",
+      "explanationRead": "Appens forklaring: Vi skal have adgang til dine sundhedsdata, så vi kan hente din aktivitet og vægt til Hello Cal.",
+      "statusTitle": "Forbindelse",
+      "deviceTitle": "Hello Cal-appen på telefonen",
+      "allow": "Tillad",
+      "deny": "Tillad ikke",
+      "write": {
+        "nutrition": "Kost og makroer",
+        "water": "Vand",
+        "weight": "Vægt",
+        "activities": "Træning"
+      },
+      "read": {
+        "weight": "Vægt",
+        "bodyFat": "Fedtprocent",
+        "activities": "Træning og sport",
+        "steps": "Skridt og distance",
+        "energy": "Forbrændte kalorier",
+        "heart": "Puls og kondition",
+        "sleep": "Søvn",
+        "water": "Vand",
+        "body": "Højde og BMI"
+      }
     }
   },
   "payment": {

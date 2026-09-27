@@ -1,26 +1,52 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import Link from "next/link";
-import { useParams, useSearchParams } from "next/navigation";
-import { HfScreen } from "@/components/HfScreen";
-import { Toggle } from "@/components/ui/Toggle";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import {
+  AccessFooter,
+  AccessGroup,
+  AccessMono,
+  AccessRow,
+  AccessToggleGroup,
+  AccessTrailingButton,
+  HfAccessSheet,
+  type AccessCategory,
+  type AccessToggleRow,
+} from "@/components/hf/HfAccessSheet";
 import type { IntegrationCardStatus } from "@/lib/integrations";
 import type { ReadType, SyncSettings, WriteType } from "@/lib/integrations/sync-settings";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { IntegrationStatusBadge, formatDateTime } from "../status-badge";
+import { formatDateTime, integrationStatusKey } from "../status-badge";
 
-// Én side pr. integration (docs/DECISIONS.md 2026-09-26): brugeren vælger
-// til/fra pr. datatype — hvad der hentes til Hello Cal, og hvad der sendes
-// fra Hello Cal — både før tilkobling og når som helst bagefter.
+// Én side pr. integration (docs/DECISIONS.md 2026-09-26), vist som iOS'
+// adgangsark (docs/DECISIONS.md 2026-09-27): brugeren vælger til/fra pr.
+// datatype — hvad Hello Cal skriver til appen, og hvad Hello Cal læser —
+// både før tilkobling og når som helst bagefter. Valget gemmes med det samme.
 
 type DeviceToken = { id: string; label: string; createdAt: string; lastUsedAt: string | null };
 
 // Ældre enhedskoder fra før kortene fik hver deres (docs/DECISIONS.md 2026-09-24).
 const LEGACY_TOKEN_LABEL = "Companion-app";
 
+// Health-appens kategori (ikon og farve) for hver datatype.
+const CATEGORY: Record<ReadType | WriteType, AccessCategory> = {
+  nutrition: "nutrition",
+  water: "nutrition",
+  weight: "body",
+  bodyFat: "body",
+  body: "body",
+  activities: "activity",
+  steps: "activity",
+  energy: "activity",
+  heart: "heart",
+  sleep: "sleep",
+};
+
+const OVERVIEW = "/settings/integrations";
+
 function IntegrationContent() {
   const { t } = useTranslation();
+  const router = useRouter();
   const { app } = useParams<{ app: string }>();
   const searchParams = useSearchParams();
   const [integration, setIntegration] = useState<IntegrationCardStatus | null>(null);
@@ -51,14 +77,13 @@ function IntegrationContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [app]);
 
-  async function changeSetting(direction: "read" | "write", type: ReadType | WriteType, value: boolean) {
+  useEffect(() => {
+    if (newToken) document.getElementById("new-device-code")?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [newToken]);
+
+  async function saveSettings(settings: SyncSettings) {
     if (!integration) return;
     const previous = integration;
-    const settings: SyncSettings = {
-      read: { ...integration.settings.read },
-      write: { ...integration.settings.write },
-      [direction]: { ...integration.settings[direction], [type]: value },
-    };
     setIntegration({ ...integration, settings });
     setSaveError(false);
     const res = await fetch(`/api/integrations/${integration.pageSlug}/settings`, {
@@ -73,6 +98,10 @@ function IntegrationContent() {
     }
     const data = (await res.json()) as { settings: SyncSettings; needsReconnect: WriteType[] };
     setIntegration((current) => (current ? { ...current, settings: data.settings, needsReconnect: data.needsReconnect } : current));
+  }
+
+  function close() {
+    router.push(OVERVIEW);
   }
 
   function connect() {
@@ -97,7 +126,7 @@ function IntegrationContent() {
     setBusy(true);
     try {
       await fetch(`/api/integrations/${integration.slug}/disconnect`, { method: "POST" });
-      load();
+      close();
     } finally {
       setBusy(false);
     }
@@ -133,16 +162,25 @@ function IntegrationContent() {
 
   if (loading || !integration) {
     return (
-      <HfScreen title={t("integrations.title")}>
-        <p className="p-4 text-center text-[13px] text-hf-black opacity-60">{loading ? t("integrations.loading") : "—"}</p>
-      </HfScreen>
+      <HfAccessSheet
+        title={t("integrations.title")}
+        message={loading ? t("integrations.loading") : "—"}
+        allowLabel={t("integrations.access.allow")}
+        denyLabel={t("integrations.access.deny")}
+        allowDisabled
+        onAllow={close}
+        onDeny={close}
+        onDismiss={close}
+      />
     );
   }
 
   const name = integration.label;
   const isOAuth = integration.kind === "oauth" && integration.slug !== null;
+  const isSamsung = integration.provider === "SAMSUNG_HEALTH";
   const connected = integration.status !== "DISCONNECTED";
   const { read: readTypes, write: writeTypes } = integration.capabilities;
+  const { settings } = integration;
   const cardTokens = tokens.filter(
     (token) => token.label === name || (integration.provider === "APPLE_HEALTH" && token.label === LEGACY_TOKEN_LABEL)
   );
@@ -152,167 +190,172 @@ function IntegrationContent() {
       ? t("integrations.notice.failed", { name })
       : null;
 
-  const toggleRows = <T extends ReadType | WriteType>(direction: "read" | "write", types: T[]) => (
-    <div className="flex flex-col rounded-[8px] bg-hf-tan px-4">
-      {types.map((type, index) => (
-        <div
-          key={type}
-          className={`flex items-center justify-between gap-3 py-3 ${index > 0 ? "border-t border-hf-tan-dark" : ""}`}
-        >
-          <span className="hf-type-body text-hf-black">{t(`integrations.${direction}Types.${type}`)}</span>
-          <Toggle
-            ariaLabel={t(`integrations.${direction}Types.${type}`)}
-            checked={Boolean(integration.settings[direction][type as never])}
-            onChange={(value) => changeSetting(direction, type, value)}
-          />
-        </div>
-      ))}
-    </div>
-  );
+  const hasTypes = readTypes.length + writeTypes.length > 0;
+  const allOn =
+    readTypes.every((type) => settings.read[type]) && writeTypes.every((type) => settings.write[type]);
+  const anyOn = readTypes.some((type) => settings.read[type]) || writeTypes.some((type) => settings.write[type]);
+
+  function toggleAll() {
+    const value = !allOn;
+    void saveSettings({
+      read: Object.fromEntries(readTypes.map((type) => [type, value])),
+      write: Object.fromEntries(writeTypes.map((type) => [type, value])),
+    });
+  }
+
+  function rows<T extends ReadType | WriteType>(direction: "read" | "write", types: T[]): AccessToggleRow[] {
+    return types.map((type) => ({
+      key: type,
+      label: t(`integrations.access.${direction}.${type}`),
+      category: CATEGORY[type],
+      checked: Boolean(settings[direction][type as never]),
+      onChange: (value) =>
+        void saveSettings({
+          read: { ...settings.read },
+          write: { ...settings.write },
+          [direction]: { ...settings[direction], [type]: value },
+        }),
+    }));
+  }
+
+  // "Tillad": forbinder (eller forbinder igen), når adgangen mangler; en
+  // companion-app uden enhedskode får en; ellers er valget allerede gemt.
+  function allow() {
+    if (isSamsung) return router.push("/settings/integrations/health-connect");
+    if (isOAuth && (!connected || integration!.needsReconnect.length > 0)) return connect();
+    if (integration!.issuesDeviceTokens && cardTokens.length === 0 && !newToken) return void createToken();
+    close();
+  }
+
+  // "Tillad ikke": en forbundet cloud-app frakobles; ellers lukkes arket.
+  function deny() {
+    if (isOAuth && connected) return void disconnect();
+    close();
+  }
+
+  const statusLine = [
+    t(`integrations.status.${integrationStatusKey(integration)}`),
+    integration.lastSyncedAt ? t("integrations.lastSynced", { date: formatDateTime(integration.lastSyncedAt) }) : null,
+    integration.lastPushedAt && writeTypes.length > 0
+      ? t("integrations.lastPushed", { date: formatDateTime(integration.lastPushedAt) })
+      : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   return (
-    <HfScreen title={name}>
-      <div className="hf-page">
-        {notice && <p className="text-[13px] rounded-[8px] bg-hf-tan px-4 py-3 text-hf-black">{notice}</p>}
+    <HfAccessSheet
+      title={t("integrations.access.title", { name })}
+      // eslint-disable-next-line @next/next/no-img-element
+      icon={<img src={integration.icon} alt="" />}
+      heading={name}
+      message={t(writeTypes.length > 0 ? "integrations.access.messageReadWrite" : "integrations.access.messageRead", {
+        name,
+      })}
+      toggleAllLabel={hasTypes ? t(allOn ? "integrations.access.turnOffAll" : "integrations.access.turnOnAll") : undefined}
+      onToggleAll={hasTypes ? toggleAll : undefined}
+      allowLabel={t("integrations.access.allow")}
+      denyLabel={t("integrations.access.deny")}
+      allowDisabled={busy || (hasTypes && !anyOn) || (isOAuth && !integration.configured)}
+      denyDisabled={busy}
+      onAllow={allow}
+      onDeny={deny}
+      onDismiss={close}
+    >
+      {writeTypes.length > 0 && (
+        <AccessToggleGroup title={t("integrations.access.writeTitle")} rows={rows("write", writeTypes)} />
+      )}
+      {readTypes.length > 0 && (
+        <AccessToggleGroup title={t("integrations.access.readTitle")} rows={rows("read", readTypes)} />
+      )}
 
-        <div className="flex items-start gap-3 rounded-[8px] bg-hf-tan p-4">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={integration.icon} alt="" width={36} height={36} className="h-9 w-9 shrink-0 rounded-[8px] object-contain" />
-          <div className="min-w-0 flex-1">
-            <p className="text-[13px] text-hf-black opacity-70">
-              {isOAuth && !integration.configured && !connected ? t("integrations.notConfigured") : integration.description}
-            </p>
-            {integration.lastSyncedAt && (
-              <p className="text-[11px] mt-1 text-hf-black opacity-60">
-                {t("integrations.lastSynced", { date: formatDateTime(integration.lastSyncedAt) })}
-              </p>
-            )}
-            {integration.lastPushedAt && writeTypes.length > 0 && (
-              <p className="text-[11px] text-hf-black opacity-60">
-                {t("integrations.lastPushed", { date: formatDateTime(integration.lastPushedAt) })}
-              </p>
-            )}
-            {integration.lastError && <p className="text-[11px] mt-1 text-red-600">{integration.lastError}</p>}
-          </div>
-          <IntegrationStatusBadge integration={integration} />
-        </div>
+      {hasTypes && (
+        <AccessFooter>
+          {t(writeTypes.length > 0 ? "integrations.access.explanationReadWrite" : "integrations.access.explanationRead", {
+            name,
+          })}
+        </AccessFooter>
+      )}
+      {writeTypes.length === 0 && readTypes.length > 0 && (
+        <AccessFooter>{t("integrations.writeNone", { name })}</AccessFooter>
+      )}
+      {saveError && <AccessFooter error>{t("integrations.saveError")}</AccessFooter>}
 
-        {integration.provider === "SAMSUNG_HEALTH" && (
-          <div className="flex flex-col gap-3 rounded-[8px] bg-hf-tan p-4">
-            <p className="text-[13px] text-hf-black opacity-70">{t("integrations.samsungViaHealthConnect")}</p>
-            <Link
-              href="/settings/integrations/health-connect"
-              className="hf-type-button hf-btn-primary block w-full py-2.5 text-center"
-            >
-              {t("integrations.openHealthConnect")}
-            </Link>
-          </div>
-        )}
+      {isSamsung && (
+        <AccessGroup
+          title={t("integrations.access.statusTitle")}
+          footer={<AccessFooter>{t("integrations.samsungViaHealthConnect")}</AccessFooter>}
+        >
+          <AccessRow tone="action" onClick={() => router.push("/settings/integrations/health-connect")}>
+            {t("integrations.openHealthConnect")}
+          </AccessRow>
+        </AccessGroup>
+      )}
 
-        {readTypes.length > 0 && (
-          <>
-            {!connected && <p className="text-[13px] px-1 text-hf-black opacity-60">{t("integrations.chooseFirst")}</p>}
-            <p className="text-[13px] font-semibold px-1 text-hf-black">{t("integrations.readTitle")}</p>
-            {toggleRows("read", readTypes)}
-            <p className="text-[13px] font-semibold px-1 text-hf-black">{t("integrations.writeTitle", { name })}</p>
-            {writeTypes.length > 0 ? (
-              toggleRows("write", writeTypes)
-            ) : (
-              <p className="text-[13px] px-1 text-hf-black opacity-60">{t("integrations.writeNone", { name })}</p>
-            )}
-          </>
-        )}
+      {!isSamsung && (
+        <AccessGroup
+          title={t("integrations.access.statusTitle")}
+          footer={
+            <>
+              {notice && <AccessFooter>{notice}</AccessFooter>}
+              {isOAuth && !integration.configured && !connected && (
+                <AccessFooter>{t("integrations.notConfigured")}</AccessFooter>
+              )}
+              {isOAuth && connected && integration.needsReconnect.length > 0 && (
+                <AccessFooter>{t("integrations.needsReconnect", { name })}</AccessFooter>
+              )}
+              {integration.lastError && <AccessFooter error>{integration.lastError}</AccessFooter>}
+            </>
+          }
+        >
+          <AccessRow>{statusLine}</AccessRow>
+          {isOAuth && connected && (
+            <AccessRow tone="action" onClick={sync} disabled={busy}>
+              {busy ? t("integrations.syncing") : t("integrations.syncNow")}
+            </AccessRow>
+          )}
+          {isOAuth && connected && (
+            <AccessRow tone="danger" onClick={disconnect} disabled={busy}>
+              {t("integrations.disconnect")}
+            </AccessRow>
+          )}
+        </AccessGroup>
+      )}
 
-        {saveError && <p className="text-[13px] px-1 text-red-600">{t("integrations.saveError")}</p>}
-
-        {isOAuth && connected && integration.needsReconnect.length > 0 && (
-          <div className="flex flex-col gap-2 rounded-[8px] bg-hf-black p-4 text-hf-white">
-            <p className="text-[13px]">{t("integrations.needsReconnect", { name })}</p>
-            <button
-              type="button"
-              disabled={busy || !integration.configured}
-              onClick={connect}
-              className="hf-type-button hf-btn-primary w-full py-2.5 disabled:opacity-50"
-            >
-              {t("integrations.reconnect")}
-            </button>
-          </div>
-        )}
-
-        {isOAuth &&
-          (connected ? (
-            <div className="flex gap-2">
-              <button
-                type="button"
-                disabled={busy}
-                onClick={sync}
-                className="hf-type-button hf-btn-primary flex-1 py-2.5 disabled:opacity-50"
-              >
-                {busy ? t("integrations.syncing") : t("integrations.syncNow")}
-              </button>
-              <button
-                type="button"
-                disabled={busy}
-                onClick={disconnect}
-                className="text-[13px] font-semibold flex-1 rounded-full bg-hf-tan py-2.5 text-hf-black disabled:opacity-50"
-              >
-                {t("integrations.disconnect")}
-              </button>
-            </div>
-          ) : (
-            <button
-              type="button"
-              disabled={busy || !integration.configured}
-              onClick={connect}
-              className="hf-type-button hf-btn-primary block w-full py-2.5 text-center disabled:opacity-50"
-            >
-              {t("integrations.connect")}
-            </button>
-          ))}
-
-        {integration.issuesDeviceTokens && (
-          <div className="flex flex-col gap-2 rounded-[8px] bg-hf-tan p-4">
-            <p className="text-[13px] text-hf-black opacity-70">{t("integrations.companionHowTo")}</p>
-
-            {cardTokens.map((token) => (
-              <div key={token.id} className="flex items-center justify-between gap-2 rounded-[8px] bg-hf-cream px-3 py-2">
-                <p className="text-[11px] min-w-0 truncate text-hf-black opacity-60">
-                  {t("integrations.createdAt", { date: formatDateTime(token.createdAt) })}
-                  {token.lastUsedAt ? t("integrations.lastUsedAt", { date: formatDateTime(token.lastUsedAt) }) : ""}
-                </p>
-                <button
-                  type="button"
-                  disabled={busy}
-                  onClick={() => revokeToken(token.id)}
-                  className="text-[13px] font-semibold shrink-0 text-hf-red-dark disabled:opacity-50"
-                >
+      {integration.issuesDeviceTokens && (
+        <AccessGroup
+          title={t("integrations.access.deviceTitle")}
+          footer={<AccessFooter>{t("integrations.companionHowTo")}</AccessFooter>}
+        >
+          {cardTokens.map((token) => (
+            <AccessRow
+              key={token.id}
+              trailing={
+                <AccessTrailingButton tone="danger" disabled={busy} onClick={() => revokeToken(token.id)}>
                   {t("integrations.remove")}
-                </button>
-              </div>
-            ))}
-
-            {newToken ? (
-              <div className="rounded-[8px] bg-hf-black p-3 text-hf-white">
-                <p className="text-[13px] font-semibold">{t("integrations.saveTokenNotice")}</p>
-                <p className="text-[13px] mt-1 break-all font-mono">{newToken}</p>
-                <button type="button" onClick={() => setNewToken(null)} className="text-[13px] font-semibold mt-2 underline">
-                  {t("integrations.close")}
-                </button>
-              </div>
-            ) : (
-              <button
-                type="button"
-                disabled={busy}
-                onClick={createToken}
-                className="text-[13px] font-semibold w-full rounded-full bg-hf-cream py-2.5 text-hf-black disabled:opacity-50"
-              >
-                {t("integrations.generateDeviceCode")}
-              </button>
-            )}
-          </div>
-        )}
-      </div>
-    </HfScreen>
+                </AccessTrailingButton>
+              }
+            >
+              {t("integrations.createdAt", { date: formatDateTime(token.createdAt) })}
+              {token.lastUsedAt ? t("integrations.lastUsedAt", { date: formatDateTime(token.lastUsedAt) }) : ""}
+            </AccessRow>
+          ))}
+          {newToken && (
+            <AccessRow
+              id="new-device-code"
+              trailing={<AccessTrailingButton onClick={() => setNewToken(null)}>{t("integrations.close")}</AccessTrailingButton>}
+            >
+              {t("integrations.saveTokenNotice")} <AccessMono>{newToken}</AccessMono>
+            </AccessRow>
+          )}
+          {!newToken && (
+            <AccessRow tone="action" onClick={createToken} disabled={busy}>
+              {t("integrations.generateDeviceCode")}
+            </AccessRow>
+          )}
+        </AccessGroup>
+      )}
+    </HfAccessSheet>
   );
 }
 

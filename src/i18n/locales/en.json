@@ -1509,6 +1509,38 @@
       "water": "Water",
       "weight": "Weight (your own weigh-ins)",
       "activities": "Workouts logged in Hello Cal"
+    },
+    "access": {
+      "title": "{name} Access",
+      "messageReadWrite": "“Hello Cal” would like to access and update your {name} data.",
+      "messageRead": "“Hello Cal” would like to access your {name} data.",
+      "turnOnAll": "Turn On All",
+      "turnOffAll": "Turn Off All",
+      "writeTitle": "Allow “Hello Cal” to write",
+      "readTitle": "Allow “Hello Cal” to read",
+      "explanationReadWrite": "App Explanation: We need access to your health data so we can import your activity and weight and update the nutritional info in your {name} profile.",
+      "explanationRead": "App Explanation: We need access to your health data so we can import your activity and weight into Hello Cal.",
+      "statusTitle": "Connection",
+      "deviceTitle": "The Hello Cal app on your phone",
+      "allow": "Allow",
+      "deny": "Don’t Allow",
+      "write": {
+        "nutrition": "Nutrition and macros",
+        "water": "Water",
+        "weight": "Weight",
+        "activities": "Workouts"
+      },
+      "read": {
+        "weight": "Weight",
+        "bodyFat": "Body Fat Percentage",
+        "activities": "Workouts and sports",
+        "steps": "Steps and Distance",
+        "energy": "Active Energy",
+        "heart": "Heart Rate and Fitness",
+        "sleep": "Sleep",
+        "water": "Water",
+        "body": "Height and BMI"
+      }
     }
   },
   "payment": {

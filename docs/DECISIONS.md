@@ -2679,3 +2679,24 @@ Se `docs/WIDGETS.md`.
 - App: `hellocal.io`, admin: `admin.hellocal.io`, oprettelses-app: `scan.hellocal.io`. Kodens standardværdier og `.env.production.example` peger nu dertil.
 - Gamle `*.packroff.dk`-hostnavne virker under overgangen (tunnel-ruter bevares, `middleware.ts` kender begge admin-hostnavne).
 - Afsender: `no-reply@hellocal.io` (Mailjet). Kontakt i betingelser/privatlivspolitik: `support@hellocal.io`. Admin-notifikationer går fortsat til `ADMIN_NOTIFICATION_EMAIL`.
+
+## 2026-09-27: Integrationssiden er iOS' Apple Health-adgangsark
+
+Brugerens krav: hver integrations egen side skal være 100 % identisk med
+Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
+- `/settings/integrations/<app>` vises nu som `HfAccessSheet`
+  (`src/components/hf/HfAccessSheet.tsx` + CSS Module): mørk baggrund, hvidt
+  ark, titlen "Adgang til <app>", app-ikon, "“Hello Cal” vil gerne have adgang
+  til og opdatere dine <app>-data", "Slå alle til/fra", grupperne "Tillad
+  “Hello Cal” at skrive" (sendes fra Hello Cal) og "… at læse" (hentes) med
+  Health-kategoriikoner og iOS 26-kontakter, "Appens forklaring", og faste
+  knapper "Tillad"/"Tillad ikke" nederst.
+- iOS-farverne (#007AFF, #34C759, #F2F2F7 m.fl.) er en bevidst undtagelse fra
+  paletten og gælder kun dette ark.
+- "Tillad" forbinder (eller forbinder igen), når adgangen mangler; en
+  companion-app uden enhedskode får en; ellers lukker arket. Grå, når intet er
+  slået til. "Tillad ikke" frakobler en forbundet cloud-app, ellers lukker
+  arket. Tryk på den mørke kant øverst lukker.
+- Status, "Synkroniser nu", "Frakobl" og enhedskoder ligger som ekstra grupper
+  i samme stil. Valgene gemmes stadig med det samme; datatyperne er uændrede.
+- Designmanualen har afsnit 9 "Adgangsark (integrationer)" med live eksempel.

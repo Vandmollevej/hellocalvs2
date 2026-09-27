@@ -18,6 +18,7 @@ import { NumberedBadge } from "@/components/hf/NumberedBadge";
 import { CalorieBadge } from "@/components/hf/CalorieBadge";
 import { OverlayDemo } from "./OverlayDemo";
 import { BoxOverview } from "./BoxOverview";
+import { AccessSheetDemo } from "./AccessSheetDemo";
 
 // Designmanual i admin: levende oversigt over Hello Cals visuelle system.
 // Alle eksempler bruger de rigtige klasser/tokens fra globals.css og
@@ -33,6 +34,7 @@ const SECTIONS = [
   { id: "grafiske-elementer", label: "Grafiske elementer" },
   { id: "sidestruktur", label: "Sidestruktur" },
   { id: "bokse", label: "Bokse" },
+  { id: "adgangsark", label: "Adgangsark (integrationer)" },
 ] as const;
 
 type Swatch = { token: string; hex: string; name: string; use: string };
@@ -501,6 +503,39 @@ export default async function DesignManualPage() {
           {/* 8. Bokse */}
           <Section id="bokse" number={8} title="Bokse" intro="Samtlige bokstyper i appen på én skærm med lorem ipsum. De grønne numre matcher listen med farver, mål og tekstplacering. Billeder er appens egne filer.">
             <BoxOverview />
+          </Section>
+
+          {/* 9. Adgangsark (integrationer) */}
+          <Section id="adgangsark" number={9} title="Adgangsark (integrationer)" intro="Hver integration (/settings/integrations/<app>) vises som en tro kopi af iOS' Apple Health-adgangsark. Komponent: HfAccessSheet. Prøv kontakterne:">
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
+              <AccessSheetDemo />
+              <div className="flex min-w-0 flex-1 flex-col gap-4">
+                <SpecTable
+                  head={["Del", "Mål", "Regel"]}
+                  rows={[
+                    ["Baggrund", "#1F1F1F", "Mørk kant øverst + lys skærm (#DCDAD6), der kigger frem bag arket. Tryk øverst lukker."],
+                    ["Ark", "Hvid, 18 px radius", "Titel 17 px semibold centreret, klæber øverst med hvid udtoning."],
+                    ["App-ikon", "79 × 79 px", "18 px radius, 1 px kant #D1D1D6, appens logo 52 px i midten."],
+                    ["Overskrift", "22/28 px", "Appens navn fed sort, derefter besked i regulær grå #8A8A8E."],
+                    ["Slå alle til", "50 px pille", "#F2F2F7, blå tekst #007AFF 17 px. Skifter til “Slå alle fra”, når alt er slået til."],
+                    ["Gruppetitel", "17 px grå", "“Tillad ‘Hello Cal’ at skrive” (sendes fra Hello Cal) først, derefter “… at læse”."],
+                    ["Liste", "25 px radius", "#F2F2F7, rækker 50 px, ikon 22 px, 17 px tekst, skillelinje #D1D1D6 fra 52 px til 15 px før kanten."],
+                    ["Ikoner", "Health-kategorier", "Kost/vand grønt æble #34C759 · Træning/skridt/kalorier orange flamme #FF9500 · Krop lilla figur #AF52DE · Puls rødt hjerte #FF2D55 · Søvn turkis seng #30B0C7."],
+                    ["Kontakt", "62 × 28 px", "iOS 26: grå rgba(120,120,128,.36) / grøn #34C759, aflang hvid knop 36 × 24 px."],
+                    ["Forklaring", "14/16 px grå", "“Appens forklaring: …” under listerne."],
+                    ["Knapper", "49 px, 37 px inde", "Tillad: blå #007AFF (grå #CBCBCB/#A1A1A1, når intet er slået til). Tillad ikke: hvid med blød skygge, sort semibold."],
+                  ]}
+                />
+                <Rules
+                  items={[
+                    "Arket er en bevidst kopi af iOS — iOS-farverne her gælder kun dette ark og må ikke bruges andre steder.",
+                    "Hvert valg gemmes med det samme; der er ingen Gem-knap.",
+                    "Tillad forbinder (eller forbinder igen), når adgangen mangler; ellers lukker arket. Tillad ikke frakobler en forbundet cloud-app, ellers lukker arket.",
+                    "Status, Synkroniser nu, Frakobl og enhedskoder ligger som ekstra grupper i samme stil under forklaringen.",
+                  ]}
+                />
+              </div>
+            </div>
           </Section>
         </div>
       </div>
