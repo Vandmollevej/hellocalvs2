@@ -604,6 +604,11 @@
     "saveMeal": "Gem måltid"
   },
   "cameraCreate": {
+    "hintFront": "Tag et billede af forsiden",
+    "hintNutrition": "Tag et billede af energi/næringsindholdet",
+    "hintIngredients": "Tag et billede af indholdsfortegnelsen",
+    "createFailed": "Varen kunne ikke oprettes. Prøv igen.",
+    "retry": "Prøv igen",
     "title": "Tilføj vare",
     "analyzingDefault": "Analyserer billedet...",
     "readingImage": "Læser billedet...",
@@ -1433,6 +1438,7 @@
     "placeholder": "Indberetning af fejl for denne registrering kommer snart."
   },
   "addProduct": {
+    "reading": "Læses…",
     "title": "Tilføj",
     "titleForDish": "Tilføj ingrediens",
     "unlockEditing": "Lås op for redigering",

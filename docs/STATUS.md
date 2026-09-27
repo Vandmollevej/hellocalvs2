@@ -171,6 +171,10 @@ uændrede. Mangler brugerens visuelle godkendelse.
 - Cloudflare færdigt: tunnel `Server` + DNS for `hellocal.io`/`www`/`admin`/`scan` (alle `/api/health` 200), www → apex, gamle packroff-hostnavne 308 → nye, Email Routing (MX/SPF/DMARC). Server: `APP_BASE_URL`/`SCAN_APP_BASE_URL` sat (backup `.env.production.bak-20260927-domain`).
 - Mangler (kræver brugeren): bekræft Cloudflare-mailen til peter@packroff.dk og opret derefter reglerne `support@` + catch-all; log ind i Mailjet, så `hellocal.io` kan verificeres (derefter `SMTP_FROM=no-reply@hellocal.io`); tilføj `https://hellocal.io/api/auth/oauth/<google|facebook|apple>/callback` hos login-udbyderne og nye integrations-callbacks hos Withings/Google Health/Strava m.fl. (derefter `INTEGRATIONS_REDIRECT_BASE_URL` + `*_REDIRECT_URI` på serveren til hellocal.io). Chrome-udvidelsen fik ikke adgang til Facebook/Withings/Mailjet-siderne.
 
+## 2026-09-27: Tilføj-kamera med fire knapper + "opret straks"
+
+- `/camera?mode=product`: Stregkode/Forside/Energi/Indhold under kameraet, flueben, hvidt overlay + load-cirkel mens OCR kører. Varen oprettes efter OCR (`POST /api/products/quick`) og OpenAI udfylder navn/brand/næring/indhold i baggrunden (`Product.pendingFields`, migration `20260927100000_product_pending_fields`). `/add/[id]` viser grønne load-cirkler og den fritlagte forside, når den er klar. Hele søgelinjen er klikbar. Se DECISIONS 2026-09-27.
+
 ## 2026-09-26: MobilePay-betaling + Opsætning delt op
 
 - Opsætning er nu en oversigt med undersiderne "Sprog og region" (også fra Indstillinger) og "Resultatvisning" (allergener + udvidet næringsindhold).

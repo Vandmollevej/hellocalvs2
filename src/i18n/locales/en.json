@@ -604,6 +604,11 @@
     "saveMeal": "Save meal"
   },
   "cameraCreate": {
+    "hintFront": "Take a photo of the front",
+    "hintNutrition": "Take a photo of the energy/nutrition info",
+    "hintIngredients": "Take a photo of the ingredients list",
+    "createFailed": "The item couldn't be created. Try again.",
+    "retry": "Try again",
     "title": "Add item",
     "analyzingDefault": "Analyzing the photo...",
     "readingImage": "Reading the photo...",
@@ -1433,6 +1438,7 @@
     "placeholder": "Reporting an error for this registration is coming soon."
   },
   "addProduct": {
+    "reading": "Reading…",
     "title": "Add",
     "titleForDish": "Add ingredient",
     "unlockEditing": "Unlock editing",

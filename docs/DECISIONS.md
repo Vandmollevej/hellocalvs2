@@ -2,6 +2,15 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-27: Tilføj → kamera med fire knapper og "opret straks"
+
+- Tilføj → Kamera (`/camera?mode=product`, `src/components/camera/ProductCaptureFlow.tsx`) har fire knapper under kameraet: Stregkode, Forside, Energi, Indhold. Kameraet starter altid på stregkoden (live-overlayet). Kendt stregkode → `/add/[id]`. Ukendt → forside → energi → indhold. `/camera/create` omdirigerer hertil.
+- Hvert foto får et semitransparent hvidt overlay med forsidens load-cirkel (`HfLoader`), mens den lokale OCR kører; knappen får flueben, når trinnet er klaret. Finder lokal OCR ingredienslisten på energifotoet, får Energi og Indhold begge flueben.
+- Så snart OCR er kørt på alle trin, oprettes varen (`POST /api/products/quick`, PENDING, forsidefotoet "as is" som billede), og skærmen går til `/add/[id]`. OpenAI læser forside/næring/ingredienser bagefter på serveren (`after()` → `src/lib/quick-product-enrichment.ts`, genbruger `src/lib/product-photo-analysis.ts`). Felter der stadig læses står i `Product.pendingFields` og vises med en grøn load-cirkel; siden poller indtil de er klar.
+- Registreringer lavet mens næringen læses, får et foreløbigt snapshot, som genberegnes når næringen er aflæst (varen er minutter gammel, så alle dens registreringer stammer fra den periode).
+- Den fritlagte forside (`pendingImageUrl`) vises med det samme for den, der oprettede varen; for andre stadig først efter admin-godkendelse.
+- Søgeresultater: hele linjen åbner varen, ikke kun Tilføj-knappen.
+
 ## 2026-09-27: Lokal OCR bruges kun, når den er læsbar; én forside-prompt
 
 - Lokal OCR-tekst (tesseract.js) sendes kun med som støtte til AI'en og

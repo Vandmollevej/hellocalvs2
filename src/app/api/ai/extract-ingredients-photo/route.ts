@@ -1,13 +1,6 @@
 import { NextResponse } from "next/server";
-import type { Prisma } from "@prisma/client";
-import { prisma } from "@/lib/prisma";
-import { readRegions } from "@/lib/ai-regions";
 import { buildBarcodeContext } from "@/lib/barcode-context";
-import { callStructuredVision } from "@/lib/product-ai";
-import { INGREDIENTS_PROMPT_VERSION, INGREDIENTS_SCHEMA, INGREDIENTS_SYSTEM, ingredientsText } from "@/lib/product-ai-tasks";
-import { saveDataUrlImage } from "@/lib/qc-image-storage";
-import { parseWholeGrain } from "@/lib/whole-grain";
-import type { IngredientsAiResult, IngredientsAnalysis } from "@/lib/product-analysis-types";
+import { analyzeIngredientsPhoto } from "@/lib/product-photo-analysis";
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
@@ -26,47 +19,8 @@ export async function POST(req: Request) {
   const context = buildBarcodeContext(barcode, marketRegion);
 
   try {
-    const { value: aiValue, model } = await callStructuredVision<IngredientsAiResult>({
-      photo,
-      schemaName: "hello_cal_ingredients",
-      schema: INGREDIENTS_SCHEMA,
-      system: INGREDIENTS_SYSTEM,
-      text: ingredientsText({ barcode, context, ocrText }),
-    });
-    // Fuldkorn udledes deterministisk af selve varedeklarationen, ikke af
-    // modellen (src/lib/whole-grain.ts, docs/DECISIONS.md 2026-09-23).
-    const wholeGrain = parseWholeGrain({ ingredientsText: aiValue.ingredientsText || aiValue.rawText });
-    const value: IngredientsAnalysis = {
-      ...aiValue,
-      wholeGrainPercent: wholeGrain.wholeGrainPercent,
-      isWholeGrain: wholeGrain.isWholeGrain,
-      wholeGrainConfidence: wholeGrain.confidence,
-      wholeGrainEvidence: wholeGrain.evidence,
-    };
-
-    // Kvalitetskontrol/billed-match (docs/DECISIONS.md 2026-09-19): gemmer
-    // selve fotoet, så den lokale billedanalyse-agent kan sammenligne det mod
-    // produktets forsidefoto. Fejl her må aldrig stoppe selve ingrediens-aflæsningen.
-    const imageUrl = await saveDataUrlImage(photo).catch(() => null);
-
-    const analysis = await prisma.aiProductAnalysis.create({
-      data: {
-        kind: "INGREDIENTS",
-        barcode,
-        marketRegion: context.marketRegion,
-        gs1Regions: context.gs1Regions,
-        languages: context.primaryOcrLanguages,
-        model,
-        promptVersion: INGREDIENTS_PROMPT_VERSION,
-        prediction: value as unknown as Prisma.InputJsonValue,
-        confidence: value.confidence,
-        regions: readRegions(value) as unknown as Prisma.InputJsonValue,
-        imageUrl,
-      },
-      select: { id: true },
-    });
-
-    return NextResponse.json({ analysisId: analysis.id, context, result: value });
+    const { analysisId, result } = await analyzeIngredientsPhoto({ photo, barcode, marketRegion, ocrText });
+    return NextResponse.json({ analysisId, context, result });
   } catch (error) {
     console.error("Ingredient photo extraction failed", error);
     return NextResponse.json(

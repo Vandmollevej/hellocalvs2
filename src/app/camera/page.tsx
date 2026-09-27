@@ -1,25 +1,16 @@
 "use client";
 
 import { mealShareBody } from "@/lib/meal-share";
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { IconCamera } from "@tabler/icons-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { HfScreen } from "@/components/HfScreen";
 import { HelloFreshMatchReview } from "@/components/HelloFreshMatchReview";
-import { BarcodeScanOverlay, type BarcodeDetection } from "@/components/hf/BarcodeScanOverlay";
-import {
-  barcodeGuideBoxFraction,
-  barcodePoseFromPoints,
-  orientationFromPose,
-  type BarcodeOrientation,
-} from "@/lib/barcode-scan";
-import { startBarcodeFrameScanner, type BarcodeRead } from "@/lib/barcode-frame-scanner";
-import { buildFakeBarcodeForRegion } from "@/lib/regions";
+import { ProductCaptureFlow } from "@/components/camera/ProductCaptureFlow";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 type CameraStatus = "starting" | "active" | "denied" | "unavailable" | "error";
-type LookupStatus = "idle" | "loading" | "not_found" | "error";
 type CameraMode = "product" | "meal" | "hellofresh";
 type RecognizeStatus = "idle" | "processing" | "found" | "not_found" | "failed";
 type MatchedHelloFreshProduct = {
@@ -45,13 +36,6 @@ type MealItem = {
   estimated: boolean;
 };
 
-// How long the bar-by-bar / digit-by-digit decode animation runs before the
-// product lookup starts (BarcodeScanOverlay's BAR_DRAW_MS + digits).
-const DECODE_ANIMATION_MS = 1300;
-const DECODE_ANIMATION_REDUCED_MS = 300;
-// A detection with no fresh read for this long is treated as gone.
-const DETECTION_STALE_MS = 1200;
-
 const MODE_TABS: { key: CameraMode; labelKey: string }[] = [
   { key: "product", labelKey: "camera.tabBarcode" },
   { key: "hellofresh", labelKey: "camera.tabProduct" },
@@ -72,35 +56,60 @@ function statusFromCameraError(error: unknown): CameraStatus {
   return "error";
 }
 
-function KameraContent() {
+// Stregkode/HelloFresh-fanerne — kun under Opret ret.
+function ModeTabs({ mode }: { mode: CameraMode }) {
   const { t } = useTranslation();
-  const params = useSearchParams();
   const router = useRouter();
+  return (
+    <div className="flex justify-center gap-2">
+      {MODE_TABS.map((tab) => (
+        <button
+          key={tab.key}
+          onClick={() => {
+            if (tab.key !== mode) router.replace(`/camera?mode=${tab.key}&for=ret`);
+          }}
+          className={
+            tab.key === mode
+              ? "hf-btn-primary px-4 py-1.5"
+              : "hf-btn-secondary px-4 py-1.5"
+          }
+        >
+          {t(tab.labelKey)}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function KameraContent() {
+  const params = useSearchParams();
   const modeParam = params.get("mode");
   const forDish = params.get("for") === "ret";
   // HelloFresh-genkendelse ("Produkt"-fanen) kun under Opret ret
   // (docs/DECISIONS.md 2026-09-24) — ellers altid stregkode.
   const mode: CameraMode =
     modeParam === "meal" ? "meal" : modeParam === "hellofresh" && forDish ? "hellofresh" : "product";
+
+  // Stregkode → forside → energi → indhold (docs/DECISIONS.md 2026-09-27).
+  if (mode === "product") {
+    return (
+      <div className="flex h-full min-h-0 flex-col gap-4 overflow-y-auto p-4">
+        {forDish && <ModeTabs mode={mode} />}
+        <ProductCaptureFlow returnSuffix={forDish ? "?for=ret" : ""} />
+      </div>
+    );
+  }
+  return <PhotoModeContent key={mode} mode={mode} forDish={forDish} />;
+}
+
+function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forDish: boolean }) {
+  const { t } = useTranslation();
+  const router = useRouter();
   const returnSuffix = forDish ? "?for=ret" : "";
   const videoRef = useRef<HTMLVideoElement>(null);
-  const stopScannerRef = useRef<(() => void) | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const lookupInProgressRef = useRef(false);
-  const activeCodeRef = useRef<string | null>(null);
-  const lookupTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const lastBarcodeSeenAtRef = useRef(0);
-  const notFoundCodesRef = useRef(new Set<string>());
   const [cameraStatus, setCameraStatus] = useState<CameraStatus>("starting");
   const [restartKey, setRestartKey] = useState(0);
-  const [barcode, setBarcode] = useState("");
-  const [lookupStatus, setLookupStatus] = useState<LookupStatus>("idle");
-  const [region, setRegion] = useState("DK");
-  const [barcodeDetection, setBarcodeDetection] = useState<BarcodeDetection | null>(null);
-  const [barcodeHint, setBarcodeHint] = useState<string | null>(null);
-  const [barcodeOrientation, setBarcodeOrientation] = useState<BarcodeOrientation>("horizontal");
-  const barcodeGuideBox = useMemo(() => barcodeGuideBoxFraction(barcodeOrientation), [barcodeOrientation]);
-  const fakeBarcode = useMemo(() => buildFakeBarcodeForRegion(region), [region]);
   const [photo, setPhoto] = useState<string | null>(null);
   const [recognizeStatus, setRecognizeStatus] = useState<RecognizeStatus>("idle");
   const [matchedProduct, setMatchedProduct] = useState<MatchedHelloFreshProduct | null>(null);
@@ -108,87 +117,10 @@ function KameraContent() {
   const [mealItems, setMealItems] = useState<MealItem[]>([]);
   const [mealSaving, setMealSaving] = useState(false);
   const stopCamera = useCallback(() => {
-    stopScannerRef.current?.();
-    stopScannerRef.current = null;
-    if (lookupTimerRef.current) clearTimeout(lookupTimerRef.current);
-    lookupTimerRef.current = null;
     streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;
     if (videoRef.current) videoRef.current.srcObject = null;
   }, []);
-
-  const lookupBarcode = useCallback(async (code: string) => {
-    const cleanedCode = code.trim();
-    if (!cleanedCode || lookupInProgressRef.current) return;
-
-    lookupInProgressRef.current = true;
-    setBarcode(cleanedCode);
-    setLookupStatus("loading");
-
-    try {
-      const response = await fetch(`/api/products/lookup/${encodeURIComponent(cleanedCode)}`);
-      if (response.status === 404) {
-        // Remember it, so holding the same barcode in view doesn't loop the
-        // animation + lookup; its overlay turns red instead (see handleBarcodeRead).
-        notFoundCodesRef.current.add(cleanedCode);
-        setBarcodeDetection((current) => (current?.code === cleanedCode ? { ...current, tone: "failed" } : current));
-        setLookupStatus("not_found");
-        activeCodeRef.current = null;
-        lookupInProgressRef.current = false;
-        return;
-      }
-      if (!response.ok) throw new Error("Product lookup failed");
-
-      const data = (await response.json()) as { product: { id: string } };
-      stopCamera();
-      router.push(`/add/${data.product.id}${returnSuffix}`);
-    } catch {
-      setLookupStatus("error");
-      activeCodeRef.current = null;
-      lookupInProgressRef.current = false;
-    }
-  }, [router, stopCamera, returnSuffix]);
-
-  // Every successful frame read: start the decode animation on a new code
-  // (and the lookup once it has played), or just move the overlay along with
-  // a code that's already being decoded, so it stays on the physical barcode.
-  const handleBarcodeRead = useCallback((read: BarcodeRead) => {
-    const pose = barcodePoseFromPoints(read.points, read.side, read.barExtent, read.tiltDeg);
-    if (!pose) return;
-    const { text: code, symbology } = read;
-    if (lookupInProgressRef.current && code !== activeCodeRef.current) return;
-
-    lastBarcodeSeenAtRef.current = Date.now();
-    const orientation = orientationFromPose(pose);
-    setBarcodeOrientation((current) => (current === orientation ? current : orientation));
-
-    if (notFoundCodesRef.current.has(code)) {
-      setBarcodeDetection({ code, symbology, pose, tone: "failed" });
-      return;
-    }
-    if (activeCodeRef.current === code) {
-      setBarcodeDetection((current) => (current?.code === code ? { ...current, pose } : current));
-      return;
-    }
-
-    if (lookupTimerRef.current) clearTimeout(lookupTimerRef.current);
-    activeCodeRef.current = code;
-    setLookupStatus("idle");
-    setBarcodeDetection({ code, symbology, pose, tone: "reading" });
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    lookupTimerRef.current = setTimeout(
-      () => {
-        lookupTimerRef.current = null;
-        void lookupBarcode(code);
-      },
-      reducedMotion ? DECODE_ANIMATION_REDUCED_MS : DECODE_ANIMATION_MS
-    );
-  }, [lookupBarcode]);
-  // Read through a ref so a new handler identity never restarts the camera.
-  const handleBarcodeReadRef = useRef(handleBarcodeRead);
-  useEffect(() => {
-    handleBarcodeReadRef.current = handleBarcodeRead;
-  }, [handleBarcodeRead]);
 
   useEffect(() => {
     let cancelled = false;
@@ -202,11 +134,7 @@ function KameraContent() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: false,
-          video:
-            mode === "product"
-              ? // Higher resolution than the photo modes: thin bars need pixels.
-                { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } }
-              : { facingMode: { ideal: "environment" } },
+          video: { facingMode: { ideal: "environment" } },
         });
         if (cancelled) {
           stream.getTracks().forEach((track) => track.stop());
@@ -216,15 +144,6 @@ function KameraContent() {
         videoRef.current.srcObject = stream;
         await videoRef.current.play();
         if (cancelled) return;
-        if (mode === "product") {
-          stopScannerRef.current = startBarcodeFrameScanner(
-            videoRef.current,
-            (read) => handleBarcodeReadRef.current(read),
-            () => {
-              if (!cancelled) setCameraStatus("error");
-            }
-          );
-        }
         setCameraStatus("active");
 
       } catch (error) {
@@ -254,72 +173,12 @@ function KameraContent() {
     stopCamera();
     setPhoto(null);
     setCameraStatus("starting");
-    lookupInProgressRef.current = false;
-    setLookupStatus("idle");
     setRecognizeStatus("idle");
     setMatchedProduct(null);
     setMealAnalyzeStatus("idle");
     setMealItems([]);
-    activeCodeRef.current = null;
-    lastBarcodeSeenAtRef.current = 0;
-    notFoundCodesRef.current.clear();
-    setBarcodeDetection(null);
-    setBarcodeHint(null);
-    setBarcodeOrientation("horizontal");
     setRestartKey((key) => key + 1);
   }
-
-  // Fetches the signed-in user's region once, so the fictional barcode guide
-  // starts with their real GS1 prefix (see src/lib/regions.ts). Defaults to
-  // "DK" (matches the User.region schema default) while loading or on error.
-  useEffect(() => {
-    let cancelled = false;
-    fetch("/api/profile")
-      .then((response) => (response.ok ? response.json() : null))
-      .then((data: { user?: { region?: string } } | null) => {
-        if (!cancelled && data?.user?.region) setRegion(data.user.region);
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  // Clears the decode overlay once its barcode has left the picture — but
-  // never while its animation or lookup is still running.
-  useEffect(() => {
-    if (mode !== "product") return;
-    const interval = setInterval(() => {
-      if (lookupInProgressRef.current || lookupTimerRef.current) return;
-      if (Date.now() - lastBarcodeSeenAtRef.current > DETECTION_STALE_MS) {
-        activeCodeRef.current = null;
-        setBarcodeDetection((current) => (current ? null : current));
-      }
-    }, 300);
-    return () => clearInterval(interval);
-  }, [mode, restartKey]);
-
-  // After a while without a confirmed read, rotate a couple of translucent
-  // hint messages over the viewfinder (blurry / not aligned) — hidden again
-  // the moment a barcode is confirmed, or when the camera is restarted.
-  useEffect(() => {
-    if (mode !== "product" || cameraStatus !== "active") return;
-    const hints = [t("camera.barcodeHintOutsideFrame"), t("camera.barcodeHintBlurry")];
-    let index = 0;
-    let rotateTimer: ReturnType<typeof setInterval> | null = null;
-    const startTimer = setTimeout(() => {
-      setBarcodeHint(hints[index]);
-      rotateTimer = setInterval(() => {
-        index = (index + 1) % hints.length;
-        setBarcodeHint(hints[index]);
-      }, 4000);
-    }, 6000);
-    return () => {
-      clearTimeout(startTimer);
-      if (rotateTimer) clearInterval(rotateTimer);
-      setBarcodeHint(null);
-    };
-  }, [mode, cameraStatus, restartKey, t]);
 
   function removeMealItem(id: string) {
     setMealItems((current) => current.filter((item) => item.id !== id));
@@ -421,27 +280,7 @@ function KameraContent() {
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-4 p-4">
-      {mode !== "meal" && forDish && (
-        <div className="flex justify-center gap-2">
-          {MODE_TABS.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => {
-                if (tab.key === mode) return;
-                restartCamera();
-                router.replace(`/camera?mode=${tab.key}${forDish ? "&for=ret" : ""}`);
-              }}
-              className={
-                tab.key === mode
-                  ? "hf-btn-primary px-4 py-1.5"
-                  : "hf-btn-secondary px-4 py-1.5"
-              }
-            >
-              {t(tab.labelKey)}
-            </button>
-          ))}
-        </div>
-      )}
+      {mode === "hellofresh" && forDish && <ModeTabs mode={mode} />}
 
       <div className="relative aspect-square w-full overflow-hidden rounded-[12px] bg-hf-black">
         {photo ? (
@@ -451,20 +290,10 @@ function KameraContent() {
           <video ref={videoRef} className="h-full w-full object-cover" autoPlay muted playsInline aria-label={t("camera.liveViewAriaLabel")} />
         )}
 
-        {!photo && (mode === "meal" || mode === "hellofresh") && (
+        {!photo && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
             <div className="aspect-square w-[68%] rounded-full border-2 border-hf-white/80 shadow-[0_0_0_999px_rgba(0,0,0,0.2)]" />
           </div>
-        )}
-
-        {!photo && mode === "product" && (
-          <BarcodeScanOverlay
-            guideBox={barcodeGuideBox}
-            orientation={barcodeOrientation}
-            fakeCode={fakeBarcode}
-            detection={barcodeDetection}
-            hintText={barcodeHint}
-          />
         )}
 
         {message && (
@@ -476,7 +305,7 @@ function KameraContent() {
           </div>
         )}
 
-        {cameraStatus === "active" && !photo && mode !== "product" && (
+        {cameraStatus === "active" && !photo && (
           <p className="hf-type-small hf-type-strong absolute inset-x-4 top-4 rounded-full bg-hf-black/60 px-4 py-2 text-center text-hf-white">
             {mode === "hellofresh" ? t("camera.placeProductInCircle") : t("camera.placePlateInCircle")}
           </p>
@@ -492,12 +321,6 @@ function KameraContent() {
           </button>
         )}
       </div>
-
-      {mode === "product" && !photo && (
-        <p className="hf-type-small hf-type-strong text-text-secondary text-center">
-          {t("camera.holdCameraStill")}
-        </p>
-      )}
 
       {mode === "hellofresh" ? (
         photo ? (
@@ -516,7 +339,7 @@ function KameraContent() {
             </button>
           </div>
         )
-      ) : mode === "meal" ? (
+      ) : (
         <div className="flex flex-col gap-4">
           <div className="flex justify-center py-1">
             {photo ? (
@@ -580,21 +403,9 @@ function KameraContent() {
             </>
           )}
         </div>
-      ) : (
-        <div className="rounded-[8px] bg-hf-tan p-4">
-          <p className="hf-type-small text-text-secondary">
-            {lookupStatus === "loading"
-              ? t("camera.lookingUp", { code: barcode })
-              : lookupStatus === "not_found"
-                ? t("camera.barcodeNotFound")
-                : lookupStatus === "error"
-                  ? t("camera.barcodeLookupError")
-                  : t("camera.autoScanHint")}
-          </p>
-        </div>
       )}
 
-      {mode !== "meal" && (
+      {mode === "hellofresh" && (
         <Link href={`/foods/new${returnSuffix}`} className="hf-control hf-btn-secondary justify-center">
           {t("camera.addManually")}
         </Link>

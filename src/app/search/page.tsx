@@ -53,8 +53,17 @@ function ResultRow({
   isFavorite: boolean;
   onToggleFavorite: (id: string, next: boolean) => void;
 }) {
+  // Hele linjen gør det samme som Tilføj-knappen (docs/DECISIONS.md 2026-09-27).
   return (
-    <div className="px-4 border-b border-hf-tan-dark last:border-b-0">
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={() => onAdd(id)}
+      onKeyDown={(event) => {
+        if (event.key === "Enter") onAdd(id);
+      }}
+      className="cursor-pointer px-4 border-b border-hf-tan-dark last:border-b-0"
+    >
       <FoodRow
         image={image}
         title={title}
@@ -71,14 +80,20 @@ function ResultRow({
           <>
             <button
               type="button"
-              onClick={() => onToggleFavorite(id, !isFavorite)}
+              onClick={(event) => {
+                event.stopPropagation();
+                onToggleFavorite(id, !isFavorite);
+              }}
               aria-label={t(isFavorite ? "search.removeFavorite" : "search.addFavorite")}
               className="text-hf-green"
             >
               {isFavorite ? <IconBookmarkFilled size={20} /> : <IconBookmark size={20} />}
             </button>
             {/* Åbner "Tilføj produkt" i bundarket (KRAV.md "Bundark"). */}
-            <button type="button" onClick={() => onAdd(id)} className="hf-btn-primary px-4 py-1.5">
+            <button type="button" onClick={(event) => {
+                event.stopPropagation();
+                onAdd(id);
+              }} className="hf-btn-primary px-4 py-1.5">
               {t("search.add")}
             </button>
           </>

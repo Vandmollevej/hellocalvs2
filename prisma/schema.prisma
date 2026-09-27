@@ -935,6 +935,11 @@ model Product {
   nutrientTolerances    Json?
 
   status           ProductStatus          @default(PENDING)
+  // "Opret straks" fra kameraflowet (docs/DECISIONS.md 2026-09-27): felter
+  // som OpenAI stadig er ved at aflæse i baggrunden ("name", "brand",
+  // "nutrition", "ingredients"). /add/[id] viser en grøn load-cirkel i dem,
+  // indtil src/lib/quick-product-enrichment.ts fjerner dem igen.
+  pendingFields    String[]               @default([])
   discontinued     Boolean                @default(false)
   createdAt        DateTime               @default(now())
 

@@ -34,6 +34,14 @@ import { NUTRIENT_BY_KEY, type ResolvedNutrient } from "@/lib/nutrients";
 import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
 import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
 import { SkeletonDetail, SkeletonScreen } from "@/components/hf/Skeleton";
+import { HfLoader } from "@/components/hf/HfLoader";
+
+// "Opret straks" (docs/DECISIONS.md 2026-09-27): mens OpenAI stadig læser
+// felter (Product.pendingFields), eller den fritlagte forside endnu ikke er
+// klar, hentes varen igen med dette interval.
+const PENDING_POLL_MS = 2500;
+// Så længe efter oprettelsen ventes der på den fritlagte forside.
+const CUTOUT_WAIT_MS = 3 * 60 * 1000;
 
 const PHOTO_AWARD_TYPE_KEY: Record<string, "photoAward.photoTypeBarcode" | "photoAward.photoTypeNutrition" | "photoAward.photoTypeIngredients"> = {
   BARCODE: "photoAward.photoTypeBarcode",
@@ -71,6 +79,12 @@ type Product = {
   productCategory?: string | null;
   packageSizeText?: string | null;
   imageUrl?: string | null;
+  // Fritlagt forside, der venter på admin-godkendelse — vises kun for den,
+  // der selv oprettede varen (docs/DECISIONS.md 2026-09-27).
+  pendingImageUrl?: string | null;
+  // Felter OpenAI stadig læser ("name" | "brand" | "nutrition" | "ingredients").
+  pendingFields?: string[];
+  createdAt?: string;
   // Tagged image variants (Multiple/Raw), see src/lib/image-tags.ts and
   // docs/DECISIONS.md 2026-09-19. Empty when the product/ingredient has no
   // tagged alternates.
@@ -219,6 +233,36 @@ export function AddProductView({
       .catch(() => setPhotoAwards([]));
   }, [id]);
 
+  // Tidspunktet siden blev åbnet — ventetiden på fritlægning måles fra det.
+  const [openedAt] = useState(() => Date.now());
+  const pendingFields = state.status === "loaded" ? (state.product.pendingFields ?? []) : [];
+  const isPending = (field: "name" | "brand" | "nutrition" | "ingredients") => pendingFields.includes(field);
+  const ownProduct =
+    state.status === "loaded" && !!profile?.id && state.product.createdByUserId === profile.id;
+  const awaitingCutout =
+    ownProduct &&
+    state.status === "loaded" &&
+    !state.product.pendingImageUrl &&
+    !!state.product.createdAt &&
+    openedAt - new Date(state.product.createdAt).getTime() < CUTOUT_WAIT_MS;
+  const shouldPoll = pendingFields.length > 0 || awaitingCutout;
+
+  useEffect(() => {
+    if (!shouldPoll) return;
+    const timer = setTimeout(() => {
+      fetch(`/api/products/${id}`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (!data?.product) return;
+          setState((current) =>
+            current.status === "loaded" ? { status: "loaded", product: { ...data.product } } : current,
+          );
+        })
+        .catch(() => {});
+    }, PENDING_POLL_MS);
+    return () => clearTimeout(timer);
+  }, [shouldPoll, state, id]);
+
   async function handleToggleFavorite() {
     if (favoritePending) return;
     const next = !isFavorite;
@@ -244,7 +288,9 @@ export function AddProductView({
   const displayImageUrl = product
     ? forDish
       ? selectRawContextImageUrl(product.imageUrl, product.images)
-      : (product.imageUrl ?? null)
+      : (product.pendingImageUrl && product.createdByUserId && product.createdByUserId === profile?.id
+          ? product.pendingImageUrl
+          : (product.imageUrl ?? null))
     : null;
   const factor = amount / 100;
   const servingSizeGrams = product?.servingSizeGrams ?? null;
@@ -554,14 +600,24 @@ export function AddProductView({
                     {t("swipeableRow.reportError")}
                   </Link>
                 )}
-                <p className="hf-type-body-lg hf-heading text-hf-black">{state.product.name}</p>
-                {state.product.brand && (
-                  <p className="hf-type-body hf-type-strong text-hf-green">
-                    {state.product.brand.name}
-                  </p>
+                {isPending("name") ? (
+                  <HfLoader size={24} label={t("addProduct.reading")} />
+                ) : (
+                  <p className="hf-type-body-lg hf-heading text-hf-black">{state.product.name}</p>
+                )}
+                {isPending("brand") ? (
+                  <HfLoader size={20} label={t("addProduct.reading")} />
+                ) : (
+                  state.product.brand && (
+                    <p className="hf-type-body hf-type-strong text-hf-green">
+                      {state.product.brand.name}
+                    </p>
+                  )
                 )}
                 <p className="hf-type-body hf-type-strong text-hf-black">
-                  {state.product.isGenericIngredient && state.product.hasKnownNutrition === false
+                  {isPending("nutrition") ? (
+                    <HfLoader size={20} label={t("addProduct.reading")} />
+                  ) : state.product.isGenericIngredient && state.product.hasKnownNutrition === false
                     ? t("addProduct.nutritionUnknown")
                     : servingSizeGrams && hasServingUnit
                     ? t("addProduct.kcalPerServing", {
@@ -657,8 +713,10 @@ export function AddProductView({
                       <span>&nbsp;{displayUnit}</span>
                     </label>
                   )}
-                  <p className="hf-type-small text-text-secondary">
-                    {state.product.isGenericIngredient && state.product.hasKnownNutrition === false
+                  <p className="hf-type-small text-text-secondary flex justify-center">
+                    {isPending("nutrition") ? (
+                      <HfLoader size={16} label={t("addProduct.reading")} />
+                    ) : state.product.isGenericIngredient && state.product.hasKnownNutrition === false
                       ? t("addProduct.nutritionUnknown")
                       : `${Math.round((state.product.kcalPer100g * amount) / 100)} kcal`}
                   </p>
@@ -699,6 +757,11 @@ export function AddProductView({
                     </button>
                   </div>
                 </div>
+                {isPending("nutrition") ? (
+                  <div className="flex justify-center py-4">
+                    <HfLoader size={28} label={t("addProduct.reading")} />
+                  </div>
+                ) : (
                 <div className="flex flex-col gap-4">
                   <MacroSliderBar
                     label={t("common.protein")}
@@ -722,6 +785,7 @@ export function AddProductView({
                     disabled={!isProductEditingUnlocked}
                   />
                 </div>
+                )}
               </div>
 
               {profile?.showAdditives && !!state.product.additives?.length && (
@@ -830,12 +894,16 @@ export function AddProductView({
                 </div>
               )}
 
-              {!!state.product.ingredientsText && (
+              {(isPending("ingredients") || !!state.product.ingredientsText) && (
                 <div>
                   <p className="hf-type-body hf-heading mb-2 text-hf-black">{t("createDish.ingredients")}</p>
-                  <p className="hf-type-small text-text-secondary">
-                    {state.product.ingredientsText}
-                  </p>
+                  {isPending("ingredients") ? (
+                    <HfLoader size={24} label={t("addProduct.reading")} />
+                  ) : (
+                    <p className="hf-type-small text-text-secondary">
+                      {state.product.ingredientsText}
+                    </p>
+                  )}
                 </div>
               )}
 

@@ -13,7 +13,7 @@ import { syncProductNutritionFeaturesSafely } from "@/lib/product-nutrition-feat
 import { composeProductName } from "@/lib/product-naming";
 import { isProductCategory } from "@/lib/product-display-unit";
 import { linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
-import { MACRO_SOURCE_KEYS, labelNutrientsFromPrediction } from "@/lib/nutrients";
+import { recordNutrientSources } from "@/lib/product-nutrient-sources";
 import { HIDE_FROM_SEARCH_BELOW } from "@/lib/uncertainty-thresholds";
 
 // Fetches Open Food Facts products globally live for search terms without enough local
@@ -318,34 +318,6 @@ function cleanOptionalString(value: unknown) {
 // src/lib/product-draft.ts) — id'er på de AiProductAnalysis-rækker, der blev
 // oprettet ved hver AI-analyse (forside/ingredienser/næring). Kun kendte
 // nøgler/streng-værdier accepteres fra klienten.
-// Usikkerheds-~ (docs/DECISIONS.md 2026-09-25): hvor et nyt produkts
-// næringstal kommer fra. Fejl må aldrig stoppe selve produktoprettelsen.
-async function recordNutrientSources(productId: string, nutritionAnalysisId: string | null) {
-  try {
-    const analysis = nutritionAnalysisId
-      ? await prisma.aiProductAnalysis.findUnique({
-          where: { id: nutritionAnalysisId },
-          select: { kind: true, prediction: true },
-        })
-      : null;
-    const macroSource = analysis?.kind === "NUTRITION" ? "LABEL" : "ESTIMATED";
-    const sources: Record<string, string> = Object.fromEntries(MACRO_SOURCE_KEYS.map((key) => [key, macroSource]));
-    const { micronutrientsPer100g, nutrientTolerances } =
-      analysis?.kind === "NUTRITION" ? labelNutrientsFromPrediction(analysis.prediction) : { micronutrientsPer100g: {}, nutrientTolerances: {} };
-    for (const key of Object.keys(micronutrientsPer100g)) sources[key] = "LABEL";
-    await prisma.product.update({
-      where: { id: productId },
-      data: {
-        nutrientSources: sources,
-        ...(Object.keys(micronutrientsPer100g).length ? { micronutrientsPer100g } : {}),
-        ...(Object.keys(nutrientTolerances).length ? { nutrientTolerances } : {}),
-      },
-    });
-  } catch (error) {
-    console.error("Recording nutrient sources failed", error);
-  }
-}
-
 function cleanAnalysisIds(value: unknown) {
   if (!value || typeof value !== "object" || Array.isArray(value)) return {} as Record<string, string>;
   const source = value as Record<string, unknown>;
