@@ -2,6 +2,13 @@
 
 Last updated: 2026-09-27
 
+## 2026-09-27: Admin-menu efter brugerens struktur + agenter/jobs/roadmap/MCP
+
+- Sidebjælken i `AdminShell` følger nu brugerens grupper (DECISIONS 2026-09-27).
+  Nye sider: Jobs, Agenter, Roadmap, Claude-integration (MCP), Partnere (tom).
+- Migration `20260927090000_admin_agents_roadmap` køres af deploy.
+- MCP ikke testet mod Claude.ai (ingen lokal DB). Lint, typecheck og page-tree-test grønne.
+
 ## 2026-09-27: Admin "Page tree"
 
 - Ny admin-side `/admin/page-tree`: alle 128 sider som træ med pile, søgning, spring til område og "testet"-flueben med fremdriftsbjælke. Test sikrer at listen følger `src/app` (docs/DECISIONS.md 2026-09-27).

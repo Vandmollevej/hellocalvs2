@@ -13,71 +13,88 @@ import { t, type AdminI18nKey } from "@/lib/admin-i18n";
 // indholdet. Under lg bliver sidebjælken en skuffe bag en menuknap.
 // Farverne er de eksisterende Hello Cal-tokens.
 
-type IconName = "home" | "box" | "users" | "search" | "shield" | "clock";
+type IconName = "home" | "box" | "database" | "users" | "handshake" | "shield" | "cog" | "palette" | "road";
 type NavLink = { href: string; key: AdminI18nKey };
 type NavEntry =
   | { kind: "link"; href: string; key: AdminI18nKey; icon: IconName }
   | { kind: "group"; id: string; key: AdminI18nKey; icon: IconName; links: NavLink[] };
 
+// Menustrukturen er brugerens (docs/DECISIONS.md 2026-09-27, "Admin-menuens
+// grupper"). Sider brugeren ikke nævnte (Nye produkter, Logoer,
+// Søgealgoritmer) er lagt i den gruppe de hører til.
 const NAV: NavEntry[] = [
   { kind: "link", href: "/admin", key: "nav_overview", icon: "home" },
   {
     kind: "group",
-    id: "products",
-    key: "nav_group_products",
+    id: "approval",
+    key: "nav_group_approval",
     icon: "box",
     links: [
-      { href: "/admin/products", key: "nav_products" },
-      { href: "/admin/images", key: "nav_images" },
-      { href: "/admin/logos", key: "nav_logos" },
       { href: "/admin/quality-control", key: "nav_quality_control" },
       { href: "/admin/uncertainties", key: "nav_uncertainties" },
       { href: "/admin/duplicate-products", key: "nav_duplicate_products" },
       { href: "/admin/ingredient-requests", key: "nav_ingredient_requests" },
+      { href: "/admin/images", key: "nav_images" },
+      { href: "/admin/products", key: "nav_products" },
+      { href: "/admin/logos", key: "nav_logos" },
     ],
   },
+  { kind: "link", href: "/admin/search", key: "nav_product_database", icon: "database" },
   {
     kind: "group",
     id: "people",
     key: "nav_group_people",
     icon: "users",
     links: [
-      { href: "/admin/users", key: "nav_users" },
-      { href: "/admin/support", key: "nav_support" },
+      { href: "/admin/users", key: "nav_users_all" },
       { href: "/admin/bug-reports", key: "nav_bug_reports" },
-      { href: "/admin/messaging", key: "nav_messaging" },
+      { href: "/admin/support", key: "nav_support" },
+    ],
+  },
+  { kind: "link", href: "/admin/partners", key: "nav_partners", icon: "handshake" },
+  {
+    kind: "group",
+    id: "administration",
+    key: "nav_group_administration",
+    icon: "shield",
+    links: [
       { href: "/admin/scan-invites", key: "nav_scan_invites" },
+      { href: "/admin/jobs", key: "nav_jobs" },
+      { href: "/admin/agents", key: "nav_agents" },
     ],
   },
   {
     kind: "group",
-    id: "search",
-    key: "nav_group_search",
-    icon: "search",
+    id: "settings",
+    key: "nav_group_settings",
+    icon: "cog",
     links: [
-      { href: "/admin/search", key: "nav_search" },
+      { href: "/admin/api-keys", key: "nav_api_keys" },
+      { href: "/admin/cron-jobs", key: "nav_cron_jobs" },
+      { href: "/admin/passkeys", key: "nav_passkeys" },
+      { href: "/admin/support/templates", key: "nav_standard_mails" },
+      { href: "/admin/messaging", key: "nav_messaging" },
       { href: "/admin/search-ranking", key: "nav_search_ranking" },
     ],
   },
   {
     kind: "group",
-    id: "security",
-    key: "nav_group_security",
-    icon: "shield",
+    id: "design",
+    key: "nav_group_design",
+    icon: "palette",
     links: [
-      { href: "/admin/passkeys", key: "nav_passkeys" },
-      { href: "/admin/api-keys", key: "nav_api_keys" },
+      { href: "/admin/designmanual", key: "nav_design_manual" },
+      { href: "/admin/page-tree", key: "nav_page_tree" },
     ],
   },
   {
     kind: "group",
-    id: "system",
-    key: "nav_group_system",
-    icon: "clock",
+    id: "roadmap",
+    key: "nav_group_roadmap",
+    icon: "road",
     links: [
-      { href: "/admin/cron-jobs", key: "nav_cron_jobs" },
-      { href: "/admin/designmanual", key: "nav_design_manual" },
-      { href: "/admin/page-tree", key: "nav_page_tree" },
+      { href: "/admin/roadmap", key: "nav_roadmap" },
+      { href: "/admin/claude", key: "nav_claude" },
     ],
   },
 ];
@@ -85,9 +102,18 @@ const NAV: NavEntry[] = [
 const OPEN_GROUPS_KEY = "hc-admin-open-groups";
 const COLLAPSED_KEY = "hc-admin-sidebar-collapsed";
 
-function isActive(pathname: string, href: string) {
+const ALL_HREFS = NAV.flatMap((entry) => (entry.kind === "link" ? [entry.href] : entry.links.map((link) => link.href)));
+
+function matches(pathname: string, href: string) {
   if (href === "/admin") return pathname === "/admin";
   return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+// Kun det længste match er aktivt, så /admin/support/templates markerer
+// "Standard-mails" og ikke også "Beskeder".
+function isActive(pathname: string, href: string) {
+  if (!matches(pathname, href)) return false;
+  return !ALL_HREFS.some((other) => other.length > href.length && matches(pathname, other));
 }
 
 function activeGroupId(pathname: string) {
@@ -113,7 +139,7 @@ function writeStorage(key: string, value: string) {
   }
 }
 
-function Icon({ name, className = "h-5 w-5" }: { name: IconName | "chevron" | "menu" | "close" | "collapse"; className?: string }) {
+function Icon({ name, className = "h-5 w-5" }: { name: IconName | "search" | "chevron" | "menu" | "close" | "collapse"; className?: string }) {
   const paths: Record<typeof name, React.ReactNode> = {
     home: <path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />,
     box: (
@@ -128,17 +154,33 @@ function Icon({ name, className = "h-5 w-5" }: { name: IconName | "chevron" | "m
         <path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6.5 6.5 0 0 1 3.5 6" />
       </>
     ),
+    database: (
+      <>
+        <ellipse cx="12" cy="5.5" rx="7.5" ry="2.5" />
+        <path d="M4.5 5.5v13c0 1.4 3.4 2.5 7.5 2.5s7.5-1.1 7.5-2.5v-13M4.5 12c0 1.4 3.4 2.5 7.5 2.5s7.5-1.1 7.5-2.5" />
+      </>
+    ),
+    handshake: <path d="m11 17 2 2a1.4 1.4 0 0 0 2-2m-2-2 2.5 2.5a1.4 1.4 0 0 0 2-2L14 12l-2 1.5a2 2 0 0 1-2.5-3L12 8h3l4 4M3 12l4-4h3M3 12l3 3m0 0 2 2a1.4 1.4 0 0 0 2-2m-4 0 1-1M21 12l-2 0" />,
+    shield: <path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6z" />,
+    cog: (
+      <>
+        <circle cx="12" cy="12" r="3" />
+        <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" />
+      </>
+    ),
+    palette: (
+      <>
+        <path d="M12 3a9 9 0 0 0 0 18c1.1 0 1.7-.8 1.7-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-4-4-7.2-9-7.2z" />
+        <circle cx="7.5" cy="11.5" r="1" />
+        <circle cx="10.5" cy="7.5" r="1" />
+        <circle cx="15" cy="8" r="1" />
+      </>
+    ),
+    road: <path d="M5 21 9 3M19 21 15 3M12 4v2.5M12 10.5v3M12 17.5V20" />,
     search: (
       <>
         <circle cx="11" cy="11" r="7" />
         <path d="m20 20-4-4" />
-      </>
-    ),
-    shield: <path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6z" />,
-    clock: (
-      <>
-        <circle cx="12" cy="12" r="9" />
-        <path d="M12 7v5l3 2" />
       </>
     ),
     chevron: <path d="m6 9 6 6 6-6" />,

@@ -2995,3 +2995,66 @@ model PaymentWebhook {
   @@unique([provider, url])
   @@map("payment_webhooks")
 }
+
+// Admin "Administration → Agenter/Jobs" og "Roadmap og udvikling"
+// (docs/DECISIONS.md 2026-09-27). En AI-agent (fx en Claude-session) får et
+// personligt token og taler med appen via MCP-endpointet /api/mcp/<token>;
+// kun sha256 af tokenet gemmes.
+model AiAgent {
+  id          String     @id @default(cuid())
+  name        String
+  description String?
+  tokenHash   String     @unique
+  disabled    Boolean    @default(false)
+  lastSeenAt  DateTime?
+  createdAt   DateTime   @default(now())
+  jobs        AgentJob[]
+
+  @@map("ai_agents")
+}
+
+enum AgentJobStatus {
+  OPEN
+  CLOSED
+}
+
+// Et job som en agent har sat op (fx en baggrundsopgave eller en
+// planlagt kørsel). Vises i admin under åbne/afsluttede.
+model AgentJob {
+  id          String         @id @default(cuid())
+  agentId     String?
+  agent       AiAgent?       @relation(fields: [agentId], references: [id], onDelete: SetNull)
+  title       String
+  description String?
+  status      AgentJobStatus @default(OPEN)
+  result      String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @default(now()) @updatedAt
+  closedAt    DateTime?
+
+  @@index([status, createdAt])
+  @@map("agent_jobs")
+}
+
+enum RoadmapStatus {
+  IDEA
+  PLANNED
+  IN_PROGRESS
+  DONE
+}
+
+model RoadmapItem {
+  id          String        @id @default(cuid())
+  title       String
+  description String?
+  status      RoadmapStatus @default(IDEA)
+  // Oprettet af admin i UI'et (null) eller af en agent via MCP (agentens navn).
+  createdBy   String?
+  sortOrder   Int           @default(0)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now()) @updatedAt
+  completedAt DateTime?
+
+  @@index([status, sortOrder])
+  @@map("roadmap_items")
+}

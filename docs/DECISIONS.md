@@ -2,6 +2,30 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-27: Admin-menuens grupper + agenter, jobs, roadmap og Claude-MCP
+
+Erstatter gruppelisten i punktet nedenfor (skallen er uændret).
+
+- Brugerens menu: Oversigt · Produktgodkendelse (Kvalitetskontrol,
+  Uncertainties, Dobbeltoprettelser, Ønskede ingredienser, Billedforslag +
+  Nye produkter, Logoer) · Produktdatabase (`/admin/search`) · Brugere (Alle
+  brugere, Fejlrapporter, Beskeder = supportindbakken) · Partnere ·
+  Administration (Scan-invites, Jobs, Agenter) · Indstillinger (API-nøgler,
+  Cronjobs, Passkeys, Standard-mails = svarskabeloner, Besked automatisering,
+  Søgealgoritmer) · Design og opbygning (Designmanual, Sidetræ) · Roadmap og
+  udvikling (Roadmap, Claude-integration). Kun det længste sti-match er aktivt.
+- "Agenter" = AI-agenter (fx Claude), ikke Oprettelses-appens medarbejdere
+  (de ligger under Scan-invites). Hver agent har et token; kun sha256 gemmes
+  (`AiAgent`), og adressen vises én gang. "Jobs" = `AgentJob`, som agenter
+  registrerer; siden har fanerne Åbne/Afsluttede.
+- Roadmap (`RoadmapItem`) er en tavle: Idéer/Planlagt/I gang/Færdig.
+- Claude-integration: stateless MCP-server på `/api/mcp/<agent-token>` (JSON,
+  ingen SSE). Kan kun læse/oprette roadmap-punkter og jobs. Tilføjes som
+  custom connector i Claude.ai eller med `claude mcp add --transport http`.
+  Skal nås på den offentlige adresse (`APP_BASE_URL`), fordi admin-
+  hostnavnet omskriver alle stier til /admin.
+- Partnere: kun menupunkt + tom side; indholdet er ikke specificeret.
+
 ## 2026-09-27: Admin-skal efter Cloudflare-dashboardets struktur
 
 - Kun struktur/opbygning fra Cloudflare — farverne er fortsat Hello Cals tokens.
