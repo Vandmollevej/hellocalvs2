@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
+import { FrontPagePreview, WheelIcon } from "@/components/FrontPagePreview";
 import {
   MAX_WHEEL_ACTIONS,
   saveWheelActionKeys,
@@ -83,6 +84,7 @@ export default function FrontPageDisplaySettingsPage() {
                 }}
                 aria-pressed={isSelected}
               >
+                <FrontPagePreview side={side} selected={isSelected} />
                 {t(side === "left" ? "frontPageSettings.sideLeft" : "frontPageSettings.sideRight")}
               </button>
             );
