@@ -26,6 +26,11 @@ function formatKcal(value: number) {
   return new Intl.NumberFormat("da-DK", { maximumFractionDigits: 0 }).format(value);
 }
 
+/** Registration.nutrient*Snapshot are Json columns; groupByDay wants plain number maps. */
+function numberRecord(value: unknown): Record<string, number> | undefined {
+  return value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, number>) : undefined;
+}
+
 /** YYYY-MM-DD of `date` in the widget device's own time zone. */
 function dayKey(date: Date, tzOffsetMinutes: number) {
   return new Date(date.getTime() + tzOffsetMinutes * 60_000).toISOString().slice(0, 10);
@@ -153,7 +158,13 @@ export async function buildWidgetSnapshot(
   // --- Stat boxes: two widget-only boxes + every Statistik card ----------
   const statCards = computeStatCards({
     days: groupByDay(
-      registrations.map((r) => ({ ...r, createdAt: r.createdAt.toISOString() })),
+      registrations.map((r) => ({
+        ...r,
+        nutrientSnapshot: numberRecord(r.nutrientSnapshot),
+        nutrientEstimatedSnapshot: numberRecord(r.nutrientEstimatedSnapshot),
+        nutrientToleranceSnapshot: numberRecord(r.nutrientToleranceSnapshot),
+        createdAt: r.createdAt.toISOString(),
+      })),
     ),
     metrics: metrics.map((m) => ({ type: m.type, value: m.value, recordedAt: m.recordedAt.toISOString() })),
     sources: registrations.map(({ product, ...r }) => ({
