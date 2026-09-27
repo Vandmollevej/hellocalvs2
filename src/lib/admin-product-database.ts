@@ -36,13 +36,28 @@ function buildWhere(filters: ProductDatabaseFilters): Prisma.ProductWhereInput {
   }
   if (filters.store === "none") and.push({ stores: { none: {} } });
   else if (filters.store) and.push({ stores: { some: { storeId: filters.store } } });
-  if (filters.brand) and.push({ brand: { name: { equals: filters.brand, ...insensitive } } });
-  if (filters.subbrand) and.push({ subbrand: { equals: filters.subbrand, ...insensitive } });
-  if (filters.category === "none") and.push({ categoryId: null });
-  else if (filters.category) and.push({ categoryId: filters.category });
-  if (filters.productCategory) and.push({ productCategory: filters.productCategory });
-  if (filters.source === "USER") and.push({ externalSource: null });
-  else if (filters.source) and.push({ externalSource: filters.source });
+  // Flervalg: et produkt matcher, hvis det rammer mindst én af de valgte værdier.
+  if (filters.brand.length > 0) and.push({ OR: filters.brand.map((name) => ({ brand: { name: { equals: name, ...insensitive } } })) });
+  if (filters.subbrand.length > 0) and.push({ OR: filters.subbrand.map((name) => ({ subbrand: { equals: name, ...insensitive } })) });
+  if (filters.category.length > 0) {
+    const ids = filters.category.filter((id) => id !== "none");
+    and.push({
+      OR: [
+        ...(ids.length > 0 ? [{ categoryId: { in: ids } }] : []),
+        ...(filters.category.includes("none") ? [{ categoryId: null }] : []),
+      ],
+    });
+  }
+  if (filters.productCategory.length > 0) and.push({ productCategory: { in: filters.productCategory } });
+  if (filters.source.length > 0) {
+    const external = filters.source.filter((source) => source !== "USER");
+    and.push({
+      OR: [
+        ...(external.length > 0 ? [{ externalSource: { in: external } }] : []),
+        ...(filters.source.includes("USER") ? [{ externalSource: null }] : []),
+      ],
+    });
+  }
   if (filters.status) and.push({ status: filters.status });
   if (filters.image === "with") and.push({ imageUrl: { not: null } });
   if (filters.image === "without") and.push({ imageUrl: null });
@@ -146,7 +161,8 @@ export async function loadProductDatabase(filters: ProductDatabaseFilters) {
     imageUrl: p.imageUrl,
     kcalPer100g: p.kcalPer100g,
     status: p.status,
-    sourceLabel: PRODUCT_SOURCE_LABELS[p.externalSource ?? "USER"],
+    // Nye kilder i skemaet (fx en kommende kæde-import) vises med deres rå navn.
+    sourceLabel: (PRODUCT_SOURCE_LABELS as Record<string, string>)[p.externalSource ?? "USER"] ?? String(p.externalSource),
     categoryLabel: p.category?.name ?? (p.productCategory ? PRODUCT_CATEGORY_LABELS[p.productCategory] : null),
     stores: p.stores.map((s) => s.store.name),
     barcodeCount: p._count.barcodes,
@@ -173,10 +189,10 @@ async function loadOverview(): Promise<ProductDatabaseOverview> {
   return { total, withImage, approved, pending };
 }
 
-// Forslag til mærke-/sub brand-felterne (datalist). Sub brands indsnævres til
-// det valgte mærke, så listen er relevant og kort.
-export async function loadProductDatabaseSuggestions(brand: string) {
-  const [brands, subbrands] = await Promise.all([
+// Valgmuligheder til mærke-/sub brand-dropdowns. Sub brands indsnævres til
+// de valgte mærker, så listen er relevant og kort.
+export async function loadProductDatabaseSuggestions(brands: string[]) {
+  const [brandRows, subbrands] = await Promise.all([
     prisma.brand.findMany({
       where: { products: { some: { privateOwnerId: null } } },
       orderBy: { name: "asc" },
@@ -187,7 +203,7 @@ export async function loadProductDatabaseSuggestions(brand: string) {
       where: {
         privateOwnerId: null,
         subbrand: { not: null },
-        ...(brand ? { brand: { name: { equals: brand, ...insensitive } } } : {}),
+        ...(brands.length > 0 ? { OR: brands.map((name) => ({ brand: { name: { equals: name, ...insensitive } } })) } : {}),
       },
       distinct: ["subbrand"],
       orderBy: { subbrand: "asc" },
@@ -196,7 +212,7 @@ export async function loadProductDatabaseSuggestions(brand: string) {
     }),
   ]);
   return {
-    brands: brands.map((b) => b.name),
+    brands: brandRows.map((b) => b.name),
     subbrands: subbrands.map((s) => s.subbrand).filter((s): s is string => Boolean(s && s.trim())),
   };
 }

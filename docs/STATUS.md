@@ -2,6 +2,10 @@
 
 Last updated: 2026-09-27
 
+## 2026-09-27: Produkt-database — filtre som dropdowns
+
+- Alle filtre på `/admin/product-database` er nu dropdowns; mærke, sub brand, kategori, varetype og kilde kan vælge flere på én gang (afkrydsning + søgning). Én chip pr. valgt værdi. Lint, typecheck og build kørt.
+
 ## 2026-09-27: Admin "Produkt-database"
 
 - Ny side `/admin/product-database` (menupunktet "Produkt-database"): søg, filtrér (kæde fx Rema 1000, mærke, sub brand, kategori, varetype, kilde, status, billede, stregkode) og sortér alle produkter; liste/galleri; klik åbner produktets admin-side. `/admin/search` sender videre. Ingen migration.

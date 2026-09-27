@@ -41,14 +41,16 @@ export const PRODUCT_SOURCE_LABELS: Record<ProductDatabaseSource, string> = {
 
 export { PRODUCT_CATEGORIES, PRODUCT_CATEGORY_LABELS };
 
+// Mærke, sub brand, kategori, varetype og kilde er flervalg (gentagne
+// URL-parametre, fx ?brand=Arla&brand=Lurpak); resten er enkeltvalg.
 export type ProductDatabaseFilters = {
   q: string;
   store: string;
-  brand: string;
-  subbrand: string;
-  category: string;
-  productCategory: ProductCategory | "";
-  source: ProductDatabaseSource | "";
+  brand: string[];
+  subbrand: string[];
+  category: string[];
+  productCategory: ProductCategory[];
+  source: ProductDatabaseSource[];
   status: ProductDatabaseStatus | "";
   image: "with" | "without" | "";
   barcode: "with" | "without" | "";
@@ -76,8 +78,19 @@ function one(value: string | string[] | undefined) {
   return (Array.isArray(value) ? value[0] : value)?.trim() ?? "";
 }
 
+function many(value: string | string[] | undefined) {
+  const values = (Array.isArray(value) ? value : value === undefined ? [] : [value])
+    .map((v) => v.trim().slice(0, 200))
+    .filter(Boolean);
+  return [...new Set(values)].slice(0, 50);
+}
+
 function pick<T extends string>(value: string, allowed: readonly T[]): T | "" {
   return (allowed as readonly string[]).includes(value) ? (value as T) : "";
+}
+
+function pickMany<T extends string>(values: string[], allowed: readonly T[]): T[] {
+  return values.filter((v): v is T => (allowed as readonly string[]).includes(v));
 }
 
 export function parseProductDatabaseFilters(params: ProductDatabaseSearchParams): ProductDatabaseFilters {
@@ -85,11 +98,11 @@ export function parseProductDatabaseFilters(params: ProductDatabaseSearchParams)
   return {
     q: one(params.q).slice(0, 200),
     store: one(params.store),
-    brand: one(params.brand).slice(0, 200),
-    subbrand: one(params.subbrand).slice(0, 200),
-    category: one(params.category),
-    productCategory: pick(one(params.productCategory), PRODUCT_CATEGORIES),
-    source: pick(one(params.source), PRODUCT_SOURCES),
+    brand: many(params.brand),
+    subbrand: many(params.subbrand),
+    category: many(params.category),
+    productCategory: pickMany(many(params.productCategory), PRODUCT_CATEGORIES),
+    source: pickMany(many(params.source), PRODUCT_SOURCES),
     status: pick(one(params.status), PRODUCT_STATUSES),
     image: pick(one(params.image), ["with", "without"] as const),
     barcode: pick(one(params.barcode), ["with", "without"] as const),
@@ -110,6 +123,10 @@ export function productDatabaseHref(filters: ProductDatabaseFilters, changes: Pa
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(next)) {
     if (value === "" || value === undefined) continue;
+    if (Array.isArray(value)) {
+      for (const item of value) params.append(key, item);
+      continue;
+    }
     if (key === "sort" && value === "name") continue;
     if (key === "view" && value === "list") continue;
     if (key === "page" && value === 1) continue;

@@ -6,6 +6,7 @@ This file records durable decisions. Add a dated entry when a later decision cha
 
 - Menupunktet "Produkt-database" (tidligere "Produktdatabase" → `/admin/search`) åbner nu `/admin/product-database`: alle produkter (private ingredienser udeladt) med søgning (navn, mærke, sub brand, variant, produkttype, stregkode; hvert ord skal matche), filtre for kæde (`ProductStore`, fx Rema 1000, eller "ikke tilknyttet"), mærke, sub brand (forslag indsnævres til valgt mærke), kategori, varetype, kilde, status, billede med/uden og stregkode med/uden, samt sortering (navn, dato, med/uden billede først, mærke, kcal).
 - Liste- eller galleri-visning, 48 pr. side. Alle valg ligger i URL'en, så visninger kan deles og tilbage-knappen virker. Et klik åbner produktets admin-side `/admin/products/[id]`.
+- Filtrene er dropdowns (`src/components/admin/FilterDropdown.tsx`, ingen knap-segmenter eller fritekst-felter). Mærke, sub brand, kategori, varetype og kilde er flervalg med afkrydsning og søgefelt; et produkt matcher, hvis det rammer mindst én valgt værdi. Kæde, status, billede, stregkode og sortering er enkeltvalg. Flervalg ligger som gentagne URL-parametre (`?brand=Arla&brand=Lurpak`).
 - `/admin/search` sender videre (med søgeord); den gamle hurtig-redigering er fjernet — redigering sker på produktsiden. Logik: `src/lib/admin-product-database.ts` (server) og `src/lib/admin-product-database-query.ts` (URL-kontrakt, klient-sikker).
 ## 2026-09-27: Tilføj → kamera med fire knapper og "opret straks"
 

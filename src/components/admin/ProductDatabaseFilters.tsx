@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { FilterDropdown } from "@/components/admin/FilterDropdown";
 import {
   PRODUCT_CATEGORIES,
   PRODUCT_CATEGORY_LABELS,
@@ -16,17 +17,8 @@ import {
 
 // Filterbjælken til admin "Produkt-database". Hvert valg skriver direkte til
 // URL'en; serveren henter så den filtrerede side (docs/DECISIONS.md 2026-09-27).
-
-const fieldClass = "hf-type-body hf-field w-full min-w-0 rounded-md border border-hf-tan-dark bg-hf-white px-3 text-hf-black";
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="flex min-w-0 flex-col gap-1">
-      <span className="hf-type-label text-text-secondary">{label}</span>
-      {children}
-    </label>
-  );
-}
+// Alle filtre er dropdowns; mærke, sub brand, kategori, varetype og kilde er
+// flervalg.
 
 function Segment<T extends string>({
   label,
@@ -59,63 +51,18 @@ function Segment<T extends string>({
   );
 }
 
-// Tekstfelt med forslag (datalist). Et valg fra listen anvendes med det samme;
-// fri tekst anvendes ved Enter eller når feltet forlades.
-function SuggestField({
-  id,
-  label,
-  placeholder,
-  value,
-  suggestions,
-  onApply,
-}: {
-  id: string;
-  label: string;
-  placeholder: string;
-  value: string;
-  suggestions: string[];
-  onApply: (value: string) => void;
-}) {
-  const [draft, setDraft] = useState(value);
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- følger URL'en (fx "Nulstil")
-    setDraft(value);
-  }, [value]);
-
-  function apply(next: string) {
-    const trimmed = next.trim();
-    if (trimmed !== value) onApply(trimmed);
-  }
-
-  return (
-    <Field label={label}>
-      <input
-        list={id}
-        value={draft}
-        placeholder={placeholder}
-        onChange={(event) => {
-          const next = event.target.value;
-          setDraft(next);
-          const exact = suggestions.find((s) => s.toLowerCase() === next.trim().toLowerCase());
-          if (next.trim() === "" || exact) apply(exact ?? "");
-        }}
-        onBlur={() => apply(draft)}
-        onKeyDown={(event) => {
-          if (event.key === "Enter") {
-            event.preventDefault();
-            apply(draft);
-          }
-        }}
-        className={`${fieldClass} placeholder:text-text-muted`}
-      />
-      <datalist id={id}>
-        {suggestions.map((s) => (
-          <option key={s} value={s} />
-        ))}
-      </datalist>
-    </Field>
-  );
-}
+const PRODUCT_CATEGORY_OPTIONS = PRODUCT_CATEGORIES.map((key) => ({ value: key, label: PRODUCT_CATEGORY_LABELS[key] }));
+const SOURCE_OPTIONS = PRODUCT_SOURCES.map((key) => ({ value: key, label: PRODUCT_SOURCE_LABELS[key] }));
+const STATUS_OPTIONS = PRODUCT_STATUSES.map((key) => ({ value: key, label: PRODUCT_STATUS_LABELS[key] }));
+const SORT_OPTIONS = PRODUCT_DATABASE_SORTS.map((s) => ({ value: s.key, label: s.label }));
+const IMAGE_OPTIONS = [
+  { value: "with", label: "Med billede" },
+  { value: "without", label: "Uden billede" },
+];
+const BARCODE_OPTIONS = [
+  { value: "with", label: "Med stregkode" },
+  { value: "without", label: "Uden stregkode" },
+];
 
 export function ProductDatabaseFilters({
   filters,
@@ -161,20 +108,46 @@ export function ProductDatabaseFilters({
     return () => window.clearTimeout(timer);
   }, [query, filters, router]);
 
-  const storeName = stores.find((s) => s.id === filters.store)?.name;
-  const categoryName = categories.find((c) => c.id === filters.category)?.name;
-  const chips: { label: string; clear: Partial<Filters> }[] = [];
-  if (filters.store) chips.push({ label: filters.store === "none" ? "Ingen kæde" : `Kæde: ${storeName ?? "ukendt"}`, clear: { store: "" } });
-  if (filters.brand) chips.push({ label: `Mærke: ${filters.brand}`, clear: { brand: "", subbrand: "" } });
-  if (filters.subbrand) chips.push({ label: `Sub brand: ${filters.subbrand}`, clear: { subbrand: "" } });
-  if (filters.category)
-    chips.push({ label: filters.category === "none" ? "Uden kategori" : `Kategori: ${categoryName ?? "ukendt"}`, clear: { category: "" } });
-  if (filters.productCategory)
-    chips.push({ label: `Varetype: ${PRODUCT_CATEGORY_LABELS[filters.productCategory]}`, clear: { productCategory: "" } });
-  if (filters.source) chips.push({ label: `Kilde: ${PRODUCT_SOURCE_LABELS[filters.source]}`, clear: { source: "" } });
-  if (filters.status) chips.push({ label: `Status: ${PRODUCT_STATUS_LABELS[filters.status]}`, clear: { status: "" } });
-  if (filters.image) chips.push({ label: filters.image === "with" ? "Med billede" : "Uden billede", clear: { image: "" } });
-  if (filters.barcode) chips.push({ label: filters.barcode === "with" ? "Med stregkode" : "Uden stregkode", clear: { barcode: "" } });
+  const storeOptions = [
+    ...stores.map((store) => ({ value: store.id, label: `${store.name} (${store.count.toLocaleString("da-DK")})` })),
+    { value: "none", label: "Ikke tilknyttet en kæde" },
+  ];
+  const categoryOptions = [
+    ...categories.map((category) => ({ value: category.id, label: category.name })),
+    { value: "none", label: "Uden kategori" },
+  ];
+  const brandOptions = brands.map((brand) => ({ value: brand, label: brand }));
+  const subbrandOptions = subbrands.map((subbrand) => ({ value: subbrand, label: subbrand }));
+
+  // Én chip pr. valgt værdi, så de kan fjernes enkeltvis.
+  const chips: { key: string; label: string; clear: Partial<Filters> }[] = [];
+  const without = <T,>(list: T[], value: T) => list.filter((v) => v !== value);
+  if (filters.store) {
+    const storeName = stores.find((s) => s.id === filters.store)?.name;
+    chips.push({ key: "store", label: filters.store === "none" ? "Ingen kæde" : `Kæde: ${storeName ?? "ukendt"}`, clear: { store: "" } });
+  }
+  for (const brand of filters.brand) chips.push({ key: `brand:${brand}`, label: `Mærke: ${brand}`, clear: { brand: without(filters.brand, brand) } });
+  for (const subbrand of filters.subbrand)
+    chips.push({ key: `subbrand:${subbrand}`, label: `Sub brand: ${subbrand}`, clear: { subbrand: without(filters.subbrand, subbrand) } });
+  for (const id of filters.category) {
+    const name = categories.find((c) => c.id === id)?.name;
+    chips.push({
+      key: `category:${id}`,
+      label: id === "none" ? "Uden kategori" : `Kategori: ${name ?? "ukendt"}`,
+      clear: { category: without(filters.category, id) },
+    });
+  }
+  for (const key of filters.productCategory)
+    chips.push({
+      key: `productCategory:${key}`,
+      label: `Varetype: ${PRODUCT_CATEGORY_LABELS[key]}`,
+      clear: { productCategory: without(filters.productCategory, key) },
+    });
+  for (const key of filters.source)
+    chips.push({ key: `source:${key}`, label: `Kilde: ${PRODUCT_SOURCE_LABELS[key]}`, clear: { source: without(filters.source, key) } });
+  if (filters.status) chips.push({ key: "status", label: `Status: ${PRODUCT_STATUS_LABELS[filters.status]}`, clear: { status: "" } });
+  if (filters.image) chips.push({ key: "image", label: filters.image === "with" ? "Med billede" : "Uden billede", clear: { image: "" } });
+  if (filters.barcode) chips.push({ key: "barcode", label: filters.barcode === "with" ? "Med stregkode" : "Uden stregkode", clear: { barcode: "" } });
 
   return (
     <section
@@ -199,19 +172,13 @@ export function ProductDatabaseFilters({
           </span>
         </label>
         <div className="grid grid-cols-2 gap-3 md:flex md:w-auto">
-          <Field label="Sortér efter">
-            <select
-              value={filters.sort}
-              onChange={(event) => go({ sort: event.target.value as Filters["sort"] })}
-              className={`${fieldClass} md:w-52`}
-            >
-              {PRODUCT_DATABASE_SORTS.map((s) => (
-                <option key={s.key} value={s.key}>
-                  {s.label}
-                </option>
-              ))}
-            </select>
-          </Field>
+          <FilterDropdown
+            label="Sortér efter"
+            value={filters.sort}
+            options={SORT_OPTIONS}
+            onChange={(sort) => go({ sort: sort as Filters["sort"] })}
+            className="md:w-52"
+          />
           <Segment
             label="Visning"
             value={filters.view}
@@ -260,11 +227,11 @@ export function ProductDatabaseFilters({
               startTransition(() => {
                 router.push(productDatabaseHref({ ...filters, q: "" }, {
                   store: "",
-                  brand: "",
-                  subbrand: "",
-                  category: "",
-                  productCategory: "",
-                  source: "",
+                  brand: [],
+                  subbrand: [],
+                  category: [],
+                  productCategory: [],
+                  source: [],
                   status: "",
                   image: "",
                   barcode: "",
@@ -280,98 +247,75 @@ export function ProductDatabaseFilters({
 
       {showFilters && (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <Field label="Kæde">
-            <select value={filters.store} onChange={(event) => go({ store: event.target.value })} className={fieldClass}>
-              <option value="">Alle kæder</option>
-              {stores.map((store) => (
-                <option key={store.id} value={store.id}>
-                  {store.name} ({store.count.toLocaleString("da-DK")})
-                </option>
-              ))}
-              <option value="none">Ikke tilknyttet en kæde</option>
-            </select>
-          </Field>
-          <SuggestField
-            id="product-database-brands"
+          <FilterDropdown
+            label="Kæde"
+            value={filters.store}
+            allLabel="Alle kæder"
+            options={storeOptions}
+            onChange={(store) => go({ store })}
+          />
+          <FilterDropdown
+            multiple
             label="Mærke"
             placeholder="Alle mærker"
-            value={filters.brand}
-            suggestions={brands}
-            onApply={(brand) => go({ brand, subbrand: "" })}
+            values={filters.brand}
+            options={brandOptions}
+            onChange={(brand) => go({ brand })}
           />
-          <SuggestField
-            id="product-database-subbrands"
+          <FilterDropdown
+            multiple
             label="Sub brand"
-            placeholder={filters.brand ? `Alle under ${filters.brand}` : "Alle sub brands"}
-            value={filters.subbrand}
-            suggestions={subbrands}
-            onApply={(subbrand) => go({ subbrand })}
+            placeholder={filters.brand.length === 1 ? `Alle under ${filters.brand[0]}` : "Alle sub brands"}
+            values={filters.subbrand}
+            options={subbrandOptions}
+            onChange={(subbrand) => go({ subbrand })}
           />
-          <Field label="Kategori">
-            <select value={filters.category} onChange={(event) => go({ category: event.target.value })} className={fieldClass}>
-              <option value="">Alle kategorier</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-              <option value="none">Uden kategori</option>
-            </select>
-          </Field>
-          <Field label="Varetype">
-            <select
-              value={filters.productCategory}
-              onChange={(event) => go({ productCategory: event.target.value as Filters["productCategory"] })}
-              className={fieldClass}
-            >
-              <option value="">Alle varetyper</option>
-              {PRODUCT_CATEGORIES.map((key) => (
-                <option key={key} value={key}>
-                  {PRODUCT_CATEGORY_LABELS[key]}
-                </option>
-              ))}
-            </select>
-          </Field>
-          <Field label="Kilde">
-            <select value={filters.source} onChange={(event) => go({ source: event.target.value as Filters["source"] })} className={fieldClass}>
-              <option value="">Alle kilder</option>
-              {PRODUCT_SOURCES.map((key) => (
-                <option key={key} value={key}>
-                  {PRODUCT_SOURCE_LABELS[key]}
-                </option>
-              ))}
-            </select>
-          </Field>
-          <Field label="Status">
-            <select value={filters.status} onChange={(event) => go({ status: event.target.value as Filters["status"] })} className={fieldClass}>
-              <option value="">Alle statusser</option>
-              {PRODUCT_STATUSES.map((key) => (
-                <option key={key} value={key}>
-                  {PRODUCT_STATUS_LABELS[key]}
-                </option>
-              ))}
-            </select>
-          </Field>
-          <div className="grid grid-cols-2 gap-3">
-            <Segment
+          <FilterDropdown
+            multiple
+            label="Kategori"
+            placeholder="Alle kategorier"
+            values={filters.category}
+            options={categoryOptions}
+            onChange={(category) => go({ category })}
+          />
+          <FilterDropdown
+            multiple
+            label="Varetype"
+            placeholder="Alle varetyper"
+            values={filters.productCategory}
+            options={PRODUCT_CATEGORY_OPTIONS}
+            onChange={(productCategory) => go({ productCategory: productCategory as Filters["productCategory"] })}
+          />
+          <FilterDropdown
+            multiple
+            label="Kilde"
+            placeholder="Alle kilder"
+            values={filters.source}
+            options={SOURCE_OPTIONS}
+            onChange={(source) => go({ source: source as Filters["source"] })}
+          />
+          <FilterDropdown
+            label="Status"
+            value={filters.status}
+            allLabel="Alle statusser"
+            options={STATUS_OPTIONS}
+            onChange={(status) => go({ status: status as Filters["status"] })}
+          />
+          <div className="grid min-w-0 grid-cols-2 gap-3">
+            <FilterDropdown
               label="Billede"
-              value={filters.image || "all"}
-              options={[
-                { value: "all", label: "Alle" },
-                { value: "with", label: "Med" },
-                { value: "without", label: "Uden" },
-              ]}
-              onChange={(image) => go({ image: image === "all" ? "" : image })}
+              value={filters.image}
+              allLabel="Alle"
+              options={IMAGE_OPTIONS}
+              onChange={(image) => go({ image: image as Filters["image"] })}
             />
-            <Segment
+            <FilterDropdown
               label="Stregkode"
-              value={filters.barcode || "all"}
-              options={[
-                { value: "all", label: "Alle" },
-                { value: "with", label: "Med" },
-                { value: "without", label: "Uden" },
-              ]}
-              onChange={(barcode) => go({ barcode: barcode === "all" ? "" : barcode })}
+              alignRight
+              value={filters.barcode}
+              allLabel="Alle"
+              options={BARCODE_OPTIONS}
+              onChange={(barcode) => go({ barcode: barcode as Filters["barcode"] })}
             />
           </div>
         </div>
@@ -380,7 +324,7 @@ export function ProductDatabaseFilters({
       {chips.length > 0 && (
         <ul className="flex flex-wrap gap-2">
           {chips.map((chip) => (
-            <li key={chip.label}>
+            <li key={chip.key}>
               <button
                 type="button"
                 onClick={() => go(chip.clear)}
