@@ -203,7 +203,8 @@ uændrede. Mangler brugerens visuelle godkendelse.
 - Cloudflare færdigt: tunnel `Server` + DNS for `hellocal.io`/`www`/`admin`/`scan` (alle `/api/health` 200), www → apex, gamle packroff-hostnavne 308 → nye, Email Routing (MX/SPF/DMARC). Server: `APP_BASE_URL`/`SCAN_APP_BASE_URL` sat (backup `.env.production.bak-20260927-domain`).
 - Mailjet: afsenderdomæne `*@hellocal.io` oprettet og **Active** (ejerskab-TXT `mailjet._158c17b9` + DKIM `mailjet._domainkey` i Cloudflare; SPF har `include:spf.mailjet.com`). Server-`.env.production`: `SMTP_FROM="Hello Cal <no-reply@hellocal.io>"` (backup `.env.production.bak-20260927-mailjet`).
 - Email Routing: peter@packroff.dk bekræftet; `support@hellocal.io` + catch-all videresendes til peter@packroff.dk.
-- Mangler (kræver brugeren): tilføj `https://hellocal.io/api/auth/oauth/<google|facebook|apple>/callback` hos login-udbyderne og nye integrations-callbacks hos Withings/Google Health/Strava m.fl. (derefter `INTEGRATIONS_REDIRECT_BASE_URL` + `*_REDIRECT_URI` på serveren til hellocal.io). Chrome-udvidelsen fik ikke adgang til Facebook/Withings/Mailjet-siderne.
+- Google OAuth-klienten har allerede hellocal.io-URIer; server `GOOGLE_HEALTH_REDIRECT_URI` sat til hellocal.io (slår igennem ved næste deploy).
+- Mangler (kræver brugeren, Chrome-udvidelsen må ikke ændre dem): Facebook-appen "log-in hello cal" → Valid OAuth Redirect URI `https://hellocal.io/api/auth/oauth/facebook/callback`; Withings (logget ud) → `https://hellocal.io/api/withings/callback`; Strava (logget ud) → callback-domæne `hellocal.io`; Apple (logget ud) → domæne + Return URL. Derefter `INTEGRATIONS_REDIRECT_BASE_URL`/`WITHINGS_REDIRECT_URI` på serveren til hellocal.io.
 
 ## 2026-09-27: Tilføj-kamera med fire knapper + "opret straks"
 
