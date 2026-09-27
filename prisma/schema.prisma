@@ -3081,3 +3081,15 @@ model RoadmapItem {
   @@index([status, sortOrder])
   @@map("roadmap_items")
 }
+
+// Admin guide-builder (docs/DECISIONS.md 2026-09-27): én række pr. slags
+// ("startup" = startup-guiden, "tooltips" = tooltips). `config` er den
+// saniterede builder-opsætning fra src/lib/guide-builder.ts.
+model GuideDesign {
+  kind        String   @id
+  config      Json
+  updatedById String?
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  @@map("guide_designs")
+}

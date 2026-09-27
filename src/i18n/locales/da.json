@@ -292,6 +292,23 @@
     "showStartupTips": "Vis start-up tips",
     "showStartupTipsDescription": "Viser et kort tip på hele skærmen, når du åbner appen, om funktioner, du endnu ikke har brugt."
   },
+  "guide": {
+    "back": "Tilbage",
+    "next": "Næste",
+    "finish": "Færdig",
+    "askLater": "Spørg mig senere",
+    "continue": "Videre",
+    "skip": "Spring over",
+    "gotIt": "Forstået",
+    "close": "Luk",
+    "progress": "Fremskridt i guiden",
+    "previousTip": "Forrige tip",
+    "nextTip": "Næste tip",
+    "tipOf": "Tip {current} af {total}",
+    "decrease": "Færre",
+    "increase": "Flere",
+    "imageAlt": "Illustration"
+  },
   "startupTips": {
     "close": "Luk",
     "disable": "Slå fra",

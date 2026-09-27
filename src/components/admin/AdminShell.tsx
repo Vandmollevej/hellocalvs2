@@ -85,6 +85,7 @@ const NAV: NavEntry[] = [
     icon: "palette",
     links: [
       { href: "/admin/designmanual", key: "nav_design_manual" },
+      { href: "/admin/guide-builder", key: "nav_guide_builder" },
       { href: "/admin/page-tree", key: "nav_page_tree" },
     ],
   },

@@ -292,6 +292,23 @@
     "showStartupTips": "Show start-up tips",
     "showStartupTipsDescription": "Shows a short full-screen tip when you open the app, about features you have not used yet."
   },
+  "guide": {
+    "back": "Back",
+    "next": "Next",
+    "finish": "Done",
+    "askLater": "Ask me later",
+    "continue": "Continue",
+    "skip": "Skip",
+    "gotIt": "Got it",
+    "close": "Close",
+    "progress": "Guide progress",
+    "previousTip": "Previous tip",
+    "nextTip": "Next tip",
+    "tipOf": "Tip {current} of {total}",
+    "decrease": "Fewer",
+    "increase": "More",
+    "imageAlt": "Illustration"
+  },
   "startupTips": {
     "close": "Close",
     "disable": "Turn off",

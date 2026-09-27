@@ -158,6 +158,15 @@ export default async function DesignManualPage() {
                 Skitser i pixels
               </Link>
             </li>
+            <li>
+              <Link
+                href="/admin/guide-builder"
+                className="flex items-center gap-2 whitespace-nowrap rounded-md px-3 py-2 text-sm text-text-secondary hover:bg-hf-tan hover:text-text-primary"
+              >
+                <span className="hidden w-5 text-xs text-text-muted md:inline">→</span>
+                Guide-builder
+              </Link>
+            </li>
           </ul>
         </nav>
 

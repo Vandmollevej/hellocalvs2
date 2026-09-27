@@ -2,6 +2,24 @@
 
 Last updated: 2026-09-27
 
+## 2026-09-27: Guide-builder (startup-guide + tooltips) i admin
+
+- Ny side `/admin/guide-builder` (menu: Design og opbygning; link fra
+  Designmanualen). Venstre: masonry med farvetema, baggrunde (kun design.md-
+  tokens), fonte (kun `.hf-type-*`-roller), stepper-element, skærmliste med
+  billede/trinnavn og "Valgt element". Højre: 402 px telefon-preview.
+- Drag n drop: baggrund først (fonte er låst til skærmen har en baggrund),
+  derefter fonte/elementer; elementer kan flyttes og slettes; billedfil kan
+  trækkes på billedfeltet.
+- Startup-guide: progress-bar (HfProgressStepper), fuldbredde-billede
+  402×226, overskrift/tekst/indstillinger, Tilbage + sort Næste og "Spørg mig
+  senere" centreret under. Tooltips: fast 280×210-billede, tekst i nederste
+  halvdel, swipe + pile/prikker med antal, sort Videre + "Spring over".
+- Begge vises i det fælles fuldskærms-overlay (`GuideOverlay`, "Luk" via
+  `OverlayCloseControl`). Gemmes i `guide_designs` (migration
+  `20260927120000_guide_designs`, køres af deploy).
+- Ikke koblet på brugerens app-flow endnu (StartupTipOverlay er uændret).
+  Ikke live-testet (ingen lokal DB). Lint, typecheck og build grønne.
 ## 2026-09-27: Umami-analyse i admin
 
 - Ny admin-side `/admin/analytics` ("Analyse", øverst i menuen): besøgende,

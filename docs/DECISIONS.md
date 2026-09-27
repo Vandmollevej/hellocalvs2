@@ -2,6 +2,23 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-27: Guide-builder til startup-guide og tooltips
+
+- Startup-guiden og tooltips bygges i admin (`/admin/guide-builder`) og
+  gemmes som saniteret JSON i `GuideDesign` (én række pr. slags:
+  `startup`, `tooltips`). Serveren accepterer kun faste baggrunde fra
+  design.md §3 og tekstroller fra §4.2 — ingen frie farver/fontstørrelser.
+- Builder-flow: baggrund trækkes ind først, derefter fonte/elementer.
+  Et farvetema er et eksplicit baggrundsvalg for alle skærme.
+- Startup-guidens bund er altid Tilbage (outline) + Næste (sort) og "Spørg mig
+  senere" (sort tekst, centreret) under knapperne. Tooltips har fast
+  billedfelt (280×210, 8 px radius, ikke rundt), prikker + pile med antal,
+  Videre + "Spring over". Intet flag/sprogvælger i nogen af dem.
+- Billedet har fast højde/dimension (startup 402×226 fuldbredde); et nyt
+  billede beskæres (object-cover) og ændrer aldrig layoutet. Uploads
+  nedskaleres i browseren til en lille data-URL (< 400 kB).
+- Begge vises i det fælles fuldskærms-overlay (samme skal som
+  StartupTipOverlay). Kobling til brugerens app-flow er en separat opgave.
 ## 2026-09-27: Umami-analyse (admin → Analyse)
 
 - Besøgsstatistik laves med selv-hostet Umami (v3, image fastlåst til
