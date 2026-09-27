@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { IconArrowRight, IconChevronRight, IconStar } from "@tabler/icons-react";
+import { IconArrowRight, IconChevronRight, IconStar, IconUsers } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { SUBSCRIPTION_PLANS } from "@/lib/subscription-plans";
@@ -14,6 +14,8 @@ type SubscriptionData = {
   pointsBalance: number;
   freeMonthCost: number;
   priceDkk: number;
+  plan: "INDIVIDUAL" | "FAMILY";
+  coveredByFamily: boolean;
 };
 
 export default function SubscriptionPage() {
@@ -141,6 +143,19 @@ export default function SubscriptionPage() {
               <p className="hf-type-body-sm">{t("subscription.freePlan.description")}</p>
             )}
           </div>
+
+          {/* Seriøs Familie: invitation, profiler og adgang styres på
+              /profile/family (docs/FAMILY.md). */}
+          {(data.plan === "FAMILY" || data.coveredByFamily) && (
+            <Link
+              href="/profile/family"
+              className="hf-type-body flex h-12 items-center gap-3 rounded-lg bg-hf-tan px-4"
+            >
+              <IconUsers size={20} aria-hidden="true" />
+              <span className="min-w-0 flex-1">{t("family.switcher.manage")}</span>
+              <IconChevronRight size={20} aria-hidden="true" className="opacity-60" />
+            </Link>
+          )}
 
           <Link href="/settings/payment" className="hf-btn-secondary hf-type-button h-12 w-full">
             {t("subscription.paymentMethods")}
