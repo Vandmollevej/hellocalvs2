@@ -64,6 +64,13 @@ Last updated: 2026-09-27
 - Fælles klasser `.rv-*` i `src/components/recipe-view/` — ingen opskrift har eget design. Brugerens egne/delte retter er uændrede.
 - Kræver migration `20260927100000_hellofresh_recipe_details` og genstart af hellofresh-agenten: den genhenter alle opskrifter én gang for at gemme beskrivelse, tid, trin m.m. Indtil da vises de gamle data (uden beskrivelse/trin).
 
+## 2026-09-27: Designmanual — typografi- og knaptabeller over HelloFresh
+
+Sektion 4 og 5 i admin → Designmanual er nu opslagstabeller over forlægget
+(18 tekstroller, 26 knap- og valgtyper) med levende prøver, farvekode med
+kontrast, mål, placering, hvor ofte (x/28 skærme) og "Hello Cal i dag".
+Se DECISIONS 2026-09-27. Mangler brugerens visuelle godkendelse.
+
 ## 2026-09-27: Admin "Page tree"
 
 - Ny admin-side `/admin/page-tree`: alle 128 sider som træ med pile, søgning, spring til område og "testet"-flueben med fremdriftsbjælke. Test sikrer at listen følger `src/app` (docs/DECISIONS.md 2026-09-27).

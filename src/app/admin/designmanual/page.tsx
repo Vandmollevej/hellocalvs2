@@ -19,6 +19,8 @@ import { CalorieBadge } from "@/components/hf/CalorieBadge";
 import { OverlayDemo } from "./OverlayDemo";
 import { BoxOverview } from "./BoxOverview";
 import { AccessSheetDemo } from "./AccessSheetDemo";
+import { TypographyTable } from "./TypographyTable";
+import { ButtonTable } from "./ButtonTable";
 
 // Designmanual i admin: levende oversigt over Hello Cals visuelle system.
 // Alle eksempler bruger de rigtige klasser/tokens fra globals.css og
@@ -102,25 +104,6 @@ const COLOR_GROUPS: { title: string; swatches: Swatch[] }[] = [
       { token: "--hf-color-facebook", hex: "#00178C", name: "Facebook", use: "Facebook-login" },
     ],
   },
-];
-
-const TYPE_ROLES: { cls: string; spec: string; use: string; sample: string; dark?: boolean }[] = [
-  { cls: "hf-type-hero", spec: "32 / 38 · 700", use: "Stor start-/marketingoverskrift", sample: "Spis godt, lev let" },
-  { cls: "hf-type-page-title", spec: "24 / 29 · 700 · centreret", use: "Sidens hovedoverskrift", sample: "Min kalender" },
-  { cls: "hf-type-nav-title", spec: "20 / 24 · 700 · hvid", use: "Titel i appbar", sample: "Indstillinger", dark: true },
-  { cls: "hf-type-section-title", spec: "14 / 20 · 500 · med linjer", use: "Sektionsadskiller", sample: "Morgenmad" },
-  { cls: "hf-type-category-title", spec: "18 / 22 · 700 · #464646", use: "Titel på kategorikort", sample: "Vægttab" },
-  { cls: "hf-type-body-lg", spec: "20 / 29 · 400", use: "Stor introduktionstekst", sample: "Registrér dit første måltid i dag." },
-  { cls: "hf-type-body", spec: "17 / 25 · 400", use: "Standard brødtekst", sample: "Du har 640 kcal tilbage i dag." },
-  { cls: "hf-type-body-sm", spec: "15 / 22 · 400", use: "Sekundær brødtekst", sample: "Opdateret for 5 minutter siden." },
-  { cls: "hf-type-caption", spec: "13 / 18 · 400 · sekundær", use: "Captions og metadata", sample: "Kilde: Frida fødevaredata" },
-  { cls: "hf-type-progress-active", spec: "13 / 18 · 600 · grøn", use: "Aktivt trin i progress", sample: "Trin 2 af 4" },
-  { cls: "hf-type-progress-inactive", spec: "13 / 18 · 400 · grå", use: "Inaktivt trin i progress", sample: "Trin 3 af 4" },
-  { cls: "hf-type-button", spec: "17 / 24 · 700", use: "Knaptekst", sample: "Fortsæt" },
-  { cls: "hf-type-input", spec: "17 / 24 · 400", use: "Værdi i inputfelt", sample: "Havregryn" },
-  { cls: "hf-type-placeholder", spec: "16 / 24 · 400 · placeholder", use: "Placeholder", sample: "Søg efter fødevare" },
-  { cls: "hf-type-label", spec: "12 / 16 · 400", use: "Floating label på felt", sample: "E-mail" },
-  { cls: "hf-type-tab", spec: "12 / 16 · 400", use: "Bundmenu-label", sample: "Kalender" },
 ];
 
 const SPACING = [4, 8, 12, 16, 24, 32, 40, 48];
@@ -274,107 +257,38 @@ export default async function DesignManualPage() {
           </Section>
 
           {/* 4. Knapper */}
-          <Section id="knapper" number={4} title="Knapper" intro="Standardhøjde 48 px, 8 px radius, 17 px fed tekst. Primære og sekundære handlinger fylder altid hele bredden (ActionButton/ActionLink).">
-            <div className="flex flex-col gap-3 rounded-lg border border-border-strong bg-hf-cream p-4">
-              <Demo label="Primær · .hf-btn-primary">
-                <button type="button" className="hf-btn-primary h-12 w-full px-4 text-[17px]">Fortsæt</button>
-              </Demo>
-              <Demo label="Sekundær · .hf-btn-secondary">
-                <button type="button" className="hf-btn-secondary h-12 w-full px-4 text-[17px]">Annullér</button>
-              </Demo>
-              <Demo label="Brand (kun onboarding/login)">
-                <button type="button" className="hf-btn-primary h-12 w-full px-4 text-[17px]" style={{ background: "var(--hf-color-brand)" }}>
-                  Kom i gang
-                </button>
-              </Demo>
-              <Demo label="Fare (bekræft destruktiv handling)">
+          <Section id="knapper" number={4} title="Knapper" intro="Forlægget er HelloFresh-appen, målt på 28 skærmbilleder. Hver knap- og valgtype viser fyld, tekst, kant, mål, radius, placering og hvor ofte den bruges.">
+            <ButtonTable />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="flex flex-col gap-3 rounded-lg border border-border-strong bg-hf-cream p-4">
+                <p className="text-sm font-semibold text-text-primary">Kun i Hello Cal · fare</p>
                 <button type="button" className="hf-btn-primary h-12 w-full px-4 text-[17px]" style={{ background: "var(--hf-color-danger)" }}>
                   Slet konto
                 </button>
-              </Demo>
-              <Demo label="Deaktiveret">
-                <button type="button" disabled className="hf-btn-primary h-12 w-full px-4 text-[17px]" style={{ background: "var(--hf-color-disabled)" }}>
-                  Fortsæt
+                <p className="text-xs text-text-secondary">#A3271F · bekræft en destruktiv handling. Findes ikke i forlægget.</p>
+              </div>
+              <div className="flex flex-col gap-3 rounded-lg border border-border-strong bg-hf-cream p-4">
+                <p className="text-sm font-semibold text-text-primary">Kun i Hello Cal · lime FAB</p>
+                <button type="button" aria-label="Tilføj" className="flex size-14 items-center justify-center rounded-[14px] bg-hf-lime text-hf-black">
+                  <IconPlus size={28} stroke={2.25} />
                 </button>
-              </Demo>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="flex flex-col gap-3 rounded-lg border border-border-strong bg-hf-cream p-4">
-                <p className="text-sm font-semibold text-text-primary">Kompakt og små</p>
-                <div className="flex flex-wrap items-center gap-3">
-                  <button type="button" className="hf-btn-secondary h-10 px-3 text-[15px]">Kompakt 40 px</button>
-                  <button type="button" className="hf-btn-secondary h-9 rounded-full px-3 text-[13px]">Filter-pill</button>
-                  <button type="button" className="text-[17px] text-hf-black underline underline-offset-2">Teksthandling</button>
-                </div>
-              </div>
-              <div className="flex flex-col gap-3 rounded-lg border border-border-strong bg-hf-cream p-4">
-                <p className="text-sm font-semibold text-text-primary">Ikonknap og FAB</p>
-                <div className="flex items-center gap-4">
-                  <button type="button" aria-label="Indstillinger" className="flex size-11 items-center justify-center text-hf-black">
-                    <IconSettings size={24} />
-                  </button>
-                  <button type="button" aria-label="Tilføj" className="flex size-14 items-center justify-center rounded-[14px] bg-hf-lime text-hf-black">
-                    <IconPlus size={28} stroke={2.25} />
-                  </button>
-                  <p className="text-xs text-text-secondary">Ikon: 44 × 44 hit area · FAB: 56 × 56, radius 14</p>
-                </div>
+                <p className="text-xs text-text-secondary">56 × 56 · radius 14 · #A3E635. Forlæggets FAB er mørk #242424 med radius 12.</p>
               </div>
             </div>
-
-            <SpecTable
-              head={["Variant", "Højde", "Padding", "Tekst"]}
-              rows={[
-                ["Standard", "48 px", "16 px vandret", "17 / 24 · 700"],
-                ["Kompakt", "40 px", "12 px vandret", "15 / 20 · 600"],
-                ["Lille (kun filter/værktøj)", "36 px", "12 px vandret", "13 / 18 · 600"],
-                ["Ikon", "44 × 44 hit area", "ingen", "24 px ikon"],
-                ["FAB", "56 × 56", "ingen", "Lime flade, mørkt ikon"],
-              ]}
-            />
             <Rules
               items={[
-                "Primær: #232323 med hvid tekst · hover #353535 · tryk #4B4B4B.",
-                "Sekundær: gennemsigtig, 1,5 px kant #232323 · hover #E3E3E3 · tryk #D2D2D2.",
-                "Knaptekst går aldrig under 17 px på en standardknap. Ikon til label: 8 px.",
-                "Disabled/loading ændrer aldrig knappens størrelse.",
+                "Næsten-sort #232323 betyder handling eller valgt. Grøn bruges kun til topbjælke og fremdrift, aldrig som knapfyld.",
+                "Beige #EFE9DE er neutral flade til valg. Lime #BBF06A + 3 px sort kant markerer det valgte kort.",
+                "Alle konturer er 1 px. Ingen gradienter eller skygger på knapper.",
+                "Formen følger beslutningen: få svar → valgkort, antal → plus/minus, lille talsæt → segmenter, lang liste → rækker med flueben, filtre → piller.",
+                "I flows ligger handlingen fast i den beige bundbjælke. På log ind står den midt på siden under felterne.",
               ]}
             />
           </Section>
 
           {/* 5. Teksttyper og fonte */}
-          <Section id="teksttyper" number={5} title="Teksttyper og fonte" intro="Systemfont (SF Pro på Apple-enheder). Vægte: 400, 600 og 700. Ingen kursiv. Vælg altid en af rollerne nedenfor.">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="flex flex-col gap-2 rounded-lg border border-border-strong bg-surface-2 p-4">
-                <p className="text-xs uppercase tracking-[0.08em] text-text-muted">Overskrifter · font-hf-heading</p>
-                <p className="hf-heading text-3xl text-hf-black">Aa Bb Æø Å</p>
-                <p className="break-all font-mono text-[11px] text-text-secondary">-apple-system, BlinkMacSystemFont, &quot;SF Pro Display&quot;, &quot;SF Pro Text&quot;, sans-serif</p>
-              </div>
-              <div className="flex flex-col gap-2 rounded-lg border border-border-strong bg-surface-2 p-4">
-                <p className="text-xs uppercase tracking-[0.08em] text-text-muted">Brødtekst · font-hf-body</p>
-                <p className="text-3xl text-hf-black" style={{ fontFamily: "var(--font-hf-body)" }}>Aa Bb Æø Å</p>
-                <p className="break-all font-mono text-[11px] text-text-secondary">-apple-system, BlinkMacSystemFont, &quot;SF Pro Text&quot;, sans-serif</p>
-              </div>
-            </div>
-            <div className="flex gap-6 rounded-lg border border-border-strong bg-surface-2 p-4 text-2xl text-hf-black" style={{ fontFamily: "var(--font-hf-body)" }}>
-              <span style={{ fontWeight: 400 }}>Regular 400</span>
-              <span style={{ fontWeight: 600 }}>Semibold 600</span>
-              <span style={{ fontWeight: 700 }}>Bold 700</span>
-            </div>
-            <div className="overflow-hidden rounded-lg border border-border-strong bg-hf-cream">
-              {TYPE_ROLES.map((role) => (
-                <div key={role.cls} className="grid gap-2 border-b border-border-strong p-4 last:border-b-0 sm:grid-cols-[1fr_200px] sm:items-center">
-                  <div className={role.dark ? "rounded-md px-3 py-2" : ""} style={role.dark ? { background: "var(--hf-color-appbar)" } : undefined}>
-                    <p className={role.cls} style={{ textAlign: "left" }}>{role.sample}</p>
-                  </div>
-                  <div className="flex flex-col gap-0.5">
-                    <code className="text-xs font-semibold text-text-primary">.{role.cls}</code>
-                    <span className="text-xs text-text-secondary">{role.spec}</span>
-                    <span className="text-xs text-text-muted">{role.use}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <Section id="teksttyper" number={5} title="Teksttyper og fonte" intro="Forlægget er HelloFresh-appen, målt på 28 skærmbilleder: en fed display-skrift til overskrifter og Roboto til alt andet. Hver rolle viser font, størrelse, farvekode og hvor den bruges.">
+            <TypographyTable />
             <Rules
               items={[
                 "Brug ikke text-sm, text-[15px] eller font-medium til en ny overskrift — vælg en rolle.",
@@ -585,15 +499,6 @@ function Tile({ title, children }: { title: string; children: React.ReactNode })
   return (
     <div className="flex flex-col gap-3 rounded-lg border border-border-strong bg-surface-2 p-4">
       <p className="text-sm font-semibold text-text-primary">{title}</p>
-      {children}
-    </div>
-  );
-}
-
-function Demo({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <p className="text-xs text-text-secondary">{label}</p>
       {children}
     </div>
   );

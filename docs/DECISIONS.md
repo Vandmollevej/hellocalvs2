@@ -79,6 +79,22 @@ Erstatter gruppelisten i punktet nedenfor (skallen er uændret).
   seneste fejlrapporter og "Øvrige opgaver" (billedforslag, logoer,
   kvalitetskontrol, dubletter, ønskede ingredienser med tal).
 
+## 2026-09-27: Designmanualens typografi- og knaptabeller beskriver forlægget
+
+- Admin → Designmanual, sektion 4 (Knapper) og 5 (Teksttyper og fonte), viser
+  HelloFresh-appen som forlæg, ikke Hello Cals nuværende klasser — brugerens
+  valg, fordi de to endnu ikke ligner hinanden. Hver række har en lille
+  "Hello Cal i dag"-note, så afvigelsen er synlig.
+- Værdierne er egne pixelmålinger på de 28 app-skærmbilleder i
+  `Hello Fresh inspiration/` (1206 px = 3×). ChatGPT-analyser er kun brugt som
+  hypoteser; flere af deres tal var forkerte (fx "afrundet" skrift, #056B3D,
+  #666666, 9–11 px vilkår, rund filterknap).
+- Forlægget: display-skrift (tæt, fed grotesk, sandsynligvis Agrandir) til
+  overskrifter og Roboto til resten. Prøverne vises med Roboto og Roboto
+  Condensed via `next/font` (kun i designmanualen).
+- 6-størrelses-typografien fra 2026-09-26 (gren `claude/typography-system`)
+  er stadig ikke live og er ikke rørt her.
+
 ## 2026-09-27: Admin-skal efter Cloudflare-dashboardets struktur
 
 - Kun struktur/opbygning fra Cloudflare — farverne er fortsat Hello Cals tokens.
