@@ -8,9 +8,9 @@ import type { Locale } from "@prisma/client";
 import { t, type AdminI18nKey } from "@/lib/admin-i18n";
 
 // Admin-skal efter Cloudflare-dashboardets struktur (docs/DECISIONS.md
-// 2026-09-27): fast topbar (logo, "Gå til…"-søgning, brugermenu), venstre
-// sidebjælke med sammenfoldelige grupper og ikoner, brødkrummer over
-// indholdet. Under lg bliver sidebjælken en skuffe bag en menuknap.
+// 2026-09-27): venstre sidebjælke i fuld højde med logo, "Gå til…"-søgning
+// og sammenfoldelige grupper med ikoner; topbar over indholdet med
+// brødkrummer og brugermenu. Under lg bliver sidebjælken en skuffe bag en menuknap.
 // Farverne er de eksisterende Hello Cal-tokens.
 
 type IconName = "home" | "box" | "database" | "users" | "handshake" | "shield" | "cog" | "palette" | "road";
@@ -483,6 +483,33 @@ function UserMenu({
   );
 }
 
+function SearchField({ label, collapsed, onOpen }: { label: string; collapsed: boolean; onOpen: () => void }) {
+  if (collapsed) {
+    return (
+      <button
+        type="button"
+        onClick={onOpen}
+        title={label}
+        aria-label={label}
+        className="flex h-9 w-full items-center justify-center rounded-md text-text-secondary hover:bg-hf-tan"
+      >
+        <Icon name="search" className="h-4 w-4" />
+      </button>
+    );
+  }
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      className="flex h-9 w-full items-center gap-2 rounded-md border border-border-strong bg-page-bg px-3 text-sm text-text-muted hover:border-hf-green"
+    >
+      <Icon name="search" className="h-4 w-4" />
+      <span className="flex-1 text-left">{label}</span>
+      <kbd className="rounded border border-border-strong px-1.5 text-[11px]">Ctrl K</kbd>
+    </button>
+  );
+}
+
 function Breadcrumbs({ locale, pathname }: { locale: Locale; pathname: string }) {
   const crumbs: { label: string; href?: string }[] = [{ label: "Admin", href: "/admin" }];
   for (const entry of NAV) {
@@ -497,10 +524,10 @@ function Breadcrumbs({ locale, pathname }: { locale: Locale; pathname: string })
       crumbs.push({ label: t(locale, link.key), href: pathname === link.href ? undefined : link.href });
     }
   }
-  if (crumbs.length === 1) return null;
+  if (pathname === "/admin") crumbs.push({ label: t(locale, "nav_overview") });
 
   return (
-    <nav aria-label="Breadcrumb" className="mb-4 flex min-w-0 items-center gap-1.5 text-xs text-text-muted">
+    <nav aria-label="Breadcrumb" className="hidden min-w-0 items-center gap-1.5 text-sm text-text-muted sm:flex">
       {crumbs.map((crumb, i) => (
         <span key={`${crumb.label}-${i}`} className="flex min-w-0 items-center gap-1.5">
           {i > 0 && <span aria-hidden="true">/</span>}
@@ -509,7 +536,7 @@ function Breadcrumbs({ locale, pathname }: { locale: Locale; pathname: string })
               {crumb.label}
             </Link>
           ) : (
-            <span className="truncate">{crumb.label}</span>
+            <span className={`truncate ${i === crumbs.length - 1 ? "text-text-primary" : ""}`}>{crumb.label}</span>
           )}
         </span>
       ))}
@@ -629,78 +656,86 @@ export function AdminShell({
 
   const badges: Badges = { support, uncertainties: hasOpenUncertainties };
 
+  const searchLabel = t(currentLocale, "nav_quick_search");
+
   return (
-    <div className="min-h-dvh bg-page-bg text-text-primary">
-      <header className="sticky top-0 z-40 flex h-14 items-center gap-2 border-b border-border-strong bg-surface-2 px-3 sm:gap-3 sm:px-4">
+    <div className="flex min-h-dvh bg-page-bg text-text-primary">
+      {/* Sidebjælken går i ét stykke fra top til bund (som Cloudflare): logo
+          og "Gå til…"-søgning ligger øverst i kolonnen, ikke i topbaren. */}
+      <aside
+        className={`sticky top-0 hidden h-dvh shrink-0 flex-col border-r border-border-strong bg-surface-2 lg:flex ${
+          collapsed ? "w-16" : "w-64"
+        }`}
+      >
+        <div className={`flex h-14 shrink-0 items-center ${collapsed ? "justify-center" : "px-4"}`}>
+          <Link href="/admin" className="flex items-center gap-2" title={collapsed ? "Hello Cal Admin" : undefined}>
+            <Image
+              src="/hello-cal-logo.png"
+              alt="Hello Cal"
+              width={collapsed ? 44 : 90}
+              height={collapsed ? 20 : 40}
+              priority
+            />
+            {!collapsed && (
+              <span className="border-l border-border-strong pl-2 text-sm font-semibold text-hf-green-dark">Admin</span>
+            )}
+          </Link>
+        </div>
+        <div className="shrink-0 px-2.5 pb-2.5">
+          <SearchField label={searchLabel} collapsed={collapsed} onOpen={() => setSearchOpen(true)} />
+        </div>
+        <nav className="flex-1 overflow-y-auto border-t border-border-strong p-2.5">
+          <SidebarNav
+            locale={currentLocale}
+            pathname={pathname}
+            badges={badges}
+            collapsed={collapsed}
+            openGroups={openGroups}
+            toggleGroup={toggleGroup}
+          />
+        </nav>
         <button
           type="button"
-          onClick={() => setDrawerOpen(true)}
-          aria-label={t(currentLocale, "nav_open_menu")}
-          className="flex h-9 w-9 items-center justify-center rounded-md text-text-secondary hover:bg-hf-tan lg:hidden"
-        >
-          <Icon name="menu" />
-        </button>
-        <Link href="/admin" className="flex shrink-0 items-center gap-2">
-          <Image src="/hello-cal-logo.png" alt="Hello Cal" width={90} height={40} priority />
-          <span className="hidden border-l border-border-strong pl-2 text-sm font-semibold text-hf-green-dark sm:inline">
-            Admin
-          </span>
-        </Link>
-
-        <button
-          type="button"
-          onClick={() => setSearchOpen(true)}
-          className="ml-auto hidden h-9 w-full max-w-xs items-center gap-2 rounded-md border border-border-strong bg-page-bg px-3 text-sm text-text-muted hover:border-hf-green md:flex"
-        >
-          <Icon name="search" className="h-4 w-4" />
-          <span className="flex-1 text-left">{t(currentLocale, "nav_quick_search")}</span>
-          <kbd className="rounded border border-border-strong px-1.5 text-[11px]">Ctrl K</kbd>
-        </button>
-        <button
-          type="button"
-          onClick={() => setSearchOpen(true)}
-          aria-label={t(currentLocale, "nav_quick_search")}
-          className="ml-auto flex h-9 w-9 items-center justify-center rounded-md text-text-secondary hover:bg-hf-tan md:hidden"
-        >
-          <Icon name="search" />
-        </button>
-        <UserMenu email={email} locale={currentLocale} onLocale={changeLocale} onLogout={logout} />
-      </header>
-
-      <div className="flex">
-        <aside
-          className={`sticky top-14 hidden h-[calc(100dvh-3.5rem)] shrink-0 flex-col border-r border-border-strong bg-surface-2 lg:flex ${
-            collapsed ? "w-16" : "w-64"
+          onClick={toggleCollapsed}
+          title={t(currentLocale, collapsed ? "nav_expand" : "nav_collapse")}
+          className={`flex items-center gap-3 border-t border-border-strong px-5 py-3 text-sm text-text-secondary hover:bg-hf-tan ${
+            collapsed ? "justify-center px-0" : ""
           }`}
         >
-          <nav className="flex-1 overflow-y-auto p-2.5">
-            <SidebarNav
-              locale={currentLocale}
-              pathname={pathname}
-              badges={badges}
-              collapsed={collapsed}
-              openGroups={openGroups}
-              toggleGroup={toggleGroup}
-            />
-          </nav>
+          <Icon name="collapse" className={`h-4 w-4 transition-transform ${collapsed ? "rotate-180" : ""}`} />
+          {!collapsed && t(currentLocale, "nav_collapse")}
+        </button>
+      </aside>
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="sticky top-0 z-40 flex h-14 items-center gap-2 border-b border-border-strong bg-surface-2 px-3 sm:gap-3 sm:px-4 lg:px-6">
           <button
             type="button"
-            onClick={toggleCollapsed}
-            title={t(currentLocale, collapsed ? "nav_expand" : "nav_collapse")}
-            className={`flex items-center gap-3 border-t border-border-strong px-5 py-3 text-sm text-text-secondary hover:bg-hf-tan ${
-              collapsed ? "justify-center px-0" : ""
-            }`}
+            onClick={() => setDrawerOpen(true)}
+            aria-label={t(currentLocale, "nav_open_menu")}
+            className="flex h-9 w-9 items-center justify-center rounded-md text-text-secondary hover:bg-hf-tan lg:hidden"
           >
-            <Icon name="collapse" className={`h-4 w-4 transition-transform ${collapsed ? "rotate-180" : ""}`} />
-            {!collapsed && t(currentLocale, "nav_collapse")}
+            <Icon name="menu" />
           </button>
-        </aside>
+          <Link href="/admin" className="flex shrink-0 items-center lg:hidden">
+            <Image src="/hello-cal-logo.png" alt="Hello Cal" width={90} height={40} priority />
+          </Link>
+          <Breadcrumbs locale={currentLocale} pathname={pathname} />
+          <button
+            type="button"
+            onClick={() => setSearchOpen(true)}
+            aria-label={searchLabel}
+            className="ml-auto flex h-9 w-9 items-center justify-center rounded-md text-text-secondary hover:bg-hf-tan lg:hidden"
+          >
+            <Icon name="search" />
+          </button>
+          <div className="lg:ml-auto">
+            <UserMenu email={email} locale={currentLocale} onLocale={changeLocale} onLogout={logout} />
+          </div>
+        </header>
 
         <main className="min-w-0 flex-1">
-          <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
-            <Breadcrumbs locale={currentLocale} pathname={pathname} />
-            {children}
-          </div>
+          <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">{children}</div>
         </main>
       </div>
 
@@ -708,7 +743,7 @@ export function AdminShell({
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-black/40" onClick={() => setDrawerOpen(false)} />
           <aside className="absolute inset-y-0 left-0 flex w-[85vw] max-w-xs flex-col bg-surface-2 shadow-xl">
-            <div className="flex h-14 items-center justify-between border-b border-border-strong px-3">
+            <div className="flex h-14 items-center justify-between px-3">
               <span className="flex items-center gap-2">
                 <Image src="/hello-cal-logo.png" alt="Hello Cal" width={90} height={40} />
                 <span className="border-l border-border-strong pl-2 text-sm font-semibold text-hf-green-dark">Admin</span>
@@ -722,7 +757,17 @@ export function AdminShell({
                 <Icon name="close" />
               </button>
             </div>
-            <nav className="flex-1 overflow-y-auto p-2.5">
+            <div className="px-2.5 pb-2.5">
+              <SearchField
+                label={searchLabel}
+                collapsed={false}
+                onOpen={() => {
+                  setDrawerOpen(false);
+                  setSearchOpen(true);
+                }}
+              />
+            </div>
+            <nav className="flex-1 overflow-y-auto border-t border-border-strong p-2.5">
               <SidebarNav
                 locale={currentLocale}
                 pathname={pathname}

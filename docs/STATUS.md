@@ -27,6 +27,11 @@ Last updated: 2026-09-27
   `IconChampagne`, `IconWaistMeasure*`), så alle brugssteder virker som før.
 - Se DECISIONS 2026-09-27 "Brugerens billeder bruges som PNG".
 
+## 2026-09-27: Admin — sidebjælke i fuld højde + widget-oversigt
+
+- Sidebjælken går nu i ét stykke fra top til bund med logo og "Gå til…"-søgning øverst (som Cloudflare). Topbaren ligger kun over indholdet med brødkrummer og brugermenu.
+- `/admin` er et widget-dashboard: 4 tællerkasser (ubesvarede beskeder, nye produkter, Usikkerheder, fejlrapporter) med links, derunder større bokse med seneste beskeder, seneste produkter, seneste fejlrapporter og øvrige opgaver med tal. Data: `src/lib/admin-dashboard.ts`.
+
 ## 2026-09-27: Admin "Page tree"
 
 - Ny admin-side `/admin/page-tree`: alle 128 sider som træ med pile, søgning, spring til område og "testet"-flueben med fremdriftsbjælke. Test sikrer at listen følger `src/app` (docs/DECISIONS.md 2026-09-27).

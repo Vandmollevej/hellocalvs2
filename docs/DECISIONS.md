@@ -36,6 +36,21 @@ Erstatter gruppelisten i punktet nedenfor (skallen er uændret).
   bad om de originale PNG'er tilbage.
 - Ønskes en anden gengivelse (f.eks. vektor), spørges brugeren først.
 
+## 2026-09-27: Admin-sidebjælke i fuld højde og widget-oversigt
+
+- Ændrer punktet "fast topbar" nedenfor: logo + "Admin" og "Gå til…"-søgningen
+  ligger øverst i venstre kolonne, som går i ét stykke fra top til bund (ingen
+  vandret streg gennem kolonnen). Topbaren ligger kun over indholdet og viser
+  brødkrummer (også "Admin / Oversigt") og brugermenuen. Mobil uændret: skuffe
+  (nu med søgefelt øverst) + logo i topbaren.
+- `/admin` (Oversigt) er widgets: 4 tællerkasser på række (ubesvarede
+  supportbeskeder med "over 24 timer", nye produkter, Usikkerheder med
+  "haster", fejlrapporter), alle med link til siden, hvor opgaven løses.
+  Derunder større bokse: seneste beskeder fra brugere (6 åbne sager med
+  uddrag af brugerens seneste besked), seneste produkter til godkendelse,
+  seneste fejlrapporter og "Øvrige opgaver" (billedforslag, logoer,
+  kvalitetskontrol, dubletter, ønskede ingredienser med tal).
+
 ## 2026-09-27: Admin-skal efter Cloudflare-dashboardets struktur
 
 - Kun struktur/opbygning fra Cloudflare — farverne er fortsat Hello Cals tokens.
