@@ -164,14 +164,14 @@ export function ProductImageGallery({
             value={primaryUrl}
             onChange={(e) => setPrimaryUrl(e.target.value)}
             placeholder="https://…"
-            className="hf-type-body w-64 rounded-md border border-hf-tan-dark px-2 py-1.5"
+            className="hf-type-body hf-field w-64 rounded-md border border-hf-tan-dark px-2"
           />
         </label>
         <button
           type="button"
           onClick={savePrimary}
           disabled={savingPrimary}
-          className="hf-btn-primary px-3 py-1.5 disabled:opacity-60"
+          className="hf-type-body rounded-md bg-hf-green-dark px-3 py-1.5 text-hf-white disabled:opacity-60"
         >
           {savingPrimary ? "Gemmer…" : "Gem hovedbillede"}
         </button>
@@ -185,7 +185,7 @@ export function ProductImageGallery({
               value={newUrl}
               onChange={(e) => setNewUrl(e.target.value)}
               placeholder="https://…"
-              className="hf-type-body w-64 rounded-md border border-hf-tan-dark px-2 py-1.5"
+              className="hf-type-body hf-field w-64 rounded-md border border-hf-tan-dark px-2"
             />
           </label>
           <button

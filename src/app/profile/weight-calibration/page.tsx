@@ -13,6 +13,7 @@ import {
   IconToiletOff,
 } from "@/components/icons/WeighConditions";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type RelativeTime = "BEFORE" | "AFTER" | "UNKNOWN";
 type TimeOfDay = "MORNING" | "EVENING" | "UNKNOWN";
@@ -323,7 +324,11 @@ export default function WeightCalibrationPage() {
             <h2 className="hf-type-title text-left text-hf-black">
               {t("weightCalibration.recentTitle")}
             </h2>
-            {loading && <p className="hf-type-small text-text-secondary">{t("weightCalibration.loading")}</p>}
+            {loading && (
+              <SkeletonScreen className="">
+                <SkeletonCards count={3} height={48} radius={16} />
+              </SkeletonScreen>
+            )}
             {recentEntries.map((entry) => (
               <div key={entry.id} className="flex items-center justify-between rounded-2xl bg-hf-tan px-4 py-3">
                 <div>

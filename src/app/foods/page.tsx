@@ -8,6 +8,7 @@ import { HfScreen } from "@/components/HfScreen";
 import { FoodRow } from "@/components/FoodRow";
 import { ActionLink } from "@/components/hf/ActionButton";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type Product = {
   id: string;
@@ -277,7 +278,9 @@ function MadvarerContent() {
 
         <div className="max-h-[60vh] overflow-y-auto overflow-x-hidden rounded-[8px] bg-hf-tan">
           {state === "loading" && (
-            <p className="hf-type-body text-text-secondary px-4 py-8 text-center">{t("foods.loading")}</p>
+            <SkeletonScreen className="px-4">
+              <SkeletonMediaRows rows={8} />
+            </SkeletonScreen>
           )}
           {state === "error" && (
             <p className="hf-type-body text-text-secondary px-4 py-8 text-center">

@@ -1,5 +1,6 @@
 "use client";
 
+import { mealShareBody } from "@/lib/meal-share";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -13,6 +14,7 @@ import {
   IconRefresh,
 } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
+import { MealShareBar } from "@/components/family/MealShareBar";
 import { ForwardButton } from "@/components/ForwardButton";
 import { appendDishDraftIngredient } from "@/lib/dish-draft";
 import { selectRawContextImageUrl } from "@/lib/image-tags";
@@ -30,6 +32,7 @@ import { fromDisplayAmount, getProductDisplayUnit, toDisplayAmount } from "@/lib
 import { NUTRIENT_BY_KEY, type ResolvedNutrient } from "@/lib/nutrients";
 import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
 import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
+import { SkeletonDetail, SkeletonScreen } from "@/components/hf/Skeleton";
 
 const PHOTO_AWARD_TYPE_KEY: Record<string, "photoAward.photoTypeBarcode" | "photoAward.photoTypeNutrition" | "photoAward.photoTypeIngredients"> = {
   BARCODE: "photoAward.photoTypeBarcode",
@@ -389,6 +392,8 @@ export default function AddPage() {
           proteinSnapshot: macros.protein,
           carbsSnapshot: macros.carbs,
           fatSnapshot: macros.fat,
+          // Fælles måltid (docs/FAMILY.md).
+          ...mealShareBody(),
         }),
       });
       if (!res.ok) {
@@ -428,13 +433,18 @@ export default function AddPage() {
       footer={
         state.status === "loaded" ? (
           <>
+            {!forDish && (
+              <div className="mb-4">
+                <MealShareBar />
+              </div>
+            )}
             {saveError && (
               <p className="hf-type-body text-text-secondary mb-2 text-center">{saveError}</p>
             )}
             <button
               onClick={forDish ? handleAddToDish : handleAdd}
               disabled={saving}
-              className="hf-btn-primary w-full py-3.5 disabled:opacity-60"
+              className="hf-control hf-btn-primary w-full disabled:opacity-60"
             >
               {forDish ? t("addProduct.addToDish") : saving ? t("createDish.saving") : t("addProduct.add")}
             </button>
@@ -444,7 +454,9 @@ export default function AddPage() {
     >
       <div className="flex h-full flex-col overflow-y-auto">
         {state.status === "loading" && (
-          <p className="hf-type-body text-text-secondary p-4 text-center">{t("addProduct.loading")}</p>
+          <SkeletonScreen>
+            <SkeletonDetail />
+          </SkeletonScreen>
         )}
 
         {(state.status === "not_found" || state.status === "error") && (
@@ -462,7 +474,7 @@ export default function AddPage() {
             {!forDish && photoAwards.length > 0 && (
               <Link
                 href={`/add/${id}/photo-award`}
-                className="hf-type-small hf-type-strong block bg-hf-black px-4 py-3 text-center text-hf-white"
+                className="hf-type-small hf-type-strong hf-control flex items-center justify-center bg-hf-black px-4 text-center text-hf-white"
               >
                 {photoAwards.length === 1
                   ? t("photoAward.bannerSingle", {
@@ -715,7 +727,7 @@ export default function AddPage() {
                           key={code}
                           type="button"
                           onClick={() => setOpenAdditive(code)}
-                          className={`flex items-center gap-3 px-4 py-3 text-left ${
+                          className={`hf-control-row flex items-center gap-3 px-4 text-left ${
                             index < (state.product.additives?.length ?? 0) - 1
                               ? "border-b border-hf-tan-dark"
                               : ""

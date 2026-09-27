@@ -74,7 +74,7 @@ export function BirthDatePicker({
       <button
         type="button"
         onClick={() => setDraft(normalize(saved ?? { year: DEFAULT_YEAR, month: 1, day: 1 }))}
-        className="hf-type-body flex items-center rounded-xl bg-hf-tan px-4 py-3 text-left text-hf-black"
+        className="hf-type-body hf-field flex items-center rounded-xl bg-hf-tan px-4 text-left text-hf-black"
       >
         {saved ? `${saved.day}. ${MONTHS[saved.month - 1]} ${saved.year}` : "Vælg"}
       </button>

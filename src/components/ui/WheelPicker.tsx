@@ -67,7 +67,7 @@ export function WheelPicker({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="hf-type-body flex items-center rounded-xl bg-hf-tan px-4 py-3 text-left text-hf-black"
+        className="hf-type-body hf-field flex items-center rounded-xl bg-hf-tan px-4 text-left text-hf-black"
       >
         {value !== null ? `${value}${unit ? ` ${unit}` : ""}` : "Vælg"}
       </button>

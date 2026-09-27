@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Widget module manifest — merged into the Hello Cal Android app. The app
+     itself must declare the `hellocal://` deep-link intent-filter on its main
+     activity (see native/README.md). -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application>
+        <receiver android:name="dk.packroff.hellocal.widgets.QuickAddWidgetReceiver" android:exported="true" android:label="Tilføj">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_quick_add_info" />
+        </receiver>
+
+        <receiver android:name="dk.packroff.hellocal.widgets.AddRowWidgetReceiver" android:exported="true" android:label="Hurtig-tilføj">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_add_row_info" />
+        </receiver>
+
+        <receiver android:name="dk.packroff.hellocal.widgets.ChartWidgetProvider" android:exported="true" android:label="Statistik-graf">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_chart_info" />
+        </receiver>
+
+        <receiver android:name="dk.packroff.hellocal.widgets.StatBoxWidgetReceiver" android:exported="true" android:label="Statistik-boks">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_stat_box_info" />
+        </receiver>
+
+        <receiver android:name="dk.packroff.hellocal.widgets.RecentEntriesWidgetReceiver" android:exported="true" android:label="Seneste registreringer">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_recent_info" />
+        </receiver>
+
+        <service
+            android:name="dk.packroff.hellocal.widgets.ChartStackService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <activity
+            android:name="dk.packroff.hellocal.widgets.WidgetConfigActivity"
+            android:exported="true">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" /></intent-filter>
+        </activity>
+    </application>
+</manifest>

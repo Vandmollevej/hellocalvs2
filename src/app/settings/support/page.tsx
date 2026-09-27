@@ -148,18 +148,21 @@ export default function SupportSettingsPage() {
 
   return (
     <HfScreen title={t("settings.support.title")}>
-      <div className="hf-page hf-page--sections">
-        <div className="flex flex-col gap-4">
-          <p className="hf-type-body">{t("settings.support.intro")}</p>
-          <p className="hf-type-body">{t("settings.support.description")}</p>
+      <div className="flex flex-col gap-8 p-4 pb-8">
+        <div className="flex flex-col gap-3">
+          <p className="text-text-secondary hf-type-body">{t("settings.support.intro")}</p>
+          <p className="text-text-secondary hf-type-body">{t("settings.support.description")}</p>
         </div>
 
-        <div>
-          <h2 className="hf-type-section-title">{t("settings.support.period")}</h2>
-          <div className="grid grid-cols-1 gap-4 min-[360px]:grid-cols-2">
+        <div className="flex flex-col gap-2">
+          <p className="hf-type-small hf-type-strong text-text-secondary hf-heading px-1 uppercase tracking-wide">
+            {t("settings.support.period")}
+          </p>
+          <div className="grid grid-cols-2 gap-3 [&>*]:min-w-0">
             <TextField
               variant="standard"
               type="date"
+              className="hf-date-input"
               label={t("settings.support.from")}
               value={validFrom}
               onChange={(event) => {
@@ -170,6 +173,7 @@ export default function SupportSettingsPage() {
             <TextField
               variant="standard"
               type="date"
+              className="hf-date-input"
               label={t("settings.support.until")}
               value={validUntil}
               min={validFrom || undefined}
@@ -181,8 +185,10 @@ export default function SupportSettingsPage() {
           </div>
         </div>
 
-        <div>
-          <h2 className="hf-type-section-title">{t("settings.support.dataTitle")}</h2>
+        <div className="flex flex-col gap-2">
+          <p className="hf-type-small hf-type-strong text-text-secondary hf-heading px-1 uppercase tracking-wide">
+            {t("settings.support.dataTitle")}
+          </p>
           <AccordionCard>
             <PermissionRow
               label={t("settings.support.selectAll")}
@@ -219,15 +225,21 @@ export default function SupportSettingsPage() {
             type="button"
             onClick={save}
             disabled={saving || loading}
-            className="hf-btn-primary h-12 w-full disabled:opacity-50"
+            className="hf-control hf-btn-primary w-full disabled:opacity-50"
           >
             {saving ? t("settings.support.saving") : t("settings.support.saveAccess")}
           </button>
           <Link
             href="/settings/support/contact"
-            className="hf-btn-primary flex h-12 w-full items-center justify-center"
+            className="hf-control hf-btn-primary flex w-full items-center justify-center"
           >
             {t("settings.support.contact")}
+          </Link>
+          <Link
+            href="/settings/support/requests"
+            className="hf-control hf-btn-secondary flex w-full items-center justify-center"
+          >
+            {t("settings.support.myRequests")}
           </Link>
         </div>
       </div>
@@ -249,7 +261,7 @@ function PermissionRow({
   divider: boolean;
 }) {
   return (
-    <div className={`flex h-12 items-center gap-4 px-4 ${divider ? "border-b border-hf-tan-dark" : ""}`}>
+    <div className={`hf-control-row flex items-center gap-4 px-4 ${divider ? "border-b border-hf-tan-dark" : ""}`}>
       <span className="hf-type-body flex-1 truncate">{label}</span>
       <Toggle checked={checked} onChange={onChange} disabled={disabled} ariaLabel={label} />
     </div>

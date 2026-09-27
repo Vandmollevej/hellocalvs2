@@ -11,6 +11,7 @@ import { FaceIdAnimation, type FaceIdPhase } from "@/components/FaceIdAnimation"
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { hasPasskeyOnDevice, loginWithPasskey } from "@/lib/passkey-client";
 import { afterLoginPath, oauthErrorKey, startOAuth } from "@/lib/login-flow";
+import { findLoginCountry, readLoginCountry, type LoginCountry } from "@/lib/login-country";
 
 function LogIndContent() {
   const { t } = useTranslation();
@@ -26,9 +27,11 @@ function LogIndContent() {
   const [submitting, setSubmitting] = useState(false);
   // Face ID kun, når det er slået til på denne enhed efter et almindeligt login.
   const [faceIdOnDevice, setFaceIdOnDevice] = useState(false);
+  const [country, setCountry] = useState<LoginCountry>(() => findLoginCountry(null));
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage findes kun i browseren
     setFaceIdOnDevice(hasPasskeyOnDevice());
+    setCountry(readLoginCountry());
   }, []);
 
   const [faceIdPhase, setFaceIdPhase] = useState<FaceIdPhase | null>(null);
@@ -93,11 +96,11 @@ function LogIndContent() {
         <div className="mt-2 h-px bg-hf-gray-border" />
         <Link
           href="/login/country"
-          className="flex h-12 items-center justify-between border-b border-hf-gray-border"
+          className="hf-control-row flex items-center justify-between border-b border-hf-gray-border"
         >
           <div className="hf-type-body flex items-center gap-3">
-            <Image src="/flag-denmark.png" alt="" width={22} height={16} className="rounded-[2px]" />
-            <span>{t("login.country")}</span>
+            <Image src={`/flags/${country.flag}.png`} alt="" width={22} height={16} className="rounded-[2px]" />
+            <span>{t(`country.countries.${country.key}`)}</span>
           </div>
           <HfChevron className="text-text-muted" />
         </Link>
@@ -108,7 +111,7 @@ function LogIndContent() {
               type="button"
               onClick={handleFaceId}
               disabled={submitting}
-              className="hf-btn-primary h-12 w-full disabled:opacity-40"
+              className="hf-control hf-btn-primary w-full disabled:opacity-40"
             >
               {t("login.continueWithFaceId")}
             </button>
@@ -150,6 +153,9 @@ function LogIndContent() {
         <p className="hf-type-body mt-4 text-center">
           {t("login.newHere")} <Link href="/signup" className="underline">{t("login.createAccount")}</Link>
         </p>
+        <p className="hf-type-body mt-2 text-center">
+          <Link href="/family-code" className="underline">{t("login.haveFamilyCode")}</Link>
+        </p>
       </form>
 
       <div className="px-4 pb-8 pt-4">
@@ -157,7 +163,7 @@ function LogIndContent() {
           type="submit"
           form="login-form"
           disabled={submitting || !email || !password}
-          className="hf-btn-primary h-12 w-full disabled:opacity-40"
+          className="hf-control hf-btn-primary w-full disabled:opacity-40"
         >
           {submitting ? t("login.submitting") : t("login.continueButton")}
         </button>

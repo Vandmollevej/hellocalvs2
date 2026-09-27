@@ -16,7 +16,7 @@ export default async function ForwardPage({ params }: { params: Promise<{ token:
     return (
       <div className="mx-auto max-w-sm p-4 text-center">
         <p className="hf-type-body">Log ind for at se hvad din ven har sendt dig.</p>
-        <Link href={`/login?next=/forward/${token}`} className="hf-btn-primary mt-4 inline-block h-12 px-6 leading-[48px]">
+        <Link href={`/login?next=/forward/${token}`} className="hf-control hf-btn-primary mt-4 inline-block px-6 leading-[48px]">
           Log ind
         </Link>
       </div>

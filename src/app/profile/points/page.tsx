@@ -78,7 +78,7 @@ export default function PointsPage() {
             type="button"
             onClick={redeem}
             disabled={redeeming || (balance ?? 0) < FREE_MONTH_COST}
-            className="hf-btn-primary mt-4 h-12 w-full disabled:opacity-40"
+            className="hf-control hf-btn-primary mt-4 w-full disabled:opacity-40"
           >
             {redeeming ? "Indløser…" : `Indløs ${FREE_MONTH_COST} points til 1 gratis måned`}
           </button>

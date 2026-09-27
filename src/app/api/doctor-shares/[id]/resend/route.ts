@@ -25,7 +25,7 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
     data: { sentAt: now, expiresAt },
   });
 
-  const viewUrl = `${process.env.APP_BASE_URL ?? "https://hellocal.packroff.dk"}/hello-doc/${updated.token}`;
+  const viewUrl = `${process.env.APP_BASE_URL ?? "https://hellocal.io"}/hello-doc/${updated.token}`;
   await queueMessage("DOCTOR_SHARE_INVITATION", {
     toEmail: updated.email,
     vars: { ownerName: user.displayName, viewUrl },

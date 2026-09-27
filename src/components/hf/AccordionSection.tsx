@@ -31,7 +31,7 @@ export function AccordionSection({
           aria-expanded={open}
           aria-controls={panelId}
           onClick={() => setOpen((value) => !value)}
-          className="flex min-w-0 flex-1 items-center gap-2 px-4 py-3 text-left focus-visible:outline-2 focus-visible:outline-hf-black"
+          className="hf-control-row flex min-w-0 flex-1 items-center gap-2 px-4 text-left focus-visible:outline-2 focus-visible:outline-hf-black"
         >
           {icon && <span className="flex shrink-0 text-hf-black">{icon}</span>}
           <span className="hf-type-body hf-type-strong flex-1 text-hf-black">{title}</span>

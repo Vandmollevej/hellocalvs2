@@ -13,7 +13,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   const link = await prisma.productDuplicateLink.findUnique({ where: { id } });
   if (!link) return NextResponse.json({ message: "Ikke fundet" }, { status: 404 });
   if (link.status !== "PENDING") {
-    return NextResponse.json({ message: "Denne dobbeltoprettelse er allerede behandlet" }, { status: 409 });
+    return NextResponse.json({ message: "Denne dublet er allerede behandlet" }, { status: 409 });
   }
 
   await prisma.productDuplicateLink.update({

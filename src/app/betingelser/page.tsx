@@ -149,7 +149,7 @@ export default function BetingelserPage() {
             abonnementet at slette appen.
           </p>
           <p>
-            Går du ned til den gratis udgave, bliver historik ældre end 30 dage skjult, men ikke
+            Går du ned til den gratis udgave, bliver historik ældre end 3 måneder skjult, men ikke
             slettet. Den kommer igen, hvis du opgraderer. Vi holder ikke dine data som gidsel.
           </p>
         </Section>
@@ -212,7 +212,7 @@ export default function BetingelserPage() {
         <Section title="14. Kontakt">
           <p>
             <Placeholder>Firmanavn</Placeholder>, <Placeholder>Adresse</Placeholder>, e-mail:{" "}
-            <Placeholder>kontakt-e-mail</Placeholder>. Du kan også skrive via appens Hjælpecenter.
+            <a href="mailto:support@hellocal.io">support@hellocal.io</a>. Du kan også skrive via appens Hjælpecenter.
           </p>
         </Section>
       </div>

@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 
-// PATCH /api/admin/products/[id] — admin edits to name/brand/macros.
+// PATCH /api/admin/products/[id] — admin edits to name/brand/macros and
+// productType/subbrand/variant.
 // Registrations store their own snapshot (titleSnapshot/kcalSnapshot/...),
 // so this never retroactively changes what past users logged — see
 // docs/DECISIONS.md's retroactive-edit note. Only future views/registrations
@@ -26,6 +27,11 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   const protein = parseNumber(body.proteinPer100g);
   const carbs = parseNumber(body.carbsPer100g);
   const fat = parseNumber(body.fatPer100g);
+  // Kerneoplysningerne fra "Nye produkter" (produkttype/subbrand/variant);
+  // tom streng rydder feltet.
+  const productType = parseOptionalText(body.productType);
+  const subbrand = parseOptionalText(body.subbrand);
+  const variant = parseOptionalText(body.variant);
 
   if (name !== undefined && !name) {
     return NextResponse.json({ message: "Navn må ikke være tomt" }, { status: 400 });
@@ -48,10 +54,18 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       ...(protein !== undefined ? { proteinPer100g: protein } : {}),
       ...(carbs !== undefined ? { carbsPer100g: carbs } : {}),
       ...(fat !== undefined ? { fatPer100g: fat } : {}),
+      ...(productType !== undefined ? { productType } : {}),
+      ...(subbrand !== undefined ? { subbrand } : {}),
+      ...(variant !== undefined ? { variant } : {}),
     },
     include: { brand: true, images: { orderBy: { order: "asc" } } },
   });
   return NextResponse.json({ product });
+}
+
+function parseOptionalText(value: unknown): string | null | undefined {
+  if (typeof value !== "string") return undefined;
+  return value.trim() || null;
 }
 
 function parseNumber(value: unknown): number | undefined {

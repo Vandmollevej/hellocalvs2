@@ -128,7 +128,7 @@ export default function InvitePage() {
     }
   }
 
-  const shareUrl = referralCode ? `https://hellocal.packroff.dk/signup?ref=${referralCode}` : null;
+  const shareUrl = referralCode ? `https://hellocal.io/signup?ref=${referralCode}` : null;
   const shareText = buildInviteMessage({ name: senderName, note });
 
   // Åbner telefonens standard-delemenu (SMS, e-mail, beskeder …) med
@@ -161,7 +161,7 @@ export default function InvitePage() {
           type="button"
           onClick={share}
           disabled={!shareUrl}
-          className="hf-btn-primary flex h-12 w-full items-center justify-center gap-2 disabled:opacity-40"
+          className="hf-control hf-btn-primary flex w-full items-center justify-center gap-2 disabled:opacity-40"
         >
           <IconShare3 size={24} aria-hidden="true" />
           <span>{copied ? "Tekst og link kopieret!" : "Del dit invite-link"}</span>
@@ -216,7 +216,7 @@ export default function InvitePage() {
             value={inviteEmail}
             onChange={(event) => setInviteEmail(event.target.value)}
             placeholder="ven@eksempel.dk"
-            className="hf-type-input h-12 min-w-0 flex-1 rounded-[8px] border bg-hf-cream px-4 outline-none"
+            className="hf-field hf-type-input min-w-0 flex-1 rounded-[8px] border bg-hf-cream px-4 outline-none"
             style={{ borderColor: "var(--hf-color-field-border)" }}
           />
           <button

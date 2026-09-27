@@ -44,7 +44,7 @@ export function FaceIdButton() {
         type="button"
         onClick={done ? undefined : enable}
         disabled={done || state === "busy"}
-        className="hf-type-body hf-type-strong flex h-14 w-full items-center justify-center gap-3 rounded-xl bg-hf-tan px-4 text-hf-black disabled:cursor-default"
+        className="hf-type-body hf-type-strong hf-control flex w-full items-center justify-center gap-3 rounded-xl bg-hf-tan px-4 text-hf-black disabled:cursor-default"
       >
         <span className="text-[#05aaf5]">
           <FaceIdIcon size={30} animate={!done} />

@@ -220,7 +220,7 @@ export function SearchRankingTuner({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Skriv en søgning for at teste live..."
-            className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-2"
+            className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-3"
           />
         </label>
         <label className="hf-type-body flex flex-col gap-1">
@@ -228,7 +228,7 @@ export function SearchRankingTuner({
           <select
             value={region}
             onChange={(e) => setRegion(e.target.value)}
-            className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-2"
+            className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-3"
           >
             {REGIONS.map((r) => (
               <option key={r.code} value={r.code}>
@@ -242,7 +242,7 @@ export function SearchRankingTuner({
           <select
             value={hour}
             onChange={(e) => setHour(Number(e.target.value))}
-            className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-2"
+            className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-3"
           >
             {Array.from({ length: 24 }, (_, h) => (
               <option key={h} value={h}>
@@ -257,7 +257,7 @@ export function SearchRankingTuner({
             value={previewUserId}
             onChange={(e) => setPreviewUserId(e.target.value)}
             placeholder="cly..."
-            className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-2"
+            className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-3"
           />
         </label>
       </div>
@@ -297,21 +297,21 @@ export function SearchRankingTuner({
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="Valgfri note til denne version..."
-              className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-2"
+              className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-3"
             />
             <div className="flex items-center gap-3">
               <button
                 type="button"
                 onClick={commit}
                 disabled={committing || !isDirty}
-                className="hf-btn-primary px-4 py-2 disabled:opacity-50"
+                className="hf-type-body hf-type-strong rounded-md bg-hf-green-dark px-4 py-2 text-hf-white disabled:opacity-50"
               >
                 {committing ? "Gemmer..." : "Commit — gør denne version aktiv"}
               </button>
               <button
                 type="button"
                 onClick={() => setWeights(defaultWeights)}
-                className="hf-btn-secondary px-3 py-2"
+                className="hf-type-body rounded-md border border-hf-tan-dark px-3 py-2 text-text-secondary hover:bg-hf-tan"
               >
                 Nulstil til standard
               </button>
@@ -338,7 +338,7 @@ export function SearchRankingTuner({
                       type="button"
                       onClick={() => restore(entry.id)}
                       disabled={committing}
-                      className="hf-btn-secondary px-2 py-1"
+                      className="rounded-md border border-hf-tan-dark px-2 py-1 text-text-secondary hover:bg-hf-tan"
                     >
                       Gendan
                     </button>

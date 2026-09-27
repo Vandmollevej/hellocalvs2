@@ -76,11 +76,11 @@ function FaceIdOfferContent() {
           type="button"
           onClick={enable}
           disabled={busy}
-          className="hf-btn-primary h-12 w-full disabled:opacity-40"
+          className="hf-control hf-btn-primary w-full disabled:opacity-40"
         >
           {busy ? t("faceIdOffer.enabling") : t("faceIdOffer.enable")}
         </button>
-        <button type="button" onClick={skip} disabled={busy} className="hf-btn-text h-12 w-full justify-center">
+        <button type="button" onClick={skip} disabled={busy} className="hf-btn-text hf-control w-full">
           {t("faceIdOffer.skip")}
         </button>
       </div>

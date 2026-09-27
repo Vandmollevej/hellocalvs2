@@ -17,7 +17,7 @@ export type KeyField = {
   hint?: string;
 };
 
-export type KeyGroupId = "login" | "integrations" | "ai" | "mail" | "push" | "system";
+export type KeyGroupId = "login" | "integrations" | "ai" | "payment" | "mail" | "push" | "system";
 
 export type KeyService = {
   id: string;
@@ -36,13 +36,14 @@ export const KEY_GROUPS: { id: KeyGroupId; title: string }[] = [
   { id: "login", title: "Log ind" },
   { id: "integrations", title: "Sundhedsintegrationer" },
   { id: "ai", title: "AI og fødevaredata" },
+  { id: "payment", title: "Betaling" },
   { id: "mail", title: "E-mail" },
   { id: "push", title: "Push-notifikationer" },
   { id: "system", title: "System (kun .env.production)" },
 ];
 
 function appBase() {
-  return (process.env.APP_BASE_URL || "https://hellocal.packroff.dk").replace(/\/$/, "");
+  return (process.env.APP_BASE_URL || "https://hellocal.io").replace(/\/$/, "");
 }
 
 function loginRedirect(provider: string) {
@@ -162,7 +163,7 @@ export const KEY_SERVICES: KeyService[] = [
     setupUrl: "https://www.strava.com/settings/api",
     redirectUris: integrationRedirect("strava"),
     testable: true,
-    note: "Hos Strava angives kun domænet (hellocal.packroff.dk) som “Authorization Callback Domain”.",
+    note: "Hos Strava angives kun domænet (hellocal.io) som “Authorization Callback Domain”.",
   },
   {
     id: "polar",
@@ -230,6 +231,28 @@ export const KEY_SERVICES: KeyService[] = [
     testable: true,
   },
   {
+    id: "mobilepay",
+    name: "MobilePay (Vipps MobilePay Recurring)",
+    group: "payment",
+    purpose: "Abonnementsbetaling med MobilePay: aftaler, månedlige træk og opsigelse.",
+    fields: [
+      { key: "MOBILEPAY_CLIENT_ID", label: "client_id", kind: "id" },
+      { key: "MOBILEPAY_CLIENT_SECRET", label: "client_secret", kind: "secret" },
+      { key: "MOBILEPAY_SUBSCRIPTION_KEY", label: "Ocp-Apim-Subscription-Key", kind: "secret" },
+      { key: "MOBILEPAY_MERCHANT_SERIAL_NUMBER", label: "Merchant Serial Number (MSN)", kind: "id" },
+      {
+        key: "MOBILEPAY_ENV",
+        label: "Miljø",
+        kind: "text",
+        optional: true,
+        hint: "Skriv “test” for testmiljøet. Tomt = produktion.",
+      },
+    ],
+    setupUrl: "https://portal.vippsmobilepay.com",
+    testable: true,
+    note: "Kræver at “Recurring API” er slået til på salgsstedet. Webhooken registreres automatisk af serveren.",
+  },
+  {
     id: "smtp",
     name: "Mailjet (SMTP)",
     group: "mail",
@@ -243,7 +266,7 @@ export const KEY_SERVICES: KeyService[] = [
         key: "SMTP_FROM",
         label: "Afsender",
         kind: "text",
-        hint: "Fx Hello Cal <no-reply@packroff.dk>. Domænet skal være verificeret i Mailjet.",
+        hint: "Fx Hello Cal <no-reply@hellocal.io>. Domænet skal være verificeret i Mailjet.",
       },
     ],
     setupUrl: "https://app.mailjet.com/account/apikeys",
@@ -262,7 +285,7 @@ export const KEY_SERVICES: KeyService[] = [
         label: "Kontakt (valgfri)",
         kind: "text",
         optional: true,
-        hint: "Fx mailto:peter@packroff.dk",
+        hint: "Fx mailto:support@hellocal.io",
       },
     ],
     testable: true,

@@ -26,6 +26,180 @@ parallelle grå/beige paletter, ~400 steder med grå tekst lavet via
   Grønne handlingsknapper (bl.a. admin, stemme-siden) er nu sorte primære.
   Rækker, valgkort, fliser, kalenderceller og overlays er bevidst ikke knapper.
 - Foreslået `.hf-button`-system i design.md §6.2 er erstattet af ovenstående.
+## 2026-09-27: Guide-builder til startup-guide og tooltips
+
+- Startup-guiden og tooltips bygges i admin (`/admin/guide-builder`) og
+  gemmes som saniteret JSON i `GuideDesign` (én række pr. slags:
+  `startup`, `tooltips`). Serveren accepterer kun faste baggrunde fra
+  design.md §3 og tekstroller fra §4.2 — ingen frie farver/fontstørrelser.
+- Builder-flow: baggrund trækkes ind først, derefter fonte/elementer.
+  Et farvetema er et eksplicit baggrundsvalg for alle skærme.
+- Startup-guidens bund er altid Tilbage (outline) + Næste (sort) og "Spørg mig
+  senere" (sort tekst, centreret) under knapperne. Tooltips har fast
+  billedfelt (280×210, 8 px radius, ikke rundt), prikker + pile med antal,
+  Videre + "Spring over". Intet flag/sprogvælger i nogen af dem.
+- Billedet har fast højde/dimension (startup 402×226 fuldbredde); et nyt
+  billede beskæres (object-cover) og ændrer aldrig layoutet. Uploads
+  nedskaleres i browseren til en lille data-URL (< 400 kB).
+- Begge vises i det fælles fuldskærms-overlay (samme skal som
+  StartupTipOverlay). Kobling til brugerens app-flow er en separat opgave.
+## 2026-09-27: Umami-analyse (admin → Analyse)
+
+- Besøgsstatistik laves med selv-hostet Umami (v3, image fastlåst til
+  `3.4.0` via `UMAMI_TAG`) — brugerens valg frem for Plausible/PostHog/Matomo.
+- Umami kører i `compose.production.yaml` på det interne backend-netværk med
+  egen database `umami` i den eksisterende PostgreSQL (oprettes af
+  `umami-db-init`). Ingen port, intet Cloudflare-hostnavn.
+- Browserne når Umami via appens egne stier: `/umami/script.js` og
+  `/umami/api/send` (route handlers, der sender videre). Kun disse to stier
+  er udstillet — Umamis login/UI er ikke.
+- Websitet har et fast id (`src/lib/umami-config.ts`); appen opretter det selv
+  i Umami første gang, så intet skal sættes op i hånden.
+- Kun den brugerrettede app spores (hellocal.io + gammel packroff-adresse), ikke
+  admin, Oprettelses-appen eller localhost. Forespørgselsstrenge og #-dele
+  sendes ikke med (fx nulstillingslinks).
+- Admin → Analyse (`/admin/analytics`, øverst i menuen under Oversigt) henter
+  tallene server-side via Umamis API med Umamis admin-login
+  (`UMAMI_USERNAME`/`UMAMI_PASSWORD`, standard admin/umami).
+- Privatlivspolitikken §8 nævner Umami (ingen cookies, ingen tredjepart).
+
+## 2026-09-27: Skelet-loading i stedet for "Henter…"
+
+- Alle brugerrettede sider viser en skitse af indholdet med løbende gradient,
+  mens data hentes (HelloFresh "Opdag"-mønster, design.md §6.14). Ingen
+  "Henter…"/"Indlæser…"-tekster som loading-tilstand.
+- Fælles ur for animationen; gradienten er relativ til boksens bredde.
+- Nye sider skal bruge `src/components/hf/Skeleton.tsx` eller `LoadingScope`.
+- Admin-sider og forsidens drejehjul er ikke omfattet.
+## 2026-09-27: Admin-menuens grupper + agenter, jobs, roadmap og Claude-MCP
+
+Erstatter gruppelisten i punktet nedenfor (skallen er uændret).
+
+- Brugerens menu: Oversigt · Produktgodkendelse (Kvalitetskontrol,
+  Uncertainties, Dobbeltoprettelser, Ønskede ingredienser, Billedforslag +
+  Nye produkter, Logoer) · Produktdatabase (`/admin/search`) · Brugere (Alle
+  brugere, Fejlrapporter, Beskeder = supportindbakken) · Partnere ·
+  Administration (Scan-invites, Jobs, Agenter) · Indstillinger (API-nøgler,
+  Cronjobs, Passkeys, Standard-mails = svarskabeloner, Besked automatisering,
+  Søgealgoritmer) · Design og opbygning (Designmanual, Sidetræ) · Roadmap og
+  udvikling (Roadmap, Claude-integration). Kun det længste sti-match er aktivt.
+- "Agenter" = AI-agenter (fx Claude), ikke Oprettelses-appens medarbejdere
+  (de ligger under Scan-invites). Hver agent har et token; kun sha256 gemmes
+  (`AiAgent`), og adressen vises én gang. "Jobs" = `AgentJob`, som agenter
+  registrerer; siden har fanerne Åbne/Afsluttede.
+- Roadmap (`RoadmapItem`) er en tavle: Idéer/Planlagt/I gang/Færdig.
+- Claude-integration: stateless MCP-server på `/api/mcp/<agent-token>` (JSON,
+  ingen SSE). Kan kun læse/oprette roadmap-punkter og jobs. Tilføjes som
+  custom connector i Claude.ai eller med `claude mcp add --transport http`.
+  Skal nås på den offentlige adresse (`APP_BASE_URL`), fordi admin-
+  hostnavnet omskriver alle stier til /admin.
+- Partnere: kun menupunkt + tom side; indholdet er ikke specificeret.
+
+## 2026-09-27: Brugerens billeder bruges som PNG — aldrig omtegnet som SVG
+
+- Når brugeren leverer et billede (PNG) til et ikon eller en illustration,
+  bruges præcis det billede: skaleret (typisk 256 px for ikoner, beskåret til
+  tegningen) og gengivet som CSS-maske, når det skal følge tekstfarven.
+- Billedet må ikke spores, omtegnes som SVG eller "forbedres". Brugeren
+  afviste SVG-udgaverne fra 25/9 (badevægt, gryde, champagne, taljemål) og
+  bad om de originale PNG'er tilbage.
+- Ønskes en anden gengivelse (f.eks. vektor), spørges brugeren først.
+
+## 2026-09-27: Admin-sidebjælke i fuld højde og widget-oversigt
+
+- Ændrer punktet "fast topbar" nedenfor: logo + "Admin" og "Gå til…"-søgningen
+  ligger øverst i venstre kolonne, som går i ét stykke fra top til bund (ingen
+  vandret streg gennem kolonnen). Topbaren ligger kun over indholdet og viser
+  brødkrummer (også "Admin / Oversigt") og brugermenuen. Mobil uændret: skuffe
+  (nu med søgefelt øverst) + logo i topbaren.
+- `/admin` (Oversigt) er widgets: 4 tællerkasser på række (ubesvarede
+  supportbeskeder med "over 24 timer", nye produkter, Usikkerheder med
+  "haster", fejlrapporter), alle med link til siden, hvor opgaven løses.
+  Derunder større bokse: seneste beskeder fra brugere (6 åbne sager med
+  uddrag af brugerens seneste besked), seneste produkter til godkendelse,
+  seneste fejlrapporter og "Øvrige opgaver" (billedforslag, logoer,
+  kvalitetskontrol, dubletter, ønskede ingredienser med tal).
+
+## 2026-09-27: Designmanualens typografi- og knaptabeller beskriver forlægget
+
+- Admin → Designmanual, sektion 4 (Knapper) og 5 (Teksttyper og fonte), viser
+  HelloFresh-appen som forlæg, ikke Hello Cals nuværende klasser — brugerens
+  valg, fordi de to endnu ikke ligner hinanden. Hver række har en lille
+  "Hello Cal i dag"-note, så afvigelsen er synlig.
+- Værdierne er egne pixelmålinger på de 28 app-skærmbilleder i
+  `Hello Fresh inspiration/` (1206 px = 3×). ChatGPT-analyser er kun brugt som
+  hypoteser; flere af deres tal var forkerte (fx "afrundet" skrift, #056B3D,
+  #666666, 9–11 px vilkår, rund filterknap).
+- Forlægget: display-skrift (tæt, fed grotesk, sandsynligvis Agrandir) til
+  overskrifter og Roboto til resten. Prøverne vises med Roboto og Roboto
+  Condensed via `next/font` (kun i designmanualen).
+- 6-størrelses-typografien fra 2026-09-26 (gren `claude/typography-system`)
+  er stadig ikke live og er ikke rørt her.
+
+## 2026-09-27: Admin-skal efter Cloudflare-dashboardets struktur
+
+- Kun struktur/opbygning fra Cloudflare — farverne er fortsat Hello Cals tokens.
+- Fast topbar: menuknap (mobil), logo + "Admin", "Gå til…"-søgning (Ctrl/Cmd+K,
+  springer til enhver admin-side), brugermenu (e-mail, DA/EN, Log ud).
+- Venstre sidebjælke med ikoner og sammenfoldelige grupper: Oversigt ·
+  Produkter (nye produkter, billedforslag, logoer, kvalitetskontrol,
+  Uncertainties, dobbeltoprettelser, ønskede ingredienser) · Brugere & support
+  (brugere, support, fejlrapporter, besked automatisering, scan-invites) ·
+  Søgning (søg, søgealgoritmer) · Sikkerhed (passkeys, API-nøgler) ·
+  System (cron-jobs, designmanual). Gruppen med den aktive side åbnes automatisk; åbne
+  grupper og sammenklappet ikon-skinne huskes i localStorage.
+- Brødkrummer (Admin / gruppe / side) over indholdet; indholdsbredde max-w-6xl.
+- Under lg: sidebjælken er en skuffe fra venstre bag menuknappen; søgning
+  som ikon. Support-tæller og Uncertainties-prik vises i menuen (prik på
+  gruppen, når den er lukket).
+- Login/opsætning/bekræftelse vises uden skal. Komponent: `src/components/admin/AdminShell.tsx`
+  (erstatter AdminNav).
+
+## 2026-09-26: Support-indbakke (beskedtjeneste i admin)
+
+- "Kontakt os"-henvendelser er nu tråde: `SupportMessage` (USER / SUPPORT /
+  NOTE). Den første besked ligger både i `SupportRequest.message` (historik)
+  og som første `SupportMessage`. Interne noter (NOTE) vises aldrig for brugeren.
+- Prioritet `HIGH/NORMAL/LOW` sættes af admin; nye sager er `NORMAL`.
+- "Ikke besvaret" = `awaitingReply` (seneste besked er fra brugeren).
+  Admin kan også markere besvaret/ikke besvaret manuelt. En brugerbesked i en
+  løst sag genåbner den.
+- Admin `/admin/support`: standard = åbne sager, ældste øverst (efter
+  brugerens seneste besked); "Senest modtaget øverst" som alternativ.
+  Filtre: status (Åbne/Ikke besvaret/Løste/Alle), 3 prioritets-flueben,
+  søgning (emne, navn, e-mail, sagsnr.). Filteret ligger i URL'en.
+  Sagen åbnes på `/admin/support/[id]` med svar, intern note,
+  "Send og marker som løst", prioritet og status.
+- Svar sendes via `queueMessage("SUPPORT_REPLY")` (mail + push + brugerens
+  indbakke, ikke fravælgelig) med link til `/settings/support/requests/[id]`,
+  hvor brugeren ser tråden og kan svare.
+- 24-timers-regel: scheduleren (hvert 15. min) sender én samlet mail
+  (`SUPPORT_OVERDUE_ADMIN`) til `ADMIN_NOTIFICATION_EMAIL` med alle sager,
+  der netop har passeret 24 timer uden svar. `overdueAlertSentAt` sikrer én
+  advarsel pr. ubesvaret besked; nulstilles ved svar/ny brugerbesked.
+  Eksisterende åbne sager markeres som allerede advaret ved migrationen.
+- Brugerens valg 2026-09-26: samtalen foregår i appen, ikke på mail.
+  `SUPPORT_REPLY` er derfor kun push + indbakke (ingen mail); brugeren får
+  en kvitteringsmail med sagsnummer (`SUPPORT_RECEIVED`), når sagen oprettes.
+- Startprioritet efter kategori: Abonnement/betaling og Konto/login = Høj,
+  Fejl/Mine data/Produkter = Normal, Andet = Lav. Admin kan ændre den.
+- Brugeren kan vedhæfte op til 3 skærmbilleder pr. besked. De skaleres til
+  maks. 1600 px JPEG i telefonen, typen tjekkes på serveren ud fra filens
+  bytes, EXIF fjernes, og de gemmes i databasen (`SupportAttachment`) —
+  aldrig under /public. Kun ejeren og admin kan hente dem.
+- Svarskabeloner (`SupportReplyTemplate`) på `/admin/support/templates`;
+  `{{navn}}` erstattes med brugerens navn ved indsættelse.
+- Admin-menuen viser "Support (n)" med antal ubesvarede sager (rød ved
+  sager over 24 timer).
+- 24-timers-advarslen sendes én gang pr. ubesvaret besked (brugerens valg).
+
+## 2026-09-26: Redigering af målsætninger
+
+- En målsætning kan redigeres (dato og targets) via `PATCH /api/goals/[id]`, kun for Seriøs (samme gating som delmål).
+- Uændrede targets beholder startværdi og gennemført-status. Et target med ny værdi regnes som et nyt mål: ny startværdi (seneste måling), ny retning og nulstillet `completedAt`. Fjernede targets slettes.
+- `User.targetWeightKg` opdateres kun, hvis den redigerede målsætning er den nyeste med et vægtmål.
+- Målsætninger kan indeholde daglige ernæringsmål (target-typerne `kcal`, `proteinG`, `carbsG`, `fatG`; ingen migration, `GoalTarget.type` er fri tekst). De er rettesnore og markeres aldrig som nået; kun vægt og kropsmål afgør, om en målsætning er nået.
+
 ## 2026-09-26: Én overskrift med streger — kun `.hf-type-section-title`
 
 Brugerens krav (gentaget): alle overskrifter med streger ("──── Tekst ────")
@@ -123,7 +297,65 @@ overtagelsen af G4 ("Tegn", Frida-datadumpet er fuldt, admin-siden bygges nu).
   rammer; ældre analyser vises med hele fotoet. Rettelsen skrives til
   produktet og gemmes som `correction`. Den natlige AI-robot er stadig en
   senere fase; en lavere minimumstærskel er stadig uafklaret.
+## 2026-09-26: Oplevelse af søvn
 
+- Ny række under Indstillinger → Visning: "Oplevelse af søvn"
+  (`/settings/display/sleep-quality`). `User.sleepQualityPromptEnabled`,
+  slået TIL som standard (bevidst undtagelse fra "vis aldrig som standard").
+- Første app-åbning hver dag (logget ind, samtykke givet, ingen vurdering
+  for i dag) viser et cremefarvet fuldskærms-overlay: "Hvordan oplever du at
+  din nat har været?" med store, understregede 1–5. Tryk → animeret cirkel →
+  overlayet lukker. "Luk" øverst til højre, "Slå fra" nederst til højre,
+  info-ikon nederst til venstre med forklaring i gråt felt.
+  "Vist i dag" huskes pr. enhed (localStorage), så lukning ikke spørger igen.
+- Én vurdering pr. dato (datoen man vågnede) i `SleepQualityEntry`
+  (`/api/sleep-quality`). Vises som sort bjælke med hvid tekst øverst i
+  kalenderens dagvisning, og som graf "Søvnkvalitet og kalorier" øverst på
+  Statistik. Senere: sammenhæng med kalorieindtag/kostomlægning.
+
+## 2026-09-26: Kropsmål med brugerens tegninger + halsmål
+
+Kropsmål vises som ét kort pr. mål (Statistik-kortenes stil): brugerens egne
+tegninger (`Icons/Kropsmål`, kopieret uændret til `public/body-measurements`)
+til venstre, titel + felt til højre. Tegningen vælges ud fra `User.sex`;
+uden valgt køn gættes der ikke (kort uden tegning + hint om at vælge køn).
+Brugeren valgte at få Hals med: nyt valgfrit felt `BodyMeasurement.neckCm`
+(migration `20260926090000_body_measurement_neck`). Hofte har ingen tegning
+og vises uden billede. Listen i `src/lib/body-measurements.ts` er fortsat
+eneste kilde, så Hals også kan bruges som målsætning.
+
+## 2026-09-25: Familieabonnement og børneprofiler
+
+Brugerens valg efter research (detaljer, kilder og åbne spørgsmål i
+`docs/FAMILY.md`). **Omstøder** `docs/SPECIFICATION.md` §3 "Én profil pr.
+konto. Ingen husstands-/familieprofiler … ingen forældrekontrol".
+
+- Familieabonnement er altid betalt; familieprofiler ser aldrig reklamer eller
+  partnertilbud.
+- Betaleren opsætter familien og bestemmer, hvem der må se og taste ind for et
+  bestemt medlem. Betaleren har adgang til alle familiens profiler.
+- Under 15 år kan man ikke selv oprette en konto; en forælder opretter
+  profilen. Barnet kan få eget login via en engangskode.
+- Barnet kan melde sig ud og låse de andre ude (fortolket: fra 15 år).
+- Barnet ser samme visning som voksne.
+- Alt, hvad andre gør på en profil (åbner, ser, tilføjer, ændrer, sletter),
+  logges og vises for profilens ejer, både som liste og i et panel, der glider
+  ned fra toppen ved nye hændelser.
+- Kun dagbogsdata følger den valgte profil. Login, adgangskode, abonnement,
+  integrationer og familieopsætning hører altid til den, der er logget ind.
+- (2026-09-26) "Skift profil" øverst på Profil med overlappende
+  initialcirkler; "Kopier til konto" ved swipe fra venstre på egne
+  indtastninger, når man styrer en anden profil; blåt telefonikon med
+  initialer til venstre for profilcirklen og 1 px blå ramme rundt om skærmen,
+  mens en anden er på kontoen (ny token `--hf-color-watch: #2f80ed`);
+  "Kontrol-log" under Indstillinger på den kontrollerede konto.
+- (2026-09-26, senere) Børneberegning under 18 år (Schofield + EFSA-PAL,
+  intet voksengulv), 179 kr./md. for op til 5 profiler, sletteret pr. profil
+  styret af profilens opretter (børn starter med nej), og fælles måltid med
+  portion pr. person. Detaljer i `docs/FAMILY.md` "Afklaret 2026-09-26".
+- (2026-09-26) Betaleren kan slette en profil uden login ("slet alt"). Slettes
+  betalerens konto, opløses familien, og alle beholder deres egne data. Alder
+  ved tilmelding løses i et kommende oprettelsesflow.
 
 ## 2026-09-25: Blød e-mailbekræftelse ved tilmelding
 
@@ -676,6 +908,15 @@ aldrig. `PATCH /api/profile` og det e-mailverificerede API er uændrede.
   kan ændres per dag)" under begge felter samlet.
 - DB-kolonnen `users.workHoursInCalendarEnabled` står midlertidigt tilbage
   (ubrugt); fjernes i en senere migration.
+
+## 2026-09-26: Målsætning-oversigt som liste af delmål med egen side
+
+`/profile/goals` viser nu hver målsætning som en blok (som kalenderens
+dagsliste): kalender-firkant til venstre med måldatoen (dag + måned, grøn når
+alle targets er nået), i midten hvad målet indebærer, pil til højre. Klik
+åbner den unikke side `/profile/goals/[id]` (API `GET /api/goals/[id]`, kun
+egne mål). Øverst en omridsknap "+ Opret nyt delmål" (`hf-btn-secondary`, ingen
+fyldfarve); formularen har dato-vælgeren øverst.
 
 ## 2026-09-22: Målsætning — historiske, daterede målsætninger for vægt og kropsmål
 
@@ -2335,6 +2576,39 @@ skal ikke genindføres uden en eksplicit anmodning.
 - Køb af Seriøs kræver en vippekontakt, der bekræfter straks-levering og forholdsmæssig refusion ved fortrydelse (forbrugeraftaleloven). Knappen er fortsat lukket, indtil en betalingsudbyder findes (`PAYMENT_AVAILABLE`).
 - Åbent: konto-sletning sker via Hjælpecenter (ingen selvbetjening), og tilbagetrækning af samtykke sker via support. Juridisk gennemlæsning anbefales før lancering.
 
+## 2026-09-26: Tooltips og start-up tips (Indstillinger → Visning)
+
+- To vippekontakter under Visning: "Vis tooltips" (små hjælpetekster via `HelpTip`, `src/components/hf/HelpTip.tsx`) og "Vis start-up tips". Begge er slået til som standard og gemmes pr. enhed i localStorage (`src/lib/help-prefs.ts`), samme mønster som Kalendervisning.
+- Start-up tips er 1-sides overlays med én fast standard (`StartupTipOverlay`): "Luk" øverst til højre, ikon + titel + tekst, evt. én stor knap, og "Slå fra" nederst til højre (slår alle start-up tips fra). Højst ét tip pr. besøg, kun for indloggede brugere med samtykke, aldrig på login-, samtykke-, juridiske eller admin-sider (`StartupTipsGate` i root layout).
+- Tips står i `STARTUP_TIPS` (`src/lib/startup-tips.ts`) og vises i rækkefølge. Et tip er færdigt, når det lukkes, eller når funktionen bruges (`markStartupTipSeen(id)` kaldes fra funktionens egen kode). Første tip er altid "Dine data er dine" med "Læs mere" til `/privatlivspolitik`.
+
+## 2026-09-26: Gratis vs. Seriøs — hvad er låst, og egne abonnementssider
+
+- Gratis viser nu rullende 3 måneders historik (`FREE_TIER_RETENTION_DAYS = 90`, før 30). Stadig kun en forespørgselsgrænse — intet slettes.
+- Kun for Seriøs: hele statistikmodulet (`/statistics/**`, inkl. omarrangering af kort), fotodagbogen, omarrangering af ikonerne i bundmenuen (langt tryk åbner ikke redigering for Gratis), visningsindstillingerne under `/settings/display/**`, allergen-/resultatvisning (`/profile/settings/results`; `GET /api/profile` returnerer `showAllergens: false` for Gratis), sortering/filtre og HelloFresh under Opskrifter → delte retter, og alle integrationer (`/settings/integrations` + `connect` afviser Gratis med 403).
+- Målsætning: Gratis har én målsætning i alt (målvægten) og ingen delmål — `/profile/goals/new` er låst, og `POST /api/goals` afviser Gratis med 403 (`PREMIUM_REQUIRED`).
+- Låste sider låses via en route-`layout.tsx` med `PremiumGate` (`src/components/PremiumGate.tsx`), så selve siden ikke renderes; klienten læser niveau via `useSubscriptionTier()` (`src/lib/use-subscription-tier.ts`). Serveren håndhæver, hvor data ellers kunne hentes/skrives udenom.
+- Seriøs og Seriøs Familie har hver deres side, `/profile/subscription/serious` og `/profile/subscription/family`, med tre vandrette periodebokse: 1 måned, 3 måneder, 1 år. Priser (samlet pr. periode) i `SUBSCRIPTION_PRICES_DKK` (`src/lib/subscription-plans.ts`, Prisma-fri så klienten kan bruge den): Seriøs 119/299/1071 kr., Familie 179/449/1611 kr.; et helt år giver 25 % rabat mod 12 enkeltmåneder (ejerens valg). Seriøs Familie dækker op til 5 personer (familiemodellen: docs/FAMILY.md). Købsknappen kalder MobilePay-aftalen (`POST /api/payments/mobilepay/agreement`, bygget af MobilePay-sessionen) og er lukket, indtil `mobilePayAvailable` er sand.
+- Familien (profiler, børn, adgang og invitation) er bygget efter docs/FAMILY.md; købet af Seriøs Familie sætter `Subscription.plan = FAMILY`.
+
+## 2026-09-26: Opret vare — rækkefølge, samme-foto-flueben, logo-genkendelse og fritskrabning
+
+- Kamera-flowet (`/camera/create`) er nu: stregkode → forside → energi (næring) → indhold (ingredienser). En række med fire bokse øverst viser trinnene; et trin, der er taget og aflæst korrekt, får flueben-overlay (`CaptureCheckOverlay`).
+- Næring og ingredienser står ofte side om side. Energifotoet sendes derfor parallelt til både næring- og ingrediens-aflæsningen. Findes ingredienslisten (confidence ≥ 0,6), får begge bokse flueben, ingrediens-trinnet springes over, og begge AiProductAnalysis-rækker kobles til produktet. Opret-sidens 2×2-grid viser samme flueben (draftens `verified`); vælges et næringsfoto manuelt dér, finder lokal OCR (`findIngredientsSection`) også ingredienslisten.
+- Logoets navn læses af OpenAI (logoer er ofte for kreative til almindelig OCR): forside-analysen returnerer `logoText`, `logoConfidence`, `logoBox` og `productBox` (prompt `front-v2-2026-09-26`). Navnet holdes op mod Brand-tabellen (`src/lib/brand-match.ts`: normaliseret navn + Levenshtein, match ≥ 0,85); et match giver databasens stavemåde, så der ikke opstår næsten-dubletter.
+- Fritskrabning: forsidefotoet gemmes (`AiProductAnalysis.imageUrl`, nu også for FRONT), og der oprettes `ImageCutoutJob`s (BRAND_LOGO + PRODUCT_FRONT). Den eksisterende `scripts/image-agent` (rembg) beskærer efter boksen, fjerner baggrunden og gemmer PNG under `/product-images/cutouts` (hvert 15. sek.). Ingen ny container. OpenAI's billedredigering blev fravalgt: den kan ændre selve logoet.
+- Produktets fritskrabede forside bliver `Product.pendingImageUrl` og venter på den eksisterende admin-godkendelse. Logoet bliver kun selv `Brand.logoUrl`, når brandet intet logo har, og både AI-sikkerhed og brand-match er ≥ 0,9. Ellers ligger det som logo-kandidat på brandet (til G5's admin-kø).
+
+## 2026-09-26: MobilePay-betaling (Vipps MobilePay Recurring) + Opsætning delt op
+
+- **Betaling kører via Vipps MobilePay Recurring API v3** (`src/lib/payments/`). Brugeren godkender en aftale i MobilePay-appen; Hello Cal gemmer kun aftale- og træk-id'er, aldrig kortdata. Aftalen oprettes med planens samlede pris og interval (1/3/12 mdr., `SUBSCRIPTION_PRICES_DKK`) — prisen slås altid op på serveren.
+- Første periode trækkes straks (initialCharge). Kører der allerede en Seriøs-periode (gavekode/points/opsagt), trækkes først ved udløb.
+- Fornyelse: den indbyggede scheduler (`runMobilePayTick`, hvert 15. min.) opretter næste træk 5 dage før udløb med forfald på udløbsdatoen (5 genforsøgsdage). Beløb/interval læses fra aftalen hos MobilePay. En gratis måned fra points bruges i stedet for et træk. Et træk, der endeligt fejler, stopper aftalen; Seriøs udløber med den betalte periode.
+- `ACTIVE` har 6 dages henstand efter `currentPeriodEnd` (mens MobilePay trækker/genforsøger). `CANCELED` = opsagt, men Seriøs løber perioden ud.
+- Status hentes altid fra MobilePay. Webhooks (registreres automatisk af serveren, hemmelighed krypteret i `payment_webhooks`) er kun et signal om at hente; scheduleren synker også uden webhooks.
+- Nøgler: admin → API-nøgler → Betaling → MobilePay (`MOBILEPAY_CLIENT_ID`, `MOBILEPAY_CLIENT_SECRET`, `MOBILEPAY_SUBSCRIPTION_KEY`, `MOBILEPAY_MERCHANT_SERIAL_NUMBER`, valgfri `MOBILEPAY_ENV=test`). Uden nøgler er købsknappen lukket (`mobilePayAvailable`).
+- Betalingssiden viser ingen "kommer snart"-tekster (ejerens krav). Visa/Apple Pay/Google Pay-logoer er fra simple-icons (CC0), MobilePay-ikonet fra Vipps MobilePays udviklerside (`public/payment/`).
+- Opsætning (`/profile/settings`) er nu en oversigt med trin-baren og to undersider: "Sprog og region" (`/profile/settings/language-region`, også linket fra Indstillinger) og "Resultatvisning" (`/profile/settings/results`: allergener + udvidet næringsindhold).
 
 
 - Åbent: teksten lover et udtrykkeligt samtykke til helbredsdata (GDPR art. 9) ved oprettelse og samtykke til fortrydelsesret-afkald ved køb; ingen af delene er bygget endnu. Konto-sletning sker via Hjælpecenter (ingen selvbetjening). Juridisk gennemlæsning anbefales før lancering.
@@ -2476,3 +2750,75 @@ både når integrationen slås til og bagefter.
 - Start-vægten (`User.weightKg`) overskrives aldrig af en integration; er den tom, bliver den ældste synkroniserede vejning start-vægt.
 - Samme vejning (±2 min, ±0,05 kg) eller træning (samme sport, ±5 min) fra to kilder gemmes kun én gang.
 - Sportstyper normaliseres til Statistik-nøglerne (`normalizeSportType` i `src/lib/sport-icons.ts`); dagssummer (fx skridt) opdateres ved næste synkronisering. Kode: `src/lib/integrations/store-items.ts`.
+
+## 2026-09-27: Admin "Page tree" — kort over alle sider
+
+- `/admin/page-tree` viser samtlige sider i appen som et træ med pile fra side til underside, grupperet efter indgang (velkomst/login, forside/bundmenu, profil, indstillinger, links, oprettelses-app, admin).
+- Træet er håndholdt i `src/lib/page-tree.ts` (danske navne + hvor man kommer ind). `src/lib/page-tree.test.mjs` fejler, hvis en `page.tsx` mangler eller står der to gange — ny side ⇒ tilføj den i træet.
+- Statiske sider åbnes i ny fane; dynamiske (`[id]`, `[token]`) markeres "kræver id". Flueben "testet" gemmes kun i admins egen browser (localStorage), ikke i databasen.
+## 2026-09-26: Hjemmeskærm-widgets — forberedt før den native app
+
+Brugerens krav: seks widgets (plus-knap, hurtig-tilføj-række, swipebar
+statistik-graf, 2×2 statistik-boks, tryk åbner Statistik, seneste
+registreringer). Afklaret med brugeren:
+- Appen bliver **helt native** på sigt (Swift/WidgetKit + Kotlin/Glance) —
+  ikke en web-app i en app-skal.
+- iPhone-widgets kan ikke swipes internt → statistik-grafen er **én widget pr.
+  graf i en Smart Stack** på iPhone; Android swiper mellem graferne i én widget.
+- iPhone har kun faste størrelser → "seneste registreringer" findes som
+  **mellem (3) + stor (8)**; Android er frit justerbar i højden.
+- Designet godkendes på en web-forhåndsvisning (`/widgets`) med rigtige data,
+  før der lejes en Mac.
+- Al widget-data kommer fra ét endpoint, `GET /api/widgets/snapshot`
+  (enhedstoken eller login-cookie); widgetvalg (knapper, boks) gemmes lokalt
+  på telefonen i widgettens egne indstillinger, ikke på serveren.
+Se `docs/WIDGETS.md`.
+
+## 2026-09-27: Domæne hellocal.io
+
+- App: `hellocal.io`, admin: `admin.hellocal.io`, oprettelses-app: `scan.hellocal.io`. Kodens standardværdier og `.env.production.example` peger nu dertil.
+- Gamle `*.packroff.dk`-hostnavne virker under overgangen (tunnel-ruter bevares, `middleware.ts` kender begge admin-hostnavne).
+- Afsender: `no-reply@hellocal.io` (Mailjet). Kontakt i betingelser/privatlivspolitik: `support@hellocal.io`. Admin-notifikationer går fortsat til `ADMIN_NOTIFICATION_EMAIL`.
+
+## 2026-09-27: Integrationssiden er iOS' Apple Health-adgangsark
+
+Brugerens krav: hver integrations egen side skal være 100 % identisk med
+Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
+- `/settings/integrations/<app>` vises nu som `HfAccessSheet`
+  (`src/components/hf/HfAccessSheet.tsx` + CSS Module): mørk baggrund, hvidt
+  ark, titlen "Adgang til <app>", app-ikon, "“Hello Cal” vil gerne have adgang
+  til og opdatere dine <app>-data", "Slå alle til/fra", grupperne "Tillad
+  “Hello Cal” at skrive" (sendes fra Hello Cal) og "… at læse" (hentes) med
+  Health-kategoriikoner og iOS 26-kontakter, "Appens forklaring", og faste
+  knapper "Tillad"/"Tillad ikke" nederst.
+- iOS-farverne (#007AFF, #34C759, #F2F2F7 m.fl.) er en bevidst undtagelse fra
+  paletten og gælder kun dette ark.
+- "Tillad" forbinder (eller forbinder igen), når adgangen mangler; en
+  companion-app uden enhedskode får en; ellers lukker arket. Grå, når intet er
+  slået til. "Tillad ikke" frakobler en forbundet cloud-app, ellers lukker
+  arket. Tryk på den mørke kant øverst lukker.
+- Status, "Synkroniser nu", "Frakobl" og enhedskoder ligger som ekstra grupper
+  i samme stil. Valgene gemmes stadig med det samme; datatyperne er uændrede.
+- Designmanualen har afsnit 9 "Adgangsark (integrationer)" med live eksempel.
+## 2026-09-26: Fælles 48 px-højde på felter, dropdowns, knapper og rækker
+
+- Brugerens beslutning: alle enkeltlinje-felter, dropdowns, madindtastninger,
+  fuldbredde-knapper, listerækker og statistik-sektionsoverskrifter er 48 px
+  (`--hf-control-height`), også på admin-siderne.
+- Højden ejes af tre klasser i `globals.css` (uden for `@layer`, så de vinder
+  over Tailwind): `.hf-field` (input/select/felt-wrapper), `.hf-control`
+  (knap/link, fast højde) og `.hf-control-row` (række, min. 48 px, 8 px
+  lodret padding). Sider må ikke sætte `h-*`/`py-*`/`min-h-*` ved siden af.
+- Bevidst undtaget: footer, fliser, statistik-kort, ikonknapper (44 px), små
+  filter-/periodeknapper og textarea. Hello Docs notched felt følger nu også
+  48 px (før 60 px).
+
+
+## 2026-09-27: HelloFresh-opskrifter vises som i HelloFresh-appen
+
+- Brugerens krav: når man åbner en HelloFresh-opskrift for inspiration, skal den se præcis ud som i HelloFresh-appen (skærmbilleder i chatten 2026-09-27), bygget med fælles klasser. Det gælder KUN HelloFresh-opskrifter — brugerens egne og delte retter beholder deres eget design (`/profile/recipes/[id]`).
+- Side: `/profile/recipes/hellofresh/[id]` (tidligere gik HelloFresh-rækker direkte til registrering `/add/[id]`). Klasser `.rv-*` i `src/components/recipe-view/recipe-view.css` + komponenterne i samme mappe.
+- Data: ny kolonne `Product.recipeDetails` (JSON) fyldt af hellofresh-agenten med HelloFreshs egne værdier uændret (undertitel, beskrivelse, tid, sværhedsgrad, tags, allergen-navne, ingredienser med mængde/enhed i rækkefølge, trin, næringsværdier pr. portion). Tal vises som HelloFresh (punktum som decimaltegn). Rækker uden recipeDetails genhentes én gang; indtil da vises fallback fra de gamle kolonner.
+- Knapper: "Gem" = favorit (samme tabel som delte retters favoritter, snapshot); kurv = del indkøbsliste via telefonens del-menu; printer = udskriv; "Markér som tilberedt" og "Tilføj i sundhedsapp" = registrér retten (`/add/[id]`), som også sender til tilkoblede sundhedsapps; "Lad os lave mad" folder Fremgangsmåde ud og scroller dertil; "Mine kogebogsbilleder" = egne fotos (ny tabel `recipe_cookbook_photos`, maks 12).
+- Ingen bundnavigation på siden (som HelloFresh). Fuldbredde-knapper følger 48 px-reglen.
+

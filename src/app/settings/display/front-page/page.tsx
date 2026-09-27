@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
+import { FrontPagePreview, WheelIcon } from "@/components/FrontPagePreview";
 import {
   MAX_WHEEL_ACTIONS,
   saveWheelActionKeys,
@@ -76,13 +77,14 @@ export default function FrontPageDisplaySettingsPage() {
                 key={side}
                 type="button"
                 onClick={() => saveFabSide(side)}
-                className="hf-type-body hf-type-strong flex h-12 items-center justify-center rounded-2xl transition-colors"
+                className="hf-type-body hf-type-strong flex flex-col items-center justify-center gap-2 rounded-2xl py-3 transition-colors"
                 style={{
                   background: isSelected ? "var(--hf-green)" : "var(--hf-tan)",
                   color: isSelected ? "var(--hf-white)" : "var(--hf-black)",
                 }}
                 aria-pressed={isSelected}
               >
+                <FrontPagePreview side={side} selected={isSelected} />
                 {t(side === "left" ? "frontPageSettings.sideLeft" : "frontPageSettings.sideRight")}
               </button>
             );
@@ -94,10 +96,15 @@ export default function FrontPageDisplaySettingsPage() {
           })}
         </p>
 
-        <p className="hf-type-small hf-type-strong text-text-secondary hf-heading px-1 uppercase tracking-wide">
-          {t("frontPageSettings.buttonsSectionTitle")}
-        </p>
-        <p className="hf-type-small hf-type-strong text-text-secondary px-1">
+        <div className="mt-2 flex items-center gap-3 px-1">
+          <WheelIcon />
+          <span aria-hidden="true" className="h-px flex-1 bg-hf-black opacity-25" />
+          <p className="hf-type-small hf-type-strong text-text-secondary hf-heading uppercase tracking-wide">
+            {t("frontPageSettings.buttonsSectionTitle")}
+          </p>
+          <span aria-hidden="true" className="h-px flex-1 bg-hf-black opacity-25" />
+        </div>
+        <p className="hf-type-small hf-type-strong text-text-secondary px-1 text-right">
           {t("frontPageSettings.selectedCount", { count: selectedKeys.length, max: MAX_WHEEL_ACTIONS })}
         </p>
 
@@ -108,7 +115,7 @@ export default function FrontPageDisplaySettingsPage() {
             return (
               <div
                 key={action.key}
-                className={`flex items-center gap-3 px-4 py-3 ${
+                className={`hf-control-row flex items-center gap-3 px-4 ${
                   index < actions.length - 1 ? "border-b border-hf-tan-dark" : ""
                 }`}
               >
@@ -148,7 +155,7 @@ export default function FrontPageDisplaySettingsPage() {
             return (
               <div
                 key={def.key}
-                className={`flex items-center gap-3 px-4 py-3 ${
+                className={`hf-control-row flex items-center gap-3 px-4 ${
                   index < FRONTPAGE_STAT_DEFS.length - 1 ? "border-b border-hf-tan-dark" : ""
                 }`}
               >

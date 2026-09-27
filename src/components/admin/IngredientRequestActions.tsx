@@ -33,13 +33,13 @@ export function IngredientRequestActions({ id, name: initialName }: { id: string
         onChange={(event) => setName(event.target.value)}
         maxLength={80}
         aria-label="Ingrediensens navn"
-        className="hf-type-body flex-1 rounded border border-hf-tan-dark bg-hf-white px-3 py-2 text-hf-black"
+        className="hf-type-body hf-field flex-1 rounded border border-hf-tan-dark bg-hf-white px-3 text-hf-black"
       />
       <button
         type="button"
         disabled={busy || !name.trim()}
         onClick={() => decide("add")}
-        className="hf-btn-primary px-3 py-2 disabled:opacity-50"
+        className="hf-type-body hf-type-strong rounded bg-hf-green-dark px-3 py-2 text-hf-white disabled:opacity-50"
       >
         Tilføj globalt
       </button>

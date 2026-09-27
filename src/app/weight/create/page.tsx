@@ -6,6 +6,7 @@ import { HfScreen } from "@/components/HfScreen";
 import { TextField } from "@/components/hf/TextField";
 import { IconBathroomScale } from "@/components/icons/BathroomScale";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type WeightEntry = {
   id: string;
@@ -105,7 +106,7 @@ export default function WeightCreatePage() {
             <p className="hf-type-small hf-type-strong text-center text-hf-green">{t("weightLog.saved")}</p>
           )}
 
-          <button type="submit" disabled={saving} className="hf-btn-primary h-12 disabled:opacity-40">
+          <button type="submit" disabled={saving} className="hf-control hf-btn-primary disabled:opacity-40">
             <span className="hf-type-button">{saving ? t("weightLog.saving") : t("weightLog.save")}</span>
           </button>
         </form>
@@ -118,12 +119,17 @@ export default function WeightCreatePage() {
           {!loading && entries.length > 0 && (
             <p className="hf-type-caption px-1">{t("weightLog.recentTitle")}</p>
           )}
-          {loading && <p className="hf-type-small text-text-secondary text-center">{t("weightLog.loading")}</p>}
+          {loading && (
+            <SkeletonScreen className="flex flex-col gap-2">
+              <Skeleton type="caption" width={96} />
+              <SkeletonCards count={3} height={48} radius={16} />
+            </SkeletonScreen>
+          )}
           {!loading && entries.length === 0 && (
             <p className="hf-type-small text-text-secondary text-center">{t("weightLog.noEntriesYet")}</p>
           )}
           {entries.map((entry) => (
-            <div key={entry.id} className="flex items-center justify-between rounded-2xl bg-hf-tan px-4 py-3">
+            <div key={entry.id} className="hf-control-row flex items-center justify-between rounded-2xl bg-hf-tan px-4">
               <p className="hf-type-body hf-type-strong text-hf-black">
                 {formatKg(entry.weightKg)} kg
                 <span className="hf-type-small text-text-secondary ml-2">{formatDateTime(entry.weighedAt)}</span>

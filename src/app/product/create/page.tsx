@@ -6,7 +6,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { IconApple } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { TextField } from "@/components/hf/TextField";
-import { CreateProductMediaGrid, type MediaGridValue } from "@/components/hf/CreateProductMediaGrid";
+import {
+  CreateProductMediaGrid,
+  type MediaGridValue,
+  type MediaGridVerified,
+} from "@/components/hf/CreateProductMediaGrid";
 import type { ParsedNutrition } from "@/lib/product-ocr";
 import { PRODUCT_DRAFT_STORAGE_KEY, type ProductCreateDraft } from "@/lib/product-draft";
 import type { AlternativeServing, AnalysisIds } from "@/lib/product-analysis-types";
@@ -49,6 +53,7 @@ type DraftState = {
   form: FormValues;
   media: MediaGridValue;
   analysisIds: AnalysisIds;
+  verified?: MediaGridVerified;
   marketRegion?: string;
   gs1Regions?: string[];
   alternativeServings?: AlternativeServing[];
@@ -96,6 +101,7 @@ function readDraft(): DraftState {
         sideImages: draft.sideImages ?? [undefined, undefined, undefined],
       },
       analysisIds: draft.analysisIds ?? {},
+      verified: draft.verified,
       marketRegion: draft.marketRegion,
       gs1Regions: draft.gs1Regions,
       alternativeServings: draft.alternativeServings,
@@ -234,7 +240,7 @@ function OpretProduktContent() {
           >
             {t("productCreate.savedOffline")}
           </div>
-          <button type="button" onClick={() => router.push("/foods")} className="hf-btn-primary h-12">
+          <button type="button" onClick={() => router.push("/foods")} className="hf-control hf-btn-primary">
             <span className="hf-type-button">{t("common.continue")}</span>
           </button>
         </div>
@@ -283,6 +289,7 @@ function OpretProduktContent() {
             uiLang={locale}
             onNutritionExtracted={applyExtractedNutrition}
             onIngredientsExtracted={applyExtractedIngredients}
+            initialVerified={initial.verified}
           />
 
           <TextField
@@ -422,7 +429,7 @@ function OpretProduktContent() {
 
           {saveError && <p className="hf-type-caption text-center">{saveError}</p>}
 
-          <button type="submit" disabled={saving} className="hf-btn-primary h-12 disabled:opacity-40">
+          <button type="submit" disabled={saving} className="hf-control hf-btn-primary disabled:opacity-40">
             <span className="hf-type-button">{saving ? t("productCreate.saving") : t("productCreate.createProduct")}</span>
           </button>
         </form>

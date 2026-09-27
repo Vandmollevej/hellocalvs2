@@ -1,4 +1,4 @@
-import type { GoalDirection } from "@prisma/client";
+import type { GoalDirection, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import {
   BODY_MEASUREMENT_FIELDS,
@@ -6,27 +6,31 @@ import {
   isBodyMeasurementField,
   type BodyMeasurementField,
 } from "@/lib/body-measurements";
+import { isNutritionGoalField, NUTRITION_GOAL_FIELDS, type NutritionGoalField } from "@/lib/goal-nutrition";
 
 // Målsætninger (docs/DECISIONS.md, 2026-09-22). En målsætning er et dateret
-// sæt targets — vægt og/eller kropsmål. Gennemført-status beregnes her
+// sæt targets — vægt, kropsmål og/eller ernæring (dagligt kcal/makroer). Gennemført-status beregnes her
 // server-side og gemmes som completedAt, der aldrig ryddes igen.
 
 export const WEIGHT_TARGET = "weight";
-export type GoalTargetType = typeof WEIGHT_TARGET | BodyMeasurementField;
+export type GoalTargetType = typeof WEIGHT_TARGET | BodyMeasurementField | NutritionGoalField;
 
 // Rækkefølgen målsætningens targets vises i: vægt øverst, derefter kropsmålene
-// i samme rækkefølge som på Kropsmål-siden.
+// i samme rækkefølge som på Kropsmål-siden, til sidst ernæring.
 export const GOAL_TARGET_TYPES: GoalTargetType[] = [
   WEIGHT_TARGET,
   ...BODY_MEASUREMENT_FIELDS.map(({ field }) => field),
+  ...NUTRITION_GOAL_FIELDS.map(({ field }) => field),
 ];
 
 export function isGoalTargetType(value: string): value is GoalTargetType {
-  return value === WEIGHT_TARGET || isBodyMeasurementField(value);
+  return value === WEIGHT_TARGET || isBodyMeasurementField(value) || isNutritionGoalField(value);
 }
 
 export function unitForTarget(type: GoalTargetType) {
-  return type === WEIGHT_TARGET ? "kg" : BODY_MEASUREMENT_UNIT;
+  if (type === WEIGHT_TARGET) return "kg";
+  const nutrition = NUTRITION_GOAL_FIELDS.find(({ field }) => field === type);
+  return nutrition ? nutrition.unit : BODY_MEASUREMENT_UNIT;
 }
 
 // Floats fra input/DB sammenlignes med en lille tolerance; "fasthold" regnes
@@ -173,15 +177,10 @@ export type GoalDTO = {
   targets: GoalTargetDTO[];
 };
 
-export async function listGoals(userId: string): Promise<GoalDTO[]> {
-  await refreshGoalCompletion(userId);
-  const goals = await prisma.goal.findMany({
-    where: { userId },
-    orderBy: { createdAt: "desc" },
-    include: { targets: true },
-  });
+type GoalWithTargets = Prisma.GoalGetPayload<{ include: { targets: true } }>;
 
-  return goals.map((goal) => ({
+function toGoalDTO(goal: GoalWithTargets): GoalDTO {
+  return {
     id: goal.id,
     createdAt: goal.createdAt.toISOString(),
     targetDate: goal.targetDate?.toISOString().slice(0, 10) ?? null,
@@ -195,7 +194,27 @@ export async function listGoals(userId: string): Promise<GoalDTO[]> {
         unit: target.unit,
         completedAt: target.completedAt?.toISOString() ?? null,
       })),
-  }));
+  };
+}
+
+export async function listGoals(userId: string): Promise<GoalDTO[]> {
+  await refreshGoalCompletion(userId);
+  const goals = await prisma.goal.findMany({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+    include: { targets: true },
+  });
+  return goals.map(toGoalDTO);
+}
+
+// Én målsætning — kun hvis den tilhører brugeren.
+export async function getGoal(userId: string, goalId: string): Promise<GoalDTO | null> {
+  await refreshGoalCompletion(userId);
+  const goal = await prisma.goal.findFirst({
+    where: { id: goalId, userId },
+    include: { targets: true },
+  });
+  return goal ? toGoalDTO(goal) : null;
 }
 
 export async function createGoal(
@@ -237,4 +256,72 @@ export async function createGoal(
     }
     return goal;
   });
+}
+
+// Redigering af en eksisterende målsætning. Uændrede targets beholder deres
+// startværdi og gennemført-status; et ændret mål er et nyt mål og får ny
+// startværdi (seneste måling) og nulstillet completedAt. False hvis
+// målsætningen ikke tilhører brugeren.
+export async function updateGoal(
+  userId: string,
+  goalId: string,
+  targetDate: Date,
+  values: Partial<Record<GoalTargetType, number>>,
+) {
+  const goal = await prisma.goal.findFirst({ where: { id: goalId, userId }, include: { targets: true } });
+  if (!goal) return false;
+  const latest = await getLatestValues(userId);
+
+  await prisma.$transaction(async (tx) => {
+    await tx.goal.update({ where: { id: goalId }, data: { targetDate } });
+
+    for (const target of goal.targets) {
+      const value = isGoalTargetType(target.type) ? values[target.type] : undefined;
+      if (value == null) {
+        await tx.goalTarget.delete({ where: { id: target.id } });
+      } else if (Math.abs(value - target.value) > EPSILON) {
+        const startValue = latest.get(target.type as GoalTargetType) ?? null;
+        await tx.goalTarget.update({
+          where: { id: target.id },
+          data: {
+            value,
+            startValue,
+            direction: startValue != null ? getGoalDirection(startValue, value) : null,
+            completedAt: null,
+          },
+        });
+      }
+    }
+
+    const existing = new Set(goal.targets.map((target) => target.type));
+    for (const type of GOAL_TARGET_TYPES) {
+      const value = values[type];
+      if (value == null || existing.has(type)) continue;
+      const startValue = latest.get(type) ?? null;
+      await tx.goalTarget.create({
+        data: {
+          goalId,
+          type,
+          value,
+          unit: unitForTarget(type),
+          startValue,
+          direction: startValue != null ? getGoalDirection(startValue, value) : null,
+        },
+      });
+    }
+
+    // User.targetWeightKg følger den nyeste vægt-målsætning (jf. createGoal).
+    const weight = values[WEIGHT_TARGET];
+    if (weight != null) {
+      const newestWeightGoal = await tx.goal.findFirst({
+        where: { userId, targets: { some: { type: WEIGHT_TARGET } } },
+        orderBy: { createdAt: "desc" },
+        select: { id: true },
+      });
+      if (newestWeightGoal?.id === goalId) {
+        await tx.user.update({ where: { id: userId }, data: { targetWeightKg: weight } });
+      }
+    }
+  });
+  return true;
 }

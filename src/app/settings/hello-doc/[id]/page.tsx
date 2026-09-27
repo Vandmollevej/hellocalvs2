@@ -11,6 +11,7 @@ import {
   type DoctorShareCategory,
   type DoctorShareHistoryRange,
 } from "@/lib/doctor-share";
+import { Skeleton, SkeletonForm, SkeletonList, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type DoctorShare = {
   id: string;
@@ -112,7 +113,11 @@ export default function EditHelloDocUserPage() {
   if (!share) {
     return (
       <HfScreen title={t("helloDoc.editTitle")}>
-        <p className="text-text-secondary hf-type-body p-4">{t("common.loading")}</p>
+        <SkeletonScreen className="hf-page hf-page--sections">
+          <Skeleton type="caption" width={90} />
+          <SkeletonForm fields={2} />
+          <SkeletonList rows={5} icons={false} />
+        </SkeletonScreen>
       </HfScreen>
     );
   }
@@ -133,7 +138,7 @@ export default function EditHelloDocUserPage() {
             type="button"
             onClick={saveChanges}
             disabled={saving || !name.trim() || !email.trim()}
-            className="hf-btn-primary h-16 w-full disabled:opacity-40"
+            className="hf-control hf-btn-primary w-full disabled:opacity-40"
             style={{ borderRadius: 12 }}
           >
             {saving ? t("helloDoc.sending") : t("helloDoc.saveChanges")}
@@ -172,7 +177,8 @@ export default function EditHelloDocUserPage() {
         <button
           type="button"
           onClick={revoke}
-          className="hf-btn-danger h-12 w-full"
+          className="hf-control hf-type-button w-full rounded-[8px] border text-hf-red-dark"
+          style={{ borderColor: "var(--hf-color-danger)" }}
         >
           {t("helloDoc.revoke")}
         </button>

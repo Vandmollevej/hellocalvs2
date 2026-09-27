@@ -13,7 +13,7 @@ export default function PrivatlivspolitikPage() {
       <ScreenHeader title="Privatlivspolitik" />
 
       <div className="flex-1 overflow-y-auto px-4 pb-10 pt-4">
-        <p className="text-text-secondary hf-type-caption">Senest opdateret: 2026-09-25</p>
+        <p className="text-text-secondary hf-type-caption">Senest opdateret: 2026-09-27</p>
 
         <LegalSummary
           title="Kort fortalt"
@@ -31,7 +31,7 @@ export default function PrivatlivspolitikPage() {
             <Placeholder>Firmanavn</Placeholder>, CVR-nr. <Placeholder>CVR-nr.</Placeholder>,{" "}
             <Placeholder>Adresse</Placeholder>, er dataansvarlig for behandlingen af dine
             personoplysninger i Hello Cal. Kontakt os om alt, der vedrører dine data, på{" "}
-            <Placeholder>kontakt-e-mail</Placeholder> eller via appens Hjælpecenter.
+            <a href="mailto:support@hellocal.io">support@hellocal.io</a> eller via appens Hjælpecenter.
           </p>
         </Section>
 
@@ -124,6 +124,11 @@ export default function PrivatlivspolitikPage() {
             viser kun grupper, aldrig enkeltpersoner, og vi sælger eller udgiver den ikke som
             &quot;trendrapporter&quot; om, hvad du spiser.
           </p>
+          <p>
+            Besøgsstatistikken (fx hvor mange der åbner hvilke sider) laves med Umami, som kører på
+            vores egen server. Den bruger ingen cookies, gemmer ikke din IP-adresse, sender intet til
+            tredjepart og tæller kun sidevisninger — ikke hvad du registrerer.
+          </p>
         </Section>
 
         <Section title="9. Børn">
@@ -144,7 +149,7 @@ export default function PrivatlivspolitikPage() {
             <li>trække et samtykke tilbage når som helst, uden at det påvirker lovligheden af behandlingen forud for tilbagetrækningen.</li>
           </ul>
           <p>
-            Skriv til os via Hjælpecenter eller <Placeholder>kontakt-e-mail</Placeholder>. Vi svarer
+            Skriv til os via Hjælpecenter eller <a href="mailto:support@hellocal.io">support@hellocal.io</a>. Vi svarer
             senest inden for en måned. Du kan altid klage til Datatilsynet, Carl Jacobsens Vej 35, 2500
             Valby, www.datatilsynet.dk.
           </p>

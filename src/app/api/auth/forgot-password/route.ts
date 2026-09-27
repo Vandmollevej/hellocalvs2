@@ -4,7 +4,7 @@ import { createPasswordResetToken } from "@/lib/password-reset";
 import { queueMessage } from "@/lib/messaging";
 import { isLocked, recordFailure } from "@/lib/rate-limit";
 
-const APP_BASE_URL = process.env.APP_BASE_URL || "https://hellocal.packroff.dk";
+const APP_BASE_URL = process.env.APP_BASE_URL || "https://hellocal.io";
 
 // Afslører aldrig om en e-mail findes i systemet (samme generiske svar altid),
 // så flowet ikke kan bruges til at liste registrerede konti.

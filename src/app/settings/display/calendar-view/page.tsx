@@ -36,7 +36,7 @@ export default function CalendarViewDisplaySettingsPage() {
                 role="radio"
                 aria-checked={isSelected}
                 onClick={() => saveDefaultCalendarView(option.value)}
-                className={`hf-type-body hf-type-strong flex min-h-12 items-center px-4 text-left ${
+                className={`hf-type-body hf-type-strong hf-control-row flex items-center px-4 text-left ${
                   index < OPTIONS.length - 1 ? "border-b border-hf-tan-dark" : ""
                 } ${isSelected ? "text-hf-green" : "text-hf-black"}`}
               >

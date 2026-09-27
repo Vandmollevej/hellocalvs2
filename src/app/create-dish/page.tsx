@@ -29,6 +29,7 @@ import { RecipeStepsEditor, isEmptyStep } from "@/components/recipes/RecipeSteps
 import { RecipeCategoriesDialog } from "@/components/recipes/RecipeCategoriesDialog";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { isPrivateIngredientId } from "@/lib/private-ingredient-ids";
+import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
 
 function round(value: number, decimals = 0) {
   const factor = 10 ** decimals;
@@ -189,7 +190,7 @@ export default function CreateDishPage() {
           <button
             onClick={handleSave}
             disabled={saving || savedDish !== null}
-            className="hf-btn-primary w-full py-3.5 disabled:opacity-60"
+            className="hf-control hf-btn-primary w-full disabled:opacity-60"
           >
             {saving ? t("createDish.saving") : t("createDish.saveDish")}
           </button>
@@ -203,11 +204,11 @@ export default function CreateDishPage() {
           autoComplete="off"
           aria-label={t("createDish.nameAriaLabel")}
           placeholder={t("createDish.namePlaceholder")}
-          className="hf-type-body min-w-0 rounded-full bg-hf-tan px-4 py-2.5 text-hf-black outline-none"
+          className="hf-type-body hf-field min-w-0 rounded-full bg-hf-tan px-4 text-hf-black outline-none"
         />
 
         <div>
-          <div className="flex items-center gap-3 rounded-2xl bg-hf-tan px-4 py-3">
+          <div className="hf-control-row flex items-center gap-3 rounded-2xl bg-hf-tan px-4">
             <span className="hf-type-body hf-type-strong flex-1 text-hf-black">{t("createDish.shareLabel")}</span>
             <button
               type="button"
@@ -311,9 +312,9 @@ export default function CreateDishPage() {
           {query.trim() && (
             <div className="mt-2 overflow-hidden rounded-[8px] bg-hf-tan">
               {searchState === "loading" && (
-                <p className="hf-type-body text-text-secondary px-4 py-4 text-center">
-                  {t("createDish.searching")}
-                </p>
+                <SkeletonScreen className="px-4">
+                  <SkeletonMediaRows rows={4} />
+                </SkeletonScreen>
               )}
               {searchState === "error" && (
                 <p className="hf-type-body text-text-secondary px-4 py-4 text-center">

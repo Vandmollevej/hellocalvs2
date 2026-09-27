@@ -10,6 +10,7 @@ import {
   DOCTOR_SHARE_HISTORY_RANGES,
   type DoctorShareHistoryRange,
 } from "@/lib/doctor-share";
+import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type PreviewData = {
   profile: { displayName: string; email: string; sex: "MALE" | "FEMALE" | null };
@@ -137,16 +138,16 @@ export default function HelloDocPreviewPage() {
             <>
               <button type="button" aria-hidden="true" tabIndex={-1} className="fixed inset-0 z-40 cursor-default" onClick={() => setMenuOpen(false)} />
               <div className="absolute right-0 top-12 z-50 w-52 rounded-xl border bg-hf-white p-1 shadow-xl" style={{ borderColor: "var(--hf-color-line)" }}>
-                <button type="button" className="hf-type-body w-full rounded-lg px-3 py-2.5 text-left hover:bg-hf-cream">
+                <button type="button" className="hf-control-row hf-type-body w-full rounded-lg px-3 text-left hover:bg-hf-cream">
                   {t("helloDoc.preview.menuHelp")}
                 </button>
-                <button type="button" className="hf-type-body w-full rounded-lg px-3 py-2.5 text-left hover:bg-hf-cream">
+                <button type="button" className="hf-control-row hf-type-body w-full rounded-lg px-3 text-left hover:bg-hf-cream">
                   {t("helloDoc.preview.menuView")}
                 </button>
-                <Link href="/profile/edit" className="hf-type-body block w-full rounded-lg px-3 py-2.5 text-left hover:bg-hf-cream">
+                <Link href="/profile/edit" className="hf-control-row hf-type-body flex w-full items-center rounded-lg px-3 text-left hover:bg-hf-cream">
                   {t("helloDoc.preview.menuMyDetails")}
                 </Link>
-                <button type="button" onClick={logOut} className="hf-type-body w-full rounded-lg px-3 py-2.5 text-left text-hf-red-dark hover:bg-hf-cream">
+                <button type="button" onClick={logOut} className="hf-control-row hf-type-body w-full rounded-lg px-3 text-left text-hf-red-dark hover:bg-hf-cream">
                   {t("helloDoc.preview.menuLogout")}
                 </button>
               </div>
@@ -162,7 +163,16 @@ export default function HelloDocPreviewPage() {
 
         {error && <p className="hf-type-body p-4 text-hf-red-dark">{t("helloDoc.loadError")}</p>}
 
-        {!error && !data && <p className="text-text-secondary hf-type-body p-4">{t("common.loading")}</p>}
+        {!error && !data && (
+          <SkeletonScreen className="hf-page hf-page--sections">
+            <div className="flex flex-col items-center gap-2 rounded-xl bg-hf-tan p-4">
+              <Skeleton type="circle" height={96} />
+              <Skeleton type="card-title" width="50%" />
+              <Skeleton type="caption" width="40%" />
+            </div>
+            <SkeletonCards count={3} height={140} gap={16} />
+          </SkeletonScreen>
+        )}
 
         {data && (
           <div className="hf-page hf-page--sections md:flex-row md:items-start">
@@ -207,7 +217,7 @@ export default function HelloDocPreviewPage() {
             <div className="min-w-0 flex-1">
               <div className="relative mb-4 ml-auto w-48">
                 <select
-                  className="hf-type-input h-10 w-full appearance-none rounded-[8px] border bg-hf-cream pl-3 pr-9 outline-none"
+                  className="hf-field hf-type-input w-full appearance-none rounded-[8px] border bg-hf-cream pl-3 pr-9 outline-none"
                   style={{ borderColor: "var(--hf-color-field-border)" }}
                   value={range}
                   onChange={(event) => setRange(event.target.value as DoctorShareHistoryRange)}

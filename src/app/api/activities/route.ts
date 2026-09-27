@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getSessionUser, unauthorized } from "@/lib/session";
+import { unauthorized } from "@/lib/session";
+import { getProfileUser } from "@/lib/family-access";
 
 export async function GET() {
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("activities", "VIEWED");
 
     if (!user) return unauthorized();
     const activities = await prisma.activity.findMany({
@@ -48,7 +49,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("activities", "CREATED");
 
     if (!user) return unauthorized();
     const activity = await prisma.activity.create({

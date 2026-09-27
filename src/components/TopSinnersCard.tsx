@@ -14,6 +14,7 @@ import {
   type SourceMetric,
   type SourceRegistration,
 } from "@/lib/food-classification";
+import { Skeleton } from "@/components/hf/Skeleton";
 
 const TOP_COUNT = 5;
 
@@ -59,8 +60,14 @@ export function TopSinnersCard({
         return (
           <div key={metric.key} className="flex flex-col gap-2">
             <p className="hf-type-small hf-type-strong text-hf-black">{metric.label}</p>
-            {items.length === 0 ? (
-              <p className="hf-type-small text-text-secondary">{loading ? "—" : "Ingen registreringer i perioden"}</p>
+            {loading ? (
+              <div className="grid grid-cols-5 gap-2" aria-hidden>
+                {Array.from({ length: 5 }, (_, index) => (
+                  <Skeleton key={index} type="tile" height={56} />
+                ))}
+              </div>
+            ) : items.length === 0 ? (
+              <p className="hf-type-small text-text-secondary">Ingen registreringer i perioden</p>
             ) : (
               <div className="grid grid-cols-5 gap-2">
                 {items.map((item) => (

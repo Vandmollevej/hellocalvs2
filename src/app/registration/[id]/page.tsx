@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { Skeleton, SkeletonCards, SkeletonScreen, SkeletonText } from "@/components/hf/Skeleton";
 
 type Registration = {
   id: string;
@@ -66,7 +67,18 @@ export default function RegistrationPage() {
 
     return (
       <HfScreen title={t("addProduct.title")}>
-        <p className="hf-type-body text-text-secondary p-4 text-center">{message}</p>
+        {status === "loading" ? (
+          <SkeletonScreen className="flex flex-col gap-4">
+            <Skeleton type="image" height={176} style={{ borderRadius: 0 }} />
+            <div className="flex flex-col gap-4 px-4">
+              <Skeleton type="page-title" width="70%" />
+              <SkeletonText lines={2} />
+              <SkeletonCards count={2} height={72} />
+            </div>
+          </SkeletonScreen>
+        ) : (
+          <p className="hf-type-body text-text-secondary p-4 text-center">{message}</p>
+        )}
       </HfScreen>
     );
   }

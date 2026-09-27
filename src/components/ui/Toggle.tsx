@@ -28,13 +28,13 @@ export function Toggle({
       aria-label={label ?? ariaLabel}
       disabled={disabled}
       onClick={() => onChange(!checked)}
-      className={`relative h-6 w-10 shrink-0 rounded-full text-left transition-colors disabled:opacity-50 ${
+      className={`relative h-[28px] w-[63px] shrink-0 rounded-full text-left transition-colors disabled:opacity-50 ${
         checked ? "bg-hf-green" : "bg-hf-tan-dark"
       }`}
     >
       <span
-        className={`absolute top-0.5 h-5 w-5 rounded-full bg-hf-white shadow transition-transform ${
-          checked ? "translate-x-[18px]" : "translate-x-0.5"
+        className={`absolute left-[2px] top-[2px] h-[24px] w-[38px] rounded-full bg-hf-white shadow transition-transform ${
+          checked ? "translate-x-[21px]" : "translate-x-0"
         }`}
       />
     </button>

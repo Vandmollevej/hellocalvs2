@@ -168,6 +168,11 @@ model User {
   averageCycleLengthDays  Int     @default(28)
   averagePeriodLengthDays Int     @default(5)
 
+  // "Oplevelse af søvn" (docs/DECISIONS.md 2026-09-26): Indstillinger →
+  // Visning. Slået til som standard — dagens første app-åbning viser et
+  // overlay, hvor nattens søvn vurderes 1–5 (SleepQualityEntry).
+  sleepQualityPromptEnabled Boolean @default(true)
+
   registrations           Registration[]
   favorites               Favorite[]
   dishes                  Dish[]
@@ -177,6 +182,7 @@ model User {
   waterEntries            WaterEntry[]
   menstrualCycleEntries   MenstrualCycleEntry[]
   sleepSchedules          SleepSchedule[]
+  sleepQualityEntries     SleepQualityEntry[]
   workShifts              WorkShift[]
   integrations            Integration[]
   activities              Activity[]
@@ -187,6 +193,7 @@ model User {
   oauthAccounts           UserOAuthAccount[]
   knownDevices            UserKnownDevice[]
   sharedRecipeFavorites   SharedRecipeFavorite[]
+  recipeCookbookPhotos    RecipeCookbookPhoto[]
   nutritionReportsFiled   ProductNutritionReport[] @relation("NutritionReportReporter")
   referralsMade           Referral[]               @relation("ReferralsMade")
   referralReceived        Referral?                @relation("ReferralReceived")
@@ -201,6 +208,7 @@ model User {
   doctorShares            DoctorShare[]
   subscription            Subscription?
   paymentMethods          PaymentMethod[]
+  paymentCharges          PaymentCharge[]
   giftCodesRedeemed       GiftCode[]
   adminAuditLogsAsActor   AdminAuditLog[]          @relation("AdminAuditActor")
   adminAuditLogsAsTarget  AdminAuditLog[]          @relation("AdminAuditTarget")
@@ -218,6 +226,20 @@ model User {
   // by anonymizeUser() (src/lib/gdpr.ts), same as every other per-user table.
   productSearchHistory    UserProductSearchHistory[]
   nutritionReportsReviewed ProductNutritionReport[] @relation("NutritionReportReviewer")
+
+  // Familieabonnement (docs/FAMILY.md, docs/DECISIONS.md 2026-09-25).
+  familyOwned             Family?             @relation("FamilyOwner")
+  familyMembership        FamilyMember?       @relation("FamilyMembership")
+  familyMembersCreated    FamilyMember[]      @relation("FamilyMemberCreatedBy")
+  familyGrantsReceived    FamilyAccessGrant[] @relation("FamilyGrantGrantee")
+  familyGrantsAbout       FamilyAccessGrant[] @relation("FamilyGrantSubject")
+  familyLoginCodes        FamilyLoginCode[]   @relation("FamilyLoginCodeProfile")
+  profileAccessLogAbout   ProfileAccessLog[]  @relation("ProfileAccessSubject")
+  profileAccessLogAsActor ProfileAccessLog[]  @relation("ProfileAccessActor")
+  registrationsCreatedForOthers Registration[] @relation("RegistrationCreatedBy")
+  // Hvornår brugeren sidst lukkede panelet med nye adgangshændelser. Kun
+  // hændelser efter dette tidspunkt vises i panelet, der glider ned.
+  accessLogSeenAt         DateTime?
 
   @@map("users")
 }
@@ -404,6 +426,8 @@ model BodyMeasurement {
   chestCm      Float?
   thighCm      Float?
   upperArmCm   Float?
+  // Halsmål (2026-09-26), så alle brugerens fem kropsmålstegninger har et felt.
+  neckCm       Float?
   note         String?
   measuredAt   DateTime @default(now())
 
@@ -506,6 +530,22 @@ model SleepSchedule {
 
   @@unique([userId, weekday])
   @@map("sleep_schedules")
+}
+
+// Oplevet søvnkvalitet (docs/DECISIONS.md 2026-09-26): én vurdering 1–5 pr.
+// dag (datoen man vågnede), fra dagens første app-åbning. Vises øverst i
+// kalenderens dagvisning og sammen med kalorieindtaget på Statistik.
+model SleepQualityEntry {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  date      DateTime @db.Date
+  rating    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, date])
+  @@map("sleep_quality_entries")
 }
 
 // Work days/hours logged directly in the calendar (e.g. shift work/
@@ -746,6 +786,7 @@ model Brand {
   createdAt DateTime  @default(now())
   products  Product[]
   regionSearchStats BrandRegionSearchStat[]
+  cutoutJobs ImageCutoutJob[]
   logoSearches      BrandLogoSearch[]
 
   @@map("brands")
@@ -843,6 +884,12 @@ model Product {
   // (e.g. HelloFresh recipes' fiber/sugar/salt/potassium/calcium/iron per
   // serving size). See docs/DECISIONS.md (2026-08-29).
   nutritionExtra   Json?
+  // HelloFresh-opskriftens visningsdata (docs/DECISIONS.md 2026-09-27):
+  // undertitel, beskrivelse, tid, sværhedsgrad, tags, allergen-navne,
+  // ingredienser med mængde/enhed i HelloFreshs rækkefølge, fremgangsmåde og
+  // næringsværdier pr. portion præcis som HelloFresh viser dem. Udfyldes af
+  // scripts/hellofresh-import/agent.py; null for alle andre produkter.
+  recipeDetails    Json?
 
   // Free-text dietary/label claims (2026-09-19, see docs/DECISIONS.md), e.g.
   // { isVegan: "Vegansk", isLactoseFree: "Laktosefri", isSugarFree: "Sukkerfri" }.
@@ -938,12 +985,14 @@ model Product {
   favorites          Favorite[]
   dishIngredients    DishIngredient[]
   ingredients        ProductIngredient[]
+  cookbookPhotos     RecipeCookbookPhoto[]
   images             ProductImage[]
   pointsTransactions PointsTransaction[]
   forwards           Forward[]
   duplicateLinksAsA  ProductDuplicateLink[] @relation("ProductDuplicateLinkA")
   duplicateLinksAsB  ProductDuplicateLink[] @relation("ProductDuplicateLinkB")
   aiAnalyses         AiProductAnalysis[]
+  cutoutJobs         ImageCutoutJob[]
   matchChecks        ProductMatchCheck[]
   photoAwards        ProductPhotoAward[]
   regionSearchStats  ProductRegionSearchStat[]
@@ -1055,10 +1104,9 @@ model AiProductAnalysis {
   prediction    Json
   correction    Json?
   confidence    Float?
-  // The guided-flow photo itself (BARCODE/NUTRITION/INGREDIENTS only — a
-  // FRONT analysis has no image here, since the front photo becomes
-  // Product.imageUrl directly). Null for analyses created before this field
-  // existed.
+  // The guided-flow photo itself. FRONT analyses store it too since
+  // 2026-09-26 — it is the source for the logo/product cutout jobs
+  // (ImageCutoutJob). Null for analyses created before this field existed.
   imageUrl      String?        @map("image_url")
   product       Product?       @relation(fields: [productId], references: [id], onDelete: SetNull)
   productId     String?        @map("product_id")
@@ -1074,6 +1122,7 @@ model AiProductAnalysis {
   // værdierne ved produktoprettelse.
   reviewedAt    DateTime?      @map("reviewed_at")
   matchCheck    ProductMatchCheck?
+  cutoutJobs    ImageCutoutJob[]
 
   @@index([kind, correctedAt])
   @@index([productId])
@@ -1085,6 +1134,59 @@ enum AiAnalysisKind {
   INGREDIENTS
   NUTRITION
   BARCODE
+}
+
+// Fritskrabning (docs/DECISIONS.md 2026-09-26): forsidefotoet fra det guidede
+// kamera-flow giver to jobs — logoet (beskåret efter OpenAI's logoBox) og
+// selve produktet (productBox). scripts/image-agent beskærer, fjerner
+// baggrunden med rembg og gemmer et transparent PNG under
+// /product-images/cutouts. Et BRAND_LOGO-job er logo-kandidaten, der holdes
+// op mod Brand-tabellen (brandId = matchet brand); det bliver kun selv
+// Brand.logoUrl, når brandet intet logo har og match + AI-sikkerhed er høje
+// (appliedAt). PRODUCT_FRONT lander som Product.pendingImageUrl og venter på
+// den eksisterende admin-godkendelse — aldrig direkte som imageUrl.
+model ImageCutoutJob {
+  id             String             @id @default(cuid())
+  kind           ImageCutoutKind
+  status         ImageCutoutStatus  @default(PENDING)
+  // Originalt foto (public-sti under /product-images).
+  sourceUrl      String
+  // Beskæring i 0-1 af billedets bredde/højde: { x, y, width, height }.
+  // Null = hele billedet.
+  cropBox        Json?
+  resultUrl      String?
+  error          String?
+  // Navnet, som OpenAI læste det på logoet (BRAND_LOGO).
+  recognizedText String?
+  confidence     Float?
+  // Match mod Brand-tabellen (0-1, 1 = normaliseret identisk navn).
+  matchScore     Float?
+  brand          Brand?             @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  brandId        String?
+  product        Product?           @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productId      String?
+  analysis       AiProductAnalysis? @relation(fields: [analysisId], references: [id], onDelete: SetNull)
+  analysisId     String?
+  createdAt      DateTime           @default(now())
+  processedAt    DateTime?
+  // Sat når resultatet er skrevet videre (Brand.logoUrl / Product.pendingImageUrl).
+  appliedAt      DateTime?
+
+  @@index([status, createdAt])
+  @@index([brandId])
+  @@index([analysisId])
+  @@map("image_cutout_jobs")
+}
+
+enum ImageCutoutKind {
+  BRAND_LOGO
+  PRODUCT_FRONT
+}
+
+enum ImageCutoutStatus {
+  PENDING
+  DONE
+  FAILED
 }
 
 // Kvalitetskontrol / billed-match (2026-09-19, se docs/DECISIONS.md): en
@@ -1700,6 +1802,11 @@ model Registration {
   nutrientEstimatedSnapshot Json?
   nutrientToleranceSnapshot Json?
 
+  // Hvem der tastede registreringen ind, når det ikke var profilens ejer selv
+  // (familieabonnement, docs/FAMILY.md). Null = profilens ejer.
+  createdBy   User?   @relation("RegistrationCreatedBy", fields: [createdById], references: [id])
+  createdById String?
+
   createdAt DateTime @default(now())
 
   @@map("registrations")
@@ -1843,6 +1950,10 @@ enum MessageEvent {
   DOCTOR_SHARE_INVITATION
   NEW_DEVICE_LOGIN
   ADMIN_MESSAGE
+  // Beskedtjeneste (docs/DECISIONS.md 2026-09-26 "Support-indbakke").
+  SUPPORT_REPLY
+  SUPPORT_OVERDUE_ADMIN
+  SUPPORT_RECEIVED
 }
 
 enum MessageChannel {
@@ -1977,6 +2088,13 @@ enum SubscriptionStatus {
   CANCELED
 }
 
+// Familieplan (docs/FAMILY.md): betaleren er Seriøs, og alle familiens
+// medlemmer arver Seriøs. Kun betalt — gavekoder og points giver ikke FAMILY.
+enum SubscriptionPlan {
+  INDIVIDUAL
+  FAMILY
+}
+
 enum PaymentProvider {
   REEPAY
   QUICKPAY
@@ -1997,6 +2115,7 @@ model Subscription {
   user                   User               @relation(fields: [userId], references: [id])
   userId                 String             @unique
   status                 SubscriptionStatus @default(INACTIVE)
+  plan                   SubscriptionPlan   @default(INDIVIDUAL)
   provider               PaymentProvider?
   providerCustomerId     String?
   providerSubscriptionId String?
@@ -2005,6 +2124,10 @@ model Subscription {
   // points, se PointsReason FREE_MONTH_REDEEMED), ventende på at blive
   // anvendt på næste faktureringsperiode.
   freeMonthsRemaining    Int                @default(0)
+  // MobilePay (Vipps MobilePay Recurring, docs/DECISIONS.md 2026-09-26): en
+  // aftale, brugeren endnu ikke har godkendt i MobilePay-appen. Flyttes til
+  // providerSubscriptionId, når aftalen bliver aktiv.
+  pendingAgreementId     String?
   createdAt              DateTime           @default(now())
   updatedAt              DateTime           @default(now()) @updatedAt
 
@@ -2161,24 +2284,102 @@ enum SupportRequestStatus {
   RESOLVED
 }
 
+// Beskedtjeneste (docs/DECISIONS.md 2026-09-26 "Support-indbakke"): admin
+// sætter prioritet; alle nye sager starter som NORMAL.
+enum SupportPriority {
+  HIGH
+  NORMAL
+  LOW
+}
+
+// USER = brugerens besked, SUPPORT = svar til brugeren, NOTE = intern note
+// (vises aldrig for brugeren).
+enum SupportMessageAuthor {
+  USER
+  SUPPORT
+  NOTE
+}
+
 // "Kontakt os" fra Support-siden. Kobles til brugerens aktive grant på
 // oprettelsestidspunktet (kan være null — man kan skrive uden at give adgang).
+// `message` er den oprindelige første besked; hele tråden (inkl. den første)
+// ligger i SupportMessage.
 model SupportRequest {
-  id             String                 @id @default(cuid())
-  user           User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId         String
-  category       SupportRequestCategory @default(OTHER)
-  subject        String
-  message        String
-  supportGrant   SupportAccessGrant?    @relation(fields: [supportGrantId], references: [id], onDelete: SetNull)
-  supportGrantId String?
-  status         SupportRequestStatus   @default(OPEN)
-  createdAt      DateTime               @default(now())
-  resolvedAt     DateTime?
+  id                 String                 @id @default(cuid())
+  user               User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             String
+  category           SupportRequestCategory @default(OTHER)
+  subject            String
+  message            String
+  supportGrant       SupportAccessGrant?    @relation(fields: [supportGrantId], references: [id], onDelete: SetNull)
+  supportGrantId     String?
+  status             SupportRequestStatus   @default(OPEN)
+  priority           SupportPriority        @default(NORMAL)
+  // true = seneste besked er fra brugeren og er ikke besvaret endnu.
+  awaitingReply      Boolean                @default(true)
+  // Brugerens seneste besked (sortering + 24-timers-fristen).
+  lastUserMessageAt  DateTime               @default(now())
+  lastSupportReplyAt DateTime?
+  // Sat når admin har fået 24-timers-advarslen for den nuværende ubesvarede
+  // besked; nulstilles ved svar og ved ny brugerbesked.
+  overdueAlertSentAt DateTime?
+  // Brugeren har et svar fra Support, som ikke er åbnet i appen endnu.
+  userUnread         Boolean                @default(false)
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @default(now()) @updatedAt
+  resolvedAt         DateTime?
+
+  messages SupportMessage[]
 
   @@index([status, createdAt])
+  @@index([status, awaitingReply, lastUserMessageAt])
   @@index([userId])
   @@map("support_requests")
+}
+
+model SupportMessage {
+  id         String               @id @default(cuid())
+  request    SupportRequest       @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  requestId  String
+  author     SupportMessageAuthor
+  // Admins visningsnavn for SUPPORT/NOTE; null for brugerbeskeder.
+  authorName String?
+  body       String
+  createdAt  DateTime             @default(now())
+
+  attachments SupportAttachment[]
+
+  @@index([requestId, createdAt])
+  @@map("support_messages")
+}
+
+// Skærmbilleder fra brugeren (docs/DECISIONS.md 2026-09-26). Gemmes i
+// databasen — private data, aldrig under /public — og vises kun for ejeren
+// og admin via beskyttede routes. Slettes sammen med beskeden/sagen.
+model SupportAttachment {
+  id        String         @id @default(cuid())
+  message   SupportMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  messageId String
+  mimeType  String
+  sizeBytes Int
+  data      Bytes
+  createdAt DateTime       @default(now())
+
+  @@index([messageId])
+  @@map("support_attachments")
+}
+
+// Admins standardsvar til Support-indbakken. {{navn}} erstattes med
+// brugerens navn, når skabelonen indsættes.
+model SupportReplyTemplate {
+  id        String   @id @default(cuid())
+  title     String
+  body      String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("support_reply_templates")
 }
 
 // --- Normaliserede produkt-søgeparametre (docs/DECISIONS.md 2026-09-23) ---
@@ -2314,6 +2515,21 @@ model SharedRecipePublisherBlock {
 
 // Favorit på en andens delte ret. Gemmes som snapshot, så favoritten
 // overlever, at ejeren sletter retten eller stopper delingen.
+// "Mine kogebogsbilleder" på en HelloFresh-opskrift (docs/DECISIONS.md
+// 2026-09-27): brugerens egne fotos af retten, kun synlige for brugeren.
+model RecipeCookbookPhoto {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  image     String
+  createdAt DateTime @default(now())
+
+  @@index([userId, productId])
+  @@map("recipe_cookbook_photos")
+}
+
 model SharedRecipeFavorite {
   id        String   @id @default(cuid())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -2364,6 +2580,107 @@ model UserKnownDevice {
 
   @@unique([userId, deviceHash])
   @@map("user_known_devices")
+}
+
+// --- Familieabonnement (docs/FAMILY.md, docs/DECISIONS.md 2026-09-25) ---
+// Betaleren (ownerId) opsætter familien og bestemmer, hvem der må se og taste
+// ind for hvem. En bruger kan kun være med i én familie ad gangen. Profiler,
+// betaleren opretter (fx børn under 15), er almindelige User-rækker uden
+// login, indtil barnet får en engangskode (FamilyLoginCode).
+
+enum ProfileAccessAction {
+  OPENED
+  VIEWED
+  CREATED
+  UPDATED
+  DELETED
+}
+
+model Family {
+  id        String              @id @default(cuid())
+  owner     User                @relation("FamilyOwner", fields: [ownerId], references: [id])
+  ownerId   String              @unique
+  createdAt DateTime            @default(now())
+  members   FamilyMember[]
+  grants    FamilyAccessGrant[]
+  codes     FamilyLoginCode[]
+
+  @@map("families")
+}
+
+model FamilyMember {
+  id          String   @id @default(cuid())
+  family      Family   @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  familyId    String
+  user        User     @relation("FamilyMembership", fields: [userId], references: [id])
+  userId      String   @unique
+  isChild     Boolean  @default(false)
+  // Må medlemmet selv slette registreringer, som andre har tastet ind på
+  // profilen? Styres af den, der oprettede profilen (ellers betaleren).
+  // Børn starter med nej (brugerens valg 2026-09-26).
+  canDeleteOthersEntries Boolean @default(true)
+  // Sat for profiler, betaleren selv har oprettet (null = eksisterende bruger,
+  // der er koblet på familien).
+  createdBy   User?    @relation("FamilyMemberCreatedBy", fields: [createdById], references: [id])
+  createdById String?
+  createdAt   DateTime @default(now())
+
+  @@index([familyId])
+  @@map("family_members")
+}
+
+// Betaleren giver grantee adgang til at se og taste ind for subject.
+// Betaleren selv har altid adgang til alle familiens profiler og har ingen
+// rækker her.
+model FamilyAccessGrant {
+  id        String   @id @default(cuid())
+  family    Family   @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  familyId  String
+  grantee   User     @relation("FamilyGrantGrantee", fields: [granteeId], references: [id])
+  granteeId String
+  subject   User     @relation("FamilyGrantSubject", fields: [subjectId], references: [id])
+  subjectId String
+  createdAt DateTime @default(now())
+
+  @@unique([granteeId, subjectId])
+  @@index([subjectId])
+  @@map("family_access_grants")
+}
+
+// Engangskode fra betaleren. Med profileId: et familiemedlem uden login
+// sætter e-mail og adgangskode på sin profil. Uden profileId: en eksisterende
+// bruger kobler sig på familien. Kun SHA-256 af koden gemmes.
+model FamilyLoginCode {
+  id        String    @id @default(cuid())
+  family    Family    @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  familyId  String
+  profile   User?     @relation("FamilyLoginCodeProfile", fields: [profileId], references: [id])
+  profileId String?
+  codeHash  String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([profileId])
+  @@map("family_login_codes")
+}
+
+// Alt, hvad en anden person gør på en profil: åbner den, ser data, tilføjer,
+// ændrer eller sletter. Vises for profilens ejer (docs/FAMILY.md punkt 6).
+// Rækkerne slettes ikke, når nogen forlader familien.
+model ProfileAccessLog {
+  id        String              @id @default(cuid())
+  subject   User                @relation("ProfileAccessSubject", fields: [subjectId], references: [id])
+  subjectId String
+  actor     User                @relation("ProfileAccessActor", fields: [actorId], references: [id])
+  actorId   String
+  action    ProfileAccessAction
+  // Område, fx "registrations", "weight", "water" (src/lib/family-access.ts).
+  area      String
+  createdAt DateTime            @default(now())
+
+  @@index([subjectId, createdAt])
+  @@map("profile_access_logs")
 }
 
 // --- Oprettelses-app (medarbejder-hyldescanning), docs/OPRETTELSES-APP.md ---
@@ -2660,4 +2977,119 @@ model AppSecret {
   updatedAt   DateTime @updatedAt
 
   @@map("app_secrets")
+}
+
+// Træk på en betalingsaftale (MobilePay Recurring, docs/DECISIONS.md
+// 2026-09-26): ét pr. abonnementsperiode. Status spejler udbyderens
+// (PENDING, DUE, RESERVED, CHARGED, FAILED, CANCELLED, REFUNDED, …) og
+// hentes altid fra udbyderen — webhooks bruges kun som vækning.
+model PaymentCharge {
+  id                  String          @id @default(cuid())
+  user                User            @relation(fields: [userId], references: [id])
+  userId              String
+  provider            PaymentProvider
+  providerAgreementId String
+  providerChargeId    String          @unique
+  amountOre           Int
+  status              String
+  dueDate             DateTime
+  periodStart         DateTime
+  periodEnd           DateTime
+  // Sat når perioden er lagt på abonnementet, så den kun lægges på én gang.
+  appliedAt           DateTime?
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @default(now()) @updatedAt
+
+  @@unique([providerAgreementId, periodStart])
+  @@index([status])
+  @@map("payment_charges")
+}
+
+// Webhook registreret hos en betalingsudbyder. Hemmeligheden (til at
+// verificere afsenderen) gemmes krypteret som app_secrets.
+model PaymentWebhook {
+  id                String          @id @default(cuid())
+  provider          PaymentProvider
+  providerWebhookId String
+  url               String
+  secretCipher      String
+  createdAt         DateTime        @default(now())
+
+  @@unique([provider, url])
+  @@map("payment_webhooks")
+}
+
+// Admin "Administration → Agenter/Jobs" og "Roadmap og udvikling"
+// (docs/DECISIONS.md 2026-09-27). En AI-agent (fx en Claude-session) får et
+// personligt token og taler med appen via MCP-endpointet /api/mcp/<token>;
+// kun sha256 af tokenet gemmes.
+model AiAgent {
+  id          String     @id @default(cuid())
+  name        String
+  description String?
+  tokenHash   String     @unique
+  disabled    Boolean    @default(false)
+  lastSeenAt  DateTime?
+  createdAt   DateTime   @default(now())
+  jobs        AgentJob[]
+
+  @@map("ai_agents")
+}
+
+enum AgentJobStatus {
+  OPEN
+  CLOSED
+}
+
+// Et job som en agent har sat op (fx en baggrundsopgave eller en
+// planlagt kørsel). Vises i admin under åbne/afsluttede.
+model AgentJob {
+  id          String         @id @default(cuid())
+  agentId     String?
+  agent       AiAgent?       @relation(fields: [agentId], references: [id], onDelete: SetNull)
+  title       String
+  description String?
+  status      AgentJobStatus @default(OPEN)
+  result      String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @default(now()) @updatedAt
+  closedAt    DateTime?
+
+  @@index([status, createdAt])
+  @@map("agent_jobs")
+}
+
+enum RoadmapStatus {
+  IDEA
+  PLANNED
+  IN_PROGRESS
+  DONE
+}
+
+model RoadmapItem {
+  id          String        @id @default(cuid())
+  title       String
+  description String?
+  status      RoadmapStatus @default(IDEA)
+  // Oprettet af admin i UI'et (null) eller af en agent via MCP (agentens navn).
+  createdBy   String?
+  sortOrder   Int           @default(0)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now()) @updatedAt
+  completedAt DateTime?
+
+  @@index([status, sortOrder])
+  @@map("roadmap_items")
+}
+
+// Admin guide-builder (docs/DECISIONS.md 2026-09-27): én række pr. slags
+// ("startup" = startup-guiden, "tooltips" = tooltips). `config` er den
+// saniterede builder-opsætning fra src/lib/guide-builder.ts.
+model GuideDesign {
+  kind        String   @id
+  config      Json
+  updatedById String?
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  @@map("guide_designs")
 }

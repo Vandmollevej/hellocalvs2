@@ -6,12 +6,17 @@ import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { SleepRangeSlider } from "@/components/hf/SleepRangeSlider";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SkeletonForm, SkeletonScreen, SkeletonToggle } from "@/components/hf/Skeleton";
 
 type SleepUser = {
   defaultBedtime: string | null;
   defaultWakeTime: string | null;
   shiftWorkEnabled: boolean;
 };
+
+// "Skiftende arbejdstider" er skjult indtil videre; koden bevares til senere.
+// Sæt til true for at vise kontakten igen.
+const SHOW_SHIFT_WORK = false;
 
 type SleepSchedule = {
   weekday: number;
@@ -29,7 +34,7 @@ function addMinutes(time: string, minutes: number) {
 }
 
 const timeInputClass =
-  "hf-type-body rounded-xl bg-hf-tan px-4 py-3 text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green";
+  "hf-type-body hf-field rounded-xl bg-hf-tan px-4 text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green";
 
 function timeToMinutes(time: string | null | undefined): number | null {
   if (!time) return null;
@@ -171,9 +176,17 @@ export default function SleepSchedulePage() {
       title={t("profileSleep.title")}
     >
       {loading || !user ? (
-        <p className="hf-type-body text-text-secondary p-4 text-center">
-          {loading ? t("profileSleep.loading") : t("profileSleep.loadError")}
-        </p>
+        loading ? (
+          <SkeletonScreen>
+            <div className="grid grid-cols-2 gap-4">
+              <SkeletonForm fields={1} />
+              <SkeletonForm fields={1} />
+            </div>
+            <SkeletonToggle count={2} />
+          </SkeletonScreen>
+        ) : (
+          <p className="hf-type-body text-text-secondary p-4 text-center">{t("profileSleep.loadError")}</p>
+        )
       ) : (
         <div className="hf-page">
           <div className="grid grid-cols-2 gap-4">
@@ -214,7 +227,7 @@ export default function SleepSchedulePage() {
           <button
             type="button"
             onClick={() => setPerDayOpen((open) => !open)}
-            className="flex w-full items-center gap-2 rounded-2xl bg-hf-tan px-4 py-3 text-left"
+            className="hf-control-row flex w-full items-center gap-2 rounded-2xl bg-hf-tan px-4 text-left"
           >
             <span className="hf-type-body hf-type-strong flex-1 text-hf-black">
               {t("profileSleep.perDayToggle")}
@@ -253,14 +266,16 @@ export default function SleepSchedulePage() {
             </div>
           )}
 
-          <Toggle
-            label={t("profileSleep.shiftWork")}
-            description={t("profileSleep.shiftWorkDescription")}
-            checked={user.shiftWorkEnabled}
-            onChange={toggleShiftWork}
-          />
+          {SHOW_SHIFT_WORK && (
+            <Toggle
+              label={t("profileSleep.shiftWork")}
+              description={t("profileSleep.shiftWorkDescription")}
+              checked={user.shiftWorkEnabled}
+              onChange={toggleShiftWork}
+            />
+          )}
 
-          {user.shiftWorkEnabled && (
+          {SHOW_SHIFT_WORK && user.shiftWorkEnabled && (
             <p className="hf-type-small text-text-secondary">
               {t("profileSleep.shiftWorkHint")}
             </p>

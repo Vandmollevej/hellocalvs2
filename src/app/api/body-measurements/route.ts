@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getSessionUser, unauthorized } from "@/lib/session";
+import { unauthorized } from "@/lib/session";
+import { getProfileUser } from "@/lib/family-access";
 
 export async function GET() {
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("bodyMeasurements", "VIEWED");
 
     if (!user) return unauthorized();
     const entries = await prisma.bodyMeasurement.findMany({
@@ -25,20 +26,21 @@ export async function GET() {
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { waistCm, hipCm, chestCm, thighCm, upperArmCm, note, measuredAt } = body as {
+  const { waistCm, hipCm, chestCm, thighCm, upperArmCm, neckCm, note, measuredAt } = body as {
     waistCm?: number | null;
     hipCm?: number | null;
     chestCm?: number | null;
     thighCm?: number | null;
     upperArmCm?: number | null;
+    neckCm?: number | null;
     note?: string;
     // Same backdating pattern as WeightEntry.weighedAt.
     measuredAt?: string;
   };
 
-  if (!waistCm && !hipCm && !chestCm && !thighCm && !upperArmCm) {
+  if (!waistCm && !hipCm && !chestCm && !thighCm && !upperArmCm && !neckCm) {
     return NextResponse.json(
-      { message: "Mindst ét mål (talje, hofte, bryst, lår eller overarm) er påkrævet" },
+      { message: "Mindst ét mål (hals, talje, hofte, bryst, lår eller overarm) er påkrævet" },
       { status: 400 }
     );
   }
@@ -49,7 +51,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("bodyMeasurements", "CREATED");
 
     if (!user) return unauthorized();
     const entry = await prisma.bodyMeasurement.create({
@@ -60,6 +62,7 @@ export async function POST(req: Request) {
         chestCm: chestCm ?? null,
         thighCm: thighCm ?? null,
         upperArmCm: upperArmCm ?? null,
+        neckCm: neckCm ?? null,
         note: note || null,
         ...(parsedMeasuredAt ? { measuredAt: parsedMeasuredAt } : {}),
       },

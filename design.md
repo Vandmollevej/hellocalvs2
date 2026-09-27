@@ -718,6 +718,31 @@ dimensioner, billedformat, eller om produktet slet ikke har et billede.
   billedboksens mål, radius eller `object-fit`-regel uden at dokumentere det
   her først.
 
+### 6.14 Skelet-loading (HelloFresh "Opdag"-mønster)
+
+Mens en side henter data, må der aldrig stå en "Henter…"-tekst. Siden tegner
+i stedet indholdets form som flader i `--hf-color-skeleton` (`#E2DACB`),
+og en lys gradient (`--hf-color-skeleton-highlight`, `#F2EEE6`) løber
+konstant hen over dem (1400 ms, lineær).
+
+- Alle skeletter på skærmen står i samme fase (fælles ur). Gradienten er
+  relativ til boksens egen bredde, så ens bokse i en række glimter ens, mens
+  forskellige boksetyper ser forskellige ud.
+- Tekstlinjer er piller med præcis tekstrollens linjehøjde (§4.2); kort,
+  felter, knapper og billeder har deres rigtige højde og radius, så indholdet
+  lander de samme steder, når det er hentet.
+- Sektionsoverskrifter beholder stregerne og afstanden fra
+  `.hf-type-section-title`; kun teksten er en skitse.
+- Komponenter: `src/components/hf/Skeleton.tsx` — `Skeleton` (type =
+  tekstrolle eller form), `SkeletonText`, `SkeletonSectionTitle` og faste
+  mønstre (`SkeletonList`, `SkeletonCards`, `SkeletonForm`,
+  `SkeletonToggle`, `SkeletonMediaRows`, `SkeletonGrid`,
+  `SkeletonDetail`) inde i `SkeletonScreen` (skærmlæsere hører "Henter…").
+- `<LoadingScope loading>`: en side kan tegne sin rigtige struktur med
+  pladsholdertekst; alle `.hf-type-*`-tekster, `.hf-btn-*` og
+  `[data-skeleton]` inde i den bliver automatisk til skitser.
+- `prefers-reduced-motion`: fladerne vises uden løbende gradient.
+
 ### Velkomst/start
 
 - Viewport-gutter: 16 px.

@@ -105,3 +105,11 @@ jobs:
           set -euo pipefail
           cd /deploy
           docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d --build logo-agent
+
+      # Umami-analyse (admin → Analyse). Sidst, så en Umami-fejl ikke
+      # forhindrer app eller agenter i at starte.
+      - name: Start Umami analytics
+        run: |
+          set -euo pipefail
+          cd /deploy
+          docker compose --project-directory /volume1/docker/App/hellocal-v2 -f compose.production.yaml --env-file .env.production up -d umami-db-init umami

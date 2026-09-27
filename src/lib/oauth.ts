@@ -20,7 +20,7 @@ export function isProviderSlug(value: string): value is ProviderSlug {
   return value === "google" || value === "apple" || value === "facebook";
 }
 
-const APP_BASE_URL = (process.env.APP_BASE_URL || "https://hellocal.packroff.dk").replace(/\/$/, "");
+const APP_BASE_URL = (process.env.APP_BASE_URL || "https://hellocal.io").replace(/\/$/, "");
 const FACEBOOK_API = "https://graph.facebook.com/v19.0";
 
 export function redirectUri(provider: ProviderSlug) {

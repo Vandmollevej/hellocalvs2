@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getSessionUser, unauthorized } from "@/lib/session";
+import { unauthorized } from "@/lib/session";
+import { getProfileUser } from "@/lib/family-access";
 
 export async function GET() {
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("sleep", "VIEWED");
 
     if (!user) return unauthorized();
     const schedules = await prisma.sleepSchedule.findMany({
@@ -37,7 +38,7 @@ export async function PUT(req: Request) {
   }
 
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("sleep", "UPDATED");
 
     if (!user) return unauthorized();
 

@@ -19,7 +19,7 @@ export function SocialLoginButton({
     <button
       type="button"
       onClick={onClick}
-      className="grid h-12 w-full items-center overflow-hidden rounded-[8px] text-hf-white"
+      className="hf-control grid w-full items-center overflow-hidden rounded-[8px] text-hf-white"
       style={{ gridTemplateColumns: "47px 1fr 47px", background: PROVIDER_BG[provider] }}
     >
       <span

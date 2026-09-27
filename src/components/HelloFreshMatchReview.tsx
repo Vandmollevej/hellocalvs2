@@ -55,11 +55,11 @@ export function HelloFreshMatchReview({ status, product, onConfirm, onRetake }: 
       )}
 
       <div className="flex gap-2">
-        <button type="button" onClick={onRetake} className="hf-btn-secondary flex-1 py-2.5">
+        <button type="button" onClick={onRetake} className="hf-control hf-btn-secondary flex-1">
           Tag billedet om
         </button>
         {status === "found" && (
-          <button type="button" onClick={onConfirm} className="hf-btn-primary flex-1 py-2.5">
+          <button type="button" onClick={onConfirm} className="hf-control hf-btn-primary flex-1">
             Er det denne ret?
           </button>
         )}

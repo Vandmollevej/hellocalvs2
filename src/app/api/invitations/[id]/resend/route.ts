@@ -26,7 +26,7 @@ export async function POST(req: Request, { params }: RouteContext) {
     data: { sentAt: now, expiresAt },
   });
 
-  const inviteUrl = `${process.env.APP_BASE_URL ?? "https://hellocal.packroff.dk"}/signup?ref=${user.referralCode}`;
+  const inviteUrl = `${process.env.APP_BASE_URL ?? "https://hellocal.io"}/signup?ref=${user.referralCode}`;
   await ensureDefaultMessageTemplates();
   await queueMessage("FRIEND_INVITATION", {
     toEmail: existing.email,

@@ -40,6 +40,11 @@ import { computeAge } from "@/lib/age";
 import { getSportMeta } from "@/lib/sport-icons";
 import { useDefaultCalendarView } from "@/lib/calendar-view-pref";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { fetchSleepQuality, localDateKey } from "@/lib/sleep-quality";
+import { IconPartyPopper, PartyPopperImage } from "@/components/icons/PartyPopper";
+import { BODY_MEASUREMENT_FIELDS } from "@/lib/body-measurements";
+import type { GoalDTO, GoalTargetDTO } from "@/lib/user-goals";
+import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
 const WEEKDAY_KEYS = [
   "calendar.weekdayMon",
@@ -92,6 +97,30 @@ type WorkShiftEntry = {
 };
 
 type SleepWindow = { bedtime: number; wakeTime: number };
+
+// Målsætninger i kalenderen: en målsætning har kun en dato (ingen tid), så i
+// dagvisningen ligger den på kl. 12 — samme middagstid som goalDisplayDate.
+const GOAL_HOUR = 12;
+type GoalsByDate = Map<string, GoalDTO[]>;
+
+function goalsForDate(goalsByDate: GoalsByDate, date: Date) {
+  return goalsByDate.get(isoDate(date)) ?? [];
+}
+
+function formatGoalValue(value: number) {
+  return new Intl.NumberFormat("da-DK", { minimumFractionDigits: 0, maximumFractionDigits: 1 }).format(value);
+}
+
+function goalTargetNameKey(type: GoalTargetDTO["type"]) {
+  if (type === "weight") return "goals.weight";
+  return BODY_MEASUREMENT_FIELDS.find(({ field }) => field === type)?.nameKey ?? type;
+}
+
+// Den target, der vises i cirklen/overlayet: vægten hvis målsætningen har en,
+// ellers det første kropsmål.
+function primaryGoalTarget(goal: GoalDTO): GoalTargetDTO | null {
+  return goal.targets.find((target) => target.type === "weight") ?? goal.targets[0] ?? null;
+}
 
 type SleepAdjustType = "bedtime" | "wake";
 
@@ -235,6 +264,21 @@ function getSleepWindow(
   return { bedtime: 23 * 60, wakeTime: (23 * 60 + FALLBACK_SLEEP_MINUTES) % 1440 };
 }
 
+// En sengetid lige efter midnat (00:00-03:59) før stå-op-tiden er stadig en
+// NAT-søvn — ikke dagsøvn efter en nattevagt. Den hører til aftenen, så
+// sengetids-håndtaget står altid nederst (ved 24:00) på dagens tidslinje, og
+// der tegnes ikke ét samlet dagsøvn-felt fra 00:00.
+const LATE_BEDTIME_CUTOFF_MINUTES = 4 * 60;
+
+function isDaytimeSleep(window: SleepWindow) {
+  return window.bedtime < window.wakeTime && window.bedtime >= LATE_BEDTIME_CUTOFF_MINUTES;
+}
+
+/** Where the bedtime handle sits on the 00-24 timeline: after-midnight bedtimes pin to the bottom. */
+function bedtimeDisplayMinutes(window: SleepWindow) {
+  return window.bedtime < LATE_BEDTIME_CUTOFF_MINUTES && !isDaytimeSleep(window) ? 24 * 60 : window.bedtime;
+}
+
 function useIsLandscape() {
   const [isLandscape, setIsLandscape] = useState(false);
   useEffect(() => {
@@ -282,6 +326,7 @@ export default function CalendarPage() {
   const [weighIns, setWeighIns] = useState<WeighIn[]>([]);
   const [weekdaySchedules, setWeekdaySchedules] = useState<Record<number, SleepScheduleEntry>>({});
   const [workShifts, setWorkShifts] = useState<Record<string, WorkShiftEntry>>({});
+  const [goals, setGoals] = useState<GoalDTO[]>([]);
   const pointerStart = useRef<number | null>(null);
   const isLandscape = useIsLandscape();
   const wasLandscapeRef = useRef(false);
@@ -445,6 +490,28 @@ export default function CalendarPage() {
 
   useEffect(() => {
     let cancelled = false;
+    fetch("/api/goals")
+      .then((response) => (response.ok ? response.json() : { goals: [] }))
+      .then((data: { goals?: GoalDTO[] }) => {
+        if (!cancelled) setGoals(data.goals ?? []);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const goalsByDate = useMemo(() => {
+    const map: GoalsByDate = new Map();
+    for (const goal of goals) {
+      if (!goal.targetDate) continue;
+      map.set(goal.targetDate, [...(map.get(goal.targetDate) ?? []), goal]);
+    }
+    return map;
+  }, [goals]);
+
+  useEffect(() => {
+    let cancelled = false;
     fetch("/api/weight-entries")
       .then((response) => (response.ok ? response.json() : { entries: [] }))
       .then((data: { entries?: WeighIn[] }) => {
@@ -567,7 +634,7 @@ export default function CalendarPage() {
               setViewMenuOpen((open) => !open);
               setMonthMenuOpen(false);
             }}
-            className="relative flex h-6 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-hf-white"
+            className="relative flex h-6 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-white"
           >
             <IconCalendar size={24} stroke={1.6} />
             <IconChevronDown
@@ -588,7 +655,7 @@ export default function CalendarPage() {
                       setView(option.value);
                       setViewMenuOpen(false);
                     }}
-                    className="hf-type-body hf-type-strong flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left hover:bg-hf-cream focus-visible:outline-2 focus-visible:outline-hf-black"
+                    className="hf-type-body hf-type-strong hf-control-row flex w-full items-center gap-3 rounded-xl px-3 text-left hover:bg-hf-cream focus-visible:outline-2 focus-visible:outline-hf-black"
                   >
                     <OptionIcon size={20} stroke={1.8} />
                     <span className="flex-1">{option.label}</span>
@@ -685,6 +752,7 @@ export default function CalendarPage() {
                 month={month}
                 today={today}
                 dailyTotals={dailyTotals}
+                goalsByDate={goalsByDate}
                 onOpenDate={openDate}
                 weekdays={WEEKDAYS}
               />
@@ -696,6 +764,7 @@ export default function CalendarPage() {
                   today={today}
                   dailyTotals={dailyTotals}
                   registrations={registrations}
+                  goalsByDate={goalsByDate}
                   onOpenDate={openDate}
                   getSleepWindow={resolveSleepWindow}
                   onSleepAdjust={requestSleepAdjust}
@@ -706,6 +775,7 @@ export default function CalendarPage() {
                   today={today}
                   dailyTotals={dailyTotals}
                   minimumKcal={minimumKcal}
+                  goalsByDate={goalsByDate}
                   onOpenDate={openDate}
                 />
               ))}
@@ -723,6 +793,7 @@ export default function CalendarPage() {
                 today={today}
                 dailyTotals={dailyTotals}
                 minimumKcal={minimumKcal}
+                goalsByDate={goalsByDate}
                 onOpenDate={openDate}
                 onPrevWeek={() => movePeriod(-1)}
                 onNextWeek={() => movePeriod(1)}
@@ -764,6 +835,7 @@ export default function CalendarPage() {
             isSameDay(new Date(registration.createdAt), selectedDate),
           )}
           activities={activities.filter((activity) => isSameDay(new Date(activity.startedAt), selectedDate))}
+          goals={goalsForDate(goalsByDate, selectedDate)}
           loading={registrationsLoading}
           error={registrationsError}
           sleepWindow={resolveSleepWindow(selectedDate)}
@@ -863,6 +935,7 @@ function MonthView({
   month,
   today,
   dailyTotals,
+  goalsByDate,
   onOpenDate,
   weekdays,
 }: {
@@ -870,6 +943,7 @@ function MonthView({
   month: number;
   today: Date;
   dailyTotals: Map<string, number>;
+  goalsByDate: GoalsByDate;
   onOpenDate: (date: Date) => void;
   weekdays: string[];
 }) {
@@ -909,6 +983,7 @@ function MonthView({
                   const logged = totalKcalForDate(dailyTotals, date) > 0;
                   const current = isSameDay(date, today);
                   const isOtherMonth = date.getMonth() !== month;
+                  const hasGoal = goalsForDate(goalsByDate, date).length > 0;
                   return (
                     <button
                       key={date.toISOString()}
@@ -916,7 +991,7 @@ function MonthView({
                       onClick={() => onOpenDate(date)}
                       aria-label={`${date.toLocaleDateString("da-DK", { dateStyle: "long" })}${current ? t("calendar.todaySuffix") : ""}${
                         !logged ? "" : met ? t("calendar.goalMetSuffix") : t("calendar.goalMissedSuffix")
-                      }`}
+                      }${hasGoal ? t("calendar.targetDateSuffix") : ""}`}
                       className={`hf-type-body hf-type-strong relative flex aspect-square items-center justify-center rounded-lg border focus-visible:outline-2 focus-visible:outline-hf-black ${
                         current
                           ? "border-hf-green bg-hf-green text-hf-white"
@@ -926,6 +1001,14 @@ function MonthView({
                       }`}
                     >
                       {date.getDate()}
+                      {/* Målsætningsdato: konfettikanonen i øverste venstre
+                          hjørne, modsat ✓/÷ i højre. */}
+                      {hasGoal && (
+                        <IconPartyPopper
+                          size={12}
+                          className={`absolute left-0.5 top-0.5 ${current ? "text-hf-white" : "text-hf-black"}`}
+                        />
+                      )}
                       {!current &&
                         logged &&
                         (met ? (
@@ -960,12 +1043,14 @@ function WeekView({
   today,
   dailyTotals,
   minimumKcal,
+  goalsByDate,
   onOpenDate,
 }: {
   days: Date[];
   today: Date;
   dailyTotals: Map<string, number>;
   minimumKcal: number;
+  goalsByDate: GoalsByDate;
   onOpenDate: (date: Date) => void;
 }) {
   const { t } = useTranslation();
@@ -983,6 +1068,7 @@ function WeekView({
         // Days that haven't happened yet have no status to show.
         const future = stripTime(date).getTime() > stripTime(today).getTime();
         const tooLow = isIntakeTooLow(kcal, minimumKcal, stripTime(date).getTime() < stripTime(today).getTime());
+        const hasGoal = goalsForDate(goalsByDate, date).length > 0;
         return (
           <button
             key={date.toISOString()}
@@ -999,14 +1085,16 @@ function WeekView({
               {date.getDate()}
             </span>
             {future ? (
-              <span className="flex-1" />
+              <span className="flex flex-1 items-center">
+                {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
+              </span>
             ) : (
               <>
                 {met && !tooLow && (
                   <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />
                 )}
                 <span
-                  className={`hf-type-body ${tooLow ? "hf-type-strong text-hf-warning" : logged ? "font-normal" : "font-normal text-text-muted"}`}
+                  className={`hf-type-body flex items-center gap-1.5 ${tooLow ? "hf-type-strong text-hf-warning" : logged ? "font-normal" : "font-normal text-text-muted"}`}
                 >
                   {!logged
                     ? t("calendar.noEntries")
@@ -1015,6 +1103,8 @@ function WeekView({
                       : met
                         ? t("calendar.goalMet")
                         : t("calendar.goalMissed")}
+                  {/* Målsætningsdato: konfettikanonen efter teksten. */}
+                  {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
                 </span>
                 <span className="ml-auto flex shrink-0 items-center gap-1">
                   <span
@@ -1092,6 +1182,7 @@ function ListView({
   today,
   dailyTotals,
   minimumKcal,
+  goalsByDate,
   onOpenDate,
   onPrevWeek,
   onNextWeek,
@@ -1100,6 +1191,7 @@ function ListView({
   today: Date;
   dailyTotals: Map<string, number>;
   minimumKcal: number;
+  goalsByDate: GoalsByDate;
   onOpenDate: (date: Date) => void;
   onPrevWeek: () => void;
   onNextWeek: () => void;
@@ -1107,7 +1199,12 @@ function ListView({
   const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const overscroll = useRef(0);
-  const touchStartY = useRef<number | null>(null);
+  const wheelLockedUntil = useRef(0);
+  // Where the finger went down, and whether the list was already resting at
+  // its top/bottom edge then. Only a fresh drag that starts at an edge may
+  // change week — and only once the finger lifts — so an ordinary scroll that
+  // runs into the edge never swaps the week (and resets scrollTop) mid-swipe.
+  const touchStart = useRef<{ y: number; atTop: boolean; atBottom: boolean } | null>(null);
 
   useEffect(() => {
     const node = scrollRef.current;
@@ -1115,19 +1212,28 @@ function ListView({
     node.scrollTop = 0;
   }, [days]);
 
+  function edges(node: HTMLDivElement) {
+    return {
+      atTop: node.scrollTop <= 0,
+      atBottom: node.scrollTop + node.clientHeight >= node.scrollHeight - 1,
+    };
+  }
+
   function handleWheel(event: React.WheelEvent<HTMLDivElement>) {
     const node = scrollRef.current;
     if (!node) return;
-    const atTop = node.scrollTop <= 0;
-    const atBottom = node.scrollTop + node.clientHeight >= node.scrollHeight - 1;
+    // Trackpad momentum keeps firing wheel events after a week change; ignore
+    // them briefly so one flick can't skip several weeks.
+    if (event.timeStamp < wheelLockedUntil.current) return;
+    const { atTop, atBottom } = edges(node);
     if ((atTop && event.deltaY < 0) || (atBottom && event.deltaY > 0)) {
       overscroll.current += event.deltaY;
-      if (overscroll.current > 80) {
+      if (Math.abs(overscroll.current) > 80) {
+        const next = overscroll.current > 0;
         overscroll.current = 0;
-        onNextWeek();
-      } else if (overscroll.current < -80) {
-        overscroll.current = 0;
-        onPrevWeek();
+        wheelLockedUntil.current = event.timeStamp + 600;
+        if (next) onNextWeek();
+        else onPrevWeek();
       }
     } else {
       overscroll.current = 0;
@@ -1135,22 +1241,20 @@ function ListView({
   }
 
   function handleTouchStart(event: React.TouchEvent<HTMLDivElement>) {
-    touchStartY.current = event.touches[0].clientY;
+    const node = scrollRef.current;
+    if (!node) return;
+    touchStart.current = { y: event.touches[0].clientY, ...edges(node) };
   }
 
-  function handleTouchMove(event: React.TouchEvent<HTMLDivElement>) {
+  function handleTouchEnd(event: React.TouchEvent<HTMLDivElement>) {
     const node = scrollRef.current;
-    if (!node || touchStartY.current === null) return;
-    const deltaY = touchStartY.current - event.touches[0].clientY;
-    const atTop = node.scrollTop <= 0;
-    const atBottom = node.scrollTop + node.clientHeight >= node.scrollHeight - 1;
-    if ((atTop && deltaY < 0) || (atBottom && deltaY > 0)) {
-      if (Math.abs(deltaY) > 60) {
-        touchStartY.current = event.touches[0].clientY;
-        if (deltaY > 0) onNextWeek();
-        else onPrevWeek();
-      }
-    }
+    const start = touchStart.current;
+    touchStart.current = null;
+    if (!node || !start) return;
+    const deltaY = start.y - event.changedTouches[0].clientY;
+    const now = edges(node);
+    if (start.atBottom && now.atBottom && deltaY > 60) onNextWeek();
+    else if (start.atTop && now.atTop && deltaY < -60) onPrevWeek();
   }
 
   return (
@@ -1158,9 +1262,9 @@ function ListView({
       ref={scrollRef}
       onWheel={handleWheel}
       onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={() => {
-        touchStartY.current = null;
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={() => {
+        touchStart.current = null;
       }}
       className="max-h-[min(60vh,420px)] space-y-2 overflow-y-auto overscroll-contain"
     >
@@ -1176,6 +1280,7 @@ function ListView({
         // Days that haven't happened yet have no status to show.
         const future = stripTime(date).getTime() > stripTime(today).getTime();
         const tooLow = isIntakeTooLow(kcal, minimumKcal, stripTime(date).getTime() < stripTime(today).getTime());
+        const hasGoal = goalsForDate(goalsByDate, date).length > 0;
         return (
           <button
             key={date.toISOString()}
@@ -1192,14 +1297,16 @@ function ListView({
               {date.getDate()}
             </span>
             {future ? (
-              <span className="flex-1" />
+              <span className="flex flex-1 items-center">
+                {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
+              </span>
             ) : (
               <>
                 {met && !tooLow && (
                   <IconCheck size={16} stroke={3} className="shrink-0 text-hf-lime" aria-hidden="true" />
                 )}
                 <span
-                  className={`hf-type-body ${tooLow ? "hf-type-strong text-hf-warning" : logged ? "font-normal" : "font-normal text-text-muted"}`}
+                  className={`hf-type-body flex items-center gap-1.5 ${tooLow ? "hf-type-strong text-hf-warning" : logged ? "font-normal" : "font-normal text-text-muted"}`}
                 >
                   {!logged
                     ? t("calendar.noEntries")
@@ -1208,6 +1315,8 @@ function ListView({
                       : met
                         ? t("calendar.goalMet")
                         : t("calendar.goalMissed")}
+                  {/* Målsætningsdato: konfettikanonen efter teksten. */}
+                  {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
                 </span>
                 <span className="ml-auto flex shrink-0 items-center gap-1">
                   <span
@@ -1235,6 +1344,7 @@ function WeekTimelineView({
   today,
   dailyTotals,
   registrations,
+  goalsByDate,
   onOpenDate,
   getSleepWindow,
   onSleepAdjust,
@@ -1243,6 +1353,7 @@ function WeekTimelineView({
   today: Date;
   dailyTotals: Map<string, number>;
   registrations: Registration[];
+  goalsByDate: GoalsByDate;
   onOpenDate: (date: Date) => void;
   getSleepWindow: (date: Date) => SleepWindow | null;
   onSleepAdjust: (date: Date, type: SleepAdjustType, minutes: number) => void;
@@ -1321,6 +1432,7 @@ function WeekTimelineView({
               <span className="hf-type-body hf-heading flex items-center gap-2">
                 {date.getDate()}
                 {met && <IconCheck size={15} stroke={3.5} className="text-hf-lime" aria-hidden="true" />}
+                {goalsForDate(goalsByDate, date).length > 0 && <IconPartyPopper size={15} />}
               </span>
             </button>
           );
@@ -1369,7 +1481,7 @@ function WeekTimelineView({
                       onCommit={(type, minutes) => onSleepAdjust(date, type, minutes)}
                     />
                     <SleepBoundaryHandle
-                      minutes={sleepWindow.bedtime}
+                      minutes={bedtimeDisplayMinutes(sleepWindow)}
                       type="bedtime"
                       onCommit={(type, minutes) => onSleepAdjust(date, type, minutes)}
                     />
@@ -1403,7 +1515,7 @@ function SleepBands({ window, hourHeight = HOUR_HEIGHT }: { window: SleepWindow 
   // Daytime sleep (e.g. after a night shift): bedtime comes before wake time
   // on the clock, so it is ONE band between them — drawing the two
   // midnight-crossing bands here made them overlap into two shades of gray.
-  if (window.bedtime < window.wakeTime) {
+  if (isDaytimeSleep(window)) {
     return (
       <div
         className={`${bandClass} border-y`}
@@ -1413,7 +1525,7 @@ function SleepBands({ window, hourHeight = HOUR_HEIGHT }: { window: SleepWindow 
     );
   }
   const topHeight = (window.wakeTime / 60) * hourHeight;
-  const bottomHeight = ((24 * 60 - window.bedtime) / 60) * hourHeight;
+  const bottomHeight = ((24 * 60 - bedtimeDisplayMinutes(window)) / 60) * hourHeight;
   return (
     <>
       <div
@@ -1475,7 +1587,11 @@ function SleepBoundaryHandle({
     const scrollDelta = (scrollRef?.current?.scrollTop ?? 0) - startScrollTopRef.current;
     const deltaY = lastYRef.current - startYRef.current + scrollDelta;
     const deltaMinutes = (deltaY / hourHeight) * 60;
-    const next = Math.min(24 * 60 - 1, Math.max(0, startMinutesRef.current + deltaMinutes));
+    // Sengetid kan trækkes helt ned til 24:00 (gemmes som 00:00), men ikke op
+    // i nattetimerne, hvor den ville blive vist nederst igen.
+    const min = type === "bedtime" ? LATE_BEDTIME_CUTOFF_MINUTES : 0;
+    const max = type === "bedtime" ? 24 * 60 : 24 * 60 - 1;
+    const next = Math.min(max, Math.max(min, startMinutesRef.current + deltaMinutes));
     dragMinutesRef.current = next;
     setDragMinutes(next);
     onDrag?.(type, next);
@@ -1589,6 +1705,7 @@ function DayDetails({
   today,
   registrations,
   activities,
+  goals,
   loading,
   error,
   sleepWindow,
@@ -1607,6 +1724,7 @@ function DayDetails({
   today: Date;
   registrations: Registration[];
   activities: Activity[];
+  goals: GoalDTO[];
   loading: boolean;
   error: boolean;
   sleepWindow: SleepWindow;
@@ -1628,12 +1746,31 @@ function DayDetails({
   const pointerStart = useRef<number | null>(null);
   const [addBarHour, setAddBarHour] = useState<number | null>(null);
   const [openHour, setOpenHour] = useState<number | null>(null);
+  // Målsætningscirklen vises hver gang en dag med en målsætning åbnes
+  // (DayDetails er keyed på datoen); et tryk udenfor lukker den, og derefter
+  // står kun det lille ikon ud for kl. GOAL_HOUR.
+  const [goalPopupDismissed, setGoalPopupDismissed] = useState(false);
   const [hourHeight, setHourHeight] = useState(() => loadStoredHourHeight());
   const activeZoomPointers = useRef(new Map<number, number>());
   const zoomStart = useRef<{ avgY: number; hourHeight: number } | null>(null);
   const mouseDrag = useRef<{ y: number; scrollTop: number } | null>(null);
   const timelineScrollRef = useRef<HTMLDivElement | null>(null);
   const [sleepDrag, setSleepDrag] = useState<{ type: SleepAdjustType; minutes: number } | null>(null);
+  // Oplevelse af søvn (docs/DECISIONS.md 2026-09-26): the day's 1–5 rating,
+  // shown as a black bar at the top. DayDetails is keyed by date, so this
+  // runs once per day shown.
+  const [sleepRating, setSleepRating] = useState<number | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    fetchSleepQuality(localDateKey(date))
+      .then((entries) => {
+        if (!cancelled) setSleepRating(entries[0]?.rating ?? null);
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [date]);
   const liveSleepWindow: SleepWindow = sleepDrag
     ? sleepDrag.type === "wake"
       ? { ...sleepWindow, wakeTime: sleepDrag.minutes }
@@ -1643,8 +1780,7 @@ function DayDetails({
   // stå-op-tid. Sover man om dagen (sengetid før stå-op-tid på samme dato),
   // er det i stedet dagens eget grå felt, der tælles.
   const nightStart =
-    liveSleepWindow.bedtime < liveSleepWindow.wakeTime ||
-    previousSleepWindow.bedtime < previousSleepWindow.wakeTime
+    isDaytimeSleep(liveSleepWindow) || isDaytimeSleep(previousSleepWindow)
       ? liveSleepWindow.bedtime
       : previousSleepWindow.bedtime;
   const nightSleepMinutes = (liveSleepWindow.wakeTime - nightStart + 1440) % 1440;
@@ -1744,7 +1880,7 @@ function DayDetails({
               aria-haspopup="listbox"
               aria-expanded={viewMenuOpen}
               onClick={onToggleViewMenu}
-              className="relative flex h-6 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-hf-white"
+              className="relative flex h-6 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-white"
             >
               <IconCalendar size={24} stroke={1.6} className="text-hf-white" />
               <IconChevronDown
@@ -1762,7 +1898,7 @@ function DayDetails({
                       key={option.value}
                       type="button"
                       onClick={() => onSelectView(option.value)}
-                      className="hf-type-body hf-type-strong flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left hover:bg-hf-cream focus-visible:outline-2 focus-visible:outline-hf-black"
+                      className="hf-type-body hf-type-strong hf-control-row flex w-full items-center gap-3 rounded-xl px-3 text-left hover:bg-hf-cream focus-visible:outline-2 focus-visible:outline-hf-black"
                     >
                       <OptionIcon size={20} stroke={1.8} />
                       <span className="flex-1">{option.label}</span>
@@ -1814,6 +1950,13 @@ function DayDetails({
           <IconChevronRight size={22} />
         </button>
       </div>
+      {sleepRating !== null && (
+        <div className="px-4 pt-4">
+          <p className="hf-type-body hf-type-strong rounded-lg bg-hf-black px-4 py-2 text-center text-hf-white">
+            {t("sleepQuality.calendarBar", { rating: sleepRating })}
+          </p>
+        </div>
+      )}
       <div
         className="flex-1 overflow-y-auto p-4 touch-pan-y"
         onPointerDown={(event) => {
@@ -1835,9 +1978,10 @@ function DayDetails({
         }}
       >
         {loading ? (
-          <div className="hf-type-body rounded-2xl bg-hf-white p-4 text-center opacity-60">
-            {t("calendar.loadingDayRegistrations")}
-          </div>
+          <SkeletonScreen className="flex flex-col gap-2">
+            <Skeleton type="caption" width={40} height={12} />
+            <SkeletonCards count={6} height={52} gap={6} radius={16} />
+          </SkeletonScreen>
         ) : error ? (
           <div className="rounded-2xl bg-hf-white p-4 text-center">
             <p className="hf-type-strong text-hf-black">{t("calendar.registrationsLoadError")}</p>
@@ -1908,7 +2052,7 @@ function DayDetails({
                   onDrag={handleSleepDrag}
                 />
                 <SleepBoundaryHandle
-                  minutes={sleepWindow.bedtime}
+                  minutes={bedtimeDisplayMinutes(sleepWindow)}
                   type="bedtime"
                   hourHeight={hourHeight}
                   scrollRef={timelineScrollRef}
@@ -1940,6 +2084,7 @@ function DayDetails({
                       kcalTotal={kcalTotal}
                       activities={hourActivities}
                       hasEntries={hourRegistrations.length > 0}
+                      hasGoal={hour === GOAL_HOUR && goals.length > 0}
                       showAddBar={addBarHour === hour}
                       onOpenDetails={setOpenHour}
                       onLongPress={setAddBarHour}
@@ -1992,7 +2137,7 @@ function DayDetails({
           <div aria-hidden="true" />
           {remaining >= 0 ? (
             <p className="hf-type-body whitespace-nowrap text-right text-hf-black">
-              {t("calendar.remainingToday")}
+              {t("calendar.remainingToday", { amount: Math.round(remaining) })}
             </p>
           ) : (
             <p className="hf-type-body hf-type-strong whitespace-nowrap text-right text-hf-red-dark">
@@ -2002,10 +2147,15 @@ function DayDetails({
         </div>
       </div>
 
+      {!goalPopupDismissed && goals.length > 0 && (
+        <GoalPopup goal={goals[0]} onOpen={() => router.push("/profile/goals")} onClose={() => setGoalPopupDismissed(true)} />
+      )}
+
       {openHour !== null && (
         <HourEntriesOverlay
           hour={openHour}
           registrations={registrations.filter((registration) => new Date(registration.createdAt).getHours() === openHour)}
+          goals={openHour === GOAL_HOUR ? goals : []}
           onClose={() => setOpenHour(null)}
         />
       )}
@@ -2020,6 +2170,7 @@ function HourRow({
   kcalTotal,
   activities,
   hasEntries,
+  hasGoal,
   showAddBar,
   onOpenDetails,
   onLongPress,
@@ -2031,6 +2182,7 @@ function HourRow({
   kcalTotal: number;
   activities: Activity[];
   hasEntries: boolean;
+  hasGoal: boolean;
   showAddBar: boolean;
   onOpenDetails: (hour: number) => void;
   onLongPress: (hour: number) => void;
@@ -2040,6 +2192,7 @@ function HourRow({
   const bonusKcal = activities.reduce((sum, activity) => sum + activity.caloriesBurned, 0);
   const pressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const movedRef = useRef(false);
+  const longPressedRef = useRef(false);
   const startRef = useRef({ x: 0, y: 0 });
 
   function clearTimer() {
@@ -2051,9 +2204,13 @@ function HourRow({
 
   function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
     movedRef.current = false;
+    longPressedRef.current = false;
     startRef.current = { x: event.clientX, y: event.clientY };
     pressTimer.current = setTimeout(() => {
-      if (!movedRef.current) onLongPress(hour);
+      if (!movedRef.current) {
+        longPressedRef.current = true;
+        onLongPress(hour);
+      }
     }, ADD_BAR_HOLD_MS);
   }
 
@@ -2075,13 +2232,29 @@ function HourRow({
       onPointerUp={clearTimer}
       onPointerCancel={clearTimer}
     >
-      {activities.length > 0 && (
-        <div className="absolute inset-y-0 left-1 z-[5] flex items-center gap-1">
+      {/* Timen med en målsætning kan trykkes på i hele sin bredde og åbner
+          timens oversigt med målsætningen øverst (men ikke lige efter et
+          langt tryk, der viser "Tilføj"-baren). */}
+      {hasGoal && (
+        <button
+          type="button"
+          aria-label={t("calendar.openTargetDateAriaLabel")}
+          onClick={() => {
+            if (!longPressedRef.current && !movedRef.current) onOpenDetails(hour);
+          }}
+          className="absolute inset-0 z-[4] focus-visible:outline-2 focus-visible:outline-hf-black"
+        />
+      )}
+      {(activities.length > 0 || hasGoal) && (
+        <div className="pointer-events-none absolute inset-y-0 left-1 z-[5] flex items-center gap-1">
+          {hasGoal && <IconPartyPopper size={16} className="text-hf-black" />}
           {activities.map((activity) => {
             const { icon: SportIcon, label } = getSportMeta(activity.sportType);
             return <SportIcon key={activity.id} size={16} className="text-hf-black opacity-70" aria-label={label} />;
           })}
-          <span className="hf-type-small hf-type-strong text-hf-green">+{Math.round(bonusKcal)} kcal</span>
+          {activities.length > 0 && (
+            <span className="hf-type-small hf-type-strong text-hf-green">+{Math.round(bonusKcal)} kcal</span>
+          )}
         </div>
       )}
       {hasEntries && (
@@ -2207,13 +2380,95 @@ function DraggableEntryMarker({
   );
 }
 
+// Målsætningscirklen midt på dagvisningen: samme størrelse og tan-baggrund
+// som produktbilledet på produktsiden (190px), med konfettikanonen og målet.
+// Tryk på cirklen åbner målsætningen; tryk udenfor lukker den.
+function GoalPopup({ goal, onOpen, onClose }: { goal: GoalDTO; onOpen: () => void; onClose: () => void }) {
+  const { t } = useTranslation();
+  const target = primaryGoalTarget(goal);
+  return (
+    <div className="absolute inset-0 z-[55] flex items-center justify-center">
+      <button
+        type="button"
+        aria-label={t("calendar.closeTargetDateAriaLabel")}
+        className="absolute inset-0 cursor-default"
+        onClick={onClose}
+      />
+      <button
+        type="button"
+        onClick={onOpen}
+        aria-label={t("calendar.openTargetDateAriaLabel")}
+        className="relative flex size-[190px] flex-col items-center justify-center gap-2 rounded-full bg-hf-tan text-hf-black shadow-xl focus-visible:outline-2 focus-visible:outline-hf-black"
+      >
+        <PartyPopperImage size={72} />
+        {target && <GoalTargetValue target={target} className="hf-type-body-lg hf-heading" />}
+      </button>
+    </div>
+  );
+}
+
+// Målværdien: grøn når målet er nået, ellers grå.
+function GoalTargetValue({ target, className = "" }: { target: GoalTargetDTO; className?: string }) {
+  return (
+    <span className={`tabular-nums ${target.completedAt ? "text-hf-green" : "text-text-muted"} ${className}`}>
+      {formatGoalValue(target.value)} {target.unit}
+    </span>
+  );
+}
+
+// Målsætningen øverst i timens oversigt: foldbar som tidsgrupperne under den.
+// Er det et vægtmål, står målvægten i midten af rækken.
+function GoalAccordion({ goal }: { goal: GoalDTO }) {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const weight = goal.targets.find((target) => target.type === "weight") ?? null;
+  return (
+    <div className="mb-2 overflow-hidden rounded-2xl bg-hf-tan">
+      <button
+        type="button"
+        onClick={() => setOpen((current) => !current)}
+        aria-expanded={open}
+        className="hf-control-row grid w-full grid-cols-[1fr_auto_1fr] items-center gap-2 px-4 text-left focus-visible:outline-2 focus-visible:outline-hf-black"
+      >
+        <span className="hf-type-body flex min-w-0 items-center gap-2 text-hf-black">
+          <IconPartyPopper size={18} className="shrink-0" />
+          <span className="truncate">{t("goals.title")}</span>
+        </span>
+        {weight ? <GoalTargetValue target={weight} className="hf-type-body" /> : <span />}
+        <span className="flex justify-end">
+          <HfChevron direction={open ? "down" : "right"} className="text-hf-black" />
+        </span>
+      </button>
+      {open && (
+        <div className="bg-hf-cream px-4">
+          {goal.targets.map((target) => (
+            <div key={target.id} className="flex items-center justify-between gap-4 border-b border-hf-tan-dark py-3">
+              <span className="hf-type-body text-hf-black">{t(goalTargetNameKey(target.type))}</span>
+              <GoalTargetValue target={target} className="hf-type-body" />
+            </div>
+          ))}
+          <Link
+            href="/profile/goals"
+            className="hf-control-row hf-type-body flex items-center justify-between text-hf-black focus-visible:outline-2 focus-visible:outline-hf-black"
+          >
+            {t("calendar.openTargetDate")}
+            <IconChevronRight size={18} className="shrink-0" />
+          </Link>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function HourEntriesOverlay({
   hour,
   registrations,
+  goals,
   onClose,
 }: {
   hour: number;
   registrations: Registration[];
+  goals: GoalDTO[];
   onClose: () => void;
 }) {
   const { t } = useTranslation();
@@ -2252,7 +2507,7 @@ function HourEntriesOverlay({
           type="button"
           onClick={onClose}
           aria-label={t("common.back")}
-          className="hf-btn-icon absolute bottom-3 left-3 hover:bg-hf-white/10 focus-visible:outline-2 focus-visible:outline-hf-white"
+          className="hf-btn-icon absolute bottom-3 left-3 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white"
         >
           <HfChevron direction="left" className="text-hf-white" />
         </button>
@@ -2264,6 +2519,9 @@ function HourEntriesOverlay({
         </h2>
       </div>
       <div className="flex-1 overflow-y-auto p-4">
+        {goals.map((goal) => (
+          <GoalAccordion key={goal.id} goal={goal} />
+        ))}
         {groups.map((group) => {
           const isOpen = openKeys.has(group.key);
           const groupKcal = group.items.reduce((sum, registration) => sum + registration.kcalSnapshot, 0);
@@ -2273,7 +2531,7 @@ function HourEntriesOverlay({
                 type="button"
                 onClick={() => toggleGroup(group.key)}
                 aria-expanded={isOpen}
-                className="flex w-full items-center justify-between px-4 py-3 text-left focus-visible:outline-2 focus-visible:outline-hf-black"
+                className="hf-control-row flex w-full items-center justify-between px-4 text-left focus-visible:outline-2 focus-visible:outline-hf-black"
               >
                 <span className="hf-type-body hf-type-strong text-hf-black">
                   {new Intl.DateTimeFormat("da-DK", { hour: "2-digit", minute: "2-digit" }).format(group.time)}

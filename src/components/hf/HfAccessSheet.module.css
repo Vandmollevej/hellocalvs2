@@ -1,0 +1,314 @@
+/* iOS "Sundhedsadgang"-arket (docs/DECISIONS.md 2026-09-27): bevidst en tro
+   kopi af iOS' eget adgangsark, målt fra HelloFreshs Apple Health-skærm
+   (390 pt bred). Værdierne er iOS-systemværdier og gælder kun dette ark. */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  justify-content: center;
+  background: #1f1f1f;
+}
+
+.embedded {
+  position: relative;
+  inset: auto;
+  z-index: auto;
+  height: 100%;
+}
+
+.frame {
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-width: 500px;
+  flex-direction: column;
+  padding-top: calc(env(safe-area-inset-top) + 20px);
+}
+
+.embedded .frame {
+  padding-top: 20px;
+}
+
+.dismissArea {
+  position: absolute;
+  inset: 0 0 auto;
+  height: calc(env(safe-area-inset-top) + 20px);
+  cursor: pointer;
+}
+
+.embedded .dismissArea {
+  height: 20px;
+}
+
+/* Skærmen bagved, der kigger frem over arket. */
+.peek {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 10px);
+  left: 16px;
+  right: 16px;
+  height: 24px;
+  border-radius: 12px 12px 0 0;
+  background: #dcdad6;
+}
+
+.embedded .peek {
+  top: 10px;
+}
+
+.sheet {
+  position: relative;
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 18px 18px 0 0;
+  background: #ffffff;
+  color: #000000;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.titleBar {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 2;
+  padding: 26px 16px 18px;
+  background: linear-gradient(to bottom, #ffffff 60%, rgba(255, 255, 255, 0));
+  text-align: center;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 22px;
+  letter-spacing: -0.4px;
+}
+
+.scroll {
+  min-height: 0;
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 92px 22px 200px;
+}
+
+.appIcon {
+  display: flex;
+  width: 79px;
+  height: 79px;
+  margin: 0 auto;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid #d1d1d6;
+  border-radius: 18px;
+  background: #ffffff;
+}
+
+.appIcon img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.heading {
+  margin: 36px 15px 0;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 28px;
+  letter-spacing: -0.3px;
+}
+
+.message {
+  margin: 0 15px;
+  color: #8a8a8e;
+  font-size: 22px;
+  line-height: 28px;
+  letter-spacing: -0.3px;
+}
+
+.pill {
+  display: block;
+  width: 100%;
+  height: 50px;
+  margin-top: 64px;
+  padding: 0 15px;
+  border-radius: 25px;
+  background: #f2f2f7;
+  color: #007aff;
+  text-align: left;
+  font-size: 17px;
+  line-height: 22px;
+  letter-spacing: -0.4px;
+}
+
+.groupTitle {
+  margin: 30px 15px 12px;
+  color: #8a8a8e;
+  font-size: 17px;
+  line-height: 22px;
+  letter-spacing: -0.4px;
+}
+
+.group {
+  overflow: hidden;
+  border-radius: 25px;
+  background: #f2f2f7;
+}
+
+.row {
+  position: relative;
+  display: flex;
+  min-height: 50px;
+  align-items: center;
+  gap: 16px;
+  padding: 6px 16px;
+}
+
+.row + .row::before {
+  position: absolute;
+  top: 0;
+  left: 52px;
+  right: 15px;
+  height: 1px;
+  background: #d1d1d6;
+  content: "";
+}
+
+.rowIcon {
+  display: flex;
+  width: 20px;
+  flex-shrink: 0;
+  justify-content: center;
+}
+
+.rowLabel {
+  min-width: 0;
+  flex: 1;
+  font-size: 17px;
+  line-height: 22px;
+  letter-spacing: -0.4px;
+}
+
+.rowAction {
+  width: 100%;
+  color: #007aff;
+  text-align: left;
+}
+
+.trailing {
+  flex-shrink: 0;
+  color: #007aff;
+  font-size: 17px;
+  line-height: 22px;
+  letter-spacing: -0.4px;
+}
+
+.trailing:disabled {
+  opacity: 0.5;
+}
+
+.rowDanger {
+  color: #ff3b30;
+}
+
+.rowMuted {
+  color: #8a8a8e;
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.mono {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  word-break: break-all;
+}
+
+.footer {
+  margin: 8px 15px 0;
+  color: #8a8a8e;
+  font-size: 14px;
+  line-height: 16px;
+}
+
+.footerError {
+  color: #ff3b30;
+}
+
+/* iOS 26-kontakt: 62 × 28 med aflang knop. */
+.switch {
+  position: relative;
+  width: 62px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 14px;
+  background: rgba(120, 120, 128, 0.36);
+  transition: background-color 0.2s ease;
+}
+
+.switch[aria-checked="true"] {
+  background: #34c759;
+}
+
+.switch:disabled {
+  opacity: 0.5;
+}
+
+.knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 36px;
+  height: 24px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease;
+}
+
+.switch[aria-checked="true"] .knob {
+  transform: translateX(22px);
+}
+
+.actions {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding: 60px 37px calc(env(safe-area-inset-bottom) + 12px);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.9) 45%, #ffffff);
+}
+
+.embedded .actions {
+  padding-bottom: 16px;
+}
+
+.button {
+  height: 49px;
+  border-radius: 25px;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 22px;
+  letter-spacing: -0.4px;
+}
+
+.allow {
+  background: #007aff;
+  color: #ffffff;
+}
+
+.allow:disabled {
+  background: #cbcbcb;
+  color: #a1a1a1;
+}
+
+.deny {
+  background: #ffffff;
+  color: #000000;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+}
+
+.deny:disabled {
+  opacity: 0.5;
+}

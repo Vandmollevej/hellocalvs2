@@ -91,7 +91,7 @@ export function ApiKeysManager({
           <button
             type="button"
             onClick={testAll}
-            className="hf-btn-primary px-3 py-1.5"
+            className="hf-type-body hf-type-strong rounded-md bg-hf-green-dark px-3 py-1.5 text-hf-white"
           >
             Test alle
           </button>
@@ -254,7 +254,7 @@ function FieldRow({ field, onChanged }: { field: FieldStatus; onChanged: (servic
   }
 
   const inputClass =
-    "hf-type-body w-full rounded-md border border-hf-tan-dark bg-hf-white px-3 py-2 font-mono text-hf-black";
+    "hf-type-body hf-field w-full rounded-md border border-hf-tan-dark bg-hf-white px-3 font-mono text-hf-black";
 
   return (
     <div className="flex flex-col gap-2 py-2.5">
@@ -320,7 +320,7 @@ function FieldRow({ field, onChanged }: { field: FieldStatus; onChanged: (servic
             <button
               type="submit"
               disabled={busy || !value.trim()}
-              className="hf-btn-primary px-3 py-1.5 disabled:opacity-50"
+              className="hf-type-body hf-type-strong rounded-md bg-hf-green-dark px-3 py-1.5 text-hf-white disabled:opacity-50"
             >
               {busy ? "Gemmer…" : "Gem"}
             </button>

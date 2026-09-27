@@ -196,7 +196,7 @@ export function OnboardingWizard({
                 save({ healthImportRequested: true });
                 goNext();
               }}
-              className="hf-btn-primary w-full py-3.5"
+              className="hf-control hf-btn-primary w-full"
             >
               {t("onboarding.setUpNow")}
             </button>
@@ -205,7 +205,7 @@ export function OnboardingWizard({
       </div>
 
       <div className="flex flex-col gap-2 px-4 pb-8">
-        <button onClick={goNext} className="hf-btn-primary w-full py-3.5">
+        <button onClick={goNext} className="hf-control hf-btn-primary w-full">
           {t("onboarding.next")}
         </button>
         <div className="flex justify-center gap-4 pt-1">
@@ -266,8 +266,9 @@ function ChoiceButton({
   return (
     <button
       onClick={onClick}
-      aria-pressed={selected}
-      className="hf-choice min-h-12 flex-1"
+      className={`hf-type-body hf-type-strong hf-control flex-1 rounded-xl px-4 transition-colors ${
+        selected ? "bg-hf-green text-hf-white" : "bg-hf-tan text-hf-black"
+      }`}
     >
       {label}
     </button>

@@ -60,7 +60,7 @@ export function MessageTemplateRow({ template }: { template: MessageTemplateData
           <select
             value={form.channel}
             onChange={(e) => save({ channel: e.target.value })}
-            className="hf-type-small rounded-md border border-hf-tan-dark px-2 py-1"
+            className="hf-type-small hf-field rounded-md border border-hf-tan-dark px-2"
           >
             <option value="EMAIL">E-mail</option>
             <option value="PUSH">Push</option>
@@ -71,11 +71,11 @@ export function MessageTemplateRow({ template }: { template: MessageTemplateData
             role="switch"
             aria-checked={form.enabled}
             onClick={() => save({ enabled: !form.enabled })}
-            className={`relative h-6 w-10 rounded-full transition-colors ${form.enabled ? "bg-hf-green" : "bg-hf-tan-dark"}`}
+            className={`relative h-[28px] w-[63px] rounded-full transition-colors ${form.enabled ? "bg-hf-green" : "bg-hf-tan-dark"}`}
           >
             <span
-              className={`absolute top-0.5 h-5 w-5 rounded-full bg-hf-white shadow transition-transform ${
-                form.enabled ? "translate-x-[18px]" : "translate-x-0.5"
+              className={`absolute left-[2px] top-[2px] h-[24px] w-[38px] rounded-full bg-hf-white shadow transition-transform ${
+                form.enabled ? "translate-x-[21px]" : "translate-x-0"
               }`}
             />
           </button>
@@ -97,7 +97,7 @@ export function MessageTemplateRow({ template }: { template: MessageTemplateData
               value={form.subject}
               onChange={(e) => setForm({ ...form, subject: e.target.value })}
               onBlur={() => save({ subject: form.subject })}
-              className="hf-type-body rounded-md border border-hf-tan-dark px-2 py-1.5"
+              className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-2"
             />
           </label>
           <label className="hf-type-small flex flex-col gap-1 text-text-secondary">

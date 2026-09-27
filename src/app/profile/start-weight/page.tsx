@@ -17,7 +17,7 @@ export default function StartWeightLockPage() {
         <button
           type="button"
           onClick={() => router.push("/profile/weight-calibration")}
-          className="hf-btn-primary h-12 w-full px-4"
+          className="hf-control hf-btn-primary w-full px-4"
         >
           {t("profile.startWeight.setDailyWeight")}
         </button>

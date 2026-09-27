@@ -6,7 +6,9 @@ import { SCAN_SESSION_COOKIE, verifyScanSession } from "@/lib/scan/auth";
 // deployment — this host just gets every path treated as living under
 // /admin, so visiting the bare hostname shows the admin UI. Localhost is
 // included so /admin works during local development without a special host.
-const ADMIN_HOST = "adminhellocal.packroff.dk";
+// The old packroff.dk admin hostname keeps working during the move to
+// hellocal.io (docs/DECISIONS.md 2026-09-27 "Domæne hellocal.io").
+const ADMIN_HOSTS = new Set(["admin.hellocal.io", "adminhellocal.packroff.dk"]);
 
 const PUBLIC_ADMIN_PATHS = [
   "/admin/login",
@@ -83,7 +85,7 @@ export async function middleware(req: NextRequest) {
   const scanResult = await handleScan(req, host);
   if (scanResult) return scanResult;
   if (IS_SCAN_APP) return NextResponse.next();
-  const isAdminHost = host === ADMIN_HOST;
+  const isAdminHost = ADMIN_HOSTS.has(host);
   // Localhost is only exempted from the hostname *gate* below (so /admin/*
   // is reachable during local development); it does not get the root-path
   // rewrite, since that would hijack the whole app in local dev.

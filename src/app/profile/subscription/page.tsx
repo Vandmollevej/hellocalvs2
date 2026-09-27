@@ -2,14 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { IconArrowRight, IconStar } from "@tabler/icons-react";
+import { IconArrowRight, IconChevronRight, IconStar, IconUsers } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
-import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
-
-// Ingen betalingsudbyder endnu (docs/DECISIONS.md 2026-09-19); knappen åbnes,
-// når betaling er tilsluttet.
-const PAYMENT_AVAILABLE = false;
+import { SUBSCRIPTION_PLANS } from "@/lib/subscription-plans";
+import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type SubscriptionData = {
   tier: "FREE" | "SERIOUS";
@@ -18,6 +15,8 @@ type SubscriptionData = {
   pointsBalance: number;
   freeMonthCost: number;
   priceDkk: number;
+  plan: "INDIVIDUAL" | "FAMILY";
+  coveredByFamily: boolean;
 };
 
 export default function SubscriptionPage() {
@@ -27,9 +26,6 @@ export default function SubscriptionPage() {
   const [giftCode, setGiftCode] = useState("");
   const [redeeming, setRedeeming] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  // Bekræftelse af straks-levering og fortrydelsesret (forbrugeraftaleloven,
-  // docs/DECISIONS.md 2026-09-25) før køb.
-  const [withdrawalAck, setWithdrawalAck] = useState(false);
 
   function load() {
     fetch("/api/subscription")
@@ -75,9 +71,17 @@ export default function SubscriptionPage() {
   return (
     <HfScreen title={t("subscription.title")}>
       {loading || !data ? (
-        <p className="hf-type-body text-text-secondary p-4 text-center">
-          {loading ? t("subscription.loading") : t("subscription.loadError")}
-        </p>
+        loading ? (
+          <SkeletonScreen>
+            <div className="hf-card">
+              <Skeleton type="body-sm" width="40%" />
+              <Skeleton type="field" />
+            </div>
+            <SkeletonCards count={2} height={140} gap={16} />
+          </SkeletonScreen>
+        ) : (
+          <p className="hf-type-body text-text-secondary p-4 text-center">{t("subscription.loadError")}</p>
+        )
       ) : (
         <div className="hf-page">
           <div className="hf-card">
@@ -94,7 +98,7 @@ export default function SubscriptionPage() {
                   if (event.key === "Enter") redeemGiftCode();
                 }}
                 placeholder={t("subscription.giftCode.placeholder")}
-                className="hf-type-body h-12 min-w-0 flex-1 rounded-lg bg-hf-white px-4 uppercase tracking-wide"
+                className="hf-field hf-type-body min-w-0 flex-1 rounded-lg bg-hf-white px-4 uppercase tracking-wide"
                 disabled={redeeming}
               />
               <button
@@ -148,35 +152,40 @@ export default function SubscriptionPage() {
             )}
           </div>
 
-          <Link href="/settings/payment" className="hf-btn-secondary h-12 w-full">
+          {/* Seriøs Familie: invitation, profiler og adgang styres på
+              /profile/family (docs/FAMILY.md). */}
+          {(data.plan === "FAMILY" || data.coveredByFamily) && (
+            <Link
+              href="/profile/family"
+              className="hf-control-row hf-type-body flex items-center gap-3 rounded-lg bg-hf-tan px-4"
+            >
+              <IconUsers size={20} aria-hidden="true" />
+              <span className="min-w-0 flex-1">{t("family.switcher.manage")}</span>
+              <IconChevronRight size={20} aria-hidden="true" className="opacity-60" />
+            </Link>
+          )}
+
+          <Link href="/settings/payment" className="hf-control hf-btn-secondary w-full">
             {t("subscription.paymentMethods")}
           </Link>
 
-          {data.tier === "FREE" && (
-            <div className="hf-card hf-card--outline hf-card--form">
-              <div className="hf-stack">
-                <p className="hf-type-section-title" style={{ margin: 0 }}>
-                  {data.priceDkk} {t("subscription.seriousPlan.priceSuffix")}
-                </p>
-                <p className="hf-type-body">{t("subscription.seriousPlan.description")}</p>
+          {/* Seriøs og Seriøs Familie har hver deres side med periodevalg og
+              køb (docs/DECISIONS.md 2026-09-26). */}
+          <h2 className="hf-type-section-title mt-2">{t("subscription.plansHeading")}</h2>
+          {SUBSCRIPTION_PLANS.map((plan) => (
+            <Link
+              key={plan}
+              href={`/profile/subscription/${plan}`}
+              className="flex items-center gap-3 rounded-lg border p-4"
+              style={{ borderColor: "var(--hf-color-line)" }}
+            >
+              <div className="min-w-0 flex-1">
+                <p className="hf-type-section-title">{t(`subscription.plans.${plan}.title`)}</p>
+                <p className="text-text-secondary hf-type-body mt-1">{t(`subscription.plans.${plan}.teaser`)}</p>
               </div>
-              <Toggle
-                checked={withdrawalAck}
-                onChange={setWithdrawalAck}
-                label={t("subscription.seriousPlan.withdrawalConsent")}
-              />
-              <div className="hf-stack">
-                <button
-                  type="button"
-                  disabled={!PAYMENT_AVAILABLE || !withdrawalAck}
-                  className="hf-btn-primary h-12 w-full px-4 disabled:opacity-40"
-                >
-                  {t("subscription.seriousPlan.upgradeCta")}
-                </button>
-                <p className="hf-type-caption">{t("subscription.seriousPlan.upgradeUnavailable")}</p>
-              </div>
-            </div>
-          )}
+              <IconChevronRight size={20} aria-hidden="true" className="shrink-0 opacity-60" />
+            </Link>
+          ))}
 
           <p className="hf-type-caption">{t("subscription.retentionNote")}</p>
 

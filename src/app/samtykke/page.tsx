@@ -61,7 +61,7 @@ function SamtykkeContent() {
           type="button"
           onClick={submit}
           disabled={!consent || submitting}
-          className="hf-btn-primary h-12 w-full disabled:opacity-50"
+          className="hf-control hf-btn-primary w-full disabled:opacity-50"
         >
           {submitting ? t("consent.submitting") : t("consent.submit")}
         </button>

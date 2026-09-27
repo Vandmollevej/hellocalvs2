@@ -10,6 +10,7 @@ import {
   type BodyMeasurementField,
   type BodyMeasurementSex,
 } from "@/lib/body-measurements";
+import { SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type BodyMeasurementEntry = {
   id: string;
@@ -18,6 +19,7 @@ type BodyMeasurementEntry = {
   chestCm: number | null;
   thighCm: number | null;
   upperArmCm: number | null;
+  neckCm: number | null;
   measuredAt: string;
 };
 
@@ -220,7 +222,9 @@ export default function BodyMeasurementsPage() {
 
         <div className="flex flex-col gap-2">
           {loading && (
-            <p className="hf-type-small text-text-secondary text-center">{t("bodyMeasurements.loading")}</p>
+            <SkeletonScreen className="flex flex-col gap-2">
+              <SkeletonCards count={3} height={48} radius={16} />
+            </SkeletonScreen>
           )}
           {!loading && entries.length === 0 && (
             <p className="hf-type-small text-text-secondary text-center">
@@ -228,7 +232,7 @@ export default function BodyMeasurementsPage() {
             </p>
           )}
           {entries.map((entry) => (
-            <div key={entry.id} className="flex items-center justify-between rounded-2xl bg-hf-tan px-4 py-3">
+            <div key={entry.id} className="hf-control-row flex items-center justify-between rounded-2xl bg-hf-tan px-4">
               <div>
                 <p className="hf-type-small hf-type-strong text-hf-black">
                   {formatEntrySummary(entry, t)}

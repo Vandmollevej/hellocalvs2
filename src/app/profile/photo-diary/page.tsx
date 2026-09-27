@@ -16,6 +16,7 @@ import {
   prepareDiaryPhoto,
   type StoredDiaryPhoto,
 } from "@/lib/photo-diary-store";
+import { Skeleton, SkeletonGrid, SkeletonScreen, SkeletonToggle } from "@/components/hf/Skeleton";
 
 type DiaryUser = {
   photoDiaryRequiresPasscode: boolean;
@@ -236,9 +237,15 @@ export default function BilledeDagbogPage() {
     >
 
       {loading || !user ? (
-        <p className="hf-type-body text-text-secondary p-4 text-center">
-          {loading ? t("photoDiary.loading") : t("photoDiary.loadError")}
-        </p>
+        loading ? (
+          <SkeletonScreen>
+            <SkeletonToggle />
+            <Skeleton type="button" />
+            <SkeletonGrid count={4} />
+          </SkeletonScreen>
+        ) : (
+          <p className="hf-type-body text-text-secondary p-4 text-center">{t("photoDiary.loadError")}</p>
+        )
       ) : (
         <div className="hf-page">
           <Toggle

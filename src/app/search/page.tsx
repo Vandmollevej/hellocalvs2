@@ -9,6 +9,7 @@ import { FoodRow } from "@/components/FoodRow";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { hasEstimatedMacros } from "@/lib/nutrients";
 import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
+import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
 
 // kcal/brand/macrosEstimated findes kun på søgeresultater fra /api/products
 // (ikke på seneste/favoritter). macrosEstimated = usikkerheds-~ foran
@@ -285,7 +286,9 @@ function SoegContent() {
             <p className="hf-type-small hf-type-strong text-hf-black">{t("search.searchResults")}</p>
             <div className="overflow-hidden rounded-[8px] bg-hf-tan">
               {resultsState === "loading" && (
-                <p className="hf-type-body text-text-secondary px-4 py-8 text-center">{t("search.searching")}</p>
+                <SkeletonScreen className="px-4">
+                  <SkeletonMediaRows rows={6} />
+                </SkeletonScreen>
               )}
               {resultsState === "error" && (
                 <p className="hf-type-body text-text-secondary px-4 py-8 text-center">

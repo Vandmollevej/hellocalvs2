@@ -6,8 +6,13 @@ import { LocaleProvider } from "@/i18n/LocaleProvider";
 import { OfflineQueueBanner } from "@/components/OfflineQueueBanner";
 import { GlobalClipboardGuard } from "@/components/GlobalClipboardGuard";
 import { AuthGate } from "@/components/AuthGate";
+import { FamilyStatusProvider } from "@/components/family/FamilyStatusProvider";
+import { FamilyWatchFrame } from "@/components/family/FamilyWatchFrame";
+import { AccessLogPanel } from "@/components/family/AccessLogPanel";
 import { ConsentGate } from "@/components/ConsentGate";
 import { StartupTipsGate } from "@/components/StartupTipsGate";
+import { SleepQualityGate } from "@/components/SleepQualityGate";
+import { UmamiTracker } from "@/components/UmamiTracker";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,12 +57,20 @@ export default function RootLayout({
     >
       <body className="min-h-full text-hf-black font-sans">
         <GlobalClipboardGuard />
+        <UmamiTracker />
         <LocaleProvider>
           <AuthGate />
           <ConsentGate />
           <StartupTipsGate />
+          <SleepQualityGate />
           <OfflineQueueBanner />
-          <PhoneFrame>{children}</PhoneFrame>
+          <FamilyStatusProvider>
+            <PhoneFrame>
+              {children}
+              <FamilyWatchFrame />
+              <AccessLogPanel />
+            </PhoneFrame>
+          </FamilyStatusProvider>
         </LocaleProvider>
       </body>
     </html>

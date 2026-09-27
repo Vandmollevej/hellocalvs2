@@ -102,7 +102,7 @@ export function StatChart({
   title: string;
   series: ChartSeries[];
   defaultEnabledKeys: string[];
-  /** Separate key per chart when several StatCharts are shown at once. */
+  /** localStorage key for the chosen series — each chart needs its own. */
   storageKey?: string;
 }) {
   const { t } = useTranslation();
@@ -268,7 +268,7 @@ export function StatChart({
               return (
                 <div
                   key={s.key}
-                  className="hf-type-body hf-type-strong flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left hover:bg-hf-cream"
+                  className="hf-type-body hf-type-strong hf-control-row flex w-full items-center gap-3 rounded-xl px-3 text-left hover:bg-hf-cream"
                 >
                   <span
                     aria-hidden="true"

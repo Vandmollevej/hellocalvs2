@@ -1,5 +1,6 @@
 "use client";
 
+import { mealShareBody } from "@/lib/meal-share";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { IconCamera } from "@tabler/icons-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -333,8 +334,8 @@ function KameraContent() {
           fetch("/api/registrations", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(
-              item.productId
+            body: JSON.stringify({
+              ...(item.productId
                 ? { productId: item.productId, amountGrams: item.amountGrams }
                 : {
                     amountGrams: item.amountGrams,
@@ -343,8 +344,10 @@ function KameraContent() {
                     proteinSnapshot: item.protein,
                     carbsSnapshot: item.carbs,
                     fatSnapshot: item.fat,
-                  }
-            ),
+                  }),
+              // Fælles måltid (docs/FAMILY.md).
+              ...mealShareBody(),
+            }),
           })
         )
       );
@@ -508,7 +511,7 @@ function KameraContent() {
           )
         ) : (
           <div className="flex justify-center py-1">
-            <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-btn-primary gap-2 px-6 py-3 disabled:opacity-40">
+            <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-control hf-btn-primary gap-2 px-6 disabled:opacity-40">
               <IconCamera size={19} /> {t("camera.takePhotoOfProduct")}
             </button>
           </div>
@@ -517,11 +520,11 @@ function KameraContent() {
         <div className="flex flex-col gap-4">
           <div className="flex justify-center py-1">
             {photo ? (
-              <button onClick={restartCamera} className="hf-btn-secondary gap-2 px-5 py-3">
+              <button onClick={restartCamera} className="hf-control hf-btn-secondary gap-2 px-5">
                 {t("camera.retakePhoto")}
               </button>
             ) : (
-              <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-btn-primary gap-2 px-6 py-3 disabled:opacity-40">
+              <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-control hf-btn-primary gap-2 px-6 disabled:opacity-40">
                 <IconCamera size={19} /> {t("camera.takePhoto")}
               </button>
             )}
@@ -570,7 +573,7 @@ function KameraContent() {
                 type="button"
                 onClick={saveMeal}
                 disabled={mealSaving}
-                className="hf-btn-primary justify-center py-3 disabled:opacity-40"
+                className="hf-control hf-btn-primary justify-center disabled:opacity-40"
               >
                 {mealSaving ? t("camera.savingMeal") : t("camera.saveMeal")}
               </button>
@@ -592,7 +595,7 @@ function KameraContent() {
       )}
 
       {mode !== "meal" && (
-        <Link href={`/foods/new${returnSuffix}`} className="hf-btn-secondary justify-center py-2.5">
+        <Link href={`/foods/new${returnSuffix}`} className="hf-control hf-btn-secondary justify-center">
           {t("camera.addManually")}
         </Link>
       )}

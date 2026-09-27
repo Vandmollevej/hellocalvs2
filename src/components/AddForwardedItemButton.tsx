@@ -1,5 +1,6 @@
 "use client";
 
+import { mealShareBody } from "@/lib/meal-share";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -30,6 +31,7 @@ export function AddForwardedItemButton({
         body: JSON.stringify({
           [kind === "PRODUCT" ? "productId" : "dishId"]: itemId,
           amountGrams: 100,
+          ...mealShareBody(),
         }),
       });
       if (!res.ok) {
@@ -52,7 +54,7 @@ export function AddForwardedItemButton({
         type="button"
         onClick={add}
         disabled={saving}
-        className="hf-btn-primary h-12 w-full disabled:opacity-50"
+        className="hf-control hf-btn-primary w-full disabled:opacity-50"
       >
         {saving ? "Tilføjer…" : `Tilføj ${name} til i dag`}
       </button>

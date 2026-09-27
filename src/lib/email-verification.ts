@@ -7,7 +7,7 @@ import { queueMessage } from "@/lib/messaging";
 // linket i mailen er åbnet. Tokenet er et signeret JWT (bruger-ID + e-mail),
 // så der ikke skal gemmes noget; skifter e-mailen, bliver gamle links ugyldige.
 const TOKEN_TTL = "7d";
-const APP_BASE_URL = process.env.APP_BASE_URL || "https://hellocal.packroff.dk";
+const APP_BASE_URL = process.env.APP_BASE_URL || "https://hellocal.io";
 
 function secretKey() {
   const secret = process.env.USER_SESSION_SECRET || process.env.ADMIN_SESSION_SECRET;

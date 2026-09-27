@@ -45,6 +45,7 @@ Ejer: G1-overtagelse, konto C (2026-09-24)
 | b4d954bd | Listevisning: fjern +/−, "Mål (ikke) nået" regulær + flyttet, lige afstand | Færdig (se G1-commit) | Minus vises nu som ÷ (brugerens valg: fortegn som symbol, som i månedsgitteret). Afventer brugerens visuelle godkendelse |
 | 116d3656 | Dagvisning: søvn-slider med to grå nuancer kan ikke trækkes + fjern dialogen "Kun denne dato / Standardmønster" | Færdig (se G1-commit) | Ét gråt felt ved dagsøvn, feltet følger håndtaget, tryk uden træk gemmer intet, dialog fjernet (gælder kun datoen). Ikke live-testet: lokal DB mangler |
 | — | Dagvisning: træk søvn-håndtag forbi kanten (scroller med) + "Nattens søvn: X,XX timer" i nattens grå felt | Færdig (flettet i master fra cloud-branch `claude/cloud-session-credits-expired-7504pf`) | Afventer brugerens test på telefon |
+| — | Dagvisning: sengetids-håndtag altid nederst (også ved sengetid 00:00) + manglende tekst "calendar.remainingToday" | Færdig (flettet i master fra `claude/calendar-slider-bedtime-text-1cp8lf`) | Afventer brugerens test på telefon |
 
 ## G2 — Statistik-siden (redigering, drag/drop)
 Filer: statistik-siden, `src/components/StatsWheel.tsx`, `src/lib/frontpage-layout.ts`, `src/lib/frontpage-stats.ts`.
@@ -84,6 +85,7 @@ Ejer: G4-sessionen, konto B (overtaget 2026-09-24)
 ## G5 — Agent-app + logo-robot
 Filer: ny agent-app, admin "scan-invites", logo-agent (Python/container).
 Ejer: G5-overtagelse, konto B (2026-09-24)
+ℹ️ Fra opret-vare-sessionen (2026-09-26): logo-isolering ved scanning + match mod DB er bygget i kamera-flowet (`ImageCutoutJob` BRAND_LOGO, `src/lib/brand-match.ts`, fritskrabning i `scripts/image-agent/cutout.py`, DECISIONS 2026-09-26). Logo-kandidater under 0,9 ligger klar til G5's admin-kø; natlig Google-søgning er ikke lavet.
 ⚠️ Fra G1 (2026-09-25): deploy-trinnet "Build and start catalog agents" i `.github/workflows` fejler ved hvert push til master siden 2026-09-24 ca. 18:00 (fx run for 50a5a47). App-deployet lykkes, men agent-containerne opdateres ikke. Brugeren har bedt G5 om at rette det — læs job-loggen på GitHub.
 
 | Id | Opgave | Status | Næste skridt |
@@ -106,18 +108,19 @@ Deploy: G6 deployet 2026-09-26 (1ca9c65, GitHub Actions grøn; `/api/private-ing
 
 ## G7 — Profil
 Filer: `src/app/profile/**`.
-Ukendte ændringer: `profile/body-measurements`, `profile/invite`, `profile/photo-diary`, `profile/settings`, `profile/weight-calibration`, `src/lib/body-measurements.ts` er ændret og ikke committet.
+Ukendte ændringer: `profile/photo-diary` og `profile/weight-calibration` har ikke-committede ændringer fra andre sessioner (passkey-lås / vægt-kalibrering) — ikke G7's, rør dem ikke.
 Ejer: Profil-gruppen (G7), konto B — overtaget 2026-09-24
+Deploy (brugerens valg 2026-09-26): G7 er committet lokalt og venter på den samlede deploy. Migration 20260926090000_body_measurement_neck skal med.
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| 9a0770ce | Ny oversigtsside over målsætninger (historik, grønt flueben, fast knap nederst) | Ikke startet | Tjek om allerede lavet, ellers byg |
-| 8b0a278f | Kropsmål med mand/kvinde-tegninger (fra hovedmappen), kort som på statistik | Ikke startet | Ikonerne er færdige (`WaistMeasure.tsx`, 93715be). Mangler: Kropsmål-siden med kort som på statistik |
-| d22c7e61 | Invitér en ven: kun visuelt (betingelser som tekstlink, luft, fjern skillelinje, demo-data) | Venter på bruger | E-mail-invitation/venneliste strider mod privacy — kun visuelle rettelser |
-| ef8a5612 | "Skift adgangskode"-side | Blokeret | Strider sandsynligvis mod passkey-only login — spørg brugeren |
-| 60da6b15 | Indstillinger: "Få vist allergener" ind i samme boks + "Vælg alle" ved topknappen | Lavet, ikke verificeret | **Sandsynligvis kilden til diff'en i profile/settings.** Verificér og commit |
-| bc01cd73 | Højde-vælger fryser, "Færdig" virker ikke, aktuel højde vises ikke i scrolleren | Lavet?, ikke verificeret | **Sandsynligvis kilden til diff'en i `src/components/ui/WheelPicker.tsx`.** Tjek, verificér og commit |
-| 26393cba | Demo-bruger med abonnement "Seriøs", næste betalingsdato, "Betalingsmetoder"-knap + profilpunkt | Blokeret | Demo-brugeren blev bevidst fjernet (commit e2c0a83). Spørg: byg kun abonnement/betalingsmetoder-UI? |
+| 9a0770ce | Ny oversigtsside over målsætninger (historik, grønt flueben, fast knap nederst) | Færdig (2a119d8, 737783e) | Var allerede bygget og opfylder kravene |
+| 8b0a278f | Kropsmål med mand/kvinde-tegninger, kort som på statistik | Færdig og deployet (8649ac8, 1a90aee → live i 1cf8b2b) | Hals tilføjet efter brugerens ja; migration 20260926090000 kørt af deployet |
+| d22c7e61 | Invitér en ven: betingelser som tekstlink, luft, fjern skillelinje | Færdig (6ab6eca, 62708b7) | Demo-data kan ikke laves: demo-brugeren er fjernet |
+| ef8a5612 | "Skift adgangskode"-side | Færdig | Fandtes allerede (/profile/change-password) og passer med det gendannede adgangskode-login |
+| 60da6b15 | Indstillinger: allergener i samme boks + "Vælg alle" | Færdig | Committet af en anden session |
+| bc01cd73 | Højde-vælger fryser / "Færdig" / aktuel højde vises ikke | Færdig (6ab6eca) | Ikke testet i browser (kræver login) |
+| 26393cba | Abonnement "Seriøs": næste betalingsdato, "Betalingsmetoder"-knap + profilpunkt | Færdig (a764b4d) | Demo-brugeren oprettes ikke (fjernet bevidst, DECISIONS 2026-09-25) |
 | gear-appsettings | Profil: tandhjul (kun på /profile) → app-indstillinger (`/settings`) + tilbagepil på profilsiden | Færdig | App-punkter flyttet fra profil til `/settings`, log ud flyttet med |
 | 65efa293 | Billede-dagbog mistede billeder (5 → 2): lager flyttet fra localStorage til IndexedDB | Færdig (44f7b58, pushet sammen med karrusellen 2c8b608) | Brugeren tester på iPhone: tag flere billeder, forlad siden, kom tilbage |
 
@@ -131,7 +134,7 @@ Ejer: G8-sessionen, konto C (overtaget 2026-09-24)
 | 6068f78a | 8 sundhedsintegrationer + nye ikoner | Færdig (22184fe) | Brugeren valgte "Byg alle 8" inden for boks-arkitekturen. Mangler kun nøgler på serveren + deploy |
 | 8d98b548 | Withings + Google Health koblet på, egen data-sync | Venter på bruger | Nøglerne ligger på serveren. 2026-09-26 (session d83284ca, med brugerens OK): 0.0.0.0-redirects i `handlers.ts` rettet. Brugeren tilføjer redirect-URI + testbruger i Google Cloud (se STATUS "Integrationssiden"). HelloFresh-trin-rettelsen i samme transcript hører til G6 |
 | d0442775 | Waldemarsro (DK-only) + scraper | Venter på bruger | Scraper + kalorie-matcher færdige og gemt i scripts/valdemarsro-import (157cff9); brugeren kører scraperen selv (output i Productdatabase/Valdemarsro). IKKE bygget: import til appen + Valdemarsro-kort/toggle på Integrationer (krav i STATUS, ea7843a) — byg når brugeren siger til |
-| 5c45b0d7 | Opskrift-scrapere som Valdemarsro: Arla, Coop, REMA 1000, MENY, Hjerteforeningen, TV2 (+ Børnevenlig og måltidstype) | I gang | Bygges i scripts/recipe-sites-import (fælles motor + ét script pr. side). Brugeren kører selv scraperne i VS Code |
+| 5c45b0d7 | Opskrift-scrapere som Valdemarsro: Arla, Coop, REMA 1000, MENY, Hjerteforeningen, TV2 (+ Børnevenlig og måltidstype) | Færdig (kode) | Scrapere + kalorie-matcher i scripts/recipe-sites-import (README). Testet på de rigtige sider. Brugeren kører dem selv i VS Code; import i appen hører under Valdemarsro-integrationen |
 | 300489b5 | Push til Health/integrationer + egen side pr. app med til/fra (hent/send) ved tilkobling og bagefter | Færdig (ce1bc7f, deployet) | Brugeren: skriveadgang i Google Cloud-klienten (nutrition/health_metrics writeonly) og Strava-appen (activity:write); native app til Apple Health/Health Connect mangler |
 
 ## G9 — Ikoner (forside + vand)
@@ -165,6 +168,14 @@ Ejer: G11-overtagelse, konto C (2026-09-24). Arbejder i worktree `gifted-hofstad
 | 03b329f3 / 5a3cdd2b | E-numre + toksiner som valgfri statistik-bokse og til/fra i Opsætning, vist på produktsiden; "udvidet næringsindhold" åben som standard | Færdig (5cea433) | Kontakter i Opsætning, toksinliste (FVST + EFSA, graviditet/amning/fertilitet først), produktside. Flettes ind i master, når G7 har committet profile/settings |
 | 56f30763 | Advarselstrekant med udråbstegn ved mættet/usundt fedt | Færdig (5cea433) | Trekant på statistik-bokse + produktside. **G2:** forsidens tal-slider (`frontpage-stats.ts`) mangler samme ikon — G11 rører ikke filen |
 
+## Widgets (iPhone/Android)
+Filer: `src/lib/widgets.ts`, `src/lib/widget-data.ts`, `src/lib/widget-add-actions.ts`, `src/app/api/widgets/**`, `src/app/widgets/**`, `src/components/widgets/**`, `docs/WIDGETS.md`.
+Ejer: Widget-sessionen (2026-09-26)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| c4b41bf9 | Forbered widgets: plus-knap, hurtig-tilføj, statistik-graf (Smart Stack/swipe), 2×2 boks, seneste registreringer | Færdig (kode) — venter på Mac | Web-preview `/widgets` + native kildekode i `native/` (Swift + Kotlin, ukompileret). Næste: kompilér på Mac/Android Studio efter `native/README.md` |
+
 ## Venter på dig (ingen gruppe)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
@@ -186,7 +197,34 @@ Ejer: G11-overtagelse, konto C (2026-09-24). Arbejder i worktree `gifted-hofstad
 | 217a0faf | Stregkode auto-rotation, fjern manuelt felt | commit 1643610 |
 | — | Stregkode: lodret/skæv aflæsning, AR-afkodning, lysere guide (2026-09-25) | DECISIONS 2026-09-25 "Stregkode-scanning" |
 
+## G12 — Ens 48 px-højde på felter, dropdowns, knapper og rækker
+Filer: `.hf-field` / `.hf-control` / `.hf-control-row` + `--hf-control-height` i `src/app/globals.css` (blokken over `.hf-search`), og klassebyt i de enkelte .tsx-filer.
+Ejer: "Ensartet højde på inputfelter og knapper" (2026-09-26)
+Brugerens valg: 48 px overalt. Kun enkeltlinje-felter, dropdowns, madindtastning, fuldbredde-knapper, listerækker og statistik-sektionsoverskrifter + admin. Ikke med: footer, fliser, statistik-kort, ikonknapper, små filter-/periodeknapper, textarea.
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | Klasser + første 16 filer (login, betaling, TextField m.fl.) | Færdig (64c5125, d7b4ec3) | — |
+| — | Resten (62 filer: profil, statistik, admin, kamera, hello-doc …) | Færdig (bdc754d) | — |
+| — | Sidste 5 filer: kalender, Indstillinger, Support, Forside-visning, admin/API-nøgler | Færdig (3a3b398) | — |
+
+## G13 — HelloFresh-opskriftsvisning (som i HelloFresh-appen)
+Filer: `src/app/profile/recipes/hellofresh/**`, `src/components/recipe-view/**`, `src/lib/hellofresh-recipe.ts`, `src/app/api/hellofresh-recipes/**`, `scripts/hellofresh-import/agent.py`.
+Ejer: ed3c2525 (2026-09-27)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| ed3c2525 | HelloFresh-opskrifter vises præcis som i HelloFresh-appen, fælles `.rv-*`-klasser (ikke egne retter) | Færdig (se git log "HelloFresh recipe view") | Deploy: migration 20260927100000 + genstart hellofresh-agent (genhenter alle opskrifter én gang). Afventer brugerens visuelle godkendelse |
+
 ## Ikke fordelt
 Ændret og ikke committet uden kendt ejer: `docs/AI.md`, `src/components/AddButton.tsx`,
 `src/components/hf/PointsPromoBanner.tsx`, `src/i18n/locales/*.json`, `src/lib/vault/webauthn-client.ts`.
 Nogle hører muligvis til login-/Mailjet-sessionerne på konto B. Rør dem ikke uden at læse diff'en først.
+
+## G-FAM — Familieabonnement og børneprofiler
+Filer: `docs/FAMILY.md`, Prisma-skema (Family*, ProfileAccessLog), `src/lib/family*.ts`, `src/lib/session.ts`, `src/app/api/family/**`, `src/app/profile/family/**`, profilvælger/panel-komponenter, dagbogs-API'erne der skal følge den valgte profil.
+Ejer: cloud-session `claude/lucid-bell-s5vyhv` (2026-09-25)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| — | Familieabonnement: forældre ser/taster for børn, adgangslog til barnet | I gang | Første version bygget og pushet (branch `claude/lucid-bell-s5vyhv`, ikke flettet). Næste: brugerens test og "Mangler" i `docs/FAMILY.md` (oprettelsesflow med alder er næste skridt) |

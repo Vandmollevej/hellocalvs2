@@ -44,7 +44,8 @@
     "errorOauth": "Login failed. Please try again.",
     "errorOauthCancelled": "Login was cancelled.",
     "errorOauthExpired": "The login attempt expired. Please try again.",
-    "errorNotConfigured": "Login with {provider} is not set up yet."
+    "errorNotConfigured": "Login with {provider} is not set up yet.",
+    "haveFamilyCode": "Got a family code?"
   },
   "forgotPassword": {
     "title": "Forgot password",
@@ -179,6 +180,26 @@
       "contactRequired": "Fill in both subject and message.",
       "contactError": "The message could not be sent. Please try again.",
       "contactSent": "Thanks, we have received your request. Your case number is {caseCode}.",
+      "myRequests": "My requests",
+      "requestsEmpty": "You have no requests yet.",
+      "requestsLoadError": "Your requests could not be loaded.",
+      "statusAwaiting": "Awaiting reply",
+      "statusAnswered": "Answered",
+      "statusResolved": "Resolved",
+      "newReply": "New reply",
+      "caseLabel": "Case {caseCode}",
+      "threadYou": "You",
+      "threadSupport": "Hello Cal Support",
+      "replyLabel": "Write a reply",
+      "replySend": "Send reply",
+      "replySending": "Sending…",
+      "replyError": "The reply could not be sent. Please try again.",
+      "replyReopens": "This case is resolved. If you write again, it will be reopened.",
+      "openCase": "View your request",
+      "attachScreenshots": "Attach screenshots",
+      "attachHint": "You can attach up to 3 screenshots.",
+      "removeAttachment": "Remove image",
+      "attachmentError": "One of the images could not be used.",
       "categories": {
         "ACCOUNT": "Account and login",
         "DATA": "My data",
@@ -251,6 +272,7 @@
     "privacyPolicy": "Privacy policy",
     "dataTracking": "Data tracking",
     "languageAndRegion": "Language and region",
+    "resultsDisplay": "Results display",
     "messages": "Messages",
     "notifications": "Communication",
     "inviteFriend": "Invite a friend",
@@ -262,12 +284,30 @@
     "frontPage": "Front page",
     "recommendedLimits": "Recommended limits",
     "menstrualCycle": "Menstrual cycle",
+    "sleepQuality": "Sleep experience",
     "calendarView": "Calendar view",
     "displayHelpTip": "Here you decide how the front page, the calendar and warnings look on this device.",
     "showTooltips": "Show tooltips",
     "showTooltipsDescription": "Shows a small help text under the various settings and windows.",
     "showStartupTips": "Show start-up tips",
     "showStartupTipsDescription": "Shows a short full-screen tip when you open the app, about features you have not used yet."
+  },
+  "guide": {
+    "back": "Back",
+    "next": "Next",
+    "finish": "Done",
+    "askLater": "Ask me later",
+    "continue": "Continue",
+    "skip": "Skip",
+    "gotIt": "Got it",
+    "close": "Close",
+    "progress": "Guide progress",
+    "previousTip": "Previous tip",
+    "nextTip": "Next tip",
+    "tipOf": "Tip {current} of {total}",
+    "decrease": "Fewer",
+    "increase": "More",
+    "imageAlt": "Illustration"
   },
   "startupTips": {
     "close": "Close",
@@ -293,6 +333,19 @@
     "autoExpandUncertainty": "Expand uncertainty automatically",
     "autoExpandUncertaintyDescription": "A green ~ always appears in front of values we have estimated because the manufacturer does not state them. Turn this on to show the grey uncertainty line under the value without tapping."
   },
+  "sleepQualitySettings": {
+    "toggleLabel": "Ask about last night's sleep",
+    "toggleDescription": "The first time you open the app each day, you are asked to rate last night's sleep from 1 to 5. The rating is shown on the day in the calendar and in the statistics."
+  },
+  "sleepQuality": {
+    "question": "How do you feel your night was?",
+    "close": "Close",
+    "disable": "Turn off",
+    "ratingAriaLabel": "Rate last night's sleep {rating} out of 5",
+    "infoAriaLabel": "What is this used for?",
+    "info": "Rate how you slept last night — 1 is very poor and 5 is really good. Once enough data has been collected, you can see your sleep quality compared with your calorie intake and any changes to your diet. You can turn the question off under Settings → Sleep experience.",
+    "calendarBar": "Sleep quality: {rating} of 5"
+  },
   "menstrualCycleSettings": {
     "intro": "Log your menstrual cycle and get it as an option in the add menu.",
     "toggleLabel": "Show menstrual cycle",
@@ -300,7 +353,7 @@
   },
   "frontPageSettings": {
     "intro": "Choose which fields should appear in the wheel on the front page. The top field always shows a list of every add-element.",
-    "sideSectionTitle": "Side layout",
+    "sideSectionTitle": "Front page layout",
     "sideLeft": "Left",
     "sideRight": "Right",
     "sideHint": "The number slider always shows on the opposite side: {side}.",
@@ -478,9 +531,14 @@
     "closeAddAriaLabel": "Close add",
     "goalLabel": "Goal: {goal} kcal",
     "remainingCalories": "You have {remaining} calories left",
+    "remainingToday": "Left for today: {amount} kcal",
     "exceededCalories": "You're over by {amount} kcal",
     "adjustSleepAriaLabel": "Adjust night sleep",
     "hourRangeLabel": "{start}–{end}",
+    "targetDateSuffix": ", goal date",
+    "openTargetDate": "Open goal",
+    "openTargetDateAriaLabel": "Open the goal for this day",
+    "closeTargetDateAriaLabel": "Close the goal",
     "streakAriaLabel": "{streak}-day streak",
     "streakMessage": "Great! You've reached your goal {streak} days in a row!",
     "withinGoal": "You are within your target.",
@@ -546,7 +604,13 @@
     "stageIngredients": "Ingredients",
     "readingIngredients": "Reading ingredients...",
     "continueWithBarcode": "Continue with this barcode",
-    "barcodeLookupFailedContinue": "The lookup failed. You can continue with the scanned barcode."
+    "barcodeLookupFailedContinue": "The lookup failed. You can continue with the scanned barcode.",
+    "stepBarcode": "Barcode",
+    "stepFront": "Front",
+    "stepNutrition": "Energy",
+    "stepIngredients": "Contents",
+    "stepDone": "{step}: captured and read",
+    "bothFound": "Energy and contents found in the same photo"
   },
   "foods": {
     "title": "Foods",
@@ -783,6 +847,54 @@
     "reportError": "Couldn't report the dish",
     "shareError": "Sharing couldn't be changed right now"
   },
+  "hfRecipe": {
+    "loading": "Loading the recipe …",
+    "notFound": "This recipe no longer exists",
+    "share": "Share",
+    "totalTime": "Total",
+    "minutes": "{minutes} min",
+    "protein": "Protein",
+    "difficulty": "Difficulty",
+    "difficulties": {
+      "1": "Easy",
+      "2": "Medium",
+      "3": "Hard"
+    },
+    "save": "Save",
+    "saved": "Saved",
+    "shoppingList": "Share shopping list",
+    "print": "Print",
+    "description": "Description",
+    "readMore": "Read more",
+    "readLess": "Read less",
+    "allergens": "Allergens",
+    "allergenNote": "Produced in a facility that handles eggs, milk, fish, peanuts, sesame, shellfish, soy, nuts and wheat.",
+    "ingredients": "Ingredients",
+    "steps": "Instructions",
+    "markCooked": "Mark as cooked",
+    "nutrition": "Nutrition values",
+    "nutritionNote": "Nutrition per meal may differ between the website and the box because of the different suppliers HelloFresh buys its products from.",
+    "addToHealthApp": "Add to health app",
+    "cookbookPhotos": "My cookbook photos",
+    "addPhoto": "Add a photo",
+    "removePhoto": "Remove photo",
+    "letsCook": "Let's cook",
+    "shareUnsupported": "Sharing isn't supported on this device",
+    "shoppingListTitle": "Shopping list: {name}",
+    "photoError": "The photo couldn't be saved",
+    "favoriteError": "The recipe couldn't be saved",
+    "nutrients": {
+      "kcal": "Calories (kcal)",
+      "kj": "Energy (kJ)",
+      "fat": "Fat",
+      "saturatedFat": "Saturated fat",
+      "carbs": "Carbohydrate",
+      "sugar": "Sugar",
+      "fiber": "Dietary fibre",
+      "protein": "Protein",
+      "salt": "Salt"
+    }
+  },
   "createDish": {
     "shareLabel": "Do you want to share this dish with other users?",
     "shareInfo": "No personal details are shared when you share a dish",
@@ -881,6 +993,7 @@
     "mediaScanFailedBarcode": "Couldn't read the barcode — enter it below",
     "mediaScanFailedNutrition": "Couldn't read the nutrition facts — fill them in below",
     "mediaScanFailedIngredients": "Couldn't read the ingredients list — fill it in below",
+    "mediaVerified": "{box}: captured and read correctly",
     "savedOffline": "No connection — the product is saved on this device and will upload automatically once you're back online."
   },
   "offlineQueue": {
@@ -1021,17 +1134,56 @@
     "paymentMethods": "Payment methods",
     "freePlan": {
       "title": "Free",
-      "description": "Access to everything in Hello Cal except Hello Doc. Only the last 30 days of history are shown — older data is kept and comes back if you go Serious."
+      "description": "Logging, calendar and your goal. Only the last 3 months of history are shown — older data is kept and comes back if you go Serious."
     },
     "seriousPlan": {
       "title": "Serious",
       "priceSuffix": "kr./month",
-      "description": "Full history with no 30-day limit, plus access to Hello Doc.",
+      "description": "Full history with no 3-month limit, statistics, photo diary, sub-goals, integrations and Hello Doc.",
       "upgradeCta": "Upgrade to Serious",
       "upgradeUnavailable": "Payment isn't connected yet — use a gift code or redeem points to go Serious until a payment provider is in place.",
       "withdrawalConsent": "I want the subscription to start right away, and I understand that if I withdraw within 14 days, I will only be refunded for the part of the period I haven't used."
     },
-    "retentionNote": "Data older than 30 days is never deleted — it's kept and shown again as soon as you go Serious."
+    "retentionNote": "Data older than 3 months is never deleted — it's kept and shown again as soon as you go Serious.",
+    "plansHeading": "Subscriptions",
+    "plans": {
+      "serious": {
+        "title": "Serious",
+        "teaser": "Full access to everything in Hello Cal — for you.",
+        "description": "For those who want to go all in. Serious gives you your full history, the whole statistics module and every tool to track, understand and tailor your diet and goals — without limits."
+      },
+      "family": {
+        "title": "Serious Family",
+        "teaser": "Full access to everything in Hello Cal — for up to 5 people.",
+        "description": "Everything in Serious for up to 5 people in your family on one subscription. You set up the family, can create child profiles and help them log — and everyone can always see who has access to their profile."
+      }
+    },
+    "features": {
+      "history": "Your full history — no 3-month limit",
+      "statistics": "The full statistics module",
+      "photoDiary": "Photo diary",
+      "customize": "Rearrange statistics and the bottom-bar icons",
+      "display": "All display settings on and off",
+      "allergens": "Allergens, special diets and dish filters",
+      "integrations": "All integrations",
+      "subGoals": "Sub-goals on top of your goal",
+      "helloDoc": "Hello Doc — share with your doctor or dietitian"
+    },
+    "planPage": {
+      "includesHeading": "What you get",
+      "periodHeading": "Choose period",
+      "period": {
+        "1": "1 month",
+        "3": "3 months",
+        "12": "1 year"
+      },
+      "price": "{price} kr.",
+      "perMonth": "{price} kr./mo.",
+      "save": "Save {pct}%",
+      "renewalNote": "The subscription renews automatically for the same period until you cancel. You can cancel at any time.",
+      "buyCta": "Buy — {price} kr.",
+      "buyError": "The purchase couldn't be started right now"
+    }
   },
   "profileSleep": {
     "title": "Sleep pattern",
@@ -1059,6 +1211,8 @@
   },
   "weightCalibration": {
     "title": "Weight calibration",
+    "lastCalibrated": "Last calibrated on {date}",
+    "neverCalibrated": "Not calibrated yet",
     "intro": "Weigh yourself at different times and under different conditions — this gives you a sense of your fluctuation throughout the day, without having to weigh yourself naked every time.",
     "weightLabel": "Weight (kg)",
     "weightPlaceholder": "e.g. 78.4",
@@ -1086,7 +1240,8 @@
       "before": "Before meal",
       "after": "After meal"
     },
-    "submit": "Update information",
+    "save": "Save",
+    "submit": "Log weigh-in",
     "saving": "Saving…",
     "loading": "Loading…",
     "noEntriesYet": "No weigh-ins logged yet.",
@@ -1107,7 +1262,9 @@
     "chest": "Chest (cm)",
     "thigh": "Thigh (cm)",
     "upperArm": "Upper arm (cm)",
+    "neck": "Neck (cm)",
     "names": {
+      "neck": "Neck",
       "waist": "Waist",
       "hip": "Hip",
       "chest": "Chest",
@@ -1126,8 +1283,12 @@
     "title": "Goals",
     "loading": "Loading…",
     "loadError": "Couldn't load goals.",
-    "empty": "You haven't created any goals yet. Create one with the button below",
+    "empty": "You haven't created any goals yet. Create one with the button above",
     "create": "Create new goal",
+    "createSubGoal": "Create new sub-goal",
+    "createdLabel": "Created {date}",
+    "detailTitle": "Sub-goal",
+    "notFound": "This goal doesn't exist.",
     "completedAria": "Goal reached",
     "intro": "Set the date, weight and body measurements you're aiming for. Used to track your progress in the statistics.",
     "targetDate": "Target date",
@@ -1142,7 +1303,30 @@
     "save": "Save goal",
     "saving": "Saving…",
     "saveError": "Couldn't save the goal.",
-    "atLeastOne": "Fill in at least one target to save."
+    "atLeastOne": "Fill in at least one target to save.",
+    "editTitle": "Edit goal",
+    "upcomingTitle": "Upcoming goals",
+    "upcomingEmpty": "You have no upcoming goals.",
+    "openGoal": "Open the goal",
+    "editTargetAria": "Edit {name}",
+    "category": {
+      "weight": "Weight",
+      "body": "Body measurements",
+      "nutrition": "Nutrition"
+    },
+    "nutritionHeading": "Nutrition per day",
+    "nutrition": {
+      "kcal": "Calories",
+      "proteinG": "Protein",
+      "carbsG": "Carbohydrates",
+      "fatG": "Fat"
+    },
+    "nutritionPlaceholder": {
+      "kcal": "e.g. 2000",
+      "proteinG": "e.g. 120",
+      "carbsG": "e.g. 200",
+      "fatG": "e.g. 70"
+    }
   },
   "weightLog": {
     "title": "Weight",
@@ -1187,15 +1371,32 @@
     "loading": "Loading…",
     "loadError": "Couldn't load photo diary.",
     "requiresPasscode": "Requires phone passcode to view",
-    "requiresPasscodeDescription": "Photos are only shown after you confirm with Face ID, Touch ID or your phone's passcode.",
+    "requiresPasscodeDescription": "Confirm with Face ID, Touch ID, Windows Hello, or your screen-lock PIN before photos are shown.",
     "showPhotos": "Show photos",
+    "unlocking": "Confirming…",
+    "passcodeFailed": "Couldn't confirm. Try again.",
+    "passcodeUnsupported": "This device doesn't support passcode confirmation.",
     "takePhoto": "Take photo (full body or stomach)",
     "noPhotosYet": "No photos yet — take the first one to compare later.",
     "photoAlt": "Photo diary entry",
     "deleteAria": "Delete photo",
     "previousPhoto": "Previous photo",
     "nextPhoto": "Next photo",
-    "unlocking": "Confirming…",
+    "selfiesSectionTitle": "Selfies",
+    "noSelfiesYet": "No selfies yet — take the first one to compare later.",
+    "photosSectionTitle": "Other photos",
+    "currentWeight": "Current weight: {value} kg",
+    "latestWeight": "Latest weight: {value} kg ({date})",
+    "noWeight": "No weight logged yet",
+    "currentMeasurements": "Current measurements: {value}",
+    "latestMeasurements": "Latest measurements: {value} ({date})",
+    "noMeasurements": "No measurements logged yet",
+    "measurementWaist": "Waist {value} cm",
+    "measurementHip": "Hip {value} cm",
+    "measurementChest": "Chest {value} cm",
+    "measurementThigh": "Thigh {value} cm",
+    "measurementUpperArm": "Upper arm {value} cm",
+    "measurementNeck": "Neck {value} cm",
     "unlockError": "Couldn't confirm. Try again.",
     "saving": "Saving photo…",
     "saveError": "The photo couldn't be saved on this phone. Try again.",
@@ -1373,6 +1574,38 @@
       "water": "Water",
       "weight": "Weight (your own weigh-ins)",
       "activities": "Workouts logged in Hello Cal"
+    },
+    "access": {
+      "title": "{name} Access",
+      "messageReadWrite": "“Hello Cal” would like to access and update your {name} data.",
+      "messageRead": "“Hello Cal” would like to access your {name} data.",
+      "turnOnAll": "Turn On All",
+      "turnOffAll": "Turn Off All",
+      "writeTitle": "Allow “Hello Cal” to write",
+      "readTitle": "Allow “Hello Cal” to read",
+      "explanationReadWrite": "App Explanation: We need access to your health data so we can import your activity and weight and update the nutritional info in your {name} profile.",
+      "explanationRead": "App Explanation: We need access to your health data so we can import your activity and weight into Hello Cal.",
+      "statusTitle": "Connection",
+      "deviceTitle": "The Hello Cal app on your phone",
+      "allow": "Allow",
+      "deny": "Don’t Allow",
+      "write": {
+        "nutrition": "Nutrition and macros",
+        "water": "Water",
+        "weight": "Weight",
+        "activities": "Workouts"
+      },
+      "read": {
+        "weight": "Weight",
+        "bodyFat": "Body Fat Percentage",
+        "activities": "Workouts and sports",
+        "steps": "Steps and Distance",
+        "energy": "Active Energy",
+        "heart": "Heart Rate and Fitness",
+        "sleep": "Sleep",
+        "water": "Water",
+        "body": "Height and BMI"
+      }
     }
   },
   "payment": {
@@ -1387,15 +1620,36 @@
     "freeMonthsRemaining": "{count} free month(s) queued",
     "paymentMethodsTitle": "Payment methods",
     "noPaymentMethod": "No payment method added yet",
-    "noPaymentMethodHint": "Coming once Hello Cal has a payment provider connected. Supports Visa, Apple Pay, Google Pay and MobilePay when it's ready.",
-    "supportedMethodsTitle": "Supported methods"
+    "nextPayment": "Next payment on {date}",
+    "canceledUntil": "Seriøs until {date}",
+    "mobilePayAgreement": "Agreement active",
+    "pendingApproval": "Waiting for approval in the MobilePay app",
+    "chooseSubscription": "Choose subscription",
+    "stopAgreement": "Stop MobilePay agreement",
+    "keepAgreement": "Keep",
+    "stopping": "Stopping…",
+    "stopConfirm": "The agreement is stopped and no further payments are taken.",
+    "stopConfirmUntil": "The agreement is stopped and no further payments are taken. You keep Seriøs until {date}.",
+    "stopError": "Could not stop the agreement. Please try again shortly.",
+    "mobilePayReturn": {
+      "title": "MobilePay",
+      "checking": "Checking status with MobilePay…",
+      "active": "Thank you! Your subscription is active.",
+      "pending": "The agreement has not been approved yet. Approve it in the MobilePay app — this page updates by itself.",
+      "none": "The agreement was not approved. You can try again from Subscription.",
+      "back": "Go to Payment"
+    },
+    "supportedMethodsTitle": "Supported methods",
+    "noPaymentMethodHint": "Coming once Hello Cal has a payment provider connected. Supports Visa, Apple Pay, Google Pay and MobilePay when it's ready."
   },
   "statistics": {
     "title": "Statistics",
     "calories": "Calories",
     "weight": "Weight",
     "trendWeight": "Trend weight (AI estimate)",
-    "caloriesAndWeightChart": "Calories and weight"
+    "caloriesAndWeightChart": "Calories and weight",
+    "sleepQuality": "Sleep quality",
+    "sleepQualityChart": "Sleep quality and calories"
   },
   "statUnusedCards": {
     "title": "Unused stat cards",
@@ -1622,5 +1876,177 @@
     "enabled": "Face ID is turned on for login.",
     "active": "Face ID enabled",
     "activate": "Enable Face ID"
+  },
+  "premium": {
+    "title": "Serious only",
+    "description": "This feature is part of Serious. With Serious you get the full statistics module, photo diary, sub-goals, allergens and filters, integrations and full freedom to customise the app.",
+    "cta": "See Serious",
+    "badge": "Serious",
+    "filtersLocked": "Filters and sorting require Serious"
+  },
+  "family": {
+    "title": "Family",
+    "child": "Child",
+    "switcher": {
+      "title": "Switch profile",
+      "you": "Your own profile",
+      "managing": "You are entering data for this profile",
+      "meLabel": "{name} (you)",
+      "active": "Selected",
+      "addProfile": "Add profile",
+      "manage": "Family and access"
+    },
+    "watch": {
+      "onAccount": "{name} is on the account"
+    },
+    "panel": {
+      "title": "Someone has been on your account",
+      "intro": "{count} new events since last time.",
+      "seeAll": "See the full control log",
+      "ok": "OK"
+    },
+    "log": {
+      "title": "Control log",
+      "you": "You",
+      "ownLogin": "Logged in",
+      "whoHasAccess": "Who has access",
+      "nobody": "No one else has access to your account.",
+      "payer": "Payer",
+      "granted": "Has been given access",
+      "manage": "See the family",
+      "eventsTitle": "Logins and actions",
+      "empty": "No events yet.",
+      "loadError": "The control log could not be loaded.",
+      "action": {
+        "OPENED": "Opened your account",
+        "VIEWED": "Viewed",
+        "CREATED": "Added",
+        "UPDATED": "Changed",
+        "DELETED": "Deleted"
+      },
+      "area": {
+        "profile": "Profile",
+        "registrations": "Entries",
+        "water": "Water",
+        "weight": "Weight",
+        "activities": "Activity",
+        "bodyMeasurements": "Body measurements",
+        "goals": "Goals",
+        "healthMetrics": "Health data",
+        "menstrualCycle": "Period",
+        "sleep": "Sleep",
+        "workShifts": "Work hours",
+        "favorites": "Favourites",
+        "recipeFavorites": "Recipe favourites",
+        "login": "Log in"
+      }
+    },
+    "plan": {
+      "title": "Family subscription",
+      "intro": "With a family subscription you can create up to {max} profiles, e.g. for your children, and view and log for them yourself. The family subscription is always paid, so no one in the family sees ads.",
+      "create": "Create family",
+      "requiresPlan": "See family subscription"
+    },
+    "join": {
+      "title": "Did you get a code?",
+      "intro": "If someone in your family sent you a code, you can link your account to their family.",
+      "codeLabel": "Family code",
+      "submit": "Link me to the family",
+      "confirm": "The person paying for the family can see and change everything on your profile while you are a member. Continue?"
+    },
+    "member": {
+      "title": "Your family",
+      "intro": "You are part of {owner}'s family subscription. {owner} manages the family and can see and change everything on your profile. Everything others do on your profile is in your control log.",
+      "seeLog": "See control log",
+      "leave": "Leave the family",
+      "leaveConfirm": "Leave the family? {owner} and others in the family lose access to your profile, and you lose the family subscription."
+    },
+    "members": {
+      "title": "Profiles ({count} of {max})",
+      "payer": "Payer",
+      "hasLogin": "Has own login",
+      "noLogin": "No own login yet",
+      "age": "{age} years",
+      "isChild": "Child",
+      "createLoginCode": "Create login code",
+      "remove": "Remove from family",
+      "removeConfirm": "Remove {name} from the family? The profile becomes a regular account without the family subscription.",
+      "deleteProfile": "Delete profile and all data",
+      "deleteProfileConfirm": "Everything on {name}'s profile is deleted and cannot be restored. Type SLET to confirm."
+    },
+    "code": {
+      "claimHelp": "The person opens Hello Cal, chooses \"Got a family code?\" on the login page and enters the code. Valid until {date}.",
+      "joinHelp": "The person logs in to their own account and enters the code under Settings → Family. Valid until {date}."
+    },
+    "add": {
+      "title": "Add profile",
+      "newProfile": "Create new profile",
+      "inviteExisting": "Invite someone with their own account",
+      "name": "Name",
+      "birthDate": "Date of birth",
+      "sex": "Sex",
+      "sexUnknown": "Not specified",
+      "sexFemale": "Female",
+      "sexMale": "Male",
+      "heightCm": "Height (cm)",
+      "weightKg": "Weight (kg)",
+      "isChild": "Is this a child?",
+      "isChildHelp": "Under 15 you cannot create an account yourself.",
+      "submit": "Add profile"
+    },
+    "access": {
+      "title": "Access",
+      "intro": "You always have access to every profile. Here you decide who else may view and log for whom.",
+      "who": "May view and log for {name}"
+    },
+    "claim": {
+      "title": "Family code",
+      "intro": "Did you get a code from your parent or someone else in the family? Enter it here and choose your own email and password.",
+      "code": "Code",
+      "email": "Email",
+      "password": "Password (at least 8 characters)",
+      "submit": "Create my login"
+    },
+    "copy": {
+      "action": "Copy to account",
+      "title": "Copy to which account?",
+      "done": "Copied to {name}",
+      "failed": "Could not copy"
+    },
+    "error": {
+      "familyPlanRequired": "This requires an active family subscription.",
+      "alreadyInFamily": "You are already in a family.",
+      "notOwner": "Only the payer can change the family.",
+      "familyFull": "The family already has the maximum number of profiles.",
+      "nameRequired": "Enter a name.",
+      "notMember": "The person is not in the family.",
+      "notAllowed": "Not allowed.",
+      "invalidCode": "The code is invalid or has expired.",
+      "emailTaken": "The email is already used by another account.",
+      "ownerCannotLeave": "The payer cannot leave the family.",
+      "tooYoungToLeave": "You can leave the family once you are 15.",
+      "profileWithoutLogin": "The profile has no login of its own and cannot be removed yet.",
+      "invalidEmail": "Enter a valid email.",
+      "passwordTooShort": "The password must be at least 8 characters.",
+      "tooManyAttempts": "Too many attempts. Try again later.",
+      "invalidRequest": "Invalid request.",
+      "notFound": "Not found.",
+      "unknown": "Something went wrong. Try again.",
+      "profileHasLogin": "The profile has its own login. Remove it from the family instead.",
+      "confirmRequired": "Type SLET to confirm."
+    },
+    "deletePermissions": {
+      "title": "Deleting entries",
+      "intro": "For each profile you created, decide whether the profile's owner may delete entries that others (e.g. you) have logged. Children start with no. Everything is in the control log.",
+      "none": "You have not created any profiles yet.",
+      "notAllowed": "You cannot delete an entry someone else made."
+    },
+    "share": {
+      "title": "For:",
+      "me": "Me",
+      "portionHelp": "Portion compared with your amount:",
+      "portionFor": "{name}",
+      "portionOption": "{factor} portion"
+    }
   }
 }

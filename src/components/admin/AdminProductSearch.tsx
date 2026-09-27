@@ -77,7 +77,7 @@ export function AdminProductSearch() {
         value={query}
         onChange={(e) => search(e.target.value)}
         placeholder="Søg efter produktnavn eller producent…"
-        className="hf-type-body w-full max-w-md rounded-md border border-hf-tan-dark bg-hf-white px-3 py-2"
+        className="hf-type-body hf-field w-full max-w-md rounded-md border border-hf-tan-dark bg-hf-white px-3"
       />
 
       <div className="flex flex-col gap-2">
@@ -125,7 +125,7 @@ export function AdminProductSearch() {
               <input
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="hf-type-body rounded-md border border-hf-tan-dark px-2 py-1.5"
+                className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-2"
               />
             </label>
             <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
@@ -133,7 +133,7 @@ export function AdminProductSearch() {
               <input
                 value={form.brand}
                 onChange={(e) => setForm({ ...form, brand: e.target.value })}
-                className="hf-type-body rounded-md border border-hf-tan-dark px-2 py-1.5"
+                className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-2"
               />
             </label>
           </div>
@@ -144,7 +144,7 @@ export function AdminProductSearch() {
                 type="number"
                 value={form.kcalPer100g}
                 onChange={(e) => setForm({ ...form, kcalPer100g: e.target.value })}
-                className="hf-type-body rounded-md border border-hf-tan-dark px-2 py-1.5"
+                className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-2"
               />
             </label>
             <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
@@ -153,7 +153,7 @@ export function AdminProductSearch() {
                 type="number"
                 value={form.proteinPer100g}
                 onChange={(e) => setForm({ ...form, proteinPer100g: e.target.value })}
-                className="hf-type-body rounded-md border border-hf-tan-dark px-2 py-1.5"
+                className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-2"
               />
             </label>
             <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
@@ -162,7 +162,7 @@ export function AdminProductSearch() {
                 type="number"
                 value={form.carbsPer100g}
                 onChange={(e) => setForm({ ...form, carbsPer100g: e.target.value })}
-                className="hf-type-body rounded-md border border-hf-tan-dark px-2 py-1.5"
+                className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-2"
               />
             </label>
             <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
@@ -171,12 +171,12 @@ export function AdminProductSearch() {
                 type="number"
                 value={form.fatPer100g}
                 onChange={(e) => setForm({ ...form, fatPer100g: e.target.value })}
-                className="hf-type-body rounded-md border border-hf-tan-dark px-2 py-1.5"
+                className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-2"
               />
             </label>
           </div>
           <div className="mt-4 flex items-center gap-3">
-            <button type="button" onClick={save} className="hf-btn-primary px-4 py-1.5">
+            <button type="button" onClick={save} className="hf-type-body rounded-md bg-hf-green-dark px-4 py-1.5 text-hf-white">
               Gem ændringer
             </button>
             {saved && <span className="hf-type-body text-hf-green-dark">Gemt ✓</span>}

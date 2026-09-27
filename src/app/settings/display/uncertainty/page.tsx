@@ -6,6 +6,7 @@ import { Toggle } from "@/components/ui/Toggle";
 import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
 import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SkeletonCards, SkeletonScreen, SkeletonToggle } from "@/components/hf/Skeleton";
 
 // Settings → Visning → Usikkerhed (docs/DECISIONS.md 2026-09-24): én kontakt,
 // der bestemmer om den grå usikkerhedslinje under estimerede værdier er
@@ -54,9 +55,14 @@ export default function UncertaintySettingsPage() {
   return (
     <HfScreen title={t("displaySettings.uncertainty")}>
       {loading || !user ? (
-        <p className="hf-type-body text-text-secondary p-6 text-center">
-          {loading ? t("settings.loading") : t("settings.loadError")}
-        </p>
+        loading ? (
+          <SkeletonScreen className="flex flex-col gap-4 p-4">
+            <SkeletonToggle />
+            <SkeletonCards count={1} height={72} radius={16} />
+          </SkeletonScreen>
+        ) : (
+          <p className="hf-type-body text-text-secondary p-6 text-center">{t("settings.loadError")}</p>
+        )
       ) : (
         <div className="flex flex-col gap-4 p-4">
           <Toggle

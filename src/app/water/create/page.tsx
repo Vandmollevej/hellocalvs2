@@ -7,6 +7,7 @@ import { FoodRow } from "@/components/FoodRow";
 import { HfScreen } from "@/components/HfScreen";
 import { HfSlider } from "@/components/hf/HfSlider";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SkeletonCards, SkeletonScreen, SkeletonSectionTitle } from "@/components/hf/Skeleton";
 
 type WaterEntry = {
   id: string;
@@ -190,7 +191,7 @@ export default function WaterCreatePage() {
             type="button"
             onClick={handleSubmit}
             disabled={saving || amountMl <= 0}
-            className="hf-btn-primary h-12 disabled:opacity-40"
+            className="hf-control hf-btn-primary disabled:opacity-40"
           >
             <span className="hf-type-button">{saving ? t("waterLog.saving") : t("waterLog.add")}</span>
           </button>
@@ -200,7 +201,12 @@ export default function WaterCreatePage() {
           {!loading && entries.length > 0 && (
             <p className="hf-type-caption px-1">{t("waterLog.recentTitle")}</p>
           )}
-          {loading && <p className="hf-type-small text-text-secondary text-center">{t("waterLog.loading")}</p>}
+          {loading && (
+            <SkeletonScreen className="flex flex-col gap-2">
+              <SkeletonSectionTitle />
+              <SkeletonCards count={3} height={48} radius={16} />
+            </SkeletonScreen>
+          )}
           {!loading && entries.length === 0 && (
             <p className="hf-type-small text-text-secondary text-center">{t("waterLog.noEntriesYet")}</p>
           )}

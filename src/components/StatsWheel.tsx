@@ -95,7 +95,14 @@ const TILT_PER_ROW = 2;
 const MAX_INSET = 25;
 /** Pointer travel that moves the wheel one row. */
 const DRAG_STEP = 38;
-const WHEEL_HEIGHT = 2 * (offsetAt(SIDE_ROWS) + FONT_SIZE);
+/** Extra room above and below the centered row for its grey caption. */
+const CAPTION_SPACE = 16;
+const WHEEL_HEIGHT = 2 * (rowOffset(SIDE_ROWS) + FONT_SIZE);
+/** Distance from the screen edge (user 2026-09-27: right-side wheel a little further right). */
+const EDGE_OFFSET = { left: 22, right: 12 } as const;
+// Temporary grey caption under the centered number (user 2026-09-27) until
+// the real text is decided.
+const CAPTION_PLACEHOLDER = "Dummytekst";
 
 // Temporary made-up numbers (user 2026-09-25: "opfind et indtil jeg har dem
 // alle opsat") so the wheel can show all its rows while the visuals are tuned.
@@ -105,6 +112,11 @@ const PLACEHOLDER_STATS: Stat[] = [
   { key: "placeholder-sleep", label: "Søvn (eksempel)", icon: IconMoon, value: "7,5", unit: "t" },
   { key: "placeholder-pulse", label: "Puls (eksempel)", icon: IconHeartbeat, value: "62", unit: "bpm" },
 ];
+
+/** offsetAt plus the caption room, which eases in over the first row away from the center. */
+function rowOffset(absDistance: number) {
+  return offsetAt(absDistance) + CAPTION_SPACE * Math.min(1, absDistance);
+}
 
 function scaleAt(absDistance: number) {
   return Math.max(MIN_SCALE, 1 - absDistance * SCALE_STEP);
@@ -288,7 +300,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
       className="absolute touch-pan-x rounded-3xl text-right transition-[left,right] duration-300 ease-out focus-visible:outline-2 focus-visible:outline-hf-green focus-visible:outline-offset-2"
       style={
         {
-          [side]: 22,
+          [side]: EDGE_OFFSET[side],
           top: "50%",
           width: side === "right" ? 178 : 200,
           height: WHEEL_HEIGHT,
@@ -359,7 +371,7 @@ function WheelItem({
   // made the motion look like it "jumped" in discrete pixel steps — font-size
   // and icon-size changes aren't picked up by the transform/opacity
   // transition below, so they snapped instantly instead of easing.
-  const y = offsetAt(absDistance);
+  const y = rowOffset(absDistance);
   const translateY = distance < 0 ? -y : y;
   const scale = scaleAt(absDistance);
   // A slight fan, like spokes of a wheel whose hub sits beyond the right
@@ -380,7 +392,7 @@ function WheelItem({
   // The items sit on a circular arc like the rim of a wheel: the centered item
   // is inset MAX_INSET from the right edge and the others curve back out to
   // the edge (0px) at the fade-out distance. Radius solved so both ends hold.
-  const edgeY = offsetAt(visibleRange);
+  const edgeY = rowOffset(visibleRange);
   const radius = (edgeY * edgeY + MAX_INSET * MAX_INSET) / (2 * MAX_INSET);
   const inset = Math.sqrt(Math.max(0, radius * radius - y * y)) - (radius - MAX_INSET);
 
@@ -407,9 +419,16 @@ function WheelItem({
         opacity,
       }}
     >
-      <span className="hf-type-strong leading-none" style={{ fontSize: FONT_SIZE }}>
+      <span className="hf-type-strong relative leading-none" style={{ fontSize: FONT_SIZE }}>
         {stat.value}
         {stat.unit && <span className="hf-type-strong"> {stat.unit}</span>}
+        <span
+          aria-hidden="true"
+          className={`hf-type-small absolute right-0 top-full mt-1 text-text-secondary ${transition}`}
+          style={{ opacity: focus }}
+        >
+          {CAPTION_PLACEHOLDER}
+        </span>
       </span>
       <span
         className={`flex ${transition}`}

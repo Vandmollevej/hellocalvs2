@@ -1,0 +1,492 @@
+/*
+ * Opskriftsvisning i HelloFresh-stil (docs/DECISIONS.md 2026-09-27).
+ * Fælles klasser for alle HelloFresh-opskrifter — ingen opskrift får eget
+ * design. Mål aflæst fra HelloFresh-appens skærmbilleder (Hello Fresh
+ * inspiration/). Brugerens egne retter bruger IKKE disse klasser.
+ */
+
+.rv-screen {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--hf-color-page);
+  color: var(--hf-color-text);
+  font-family: var(--font-hf-body);
+}
+
+.rv-scroll {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Topbjælke: gennemsigtig med runde knapper over billedet, massiv med
+   skygge når billedet er scrollet væk. */
+.rv-header {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: calc(64px + env(safe-area-inset-top, 0px));
+  padding: env(safe-area-inset-top, 0px) 16px 0;
+  background-color: transparent;
+  transition:
+    background-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.rv-header--solid {
+  background-color: var(--hf-color-page);
+  box-shadow: 0 6px 12px rgb(0 0 0 / 10%);
+}
+
+.rv-header-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  background-color: rgb(35 35 35 / 55%);
+  color: var(--hf-color-white);
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.rv-header--solid .rv-header-button {
+  background-color: transparent;
+  color: var(--hf-color-text);
+}
+
+.rv-hero {
+  display: block;
+  width: 100%;
+  aspect-ratio: 10 / 7;
+  object-fit: cover;
+  background-color: var(--hf-color-card);
+}
+
+.rv-hero--empty {
+  padding-top: calc(64px + env(safe-area-inset-top, 0px));
+  aspect-ratio: auto;
+  background-color: transparent;
+}
+
+.rv-body {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 16px 32px;
+}
+
+.rv-title {
+  margin: 0;
+  font-family: var(--font-hf-heading);
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 31px;
+  letter-spacing: -0.02em;
+}
+
+.rv-headline {
+  margin: 4px 0 0;
+  font-size: 17px;
+  line-height: 24px;
+}
+
+.rv-meta {
+  display: flex;
+  gap: 32px;
+  margin-top: 28px;
+}
+
+.rv-meta-label {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 18px;
+}
+
+.rv-meta-value {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 0;
+  font-size: 17px;
+  line-height: 22px;
+  white-space: nowrap;
+}
+
+.rv-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.rv-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 27px;
+  padding: 0 8px;
+  border-radius: 4px;
+  background-color: var(--hf-color-card);
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.rv-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+/* Omridsede knapper (Gem, ikonknapper, "Markér som tilberedt" m.fl.). */
+.rv-outline-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--hf-color-action);
+  border-radius: 8px;
+  background-color: transparent;
+  color: var(--hf-color-action);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 20px;
+}
+
+.rv-outline-button:active {
+  background-color: var(--hf-color-secondary-hover);
+}
+
+.rv-outline-button:disabled {
+  opacity: 0.5;
+}
+
+.rv-outline-button--save {
+  min-width: 112px;
+}
+
+.rv-outline-button--icon {
+  width: 40px;
+  padding: 0;
+}
+
+.rv-outline-button--block {
+  width: 100%;
+  height: var(--hf-control-height, 48px);
+}
+
+.rv-section-title {
+  margin: 0;
+  font-family: var(--font-hf-heading);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 25px;
+  letter-spacing: -0.02em;
+}
+
+.rv-description {
+  margin-top: 36px;
+}
+
+.rv-description-text {
+  margin: 4px 0 0;
+  font-size: 17px;
+  line-height: 23px;
+  white-space: pre-line;
+}
+
+.rv-description-text--clamped {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
+.rv-read-more {
+  margin-top: 2px;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: left;
+}
+
+.rv-allergens {
+  margin: 28px 0 0;
+  font-size: 17px;
+  line-height: 23px;
+}
+
+.rv-allergens-label {
+  margin-right: 8px;
+  font-weight: 700;
+}
+
+.rv-allergen-note {
+  margin: 20px 0 0;
+  font-size: 15px;
+  line-height: 18px;
+}
+
+/* Foldbare sektioner: Ingredienser, Fremgangsmåde, Næringsværdier, Mine
+   kogebogsbilleder. Ingen baggrund og ingen skillelinjer. */
+.rv-accordion {
+  margin-top: 8px;
+}
+
+.rv-description + .rv-accordion,
+.rv-allergen-note + .rv-accordion,
+.rv-allergens + .rv-accordion {
+  margin-top: 24px;
+}
+
+.rv-accordion-toggle {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 46px;
+  padding: 0;
+  text-align: left;
+}
+
+.rv-accordion-toggle .rv-section-title {
+  flex: 1 1 auto;
+  font-size: 22px;
+  line-height: 28px;
+}
+
+.rv-accordion-chevron {
+  flex-shrink: 0;
+  margin-right: 8px;
+}
+
+.rv-accordion-panel {
+  padding: 16px 0 16px;
+}
+
+.rv-ingredients {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.rv-ingredient {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.rv-ingredient-image {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+}
+
+.rv-ingredient-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.rv-ingredient-placeholder {
+  border-radius: 9999px;
+  background-color: var(--hf-color-card);
+  color: var(--hf-color-text);
+}
+
+.rv-ingredient-name {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 21px;
+}
+
+.rv-ingredient-amount {
+  margin: 1px 0 0;
+  font-size: 16px;
+  line-height: 21px;
+}
+
+.rv-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rv-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.rv-step-number {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 23px;
+  height: 23px;
+  border-radius: 9999px;
+  background-color: var(--hf-color-action);
+  color: var(--hf-color-white);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.rv-step-text {
+  margin: 0;
+  min-width: 0;
+  flex: 1 1 auto;
+  font-size: 17px;
+  line-height: 23px;
+  white-space: pre-line;
+}
+
+.rv-steps + .rv-outline-button--block {
+  margin-top: 28px;
+}
+
+.rv-nutrition {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0;
+}
+
+.rv-nutrition-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 39px;
+  font-size: 17px;
+  line-height: 23px;
+}
+
+.rv-nutrition-row dt,
+.rv-nutrition-row dd {
+  margin: 0;
+}
+
+.rv-nutrition-note {
+  margin: 16px 0 16px;
+  font-size: 17px;
+  line-height: 23px;
+}
+
+.rv-photos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.rv-photo {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 8px;
+  background-color: var(--hf-color-card);
+}
+
+.rv-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rv-photo-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 9999px;
+  background-color: rgb(35 35 35 / 60%);
+  color: var(--hf-color-white);
+}
+
+.rv-notice {
+  margin: 0 0 16px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background-color: var(--hf-color-card);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.rv-status {
+  padding: 32px 0;
+  font-size: 14px;
+  text-align: center;
+  opacity: 0.6;
+}
+
+/* Fast knap nederst ("Lad os lave mad"). */
+.rv-footer {
+  flex-shrink: 0;
+  padding: 24px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+  background-color: var(--hf-color-nav);
+}
+
+.rv-primary-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: var(--hf-control-height, 48px);
+  border-radius: 8px;
+  background-color: var(--hf-color-action);
+  color: var(--hf-color-white);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 22px;
+}
+
+.rv-primary-button:active {
+  background-color: var(--hf-color-action-active);
+}
+
+@media print {
+  .rv-header,
+  .rv-footer,
+  .rv-actions,
+  .rv-no-print {
+    display: none !important;
+  }
+
+  .rv-screen,
+  .rv-scroll {
+    height: auto;
+    overflow: visible;
+  }
+}
+
+@media print {
+  .rv-accordion-panel[hidden] {
+    display: block !important;
+  }
+}

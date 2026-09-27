@@ -9,6 +9,7 @@ import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { loadRecipeFilters, saveRecipeFilters } from "@/lib/recipe-filters";
 import { MAX_RECIPE_PERSONS, portionKcalFor, scaleFactorFor, type PortionProfile } from "@/lib/recipe-portions";
+import { SkeletonDetail, SkeletonScreen } from "@/components/hf/Skeleton";
 
 // En ret fra Indstillinger → Opskrifter (docs/DECISIONS.md 2026-09-24).
 // kind=own: brugerens egen ret fra boksen, med deling til/fra.
@@ -213,7 +214,7 @@ function RecipeDetailContent() {
       icon={<IconSoup size={20} stroke={2} />}
       footer={
         state === "ready" && kind === "shared" ? (
-          <button type="button" onClick={saveCopy} disabled={busy} className="hf-btn-primary w-full py-3.5 disabled:opacity-60">
+          <button type="button" onClick={saveCopy} disabled={busy} className="hf-control hf-btn-primary w-full disabled:opacity-60">
             {t("recipeDetail.saveCopy")}
           </button>
         ) : undefined
@@ -221,7 +222,9 @@ function RecipeDetailContent() {
     >
       <div className="hf-page">
         {state === "loading" && (
-          <p className="hf-type-body text-text-secondary py-8 text-center">{t("recipeDetail.loading")}</p>
+          <SkeletonScreen className="contents">
+            <SkeletonDetail />
+          </SkeletonScreen>
         )}
         {state === "missing" && (
           <p className="hf-type-body text-text-secondary py-8 text-center">{t("recipeDetail.notFound")}</p>
@@ -249,7 +252,7 @@ function RecipeDetailContent() {
 
             {kind === "own" && (
               <div>
-                <div className="flex items-center gap-3 rounded-2xl bg-hf-tan px-4 py-3">
+                <div className="hf-control-row flex items-center gap-3 rounded-2xl bg-hf-tan px-4">
                   <span className="hf-type-body hf-type-strong flex-1 text-hf-black">{t("createDish.shareLabel")}</span>
                   <button
                     type="button"

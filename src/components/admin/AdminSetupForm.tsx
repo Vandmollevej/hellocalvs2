@@ -85,14 +85,14 @@ export function AdminSetupForm() {
               required
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-              className="hf-type-page-title rounded-md border border-hf-tan-dark bg-hf-white px-3 py-2 text-center tracking-[0.4em]"
+              className="hf-type-page-title hf-field rounded-md border border-hf-tan-dark bg-hf-white px-3 text-center tracking-[0.4em]"
             />
           </label>
           {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
           <button
             type="submit"
             disabled={loading || code.length !== 6}
-            className="hf-btn-primary px-4 py-2.5 disabled:opacity-60"
+            className="hf-type-body hf-type-strong rounded-md bg-hf-green-dark px-4 py-2.5 text-hf-white disabled:opacity-60"
           >
             {loading ? "Bekræfter…" : "Bekræft og opret"}
           </button>
@@ -111,7 +111,7 @@ export function AdminSetupForm() {
           autoComplete="username"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="hf-type-body rounded-md border border-hf-tan-dark bg-hf-white px-3 py-2"
+          className="hf-type-body hf-field rounded-md border border-hf-tan-dark bg-hf-white px-3"
         />
       </label>
       <label className="hf-type-body flex flex-col gap-1">
@@ -123,14 +123,14 @@ export function AdminSetupForm() {
           autoComplete="new-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="hf-type-body rounded-md border border-hf-tan-dark bg-hf-white px-3 py-2"
+          className="hf-type-body hf-field rounded-md border border-hf-tan-dark bg-hf-white px-3"
         />
       </label>
       {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
       <button
         type="submit"
         disabled={loading}
-        className="hf-btn-primary px-4 py-2.5 disabled:opacity-60"
+        className="hf-type-body hf-type-strong rounded-md bg-hf-green-dark px-4 py-2.5 text-hf-white disabled:opacity-60"
       >
         {loading ? "Genererer…" : "Fortsæt til QR-kode"}
       </button>

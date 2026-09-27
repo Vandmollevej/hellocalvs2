@@ -133,7 +133,7 @@ function VerifyStartWeightContent() {
             <span className="hf-type-small hf-type-strong text-text-secondary uppercase tracking-[0.06em]">
               {t("profile.startWeight.fieldLabel")}
             </span>
-            <span className="flex items-center rounded-xl bg-hf-tan px-4 focus-within:ring-2 focus-within:ring-hf-green">
+            <span className="hf-field flex items-center rounded-xl bg-hf-tan px-4 focus-within:ring-2 focus-within:ring-hf-green">
               <input
                 type="text"
                 inputMode="decimal"
@@ -141,7 +141,7 @@ function VerifyStartWeightContent() {
                 value={weight}
                 disabled={state === "saving"}
                 onChange={(event) => setWeight(event.target.value)}
-                className="hf-type-body min-w-0 flex-1 bg-transparent py-3 text-hf-black outline-none"
+                className="hf-type-body min-w-0 flex-1 bg-transparent text-hf-black outline-none"
               />
               <span className="hf-type-body ml-2 text-hf-black">KG</span>
             </span>

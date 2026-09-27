@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { IconCalendarHeart } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type CycleEntry = {
   id: string;
@@ -87,7 +88,7 @@ export default function PeriodCreatePage() {
             </span>
             <input
               type="date"
-              className="hf-type-body rounded-xl bg-hf-white px-4 py-3 text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green"
+              className="hf-type-body hf-field rounded-xl bg-hf-white px-4 text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green"
               value={startDate}
               max={todayIso()}
               onChange={(event) => {
@@ -106,7 +107,7 @@ export default function PeriodCreatePage() {
             type="button"
             onClick={handleSubmit}
             disabled={saving}
-            className="hf-btn-primary h-12 disabled:opacity-40"
+            className="hf-control hf-btn-primary disabled:opacity-40"
           >
             <span className="hf-type-button">{saving ? t("periodLog.saving") : t("periodLog.add")}</span>
           </button>
@@ -114,12 +115,17 @@ export default function PeriodCreatePage() {
 
         <div className="flex flex-col gap-2">
           {!loading && entries.length > 0 && <p className="hf-type-caption px-1">{t("periodLog.recentTitle")}</p>}
-          {loading && <p className="hf-type-small text-text-secondary text-center">{t("periodLog.loading")}</p>}
+          {loading && (
+            <SkeletonScreen className="flex flex-col gap-2">
+              <Skeleton type="caption" width={96} />
+              <SkeletonCards count={3} height={48} radius={16} />
+            </SkeletonScreen>
+          )}
           {!loading && entries.length === 0 && (
             <p className="hf-type-small text-text-secondary text-center">{t("periodLog.noEntriesYet")}</p>
           )}
           {entries.map((entry) => (
-            <div key={entry.id} className="flex items-center justify-between rounded-2xl bg-hf-tan px-4 py-3">
+            <div key={entry.id} className="hf-control-row flex items-center justify-between rounded-2xl bg-hf-tan px-4">
               <p className="hf-type-body hf-type-strong text-hf-black">{formatDate(entry.startDate)}</p>
             </div>
           ))}

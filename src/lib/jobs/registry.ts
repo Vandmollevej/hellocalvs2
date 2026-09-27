@@ -27,9 +27,9 @@ export const JOBS: JobDefinition[] = [
   },
   {
     key: "uncertainty-rerun",
-    name: "Uncertainties: AI-genkørsel",
+    name: "Usikkerheder: AI-genkørsel",
     description:
-      "Kører AI'en igen på de gemte fotos for produkter på Uncertainties under 90 % sikkerhed. Bliver svaret mere sikkert, gemmes det; når over 90 % skrives værdierne til produktet.",
+      "Kører AI'en igen på de gemte fotos for produkter på Usikkerheder under 90 % sikkerhed. Bliver svaret mere sikkert, gemmes det; når over 90 % skrives værdierne til produktet.",
     runtime: "app",
     defaultIntervalMinutes: null,
     defaultRunAtTime: "03:00",
@@ -66,7 +66,7 @@ export const JOBS: JobDefinition[] = [
     key: "quality-control-agent",
     name: "Kvalitetskontrol (billedmatch)",
     description:
-      "Sammenligner stregkode-, nærings- og ingrediensfotos med produktets forsidefoto og beregner en match-sikkerhed; lav sikkerhed havner under Uncertainties → Billeder.",
+      "Sammenligner stregkode-, nærings- og ingrediensfotos med produktets forsidefoto og beregner en match-sikkerhed; lav sikkerhed havner under Usikkerheder → Billeder.",
     runtime: "agent",
     container: "quality-control-agent",
     defaultIntervalMinutes: 5,

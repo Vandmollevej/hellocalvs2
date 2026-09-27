@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
+import { SkeletonMediaRows, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type DoctorShare = {
   id: string;
@@ -60,7 +61,7 @@ export default function HelloDocPage() {
         ) : (
           <Link
             href="/settings/hello-doc/invite"
-            className="hf-btn-primary flex h-12 w-full items-center justify-center"
+            className="hf-control hf-btn-primary flex w-full items-center justify-center"
           >
             {t("helloDoc.inviteButton")}
           </Link>
@@ -71,7 +72,11 @@ export default function HelloDocPage() {
 
           {error && <p className="hf-type-body text-hf-red-dark">{t("helloDoc.loadError")}</p>}
 
-          {!error && shares === null && <p className="text-text-secondary hf-type-body">{t("common.loading")}</p>}
+          {!error && shares === null && (
+            <SkeletonScreen className="">
+              <SkeletonMediaRows rows={3} thumb={false} />
+            </SkeletonScreen>
+          )}
 
           {!error && shares !== null && shares.length === 0 && (
             <p className="text-text-secondary hf-type-body">{t("helloDoc.emptyInvited")}</p>
@@ -83,7 +88,7 @@ export default function HelloDocPage() {
                 <Link
                   key={share.id}
                   href={`/settings/hello-doc/${share.id}`}
-                  className="flex items-center justify-between border-b py-3 text-left"
+                  className="hf-control-row flex items-center justify-between border-b text-left"
                   style={{ borderColor: "var(--hf-color-line)" }}
                 >
                   <div className="min-w-0 flex-1">

@@ -1,14 +1,23 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isValidStartWeight, parseWeightInput } from "@/lib/start-weight-verification";
-import { getSessionUser, unauthorized } from "@/lib/session";
+import { unauthorized } from "@/lib/session";
+import { getProfileUser } from "@/lib/family-access";
+import { getUserSubscriptionTier } from "@/lib/subscription";
 
 export async function GET() {
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("profile", "VIEWED");
 
     if (!user) return unauthorized();
-    return NextResponse.json({ user });
+    // Loginhemmeligheder sendes aldrig til klienten — heller ikke når en
+    // forælder ser et barns profil (docs/FAMILY.md).
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { passwordHash, totpSecret, ...safeUser } = user;
+    // Allergenvisning er kun for Seriøs (docs/DECISIONS.md 2026-09-26); den
+    // gemte præference bevares og virker igen ved opgradering.
+    const tier = await getUserSubscriptionTier(user.id);
+    return NextResponse.json({ user: tier === "SERIOUS" ? safeUser : { ...safeUser, showAllergens: false } });
   } catch (error) {
     console.error("Profile fetch failed", error);
     return NextResponse.json(
@@ -29,6 +38,7 @@ export async function PATCH(req: Request) {
     birthDate,
     sex,
     cycleTrackingEnabled,
+    sleepQualityPromptEnabled,
     averageCycleLengthDays,
     averagePeriodLengthDays,
     defaultBedtime,
@@ -62,6 +72,7 @@ export async function PATCH(req: Request) {
     birthDate?: string | null;
     sex?: "FEMALE" | "MALE" | null;
     cycleTrackingEnabled?: boolean;
+    sleepQualityPromptEnabled?: boolean;
     averageCycleLengthDays?: number;
     averagePeriodLengthDays?: number;
     defaultBedtime?: string | null;
@@ -90,7 +101,7 @@ export async function PATCH(req: Request) {
   };
 
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("profile", "UPDATED");
 
     if (!user) return unauthorized();
 
@@ -124,6 +135,7 @@ export async function PATCH(req: Request) {
           birthDate === undefined ? undefined : birthDate === null ? null : new Date(birthDate),
         sex,
         cycleTrackingEnabled,
+        sleepQualityPromptEnabled,
         averageCycleLengthDays,
         averagePeriodLengthDays,
         defaultBedtime,
@@ -162,7 +174,9 @@ export async function PATCH(req: Request) {
       },
     });
 
-    return NextResponse.json({ user: updated });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { passwordHash, totpSecret, ...safeUpdated } = updated;
+    return NextResponse.json({ user: safeUpdated });
   } catch (error) {
     console.error("Profile update failed", error);
     return NextResponse.json(

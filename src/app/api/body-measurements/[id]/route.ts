@@ -1,22 +1,24 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getSessionUser, unauthorized } from "@/lib/session";
+import { unauthorized } from "@/lib/session";
+import { getProfileUser } from "@/lib/family-access";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
 export async function PATCH(req: Request, { params }: RouteContext) {
   const { id } = await params;
-  const { waistCm, hipCm, chestCm, thighCm, upperArmCm, note } = (await req.json()) as {
+  const { waistCm, hipCm, chestCm, thighCm, upperArmCm, neckCm, note } = (await req.json()) as {
     waistCm?: number | null;
     hipCm?: number | null;
     chestCm?: number | null;
     thighCm?: number | null;
     upperArmCm?: number | null;
+    neckCm?: number | null;
     note?: string | null;
   };
 
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("bodyMeasurements", "UPDATED");
 
     if (!user) return unauthorized();
     const result = await prisma.bodyMeasurement.updateMany({
@@ -27,6 +29,7 @@ export async function PATCH(req: Request, { params }: RouteContext) {
         ...(chestCm !== undefined ? { chestCm } : {}),
         ...(thighCm !== undefined ? { thighCm } : {}),
         ...(upperArmCm !== undefined ? { upperArmCm } : {}),
+        ...(neckCm !== undefined ? { neckCm } : {}),
         ...(note !== undefined ? { note: note || null } : {}),
       },
     });
@@ -49,7 +52,7 @@ export async function DELETE(_req: Request, { params }: RouteContext) {
   const { id } = await params;
 
   try {
-    const user = await getSessionUser();
+    const user = await getProfileUser("bodyMeasurements", "DELETED");
 
     if (!user) return unauthorized();
     const result = await prisma.bodyMeasurement.deleteMany({

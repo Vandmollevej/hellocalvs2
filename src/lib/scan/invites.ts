@@ -10,7 +10,7 @@ export const SCAN_INVITE_TTL_DAYS = 7;
 export const INVITE_LINK_COOKIE = "hc_scan_invite_link";
 
 // Scan-appens egen adresse (separat container, docs/DEPLOYMENT.md).
-export const SCAN_APP_BASE_URL = process.env.SCAN_APP_BASE_URL || "https://scanhellocal.packroff.dk";
+export const SCAN_APP_BASE_URL = process.env.SCAN_APP_BASE_URL || "https://scan.hellocal.io";
 
 export function hashInviteToken(token: string) {
   return createHash("sha256").update(token).digest("hex");

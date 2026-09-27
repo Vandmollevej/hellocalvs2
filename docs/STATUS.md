@@ -1,6 +1,225 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-26
+Last updated: 2026-09-27
+
+## 2026-09-27: Guide-builder (startup-guide + tooltips) i admin
+
+- Ny side `/admin/guide-builder` (menu: Design og opbygning; link fra
+  Designmanualen). Venstre: masonry med farvetema, baggrunde (kun design.md-
+  tokens), fonte (kun `.hf-type-*`-roller), stepper-element, skærmliste med
+  billede/trinnavn og "Valgt element". Højre: 402 px telefon-preview.
+- Drag n drop: baggrund først (fonte er låst til skærmen har en baggrund),
+  derefter fonte/elementer; elementer kan flyttes og slettes; billedfil kan
+  trækkes på billedfeltet.
+- Startup-guide: progress-bar (HfProgressStepper), fuldbredde-billede
+  402×226, overskrift/tekst/indstillinger, Tilbage + sort Næste og "Spørg mig
+  senere" centreret under. Tooltips: fast 280×210-billede, tekst i nederste
+  halvdel, swipe + pile/prikker med antal, sort Videre + "Spring over".
+- Begge vises i det fælles fuldskærms-overlay (`GuideOverlay`, "Luk" via
+  `OverlayCloseControl`). Gemmes i `guide_designs` (migration
+  `20260927120000_guide_designs`, køres af deploy).
+- Ikke koblet på brugerens app-flow endnu (StartupTipOverlay er uændret).
+  Ikke live-testet (ingen lokal DB). Lint, typecheck og build grønne.
+## 2026-09-27: Umami-analyse i admin
+
+- Ny admin-side `/admin/analytics` ("Analyse", øverst i menuen): besøgende,
+  besøg, sidevisninger, afvisningsrate, besøgstid, trafikgraf og toplister
+  (sider, henvisninger, lande, enheder, browsere, styresystemer) for 24 t/7/30/90 dage.
+- Umami-container + `umami-db-init` i `compose.production.yaml`; deploy-workflowet
+  starter dem som sidste trin. Sporing via `src/components/UmamiTracker.tsx`.
+- Ikke testet mod en kørende Umami (ingen lokal Docker/DB); lint + typecheck
+  + build grønne. Første deploy afgør, om containeren starter.
+
+## 2026-09-27: Skelet-loading
+
+- `src/components/hf/Skeleton.tsx` + `.hf-skeleton`/`[data-hf-loading]` i
+  globals.css (design.md §6.14).
+- "Henter…"-tekster erstattet med skitser på ~40 steder: profil, indstillinger,
+  Hello Doc, integrationer, support, opskrifter, madvarer, søgning, vægt/vand/
+  menstruation, kalenderens dagvisning, statistikkort, registrering og produkt.
+## 2026-09-27: Integrationer som Apple Health-adgangsark
+
+- Hver integrations side er nu en kopi af iOS' Health-adgangsark (Tillad/Tillad ikke, Slå alle til, skrive-/læse-grupper med kategoriikoner). Designmanualen har nyt afsnit 9 med live eksempel. Mangler brugerens visuelle godkendelse.
+
+## 2026-09-27: Admin "Nye produkter" — fuldt produktkort
+
+- Kortet foldes ud i 3 sektioner: Produkt (logo, produkttype, brand, subbrand,
+  variant), Energifordeling (makroer + fordelingsbjælke), Produktdetaljer (alt øvrigt).
+- Sikkerheds-% (laveste AI-/billedsikkerhed, `src/lib/pending-product-confidence.ts`)
+  ved fold-ud-pilen; "Oprettet: dato, kl." over knapperne; større billeder; ringen om pilen fjernet.
+- Sortering øverst til højre: tidspunkt, alfabetisk, sikkerhedsmargin (`?sort=`).
+- PATCH `/api/admin/products/[id]` gemmer nu også produkttype/subbrand/variant.
+
+## 2026-09-27: Admin-menu efter brugerens struktur + agenter/jobs/roadmap/MCP
+
+- Sidebjælken i `AdminShell` følger nu brugerens grupper (DECISIONS 2026-09-27).
+  Nye sider: Jobs, Agenter, Roadmap, Claude-integration (MCP), Partnere (tom).
+- Migration `20260927090000_admin_agents_roadmap` køres af deploy.
+- MCP ikke testet mod Claude.ai (ingen lokal DB). Lint, typecheck og page-tree-test grønne.
+
+## 2026-09-27: Ikoner tilbage til brugerens PNG'er (SVG-sporinger fjernet)
+
+- De fire ikoner, der 25/9 blev tegnet om som SVG (badevægt, gryde,
+  champagne/Målsætning, taljemål), viser nu igen brugerens egne PNG'er,
+  skaleret til 256 px og gengivet som CSS-maske (følger `currentColor`):
+  `public/icons/bathroom-scale.png` (den oprindelige 256 px-fil fra ae1c88d1),
+  `public/icons/gryde.png` (256 px af den uploadede gryde.png),
+  `public/icons/champagne.png` (256 px af Målsætning.png, beskåret til
+  tegningen) og `public/icons/body-measurements/waist-female.png` /
+  `waist-male.png` (256 px af brugerens taljetegninger).
+- Komponentnavne og props er uændrede (`IconBathroomScale`, `IconCookingPot`,
+  `IconChampagne`, `IconWaistMeasure*`), så alle brugssteder virker som før.
+- Se DECISIONS 2026-09-27 "Brugerens billeder bruges som PNG".
+
+## 2026-09-27: Admin — sidebjælke i fuld højde + widget-oversigt
+
+- Sidebjælken går nu i ét stykke fra top til bund med logo og "Gå til…"-søgning øverst (som Cloudflare). Topbaren ligger kun over indholdet med brødkrummer og brugermenu.
+- `/admin` er et widget-dashboard: 4 tællerkasser (ubesvarede beskeder, nye produkter, Usikkerheder, fejlrapporter) med links, derunder større bokse med seneste beskeder, seneste produkter, seneste fejlrapporter og øvrige opgaver med tal. Data: `src/lib/admin-dashboard.ts`.
+
+## 2026-09-27: HelloFresh-opskrifter vist som i HelloFresh-appen
+
+- Ny side `/profile/recipes/hellofresh/[id]` (fra "Delte retter" og favoritter): stort billede, titel + undertitel, I alt/Protein/Sværhedsgrad, tags, Gem/indkøbsliste/udskriv, Beskrivelse med "Læs mere", allergener, foldbare Ingredienser, Fremgangsmåde (+ "Markér som tilberedt"), Næringsværdier (+ "Tilføj i sundhedsapp") og "Mine kogebogsbilleder", fast "Lad os lave mad"-knap.
+- Fælles klasser `.rv-*` i `src/components/recipe-view/` — ingen opskrift har eget design. Brugerens egne/delte retter er uændrede.
+- Kræver migration `20260927100000_hellofresh_recipe_details` og genstart af hellofresh-agenten: den genhenter alle opskrifter én gang for at gemme beskrivelse, tid, trin m.m. Indtil da vises de gamle data (uden beskrivelse/trin).
+
+## 2026-09-27: Designmanual — typografi- og knaptabeller over HelloFresh
+
+Sektion 4 og 5 i admin → Designmanual er nu opslagstabeller over forlægget
+(18 tekstroller, 26 knap- og valgtyper) med levende prøver, farvekode med
+kontrast, mål, placering, hvor ofte (x/28 skærme) og "Hello Cal i dag".
+Se DECISIONS 2026-09-27. Mangler brugerens visuelle godkendelse.
+
+## 2026-09-27: Admin "Page tree"
+
+- Ny admin-side `/admin/page-tree`: alle 128 sider som træ med pile, søgning, spring til område og "testet"-flueben med fremdriftsbjælke. Test sikrer at listen følger `src/app` (docs/DECISIONS.md 2026-09-27).
+
+## 2026-09-27: Admin i Cloudflare-struktur
+
+Hele admin har fået ny skal (`AdminShell`): topbar med "Gå til…"-søgning
+(Ctrl+K) og brugermenu, grupperet venstre sidebjælke med ikoner (kan klappes
+sammen til ikon-skinne), brødkrummer og bredere indhold. Mobil: skuffe-menu
+fra venstre. Menupunkter er omgrupperet (se DECISIONS 2026-09-27). Farver
+uændrede. Mangler brugerens visuelle godkendelse.
+
+## 2026-09-27: Designmanual → Skitser i pixels
+
+- `/admin/designmanual/skitser`: alle 57 billeder fra "Hello Fresh inspiration" tegnet som rå farvekasser uden tekst med bredde × højde (CSS-px = billedpx ÷ 3) inde i hver kasse, side om side med originalen. Én skitse ad gangen (`?s=<id>`), oversigt + forrige/næste, foldbar målliste (x, y, farve, kant, radius).
+- Målene er fundet af et script på billedets pixels (flader, kantbokse, fotos, tekstlinjer, ikoner, hårlinjer, radius med sub-pixel), ikke aflæst. Eksemplet (IMG_2274) blev godkendt af brugeren før resten blev bygget.
+- Data: `src/app/admin/designmanual/skitser/data/*.ts` (genereret). Originalerne er indlejret som data-URL, så de kun vises bag admin-login (nogle viser brugerens e-mail) — ikke i `public/`.
+- Nye billeder i mappen kommer ikke automatisk med; de skal genereres med skitse-scriptet (ligger ikke i repoet endnu).
+
+## 2026-09-27: Domæne hellocal.io
+
+- Kode, `.env.production.example` og docs peger på `hellocal.io` / `admin.hellocal.io` / `scan.hellocal.io` (DECISIONS 2026-09-27, DEPLOYMENT "Domæne hellocal.io").
+- Kontakt-e-mail i betingelser/privatlivspolitik: `support@hellocal.io`.
+- Cloudflare færdigt: tunnel `Server` + DNS for `hellocal.io`/`www`/`admin`/`scan` (alle `/api/health` 200), www → apex, gamle packroff-hostnavne 308 → nye, Email Routing (MX/SPF/DMARC). Server: `APP_BASE_URL`/`SCAN_APP_BASE_URL` sat (backup `.env.production.bak-20260927-domain`).
+- Mangler (kræver brugeren): bekræft Cloudflare-mailen til peter@packroff.dk og opret derefter reglerne `support@` + catch-all; log ind i Mailjet, så `hellocal.io` kan verificeres (derefter `SMTP_FROM=no-reply@hellocal.io`); tilføj `https://hellocal.io/api/auth/oauth/<google|facebook|apple>/callback` hos login-udbyderne og nye integrations-callbacks hos Withings/Google Health/Strava m.fl. (derefter `INTEGRATIONS_REDIRECT_BASE_URL` + `*_REDIRECT_URI` på serveren til hellocal.io). Chrome-udvidelsen fik ikke adgang til Facebook/Withings/Mailjet-siderne.
+
+## 2026-09-26: MobilePay-betaling + Opsætning delt op
+
+- Opsætning er nu en oversigt med undersiderne "Sprog og region" (også fra Indstillinger) og "Resultatvisning" (allergener + udvidet næringsindhold).
+- Betaling: sort statusboks, ingen "kommer snart"-tekst, rigtige logoer, MobilePay-aftale kan stoppes.
+- Fuld MobilePay Recurring-integration bygget (aftale, første træk, fornyelser via scheduler, webhook, opsigelse). Se DECISIONS/DEPLOYMENT 2026-09-26.
+- Mangler for at gå live: MobilePay-salgsstedsaftale med Recurring API + nøglerne i admin → API-nøgler, migration `20260926120000_mobilepay_recurring`, deploy. Ikke testet mod MobilePay (ingen nøgler endnu).
+## 2026-09-27: Designmanual → "Bokse"
+
+`/admin/designmanual#bokse` viser samtlige bokstyper (statistikkort, kort,
+indstillingsgruppe, foldbar sektion, til/fra-, valg- og billedgitter-kort,
+rækker, produktbillede, banner, infoboks, toast, bundark, appbar, bundmenu) i en
+telefonramme på 402 px (HelloFresh-skærmbillederne 1206 px ÷ 3) med lorem
+ipsum og appens egne billeder. Nummererede nåle matcher en liste med farver,
+mål og tekstplacering; stiplede zoner viser, hvor tekst står
+(`src/app/admin/designmanual/BoxOverview.tsx`).
+
+## 2026-09-26: Profilcirklen ("PT") er én fælles komponent
+
+Brugeren så profilcirklen som mindre på forsiden. Målt i Chromium ved 402 px
+var begge 32 px, men forsidens 1 px `border` lå inden i de 32 px (farvet flade
+kun 30 px), og cirklen sad 6 px længere inde og længere nede end i den grønne
+header. `src/components/ProfileAvatarLink.tsx` bruges nu af både `TopBar` og
+`ScreenHeader` (cirklen selv er master's `ProfileCircle`) og placeringen i
+`.hf-appbar__slot`/`.hf-topbar` (`globals.css`). Forsidens ring er en
+`box-shadow` uden for cirklen (`.hf-avatar--outlined`). Genmålt: 32×32 px ved
+(348, 10) på `/`, `/calendar` og `/statistics`. Mangler test på telefon.
+
+## 2026-09-26: "Skiftende arbejdstider" skjult på Søvnmønster
+
+Kontakten og hint-teksten på `/profile/sleep` er skjult bag
+`SHOW_SHIFT_WORK = false` i `src/app/profile/sleep/page.tsx`. Koden, feltet
+`shiftWorkEnabled`, API'et og oversættelserne er bevaret til senere. Spørgsmålet
+om skifteholdsarbejde i onboarding-guiden er ikke rørt. Lint og build kørt.
+## 2026-09-26: Kommende målsætninger + redigering af målsætning
+
+- Ny side `/profile/goals/upcoming` (knap på Målsætning-siden): én fold-ud-bjælke pr. kommende målsætning (ikke nået, dato fra i dag), nærmeste først. Ikoner til venstre: badevægt (vægt), målebånd (kropsmål), kyllingelår (ernæring — findes ikke i datamodellen endnu).
+- Hvert mål i dropdownen åbner `/profile/goals/[id]/edit?focus=<type>`; "Åbn målsætningen" går til målsætningens egen side `/profile/goals/[id]`.
+- `PATCH /api/goals/[id]` + `updateGoal`; formularen er fælles (`src/components/hf/GoalForm.tsx`) for opret og redigér.
+- Ernæringsmål pr. dag (kcal, protein, kulhydrat, fedt) kan nu sættes i målsætningen (`src/lib/goal-nutrition.ts`); de giver kyllingelår-ikonet på bjælken.
+
+## 2026-09-26: Widgets til iPhone/Android — design-fase
+
+Katalog `src/lib/widgets.ts`, data `GET /api/widgets/snapshot`
+(`src/lib/widget-data.ts`), forhåndsvisning på `/widgets` (ikke linket).
+Se `docs/WIDGETS.md` og DECISIONS 2026-09-26.
+
+Next work:
+1. Brugeren godkender/retter designet på `/widgets`.
+2. Native widgets bygges, når Mac + Apple Developer-konto er klar.
+
+## 2026-09-26: Opret vare — logo, fritskrabning og samme-foto-flueben
+
+Se docs/DECISIONS.md 2026-09-26 "Opret vare — rækkefølge …". Kamera-flowet er
+stregkode → forside → energi → indhold med flueben pr. trin; energi + indhold på
+samme foto giver begge flueben. OpenAI læser logonavn + logo-/produktboks;
+navnet matches mod Brand-tabellen; `scripts/image-agent` fritskraber logo og
+produkt (`ImageCutoutJob`, migration `20260926140000_image_cutout_jobs`).
+Lint + typecheck grønne for de ændrede filer. Ikke testet mod OpenAI/rembg
+(ingen lokal DB/Python).
+
+Next work:
+1. Deploy: migrationen + genbyg `image-agent` (deploy-trinnet for agenterne
+   fejler pt., se G5 i OPEN-TASKS).
+2. Test på telefon med en rigtig vare (fx næring + ingredienser på samme side).
+
+
+## 2026-09-26: Seriøs-låse + egne abonnementssider
+
+Gratis: 3 måneders historik, én målsætning (målvægt), ingen delmål. Låst til
+Seriøs: statistik, fotodagbog, bundmenu-omarrangering, visningsindstillinger,
+allergenvisning, opskriftsfiltre/HelloFresh og integrationer (se DECISIONS
+2026-09-26). Nye sider `/profile/subscription/serious` og `/family` med 1/3/12
+mdr.-bokse (et helt år = 25 % rabat). Familien følger docs/FAMILY.md; købet
+virker, så snart MobilePay-nøglerne er lagt ind. Lint + fuld build grønne.
+
+
+## 2026-09-26: Oplevelse af søvn
+
+Dagligt søvn-overlay (1–5), indstilling under Visning, sort bjælke i
+kalenderens dagvisning og graf "Søvnkvalitet og kalorier" på Statistik. Se
+DECISIONS 2026-09-26. Kræver migration `20260926130000_sleep_quality` ved
+deploy. Ikke visuelt testet (brugeren tjekker selv).
+
+Last updated: 2026-09-27
+## 2026-09-26: Support-indbakke i admin
+
+Se DECISIONS 2026-09-26 "Support-indbakke". Tråde, svar, interne noter,
+prioritet (3 niveauer), filtre/sortering, "Ikke besvaret"-markering og
+24-timers-mail til admin. Brugeren ser svar under Indstillinger → Support →
+Mine henvendelser. Migration `20260926150000_support_inbox`. Lint +
+typecheck + build grønne. Ikke testet mod rigtig DB/mail.
+
+Next work:
+Tilføjet: kvitteringsmail, svar kun i appen (push), auto-prioritet efter
+kategori, skærmbilleder, svarskabeloner og tæller i admin-menuen.
+
+1. Deploy med migrationerne `20260926150000_support_inbox` og
+   `20260926220000_support_inbox_extras`.
+## 2026-09-26: Kalender-listevisning hakkede og sprang ved scroll
+
+Listevisningens touch-handler målte trækket fra fingerens startpunkt og skiftede
+uge midt i et swipe, så snart listen ramte bunden/toppen — ugen blev byttet og
+`scrollTop` nulstillet under fingeren. Nu skifter uge kun, når trækket *startede*
+med listen hvilende ved kanten, og først når fingeren slippes (>60 px). Hjul/
+trackpad får 600 ms pause efter et ugeskift, så momentum ikke springer flere uger.
 
 ## 2026-09-26: Én fast regel for skrift, farver og knapper i hele appen
 
@@ -144,6 +363,25 @@ container-backup"), som deployet lægger samme sted; den gamle gemmes som
 `.orig`. Forventet: ca. 7 GB første gang, derefter kun ændringer. Ikke kørt på
 Synology endnu — kun testet med en falsk `docker` i cloud-sessionen.
 
+## 2026-09-26: Familieabonnement — børneberegning, sletteret, fælles måltid
+
+Se `docs/FAMILY.md` "Afklaret 2026-09-26". Ny migration
+`20260926100000_family_delete_permission`. Lint og build grønne; ikke testet
+mod database eller på telefon.
+
+## 2026-09-26: Familieabonnement — første version bygget
+
+Branch `claude/lucid-bell-s5vyhv`. Se `docs/FAMILY.md` "Sådan virker den
+første version" og "Mangler". Lint, typetjek og build er grønne. Ikke testet
+mod en rigtig database eller på telefon. Kræver migration
+`20260925200000_family_subscription` ved deploy.
+
+## 2026-09-25: Familieabonnement — research og beslutninger
+
+Se `docs/FAMILY.md` (research, beslutninger, åbne spørgsmål, byggeplan) og
+`docs/DECISIONS.md` 2026-09-25 "Familieabonnement". Bygges på branch
+`claude/lucid-bell-s5vyhv`; følg rækken i `docs/handoffs/OPEN-TASKS.md`.
+
 ## 2026-09-25: Ubrugte statistik-kort — "+ Overskrift" og "+ Skillelinje" øverst
 
 `/statistics/unused-cards`: knapperne ligger nu lige under søgefeltet, før accordionerne.
@@ -198,6 +436,18 @@ Platform → Audience). Test derefter forbindelsen på iPhone.
 - Brugerens vandglas-ikon (`public/icons/water-glass.png`, maske-komponent
   `src/components/icons/WaterGlass.tsx`) erstatter tabler-dråben overalt hvor
   det betyder vand. Fedt-statistikkerne beholder dråben.
+
+## 2026-09-26: Kalender-dagvisning — sengetid altid nederst + "Tilbage for i dag"
+
+- Sengetid 00:00-03:59 (før stå-op-tid) regnes nu som NAT-søvn, ikke dagsøvn.
+  Sengetids-håndtaget står derfor altid nederst (24:00) på dagens tidslinje —
+  før stod det øverst ved 00, og hele natten blev tegnet som ét dagsøvn-felt.
+  Stå-op-håndtaget er øverst, sengetid nederst, også på dage uden søvn endnu.
+- Sengetid kan trækkes ned til 24:00 (gemmes som 00:00), men ikke op i
+  nattetimerne før 04:00. Gælder også ugevisningen.
+- `calendar.remainingToday` tilføjet ("Tilbage for i dag: {amount} kcal") —
+  vistes før som rå nøgle.
+- Lint og build grønne. Ikke testet på telefon (ingen login/DB i cloud).
 
 ## 2026-09-25: Kalender-dagvisning — træk søvn-håndtag forbi kanten + "Nattens søvn"
 
@@ -474,6 +724,16 @@ Mangler (bevidst udskudt):
   (migrationen skal deployes først).
 - Nye kort vises kun automatisk for brugere uden gemt statistik-layout;
   andre tilføjer dem via "Tilføj kort" → "Kød, fisk og drikke".
+
+## 2026-09-26: Opskrift-scrapere som Valdemarsro (Arla, Coop, REMA 1000, MENY, Hjerteforeningen, TV 2)
+
+`scripts/recipe-sites-import` (se README): fælles motor + ét script pr. side,
+samme struktur som Valdemarsro-scraperen. Hver opskrift får "Meal Type"
+(Frokost/Aftensmad/Fin middag/Mellemmåltid/Dessert) og "Børnevenlig" (børn/barn/unger
+i tekst, kategorier eller temaside). `recipe_sites_match.py <site>` beregner kalorier
+via Valdemarsro-matcheren; Hjerteforeningens egne kcal pr. person bruges direkte.
+Output i `Productdatabase/Opskrifter/<Site>`. Brugeren kører selv scraperne.
+Ikke bygget: import i appen (følger Valdemarsro-integrationens TODO).
 
 ## TODO (2026-09-24): Waldemarsro-integration (dansk opskriftsside) — afklaret, ikke bygget
 

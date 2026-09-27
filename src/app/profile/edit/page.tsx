@@ -13,6 +13,7 @@ import { latestTrendWeight, type MealSample, type WeightSample } from "@/lib/wei
 import { computeAge } from "@/lib/age";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { FaceIdButton } from "@/components/FaceIdButton";
+import { SkeletonForm, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type Sex = "FEMALE" | "MALE";
 
@@ -63,7 +64,7 @@ const tileClass =
   "hf-type-small hf-type-strong flex aspect-square min-w-0 flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-hf-tan px-1 text-center text-hf-black";
 
 const inputClass =
-  "hf-type-body rounded-xl bg-hf-tan px-4 py-3 text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green";
+  "hf-type-body hf-field rounded-xl bg-hf-tan px-4 text-hf-black outline-none focus-visible:ring-2 focus-visible:ring-hf-green";
 
 export default function ProfileEditPage() {
   const { t } = useTranslation();
@@ -152,7 +153,7 @@ export default function ProfileEditPage() {
           <button
             type="button"
             onClick={() => router.push("/profile/change-password")}
-            className="hf-btn-primary h-12 w-full px-4"
+            className="hf-control hf-btn-primary w-full px-4"
           >
             {t("profile.changePasswordButton")}
           </button>
@@ -160,9 +161,17 @@ export default function ProfileEditPage() {
       }
     >
       {loading || !user ? (
-        <p className="hf-type-body text-text-secondary p-4 text-center">
-          {loading ? t("profile.loading") : t("profile.loadError")}
-        </p>
+        loading ? (
+          <SkeletonScreen className="flex flex-col gap-4 p-4">
+            <SkeletonForm fields={2} />
+            <div className="grid grid-cols-2 gap-4">
+              <SkeletonForm fields={2} />
+              <SkeletonForm fields={2} />
+            </div>
+          </SkeletonScreen>
+        ) : (
+          <p className="hf-type-body text-text-secondary p-4 text-center">{t("profile.loadError")}</p>
+        )
       ) : (
         <div className="flex min-h-full flex-col gap-4 p-4">
           <Field label={t("profile.field.name")}>
