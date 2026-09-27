@@ -2903,5 +2903,5 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
 
 ## 2026-09-27 Admin IP-spærre og glemt adgangskode
 
-- `src/proxy.ts` tillader /admin og /api/admin kun fra LAN og `ADMIN_ALLOWED_IPS` (standard: hjemme-IP 213.80.120.167). Tom liste = ingen spærre. Login + 2-trins kræves stadig overalt.
+- `middleware.ts` tillader /admin og /api/admin kun fra LAN og `ADMIN_ALLOWED_IPS` (standard: hjemme-IP 213.80.120.167). Tom liste = ingen spærre. Login + 2-trins kræves stadig overalt.
 - Admin har "Glemt adgangskode": mail-link (1 time) → ny adgangskode + ny authenticator-kode → logget ind.

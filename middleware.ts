@@ -29,6 +29,34 @@ const PUBLIC_ADMIN_API_PATHS = [
   "/api/admin/approve",
 ];
 
+// Admin IP-spærre (docs/DECISIONS.md 2026-09-27): /admin og /api/admin kan
+// kun nås fra det lokale netværk og fra IP'erne i ADMIN_ALLOWED_IPS
+// (kommasepareret). Login kræves stadig. Offentlig trafik kommer via
+// Cloudflare-tunnelen, som selv sætter CF-Connecting-IP (klientens egen værdi
+// overskrives). Uden den header er forbindelsen direkte på LAN'et.
+const PRIVATE_IP = /^(127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|::1$|fc|fd|fe80:)/i;
+
+function clientIp(req: NextRequest): string {
+  const cf = req.headers.get("cf-connecting-ip");
+  if (cf) return cf.trim();
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded) return forwarded.split(",")[0].trim();
+  return req.headers.get("x-real-ip")?.trim() ?? "";
+}
+
+function isAdminIpAllowed(req: NextRequest): boolean {
+  const allowed = (process.env.ADMIN_ALLOWED_IPS ?? "")
+    .split(",")
+    .map((ip) => ip.trim())
+    .filter(Boolean);
+  // Ingen liste sat = ingen spærre (undgår at låse admin ude ved fejlopsætning).
+  if (allowed.length === 0) return true;
+
+  const ip = clientIp(req).replace(/^::ffff:/, "");
+  const isLan = !req.headers.get("cf-connecting-ip") && (ip === "" || PRIVATE_IP.test(ip));
+  return isLan || PRIVATE_IP.test(ip) || allowed.includes(ip);
+}
+
 function isPublicPath(pathname: string, publicPaths: string[]) {
   return publicPaths.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
@@ -101,6 +129,10 @@ export async function middleware(req: NextRequest) {
   const isAdminPage = pathname.startsWith("/admin");
   const isAdminApi = pathname.startsWith("/api/admin");
   if (!isAdminPage && !isAdminApi) return NextResponse.next();
+
+  if (!isAdminIpAllowed(req)) {
+    return new NextResponse("Not found", { status: 404, headers: { "X-Robots-Tag": "noindex, nofollow" } });
+  }
 
   // The admin UI only exists on its dedicated hostname — refuse it on the
   // public consumer domain even though every route is also login-gated.
