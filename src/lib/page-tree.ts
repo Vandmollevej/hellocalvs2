@@ -307,7 +307,11 @@ export const PAGE_TREE: PageArea[] = [
             ],
           },
           { path: "/admin/bug-reports", label: "Fejlrapporter" },
-          { path: "/admin/messaging", label: "Besked automatisering" },
+          {
+            path: "/admin/messaging",
+            label: "Besked automatisering",
+            children: [{ path: "/admin/messaging/[event]", label: "Rediger mail/notifikation" }],
+          },
           { path: "/admin/images", label: "Billedforslag" },
           {
             path: "/admin/quality-control",
@@ -334,6 +338,11 @@ export const PAGE_TREE: PageArea[] = [
           { path: "/admin/api-keys", label: "API-nøgler" },
           { path: "/admin/designmanual", label: "Designmanual" },
           { path: "/admin/page-tree", label: "Sidetræ", note: "Denne side" },
+          {
+            path: "/admin/flows",
+            label: "Flows",
+            children: [{ path: "/admin/flows/[id]", label: "Flow" }],
+          },
           { path: "/admin/partners", label: "Partnere" },
           { path: "/admin/analytics", label: "Analyse", note: "Besøgsstatistik fra Umami" },
           { path: "/admin/jobs", label: "Jobs", note: "Jobs sat op af AI-agenter (åbne/afsluttede)" },

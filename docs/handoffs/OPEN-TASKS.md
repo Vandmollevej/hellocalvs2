@@ -228,3 +228,11 @@ Ejer: cloud-session `claude/lucid-bell-s5vyhv` (2026-09-25)
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | — | Familieabonnement: forældre ser/taster for børn, adgangslog til barnet | I gang | Første version bygget og pushet (branch `claude/lucid-bell-s5vyhv`, ikke flettet). Næste: brugerens test og "Mangler" i `docs/FAMILY.md` (oprettelsesflow med alder er næste skridt) |
+
+## G-FLOWS — Admin "Flows" + telefon-editor
+Filer: `src/components/admin/PhonePreviewEditor.tsx`, `src/components/admin/FlowEditor.tsx`, `src/app/admin/flows/**`, `src/app/api/admin/flows/**`, `src/lib/flows.ts`.
+Ejer: Flows-sessionen (2026-09-27)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| 745f1ab5 | Telefon-editor (iPhone 17) til mails/notifikationer/svarskabeloner + hovedmenu "Flows" med flow-sider | Færdig (se git log "Admin: phone editor") | Guide-builderen (tooltips) er flyttet ind i `flows`-gruppen i `AdminShell.tsx` efter brugerens ønske |

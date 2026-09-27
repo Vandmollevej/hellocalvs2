@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
+import { EVENT_LABELS } from "@/lib/message-event-labels";
 
 export type MessageTemplateData = {
   event: string;
@@ -10,43 +12,18 @@ export type MessageTemplateData = {
   bodyHtml: string;
 };
 
-const EVENT_LABELS: Record<string, string> = {
-  ACCOUNT_CREATED: "Konto oprettet",
-  EMAIL_VERIFICATION: "E-mail-verifikation",
-  PASSWORD_RESET: "Glemt kodeord",
-  PASSWORD_CHANGED: "Adgangskode ændret",
-  START_WEIGHT_CHANGE: "Ændring af startvægt",
-  FRIEND_REFERRAL: "Invitér en ven — belønning givet",
-  PRODUCT_APPROVED: "Produkt godkendt",
-  PRODUCT_REJECTED: "Produkt afvist",
-  PRODUCT_ESCALATION_ADMIN: "Admin: produkt venter >48 timer",
-  BUG_REPORT_ESCALATION_ADMIN: "Admin: fejlrapport venter >48 timer",
-  BUG_REPORT_RESOLVED: "Fejlrapport løst",
-  POINTS_AWARDED: "Points tildelt",
-  FRIEND_FORWARD_RECEIVED: "Videresendelse modtaget",
-};
-
+// Listen viser kanal og til/fra direkte; selve indholdet redigeres i
+// telefon-editoren på /admin/messaging/[event].
 export function MessageTemplateRow({ template }: { template: MessageTemplateData }) {
-  const [expanded, setExpanded] = useState(false);
   const [form, setForm] = useState(template);
-  const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
 
   async function save(patch: Partial<MessageTemplateData>) {
-    const next = { ...form, ...patch };
-    setForm(next);
-    setSaving(true);
-    setSaved(false);
-    try {
-      const res = await fetch(`/api/admin/message-templates/${template.event}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(patch),
-      });
-      if (res.ok) setSaved(true);
-    } finally {
-      setSaving(false);
-    }
+    setForm({ ...form, ...patch });
+    await fetch(`/api/admin/message-templates/${template.event}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(patch),
+    });
   }
 
   return (
@@ -79,41 +56,11 @@ export function MessageTemplateRow({ template }: { template: MessageTemplateData
               }`}
             />
           </button>
-          <button
-            type="button"
-            onClick={() => setExpanded((v) => !v)}
-            className="hf-btn-text text-hf-green-dark"
-          >
-            {expanded ? "Luk" : "Rediger"}
-          </button>
+          <Link href={`/admin/messaging/${template.event}`} className="hf-btn-text text-hf-green-dark">
+            Rediger
+          </Link>
         </div>
       </div>
-
-      {expanded && (
-        <div className="flex flex-col gap-2 border-t border-hf-tan-dark p-4">
-          <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
-            Emne
-            <input
-              value={form.subject}
-              onChange={(e) => setForm({ ...form, subject: e.target.value })}
-              onBlur={() => save({ subject: form.subject })}
-              className="hf-type-body hf-field rounded-md border border-hf-tan-dark px-2"
-            />
-          </label>
-          <label className="hf-type-small flex flex-col gap-1 text-text-secondary">
-            Indhold (HTML, {"{{variabel}}"} erstattes ved afsendelse)
-            <textarea
-              rows={5}
-              value={form.bodyHtml}
-              onChange={(e) => setForm({ ...form, bodyHtml: e.target.value })}
-              onBlur={() => save({ bodyHtml: form.bodyHtml })}
-              className="hf-type-small rounded-md border border-hf-tan-dark px-2 py-1.5 font-mono"
-            />
-          </label>
-          {saving && <span className="hf-type-small text-text-muted">Gemmer…</span>}
-          {saved && !saving && <span className="hf-type-small text-hf-green-dark">Gemt ✓</span>}
-        </div>
-      )}
     </div>
   );
 }

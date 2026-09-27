@@ -3093,3 +3093,34 @@ model GuideDesign {
 
   @@map("guide_designs")
 }
+
+// --- Flows (admin) ---
+
+// Egne flow-sider sat op i admin under "Flows" (docs/DECISIONS.md
+// 2026-09-27). Et flow er en række sider, der vises efter hinanden.
+model Flow {
+  id          String     @id @default(cuid())
+  name        String
+  description String?
+  enabled     Boolean    @default(false)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @default(now()) @updatedAt
+  pages       FlowPage[]
+
+  @@map("flows")
+}
+
+model FlowPage {
+  id          String   @id @default(cuid())
+  flowId      String
+  flow        Flow     @relation(fields: [flowId], references: [id], onDelete: Cascade)
+  sortOrder   Int      @default(0)
+  title       String   @default("")
+  bodyHtml    String   @default("")
+  buttonLabel String   @default("Næste")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  @@index([flowId, sortOrder])
+  @@map("flow_pages")
+}

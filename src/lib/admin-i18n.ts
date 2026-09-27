@@ -40,6 +40,8 @@ const DICTIONARY = {
   nav_group_settings: { DA: "Indstillinger", EN: "Settings" },
   nav_standard_mails: { DA: "Standard-mails", EN: "Standard emails" },
   nav_group_design: { DA: "Design og opbygning", EN: "Design and structure" },
+  nav_group_flows: { DA: "Flows", EN: "Flows" },
+  nav_flow_pages: { DA: "Flow-sider", EN: "Flow pages" },
   nav_group_roadmap: { DA: "Roadmap og udvikling", EN: "Roadmap and development" },
   nav_roadmap: { DA: "Roadmap", EN: "Roadmap" },
   nav_claude: { DA: "Claude-integration", EN: "Claude integration" },

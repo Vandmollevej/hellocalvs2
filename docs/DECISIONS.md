@@ -2837,3 +2837,8 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
 - Knapper: "Gem" = favorit (samme tabel som delte retters favoritter, snapshot); kurv = del indkøbsliste via telefonens del-menu; printer = udskriv; "Markér som tilberedt" og "Tilføj i sundhedsapp" = registrér retten (`/add/[id]`), som også sender til tilkoblede sundhedsapps; "Lad os lave mad" folder Fremgangsmåde ud og scroller dertil; "Mine kogebogsbilleder" = egne fotos (ny tabel `recipe_cookbook_photos`, maks 12).
 - Ingen bundnavigation på siden (som HelloFresh). Fuldbredde-knapper følger 48 px-reglen.
 
+## 2026-09-27: Telefon-editor i admin og "Flows"
+
+- Indhold der vises på telefonen (mails, notifikationer, svarskabeloner, flow-sider) redigeres i ét fælles vindue: `src/components/admin/PhonePreviewEditor.tsx`. Venstre halvdel: sort iPhone 17 i præcis 402 × 874 CSS-px (1206 × 2622 @3x), placeret i højre side af halvdelen; højre halvdel: redigering. HTML vises i en sandboxed iframe (ingen scripts), og `{{variabler}}` får eksempelværdier.
+- Notifikationer vises som en låseskærm-notifikation med emnet som titel og teksten uden HTML.
+- "Flows" er et hovedmenupunkt (gruppe) i admin. "Flow-sider" (`/admin/flows`) gemmer flows i `flows`/`flow_pages`; et flow gemmes altid samlet (`PUT /api/admin/flows/[id]`). Tooltip-popups (Guide-builderen, `/admin/guide-builder`) ligger i samme gruppe.

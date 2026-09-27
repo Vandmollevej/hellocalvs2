@@ -13,7 +13,7 @@ import { t, type AdminI18nKey } from "@/lib/admin-i18n";
 // brødkrummer og brugermenu. Under lg bliver sidebjælken en skuffe bag en menuknap.
 // Farverne er de eksisterende Hello Cal-tokens.
 
-type IconName = "home" | "chart" | "box" | "database" | "users" | "handshake" | "shield" | "cog" | "palette" | "road";
+type IconName = "home" | "chart" | "box" | "database" | "users" | "handshake" | "shield" | "cog" | "palette" | "road" | "flow";
 type NavLink = { href: string; key: AdminI18nKey };
 type NavEntry =
   | { kind: "link"; href: string; key: AdminI18nKey; icon: IconName }
@@ -78,6 +78,18 @@ const NAV: NavEntry[] = [
       { href: "/admin/search-ranking", key: "nav_search_ranking" },
     ],
   },
+  // Flows (docs/DECISIONS.md 2026-09-27): egne flow-sider og
+  // Guide-builderen (startup-guide + tooltip-popups).
+  {
+    kind: "group",
+    id: "flows",
+    key: "nav_group_flows",
+    icon: "flow",
+    links: [
+      { href: "/admin/flows", key: "nav_flow_pages" },
+      { href: "/admin/guide-builder", key: "nav_guide_builder" },
+    ],
+  },
   {
     kind: "group",
     id: "design",
@@ -85,7 +97,6 @@ const NAV: NavEntry[] = [
     icon: "palette",
     links: [
       { href: "/admin/designmanual", key: "nav_design_manual" },
-      { href: "/admin/guide-builder", key: "nav_guide_builder" },
       { href: "/admin/page-tree", key: "nav_page_tree" },
     ],
   },
@@ -180,6 +191,13 @@ function Icon({ name, className = "h-5 w-5" }: { name: IconName | "search" | "ch
       </>
     ),
     road: <path d="M5 21 9 3M19 21 15 3M12 4v2.5M12 10.5v3M12 17.5V20" />,
+    flow: (
+      <>
+        <rect x="3" y="3.5" width="7" height="5" rx="1.5" />
+        <rect x="14" y="15.5" width="7" height="5" rx="1.5" />
+        <path d="M6.5 8.5v4a2 2 0 0 0 2 2h9v1M15 12.5l2.5 2 -2.5 2" />
+      </>
+    ),
     search: (
       <>
         <circle cx="11" cy="11" r="7" />

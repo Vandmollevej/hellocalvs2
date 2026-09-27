@@ -2,6 +2,12 @@
 
 Last updated: 2026-09-27
 
+## 2026-09-27: Telefon-editor i admin + "Flows"
+
+- Fælles vindue `PhonePreviewEditor`: sort iPhone 17 (402 × 874 px) i venstre halvdel, redigering i højre. Bruges af Besked automatisering (`/admin/messaging/[event]`, mail + notifikation), Svarskabeloner og Flows.
+- Nyt hovedmenupunkt "Flows" → "Flow-sider" (`/admin/flows`): opret flows med sider (overskrift, HTML, knaptekst), rækkefølge, aktiv/kladde. Migration `20260927140000_admin_flows` køres af deploy.
+- Guide-builderen (startup-guide + tooltips) er flyttet fra "Design og opbygning" ind i Flows-gruppen. Hvor/hvornår flows vises for brugerne i appen er ikke bestemt endnu.
+
 ## 2026-09-27: Opret vare — end-to-end-test med rigtig vare (EDEKA H-Milch) + rettelser
 
 Testet uden DB mod OpenAI med de live prompter, rembg via
