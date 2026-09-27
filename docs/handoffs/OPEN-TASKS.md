@@ -113,7 +113,7 @@ Ejer: Profil-gruppen (G7), konto B — overtaget 2026-09-24
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
 | 9a0770ce | Ny oversigtsside over målsætninger (historik, grønt flueben, fast knap nederst) | Færdig (2a119d8, 737783e) | Var allerede bygget og opfylder kravene |
-| 8b0a278f | Kropsmål med mand/kvinde-tegninger, kort som på statistik | Færdig (8649ac8 + Hals-commit) | Hals tilføjet efter brugerens ja (ny migration 20260926090000 — skal deployes). Ikke set i browser (kræver login) |
+| 8b0a278f | Kropsmål med mand/kvinde-tegninger, kort som på statistik | Færdig og deployet (8649ac8, 1a90aee → live i 1cf8b2b) | Hals tilføjet efter brugerens ja; migration 20260926090000 kørt af deployet |
 | d22c7e61 | Invitér en ven: betingelser som tekstlink, luft, fjern skillelinje | Færdig (6ab6eca, 62708b7) | Demo-data kan ikke laves: demo-brugeren er fjernet |
 | ef8a5612 | "Skift adgangskode"-side | Færdig | Fandtes allerede (/profile/change-password) og passer med det gendannede adgangskode-login |
 | 60da6b15 | Indstillinger: allergener i samme boks + "Vælg alle" | Færdig | Committet af en anden session |
