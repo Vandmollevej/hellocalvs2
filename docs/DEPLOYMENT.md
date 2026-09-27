@@ -228,8 +228,18 @@ tunnellen `Server`:
 | `admin.hellocal.io` | `http://192.168.1.90:3100` |
 | `scan.hellocal.io` | `http://192.168.1.90:3101` |
 
-De gamle `*.packroff.dk`-hostnavne bliver liggende i tunnellen under
-overgangen; `middleware.ts` accepterer begge admin-hostnavne. Server-
+De gamle `*.packroff.dk`-hostnavne bliver liggende i tunnellen, men
+packroff.dk-zonen har redirect-regler (308, sti + query bevares):
+`hellocal.packroff.dk` → `hellocal.io`, `adminhellocal.packroff.dk` →
+`admin.hellocal.io`, `scanhellocal.packroff.dk` → `scan.hellocal.io`.
+`www.hellocal.io` → `hellocal.io` (301). Derfor virker OAuth-callbacks, der
+stadig er registreret på det gamle domæne (`INTEGRATIONS_REDIRECT_BASE_URL`,
+`WITHINGS_REDIRECT_URI`, `GOOGLE_HEALTH_REDIRECT_URI` står bevidst på
+`hellocal.packroff.dk`, indtil udbyderne har fået den nye URI).
+`middleware.ts` accepterer begge admin-hostnavne. Email Routing: MX, SPF
+(`include:_spf.mx.cloudflare.net include:spf.mailjet.com`) og DMARC `p=none`
+er sat; `support@` + catch-all → `peter@packroff.dk` (kræver at modtager-
+adressen er bekræftet via Cloudflares mail). Server-
 `.env.production` skal have `APP_BASE_URL`/`INTEGRATIONS_REDIRECT_BASE_URL=https://hellocal.io`,
 `ADMIN_BASE_URL=https://admin.hellocal.io`, `SCAN_APP_BASE_URL=https://scan.hellocal.io`
 og `SMTP_FROM=Hello Cal <no-reply@hellocal.io>` (kræver at `hellocal.io` er

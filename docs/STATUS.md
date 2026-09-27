@@ -112,7 +112,8 @@ uændrede. Mangler brugerens visuelle godkendelse.
 
 - Kode, `.env.production.example` og docs peger på `hellocal.io` / `admin.hellocal.io` / `scan.hellocal.io` (DECISIONS 2026-09-27, DEPLOYMENT "Domæne hellocal.io").
 - Kontakt-e-mail i betingelser/privatlivspolitik: `support@hellocal.io`.
-- Mangler: Cloudflare-tunnelruter + DNS for hellocal.io, Email Routing, Mailjet-domæne, server-`.env.production`, OAuth-redirects hos udbyderne.
+- Cloudflare færdigt: tunnel `Server` + DNS for `hellocal.io`/`www`/`admin`/`scan` (alle `/api/health` 200), www → apex, gamle packroff-hostnavne 308 → nye, Email Routing (MX/SPF/DMARC). Server: `APP_BASE_URL`/`SCAN_APP_BASE_URL` sat (backup `.env.production.bak-20260927-domain`).
+- Mangler (kræver brugeren): bekræft Cloudflare-mailen til peter@packroff.dk og opret derefter reglerne `support@` + catch-all; log ind i Mailjet, så `hellocal.io` kan verificeres (derefter `SMTP_FROM=no-reply@hellocal.io`); tilføj `https://hellocal.io/api/auth/oauth/<google|facebook|apple>/callback` hos login-udbyderne og nye integrations-callbacks hos Withings/Google Health/Strava m.fl. (derefter `INTEGRATIONS_REDIRECT_BASE_URL` + `*_REDIRECT_URI` på serveren til hellocal.io). Chrome-udvidelsen fik ikke adgang til Facebook/Withings/Mailjet-siderne.
 
 ## 2026-09-26: MobilePay-betaling + Opsætning delt op
 
