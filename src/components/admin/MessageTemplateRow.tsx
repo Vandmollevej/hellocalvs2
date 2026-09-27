@@ -71,11 +71,11 @@ export function MessageTemplateRow({ template }: { template: MessageTemplateData
             role="switch"
             aria-checked={form.enabled}
             onClick={() => save({ enabled: !form.enabled })}
-            className={`relative h-6 w-10 rounded-full transition-colors ${form.enabled ? "bg-hf-green" : "bg-hf-tan-dark"}`}
+            className={`relative h-[28px] w-[63px] rounded-full transition-colors ${form.enabled ? "bg-hf-green" : "bg-hf-tan-dark"}`}
           >
             <span
-              className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
-                form.enabled ? "translate-x-[18px]" : "translate-x-0.5"
+              className={`absolute left-[2px] top-[2px] h-[24px] w-[38px] rounded-full bg-white shadow transition-transform ${
+                form.enabled ? "translate-x-[21px]" : "translate-x-0"
               }`}
             />
           </button>
