@@ -13,7 +13,7 @@ export const AGENT_TOKEN_COOKIE = "hc_agent_token_once";
 
 // MCP skal nås på den offentlige app-adresse — admin-hostnavnet omskriver
 // alle stier til /admin (middleware.ts).
-const APP_BASE_URL = (process.env.APP_BASE_URL || "https://hellocal.packroff.dk").replace(/\/$/, "");
+const APP_BASE_URL = (process.env.APP_BASE_URL || "https://hellocal.io").replace(/\/$/, "");
 
 export function mcpUrlForToken(token: string) {
   return `${APP_BASE_URL}/api/mcp/${token}`;
