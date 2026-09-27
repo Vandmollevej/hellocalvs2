@@ -11,7 +11,7 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - Den fritlagte forside (`pendingImageUrl`) vises med det samme for den, der oprettede varen; for andre stadig først efter admin-godkendelse.
 - Søgeresultater: hele linjen åbner varen, ikke kun Tilføj-knappen.
 
-## 2026-09-27: Lokal OCR bruges kun, når den er læsbar; én forside-prompt
+## 2026-09-27: Lokal OCR først, sprogsignaler og lokal billedredigering; én forside-prompt
 
 - Lokal OCR-tekst (tesseract.js) sendes kun med som støtte til AI'en og
   bruges kun som reserve, når den er læsbar (`usableOcrText`: sikkerhed
@@ -23,8 +23,25 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - Forsidens prompt, skema og version ligger ét sted
   (`src/lib/product-ai-tasks.ts`) og bruges af både ruten og den natlige
   genkørsel.
-- Den midlertidige AI-først-dispensation fra 2026-09-17 gælder stadig.
-  Testen viste, at lokal OCR kun kan bære et nærbillede af deklarationen.
+- **Dispensationen fra 2026-09-17 er rullet tilbage for energi og indhold**
+  (brugerens valg 2026-09-27: "lokal først + ét samlet kald"). I "opret
+  straks"-flowet afgør serveren ud fra telefonens OCR-tekst (aldrig
+  klientens egne tal), hvad der kan bruges uden OpenAI. Næring kræver alle
+  fire hovedtal + plausibilitetstjek. Ingredienser kræver en tydelig
+  "Ingredienser:"-sektion og OCR-sikkerhed ≥ 85 %, fordi der intet tjek er
+  for en fejlstavet ingrediens. Resten læser OpenAI, i ét samlet kald når
+  begge står på samme foto (`label-v1-2026-09-27`). Forsiden (logo, navn,
+  bokse) læses stadig af OpenAI.
+- **Sprogsignaler (ændrer 2026-09-12-reglen)**: brugeren besluttede, at
+  telefonens sprog og appens sprog nu også bruges — som svage signaler
+  EFTER region og stregkode, aldrig alene. Telefonens land tages fra
+  tidszonen, så appen aldrig spørger om eller ser en præcis position.
+  Talegenkendelsen følger stadig kun regionen.
+- **Produktbilleder redigeres kun lokalt**: udretning af skrå sider og
+  lysning sker i image-agent på originalfotoet. OpenAI's billedmodeller
+  bruges ikke til det, fordi de ændrer format og kan ændre logoet
+  (benchmark 2026-09-18: 3:4-fotos kom tilbage som 2:3, 1:1, 4:3, 16:9 og
+  8:3).
 ## 2026-09-27: Bundark er standard for alle screen-overlays/popups
 
 Brugerens krav (2026-09-27, med skærmbillede af HelloFresh' "Velkommen til

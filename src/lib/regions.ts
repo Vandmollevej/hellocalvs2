@@ -87,16 +87,102 @@ export function gs1RegionCandidates(barcode: string): RegionCode[] {
   ).map((region) => region.code);
 }
 
+// Ekstra sprogsignaler for emballagens sprog (brugerens valg 2026-09-27):
+// telefonens land (kun landet, aflæst af telefonens tidszone — aldrig en
+// præcis position), appens sprog og telefonens sprog. De kommer EFTER
+// brugerens region og stregkodens GS1-signal i prioriteten, så en engelsk
+// telefon i Danmark stadig forventer dansk emballage først.
+export type LanguageSignals = {
+  locationCountry?: string | null;
+  appLanguage?: string | null;
+  phoneLanguages?: string[];
+};
+
+// BCP-47-sprogtag (fx "da-DK", "nb") -> tesseract-kode, kun for de sprog
+// OCR_LANGUAGE_BY_REGION allerede bruger.
+const TESSERACT_BY_LANGUAGE: Record<string, string> = {
+  da: "dan",
+  sv: "swe",
+  nb: "nor",
+  nn: "nor",
+  no: "nor",
+  de: "deu",
+  nl: "nld",
+  fr: "fra",
+  it: "ita",
+  es: "spa",
+  en: "eng",
+};
+
+export function tesseractCodeForLanguageTag(tag: string | null | undefined): string | null {
+  const primary = (tag ?? "").toLowerCase().split(/[-_]/)[0];
+  return TESSERACT_BY_LANGUAGE[primary] ?? null;
+}
+
+// Telefonens tidszone -> land. Telefoner sætter tidszonen automatisk efter
+// hvor de er, så det giver landet uden at spørge om eller sende en position.
+const REGION_BY_TIME_ZONE: Record<string, RegionCode> = {
+  "Europe/Copenhagen": "DK",
+  "Europe/Stockholm": "SE",
+  "Europe/Oslo": "NO",
+  "Europe/Berlin": "DE",
+  "Europe/Busingen": "DE",
+  "Europe/Vienna": "AT",
+  "Europe/Zurich": "CH",
+  "Europe/Amsterdam": "NL",
+  "Europe/Brussels": "BE",
+  "Europe/Paris": "FR",
+  "Europe/Rome": "IT",
+  "Europe/Madrid": "ES",
+  "Atlantic/Canary": "ES",
+  "Europe/London": "GB",
+  "Europe/Dublin": "IE",
+  "America/New_York": "US",
+  "America/Chicago": "US",
+  "America/Denver": "US",
+  "America/Phoenix": "US",
+  "America/Los_Angeles": "US",
+  "America/Anchorage": "US",
+  "Pacific/Honolulu": "US",
+  "America/Toronto": "CA",
+  "America/Vancouver": "CA",
+  "America/Edmonton": "CA",
+  "America/Winnipeg": "CA",
+  "America/Halifax": "CA",
+  "America/St_Johns": "CA",
+  "America/Regina": "CA",
+  "Pacific/Auckland": "NZ",
+};
+
+export function regionFromTimeZone(timeZone: string | null | undefined): RegionCode | null {
+  if (!timeZone) return null;
+  if (timeZone.startsWith("Australia/")) return "AU";
+  return REGION_BY_TIME_ZONE[timeZone] ?? null;
+}
+
 // Ordered, deduplicated Tesseract/vision language codes: the user's market
-// region is the primary signal (never the phone/browser display language,
-// see OCR_LANGUAGE_BY_REGION above), the barcode's GS1 signal is a
-// secondary/fallback signal, English is always included last as a safety
-// net. This is a priority order, not a hard restriction — low-confidence
-// OCR/vision may still recognize other languages.
-export function primaryOcrLanguages(marketRegion: string, gs1Regions: RegionCode[]): string[] {
+// region is the primary signal, the barcode's GS1 signal is next, then the
+// phone's country, the app's language and the phone's languages (brugerens
+// valg 2026-09-27 — before that, phone/app language was never used).
+// English is always included as a safety net. This is a priority order, not
+// a hard restriction — low-confidence OCR/vision may still recognize other
+// languages.
+export function primaryOcrLanguages(
+  marketRegion: string,
+  gs1Regions: RegionCode[],
+  signals: LanguageSignals = {},
+): string[] {
   const region = isRegionCode(marketRegion) ? marketRegion : "DK";
   const codesFor = (r: RegionCode) => OCR_LANGUAGE_BY_REGION[r].split("+");
-  return [...new Set([...codesFor(region), ...gs1Regions.flatMap(codesFor), "eng"])];
+  const location = signals.locationCountry && isRegionCode(signals.locationCountry) ? codesFor(signals.locationCountry) : [];
+  const languages = [signals.appLanguage, ...(signals.phoneLanguages ?? [])].map(tesseractCodeForLanguageTag);
+  return [
+    ...new Set(
+      [...codesFor(region), ...gs1Regions.flatMap(codesFor), ...location, ...languages, "eng"].filter(
+        (code): code is string => Boolean(code),
+      ),
+    ),
+  ];
 }
 
 // BCP-47 speech-recognition language tags per region, same reasoning as

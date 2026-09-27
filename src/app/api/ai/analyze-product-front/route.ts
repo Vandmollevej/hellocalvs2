@@ -15,10 +15,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "barcode er påkrævet før forsideanalyse" }, { status: 400 });
   }
 
-  const context = buildBarcodeContext(barcode, marketRegion);
+  const signals = body?.signals;
+  const context = buildBarcodeContext(barcode, marketRegion, signals);
 
   try {
-    const { analysisId, result, brandMatch } = await analyzeFrontPhoto({ photo, barcode, marketRegion });
+    const { analysisId, result, brandMatch } = await analyzeFrontPhoto({ photo, barcode, marketRegion, signals });
     return NextResponse.json({ analysisId, context, result, brandMatch });
   } catch (error) {
     console.error("Product front analysis failed", error);

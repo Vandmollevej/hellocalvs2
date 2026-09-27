@@ -32,6 +32,12 @@ export async function POST(req: Request) {
   const ingredientsOcrText = typeof body?.ingredientsOcrText === "string" ? body.ingredientsOcrText.slice(0, 8000) : "";
   const localIngredients = typeof body?.localIngredientsText === "string" ? body.localIngredientsText.trim() : "";
   const barcodeAnalysisId = typeof body?.barcodeAnalysisId === "string" ? body.barcodeAnalysisId : null;
+  // Sprogsignaler og OCR-sikkerhed (brugerens valg 2026-09-27). Signalerne
+  // valideres i buildBarcodeContext; sikkerheden afgør, om telefonens egen
+  // aflæsning kan bruges uden OpenAI (src/lib/local-label.ts).
+  const signals = body?.signals;
+  const nutritionOcrConfidence = cleanNumber(body?.nutritionOcrConfidence) ?? 0;
+  const ingredientsOcrConfidence = cleanNumber(body?.ingredientsOcrConfidence) ?? 0;
   const local = body?.localNutrition ?? null;
   const localNutrition =
     local &&
@@ -92,11 +98,14 @@ export async function POST(req: Request) {
         productId: product.id,
         barcode,
         marketRegion,
+        signals,
         frontPhoto,
         nutritionPhoto,
         ingredientsPhoto,
         nutritionOcrText,
+        nutritionOcrConfidence,
         ingredientsOcrText,
+        ingredientsOcrConfidence,
         fallbackName,
       }).catch((error) => console.error("Quick product enrichment failed", product.id, error)),
     );

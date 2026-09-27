@@ -11,12 +11,17 @@ import {
   INGREDIENTS_PROMPT_VERSION,
   INGREDIENTS_SCHEMA,
   INGREDIENTS_SYSTEM,
+  LABEL_PROMPT_VERSION,
+  LABEL_SCHEMA,
+  LABEL_SYSTEM,
+  labelText,
   NUTRITION_PROMPT_VERSION,
   NUTRITION_SCHEMA,
   NUTRITION_SYSTEM,
   ingredientsText,
   nutritionText,
 } from "@/lib/product-ai-tasks";
+import { LOCAL_OCR_MODEL, LOCAL_OCR_PROMPT_VERSION } from "@/lib/local-label";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
 import { matchBrand, type BrandMatch } from "@/lib/brand-match";
 import { createFrontCutoutJobs } from "@/lib/image-cutout-jobs";
@@ -41,6 +46,9 @@ export type PhotoAnalysisInput = {
   barcode: string;
   marketRegion: string;
   ocrText?: string;
+  // Telefonens land/sprog og appens sprog (src/lib/language-signals.ts),
+  // valideres i buildBarcodeContext.
+  signals?: unknown;
 };
 
 function clamp01(value: number) {
@@ -58,12 +66,12 @@ function cleanBox(box: ProductFrontAnalysis["logoBox"]) {
   return width > 0.01 && height > 0.01 ? { x, y, width, height } : null;
 }
 
-export async function analyzeFrontPhoto({ photo, barcode, marketRegion }: PhotoAnalysisInput): Promise<{
+export async function analyzeFrontPhoto({ photo, barcode, marketRegion, signals }: PhotoAnalysisInput): Promise<{
   analysisId: string;
   result: ProductFrontAnalysis;
   brandMatch: BrandMatch | null;
 }> {
-  const context = buildBarcodeContext(barcode, marketRegion);
+  const context = buildBarcodeContext(barcode, marketRegion, signals);
   const knownBrands = await prisma.brand.findMany({
     select: { id: true, name: true },
     orderBy: { name: "asc" },
@@ -119,11 +127,11 @@ export async function analyzeFrontPhoto({ photo, barcode, marketRegion }: PhotoA
   return { analysisId: analysis.id, result: value, brandMatch };
 }
 
-export async function analyzeNutritionPhoto({ photo, barcode, marketRegion, ocrText = "" }: PhotoAnalysisInput): Promise<{
+export async function analyzeNutritionPhoto({ photo, barcode, marketRegion, ocrText = "", signals }: PhotoAnalysisInput): Promise<{
   analysisId: string;
   result: NutritionAnalysis;
 }> {
-  const context = buildBarcodeContext(barcode, marketRegion);
+  const context = buildBarcodeContext(barcode, marketRegion, signals);
   const { value: aiValue, model } = await callStructuredVision<NutritionAiResult>({
     photo,
     schemaName: "hello_cal_nutrition",
@@ -163,11 +171,11 @@ export async function analyzeNutritionPhoto({ photo, barcode, marketRegion, ocrT
   return { analysisId: analysis.id, result: value };
 }
 
-export async function analyzeIngredientsPhoto({ photo, barcode, marketRegion, ocrText = "" }: PhotoAnalysisInput): Promise<{
+export async function analyzeIngredientsPhoto({ photo, barcode, marketRegion, ocrText = "", signals }: PhotoAnalysisInput): Promise<{
   analysisId: string;
   result: IngredientsAnalysis;
 }> {
-  const context = buildBarcodeContext(barcode, marketRegion);
+  const context = buildBarcodeContext(barcode, marketRegion, signals);
   const { value: aiValue, model } = await callStructuredVision<IngredientsAiResult>({
     photo,
     schemaName: "hello_cal_ingredients",
@@ -209,4 +217,103 @@ export async function analyzeIngredientsPhoto({ photo, barcode, marketRegion, oc
   });
 
   return { analysisId: analysis.id, result: value };
+}
+
+// Energi + indhold fra ét foto i ét kald (brugerens valg 2026-09-27: "lokal
+// først + ét samlet kald"). Bruges, når telefonens OCR ikke kunne læse
+// næringen, og ingredienslisten står på samme foto. Giver to rækker
+// (NUTRITION + INGREDIENTS), så prediction/correction virker som før.
+export async function analyzeLabelPhoto({ photo, barcode, marketRegion, ocrText = "", signals }: PhotoAnalysisInput): Promise<{
+  nutrition: { analysisId: string; result: NutritionAnalysis };
+  ingredients: { analysisId: string; result: IngredientsAnalysis };
+}> {
+  const context = buildBarcodeContext(barcode, marketRegion, signals);
+  const { value: aiValue, model } = await callStructuredVision<{
+    nutrition: NutritionAiResult;
+    ingredients: IngredientsAiResult;
+  }>({
+    photo,
+    schemaName: "hello_cal_label",
+    schema: LABEL_SCHEMA,
+    system: LABEL_SYSTEM,
+    text: labelText({ barcode, context, ocrText }),
+  });
+  const nutrition: NutritionAnalysis = {
+    ...aiValue.nutrition,
+    fiberPercent: deriveFiberPercent(aiValue.nutrition.basis, aiValue.nutrition.fiberPer100g),
+  };
+  const wholeGrain = parseWholeGrain({
+    ingredientsText: aiValue.ingredients.ingredientsText || aiValue.ingredients.rawText,
+  });
+  const ingredients: IngredientsAnalysis = {
+    ...aiValue.ingredients,
+    wholeGrainPercent: wholeGrain.wholeGrainPercent,
+    isWholeGrain: wholeGrain.isWholeGrain,
+    wholeGrainConfidence: wholeGrain.confidence,
+    wholeGrainEvidence: wholeGrain.evidence,
+  };
+  const regions = readRegions(aiValue) as unknown as Prisma.InputJsonValue;
+  const imageUrl = await saveDataUrlImage(photo).catch(() => null);
+  const common = {
+    barcode,
+    marketRegion: context.marketRegion,
+    gs1Regions: context.gs1Regions,
+    languages: context.primaryOcrLanguages,
+    model,
+    promptVersion: LABEL_PROMPT_VERSION,
+    regions,
+    imageUrl,
+  };
+  const [nutritionRow, ingredientsRow] = await Promise.all([
+    prisma.aiProductAnalysis.create({
+      data: { ...common, kind: "NUTRITION", prediction: nutrition as unknown as Prisma.InputJsonValue, confidence: nutrition.confidence },
+      select: { id: true },
+    }),
+    prisma.aiProductAnalysis.create({
+      data: { ...common, kind: "INGREDIENTS", prediction: ingredients as unknown as Prisma.InputJsonValue, confidence: ingredients.confidence },
+      select: { id: true },
+    }),
+  ]);
+  return {
+    nutrition: { analysisId: nutritionRow.id, result: nutrition },
+    ingredients: { analysisId: ingredientsRow.id, result: ingredients },
+  };
+}
+
+// Telefonens egen aflæsning gemmes som en AiProductAnalysis-række med model
+// "local-tesseract", så også lokalt læste varer giver prediction/correction-
+// træningsdata og kvalitetskontrollen har fotoet.
+export async function recordLocalAnalysis({
+  kind,
+  photo,
+  barcode,
+  marketRegion,
+  signals,
+  prediction,
+}: {
+  kind: "NUTRITION" | "INGREDIENTS";
+  photo: string;
+  barcode: string;
+  marketRegion: string;
+  signals?: unknown;
+  prediction: NutritionAnalysis | IngredientsAnalysis;
+}): Promise<{ analysisId: string }> {
+  const context = buildBarcodeContext(barcode, marketRegion, signals);
+  const imageUrl = await saveDataUrlImage(photo).catch(() => null);
+  const row = await prisma.aiProductAnalysis.create({
+    data: {
+      kind,
+      barcode,
+      marketRegion: context.marketRegion,
+      gs1Regions: context.gs1Regions,
+      languages: context.primaryOcrLanguages,
+      model: LOCAL_OCR_MODEL,
+      promptVersion: LOCAL_OCR_PROMPT_VERSION,
+      prediction: prediction as unknown as Prisma.InputJsonValue,
+      confidence: prediction.confidence,
+      imageUrl,
+    },
+    select: { id: true },
+  });
+  return { analysisId: row.id };
 }

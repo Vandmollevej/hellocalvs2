@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ analysisId: null, message: "Kunne ikke gemme billedet" }, { status: 503 });
   }
 
-  const context = buildBarcodeContext(barcode, marketRegion);
+  const context = buildBarcodeContext(barcode, marketRegion, body?.signals);
   const analysis = await prisma.aiProductAnalysis.create({
     data: {
       kind: "BARCODE",

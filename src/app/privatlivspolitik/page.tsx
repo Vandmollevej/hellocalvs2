@@ -66,6 +66,13 @@ export default function PrivatlivspolitikPage() {
             GPS-position, telefonmodel og tidspunkt), og vi sender ingen oplysninger om, hvem du er.
             Selve billedet kan dog vise noget personligt. Tag derfor billedet tæt på produktet.
           </p>
+          <p>
+            Telefonen forsøger først selv at læse varedeklarationen. Kun det, den ikke kan læse
+            sikkert, sendes til OpenAI. For at gætte emballagens sprog bruger vi din region,
+            stregkoden, appens og telefonens sprog og det land, telefonen er i. Landet aflæses af
+            telefonens tidszone, så vi aldrig spørger om eller ser din præcise placering. Kun landet
+            og sprogkoderne sendes med.
+          </p>
           <p>AI bruges ikke til at træffe afgørelser om dig, og vi foretager ikke profilering efter art. 22.</p>
         </Section>
 

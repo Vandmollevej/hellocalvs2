@@ -69,6 +69,32 @@ const LINE_START: Record<keyof typeof LABELS, RegExp> = {
   protein: lineStartPattern(LABELS.protein),
 };
 
+// Underposter og øvrige linjer i tabellen. De læses kun efter tabellens
+// første linje, så "Zucker"/"Salz" i ingredienslisten aldrig bliver tal.
+const EXTRA_LABELS = {
+  saturatedFatPer100g: ["mættede fedtsyrer", "mættet fedt", "mættede", "mettede fettsyrer", "mettet fett", "mättat fett", "mättade fettsyror", "gesättigte fettsäuren", "gesättigte", "gesåttigte", "saturates", "saturated fat", "saturated", "verzadigde vetzuren", "verzadigd", "acides gras saturés", "saturés", "acidi grassi saturi", "saturi", "saturadas", "saturados"],
+  sugarsPer100g: ["sukkerarter", "sukker", "sockerarter", "socker", "zucker", "sugars", "sugar", "suikers", "suiker", "sucres", "zuccheri", "azúcares", "azucares"],
+  saltPer100g: ["salt", "salz", "zout", "sel", "sale", "sal"],
+  fiberPer100g: ["kostfibre", "kostfiber", "ballaststoffe", "voedingsvezel", "vezels", "fibres", "fibre", "fiber", "fibra"],
+} as const;
+
+type ExtraField = keyof typeof EXTRA_LABELS;
+
+const EXTRA_PATTERN: Record<ExtraField, RegExp> = Object.fromEntries(
+  Object.entries(EXTRA_LABELS).map(([field, labels]) => [
+    field,
+    new RegExp(`(?<![\\p{L}])(?:${labels.map(escapeRegExp).join("|")})(?![\\p{L}])`, "iu"),
+  ]),
+) as Record<ExtraField, RegExp>;
+
+// Salt afrundes til to decimaler under 1 g (EU), de øvrige til én.
+const EXTRA_MAX_DECIMALS: Record<ExtraField, number> = {
+  saturatedFatPer100g: 1,
+  sugarsPer100g: 1,
+  saltPer100g: 2,
+  fiberPer100g: 1,
+};
+
 function toNumber(text: string) {
   const value = parseFloat(text.replace(",", "."));
   return Number.isFinite(value) ? value : null;
@@ -76,9 +102,9 @@ function toNumber(text: string) {
 
 // Tesseract læser ofte enheden "g" som 9 eller 0 ("1,5g" -> "1,50",
 // "3,4g" -> "3,49"). Uden enhed og med flere decimaler end EU's
-// afrundingsregler tillader for makroer (højst én), eller over 100 g pr.
+// afrundingsregler tillader (makroer: én, salt: to), eller over 100 g pr.
 // 100 g, er sidste ciffer derfor enheden og fjernes.
-function readMacroValue(rest: string): { value: number; corrected: boolean } | null {
+function readMacroValue(rest: string, maxDecimals = 1): { value: number; corrected: boolean } | null {
   const match = new RegExp(`^[^0-9<]*?(<\\s*)?${NUMBER}\\s*(mg|g)?`, "iu").exec(rest);
   if (!match || match[1]) return null; // "<0,5 g" er en grænse, ikke en værdi
   let digits = match[2];
@@ -88,7 +114,7 @@ function readMacroValue(rest: string): { value: number; corrected: boolean } | n
   if (!hasUnit && /[90]$/.test(digits)) {
     const decimals = digits.split(/[.,]/)[1]?.length ?? 0;
     const whole = toNumber(digits) ?? 0;
-    if (decimals >= 2 || (decimals === 0 && whole > 100)) {
+    if (decimals > maxDecimals || (decimals === 0 && whole > 100)) {
       digits = digits.slice(0, -1).replace(/[.,]$/, "");
       corrected = true;
     }
@@ -115,12 +141,22 @@ function readEnergy(text: string): { kcal: number; kj: number | null } | null {
 }
 
 export type DetailedNutritionParse = {
-  values: Partial<ParsedNutrition> & { energyKj?: number | null };
+  values: Partial<ParsedNutrition> &
+    Partial<Record<ExtraField, number>> & { energyKj?: number | null };
+  // Tabellens kolonne: "pro 100 ml" / "pr. 100 g".
+  basis: "100g" | "100ml" | "unknown";
   // Felter hvor et "g" læst som ciffer er fjernet — skal vises/tjekkes.
-  corrected: MacroKey[];
+  corrected: (MacroKey | ExtraField)[];
   // Fedt x 9 + kulhydrat x 4 + protein x 4 ligger tæt på den læste kcal.
   plausible: boolean;
 };
+
+function readBasis(text: string): DetailedNutritionParse["basis"] {
+  const explicit = /(?:pr\.?|per|pro|je|pour|por|\/)\s*100\s*(ml|g)/i.exec(text);
+  const any = explicit ?? /100\s*(ml|g)(?![\p{L}])/iu.exec(text);
+  if (!any) return "unknown";
+  return any[1].toLowerCase() === "ml" ? "100ml" : "100g";
+}
 
 // Linjebaseret aflæsning af en næringstabel (pr. 100 g/ml-kolonnen er
 // første tal efter labelen). Ren funktion — bruges af parseNutritionText og
@@ -131,7 +167,8 @@ export function parseNutritionDetailed(rawText: string): DetailedNutritionParse 
     .map((line) => line.replace(/\s+/g, " ").trim())
     .filter(Boolean);
   const values: DetailedNutritionParse["values"] = {};
-  const corrected: MacroKey[] = [];
+  const corrected: DetailedNutritionParse["corrected"] = [];
+  let tableStarted = false;
 
   lines.forEach((line, index) => {
     if (values.kcalPer100g === undefined && (LINE_START.energy.test(line) || /kj\s*\/\s*kcal/i.test(line))) {
@@ -142,6 +179,7 @@ export function parseNutritionDetailed(rawText: string): DetailedNutritionParse 
       if (energy && energy.kcal <= 900) {
         values.kcalPer100g = energy.kcal;
         values.energyKj = energy.kj;
+        tableStarted = true;
       }
       return;
     }
@@ -151,17 +189,38 @@ export function parseNutritionDetailed(rawText: string): DetailedNutritionParse 
       ["protein", "proteinPer100g"],
     ];
     for (const [key, field] of macros) {
-      if (values[field] !== undefined) continue;
       const start = LINE_START[key].exec(line);
       if (!start) continue;
+      tableStarted = true;
+      if (values[field] !== undefined) return;
       const read = readMacroValue(line.slice(start[0].length));
       if (read) {
         values[field] = read.value;
         if (read.corrected) corrected.push(key);
       }
-      break;
+      return;
+    }
+    if (!tableStarted) return;
+    for (const field of Object.keys(EXTRA_PATTERN) as ExtraField[]) {
+      if (values[field] !== undefined) continue;
+      const hit = EXTRA_PATTERN[field].exec(line);
+      if (!hit) continue;
+      const read = readMacroValue(line.slice(hit.index + hit[0].length), EXTRA_MAX_DECIMALS[field]);
+      if (read) {
+        values[field] = read.value;
+        if (read.corrected) corrected.push(field);
+      }
+      return;
     }
   });
+
+  // Underposter kan ikke være større end deres hovedpost.
+  if (values.saturatedFatPer100g !== undefined && (values.fatPer100g === undefined || values.saturatedFatPer100g > values.fatPer100g + 0.05)) {
+    delete values.saturatedFatPer100g;
+  }
+  if (values.sugarsPer100g !== undefined && (values.carbsPer100g === undefined || values.sugarsPer100g > values.carbsPer100g + 0.05)) {
+    delete values.sugarsPer100g;
+  }
 
   // Reserve, når OCR har tabt "Energi"-labelen: første linje med kcal, som
   // ikke er referenceindtaget ("8400 kJ/2000 kcal").
@@ -184,7 +243,7 @@ export function parseNutritionDetailed(rawText: string): DetailedNutritionParse 
       fatPer100g + carbsPer100g + proteinPer100g <= 102 &&
       Math.abs(atwater - kcalPer100g) <= Math.max(20, kcalPer100g * 0.2);
   }
-  return { values, corrected, plausible };
+  return { values, basis: readBasis(rawText), corrected, plausible };
 }
 
 // Returnerer alle fire pr.-100g-værdier, eller null hvis blot ét af dem ikke
@@ -216,6 +275,10 @@ const INGREDIENTS_HEADING =
 // tyske tabeller starter med "Durchschnittliche Nährwerte".
 const INGREDIENTS_END =
   /(?:næringsindhold|næringsdeklaration|næringsværdi|nutrition|näringsvärde|n[äåa]hrwert|durchschnittliche|brennwert|valeurs nutritionnelles|voedingswaarde|valori nutrizionali|informaci[óo]n nutricional)/i;
+
+export function hasIngredientsHeading(rawText: string): boolean {
+  return INGREDIENTS_HEADING.test(rawText);
+}
 
 export function findIngredientsSection(rawText: string): string | null {
   const text = rawText.replace(/\s+/g, " ");

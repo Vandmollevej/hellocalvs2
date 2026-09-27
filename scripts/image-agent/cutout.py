@@ -95,18 +95,114 @@ def drop_edge_fragments(cutout):
     return cleaned
 
 
-def make_cutout(source_path, box, drop_fragments=False):
+def auto_exposure(cutout, lift_midtones):
+    """Gør et for mørkt fritskrabet billede lysere uden at ændre størrelsen.
+
+    Mobilfotos i køkkenlys er typisk undereksponerede (test 2026-09-27:
+    EDEKA-logoet blev næsten sort). Kun varens egne pixels (alpha > 128)
+    måles. Lyseste del (99. percentil) løftes til næsten hvid, så farverne
+    bevares; for produktfotos løftes mellemtonerne også lidt (gamma), for
+    logoer ikke — et sort logo må ikke blive gråt. Gør aldrig billedet
+    mørkere.
+    """
+    rgba = np.array(cutout).astype(np.float32)
+    alpha = rgba[..., 3]
+    visible = alpha > 128
+    if visible.sum() < 100:
+        return cutout
+    rgb = rgba[..., :3]
+    luminance = rgb[..., 0] * 0.2126 + rgb[..., 1] * 0.7152 + rgb[..., 2] * 0.0722
+    high = float(np.percentile(luminance[visible], 99))
+    gain = min(2.0, max(1.0, 245.0 / max(high, 1.0)))
+    rgb = np.clip(rgb * gain, 0, 255)
+    if lift_midtones:
+        luminance = rgb[..., 0] * 0.2126 + rgb[..., 1] * 0.7152 + rgb[..., 2] * 0.0722
+        median = float(np.median(luminance[visible])) / 255.0
+        if 0.02 < median < 0.45:
+            gamma = min(1.0, max(0.65, np.log(0.45) / np.log(median)))
+            rgb = 255.0 * np.power(rgb / 255.0, gamma)
+    rgba[..., :3] = rgb
+    return Image.fromarray(np.clip(rgba, 0, 255).astype(np.uint8), "RGBA")
+
+
+def straighten(cutout):
+    """Retter skrå sider ud, når varen har lige sider (karton, kasse, dåse).
+
+    Et foto taget lidt oppefra gør varen bredere foroven end forneden
+    (perspektiv). Venstre og højre kant af den fritskrabede vare måles på
+    kroppen (30-95 % af højden, så låg/top og skygge ikke tæller), og en
+    perspektivrettelse gør kanterne lodrette. Bredden bliver gennemsnittet af
+    top og bund og højden bevares, så proportionerne holdes. Varer uden lige
+    sider (flaske, pose) røres ikke. Test 2026-09-27: EDEKA-kartonen.
+    """
+    alpha = np.array(cutout.getchannel("A"))
+    height, width = alpha.shape
+    ys, lefts, rights = [], [], []
+    for y in range(int(height * 0.30), int(height * 0.95)):
+        xs = np.flatnonzero(alpha[y] > 128)
+        if xs.size >= width * 0.2:
+            ys.append(y)
+            lefts.append(xs[0])
+            rights.append(xs[-1])
+    if len(ys) < height * 0.3:
+        return cutout
+    ys = np.array(ys, dtype=np.float64)
+    left_fit = np.polyfit(ys, lefts, 1)
+    right_fit = np.polyfit(ys, rights, 1)
+    tolerance = width * 0.02
+    if (
+        np.percentile(np.abs(np.polyval(left_fit, ys) - lefts), 90) > tolerance
+        or np.percentile(np.abs(np.polyval(right_fit, ys) - rights), 90) > tolerance
+    ):
+        return cutout  # siderne er ikke rette linjer
+    top, bottom = ys[0], ys[-1]
+    tl, tr = np.polyval(left_fit, top), np.polyval(right_fit, top)
+    bl, br = np.polyval(left_fit, bottom), np.polyval(right_fit, bottom)
+    if abs((tr - tl) - (br - bl)) < width * 0.01 and abs(tl - bl) < width * 0.01:
+        return cutout  # allerede lige
+    target = ((tr - tl) + (br - bl)) / 2
+    center = (tl + tr + bl + br) / 4
+    src = np.float32([[tl, top], [tr, top], [br, bottom], [bl, bottom]])
+    dst = np.float32(
+        [[center - target / 2, top], [center + target / 2, top], [center + target / 2, bottom], [center - target / 2, bottom]]
+    )
+    matrix = cv2.getPerspectiveTransform(src, dst)
+    corners = cv2.perspectiveTransform(np.float32([[[0, 0]], [[width, 0]], [[width, height]], [[0, height]]]), matrix)
+    min_x, min_y = corners[:, 0, 0].min(), corners[:, 0, 1].min()
+    shift = np.array([[1, 0, -min_x], [0, 1, -min_y], [0, 0, 1]], dtype=np.float64)
+    out_w = int(np.ceil(corners[:, 0, 0].max() - min_x))
+    out_h = int(np.ceil(corners[:, 0, 1].max() - min_y))
+    if out_w <= 0 or out_h <= 0 or out_w > width * 3 or out_h > height * 3:
+        return cutout
+    warped = cv2.warpPerspective(
+        np.array(cutout), shift @ matrix, (out_w, out_h), flags=cv2.INTER_CUBIC, borderValue=(0, 0, 0, 0)
+    )
+    result = Image.fromarray(warped, "RGBA")
+    bbox = result.getbbox()
+    return result.crop(bbox) if bbox else cutout
+
+
+def make_cutout(source_path, box, kind="PRODUCT_FRONT"):
+    """Beskær -> fjern baggrund -> ryd op -> ret ud (produkt) -> lys op.
+
+    Alt sker lokalt på originalfotoet, så størrelse, proportioner og logo
+    aldrig ændres af en AI (OpenAI's billedmodeller returnerede andre
+    formater end fotoet i testen 2026-09-18).
+    """
     with Image.open(source_path) as source:
         cropped = crop(source.convert("RGB"), box)
     buffer = io.BytesIO()
     cropped.save(buffer, format="PNG")
     cutout = Image.open(io.BytesIO(remove(buffer.getvalue()))).convert("RGBA")
-    if drop_fragments:
+    if kind == "BRAND_LOGO":
         cutout = drop_edge_fragments(cutout)
     bbox = cutout.getbbox()
     if not bbox:
         raise ValueError("background removal left nothing")
-    return cutout.crop(bbox)
+    cutout = cutout.crop(bbox)
+    if kind == "PRODUCT_FRONT":
+        cutout = straighten(cutout)
+    return auto_exposure(cutout, lift_midtones=kind == "PRODUCT_FRONT")
 
 
 def fetch_pending_jobs(conn):
@@ -126,7 +222,7 @@ def fetch_pending_jobs(conn):
 
 def process_job(conn, job_id, source_url, crop_box, kind):
     try:
-        cutout = make_cutout(local_path(source_url), crop_box, drop_fragments=kind == "BRAND_LOGO")
+        cutout = make_cutout(local_path(source_url), crop_box, kind)
         os.makedirs(os.path.join(OUTPUT_DIR, CUTOUT_DIR), exist_ok=True)
         cutout.save(os.path.join(OUTPUT_DIR, CUTOUT_DIR, f"{job_id}.png"), format="PNG")
         result_url = f"{PUBLIC_PATH_PREFIX}/{CUTOUT_DIR}/{job_id}.png"

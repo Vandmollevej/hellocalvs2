@@ -40,14 +40,36 @@ tysk mælkekarton. Testscripts ligger kun i sessionens scratchpad.
   - Det fritskrabede logo fik et stykke af "Herzstücke"-teksten med. Nu
     fjerner `drop_edge_fragments` (kun BRAND_LOGO) stumper, som
     beskæringskanten har skåret over, samt bittesmå løse stumper.
-- Ikke testet: Google Vision (den lokale Google-nøgle må ikke kalde Vision;
-  der mangler en `GOOGLE_VISION_API_KEY`). Geo-position fra fotoet findes
-  ikke: EXIF fjernes bevidst (docs/PRIVACY.md).
-- Farvekorrektion: AI foreslår kun parametre, sharp anvender dem lokalt —
-  1500×2000 før og efter. Ikke bygget ind i appen (afventer brugeren).
+- Bygget efter brugerens svar samme dag (oven på "opret straks"-flowet):
+  - **Lokal først, ét samlet kald** i baggrundsudfyldningen
+    (`enrichLabel` i `src/lib/quick-product-enrichment.ts`,
+    `src/lib/local-label.ts`): kan telefonens OCR læse næringen (tallene
+    hænger sammen) og ingredienslisten (OCR ≥ 85 %), spørges OpenAI ikke.
+    Mangler næringen, og står indholdet på samme foto, læser ét kald begge
+    (`analyzeLabelPhoto`, 4.800 tokens mod 8.100 for de to gamle kald).
+    Lokale aflæsninger gemmes som AiProductAnalysis med model
+    `local-tesseract` (`recordLocalAnalysis`). Den lokale parser læser nu
+    også mættet fedt, sukker, salt, kostfibre og "pr. 100 g/ml".
+  - **Sprogsignaler**: region, stregkode, telefonens land (fra tidszonen,
+    ingen position), appens sprog og telefonens sprog
+    (`src/lib/language-signals.ts`, `primaryOcrLanguages`). Fastfryses ved
+    scanningen i `ProductCaptureFlow` og følger med til alle aflæsninger.
+    Privatlivspolitikken er opdateret.
+  - **Produktbilledet** rettes ud (skrå sider fra perspektiv gøres lodrette,
+    `straighten`) og lysnes (`auto_exposure`) lokalt i image-agent. Logoer
+    lysnes uden at sort bliver gråt. Ingen AI-billedredigering: OpenAI's
+    billedmodeller returnerede andre formater end fotoet (test 2026-09-18).
+- Pris pr. vare: forside ~4.300 tokens + enten 0 (lokalt læst) eller ~4.800
+  (samlet kald). Før: ~12.400.
+- Ikke testet: Google Vision. Den lokale Places-nøgle virker til Places, men
+  Google blokerer den til Vision (nøglen er låst til bestemte API'er). På
+  serveren findes hverken Places- eller Vision-nøgle. Afventer, at brugeren
+  åbner nøglen for Cloud Vision API.
+- Logo-firkanten på EDEKA-fotoet er reelt næsten sort (RGB ~8,1,8) — farven
+  kan ikke hentes ud af fotoet. Det rene logo skal komme fra logo-robotten
+  (Google Vision web-søgning).
 - Lokal OCR læser et nærbillede af deklarationen med ~90 %, men intet på et
-  foto taget på afstand. "Lokal først, ChatGPT kun ved usikkerhed" er
-  derfor muligt, men ikke slået til (afventer brugeren).
+  foto taget på afstand; så overtager OpenAI automatisk.
 ## 2026-09-27: Bundark til alle screen-overlays/popups
 
 - Nyt `BottomSheet` (`.hf-bottom-sheet`): glider op, trækstreg, træk ned /

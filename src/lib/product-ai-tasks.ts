@@ -1,5 +1,5 @@
 import { REGION_PROMPT, REGION_SCHEMA_PROPERTIES, REGION_SCHEMA_REQUIRED } from "@/lib/ai-regions";
-import type { BarcodeContext } from "@/lib/barcode-context";
+import { describeLanguageSignals, type BarcodeContext } from "@/lib/barcode-context";
 import { NUTRIENTS, NUTRIENT_KEYS } from "@/lib/nutrients";
 
 // Skema, prompt og promptversion for de tre AI-aflæsninger af produktfotos.
@@ -16,7 +16,8 @@ function contextLines({ barcode, context }: ContextLines, languageLabel = "Prior
     `Markedsregion: ${context.marketRegion}.`,
     `GS1-landesignal(er): ${context.gs1Regions.join(", ") || "ukendt"}.`,
     `${languageLabel}: ${context.primaryLanguageLabels.join(", ")}.`,
-  ];
+    describeLanguageSignals(context.signals ?? {}),
+  ].filter((line): line is string => Boolean(line));
 }
 
 // --- Forside ---------------------------------------------------------------
@@ -205,8 +206,7 @@ export const NUTRITION_SCHEMA = {
 
 const MICRO_UNITS = NUTRIENTS.map((n) => `${n.key}=${n.unit}`).join(", ");
 
-export const NUTRITION_SYSTEM = [
-  "Du aflæser en næringsdeklaration på en fødevareemballage.",
+const NUTRITION_RULES = [
   "Foretræk værdier pr. 100 g eller 100 ml. Bland aldrig portionskolonnen sammen med pr.100-kolonnen.",
   "kcalPer100g/proteinPer100g/carbsPer100g/fatPer100g skal være null hvis korrekt pr.100-værdi ikke kan læses.",
   "Hvis tabellen kun viser pr. portion, sæt basis=portion og lad pr.100-felter være null.",
@@ -217,6 +217,11 @@ export const NUTRITION_SYSTEM = [
   "Tom micronutrients-liste hvis tabellen ikke viser flere næringsstoffer.",
   "Prioritér de oplyste sprog, men de er ikke en whitelist.",
   "Gæt aldrig tal.",
+];
+
+export const NUTRITION_SYSTEM = [
+  "Du aflæser en næringsdeklaration på en fødevareemballage.",
+  ...NUTRITION_RULES,
   REGION_PROMPT,
 ].join(" ");
 
@@ -247,13 +252,17 @@ export const INGREDIENTS_SCHEMA = {
   additionalProperties: false,
 };
 
-export const INGREDIENTS_SYSTEM = [
-  "Du aflæser en ingrediensdeklaration på en fødevareemballage.",
+const INGREDIENTS_RULES = [
   "Returnér kun ingredienser, allergener og tekst som faktisk kan ses.",
   "rawText skal bevare teksten så tæt på emballagen som muligt.",
   "ingredientsText må rydde åbenlyse OCR-linjeproblemer, men må ikke opfinde, fjerne eller ændre ingredienser/procenter.",
   "Prioritér de oplyste sprog, men de er ikke en whitelist.",
   "Hvis billedet ikke er en ingrediensdeklaration eller er ulæseligt, brug tomme strenge/lister og lav confidence lav.",
+];
+
+export const INGREDIENTS_SYSTEM = [
+  "Du aflæser en ingrediensdeklaration på en fødevareemballage.",
+  ...INGREDIENTS_RULES,
   REGION_PROMPT,
 ].join(" ");
 
@@ -263,6 +272,57 @@ export function ingredientsText(input: ContextLines & { ocrText?: string }) {
     input.ocrText
       ? `Lokal OCR har foreslået denne tekst. Brug den kun som støtte og kontrollér mod billedet:\n${input.ocrText}`
       : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+// --- Energi + indhold i ét kald ---------------------------------------------
+// Brugerens valg 2026-09-27: næring og ingredienser står ofte på samme foto,
+// så de læses i ét kald i stedet for to (samme billede blev før sendt to
+// gange, ~3.400 ekstra tokens pr. vare). Bruges kun, når telefonens egen OCR
+// ikke kunne læse næringstabellen (src/lib/local-label.ts).
+
+export const LABEL_PROMPT_VERSION = "label-v1-2026-09-27";
+
+type ObjectSchema = { properties: Record<string, unknown>; required: string[] } & Record<string, unknown>;
+
+function withoutRegions(schema: ObjectSchema): ObjectSchema {
+  const properties = { ...schema.properties };
+  delete properties.ocrRegion;
+  delete properties.uncertainRegions;
+  return {
+    ...schema,
+    properties,
+    required: schema.required.filter((key) => key !== "ocrRegion" && key !== "uncertainRegions"),
+  };
+}
+
+export const LABEL_SCHEMA = {
+  type: "object",
+  properties: {
+    nutrition: withoutRegions(NUTRITION_SCHEMA),
+    ingredients: withoutRegions(INGREDIENTS_SCHEMA),
+    ...REGION_SCHEMA_PROPERTIES,
+  },
+  required: ["nutrition", "ingredients", ...REGION_SCHEMA_REQUIRED],
+  additionalProperties: false,
+};
+
+export const LABEL_SYSTEM = [
+  "Du aflæser ét foto af en fødevareemballage, som kan vise både næringsdeklarationen og ingredienslisten.",
+  "Udfyld nutrition ud fra næringsdeklarationen:",
+  ...NUTRITION_RULES,
+  "Udfyld ingredients ud fra ingredienslisten:",
+  ...INGREDIENTS_RULES,
+  "Viser billedet kun den ene del, så returnér null-/tomme værdier og lav confidence for den anden del.",
+  REGION_PROMPT,
+].join(" ");
+
+export function labelText(input: ContextLines & { ocrText?: string }) {
+  return [
+    ...contextLines(input),
+    input.ocrText ? `Lokal OCR som støtte (kontrollér altid mod billedet):\n${input.ocrText}` : "",
   ]
     .filter(Boolean)
     .join("\n");

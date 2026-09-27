@@ -15,6 +15,7 @@ import {
 } from "@/lib/barcode-scan";
 import { startBarcodeFrameScanner, type BarcodeRead } from "@/lib/barcode-frame-scanner";
 import { buildBarcodeContext } from "@/lib/barcode-context";
+import { readLanguageSignals } from "@/lib/language-signals";
 import { buildFakeBarcodeForRegion } from "@/lib/regions";
 import {
   CAPTURE_STEPS,
@@ -35,7 +36,8 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 // load-cirklen, mens den lokale OCR kører, og knappen får flueben, når den er
 // klaret. Står indholdet på energifotoet, får begge flueben. Så snart alle er
 // klaret, oprettes varen (POST /api/products/quick), og skærmen går til
-// /add/[id]; OpenAI udfylder navn/brand/næring/indhold bagefter.
+// /add/[id]; serveren udfylder navn/brand/næring/indhold bagefter — energi og
+// indhold fra telefonens egen aflæsning, når den er sikker, ellers OpenAI.
 
 type CameraStatus = "starting" | "active" | "denied" | "unavailable" | "error";
 
@@ -71,7 +73,7 @@ function captureFrame(video: HTMLVideoElement | null): string | null {
 }
 
 export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -203,8 +205,11 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     return buildBarcodeContext(dataRef.current.barcode ?? "", region).marketRegion;
   }
 
+  // Region + stregkode + telefonens land/sprog + appens sprog (fastfrosset
+  // ved scanningen). Tesseract får kun de første sprog (hastighed).
   function ocrLanguages() {
-    return buildBarcodeContext(dataRef.current.barcode ?? "", region).primaryOcrLanguages;
+    return buildBarcodeContext(dataRef.current.barcode ?? "", region, dataRef.current.languageSignals)
+      .tesseractLanguages;
   }
 
   const lookupBarcode = useCallback(
@@ -224,9 +229,10 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
         // Ukendt vare: gem stregkoden og gå videre til forsiden.
         const frame = captureFrame(videoRef.current);
         dataRef.current.barcode = code;
-        const context = buildBarcodeContext(code, region);
+        dataRef.current.languageSignals = readLanguageSignals(locale);
+        const context = buildBarcodeContext(code, region, dataRef.current.languageSignals);
         if (frame) {
-          void saveBarcodePhoto(frame, code, context.marketRegion).then((id) => {
+          void saveBarcodePhoto(frame, code, context.marketRegion, context.signals).then((id) => {
             if (id) dataRef.current.barcodeAnalysisId = id;
           });
         }
@@ -243,7 +249,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
         lookupInProgressRef.current = false;
       }
     },
-    [leaveTo, region, returnSuffix, stopScanner],
+    [leaveTo, locale, region, returnSuffix, stopScanner],
   );
 
   // Hver aflæsning: start decode-animationen på en ny kode (og opslaget, når
@@ -335,6 +341,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
       if (leavingRef.current) return;
       data.nutritionPhoto = frame;
       data.nutritionOcrText = result.text;
+      data.nutritionOcrConfidence = result.confidence;
       data.localNutrition = result.nutrition;
       if (result.ingredientsText) {
         // Indholdet står ved siden af næringstabellen: begge får flueben.
@@ -352,6 +359,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     if (leavingRef.current) return;
     data.ingredientsPhoto = frame;
     data.ingredientsOcrText = result.text;
+    data.ingredientsOcrConfidence = result.confidence;
     data.ingredientsOnNutritionPhoto = false;
     if (result.ingredientsText) data.localIngredientsText = result.ingredientsText;
     goToNextStep(markDone("ingredients"));

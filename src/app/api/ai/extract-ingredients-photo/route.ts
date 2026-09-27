@@ -16,10 +16,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "barcode er påkrævet før ingrediensanalyse" }, { status: 400 });
   }
 
-  const context = buildBarcodeContext(barcode, marketRegion);
+  const signals = body?.signals;
+  const context = buildBarcodeContext(barcode, marketRegion, signals);
 
   try {
-    const { analysisId, result } = await analyzeIngredientsPhoto({ photo, barcode, marketRegion, ocrText });
+    const { analysisId, result } = await analyzeIngredientsPhoto({ photo, barcode, marketRegion, ocrText, signals });
     return NextResponse.json({ analysisId, context, result });
   } catch (error) {
     console.error("Ingredient photo extraction failed", error);

@@ -1,4 +1,5 @@
 import type { AlternativeServing, AnalysisIds } from "@/lib/product-analysis-types";
+import type { LanguageSignals } from "@/lib/regions";
 
 // Delt sessionStorage-cache mellem det guidede kamera-auto-flow
 // (/camera/create) og opret-produkt-siden (/product/create) — alt brugeren har
@@ -44,5 +45,8 @@ export type ProductCreateDraft = {
   gs1Prefix3?: string;
   gs1Regions?: string[];
   primaryOcrLanguages?: string[];
+  // Telefonens land (tidszone), appens sprog og telefonens sprog — fastfrosset
+  // ved scanningen sammen med region/GS1 (brugerens valg 2026-09-27).
+  languageSignals?: LanguageSignals;
   analysisIds?: AnalysisIds;
 };

@@ -1,10 +1,11 @@
 import { findIngredientsSection, parseNutritionText, type ParsedNutrition } from "@/lib/product-ocr";
 import { extractTextPrioritized, usableOcrText } from "@/lib/product-ocr-prioritized";
+import type { LanguageSignals } from "@/lib/regions";
 
 // Klientlogik for kameraflowet under Tilføj (docs/DECISIONS.md 2026-09-27):
 // stregkode → forside → energi → indhold. Hvert foto læses kun med lokal OCR
-// (hurtigt); OpenAI kører bagefter på serveren, når varen er oprettet
-// (POST /api/products/quick).
+// (hurtigt); serveren bruger den lokale aflæsning, når den er sikker, og
+// spørger ellers OpenAI, når varen er oprettet (POST /api/products/quick).
 
 export type CaptureStep = "barcode" | "front" | "nutrition" | "ingredients";
 
@@ -13,12 +14,17 @@ export const CAPTURE_STEPS: CaptureStep[] = ["barcode", "front", "nutrition", "i
 export type CaptureData = {
   barcode?: string;
   barcodeAnalysisId?: string;
+  // Telefonens land (tidszone), appens sprog og telefonens sprog —
+  // fastfrosset ved scanningen (src/lib/language-signals.ts).
+  languageSignals?: LanguageSignals;
   frontPhoto?: string;
   nutritionPhoto?: string;
   nutritionOcrText?: string;
+  nutritionOcrConfidence?: number;
   localNutrition?: ParsedNutrition | null;
   ingredientsPhoto?: string;
   ingredientsOcrText?: string;
+  ingredientsOcrConfidence?: number;
   localIngredientsText?: string;
   // Ingredienslisten stod på energifotoet — intet separat indholdsfoto.
   ingredientsOnNutritionPhoto?: boolean;
@@ -26,19 +32,22 @@ export type CaptureData = {
 
 // Kun læsbar tekst bruges (usableOcrText) — ulæselig OCR må aldrig ende i et
 // felt (docs/DECISIONS.md 2026-09-27). Næring/ingredienser læses med
-// tesseracts tabel-layout.
+// tesseracts tabel-layout. Sikkerheden sendes med, så serveren kan afgøre,
+// om aflæsningen kan bruges uden OpenAI.
 async function ocr(photo: string, languages: string[], tableLayout = false) {
   try {
-    return usableOcrText(await extractTextPrioritized(photo, languages, undefined, { tableLayout }));
+    const result = await extractTextPrioritized(photo, languages, undefined, { tableLayout });
+    const text = usableOcrText(result);
+    return { text, confidence: text ? result.confidence : 0 };
   } catch {
-    return "";
+    return { text: "", confidence: 0 };
   }
 }
 
 // Forsiden: lokal OCR bruges kun til dublet-tjek mod databasen. Returnerer
 // id'et på en eksisterende vare, hvis teksten matcher en.
 export async function readFrontPhoto(photo: string, languages: string[]): Promise<{ duplicateId: string | null }> {
-  const text = await ocr(photo, languages);
+  const { text } = await ocr(photo, languages);
   if (!text) return { duplicateId: null };
   try {
     const response = await fetch("/api/products/recognize-text", {
@@ -57,27 +66,33 @@ export async function readFrontPhoto(photo: string, languages: string[]): Promis
 // Energi: næringstabellen læses lokalt; står ingredienslisten ved siden af,
 // er indholds-trinnet også klaret.
 export async function readNutritionPhoto(photo: string, languages: string[]) {
-  const text = await ocr(photo, languages, true);
+  const { text, confidence } = await ocr(photo, languages, true);
   return {
     text,
+    confidence,
     nutrition: text ? parseNutritionText(text) : null,
     ingredientsText: text ? findIngredientsSection(text) : null,
   };
 }
 
 export async function readIngredientsPhoto(photo: string, languages: string[]) {
-  const text = await ocr(photo, languages, true);
-  return { text, ingredientsText: text ? (findIngredientsSection(text) ?? "") : "" };
+  const { text, confidence } = await ocr(photo, languages, true);
+  return { text, confidence, ingredientsText: text ? (findIngredientsSection(text) ?? "") : "" };
 }
 
 // Stregkode-fotoet gemmes i baggrunden til kvalitetskontrol
 // (docs/DECISIONS.md 2026-09-19) og må aldrig blokere flowet.
-export async function saveBarcodePhoto(photo: string, barcode: string, marketRegion: string): Promise<string | null> {
+export async function saveBarcodePhoto(
+  photo: string,
+  barcode: string,
+  marketRegion: string,
+  signals?: LanguageSignals,
+): Promise<string | null> {
   try {
     const response = await fetch("/api/ai/save-barcode-photo", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ photo, barcode, marketRegion }),
+      body: JSON.stringify({ photo, barcode, marketRegion, signals }),
     });
     const data = response.ok ? ((await response.json()) as { analysisId?: string }) : null;
     return data?.analysisId ?? null;
@@ -93,13 +108,16 @@ export async function createQuickProduct(data: CaptureData, marketRegion: string
     body: JSON.stringify({
       barcode: data.barcode,
       marketRegion,
+      signals: data.languageSignals,
       barcodeAnalysisId: data.barcodeAnalysisId,
       frontPhoto: data.frontPhoto,
       nutritionPhoto: data.nutritionPhoto,
       nutritionOcrText: data.nutritionOcrText,
+      nutritionOcrConfidence: data.nutritionOcrConfidence,
       localNutrition: data.localNutrition ?? null,
       ingredientsPhoto: data.ingredientsOnNutritionPhoto ? undefined : data.ingredientsPhoto,
       ingredientsOcrText: data.ingredientsOcrText,
+      ingredientsOcrConfidence: data.ingredientsOcrConfidence,
       localIngredientsText: data.localIngredientsText,
     }),
   });
