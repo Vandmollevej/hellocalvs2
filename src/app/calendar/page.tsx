@@ -41,7 +41,7 @@ import { getSportMeta } from "@/lib/sport-icons";
 import { useDefaultCalendarView } from "@/lib/calendar-view-pref";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { fetchSleepQuality, localDateKey } from "@/lib/sleep-quality";
-import { IconChampagneBottle } from "@/components/icons/ChampagneBottle";
+import { IconPartyPopper, PartyPopperImage } from "@/components/icons/PartyPopper";
 import { BODY_MEASUREMENT_FIELDS } from "@/lib/body-measurements";
 import type { GoalDTO, GoalTargetDTO } from "@/lib/user-goals";
 
@@ -1000,12 +1000,11 @@ function MonthView({
                       }`}
                     >
                       {date.getDate()}
-                      {/* Målsætningsdato: champagneflasken i øverste venstre
+                      {/* Målsætningsdato: konfettikanonen i øverste venstre
                           hjørne, modsat ✓/÷ i højre. */}
                       {hasGoal && (
-                        <IconChampagneBottle
+                        <IconPartyPopper
                           size={12}
-                          stroke={2.2}
                           className={`absolute left-0.5 top-0.5 ${current ? "text-hf-white" : "text-hf-black"}`}
                         />
                       )}
@@ -1086,7 +1085,7 @@ function WeekView({
             </span>
             {future ? (
               <span className="flex flex-1 items-center">
-                {hasGoal && <IconChampagneBottle size={18} className="shrink-0 text-hf-black" />}
+                {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
               </span>
             ) : (
               <>
@@ -1103,8 +1102,8 @@ function WeekView({
                       : met
                         ? t("calendar.goalMet")
                         : t("calendar.goalMissed")}
-                  {/* Målsætningsdato: champagneflasken efter teksten. */}
-                  {hasGoal && <IconChampagneBottle size={18} className="shrink-0 text-hf-black" />}
+                  {/* Målsætningsdato: konfettikanonen efter teksten. */}
+                  {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
                 </span>
                 <span className="ml-auto flex shrink-0 items-center gap-1">
                   <span
@@ -1298,7 +1297,7 @@ function ListView({
             </span>
             {future ? (
               <span className="flex flex-1 items-center">
-                {hasGoal && <IconChampagneBottle size={18} className="shrink-0 text-hf-black" />}
+                {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
               </span>
             ) : (
               <>
@@ -1315,8 +1314,8 @@ function ListView({
                       : met
                         ? t("calendar.goalMet")
                         : t("calendar.goalMissed")}
-                  {/* Målsætningsdato: champagneflasken efter teksten. */}
-                  {hasGoal && <IconChampagneBottle size={18} className="shrink-0 text-hf-black" />}
+                  {/* Målsætningsdato: konfettikanonen efter teksten. */}
+                  {hasGoal && <IconPartyPopper size={18} className="shrink-0 text-hf-black" />}
                 </span>
                 <span className="ml-auto flex shrink-0 items-center gap-1">
                   <span
@@ -1432,7 +1431,7 @@ function WeekTimelineView({
               <span className="hf-heading flex items-center gap-2 text-sm">
                 {date.getDate()}
                 {met && <IconCheck size={15} stroke={3.5} className="text-hf-lime" aria-hidden="true" />}
-                {goalsForDate(goalsByDate, date).length > 0 && <IconChampagneBottle size={15} />}
+                {goalsForDate(goalsByDate, date).length > 0 && <IconPartyPopper size={15} />}
               </span>
             </button>
           );
@@ -2246,7 +2245,7 @@ function HourRow({
       )}
       {(activities.length > 0 || hasGoal) && (
         <div className="pointer-events-none absolute inset-y-0 left-1 z-[5] flex items-center gap-1">
-          {hasGoal && <IconChampagneBottle size={16} className="text-hf-black" />}
+          {hasGoal && <IconPartyPopper size={16} className="text-hf-black" />}
           {activities.map((activity) => {
             const { icon: SportIcon, label } = getSportMeta(activity.sportType);
             return <SportIcon key={activity.id} size={16} className="text-hf-black opacity-70" aria-label={label} />;
@@ -2380,7 +2379,7 @@ function DraggableEntryMarker({
 }
 
 // Målsætningscirklen midt på dagvisningen: samme størrelse og tan-baggrund
-// som produktbilledet på produktsiden (190px), med champagneflasken og målet.
+// som produktbilledet på produktsiden (190px), med konfettikanonen og målet.
 // Tryk på cirklen åbner målsætningen; tryk udenfor lukker den.
 function GoalPopup({ goal, onOpen, onClose }: { goal: GoalDTO; onOpen: () => void; onClose: () => void }) {
   const { t } = useTranslation();
@@ -2399,7 +2398,7 @@ function GoalPopup({ goal, onOpen, onClose }: { goal: GoalDTO; onOpen: () => voi
         aria-label={t("calendar.openTargetDateAriaLabel")}
         className="relative flex size-[190px] flex-col items-center justify-center gap-2 rounded-full bg-hf-tan text-hf-black shadow-xl focus-visible:outline-2 focus-visible:outline-hf-black"
       >
-        <IconChampagneBottle size={56} stroke={1.6} />
+        <PartyPopperImage size={72} />
         {target && <GoalTargetValue target={target} className="hf-type-body-lg hf-heading" />}
       </button>
     </div>
@@ -2430,7 +2429,7 @@ function GoalAccordion({ goal }: { goal: GoalDTO }) {
         className="grid w-full grid-cols-[1fr_auto_1fr] items-center gap-2 px-4 py-3 text-left focus-visible:outline-2 focus-visible:outline-hf-black"
       >
         <span className="hf-type-body font-semibold flex min-w-0 items-center gap-2 text-hf-black">
-          <IconChampagneBottle size={18} className="shrink-0" />
+          <IconPartyPopper size={18} className="shrink-0" />
           <span className="truncate">{t("goals.title")}</span>
         </span>
         {weight ? <GoalTargetValue target={weight} className="hf-type-body font-semibold" /> : <span />}
