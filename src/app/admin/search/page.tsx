@@ -1,16 +1,8 @@
 import { redirect } from "next/navigation";
-import { requireAdminUser } from "@/lib/require-admin";
-import { AdminProductSearch } from "@/components/admin/AdminProductSearch";
 
-export default async function AdminSearchPage() {
-  const admin = await requireAdminUser();
-  if (!admin) redirect("/admin/login");
-
-  return (
-    <div className="flex flex-col gap-4">
-      <h1 className="hf-type-title text-hf-black">Søg</h1>
-      <p className="hf-type-body text-text-secondary">Søg i den godkendte database og ret eksisterende produkter.</p>
-      <AdminProductSearch />
-    </div>
-  );
+// Den gamle søgeside er afløst af Produkt-database (docs/DECISIONS.md
+// 2026-09-27); gamle links sender videre med søgeordet.
+export default async function AdminSearchPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
+  const { q } = await searchParams;
+  redirect(q ? `/admin/product-database?q=${encodeURIComponent(q)}` : "/admin/product-database");
 }

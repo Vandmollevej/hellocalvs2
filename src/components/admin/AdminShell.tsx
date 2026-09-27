@@ -40,7 +40,7 @@ const NAV: NavEntry[] = [
       { href: "/admin/logos", key: "nav_logos" },
     ],
   },
-  { kind: "link", href: "/admin/search", key: "nav_product_database", icon: "database" },
+  { kind: "link", href: "/admin/product-database", key: "nav_product_database", icon: "database" },
   {
     kind: "group",
     id: "people",

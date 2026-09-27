@@ -2,6 +2,10 @@
 
 Last updated: 2026-09-27
 
+## 2026-09-27: Admin "Produkt-database"
+
+- Ny side `/admin/product-database` (menupunktet "Produkt-database"): søg, filtrér (kæde fx Rema 1000, mærke, sub brand, kategori, varetype, kilde, status, billede, stregkode) og sortér alle produkter; liste/galleri; klik åbner produktets admin-side. `/admin/search` sender videre. Ingen migration.
+- Lint, typecheck og build kørt; ikke testet mod data (lokalt er der ingen DB).
 ## 2026-09-27: Telefon-editor i admin + "Flows"
 
 - Fælles vindue `PhonePreviewEditor`: sort iPhone 17 (402 × 874 px) i venstre halvdel, redigering i højre. Bruges af Besked automatisering (`/admin/messaging/[event]`, mail + notifikation), Svarskabeloner og Flows.

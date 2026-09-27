@@ -31,7 +31,7 @@ const DICTIONARY = {
   support_title: { DA: "Supporthenvendelser", EN: "Support requests" },
   nav_logout: { DA: "Log ud", EN: "Log out" },
   nav_group_approval: { DA: "Produktgodkendelse", EN: "Product approval" },
-  nav_product_database: { DA: "Produktdatabase", EN: "Product database" },
+  nav_product_database: { DA: "Produkt-database", EN: "Product database" },
   nav_users_all: { DA: "Alle brugere", EN: "All users" },
   nav_partners: { DA: "Partnere", EN: "Partners" },
   nav_group_administration: { DA: "Administration", EN: "Administration" },

@@ -326,7 +326,8 @@ export const PAGE_TREE: PageArea[] = [
           },
           { path: "/admin/cron-jobs", label: "Cron-jobs" },
           { path: "/admin/duplicate-products", label: "Dubletter" },
-          { path: "/admin/search", label: "Søg" },
+          { path: "/admin/product-database", label: "Produkt-database" },
+          { path: "/admin/search", label: "Søg", note: "Gammel adresse — sender videre til Produkt-database" },
           { path: "/admin/search-ranking", label: "Søgealgoritmer" },
           { path: "/admin/passkeys", label: "Passkeys" },
           {
