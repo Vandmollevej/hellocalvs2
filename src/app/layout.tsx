@@ -6,6 +6,9 @@ import { LocaleProvider } from "@/i18n/LocaleProvider";
 import { OfflineQueueBanner } from "@/components/OfflineQueueBanner";
 import { GlobalClipboardGuard } from "@/components/GlobalClipboardGuard";
 import { AuthGate } from "@/components/AuthGate";
+import { FamilyStatusProvider } from "@/components/family/FamilyStatusProvider";
+import { FamilyWatchFrame } from "@/components/family/FamilyWatchFrame";
+import { AccessLogPanel } from "@/components/family/AccessLogPanel";
 import { ConsentGate } from "@/components/ConsentGate";
 import { StartupTipsGate } from "@/components/StartupTipsGate";
 import { SleepQualityGate } from "@/components/SleepQualityGate";
@@ -59,7 +62,13 @@ export default function RootLayout({
           <StartupTipsGate />
           <SleepQualityGate />
           <OfflineQueueBanner />
-          <PhoneFrame>{children}</PhoneFrame>
+          <FamilyStatusProvider>
+            <PhoneFrame>
+              {children}
+              <FamilyWatchFrame />
+              <AccessLogPanel />
+            </PhoneFrame>
+          </FamilyStatusProvider>
         </LocaleProvider>
       </body>
     </html>

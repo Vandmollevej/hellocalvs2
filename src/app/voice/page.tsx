@@ -1,5 +1,6 @@
 "use client";
 
+import { mealShareBody } from "@/lib/meal-share";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -526,8 +527,8 @@ export default function VoicePage() {
           const saveRes = await fetch("/api/registrations", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(
-              item.productId
+            body: JSON.stringify({
+              ...(item.productId
                 ? { productId: item.productId, amountGrams: item.amountGrams }
                 : {
                     amountGrams: item.amountGrams,
@@ -536,8 +537,10 @@ export default function VoicePage() {
                     proteinSnapshot: item.protein,
                     carbsSnapshot: item.carbs,
                     fatSnapshot: item.fat,
-                  }
-            ),
+                  }),
+              // Fælles måltid (docs/FAMILY.md).
+              ...mealShareBody(),
+            }),
           });
           if (!saveRes.ok) return null;
           const saveData = await saveRes.json();

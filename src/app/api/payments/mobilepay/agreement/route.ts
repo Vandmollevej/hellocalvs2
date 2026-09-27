@@ -32,6 +32,7 @@ export async function POST(req: Request) {
       amountOre: SUBSCRIPTION_PRICES_DKK[plan][months] * 100,
       intervalMonths: months,
       productName: PLAN_NAMES[plan],
+      subscriptionPlan: plan === "family" ? "FAMILY" : "INDIVIDUAL",
     });
     return NextResponse.json({ confirmationUrl });
   } catch (error) {

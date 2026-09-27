@@ -39,7 +39,13 @@ const PAID_CHARGE_STATUSES: ChargeStatus[] = ["CHARGED", "PARTIALLY_CAPTURED", "
 export class MobilePayUnavailableError extends Error {}
 
 // Det, brugeren køber: beløb pr. interval og intervallets længde i måneder.
-export type MobilePayPlan = { amountOre: number; intervalMonths: number; productName: string };
+export type MobilePayPlan = {
+  amountOre: number;
+  intervalMonths: number;
+  productName: string;
+  // Familieplan (docs/FAMILY.md): FAMILY giver familiens medlemmer Seriøs.
+  subscriptionPlan?: "INDIVIDUAL" | "FAMILY";
+};
 
 export function mobilePayReturnUrl() {
   return `${appBaseUrl()}/settings/payment/mobilepay`;
@@ -133,8 +139,13 @@ export async function startMobilePayAgreement(userId: string, plan: MobilePayPla
 
   await prisma.subscription.upsert({
     where: { userId },
-    create: { userId, status: "INACTIVE", pendingAgreementId: created.agreementId },
-    update: { pendingAgreementId: created.agreementId },
+    create: {
+      userId,
+      status: "INACTIVE",
+      pendingAgreementId: created.agreementId,
+      plan: plan.subscriptionPlan ?? "INDIVIDUAL",
+    },
+    update: { pendingAgreementId: created.agreementId, plan: plan.subscriptionPlan ?? "INDIVIDUAL" },
   });
 
   if (created.chargeId) {
