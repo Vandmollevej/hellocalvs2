@@ -160,25 +160,41 @@ export function regionFromTimeZone(timeZone: string | null | undefined): RegionC
   return REGION_BY_TIME_ZONE[timeZone] ?? null;
 }
 
+// Varer, der ofte sælges på tværs af grænsen (brugerens viden 2026-09-27): i
+// Danmark scannes også svenske varer (mest på Sjælland) og tyske varer (mest
+// i Jylland). Appen kender ikke landsdelen (intet postnummer, ingen præcis
+// position), så begge er sekundære for hele Danmark. Stregkodens GS1-signal
+// afgør stadig det konkrete produkt: en tysk vare har et tysk nummer.
+export const CROSS_BORDER_REGIONS: Partial<Record<RegionCode, { regions: RegionCode[]; note: string }>> = {
+  DK: {
+    regions: ["SE", "DE"],
+    note: "I Danmark sælges også svenske varer (især på Sjælland) og tyske varer (især i Jylland), så svensk og tysk emballagetekst er almindelig.",
+  },
+};
+
 // Ordered, deduplicated Tesseract/vision language codes: the user's market
 // region is the primary signal, the barcode's GS1 signal is next, then the
-// phone's country, the app's language and the phone's languages (brugerens
-// valg 2026-09-27 — before that, phone/app language was never used).
-// English is always included as a safety net. This is a priority order, not
-// a hard restriction — low-confidence OCR/vision may still recognize other
-// languages.
+// phone's country, the region's cross-border languages (only with
+// includeCrossBorder — the AI prompt gets them, local OCR does not, since
+// every extra tesseract language makes it markedly slower), the app's
+// language and the phone's languages (brugerens valg 2026-09-27 — before
+// that, phone/app language was never used). English is always included as a
+// safety net. This is a priority order, not a hard restriction —
+// low-confidence OCR/vision may still recognize other languages.
 export function primaryOcrLanguages(
   marketRegion: string,
   gs1Regions: RegionCode[],
   signals: LanguageSignals = {},
+  { includeCrossBorder = true }: { includeCrossBorder?: boolean } = {},
 ): string[] {
   const region = isRegionCode(marketRegion) ? marketRegion : "DK";
   const codesFor = (r: RegionCode) => OCR_LANGUAGE_BY_REGION[r].split("+");
   const location = signals.locationCountry && isRegionCode(signals.locationCountry) ? codesFor(signals.locationCountry) : [];
+  const crossBorder = includeCrossBorder ? (CROSS_BORDER_REGIONS[region]?.regions ?? []).flatMap(codesFor) : [];
   const languages = [signals.appLanguage, ...(signals.phoneLanguages ?? [])].map(tesseractCodeForLanguageTag);
   return [
     ...new Set(
-      [...codesFor(region), ...gs1Regions.flatMap(codesFor), ...location, ...languages, "eng"].filter(
+      [...codesFor(region), ...gs1Regions.flatMap(codesFor), ...location, ...crossBorder, ...languages, "eng"].filter(
         (code): code is string => Boolean(code),
       ),
     ),

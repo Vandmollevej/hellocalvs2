@@ -37,6 +37,14 @@ This file records durable decisions. Add a dated entry when a later decision cha
   EFTER region og stregkode, aldrig alene. Telefonens land tages fra
   tidszonen, så appen aldrig spørger om eller ser en præcis position.
   Talegenkendelsen følger stadig kun regionen.
+- **Grænsehandel i Danmark** (brugerens viden 2026-09-27): svenske varer
+  (mest Sjælland) og tyske varer (mest Jylland) scannes jævnligt. Svensk og
+  tysk er derfor faste sekundære sprog for regionen DK i AI-prompten
+  (`CROSS_BORDER_REGIONS` i `src/lib/regions.ts`), med en linje om
+  grænsehandlen. Lokal OCR får dem kun, når stregkoden selv peger dertil
+  (GS1 73 = svensk, 40-44 = tysk), fordi hvert ekstra tesseract-sprog gør
+  den markant langsommere. Landsdelen bruges ikke: appen kender hverken
+  postnummer eller præcis position.
 - **Produktbilleder redigeres kun lokalt**: udretning af skrå sider og
   lysning sker i image-agent på originalfotoet. OpenAI's billedmodeller
   bruges ikke til det, fordi de ændrer format og kan ændre logoet

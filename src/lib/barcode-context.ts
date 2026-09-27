@@ -1,4 +1,5 @@
 import {
+  CROSS_BORDER_REGIONS,
   isRegionCode,
   gs1RegionCandidates,
   primaryOcrLanguages,
@@ -32,6 +33,8 @@ export type BarcodeContext = {
   marketRegion: RegionCode;
   gs1Regions: RegionCode[];
   signals: LanguageSignals;
+  // Fx "I Danmark sælges også svenske og tyske varer …" til AI-prompten.
+  crossBorderNote: string | null;
   primaryOcrLanguages: string[];
   primaryLanguageLabels: string[];
   tesseractLanguages: string[];
@@ -70,7 +73,11 @@ export function buildBarcodeContext(
   const gs1Regions = gs1RegionCandidates(cleanedBarcode);
   const signals = cleanLanguageSignals(signalsInput);
   const languages = primaryOcrLanguages(marketRegion, gs1Regions, signals);
-  const tesseractLanguages = languages.slice(0, MAX_TESSERACT_LANGUAGES);
+  // Lokal OCR får ikke grænsehandels-sprogene (kun når stregkoden selv peger
+  // dertil), så den ikke bliver langsommere for helt almindelige varer.
+  const tesseractLanguages = primaryOcrLanguages(marketRegion, gs1Regions, signals, {
+    includeCrossBorder: false,
+  }).slice(0, MAX_TESSERACT_LANGUAGES);
 
   return {
     barcode: cleanedBarcode,
@@ -78,6 +85,7 @@ export function buildBarcodeContext(
     marketRegion,
     gs1Regions,
     signals,
+    crossBorderNote: CROSS_BORDER_REGIONS[marketRegion]?.note ?? null,
     primaryOcrLanguages: languages,
     primaryLanguageLabels: languages.map((code) => LANGUAGE_LABELS[code] ?? code),
     tesseractLanguages,

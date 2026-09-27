@@ -54,7 +54,9 @@ tysk mælkekarton. Testscripts ligger kun i sessionens scratchpad.
     ingen position), appens sprog og telefonens sprog
     (`src/lib/language-signals.ts`, `primaryOcrLanguages`). Fastfryses ved
     scanningen i `ProductCaptureFlow` og følger med til alle aflæsninger.
-    Privatlivspolitikken er opdateret.
+    Privatlivspolitikken er opdateret. For Danmark er svensk og tysk faste
+    sekundære sprog til AI'en (grænsehandel); lokal OCR får dem kun via
+    stregkoden (`CROSS_BORDER_REGIONS`).
   - **Produktbilledet** rettes ud (skrå sider fra perspektiv gøres lodrette,
     `straighten`) og lysnes (`auto_exposure`) lokalt i image-agent. Logoer
     lysnes uden at sort bliver gråt. Ingen AI-billedredigering: OpenAI's

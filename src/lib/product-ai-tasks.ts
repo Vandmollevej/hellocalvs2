@@ -16,6 +16,7 @@ function contextLines({ barcode, context }: ContextLines, languageLabel = "Prior
     `Markedsregion: ${context.marketRegion}.`,
     `GS1-landesignal(er): ${context.gs1Regions.join(", ") || "ukendt"}.`,
     `${languageLabel}: ${context.primaryLanguageLabels.join(", ")}.`,
+    context.crossBorderNote ?? null,
     describeLanguageSignals(context.signals ?? {}),
   ].filter((line): line is string => Boolean(line));
 }
