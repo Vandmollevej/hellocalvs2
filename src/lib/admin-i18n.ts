@@ -24,6 +24,7 @@ const DICTIONARY = {
   nav_logos: { DA: "Logoer", EN: "Logos" },
   nav_api_keys: { DA: "API-nøgler", EN: "API keys" },
   nav_design_manual: { DA: "Designmanual", EN: "Design manual" },
+  nav_page_tree: { DA: "Page tree", EN: "Page tree" },
   nav_ingredient_requests: { DA: "Ønskede ingredienser", EN: "Requested ingredients" },
   nav_support: { DA: "Support", EN: "Support" },
   support_title: { DA: "Supporthenvendelser", EN: "Support requests" },

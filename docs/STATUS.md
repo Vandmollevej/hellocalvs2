@@ -2,6 +2,10 @@
 
 Last updated: 2026-09-27
 
+## 2026-09-27: Admin "Page tree"
+
+- Ny admin-side `/admin/page-tree`: alle 128 sider som træ med pile, søgning, spring til område og "testet"-flueben med fremdriftsbjælke. Test sikrer at listen følger `src/app` (docs/DECISIONS.md 2026-09-27).
+
 ## 2026-09-27: Admin i Cloudflare-struktur
 
 Hele admin har fået ny skal (`AdminShell`): topbar med "Gå til…"-søgning
@@ -68,7 +72,7 @@ kalenderens dagvisning og graf "Søvnkvalitet og kalorier" på Statistik. Se
 DECISIONS 2026-09-26. Kræver migration `20260926130000_sleep_quality` ved
 deploy. Ikke visuelt testet (brugeren tjekker selv).
 
-Last updated: 2026-09-26
+Last updated: 2026-09-27
 ## 2026-09-26: Support-indbakke i admin
 
 Se DECISIONS 2026-09-26 "Support-indbakke". Tråde, svar, interne noter,

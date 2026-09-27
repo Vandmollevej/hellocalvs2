@@ -77,6 +77,7 @@ const NAV: NavEntry[] = [
     links: [
       { href: "/admin/cron-jobs", key: "nav_cron_jobs" },
       { href: "/admin/designmanual", key: "nav_design_manual" },
+      { href: "/admin/page-tree", key: "nav_page_tree" },
     ],
   },
 ];

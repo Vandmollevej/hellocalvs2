@@ -2610,3 +2610,9 @@ både når integrationen slås til og bagefter.
 - Start-vægten (`User.weightKg`) overskrives aldrig af en integration; er den tom, bliver den ældste synkroniserede vejning start-vægt.
 - Samme vejning (±2 min, ±0,05 kg) eller træning (samme sport, ±5 min) fra to kilder gemmes kun én gang.
 - Sportstyper normaliseres til Statistik-nøglerne (`normalizeSportType` i `src/lib/sport-icons.ts`); dagssummer (fx skridt) opdateres ved næste synkronisering. Kode: `src/lib/integrations/store-items.ts`.
+
+## 2026-09-27: Admin "Page tree" — kort over alle sider
+
+- `/admin/page-tree` viser samtlige sider i appen som et træ med pile fra side til underside, grupperet efter indgang (velkomst/login, forside/bundmenu, profil, indstillinger, links, oprettelses-app, admin).
+- Træet er håndholdt i `src/lib/page-tree.ts` (danske navne + hvor man kommer ind). `src/lib/page-tree.test.mjs` fejler, hvis en `page.tsx` mangler eller står der to gange — ny side ⇒ tilføj den i træet.
+- Statiske sider åbnes i ny fane; dynamiske (`[id]`, `[token]`) markeres "kræver id". Flueben "testet" gemmes kun i admins egen browser (localStorage), ikke i databasen.
