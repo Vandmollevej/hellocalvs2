@@ -471,6 +471,23 @@ textarea::selection,
   justify-content: center;
 }
 
+/* Ring uden for cirklen på lys baggrund (forsiden) — box-shadow i stedet for
+   border, så den farvede flade forbliver 32 px som i den grønne header. */
+.hf-avatar--outlined {
+  box-shadow: 0 0 0 1px var(--hf-tan-dark);
+}
+
+/* Forsidens topbjælke uden grøn baggrund: samme højde og sidemargin som
+   .hf-appbar, så profilcirklen står samme sted. */
+.hf-topbar {
+  display: flex;
+  min-height: calc(52px + env(safe-area-inset-top, 0px));
+  flex: none;
+  align-items: center;
+  justify-content: flex-end;
+  padding: env(safe-area-inset-top, 0px) 16px 0;
+}
+
 .hf-appbar__title {
   overflow: hidden;
   color: var(--hf-color-white);

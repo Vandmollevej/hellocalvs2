@@ -5,10 +5,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { IconSettings } from "@tabler/icons-react";
 import { isMainFooterRoute, useFooterRootHrefs } from "@/lib/navigation";
 import { HfChevron } from "@/components/hf/HfChevron";
+import { ProfileAvatarLink } from "@/components/ProfileAvatarLink";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { useIsCompactLandscape } from "@/hooks/useIsCompactLandscape";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
-import { ProfileCircle } from "@/components/family/ProfileCircle";
 import { WatchPhoneIcon } from "@/components/family/WatchPhoneIcon";
 
 // Tilbagepilen sidder altid til venstre, profilcirklen altid til højre —
@@ -114,9 +114,7 @@ export function ScreenHeader({
             <IconSettings size={39} stroke={1.54} />
           </Link>
         ) : (
-          <Link href="/profile" aria-label={t("settings.openProfile")}>
-            <ProfileCircle name={status?.activeProfile.displayName ?? ""} />
-          </Link>
+          <ProfileAvatarLink />
         )}
       </div>
     </div>

@@ -1,23 +1,22 @@
 "use client";
 
-import Link from "next/link";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
-import { ProfileCircle } from "@/components/family/ProfileCircle";
 import { WatchPhoneIcon } from "@/components/family/WatchPhoneIcon";
+import { ProfileAvatarLink } from "@/components/ProfileAvatarLink";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
+// Samme højde, sidemargin og 44 px-slot som .hf-appbar, så profilcirklen
+// står præcis samme sted og har samme størrelse som på sider med ScreenHeader.
 export function TopBar() {
   const { t } = useTranslation();
   const { status } = useFamilyStatus();
   const watcher = status?.presence[0] ?? null;
   return (
-    <div data-top-bar className="flex items-center justify-end gap-2 px-4 pt-4">
+    <div data-top-bar className="hf-topbar gap-2">
       {watcher && (
         <WatchPhoneIcon name={watcher.displayName} title={t("family.watch.onAccount", { name: watcher.displayName })} />
       )}
-      <Link href="/profile" aria-label={t("settings.openProfile")}>
-        <ProfileCircle name={status?.activeProfile.displayName ?? ""} className="border border-hf-tan-dark" />
-      </Link>
+      <ProfileAvatarLink outlined />
     </div>
   );
 }

@@ -2,6 +2,17 @@
 
 Last updated: 2026-09-26
 
+## 2026-09-26: Profilcirklen ("PT") er én fælles komponent
+
+Brugeren så profilcirklen som mindre på forsiden. Målt i Chromium ved 402 px
+var begge 32 px, men forsidens 1 px `border` lå inden i de 32 px (farvet flade
+kun 30 px), og cirklen sad 6 px længere inde og længere nede end i den grønne
+header. `src/components/ProfileAvatarLink.tsx` bruges nu af både `TopBar` og
+`ScreenHeader` (cirklen selv er master's `ProfileCircle`) og placeringen i
+`.hf-appbar__slot`/`.hf-topbar` (`globals.css`). Forsidens ring er en
+`box-shadow` uden for cirklen (`.hf-avatar--outlined`). Genmålt: 32×32 px ved
+(348, 10) på `/`, `/calendar` og `/statistics`. Mangler test på telefon.
+
 ## 2026-09-26: "Skiftende arbejdstider" skjult på Søvnmønster
 
 Kontakten og hint-teksten på `/profile/sleep` er skjult bag
