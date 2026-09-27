@@ -83,11 +83,12 @@ sammen til ikon-skinne), brødkrummer og bredere indhold. Mobil: skuffe-menu
 fra venstre. Menupunkter er omgrupperet (se DECISIONS 2026-09-27). Farver
 uændrede. Mangler brugerens visuelle godkendelse.
 
-## 2026-09-27: Designmanual → Skitser i pixels (eksempel)
+## 2026-09-27: Designmanual → Skitser i pixels
 
-- Ny underside `/admin/designmanual/skitser`: skærmbilleder fra "Hello Fresh inspiration" tegnet som rå farvekasser uden tekst med bredde × højde (CSS-px = billedpx ÷ 3) inde i hver kasse, side om side med originalen, plus foldbar målliste.
-- Målene er fundet med script på billedets pixels (farveskift/afgrænsning), ikke aflæst. Data: `src/app/admin/designmanual/skitser/sketch-data.ts`.
-- Kun eksemplet IMG_2274 (Log ind) er bygget. De øvrige billeder bygges, når brugeren har godkendt eksemplet.
+- `/admin/designmanual/skitser`: alle 57 billeder fra "Hello Fresh inspiration" tegnet som rå farvekasser uden tekst med bredde × højde (CSS-px = billedpx ÷ 3) inde i hver kasse, side om side med originalen. Én skitse ad gangen (`?s=<id>`), oversigt + forrige/næste, foldbar målliste (x, y, farve, kant, radius).
+- Målene er fundet af et script på billedets pixels (flader, kantbokse, fotos, tekstlinjer, ikoner, hårlinjer, radius med sub-pixel), ikke aflæst. Eksemplet (IMG_2274) blev godkendt af brugeren før resten blev bygget.
+- Data: `src/app/admin/designmanual/skitser/data/*.ts` (genereret). Originalerne er indlejret som data-URL, så de kun vises bag admin-login (nogle viser brugerens e-mail) — ikke i `public/`.
+- Nye billeder i mappen kommer ikke automatisk med; de skal genereres med skitse-scriptet (ligger ikke i repoet endnu).
 
 ## 2026-09-27: Domæne hellocal.io
 

@@ -1,4 +1,4 @@
-import type { Sketch, SketchBox } from "./sketch-data";
+import type { Sketch, SketchBox } from "./sketch-types";
 
 // Omregner skitsens billedpixels til CSS-pixels og placerer målteksten inde i
 // hver kasse, så den ikke dækker de kasser, der ligger inden i den.
@@ -14,6 +14,8 @@ export type LaidOutBox = SketchBox & {
   labelCenter: { x: number; y: number };
   /** Målteksten får kassens farve som baggrund, når den ikke kan stå frit. */
   pill: boolean;
+  /** Farven bag målteksten: kassens egen, ellers den nærmeste fyldte kasse udenom. */
+  backdrop: string;
 };
 
 const PAD = 4;
@@ -23,9 +25,14 @@ export function toCssRect(box: SketchBox, scale: number): Rect {
   return { x: box.x / scale, y: box.y / scale, w: box.w / scale, h: box.h / scale };
 }
 
+// Hele pixels; under 2 px med én decimal (fx hårlinjer på 0,3 px).
+export function formatPx(value: number): string {
+  return value < 2 ? String(Math.round(value * 10) / 10).replace(".", ",") : String(Math.round(value));
+}
+
 export function sizeLabel(rect: Rect): string {
-  const w = Math.round(rect.w);
-  const h = Math.round(rect.h);
+  const w = formatPx(rect.w);
+  const h = formatPx(rect.h);
   return rect.w >= 60 ? `${w} × ${h}` : `${w}×${h}`;
 }
 
@@ -97,11 +104,19 @@ export function layoutSketch(sketch: Sketch): LaidOutBox[] {
       if (overlap === 0) break;
     }
 
+    const parent = rects
+      .slice(0, index)
+      .map((r, i) => ({ r, fill: sketch.boxes[i].fill }))
+      .filter((p) => p.fill && contains(p.r, rect))
+      .pop();
+    const backdrop = box.fill ?? parent?.fill ?? sketch.background;
+
     return {
       ...box,
       rect,
       label,
-      labelColor: contrastColor(box.fill ?? sketch.background),
+      backdrop,
+      labelColor: contrastColor(backdrop),
       fontSize,
       labelCenter: { x: rect.x + best.x, y: rect.y + best.y },
       pill: bestOverlap > 0 || lw > rect.w - 2 || lh > rect.h,
