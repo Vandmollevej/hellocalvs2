@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
   IconAlertTriangle,
@@ -161,6 +162,15 @@ export default async function DesignManualPage() {
                 </a>
               </li>
             ))}
+            <li>
+              <Link
+                href="/admin/designmanual/skitser"
+                className="flex items-center gap-2 whitespace-nowrap rounded-md px-3 py-2 text-sm text-text-secondary hover:bg-hf-tan hover:text-text-primary"
+              >
+                <span className="hidden w-5 text-xs text-text-muted md:inline">→</span>
+                Skitser i pixels
+              </Link>
+            </li>
           </ul>
         </nav>
 

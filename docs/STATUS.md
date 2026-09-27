@@ -14,6 +14,12 @@ sammen til ikon-skinne), brødkrummer og bredere indhold. Mobil: skuffe-menu
 fra venstre. Menupunkter er omgrupperet (se DECISIONS 2026-09-27). Farver
 uændrede. Mangler brugerens visuelle godkendelse.
 
+## 2026-09-27: Designmanual → Skitser i pixels (eksempel)
+
+- Ny underside `/admin/designmanual/skitser`: skærmbilleder fra "Hello Fresh inspiration" tegnet som rå farvekasser uden tekst med bredde × højde (CSS-px = billedpx ÷ 3) inde i hver kasse, side om side med originalen, plus foldbar målliste.
+- Målene er fundet med script på billedets pixels (farveskift/afgrænsning), ikke aflæst. Data: `src/app/admin/designmanual/skitser/sketch-data.ts`.
+- Kun eksemplet IMG_2274 (Log ind) er bygget. De øvrige billeder bygges, når brugeren har godkendt eksemplet.
+
 ## 2026-09-26: MobilePay-betaling + Opsætning delt op
 
 - Opsætning er nu en oversigt med undersiderne "Sprog og region" (også fra Indstillinger) og "Resultatvisning" (allergener + udvidet næringsindhold).
