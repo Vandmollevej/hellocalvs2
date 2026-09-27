@@ -2,6 +2,12 @@
 
 Last updated: 2026-09-27
 
+## 2026-09-27: Admin kunne ikke scrolle på mobil
+
+- Årsag: `globals.css` låser html/body mod scroll (`overflow: hidden`), fordi appen scroller i sine egne indre containere. Admin-skallen, admin-login-layoutet og `/hello-doc/[token]` lå uden for telefonrammen og regnede med dokument-scroll, som derfor var blokeret.
+- Rettet: de tre rødder er nu `h-dvh overflow-y-auto` (egen scroll-container). Sticky topbar/sidebjælke virker uændret, fordi de klæber til den nærmeste scroll-container. Menuskuffen låser nu skallens container i stedet for body.
+- Lint, typecheck og build kørt.
+
 ## 2026-09-27: Produkt-database — filtre som dropdowns
 
 - Alle filtre på `/admin/product-database` er nu dropdowns; mærke, sub brand, kategori, varetype og kilde kan vælge flere på én gang (afkrydsning + søgning). Én chip pr. valgt værdi. Lint, typecheck og build kørt.
