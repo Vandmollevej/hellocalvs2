@@ -18,6 +18,8 @@ export type DailyChartField = Exclude<
 export type StatChartDef =
   | { key: "caloriesAndWeight"; kind: "caloriesAndWeight" }
   | { key: "intradayKcal"; kind: "intradayKcal" }
+  // Oplevelse af søvn (docs/DECISIONS.md 2026-09-26): søvnkvalitet 1–5 mod kalorier.
+  | { key: "sleepQuality"; kind: "sleepQuality" }
   | { key: `daily:${DailyChartField}`; kind: "daily"; field: DailyChartField; unit: string };
 
 function daily(field: DailyChartField, unit: string): StatChartDef {
@@ -27,6 +29,7 @@ function daily(field: DailyChartField, unit: string): StatChartDef {
 export const STAT_CHART_DEFS: StatChartDef[] = [
   { key: "caloriesAndWeight", kind: "caloriesAndWeight" },
   { key: "intradayKcal", kind: "intradayKcal" },
+  { key: "sleepQuality", kind: "sleepQuality" },
   daily("protein", "g"),
   daily("carbs", "g"),
   daily("fat", "g"),
@@ -44,7 +47,7 @@ export const STAT_CHART_DEFS: StatChartDef[] = [
   daily("vitaminC", "mg"),
 ];
 
-export const DEFAULT_ACTIVE_CHART_KEYS: string[] = ["caloriesAndWeight", "intradayKcal"];
+export const DEFAULT_ACTIVE_CHART_KEYS: string[] = ["caloriesAndWeight", "intradayKcal", "sleepQuality"];
 
 const chartDefByKey = new Map<string, StatChartDef>(STAT_CHART_DEFS.map((def) => [def.key, def]));
 

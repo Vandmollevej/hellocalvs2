@@ -323,6 +323,16 @@ export default function StatisticsPage() {
           <StatChart title={t("statistics.caloriesAndWeightChart")} series={chartSeries} defaultEnabledKeys={["kcal"]} />
         );
       }
+      if (def.kind === "sleepQuality") {
+        return (
+          <StatChart
+            title={t("statistics.sleepQualityChart")}
+            series={sleepChartSeries}
+            defaultEnabledKeys={["sleepQuality", "kcal"]}
+            storageKey="hellocal.statistik.sleepSeries"
+          />
+        );
+      }
       if (def.kind === "intradayKcal") {
         return <IntradayKcalChart registrations={recentRegistrations} windowDays={activePeriodDays} />;
       }
@@ -340,19 +350,12 @@ export default function StatisticsPage() {
         />
       );
     },
-    [t, chartSeries, recentRegistrations, activePeriodDays, allDays],
+    [t, chartSeries, sleepChartSeries, recentRegistrations, activePeriodDays, allDays],
   );
 
   return (
     <HfScreen title={t("statistics.title")} icon={<TrendIcon color="currentColor" size={20} />}>
       <div className="hf-page">
-        <StatChart
-          title={t("statistics.sleepQualityChart")}
-          series={sleepChartSeries}
-          defaultEnabledKeys={["sleepQuality", "kcal"]}
-          storageKey="hellocal.statistik.sleepSeries"
-        />
-
         {showAddChart && (
           <div className="flex justify-end">
             <Link

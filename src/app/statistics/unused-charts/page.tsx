@@ -26,7 +26,7 @@ type CategoryDef = { title: string; keys: string[] };
 
 function categoryDefs(t: (key: string) => string, region: string): CategoryDef[] {
   return [
-    { title: t("statUnusedCharts.category.energyWeight"), keys: ["caloriesAndWeight", "intradayKcal"] },
+    { title: t("statUnusedCharts.category.energyWeight"), keys: ["caloriesAndWeight", "intradayKcal", "sleepQuality"] },
     {
       title: nutritionSectionLabel(region),
       keys: [
@@ -43,6 +43,9 @@ function categoryDefs(t: (key: string) => string, region: string): CategoryDef[]
 function chartOption(def: StatChartDef, t: (key: string) => string): ChartOption {
   if (def.kind === "caloriesAndWeight") {
     return { key: def.key, label: t("statistics.caloriesAndWeightChart"), subtitle: t("statChart.last7Days") };
+  }
+  if (def.kind === "sleepQuality") {
+    return { key: def.key, label: t("statistics.sleepQualityChart"), subtitle: t("statChart.last7Days") };
   }
   if (def.kind === "intradayKcal") {
     return { key: def.key, label: t("statUnusedCharts.intradayKcal"), subtitle: t("statUnusedCharts.dayProfile") };
