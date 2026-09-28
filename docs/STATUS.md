@@ -8,6 +8,18 @@ Last updated: 2026-09-28
 - Grå infotekst under spørgsmålet følger "Vis tooltips". Store tal; valgt = grøn fyldt cirkel, hvidt tal, ingen Luk.
 - Efter 0,5 s glider popup'en ned som bundark med håndtag og forsvinder. Afventer test på telefon.
 
+## 2026-09-28: Abonnement — boilerplate fjernet
+
+- `/profile/subscription`: datalagringsnoten (`subscription.retentionNote`)
+  er fjernet fra hovedindholdet og fra da/en. Betingelser ligger fortsat i
+  footerens `TermsSheet`.
+
+## 2026-09-28: Kamera — scanningsstribe i stedet for load-cirkel
+
+- `PhotoWorkingOverlay` viser en hvid/lys gradientstribe (`.hf-scan-sweep`),
+  der fejer hen over fotoet, mens det analyseres. Beslutning: DECISIONS 2026-09-28.
+
+
 ## 2026-09-28: Aktivitetsniveau i 5 trin + mails mod spam
 
 - Profil → Profil: aktivitetsniveau i 5 trin (Meget lav … Meget høj), gemmes
@@ -22,6 +34,27 @@ Next work:
 1. Deploy med migrationen (sker ved push til master).
 2. Brugeren opretter selv sin private konto (peter@packroff.dk) og udfylder
    vægt/højde/fødselsdato/aktivitetsniveau i profilen.
+
+## 2026-09-28: Levende omrids om varen i kameraet
+
+- Tilføj-kameraet (Forside/Energi/Indhold) tegner nu en hvid streg om varen
+  midt i billedet, mens man sigter (MediaPipe på telefonen, hentes fra CDN).
+  Beslutning: DECISIONS 2026-09-28.
+- Lint, typecheck og build kørt; ikke afprøvet på en telefon (brugeren tjekker udseendet).
+
+## 2026-09-28: Kameraflowet — "Uden brus" i navnet + logo fra stregkode-fotoet
+
+- Testscanning af AQUA-vand: AI læste "Uden brus" men gemte det kun som
+  variant (navn "Vand"). Nu kommer varianten med i navnet.
+- Stregkode-fotoet læses for logo + variant (`enrich_barcode_logo` i admin
+  "Log"); logoet bliver et fritskrabningsjob. Beslutning: DECISIONS 2026-09-28.
+- Eksisterende vare "Vand" (AQUA) skal rettes manuelt i admin.
+- Lint, typecheck og build kørt; ikke testet mod database/OpenAI lokalt.
+## 2026-09-28: Hele Bilka + REMA 1000-kataloget importeres
+
+- 10.524 varer med næring (2.408 uden kcal/protein/kulhydrat/fedt springes over) og 7.218 billeder (5 GB) ligger på NAS'en i `data/store-products-import/` (kopieret med tar over SSH – for stort til git).
+- `store-products-agent` læser `/import` (compose-volume), når `store_products.json` findes dér; ellers den lille prøve i billedet. Billeder, der allerede er kopieret, springes over ved genstart.
+- Opdatering af kataloget: `py build_data.py --all --out <mappe>` og kopiér mappen til NAS'en igen; agenten kører ved næste start eller "Kør nu" i admin → Cron-jobs (`store-products-import`).
 
 ## 2026-09-28: Open Food Facts ude af søgningen
 
@@ -42,6 +75,23 @@ Next work:
 - `PATCH /api/registrations/[id]` tager nu også `amountGrams` + snapshot-værdier;
   øvrige snapshots skaleres med mængden. Beslutning: DECISIONS 2026-09-28.
 - Lint, typecheck og build kørt; ikke testet mod en database.
+
+## 2026-09-28: Billedrobot løbende + admin "Robotter"
+
+- Fritlægning (`image-cutout`) kører nu løbende (venter hele tiden på nye
+  produkter); logo-robotten er kommet under admin-styring (standard 03:00).
+- Ny side `/admin/robots` med On/Off, KØR og cron-job-kolonne pr. robot.
+  Beslutning: DECISIONS 2026-09-28.
+- Deploy: genbyg `image-agent` og `logo-agent` (ingen migration).
+- Lint og build kørt; ikke testet mod en database (lokalt er der ingen DB).
+
+## 2026-09-28: Kameraflow — stregkodefotoet udfylder Energi/Indhold
+
+- Årsag til fejlen (vandflaske): stregkodefotoet blev kun gemt, aldrig OCR-læst.
+  Nu læses det i baggrunden; "Ingredienser"/næringstabel på fotoet giver
+  flueben på Indhold/Energi, og en grøn ramme viser feltet. Beslutning:
+  DECISIONS 2026-09-28. Nyt log-trin `barcode_label` i admin "Log".
+- Lint, typecheck og build kørt; ikke testet på telefon.
 
 ## 2026-09-28: Admin "Log" — hver scanning trin for trin
 
@@ -4656,3 +4706,5 @@ låser porten/mappen på tværs af port-forsøg), og denne sessions Browser-pane
 kan ikke nå den server. Denne ændring bør derfor tjekkes visuelt af brugeren
 selv (eller i en senere session, når den anden dev-server ikke kører), særligt
 justeringen af scroll-fligen ved forskellige stå-op-tidspunkter.
+
+- 2026-09-28 (opgave 33): Ny side `/e-numre` viser hele E-nummer-databasen med søgefelt øverst (søg på nummer, fx "330"/"E330", eller dansk/internationalt navn/funktion). Logik i `src/lib/additives.ts`, UI i `src/components/additives/AdditiveList.tsx`.

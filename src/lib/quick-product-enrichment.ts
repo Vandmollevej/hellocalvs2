@@ -1,6 +1,7 @@
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import {
+  analyzeBarcodePhotoLogo,
   analyzeFrontPhoto,
   analyzeIngredientsPhoto,
   analyzeLabelPhoto,
@@ -9,7 +10,8 @@ import {
 } from "@/lib/product-photo-analysis";
 import { localIngredients, localNutrition } from "@/lib/local-label";
 import { hasIngredientsHeading } from "@/lib/product-ocr";
-import { linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
+import { createBarcodeLogoCutoutJob, linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
+import { matchBrand } from "@/lib/brand-match";
 import { cleanAlternativeServings } from "@/lib/alternative-servings";
 import { flagUncertainAlternativeServings } from "@/lib/alternative-servings-review";
 import { flagSimultaneousDuplicates } from "@/lib/product-duplicates";
@@ -45,6 +47,9 @@ export type QuickEnrichmentInput = {
   ingredientsOcrConfidence?: number;
   // Navn, hvis OpenAI ikke kan læse forsiden.
   fallbackName: string;
+  // Stregkode-fotoets AiProductAnalysis (kind=BARCODE), hvis det nåede at
+  // blive gemt — læses for logo og variant.
+  barcodeAnalysisId?: string | null;
 };
 
 // Atomisk i SQL: aflæsningerne rydder hver sine felter samtidig.
@@ -160,6 +165,109 @@ async function enrichFront(input: QuickEnrichmentInput) {
     await clearPending(productId, ["name", "brand"]);
     // Navnet indgår i registreringernes titleSnapshot.
     await refreshRegistrationSnapshots(productId).catch(() => {});
+  }
+}
+
+// Stregkode-fotoet (docs/DECISIONS.md 2026-09-28): logoet står ikke altid på
+// forsiden. Kører efter forsiden, så den kun udfylder det forsiden manglede:
+// - et logo i fotoet bliver altid et fritskrabnings-job (logo-kandidat),
+// - brand sættes kun, hvis forsiden intet brand gav,
+// - variant (fx "Uden brus") kun, hvis forsiden ingen variant gav.
+async function enrichBarcodeLogo(input: QuickEnrichmentInput) {
+  const { productId, barcodeAnalysisId } = input;
+  if (!barcodeAnalysisId) return;
+  const startedAt = Date.now();
+  try {
+    const read = await analyzeBarcodePhotoLogo({
+      analysisId: barcodeAnalysisId,
+      barcode: input.barcode,
+      marketRegion: input.marketRegion,
+      signals: input.signals,
+    });
+    if (!read) {
+      await debugLog({
+        category: "scan",
+        event: "enrich_barcode_logo",
+        level: "warn",
+        message: "Stregkode-fotoet kunne ikke findes — intet logo læst derfra",
+        productId,
+        durationMs: Date.now() - startedAt,
+      });
+      return;
+    }
+    const { result, brandMatch, imageUrl } = read;
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+      select: { name: true, variant: true, brand: { select: { id: true, name: true } } },
+    });
+    if (!product) return;
+
+    const logoText = result.logoText?.trim() || null;
+    const changes: Prisma.ProductUpdateInput = {};
+    let brand = product.brand;
+    const brandName = (brandMatch?.name ?? logoText ?? "").trim();
+    if (!brand && brandName && result.logoConfidence >= 0.5) {
+      brand = await prisma.brand.upsert({ where: { name: brandName }, update: {}, create: { name: brandName }, select: { id: true, name: true } });
+      changes.brand = { connect: { id: brand.id } };
+    }
+
+    const variant = result.variant?.trim() ?? "";
+    if (!product.variant && variant && result.variantConfidence >= 0.5) {
+      changes.variant = variant;
+      if (product.name !== input.fallbackName && !product.name.toLowerCase().includes(variant.toLowerCase())) {
+        changes.name = composeProductName({ productType: product.name, variant });
+      }
+    }
+    if (Object.keys(changes).length) {
+      await prisma.product.update({ where: { id: productId }, data: changes });
+      if (changes.name) await refreshRegistrationSnapshots(productId).catch(() => {});
+    }
+
+    // Logo-jobbet kobles til varens brand, når logoet er det brand;
+    // ellers til det bedste match i brand-databasen.
+    let logoJobCreated = false;
+    if (result.logoBox) {
+      const productBrandMatch = brand ? matchBrand(logoText, [brand]) : null;
+      await createBarcodeLogoCutoutJob({
+        analysisId: barcodeAnalysisId,
+        sourceUrl: imageUrl,
+        logoBox: result.logoBox,
+        logoText,
+        logoConfidence: result.logoConfidence,
+        productId,
+        brandMatch: productBrandMatch ?? brandMatch,
+      });
+      logoJobCreated = true;
+    }
+
+    await debugLog({
+      category: "scan",
+      event: "enrich_barcode_logo",
+      message: `Stregkode-foto læst af AI: ${logoText ? `logo "${logoText}"` : "intet logo"}${variant ? ` · variant "${variant}"` : ""}${
+        changes.brand ? " · brand sat fra stregkode-fotoet" : ""
+      }${changes.variant ? " · variant sat fra stregkode-fotoet" : ""}`,
+      productId,
+      durationMs: Date.now() - startedAt,
+      data: {
+        logoText,
+        logoConfidence: result.logoConfidence,
+        brandMatch,
+        variant: variant || null,
+        variantConfidence: result.variantConfidence,
+        logoJobCreated,
+        changedFields: Object.keys(changes),
+      },
+    });
+  } catch (error) {
+    console.error("Quick product barcode logo enrichment failed", productId, error);
+    await debugLog({
+      category: "scan",
+      event: "enrich_barcode_logo",
+      level: "error",
+      message: `Logo-aflæsningen af stregkode-fotoet fejlede: ${errorText(error)}`,
+      productId,
+      durationMs: Date.now() - startedAt,
+    });
   }
 }
 
@@ -308,7 +416,7 @@ async function enrichLabel(input: QuickEnrichmentInput) {
 
 export async function enrichQuickProduct(input: QuickEnrichmentInput) {
   const startedAt = Date.now();
-  await Promise.all([enrichFront(input), enrichLabel(input)]);
+  await Promise.all([enrichFront(input).then(() => enrichBarcodeLogo(input)), enrichLabel(input)]);
   await syncProductNutritionFeaturesSafely(input.productId);
 
   const product = await prisma.product

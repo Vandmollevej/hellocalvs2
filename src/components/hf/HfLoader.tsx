@@ -24,12 +24,13 @@ export function HfLoader({
   );
 }
 
-// Semitransparent hvidt overlay med load-cirklen, mens et foto arbejder
-// (kameraflowet under Tilføj, docs/DECISIONS.md 2026-09-27).
+// Scanningseffekt, mens et foto arbejder (kameraflowet under Tilføj,
+// docs/DECISIONS.md 2026-09-28): en bred hvid/lys gradientstribe fejer hen
+// over billedet i stedet for en load-cirkel, så varen ser ud til at blive scannet.
 export function PhotoWorkingOverlay({ label }: { label: string }) {
   return (
-    <div className="absolute inset-0 flex items-center justify-center bg-white/60" role="status" aria-label={label}>
-      <HfLoader size={56} />
+    <div className="absolute inset-0 overflow-hidden" role="status" aria-label={label}>
+      <div className="hf-scan-sweep" />
     </div>
   );
 }

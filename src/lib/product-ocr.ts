@@ -280,6 +280,24 @@ export function hasIngredientsHeading(rawText: string): boolean {
   return INGREDIENTS_HEADING.test(rawText);
 }
 
+// Til at finde næringstabellen på et foto (src/lib/label-text-regions.ts):
+// hvilken tabelrække en enkelt OCR-linje er, eller "heading" for
+// tabellens overskrift. null for alt andet.
+export type NutritionLineKind = "heading" | keyof typeof LABELS;
+
+export function nutritionLineKind(line: string): NutritionLineKind | null {
+  if (INGREDIENTS_END.test(line)) return "heading";
+  if (LINE_START.energy.test(line) || /\d\s*(?:kcal|kj)\b/i.test(line)) return "energy";
+  if (LINE_START.fat.test(line)) return "fat";
+  if (LINE_START.carbs.test(line)) return "carbs";
+  if (LINE_START.protein.test(line)) return "protein";
+  return null;
+}
+
+export function isNutritionHeading(line: string): boolean {
+  return INGREDIENTS_END.test(line);
+}
+
 export function findIngredientsSection(rawText: string): string | null {
   const text = rawText.replace(/\s+/g, " ");
   const heading = INGREDIENTS_HEADING.exec(text);
