@@ -1000,13 +1000,37 @@ textarea::selection,
   }
 }
 
-/* Scanningsstribe over et foto, der analyseres (PhotoWorkingOverlay). */
+/* Scanningsstribe over et foto, der analyseres (PhotoWorkingOverlay).
+   3D-effekt: striben bliver bredere og lysere, når den passerer midten
+   (objektet i fokus), og billedet (.hf-scan-lift) løfter/zoomer sig samtidig.
+   Begge animationer deler varighed og starter sammen, så de er i takt. */
 @keyframes hf-scan-sweep {
   0% {
-    transform: translateX(-100%);
+    transform: translateX(-100%) scaleX(0.7);
+    opacity: 0.8;
+  }
+  50% {
+    /* Stribens midte ligger over billedets midte. */
+    transform: translateX(75%) scaleX(1.5);
+    opacity: 1;
   }
   100% {
-    transform: translateX(250%);
+    transform: translateX(250%) scaleX(0.7);
+    opacity: 0.8;
+  }
+}
+
+@keyframes hf-scan-lift {
+  0%,
+  20%,
+  80%,
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.06);
+    filter: brightness(1.08);
   }
 }
 
@@ -1027,9 +1051,17 @@ textarea::selection,
   animation: hf-scan-sweep 1.8s ease-in-out infinite;
 }
 
+.hf-scan-lift {
+  animation: hf-scan-lift 1.8s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hf-scan-sweep {
     animation-duration: 4s;
+  }
+
+  .hf-scan-lift {
+    animation: none;
   }
 }
 

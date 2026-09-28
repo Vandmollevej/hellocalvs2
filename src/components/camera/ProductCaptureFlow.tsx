@@ -557,7 +557,11 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
         />
         {photo && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={photo} alt={t("camera.photoAlt")} className="absolute inset-0 h-full w-full object-cover" />
+          <img
+            src={photo}
+            alt={t("camera.photoAlt")}
+            className={`absolute inset-0 h-full w-full object-cover ${working ? "hf-scan-lift" : ""}`}
+          />
         )}
 
         {scanning && (
