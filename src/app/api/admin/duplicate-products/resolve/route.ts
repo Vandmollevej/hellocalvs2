@@ -49,11 +49,11 @@ export async function POST(req: Request) {
   const values = cleanValues(body.values);
 
   if (productIds.length === 0 || productIds.length > MAX_COLUMNS) {
-    return NextResponse.json({ message: "Ugyldigt antal produkter" }, { status: 400 });
+    return NextResponse.json({ message: "Ugyldigt antal varer" }, { status: 400 });
   }
   const found = await prisma.product.count({ where: { id: { in: productIds } } });
   if (found !== productIds.length) {
-    return NextResponse.json({ message: "Et af produkterne findes ikke længere — genindlæs siden" }, { status: 409 });
+    return NextResponse.json({ message: "En af varerne findes ikke længere — genindlæs siden" }, { status: 409 });
   }
 
   try {
@@ -67,14 +67,14 @@ export async function POST(req: Request) {
     }
 
     if (productIds.length < 2) {
-      return NextResponse.json({ message: "Der skal være mindst to produkter" }, { status: 400 });
+      return NextResponse.json({ message: "Der skal være mindst to varer" }, { status: 400 });
     }
     if (action === "dismiss") {
       await dismissProductSet(productIds);
       return NextResponse.json({ ok: true });
     }
     if (!productIds.includes(keepProductId)) {
-      return NextResponse.json({ message: "Vælg hvilket produkt der er det endelige" }, { status: 400 });
+      return NextResponse.json({ message: "Vælg hvilken vare der er den endelige" }, { status: 400 });
     }
     await prisma.$transaction(
       async (tx) => {

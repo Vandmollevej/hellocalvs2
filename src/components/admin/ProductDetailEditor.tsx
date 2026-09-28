@@ -83,11 +83,11 @@ export function ProductDetailEditor({ product }: { product: Product }) {
         body: JSON.stringify({ intoProductId: mergeTarget.id }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message ?? "Kunne ikke flette produkterne");
+      if (!res.ok) throw new Error(data.message ?? "Kunne ikke flette varerne");
       router.push(`/admin/products/${mergeTarget.id}`);
       router.refresh();
     } catch (err) {
-      setMergeError(err instanceof Error ? err.message : "Kunne ikke flette produkterne");
+      setMergeError(err instanceof Error ? err.message : "Kunne ikke flette varerne");
     } finally {
       setMergeBusy(false);
     }
@@ -167,8 +167,8 @@ export function ProductDetailEditor({ product }: { product: Product }) {
           {error && <span className="hf-type-body text-hf-red-dark">{error}</span>}
         </div>
         <p className="hf-type-small mt-4 border-t border-hf-tan-dark pt-4 text-text-muted">
-          Ændringer påvirker kun produktets fremtidige visning — brugere, der allerede har registreret
-          dette produkt, beholder deres oprindelige værdier (snapshot).
+          Ændringer påvirker kun varens fremtidige visning — brugere, der allerede har registreret
+          denne vare, beholder deres oprindelige værdier (snapshot).
         </p>
       </div>
 
@@ -185,14 +185,14 @@ export function ProductDetailEditor({ product }: { product: Product }) {
         {mergeOpen && (
           <div className="rounded-lg border border-hf-tan-dark bg-hf-white p-4">
             <p className="hf-type-small mb-2 text-text-secondary">
-              Flet dette produkt ind i et andet — alle registreringer, favoritter og stregkoder flyttes,
-              og dette produkt slettes.
+              Flet denne vare ind i en anden — alle registreringer, favoritter og stregkoder flyttes,
+              og denne vare slettes.
             </p>
             <input
               type="text"
               value={mergeQuery}
               onChange={(e) => searchMergeTargets(e.target.value)}
-              placeholder="Søg efter produkt at flette ind i…"
+              placeholder="Søg efter vare at flette ind i…"
               className="hf-type-body hf-field w-full rounded-md border border-hf-tan-dark px-2"
             />
             <div className="mt-2 flex flex-col gap-1">

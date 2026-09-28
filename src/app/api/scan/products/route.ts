@@ -66,7 +66,7 @@ export async function POST(req: Request) {
     );
     const data = (await response.json().catch(() => ({}))) as { product?: { id: string }; message?: string };
     if (!response.ok || !data.product) {
-      return NextResponse.json({ message: data.message ?? "Produktet kunne ikke oprettes" }, { status: response.status || 500 });
+      return NextResponse.json({ message: data.message ?? "Varen kunne ikke oprettes" }, { status: response.status || 500 });
     }
     productId = data.product.id;
     kind = "NEW_PRODUCT";

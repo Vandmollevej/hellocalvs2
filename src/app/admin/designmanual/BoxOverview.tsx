@@ -118,11 +118,11 @@ const BOXES: BoxSpec[] = [
     text: "Billede til venstre. Navn 14 px semibold, undertekst 12 px nedtonet med grønt mærke. Chevron til højre.",
   },
   {
-    name: "Produktbillede",
+    name: "Varebillede",
     source: "add/[id] · .hf-favorite-button",
     colors: [{ label: "Cirkel", hex: "#EEE9DF" }, { label: "Favorit", hex: "rgb(35 35 35 / 72 %)" }, { label: "Brand", hex: "#067A46" }],
     shape: "Cirkel 190 px · billedet har 32 px luft · favorit 44 px, 8 px fra top/højre",
-    text: "Ingen tekst i boksen. Produktnavn (fed) og brand (grøn) centreret under cirklen.",
+    text: "Ingen tekst i boksen. Varenavn (fed) og brand (grøn) centreret under cirklen.",
   },
   {
     name: "Point-banner",
@@ -420,7 +420,7 @@ function PhoneFrame({ showGuides }: { showGuides: boolean }) {
 
         {/* Produktbillede */}
         <div className="relative flex flex-col items-center gap-2 pt-2 text-center">
-          <Pin n={n("Produktbillede")} />
+          <Pin n={n("Varebillede")} />
           <div className="relative size-[190px] shrink-0">
             <div className="flex size-[190px] items-center justify-center overflow-hidden rounded-full bg-hf-tan">
               {/* eslint-disable-next-line @next/next/no-img-element */}

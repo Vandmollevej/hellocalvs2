@@ -64,7 +64,7 @@ export function ToxinInfoModal({ toxin, onClose }: { toxin: ToxinInfo; onClose: 
           </div>
           <p className="hf-type-small text-text-secondary mt-4">
             Vist fordi indholdsfortegnelsen nævner en fødevare, der er kendt for stoffet — ikke en
-            måling af netop dette produkt. Generel information fra Fødevarestyrelsen og EFSA, ikke
+            måling af netop denne vare. Generel information fra Fødevarestyrelsen og EFSA, ikke
             personlig kostrådgivning.
           </p>
         </div>

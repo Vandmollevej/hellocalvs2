@@ -98,7 +98,7 @@ export function AdminNav({
               {t(currentLocale, link.key)}
               {link.href === "/admin/uncertainties" && hasOpenUncertainties && (
                 <span
-                  aria-label="Usikre produkter"
+                  aria-label="Usikre varer"
                   className="ml-1 inline-block h-2 w-2 rounded-full bg-hf-red-dark align-top"
                 />
               )}

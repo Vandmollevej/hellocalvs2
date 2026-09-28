@@ -158,7 +158,7 @@ export async function POST(req: Request) {
         },
       });
       if (!product) {
-        return NextResponse.json({ message: "Produkt ikke fundet" }, { status: 404 });
+        return NextResponse.json({ message: "Vare ikke fundet" }, { status: 404 });
       }
 
       const factor = amountGrams / 100;

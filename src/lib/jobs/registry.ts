@@ -20,7 +20,7 @@ export const JOBS: JobDefinition[] = [
     key: "maintenance",
     name: "Vedligehold",
     description:
-      "Eskalerer produkter og fejlrapporter, der har ventet over 48 timer, uddeler invitationsbelønninger, sletter udløbne supportpakker, sender mail/push-køen og udfylder manglende fiber-/sukker-/saltfelter.",
+      "Eskalerer varer og fejlrapporter, der har ventet over 48 timer, uddeler invitationsbelønninger, sletter udløbne supportpakker, sender mail/push-køen og udfylder manglende fiber-/sukker-/saltfelter.",
     runtime: "app",
     defaultIntervalMinutes: 15,
     defaultRunAtTime: null,
@@ -29,7 +29,7 @@ export const JOBS: JobDefinition[] = [
     key: "uncertainty-rerun",
     name: "Usikkerheder: AI-genkørsel",
     description:
-      "Kører AI'en igen på de gemte fotos for produkter på Usikkerheder under 90 % sikkerhed. Bliver svaret mere sikkert, gemmes det; når over 90 % skrives værdierne til produktet.",
+      "Kører AI'en igen på de gemte fotos for varer på Usikkerheder under 90 % sikkerhed. Bliver svaret mere sikkert, gemmes det; når over 90 % skrives værdierne til varen.",
     runtime: "app",
     defaultIntervalMinutes: null,
     defaultRunAtTime: "03:00",
@@ -47,7 +47,7 @@ export const JOBS: JobDefinition[] = [
   {
     key: "hellofresh-import",
     name: "HelloFresh-import",
-    description: "Henter nye/ændrede HelloFresh-opskrifter i små portioner og matcher ingredienserne mod produkter.",
+    description: "Henter nye/ændrede HelloFresh-opskrifter i små portioner og matcher ingredienserne mod varer.",
     runtime: "agent",
     container: "hellofresh-agent",
     defaultIntervalMinutes: 2,
@@ -58,7 +58,7 @@ export const JOBS: JobDefinition[] = [
     // nye produkter (brugerregel 2026-09-28).
     key: "image-cutout",
     name: "Billedrobot: fritlægning",
-    description: "Fritlægger, beskærer, retter op og lysner nye produkt- og logofotos, så snart de kommer ind.",
+    description: "Fritlægger, beskærer, retter op og lysner nye vare- og logofotos, så snart de kommer ind.",
     runtime: "agent",
     container: "image-agent",
     defaultIntervalMinutes: 0,
@@ -86,7 +86,7 @@ export const JOBS: JobDefinition[] = [
     key: "quality-control-agent",
     name: "Kvalitetskontrol (billedmatch)",
     description:
-      "Sammenligner stregkode-, nærings- og ingrediensfotos med produktets forsidefoto og beregner en match-sikkerhed; lav sikkerhed havner under Usikkerheder → Billeder.",
+      "Sammenligner stregkode-, nærings- og ingrediensfotos med varens forsidefoto og beregner en match-sikkerhed; lav sikkerhed havner under Usikkerheder → Billeder.",
     runtime: "agent",
     container: "quality-control-agent",
     defaultIntervalMinutes: 5,

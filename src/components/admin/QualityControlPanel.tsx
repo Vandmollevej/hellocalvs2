@@ -25,9 +25,9 @@ type MatchCheck = {
 };
 
 const PHOTO_TYPE_LABEL: Record<MatchCheck["photoType"], string> = {
-  BARCODE: "Produkt ↔ stregkode",
-  NUTRITION: "Produkt ↔ næring",
-  INGREDIENTS: "Produkt ↔ ingrediensliste",
+  BARCODE: "Vare ↔ stregkode",
+  NUTRITION: "Vare ↔ næring",
+  INGREDIENTS: "Vare ↔ ingrediensliste",
 };
 
 function IssueRow({ matchCheck }: { matchCheck: MatchCheck }) {

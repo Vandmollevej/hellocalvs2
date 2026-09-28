@@ -148,7 +148,7 @@ async function loadSourceGroups(productIds: string[]): Promise<CompareGroup[]> {
       values: sourceRecordValues(record.data),
     }));
     const final = productColumn(p);
-    final.subtitle = "Produktet i databasen";
+    final.subtitle = "Varen i databasen";
     const columns = [...sourceColumns, final];
     if (!differs(sourceColumns)) continue;
     groups.push({

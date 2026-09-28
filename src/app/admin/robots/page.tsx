@@ -24,7 +24,7 @@ export default async function AdminRobotsPage() {
       <div>
         <h1 className="hf-type-title text-hf-black">Robotter</h1>
         <p className="hf-type-body text-text-secondary">
-          Robotterne i hver sin container. &quot;Løbende&quot; betyder, at robotten hele tiden venter på nye produkter.
+          Robotterne i hver sin container. &quot;Løbende&quot; betyder, at robotten hele tiden venter på nye varer.
           Ændringer slår igennem inden for et minut. Tider er dansk tid.
         </p>
       </div>

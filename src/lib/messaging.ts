@@ -119,18 +119,18 @@ const DEFAULT_TEMPLATES: Record<MessageEventType, { subject: string; bodyHtml: s
     channel: "BOTH",
     },
   PRODUCT_APPROVED: {
-    subject: "Dit produkt er godkendt",
-    bodyHtml: "<p>Hej {{displayName}},</p><p>Produktet \"{{productName}}\" er nu godkendt og du har optjent {{points}} points.</p>",
+    subject: "Din vare er godkendt",
+    bodyHtml: "<p>Hej {{displayName}},</p><p>Varen \"{{productName}}\" er nu godkendt og du har optjent {{points}} points.</p>",
     channel: "BOTH",
   },
   PRODUCT_REJECTED: {
-    subject: "Dit produkt blev ikke godkendt",
-    bodyHtml: "<p>Hej {{displayName}},</p><p>Produktet \"{{productName}}\" kunne desværre ikke godkendes.</p>",
+    subject: "Din vare blev ikke godkendt",
+    bodyHtml: "<p>Hej {{displayName}},</p><p>Varen \"{{productName}}\" kunne desværre ikke godkendes.</p>",
     channel: "EMAIL",
   },
   PRODUCT_ESCALATION_ADMIN: {
-    subject: "Produkt venter på godkendelse (>48 timer)",
-    bodyHtml: "<p>Produktet \"{{productName}}\" har ventet mere end 48 timer.</p><p><a href=\"{{approveLink}}\">Godkend/afvis direkte</a></p>",
+    subject: "Vare venter på godkendelse (>48 timer)",
+    bodyHtml: "<p>Varen \"{{productName}}\" har ventet mere end 48 timer.</p><p><a href=\"{{approveLink}}\">Godkend/afvis direkte</a></p>",
     channel: "EMAIL",
   },
   BUG_REPORT_ESCALATION_ADMIN: {

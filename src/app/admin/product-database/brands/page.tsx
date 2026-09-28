@@ -97,7 +97,7 @@ export default async function AdminBrandsPage({ searchParams }: { searchParams: 
       <div className="flex flex-col gap-1">
         <h1 className="hf-type-title text-hf-black">Brands</h1>
         <p className="hf-type-body text-text-secondary">
-          Alle brands i Hello Cal med logo. Klik på et brand for at se dets produkter.
+          Alle brands i Hello Cal med logo. Klik på et brand for at se dets varer.
         </p>
       </div>
 
@@ -165,7 +165,7 @@ export default async function AdminBrandsPage({ searchParams }: { searchParams: 
                   <div className="flex min-w-0 flex-col gap-0.5 px-1 pb-1">
                     <p className="hf-type-body hf-type-strong truncate text-hf-black">{brand.name}</p>
                     <p className="hf-type-small text-text-muted">
-                      {numberFormat.format(brand.productCount)} produkt{brand.productCount === 1 ? "" : "er"}
+                      {numberFormat.format(brand.productCount)} vare{brand.productCount === 1 ? "" : "er"}
                     </p>
                   </div>
                 </Link>
