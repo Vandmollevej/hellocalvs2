@@ -82,9 +82,7 @@ function LogIndContent() {
         className="flex items-center justify-between bg-hf-green px-4 pb-4"
         style={{ paddingTop: "max(16px, env(safe-area-inset-top, 0px))" }}
       >
-        <Link href="/welcome" className="hf-type-body" style={{ color: "var(--hf-color-white)" }}>
-          {t("login.cancel")}
-        </Link>
+        <span className="w-[52px]" aria-hidden="true" />
         <p className="hf-type-nav-title">
           {t("welcome.signUp")} <span className="opacity-80">/</span> {t("welcome.logIn")}
         </p>
@@ -151,9 +149,6 @@ function LogIndContent() {
         {error && <p className="hf-type-caption mt-2 text-hf-red-dark">{error}</p>}
 
         <p className="hf-type-body mt-4 text-center">
-          {t("login.newHere")} <Link href="/signup" className="underline">{t("login.createAccount")}</Link>
-        </p>
-        <p className="hf-type-body mt-2 text-center">
           <Link href="/family-code" className="underline">{t("login.haveFamilyCode")}</Link>
         </p>
       </form>
@@ -167,6 +162,9 @@ function LogIndContent() {
         >
           {submitting ? t("login.submitting") : t("login.continueButton")}
         </button>
+        <p className="hf-type-body-lg mt-5 text-center">
+          {t("login.newHere")} <Link href="/signup" className="underline">{t("login.createAccount")}</Link>
+        </p>
       </div>
 
       {faceIdPhase && (

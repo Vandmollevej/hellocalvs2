@@ -113,6 +113,9 @@ Next work:
 
 - Landvalget på `/login` er nu en kompakt pille ud for "Vælg land": flag + landekode (fx DK) + chevron, i stedet for en bred række med landenavnet. `LOGIN_COUNTRIES` har fået et `code`-felt (ISO 3166-1 alpha-2).
 - HelloFreshs aktuelle signup-flow kunne ikke kontrolleres fra cloud-miljøet (hellofresh.dk blokeret af netværkspolitikken). Åbent: skal verificeres manuelt, om e-mailfeltet vises direkte eller om man først vælger metode.
+## 2026-09-28: Login-/tilmeldingsside ryddet op (punkt 37)
+
+Google-knappen uden hvid ikonboks, Afbryd-linket fjernet fra login, ingen rød fejl når brugeren selv afbryder OAuth (fx Apple). "Ny på Hello Cal? Opret konto" / "Har du allerede en konto? Log ind" ligger nu nederst under hovedknappen, større og understreget.
 
 ## 2026-09-28: Open Food Facts ude af søgningen
 

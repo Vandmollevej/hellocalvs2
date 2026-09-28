@@ -36,7 +36,7 @@
     "submitting": "Logging in…",
     "genericError": "Could not log in",
     "networkError": "Could not log in — check your connection and try again",
-    "newHere": "New here?",
+    "newHere": "New to Hello Cal?",
     "createAccount": "Create account",
     "forgotPassword": "Forgot password?",
     "continueWithFaceId": "Log in with Face ID",
@@ -126,6 +126,8 @@
     }
   },
   "signup": {
+    "haveAccount": "Already have an account?",
+    "logIn": "Log in",
     "title": "Create account",
     "back": "Back",
     "nameLabel": "Name",
