@@ -11,7 +11,7 @@ import { StatChartsSection } from "@/components/StatChartsSection";
 import { StatPeriodPicker } from "@/components/StatPeriodPicker";
 import { IntradayKcalChart } from "@/components/IntradayKcalChart";
 import { TopSinnersCard } from "@/components/TopSinnersCard";
-import { filterRegistrationsInRange } from "@/lib/food-classification";
+import { filterRegistrationsInRange, SINNERS_ENABLED } from "@/lib/food-classification";
 import { useSourceRegistrations } from "@/lib/use-source-registrations";
 import {
   computeStatCards,
@@ -425,7 +425,7 @@ export default function StatisticsPage() {
           highlightRecommendedLimits={warnOnRecommendedLimits}
           autoExpandUncertainty={autoExpandUncertainty}
         />
-        <TopSinnersCard registrations={periodSources} loading={sourcesLoading} />
+        {SINNERS_ENABLED && <TopSinnersCard registrations={periodSources} loading={sourcesLoading} />}
       </>
     );
   }

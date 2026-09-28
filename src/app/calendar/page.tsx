@@ -1,5 +1,6 @@
 "use client";
 
+import { SINNERS_ENABLED } from "@/lib/food-classification";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -817,7 +818,7 @@ export default function CalendarPage() {
         </div>
 
         {/* G3: "Månedens synder" for den viste måned (docs/DECISIONS.md 2026-09-24). */}
-        {view === "month" && (
+        {SINNERS_ENABLED && view === "month" && (
           <div className="pt-4">
             <ActionLink
               variant="secondary"

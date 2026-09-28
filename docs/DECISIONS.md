@@ -3178,3 +3178,9 @@ Skabeloner skriver `<a class="hc-button" href="…">Tekst</a>`, og
 inline styles. Linjen "kopiér dette link" er fjernet; tekstversionen af
 mailen har stadig linket. Uredigerede gamle standardtekster i databasen
 erstattes automatisk (LEGACY_DEFAULT_BODIES i src/lib/messaging.ts).
+## 2026-09-28: "Største syndere" og "Månedens synder" slået fra
+
+- Begge vises ikke, før der findes en volumengrænse (for lidt data kan gøre
+  fx broccoli til "synder"). Styres af `SINNERS_ENABLED = false` i
+  `src/lib/food-classification.ts`; koden er bevaret. Siden
+  `/statistics/month-sinners` findes stadig, men linkes ikke.
