@@ -5,8 +5,8 @@
 // 2. En rigtig portionsenhed (servingSizeGrams + enhedsnavne, fx HelloFresh
 //    "portion") — tælles i hele portioner.
 // 3. Typisk mængde for varens kategori (tabellen nedenfor).
-// 4. Producentens portion (fx Open Food Facts' serving_quantity).
-// 5. 100 g/ml som sidste udvej.
+// 6. Producentens portion (fx Open Food Facts' serving_quantity).
+// 7. 100 g/ml som sidste udvej.
 //
 // Producentens portion bruges bevidst ikke før kategorien: den er ofte
 // urealistisk lille (musli 30 g, sodavand 10 cl).
@@ -18,6 +18,8 @@ export type DefaultAmountProduct = {
   servingSizeGrams?: number | null;
   servingSizeUnitSingular?: string | null;
   servingSizeUnitPlural?: string | null;
+  packageSizeText?: string | null;
+  keywords?: string[] | null;
   lastAmountGrams?: number | null;
 };
 
@@ -50,8 +52,39 @@ const CATEGORY_AMOUNTS: Record<string, number> = {
   DRINK: 250,
 };
 
+const WINE_PATTERN = /(vin|rosé|champagne|cava|prosecco)\b/i;
+const WINE_GLASS_ML = 150;
+const DRINK_GLASS_ML = 250;
+const SINGLE_DRINK_MAX_ML = 500;
+
+function productText(product: DefaultAmountProduct): string {
+  return [product.productType, product.name, ...(product.keywords ?? [])].filter(Boolean).join(" ");
+}
+
+export function isSlicedProduct(product: DefaultAmountProduct): boolean {
+  return /skive/i.test(productText(product));
+}
+
+// "33 cl", "1,5 l", "250ml", "6 x 33 cl" (pr. enhed) → ml. Null hvis ukendt.
+export function packageVolumeMl(text?: string | null): number | null {
+  const match = text?.match(/(\d+(?:[.,]\d+)?)\s*(ml|cl|l|ltr|liter)\b/i);
+  if (!match) return null;
+  const value = Number(match[1].replace(",", "."));
+  const unit = match[2].toLowerCase();
+  const ml = unit === "ml" ? value : unit === "cl" ? value * 10 : value * 1000;
+  return Number.isFinite(ml) && ml > 0 ? ml : null;
+}
+
+function drinkAmountMl(product: DefaultAmountProduct): number | null {
+  if (product.productCategory !== "DRINK") return null;
+  if (WINE_PATTERN.test(productText(product))) return WINE_GLASS_ML;
+  const volume = packageVolumeMl(product.packageSizeText);
+  if (volume === null) return null;
+  return volume <= SINGLE_DRINK_MAX_ML ? volume : DRINK_GLASS_ML;
+}
+
 export function typicalAmountGrams(product: DefaultAmountProduct): number | null {
-  const text = [product.productType, product.name].filter(Boolean).join(" ");
+  const text = productText(product);
   if (text) {
     const match = TYPICAL_AMOUNTS.find((entry) => entry.pattern.test(text));
     if (match) return match.grams;
@@ -63,5 +96,6 @@ export function defaultAmountGrams(product: DefaultAmountProduct): number {
   if (product.lastAmountGrams && product.lastAmountGrams > 0) return product.lastAmountGrams;
   const serving = product.servingSizeGrams && product.servingSizeGrams > 0 ? product.servingSizeGrams : null;
   if (serving && product.servingSizeUnitSingular && product.servingSizeUnitPlural) return serving;
-  return typicalAmountGrams(product) ?? serving ?? 100;
+  if (serving && isSlicedProduct(product)) return serving;
+  return drinkAmountMl(product) ?? typicalAmountGrams(product) ?? serving ?? 100;
 }

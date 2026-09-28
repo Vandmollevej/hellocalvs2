@@ -78,6 +78,8 @@ export async function GET(
         carbsPer100g: externalProduct.carbsPer100g,
         fatPer100g: externalProduct.fatPer100g,
         servingSizeGrams: externalProduct.servingSizeGrams,
+        servingSizeUnitSingular: offProduct?.servingIsSlice ? "skive" : undefined,
+        servingSizeUnitPlural: offProduct?.servingIsSlice ? "skiver" : undefined,
         productCategory: offProduct?.isBeverage ? "DRINK" : undefined,
         ingredientsText: offProduct?.ingredientsText ?? null,
         allergens: offProduct?.allergens ?? [],

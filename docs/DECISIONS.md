@@ -3245,3 +3245,15 @@ Produktsiden viser aldrig teksten "Branded". Brandet vises kun som brandnavn/log
 - `/api/products/:id` returnerer `lastAmountGrams` for den indloggede bruger.
 - Open Food Facts-varer med `en:beverages` i `categories_tags` oprettes med
   `productCategory = DRINK`.
+
+### Tilføjelse 2026-09-28 — skiver og pakkestørrelse
+
+- Skivevarer (pålæg, skiveost): producentens portion er én skive og bruges som
+  startmængde, i enheden "skive/skiver". OFF-opslag sætter enheden, når
+  `serving_size` nævner skive/slice.
+- Drikkevarer: pakke ≤ 50 cl (juicebrik, dåse) = hele pakken; vin = 150 ml pr.
+  glas; større flasker = 250 ml pr. glas.
+- Vores REMA-data har ingen skivevægt. `scripts/off-slice-weights/` henter den
+  fra Open Food Facts (kræver netadgang; dry run som standard).
+- Senere: AI-beregnet median pr. produkttype (fx smørrist) kan erstatte den
+  håndskrevne tabel i `src/lib/default-amount.ts`.
