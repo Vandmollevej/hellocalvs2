@@ -4770,3 +4770,9 @@ justeringen af scroll-fligen ved forskellige stå-op-tidspunkter.
   tilføjelser og tale) viser `TimeSection` (kun når `AddProductView` redigerer
   en registrering): "Tidspunkt" med klokkeslættet lige under, uden streger og
   uden "Kl."-præfiks.
+
+## 2026-09-28: "Største syndere" og "Månedens synder" slået fra
+
+`SINNERS_ENABLED = false` i `src/lib/food-classification.ts` skjuler boksen på
+statistik og knappen i kalenderen, indtil der er en volumengrænse (se
+DECISIONS.md). Næste skridt: indfør grænser og sæt flaget til `true`.
