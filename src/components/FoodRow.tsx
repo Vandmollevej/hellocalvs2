@@ -27,8 +27,9 @@ export function FoodRow({
       <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-hf-tan">
         {thumbnail}
         {!thumbnail && image && (
+          // Multiply blends the photos' white backdrop into the tan tile (HelloFresh-style).
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={image} alt="" className="h-full w-full object-contain object-center" />
+          <img src={image} alt="" className="h-full w-full object-contain object-center p-1 mix-blend-multiply" />
         )}
       </div>
       <div className="min-w-0 flex-1">
