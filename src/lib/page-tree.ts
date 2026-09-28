@@ -100,7 +100,7 @@ export const PAGE_TREE: PageArea[] = [
             path: "/statistics",
             label: "Statistik",
             children: [
-              { path: "/statistics/month-sinners", label: "Månedens synder" },
+              // "Månedens synder" slået fra (SINNERS_ENABLED).
               { path: "/statistics/unused-cards", label: "Ubrugte kort" },
               { path: "/statistics/unused-charts", label: "Ubrugte grafer" },
             ],

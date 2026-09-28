@@ -221,6 +221,9 @@ export function alcoholTotals(registrations: SourceRegistration[]) {
 
 // --- Største syndere (samlet pr. vare / pr. produkttype) ---
 
+// Slået fra indtil der er en volumengrænse (docs/DECISIONS.md 2026-09-28).
+export const SINNERS_ENABLED = false;
+
 export type SourceItem = {
   key: string;
   productId: string | null;

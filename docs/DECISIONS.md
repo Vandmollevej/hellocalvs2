@@ -3177,3 +3177,9 @@ Et produkt, hvis produkttype/navn starter med ordet "Vand" alene, hedder "Flaske
 Produktfotos i `FoodRow` blandes med `mix-blend-multiply` (+4 px luft) ind i
 `--hf-color-card` (#EEE9DF), så fotoets hvide baggrund bliver let brunlig som
 hos HelloFresh. Ingen ny farvetoken; mørkere/off-white blev fravalgt.
+## 2026-09-28: "Største syndere" og "Månedens synder" slået fra
+
+- Begge vises ikke, før der findes en volumengrænse (for lidt data kan gøre
+  fx broccoli til "synder"). Styres af `SINNERS_ENABLED = false` i
+  `src/lib/food-classification.ts`; koden er bevaret. Siden
+  `/statistics/month-sinners` findes stadig, men linkes ikke.

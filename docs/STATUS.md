@@ -4820,3 +4820,9 @@ Trin 1–2 af brugerens nummererede spec kendes ikke i denne session.
 Lint + build grønne; ikke verificeret i browser (ingen database).
 - 2026-09-28 (opgave 40): Admin-brugermenu viser nu "Dansk"/"English" + flag + pil ned i stedet for "DA / EN"-knapperne. Rækken åbner `AdminCountryDialog` (HelloFresh-stil landeliste): fuldskærm på mobil, centreret dialog på desktop. Danmark → DA, øvrige lande → EN; valgt land huskes i localStorage.
 - 2026-09-28: Admin-flowsider (liste, editor, telefon-preview) design-screenet: sort radius-8 knap i flow-preview i stedet for grøn pill, 48 px felter/knapper, `HfChevron`-pile og SVG-ikonknapper, sort 1,5 px valgt-kant, `hf-choice` til Aktiv/Kladde og fane-vælger, faste tekstroller og stablede knapper på mobil.
+
+## 2026-09-28: "Største syndere" og "Månedens synder" slået fra
+
+`SINNERS_ENABLED = false` i `src/lib/food-classification.ts` skjuler boksen på
+statistik og knappen i kalenderen, indtil der er en volumengrænse (se
+DECISIONS.md). Næste skridt: indfør grænser og sæt flaget til `true`.
