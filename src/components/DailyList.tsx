@@ -140,6 +140,7 @@ export function DailyList() {
 
   return (
     <div className="relative flex h-full min-h-0 flex-col">
+      <h2 className="hf-type-section-title px-4">{t("dailyList.heading")}</h2>
       <ul className="min-h-0 flex-1 overflow-y-auto px-4 pb-9">
         {entries.map((entry, i) => (
           <li

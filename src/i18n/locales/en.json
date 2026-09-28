@@ -1840,6 +1840,7 @@
     "delete": "Delete"
   },
   "dailyList": {
+    "heading": "Today's additions",
     "loading": "Loading today's registrations...",
     "noEntriesToday": "No registrations today",
     "loadError": "Couldn't load today's registrations",
