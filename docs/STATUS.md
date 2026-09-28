@@ -4826,3 +4826,4 @@ Lint + build grønne; ikke verificeret i browser (ingen database).
 `SINNERS_ENABLED = false` i `src/lib/food-classification.ts` skjuler boksen på
 statistik og knappen i kalenderen, indtil der er en volumengrænse (se
 DECISIONS.md). Næste skridt: indfør grænser og sæt flaget til `true`.
+- 2026-09-28: Opgave 32 (varesidens titel/varetype/branding) implementeret i `AddProductView.tsx` — se DECISIONS 2026-09-28. Certifikatlogoerne er forenklede badges; rigtige logofiler kan erstatte dem i `CertificationLogo.tsx`.
