@@ -356,6 +356,7 @@ export const PAGE_TREE: PageArea[] = [
           { path: "/admin/analytics", label: "Analyse", note: "Besøgsstatistik fra Umami" },
           { path: "/admin/jobs", label: "Jobs", note: "Jobs sat op af AI-agenter (åbne/afsluttede)" },
           { path: "/admin/agents", label: "Agenter", note: "AI-agenter med MCP-adgang" },
+          { path: "/admin/robots", label: "Robotter", note: "On/off, KØR og cron-plan for robot-containerne" },
           { path: "/admin/roadmap", label: "Roadmap" },
           { path: "/admin/claude", label: "Claude-integration", note: "Vejledning til MCP-forbindelsen" },
         ],

@@ -54,9 +54,29 @@ export const JOBS: JobDefinition[] = [
     defaultRunAtTime: null,
   },
   {
+    // Fritlægning kører "Løbende" (intervalMinutes 0): venter hele tiden på
+    // nye produkter (brugerregel 2026-09-28).
+    key: "image-cutout",
+    name: "Billedrobot: fritlægning",
+    description: "Fritlægger, beskærer, retter op og lysner nye produkt- og logofotos, så snart de kommer ind.",
+    runtime: "agent",
+    container: "image-agent",
+    defaultIntervalMinutes: 0,
+    defaultRunAtTime: null,
+  },
+  {
+    key: "logo-agent",
+    name: "Logo-robot",
+    description: "Finder logoer til brands uden logo via Google Vision; usikre fund lægges under Logoer.",
+    runtime: "agent",
+    container: "logo-agent",
+    defaultIntervalMinutes: null,
+    defaultRunAtTime: "03:00",
+  },
+  {
     key: "image-agent",
-    name: "Billedrobot",
-    description: "Fjerner baggrund og beskærer nye produktbilleder, så de lever op til billedkravene.",
+    name: "Billedrobot: billedsøgning",
+    description: "Søger billeder til generiske råvarer uden billede og fjerner baggrunden; forslag venter på godkendelse.",
     runtime: "agent",
     container: "image-agent",
     defaultIntervalMinutes: 5,

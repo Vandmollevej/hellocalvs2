@@ -155,6 +155,7 @@ export async function POST(req: Request) {
           ingredientsOcrText,
           ingredientsOcrConfidence,
           fallbackName,
+          barcodeAnalysisId,
         }),
       ).catch((error) => {
         console.error("Quick product enrichment failed", product.id, error);

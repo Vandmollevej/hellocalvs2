@@ -2,7 +2,7 @@
 
 Beslutning: docs/DECISIONS.md 2026-09-27 "Butiksvarer i tre tabeller".
 Kode: `scripts/store-products-import/` (`build_data.py` lokalt → JSON,
-`agent.py` på NAS'en → database).
+`agent.py` på NAS'en → database). Hele kataloget bygges med `--all --out` og kopieres til NAS'ens `data/store-products-import/`.
 
 ## Kilder
 

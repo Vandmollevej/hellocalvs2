@@ -25,6 +25,27 @@ Next work:
 2. Brugeren opretter selv sin private konto (peter@packroff.dk) og udfylder
    vægt/højde/fødselsdato/aktivitetsniveau i profilen.
 
+## 2026-09-28: Levende omrids om varen i kameraet
+
+- Tilføj-kameraet (Forside/Energi/Indhold) tegner nu en hvid streg om varen
+  midt i billedet, mens man sigter (MediaPipe på telefonen, hentes fra CDN).
+  Beslutning: DECISIONS 2026-09-28.
+- Lint, typecheck og build kørt; ikke afprøvet på en telefon (brugeren tjekker udseendet).
+
+## 2026-09-28: Kameraflowet — "Uden brus" i navnet + logo fra stregkode-fotoet
+
+- Testscanning af AQUA-vand: AI læste "Uden brus" men gemte det kun som
+  variant (navn "Vand"). Nu kommer varianten med i navnet.
+- Stregkode-fotoet læses for logo + variant (`enrich_barcode_logo` i admin
+  "Log"); logoet bliver et fritskrabningsjob. Beslutning: DECISIONS 2026-09-28.
+- Eksisterende vare "Vand" (AQUA) skal rettes manuelt i admin.
+- Lint, typecheck og build kørt; ikke testet mod database/OpenAI lokalt.
+## 2026-09-28: Hele Bilka + REMA 1000-kataloget importeres
+
+- 10.524 varer med næring (2.408 uden kcal/protein/kulhydrat/fedt springes over) og 7.218 billeder (5 GB) ligger på NAS'en i `data/store-products-import/` (kopieret med tar over SSH – for stort til git).
+- `store-products-agent` læser `/import` (compose-volume), når `store_products.json` findes dér; ellers den lille prøve i billedet. Billeder, der allerede er kopieret, springes over ved genstart.
+- Opdatering af kataloget: `py build_data.py --all --out <mappe>` og kopiér mappen til NAS'en igen; agenten kører ved næste start eller "Kør nu" i admin → Cron-jobs (`store-products-import`).
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen
@@ -44,6 +65,23 @@ Next work:
 - `PATCH /api/registrations/[id]` tager nu også `amountGrams` + snapshot-værdier;
   øvrige snapshots skaleres med mængden. Beslutning: DECISIONS 2026-09-28.
 - Lint, typecheck og build kørt; ikke testet mod en database.
+
+## 2026-09-28: Billedrobot løbende + admin "Robotter"
+
+- Fritlægning (`image-cutout`) kører nu løbende (venter hele tiden på nye
+  produkter); logo-robotten er kommet under admin-styring (standard 03:00).
+- Ny side `/admin/robots` med On/Off, KØR og cron-job-kolonne pr. robot.
+  Beslutning: DECISIONS 2026-09-28.
+- Deploy: genbyg `image-agent` og `logo-agent` (ingen migration).
+- Lint og build kørt; ikke testet mod en database (lokalt er der ingen DB).
+
+## 2026-09-28: Kameraflow — stregkodefotoet udfylder Energi/Indhold
+
+- Årsag til fejlen (vandflaske): stregkodefotoet blev kun gemt, aldrig OCR-læst.
+  Nu læses det i baggrunden; "Ingredienser"/næringstabel på fotoet giver
+  flueben på Indhold/Energi, og en grøn ramme viser feltet. Beslutning:
+  DECISIONS 2026-09-28. Nyt log-trin `barcode_label` i admin "Log".
+- Lint, typecheck og build kørt; ikke testet på telefon.
 
 ## 2026-09-28: Admin "Log" — hver scanning trin for trin
 
