@@ -683,7 +683,7 @@ export function AddProductView({
               )}
               {/* Rytme som HelloFresh-heroen (design.md §6 Velkomst): 32 px fra
                   cirklen til titlen, titel + grøn linje er én tekstblok uden
-                  mellemrum, 24 px videre til næste blok. */}
+                  mellemrum, 16 px videre til næste blok (målt: ca. 20 px ink-til-ink). */}
               <div className="flex flex-col items-start gap-8 pt-4 text-left">
                 <div className="relative self-center h-[190px] w-[190px] min-h-[190px] min-w-[190px] max-h-[190px] max-w-[190px] shrink-0 overflow-visible">
                   <div className="flex h-[190px] w-[190px] min-h-[190px] min-w-[190px] items-center justify-center overflow-hidden rounded-full bg-hf-tan">
@@ -755,7 +755,7 @@ export function AddProductView({
               <button
                 type="button"
                 onClick={scrollToDetails}
-                className="hf-btn-text mt-6 mb-4 flex items-center gap-1 self-center font-normal text-hf-black"
+                className="hf-btn-text mt-4 mb-4 flex items-center gap-1 self-center font-normal text-hf-black"
               >
                 {t("addProduct.details")}
                 <IconChevronDown size={15} />

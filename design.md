@@ -243,7 +243,7 @@ side-for-side lappeløsninger. Hele appen bruger **kun 6 størrelser** og **kun
 
 | Størrelse | Klasse | Line-height | Vægt | Brug |
 | --- | --- | --- | --- | --- |
-| 32 px | `.hf-type-hero` | 38 | 700 | Stort tal/velkomst (fx points-saldo) |
+| 32 px | `.hf-type-hero` | 40 | 700 | Stort tal/velkomst (fx points-saldo) |
 | 22 px | `.hf-type-page-title` | 28 | 700 | Sidens indholdsoverskrift |
 | 17 px | `.hf-type-title` (= `.hf-type-card-title`) | 22 | 700 | Kort-, række- og dialogtitel |
 | 17 px | `.hf-type-nav-title` | 22 | 700 | Titel i grøn appbar (hvid) |
@@ -558,7 +558,7 @@ fuld bredde).
 - Centreret horisontalt.
 - 32 px layoutafstand fra landevælger-blokken.
 - 32 px layoutafstand til hero-overskriftsblokken.
-- Hero-overskrift bruger 32/38; de to farvelinjer er én typografiblok.
+- Hero-overskrift bruger 32/40 (målt i HelloFresh-appen 2026-09-28: 40 px linjeafstand); de to farvelinjer er én typografiblok.
 - Standardafstand fra hero-overskrift til brødtekst er 24-32 px, ikke 48 px.
 
 ### 6.10 Fast actionbar og bundnavigation
