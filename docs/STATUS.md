@@ -4623,3 +4623,18 @@ låser porten/mappen på tværs af port-forsøg), og denne sessions Browser-pane
 kan ikke nå den server. Denne ændring bør derfor tjekkes visuelt af brugeren
 selv (eller i en senere session, når den anden dev-server ikke kører), særligt
 justeringen af scroll-fligen ved forskellige stå-op-tidspunkter.
+
+## 2026-09-28: "Indberet fejl" pr. registrering — trin 3: vælg fejlsted
+
+`/registration/[id]/report-error` (fra "Fejl"-swipe i dagslisten) er ikke
+længere et skelet. Siden henter registreringens produkt og viser hvert
+relevant punkt (Produktbillede, Navn, Mærke, EAN, Energi, Protein/kulhydrat/
+fedt, Indhold) med et grønt udråbstegn i en cirkel. Et tryk vælger netop det
+punkt (cirklen fyldes grøn) og åbner et felt til rettelsen; flere kan vælges.
+Indsendes som almindelig produkt-`BugReport` via `POST /api/bug-reports`
+(kategorier afledt af punkterne, én afventende pr. produkt — ved 409 vises
+"afventer gennemgang" + "Redigér"-link til `/profile/report-bug`).
+Registreringer uden produkt (retter/generiske ingredienser) linker til den
+generelle indberetning. Punktlogik i `src/lib/registration-report-points.ts`.
+Trin 1–2 af brugerens nummererede spec kendes ikke i denne session.
+Lint + build grønne; ikke verificeret i browser (ingen database).

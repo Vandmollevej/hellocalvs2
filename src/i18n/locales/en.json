@@ -1447,7 +1447,27 @@
   },
   "registrationReportError": {
     "title": "Report error",
-    "placeholder": "Reporting an error for this registration is coming soon."
+    "intro": "Tap the green exclamation mark next to the item that is wrong and write what is correct.",
+    "selectPoint": "Flag error in {point}",
+    "correctionPlaceholder": "What is wrong, and what is correct?",
+    "missingValue": "Not specified",
+    "submit": "Send report",
+    "sending": "Sending…",
+    "submitFailed": "Could not send the report — please try again",
+    "sent": "Thanks! We have received your correction, which is awaiting review.",
+    "alreadyPending": "You already have a correction for this product awaiting review.",
+    "editPending": "Edit",
+    "noProduct": "This registration is not linked to a product, so there are no fields to choose.",
+    "generalReport": "Report a general error",
+    "point": {
+      "image": "Product image",
+      "name": "Name",
+      "brand": "Brand",
+      "ean": "EAN",
+      "energy": "Energy",
+      "macros": "Protein, carbs and fat",
+      "ingredients": "Ingredients"
+    }
   },
   "addProduct": {
     "reading": "Reading…",
