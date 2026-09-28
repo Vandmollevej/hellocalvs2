@@ -81,7 +81,7 @@ export function StatPeriodPicker({
                       setOpen(false);
                     }}
                     className={`hf-type-body hf-type-strong min-h-9 rounded-xl px-3 text-left ${
-                      active ? "bg-hf-green text-hf-white" : "hover:bg-hf-cream"
+                      active ? "hf-selected" : "hover:bg-hf-cream"
                     }`}
                   >
                     {period.label}
