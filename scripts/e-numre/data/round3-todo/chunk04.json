@@ -1,0 +1,797 @@
+[
+ {
+  "code": "E321",
+  "nameDa": "Butylhydroxytoluen (BHT)",
+  "nameEn": "Butylated hydroxytoluene (BHT)",
+  "category": "Antioxidant",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "BHT er en syntetisk antioxidant, der beskytter fedtstoffer mod harskning.",
+  "description": "BHT (2,6-di-tert-butyl-4-methylfenol) fremstilles syntetisk ud fra p-kresol og isobutylen. Den virker ved at opfange frie radikaler og bremse oxidation af fedt. BHT bruges også bredt i kosmetik, plast, gummi og brændstof. Den er mindre varmestabil end BHA og kan fordampe ved stegning.",
+  "uses": "Tyggegummi, fedtstoffer og olier til stegning, fiskeolier, morgenmadsprodukter (især uden for EU), snacks og kryddermixer. Kun tilladt med maksimumsgrænser (fx 100 mg/kg fedt i visse fedtstoffer, 400 mg/kg i tyggegummi).",
+  "health": "EFSA fastsatte i 2012 en ADI på 0,25 mg/kg legemsvægt/dag og vurderede, at voksnes indtag næppe overskrider ADI, mens børn med højt forbrug i enkelte lande (Finland, Nederlandene) kunne overskride den. Ved høje doser i dyreforsøg er set påvirkning af lever og skjoldbruskkirtel. IARC vurderede i 1986, at BHT ikke kan klassificeres mht. kræftfremkaldende virkning hos mennesker (gruppe 3). Ikke tilladt i fødevarer til spædbørn og småbørn.",
+  "research": "EFSA's gen-evaluering af BHT (2012) fastsatte ADI 0,25 mg/kg lgv/dag (en forhøjelse fra den tidligere 0,05) baseret på en NOAEL på 25 mg/kg fra reproduktions- og udviklingsstudier i rotter. Forskningen viser både potentiel tumorfremmende og tumorhæmmende effekt i dyremodeller afhængig af forsøgsdesign, hvilket gør billedet uklart. Stoffet er bredt udbredt i miljøet via andre anvendelser, hvilket komplicerer eksponeringsvurderingen.",
+  "keyReferences": [],
+  "pubmedTerm": "butylated hydroxytoluene",
+  "flags": [
+   "children_caution"
+  ],
+  "classes": [
+   "antioxidant"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of butylated hydroxytoluene BHT (E 321) as a food additive",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2012.2588",
+   "date": "2012-03-07",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2012.2588",
+    "https://www.foodnavigator.com/Article/2012/03/13/EU-risk-assessor-hikes-intake-safety-levels-for-food-additive-BHT/"
+   ],
+   "notes": "Runde 2 (udsagn-for-udsagn) er IKKE gennemført for denne post: sessionens WebSearch-budget (200 kald) blev opbrugt, og direkte netadgang er blokeret. Teksten er uændret fra runde 1, som kun kontrollerede EU-status, ADI og EFSA-konklusion (Eksponeringskonklusion rettet (overskridelse hos børn i enkelte lande); ADI-forhøjelse fra 0,05 tilføjet. IARC gruppe 3 bekræftet.). Øvrige udsagn (kemi, fremstilling, fødevarer, tal, studier, følsomme grupper) er ubekræftede."
+  },
+  "wikipedia": "",
+  "wikidata": "Q221945",
+  "claims": []
+ },
+ {
+  "code": "E322",
+  "nameDa": "Lecithiner",
+  "nameEn": "Lecithins",
+  "category": "Emulgator / antioxidant",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Lecithin er en naturlig emulgator fra fx soja, solsikke eller æg, som får fedt og vand til at blande sig.",
+  "description": "Lecithiner er blandinger af fosfolipider (bl.a. fosfatidylcholin) udvundet som biprodukt ved afslimning af vegetabilske olier, især soja-, solsikke- og rapsolie, eller fra æggeblommer. (i) er almindelig lecithin, mens (ii) delvist hydrolyseret lecithin er behandlet med enzymer for at forbedre emulgeringsevnen i vandige systemer. Lecithin stabiliserer emulsioner, nedsætter viskositet i chokolade, forhindrer sprøjt ved stegning og virker svagt antioxidativt.",
+  "uses": "Chokolade og konfekture, margarine og smørbare fedtstoffer, bagværk, instant-pulver (kakao, mælkepulver), dressinger, modermælkserstatning, stegespray. Tilladt quantum satis i de fleste kategorier og med grænser i modermælkserstatning.",
+  "health": "Lecithin anses som sikker; EFSA konkluderede i sin gen-evaluering (2017), at en numerisk ADI ikke var nødvendig. Sojalecithin skal mærkes som soja, og æggelecithin som æg, da de i teorien kan indeholde spor af allergene proteiner; i praksis reagerer de fleste sojaallergikere ikke på raffineret lecithin, men meget følsomme bør være forsigtige. Lecithin fra genmodificeret soja er underlagt EU's GMO-mærkningsregler.",
+  "research": "EFSA's gen-evaluering af lecithiner (E322) fra 2017 (EFSA Journal 2017;15(4):4742) fandt ingen sikkerhedsbekymring og ingen behov for ADI; en opfølgende udtalelse fra 2020 vurderede brugen i fødevarer til spædbørn under 16 uger. Forskning har rejst spørgsmål om, at cholin fra fosfatidylcholin af tarmbakterier kan omdannes til TMAO, som er associeret med hjerte-kar-sygdom (Wang et al., Nature 2011), men betydningen af mængderne fra tilsætningsstoffer er uafklaret.",
+  "keyReferences": [
+   {
+    "citation": "Wang Z et al. Gut flora metabolism of phosphatidylcholine promotes cardiovascular disease. Nature. 2011.",
+    "searchTitle": "Gut flora metabolism of phosphatidylcholine promotes cardiovascular disease"
+   }
+  ],
+  "pubmedTerm": "lecithin",
+  "flags": [
+   "allergen",
+   "animal_origin"
+  ],
+  "classes": [
+   "antioxidant",
+   "emulsifier"
+  ],
+  "variants": [
+   {
+    "code": "E322(i)",
+    "nameDa": "Lecitin",
+    "nameEn": "Lecithin"
+   },
+   {
+    "code": "E322(ii)",
+    "nameDa": "Delvist hydrolyseret lecithin",
+    "nameEn": "Partially hydrolyzed lecithin"
+   },
+   {
+    "code": "E322(iii)",
+    "nameDa": "",
+    "nameEn": "Lecithin\\"
+   }
+  ],
+  "efsa": {
+   "title": "Re-evaluation of lecithins (E 322) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4742",
+   "date": "2017-04-07",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4742",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7654424/"
+   ],
+   "notes": "Runde 2 (udsagn-for-udsagn) er IKKE gennemført for denne post: sessionens WebSearch-budget (200 kald) blev opbrugt, og direkte netadgang er blokeret. Teksten er uændret fra runde 1, som kun kontrollerede EU-status, ADI og EFSA-konklusion (efsa-objekt tilføjet (DOI 10.2903/j.efsa.2017.4742); Wang et al. Nature 2011 bekræftet; 2020-opfølgning tilføjet.). Øvrige udsagn (kemi, fremstilling, fødevarer, tal, studier, følsomme grupper) er ubekræftede."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Lecithin",
+  "wikidata": "Q241595",
+  "claims": []
+ },
+ {
+  "code": "E325",
+  "nameDa": "Natriumlactat",
+  "nameEn": "Sodium lactate",
+  "category": "Surhedsregulerende middel / fugtighedsbevarende middel",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Natriumlactat er natriumsaltet af mælkesyre og bruges til at bevare fugt og hæmme bakterievækst, især i kødvarer.",
+  "description": "Natriumlactat fremstilles ved at neutralisere mælkesyre, som typisk produceres ved bakteriel fermentering af sukker fra majs eller sukkerroer, med natriumhydroxid. Det binder vand (fugtighedsbevarende), regulerer pH og hæmmer vækst af bakterier som Listeria i kødprodukter. Det kan også forstærke salt smag og forbedre saftighed.",
+  "uses": "Kødpålæg, pølser og færdigkød, fjerkræprodukter, fisk, bagværk, ost og slik. Tilladt quantum satis i de fleste kategorier.",
+  "health": "Laktater anses som sikre; mælkesyre og dens salte er normale stofskifteprodukter, og der er ikke fastsat en numerisk ADI (JECFA: 'ikke specificeret'). Trods navnet indeholder laktater ikke mælk eller laktose og er uproblematiske ved laktoseintolerans og mælkeallergi. D-mælkesyre omsættes langsomt af spædbørn, og derfor bruges kun L-formen i fødevarer til spædbørn. Natriumlactat bidrager lidt til natriumindtaget.",
+  "research": "Mælkesyre og dens salte er vurderet af JECFA og SCF uden sikkerhedsbekymringer. Forskningen fokuserer mest på den antimikrobielle effekt i kødvarer mod Listeria monocytogenes, som er veldokumenteret.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium lactate",
+  "flags": [],
+  "classes": [
+   "antioxidant",
+   "emulsifier",
+   "humectant",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en"
+   ],
+   "notes": "Runde 2 (udsagn-for-udsagn) er IKKE gennemført for denne post: sessionens WebSearch-budget (200 kald) blev opbrugt, og direkte netadgang er blokeret. Teksten er uændret fra runde 1, som kun kontrollerede EU-status, ADI og EFSA-konklusion (Godkendt (bilag II). JECFA-ADI 'ikke begrænset' for mælkesyre og laktater bekræftet; kun L(+)-form i spædbørnsmad. EFSA har endnu ikke afsluttet gen-evaluering.). Øvrige udsagn (kemi, fremstilling, fødevarer, tal, studier, følsomme grupper) er ubekræftede."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_lactate",
+  "wikidata": "Q418235",
+  "claims": []
+ },
+ {
+  "code": "E326",
+  "nameDa": "Kaliumlactat",
+  "nameEn": "Potassium lactate",
+  "category": "Surhedsregulerende middel / fugtighedsbevarende middel",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Kaliumlactat er kaliumsaltet af mælkesyre og bruges til at bevare fugt og holdbarhed.",
+  "description": "Kaliumlactat fremstilles ved neutralisering af fermenteringsbaseret mælkesyre med kaliumhydroxid. Det har samme funktioner som natriumlactat (fugtbevaring, pH-regulering, hæmning af bakterier) og bruges ofte, når man vil reducere natriumindholdet. Det er desuden en kaliumkilde.",
+  "uses": "Kødpålæg og pølser med reduceret salt, fjerkræ- og fiskeprodukter, færdigretter. Tilladt quantum satis i de fleste kategorier.",
+  "health": "Laktater anses som sikre; mælkesyre og dens salte er normale stofskifteprodukter, og der er ikke fastsat en numerisk ADI (JECFA: 'ikke specificeret'). Trods navnet indeholder laktater ikke mælk eller laktose og er uproblematiske ved laktoseintolerans og mælkeallergi. D-mælkesyre omsættes langsomt af spædbørn, og derfor bruges kun L-formen i fødevarer til spædbørn. Personer med nedsat nyrefunktion, som skal begrænse kalium, bør være opmærksomme på, at kaliumsalte i natriumreducerede produkter kan bidrage væsentligt.",
+  "research": "Kaliumlactat er ikke genstand for særskilte sikkerhedsbekymringer. Forskning viser effektiv hæmning af Listeria og anvendelighed til saltreduktion i kødvarer.",
+  "keyReferences": [],
+  "pubmedTerm": "potassium lactate",
+  "flags": [
+   "kidney_caution"
+  ],
+  "classes": [
+   "antioxidant",
+   "emulsifier",
+   "humectant"
+  ],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en"
+   ],
+   "notes": "Runde 2 (udsagn-for-udsagn) er IKKE gennemført for denne post: sessionens WebSearch-budget (200 kald) blev opbrugt, og direkte netadgang er blokeret. Teksten er uændret fra runde 1, som kun kontrollerede EU-status, ADI og EFSA-konklusion (Godkendt (bilag II). JECFA-ADI 'ikke begrænset' for mælkesyre og laktater bekræftet; kun L(+)-form i spædbørnsmad. EFSA har endnu ikke afsluttet gen-evaluering.). Øvrige udsagn (kemi, fremstilling, fødevarer, tal, studier, følsomme grupper) er ubekræftede."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Potassium_lactate",
+  "wikidata": "Q411342",
+  "claims": []
+ },
+ {
+  "code": "E327",
+  "nameDa": "Calciumlactat",
+  "nameEn": "Calcium lactate",
+  "category": "Surhedsregulerende middel / fortykningsmiddel",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Calciumlactat er calciumsaltet af mælkesyre og bruges til at give fasthed og tilsætte calcium.",
+  "description": "Calciumlactat fremstilles ved at neutralisere mælkesyre med calciumcarbonat eller calciumhydroxid. Det er let opløseligt og velsmagende sammenlignet med andre calciumsalte. Det bruges til at holde frugter og grøntsager faste, som calciumkilde i berigede fødevarer, og som surhedsregulerende middel. De hvide krystaller, der ses på lagret ost, kan bl.a. være calciumlactat.",
+  "uses": "Dåsefrugt og -grøntsager, marmelade, bagepulver, berigede drikke og mejeriprodukter, slik, tyggegummi og kosttilskud. Tilladt quantum satis i de fleste kategorier.",
+  "health": "Laktater anses som sikre; mælkesyre og dens salte er normale stofskifteprodukter, og der er ikke fastsat en numerisk ADI (JECFA: 'ikke specificeret'). Trods navnet indeholder laktater ikke mælk eller laktose og er uproblematiske ved laktoseintolerans og mælkeallergi. D-mælkesyre omsættes langsomt af spædbørn, og derfor bruges kun L-formen i fødevarer til spædbørn.",
+  "research": "Calciumlactat er grundigt kendt og uden sikkerhedskontrovers. Det er undersøgt som calciumkilde med god biotilgængelighed.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium lactate",
+  "flags": [],
+  "classes": [
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en"
+   ],
+   "notes": "Runde 2 (udsagn-for-udsagn) er IKKE gennemført for denne post: sessionens WebSearch-budget (200 kald) blev opbrugt, og direkte netadgang er blokeret. Teksten er uændret fra runde 1, som kun kontrollerede EU-status, ADI og EFSA-konklusion (Godkendt (bilag II). JECFA-ADI 'ikke begrænset' for mælkesyre og laktater bekræftet; kun L(+)-form i spædbørnsmad. EFSA har endnu ikke afsluttet gen-evaluering.). Øvrige udsagn (kemi, fremstilling, fødevarer, tal, studier, følsomme grupper) er ubekræftede."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Calcium_lactate",
+  "wikidata": "Q419693",
+  "claims": []
+ },
+ {
+  "code": "E330",
+  "nameDa": "Citronsyre",
+  "nameEn": "Citric acid",
+  "category": "Syre / surhedsregulerende middel / antioxidant",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Citronsyre er den syre, der naturligt findes i citrusfrugter, og er et af de mest brugte tilsætningsstoffer.",
+  "description": "Citronsyre er en trikarboxylsyre, som indgår i citronsyrecyklussen i alle levende celler. Næsten al industriel citronsyre fremstilles ved fermentering af sukker (melasse eller glukose) med skimmelsvampen Aspergillus niger, hvorefter syren renses. Den giver frisk syrlig smag, sænker pH (hvilket hæmmer mikroorganismer), binder metalioner (kompleksbinder) og forstærker andre antioxidanters virkning. Det færdige produkt indeholder ikke svampen.",
+  "uses": "Sodavand og saftevand, slik og vingummi, marmelade, konserves og dåsetomater, dressinger og saucer, frosne fisk og frugt, is, ost og mejeriprodukter. Tilladt quantum satis i de fleste kategorier.",
+  "health": "Citronsyre anses som meget sikker; der er ikke fastsat en numerisk ADI (JECFA: 'ikke specificeret'). Hyppigt indtag af sure drikke og slik kan bidrage til syreerosion af tænderne. Der er rapporteret enkelte tilfælde af formodede reaktioner, som forfattere har spekuleret i skyldes rester fra fermenteringen (Sweis & Cressey 2018, fire case-rapporter), men dette er ikke bekræftet. Citronsyre er ikke det samme som citrusallergi.",
+  "research": "EFSA har vurderet citronsyre i flere sammenhænge (bl.a. 2013 som aktivt stof i fødevarekontaktmaterialer) uden sikkerhedsbekymring. En serie på fire case-rapporter (Sweis & Cressey, Toxicology Reports 2018) foreslog, at rester fra Aspergillus-fremstilling kunne udløse inflammatoriske reaktioner hos enkelte, men dette er hypotesegenererende og ikke bekræftet i kontrollerede studier. EFSA's egentlige gen-evaluering af citronsyre og citrater (E330-E333, E380) er endnu ikke afsluttet; der er indkaldt anvendelsesdata.",
+  "keyReferences": [
+   {
+    "citation": "Sweis IE, Cressey BC. Potential role of the common food additive manufactured citric acid in eliciting significant inflammatory reactions contributing to serious disease states: A series of four case reports. Toxicology Reports. 2018;5:808-812. doi:10.1016/j.toxrep.2018.08.002",
+    "searchTitle": "Potential role of the common food additive manufactured citric acid in eliciting significant inflammatory reactions contributing to serious disease states"
+   }
+  ],
+  "pubmedTerm": "citric acid",
+  "flags": [],
+  "classes": [
+   "antioxidant",
+   "sequestrant"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the safety evaluation of the active substances citric acid (E330) and sodium hydrogen carbonate (E500ii), used as carbon dioxide generators, together with liquid absorbers cellulose and polyacrylic acid sodium salt crosslinked, in active food contact materials.",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2013.3152",
+   "date": "2013-04-09",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://doi.org/10.1016/j.toxrep.2018.08.002",
+    "https://www.efsa.europa.eu/sites/default/files/consultation/160524.pdf",
+    "https://doi.org/10.2903/j.efsa.2013.3152"
+   ],
+   "notes": "Runde 2 (udsagn-for-udsagn) er IKKE gennemført for denne post: sessionens WebSearch-budget (200 kald) blev opbrugt, og direkte netadgang er blokeret. Teksten er uændret fra runde 1, som kun kontrollerede EU-status, ADI og EFSA-konklusion (Referencen var forkert: artiklen er af Sweis & Cressey (ikke Sumpter) med en anden titel; rettet i tekst og keyReferences. EFSA-gen-evaluering af citrater ikke afsluttet – tilføjet.). Øvrige udsagn (kemi, fremstilling, fødevarer, tal, studier, følsomme grupper) er ubekræftede."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Citric_acid",
+  "wikidata": "Q159683",
+  "claims": []
+ },
+ {
+  "code": "E380",
+  "nameDa": "Triammoniumcitrat",
+  "nameEn": "Triammonium citrate",
+  "category": "Surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Ammoniumsaltet af citronsyre, der bruges til at regulere surhedsgraden i fødevarer.",
+  "description": "Triammoniumcitrat er citronsyre, hvor alle tre syregrupper er neutraliseret med ammoniak. Det fremstilles ved at lade citronsyre (normalt fremstillet ved fermentering med skimmelsvampen Aspergillus niger) reagere med ammoniak. Stoffet fungerer som buffer og surhedsregulerende middel og kan også binde metalioner. I kroppen omsættes citrat i citronsyrecyklussen, mens ammonium omdannes til urinstof i leveren. Det anvendes langt sjældnere end natrium- og kaliumcitrater.",
+  "uses": "Tilladt i EU efter quantum satis-princippet i en række fødevarer. Anvendes i praksis sjældent, fx i visse forarbejdede oste, drikkevarer og konfekture.",
+  "health": "Citrat er en normal del af stofskiftet, og ammonium i de små mængder der bruges, håndteres let af leveren. Der er ikke kendte bivirkninger ved normalt indtag. Personer med svær leversygdom har nedsat evne til at omsætte ammonium, men mængderne fra tilsætningsstoffer er ubetydelige i den sammenhæng. JECFA har ikke fundet behov for en numerisk ADI for citronsyre og dens salte ('ADI not limited').",
+  "research": "Citronsyre og citrater regnes generelt for nogle af de mest uproblematiske tilsætningsstoffer. EFSA's genvurderingsprogram omfatter citrater (E330–E333, E380), men vurderingen er endnu ikke afsluttet, men der er ikke rejst særlige sikkerhedsbekymringer for triammoniumcitrat. Forskning i stoffet som tilsætningsstof er sparsom.",
+  "keyReferences": [],
+  "pubmedTerm": "ammonium citrate",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://www.efsa.europa.eu/sites/default/files/consultation/160524.pdf"
+   ],
+   "notes": "IKKE GENNEMGÅET udsagn-for-udsagn i runde 2: sessionens WebSearch-budget (200 søgninger) blev opbrugt, og der er ingen anden netadgang. Teksten er uændret fra runde 1 og er ikke kildebelagt pr. udsagn. Tidligere note: Godkendt; indgår i EFSA's dataindkaldelse for citrater. Ingen afsluttet EFSA-udtalelse."
+  },
+  "wikipedia": "",
+  "wikidata": "Q13081798",
+  "claims": []
+ },
+ {
+  "code": "E385",
+  "nameDa": "Calciumdinatrium-EDTA",
+  "nameEn": "Calcium disodium ethylenediaminetetraacetate",
+  "category": "Antioxidant / sekvestrant",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Et syntetisk kompleksbindende stof (EDTA), der binder metalioner og derved forhindrer misfarvning og harskning.",
+  "description": "Calciumdinatrium-EDTA er calcium- og natriumsaltet af ethylendiamintetraeddikesyre (EDTA), et stærkt chelaterende molekyle. Det fremstilles syntetisk ud fra ethylendiamin, formaldehyd og cyanid efterfulgt af rensning. EDTA binder spormetaller som jern og kobber, der ellers katalyserer oxidation, farveændringer og smagsfejl. Calciumformen bruges i fødevarer, fordi den ikke trækker calcium ud af kroppen som fri EDTA. Stoffet optages kun i ringe grad fra tarmen (ca. 5 %).",
+  "uses": "Tilladt i EU i begrænsede kategorier med maksimumsgrænser: fx konserverede og glaserede bælgfrugter, svampe og artiskokker, konserverede krebsdyr og bløddyr, emulgerede saucer (mayonnaise), smørbare fedtstoffer med lavt fedtindhold og frosne krebsdyr.",
+  "health": "JECFA fastsatte i 1973 en ADI på 0-2,5 mg/kg legemsvægt/dag (udtrykt som CaNa2EDTA, svarende til ca. 1,9 mg/kg som fri EDTA). I højere doser kan EDTA påvirke optagelsen af mineraler som zink og jern. Ved normalt indtag fra fødevarer ligger eksponeringen langt under ADI. Stoffet anvendes også medicinsk til behandling af blyforgiftning, hvilket viser dets stærke metalbindende egenskaber.",
+  "research": "JECFA har vurderet EDTA flere gange, senest i forbindelse med brug af natriumjern-EDTA til jernberigelse. EFSA har endnu ikke gen-evalueret E385: i en udtalelse fra 2018 om ferrinatrium-EDTA (EFSA Journal 2018;16(8):5369) anbefalede ANS-panelet, at der skulle fremskaffes yderligere toksikologiske data for at afhjælpe mangler i databasen, før calciumdinatrium-EDTA kan gen-evalueres, og EFSA har siden indkaldt data. Nogle forskere har diskuteret, om EDTA kan påvirke tarmens barrierefunktion, men dette er ikke påvist ved relevante doser i mennesker.",
+  "keyReferences": [],
+  "pubmedTerm": "edetate calcium disodium",
+  "flags": [],
+  "classes": [
+   "antioxidant",
+   "preservative",
+   "sequestrant"
+  ],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://www.inchem.org/documents/jecfa/jeceval/jec_311.htm",
+    "https://doi.org/10.2903/j.efsa.2018.5369",
+    "https://www.efsa.europa.eu/en/call/call-data-re-evaluation-calcium-disodium-edta-e-385-food-additive"
+   ],
+   "notes": "IKKE GENNEMGÅET udsagn-for-udsagn i runde 2: sessionens WebSearch-budget (200 søgninger) blev opbrugt, og der er ingen anden netadgang. Teksten er uændret fra runde 1 og er ikke kildebelagt pr. udsagn. Tidligere note: Ubekræftet påstand om EFSA-vurdering 2004 fjernet; erstattet med EFSA 2018-udtalelse (datamangler) og igangværende dataindkaldelse. JECFA-ADI 1973 bekræftet."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Ethylenediaminetetraacetic_acid",
+  "wikidata": "Q9189390",
+  "claims": []
+ },
+ {
+  "code": "E392",
+  "nameDa": "Ekstrakter af rosmarin",
+  "nameEn": "Extracts of rosemary",
+  "category": "Antioxidant",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Et naturligt antioxidantekstrakt fra rosmarinblade, der beskytter fedtstoffer mod harskning.",
+  "description": "Rosmarinekstrakt udvindes fra bladene af Rosmarinus officinalis med opløsningsmidler (fx ethanol, acetone, hexan) eller superkritisk CO2. De aktive stoffer er primært de fenoliske diterpener carnosolsyre og carnosol; specifikationen angiver indholdet som summen af disse. Ekstraktet deodoriseres ofte, så det ikke giver rosmarinsmag. Det bruges til at forsinke harskning af fedt og olier og til at stabilisere farve i kød. Stoffet blev godkendt i EU i 2010.",
+  "uses": "Tilladt i EU med maksimumsgrænser (udtrykt som carnosol + carnosolsyre), fx i vegetabilske olier, fedtstoffer, smørbare fedtstoffer, kødprodukter, pølser, fiskeprodukter, snacks, saucer, supper og kosttilskud.",
+  "health": "Rosmarinekstrakt anses for at have lav toksicitet. EFSA (2008) fandt ikke grundlag for at fastsætte en fuld ADI pga. utilstrækkelige data, men vurderede at eksponeringen fra de tilladte anvendelser gav tilstrækkelig sikkerhedsmargin. Personer med allergi over for rosmarin eller andre læbeblomstplanter kan i sjældne tilfælde reagere. Der er ikke kendte problemer for særlige grupper ved normalt indtag.",
+  "research": "EFSA's AFC-panel vurderede rosmarinekstrakter i 2008, og ANS-panelet har efterfølgende vurderet udvidede anvendelser, bl.a. i fedtbaserede smørepålæg (2015), og i 2018 offentliggjorde EFSA en forfinet eksponeringsvurdering (DOI 10.2903/j.efsa.2018.5373). Rosmarinekstrakt ses som et 'clean label'-alternativ til syntetiske antioxidanter som BHA og BHT. Der forskes i carnosolsyres mulige antiinflammatoriske og neurobeskyttende egenskaber, men dette er primært prækliniske studier.",
+  "keyReferences": [],
+  "pubmedTerm": "rosemary extract",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Extension of use of extracts of rosemary (E 392) in fat-based spreads",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2015.4090",
+   "date": "2015-05-07",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "http://www.efsa.europa.eu/sites/default/files/scientific_output/files/main_documents/721.pdf",
+    "https://doi.org/10.2903/j.efsa.2015.4090",
+    "https://doi.org/10.2903/j.efsa.2018.5373"
+   ],
+   "notes": "IKKE GENNEMGÅET udsagn-for-udsagn i runde 2: sessionens WebSearch-budget (200 søgninger) blev opbrugt, og der er ingen anden netadgang. Teksten er uændret fra runde 1 og er ikke kildebelagt pr. udsagn. Tidligere note: EFSA 2008 (EFSA Journal 721): data utilstrækkelige til ADI men ingen bekymring – bekræftet. Tilføjet 2018-eksponeringsvurdering."
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "claims": []
+ },
+ {
+  "code": "E400",
+  "nameDa": "Alginsyre",
+  "nameEn": "Alginic acid",
+  "category": "Fortykningsmiddel / stabilisator",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Alginsyre er et naturligt kulhydrat fra brunalger, der danner geler og gør fødevarer tykkere.",
+  "description": "Alginsyre er et lineært polysakkarid opbygget af mannuronsyre og guluronsyre, der udvindes fra cellevæggene i brunalger (fx Laminaria og Ascophyllum). Tangen ekstraheres med alkali, og alginsyren fældes ud med syre. Alginsyre er i sig selv tungt opløselig; derfor bruges oftest saltene E401-E404. Den binder vand, fortykker og kan danne geler med calcium. Den fungerer i kroppen som opløselig kostfiber, der ikke nedbrydes i tyndtarmen.",
+  "uses": "Tilladt i EU efter quantum satis i mange fødevarer, fx is, desserter, saucer, dressinger, fyld til bagværk og kosttilskud. Må ikke bruges i gelékonfekture i minibægre (kvælningsrisiko) og har særlige regler i mad til spædbørn.",
+  "health": "Alginater optages ikke og anses for sikre. Store mængder kan give luft i maven eller løs mave, som andre kostfibre. EFSA's genvurdering (2017) fandt ikke behov for en numerisk ADI ('ADI not specified') for alginsyre og dens salte. EFSA bemærkede, at data ikke tillod en tilstrækkelig vurdering for spædbørn og småbørn, der får fødevarer til særlige medicinske formål.",
+  "research": "EFSA's ANS-panel genvurderede alginsyre og salte (E400-E404) i 2017 og konkluderede, at der ikke var sikkerhedsbekymring ved de rapporterede anvendelser. Alginat bruges medicinsk mod halsbrand (fx Gaviscon), og der forskes i alginatets mulige mæthedsfremmende effekt, med blandede resultater.",
+  "keyReferences": [],
+  "pubmedTerm": "alginic acid",
+  "flags": [],
+  "classes": [
+   "carrier",
+   "emulsifier",
+   "humectant",
+   "sequestrant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of alginic acid and its sodium, potassium, ammonium and calcium salts (E 400–E 404) as food additives",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.5049",
+   "date": "2017/11/10",
+   "adi": "not specified",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2017.5049"
+   ],
+   "notes": "IKKE GENNEMGÅET udsagn-for-udsagn i runde 2: sessionens WebSearch-budget (200 søgninger) blev opbrugt, og der er ingen anden netadgang. Teksten er uændret fra runde 1 og er ikke kildebelagt pr. udsagn. Tidligere note: EFSA 2017 'ADI not specified' bekræftet; forbeholdet om spædbørn præciseret (FSMP til spædbørn/småbørn)."
+  },
+  "wikipedia": "",
+  "wikidata": "Q422092",
+  "claims": []
+ },
+ {
+  "code": "E401",
+  "nameDa": "Natriumalginat",
+  "nameEn": "Sodium alginate",
+  "category": "Fortykningsmiddel / geleringsmiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Natriumsaltet af alginsyre fra brunalger, der er et af de mest brugte alginater til fortykkelse og gelering.",
+  "description": "Natriumalginat fremstilles ved at neutralisere alginsyre fra brunalger med natriumkarbonat. Det er let opløseligt i koldt vand og giver tyktflydende opløsninger. Ved kontakt med calciumioner dannes øjeblikkeligt en fast gel, hvilket udnyttes i fx 'sfærificering' i molekylær gastronomi og til restrukturerede produkter som oliven-fyld og kunstige kaviarperler. Molekylets forhold mellem mannuron- og guluronsyre bestemmer gelens styrke.",
+  "uses": "Tilladt quantum satis i mange fødevarer i EU: is, milkshakes, flødeskum, dressinger, bageri-creme, restrukturerede fisk/kød-produkter, fyldte oliven og øl (skumstabilisering). Ikke tilladt i gelékonfekture i minibægre.",
+  "health": "Anses for sikkert. EFSA (2017) fastsatte 'ADI not specified' for alginater. Høje indtag kan give luft og løs mave. Bidraget til natriumindtaget er ubetydeligt ved normale mængder.",
+  "research": "Omfattet af EFSA's genvurdering af E400-E404 (2017), der ikke fandt sikkerhedsbekymring. Natriumalginat er desuden brugt i sårbehandling og lægemidler, og det undersøges som vægttabsmiddel i form af 'alginat-drinks', uden overbevisende langtidseffekt.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium alginate",
+  "flags": [],
+  "classes": [
+   "carrier",
+   "emulsifier",
+   "humectant",
+   "sequestrant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of alginic acid and its sodium, potassium, ammonium and calcium salts (E 400–E 404) as food additives",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.5049",
+   "date": "2017/11/10",
+   "adi": "not specified",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2017.5049"
+   ],
+   "notes": "IKKE GENNEMGÅET udsagn-for-udsagn i runde 2: sessionens WebSearch-budget (200 søgninger) blev opbrugt, og der er ingen anden netadgang. Teksten er uændret fra runde 1 og er ikke kildebelagt pr. udsagn. Tidligere note: EFSA 2017 re-evaluering (ingen numerisk ADI, ingen bekymring) bekræftet."
+  },
+  "wikipedia": "",
+  "wikidata": "Q1187513",
+  "claims": []
+ },
+ {
+  "code": "E402",
+  "nameDa": "Kaliumalginat",
+  "nameEn": "Potassium alginate",
+  "category": "Fortykningsmiddel / stabilisator",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Kaliumsaltet af alginsyre fra brunalger, som fortykker og stabiliserer fødevarer.",
+  "description": "Kaliumalginat fremstilles ved neutralisering af alginsyre med kaliumforbindelser. Det har samme funktioner som natriumalginat: vandbinding, fortykkelse og gelering med calcium. Det kan vælges, når man ønsker at reducere natriumindholdet. I praksis bruges det mindre end natriumalginat.",
+  "uses": "Tilladt quantum satis i EU i fx desserter, is, saucer og natriumreducerede produkter. Ikke tilladt i gelékonfekture i minibægre.",
+  "health": "Anses for sikkert; EFSA (2017) 'ADI not specified' for alginater. Kaliumbidraget er lille, men personer med svært nedsat nyrefunktion, der skal begrænse kalium, bør være opmærksomme på kaliumsalte generelt.",
+  "research": "Omfattet af EFSA's genvurdering af E400-E404 (2017) uden sikkerhedsbekymringer. Der er ikke stofspecifik forskning af betydning ud over den generelle alginatforskning.",
+  "keyReferences": [],
+  "pubmedTerm": "potassium alginate",
+  "flags": [],
+  "classes": [
+   "carrier",
+   "emulsifier",
+   "humectant",
+   "sequestrant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of alginic acid and its sodium, potassium, ammonium and calcium salts (E 400–E 404) as food additives",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.5049",
+   "date": "2017/11/10",
+   "adi": "not specified",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2017.5049"
+   ],
+   "notes": "IKKE GENNEMGÅET udsagn-for-udsagn i runde 2: sessionens WebSearch-budget (200 søgninger) blev opbrugt, og der er ingen anden netadgang. Teksten er uændret fra runde 1 og er ikke kildebelagt pr. udsagn. Tidligere note: EFSA 2017 re-evaluering (ingen numerisk ADI, ingen bekymring) bekræftet."
+  },
+  "wikipedia": "",
+  "wikidata": "Q16038950",
+  "claims": []
+ },
+ {
+  "code": "E403",
+  "nameDa": "Ammoniumalginat",
+  "nameEn": "Ammonium alginate",
+  "category": "Fortykningsmiddel / stabilisator",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Ammoniumsaltet af alginsyre fra brunalger, som bruges som fortykningsmiddel og stabilisator.",
+  "description": "Ammoniumalginat fremstilles ved neutralisering af alginsyre med ammoniak. Det har de samme fortykkende og stabiliserende egenskaber som de øvrige alginater. Det anvendes sjældent i fødevarer sammenlignet med natriumalginat.",
+  "uses": "Tilladt quantum satis i EU i de samme kategorier som øvrige alginater, men bruges sjældent. Ikke tilladt i gelékonfekture i minibægre.",
+  "health": "Anses for sikkert; EFSA (2017) fandt ikke behov for numerisk ADI for alginater. Mængden af ammonium er ubetydelig. Store indtag af alginat kan give maveluft og løs mave.",
+  "research": "Omfattet af EFSA's gruppevurdering af E400-E404 i 2017, som ikke fandt sikkerhedsbekymring og ikke fastsatte en numerisk ADI. Ammoniumalginat anvendes kun i begrænset omfang.",
+  "keyReferences": [],
+  "pubmedTerm": "ammonium alginate",
+  "flags": [],
+  "classes": [
+   "carrier",
+   "emulsifier",
+   "humectant",
+   "sequestrant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of alginic acid and its sodium, potassium, ammonium and calcium salts (E 400–E 404) as food additives",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.5049",
+   "date": "2017/11/10",
+   "adi": "not specified",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2017.5049"
+   ],
+   "notes": "IKKE GENNEMGÅET udsagn-for-udsagn i runde 2: sessionens WebSearch-budget (200 søgninger) blev opbrugt, og der er ingen anden netadgang. Teksten er uændret fra runde 1 og er ikke kildebelagt pr. udsagn. Tidligere note: Ubekræftet påstand om at industrien ikke rapporterede brug er omformuleret."
+  },
+  "wikipedia": "",
+  "wikidata": "Q16038948",
+  "claims": []
+ },
+ {
+  "code": "E404",
+  "nameDa": "Calciumalginat",
+  "nameEn": "Calcium alginate",
+  "category": "Fortykningsmiddel / geleringsmiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Calciumsaltet af alginsyre, som danner faste geler og bruges i restrukturerede fødevarer.",
+  "description": "Calciumalginat er den gelerede form af alginat, hvor calciumioner krydsbinder alginatkæderne ('æggebakke-modellen'). Det er uopløseligt i vand og danner varmestabile geler, der ikke smelter ved opvarmning. Derfor bruges det til produkter, der skal holde formen under bagning eller stegning, og som pølsetarme (co-extruderede alginattarme).",
+  "uses": "Tilladt quantum satis i EU, fx i bagefaste cremer og fyld, restruktureret frugt, fyldte oliven, dyrefoder-lignende 'bidder' og alginat-pølsetarme. Ikke tilladt i gelékonfekture i minibægre.",
+  "health": "Anses for sikkert; EFSA (2017) 'ADI not specified'. Bidrager med en lille mængde calcium. Ingen kendte særlige risikogrupper.",
+  "research": "Omfattet af EFSA's genvurdering af E400-E404 (2017). Calciumalginat bruges også bredt i sårbandager, og i fødevareforskning undersøges det som indkapslingsmateriale til probiotika.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium alginate",
+  "flags": [],
+  "classes": [
+   "carrier",
+   "humectant",
+   "sequestrant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of alginic acid and its sodium, potassium, ammonium and calcium salts (E 400–E 404) as food additives",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.5049",
+   "date": "2017/11/10",
+   "adi": "not specified",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2017.5049"
+   ],
+   "notes": "IKKE GENNEMGÅET udsagn-for-udsagn i runde 2: sessionens WebSearch-budget (200 søgninger) blev opbrugt, og der er ingen anden netadgang. Teksten er uændret fra runde 1 og er ikke kildebelagt pr. udsagn. Tidligere note: EFSA 2017 re-evaluering (ingen numerisk ADI, ingen bekymring) bekræftet."
+  },
+  "wikipedia": "",
+  "wikidata": "Q2034064",
+  "claims": []
+ },
+ {
+  "code": "E405",
+  "nameDa": "Propylenglycolalginat",
+  "nameEn": "Propane-1,2-diol alginate",
+  "category": "Fortykningsmiddel / emulgator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "En kemisk modificeret form af alginat fra brunalger, som er stabil i sure produkter og bruges bl.a. til at stabilisere ølskum og dressinger.",
+  "description": "Propylenglycolalginat (PGA) fremstilles ved at lade alginsyre fra brunalger reagere med propylenoxid, så en del af syregrupperne forestres med propan-1,2-diol. Forestringen gør molekylet mere tolerant over for syre og calcium end almindelige alginater, og det får let emulgerende egenskaber. Det bruges derfor i sure fødevarer, hvor andre alginater ville udfælde. I kroppen spaltes en del af esteren og frigiver propylenglycol.",
+  "uses": "Tilladt i EU med maksimumsgrænser, fx i øl (skumstabilisering), dressinger og emulgerede saucer, desserter, fyld og overtræk, is, konfekture og kosttilskud. Må ikke bruges i gelékonfekture i minibægre (kvælningsrisiko).",
+  "health": "PGA har lav toksicitet. Den frigivne propylenglycol (E1520) bidrager marginalt til det samlede propylenglycolindtag. EFSA genvurderede stoffet i 2018 og fastsatte en ADI på 55 mg/kg lgv/dag (baseret på ADI for propylenglycol på 25 mg/kg); eksponeringen oversteg ikke ADI i nogen befolkningsgruppe. Høje indtag kan give løs mave som andre fibre.",
+  "research": "EFSA's ANS-panel genvurderede propan-1,2-diol-alginat i 2018 og fandt ikke grundlag for bekymring ved aktuelt forbrug. Ældre dyre- og humanstudier viste god tolerance. Forskningen er i øvrigt begrænset.",
+  "keyReferences": [],
+  "pubmedTerm": "propylene glycol alginate",
+  "flags": [],
+  "classes": [
+   "carrier",
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of propane-1,2-diol alginate (E 405) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2018.5371",
+   "date": "2018",
+   "adi": "55 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2018.5371",
+    "https://pubmed.ncbi.nlm.nih.gov/32625998/"
+   ],
+   "notes": "IKKE GENNEMGÅET udsagn-for-udsagn i runde 2: sessionens WebSearch-budget (200 søgninger) blev opbrugt, og der er ingen anden netadgang. Teksten er uændret fra runde 1 og er ikke kildebelagt pr. udsagn. Tidligere note: Tilføjet EFSA 2018 ADI 55 mg/kg lgv/dag og efsa-objekt."
+  },
+  "wikipedia": "",
+  "wikidata": "Q2474785",
+  "claims": []
+ },
+ {
+  "code": "E406",
+  "nameDa": "Agar",
+  "nameEn": "Agar",
+  "category": "Geleringsmiddel / fortykningsmiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Agar er et geleringsmiddel udvundet af rødalger, der bruges som vegetabilsk alternativ til gelatine.",
+  "description": "Agar består af polysakkariderne agarose og agaropektin og udvindes ved kogning af rødalger som Gelidium og Gracilaria. Efter filtrering, gelering og tørring fås et pulver eller flager. Agar danner faste geler allerede ved lave koncentrationer (ca. 1 %), og gelen smelter først ved ca. 85 °C, mens den stivner ved 32-40 °C. Det er vegansk og bruges derfor ofte som erstatning for gelatine. Agar nedbrydes ikke i tyndtarmen og fungerer som kostfiber.",
+  "uses": "Tilladt quantum satis i EU, fx i vingummi, gelé, marmelade, desserter, glasur, is, kødkonserves i gelé og veganske produkter. Må ikke bruges i gelékonfekture i minibægre (kvælningsrisiko).",
+  "health": "Agar anses for meget sikkert; EFSA's genvurdering (2016) fandt ikke behov for en numerisk ADI. I store mængder virker det laksativt og kan give oppustethed. Der har tidligere været tilfælde af kvælning og tarmobstruktion ved gelékonfekture i minibægre, hvorfor dette er forbudt. Personer der tager medicin, bør være opmærksomme på, at store fibermængder kan påvirke optagelsen.",
+  "research": "EFSA's ANS-panel genvurderede agar (E406) i 2016 uden at finde sikkerhedsbekymringer ved de anvendte niveauer. Der er begrænset forskning i agar som mættende fiber til vægttab (bl.a. japanske studier), men evidensen er sparsom.",
+  "keyReferences": [],
+  "pubmedTerm": "agar",
+  "flags": [
+   "laxative"
+  ],
+  "classes": [
+   "carrier",
+   "emulsifier",
+   "humectant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of agar (E 406) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2016.4645",
+   "date": "2016-12-21",
+   "adi": "not specified",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2016.4645"
+   ],
+   "notes": "IKKE GENNEMGÅET udsagn-for-udsagn i runde 2: sessionens WebSearch-budget (200 søgninger) blev opbrugt, og der er ingen anden netadgang. Teksten er uændret fra runde 1 og er ikke kildebelagt pr. udsagn. Tidligere note: EFSA 2016: ingen numerisk ADI, ingen bekymring – bekræftet; efsa-objekt tilføjet."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Agar",
+  "wikidata": "Q177998",
+  "claims": []
+ },
+ {
+  "code": "E407",
+  "nameDa": "Carrageenan",
+  "nameEn": "Carrageenan",
+  "category": "Fortykningsmiddel / geleringsmiddel / stabilisator",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Carrageenan er et fortykningsmiddel udvundet af rødalger, som især bruges i mejeriprodukter og kødprodukter. Det er et af de mest debatterede fortykningsmidler.",
+  "description": "Carrageenan er en familie af svovlholdige polysakkarider (kappa-, iota- og lambda-carrageenan) fra rødalger som Chondrus crispus (irsk mos), Eucheuma og Kappaphycus. Det udvindes ved varm alkalisk ekstraktion, filtrering og fældning med alkohol eller kaliumchlorid. Kappa giver faste, sprøde geler, iota elastiske geler, og lambda gelerer ikke men fortykker. Carrageenan reagerer særligt godt med mælkeprotein og bruges derfor til at stabilisere kakaomælk og desserter. Det skal skelnes fra 'poligeenan' (nedbrudt carrageenan med lav molekylvægt), som ikke er tilladt i fødevarer.",
+  "uses": "Tilladt quantum satis i EU i mange produkter: kakaomælk, fløde, flødeskum, budding, is, plantedrikke, skinke og pålæg (vandbinding), gelé og konfekture. Særlige regler for modermælkserstatning og babymad. Må ikke bruges i gelékonfekture i minibægre (kvælningsrisiko).",
+  "health": "EFSA (2018) konkluderede, at den eksisterende gruppe-ADI på 75 mg/kg legemsvægt/dag for E407 og E407a skal betragtes som midlertidig, indtil datagrundlaget er forbedret, og fandt i det mest relevante eksponeringsscenarie, at høje forbrugere i alle aldersgrupper kunne overskride ADI (i nogle tilfælde op til ca. 10 gange). Dyreforsøg har knyttet især nedbrudt carrageenan (poligeenan) til tarmbetændelse og tumorer; poligeenan er af IARC klassificeret som muligvis kræftfremkaldende (gruppe 2B). Nogle personer med inflammatorisk tarmsygdom oplever forbedring ved at undgå carrageenan, men dokumentationen er begrænset. Anvendelse i modermælkserstatning til spædbørn er et særligt fokus på grund af manglende data.",
+  "research": "EFSA's genvurdering (2018) konkluderede, at der ikke var sikkerhedsbekymring ved nuværende brug, men gjorde ADI midlertidig pga. usikkerheder om data og indhold af lavmolekylært carrageenan; EFSA's særskilte vurdering af brug i fødevarer til spædbørn under 16 uger (FAF-panelet, mandat fra 2023) var ved seneste offentliggjorte status endnu ikke afsluttet. Tobacman (Environ Health Perspect, 2001) gennemgik dyreforsøg med skadelige mave-tarmeffekter og har rejst bekymring. Et lille randomiseret studie af Bhattacharyya et al. (Nutrition and Healthy Aging, 2017; 12 deltagere) antydede, at carrageenanfri kost kunne mindske tilbagefald ved colitis ulcerosa, men det er ikke bekræftet i større studier. Studiet er kritiseret af industriforskere (McKim et al., 2019). I den franske NutriNet-Santé-kohorte fandt Sellem et al. (PLoS Medicine, 2024) en association mellem højere indtag af carrageenan og brystkræft, men observationelle data kan ikke vise årsagssammenhæng. Emnet er fortsat omdiskuteret.",
+  "keyReferences": [
+   {
+    "citation": "Tobacman JK. Review of harmful gastrointestinal effects of carrageenan in animal experiments. Environ Health Perspect. 2001.",
+    "searchTitle": "Review of harmful gastrointestinal effects of carrageenan in animal experiments"
+   },
+   {
+    "citation": "Bhattacharyya S, Shumard T, Xie H, et al. A randomized trial of the effects of the no-carrageenan diet on ulcerative colitis disease activity. Nutr Healthy Aging. 2017.",
+    "searchTitle": "A randomized trial of the effects of the no-carrageenan diet on ulcerative colitis disease activity"
+   },
+   {
+    "citation": "Sellem L, Srour B, Javaux G, et al. Food additive emulsifiers and cancer risk: Results from the French prospective NutriNet-Santé cohort. PLoS Med. 2024.",
+    "searchTitle": "Food additive emulsifiers and cancer risk: Results from the French prospective NutriNet-Santé cohort"
+   }
+  ],
+  "pubmedTerm": "carrageenan",
+  "flags": [
+   "children_caution"
+  ],
+  "classes": [
+   "carrier",
+   "emulsifier",
+   "humectant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of carrageenan (E 407) and processed Eucheuma seaweed (E 407a) as food additives",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5238",
+   "date": "2018/04/26",
+   "adi": "75",
+   "overexposureRisk": "en:high"
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2018.5238",
+    "https://journals.sagepub.com/doi/full/10.3233/NHA-170023",
+    "https://www.efsa.europa.eu/sites/default/files/2024-04/200324-m.pdf",
+    "https://journals.plos.org/plosmedicine/article?id=10.1371%2Fjournal.pmed.1004338"
+   ],
+   "notes": "IKKE GENNEMGÅET udsagn-for-udsagn i runde 2: sessionens WebSearch-budget (200 søgninger) blev opbrugt, og der er ingen anden netadgang. Teksten er uændret fra runde 1 og er ikke kildebelagt pr. udsagn. Tidligere note: EU-godkendt bekræftet. ADI-formulering præciseret (eksisterende ADI 75 gjort midlertidig; overskridelse op til ~10x). Påstand om afsluttet EFSA-vurdering for spædbørn rettet (stadig i gang). Bhattacharyya-studiets tidsskrift tilføjet; NutriNet-Santé-fund tilføjet; referencer bekræftet og suppleret."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Carrageenan",
+  "wikidata": "Q421991",
+  "claims": []
+ },
+ {
+  "code": "E407a",
+  "nameDa": "Forarbejdet eucheuma-tang",
+  "nameEn": "Processed eucheuma seaweed",
+  "category": "Fortykningsmiddel / geleringsmiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "En mindre raffineret form af carrageenan, hvor hele tangen fra Eucheuma-arter forarbejdes uden at carrageenan udskilles fuldt.",
+  "description": "Forarbejdet eucheuma-tang (PES, også kaldet semi-raffineret carrageenan) fremstilles ved at behandle rødalgerne Eucheuma cottonii eller E. spinosum med varm alkali, vaske og tørre dem, uden at carrageenanen opløses og fældes. Produktet indeholder derfor op til ca. 15 % uopløselig algecellulose ud over carrageenan. Det er billigere end raffineret carrageenan og giver mere uklare geler. Funktionen er i øvrigt som E407.",
+  "uses": "Tilladt quantum satis i EU i de samme kategorier som carrageenan, fx kødprodukter, desserter og mejeriprodukter. Må ikke bruges i gelékonfekture i minibægre (kvælningsrisiko).",
+  "health": "Vurderes sammen med carrageenan: EFSA (2018) konkluderede, at den eksisterende gruppe-ADI på 75 mg/kg legemsvægt/dag for E407 og E407a skal betragtes som midlertidig, indtil datagrundlaget er forbedret, og fandt i det mest relevante eksponeringsscenarie, at høje forbrugere i alle aldersgrupper kunne overskride ADI (i nogle tilfælde op til ca. 10 gange). De samme bekymringer om nedbrudt carrageenan og tarmeffekter gælder. Der er særligt fokus på spædbørn pga. manglende data.",
+  "research": "EFSA's genvurdering (2018) omfattede både E407 og E407a og krævede bedre data om molekylvægtsfordeling og forureninger. Specifik forskning i PES adskilt fra carrageenan er meget begrænset.",
+  "keyReferences": [
+   {
+    "citation": "Tobacman JK. Review of harmful gastrointestinal effects of carrageenan in animal experiments. Environ Health Perspect. 2001.",
+    "searchTitle": "Review of harmful gastrointestinal effects of carrageenan in animal experiments"
+   }
+  ],
+  "pubmedTerm": "carrageenan",
+  "flags": [
+   "children_caution"
+  ],
+  "classes": [
+   "carrier",
+   "emulsifier",
+   "humectant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of carrageenan (E 407) and processed Eucheuma seaweed (E 407a) as food additives",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5238",
+   "date": "2018/04/26",
+   "adi": "75",
+   "overexposureRisk": "en:high"
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2018.5238",
+    "https://pubmed.ncbi.nlm.nih.gov/32625873/"
+   ],
+   "notes": "IKKE GENNEMGÅET udsagn-for-udsagn i runde 2: sessionens WebSearch-budget (200 søgninger) blev opbrugt, og der er ingen anden netadgang. Teksten er uændret fra runde 1 og er ikke kildebelagt pr. udsagn. Tidligere note: Godkendt (E407a). ADI-formulering præciseret efter EFSA 2018. Fjernet ubekræftet \"dyrefoder-lignende produkter\". Tobacman-reference bekræftet (Environ Health Perspect 2001)."
+  },
+  "wikipedia": "",
+  "wikidata": "Q421991",
+  "claims": []
+ },
+ {
+  "code": "E410",
+  "nameDa": "Johannesbrødkernemel",
+  "nameEn": "Locust bean gum",
+  "category": "Fortykningsmiddel / stabilisator",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Johannesbrødkernemel (locust bean gum) er et fortykningsmiddel fra frøene af johannesbrødtræet.",
+  "description": "Stoffet udvindes af endospermen i frøene fra johannesbrødtræet (Ceratonia siliqua), der vokser i Middelhavsområdet. Det består af galactomannan, en kæde af mannose med sidegrupper af galactose (forhold ca. 4:1). Det opløses bedst ved opvarmning og giver høj viskositet; sammen med xanthan eller carrageenan dannes stærkere geler (synergi). Det er en opløselig kostfiber.",
+  "uses": "Tilladt quantum satis i EU, fx i is, flødeost, yoghurt, desserter, saucer, dressinger og tykkere modermælkserstatning (reflux-produkter). Må ikke bruges i gelékonfekture i minibægre (kvælningsrisiko).",
+  "health": "Anses for sikkert; EFSA's genvurdering (2017) fandt ikke behov for en numerisk ADI. Store mængder kan give luft og blød mave. Personer med stærk allergi over for bælgfrugter (fx jordnødder) har i sjældne tilfælde reageret på johannesbrødkernemel. EFSA har særligt vurderet brug i modermælkserstatning og fundet det acceptabelt ved de anvendte niveauer.",
+  "research": "EFSA's ANS-panel genvurderede E410 i 2017 og konkluderede i en opfølgning (FAF-panelet, 2023), at der ikke er sikkerhedsbekymring ved brug i modermælkserstatning og i fødevarer til særlige medicinske formål til spædbørn under 16 uger. Fortykket modermælkserstatning med johannesbrødkernemel er undersøgt ved spædbørnsgylp med moderat evidens for færre gylp.",
+  "keyReferences": [
+   {
+    "citation": "EFSA FAF Panel. Re-evaluation of locust bean gum (E 410) as a food additive in foods for infants below 16 weeks of age and follow-up of its re-evaluation as a food additive for uses in foods for all population groups. EFSA Journal. 2023;21(2):7775.",
+    "searchTitle": "Re-evaluation of locust bean gum (E 410) as a food additive in foods for infants below 16 weeks of age"
+   }
+  ],
+  "pubmedTerm": "locust bean gum",
+  "flags": [],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of locust bean gum (E 410) as a food additive",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4646",
+   "date": "2017/01/20",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://doi.org/10.2903/j.efsa.2017.4646",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.7775"
+   ],
+   "notes": "IKKE GENNEMGÅET udsagn-for-udsagn i runde 2: sessionens WebSearch-budget (200 søgninger) blev opbrugt, og der er ingen anden netadgang. Teksten er uændret fra runde 1 og er ikke kildebelagt pr. udsagn. Tidligere note: Godkendt. EFSA 2017 bekræftet; opfølgning 2023 (ingen bekymring for spædbørn <16 uger) indsat med konklusion."
+  },
+  "wikipedia": "",
+  "wikidata": "Q221391",
+  "claims": []
+ }
+]

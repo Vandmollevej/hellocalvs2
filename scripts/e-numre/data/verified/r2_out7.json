@@ -1,0 +1,1552 @@
+[
+  {
+    "code": "E576",
+    "nameDa": "Natriumgluconat",
+    "nameEn": "Sodium gluconate",
+    "category": "Kompleksdanner / stabilisator",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Natriumgluconat er natriumsaltet af gluconsyre, der bruges til at binde metalioner og stabilisere fødevarer.",
+    "description": "Natriumgluconat fremstilles ved fermentering af glukose til gluconsyre, som derefter neutraliseres med natriumhydroxid. Det er en effektiv kompleksdanner, der binder calcium, jern og andre metalioner, hvilket kan forhindre misfarvning og uklarhed. Det kan også maskere bitter smag og bruges i nogle saltreducerede produkter.",
+    "uses": "Forarbejdet kød, drikkevarer, mejeriprodukter og saltreducerede produkter. Tilladt i EU som gruppe I-tilsætningsstof (quantum satis) i mange fødevarekategorier.",
+    "health": "Natriumgluconat anses for at have lav toksicitet. JECFA fastsatte i 1998 en gruppe-ADI \"ikke specificeret\" for glucono-delta-lacton og gluconaterne (undtagen ferrogluconat).",
+    "research": "EFSA's gen-evaluering af gluconsyre og gluconaterne (E 574–E 579) er ikke afsluttet; EFSA indkaldte data i 2023 med frist i 2024. Forsøg med smagspaneler har vist, at natriumgluconat kan dæmpe bitter smag.",
+    "keyReferences": [
+      {
+        "citation": "JECFA. Glucono-delta-lactone and the calcium, magnesium, potassium and sodium salts of gluconic acid. WHO Food Additives Series 42. 1999 (51. møde, 1998).",
+        "searchTitle": "Glucono-delta-lactone gluconic acid salts JECFA WHO Food Additives Series 42"
+      }
+    ],
+    "pubmedTerm": "sodium gluconate",
+    "flags": [],
+    "classes": [
+      "sequestrant",
+      "stabiliser",
+      "thickener"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Call for data for the re-evaluation of gluconic acid (E 574) and related food additives (E 575-579)",
+      "url": "https://www.efsa.europa.eu/en/call/call-data-re-evaluation-gluconic-acid-e-574-and-related-food-additives-e-575-579",
+      "date": "2023",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.efsa.europa.eu/en/call/call-data-re-evaluation-gluconic-acid-e-574-and-related-food-additives-e-575-579",
+        "https://inchem.org/documents/jecfa/jecmono/v042je12.htm",
+        "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+        "https://en.wikipedia.org/wiki/Sodium_gluconate",
+        "https://www.jungbunzlauer.com/ingredients/sodium-gluconate/",
+        "https://www.researchgate.net/publication/233879813_Evaluation_of_the_Suppressive_Effect_on_Bitter_Taste_of_Gluconate",
+        "https://pubs.acs.org/doi/10.1021/ie50506a061"
+      ],
+      "notes": "RETTET: Påstanden om en EFSA-gen-evaluering fra 2018 (pub/5426) uden numerisk ADI kunne ikke findes; EFSA's gen-evaluering af E 574–E 579 er fortsat i gang (dataindkaldelse 2023–2024). Erstattet med JECFA's gruppe-ADI 'ikke specificeret' (1998). Fjernet 'bidraget til natriumindtaget er lille' (ikke kildebelagt). Bekræftet: fremstilling ved fermentering og neutralisering med NaOH, kompleksbinding af Ca/Fe, bitterdæmpning, gruppe I quantum satis (EU-forordning 1129/2011). Konkrete fødevarekategorier (kød, mejeri) er ikke enkeltvis bekræftet."
+    },
+    "wikipedia": "",
+    "wikidata": "Q264552",
+    "claims": [
+      {
+        "claim": "Natriumsalt af gluconsyre",
+        "source": "https://inchem.org/documents/jecfa/jecmono/v042je12.htm",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles ved fermentering af glukose og neutralisering med NaOH",
+        "source": "https://pubs.acs.org/doi/10.1021/ie50506a061",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Binder calcium, jern og andre metalioner",
+        "source": "https://www.jungbunzlauer.com/ingredients/sodium-gluconate/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kan maskere bitter smag",
+        "source": "https://www.researchgate.net/publication/233879813_Evaluation_of_the_Suppressive_Effect_on_Bitter_Taste_of_Gluconate",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Gruppe I, quantum satis i EU",
+        "source": "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2018: ingen numerisk ADI",
+        "source": "https://www.efsa.europa.eu/en/call/call-data-re-evaluation-gluconic-acid-e-574-and-related-food-additives-e-575-579",
+        "result": "rettet"
+      },
+      {
+        "claim": "JECFA gruppe-ADI ikke specificeret (1998)",
+        "source": "https://inchem.org/documents/jecfa/jecmono/v042je12.htm",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bidrag til natriumindtag er lille",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Anvendelse i forarbejdet kød, drikkevarer, mejeri",
+        "source": "",
+        "result": "ikke enkeltvis bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E577",
+    "nameDa": "Kaliumgluconat",
+    "nameEn": "Potassium gluconate",
+    "category": "Kompleksdanner / surhedsregulerende middel",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Kaliumgluconat er kaliumsaltet af gluconsyre, som bruges som kompleksdanner og som kaliumkilde.",
+    "description": "Kaliumgluconat er kaliumsaltet af gluconsyre. Det bruges som kompleksdanner og surhedsregulerende middel, til kaliumberigelse og i kosttilskud som kaliumkilde, og kan erstatte natriumsalte for at sænke natriumindholdet. Det anses for mere velsmagende end kaliumchlorid.",
+    "uses": "Kosttilskud, kaliumberigede og natriumreducerede produkter. Tilladt i EU som gruppe I-tilsætningsstof (quantum satis) i mange fødevarekategorier.",
+    "health": "Kaliumgluconat anses for sikkert i fødevaremængder; JECFA fastsatte i 1998 en gruppe-ADI \"ikke specificeret\" for gluconaterne. Personer med fremskreden nyresygdom eller som tager kaliumbesparende vanddrivende midler, ACE-hæmmere eller angiotensin-receptorblokkere bør være opmærksomme på det samlede kaliumindtag, fx fra kaliumholdige salterstatninger.",
+    "research": "EFSA's gen-evaluering af gluconaterne (E 574–E 579) er ikke afsluttet; EFSA indkaldte data i 2023 med frist i 2024.",
+    "keyReferences": [
+      {
+        "citation": "JECFA. Glucono-delta-lactone and the calcium, magnesium, potassium and sodium salts of gluconic acid. WHO Food Additives Series 42. 1999 (51. møde, 1998).",
+        "searchTitle": "Glucono-delta-lactone gluconic acid salts JECFA WHO Food Additives Series 42"
+      }
+    ],
+    "pubmedTerm": "potassium gluconate",
+    "flags": [
+      "kidney_caution"
+    ],
+    "classes": [
+      "sequestrant"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Call for data for the re-evaluation of gluconic acid (E 574) and related food additives (E 575-579)",
+      "url": "https://www.efsa.europa.eu/en/call/call-data-re-evaluation-gluconic-acid-e-574-and-related-food-additives-e-575-579",
+      "date": "2023",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.efsa.europa.eu/en/call/call-data-re-evaluation-gluconic-acid-e-574-and-related-food-additives-e-575-579",
+        "https://inchem.org/documents/jecfa/jecmono/v042je12.htm",
+        "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+        "https://foodcom.pl/en/term-e/e577/",
+        "https://go.drugbank.com/drugs/DB13620",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10863666/",
+        "https://www.ccjm.org/content/86/9/601"
+      ],
+      "notes": "RETTET: EFSA-2018-udtalelsen findes ikke; gen-evalueringen er i gang (dataindkaldelse 2023). Erstattet med JECFA 1998. Fremstillingsmetode (KOH/carbonat) kunne ikke kildebelægges og er fjernet. 'Mildere smag' omformuleret til 'mere velsmagende' (DrugBank). Fjernet udsagn om kaliums blodtrykseffekt som forskningsfokus. Nyre-/medicinadvarsel bekræftet og præciseret."
+    },
+    "wikipedia": "",
+    "wikidata": "Q1122870",
+    "claims": [
+      {
+        "claim": "Kaliumsalt af gluconsyre",
+        "source": "https://inchem.org/documents/jecfa/jecmono/v042je12.htm",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles med KOH/kaliumcarbonat",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Kompleksdanner, surhedsregulerende, kaliumkilde i kosttilskud",
+        "source": "https://foodcom.pl/en/term-e/e577/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Mere velsmagende end kaliumchlorid",
+        "source": "https://go.drugbank.com/drugs/DB13620",
+        "result": "rettet"
+      },
+      {
+        "claim": "Gruppe I quantum satis",
+        "source": "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2018 ingen numerisk ADI",
+        "source": "https://www.efsa.europa.eu/en/call/call-data-re-evaluation-gluconic-acid-e-574-and-related-food-additives-e-575-579",
+        "result": "rettet"
+      },
+      {
+        "claim": "Forsigtighed ved nyresygdom/visse blodtryksmidler",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10863666/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kaliumforskning handler om blodtryk",
+        "source": "",
+        "result": "fjernet"
+      }
+    ]
+  },
+  {
+    "code": "E578",
+    "nameDa": "Calciumgluconat",
+    "nameEn": "Calcium gluconate",
+    "category": "Kompleksdanner / stabilisator",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Calciumgluconat er calciumsaltet af gluconsyre, der bruges som stabilisator, fastholdelsesmiddel og calciumkilde.",
+    "description": "Calciumgluconat fremstilles ved at neutralisere gluconsyre med calciumcarbonat eller -hydroxid. Det bruges til at holde frugt og grøntsager faste, som stabilisator og til calciumberigelse. Det bruges også medicinsk, fx intravenøst ved lavt calcium.",
+    "uses": "Konserverede frugter og grøntsager, kosttilskud og calciumberigede produkter. Tilladt i EU som gruppe I-tilsætningsstof (quantum satis) i mange fødevarekategorier.",
+    "health": "Calciumgluconat anses for at have lav toksicitet; JECFA fastsatte i 1998 en gruppe-ADI \"ikke specificeret\" for gluconaterne. EFSA's øvre grænse for det samlede calciumindtag er 2500 mg/dag for voksne.",
+    "research": "EFSA's gen-evaluering af gluconaterne (E 574–E 579) er ikke afsluttet; EFSA indkaldte data i 2023 med frist i 2024.",
+    "keyReferences": [
+      {
+        "citation": "JECFA. Glucono-delta-lactone and the calcium, magnesium, potassium and sodium salts of gluconic acid. WHO Food Additives Series 42. 1999 (51. møde, 1998).",
+        "searchTitle": "Glucono-delta-lactone gluconic acid salts JECFA WHO Food Additives Series 42"
+      }
+    ],
+    "pubmedTerm": "calcium gluconate",
+    "flags": [],
+    "classes": [
+      "sequestrant"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Call for data for the re-evaluation of gluconic acid (E 574) and related food additives (E 575-579)",
+      "url": "https://www.efsa.europa.eu/en/call/call-data-re-evaluation-gluconic-acid-e-574-and-related-food-additives-e-575-579",
+      "date": "2023",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.efsa.europa.eu/en/call/call-data-re-evaluation-gluconic-acid-e-574-and-related-food-additives-e-575-579",
+        "https://inchem.org/documents/jecfa/jecmono/v042je12.htm",
+        "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+        "https://artgerecht.com/en/glossary/e578/",
+        "https://patents.google.com/patent/US20120231129A1/en",
+        "https://www.efsa.europa.eu/en/efsajournal/pub/2814"
+      ],
+      "notes": "RETTET: EFSA-2018-udtalelsen findes ikke; gen-evaluering i gang. Erstattet med JECFA 1998. Bekræftet: fremstilling med calciumcarbonat/-hydroxid, fastholdelse af frugt/grønt, calciumberigelse, intravenøs brug ved hypocalcæmi, EFSA UL 2500 mg/dag. Fjernet syltetøj og drikkevarer (ikke bekræftet) og 'bidrager kun lidt'."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Calcium_gluconate",
+    "wikidata": "Q413739",
+    "claims": [
+      {
+        "claim": "Fremstilles med calciumcarbonat/-hydroxid",
+        "source": "https://artgerecht.com/en/glossary/e578/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fastholder frugt og grønt",
+        "source": "https://patents.google.com/patent/US20120231129A1/en",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Intravenøst ved lavt calcium",
+        "source": "https://artgerecht.com/en/glossary/e578/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Gruppe I quantum satis",
+        "source": "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA UL calcium 2500 mg/dag",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/2814",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2018 ingen numerisk ADI",
+        "source": "https://www.efsa.europa.eu/en/call/call-data-re-evaluation-gluconic-acid-e-574-and-related-food-additives-e-575-579",
+        "result": "rettet"
+      },
+      {
+        "claim": "Syltetøj, drikkevarer",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Tilsætningsstoffet bidrager kun lidt",
+        "source": "",
+        "result": "fjernet"
+      }
+    ]
+  },
+  {
+    "code": "E579",
+    "nameDa": "Ferrogluconat",
+    "nameEn": "Ferrous gluconate",
+    "category": "Farvestabilisator",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Ferrogluconat er jern(II)saltet af gluconsyre, der bruges til at give sorte oliven en jævn sort farve.",
+    "description": "Ferrogluconat er jern(II)saltet af gluconsyre. Sorte modne oliven får deres farve ved oxidation og polymerisering af fenoler; jern(II)salte som ferrogluconat fikserer farven ved at danne jern-fenol-komplekser. Stoffet bruges også som jernkilde i kosttilskud og berigelse.",
+    "uses": "I EU kun tilladt i oliven, der er gjort sorte ved oxidation, med maks. 150 mg/kg udtrykt som jern.",
+    "health": "I de små mængder i oliven anses ferrogluconat ikke for problematisk. Personer med jernophobningssygdom (hæmokromatose) bør undgå jerntilskud. Utilsigtet overdosis af jerntilskud er en af de hyppigste årsager til dødelige forgiftninger hos børn under 6 år, men det vedrører tilskud, ikke oliven.",
+    "research": "Ferrogluconat indgår i EFSA's igangværende gen-evaluering af gluconsyre og gluconaterne (E 574–E 579); dataindkaldelsen havde tilmeldingsfrist i september 2023. JECFA har tidligere vurderet ferrogluconat og undtog det fra gruppe-ADI'en for de øvrige gluconater.",
+    "keyReferences": [
+      {
+        "citation": "JECFA. Ferrous gluconate – evaluering.",
+        "searchTitle": "JECFA ferrous gluconate"
+      }
+    ],
+    "pubmedTerm": "ferrous gluconate",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": null,
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.efsa.europa.eu/en/call/call-data-re-evaluation-gluconic-acid-e-574-and-related-food-additives-e-575-579",
+        "https://inchem.org/documents/jecfa/jeceval/jec_857.htm",
+        "https://inchem.org/documents/jecfa/jecmono/v042je12.htm",
+        "https://www.researchgate.net/publication/229792005_Colour_fixation_in_ripe_olives_Effects_of_type_of_iron_salt_and_other_processing_factors",
+        "https://www.ncbi.nlm.nih.gov/sites/books/NBK526131/",
+        "https://www.merckmanuals.com/home/injuries-and-poisoning/poisoning/iron-poisoning",
+        "https://foodadditives.net/nutrients/ferrous-gluconate/"
+      ],
+      "notes": "Bekræftet: brug i oxideret sorte oliven, maks. 150 mg/kg (sekundær kilde; EU-forordningstekst ikke direkte søgt), jern-fenol-kompleks, JECFA-evaluering, EFSA-dataindkaldelse 2023 omfatter E 579, hæmokromatose, børneforgiftning. RETTET: 'dataindkaldelsen lukkede i 2023' -> tilmeldingsfrist sept. 2023/indsendelse marts 2024. Fjernet 'reaktion mellem gluconsyre og jern' og 'maveproblemer' (ikke kildebelagt). Mangler EU-primærkilde for 150 mg/kg."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Iron(II)_gluconate",
+    "wikidata": "Q421291",
+    "claims": [
+      {
+        "claim": "Kun i oxideret sorte oliven, maks. 150 mg/kg som Fe",
+        "source": "https://foodadditives.net/nutrients/ferrous-gluconate/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Jern-fenol-komplekser fikserer farven",
+        "source": "https://www.researchgate.net/publication/229792005_Colour_fixation_in_ripe_olives_Effects_of_type_of_iron_salt_and_other_processing_factors",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles af gluconsyre og jern",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Hæmokromatose: undgå jerntilskud",
+        "source": "https://www.ncbi.nlm.nih.gov/sites/books/NBK526131/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Jernoverdosis farlig for små børn",
+        "source": "https://www.merckmanuals.com/home/injuries-and-poisoning/poisoning/iron-poisoning",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "For højt jernindtag giver maveproblemer",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EFSA-gen-evaluering i gang, dataindkaldelse 2023",
+        "source": "https://www.efsa.europa.eu/en/call/call-data-re-evaluation-gluconic-acid-e-574-and-related-food-additives-e-575-579",
+        "result": "rettet"
+      },
+      {
+        "claim": "JECFA har vurderet ferrogluconat",
+        "source": "https://inchem.org/documents/jecfa/jeceval/jec_857.htm",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E585",
+    "nameDa": "Ferrolactat",
+    "nameEn": "Ferrous lactate",
+    "category": "Farvestabilisator",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Ferrolactat er jern(II)saltet af mælkesyre, som bruges til at stabilisere den sorte farve i oliven.",
+    "description": "Ferrolactat er jern(II)saltet af mælkesyre og fremstilles fx ved at lade calcium- eller natriumlactat reagere med ferrosulfat eller mælkesyre reagere direkte med jernspåner. Ligesom ferrogluconat fikserer jern(II) den sorte farve i oliven via jern-fenol-komplekser. Det bruges også til jernberigelse af fødevarer.",
+    "uses": "I EU kun tilladt i oliven, der er gjort sorte ved oxidation, med maks. 150 mg/kg udtrykt som jern.",
+    "health": "I de små mængder i oliven anses ferrolactat ikke for problematisk. Personer med hæmokromatose bør undgå jerntilskud.",
+    "research": "Der er begrænset ny forskning i ferrolactat som tilsætningsstof. EFSA's afsluttede gen-evaluering af E 585 kunne ikke findes i runde 2.",
+    "keyReferences": [],
+    "pubmedTerm": "ferrous lactate",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": null,
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/ferrous-lactate",
+        "https://www.researchgate.net/publication/229792005_Colour_fixation_in_ripe_olives_Effects_of_type_of_iron_salt_and_other_processing_factors",
+        "https://foodadditives.net/nutrients/ferrous-gluconate/",
+        "https://www.ncbi.nlm.nih.gov/sites/books/NBK526131/"
+      ],
+      "notes": "Bekræftet: fremstilling, farvefiksering i oliven, jernberigelse, 150 mg/kg (sekundær kilde), hæmokromatose. FJERNET: påstand om at E 585 indgår i dataindkaldelsen 2023 (den fundne indkaldelse dækker kun E 574–E 579), 'godkendt på baggrund af SCF/JECFA' og 'ikke af mælkeoprindelse/intet mælkeprotein' (ikke direkte kildebelagt). USIKKERT: EFSA-status for E 585 kunne ikke afklares; søgekvoten blev opbrugt."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Iron(II)_lactate",
+    "wikidata": "Q836793",
+    "claims": [
+      {
+        "claim": "Fremstilling af lactat/mælkesyre og jern",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/ferrous-lactate",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fikserer sort farve i oliven",
+        "source": "https://www.researchgate.net/publication/229792005_Colour_fixation_in_ripe_olives_Effects_of_type_of_iron_salt_and_other_processing_factors",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Maks. 150 mg/kg i oliven",
+        "source": "https://foodadditives.net/nutrients/ferrous-gluconate/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Hæmokromatose",
+        "source": "https://www.ncbi.nlm.nih.gov/sites/books/NBK526131/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ikke mælkeprotein",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EFSA-dataindkaldelse 2023 omfatter E585",
+        "source": "https://www.efsa.europa.eu/en/call/call-data-re-evaluation-gluconic-acid-e-574-and-related-food-additives-e-575-579",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Godkendt på baggrund af SCF/JECFA",
+        "source": "",
+        "result": "fjernet"
+      }
+    ]
+  },
+  {
+    "code": "E586",
+    "nameDa": "4-hexylresorcinol",
+    "nameEn": "4-Hexylresorcinol",
+    "category": "Antioxidant",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "4-hexylresorcinol er et stof, der forhindrer sorte pletter (melanose) på rejer og andre krebsdyr.",
+    "description": "4-hexylresorcinol er en resorcinol-forbindelse med en hexyl-sidekæde. Den hæmmer enzymet polyphenoloxidase, som ellers danner sorte pletter (melanose) på rejer og krebsdyr. Det bruges som alternativ til sulfitter til samme formål. Stoffet bruges også i kosmetik og som antiseptisk middel i halstabletter.",
+    "uses": "Krebsdyr som rejer. I EU er restindholdet i krebsdyrkødet begrænset til 2 mg/kg.",
+    "health": "EFSA's gen-evaluering fra 2014 fandt stoffet toksikologisk acceptabelt til krebsdyr, forudsat at restindholdet ikke overstiger 2 mg/kg. Der er rapporteret allergisk kontakteksem ved kosmetisk brug.",
+    "research": "EFSA's ANS-panel vurderede 4-hexylresorcinol i 2014 og fandt det toksikologisk acceptabelt til at forhindre melanose i rejer og krebsdyr, forudsat at restindholdet i kødet ikke overstiger 2 mg/kg; enhver udvidelse af brugen ville kræve nye reproduktionsstudier, og panelet anbefalede overvågning af restniveauer. Kræftforsøg fra det amerikanske National Toxicology Program (1988) fandt ingen tegn på kræftfremkaldende effekt i rotter og tvetydige tegn (equivocal evidence) hos hanmus. Cellestudier om mulig østrogen-lignende aktivitet har givet modstridende resultater.",
+    "keyReferences": [
+      {
+        "citation": "EFSA ANS Panel. Scientific Opinion on the re-evaluation of 4-hexylresorcinol (E 586) as a food additive. EFSA Journal. 2014.",
+        "searchTitle": "Scientific Opinion on the re-evaluation of 4-hexylresorcinol (E 586) as a food additive"
+      }
+    ],
+    "pubmedTerm": "4-hexylresorcinol",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluation of 4-hexylresorcinol (E 586) as a food additive",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2014.3643",
+      "date": "2014-04-24",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.efsa.europa.eu/en/efsajournal/pub/3643",
+        "https://ntp.niehs.nih.gov/publications/reports/tr/tr330",
+        "https://www.globalseafood.org/advocate/4-hexylresorcinol-sulfite-free-control-for-melanosis-in-crustaceans/",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7041292/",
+        "https://onlinelibrary.wiley.com/doi/10.1111/cod.14785",
+        "https://www.academia.edu/58236940/4_Hexylresorcinol_Exhibits_Different_Characteristics_to_Estrogen",
+        "https://en.wikipedia.org/wiki/4-Hexylresorcinol"
+      ],
+      "notes": "Bekræftet: EFSA 2014-konklusion (2 mg/kg, reproduktionsstudier, overvågning), PPO-hæmning, sulfit-alternativ, halstabletter, kosmetik, kontaktallergi. RETTET: NTP 1988 viste 'equivocal evidence' hos hanmus (ikke blot 'ingen klare tegn'); østrogen-udsagn omformuleret til modstridende cellefund. FJERNET: 'syntetisk', 'hummer og jomfruhummer', 'friske, frosne og dybfrosne' (EU-ordlyd ikke søgt op), 'ikke kendt for at udløse astma' og 'betydning ved fødevareeksponering lav'."
+    },
+    "wikipedia": "",
+    "wikidata": "",
+    "claims": [
+      {
+        "claim": "EFSA 2014: acceptabel ved rest ≤2 mg/kg",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3643",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Udvidet brug kræver reproduktionsstudier; overvågning anbefalet",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3643",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Hæmmer polyphenoloxidase/melanose",
+        "source": "https://www.globalseafood.org/advocate/4-hexylresorcinol-sulfite-free-control-for-melanosis-in-crustaceans/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Alternativ til sulfitter",
+        "source": "https://www.globalseafood.org/advocate/4-hexylresorcinol-sulfite-free-control-for-melanosis-in-crustaceans/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Halstabletter",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7041292/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Hudallergi ved kosmetik",
+        "source": "https://onlinelibrary.wiley.com/doi/10.1111/cod.14785",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "NTP 1988 kræftforsøg",
+        "source": "https://ntp.niehs.nih.gov/publications/reports/tr/tr330",
+        "result": "rettet"
+      },
+      {
+        "claim": "Østrogen-lignende aktivitet i celler",
+        "source": "https://www.academia.edu/58236940/4_Hexylresorcinol_Exhibits_Different_Characteristics_to_Estrogen",
+        "result": "rettet"
+      },
+      {
+        "claim": "Syntetisk fremstillet",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Hummer, jomfruhummer; friske/frosne/dybfrosne",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Ikke kendt for astmaanfald",
+        "source": "",
+        "result": "fjernet"
+      }
+    ]
+  },
+  {
+    "code": "E620",
+    "nameDa": "Glutaminsyre",
+    "nameEn": "Glutamic acid",
+    "category": "Smagsforstærker",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Glutaminsyre er en naturlig aminosyre, der giver umami-smag og bruges som smagsforstærker.",
+    "description": "L-glutaminsyre er en af de mest almindelige aminosyrer i proteiner. Glutamater fremstilles i dag næsten udelukkende ved bakteriel fermentering af sukkerholdige råvarer (fx majs, sukkerrør eller roer) med bakterier som Corynebacterium glutamicum. Glutamat er den samme aminosyre, som findes naturligt i tomater, parmesan, svampe, sojasauce og modermælk, og kroppen skelner ikke mellem naturligt og tilsat glutamat. Stofferne giver umami-smag og forstærker smagen af salt og kød. Den frie syre er mindre opløselig end natriumsaltet og bruges derfor sjældnere.",
+    "uses": "Supper, bouillon, snacks, færdigretter, krydderiblandinger og saucer. I EU maks. 10 g/kg (alene eller i kombination med E621–E625), dog quantum satis i krydderier og smagsforstærkere.",
+    "health": "EFSA fastsatte i 2017 en gruppe-ADI på 30 mg/kg legemsvægt/dag for glutaminsyre og glutamater (E620–E625), udtrykt som glutaminsyre, baseret på neuroudviklingseffekter i et dyreforsøg. EFSA vurderede, at ADI kan overskrides af alle aldersgrupper med højt forbrug, når alle kilder medregnes, og bemærkede, at høje indtag i humane studier er forbundet med hovedpine og blodtryksstigning hos nogle personer. Det såkaldte \"kinarestaurant-syndrom\" er ikke bekræftet i kontrollerede dobbeltblindede forsøg ved normale mængder.",
+    "research": "EFSA's ANS-panel gen-evaluerede glutamaterne i 2017 og erstattede den tidligere \"ADI not specified\" (SCF 1991) med en gruppe-ADI på 30 mg/kg legemsvægt/dag og anbefalede at revurdere de maksimale niveauer i fødevarer. EFSA vurderede i 2015 også sikkerheden af en ændret produktionsmetode (fermentering med genetisk modificerede stammer) og fandt den uproblematisk. En systematisk gennemgang (Obayashi & Nagamura, J Headache Pain 2016) fandt ikke overbevisende evidens for, at glutamat i mad giver hovedpine. Debatten om glutamat og overvægt er uafklaret.",
+    "keyReferences": [
+      {
+        "citation": "EFSA ANS Panel. Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives. EFSA Journal. 2017.",
+        "searchTitle": "Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives"
+      },
+      {
+        "citation": "Obayashi Y, Nagamura Y. Does monosodium glutamate really cause headache? A systematic review of human studies. J Headache Pain. 2016.",
+        "searchTitle": "Does monosodium glutamate really cause headache?: a systematic review of human studies"
+      }
+    ],
+    "pubmedTerm": "glutamic acid",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2017.4910",
+      "date": "2017-07-12",
+      "adi": "30 mg/kg bw/day",
+      "overexposureRisk": "en:high"
+    },
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4910",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009848/",
+        "https://doi.org/10.1186/s10194-016-0639-4"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: Gruppe-ADI 30 mg/kg bw/dag (EFSA 2017, DOI 10.2903/j.efsa.2017.4910) bekræftet; efsa-objekt opdateret til 2017-gen-evalueringen (2015-udtalelsen om produktionsmetode nævnes fortsat i research). Obayashi & Nagamura 2016 bekræftet."
+    },
+    "wikipedia": "",
+    "wikidata": "Q181136",
+    "claims": []
+  },
+  {
+    "code": "E621",
+    "nameDa": "Mononatriumglutamat",
+    "nameEn": "Monosodium glutamate",
+    "category": "Smagsforstærker",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Mononatriumglutamat (MSG, \"atamon\"/\"vetsin\") er natriumsaltet af glutaminsyre og er verdens mest brugte smagsforstærker.",
+    "description": "MSG blev isoleret af den japanske kemiker Kikunae Ikeda i 1908 fra tangbouillon (kombu). Glutamater fremstilles i dag næsten udelukkende ved bakteriel fermentering af sukkerholdige råvarer (fx majs, sukkerrør eller roer) med bakterier som Corynebacterium glutamicum. Glutamat er den samme aminosyre, som findes naturligt i tomater, parmesan, svampe, sojasauce og modermælk, og kroppen skelner ikke mellem naturligt og tilsat glutamat. Stofferne giver umami-smag og forstærker smagen af salt og kød. MSG indeholder ca. en tredjedel så meget natrium som bordsalt og kan derfor bruges til at reducere det samlede saltindhold.",
+    "uses": "Chips og snacks, bouillonterninger, pulversupper, nudler, krydderiblandinger, færdigretter, saucer og asiatiske retter. I EU maks. 10 g/kg (samlet for E620–E625), quantum satis i krydderier og smagsforstærkere.",
+    "health": "EFSA fastsatte i 2017 en gruppe-ADI på 30 mg/kg legemsvægt/dag for glutaminsyre og glutamater (E620–E625), udtrykt som glutaminsyre, baseret på neuroudviklingseffekter i et dyreforsøg. EFSA vurderede, at ADI kan overskrides af alle aldersgrupper med højt forbrug, når alle kilder medregnes, og bemærkede, at høje indtag i humane studier er forbundet med hovedpine og blodtryksstigning hos nogle personer. Det såkaldte \"kinarestaurant-syndrom\" er ikke bekræftet i kontrollerede dobbeltblindede forsøg ved normale mængder. EFSA vurderede risikoen for overeksponering som høj for nogle befolkningsgrupper.",
+    "research": "EFSA's ANS-panel gen-evaluerede glutamaterne i 2017 og erstattede den tidligere \"ADI not specified\" (SCF 1991) med en gruppe-ADI på 30 mg/kg legemsvægt/dag og anbefalede at revurdere de maksimale niveauer i fødevarer. EFSA vurderede i 2015 også sikkerheden af en ændret produktionsmetode (fermentering med genetisk modificerede stammer) og fandt den uproblematisk. En systematisk gennemgang (Obayashi & Nagamura, J Headache Pain 2016) fandt ikke overbevisende evidens for, at glutamat i mad giver hovedpine. Debatten om glutamat og overvægt er uafklaret.",
+    "keyReferences": [
+      {
+        "citation": "EFSA ANS Panel. Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives. EFSA Journal. 2017.",
+        "searchTitle": "Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives"
+      },
+      {
+        "citation": "Obayashi Y, Nagamura Y. Does monosodium glutamate really cause headache? A systematic review of human studies. J Headache Pain. 2016.",
+        "searchTitle": "Does monosodium glutamate really cause headache?: a systematic review of human studies"
+      }
+    ],
+    "pubmedTerm": "monosodium glutamate",
+    "flags": [],
+    "classes": [
+      "flavour-enhancer"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Re‐evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives",
+      "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4910",
+      "date": "2017/07/12",
+      "adi": "30 mg/kg bw/day",
+      "overexposureRisk": "en:high"
+    },
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4910",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009848/",
+        "https://doi.org/10.1186/s10194-016-0639-4"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: Gruppe-ADI 30 mg/kg bw/dag (EFSA 2017, DOI 10.2903/j.efsa.2017.4910) bekræftet; efsa-objekt opdateret til 2017-gen-evalueringen (2015-udtalelsen om produktionsmetode nævnes fortsat i research). Obayashi & Nagamura 2016 bekræftet."
+    },
+    "wikipedia": "",
+    "wikidata": "Q179678",
+    "claims": []
+  },
+  {
+    "code": "E622",
+    "nameDa": "Monokaliumglutamat",
+    "nameEn": "Monopotassium glutamate",
+    "category": "Smagsforstærker",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Monokaliumglutamat er kaliumsaltet af glutaminsyre og bruges som smagsforstærker med umami-smag, ofte i natriumreducerede produkter.",
+    "description": "Monokaliumglutamat er et salt af L-glutaminsyre med kalium som modion i stedet for natrium. Glutamater fremstilles i dag næsten udelukkende ved bakteriel fermentering af sukkerholdige råvarer (fx majs, sukkerrør eller roer) med bakterier som Corynebacterium glutamicum. Glutamat er den samme aminosyre, som findes naturligt i tomater, parmesan, svampe, sojasauce og modermælk, og kroppen skelner ikke mellem naturligt og tilsat glutamat. Stofferne giver umami-smag og forstærker smagen af salt og kød. Kaliumformen bruges især, hvor man ønsker at undgå natrium, men den er mindre udbredt end MSG (E621).",
+    "uses": "Saltreducerede supper, bouillon, krydderiblandinger og færdigretter. I EU maks. 10 g/kg (samlet for E620–E625), quantum satis i krydderier og smagsforstærkere.",
+    "health": "EFSA fastsatte i 2017 en gruppe-ADI på 30 mg/kg legemsvægt/dag for glutaminsyre og glutamater (E620–E625), udtrykt som glutaminsyre, baseret på neuroudviklingseffekter i et dyreforsøg. EFSA vurderede, at ADI kan overskrides af alle aldersgrupper med højt forbrug, når alle kilder medregnes, og bemærkede, at høje indtag i humane studier er forbundet med hovedpine og blodtryksstigning hos nogle personer. Det såkaldte \"kinarestaurant-syndrom\" er ikke bekræftet i kontrollerede dobbeltblindede forsøg ved normale mængder. Personer med nedsat nyrefunktion bør være opmærksomme på kaliumindholdet.",
+    "research": "EFSA's ANS-panel gen-evaluerede glutamaterne i 2017 og erstattede den tidligere \"ADI not specified\" (SCF 1991) med en gruppe-ADI på 30 mg/kg legemsvægt/dag og anbefalede at revurdere de maksimale niveauer i fødevarer. EFSA vurderede i 2015 også sikkerheden af en ændret produktionsmetode (fermentering med genetisk modificerede stammer) og fandt den uproblematisk. En systematisk gennemgang (Obayashi & Nagamura, J Headache Pain 2016) fandt ikke overbevisende evidens for, at glutamat i mad giver hovedpine. Debatten om glutamat og overvægt er uafklaret.",
+    "keyReferences": [
+      {
+        "citation": "EFSA ANS Panel. Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives. EFSA Journal. 2017.",
+        "searchTitle": "Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives"
+      }
+    ],
+    "pubmedTerm": "monopotassium glutamate",
+    "flags": [
+      "kidney_caution"
+    ],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2017.4910",
+      "date": "2017-07-12",
+      "adi": "30 mg/kg bw/day",
+      "overexposureRisk": "en:high"
+    },
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4910",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009848/",
+        "https://doi.org/10.1186/s10194-016-0639-4"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: Gruppe-ADI 30 mg/kg bw/dag (EFSA 2017, DOI 10.2903/j.efsa.2017.4910) bekræftet; efsa-objekt opdateret til 2017-gen-evalueringen (2015-udtalelsen om produktionsmetode nævnes fortsat i research). Obayashi & Nagamura 2016 bekræftet."
+    },
+    "wikipedia": "",
+    "wikidata": "Q3029787",
+    "claims": []
+  },
+  {
+    "code": "E623",
+    "nameDa": "Calciumdiglutamat",
+    "nameEn": "Calcium diglutamate",
+    "category": "Smagsforstærker",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Calciumdiglutamat er calciumsaltet af glutaminsyre og bruges som smagsforstærker med umami-smag, ofte i natriumreducerede produkter.",
+    "description": "Calciumdiglutamat er et salt af L-glutaminsyre med calcium som modion i stedet for natrium. Glutamater fremstilles i dag næsten udelukkende ved bakteriel fermentering af sukkerholdige råvarer (fx majs, sukkerrør eller roer) med bakterier som Corynebacterium glutamicum. Glutamat er den samme aminosyre, som findes naturligt i tomater, parmesan, svampe, sojasauce og modermælk, og kroppen skelner ikke mellem naturligt og tilsat glutamat. Stofferne giver umami-smag og forstærker smagen af salt og kød. Calciumformen bruges især, hvor man ønsker at undgå natrium, men den er mindre udbredt end MSG (E621).",
+    "uses": "Saltreducerede supper, bouillon, krydderiblandinger og færdigretter. I EU maks. 10 g/kg (samlet for E620–E625), quantum satis i krydderier og smagsforstærkere.",
+    "health": "EFSA fastsatte i 2017 en gruppe-ADI på 30 mg/kg legemsvægt/dag for glutaminsyre og glutamater (E620–E625), udtrykt som glutaminsyre, baseret på neuroudviklingseffekter i et dyreforsøg. EFSA vurderede, at ADI kan overskrides af alle aldersgrupper med højt forbrug, når alle kilder medregnes, og bemærkede, at høje indtag i humane studier er forbundet med hovedpine og blodtryksstigning hos nogle personer. Det såkaldte \"kinarestaurant-syndrom\" er ikke bekræftet i kontrollerede dobbeltblindede forsøg ved normale mængder.",
+    "research": "EFSA's ANS-panel gen-evaluerede glutamaterne i 2017 og erstattede den tidligere \"ADI not specified\" (SCF 1991) med en gruppe-ADI på 30 mg/kg legemsvægt/dag og anbefalede at revurdere de maksimale niveauer i fødevarer. EFSA vurderede i 2015 også sikkerheden af en ændret produktionsmetode (fermentering med genetisk modificerede stammer) og fandt den uproblematisk. En systematisk gennemgang (Obayashi & Nagamura, J Headache Pain 2016) fandt ikke overbevisende evidens for, at glutamat i mad giver hovedpine. Debatten om glutamat og overvægt er uafklaret.",
+    "keyReferences": [
+      {
+        "citation": "EFSA ANS Panel. Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives. EFSA Journal. 2017.",
+        "searchTitle": "Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives"
+      }
+    ],
+    "pubmedTerm": "calcium diglutamate",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2017.4910",
+      "date": "2017-07-12",
+      "adi": "30 mg/kg bw/day",
+      "overexposureRisk": "en:high"
+    },
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4910",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009848/",
+        "https://doi.org/10.1186/s10194-016-0639-4"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: Gruppe-ADI 30 mg/kg bw/dag (EFSA 2017, DOI 10.2903/j.efsa.2017.4910) bekræftet; efsa-objekt opdateret til 2017-gen-evalueringen (2015-udtalelsen om produktionsmetode nævnes fortsat i research). Obayashi & Nagamura 2016 bekræftet."
+    },
+    "wikipedia": "",
+    "wikidata": "Q591440",
+    "claims": []
+  },
+  {
+    "code": "E624",
+    "nameDa": "Monoammoniumglutamat",
+    "nameEn": "Monoammonium glutamate",
+    "category": "Smagsforstærker",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Monoammoniumglutamat er ammoniumsaltet af glutaminsyre og bruges som smagsforstærker med umami-smag, ofte i natriumreducerede produkter.",
+    "description": "Monoammoniumglutamat er et salt af L-glutaminsyre med ammonium som modion i stedet for natrium. Glutamater fremstilles i dag næsten udelukkende ved bakteriel fermentering af sukkerholdige råvarer (fx majs, sukkerrør eller roer) med bakterier som Corynebacterium glutamicum. Glutamat er den samme aminosyre, som findes naturligt i tomater, parmesan, svampe, sojasauce og modermælk, og kroppen skelner ikke mellem naturligt og tilsat glutamat. Stofferne giver umami-smag og forstærker smagen af salt og kød. Ammoniumformen bruges især, hvor man ønsker at undgå natrium, men den er mindre udbredt end MSG (E621).",
+    "uses": "Saltreducerede supper, bouillon, krydderiblandinger og færdigretter. I EU maks. 10 g/kg (samlet for E620–E625), quantum satis i krydderier og smagsforstærkere.",
+    "health": "EFSA fastsatte i 2017 en gruppe-ADI på 30 mg/kg legemsvægt/dag for glutaminsyre og glutamater (E620–E625), udtrykt som glutaminsyre, baseret på neuroudviklingseffekter i et dyreforsøg. EFSA vurderede, at ADI kan overskrides af alle aldersgrupper med højt forbrug, når alle kilder medregnes, og bemærkede, at høje indtag i humane studier er forbundet med hovedpine og blodtryksstigning hos nogle personer. Det såkaldte \"kinarestaurant-syndrom\" er ikke bekræftet i kontrollerede dobbeltblindede forsøg ved normale mængder.",
+    "research": "EFSA's ANS-panel gen-evaluerede glutamaterne i 2017 og erstattede den tidligere \"ADI not specified\" (SCF 1991) med en gruppe-ADI på 30 mg/kg legemsvægt/dag og anbefalede at revurdere de maksimale niveauer i fødevarer. EFSA vurderede i 2015 også sikkerheden af en ændret produktionsmetode (fermentering med genetisk modificerede stammer) og fandt den uproblematisk. En systematisk gennemgang (Obayashi & Nagamura, J Headache Pain 2016) fandt ikke overbevisende evidens for, at glutamat i mad giver hovedpine. Debatten om glutamat og overvægt er uafklaret.",
+    "keyReferences": [
+      {
+        "citation": "EFSA ANS Panel. Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives. EFSA Journal. 2017.",
+        "searchTitle": "Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives"
+      }
+    ],
+    "pubmedTerm": "monoammonium glutamate",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2017.4910",
+      "date": "2017-07-12",
+      "adi": "30 mg/kg bw/day",
+      "overexposureRisk": "en:high"
+    },
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4910",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009848/",
+        "https://doi.org/10.1186/s10194-016-0639-4"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: Gruppe-ADI 30 mg/kg bw/dag (EFSA 2017, DOI 10.2903/j.efsa.2017.4910) bekræftet; efsa-objekt opdateret til 2017-gen-evalueringen (2015-udtalelsen om produktionsmetode nævnes fortsat i research). Obayashi & Nagamura 2016 bekræftet."
+    },
+    "wikipedia": "",
+    "wikidata": "Q8213959",
+    "claims": []
+  },
+  {
+    "code": "E625",
+    "nameDa": "Magnesiumdiglutamat",
+    "nameEn": "Magnesium diglutamate",
+    "category": "Smagsforstærker",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Magnesiumdiglutamat er magnesiumsaltet af glutaminsyre og bruges som smagsforstærker med umami-smag, ofte i natriumreducerede produkter.",
+    "description": "Magnesiumdiglutamat er et salt af L-glutaminsyre med magnesium som modion i stedet for natrium. Glutamater fremstilles i dag næsten udelukkende ved bakteriel fermentering af sukkerholdige råvarer (fx majs, sukkerrør eller roer) med bakterier som Corynebacterium glutamicum. Glutamat er den samme aminosyre, som findes naturligt i tomater, parmesan, svampe, sojasauce og modermælk, og kroppen skelner ikke mellem naturligt og tilsat glutamat. Stofferne giver umami-smag og forstærker smagen af salt og kød. Magnesiumformen bruges især, hvor man ønsker at undgå natrium, men den er mindre udbredt end MSG (E621).",
+    "uses": "Saltreducerede supper, bouillon, krydderiblandinger og færdigretter. I EU maks. 10 g/kg (samlet for E620–E625), quantum satis i krydderier og smagsforstærkere.",
+    "health": "EFSA fastsatte i 2017 en gruppe-ADI på 30 mg/kg legemsvægt/dag for glutaminsyre og glutamater (E620–E625), udtrykt som glutaminsyre, baseret på neuroudviklingseffekter i et dyreforsøg. EFSA vurderede, at ADI kan overskrides af alle aldersgrupper med højt forbrug, når alle kilder medregnes, og bemærkede, at høje indtag i humane studier er forbundet med hovedpine og blodtryksstigning hos nogle personer. Det såkaldte \"kinarestaurant-syndrom\" er ikke bekræftet i kontrollerede dobbeltblindede forsøg ved normale mængder.",
+    "research": "EFSA's ANS-panel gen-evaluerede glutamaterne i 2017 og erstattede den tidligere \"ADI not specified\" (SCF 1991) med en gruppe-ADI på 30 mg/kg legemsvægt/dag og anbefalede at revurdere de maksimale niveauer i fødevarer. EFSA vurderede i 2015 også sikkerheden af en ændret produktionsmetode (fermentering med genetisk modificerede stammer) og fandt den uproblematisk. En systematisk gennemgang (Obayashi & Nagamura, J Headache Pain 2016) fandt ikke overbevisende evidens for, at glutamat i mad giver hovedpine. Debatten om glutamat og overvægt er uafklaret.",
+    "keyReferences": [
+      {
+        "citation": "EFSA ANS Panel. Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives. EFSA Journal. 2017.",
+        "searchTitle": "Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives"
+      }
+    ],
+    "pubmedTerm": "magnesium diglutamate",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2017.4910",
+      "date": "2017-07-12",
+      "adi": "30 mg/kg bw/day",
+      "overexposureRisk": "en:high"
+    },
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4910",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009848/",
+        "https://doi.org/10.1186/s10194-016-0639-4"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: Gruppe-ADI 30 mg/kg bw/dag (EFSA 2017, DOI 10.2903/j.efsa.2017.4910) bekræftet; efsa-objekt opdateret til 2017-gen-evalueringen (2015-udtalelsen om produktionsmetode nævnes fortsat i research). Obayashi & Nagamura 2016 bekræftet."
+    },
+    "wikipedia": "",
+    "wikidata": "Q1821120",
+    "claims": []
+  },
+  {
+    "code": "E626",
+    "nameDa": "Guanylsyre",
+    "nameEn": "Guanylic acid",
+    "category": "Smagsforstærker",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Guanylsyre er en ribonukleotid-smagsforstærker, der forstærker umami-smag, typisk sammen med glutamat.",
+    "description": "Guanylsyre (guanosin-5'-monophosphat, GMP) er den frie syre og bruges sjældent i ren form. Ribonukleotider som guanylat og inosinat forstærker umami-smagen kraftigt i samspil med glutamat (synergi), så små mængder rækker langt. De fremstilles ved fermentering med mikroorganismer eller ved enzymatisk nedbrydning af gær-RNA; tidligere blev inosinat også udvundet af kød og fisk. Kilden (plante, gær eller animalsk) fremgår normalt ikke af deklarationen.",
+    "uses": "Chips og snacks, pulversupper, bouillon, nudler, krydderiblandinger, færdigretter og saucer. I EU maks. 500 mg/kg for ribonukleotiderne (E626–E635) samlet, quantum satis i krydderier og smagsforstærkere.",
+    "health": "Ribonukleotider nedbrydes i kroppen til urinsyre, og personer med urinsyregigt (podagra) eller forhøjet urinsyre rådes ofte til at være forsigtige, selvom bidraget fra tilsætningsstoffer er lille sammenlignet med kød og fisk. EU-godkendelsen bygger på SCF's vurdering fra 1990, der fastsatte en gruppe-ADI \"not specified\"; JECFA har ligeledes ikke fundet behov for en numerisk ADI. Der har været sporadiske rapporter om hududslæt, men sammenhængen er ikke dokumenteret. Stofferne er generelt ikke tilladt i fødevarer til spædbørn.",
+    "research": "Ribonukleotiderne (E626–E635) er under gen-evaluering hos EFSA; ifølge EFSA's statusoversigt (2024) mangler der data om fremstilling, urenheder og opløselighed, og panelet går videre til udtalelse med datahuller. Der var ikke offentliggjort en endelig EFSA-udtalelse ved seneste kontrol. Forskning i ribonukleotider handler især om deres smagsmekanisme (umami-receptoren T1R1/T1R3) og om purinindtag ved gigt.",
+    "keyReferences": [],
+    "pubmedTerm": "guanosine monophosphate",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": null,
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://www.efsa.europa.eu/sites/default/files/2024-03/12-re-evaluations-food-additives-ongoing-and-upcoming-calls-for-data.pdf",
+        "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: EU-godkendt. ADI-grundlag rettet til SCF 1990 (gruppe-ADI not specified); EFSA-gen-evaluering bekræftet som igangværende."
+    },
+    "wikipedia": "",
+    "wikidata": "Q422473",
+    "claims": []
+  },
+  {
+    "code": "E627",
+    "nameDa": "Dinatriumguanylat",
+    "nameEn": "Disodium guanylate",
+    "category": "Smagsforstærker",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Dinatriumguanylat er en ribonukleotid-smagsforstærker, der forstærker umami-smag, typisk sammen med glutamat.",
+    "description": "Dinatriumguanylat er natriumsaltet af GMP og den mest anvendte form; det fremstilles ofte ud fra gær eller tørret shiitake-svamp. Ribonukleotider som guanylat og inosinat forstærker umami-smagen kraftigt i samspil med glutamat (synergi), så små mængder rækker langt. De fremstilles ved fermentering med mikroorganismer eller ved enzymatisk nedbrydning af gær-RNA; tidligere blev inosinat også udvundet af kød og fisk. Kilden (plante, gær eller animalsk) fremgår normalt ikke af deklarationen.",
+    "uses": "Chips og snacks, pulversupper, bouillon, nudler, krydderiblandinger, færdigretter og saucer. I EU maks. 500 mg/kg for ribonukleotiderne (E626–E635) samlet, quantum satis i krydderier og smagsforstærkere.",
+    "health": "Ribonukleotider nedbrydes i kroppen til urinsyre, og personer med urinsyregigt (podagra) eller forhøjet urinsyre rådes ofte til at være forsigtige, selvom bidraget fra tilsætningsstoffer er lille sammenlignet med kød og fisk. EU-godkendelsen bygger på SCF's vurdering fra 1990, der fastsatte en gruppe-ADI \"not specified\"; JECFA har ligeledes ikke fundet behov for en numerisk ADI. Der har været sporadiske rapporter om hududslæt, men sammenhængen er ikke dokumenteret. Stofferne er generelt ikke tilladt i fødevarer til spædbørn.",
+    "research": "Ribonukleotiderne (E626–E635) er under gen-evaluering hos EFSA; ifølge EFSA's statusoversigt (2024) mangler der data om fremstilling, urenheder og opløselighed, og panelet går videre til udtalelse med datahuller. Der var ikke offentliggjort en endelig EFSA-udtalelse ved seneste kontrol. Forskning i ribonukleotider handler især om deres smagsmekanisme (umami-receptoren T1R1/T1R3) og om purinindtag ved gigt.",
+    "keyReferences": [],
+    "pubmedTerm": "disodium guanylate",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": null,
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://www.efsa.europa.eu/sites/default/files/2024-03/12-re-evaluations-food-additives-ongoing-and-upcoming-calls-for-data.pdf",
+        "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: EU-godkendt. ADI-grundlag rettet til SCF 1990 (gruppe-ADI not specified); EFSA-gen-evaluering bekræftet som igangværende."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Disodium_guanylate",
+    "wikidata": "Q905776",
+    "claims": []
+  },
+  {
+    "code": "E628",
+    "nameDa": "Dikaliumguanylat",
+    "nameEn": "Dipotassium guanylate",
+    "category": "Smagsforstærker",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Dikaliumguanylat er en ribonukleotid-smagsforstærker, der forstærker umami-smag, typisk sammen med glutamat.",
+    "description": "Dikaliumguanylat er kaliumsaltet af GMP og bruges sjældnere end natriumformen. Ribonukleotider som guanylat og inosinat forstærker umami-smagen kraftigt i samspil med glutamat (synergi), så små mængder rækker langt. De fremstilles ved fermentering med mikroorganismer eller ved enzymatisk nedbrydning af gær-RNA; tidligere blev inosinat også udvundet af kød og fisk. Kilden (plante, gær eller animalsk) fremgår normalt ikke af deklarationen.",
+    "uses": "Chips og snacks, pulversupper, bouillon, nudler, krydderiblandinger, færdigretter og saucer. I EU maks. 500 mg/kg for ribonukleotiderne (E626–E635) samlet, quantum satis i krydderier og smagsforstærkere.",
+    "health": "Ribonukleotider nedbrydes i kroppen til urinsyre, og personer med urinsyregigt (podagra) eller forhøjet urinsyre rådes ofte til at være forsigtige, selvom bidraget fra tilsætningsstoffer er lille sammenlignet med kød og fisk. EU-godkendelsen bygger på SCF's vurdering fra 1990, der fastsatte en gruppe-ADI \"not specified\"; JECFA har ligeledes ikke fundet behov for en numerisk ADI. Der har været sporadiske rapporter om hududslæt, men sammenhængen er ikke dokumenteret. Stofferne er generelt ikke tilladt i fødevarer til spædbørn.",
+    "research": "Ribonukleotiderne (E626–E635) er under gen-evaluering hos EFSA; ifølge EFSA's statusoversigt (2024) mangler der data om fremstilling, urenheder og opløselighed, og panelet går videre til udtalelse med datahuller. Der var ikke offentliggjort en endelig EFSA-udtalelse ved seneste kontrol. Forskning i ribonukleotider handler især om deres smagsmekanisme (umami-receptoren T1R1/T1R3) og om purinindtag ved gigt.",
+    "keyReferences": [],
+    "pubmedTerm": "guanosine monophosphate",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": null,
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://www.efsa.europa.eu/sites/default/files/2024-03/12-re-evaluations-food-additives-ongoing-and-upcoming-calls-for-data.pdf",
+        "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: EU-godkendt. ADI-grundlag rettet til SCF 1990 (gruppe-ADI not specified); EFSA-gen-evaluering bekræftet som igangværende."
+    },
+    "wikipedia": "",
+    "wikidata": "Q5280047",
+    "claims": []
+  },
+  {
+    "code": "E629",
+    "nameDa": "Calciumguanylat",
+    "nameEn": "Calcium guanylate",
+    "category": "Smagsforstærker",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Calciumguanylat er en ribonukleotid-smagsforstærker, der forstærker umami-smag, typisk sammen med glutamat.",
+    "description": "Calciumguanylat er calciumsaltet af GMP og bruges kun sjældent. Ribonukleotider som guanylat og inosinat forstærker umami-smagen kraftigt i samspil med glutamat (synergi), så små mængder rækker langt. De fremstilles ved fermentering med mikroorganismer eller ved enzymatisk nedbrydning af gær-RNA; tidligere blev inosinat også udvundet af kød og fisk. Kilden (plante, gær eller animalsk) fremgår normalt ikke af deklarationen.",
+    "uses": "Chips og snacks, pulversupper, bouillon, nudler, krydderiblandinger, færdigretter og saucer. I EU maks. 500 mg/kg for ribonukleotiderne (E626–E635) samlet, quantum satis i krydderier og smagsforstærkere.",
+    "health": "Ribonukleotider nedbrydes i kroppen til urinsyre, og personer med urinsyregigt (podagra) eller forhøjet urinsyre rådes ofte til at være forsigtige, selvom bidraget fra tilsætningsstoffer er lille sammenlignet med kød og fisk. EU-godkendelsen bygger på SCF's vurdering fra 1990, der fastsatte en gruppe-ADI \"not specified\"; JECFA har ligeledes ikke fundet behov for en numerisk ADI. Der har været sporadiske rapporter om hududslæt, men sammenhængen er ikke dokumenteret. Stofferne er generelt ikke tilladt i fødevarer til spædbørn.",
+    "research": "Ribonukleotiderne (E626–E635) er under gen-evaluering hos EFSA; ifølge EFSA's statusoversigt (2024) mangler der data om fremstilling, urenheder og opløselighed, og panelet går videre til udtalelse med datahuller. Der var ikke offentliggjort en endelig EFSA-udtalelse ved seneste kontrol. Forskning i ribonukleotider handler især om deres smagsmekanisme (umami-receptoren T1R1/T1R3) og om purinindtag ved gigt.",
+    "keyReferences": [],
+    "pubmedTerm": "guanosine monophosphate",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": null,
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://www.efsa.europa.eu/sites/default/files/2024-03/12-re-evaluations-food-additives-ongoing-and-upcoming-calls-for-data.pdf",
+        "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: EU-godkendt. ADI-grundlag rettet til SCF 1990 (gruppe-ADI not specified); EFSA-gen-evaluering bekræftet som igangværende."
+    },
+    "wikipedia": "",
+    "wikidata": "Q5018832",
+    "claims": []
+  },
+  {
+    "code": "E630",
+    "nameDa": "Inosinsyre",
+    "nameEn": "Inosinic acid",
+    "category": "Smagsforstærker",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Inosinsyre er en ribonukleotid-smagsforstærker, der forstærker umami-smag, typisk sammen med glutamat.",
+    "description": "Inosinsyre (inosin-5'-monophosphat, IMP) findes naturligt i kød og fisk, bl.a. i bonitoflager, og er den frie syre. Ribonukleotider som guanylat og inosinat forstærker umami-smagen kraftigt i samspil med glutamat (synergi), så små mængder rækker langt. De fremstilles ved fermentering med mikroorganismer eller ved enzymatisk nedbrydning af gær-RNA; tidligere blev inosinat også udvundet af kød og fisk. Kilden (plante, gær eller animalsk) fremgår normalt ikke af deklarationen.",
+    "uses": "Chips og snacks, pulversupper, bouillon, nudler, krydderiblandinger, færdigretter og saucer. I EU maks. 500 mg/kg for ribonukleotiderne (E626–E635) samlet, quantum satis i krydderier og smagsforstærkere.",
+    "health": "Ribonukleotider nedbrydes i kroppen til urinsyre, og personer med urinsyregigt (podagra) eller forhøjet urinsyre rådes ofte til at være forsigtige, selvom bidraget fra tilsætningsstoffer er lille sammenlignet med kød og fisk. EU-godkendelsen bygger på SCF's vurdering fra 1990, der fastsatte en gruppe-ADI \"not specified\"; JECFA har ligeledes ikke fundet behov for en numerisk ADI. Der har været sporadiske rapporter om hududslæt, men sammenhængen er ikke dokumenteret. Stofferne er generelt ikke tilladt i fødevarer til spædbørn.",
+    "research": "Ribonukleotiderne (E626–E635) er under gen-evaluering hos EFSA; ifølge EFSA's statusoversigt (2024) mangler der data om fremstilling, urenheder og opløselighed, og panelet går videre til udtalelse med datahuller. Der var ikke offentliggjort en endelig EFSA-udtalelse ved seneste kontrol. Forskning i ribonukleotider handler især om deres smagsmekanisme (umami-receptoren T1R1/T1R3) og om purinindtag ved gigt.",
+    "keyReferences": [],
+    "pubmedTerm": "inosinic acid",
+    "flags": [
+      "animal_origin"
+    ],
+    "classes": [],
+    "variants": [],
+    "efsa": null,
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://www.efsa.europa.eu/sites/default/files/2024-03/12-re-evaluations-food-additives-ongoing-and-upcoming-calls-for-data.pdf",
+        "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: EU-godkendt. ADI-grundlag rettet til SCF 1990 (gruppe-ADI not specified); EFSA-gen-evaluering bekræftet som igangværende."
+    },
+    "wikipedia": "",
+    "wikidata": "Q255933",
+    "claims": []
+  },
+  {
+    "code": "E631",
+    "nameDa": "Dinatriuminosinat",
+    "nameEn": "Disodium inosinate",
+    "category": "Smagsforstærker",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Dinatriuminosinat er en ribonukleotid-smagsforstærker, der forstærker umami-smag, typisk sammen med glutamat.",
+    "description": "Dinatriuminosinat er natriumsaltet af IMP og en af de mest brugte ribonukleotider; det kan være fremstillet af animalske råvarer, men fremstilles i dag oftest ved fermentering. Ribonukleotider som guanylat og inosinat forstærker umami-smagen kraftigt i samspil med glutamat (synergi), så små mængder rækker langt. De fremstilles ved fermentering med mikroorganismer eller ved enzymatisk nedbrydning af gær-RNA; tidligere blev inosinat også udvundet af kød og fisk. Kilden (plante, gær eller animalsk) fremgår normalt ikke af deklarationen.",
+    "uses": "Chips og snacks, pulversupper, bouillon, nudler, krydderiblandinger, færdigretter og saucer. I EU maks. 500 mg/kg for ribonukleotiderne (E626–E635) samlet, quantum satis i krydderier og smagsforstærkere.",
+    "health": "Ribonukleotider nedbrydes i kroppen til urinsyre, og personer med urinsyregigt (podagra) eller forhøjet urinsyre rådes ofte til at være forsigtige, selvom bidraget fra tilsætningsstoffer er lille sammenlignet med kød og fisk. EU-godkendelsen bygger på SCF's vurdering fra 1990, der fastsatte en gruppe-ADI \"not specified\"; JECFA har ligeledes ikke fundet behov for en numerisk ADI. Der har været sporadiske rapporter om hududslæt, men sammenhængen er ikke dokumenteret. Stofferne er generelt ikke tilladt i fødevarer til spædbørn.",
+    "research": "Ribonukleotiderne (E626–E635) er under gen-evaluering hos EFSA; ifølge EFSA's statusoversigt (2024) mangler der data om fremstilling, urenheder og opløselighed, og panelet går videre til udtalelse med datahuller. Der var ikke offentliggjort en endelig EFSA-udtalelse ved seneste kontrol. Forskning i ribonukleotider handler især om deres smagsmekanisme (umami-receptoren T1R1/T1R3) og om purinindtag ved gigt.",
+    "keyReferences": [],
+    "pubmedTerm": "disodium inosinate",
+    "flags": [
+      "animal_origin"
+    ],
+    "classes": [],
+    "variants": [],
+    "efsa": null,
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://www.efsa.europa.eu/sites/default/files/2024-03/12-re-evaluations-food-additives-ongoing-and-upcoming-calls-for-data.pdf",
+        "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: EU-godkendt. ADI-grundlag rettet til SCF 1990 (gruppe-ADI not specified); EFSA-gen-evaluering bekræftet som igangværende."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Disodium_inosinate",
+    "wikidata": "Q905782",
+    "claims": []
+  },
+  {
+    "code": "E632",
+    "nameDa": "Dikaliuminosinat",
+    "nameEn": "Dipotassium inosinate",
+    "category": "Smagsforstærker",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Dikaliuminosinat er en ribonukleotid-smagsforstærker, der forstærker umami-smag, typisk sammen med glutamat.",
+    "description": "Dikaliuminosinat er kaliumsaltet af IMP og bruges sjældnere end natriumformen. Ribonukleotider som guanylat og inosinat forstærker umami-smagen kraftigt i samspil med glutamat (synergi), så små mængder rækker langt. De fremstilles ved fermentering med mikroorganismer eller ved enzymatisk nedbrydning af gær-RNA; tidligere blev inosinat også udvundet af kød og fisk. Kilden (plante, gær eller animalsk) fremgår normalt ikke af deklarationen.",
+    "uses": "Chips og snacks, pulversupper, bouillon, nudler, krydderiblandinger, færdigretter og saucer. I EU maks. 500 mg/kg for ribonukleotiderne (E626–E635) samlet, quantum satis i krydderier og smagsforstærkere.",
+    "health": "Ribonukleotider nedbrydes i kroppen til urinsyre, og personer med urinsyregigt (podagra) eller forhøjet urinsyre rådes ofte til at være forsigtige, selvom bidraget fra tilsætningsstoffer er lille sammenlignet med kød og fisk. EU-godkendelsen bygger på SCF's vurdering fra 1990, der fastsatte en gruppe-ADI \"not specified\"; JECFA har ligeledes ikke fundet behov for en numerisk ADI. Der har været sporadiske rapporter om hududslæt, men sammenhængen er ikke dokumenteret. Stofferne er generelt ikke tilladt i fødevarer til spædbørn.",
+    "research": "Ribonukleotiderne (E626–E635) er under gen-evaluering hos EFSA; ifølge EFSA's statusoversigt (2024) mangler der data om fremstilling, urenheder og opløselighed, og panelet går videre til udtalelse med datahuller. Der var ikke offentliggjort en endelig EFSA-udtalelse ved seneste kontrol. Forskning i ribonukleotider handler især om deres smagsmekanisme (umami-receptoren T1R1/T1R3) og om purinindtag ved gigt.",
+    "keyReferences": [],
+    "pubmedTerm": "inosinic acid",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": null,
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://www.efsa.europa.eu/sites/default/files/2024-03/12-re-evaluations-food-additives-ongoing-and-upcoming-calls-for-data.pdf",
+        "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: EU-godkendt. ADI-grundlag rettet til SCF 1990 (gruppe-ADI not specified); EFSA-gen-evaluering bekræftet som igangværende."
+    },
+    "wikipedia": "",
+    "wikidata": "Q18608832",
+    "claims": []
+  },
+  {
+    "code": "E633",
+    "nameDa": "Calciuminosinat",
+    "nameEn": "Calcium inosinate",
+    "category": "Smagsforstærker",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Calciuminosinat er en ribonukleotid-smagsforstærker, der forstærker umami-smag, typisk sammen med glutamat.",
+    "description": "Calciuminosinat er calciumsaltet af IMP og bruges kun sjældent. Ribonukleotider som guanylat og inosinat forstærker umami-smagen kraftigt i samspil med glutamat (synergi), så små mængder rækker langt. De fremstilles ved fermentering med mikroorganismer eller ved enzymatisk nedbrydning af gær-RNA; tidligere blev inosinat også udvundet af kød og fisk. Kilden (plante, gær eller animalsk) fremgår normalt ikke af deklarationen.",
+    "uses": "Chips og snacks, pulversupper, bouillon, nudler, krydderiblandinger, færdigretter og saucer. I EU maks. 500 mg/kg for ribonukleotiderne (E626–E635) samlet, quantum satis i krydderier og smagsforstærkere.",
+    "health": "Ribonukleotider nedbrydes i kroppen til urinsyre, og personer med urinsyregigt (podagra) eller forhøjet urinsyre rådes ofte til at være forsigtige, selvom bidraget fra tilsætningsstoffer er lille sammenlignet med kød og fisk. EU-godkendelsen bygger på SCF's vurdering fra 1990, der fastsatte en gruppe-ADI \"not specified\"; JECFA har ligeledes ikke fundet behov for en numerisk ADI. Der har været sporadiske rapporter om hududslæt, men sammenhængen er ikke dokumenteret. Stofferne er generelt ikke tilladt i fødevarer til spædbørn.",
+    "research": "Ribonukleotiderne (E626–E635) er under gen-evaluering hos EFSA; ifølge EFSA's statusoversigt (2024) mangler der data om fremstilling, urenheder og opløselighed, og panelet går videre til udtalelse med datahuller. Der var ikke offentliggjort en endelig EFSA-udtalelse ved seneste kontrol. Forskning i ribonukleotider handler især om deres smagsmekanisme (umami-receptoren T1R1/T1R3) og om purinindtag ved gigt.",
+    "keyReferences": [],
+    "pubmedTerm": "inosinic acid",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": null,
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://www.efsa.europa.eu/sites/default/files/2024-03/12-re-evaluations-food-additives-ongoing-and-upcoming-calls-for-data.pdf",
+        "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: EU-godkendt. ADI-grundlag rettet til SCF 1990 (gruppe-ADI not specified); EFSA-gen-evaluering bekræftet som igangværende."
+    },
+    "wikipedia": "",
+    "wikidata": "Q725037",
+    "claims": []
+  },
+  {
+    "code": "E634",
+    "nameDa": "Calcium-5'-ribonukleotider",
+    "nameEn": "Calcium 5'-ribonucleotides",
+    "category": "Smagsforstærker",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Calcium-5'-ribonukleotider er en ribonukleotid-smagsforstærker, der forstærker umami-smag, typisk sammen med glutamat.",
+    "description": "Calcium-5'-ribonukleotider er en blanding af calciumsalte af guanylat og inosinat. Ribonukleotider som guanylat og inosinat forstærker umami-smagen kraftigt i samspil med glutamat (synergi), så små mængder rækker langt. De fremstilles ved fermentering med mikroorganismer eller ved enzymatisk nedbrydning af gær-RNA; tidligere blev inosinat også udvundet af kød og fisk. Kilden (plante, gær eller animalsk) fremgår normalt ikke af deklarationen.",
+    "uses": "Chips og snacks, pulversupper, bouillon, nudler, krydderiblandinger, færdigretter og saucer. I EU maks. 500 mg/kg for ribonukleotiderne (E626–E635) samlet, quantum satis i krydderier og smagsforstærkere.",
+    "health": "Ribonukleotider nedbrydes i kroppen til urinsyre, og personer med urinsyregigt (podagra) eller forhøjet urinsyre rådes ofte til at være forsigtige, selvom bidraget fra tilsætningsstoffer er lille sammenlignet med kød og fisk. EU-godkendelsen bygger på SCF's vurdering fra 1990, der fastsatte en gruppe-ADI \"not specified\"; JECFA har ligeledes ikke fundet behov for en numerisk ADI. Der har været sporadiske rapporter om hududslæt, men sammenhængen er ikke dokumenteret. Stofferne er generelt ikke tilladt i fødevarer til spædbørn.",
+    "research": "Ribonukleotiderne (E626–E635) er under gen-evaluering hos EFSA; ifølge EFSA's statusoversigt (2024) mangler der data om fremstilling, urenheder og opløselighed, og panelet går videre til udtalelse med datahuller. Der var ikke offentliggjort en endelig EFSA-udtalelse ved seneste kontrol. Forskning i ribonukleotider handler især om deres smagsmekanisme (umami-receptoren T1R1/T1R3) og om purinindtag ved gigt.",
+    "keyReferences": [],
+    "pubmedTerm": "ribonucleotides",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": null,
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://www.efsa.europa.eu/sites/default/files/2024-03/12-re-evaluations-food-additives-ongoing-and-upcoming-calls-for-data.pdf",
+        "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: EU-godkendt. ADI-grundlag rettet til SCF 1990 (gruppe-ADI not specified); EFSA-gen-evaluering bekræftet som igangværende."
+    },
+    "wikipedia": "",
+    "wikidata": "Q18967192",
+    "claims": []
+  },
+  {
+    "code": "E635",
+    "nameDa": "Dinatrium-5'-ribonukleotider",
+    "nameEn": "Disodium 5'-ribonucleotides",
+    "category": "Smagsforstærker",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Dinatrium-5'-ribonukleotider er en ribonukleotid-smagsforstærker, der forstærker umami-smag, typisk sammen med glutamat.",
+    "description": "Dinatrium-5'-ribonukleotider (I+G) er en blanding af cirka lige dele dinatriuminosinat og dinatriumguanylat og er den mest almindelige form i handlen. Ribonukleotider som guanylat og inosinat forstærker umami-smagen kraftigt i samspil med glutamat (synergi), så små mængder rækker langt. De fremstilles ved fermentering med mikroorganismer eller ved enzymatisk nedbrydning af gær-RNA; tidligere blev inosinat også udvundet af kød og fisk. Kilden (plante, gær eller animalsk) fremgår normalt ikke af deklarationen.",
+    "uses": "Chips og snacks, pulversupper, bouillon, nudler, krydderiblandinger, færdigretter og saucer. I EU maks. 500 mg/kg for ribonukleotiderne (E626–E635) samlet, quantum satis i krydderier og smagsforstærkere.",
+    "health": "Ribonukleotider nedbrydes i kroppen til urinsyre, og personer med urinsyregigt (podagra) eller forhøjet urinsyre rådes ofte til at være forsigtige, selvom bidraget fra tilsætningsstoffer er lille sammenlignet med kød og fisk. EU-godkendelsen bygger på SCF's vurdering fra 1990, der fastsatte en gruppe-ADI \"not specified\"; JECFA har ligeledes ikke fundet behov for en numerisk ADI. Der har været sporadiske rapporter om hududslæt, men sammenhængen er ikke dokumenteret. Stofferne er generelt ikke tilladt i fødevarer til spædbørn.",
+    "research": "Ribonukleotiderne (E626–E635) er under gen-evaluering hos EFSA; ifølge EFSA's statusoversigt (2024) mangler der data om fremstilling, urenheder og opløselighed, og panelet går videre til udtalelse med datahuller. Der var ikke offentliggjort en endelig EFSA-udtalelse ved seneste kontrol. Forskning i ribonukleotider handler især om deres smagsmekanisme (umami-receptoren T1R1/T1R3) og om purinindtag ved gigt.",
+    "keyReferences": [],
+    "pubmedTerm": "disodium ribonucleotides",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": null,
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://www.efsa.europa.eu/sites/default/files/2024-03/12-re-evaluations-food-additives-ongoing-and-upcoming-calls-for-data.pdf",
+        "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: EU-godkendt. ADI-grundlag rettet til SCF 1990 (gruppe-ADI not specified); EFSA-gen-evaluering bekræftet som igangværende."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Disodium_ribonucleotides",
+    "wikidata": "Q18967210",
+    "claims": []
+  },
+  {
+    "code": "E640",
+    "nameDa": "Glycin og natriumsaltet heraf",
+    "nameEn": "Glycine and its sodium salt",
+    "category": "Smagsforstærker / bærestof",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Glycin er den simpleste aminosyre og har en let sød smag; den bruges som smagsforstærker og bærestof.",
+    "description": "Glycin (NH2CH2COOH) findes i store mængder i kollagen og gelatine. Den fremstilles industrielt ved kemisk syntese (fx ud fra chloreddikesyre og ammoniak) eller ved hydrolyse af protein. E640(i) er glycin og E640(ii) er natriumglycinat. Den har en sødlig smag, kan maskere bitterhed og har svag antimikrobiel og bufrende virkning.",
+    "uses": "I EU tilladt som bærestof for næringsstoffer og i visse kosttilskud; i andre lande også i drikkevarer og saucer.",
+    "health": "Glycin er en normal aminosyre i kosten og omsættes normalt; toksiciteten er meget lav. Der er ikke kendte risici ved de mængder, der bruges som tilsætningsstof. Glycin bruges også som kosttilskud i gram-mængder uden kendte alvorlige bivirkninger.",
+    "research": "EFSA's ANS-panel har udgivet en udtalelse om gen-evaluering af glycin (E640) og natriumglycinat, men dens detaljerede konklusion kunne ikke verificeres her. Der er forskning i glycin som kosttilskud, fx mod søvnproblemer, men evidensen er begrænset. Ingen kendte kontroverser om tilsætningsstoffet.",
+    "keyReferences": [],
+    "pubmedTerm": "glycine",
+    "flags": [],
+    "classes": [],
+    "variants": [
+      {
+        "code": "E640(i)",
+        "nameDa": "Glycin",
+        "nameEn": "Glycine"
+      },
+      {
+        "code": "E640(ii)",
+        "nameDa": "Natriumglycinat",
+        "nameEn": "Sodiumglycinate"
+      }
+    ],
+    "efsa": null,
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://artgerecht.com/en/glossary/e640/",
+        "https://food-detektiv.de/en/additives/?enummer=Glycine+and+its+sodium+salt"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: EU-godkendt (E640). Det præcise EU-anvendelsesområde og EFSA-udtalelsens konklusion kunne ikke bekræftes i primærkilde; ubekræftet udsagn omformuleret."
+    },
+    "wikipedia": "",
+    "wikidata": "Q18967228",
+    "claims": []
+  },
+  {
+    "code": "E650",
+    "nameDa": "Zinkacetat",
+    "nameEn": "Zinc acetate",
+    "category": "Smagsforstærker",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Zinkacetat er zinksaltet af eddikesyre, der i EU bruges som smagsforstærker i tyggegummi.",
+    "description": "Zinkacetat fremstilles ved reaktion mellem zinkoxid og eddikesyre. Det har en let astringerende og metallisk smag. I tyggegummi bruges det til at forstærke smag og kan bidrage til at mindske dårlig ånde. Det bruges også i halstabletter mod forkølelse og medicinsk mod Wilsons sygdom.",
+    "uses": "I EU kun tilladt i tyggegummi med maks. niveau (1000 mg/kg).",
+    "health": "I de små mængder, der findes i tyggegummi, anses zinkacetat for sikkert. Zink er essentielt, men langvarigt højt indtag fra tilskud kan hæmme kobberoptagelsen; EFSA's øvre grænse for zink er 25 mg/dag for voksne. Meget store doser kan give kvalme og mavebesvær.",
+    "research": "Zinkacetat blev godkendt i EU i 2002 efter en positiv vurdering fra EU's Videnskabelige Komité for Levnedsmidler (SCF) om brug som smagsforstærker i tyggegummi. Stoffet er endnu ikke gen-evalueret af EFSA. Forskningen i zinkacetat handler mest om zink-halstabletter mod forkølelse, hvor nogle metaanalyser tyder på kortere sygdomsvarighed, men resultaterne er ikke entydige.",
+    "keyReferences": [],
+    "pubmedTerm": "zinc acetate",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": null,
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://food.ec.europa.eu/document/download/f75dad22-22ea-41d3-b29a-7dad62402312_en?filename=sci-com_scf_out06_en.pdf",
+        "https://food-detektiv.de/en/additives/?enummer=Zinc+acetate"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: Kun tyggegummi, maks. 1000 mg/kg bekræftet. Rettet: vurderingen var SCF's (godkendt 2002), ikke en EFSA-vurdering fra 2015."
+    },
+    "wikipedia": "",
+    "wikidata": "Q204639",
+    "claims": []
+  },
+  {
+    "code": "E900",
+    "nameDa": "Dimethylpolysiloxan",
+    "nameEn": "Dimethylpolysiloxane",
+    "category": "Skumdæmpende middel",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Dimethylpolysiloxan er en silikoneolie, der bruges til at hindre skumdannelse i fødevareproduktion og frituresolie.",
+    "description": "Dimethylpolysiloxan (PDMS) er en syntetisk silikonepolymer opbygget af gentagne silicium-oxygen-enheder med methylgrupper. Det fremstilles ud fra silicium og methylchlorid. Det er kemisk meget stabilt og sænker overfladespændingen, så skum brydes. Methylphenylpolysiloxan er en beslægtet variant, hvor nogle methylgrupper er erstattet af phenylgrupper. Kommercielle produkter kan indeholde en lille mængde siliciumdioxid.",
+    "uses": "Frituresolie og friturestegte produkter, dåsefrugt og -grøntsager, suppekoncentrater, sodavand og saftkoncentrater, syltetøj og tyggegummi. I EU typisk maks. 10 mg/kg eller 10 mg/l afhængigt af kategori.",
+    "health": "PDMS optages stort set ikke fra tarmen og udskilles uændret. EFSA fastsatte ved gen-evalueringen i 2020 en ADI på 17 mg/kg legemsvægt/dag og fandt, at eksponeringen for alle befolkningsgrupper lå langt under denne. Der er ingen kendte særlige risikogrupper.",
+    "research": "EFSA's FAF-panel gen-evaluerede E900 i 2020 og fastsatte en ADI på 17 mg/kg legemsvægt/dag på baggrund af et 26-måneders studie i rotter (NOAEL 1.742 mg/kg legemsvægt/dag). Mediedebat har handlet om brug i fastfood-frituresolie, men der er ikke påvist sundhedsskader ved de anvendte mængder. Der er åbne spørgsmål om specifikationer for tilsat silica. Den tidligere SCF-ADI på 1,5 mg/kg legemsvægt/dag (1990) blev samtidig trukket tilbage.",
+    "keyReferences": [
+      {
+        "citation": "EFSA FAF Panel. Re-evaluation of dimethyl polysiloxane (E 900) as a food additive. EFSA Journal. 2020;18(5):6107.",
+        "searchTitle": "Re-evaluation of dimethyl polysiloxane (E 900) as a food additive"
+      }
+    ],
+    "pubmedTerm": "dimethylpolysiloxane",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of dimethyl polysiloxane (E 900) as a food additive",
+      "url": "https://doi.org/10.2903/j.efsa.2020.6107",
+      "date": "2020",
+      "adi": "17 mg/kg bw/day",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6107",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10464691/"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: ADI 17 mg/kg bw/dag (EFSA FAF 2020, DOI 10.2903/j.efsa.2020.6107) bekræftet; efsa-objekt og detaljer tilføjet."
+    },
+    "wikipedia": "",
+    "wikidata": "Q411955",
+    "claims": []
+  },
+  {
+    "code": "E901",
+    "nameDa": "Bivoks, hvidt og gult",
+    "nameEn": "Beeswax, white and yellow",
+    "category": "Overfladebehandlingsmiddel",
+    "euStatus": "approved",
+    "origin": "natural",
+    "summary": "Naturlig voks produceret af honningbier, brugt som glansmiddel på slik og frugt og som bærestof for aromaer.",
+    "description": "Bivoks udskilles af voksproducerende kirtler hos arbejderbier og bruges til at bygge bikagens celler. Det består hovedsageligt af estere af langkædede fedtsyrer og fedtalkoholer, frie fedtsyrer og kulbrinter. Gul bivoks er renset og smeltet voks fra tavlerne, mens hvid bivoks er bleget (fx med sollys, aktivt kul eller oxidationsmidler). I fødevarer bruges det til at give en blank, fugtbeskyttende overflade og som bærestof for aromaer.",
+    "uses": "Overfladebehandling af chokoladeovertrukne varer, vingummi og andet sukkervarer (fx som glans på gelébønner), overfladebehandling af æbler, pærer, citrusfrugter, melon og ananas, osteskorper, kaffebønner, kosttilskud samt tyggegummi. Anvendes typisk quantum satis til overfladebehandling.",
+    "health": "Bivoks optages kun i ringe grad og anses for ugiftigt i de anvendte mængder. Sjældne allergiske reaktioner kan forekomme, især hos personer med allergi over for propolis eller andre biprodukter, som kan være til stede som urenheder. Stoffet er af animalsk oprindelse og derfor ikke veganskt. EFSA fandt i 2007 anvendelsen acceptabel og fastsatte ingen numerisk ADI.",
+    "research": "EFSA's AFC-panel vurderede i 2007 bivoks som overfladebehandlingsmiddel og bærestof for aromaer og konkluderede, at brugen ikke gav anledning til sikkerhedsbekymring. Vurderingen byggede bl.a. på lang historisk brug og den lave optagelse. Der er begrænset moderne toksikologisk forskning, men heller ingen signaler om problemer ud over sjældne allergier.",
+    "keyReferences": [],
+    "pubmedTerm": "beeswax",
+    "flags": [
+      "animal_origin",
+      "allergen"
+    ],
+    "classes": [
+      "carrier",
+      "emulsifier",
+      "stabiliser",
+      "thickener"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Beeswax (E 901) as a glazing agent and as carrier for flavours",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2007.615",
+      "date": "2007-12-20",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://doi.org/10.2903/j.efsa.2007.615"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: EFSA AFC 2007 om bivoks som glansmiddel/bærestof bekræftet, ingen numerisk ADI."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Beeswax",
+    "wikidata": "Q143739",
+    "claims": []
+  },
+  {
+    "code": "E902",
+    "nameDa": "Candelillavoks",
+    "nameEn": "Candelilla wax",
+    "category": "Overfladebehandlingsmiddel",
+    "euStatus": "approved",
+    "origin": "natural",
+    "summary": "En plantevoks udvundet fra den mexicanske candelilla-busk, brugt som glans- og beskyttelseslag på slik og frugt.",
+    "description": "Candelillavoks udvindes af stængler fra buskene Euphorbia cerifera og Euphorbia antisyphilitica, der vokser i det nordlige Mexico og det sydlige USA. Planterne koges i vand tilsat svovlsyre, hvorefter den flydende voks skummes af, størknes og renses. Voksen består hovedsageligt af kulbrinter (især hentriacontan), voksestere, frie fedtsyrer og alkoholer. Den er hård og giver en blank overflade og bruges som vegansk alternativ til bivoks.",
+    "uses": "Glans på sukkervarer, chokoladeovertræk og dragéer, tyggegummi, overfladebehandling af frugt (citrus, melon, æbler, pærer m.fl.), kosttilskud samt små bagte snacks overtrukket med chokolade. Tilladt quantum satis i de godkendte kategorier.",
+    "health": "Candelillavoks optages meget lidt i tarmen og anses som lavtoksisk. Der er ikke kendte særlige risikogrupper. EFSA kunne i 2012 ikke fastsætte en ADI pga. begrænsede data, men vurderede, at den nuværende anvendelse ikke giver anledning til sikkerhedsbekymring.",
+    "research": "EFSA's gen-evaluering (2012) byggede på et 90-dages rotteforsøg, der ikke viste skadelige effekter, og på data om lav absorption. Panelet bemærkede mangel på langtidsstudier og reproduktionsstudier, men fandt dette acceptabelt i lyset af det lave indtag. JECFA har ikke fastsat en ADI for stoffet.",
+    "keyReferences": [],
+    "pubmedTerm": "candelilla wax",
+    "flags": [],
+    "classes": [
+      "carrier",
+      "emulsifier",
+      "thickener"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluation of candelilla wax (E 902) as a food additive.",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2012.2946",
+      "date": "2012-11-16",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2012.2946",
+        "https://www.confectionerynews.com/Article/2012/11/20/Candelilla-wax-presents-no-health-risk-says-EFSA/"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: EFSA 2012: ingen ADI pga. manglende langtidsdata, men ingen sikkerhedsbekymring; SCF/JECFA fandt brug acceptabel uden ADI – bekræftet."
+    },
+    "wikipedia": "",
+    "wikidata": "Q898937",
+    "claims": []
+  },
+  {
+    "code": "E903",
+    "nameDa": "Carnaubavoks",
+    "nameEn": "Carnauba wax",
+    "category": "Overfladebehandlingsmiddel",
+    "euStatus": "approved",
+    "origin": "natural",
+    "summary": "En hård plantevoks fra bladene på den brasilianske carnaubapalme, som giver slik og frugt en blank overflade.",
+    "description": "Carnaubavoks udvindes fra bladene af palmen Copernicia prunifera (tidligere C. cerifera) i det nordøstlige Brasilien. Bladene tørres og bankes, så vokspulveret falder af, hvorefter det smeltes, filtreres og eventuelt bleges. Voksen består hovedsageligt af estere af langkædede fedtsyrer og alkoholer samt hydroxysyrer og kanelsyrederivater. Den er en af de hårdeste naturlige vokser med højt smeltepunkt, hvilket gør den velegnet som glansmiddel.",
+    "uses": "Vingummi og gelébønner, chokoladedragéer (fx overtrukne chokoladelinser), tyggegummi, overfladebehandling af citrusfrugter, melon, æbler og pærer, kaffebønner, kosttilskud og små chokoladeovertrukne bagværk. Maksimalniveau typisk 200 mg/kg i sukkervarer; quantum satis på frugtoverflader.",
+    "health": "Carnaubavoks optages næsten ikke og anses for at have meget lav toksicitet. Der er ikke kendte særlige risikogrupper. JECFA har fastsat en ADI på 0-7 mg/kg legemsvægt/dag, og EFSA vurderede i 2012, at den anvendte eksponering ikke giver anledning til bekymring.",
+    "research": "EFSA's gen-evaluering (2012) fandt ingen tegn på toksicitet i de tilgængelige subkroniske og kroniske forsøg eller i genotoksicitetstest. Panelet understregede dog, at data om reproduktions- og udviklingstoksicitet var begrænsede. Der er ingen nyere signaler, der har rejst tvivl om stoffets sikkerhed.",
+    "keyReferences": [],
+    "pubmedTerm": "carnauba wax",
+    "flags": [],
+    "classes": [
+      "carrier"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluation of carnauba wax (E 903) as a food additive",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2012.2880",
+      "date": "2012-10-04",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2012.2880",
+        "https://www.foodnavigator.com/Article/2012/10/10/EFSA-reaffirms-carnauba-wax-safety-at-current-usage-levels/"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: JECFA-ADI 0–7 mg/kg bw/dag og EFSA 2012 (ingen ADI, tilstrækkelig sikkerhedsmargin) bekræftet."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Carnauba_wax",
+    "wikidata": "Q839494",
+    "claims": []
+  },
+  {
+    "code": "E904",
+    "nameDa": "Shellak",
+    "nameEn": "Shellac",
+    "category": "Overfladebehandlingsmiddel",
+    "euStatus": "approved",
+    "origin": "natural",
+    "summary": "En naturlig harpiks udskilt af lakskjoldlus, som bruges til at give slik, piller og frugt en blank, beskyttende overflade.",
+    "description": "Shellak er en harpiks, som hunnerne af lakskjoldlusen (Kerria lacca) udskiller på træer i Indien og Thailand. Harpiksen skrabes af grenene, renses, opløses i alkohol og filtreres; den kan også bleges. Kemisk består den af polyestere af hydroxyfedtsyrer (især aleuritinsyre) og sesquiterpensyrer samt lidt voks. Den danner en hård, blank og fugtafvisende film og bruges som glansmiddel, ofte under betegnelsen 'confectioner's glaze'.",
+    "uses": "Chokoladeovertrukne slikprodukter og dragéer, overtrukne nødder og kaffebønner, overfladebehandling af citrusfrugter, æbler, pærer, melon og ananas, kosttilskud og tabletter samt kosmetiske sukkerovertræk. Tilladt quantum satis til overfladebehandling.",
+    "health": "Shellak optages kun i begrænset omfang. Da den stammer fra insekter, er den ikke vegansk og kan være uønsket af religiøse eller etiske grunde. Allergiske reaktioner er sjældne, men kontaktallergi er beskrevet ved kosmetisk brug. EFSA fastsatte i 2024 en ADI på 4 mg/kg legemsvægt/dag for voksfri shellak; ADI kunne overskrides ved 95-percentilen for nogle aldersgrupper, men EFSA vurderede ikke dette som en sikkerhedsbekymring pga. de konservative antagelser.",
+    "research": "EFSA's FAF-panel gen-evaluerede shellak i 2024 (\"Re-evaluation of shellac (E 904) as a food additive and a new application on the extension of use of shellac (E 904) in dietary foods for special medical purposes\") og fastsatte en ADI på 4 mg/kg legemsvægt/dag baseret på en NOAEL på 400 mg/kg/dag. For kemisk bleget shellak er ADI midlertidig, indtil der foreligger data om organochlor-urenheder. Der er i øvrigt begrænset moderne forskning i stoffet som fødevaretilsætning.",
+    "keyReferences": [
+      {
+        "citation": "EFSA FAF Panel. Re-evaluation of shellac (E 904) as a food additive and a new application on the extension of use of shellac (E 904) in dietary foods for special medical purposes. EFSA Journal. 2024;22(8):8897.",
+        "searchTitle": "Re-evaluation of shellac (E 904) as a food additive"
+      }
+    ],
+    "pubmedTerm": "shellac",
+    "flags": [
+      "animal_origin"
+    ],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of shellac (E 904) as a food additive and a new application on the extension of use of shellac (E 904) in dietary foods for special medical purposes",
+      "url": "https://doi.org/10.2903/j.efsa.2024.8897",
+      "date": "2024-08-01",
+      "adi": "4 mg/kg bw/day",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11292212/",
+        "https://pubmed.ncbi.nlm.nih.gov/39099614/"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: Rettet: EFSA har gen-evalueret shellak (2024) med ADI 4 mg/kg bw/dag (midlertidig for kemisk bleget); efsa-objekt tilføjet."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Shellac",
+    "wikidata": "Q429659",
+    "claims": []
+  },
+  {
+    "code": "E905",
+    "nameDa": "Mikrokrystallinsk voks",
+    "nameEn": "Microcrystalline wax",
+    "category": "Overfladebehandlingsmiddel",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "En raffineret voks fra råolie, som i EU må bruges til at give visse slikvarer og frugter en beskyttende overflade.",
+    "description": "Mikrokrystallinsk voks er en blanding af mættede, overvejende forgrenede og cykliske kulbrinter udvundet af tunge fraktioner fra råolieraffinering. Den renses grundigt (fx ved hydrogenering) for at fjerne aromatiske og polycykliske forbindelser. Sammenlignet med paraffin har den mindre krystaller, højere molekylvægt og er mere smidig.",
+    "uses": "Overfladebehandling af sukkervarer (ikke chokolade), tyggegummi samt skræl på melon, papaya, mango og avocado. Anvendes quantum satis i de godkendte kategorier; ikke tilladt som generelt ingrediens.",
+    "health": "Højmolekylær mikrokrystallinsk voks optages meget lidt i tarmen, hvilket mindsker risikoen for ophobning sammenlignet med lavviskøse mineralolier. EFSA vurderede i 2013, at den godkendte anvendelse ikke giver anledning til sikkerhedsbekymring, men fastsatte ingen ADI. Da der er tale om et råolieprodukt, er renheden (lavt indhold af aromatiske kulbrinter) afgørende.",
+    "research": "EFSA's gen-evaluering (2013) konkluderede, at de godkendte anvendelser ikke giver sikkerhedsbekymring, da den konservative eksponering gav tilstrækkelig sikkerhedsmargin i forhold til NOAEL for nært beslægtede højviskøse mineralolier. Panelet anbefalede strammere specifikationer, bl.a. for molekylvægt og indhold af polycykliske aromatiske kulbrinter. Den bredere forskning i mineralolie-kulbrinter (MOSH/MOAH) har fokus på lavere molekylvægte, som optages og ophobes lettere.",
+    "keyReferences": [],
+    "pubmedTerm": "microcrystalline wax",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluation of microcrystalline wax (E 905) as a food additive.",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2013.3146",
+      "date": "2013-04-04",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2013.3146"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: EFSA 2013-konklusion præciseret; uklar sætning om 'syntetisk voks' fjernet."
+    },
+    "wikipedia": "",
+    "wikidata": "Q579764",
+    "claims": []
+  },
+  {
+    "code": "E907",
+    "nameDa": "Hydrogeneret poly-1-decen",
+    "nameEn": "Hydrogenated poly-1-decene",
+    "category": "Overfladebehandlingsmiddel",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "En syntetisk, flydende kulbrinte-polymer, der i EU er godkendt som glansmiddel på sukkervarer og tørret frugt.",
+    "description": "Hydrogeneret poly-1-decen fremstilles ved polymerisering af 1-decen (en alfa-olefin fra petrokemisk industri) til korte oligomerer, som derefter hydrogeneres, så de bliver mættede og kemisk stabile. Resultatet er en farveløs, lugtfri olie med egenskaber, der minder om mineralolie, men med mere ensartet sammensætning. Stoffet bruges som glansmiddel og er opført i bilag II til forordning 1333/2008.",
+    "uses": "Overfladebehandling (glasering) af sukkervarer og tørret frugt i begrænsede maksimalmængder. Bruges desuden i kosmetik og tekniske smøremidler.",
+    "health": "Stoffet er godkendt i EU (forordning 1333/2008) som glansmiddel. Det har lav akut toksicitet og giver ikke anledning til bekymring for genotoksicitet. EFSA fastsatte i 2020 en ADI på 20 mg/kg legemsvægt/dag og fandt, at eksponeringen ikke overskred denne for nogen befolkningsgruppe.",
+    "research": "JECFA (1997, 2001) og SCF (2001) fastsatte en ADI på 0–6 mg/kg legemsvægt/dag. EFSA's FAF-panel gen-evaluerede stoffet i 2020 og fastsatte en ny ADI på 20 mg/kg legemsvægt/dag ud fra en NOAEL på 4.160 mg/kg/dag, og konkluderede, at brugen ved de maksimalt tilladte niveauer ikke giver sikkerhedsbekymring. Der er ellers meget lidt forskning i stoffet i fødevaresammenhæng.",
+    "keyReferences": [
+      {
+        "citation": "EFSA FAF Panel. Re-evaluation of hydrogenated poly-1-decene (E 907) as food additive. EFSA Journal. 2020;18(2):6034.",
+        "searchTitle": "Re-evaluation of hydrogenated poly-1-decene (E 907) as food additive"
+      }
+    ],
+    "pubmedTerm": "hydrogenated polydecene",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of hydrogenated poly-1-decene (E 907) as food additive",
+      "url": "https://doi.org/10.2903/j.efsa.2020.6034",
+      "date": "2020-02-28",
+      "adi": "20 mg/kg bw/day",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6034",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7448092/"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: Stærkt rettet: stoffet ER godkendt i EU (bilag II); fjernet påstande om at det ikke længere er tilladt. Tilføjet EFSA 2020 (ADI 20 mg/kg bw/dag) og tidligere ADI 0–6."
+    },
+    "wikipedia": "",
+    "wikidata": "Q18967207",
+    "claims": []
+  },
+  {
+    "code": "E912",
+    "nameDa": "Montansyreestere",
+    "nameEn": "Montan acid esters",
+    "category": "Overfladebehandlingsmiddel",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Estere fremstillet af montanvoks fra brunkul, som i EU kun må bruges på skrællen af visse frugter.",
+    "description": "Montansyrer udvindes af montanvoks, som ekstraheres fra brunkul (lignit) med opløsningsmidler og derefter oxideres. Syrerne forestres med ethylenglycol og/eller 1,3-butandiol, hvilket giver en hård voks. Stoffet danner en tynd film, som mindsker vandtab og giver glans. I EU er anvendelsen begrænset til overfladebehandling af frugt med skræl, der normalt ikke spises.",
+    "uses": "Kun til overfladebehandling af friske citrusfrugter, melon, papaya, mango, avocado og ananas (quantum satis). Skrællen på behandlede citrusfrugter bør ikke bruges i madlavning (fx revet skal) uden hensyn til dette.",
+    "health": "EFSA konkluderede i 2013, at stoffet ikke kunne vurderes pga. begrænsninger i de toksikologiske data, og der er ingen ADI. Da stoffet primært sidder på skræl, der ikke spises, er eksponeringen lav, men den kan stige ved brug af citrusskal. Der er ikke identificeret særlige risikogrupper.",
+    "research": "EFSA's gen-evaluering (2013) kunne ikke konkludere om sikkerheden pga. utilstrækkelige data om bl.a. absorption, genotoksicitet og langtidstoksicitet. Data efterspurgt siden 1990'erne (bl.a. reproduktions- og teratogenicitetsstudier og indhold af PAH) var ikke indsendt, og der kom ingen data efter EFSA's dataindkaldelse i 2012. Panelet efterlyste også bedre specifikationer for urenheder som fx polycykliske aromatiske kulbrinter fra brunkulsråmaterialet. Stoffet er fortsat godkendt, men er et af de tilsætningsstoffer med åbne spørgsmål.",
+    "keyReferences": [],
+    "pubmedTerm": "montan wax",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluation of montan acid esters (E 912) as a food additive.",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2013.3236",
+      "date": "2013-06-07",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2013.3236",
+        "https://www.efsa.europa.eu/en/efsajournal/pub/3236"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: EFSA 2013: kunne ikke evalueres pga. datamangler – bekræftet og præciseret."
+    },
+    "wikipedia": "",
+    "wikidata": "Q18935695",
+    "claims": []
+  },
+  {
+    "code": "E914",
+    "nameDa": "Oxideret polyethylenvoks",
+    "nameEn": "Oxidised polyethylene wax",
+    "category": "Overfladebehandlingsmiddel",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "En syntetisk voks fra polyethylen, som i EU bruges til at beskytte skrællen på visse frugter.",
+    "description": "Oxideret polyethylenvoks fremstilles ved kontrolleret oxidation af polyethylen med lav molekylvægt, hvorved der dannes polære grupper (fx carboxylsyre- og hydroxylgrupper). Det gør voksen lettere at emulgere i vand, så den kan påføres frugt som en tynd film. Filmen mindsker vandtab, forlænger holdbarheden og giver glans. Den er kemisk stabil og optages kun meget lidt.",
+    "uses": "Overfladebehandling af friske citrusfrugter, melon, papaya, mango, avocado og ananas (quantum satis). Skal fremgå af mærkningen på løs frugt som 'overfladebehandlet'.",
+    "health": "EFSA konkluderede i sin gen-evaluering (EFSA Journal 2015;13(6):4145), at datagrundlaget var utilstrækkeligt til at fastsætte en ADI, men at den godkendte anvendelse ikke giver anledning til sikkerhedsbekymring, da eksponeringen er meget lav (sikkerhedsmargin på ca. 4.400 ved højeste indtag). Der er ikke kendte særlige risikogrupper.",
+    "research": "EFSA's gen-evaluering (2015) byggede bl.a. på 90-dages studier i rotter og hunde samt genotoksicitetsdata; stoffet var ikke genotoksisk, og der var ingen tegn på ophobning. Der mangler kroniske studier og kræftstudier, hvorfor der ikke blev fastsat en ADI. Der er begrænset uafhængig forskning i stoffet.",
+    "keyReferences": [],
+    "pubmedTerm": "oxidized polyethylene wax",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluation of oxidised polyethylene wax (E 914) as a food additive",
+      "url": "https://doi.org/10.2903/j.efsa.2015.4145",
+      "date": "2015-07-02",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://www.efsa.europa.eu/en/efsajournal/pub/4145",
+        "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4145"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: EFSA 2015-konklusion præciseret: ingen ADI pga. utilstrækkelige data, men ingen bekymring (MoS ~4.400). Ubekræftet udsagn om anbefalede specifikationer fjernet."
+    },
+    "wikipedia": "",
+    "wikidata": "Q18608846",
+    "claims": []
+  },
+  {
+    "code": "E920",
+    "nameDa": "L-cystein",
+    "nameEn": "L-cysteine",
+    "category": "Melbehandlingsmiddel",
+    "euStatus": "approved",
+    "origin": "mixed",
+    "summary": "En svovlholdig aminosyre, som bruges til at gøre dej mere elastisk og lettere at forarbejde.",
+    "description": "L-cystein er en naturligt forekommende aminosyre med en thiolgruppe (-SH). Som melbehandlingsmiddel bryder den disulfidbroer i glutenet, så dejen bliver blødere, mere strækbar og kræver kortere æltetid. Historisk er L-cystein udvundet ved hydrolyse af keratin fra fjer, svinebørster eller menneskehår, men i dag fremstilles en stigende del ved mikrobiel fermentering. I EU omfatter specifikationen også hydrochlorid- og hydrochloridmonohydrat-formerne.",
+    "uses": "Kun tilladt til melbehandling i EU, fx i industrielt bagværk som pizzabunde, tortillas, kiks, burgerboller og kiksdej (quantum satis i mel). Findes desuden i nogle aromaer (reaktionsaromaer) og som næringsstof i kosttilskud.",
+    "health": "L-cystein er en normal bestanddel af kosten og kroppens proteiner, og mængderne i bagværk er små. Der er ingen kendte sundhedsrisici ved den anvendte mængde. Stoffet kan være af animalsk oprindelse (fjer, svinebørster), hvilket kan være relevant for vegetarer, veganere og af religiøse grunde; oprindelsen fremgår sjældent af mærkningen.",
+    "research": "Der er ingen nyere EFSA-gen-evaluering, der har rejst bekymringer for L-cystein som melbehandlingsmiddel. Forskningen fokuserer på bageteknologi og på fermenteringsbaseret produktion som alternativ til animalske kilder. Selve aminosyren har en veldokumenteret rolle i ernæring og stofskifte.",
+    "keyReferences": [],
+    "pubmedTerm": "cysteine",
+    "flags": [
+      "animal_origin"
+    ],
+    "classes": [],
+    "variants": [],
+    "efsa": null,
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Cysteine",
+        "https://nutrasafe.co.uk/e-numbers/e920"
+      ],
+      "notes": "RUNDE 2 IKKE UDFØRT for denne post: sessionens WebSearch-kvote (200 søgninger) blev opbrugt, og direkte adgang til EFSA/PubMed er blokeret. Teksten er uændret fra runde 1 og er IKKE udsagn-for-udsagn kildebelagt. Runde 1-note: Anvendelse (kun melbehandling, quantum satis) og fremstilling (keratinhydrolyse/fermentering) er i overensstemmelse med kendt viden; der blev ikke fundet en entydig EFSA-gen-evaluering af E 920 i primærkilder."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Cysteine",
+    "wikidata": "Q186474",
+    "claims": []
+  }
+]
