@@ -2,6 +2,47 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Kamera — scanningsstribe i stedet for load-cirkel
+
+- `PhotoWorkingOverlay` viser en hvid/lys gradientstribe (`.hf-scan-sweep`),
+  der fejer hen over fotoet, mens det analyseres. Beslutning: DECISIONS 2026-09-28.
+
+## 2026-09-28: Aktivitetsniveau i 5 trin + mails mod spam
+
+- Profil → Profil: aktivitetsniveau i 5 trin (Meget lav … Meget høj), gemmes
+  straks (`User.activityLevel`, migration `20260928160000_user_activity_level`).
+  Bruges som BMR-faktor i kalenderens ugeestimat og i opskrifternes
+  portionsstørrelse (DECISIONS 2026-09-28).
+- Alle mails (kø + direkte) får fuldt HTML-dokument med bundtekst,
+  tekstversion og Reply-To `support@hellocal.io`. DNS (SPF/DKIM/DMARC) for
+  hellocal.io er tjekket og korrekt; resten er nyt domænes omdømme.
+
+Next work:
+1. Deploy med migrationen (sker ved push til master).
+2. Brugeren opretter selv sin private konto (peter@packroff.dk) og udfylder
+   vægt/højde/fødselsdato/aktivitetsniveau i profilen.
+
+## 2026-09-28: Levende omrids om varen i kameraet
+
+- Tilføj-kameraet (Forside/Energi/Indhold) tegner nu en hvid streg om varen
+  midt i billedet, mens man sigter (MediaPipe på telefonen, hentes fra CDN).
+  Beslutning: DECISIONS 2026-09-28.
+- Lint, typecheck og build kørt; ikke afprøvet på en telefon (brugeren tjekker udseendet).
+
+## 2026-09-28: Kameraflowet — "Uden brus" i navnet + logo fra stregkode-fotoet
+
+- Testscanning af AQUA-vand: AI læste "Uden brus" men gemte det kun som
+  variant (navn "Vand"). Nu kommer varianten med i navnet.
+- Stregkode-fotoet læses for logo + variant (`enrich_barcode_logo` i admin
+  "Log"); logoet bliver et fritskrabningsjob. Beslutning: DECISIONS 2026-09-28.
+- Eksisterende vare "Vand" (AQUA) skal rettes manuelt i admin.
+- Lint, typecheck og build kørt; ikke testet mod database/OpenAI lokalt.
+## 2026-09-28: Hele Bilka + REMA 1000-kataloget importeres
+
+- 10.524 varer med næring (2.408 uden kcal/protein/kulhydrat/fedt springes over) og 7.218 billeder (5 GB) ligger på NAS'en i `data/store-products-import/` (kopieret med tar over SSH – for stort til git).
+- `store-products-agent` læser `/import` (compose-volume), når `store_products.json` findes dér; ellers den lille prøve i billedet. Billeder, der allerede er kopieret, springes over ved genstart.
+- Opdatering af kataloget: `py build_data.py --all --out <mappe>` og kopiér mappen til NAS'en igen; agenten kører ved næste start eller "Kør nu" i admin → Cron-jobs (`store-products-import`).
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen
@@ -13,6 +54,31 @@ Last updated: 2026-09-28
   navn, brand, kcal, makro-sliders og ingredienser som `Skeleton`-flader med
   den løbende gradient (design.md §6.14) i stedet for `HfLoader`-cirkler.
   Den tomme produktcirkel glimter også, mens billedet ventes.
+
+## 2026-09-28: Tilføjede produkter kan redigeres
+
+- `/registration/[id]` viser nu samme side som "Tilføj produkt" (mængde +/−,
+  kcal, tidspunkt, energifordeling med lås) med knappen "Gem ændringer".
+- `PATCH /api/registrations/[id]` tager nu også `amountGrams` + snapshot-værdier;
+  øvrige snapshots skaleres med mængden. Beslutning: DECISIONS 2026-09-28.
+- Lint, typecheck og build kørt; ikke testet mod en database.
+
+## 2026-09-28: Billedrobot løbende + admin "Robotter"
+
+- Fritlægning (`image-cutout`) kører nu løbende (venter hele tiden på nye
+  produkter); logo-robotten er kommet under admin-styring (standard 03:00).
+- Ny side `/admin/robots` med On/Off, KØR og cron-job-kolonne pr. robot.
+  Beslutning: DECISIONS 2026-09-28.
+- Deploy: genbyg `image-agent` og `logo-agent` (ingen migration).
+- Lint og build kørt; ikke testet mod en database (lokalt er der ingen DB).
+
+## 2026-09-28: Kameraflow — stregkodefotoet udfylder Energi/Indhold
+
+- Årsag til fejlen (vandflaske): stregkodefotoet blev kun gemt, aldrig OCR-læst.
+  Nu læses det i baggrunden; "Ingredienser"/næringstabel på fotoet giver
+  flueben på Indhold/Energi, og en grøn ramme viser feltet. Beslutning:
+  DECISIONS 2026-09-28. Nyt log-trin `barcode_label` i admin "Log".
+- Lint, typecheck og build kørt; ikke testet på telefon.
 
 ## 2026-09-28: Admin "Log" — hver scanning trin for trin
 
@@ -653,9 +719,13 @@ testbrugere. Connect/callback sendte desuden brugeren til
 `https://0.0.0.0:3000/…` (req.url i containeren); redirects bygges nu fra
 `INTEGRATIONS_REDIRECT_BASE_URL` (`publicUrl` i `src/lib/integrations/registry.ts`).
 
-Next work: Brugeren tilføjer `https://hellocal.packroff.dk/api/google-health/callback`
-som redirect-URI på klienten og `packroff@gmail.com` som testbruger (Google Auth
-Platform → Audience). Test derefter forbindelsen på iPhone.
+2026-09-28: Redirect-delen er løst med domæneskiftet — Google accepterer den
+hellocal.io-URI, serveren nu sender, og callbacken rammer appen (tjekket uden at
+vise værdier).
+
+Next work: Tilføj `packroff@gmail.com` som testbruger (Google Auth Platform →
+Audience; appen står i Testing), hvis det ikke allerede er gjort. Test derefter
+forbindelsen på iPhone.
 ## 2026-09-25: Tilføj-menu tekster og vandglas-ikon
 
 - "Kamera" → "Scan med kamera", "Mikrofon" → "Indtal" (`addButton.*` i
@@ -4629,5 +4699,6 @@ justeringen af scroll-fligen ved forskellige stå-op-tidspunkter.
 - Den generelle vareside (`AddProductView`) viser ikke længere Tidspunkt; ny
   registrering får stadig nu eller det tidspunkt, kalenderen åbnede med.
 - Konkret registrering (`/registration/[id]`, åbnes fra kalender, Dagens
-  tilføjelser og tale) viser "Tidspunkt" med klokkeslættet lige under — uden
-  stregerne fra `.hf-type-section-title`.
+  tilføjelser og tale) viser `TimeSection` (kun når `AddProductView` redigerer
+  en registrering): "Tidspunkt" med klokkeslættet lige under, uden streger og
+  uden "Kl."-præfiks.
