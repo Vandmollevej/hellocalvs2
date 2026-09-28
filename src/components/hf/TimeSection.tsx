@@ -20,6 +20,7 @@ export function TimeSection({
       <h2 className="hf-type-body hf-heading text-center text-hf-black">{t("common.timeHeading")}</h2>
       <div className="flex justify-center">
         <label className="hf-type-body inline-flex min-h-8 items-center gap-1 px-4 text-hf-black">
+          <span>{t("common.clockPrefix")}</span>
           <input
             type="time"
             value={value}
