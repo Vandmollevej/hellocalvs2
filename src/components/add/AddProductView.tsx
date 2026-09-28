@@ -676,7 +676,7 @@ export function AddProductView({
               {/* Del-knappen ligger oven på hjørnet, så cirklen står 16 px under
                   headeren – samme afstand som mellem sektionerne. */}
               {!forDish && !!id && (
-                <div className="absolute right-4 top-4 z-20">
+                <div className="absolute right-4 top-2 z-20">
                   <ForwardButton kind="PRODUCT" itemId={state.product.id} name={state.product.name} />
                 </div>
               )}
