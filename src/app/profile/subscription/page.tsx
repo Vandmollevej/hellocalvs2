@@ -71,7 +71,7 @@ export default function SubscriptionPage() {
     data?.currentPeriodEnd ? new Date(data.currentPeriodEnd).toLocaleDateString("da-DK") : null;
 
   return (
-    <HfScreen title={t("subscription.title")} footer={<TermsSheet hint={SUBSCRIPTION_OVERVIEW_TERMS} />}>
+    <HfScreen title={t("subscription.title")}>
       {loading || !data ? (
         loading ? (
           <SkeletonScreen>
@@ -189,6 +189,11 @@ export default function SubscriptionPage() {
             </Link>
           ))}
 
+          {/* Vilkår og betingelser står nederst i sidens indhold, ikke i en
+              fast footer midt på skærmen. */}
+          <div className="mt-2">
+            <TermsSheet hint={SUBSCRIPTION_OVERVIEW_TERMS} />
+          </div>
         </div>
       )}
     </HfScreen>
