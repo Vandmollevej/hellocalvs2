@@ -2,6 +2,12 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Favicon rettet
+
+- `src/app/favicon.ico` var kun én sløret 16×16-udgave; nu genereret fra `Original images - Hi-res/Hello Cal Favicon.png` i 16/32/48/64 px.
+- Middleware omskrev `/icon.png`, `/apple-icon.png`, `/icons/*` og manifestet til `/admin/...` på admin-domænet (404). Rod-assets springes nu over.
+- Browsere cacher favicons hårdt: tving genindlæsning / ryd cache efter deploy.
+
 ## 2026-09-28: Bekræft e-mail-arket — "Senere" fjernet
 
 Knappen "Senere" er fjernet fra `EmailVerifySheet`; under "Send igen" står nu
