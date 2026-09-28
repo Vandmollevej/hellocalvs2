@@ -23,7 +23,8 @@ export async function GET() {
     getPointsBalance(user.id),
   ]);
 
-  const ownTier = getSubscriptionTier(subscription);
+  // Administratorer er altid Seriøs (docs/DECISIONS.md 2026-09-28).
+  const ownTier = user.role === "ADMIN" ? "SERIOUS" : getSubscriptionTier(subscription);
   const coveredByFamily = ownTier === "FREE" && (await isCoveredByFamilyPlan(user.id));
   const tier = coveredByFamily ? "SERIOUS" : ownTier;
 

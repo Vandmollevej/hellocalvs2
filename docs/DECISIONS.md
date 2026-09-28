@@ -3085,6 +3085,10 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
 - Erstatter det tidligere par-kort (`DuplicateProductCard`) og ruterne
   `/api/admin/duplicate-products/[id]/merge|dismiss`.
 
+## 2026-09-28 — Administratorer er altid Seriøs
+
+Brugere med `role = ADMIN` behandles som Seriøs i `getUserSubscriptionTier` og `/api/subscription`, uden en Subscription-række, så alle Seriøs-funktioner kan testes. Ingen databaseændring.
+
 ## 2026-09-28: Samtykke på tilmeldingssiden i stedet for separat side
 
 Brugerens opgave 35: det separate samtykke-step (`/samtykke`) fjernes. Samtykket
