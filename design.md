@@ -761,6 +761,15 @@ konstant hen over dem (1400 ms, lineær).
   pladsholdertekst; alle `.hf-type-*`-tekster, `.hf-btn-*` og
   `[data-skeleton]` inde i den bliver automatisk til skitser.
 - `prefers-reduced-motion`: fladerne vises uden løbende gradient.
+- **Strategi (2026-09-28): skelettet er siden selv.** En side med eget
+  layout (fx produktsiden) tegner under hentning sin rigtige komponent-
+  træ med en tom model og erstatter kun hvert *datafelt* med en flade i
+  feltets egen rolle og plads. Generiske mønstre (`SkeletonDetail` o.l.)
+  må kun bruges til sider, hvis layout netop er det mønster. Flyttes en
+  tekst eller en boks, flytter skelettet derfor automatisk med; der må
+  aldrig vedligeholdes et separat "skelet-layout" ved siden af det rigtige.
+  Statiske tekster (overskrifter, knaptekster) vises som de er; ikoner og
+  knapper, der kræver data, skjules uden at ændre pladsen.
 
 ### Velkomst/start
 
