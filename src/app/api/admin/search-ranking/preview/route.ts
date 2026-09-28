@@ -51,7 +51,9 @@ export async function POST(req: Request) {
             { name: { contains: query, mode: "insensitive" } },
             { brand: { name: { contains: query, mode: "insensitive" } } },
           ],
-          AND: { OR: [{ externalSource: null }, { externalSource: { not: "HELLOFRESH" } }] },
+          AND: {
+            OR: [{ externalSource: null }, { externalSource: { notIn: ["HELLOFRESH", "OPEN_FOOD_FACTS"] } }],
+          },
         },
         include: {
           brand: { include: { regionSearchStats: true } },

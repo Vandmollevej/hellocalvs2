@@ -1,6 +1,6 @@
 // Supported regions for personal settings. `barcodePrefixes` are the
 // country's GS1 barcode prefixes, used to prioritize search results from
-// our own database and Open Food Facts (see src/app/api/products/route.ts).
+// our own database (see src/app/api/products/route.ts).
 // Udvidet 2026-09-06 (fejl #17 i Fejlretninger/FEJLLISTE.md) til at dække
 // HelloFreshs faktiske leveringslande, ikke kun de oprindelige 6. GS1-præfikser
 // er standard landepræfikser (GS1 GmbH's officielle liste), ikke gættet.

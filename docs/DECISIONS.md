@@ -2,6 +2,12 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-28: Open Food Facts kun som backup ved scanning
+
+- Brugerens krav: Open Food Facts må kun vises ved scanning som backup, aldrig i søgeresultater.
+- `GET /api/products` (Madvarer/Søg) søger kun i egen database og udelukker varer med `externalSource = OPEN_FOOD_FACTS` — også via `?source=`. Den live OFF-tekstsøgning (`searchOpenFoodFacts`, der importerede OFF-varer ved få lokale hits) er fjernet. Admin-søgeprøven (`/api/admin/search-ranking/preview`) følger samme regel.
+- Stregkodeopslaget (`/api/products/lookup/[barcode]`) er uændret: egen database → Open Food Facts → USDA.
+
 ## 2026-09-28: Admin "Log" — test-log indtil go-live
 
 - Brugerens krav: log hver gang et produkt scannes, indtil appen går live, så alle trin kan testes; plus andre relevante logs.

@@ -150,30 +150,3 @@ export async function lookupOpenFoodFacts(
 
   return mapOffProduct({ ...data.product, code: barcode });
 }
-
-// Live text search against Open Food Facts' global catalog. Used as a
-// supplement to our own product database, so the user doesn't have to
-// download/import the whole OFF catalog just to search for e.g. "toast".
-export async function searchOpenFoodFacts(query: string): Promise<OffProduct[]> {
-  const url =
-    "https://world.openfoodfacts.org/cgi/search.pl?" +
-    new URLSearchParams({
-      search_terms: query,
-      search_simple: "1",
-      action: "process",
-      json: "1",
-      page_size: "20",
-      fields:
-        "code,product_name,product_name_da,brands,image_front_url,image_url,nutriments,serving_quantity,ingredients_text_da,ingredients_text,allergens_tags,additives_tags",
-    }).toString();
-
-  const res = await fetch(url, {
-    headers: { "User-Agent": "HelloCal/0.1 (prototype)" },
-  });
-  if (!res.ok) return [];
-
-  const data = await res.json();
-  const products: Record<string, unknown>[] = Array.isArray(data.products) ? data.products : [];
-
-  return products.map(mapOffProduct).filter((p): p is OffProduct => p !== null);
-}

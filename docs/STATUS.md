@@ -2,6 +2,11 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Open Food Facts ude af søgningen
+
+- Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen
+  live OFF-søgning; OFF bruges kun som backup ved stregkodescanning.
+  Beslutning: DECISIONS 2026-09-28.
 ## 2026-09-28: Produktsiden — skelet-gradient i stedet for load-cirkler
 
 - `AddProductView`: mens OpenAI stadig læser felter (`pendingFields`), vises

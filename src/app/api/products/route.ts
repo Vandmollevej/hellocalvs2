@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { ExternalProductSource, type Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { searchOpenFoodFacts } from "@/lib/openFoodFacts";
 import { inferGs1OriginCountryCode } from "@/lib/regions";
 import { getSessionUser } from "@/lib/session";
 import { flagSimultaneousDuplicates } from "@/lib/product-duplicates";
@@ -16,64 +15,7 @@ import { linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
 import { recordNutrientSources } from "@/lib/product-nutrient-sources";
 import { HIDE_FROM_SEARCH_BELOW } from "@/lib/uncertainty-thresholds";
 
-// Fetches Open Food Facts products globally live for search terms without enough local
-// results, and saves them as PENDING (same pattern as the barcode lookup in
-// /api/products/lookup/[barcode]), so they can be searched again without a new live call.
-async function importMatchingOffProducts(q: string) {
-  try {
-    const offProducts = await searchOpenFoodFacts(q);
-    for (const offProduct of offProducts) {
-      const existing = await prisma.barcode.findUnique({ where: { code: offProduct.barcode } });
-      if (existing) continue;
-
-      const brand = offProduct.brand
-        ? await prisma.brand.upsert({
-            where: { name: offProduct.brand },
-            update: {},
-            create: { name: offProduct.brand },
-          })
-        : null;
-
-      const created = await prisma.product.create({
-        data: {
-          name: offProduct.name,
-          brandId: brand?.id,
-          imageUrl: offProduct.imageUrl,
-          kcalPer100g: offProduct.kcalPer100g,
-          proteinPer100g: offProduct.proteinPer100g,
-          carbsPer100g: offProduct.carbsPer100g,
-          fatPer100g: offProduct.fatPer100g,
-          servingSizeGrams: offProduct.servingSizeGrams,
-          ingredientsText: offProduct.ingredientsText,
-          allergens: offProduct.allergens,
-          additives: offProduct.additives,
-          saturatedFatPer100g: offProduct.saturatedFatPer100g,
-          unsaturatedFatPer100g: offProduct.unsaturatedFatPer100g,
-          transFatPer100g: offProduct.transFatPer100g,
-          cholesterolPer100g: offProduct.cholesterolPer100g,
-          vitaminAPer100g: offProduct.vitaminAPer100g,
-          vitaminCPer100g: offProduct.vitaminCPer100g,
-          nutritionExtra: offProduct.nutritionExtraPer100 ?? undefined,
-          packageSizeText: offProduct.packageSizeText ?? undefined,
-          externalSource: "OPEN_FOOD_FACTS",
-          externalId: offProduct.barcode,
-          sourceCheckedAt: new Date(),
-          originCountryCode: inferGs1OriginCountryCode(offProduct.barcode),
-          status: "PENDING",
-          barcodes: { create: { code: offProduct.barcode } },
-        },
-      });
-      await syncProductNutritionFeaturesSafely(created.id);
-    }
-  } catch (error) {
-    // Live OFF search is a supplement — does not fail the actual product search.
-    console.error("Open Food Facts search import failed", error);
-  }
-}
-
-// GET /api/products?q=rugbrød — search in our own product database, supplemented by
-// a global live search in Open Food Facts if local results are
-// sparse. Results are ranked by src/lib/product-search-ranking.ts: text match
+// GET /api/products?q=rugbrød — search in our own product database only. Results are ranked by src/lib/product-search-ranking.ts: text match
 // is always dominant, and hidden regional search/click/hour-of-day statistics
 // plus GS1 origin/market only reorder otherwise-comparable matches (see
 // docs/DECISIONS.md, 2026-09-19). Live autosuggest deliberately starts at 2
@@ -86,12 +28,15 @@ async function importMatchingOffProducts(q: string) {
 // HelloFresh dishes are deliberately excluded unless ?source=HELLOFRESH is passed
 // explicitly — they must stay discoverable only via the dedicated dish-recognition
 // flow (/api/ai/recognize-hellofresh), not through ordinary Madvarer/Søg search.
+// Open Food Facts products are never shown in search, not even via ?source=
+// (docs/DECISIONS.md 2026-09-28): OFF is only a backup for barcode scanning
+// (/api/products/lookup/[barcode]) and is never live-searched.
 export async function GET(req: Request) {
   const params = new URL(req.url).searchParams;
   const q = params.get("q")?.trim() ?? "";
   const sourceParam = params.get("source")?.trim();
   const source =
-    sourceParam && sourceParam in ExternalProductSource
+    sourceParam && sourceParam !== "OPEN_FOOD_FACTS" && sourceParam in ExternalProductSource
       ? (sourceParam as ExternalProductSource)
       : undefined;
   const take = Math.min(Math.max(parseInt(params.get("take") ?? "20", 10) || 20, 1), 200);
@@ -140,7 +85,12 @@ export async function GET(req: Request) {
               : []),
             source
               ? { externalSource: source }
-              : { OR: [{ externalSource: null }, { externalSource: { not: "HELLOFRESH" } }] },
+              : {
+                  OR: [
+                    { externalSource: null },
+                    { externalSource: { notIn: ["HELLOFRESH", "OPEN_FOOD_FACTS"] } },
+                  ],
+                },
           ],
         },
         include: {
@@ -163,11 +113,6 @@ export async function GET(req: Request) {
       });
 
     let products = await findProducts();
-
-    if (q.length >= 2 && products.length < 10 && !source) {
-      await importMatchingOffProducts(q);
-      products = await findProducts();
-    }
 
     if (q && !source) {
       const sessionUser = await getSessionUser();
