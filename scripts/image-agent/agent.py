@@ -14,9 +14,6 @@ import io
 import logging
 import os
 import threading
-import time
-
-import psycopg2
 
 from job_control import run_forever
 import requests
@@ -154,13 +151,18 @@ def run_once(conn):
 
 
 def cutout_loop():
-    while True:
-        try:
-            with psycopg2.connect(DATABASE_URL) as conn:
-                run_cutouts(conn)
-        except Exception:  # noqa: BLE001 - a broken cycle must not kill the service
-            log.exception("cutout cycle failed")
-        time.sleep(CUTOUT_POLL_INTERVAL_SECONDS)
+    # Fritlægning er sit eget job ("image-cutout") på admin "Robotter": som
+    # standard "Løbende", dvs. den venter hele tiden på nye produkter og
+    # tjekker hvert CUTOUT_POLL_INTERVAL_SECONDS (brugerregel 2026-09-28: ikke
+    # kun om natten). Admin kan slå den fra, køre den nu eller give den et
+    # fast tidspunkt.
+    run_forever(
+        DATABASE_URL,
+        "image-cutout",
+        run_cutouts,
+        interval_minutes=0,
+        check_seconds=CUTOUT_POLL_INTERVAL_SECONDS,
+    )
 
 
 def main():
@@ -171,9 +173,9 @@ def main():
         CUTOUT_POLL_INTERVAL_SECONDS,
     )
 
-    # Fritskrabning (ImageCutoutJob) kører i sin egen tråd hvert
-    # CUTOUT_POLL_INTERVAL_SECONDS; logosøgningen styres fra admin "Cron-jobs"
-    # (job_control.py), hvor POLL_INTERVAL_SECONDS kun er standard-intervallet.
+    # Fritlægning (ImageCutoutJob) og billedsøgningen kører i hver sin tråd og
+    # styres begge fra admin (job_control.py); POLL_INTERVAL_SECONDS er kun
+    # billedsøgningens standard-interval.
     threading.Thread(target=cutout_loop, name="cutouts", daemon=True).start()
     run_forever(DATABASE_URL, "image-agent", run_once, interval_minutes=max(1, POLL_INTERVAL_SECONDS // 60))
 
