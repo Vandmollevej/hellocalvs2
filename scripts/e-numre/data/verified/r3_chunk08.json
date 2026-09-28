@@ -1,0 +1,2474 @@
+[
+  {
+    "code": "E528",
+    "nameDa": "Magnesiumhydroxid",
+    "nameEn": "Magnesium hydroxide",
+    "category": "Surhedsregulerende middel",
+    "euStatus": "approved",
+    "origin": "mixed",
+    "summary": "Magnesiumhydroxid er en tungtopløselig base, der bruges som surhedsregulerende middel i fødevarer.",
+    "description": "Magnesiumhydroxid (Mg(OH)2) forekommer naturligt som mineralet brucit. Industrielt udvindes det bl.a. af havvand, hvor magnesium fældes som hydroxid ved tilsætning af kalk. Stoffet er tungtopløseligt i vand. Det er samme stof, som bruges i syreneutraliserende midler som \"magnesiamælk\" (milk of magnesia).",
+    "uses": "Bl.a. som alkaliseringsmiddel i forarbejdning af kakao. I EU hører det til gruppe I-tilsætningsstofferne, der generelt er tilladt quantum satis i en række fødevarer.",
+    "health": "Magnesium er et essentielt mineral. Øget indtag af magnesium fra kosttilskud, tilsætningsstoffer og lægemidler kan give diarré; SCF har derfor fastsat en øvre grænse for tilført magnesium (se nedenfor), som ikke omfatter magnesium, der naturligt findes i mad. Hos personer med nedsat nyrefunktion kan magnesiumholdige lægemidler (fx afførings- og syreneutraliserende midler) føre til for højt magnesiumniveau i blodet, fordi raske nyrer ellers let udskiller overskud. JECFA har tildelt magnesiumhydroxid en ADI \"not limited\" (9. JECFA-møde, 1965).",
+    "research": "SCF fastsatte i 2001 en tolerabel øvre grænse (UL) på 250 mg magnesium/dag for letdissocierbare magnesiumsalte og forbindelser som magnesiumoxid i kosttilskud, vand eller tilsat fødevarer; den kritiske effekt er osmotisk diarré, og grænsen omfatter ikke magnesium, der naturligt findes i mad. Stoffet er omfattet af EU's gen-evalueringsprogram for tilsætningsstoffer; der er ikke fundet en offentliggjort EFSA-gen-evaluering af E528 som tilsætningsstof.",
+    "keyReferences": [],
+    "pubmedTerm": "magnesium hydroxide",
+    "flags": [
+      "laxative",
+      "kidney_caution"
+    ],
+    "classes": [],
+    "variants": [],
+    "efsa": null,
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Magnesium_hydroxide",
+        "https://patents.google.com/patent/US2405055A/en",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10384947/",
+        "https://www.agri.ee/sites/default/files/documents/2021-09/paff-otsus-2016-kakaopulber.pdf",
+        "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32011R1129",
+        "https://ec.europa.eu/food/fs/sc/scf/out105_en.pdf",
+        "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-262.pdf",
+        "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en"
+      ],
+      "notes": "RUNDE 3: Bekræftet: kemi/brucit, udvinding fra havvand med kalk, antacidum, kakao-alkalisering, EU gruppe I (quantum satis), SCF-UL 250 mg/dag (2001), JECFA ADI 'not limited' (1965), nyrerisiko ved magnesiumholdig medicin. Rettet: JECFA-formulering præciseret. Fjernet: farvestabilisator, konfekture, udsagn om forskningsfokus/kontroverser (ikke kildebelagt). Uncertain: det kunne ikke entydigt afgøres via søgning, om EFSA har offentliggjort en gen-evaluering; ingen blev fundet."
+    },
+    "wikipedia": "",
+    "wikidata": "Q407548",
+    "claims": [
+      {
+        "claim": "Magnesiumhydroxid har formlen Mg(OH)2 og forekommer naturligt som mineralet brucit",
+        "source": "https://en.wikipedia.org/wiki/Magnesium_hydroxide",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles ved fældning fra havvand/saltlage med kalk",
+        "source": "https://patents.google.com/patent/US2405055A/en",
+        "result": "rettet"
+      },
+      {
+        "claim": "Tungtopløselig base",
+        "source": "https://en.wikipedia.org/wiki/Magnesium_hydroxide",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bruges i visse tilfælde som farvestabilisator",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Samme stof som i syreneutraliserende midler (magnesiamælk)",
+        "source": "https://en.wikipedia.org/wiki/Magnesium_hydroxide",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Mild afføringsmedicin",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10384947/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Anvendes i kakaoprodukter (alkalisering)",
+        "source": "https://www.agri.ee/sites/default/files/documents/2021-09/paff-otsus-2016-kakaopulber.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i visse konfektureprodukter",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EU-godkendt quantum satis i en række fødevarer (gruppe I)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32011R1129",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Magnesium er et essentielt mineral; større mængder tilført magnesium virker afførende (diarré)",
+        "source": "https://ec.europa.eu/food/fs/sc/scf/out105_en.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Nyrepatienter bør være opmærksomme på magnesiumindtag fra kosttilskud/medicin",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10384947/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "JECFA har ikke fastsat en begrænsende ADI",
+        "source": "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-262.pdf",
+        "result": "rettet"
+      },
+      {
+        "claim": "SCF 2001: UL 250 mg/dag for letdissocierbare magnesiumsalte (tilskud, tilsatte fødevarer), primært pga. diarré",
+        "source": "https://ec.europa.eu/food/fs/sc/scf/out105_en.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Forskningen handler primært om medicinsk brug; ingen kendte kontroverser",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Ingen offentliggjort EFSA-gen-evaluering fundet",
+        "source": "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E529",
+    "nameDa": "Calciumoxid",
+    "nameEn": "Calcium oxide",
+    "category": "Surhedsregulerende middel",
+    "euStatus": "approved",
+    "origin": "mixed",
+    "summary": "Calciumoxid, også kaldet brændt kalk, er en stærk base, der bruges som surhedsregulerende middel og melbehandlingsmiddel.",
+    "description": "Calciumoxid (CaO) fremstilles ved at brænde kalksten (calciumcarbonat) ved ca. 900 °C, hvorved kuldioxid frigives. I kontakt med vand danner det calciumhydroxid under kraftig varmeudvikling. I fødevareproduktionen bruges det som surhedsregulerende middel, melbehandlingsmiddel og calciumkilde samt i sukkerproduktion til klaring af sukkersaft. Traditionelt kan det også bruges ved nixtamalisering af majs, fordi det med vand danner calciumhydroxid.",
+    "uses": "Mel og bageri (melbehandling), sukkerproduktion (klaring af saft) og frugt- og grøntforarbejdning. I EU hører det til gruppe I-tilsætningsstofferne, der generelt er tilladt quantum satis i en række fødevarekategorier.",
+    "health": "Rent calciumoxid er ætsende og kan give alvorlige hud- og øjenskader; det er primært et arbejdsmiljøproblem ved håndtering af stoffet. JECFA har tildelt calciumoxid en ADI \"not limited\" (9. JECFA-møde, 1965).",
+    "research": "Nixtamalisering (kogning af majs med kalk) er velundersøgt og øger bl.a. tilgængeligheden af niacin i majs, hvilket forklarer, at pellagra er sjælden i lande, hvor tortillas er basiskost. Stoffet er omfattet af EU's gen-evalueringsprogram for tilsætningsstoffer; der er ikke fundet en offentliggjort EFSA-gen-evaluering af E529 som tilsætningsstof.",
+    "keyReferences": [],
+    "pubmedTerm": "calcium oxide",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": null,
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Calcium_oxide",
+        "https://www.lhoist.com/en-US/products-and-services/material/quicklime",
+        "https://foodcom.pl/en/term-e/e529/",
+        "https://en.wikipedia.org/wiki/Nixtamalization",
+        "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32011R1129",
+        "https://www.graymont.com/safety-data-sheet/high-calcium-quicklime-nz-ghs/download/",
+        "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/additive-091-m1.pdf",
+        "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en"
+      ],
+      "notes": "RUNDE 3: Bekræftet: fremstilling ved kalkbrænding, reaktion med vand, funktioner (surhedsregulering, melbehandling, calciumkilde, sukkerklaring), nixtamalisering/niacin, ætsende egenskaber, EU gruppe I, JECFA ADI 'not limited' (1965). Rettet: JECFA-formulering. Fjernet: kakaoprodukter (ikke fundet som anvendelse), 'omdannes til calciumsalte', 'beskedent calciumbidrag', 'begrænset forskning' (ikke kildebelagt). Uncertain: ingen EFSA-gen-evaluering fundet, men fravær kunne ikke bekræftes endeligt."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Calcium_oxide",
+    "wikidata": "Q185006",
+    "claims": [
+      {
+        "claim": "Calciumoxid kaldes brændt kalk og er en stærk base",
+        "source": "https://en.wikipedia.org/wiki/Calcium_oxide",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bruges som surhedsregulerende middel og melbehandlingsmiddel",
+        "source": "https://en.wikipedia.org/wiki/Calcium_oxide",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles ved brænding af kalksten; CO2 frigives",
+        "source": "https://www.lhoist.com/en-US/products-and-services/material/quicklime",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Danner calciumhydroxid med vand under kraftig varmeudvikling",
+        "source": "https://www.lhoist.com/en-US/products-and-services/material/quicklime",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bruges som calciumkilde",
+        "source": "https://foodcom.pl/en/term-e/e529/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bruges ved nixtamalisering af majs",
+        "source": "https://en.wikipedia.org/wiki/Nixtamalization",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Uorganisk mineralsk stof",
+        "source": "https://en.wikipedia.org/wiki/Calcium_oxide",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i bageriprodukter og mel",
+        "source": "https://en.wikipedia.org/wiki/Calcium_oxide",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i majsprodukter",
+        "source": "https://en.wikipedia.org/wiki/Nixtamalization",
+        "result": "rettet"
+      },
+      {
+        "claim": "Anvendes i kakaoprodukter",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Anvendes i sukkerraffinering",
+        "source": "https://foodcom.pl/en/term-e/e529/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EU-godkendt quantum satis (gruppe I)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32011R1129",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Omdannes i fødevaren til calciumsalte og anses for sikkert",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Rent calciumoxid er ætsende for hud og øjne; arbejdsmiljøproblem",
+        "source": "https://www.graymont.com/safety-data-sheet/high-calcium-quicklime-nz-ghs/download/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "JECFA har ikke fastsat en begrænsende ADI",
+        "source": "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/additive-091-m1.pdf",
+        "result": "rettet"
+      },
+      {
+        "claim": "Bidraget til calciumindtaget er beskedent",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Begrænset specifik forskning; betragtes som uproblematisk",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Nixtamalisering forbedrer tilgængeligheden af niacin i majs",
+        "source": "https://en.wikipedia.org/wiki/Nixtamalization",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ingen offentliggjort EFSA-gen-evaluering fundet",
+        "source": "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E530",
+    "nameDa": "Magnesiumoxid",
+    "nameEn": "Magnesium oxide",
+    "category": "Surhedsregulerende middel",
+    "euStatus": "approved",
+    "origin": "mixed",
+    "summary": "Magnesiumoxid er et hvidt mineralsk pulver, der bruges som surhedsregulerende middel og antiklumpningsmiddel.",
+    "description": "Magnesiumoxid (MgO) fremstilles ved kalcinering (stærk opvarmning) af magnesiumcarbonat eller ved dehydrering af magnesiumhydroxid. I fødevarer bruges det til at regulere pH, forhindre klumpning i pulvere og salt samt i kosttilskud som magnesiumkilde.",
+    "uses": "Kakao- og chokoladeprodukter, mælke- og flødepulver, salt samt kosttilskud. I EU hører det til gruppe I-tilsætningsstofferne, der generelt er tilladt quantum satis i en række kategorier.",
+    "health": "Store mængder tilført magnesium (typisk fra kosttilskud) kan give diarré. Hos personer med nedsat nyrefunktion kan magnesiumholdige lægemidler og tilskud føre til for højt magnesiumniveau i blodet. JECFA har tildelt magnesiumoxid en ADI \"not limited\" (9. JECFA-møde, 1965).",
+    "research": "SCF fastsatte i 2001 en tolerabel øvre grænse på 250 mg/dag for magnesium fra letdissocierbare salte og forbindelser som magnesiumoxid i kosttilskud, vand eller tilsat fødevarer. Studier viser, at magnesium fra magnesiumoxid optages dårligere end fra organiske magnesiumsalte som citrat. Stoffet er omfattet af EU's gen-evalueringsprogram; der er ikke fundet en offentliggjort EFSA-gen-evaluering af E530 som tilsætningsstof.",
+    "keyReferences": [],
+    "pubmedTerm": "magnesium oxide",
+    "flags": [
+      "laxative",
+      "kidney_caution"
+    ],
+    "classes": [],
+    "variants": [],
+    "efsa": null,
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://foodcom.pl/en/term-e/e530/",
+        "https://en.wikipedia.org/wiki/Magnesium_(medication)",
+        "https://www.agri.ee/sites/default/files/documents/2021-09/paff-otsus-2016-kakaopulber.pdf",
+        "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32011R1129",
+        "https://ec.europa.eu/food/fs/sc/scf/out105_en.pdf",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10384947/",
+        "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-266.pdf",
+        "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en"
+      ],
+      "notes": "RUNDE 3: Bekræftet: fremstilling, funktioner, anvendelser (kakao, mælkepulver, salt, kosttilskud), EU gruppe I, SCF-UL, JECFA ADI 'not limited', dårligere optagelse end organiske salte, nyrerisiko. Rettet: anvendelser præciseret, JECFA-formulering. Fjernet: 'svag base/koncentreret kilde', 'omdannes langsomt til hydroxid', 'mest undersøgt som...' (ikke kildebelagt). Uncertain: et søgeresumé nævnte en EFSA-udtalelse om E530 fra 2018, men den kunne ikke findes ved målrettet søgning; derfor ikke medtaget."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Magnesium_oxide",
+    "wikidata": "Q214769",
+    "claims": [
+      {
+        "claim": "Hvidt mineralsk pulver; surhedsregulerende og antiklumpningsmiddel",
+        "source": "https://foodcom.pl/en/term-e/e530/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles ved opvarmning af magnesiumcarbonat eller magnesiumhydroxid",
+        "source": "https://en.wikipedia.org/wiki/Magnesium_(medication)",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Svag base og koncentreret magnesiumkilde",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Bruges i kosttilskud som magnesiumkilde",
+        "source": "https://foodcom.pl/en/term-e/e530/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Omdannes langsomt til magnesiumhydroxid i vand",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Anvendes i kakaoprodukter",
+        "source": "https://www.agri.ee/sites/default/files/documents/2021-09/paff-otsus-2016-kakaopulber.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i pulverprodukter og visse mejeriprodukter",
+        "source": "https://foodcom.pl/en/term-e/e530/",
+        "result": "rettet"
+      },
+      {
+        "claim": "EU-godkendt quantum satis (gruppe I)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32011R1129",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Store doser magnesium kan give diarré",
+        "source": "https://ec.europa.eu/food/fs/sc/scf/out105_en.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Nedsat nyrefunktion: forsigtighed med højt magnesiumindtag",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10384947/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "JECFA har ikke fastsat en begrænsende ADI",
+        "source": "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-266.pdf",
+        "result": "rettet"
+      },
+      {
+        "claim": "SCF's øvre grænse (2001) 250 mg/dag for tilsat magnesium hos voksne",
+        "source": "https://ec.europa.eu/food/fs/sc/scf/out105_en.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Magnesium fra magnesiumoxid optages dårligere end fra organiske salte",
+        "source": "https://en.wikipedia.org/wiki/Magnesium_(medication)",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Mest undersøgt som kosttilskud og afføringsmiddel",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Ingen offentliggjort EFSA-gen-evaluering fundet",
+        "source": "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E535",
+    "nameDa": "Natriumferrocyanid",
+    "nameEn": "Sodium ferrocyanide",
+    "category": "Antiklumpningsmiddel",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Natriumferrocyanid er et antiklumpningsmiddel, som primært tilsættes bordsalt for at det kan flyde frit.",
+    "description": "Natriumferrocyanid (Na4[Fe(CN)6]) er et gult krystallinsk salt. Ferrocyanider er komplekse jern-cyanid-forbindelser, hvor cyanidgrupperne er meget stærkt bundet til jern, så der normalt ikke frigives fri cyanid. I salt virker de ved at ændre krystalliseringen, så saltet danner skøre, forgrenede krystaller i stedet for terninger og derfor ikke klumper. Stoffet fremstilles syntetisk. I EU må der højst tilsættes 20 mg/kg salt.",
+    "uses": "Salt og saltsubstitutter. I EU er brugen begrænset til salt og saltsubstitutter med et maksimalt niveau på 20 mg/kg (som summen af E535, E536 og E538, udtrykt som vandfri kaliumferrocyanid).",
+    "health": "EFSA fastsatte ved gen-evalueringen i 2018 en gruppe-ADI for natrium-, kalium- og calciumferrocyanid på 0,03 mg/kg legemsvægt/dag, udtrykt som ferrocyanid-ion. Nyrerne var målorgan, og NOAEL for nyrepåvirkning var 4,4 mg natriumferrocyanid/kg legemsvægt/dag i et 2-årigt rotteforsøg. Den beregnede eksponering fra tilsætningsstoffet var højst 0,009 mg/kg legemsvægt/dag (børn og unge, maksimalscenariet), dvs. under ADI. Cyanidgrupperne er stærkt bundet til jern, så ferrocyanider frigiver normalt ikke fri cyanid; blandes de derimod med varme, koncentrerede syrer, kan der frigives giftig hydrogencyanid.",
+    "research": "EFSA's ANS-panel gen-evaluerede ferrocyaniderne (E535, E536, E538) i 2018 (EFSA Journal 2018;16(7):5374), fastsatte en fælles ADI på 0,03 mg/kg legemsvægt/dag og konkluderede, at de ikke giver anledning til sikkerhedsbekymring ved de nuværende godkendte anvendelser og niveauer. Kaliumferrocyanid bruges desuden i vinproduktion til at fjerne overskydende jern og kobber (\"blue fining\"), hvilket er en separat, reguleret anvendelse.",
+    "keyReferences": [
+      {
+        "citation": "EFSA ANS Panel. Re-evaluation of sodium ferrocyanide (E 535), potassium ferrocyanide (E 536) and calcium ferrocyanide (E 538) as food additives. EFSA Journal. 2018;16(7):5374.",
+        "searchTitle": "Re-evaluation of sodium ferrocyanide (E 535), potassium ferrocyanide (E 536) and calcium ferrocyanide (E 538) as food additives"
+      }
+    ],
+    "pubmedTerm": "sodium ferrocyanide",
+    "flags": [
+      "kidney_caution"
+    ],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of sodium ferrocyanide (E 535), potassium ferrocyanide (E 536) and calcium ferrocyanide (E 538) as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2018.5374",
+      "date": "2018",
+      "adi": "0.03 mg/kg bw/day",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.europarl.europa.eu/doceo/document/E-7-2011-004484-ASW_EN.html",
+        "https://en.wikipedia.org/wiki/Sodium_ferrocyanide",
+        "https://www.biosite.dk/leksikon/kaliumhexacyanoferrat-ii.htm",
+        "https://pubs.acs.org/doi/abs/10.1021/cg201661y",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5374",
+        "https://pubmed.ncbi.nlm.nih.gov/32626000/",
+        "https://cameochemicals.noaa.gov/chemical/9069",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32019R0934"
+      ],
+      "notes": "RUNDE 3: Bekræftet: kemi, virkemåde (krystalvaneændring), syntetisk fremstilling, EU-grænse 20 mg/kg i salt/saltsubstitutter, EFSA 2018 ADI 0,03 mg/kg lgv/dag, NOAEL 4,4 mg/kg (nyrer), ingen sikkerhedsbekymring, vin-anvendelse. Rettet: 'få mg/kg' → maks. 20 mg/kg; cyanidfrigivelse præciseret til varme, koncentrerede syrer; eksponeringstal tilføjet. Fjernet: 'gult blodludsalt på natriumform' (betegnelsen gælder kaliumsaltet), 'havsalt' som særskilt kategori."
+    },
+    "wikipedia": "",
+    "wikidata": "Q418474",
+    "claims": [
+      {
+        "claim": "Primært tilsat bordsalt for at det kan flyde frit",
+        "source": "https://www.europarl.europa.eu/doceo/document/E-7-2011-004484-ASW_EN.html",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Formel Na4[Fe(CN)6]; gult krystallinsk salt",
+        "source": "https://en.wikipedia.org/wiki/Sodium_ferrocyanide",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kaldes gult blodludsalt på natriumform",
+        "source": "https://www.biosite.dk/leksikon/kaliumhexacyanoferrat-ii.htm",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Tilsættes typisk få milligram pr. kilo salt",
+        "source": "https://www.europarl.europa.eu/doceo/document/E-7-2011-004484-ASW_EN.html",
+        "result": "rettet"
+      },
+      {
+        "claim": "Anvendes i havsalt specifikt",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Ferrocyanider er komplekse jern-cyanid-forbindelser med stærkt bundet cyanid; frigiver normalt ikke fri cyanid",
+        "source": "https://en.wikipedia.org/wiki/Sodium_ferrocyanide",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Virker ved at ændre saltets krystalstruktur (krystalvaneændring), så det ikke klumper",
+        "source": "https://pubs.acs.org/doi/abs/10.1021/cg201661y",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles syntetisk (industrielt af hydrogencyanid, jern(II)chlorid og calciumhydroxid)",
+        "source": "https://en.wikipedia.org/wiki/Sodium_ferrocyanide",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EU: kun i salt og saltsubstitutter, maks. 20 mg/kg samlet, udtrykt som vandfri kaliumferrocyanid",
+        "source": "https://www.europarl.europa.eu/doceo/document/E-7-2011-004484-ASW_EN.html",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2018: gruppe-ADI 0,03 mg/kg lgv/dag udtrykt som ferrocyanid-ion",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5374",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kritisk fund: nyrepåvirkning i 2-årigt rotteforsøg, NOAEL 4,4 mg natriumferrocyanid/kg lgv/dag",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5374",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Eksponeringen fra salt udgør ikke en sikkerhedsrisiko (maks. 0,009 mg/kg lgv/dag hos børn/unge)",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/32626000/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Stærk opvarmning i sure miljøer kan frigive cyanid",
+        "source": "https://cameochemicals.noaa.gov/chemical/9069",
+        "result": "rettet"
+      },
+      {
+        "claim": "ANS-panelet gen-evaluerede E535/E536/E538 i 2018; ingen sikkerhedsbekymring ved nuværende anvendelser",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5374",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ferrocyanider bruges i vinproduktion til at fjerne metalioner (blue fining)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32019R0934",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E536",
+    "nameDa": "Kaliumferrocyanid",
+    "nameEn": "Potassium ferrocyanide",
+    "category": "Antiklumpningsmiddel",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Kaliumferrocyanid er et antiklumpningsmiddel, der bruges i salt, og som også anvendes i vinfremstilling.",
+    "description": "Kaliumferrocyanid (K4[Fe(CN)6]), på dansk kendt som gult blodludsalt, er et gult krystallinsk salt. Ferrocyanider er komplekse jern-cyanid-forbindelser, hvor cyanidgrupperne er meget stærkt bundet til jern, så der normalt ikke frigives fri cyanid. I salt virker de ved at ændre krystalliseringen, så saltet ikke klumper. Stoffet fremstilles syntetisk. Det bruges desuden i vinproduktion (\"blue fining\") til at nedsætte for høje indhold af jern og kobber; i EU må behandlingen kun foretages under tilsyn af en autoriseret ønolog eller tekniker.",
+    "uses": "Salt og saltsubstitutter (maks. 20 mg/kg samlet for E535, E536 og E538, udtrykt som vandfri kaliumferrocyanid) samt som ønologisk behandlingsmiddel i vin.",
+    "health": "EFSA fastsatte ved gen-evalueringen i 2018 en gruppe-ADI for natrium-, kalium- og calciumferrocyanid på 0,03 mg/kg legemsvægt/dag, udtrykt som ferrocyanid-ion. Nyrerne var målorgan, og NOAEL for nyrepåvirkning var 4,4 mg natriumferrocyanid/kg legemsvægt/dag i et 2-årigt rotteforsøg. Den beregnede eksponering fra tilsætningsstoffet var højst 0,009 mg/kg legemsvægt/dag (børn og unge, maksimalscenariet), dvs. under ADI. Cyanidgrupperne er stærkt bundet til jern, så ferrocyanider frigiver normalt ikke fri cyanid; blandes de derimod med varme, koncentrerede syrer, kan der frigives giftig hydrogencyanid.",
+    "research": "EFSA's ANS-panel gen-evaluerede ferrocyaniderne (E535, E536, E538) i 2018 (EFSA Journal 2018;16(7):5374), fastsatte en fælles ADI på 0,03 mg/kg legemsvægt/dag og konkluderede, at de ikke giver anledning til sikkerhedsbekymring ved de nuværende godkendte anvendelser og niveauer. Kaliumferrocyanid bruges desuden i vinproduktion til at fjerne overskydende jern og kobber (\"blue fining\"), hvilket er en separat, reguleret anvendelse.",
+    "keyReferences": [
+      {
+        "citation": "EFSA ANS Panel. Re-evaluation of sodium ferrocyanide (E 535), potassium ferrocyanide (E 536) and calcium ferrocyanide (E 538) as food additives. EFSA Journal. 2018;16(7):5374.",
+        "searchTitle": "Re-evaluation of sodium ferrocyanide (E 535), potassium ferrocyanide (E 536) and calcium ferrocyanide (E 538) as food additives"
+      }
+    ],
+    "pubmedTerm": "potassium ferrocyanide",
+    "flags": [
+      "kidney_caution"
+    ],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of sodium ferrocyanide (E 535), potassium ferrocyanide (E 536) and calcium ferrocyanide (E 538) as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2018.5374",
+      "date": "2018",
+      "adi": "0.03 mg/kg bw/day",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.biosite.dk/leksikon/kaliumhexacyanoferrat-ii.htm",
+        "https://en.wikipedia.org/wiki/Potassium_ferrocyanide",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5374",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32019R0934",
+        "https://en.wikipedia.org/wiki/Sodium_ferrocyanide",
+        "https://pubs.acs.org/doi/abs/10.1021/cg201661y",
+        "https://www.europarl.europa.eu/doceo/document/E-7-2011-004484-ASW_EN.html",
+        "https://pubmed.ncbi.nlm.nih.gov/32626000/",
+        "https://cameochemicals.noaa.gov/chemical/9069"
+      ],
+      "notes": "RUNDE 3: Bekræftet: kemi og dansk navn, virkemåde, EU-grænse i salt, EFSA 2018 (ADI, NOAEL, konklusion), vinbehandling (jern/kobber) og EU-krav om tilsyn. Rettet: 'fjernes igen' → EFSA anfører kun små restmængder i vin; cyanidfrigivelse præciseret. Fjernet: intet ud over omformuleringer."
+    },
+    "wikipedia": "",
+    "wikidata": "Q422017",
+    "claims": [
+      {
+        "claim": "Formel K4[Fe(CN)6]; kendt som gult blodludsalt; gult krystallinsk salt",
+        "source": "https://www.biosite.dk/leksikon/kaliumhexacyanoferrat-ii.htm",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bruges i vinproduktion til at fælde jern og kobber",
+        "source": "https://en.wikipedia.org/wiki/Potassium_ferrocyanide",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Stoffet fjernes igen efter vinbehandlingen",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5374",
+        "result": "rettet"
+      },
+      {
+        "claim": "Må i EU kun bruges i vin under tilsyn af autoriseret ønolog/tekniker",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32019R0934",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ferrocyanider er komplekse jern-cyanid-forbindelser med stærkt bundet cyanid; frigiver normalt ikke fri cyanid",
+        "source": "https://en.wikipedia.org/wiki/Sodium_ferrocyanide",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Virker ved at ændre saltets krystalstruktur (krystalvaneændring), så det ikke klumper",
+        "source": "https://pubs.acs.org/doi/abs/10.1021/cg201661y",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles syntetisk (industrielt af hydrogencyanid, jern(II)chlorid og calciumhydroxid)",
+        "source": "https://en.wikipedia.org/wiki/Sodium_ferrocyanide",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EU: kun i salt og saltsubstitutter, maks. 20 mg/kg samlet, udtrykt som vandfri kaliumferrocyanid",
+        "source": "https://www.europarl.europa.eu/doceo/document/E-7-2011-004484-ASW_EN.html",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2018: gruppe-ADI 0,03 mg/kg lgv/dag udtrykt som ferrocyanid-ion",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5374",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kritisk fund: nyrepåvirkning i 2-årigt rotteforsøg, NOAEL 4,4 mg natriumferrocyanid/kg lgv/dag",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5374",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Eksponeringen fra salt udgør ikke en sikkerhedsrisiko (maks. 0,009 mg/kg lgv/dag hos børn/unge)",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/32626000/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Stærk opvarmning i sure miljøer kan frigive cyanid",
+        "source": "https://cameochemicals.noaa.gov/chemical/9069",
+        "result": "rettet"
+      },
+      {
+        "claim": "ANS-panelet gen-evaluerede E535/E536/E538 i 2018; ingen sikkerhedsbekymring ved nuværende anvendelser",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5374",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ferrocyanider bruges i vinproduktion til at fjerne metalioner (blue fining)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32019R0934",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E538",
+    "nameDa": "Calciumferrocyanid",
+    "nameEn": "Calcium ferrocyanide",
+    "category": "Antiklumpningsmiddel",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Calciumferrocyanid er et antiklumpningsmiddel til salt, beslægtet med natrium- og kaliumferrocyanid.",
+    "description": "Calciumferrocyanid (Ca2[Fe(CN)6]) er calciumsaltet af ferrocyanid og dannes også som mellemprodukt ved industriel fremstilling af natrium- og kaliumferrocyanid. Ferrocyanider er komplekse jern-cyanid-forbindelser, hvor cyanidgrupperne er meget stærkt bundet til jern, så der normalt ikke frigives fri cyanid. I salt virker de ved at ændre krystalliseringen, så saltet ikke klumper. Stoffet fremstilles syntetisk.",
+    "uses": "Salt og saltsubstitutter, maks. 20 mg/kg samlet for E535, E536 og E538 (udtrykt som vandfri kaliumferrocyanid).",
+    "health": "EFSA fastsatte ved gen-evalueringen i 2018 en gruppe-ADI for natrium-, kalium- og calciumferrocyanid på 0,03 mg/kg legemsvægt/dag, udtrykt som ferrocyanid-ion. Nyrerne var målorgan, og NOAEL for nyrepåvirkning var 4,4 mg natriumferrocyanid/kg legemsvægt/dag i et 2-årigt rotteforsøg. Den beregnede eksponering fra tilsætningsstoffet var højst 0,009 mg/kg legemsvægt/dag (børn og unge, maksimalscenariet), dvs. under ADI. Cyanidgrupperne er stærkt bundet til jern, så ferrocyanider frigiver normalt ikke fri cyanid; blandes de derimod med varme, koncentrerede syrer, kan der frigives giftig hydrogencyanid.",
+    "research": "EFSA's ANS-panel gen-evaluerede ferrocyaniderne (E535, E536, E538) i 2018 (EFSA Journal 2018;16(7):5374), fastsatte en fælles ADI på 0,03 mg/kg legemsvægt/dag og konkluderede, at de ikke giver anledning til sikkerhedsbekymring ved de nuværende godkendte anvendelser og niveauer. Kaliumferrocyanid bruges desuden i vinproduktion til at fjerne overskydende jern og kobber (\"blue fining\"), hvilket er en separat, reguleret anvendelse.",
+    "keyReferences": [
+      {
+        "citation": "EFSA ANS Panel. Re-evaluation of sodium ferrocyanide (E 535), potassium ferrocyanide (E 536) and calcium ferrocyanide (E 538) as food additives. EFSA Journal. 2018;16(7):5374.",
+        "searchTitle": "Re-evaluation of sodium ferrocyanide (E 535), potassium ferrocyanide (E 536) and calcium ferrocyanide (E 538) as food additives"
+      }
+    ],
+    "pubmedTerm": "calcium ferrocyanide",
+    "flags": [
+      "kidney_caution"
+    ],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of sodium ferrocyanide (E 535), potassium ferrocyanide (E 536) and calcium ferrocyanide (E 538) as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2018.5374",
+      "date": "2018",
+      "adi": "0.03 mg/kg bw/day",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Sodium_ferrocyanide",
+        "https://pubs.acs.org/doi/abs/10.1021/cg201661y",
+        "https://www.europarl.europa.eu/doceo/document/E-7-2011-004484-ASW_EN.html",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5374",
+        "https://pubmed.ncbi.nlm.nih.gov/32626000/",
+        "https://cameochemicals.noaa.gov/chemical/9069",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32019R0934"
+      ],
+      "notes": "RUNDE 3: Bekræftet: kemi (Ca2[Fe(CN)6] som industrielt mellemprodukt), virkemåde, EU-grænse, EFSA 2018 (ADI, NOAEL, konklusion). Rettet: cyanidfrigivelse præciseret; eksponeringstal tilføjet. Fjernet: 'bruges mindre end Na/K-formen' (ikke kildebelagt)."
+    },
+    "wikipedia": "",
+    "wikidata": "Q18967196",
+    "claims": [
+      {
+        "claim": "Calciumsaltet af ferrocyanid, Ca2[Fe(CN)6]",
+        "source": "https://en.wikipedia.org/wiki/Sodium_ferrocyanide",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bruges i praksis mindre end natrium- og kaliumformen",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Ferrocyanider er komplekse jern-cyanid-forbindelser med stærkt bundet cyanid; frigiver normalt ikke fri cyanid",
+        "source": "https://en.wikipedia.org/wiki/Sodium_ferrocyanide",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Virker ved at ændre saltets krystalstruktur (krystalvaneændring), så det ikke klumper",
+        "source": "https://pubs.acs.org/doi/abs/10.1021/cg201661y",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles syntetisk (industrielt af hydrogencyanid, jern(II)chlorid og calciumhydroxid)",
+        "source": "https://en.wikipedia.org/wiki/Sodium_ferrocyanide",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EU: kun i salt og saltsubstitutter, maks. 20 mg/kg samlet, udtrykt som vandfri kaliumferrocyanid",
+        "source": "https://www.europarl.europa.eu/doceo/document/E-7-2011-004484-ASW_EN.html",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2018: gruppe-ADI 0,03 mg/kg lgv/dag udtrykt som ferrocyanid-ion",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5374",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kritisk fund: nyrepåvirkning i 2-årigt rotteforsøg, NOAEL 4,4 mg natriumferrocyanid/kg lgv/dag",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5374",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Eksponeringen fra salt udgør ikke en sikkerhedsrisiko (maks. 0,009 mg/kg lgv/dag hos børn/unge)",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/32626000/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Stærk opvarmning i sure miljøer kan frigive cyanid",
+        "source": "https://cameochemicals.noaa.gov/chemical/9069",
+        "result": "rettet"
+      },
+      {
+        "claim": "ANS-panelet gen-evaluerede E535/E536/E538 i 2018; ingen sikkerhedsbekymring ved nuværende anvendelser",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5374",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ferrocyanider bruges i vinproduktion til at fjerne metalioner (blue fining)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32019R0934",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E541",
+    "nameDa": "Natriumaluminiumphosphat",
+    "nameEn": "Sodium aluminium phosphate",
+    "category": "Hævemiddel / emulgator",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Surt natriumaluminiumphosphat er et aluminiumholdigt fosfatsalt, der bruges som hævemiddel i bagværk; i EU er brugen meget begrænset.",
+    "description": "Natriumaluminiumphosphat fremstilles syntetisk af en natriumforbindelse (fx natriumcarbonat), en aluminiumforbindelse (fx aluminiumhydroxid) og fosforsyre. Den sure form er en langsomtvirkende hævesyre: den reagerer kun lidt med natron ved stuetemperatur, og det meste af kuldioxiden frigives først ved bagetemperatur, hvilket gjorde den nyttig i færdige kagemixer. Den basiske form bruges især i USA som emulgeringssalt i smelteost. I EU har kun den sure form nummeret E541, og brugen blev stærkt begrænset ved forordning (EU) nr. 380/2012 (gældende fra 1. februar 2014) på grund af aluminiumsindholdet.",
+    "uses": "I EU kun tilladt i sponge-kager af kontrastfarvede segmenter holdt sammen af marmelade/gelé og omsluttet af aromatiseret sukkermasse (Battenberg-type), med højst 0,4 g/kg udtrykt som aluminium (kun i kagedelen). Uden for EU bruges det bl.a. i bagepulver og kagemixer.",
+    "health": "Hovedbekymringen er aluminium. Aluminiumforbindelser har i dyreforsøg vist neurotoksicitet, påvirkning af det mandlige reproduktionssystem og af nervesystemets udvikling hos afkom. EFSA fastsatte i 2008 et tolerabelt ugentligt indtag (TWI) for aluminium på 1 mg/kg legemsvægt/uge og vurderede, at det sandsynligvis overskrides af en betydelig del af befolkningen; børn havde de højeste indtag (0,7–2,3 mg/kg legemsvægt/uge). Fosfattilsætningsstoffer er desuden relevante for nyrepatienter, fordi uorganisk fosfat optages let.",
+    "research": "EFSA's aluminiumsvurdering (2008) blev fulgt af forordning 380/2012, der indskrænkede brugen af aluminiumholdige tilsætningsstoffer, herunder E541. EFSA vurderede i 2008, at aluminium via fødevarer ikke udgør en risiko for udvikling af Alzheimers sygdom. EFSA's ANS-panel gen-evaluerede i 2018 aluminiumsulfaterne (E 520–523) og surt natriumaluminiumphosphat (E 541) (EFSA Journal 2018;16(7):5372) og konkluderede, at de ikke giver anledning til sikkerhedsbekymring ved de nuværende godkendte anvendelser og niveauer, da de kun må bruges i få produkter, og eksponeringen sandsynligvis er tæt på nul.",
+    "keyReferences": [
+      {
+        "citation": "EFSA ANS Panel. Re-evaluation of aluminium sulphates (E 520–523) and sodium aluminium phosphate (E 541) as food additives. EFSA Journal. 2018;16(7):5372.",
+        "searchTitle": "Re-evaluation of aluminium sulphates (E 520–523) and sodium aluminium phosphate (E 541) as food additives"
+      },
+      {
+        "citation": "EFSA AFC Panel. Safety of aluminium from dietary intake. EFSA Journal. 2008;754:1-34.",
+        "searchTitle": "Safety of aluminium from dietary intake"
+      }
+    ],
+    "pubmedTerm": "sodium aluminum phosphate",
+    "flags": [
+      "children_caution",
+      "kidney_caution"
+    ],
+    "classes": [
+      "emulsifier",
+      "stabiliser",
+      "thickener"
+    ],
+    "variants": [
+      {
+        "code": "E541",
+        "nameDa": "Natriumaluminiumphosphat, surt",
+        "nameEn": "Sodium aluminium phosphate, acidic"
+      }
+    ],
+    "efsa": {
+      "title": "Re-evaluation of aluminium sulphates (E 520–523) and sodium aluminium phosphate (E 541) as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2018.5372",
+      "date": "2018",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Sodium_aluminium_phosphate",
+        "https://www.sciencedirect.com/science/article/abs/pii/S0278691508001348",
+        "https://bakerpedia.com/ingredients/sodium-aluminium-phosphate-salp/",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5372",
+        "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2008.754",
+        "https://diabetesjournals.org/spectrum/article/30/2/101/32300/Phosphate-Additive-Avoidance-in-Chronic-Kidney",
+        "https://pubmed.ncbi.nlm.nih.gov/37213837/"
+      ],
+      "notes": "RUNDE 3: Bekræftet: kemi/fremstilling, virkemåde som langsom hævesyre, basisk form i smelteost (USA), kun sur form i EU, forordning 380/2012, EFSA 2008 TWI og børns overskridelse, EFSA 2018-konklusion. Rettet: EU-anvendelsen er nu kun Battenberg-type sponge-kager med 0,4 g Al/kg (scones/sponge goods ophørte 31.1.2014); dyreforsøgseffekter præciseret til EFSA 2008's ordlyd; Alzheimer-udsagn til EFSA's konklusion. Fjernet: udsagn om nedsat nyreudskillelse af aluminium og 'åbne spørgsmål' (ikke kildebelagt); variant E541(ii), da den basiske form ikke har et EU-nummer (kun INS 541(ii))."
+    },
+    "wikipedia": "",
+    "wikidata": "Q1220360",
+    "claims": [
+      {
+        "claim": "Aluminiumholdigt fosfatsalt brugt som hævemiddel",
+        "source": "https://en.wikipedia.org/wiki/Sodium_aluminium_phosphate",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Basisk form bruges som emulgeringssalt",
+        "source": "https://www.sciencedirect.com/science/article/abs/pii/S0278691508001348",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles syntetisk af fosforsyre, natrium- og aluminiumforbindelser",
+        "source": "https://bakerpedia.com/ingredients/sodium-aluminium-phosphate-salp/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Den sure form reagerer langsomt med natron og frigiver CO2 ved opvarmning",
+        "source": "https://bakerpedia.com/ingredients/sodium-aluminium-phosphate-salp/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Den basiske form bruges især i USA i smelteost",
+        "source": "https://www.sciencedirect.com/science/article/abs/pii/S0278691508001348",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "I EU er kun den sure form E541",
+        "source": "https://en.wikipedia.org/wiki/Sodium_aluminium_phosphate",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Begrænset ved forordning 380/2012, gældende fra februar 2014, pga. aluminium",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5372",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "I EU kun tilladt i scones og sponge goods",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5372",
+        "result": "rettet"
+      },
+      {
+        "claim": "Mere udbredt i bagepulver og færdigblandinger i USA",
+        "source": "https://bakerpedia.com/ingredients/sodium-aluminium-phosphate-salp/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Aluminium kan ved høje indtag påvirke nervesystem, knogler og reproduktion i dyreforsøg",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2008.754",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2008: TWI 1 mg/kg lgv/uge; del af befolkningen, især børn, kan overskride det",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2008.754",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Personer med nedsat nyrefunktion udskiller aluminium dårligere",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Fosfatdelen er relevant for nyrepatienter",
+        "source": "https://diabetesjournals.org/spectrum/article/30/2/101/32300/Phosphate-Additive-Avoidance-in-Chronic-Kidney",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Aluminium–Alzheimer ikke påvist overbevisende",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/37213837/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Fortsat åbne spørgsmål om aluminiums langtidsvirkninger",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EFSA 2018 (5372): ingen sikkerhedsbekymring; eksponering sandsynligvis tæt på nul",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5372",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Variant E541(i) Natriumaluminiumphosphat (surt)",
+        "source": "https://en.wikipedia.org/wiki/Sodium_aluminium_phosphate",
+        "result": "rettet"
+      },
+      {
+        "claim": "Variant E541(ii) Alkalisk natriumaluminiumphosphat",
+        "source": "https://en.wikipedia.org/wiki/Sodium_aluminium_phosphate",
+        "result": "fjernet"
+      }
+    ]
+  },
+  {
+    "code": "E551",
+    "nameDa": "Siliciumdioxid",
+    "nameEn": "Silicon dioxide",
+    "category": "Antiklumpningsmiddel / bærestof",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Siliciumdioxid (silica) er et fint hvidt pulver, der bruges til at forhindre pulvere i at klumpe og som bærestof.",
+    "description": "Siliciumdioxid (SiO2) findes naturligt i krystallinsk form som kvarts, men som tilsætningsstof anvendes syntetisk amorf silica, fremstillet enten ved en våd proces (fældet silica eller silicagel) eller ved flammehydrolyse af chlorsilaner (pyrogen/fumed silica). Materialet består af primærpartikler i nanostørrelse (oftest under 20 nm), som danner aggregater og agglomerater, der normalt er større end 100 nm. Det bruges også som bærestof for aromaer og som klaringsmiddel ved fremstilling af øl og vin.",
+    "uses": "Salt, krydderier og krydderiblandinger, pulveriserede drikkevareblandinger, tørrede supper samt kosttilskud og tabletter. Godkendt i EU i en række fødevarekategorier med maksimale niveauer mellem 2.000 og 30.000 mg/kg, i andre quantum satis.",
+    "health": "Siliciumdioxid optages kun i meget ringe grad fra tarmen og har i dyreforsøg vist lav toksicitet uden skadelige effekter selv ved høje doser. EFSA kunne i 2018 ikke bekræfte den tidligere ADI \"not specified\", bl.a. fordi EU-specifikationerne ikke karakteriserede partikelstørrelse og nanofraktion tilstrækkeligt. I opfølgningen fra 2024 konkluderede EFSA's FAF-panel, at E 551 ikke giver anledning til sikkerhedsbekymring for nogen befolkningsgruppe ved de rapporterede anvendelser, heller ikke i mad til spædbørn under 16 uger ved de nuværende eksponeringsniveauer.",
+    "research": "EFSA's ANS-panel gen-evaluerede E551 i 2018 (EFSA Journal 2018;16(1):5088) og anbefalede bl.a., at specifikationerne skulle omfatte partikelstørrelsesfordeling og andelen af partikler i nanoområdet. I 2024 afsluttede EFSA's FAF-panel en opfølgende vurdering (EFSA Journal 2024;22(10):8880) efter EFSA's vejledning om partikler (2021), hvor den konventionelle vurdering blev suppleret med nano-specifikke overvejelser; pga. usikkerheder i data og fravær af genotoksisk bekymring brugte panelet en margin of exposure-tilgang frem for at fastsætte en ADI og konkluderede, at der ikke er sikkerhedsbekymring. Celle- og dyrestudier har vist, at amorfe silica-nanopartikler kan påvirke immunceller (fx dendritceller); forskere efterlyser flere studier af de lokale effekter i mave-tarm-kanalen.",
+    "keyReferences": [
+      {
+        "citation": "EFSA ANS Panel. Re-evaluation of silicon dioxide (E 551) as a food additive. EFSA Journal. 2018;16(1):5088.",
+        "searchTitle": "Re-evaluation of silicon dioxide (E 551) as a food additive"
+      },
+      {
+        "citation": "EFSA FAF Panel. Re-evaluation of silicon dioxide (E 551) as a food additive in foods for infants below 16 weeks of age and follow-up of its re-evaluation as a food additive for uses in foods for all population groups. EFSA Journal. 2024;22(10):8880.",
+        "searchTitle": "Re-evaluation of silicon dioxide (E 551) as a food additive in foods for infants below 16 weeks of age"
+      }
+    ],
+    "pubmedTerm": "silicon dioxide",
+    "flags": [],
+    "classes": [
+      "carrier"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of silicon dioxide (E 551) as a food additive in foods for infants below 16 weeks of age and follow-up of its re-evaluation as a food additive for uses in foods for all population groups",
+      "url": "https://doi.org/10.2903/j.efsa.2024.8880",
+      "date": "2024",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.acsmaterial.com/blog-detail/what-is-silicon-dioxide-silicon-dioxide-in-food.html",
+        "https://link.springer.com/article/10.1007/s00204-016-1850-4",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC7279390/",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5088",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8880",
+        "https://www.efsa.europa.eu/en/plain-language-summary/re-evaluation-silicon-dioxide-e-551-food-additive-foods-infants-below-16",
+        "https://jnanobiotechnology.biomedcentral.com/articles/10.1186/s12951-016-0189-6"
+      ],
+      "notes": "RUNDE 3: Bekræftet: fremstillingsmetoder, nanostruktur, funktioner, udvalgte anvendelser, lav optagelse/toksicitet, EFSA 2018- og 2024-konklusioner (MOE-tilgang). Rettet: maks.-niveauer (EU: 2.000–30.000 mg/kg og quantum satis; 10.000 mg/kg-tallet vedrører næringsstofpræparater til spædbørn, Annex III); 'ingen risikogrupper' → EFSA 2024's konklusion for alle grupper; nano-forskningsudsagn formuleret efter kilderne. Fjernet: kaffe-/kakaopulver, flødepulver, revet ost (ikke kildebelagt)."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Silicon_dioxide",
+    "wikidata": "Q116269",
+    "claims": [
+      {
+        "claim": "Fint hvidt pulver brugt som antiklumpningsmiddel og bærestof",
+        "source": "https://www.acsmaterial.com/blog-detail/what-is-silicon-dioxide-silicon-dioxide-in-food.html",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Findes naturligt som kvarts; til fødevarer anvendes syntetisk amorf silica",
+        "source": "https://link.springer.com/article/10.1007/s00204-016-1850-4",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles ved fældning eller flammehydrolyse (pyrogen silica)",
+        "source": "https://link.springer.com/article/10.1007/s00204-016-1850-4",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Aggregater af primærpartikler i nanostørrelse",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7279390/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Store overflader, der binder fugt",
+        "source": "https://www.acsmaterial.com/blog-detail/what-is-silicon-dioxide-silicon-dioxide-in-food.html",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bærestof for aromaer og klaring af øl og vin",
+        "source": "https://www.acsmaterial.com/blog-detail/what-is-silicon-dioxide-silicon-dioxide-in-food.html",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i salt, krydderiblandinger, pulversupper, kosttilskud og tabletter",
+        "source": "https://www.acsmaterial.com/blog-detail/what-is-silicon-dioxide-silicon-dioxide-in-food.html",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i kaffe- og kakaopulvere, flødepulver og revet ost",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Maks. niveauer fx 10 g/kg i tørrede pulverfødevarer",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5088",
+        "result": "rettet"
+      },
+      {
+        "claim": "Optages meget ringe; lav toksicitet i dyreforsøg",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5088",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2018 kunne ikke bekræfte tidligere ADI pga. datamangler, bl.a. nanofraktion",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5088",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA/FAF 2024: ingen sikkerhedsbekymring for nogen gruppe, inkl. spædbørn under 16 uger",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8880",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ingen særlige risikogrupper kendt",
+        "source": "https://www.efsa.europa.eu/en/plain-language-summary/re-evaluation-silicon-dioxide-e-551-food-additive-foods-infants-below-16",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2018 anbefalede bedre karakterisering af partikelstørrelse",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5088",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "2024-vurdering fulgte partikelvejledningen fra 2021; nano-specifik vurdering",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8880",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "MOE-tilgang frem for ADI pga. usikkerheder og ingen genotoksisk bekymring",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8880",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Dyre-/cellestudier har rejst spørgsmål om nanosilicas effekter på immunsystem og tarm; relevans uafklaret",
+        "source": "https://jnanobiotechnology.biomedcentral.com/articles/10.1186/s12951-016-0189-6",
+        "result": "rettet"
+      }
+    ]
+  },
+  {
+    "code": "E552",
+    "nameDa": "Calciumsilicat",
+    "nameEn": "Calcium silicate",
+    "category": "Antiklumpningsmiddel",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Calciumsilicat er et hvidt mineralsk pulver, der bruges som antiklumpningsmiddel i salt og pulvere.",
+    "description": "Calciumsilicat er et vandholdigt eller vandfrit silikat med varierende andele af calciumoxid (CaO) og siliciumdioxid (SiO2); ifølge EU-specifikationen skal det være fri for asbest. Det kan fremstilles ved reaktion mellem calciumchlorid eller calciumhydroxid og natriumsilikat (vandglas). Det har stor evne til at optage fugt, hvilket holder pulvere fritflydende.",
+    "uses": "Bordsalt, bagepulver og kosttilskud. Godkendt i EU i en række kategorier, bl.a. i gruppen \"siliciumdioxid – silikater\" (E 551–553) med maksimale niveauer.",
+    "health": "Calciumsilicat optages kun ringe. EFSA konkluderede i 2018, at sikkerheden ikke kunne vurderes pga. datamangler; optagelsen er dog meget lav, og der blev ikke fundet tegn på genotoksicitet.",
+    "research": "EFSA's ANS-panel gen-evaluerede i 2018 calciumsilicat, magnesiumsilicat, magnesiumtrisilicat og talkum (EFSA Journal 2018;16(8):5375). Optagelsen var meget lav, og der var ingen tegn på genotoksicitet eller udviklingstoksicitet for calcium- og magnesiumsilicat og talkum, men pga. datamangler konkluderede panelet, at sikkerheden ved brugen som tilsætningsstoffer ikke kunne vurderes. Den tidligere gruppe-ADI fra SCF blev anset for forældet. I det mest repræsentative scenarie (kosttilskud) lå eksponeringen under den maksimale daglige dosis af magnesiumtrisilicat som syreneutraliserende medicin (4 g/person/dag). Panelet efterlyste data om bl.a. bly, kviksølv, arsen, aluminium, nikkel, fluorid og krystallinsk silica for at kunne fastsætte grænser i specifikationerne.",
+    "keyReferences": [
+      {
+        "citation": "EFSA ANS Panel. Re-evaluation of calcium silicate (E 552), magnesium silicate (E 553a(i)), magnesium trisilicate (E 553a(ii)) and talc (E 553b) as food additives. EFSA Journal. 2018;16(8):5375.",
+        "searchTitle": "Re-evaluation of calcium silicate (E 552), magnesium silicate (E 553a(i)), magnesium trisilicate (E 553a(ii)) and talc (E 553b) as food additives"
+      }
+    ],
+    "pubmedTerm": "calcium silicate",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of calcium silicate (E 552), magnesium silicate (E 553a(i)), magnesium trisilicate (E 553a(ii)) and talc (E 553b) as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2018.5375",
+      "date": "2018",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Anticaking_agent",
+        "https://foodcom.pl/en/term-e/e552/",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "https://pubmed.ncbi.nlm.nih.gov/32626019/"
+      ],
+      "notes": "RUNDE 3: Bekræftet: EU-definition (CaO/SiO2, asbestfri), fugtoptagelse, anvendelser i salt/bagepulver/kosttilskud, EFSA 2018-konklusioner og specifikationsanbefalinger. Rettet: fremstillingsmetode (calciumchlorid/-hydroxid + natriumsilikat); 'lav toksicitet' erstattet af EFSA's konkrete fund. Fjernet: bærestof, cement-sammenligning, revet ost/krydderier, 'ingen risikogrupper', 'begrænset forskning' (ikke kildebelagt)."
+    },
+    "wikipedia": "",
+    "wikidata": "Q416365",
+    "claims": [
+      {
+        "claim": "Hvidt mineralsk pulver brugt som antiklumpningsmiddel i salt og pulvere",
+        "source": "https://en.wikipedia.org/wiki/Anticaking_agent",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles af kalk og siliciumdioxid eller udvindes af mineraler",
+        "source": "https://foodcom.pl/en/term-e/e552/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Uopløseligt i vand og absorberer store mængder væske",
+        "source": "https://foodcom.pl/en/term-e/e552/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Bruges i bagepulver",
+        "source": "https://en.wikipedia.org/wiki/Anticaking_agent",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bruges som bærestof",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Beslægtet med cement/byggematerialer; fødevarekvaliteten er renset",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Anvendes i salt, bagepulver og kosttilskud",
+        "source": "https://en.wikipedia.org/wiki/Anticaking_agent",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i revet ost, krydderier og tørre pulverblandinger",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Godkendt i EU i en række kategorier med maks. niveauer",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Optages ringe og har lav toksicitet",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "rettet"
+      },
+      {
+        "claim": "Ingen kendte særlige risikogrupper",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Panelet anbefalede strammere specifikationer, bl.a. for tungmetaller og aluminium",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Begrænset ny forskning i stoffet som tilsætningsstof",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EFSA 2018 (5375) gen-evaluerede E552, E553a(i), E553a(ii) og E553b",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Meget lav optagelse; ingen tegn på genotoksicitet eller udviklingstoksicitet",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Sikkerheden kunne ikke vurderes pga. datamangler",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/32626019/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "SCF's gruppe-ADI anset for forældet",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Eksponering under maks. dosis af magnesiumtrisilicat som antacidum (4 g/person/dag)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E553",
+    "nameDa": "Magnesiumsilicater",
+    "nameEn": "Magnesium silicates",
+    "category": "Antiklumpningsmiddel",
+    "euStatus": "not_approved",
+    "origin": "mixed",
+    "summary": "\"E553\" bruges som samlebetegnelse for magnesiumsilicater, der bruges som antiklumpningsmidler; i EU er de opført som E553a (magnesiumsilicat og -trisilicat) og E553b (talkum), ikke som E553.",
+    "description": "Magnesiumsilicaterne omfatter syntetisk magnesiumsilicat (E553a(i)), magnesiumtrisilicat (E553a(ii)) og talkum (E553b). Syntetisk magnesiumsilicat fremstilles ved fældning af et magnesiumsalt med en silikatkilde i vandig opløsning, mens talkum udvindes af naturlige mineraler ved formaling og rensning. Syntetisk magnesiumsilicat kan binde fedtsyrer og bruges bl.a. til at rense frituresolie. I EU-lovgivningen anvendes numrene E553a og E553b.",
+    "uses": "Se E553a og E553b. Talkum bruges bl.a. i tyggegummi, ris (poleringsmiddel) og kosttilskud.",
+    "health": "Magnesiumsilicater og talkum optages meget ringe fra tarmen. EFSA konkluderede i 2018, at sikkerheden ikke kunne vurderes pga. datamangler; optagelsen er dog meget lav, og der blev ikke fundet tegn på genotoksicitet. Naturlige talkumforekomster kan indeholde asbest, og EU-specifikationerne kræver derfor asbestfrihed.",
+    "research": "EFSA's ANS-panel gen-evaluerede i 2018 calciumsilicat, magnesiumsilicat, magnesiumtrisilicat og talkum (EFSA Journal 2018;16(8):5375). Optagelsen var meget lav, og der var ingen tegn på genotoksicitet eller udviklingstoksicitet for calcium- og magnesiumsilicat og talkum, men pga. datamangler konkluderede panelet, at sikkerheden ved brugen som tilsætningsstoffer ikke kunne vurderes. Den tidligere gruppe-ADI fra SCF blev anset for forældet. I det mest repræsentative scenarie (kosttilskud) lå eksponeringen under den maksimale daglige dosis af magnesiumtrisilicat som syreneutraliserende medicin (4 g/person/dag). Panelet anbefalede revision af specifikationerne, herunder data om tungmetaller, aluminium, nikkel, fluorid og krystallinsk silica. IARC klassificerede i 2024 talkum som sandsynligt kræftfremkaldende (gruppe 2A), bl.a. på grundlag af begrænset evidens for æggestokkræft; se E553b.",
+    "keyReferences": [
+      {
+        "citation": "EFSA ANS Panel. Re-evaluation of calcium silicate (E 552), magnesium silicate (E 553a(i)), magnesium trisilicate (E 553a(ii)) and talc (E 553b) as food additives. EFSA Journal. 2018;16(8):5375.",
+        "searchTitle": "Re-evaluation of calcium silicate (E 552), magnesium silicate (E 553a(i)), magnesium trisilicate (E 553a(ii)) and talc (E 553b) as food additives"
+      }
+    ],
+    "pubmedTerm": "magnesium silicate",
+    "flags": [],
+    "classes": [
+      "thickener"
+    ],
+    "variants": [
+      {
+        "code": "E553a(i)",
+        "nameDa": "Syntetisk magnesiumsilicat",
+        "nameEn": "Magnesium silicate"
+      },
+      {
+        "code": "E553a(ii)",
+        "nameDa": "Magnesiumtrisilicat",
+        "nameEn": "Magnesium trisilicate"
+      },
+      {
+        "code": "E553b",
+        "nameDa": "Talkum",
+        "nameEn": "Talc"
+      }
+    ],
+    "efsa": {
+      "title": "Re-evaluation of calcium silicate (E 552), magnesium silicate (E 553a(i)), magnesium trisilicate (E 553a(ii)) and talc (E 553b) as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2018.5375",
+      "date": "2018",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "https://patents.google.com/patent/US5597600A/en",
+        "https://proe.info/en/additives/e553b",
+        "https://artgerecht.com/en/glossary/e553b/",
+        "https://www.iarc.who.int/news-events/iarc-monographs-evaluate-the-carcinogenicity-of-talc-and-acrylonitrile-iarc-monographs-volume-136",
+        "https://pubmed.ncbi.nlm.nih.gov/32626019/"
+      ],
+      "notes": "RUNDE 3: Bekræftet: EU-numrene E553a(i), E553a(ii) og E553b, fremstilling, anvendelser (ris, tyggegummi, kosttilskud), asbestkrav, EFSA 2018-konklusioner. Rettet: euStatus → not_approved, fordi nummeret E553 ikke står på EU-listen (kun E553a og E553b, jf. EFSA 2018); varianter rettet til EU-numre med navne; asbestkravet står allerede i EU-definitionen (EFSA efterlyste data om tungmetaller m.m.); IARC-udsagn rettet til klassificeringens grundlag. Fjernet: 'ældre (i)-(iii)-system' samt salt/krydderier/pulver (ikke kildebelagt)."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Talc",
+    "wikidata": "",
+    "claims": [
+      {
+        "claim": "I EU opført som E553a og E553b, ikke som E553",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "E553 som nummer er ikke opført i EU; euStatus sat til not_approved (undernumrene er godkendt)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "rettet"
+      },
+      {
+        "claim": "Ældre system med (i) magnesiumsilicat, (ii) magnesiumtrisilicat, (iii) talkum",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Fremstilles syntetisk ved reaktion mellem magnesium- og silikatsalte eller udvindes som mineraler",
+        "source": "https://patents.google.com/patent/US5597600A/en",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Talkum udvindes af naturlige mineraler",
+        "source": "https://proe.info/en/additives/e553b",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Uopløselige; binder fugt og fedt",
+        "source": "https://patents.google.com/patent/US5597600A/en",
+        "result": "rettet"
+      },
+      {
+        "claim": "Anvendes i ris (poleringsmiddel), tyggegummi og kosttilskud",
+        "source": "https://artgerecht.com/en/glossary/e553b/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i salt, krydderier og pulverprodukter",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Optages ringe; lav akut toksicitet",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "rettet"
+      },
+      {
+        "claim": "Talkum kan være forurenet med asbest; krav om renhed",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Panelet anbefalede strammere specifikationer, bl.a. krav om fravær af asbest",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "rettet"
+      },
+      {
+        "claim": "IARC's klassificering vedrører primært indånding og kosmetisk brug",
+        "source": "https://www.iarc.who.int/news-events/iarc-monographs-evaluate-the-carcinogenicity-of-talc-and-acrylonitrile-iarc-monographs-volume-136",
+        "result": "rettet"
+      },
+      {
+        "claim": "Varianter E553(i)/(ii)/(iii) med manglende/fejlagtige navne",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2018 (5375) gen-evaluerede E552, E553a(i), E553a(ii) og E553b",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Meget lav optagelse; ingen tegn på genotoksicitet eller udviklingstoksicitet",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Sikkerheden kunne ikke vurderes pga. datamangler",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/32626019/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "SCF's gruppe-ADI anset for forældet",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Eksponering under maks. dosis af magnesiumtrisilicat som antacidum (4 g/person/dag)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E553a",
+    "nameDa": "Magnesiumsilicat (syntetisk) og magnesiumtrisilicat",
+    "nameEn": "Magnesium silicate and magnesium trisilicate",
+    "category": "Antiklumpningsmiddel",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "E553a omfatter syntetisk magnesiumsilicat og magnesiumtrisilicat, der bruges som antiklumpningsmidler og fortykningsmidler.",
+    "description": "E553a(i) er syntetisk magnesiumsilicat, fremstillet ved fældning af en silikatkilde (fx natriumsilikat) med et magnesiumsalt i vandig opløsning. E553a(ii) er magnesiumtrisilicat, som også bruges i syreneutraliserende medicin. Syntetisk magnesiumsilicat har stor overflade, binder fedtsyrer og bruges også industrielt til at rense frituresolie.",
+    "uses": "Bl.a. tyggegummi. Godkendt i EU i flere kategorier, mange quantum satis, og i gruppen \"siliciumdioxid – silikater\" (E 551–553) med maksimale niveauer.",
+    "health": "Stofferne optages meget ringe. Silikat-nyresten er sjældne og er især beskrevet hos personer, der i årevis har taget magnesiumtrisilicat som syreneutraliserende medicin; EFSA fandt dog ingen bekræftede tilfælde af nyrepåvirkning i EU's bivirkningsdatabase (EudraVigilance) trods årtiers brug af doser op til 4 g/person/dag. EFSA konkluderede i 2018, at sikkerheden ikke kunne vurderes pga. datamangler; optagelsen er dog meget lav, og der blev ikke fundet tegn på genotoksicitet.",
+    "research": "EFSA's ANS-panel gen-evaluerede i 2018 calciumsilicat, magnesiumsilicat, magnesiumtrisilicat og talkum (EFSA Journal 2018;16(8):5375). Optagelsen var meget lav, og der var ingen tegn på genotoksicitet eller udviklingstoksicitet for calcium- og magnesiumsilicat og talkum, men pga. datamangler konkluderede panelet, at sikkerheden ved brugen som tilsætningsstoffer ikke kunne vurderes. Den tidligere gruppe-ADI fra SCF blev anset for forældet. I det mest repræsentative scenarie (kosttilskud) lå eksponeringen under den maksimale daglige dosis af magnesiumtrisilicat som syreneutraliserende medicin (4 g/person/dag). Panelet anbefalede revision af EU-specifikationerne.",
+    "keyReferences": [
+      {
+        "citation": "EFSA ANS Panel. Re-evaluation of calcium silicate (E 552), magnesium silicate (E 553a(i)), magnesium trisilicate (E 553a(ii)) and talc (E 553b) as food additives. EFSA Journal. 2018;16(8):5375.",
+        "searchTitle": "Re-evaluation of calcium silicate (E 552), magnesium silicate (E 553a(i)), magnesium trisilicate (E 553a(ii)) and talc (E 553b) as food additives"
+      }
+    ],
+    "pubmedTerm": "magnesium trisilicate",
+    "flags": [],
+    "classes": [
+      "thickener"
+    ],
+    "variants": [
+      {
+        "code": "E553a(i)",
+        "nameDa": "Syntetisk magnesiumsilikat",
+        "nameEn": "Synthetic magnesium silicate"
+      },
+      {
+        "code": "E553a(ii)",
+        "nameDa": "Magnesiumtrisilicat",
+        "nameEn": "Magnesium trisilicate"
+      }
+    ],
+    "efsa": {
+      "title": "Re-evaluation of calcium silicate (E 552), magnesium silicate (E 553a(i)), magnesium trisilicate (E 553a(ii)) and talc (E 553b) as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2018.5375",
+      "date": "2018",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "https://patents.google.com/patent/US5597600A/en",
+        "https://pubmed.ncbi.nlm.nih.gov/3008398/",
+        "https://pubmed.ncbi.nlm.nih.gov/32626019/"
+      ],
+      "notes": "RUNDE 3: Bekræftet: fremstilling af syntetisk magnesiumsilicat, antacidum-brug, frituresolie-rensning, tyggegummi (quantum satis), silikat-nyresten ved langvarig antacidum-brug, EudraVigilance-fundet, EFSA 2018-konklusioner. Rettet: 'binder fugt og fedt' → binder fedtsyrer; EU-godkendelsen præciseret. Fjernet: fortykningsmiddel, formlen Mg2Si3O8, salt/krydderier/ris/konfekture/kosttilskud som E553a-anvendelser, 'begrænset forskning' og flaget 'laxative' (ikke kildebelagt)."
+    },
+    "wikipedia": "",
+    "wikidata": "",
+    "claims": [
+      {
+        "claim": "E553a omfatter syntetisk magnesiumsilicat og magnesiumtrisilicat; antiklumpningsmidler",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bruges også som fortykningsmiddel",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "E553a(i) fremstilles ved fældning af natriumsilikat med et magnesiumsalt",
+        "source": "https://patents.google.com/patent/US5597600A/en",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Magnesiumtrisilicat har formlen Mg2Si3O8",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Magnesiumtrisilicat bruges i syreneutraliserende medicin",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fine, uopløselige pulvere med stor overflade, der binder fugt og fedt",
+        "source": "https://patents.google.com/patent/US5597600A/en",
+        "result": "rettet"
+      },
+      {
+        "claim": "Bruges til at rense frituresolie",
+        "source": "https://patents.google.com/patent/US5597600A/en",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i tyggegummi",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i salt, krydderiblandinger, pulverfødevarer, ris, konfekture og kosttilskud",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Godkendt i EU med maks. niveauer i flere kategorier",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "rettet"
+      },
+      {
+        "claim": "Langvarigt højt medicinsk indtag af magnesiumtrisilicat forbundet med silikat-nyresten",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/3008398/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA fandt ingen bekræftede tilfælde af nyrepåvirkning i EudraVigilance",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Panelet anbefalede bedre specifikationer",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Begrænset ny forskning i stoffet som fødevaretilsætningsstof",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Flag 'laxative'",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EFSA 2018 (5375) gen-evaluerede E552, E553a(i), E553a(ii) og E553b",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Meget lav optagelse; ingen tegn på genotoksicitet eller udviklingstoksicitet",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Sikkerheden kunne ikke vurderes pga. datamangler",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/32626019/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "SCF's gruppe-ADI anset for forældet",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Eksponering under maks. dosis af magnesiumtrisilicat som antacidum (4 g/person/dag)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E553b",
+    "nameDa": "Talkum",
+    "nameEn": "Talc",
+    "category": "Antiklumpningsmiddel / overfladebehandling",
+    "euStatus": "approved",
+    "origin": "natural",
+    "summary": "Talkum er et naturligt magnesiumsilicat-mineral, der bruges som antiklumpnings- og poleringsmiddel.",
+    "description": "Talkum (Mg3Si4O10(OH)2) er et naturligt, vandholdigt magnesiumsilicat-mineral, som udvindes og formales og renses til fødevarekvalitet. Det virker som slip-, overflade- og antiklumpningsmiddel og hindrer, at produkter klistrer sammen. Et kritisk kvalitetskrav er, at fødevaretalkum skal være fri for asbest, som kan forekomme i naturlige talkumforekomster. Talkum bruges også som hjælpestof i tabletter og i kosmetiske pudderprodukter.",
+    "uses": "Tyggegummi, ris (poleringsmiddel), konfekture, visse kød- og osteprodukter samt kosttilskud og tabletter. Godkendt i EU i flere kategorier, typisk quantum satis eller med maksimale niveauer.",
+    "health": "Talkum optages meget ringe ved indtagelse. EFSA konkluderede i 2018, at sikkerheden ikke kunne vurderes pga. datamangler; optagelsen er dog meget lav, og der blev ikke fundet tegn på genotoksicitet. Den væsentligste bekymring ved fødevaretalkum er forurening med asbest. IARC's klassificering fra 2024 bygger bl.a. på studier af æggestokkræft ved brug af talkumpudder i underlivet.",
+    "research": "EFSA's ANS-panel gen-evaluerede i 2018 calciumsilicat, magnesiumsilicat, magnesiumtrisilicat og talkum (EFSA Journal 2018;16(8):5375). Optagelsen var meget lav, og der var ingen tegn på genotoksicitet eller udviklingstoksicitet for calcium- og magnesiumsilicat og talkum, men pga. datamangler konkluderede panelet, at sikkerheden ved brugen som tilsætningsstoffer ikke kunne vurderes. Den tidligere gruppe-ADI fra SCF blev anset for forældet. I det mest repræsentative scenarie (kosttilskud) lå eksponeringen under den maksimale daglige dosis af magnesiumtrisilicat som syreneutraliserende medicin (4 g/person/dag). IARC klassificerede i 2024 talkum som \"sandsynligt kræftfremkaldende\" (gruppe 2A) på grundlag af begrænset evidens for æggestokkræft hos mennesker, tilstrækkelig evidens i forsøgsdyr og stærk mekanistisk evidens; klassificeringen erstatter de tidligere vurderinger af asbestfri talkum og af talkumpudder brugt i underlivet. EFSA har efterfølgende indkaldt data om talkum (E 553b) som opfølgning på gen-evalueringen.",
+    "keyReferences": [
+      {
+        "citation": "EFSA ANS Panel. Re-evaluation of calcium silicate (E 552), magnesium silicate (E 553a(i)), magnesium trisilicate (E 553a(ii)) and talc (E 553b) as food additives. EFSA Journal. 2018;16(8):5375.",
+        "searchTitle": "Re-evaluation of calcium silicate (E 552), magnesium silicate (E 553a(i)), magnesium trisilicate (E 553a(ii)) and talc (E 553b) as food additives"
+      }
+    ],
+    "pubmedTerm": "talc",
+    "flags": [],
+    "classes": [
+      "thickener"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of calcium silicate (E 552), magnesium silicate (E 553a(i)), magnesium trisilicate (E 553a(ii)) and talc (E 553b) as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2018.5375",
+      "date": "2018",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://artgerecht.com/en/glossary/e553b/",
+        "https://proe.info/en/additives/e553b",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "https://www.iarc.who.int/news-events/iarc-monographs-evaluate-the-carcinogenicity-of-talc-and-acrylonitrile-iarc-monographs-volume-136",
+        "https://www.efsa.europa.eu/en/call/call-data-talc-e-553b",
+        "https://pubmed.ncbi.nlm.nih.gov/32626019/"
+      ],
+      "notes": "RUNDE 3: Bekræftet: formel, naturlig oprindelse og rensning, funktioner, anvendelser (tyggegummi, ris, konfekture, kosttilskud/tabletter), asbestkrav, EFSA 2018-konklusioner, IARC 2024 (gruppe 2A) og grundlaget herfor, EFSA's opfølgende dataindkaldelse. Rettet: 'pølser' → visse kød- og osteprodukter; IARC-grundlaget præciseret (begrænset human evidens for æggestokkræft + dyreforsøg + mekanistisk evidens); asbestkravet står allerede i EU-definitionen. Fjernet: 'klassificeringen vedrører ikke fødevarer / ingen evidens for kræftrisiko fra fødevaretalkum' (ikke kildebelagt)."
+    },
+    "wikipedia": "",
+    "wikidata": "Q134583",
+    "claims": [
+      {
+        "claim": "Naturligt magnesiumsilicat-mineral; antiklumpnings- og poleringsmiddel",
+        "source": "https://artgerecht.com/en/glossary/e553b/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Formel Mg3Si4O10(OH)2; blødt mineral udvundet i miner og renset",
+        "source": "https://proe.info/en/additives/e553b",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Giver glat overflade og hindrer, at produkter klistrer sammen",
+        "source": "https://artgerecht.com/en/glossary/e553b/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fødevaretalkum skal være fri for asbest, som kan forekomme i samme aflejringer",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bruges også i kosmetik og tabletter",
+        "source": "https://www.iarc.who.int/news-events/iarc-monographs-evaluate-the-carcinogenicity-of-talc-and-acrylonitrile-iarc-monographs-volume-136",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i tyggegummi, ris (polering), konfekture og kosttilskud",
+        "source": "https://artgerecht.com/en/glossary/e553b/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes på overfladen af pølser",
+        "source": "https://artgerecht.com/en/glossary/e553b/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Godkendt i EU i flere kategorier, quantum satis eller med maks. niveauer",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Optages næsten ikke; lav toksicitet",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "rettet"
+      },
+      {
+        "claim": "Bekymringer vedrører indånding og kosmetisk brug i underlivet samt asbest",
+        "source": "https://www.iarc.who.int/news-events/iarc-monographs-evaluate-the-carcinogenicity-of-talc-and-acrylonitrile-iarc-monographs-volume-136",
+        "result": "rettet"
+      },
+      {
+        "claim": "IARC 2024: talkum gruppe 2A, primært baseret på æggestokkræft ved kosmetisk brug og mekanistiske data",
+        "source": "https://www.iarc.who.int/news-events/iarc-monographs-evaluate-the-carcinogenicity-of-talc-and-acrylonitrile-iarc-monographs-volume-136",
+        "result": "rettet"
+      },
+      {
+        "claim": "Klassificeringen vedrører ikke specifikt fødevarer; ingen evidens for øget kræftrisiko fra fødevaretalkum",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Panelet anbefalede strenge krav om asbestfrihed",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA har indkaldt opfølgende data om talkum (E 553b)",
+        "source": "https://www.efsa.europa.eu/en/call/call-data-talc-e-553b",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2018 (5375) gen-evaluerede E552, E553a(i), E553a(ii) og E553b",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Meget lav optagelse; ingen tegn på genotoksicitet eller udviklingstoksicitet",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Sikkerheden kunne ikke vurderes pga. datamangler",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/32626019/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "SCF's gruppe-ADI anset for forældet",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Eksponering under maks. dosis af magnesiumtrisilicat som antacidum (4 g/person/dag)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5375",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E554",
+    "nameDa": "Natriumaluminiumsilicat",
+    "nameEn": "Sodium aluminium silicate",
+    "category": "Antiklumpningsmiddel",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Natriumaluminiumsilicat er et aluminiumholdigt silikat, der bruges som antiklumpningsmiddel i meget få, begrænsede anvendelser i EU.",
+    "description": "Natriumaluminiumsilicat er et syntetisk silikat, der ifølge EU-specifikationen indeholder 66–88 % siliciumdioxid og 5–15 % aluminiumoxid (op til ca. 7,8 % aluminium). Det er et fint pulver, der binder fugt. Brugen blev begrænset i EU ved forordning (EU) nr. 380/2012 om aluminiumholdige tilsætningsstoffer.",
+    "uses": "I EU kun i salt til overfladebehandling af modnede oste (maks. 20 mg/kg overført til osten) samt som tilsætningsstof i fedtopløselige vitaminpræparater (maks. 15.000 mg/kg, ikke til spædbørn og småbørn).",
+    "health": "Hovedbekymringen er aluminiumsindholdet. EFSA fastsatte i 2008 et tolerabelt ugentligt indtag (TWI) for aluminium på 1 mg/kg legemsvægt/uge og vurderede, at det sandsynligvis overskrides af en betydelig del af befolkningen; børn havde de højeste indtag.",
+    "research": "EU's forordning 380/2012 begrænsede brugen af aluminiumholdige tilsætningsstoffer, herunder E554, efter EFSA's vurdering fra 2008. I 2020 gen-evaluerede EFSA's FAF-panel E554 og E555 (EFSA Journal 2020;18(6):6152) og konkluderede, at sikkerheden ikke kunne vurderes pga. meget begrænsede toksikologiske data og utilstrækkelig fysisk-kemisk karakterisering. Panelet beregnede, at aluminiumseksponeringen fra E554 alene kunne nå op til 1,58 mg/kg legemsvægt/uge (gennemsnit) og 2,13 mg/kg legemsvægt/uge (P95) hos børn og dermed overskride TWI. EFSA vurderede i 2008, at aluminium via fødevarer ikke udgør en risiko for udvikling af Alzheimers sygdom.",
+    "keyReferences": [
+      {
+        "citation": "EFSA FAF Panel. Re-evaluation of sodium aluminium silicate (E 554) and potassium aluminium silicate (E 555) as food additives. EFSA Journal. 2020;18(6):6152.",
+        "searchTitle": "Re-evaluation of sodium aluminium silicate (E 554) and potassium aluminium silicate (E 555) as food additives"
+      },
+      {
+        "citation": "EFSA AFC Panel. Safety of aluminium from dietary intake. EFSA Journal. 2008;754:1-34.",
+        "searchTitle": "Safety of aluminium from dietary intake"
+      }
+    ],
+    "pubmedTerm": "sodium aluminosilicate",
+    "flags": [
+      "children_caution"
+    ],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of sodium aluminium silicate (E 554) and potassium aluminium silicate (E 555) as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2020.6152",
+      "date": "2020",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6152",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC7448050/",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=celex%3A32012R0380",
+        "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2008.754",
+        "https://pubmed.ncbi.nlm.nih.gov/37213837/"
+      ],
+      "notes": "RUNDE 3: Bekræftet: begrænsede anvendelser, forordning 380/2012, EFSA 2008 TWI og børns høje indtag, FAF 2020-konklusion. Rettet: fremstilling erstattet af EU-specifikationens sammensætning; EU-anvendelser rettet til salt til overfladebehandling af modnede oste (20 mg/kg) og fedtopløselige vitaminpræparater (15.000 mg/kg); TWI-overskridelse angivet med EFSA's tal; Alzheimer-udsagn til EFSA 2008's konklusion. Fjernet: nedsat nyreudskillelse og flaget 'kidney_caution' (ikke kildebelagt for fødevareindtag)."
+    },
+    "wikipedia": "",
+    "wikidata": "Q18967277",
+    "claims": [
+      {
+        "claim": "Aluminiumholdigt silikat brugt som antiklumpningsmiddel i meget begrænsede kategorier",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6152",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles syntetisk ved reaktion mellem aluminiumsulfat og natriumsilikat",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7448050/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Fint, uopløseligt pulver der binder fugt",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7448050/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Har været brugt som bærestof og i visse ostetyper",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6152",
+        "result": "rettet"
+      },
+      {
+        "claim": "Brugen stærkt begrænset i EU fra 2014 efter EFSA's aluminiumsvurdering",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=celex%3A32012R0380",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "I EU kun tilladt som bærestof for farvestoffer og i skive- og revne oste",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6152",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2008: TWI 1 mg/kg lgv/uge; del af befolkningen, især børn, kan overskride det",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2008.754",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Personer med nedsat nyrefunktion udskiller aluminium dårligere",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "FAF 2020 (6152): sikkerheden kunne ikke vurderes pga. utilstrækkelige data",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6152",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Aluminiumseksponering fra E554 kunne teoretisk overskride TWI betydeligt",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6152",
+        "result": "rettet"
+      },
+      {
+        "claim": "Aluminium og neurologiske sygdomme: ingen klar årsagssammenhæng påvist",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/37213837/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Flag 'kidney_caution'",
+        "source": "",
+        "result": "fjernet"
+      }
+    ]
+  },
+  {
+    "code": "E555",
+    "nameDa": "Kaliumaluminiumsilicat",
+    "nameEn": "Potassium aluminium silicate",
+    "category": "Bærestof / antiklumpningsmiddel",
+    "euStatus": "approved",
+    "origin": "natural",
+    "summary": "Kaliumaluminiumsilicat er mineralet glimmer (mica), der primært bruges som bærestof i perlemorsfarvestoffer.",
+    "description": "Kaliumaluminiumsilicat er ifølge EU-specifikationen naturligt glimmer (mica), der hovedsageligt består af muskovit. Tynde glimmerflager belægges med metaloxider som titandioxid (E171) eller jernoxider (E172), hvilket giver perlemorseffekt. Titandioxid (E171) må ikke længere bruges i fødevarer i EU (forordning (EU) 2022/63; overgangsperioden udløb 7. august 2022). I EU er E555 kun godkendt som bærestof for E171 og E172.",
+    "uses": "Bærestof for farvestofferne E171 og E172 (op til 90 % i forhold til pigmentet); da E171 ikke længere er tilladt i fødevarer, er det i praksis kun relevant for E172.",
+    "health": "Aluminiumsindholdet bidrager til det samlede aluminiumindtag (EFSA TWI 1 mg/kg legemsvægt/uge, 2008); EFSA beregnede i 2020, at eksponeringen for aluminium fra E555 ved det maksimalt tilladte niveau teoretisk kunne overskride TWI langt. EFSA's gen-evaluering fra 2020 kunne ikke vurdere sikkerheden pga. meget begrænsede toksikologiske data og utilstrækkelig fysisk-kemisk karakterisering.",
+    "research": "EFSA's FAF-panel gen-evaluerede E554 og E555 i 2020 (EFSA Journal 2020;18(6):6152) og konkluderede, at sikkerheden ikke kunne vurderes pga. utilstrækkelige data. Panelet vurderede desuden, at E555 i praksis ikke bruges som bærestof, men som uadskillelig bestanddel af perlemorspigmenter baseret på kaliumaluminiumsilicat. Der er dokumenteret børnearbejde i glimmerminer i Indien og Madagaskar, som er de største kilder til glimmer.",
+    "keyReferences": [
+      {
+        "citation": "EFSA FAF Panel. Re-evaluation of sodium aluminium silicate (E 554) and potassium aluminium silicate (E 555) as food additives. EFSA Journal. 2020;18(6):6152.",
+        "searchTitle": "Re-evaluation of sodium aluminium silicate (E 554) and potassium aluminium silicate (E 555) as food additives"
+      },
+      {
+        "citation": "EFSA AFC Panel. Safety of aluminium from dietary intake. EFSA Journal. 2008;754:1-34.",
+        "searchTitle": "Safety of aluminium from dietary intake"
+      }
+    ],
+    "pubmedTerm": "potassium aluminum silicate",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of sodium aluminium silicate (E 554) and potassium aluminium silicate (E 555) as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2020.6152",
+      "date": "2020",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6152",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC7448050/",
+        "https://iacmcolor.org/color-profile/mica-based-pearlescent-pigments/",
+        "https://www.fsai.ie/news-and-alerts/latest-news/titanium-dioxide-is-no-longer-authorised-as-a-food",
+        "https://int.terredeshommes.nl/uploads/44e57b25-digital-english-mica-factsheet-1.pdf"
+      ],
+      "notes": "RUNDE 3: Bekræftet: EU-definition (muskovit), perlemorspigmenter med metaloxider, E171-forbuddet (2022/63, 7.8.2022), EU-godkendelse kun som bærestof for E171/E172 (90 %), FAF 2020-konklusioner. Rettet: 'primært' → kun bærestof; aluminiumsudsagn til EFSA's beregning; børnearbejde omformuleret til dokumenteret fakta. Fjernet: 'optages næsten ikke', konkrete produktkategorier (konfekture/kagepynt/kosttilskud) og 'E171-forbuddet har ændret pigmenterne' (ikke kildebelagt)."
+    },
+    "wikipedia": "",
+    "wikidata": "Q18944658",
+    "claims": [
+      {
+        "claim": "Kaliumaluminiumsilicat er glimmer (mica), primært brugt som bærestof i perlemorsfarvestoffer",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6152",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Naturligt glimmer (muskovit), udvundet og renset",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7448050/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Glimmerflager belægges med jernoxider (E172) for perlemors- og metaleffekter",
+        "source": "https://iacmcolor.org/color-profile/mica-based-pearlescent-pigments/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Titandioxid (E171) blev tidligere brugt, men forbudt i EU i 2022",
+        "source": "https://www.fsai.ie/news-and-alerts/latest-news/titanium-dioxide-is-no-longer-authorised-as-a-food",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "I EU primært tilladt som bærestof",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6152",
+        "result": "rettet"
+      },
+      {
+        "claim": "Bærestof i E171/E172 til konfekture, kagepynt og kosttilskud",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6152",
+        "result": "rettet"
+      },
+      {
+        "claim": "Glimmer optages næsten ikke fra tarmen",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Aluminiumsindholdet er ikke biologisk let tilgængeligt men bidrager teoretisk til indtaget",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6152",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2020 kunne ikke vurdere sikkerheden pga. manglende data om bl.a. partikelkarakterisering",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6152",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "E555 bruges ikke som bærestof, men som uadskillelig bestanddel af perlemorspigmenter",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6152",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Etiske spørgsmål om børnearbejde i glimmerminer er mere diskuteret end sundhedsrisici",
+        "source": "https://int.terredeshommes.nl/uploads/44e57b25-digital-english-mica-factsheet-1.pdf",
+        "result": "rettet"
+      },
+      {
+        "claim": "Forbuddet mod E171 har ændret sammensætningen af pigmenterne",
+        "source": "",
+        "result": "fjernet"
+      }
+    ]
+  },
+  {
+    "code": "E570",
+    "nameDa": "Fedtsyrer",
+    "nameEn": "Fatty acids",
+    "category": "Antiklumpningsmiddel / glansmiddel",
+    "euStatus": "approved",
+    "origin": "mixed",
+    "summary": "Fedtsyrer er de byggesten, fedt består af, og de bruges som antiklumpningsmiddel, glansmiddel og emulgeringshjælp.",
+    "description": "E570 dækker frie fedtsyrer – caprylsyre, caprinsyre, laurinsyre, myristinsyre, palmitinsyre, stearinsyre og oliesyre, alene eller i kombination. De fremstilles typisk ved hydrolyse (spaltning) af spiselige fedtstoffer og olier efterfulgt af destillation, fraktionering og raffinering. Afhængigt af råvaren kan E570 være baseret på vegetabilske olier, animalsk fedt eller blandede kilder. Fedtsyrerne bruges som overflade- og glansmiddel, skumdæmper og slipmiddel samt som bærestof, der hjælper overfladebehandlingsmidler (fx på frugt) med at danne ensartede belægninger.",
+    "uses": "Kosttilskud og tabletter (hjælpestof), overfladebehandling af konfekture og tyggegummi, skumdæmpning ved forarbejdning af spiseolier og slipmiddel i bagværk. I EU hører E570 til gruppe I-tilsætningsstofferne, der generelt er tilladt quantum satis.",
+    "health": "Fedtsyrer er normale bestanddele af kosten. EFSA konkluderede i 2017, at E570 ikke giver anledning til sikkerhedsbekymring ved de rapporterede anvendelser og niveauer; bidraget fra tilsætningsstoffet udgjorde i gennemsnit kun ca. 1 % af den samlede eksponering for mættede fedtsyrer fra kosten. Kilden kan være animalsk, hvilket kan være relevant for vegetarer og veganere.",
+    "research": "EFSA's ANS-panel gen-evaluerede fedtsyrer (E570) i 2017 (EFSA Journal 2017;15(5):4785). Stofferne har lav akut toksicitet, og de begrænsede subkroniske studier viste ingen toksiske effekter ved op til 10 % i foderet. SCF havde i 1991 fastsat en gruppe-ADI \"not specified\" for myristin-, stearin-, palmitin- og oliesyre.",
+    "keyReferences": [
+      {
+        "citation": "EFSA ANS Panel. Re-evaluation of fatty acids (E 570) as a food additive. EFSA Journal. 2017;15(5):4785.",
+        "searchTitle": "Re-evaluation of fatty acids (E 570) as a food additive"
+      }
+    ],
+    "pubmedTerm": "stearic acid",
+    "flags": [
+      "animal_origin"
+    ],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of fatty acids (E 570) as a food additive",
+      "url": "https://doi.org/10.2903/j.efsa.2017.4785",
+      "date": "2017",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://artgerecht.com/en/glossary/e570/",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4785",
+        "https://agrinfo.eu/book-of-reports/food-additives-approval-of-certain-glazing-agents-and-carriers/",
+        "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32011R1129",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009963/"
+      ],
+      "notes": "RUNDE 3: Bekræftet: sammensætning, fremstilling, funktioner, anvendelser, EU gruppe I, EFSA 2017's konklusion (ingen sikkerhedsbekymring; ca. 1 % af mættet fedt), SCF 1991-ADI. Rettet: 'ikke behov for numerisk ADI' kunne ikke bekræftes og er erstattet af EFSA's faktiske konklusion; frugtbelægning præciseret (bærestof for glasuringsmidler); kildeeksempler (palme/soja) erstattet af 'vegetabilsk/animalsk/blandet'. Fjernet: deklarationsudsagn, 'visse pulvere', udsagn om forskning i mættet/umættet fedt (ikke kildebelagt)."
+    },
+    "wikipedia": "",
+    "wikidata": "Q61476",
+    "claims": [
+      {
+        "claim": "Fedtsyrer bruges som antiklumpningsmiddel, glansmiddel og emulgeringshjælp",
+        "source": "https://artgerecht.com/en/glossary/e570/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Omfatter stearin-, palmitin- og oliesyre m.fl.",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4785",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Udvindes ved hydrolyse af fedtstoffer og efterfølgende destillation",
+        "source": "https://artgerecht.com/en/glossary/e570/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Danner overfladehinde, giver glans og hindrer klumpning",
+        "source": "https://artgerecht.com/en/glossary/e570/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bruges som skumdæmpere",
+        "source": "https://artgerecht.com/en/glossary/e570/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bruges i overfladebehandling af frugt",
+        "source": "https://agrinfo.eu/book-of-reports/food-additives-approval-of-certain-glazing-agents-and-carriers/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Kilden kan være planter (fx palme eller soja) og dyr",
+        "source": "https://artgerecht.com/en/glossary/e570/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Kilden fremgår normalt ikke af deklarationen",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Anvendes i kosttilskud, tabletter, overfladebehandling, tyggegummi og konfekture",
+        "source": "https://artgerecht.com/en/glossary/e570/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i visse pulvere",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EU-godkendt quantum satis (gruppe I)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32011R1129",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fedtsyrer er normale kostbestanddele og omsættes som almindeligt fedt",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4785",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2017: ikke behov for numerisk ADI",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4785",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2017: ingen sikkerhedsbekymring",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009963/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Mængderne er små sammenlignet med kostens fedt",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009963/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Animalsk kilde relevant for vegetarer/veganere",
+        "source": "https://artgerecht.com/en/glossary/e570/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "ANS 2017 (4785) omfattede C8-C18:1-fedtsyrerne og fandt ingen sikkerhedsproblemer",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4785",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Forskning i mættede vs. umættede fedtsyrer vedrører kosten som helhed",
+        "source": "",
+        "result": "fjernet"
+      }
+    ]
+  },
+  {
+    "code": "E574",
+    "nameDa": "Gluconsyre",
+    "nameEn": "Gluconic acid",
+    "category": "Surhedsregulerende middel",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Gluconsyre er en mild organisk syre, der dannes ved oxidation af glukose, og som bruges til at regulere surhedsgraden.",
+    "description": "Gluconsyre (C6H12O7) er et oxidationsprodukt af glukose og findes naturligt i bl.a. honning (op til ca. 1 %), vin (op til ca. 0,25 %) og frugt. Industrielt fremstilles den ved fermentering af glukose med svampen Aspergillus niger eller bakterien Gluconobacter oxydans. I vandig opløsning står den i ligevægt med glucono-delta-lacton (E575). Gluconat-ionen er en god kompleksdanner for metalioner som calcium og jern.",
+    "uses": "Bruges som surhedsregulerende middel. I EU hører E574 til gruppe I-tilsætningsstofferne, der generelt er tilladt quantum satis i mange kategorier.",
+    "health": "JECFA har tildelt gluconsyre, glucono-delta-lacton og deres calcium-, magnesium-, kalium- og natriumsalte en gruppe-ADI \"not specified\", dvs. at en numerisk grænse ikke anses for nødvendig. EFSA's gen-evaluering er endnu ikke afsluttet.",
+    "research": "EFSA's gen-evaluering af gluconsyre og gluconater (E574–E579) er endnu ikke afsluttet: EFSA indkaldte data i 2023 (frist 31. marts 2024), og FAF-panelets arbejdsgruppe påbegyndte udkastet til udtalelse i juli 2025. JECFA fastsatte i 1998 en gruppe-ADI \"not specified\" for glucono-delta-lacton og calcium-, magnesium-, kalium- og natriumgluconat.",
+    "keyReferences": [
+      {
+        "citation": "JECFA. Glucono-delta-lactone and the calcium, magnesium, potassium and sodium salts of gluconic acid. WHO Food Additives Series 42 (51. JECFA-møde, 1998).",
+        "searchTitle": "Glucono-delta-lactone calcium magnesium potassium sodium salts gluconic acid WHO Food Additives Series 42"
+      }
+    ],
+    "pubmedTerm": "gluconic acid",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": null,
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Gluconic_acid",
+        "https://www.jungbunzlauer.com/en/products/gluconates/gluconic-acid",
+        "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32011R1129",
+        "https://inchem.org/documents/jecfa/jecmono/v042je12.htm",
+        "https://www.efsa.europa.eu/en/call/call-data-re-evaluation-gluconic-acid-e-574-and-related-food-additives-e-575-579",
+        "https://www.efsa.europa.eu/sites/default/files/2024-10/wg-food-additives-re-evaluation-follow-up.pdf"
+      ],
+      "notes": "RUNDE 3: Bekræftet: kemi, naturlig forekomst, fermentering, ligevægt med GDL, kompleksdannelse, EU gruppe I, JECFA gruppe-ADI 'not specified' (1998). Rettet: påstanden om en EFSA-gen-evaluering fra 2018 er forkert – EFSA indkaldte data i 2023-24, og arbejdsgruppen begyndte på udtalelsen i 2025; efsa-feltet er sat til null, og nøglereferencen er erstattet af JECFA-monografien. Fjernet: konkrete fødevarekategorier, 'løs mave ved høje doser', 'begrænset forskning' (ikke kildebelagt)."
+    },
+    "wikipedia": "",
+    "wikidata": "Q407569",
+    "claims": [
+      {
+        "claim": "Mild organisk syre, dannet ved oxidation af glukose",
+        "source": "https://en.wikipedia.org/wiki/Gluconic_acid",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Formel C6H12O7",
+        "source": "https://en.wikipedia.org/wiki/Gluconic_acid",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Findes naturligt i honning, vin og frugt",
+        "source": "https://www.jungbunzlauer.com/en/products/gluconates/gluconic-acid",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles ved fermentering med Aspergillus niger eller Gluconobacter",
+        "source": "https://www.jungbunzlauer.com/en/products/gluconates/gluconic-acid",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "I ligevægt med glucono-delta-lacton i opløsning",
+        "source": "https://en.wikipedia.org/wiki/Gluconic_acid",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "God kompleksdanner for metalioner",
+        "source": "https://en.wikipedia.org/wiki/Gluconic_acid",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i mejeriprodukter, drikkevarer, konserves og forarbejdet kød",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EU-godkendt quantum satis (gruppe I)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32011R1129",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Omsættes i kroppen og har meget lav toksicitet",
+        "source": "https://inchem.org/documents/jecfa/jecmono/v042je12.htm",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA's ANS-panel gen-evaluerede gluconsyre og gluconater i 2018 uden sikkerhedsproblemer",
+        "source": "https://www.efsa.europa.eu/en/call/call-data-re-evaluation-gluconic-acid-e-574-and-related-food-additives-e-575-579",
+        "result": "rettet"
+      },
+      {
+        "claim": "Meget høje doser kan give løs mave",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Begrænset nyere forskning",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "efsa-felt og nøglereference til en EFSA-udtalelse fra 2018 (pub/5426)",
+        "source": "https://www.efsa.europa.eu/sites/default/files/2024-10/wg-food-additives-re-evaluation-follow-up.pdf",
+        "result": "fjernet"
+      }
+    ]
+  },
+  {
+    "code": "E575",
+    "nameDa": "Glucono-delta-lacton",
+    "nameEn": "Glucono-delta-lactone",
+    "category": "Surhedsregulerende middel / hævemiddel",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Glucono-delta-lacton (GDL) er et stof, der langsomt omdannes til gluconsyre i vand og derfor giver en gradvis syrning.",
+    "description": "GDL er den cykliske ester (lacton) af gluconsyre, som produceres ved fermentering af glukose. I vand hydrolyseres GDL gradvist til gluconsyre over 40–60 minutter, så pH falder gradvist i stedet for momentant. Det gør GDL nyttigt som koaguleringsmiddel i tofu, som syrningsmiddel i spegepølser og salami, som hævesyre i bagværk og som koaguleringsmiddel for mælkeproteiner i ost. Smagen er i starten sød og bliver kun let syrlig.",
+    "uses": "Tofu, spegepølser og salami, bagværk (hævemiddel) og ost. I EU hører E575 til gruppe I-tilsætningsstofferne, der generelt er tilladt quantum satis i mange kategorier.",
+    "health": "GDL hydrolyseres til gluconsyre. JECFA har tildelt GDL og gluconaterne en gruppe-ADI \"not specified\". EFSA's gen-evaluering er endnu ikke afsluttet.",
+    "research": "EFSA's gen-evaluering af gluconsyre og gluconater (E574–E579) er endnu ikke afsluttet: EFSA indkaldte data i 2023 (frist 31. marts 2024), og FAF-panelets arbejdsgruppe påbegyndte udkastet til udtalelse i juli 2025. JECFA fastsatte i 1998 en gruppe-ADI \"not specified\" for glucono-delta-lacton og calcium-, magnesium-, kalium- og natriumgluconat.",
+    "keyReferences": [
+      {
+        "citation": "JECFA. Glucono-delta-lactone and the calcium, magnesium, potassium and sodium salts of gluconic acid. WHO Food Additives Series 42 (51. JECFA-møde, 1998).",
+        "searchTitle": "Glucono-delta-lactone calcium magnesium potassium sodium salts gluconic acid WHO Food Additives Series 42"
+      }
+    ],
+    "pubmedTerm": "glucono-delta-lactone",
+    "flags": [],
+    "classes": [
+      "sequestrant"
+    ],
+    "variants": [],
+    "efsa": null,
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.ams.usda.gov/sites/default/files/media/Glucono%20Delta%20Lactone%20TR.pdf",
+        "https://www.jungbunzlauer.com/en/products/gluconates/gluconic-acid",
+        "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32011R1129",
+        "https://www.efsa.europa.eu/en/call/call-data-re-evaluation-gluconic-acid-e-574-and-related-food-additives-e-575-579",
+        "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/1370",
+        "https://www.efsa.europa.eu/sites/default/files/2024-10/wg-food-additives-re-evaluation-follow-up.pdf"
+      ],
+      "notes": "RUNDE 3: Bekræftet: kemi, gradvis hydrolyse (40–60 min), anvendelser (tofu, spegepølse, bagning, ost), smag, EU gruppe I, JECFA ADI 'not specified'. Rettet: påstanden om en EFSA-gen-evaluering fra 2018 er forkert – den pågår (dataindkaldelse 2023-24, arbejdsgruppe fra 2025); efsa sat til null; nøglereference erstattet af JECFA; fremstillingstrinnet 'krystallisering' kunne ikke bekræftes og er omformuleret. Fjernet: feta/fisk/kosttilskud, 'mavebesvær', 'begrænset forskning' (ikke kildebelagt)."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Glucono_delta-lactone",
+    "wikidata": "Q114174",
+    "claims": [
+      {
+        "claim": "Omdannes langsomt til gluconsyre i vand og giver gradvis syrning",
+        "source": "https://www.ams.usda.gov/sites/default/files/media/Glucono%20Delta%20Lactone%20TR.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Cyklisk ester (lacton) af gluconsyre",
+        "source": "https://www.jungbunzlauer.com/en/products/gluconates/gluconic-acid",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles ved krystallisering af gluconsyre fra fermentering af glukose",
+        "source": "https://www.jungbunzlauer.com/en/products/gluconates/gluconic-acid",
+        "result": "rettet"
+      },
+      {
+        "claim": "Bruges til tofu, spegepølser, bagepulver og ost",
+        "source": "https://www.ams.usda.gov/sites/default/files/media/Glucono%20Delta%20Lactone%20TR.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Smag først sød, bliver mildt syrlig",
+        "source": "https://www.ams.usda.gov/sites/default/files/media/Glucono%20Delta%20Lactone%20TR.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i feta-lignende oste, fiskeprodukter og kosttilskud",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EU-godkendt quantum satis (gruppe I)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32011R1129",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA konkluderede i 2018: ikke behov for numerisk ADI, ikke et sikkerhedsproblem",
+        "source": "https://www.efsa.europa.eu/en/call/call-data-re-evaluation-gluconic-acid-e-574-and-related-food-additives-e-575-579",
+        "result": "rettet"
+      },
+      {
+        "claim": "Meget store mængder kan give mavebesvær",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "JECFA har tildelt ADI 'not specified'",
+        "source": "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/1370",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Begrænset ny forskning",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "efsa-felt og nøglereference til en EFSA-udtalelse fra 2018 (pub/5426)",
+        "source": "https://www.efsa.europa.eu/sites/default/files/2024-10/wg-food-additives-re-evaluation-follow-up.pdf",
+        "result": "fjernet"
+      }
+    ]
+  },
+  {
+    "code": "E620",
+    "nameDa": "Glutaminsyre",
+    "nameEn": "Glutamic acid",
+    "category": "Smagsforstærker",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Glutaminsyre er en naturlig aminosyre, der giver umami-smag og bruges som smagsforstærker.",
+    "description": "L-glutaminsyre er en af de mest udbredte aminosyrer i proteiner. Glutamater fremstilles i dag ved bakteriel fermentering med bakterier som Corynebacterium glutamicum; alle producenter gik over til fermentering, efter at metoden blev indført i 1956. Glutamat findes naturligt i fx tomater, parmesan, svampe, sojasovs og modermælk, og kroppen behandler tilsat glutamat på samme måde som naturligt forekommende glutamat. Stofferne giver umami-smag. Den frie syre er langt mindre opløselig i vand end natriumsaltet (ca. 8,6 g/l mod ca. 740 g/l).",
+    "uses": "Supper, bouillon, snacks, færdigretter, krydderiblandinger og saucer. I EU højst 10 g/kg (alene eller i kombination med E621–E625), dog uden numerisk grænse (quantum satis) i saltsubstitutter, krydderier og smagsgivere (seasonings and condiments).",
+    "health": "EFSA fastsatte i 2017 en gruppe-ADI på 30 mg/kg legemsvægt/dag for glutaminsyre og glutamater (E620–E625), udtrykt som glutaminsyre, baseret på en NOAEL på 3.200 mg mononatriumglutamat/kg legemsvægt/dag i et neuroudviklingsstudie i dyr og en usikkerhedsfaktor på 100. EFSA konstaterede, at eksponeringen fra alle kilder overskrider ADI i alle befolkningsgrupper ved højt forbrug og for nogle grupper også overskrider doser, der i humane studier er forbundet med bivirkninger som hovedpine (85,8 mg/kg legemsvægt/dag) og blodtryksstigning (150 mg/kg legemsvægt/dag). Det såkaldte \"kinarestaurant-syndrom\" er ikke bekræftet i kontrollerede dobbeltblindede forsøg.",
+    "research": "EFSA's ANS-panel gen-evaluerede glutamaterne i 2017 og erstattede SCF's tidligere gruppe-ADI \"not specified\" (udtalelse fra 1990, offentliggjort 1991) med en gruppe-ADI på 30 mg/kg legemsvægt/dag og anbefalede at revurdere de maksimale niveauer i fødevarer. I 2015 vurderede EFSA en ny produktionsmetode med en genetisk modificeret Corynebacterium glutamicum-stamme og fandt ingen sikkerhedsbekymring ved ændringen. En systematisk gennemgang (Obayashi & Nagamura, J Headache Pain 2016) fandt, at MSG givet sammen med mad ikke gav signifikant flere tilfælde af hovedpine (bortset fra én kvindegruppe), og konkluderede, at der kræves flere studier for at afgøre, om der er en årsagssammenhæng. Epidemiologiske studier af glutamat og overvægt har givet modstridende resultater, og spørgsmålet er uafklaret.",
+    "keyReferences": [
+      {
+        "citation": "EFSA ANS Panel. Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives. EFSA Journal. 2017.",
+        "searchTitle": "Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives"
+      },
+      {
+        "citation": "Obayashi Y, Nagamura Y. Does monosodium glutamate really cause headache? A systematic review of human studies. J Headache Pain. 2016.",
+        "searchTitle": "Does monosodium glutamate really cause headache?: a systematic review of human studies"
+      }
+    ],
+    "pubmedTerm": "glutamic acid",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2017.4910",
+      "date": "2017-07-12",
+      "adi": "30 mg/kg bw/day",
+      "overexposureRisk": "en:high"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Glutamic_acid",
+        "https://www.health.harvard.edu/diet-and-nutrition/monosodium-glutamate-msg-what-it-is-and-why-you-might-consider-avoiding-foods-that-contain-it",
+        "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/corynebacterium-glutamicum",
+        "https://ific.org/resources/articles/everything-you-need-to-know-about-glutamate-and-monosodium-glutamate/",
+        "https://www.umamiinfo.com/ikedakikunae/",
+        "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4910",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009848/",
+        "https://www.mcgill.ca/oss/article/controversial-science-food-health-news/chinese-restaurant-syndrome",
+        "https://doi.org/10.1186/s10194-016-0639-4",
+        "https://pubmed.ncbi.nlm.nih.gov/24927698/"
+      ],
+      "notes": "RUNDE 3: Bekræftet: aminosyre, opløselighed, fermentering (C. glutamicum), naturlig forekomst, EFSA 2017 (ADI 30 mg/kg, NOAEL, overskridelse, humane effekter), EFSA 2015 (GM-stamme), kinarestaurant-syndrom, overvægtsdebat. Rettet: EU quantum satis gælder saltsubstitutter, krydderier og smagsgivere (ikke 'smagsforstærkere'); SCF-årstal præciseret (1990/1991); Obayashi-konklusion gengivet præcist. Fjernet: konkrete råvarer, 'forstærker salt- og kødsmag', 'bruges sjældnere' (ikke kildebelagt)."
+    },
+    "wikipedia": "",
+    "wikidata": "Q181136",
+    "claims": [
+      {
+        "claim": "L-glutaminsyre er en af de mest almindelige aminosyrer i proteiner",
+        "source": "https://en.wikipedia.org/wiki/Glutamic_acid",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Den frie syre er mindre opløselig end natriumsaltet",
+        "source": "https://en.wikipedia.org/wiki/Glutamic_acid",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bruges derfor sjældnere",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Anvendes i supper, bouillon, snacks, færdigretter, krydderiblandinger og saucer",
+        "source": "https://www.health.harvard.edu/diet-and-nutrition/monosodium-glutamate-msg-what-it-is-and-why-you-might-consider-avoiding-foods-that-contain-it",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Glutamater fremstilles næsten udelukkende ved bakteriel fermentering med Corynebacterium glutamicum",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/corynebacterium-glutamicum",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Råvarer: sukkerholdige råvarer som majs, sukkerrør eller roer",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Glutamat findes naturligt i tomater, parmesan, svampe, sojasauce og modermælk",
+        "source": "https://ific.org/resources/articles/everything-you-need-to-know-about-glutamate-and-monosodium-glutamate/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kroppen skelner ikke mellem naturligt og tilsat glutamat",
+        "source": "https://ific.org/resources/articles/everything-you-need-to-know-about-glutamate-and-monosodium-glutamate/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Giver umami-smag",
+        "source": "https://www.umamiinfo.com/ikedakikunae/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Forstærker smagen af salt og kød",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EU: maks. 10 g/kg (alene eller kombineret E620–E625); quantum satis i krydderier/smagsforstærkere",
+        "source": "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2017: gruppe-ADI 30 mg/kg lgv/dag udtrykt som glutaminsyre, baseret på neuroudviklingseffekter i dyreforsøg",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4910",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "ADI kan overskrides af alle aldersgrupper med højt forbrug",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4910",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Høje indtag i humane studier forbundet med hovedpine og blodtryksstigning",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009848/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kinarestaurant-syndrom ikke bekræftet i dobbeltblindede forsøg",
+        "source": "https://www.mcgill.ca/oss/article/controversial-science-food-health-news/chinese-restaurant-syndrome",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2017 erstattede 'ADI not specified' (SCF 1991) og anbefalede revurdering af maks. niveauer",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4910",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2015: ændret produktionsmetode med GM-stamme uproblematisk",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4910",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Obayashi & Nagamura 2016 fandt ikke overbevisende evidens for, at glutamat i mad giver hovedpine",
+        "source": "https://doi.org/10.1186/s10194-016-0639-4",
+        "result": "rettet"
+      },
+      {
+        "claim": "Debatten om glutamat og overvægt er uafklaret",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/24927698/",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E621",
+    "nameDa": "Mononatriumglutamat",
+    "nameEn": "Monosodium glutamate",
+    "category": "Smagsforstærker",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Mononatriumglutamat (MSG) er natriumsaltet af glutaminsyre og en udbredt smagsforstærker.",
+    "description": "Kikunae Ikeda identificerede i 1908 glutamat som smagsstoffet i tangbouillon (kombu) og navngav smagen umami. Glutamater fremstilles i dag ved bakteriel fermentering med bakterier som Corynebacterium glutamicum; alle producenter gik over til fermentering, efter at metoden blev indført i 1956. Glutamat findes naturligt i fx tomater, parmesan, svampe, sojasovs og modermælk, og kroppen behandler tilsat glutamat på samme måde som naturligt forekommende glutamat. Stofferne giver umami-smag. MSG indeholder ca. en tredjedel så meget natrium som bordsalt (ca. 12 % mod 39 %) og kan bruges til at sænke natriumindholdet uden at gå på kompromis med smagen.",
+    "uses": "Chips og snacks, bouillonterninger, supper, instantnudler, krydderiblandinger, færdigretter, saucer og asiatiske retter. I EU højst 10 g/kg (samlet for E620–E625), uden numerisk grænse (quantum satis) i saltsubstitutter, krydderier og smagsgivere (seasonings and condiments).",
+    "health": "EFSA fastsatte i 2017 en gruppe-ADI på 30 mg/kg legemsvægt/dag for glutaminsyre og glutamater (E620–E625), udtrykt som glutaminsyre, baseret på en NOAEL på 3.200 mg mononatriumglutamat/kg legemsvægt/dag i et neuroudviklingsstudie i dyr og en usikkerhedsfaktor på 100. EFSA konstaterede, at eksponeringen fra alle kilder overskrider ADI i alle befolkningsgrupper ved højt forbrug og for nogle grupper også overskrider doser, der i humane studier er forbundet med bivirkninger som hovedpine (85,8 mg/kg legemsvægt/dag) og blodtryksstigning (150 mg/kg legemsvægt/dag). Det såkaldte \"kinarestaurant-syndrom\" er ikke bekræftet i kontrollerede dobbeltblindede forsøg.",
+    "research": "EFSA's ANS-panel gen-evaluerede glutamaterne i 2017 og erstattede SCF's tidligere gruppe-ADI \"not specified\" (udtalelse fra 1990, offentliggjort 1991) med en gruppe-ADI på 30 mg/kg legemsvægt/dag og anbefalede at revurdere de maksimale niveauer i fødevarer. I 2015 vurderede EFSA en ny produktionsmetode med en genetisk modificeret Corynebacterium glutamicum-stamme og fandt ingen sikkerhedsbekymring ved ændringen. En systematisk gennemgang (Obayashi & Nagamura, J Headache Pain 2016) fandt, at MSG givet sammen med mad ikke gav signifikant flere tilfælde af hovedpine (bortset fra én kvindegruppe), og konkluderede, at der kræves flere studier for at afgøre, om der er en årsagssammenhæng. Epidemiologiske studier af glutamat og overvægt har givet modstridende resultater, og spørgsmålet er uafklaret.",
+    "keyReferences": [
+      {
+        "citation": "EFSA ANS Panel. Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives. EFSA Journal. 2017.",
+        "searchTitle": "Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives"
+      },
+      {
+        "citation": "Obayashi Y, Nagamura Y. Does monosodium glutamate really cause headache? A systematic review of human studies. J Headache Pain. 2016.",
+        "searchTitle": "Does monosodium glutamate really cause headache?: a systematic review of human studies"
+      }
+    ],
+    "pubmedTerm": "monosodium glutamate",
+    "flags": [],
+    "classes": [
+      "flavour-enhancer"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Re‐evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives",
+      "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4910",
+      "date": "2017/07/12",
+      "adi": "30 mg/kg bw/day",
+      "overexposureRisk": "en:high"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.umamiinfo.com/ikedakikunae/",
+        "https://www.health.harvard.edu/diet-and-nutrition/monosodium-glutamate-msg-what-it-is-and-why-you-might-consider-avoiding-foods-that-contain-it",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4910",
+        "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/corynebacterium-glutamicum",
+        "https://ific.org/resources/articles/everything-you-need-to-know-about-glutamate-and-monosodium-glutamate/",
+        "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009848/",
+        "https://www.mcgill.ca/oss/article/controversial-science-food-health-news/chinese-restaurant-syndrome",
+        "https://doi.org/10.1186/s10194-016-0639-4",
+        "https://pubmed.ncbi.nlm.nih.gov/24927698/"
+      ],
+      "notes": "RUNDE 3: Bekræftet: Ikeda 1908/kombu, natriumindhold (12 % vs. 39 %), anvendelser, fermentering, naturlig forekomst, EFSA 2017 og 2015, kinarestaurant-syndrom, overvægtsdebat. Rettet: EU quantum satis-kategorier, SCF-årstal, Obayashi-konklusion, overeksponering formuleret som EFSA's faktiske konstatering. Fjernet: kaldenavnene 'atamon' og 'vetsin' (ikke kildebelagt som navne for MSG), 'verdens mest brugte', konkrete råvarer, 'forstærker salt- og kødsmag' (ikke kildebelagt)."
+    },
+    "wikipedia": "",
+    "wikidata": "Q179678",
+    "claims": [
+      {
+        "claim": "Kaldes 'atamon'/'vetsin'",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Verdens mest brugte smagsforstærker",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Isoleret af Kikunae Ikeda i 1908 fra tangbouillon (kombu)",
+        "source": "https://www.umamiinfo.com/ikedakikunae/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "MSG indeholder ca. en tredjedel så meget natrium som bordsalt og kan reducere saltindholdet",
+        "source": "https://www.health.harvard.edu/diet-and-nutrition/monosodium-glutamate-msg-what-it-is-and-why-you-might-consider-avoiding-foods-that-contain-it",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i chips/snacks, bouillonterninger, supper, nudler, krydderier, færdigretter, saucer og asiatiske retter",
+        "source": "https://www.health.harvard.edu/diet-and-nutrition/monosodium-glutamate-msg-what-it-is-and-why-you-might-consider-avoiding-foods-that-contain-it",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA vurderede risikoen for overeksponering som høj for nogle befolkningsgrupper",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4910",
+        "result": "rettet"
+      },
+      {
+        "claim": "Glutamater fremstilles næsten udelukkende ved bakteriel fermentering med Corynebacterium glutamicum",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/corynebacterium-glutamicum",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Råvarer: sukkerholdige råvarer som majs, sukkerrør eller roer",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Glutamat findes naturligt i tomater, parmesan, svampe, sojasauce og modermælk",
+        "source": "https://ific.org/resources/articles/everything-you-need-to-know-about-glutamate-and-monosodium-glutamate/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kroppen skelner ikke mellem naturligt og tilsat glutamat",
+        "source": "https://ific.org/resources/articles/everything-you-need-to-know-about-glutamate-and-monosodium-glutamate/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Giver umami-smag",
+        "source": "https://www.umamiinfo.com/ikedakikunae/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Forstærker smagen af salt og kød",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EU: maks. 10 g/kg (alene eller kombineret E620–E625); quantum satis i krydderier/smagsforstærkere",
+        "source": "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2017: gruppe-ADI 30 mg/kg lgv/dag udtrykt som glutaminsyre, baseret på neuroudviklingseffekter i dyreforsøg",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4910",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "ADI kan overskrides af alle aldersgrupper med højt forbrug",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4910",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Høje indtag i humane studier forbundet med hovedpine og blodtryksstigning",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009848/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kinarestaurant-syndrom ikke bekræftet i dobbeltblindede forsøg",
+        "source": "https://www.mcgill.ca/oss/article/controversial-science-food-health-news/chinese-restaurant-syndrome",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2017 erstattede 'ADI not specified' (SCF 1991) og anbefalede revurdering af maks. niveauer",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4910",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2015: ændret produktionsmetode med GM-stamme uproblematisk",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4910",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Obayashi & Nagamura 2016 fandt ikke overbevisende evidens for, at glutamat i mad giver hovedpine",
+        "source": "https://doi.org/10.1186/s10194-016-0639-4",
+        "result": "rettet"
+      },
+      {
+        "claim": "Debatten om glutamat og overvægt er uafklaret",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/24927698/",
+        "result": "bekræftet"
+      }
+    ]
+  }
+]
