@@ -51,6 +51,12 @@ Next work:
 - 10.524 varer med næring (2.408 uden kcal/protein/kulhydrat/fedt springes over) og 7.218 billeder (5 GB) ligger på NAS'en i `data/store-products-import/` (kopieret med tar over SSH – for stort til git).
 - `store-products-agent` læser `/import` (compose-volume), når `store_products.json` findes dér; ellers den lille prøve i billedet. Billeder, der allerede er kopieret, springes over ved genstart.
 - Opdatering af kataloget: `py build_data.py --all --out <mappe>` og kopiér mappen til NAS'en igen; agenten kører ved næste start eller "Kør nu" i admin → Cron-jobs (`store-products-import`).
+## 2026-09-28: Selected state i HelloFresh-stil (punkt 46)
+
+- Ny `.hf-selected` (+ `.hf-selected-open` til accordions) med lysegrøn flade,
+  grøn stroke og mørkegrøn tekst. Brugt i `.hf-choice`, `.hf-chip`,
+  `AccordionSection`, onboarding, periodevælger, kalenderens valgte dag,
+  forsidens FAB-side, vandbeholdere, widgets-valg og måltidsdeling.
 
 ## 2026-09-28: Open Food Facts ude af søgningen
 
