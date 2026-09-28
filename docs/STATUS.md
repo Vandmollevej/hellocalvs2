@@ -2,6 +2,18 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Dagens rettelser samlet i master (claude/unsolved-tasks-today-gpptj8)
+
+Dagens rettelser lå på grene, der aldrig var flettet ind i master, og var derfor
+ikke deployet. De er samlet i én PR. Konflikter er løst sådan:
+- Fejlrapport: noter + sektioner er begge med. Migrationen `bug_report_sections` er omdøbt til 20260928170100.
+- Ingrediensliste: E-numre er klikbare, og allergener står med fed (`IngredientsText`).
+- Produktcirklen: kun brandlogo (seneste opgave). Certifikater vises under energifordelingen.
+- Sprunget over som dubletter af det, der allerede er i master: e-nummer-side ×3, favicon-display,
+  fejlrapportering-vareside, flaskevand-0bqm0j, kamera-scanning-effect-t7x982,
+  multiple-camera-objects-xwz4s4, nat-question-ui-behavior, scroll-numre-snap-fix-n97mcl.
+- Kildegrenenes STATUS/DECISIONS-noter er ikke flettet med (master-versionen er beholdt).
+
 ## 2026-09-28: Statistiksiden — frit layout med sektionerne Grafer og Kort
 
 - Statistiksiden er delt i to sektioner med overskrift, "Grafer" og "Kort"
