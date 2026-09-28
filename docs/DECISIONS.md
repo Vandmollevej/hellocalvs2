@@ -3090,6 +3090,9 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
 - "Slå fra" i søvn-popup'en er et understreget tekstlink (ingen slider/nedtælling). Det åbner Indstillinger → Visning → Oplevelse af søvn (`?focus=toggle`), hvor indstillingen står markeret med en tynd grøn ring.
 - Den grå infotekst står under spørgsmålet og følger den globale tooltip-indstilling (`useShowTooltips`); info-ikonet er fjernet.
 - Tallene er store og ikke understregede. Valgt tal: grøn fyldt cirkel, hvidt tal, ingen Luk/Slå fra. Efter ~0,5 s glider popup'en ned til et lille bottom-sheet med håndtag, bliver liggende ~1,3 s og forsvinder.
+## 2026-09-28 — Automatisk fotografering (punkt 15)
+
+Foto-trinnene i kamera-flowet (forside, næring, ingredienser) udløser automatisk, når varen er i fokus: skarphed (Laplace-varians) i midterrammen skal være over et minimum og tæt på den bedste målte, og billedet skal være stillestående i 4 målinger i træk (200 ms interval, 1,2 s opstart pr. trin). Beregnes lokalt på et 160×160-udsnit (`src/lib/focus-detection.ts`, `useAutoCapture`). "Tag billede"-knappen bevares som manuel reserve. Stregkodetrinnet er uændret.
 - 2026-09-28 (#34): Hvert E-nummer har en egen side `/e-numre/[code]`. Alternative
   troværdige kilder genereres ud fra E-nummeret (ingen ny DB-kolonne); den
   primære kilde forbliver `Additive.link`/`source`. Modalen er fortsat hurtigvisning.

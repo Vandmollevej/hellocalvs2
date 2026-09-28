@@ -594,6 +594,7 @@
     "lookingUp": "Slår {code} op...",
     "barcodeNotFound": "Stregkoden blev læst, men produktet blev ikke fundet. Prøv en anden kode.",
     "barcodeLookupError": "Stregkoden blev læst, men produktopslaget fejlede. Prøv igen.",
+    "autoCaptureHint": "Billedet tages automatisk, når varen er skarp og holdes stille.",
     "autoScanHint": "Kameraet scanner automatisk. Du kan også indtaste nummeret under stregkoden.",
     "barcodeNumberAriaLabel": "Stregkodenummer",
     "lookUp": "Slå op",

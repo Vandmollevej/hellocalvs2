@@ -8,6 +8,9 @@ Last updated: 2026-09-28
   `/settings/display/sleep-quality?focus=toggle` (grøn fokus-ring), grå
   infotekst under spørgsmålet styret af tooltip-indstillingen, store tal med
   grøn fyldt cirkel ved valg og bottom-sheet-exit. DECISIONS 2026-09-28.
+## 2026-09-28: Indberet fejl — sammenfoldelig "Note"
+
+- `/profile/report-bug`: feltet "Beskriv fejlen" er erstattet af en "Note"-header med pil ned, der folder noteområdet ud/ind. Foldes automatisk ud ved "Redigér" og ved afsendelse uden gyldig note (min. 10 tegn).
 ## 2026-09-28: Forside — kun "Dagens tilføjelser" scroller
 
 Forsiden er låst til skærmhøjden (`h-dvh overflow-hidden`); topbar, hero og bundmenu står fast, og kun listen scroller internt.
@@ -4715,6 +4718,7 @@ kan ikke nå den server. Denne ændring bør derfor tjekkes visuelt af brugeren
 selv (eller i en senere session, når den anden dev-server ikke kører), særligt
 justeringen af scroll-fligen ved forskellige stå-op-tidspunkter.
 
+- 2026-09-28: Punkt 15 automatisk fotografering bygget (PR #35): foto-trinnene i kamera-flowet udløser selv, når varen er skarp og stille; knappen er manuel reserve. Lint + build grønne.
 - 2026-09-28 (opgave #34 E-nummer-side – indhold): Ny detaljeside
   `/e-numre/[code]` (`src/app/e-numre/[code]/page.tsx`) med sektionerne Navn,
   Forklaring, Risici og relevante oplysninger, Forskning, Primær kilde og
@@ -4724,3 +4728,12 @@ justeringen af scroll-fligen ved forskellige stå-op-tidspunkter.
   `AdditiveInfoModal` linker til siden. Lint/typecheck/build grønne; ikke
   verificeret mod live-data (kræver DB med `additives`-tabellen).
 - 2026-09-28 (opgave 33): Ny side `/e-numre` viser hele E-nummer-databasen med søgefelt øverst (søg på nummer, fx "330"/"E330", eller dansk/internationalt navn/funktion). Logik i `src/lib/additives.ts`, UI i `src/components/additives/AdditiveList.tsx`.
+
+## 2026-09-28: Punkt 33 — Tidspunkt hører til registreringen
+
+- Den generelle vareside (`AddProductView`) viser ikke længere Tidspunkt; ny
+  registrering får stadig nu eller det tidspunkt, kalenderen åbnede med.
+- Konkret registrering (`/registration/[id]`, åbnes fra kalender, Dagens
+  tilføjelser og tale) viser `TimeSection` (kun når `AddProductView` redigerer
+  en registrering): "Tidspunkt" med klokkeslættet lige under, uden streger og
+  uden "Kl."-præfiks.
