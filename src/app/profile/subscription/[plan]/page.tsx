@@ -166,6 +166,21 @@ export default function SubscriptionPlanPage() {
             );
           })}
         </div>
+        {/* Pris og bindingsperiode for den valgte periode står under boksene,
+            så det er tydeligt, hvad man betaler og binder sig til (opgave 25). */}
+        <div className="rounded-lg bg-hf-tan p-4" aria-live="polite">
+          <p className="hf-type-section-title">
+            {t("subscription.planPage.summaryPrice", {
+              price: formatDkk(prices[months]),
+              unit: t(`subscription.planPage.unit.${months}`),
+            })}
+          </p>
+          <p className="hf-type-body mt-1">
+            {t("subscription.planPage.summaryBinding", {
+              period: t(`subscription.planPage.bindingPeriod.${months}`),
+            })}
+          </p>
+        </div>
         <p className="text-text-secondary hf-type-caption">{t("subscription.planPage.renewalNote")}</p>
       </div>
     </HfScreen>
