@@ -576,7 +576,7 @@ export function AddProductView({
                       <img
                         src={displayImageUrl}
                         alt=""
-                        className="block h-full w-full max-h-full max-w-full object-contain p-8"
+                        className="block h-full w-full max-h-full max-w-full object-cover"
                       />
                     ) : shouldPoll ? (
                       <Skeleton type="circle" width="100%" height="100%" />
@@ -595,13 +595,13 @@ export function AddProductView({
                     </button>
                   )}
                   {/* Logo sits on top of the product circle: its bottom-left
-                      corner halfway between the circle's centre and its bottom
-                      edge (half a radius up), spanning one radius to the right. */}
+                      corner at the circle's bottom point, spanning one radius
+                      to the right, so it never covers the photo's centre. */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="/hello-cal-fruit.png"
                     alt=""
-                    className="pointer-events-none absolute bottom-1/4 left-1/2 z-10 h-[95px] w-[95px] object-contain object-left-bottom"
+                    className="pointer-events-none absolute bottom-0 left-1/2 z-10 h-[95px] w-[95px] object-contain object-left-bottom"
                   />
                 </div>
                 {!!state.product.barcodes?.length && state.product.createdByUserId !== profile?.id && (
