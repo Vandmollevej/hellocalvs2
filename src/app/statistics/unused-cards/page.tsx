@@ -27,6 +27,24 @@ import type { IntegrationCardStatus } from "@/lib/integrations";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { useSourceRegistrations } from "@/lib/use-source-registrations";
 import { registrationsWithinLastDays } from "@/lib/food-classification";
+import { TrendIcon } from "@/components/BottomNav";
+import {
+  addChartsToLayout,
+  dailyChartLabel,
+  DEFAULT_ACTIVE_CHART_KEYS,
+  loadChartLayout,
+  STAT_CHART_DEFS,
+  type StatChartDef,
+} from "@/lib/stat-charts";
+
+type ChartOption = { key: string; label: string };
+
+function chartLabel(def: StatChartDef, t: (key: string) => string): string {
+  if (def.kind === "caloriesAndWeight") return t("statistics.caloriesAndWeightChart");
+  if (def.kind === "sleepQuality") return t("statistics.sleepQualityChart");
+  if (def.kind === "intradayKcal") return t("statUnusedCharts.intradayKcal");
+  return dailyChartLabel(def.field);
+}
 
 function withinLastDaysActivities(activities: ActivityTotals[], days: number) {
   const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
@@ -121,6 +139,25 @@ export default function UnusedStatCardsPage() {
   const [activeKeys, setActiveKeys] = useState<Set<string>>(() => activeStatKeys(DEFAULT_LAYOUT));
   const { registrations: sourceRegistrations, loading: sourcesLoading } = useSourceRegistrations();
   const [query, setQuery] = useState("");
+  // localStorage er usynlig for serveren: start med standardgraferne og skift efter mount.
+  const [activeChartKeys, setActiveChartKeys] = useState<Set<string>>(() => new Set(DEFAULT_ACTIVE_CHART_KEYS));
+
+  useEffect(() => {
+    function syncActiveChartKeys() {
+      setActiveChartKeys(new Set(loadChartLayout()));
+    }
+    syncActiveChartKeys();
+  }, []);
+
+  // Alle grafer samlet i én dropdown ("Grafer") øverst.
+  const chartOptions = useMemo<ChartOption[]>(
+    () =>
+      STAT_CHART_DEFS.filter((def) => !activeChartKeys.has(def.key)).map((def) => ({
+        key: def.key,
+        label: chartLabel(def, t),
+      })),
+    [activeChartKeys, t],
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -223,6 +260,46 @@ export default function UnusedStatCardsPage() {
     return results;
   }, [categories, normalizedQuery]);
 
+  const chartSearchResults = useMemo(
+    () =>
+      normalizedQuery
+        ? chartOptions.filter((option) => option.label.toLocaleLowerCase("da").includes(normalizedQuery))
+        : [],
+    [chartOptions, normalizedQuery],
+  );
+
+  function addChart(key: string) {
+    addChartsToLayout([key]);
+    setActiveChartKeys((prev) => new Set(prev).add(key));
+    router.back();
+  }
+
+  function renderChartGrid(options: ChartOption[]) {
+    return (
+      <div className="grid grid-cols-2 gap-4">
+        {options.map((option) => (
+          <button
+            key={option.key}
+            type="button"
+            onClick={() => addChart(option.key)}
+            className="flex flex-col justify-between gap-1 rounded-2xl bg-hf-tan p-4 text-left active:opacity-80"
+          >
+            <span className="flex items-start justify-between gap-2">
+              <span className="hf-type-small text-text-secondary min-w-0">{t("statSections.chartsHeading")}</span>
+              <span className="hf-type-small hf-type-strong shrink-0 whitespace-nowrap text-hf-black">
+                {t("statUnusedCards.add")}
+              </span>
+            </span>
+            <span className="hf-type-body hf-heading flex items-center gap-1.5 text-hf-black">
+              <TrendIcon color="currentColor" size={16} />
+              {option.label}
+            </span>
+          </button>
+        ))}
+      </div>
+    );
+  }
+
   function addCard(key: string) {
     addStatCardToLayout(DEFAULT_LAYOUT, key);
     setActiveKeys((prev) => new Set(prev).add(key));
@@ -293,15 +370,28 @@ export default function UnusedStatCardsPage() {
             <p className="hf-type-body hf-type-strong px-1 text-hf-black">
               {t("statUnusedCards.searchResults")}
             </p>
-            {searchResults.length === 0 ? (
+            {searchResults.length === 0 && chartSearchResults.length === 0 ? (
               <p className="hf-type-small rounded-2xl bg-hf-tan/60 p-4 text-hf-black opacity-50">
                 {t("statUnusedCards.noSearchResults")}
               </p>
             ) : (
-              renderCardGrid(searchResults)
+              <>
+                {chartSearchResults.length > 0 && renderChartGrid(chartSearchResults)}
+                {searchResults.length > 0 && renderCardGrid(searchResults)}
+              </>
             )}
           </section>
         )}
+
+        <AccordionSection title={t("statSections.chartsHeading")} count={chartOptions.length}>
+          {chartOptions.length === 0 ? (
+            <p className="hf-type-small rounded-2xl bg-hf-tan/60 p-4 text-hf-black opacity-50">
+              {t("statUnusedCharts.noChartsLeft")}
+            </p>
+          ) : (
+            renderChartGrid(chartOptions)
+          )}
+        </AccordionSection>
 
         <button
           type="button"

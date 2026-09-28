@@ -1723,8 +1723,8 @@
     "sleepQualityChart": "Søvnkvalitet og kalorier"
   },
   "statUnusedCards": {
-    "title": "Ubrugte statistik-kort",
-    "hint": "Tryk på et kort for at tilføje det til din statistikside.",
+    "title": "Tilføj til statistik",
+    "hint": "Tryk på en graf eller et kort for at tilføje det til din statistikside.",
     "category": {
       "carbsFibre": "Kulhydrattyper og fibre",
       "minerals": "Mineraler",
@@ -1734,9 +1734,9 @@
       "sleep": "Søvn",
       "other": "Øvrige data"
     },
-    "searchPlaceholder": "Søg i alle kort",
+    "searchPlaceholder": "Søg i alle grafer og kort",
     "searchResults": "Søgeresultater",
-    "noSearchResults": "Ingen kort matcher din søgning.",
+    "noSearchResults": "Ingen grafer eller kort matcher din søgning.",
     "add": "+ Tilføj",
     "noCardsYet": "Ingen kort her endnu.",
     "addHeading": "+ Overskrift",
@@ -2120,5 +2120,12 @@
       "portionFor": "{name}",
       "portionOption": "{factor} portion"
     }
+  },
+  "statSections": {
+    "chartsHeading": "Grafer",
+    "cardsHeading": "Kort",
+    "add": "Tilføj",
+    "moveUp": "Flyt sektion op",
+    "moveDown": "Flyt sektion ned"
   }
 }

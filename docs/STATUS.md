@@ -2,6 +2,17 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Statistiksiden — frit layout med sektionerne Grafer og Kort
+
+- Statistiksiden er delt i to sektioner med overskrift, "Grafer" og "Kort"
+  (kortsektionen rummer periodevælger, kort og "Største syndere"). Pile ved
+  hver overskrift flytter sektionen op/ned; rækkefølgen gemmes i localStorage
+  (`src/lib/stat-sections.ts`).
+- Ét samlet "+ Tilføj" øverst (altid synligt) fører til
+  `/statistics/unused-cards`, som nu hedder "Tilføj til statistik" og har én
+  "Grafer"-dropdown med alle ubrugte grafer før kortkategorierne; søgningen
+  dækker både grafer og kort. `/statistics/unused-charts` linkes ikke længere.
+
 ## 2026-09-28: Samtykke direkte på tilmeldingssiden (opgave 35)
 
 - Siden `/samtykke`, `ConsentGate` og `POST /api/auth/consent` er fjernet.
