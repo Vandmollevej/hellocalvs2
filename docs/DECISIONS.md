@@ -3042,3 +3042,8 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
   data sig, vises konflikten igen.
 - Erstatter det tidligere par-kort (`DuplicateProductCard`) og ruterne
   `/api/admin/duplicate-products/[id]/merge|dismiss`.
+
+## 2026-09-28 — Forsidens varebokse: brunlig flade frem for hvidt
+Produktfotos i `FoodRow` blandes med `mix-blend-multiply` (+4 px luft) ind i
+`--hf-color-card` (#EEE9DF), så fotoets hvide baggrund bliver let brunlig som
+hos HelloFresh. Ingen ny farvetoken; mørkere/off-white blev fravalgt.
