@@ -109,6 +109,10 @@ Next work:
 ## 2026-09-28: E-nummer-advarsel på produktsiden (#30)
 
 - Når "Vis E-numre" er slået til i Opsætning, vises en særskilt advarselsblok før energifordelingen: stort grønt E i grøn firkant med advarselstrekant, overskrift "Indeholder E-numre" og varens E-numre som chips (tryk åbner infomodal). Den tidligere sammenklappelige E-nummer-liste under energifordelingen er erstattet af blokken.
+## 2026-09-28: Tilmelding — kompakt landvalg (opgave 38)
+
+- Landvalget på `/login` er nu en kompakt pille ud for "Vælg land": flag + landekode (fx DK) + chevron, i stedet for en bred række med landenavnet. `LOGIN_COUNTRIES` har fået et `code`-felt (ISO 3166-1 alpha-2).
+- HelloFreshs aktuelle signup-flow kunne ikke kontrolleres fra cloud-miljøet (hellofresh.dk blokeret af netværkspolitikken). Åbent: skal verificeres manuelt, om e-mailfeltet vises direkte eller om man først vælger metode.
 
 ## 2026-09-28: Open Food Facts ude af søgningen
 
