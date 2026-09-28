@@ -3042,3 +3042,13 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
   data sig, vises konflikten igen.
 - Erstatter det tidligere par-kort (`DuplicateProductCard`) og ruterne
   `/api/admin/duplicate-products/[id]/merge|dismiss`.
+
+## 2026-09-28: Indberet fejl opdeles i varens sektioner
+
+- En produktrapport gemmes som `BugReport.sections` = `{ sektionsnøgle: tekst }`
+  med nøglerne i `src/lib/bug-report-sections.ts` (IMAGE, TITLE, ENERGY,
+  INGREDIENTS, CERTIFICATES, OTHER). `description` bygges på serveren ud fra
+  sektionerne, så ældre visninger og notifikationer virker uændret, og
+  sektionerne afleder de eksisterende kategorier (billede, energi, indhold).
+- Mindst én sektion med tekst er påkrævet. Rapporter uden produkt (Profil →
+  Indberet fejl) beholder fri tekst + kategori-chips.

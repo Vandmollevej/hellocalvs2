@@ -5,8 +5,15 @@ import { useSearchParams } from "next/navigation";
 import { IconBarcode, IconBolt, IconList, IconPhoto } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { PointsPromoBanner } from "@/components/hf/PointsPromoBanner";
+import { BUG_REPORT_SECTIONS, type BugReportSectionKey, type BugReportSections } from "@/lib/bug-report-sections";
 
-type BugReport = { id: string; description: string; status: string; categories?: string[] };
+type BugReport = {
+  id: string;
+  description: string;
+  status: string;
+  categories?: string[];
+  sections?: BugReportSections | null;
+};
 
 // Fire ikon-knapper der lader brugeren tagge hvilken del af produktets data
 // der er forkert, så admin-triage ikke skal gætte det ud fra fri tekst alene
@@ -31,6 +38,9 @@ function ReportBugContent() {
 
   const [description, setDescription] = useState("");
   const [categories, setCategories] = useState<string[]>([]);
+  // Produktrapporter opdeles i varens sektioner (docs/DECISIONS.md
+  // 2026-09-28): en åben sektion = en nøgle i objektet, også mens tom.
+  const [sections, setSections] = useState<BugReportSections>({});
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [pending, setPending] = useState<BugReport | null | undefined>(productId ? undefined : null);
@@ -51,12 +61,26 @@ function ReportBugContent() {
   function startEditing(report: BugReport) {
     setDescription(report.description);
     setCategories(report.categories ?? []);
+    setSections(report.sections ?? {});
     setEditing(true);
+  }
+
+  function toggleSection(key: BugReportSectionKey) {
+    setSections((prev) => {
+      const next = { ...prev };
+      if (key in next) delete next[key];
+      else next[key] = "";
+      return next;
+    });
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    if (productId && !Object.values(sections).some((text) => text?.trim())) {
+      setError("Vælg mindst én sektion og beskriv, hvad der er forkert");
+      return;
+    }
     setSubmitting(true);
     try {
       const editingExisting = editing && pending ? pending : null;
@@ -66,7 +90,11 @@ function ReportBugContent() {
           method: editingExisting ? "PATCH" : "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(
-            editingExisting ? { description, categories } : { description, categories, productId }
+            productId
+              ? editingExisting
+                ? { sections }
+                : { sections, productId }
+              : { description, categories }
           ),
         }
       );
@@ -123,6 +151,44 @@ function ReportBugContent() {
           </div>
         ) : showForm ? (
           <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
+            {productId ? (
+              <>
+                <p className="hf-type-label">Hvad er forkert på varen?</p>
+                {BUG_REPORT_SECTIONS.map((section) => {
+                  const open = section.key in sections;
+                  return (
+                    <div
+                      key={section.key}
+                      className="rounded-[8px] border"
+                      style={{ borderColor: open ? "var(--hf-color-action)" : "var(--hf-color-field-border)" }}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => toggleSection(section.key)}
+                        aria-expanded={open}
+                        className="hf-type-body flex w-full items-center justify-between p-3 text-left"
+                      >
+                        <span>{section.label}</span>
+                        <span aria-hidden>{open ? "−" : "+"}</span>
+                      </button>
+                      {open && (
+                        <textarea
+                          rows={3}
+                          value={sections[section.key] ?? ""}
+                          onChange={(e) => setSections((prev) => ({ ...prev, [section.key]: e.target.value }))}
+                          placeholder="Hvad er forkert, og hvad burde der stå?"
+                          aria-label={section.label}
+                          className="hf-type-input mx-3 mb-3 w-[calc(100%-1.5rem)] rounded-[4px] border bg-hf-cream p-3 outline-none"
+                          style={{ borderColor: "var(--hf-color-field-border)" }}
+                        />
+                      )}
+                    </div>
+                  );
+                })}
+                {error && <p className="hf-type-caption text-hf-red-dark">{error}</p>}
+              </>
+            ) : (
+            <>
             <label className="flex flex-col gap-1">
               <span className="hf-type-label">Beskriv fejlen</span>
               <textarea
@@ -159,6 +225,8 @@ function ReportBugContent() {
                 );
               })}
             </div>
+            </>
+            )}
             <button
               type="submit"
               disabled={submitting}

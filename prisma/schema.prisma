@@ -1972,6 +1972,10 @@ model BugReport {
   source        BugReportSource     @default(USER)
   description   String
   categories    BugReportCategory[] @default([])
+  // Fejlrapport opdelt i varens sektioner (docs/DECISIONS.md 2026-09-28):
+  // { <sektionsnøgle>: "brugerens tekst" }, nøgler i
+  // src/lib/bug-report-sections.ts. Null for ældre/generelle rapporter.
+  sections      Json?
   screenshotUrl String?
   status        BugReportStatus     @default(PENDING)
   createdAt     DateTime            @default(now())

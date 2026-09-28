@@ -2,6 +2,15 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Indberet fejl — opdelt i varens sektioner
+
+- Fra et produkts "Indberet fejl"-link vælger brugeren de sektioner, der er
+  forkerte (Billede, Titel/varetype, Energifordeling, Ingredienser,
+  Certifikater, Øvrige varedata), med et tekstfelt pr. sektion. Den generelle
+  indgang under Profil er uændret. Admin-kortet viser teksten pr. sektion.
+- Ny migration `20260928170000_bug_report_sections` (`bug_reports.sections`
+  JSONB). Køres af deploy. Beslutning: DECISIONS 2026-09-28.
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen
