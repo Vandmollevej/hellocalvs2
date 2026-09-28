@@ -171,9 +171,9 @@ export function PushPreview({ title, body }: { title: string; body: string }) {
 }
 
 const APP_CSS = `
-  html,body{margin:0;background:#FAF8F3;color:#242424;font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+  html,body{margin:0;background:#FAF8F3;color:#242424;font:15px/22px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
   body{padding:0 24px 24px;word-wrap:break-word;}
-  h1,h2,h3{color:#242424;line-height:1.2;margin:0 0 12px;} h1{font-size:28px;} h2{font-size:22px;}
+  h1,h2,h3{color:#242424;font-weight:700;margin:0 0 12px;} h1,h2{font-size:22px;line-height:28px;} h3{font-size:17px;line-height:22px;}
   a{color:#35784A;} img{max-width:100%;height:auto;border-radius:12px;} p{margin:0 0 12px;}
 `;
 
@@ -196,14 +196,15 @@ export function FlowPagePreview({
         {Array.from({ length: Math.max(total, 1) }, (_, index) => (
           <span
             key={index}
-            className={`h-2 rounded-full ${index === step ? "w-6 bg-[#35784A]" : "w-2 bg-[#DFD9CC]"}`}
+            className={`h-2 rounded-full ${index === step ? "w-6 bg-[#232323]" : "w-2 bg-[#DFD9CC]"}`}
           />
         ))}
       </div>
-      {title && <p className="shrink-0 px-6 pb-3 pt-2 text-[28px] font-bold leading-8">{fillSampleVars(title)}</p>}
+      {title && <p className="shrink-0 px-6 pb-3 pt-2 hf-type-page-title">{fillSampleVars(title)}</p>}
       <SandboxedHtml html={fillSampleVars(html)} css={APP_CSS} />
-      <div className="shrink-0 px-6 pb-10 pt-3">
-        <div className="flex h-12 items-center justify-center rounded-full bg-[#35784A] text-[17px] font-semibold text-white">
+      {/* Handlingsknap som i appen (design.md §6.2): sort, radius 8, 48 px høj. */}
+      <div className="shrink-0 px-4 pb-8 pt-3">
+        <div className="hf-btn-primary h-12 w-full px-4">
           {buttonLabel || "Næste"}
         </div>
       </div>
@@ -222,15 +223,15 @@ export function PreviewTabs<T extends string>({
   onChange: (value: T) => void;
 }) {
   return (
-    <div className="hf-type-small flex overflow-hidden rounded-md border border-hf-tan-dark">
+    <div className="flex gap-2" role="tablist">
       {options.map((option) => (
         <button
           key={option.value}
           type="button"
+          role="tab"
+          aria-selected={value === option.value}
           onClick={() => onChange(option.value)}
-          className={`px-3 py-1.5 ${
-            value === option.value ? "bg-hf-green-dark text-hf-white" : "text-text-secondary hover:bg-hf-tan"
-          }`}
+          className="hf-choice"
         >
           {option.label}
         </button>
