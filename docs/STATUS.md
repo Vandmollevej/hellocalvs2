@@ -2,6 +2,10 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Kamera — scanningsstribe i stedet for loader
+
+Mens et foto analyseres i kameraflowet viser `ProductCaptureFlow` nu `ScanningOverlay`: en bred, lys gradientstribe (`.hf-scan-line`) der glider hen over billedet, i stedet for den runde loader. Reduced motion: stående stribe. PR #45.
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen
