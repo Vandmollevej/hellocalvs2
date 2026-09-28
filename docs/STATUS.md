@@ -2,6 +2,12 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Bekræft e-mail-arket — "Senere" fjernet
+
+Knappen "Senere" er fjernet fra `EmailVerifySheet`; under "Send igen" står nu
+diskret grå tekst "Linket er aktivt i 1 time." Bekræftelseslinkets levetid er
+sat fra 7 dage til 1 time (`src/lib/email-verification.ts`), så teksten er sand.
+
 ## 2026-09-28: Søvnspørgsmålet — Slå fra-link, infotekst og bundark (punkt 34)
 
 - "Slå fra" er understreget tekst, der åbner Indstillinger → Visning → Oplevelse af søvn med grøn ring om kontakten.
