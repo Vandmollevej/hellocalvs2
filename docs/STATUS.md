@@ -75,6 +75,10 @@ Forsiden er låst til skærmhøjden (`h-dvh overflow-hidden`); topbar, hero og b
 - Produktsidens E-nummer-rækker og E-numre i indholdsfortegnelsen linker nu
   direkte til afsnittet (erstatter info-vinduet). Beslutning: DECISIONS 2026-09-28.
 - Lint og build kørt; ikke testet mod en database (lokalt er der ingen DB).
+## 2026-09-28: Admin — sikkerhedsfeltet (opgave 43)
+
+- `PendingProductCard`: sikkerhed skjules, når der ingen værdi er; procent står samlet (`83%`, ingen ombrydning), og pil-knappen holder fast position.
+
 ## 2026-09-28: Aktivitetsniveau i 5 trin + mails mod spam
 
 - Profil → Profil: aktivitetsniveau i 5 trin (Meget lav … Meget høj), gemmes
