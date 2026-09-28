@@ -8,7 +8,7 @@ import { TextField } from "@/components/hf/TextField";
 import { SocialLoginButton } from "@/components/hf/SocialLoginButton";
 import { HealthConsentToggle } from "@/components/hf/HealthConsentToggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { afterLoginPath, startOAuth, type OAuthProviderSlug } from "@/lib/login-flow";
+import { afterLoginPath, startOAuth } from "@/lib/login-flow";
 
 function TilmeldContent() {
   const { t } = useTranslation();
@@ -21,15 +21,6 @@ function TilmeldContent() {
   const [healthDataConsent, setHealthDataConsent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-
-  // Samtykket gælder også tilmelding via Google/Apple/Facebook.
-  function social(provider: OAuthProviderSlug) {
-    if (!healthDataConsent) {
-      setError(t("signup.consentRequired"));
-      return;
-    }
-    startOAuth(provider, "/", true);
-  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -76,12 +67,12 @@ function TilmeldContent() {
 
       <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4 px-4 pt-8">
         <div className="flex flex-col gap-4">
-          <SocialLoginButton provider="google" label={t("login.continueWithGoogle")} onClick={() => social("google")} />
-          <SocialLoginButton provider="apple" label={t("login.continueWithApple")} onClick={() => social("apple")} />
+          <SocialLoginButton provider="google" label={t("login.continueWithGoogle")} onClick={() => startOAuth("google", "/")} />
+          <SocialLoginButton provider="apple" label={t("login.continueWithApple")} onClick={() => startOAuth("apple", "/")} />
           <SocialLoginButton
             provider="facebook"
             label={t("login.continueWithFacebook")}
-            onClick={() => social("facebook")}
+            onClick={() => startOAuth("facebook", "/")}
           />
         </div>
         <p className="text-text-secondary hf-type-body text-center">{t("common.or")}</p>
@@ -103,8 +94,6 @@ function TilmeldContent() {
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        <HealthConsentToggle checked={healthDataConsent} onChange={setHealthDataConsent} />
-
         <TextField
           label={t("signup.passwordLabel")}
           type="password"
@@ -121,6 +110,8 @@ function TilmeldContent() {
           </Link>
         </p>
 
+        <HealthConsentToggle checked={healthDataConsent} onChange={setHealthDataConsent} />
+
         {error && <p className="hf-type-caption text-hf-red-dark">{error}</p>}
 
         <div className="flex-1" />
@@ -132,7 +123,7 @@ function TilmeldContent() {
         >
           {submitting ? t("signup.submitting") : t("signup.submit")}
         </button>
-        <p className="hf-type-body-lg mb-8 mt-1 text-center">
+        <p className="hf-type-body-lg mb-6 mt-1 text-center">
           {t("signup.haveAccount")} <Link href="/login" className="underline">{t("signup.logIn")}</Link>
         </p>
       </form>
