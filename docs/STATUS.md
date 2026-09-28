@@ -2,6 +2,13 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Søvnspørgsmålet (punkt 34)
+
+- `SleepQualityOverlay`: "Slå fra" er et understreget link til
+  `/settings/display/sleep-quality?focus=toggle` (grøn fokus-ring), grå
+  infotekst under spørgsmålet styret af tooltip-indstillingen, store tal med
+  grøn fyldt cirkel ved valg og bottom-sheet-exit. DECISIONS 2026-09-28.
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen

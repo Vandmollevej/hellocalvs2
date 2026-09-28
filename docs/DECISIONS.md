@@ -3042,3 +3042,9 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
   data sig, vises konflikten igen.
 - Erstatter det tidligere par-kort (`DuplicateProductCard`) og ruterne
   `/api/admin/duplicate-products/[id]/merge|dismiss`.
+
+## 2026-09-28 — Søvnspørgsmålet: "Slå fra"-link, grøn valgt cirkel, bottom-sheet-exit
+
+- "Slå fra" i søvn-popup'en er et understreget tekstlink (ingen slider/nedtælling). Det åbner Indstillinger → Visning → Oplevelse af søvn (`?focus=toggle`), hvor indstillingen står markeret med en tynd grøn ring.
+- Den grå infotekst står under spørgsmålet og følger den globale tooltip-indstilling (`useShowTooltips`); info-ikonet er fjernet.
+- Tallene er store og ikke understregede. Valgt tal: grøn fyldt cirkel, hvidt tal, ingen Luk/Slå fra. Efter ~0,5 s glider popup'en ned til et lille bottom-sheet med håndtag, bliver liggende ~1,3 s og forsvinder.

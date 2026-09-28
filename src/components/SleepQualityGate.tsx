@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { SleepQualityOverlay } from "@/components/SleepQualityOverlay";
 import {
   fetchSleepQuality,
@@ -37,6 +37,7 @@ type ProfileFlags = { sleepQualityPromptEnabled?: boolean; healthDataConsentAt?:
 
 export function SleepQualityGate() {
   const pathname = usePathname() ?? "/";
+  const router = useRouter();
   const [dateKey, setDateKey] = useState<string | null>(null);
 
   useEffect(() => {
@@ -71,12 +72,9 @@ export function SleepQualityGate() {
       }}
       onClose={() => setDateKey(null)}
       onDisable={() => {
+        // "Slå fra" opens the setting under Visning with the toggle in focus.
         setDateKey(null);
-        fetch("/api/profile", {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sleepQualityPromptEnabled: false }),
-        }).catch(() => undefined);
+        router.push("/settings/display/sleep-quality?focus=toggle");
       }}
     />
   );

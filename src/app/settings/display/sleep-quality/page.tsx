@@ -12,6 +12,8 @@ import { SkeletonScreen, SkeletonToggle } from "@/components/hf/Skeleton";
 export default function SleepQualityDisplaySettingsPage() {
   const { t } = useTranslation();
   const [enabled, setEnabled] = useState<boolean | null>(null);
+  // Arriving from the sleep prompt's "Slå fra" link rings the toggle.
+  const [focused, setFocused] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -21,7 +23,9 @@ export default function SleepQualityDisplaySettingsPage() {
         return (await response.json()) as { user: { sleepQualityPromptEnabled: boolean } };
       })
       .then((data) => {
-        if (!cancelled) setEnabled(data.user.sleepQualityPromptEnabled);
+        if (cancelled) return;
+        setEnabled(data.user.sleepQualityPromptEnabled);
+        setFocused(new URLSearchParams(window.location.search).get("focus") === "toggle");
       })
       .catch(() => undefined);
     return () => {
@@ -46,12 +50,14 @@ export default function SleepQualityDisplaySettingsPage() {
             <SkeletonToggle />
           </SkeletonScreen>
         ) : (
-          <Toggle
-            checked={enabled}
-            onChange={toggle}
-            label={t("sleepQualitySettings.toggleLabel")}
-            description={t("sleepQualitySettings.toggleDescription")}
-          />
+          <div className={focused ? "rounded-xl ring-2 ring-hf-green ring-offset-2" : ""}>
+            <Toggle
+              checked={enabled}
+              onChange={toggle}
+              label={t("sleepQualitySettings.toggleLabel")}
+              description={t("sleepQualitySettings.toggleDescription")}
+            />
+          </div>
         )}
       </div>
     </HfScreen>
