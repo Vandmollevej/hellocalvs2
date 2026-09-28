@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { BUG_REPORT_SECTIONS, type BugReportSections } from "@/lib/bug-report-sections";
 
 type BugReport = {
   id: string;
   description: string;
   screenshotUrl: string | null;
+  sections: BugReportSections | null;
   createdAt: string;
   // Null for source = "AI" (auto-filed by the product-recognition pipeline,
   // e.g. an uncertain alternative calorie display — see
@@ -51,7 +53,18 @@ export function PendingBugReportCard({ report }: { report: BugReport }) {
               {report.product.name}
             </p>
           )}
-          <p className="hf-type-body mt-1 whitespace-pre-wrap text-hf-black">{report.description}</p>
+          {report.sections ? (
+            <dl className="mt-1 flex flex-col gap-2">
+              {BUG_REPORT_SECTIONS.filter((s) => report.sections?.[s.key]).map((s) => (
+                <div key={s.key}>
+                  <dt className="hf-type-small hf-type-strong text-text-muted">{s.label}</dt>
+                  <dd className="hf-type-body whitespace-pre-wrap text-hf-black">{report.sections?.[s.key]}</dd>
+                </div>
+              ))}
+            </dl>
+          ) : (
+            <p className="hf-type-body mt-1 whitespace-pre-wrap text-hf-black">{report.description}</p>
+          )}
           {report.notes.length > 0 && (
             <div className="mt-2 flex flex-col gap-1 border-l-2 border-hf-tan-dark pl-3">
               <p className="hf-type-small hf-type-strong text-text-muted">Brugerens noter</p>
