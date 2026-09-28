@@ -858,7 +858,7 @@ export function AddProductView({
               <button
                 type="button"
                 onClick={scrollToDetails}
-                className="hf-btn-text flex items-center gap-1 self-start text-hf-black"
+                className="hf-btn-text flex items-center gap-1 self-start font-normal text-hf-black"
               >
                 {t("addProduct.details")}
                 <IconChevronDown size={15} />
