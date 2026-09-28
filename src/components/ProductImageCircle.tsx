@@ -10,7 +10,7 @@ export function ProductImageCircle({ imageUrl, children }: { imageUrl: string | 
       <div className="flex h-[190px] w-[190px] min-h-[190px] min-w-[190px] items-center justify-center overflow-hidden rounded-full bg-hf-tan">
         {imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={imageUrl} alt="" className="block h-full w-full max-h-full max-w-full object-contain p-8" />
+          <img src={imageUrl} alt="" className="block h-full w-full max-h-full max-w-full object-cover" />
         ) : (
           <div aria-hidden="true" className="h-full w-full" />
         )}

@@ -8,6 +8,15 @@ Knappen "Senere" er fjernet fra `EmailVerifySheet`; under "Send igen" står nu
 diskret grå tekst "Linket er aktivt i 1 time." Bekræftelseslinkets levetid er
 sat fra 7 dage til 1 time (`src/lib/email-verification.ts`), så teksten er sand.
 
+## 2026-09-28: Forside — kun "Dagens tilføjelser" scroller
+
+Forsiden er låst til skærmhøjden (`h-dvh overflow-hidden`); topbar, hero og bundmenu står fast, og kun listen scroller internt.
+## 2026-09-28: Abonnement — boilerplate fjernet
+
+- `/profile/subscription`: datalagringsnoten (`subscription.retentionNote`)
+  er fjernet fra hovedindholdet og fra da/en. Betingelser ligger fortsat i
+  footerens `TermsSheet`.
+
 ## 2026-09-28: Kamera — scanningsstribe i stedet for load-cirkel
 
 - `PhotoWorkingOverlay` viser en hvid/lys gradientstribe (`.hf-scan-sweep`),
@@ -4699,3 +4708,13 @@ låser porten/mappen på tværs af port-forsøg), og denne sessions Browser-pane
 kan ikke nå den server. Denne ændring bør derfor tjekkes visuelt af brugeren
 selv (eller i en senere session, når den anden dev-server ikke kører), særligt
 justeringen af scroll-fligen ved forskellige stå-op-tidspunkter.
+
+- 2026-09-28 (opgave #34 E-nummer-side – indhold): Ny detaljeside
+  `/e-numre/[code]` (`src/app/e-numre/[code]/page.tsx`) med sektionerne Navn,
+  Forklaring, Risici og relevante oplysninger, Forskning, Primær kilde og
+  Alternative kilder. Alternative kilder bygges i `src/lib/additive-sources.ts`
+  (EFSA-søgning, EU's tilsætningsstofdatabase, Fødevarestyrelsen, Open Food
+  Facts, PubMed) ud fra E-nummer/navn, så alle rækker i `additives` får dem.
+  `AdditiveInfoModal` linker til siden. Lint/typecheck/build grønne; ikke
+  verificeret mod live-data (kræver DB med `additives`-tabellen).
+- 2026-09-28 (opgave 33): Ny side `/e-numre` viser hele E-nummer-databasen med søgefelt øverst (søg på nummer, fx "330"/"E330", eller dansk/internationalt navn/funktion). Logik i `src/lib/additives.ts`, UI i `src/components/additives/AdditiveList.tsx`.

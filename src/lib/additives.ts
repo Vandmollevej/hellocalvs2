@@ -76,3 +76,19 @@ export async function getAdditiveInfo(code: string): Promise<AdditiveInfo> {
     return { ...FALLBACK, eNumber: normalized };
   }
 }
+
+// All E-numbers sorted by number (E100 before E1100), for the E-number page.
+export async function listAdditives(): Promise<AdditiveInfo[]> {
+  const map = await loadAdditives();
+  const num = (code: string) => parseInt(code.replace(/\D/g, ""), 10) || 0;
+  return [...map.values()].sort((a, b) => num(a.eNumber) - num(b.eNumber) || a.eNumber.localeCompare(b.eNumber));
+}
+
+// Matches an E-number by code ("e330", "330") or by Danish/international name.
+export function matchesAdditive(additive: AdditiveInfo, query: string): boolean {
+  const q = query.trim().toLowerCase();
+  if (!q) return true;
+  const code = additive.eNumber.toLowerCase();
+  if (code.includes(q) || code.replace(/^e/, "").startsWith(q.replace(/^e\s*/, ""))) return true;
+  return `${additive.danishName} ${additive.internationalName} ${additive.function}`.toLowerCase().includes(q);
+}
