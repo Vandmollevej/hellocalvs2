@@ -3215,3 +3215,10 @@ PRODUCT_FRONT-fritskrabningsjob for det eksterne billede (https), som
 `scripts/image-agent/cutout.py` henter, fritskraber og skriver til
 `pendingImageUrl` via samme admin-godkendelse som kamerafotos.
 
+## 2026-09-28 — Kamera: scanningsstribe i stedet for load-cirkel
+
+Mens et foto arbejder i kameraflowet under Tilføj, vises en bred hvid/lys gradientstribe (`.hf-scan-sweep`), der fejer hen over billedet, i stedet for det hvide overlay med load-cirklen. Billedet forbliver synligt, så varen ser ud til at blive scannet.
+
+## 2026-09-28 — Kamera: 3D-scanningseffekt
+
+Når scanningsstriben passerer midten af fotoet (objektet i fokus), bliver striben bredere og lysere, og fotoet løfter/zoomer sig let (`.hf-scan-lift`, skala 1,06). Stribe og løft deler varighed (1,8 s) og starter samtidig, så de er i takt. Ved reduceret bevægelse løfter billedet sig ikke.
