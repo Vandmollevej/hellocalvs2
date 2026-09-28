@@ -2,6 +2,17 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: E-nummer-side (`/e-numre`)
+
+- Ny samlet side med søgefelt øverst og ét afsnit pr. E-nummer med eget anker
+  (`/e-numre#e330`, `E101(i)` → `#e101i`). Viser navn, dansk navn, forklaring
+  (funktion), sundhed/anvendelse (risici), forskning, forskningslinks (kilde fra
+  databasen + PubMed/EFSA-søgning) og andre kilder (EU-database,
+  Fødevarestyrelsen, Open Food Facts, Wikipedia).
+- Produktsidens E-nummer-rækker og E-numre i indholdsfortegnelsen linker nu
+  direkte til afsnittet (erstatter info-vinduet). Beslutning: DECISIONS 2026-09-28.
+- Lint og build kørt; ikke testet mod en database (lokalt er der ingen DB).
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen

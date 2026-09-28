@@ -20,7 +20,7 @@ import { ForwardButton } from "@/components/ForwardButton";
 import { appendDishDraftIngredient } from "@/lib/dish-draft";
 import { selectRawContextImageUrl } from "@/lib/image-tags";
 import { MacroSliderBar } from "@/components/hf/MacroSliderBar";
-import { AdditiveInfoModal } from "@/components/hf/AdditiveInfoModal";
+import { E_NUMBER_PATTERN, eNumberHref } from "@/lib/e-number-links";
 import { TimeSection } from "@/components/hf/TimeSection";
 import { getAdditiveInfo } from "@/lib/additives";
 import { labelForAllergen } from "@/lib/allergens";
@@ -182,7 +182,6 @@ export function AddProductView({
   const [date] = useState(() => initialDate ?? currentDateString());
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
-  const [openAdditive, setOpenAdditive] = useState<string | null>(null);
   const [additivesOpen, setAdditivesOpen] = useState(false);
   // Åben som standard (G11, 2026-09-24) — brugeren har selv slået panelet til.
   const [extendedNutritionOpen, setExtendedNutritionOpen] = useState(true);
@@ -836,10 +835,9 @@ export function AddProductView({
                     {state.product.additives.map((code, index) => {
                       const name = additiveNames[code] ?? code.toUpperCase();
                       return (
-                        <button
+                        <Link
                           key={code}
-                          type="button"
-                          onClick={() => setOpenAdditive(code)}
+                          href={eNumberHref(code)}
                           className={`hf-control-row flex items-center gap-3 px-4 text-left ${
                             index < (state.product.additives?.length ?? 0) - 1
                               ? "border-b border-hf-tan-dark"
@@ -853,7 +851,7 @@ export function AddProductView({
                             ({code.toUpperCase()}){" "}
                             <span className="underline underline-offset-2">{name}</span>
                           </span>
-                        </button>
+                        </Link>
                       );
                     })}
                   </div>
@@ -936,7 +934,7 @@ export function AddProductView({
                     </div>
                   ) : (
                     <p className="hf-type-small text-text-secondary">
-                      {state.product.ingredientsText}
+                      {linkENumbers(state.product.ingredientsText ?? "")}
                     </p>
                   )}
                 </div>
@@ -1040,9 +1038,6 @@ export function AddProductView({
         )}
       </div>
 
-      {openAdditive && (
-        <AdditiveInfoModal code={openAdditive} onClose={() => setOpenAdditive(null)} />
-      )}
       {openToxin && <ToxinInfoModal toxin={openToxin} onClose={() => setOpenToxin(null)} />}
     </Frame>
   );
@@ -1070,4 +1065,22 @@ function SheetFrame({ title, footer, onClose, children }: FrameProps) {
       {children}
     </BottomSheet>
   );
+}
+
+// Gør E-numre i indholdsfortegnelsen til links til /e-numre#e330.
+function linkENumbers(text: string): ReactNode[] {
+  const parts: ReactNode[] = [];
+  let last = 0;
+  for (const match of text.matchAll(E_NUMBER_PATTERN)) {
+    const start = match.index ?? 0;
+    parts.push(text.slice(last, start));
+    parts.push(
+      <Link key={start} href={eNumberHref(match[0])} className="text-hf-green underline underline-offset-2">
+        {match[0]}
+      </Link>,
+    );
+    last = start + match[0].length;
+  }
+  parts.push(text.slice(last));
+  return parts;
 }

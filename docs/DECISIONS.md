@@ -3042,3 +3042,13 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
   data sig, vises konflikten igen.
 - Erstatter det tidligere par-kort (`DuplicateProductCard`) og ruterne
   `/api/admin/duplicate-products/[id]/merge|dismiss`.
+
+## 2026-09-28: Samlet E-nummer-side
+
+- `/e-numre` er den fælles side for alle E-numre, læst fra `additives`-tabellen.
+  Hvert E-nummer har ankeret `eNumberAnchor()` (`src/lib/e-number-links.ts`):
+  små bogstaver uden tegn, fx `#e330`, `#e101i`.
+- Klik på et E-nummer fra en vare eller en indholdsfortegnelse går til siden i
+  stedet for at åbne `AdditiveInfoModal` (komponenten står ubrugt tilbage).
+- Forsknings- og alternative kildelinks er faste søge-/opslagslinks bygget ud
+  fra nummer og navn; kun `link`/`source` kommer fra databasen.
