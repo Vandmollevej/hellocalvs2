@@ -1,0 +1,2302 @@
+[
+  {
+    "code": "E442",
+    "nameDa": "Ammoniumphosphatider",
+    "nameEn": "Ammonium phosphatides",
+    "category": "Emulgator",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "En syntetisk emulgator, der især bruges i chokolade for at gøre den mere flydende under produktionen.",
+    "description": "Ammoniumphosphatider (også kaldet emulgator YN) er en blanding af ammoniumforbindelser af fosfatidsyrer. De fremstilles ved glycerolyse af spiseligt fedt – typisk delvist hærdet rapsolie – efterfulgt af fosforylering med fosforpentoxid og neutralisering med ammoniak. Stoffet virker som lecithin (E322) og nedsætter chokolademassens viskositet og flydegrænse, så den flyder lettere under produktionen. Det bruges som alternativ til sojalecithin, bl.a. hvor man ønsker at undgå soja.",
+    "uses": "Tilladt i EU med en maksimumsgrænse på 10 g/kg (10.000 mg/kg) i kakao- og chokoladeprodukter samt i konfekture baseret på kakao.",
+    "health": "Anses for sikkert ved de anvendte mængder. JECFA fastsatte i 1974 en ADI på 0-30 mg/kg legemsvægt/dag, og SCF fastsatte i 1978 en ADI på 30 mg/kg legemsvægt/dag. EFSA fandt ved sin genvurdering (2016) ingen grund til at ændre ADI på 30 mg/kg legemsvægt/dag (baseret på NOAEL 3.000 mg/kg fra et toårigt rottestudie). Ved maksimalt tilladte niveauer lå gennemsnitseksponeringen under ADI i alle befolkningsgrupper og kun lidt over ADI hos småbørn med højt indtag. Ingen kendte særlige risikogrupper.",
+    "research": "EFSA's ANS-panel genvurderede ammoniumphosphatider (E442) i 2016. Nyere forskning er primært analytisk og teknologisk, fx kvantificering af ammoniumphosphatid-emulgatorer i chokolade med 31P-NMR (J. Agric. Food Chem., 2018).",
+    "keyReferences": [],
+    "pubmedTerm": "ammonium phosphatides",
+    "flags": [],
+    "classes": [
+      "emulsifier"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of ammonium phosphatides (E 442) as a food additive",
+      "url": "https://doi.org/10.2903/j.efsa.2016.4597",
+      "date": "2016-11",
+      "adi": "30 mg/kg bw/day",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://halalcodecheck.com/blog/e442-ammonium-phosphatide-halal/",
+        "https://www.researchgate.net/publication/311502913_Re-evaluation_of_ammonium_phosphatides_E_442_as_a_food_additive",
+        "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-026.pdf",
+        "https://artgerecht.com/en/glossary/e442/",
+        "https://www.researchgate.net/figure/MPLs-of-ammonium-phosphatides-E-442-in-foods-according-to-the-Annex-II-to-Regulation_tbl1_311502913",
+        "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/276",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2016.4597",
+        "https://pubs.acs.org/doi/10.1021/acs.jafc.8b04379"
+      ],
+      "notes": "Runde 3: Fremstilling præciseret (fosforpentoxid, ammoniak). Påstande om neutral smag og reduceret kakaosmør kunne ikke bekræftes og er fjernet; 'fri for soja-allergener' omformuleret. EFSA-eksponering rettet: lidt over ADI hos småbørn med højt indtag i maksimumsscenariet. Maks. 10 g/kg og JECFA/SCF-ADI bekræftet."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Mixed_ammonium_salts_of_phosphorylated_glycerides",
+    "wikidata": "Q695975",
+    "claims": [
+      {
+        "claim": "Kaldes også emulgator YN",
+        "source": "https://halalcodecheck.com/blog/e442-ammonium-phosphatide-halal/ | https://www.researchgate.net/publication/311502913_Re-evaluation_of_ammonium_phosphatides_E_442_as_a_food_additive",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Blanding af ammoniumforbindelser/-salte af fosfatidsyrer (fosforylerede glycerider)",
+        "source": "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-026.pdf | https://www.researchgate.net/publication/311502913_Re-evaluation_of_ammonium_phosphatides_E_442_as_a_food_additive",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles ved glycerolyse af fedt, fosforylering og neutralisering med ammoniak",
+        "source": "https://www.researchgate.net/publication/311502913_Re-evaluation_of_ammonium_phosphatides_E_442_as_a_food_additive | https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-026.pdf",
+        "result": "rettet"
+      },
+      {
+        "claim": "Råvaren er delvist hærdet rapsolie (præciseret: typisk; lav-erucasyre-raps)",
+        "source": "https://artgerecht.com/en/glossary/e442/ | https://www.researchgate.net/publication/311502913_Re-evaluation_of_ammonium_phosphatides_E_442_as_a_food_additive",
+        "result": "rettet"
+      },
+      {
+        "claim": "Virker som lecithin (E322) og nedsætter chokoladens viskositet",
+        "source": "https://halalcodecheck.com/blog/e442-ammonium-phosphatide-halal/ | https://www.researchgate.net/publication/311502913_Re-evaluation_of_ammonium_phosphatides_E_442_as_a_food_additive",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Tillader brug af mindre kakaosmør",
+        "source": "https://www.researchgate.net/publication/311502913_Re-evaluation_of_ammonium_phosphatides_E_442_as_a_food_additive",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Mere neutral smag end sojalecithin",
+        "source": "https://artgerecht.com/en/glossary/e442/",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Fri for soja-allergener (omformuleret: bruges som alternativ til sojalecithin, bl.a. ved sojaallergi)",
+        "source": "https://artgerecht.com/en/glossary/e442/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Maks. 10 g/kg i kakao-/chokoladeprodukter og kakaobaseret konfekture",
+        "source": "https://www.researchgate.net/figure/MPLs-of-ammonium-phosphatides-E-442-in-foods-according-to-the-Annex-II-to-Regulation_tbl1_311502913 | https://www.researchgate.net/publication/311502913_Re-evaluation_of_ammonium_phosphatides_E_442_as_a_food_additive",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "JECFA ADI 0-30 mg/kg (1974), SCF ADI 30 mg/kg (1978)",
+        "source": "https://www.researchgate.net/publication/311502913_Re-evaluation_of_ammonium_phosphatides_E_442_as_a_food_additive | https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/276",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2016: ingen grund til at ændre ADI på 30 mg/kg (NOAEL 3.000 mg/kg, rotte)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2016.4597",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "ADI overskrides ikke i nogen befolkningsgruppe (rettet: kun lidt over ADI hos småbørn ved højt indtag i maksimumsscenariet)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2016.4597",
+        "result": "rettet"
+      },
+      {
+        "claim": "Ingen kendte særlige risikogrupper",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2016.4597",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Begrænset nyere forskning, primært teknologisk (eksempel tilføjet)",
+        "source": "https://pubs.acs.org/doi/10.1021/acs.jafc.8b04379",
+        "result": "rettet"
+      }
+    ]
+  },
+  {
+    "code": "E444",
+    "nameDa": "Saccharoseacetatisobutyrat",
+    "nameEn": "Sucrose acetate isobutyrate",
+    "category": "Emulgator / stabilisator",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "SAIB er en sukkerester, der bruges til at holde aromaolier svævende i uklare sodavand.",
+    "description": "Saccharoseacetatisobutyrat (SAIB) fremstilles ved kontrolleret forestring af saccharose med eddikesyreanhydrid og isosmørsyreanhydrid efterfulgt af rensning. Det er en meget tyktflydende, klar væske med høj massefylde (ca. 1,15 g/ml), som blandes i aromaolier for at gøre dem tungere ('weighting agent'). Dermed holdes aromaolierne jævnt fordelt i drikken og skilles ikke ud. Det er et muligt alternativ til bromeret vegetabilsk olie (BVO).",
+    "uses": "Tilladt i EU med en maksimumsgrænse på 300 mg/l i aromatiserede, uklare drikkevarer og i aromatiserede, uklare alkoholholdige drikke med under 15 % alkohol.",
+    "health": "Anses for sikkert ved de tilladte mængder. SCF fastsatte i 1994 en ADI på 10 mg/kg legemsvægt/dag og JECFA i 1997 en ADI på 20 mg/kg. EFSA's genvurdering (2016) hævede ADI til 20 mg/kg legemsvægt/dag, og eksponeringen lå under ADI i begge eksponeringsscenarier. Der er ikke kendte særlige risikogrupper.",
+    "research": "EFSA's ANS-panel genvurderede SAIB (E444) i 2016 på grundlag af bl.a. studier af genotoksicitet, kræftfremkaldende egenskaber og reproduktions- og udviklingstoksicitet og konkluderede, at de tilladte anvendelser ikke giver anledning til sikkerhedsbekymring.",
+    "keyReferences": [],
+    "pubmedTerm": "sucrose acetate isobutyrate",
+    "flags": [],
+    "classes": [
+      "emulsifier",
+      "stabiliser"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of sucrose acetate isobutyrate (E 444) as a food additive",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2016.4489",
+      "date": "2016-05-25",
+      "adi": "20",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.eastman.com/en/products/product-detail/71001090/sustane-saib-sucrose-acetate-isobutyrate-food-grade-kosher",
+        "https://foodadditives.net/emulsifiers/sucrose-acetate-isobutyrate/",
+        "https://patents.google.com/patent/US20070104850A1/en",
+        "https://www.efsa.europa.eu/en/efsajournal/pub/4489",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC13151642/",
+        "https://www.foodnavigator.com/Article/2016/06/01/efsa-panel-concludes-e-444-limit-can-be-doubled/"
+      ],
+      "notes": "Runde 3: Fremstilling, egenskaber og ADI-historik (SCF 1994: 10; JECFA 1997: 20; EFSA 2016: 20 mg/kg) bekræftet. Anvendelse rettet til uklare drikke og uklare alkoholdrikke <15 % (300 mg/l; kilde er sekundær, EUR-Lex kunne ikke hentes direkte). Sammenligning med E445 og udsagn om 'ingen uenigheder' fjernet; forskningsafsnit omformuleret."
+    },
+    "wikipedia": "",
+    "wikidata": "Q410537",
+    "claims": [
+      {
+        "claim": "SAIB er en sukkerester, der holder aromaolier fordelt i drikke",
+        "source": "https://www.eastman.com/en/products/product-detail/71001090/sustane-saib-sucrose-acetate-isobutyrate-food-grade-kosher | https://foodadditives.net/emulsifiers/sucrose-acetate-isobutyrate/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles ved forestring af saccharose med eddikesyre- og isosmørsyreanhydrid",
+        "source": "https://patents.google.com/patent/US20070104850A1/en",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Meget tyktflydende, klar væske med høj massefylde",
+        "source": "https://patents.google.com/patent/US20070104850A1/en | https://www.eastman.com/en/products/product-detail/71001090/sustane-saib-sucrose-acetate-isobutyrate-food-grade-kosher",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Blandes i aromaolier som 'weighting agent'",
+        "source": "https://www.eastman.com/en/products/product-detail/71001090/sustane-saib-sucrose-acetate-isobutyrate-food-grade-kosher",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Forhindrer oliering i toppen af flasken (omformuleret: holder aromaolier jævnt fordelt)",
+        "source": "https://foodadditives.net/emulsifiers/sucrose-acetate-isobutyrate/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Alternativ til BVO",
+        "source": "https://patents.google.com/patent/US20070104850A1/en",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Alternativ til glycerolestere af harpiks (E445)",
+        "source": "https://patents.google.com/patent/US20070104850A1/en",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Maks. 300 mg/l i aromatiserede uklare drikke",
+        "source": "https://foodadditives.net/emulsifiers/sucrose-acetate-isobutyrate/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Tilladt i 'visse uklare spiritusdrikke' (rettet: uklare alkoholholdige drikke under 15 % alkohol)",
+        "source": "https://foodadditives.net/emulsifiers/sucrose-acetate-isobutyrate/",
+        "result": "rettet"
+      },
+      {
+        "claim": "SCF ADI 10 mg/kg (1994), JECFA 20 mg/kg (1997)",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/4489 | https://pmc.ncbi.nlm.nih.gov/articles/PMC13151642/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2016 hævede ADI til 20 mg/kg",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/4489 | https://www.foodnavigator.com/Article/2016/06/01/efsa-panel-concludes-e-444-limit-can-be-doubled/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Eksponering under ADI",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13151642/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Undersøgt i dyreforsøg og humane studier i 1970'erne-90'erne uden alvorlige fund (omformuleret til EFSA's datagrundlag)",
+        "source": "https://foodadditives.net/emulsifiers/sucrose-acetate-isobutyrate/ | https://www.efsa.europa.eu/en/efsajournal/pub/4489",
+        "result": "rettet"
+      },
+      {
+        "claim": "Ingen aktuelle uenigheder af betydning",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/4489",
+        "result": "fjernet"
+      }
+    ]
+  },
+  {
+    "code": "E445",
+    "nameDa": "Glycerolestere af harpiks",
+    "nameEn": "Glycerol esters of wood rosins",
+    "category": "Emulgator / stabilisator",
+    "euStatus": "approved",
+    "origin": "natural",
+    "summary": "Glycerolestere af træharpiks fra fyrretræsstubbe, som bruges til at stabilisere aromaolier i uklare drikke.",
+    "description": "I EU er E445 defineret som en blanding af tri- og diglycerolestere af harpikssyrer fra træharpiks, der udvindes ved opløsningsmiddelekstraktion af gamle fyrretræsstubbe og renses ved væske-væske-ekstraktion; esterne renses yderligere ved dampstripning eller modstrøms-dampdestillation. Harpikssyrerne er hovedsageligt abietinsyre. Stoffer fremstillet af gummiharpiks (tappet fra levende træer) og af tallolieharpiks (biprodukt fra papirproduktion) er udtrykkeligt udelukket fra EU-definitionen. Ligesom SAIB bruges E445 til at gøre aromaolier tungere i uklare drikke.",
+    "uses": "Tilladt i EU i aromatiserede, uklare drikkevarer og uklare spiritusdrikke (maks. 100 mg/l), til tryk på hårdt overtrukne konfektureprodukter og til overfladebehandling af citrusfrugter.",
+    "health": "Anses for sikkert ved de tilladte mængder. SCF's ADI på 12,5 mg/kg (1994) blev i 2018 betragtet som midlertidig pga. manglende reproduktionsdata. I opfølgningen (2023) fastsatte EFSA en ADI på 10 mg/kg legemsvægt/dag (NOAEL 976 mg/kg), begrænset til E445 fremstillet af Pinus palustris og P. elliottii, og fandt ingen sikkerhedsbekymring ved maksimalt tilladte eller rapporterede niveauer. Harpiks (kolofonium) er et kendt kontaktallergen; glycerolforestring nedsætter allergeniciteten, men nogle harpiksallergikere har reageret på glycerolestere ved lappetest, og mundreaktioner på harpiks (fx fra tyggegummi) er beskrevet.",
+    "research": "EFSA's ANS-panel genvurderede E445 i 2018, og FAF-panelet fulgte op i 2023 på baggrund af nye reproduktions- og udviklingstoksikologiske data og fastsatte en ADI på 10 mg/kg legemsvægt/dag.",
+    "keyReferences": [],
+    "pubmedTerm": "glycerol ester of wood rosin",
+    "flags": [],
+    "classes": [
+      "emulsifier",
+      "stabiliser"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Follow-up of the re-evaluation of glycerol esters of wood rosins (E 445) as a food additive",
+      "url": "https://doi.org/10.2903/j.efsa.2023.8110",
+      "date": "2023-07-19",
+      "adi": "10 mg/kg bw/day",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.eadditives.com/e445-glycerol-esters-of-wood-rosin/",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009419/",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10355140/",
+        "https://doi.org/10.2903/j.efsa.2023.8110",
+        "https://onlinelibrary.wiley.com/doi/10.1111/j.1600-0536.1993.tb03408.x",
+        "https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1600-0536.1996.tb02391.x",
+        "https://pubmed.ncbi.nlm.nih.gov/10385342/"
+      ],
+      "notes": "Runde 3: Væsentlig rettelse – EU-definitionen af E445 omfatter kun træharpiks fra fyrretræsstubbe; gummiharpiks og tallolieharpiks er udelukket, så varianterne (i)-(iii) er fjernet og beskrivelsen omskrevet. Tyggegummi fjernet fra summary. Allergiudsagn rettet efter kontaktdermatitis-litteraturen. ADI-historik og EFSA 2023 bekræftet. Brug til citrusoverflade og konfekturetryk bekræftet via sekundær kilde (EUR-Lex kunne ikke hentes direkte)."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Glycerol_ester_of_wood_rosin",
+    "wikidata": "Q836765",
+    "claims": [
+      {
+        "claim": "Bruges til at stabilisere aromaolier i sodavand/uklare drikke",
+        "source": "https://www.eadditives.com/e445-glycerol-esters-of-wood-rosin/ | https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009419/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bruges i tyggegummi",
+        "source": "https://www.eadditives.com/e445-glycerol-esters-of-wood-rosin/",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Fremstilles af harpiks fra fyrretræer (rettet: træharpiks fra gamle fyrretræsstubbe)",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009419/ | https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10355140/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Renses ved damp-destillation (dampstripning / modstrøms-dampdestillation)",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009419/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Harpikssyrerne er hovedsageligt abietinsyre",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009419/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Tre EU-varianter: gummiharpiks, tallolieharpiks, træharpiks (rettet: gummi- og tallolieharpiks er udelukket fra EU-definitionen; variants tømt)",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009419/ | https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10355140/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Maks. 100 mg/l i aromatiserede uklare drikke",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10355140/ | https://www.eadditives.com/e445-glycerol-esters-of-wood-rosin/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Tilladt i visse spiritusdrikke (uklare spiritusdrikke)",
+        "source": "https://www.eadditives.com/e445-glycerol-esters-of-wood-rosin/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Tilladt til overfladebehandling af citrusfrugter",
+        "source": "https://www.eadditives.com/e445-glycerol-esters-of-wood-rosin/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Tilladt til tryk på hårdt overtrukne konfektureprodukter (tilføjet)",
+        "source": "https://www.eadditives.com/e445-glycerol-esters-of-wood-rosin/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "SCF ADI 12,5 mg/kg var midlertidig",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009419/ | https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10355140/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2023: ADI 10 mg/kg, gældende for P. palustris og P. elliottii",
+        "source": "https://doi.org/10.2903/j.efsa.2023.8110 | https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10355140/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ingen sikkerhedsbekymring ved maksimale eller rapporterede niveauer",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10355140/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Harpiksallergikere reagerer normalt ikke ved indtagelse (rettet: glycerolestere er mindre allergene, men reaktioner er beskrevet)",
+        "source": "https://onlinelibrary.wiley.com/doi/10.1111/j.1600-0536.1993.tb03408.x | https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1600-0536.1996.tb02391.x | https://pubmed.ncbi.nlm.nih.gov/10385342/",
+        "result": "rettet"
+      },
+      {
+        "claim": "ANS 2018 og FAF 2023 (nye reproduktionsdata)",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009419/ | https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10355140/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kun sparsom uafhængig forskning",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10355140/",
+        "result": "fjernet"
+      }
+    ]
+  },
+  {
+    "code": "E450",
+    "nameDa": "Diphosphater",
+    "nameEn": "Diphosphates",
+    "category": "Surhedsregulerende middel / hævemiddel / sekvestrant",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Diphosphater (pyrofosfater) er fosfatsalte, der bl.a. bruges som hævemiddel i bagepulver og til at binde vand i kød.",
+    "description": "Diphosphater (pyrofosfater) består af to sammenkoblede fosfatenheder bundet til natrium, kalium, calcium eller magnesium. De kan fremstilles ved opvarmning af monofosfater, der derved afgiver vand og kondenserer (fx dannes dinatriumdihydrogendiphosphat ved ca. 200 °C). De EU-godkendte varianter er (i) dinatriumdiphosphat, (ii) trinatriumdiphosphat, (iii) tetranatriumdiphosphat, (v) tetrakaliumdiphosphat, (vi) dicalciumdiphosphat, (vii) calciumdihydrogendiphosphat og (ix) magnesiumdihydrogendiphosphat (godkendt 2014). Dinatriumdiphosphat (SAPP) er den sure komponent i mange bagepulvere og reagerer langsomt med natron, så en stor del af gassen først frigives under bagningen. Andre anvendelser er vandbinding i kød og fisk, forebyggelse af mørkfarvning af kartofler og som smeltesalt i ost.",
+    "uses": "Tilladt i EU med maksimumsgrænser (angivet som P2O5, ofte samlet for fosfater), fx i bagepulver, mel, dej og bagværk, forarbejdet kød som pølser, forarbejdet fisk og surimi, smelteost, kartoffelprodukter og supper.",
+    "health": "EFSA (2019) fastsatte en gruppe-ADI for fosfater (inkl. E338-E341, E343, E450-E452) på 40 mg/kg legemsvægt/dag udtrykt som fosfor, gældende for det samlede fosforindtag fra både naturligt indhold og tilsætningsstoffer. Indtaget kan overstige ADI hos spædbørn, småbørn og børn allerede ved gennemsnitligt forbrug og desuden hos unge ved højt forbrug. ADI gælder ikke for personer med moderat til svært nedsat nyrefunktion, som udgør en særlig risikogruppe; hos patienter med fremskreden nyresygdom er forhøjet fosfat i blodet forbundet med karskader, herunder karforkalkning, og øget dødelighed. Uorganisk fosfat fra tilsætningsstoffer optages mere effektivt end organisk bundet fosfat i uforarbejdede fødevarer. Højt fosforindtag, især kombineret med lavt calciumindtag, kan påvirke calcium- og knoglestofskiftet via øget parathyroideahormon.",
+    "research": "EFSA's FAF-panel genvurderede fosforsyre og fosfater samlet i 2019 og indførte den nye gruppe-ADI. Panelet påpegede, at forureninger med tungmetaller (arsen, bly, kviksølv, cadmium) og aluminium i fosfattilsætningsstofferne kan bidrage væsentligt til eksponeringen, og EU-Kommissionen har efterfølgende indkaldt data med henblik på at revidere specifikationerne. Ritz et al. (Deutsches Ärzteblatt, 2012) gjorde opmærksom på, at fosfattilsætning kan være en sundhedsrisiko, især for nyrepatienter, og at højt-normale fosfatniveauer også hos personer med normal nyrefunktion er forbundet med øget sygelighed og dødelighed. Det er fortsat uafklaret, i hvilket omfang fosfattilsætning påvirker raske personer.",
+    "keyReferences": [
+      {
+        "citation": "Ritz E, Hahn K, Ketteler M, Kuhlmann MK, Mann J. Phosphate additives in food--a health risk. Dtsch Arztebl Int. 2012.",
+        "searchTitle": "Phosphate additives in food--a health risk"
+      }
+    ],
+    "pubmedTerm": "diphosphates",
+    "flags": [
+      "kidney_caution",
+      "children_caution"
+    ],
+    "classes": [
+      "emulsifier",
+      "humectant",
+      "sequestrant",
+      "stabiliser",
+      "thickener"
+    ],
+    "variants": [
+      {
+        "code": "E450(i)",
+        "nameDa": "Dinatriumdiphosphat",
+        "nameEn": "Disodium diphosphate"
+      },
+      {
+        "code": "E450(ii)",
+        "nameDa": "Trinatriumdiphosphat",
+        "nameEn": "Trisodium diphosphate"
+      },
+      {
+        "code": "E450(iii)",
+        "nameDa": "Tetranatriumdiphosphat",
+        "nameEn": "Tetrasodium diphosphate"
+      },
+      {
+        "code": "E450(v)",
+        "nameDa": "Tetrakaliumdiphosphat",
+        "nameEn": "Tetrapotassium diphosphate"
+      },
+      {
+        "code": "E450(vi)",
+        "nameDa": "Dicalciumdiphosphat",
+        "nameEn": "Dicalcium diphosphate"
+      },
+      {
+        "code": "E450(vii)",
+        "nameDa": "Calciumdihydrogendiphosphat",
+        "nameEn": "Calcium dihydrogen diphosphate"
+      },
+      {
+        "code": "E450(ix)",
+        "nameDa": "",
+        "nameEn": "Magnesium dihydrogen diphosphate"
+      }
+    ],
+    "efsa": {
+      "title": "Re‐evaluation of phosphoric acid–phosphates – di‐, tri‐ and polyphosphates (E 338–341, E 343, E 450–452) as food additives and the safety of proposed extension of use",
+      "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5674",
+      "date": "2019/06/12",
+      "adi": "40 mg/kg bw/day (som fosfor)",
+      "overexposureRisk": "en:high"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.inchem.org/documents/jecfa/jecmono/v17je22.htm",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32014R0298",
+        "https://bakerpedia.com/ingredients/sodium-acid-pyrophosphate-sapp/",
+        "https://www.fao.org/4/x5909e/x5909e01.htm",
+        "https://www.ams.usda.gov/sites/default/files/media/SAP%20report_0.pdf",
+        "https://pubmed.ncbi.nlm.nih.gov/16332629/",
+        "https://pubmed.ncbi.nlm.nih.gov/38116373",
+        "https://doi.org/10.2903/j.efsa.2019.5674",
+        "https://www.eurekalert.org/news-releases/526419",
+        "https://www.foodnavigator.com/Article/2019/06/13/Children-exceed-acceptable-daily-intake-of-phosphates-EFSA-finds/",
+        "https://pubmed.ncbi.nlm.nih.gov/22334826/",
+        "https://di.aerzteblatt.de/int/archive/article/119592",
+        "https://pubmed.ncbi.nlm.nih.gov/24425727/",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC5693714/",
+        "https://food.ec.europa.eu/document/download/7c2be994-e3a9-45f6-bc1d-10f29f326299_en?filename=fs_food-improvement-agents_reeval_call_2020705_e338-341_e343_e450-452_data.pdf"
+      ],
+      "notes": "Runde 3: Gruppe-ADI og EFSA 2019-konklusioner bekræftet; eksponeringsgrupper og absorptionsudsagn præciseret. Udsagn om at EFSA 'anbefalede lavere grænser' omformuleret. Varianter (iv) og (viii) fjernet fra variants (ikke i EU-listen). Fremstilling og teknologiske anvendelser bekræftet. Britisk kilde (legislation.gov.uk) fjernet fra sources."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Pyrophosphate",
+    "wikidata": "Q55506489",
+    "claims": [
+      {
+        "claim": "Diphosphater = to sammenkoblede fosfatenheder med Na, K, Ca eller Mg",
+        "source": "https://www.inchem.org/documents/jecfa/jecmono/v17je22.htm",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles ved opvarmning af monofosfater",
+        "source": "https://www.inchem.org/documents/jecfa/jecmono/v17je22.htm",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EU-varianter (i),(ii),(iii),(v),(vi),(vii); (iv) og (viii) ikke EU-godkendte og fjernet fra variants",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/",
+        "result": "rettet"
+      },
+      {
+        "claim": "(ix) magnesiumdihydrogendiphosphat godkendt 2014 (forordning (EU) nr. 298/2014)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32014R0298",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "SAPP er sur komponent i bagepulver og reagerer langsomt med natron",
+        "source": "https://bakerpedia.com/ingredients/sodium-acid-pyrophosphate-sapp/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Binder vand og protein i kød og fisk",
+        "source": "https://www.fao.org/4/x5909e/x5909e01.htm | https://www.ams.usda.gov/sites/default/files/media/SAP%20report_0.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Forhindrer misfarvning af kartofler",
+        "source": "https://bakerpedia.com/ingredients/sodium-acid-pyrophosphate-sapp/ | https://www.ams.usda.gov/sites/default/files/media/SAP%20report_0.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Smeltesalt i ost",
+        "source": "https://www.ams.usda.gov/sites/default/files/media/SAP%20report_0.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Maksimumsgrænser angivet som P2O5, samlet for fosfater",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32014R0298 | https://pubmed.ncbi.nlm.nih.gov/16332629/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: bagepulver/bagværk, pølser/skinke, fisk/surimi, smelteost, frosne kartoffelprodukter, pulversupper (præciseret)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32014R0298 | https://pubmed.ncbi.nlm.nih.gov/38116373 | https://bakerpedia.com/ingredients/sodium-acid-pyrophosphate-sapp/ | https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Gruppe-ADI 40 mg/kg lgv/dag som fosfor (EFSA 2019)",
+        "source": "https://doi.org/10.2903/j.efsa.2019.5674 | https://www.eurekalert.org/news-releases/526419",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "ADI kan overskrides hos spædbørn, børn og unge (præciseret: børn allerede ved gennemsnit, unge ved højt forbrug)",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/ | https://www.foodnavigator.com/Article/2019/06/13/Children-exceed-acceptable-daily-intake-of-phosphates-EFSA-finds/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Særligt problematisk ved nedsat nyrefunktion (ADI gælder ikke denne gruppe)",
+        "source": "https://www.eurekalert.org/news-releases/526419 | https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fosfatophobning øger risiko for karforkalkning og hjertekarsygdom hos nyrepatienter",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/22334826/ | https://di.aerzteblatt.de/int/archive/article/119592",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Tilsatte fosfater optages næsten fuldstændigt (rettet: optages mere effektivt end organisk bundet fosfat)",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/22334826/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Højt fosfatindtag og lavt calciumindtag kan påvirke knoglestofskiftet",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/24425727/ | https://pmc.ncbi.nlm.nih.gov/articles/PMC5693714/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA anbefalede lavere grænser for tungmetaller (rettet: påpegede at arsen, bly, kviksølv, cadmium og aluminium kan bidrage væsentligt; Kommissionen har indkaldt data til revision)",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/ | https://food.ec.europa.eu/document/download/7c2be994-e3a9-45f6-bc1d-10f29f326299_en?filename=fs_food-improvement-agents_reeval_call_2020705_e338-341_e343_e450-452_data.pdf",
+        "result": "rettet"
+      },
+      {
+        "claim": "Ritz et al. Dtsch Arztebl Int 2012: fosfattilsætning som sundhedsrisiko, især for nyrepatienter",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/22334826/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Association mellem højt fosfat i blodet og hjertekardødelighed i befolkningsstudier",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/22334826/ | https://di.aerzteblatt.de/int/archive/article/119592",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Uafklaret betydning for raske personer",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/22334826/",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E451",
+    "nameDa": "Triphosphater",
+    "nameEn": "Triphosphates",
+    "category": "Stabilisator / sekvestrant / fugtighedsbevarende middel",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Triphosphater er fosfatsalte, der især bruges til at holde på vandet i kød-, fiske- og skaldyrsprodukter.",
+    "description": "Triphosphater består af tre sammenkoblede fosfatenheder. De EU-godkendte varianter er (i) pentanatriumtriphosphat og (ii) pentakaliumtriphosphat. Pentanatriumtriphosphat fremstilles ved at lade fosforsyre reagere med soda eller natriumhydroxid i støkiometrisk forhold efterfulgt af tørring og kondensation. Fosfaterne binder muskelproteinerne, så kød og fisk holder på mere vand. Det giver saftigere produkter, men kan også misbruges til at øge vægten med optaget vand, hvilket er et kendt problem ved frosne rejer og fiskefileter.",
+    "uses": "Tilladt i EU med maksimumsgrænser (samlet for fosfater), fx i forarbejdet kød som skinke, pålæg og pølser, frosne fiskefileter og krebsdyr, smelteost, supper og pulverprodukter.",
+    "health": "EFSA (2019) fastsatte en gruppe-ADI for fosfater (inkl. E338-E341, E343, E450-E452) på 40 mg/kg legemsvægt/dag udtrykt som fosfor, gældende for det samlede fosforindtag fra både naturligt indhold og tilsætningsstoffer. Indtaget kan overstige ADI hos spædbørn, småbørn og børn allerede ved gennemsnitligt forbrug og desuden hos unge ved højt forbrug. ADI gælder ikke for personer med moderat til svært nedsat nyrefunktion, som udgør en særlig risikogruppe; hos patienter med fremskreden nyresygdom er forhøjet fosfat i blodet forbundet med karskader, herunder karforkalkning, og øget dødelighed. Uorganisk fosfat fra tilsætningsstoffer optages mere effektivt end organisk bundet fosfat i uforarbejdede fødevarer. Højt fosforindtag, især kombineret med lavt calciumindtag, kan påvirke calcium- og knoglestofskiftet via øget parathyroideahormon.",
+    "research": "EFSA's FAF-panel genvurderede fosforsyre og fosfater samlet i 2019 og indførte den nye gruppe-ADI. Panelet påpegede, at forureninger med tungmetaller (arsen, bly, kviksølv, cadmium) og aluminium i fosfattilsætningsstofferne kan bidrage væsentligt til eksponeringen, og EU-Kommissionen har efterfølgende indkaldt data med henblik på at revidere specifikationerne. Ritz et al. (Deutsches Ärzteblatt, 2012) gjorde opmærksom på, at fosfattilsætning kan være en sundhedsrisiko, især for nyrepatienter, og at højt-normale fosfatniveauer også hos personer med normal nyrefunktion er forbundet med øget sygelighed og dødelighed. Det er fortsat uafklaret, i hvilket omfang fosfattilsætning påvirker raske personer.",
+    "keyReferences": [
+      {
+        "citation": "Ritz E, Hahn K, Ketteler M, Kuhlmann MK, Mann J. Phosphate additives in food--a health risk. Dtsch Arztebl Int. 2012.",
+        "searchTitle": "Phosphate additives in food--a health risk"
+      }
+    ],
+    "pubmedTerm": "triphosphates",
+    "flags": [
+      "kidney_caution",
+      "children_caution"
+    ],
+    "classes": [
+      "emulsifier",
+      "humectant",
+      "sequestrant",
+      "stabiliser",
+      "thickener"
+    ],
+    "variants": [
+      {
+        "code": "E451(i)",
+        "nameDa": "Pentanatriumtriphosphat",
+        "nameEn": "Pentasodium triphosphate"
+      },
+      {
+        "code": "E451(ii)",
+        "nameDa": "Pentakaliumtriphosphat",
+        "nameEn": "Pentapotassium triphosphate"
+      }
+    ],
+    "efsa": {
+      "title": "Re‐evaluation of phosphoric acid–phosphates – di‐, tri‐ and polyphosphates (E 338–341, E 343, E 450–452) as food additives and the safety of proposed extension of use",
+      "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5674",
+      "date": "2019/06/12",
+      "adi": "40 mg/kg bw/day (som fosfor)",
+      "overexposureRisk": "en:high"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/",
+        "https://www.inchem.org/documents/jecfa/jecmono/v17je22.htm",
+        "https://www.fao.org/4/x5909e/x5909e01.htm",
+        "https://pubmed.ncbi.nlm.nih.gov/16332629/",
+        "https://ift.onlinelibrary.wiley.com/doi/full/10.1111/1750-3841.70365",
+        "https://pubmed.ncbi.nlm.nih.gov/38116373",
+        "https://doi.org/10.2903/j.efsa.2019.5674",
+        "https://www.eurekalert.org/news-releases/526419",
+        "https://www.foodnavigator.com/Article/2019/06/13/Children-exceed-acceptable-daily-intake-of-phosphates-EFSA-finds/",
+        "https://pubmed.ncbi.nlm.nih.gov/22334826/",
+        "https://di.aerzteblatt.de/int/archive/article/119592",
+        "https://pubmed.ncbi.nlm.nih.gov/24425727/",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC5693714/",
+        "https://food.ec.europa.eu/document/download/7c2be994-e3a9-45f6-bc1d-10f29f326299_en?filename=fs_food-improvement-agents_reeval_call_2020705_e338-341_e343_e450-452_data.pdf"
+      ],
+      "notes": "Runde 3: EFSA 2019 og Ritz 2012 bekræftet; eksponering og absorption præciseret. Fremstillingsmetode og virkningsmekanisme rettet efter kilderne. Surimi fjernet fra uses (kun dokumenteret for fosfater generelt, se E450). Britisk kilde (legislation.gov.uk) fjernet fra sources."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Sodium_triphosphate",
+    "wikidata": "Q29145",
+    "claims": [
+      {
+        "claim": "Tre sammenkoblede fosfatenheder; EU-varianter (i) pentanatrium- og (ii) pentakaliumtriphosphat",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/ | https://www.inchem.org/documents/jecfa/jecmono/v17je22.htm",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "(iii) natriumkaliumtriphosphat ikke EU-godkendt; fjernet fra variants",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Fremstilles ved kontrolleret opvarmning af natrium-/kaliumfosfater (rettet: fosforsyre + soda/NaOH, tørring)",
+        "source": "https://www.inchem.org/documents/jecfa/jecmono/v17je22.htm",
+        "result": "rettet"
+      },
+      {
+        "claim": "Binder calcium og magnesium og ændrer muskelproteinernes ladning (omformuleret: binder muskelproteiner og øger vandbinding)",
+        "source": "https://www.fao.org/4/x5909e/x5909e01.htm",
+        "result": "rettet"
+      },
+      {
+        "claim": "Kan bruges til at øge vægten med tilsat vand ved frosne rejer og fiskefileter",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/16332629/ | https://ift.onlinelibrary.wiley.com/doi/full/10.1111/1750-3841.70365",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: skinke/pålæg, pølser, frosne rejer og fisk, smelteost, pulverprodukter",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/16332629/ | https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Surimi",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/38116373",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Gruppe-ADI 40 mg/kg lgv/dag som fosfor (EFSA 2019)",
+        "source": "https://doi.org/10.2903/j.efsa.2019.5674 | https://www.eurekalert.org/news-releases/526419",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "ADI kan overskrides hos spædbørn, børn og unge (præciseret: børn allerede ved gennemsnit, unge ved højt forbrug)",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/ | https://www.foodnavigator.com/Article/2019/06/13/Children-exceed-acceptable-daily-intake-of-phosphates-EFSA-finds/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Særligt problematisk ved nedsat nyrefunktion (ADI gælder ikke denne gruppe)",
+        "source": "https://www.eurekalert.org/news-releases/526419 | https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fosfatophobning øger risiko for karforkalkning og hjertekarsygdom hos nyrepatienter",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/22334826/ | https://di.aerzteblatt.de/int/archive/article/119592",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Tilsatte fosfater optages næsten fuldstændigt (rettet: optages mere effektivt end organisk bundet fosfat)",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/22334826/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Højt fosfatindtag og lavt calciumindtag kan påvirke knoglestofskiftet",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/24425727/ | https://pmc.ncbi.nlm.nih.gov/articles/PMC5693714/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA anbefalede lavere grænser for tungmetaller (rettet: påpegede at arsen, bly, kviksølv, cadmium og aluminium kan bidrage væsentligt; Kommissionen har indkaldt data til revision)",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/ | https://food.ec.europa.eu/document/download/7c2be994-e3a9-45f6-bc1d-10f29f326299_en?filename=fs_food-improvement-agents_reeval_call_2020705_e338-341_e343_e450-452_data.pdf",
+        "result": "rettet"
+      },
+      {
+        "claim": "Ritz et al. Dtsch Arztebl Int 2012: fosfattilsætning som sundhedsrisiko, især for nyrepatienter",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/22334826/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Association mellem højt fosfat i blodet og hjertekardødelighed i befolkningsstudier",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/22334826/ | https://di.aerzteblatt.de/int/archive/article/119592",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Uafklaret betydning for raske personer",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/22334826/",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E452",
+    "nameDa": "Polyphosphater",
+    "nameEn": "Polyphosphates",
+    "category": "Sekvestrant / stabilisator / emulgator",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Polyphosphater er lange kæder af fosfat, som binder vand og mineraler i fx kødprodukter og ost.",
+    "description": "Polyphosphater består af mange sammenkoblede fosfatenheder. Natriumpolyphosphat (Grahams salt) fremstilles ved at opvarme natriumdihydrogenfosfat til over ca. 620 °C og afkøle smelten hurtigt, så der dannes et vandopløseligt fosfatglas. De EU-godkendte varianter er (i) natriumpolyphosphat, (ii) kaliumpolyphosphat, (iii) natriumcalciumpolyphosphat og (iv) calciumpolyphosphat. De bruges som stabilisatorer og emulgatorer, til vandbinding i kød og fisk og som smeltesalte i ost.",
+    "uses": "Tilladt i EU med maksimumsgrænser (samlet for fosfater), fx i forarbejdet kød, smelteost, frosne fiskefileter og krebsdyr, supper, saucer og pulverprodukter; i tyggegummi er fosfater tilladt quantum satis.",
+    "health": "EFSA (2019) fastsatte en gruppe-ADI for fosfater (inkl. E338-E341, E343, E450-E452) på 40 mg/kg legemsvægt/dag udtrykt som fosfor, gældende for det samlede fosforindtag fra både naturligt indhold og tilsætningsstoffer. Indtaget kan overstige ADI hos spædbørn, småbørn og børn allerede ved gennemsnitligt forbrug og desuden hos unge ved højt forbrug. ADI gælder ikke for personer med moderat til svært nedsat nyrefunktion, som udgør en særlig risikogruppe; hos patienter med fremskreden nyresygdom er forhøjet fosfat i blodet forbundet med karskader, herunder karforkalkning, og øget dødelighed. Uorganisk fosfat fra tilsætningsstoffer optages mere effektivt end organisk bundet fosfat i uforarbejdede fødevarer. Højt fosforindtag, især kombineret med lavt calciumindtag, kan påvirke calcium- og knoglestofskiftet via øget parathyroideahormon.",
+    "research": "EFSA's FAF-panel genvurderede fosforsyre og fosfater samlet i 2019 og indførte den nye gruppe-ADI. Panelet påpegede, at forureninger med tungmetaller (arsen, bly, kviksølv, cadmium) og aluminium i fosfattilsætningsstofferne kan bidrage væsentligt til eksponeringen, og EU-Kommissionen har efterfølgende indkaldt data med henblik på at revidere specifikationerne. Ritz et al. (Deutsches Ärzteblatt, 2012) gjorde opmærksom på, at fosfattilsætning kan være en sundhedsrisiko, især for nyrepatienter, og at højt-normale fosfatniveauer også hos personer med normal nyrefunktion er forbundet med øget sygelighed og dødelighed. Det er fortsat uafklaret, i hvilket omfang fosfattilsætning påvirker raske personer.",
+    "keyReferences": [
+      {
+        "citation": "Ritz E, Hahn K, Ketteler M, Kuhlmann MK, Mann J. Phosphate additives in food--a health risk. Dtsch Arztebl Int. 2012.",
+        "searchTitle": "Phosphate additives in food--a health risk"
+      }
+    ],
+    "pubmedTerm": "polyphosphates",
+    "flags": [
+      "kidney_caution",
+      "children_caution"
+    ],
+    "classes": [
+      "emulsifier",
+      "humectant",
+      "sequestrant",
+      "stabiliser",
+      "thickener"
+    ],
+    "variants": [
+      {
+        "code": "E452(i)",
+        "nameDa": "Natriumpolyphosphater",
+        "nameEn": "Sodium polyphosphate"
+      },
+      {
+        "code": "E452(ii)",
+        "nameDa": "Kaliumpolyphosphater",
+        "nameEn": "Potassium polyphosphate"
+      },
+      {
+        "code": "E452(iii)",
+        "nameDa": "Natriumcalciumpolyphosphater",
+        "nameEn": "Sodium calcium polyphosphate"
+      },
+      {
+        "code": "E452(iv)",
+        "nameDa": "Calciumpolyphosphater",
+        "nameEn": "Calcium polyphosphate"
+      }
+    ],
+    "efsa": {
+      "title": "Re‐evaluation of phosphoric acid–phosphates – di‐, tri‐ and polyphosphates (E 338–341, E 343, E 450–452) as food additives and the safety of proposed extension of use",
+      "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5674",
+      "date": "2019/06/12",
+      "adi": "40 mg/kg bw/day (som fosfor)",
+      "overexposureRisk": "en:high"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.inchem.org/documents/jecfa/jecmono/v17je22.htm",
+        "https://www.fao.org/4/x5909e/x5909e01.htm",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/",
+        "https://pubmed.ncbi.nlm.nih.gov/38116373",
+        "https://pubmed.ncbi.nlm.nih.gov/16332629/",
+        "https://doi.org/10.2903/j.efsa.2019.5674",
+        "https://www.eurekalert.org/news-releases/526419",
+        "https://www.foodnavigator.com/Article/2019/06/13/Children-exceed-acceptable-daily-intake-of-phosphates-EFSA-finds/",
+        "https://pubmed.ncbi.nlm.nih.gov/22334826/",
+        "https://di.aerzteblatt.de/int/archive/article/119592",
+        "https://pubmed.ncbi.nlm.nih.gov/24425727/",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC5693714/",
+        "https://food.ec.europa.eu/document/download/7c2be994-e3a9-45f6-bc1d-10f29f326299_en?filename=fs_food-improvement-agents_reeval_call_2020705_e338-341_e343_e450-452_data.pdf"
+      ],
+      "notes": "Runde 3: EFSA 2019 og Ritz 2012 bekræftet; eksponering og absorption præciseret. Fremstilling (Grahams salt) bekræftet. Varianter (v) og (vi) fjernet fra variants. Ubekræftede anvendelser (drikke, flødeprodukter, udfældning i mejeriprodukter) fjernet; tyggegummi bekræftet (quantum satis). Britisk kilde (legislation.gov.uk) fjernet fra sources."
+    },
+    "wikipedia": "",
+    "wikidata": "Q11867365",
+    "claims": [
+      {
+        "claim": "Lange kæder af fosfat, der binder vand og mineraler",
+        "source": "https://www.inchem.org/documents/jecfa/jecmono/v17je22.htm | https://www.fao.org/4/x5909e/x5909e01.htm",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles ved opvarmning og hurtig afkøling (Grahams salt)",
+        "source": "https://www.inchem.org/documents/jecfa/jecmono/v17je22.htm",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EU-varianter (i)-(iv)",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "(v) ammoniumpolyphosphat og (vi) natriumtripolyphosphat er ikke E452-varianter i EU; fjernet fra variants",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Stærke kompleksbindere for calcium og magnesium",
+        "source": "https://www.inchem.org/documents/jecfa/jecmono/v17je22.htm",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Vandbinding i kød, smeltesalte i ost",
+        "source": "https://www.fao.org/4/x5909e/x5909e01.htm | https://pubmed.ncbi.nlm.nih.gov/38116373",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Forhindrer udfældning i drikke og mejeriprodukter",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Anvendelser: pålæg, pølser, frosne fisk og skaldyr, smelteost",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/16332629/ | https://pubmed.ncbi.nlm.nih.gov/38116373",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Flødeprodukter og drikke",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Tyggegummi (fosfater tilladt quantum satis i kategori 5.3)",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Gruppe-ADI 40 mg/kg lgv/dag som fosfor (EFSA 2019)",
+        "source": "https://doi.org/10.2903/j.efsa.2019.5674 | https://www.eurekalert.org/news-releases/526419",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "ADI kan overskrides hos spædbørn, børn og unge (præciseret: børn allerede ved gennemsnit, unge ved højt forbrug)",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/ | https://www.foodnavigator.com/Article/2019/06/13/Children-exceed-acceptable-daily-intake-of-phosphates-EFSA-finds/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Særligt problematisk ved nedsat nyrefunktion (ADI gælder ikke denne gruppe)",
+        "source": "https://www.eurekalert.org/news-releases/526419 | https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fosfatophobning øger risiko for karforkalkning og hjertekarsygdom hos nyrepatienter",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/22334826/ | https://di.aerzteblatt.de/int/archive/article/119592",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Tilsatte fosfater optages næsten fuldstændigt (rettet: optages mere effektivt end organisk bundet fosfat)",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/22334826/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Højt fosfatindtag og lavt calciumindtag kan påvirke knoglestofskiftet",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/24425727/ | https://pmc.ncbi.nlm.nih.gov/articles/PMC5693714/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA anbefalede lavere grænser for tungmetaller (rettet: påpegede at arsen, bly, kviksølv, cadmium og aluminium kan bidrage væsentligt; Kommissionen har indkaldt data til revision)",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7009158/ | https://food.ec.europa.eu/document/download/7c2be994-e3a9-45f6-bc1d-10f29f326299_en?filename=fs_food-improvement-agents_reeval_call_2020705_e338-341_e343_e450-452_data.pdf",
+        "result": "rettet"
+      },
+      {
+        "claim": "Ritz et al. Dtsch Arztebl Int 2012: fosfattilsætning som sundhedsrisiko, især for nyrepatienter",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/22334826/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Association mellem højt fosfat i blodet og hjertekardødelighed i befolkningsstudier",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/22334826/ | https://di.aerzteblatt.de/int/archive/article/119592",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Uafklaret betydning for raske personer",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/22334826/",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E459",
+    "nameDa": "Beta-cyclodextrin",
+    "nameEn": "Beta-cyclodextrin",
+    "category": "Stabilisator / bærestof",
+    "euStatus": "approved",
+    "origin": "natural",
+    "summary": "Beta-cyclodextrin er en ringformet stivelsesforbindelse, der indkapsler aromaer og andre stoffer for at beskytte dem.",
+    "description": "Beta-cyclodextrin er et ringformet oligosakkarid af syv glukoseenheder og fremstilles enzymatisk fra stivelse med enzymet cyclodextrin-glucanotransferase. Det er den mest anvendte og billigste cyclodextrin. Det hydrofobe hulrum danner inklusionskomplekser med fedtopløselige molekyler, fx aromaer, farvestoffer og næringsstoffer, hvilket beskytter dem mod oxidation eller maskerer bitter smag. Det nedbrydes i tyktarmen af tarmfloraen og amylaser til maltose og glukose, og niveauerne i blod og væv er lave.",
+    "uses": "Tilladt i EU som bærestof for tilsætningsstoffer (op til 1.000 mg/kg i den færdige fødevare), i indkapslede aromaer i aromatiseret te og aromatiserede pulverdrikke (maks. 500 mg/l) og aromatiserede snacks (maks. 1.000 mg/kg) samt i kosttilskud i tablet- og dragéform.",
+    "health": "EFSA (2016) fandt ingen grund til at ændre ADI på 5 mg/kg legemsvægt/dag (fastsat af SCF i 1996), men fandt, at eksponeringen i det mest relevante (brand-loyale) scenarie oversteg ADI ved 95-percentilen i alle aldersgrupper og ved gennemsnittet i alle grupper undtagen spædbørn. Beta-cyclodextrin kan binde kolesterol og danne komplekser med lægemiddelstoffer. Børn med højt forbrug er blandt de grupper, hvor ADI overskrides.",
+    "research": "EFSA's ANS-panel genvurderede beta-cyclodextrin (E459) i 2016. Beta-cyclodextrin og dets derivater bruges også i lægemidler til at øge opløseligheden af aktive stoffer, og derivatet hydroxypropyl-beta-cyclodextrin er afprøvet i kliniske forsøg (bl.a. NIH fase 1) ved Niemann-Pick type C, men dette er ikke det samme som fødevaretilsætningsstoffet.",
+    "keyReferences": [],
+    "pubmedTerm": "beta-cyclodextrin",
+    "flags": [
+      "children_caution"
+    ],
+    "classes": [
+      "carrier",
+      "stabiliser",
+      "thickener"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of Beta-cyclodextrin (E 459) as a food additive",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2016.4628",
+      "date": "2016-12-07",
+      "adi": "5",
+      "overexposureRisk": "en:high"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.chemicalbook.com/ChemicalProductProperty_EN_CB8289713.htm",
+        "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/beta-cyclodextrin",
+        "https://www.ema.europa.eu/en/documents/scientific-guideline/questions-and-answers-cyclodextrins-used-excipients-medicinal-products-human-use_en.pdf",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11050477/",
+        "https://doi.org/10.2903/j.efsa.2016.4628",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC13088895/",
+        "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/10258641"
+      ],
+      "notes": "Runde 3: Kemi, fremstilling, ADI og EFSA-eksponeringskonklusion bekræftet. EU-anvendelser rettet til de faktiske kategorier/grænser (bærestof, indkapslede aromaer i te/pulverdrikke og snacks, kosttilskud); kaffe og tyggegummi fjernet. Ubekræftede udsagn om bidragende fødevarer og EFSA-anbefaling af forbrugsdata fjernet."
+    },
+    "wikipedia": "",
+    "wikidata": "",
+    "claims": [
+      {
+        "claim": "Syv glukoseenheder i en ring",
+        "source": "https://www.chemicalbook.com/ChemicalProductProperty_EN_CB8289713.htm | https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/beta-cyclodextrin",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles enzymatisk fra stivelse med cyclodextrin-glucanotransferase",
+        "source": "https://www.chemicalbook.com/ChemicalProductProperty_EN_CB8289713.htm",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Mest anvendte og billigste cyclodextrin",
+        "source": "https://www.ema.europa.eu/en/documents/scientific-guideline/questions-and-answers-cyclodextrins-used-excipients-medicinal-products-human-use_en.pdf | https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11050477/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Binder fedtopløselige molekyler (aromaer, farvestoffer, vitaminer), beskytter mod lys/ilt, skjuler bitter smag (rettet: beskyttelse mod oxidation; 'lys' ikke bekræftet)",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/beta-cyclodextrin | https://www.chemicalbook.com/ChemicalProductProperty_EN_CB8289713.htm",
+        "result": "rettet"
+      },
+      {
+        "claim": "Nedbrydes begrænset i tyndtarmen og fermenteres i tyktarmen (præciseret efter EFSA)",
+        "source": "https://doi.org/10.2903/j.efsa.2016.4628 | https://www.chemicalbook.com/ChemicalProductProperty_EN_CB8289713.htm",
+        "result": "rettet"
+      },
+      {
+        "claim": "Anvendelser: aromaer, tabletter, kosttilskud, aromatiserede te-/pulverdrikke, snacks (rettet med EU-grænser)",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13088895/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Kaffedrikke og tyggegummi",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13088895/",
+        "result": "fjernet"
+      },
+      {
+        "claim": "ADI 5 mg/kg bekræftet af EFSA 2016 (SCF 1996)",
+        "source": "https://doi.org/10.2903/j.efsa.2016.4628 | https://pmc.ncbi.nlm.nih.gov/articles/PMC13088895/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Eksponering over ADI ved P95 i alle grupper og ved gennemsnit i alle undtagen spædbørn",
+        "source": "https://doi.org/10.2903/j.efsa.2016.4628",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Drikke med aroma, kaffe/te og kosttilskud bidrog mest",
+        "source": "https://doi.org/10.2903/j.efsa.2016.4628",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Kan binde kolesterol",
+        "source": "https://www.chemicalbook.com/ChemicalProductProperty_EN_CB8289713.htm",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kan binde visse lægemidler",
+        "source": "https://www.ema.europa.eu/en/documents/scientific-guideline/questions-and-answers-cyclodextrins-used-excipients-medicinal-products-human-use_en.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Småbørn og børn med højt forbrug mest udsatte (rettet: overskridelse i alle aldersgrupper ved høj eksponering)",
+        "source": "https://doi.org/10.2903/j.efsa.2016.4628",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA anbefalede bedre forbrugsdata",
+        "source": "https://doi.org/10.2903/j.efsa.2016.4628",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Bruges i lægemidler til at øge opløselighed",
+        "source": "https://www.ema.europa.eu/en/documents/scientific-guideline/questions-and-answers-cyclodextrins-used-excipients-medicinal-products-human-use_en.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Hydroxypropyl-beta-cyclodextrin undersøgt ved Niemann-Pick type C",
+        "source": "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/10258641",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E460",
+    "nameDa": "Cellulose",
+    "nameEn": "Cellulose",
+    "category": "Fortykningsmiddel / antiklumpningsmiddel / fyldstof",
+    "euStatus": "approved",
+    "origin": "natural",
+    "summary": "Cellulose er plantefibre fra træ eller andre planter, der bruges som fyldstof, fortykker og antiklumpningsmiddel.",
+    "description": "Cellulose er en lang, uforgrenet kæde af glukoseenheder med beta-1,4-bindinger og er den mest udbredte organiske polymer på jorden. Til fødevarer udvindes den som alfa-cellulose fra fibrøst plantemateriale, fx træmasse. E460(i) mikrokrystallinsk cellulose (MCC) fremstilles ved syrehydrolyse, der fjerner de amorfe dele og giver delvist depolymeriseret, renset cellulose. E460(ii) cellulosepulver fremstilles ved rensning og mekanisk findeling af alfa-cellulose. Cellulose optages ikke og udskilles intakt med afføringen.",
+    "uses": "Tilladt quantum satis i EU (gruppe I), fx som antiklumpningsmiddel i revet ost og i mange andre fødevarekategorier samt i kosttilskud og tabletter.",
+    "health": "Cellulose er ufordøjelig kostfiber og anses for meget sikkert; eFSA's genvurdering af celluloser (E460-E466, E468, E469) fra 2018 fandt ikke behov for en numerisk ADI og ingen sikkerhedsbekymring ved de rapporterede anvendelser. Celluloser optages ikke og udskilles intakte med afføringen. Store enkeltindtag af celluloser er lejlighedsvis forbundet med afføringsvirkning, som for andre kostfibre. Ingen kendte særlige risikogrupper.",
+    "research": "EFSA's ANS-panel genvurderede celluloser samlet i 2018. I 2016 var der i USA mediedebat om 'træmasse' i revet parmesan; sagen handlede om vildledende mærkning ('100 % parmesan'), ikke om sundhedsrisiko, da cellulose er godkendt som antiklumpningsmiddel.",
+    "keyReferences": [],
+    "pubmedTerm": "microcrystalline cellulose",
+    "flags": [],
+    "classes": [
+      "carrier",
+      "emulsifier",
+      "humectant",
+      "stabiliser",
+      "thickener"
+    ],
+    "variants": [
+      {
+        "code": "E460(i)",
+        "nameDa": "Mikrokrystallinsk cellulose",
+        "nameEn": "Microcrystalline cellulose"
+      },
+      {
+        "code": "E460(ii)",
+        "nameDa": "Cellulosepulver",
+        "nameEn": "Powdered cellulose"
+      }
+    ],
+    "efsa": {
+      "title": "Re-evaluation of celluloses E 460(i), E 460(ii), E 461, E 462, E 463, E 464, E 465, E 466, E 468 and E 469 as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2018.5047",
+      "date": "2018",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.acs.org/molecule-of-the-week/archive/c/cellulose.html",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4699",
+        "https://www.dairyreporter.com/Article/2016/02/21/Shredded-Parmesan-market-growing-despite-wood-pulp-controversy/",
+        "https://thecounter.org/100-percent-grated-cheese-contain-cellulose-false-advertising-kraft-heinz/",
+        "https://doi.org/10.2903/j.efsa.2018.5047"
+      ],
+      "notes": "Runde 3: Kemi, fremstilling af MCC/cellulosepulver, gruppe I/quantum satis og EFSA 2018 bekræftet. 'Cremet gel', luftgener og udsagn om lægemiddelforskning kunne ikke bekræftes og er fjernet/omformuleret. 'Træ i osten'-debatten præciseret."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Cellulose",
+    "wikidata": "Q80294",
+    "claims": [
+      {
+        "claim": "Lang kæde af glukose med beta-bindinger",
+        "source": "https://www.acs.org/molecule-of-the-week/archive/c/cellulose.html",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Mest udbredte organiske stof på jorden (præciseret: organiske polymer)",
+        "source": "https://www.acs.org/molecule-of-the-week/archive/c/cellulose.html",
+        "result": "rettet"
+      },
+      {
+        "claim": "Udvindes fra træmasse eller bomuld (præciseret: alfa-cellulose fra fibrøst plantemateriale)",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/ | https://www.acs.org/molecule-of-the-week/archive/c/cellulose.html",
+        "result": "rettet"
+      },
+      {
+        "claim": "MCC fremstilles ved syrehydrolyse, der fjerner amorfe dele",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "MCC kan danne cremet gel",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Cellulosepulver fremstilles ved mekanisk findeling af renset cellulose",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fordøjes ikke / optages ikke",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Tilladt quantum satis (gruppe I)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4699",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Antiklumpningsmiddel i revet ost",
+        "source": "https://www.dairyreporter.com/Article/2016/02/21/Shredded-Parmesan-market-growing-despite-wood-pulp-controversy/ | https://thecounter.org/100-percent-grated-cheese-contain-cellulose-false-advertising-kraft-heinz/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Specifikke kategorier: fedtreducerede produkter, is, saucer, fiberberiget bagværk",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EFSA 2018: ingen numerisk ADI, ingen sikkerhedsbekymring",
+        "source": "https://doi.org/10.2903/j.efsa.2018.5047 | https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Store mængder kan give luft og løs mave (rettet: store enkeltindtag lejlighedsvis afføringsvirkning)",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Mikrokrystallinsk cellulose grundigt undersøgt pga. brug i lægemidler",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Mediedebat om 'træ i osten' (præciseret: USA 2016, vildledende mærkning)",
+        "source": "https://www.dairyreporter.com/Article/2016/02/21/Shredded-Parmesan-market-growing-despite-wood-pulp-controversy/ | https://thecounter.org/100-percent-grated-cheese-contain-cellulose-false-advertising-kraft-heinz/",
+        "result": "rettet"
+      }
+    ]
+  },
+  {
+    "code": "E461",
+    "nameDa": "Methylcellulose",
+    "nameEn": "Methyl cellulose",
+    "category": "Fortykningsmiddel / emulgator / stabilisator",
+    "euStatus": "approved",
+    "origin": "mixed",
+    "summary": "Methylcellulose er kemisk modificeret cellulose, der danner gel ved opvarmning og bl.a. bruges i plantebaserede kødalternativer.",
+    "description": "Methylcellulose fremstilles ved at behandle cellulose med natronlud (alkalicellulose) og methylchlorid, så en del af hydroxylgrupperne erstattes med methoxygrupper. Stoffet opløses i koldt vand og har den usædvanlige egenskab, at det gelerer ved opvarmning (typisk 50-70 °C) og bliver flydende igen ved afkøling (termoreversibel gelering). Derfor bruges det som bindemiddel i plantebaserede burgere og pølser, så de holder formen og saftigheden ved stegning. Det optages ikke og bruges også medicinsk som bulkdannende afføringsmiddel.",
+    "uses": "Tilladt i EU i mange fødevarekategorier (quantum satis), fx som bindemiddel i plantebaserede burgere, pølser og nuggets.",
+    "health": "Anses for sikkert; eFSA's genvurdering af celluloser (E460-E466, E468, E469) fra 2018 fandt ikke behov for en numerisk ADI og ingen sikkerhedsbekymring ved de rapporterede anvendelser. Celluloser optages ikke og udskilles intakte med afføringen. Store enkeltindtag kan virke afførende. Methylcellulose i form af afføringsmiddel (pulver/tabletter) skal tages med rigeligt væske, da det ellers kan svulme op i halsen og give kvælningsfare.",
+    "research": "EFSA's ANS-panel genvurderede methylcellulose med de øvrige celluloser i 2018. Forskning i emulgatorer og tarmflora har primært fokuseret på carboxymethylcellulose (E466), fx et randomiseret kostforsøg (Chassaing et al., Gastroenterology 2022); i hvilket omfang andre cellulosederivater påvirker tarmfloraen, er ikke afklaret.",
+    "keyReferences": [],
+    "pubmedTerm": "methylcellulose",
+    "flags": [
+      "laxative"
+    ],
+    "classes": [
+      "emulsifier",
+      "stabiliser",
+      "thickener"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of celluloses E 460(i), E 460(ii), E 461, E 462, E 463, E 464, E 465, E 466, E 468 and E 469 as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2018.5047",
+      "date": "2018",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.drugs.com/mtm/methylcellulose.html",
+        "https://www.kimacellulose.com/innovation-in-the-application-of-methyl-cellulose-in-vegetarian-meat-products.html",
+        "https://www.foodnavigator.com/Article/2022/10/03/replacing-methylcellulose-for-clean-label-plant-based-innovation/",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12026432/",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4699",
+        "https://doi.org/10.2903/j.efsa.2018.5047",
+        "https://pubmed.ncbi.nlm.nih.gov/34774538/",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7986288/"
+      ],
+      "notes": "Runde 3: Fremstilling, termogelering, anvendelse i plantebaserede kødalternativer, laksativ-brug og EFSA 2018 bekræftet. Ubekræftede anvendelseseksempler og 'luft' fjernet. Væskeadvarsel præciseret med kilde."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Methyl_cellulose",
+    "wikidata": "Q416312",
+    "claims": [
+      {
+        "claim": "Fremstilles med natronlud og methylchlorid (methoxygrupper)",
+        "source": "https://www.drugs.com/mtm/methylcellulose.html | https://www.kimacellulose.com/innovation-in-the-application-of-methyl-cellulose-in-vegetarian-meat-products.html",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Opløseligt i koldt vand, gelerer ved opvarmning og bliver flydende ved afkøling",
+        "source": "https://www.foodnavigator.com/Article/2022/10/03/replacing-methylcellulose-for-clean-label-plant-based-innovation/ | https://www.kimacellulose.com/innovation-in-the-application-of-methyl-cellulose-in-vegetarian-meat-products.html",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bindemiddel i vegetariske burgere og pølser",
+        "source": "https://www.foodnavigator.com/Article/2022/10/03/replacing-methylcellulose-for-clean-label-plant-based-innovation/ | https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12026432/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bulk-laksativ",
+        "source": "https://www.drugs.com/mtm/methylcellulose.html",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Quantum satis i EU",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/ | https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4699",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Glutenfrit brød, frosne friterede produkter, saucer, desserter, kosttilskud",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EFSA 2018: ingen numerisk ADI, ingen sikkerhedsbekymring",
+        "source": "https://doi.org/10.2903/j.efsa.2018.5047 | https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Afførende i store mængder",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/ | https://www.drugs.com/mtm/methylcellulose.html",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kan give luft",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Tages med rigeligt væske",
+        "source": "https://www.drugs.com/mtm/methylcellulose.html",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Tarmflora-forskning primært på CMC (E466); methylcellulose mindre undersøgt",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/34774538/ | https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7986288/",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E462",
+    "nameDa": "Ethylcellulose",
+    "nameEn": "Ethyl cellulose",
+    "category": "Bærestof / filmdanner",
+    "euStatus": "approved",
+    "origin": "mixed",
+    "summary": "Ethylcellulose er kemisk modificeret cellulose, der bruges som bærestof og til overtræk af tabletter og aromaer.",
+    "description": "Ethylcellulose fremstilles ved at lade alkalicellulose reagere med ethylchlorid, så hydroxylgrupper erstattes med ethoxygrupper. I modsætning til methylcellulose er den uopløselig i vand og mave-tarmsaft, men opløselig i organiske opløsningsmidler. Den danner stærke film og bruges derfor som overtræk og til smagsmaskering og fiksering af aromaer; desuden undersøges den som oleogelator (til at strukturere flydende olie).",
+    "uses": "Tilladt i EU quantum satis (gruppe I), fx som bindemiddel, filmdanner og aromafiksativ, bl.a. i overtræk af kosttilskud og tabletter.",
+    "health": "Anses for sikkert; eFSA's genvurdering af celluloser (E460-E466, E468, E469) fra 2018 fandt ikke behov for en numerisk ADI og ingen sikkerhedsbekymring ved de rapporterede anvendelser. Celluloser optages ikke og udskilles intakte med afføringen. Ingen kendte særlige risikogrupper.",
+    "research": "EFSA genvurderede ethylcellulose i 2018 sammen med de øvrige celluloser. Nyere forskning handler især om ethylcellulose-oleogeler som erstatning for mættet fedt i fx kiks, cremer og pølser; oleogeler er endnu ikke i udbredt kommerciel brug.",
+    "keyReferences": [],
+    "pubmedTerm": "ethylcellulose",
+    "flags": [],
+    "classes": [
+      "carrier",
+      "thickener"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of celluloses E 460(i), E 460(ii), E 461, E 462, E 463, E 464, E 465, E 466, E 468 and E 469 as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2018.5047",
+      "date": "2018",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://foodadditives.net/thickeners/ethylcellulose/",
+        "https://pubmed.ncbi.nlm.nih.gov/29555066/",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC10048032/",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4699",
+        "https://doi.org/10.2903/j.efsa.2018.5047"
+      ],
+      "notes": "Runde 3: Fremstilling, opløselighed, filmdannelse, oleogel-forskning og EFSA 2018 bekræftet. Vitamin-indkapsling ikke bekræftet og fjernet; anvendelser omformuleret."
+    },
+    "wikipedia": "",
+    "wikidata": "Q420113",
+    "claims": [
+      {
+        "claim": "Fremstilles af alkalicellulose og ethylchlorid",
+        "source": "https://foodadditives.net/thickeners/ethylcellulose/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Uopløselig i vand, opløselig i organiske opløsningsmidler",
+        "source": "https://foodadditives.net/thickeners/ethylcellulose/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Danner stærke film; overtræk og indkapsling af aromaer",
+        "source": "https://foodadditives.net/thickeners/ethylcellulose/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Indkapsling af vitaminer",
+        "source": "https://foodadditives.net/thickeners/ethylcellulose/",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Oleogelator",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/29555066/ | https://pmc.ncbi.nlm.nih.gov/articles/PMC10048032/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Quantum satis i EU",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/ | https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4699",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bærestof for aromaer og farvestoffer; indkapslede ingredienser (omformuleret til funktionerne i kilden)",
+        "source": "https://foodadditives.net/thickeners/ethylcellulose/",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2018: ingen numerisk ADI, ingen sikkerhedsbekymring",
+        "source": "https://doi.org/10.2903/j.efsa.2018.5047 | https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Optages ikke og udskilles uændret",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/ | https://foodadditives.net/thickeners/ethylcellulose/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Forskning i ethylcellulose-oleogeler som alternativ til mættet fedt",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/29555066/ | https://pmc.ncbi.nlm.nih.gov/articles/PMC10048032/",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E463",
+    "nameDa": "Hydroxypropylcellulose",
+    "nameEn": "Hydroxypropyl cellulose",
+    "category": "Fortykningsmiddel / emulgator / stabilisator",
+    "euStatus": "approved",
+    "origin": "mixed",
+    "summary": "Hydroxypropylcellulose er kemisk modificeret cellulose, der fortykker og stabiliserer fødevarer og kosttilskud.",
+    "description": "Hydroxypropylcellulose fremstilles ved at lade alkalicellulose reagere med propylenoxid under forhøjet tryk og temperatur, så der dannes hydroxypropylethergrupper på cellulosekæden. Stoffet er opløseligt i vand og i polære organiske opløsningsmidler og udfælder ved opvarmning (nedre kritiske opløsningstemperatur). Det bruges som fortykker, emulgator, stabilisator og filmdanner samt som bindemiddel og overtræk i tabletter. Det optages ikke og udskilles intakt.",
+    "uses": "Tilladt i EU quantum satis, fx som fortykker og stabilisator samt i overtræk og bindemiddel i kosttilskud og tabletter.",
+    "health": "Anses for sikkert; eFSA's genvurdering af celluloser (E460-E466, E468, E469) fra 2018 fandt ikke behov for en numerisk ADI og ingen sikkerhedsbekymring ved de rapporterede anvendelser. Celluloser optages ikke og udskilles intakte med afføringen. Store enkeltindtag af celluloser kan lejlighedsvis virke afførende. Ingen kendte særlige risikogrupper.",
+    "research": "EFSA genvurderede hydroxypropylcellulose i 2018 sammen med de øvrige celluloser uden fund af sikkerhedsbekymring. Stoffet bruges bredt i lægemidler som bindemiddel og filmovertræk.",
+    "keyReferences": [],
+    "pubmedTerm": "hydroxypropyl cellulose",
+    "flags": [],
+    "classes": [
+      "emulsifier",
+      "stabiliser",
+      "thickener"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of celluloses E 460(i), E 460(ii), E 461, E 462, E 463, E 464, E 465, E 466, E 468 and E 469 as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2018.5047",
+      "date": "2018",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/hydroxypropyl-cellulose",
+        "https://www.ashland.com/file_source/Ashland/Product/Documents/Pharmaceutical/PC_11229_Klucel_HPC.pdf",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4699",
+        "https://doi.org/10.2903/j.efsa.2018.5047"
+      ],
+      "notes": "Runde 3: Fremstilling, opløselighed, udfældning ved opvarmning, funktioner og EFSA 2018 bekræftet. Ubekræftede anvendelseseksempler og udsagn om 'ingen nye sikkerhedsspørgsmål' fjernet; fibereffekt præciseret."
+    },
+    "wikipedia": "",
+    "wikidata": "Q724426",
+    "claims": [
+      {
+        "claim": "Fremstilles af alkalicellulose og propylenoxid",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/hydroxypropyl-cellulose",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Opløseligt i koldt vand og visse organiske opløsningsmidler",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/hydroxypropyl-cellulose | https://www.ashland.com/file_source/Ashland/Product/Documents/Pharmaceutical/PC_11229_Klucel_HPC.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Udfælder ved opvarmning",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/hydroxypropyl-cellulose | https://www.ashland.com/file_source/Ashland/Product/Documents/Pharmaceutical/PC_11229_Klucel_HPC.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fortykker, emulgator, filmdanner, bindemiddel i tabletter",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/hydroxypropyl-cellulose",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ufordøjelig",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Quantum satis i EU",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/ | https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4699",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Piskede toppings, desserter, saucer, glutenfrit bagværk",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EFSA 2018: ingen numerisk ADI, ingen sikkerhedsbekymring",
+        "source": "https://doi.org/10.2903/j.efsa.2018.5047 | https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fibereffekter som luft og løs mave (rettet: lejlighedsvis afføringsvirkning ved store enkeltindtag)",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Bredt brugt i lægemidler",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/hydroxypropyl-cellulose",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ingen betydende nye sikkerhedsspørgsmål",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "result": "fjernet"
+      }
+    ]
+  },
+  {
+    "code": "E463a",
+    "nameDa": "Lavsubstitueret hydroxypropylcellulose",
+    "nameEn": "Low-substituted hydroxypropyl cellulose (L-HPC)",
+    "category": "Fyldstof / bindemiddel (tabletter)",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Vanduopløselig, modificeret cellulose, der bruges som bindemiddel og sprængmiddel i kosttilskud i tabletform.",
+    "description": "L-HPC er en hydroxypropylether af cellulose med lav substitutionsgrad (typisk 5-16 vægt-% hydroxypropoxygrupper), hvilket adskiller den fra almindelig hydroxypropylcellulose (E463). Den fremstilles ved at behandle cellulosemasse med natriumhydroxid (alkalicellulose) og derefter propylenoxid. Den er uopløselig i vand, men suger vand og svulmer op, og den har gode presse- og bindeegenskaber, så tabletter både holder sammen og falder hurtigt fra hinanden efter indtagelse. L-HPC bruges især som sprængmiddel i faste lægemidler.",
+    "uses": "Kun godkendt i kosttilskud i fast form (tabletter, fødevarekategori 17.1) med en maksimumsgrænse på 20.000 mg/kg, jf. Kommissionens forordning (EU) 2018/1461. Det typiske anvendelsesniveau er 10.000 mg/kg.",
+    "health": "EFSA (2018) konkluderede, at der ikke er sikkerhedsbekymring ved den foreslåede brug. Vurderingen byggede på read-across fra de genvurderede celluloser, især hydroxypropylcellulose (E463), for hvilke der ikke er behov for en numerisk ADI. Celluloser optages ikke, men udskilles intakte med afføringen.",
+    "research": "Forskningen stammer overvejende fra farmaceutisk teknologi (tabletdesintegration og binding). Toksikologiske data er overført fra øvrige modificerede celluloser, der ikke viser sikkerhedsbekymring ved de rapporterede anvendelser.",
+    "keyReferences": [
+      {
+        "citation": "EFSA ANS Panel (2018). Safety of low-substituted hydroxypropyl cellulose (L-HPC) to be used as a food additive in food supplements in tablet form. EFSA Journal 16(1):5062. doi:10.2903/j.efsa.2018.5062",
+        "searchTitle": "Safety of low-substituted hydroxypropyl cellulose (L-HPC) to be used as a food additive in food supplements in tablet form"
+      }
+    ],
+    "pubmedTerm": "low-substituted hydroxypropyl cellulose",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Safety of low-substituted hydroxypropyl cellulose (L-HPC) to be used as a food additive in food supplements in tablet form",
+      "url": "https://doi.org/10.2903/j.efsa.2018.5062",
+      "date": "2018",
+      "adi": "Ikke specificeret (read-across fra celluloser)",
+      "overexposureRisk": false
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5062",
+        "https://patents.google.com/patent/EP1054019A1/en",
+        "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/7009046",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32018R1461",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009426/",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/"
+      ],
+      "notes": "Runde 3: Forordning (EU) 2018/1461 (kategori 17.1, maks. 20.000 mg/kg) og EFSA 2018 (read-across, primært fra E463) bekræftet. Fremstilling og egenskaber bekræftet. Ubekræftet udsagn om 'meget lille eksponering' fjernet."
+    },
+    "wikipedia": "",
+    "wikidata": "",
+    "claims": [
+      {
+        "claim": "Poly(hydroxypropyl)ether af cellulose med lav substitutionsgrad; adskiller sig fra E463",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5062 | https://patents.google.com/patent/EP1054019A1/en",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles af cellulosemasse under basiske forhold med propylenoxid",
+        "source": "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/7009046",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Uopløselig i vand, svulmer op",
+        "source": "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/7009046 | https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32018R1461",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "God presbarhed; binde- og sprængmiddel i tabletter",
+        "source": "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/7009046 | https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32018R1461",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kendt i medicinalindustrien i mange år (omformuleret: bruges især som sprængmiddel i lægemidler)",
+        "source": "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/7009046",
+        "result": "rettet"
+      },
+      {
+        "claim": "Kun i kosttilskud i fast form, forordning (EU) 2018/1461",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32018R1461",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Maks. 20.000 mg/kg (EFSA vurderede; nu også EU-grænse), typisk 10.000 mg/kg",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5062 | https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32018R1461",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2018: ingen sikkerhedsbekymring; read-across fra celluloser",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5062 | https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009426/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Optages ikke; passerer som ufordøjelig fiber",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Eksponering fra tabletter meget lille",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5062",
+        "result": "fjernet"
+      }
+    ]
+  },
+  {
+    "code": "E464",
+    "nameDa": "Hydroxypropylmethylcellulose",
+    "nameEn": "Hydroxypropyl methyl cellulose",
+    "category": "Fortykningsmiddel / emulgator / stabilisator",
+    "euStatus": "approved",
+    "origin": "mixed",
+    "summary": "Hydroxypropylmethylcellulose (HPMC, hypromellose) er en kemisk modificeret cellulose fra plantefibre, der bruges som fortykningsmiddel, emulgator og stabilisator.",
+    "description": "HPMC (hypromellose) fremstilles ved at behandle cellulose fra træmasse eller bomuld med natriumhydroxid (alkalicellulose) og derefter med methylchlorid og propylenoxid, så en del af hydroxylgrupperne erstattes med methoxy- og hydroxypropoxygrupper. Resultatet er en vandopløselig polymer, der danner termoreversibel gel ved opvarmning. Egenskaben udnyttes i glutenfrit brød, hvor HPMC efterligner glutens funktion, stabiliserer gasboblerne og giver større brødvolumen. HPMC er også meget udbredt som materiale til vegetariske kapsler i kosttilskud og lægemidler. Det optages ikke og udskilles intakt.",
+    "uses": "Glutenfrit brød og bagværk samt vegetariske kapsler til kosttilskud. Tilladt quantum satis i mange fødevarekategorier i EU.",
+    "health": "Modificerede celluloser optages ikke i tarmen og udskilles intakte med afføringen. Store enkeltindtag kan lejlighedsvis virke afførende, som for andre kostfibre. EFSA har ved genvurderingen af celluloser (2018) ikke fundet behov for en numerisk ADI og vurderede, at de rapporterede anvendelser ikke giver sikkerhedsmæssig bekymring.",
+    "research": "EFSA's ANS-panel genvurderede i 2018 samlet E460–E466, E468 og E469 og fandt ikke behov for en numerisk ADI, da stofferne ikke optages og har lav toksicitet. Nyere forskning i emulgatorer og tarmflora har primært fokuseret på carboxymethylcellulose (E466), og det er uafklaret, i hvilket omfang fund herfra kan overføres til andre cellulosederivater. I 2015 vurderede EFSA et ønske om at hæve grænsen for propylenchlorhydrin i E464 fra 0,1 til 1 mg/kg og fandt, at data var utilstrækkelige til at støtte ændringen.",
+    "keyReferences": [],
+    "pubmedTerm": "hypromellose",
+    "flags": [
+      "laxative"
+    ],
+    "classes": [
+      "emulsifier",
+      "stabiliser",
+      "thickener"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of celluloses E 460(i), E 460(ii), E 461, E 462, E 463, E 464, E 465, E 466, E 468 and E 469 as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2018.5047",
+      "date": "2018",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/hypromellose",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12802409/",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4699",
+        "https://doi.org/10.2903/j.efsa.2018.5047",
+        "https://pubmed.ncbi.nlm.nih.gov/34774538/",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7986288/",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4088"
+      ],
+      "notes": "Runde 3: Væsentlig rettelse – EFSA's 2015-udtalelse om E464 fandt data utilstrækkelige til at hæve grænsen for propylenchlorhydrin; efsa-objektet er ændret til 2018-genvurderingen af celluloser. Fremstilling, termogelering, glutenfrit brød, vegetariske kapsler og EFSA 2018 bekræftet. Ubekræftede anvendelser og udsagn (plantebaseret kød, vegansk/glutenfri, luft) fjernet."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Hypromellose",
+    "wikidata": "Q423846",
+    "claims": [
+      {
+        "claim": "Fremstilles med NaOH, methylchlorid og propylenoxid",
+        "source": "https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/hypromellose",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Vandopløselig polymer med termisk gelering",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12802409/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bruges i glutenfrit bagværk (struktur, gasceller)",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12802409/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bruges i plantebaserede kødalternativer",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12802409/",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Materiale til vegetariske kapsler",
+        "source": "https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/hypromellose",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ufordøjelig; fungerer som opløselig kostfiber",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: frysevarer, saucer, dressinger, fyld og glasur",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Quantum satis i mange kategorier",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/ | https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4699",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Store indtag kan virke fyldende og let afførende og give luft (rettet: lejlighedsvis afføringsvirkning)",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2018: ingen numerisk ADI, ingen sikkerhedsbekymring",
+        "source": "https://doi.org/10.2903/j.efsa.2018.5047 | https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009359/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Vegansk og glutenfrit",
+        "source": "https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/hypromellose",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Tarmflora-forskning primært på CMC",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/34774538/ | https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7986288/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2015: specifikationsændring uden sikkerhedsproblemer (rettet: data utilstrækkelige til at hæve PCH-grænsen)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4088",
+        "result": "rettet"
+      }
+    ]
+  },
+  {
+    "code": "E475",
+    "nameDa": "Polyglycerolestere af fedtsyrer",
+    "nameEn": "Polyglycerol esters of fatty acids",
+    "category": "Emulgator / stabilisator",
+    "euStatus": "approved",
+    "origin": "mixed",
+    "summary": "Polyglycerolestere er emulgatorer, hvor fedtsyrer er bundet til korte kæder af glycerol.",
+    "description": "Glycerol polymeriseres ved høj temperatur med en basisk katalysator til polyglycerol, som derefter forestres med fedtsyrer fra vegetabilske eller animalske fedtstoffer. Stofferne forbedrer luftindblanding og stabiliserer emulsioner. De bruges især i kagemix, piskbare produkter og margarine.",
+    "uses": "Kagemix, piskbare emulsioner og toppings, margarine og fedtfattige smørbare produkter.",
+    "health": "Polyglycerolestere spaltes i tarmen; fedtsyrerne udnyttes som energi, mens polyglycerol ikke nedbrydes, men udskilles uomdannet (bl.a. med urinen). JECFA fastsatte en ADI på 25 mg/kg legemsvægt/dag, som SCF godkendte i 1978. EFSA's genvurdering (2017) fandt ikke behov for en numerisk ADI og ingen sikkerhedsbekymring ved de rapporterede brugsniveauer. Fedtsyrerne kan være af animalsk oprindelse.",
+    "research": "EFSA's ANS-panel genvurderede E475 i 2017 (DOI 10.2903/j.efsa.2017.5089) og konkluderede, at der ikke var behov for en numerisk ADI, og at der ikke var sikkerhedsbekymring ved de rapporterede anvendelser. En opfølgning fra FAF-panelet i 2022 (DOI 10.2903/j.efsa.2022.7308) behandlede de identificerede datahuller med henblik på ændring af EU-specifikationerne.",
+    "keyReferences": [],
+    "pubmedTerm": "polyglycerol esters of fatty acids",
+    "flags": [
+      "animal_origin"
+    ],
+    "classes": [
+      "emulsifier",
+      "stabiliser"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of polyglycerol esters of fatty acids (E 475) as a food additive",
+      "url": "https://doi.org/10.2903/j.efsa.2017.5089",
+      "date": "2017",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://patents.google.com/patent/EP1568677A1/en",
+        "https://bakerpedia.com/ingredients/polyglycerol-esters/",
+        "https://www.inchem.org/documents/jecfa/jecmono/v05je45.htm",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9109700/",
+        "https://www.efsa.europa.eu/en/efsajournal/pub/5089",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010213/"
+      ],
+      "notes": "Runde 3: Fremstilling, funktion, metabolisme, ADI-historik og EFSA 2017/2022 bekræftet. Desserter/slik og EFSA-begrundelsen om 'næsten fuldstændig hydrolyse' kunne ikke bekræftes og er fjernet; udsagn om 'ingen nyere studier' fjernet."
+    },
+    "wikipedia": "",
+    "wikidata": "Q4037764",
+    "claims": [
+      {
+        "claim": "Glycerol kondenseres ved opvarmning til polyglycerol og forestres med fedtsyrer",
+        "source": "https://patents.google.com/patent/EP1568677A1/en | https://bakerpedia.com/ingredients/polyglycerol-esters/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fedtsyrer fra vegetabilske eller animalske fedtstoffer",
+        "source": "https://bakerpedia.com/ingredients/polyglycerol-esters/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Forbedrer luftindblanding og stabiliserer emulsioner",
+        "source": "https://bakerpedia.com/ingredients/polyglycerol-esters/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: kager/kagemix, piskbare toppings, margarine og fedtblandinger",
+        "source": "https://bakerpedia.com/ingredients/polyglycerol-esters/ | https://patents.google.com/patent/EP1568677A1/en",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Desserter og slik",
+        "source": "https://bakerpedia.com/ingredients/polyglycerol-esters/",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Spaltes til fedtsyrer og polyglycerol, som udskilles uomdannet",
+        "source": "https://www.inchem.org/documents/jecfa/jecmono/v05je45.htm | https://patents.google.com/patent/EP1568677A1/en",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "JECFA ADI 25 mg/kg, godkendt af SCF 1978",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9109700/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2017: ingen numerisk ADI, ingen sikkerhedsbekymring",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/5089 | https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9109700/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Begrundelse: næsten fuldstændig hydrolyse i mave-tarm-kanalen",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010213/",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Opfølgning 2022 behandlede datahuller",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9109700/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ingen nyere studier, der rejser specifikke bekymringer",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/5089",
+        "result": "fjernet"
+      }
+    ]
+  },
+  {
+    "code": "E476",
+    "nameDa": "Polyglycerolpolyricinoleat",
+    "nameEn": "Polyglycerol polyricinoleate",
+    "category": "Emulgator",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Polyglycerolpolyricinoleat (PGPR) er en emulgator, der især bruges i chokolade for at gøre den mere flydende.",
+    "description": "PGPR fremstilles ved at forestre polyglycerol med kondenserede fedtsyrer fra ricinusolie, der hovedsageligt består af ricinolsyre (80-90 %). Stoffet nedsætter friktionen mellem de faste partikler i smeltet chokolade og dermed flydegrænsen, så chokolademassen flyder lettere, og producenten kan bruge mindre kakaosmør. Det bruges ofte sammen med lecithin (E322).",
+    "uses": "Chokolade og chokoladelignende konfekture samt emulgerede saucer. I EU maks. 0,5 % (5 g/kg) i chokolade.",
+    "health": "PGPR spaltes i tarmen til frie polyglyceroler, polyricinolsyre og ricinolsyre. EFSA hævede i sin genvurdering (2017) ADI fra SCF's 7,5 til 25 mg/kg legemsvægt/dag og fandt, at eksponeringen ikke overstiger denne. I dyreforsøg med meget høje doser er der set øget levervægt, som blev vurderet som en tilpasningsreaktion og ikke en toksisk effekt.",
+    "research": "EFSA's ANS-panel genvurderede E476 i 2017 og hævede ADI fra 7,5 mg/kg legemsvægt/dag (SCF 1978) til 25 mg/kg legemsvægt/dag på baggrund af et 2-årigt rottestudie (NOAEL 2.500 mg/kg). Eksponeringen oversteg ikke ADI. I opfølgningen i 2022 (DOI 10.2903/j.efsa.2022.7294) anbefalede FAF-panelet lavere grænser for arsen, bly, kviksølv og cadmium i specifikationerne samt grænser for glycidylestere og 3-MCPD, og fandt ingen sikkerhedsbekymring ved en foreslået udvidet anvendelse.",
+    "keyReferences": [],
+    "pubmedTerm": "polyglycerol polyricinoleate",
+    "flags": [],
+    "classes": [
+      "emulsifier"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of polyglycerol polyricinoleate (E 476) as a food additive",
+      "url": "https://doi.org/10.2903/j.efsa.2017.4743",
+      "date": "2017-03-24",
+      "adi": "25 mg/kg bw/day",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://foodadditives.net/emulsifiers/pgpr/",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010163/",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4743",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9066526/"
+      ],
+      "notes": "Runde 3: Fremstilling, funktion i chokolade, maks. 5 g/kg, ADI-ændringen (7,5→25 mg/kg) og NOAEL bekræftet. Anvendelse i fedtfattige smørbare produkter/dressinger rettet til emulgerede saucer. Organeffekter ved høje doser præciseret (adaptiv levervægtsstigning). 2022-opfølgningens indhold præciseret."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Polyglycerol_polyricinoleate",
+    "wikidata": "Q168686",
+    "claims": [
+      {
+        "claim": "Forestring af polyglycerol med kondenserede ricinolsyrer fra ricinusolie",
+        "source": "https://foodadditives.net/emulsifiers/pgpr/ | https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010163/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Nedsætter chokolademassens flydegrænse",
+        "source": "https://foodadditives.net/emulsifiers/pgpr/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Mindre kakaosmør",
+        "source": "https://foodadditives.net/emulsifiers/pgpr/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Jævnere støbning og overtrækning",
+        "source": "https://foodadditives.net/emulsifiers/pgpr/",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Bruges ofte sammen med lecithin",
+        "source": "https://foodadditives.net/emulsifiers/pgpr/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Smørbare fedtprodukter med lavt fedtindhold og dressinger (rettet: emulgerede saucer)",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010163/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Maks. 5 g/kg i chokolade",
+        "source": "https://foodadditives.net/emulsifiers/pgpr/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Spaltes i tarmen til polyglycerol og ricinolsyre",
+        "source": "https://foodadditives.net/emulsifiers/pgpr/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2017 hævede ADI fra 7,5 til 25 mg/kg; eksponering under ADI",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4743 | https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010163/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Lever- og nyreforstørrelse ved meget høje doser (rettet: øget levervægt, vurderet som adaptiv)",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7010163/",
+        "result": "rettet"
+      },
+      {
+        "claim": "2-årigt rottestudie, NOAEL 2.500 mg/kg",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4743 | https://foodadditives.net/emulsifiers/pgpr/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Opfølgning 2022 behandlede specifikationerne (præciseret indhold)",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9066526/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Ingen nyere studier, der rejser bekymring",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4743",
+        "result": "fjernet"
+      }
+    ]
+  },
+  {
+    "code": "E477",
+    "nameDa": "Propylenglycolestere af fedtsyrer",
+    "nameEn": "Propane-1,2-diol esters of fatty acids",
+    "category": "Emulgator",
+    "euStatus": "approved",
+    "origin": "mixed",
+    "summary": "Propylenglycolestere af fedtsyrer er emulgatorer, der fremmer luftighed i kager og piskbare produkter.",
+    "description": "Stoffet fremstilles ved at forestre propylenglycol (propan-1,2-diol) med fedtsyrer, typisk stearinsyreblandinger, fra vegetabilske eller animalske fedtstoffer. Det bruges ofte sammen med mono- og diglycerider, hvor det stabiliserer den alfa-krystallinske form og danner film om luftbobler, så kagedej og skum bliver luftigt og stabilt.",
+    "uses": "Kagemix og kager, piskecreme og pulvertoppings, ikke-mejeribaserede desserter og is.",
+    "health": "Estrene spaltes i tarmen til propylenglycol og fedtsyrer. EFSA's genvurdering (2018) bekræftede ADI på 25 mg/kg legemsvægt/dag udtrykt som propylenglycol (svarende til 80 mg E477/kg) og fandt ingen sikkerhedsbekymring ved de rapporterede anvendelser. Fedtsyrerne kan være af animalsk oprindelse.",
+    "research": "EFSA's FAF-panel genvurderede E477 i 2018 (DOI 10.2903/j.efsa.2018.5497) og bekræftede den ADI på 25 mg/kg legemsvægt/dag udtrykt som propan-1,2-diol, som JECFA fastsatte i 1974 og SCF godkendte i 1978; det svarer til 80 mg E477/kg legemsvægt/dag. Eksponeringen oversteg ikke ADI i nogen befolkningsgruppe; finere bagværk var den største kilde, og de fleste indrapporterede brugsniveauer gjaldt is. Panelet bemærkede, at propylenglycol fra E477 lægger sig til eksponeringen fra E1520 og E405.",
+    "keyReferences": [],
+    "pubmedTerm": "propylene glycol esters of fatty acids",
+    "flags": [
+      "animal_origin"
+    ],
+    "classes": [
+      "emulsifier"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of propane-1,2-diol esters of fatty acids (E 477) as a food additive",
+      "url": "https://doi.org/10.2903/j.efsa.2018.5497",
+      "date": "2018",
+      "adi": "80 mg/kg bw/day",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://bakerpedia.com/ingredients/propylene-glycol-monoesters/",
+        "https://onlinelibrary.wiley.com/doi/abs/10.1002/9781118921265.ch10",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009423/",
+        "https://doi.org/10.2903/j.efsa.2018.5497"
+      ],
+      "notes": "Runde 3: ADI, JECFA/SCF-historik og eksponeringskonklusion bekræftet. Panel rettet fra ANS til FAF. Anvendelser præciseret (is tilføjet; flødeerstatninger/mousser fjernet). Bemærkning om samlet propylenglycol-eksponering (E1520, E405) tilføjet med kilde."
+    },
+    "wikipedia": "",
+    "wikidata": "Q18944660",
+    "claims": [
+      {
+        "claim": "Forestring af propylenglycol med fedtsyrer",
+        "source": "https://bakerpedia.com/ingredients/propylene-glycol-monoesters/ | https://onlinelibrary.wiley.com/doi/abs/10.1002/9781118921265.ch10",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fedtsyrer fra vegetabilske eller animalske fedtstoffer",
+        "source": "https://bakerpedia.com/ingredients/propylene-glycol-monoesters/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bruges sammen med mono- og diglycerider til at stabilisere luftbobler",
+        "source": "https://bakerpedia.com/ingredients/propylene-glycol-monoesters/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: kagemix, piskbare toppings, desserter (præciseret; is tilføjet)",
+        "source": "https://bakerpedia.com/ingredients/propylene-glycol-monoesters/ | https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009423/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Flødeerstatninger og mousser",
+        "source": "https://bakerpedia.com/ingredients/propylene-glycol-monoesters/",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Spaltes i tarmen til propylenglycol og fedtsyrer",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009423/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "ADI 25 mg/kg som propylenglycol = 80 mg E477/kg",
+        "source": "https://doi.org/10.2903/j.efsa.2018.5497 | https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009423/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "JECFA 1974, SCF 1978",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009423/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "ANS-panelet (rettet: FAF-panelet) genvurderede E477 i 2018",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009423/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Eksponering over ADI i ingen befolkningsgruppe",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009423/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ingen nyere forskning med specifikke bekymringer",
+        "source": "https://doi.org/10.2903/j.efsa.2018.5497",
+        "result": "fjernet"
+      }
+    ]
+  },
+  {
+    "code": "E479b",
+    "nameDa": "Termisk oxideret sojaolie omsat med mono- og diglycerider af fedtsyrer",
+    "nameEn": "Thermally oxidised soya bean oil interacted with mono- and diglycerides of fatty acids",
+    "category": "Emulgator",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "E479b er en emulgator fremstillet af opvarmet og oxideret sojaolie, som kun må bruges i stegefedt.",
+    "description": "Raffineret sojaolie oxideres ved opvarmning (ca. 190-250 °C) under lufttilførsel og omsættes derefter med mono- og diglycerider af fedtsyrer under vakuum. Produktet virker som emulgator og modvirker, at margarine sprøjter ved stegning. Anvendelsen er i EU begrænset til fedtemulsioner beregnet til stegning.",
+    "uses": "Kun i fedt- og olieemulsioner til stegning (fx stegemargarine), maks. 5 g/kg.",
+    "health": "EFSA vurderede i 2018, at stoffet ikke giver sikkerhedsbekymring, især set i lyset af den meget begrænsede anvendelse; sikkerhedsmargenen mellem den højeste estimerede eksponering (småbørn) og NOAEL var 540. Stoffet er fremstillet af sojaolie; fuldt raffineret sojaolie indeholder kun spormængder af protein og er undtaget fra EU's allergenmærkning. Personer med sojaallergi kan dog vælge at være opmærksomme.",
+    "research": "EFSA's FAF-panel genvurderede E479b i 2018 (DOI 10.2903/j.efsa.2018.5420). SCF og JECFA havde tidligere fastsat ADI på henholdsvis 25 og 30 mg/kg legemsvægt/dag. Panelet fandt ingen sikkerhedsbekymring, især i lyset af den meget begrænsede anvendelse, men bemærkede, at der mangler data om optagelse og omsætning, genotoksicitet og reproduktionstoksicitet.",
+    "keyReferences": [],
+    "pubmedTerm": "thermally oxidized soybean oil",
+    "flags": [],
+    "classes": [
+      "emulsifier"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Re-evaluation of oxidised soya bean oil interacted with mono- and diglycerides of fatty acids (E 479b) as a food additive",
+      "url": "https://doi.org/10.2903/j.efsa.2018.5420",
+      "date": "2018-10-10",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009384/",
+        "https://inchem.org/documents/jecfa/jecmono/v30je02.htm",
+        "https://www.fediol.eu/web/physical+refining/1011306087/list1187970120/f1.html",
+        "https://sites.manchester.ac.uk/foodallergens/information-for-food-businesses/eu-legal-requirements-on-food-allergen-labelling/",
+        "https://www.efsa.europa.eu/en/efsajournal/pub/5420"
+      ],
+      "notes": "Runde 3: Fremstilling, anvendelsesbegrænsning, 5 g/kg, SCF/JECFA-ADI og EFSA 2018-konklusion (MoS 540) bekræftet. Sojaallergi-udsagn underbygget med EU-allergenundtagelse for fuldt raffineret sojaolie. Datahuller tilføjet. Maks. 5 g/kg er bekræftet via EFSA-sammendrag; EUR-Lex kunne ikke hentes direkte."
+    },
+    "wikipedia": "",
+    "wikidata": "",
+    "claims": [
+      {
+        "claim": "Kun tilladt i stegefedt/fedtemulsioner til stegning",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009384/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Sojaolie opvarmes under lufttilførsel og oxideres",
+        "source": "https://inchem.org/documents/jecfa/jecmono/v30je02.htm",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Omsættes med mono- og diglycerider",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009384/ | https://inchem.org/documents/jecfa/jecmono/v30je02.htm",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Forhindrer at stegefedt sprøjter",
+        "source": "https://inchem.org/documents/jecfa/jecmono/v30je02.htm",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Maks. 5 g/kg",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009384/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA har ikke rejst sikkerhedsbekymringer ved tilladt brugsniveau",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009384/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Raffineret olie indeholder ikke nævneværdige mængder sojaprotein (præciseret: undtaget fra allergenmærkning)",
+        "source": "https://www.fediol.eu/web/physical+refining/1011306087/list1187970120/f1.html | https://sites.manchester.ac.uk/foodallergens/information-for-food-businesses/eu-legal-requirements-on-food-allergen-labelling/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "FAF-panelet 2018",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/5420",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "SCF ADI 25, JECFA ADI 30 mg/kg",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009384/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ingen sikkerhedsbekymring pga. meget begrænset anvendelse",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009384/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Forskningen er sparsom (præciseret: manglende ADME-, genotoksicitets- og reproduktionsdata)",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009384/",
+        "result": "rettet"
+      }
+    ]
+  },
+  {
+    "code": "E481",
+    "nameDa": "Natriumstearoyl-2-lactylat",
+    "nameEn": "Sodium stearoyl-2-lactylate",
+    "category": "Emulgator / stabilisator",
+    "euStatus": "approved",
+    "origin": "mixed",
+    "summary": "Natriumstearoyllactylat (SSL) er en emulgator og dejforbedrer dannet af stearinsyre og mælkesyre.",
+    "description": "Stoffet fremstilles ved forestring af stearinsyre med mælkesyre og neutralisering med natriumhydroxid. SSL styrker dejen og blødgør krummen og bruges især som dejforbedrer i industrielt bagværk.",
+    "uses": "Brød og boller, finere bagværk og aromatiserede fermenterede mælkeprodukter.",
+    "health": "Lactylaterne spaltes i tarmen til stearinsyre og mælkesyre, som begge er normale kostbestanddele. EFSA fastsatte i 2013 en ADI på 22 mg/kg legemsvægt/dag for E481 og E482 enkeltvis eller samlet (NOAEL 2.200 mg/kg fra et etårigt rottestudie). Eksponeringen lå under ADI for voksne og ældre, men oversteg ADI i andre befolkningsgrupper ved gennemsnitligt indtag og i alle grupper ved højt indtag; de største kilder var aromatiserede fermenterede mælkeprodukter, brød og boller samt finere bagværk. Stoffet indeholder ikke mælk trods navnet. Stearinsyren kan være af animalsk oprindelse.",
+    "research": "EFSA's ANS-panel genvurderede E481 og E482 i 2013 og fastsatte en ADI på 22 mg/kg legemsvægt/dag, lidt højere end JECFA's tidligere 20 mg/kg. Eksponeringsberegningerne viste overskridelse af ADI hos bl.a. småbørn og børn. Der er ikke fundet humane studier, der påviser skadelige effekter ved normale indtag.",
+    "keyReferences": [],
+    "pubmedTerm": "sodium stearoyl lactylate",
+    "flags": [
+      "children_caution",
+      "animal_origin"
+    ],
+    "classes": [
+      "emulsifier",
+      "stabiliser"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluation of sodium stearoyl-2-lactylate (E 481) and calcium stearoyl-2-lactylate (E 482) as food additives.",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2013.3144",
+      "date": "2013-05-13",
+      "adi": "22",
+      "overexposureRisk": "en:high"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://puracy.com/blogs/ingredients/sodium-stearoyl-lactylate",
+        "https://foodadditives.net/emulsifiers/sodium-stearoyl-lactylate/",
+        "https://www.efsa.europa.eu/en/efsajournal/pub/3144",
+        "https://www.efsa.europa.eu/en/efsajournal/pub/3125",
+        "https://www.iamgoingvegan.com/sodium-stearoyl-lactylate/"
+      ],
+      "notes": "Runde 3: EFSA 2013 (ADI 22 mg/kg, NOAEL 2.200 mg/kg) og eksponeringskonklusion bekræftet og præciseret. Varianterne (i)/(ii) fjernet, da de ikke er en del af EU-specifikationen. Ubekræftede anvendelser og udsagn om justering af brugsgrænser fjernet; 'mælkefri' og animalsk oprindelse bekræftet."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Sodium_stearoyl_lactylate",
+    "wikidata": "Q416058",
+    "claims": [
+      {
+        "claim": "Emulgator og dejforbedrer af stearinsyre og mælkesyre",
+        "source": "https://puracy.com/blogs/ingredients/sodium-stearoyl-lactylate | https://foodadditives.net/emulsifiers/sodium-stearoyl-lactylate/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Neutraliseres med natriumcarbonat eller -hydroxid (rettet: natriumhydroxid)",
+        "source": "https://puracy.com/blogs/ingredients/sodium-stearoyl-lactylate",
+        "result": "rettet"
+      },
+      {
+        "claim": "Styrker dejen og giver blødere krumme",
+        "source": "https://foodadditives.net/emulsifiers/sodium-stearoyl-lactylate/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Større brødvolumen og længere friskhed",
+        "source": "https://foodadditives.net/emulsifiers/sodium-stearoyl-lactylate/",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Anvendelser: brød, bagværk (bekræftet); fermenterede mælkeprodukter tilføjet",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3144",
+        "result": "rettet"
+      },
+      {
+        "claim": "Kaffefløde-erstatninger, desserter, instantprodukter",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3144",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Spaltes i tarmen til stearinsyre og mælkesyre",
+        "source": "https://puracy.com/blogs/ingredients/sodium-stearoyl-lactylate",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2013: ADI 22 mg/kg for E481 og E482 enkeltvis eller samlet",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3144",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Indtaget kan overstige ADI, især hos børn med højt forbrug af bagværk (præciseret: over ADI i flere grupper ved gennemsnit og alle grupper ved højt indtag, undtagen voksne/ældre ved gennemsnit)",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3144 | https://www.efsa.europa.eu/en/efsajournal/pub/3125",
+        "result": "rettet"
+      },
+      {
+        "claim": "Indeholder ikke mælk trods navnet",
+        "source": "https://www.iamgoingvegan.com/sodium-stearoyl-lactylate/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fedtsyrerne kan være af animalsk oprindelse",
+        "source": "https://www.iamgoingvegan.com/sodium-stearoyl-lactylate/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "ANS-panelet 2013",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3144",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Overvejelser om at justere brugsgrænserne",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3144",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Ingen humane studier med skadelige effekter ved normale indtag",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3144",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Varianter (i)/(ii) (stearoyl-/oleyllactylat) er Codex-/INS-inddeling og ikke en del af EU-specifikationen; fjernet fra variants og beskrivelse",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3144",
+        "result": "rettet"
+      }
+    ]
+  },
+  {
+    "code": "E482",
+    "nameDa": "Calciumstearoyl-2-lactylat",
+    "nameEn": "Calcium stearoyl-2-lactylate",
+    "category": "Emulgator / stabilisator",
+    "euStatus": "approved",
+    "origin": "mixed",
+    "summary": "Calciumstearoyllactylat (CSL) er en emulgator og dejforbedrer, der svarer til E481, men med calcium i stedet for natrium.",
+    "description": "Stoffet fremstilles ved forestring af stearinsyre med mælkesyre og neutralisering med en calciumforbindelse (fx calciumhydroxid). Det bruges som emulgator og dejforbedrer i bagværk på samme måde som E481.",
+    "uses": "Brød og boller, finere bagværk og aromatiserede fermenterede mælkeprodukter.",
+    "health": "Lactylaterne spaltes i tarmen til stearinsyre og mælkesyre, som begge er normale kostbestanddele. EFSA fastsatte i 2013 en ADI på 22 mg/kg legemsvægt/dag for E481 og E482 enkeltvis eller samlet (NOAEL 2.200 mg/kg fra et etårigt rottestudie). Eksponeringen lå under ADI for voksne og ældre, men oversteg ADI i andre befolkningsgrupper ved gennemsnitligt indtag og i alle grupper ved højt indtag; de største kilder var aromatiserede fermenterede mælkeprodukter, brød og boller samt finere bagværk. Stoffet indeholder ikke mælk trods navnet. Stearinsyren kan være af animalsk oprindelse.",
+    "research": "EFSA's ANS-panel genvurderede E481 og E482 i 2013 og fastsatte en ADI på 22 mg/kg legemsvægt/dag, lidt højere end JECFA's tidligere 20 mg/kg. Eksponeringsberegningerne viste overskridelse af ADI hos bl.a. småbørn og børn. Der er ikke fundet humane studier, der påviser skadelige effekter ved normale indtag.",
+    "keyReferences": [],
+    "pubmedTerm": "calcium stearoyl lactylate",
+    "flags": [
+      "children_caution",
+      "animal_origin"
+    ],
+    "classes": [
+      "emulsifier",
+      "stabiliser"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluation of sodium stearoyl-2-lactylate (E 481) and calcium stearoyl-2-lactylate (E 482) as food additives.",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2013.3144",
+      "date": "2013-05-13",
+      "adi": "22",
+      "overexposureRisk": "en:high"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.efsa.europa.eu/en/efsajournal/pub/3144",
+        "https://puracy.com/blogs/ingredients/sodium-stearoyl-lactylate",
+        "https://foodadditives.net/emulsifiers/sodium-stearoyl-lactylate/",
+        "https://www.efsa.europa.eu/en/efsajournal/pub/3125",
+        "https://www.iamgoingvegan.com/sodium-stearoyl-lactylate/"
+      ],
+      "notes": "Runde 3: EFSA 2013 (ADI 22 mg/kg) og eksponeringskonklusion bekræftet og præciseret. Varianterne (i)/(ii) fjernet, da de ikke er en del af EU-specifikationen. Ubekræftede funktionsudsagn og anvendelser fjernet."
+    },
+    "wikipedia": "",
+    "wikidata": "Q788535",
+    "claims": [
+      {
+        "claim": "Emulgator og dejforbedrer svarende til E481 med calcium",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3144 | https://puracy.com/blogs/ingredients/sodium-stearoyl-lactylate",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Neutraliseres med en calciumforbindelse",
+        "source": "https://puracy.com/blogs/ingredients/sodium-stearoyl-lactylate",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Styrker glutennetværket og forsinker at brød bliver tørt",
+        "source": "https://foodadditives.net/emulsifiers/sodium-stearoyl-lactylate/",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Anvendelser: brød og bagværk (bekræftet); fermenterede mælkeprodukter tilføjet",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3144",
+        "result": "rettet"
+      },
+      {
+        "claim": "Kager, desserter, flødeerstatninger",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3144",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Spaltes i tarmen til stearinsyre og mælkesyre",
+        "source": "https://puracy.com/blogs/ingredients/sodium-stearoyl-lactylate",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2013: ADI 22 mg/kg for E481 og E482 enkeltvis eller samlet",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3144",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Indtaget kan overstige ADI, især hos børn med højt forbrug af bagværk (præciseret: over ADI i flere grupper ved gennemsnit og alle grupper ved højt indtag, undtagen voksne/ældre ved gennemsnit)",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3144 | https://www.efsa.europa.eu/en/efsajournal/pub/3125",
+        "result": "rettet"
+      },
+      {
+        "claim": "Indeholder ikke mælk trods navnet",
+        "source": "https://www.iamgoingvegan.com/sodium-stearoyl-lactylate/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fedtsyrerne kan være af animalsk oprindelse",
+        "source": "https://www.iamgoingvegan.com/sodium-stearoyl-lactylate/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "ANS-panelet 2013",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3144",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Overvejelser om at justere brugsgrænserne",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3144",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Ingen humane studier med skadelige effekter ved normale indtag",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3144",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Varianter (i)/(ii) (stearoyl-/oleyllactylat) er Codex-/INS-inddeling og ikke en del af EU-specifikationen; fjernet fra variants og beskrivelse",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3144",
+        "result": "rettet"
+      }
+    ]
+  }
+]
