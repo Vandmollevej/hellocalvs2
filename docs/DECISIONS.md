@@ -5,9 +5,10 @@ This file records durable decisions. Add a dated entry when a later decision cha
 ## 2026-09-28: Produktcirklen viser kun brandets eget logo
 
 Hello Cal-frugten ligger ikke længere oven på produktcirklen. Har brandet et
-logo (`Brand.logoUrl`), ligger det samme sted (nederste venstre hjørne i
-cirklens bundpunkt, 95px, `z-10`); ellers vises intet på cirklen, og brandet
-står kun som tekst under produktnavnet. Erstatter logo-afsnittet i
+logo (`Brand.logoUrl`), ligger det med bunden i cirklens bund og venstre kant
+3/4 inde i cirklen (95px, `z-10`). Uden logo står brandnavnet samme sted i fed
+grøn tekst. Brandet står ikke længere under produktnavnet, og certificeringer
+(Øko m.fl.) vises kun som logoer (nederst til venstre på cirklen). Erstatter logo-afsnittet i
 "hængelås på energifordeling"-beslutningen.
 
 ## 2026-09-28: Aktivitetsniveau i 5 trin

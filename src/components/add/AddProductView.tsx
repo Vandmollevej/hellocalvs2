@@ -93,6 +93,7 @@ type Product = {
   // ml/cl, ellers g), se src/lib/product-display-unit.ts.
   productCategory?: string | null;
   packageSizeText?: string | null;
+  variant?: string | null;
   imageUrl?: string | null;
   // Fritlagt forside, der venter på admin-godkendelse — vises kun for den,
   // der selv oprettede varen (docs/DECISIONS.md 2026-09-27).
@@ -676,11 +677,11 @@ export function AddProductView({
               {/* Del-knappen ligger oven på hjørnet, så cirklen står 16 px under
                   headeren – samme afstand som mellem sektionerne. */}
               {!forDish && !!id && (
-                <div className="absolute right-4 top-4 z-20">
+                <div className="absolute right-4 top-2 z-20">
                   <ForwardButton kind="PRODUCT" itemId={state.product.id} name={state.product.name} />
                 </div>
               )}
-              <div className="flex flex-col items-center gap-2 text-center">
+              <div className="flex flex-col items-start gap-2 pt-4 text-left">
                 <div className="relative self-center h-[190px] w-[190px] min-h-[190px] min-w-[190px] max-h-[190px] max-w-[190px] shrink-0 overflow-visible">
                   <div className="flex h-[190px] w-[190px] min-h-[190px] min-w-[190px] items-center justify-center overflow-hidden rounded-full bg-hf-tan">
                     {displayImageUrl ? (
@@ -706,21 +707,26 @@ export function AddProductView({
                       {isFavorite ? <IconBookmarkFilled size={24} /> : <IconBookmark size={24} />}
                     </button>
                   )}
-                  {/* Only a real brand logo goes on the circle (bottom-left
-                      corner at the circle's bottom point, one radius wide).
-                      Without a logo the brand name below is the only mark. */}
-                  {state.product.brand?.logoUrl && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={state.product.brand.logoUrl}
-                      alt={state.product.brand.name}
-                      className="pointer-events-none absolute bottom-0 left-1/2 z-10 h-[95px] w-[95px] object-contain object-left-bottom"
-                    />
-                  )}
+                  {/* Brandet vises kun på cirklen: logoet med bunden i cirklens
+                      bund og venstre kant 3/4 inde; uden logo brandnavnet i
+                      fed grøn tekst samme sted (DECISIONS 2026-09-28). */}
+                  {state.product.brand &&
+                    (state.product.brand.logoUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={state.product.brand.logoUrl}
+                        alt={state.product.brand.name}
+                        className="pointer-events-none absolute bottom-0 left-3/4 z-10 h-[95px] w-[95px] object-contain object-left-bottom"
+                      />
+                    ) : (
+                      <p className="hf-type-title hf-type-strong pointer-events-none absolute bottom-0 left-3/4 z-10 whitespace-nowrap text-hf-green">
+                        {state.product.brand.name}
+                      </p>
+                    ))}
                   {/* Certificeringslogoer (Øko m.fl.) på produktcirklen; uden
                       certificering vises intet logo (docs/DECISIONS.md 2026-09-28). */}
                   {certifications.length > 0 && (
-                    <div className="pointer-events-none absolute bottom-2 right-0 z-10 flex gap-1">
+                    <div className="pointer-events-none absolute bottom-2 left-0 z-10 flex gap-1">
                       {certifications.map((certification) => (
                         <CertificationLogo key={certification} certification={certification} />
                       ))}
@@ -732,23 +738,23 @@ export function AddProductView({
                     <Skeleton type="body-lg" width={200} />
                   </ReadingSkeleton>
                 ) : (
-                  <h1 className="hf-type-title hf-type-strong text-hf-black">{productTitle}</h1>
+                  <h1 className="hf-type-page-title text-hf-black">{productTitle}</h1>
                 )}
-                {state.product.packageSizeText && (
-                  <h2 className="hf-type-body-lg text-hf-green">{state.product.packageSizeText}</h2>
-                )}
-                {isPending("brand") ? (
-                  <ReadingSkeleton label={t("addProduct.reading")}>
-                    <Skeleton type="body" width={120} />
-                  </ReadingSkeleton>
-                ) : (
-                  state.product.brand && (
-                    <p className="hf-type-small hf-type-strong text-hf-green">
-                      {state.product.brand.name}
-                    </p>
-                  )
+                {(state.product.packageSizeText || state.product.variant) && (
+                  <h2 className="hf-type-title hf-type-strong text-hf-green">
+                    {[state.product.packageSizeText, state.product.variant].filter(Boolean).join(" · ")}
+                  </h2>
                 )}
               </div>
+
+              <button
+                type="button"
+                onClick={scrollToDetails}
+                className="hf-btn-text flex items-center gap-1 self-center mb-4 font-normal text-hf-black"
+              >
+                {t("addProduct.details")}
+                <IconChevronDown size={15} />
+              </button>
 
               {hasServingUnit && (
                 <div className="mb-4 flex justify-center gap-2">
@@ -829,8 +835,8 @@ export function AddProductView({
                 </button>
               </div>
 
-              <div className="mb-4 flex flex-col items-center text-center">
-                <p className="hf-type-body hf-type-strong text-hf-black">
+              <div className="-mt-2 mb-4 flex flex-col items-center text-center">
+                <p className="hf-type-body text-hf-black">
                   {isPending("nutrition") ? (
                     <ReadingSkeleton label={t("addProduct.reading")}>
                       <Skeleton type="body" width={150} />
@@ -857,14 +863,6 @@ export function AddProductView({
                 )}
               </div>
 
-              <button
-                type="button"
-                onClick={scrollToDetails}
-                className="hf-btn-text flex items-center gap-1 self-start font-normal text-hf-black"
-              >
-                {t("addProduct.details")}
-                <IconChevronDown size={15} />
-              </button>
             </div>
 
             <div ref={detailsRef} className="flex flex-col gap-8 border-t border-hf-tan-dark p-4">
@@ -1044,7 +1042,7 @@ export function AddProductView({
 
               {(isPending("ingredients") || !!state.product.ingredientsText) && (
                 <div>
-                  <p className="hf-type-body hf-heading mb-2 text-hf-black">{t("createDish.ingredients")}</p>
+                  <p className="hf-type-body mb-2 text-hf-black">{t("createDish.ingredients")}</p>
                   {isPending("ingredients") ? (
                     <div role="status" aria-busy="true" className="flex flex-col gap-2">
                       <span className="sr-only">{t("addProduct.reading")}</span>
