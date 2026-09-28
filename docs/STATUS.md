@@ -2,6 +2,11 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: "Mad på latin" — ordbog over ikke-danske ingredienser
+
+- Ny side `/mad-paa-latin` med søgefelt øverst; ét afsnit pr. ord med anker (`#dextrose`).
+- Ordbogen ligger i `src/lib/food-latin.ts` (fx dextrose, acerola, maltodextrin).
+- `IngredientsText` linker ordene stille (ingen understregning/fed); E-numre er uændrede.
 
 ## 2026-09-28: Produktsiden — centreret, kcal under mængdeboksen (PR #90)
 
