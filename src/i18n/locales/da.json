@@ -1836,6 +1836,7 @@
     "delete": "Slet"
   },
   "dailyList": {
+    "heading": "Dagens tilføjelser",
     "loading": "Henter dagens registreringer...",
     "noEntriesToday": "Ingen registreringer i dag",
     "loadError": "Kunne ikke hente dagens registreringer",
