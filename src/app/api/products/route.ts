@@ -9,7 +9,7 @@ import { getActiveSearchRankingWeights } from "@/lib/search-ranking-config";
 import { cleanAlternativeServings } from "@/lib/alternative-servings";
 import { flagUncertainAlternativeServings } from "@/lib/alternative-servings-review";
 import { syncProductNutritionFeaturesSafely } from "@/lib/product-nutrition-features";
-import { composeProductName } from "@/lib/product-naming";
+import { composeProductName, normalizeProductName } from "@/lib/product-naming";
 import { isProductCategory } from "@/lib/product-display-unit";
 import { linkCutoutJobsToProduct } from "@/lib/image-cutout-jobs";
 import { recordNutrientSources } from "@/lib/product-nutrient-sources";
@@ -307,7 +307,7 @@ export async function POST(req: Request) {
   const productCategory = isProductCategory(body.productCategory) ? body.productCategory : null;
   const explicitName = typeof body.name === "string" ? body.name.trim() : "";
   const name =
-    explicitName || (productType ? composeProductName({ subbrand, productType, variant }) : "");
+    (explicitName ? normalizeProductName(explicitName) : "") || (productType ? composeProductName({ subbrand, productType, variant }) : "");
 
   const kcalPer100g = parsePositiveNumber(body.kcalPer100g);
   const proteinPer100g = parsePositiveNumber(body.proteinPer100g);

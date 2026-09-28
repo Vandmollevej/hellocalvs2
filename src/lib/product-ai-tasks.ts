@@ -102,7 +102,7 @@ export const FRONT_SYSTEM = [
   "Skeln meget strengt mellem brand, subbrand, produktnavn og variant.",
   "brand = hovedmærket/kommercielt logo, fx Arla.",
   "subbrand = produktserie/familie, fx LactoFREE.",
-  "productName = hvad varen faktisk er, fx Letmælk.",
+  "productName = hvad varen faktisk er, fx Letmælk. Emballeret drikkevand hedder Flaskevand (ikke bare Vand), medmindre emballagen siger fx Kildevand.",
   "variant = smag/type/styrke/fedtprocent eller anden variant, når den tydeligt er en variant.",
   "packageSizeText = synlig mængde/størrelse, fx 1 L eller 500 g.",
   "Genkend logo visuelt; stol ikke kun på almindelig OCR. Logoer kan være stiliserede, skrå, håndskrevne eller grafiske.",
