@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, type DragEvent } from "react";
 import { useRouter } from "next/navigation";
 import { IMAGE_TAG_MULTIPLE, IMAGE_TAG_RAW } from "@/lib/image-tags";
+import { fileToDownscaledDataUrl } from "@/lib/image-downscale";
 
 type ProductImage = { id: string; url: string; tags: string[] };
 
@@ -29,22 +30,58 @@ export function ProductImageGallery({
   const [error, setError] = useState<string | null>(null);
   const [zoomedId, setZoomedId] = useState<string | null>(null);
 
-  async function savePrimary() {
+  const [dragOver, setDragOver] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  async function savePrimary(value: string = primaryUrl) {
     setSavingPrimary(true);
     setError(null);
     try {
       const res = await fetch(`/api/admin/products/${productId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageUrl: primaryUrl }),
+        body: JSON.stringify({ imageUrl: value }),
       });
-      if (!res.ok) throw new Error((await res.json()).message ?? "Kunne ikke gemme");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message ?? "Kunne ikke gemme");
+      setPrimaryUrl(data.product?.imageUrl ?? "");
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Kunne ikke gemme");
     } finally {
       setSavingPrimary(false);
     }
+  }
+
+  // Hovedbillede via drag-and-drop: en billedfil (fra computeren) nedskaleres
+  // og gemmes som fil på serveren; et billede trukket fra en anden webside
+  // giver en URL, som gemmes direkte.
+  async function savePrimaryFile(file: File) {
+    if (!file.type.startsWith("image/")) {
+      setError("Filen er ikke et billede");
+      return;
+    }
+    try {
+      await savePrimary(await fileToDownscaledDataUrl(file));
+    } catch {
+      setError("Billedet kunne ikke læses");
+    }
+  }
+
+  function handlePrimaryDrop(event: DragEvent) {
+    event.preventDefault();
+    setDragOver(false);
+    const file = event.dataTransfer.files[0];
+    if (file) {
+      void savePrimaryFile(file);
+      return;
+    }
+    const url = (event.dataTransfer.getData("text/uri-list") || event.dataTransfer.getData("text/plain"))
+      .split("\n")
+      .map((line) => line.trim())
+      .find((line) => /^https?:\/\//.test(line));
+    if (url) void savePrimary(url);
+    else setError("Træk en billedfil eller et billede fra en webside hertil");
   }
 
   async function addSecondary() {
@@ -97,12 +134,45 @@ export function ProductImageGallery({
         Billeder — ét hovedbillede + op til {MAX_SECONDARY} øvrige (fx en æskes andre sider)
       </p>
       <div className="flex flex-wrap gap-4">
-        <div className="flex flex-col items-center gap-2">
+        <div
+          onDragOver={(event) => {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = "copy";
+            setDragOver(true);
+          }}
+          onDragLeave={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setDragOver(false);
+          }}
+          onDrop={handlePrimaryDrop}
+          className={
+            "flex flex-col items-center gap-2 rounded-lg p-1 outline-2 outline-offset-2 " +
+            (dragOver ? "outline-dashed outline-hf-green-dark" : "outline-transparent")
+          }
+        >
           <Thumb
             url={primaryUrl}
             zoomed={zoomedId === "primary"}
             onHover={(hovering) => setZoomedId(hovering ? "primary" : null)}
-            label="Hovedbillede"
+            label={savingPrimary ? "Gemmer…" : "Hovedbillede — træk et billede hertil"}
+          />
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={savingPrimary}
+            className="hf-type-small rounded border border-hf-tan-dark px-1.5 disabled:opacity-60"
+          >
+            Vælg fil
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(event) => {
+              const file = event.target.files?.[0];
+              event.target.value = "";
+              if (file) void savePrimaryFile(file);
+            }}
           />
         </div>
         {images.map((img) => (
@@ -169,7 +239,7 @@ export function ProductImageGallery({
         </label>
         <button
           type="button"
-          onClick={savePrimary}
+          onClick={() => savePrimary()}
           disabled={savingPrimary}
           className="hf-type-body rounded-md bg-hf-green-dark px-3 py-1.5 text-hf-white disabled:opacity-60"
         >

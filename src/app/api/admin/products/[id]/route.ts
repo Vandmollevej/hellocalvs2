@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { saveDataUrlImage } from "@/lib/qc-image-storage";
 import { requireAdminUser } from "@/lib/require-admin";
 
 // PATCH /api/admin/products/[id] — admin edits to name/brand/macros and
@@ -22,7 +23,14 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
   const name = typeof body.name === "string" ? body.name.trim() : undefined;
   const brandName = typeof body.brand === "string" ? body.brand.trim() : undefined;
-  const imageUrl = typeof body.imageUrl === "string" ? body.imageUrl.trim() : undefined;
+  let imageUrl = typeof body.imageUrl === "string" ? body.imageUrl.trim() : undefined;
+  // Hovedbillede trukket ind (drag-and-drop) kommer som data-URL — gem det på
+  // /product-images-volumen og brug den offentlige sti i stedet.
+  if (imageUrl?.startsWith("data:image/")) {
+    const saved = await saveDataUrlImage(imageUrl).catch(() => null);
+    if (!saved) return NextResponse.json({ message: "Billedet kunne ikke gemmes" }, { status: 400 });
+    imageUrl = saved;
+  }
   const kcal = parseNumber(body.kcalPer100g);
   const protein = parseNumber(body.proteinPer100g);
   const carbs = parseNumber(body.carbsPer100g);

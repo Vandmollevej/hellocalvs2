@@ -8,6 +8,14 @@ Last updated: 2026-09-28
 mails og push, cron-job-status, manglende API-nøgler og nøgletal (DECISIONS
 2026-09-27, udvidelse 2026-09-28). Ikke testet mod rigtige data (lokal DB mangler).
 
+## 2026-09-28: Admin "Nye produkter" — hovedbillede via drag-and-drop
+
+- Produktsidens hovedbillede (`ProductImageGallery`) tager nu imod en billedfil
+  trukket ind (eller "Vælg fil"), nedskaleret i browseren, samt et billede
+  trukket fra en anden webside (URL). Gemmes straks.
+- `PATCH /api/admin/products/[id]` gemmer en data-URL som fil via
+  `saveDataUrlImage` (`/product-images/qc-uploads`, EXIF fjernet).
+
 ## 2026-09-28: Google OAuth-klienten klar til hellocal.io
 
 - Google Cloud (projekt `hellocal`, "OAuth client"): redirect-URI'erne
