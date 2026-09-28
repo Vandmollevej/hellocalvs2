@@ -3087,3 +3087,20 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
   forholdsmæssigt med den nye mængde. Varen selv ændres aldrig, og der oprettes
   ingen kontrolsag til admin ved redigering.
 - Egne retter uden vare vises med en vare bygget af snapshottet.
+
+## 2026-09-28: Billedrobotten kører løbende + admin "Robotter"
+
+- Brugerregel: robotten der fritlægger og retter billeder til skal ikke kun
+  køre om natten, men hele tiden vente på nye produkter. Fritlægningen
+  (`scripts/image-agent/cutout.py`) er nu sit eget job `image-cutout` med
+  planen "Løbende" (`intervalMinutes = 0`), tjekket hvert
+  `CUTOUT_POLL_INTERVAL_SECONDS` (standard 15 s).
+- "Løbende" er en ny plantype i `scheduled_jobs` (ingen migration): 0
+  minutter = kør ved hvert tjek. Samme regel i `job_control.py` (alle kopier)
+  og `src/lib/jobs/schedule.ts`.
+- Logo-robotten (`scripts/logo-agent`) styres nu også af `job_control.py`
+  (job `logo-agent`, standard 03:00), så den kan slås til/fra og køres fra admin.
+- Ny admin-side `/admin/robots` ("Administration → Robotter"): tabel med alle
+  robot-containere (runtime "agent") og kolonnerne Robot, On/Off, Kør,
+  Cron-job (Løbende / dagligt kl. / interval / kun manuelt) og Sidst kørt.
+  Samme rækker og API som "Cron-jobs".

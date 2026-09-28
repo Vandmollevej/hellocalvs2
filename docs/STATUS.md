@@ -52,6 +52,15 @@ Next work:
   øvrige snapshots skaleres med mængden. Beslutning: DECISIONS 2026-09-28.
 - Lint, typecheck og build kørt; ikke testet mod en database.
 
+## 2026-09-28: Billedrobot løbende + admin "Robotter"
+
+- Fritlægning (`image-cutout`) kører nu løbende (venter hele tiden på nye
+  produkter); logo-robotten er kommet under admin-styring (standard 03:00).
+- Ny side `/admin/robots` med On/Off, KØR og cron-job-kolonne pr. robot.
+  Beslutning: DECISIONS 2026-09-28.
+- Deploy: genbyg `image-agent` og `logo-agent` (ingen migration).
+- Lint og build kørt; ikke testet mod en database (lokalt er der ingen DB).
+
 ## 2026-09-28: Admin "Log" — hver scanning trin for trin
 
 - Nyt menupunkt `/admin/log`: Scanninger (tidslinje pr. kameraflow med
