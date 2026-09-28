@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { IconBarcode, IconBolt, IconList, IconPhoto } from "@tabler/icons-react";
+import { IconBarcode, IconBolt, IconChevronDown, IconList, IconPhoto } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { PointsPromoBanner } from "@/components/hf/PointsPromoBanner";
 
@@ -35,6 +35,9 @@ function ReportBugContent() {
   const [submitting, setSubmitting] = useState(false);
   const [pending, setPending] = useState<BugReport | null | undefined>(productId ? undefined : null);
   const [editing, setEditing] = useState(false);
+  // Noteområdet er foldet sammen bag en "Note"-header med pil ned, så
+  // kategori-chips er det første brugeren ser; det foldes ud ved tryk.
+  const [noteOpen, setNoteOpen] = useState(false);
 
   useEffect(() => {
     if (!productId) return;
@@ -51,12 +54,20 @@ function ReportBugContent() {
   function startEditing(report: BugReport) {
     setDescription(report.description);
     setCategories(report.categories ?? []);
+    setNoteOpen(true);
     setEditing(true);
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    // Noten er påkrævet (API'et kræver min. 10 tegn); er den foldet sammen,
+    // kan browserens egen validering ikke fokusere feltet, så fold den ud.
+    if (description.trim().length < 10) {
+      setNoteOpen(true);
+      setError("Beskriv fejlen med mindst 10 tegn");
+      return;
+    }
     setSubmitting(true);
     try {
       const editingExisting = editing && pending ? pending : null;
@@ -123,19 +134,37 @@ function ReportBugContent() {
           </div>
         ) : showForm ? (
           <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
-            <label className="flex flex-col gap-1">
-              <span className="hf-type-label">Beskriv fejlen</span>
-              <textarea
-                required
-                minLength={10}
-                rows={6}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Hvad skete der, og hvad forventede du i stedet?"
-                className="hf-type-input w-full rounded-[4px] border bg-hf-cream p-3 outline-none"
-                style={{ borderColor: "var(--hf-color-field-border)" }}
-              />
-            </label>
+            <div className="flex flex-col gap-1">
+              <button
+                type="button"
+                onClick={() => setNoteOpen((open) => !open)}
+                aria-expanded={noteOpen}
+                aria-controls="bug-report-note"
+                className="flex items-center justify-between py-1 text-left"
+              >
+                <span className="hf-type-label">Note</span>
+                <IconChevronDown
+                  size={20}
+                  stroke={1.75}
+                  className="transition-transform"
+                  style={{ transform: noteOpen ? "rotate(180deg)" : undefined }}
+                />
+              </button>
+              {noteOpen && (
+                <textarea
+                  id="bug-report-note"
+                  aria-label="Note"
+                  required
+                  minLength={10}
+                  rows={6}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Hvad skete der, og hvad forventede du i stedet?"
+                  className="hf-type-input w-full rounded-[4px] border bg-hf-cream p-3 outline-none"
+                  style={{ borderColor: "var(--hf-color-field-border)" }}
+                />
+              )}
+            </div>
             {error && <p className="hf-type-caption text-hf-red-dark">{error}</p>}
             <div className="mt-1 grid grid-cols-4 gap-2">
               {BUG_REPORT_CATEGORIES.map((cat) => {
