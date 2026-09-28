@@ -17,6 +17,7 @@ import { recordNutrientSources } from "@/lib/product-nutrient-sources";
 import { syncProductNutritionFeaturesSafely } from "@/lib/product-nutrition-features";
 import type { IngredientsAnalysis, NutritionAnalysis } from "@/lib/product-analysis-types";
 import { debugLog, errorText } from "@/lib/debug-log";
+import { composeProductName } from "@/lib/product-naming";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): kameraflowet opretter varen,
 // så snart den lokale OCR er kørt, og sender brugeren videre til /add/[id].
@@ -102,7 +103,16 @@ async function enrichFront(input: QuickEnrichmentInput) {
     const brand = brandName
       ? await prisma.brand.upsert({ where: { name: brandName }, update: {}, create: { name: brandName } })
       : null;
-    const name = result.productName?.trim() || input.fallbackName;
+    // Navnet sammensættes som ved manuel oprettelse (produkttype + variant,
+    // docs/DECISIONS.md 2026-09-23) — ellers endte fx "Uden brus" kun i
+    // variant-feltet, og varen hed bare "Vand".
+    const productName = result.productName?.trim() ?? "";
+    const variant = result.variant?.trim() ?? "";
+    const name = productName
+      ? variant && !productName.toLowerCase().includes(variant.toLowerCase())
+        ? composeProductName({ productType: productName, variant })
+        : productName
+      : input.fallbackName;
     const product = await prisma.product.update({
       where: { id: productId },
       data: {
