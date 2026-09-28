@@ -3,6 +3,14 @@
 Last updated: 2026-09-28
 
 
+## 2026-09-28: E-numre — egen side pr. nummer med detaljeret beskrivelse og stof-specifikke kilder
+
+- Nyt opslagsværk `src/data/e-numbers.json` (541 E-numre inkl. varianter), bygget af `scripts/e-numre/build_catalog.py` fra Open Food Facts' additives-taxonomi (navne, varianter, EFSA-udtalelse med DOI/ADI) + redaktionelle danske tekster (`scripts/e-numre/data/texts/`).
+- `/e-numre/[code]`: navn, EU-status, kategori, oprindelse, ADI, hvad er det, varianter, hvor findes det, sundhed og risici, forskningen, EFSA's vurdering og links til forskning om netop dette stof (EFSA-DOI, PubMed/reviews, EFSA Journal, JECFA, Europe PMC, nøglestudier, Open Food Facts). Varianter (E331(iii)) viser forældersiden.
+- `/e-numre`: liste grupperet i nummerområder med søgning og filter (godkendt / forbudt-ikke godkendt); gamle `#e330`-links omdirigeres.
+- `/api/additives` leverer katalogets data (DB-tabellen `additives` kun som supplement).
+- Teksterne er AI-skrevet og ikke kontrolleret én for én; tal (ADI, grænser) og EU-status på obskure/tidligere numre bør stikprøvekontrolleres.
+
 ## 2026-09-28: Produktsiden — centreret, kcal under mængdeboksen (PR #90)
 
 - Tidspunkt vises ikke længere på produktsiden (ses i kalender og oversigt); registreringens tid bevares ved gem.

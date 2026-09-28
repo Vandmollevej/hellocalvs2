@@ -3231,3 +3231,13 @@ Synlige tekster i app og admin kalder madvarer "vare/varer", og "Produktdatabase
 ## 2026-09-28: Ingen "Branded"-mærkat
 
 Produktsiden viser aldrig teksten "Branded". Brandet vises kun som brandnavn/logo.
+
+## 2026-09-28: E-nummer-opslagsværk ligger i repoet, ikke i databasen
+
+E-numrenes beskrivelser er referenceindhold (ikke brugerdata) og versioneres som
+`src/data/e-numbers.json` (genereret af `scripts/e-numre/build_catalog.py`), så
+alle miljøer får samme indhold uden import på Synology. Hvert E-nummer har sin
+egen side `/e-numre/[kode]`, og kilderne skal være specifikke for netop det stof
+(EFSA-udtalelsens DOI og søgninger på stoffets præcise navn) — aldrig kun
+generelle forsider. DB-tabellen `additives` bruges kun som fallback.
+

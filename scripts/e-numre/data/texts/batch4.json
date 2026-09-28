@@ -1,0 +1,1233 @@
+[
+ {
+  "code": "E464",
+  "nameDa": "Hydroxypropylmethylcellulose",
+  "nameEn": "Hydroxypropyl methyl cellulose",
+  "category": "Fortykningsmiddel / emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Hydroxypropylmethylcellulose (HPMC, hypromellose) er en kemisk modificeret cellulose fra plantefibre, der bruges som fortykningsmiddel, emulgator og stabilisator.",
+  "description": "HPMC fremstilles ved at behandle cellulose fra træmasse eller bomuld med natriumhydroxid og derefter med methylchlorid og propylenoxid, så en del af hydroxylgrupperne erstattes med methoxy- og hydroxypropylgrupper. Resultatet er et vandopløseligt polymer, der danner gel ved opvarmning og bliver flydende igen ved afkøling (termisk gelering). Denne egenskab udnyttes i glutenfri bagværk og plantebaserede kødalternativer, hvor HPMC giver struktur og binder vand. Stoffet er også meget udbredt som materiale til vegetariske kapsler i kosttilskud og lægemidler. Det er ufordøjeligt og fungerer i tarmen som en opløselig kostfiber.",
+  "uses": "Glutenfrit brød og bagværk, plantebaserede burgere og pølser, veganske kapsler til kosttilskud, frysevarer, saucer og dressinger, fyld og glasur. Godkendt quantum satis i mange fødevarekategorier.",
+  "health": "Modificerede celluloser optages stort set ikke i tarmen og udskilles uomsat med afføringen. Ved store indtag (flere gram om dagen) kan de virke fyldende og let afførende og give luft i maven. EFSA har ved gen-evalueringen af celluloser (2018) ikke fundet behov for en numerisk ADI og vurderede, at de anvendte mængder ikke giver sikkerhedsmæssig bekymring for befolkningen generelt. Stoffet er vegansk og glutenfrit.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2018 samlet E 460–E 466, E 468 og E 469 og fastsatte ingen numerisk ADI ('not specified'), da stofferne ikke optages og har lav toksicitet. Nyere forskning i emulgatorer og tarmflora har primært fokuseret på carboxymethylcellulose (E466), og det er uafklaret, i hvilket omfang fund herfra kan overføres til andre cellulosederivater. EFSA vurderede i 2015 desuden en ændring i specifikationerne for E 464 uden at finde sikkerhedsproblemer.",
+  "keyReferences": [],
+  "pubmedTerm": "hypromellose",
+  "flags": [
+   "laxative"
+  ]
+ },
+ {
+  "code": "E465",
+  "nameDa": "Ethylmethylcellulose",
+  "nameEn": "Ethyl methyl cellulose",
+  "category": "Fortykningsmiddel / emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Ethylmethylcellulose er en kemisk modificeret cellulose, der bruges til at gøre fødevarer tykkere og mere stabile.",
+  "description": "Stoffet fremstilles ud fra cellulose (træmasse), som behandles med base og derefter med ethyl- og methylchlorid, så der indføres ethyl- og methylgrupper på cellulosekæden. Det er opløseligt i koldt vand og kan danne skum og stabile emulsioner. Det bruges i langt mindre omfang end E461 og E464. Som andre cellulosederivater er det ufordøjeligt.",
+  "uses": "Anvendes sjældent; kan forekomme i skum og desserter, saucer, frysevarer og bagværk. Godkendt quantum satis i en række fødevarekategorier.",
+  "health": "Modificerede celluloser optages stort set ikke i tarmen og udskilles uomsat med afføringen. Ved store indtag (flere gram om dagen) kan de virke fyldende og let afførende og give luft i maven. EFSA har ved gen-evalueringen af celluloser (2018) ikke fundet behov for en numerisk ADI og vurderede, at de anvendte mængder ikke giver sikkerhedsmæssig bekymring for befolkningen generelt.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2018 samlet E 460–E 466, E 468 og E 469 og fastsatte ingen numerisk ADI ('not specified'), da stofferne ikke optages og har lav toksicitet. Nyere forskning i emulgatorer og tarmflora har primært fokuseret på carboxymethylcellulose (E466), og det er uafklaret, i hvilket omfang fund herfra kan overføres til andre cellulosederivater.",
+  "keyReferences": [],
+  "pubmedTerm": "ethyl methyl cellulose",
+  "flags": [
+   "laxative"
+  ]
+ },
+ {
+  "code": "E466",
+  "nameDa": "Natriumcarboxymethylcellulose",
+  "nameEn": "Sodium carboxy methyl cellulose",
+  "category": "Fortykningsmiddel / stabilisator / fugtighedsbevarende middel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Natriumcarboxymethylcellulose (CMC, cellulosegummi) er en modificeret cellulose, der gør fødevarer tyktflydende og stabile og holder på fugt.",
+  "description": "CMC fremstilles ved at behandle cellulose med natriumhydroxid og monochloreddikesyre, så der indføres carboxymethylgrupper, som gør stoffet vandopløseligt. Det giver høj viskositet selv i små mængder, forhindrer iskrystaldannelse i is og holder proteiner opløst i sure mejeridrikke. CMC er et af de mest anvendte fortykningsmidler i industrien og bruges også i tandpasta og lægemidler. Det nedbrydes ikke i tyndtarmen og kun i ringe grad af tarmbakterierne.",
+  "uses": "Is og frysedesserter, drikkeyoghurt og sure mælkedrikke, dressinger og saucer, bagværk og kagefyld, instantprodukter, slik og light-produkter. Godkendt quantum satis i mange kategorier.",
+  "health": "CMC optages ikke og har meget lav akut toksicitet; store mængder kan give luft i maven og løs afføring. EFSA fastsatte i 2018 ingen numerisk ADI for celluloserne og så ingen sikkerhedsbekymring ved nuværende brug. Dyreforsøg og et lille humant forsøg har dog vist, at CMC kan påvirke tarmfloraen og slimlaget i tarmen, hvilket har rejst spørgsmål for personer med inflammatorisk tarmsygdom (Crohns sygdom, colitis ulcerosa). Der er ikke dokumenteret skadelige effekter hos raske mennesker ved normale indtag.",
+  "research": "Chassaing et al. (Nature 2015) viste, at CMC og polysorbat 80 i mus ændrede tarmfloraen, nedbrød slimlaget og fremmede lavgradig inflammation, colitis og metabolisk syndrom. Et randomiseret fodringsforsøg med raske frivillige (Chassaing et al., Gastroenterology 2022) fandt, at CMC reducerede tarmflorans diversitet og ændrede metabolomet, dog uden kliniske symptomer i den korte periode. I den franske NutriNet-Santé-kohorte (Sellem et al., BMJ 2023) var højere indtag af cellulosederivater (E460–E468) forbundet med øget risiko for hjerte-kar-sygdom; observationsstudier kan ikke påvise årsagssammenhæng. EFSA's gen-evaluering 2018 fandt ikke grundlag for en ADI, men de nyere fund er fortsat genstand for debat.",
+  "keyReferences": [
+   {
+    "citation": "Chassaing B et al. Dietary emulsifiers impact the mouse gut microbiota promoting colitis and metabolic syndrome. Nature. 2015.",
+    "searchTitle": "Dietary emulsifiers impact the mouse gut microbiota promoting colitis and metabolic syndrome"
+   },
+   {
+    "citation": "Chassaing B et al. Randomized Controlled-Feeding Study of Dietary Emulsifier Carboxymethylcellulose Reveals Detrimental Impacts on the Gut Microbiota and Metabolome. Gastroenterology. 2022.",
+    "searchTitle": "Randomized Controlled-Feeding Study of Dietary Emulsifier Carboxymethylcellulose Reveals Detrimental Impacts on the Gut Microbiota and Metabolome"
+   },
+   {
+    "citation": "Sellem L et al. Food additive emulsifiers and cardiovascular disease risk in the NutriNet-Santé cohort: prospective cohort study. BMJ. 2023.",
+    "searchTitle": "Food additive emulsifiers and risk of cardiovascular disease in the NutriNet-Santé cohort: prospective cohort study"
+   }
+  ],
+  "pubmedTerm": "carboxymethylcellulose",
+  "flags": [
+   "laxative"
+  ]
+ },
+ {
+  "code": "E467",
+  "nameDa": "Etulose",
+  "nameEn": "Ethulose (ethyl hydroxyethyl cellulose)",
+  "category": "Fortykningsmiddel / emulgator / stabilisator",
+  "euStatus": "not_approved",
+  "origin": "mixed",
+  "summary": "Etulose (ethylhydroxyethylcellulose) er en modificeret cellulose, som har et INS-nummer, men ikke er godkendt som tilsætningsstof i EU.",
+  "description": "Stoffet fremstilles ved at behandle cellulose med ethylenoxid og ethylchlorid, så der indføres hydroxyethyl- og ethylgrupper. Det har egenskaber som andre cellulosederivater: det fortykker, stabiliserer og kan danne film. Det anvendes primært industrielt (fx i maling og byggematerialer) og kun i begrænset omfang i fødevarer uden for EU.",
+  "uses": "Ikke tilladt i fødevarer i EU. Kan forekomme i enkelte importerede produkter fra lande, der følger Codex/INS-listen.",
+  "health": "Der findes begrænsede offentlige data om stoffet som fødevaretilsætning. Som andre cellulosederivater forventes det ikke at blive optaget, og store mængder kan virke afførende.",
+  "research": "Der er ikke fundet nogen EFSA-vurdering af E 467 som fødevaretilsætningsstof, og forskningslitteraturen om stoffet i fødevarer er sparsom.",
+  "keyReferences": [],
+  "pubmedTerm": "ethyl hydroxyethyl cellulose",
+  "flags": []
+ },
+ {
+  "code": "E468",
+  "nameDa": "Tværbunden natriumcarboxymethylcellulose",
+  "nameEn": "Cross-linked sodium carboxymethylcellulose",
+  "category": "Fortykningsmiddel / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Tværbunden CMC (croscarmellose) er en CMC, hvor cellulosekæderne er kemisk forbundet, så stoffet svulmer op i vand i stedet for at opløses.",
+  "description": "Stoffet fremstilles som E466, men kæderne tværbindes, typisk ved varmebehandling i sure omgivelser. Det gør produktet uopløseligt, men meget vandabsorberende. Det bruges først og fremmest som sprængmiddel i tabletter, så tabletten hurtigt falder fra hinanden i maven. I fødevarer er anvendelsen i EU hovedsageligt begrænset til kosttilskud.",
+  "uses": "Kosttilskud i tabletform (vitamin- og mineraltabletter); ellers sjældent i almindelige fødevarer.",
+  "health": "Modificerede celluloser optages stort set ikke i tarmen og udskilles uomsat med afføringen. Ved store indtag (flere gram om dagen) kan de virke fyldende og let afførende og give luft i maven. EFSA har ved gen-evalueringen af celluloser (2018) ikke fundet behov for en numerisk ADI og vurderede, at de anvendte mængder ikke giver sikkerhedsmæssig bekymring for befolkningen generelt.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2018 samlet E 460–E 466, E 468 og E 469 og fastsatte ingen numerisk ADI ('not specified'), da stofferne ikke optages og har lav toksicitet. Nyere forskning i emulgatorer og tarmflora har primært fokuseret på carboxymethylcellulose (E466), og det er uafklaret, i hvilket omfang fund herfra kan overføres til andre cellulosederivater.",
+  "keyReferences": [],
+  "pubmedTerm": "croscarmellose sodium",
+  "flags": [
+   "laxative"
+  ]
+ },
+ {
+  "code": "E469",
+  "nameDa": "Enzymatisk hydrolyseret carboxymethylcellulose",
+  "nameEn": "Enzymatically hydrolysed carboxymethylcellulose",
+  "category": "Fortykningsmiddel / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Enzymatisk hydrolyseret CMC er carboxymethylcellulose, der er delvist nedbrudt med enzymer, så kæderne bliver kortere og stoffet mindre tyktflydende.",
+  "description": "Udgangspunktet er E466, som behandles med cellulase-enzymer fra fx Trichoderma-svampe, hvorved polymerkæderne klippes over. Det giver et produkt med lavere viskositet, der kan bruges, hvor man ønsker stabilisering eller fylde uden stærk fortykkelse. Stoffet bruges i begrænset omfang.",
+  "uses": "Kan forekomme i drikkevarer, desserter, saucer og kosttilskud; relativt sjældent anvendt.",
+  "health": "Modificerede celluloser optages stort set ikke i tarmen og udskilles uomsat med afføringen. Ved store indtag (flere gram om dagen) kan de virke fyldende og let afførende og give luft i maven. EFSA har ved gen-evalueringen af celluloser (2018) ikke fundet behov for en numerisk ADI og vurderede, at de anvendte mængder ikke giver sikkerhedsmæssig bekymring for befolkningen generelt.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2018 samlet E 460–E 466, E 468 og E 469 og fastsatte ingen numerisk ADI ('not specified'), da stofferne ikke optages og har lav toksicitet. Nyere forskning i emulgatorer og tarmflora har primært fokuseret på carboxymethylcellulose (E466), og det er uafklaret, i hvilket omfang fund herfra kan overføres til andre cellulosederivater.",
+  "keyReferences": [],
+  "pubmedTerm": "carboxymethylcellulose",
+  "flags": [
+   "laxative"
+  ]
+ },
+ {
+  "code": "E470",
+  "nameDa": "Natrium-, kalium-, calcium- og magnesiumsalte af fedtsyrer",
+  "nameEn": "Sodium, potassium, calcium and magnesium salts of fatty acids",
+  "category": "Emulgator / stabilisator / antiklumpningsmiddel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "E470 er en ældre samlebetegnelse for salte af fedtsyrer (en form for 'sæbe' af spiselige fedtsyrer), som i dag er opdelt i E470a og E470b.",
+  "description": "Fedtsyresalte fremstilles ved at lade fedtsyrer fra vegetabilske eller animalske fedtstoffer reagere med natrium-, kalium-, calcium- eller magnesiumhydroxid eller -carbonat. De fungerer som emulgatorer, bindemidler og antiklumpningsmidler. I den gældende EU-liste er de opdelt i E470a (natrium-, kalium- og calciumsalte) og E470b (magnesiumsalte); varianterne (i), (ii) og (iii) svarer til de enkelte salte.",
+  "uses": "Se E470a og E470b: pulverprodukter, krydderiblandinger, kosttilskud (tabletter), tyggegummi og slik.",
+  "health": "Fedtsyresaltene spaltes i tarmen til fedtsyrer og de tilsvarende mineraler (natrium, kalium, calcium, magnesium), som også findes naturligt i kosten. EFSA's gen-evaluering (2018) fandt ingen grund til at fastsætte en numerisk ADI og ingen sikkerhedsbekymring ved de rapporterede anvendelser. Fedtsyrerne kan stamme fra både vegetabilske og animalske fedtstoffer, hvilket kan være relevant for veganere og visse religiøse kostregler.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 470a og E 470b i 2018 og konkluderede, at der ikke er behov for en numerisk ADI. Stofferne betragtes som toksikologisk uproblematiske, fordi de omdannes til normale kostkomponenter. Der er ikke fundet nyere studier, der rejser særlige bekymringer.",
+  "keyReferences": [],
+  "pubmedTerm": "fatty acid salts",
+  "flags": [
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E470a",
+  "nameDa": "Natrium-, kalium- og calciumsalte af fedtsyrer",
+  "nameEn": "Sodium, potassium and calcium salts of fatty acids",
+  "category": "Emulgator / stabilisator / antiklumpningsmiddel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "E470a er natrium-, kalium- og calciumsalte af spiselige fedtsyrer, som bruges som emulgatorer og antiklumpningsmidler.",
+  "description": "Stofferne fremstilles ved at neutralisere fedtsyrer (typisk stearinsyre, palmitinsyre og oliesyre fra vegetabilske olier eller animalsk fedt) med natrium-, kalium- eller calciumbaser. Varianten (i) er natriumsalte, (ii) kaliumsalte og (iii) calciumsalte; calciumstearat er fx et meget almindeligt glidemiddel i tabletproduktion. De hjælper pulvere med at flyde frit og stabiliserer emulsioner.",
+  "uses": "Kosttilskud i tablet- og kapselform, pulverprodukter, krydderiblandinger, tyggegummi, slik og bagværk. Godkendt quantum satis i en række kategorier.",
+  "health": "Fedtsyresaltene spaltes i tarmen til fedtsyrer og de tilsvarende mineraler (natrium, kalium, calcium, magnesium), som også findes naturligt i kosten. EFSA's gen-evaluering (2018) fandt ingen grund til at fastsætte en numerisk ADI og ingen sikkerhedsbekymring ved de rapporterede anvendelser. Fedtsyrerne kan stamme fra både vegetabilske og animalske fedtstoffer, hvilket kan være relevant for veganere og visse religiøse kostregler.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 470a og E 470b i 2018 og konkluderede, at der ikke er behov for en numerisk ADI. Stofferne betragtes som toksikologisk uproblematiske, fordi de omdannes til normale kostkomponenter. Der er ikke fundet nyere studier, der rejser særlige bekymringer.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium stearate",
+  "flags": [
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E470b",
+  "nameDa": "Magnesiumsalte af fedtsyrer",
+  "nameEn": "Magnesium salts of fatty acids",
+  "category": "Emulgator / antiklumpningsmiddel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "E470b er magnesiumsalte af spiselige fedtsyrer, især magnesiumstearat, der bruges som glidemiddel og antiklumpningsmiddel.",
+  "description": "Stoffet fremstilles ved at lade stearin- og palmitinsyre fra vegetabilsk eller animalsk fedt reagere med magnesiumoxid eller -hydroxid. Magnesiumstearat er et af de mest anvendte hjælpestoffer i tabletproduktion, fordi det forhindrer pulveret i at klæbe til maskinerne. I fødevarer bruges det i små mængder.",
+  "uses": "Kosttilskud i tabletform, pastiller og pebermyntebolsjer, pulvere og krydderiblandinger.",
+  "health": "Fedtsyresaltene spaltes i tarmen til fedtsyrer og de tilsvarende mineraler (natrium, kalium, calcium, magnesium), som også findes naturligt i kosten. EFSA's gen-evaluering (2018) fandt ingen grund til at fastsætte en numerisk ADI og ingen sikkerhedsbekymring ved de rapporterede anvendelser. Fedtsyrerne kan stamme fra både vegetabilske og animalske fedtstoffer, hvilket kan være relevant for veganere og visse religiøse kostregler. Magnesium i store mængder kan virke afførende, men mængderne fra E470b er små.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 470a og E 470b i 2018 og konkluderede, at der ikke er behov for en numerisk ADI. Stofferne betragtes som toksikologisk uproblematiske, fordi de omdannes til normale kostkomponenter. Der er ikke fundet nyere studier, der rejser særlige bekymringer.",
+  "keyReferences": [],
+  "pubmedTerm": "magnesium stearate",
+  "flags": [
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E471",
+  "nameDa": "Mono- og diglycerider af fedtsyrer",
+  "nameEn": "Mono- and diglycerides of fatty acids",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Mono- og diglycerider er delvist nedbrudte fedtstoffer og er den mest anvendte emulgator i fødevarer.",
+  "description": "Stofferne fremstilles typisk ved glycerolyse, hvor fedt eller olie opvarmes med glycerol, så triglyceriderne omdannes til en blanding af mono-, di- og triglycerider; alternativt ved direkte forestring af glycerol med fedtsyrer. Råvaren er oftest palme-, raps- eller solsikkeolie, men kan også være animalsk fedt. Molekylerne har en fedtopløselig og en vandopløselig ende, så de binder fedt og vand sammen, blødgør brødkrummen og forsinker, at brød bliver tørt. De samme stoffer dannes naturligt i tarmen, når vi fordøjer fedt.",
+  "uses": "Brød og bagværk, margarine og smørbare blandingsprodukter, is, flødeerstatninger, kager og kagemix, chokolade- og slikprodukter, færdigretter. Godkendt quantum satis i de fleste kategorier.",
+  "health": "E471 fordøjes som almindeligt fedt og bidrager med samme energi som andet fedt (ca. 9 kcal/g). EFSA fastsatte i 2017 ingen numerisk ADI og så ingen sikkerhedsbekymring ved nuværende brug, men anbefalede lavere grænser for forureninger, der kan dannes ved fremstillingen (glycidylestere, 3-MCPD, erukasyre og tungmetaller). Stoffet kan være af animalsk oprindelse, hvilket normalt ikke fremgår af etiketten. Der er ikke kendte allergiske reaktioner på stoffet selv.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 471 i 2017 og fandt ikke behov for en numerisk ADI, men anbefalede strammere grænser for urenheder som glycidylestere, 3-MCPD og tungmetaller. I den franske NutriNet-Santé-kohorte var højere indtag af E471 forbundet med øget risiko for hjerte-kar-sygdom (Sellem et al., BMJ 2023) og for kræft samlet set samt bryst- og prostatakræft (Sellem et al., PLoS Medicine 2024). Der er tale om observationsstudier, som ikke kan bevise årsagssammenhæng, men de har øget interessen for emulgatorers langtidseffekter.",
+  "keyReferences": [
+   {
+    "citation": "Sellem L et al. Food additive emulsifiers and cardiovascular disease risk in the NutriNet-Santé cohort: prospective cohort study. BMJ. 2023.",
+    "searchTitle": "Food additive emulsifiers and risk of cardiovascular disease in the NutriNet-Santé cohort: prospective cohort study"
+   },
+   {
+    "citation": "Sellem L et al. Food additive emulsifiers and cancer risk: Results from the French prospective NutriNet-Santé cohort. PLoS Medicine. 2024.",
+    "searchTitle": "Food additive emulsifiers and cancer risk: Results from the French prospective NutriNet-Santé cohort"
+   }
+  ],
+  "pubmedTerm": "monoglycerides",
+  "flags": [
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E472",
+  "nameDa": "Syreestere af mono- og diglycerider af fedtsyrer",
+  "nameEn": "Acid esters of mono- and diglycerides of fatty acids",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "E472 er en samlebetegnelse for emulgatorer, hvor mono- og diglycerider (E471) er koblet sammen med en organisk syre.",
+  "description": "Gruppen omfatter E472a (eddikesyre), E472b (mælkesyre), E472c (citronsyre), E472d (vinsyre), E472e (mono- og diacetylvinsyre, DATEM) og E472f (blandede eddike- og vinsyreestere). De fremstilles ved at forestre mono- og diglycerider med den pågældende syre. Syregruppen ændrer emulgatorens egenskaber, fx styrker E472e glutennetværket i brød, mens E472a giver fedtstoffer bedre filmdannende evne. På etiketten står normalt den specifikke undergruppe.",
+  "uses": "Brød og bagværk, margarine, kager, is, chokoladeprodukter, flødeerstatninger og færdigretter.",
+  "health": "Esterne spaltes i tarmen til glycerol, fedtsyrer og den pågældende organiske syre (eddike-, mælke-, citron- eller vinsyre), som alle er normale kostbestanddele. EFSA fandt ved gen-evalueringen (2020) ingen sikkerhedsbekymring ved de rapporterede anvendelser. Fedtsyrerne kan stamme fra animalsk fedt.",
+  "research": "EFSA's ANS/FAF-panel gen-evaluerede E 472a–f i 2020 og konkluderede, at der ikke var sikkerhedsbekymring ved de rapporterede brugsniveauer, men anbefalede strammere specifikationer for urenheder (fx glycidylestere, 3-MCPD og tungmetaller). I NutriNet-Santé-kohorten (Sellem et al., BMJ 2023) var højere indtag af E472c forbundet med øget risiko for hjerte-kar-sygdom, og E472e er undersøgt i samme kohorte i relation til kræft; resultaterne er observationelle og kræver bekræftelse.",
+  "keyReferences": [
+   {
+    "citation": "Sellem L et al. Food additive emulsifiers and cardiovascular disease risk in the NutriNet-Santé cohort: prospective cohort study. BMJ. 2023.",
+    "searchTitle": "Food additive emulsifiers and risk of cardiovascular disease in the NutriNet-Santé cohort: prospective cohort study"
+   }
+  ],
+  "pubmedTerm": "mono- and diglycerides esters",
+  "flags": [
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E472a",
+  "nameDa": "Eddikesyreestere af mono- og diglycerider af fedtsyrer",
+  "nameEn": "Acetic acid esters of mono- and diglycerides of fatty acids",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Eddikesyreestere af mono- og diglycerider (ACETEM) er emulgatorer, der bl.a. bruges til at danne beskyttende fedtfilm på fødevarer.",
+  "description": "Stoffet fremstilles ved at forestre mono- og diglycerider med eddikesyre eller eddikesyreanhydrid. ACETEM er fleksible, voksagtige stoffer, der kan danne tynde belægninger, som mindsker udtørring og iltning. De bruges også til at stabilisere luftbobler i skum og kagedej og til at ændre krystalliseringen af fedt.",
+  "uses": "Overfladebehandling af pølser, ost og frugt, kagemix og piskbare toppings, margarine og shortening, is og desserter.",
+  "health": "Esterne spaltes i tarmen til glycerol, fedtsyrer og den pågældende organiske syre (eddike-, mælke-, citron- eller vinsyre), som alle er normale kostbestanddele. EFSA fandt ved gen-evalueringen (2020) ingen sikkerhedsbekymring ved de rapporterede anvendelser. Fedtsyrerne kan stamme fra animalsk fedt.",
+  "research": "EFSA's ANS/FAF-panel gen-evaluerede E 472a–f i 2020 og konkluderede, at der ikke var sikkerhedsbekymring ved de rapporterede brugsniveauer, men anbefalede strammere specifikationer for urenheder (fx glycidylestere, 3-MCPD og tungmetaller). I NutriNet-Santé-kohorten (Sellem et al., BMJ 2023) var højere indtag af E472c forbundet med øget risiko for hjerte-kar-sygdom, og E472e er undersøgt i samme kohorte i relation til kræft; resultaterne er observationelle og kræver bekræftelse.",
+  "keyReferences": [],
+  "pubmedTerm": "acetylated monoglycerides",
+  "flags": [
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E472b",
+  "nameDa": "Mælkesyreestere af mono- og diglycerider af fedtsyrer",
+  "nameEn": "Lactic acid esters of mono- and diglycerides of fatty acids",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Mælkesyreestere af mono- og diglycerider (LACTEM) er emulgatorer, der især bruges til at give luftige kager og piskbare produkter.",
+  "description": "Stoffet fremstilles ved at forestre mono- og diglycerider med mælkesyre. LACTEM fremmer dannelsen af stabile luftbobler i fedtholdige systemer og forbedrer skummets holdbarhed. Mælkesyren er normalt fremstillet ved fermentering og indeholder ikke mælkeprotein eller laktose.",
+  "uses": "Kagemix og sukkerbrød, piskbare toppings og flødeerstatninger, desserter og mousser, margarine.",
+  "health": "Esterne spaltes i tarmen til glycerol, fedtsyrer og den pågældende organiske syre (eddike-, mælke-, citron- eller vinsyre), som alle er normale kostbestanddele. EFSA fandt ved gen-evalueringen (2020) ingen sikkerhedsbekymring ved de rapporterede anvendelser. Fedtsyrerne kan stamme fra animalsk fedt. Trods navnet indeholder stoffet ikke mælk og er uproblematisk ved mælkeallergi.",
+  "research": "EFSA's ANS/FAF-panel gen-evaluerede E 472a–f i 2020 og konkluderede, at der ikke var sikkerhedsbekymring ved de rapporterede brugsniveauer, men anbefalede strammere specifikationer for urenheder (fx glycidylestere, 3-MCPD og tungmetaller). I NutriNet-Santé-kohorten (Sellem et al., BMJ 2023) var højere indtag af E472c forbundet med øget risiko for hjerte-kar-sygdom, og E472e er undersøgt i samme kohorte i relation til kræft; resultaterne er observationelle og kræver bekræftelse.",
+  "keyReferences": [],
+  "pubmedTerm": "lactylated monoglycerides",
+  "flags": [
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E472c",
+  "nameDa": "Citronsyreestere af mono- og diglycerider af fedtsyrer",
+  "nameEn": "Citric acid esters of mono- and diglycerides of fatty acids",
+  "category": "Emulgator / stabilisator / antioxidant",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Citronsyreestere af mono- og diglycerider (CITREM) er emulgatorer, der også binder metaller og derved hjælper mod harskning.",
+  "description": "Stoffet fremstilles ved at forestre mono- og diglycerider med citronsyre. CITREM er god til at stabilisere olie-i-vand-emulsioner og forhindre sprøjt ved stegning i margarine. Citronsyredelen binder metalioner, hvilket forstærker virkningen af antioxidanter. Det anvendes også i modermælkserstatning og kliniske ernæringsprodukter.",
+  "uses": "Margarine og stegefedt, mayonnaise og dressinger, pålæg og kødprodukter, modermælkserstatning, bagværk.",
+  "health": "Esterne spaltes i tarmen til glycerol, fedtsyrer og den pågældende organiske syre (eddike-, mælke-, citron- eller vinsyre), som alle er normale kostbestanddele. EFSA fandt ved gen-evalueringen (2020) ingen sikkerhedsbekymring ved de rapporterede anvendelser. Fedtsyrerne kan stamme fra animalsk fedt.",
+  "research": "EFSA's ANS/FAF-panel gen-evaluerede E 472a–f i 2020 og konkluderede, at der ikke var sikkerhedsbekymring ved de rapporterede brugsniveauer, men anbefalede strammere specifikationer for urenheder (fx glycidylestere, 3-MCPD og tungmetaller). I NutriNet-Santé-kohorten (Sellem et al., BMJ 2023) var højere indtag af E472c forbundet med øget risiko for hjerte-kar-sygdom, og E472e er undersøgt i samme kohorte i relation til kræft; resultaterne er observationelle og kræver bekræftelse.",
+  "keyReferences": [
+   {
+    "citation": "Sellem L et al. Food additive emulsifiers and cardiovascular disease risk in the NutriNet-Santé cohort: prospective cohort study. BMJ. 2023.",
+    "searchTitle": "Food additive emulsifiers and risk of cardiovascular disease in the NutriNet-Santé cohort: prospective cohort study"
+   }
+  ],
+  "pubmedTerm": "citric acid esters of mono- and diglycerides",
+  "flags": [
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E472d",
+  "nameDa": "Vinsyreestere af mono- og diglycerider af fedtsyrer",
+  "nameEn": "Tartaric acid esters of mono- and diglycerides of fatty acids",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Vinsyreestere af mono- og diglycerider er emulgatorer, der bruges i begrænset omfang, især i bagværk.",
+  "description": "Stoffet fremstilles ved at forestre mono- og diglycerider med vinsyre. Det har egenskaber, der minder om E472e, men er langt mindre udbredt. Vinsyren stammer typisk fra vinproduktion eller kemisk syntese.",
+  "uses": "Bagværk og kagemix; forholdsvis sjældent anvendt.",
+  "health": "Esterne spaltes i tarmen til glycerol, fedtsyrer og den pågældende organiske syre (eddike-, mælke-, citron- eller vinsyre), som alle er normale kostbestanddele. EFSA fandt ved gen-evalueringen (2020) ingen sikkerhedsbekymring ved de rapporterede anvendelser. Fedtsyrerne kan stamme fra animalsk fedt.",
+  "research": "EFSA's ANS/FAF-panel gen-evaluerede E 472a–f i 2020 og konkluderede, at der ikke var sikkerhedsbekymring ved de rapporterede brugsniveauer, men anbefalede strammere specifikationer for urenheder (fx glycidylestere, 3-MCPD og tungmetaller). I NutriNet-Santé-kohorten (Sellem et al., BMJ 2023) var højere indtag af E472c forbundet med øget risiko for hjerte-kar-sygdom, og E472e er undersøgt i samme kohorte i relation til kræft; resultaterne er observationelle og kræver bekræftelse.",
+  "keyReferences": [],
+  "pubmedTerm": "tartaric acid esters of monoglycerides",
+  "flags": [
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E472e",
+  "nameDa": "Mono- og diacetylvinsyreestere af mono- og diglycerider af fedtsyrer",
+  "nameEn": "Mono- and diacetyltartaric acid esters of mono- and diglycerides of fatty acids",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "DATEM (E472e) er en emulgator, der styrker glutennetværket i dej og giver brød større volumen og en jævn krumme.",
+  "description": "Stoffet fremstilles ved at lade diacetylvinsyreanhydrid reagere med mono- og diglycerider. DATEM binder sig til glutenproteinerne og gør dejen mere elastisk og gasholdende, hvilket er særligt nyttigt ved hvedemel af svingende kvalitet og i industrielt bagværk. Det bruges også i kaffefløde-erstatninger og drikkevareemulsioner.",
+  "uses": "Franskbrød, toastbrød, burgerboller, bake-off og frosne dejprodukter, kaffefløde og flødeerstatninger.",
+  "health": "Esterne spaltes i tarmen til glycerol, fedtsyrer og den pågældende organiske syre (eddike-, mælke-, citron- eller vinsyre), som alle er normale kostbestanddele. EFSA fandt ved gen-evalueringen (2020) ingen sikkerhedsbekymring ved de rapporterede anvendelser. Fedtsyrerne kan stamme fra animalsk fedt. JECFA har tidligere fastsat en ADI på 50 mg/kg legemsvægt/dag for DATEM.",
+  "research": "EFSA's ANS/FAF-panel gen-evaluerede E 472a–f i 2020 og konkluderede, at der ikke var sikkerhedsbekymring ved de rapporterede brugsniveauer, men anbefalede strammere specifikationer for urenheder (fx glycidylestere, 3-MCPD og tungmetaller). I NutriNet-Santé-kohorten (Sellem et al., BMJ 2023) var højere indtag af E472c forbundet med øget risiko for hjerte-kar-sygdom, og E472e er undersøgt i samme kohorte i relation til kræft; resultaterne er observationelle og kræver bekræftelse.",
+  "keyReferences": [
+   {
+    "citation": "Sellem L et al. Food additive emulsifiers and cancer risk: Results from the French prospective NutriNet-Santé cohort. PLoS Medicine. 2024.",
+    "searchTitle": "Food additive emulsifiers and cancer risk: Results from the French prospective NutriNet-Santé cohort"
+   }
+  ],
+  "pubmedTerm": "diacetyl tartaric acid esters of mono- and diglycerides",
+  "flags": [
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E472f",
+  "nameDa": "Blandede eddikesyre- og vinsyreestere af mono- og diglycerider af fedtsyrer",
+  "nameEn": "Mixed acetic and tartaric acid esters of mono- and diglycerides of fatty acids",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "E472f er en emulgator, hvor mono- og diglycerider er forestret med både eddikesyre og vinsyre.",
+  "description": "Stoffet fremstilles ved at lade mono- og diglycerider reagere med en blanding af eddikesyre og vinsyre (eller deres anhydrider). Det har egenskaber, der ligger mellem E472a og E472e, og bruges især i bagværk. Anvendelsen er begrænset.",
+  "uses": "Bagværk og brødprodukter; sjældent anvendt.",
+  "health": "Esterne spaltes i tarmen til glycerol, fedtsyrer og den pågældende organiske syre (eddike-, mælke-, citron- eller vinsyre), som alle er normale kostbestanddele. EFSA fandt ved gen-evalueringen (2020) ingen sikkerhedsbekymring ved de rapporterede anvendelser. Fedtsyrerne kan stamme fra animalsk fedt.",
+  "research": "EFSA's ANS/FAF-panel gen-evaluerede E 472a–f i 2020 og konkluderede, at der ikke var sikkerhedsbekymring ved de rapporterede brugsniveauer, men anbefalede strammere specifikationer for urenheder (fx glycidylestere, 3-MCPD og tungmetaller). I NutriNet-Santé-kohorten (Sellem et al., BMJ 2023) var højere indtag af E472c forbundet med øget risiko for hjerte-kar-sygdom, og E472e er undersøgt i samme kohorte i relation til kræft; resultaterne er observationelle og kræver bekræftelse.",
+  "keyReferences": [],
+  "pubmedTerm": "acetic and tartaric acid esters of monoglycerides",
+  "flags": [
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E472g",
+  "nameDa": "Succinylerede monoglycerider",
+  "nameEn": "Succinylated monoglycerides",
+  "category": "Emulgator",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Succinylerede monoglycerider er monoglycerider forestret med ravsyre; de har et INS-nummer, men er ikke godkendt i EU.",
+  "description": "Stoffet fremstilles ved at lade monoglycerider reagere med ravsyreanhydrid. Det er anvendt som dejforbedrer i brød og bagværk, primært i USA, hvor det er tilladt under FDA's regler. Det styrker dejen på samme måde som DATEM.",
+  "uses": "Ikke tilladt i EU. Kan forekomme i bagværk i fx USA.",
+  "health": "Der findes kun begrænsede offentlige data. Stoffet forventes spaltet til monoglycerider og ravsyre, som begge er naturlige stofskifteprodukter.",
+  "research": "Der er ingen EFSA-vurdering af stoffet som fødevaretilsætning, og der er ikke fundet nyere forskning af betydning.",
+  "keyReferences": [],
+  "pubmedTerm": "succinylated monoglycerides",
+  "flags": []
+ },
+ {
+  "code": "E473",
+  "nameDa": "Saccharoseestere af fedtsyrer",
+  "nameEn": "Sucrose esters of fatty acids",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Saccharoseestere er emulgatorer dannet af almindeligt sukker (saccharose) og fedtsyrer.",
+  "description": "Stofferne fremstilles ved at forestre saccharose med fedtsyrer fra vegetabilske eller animalske fedtstoffer, ofte via methylestere af fedtsyrerne i et opløsningsmiddel, som efterfølgende fjernes. Afhængigt af hvor mange fedtsyrer der bindes til sukkermolekylet, kan emulgatoren være mere vand- eller fedtopløselig. De bruges til at stabilisere emulsioner, forbedre skum og som overfladebehandling af frisk frugt.",
+  "uses": "Overfladebehandling af frugt, drikkevarer med aroma-emulsioner, kaffefløde-erstatninger, bagværk, is, slik og tyggegummi, desserter.",
+  "health": "Saccharoseestere spaltes delvist i tarmen til sukker og fedtsyrer. EFSA fastsatte i 2018 en gruppe-ADI på 40 mg/kg legemsvægt/dag for saccharoseestere (E473) og saccharoseglycerider (E474). Ifølge EFSA's eksponeringsberegninger kan indtaget hos især børn overstige ADI ved de højeste anvendte niveauer, hvorfor Open Food Facts angiver høj risiko for overeksponering. Der er ingen kendt allergirisiko.",
+  "research": "EFSA's ANS/FAF-panel gen-evaluerede E 473 og E 474 i 2018 og fastsatte en samlet gruppe-ADI på 40 mg/kg legemsvægt/dag baseret på dyreforsøg. Samme vurdering pegede på, at eksponeringen i visse aldersgrupper kunne overstige ADI i de mest konservative scenarier. Der findes få studier af langtidseffekter på mennesker.",
+  "keyReferences": [],
+  "pubmedTerm": "sucrose esters",
+  "flags": [
+   "children_caution"
+  ]
+ },
+ {
+  "code": "E473a",
+  "nameDa": "Oligoestere af saccharose type I og II",
+  "nameEn": "Sucrose oligoesters type I and type II",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Saccharose-oligoestere er en blanding af saccharose forestret med mange fedtsyrer; de blev vurderet af EFSA i 2004 som et muligt nyt tilsætningsstof.",
+  "description": "Stofferne ligner E473, men indeholder overvejende højere estere (flere fedtsyrer pr. sukkermolekyle). De blev foreslået som emulgatorer og stabilisatorer til bl.a. drikkevarer. EFSA's AFC-panel vurderede stofferne i 2004. Nummeret E473a indgår ikke i den gældende EU-liste over godkendte tilsætningsstoffer (bilag II til forordning 1333/2008).",
+  "uses": "Ingen dokumenteret anvendelse i almindelige danske fødevarer.",
+  "health": "EFSA's vurdering fra 2004 behandlede stofferne sammen med de øvrige saccharoseestere. Der foreligger kun begrænsede offentlige data om brug og eksponering.",
+  "research": "EFSA's AFC-panel afgav i 2004 udtalelse om saccharose-oligoestere type I og II. Der er ikke fundet nyere forskning af betydning.",
+  "keyReferences": [],
+  "pubmedTerm": "sucrose esters",
+  "flags": []
+ },
+ {
+  "code": "E474",
+  "nameDa": "Saccharoseglycerider",
+  "nameEn": "Sucroglycerides",
+  "category": "Emulgator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Saccharoseglycerider er en blanding af saccharoseestere og mono-, di- og triglycerider af fedtsyrer.",
+  "description": "Stoffet fremstilles ved at lade saccharose reagere med naturlige fedtstoffer (fx palme- eller talgolie), hvorved der dannes en blanding af saccharoseestere og glycerider. Det fungerer som emulgator i fedt- og vandholdige produkter.",
+  "uses": "Bagværk, desserter, is, flødeerstatninger og drikkevarer; forholdsvis sjældent anvendt.",
+  "health": "Saccharoseestere spaltes delvist i tarmen til sukker og fedtsyrer. EFSA fastsatte i 2018 en gruppe-ADI på 40 mg/kg legemsvægt/dag for saccharoseestere (E473) og saccharoseglycerider (E474). Ifølge EFSA's eksponeringsberegninger kan indtaget hos især børn overstige ADI ved de højeste anvendte niveauer, hvorfor Open Food Facts angiver høj risiko for overeksponering. Der er ingen kendt allergirisiko.",
+  "research": "EFSA vurderede E 474 i 2004 og indgik den i den samlede gen-evaluering af E 473 og E 474 i 2018 med en gruppe-ADI på 40 mg/kg legemsvægt/dag.",
+  "keyReferences": [],
+  "pubmedTerm": "sucroglycerides",
+  "flags": [
+   "children_caution",
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E475",
+  "nameDa": "Polyglycerolestere af fedtsyrer",
+  "nameEn": "Polyglycerol esters of fatty acids",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Polyglycerolestere er emulgatorer, hvor fedtsyrer er bundet til korte kæder af glycerol.",
+  "description": "Glycerol kondenseres ved opvarmning til polyglycerol, som derefter forestres med fedtsyrer fra vegetabilske eller animalske fedtstoffer. Stofferne forbedrer luftindblanding og stabiliserer emulsioner. De bruges især i kager, piskbare produkter og visse fedtstoffer.",
+  "uses": "Kager og kagemix, piskbare toppings, desserter, margarine og fedtblandinger, slik.",
+  "health": "Polyglycerolestere spaltes i tarmen til fedtsyrer og polyglycerol, som udskilles stort set uomdannet. JECFA har fastsat en ADI på 25 mg/kg legemsvægt/dag. EFSA's gen-evaluering fandt ingen sikkerhedsbekymring ved de rapporterede brugsniveauer. Fedtsyrerne kan være af animalsk oprindelse.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 475 i 2017. Der er ikke fundet nyere studier, der rejser specifikke bekymringer.",
+  "keyReferences": [],
+  "pubmedTerm": "polyglycerol esters of fatty acids",
+  "flags": [
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E476",
+  "nameDa": "Polyglycerolpolyricinoleat",
+  "nameEn": "Polyglycerol polyricinoleate",
+  "category": "Emulgator",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Polyglycerolpolyricinoleat (PGPR) er en emulgator, der især bruges i chokolade for at gøre den mere flydende.",
+  "description": "PGPR fremstilles ved at forestre polyglycerol med kondenserede ricinolsyrer fra ricinusolie. Stoffet nedsætter chokolademassens flydegrænse, så producenten kan bruge mindre kakaosmør og få en mere jævn støbning og overtrækning. Det bruges ofte sammen med lecithin (E322). Det anvendes også i smørbare fedtprodukter med lavt fedtindhold.",
+  "uses": "Chokolade og chokoladeovertræk, chokoladebaserede slik og kiks, fedtfattige smørbare produkter og dressinger. Maks. 5 g/kg i kakao- og chokoladeprodukter.",
+  "health": "PGPR spaltes i tarmen til polyglycerol, ricinolsyre og andre fedtsyrer. EFSA fastsatte i sin gen-evaluering (2017) en ADI på 25 mg/kg legemsvægt/dag og fandt, at indtaget ikke overstiger denne. I dyreforsøg med meget høje doser er der set forstørrelse af lever og nyrer, men ikke ved relevante doser.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 476 i 2017 og fastholdt en ADI på 25 mg/kg legemsvægt/dag. Stoffet har været brugt i chokolade siden 1950'erne, og der er ikke fundet nyere studier, der rejser bekymring.",
+  "keyReferences": [],
+  "pubmedTerm": "polyglycerol polyricinoleate",
+  "flags": []
+ },
+ {
+  "code": "E477",
+  "nameDa": "Propylenglycolestere af fedtsyrer",
+  "nameEn": "Propane-1,2-diol esters of fatty acids",
+  "category": "Emulgator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Propylenglycolestere af fedtsyrer er emulgatorer, der fremmer luftighed i kager og piskbare produkter.",
+  "description": "Stoffet fremstilles ved at forestre propylenglycol (propan-1,2-diol) med fedtsyrer fra vegetabilske eller animalske fedtstoffer. Det bruges ofte sammen med mono- og diglycerider til at stabilisere luftbobler og give et fint, jævnt kageskum.",
+  "uses": "Kagemix og sukkerbrød, piskbare toppings og flødeerstatninger, desserter og mousser.",
+  "health": "Estrene spaltes i tarmen til propylenglycol og fedtsyrer. EFSA's gen-evaluering (2018) fandt ingen sikkerhedsbekymring ved de rapporterede anvendelser. Fedtsyrerne kan være af animalsk oprindelse.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 477 i 2018. Der er ikke fundet nyere forskning, der rejser specifikke bekymringer.",
+  "keyReferences": [],
+  "pubmedTerm": "propylene glycol esters of fatty acids",
+  "flags": [
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E478",
+  "nameDa": "Lactylerede fedtsyreestere af glycerol og propan-1,2-diol",
+  "nameEn": "Lactylated fatty acid esters of glycerol and propane-1,2-diol",
+  "category": "Emulgator",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "E478 er en emulgator dannet af glycerol, propylenglycol, fedtsyrer og mælkesyre; den er ikke på den gældende EU-liste.",
+  "description": "Stoffet fremstilles ved at lade blandinger af fedtsyrer, glycerol, propylenglycol og mælkesyre reagere. Det har været brugt til at forbedre luftindblanding i kager og piskbare produkter. Nummeret indgår ikke i den gældende EU-liste over tilladte tilsætningsstoffer.",
+  "uses": "Ingen dokumenteret anvendelse i almindelige danske fødevarer.",
+  "health": "Der findes begrænsede offentlige data. Stoffet forventes spaltet til velkendte kostkomponenter (glycerol, propylenglycol, mælkesyre og fedtsyrer).",
+  "research": "Der er ikke fundet nyere EFSA-vurderinger eller forskning af betydning for stoffet.",
+  "keyReferences": [],
+  "pubmedTerm": "lactylated fatty acid esters",
+  "flags": []
+ },
+ {
+  "code": "E479b",
+  "nameDa": "Termisk oxideret sojaolie omsat med mono- og diglycerider af fedtsyrer",
+  "nameEn": "Thermally oxidised soya bean oil interacted with mono- and diglycerides of fatty acids",
+  "category": "Emulgator",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "E479b er en emulgator fremstillet af opvarmet og oxideret sojaolie, som kun må bruges i stegefedt.",
+  "description": "Sojaolie opvarmes under lufttilførsel, så den oxideres, og omsættes derefter med mono- og diglycerider. Produktet forhindrer, at stegefedt sprøjter under opvarmning. Anvendelsen er i EU begrænset til fedtemulsioner beregnet til stegning.",
+  "uses": "Kun i fedtemulsioner til stegning (fx flydende margarine til stegning), maks. 5 g/kg.",
+  "health": "EFSA har ikke rejst sikkerhedsbekymringer ved det tilladte brugsniveau. Stoffet er fremstillet af sojaolie, men raffineret olie indeholder normalt ikke nævneværdige mængder sojaprotein. Personer med sojaallergi kan dog vælge at være opmærksomme.",
+  "research": "EFSA's ANS-panel har gen-evalueret E 479b (2018) uden at finde sikkerhedsproblemer ved det begrænsede brug. Forskningen om stoffet er sparsom.",
+  "keyReferences": [],
+  "pubmedTerm": "thermally oxidized soybean oil",
+  "flags": []
+ },
+ {
+  "code": "E481",
+  "nameDa": "Natriumstearoyl-2-lactylat",
+  "nameEn": "Sodium stearoyl-2-lactylate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Natriumstearoyllactylat (SSL) er en emulgator og dejforbedrer dannet af stearinsyre og mælkesyre.",
+  "description": "Stoffet fremstilles ved at forestre stearinsyre med mælkesyre og neutralisere med natriumcarbonat eller -hydroxid. SSL styrker dejen, giver større brødvolumen og blødere krumme, som holder sig frisk længere. Varianten (i) er natriumstearoyllactylat, mens (ii) er natriumoleyllactylat baseret på oliesyre.",
+  "uses": "Toastbrød, burgerboller og industrielt brød, kager, kaffefløde-erstatninger, desserter og instantprodukter.",
+  "health": "Lactylaterne spaltes i tarmen til stearinsyre og mælkesyre, som begge er normale kostbestanddele. EFSA fastsatte i 2013 en gruppe-ADI på 22 mg/kg legemsvægt/dag for E481 og E482 og fandt, at indtaget i nogle grupper — især børn med højt forbrug af bagværk — kan overstige ADI. Stoffet indeholder ikke mælk trods navnet. Fedtsyrerne kan være af animalsk oprindelse.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 481 og E 482 i 2013 og fastsatte en gruppe-ADI på 22 mg/kg legemsvægt/dag. Eksponeringsberegningerne viste mulig overskridelse hos børn ved de højeste tilladte niveauer, hvilket gav anledning til overvejelser om at justere brugsgrænserne. Der er ikke fundet humane studier, der påviser skadelige effekter ved normale indtag.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium stearoyl lactylate",
+  "flags": [
+   "children_caution",
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E482",
+  "nameDa": "Calciumstearoyl-2-lactylat",
+  "nameEn": "Calcium stearoyl-2-lactylate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Calciumstearoyllactylat (CSL) er en emulgator og dejforbedrer, der svarer til E481, men med calcium i stedet for natrium.",
+  "description": "Stoffet fremstilles ved at forestre stearinsyre med mælkesyre og neutralisere med en calciumforbindelse. Det styrker glutennetværket og forsinker, at brød bliver tørt. Varianten (i) er calciumstearoyllactylat og (ii) calciumoleyllactylat.",
+  "uses": "Brød og bagværk, kager, desserter og flødeerstatninger.",
+  "health": "Lactylaterne spaltes i tarmen til stearinsyre og mælkesyre, som begge er normale kostbestanddele. EFSA fastsatte i 2013 en gruppe-ADI på 22 mg/kg legemsvægt/dag for E481 og E482 og fandt, at indtaget i nogle grupper — især børn med højt forbrug af bagværk — kan overstige ADI. Stoffet indeholder ikke mælk trods navnet. Fedtsyrerne kan være af animalsk oprindelse.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 481 og E 482 i 2013 og fastsatte en gruppe-ADI på 22 mg/kg legemsvægt/dag. Eksponeringsberegningerne viste mulig overskridelse hos børn ved de højeste tilladte niveauer, hvilket gav anledning til overvejelser om at justere brugsgrænserne. Der er ikke fundet humane studier, der påviser skadelige effekter ved normale indtag.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium stearoyl lactylate",
+  "flags": [
+   "children_caution",
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E483",
+  "nameDa": "Stearyltartrat",
+  "nameEn": "Stearyl tartrate",
+  "category": "Emulgator / dejforbedrer",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Stearyltartrat er en ester af stearylalkohol og vinsyre, der bruges som dejforbedrer.",
+  "description": "Stoffet fremstilles ved at forestre vinsyre med stearylalkohol (eller en blanding med palmitylalkohol). Det forbedrer dejens egenskaber i bagværk. Anvendelsen er i EU begrænset til bestemte bageriprodukter og bruges i praksis sjældent.",
+  "uses": "Fint bagværk og bageriprodukter; sjældent anvendt.",
+  "health": "Der er få data om stoffet, men det forventes spaltet til vinsyre og fedtalkohol. EFSA har ikke rejst sikkerhedsbekymringer ved det begrænsede brug.",
+  "research": "Stoffet er omfattet af EFSA's gen-evalueringsprogram, men der er ikke fundet nyere forskning af betydning.",
+  "keyReferences": [],
+  "pubmedTerm": "stearyl tartrate",
+  "flags": []
+ },
+ {
+  "code": "E484",
+  "nameDa": "Stearylcitrat",
+  "nameEn": "Stearyl citrate",
+  "category": "Emulgator / antioxidant / sekvestreringsmiddel",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Stearylcitrat er en ester af stearylalkohol og citronsyre, som har et INS-nummer, men ikke er godkendt i EU.",
+  "description": "Stoffet fremstilles ved at forestre citronsyre med stearylalkohol. Det binder metaller og kan dermed forsinke harskning af olier og fedtstoffer. Det er tilladt i fx USA, men står ikke på den gældende EU-liste.",
+  "uses": "Ikke tilladt i EU. Kan forekomme i olier og margarine uden for EU.",
+  "health": "Der findes kun begrænsede offentlige data. Stoffet forventes spaltet til citronsyre og fedtalkohol. JECFA har tidligere vurderet det.",
+  "research": "Der er ingen EFSA-vurdering af stoffet som fødevaretilsætning og ingen nyere forskning af betydning.",
+  "keyReferences": [],
+  "pubmedTerm": "stearyl citrate",
+  "flags": []
+ },
+ {
+  "code": "E485",
+  "nameDa": "Natriumstearoylfumarat",
+  "nameEn": "Sodium stearoyl fumarate",
+  "category": "Emulgator / dejforbedrer",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Natriumstearoylfumarat er en natriumforbindelse af stearylalkohol og fumarsyre, som har et INS-nummer, men ikke er godkendt som fødevaretilsætning i EU.",
+  "description": "Stoffet fremstilles ved at forestre fumarsyre med stearylalkohol og neutralisere med en natriumforbindelse. Det har været brugt som dejforbedrer i bagværk uden for EU. Natriumstearylfumarat kendes især som glidemiddel i lægemiddeltabletter.",
+  "uses": "Ikke tilladt i fødevarer i EU.",
+  "health": "Der findes kun begrænsede offentlige data om stoffet i fødevarer. Det forventes spaltet til fumarsyre og stearylalkohol.",
+  "research": "Der er ingen EFSA-vurdering af stoffet som fødevaretilsætning og ingen nyere forskning af betydning.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium stearoyl fumarate",
+  "flags": []
+ },
+ {
+  "code": "E486",
+  "nameDa": "Calciumstearoylfumarat",
+  "nameEn": "Calcium stearoyl fumarate",
+  "category": "Emulgator / dejforbedrer",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Calciumstearoylfumarat er en calciumforbindelse af stearylalkohol og fumarsyre, som har et INS-nummer, men ikke er godkendt som fødevaretilsætning i EU.",
+  "description": "Stoffet fremstilles ved at forestre fumarsyre med stearylalkohol og neutralisere med en calciumforbindelse. Det har været brugt som dejforbedrer i bagværk uden for EU. Natriumstearylfumarat kendes især som glidemiddel i lægemiddeltabletter.",
+  "uses": "Ikke tilladt i fødevarer i EU.",
+  "health": "Der findes kun begrænsede offentlige data om stoffet i fødevarer. Det forventes spaltet til fumarsyre og stearylalkohol.",
+  "research": "Der er ingen EFSA-vurdering af stoffet som fødevaretilsætning og ingen nyere forskning af betydning.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium stearoyl fumarate",
+  "flags": []
+ },
+ {
+  "code": "E487",
+  "nameDa": "Natriumlaurylsulfat",
+  "nameEn": "Sodium lauryl sulfate (sodium dodecyl sulfate)",
+  "category": "Emulgator / overfladeaktivt stof",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Natriumlaurylsulfat (SLS) er et kraftigt overfladeaktivt stof kendt fra sæbe og tandpasta; det er ikke godkendt som fødevaretilsætning i EU.",
+  "description": "SLS fremstilles ved at sulfatere laurylalkohol (fra kokos- eller palmekerneolie eller petrokemisk) og neutralisere med natriumhydroxid. Det er et effektivt rengørings- og skummiddel. I USA må det i begrænset omfang bruges i fødevarer, fx som piskemiddel i tørret æggehvide.",
+  "uses": "Ikke tilladt i fødevarer i EU. Findes i tandpasta, shampoo og rengøringsmidler.",
+  "health": "SLS kan irritere hud og slimhinder, og i tandpasta er det sat i forbindelse med øget forekomst af mundsår hos disponerede personer. I de små mængder, der tillades i fødevarer uden for EU, anses det ikke for giftigt.",
+  "research": "Stoffet er velundersøgt som kosmetisk ingrediens, bl.a. i forbindelse med hudirritation. Der er ingen EFSA-vurdering af stoffet som fødevaretilsætning.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium dodecyl sulfate",
+  "flags": []
+ },
+ {
+  "code": "E488",
+  "nameDa": "Ethoxylerede mono- og diglycerider",
+  "nameEn": "Ethoxylated mono- and diglycerides",
+  "category": "Emulgator",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Ethoxylerede mono- og diglycerider er emulgatorer, hvor mono- og diglycerider er omsat med ethylenoxid; de er ikke godkendt i EU.",
+  "description": "Stoffet fremstilles ved at lade mono- og diglycerider reagere med ethylenoxid, hvorved der dannes polyoxyethylenkæder, som gør molekylet mere vandopløseligt. Det har været brugt som dejforbedrer i bagværk uden for EU.",
+  "uses": "Ikke tilladt i EU.",
+  "health": "Der findes kun begrænsede offentlige data. Ved ethoxylering kan der dannes spor af urenheder som 1,4-dioxan, som man generelt ønsker at begrænse.",
+  "research": "Der er ingen EFSA-vurdering af stoffet som fødevaretilsætning og ingen nyere forskning af betydning.",
+  "keyReferences": [],
+  "pubmedTerm": "ethoxylated monoglycerides",
+  "flags": []
+ },
+ {
+  "code": "E489",
+  "nameDa": "Methylglucosid-kokosolieester",
+  "nameEn": "Methyl glucoside-coconut oil ester",
+  "category": "Emulgator",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Methylglucosid-kokosolieester er en emulgator dannet af methylglucosid og kokosolie; den er ikke godkendt i EU.",
+  "description": "Stoffet fremstilles ved omestring af methylglucosid (et sukkerderivat) med fedtsyrer fra kokosolie. Det er i visse lande brugt som hjælpestof, fx ved vask og overfladebehandling af frugt og grøntsager.",
+  "uses": "Ikke tilladt i fødevarer i EU.",
+  "health": "Der findes kun begrænsede offentlige data om stoffet.",
+  "research": "Der er ingen EFSA-vurdering af stoffet som fødevaretilsætning og ingen nyere forskning af betydning.",
+  "keyReferences": [],
+  "pubmedTerm": "methyl glucoside coconut oil ester",
+  "flags": []
+ },
+ {
+  "code": "E490",
+  "nameDa": "Propylenglycol",
+  "nameEn": "Propylene glycol",
+  "category": "Bærestof / fugtighedsbevarende middel",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Propylenglycol er en sødlig, farveløs væske, der bruges som opløsningsmiddel og fugtbevarer; i EU har det nummeret E1520, ikke E490.",
+  "description": "Propylenglycol (propan-1,2-diol) fremstilles petrokemisk ved hydrolyse af propylenoxid eller biobaseret ud fra glycerol. Det bruges som bærestof for aromaer, farver og antioxidanter og til at holde på fugt. E490 er et ældre/INS-relateret nummer; i EU's liste hedder stoffet E1520 og må kun bruges som bærestof, med en maksimal restmængde i fødevaren.",
+  "uses": "Som E1520: bærestof i aromaer og farvestoffer, som indgår i bl.a. slik, bagværk, drikkevarer og is. Findes også i e-cigaretvæske, kosmetik og medicin.",
+  "health": "Propylenglycol omsættes i kroppen til mælkesyre og pyrodruesyre. EFSA fastsatte i 2018 en ADI på 25 mg/kg legemsvægt/dag. Meget store mængder (typisk fra lægemidler) kan give syreophobning, især hos for tidligt fødte børn og personer med nedsat nyrefunktion. Ved normalt fødevareindtag anses stoffet for sikkert.",
+  "research": "EFSA's ANS-panel gen-evaluerede propylenglycol (E 1520) i 2018 og fastsatte en ADI på 25 mg/kg legemsvægt/dag. Forgiftningstilfælde er beskrevet ved intravenøs medicin med højt indhold, ikke ved fødevarer.",
+  "keyReferences": [],
+  "pubmedTerm": "propylene glycol",
+  "flags": [
+   "children_caution",
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E491",
+  "nameDa": "Sorbitanmonostearat",
+  "nameEn": "Sorbitan monostearate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Sorbitanmonostearat er en emulgator dannet af sorbitol og stearinsyre.",
+  "description": "Stoffet fremstilles ved at opvarme sorbitol, så det mister vand og danner sorbitan, som derefter forestres med stearinsyre. Sorbitanestere er fedtopløselige emulgatorer, der ofte bruges sammen med polysorbater (E432–E436). De bruges bl.a. til at stabilisere emulsioner, forhindre fedtudskillelse og som hjælpestof i tørgær. Fedtsyrerne kan stamme fra vegetabilske eller animalske kilder.",
+  "uses": "Kager og kagedekorationer, glasur og overtræk, chokolade- og slikprodukter, piskbare toppings, flødeerstatninger, tørgær og kosttilskud. Tilladt i afgrænsede kategorier med maksimumsgrænser.",
+  "health": "EFSA har angivet en ADI på 26 mg/kg legemsvægt/dag for sorbitanmonostearat. Sorbitanestere spaltes delvist i tarmen til sorbitan (et sukkeralkohol-derivat) og fedtsyrer. EFSA's gen-evaluering (2017) fastsatte ADI-værdier for gruppen og konkluderede, at eksponeringen for visse aldersgrupper — især børn med højt indtag af kager og desserter — kan overstige ADI ved de højeste brugsniveauer. Store mængder kan i dyreforsøg give diarré og forstørret lever og nyrer. Fedtsyrerne kan være af animalsk oprindelse.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 491–E 495 i 2017 og konkluderede, at der var risiko for overskridelse af ADI i nogle befolkningsgrupper ved de maksimale tilladte niveauer; Open Food Facts angiver derfor høj risiko for overeksponering. EFSA anbefalede bedre data om faktisk brug. Der er ikke fundet humane studier, der viser skadelige effekter ved normalt indtag.",
+  "keyReferences": [],
+  "pubmedTerm": "sorbitan monostearate",
+  "flags": [
+   "children_caution",
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E492",
+  "nameDa": "Sorbitantristearat",
+  "nameEn": "Sorbitan tristearate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Sorbitantristearat er en emulgator dannet af sorbitol og stearinsyre.",
+  "description": "Stoffet fremstilles ved at opvarme sorbitol, så det mister vand og danner sorbitan, som derefter forestres med stearinsyre (tre fedtsyrer pr. molekyle). Sorbitanestere er fedtopløselige emulgatorer, der ofte bruges sammen med polysorbater (E432–E436). De bruges bl.a. til at stabilisere emulsioner, forhindre fedtudskillelse og som hjælpestof i tørgær. Fedtsyrerne kan stamme fra vegetabilske eller animalske kilder.",
+  "uses": "Kager og kagedekorationer, glasur og overtræk, chokolade- og slikprodukter, piskbare toppings, flødeerstatninger, tørgær og kosttilskud. Tilladt i afgrænsede kategorier med maksimumsgrænser.",
+  "health": "Sorbitanestere spaltes delvist i tarmen til sorbitan (et sukkeralkohol-derivat) og fedtsyrer. EFSA's gen-evaluering (2017) fastsatte ADI-værdier for gruppen og konkluderede, at eksponeringen for visse aldersgrupper — især børn med højt indtag af kager og desserter — kan overstige ADI ved de højeste brugsniveauer. Store mængder kan i dyreforsøg give diarré og forstørret lever og nyrer. Fedtsyrerne kan være af animalsk oprindelse.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 491–E 495 i 2017 og konkluderede, at der var risiko for overskridelse af ADI i nogle befolkningsgrupper ved de maksimale tilladte niveauer; Open Food Facts angiver derfor høj risiko for overeksponering. EFSA anbefalede bedre data om faktisk brug. Der er ikke fundet humane studier, der viser skadelige effekter ved normalt indtag.",
+  "keyReferences": [],
+  "pubmedTerm": "sorbitan tristearate",
+  "flags": [
+   "children_caution",
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E493",
+  "nameDa": "Sorbitanmonolaurat",
+  "nameEn": "Sorbitan monolaurate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Sorbitanmonolaurat er en emulgator dannet af sorbitol og laurinsyre.",
+  "description": "Stoffet fremstilles ved at opvarme sorbitol, så det mister vand og danner sorbitan, som derefter forestres med laurinsyre. Sorbitanestere er fedtopløselige emulgatorer, der ofte bruges sammen med polysorbater (E432–E436). De bruges bl.a. til at stabilisere emulsioner, forhindre fedtudskillelse og som hjælpestof i tørgær. Fedtsyrerne kan stamme fra vegetabilske eller animalske kilder.",
+  "uses": "Kager og kagedekorationer, glasur og overtræk, chokolade- og slikprodukter, piskbare toppings, flødeerstatninger, tørgær og kosttilskud. Tilladt i afgrænsede kategorier med maksimumsgrænser.",
+  "health": "Sorbitanestere spaltes delvist i tarmen til sorbitan (et sukkeralkohol-derivat) og fedtsyrer. EFSA's gen-evaluering (2017) fastsatte ADI-værdier for gruppen og konkluderede, at eksponeringen for visse aldersgrupper — især børn med højt indtag af kager og desserter — kan overstige ADI ved de højeste brugsniveauer. Store mængder kan i dyreforsøg give diarré og forstørret lever og nyrer. Fedtsyrerne kan være af animalsk oprindelse.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 491–E 495 i 2017 og konkluderede, at der var risiko for overskridelse af ADI i nogle befolkningsgrupper ved de maksimale tilladte niveauer; Open Food Facts angiver derfor høj risiko for overeksponering. EFSA anbefalede bedre data om faktisk brug. Der er ikke fundet humane studier, der viser skadelige effekter ved normalt indtag.",
+  "keyReferences": [],
+  "pubmedTerm": "sorbitan monolaurate",
+  "flags": [
+   "children_caution",
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E494",
+  "nameDa": "Sorbitanmonooleat",
+  "nameEn": "Sorbitan monooleate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Sorbitanmonooleat er en emulgator dannet af sorbitol og oliesyre.",
+  "description": "Stoffet fremstilles ved at opvarme sorbitol, så det mister vand og danner sorbitan, som derefter forestres med oliesyre. Sorbitanestere er fedtopløselige emulgatorer, der ofte bruges sammen med polysorbater (E432–E436). De bruges bl.a. til at stabilisere emulsioner, forhindre fedtudskillelse og som hjælpestof i tørgær. Fedtsyrerne kan stamme fra vegetabilske eller animalske kilder.",
+  "uses": "Kager og kagedekorationer, glasur og overtræk, chokolade- og slikprodukter, piskbare toppings, flødeerstatninger, tørgær og kosttilskud. Tilladt i afgrænsede kategorier med maksimumsgrænser.",
+  "health": "Sorbitanestere spaltes delvist i tarmen til sorbitan (et sukkeralkohol-derivat) og fedtsyrer. EFSA's gen-evaluering (2017) fastsatte ADI-værdier for gruppen og konkluderede, at eksponeringen for visse aldersgrupper — især børn med højt indtag af kager og desserter — kan overstige ADI ved de højeste brugsniveauer. Store mængder kan i dyreforsøg give diarré og forstørret lever og nyrer. Fedtsyrerne kan være af animalsk oprindelse.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 491–E 495 i 2017 og konkluderede, at der var risiko for overskridelse af ADI i nogle befolkningsgrupper ved de maksimale tilladte niveauer; Open Food Facts angiver derfor høj risiko for overeksponering. EFSA anbefalede bedre data om faktisk brug. Der er ikke fundet humane studier, der viser skadelige effekter ved normalt indtag.",
+  "keyReferences": [],
+  "pubmedTerm": "sorbitan monooleate",
+  "flags": [
+   "children_caution",
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E495",
+  "nameDa": "Sorbitanmonopalmitat",
+  "nameEn": "Sorbitan monopalmitate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Sorbitanmonopalmitat er en emulgator dannet af sorbitol og palmitinsyre.",
+  "description": "Stoffet fremstilles ved at opvarme sorbitol, så det mister vand og danner sorbitan, som derefter forestres med palmitinsyre. Sorbitanestere er fedtopløselige emulgatorer, der ofte bruges sammen med polysorbater (E432–E436). De bruges bl.a. til at stabilisere emulsioner, forhindre fedtudskillelse og som hjælpestof i tørgær. Fedtsyrerne kan stamme fra vegetabilske eller animalske kilder.",
+  "uses": "Kager og kagedekorationer, glasur og overtræk, chokolade- og slikprodukter, piskbare toppings, flødeerstatninger, tørgær og kosttilskud. Tilladt i afgrænsede kategorier med maksimumsgrænser.",
+  "health": "Sorbitanestere spaltes delvist i tarmen til sorbitan (et sukkeralkohol-derivat) og fedtsyrer. EFSA's gen-evaluering (2017) fastsatte ADI-værdier for gruppen og konkluderede, at eksponeringen for visse aldersgrupper — især børn med højt indtag af kager og desserter — kan overstige ADI ved de højeste brugsniveauer. Store mængder kan i dyreforsøg give diarré og forstørret lever og nyrer. Fedtsyrerne kan være af animalsk oprindelse.",
+  "research": "EFSA's ANS-panel gen-evaluerede E 491–E 495 i 2017 og konkluderede, at der var risiko for overskridelse af ADI i nogle befolkningsgrupper ved de maksimale tilladte niveauer; Open Food Facts angiver derfor høj risiko for overeksponering. EFSA anbefalede bedre data om faktisk brug. Der er ikke fundet humane studier, der viser skadelige effekter ved normalt indtag.",
+  "keyReferences": [],
+  "pubmedTerm": "sorbitan monopalmitate",
+  "flags": [
+   "children_caution",
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E496",
+  "nameDa": "Sorbitantrioleat",
+  "nameEn": "Sorbitan trioleate",
+  "category": "Emulgator",
+  "euStatus": "not_approved",
+  "origin": "mixed",
+  "summary": "Sorbitantrioleat er en sorbitanester med tre oliesyrer; den har et INS-nummer, men står ikke på EU's liste over tilladte tilsætningsstoffer.",
+  "description": "Stoffet fremstilles som de øvrige sorbitanestere ved forestring af sorbitan med oliesyre. Det er meget fedtopløseligt og anvendes mest i kosmetik, lægemidler og industrien.",
+  "uses": "Ikke tilladt i fødevarer i EU.",
+  "health": "Der findes kun begrænsede data om stoffet i fødevarer. Det forventes at opføre sig som de øvrige sorbitanestere (E491–E495).",
+  "research": "Der er ingen EFSA-vurdering af stoffet som fødevaretilsætning og ingen nyere forskning af betydning.",
+  "keyReferences": [],
+  "pubmedTerm": "sorbitan trioleate",
+  "flags": []
+ },
+ {
+  "code": "E500",
+  "nameDa": "Natriumcarbonater",
+  "nameEn": "Sodium carbonates",
+  "category": "Hævemiddel / surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Natriumcarbonater er salte af kulsyre og natrium; den mest kendte er natron (natriumhydrogencarbonat), der bruges som hævemiddel.",
+  "description": "Varianten (i) er soda (natriumcarbonat), (ii) er natron/tvekulsurt natron (natriumhydrogencarbonat) og (iii) er natriumsesquicarbonat, en blanding af de to. De fremstilles industrielt via Solvay-processen ud fra salt og kalksten eller udvindes fra mineralet trona. Natron frigiver kuldioxid ved kontakt med syre eller varme og får derved dej til at hæve; det er hovedbestanddelen i bagepulver. Soda bruges som surhedsregulerende middel, fx i ramen-nudler og ved behandling af kakao.",
+  "uses": "Bagepulver og natron, kager, kiks og brød, pandekager, ramen/nudler, kakao (alkaliseret), brusetabletter og antacida. Tilladt quantum satis.",
+  "health": "I normale mængder er natriumcarbonater uskadelige; hydrogencarbonat dannes også naturligt i kroppen. Store mængder natron (fx brugt som husråd mod halsbrand) kan give alkalose og bidrager med natrium, hvilket er relevant for personer med forhøjet blodtryk eller nyre- og hjertesygdom. Stoffet er optaget i EU's liste med 'ADI ikke specificeret', da det indgår i kroppens normale stofskifte.",
+  "research": "EFSA's ANS-panel har gen-evalueret natrium-, kalium- og magnesiumcarbonater og fundet, at de ikke giver anledning til sikkerhedsbekymring ved brug som tilsætningsstof. Natriumbicarbonat undersøges i klinisk forskning, bl.a. til behandling af metabolisk acidose ved kronisk nyresygdom og som præstationsfremmende middel i sport.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium bicarbonate",
+  "flags": [
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E501",
+  "nameDa": "Kaliumcarbonater",
+  "nameEn": "Potassium carbonates",
+  "category": "Surhedsregulerende middel / hævemiddel / stabilisator",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Kaliumcarbonater er salte af kulsyre og kalium, bl.a. potaske, der bruges i traditionelt julebag.",
+  "description": "Varianten (i) er kaliumcarbonat (potaske) og (ii) er kaliumhydrogencarbonat. De fremstilles industrielt ved at lade kaliumhydroxid reagere med kuldioxid; historisk blev potaske udvundet af træaske. Potaske bruges som hævemiddel i tunge, honningholdige dejer som brunkager og pebernødder, og som surhedsregulerende middel i kakao og visse nudler. Kaliumhydrogencarbonat bruges som natriumfrit alternativ til natron.",
+  "uses": "Brunkager, honningkager og pebernødder, alkaliseret kakao, natriumreduceret bagepulver, vin (afsyring), sodavand og mineralvand. Tilladt quantum satis.",
+  "health": "I normale mængder er kaliumcarbonater uskadelige. Personer med nedsat nyrefunktion eller som tager kaliumbesparende medicin bør være opmærksomme på det samlede kaliumindtag, men bidraget fra tilsætningsstoffet er lille. Koncentreret potaske er ætsende og skal opbevares utilgængeligt for børn. Stoffet er optaget i EU's liste med 'ADI ikke specificeret', da det indgår i kroppens normale stofskifte.",
+  "research": "EFSA har gen-evalueret carbonaterne uden at finde sikkerhedsbekymring. Der er ikke fundet forskning, der rejser nye spørgsmål ved brug i fødevarer.",
+  "keyReferences": [],
+  "pubmedTerm": "potassium carbonate",
+  "flags": [
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E502",
+  "nameDa": "Carbonater",
+  "nameEn": "Carbonates",
+  "category": "Surhedsregulerende middel",
+  "euStatus": "not_approved",
+  "origin": "mixed",
+  "summary": "E502 er en gammel samlebetegnelse for carbonater, som ikke bruges i den gældende EU-liste.",
+  "description": "Carbonater er salte af kulsyre. I EU er de i stedet angivet med specifikke numre: E500 (natrium), E501 (kalium), E503 (ammonium) og E504 (magnesium) samt E170 (calciumcarbonat). E502 optræder derfor næppe på danske varedeklarationer.",
+  "uses": "Se E500, E501, E503, E504 og E170.",
+  "health": "Sikkerheden afhænger af det konkrete carbonat; se de enkelte numre.",
+  "research": "Der findes ingen selvstændig vurdering af E502 som tilsætningsstof.",
+  "keyReferences": [],
+  "pubmedTerm": "carbonates",
+  "flags": []
+ },
+ {
+  "code": "E503",
+  "nameDa": "Ammoniumcarbonater",
+  "nameEn": "Ammonium carbonates",
+  "category": "Hævemiddel / surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Ammoniumcarbonater er hævemidler; ammoniumhydrogencarbonat kendes i Danmark som hjortetakssalt.",
+  "description": "Varianten (i) er ammoniumcarbonat og (ii) ammoniumhydrogencarbonat. De fremstilles ved at lade ammoniak reagere med kuldioxid og vand. Ved opvarmning nedbrydes stofferne fuldstændigt til kuldioxid, ammoniak og vand, som fordamper, så der ikke efterlades salt i produktet. Det giver et meget sprødt resultat i tørre, flade bagværker, hvor ammoniakken kan slippe ud.",
+  "uses": "Vaniljekranse, klejner, finske brød, knækbrød og andre sprøde småkager. Tilladt quantum satis.",
+  "health": "Ved bagning fordamper stoffet næsten helt, så restmængden i det færdige produkt er lille. I tykke eller fugtige bagværker kan der blive en ubehagelig ammoniaksmag. Håndtering af hjortetakssalt kan irritere øjne og luftveje på grund af ammoniakdampe. Stoffet er optaget i EU's liste med 'ADI ikke specificeret', da det indgår i kroppens normale stofskifte.",
+  "research": "EFSA har ikke rejst sikkerhedsbekymringer ved brug af ammoniumcarbonater som tilsætningsstof. Der er ikke fundet nyere forskning af betydning.",
+  "keyReferences": [],
+  "pubmedTerm": "ammonium bicarbonate",
+  "flags": []
+ },
+ {
+  "code": "E504",
+  "nameDa": "Magnesiumcarbonater",
+  "nameEn": "Magnesium carbonates",
+  "category": "Surhedsregulerende middel / antiklumpningsmiddel / bærestof",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Magnesiumcarbonater er hvide mineralsalte, der bruges som antiklumpningsmiddel og surhedsregulerende middel.",
+  "description": "Varianten (i) er magnesiumcarbonat og (ii) magnesiumhydroxidcarbonat (basisk magnesiumcarbonat). De udvindes fra mineralet magnesit eller fremstilles kemisk ud fra magnesiumsalte og carbonater. Pulveret binder fugt og holder salt og pulvere fritflydende; det bruges også som magnesiumkilde i kosttilskud og i antacida.",
+  "uses": "Bordsalt, kakao og pulverprodukter, kosttilskud, tyggegummi og slik, mel (visse typer). Tilladt quantum satis.",
+  "health": "Magnesiumcarbonat er ugiftigt i normale mængder. Store mængder magnesium kan virke afførende, og personer med svært nedsat nyrefunktion bør være forsigtige med magnesium fra fx kosttilskud. Stoffet er optaget i EU's liste med 'ADI ikke specificeret', da det indgår i kroppens normale stofskifte.",
+  "research": "EFSA har gen-evalueret carbonaterne uden at finde sikkerhedsbekymring ved brug som tilsætningsstof. Der er ikke fundet nyere forskning, der rejser nye spørgsmål.",
+  "keyReferences": [],
+  "pubmedTerm": "magnesium carbonate",
+  "flags": [
+   "laxative",
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E505",
+  "nameDa": "Jern(II)carbonat",
+  "nameEn": "Ferrous carbonate",
+  "category": "Surhedsregulerende middel",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Jern(II)carbonat er et jernsalt af kulsyre, som har et INS-nummer, men ikke er godkendt som tilsætningsstof i EU.",
+  "description": "Stoffet findes naturligt som mineralet siderit og kan fremstilles ved fældning af jern(II)salte med carbonat. Det har været brugt som jernkilde i kosttilskud og foder, men det optages relativt dårligt. Det står ikke på EU's liste over tilsætningsstoffer.",
+  "uses": "Ikke tilladt som tilsætningsstof i EU.",
+  "health": "Jern er et vigtigt næringsstof, men for store mængder kan være skadelige, især for små børn, hvor jernforgiftning fra tabletter er en kendt risiko. Der er begrænsede data om stoffet som fødevaretilsætning.",
+  "research": "Der er ingen EFSA-vurdering af stoffet som fødevaretilsætning.",
+  "keyReferences": [],
+  "pubmedTerm": "ferrous carbonate",
+  "flags": []
+ },
+ {
+  "code": "E507",
+  "nameDa": "Saltsyre",
+  "nameEn": "Hydrochloric acid",
+  "category": "Surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Saltsyre er en stærk syre, som i fødevareindustrien bruges til at regulere surhedsgraden og som hjælpestof i produktionen.",
+  "description": "Saltsyre er en opløsning af hydrogenchlorid i vand og fremstilles industrielt, bl.a. som biprodukt fra klorproduktion. Den bruges til syrehydrolyse, fx ved fremstilling af glukosesirup og hydrolyseret vegetabilsk protein, og til at justere pH. Ved efterfølgende neutralisering dannes almindeligt salt (natriumchlorid). Kroppen producerer selv saltsyre i mavesækken.",
+  "uses": "Hjælpestof ved produktion af glukosesirup, stivelsesprodukter og proteinhydrolysater; justering af pH i drikkevarer og konserves. Tilladt quantum satis.",
+  "health": "I de færdige fødevarer er saltsyren neutraliseret og uden sundhedsmæssig betydning. Koncentreret saltsyre er stærkt ætsende. Ved syrehydrolyse af proteiner kan der dannes 3-MCPD, som der er grænseværdier for. EFSA fandt i 2019 ingen behov for en numerisk ADI.",
+  "research": "EFSA's FAF-panel gen-evaluerede i 2019 saltsyre (E 507), kaliumchlorid (E 508), calciumchlorid (E 509) og magnesiumchlorid (E 511) og konkluderede, at der ikke er behov for en numerisk ADI og ingen sikkerhedsbekymring ved de rapporterede anvendelser. Open Food Facts angiver moderat risiko for overeksponering, hvilket især afspejler, at bidraget til det samlede mineralindtag bør ses i sammenhæng med kosten.",
+  "keyReferences": [],
+  "pubmedTerm": "hydrochloric acid",
+  "flags": []
+ },
+ {
+  "code": "E508",
+  "nameDa": "Kaliumchlorid",
+  "nameEn": "Potassium chloride",
+  "category": "Stabilisator / fortykningsmiddel / smagsforstærker",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Kaliumchlorid er et mineralsalt, der især bruges som delvis erstatning for almindeligt salt.",
+  "description": "Stoffet udvindes fra naturlige saltforekomster (sylvin) eller fra saltsøer og havvand. Det smager salt, men med en let bitter eller metallisk eftersmag. Det bruges i natriumreducerede salte (fx 'mineralsalt'), som geleringshjælp sammen med carrageenan og som kaliumkilde i kosttilskud.",
+  "uses": "Mineralsalt og natriumreduceret salt, suppeterninger og krydderiblandinger, snacks, pålæg, færdigretter, sportsdrikke. Tilladt quantum satis.",
+  "health": "For de fleste er kaliumchlorid som saltalternativ en fordel, fordi det sænker natriumindtaget. Personer med nedsat nyrefunktion, hjertesvigt eller som tager kaliumbesparende medicin (fx ACE-hæmmere, spironolacton) kan dog få for højt kalium i blodet (hyperkaliæmi) og bør tale med lægen før brug af saltalternativer. EFSA fandt i 2019 ingen behov for en numerisk ADI.",
+  "research": "EFSA's FAF-panel gen-evaluerede i 2019 saltsyre (E 507), kaliumchlorid (E 508), calciumchlorid (E 509) og magnesiumchlorid (E 511) og konkluderede, at der ikke er behov for en numerisk ADI og ingen sikkerhedsbekymring ved de rapporterede anvendelser. Open Food Facts angiver moderat risiko for overeksponering, hvilket især afspejler, at bidraget til det samlede mineralindtag bør ses i sammenhæng med kosten. Et stort randomiseret studie i Kina (SSaSS, Neal et al., NEJM 2021) viste, at erstatning af salt med en kaliumholdig saltblanding reducerede slagtilfælde, hjerte-kar-hændelser og død.",
+  "keyReferences": [
+   {
+    "citation": "Neal B et al. Effect of Salt Substitution on Cardiovascular Events and Death. New England Journal of Medicine. 2021.",
+    "searchTitle": "Effect of Salt Substitution on Cardiovascular Events and Death"
+   }
+  ],
+  "pubmedTerm": "potassium chloride",
+  "flags": [
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E509",
+  "nameDa": "Calciumchlorid",
+  "nameEn": "Calcium chloride",
+  "category": "Stabilisator / fortykningsmiddel / koaguleringsmiddel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Calciumchlorid er et mineralsalt, der bruges til at gøre grøntsager faste og til osteproduktion og tofu.",
+  "description": "Stoffet fremstilles som biprodukt af Solvay-processen eller ved at lade calciumcarbonat reagere med saltsyre. Calcium binder sig til pektin i frugt og grønt og holder dem faste under konservering. I osteproduktion tilsættes det mælken for at forbedre løbens koagulering, og det kan bruges som koaguleringsmiddel i tofu. Det bruges også i 'spherification' i molekylær gastronomi sammen med alginat.",
+  "uses": "Konserverede grøntsager (fx tomater, bønner, syltede agurker), ost, tofu, øl (bryggevand), sportsdrikke og mineralvand. Tilladt quantum satis.",
+  "health": "Calciumchlorid er uskadeligt i de anvendte mængder og bidrager med calcium til kosten. Koncentrerede opløsninger kan irritere mund og mave. EFSA fandt i 2019 ingen behov for en numerisk ADI.",
+  "research": "EFSA's FAF-panel gen-evaluerede i 2019 saltsyre (E 507), kaliumchlorid (E 508), calciumchlorid (E 509) og magnesiumchlorid (E 511) og konkluderede, at der ikke er behov for en numerisk ADI og ingen sikkerhedsbekymring ved de rapporterede anvendelser. Open Food Facts angiver moderat risiko for overeksponering, hvilket især afspejler, at bidraget til det samlede mineralindtag bør ses i sammenhæng med kosten.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium chloride",
+  "flags": []
+ },
+ {
+  "code": "E510",
+  "nameDa": "Ammoniumchlorid",
+  "nameEn": "Ammonium chloride",
+  "category": "Surhedsregulerende middel / smagsstof",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Ammoniumchlorid (salmiak) giver den karakteristiske skarpe smag i salmiaklakrids, men er ikke på EU's liste over tilsætningsstoffer.",
+  "description": "Stoffet fremstilles ved at lade ammoniak reagere med saltsyre eller som biprodukt af Solvay-processen. Det har tidligere været brugt som gærnæring og dejforbedrer. I EU bruges det i dag i salmiakprodukter under reglerne for aromaer/fødevareingredienser snarere end som E-nummer, og det deklareres typisk som 'salmiak' eller 'ammoniumchlorid'.",
+  "uses": "Salmiaklakrids, salmiakpastiller og -likør (især i Norden og Nederlandene); hostemedicin.",
+  "health": "Ammoniumchlorid virker syredannende i kroppen. Store mængder kan give kvalme, opkast og syreophobning, og det kan være en belastning for personer med nedsat nyre- eller leverfunktion. Salmiaklakrids indeholder desuden ofte glycyrrhizin fra lakrids, som kan hæve blodtrykket ved højt forbrug. Små børn bør ikke få store mængder stærk salmiak.",
+  "research": "Der er ingen EFSA-vurdering af ammoniumchlorid som fødevaretilsætning; JECFA har tidligere vurderet stoffet. Nordiske fødevaremyndigheder har drøftet grænser for indholdet i salmiakslik.",
+  "keyReferences": [],
+  "pubmedTerm": "ammonium chloride",
+  "flags": [
+   "children_caution",
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E511",
+  "nameDa": "Magnesiumchlorid",
+  "nameEn": "Magnesium chloride",
+  "category": "Stabilisator / koaguleringsmiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Magnesiumchlorid er et mineralsalt, bl.a. kendt som nigari, der bruges til at koagulere sojamælk til tofu.",
+  "description": "Stoffet udvindes fra havvand, saltlage eller mineralforekomster. Magnesiumionerne får sojaproteinerne til at klumpe sammen, så der dannes tofu. Det bruges også som fasthedsgivende middel og som magnesiumkilde i kosttilskud og mineralvand.",
+  "uses": "Tofu, sojaprodukter, kosttilskud, mineralvand og visse konserverede grøntsager. Tilladt quantum satis.",
+  "health": "I normale mængder er magnesiumchlorid uskadeligt. Store doser magnesium (fx fra kosttilskud) kan virke afførende, og personer med svært nedsat nyrefunktion bør være forsigtige med magnesium. EFSA fandt i 2019 ingen behov for en numerisk ADI.",
+  "research": "EFSA's FAF-panel gen-evaluerede i 2019 saltsyre (E 507), kaliumchlorid (E 508), calciumchlorid (E 509) og magnesiumchlorid (E 511) og konkluderede, at der ikke er behov for en numerisk ADI og ingen sikkerhedsbekymring ved de rapporterede anvendelser. Open Food Facts angiver moderat risiko for overeksponering, hvilket især afspejler, at bidraget til det samlede mineralindtag bør ses i sammenhæng med kosten.",
+  "keyReferences": [],
+  "pubmedTerm": "magnesium chloride",
+  "flags": [
+   "laxative",
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E512",
+  "nameDa": "Tin(II)chlorid",
+  "nameEn": "Stannous chloride",
+  "category": "Antioxidant / farvestabilisator",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Tin(II)chlorid er et tinsalt, der i EU kun må bruges i konserverede hvide asparges for at bevare den lyse farve.",
+  "description": "Stoffet fremstilles ved at lade tin reagere med saltsyre. Det virker som reduktionsmiddel og antioxidant og forhindrer misfarvning af asparges i dåser. Anvendelsen er i EU begrænset til konserverede og henkogte hvide asparges med en maksimal mængde på 25 mg/kg (som tin).",
+  "uses": "Kun dåse- og glaskonserverede hvide asparges.",
+  "health": "Uorganisk tin optages dårligt, men store mængder (fra fx ulakerede dåser) kan give kvalme, opkast og diarré. Det tilladte niveau er fastsat lavt for at undgå sådanne gener. Stoffet har kun ubetydelig betydning for det samlede tinindtag.",
+  "research": "EFSA har vurderet tin i fødevarer (bl.a. 2005) og har inkluderet E 512 i gen-evalueringsprogrammet. Der er ikke fundet nyere forskning, der ændrer vurderingen.",
+  "keyReferences": [],
+  "pubmedTerm": "stannous chloride",
+  "flags": []
+ },
+ {
+  "code": "E513",
+  "nameDa": "Svovlsyre",
+  "nameEn": "Sulphuric acid",
+  "category": "Surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Svovlsyre er en stærk syre, der i fødevareindustrien bruges som hjælpestof til at regulere pH.",
+  "description": "Svovlsyre fremstilles industrielt ved kontaktprocessen, hvor svovldioxid oxideres til svovltrioxid og opløses i vand. I fødevareproduktion bruges den især til pH-justering, fx ved fremstilling af stivelsesprodukter og i visse drikkevarer. Den neutraliseres normalt, så der kun er sulfater tilbage i det færdige produkt.",
+  "uses": "Hjælpestof i stivelses- og sukkerproduktion, pH-justering af vand og drikkevarer. Tilladt quantum satis.",
+  "health": "I fødevarer er mængderne meget små og normalt neutraliseret, og stoffet har ingen kendt sundhedsmæssig betydning i denne form. Koncentreret svovlsyre er stærkt ætsende.",
+  "research": "EFSA har ikke rejst bekymringer ved brug som tilsætningsstof. Der findes ingen relevant nyere forskning om svovlsyre som fødevaretilsætning.",
+  "keyReferences": [],
+  "pubmedTerm": "sulfuric acid",
+  "flags": []
+ },
+ {
+  "code": "E514",
+  "nameDa": "Natriumsulfater",
+  "nameEn": "Sodium sulphates",
+  "category": "Surhedsregulerende middel / bærestof",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Natriumsulfater er salte af svovlsyre og natrium, der bruges som bærestof og surhedsregulerende middel.",
+  "description": "Varianten (i) er natriumsulfat (glaubersalt) og (ii) natriumhydrogensulfat. Natriumsulfat udvindes fra naturlige mineraler eller fremstilles som biprodukt fra kemisk industri. Det bruges især som bærestof for farvestoffer og aromaer, mens natriumhydrogensulfat bruges som syrningsmiddel.",
+  "uses": "Bærestof i farvestoffer og aromaer; kan forekomme i slik, drikkevarer og tyggegummi.",
+  "health": "Sulfater optages kun delvist i tarmen, og store mængder virker afførende. I de mængder, der bruges som tilsætningsstof, anses de for uskadelige. Glaubersalt er historisk brugt som afføringsmiddel.",
+  "research": "EFSA's gen-evaluering af sulfater (E 514–E 517) har ikke vist sikkerhedsproblemer ved brug som tilsætningsstof. Der findes ikke relevant nyere forskning.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium sulfate",
+  "flags": [
+   "laxative"
+  ]
+ },
+ {
+  "code": "E515",
+  "nameDa": "Kaliumsulfater",
+  "nameEn": "Potassium sulphates",
+  "category": "Surhedsregulerende middel / saltsubstitut",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Kaliumsulfater er salte af svovlsyre og kalium, der bl.a. bruges i saltsubstitutter.",
+  "description": "Varianten (i) er kaliumsulfat og (ii) kaliumhydrogensulfat. Kaliumsulfat udvindes fra mineraler eller fremstilles af kaliumchlorid og svovlsyre. Det har en saltagtig, lidt bitter smag og bruges i begrænset omfang som saltsubstitut og surhedsregulerende middel.",
+  "uses": "Saltsubstitutter, visse drikkevarer; sjældent anvendt.",
+  "health": "Sulfater optages kun delvist i tarmen, og store mængder virker afførende. I de mængder, der bruges som tilsætningsstof, anses de for uskadelige. Personer med nedsat nyrefunktion bør være opmærksomme på kaliumholdige saltsubstitutter.",
+  "research": "EFSA's gen-evaluering af sulfater har ikke vist sikkerhedsproblemer ved brug som tilsætningsstof.",
+  "keyReferences": [],
+  "pubmedTerm": "potassium sulfate",
+  "flags": [
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E516",
+  "nameDa": "Calciumsulfat",
+  "nameEn": "Calcium sulphate",
+  "category": "Koaguleringsmiddel / stabilisator / bærestof",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Calciumsulfat er gips — et mineralsalt, der bruges til at koagulere tofu og som calciumkilde og melbehandlingsmiddel.",
+  "description": "Stoffet udvindes fra naturlig gips eller dannes som biprodukt fra fx røggasrensning. Calcium får sojaproteiner til at koagulere og giver en blød, glat tofu. Det bruges også til at justere mineralindholdet i bryggevand, som bærestof og i bagværk.",
+  "uses": "Tofu, øl (bryggevand), bagværk og gærprodukter, konserverede grøntsager. Tilladt quantum satis.",
+  "health": "Calciumsulfat er uskadeligt i de anvendte mængder og bidrager med calcium til kosten. Sulfater optages kun delvist i tarmen, og store mængder virker afførende. I de mængder, der bruges som tilsætningsstof, anses de for uskadelige.",
+  "research": "EFSA's gen-evaluering af sulfater har ikke vist sikkerhedsproblemer ved brug som tilsætningsstof.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium sulfate",
+  "flags": []
+ },
+ {
+  "code": "E517",
+  "nameDa": "Ammoniumsulfat",
+  "nameEn": "Ammonium sulphate",
+  "category": "Melbehandlingsmiddel / stabilisator / bærestof",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Ammoniumsulfat er et salt, der bruges som gærnæring og melbehandlingsmiddel.",
+  "description": "Stoffet fremstilles ved at lade ammoniak reagere med svovlsyre og er også et biprodukt fra kemisk industri. Det giver gæren kvælstof og kan fremme gæringen i dej. Det bruges også som bærestof og i gødning.",
+  "uses": "Brød og bagværk (gærnæring), bærestof i visse tilsætningsstofblandinger.",
+  "health": "Ammoniumsulfat er uskadeligt i de anvendte mængder. Sulfater optages kun delvist i tarmen, og store mængder virker afførende. I de mængder, der bruges som tilsætningsstof, anses de for uskadelige.",
+  "research": "EFSA's gen-evaluering af sulfater har ikke vist sikkerhedsproblemer ved brug som tilsætningsstof.",
+  "keyReferences": [],
+  "pubmedTerm": "ammonium sulfate",
+  "flags": []
+ },
+ {
+  "code": "E518",
+  "nameDa": "Magnesiumsulfat",
+  "nameEn": "Magnesium sulphate",
+  "category": "Koaguleringsmiddel / stabilisator",
+  "euStatus": "not_approved",
+  "origin": "natural",
+  "summary": "Magnesiumsulfat (bittersalt, Epsom-salt) er et mineralsalt, der har et INS-nummer, men ikke står på EU's liste over tilsætningsstoffer.",
+  "description": "Stoffet udvindes fra mineralforekomster eller saltvand. Det kan bruges som koaguleringsmiddel i tofu, i bryggevand og som magnesiumkilde. I EU må magnesiumsulfat anvendes som mineralkilde i kosttilskud og berigede fødevarer, men ikke med E-nummeret E518.",
+  "uses": "Kosttilskud og berigede fødevarer (som næringsstof); bryggevand. Bruges også som badesalt og afføringsmiddel.",
+  "health": "Magnesiumsulfat er et velkendt afføringsmiddel, og større mængder giver diarré. Personer med svært nedsat nyrefunktion bør undgå store mængder magnesium.",
+  "research": "Stoffet er godt undersøgt som lægemiddel, bl.a. mod svangerskabsforgiftning (eklampsi), men der er ingen EFSA-vurdering af det som tilsætningsstof.",
+  "keyReferences": [],
+  "pubmedTerm": "magnesium sulfate",
+  "flags": [
+   "laxative",
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E519",
+  "nameDa": "Kobber(II)sulfat",
+  "nameEn": "Copper sulphate",
+  "category": "Konserveringsmiddel / farvestabilisator",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Kobbersulfat er et blåt kobbersalt, som ikke er godkendt som tilsætningsstof i fødevarer i EU.",
+  "description": "Stoffet fremstilles ved at lade kobber eller kobberoxid reagere med svovlsyre. Det har været brugt til at bevare den grønne farve i grøntsager og som svampemiddel i landbruget. I EU er det ikke tilladt som fødevaretilsætningsstof, men kan bruges som kobberkilde i kosttilskud og foder.",
+  "uses": "Ikke tilladt som tilsætningsstof i EU.",
+  "health": "Kobber er et nødvendigt sporstof, men kobbersulfat er giftigt i større mængder og kan give opkast, mavesmerter og lever- og nyreskade. EFSA har fastsat en ADI for kobber på 0,07 mg/kg legemsvægt/dag (2023). Personer med Wilsons sygdom bør undgå ekstra kobber.",
+  "research": "EFSA vurderede i 2023 kobber samlet på tværs af anvendelser og fastsatte en ADI på 0,07 mg/kg legemsvægt/dag. Der er ingen vurdering af E519 som tilsætningsstof.",
+  "keyReferences": [],
+  "pubmedTerm": "copper sulfate",
+  "flags": [
+   "children_caution"
+  ]
+ },
+ {
+  "code": "E520",
+  "nameDa": "Aluminiumsulfat",
+  "nameEn": "Aluminium sulphate",
+  "category": "Stabilisator / fasthedsgivende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Aluminiumsulfat er et aluminiumholdigt salt (aluminiumsulfat), som i EU kun må bruges i få fødevarer.",
+  "description": "Stoffet fremstilles ved at lade aluminiumhydroxid eller bauxit reagere med svovlsyre. Aluminiumionerne stabiliserer proteinskum og gør frugt- og grøntsagsvæv fastere. Anvendelsen er efter EU's stramninger begrænset til flydende æggehvide og kandiserede frugter og grøntsager.",
+  "uses": "I EU kun tilladt i få kategorier: flydende æggehvide og kandiserede/glaserede frugter og grøntsager (maks. 30 mg/kg som aluminium).",
+  "health": "Aluminium optages kun i små mængder, men kan ophobe sig i kroppen, især hos personer med nedsat nyrefunktion. EFSA har fastsat et tolerabelt ugentligt indtag (TWI) på 1 mg aluminium/kg legemsvægt/uge (2008), og en betydelig del af befolkningen, især børn, kan overskride dette fra alle kilder samlet. Aluminium er i dyreforsøg vist at kunne påvirke nervesystem og forplantning; en sammenhæng med Alzheimers sygdom er foreslået, men ikke påvist.",
+  "research": "EFSA's AFC-panel vurderede aluminium fra alle kilder i 2008 og sænkede det tolerable indtag til 1 mg/kg legemsvægt/uge. På den baggrund strammede EU i 2012–2014 reglerne for aluminiumholdige tilsætningsstoffer betydeligt. Den mulige sammenhæng mellem aluminium og neurodegenerative sygdomme er fortsat et åbent forskningsspørgsmål.",
+  "keyReferences": [],
+  "pubmedTerm": "aluminium sulfate",
+  "flags": [
+   "children_caution",
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E521",
+  "nameDa": "Aluminiumnatriumsulfat",
+  "nameEn": "Aluminium sodium sulphate",
+  "category": "Stabilisator / fasthedsgivende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Aluminiumnatriumsulfat er et aluminiumholdigt salt (alun), som i EU kun må bruges i få fødevarer.",
+  "description": "Stoffet fremstilles ved at lade aluminiumhydroxid eller bauxit reagere med svovlsyre og et natriumsalt. Aluminiumionerne stabiliserer proteinskum og gør frugt- og grøntsagsvæv fastere. Anvendelsen er efter EU's stramninger begrænset til flydende æggehvide og kandiserede frugter og grøntsager.",
+  "uses": "I EU kun tilladt i få kategorier: flydende æggehvide og kandiserede/glaserede frugter og grøntsager (maks. 30 mg/kg som aluminium).",
+  "health": "Aluminium optages kun i små mængder, men kan ophobe sig i kroppen, især hos personer med nedsat nyrefunktion. EFSA har fastsat et tolerabelt ugentligt indtag (TWI) på 1 mg aluminium/kg legemsvægt/uge (2008), og en betydelig del af befolkningen, især børn, kan overskride dette fra alle kilder samlet. Aluminium er i dyreforsøg vist at kunne påvirke nervesystem og forplantning; en sammenhæng med Alzheimers sygdom er foreslået, men ikke påvist.",
+  "research": "EFSA's AFC-panel vurderede aluminium fra alle kilder i 2008 og sænkede det tolerable indtag til 1 mg/kg legemsvægt/uge. På den baggrund strammede EU i 2012–2014 reglerne for aluminiumholdige tilsætningsstoffer betydeligt. Den mulige sammenhæng mellem aluminium og neurodegenerative sygdomme er fortsat et åbent forskningsspørgsmål.",
+  "keyReferences": [],
+  "pubmedTerm": "aluminium sodium sulfate",
+  "flags": [
+   "children_caution",
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E522",
+  "nameDa": "Aluminiumkaliumsulfat",
+  "nameEn": "Aluminium potassium sulphate",
+  "category": "Stabilisator / fasthedsgivende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Aluminiumkaliumsulfat er et aluminiumholdigt salt (alun), som i EU kun må bruges i få fødevarer.",
+  "description": "Stoffet fremstilles ved at lade aluminiumhydroxid eller bauxit reagere med svovlsyre og et kaliumsalt. Aluminiumionerne stabiliserer proteinskum og gør frugt- og grøntsagsvæv fastere. Anvendelsen er efter EU's stramninger begrænset til flydende æggehvide og kandiserede frugter og grøntsager.",
+  "uses": "I EU kun tilladt i få kategorier: flydende æggehvide og kandiserede/glaserede frugter og grøntsager (maks. 30 mg/kg som aluminium).",
+  "health": "Aluminium optages kun i små mængder, men kan ophobe sig i kroppen, især hos personer med nedsat nyrefunktion. EFSA har fastsat et tolerabelt ugentligt indtag (TWI) på 1 mg aluminium/kg legemsvægt/uge (2008), og en betydelig del af befolkningen, især børn, kan overskride dette fra alle kilder samlet. Aluminium er i dyreforsøg vist at kunne påvirke nervesystem og forplantning; en sammenhæng med Alzheimers sygdom er foreslået, men ikke påvist.",
+  "research": "EFSA's AFC-panel vurderede aluminium fra alle kilder i 2008 og sænkede det tolerable indtag til 1 mg/kg legemsvægt/uge. På den baggrund strammede EU i 2012–2014 reglerne for aluminiumholdige tilsætningsstoffer betydeligt. Den mulige sammenhæng mellem aluminium og neurodegenerative sygdomme er fortsat et åbent forskningsspørgsmål.",
+  "keyReferences": [],
+  "pubmedTerm": "aluminium potassium sulfate",
+  "flags": [
+   "children_caution",
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E523",
+  "nameDa": "Aluminiumammoniumsulfat",
+  "nameEn": "Aluminium ammonium sulphate",
+  "category": "Stabilisator / fasthedsgivende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Aluminiumammoniumsulfat er et aluminiumholdigt salt (alun), som i EU kun må bruges i få fødevarer.",
+  "description": "Stoffet fremstilles ved at lade aluminiumhydroxid eller bauxit reagere med svovlsyre og et ammoniumsalt. Aluminiumionerne stabiliserer proteinskum og gør frugt- og grøntsagsvæv fastere. Anvendelsen er efter EU's stramninger begrænset til flydende æggehvide og kandiserede frugter og grøntsager.",
+  "uses": "I EU kun tilladt i få kategorier: flydende æggehvide og kandiserede/glaserede frugter og grøntsager (maks. 30 mg/kg som aluminium).",
+  "health": "Aluminium optages kun i små mængder, men kan ophobe sig i kroppen, især hos personer med nedsat nyrefunktion. EFSA har fastsat et tolerabelt ugentligt indtag (TWI) på 1 mg aluminium/kg legemsvægt/uge (2008), og en betydelig del af befolkningen, især børn, kan overskride dette fra alle kilder samlet. Aluminium er i dyreforsøg vist at kunne påvirke nervesystem og forplantning; en sammenhæng med Alzheimers sygdom er foreslået, men ikke påvist.",
+  "research": "EFSA's AFC-panel vurderede aluminium fra alle kilder i 2008 og sænkede det tolerable indtag til 1 mg/kg legemsvægt/uge. På den baggrund strammede EU i 2012–2014 reglerne for aluminiumholdige tilsætningsstoffer betydeligt. Den mulige sammenhæng mellem aluminium og neurodegenerative sygdomme er fortsat et åbent forskningsspørgsmål.",
+  "keyReferences": [],
+  "pubmedTerm": "aluminium ammonium sulfate",
+  "flags": [
+   "children_caution",
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E524",
+  "nameDa": "Natriumhydroxid",
+  "nameEn": "Sodium hydroxide",
+  "category": "Surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Natriumhydroxid (kaustisk soda, lud) er en stærk base, der bruges til at regulere surhedsgrad og behandle visse fødevarer.",
+  "description": "Stoffet fremstilles ved elektrolyse af saltvand (chloralkali-processen). I fødevareproduktion bruges det til at neutralisere syrer, skrælle frugt og grøntsager kemisk, alkalisere kakao og behandle oliven. Det bruges også til at give kringler og laugenbrød deres brune, blanke skorpe og til den traditionelle norske lutefisk.",
+  "uses": "Laugenbrød og kringler, sorte oliven, alkaliseret kakao, lutefisk, mandariner i dåse (skrælning), neutralisering i diverse produkter. Tilladt quantum satis.",
+  "health": "I de færdige fødevarer er baserne neutraliseret og uden sundhedsmæssig betydning. Det koncentrerede stof er stærkt ætsende og skal holdes utilgængeligt for børn. Stoffet er optaget i EU's liste med 'ADI ikke specificeret', da det indgår i kroppens normale stofskifte.",
+  "research": "EFSA har ikke rejst sikkerhedsbekymringer ved brug som tilsætningsstof. Der findes ingen relevant nyere forskning om stoffet som fødevaretilsætning.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium hydroxide",
+  "flags": []
+ },
+ {
+  "code": "E525",
+  "nameDa": "Kaliumhydroxid",
+  "nameEn": "Potassium hydroxide",
+  "category": "Surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Kaliumhydroxid (kaliumlud) er en stærk base, der bruges til at regulere surhedsgrad.",
+  "description": "Stoffet fremstilles ved elektrolyse af kaliumchloridopløsning. Det bruges til at neutralisere syrer, til alkalisering af kakao og som hjælpestof i produktionen. Det svarer i funktion til natriumhydroxid.",
+  "uses": "Alkaliseret kakao og chokolade, neutralisering i drikkevarer og andre fødevarer. Tilladt quantum satis.",
+  "health": "I de færdige fødevarer er baserne neutraliseret og uden sundhedsmæssig betydning. Det koncentrerede stof er stærkt ætsende og skal holdes utilgængeligt for børn. Stoffet er optaget i EU's liste med 'ADI ikke specificeret', da det indgår i kroppens normale stofskifte.",
+  "research": "EFSA har ikke rejst sikkerhedsbekymringer ved brug som tilsætningsstof. Der findes ingen relevant nyere forskning om stoffet som fødevaretilsætning.",
+  "keyReferences": [],
+  "pubmedTerm": "potassium hydroxide",
+  "flags": []
+ },
+ {
+  "code": "E526",
+  "nameDa": "Calciumhydroxid",
+  "nameEn": "Calcium hydroxide",
+  "category": "Surhedsregulerende middel / fasthedsgivende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Calciumhydroxid (læsket kalk) er en base, der bruges til at regulere surhedsgrad og i traditionel majsbehandling.",
+  "description": "Stoffet fremstilles ved at brænde kalksten til calciumoxid, som derefter tilsættes vand ('læskes'). I Mellemamerika bruges det til nixtamalisering af majs, hvor behandlingen frigør niacin og giver dejen til tortillas dens egenskaber. Det bruges også til at gøre syltede grøntsager faste, i sukkerraffinering og som calciumkilde.",
+  "uses": "Majstortillas og majschips (nixtamaliseret majs), syltede grøntsager, sukker (raffinering), kakao. Tilladt quantum satis.",
+  "health": "I de færdige fødevarer er baserne neutraliseret og uden sundhedsmæssig betydning. Det koncentrerede stof er stærkt ætsende og skal holdes utilgængeligt for børn. Stoffet er optaget i EU's liste med 'ADI ikke specificeret', da det indgår i kroppens normale stofskifte.",
+  "research": "EFSA har ikke rejst sikkerhedsbekymringer ved brug som tilsætningsstof. Nixtamalisering er velbeskrevet i ernæringsforskningen som en metode, der forebygger pellagra ved at gøre niacin i majs tilgængeligt.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium hydroxide",
+  "flags": []
+ }
+]

@@ -1,0 +1,1247 @@
+[
+ {
+  "code": "E527",
+  "nameDa": "Ammoniumhydroxid",
+  "nameEn": "Ammonium hydroxide",
+  "category": "Surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Ammoniumhydroxid er en vandig opløsning af ammoniak, som bruges som base til at regulere surhedsgraden i fødevarer.",
+  "description": "Ammoniumhydroxid (NH4OH) er ammoniakgas opløst i vand og er en svag base. Det fremstilles industrielt ud fra ammoniak, der produceres via Haber-Bosch-processen. I fødevareindustrien bruges det til at hæve pH, fx i kakaoforarbejdning (alkalisering) og ved fremstilling af visse farvestoffer som ammoniakkaramel. Ved opvarmning fordamper ammoniakken delvist, så der kun efterlades små rester i slutproduktet.",
+  "uses": "Alkaliseret kakao og kakaopulver, visse bageri- og konfektureprodukter samt som procesmiddel i farvestoffer. I EU er det godkendt i generelle anvendelser efter quantum satis-princippet.",
+  "health": "I de mængder, der bruges i fødevarer, anses ammoniumhydroxid ikke for at udgøre en sundhedsrisiko, fordi ammonium også dannes naturligt i kroppens stofskifte. Koncentreret ammoniak er ætsende, men det er et arbejdsmiljøspørgsmål og ikke relevant for fødevarer. JECFA har ikke fundet det nødvendigt at fastsætte en numerisk ADI (\"ADI not limited\"). Personer med alvorlig leversygdom har nedsat evne til at omsætte ammonium, men bidraget fra tilsætningsstoffet er lille.",
+  "research": "Stoffet er gammelt og velkendt og har ikke været genstand for megen nyere forskning som tilsætningsstof. JECFA vurderede ammoniumsalte samlet og fandt ingen grund til bekymring ved brug som tilsætningsstof. Omtale i medierne har mest drejet sig om brugen af ammoniakgas til behandling af kød i USA, som ikke er tilladt på samme måde i EU.",
+  "keyReferences": [],
+  "pubmedTerm": "ammonium hydroxide",
+  "flags": []
+ },
+ {
+  "code": "E528",
+  "nameDa": "Magnesiumhydroxid",
+  "nameEn": "Magnesium hydroxide",
+  "category": "Surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Magnesiumhydroxid er en mild, tungtopløselig base, der bruges til at regulere surhedsgraden i fødevarer.",
+  "description": "Magnesiumhydroxid (Mg(OH)2) forekommer naturligt som mineralet brucit, men fremstilles typisk ved at fælde magnesium fra havvand eller saltlage med kalk. Det er kun svagt opløseligt i vand og virker som en mild base. I fødevarer bruges det som surhedsregulerende middel og i visse tilfælde som farvestabilisator. Det er samme stof, som kendes fra syreneutraliserende midler og mild afføringsmedicin (\"magnesiamælk\").",
+  "uses": "Kakaoprodukter, visse konfektureprodukter og produkter hvor pH skal hæves. I EU godkendt quantum satis i en række fødevarer.",
+  "health": "I fødevaremængder anses magnesiumhydroxid for sikkert, og magnesium er et essentielt mineral. Større mængder magnesium har en afførende virkning, men det kræver doser langt over, hvad der typisk findes i fødevarer. Nyrepatienter med nedsat udskillelse af magnesium bør være opmærksomme på det samlede magnesiumindtag, især fra kosttilskud og medicin. JECFA har ikke fastsat en begrænsende ADI.",
+  "research": "Forskningen i magnesiumhydroxid handler primært om medicinsk brug som antacidum og laksantia snarere end om tilsætningsstoffet. EFSA har fastsat en tolerabel øvre grænse for tilsat magnesium (fra tilskud og tilsætningsstoffer) på 250 mg/dag for voksne, primært pga. risikoen for diarré. Der er ingen kendte særlige kontroverser om brugen i fødevarer.",
+  "keyReferences": [],
+  "pubmedTerm": "magnesium hydroxide",
+  "flags": [
+   "laxative",
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E529",
+  "nameDa": "Calciumoxid",
+  "nameEn": "Calcium oxide",
+  "category": "Surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Calciumoxid, også kaldet brændt kalk, er en stærk base, der bruges som surhedsregulerende middel og mel-behandlingsmiddel.",
+  "description": "Calciumoxid (CaO) fremstilles ved at brænde kalksten (calciumcarbonat) ved høj temperatur, hvorved kuldioxid frigives. I kontakt med vand danner det calciumhydroxid under kraftig varmeudvikling. I fødevareproduktion bruges det til at regulere pH, som calciumkilde og i visse forarbejdningsprocesser, fx ved nixtamalisering af majs i latinamerikansk tradition. Det er et uorganisk mineralsk stof.",
+  "uses": "Visse bageriprodukter og mel, majsprodukter, kakaoprodukter og sukkerraffinering. I EU godkendt quantum satis i en række fødevarekategorier.",
+  "health": "Som tilsætningsstof i små mængder anses calciumoxid for sikkert, da det i fødevaren omdannes til calciumsalte. Rent calciumoxid er ætsende og farligt ved hud- og øjenkontakt, men det er et arbejdsmiljøproblem. JECFA har ikke fastsat en begrænsende ADI. Bidraget til det samlede calciumindtag er beskedent.",
+  "research": "Der er begrænset specifik forskning i calciumoxid som tilsætningsstof. Stoffet betragtes generelt som uproblematisk i fødevaremængder. Nixtamalisering med kalk er velundersøgt og forbedrer bl.a. tilgængeligheden af niacin i majs.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium oxide",
+  "flags": []
+ },
+ {
+  "code": "E530",
+  "nameDa": "Magnesiumoxid",
+  "nameEn": "Magnesium oxide",
+  "category": "Surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Magnesiumoxid er et hvidt mineralsk pulver, der bruges som surhedsregulerende middel og antiklumpningsmiddel.",
+  "description": "Magnesiumoxid (MgO) fremstilles typisk ved at opvarme magnesiumcarbonat eller magnesiumhydroxid, så vand eller kuldioxid drives af. Det er en svag base og en koncentreret magnesiumkilde. I fødevarer bruges det til at regulere pH, forhindre klumpning i pulvere og i kosttilskud som magnesiumkilde. I vand omdannes det langsomt til magnesiumhydroxid.",
+  "uses": "Kakaoprodukter, pulverprodukter, visse mejeriprodukter samt kosttilskud. I EU godkendt quantum satis i flere kategorier.",
+  "health": "I de mængder, der anvendes i fødevarer, anses magnesiumoxid for sikkert. Store doser magnesium (typisk fra tilskud) kan give diarré og mavebesvær. Personer med nedsat nyrefunktion kan have svært ved at udskille magnesium og bør være forsigtige med høje samlede indtag. JECFA har ikke fastsat en begrænsende ADI.",
+  "research": "Magnesiumoxid er mest undersøgt som kosttilskud og afføringsmiddel. EFSA's øvre grænse for tilsat magnesium er 250 mg/dag for voksne. Studier viser, at magnesium fra magnesiumoxid optages relativt dårligt sammenlignet med organiske magnesiumsalte.",
+  "keyReferences": [],
+  "pubmedTerm": "magnesium oxide",
+  "flags": [
+   "laxative",
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E535",
+  "nameDa": "Natriumferrocyanid",
+  "nameEn": "Sodium ferrocyanide",
+  "category": "Antiklumpningsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Natriumferrocyanid er et antiklumpningsmiddel, som primært tilsættes bordsalt for at det kan flyde frit.",
+  "description": "Natriumferrocyanid (Na4[Fe(CN)6]), også kaldet gult blodludsalt på natriumform, er et gult krystallinsk salt. Ferrocyanider er komplekse jern-cyanid-forbindelser, hvor cyanidgrupperne er meget stærkt bundet til jern, så der normalt ikke frigives fri cyanid. De virker ved at ændre saltets krystalstruktur, så det ikke klumper. Stoffet fremstilles syntetisk. Det tilsættes i meget små mængder, typisk få milligram pr. kilo salt.",
+  "uses": "Bordsalt, havsalt og saltsubstitutter. I EU er brugen begrænset til salt og saltsubstitutter med et maksimalt niveau på 20 mg/kg (som summen af E535, E536 og E538, udtrykt som vandfri kaliumferrocyanid).",
+  "health": "EFSA fastsatte ved gen-evalueringen i 2018 en gruppe-ADI for natrium-, kalium- og calciumferrocyanid på 0,03 mg/kg legemsvægt/dag, udtrykt som ferrocyanid-ion. Det kritiske fund var nyrepåvirkning i dyreforsøg. EFSA konkluderede, at den beregnede eksponering fra salt ikke udgjorde en sikkerhedsrisiko ved de anvendte niveauer. Da cyaniden er stærkt bundet, frigives der ikke skadelige mængder cyanid ved normal brug, men stoffet bør ikke opvarmes kraftigt i sure miljøer.",
+  "research": "EFSA's ANS-panel gen-evaluerede ferrocyaniderne (E535, E536, E538) i 2018 og fastsatte en fælles ADI på 0,03 mg/kg legemsvægt/dag. Eksponeringen lå under ADI for alle befolkningsgrupper. Ferrocyanider bruges også i vinproduktion til at fjerne overskydende metalioner (\"blue fining\"), hvilket er en separat anvendelse.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel. Re-evaluation of sodium ferrocyanide (E 535), potassium ferrocyanide (E 536) and calcium ferrocyanide (E 538) as food additives. EFSA Journal. 2018.",
+    "searchTitle": "Re-evaluation of sodium ferrocyanide (E 535), potassium ferrocyanide (E 536) and calcium ferrocyanide (E 538) as food additives"
+   }
+  ],
+  "pubmedTerm": "sodium ferrocyanide",
+  "flags": [
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E536",
+  "nameDa": "Kaliumferrocyanid",
+  "nameEn": "Potassium ferrocyanide",
+  "category": "Antiklumpningsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Kaliumferrocyanid er et antiklumpningsmiddel, der bruges i salt, og som også anvendes i vinfremstilling.",
+  "description": "Kaliumferrocyanid (K4[Fe(CN)6]), kendt som gult blodludsalt, er et gult krystallinsk salt. Ferrocyanider er komplekse jern-cyanid-forbindelser, hvor cyanidgrupperne er meget stærkt bundet til jern, så der normalt ikke frigives fri cyanid. De virker ved at ændre saltets krystalstruktur, så det ikke klumper. Stoffet fremstilles syntetisk. Det bruges desuden i vinproduktion til at fælde jern og kobber, hvorefter stoffet fjernes igen.",
+  "uses": "Bordsalt og saltsubstitutter (maks. 20 mg/kg samlet for E535, E536 og E538), samt som behandlingsmiddel i vin.",
+  "health": "EFSA fastsatte ved gen-evalueringen i 2018 en gruppe-ADI for natrium-, kalium- og calciumferrocyanid på 0,03 mg/kg legemsvægt/dag, udtrykt som ferrocyanid-ion. Det kritiske fund var nyrepåvirkning i dyreforsøg. EFSA konkluderede, at den beregnede eksponering fra salt ikke udgjorde en sikkerhedsrisiko ved de anvendte niveauer. Da cyaniden er stærkt bundet, frigives der ikke skadelige mængder cyanid ved normal brug, men stoffet bør ikke opvarmes kraftigt i sure miljøer.",
+  "research": "EFSA's ANS-panel gen-evaluerede ferrocyaniderne (E535, E536, E538) i 2018 og fastsatte en fælles ADI på 0,03 mg/kg legemsvægt/dag. Eksponeringen lå under ADI for alle befolkningsgrupper. Ferrocyanider bruges også i vinproduktion til at fjerne overskydende metalioner (\"blue fining\"), hvilket er en separat anvendelse.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel. Re-evaluation of sodium ferrocyanide (E 535), potassium ferrocyanide (E 536) and calcium ferrocyanide (E 538) as food additives. EFSA Journal. 2018.",
+    "searchTitle": "Re-evaluation of sodium ferrocyanide (E 535), potassium ferrocyanide (E 536) and calcium ferrocyanide (E 538) as food additives"
+   }
+  ],
+  "pubmedTerm": "potassium ferrocyanide",
+  "flags": [
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E537",
+  "nameDa": "Ferrohexacyanomanganat",
+  "nameEn": "Ferrous hexacyanomanganate",
+  "category": "Antiklumpningsmiddel",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Ferrohexacyanomanganat er et kompleks af jern, mangan og cyanid, som har været opført som antiklumpningsmiddel, men som ikke er godkendt i EU.",
+  "description": "Ferrohexacyanomanganat er en kompleks cyanidforbindelse med mangan som centralt metal og jern(II) som modion, beslægtet med ferrocyaniderne. Det har været foreslået som antiklumpningsmiddel til salt. Stoffet er syntetisk. Der findes meget sparsom offentlig information om fremstilling og faktisk anvendelse.",
+  "uses": "Ingen godkendt anvendelse i EU. Kendes primært fra ældre lister over E-numre; anvendelse i handlen er sjælden eller ikke-eksisterende.",
+  "health": "Der foreligger ingen EFSA- eller JECFA-vurdering med ADI for stoffet. Pga. manglende data kan der ikke siges noget sikkert om risici. Stoffet må ikke bruges i fødevarer i EU.",
+  "research": "Der er ikke kendskab til nyere videnskabelige vurderinger af stoffet som tilsætningsstof. Viden er meget begrænset.",
+  "keyReferences": [],
+  "pubmedTerm": "ferrous hexacyanomanganate",
+  "flags": []
+ },
+ {
+  "code": "E538",
+  "nameDa": "Calciumferrocyanid",
+  "nameEn": "Calcium ferrocyanide",
+  "category": "Antiklumpningsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Calciumferrocyanid er et antiklumpningsmiddel til salt, beslægtet med natrium- og kaliumferrocyanid.",
+  "description": "Calciumferrocyanid (Ca2[Fe(CN)6]) er calciumsaltet af ferrocyanid. Ferrocyanider er komplekse jern-cyanid-forbindelser, hvor cyanidgrupperne er meget stærkt bundet til jern, så der normalt ikke frigives fri cyanid. De virker ved at ændre saltets krystalstruktur, så det ikke klumper. Stoffet fremstilles syntetisk. I praksis bruges det mindre end natrium- og kaliumformen.",
+  "uses": "Bordsalt og saltsubstitutter, maks. 20 mg/kg samlet for E535, E536 og E538.",
+  "health": "EFSA fastsatte ved gen-evalueringen i 2018 en gruppe-ADI for natrium-, kalium- og calciumferrocyanid på 0,03 mg/kg legemsvægt/dag, udtrykt som ferrocyanid-ion. Det kritiske fund var nyrepåvirkning i dyreforsøg. EFSA konkluderede, at den beregnede eksponering fra salt ikke udgjorde en sikkerhedsrisiko ved de anvendte niveauer. Da cyaniden er stærkt bundet, frigives der ikke skadelige mængder cyanid ved normal brug, men stoffet bør ikke opvarmes kraftigt i sure miljøer.",
+  "research": "EFSA's ANS-panel gen-evaluerede ferrocyaniderne (E535, E536, E538) i 2018 og fastsatte en fælles ADI på 0,03 mg/kg legemsvægt/dag. Eksponeringen lå under ADI for alle befolkningsgrupper. Ferrocyanider bruges også i vinproduktion til at fjerne overskydende metalioner (\"blue fining\"), hvilket er en separat anvendelse.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel. Re-evaluation of sodium ferrocyanide (E 535), potassium ferrocyanide (E 536) and calcium ferrocyanide (E 538) as food additives. EFSA Journal. 2018.",
+    "searchTitle": "Re-evaluation of sodium ferrocyanide (E 535), potassium ferrocyanide (E 536) and calcium ferrocyanide (E 538) as food additives"
+   }
+  ],
+  "pubmedTerm": "calcium ferrocyanide",
+  "flags": [
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E539",
+  "nameDa": "Natriumthiosulfat",
+  "nameEn": "Sodium thiosulfate",
+  "category": "Antioxidant / kompleksdanner",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Natriumthiosulfat er et svovlholdigt salt, som i nogle lande bruges som antioxidant og kompleksdanner, men som ikke er godkendt som tilsætningsstof i EU.",
+  "description": "Natriumthiosulfat (Na2S2O3) fremstilles syntetisk, fx ud fra natriumsulfit og svovl. Det er kendt fra fotografering (fiksersalt) og som modgift ved cyanidforgiftning. Som tilsætningsstof kan det binde metaller og virke antioxiderende, og det har været brugt i jodholdigt salt for at stabilisere jod. Det er ikke optaget på EU's liste over godkendte tilsætningsstoffer.",
+  "uses": "Ikke godkendt i EU. I visse andre lande tilladt i fx jodberiget salt og alkoholfri drikke.",
+  "health": "Natriumthiosulfat har lav toksicitet og bruges medicinsk i høje doser. Det kan dog frigive svovldioxid i sure miljøer, hvilket teoretisk kan være relevant for sulfitfølsomme personer og astmatikere. JECFA har vurderet stoffet sammen med sulfitterne. Der er ingen EU-godkendelse, og stoffet bør ikke findes i EU-fødevarer.",
+  "research": "Forskningen i natriumthiosulfat handler primært om medicinsk brug, bl.a. som modgift mod cyanid og som beskyttelse mod høretab ved cisplatin-kemoterapi hos børn. Som tilsætningsstof er der kun begrænset nyere forskning.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium thiosulfate",
+  "flags": [
+   "asthma_caution"
+  ]
+ },
+ {
+  "code": "E540",
+  "nameDa": "Dicalciumdiphosphat",
+  "nameEn": "Dicalcium diphosphate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Dicalciumdiphosphat er et calciumsalt af difosforsyre, som har været brugt som stabilisator og surhedsregulerende middel, men ikke er på EU's nuværende liste under dette nummer.",
+  "description": "Dicalciumdiphosphat (Ca2P2O7), også kaldet calciumpyrophosphat, fremstilles syntetisk ved opvarmning af calciumhydrogenphosphat. I EU er calciumdiphosphater i dag samlet under E450(vi) og E450(vii), så E540 bruges ikke længere som selvstændigt nummer. Stoffet fungerer som stabilisator, emulgeringssalt og mildt slibemiddel.",
+  "uses": "Ikke godkendt i EU under E540; det tilsvarende stof bruges som E450(vi) i fx bagepulver og visse forarbejdede fødevarer.",
+  "health": "Fosfater er generelt uproblematiske i små mængder, men et højt samlet fosfatindtag fra tilsætningsstoffer er relevant for personer med nedsat nyrefunktion. EFSA fastsatte i 2019 en gruppe-ADI for fosfater på 40 mg/kg legemsvægt/dag udtrykt som fosfor. Nyrepatienter rådes ofte til at begrænse fosfattilsatte fødevarer.",
+  "research": "EFSA's gen-evaluering af fosfater (2019) dækkede de di-, tri- og polyfosfater, der er godkendt i EU. Der er løbende forskning i sammenhængen mellem højt fosforindtag og hjerte-kar-sygdom samt nyresygdom, men resultaterne for den generelle befolkning er ikke entydige.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel. Re-evaluation of phosphoric acid–phosphates – di-, tri- and polyphosphates (E 338–341, E 343, E 450–452) as food additives and the safety of proposed extension of use. EFSA Journal. 2019.",
+    "searchTitle": "Re-evaluation of phosphoric acid-phosphates - di-, tri- and polyphosphates (E 338-341, E 343, E 450-452) as food additives and the safety of proposed extension of use"
+   }
+  ],
+  "pubmedTerm": "calcium pyrophosphate",
+  "flags": [
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E541",
+  "nameDa": "Natriumaluminiumphosphat",
+  "nameEn": "Sodium aluminium phosphate",
+  "category": "Hævemiddel / emulgator",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Natriumaluminiumphosphat er et aluminiumholdigt fosfatsalt, som bruges som hævemiddel i bagværk og (i basisk form) som emulgeringssalt.",
+  "description": "Natriumaluminiumphosphat fremstilles syntetisk af fosforsyre, natrium- og aluminiumforbindelser. Den sure form (i) reagerer langsomt med natron og frigiver kuldioxid ved opvarmning, hvilket gør den nyttig i bagepulver. Den basiske form (ii) bruges især i USA som emulgeringssalt i smelteost. I EU er kun den sure form (E541) godkendt, og brugen blev stærkt begrænset i 2014 pga. aluminiumsindholdet.",
+  "uses": "I EU kun tilladt i scones og sponge-kage-lignende fint bagværk (sponge goods) med et maks. niveau udtrykt som aluminium. Mere udbredt i bagepulver og færdigblandinger i USA.",
+  "health": "Hovedbekymringen er aluminium, som ved høje indtag kan påvirke nervesystem, knogler og reproduktion i dyreforsøg. EFSA fastsatte i 2008 en tolerabelt ugentligt indtag (TWI) for aluminium på 1 mg/kg legemsvægt/uge og vurderede, at en del af befolkningen, især børn, kan overskride dette fra den samlede kost. Personer med nedsat nyrefunktion udskiller aluminium dårligere. Fosfatdelen er ligeledes relevant for nyrepatienter.",
+  "research": "EFSA's aluminiumsvurdering (2008) førte til, at EU i 2012 (forordning 380/2012) indskrænkede brugen af aluminiumholdige tilsætningsstoffer, herunder E541. Sammenhængen mellem aluminium og Alzheimers sygdom har været diskuteret i årtier, men er ikke påvist overbevisende i befolkningsstudier. Der er fortsat åbne spørgsmål om aluminiums langtidsvirkninger.",
+  "keyReferences": [
+   {
+    "citation": "EFSA. Safety of aluminium from dietary intake. EFSA Journal. 2008.",
+    "searchTitle": "Safety of aluminium from dietary intake"
+   }
+  ],
+  "pubmedTerm": "sodium aluminum phosphate",
+  "flags": [
+   "children_caution",
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E542",
+  "nameDa": "Knoglefosfat",
+  "nameEn": "Bone phosphate",
+  "category": "Antiklumpningsmiddel / emulgator",
+  "euStatus": "not_approved",
+  "origin": "natural",
+  "summary": "Knoglefosfat er et calciumfosfat udvundet af dyreknogler, som har været brugt som antiklumpningsmiddel og fugtighedsbevarende middel.",
+  "description": "Knoglefosfat består hovedsageligt af tricalciumphosphat og fremstilles ved at behandle dyreknogler (typisk fra kvæg eller svin) med varme og kemikalier, så organisk materiale fjernes. Det har været brugt som antiklumpningsmiddel, emulgator og calciumkilde. Stoffet er ikke længere på EU's liste over godkendte tilsætningsstoffer; tilsvarende calciumfosfater fremstilles i dag syntetisk (E341).",
+  "uses": "Ikke godkendt i EU. Historisk anvendt i pulverprodukter, krydderiblandinger og som calciumberigelse.",
+  "health": "Kemisk er stoffet et calciumfosfat og anses i sig selv for at have lav toksicitet. Det er af animalsk oprindelse, hvilket er relevant for vegetarer, veganere og visse religiøse kostregler. Som alle fosfater er et højt indtag relevant for nyrepatienter.",
+  "research": "Der er ingen nyere EFSA-vurdering af knoglefosfat som selvstændigt tilsætningsstof, da det ikke er godkendt. Viden om de syntetiske calciumfosfater (E341) er dækket af EFSA's fosfatvurdering fra 2019.",
+  "keyReferences": [],
+  "pubmedTerm": "bone phosphate",
+  "flags": [
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E543",
+  "nameDa": "Calciumnatriumpolyphosphat",
+  "nameEn": "Calcium sodium polyphosphate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "E543 er et polyfosfat af calcium og natrium, som har været opført som emulgator og stabilisator, men som ikke er godkendt i EU.",
+  "description": "E543 betegner calciumnatriumpolyphosphat, et syntetisk kædeformet fosfatsalt. Polyfosfater binder metalioner og kan forbedre vandbinding og tekstur i forarbejdede fødevarer. Nummeret findes på ældre lister, men stoffet er ikke medtaget i EU's nuværende positivliste. Der er meget sparsom offentlig information om dets faktiske brug.",
+  "uses": "Ingen godkendt anvendelse i EU.",
+  "health": "Der foreligger ingen specifik ADI for E543. Som for andre fosfater er et højt samlet fosfatindtag relevant for nyrepatienter. Viden om netop denne forbindelse er begrænset.",
+  "research": "Der er ikke kendskab til specifikke nyere vurderinger af E543. Beslægtede polyfosfater er vurderet af EFSA i 2019.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium sodium polyphosphate",
+  "flags": [
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E544",
+  "nameDa": "Calciumpolyphosphat",
+  "nameEn": "Calcium polyphosphate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Calciumpolyphosphat er et kædeformet calciumfosfat, som har været brugt som emulgeringssalt og stabilisator; i EU hører det i dag under E452(iv).",
+  "description": "Calciumpolyphosphat fremstilles syntetisk ved opvarmning af calciumfosfater, så der dannes lange fosfatkæder. Polyfosfater binder calcium- og magnesiumioner og bruges til at stabilisere proteiner, fx i smelteost. I EU er stoffet opført som E452(iv) og ikke under E544.",
+  "uses": "Under E452(iv) i EU: smelteost, forarbejdet kød og visse drikkevarer. E544 som nummer bruges ikke i EU.",
+  "health": "EFSA fastsatte i 2019 en gruppe-ADI for fosfater på 40 mg/kg legemsvægt/dag udtrykt som fosfor. EFSA bemærkede, at børn med højt forbrug kunne nærme sig eller overskride ADI, når naturligt fosfor medregnes. Personer med nedsat nyrefunktion rådes til at begrænse fosfattilsætninger.",
+  "research": "EFSA's gen-evaluering af fosfater (2019) er den centrale vurdering. Observationsstudier har koblet højt serumfosfat til hjerte-kar-sygdom, især hos nyrepatienter; betydningen for raske personer er uafklaret.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel. Re-evaluation of phosphoric acid–phosphates – di-, tri- and polyphosphates (E 338–341, E 343, E 450–452) as food additives and the safety of proposed extension of use. EFSA Journal. 2019.",
+    "searchTitle": "Re-evaluation of phosphoric acid-phosphates - di-, tri- and polyphosphates (E 338-341, E 343, E 450-452) as food additives and the safety of proposed extension of use"
+   }
+  ],
+  "pubmedTerm": "calcium polyphosphate",
+  "flags": [
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E545",
+  "nameDa": "Ammoniumpolyphosphat",
+  "nameEn": "Ammonium polyphosphate",
+  "category": "Emulgator / stabilisator",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Ammoniumpolyphosphat er et polyfosfatsalt, som i nogle lande bruges som emulgator og vandbindende middel, men som ikke er godkendt i EU.",
+  "description": "Ammoniumpolyphosphat fremstilles syntetisk ud fra fosforsyre og ammoniak og består af lange fosfatkæder. Det bruges i stor skala som gødning og flammehæmmer. Som tilsætningsstof kan det binde vand og stabilisere tekstur. Stoffet er ikke på EU's liste over godkendte tilsætningsstoffer.",
+  "uses": "Ikke godkendt i EU. I visse andre lande tilladt i fx forarbejdet kød og ost.",
+  "health": "Som fødevarestof vil det bidrage til det samlede fosfatindtag, hvilket er relevant for nyrepatienter. Der foreligger ingen EFSA-ADI for stoffet specifikt. Det forventes ikke at findes i EU-fødevarer.",
+  "research": "Der er ingen nyere EU-vurdering af stoffet som tilsætningsstof. Forskningen fokuserer på industrielle anvendelser.",
+  "keyReferences": [],
+  "pubmedTerm": "ammonium polyphosphate",
+  "flags": [
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E546",
+  "nameDa": "Magnesiumpyrophosphat",
+  "nameEn": "Magnesium pyrophosphate",
+  "category": "Stabilisator / antiklumpningsmiddel",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Magnesiumpyrophosphat er et magnesiumfosfatsalt, som har været opført som tilsætningsstof, men ikke er godkendt i EU under dette nummer.",
+  "description": "Magnesiumpyrophosphat (Mg2P2O7) fremstilles syntetisk ved opvarmning af magnesiumfosfater. Det kan fungere som stabilisator, antiklumpningsmiddel og magnesiumkilde. Stoffet findes på ældre lister over E-numre, men indgår ikke i EU's nuværende positivliste som E546. Oplysninger om faktisk brug i fødevarer er sparsomme.",
+  "uses": "Ingen godkendt anvendelse i EU.",
+  "health": "Der foreligger ingen specifik ADI. Stoffet vil bidrage med både magnesium og fosfor; begge er relevante for personer med nedsat nyrefunktion ved højt indtag.",
+  "research": "Der er ikke kendskab til specifikke nyere vurderinger af E546 som tilsætningsstof.",
+  "keyReferences": [],
+  "pubmedTerm": "magnesium pyrophosphate",
+  "flags": [
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E550",
+  "nameDa": "Natriumsilikat",
+  "nameEn": "Sodium silicate",
+  "category": "Antiklumpningsmiddel",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Natriumsilikat, også kaldet vandglas, er et silikatsalt, som har været brugt som antiklumpningsmiddel, men ikke er godkendt som tilsætningsstof i EU.",
+  "description": "Natriumsilikat fremstilles ved at smelte kvartssand med natriumcarbonat og danner i vand en tyktflydende basisk opløsning (vandglas). Variant (i) er natriumsilikat generelt, mens (ii) er natriummetasilikat (Na2SiO3). Det bruges industrielt i rengøringsmidler, cement og historisk til at konservere æg. Som tilsætningsstof er det ikke optaget på EU's positivliste.",
+  "uses": "Ikke godkendt i EU. Kan i visse lande forekomme som antiklumpningsmiddel eller i vandbehandling.",
+  "health": "Koncentrerede opløsninger er stærkt basiske og ætsende. I fortyndet form anses silikater for at have lav toksicitet. Der foreligger ingen EFSA-ADI for stoffet som tilsætningsstof.",
+  "research": "Der er ingen nyere EU-vurdering af natriumsilikat som tilsætningsstof. Beslægtede silikater som siliciumdioxid (E551) er vurderet af EFSA i 2018.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium silicate",
+  "flags": []
+ },
+ {
+  "code": "E551",
+  "nameDa": "Siliciumdioxid",
+  "nameEn": "Silicon dioxide",
+  "category": "Antiklumpningsmiddel / bærestof",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Siliciumdioxid (silica) er et fint hvidt pulver, der bruges til at forhindre pulvere i at klumpe og som bærestof.",
+  "description": "Siliciumdioxid (SiO2) findes naturligt som kvarts og sand, men til fødevarer fremstilles syntetisk amorf silica, enten ved fældning (precipitated silica) eller ved flammehydrolyse (fumed/pyrogen silica). Partiklerne danner meget store overflader, der kan binde fugt og holde pulvere fritflydende. Materialet består af aggregater, der er opbygget af meget små primærpartikler i nanostørrelse. Det bruges også som bærestof for aromaer og i klaringsprocesser for øl og vin.",
+  "uses": "Salt, krydderiblandinger, pulversupper, kaffe- og kakaopulvere, flødepulver, revet ost, kosttilskud og tabletter. Godkendt i en række kategorier, ofte med maks. niveauer (fx 10 g/kg i tørrede pulverfødevarer).",
+  "health": "Siliciumdioxid optages kun i meget ringe grad fra tarmen og har i dyreforsøg vist lav toksicitet. EFSA kunne i 2018 ikke fastsætte en ADI på grund af datamangler, bl.a. om nanopartikelfraktionen, men fandt ikke tegn på risiko ved de rapporterede anvendelser. EFSA pegede på behov for bedre specifikationer af partikelstørrelse. Der er ingen særlige risikogrupper kendt.",
+  "research": "EFSA's ANS-panel gen-evaluerede E551 i 2018 og anbefalede at ændre specifikationerne for at karakterisere partikelstørrelsen bedre. Efter EFSA's nye vejledning om nanomaterialer (2021) er der igangsat en opfølgende vurdering. Nogle dyre- og cellestudier har rejst spørgsmål om nanosilicas effekter på immunsystem og tarm, men relevansen for mennesker ved fødevareindtag er uafklaret.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel. Re-evaluation of silicon dioxide (E 551) as a food additive. EFSA Journal. 2018.",
+    "searchTitle": "Re-evaluation of silicon dioxide (E 551) as a food additive"
+   }
+  ],
+  "pubmedTerm": "silicon dioxide",
+  "flags": []
+ },
+ {
+  "code": "E552",
+  "nameDa": "Calciumsilicat",
+  "nameEn": "Calcium silicate",
+  "category": "Antiklumpningsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Calciumsilicat er et hvidt mineralsk pulver, der bruges som antiklumpningsmiddel i salt og pulvere.",
+  "description": "Calciumsilicat fremstilles syntetisk ved reaktion mellem kalk (calciumoxid) og siliciumdioxid, eller udvindes af mineraler. Det er uopløseligt i vand og kan absorbere store mængder væske, hvilket holder pulvere tørre og fritflydende. Det bruges også i bagepulver og som bærestof. Stoffet er beslægtet med materialer i cement og byggematerialer, men fødevarekvaliteten er renset.",
+  "uses": "Salt og saltsubstitutter, bagepulver, revet ost, krydderier, kosttilskud og tørre pulverblandinger. Godkendt i EU i en række kategorier, typisk med maks. niveauer.",
+  "health": "Calciumsilicat optages kun ringe og anses for at have lav toksicitet. EFSA's gen-evaluering af silikater (2018) kunne ikke fastsætte en numerisk ADI pga. datamangler, men fandt ingen tegn på sikkerhedsproblemer ved nuværende brug. Der er ingen kendte særlige risikogrupper.",
+  "research": "EFSA's ANS-panel gen-evaluerede calciumsilicat sammen med andre silikater (E552, E553a, E553b) i 2018 og anbefalede strammere specifikationer, bl.a. for tungmetaller og aluminium. Der er begrænset ny forskning i stoffet som tilsætningsstof.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium silicate",
+  "flags": []
+ },
+ {
+  "code": "E553",
+  "nameDa": "Magnesiumsilicater",
+  "nameEn": "Magnesium silicates",
+  "category": "Antiklumpningsmiddel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Magnesiumsilicater er en gruppe mineralske stoffer, der bruges som antiklumpningsmidler; i EU er de opført som E553a (magnesiumsilicat og -trisilicat) og E553b (talkum).",
+  "description": "E553 er en samlebetegnelse for magnesiumsilicater, der i ældre systemer blev delt i (i) magnesiumsilicat, (ii) magnesiumtrisilicat og (iii) talkum. De kan fremstilles syntetisk ved reaktion mellem magnesium- og silikatsalte eller udvindes som mineraler. De er uopløselige og binder fugt og fedt, hvilket holder pulvere fritflydende. I EU-lovgivningen anvendes numrene E553a og E553b.",
+  "uses": "Salt, krydderier, pulverprodukter, ris (som poleringsmiddel), tyggegummi og kosttilskud. Se E553a og E553b for detaljer.",
+  "health": "Magnesiumsilicater optages ringe fra tarmen og har lav akut toksicitet. EFSA kunne i 2018 ikke fastsætte en numerisk ADI pga. datamangler, men fandt ikke sikkerhedsproblemer ved den rapporterede brug. Talkum kan være forurenet med asbest, hvilket stiller krav til renhed.",
+  "research": "EFSA gen-evaluerede magnesiumsilicater og talkum i 2018 og anbefalede strammere specifikationer, bl.a. krav om fravær af asbest. IARC's klassificering af talkum (se E553b) vedrører primært indånding og kosmetisk brug, ikke fødevarer.",
+  "keyReferences": [],
+  "pubmedTerm": "magnesium silicate",
+  "flags": []
+ },
+ {
+  "code": "E553a",
+  "nameDa": "Magnesiumsilicat (syntetisk) og magnesiumtrisilicat",
+  "nameEn": "Magnesium silicate and magnesium trisilicate",
+  "category": "Antiklumpningsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "E553a omfatter syntetisk magnesiumsilicat og magnesiumtrisilicat, der bruges som antiklumpningsmidler og fortykningsmidler.",
+  "description": "E553a(i) er syntetisk magnesiumsilicat, fremstillet ved fældning af natriumsilikat med et magnesiumsalt. E553a(ii) er magnesiumtrisilicat (Mg2Si3O8), som også bruges i syreneutraliserende medicin. Begge er fine, uopløselige pulvere med stor overflade, der binder fugt og fedt. De bruges også i olie-industrien til at rense frituresolie.",
+  "uses": "Salt, krydderiblandinger, tørrede pulverfødevarer, overfladebehandling af ris, konfekture og kosttilskud. Godkendt i EU med maks. niveauer i flere kategorier.",
+  "health": "Stofferne optages meget ringe og har lav toksicitet. Silicium kan i sjældne tilfælde bidrage til nyresten ved langvarigt højt medicinsk indtag af magnesiumtrisilicat, men det er ikke påvist ved fødevaremængder. EFSA fastsatte i 2018 ingen numerisk ADI pga. datamangler, men fandt ingen sikkerhedsproblemer ved rapporteret brug.",
+  "research": "EFSA's gen-evaluering fra 2018 dækkede E553a sammen med andre silikater og anbefalede bedre specifikationer. Der er kun begrænset ny forskning i stoffet som fødevaretilsætningsstof.",
+  "keyReferences": [],
+  "pubmedTerm": "magnesium trisilicate",
+  "flags": [
+   "laxative"
+  ]
+ },
+ {
+  "code": "E553b",
+  "nameDa": "Talkum",
+  "nameEn": "Talc",
+  "category": "Antiklumpningsmiddel / overfladebehandling",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Talkum er et naturligt magnesiumsilicat-mineral, der bruges som antiklumpnings- og poleringsmiddel.",
+  "description": "Talkum (Mg3Si4O10(OH)2) er et blødt mineral, som udvindes i miner og renses til fødevarekvalitet. Det giver en glat overflade og hindrer, at produkter klistrer sammen. Et kritisk kvalitetskrav er, at fødevaretalkum skal være fri for asbest, som kan forekomme i de samme geologiske aflejringer. Det bruges også meget i kosmetik og tabletter.",
+  "uses": "Tyggegummi, ris (poleringsmiddel), overflade på konfekture og pølser, kosttilskud og tabletter. Godkendt i EU i flere kategorier, typisk quantum satis eller med maks. niveauer.",
+  "health": "Ved indtagelse optages talkum næsten ikke og anses for at have lav toksicitet. Bekymringer om talkum vedrører især indånding og kosmetisk brug i underlivet samt forurening med asbest. EFSA fastsatte i 2018 ingen numerisk ADI pga. datamangler, men fandt ingen sikkerhedsproblemer ved rapporteret brug i fødevarer.",
+  "research": "IARC klassificerede i 2024 talkum som \"sandsynligt kræftfremkaldende\" (gruppe 2A), primært baseret på studier af æggestokkræft ved kosmetisk brug og mekanistiske data; klassificeringen vedrører ikke specifikt indtag via fødevarer. EFSA's gen-evaluering fra 2018 anbefalede strenge krav om asbestfrihed. Der er ikke evidens for, at talkum i fødevarer øger kræftrisikoen.",
+  "keyReferences": [],
+  "pubmedTerm": "talc",
+  "flags": []
+ },
+ {
+  "code": "E554",
+  "nameDa": "Natriumaluminiumsilicat",
+  "nameEn": "Sodium aluminium silicate",
+  "category": "Antiklumpningsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Natriumaluminiumsilicat er et aluminiumholdigt silikat, der bruges som antiklumpningsmiddel i meget begrænsede fødevarekategorier.",
+  "description": "Natriumaluminiumsilicat fremstilles syntetisk ved reaktion mellem aluminiumsulfat og natriumsilikat. Det er et fint, uopløseligt pulver, der binder fugt. Det har også været brugt som bærestof og i visse ostetyper. Efter EFSA's aluminiumsvurdering blev brugen stærkt begrænset i EU fra 2014.",
+  "uses": "I EU kun tilladt i få kategorier, bl.a. som bærestof for farvestoffer og i visse skive- og revne oste, med maks. niveauer.",
+  "health": "Hovedbekymringen er aluminiumsindholdet. EFSA fastsatte i 2008 et tolerabelt ugentligt indtag (TWI) for aluminium på 1 mg/kg legemsvægt/uge og vurderede, at en del af befolkningen, især børn, kan overskride det fra den samlede kost. Personer med nedsat nyrefunktion udskiller aluminium dårligere.",
+  "research": "EU's forordning 380/2012 begrænsede brugen af aluminiumholdige tilsætningsstoffer, herunder E554, på baggrund af EFSA's vurdering. Diskussionen om aluminium og neurologiske sygdomme er ikke afgjort, men der er ikke påvist en klar årsagssammenhæng.",
+  "keyReferences": [
+   {
+    "citation": "EFSA. Safety of aluminium from dietary intake. EFSA Journal. 2008.",
+    "searchTitle": "Safety of aluminium from dietary intake"
+   }
+  ],
+  "pubmedTerm": "sodium aluminosilicate",
+  "flags": [
+   "children_caution",
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E555",
+  "nameDa": "Kaliumaluminiumsilicat",
+  "nameEn": "Potassium aluminium silicate",
+  "category": "Bærestof / antiklumpningsmiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Kaliumaluminiumsilicat er mineralet glimmer (mica), der primært bruges som bærestof i perlemorsfarvestoffer.",
+  "description": "Kaliumaluminiumsilicat er naturligt glimmer (muskovit), som udvindes og renses. Tynde glimmerflager belægges med farvestoffer som jernoxider (E172) for at give perlemors- og metaleffekter. Tidligere blev titandioxid (E171) meget brugt til belægningen, men det blev forbudt i EU i 2022. I EU er E555 primært tilladt som bærestof.",
+  "uses": "Bærestof i farvestoffer E171/E172 (nu primært E172) til overfladedekoration af konfekture, kagepynt og kosttilskud. Begrænsede kategorier med maks. niveauer.",
+  "health": "Glimmer optages næsten ikke fra tarmen. Aluminiumsindholdet er ikke biologisk let tilgængeligt, men bidrager i teorien til det samlede aluminiumindtag (EFSA TWI 1 mg/kg legemsvægt/uge, 2008). EFSA vurderede i 2012 anvendelsen som bærestof og fandt den ikke sikkerhedsmæssigt problematisk ved de anvendte niveauer.",
+  "research": "EFSA vurderede kaliumaluminiumsilicat-baserede perlemorspigmenter i 2012–2013. Etiske spørgsmål om børnearbejde i glimmerminer er mere diskuteret end sundhedsrisici. Forbuddet mod E171 har ændret sammensætningen af disse pigmenter.",
+  "keyReferences": [],
+  "pubmedTerm": "potassium aluminum silicate",
+  "flags": []
+ },
+ {
+  "code": "E556",
+  "nameDa": "Calciumaluminiumsilicat",
+  "nameEn": "Calcium aluminium silicate",
+  "category": "Antiklumpningsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Calciumaluminiumsilicat er et aluminiumholdigt silikat, der bruges som antiklumpningsmiddel i få fødevarer.",
+  "description": "Calciumaluminiumsilicat fremstilles syntetisk ved reaktion mellem calcium-, aluminium- og silikatforbindelser eller udvindes af mineraler. Det binder fugt og holder pulvere fritflydende. Efter EFSA's vurdering af aluminium blev brugen begrænset kraftigt i EU.",
+  "uses": "I EU kun tilladt i meget begrænsede kategorier med maks. niveauer; anvendes sjældent i praksis.",
+  "health": "Bekymringen knytter sig til aluminium. EFSA fastsatte i 2008 et TWI på 1 mg/kg legemsvægt/uge og vurderede, at især børn kan overskride det via den samlede kost. Nyrepatienter udskiller aluminium dårligere.",
+  "research": "Brugen blev indskrænket ved forordning 380/2012. Der er begrænset specifik forskning i E556 som tilsætningsstof.",
+  "keyReferences": [
+   {
+    "citation": "EFSA. Safety of aluminium from dietary intake. EFSA Journal. 2008.",
+    "searchTitle": "Safety of aluminium from dietary intake"
+   }
+  ],
+  "pubmedTerm": "calcium aluminosilicate",
+  "flags": [
+   "children_caution",
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E557",
+  "nameDa": "Zinksilicat (hemimorfit)",
+  "nameEn": "Zinc silicate (hemimorphite)",
+  "category": "Antiklumpningsmiddel",
+  "euStatus": "not_approved",
+  "origin": "natural",
+  "summary": "E557 er zinksilicat, fx mineralet hemimorfit, som har været opført som antiklumpningsmiddel, men ikke er godkendt i EU.",
+  "description": "Hemimorfit er et naturligt zinksilicat-mineral (Zn4Si2O7(OH)2·H2O). Zinksilicat har været foreslået som antiklumpningsmiddel. Nummeret optræder på ældre lister, men stoffet er ikke medtaget på EU's positivliste. Der er meget lidt offentlig information om faktisk anvendelse i fødevarer.",
+  "uses": "Ingen godkendt anvendelse i EU.",
+  "health": "Der foreligger ingen EFSA- eller JECFA-ADI for stoffet. Zink er et essentielt mineral, men højt indtag kan hæmme kobberoptagelsen. Viden om stoffet som tilsætningsstof er meget begrænset.",
+  "research": "Der er ikke kendskab til videnskabelige vurderinger af zinksilicat som tilsætningsstof.",
+  "keyReferences": [],
+  "pubmedTerm": "zinc silicate",
+  "flags": []
+ },
+ {
+  "code": "E558",
+  "nameDa": "Bentonit",
+  "nameEn": "Bentonite",
+  "category": "Antiklumpningsmiddel / klaringsmiddel",
+  "euStatus": "not_approved",
+  "origin": "natural",
+  "summary": "Bentonit er et naturligt lermineral, som i EU ikke er godkendt som tilsætningsstof, men bruges som hjælpestof til klaring af vin og saft.",
+  "description": "Bentonit er en ler bestående overvejende af montmorillonit, et aluminiumsilikat med stor evne til at svulme og binde proteiner og andre partikler. Det udvindes fra vulkanske askeaflejringer. I vin- og saftproduktion bruges det til at fjerne proteiner, der ellers kan give uklarhed; bentonitten fjernes igen før aftapning. Det har desuden været brugt som antiklumpningsmiddel og som foderadditiv.",
+  "uses": "Tekniske hjælpestoffer ved klaring af vin, øl, saft og eddike (fjernes fra slutproduktet). Ikke godkendt som tilsætningsstof i EU.",
+  "health": "Som klaringsmiddel efterlades kun ubetydelige rester. Bentonit optages ikke fra tarmen, men kan binde mineraler og visse lægemidler. Råmaterialet kan indeholde tungmetaller eller dioxiner, hvilket stiller krav til renhed. Der er ingen ADI fastsat for bentonit som tilsætningsstof.",
+  "research": "Bentonit er godkendt som fodertilsætningsstof i EU til binding af mykotoksiner, vurderet af EFSA's FEEDAP-panel. Der er begrænset forskning i bentonit som fødevaretilsætningsstof til mennesker.",
+  "keyReferences": [],
+  "pubmedTerm": "bentonite",
+  "flags": []
+ },
+ {
+  "code": "E559",
+  "nameDa": "Aluminiumsilicat (kaolin)",
+  "nameEn": "Aluminium silicate (kaolin)",
+  "category": "Antiklumpningsmiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Aluminiumsilicat, i praksis kaolin (porcelænsler), er et lermineral, der bruges som antiklumpningsmiddel og bærestof i begrænsede fødevarer.",
+  "description": "Kaolin er et naturligt lermineral, overvejende kaolinit (Al2Si2O5(OH)4), som udvindes og renses. Det er et fint hvidt pulver, der binder fugt. Det er kendt fra porcelænsfremstilling og har medicinsk været brugt mod diarré. I EU blev brugen som tilsætningsstof stærkt begrænset efter vurderingen af aluminium.",
+  "uses": "I EU kun tilladt i meget begrænsede kategorier, bl.a. som bærestof for farvestoffer, med maks. niveauer.",
+  "health": "Kaolin optages næsten ikke, men bidrager potentielt til aluminiumsindtaget. EFSA fastsatte i 2008 et TWI for aluminium på 1 mg/kg legemsvægt/uge og vurderede, at især børn kan overskride det via den samlede kost. Nyrepatienter udskiller aluminium dårligere.",
+  "research": "Brugen blev indskrænket ved forordning 380/2012. Der er begrænset specifik forskning i kaolin som fødevaretilsætningsstof.",
+  "keyReferences": [
+   {
+    "citation": "EFSA. Safety of aluminium from dietary intake. EFSA Journal. 2008.",
+    "searchTitle": "Safety of aluminium from dietary intake"
+   }
+  ],
+  "pubmedTerm": "kaolin",
+  "flags": [
+   "children_caution",
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E560",
+  "nameDa": "Kaliumsilikat",
+  "nameEn": "Potassium silicate",
+  "category": "Antiklumpningsmiddel",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Kaliumsilikat er et silikatsalt, som har været opført som antiklumpningsmiddel, men ikke er godkendt som tilsætningsstof i EU.",
+  "description": "Kaliumsilikat fremstilles ved at smelte kvartssand med kaliumcarbonat og danner basiske opløsninger (kalivandglas). Det bruges industrielt i maling, klæbemidler og som gødning. Som tilsætningsstof har det været foreslået som antiklumpningsmiddel. Det er ikke på EU's positivliste.",
+  "uses": "Ingen godkendt anvendelse i EU.",
+  "health": "Koncentrerede opløsninger er basiske og irriterende. Der foreligger ingen EFSA-ADI for stoffet som tilsætningsstof. Viden om brugen i fødevarer er begrænset.",
+  "research": "Der er ikke kendskab til nyere vurderinger af kaliumsilikat som fødevaretilsætningsstof.",
+  "keyReferences": [],
+  "pubmedTerm": "potassium silicate",
+  "flags": []
+ },
+ {
+  "code": "E570",
+  "nameDa": "Fedtsyrer",
+  "nameEn": "Fatty acids",
+  "category": "Antiklumpningsmiddel / glansmiddel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Fedtsyrer er de byggesten, fedt består af, og de bruges som antiklumpningsmiddel, glansmiddel og emulgeringshjælp.",
+  "description": "E570 dækker frie fedtsyrer som stearinsyre, palmitinsyre og oliesyre, der udvindes ved spaltning (hydrolyse) af vegetabilske eller animalske fedtstoffer og efterfølgende destillation. De kan danne en tynd overfladehinde, der giver glans og hindrer klumpning. De bruges også som skumdæmpere og i overfladebehandling af frugt. Kilden kan være både planter (fx palme eller soja) og dyr, hvilket normalt ikke fremgår af deklarationen.",
+  "uses": "Kosttilskud og tabletter, overfladebehandling, tyggegummi, konfekture og visse pulvere. Godkendt i EU quantum satis i en række kategorier.",
+  "health": "Fedtsyrer er normale bestanddele af kosten og omsættes som almindeligt fedt. EFSA vurderede i 2017, at der ikke var behov for en numerisk ADI, og at brugen som tilsætningsstof ikke giver anledning til sikkerhedsbekymring. De mængder, der tilføres, er små sammenlignet med kostens fedt. Kilden kan være animalsk, hvilket kan være relevant for vegetarer og veganere.",
+  "research": "EFSA's ANS-panel gen-evaluerede fedtsyrer (E570) i 2017 og fandt ingen sikkerhedsproblemer ved rapporteret brug. Forskning i enkelte fedtsyrers sundhedseffekter (fx mættede vs. umættede fedtsyrer) vedrører kosten som helhed og ikke tilsætningsstoffet.",
+  "keyReferences": [],
+  "pubmedTerm": "stearic acid",
+  "flags": [
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E571",
+  "nameDa": "Ammoniumstearat",
+  "nameEn": "Ammonium stearate",
+  "category": "Emulgator / antiklumpningsmiddel",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Ammoniumstearat er ammoniumsaltet af stearinsyre, som har været opført som tilsætningsstof, men ikke er godkendt i EU.",
+  "description": "Ammoniumstearat dannes ved reaktion mellem stearinsyre og ammoniak. Det er et voksagtigt stof, der bruges i kosmetik og som emulgator og vandafvisende middel i industrien. Nummeret optræder på ældre lister, men stoffet er ikke på EU's positivliste over fødevaretilsætningsstoffer.",
+  "uses": "Ingen godkendt anvendelse i EU.",
+  "health": "Stearinsyre og ammonium omsættes begge normalt i kroppen, og toksiciteten forventes at være lav. Der foreligger dog ingen EFSA-ADI for stoffet som tilsætningsstof.",
+  "research": "Der er ikke kendskab til videnskabelige vurderinger af ammoniumstearat som fødevaretilsætningsstof.",
+  "keyReferences": [],
+  "pubmedTerm": "ammonium stearate",
+  "flags": [
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E572",
+  "nameDa": "Magnesiumstearat",
+  "nameEn": "Magnesium stearate",
+  "category": "Antiklumpningsmiddel / smøremiddel",
+  "euStatus": "not_approved",
+  "origin": "mixed",
+  "summary": "Magnesiumstearat er magnesiumsaltet af stearinsyre, som især bruges som smøremiddel i tabletfremstilling; i EU er det dækket af E470b og ikke af E572.",
+  "description": "Magnesiumstearat fremstilles af stearinsyre fra vegetabilske eller animalske fedtstoffer og et magnesiumsalt. Det er et fint, fedtet pulver, der hindrer, at pulvere klæber til maskiner under tabletpresning. I EU-retten indgår det under E470b (magnesiumsalte af fedtsyrer), og E572 bruges ikke som selvstændigt nummer. Det er et af de mest anvendte hjælpestoffer i medicin og kosttilskud.",
+  "uses": "Kosttilskud, tabletter og kapsler, visse slik og pulverprodukter (under E470b i EU).",
+  "health": "Magnesiumstearat nedbrydes i kroppen til magnesium og stearinsyre, som begge er normale kostbestanddele. EFSA vurderede fedtsyresalte (E470a/b) i 2018 og fandt ikke behov for en numerisk ADI. Påstande på internettet om, at stoffet hæmmer optagelse af næringsstoffer eller skader immunsystemet, er ikke underbygget af solid forskning. Kilden kan være animalsk.",
+  "research": "EFSA's gen-evaluering af salte af fedtsyrer (E470a, E470b) fra 2018 fandt ingen sikkerhedsproblemer. Et ofte citeret cellestudie om stearinsyre og T-celler er ikke relevant for de mængder, der indtages.",
+  "keyReferences": [],
+  "pubmedTerm": "magnesium stearate",
+  "flags": [
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E573",
+  "nameDa": "Aluminiumstearat",
+  "nameEn": "Aluminium stearate",
+  "category": "Emulgator / antiklumpningsmiddel",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Aluminiumstearat er aluminiumsaltet af stearinsyre, som ikke er godkendt som fødevaretilsætningsstof i EU.",
+  "description": "Aluminiumstearat dannes ved reaktion mellem stearinsyre og aluminiumsalte. Det er et voksagtigt pulver med fortykkende og vandafvisende egenskaber, som bruges i maling, kosmetik og smøremidler. Som fødevaretilsætningsstof har det været foreslået som emulgator og antiklumpningsmiddel. Det er ikke på EU's positivliste.",
+  "uses": "Ingen godkendt anvendelse i EU.",
+  "health": "Stoffet vil bidrage til aluminiumsindtaget. EFSA fastsatte i 2008 et tolerabelt ugentligt indtag for aluminium på 1 mg/kg legemsvægt/uge. Der foreligger ingen specifik ADI for aluminiumstearat.",
+  "research": "Der er ikke kendskab til specifikke vurderinger af stoffet som fødevaretilsætningsstof.",
+  "keyReferences": [],
+  "pubmedTerm": "aluminum stearate",
+  "flags": [
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E574",
+  "nameDa": "Gluconsyre",
+  "nameEn": "Gluconic acid",
+  "category": "Surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Gluconsyre er en mild organisk syre, der dannes ved oxidation af glukose, og som bruges til at regulere surhedsgraden.",
+  "description": "Gluconsyre (C6H12O7) findes naturligt i honning, vin og frugt. Industrielt fremstilles den ved fermentering af glukose med svampen Aspergillus niger eller bakterier som Gluconobacter. I opløsning står den i ligevægt med glucono-delta-lacton (E575). Den er en mild syre og en god kompleksdanner for metalioner.",
+  "uses": "Mejeriprodukter, drikkevarer, konserves og forarbejdet kød. Godkendt i EU quantum satis i mange kategorier.",
+  "health": "Gluconsyre omsættes i kroppen og har meget lav toksicitet. EFSA konkluderede ved gen-evalueringen af gluconsyre og gluconater (2018), at der ikke var behov for en numerisk ADI, og at brugen ikke giver sikkerhedsbekymring. Meget høje doser kan give løs mave.",
+  "research": "EFSA's ANS-panel gen-evaluerede gluconsyre og dens salte (E574–E579) i 2018 uden at finde sikkerhedsproblemer ved de rapporterede niveauer. Der er kun begrænset nyere forskning i stoffet som tilsætningsstof.",
+  "keyReferences": [],
+  "pubmedTerm": "gluconic acid",
+  "flags": []
+ },
+ {
+  "code": "E575",
+  "nameDa": "Glucono-delta-lacton",
+  "nameEn": "Glucono-delta-lactone",
+  "category": "Surhedsregulerende middel / hævemiddel",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Glucono-delta-lacton (GDL) er et stof, der langsomt omdannes til gluconsyre i vand og derfor giver en gradvis syrning.",
+  "description": "GDL er den cykliske ester (lacton) af gluconsyre og fremstilles ved krystallisering af gluconsyre, som produceres ved fermentering af glukose. I vand hydrolyseres det langsomt til gluconsyre, så pH falder gradvist i stedet for momentant. Det gør GDL nyttigt til at koagulere tofu, modne spegepølser, i bagepulver og i ost. Smagen er i starten sød og bliver mildt syrlig.",
+  "uses": "Tofu, spegepølser og salami, bagepulver, feta-lignende oste, fiskeprodukter og kosttilskud. Godkendt i EU quantum satis i mange kategorier.",
+  "health": "GDL omdannes til gluconsyre, som omsættes normalt i kroppen. EFSA konkluderede i 2018, at der ikke var behov for en numerisk ADI, og at brugen ikke var et sikkerhedsproblem. Meget store mængder kan give mavebesvær.",
+  "research": "EFSA gen-evaluerede GDL sammen med gluconsyre og gluconater i 2018 og fandt ingen sikkerhedsproblemer. JECFA har tidligere tildelt en ADI \"not specified\". Der er begrænset ny forskning.",
+  "keyReferences": [],
+  "pubmedTerm": "glucono-delta-lactone",
+  "flags": []
+ },
+ {
+  "code": "E576",
+  "nameDa": "Natriumgluconat",
+  "nameEn": "Sodium gluconate",
+  "category": "Kompleksdanner / stabilisator",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Natriumgluconat er natriumsaltet af gluconsyre, der bruges til at binde metalioner og stabilisere fødevarer.",
+  "description": "Natriumgluconat fremstilles ved fermentering af glukose til gluconsyre, som derefter neutraliseres med natriumhydroxid. Det er en effektiv kompleksdanner, der binder calcium, jern og andre metalioner, hvilket kan forhindre misfarvning og uklarhed. Det kan også maskere bitter smag og bruges i nogle saltreducerede produkter.",
+  "uses": "Forarbejdet kød, drikkevarer, mejeriprodukter og saltreducerede produkter. Godkendt i EU quantum satis i mange kategorier.",
+  "health": "Natriumgluconat har meget lav toksicitet. EFSA fandt i 2018 ikke behov for en numerisk ADI. Bidraget til natriumindtaget er lille sammenlignet med salt.",
+  "research": "EFSA's gen-evaluering af gluconsyre og gluconater (2018) fandt ingen sikkerhedsproblemer. Der er kun begrænset specifik forskning i stoffet.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium gluconate",
+  "flags": []
+ },
+ {
+  "code": "E577",
+  "nameDa": "Kaliumgluconat",
+  "nameEn": "Potassium gluconate",
+  "category": "Kompleksdanner / surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Kaliumgluconat er kaliumsaltet af gluconsyre, som bruges som kompleksdanner og som kaliumkilde.",
+  "description": "Kaliumgluconat fremstilles ved at neutralisere gluconsyre med kaliumhydroxid eller -carbonat. Det bruges som kompleksdanner og surhedsregulerende middel og i kosttilskud som kaliumkilde. Det har en mildere smag end kaliumchlorid.",
+  "uses": "Drikkevarer, kosttilskud, saltreducerede produkter og forarbejdede fødevarer. Godkendt i EU quantum satis i mange kategorier.",
+  "health": "Kaliumgluconat anses for sikkert i fødevaremængder; EFSA fandt i 2018 ikke behov for en numerisk ADI. Personer med nedsat nyrefunktion eller som tager visse blodtryksmidler bør være opmærksomme på det samlede kaliumindtag.",
+  "research": "EFSA's gen-evaluering af gluconater (2018) fandt ingen sikkerhedsproblemer. Forskningen i kalium handler primært om kaliums gavnlige effekt på blodtryk.",
+  "keyReferences": [],
+  "pubmedTerm": "potassium gluconate",
+  "flags": [
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E578",
+  "nameDa": "Calciumgluconat",
+  "nameEn": "Calcium gluconate",
+  "category": "Kompleksdanner / stabilisator",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Calciumgluconat er calciumsaltet af gluconsyre, der bruges som stabilisator, fastholdelsesmiddel og calciumkilde.",
+  "description": "Calciumgluconat fremstilles ved at neutralisere gluconsyre med calciumcarbonat eller -hydroxid. Det bruges til at holde frugt og grøntsager faste, som stabilisator og til calciumberigelse. Det bruges også medicinsk, fx intravenøst ved lavt calcium.",
+  "uses": "Konserverede frugter og grøntsager, syltetøj, drikkevarer, kosttilskud og calciumberigede produkter. Godkendt i EU quantum satis i mange kategorier.",
+  "health": "Calciumgluconat har lav toksicitet. EFSA fandt i 2018 ikke behov for en numerisk ADI. Det samlede calciumindtag bør ikke overstige EFSA's øvre grænse på 2500 mg/dag for voksne, men tilsætningsstoffet bidrager kun lidt.",
+  "research": "EFSA's gen-evaluering af gluconater (2018) fandt ingen sikkerhedsproblemer. Der er begrænset ny forskning i stoffet som tilsætningsstof.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium gluconate",
+  "flags": []
+ },
+ {
+  "code": "E579",
+  "nameDa": "Ferrogluconat",
+  "nameEn": "Ferrous gluconate",
+  "category": "Farvestabilisator",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Ferrogluconat er jern(II)saltet af gluconsyre, der bruges til at give sorte oliven en jævn sort farve.",
+  "description": "Ferrogluconat fremstilles ved reaktion mellem gluconsyre og jern. Jernet reagerer med polyfenoler i oliven og stabiliserer den sorte farve, der dannes, når grønne oliven oxideres. Det bruges også i kosttilskud og berigelse som jernkilde.",
+  "uses": "I EU kun tilladt i oliven, der er gjort sorte ved oxidation, med maks. 150 mg/kg udtrykt som jern.",
+  "health": "I små mængder anses ferrogluconat for sikkert. Jern er essentielt, men for højt indtag kan give maveproblemer, og personer med jernophobningssygdom (hæmokromatose) bør undgå unødvendigt jerntilskud. Utilsigtet overdosis af jerntilskud er farlig for små børn, men det er ikke relevant for mængden i oliven.",
+  "research": "EFSA gen-evaluerede ferrogluconat og ferrolactat (E579, E585) og fandt, at brugen i oliven ikke var et sikkerhedsproblem. Der er begrænset ny forskning i stoffet som tilsætningsstof.",
+  "keyReferences": [],
+  "pubmedTerm": "ferrous gluconate",
+  "flags": []
+ },
+ {
+  "code": "E580",
+  "nameDa": "Magnesiumgluconat",
+  "nameEn": "Magnesium gluconate",
+  "category": "Surhedsregulerende middel / fastholdelsesmiddel",
+  "euStatus": "not_approved",
+  "origin": "nature_identical",
+  "summary": "Magnesiumgluconat er magnesiumsaltet af gluconsyre, som bruges i kosttilskud, men ikke er godkendt som tilsætningsstof i EU.",
+  "description": "Magnesiumgluconat fremstilles ved at neutralisere gluconsyre med magnesiumoxid eller -carbonat. Det er en velopløselig og veloptagelig magnesiumkilde. Som tilsætningsstof har det været foreslået som surhedsregulerende middel og fastholdelsesmiddel. I EU må det bruges som næringsstofkilde i kosttilskud, men ikke som tilsætningsstof.",
+  "uses": "Kosttilskud og berigede fødevarer (som næringsstof). Ingen godkendt anvendelse som tilsætningsstof i EU.",
+  "health": "Magnesiumgluconat har lav toksicitet. Højt indtag af magnesium fra tilskud kan give diarré; EFSA's øvre grænse for tilsat magnesium er 250 mg/dag for voksne. Nyrepatienter bør være forsigtige med magnesiumtilskud.",
+  "research": "Der er ingen EU-vurdering af stoffet som tilsætningsstof. Forskningen handler primært om optagelse af magnesium fra forskellige salte.",
+  "keyReferences": [],
+  "pubmedTerm": "magnesium gluconate",
+  "flags": [
+   "laxative",
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E585",
+  "nameDa": "Ferrolactat",
+  "nameEn": "Ferrous lactate",
+  "category": "Farvestabilisator",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Ferrolactat er jern(II)saltet af mælkesyre, som bruges til at stabilisere den sorte farve i oliven.",
+  "description": "Ferrolactat fremstilles ved reaktion mellem mælkesyre og jern eller jernsalte. Ligesom ferrogluconat reagerer jernet med polyfenoler i oliven og fastholder den sorte farve. Det bruges også som jernkilde i berigede fødevarer og kosttilskud.",
+  "uses": "I EU kun tilladt i oliven, der er gjort sorte ved oxidation, med maks. 150 mg/kg udtrykt som jern.",
+  "health": "I små mængder anses ferrolactat for sikkert. Personer med hæmokromatose bør undgå unødvendige jernkilder. Stoffet er ikke af mælkeoprindelse og indeholder ikke mælkeprotein.",
+  "research": "EFSA's gen-evaluering af E579 og E585 fandt ingen sikkerhedsproblemer ved brug i oliven. Der er begrænset ny forskning.",
+  "keyReferences": [],
+  "pubmedTerm": "ferrous lactate",
+  "flags": []
+ },
+ {
+  "code": "E586",
+  "nameDa": "4-hexylresorcinol",
+  "nameEn": "4-Hexylresorcinol",
+  "category": "Antioxidant",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "4-hexylresorcinol er et syntetisk stof, der forhindrer sorte pletter på rejer og andre krebsdyr.",
+  "description": "4-hexylresorcinol er en resorcinol-forbindelse med en hexyl-sidekæde og fremstilles syntetisk. Den hæmmer enzymet polyphenoloxidase, som ellers danner sorte pletter (melanose) på skaller af rejer og krebsdyr efter fangst. Det er et alternativ til sulfitter til samme formål. Stoffet bruges også i kosmetik og som antiseptisk middel i halstabletter.",
+  "uses": "Friske, frosne og dybfrosne krebsdyr som rejer, hummer og jomfruhummer. I EU begrænset til krebsdyr med en maks. restmængde (2 mg/kg i kødet).",
+  "health": "EFSA's gen-evaluering fra 2014 konkluderede, at brugen i krebsdyr ikke gav anledning til sikkerhedsbekymring ved de godkendte niveauer, da eksponeringen er meget lav. I modsætning til sulfitter er stoffet ikke kendt for at udløse astmaanfald. Der er rapporteret hudallergi ved kosmetisk brug.",
+  "research": "EFSA's ANS-panel vurderede 4-hexylresorcinol i 2014 (\"Scientific Opinion on the re-evaluation of 4-hexylresorcinol (E 586) as a food additive\") og fandt det sikkert ved den begrænsede brug. Dyreforsøg fra det amerikanske National Toxicology Program fandt ikke klare tegn på kræftfremkaldende effekt. Der har været interesse for stoffets mulige østrogen-lignende aktivitet i cellestudier, men betydningen ved fødevareeksponering vurderes som lav.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel. Scientific Opinion on the re-evaluation of 4-hexylresorcinol (E 586) as a food additive. EFSA Journal. 2014.",
+    "searchTitle": "Scientific Opinion on the re-evaluation of 4-hexylresorcinol (E 586) as a food additive"
+   }
+  ],
+  "pubmedTerm": "4-hexylresorcinol",
+  "flags": []
+ },
+ {
+  "code": "E620",
+  "nameDa": "Glutaminsyre",
+  "nameEn": "Glutamic acid",
+  "category": "Smagsforstærker",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Glutaminsyre er en naturlig aminosyre, der giver umami-smag og bruges som smagsforstærker.",
+  "description": "L-glutaminsyre er en af de mest almindelige aminosyrer i proteiner. Glutamater fremstilles i dag næsten udelukkende ved bakteriel fermentering af sukkerholdige råvarer (fx majs, sukkerrør eller roer) med bakterier som Corynebacterium glutamicum. Glutamat er den samme aminosyre, som findes naturligt i tomater, parmesan, svampe, sojasauce og modermælk, og kroppen skelner ikke mellem naturligt og tilsat glutamat. Stofferne giver umami-smag og forstærker smagen af salt og kød. Den frie syre er mindre opløselig end natriumsaltet og bruges derfor sjældnere.",
+  "uses": "Supper, bouillon, snacks, færdigretter, krydderiblandinger og saucer. I EU maks. 10 g/kg (alene eller i kombination med E621–E625), dog quantum satis i krydderier og smagsforstærkere.",
+  "health": "EFSA fastsatte i 2017 en gruppe-ADI på 30 mg/kg legemsvægt/dag for glutaminsyre og glutamater (E620–E625), udtrykt som glutaminsyre, baseret på neuroudviklingseffekter i et dyreforsøg. EFSA vurderede, at ADI kan overskrides af alle aldersgrupper med højt forbrug, når alle kilder medregnes, og bemærkede, at høje indtag i humane studier er forbundet med hovedpine og blodtryksstigning hos nogle personer. Det såkaldte \"kinarestaurant-syndrom\" er ikke bekræftet i kontrollerede dobbeltblindede forsøg ved normale mængder.",
+  "research": "EFSA's ANS-panel gen-evaluerede glutamaterne i 2017 og sænkede i praksis den tidligere \"ADI not specified\" til 30 mg/kg legemsvægt/dag og anbefalede at revurdere de maksimale niveauer i fødevarer. EFSA vurderede i 2015 også sikkerheden af en ændret produktionsmetode (fermentering med genetisk modificerede stammer) og fandt den uproblematisk. En systematisk gennemgang (Obayashi & Nagamura, J Headache Pain 2016) fandt ikke overbevisende evidens for, at glutamat i mad giver hovedpine. Debatten om glutamat og overvægt er uafklaret.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel. Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives. EFSA Journal. 2017.",
+    "searchTitle": "Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives"
+   },
+   {
+    "citation": "Obayashi Y, Nagamura Y. Does monosodium glutamate really cause headache? A systematic review of human studies. J Headache Pain. 2016.",
+    "searchTitle": "Does monosodium glutamate really cause headache?: a systematic review of human studies"
+   }
+  ],
+  "pubmedTerm": "glutamic acid",
+  "flags": []
+ },
+ {
+  "code": "E621",
+  "nameDa": "Mononatriumglutamat",
+  "nameEn": "Monosodium glutamate",
+  "category": "Smagsforstærker",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Mononatriumglutamat (MSG, \"atamon\"/\"vetsin\") er natriumsaltet af glutaminsyre og er verdens mest brugte smagsforstærker.",
+  "description": "MSG blev isoleret af den japanske kemiker Kikunae Ikeda i 1908 fra tangbouillon (kombu). Glutamater fremstilles i dag næsten udelukkende ved bakteriel fermentering af sukkerholdige råvarer (fx majs, sukkerrør eller roer) med bakterier som Corynebacterium glutamicum. Glutamat er den samme aminosyre, som findes naturligt i tomater, parmesan, svampe, sojasauce og modermælk, og kroppen skelner ikke mellem naturligt og tilsat glutamat. Stofferne giver umami-smag og forstærker smagen af salt og kød. MSG indeholder ca. en tredjedel så meget natrium som bordsalt og kan derfor bruges til at reducere det samlede saltindhold.",
+  "uses": "Chips og snacks, bouillonterninger, pulversupper, nudler, krydderiblandinger, færdigretter, saucer og asiatiske retter. I EU maks. 10 g/kg (samlet for E620–E625), quantum satis i krydderier og smagsforstærkere.",
+  "health": "EFSA fastsatte i 2017 en gruppe-ADI på 30 mg/kg legemsvægt/dag for glutaminsyre og glutamater (E620–E625), udtrykt som glutaminsyre, baseret på neuroudviklingseffekter i et dyreforsøg. EFSA vurderede, at ADI kan overskrides af alle aldersgrupper med højt forbrug, når alle kilder medregnes, og bemærkede, at høje indtag i humane studier er forbundet med hovedpine og blodtryksstigning hos nogle personer. Det såkaldte \"kinarestaurant-syndrom\" er ikke bekræftet i kontrollerede dobbeltblindede forsøg ved normale mængder. EFSA vurderede risikoen for overeksponering som høj for nogle befolkningsgrupper.",
+  "research": "EFSA's ANS-panel gen-evaluerede glutamaterne i 2017 og sænkede i praksis den tidligere \"ADI not specified\" til 30 mg/kg legemsvægt/dag og anbefalede at revurdere de maksimale niveauer i fødevarer. EFSA vurderede i 2015 også sikkerheden af en ændret produktionsmetode (fermentering med genetisk modificerede stammer) og fandt den uproblematisk. En systematisk gennemgang (Obayashi & Nagamura, J Headache Pain 2016) fandt ikke overbevisende evidens for, at glutamat i mad giver hovedpine. Debatten om glutamat og overvægt er uafklaret.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel. Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives. EFSA Journal. 2017.",
+    "searchTitle": "Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives"
+   },
+   {
+    "citation": "Obayashi Y, Nagamura Y. Does monosodium glutamate really cause headache? A systematic review of human studies. J Headache Pain. 2016.",
+    "searchTitle": "Does monosodium glutamate really cause headache?: a systematic review of human studies"
+   }
+  ],
+  "pubmedTerm": "monosodium glutamate",
+  "flags": []
+ },
+ {
+  "code": "E622",
+  "nameDa": "Monokaliumglutamat",
+  "nameEn": "Monopotassium glutamate",
+  "category": "Smagsforstærker",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Monokaliumglutamat er kaliumsaltet af glutaminsyre og bruges som smagsforstærker med umami-smag, ofte i natriumreducerede produkter.",
+  "description": "Monokaliumglutamat er et salt af L-glutaminsyre med kalium som modion i stedet for natrium. Glutamater fremstilles i dag næsten udelukkende ved bakteriel fermentering af sukkerholdige råvarer (fx majs, sukkerrør eller roer) med bakterier som Corynebacterium glutamicum. Glutamat er den samme aminosyre, som findes naturligt i tomater, parmesan, svampe, sojasauce og modermælk, og kroppen skelner ikke mellem naturligt og tilsat glutamat. Stofferne giver umami-smag og forstærker smagen af salt og kød. Kaliumformen bruges især, hvor man ønsker at undgå natrium, men den er mindre udbredt end MSG (E621).",
+  "uses": "Saltreducerede supper, bouillon, krydderiblandinger og færdigretter. I EU maks. 10 g/kg (samlet for E620–E625), quantum satis i krydderier og smagsforstærkere.",
+  "health": "EFSA fastsatte i 2017 en gruppe-ADI på 30 mg/kg legemsvægt/dag for glutaminsyre og glutamater (E620–E625), udtrykt som glutaminsyre, baseret på neuroudviklingseffekter i et dyreforsøg. EFSA vurderede, at ADI kan overskrides af alle aldersgrupper med højt forbrug, når alle kilder medregnes, og bemærkede, at høje indtag i humane studier er forbundet med hovedpine og blodtryksstigning hos nogle personer. Det såkaldte \"kinarestaurant-syndrom\" er ikke bekræftet i kontrollerede dobbeltblindede forsøg ved normale mængder. Personer med nedsat nyrefunktion bør være opmærksomme på kaliumindholdet.",
+  "research": "EFSA's ANS-panel gen-evaluerede glutamaterne i 2017 og sænkede i praksis den tidligere \"ADI not specified\" til 30 mg/kg legemsvægt/dag og anbefalede at revurdere de maksimale niveauer i fødevarer. EFSA vurderede i 2015 også sikkerheden af en ændret produktionsmetode (fermentering med genetisk modificerede stammer) og fandt den uproblematisk. En systematisk gennemgang (Obayashi & Nagamura, J Headache Pain 2016) fandt ikke overbevisende evidens for, at glutamat i mad giver hovedpine. Debatten om glutamat og overvægt er uafklaret.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel. Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives. EFSA Journal. 2017.",
+    "searchTitle": "Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives"
+   }
+  ],
+  "pubmedTerm": "monopotassium glutamate",
+  "flags": [
+   "kidney_caution"
+  ]
+ },
+ {
+  "code": "E623",
+  "nameDa": "Calciumdiglutamat",
+  "nameEn": "Calcium diglutamate",
+  "category": "Smagsforstærker",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Calciumdiglutamat er calciumsaltet af glutaminsyre og bruges som smagsforstærker med umami-smag, ofte i natriumreducerede produkter.",
+  "description": "Calciumdiglutamat er et salt af L-glutaminsyre med calcium som modion i stedet for natrium. Glutamater fremstilles i dag næsten udelukkende ved bakteriel fermentering af sukkerholdige råvarer (fx majs, sukkerrør eller roer) med bakterier som Corynebacterium glutamicum. Glutamat er den samme aminosyre, som findes naturligt i tomater, parmesan, svampe, sojasauce og modermælk, og kroppen skelner ikke mellem naturligt og tilsat glutamat. Stofferne giver umami-smag og forstærker smagen af salt og kød. Calciumformen bruges især, hvor man ønsker at undgå natrium, men den er mindre udbredt end MSG (E621).",
+  "uses": "Saltreducerede supper, bouillon, krydderiblandinger og færdigretter. I EU maks. 10 g/kg (samlet for E620–E625), quantum satis i krydderier og smagsforstærkere.",
+  "health": "EFSA fastsatte i 2017 en gruppe-ADI på 30 mg/kg legemsvægt/dag for glutaminsyre og glutamater (E620–E625), udtrykt som glutaminsyre, baseret på neuroudviklingseffekter i et dyreforsøg. EFSA vurderede, at ADI kan overskrides af alle aldersgrupper med højt forbrug, når alle kilder medregnes, og bemærkede, at høje indtag i humane studier er forbundet med hovedpine og blodtryksstigning hos nogle personer. Det såkaldte \"kinarestaurant-syndrom\" er ikke bekræftet i kontrollerede dobbeltblindede forsøg ved normale mængder.",
+  "research": "EFSA's ANS-panel gen-evaluerede glutamaterne i 2017 og sænkede i praksis den tidligere \"ADI not specified\" til 30 mg/kg legemsvægt/dag og anbefalede at revurdere de maksimale niveauer i fødevarer. EFSA vurderede i 2015 også sikkerheden af en ændret produktionsmetode (fermentering med genetisk modificerede stammer) og fandt den uproblematisk. En systematisk gennemgang (Obayashi & Nagamura, J Headache Pain 2016) fandt ikke overbevisende evidens for, at glutamat i mad giver hovedpine. Debatten om glutamat og overvægt er uafklaret.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel. Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives. EFSA Journal. 2017.",
+    "searchTitle": "Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives"
+   }
+  ],
+  "pubmedTerm": "calcium diglutamate",
+  "flags": []
+ },
+ {
+  "code": "E624",
+  "nameDa": "Monoammoniumglutamat",
+  "nameEn": "Monoammonium glutamate",
+  "category": "Smagsforstærker",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Monoammoniumglutamat er ammoniumsaltet af glutaminsyre og bruges som smagsforstærker med umami-smag, ofte i natriumreducerede produkter.",
+  "description": "Monoammoniumglutamat er et salt af L-glutaminsyre med ammonium som modion i stedet for natrium. Glutamater fremstilles i dag næsten udelukkende ved bakteriel fermentering af sukkerholdige råvarer (fx majs, sukkerrør eller roer) med bakterier som Corynebacterium glutamicum. Glutamat er den samme aminosyre, som findes naturligt i tomater, parmesan, svampe, sojasauce og modermælk, og kroppen skelner ikke mellem naturligt og tilsat glutamat. Stofferne giver umami-smag og forstærker smagen af salt og kød. Ammoniumformen bruges især, hvor man ønsker at undgå natrium, men den er mindre udbredt end MSG (E621).",
+  "uses": "Saltreducerede supper, bouillon, krydderiblandinger og færdigretter. I EU maks. 10 g/kg (samlet for E620–E625), quantum satis i krydderier og smagsforstærkere.",
+  "health": "EFSA fastsatte i 2017 en gruppe-ADI på 30 mg/kg legemsvægt/dag for glutaminsyre og glutamater (E620–E625), udtrykt som glutaminsyre, baseret på neuroudviklingseffekter i et dyreforsøg. EFSA vurderede, at ADI kan overskrides af alle aldersgrupper med højt forbrug, når alle kilder medregnes, og bemærkede, at høje indtag i humane studier er forbundet med hovedpine og blodtryksstigning hos nogle personer. Det såkaldte \"kinarestaurant-syndrom\" er ikke bekræftet i kontrollerede dobbeltblindede forsøg ved normale mængder.",
+  "research": "EFSA's ANS-panel gen-evaluerede glutamaterne i 2017 og sænkede i praksis den tidligere \"ADI not specified\" til 30 mg/kg legemsvægt/dag og anbefalede at revurdere de maksimale niveauer i fødevarer. EFSA vurderede i 2015 også sikkerheden af en ændret produktionsmetode (fermentering med genetisk modificerede stammer) og fandt den uproblematisk. En systematisk gennemgang (Obayashi & Nagamura, J Headache Pain 2016) fandt ikke overbevisende evidens for, at glutamat i mad giver hovedpine. Debatten om glutamat og overvægt er uafklaret.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel. Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives. EFSA Journal. 2017.",
+    "searchTitle": "Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives"
+   }
+  ],
+  "pubmedTerm": "monoammonium glutamate",
+  "flags": []
+ },
+ {
+  "code": "E625",
+  "nameDa": "Magnesiumdiglutamat",
+  "nameEn": "Magnesium diglutamate",
+  "category": "Smagsforstærker",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Magnesiumdiglutamat er magnesiumsaltet af glutaminsyre og bruges som smagsforstærker med umami-smag, ofte i natriumreducerede produkter.",
+  "description": "Magnesiumdiglutamat er et salt af L-glutaminsyre med magnesium som modion i stedet for natrium. Glutamater fremstilles i dag næsten udelukkende ved bakteriel fermentering af sukkerholdige råvarer (fx majs, sukkerrør eller roer) med bakterier som Corynebacterium glutamicum. Glutamat er den samme aminosyre, som findes naturligt i tomater, parmesan, svampe, sojasauce og modermælk, og kroppen skelner ikke mellem naturligt og tilsat glutamat. Stofferne giver umami-smag og forstærker smagen af salt og kød. Magnesiumformen bruges især, hvor man ønsker at undgå natrium, men den er mindre udbredt end MSG (E621).",
+  "uses": "Saltreducerede supper, bouillon, krydderiblandinger og færdigretter. I EU maks. 10 g/kg (samlet for E620–E625), quantum satis i krydderier og smagsforstærkere.",
+  "health": "EFSA fastsatte i 2017 en gruppe-ADI på 30 mg/kg legemsvægt/dag for glutaminsyre og glutamater (E620–E625), udtrykt som glutaminsyre, baseret på neuroudviklingseffekter i et dyreforsøg. EFSA vurderede, at ADI kan overskrides af alle aldersgrupper med højt forbrug, når alle kilder medregnes, og bemærkede, at høje indtag i humane studier er forbundet med hovedpine og blodtryksstigning hos nogle personer. Det såkaldte \"kinarestaurant-syndrom\" er ikke bekræftet i kontrollerede dobbeltblindede forsøg ved normale mængder.",
+  "research": "EFSA's ANS-panel gen-evaluerede glutamaterne i 2017 og sænkede i praksis den tidligere \"ADI not specified\" til 30 mg/kg legemsvægt/dag og anbefalede at revurdere de maksimale niveauer i fødevarer. EFSA vurderede i 2015 også sikkerheden af en ændret produktionsmetode (fermentering med genetisk modificerede stammer) og fandt den uproblematisk. En systematisk gennemgang (Obayashi & Nagamura, J Headache Pain 2016) fandt ikke overbevisende evidens for, at glutamat i mad giver hovedpine. Debatten om glutamat og overvægt er uafklaret.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel. Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives. EFSA Journal. 2017.",
+    "searchTitle": "Re-evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives"
+   }
+  ],
+  "pubmedTerm": "magnesium diglutamate",
+  "flags": []
+ },
+ {
+  "code": "E626",
+  "nameDa": "Guanylsyre",
+  "nameEn": "Guanylic acid",
+  "category": "Smagsforstærker",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Guanylsyre er en ribonukleotid-smagsforstærker, der forstærker umami-smag, typisk sammen med glutamat.",
+  "description": "Guanylsyre (guanosin-5'-monophosphat, GMP) er den frie syre og bruges sjældent i ren form. Ribonukleotider som guanylat og inosinat forstærker umami-smagen kraftigt i samspil med glutamat (synergi), så små mængder rækker langt. De fremstilles ved fermentering med mikroorganismer eller ved enzymatisk nedbrydning af gær-RNA; tidligere blev inosinat også udvundet af kød og fisk. Kilden (plante, gær eller animalsk) fremgår normalt ikke af deklarationen.",
+  "uses": "Chips og snacks, pulversupper, bouillon, nudler, krydderiblandinger, færdigretter og saucer. I EU maks. 500 mg/kg for ribonukleotiderne (E626–E635) samlet, quantum satis i krydderier og smagsforstærkere.",
+  "health": "Ribonukleotider nedbrydes i kroppen til urinsyre, og personer med urinsyregigt (podagra) eller forhøjet urinsyre rådes ofte til at være forsigtige, selvom bidraget fra tilsætningsstoffer er lille sammenlignet med kød og fisk. JECFA har tildelt ribonukleotiderne en ADI \"not specified\". Der har været sporadiske rapporter om hududslæt, men sammenhængen er ikke dokumenteret. Stofferne er generelt ikke tilladt i fødevarer til spædbørn.",
+  "research": "Ribonukleotiderne (E626–E635) er på EFSA's liste til gen-evaluering, men en fuld vurdering var ikke afsluttet ved seneste kendte status. JECFA har tidligere vurderet dem som sikre ved nuværende brug. Forskning i ribonukleotider handler især om deres smagsmekanisme (umami-receptoren T1R1/T1R3) og om purinindtag ved gigt.",
+  "keyReferences": [],
+  "pubmedTerm": "guanosine monophosphate",
+  "flags": []
+ },
+ {
+  "code": "E627",
+  "nameDa": "Dinatriumguanylat",
+  "nameEn": "Disodium guanylate",
+  "category": "Smagsforstærker",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Dinatriumguanylat er en ribonukleotid-smagsforstærker, der forstærker umami-smag, typisk sammen med glutamat.",
+  "description": "Dinatriumguanylat er natriumsaltet af GMP og den mest anvendte form; det fremstilles ofte ud fra gær eller tørret shiitake-svamp. Ribonukleotider som guanylat og inosinat forstærker umami-smagen kraftigt i samspil med glutamat (synergi), så små mængder rækker langt. De fremstilles ved fermentering med mikroorganismer eller ved enzymatisk nedbrydning af gær-RNA; tidligere blev inosinat også udvundet af kød og fisk. Kilden (plante, gær eller animalsk) fremgår normalt ikke af deklarationen.",
+  "uses": "Chips og snacks, pulversupper, bouillon, nudler, krydderiblandinger, færdigretter og saucer. I EU maks. 500 mg/kg for ribonukleotiderne (E626–E635) samlet, quantum satis i krydderier og smagsforstærkere.",
+  "health": "Ribonukleotider nedbrydes i kroppen til urinsyre, og personer med urinsyregigt (podagra) eller forhøjet urinsyre rådes ofte til at være forsigtige, selvom bidraget fra tilsætningsstoffer er lille sammenlignet med kød og fisk. JECFA har tildelt ribonukleotiderne en ADI \"not specified\". Der har været sporadiske rapporter om hududslæt, men sammenhængen er ikke dokumenteret. Stofferne er generelt ikke tilladt i fødevarer til spædbørn.",
+  "research": "Ribonukleotiderne (E626–E635) er på EFSA's liste til gen-evaluering, men en fuld vurdering var ikke afsluttet ved seneste kendte status. JECFA har tidligere vurderet dem som sikre ved nuværende brug. Forskning i ribonukleotider handler især om deres smagsmekanisme (umami-receptoren T1R1/T1R3) og om purinindtag ved gigt.",
+  "keyReferences": [],
+  "pubmedTerm": "disodium guanylate",
+  "flags": []
+ },
+ {
+  "code": "E628",
+  "nameDa": "Dikaliumguanylat",
+  "nameEn": "Dipotassium guanylate",
+  "category": "Smagsforstærker",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Dikaliumguanylat er en ribonukleotid-smagsforstærker, der forstærker umami-smag, typisk sammen med glutamat.",
+  "description": "Dikaliumguanylat er kaliumsaltet af GMP og bruges sjældnere end natriumformen. Ribonukleotider som guanylat og inosinat forstærker umami-smagen kraftigt i samspil med glutamat (synergi), så små mængder rækker langt. De fremstilles ved fermentering med mikroorganismer eller ved enzymatisk nedbrydning af gær-RNA; tidligere blev inosinat også udvundet af kød og fisk. Kilden (plante, gær eller animalsk) fremgår normalt ikke af deklarationen.",
+  "uses": "Chips og snacks, pulversupper, bouillon, nudler, krydderiblandinger, færdigretter og saucer. I EU maks. 500 mg/kg for ribonukleotiderne (E626–E635) samlet, quantum satis i krydderier og smagsforstærkere.",
+  "health": "Ribonukleotider nedbrydes i kroppen til urinsyre, og personer med urinsyregigt (podagra) eller forhøjet urinsyre rådes ofte til at være forsigtige, selvom bidraget fra tilsætningsstoffer er lille sammenlignet med kød og fisk. JECFA har tildelt ribonukleotiderne en ADI \"not specified\". Der har været sporadiske rapporter om hududslæt, men sammenhængen er ikke dokumenteret. Stofferne er generelt ikke tilladt i fødevarer til spædbørn.",
+  "research": "Ribonukleotiderne (E626–E635) er på EFSA's liste til gen-evaluering, men en fuld vurdering var ikke afsluttet ved seneste kendte status. JECFA har tidligere vurderet dem som sikre ved nuværende brug. Forskning i ribonukleotider handler især om deres smagsmekanisme (umami-receptoren T1R1/T1R3) og om purinindtag ved gigt.",
+  "keyReferences": [],
+  "pubmedTerm": "guanosine monophosphate",
+  "flags": []
+ },
+ {
+  "code": "E629",
+  "nameDa": "Calciumguanylat",
+  "nameEn": "Calcium guanylate",
+  "category": "Smagsforstærker",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Calciumguanylat er en ribonukleotid-smagsforstærker, der forstærker umami-smag, typisk sammen med glutamat.",
+  "description": "Calciumguanylat er calciumsaltet af GMP og bruges kun sjældent. Ribonukleotider som guanylat og inosinat forstærker umami-smagen kraftigt i samspil med glutamat (synergi), så små mængder rækker langt. De fremstilles ved fermentering med mikroorganismer eller ved enzymatisk nedbrydning af gær-RNA; tidligere blev inosinat også udvundet af kød og fisk. Kilden (plante, gær eller animalsk) fremgår normalt ikke af deklarationen.",
+  "uses": "Chips og snacks, pulversupper, bouillon, nudler, krydderiblandinger, færdigretter og saucer. I EU maks. 500 mg/kg for ribonukleotiderne (E626–E635) samlet, quantum satis i krydderier og smagsforstærkere.",
+  "health": "Ribonukleotider nedbrydes i kroppen til urinsyre, og personer med urinsyregigt (podagra) eller forhøjet urinsyre rådes ofte til at være forsigtige, selvom bidraget fra tilsætningsstoffer er lille sammenlignet med kød og fisk. JECFA har tildelt ribonukleotiderne en ADI \"not specified\". Der har været sporadiske rapporter om hududslæt, men sammenhængen er ikke dokumenteret. Stofferne er generelt ikke tilladt i fødevarer til spædbørn.",
+  "research": "Ribonukleotiderne (E626–E635) er på EFSA's liste til gen-evaluering, men en fuld vurdering var ikke afsluttet ved seneste kendte status. JECFA har tidligere vurderet dem som sikre ved nuværende brug. Forskning i ribonukleotider handler især om deres smagsmekanisme (umami-receptoren T1R1/T1R3) og om purinindtag ved gigt.",
+  "keyReferences": [],
+  "pubmedTerm": "guanosine monophosphate",
+  "flags": []
+ },
+ {
+  "code": "E630",
+  "nameDa": "Inosinsyre",
+  "nameEn": "Inosinic acid",
+  "category": "Smagsforstærker",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Inosinsyre er en ribonukleotid-smagsforstærker, der forstærker umami-smag, typisk sammen med glutamat.",
+  "description": "Inosinsyre (inosin-5'-monophosphat, IMP) findes naturligt i kød og fisk, bl.a. i bonitoflager, og er den frie syre. Ribonukleotider som guanylat og inosinat forstærker umami-smagen kraftigt i samspil med glutamat (synergi), så små mængder rækker langt. De fremstilles ved fermentering med mikroorganismer eller ved enzymatisk nedbrydning af gær-RNA; tidligere blev inosinat også udvundet af kød og fisk. Kilden (plante, gær eller animalsk) fremgår normalt ikke af deklarationen.",
+  "uses": "Chips og snacks, pulversupper, bouillon, nudler, krydderiblandinger, færdigretter og saucer. I EU maks. 500 mg/kg for ribonukleotiderne (E626–E635) samlet, quantum satis i krydderier og smagsforstærkere.",
+  "health": "Ribonukleotider nedbrydes i kroppen til urinsyre, og personer med urinsyregigt (podagra) eller forhøjet urinsyre rådes ofte til at være forsigtige, selvom bidraget fra tilsætningsstoffer er lille sammenlignet med kød og fisk. JECFA har tildelt ribonukleotiderne en ADI \"not specified\". Der har været sporadiske rapporter om hududslæt, men sammenhængen er ikke dokumenteret. Stofferne er generelt ikke tilladt i fødevarer til spædbørn.",
+  "research": "Ribonukleotiderne (E626–E635) er på EFSA's liste til gen-evaluering, men en fuld vurdering var ikke afsluttet ved seneste kendte status. JECFA har tidligere vurderet dem som sikre ved nuværende brug. Forskning i ribonukleotider handler især om deres smagsmekanisme (umami-receptoren T1R1/T1R3) og om purinindtag ved gigt.",
+  "keyReferences": [],
+  "pubmedTerm": "inosinic acid",
+  "flags": [
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E631",
+  "nameDa": "Dinatriuminosinat",
+  "nameEn": "Disodium inosinate",
+  "category": "Smagsforstærker",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Dinatriuminosinat er en ribonukleotid-smagsforstærker, der forstærker umami-smag, typisk sammen med glutamat.",
+  "description": "Dinatriuminosinat er natriumsaltet af IMP og en af de mest brugte ribonukleotider; det kan være fremstillet af animalske råvarer, men fremstilles i dag oftest ved fermentering. Ribonukleotider som guanylat og inosinat forstærker umami-smagen kraftigt i samspil med glutamat (synergi), så små mængder rækker langt. De fremstilles ved fermentering med mikroorganismer eller ved enzymatisk nedbrydning af gær-RNA; tidligere blev inosinat også udvundet af kød og fisk. Kilden (plante, gær eller animalsk) fremgår normalt ikke af deklarationen.",
+  "uses": "Chips og snacks, pulversupper, bouillon, nudler, krydderiblandinger, færdigretter og saucer. I EU maks. 500 mg/kg for ribonukleotiderne (E626–E635) samlet, quantum satis i krydderier og smagsforstærkere.",
+  "health": "Ribonukleotider nedbrydes i kroppen til urinsyre, og personer med urinsyregigt (podagra) eller forhøjet urinsyre rådes ofte til at være forsigtige, selvom bidraget fra tilsætningsstoffer er lille sammenlignet med kød og fisk. JECFA har tildelt ribonukleotiderne en ADI \"not specified\". Der har været sporadiske rapporter om hududslæt, men sammenhængen er ikke dokumenteret. Stofferne er generelt ikke tilladt i fødevarer til spædbørn.",
+  "research": "Ribonukleotiderne (E626–E635) er på EFSA's liste til gen-evaluering, men en fuld vurdering var ikke afsluttet ved seneste kendte status. JECFA har tidligere vurderet dem som sikre ved nuværende brug. Forskning i ribonukleotider handler især om deres smagsmekanisme (umami-receptoren T1R1/T1R3) og om purinindtag ved gigt.",
+  "keyReferences": [],
+  "pubmedTerm": "disodium inosinate",
+  "flags": [
+   "animal_origin"
+  ]
+ },
+ {
+  "code": "E632",
+  "nameDa": "Dikaliuminosinat",
+  "nameEn": "Dipotassium inosinate",
+  "category": "Smagsforstærker",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Dikaliuminosinat er en ribonukleotid-smagsforstærker, der forstærker umami-smag, typisk sammen med glutamat.",
+  "description": "Dikaliuminosinat er kaliumsaltet af IMP og bruges sjældnere end natriumformen. Ribonukleotider som guanylat og inosinat forstærker umami-smagen kraftigt i samspil med glutamat (synergi), så små mængder rækker langt. De fremstilles ved fermentering med mikroorganismer eller ved enzymatisk nedbrydning af gær-RNA; tidligere blev inosinat også udvundet af kød og fisk. Kilden (plante, gær eller animalsk) fremgår normalt ikke af deklarationen.",
+  "uses": "Chips og snacks, pulversupper, bouillon, nudler, krydderiblandinger, færdigretter og saucer. I EU maks. 500 mg/kg for ribonukleotiderne (E626–E635) samlet, quantum satis i krydderier og smagsforstærkere.",
+  "health": "Ribonukleotider nedbrydes i kroppen til urinsyre, og personer med urinsyregigt (podagra) eller forhøjet urinsyre rådes ofte til at være forsigtige, selvom bidraget fra tilsætningsstoffer er lille sammenlignet med kød og fisk. JECFA har tildelt ribonukleotiderne en ADI \"not specified\". Der har været sporadiske rapporter om hududslæt, men sammenhængen er ikke dokumenteret. Stofferne er generelt ikke tilladt i fødevarer til spædbørn.",
+  "research": "Ribonukleotiderne (E626–E635) er på EFSA's liste til gen-evaluering, men en fuld vurdering var ikke afsluttet ved seneste kendte status. JECFA har tidligere vurderet dem som sikre ved nuværende brug. Forskning i ribonukleotider handler især om deres smagsmekanisme (umami-receptoren T1R1/T1R3) og om purinindtag ved gigt.",
+  "keyReferences": [],
+  "pubmedTerm": "inosinic acid",
+  "flags": []
+ },
+ {
+  "code": "E633",
+  "nameDa": "Calciuminosinat",
+  "nameEn": "Calcium inosinate",
+  "category": "Smagsforstærker",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Calciuminosinat er en ribonukleotid-smagsforstærker, der forstærker umami-smag, typisk sammen med glutamat.",
+  "description": "Calciuminosinat er calciumsaltet af IMP og bruges kun sjældent. Ribonukleotider som guanylat og inosinat forstærker umami-smagen kraftigt i samspil med glutamat (synergi), så små mængder rækker langt. De fremstilles ved fermentering med mikroorganismer eller ved enzymatisk nedbrydning af gær-RNA; tidligere blev inosinat også udvundet af kød og fisk. Kilden (plante, gær eller animalsk) fremgår normalt ikke af deklarationen.",
+  "uses": "Chips og snacks, pulversupper, bouillon, nudler, krydderiblandinger, færdigretter og saucer. I EU maks. 500 mg/kg for ribonukleotiderne (E626–E635) samlet, quantum satis i krydderier og smagsforstærkere.",
+  "health": "Ribonukleotider nedbrydes i kroppen til urinsyre, og personer med urinsyregigt (podagra) eller forhøjet urinsyre rådes ofte til at være forsigtige, selvom bidraget fra tilsætningsstoffer er lille sammenlignet med kød og fisk. JECFA har tildelt ribonukleotiderne en ADI \"not specified\". Der har været sporadiske rapporter om hududslæt, men sammenhængen er ikke dokumenteret. Stofferne er generelt ikke tilladt i fødevarer til spædbørn.",
+  "research": "Ribonukleotiderne (E626–E635) er på EFSA's liste til gen-evaluering, men en fuld vurdering var ikke afsluttet ved seneste kendte status. JECFA har tidligere vurderet dem som sikre ved nuværende brug. Forskning i ribonukleotider handler især om deres smagsmekanisme (umami-receptoren T1R1/T1R3) og om purinindtag ved gigt.",
+  "keyReferences": [],
+  "pubmedTerm": "inosinic acid",
+  "flags": []
+ },
+ {
+  "code": "E634",
+  "nameDa": "Calcium-5'-ribonukleotider",
+  "nameEn": "Calcium 5'-ribonucleotides",
+  "category": "Smagsforstærker",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Calcium-5'-ribonukleotider er en ribonukleotid-smagsforstærker, der forstærker umami-smag, typisk sammen med glutamat.",
+  "description": "Calcium-5'-ribonukleotider er en blanding af calciumsalte af guanylat og inosinat. Ribonukleotider som guanylat og inosinat forstærker umami-smagen kraftigt i samspil med glutamat (synergi), så små mængder rækker langt. De fremstilles ved fermentering med mikroorganismer eller ved enzymatisk nedbrydning af gær-RNA; tidligere blev inosinat også udvundet af kød og fisk. Kilden (plante, gær eller animalsk) fremgår normalt ikke af deklarationen.",
+  "uses": "Chips og snacks, pulversupper, bouillon, nudler, krydderiblandinger, færdigretter og saucer. I EU maks. 500 mg/kg for ribonukleotiderne (E626–E635) samlet, quantum satis i krydderier og smagsforstærkere.",
+  "health": "Ribonukleotider nedbrydes i kroppen til urinsyre, og personer med urinsyregigt (podagra) eller forhøjet urinsyre rådes ofte til at være forsigtige, selvom bidraget fra tilsætningsstoffer er lille sammenlignet med kød og fisk. JECFA har tildelt ribonukleotiderne en ADI \"not specified\". Der har været sporadiske rapporter om hududslæt, men sammenhængen er ikke dokumenteret. Stofferne er generelt ikke tilladt i fødevarer til spædbørn.",
+  "research": "Ribonukleotiderne (E626–E635) er på EFSA's liste til gen-evaluering, men en fuld vurdering var ikke afsluttet ved seneste kendte status. JECFA har tidligere vurderet dem som sikre ved nuværende brug. Forskning i ribonukleotider handler især om deres smagsmekanisme (umami-receptoren T1R1/T1R3) og om purinindtag ved gigt.",
+  "keyReferences": [],
+  "pubmedTerm": "ribonucleotides",
+  "flags": []
+ },
+ {
+  "code": "E635",
+  "nameDa": "Dinatrium-5'-ribonukleotider",
+  "nameEn": "Disodium 5'-ribonucleotides",
+  "category": "Smagsforstærker",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Dinatrium-5'-ribonukleotider er en ribonukleotid-smagsforstærker, der forstærker umami-smag, typisk sammen med glutamat.",
+  "description": "Dinatrium-5'-ribonukleotider (I+G) er en blanding af cirka lige dele dinatriuminosinat og dinatriumguanylat og er den mest almindelige form i handlen. Ribonukleotider som guanylat og inosinat forstærker umami-smagen kraftigt i samspil med glutamat (synergi), så små mængder rækker langt. De fremstilles ved fermentering med mikroorganismer eller ved enzymatisk nedbrydning af gær-RNA; tidligere blev inosinat også udvundet af kød og fisk. Kilden (plante, gær eller animalsk) fremgår normalt ikke af deklarationen.",
+  "uses": "Chips og snacks, pulversupper, bouillon, nudler, krydderiblandinger, færdigretter og saucer. I EU maks. 500 mg/kg for ribonukleotiderne (E626–E635) samlet, quantum satis i krydderier og smagsforstærkere.",
+  "health": "Ribonukleotider nedbrydes i kroppen til urinsyre, og personer med urinsyregigt (podagra) eller forhøjet urinsyre rådes ofte til at være forsigtige, selvom bidraget fra tilsætningsstoffer er lille sammenlignet med kød og fisk. JECFA har tildelt ribonukleotiderne en ADI \"not specified\". Der har været sporadiske rapporter om hududslæt, men sammenhængen er ikke dokumenteret. Stofferne er generelt ikke tilladt i fødevarer til spædbørn.",
+  "research": "Ribonukleotiderne (E626–E635) er på EFSA's liste til gen-evaluering, men en fuld vurdering var ikke afsluttet ved seneste kendte status. JECFA har tidligere vurderet dem som sikre ved nuværende brug. Forskning i ribonukleotider handler især om deres smagsmekanisme (umami-receptoren T1R1/T1R3) og om purinindtag ved gigt.",
+  "keyReferences": [],
+  "pubmedTerm": "disodium ribonucleotides",
+  "flags": []
+ },
+ {
+  "code": "E636",
+  "nameDa": "Maltol",
+  "nameEn": "Maltol",
+  "category": "Smagsforstærker / aroma",
+  "euStatus": "not_approved",
+  "origin": "mixed",
+  "summary": "Maltol er et naturligt forekommende aromastof med karamel- og brødduft, som i EU reguleres som aroma og ikke som tilsætningsstof.",
+  "description": "Maltol (3-hydroxy-2-methyl-4-pyron) findes naturligt i lærkebark, fyrrenåle og ristede produkter som malt, kaffe og brødskorpe. Det dannes ved opvarmning af sukker og kan udvindes eller fremstilles syntetisk. Det giver en sød, karamel-agtig smag og forstærker oplevelsen af sødme. I EU blev E636 fjernet fra listen over tilsætningsstoffer, og maltol må i stedet anvendes som aromastof.",
+  "uses": "Bagværk, slik, sodavand, is og desserter (som aroma i EU). Bruges også i tobak og e-cigaretvæsker.",
+  "health": "JECFA har fastsat en ADI for maltol på 0–1 mg/kg legemsvægt/dag. Ved normale aromamængder anses stoffet ikke for at være et sikkerhedsproblem. Maltol kan danne komplekser med metaller som jern og aluminium; der har været teoretiske bekymringer om øget aluminiumsoptag, men det er ikke påvist ved fødevaremængder.",
+  "research": "Maltol er vurderet af JECFA og som aromastof af EFSA. Forskningen har især undersøgt dets metalbindende egenskaber; jern(III)maltol er fx godkendt som lægemiddel mod jernmangel. Der er ingen større aktuel kontrovers.",
+  "keyReferences": [],
+  "pubmedTerm": "maltol",
+  "flags": []
+ },
+ {
+  "code": "E637",
+  "nameDa": "Ethylmaltol",
+  "nameEn": "Ethyl maltol",
+  "category": "Smagsforstærker / aroma",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Ethylmaltol er et syntetisk aromastof med stærk sød karamel- og bomuldsslik-duft, som i EU reguleres som aroma.",
+  "description": "Ethylmaltol er en syntetisk analog til maltol, hvor en methylgruppe er erstattet med en ethylgruppe. Det er 4–6 gange mere aromastærkt end maltol og findes ikke i naturen i nævneværdige mængder. Det bruges til at give sødme- og karamelnoter. I EU er det ikke længere et E-nummer, men godkendt som aromastof.",
+  "uses": "Slik, bagværk, desserter, sodavand og is (som aroma i EU), samt e-cigaretvæsker.",
+  "health": "JECFA har fastsat en ADI for ethylmaltol på 0–2 mg/kg legemsvægt/dag. Ved normale aromamængder anses det ikke for et sikkerhedsproblem. Der er diskussion om sikkerheden ved indånding i e-cigaretter, som er en anden eksponeringsvej end føde.",
+  "research": "Stoffet er vurderet af JECFA og af EFSA som aromastof. Nyere forskning har især fokuseret på inhalation via e-cigaretter, hvor der er fundet celletoksiske effekter i laboratoriestudier; relevansen for fødevareindtag er begrænset.",
+  "keyReferences": [],
+  "pubmedTerm": "ethyl maltol",
+  "flags": []
+ },
+ {
+  "code": "E638",
+  "nameDa": "Natriumaspartat",
+  "nameEn": "Sodium aspartate",
+  "category": "Smagsforstærker",
+  "euStatus": "not_approved",
+  "origin": "nature_identical",
+  "summary": "Natriumaspartat er natriumsaltet af aminosyren asparaginsyre, som har været opført som smagsforstærker, men ikke er godkendt i EU.",
+  "description": "Natriumaspartat er et salt af L-asparaginsyre, en naturlig aminosyre, der findes i mange proteiner. Det kan fremstilles ved fermentering eller enzymatisk syntese. Det har en mild umami-agtig smag. Stoffet må ikke forveksles med sødemidlet aspartam (E951), selvom navnene ligner hinanden. Det er ikke på EU's positivliste over tilsætningsstoffer.",
+  "uses": "Ingen godkendt anvendelse i EU.",
+  "health": "Asparaginsyre er en almindelig aminosyre i kosten og har lav toksicitet. Der foreligger ingen EFSA-ADI for natriumaspartat som tilsætningsstof. Stoffet indeholder ikke phenylalanin og er derfor ikke et problem for personer med PKU.",
+  "research": "Der er ikke kendskab til specifikke nyere vurderinger af natriumaspartat som tilsætningsstof.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium aspartate",
+  "flags": []
+ },
+ {
+  "code": "E640",
+  "nameDa": "Glycin og natriumsaltet heraf",
+  "nameEn": "Glycine and its sodium salt",
+  "category": "Smagsforstærker / bærestof",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Glycin er den simpleste aminosyre og har en let sød smag; den bruges som smagsforstærker og bærestof.",
+  "description": "Glycin (NH2CH2COOH) findes i store mængder i kollagen og gelatine. Den fremstilles industrielt ved kemisk syntese (fx ud fra chloreddikesyre og ammoniak) eller ved hydrolyse af protein. E640(i) er glycin og E640(ii) er natriumglycinat. Den har en sødlig smag, kan maskere bitterhed og har svag antimikrobiel og bufrende virkning.",
+  "uses": "I EU tilladt som bærestof for næringsstoffer og i visse kosttilskud; i andre lande også i drikkevarer og saucer.",
+  "health": "Glycin er en normal aminosyre i kosten og omsættes normalt; toksiciteten er meget lav. Der er ikke kendte risici ved de mængder, der bruges som tilsætningsstof. Glycin bruges også som kosttilskud i gram-mængder uden kendte alvorlige bivirkninger.",
+  "research": "EFSA vurderede glycin i forbindelse med brug som bærestof. Der er forskning i glycin som kosttilskud, fx mod søvnproblemer, men evidensen er begrænset. Ingen kendte kontroverser om tilsætningsstoffet.",
+  "keyReferences": [],
+  "pubmedTerm": "glycine",
+  "flags": []
+ },
+ {
+  "code": "E641",
+  "nameDa": "L-leucin",
+  "nameEn": "L-Leucine",
+  "category": "Smagsforstærker / smøremiddel",
+  "euStatus": "not_approved",
+  "origin": "nature_identical",
+  "summary": "Leucin er en essentiel aminosyre, som har været opført som smagsforstærker, men ikke er godkendt som tilsætningsstof i EU.",
+  "description": "L-leucin er en forgrenet aminosyre (BCAA), der findes i de fleste proteiner. Den fremstilles ved fermentering eller udvindes af proteinhydrolysater. Den har været foreslået som smagsforstærker og som smøremiddel i tabletter. I EU må den bruges som næringsstof, men den er ikke optaget som tilsætningsstof.",
+  "uses": "Kosttilskud og sportsernæring (som næringsstof). Ingen godkendt anvendelse som tilsætningsstof i EU.",
+  "health": "Leucin er en essentiel aminosyre og har lav toksicitet i normale mængder. Personer med den sjældne stofskiftesygdom ahornsirupssyge (MSUD) kan ikke omsætte leucin og skal undgå tilsat leucin. Der foreligger ingen ADI for stoffet som tilsætningsstof.",
+  "research": "Forskningen i leucin handler hovedsageligt om muskelproteinsyntese og sportsernæring. Der er ingen EU-vurdering som tilsætningsstof.",
+  "keyReferences": [],
+  "pubmedTerm": "leucine",
+  "flags": []
+ },
+ {
+  "code": "E642",
+  "nameDa": "Lysinhydrochlorid",
+  "nameEn": "Lysine hydrochloride",
+  "category": "Smagsforstærker",
+  "euStatus": "not_approved",
+  "origin": "nature_identical",
+  "summary": "Lysinhydrochlorid er saltsyresaltet af aminosyren lysin, som har været opført som smagsforstærker, men ikke er godkendt i EU.",
+  "description": "L-lysin er en essentiel aminosyre, som især er begrænset i kornprodukter. Lysinhydrochlorid fremstilles ved bakteriel fermentering og bruges i stor skala til dyrefoder. I fødevarer bruges det som næringsstof og til berigelse. Det er ikke på EU's positivliste som tilsætningsstof.",
+  "uses": "Kosttilskud, berigede fødevarer og dyrefoder. Ingen godkendt anvendelse som tilsætningsstof i EU.",
+  "health": "Lysin har lav toksicitet ved normale doser. Meget høje doser fra tilskud kan give mavebesvær. Der foreligger ingen ADI for stoffet som tilsætningsstof.",
+  "research": "Forskningen i lysin handler især om ernæring og om brug mod herpes-udbrud, hvor evidensen er blandet. Der er ingen EU-vurdering som tilsætningsstof.",
+  "keyReferences": [],
+  "pubmedTerm": "lysine hydrochloride",
+  "flags": []
+ },
+ {
+  "code": "E650",
+  "nameDa": "Zinkacetat",
+  "nameEn": "Zinc acetate",
+  "category": "Smagsforstærker",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Zinkacetat er zinksaltet af eddikesyre, der i EU bruges som smagsforstærker i tyggegummi.",
+  "description": "Zinkacetat fremstilles ved reaktion mellem zinkoxid og eddikesyre. Det har en let astringerende og metallisk smag. I tyggegummi bruges det til at forstærke smag og kan bidrage til at mindske dårlig ånde. Det bruges også i halstabletter mod forkølelse og medicinsk mod Wilsons sygdom.",
+  "uses": "I EU kun tilladt i tyggegummi med maks. niveau (1000 mg/kg).",
+  "health": "I de små mængder, der findes i tyggegummi, anses zinkacetat for sikkert. Zink er essentielt, men langvarigt højt indtag fra tilskud kan hæmme kobberoptagelsen; EFSA's øvre grænse for zink er 25 mg/dag for voksne. Meget store doser kan give kvalme og mavebesvær.",
+  "research": "EFSA vurderede i 2015 zinkacetat i tyggegummi og fandt det uproblematisk ved det godkendte niveau. Forskningen i zinkacetat handler mest om zink-halstabletter mod forkølelse, hvor nogle metaanalyser tyder på kortere sygdomsvarighed, men resultaterne er ikke entydige.",
+  "keyReferences": [],
+  "pubmedTerm": "zinc acetate",
+  "flags": []
+ },
+ {
+  "code": "E710",
+  "nameDa": "Spiramycin",
+  "nameEn": "Spiramycin",
+  "category": "Antibiotikum (konserveringsmiddel)",
+  "euStatus": "banned",
+  "origin": "natural",
+  "summary": "Spiramycin er et makrolid-antibiotikum, som tidligere var opført som konserveringsmiddel, men som ikke må bruges i fødevarer i EU.",
+  "description": "Spiramycin er et antibiotikum produceret af bakterien Streptomyces ambofaciens. Det hæmmer bakteriers proteinsyntese. Det har været anvendt som konserveringsmiddel og som vækstfremmer i dyrefoder, men brugen af antibiotika som vækstfremmere blev forbudt i EU (spiramycin fra 1999, alle fra 2006). I humanmedicin bruges det bl.a. mod toxoplasmose hos gravide.",
+  "uses": "Ingen tilladt anvendelse i fødevarer i EU. Restkoncentrationer i animalske fødevarer reguleres via maksimalgrænser for veterinærmedicin.",
+  "health": "Hovedbekymringen ved antibiotika i fødevarer er udvikling af antibiotikaresistens og allergiske reaktioner hos følsomme personer. Derfor må stoffet ikke tilsættes fødevarer. Som lægemiddel har det få alvorlige bivirkninger, men det skal ordineres af læge.",
+  "research": "EU's forbud mod antibiotiske vækstfremmere byggede på bekymring for resistensudvikling. Forskning i spiramycin i dag handler primært om behandling af toxoplasmose under graviditet.",
+  "keyReferences": [],
+  "pubmedTerm": "spiramycin",
+  "flags": []
+ },
+ {
+  "code": "E713",
+  "nameDa": "Tylosin",
+  "nameEn": "Tylosin",
+  "category": "Antibiotikum (konserveringsmiddel)",
+  "euStatus": "banned",
+  "origin": "natural",
+  "summary": "Tylosin er et makrolid-antibiotikum til dyr, som tidligere var opført som konserveringsmiddel, men som ikke må bruges i fødevarer i EU.",
+  "description": "Tylosin produceres af bakterien Streptomyces fradiae og bruges i veterinærmedicin mod infektioner hos svin, kvæg og fjerkræ. Det har tidligere været brugt som vækstfremmer i foder og som konserveringsmiddel. EU forbød brugen som vækstfremmer i 1999, og antibiotiske vækstfremmere blev helt forbudt i 2006. Det er ikke godkendt til brug i human medicin.",
+  "uses": "Ingen tilladt anvendelse i fødevarer i EU. Rester i kød, mælk og æg reguleres via maksimalgrænser for veterinærlægemidler.",
+  "health": "Bekymringen er især udvikling og spredning af antibiotikaresistente bakterier, fordi tylosin er beslægtet med makrolider brugt i human medicin (fx erythromycin). Allergiske reaktioner hos følsomme personer er også mulige. Stoffet må ikke tilsættes fødevarer.",
+  "research": "Tylosin er et centralt eksempel i forskningen om, hvordan antibiotikabrug i husdyr kan bidrage til makrolidresistens hos bakterier som Campylobacter. Danske overvågningsprogrammer (DANMAP) har fulgt forbruget og resistensudviklingen siden 1990'erne.",
+  "keyReferences": [],
+  "pubmedTerm": "tylosin",
+  "flags": []
+ },
+ {
+  "code": "E900",
+  "nameDa": "Dimethylpolysiloxan",
+  "nameEn": "Dimethylpolysiloxane",
+  "category": "Skumdæmpende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Dimethylpolysiloxan er en silikoneolie, der bruges til at hindre skumdannelse i fødevareproduktion og frituresolie.",
+  "description": "Dimethylpolysiloxan (PDMS) er en syntetisk silikonepolymer opbygget af gentagne silicium-oxygen-enheder med methylgrupper. Det fremstilles ud fra silicium og methylchlorid. Det er kemisk meget stabilt og sænker overfladespændingen, så skum brydes. Methylphenylpolysiloxan er en beslægtet variant, hvor nogle methylgrupper er erstattet af phenylgrupper. Kommercielle produkter kan indeholde en lille mængde siliciumdioxid.",
+  "uses": "Frituresolie og friturestegte produkter, dåsefrugt og -grøntsager, suppekoncentrater, sodavand og saftkoncentrater, syltetøj og tyggegummi. I EU typisk maks. 10 mg/kg eller 10 mg/l afhængigt af kategori.",
+  "health": "PDMS optages stort set ikke fra tarmen og udskilles uændret. EFSA fastsatte ved gen-evalueringen i 2020 en ADI på 17 mg/kg legemsvægt/dag og fandt, at eksponeringen for alle befolkningsgrupper lå langt under denne. Der er ingen kendte særlige risikogrupper.",
+  "research": "EFSA's FAF-panel gen-evaluerede E900 i 2020 og fastsatte en ADI på 17 mg/kg legemsvægt/dag på baggrund af et langtidsstudie i rotter. Mediedebat har handlet om brug i fastfood-frituresolie, men der er ikke påvist sundhedsskader ved de anvendte mængder. Der er åbne spørgsmål om specifikationer for tilsat silica.",
+  "keyReferences": [
+   {
+    "citation": "EFSA FAF Panel. Re-evaluation of dimethyl polysiloxane (E 900) as a food additive. EFSA Journal. 2020.",
+    "searchTitle": "Re-evaluation of dimethyl polysiloxane (E 900) as a food additive"
+   }
+  ],
+  "pubmedTerm": "dimethylpolysiloxane",
+  "flags": []
+ }
+]

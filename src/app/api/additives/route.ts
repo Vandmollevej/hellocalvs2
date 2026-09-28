@@ -32,7 +32,7 @@ export async function GET() {
     .findMany({ orderBy: { eNumber: "asc" } })
     .catch((error) => {
       console.error("Additive lookup failed", error);
-      return [];
+      return [] as Awaited<ReturnType<typeof prisma.additive.findMany>>;
     });
   const extra = dbRows
     .filter((row) => !known.has(row.eNumber.toUpperCase()))
