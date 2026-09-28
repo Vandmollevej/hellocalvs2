@@ -1,0 +1,5746 @@
+[
+ {
+  "code": "E100",
+  "variants": [
+   {
+    "code": "E100(i)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E100(ii)",
+    "en": "",
+    "da": ""
+   }
+  ],
+  "en": "Curcumin",
+  "da": "curcumin",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of curcumin (E 100) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2010.1679",
+  "efsa_evaluation_date": "2010-09-06",
+  "wikidata": "Q312266",
+  "wikipedia": "https://en.wikipedia.org/wiki/Curcumin"
+ },
+ {
+  "code": "E101",
+  "variants": [
+   {
+    "code": "E101(i)",
+    "en": "Riboflavin",
+    "da": "Riboflavin"
+   },
+   {
+    "code": "E101(ii)",
+    "en": "Riboflavin-5′-phosphate",
+    "da": "Riboflavin-5′-phosphat"
+   },
+   {
+    "code": "E101(iii)",
+    "en": "Riboflavin from Bacillus subtilis",
+    "da": ""
+   },
+   {
+    "code": "E101(iv)",
+    "en": "Riboflavin from Ashbya gossypii",
+    "da": ""
+   }
+  ],
+  "en": "Riboflavin",
+  "da": "Riboflavin",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of riboflavin (E 101(i)) and riboflavin-5'-phosphate sodium (E 101(ii)) as food additives.",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3357",
+  "efsa_evaluation_date": "2013-10-22",
+  "wikidata": "Q130365"
+ },
+ {
+  "code": "E101a",
+  "variants": [],
+  "en": "E101a food additive",
+  "da": "E101a food additive",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of riboflavin (E 101(i)) and riboflavin-5'-phosphate sodium (E 101(ii)) as food additives.",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3357",
+  "efsa_evaluation_date": "2013-10-22",
+  "wikidata": "Q376061"
+ },
+ {
+  "code": "E102",
+  "variants": [],
+  "en": "Tartrazine",
+  "da": "Tartrazin",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation Tartrazine (E 102)",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2009.1331",
+  "efsa_evaluation_date": "2009-11-12",
+  "wikidata": "Q407158",
+  "wikipedia": "https://en.wikipedia.org/wiki/Tartrazine",
+  "colour_index": "CI 19140"
+ },
+ {
+  "code": "E103",
+  "variants": [],
+  "en": "Alkannin",
+  "da": "Alkannin",
+  "wikidata": "Q418237",
+  "colour_index": "CI 14270"
+ },
+ {
+  "code": "E104",
+  "variants": [],
+  "en": "Quinoline yellow",
+  "da": "Quinolingult",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of Quinoline Yellow (E 104) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2009.1329",
+  "efsa_evaluation_date": "2009-11-12",
+  "wikidata": "Q420123",
+  "colour_index": "CI 47005"
+ },
+ {
+  "code": "E105",
+  "variants": [],
+  "en": "Fast Yellow AB",
+  "da": "E105 food additive"
+ },
+ {
+  "code": "E106",
+  "variants": [],
+  "en": "flavin mononucleotide",
+  "da": "flavinmononukleotid",
+  "wikidata": "Q376061"
+ },
+ {
+  "code": "E107",
+  "variants": [],
+  "en": "Yellow 2G",
+  "da": "Gul 2G",
+  "wikidata": "Q424528",
+  "colour_index": "CI 18965"
+ },
+ {
+  "code": "E110",
+  "variants": [],
+  "en": "Sunset yellow FCF",
+  "da": "Sunset yellow FCF",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Reconsideration of the temporary ADI and refined exposure assessment for Sunset Yellow FCF (E110)",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2014.3765",
+  "efsa_evaluation_date": "2014-07-15",
+  "wikidata": "Q410095",
+  "colour_index": "CI 15985"
+ },
+ {
+  "code": "E111",
+  "variants": [],
+  "en": "Orange GGN",
+  "da": "Orange GGN",
+  "wikidata": "Q929052"
+ },
+ {
+  "code": "E120",
+  "variants": [],
+  "en": "Cochineal",
+  "da": "karminer",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of cochineal, carminic acid, carmines (E 120) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4288",
+  "efsa_evaluation_date": "2015-11-18",
+  "wikidata": "Q416860",
+  "wikipedia": "https://en.wikipedia.org/wiki/Carmine",
+  "colour_index": "CI 75470"
+ },
+ {
+  "code": "E121",
+  "variants": [],
+  "en": "Citrus Red 2",
+  "da": "Citrus Rød 2",
+  "wikidata": "Q2653981"
+ },
+ {
+  "code": "E122",
+  "variants": [],
+  "en": "Azorubine",
+  "da": "Azorubin (carmoisin)",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluationof Azorubine/Carmoisine (E 122) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2009.1332",
+  "efsa_evaluation_date": "2009-11-12",
+  "efsa_evaluation_overexposure_risk": "en:no",
+  "wikidata": "Q409676",
+  "colour_index": "CI 14720"
+ },
+ {
+  "code": "E123",
+  "variants": [],
+  "en": "Amaranth",
+  "da": "Amaranth",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re‐evaluation of Amaranth (E 123) as a food additive",
+  "efsa_evaluation_url": "http://www.efsa.europa.eu/fr/efsajournal/doc/1649.pdf",
+  "efsa_evaluation_date": "2010/07/26",
+  "efsa_evaluation_overexposure_risk": "en:no",
+  "wikidata": "Q421074",
+  "colour_index": "CI 16185"
+ },
+ {
+  "code": "E124",
+  "variants": [],
+  "en": "Ponceau 4r",
+  "da": "Ponceau 4r (cochenillerød a)",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of Ponceau 4R (E 124) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2009.1328",
+  "efsa_evaluation_date": "2009-11-12",
+  "wikidata": "Q384709",
+  "colour_index": "CI 16255"
+ },
+ {
+  "code": "E125",
+  "variants": [],
+  "en": "Scarlet GN",
+  "wikidata": "Q934310"
+ },
+ {
+  "code": "E126",
+  "variants": [],
+  "en": "Ponceau 6R",
+  "wikidata": "Q596946"
+ },
+ {
+  "code": "E127",
+  "variants": [],
+  "en": "Erythrosine",
+  "da": "Erythrosin",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of Erythrosine (E 127) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2011.1854",
+  "efsa_evaluation_date": "2011-01-27",
+  "wikidata": "Q420101",
+  "wikipedia": "https://en.wikipedia.org/wiki/Erythrosine"
+ },
+ {
+  "code": "E128",
+  "variants": [],
+  "en": "Red 2G",
+  "da": "Rød 2G",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Opinion of the Scientific Panel on Food Additives, Flavourings, Processing Aids and Materials in Contact with Food on the food colour Red 2G (E128) based on a request from the Commission related to the re-evaluation of all permitted food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2007.515",
+  "efsa_evaluation_date": "2007-07-16",
+  "wikidata": "Q417819",
+  "colour_index": "CI 18050"
+ },
+ {
+  "code": "E129",
+  "variants": [],
+  "en": "Allura red",
+  "da": "Allura red ac",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Refined exposure assessment for Allura Red AC (E 129)",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4007",
+  "efsa_evaluation_date": "2015/02/13",
+  "efsa_evaluation_overexposure_risk": "en:no",
+  "wikidata": "Q419895",
+  "colour_index": "CI 16035"
+ },
+ {
+  "code": "E130",
+  "variants": [],
+  "en": "Indanthrene blue RS",
+  "da": "Indanthrenblå RS",
+  "wikidata": "Q185929"
+ },
+ {
+  "code": "E131",
+  "variants": [],
+  "en": "Patent blue v",
+  "da": "Patent blue v",
+  "efsa_evaluation": "Scientific Opinion on the re‐evaluation of Patent Blue V (E 131) as a food additive",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2013.2818",
+  "efsa_evaluation_date": "2013/03/01",
+  "efsa_evaluation_adi": "5",
+  "efsa_evaluation_overexposure_risk": "en:moderate",
+  "wikidata": "Q420087",
+  "wikipedia": "https://en.wikipedia.org/wiki/Patent_Blue_V",
+  "colour_index": "CI 42051"
+ },
+ {
+  "code": "E132",
+  "variants": [],
+  "en": "Indigotine",
+  "da": "Indigotin (indigocarmin)",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re‐evaluation of Indigo Carmine (E 132) as a food additive",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3768",
+  "efsa_evaluation_date": "2014/07/25",
+  "efsa_evaluation_adi": "5",
+  "efsa_evaluation_overexposure_risk": "en:no",
+  "wikidata": "Q410120",
+  "wikipedia": "https://en.wikipedia.org/wiki/Indigo_carmine"
+ },
+ {
+  "code": "E133",
+  "variants": [],
+  "en": "Brilliant blue FCF",
+  "da": "Brilliant blue FCF",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re‐evaluation of Brilliant Blue FCF (E 133) as a food additive",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1853",
+  "efsa_evaluation_date": "2010/11/22",
+  "efsa_evaluation_overexposure_risk": "en:moderate",
+  "wikidata": "Q420093",
+  "wikipedia": "https://en.wikipedia.org/wiki/Brilliant_Blue_FCF",
+  "colour_index": "CI 42090"
+ },
+ {
+  "code": "E140",
+  "variants": [
+   {
+    "code": "E140(i)",
+    "en": "Chlorophylls",
+    "da": "Chlorophyll"
+   },
+   {
+    "code": "E140(ii)",
+    "en": "Chlorophyllins",
+    "da": "Chlorophylliner"
+   }
+  ],
+  "en": "Chlorophylls and Chlorophyllins",
+  "da": "Chlorophyller og Chlorophylliner",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of chlorophylls (E 140(i)) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4089",
+  "efsa_evaluation_date": "2015-05-07",
+  "wikidata": "Q26806091",
+  "colour_index": "CI 75815",
+  "wikipedia": "https://en.wikipedia.org/wiki/Chlorophyll"
+ },
+ {
+  "code": "E141",
+  "variants": [
+   {
+    "code": "E141(i)",
+    "en": "Copper complexes of chlorophylls",
+    "da": "Chlorophyll-kobber-kompleks"
+   },
+   {
+    "code": "E141(ii)",
+    "en": "Copper complexes of chlorophyllins",
+    "da": "Chlorophyllin-kobber-kompleks"
+   }
+  ],
+  "en": "Copper complexes of chlorophylls and chlorophyllins",
+  "da": "E141 food additive",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on re-evaluation of copper complexes of chlorophylls (E 141(i)) and chlorophyllins (E 141(ii)) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4151",
+  "efsa_evaluation_date": "2015-06-30",
+  "wikidata": "Q18967203"
+ },
+ {
+  "code": "E142",
+  "variants": [],
+  "en": "Green s",
+  "da": "Green s",
+  "efsa_evaluation": "Scientific Opinion on the re‐evaluation of Green S (E 142) as a food additive",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/epdf/10.2903/j.efsa.2010.1851",
+  "efsa_evaluation_date": "2010/11/22",
+  "efsa_evaluation_overexposure_risk": "en:moderate",
+  "wikidata": "Q420143",
+  "wikipedia": "https://en.wikipedia.org/wiki/Green_S",
+  "colour_index": "CI 5"
+ },
+ {
+  "code": "E143",
+  "variants": [],
+  "en": "Fast Green FCF",
+  "da": "E143 food additive",
+  "additives_classes": "en:colour",
+  "wikidata": "Q898299"
+ },
+ {
+  "code": "E150",
+  "variants": [],
+  "en": "Caramel",
+  "da": "Karamel",
+  "efsa_evaluation": "Refined exposure assessment for caramel colours (E 150a, c, d)",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2012.3030",
+  "efsa_evaluation_date": "2012-12-03",
+  "wikidata": "Q183440",
+  "wikipedia": "https://en.wikipedia.org/wiki/Caramel"
+ },
+ {
+  "code": "E150a",
+  "variants": [],
+  "en": "Plain caramel",
+  "da": "Madkulør",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Refined exposure assessment for caramel colours (E 150a, c, d)",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2012.3030",
+  "efsa_evaluation_date": "2012-12-03",
+  "efsa_evaluation_adi": "300",
+  "efsa_evaluation_overexposure_risk": "en:no",
+  "wikidata": "Q227816",
+  "wikipedia": "https://en.wikipedia.org/wiki/Caramel_color"
+ },
+ {
+  "code": "E150b",
+  "variants": [],
+  "en": "Caustic sulphite caramel",
+  "da": "Kaustisk sulfiteret karamel",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific opinion on the re-evaluation of caramel colours (E 150 a,b,c,d) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2011.2004",
+  "efsa_evaluation_date": "2011-03-08",
+  "efsa_evaluation_adi": "300",
+  "efsa_evaluation_overexposure_risk": "en:no"
+ },
+ {
+  "code": "E150c",
+  "variants": [],
+  "en": "Ammonia caramel",
+  "da": "Ammonieret karamel",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Refined exposure assessment for caramel colours (E 150a, c, d)",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2012.3030",
+  "efsa_evaluation_date": "2012-12-03",
+  "efsa_evaluation_adi": "100",
+  "efsa_evaluation_overexposure_risk": "en:moderate",
+  "wikidata": "Q11735907"
+ },
+ {
+  "code": "E150d",
+  "variants": [],
+  "en": "Sulphite ammonia caramel",
+  "da": "Ammonieret sulfiteret karamel",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Refined exposure assessment for caramel colours (E 150a, c, d)",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2012.3030",
+  "efsa_evaluation_date": "2012-12-03",
+  "efsa_evaluation_adi": "300",
+  "efsa_evaluation_overexposure_risk": "en:no",
+  "wikidata": "Q13081740"
+ },
+ {
+  "code": "E151",
+  "variants": [],
+  "en": "Brilliant black bn",
+  "da": "Black pn (brilliant black bn)",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Refined exposure assessment for Brilliant Black BN (E 151)",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.3960",
+  "efsa_evaluation_date": "2015-01-09",
+  "efsa_evaluation_adi": "5",
+  "efsa_evaluation_overexposure_risk": "en:no",
+  "wikidata": "Q420079",
+  "colour_index": "CI 28440"
+ },
+ {
+  "code": "E152",
+  "variants": [],
+  "en": "Black 7984",
+  "da": "Carbon black",
+  "wikidata": "Q764245",
+  "colour_index": "CI 27755"
+ },
+ {
+  "code": "E153",
+  "variants": [],
+  "en": "Vegetable carbon",
+  "da": "Vegetabilsk kul",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of vegetable carbon (E 153) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2012.2592",
+  "efsa_evaluation_date": "2012-04-27",
+  "wikidata": "Q59557415"
+ },
+ {
+  "code": "E154",
+  "variants": [],
+  "en": "Brown FK",
+  "da": "Brun FK",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluationof Brown FK (E 154) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2010.1535",
+  "efsa_evaluation_date": "2010-04-21",
+  "wikidata": "Q425437"
+ },
+ {
+  "code": "E155",
+  "variants": [],
+  "en": "Brown ht",
+  "da": "Brown ht",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Refined exposure assessment of Brown HT (E 155)",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/epdf/10.2903/j.efsa.2014.3719",
+  "efsa_evaluation_date": "2014/05/28",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q424541",
+  "colour_index": "CI 20285"
+ },
+ {
+  "code": "E160",
+  "variants": [],
+  "en": "Carotenoids",
+  "da": "Carotenoider",
+  "efsa_evaluation": "Scientific Opinion on the reconsideration of the ADI and a refined exposure assessment of beta-apo-8'-carotenal (E 160e)",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2014.3492",
+  "efsa_evaluation_date": "2014-01-22",
+  "wikidata": "Q191907"
+ },
+ {
+  "code": "E160a",
+  "variants": [
+   {
+    "code": "E160a(i)",
+    "en": "Beta-carotene",
+    "da": "Beta-caroten"
+   },
+   {
+    "code": "E160a(ii)",
+    "en": "Plant carotenes",
+    "da": "Plantecarotener"
+   },
+   {
+    "code": "E160a(iii)",
+    "en": "Beta-carotene from blakeslea trispora",
+    "da": "Beta-caroten fra blakeslea trispora"
+   },
+   {
+    "code": "E160a(iv)",
+    "en": "Algal carotenes",
+    "da": "Algecarotener"
+   }
+  ],
+  "en": "carotene",
+  "da": "Karotin",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Safety of the proposed extension of use of synthetic Beta-carotene [E 160a(ii)] in foods for special medical purposes in young children",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4434",
+  "efsa_evaluation_date": "2016-03-18",
+  "wikidata": "Q190156"
+ },
+ {
+  "code": "E160b",
+  "variants": [
+   {
+    "code": "E160b(i)",
+    "en": "Annatto bixin",
+    "da": ""
+   },
+   {
+    "code": "E160b(ii)",
+    "en": "Annatto norbixin",
+    "da": ""
+   },
+   {
+    "code": "E160b(iii)",
+    "en": "Oil-extracted annatto",
+    "da": ""
+   }
+  ],
+  "en": "Annatto",
+  "da": "Annatto",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "The safety of annatto extracts (E 160b) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4544",
+  "efsa_evaluation_date": "2016-08-24",
+  "wikidata": "Q425902",
+  "colour_index": "CI 75120"
+ },
+ {
+  "code": "E160c",
+  "variants": [
+   {
+    "code": "E160c(i)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E160c(ii)",
+    "en": "",
+    "da": ""
+   }
+  ],
+  "en": "Paprika extract",
+  "da": "Paprikaekstrakt (capsanthin og capsorubin)",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of paprika extract (E 160c) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4320",
+  "efsa_evaluation_date": "2015-12-10"
+ },
+ {
+  "code": "E160d",
+  "variants": [
+   {
+    "code": "E160d(i)",
+    "en": "Lycopene\\",
+    "da": ""
+   },
+   {
+    "code": "E160d(ii)",
+    "en": "Lycopene\\",
+    "da": ""
+   },
+   {
+    "code": "E160d(iii)",
+    "en": "Lycopene\\",
+    "da": ""
+   }
+  ],
+  "en": "Lycopene",
+  "da": "Lycopen",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the reconsideration of the ADI and a refined exposure assessment of beta-apo-8'-carotenal (E 160e)",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2014.3492",
+  "efsa_evaluation_date": "2014-01-22",
+  "wikidata": "Q208130"
+ },
+ {
+  "code": "E160e",
+  "variants": [],
+  "en": "Beta-apo-8′-carotenal (c30)",
+  "da": "Beta-apo-8′-carotenal(c30)",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the reconsideration of the ADI and a refined exposure assessment of beta-apo-8'-carotenal (E 160e)",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2014.3492",
+  "efsa_evaluation_date": "2014-01-22"
+ },
+ {
+  "code": "E160f",
+  "variants": [],
+  "en": "Ethyl ester of beta-apo-8'-carotenic acid (C 30)",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the reconsideration of the ADI and a refined exposure assessment of beta-apo-8'-carotenal (E 160e)",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2014.3492",
+  "efsa_evaluation_date": "2014-01-22"
+ },
+ {
+  "code": "E161",
+  "variants": [],
+  "en": "Xanthophylls",
+  "da": "Xanthophyller",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of canthaxanthin (E 161 g) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2010.1852",
+  "efsa_evaluation_date": "2010-10-22"
+ },
+ {
+  "code": "E161a",
+  "variants": [],
+  "en": "Flavoxanthin",
+  "da": "Flavoxanthin",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of canthaxanthin (E 161 g) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2010.1852",
+  "efsa_evaluation_date": "2010-10-22"
+ },
+ {
+  "code": "E161b",
+  "variants": [
+   {
+    "code": "E161b(i)",
+    "en": "Lutein from Tagetes erecta",
+    "da": ""
+   },
+   {
+    "code": "E161b(ii)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E161b(iii)",
+    "en": "Lutein esters from Tagetes erecta",
+    "da": ""
+   }
+  ],
+  "en": "Lutein",
+  "da": "Lutein",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of lutein (E 161b) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2010.1678",
+  "efsa_evaluation_date": "2010-07-28",
+  "wikidata": "Q422067",
+  "wikipedia": "https://en.wikipedia.org/wiki/Lutein"
+ },
+ {
+  "code": "E161c",
+  "variants": [],
+  "en": "Cryptoaxanthin",
+  "da": "Kryptoxanthin",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of canthaxanthin (E 161 g) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2010.1852",
+  "efsa_evaluation_date": "2010-10-22"
+ },
+ {
+  "code": "E161d",
+  "variants": [],
+  "en": "Rubixanthin",
+  "da": "Rubixantin",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of canthaxanthin (E 161 g) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2010.1852",
+  "efsa_evaluation_date": "2010-10-22",
+  "colour_index": "CI 75135"
+ },
+ {
+  "code": "E161e",
+  "variants": [],
+  "en": "Violaxanthin",
+  "da": "Violaxanthin",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of canthaxanthin (E 161 g) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2010.1852",
+  "efsa_evaluation_date": "2010-10-22"
+ },
+ {
+  "code": "E161f",
+  "variants": [],
+  "en": "Rhodoxanthin",
+  "da": "Rhodoxanthin",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of canthaxanthin (E 161 g) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2010.1852",
+  "efsa_evaluation_date": "2010-10-22"
+ },
+ {
+  "code": "E161g",
+  "variants": [],
+  "en": "Canthaxanthin",
+  "da": "Canthaxanthin",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of canthaxanthin (E 161 g) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2010.1852",
+  "efsa_evaluation_date": "2010-10-22",
+  "colour_index": "CI 40850"
+ },
+ {
+  "code": "E161h",
+  "variants": [
+   {
+    "code": "E161h(i)",
+    "en": "Zeaxanthin\\",
+    "da": ""
+   },
+   {
+    "code": "E161h(ii)",
+    "en": "",
+    "da": ""
+   }
+  ],
+  "en": "Zeaxanthin",
+  "da": "Zeaxanthin",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of canthaxanthin (E 161 g) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2010.1852",
+  "efsa_evaluation_date": "2010-10-22"
+ },
+ {
+  "code": "E161i",
+  "variants": [],
+  "en": "Citranaxanthin",
+  "da": "Citranaxanthin",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of canthaxanthin (E 161 g) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2010.1852",
+  "efsa_evaluation_date": "2010-10-22"
+ },
+ {
+  "code": "E161j",
+  "variants": [],
+  "en": "Astaxanthin",
+  "da": "Astaxanthin",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of canthaxanthin (E 161 g) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2010.1852",
+  "efsa_evaluation_date": "2010-10-22"
+ },
+ {
+  "code": "E162",
+  "variants": [],
+  "en": "Beetroot red",
+  "da": "Rødbedefarve",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of beetroot red (E 162) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4318",
+  "efsa_evaluation_date": "2015-12-09",
+  "wikidata": "Q420138"
+ },
+ {
+  "code": "E163",
+  "variants": [
+   {
+    "code": "E163(ii)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E163(iii)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E163(iv)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E163(v)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E163(vi)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E163(vii)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E163(viii)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E163(ix)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E163(x)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E163(xi)",
+    "en": "",
+    "da": ""
+   }
+  ],
+  "en": "Anthocyanins",
+  "da": "Anthocyaniner",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of anthocyanins (E 163) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3145",
+  "efsa_evaluation_date": "2013-04-23",
+  "wikidata": "Q262547"
+ },
+ {
+  "code": "E163a",
+  "variants": [],
+  "en": "Cyanidin",
+  "da": "Cyanidin",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of anthocyanins (E 163) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3145",
+  "efsa_evaluation_date": "2013-04-23",
+  "wikidata": "Q417606"
+ },
+ {
+  "code": "E163b",
+  "variants": [],
+  "en": "Delphinidin",
+  "da": "Delphinidin",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of anthocyanins (E 163) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3145",
+  "efsa_evaluation_date": "2013-04-23",
+  "wikidata": "Q367258"
+ },
+ {
+  "code": "E163c",
+  "variants": [],
+  "en": "Malvidin",
+  "da": "Malvidin",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of anthocyanins (E 163) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3145",
+  "efsa_evaluation_date": "2013-04-23",
+  "wikidata": "Q137220"
+ },
+ {
+  "code": "E163d",
+  "variants": [],
+  "en": "Pelargonidin",
+  "da": "Pelargonidin",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of anthocyanins (E 163) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3145",
+  "efsa_evaluation_date": "2013-04-23",
+  "wikidata": "Q2522451"
+ },
+ {
+  "code": "E163e",
+  "variants": [],
+  "en": "Peonidin",
+  "da": "Peonidin",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of anthocyanins (E 163) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3145",
+  "efsa_evaluation_date": "2013-04-23",
+  "wikidata": "Q3072948"
+ },
+ {
+  "code": "E163f",
+  "variants": [],
+  "en": "Petunidin",
+  "da": "Petunidin",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of anthocyanins (E 163) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3145",
+  "efsa_evaluation_date": "2013-04-23",
+  "wikidata": "Q27145212"
+ },
+ {
+  "code": "E164",
+  "variants": [],
+  "en": "saffron",
+  "da": "safran",
+  "wikidata": "Q25434",
+  "wikipedia": "https://en.wikipedia.org/wiki/Saffron"
+ },
+ {
+  "code": "E165",
+  "variants": [],
+  "en": "Gardenia Blue",
+  "da": "Gardenia Blå"
+ },
+ {
+  "code": "E166",
+  "variants": [],
+  "en": "Sandalwood",
+  "da": "Sandeltræ"
+ },
+ {
+  "code": "E170",
+  "variants": [
+   {
+    "code": "E170(i)",
+    "en": "Calcium carbonate",
+    "da": "calciumkarbonat"
+   },
+   {
+    "code": "E170(ii)",
+    "en": "Calcium hydrogen carbonate",
+    "da": "calciumhydrogenkarbonat"
+   }
+  ],
+  "en": "Calcium carbonates",
+  "da": "calciumkarbonater",
+  "efsa_evaluation": "Scientific Opinion on re‐evaluation of calcium carbonate (E 170) as a food additive",
+  "efsa_evaluation_url": "http://www.efsa.europa.eu/fr/efsajournal/doc/2318.pdf",
+  "efsa_evaluation_date": "2011/07/26",
+  "wikipedia": "https://en.wikipedia.org/wiki/Calcium_carbonate"
+ },
+ {
+  "code": "E171",
+  "variants": [],
+  "en": "Titanium dioxide",
+  "da": "Titandioxid",
+  "additives_classes": "en:colour",
+  "efsa_evaluation": "Re-evaluation of titanium dioxide (E 171) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4545",
+  "efsa_evaluation_date": "2016-09-14",
+  "wikidata": "Q193521",
+  "wikipedia": "https://en.wikipedia.org/wiki/Titanium_dioxide"
+ },
+ {
+  "code": "E172",
+  "variants": [
+   {
+    "code": "E172(i)",
+    "en": "Black iron oxide",
+    "da": "Sort jernoxid"
+   },
+   {
+    "code": "E172(ii)",
+    "en": "Red iron oxide",
+    "da": "Rød jernoxid"
+   },
+   {
+    "code": "E172(iii)",
+    "en": "Yellow iron oxide",
+    "da": "Gul jernoxid"
+   }
+  ],
+  "en": "Iron oxides and iron hydroxides",
+  "da": "Jernoxider og jernhydroxider",
+  "additives_classes": "en:colour",
+  "wikidata": "Q3045754",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of iron oxides and hydroxides (E 172) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4317",
+  "efsa_evaluation_date": "2015-12-08"
+ },
+ {
+  "code": "E173",
+  "variants": [],
+  "en": "Aluminium",
+  "da": "Aluminium",
+  "wikidata": "Q663"
+ },
+ {
+  "code": "E174",
+  "variants": [],
+  "en": "Silver",
+  "da": "Sølv",
+  "efsa_evaluation": "Scientific opinion on the re-evaluation of silver (E 174) as food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4364",
+  "efsa_evaluation_date": "2016-01-21",
+  "wikidata": "Q1090"
+ },
+ {
+  "code": "E175",
+  "variants": [],
+  "en": "Gold",
+  "da": "Guld",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of gold (E 175) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4362",
+  "efsa_evaluation_date": "2016-01-20",
+  "wikidata": "Q897"
+ },
+ {
+  "code": "E180",
+  "variants": [],
+  "en": "Litholrubine bk",
+  "da": "Rubinpigment bk",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of Litholrubine BK (E 180) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2010.1586",
+  "efsa_evaluation_date": "2010-05-07",
+  "wikidata": "Q427230",
+  "colour_index": "CI 15850"
+ },
+ {
+  "code": "E181",
+  "variants": [],
+  "en": "Tannin",
+  "da": "Tannin",
+  "additives_classes": "en:colour, en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q187607"
+ },
+ {
+  "code": "E182",
+  "variants": [],
+  "en": "Orcein",
+  "da": "Orcein",
+  "wikidata": "Q425645"
+ },
+ {
+  "code": "E200",
+  "variants": [],
+  "en": "Sorbic acid",
+  "da": "Sorbinsyre",
+  "additives_classes": "en:preservative",
+  "efsa_evaluation": "Scientific Opinion on the re‐evaluation of sorbic acid (E 200), potassium sorbate (E 202) and calcium sorbate (E 203) as food additives",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/epdf/10.2903/j.efsa.2015.4144",
+  "efsa_evaluation_date": "2015/06/30",
+  "efsa_evaluation_adi": "3",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q407131",
+  "wikipedia": "https://en.wikipedia.org/wiki/Sorbic_acid"
+ },
+ {
+  "code": "E201",
+  "variants": [],
+  "en": "Sodium sorbate",
+  "da": "Natriumsorbat",
+  "additives_classes": "en:preservative",
+  "wikidata": "Q420152"
+ },
+ {
+  "code": "E202",
+  "variants": [],
+  "en": "Potassium sorbate",
+  "da": "Kaliumsorbat",
+  "additives_classes": "en:preservative",
+  "efsa_evaluation": "Scientific Opinion on the re‐evaluation of sorbic acid (E 200), potassium sorbate (E 202) and calcium sorbate (E 203) as food additives",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/epdf/10.2903/j.efsa.2015.4144",
+  "efsa_evaluation_date": "2015/06/30",
+  "efsa_evaluation_adi": "3",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q410744",
+  "wikipedia": "https://en.wikipedia.org/wiki/Potassium_sorbate"
+ },
+ {
+  "code": "E203",
+  "variants": [],
+  "en": "Calcium sorbate",
+  "da": "Calciumsorbat",
+  "additives_classes": "en:preservative",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of sorbic acid (E 200), potassium sorbate (E 202) and calcium sorbate (E 203) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4144",
+  "efsa_evaluation_date": "2015-06-30",
+  "wikidata": "Q425183",
+  "wikipedia": "https://en.wikipedia.org/wiki/Calcium_sorbate"
+ },
+ {
+  "code": "E209",
+  "variants": [],
+  "en": "Heptylparaben",
+  "da": "Heptylparaben",
+  "wikidata": "Q5732121"
+ },
+ {
+  "code": "E210",
+  "variants": [],
+  "en": "Benzoic acid",
+  "da": "Benzoesyre",
+  "additives_classes": "en:preservative",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of benzoic acid (E 210), sodium benzoate (E 211), potassium benzoate (E 212) and calcium benzoate (E 213) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4433",
+  "efsa_evaluation_date": "2016-03-31",
+  "efsa_evaluation_adi": "5",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q191700"
+ },
+ {
+  "code": "E211",
+  "variants": [],
+  "en": "Sodium benzoate",
+  "da": "Natriumbenzoat",
+  "additives_classes": "en:preservative",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of benzoic acid (E 210), sodium benzoate (E 211), potassium benzoate (E 212) and calcium benzoate (E 213) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4433",
+  "efsa_evaluation_date": "2016-03-31",
+  "efsa_evaluation_adi": "5",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q423971",
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_benzoate"
+ },
+ {
+  "code": "E212",
+  "variants": [],
+  "en": "Potassium benzoate",
+  "da": "Kaliumbenzoat",
+  "additives_classes": "en:preservative",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of benzoic acid (E 210), sodium benzoate (E 211), potassium benzoate (E 212) and calcium benzoate (E 213) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4433",
+  "efsa_evaluation_date": "2016-03-31",
+  "efsa_evaluation_adi": "5",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q413611"
+ },
+ {
+  "code": "E213",
+  "variants": [],
+  "en": "Calcium benzoate",
+  "da": "Calciumbenzoat",
+  "additives_classes": "en:preservative",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of benzoic acid (E 210), sodium benzoate (E 211), potassium benzoate (E 212) and calcium benzoate (E 213) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4433",
+  "efsa_evaluation_date": "2016-03-31",
+  "efsa_evaluation_adi": "5",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q414509"
+ },
+ {
+  "code": "E214",
+  "variants": [],
+  "en": "Ethyl p-hydroxybenzoate",
+  "da": "Ethyl-p-hydroxybenzoat",
+  "additives_classes": "en:preservative",
+  "efsa_evaluation": "Opinion of the Scientific Panel on Food Additives, Flavourings, Processing Aids and Materials in Contact with Food on a Request from the Commission related to para hydroxybenzoates (E 214-219)",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2004.83",
+  "efsa_evaluation_date": "2004-09-28",
+  "wikidata": "Q229976"
+ },
+ {
+  "code": "E215",
+  "variants": [],
+  "en": "Sodium ethyl p-hydroxybenzoate",
+  "da": "Ethyl-p-hydroxybenzoat natriumsalt"
+ },
+ {
+  "code": "E216",
+  "variants": [],
+  "en": "Propyl para-hydroxybenzoate",
+  "da": "Propylparaben",
+  "wikidata": "Q511627"
+ },
+ {
+  "code": "E217",
+  "variants": [],
+  "en": "Sodium propyl para-hydroxybenzoate",
+  "da": "Natriumpropyl-p-hydroxybenzoat",
+  "wikidata": "Q18967279"
+ },
+ {
+  "code": "E218",
+  "variants": [],
+  "en": "Methyl p-hydroxybenzoate",
+  "da": "Methyl-p-hydroxybenzoat",
+  "additives_classes": "en:preservative",
+  "wikidata": "Q229987"
+ },
+ {
+  "code": "E219",
+  "variants": [],
+  "en": "Sodium methyl p-hydroxybenzoate",
+  "da": "Methyl-p-hydroxybenzoat natriumsalt",
+  "wikidata": "Q3963920"
+ },
+ {
+  "code": "E220",
+  "variants": [],
+  "en": "Sulphur dioxide",
+  "da": "Svovldioxid",
+  "additives_classes": "en:antioxidant, en:preservative",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of sulfur dioxide (E 220), sodium sulfite (E 221), sodium bisulfite (E 222), sodium metabisulfite (E 223), potassium metabisulfite (E 224), calcium sulfite (E 226), calcium bisulfite (E 227) and potassium bisulfite (E 228) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4438",
+  "efsa_evaluation_date": "2016-04-14",
+  "efsa_evaluation_adi": "0.7",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q5282",
+  "wikipedia": "https://en.wikipedia.org/wiki/Sulfur_dioxide"
+ },
+ {
+  "code": "E221",
+  "variants": [],
+  "en": "Sodium sulphite",
+  "da": "Natriumsulfit",
+  "additives_classes": "en:antioxidant, en:preservative",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of sulfur dioxide (E 220), sodium sulfite (E 221), sodium bisulfite (E 222), sodium metabisulfite (E 223), potassium metabisulfite (E 224), calcium sulfite (E 226), calcium bisulfite (E 227) and potassium bisulfite (E 228) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4438",
+  "efsa_evaluation_date": "2016-04-14",
+  "efsa_evaluation_adi": "0.7",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q407806",
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_sulfite"
+ },
+ {
+  "code": "E222",
+  "variants": [],
+  "en": "Sodium bisulphite",
+  "da": "Natriumhydrogensulfit",
+  "additives_classes": "en:antioxidant, en:preservative",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of sulfur dioxide (E 220), sodium sulfite (E 221), sodium bisulfite (E 222), sodium metabisulfite (E 223), potassium metabisulfite (E 224), calcium sulfite (E 226), calcium bisulfite (E 227) and potassium bisulfite (E 228) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4438",
+  "efsa_evaluation_date": "2016-04-14",
+  "efsa_evaluation_adi": "0.7",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q407891",
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_bisulfite"
+ },
+ {
+  "code": "E223",
+  "variants": [],
+  "en": "Sodium metabisulphite",
+  "da": "Natriumdisulfit",
+  "additives_classes": "en:antioxidant, en:preservative",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of sulfur dioxide (E 220), sodium sulfite (E 221), sodium bisulfite (E 222), sodium metabisulfite (E 223), potassium metabisulfite (E 224), calcium sulfite (E 226), calcium bisulfite (E 227) and potassium bisulfite (E 228) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4438",
+  "efsa_evaluation_date": "2016-04-14",
+  "efsa_evaluation_adi": "0.7",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q284549",
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_metabisulfite"
+ },
+ {
+  "code": "E224",
+  "variants": [],
+  "en": "Potassium metabisulphite",
+  "da": "Kaliumdisulfit",
+  "additives_classes": "en:antioxidant, en:preservative",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of sulfur dioxide (E 220), sodium sulfite (E 221), sodium bisulfite (E 222), sodium metabisulfite (E 223), potassium metabisulfite (E 224), calcium sulfite (E 226), calcium bisulfite (E 227) and potassium bisulfite (E 228) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4438",
+  "efsa_evaluation_date": "2016-04-14",
+  "efsa_evaluation_adi": "0.7",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q417881",
+  "wikipedia": "https://en.wikipedia.org/wiki/Potassium_metabisulfite"
+ },
+ {
+  "code": "E225",
+  "variants": [],
+  "en": "Calcium Disulphite",
+  "da": "Calcium Disulphite",
+  "additives_classes": "en:antioxidant, en:preservative",
+  "wikidata": "Q417109"
+ },
+ {
+  "code": "E226",
+  "variants": [],
+  "en": "Calcium sulphite",
+  "da": "Calciumsulfit",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of sulfur dioxide (E 220), sodium sulfite (E 221), sodium bisulfite (E 222), sodium metabisulfite (E 223), potassium metabisulfite (E 224), calcium sulfite (E 226), calcium bisulfite (E 227) and potassium bisulfite (E 228) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4438",
+  "efsa_evaluation_date": "2016-04-14",
+  "efsa_evaluation_adi": "0.7",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q899410"
+ },
+ {
+  "code": "E227",
+  "variants": [],
+  "en": "Calcium bisulphite",
+  "da": "Calciumhydrogensulfit",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of sulfur dioxide (E 220), sodium sulfite (E 221), sodium bisulfite (E 222), sodium metabisulfite (E 223), potassium metabisulfite (E 224), calcium sulfite (E 226), calcium bisulfite (E 227) and potassium bisulfite (E 228) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4438",
+  "efsa_evaluation_date": "2016-04-14",
+  "efsa_evaluation_adi": "0.7",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q419619"
+ },
+ {
+  "code": "E228",
+  "variants": [],
+  "en": "Potassium bisulphite",
+  "da": "Kaliumhydrogensulfit",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of sulfur dioxide (E 220), sodium sulfite (E 221), sodium bisulfite (E 222), sodium metabisulfite (E 223), potassium metabisulfite (E 224), calcium sulfite (E 226), calcium bisulfite (E 227) and potassium bisulfite (E 228) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4438",
+  "efsa_evaluation_date": "2016-04-14",
+  "efsa_evaluation_adi": "0.7",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q412524"
+ },
+ {
+  "code": "E230",
+  "variants": [],
+  "en": "Biphenyl",
+  "da": "Biphenyl",
+  "additives_classes": "en:preservative",
+  "wikidata": "Q410915"
+ },
+ {
+  "code": "E231",
+  "variants": [],
+  "en": "Orthophenyl phenol",
+  "da": "Orthophenyl phenol",
+  "additives_classes": "en:preservative"
+ },
+ {
+  "code": "E232",
+  "variants": [],
+  "en": "Sodium orthophenyl phenol",
+  "da": "Natriumorthophenylphenol",
+  "additives_classes": "en:preservative",
+  "wikidata": "Q6581446"
+ },
+ {
+  "code": "E233",
+  "variants": [],
+  "en": "Thiabendazole",
+  "da": "Thiabendazol"
+ },
+ {
+  "code": "E234",
+  "variants": [],
+  "en": "Nisin",
+  "da": "Nisin",
+  "additives_classes": "en:preservative",
+  "efsa_evaluation": "Opinion of the Scientific Panel on Food Additives, Flavourings, Processing Aids and Materials in Contact with Food on a request from the Commission related to The use of nisin (E 234) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2006.314",
+  "efsa_evaluation_date": "2006-03-15",
+  "wikidata": "Q415798"
+ },
+ {
+  "code": "E235",
+  "variants": [],
+  "en": "Natamycin",
+  "da": "natamycin",
+  "additives_classes": "en:preservative",
+  "efsa_evaluation": "Scientific Opinion on the use of natamycin (E 235) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2009.1412",
+  "efsa_evaluation_date": "2009-12-14",
+  "wikidata": "Q248466",
+  "wikipedia": "https://en.wikipedia.org/wiki/Natamycin"
+ },
+ {
+  "code": "E236",
+  "variants": [],
+  "en": "Formic acid",
+  "da": "Myresyre",
+  "wikidata": "Q161233"
+ },
+ {
+  "code": "E237",
+  "variants": [],
+  "en": "Sodium formiate",
+  "da": "Natriumformiat",
+  "wikidata": "Q409209"
+ },
+ {
+  "code": "E238",
+  "variants": [],
+  "en": "Calcium formiate",
+  "da": "Calciumformiat",
+  "wikidata": "Q221123"
+ },
+ {
+  "code": "E239",
+  "variants": [],
+  "en": "Hexamethylene tetramine",
+  "da": "Hexamethylentetramin",
+  "additives_classes": "en:preservative",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of hexamethylene tetramine (E 239) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2014.3696",
+  "efsa_evaluation_date": "2014-06-05",
+  "wikidata": "Q71969"
+ },
+ {
+  "code": "E240",
+  "variants": [],
+  "en": "Formaldehyde",
+  "da": "Formaldehyd",
+  "wikidata": "Q161210"
+ },
+ {
+  "code": "E241",
+  "variants": [],
+  "en": "Gum Guaicum",
+  "da": "Gummi Guaicum",
+  "wikipedia": "Gum_guaicum"
+ },
+ {
+  "code": "E242",
+  "variants": [],
+  "en": "Dimethyl dicarbonate",
+  "da": "dimethyldikarbonat",
+  "additives_classes": "en:preservative",
+  "efsa_evaluation": "Scientific opinion on the re-evaluation of dimethyl dicarbonate (DMDC, E 242) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4319",
+  "efsa_evaluation_date": "2015-12-10",
+  "wikidata": "Q416985",
+  "wikipedia": "https://en.wikipedia.org/wiki/Dimethyl_dicarbonate"
+ },
+ {
+  "code": "E243",
+  "variants": [],
+  "en": "Ethyl lauroyl arginate",
+  "da": "Ethyllauroylarginat",
+  "additives_classes": "en:preservative",
+  "efsa_evaluation": "Safety of ethyl lauroyl arginate (E 243) as a food additive in the light of the new information provided and the proposed extension of use",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5621",
+  "efsa_evaluation_date": "2019/03/08",
+  "wikidata": "Q18608852"
+ },
+ {
+  "code": "E246",
+  "variants": [],
+  "en": "Glycolipids",
+  "da": "Glykolipider"
+ },
+ {
+  "code": "E249",
+  "variants": [],
+  "en": "Potassium nitrite",
+  "da": "Kaliumnitrit",
+  "additives_classes": "en:preservative",
+  "wikidata": "Q409179"
+ },
+ {
+  "code": "E250",
+  "variants": [],
+  "en": "Sodium nitrite",
+  "da": "Natriumnitrit",
+  "additives_classes": "en:preservative",
+  "efsa_evaluation": "Re-evaluation of potassium nitrite (E 249) and sodium nitrite (E 250) as food additives",
+  "efsa_evaluation_url": "https://zenodo.org/record/1252752/files/EFSAOutputs_KJ_2018.xlsx",
+  "efsa_evaluation_date": "2017/06/15",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q339975",
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_nitrite"
+ },
+ {
+  "code": "E251",
+  "variants": [],
+  "en": "Sodium nitrate",
+  "da": "Natriumnitrat",
+  "additives_classes": "en:preservative",
+  "efsa_evaluation": "Re‐evaluation of sodium nitrate (E 251) and potassium nitrate (E 252) as food additives",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/epdf/10.2903/j.efsa.2017.4787",
+  "efsa_evaluation_date": "2017/06/15",
+  "efsa_evaluation_adi": "3.7",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q184373",
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_nitrate"
+ },
+ {
+  "code": "E252",
+  "variants": [],
+  "en": "Potassium nitrate",
+  "da": "Kaliumnitrat",
+  "additives_classes": "en:preservative",
+  "efsa_evaluation": "Re‐evaluation of sodium nitrate (E 251) and potassium nitrate (E 252) as food additives",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/epdf/10.2903/j.efsa.2017.4787",
+  "efsa_evaluation_date": "2017/06/15",
+  "efsa_evaluation_adi": "3.7",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q177836",
+  "wikipedia": "https://en.wikipedia.org/wiki/Potassium_nitrate"
+ },
+ {
+  "code": "E260",
+  "variants": [],
+  "en": "Acetic acid",
+  "da": "Eddikesyre",
+  "additives_classes": "en:preservative",
+  "wikidata": "Q47512",
+  "wikipedia": "https://en.wikipedia.org/wiki/Acetic_acid"
+ },
+ {
+  "code": "E261",
+  "variants": [
+   {
+    "code": "E261(i)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E261(ii)",
+    "en": "Potassium diacetate",
+    "da": ""
+   }
+  ],
+  "en": "Potassium acetate",
+  "da": "Kaliumacetat",
+  "additives_classes": "en:preservative",
+  "wikidata": "Q409199"
+ },
+ {
+  "code": "E262",
+  "variants": [
+   {
+    "code": "E262(i)",
+    "en": "Sodium acetate",
+    "da": "Natriumacetat"
+   },
+   {
+    "code": "E262(ii)",
+    "en": "Sodium diacetate",
+    "da": "Natriumdiacetat"
+   }
+  ],
+  "en": "Sodium acetates",
+  "da": "CH_3 COONa",
+  "additives_classes": "en:preservative, en:sequestrant",
+  "wikidata": "Q339940",
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_acetate"
+ },
+ {
+  "code": "E263",
+  "variants": [],
+  "en": "Calcium acetate",
+  "da": "Calciumacetat",
+  "additives_classes": "en:preservative, en:stabiliser",
+  "wikidata": "Q409251",
+  "wikipedia": "https://en.wikipedia.org/wiki/Calcium_acetate"
+ },
+ {
+  "code": "E264",
+  "variants": [],
+  "en": "Ammonium acetate",
+  "da": "Ammoniumacetat"
+ },
+ {
+  "code": "E265",
+  "variants": [],
+  "en": "Dehydroacetic acid",
+  "da": "Dehydroeddikesyre",
+  "wikidata": "Q920725"
+ },
+ {
+  "code": "E266",
+  "variants": [],
+  "en": "Sodium dehydroacetate",
+  "da": "Natriumdehydroacetat",
+  "wikidata": "Q7553316"
+ },
+ {
+  "code": "E267",
+  "variants": [],
+  "en": "Buffered vinegar",
+  "wikidata": "Q130547560"
+ },
+ {
+  "code": "E270",
+  "variants": [],
+  "en": "Lactic acid",
+  "da": "Mælkesyre",
+  "wikidata": "Q56626856",
+  "wikipedia": "https://en.wikipedia.org/wiki/Lactic_acid"
+ },
+ {
+  "code": "E280",
+  "variants": [],
+  "en": "Propionic acid",
+  "da": "Propionsyre",
+  "additives_classes": "en:preservative",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of propionic acid (E 280), sodium propionate (E 281), calcium propionate (E 282) and potassium propionate (E 283) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2014.3779",
+  "efsa_evaluation_date": "2014-07-22",
+  "wikidata": "Q422956"
+ },
+ {
+  "code": "E281",
+  "variants": [],
+  "en": "Sodium propionate",
+  "da": "Natriumpropionat",
+  "additives_classes": "en:preservative",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of propionic acid (E 280), sodium propionate (E 281), calcium propionate (E 282) and potassium propionate (E 283) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2014.3779",
+  "efsa_evaluation_date": "2014-07-22",
+  "wikidata": "Q420130",
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_propionate"
+ },
+ {
+  "code": "E282",
+  "variants": [],
+  "en": "calcium propionate",
+  "da": "Calciumpropionat",
+  "additives_classes": "en:preservative",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of propionic acid (E 280), sodium propionate (E 281), calcium propionate (E 282) and potassium propionate (E 283) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2014.3779",
+  "efsa_evaluation_date": "2014-07-22",
+  "wikidata": "Q417394",
+  "wikipedia": "https://en.wikipedia.org/wiki/Calcium_propanoate"
+ },
+ {
+  "code": "E283",
+  "variants": [],
+  "en": "Potassium propionate",
+  "da": "Kaliumpropionat",
+  "additives_classes": "en:preservative",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of propionic acid (E 280), sodium propionate (E 281), calcium propionate (E 282) and potassium propionate (E 283) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2014.3779",
+  "efsa_evaluation_date": "2014-07-22",
+  "wikidata": "Q416435"
+ },
+ {
+  "code": "E284",
+  "variants": [],
+  "en": "Boric acid",
+  "da": "Borsyre",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of boric acid (E 284) and sodium tetraborate (borax) (E 285) as food additives.",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3407",
+  "efsa_evaluation_date": "2013-10-24",
+  "wikidata": "Q187045"
+ },
+ {
+  "code": "E285",
+  "variants": [],
+  "en": "Sodium tetraborate (borax)",
+  "da": "Natriumtetraborat (boraks)",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of boric acid (E 284) and sodium tetraborate (borax) (E 285) as food additives.",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3407",
+  "efsa_evaluation_date": "2013-10-24",
+  "wikidata": "Q5319"
+ },
+ {
+  "code": "E290",
+  "variants": [],
+  "en": "Carbon dioxide",
+  "da": "Carbondioxid",
+  "additives_classes": "en:preservative, en:propellent-gas",
+  "wikidata": "Q1997",
+  "wikipedia": "https://en.wikipedia.org/wiki/Carbon_dioxide"
+ },
+ {
+  "code": "E296",
+  "variants": [],
+  "en": "Malic acid",
+  "da": "Æblesyre",
+  "wikidata": "Q190143",
+  "wikipedia": "https://en.wikipedia.org/wiki/Malic_acid"
+ },
+ {
+  "code": "E297",
+  "variants": [],
+  "en": "Fumaric acid",
+  "da": "Fumarsyre",
+  "wikidata": "Q139857"
+ },
+ {
+  "code": "E300",
+  "variants": [],
+  "en": "Ascorbic acid",
+  "da": "Ascorbinsyre",
+  "additives_classes": "en:antioxidant, en:sequestrant",
+  "efsa_evaluation": "Scientific Opinion on the re‐evaluation of ascorbic acid (E 300), sodium ascorbate (E 301) and calcium ascorbate (E 302) as food additives",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/epdf/10.2903/j.efsa.2015.4087",
+  "efsa_evaluation_date": "2015/05/06",
+  "wikidata": "Q193598"
+ },
+ {
+  "code": "E301",
+  "variants": [],
+  "en": "Sodium ascorbate",
+  "da": "Natriumascorbat",
+  "additives_classes": "en:antioxidant",
+  "efsa_evaluation": "Scientific Opinion on the re‐evaluation of ascorbic acid (E 300), sodium ascorbate (E 301) and calcium ascorbate (E 302) as food additives",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/epdf/10.2903/j.efsa.2015.4087",
+  "efsa_evaluation_date": "2015/05/06",
+  "wikidata": "Q424551",
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_ascorbate"
+ },
+ {
+  "code": "E302",
+  "variants": [],
+  "en": "Calcium ascorbate",
+  "da": "Calciumascorbat",
+  "additives_classes": "en:antioxidant",
+  "efsa_evaluation": "Scientific Opinion on the re‐evaluation of ascorbic acid (E 300), sodium ascorbate (E 301) and calcium ascorbate (E 302) as food additives",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/epdf/10.2903/j.efsa.2015.4087",
+  "efsa_evaluation_date": "2015/05/06",
+  "wikidata": "Q283033"
+ },
+ {
+  "code": "E303",
+  "variants": [],
+  "en": "Potassium ascorbate",
+  "da": "Kaliumascorbat",
+  "wikidata": "Q56410901"
+ },
+ {
+  "code": "E304",
+  "variants": [
+   {
+    "code": "E304(i)",
+    "en": "Ascorbyl palmitate",
+    "da": "Ascorbylpalmitat"
+   },
+   {
+    "code": "E304(ii)",
+    "en": "Ascorbyl stearate",
+    "da": "Ascorbylstearat"
+   }
+  ],
+  "en": "Fatty acid esters of ascorbic acid",
+  "da": "Fedtsyreestere af ascorbinsyre",
+  "additives_classes": "en:antioxidant",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of ascorbyl palmitate (E 304(i)) and ascorbyl stearate (E 304(ii)) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4289",
+  "efsa_evaluation_date": "2015-11-18",
+  "wikidata": "Q43303953",
+  "wikipedia": "https://en.wikipedia.org/wiki/Ascorbyl_palmitate"
+ },
+ {
+  "code": "E306",
+  "variants": [],
+  "en": "Tocopherol-rich extract",
+  "da": "Tocopherolrig ekstrakt",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of tocopherol-rich extract (E 306), alpha-tocopherol (E 307), gamma-tocopherol (E 308) and delta-tocopherol (E 309) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4247",
+  "efsa_evaluation_date": "2015-09-30",
+  "wikidata": "Q141180",
+  "wikipedia": "https://en.wikipedia.org/wiki/Vitamin_E"
+ },
+ {
+  "code": "E307",
+  "variants": [],
+  "en": "Alpha-tocopherol",
+  "da": "Alfa-tocopherol",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of tocopherol-rich extract (E 306), alpha-tocopherol (E 307), gamma-tocopherol (E 308) and delta-tocopherol (E 309) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4247",
+  "efsa_evaluation_date": "2015-09-30",
+  "wikidata": "Q158348"
+ },
+ {
+  "code": "E307a",
+  "variants": [],
+  "en": "D-Alpha-tocopherol",
+  "da": "D-Alpha-tocopherol",
+  "additives_classes": "en:antioxidant",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of tocopherol-rich extract (E 306), alpha-tocopherol (E 307), gamma-tocopherol (E 308) and delta-tocopherol (E 309) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4247",
+  "efsa_evaluation_date": "2015-09-30",
+  "wikidata": "Q158348"
+ },
+ {
+  "code": "E307b",
+  "variants": [],
+  "en": "concentrated tocopherol",
+  "da": "koncentreret tocopherol",
+  "additives_classes": "en:antioxidant",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of tocopherol-rich extract (E 306), alpha-tocopherol (E 307), gamma-tocopherol (E 308) and delta-tocopherol (E 309) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4247",
+  "efsa_evaluation_date": "2015-09-30",
+  "wikidata": "Q158348"
+ },
+ {
+  "code": "E307c",
+  "variants": [],
+  "en": "DL-Alpha-tocopherol",
+  "da": "dl-α-Tocopherol",
+  "additives_classes": "en:antioxidant",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of tocopherol-rich extract (E 306), alpha-tocopherol (E 307), gamma-tocopherol (E 308) and delta-tocopherol (E 309) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4247",
+  "efsa_evaluation_date": "2015-09-30",
+  "wikidata": "Q158348"
+ },
+ {
+  "code": "E308",
+  "variants": [],
+  "en": "Gamme-tocopherol",
+  "da": "Gamma-tocopherol",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of tocopherol-rich extract (E 306), alpha-tocopherol (E 307), gamma-tocopherol (E 308) and delta-tocopherol (E 309) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4247",
+  "efsa_evaluation_date": "2015-09-30",
+  "wikidata": "Q155753"
+ },
+ {
+  "code": "E309",
+  "variants": [],
+  "en": "Delta-tocopherol",
+  "da": "Delta-tocopherol",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of tocopherol-rich extract (E 306), alpha-tocopherol (E 307), gamma-tocopherol (E 308) and delta-tocopherol (E 309) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4247",
+  "efsa_evaluation_date": "2015-09-30",
+  "wikidata": "Q155751"
+ },
+ {
+  "code": "E310",
+  "variants": [],
+  "en": "Propyl gallate",
+  "da": "Propylgallat",
+  "additives_classes": "en:antioxidant",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of propyl gallate (E 310) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2014.3642",
+  "efsa_evaluation_date": "2014-04-24",
+  "wikidata": "Q608726"
+ },
+ {
+  "code": "E311",
+  "variants": [],
+  "en": "Octyl gallate",
+  "da": "Octylgallat",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of octyl gallate (E 311) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4248",
+  "efsa_evaluation_date": "2015-10-01",
+  "wikidata": "Q2317929"
+ },
+ {
+  "code": "E312",
+  "variants": [],
+  "en": "Dodecyl gallate",
+  "da": "Dodecylgallat",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of dodecyl gallate (E 312) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4086",
+  "efsa_evaluation_date": "2015-05-05",
+  "wikidata": "Q418209"
+ },
+ {
+  "code": "E313",
+  "variants": [],
+  "en": "Ethyl gallate",
+  "da": "Ethyl gallate"
+ },
+ {
+  "code": "E314",
+  "variants": [],
+  "en": "Guaiacum",
+  "da": "Guajak",
+  "additives_classes": "en:antioxidant",
+  "wikipedia": "Gum_guaicum"
+ },
+ {
+  "code": "E315",
+  "variants": [],
+  "en": "Erythorbic acid",
+  "da": "Erythorbinsyre",
+  "additives_classes": "en:antioxidant",
+  "efsa_evaluation": "Scientific Opinion on the re‐evaluation of erythorbic acid (E 315) and sodium erythorbate (E 316) as food additives",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/epdf/10.2903/j.efsa.2016.4360",
+  "efsa_evaluation_date": "2016/01/20",
+  "efsa_evaluation_adi": "6",
+  "efsa_evaluation_overexposure_risk": "en:no",
+  "wikidata": "Q424531"
+ },
+ {
+  "code": "E316",
+  "variants": [],
+  "en": "sodium erythorbate",
+  "da": "Natriumerythorbat",
+  "additives_classes": "en:antioxidant",
+  "efsa_evaluation": "Scientific Opinion on the re‐evaluation of erythorbic acid (E 315) and sodium erythorbate (E 316) as food additives",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/epdf/10.2903/j.efsa.2016.4360",
+  "efsa_evaluation_date": "2016/01/20",
+  "efsa_evaluation_adi": "6",
+  "efsa_evaluation_overexposure_risk": "en:no",
+  "wikidata": "Q417003",
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_erythorbate"
+ },
+ {
+  "code": "E317",
+  "variants": [],
+  "en": "Erythorbin acid"
+ },
+ {
+  "code": "E318",
+  "variants": [],
+  "en": "Calcium erythorbin",
+  "da": "Calcium erythorbin",
+  "wikidata": "Q13081784"
+ },
+ {
+  "code": "E319",
+  "variants": [],
+  "en": "Tertiary-butylhydroquinone (tbhq)",
+  "da": "Tert-butylhydroquinon (tbhq)",
+  "additives_classes": "en:antioxidant",
+  "efsa_evaluation": "Statement on the refined exposure assessment of tertiary-butyl hydroquinone (E 319)",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4363",
+  "efsa_evaluation_date": "2016-01-12",
+  "wikidata": "Q662443"
+ },
+ {
+  "code": "E320",
+  "variants": [],
+  "en": "Butylated hydroxyanisole (bha)",
+  "da": "Butylhydroxyanisol (bha)",
+  "additives_classes": "en:antioxidant",
+  "efsa_evaluation": "Statement on the safety assessment of the exposure to butylated ydroxyanisole E 320 (BHA) by applying a new exposure assessment methodology",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2012.2759",
+  "efsa_evaluation_date": "2012-07-24",
+  "wikidata": "Q409401"
+ },
+ {
+  "code": "E321",
+  "variants": [],
+  "en": "Butylated hydroxytoluene",
+  "da": "Butylhydroxytoluen (bht)",
+  "additives_classes": "en:antioxidant",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of butylated hydroxytoluene BHT (E 321) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2012.2588",
+  "efsa_evaluation_date": "2012-03-07",
+  "wikidata": "Q221945"
+ },
+ {
+  "code": "E322",
+  "variants": [
+   {
+    "code": "E322(i)",
+    "en": "Lecithin",
+    "da": "Lecitin"
+   },
+   {
+    "code": "E322(ii)",
+    "en": "Partially hydrolyzed lecithin",
+    "da": "Delvist hydrolyseret lecithin"
+   },
+   {
+    "code": "E322(iii)",
+    "en": "Lecithin\\",
+    "da": ""
+   }
+  ],
+  "en": "Lecithins",
+  "da": "Lecithiner",
+  "additives_classes": "en:antioxidant, en:emulsifier",
+  "wikidata": "Q241595",
+  "wikipedia": "https://en.wikipedia.org/wiki/Lecithin"
+ },
+ {
+  "code": "E322a",
+  "variants": [],
+  "en": "Oat lecithin",
+  "da": "Havrel lecithin"
+ },
+ {
+  "code": "E323",
+  "variants": [],
+  "en": "Anoxomer",
+  "da": "Anoxomer"
+ },
+ {
+  "code": "E324",
+  "variants": [],
+  "en": "Ethoxyquin",
+  "da": "Ethoxyquin",
+  "wikidata": "Q1657816"
+ },
+ {
+  "code": "E325",
+  "variants": [],
+  "en": "sodium lactate",
+  "da": "Natriumlactat",
+  "additives_classes": "en:antioxidant, en:emulsifier, en:humectant, en:thickener",
+  "wikidata": "Q418235",
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_lactate"
+ },
+ {
+  "code": "E326",
+  "variants": [],
+  "en": "potassium lactate",
+  "da": "kaliumlaktat",
+  "additives_classes": "en:antioxidant, en:emulsifier, en:humectant",
+  "wikidata": "Q411342",
+  "wikipedia": "https://en.wikipedia.org/wiki/Potassium_lactate"
+ },
+ {
+  "code": "E327",
+  "variants": [],
+  "en": "calcium lactate",
+  "da": "kalciumlaktat",
+  "additives_classes": "en:thickener",
+  "wikidata": "Q419693",
+  "wikipedia": "https://en.wikipedia.org/wiki/Calcium_lactate"
+ },
+ {
+  "code": "E328",
+  "variants": [],
+  "en": "ammonium lactate",
+  "da": "Ammoniumlaktat",
+  "wikidata": "Q663358"
+ },
+ {
+  "code": "E329",
+  "variants": [],
+  "en": "Magnesium lactate",
+  "da": "Magnesiumlaktat",
+  "wikidata": "Q594836"
+ },
+ {
+  "code": "E330",
+  "variants": [],
+  "en": "Citric acid",
+  "da": "Citronsyre",
+  "additives_classes": "en:antioxidant, en:sequestrant",
+  "efsa_evaluation": "Scientific Opinion on the safety evaluation of the active substances citric acid (E330) and sodium hydrogen carbonate (E500ii), used as carbon dioxide generators, together with liquid absorbers cellulose and polyacrylic acid sodium salt crosslinked, in active food contact materials.",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3152",
+  "efsa_evaluation_date": "2013-04-09",
+  "wikidata": "Q159683",
+  "wikipedia": "https://en.wikipedia.org/wiki/Citric_acid"
+ },
+ {
+  "code": "E331",
+  "variants": [
+   {
+    "code": "E331(i)",
+    "en": "Monosodium citrate",
+    "da": "Mononatriumcitrat"
+   },
+   {
+    "code": "E331(ii)",
+    "en": "Disodium citrate",
+    "da": "Dinatriumcitrat"
+   },
+   {
+    "code": "E331(iii)",
+    "en": "Trisodium citrate",
+    "da": "Trinatriumcitrat"
+   }
+  ],
+  "en": "Sodium citrates",
+  "da": "Natriumcitrater",
+  "additives_classes": "en:emulsifier, en:sequestrant, en:stabiliser",
+  "wikidata": "Q6460572",
+  "wikipedia": "https://en.wikipedia.org/wiki/Monosodium_citrate"
+ },
+ {
+  "code": "E332",
+  "variants": [
+   {
+    "code": "E332(i)",
+    "en": "Monopotassium citrate",
+    "da": "Monokaliumcitrat"
+   },
+   {
+    "code": "E332(ii)",
+    "en": "Tripotassium citrate",
+    "da": "Trikaliumcitrat"
+   }
+  ],
+  "en": "Potassium citrates",
+  "da": "Kaliumcitrat",
+  "additives_classes": "en:sequestrant, en:stabiliser",
+  "wikidata": "Q419921",
+  "wikipedia": "https://en.wikipedia.org/wiki/Potassium_citrate"
+ },
+ {
+  "code": "E333",
+  "variants": [
+   {
+    "code": "E333(i)",
+    "en": "Monocalcium citrate",
+    "da": "Monocalciumcitrat"
+   },
+   {
+    "code": "E333(ii)",
+    "en": "Dicalcium citrate",
+    "da": "Dicalciumcitrat"
+   },
+   {
+    "code": "E333(iii)",
+    "en": "Tricalcium citrate",
+    "da": "Tricalciumcitrat"
+   }
+  ],
+  "en": "Calcium citrates",
+  "additives_classes": "en:sequestrant, en:stabiliser",
+  "wikidata": "Q420280"
+ },
+ {
+  "code": "E334",
+  "variants": [],
+  "en": "L(+)-tartaric acid",
+  "da": "L(+)-tartaric acid",
+  "additives_classes": "en:antioxidant, en:sequestrant",
+  "wikidata": "Q194322",
+  "wikipedia": "https://en.wikipedia.org/wiki/Tartaric_acid"
+ },
+ {
+  "code": "E335",
+  "variants": [
+   {
+    "code": "E335(i)",
+    "en": "Monosodium tartrate",
+    "da": "Mononatriumtartrat"
+   },
+   {
+    "code": "E335(ii)",
+    "en": "Disodium tartrate",
+    "da": "Dinatriumtartrat"
+   }
+  ],
+  "en": "Sodium tartrates",
+  "da": "Natriumtartrater",
+  "additives_classes": "en:sequestrant, en:stabiliser",
+  "wikidata": "Q58641683"
+ },
+ {
+  "code": "E336",
+  "variants": [
+   {
+    "code": "E336(i)",
+    "en": "Monopotassium tartrate",
+    "da": "Monokaliumtartrat"
+   },
+   {
+    "code": "E336(ii)",
+    "en": "Dipotassium tartrate",
+    "da": "Dikaliumtartrat"
+   }
+  ],
+  "en": "Potassium tartrates",
+  "wikidata": "Q65770886",
+  "wikipedia": "https://en.wikipedia.org/wiki/Potassium_tartrate"
+ },
+ {
+  "code": "E337",
+  "variants": [],
+  "en": "Potassium sodium tartrate",
+  "da": "Natriumkaliumtartrat",
+  "additives_classes": "en:sequestrant, en:stabiliser",
+  "wikidata": "Q303489"
+ },
+ {
+  "code": "E338",
+  "variants": [],
+  "en": "Phosphoric acid",
+  "da": "Phosphorsyre",
+  "additives_classes": "en:antioxidant, en:sequestrant",
+  "efsa_evaluation": "Re‐evaluation of phosphoric acid–phosphates – di‐, tri‐ and polyphosphates (E 338–341, E 343, E 450–452) as food additives and the safety of proposed extension of use",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5674",
+  "efsa_evaluation_date": "2019/06/12",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q184782",
+  "wikipedia": "https://en.wikipedia.org/wiki/Phosphoric_acid"
+ },
+ {
+  "code": "E339",
+  "variants": [
+   {
+    "code": "E339(i)",
+    "en": "Monosodium phosphate",
+    "da": "Mononatriumphosphat"
+   },
+   {
+    "code": "E339(ii)",
+    "en": "Disodium phosphate",
+    "da": "Dinatriumphosphat"
+   },
+   {
+    "code": "E339(iii)",
+    "en": "Trisodium phosphate",
+    "da": "Trinatriumphosphat"
+   }
+  ],
+  "en": "Sodium phosphates",
+  "da": "Natriumphosphate",
+  "additives_classes": "en:emulsifier, en:humectant, en:preservative, en:sequestrant, en:stabiliser, en:thickener",
+  "efsa_evaluation": "Re‐evaluation of phosphoric acid–phosphates – di‐, tri‐ and polyphosphates (E 338–341, E 343, E 450–452) as food additives and the safety of proposed extension of use",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5674",
+  "efsa_evaluation_date": "2019/06/12",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q3249706",
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_phosphates"
+ },
+ {
+  "code": "E340",
+  "variants": [
+   {
+    "code": "E340(i)",
+    "en": "Monopotassium phosphate",
+    "da": "Monokaliumphosphat"
+   },
+   {
+    "code": "E340(ii)",
+    "en": "Dipotassium phosphate",
+    "da": "Dikaliumphosphat"
+   },
+   {
+    "code": "E340(iii)",
+    "en": "Tripotassium phosphate",
+    "da": "Trikaliumphosphat"
+   }
+  ],
+  "en": "Potassium phosphates",
+  "additives_classes": "en:emulsifier, en:humectant, en:sequestrant, en:stabiliser, en:thickener",
+  "efsa_evaluation": "Re‐evaluation of phosphoric acid–phosphates – di‐, tri‐ and polyphosphates (E 338–341, E 343, E 450–452) as food additives and the safety of proposed extension of use",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5674",
+  "efsa_evaluation_date": "2019/06/12",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q3381491",
+  "wikipedia": "https://en.wikipedia.org/wiki/Potassium_phosphate"
+ },
+ {
+  "code": "E341",
+  "variants": [
+   {
+    "code": "E341(i)",
+    "en": "Monocalcium phosphate",
+    "da": "Monocalciumphosphat"
+   },
+   {
+    "code": "E341(ii)",
+    "en": "Dicalcium phosphate",
+    "da": "dicalciumfosfat"
+   },
+   {
+    "code": "E341(iii)",
+    "en": "Tricalcium phosphate",
+    "da": "Tricalciumphosphat"
+   }
+  ],
+  "en": "Calcium phosphates",
+  "da": "Kalciumfosfater",
+  "additives_classes": "en:emulsifier, en:humectant, en:sequestrant, en:stabiliser, en:thickener",
+  "efsa_evaluation": "Re‐evaluation of phosphoric acid–phosphates – di‐, tri‐ and polyphosphates (E 338–341, E 343, E 450–452) as food additives and the safety of proposed extension of use",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5674",
+  "efsa_evaluation_date": "2019/06/12",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q426664",
+  "wikipedia": "https://en.wikipedia.org/wiki/Calcium_phosphate"
+ },
+ {
+  "code": "E342",
+  "variants": [
+   {
+    "code": "E342(i)",
+    "en": "Ammonium dihydrogen phosphate",
+    "da": ""
+   },
+   {
+    "code": "E342(ii)",
+    "en": "Diammonium hydrogen phosphate",
+    "da": ""
+   }
+  ],
+  "en": "Ammonium phosphate",
+  "additives_classes": "en:stabiliser, en:thickener",
+  "wikidata": "Q18967184"
+ },
+ {
+  "code": "E343",
+  "variants": [
+   {
+    "code": "E343(i)",
+    "en": "Monomagnesium phosphate",
+    "da": "Monomagnesiumphosphat"
+   },
+   {
+    "code": "E343(ii)",
+    "en": "Dimagnesium phosphate",
+    "da": "Dimagnesiumphosphat"
+   },
+   {
+    "code": "E343(iii)",
+    "en": "Trimagnesium phosphate",
+    "da": ""
+   }
+  ],
+  "en": "Magnesium phosphates",
+  "da": "Magnesiumfosfater",
+  "additives_classes": "en:stabiliser, en:thickener",
+  "efsa_evaluation": "Re‐evaluation of phosphoric acid–phosphates – di‐, tri‐ and polyphosphates (E 338–341, E 343, E 450–452) as food additives and the safety of proposed extension of use",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5674",
+  "efsa_evaluation_date": "2019/06/12",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q6731399",
+  "wikipedia": "https://en.wikipedia.org/wiki/Magnesium_phosphate"
+ },
+ {
+  "code": "E344",
+  "variants": [],
+  "en": "Lecithin citrate",
+  "da": "Lecithin citrat",
+  "wikidata": "Q13081794"
+ },
+ {
+  "code": "E345",
+  "variants": [],
+  "en": "Magnesium citrate",
+  "da": "Magnesiumcitrat",
+  "wikidata": "Q45044"
+ },
+ {
+  "code": "E349",
+  "variants": [],
+  "en": "ammonium malate",
+  "da": "Ammoniummalat",
+  "wikidata": "Q4747303"
+ },
+ {
+  "code": "E350",
+  "variants": [
+   {
+    "code": "E350(i)",
+    "en": "Sodium malate",
+    "da": "Natriummalat"
+   },
+   {
+    "code": "E350(ii)",
+    "en": "Sodium hydrogen malate",
+    "da": "Natriumhydrogenmalat"
+   }
+  ],
+  "en": "Sodium malates",
+  "da": "Natriummalater",
+  "additives_classes": "en:humectant",
+  "wikidata": "Q836788",
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_malate"
+ },
+ {
+  "code": "E351",
+  "variants": [
+   {
+    "code": "E351(i)",
+    "en": "Potassium hydrogen malate",
+    "da": ""
+   },
+   {
+    "code": "E351(ii)",
+    "en": "",
+    "da": ""
+   }
+  ],
+  "en": "Potassium malate",
+  "da": "Kaliummalat",
+  "wikidata": "Q408755"
+ },
+ {
+  "code": "E352",
+  "variants": [
+   {
+    "code": "E352(i)",
+    "en": "Calcium malate",
+    "da": "Calciummalat"
+   },
+   {
+    "code": "E352(ii)",
+    "en": "Calcium hydrogen malate",
+    "da": "Calciumhydrogenmalat"
+   }
+  ],
+  "en": "Calcium malates",
+  "da": "Calciummalater",
+  "wikidata": "Q1356722"
+ },
+ {
+  "code": "E353",
+  "variants": [],
+  "en": "Metatartaric acid",
+  "da": "Metavinsyre",
+  "wikidata": "Q17997708"
+ },
+ {
+  "code": "E354",
+  "variants": [],
+  "en": "Calcium tartrate",
+  "da": "Calciumtartrat",
+  "wikidata": "Q416767"
+ },
+ {
+  "code": "E355",
+  "variants": [],
+  "en": "Adipic acid",
+  "da": "Adipinsyre",
+  "wikidata": "Q357415"
+ },
+ {
+  "code": "E356",
+  "variants": [],
+  "en": "Sodium adipate",
+  "da": "Natriumadipat",
+  "wikidata": "Q423296"
+ },
+ {
+  "code": "E357",
+  "variants": [],
+  "en": "Potassium adipate",
+  "da": "Kaliumadipat",
+  "wikidata": "Q931445"
+ },
+ {
+  "code": "E359",
+  "variants": [],
+  "en": "ammonium adipate",
+  "da": "Ammoniumadipat",
+  "wikidata": "Q4747299"
+ },
+ {
+  "code": "E363",
+  "variants": [],
+  "en": "Succinic acid",
+  "da": "Ravsyre",
+  "wikidata": "Q213050"
+ },
+ {
+  "code": "E364",
+  "variants": [
+   {
+    "code": "E364(i)",
+    "en": "Monosodium succinate",
+    "da": ""
+   },
+   {
+    "code": "E364(ii)",
+    "en": "Disodium succinate",
+    "da": ""
+   }
+  ],
+  "en": "Sodium succinates",
+  "da": "Natriumsukcinat"
+ },
+ {
+  "code": "E365",
+  "variants": [],
+  "en": "Sodium fumarate",
+  "da": "Natriumfumarat"
+ },
+ {
+  "code": "E366",
+  "variants": [],
+  "en": "Potassium fumarate",
+  "da": "Kaliumfumarat",
+  "wikidata": "Q723321"
+ },
+ {
+  "code": "E367",
+  "variants": [],
+  "en": "Calcium fumarate",
+  "da": "Calciumfumarat",
+  "wikidata": "Q836445"
+ },
+ {
+  "code": "E368",
+  "variants": [],
+  "en": "ammonium fumarate",
+  "da": "Ammoniumfumarat",
+  "wikidata": "Q2882202"
+ },
+ {
+  "code": "E369",
+  "variants": [],
+  "en": "Alanin",
+  "da": "E639"
+ },
+ {
+  "code": "E370",
+  "variants": [],
+  "en": "1\\",
+  "da": "1"
+ },
+ {
+  "code": "E375",
+  "variants": [],
+  "en": "Nicotinic acid",
+  "da": "Nikotinsyre"
+ },
+ {
+  "code": "E380",
+  "variants": [],
+  "en": "Triammonium citrate",
+  "da": "Triammoniumcitrat",
+  "wikidata": "Q13081798"
+ },
+ {
+  "code": "E381",
+  "variants": [],
+  "en": "ferric ammonium citrate",
+  "wikidata": "Q473522"
+ },
+ {
+  "code": "E383",
+  "variants": [],
+  "en": "calcium glycerophosphate",
+  "wikidata": "Q4119838",
+  "wikipedia": "https://en.wikipedia.org/wiki/Calcium_glycerylphosphate"
+ },
+ {
+  "code": "E384",
+  "variants": [],
+  "en": "Isopropyl citrates",
+  "da": "Isopropyl citrater",
+  "additives_classes": "en:antioxidant, en:preservative, en:sequestrant"
+ },
+ {
+  "code": "E385",
+  "variants": [],
+  "en": "Calcium disodium ethylenediaminetetraacetate",
+  "da": "Calciumdinatriumethylendiamintetraacetat",
+  "additives_classes": "en:antioxidant, en:preservative, en:sequestrant",
+  "wikidata": "Q9189390",
+  "wikipedia": "https://en.wikipedia.org/wiki/Ethylenediaminetetraacetic_acid"
+ },
+ {
+  "code": "E388",
+  "variants": [],
+  "en": "Thiodipropionic acid",
+  "da": "Thiodipropionsyre",
+  "additives_classes": "en:antioxidant",
+  "wikidata": "Q2823309"
+ },
+ {
+  "code": "E391",
+  "variants": [],
+  "en": "Phytic acid",
+  "da": "Fytin",
+  "wikidata": "Q409679"
+ },
+ {
+  "code": "E392",
+  "variants": [],
+  "en": "Extracts of rosemary",
+  "da": "Ekstrakter af rosmarin",
+  "efsa_evaluation": "Extension of use of extracts of rosemary (E 392) in fat-based spreads",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4090",
+  "efsa_evaluation_date": "2015-05-07"
+ },
+ {
+  "code": "E399",
+  "variants": [],
+  "en": "Calcium lactobionate",
+  "wikidata": "Q6138969"
+ },
+ {
+  "code": "E400",
+  "variants": [],
+  "en": "Alginic acid",
+  "da": "Alginsyre",
+  "additives_classes": "en:carrier, en:emulsifier, en:humectant, en:sequestrant, en:stabiliser, en:thickener",
+  "efsa_evaluation": "Re‐evaluation of alginic acid and its sodium, potassium, ammonium and calcium salts (E 400–E 404) as food additives",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.5049",
+  "efsa_evaluation_date": "2017/11/10",
+  "wikidata": "Q422092"
+ },
+ {
+  "code": "E401",
+  "variants": [],
+  "en": "sodium alginate",
+  "da": "Natriumalginat",
+  "additives_classes": "en:carrier, en:emulsifier, en:humectant, en:sequestrant, en:stabiliser, en:thickener",
+  "efsa_evaluation": "Re‐evaluation of alginic acid and its sodium, potassium, ammonium and calcium salts (E 400–E 404) as food additives",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.5049",
+  "efsa_evaluation_date": "2017/11/10",
+  "wikidata": "Q1187513"
+ },
+ {
+  "code": "E402",
+  "variants": [],
+  "en": "Potassium alginate",
+  "da": "Kaliumalginat",
+  "additives_classes": "en:carrier, en:emulsifier, en:humectant, en:sequestrant, en:stabiliser, en:thickener",
+  "efsa_evaluation": "Re‐evaluation of alginic acid and its sodium, potassium, ammonium and calcium salts (E 400–E 404) as food additives",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.5049",
+  "efsa_evaluation_date": "2017/11/10",
+  "wikidata": "Q16038950"
+ },
+ {
+  "code": "E403",
+  "variants": [],
+  "en": "Ammonium alginate",
+  "da": "Ammoniumalginat",
+  "additives_classes": "en:carrier, en:emulsifier, en:humectant, en:sequestrant, en:stabiliser, en:thickener",
+  "efsa_evaluation": "Re‐evaluation of alginic acid and its sodium, potassium, ammonium and calcium salts (E 400–E 404) as food additives",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.5049",
+  "efsa_evaluation_date": "2017/11/10",
+  "wikidata": "Q16038948"
+ },
+ {
+  "code": "E404",
+  "variants": [],
+  "en": "Calcium alginate",
+  "da": "Calciumalginat",
+  "additives_classes": "en:carrier, en:humectant, en:sequestrant, en:stabiliser, en:thickener",
+  "efsa_evaluation": "Re‐evaluation of alginic acid and its sodium, potassium, ammonium and calcium salts (E 400–E 404) as food additives",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.5049",
+  "efsa_evaluation_date": "2017/11/10",
+  "wikidata": "Q2034064"
+ },
+ {
+  "code": "E405",
+  "variants": [],
+  "en": "Propane-1\\",
+  "da": "Propylenglycolalginat",
+  "additives_classes": "en:carrier, en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q2474785"
+ },
+ {
+  "code": "E406",
+  "variants": [],
+  "en": "Agar",
+  "da": "Agar",
+  "additives_classes": "en:carrier, en:emulsifier, en:humectant, en:stabiliser, en:thickener",
+  "wikidata": "Q177998",
+  "wikipedia": "https://en.wikipedia.org/wiki/Agar"
+ },
+ {
+  "code": "E407",
+  "variants": [],
+  "en": "Carrageenan",
+  "da": "Carrageenan",
+  "additives_classes": "en:carrier, en:emulsifier, en:humectant, en:stabiliser, en:thickener",
+  "efsa_evaluation": "Re‐evaluation of carrageenan (E 407) and processed Eucheuma seaweed (E 407a) as food additives",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5238",
+  "efsa_evaluation_date": "2018/04/26",
+  "efsa_evaluation_adi": "75",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q421991",
+  "wikipedia": "https://en.wikipedia.org/wiki/Carrageenan"
+ },
+ {
+  "code": "E407a",
+  "variants": [],
+  "en": "Processed eucheuma seaweed",
+  "da": "Forarbejdet eucheuma-tang",
+  "additives_classes": "en:carrier, en:emulsifier, en:humectant, en:stabiliser, en:thickener",
+  "efsa_evaluation": "Re‐evaluation of carrageenan (E 407) and processed Eucheuma seaweed (E 407a) as food additives",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5238",
+  "efsa_evaluation_date": "2018/04/26",
+  "efsa_evaluation_adi": "75",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q421991"
+ },
+ {
+  "code": "E408",
+  "variants": [],
+  "en": "Bakers yeast glycan",
+  "wikidata": "Q18935685"
+ },
+ {
+  "code": "E409",
+  "variants": [],
+  "en": "Arabinogalactan",
+  "wikidata": "Q4783458"
+ },
+ {
+  "code": "E410",
+  "variants": [],
+  "en": "Locust bean gum",
+  "da": "Locust bean gum",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "efsa_evaluation": "Re‐evaluation of locust bean gum (E 410) as a food additive",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4646",
+  "efsa_evaluation_date": "2017/01/20",
+  "wikidata": "Q221391"
+ },
+ {
+  "code": "E411",
+  "variants": [],
+  "en": "E411 food additive"
+ },
+ {
+  "code": "E412",
+  "variants": [],
+  "en": "Guar gum",
+  "da": "Guargummi",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q422071"
+ },
+ {
+  "code": "E413",
+  "variants": [],
+  "en": "Tragacanth",
+  "da": "Traganth",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "efsa_evaluation": "Re‐evaluation of tragacanth (E 413) as a food additive",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4789",
+  "efsa_evaluation_date": "2017/06/09",
+  "wikidata": "Q423901"
+ },
+ {
+  "code": "E414",
+  "variants": [],
+  "en": "Acacia gum",
+  "da": "Arabisk gummi (akaciegummi)",
+  "additives_classes": "en:carrier, en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q535814",
+  "wikipedia": "https://en.wikipedia.org/wiki/Gum_arabic"
+ },
+ {
+  "code": "E414a",
+  "variants": [],
+  "en": "E414a food additive",
+  "additives_classes": "en:carrier, en:emulsifier, en:stabiliser, en:thickener"
+ },
+ {
+  "code": "E415",
+  "variants": [],
+  "en": "Xanthan gum",
+  "da": "xanthangummi",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "efsa_evaluation": "Re‐evaluation of xanthan gum (E 415) as a food additive",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4909",
+  "efsa_evaluation_date": "2017/07/14",
+  "wikidata": "Q410768",
+  "wikipedia": "https://en.wikipedia.org/wiki/Xanthan_gum"
+ },
+ {
+  "code": "E416",
+  "variants": [],
+  "en": "Karaya-gum",
+  "da": "Karaya-gum",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "efsa_evaluation": "Re-evaluation of karaya gum (E 416) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4598",
+  "efsa_evaluation_date": "2016-12-19",
+  "wikidata": "Q421167"
+ },
+ {
+  "code": "E417",
+  "variants": [],
+  "en": "Tara gum",
+  "da": "Taragummi",
+  "additives_classes": "en:stabiliser, en:thickener",
+  "efsa_evaluation": "Re‐evaluation of tara gum (E 417) as a food additive",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4863",
+  "efsa_evaluation_date": "2017/06/28",
+  "wikidata": "Q15089452",
+  "wikipedia": "https://en.wikipedia.org/wiki/Tara_spinosa#Uses"
+ },
+ {
+  "code": "E418",
+  "variants": [
+   {
+    "code": "E418(i)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E418(ii)",
+    "en": "Low-acyl clarified gellan gum",
+    "da": ""
+   }
+  ],
+  "en": "Gellan gum",
+  "da": "Gellangummi",
+  "additives_classes": "en:stabiliser, en:thickener",
+  "efsa_evaluation": "Re‐evaluation of gellan gum (E 418) as food additive",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5296",
+  "efsa_evaluation_date": "2018/06/20",
+  "wikidata": "Q416694",
+  "wikipedia": "https://en.wikipedia.org/wiki/Gellan_gum"
+ },
+ {
+  "code": "E419",
+  "variants": [],
+  "en": "Gum ghatti",
+  "da": "Ghattigummi",
+  "additives_classes": "en:stabiliser, en:thickener",
+  "wikidata": "Q18967232"
+ },
+ {
+  "code": "E420",
+  "variants": [
+   {
+    "code": "E420(i)",
+    "en": "D-sorbitol",
+    "da": "D-Sorbitol"
+   },
+   {
+    "code": "E420(ii)",
+    "en": "Sorbitol syrup",
+    "da": "Sorbitolsirup"
+   }
+  ],
+  "en": "Sorbitol",
+  "da": "Sorbitol",
+  "additives_classes": "en:humectant, en:sequestrant, en:stabiliser, en:sweetener, en:thickener",
+  "wikidata": "Q245280"
+ },
+ {
+  "code": "E421",
+  "variants": [],
+  "en": "Mannitol",
+  "da": "Mannitol",
+  "additives_classes": "en:humectant, en:stabiliser, en:sweetener, en:thickener",
+  "wikidata": "Q407646",
+  "wikipedia": "https://en.wikipedia.org/wiki/Mannitol"
+ },
+ {
+  "code": "E422",
+  "variants": [],
+  "en": "Glycerol",
+  "da": "Glycerol",
+  "additives_classes": "en:humectant, en:thickener",
+  "wikidata": "Q132501",
+  "wikipedia": "https://en.wikipedia.org/wiki/Glycerol"
+ },
+ {
+  "code": "E424",
+  "variants": [],
+  "en": "Curdlan",
+  "da": "Curdlan",
+  "additives_classes": "en:stabiliser, en:thickener",
+  "wikidata": "Q616242"
+ },
+ {
+  "code": "E425",
+  "variants": [
+   {
+    "code": "E425(i)",
+    "en": "Konjac gum",
+    "da": "Konjacgummi"
+   },
+   {
+    "code": "E425(ii)",
+    "en": "Konjac glucomannan",
+    "da": "Konjacglucomannan"
+   }
+  ],
+  "en": "Konjac",
+  "additives_classes": "en:carrier, en:emulsifier, en:humectant, en:stabiliser, en:thickener"
+ },
+ {
+  "code": "E426",
+  "variants": [],
+  "en": "Soybean hemicellulose",
+  "da": "Sojabønnehemicellulose",
+  "wikidata": "Q18967285"
+ },
+ {
+  "code": "E427",
+  "variants": [],
+  "en": "Cassia gum",
+  "da": "Cassiagummi",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q3110379"
+ },
+ {
+  "code": "E428",
+  "variants": [],
+  "en": "Gelatine",
+  "da": "gelatine",
+  "wikidata": "Q179254"
+ },
+ {
+  "code": "E429",
+  "variants": [],
+  "en": "peptone",
+  "wikidata": "Q424323"
+ },
+ {
+  "code": "E430",
+  "variants": [],
+  "en": "Polyoxyethylene (8) stearate",
+  "additives_classes": "en:emulsifier"
+ },
+ {
+  "code": "E431",
+  "variants": [],
+  "en": "Polyoxyethylene (40) stearate",
+  "da": "Polyoxyethylen (40) stearat",
+  "additives_classes": "en:emulsifier",
+  "wikidata": "Q18636149"
+ },
+ {
+  "code": "E432",
+  "variants": [],
+  "en": "Polyoxyethylene sorbitan monolaurate",
+  "da": "Polyoxyethylen(20)sorbitanmonolaurat",
+  "additives_classes": "en:emulsifier, en:stabiliser",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of polyoxyethylene sorbitan monolaurate (E 432), polyoxyethylene sorbitan monooleate (E 433), polyoxyethylene sorbitan monopalmitate (E 434), polyoxyethylene sorbitan monostearate (E 435) and polyoxyethylene sorbitan tristearate (E 436) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4152",
+  "efsa_evaluation_date": "2015-07-17",
+  "efsa_evaluation_adi": "25",
+  "efsa_evaluation_overexposure_risk": "en:moderate",
+  "wikidata": "Q413616"
+ },
+ {
+  "code": "E433",
+  "variants": [],
+  "en": "Polyoxyethylene sorbitan monooleate",
+  "da": "Polyoxyethylen(20)sorbitanmonooleat",
+  "additives_classes": "en:emulsifier, en:stabiliser",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of polyoxyethylene sorbitan monolaurate (E 432), polyoxyethylene sorbitan monooleate (E 433), polyoxyethylene sorbitan monopalmitate (E 434), polyoxyethylene sorbitan monostearate (E 435) and polyoxyethylene sorbitan tristearate (E 436) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4152",
+  "efsa_evaluation_date": "2015-07-17",
+  "efsa_evaluation_adi": "25",
+  "efsa_evaluation_overexposure_risk": "en:moderate",
+  "wikidata": "Q420358"
+ },
+ {
+  "code": "E434",
+  "variants": [],
+  "en": "Polyoxyethylene sorbitan monopalmitate",
+  "da": "Polyoxyethylen(20)sorbitanmonopalmitat",
+  "additives_classes": "en:emulsifier",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of polyoxyethylene sorbitan monolaurate (E 432), polyoxyethylene sorbitan monooleate (E 433), polyoxyethylene sorbitan monopalmitate (E 434), polyoxyethylene sorbitan monostearate (E 435) and polyoxyethylene sorbitan tristearate (E 436) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4152",
+  "efsa_evaluation_date": "2015-07-17",
+  "efsa_evaluation_adi": "25",
+  "efsa_evaluation_overexposure_risk": "en:moderate",
+  "wikidata": "Q1413823"
+ },
+ {
+  "code": "E435",
+  "variants": [],
+  "en": "Polyoxyethylene sorbitan monostearate",
+  "da": "Polyoxyethylen(20)sorbitanmonostearat",
+  "additives_classes": "en:emulsifier, en:stabiliser",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of polyoxyethylene sorbitan monolaurate (E 432), polyoxyethylene sorbitan monooleate (E 433), polyoxyethylene sorbitan monopalmitate (E 434), polyoxyethylene sorbitan monostearate (E 435) and polyoxyethylene sorbitan tristearate (E 436) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4152",
+  "efsa_evaluation_date": "2015-07-17",
+  "efsa_evaluation_adi": "25",
+  "efsa_evaluation_overexposure_risk": "en:moderate",
+  "wikidata": "Q2103104"
+ },
+ {
+  "code": "E436",
+  "variants": [],
+  "en": "Polyoxyethylene sorbitan tristearate",
+  "da": "Polyoxyethylen(20)sorbitantristearat",
+  "additives_classes": "en:emulsifier, en:stabiliser",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of polyoxyethylene sorbitan monolaurate (E 432), polyoxyethylene sorbitan monooleate (E 433), polyoxyethylene sorbitan monopalmitate (E 434), polyoxyethylene sorbitan monostearate (E 435) and polyoxyethylene sorbitan tristearate (E 436) as food additives",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4152",
+  "efsa_evaluation_date": "2015-07-17",
+  "efsa_evaluation_adi": "25",
+  "efsa_evaluation_overexposure_risk": "en:moderate",
+  "wikidata": "Q2103107"
+ },
+ {
+  "code": "E440",
+  "variants": [
+   {
+    "code": "E440(i)",
+    "en": "non-amidated pectines",
+    "da": ""
+   },
+   {
+    "code": "E440(ii)",
+    "en": "Amidated pectin",
+    "da": "Amideret pectin"
+   }
+  ],
+  "en": "Pectins",
+  "da": "Pektiner",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q188154",
+  "wikipedia": "https://en.wikipedia.org/wiki/Pectin"
+ },
+ {
+  "code": "E440a",
+  "variants": [
+   {
+    "code": "E440a(ii)",
+    "en": "Sodium pectate",
+    "da": ""
+   },
+   {
+    "code": "E440a(iii)",
+    "en": "Potassium pectate",
+    "da": ""
+   },
+   {
+    "code": "E440a(iv)",
+    "en": "Ammonium Pectate",
+    "da": ""
+   }
+  ],
+  "en": "Pectin",
+  "da": "Pektin",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q188154"
+ },
+ {
+  "code": "E440b",
+  "variants": [],
+  "en": "pectin amide",
+  "da": "amideret pektin",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q188154"
+ },
+ {
+  "code": "E441",
+  "variants": [],
+  "en": "Superglycerinated hydrogenated rapeseed oil"
+ },
+ {
+  "code": "E442",
+  "variants": [],
+  "en": "Ammonium phosphatides",
+  "da": "Ammoniumphosphatider",
+  "additives_classes": "en:emulsifier",
+  "wikidata": "Q695975",
+  "wikipedia": "https://en.wikipedia.org/wiki/Mixed_ammonium_salts_of_phosphorylated_glycerides"
+ },
+ {
+  "code": "E443",
+  "variants": [],
+  "en": "Brominated vegetable oil",
+  "da": "Bromeret vegetabilsk olie",
+  "wikidata": "Q4164502"
+ },
+ {
+  "code": "E444",
+  "variants": [],
+  "en": "Sucrose acetate isobutyrate",
+  "da": "Saccharoseacetatisobutyrat",
+  "additives_classes": "en:emulsifier, en:stabiliser",
+  "efsa_evaluation": "Re-evaluation of sucrose acetate isobutyrate (E 444) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4489",
+  "efsa_evaluation_date": "2016-05-25",
+  "wikidata": "Q410537"
+ },
+ {
+  "code": "E445",
+  "variants": [
+   {
+    "code": "E445(i)",
+    "en": "Glycerol ester of gum rosin",
+    "da": ""
+   },
+   {
+    "code": "E445(ii)",
+    "en": "Glycerol ester of tall oil rosin",
+    "da": ""
+   },
+   {
+    "code": "E445(iii)",
+    "en": "",
+    "da": ""
+   }
+  ],
+  "en": "Glycerol esters of wood rosin",
+  "da": "Glycerolestere af fyrreharpiks",
+  "additives_classes": "en:emulsifier, en:stabiliser",
+  "wikidata": "Q836765",
+  "wikipedia": "https://en.wikipedia.org/wiki/Glycerol_ester_of_wood_rosin"
+ },
+ {
+  "code": "E446",
+  "variants": [],
+  "en": "Succistearin",
+  "da": "Succistearin",
+  "wikidata": "Q18601547"
+ },
+ {
+  "code": "E450",
+  "variants": [
+   {
+    "code": "E450(i)",
+    "en": "Disodium diphosphate",
+    "da": "Dinatriumdiphosphat"
+   },
+   {
+    "code": "E450(ii)",
+    "en": "Trisodium diphosphate",
+    "da": "Trinatriumdiphosphat"
+   },
+   {
+    "code": "E450(iii)",
+    "en": "Tetrasodium diphosphate",
+    "da": "Tetranatriumdiphosphat"
+   },
+   {
+    "code": "E450(iv)",
+    "en": "dipotassium dihydrogenpyrophosphate",
+    "da": "Dikaliumdihydrogendiphosphat"
+   },
+   {
+    "code": "E450(v)",
+    "en": "Tetrapotassium diphosphate",
+    "da": "Tetrakaliumdiphosphat"
+   },
+   {
+    "code": "E450(vi)",
+    "en": "Dicalcium diphosphate",
+    "da": "Dicalciumdiphosphat"
+   },
+   {
+    "code": "E450(vii)",
+    "en": "Calcium dihydrogen diphosphate",
+    "da": "Calciumdihydrogendiphosphat"
+   },
+   {
+    "code": "E450(viii)",
+    "en": "",
+    "da": "Dimagnesiumdiphosphat"
+   },
+   {
+    "code": "E450(ix)",
+    "en": "Magnesium dihydrogen diphosphate",
+    "da": ""
+   }
+  ],
+  "en": "Diphosphates",
+  "da": "diphosphater",
+  "additives_classes": "en:emulsifier, en:humectant, en:sequestrant, en:stabiliser, en:thickener",
+  "efsa_evaluation": "Re‐evaluation of phosphoric acid–phosphates – di‐, tri‐ and polyphosphates (E 338–341, E 343, E 450–452) as food additives and the safety of proposed extension of use",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5674",
+  "efsa_evaluation_date": "2019/06/12",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q55506489",
+  "wikipedia": "https://en.wikipedia.org/wiki/Pyrophosphate"
+ },
+ {
+  "code": "E451",
+  "variants": [
+   {
+    "code": "E451(i)",
+    "en": "Pentasodium triphosphate",
+    "da": "Pentanatriumtriphosphat"
+   },
+   {
+    "code": "E451(ii)",
+    "en": "Pentapotassium triphosphate",
+    "da": "Pentakaliumtriphosphat"
+   },
+   {
+    "code": "E451(iii)",
+    "en": "Sodium potassium triphosphate",
+    "da": ""
+   }
+  ],
+  "en": "Triphosphates",
+  "da": "Triphosphater",
+  "additives_classes": "en:emulsifier, en:humectant, en:sequestrant, en:stabiliser, en:thickener",
+  "efsa_evaluation": "Re‐evaluation of phosphoric acid–phosphates – di‐, tri‐ and polyphosphates (E 338–341, E 343, E 450–452) as food additives and the safety of proposed extension of use",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5674",
+  "efsa_evaluation_date": "2019/06/12",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q29145",
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_triphosphate"
+ },
+ {
+  "code": "E452",
+  "variants": [
+   {
+    "code": "E452(i)",
+    "en": "Sodium polyphosphate",
+    "da": "Natriumpolyphosphater"
+   },
+   {
+    "code": "E452(ii)",
+    "en": "Potassium polyphosphate",
+    "da": "Kaliumpolyphosphater"
+   },
+   {
+    "code": "E452(iii)",
+    "en": "Sodium calcium polyphosphate",
+    "da": "Natriumcalciumpolyphosphater"
+   },
+   {
+    "code": "E452(iv)",
+    "en": "Calcium polyphosphate",
+    "da": "Calciumpolyphosphater"
+   },
+   {
+    "code": "E452(v)",
+    "en": "Ammonium polyphosphate",
+    "da": "Ammoniumpolyphosphat"
+   },
+   {
+    "code": "E452(vi)",
+    "en": "Sodium tripolyphosphate",
+    "da": "Natriumtripolyphosphat"
+   }
+  ],
+  "en": "Polyphosphates",
+  "da": "Polyphosphater",
+  "additives_classes": "en:emulsifier, en:humectant, en:sequestrant, en:stabiliser, en:thickener",
+  "efsa_evaluation": "Re‐evaluation of phosphoric acid–phosphates – di‐, tri‐ and polyphosphates (E 338–341, E 343, E 450–452) as food additives and the safety of proposed extension of use",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5674",
+  "efsa_evaluation_date": "2019/06/12",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q11867365"
+ },
+ {
+  "code": "E457",
+  "variants": [],
+  "en": "Alpha-Cyclodextrine",
+  "da": "Alfa-cyclodextrin",
+  "additives_classes": "en:stabiliser, en:thickener"
+ },
+ {
+  "code": "E458",
+  "variants": [],
+  "en": "Gamma-Cyclodextrine",
+  "da": "Gamma-cyclodextrin",
+  "additives_classes": "en:stabiliser, en:thickener"
+ },
+ {
+  "code": "E459",
+  "variants": [],
+  "en": "Beta-cyclodextrine",
+  "da": "Beta-cyclodextrin",
+  "additives_classes": "en:carrier, en:stabiliser, en:thickener",
+  "efsa_evaluation": "Re-evaluation of Beta-cyclodextrin (E 459) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4628",
+  "efsa_evaluation_date": "2016-12-07",
+  "efsa_evaluation_adi": "5",
+  "efsa_evaluation_overexposure_risk": "en:high"
+ },
+ {
+  "code": "E460",
+  "variants": [
+   {
+    "code": "E460(i)",
+    "en": "Microcrystalline cellulose",
+    "da": "Mikrokrystallinsk cellulose"
+   },
+   {
+    "code": "E460(ii)",
+    "en": "Powdered cellulose",
+    "da": "Cellulosepulver"
+   }
+  ],
+  "en": "Cellulose",
+  "da": "Cellulose",
+  "additives_classes": "en:carrier, en:emulsifier, en:humectant, en:stabiliser, en:thickener",
+  "wikidata": "Q80294",
+  "wikipedia": "https://en.wikipedia.org/wiki/Cellulose"
+ },
+ {
+  "code": "E461",
+  "variants": [],
+  "en": "methyl cellulose",
+  "da": "methylcellulose",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q416312",
+  "wikipedia": "https://en.wikipedia.org/wiki/Methyl_cellulose"
+ },
+ {
+  "code": "E462",
+  "variants": [],
+  "en": "Ethyl cellulose",
+  "da": "Ethylcellulose",
+  "additives_classes": "en:carrier, en:thickener",
+  "wikidata": "Q420113"
+ },
+ {
+  "code": "E463",
+  "variants": [],
+  "en": "Hydroxypropyl cellulose",
+  "da": "Hydroxypropylcellulose",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q724426"
+ },
+ {
+  "code": "E464",
+  "variants": [],
+  "en": "Hydroxypropyl methyl cellulose",
+  "da": "Hydroxypropylmethylcellulose",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "efsa_evaluation": "Safety of a change in specifications for the food additive hydroxypropyl methyl cellulose (E 464)",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4088",
+  "efsa_evaluation_date": "2015-05-05",
+  "wikidata": "Q423846",
+  "wikipedia": "https://en.wikipedia.org/wiki/Hypromellose"
+ },
+ {
+  "code": "E465",
+  "variants": [],
+  "en": "Ethyl methyl cellulose",
+  "da": "Ethylmethylcellulose",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q18579463"
+ },
+ {
+  "code": "E466",
+  "variants": [],
+  "en": "Sodium carboxy methyl cellulose",
+  "da": "Natriumcarboxymethylcellulose",
+  "additives_classes": "en:emulsifier, en:humectant, en:stabiliser, en:thickener",
+  "wikidata": "Q411030",
+  "wikipedia": "https://en.wikipedia.org/wiki/Carboxymethyl_cellulose"
+ },
+ {
+  "code": "E467",
+  "variants": [],
+  "en": "Ethulose",
+  "da": "Etulose",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q5404436"
+ },
+ {
+  "code": "E468",
+  "variants": [],
+  "en": "Cross-linked sodium carboxymethylcellulose",
+  "da": "Tværbunden natriumcarboxymethylcellulose (tværbunden cellulosegummi)",
+  "additives_classes": "en:stabiliser, en:thickener",
+  "wikidata": "Q18967204"
+ },
+ {
+  "code": "E469",
+  "variants": [],
+  "en": "Enzymatically hydrolysed carboxymethylcellulose",
+  "da": "Enzymatisk hydroliseret carboxymethylcellulose (enzymatisk hydrolyseret cellulosegummi)",
+  "additives_classes": "en:stabiliser, en:thickener",
+  "wikidata": "Q18935689"
+ },
+ {
+  "code": "E470",
+  "variants": [
+   {
+    "code": "E470(i)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E470(ii)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E470(iii)",
+    "en": "",
+    "da": ""
+   }
+  ],
+  "en": "Sodium/potassium/calcium and magnesium salts of fatty acids",
+  "da": "Natrium/kalium/calcium- og magnesiumsalte af fedtsyrer",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener"
+ },
+ {
+  "code": "E470a",
+  "variants": [
+   {
+    "code": "E470a(i)",
+    "en": "Sodium salts of fatty acids",
+    "da": "Natriumsalte af fedtsyrer"
+   },
+   {
+    "code": "E470a(ii)",
+    "en": "Potassium salts of fatty acids",
+    "da": ""
+   },
+   {
+    "code": "E470a(iii)",
+    "en": "Calcium salts of fatty acids",
+    "da": "Calciumsalte af fedtsyrer"
+   }
+  ],
+  "en": "Sodium/potassium and calcium salts of fatty acids",
+  "da": "Natrium-/kalium- og calciumsalte af fedtsyrer",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener"
+ },
+ {
+  "code": "E470b",
+  "variants": [],
+  "en": "Magnesium salts of fatty acids",
+  "da": "Magnesiumsalte af fedtsyrer",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener"
+ },
+ {
+  "code": "E471",
+  "variants": [],
+  "en": "Mono- and diglycerides of fatty acids",
+  "da": "Mono- og diglycerider af fedtsyrer",
+  "additives_classes": "en:emulsifier, en:stabiliser",
+  "wikidata": "Q416711",
+  "wikipedia": "https://en.wikipedia.org/wiki/Mono-_and_diglycerides_of_fatty_acids"
+ },
+ {
+  "code": "E472",
+  "variants": [],
+  "en": "acid esters of mono- and diglycerides of fatty acids",
+  "da": "syreestere af mono- og diglycerider af fedtsyrer"
+ },
+ {
+  "code": "E472a",
+  "variants": [],
+  "en": "Acetic acid esters of mono- and diglycerides of fatty acids",
+  "da": "Edikkesyreestere af mono- og diglycerider af fedtsyrer",
+  "additives_classes": "en:emulsifier, en:sequestrant, en:stabiliser",
+  "wikidata": "Q26806065"
+ },
+ {
+  "code": "E472b",
+  "variants": [],
+  "en": "Lactic acid esters of mono- and diglycerides of fatty acids",
+  "da": "Mælkesyreestere af mono- og diglycerider af fedtsyrer",
+  "additives_classes": "en:emulsifier, en:sequestrant, en:stabiliser",
+  "wikidata": "Q18967238"
+ },
+ {
+  "code": "E472c",
+  "variants": [],
+  "en": "Citric acid esters of mono- and diglycerides of fatty acids",
+  "da": "Citronsyreestere af mono- og diglycerider af fedtsyrer",
+  "additives_classes": "en:antioxidant, en:emulsifier, en:sequestrant, en:stabiliser",
+  "wikidata": "Q18967202"
+ },
+ {
+  "code": "E472d",
+  "variants": [],
+  "en": "Tartaric acid esters of mono- and diglycerides of fatty acids",
+  "da": "Vinsyreestere af mono- og diglycerider af fedtsyrer"
+ },
+ {
+  "code": "E472e",
+  "variants": [],
+  "en": "Mono- and diacetyltartaric acid esters of mono- and diglycerides of fatty acids",
+  "da": "Mono- og diacetylvinsyreestere af mono- og diglycerider af fedtsyrer",
+  "additives_classes": "en:emulsifier, en:sequestrant, en:stabiliser",
+  "wikidata": "Q409406"
+ },
+ {
+  "code": "E472f",
+  "variants": [],
+  "en": "Mixed acetic and tartaric acid esters of mono- and diglycerides of fatty acids",
+  "da": "Blandede eddikesyre- og vinsyreestere af mono- og diglycerider af fedtsyrer",
+  "wikidata": "Q18967248"
+ },
+ {
+  "code": "E472g",
+  "variants": [],
+  "en": "Succinylated monoglycerides",
+  "da": "Succinylerede monoglycerider"
+ },
+ {
+  "code": "E473",
+  "variants": [],
+  "en": "Sucrose esters of fatty acids",
+  "da": "Saccharoseestere af fedtsyrer",
+  "additives_classes": "en:emulsifier, en:stabiliser",
+  "efsa_evaluation": "Refined exposure assessment of sucrose esters of fatty acids (E 473) from its use as a food additive",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5087",
+  "efsa_evaluation_date": "2018/01/05",
+  "efsa_evaluation_adi": "40",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q55648666",
+  "wikipedia": "https://en.wikipedia.org/wiki/Sucrose_esters"
+ },
+ {
+  "code": "E473a",
+  "variants": [],
+  "en": "Oligoesters of sucrose type I",
+  "da": "Oligoestere af sukrose type I",
+  "additives_classes": "en:emulsifier, en:stabiliser",
+  "efsa_evaluation": "Opinion of the Scientific Panel on Food Additives, Flavourings, Processing Aids and Materials in Contact with Food on Sucrose esters of fatty acids, E 473 and sucroglycerides, E 474 based on a request from the Commission related to Sucrose Esters of Fatty Acids (E 473)",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2004.106",
+  "efsa_evaluation_date": "2004-11-23",
+  "wikidata": "Q32418"
+ },
+ {
+  "code": "E474",
+  "variants": [],
+  "en": "Sucroglycerides",
+  "da": "Saccharoseestere i blanding med mono- og diglycerider af fedtsyrer",
+  "additives_classes": "en:emulsifier",
+  "efsa_evaluation": "Opinion of the Scientific Panel on Food Additives, Flavourings, Processing Aids and Materials in Contact with Food on Sucrose esters of fatty acids, E 473 and sucroglycerides, E 474 based on a request from the Commission related to Sucrose Esters of Fatty Acids (E 473)",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2004.106",
+  "efsa_evaluation_date": "2004-11-23",
+  "wikidata": "Q18608931"
+ },
+ {
+  "code": "E475",
+  "variants": [],
+  "en": "Polyglycerol esters of fatty acids",
+  "da": "Polyglycerolestere af fedtsyrer",
+  "additives_classes": "en:emulsifier, en:stabiliser",
+  "wikidata": "Q4037764"
+ },
+ {
+  "code": "E476",
+  "variants": [],
+  "en": "Polyglycerol polyricinoleate",
+  "da": "Polyglycerolpolyricinoleat",
+  "additives_classes": "en:emulsifier",
+  "wikidata": "Q168686",
+  "wikipedia": "https://en.wikipedia.org/wiki/Polyglycerol_polyricinoleate"
+ },
+ {
+  "code": "E477",
+  "variants": [],
+  "en": "Propane-1\\",
+  "da": "Propylenglycolestere af fedtsyrer",
+  "additives_classes": "en:emulsifier",
+  "wikidata": "Q18944660"
+ },
+ {
+  "code": "E478",
+  "variants": [],
+  "en": "Lactylated fatty acid esters of glycerol and propane-1",
+  "da": "Lactylerede fedtsyreestere af glycerol og propan-1",
+  "wikidata": "Q18935693"
+ },
+ {
+  "code": "E479b",
+  "variants": [],
+  "en": "Thermally oxidised soya bean oil interacted with mono- and diglycerides of fatty acids",
+  "da": "Termisk oxideret sojaolie omsat med mono- og diglycerider af fedtsyrer",
+  "additives_classes": "en:emulsifier"
+ },
+ {
+  "code": "E481",
+  "variants": [
+   {
+    "code": "E481(i)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E481(ii)",
+    "en": "Sodium oleyl lactylate",
+    "da": ""
+   }
+  ],
+  "en": "Sodium stearoyl-2-lactylate",
+  "da": "Natriumstearoyllactylat",
+  "additives_classes": "en:emulsifier, en:stabiliser",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of sodium stearoyl-2-lactylate (E 481) and calcium stearoyl-2-lactylate (E 482) as food additives.",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3144",
+  "efsa_evaluation_date": "2013-05-13",
+  "efsa_evaluation_adi": "22",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q416058",
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_stearoyl_lactylate"
+ },
+ {
+  "code": "E482",
+  "variants": [
+   {
+    "code": "E482(i)",
+    "en": "Calcium stearoyl lactylate",
+    "da": ""
+   },
+   {
+    "code": "E482(ii)",
+    "en": "Calcium oleyl lactylate",
+    "da": ""
+   }
+  ],
+  "en": "Calcium stearoyl-2-lactylate",
+  "da": "Calciumstearoyllactylat",
+  "additives_classes": "en:emulsifier, en:stabiliser",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of sodium stearoyl-2-lactylate (E 481) and calcium stearoyl-2-lactylate (E 482) as food additives.",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3144",
+  "efsa_evaluation_date": "2013-05-13",
+  "efsa_evaluation_adi": "22",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q788535"
+ },
+ {
+  "code": "E483",
+  "variants": [],
+  "en": "Stearyl tartrate",
+  "da": "Stearyltartrat",
+  "wikidata": "Q673260"
+ },
+ {
+  "code": "E484",
+  "variants": [],
+  "en": "Stearyl citrate",
+  "da": "Stearylcitrat",
+  "additives_classes": "en:antioxidant, en:emulsifier, en:sequestrant",
+  "wikidata": "Q18608830"
+ },
+ {
+  "code": "E485",
+  "variants": [],
+  "en": "Sodium stearoyl fumarate",
+  "da": "Natriumstearoylfumarat",
+  "wikidata": "Q18967283"
+ },
+ {
+  "code": "E486",
+  "variants": [],
+  "en": "Calcium stearoyl fumarate",
+  "da": "Calciumstearoylfumarat",
+  "wikidata": "Q18606662"
+ },
+ {
+  "code": "E487",
+  "variants": [],
+  "en": "sodium dodecyl sulfate",
+  "da": "Natriumlaurylsulfat",
+  "wikidata": "Q422241"
+ },
+ {
+  "code": "E488",
+  "variants": [],
+  "en": "Ethoxylated Mono- and Di-Glycerides",
+  "da": "Ethoxylerede mono- og diglycerider",
+  "wikidata": "Q18967225"
+ },
+ {
+  "code": "E489",
+  "variants": [],
+  "en": "Methyl glucoside-coconut oil ester",
+  "da": "Methylglucosid-kokosolieester",
+  "wikidata": "Q18967245"
+ },
+ {
+  "code": "E490",
+  "variants": [],
+  "en": "Propylene glycol",
+  "da": "Propylenglycol",
+  "wikidata": "Q161495"
+ },
+ {
+  "code": "E491",
+  "variants": [],
+  "en": "Sorbitan monostearate",
+  "da": "Sorbitanmonostearat",
+  "additives_classes": "en:emulsifier",
+  "efsa_evaluation": "Re‐evaluation of sorbitan monostearate (E 491), sorbitan tristearate (E 492), sorbitan monolaurate (E 493), sorbitan monooleate (E 494) and sorbitan monopalmitate (E 495) when used as food additives",
+  "efsa_evaluation_url": "hhttps://efsa.onlinelibrary.wiley.com/doi/epdf/10.2903/j.efsa.2017.4788",
+  "efsa_evaluation_date": "2017-05-05",
+  "efsa_evaluation_adi": "26",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q907898",
+  "wikipedia": "https://en.wikipedia.org/wiki/Sorbitan_monostearate"
+ },
+ {
+  "code": "E492",
+  "variants": [],
+  "en": "Sorbitan tristearate",
+  "da": "Sorbitantristearat",
+  "additives_classes": "en:emulsifier, en:stabiliser",
+  "efsa_evaluation": "Re‐evaluation of sorbitan monostearate (E 491), sorbitan tristearate (E 492), sorbitan monolaurate (E 493), sorbitan monooleate (E 494) and sorbitan monopalmitate (E 495) when used as food additives",
+  "efsa_evaluation_url": "hhttps://efsa.onlinelibrary.wiley.com/doi/epdf/10.2903/j.efsa.2017.4788",
+  "efsa_evaluation_date": "2017-05-05",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q1416224"
+ },
+ {
+  "code": "E493",
+  "variants": [],
+  "en": "Sorbitan monolaurate",
+  "da": "Sorbitanmonolaurat",
+  "additives_classes": "en:emulsifier, en:stabiliser",
+  "efsa_evaluation": "Re‐evaluation of sorbitan monostearate (E 491), sorbitan tristearate (E 492), sorbitan monolaurate (E 493), sorbitan monooleate (E 494) and sorbitan monopalmitate (E 495) when used as food additives",
+  "efsa_evaluation_url": "hhttps://efsa.onlinelibrary.wiley.com/doi/epdf/10.2903/j.efsa.2017.4788",
+  "efsa_evaluation_date": "2017-05-05",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q15427856"
+ },
+ {
+  "code": "E494",
+  "variants": [],
+  "en": "Sorbitan monooleate",
+  "da": "Sorbitanmonooleat",
+  "additives_classes": "en:emulsifier, en:stabiliser",
+  "efsa_evaluation": "Re‐evaluation of sorbitan monostearate (E 491), sorbitan tristearate (E 492), sorbitan monolaurate (E 493), sorbitan monooleate (E 494) and sorbitan monopalmitate (E 495) when used as food additives",
+  "efsa_evaluation_url": "hhttps://efsa.onlinelibrary.wiley.com/doi/epdf/10.2903/j.efsa.2017.4788",
+  "efsa_evaluation_date": "2017-05-05",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q18944664"
+ },
+ {
+  "code": "E495",
+  "variants": [],
+  "en": "Sorbitan monopalmitate",
+  "da": "Sorbitanmonopalmitat",
+  "additives_classes": "en:emulsifier",
+  "efsa_evaluation": "Re‐evaluation of sorbitan monostearate (E 491), sorbitan tristearate (E 492), sorbitan monolaurate (E 493), sorbitan monooleate (E 494) and sorbitan monopalmitate (E 495) when used as food additives",
+  "efsa_evaluation_url": "hhttps://efsa.onlinelibrary.wiley.com/doi/epdf/10.2903/j.efsa.2017.4788",
+  "efsa_evaluation_date": "2017-05-05",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q18601367"
+ },
+ {
+  "code": "E496",
+  "variants": [],
+  "en": "Sorbitan trioleate",
+  "da": "Sorbitantrioleat",
+  "wikidata": "Q18601524"
+ },
+ {
+  "code": "E500",
+  "variants": [
+   {
+    "code": "E500(i)",
+    "en": "Sodium carbonate",
+    "da": "natriumkarbonat"
+   },
+   {
+    "code": "E500(ii)",
+    "en": "Sodium hydrogen carbonate",
+    "da": "natriumhydrogenkarbonat"
+   },
+   {
+    "code": "E500(iii)",
+    "en": "Sodium sesquicarbonate",
+    "da": "natriumsesquikarbonat"
+   }
+  ],
+  "en": "Sodium carbonates",
+  "da": "natriumkarbonater",
+  "additives_classes": "en:stabiliser, en:thickener",
+  "efsa_evaluation": "Scientific Opinion on the safety evaluation of the active substances citric acid (E330) and sodium hydrogen carbonate (E500ii), used as carbon dioxide generators, together with liquid absorbers cellulose and polyacrylic acid sodium salt crosslinked, in active food contact materials.",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3152",
+  "efsa_evaluation_date": "2013-04-09",
+  "wikidata": "Q190227",
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_bicarbonate"
+ },
+ {
+  "code": "E501",
+  "variants": [
+   {
+    "code": "E501(i)",
+    "en": "Potassium carbonate",
+    "da": "kaliumkarbonat"
+   },
+   {
+    "code": "E501(ii)",
+    "en": "Potassium hydrogen carbonate",
+    "da": "kaliumhydrogenkarbonat"
+   }
+  ],
+  "en": "Potassium carbonates",
+  "da": "kaliumkarbonater",
+  "additives_classes": "en:stabiliser",
+  "wikidata": "Q379885",
+  "wikipedia": "https://en.wikipedia.org/wiki/Potassium_carbonate"
+ },
+ {
+  "code": "E502",
+  "variants": [],
+  "en": "Carbonates",
+  "da": "karbonater"
+ },
+ {
+  "code": "E503",
+  "variants": [
+   {
+    "code": "E503(i)",
+    "en": "Ammonium carbonate",
+    "da": "ammoniumkarbonat"
+   },
+   {
+    "code": "E503(ii)",
+    "en": "Ammonium hydrogen carbonate",
+    "da": "ammoniumhydrogenkarbonat"
+   }
+  ],
+  "en": "Ammonium carbonates",
+  "da": "ammoniumkarbonater",
+  "wikidata": "Q204873",
+  "wikipedia": "https://en.wikipedia.org/wiki/Ammonium_carbonate"
+ },
+ {
+  "code": "E504",
+  "variants": [
+   {
+    "code": "E504(i)",
+    "en": "Magnesium carbonate",
+    "da": "magnesiumkarbonat"
+   },
+   {
+    "code": "E504(ii)",
+    "en": "Magnesium hydroxide carbonate",
+    "da": "magnesiumhydroxidkarbonat"
+   }
+  ],
+  "en": "Magnesium carbonates",
+  "da": "magnesiumkarbonater",
+  "additives_classes": "en:carrier",
+  "wikidata": "Q407931",
+  "wikipedia": "https://en.wikipedia.org/wiki/Magnesium_carbonate"
+ },
+ {
+  "code": "E505",
+  "variants": [],
+  "en": "Ferrous carbonate",
+  "da": "jernkarbonat",
+  "wikidata": "Q18967227"
+ },
+ {
+  "code": "E507",
+  "variants": [],
+  "en": "Hydrochloric acid",
+  "da": "Saltsyre",
+  "efsa_evaluation": "Re‐evaluation of hydrochloric acid (E 507), potassium chloride (E 508), calcium chloride (E 509) and magnesium chloride (E 511) as food additives",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5751",
+  "efsa_evaluation_date": "2019/07/06",
+  "efsa_evaluation_overexposure_risk": "en:moderate",
+  "wikidata": "Q2409"
+ },
+ {
+  "code": "E508",
+  "variants": [],
+  "en": "Potassium chloride",
+  "da": "Kaliumchlorid",
+  "additives_classes": "en:stabiliser, en:thickener, en:preservative",
+  "efsa_evaluation": "Re‐evaluation of hydrochloric acid (E 507), potassium chloride (E 508), calcium chloride (E 509) and magnesium chloride (E 511) as food additives",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5751",
+  "efsa_evaluation_date": "2019/07/06",
+  "efsa_evaluation_overexposure_risk": "en:moderate",
+  "wikidata": "Q184630"
+ },
+ {
+  "code": "E509",
+  "variants": [],
+  "en": "Calcium chloride",
+  "da": "Calciumchlorid",
+  "additives_classes": "en:stabiliser, en:thickener, en:coagulant",
+  "efsa_evaluation": "Re‐evaluation of hydrochloric acid (E 507), potassium chloride (E 508), calcium chloride (E 509) and magnesium chloride (E 511) as food additives",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5751",
+  "efsa_evaluation_date": "2019/07/06",
+  "efsa_evaluation_overexposure_risk": "en:moderate",
+  "wikidata": "Q208451",
+  "wikipedia": "https://en.wikipedia.org/wiki/Calcium_chloride"
+ },
+ {
+  "code": "E510",
+  "variants": [],
+  "en": "ammonium chloride",
+  "da": "ammoniumklorid",
+  "wikidata": "Q188543",
+  "wikipedia": "https://en.wikipedia.org/wiki/Ammonium_chloride"
+ },
+ {
+  "code": "E511",
+  "variants": [],
+  "en": "Magnesium chloride",
+  "da": "Magnesiumchlorid",
+  "additives_classes": "en:stabiliser, en:coagulant",
+  "efsa_evaluation": "Re‐evaluation of hydrochloric acid (E 507), potassium chloride (E 508), calcium chloride (E 509) and magnesium chloride (E 511) as food additives",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5751",
+  "efsa_evaluation_date": "2019/07/06",
+  "efsa_evaluation_overexposure_risk": "en:moderate",
+  "wikidata": "Q265414"
+ },
+ {
+  "code": "E512",
+  "variants": [],
+  "en": "Stannous chloride",
+  "da": "Stannochlorid",
+  "additives_classes": "en:antioxidant",
+  "wikidata": "Q204964",
+  "colour_index": "CI 77864"
+ },
+ {
+  "code": "E513",
+  "variants": [],
+  "en": "Sulphuric acid",
+  "da": "Svovlsyre",
+  "wikidata": "Q4118"
+ },
+ {
+  "code": "E514",
+  "variants": [
+   {
+    "code": "E514(i)",
+    "en": "Sodium sulphate",
+    "da": "Natriumsulfat"
+   },
+   {
+    "code": "E514(ii)",
+    "en": "Sodium hydrogen sulphate",
+    "da": "Natriumhydrogensulfat"
+   }
+  ],
+  "en": "Sodium sulphates",
+  "da": "Natriumsulfater",
+  "wikidata": "Q211737"
+ },
+ {
+  "code": "E515",
+  "variants": [
+   {
+    "code": "E515(i)",
+    "en": "Potassium sulphate",
+    "da": "Kaliumsulfat"
+   },
+   {
+    "code": "E515(ii)",
+    "en": "Potassium hydrogen sulphate",
+    "da": "Kaliumhydrogensulfat"
+   }
+  ],
+  "en": "Potassium sulphates",
+  "da": "Kaliumsulfater",
+  "wikidata": "Q193054"
+ },
+ {
+  "code": "E516",
+  "variants": [],
+  "en": "Calcium sulphate",
+  "da": "Calciumsulfat",
+  "additives_classes": "en:sequestrant, en:stabiliser",
+  "wikidata": "Q407258",
+  "wikipedia": "https://en.wikipedia.org/wiki/Calcium_sulfate"
+ },
+ {
+  "code": "E517",
+  "variants": [],
+  "en": "Ammonium sulphate",
+  "da": "Ammoniumsulfat",
+  "wikidata": "Q191831"
+ },
+ {
+  "code": "E518",
+  "variants": [],
+  "en": "Magnesium sulphate",
+  "wikidata": "Q288266"
+ },
+ {
+  "code": "E519",
+  "variants": [],
+  "en": "Copper sulphate",
+  "da": "Kobber(II)sulfat",
+  "wikidata": "Q107184"
+ },
+ {
+  "code": "E520",
+  "variants": [],
+  "en": "Aluminium sulphate",
+  "da": "Aluminiumsulfat",
+  "wikidata": "Q421857"
+ },
+ {
+  "code": "E521",
+  "variants": [],
+  "en": "Aluminium sodium sulphate",
+  "da": "Aluminiumnatriumsulfat",
+  "wikidata": "Q413559"
+ },
+ {
+  "code": "E522",
+  "variants": [],
+  "en": "Aluminium potassium sulphate",
+  "da": "Aluminiumkaliumsulfat",
+  "wikidata": "Q411309"
+ },
+ {
+  "code": "E523",
+  "variants": [],
+  "en": "Aluminium ammonium sulphate",
+  "da": "Aluminiumammoniumsulfat",
+  "additives_classes": "en:stabiliser",
+  "wikidata": "Q419370"
+ },
+ {
+  "code": "E524",
+  "variants": [],
+  "en": "Sodium hydroxide",
+  "da": "Natriumhydroxid",
+  "wikidata": "Q102769",
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_hydroxide"
+ },
+ {
+  "code": "E525",
+  "variants": [],
+  "en": "Potassium hydroxide",
+  "da": "Kaliumhydroxid",
+  "wikidata": "Q132298",
+  "wikipedia": "https://en.wikipedia.org/wiki/Potassium_hydroxide"
+ },
+ {
+  "code": "E526",
+  "variants": [],
+  "en": "Calcium hydroxide",
+  "da": "Calciumhydroxid",
+  "wikidata": "Q182849"
+ },
+ {
+  "code": "E527",
+  "variants": [],
+  "en": "Ammonium hydroxide",
+  "da": "Ammoniumhydroxid",
+  "wikidata": "Q421888"
+ },
+ {
+  "code": "E528",
+  "variants": [],
+  "en": "Magnesium hydroxide",
+  "da": "Magnesiumhydroxid",
+  "wikidata": "Q407548"
+ },
+ {
+  "code": "E529",
+  "variants": [],
+  "en": "Calcium oxide",
+  "da": "Calciumoxid",
+  "wikidata": "Q185006",
+  "wikipedia": "https://en.wikipedia.org/wiki/Calcium_oxide"
+ },
+ {
+  "code": "E530",
+  "variants": [],
+  "en": "Magnesium oxide",
+  "da": "Magnesiumoxid",
+  "wikidata": "Q214769",
+  "wikipedia": "https://en.wikipedia.org/wiki/Magnesium_oxide"
+ },
+ {
+  "code": "E535",
+  "variants": [],
+  "en": "Sodium ferrocyanide",
+  "da": "Natriumferrocyanid",
+  "wikidata": "Q418474"
+ },
+ {
+  "code": "E536",
+  "variants": [],
+  "en": "Potassium ferrocyanide",
+  "da": "Kaliumferrocyanid",
+  "wikidata": "Q422017"
+ },
+ {
+  "code": "E537",
+  "variants": [],
+  "en": "ferrous hexacyanomanganate",
+  "da": "ferro hexacyanomanganat",
+  "wikidata": "Q18602070"
+ },
+ {
+  "code": "E538",
+  "variants": [],
+  "en": "Calcium ferrocyanide",
+  "da": "Calciumferrocyanid",
+  "wikidata": "Q18967196"
+ },
+ {
+  "code": "E539",
+  "variants": [],
+  "en": "sodium thiosulfate",
+  "da": "Natriumthiosulfat",
+  "additives_classes": "en:antioxidant, en:sequestrant",
+  "wikidata": "Q339866"
+ },
+ {
+  "code": "E540",
+  "variants": [],
+  "en": "Dicalcium diphosphate",
+  "da": "Dicalciumdiphosphat",
+  "wikidata": "Q18967208"
+ },
+ {
+  "code": "E541",
+  "variants": [
+   {
+    "code": "E541(i)",
+    "en": "Acid sodium aluminium phosphate",
+    "da": "Natriumaluminiumphosphat"
+   },
+   {
+    "code": "E541(ii)",
+    "en": "Alkaline sodium aluminium phosphate",
+    "da": "Alkalisk natriumaluminiumphosphat"
+   }
+  ],
+  "en": "Sodium aluminium phosphate",
+  "da": "Natriumaluminiumphosphater",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q1220360"
+ },
+ {
+  "code": "E542",
+  "variants": [],
+  "en": "Bone phosphate",
+  "da": "Knoglefosfat",
+  "additives_classes": "en:emulsifier, en:humectant",
+  "wikidata": "Q18967189"
+ },
+ {
+  "code": "E543",
+  "variants": [],
+  "en": "E543 food additive",
+  "wikidata": "Q18967200"
+ },
+ {
+  "code": "E544",
+  "variants": [],
+  "en": "Calcium polyphosphate",
+  "da": "Calciumpolyphosphat",
+  "wikidata": "Q18967198"
+ },
+ {
+  "code": "E545",
+  "variants": [],
+  "en": "Ammonium polyphosphate",
+  "da": "Ammoniumpolyphosphat",
+  "wikidata": "Q2770473"
+ },
+ {
+  "code": "E546",
+  "variants": [],
+  "en": "Magnesium pyrophosphate",
+  "da": "magnesiumpyrophosphat"
+ },
+ {
+  "code": "E550",
+  "variants": [
+   {
+    "code": "E550(i)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E550(ii)",
+    "en": "Sodium metasilicate",
+    "da": ""
+   }
+  ],
+  "en": "Sodium silicate",
+  "da": "Natriumsilikat",
+  "wikidata": "Q18944661"
+ },
+ {
+  "code": "E551",
+  "variants": [],
+  "en": "Silicon dioxide",
+  "da": "Siliciumdioxid",
+  "additives_classes": "en:carrier",
+  "wikidata": "Q116269",
+  "wikipedia": "https://en.wikipedia.org/wiki/Silicon_dioxide",
+  "colour_index": "CI 7811"
+ },
+ {
+  "code": "E552",
+  "variants": [],
+  "en": "Calcium silicate",
+  "da": "Calciumsilicat",
+  "wikidata": "Q416365"
+ },
+ {
+  "code": "E553",
+  "variants": [
+   {
+    "code": "E553(i)",
+    "en": "Magnesium silicate\\",
+    "da": ""
+   },
+   {
+    "code": "E553(ii)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E553(iii)",
+    "en": "",
+    "da": ""
+   }
+  ],
+  "en": "Magnesium silicates",
+  "da": "Magnesiumsilicat",
+  "additives_classes": "en:thickener",
+  "wikipedia": "https://en.wikipedia.org/wiki/Talc"
+ },
+ {
+  "code": "E553a",
+  "variants": [
+   {
+    "code": "E553a(i)",
+    "en": "Synthetic magnesium silicate",
+    "da": "Syntetisk magnesiumsilikat"
+   },
+   {
+    "code": "E553a(ii)",
+    "en": "Magnesium trisilicate",
+    "da": "Magnesiumtrisilicat"
+   }
+  ],
+  "en": "synthetic magnesium silicates",
+  "da": "syntetiske magnesiumsilikater",
+  "additives_classes": "en:thickener"
+ },
+ {
+  "code": "E553b",
+  "variants": [],
+  "en": "Talc",
+  "da": "Talkum",
+  "additives_classes": "en:thickener",
+  "wikidata": "Q134583"
+ },
+ {
+  "code": "E554",
+  "variants": [],
+  "en": "Sodium aluminium silicate",
+  "da": "Natriumaluminiumsilicat",
+  "wikidata": "Q18967277"
+ },
+ {
+  "code": "E555",
+  "variants": [],
+  "en": "Potassium aluminium silicate",
+  "da": "Kaliumaluminiumsilicat",
+  "wikidata": "Q18944658"
+ },
+ {
+  "code": "E556",
+  "variants": [],
+  "en": "Calcium aluminium silicate",
+  "da": "Calciumaluminiumsilicat",
+  "wikidata": "Q18967182"
+ },
+ {
+  "code": "E557",
+  "variants": [],
+  "en": "hemimorphite",
+  "wikidata": "Q408008"
+ },
+ {
+  "code": "E558",
+  "variants": [],
+  "en": "Bentonite",
+  "da": "Bentonit",
+  "wikidata": "Q380149"
+ },
+ {
+  "code": "E559",
+  "variants": [],
+  "en": "Aluminium silicate",
+  "da": "Aluminiumsilicat",
+  "wikidata": "Q1284687",
+  "colour_index": "CI 7704"
+ },
+ {
+  "code": "E560",
+  "variants": [],
+  "en": "Potassium silicate",
+  "wikidata": "Q419390"
+ },
+ {
+  "code": "E570",
+  "variants": [],
+  "en": "Fatty acids",
+  "da": "Fedtsyrer",
+  "wikidata": "Q61476"
+ },
+ {
+  "code": "E571",
+  "variants": [],
+  "da": "Ammoniumstearat"
+ },
+ {
+  "code": "E572",
+  "variants": [],
+  "en": "Magnesium stearate",
+  "wikidata": "Q416713",
+  "wikipedia": "https://en.wikipedia.org/wiki/Magnesium_stearate"
+ },
+ {
+  "code": "E573",
+  "variants": [],
+  "en": "Aluminium stearate",
+  "da": "Aluminiumstearat"
+ },
+ {
+  "code": "E574",
+  "variants": [],
+  "en": "Gluconic acid",
+  "da": "Gluconsyre",
+  "wikidata": "Q407569"
+ },
+ {
+  "code": "E575",
+  "variants": [],
+  "en": "Glucono-delta-lactone",
+  "da": "Glucono-delta-lacton",
+  "additives_classes": "en:sequestrant",
+  "wikidata": "Q114174",
+  "wikipedia": "https://en.wikipedia.org/wiki/Glucono_delta-lactone"
+ },
+ {
+  "code": "E576",
+  "variants": [],
+  "en": "Sodium gluconate",
+  "da": "Natriumgluconat",
+  "additives_classes": "en:sequestrant, en:stabiliser, en:thickener",
+  "wikidata": "Q264552"
+ },
+ {
+  "code": "E577",
+  "variants": [],
+  "en": "Potassium gluconate",
+  "da": "Kaliumgluconat",
+  "additives_classes": "en:sequestrant",
+  "wikidata": "Q1122870"
+ },
+ {
+  "code": "E578",
+  "variants": [],
+  "en": "calcium gluconate",
+  "additives_classes": "en:sequestrant",
+  "wikidata": "Q413739",
+  "wikipedia": "https://en.wikipedia.org/wiki/Calcium_gluconate"
+ },
+ {
+  "code": "E579",
+  "variants": [],
+  "en": "iron gluconate",
+  "da": "Ferrogluconat",
+  "wikidata": "Q421291",
+  "wikipedia": "https://en.wikipedia.org/wiki/Iron(II)_gluconate"
+ },
+ {
+  "code": "E580",
+  "variants": [],
+  "en": "Magnesium Gluconate",
+  "da": "Magnesiumgluconat",
+  "wikidata": "Q6731392"
+ },
+ {
+  "code": "E585",
+  "variants": [],
+  "en": "Ferrous lactate",
+  "da": "Ferrolactat",
+  "wikidata": "Q836793",
+  "wikipedia": "https://en.wikipedia.org/wiki/Iron(II)_lactate"
+ },
+ {
+  "code": "E586",
+  "variants": [],
+  "en": "4-hexylresorcinol",
+  "da": "4-hexylresorcinol",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of 4-hexylresorcinol (E 586) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2014.3643",
+  "efsa_evaluation_date": "2014-04-24"
+ },
+ {
+  "code": "E620",
+  "variants": [],
+  "en": "Glutamic acid",
+  "da": "Glutaminsyre",
+  "efsa_evaluation": "Scientific Opinion on the safety of the change in the production method of L-glutamic acid (E620), monosodium L-glutamate (E621), monopotassium L-glutamate (E622), calcium di-L-glutamate (E623), monoammonium Lglutamate (E624) and magnesium di-L-glutamate (E625)",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.3981",
+  "efsa_evaluation_date": "2015-01-20",
+  "wikidata": "Q181136"
+ },
+ {
+  "code": "E621",
+  "variants": [],
+  "en": "Monosodium glutamate",
+  "da": "Mononatriumglutamat",
+  "additives_classes": "en:flavour-enhancer",
+  "efsa_evaluation": "Re‐evaluation of glutamic acid (E 620), sodium glutamate (E 621), potassium glutamate (E 622), calcium glutamate (E 623), ammonium glutamate (E 624) and magnesium glutamate (E 625) as food additives",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4910",
+  "efsa_evaluation_date": "2017/07/12",
+  "efsa_evaluation_overexposure_risk": "en:high",
+  "wikidata": "Q179678"
+ },
+ {
+  "code": "E622",
+  "variants": [],
+  "en": "Monopotassium glutamate",
+  "da": "Monokaliumglutamat",
+  "efsa_evaluation": "Scientific Opinion on the safety of the change in the production method of L-glutamic acid (E620), monosodium L-glutamate (E621), monopotassium L-glutamate (E622), calcium di-L-glutamate (E623), monoammonium Lglutamate (E624) and magnesium di-L-glutamate (E625)",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.3981",
+  "efsa_evaluation_date": "2015-01-20",
+  "wikidata": "Q3029787"
+ },
+ {
+  "code": "E623",
+  "variants": [],
+  "en": "Calcium diglutamate",
+  "da": "Calciumdiglutamat",
+  "efsa_evaluation": "Scientific Opinion on the safety of the change in the production method of L-glutamic acid (E620), monosodium L-glutamate (E621), monopotassium L-glutamate (E622), calcium di-L-glutamate (E623), monoammonium Lglutamate (E624) and magnesium di-L-glutamate (E625)",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.3981",
+  "efsa_evaluation_date": "2015-01-20",
+  "wikidata": "Q591440"
+ },
+ {
+  "code": "E624",
+  "variants": [],
+  "en": "Monoammonium glutamate",
+  "da": "Monoammoniumglutamat",
+  "efsa_evaluation": "Scientific Opinion on the safety of the change in the production method of L-glutamic acid (E620), monosodium L-glutamate (E621), monopotassium L-glutamate (E622), calcium di-L-glutamate (E623), monoammonium Lglutamate (E624) and magnesium di-L-glutamate (E625)",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.3981",
+  "efsa_evaluation_date": "2015-01-20",
+  "wikidata": "Q8213959"
+ },
+ {
+  "code": "E625",
+  "variants": [],
+  "en": "Magnesium diglutamate",
+  "da": "Magnesiumdiglutamat",
+  "efsa_evaluation": "Scientific Opinion on the safety of the change in the production method of L-glutamic acid (E620), monosodium L-glutamate (E621), monopotassium L-glutamate (E622), calcium di-L-glutamate (E623), monoammonium Lglutamate (E624) and magnesium di-L-glutamate (E625)",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.3981",
+  "efsa_evaluation_date": "2015-01-20",
+  "wikidata": "Q1821120"
+ },
+ {
+  "code": "E626",
+  "variants": [],
+  "en": "Guanylic acid",
+  "da": "Guanylsyre",
+  "wikidata": "Q422473"
+ },
+ {
+  "code": "E627",
+  "variants": [],
+  "en": "Disodium guanylate",
+  "da": "Dinatriumguanylat",
+  "wikidata": "Q905776",
+  "wikipedia": "https://en.wikipedia.org/wiki/Disodium_guanylate"
+ },
+ {
+  "code": "E628",
+  "variants": [],
+  "en": "Dipotassium guanylate",
+  "da": "Dikaliumguanylat",
+  "wikidata": "Q5280047"
+ },
+ {
+  "code": "E629",
+  "variants": [],
+  "en": "Calcium guanylate",
+  "da": "Calciumguanylat",
+  "wikidata": "Q5018832"
+ },
+ {
+  "code": "E630",
+  "variants": [],
+  "en": "Inosinic acid",
+  "da": "Inosinsyre",
+  "wikidata": "Q255933"
+ },
+ {
+  "code": "E631",
+  "variants": [],
+  "en": "Disodium inosinate",
+  "da": "Dinatriuminosinat",
+  "wikidata": "Q905782",
+  "wikipedia": "https://en.wikipedia.org/wiki/Disodium_inosinate"
+ },
+ {
+  "code": "E632",
+  "variants": [],
+  "en": "Dipotassium inosinate",
+  "da": "Dikaliuminosinat",
+  "wikidata": "Q18608832"
+ },
+ {
+  "code": "E633",
+  "variants": [],
+  "en": "Calcium inosinate",
+  "da": "Calciuminosinat",
+  "wikidata": "Q725037"
+ },
+ {
+  "code": "E634",
+  "variants": [],
+  "en": "Calcium 5'-ribonucleotide",
+  "da": "Calcium-5'-ribonucleotider",
+  "wikidata": "Q18967192"
+ },
+ {
+  "code": "E635",
+  "variants": [],
+  "en": "Disodium 5'-ribonucleotide",
+  "da": "Dinatrium-5'-ribonucleotider",
+  "wikidata": "Q18967210",
+  "wikipedia": "https://en.wikipedia.org/wiki/Disodium_ribonucleotides"
+ },
+ {
+  "code": "E636",
+  "variants": [],
+  "en": "Maltol",
+  "da": "Maltol"
+ },
+ {
+  "code": "E637",
+  "variants": [],
+  "en": "Ethyl maltol",
+  "da": "Ethyl maltol"
+ },
+ {
+  "code": "E638",
+  "variants": [],
+  "da": "Natrium aspartam"
+ },
+ {
+  "code": "E640",
+  "variants": [
+   {
+    "code": "E640(i)",
+    "en": "Glycine",
+    "da": "Glycin"
+   },
+   {
+    "code": "E640(ii)",
+    "en": "Sodiumglycinate",
+    "da": "Natriumglycinat"
+   }
+  ],
+  "en": "Glycine and its sodium salt",
+  "da": "Glycin og natriumsaltet heraf",
+  "wikidata": "Q18967228"
+ },
+ {
+  "code": "E641",
+  "variants": [],
+  "en": "Leucine",
+  "da": "Leucin",
+  "wikidata": "Q483745",
+  "wikipedia": "https://en.wikipedia.org/wiki/Leucine"
+ },
+ {
+  "code": "E642",
+  "variants": [],
+  "da": "Lysinhydrochlorid"
+ },
+ {
+  "code": "E650",
+  "variants": [],
+  "en": "Zinc acetate",
+  "da": "Zinkacetat",
+  "wikidata": "Q204639"
+ },
+ {
+  "code": "E710",
+  "variants": [],
+  "en": "Spiramycin",
+  "da": "Spiramycin",
+  "wikidata": "Q422265"
+ },
+ {
+  "code": "E713",
+  "variants": [],
+  "en": "Tylosin",
+  "da": "Tylosin",
+  "wikidata": "Q411462"
+ },
+ {
+  "code": "E900",
+  "variants": [],
+  "en": "Dimethylpolysiloxane and Methylphenylpolysiloxane",
+  "da": "Dimethylpolysiloxan og Methylphenylpolysiloxan",
+  "wikidata": "Q411955"
+ },
+ {
+  "code": "E900a",
+  "variants": [],
+  "en": "Dimethyl polysiloxane",
+  "da": "Dimethylpolysiloxan",
+  "additives_classes": "en:emulsifier",
+  "wikidata": "Q411955"
+ },
+ {
+  "code": "E900b",
+  "variants": [],
+  "en": "Methylphenylpolysiloxane",
+  "da": "Methylphenylpolysiloxan",
+  "wikidata": "Q411955"
+ },
+ {
+  "code": "E901",
+  "variants": [],
+  "en": "white and yellow beeswax",
+  "da": "Bivoks hvidt og gult",
+  "additives_classes": "en:carrier, en:emulsifier, en:stabiliser, en:thickener",
+  "efsa_evaluation": "Beeswax (E 901) as a glazing agent and as carrier for flavours",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2007.615",
+  "efsa_evaluation_date": "2007-12-20",
+  "wikidata": "Q143739",
+  "wikipedia": "https://en.wikipedia.org/wiki/Beeswax"
+ },
+ {
+  "code": "E902",
+  "variants": [],
+  "en": "Candelilla wax",
+  "da": "Candelillavoks",
+  "additives_classes": "en:carrier, en:emulsifier, en:thickener",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of candelilla wax (E 902) as a food additive.",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2012.2946",
+  "efsa_evaluation_date": "2012-11-16",
+  "wikidata": "Q898937"
+ },
+ {
+  "code": "E903",
+  "variants": [],
+  "en": "Carnauba wax",
+  "da": "Carnaubavoks",
+  "additives_classes": "en:carrier",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of carnauba wax (E 903) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2012.2880",
+  "efsa_evaluation_date": "2012-10-04",
+  "wikidata": "Q839494",
+  "wikipedia": "https://en.wikipedia.org/wiki/Carnauba_wax"
+ },
+ {
+  "code": "E904",
+  "variants": [],
+  "en": "Shellac",
+  "da": "Shellak",
+  "wikidata": "Q429659",
+  "wikipedia": "https://en.wikipedia.org/wiki/Shellac"
+ },
+ {
+  "code": "E905",
+  "variants": [],
+  "en": "Synthetic wax",
+  "da": "syntetisk voks",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of microcrystalline wax (E 905) as a food additive.",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3146",
+  "efsa_evaluation_date": "2013-04-04",
+  "wikidata": "Q579764"
+ },
+ {
+  "code": "E905a",
+  "variants": [],
+  "en": "mineral oil",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of microcrystalline wax (E 905) as a food additive.",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3146",
+  "efsa_evaluation_date": "2013-04-04",
+  "wikidata": "Q583582"
+ },
+ {
+  "code": "E905b",
+  "variants": [],
+  "en": "petroleum jelly",
+  "da": "Vaseline",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of microcrystalline wax (E 905) as a food additive.",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3146",
+  "efsa_evaluation_date": "2013-04-04",
+  "wikidata": "Q457239"
+ },
+ {
+  "code": "E905c",
+  "variants": [
+   {
+    "code": "E905c(i)",
+    "en": "Microcrystalline wax",
+    "da": "Mikrokrystallinsk voks"
+   },
+   {
+    "code": "E905c(ii)",
+    "en": "Paraffin wax",
+    "da": "Paraffin"
+   }
+  ],
+  "en": "Petroleum wax",
+  "da": "Petroleumsvoks",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of microcrystalline wax (E 905) as a food additive.",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3146",
+  "efsa_evaluation_date": "2013-04-04",
+  "wikidata": "Q579764"
+ },
+ {
+  "code": "E905d",
+  "variants": [],
+  "en": "Mineral oil high viscosity",
+  "da": "Mineralolie med høj viskositet",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of microcrystalline wax (E 905) as a food additive.",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3146",
+  "efsa_evaluation_date": "2013-04-04",
+  "wikidata": "Q579764"
+ },
+ {
+  "code": "E905e",
+  "variants": [],
+  "en": "Mineral oil medium viscosity",
+  "da": "Mineralolie med medium viskositet",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of microcrystalline wax (E 905) as a food additive.",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3146",
+  "efsa_evaluation_date": "2013-04-04",
+  "wikidata": "Q579764"
+ },
+ {
+  "code": "E905f",
+  "variants": [],
+  "en": "Mineral oil medium and low viscosity class II",
+  "da": "Mineralolie med medium og lav viskositet klasse II",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of microcrystalline wax (E 905) as a food additive.",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3146",
+  "efsa_evaluation_date": "2013-04-04",
+  "wikidata": "Q579764"
+ },
+ {
+  "code": "E905g",
+  "variants": [],
+  "en": "Mineral oil medium and low viscosity class III",
+  "da": "Mineralolie med medium og lav viskositet klasse III",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of microcrystalline wax (E 905) as a food additive.",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3146",
+  "efsa_evaluation_date": "2013-04-04",
+  "wikidata": "Q579764"
+ },
+ {
+  "code": "E906",
+  "variants": [],
+  "en": "Benzoin resin",
+  "da": "Benzoinharpiks",
+  "wikidata": "Q793163"
+ },
+ {
+  "code": "E907",
+  "variants": [],
+  "en": "Hydrogenated poly-1-decene",
+  "da": "Hydrogeneret poly-1-decen",
+  "wikidata": "Q18967207"
+ },
+ {
+  "code": "E908",
+  "variants": [],
+  "en": "Rice bran wax",
+  "da": "Risklidvoks",
+  "wikidata": "Q725234"
+ },
+ {
+  "code": "E909",
+  "variants": [],
+  "en": "Spermaceti",
+  "da": "Spermacetolie",
+  "wikidata": "Q369682"
+ },
+ {
+  "code": "E910",
+  "variants": [],
+  "en": "Wax ester",
+  "da": "Voksester",
+  "wikidata": "Q7975685"
+ },
+ {
+  "code": "E911",
+  "variants": [],
+  "en": "Fatty acid methyl ester",
+  "da": "Methyl ester af fedtsyrer",
+  "wikidata": "Q18944655"
+ },
+ {
+  "code": "E912",
+  "variants": [],
+  "en": "Montanic acid esters",
+  "da": "Montansyreestere",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of montan acid esters (E 912) as a food additive.",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3236",
+  "efsa_evaluation_date": "2013-06-07",
+  "wikidata": "Q18935695"
+ },
+ {
+  "code": "E913",
+  "variants": [],
+  "en": "Lanolin",
+  "da": "Lanolin",
+  "wikidata": "Q911098"
+ },
+ {
+  "code": "E914",
+  "variants": [],
+  "en": "Oxidised polyethylene wax",
+  "da": "Oxideret polyethylenvoks",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of oxidised polyethylene wax (E 914) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4145",
+  "efsa_evaluation_date": "2015-07-02",
+  "wikidata": "Q18608846"
+ },
+ {
+  "code": "E915",
+  "variants": [],
+  "en": "Esters of Colophane",
+  "da": "Estere af colophane",
+  "wikidata": "Q18935691"
+ },
+ {
+  "code": "E916",
+  "variants": [],
+  "en": "Calcium iodate",
+  "da": "Calciumiodat",
+  "wikidata": "Q2185998"
+ },
+ {
+  "code": "E917",
+  "variants": [],
+  "en": "potassium iodate",
+  "wikidata": "Q414599"
+ },
+ {
+  "code": "E918",
+  "variants": [],
+  "en": "Nitrogen oxides",
+  "da": "Nitrogenoxider",
+  "wikidata": "Q18967254"
+ },
+ {
+  "code": "E919",
+  "variants": [],
+  "en": "Nitrosyl chloride",
+  "da": "Nitrosylchlorid",
+  "wikidata": "Q419266"
+ },
+ {
+  "code": "E920",
+  "variants": [],
+  "en": "l-cysteine",
+  "da": "L-cystein",
+  "wikidata": "Q186474",
+  "wikipedia": "https://en.wikipedia.org/wiki/Cysteine"
+ },
+ {
+  "code": "E921",
+  "variants": [],
+  "en": "L-cysteine hydrochloride monohydrate",
+  "da": "L-cystein hydrochlorid monohydrat"
+ },
+ {
+  "code": "E922",
+  "variants": [],
+  "en": "Potassium persulfate",
+  "da": "Kaliumpersulfat",
+  "wikidata": "Q415226"
+ },
+ {
+  "code": "E923",
+  "variants": [],
+  "en": "ammonium persulfate",
+  "da": "Ammoniumpersulfat",
+  "wikidata": "Q412085"
+ },
+ {
+  "code": "E924",
+  "variants": [],
+  "en": "Potassium bromate",
+  "da": "Kaliumbromat",
+  "wikidata": "Q409241"
+ },
+ {
+  "code": "E924a",
+  "variants": [],
+  "en": "Potassium bromate",
+  "da": "Kaliumbromat",
+  "wikidata": "Q409241"
+ },
+ {
+  "code": "E924b",
+  "variants": [],
+  "en": "Calcium bromate",
+  "da": "Calciumbromat",
+  "wikidata": "Q409241"
+ },
+ {
+  "code": "E925",
+  "variants": [],
+  "en": "Chlorine",
+  "da": "klor",
+  "wikidata": "Q688"
+ },
+ {
+  "code": "E926",
+  "variants": [],
+  "en": "Chlorine dioxide",
+  "da": "Chlordioxid",
+  "wikidata": "Q422080"
+ },
+ {
+  "code": "E927",
+  "variants": [],
+  "en": "Azodicarbonamide and Carbamide",
+  "da": "azodikarbonamid og karbamid"
+ },
+ {
+  "code": "E927a",
+  "variants": [],
+  "en": "Azodicarbonamide",
+  "da": "azodikarbonamid",
+  "wikidata": "Q415646"
+ },
+ {
+  "code": "E927b",
+  "variants": [],
+  "en": "Carbamide",
+  "da": "karbamid",
+  "wikidata": "Q48318"
+ },
+ {
+  "code": "E928",
+  "variants": [],
+  "en": "Benzole peroxide",
+  "da": "Benzoylperoxid",
+  "additives_classes": "en:preservative",
+  "wikidata": "Q411424"
+ },
+ {
+  "code": "E929",
+  "variants": [],
+  "en": "acetone peroxide",
+  "da": "Acetoneperoxid",
+  "wikidata": "Q329022"
+ },
+ {
+  "code": "E930",
+  "variants": [],
+  "en": "calcium peroxide",
+  "da": "Calciumperoxid",
+  "wikidata": "Q94770"
+ },
+ {
+  "code": "E931",
+  "variants": [],
+  "en": "Nitrogen",
+  "da": "Nitrogen"
+ },
+ {
+  "code": "E932",
+  "variants": [],
+  "en": "Nitrogen oxide",
+  "da": "Nitrogenoxid"
+ },
+ {
+  "code": "E938",
+  "variants": [],
+  "en": "Argon",
+  "da": "Argon",
+  "wikidata": "Q696"
+ },
+ {
+  "code": "E939",
+  "variants": [],
+  "en": "Helium",
+  "da": "Helium",
+  "wikidata": "Q560"
+ },
+ {
+  "code": "E940",
+  "variants": [],
+  "en": "Dichlorodifluoromethane",
+  "wikidata": "Q423021"
+ },
+ {
+  "code": "E941",
+  "variants": [],
+  "en": "Nitrogen",
+  "da": "Nitrogen",
+  "additives_classes": "en:propellent-gas",
+  "wikidata": "Q627",
+  "wikipedia": "https://en.wikipedia.org/wiki/Nitrogen"
+ },
+ {
+  "code": "E942",
+  "variants": [],
+  "en": "Nitrous oxide",
+  "da": "Dinitrogenoxid",
+  "additives_classes": "en:antioxidant, en:propellent-gas",
+  "wikidata": "Q905750",
+  "wikipedia": "https://en.wikipedia.org/wiki/Nitrous_oxide"
+ },
+ {
+  "code": "E943a",
+  "variants": [],
+  "en": "Butane",
+  "da": "Butan"
+ },
+ {
+  "code": "E943b",
+  "variants": [],
+  "en": "Isobutane",
+  "da": "Isobutan"
+ },
+ {
+  "code": "E944",
+  "variants": [],
+  "en": "Propane",
+  "da": "Propan",
+  "wikidata": "Q131189"
+ },
+ {
+  "code": "E945",
+  "variants": [],
+  "en": "chloropentafluoroethane",
+  "da": "chlorpentafluorethan",
+  "wikidata": "Q419702"
+ },
+ {
+  "code": "E946",
+  "variants": [],
+  "en": "octafluorocyclobutane",
+  "da": "octafluorcyclobutan",
+  "wikidata": "Q413079"
+ },
+ {
+  "code": "E948",
+  "variants": [],
+  "en": "Oxygen",
+  "da": "Oxygen",
+  "wikidata": "Q629"
+ },
+ {
+  "code": "E949",
+  "variants": [],
+  "en": "Hydrogen",
+  "da": "Brint",
+  "wikidata": "Q556"
+ },
+ {
+  "code": "E950",
+  "variants": [],
+  "en": "Acesulfame k",
+  "da": "Acesulfamkalium",
+  "additives_classes": "en:sweetener",
+  "efsa_evaluation": "Safety of the proposed extension of use of acesulfame K (E 950) in foods for special medical purposes in young children",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4437",
+  "efsa_evaluation_date": "2016-04-05",
+  "wikidata": "Q132037",
+  "wikipedia": "https://en.wikipedia.org/wiki/Acesulfame_potassium"
+ },
+ {
+  "code": "E951",
+  "variants": [],
+  "en": "Aspartame",
+  "da": "Aspartam",
+  "additives_classes": "en:sweetener",
+  "efsa_evaluation": "Scientific Opinion on the re-evaluation of aspartame (E 951) as a food additive.",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2013.3496",
+  "efsa_evaluation_date": "2013-12-10",
+  "efsa_evaluation_adi": "40",
+  "efsa_evaluation_overexposure_risk": "en:no",
+  "wikidata": "Q182040",
+  "wikipedia": "https://en.wikipedia.org/wiki/Aspartame"
+ },
+ {
+  "code": "E952",
+  "variants": [
+   {
+    "code": "E952(i)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E952(ii)",
+    "en": "Calcium cyclamate",
+    "da": ""
+   },
+   {
+    "code": "E952(iv)",
+    "en": "",
+    "da": ""
+   }
+  ],
+  "en": "Cyclamic acid and its Na and Ca salts",
+  "da": "Cyclaminsyre samt na- og ca-salte deraf",
+  "additives_classes": "en:sweetener",
+  "wikidata": "Q2130929"
+ },
+ {
+  "code": "E953",
+  "variants": [],
+  "en": "isomalt",
+  "da": "Isomalt",
+  "additives_classes": "en:stabiliser, en:sweetener, en:thickener",
+  "wikidata": "Q412068",
+  "wikipedia": "https://en.wikipedia.org/wiki/Isomalt"
+ },
+ {
+  "code": "E954",
+  "variants": [
+   {
+    "code": "E954(i)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E954(ii)",
+    "en": "Calcium saccharin",
+    "da": ""
+   },
+   {
+    "code": "E954(iii)",
+    "en": "Potassium saccharin",
+    "da": ""
+   },
+   {
+    "code": "E954(iv)",
+    "en": "",
+    "da": ""
+   }
+  ],
+  "en": "saccharin and its salts",
+  "da": "saccharin and its na. k and ca salts",
+  "additives_classes": "en:sweetener",
+  "wikidata": "Q191381"
+ },
+ {
+  "code": "E955",
+  "variants": [],
+  "en": "Sucralose",
+  "da": "Sucralose",
+  "additives_classes": "en:sweetener",
+  "efsa_evaluation": "Safety of the proposed extension of use of sucralose (E 955) in foods for special medical purposes in young children",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4361",
+  "efsa_evaluation_date": "2016-01-19",
+  "wikidata": "Q410209"
+ },
+ {
+  "code": "E956",
+  "variants": [],
+  "en": "Alitame",
+  "da": "Alitam",
+  "additives_classes": "en:sweetener",
+  "wikidata": "Q424676"
+ },
+ {
+  "code": "E957",
+  "variants": [],
+  "en": "Thaumatin",
+  "da": "Thaumatin",
+  "additives_classes": "en:sweetener",
+  "efsa_evaluation": "Scientific Opinion on the safety of the extension of use of thaumatin (E 957)",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4290",
+  "efsa_evaluation_date": "2015-11-12",
+  "wikidata": "Q414048"
+ },
+ {
+  "code": "E958",
+  "variants": [],
+  "en": "Glycyrrhizin",
+  "da": "Glycyrrhizin",
+  "additives_classes": "en:sweetener",
+  "wikidata": "Q418705"
+ },
+ {
+  "code": "E959",
+  "variants": [],
+  "en": "Neohesperidine dihydrochalcone",
+  "da": "Neohesperidindihydrochalcon",
+  "additives_classes": "en:sweetener",
+  "wikidata": "Q424595",
+  "wikipedia": "https://en.wikipedia.org/wiki/Neohesperidin_dihydrochalcone"
+ },
+ {
+  "code": "E960",
+  "variants": [],
+  "en": "Steviol glycosides",
+  "da": "Steviolglycosider",
+  "additives_classes": "en:sweetener",
+  "efsa_evaluation": "Scientific opinion on the safety of the extension of use of steviol glycosides (E 960) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2015.4146",
+  "efsa_evaluation_date": "2015-06-30",
+  "efsa_evaluation_adi": "4",
+  "efsa_evaluation_overexposure_risk": "en:moderate",
+  "wikidata": "Q2805600",
+  "wikipedia": "https://en.wikipedia.org/wiki/Steviol_glycoside"
+ },
+ {
+  "code": "E960a",
+  "variants": [],
+  "en": "Steviol glycosides from Stevia",
+  "da": "Steviolglycosider fra Stevia",
+  "additives_classes": "en:sweetener"
+ },
+ {
+  "code": "E960b",
+  "variants": [],
+  "en": "Rebaudioside from multiple gene donors expressed in Yarrowia lipolityca",
+  "additives_classes": "en:sweetener"
+ },
+ {
+  "code": "E960c",
+  "variants": [],
+  "en": "Enzymatically produced steviol glycosides",
+  "additives_classes": "en:sweetener"
+ },
+ {
+  "code": "E960d",
+  "variants": [],
+  "en": "Glucosylated steviol glycosides",
+  "da": "Glucosyleret steviolglycosider",
+  "additives_classes": "en:sweetener"
+ },
+ {
+  "code": "E961",
+  "variants": [],
+  "en": "Neotame",
+  "da": "Neotam",
+  "additives_classes": "en:sweetener",
+  "wikidata": "Q415698"
+ },
+ {
+  "code": "E962",
+  "variants": [],
+  "en": "Salt of aspartame-acesulfame",
+  "da": "Aspartam-acesulfamsalt",
+  "additives_classes": "en:sweetener",
+  "wikidata": "Q409847",
+  "wikipedia": "https://en.wikipedia.org/wiki/Aspartame-acesulfame_salt"
+ },
+ {
+  "code": "E963",
+  "variants": [],
+  "en": "Tagatose",
+  "da": "Tagatose",
+  "additives_classes": "en:sweetener",
+  "wikidata": "Q414089"
+ },
+ {
+  "code": "E964",
+  "variants": [],
+  "en": "Polyglycitol syrup",
+  "da": "Polyglycitol sirup",
+  "additives_classes": "en:sweetener",
+  "wikidata": "Q18601425"
+ },
+ {
+  "code": "E965",
+  "variants": [
+   {
+    "code": "E965(i)",
+    "en": "D-Maltitol",
+    "da": "D-Maltitol"
+   },
+   {
+    "code": "E965(ii)",
+    "en": "Maltitol syrup",
+    "da": "Maltitolsirup"
+   }
+  ],
+  "en": "maltitol",
+  "da": "Maltitol",
+  "additives_classes": "en:emulsifier, en:humectant, en:stabiliser, en:sweetener, en:thickener",
+  "efsa_evaluation": "Opinion of the Scientific Panel on Food Additives, Flavourings, Processing Aids and Materials in Contact with Food on a request from the Commission related to Maltitol Syrup E 965(ii) new production process. Change of specification",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2006.354",
+  "efsa_evaluation_date": "2006-05-18",
+  "wikidata": "Q423882",
+  "wikipedia": "https://en.wikipedia.org/wiki/Maltitol"
+ },
+ {
+  "code": "E966",
+  "variants": [],
+  "en": "Lactitol",
+  "da": "Lactitol",
+  "additives_classes": "en:emulsifier, en:sweetener, en:thickener",
+  "wikidata": "Q415020"
+ },
+ {
+  "code": "E967",
+  "variants": [],
+  "en": "Xylitol",
+  "da": "Xylitol",
+  "additives_classes": "en:emulsifier, en:humectant, en:stabiliser, en:sweetener, en:thickener",
+  "wikidata": "Q212093",
+  "wikipedia": "https://en.wikipedia.org/wiki/Xylitol"
+ },
+ {
+  "code": "E968",
+  "variants": [],
+  "en": "Erythritol",
+  "da": "Erythritol",
+  "additives_classes": "en:humectant, en:sweetener",
+  "efsa_evaluation": "Statement in relation to the safety of erythritol (E 968) in light of new data, including a new paediatric study on the gastrointestinal tolerability of erythritol",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2010.1650",
+  "efsa_evaluation_date": "2010-07-09",
+  "wikidata": "Q421873",
+  "wikipedia": "https://en.wikipedia.org/wiki/Erythritol"
+ },
+ {
+  "code": "E969",
+  "variants": [],
+  "en": "Advantame",
+  "additives_classes": "en:sweetener"
+ },
+ {
+  "code": "E999",
+  "variants": [
+   {
+    "code": "E999(i)",
+    "en": "Quillaia extract type 1",
+    "da": ""
+   },
+   {
+    "code": "E999(ii)",
+    "en": "Quillaia extract type 2",
+    "da": ""
+   }
+  ],
+  "en": "Quillaia extract",
+  "da": "Quillaiaekstrakt synonymer —",
+  "additives_classes": "en:emulsifier",
+  "wikidata": "Q118843"
+ },
+ {
+  "code": "E1000",
+  "variants": [],
+  "en": "Cholic acid",
+  "da": "Cholsyre",
+  "wikidata": "Q287415"
+ },
+ {
+  "code": "E1001",
+  "variants": [
+   {
+    "code": "E1001(i)",
+    "en": "Choline acetate",
+    "da": ""
+   },
+   {
+    "code": "E1001(ii)",
+    "en": "Choline carbonate",
+    "da": ""
+   },
+   {
+    "code": "E1001(iii)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E1001(iv)",
+    "en": "Choline citrate",
+    "da": ""
+   },
+   {
+    "code": "E1001(v)",
+    "en": "Choline tartrate",
+    "da": ""
+   },
+   {
+    "code": "E1001(vi)",
+    "en": "Choline lactate",
+    "da": ""
+   }
+  ],
+  "en": "Choline salt",
+  "da": "Cholinsalt",
+  "wikidata": "Q18668392"
+ },
+ {
+  "code": "E1100",
+  "variants": [
+   {
+    "code": "E1100(i)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E1100(ii)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E1100(iii)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E1100(iv)",
+    "en": "alpha-Amylase from Bacillus megaterium expressed in Bacillus subtilis",
+    "da": ""
+   },
+   {
+    "code": "E1100(v)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E1100(vi)",
+    "en": "",
+    "da": ""
+   }
+  ],
+  "en": "Alpha-Amylase",
+  "da": "amylase",
+  "wikidata": "Q17153",
+  "wikipedia": "https://en.wikipedia.org/wiki/Amylase"
+ },
+ {
+  "code": "E1101",
+  "variants": [
+   {
+    "code": "E1101(i)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E1101(ii)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E1101(iii)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E1101(iv)",
+    "en": "",
+    "da": ""
+   },
+   {
+    "code": "E1101(v)",
+    "en": "Protease from Streptomyces fradiae",
+    "da": ""
+   },
+   {
+    "code": "E1101(vi)",
+    "en": "Proteases from Bacillus subtilis",
+    "da": ""
+   }
+  ],
+  "en": "Protease",
+  "da": "protease",
+  "additives_classes": "en:stabiliser",
+  "wikidata": "Q212410",
+  "wikipedia": "https://en.wikipedia.org/wiki/Protease"
+ },
+ {
+  "code": "E1102",
+  "variants": [],
+  "en": "Glucose oxidase",
+  "da": "Glukoseoxidase",
+  "additives_classes": "en:antioxidant",
+  "wikidata": "Q419321"
+ },
+ {
+  "code": "E1103",
+  "variants": [],
+  "en": "Invertase",
+  "da": "Invertase",
+  "additives_classes": "en:stabiliser",
+  "wikidata": "Q419189",
+  "wikipedia": "https://en.wikipedia.org/wiki/Invertase"
+ },
+ {
+  "code": "E1104",
+  "variants": [],
+  "en": "lipase",
+  "da": "Lipase",
+  "wikidata": "Q380967"
+ },
+ {
+  "code": "E1105",
+  "variants": [],
+  "en": "Lysozyme",
+  "da": "Lysozym",
+  "additives_classes": "en:preservative",
+  "wikidata": "Q21114915",
+  "wikipedia": "https://en.wikipedia.org/wiki/Lysozyme"
+ },
+ {
+  "code": "E1200",
+  "variants": [],
+  "en": "Polydextrose",
+  "da": "Polydextrose",
+  "additives_classes": "en:humectant, en:stabiliser, en:thickener",
+  "wikidata": "Q424616"
+ },
+ {
+  "code": "E1201",
+  "variants": [],
+  "en": "Polyvinylpyrrolidone",
+  "da": "Polyvinylpyrrolidon",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q413433"
+ },
+ {
+  "code": "E1202",
+  "variants": [],
+  "en": "Polyvinylpolypyrrolidone",
+  "da": "Polyvinylpolypyrrolidon",
+  "additives_classes": "en:stabiliser",
+  "wikidata": "Q3003746"
+ },
+ {
+  "code": "E1203",
+  "variants": [],
+  "en": "Polyvinyl alcohol",
+  "da": "Polyvinylalkohol",
+  "additives_classes": "en:thickener",
+  "wikidata": "Q146339"
+ },
+ {
+  "code": "E1204",
+  "variants": [],
+  "en": "Pullulan",
+  "da": "Pullulan",
+  "additives_classes": "en:thickener",
+  "wikidata": "Q419779"
+ },
+ {
+  "code": "E1205",
+  "variants": [],
+  "en": "Basic methacrylate copolymer",
+  "da": "Basisk methacrylat-copolymer",
+  "efsa_evaluation": "Safety of the proposed amendment of the specifications for basic methacrylate copolymer (E 1205) as a food additive",
+  "efsa_evaluation_url": "http://dx.doi.org/10.2903/j.efsa.2016.4490",
+  "efsa_evaluation_date": "2016-05-27",
+  "wikidata": "Q18967186"
+ },
+ {
+  "code": "E1206",
+  "variants": [],
+  "en": "Neutral methacrylate copolymer"
+ },
+ {
+  "code": "E1207",
+  "variants": [],
+  "en": "Anionic methacrylate copolymer"
+ },
+ {
+  "code": "E1208",
+  "variants": [],
+  "en": "Polyvinylpyrrolidone-vinyl acetate copolymer"
+ },
+ {
+  "code": "E1209",
+  "variants": [],
+  "en": "Polyvinyl alcohol-polyethylene glycol-graft-co-polymer"
+ },
+ {
+  "code": "E1210",
+  "variants": [],
+  "en": "Carbomer",
+  "da": "Carbomer"
+ },
+ {
+  "code": "E1400",
+  "variants": [],
+  "en": "Dextrin",
+  "da": "dekstrin",
+  "additives_classes": "en:carrier, en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q191978",
+  "wikipedia": "https://en.wikipedia.org/wiki/Dextrin"
+ },
+ {
+  "code": "E1401",
+  "variants": [],
+  "en": "Acid-treated modified starch",
+  "da": "Syrebehandlet modificeret stivelse",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q18967250"
+ },
+ {
+  "code": "E1402",
+  "variants": [],
+  "en": "Alkaline modified starch",
+  "da": "Alkalisk modificeret stivelse",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q18636175"
+ },
+ {
+  "code": "E1403",
+  "variants": [],
+  "en": "Bleached starch",
+  "da": "Blegnet stivelse",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener"
+ },
+ {
+  "code": "E1404",
+  "variants": [],
+  "en": "Oxidised starch",
+  "da": "Oxideret stivelse",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q18967259"
+ },
+ {
+  "code": "E1405",
+  "variants": [],
+  "en": "Enzyme treated starch",
+  "da": "Enzymbehandlet stivelse",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q18967222"
+ },
+ {
+  "code": "E1410",
+  "variants": [],
+  "en": "Monostarch phosphate",
+  "da": "Monostivelsephosphat",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q18631008"
+ },
+ {
+  "code": "E1411",
+  "variants": [],
+  "en": "Distarch glycerol",
+  "da": "Distarch glycerol",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q18967214"
+ },
+ {
+  "code": "E1412",
+  "variants": [],
+  "en": "Distarch phosphate",
+  "da": "Distivelsephosphat",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q18967218"
+ },
+ {
+  "code": "E1413",
+  "variants": [],
+  "en": "Phosphated distarch phosphate",
+  "da": "Phosphateret distivelsephosphat",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q7187438"
+ },
+ {
+  "code": "E1414",
+  "variants": [],
+  "en": "Acetylated distarch phosphate",
+  "da": "Acetyleret distivelsephosphat",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q18967180"
+ },
+ {
+  "code": "E1420",
+  "variants": [],
+  "en": "Acetylated starch",
+  "da": "Acetyleret stivelse",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q18935684"
+ },
+ {
+  "code": "E1421",
+  "variants": [],
+  "en": "Acetylated starch",
+  "da": "Acetyleret stivelse",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q18944665"
+ },
+ {
+  "code": "E1422",
+  "variants": [],
+  "en": "Acetylated distarch adipate",
+  "da": "Acetyleret distivelseadipat",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q2824457"
+ },
+ {
+  "code": "E1423",
+  "variants": [],
+  "en": "Acetylated distarch glycerol",
+  "da": "Acetyleret distivelseglycerol",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q18608829"
+ },
+ {
+  "code": "E1430",
+  "variants": [],
+  "en": "Distarch glycerine",
+  "da": "Distarch glycerin",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q18967212"
+ },
+ {
+  "code": "E1440",
+  "variants": [],
+  "en": "Hydroxypropyl starch",
+  "da": "Hydroxypropylstivelse",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q1640437"
+ },
+ {
+  "code": "E1441",
+  "variants": [],
+  "en": "Hydroxy propyl distarch glycerine",
+  "da": "Hydroxy propyl distarch glycerin",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q18967235"
+ },
+ {
+  "code": "E1442",
+  "variants": [],
+  "en": "Hydroxypropyl distarch phosphate",
+  "da": "Hydroxypropyldistivelsephosphat",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q10528966"
+ },
+ {
+  "code": "E1443",
+  "variants": [],
+  "en": "Hydroxy propyl distarch glycerol",
+  "da": "Hydroxy propyl distarch glycerol",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q18967237"
+ },
+ {
+  "code": "E1450",
+  "variants": [],
+  "en": "Starch sodium octenyl succinate",
+  "da": "Stivelsenatriumoctenylsuccinat",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q18967290"
+ },
+ {
+  "code": "E1451",
+  "variants": [],
+  "en": "Acetylated oxidised starch",
+  "da": "Acetyleret oxideret stivelse",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q2633813"
+ },
+ {
+  "code": "E1452",
+  "variants": [],
+  "en": "Starch aluminium octenyl succinate",
+  "da": "Stivelsealuminiumoctenylsuccinat",
+  "additives_classes": "en:emulsifier, en:stabiliser, en:thickener",
+  "wikidata": "Q18967287"
+ },
+ {
+  "code": "E1503",
+  "variants": [],
+  "en": "Castor oil",
+  "da": "Ricinusolie",
+  "additives_classes": "en:carrier, en:emulsifier",
+  "wikidata": "Q337492"
+ },
+ {
+  "code": "E1504",
+  "variants": [],
+  "en": "ethyl acetate",
+  "additives_classes": "en:carrier",
+  "wikidata": "Q407153"
+ },
+ {
+  "code": "E1505",
+  "variants": [],
+  "en": "Triethyl citrate",
+  "da": "Triethylcitrat",
+  "additives_classes": "en:carrier, en:emulsifier, en:sequestrant, en:stabiliser",
+  "wikidata": "Q418057",
+  "wikipedia": "https://en.wikipedia.org/wiki/Triethyl_citrate"
+ },
+ {
+  "code": "E1510",
+  "variants": [],
+  "en": "Ethanol",
+  "da": "Ethanol",
+  "wikidata": "Q153"
+ },
+ {
+  "code": "E1517",
+  "variants": [],
+  "en": "Glyceryl diacetate",
+  "da": "Glyceryldiacetat",
+  "wikidata": "Q904648"
+ },
+ {
+  "code": "E1518",
+  "variants": [],
+  "en": "Glyceryl triacetate",
+  "da": "Glyceryltriacetat",
+  "additives_classes": "en:carrier, en:emulsifier, en:humectant",
+  "wikidata": "Q83253"
+ },
+ {
+  "code": "E1519",
+  "variants": [],
+  "en": "Benzyl alcohol",
+  "da": "Benzylalkohol",
+  "wikidata": "Q52353"
+ },
+ {
+  "code": "E1520",
+  "variants": [],
+  "en": "Propylene Glycol",
+  "da": "Propan-1\\",
+  "additives_classes": "en:emulsifier, en:humectant",
+  "efsa_evaluation": "Re‐evaluation of propane‐1,2‐diol (E 1520) as a food additive",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5235",
+  "efsa_evaluation_date": "2018/04/05",
+  "efsa_evaluation_adi": "25",
+  "efsa_evaluation_overexposure_risk": "en:no",
+  "wikidata": "Q18967269"
+ },
+ {
+  "code": "E1521",
+  "variants": [],
+  "en": "Polyethylene glycol",
+  "da": "Polyethylenglycol",
+  "efsa_evaluation": "Refined exposure assessment of polyethylene glycol (E 1521) from its use as a food additive",
+  "efsa_evaluation_url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5293",
+  "efsa_evaluation_date": "2018/06/22",
+  "wikidata": "Q410083"
+ }
+]
