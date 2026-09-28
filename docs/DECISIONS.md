@@ -19,6 +19,13 @@ This file records durable decisions. Add a dated entry when a later decision cha
   `support@hellocal.io` (`src/lib/email-format.ts`). Kan overstyres med
   `SMTP_REPLY_TO`.
 
+## 2026-09-28: Levende omrids om varen i Tilføj-kameraet
+
+- Brugerens valg: på trinnene Forside, Energi og Indhold tegnes en hvid streg, der følger konturen af varen midt i kameraet, mens brugeren sigter (live, ikke først på det tagne billede). Stregkode-trinnet har sit eget overlay og er uændret.
+- Genkendelsen kører på telefonen med MediaPipe `InteractiveSegmenter` (magic touch, int8) med et positivt punkt midt i billedet. Biblioteket (`@mediapipe/tasks-vision` 1.0.1) og modellen hentes først, når kameraet bruges (jsDelivr + Google's model-storage) — ikke i app-bundlen, ingen npm-afhængighed. Modellen er ca. 30 MB og hentes kun første gang (browser-cache). Analysen kører på hovedtråden, så pausen mellem billeder er mindst dobbelt så lang som selve analysen.
+- Masken udglattes over billederne; stregen skjules, hvis objektet fylder under 1 % eller over 80 % af billedet, eller hvis midten ikke rammer noget. Kan genkendelsen ikke indlæses, vises bare den faste ramme som før (log-trin `outline_unavailable`).
+- Kode: `src/lib/product-outline.ts` (logik) og `src/components/camera/ProductOutlineOverlay.tsx` (takt/tegning).
+
 ## 2026-09-28: Open Food Facts kun som backup ved scanning
 
 - Brugerens krav: Open Food Facts må kun vises ved scanning som backup, aldrig i søgeresultater.

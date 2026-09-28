@@ -17,6 +17,13 @@ Next work:
 2. Brugeren opretter selv sin private konto (peter@packroff.dk) og udfylder
    vægt/højde/fødselsdato/aktivitetsniveau i profilen.
 
+## 2026-09-28: Levende omrids om varen i kameraet
+
+- Tilføj-kameraet (Forside/Energi/Indhold) tegner nu en hvid streg om varen
+  midt i billedet, mens man sigter (MediaPipe på telefonen, hentes fra CDN).
+  Beslutning: DECISIONS 2026-09-28.
+- Lint, typecheck og build kørt; ikke afprøvet på en telefon (brugeren tjekker udseendet).
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen
