@@ -2,6 +2,23 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-28: Aktivitetsniveau i 5 trin
+
+- Brugerens krav: aktivitetsniveau i 5 trin i profilen. Niveauet beskriver
+  hverdagen (arbejde, gang, husarbejde) *uden* logget træning, så træning
+  ikke tælles to gange — logget `Activity.caloriesBurned` lægges fortsat oveni.
+- BMR-faktorer (`src/lib/activity-level.ts`): Meget lav 1,2 · Lav 1,375 ·
+  Moderat 1,55 · Høj 1,725 · Meget høj 1,9. Ikke valgt = 1,2 i kalenderen
+  (som før) og 1,4 i opskriftsportioner (som før). Børn bruger stadig EFSA's
+  aldersværdier.
+
+## 2026-09-28: Mailformat mod spamfiltre
+
+- Alle mails sendes som fuldt HTML-dokument med fast bundtekst (hvorfor man
+  får mailen + support-adresse), med tekstversion og Reply-To
+  `support@hellocal.io` (`src/lib/email-format.ts`). Kan overstyres med
+  `SMTP_REPLY_TO`.
+
 ## 2026-09-28: Open Food Facts kun som backup ved scanning
 
 - Brugerens krav: Open Food Facts må kun vises ved scanning som backup, aldrig i søgeresultater.
@@ -3052,3 +3069,13 @@ ingen native checkboxe) og et klikbart link til Betingelser. Det kræves før
 både e-mail- og social-tilmelding. Konsekvens: brugere, der logger ind via
 Google/Apple/Facebook fra login-siden uden at have været forbi tilmeldingen,
 eller ældre konti uden samtykke, bliver ikke længere stoppet af en gate.
+## 2026-09-28: Redigering af en tilføjet registrering
+
+- Et tryk på en tilføjet vare (`/registration/[id]`) åbner samme visning som
+  "Tilføj produkt", så mængde, tidspunkt og energifordeling kan ændres og gemmes.
+- Snapshot-semantik bevares: kcal og makroer pr. 100 g regnes ud fra
+  registreringens egne snapshot-værdier, aldrig fra varens nuværende data.
+  Øvrige snapshots (sukker, fibre, vitaminer, `nutrientSnapshot` osv.) skaleres
+  forholdsmæssigt med den nye mængde. Varen selv ændres aldrig, og der oprettes
+  ingen kontrolsag til admin ved redigering.
+- Egne retter uden vare vises med en vare bygget af snapshottet.
