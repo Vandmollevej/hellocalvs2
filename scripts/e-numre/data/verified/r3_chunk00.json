@@ -1,0 +1,3412 @@
+[
+  {
+    "code": "E102",
+    "nameDa": "Tartrazin",
+    "nameEn": "Tartrazine",
+    "category": "Farvestof (gul, azo)",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Syntetisk citrongult azofarvestof.",
+    "description": "Tartrazin er et syntetisk azofarvestof (trinatriumsalt), fremstillet af petrokemiske mellemprodukter via diazotering og kobling. Det giver en citrongul farve og kombineres med brillantblåt til grøn. Det er billigt og holder farven over for lys, varme og syre. Stoffet er ét af de seks 'Southampton-farvestoffer'.",
+    "uses": "Bruges bl.a. i læskedrikke, slik, is, desserter/budding, snacks, bagværk, supper og saucer. Tilladt i EU med maksimumsgrænser pr. fødevarekategori (forordning (EF) nr. 1333/2008, bilag II). Siden 20. juli 2010 skal fødevarer med stoffet bære advarslen 'kan have negativ indvirkning på aktivitet og opmærksomhed hos børn' (forordning (EF) nr. 1333/2008, artikel 24 og bilag V).",
+    "health": "EFSA fastholdt i 2009 ADI på 7,5 mg/kg legemsvægt/dag. Tartrazin kan udløse intolerancereaktioner hos en lille del af befolkningen, bl.a. nældefeber (urticaria) og vaskulitis, og følsomme personer kan reagere ved doser inden for ADI. EFSA (2010) konstaterede, at der kun er rapporteret få veldokumenterede tilfælde – oftest for tartrazin og Ponceau 4R – og at alvorlige reaktioner er usandsynlige ved nuværende anvendelse. I et studie fra 1986 reagerede 16 af 51 astmatikere med aspirin-overfølsomhed på tartrazin. Siden 20. juli 2010 skal fødevarer med stoffet bære advarslen 'kan have negativ indvirkning på aktivitet og opmærksomhed hos børn' (forordning (EF) nr. 1333/2008, artikel 24 og bilag V).",
+    "research": "EFSA's gen-evaluering i 2009 fandt ikke grundlag for at ændre ADI på 7,5 mg/kg legemsvægt/dag, og raffinerede indtagsestimater ved de højeste rapporterede anvendelsesniveauer lå under ADI. Southampton-studiet (McCann et al., Lancet 2007) var et randomiseret, dobbeltblindet, placebokontrolleret overkrydsningsforsøg med 153 treårige og 144 otte-niårige børn; det konkluderede, at blandinger af kunstige farvestoffer og/eller konserveringsmidlet natriumbenzoat øgede hyperaktiviteten. De to testede blandinger indeholdt tilsammen seks farvestoffer (E102, E104, E110, E122, E124 og E129) plus natriumbenzoat (E211). EFSA vurderede i 2008, at studiet kun gav begrænset evidens for en lille effekt på aktivitet og opmærksomhed hos nogle børn, at effekten ikke var konsistent mellem de to aldersgrupper og de to blandinger, og at brugen af blandinger gjorde det umuligt at tilskrive effekten enkelte stoffer; resultaterne kunne derfor ikke bruges som grundlag for at ændre ADI. EU indførte alligevel mærkningskrav (forordning 1333/2008, bilag V). Gen-evalueringen af farvestofferne skete under EU's program for gen-evaluering af godkendte tilsætningsstoffer (forordning (EU) nr. 257/2010), hvor farvestofferne skulle være vurderet senest 31. december 2015.",
+    "keyReferences": [
+      {
+        "citation": "McCann D et al. Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial. Lancet. 2007.",
+        "searchTitle": "Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial"
+      }
+    ],
+    "pubmedTerm": "tartrazine",
+    "flags": [
+      "children_caution",
+      "asthma_caution",
+      "allergen"
+    ],
+    "classes": [
+      "colour"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluation Tartrazine (E 102)",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2009.1331",
+      "date": "2009-11-12",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2009.1331",
+        "https://www.efsa.europa.eu/en/press/news/091112",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1778",
+        "https://pubmed.ncbi.nlm.nih.gov/3962814/",
+        "https://en.wikipedia.org/wiki/Tartrazine",
+        "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/tartrazine",
+        "https://www.chemtradeasia.sg/market-insights/tartrazine-synthetic-dye-food-industry-singapore",
+        "https://eur-lex.europa.eu/eli/reg/2012/232/oj/eng",
+        "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2008.660",
+        "https://www.efsa.europa.eu/en/news/efsa-evaluates-southampton-study-food-additives-and-child-behaviour",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005",
+        "https://www.fsai.ie/business-advice/running-a-food-business/food-safety-and-hygiene/additives/labelling-requirements",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32010R0257",
+        "https://www.efsa.europa.eu/en/topics/topic/food-colours"
+      ],
+      "notes": "Bekræftet: azo/trinatriumsalt, petrokemisk fremstilling via diazotering og kobling, citrongul, grøn med brillantblåt, stabilitet, EFSA 2009 (ADI 7,5 fastholdt, indtag under ADI, intolerance inkl. urticaria), EFSA 2010 om få tilfælde, aspirin-astma-studie (1986), bilag V-advarsel, EU-godkendelse. Rettet: 'det farvestof der oftest...' → EFSA 2010's formulering; anvendelser tilpasset kilder; Southampton-afsnit præciseret (E104 er ikke azo); program-sætning omformuleret. Fjernet: 'vandopløseligt', 'visse saucer/konfekture' erstattet af kildens liste, 'børn med særlig følsomhed kan have gavn af at undgå stoffet' (ikke belagt)."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Tartrazine",
+    "wikidata": "Q407158",
+    "claims": [
+      {
+        "claim": "nameDa Tartrazin / kategori gult azofarvestof",
+        "source": "https://en.wikipedia.org/wiki/Tartrazine",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EU-godkendt (euStatus approved)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Syntetisk citrongult azofarvestof, trinatriumsalt",
+        "source": "https://en.wikipedia.org/wiki/Tartrazine",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Vandopløseligt",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Fremstillet af petrokemiske mellemprodukter via diazotering og kobling",
+        "source": "https://en.wikipedia.org/wiki/Tartrazine",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kombineres med blåt (brillantblåt) til grøn",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/tartrazine",
+        "result": "rettet"
+      },
+      {
+        "claim": "Billigt og stabilt over for lys, varme og syre",
+        "source": "https://www.chemtradeasia.sg/market-insights/tartrazine-synthetic-dye-food-industry-singapore",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ét af de seks Southampton-farvestoffer",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: læskedrikke, slik, is, desserter/budding, snacks, bagværk, supper, saucer (tidl. også 'saftevand, vingummi, konfekture')",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/tartrazine",
+        "result": "rettet"
+      },
+      {
+        "claim": "Tilladt med maksimumsgrænser pr. kategori (bilag II)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2009 fastholdt ADI 7,5 mg/kg lgv/dag",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2009.1331",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Raffinerede indtagsestimater under ADI (tidl. 'eksponeringen generelt under ADI')",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2009.1331",
+        "result": "rettet"
+      },
+      {
+        "claim": "Tartrazin er 'det farvestof der oftest' giver overfølsomhed, reaktioner sjældne → omformuleret til EFSA 2010: få veldokumenterede tilfælde, oftest tartrazin og Ponceau 4R",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1778",
+        "result": "rettet"
+      },
+      {
+        "claim": "Intolerancereaktioner (urticaria, vaskulitis) hos lille del; følsomme kan reagere inden for ADI",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2009.1331",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Forbindelse til aspirin-overfølsomhed og astma (16/51 aspirin-følsomme astmatikere reagerede)",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/3962814/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Børn med særlig følsomhed for hyperaktivitet kan have gavn af at undgå stoffet",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "flag asthma_caution (aspirin-astma-studie)",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/3962814/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "flag allergen (intolerance-/overfølsomhedsreaktioner beskrevet af EFSA)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1778",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "efsa: Scientific Opinion on the re-evaluation Tartrazine (E 102), doi 10.2903/j.efsa.2009.1331, nov. 2009",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2009.1331",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "McCann et al. 2007 (Lancet): randomiseret, dobbeltblindet, placebokontrolleret forsøg med 153 treårige og 144 otte-niårige; blandinger af farvestoffer/natriumbenzoat øgede hyperaktivitet",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "rettet"
+      },
+      {
+        "claim": "De to blandinger indeholdt E102, E104, E110, E122, E124, E129 plus natriumbenzoat (tidligere fejlagtigt 'seks azofarvestoffer' – E104 er ikke et azofarvestof)",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2008: begrænset evidens for lille, inkonsistent effekt; blandinger gør det umuligt at udpege enkeltstoffer; kan ikke ændre ADI",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2008.660",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EU indførte mærkningskrav trods EFSA's vurdering (art. 24/bilag V)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Advarslen 'kan have negativ indvirkning på aktivitet og opmærksomhed hos børn' kræves siden 20. juli 2010 (1333/2008 bilag V)",
+        "source": "https://www.fsai.ie/business-advice/running-a-food-business/food-safety-and-hygiene/additives/labelling-requirements",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Gen-evalueringsprogram 2009-2015 'byggede på dyreforsøg med toksicitet, genotoksicitet og kræft' – omformuleret til: programmet efter forordning 257/2010 med frist 31.12.2015 for farvestoffer",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32010R0257",
+        "result": "rettet"
+      },
+      {
+        "claim": "nøglereference McCann D et al., Lancet 2007 (titel)",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "flag children_caution (bilag V-advarsel og Southampton-studiet)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E104",
+    "nameDa": "Quinolingult",
+    "nameEn": "Quinoline yellow",
+    "category": "Farvestof (gul)",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Syntetisk grønliggult farvestof (ikke azo).",
+    "description": "Quinolingult er en blanding af primært disulfonater samt mono- og trisulfonater af 2-(2-quinolyl)indan-1,3-dion og fremstilles syntetisk. Det er ikke et azofarvestof, men indgik alligevel i Southampton-studiets blandinger. Det giver en grønlig gul tone. Stoffet er ikke tilladt som fødevaretilsætningsstof i USA, hvor det kun må bruges i lægemidler og kosmetik (D&C Yellow No. 10).",
+    "uses": "Bruges bl.a. i marmelade og gelé, bagværk, konfekture og slik, is, tyggegummi, læskedrikke og alkoholiske drikke, krydderier, røget fisk og fiskerogn. Forordning (EU) nr. 232/2012 ændrede anvendelsesbetingelser og -mængder og sænkede maksimumsgrænserne (gældende fra 1. juni 2013). Siden 20. juli 2010 skal fødevarer med stoffet bære advarslen 'kan have negativ indvirkning på aktivitet og opmærksomhed hos børn' (forordning (EF) nr. 1333/2008, artikel 24 og bilag V).",
+    "health": "EFSA sænkede i 2009 ADI fra 10 til 0,5 mg/kg legemsvægt/dag. Den teoretiske maksimale eksponering for treårige børn blev anslået til 13,1 mg/kg/dag, dvs. over den nye ADI, og EU sænkede derfor maksimumsgrænserne (forordning (EU) nr. 232/2012). EFSA nævner rapporterede overfølsomhedsreaktioner (nældefeber, rhinitis og astma), især når stoffet indgår i blandinger med andre syntetiske farvestoffer. Siden 20. juli 2010 skal fødevarer med stoffet bære advarslen 'kan have negativ indvirkning på aktivitet og opmærksomhed hos børn' (forordning (EF) nr. 1333/2008, artikel 24 og bilag V).",
+    "research": "EFSA's gen-evaluering i 2009 baserede den lavere ADI på et kronisk toksicitets- og kræftstudie med en reproduktionsfase i rotter (NOAEL 50 mg/kg legemsvægt/dag og usikkerhedsfaktor 100). En raffineret eksponeringsvurdering fra EFSA i 2015 fandt, at eksponeringen lå under ADI i alle befolkningsgrupper. Southampton-studiet (McCann et al., Lancet 2007) var et randomiseret, dobbeltblindet, placebokontrolleret overkrydsningsforsøg med 153 treårige og 144 otte-niårige børn; det konkluderede, at blandinger af kunstige farvestoffer og/eller konserveringsmidlet natriumbenzoat øgede hyperaktiviteten. De to testede blandinger indeholdt tilsammen seks farvestoffer (E102, E104, E110, E122, E124 og E129) plus natriumbenzoat (E211). EFSA vurderede i 2008, at studiet kun gav begrænset evidens for en lille effekt på aktivitet og opmærksomhed hos nogle børn, at effekten ikke var konsistent mellem de to aldersgrupper og de to blandinger, og at brugen af blandinger gjorde det umuligt at tilskrive effekten enkelte stoffer; resultaterne kunne derfor ikke bruges som grundlag for at ændre ADI. EU indførte alligevel mærkningskrav (forordning 1333/2008, bilag V). Gen-evalueringen af farvestofferne skete under EU's program for gen-evaluering af godkendte tilsætningsstoffer (forordning (EU) nr. 257/2010), hvor farvestofferne skulle være vurderet senest 31. december 2015.",
+    "keyReferences": [
+      {
+        "citation": "McCann D et al. Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial. Lancet. 2007.",
+        "searchTitle": "Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial"
+      }
+    ],
+    "pubmedTerm": "quinoline yellow",
+    "flags": [
+      "children_caution"
+    ],
+    "classes": [
+      "colour"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluation of Quinoline Yellow (E 104) as a food additive",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2009.1329",
+      "date": "2009-11-12",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2009.1329",
+        "https://www.efsa.europa.eu/en/efsajournal/pub/1329",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4070",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC11883131/",
+        "https://www.efsa.europa.eu/en/press/news/091112",
+        "https://en.wikipedia.org/wiki/Quinoline_Yellow_WS",
+        "https://infocons.org/blog/e104-quinoline-yellow-2701/",
+        "https://eur-lex.europa.eu/eli/reg/2012/232/oj/eng",
+        "https://www.eubusiness.com/food/additives-2/",
+        "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2008.660",
+        "https://www.efsa.europa.eu/en/news/efsa-evaluates-southampton-study-food-additives-and-child-behaviour",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005",
+        "https://www.fsai.ie/business-advice/running-a-food-business/food-safety-and-hygiene/additives/labelling-requirements",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32010R0257",
+        "https://www.efsa.europa.eu/en/topics/topic/food-colours"
+      ],
+      "notes": "Bekræftet: kemisk sammensætning, grønliggul, ikke azo men i Southampton-blandingen, ikke tilladt i fødevarer i USA, ADI 10→0,5 (2009) baseret på rottestudie, børns eksponering over ny ADI, sænkede grænser via 232/2012 (fra 1.6.2013), overfølsomhedsreaktioner, bilag V. Rettet: 'reproduktionsstudie' præciseret; anvendelsesliste tilpasset kilde; Southampton-afsnit præciseret. Fjernet: 'quinophthalon-typen', 'vandopløseligt', 'ikke tilladt i Japan' (kun sekundære, modstridende kilder), 'ændrede specifikationen', 'vingummi/desserter'. Tilføjet: EFSA 2015 raffineret eksponering under ADI."
+    },
+    "wikipedia": "",
+    "wikidata": "Q420123",
+    "claims": [
+      {
+        "claim": "nameDa Quinolingult / kategori gult farvestof",
+        "source": "https://en.wikipedia.org/wiki/Quinoline_Yellow_WS",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EU-godkendt (euStatus approved)",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/232/oj/eng",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Syntetisk grønliggult farvestof",
+        "source": "https://en.wikipedia.org/wiki/Quinoline_Yellow_WS",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Af quinophthalon-typen",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Blanding af sulfonerede derivater af 2-(2-quinolyl)indan-1,3-dion (primært disulfonater)",
+        "source": "https://en.wikipedia.org/wiki/Quinoline_Yellow_WS",
+        "result": "rettet"
+      },
+      {
+        "claim": "Ikke azofarvestof, men indgik i Southampton-blandingerne",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Vandopløseligt",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Ikke tilladt i fødevarer i USA (kun lægemidler/kosmetik som D&C Yellow 10)",
+        "source": "https://en.wikipedia.org/wiki/Quinoline_Yellow_WS",
+        "result": "rettet"
+      },
+      {
+        "claim": "Ikke tilladt i Japan",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Anvendelser: marmelade, bagværk, konfekture, is, tyggegummi, drikke, krydderier, røget fisk, fiskerogn (tidl. vingummi, desserter fjernet)",
+        "source": "https://infocons.org/blog/e104-quinoline-yellow-2701/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Maksimumsgrænser sænket via forordning 232/2012 (gældende fra 1.6.2013; tidl. 'sænket i 2012')",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/232/oj/eng",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2009: ADI sænket fra 10 til 0,5 mg/kg lgv/dag",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2009.1329",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Børn med højt forbrug kunne overskride ny ADI (teoretisk maks. 13,1 mg/kg/dag for 3-årige), derfor lavere grænser",
+        "source": "https://www.eubusiness.com/food/additives-2/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Overfølsomhedsreaktioner (urticaria, rhinitis, astma) rapporteret, især i blandinger",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2009.1329",
+        "result": "rettet"
+      },
+      {
+        "claim": "Lavere ADI baseret på kronisk tox/kræftstudie med reproduktionsfase i rotter, NOAEL 50, UF 100",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1329",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2009 'ændrede specifikationen'",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EFSA 2015 raffineret eksponering under ADI for alle grupper (tilføjet)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4070",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "efsa: Scientific Opinion on the re-evaluation of Quinoline Yellow (E 104), doi 10.2903/j.efsa.2009.1329",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2009.1329",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "McCann et al. 2007 (Lancet): randomiseret, dobbeltblindet, placebokontrolleret forsøg med 153 treårige og 144 otte-niårige; blandinger af farvestoffer/natriumbenzoat øgede hyperaktivitet",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "rettet"
+      },
+      {
+        "claim": "De to blandinger indeholdt E102, E104, E110, E122, E124, E129 plus natriumbenzoat (tidligere fejlagtigt 'seks azofarvestoffer' – E104 er ikke et azofarvestof)",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2008: begrænset evidens for lille, inkonsistent effekt; blandinger gør det umuligt at udpege enkeltstoffer; kan ikke ændre ADI",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2008.660",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EU indførte mærkningskrav trods EFSA's vurdering (art. 24/bilag V)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Advarslen 'kan have negativ indvirkning på aktivitet og opmærksomhed hos børn' kræves siden 20. juli 2010 (1333/2008 bilag V)",
+        "source": "https://www.fsai.ie/business-advice/running-a-food-business/food-safety-and-hygiene/additives/labelling-requirements",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Gen-evalueringsprogram 2009-2015 'byggede på dyreforsøg med toksicitet, genotoksicitet og kræft' – omformuleret til: programmet efter forordning 257/2010 med frist 31.12.2015 for farvestoffer",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32010R0257",
+        "result": "rettet"
+      },
+      {
+        "claim": "nøglereference McCann D et al., Lancet 2007 (titel)",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "flag children_caution (bilag V-advarsel og Southampton-studiet)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E110",
+    "nameDa": "Sunset yellow FCF (orange gul S)",
+    "nameEn": "Sunset yellow FCF",
+    "category": "Farvestof (orange, azo)",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Syntetisk orange azofarvestof.",
+    "description": "Sunset yellow FCF (orange gul S) er et sulfoneret azofarvestof, hovedsageligt dinatriumsaltet af 6-hydroxy-5-[(4-sulfophenyl)azo]-2-naphthalensulfonsyre. Det fremstilles syntetisk ved diazotering af 4-aminobenzensulfonsyre (en aromatisk amin), der kobles med 6-hydroxy-2-naphthalensulfonsyre. Det giver en orange til gul-orange farve og har god stabilitet over for lys, varme og syre, men blegner ved tilstedeværelse af ascorbinsyre og svovldioxid. Stoffet er ét af de seks Southampton-farvestoffer.",
+    "uses": "Bruges bl.a. i slik, kager og bagværk, snacks, saucer og konserverede frugter. Forordning (EU) nr. 232/2012 ændrede anvendelsesbetingelser og -mængder og sænkede maksimumsgrænserne (gældende fra 1. juni 2013). Siden 20. juli 2010 skal fødevarer med stoffet bære advarslen 'kan have negativ indvirkning på aktivitet og opmærksomhed hos børn' (forordning (EF) nr. 1333/2008, artikel 24 og bilag V).",
+    "health": "EFSA sænkede i 2009 ADI fra 2,5 til 1 mg/kg legemsvægt/dag og gjorde den midlertidig i to år på grund af uafklarede effekter på testikler og sædceller i dyreforsøg. I 2014 fastsatte EFSA på grundlag af et nyt rottestudie en ADI på 4 mg/kg legemsvægt/dag. Intolerancereaktioner (fx nældefeber og angioødem) er beskrevet, men EFSA (2010) fandt kun få tilfælde, i mindre grad end for tartrazin og Ponceau 4R. Siden 20. juli 2010 skal fødevarer med stoffet bære advarslen 'kan have negativ indvirkning på aktivitet og opmærksomhed hos børn' (forordning (EF) nr. 1333/2008, artikel 24 og bilag V).",
+    "research": "EFSA's revurdering i 2014 fastsatte ADI på 4 mg/kg legemsvægt/dag (i overensstemmelse med JECFA) og fandt, at eksponeringen – både ved de tilladte maksimumsgrænser og ved rapporterede anvendelsesniveauer – lå et godt stykke under ADI i alle befolkningsgrupper. Southampton-studiet (McCann et al., Lancet 2007) var et randomiseret, dobbeltblindet, placebokontrolleret overkrydsningsforsøg med 153 treårige og 144 otte-niårige børn; det konkluderede, at blandinger af kunstige farvestoffer og/eller konserveringsmidlet natriumbenzoat øgede hyperaktiviteten. De to testede blandinger indeholdt tilsammen seks farvestoffer (E102, E104, E110, E122, E124 og E129) plus natriumbenzoat (E211). EFSA vurderede i 2008, at studiet kun gav begrænset evidens for en lille effekt på aktivitet og opmærksomhed hos nogle børn, at effekten ikke var konsistent mellem de to aldersgrupper og de to blandinger, og at brugen af blandinger gjorde det umuligt at tilskrive effekten enkelte stoffer; resultaterne kunne derfor ikke bruges som grundlag for at ændre ADI. EU indførte alligevel mærkningskrav (forordning 1333/2008, bilag V). Gen-evalueringen af farvestofferne skete under EU's program for gen-evaluering af godkendte tilsætningsstoffer (forordning (EU) nr. 257/2010), hvor farvestofferne skulle være vurderet senest 31. december 2015.",
+    "keyReferences": [
+      {
+        "citation": "McCann D et al. Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial. Lancet. 2007.",
+        "searchTitle": "Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial"
+      }
+    ],
+    "pubmedTerm": "sunset yellow",
+    "flags": [
+      "children_caution",
+      "allergen"
+    ],
+    "classes": [
+      "colour"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Reconsideration of the temporary ADI and refined exposure assessment for Sunset Yellow FCF (E110)",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2014.3765",
+      "date": "2014-07-15",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3765",
+        "https://www.efsa.europa.eu/en/efsajournal/pub/3765",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2009.1330",
+        "https://www.efsa.europa.eu/en/press/news/091112",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1778",
+        "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/monograph11/additive-450-m11.pdf",
+        "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sunset-yellow-fcf",
+        "https://eur-lex.europa.eu/eli/reg/2012/232/oj/eng",
+        "https://www.eubusiness.com/food/additives-2/",
+        "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2008.660",
+        "https://www.efsa.europa.eu/en/news/efsa-evaluates-southampton-study-food-additives-and-child-behaviour",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005",
+        "https://www.fsai.ie/business-advice/running-a-food-business/food-safety-and-hygiene/additives/labelling-requirements",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32010R0257",
+        "https://www.efsa.europa.eu/en/topics/topic/food-colours"
+      ],
+      "notes": "Bekræftet: sulfoneret azo, dinatriumsalt, syntese fra aromatisk amin (JECFA), orange farve, stabilitet, Southampton, ADI 2,5→1 midlertidig (2009) og 4 (2014), eksponering under ADI i alle grupper (2014), sænkede grænser via 232/2012, intolerancereaktioner (EFSA 2010), bilag V, navnet Orange Yellow S. Rettet: ADI-historik præciseret (fra 2,5, midlertidig pga. testikeleffekter); eksponeringsudsagnet henført kun til 2014 (ikke 2009); anvendelser tilpasset kilde. Fjernet: 'appelsin-/abrikostone', 'vandopløseligt', 'sodavand, saft, marcipan, desserter, is' (ikke fundet i kilder)."
+    },
+    "wikipedia": "",
+    "wikidata": "Q410095",
+    "claims": [
+      {
+        "claim": "nameDa Sunset yellow FCF (orange gul S) / kategori orange azo",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/232/oj/eng",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EU-godkendt (euStatus approved)",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/232/oj/eng",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Sulfoneret azofarvestof, dinatriumsalt",
+        "source": "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/monograph11/additive-450-m11.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles syntetisk ud fra aromatiske aminer (diazotering af 4-aminobenzensulfonsyre)",
+        "source": "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/monograph11/additive-450-m11.pdf",
+        "result": "rettet"
+      },
+      {
+        "claim": "Orange farve; appelsin-/abrikostone",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sunset-yellow-fcf",
+        "result": "rettet"
+      },
+      {
+        "claim": "Stabilt (lys, varme, syre; blegner med ascorbinsyre/SO2) og vandopløseligt",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sunset-yellow-fcf",
+        "result": "rettet"
+      },
+      {
+        "claim": "Ét af seks Southampton-farvestoffer",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: slik, bagværk, snacks, saucer, konserverede frugter (sodavand, saft, marcipan, desserter, is fjernet)",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/sunset-yellow-fcf",
+        "result": "rettet"
+      },
+      {
+        "claim": "Maksimumsgrænser reduceret via 232/2012 (gældende fra 1.6.2013)",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/232/oj/eng",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2009: ADI sænket fra 2,5 til midlertidig 1 mg/kg (2 år, testikeleffekter)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2009.1330",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2014: ADI 4 mg/kg efter nye data (rottestudie)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3765",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Overfølsomhedsreaktioner sjældne men beskrevet (EFSA 2010: få tilfælde)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1778",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Eksponering under ADI i alle aldersgrupper (kun 2014, ikke 2009)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3765",
+        "result": "rettet"
+      },
+      {
+        "claim": "flag allergen (intolerancereaktioner beskrevet)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1778",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "efsa: Reconsideration of the temporary ADI ... Sunset Yellow FCF (E 110), doi 10.2903/j.efsa.2014.3765, juli 2014",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3765",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "McCann et al. 2007 (Lancet): randomiseret, dobbeltblindet, placebokontrolleret forsøg med 153 treårige og 144 otte-niårige; blandinger af farvestoffer/natriumbenzoat øgede hyperaktivitet",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "rettet"
+      },
+      {
+        "claim": "De to blandinger indeholdt E102, E104, E110, E122, E124, E129 plus natriumbenzoat (tidligere fejlagtigt 'seks azofarvestoffer' – E104 er ikke et azofarvestof)",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2008: begrænset evidens for lille, inkonsistent effekt; blandinger gør det umuligt at udpege enkeltstoffer; kan ikke ændre ADI",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2008.660",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EU indførte mærkningskrav trods EFSA's vurdering (art. 24/bilag V)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Advarslen 'kan have negativ indvirkning på aktivitet og opmærksomhed hos børn' kræves siden 20. juli 2010 (1333/2008 bilag V)",
+        "source": "https://www.fsai.ie/business-advice/running-a-food-business/food-safety-and-hygiene/additives/labelling-requirements",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Gen-evalueringsprogram 2009-2015 'byggede på dyreforsøg med toksicitet, genotoksicitet og kræft' – omformuleret til: programmet efter forordning 257/2010 med frist 31.12.2015 for farvestoffer",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32010R0257",
+        "result": "rettet"
+      },
+      {
+        "claim": "nøglereference McCann D et al., Lancet 2007 (titel)",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "flag children_caution (bilag V-advarsel og Southampton-studiet)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E120",
+    "nameDa": "Karmin (cochenille, karminsyre)",
+    "nameEn": "Cochineal, carminic acid, carmines",
+    "category": "Farvestof (rød)",
+    "euStatus": "approved",
+    "origin": "natural",
+    "summary": "Rødt farvestof udvundet af tørrede hunner af cochenillelusen Dactylopius coccus.",
+    "description": "Karminsyre er et anthraquinon-farvestof (et C-glykosid), som udvindes af de tørrede kroppe af hunner af skjoldlusen Dactylopius coccus, der lever på Opuntia-kaktus i bl.a. Peru (den største producent) og på De Kanariske Øer. Karminsyren ekstraheres fra de tørrede insekter med vand eller alkohol. Karminer er aluminiumlakker af karminsyre, fremstillet ved udfældning med aluminium- og calciumioner, så der dannes aluminium- eller calcium-aluminium-lakker; ifølge EU-specifikationen og EFSA indeholder karmin ca. 50 % karminsyre. Farven er meget varmestabil; karminsyre i vandig opløsning er dog lysfølsom (især ved højere pH), mens karminlakkerne beskrives som lys- og varmestabile. Farvetonen afhænger af pH: orange ved lav pH og violet ved basisk pH. Stoffet stammer fra insekter og er ikke veganskt.",
+    "uses": "Kødprodukter og pølser (herunder danske røde pølser, hvis skind farves med karmin), frugtyoghurt og andre fermenterede mejeriprodukter, slik, is, marmelade, bagværk, drikkevarer som americano, bitter soda og likører samt kosmetik (fx læbestift). Tilladt i EU efter bilag II til forordning (EF) nr. 1333/2008 med maksimumsgrænser pr. fødevarekategori.",
+    "health": "Karmin kan udløse IgE-medierede allergiske reaktioner, herunder alvorlig anafylaksi; EFSA tilskriver reaktionerne proteinholdige rester fra insektet i E 120 og anbefaler, at de fjernes ved rensning, da der ikke kan fastsættes en tærskeldosis. Arbejdsbetinget astma er beskrevet hos ansatte i farvestofproduktion og hos en slagter. EFSA fastholdt i 2015 den ADI på 5 mg karmin/kg legemsvægt/dag, som SCF fastsatte i 1983, men udtrykte den som karminsyre: 2,5 mg karminsyre/kg legemsvægt/dag (karmin indeholder ca. 50 % karminsyre). Stoffet er af animalsk oprindelse og undgås af veganere; flere halal-certificeringsorganer betragter det som ikke tilladt.",
+    "research": "EFSA's gen-evaluering fra 2015 konkluderede, at karminsyre ikke er genotoksisk, og at studier af akut, kortvarig, subkronisk og kræftfremkaldende toksicitet samt reproduktions- og udviklingstoksicitet i rotter og mus ikke viste toksikologisk potentiale; de raffinerede eksponeringsestimater lå under ADI for alle befolkningsgrupper. EFSA fremhævede samtidig risikoen for allergiske reaktioner. Den første beskrivelse af IgE-medieret allergi mod karmin (anafylaksi efter Campari-orange) kom i 1994, og Wüthrich m.fl. beskrev i 1997 fem tilfælde af anafylaksi efter indtagelse af alkoholiske drikke med karmin. Et studie fra 2003 på en farvestoffabrik fandt sensibilisering hos 41,6 % og arbejdsbetinget astma hos 8,3 % af de ansatte.",
+    "keyReferences": [
+      {
+        "citation": "EFSA ANS Panel (2015). Scientific Opinion on the re-evaluation of cochineal, carminic acid, carmines (E 120) as a food additive. EFSA Journal 13(11):4288. doi:10.2903/j.efsa.2015.4288",
+        "searchTitle": "Scientific Opinion on the re-evaluation of cochineal, carminic acid, carmines (E 120) as a food additive"
+      },
+      {
+        "citation": "Wüthrich B, Kägi MK, Stücker W (1997). Anaphylactic reactions to ingested carmine (E120). Allergy 52(11):1133-1137. doi:10.1111/j.1398-9995.1997.tb00189.x",
+        "searchTitle": "Anaphylactic reactions to ingested carmine (E120)"
+      },
+      {
+        "citation": "Tabar-Purroy AI m.fl. (2003). Carmine (E-120)-induced occupational asthma revisited. J Allergy Clin Immunol 111(2):415-419.",
+        "searchTitle": "Carmine (E-120)-induced occupational asthma revisited"
+      }
+    ],
+    "pubmedTerm": "carmine",
+    "flags": [
+      "allergen",
+      "animal_origin",
+      "asthma_caution"
+    ],
+    "classes": [
+      "colour"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluation of cochineal, carminic acid, carmines (E 120) as a food additive",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2015.4288",
+      "date": "2015-11-18",
+      "adi": "2,5 mg/kg bw/day (som karminsyre; svarer til 5 mg karmin/kg bw/day)",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://cameo.mfa.org/wiki/Carmine_lake",
+        "https://checkmyhalal.com/e120-halal-or-haram/",
+        "https://doi.org/10.2903/j.efsa.2015.4288",
+        "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2008%3A354%3A0016%3A0033%3Aen%3APDF",
+        "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L:2018:247:FULL",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02012R0231-20231029",
+        "https://food.ec.europa.eu/system/files/2022-12/fs_food-improvement-agents_guidance_1333-2008_annex-2.pdf",
+        "https://fyens.dk/bolig-og-livsstil/lus-giver-den-roede-farve-2022-12-10",
+        "https://imbarex.com/can-vegetarians-kosher-and-halaal-consumers-use-carmine-heres-what-you-need-to-know/",
+        "https://imbarex.com/carmine-red-guide-natural-food-coloring/",
+        "https://imbarex.com/foods-that-contain-carmine/",
+        "https://karger.com/iaa/article-abstract/138/3/243/165042/Occupational-Asthma-to-Carmine-in-a-Butcher?redirectedFrom=fulltext",
+        "https://madensverden.dk/roede-poelser-farve/",
+        "https://medizinonline.com/en/campari-anaphylaxis-at-garden-party-what-does-the-scale-insect-have-to-do-with-it/",
+        "https://onlinelibrary.wiley.com/doi/10.1111/j.1398-9995.1997.tb00189.x",
+        "https://pubmed.ncbi.nlm.nih.gov/12589365/",
+        "https://pubmed.ncbi.nlm.nih.gov/42169840/",
+        "https://pubmed.ncbi.nlm.nih.gov/9404569/",
+        "https://www.britannica.com/technology/cochineal",
+        "https://www.fsai.ie/getmedia/5222c79d-bfeb-4d8a-af0b-d41dc623e9ae/consol_reg1333_2008.aspx?ext=.pdf",
+        "https://www.sciencedirect.com/science/article/abs/pii/S0308814611017730",
+        "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/carmine",
+        "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/carminic-acid"
+      ],
+      "notes": "Runde 3 udsagn-for-udsagn gennemført. Bekræftet: kilde (hunner af Dactylopius coccus på Opuntia; Peru og De Kanariske Øer), ekstraktion med vand/alkohol, aluminium-/calcium-aluminium-lakker og ca. 50 % karminsyre (231/2012 og EFSA), anthraquinon-struktur, varmestabilitet, EU-godkendelse i bilag II til 1333/2008, anvendelser (kødprodukter/røde pølser, yoghurt, slik, is, marmelade, bagværk, americano/bitter soda, likører, kosmetik), ADI 2,5 mg karminsyre/kg = 5 mg karmin/kg (SCF 1983), ingen genotoksicitet/carcinogenicitet, IgE-medieret allergi fra proteinrester, anafylaksi og arbejdsbetinget astma. Rettet: pH-farve (orange ved lav pH, violet ved basisk – ikke 'blålig rød'), lysstabilitet nuanceret (karminsyre i opløsning er lysfølsom), 'sjældne tilfælde' af anafylaksi (ikke kvantificeret i kilder), 'siden 1990'erne' præciseret med konkrete kasuistikker (1994, 1997), religiøse grupper præciseret til halal. Fjernet: 'ikke vegetarisk' som absolut udsagn, kosmetik som dokumenteret årsag i research-afsnittet, 'frugtdesserter'. Tilføjet efsa.adi og tre keyReferences. WebFetch til eur-lex, PMC og EFSA-PDF var blokeret af proxy; EU-tekster og EFSA-udtalelsen er verificeret via WebSearch-uddrag. Britisk kilde (legislation.gov.uk/food.gov.uk) er ikke brugt."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Carmine",
+    "wikidata": "Q416860",
+    "claims": [
+      {
+        "claim": "nameDa: Karmin = cochenille/karminsyre/karminer (E 120)",
+        "source": "https://doi.org/10.2903/j.efsa.2015.4288",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "category: rødt farvestof",
+        "source": "https://doi.org/10.2903/j.efsa.2015.4288 ; https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2008%3A354%3A0016%3A0033%3Aen%3APDF",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "euStatus: godkendt i EU (bilag II til 1333/2008; specifikation i 231/2012, senest ændret ved 2018/1472)",
+        "source": "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2008%3A354%3A0016%3A0033%3Aen%3APDF ; https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L:2018:247:FULL",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Karminsyre er et anthraquinon-pigment (C-glykosid)",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/carminic-acid",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Udvindes af tørrede hunner af Dactylopius coccus",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng ; https://www.sciencedirect.com/science/article/abs/pii/S0308814611017730",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Insekterne lever på (Opuntia-)kaktus",
+        "source": "https://www.sciencedirect.com/science/article/abs/pii/S0308814611017730",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Findes/produceres bl.a. i Peru (største producent) og på De Kanariske Øer",
+        "source": "https://www.sciencedirect.com/science/article/abs/pii/S0308814611017730 ; https://www.britannica.com/technology/cochineal",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ekstraheres med vand eller alkohol",
+        "source": "https://www.sciencedirect.com/science/article/abs/pii/S0308814611017730",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Karminer er aluminium- eller calcium-aluminium-lakker af karminsyre",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng ; https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02012R0231-20231029",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Karminer er 'mere stabile' end karminsyre (omformuleret: karminsyre i vandig opløsning er lysfølsom, lakker beskrives som lys- og varmestabile)",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/carminic-acid ; https://cameo.mfa.org/wiki/Carmine_lake",
+        "result": "rettet"
+      },
+      {
+        "claim": "Farven er meget varmestabil",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/carminic-acid ; https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/carmine",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Farven er 'meget lysstabil' (omformuleret: karminsyre i opløsning er lysfølsom ved højere pH)",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/carminic-acid",
+        "result": "rettet"
+      },
+      {
+        "claim": "pH-afhængig farve: 'orange til blålig rød' rettet til orange ved lav pH, violet ved basisk pH",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/carminic-acid",
+        "result": "rettet"
+      },
+      {
+        "claim": "Ca. 50 % karminsyre i karmin",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng ; https://doi.org/10.2903/j.efsa.2015.4288",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ikke vegansk",
+        "source": "https://imbarex.com/can-vegetarians-kosher-and-halaal-consumers-use-carmine-heres-what-you-need-to-know/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ikke vegetarisk (fjernet som absolut udsagn; kilden kalder det kontroversielt for vegetarer)",
+        "source": "https://imbarex.com/can-vegetarians-kosher-and-halaal-consumers-use-carmine-heres-what-you-need-to-know/",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Anvendes i pølser/kødprodukter, herunder danske røde pølser",
+        "source": "https://madensverden.dk/roede-poelser-farve/ ; https://fyens.dk/bolig-og-livsstil/lus-giver-den-roede-farve-2022-12-10 ; https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2008%3A354%3A0016%3A0033%3Aen%3APDF",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i yoghurt/fermenterede mejeriprodukter",
+        "source": "https://doi.org/10.2903/j.efsa.2015.4288 ; https://imbarex.com/foods-that-contain-carmine/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Frugtdesserter (omformuleret til frugtyoghurt; 'frugtdesserter' ikke specifikt bekræftet)",
+        "source": "https://imbarex.com/foods-that-contain-carmine/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Anvendes i slik",
+        "source": "https://imbarex.com/foods-that-contain-carmine/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i is",
+        "source": "https://imbarex.com/foods-that-contain-carmine/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i marmelade",
+        "source": "https://imbarex.com/foods-that-contain-carmine/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i bagværk (tilføjet)",
+        "source": "https://imbarex.com/foods-that-contain-carmine/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bitter: E 120 tilladt i americano og bitter soda",
+        "source": "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2008%3A354%3A0016%3A0033%3Aen%3APDF ; https://food.ec.europa.eu/system/files/2022-12/fs_food-improvement-agents_guidance_1333-2008_annex-2.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Likører/alkoholiske drikke",
+        "source": "https://imbarex.com/foods-that-contain-carmine/ ; https://pubmed.ncbi.nlm.nih.gov/9404569/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kosmetik (fx læbestift)",
+        "source": "https://imbarex.com/carmine-red-guide-natural-food-coloring/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Tilladt med maksimumsgrænser pr. fødevarekategori",
+        "source": "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2008%3A354%3A0016%3A0033%3Aen%3APDF ; https://www.fsai.ie/getmedia/5222c79d-bfeb-4d8a-af0b-d41dc623e9ae/consol_reg1333_2008.aspx?ext=.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kan give IgE-medieret allergi fremkaldt af proteinholdige rester fra insektet",
+        "source": "https://doi.org/10.2903/j.efsa.2015.4288",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kan give (alvorlig) anafylaksi; 'sjældne tilfælde' fjernet som ukvantificeret",
+        "source": "https://doi.org/10.2903/j.efsa.2015.4288 ; https://pubmed.ncbi.nlm.nih.gov/9404569/",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA: ingen tærskeldosis; proteinrester bør fjernes ved rensning",
+        "source": "https://doi.org/10.2903/j.efsa.2015.4288",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Arbejdsbetinget astma er beskrevet (farvestoffabrik, slagter)",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/12589365/ ; https://karger.com/iaa/article-abstract/138/3/243/165042/Occupational-Asthma-to-Carmine-in-a-Butcher?redirectedFrom=fulltext",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2015: ADI 2,5 mg karminsyre/kg lgv/dag",
+        "source": "https://doi.org/10.2903/j.efsa.2015.4288 ; https://pubmed.ncbi.nlm.nih.gov/42169840/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Svarer til ADI 5 mg karmin/kg (SCF 1983) da karmin indeholder ca. 50 % karminsyre",
+        "source": "https://doi.org/10.2903/j.efsa.2015.4288",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Undgås af nogle religiøse grupper (præciseret: flere halal-organer betragter det som ikke tilladt)",
+        "source": "https://checkmyhalal.com/e120-halal-or-haram/",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2015: karminsyre ikke genotoksisk",
+        "source": "https://doi.org/10.2903/j.efsa.2015.4288",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2015: ingen kræftfremkaldende effekt (carcinogenicitetsstudier uden toksikologisk potentiale)",
+        "source": "https://doi.org/10.2903/j.efsa.2015.4288",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Raffineret eksponering under ADI for alle befolkningsgrupper (tilføjet)",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/42169840/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA understregede allergirisikoen",
+        "source": "https://doi.org/10.2903/j.efsa.2015.4288",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kasuistikker siden 1990'erne om IgE-reaktioner (præciseret: første IgE-påviste tilfælde 1994, Wüthrich m.fl. 1997 fem tilfælde)",
+        "source": "https://medizinonline.com/en/campari-anaphylaxis-at-garden-party-what-does-the-scale-insect-have-to-do-with-it/ ; https://pubmed.ncbi.nlm.nih.gov/9404569/ ; https://onlinelibrary.wiley.com/doi/10.1111/j.1398-9995.1997.tb00189.x",
+        "result": "rettet"
+      },
+      {
+        "claim": "Kosmetik som kilde til IgE-reaktioner (fjernet fra research-afsnit; ikke specifikt dækket af fundne kasuistikker)",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/9404569/",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Tabar-Purroy 2003: sensibilisering 41,6 % og arbejdsastma 8,3 % (tilføjet)",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/12589365/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA-udtalelse vedtaget/offentliggjort 18.11.2015, doi 10.2903/j.efsa.2015.4288",
+        "source": "https://doi.org/10.2903/j.efsa.2015.4288 ; https://pubmed.ncbi.nlm.nih.gov/42169840/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "flag allergen: begrundet i health (IgE-allergi, anafylaksi)",
+        "source": "https://doi.org/10.2903/j.efsa.2015.4288",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "flag animal_origin: begrundet (udvindes af insekter)",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "flag asthma_caution: begrundet (arbejdsbetinget astma; bronkospasme ved sensibilisering)",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/12589365/ ; https://doi.org/10.2903/j.efsa.2015.4288",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E122",
+    "nameDa": "Azorubin (carmoisin)",
+    "nameEn": "Azorubine / Carmoisine",
+    "category": "Farvestof (rød, azo)",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Syntetisk rødt azofarvestof.",
+    "description": "Azorubin (carmoisin) er et syntetisk, vandopløseligt azofarvestof med naphthalenstruktur (dinatriumsalt), der giver en magentarød farve. Det er lidt mindre varmestabilt end amarant og har rimelig lysstabilitet. Stoffet er ét af de seks Southampton-farvestoffer og har aldrig været godkendt til fødevarer i USA.",
+    "uses": "Bruges bl.a. i marmelade, sirup, gelé, konfekture og drikke. Stoffet er i EU godkendt i omkring 50 fødevarekategorier med maksimumsgrænser (forordning (EF) nr. 1333/2008, bilag II). Siden 20. juli 2010 skal fødevarer med stoffet bære advarslen 'kan have negativ indvirkning på aktivitet og opmærksomhed hos børn' (forordning (EF) nr. 1333/2008, artikel 24 og bilag V).",
+    "health": "EFSA fastholdt i 2009 ADI på 4 mg/kg legemsvægt/dag. Ved højt forbrug (95. percentil) kunne 1-10-årige børn ligge lidt over ADI. Azofarvestoffer som gruppe forbindes med pseudoallergiske reaktioner hos aspirin-intolerante, men EFSA (2010) fandt ingen veldokumenterede tilfælde af intolerancereaktioner efter indtagelse af carmoisin. Siden 20. juli 2010 skal fødevarer med stoffet bære advarslen 'kan have negativ indvirkning på aktivitet og opmærksomhed hos børn' (forordning (EF) nr. 1333/2008, artikel 24 og bilag V).",
+    "research": "EFSA's gen-evaluering i 2009 fandt alle genotoksicitetstest negative og ingen øget tumorforekomst i kræftstudier i rotter og mus. En raffineret eksponeringsvurdering fra EFSA i 2015 fandt, at eksponeringen ved de tilladte maksimumsgrænser kunne overskride ADI hos småbørn og børn med højt forbrug. Southampton-studiet (McCann et al., Lancet 2007) var et randomiseret, dobbeltblindet, placebokontrolleret overkrydsningsforsøg med 153 treårige og 144 otte-niårige børn; det konkluderede, at blandinger af kunstige farvestoffer og/eller konserveringsmidlet natriumbenzoat øgede hyperaktiviteten. De to testede blandinger indeholdt tilsammen seks farvestoffer (E102, E104, E110, E122, E124 og E129) plus natriumbenzoat (E211). EFSA vurderede i 2008, at studiet kun gav begrænset evidens for en lille effekt på aktivitet og opmærksomhed hos nogle børn, at effekten ikke var konsistent mellem de to aldersgrupper og de to blandinger, og at brugen af blandinger gjorde det umuligt at tilskrive effekten enkelte stoffer; resultaterne kunne derfor ikke bruges som grundlag for at ændre ADI. EU indførte alligevel mærkningskrav (forordning 1333/2008, bilag V). Gen-evalueringen af farvestofferne skete under EU's program for gen-evaluering af godkendte tilsætningsstoffer (forordning (EU) nr. 257/2010), hvor farvestofferne skulle være vurderet senest 31. december 2015.",
+    "keyReferences": [
+      {
+        "citation": "McCann D et al. Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial. Lancet. 2007.",
+        "searchTitle": "Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial"
+      }
+    ],
+    "pubmedTerm": "carmoisine",
+    "flags": [
+      "children_caution"
+    ],
+    "classes": [
+      "colour"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluationof Azorubine/Carmoisine (E 122) as a food additive",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2009.1332",
+      "date": "2009-11-12",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2009.1332",
+        "https://efsa.europa.eu/en/efsajournal/pub/1332",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4072",
+        "https://www.efsa.europa.eu/en/efsajournal/pub/4072",
+        "https://www.efsa.europa.eu/en/press/news/091112",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1778",
+        "https://iacmcolor.org/color-profile/azorubine/",
+        "https://infocons.org/blog/2022/11/16/e122-azorubine/",
+        "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2008.660",
+        "https://www.efsa.europa.eu/en/news/efsa-evaluates-southampton-study-food-additives-and-child-behaviour",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005",
+        "https://www.fsai.ie/business-advice/running-a-food-business/food-safety-and-hygiene/additives/labelling-requirements",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32010R0257",
+        "https://www.efsa.europa.eu/en/topics/topic/food-colours"
+      ],
+      "notes": "Bekræftet: syntetisk vandopløseligt azo med naphthalenstruktur, dinatriumsalt, Southampton, aldrig godkendt i USA, ADI 4 fastholdt 2009, ingen genotoksicitet/kræft, bilag V. Rettet: farve (magentarød), stabilitet (lidt mindre varmestabil end amarant, rimelig lysstabilitet); anvendelser tilpasset kilder. Fjernet: 'især hos personer med aspirin-følsomhed' som påstand om beskrevne reaktioner (EFSA 2010: ingen veldokumenterede tilfælde for carmoisin); flag asthma_caution fjernet (intet belæg); efsa.overexposureRisk 'en:no' fjernet (EFSA 2009 og 2015 fandt mulig overskridelse hos børn); 'is, marcipan, kager, vingummi, desserter' fjernet. Tilføjet: EFSA 2009/2015 om børns høje eksponering."
+    },
+    "wikipedia": "",
+    "wikidata": "Q409676",
+    "claims": [
+      {
+        "claim": "nameDa Azorubin (carmoisin) / kategori rødt azo",
+        "source": "https://iacmcolor.org/color-profile/azorubine/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EU-godkendt (euStatus approved)",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/4072",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Syntetisk, vandopløseligt naphthalen-azofarvestof, dinatriumsalt",
+        "source": "https://iacmcolor.org/color-profile/azorubine/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Rød til bordeaux farve → magentarød",
+        "source": "https://iacmcolor.org/color-profile/azorubine/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Stabilt over for varme og lys → lidt mindre varmestabilt end amarant, rimelig lysstabilitet",
+        "source": "https://iacmcolor.org/color-profile/azorubine/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Ét af seks Southampton-farvestoffer",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ikke tilladt i USA (aldrig godkendt til fødevarer)",
+        "source": "https://iacmcolor.org/color-profile/azorubine/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: marmelade, sirup, gelé, konfekture, drikke (is, marcipan, kager, vingummi, desserter fjernet)",
+        "source": "https://infocons.org/blog/2022/11/16/e122-azorubine/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Godkendt i ca. 50 fødevarekategorier i EU (tilføjet)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4072",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2009 fastholdt ADI 4 mg/kg lgv/dag",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2009.1332",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Børn 1-10 år ved 95. percentil lidt over ADI (2009); MPL-scenarie over ADI for småbørn/børn (2015) (tilføjet)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4072",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Sjældne overfølsomhedsreaktioner beskrevet, især ved aspirin-følsomhed → EFSA 2010: ingen veldokumenterede tilfælde for carmoisin",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1778",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2009: ingen genotoksicitet eller kræftfremkaldende effekt",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2009.1332",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "flag asthma_caution",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1778",
+        "result": "fjernet"
+      },
+      {
+        "claim": "efsa.overexposureRisk 'en:no'",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4072",
+        "result": "fjernet"
+      },
+      {
+        "claim": "efsa: Scientific Opinion on the re-evaluation of Azorubine/Carmoisine (E 122), doi 10.2903/j.efsa.2009.1332",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2009.1332",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "McCann et al. 2007 (Lancet): randomiseret, dobbeltblindet, placebokontrolleret forsøg med 153 treårige og 144 otte-niårige; blandinger af farvestoffer/natriumbenzoat øgede hyperaktivitet",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "rettet"
+      },
+      {
+        "claim": "De to blandinger indeholdt E102, E104, E110, E122, E124, E129 plus natriumbenzoat (tidligere fejlagtigt 'seks azofarvestoffer' – E104 er ikke et azofarvestof)",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2008: begrænset evidens for lille, inkonsistent effekt; blandinger gør det umuligt at udpege enkeltstoffer; kan ikke ændre ADI",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2008.660",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EU indførte mærkningskrav trods EFSA's vurdering (art. 24/bilag V)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Advarslen 'kan have negativ indvirkning på aktivitet og opmærksomhed hos børn' kræves siden 20. juli 2010 (1333/2008 bilag V)",
+        "source": "https://www.fsai.ie/business-advice/running-a-food-business/food-safety-and-hygiene/additives/labelling-requirements",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Gen-evalueringsprogram 2009-2015 'byggede på dyreforsøg med toksicitet, genotoksicitet og kræft' – omformuleret til: programmet efter forordning 257/2010 med frist 31.12.2015 for farvestoffer",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32010R0257",
+        "result": "rettet"
+      },
+      {
+        "claim": "nøglereference McCann D et al., Lancet 2007 (titel)",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "flag children_caution (bilag V-advarsel og Southampton-studiet)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E123",
+    "nameDa": "Amaranth",
+    "nameEn": "Amaranth",
+    "category": "Farvestof (rød, azo)",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Syntetisk mørkerødt azofarvestof med meget begrænset anvendelse i EU.",
+    "description": "Amaranth er et syntetisk azofarvestof med sulfonatgrupper, som normalt forekommer som trinatriumsalt. Navnet er taget fra amarantplanten, men stoffet udvindes ikke af planten. Det giver en mørkerød til lilla farve. Stoffet blev forbudt i USA i 1976, hvor FDA ophævede den foreløbige godkendelse af FD&C Red No. 2, efter at sovjetiske studier havde rejst mistanke om kræft hos rotter, og FDA's egne forsøg havde givet uafklarede resultater. I EU er det kun tilladt i få fødevarekategorier.",
+    "uses": "I EU kun tilladt i aperitifvine og spiritus (herunder produkter med under 15 % alkohol, fx Americano og bitter vino) samt i fiskerogn (maks. 30 mg/kg).",
+    "health": "EFSA fastsatte i 2010 en ADI på 0,15 mg/kg legemsvægt/dag og sænkede dermed de ADI'er, som SCF (0,8) og JECFA (0,5) havde fastsat i 1984. I 2010 lå børns forventede eksponering langt under ADI, mens voksne med meget højt forbrug af aperitifvine og Americano kunne overskride ADI ved maksimalt tilladte niveauer. EFSA's forfinede eksponeringsvurdering i 2013 viste, at eksponeringen for børn, voksne og ældre ligger under ADI. Enkelte tilfælde af intoleransreaktioner (fx nældefeber og hævelse omkring øjnene) er beskrevet hos følsomme personer.",
+    "research": "EFSA's gen-evaluering i 2010 konkluderede, at stoffet hverken er genotoksisk eller kræftfremkaldende, og sænkede ADI til 0,15 mg/kg legemsvægt/dag. Det amerikanske forbud i 1976 fulgte efter sovjetiske rotteforsøg, der tydede på en kræftrisiko; FDA's egne forsøg gav uafklarede resultater.",
+    "keyReferences": [],
+    "pubmedTerm": "amaranth dye",
+    "flags": [],
+    "classes": [
+      "colour"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re‐evaluation of Amaranth (E 123) as a food additive",
+      "url": "https://doi.org/10.2903/j.efsa.2010.1649",
+      "date": "2010/07/26",
+      "adi": "",
+      "overexposureRisk": "en:no"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.efsa.europa.eu/en/efsajournal/pub/1649",
+        "https://www.efsa.europa.eu/en/press/news/100726",
+        "https://www.efsa.europa.eu/en/efsajournal/pub/3442",
+        "https://www.efsa.europa.eu/en/efsajournal/pub/1778",
+        "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/cpg-sec-587200-uncertified-or-delisted-colors-foods-export-eg-fdc-red-2",
+        "https://www.acs.org/molecule-of-the-week/archive/a/amaranth.html",
+        "https://en.wikipedia.org/wiki/Amaranth_(dye)",
+        "https://www.foodnavigator.com/Article/2010/07/27/EFSA-lowers-amaranth-ADI-and-questions-standards/"
+      ],
+      "notes": "Bekræftet: azofarvestof (trinatriumsalt), ikke fra amarantplanten, US-forbud 1976, EFSA 2010 ADI 0,15 og ikke genotoksisk/kræftfremkaldende, anvendelser i aperitifvine/spiritus og fiskerogn (30 mg/kg). Rettet: ADI blev SÆNKET i 2010 (ikke bibeholdt) fra SCF 0,8/JECFA 0,5; eksponering præciseret (voksne kunne overskride i 2010, forfinet vurdering 2013 under ADI); farve til mørkerød-lilla; US-forbuddets baggrund præciseret. Fjernet: eksemplet stenbiderrogn og udsagnet om at EFSA ikke ændrede ADI. EUR-Lex (bilag II) var ikke tilgængelig via netværket; anvendelser er belagt via EFSA-udtalelsen."
+    },
+    "wikipedia": "",
+    "wikidata": "Q421074",
+    "claims": [
+      {
+        "claim": "Dansk navn: Amaranth",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1649",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kategori: rødt azofarvestof",
+        "source": "https://www.efsa.europa.eu/en/press/news/100726",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Syntetisk mørkerødt azofarvestof",
+        "source": "https://en.wikipedia.org/wiki/Amaranth_(dye)",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Meget begrænset anvendelse i EU (få fødevarekategorier)",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1649",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Sulfoneret azofarvestof, trinatriumsalt",
+        "source": "https://en.wikipedia.org/wiki/Amaranth_(dye)",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ikke fremstillet af amarantplanten; kun navnet er taget derfra",
+        "source": "https://en.wikipedia.org/wiki/Amaranth_(dye)",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Farve: rød-violet -> mørkerød til lilla",
+        "source": "https://en.wikipedia.org/wiki/Amaranth_(dye)",
+        "result": "rettet"
+      },
+      {
+        "claim": "Forbudt i USA i 1976 (FD&C Red No. 2 afnoteret februar 1976)",
+        "source": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/cpg-sec-587200-uncertified-or-delisted-colors-foods-export-eg-fdc-red-2",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Forbuddet fulgte 'usikre dyreforsøg' -> sovjetiske studier rejste mistanke om kræft; FDA's egne forsøg uafklarede",
+        "source": "https://www.acs.org/molecule-of-the-week/archive/a/amaranth.html",
+        "result": "rettet"
+      },
+      {
+        "claim": "Tilladt i aperitifvine og spiritus (herunder <15 % alkohol, fx Americano/bitter vino)",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1649",
+        "result": "rettet"
+      },
+      {
+        "claim": "Tilladt i fiskerogn, maks. 30 mg/kg",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1649",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Eksemplet 'stenbiderrogn' kunne ikke bekræftes og er fjernet",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EFSA 'bibeholdt' ADI 0,15 i 2010 -> EFSA fastsatte ADI 0,15 og sænkede tidligere ADI (SCF 0,8; JECFA 0,5)",
+        "source": "https://www.efsa.europa.eu/en/press/news/100726",
+        "result": "rettet"
+      },
+      {
+        "claim": "Eksponering lav for de fleste -> børn langt under ADI; voksne højforbrugere kunne overskride ADI i 2010; forfinet vurdering 2013 under ADI",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3442",
+        "result": "rettet"
+      },
+      {
+        "claim": "Sjældne overfølsomhedsreaktioner -> få tilfælde af intoleransreaktioner (nældefeber m.m.) beskrevet",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1778",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2010: ikke genotoksisk eller kræftfremkaldende",
+        "source": "https://www.efsa.europa.eu/en/press/news/100726",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'EFSA fandt ikke grund til at ændre ADI' var forkert (ADI blev sænket)",
+        "source": "https://www.efsa.europa.eu/en/press/news/100726",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Sovjetiske og amerikanske rotteforsøg med uklare resultater",
+        "source": "https://www.acs.org/molecule-of-the-week/archive/a/amaranth.html",
+        "result": "rettet"
+      },
+      {
+        "claim": "'Senere ikke bekræftet entydigt' - omformuleret til EFSA's konklusion (ikke kræftfremkaldende)",
+        "source": "https://www.efsa.europa.eu/en/press/news/100726",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA-udtalelse 2010 (titel, DOI, dato)",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1649",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "euStatus approved (fortsat tilladt, forfinet eksponeringsvurdering 2013)",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3442",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E124",
+    "nameDa": "Ponceau 4R (cochenillerød A)",
+    "nameEn": "Ponceau 4R",
+    "category": "Farvestof (rød, azo)",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Syntetisk jordbærrødt azofarvestof.",
+    "description": "Ponceau 4R er et syntetisk sulfoneret monoazofarvestof (trinatriumsalt), fremstillet ved at koble diazoteret naphthionsyre til G-syre. Trods det alternative navn 'cochenillerød A' er det ikke udvundet af cochenillelus, men kemisk syntetiseret. Det giver en jordbærrød farve. Stoffet er ét af de seks Southampton-farvestoffer og er ikke godkendt af de amerikanske fødevaremyndigheder (FDA).",
+    "uses": "Bruges bl.a. i slik, desserter, læskedrikke, marmelade, bagværk og røget fisk; i EU er det bl.a. tilladt i spanske pølsespecialiteter som chorizo, salchichón og sobrasada samt i laksesubstitutter. Forordning (EU) nr. 232/2012 ændrede anvendelsesbetingelser og -mængder og sænkede maksimumsgrænserne (gældende fra 1. juni 2013). Siden 20. juli 2010 skal fødevarer med stoffet bære advarslen 'kan have negativ indvirkning på aktivitet og opmærksomhed hos børn' (forordning (EF) nr. 1333/2008, artikel 24 og bilag V).",
+    "health": "EFSA sænkede i 2009 ADI fra 4 til 0,7 mg/kg legemsvægt/dag. Ved de maksimale anvendelsesniveauer lå indtaget for 1-10-årige børn generelt over ADI, og EU sænkede derfor maksimumsgrænserne (forordning (EU) nr. 232/2012). EFSA (2010) har beskrevet enkelte tilfælde af intolerancereaktioner over for Ponceau 4R hos følsomme personer, bl.a. nældefeber, angioødem og hvæsende vejrtrækning, men vurderede, at alvorlige reaktioner er usandsynlige ved nuværende anvendelse. Siden 20. juli 2010 skal fødevarer med stoffet bære advarslen 'kan have negativ indvirkning på aktivitet og opmærksomhed hos børn' (forordning (EF) nr. 1333/2008, artikel 24 og bilag V).",
+    "research": "EFSA's gen-evaluering i 2009 byggede den lavere ADI på et langtidsstudie i mus, hvor der sås glomerulonefrose (nyreskade) ved foderniveauer på 0,25 % og derover; NOAEL på 70 mg/kg legemsvægt/dag og usikkerhedsfaktor 100 gav ADI 0,7. En raffineret eksponeringsvurdering fra EFSA i 2015 fandt, at børn og voksne med højt forbrug stadig kunne overskride ADI, hvis maksimumsgrænserne udnyttes. Southampton-studiet (McCann et al., Lancet 2007) var et randomiseret, dobbeltblindet, placebokontrolleret overkrydsningsforsøg med 153 treårige og 144 otte-niårige børn; det konkluderede, at blandinger af kunstige farvestoffer og/eller konserveringsmidlet natriumbenzoat øgede hyperaktiviteten. De to testede blandinger indeholdt tilsammen seks farvestoffer (E102, E104, E110, E122, E124 og E129) plus natriumbenzoat (E211). EFSA vurderede i 2008, at studiet kun gav begrænset evidens for en lille effekt på aktivitet og opmærksomhed hos nogle børn, at effekten ikke var konsistent mellem de to aldersgrupper og de to blandinger, og at brugen af blandinger gjorde det umuligt at tilskrive effekten enkelte stoffer; resultaterne kunne derfor ikke bruges som grundlag for at ændre ADI. EU indførte alligevel mærkningskrav (forordning 1333/2008, bilag V). Gen-evalueringen af farvestofferne skete under EU's program for gen-evaluering af godkendte tilsætningsstoffer (forordning (EU) nr. 257/2010), hvor farvestofferne skulle være vurderet senest 31. december 2015.",
+    "keyReferences": [
+      {
+        "citation": "McCann D et al. Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial. Lancet. 2007.",
+        "searchTitle": "Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial"
+      }
+    ],
+    "pubmedTerm": "ponceau 4R",
+    "flags": [
+      "children_caution",
+      "asthma_caution"
+    ],
+    "classes": [
+      "colour"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluation of Ponceau 4R (E 124) as a food additive",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2009.1328",
+      "date": "2009-11-12",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2009.1328",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4073",
+        "https://www.efsa.europa.eu/en/efsajournal/pub/4073",
+        "https://www.efsa.europa.eu/en/press/news/091112",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1778",
+        "https://en.wikipedia.org/wiki/Ponceau_4R",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC11565066/",
+        "https://food-detektiv.de/en/additives/?enummer=Ponceau+4R",
+        "https://eur-lex.europa.eu/eli/reg/2012/232/oj/eng",
+        "https://www.eubusiness.com/food/additives-2/",
+        "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2008.660",
+        "https://www.efsa.europa.eu/en/news/efsa-evaluates-southampton-study-food-additives-and-child-behaviour",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005",
+        "https://www.fsai.ie/business-advice/running-a-food-business/food-safety-and-hygiene/additives/labelling-requirements",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32010R0257",
+        "https://www.efsa.europa.eu/en/topics/topic/food-colours"
+      ],
+      "notes": "Bekræftet: syntetisk sulfoneret (mono)azo, trinatriumsalt, navnet cochenillerød A uden relation til cochenille, rød farve, Southampton, ikke FDA-godkendt, ADI 4→0,7 (2009) på baggrund af langtidsstudie i mus, børns indtag over ADI, sænkede grænser via 232/2012, chorizo og røget fisk, bilag V. Rettet: farve (jordbærrød), langtidsstudie præciseret (mus, glomerulonefrose, NOAEL 70); anvendelser tilpasset kilder. Fjernet: 'is', 'visse kødprodukter' erstattet af konkrete pølsespecialiteter. Tilføjet: EFSA 2010 om intolerancereaktioner (belæg for asthma_caution: hvæsende vejrtrækning) og EFSA 2015-eksponering."
+    },
+    "wikipedia": "",
+    "wikidata": "Q384709",
+    "claims": [
+      {
+        "claim": "nameDa Ponceau 4R (cochenillerød A) / kategori rødt azo",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/232/oj/eng",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EU-godkendt (euStatus approved)",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/232/oj/eng",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Syntetisk sulfoneret azofarvestof, trinatriumsalt",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11565066/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Intet med cochenille at gøre (kemisk syntetiseret)",
+        "source": "https://en.wikipedia.org/wiki/Ponceau_4R",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Klar rød → jordbærrød farve",
+        "source": "https://en.wikipedia.org/wiki/Ponceau_4R",
+        "result": "rettet"
+      },
+      {
+        "claim": "Ét af seks Southampton-farvestoffer",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ikke tilladt i USA (ikke FDA-godkendt)",
+        "source": "https://en.wikipedia.org/wiki/Ponceau_4R",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: slik, desserter, drikke, marmelade, bagværk, røget fisk; chorizo, salchichón, sobrasada, laksesubstitutter ('is' og 'kager' som sådan fjernet)",
+        "source": "https://food-detektiv.de/en/additives/?enummer=Ponceau+4R",
+        "result": "rettet"
+      },
+      {
+        "claim": "Maksimumsgrænser sænket via 232/2012 (gældende fra 1.6.2013)",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/232/oj/eng",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2009: ADI sænket fra 4 til 0,7 mg/kg lgv/dag",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2009.1328",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Børn med højt forbrug kunne overskride ADI, derfor lavere grænser",
+        "source": "https://www.eubusiness.com/food/additives-2/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Lavere ADI baseret på langtidsstudie i dyr → mus, glomerulonefrose, NOAEL 70, UF 100",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2009.1328",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2015: høje forbrugere kan fortsat overskride ADI ved maksimumsgrænser (tilføjet)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4073",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2010: enkelte intolerancereaktioner (urticaria, angioødem, hvæsende vejrtrækning); alvorlige reaktioner usandsynlige (tilføjet)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1778",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "flag asthma_caution (hvæsende vejrtrækning rapporteret, EFSA 2010)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1778",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "efsa: Scientific Opinion on the re-evaluation of Ponceau 4R (E 124), doi 10.2903/j.efsa.2009.1328",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2009.1328",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "McCann et al. 2007 (Lancet): randomiseret, dobbeltblindet, placebokontrolleret forsøg med 153 treårige og 144 otte-niårige; blandinger af farvestoffer/natriumbenzoat øgede hyperaktivitet",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "rettet"
+      },
+      {
+        "claim": "De to blandinger indeholdt E102, E104, E110, E122, E124, E129 plus natriumbenzoat (tidligere fejlagtigt 'seks azofarvestoffer' – E104 er ikke et azofarvestof)",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2008: begrænset evidens for lille, inkonsistent effekt; blandinger gør det umuligt at udpege enkeltstoffer; kan ikke ændre ADI",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2008.660",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EU indførte mærkningskrav trods EFSA's vurdering (art. 24/bilag V)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Advarslen 'kan have negativ indvirkning på aktivitet og opmærksomhed hos børn' kræves siden 20. juli 2010 (1333/2008 bilag V)",
+        "source": "https://www.fsai.ie/business-advice/running-a-food-business/food-safety-and-hygiene/additives/labelling-requirements",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Gen-evalueringsprogram 2009-2015 'byggede på dyreforsøg med toksicitet, genotoksicitet og kræft' – omformuleret til: programmet efter forordning 257/2010 med frist 31.12.2015 for farvestoffer",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32010R0257",
+        "result": "rettet"
+      },
+      {
+        "claim": "nøglereference McCann D et al., Lancet 2007 (titel)",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "flag children_caution (bilag V-advarsel og Southampton-studiet)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E127",
+    "nameDa": "Erythrosin",
+    "nameEn": "Erythrosine",
+    "category": "Farvestof (rød)",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Syntetisk jodholdigt rødt farvestof med meget begrænset anvendelse i EU.",
+    "description": "Erythrosin er et xanthen-farvestof (tetrajodfluorescein, hovedsageligt som dinatriumsalt), hvor jod udgør ca. 58 % af molekylvægten. Det giver en kirsebærrosa-rød farve. I EU er det kun tilladt i cocktailkirsebær, kandiserede kirsebær og bigarreau-kirsebær i sirup og i cocktails. USA's FDA meddelte 15. januar 2025, at tilladelsen til FD&C Red No. 3 i fødevarer og indtagne lægemidler tilbagekaldes.",
+    "uses": "Kun cocktailkirsebær og kandiserede kirsebær (maks. 200 mg/kg) samt bigarreau-kirsebær i sirup og i cocktails (maks. 150 mg/kg).",
+    "health": "EFSA bibeholdt i 2011 ADI på 0,1 mg/kg legemsvægt/dag. Ved høje doser påvirker stoffet skjoldbruskkirtlens funktion hos rotter (bl.a. forhøjede thyroideahormoner og øget TSH-respons), og hanrotter, der fik 4 % erythrosin i foderet, fik flere follikelcelleadenomer i skjoldbruskkirtlen. Eksponeringen i EU er lav: EFSA anslog voksnes indtag til ca. 0,003 mg/kg legemsvægt/dag i gennemsnit og 0,01 ved 95-percentilen, dvs. under ADI.",
+    "research": "EFSA's gen-evaluering i 2011 vurderede, at tumorerne i rotters skjoldbruskkirtel er sekundære til stoffets effekter på skjoldbruskkirtlens funktion og ikke skyldes genotoksicitet, og at de har begrænset relevans for mennesker. FDA begrundede tilbagekaldelsen i januar 2025 med Delaney-klausulen, fordi stoffet giver kræft hos hanrotter via en køns- og artsspecifik hormonel mekanisme; FDA anførte samtidig, at påstande om risiko for mennesker ikke understøttes af de tilgængelige oplysninger. Fødevareproducenter har frist til 15. januar 2027.",
+    "keyReferences": [],
+    "pubmedTerm": "erythrosine",
+    "flags": [],
+    "classes": [
+      "colour"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluation of Erythrosine (E 127) as a food additive",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2011.1854",
+      "date": "2011-01-27",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.efsa.europa.eu/en/efsajournal/pub/1854",
+        "https://fda.gov/food/hfp-constituent-updates/fda-revoke-authorization-use-red-no-3-food-and-ingested-drugs",
+        "https://www.cov.com/en/news-and-insights/insights/2025/01/fda-announces-revocation-of-authorization-for-the-use-of-fdandc-red-no-3-in-food-and-ingested-drugs-despite-finding-no-human-health-risk",
+        "https://www.dlapiper.com/en-us/insights/publications/2025/01/fda-bans-red-dye-no-3",
+        "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/erythrosine",
+        "https://openknowledge.fao.org/server/api/core/bitstreams/130fc6c9-54da-4738-be91-33e41a702584/content",
+        "https://www.inchem.org/documents/jecfa/jecmono/v28je12.htm",
+        "https://www.sciencedirect.com/science/article/abs/pii/S0039914018313158",
+        "https://pubmed.ncbi.nlm.nih.gov/2160137/"
+      ],
+      "notes": "Bekræftet: xanthenfarvestof/tetrajodfluorescein, ca. 58 % jod, EU-anvendelse kun kirsebær, EFSA 2011 ADI 0,1 bibeholdt, ikke-genotoksisk thyroideamekanisme, FDA-tilbagekaldelse 15.1.2025 på grundlag af Delaney-klausulen uden fund af risiko for mennesker. Rettet: maksimumsgrænse for bigarreau-kirsebær er 150 mg/kg (ikke 200); farvebeskrivelse; jod-frigivelse som mekanisme omformuleret til effekt på thyroideafunktion; eksponeringstal tilføjet. Fjernet: 'med tærskel' og flaget children_caution (uden belæg). EUR-Lex var ikke tilgængelig via netværket; grænseværdier er belagt via EFSA og videnskabelig litteratur."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Erythrosine",
+    "wikidata": "Q420101",
+    "claims": [
+      {
+        "claim": "Dansk navn: Erythrosin",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1854",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kategori: rødt farvestof",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1854",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Syntetisk jodholdigt rødt farvestof",
+        "source": "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/erythrosine",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Meget begrænset anvendelse i EU",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1854",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Xanthen-farvestof, tetrajodfluorescein, dinatriumsalt",
+        "source": "https://openknowledge.fao.org/server/api/core/bitstreams/130fc6c9-54da-4738-be91-33e41a702584/content",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ca. 58 % jod (af molekylvægten)",
+        "source": "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/erythrosine",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kirsebærrød farve -> kirsebærrosa-rød ('cherry-pink')",
+        "source": "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/erythrosine",
+        "result": "rettet"
+      },
+      {
+        "claim": "EU: kun cocktail-, kandiserede og bigarreau-kirsebær",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1854",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Maks. 200 mg/kg for cocktail- og kandiserede kirsebær",
+        "source": "https://www.sciencedirect.com/science/article/abs/pii/S0039914018313158",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bigarreau-kirsebær i sirup 'maks. 200 mg/kg' -> maks. 150 mg/kg (også i cocktails)",
+        "source": "https://www.sciencedirect.com/science/article/abs/pii/S0039914018313158",
+        "result": "rettet"
+      },
+      {
+        "claim": "FDA tilbagekaldte i januar 2025 tilladelsen til Red No. 3 i fødevarer (og indtagne lægemidler)",
+        "source": "https://fda.gov/food/hfp-constituent-updates/fda-revoke-authorization-use-red-no-3-food-and-ingested-drugs",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA bibeholdt ADI 0,1 mg/kg lgv/dag i 2011",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1854",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'Fordi stoffet frigiver jod' - mekanismen kunne ikke bekræftes; omformuleret til påvirkning af skjoldbruskkirtlens funktion ved høje doser",
+        "source": "https://www.inchem.org/documents/jecfa/jecmono/v28je12.htm",
+        "result": "rettet"
+      },
+      {
+        "claim": "Hanrotter udviklede skjoldbruskkirteltumorer ved høje doser (4 % i foder, adenomer)",
+        "source": "https://www.inchem.org/documents/jecfa/jecmono/v28je12.htm",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Eksponeringen i EU lav / under ADI (voksne 0,003 gns., 0,01 P95)",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1854",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Tumorer skyldes ikke-genotoksisk mekanisme sekundær til thyroideafunktion, begrænset relevans for mennesker",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1854",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'Med tærskel' kunne ikke bekræftes direkte og er fjernet",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "FDA begrundede forbuddet med Delaney-klausulen, ikke ny risikovurdering for mennesker",
+        "source": "https://www.cov.com/en/news-and-insights/insights/2025/01/fda-announces-revocation-of-authorization-for-the-use-of-fdandc-red-no-3-in-food-and-ingested-drugs-despite-finding-no-human-health-risk",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Hormonel køns- og artsspecifik mekanisme hos hanrotter (FDA)",
+        "source": "https://www.dlapiper.com/en-us/insights/publications/2025/01/fda-bans-red-dye-no-3",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Frist for fødevareproducenter 15. januar 2027",
+        "source": "https://www.cov.com/en/news-and-insights/insights/2025/01/fda-announces-revocation-of-authorization-for-the-use-of-fdandc-red-no-3-in-food-and-ingested-drugs-despite-finding-no-human-health-risk",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Flag children_caution: intet belæg i teksten (ikke Southampton-farvestof, ingen advarselsmærkning, eksponering under ADI)",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EFSA-udtalelse 2011 (titel, DOI, dato)",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1854",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "euStatus approved (fortsat tilladt til kirsebær)",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1854",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E129",
+    "nameDa": "Allura red AC",
+    "nameEn": "Allura red AC",
+    "category": "Farvestof (rød, azo)",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Syntetisk rødt azofarvestof.",
+    "description": "Allura red AC er et syntetisk, vandopløseligt azofarvestof, som normalt leveres som natriumsalt, og som fremstilles af petrokemiske (råolieafledte) udgangsstoffer. Det anvendes bredt i USA under navnet FD&C Red No. 40 og giver en rød farve. Stoffet er ét af de seks farvestoffer fra Southampton-studiet, som i EU skal bære advarselsmærkning.",
+    "uses": "Bl.a. slik, sodavand og andre drikke, is og frosne desserter, gelé- og buddingprodukter, mejeriprodukter, morgenmadsprodukter, bagværk, glasur, dressinger og saucer. Siden 20. juli 2010 skal fødevarer med stoffet mærkes med advarslen 'kan have negativ indvirkning på aktivitet og opmærksomhed hos børn' (forordning 1333/2008, bilag V).",
+    "health": "EFSA bibeholdt i 2009 ADI på 7 mg/kg legemsvægt/dag, men fandt, at højtforbrugende børn på 1-10 år kunne overskride ADI. EFSA's forfinede eksponeringsvurdering i 2015 viste, at ingen eksponeringsestimater oversteg ADI i nogen befolkningsgruppe. EFSA vurderede i 2010, at det er usandsynligt, at de azofarvestoffer, der blev vurderet, udløser alvorlige overfølsomhedsreaktioner ved de nuværende anvendelsesniveauer; intolerans er dog beskrevet hos enkelte følsomme personer. Siden 2010 skal fødevarer med stoffet bære advarslen 'kan have negativ indvirkning på aktivitet og opmærksomhed hos børn' (forordning 1333/2008, bilag V).",
+    "research": "EFSA's gen-evaluering i 2009 fandt negative resultater i in vitro-genotoksicitetstest og i langtidsstudier af kræft og vurderede, at effekter i en comet-test i mus ikke forventes at føre til kræft. Den forfinede eksponeringsvurdering fulgte i 2015. Et musestudie (Kwon et al., Nature Communications 2022) fandt, at kronisk eksponering øgede modtageligheden for eksperimentel tarmbetændelse (colitis) via serotonin i tarmen; relevansen for mennesker er uafklaret. Californiens AB 2316 (underskrevet i september 2024) forbyder fra 31. december 2027 offentlige skoler (K-12) at tilbyde mad og drikke med bl.a. Red 40. Southampton-studiet (McCann et al., Lancet 2007) fandt små, men statistisk signifikante øgninger i hyperaktiv adfærd hos børn, der fik blandinger af syntetiske farvestoffer plus natriumbenzoat; allura red indgik i blanding B, som gav en effekt hos 8-9-årige, men ikke hos 3-årige. EFSA vurderede i 2008, at studiet gav begrænset evidens for en lille effekt på aktivitet og opmærksomhed hos nogle børn, at effekterne ikke var konsistente mellem aldersgrupper og blandinger, og at resultaterne ikke kunne bruges til at ændre ADI. EU indførte alligevel mærkningskrav i bilag V.",
+    "keyReferences": [
+      {
+        "citation": "McCann D et al. Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial. Lancet. 2007.",
+        "searchTitle": "Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial"
+      },
+      {
+        "citation": "Kwon YH et al. Chronic exposure to synthetic food colorant Allura Red AC promotes susceptibility to experimental colitis via intestinal serotonin in mice. Nat Commun. 2022.",
+        "searchTitle": "Chronic exposure to synthetic food colorant Allura Red AC promotes susceptibility to experimental colitis via intestinal serotonin in mice"
+      }
+    ],
+    "pubmedTerm": "allura red",
+    "flags": [
+      "children_caution"
+    ],
+    "classes": [
+      "colour"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Refined exposure assessment for Allura Red AC (E 129)",
+      "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4007",
+      "date": "2015/02/13",
+      "adi": "",
+      "overexposureRisk": "en:no"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.efsa.europa.eu/en/efsajournal/pub/1327",
+        "https://efsa.europa.eu/en/efsajournal/pub/4007",
+        "https://www.foodnavigator.com/Article/2015/02/16/Southampton-colour-Allura-Red-safe-at-current-levels-EFSA-finds/",
+        "https://www.efsa.europa.eu/en/efsajournal/pub/1778",
+        "https://www.nature.com/articles/s41467-022-35309-y",
+        "https://leginfo.legislature.ca.gov/faces/billNavClient.xhtml?bill_id=202320240AB2316",
+        "https://www.cnn.com/2024/08/30/health/california-food-dye-ban-schools-wellness/index.html",
+        "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "https://www.cspi.org/sites/default/files/media/documents/resource/mccann.pdf",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2008.660",
+        "https://www.efsa.europa.eu/en/news/efsa-evaluates-southampton-study-food-additives-and-child-behaviour",
+        "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ:L:2010:075:0017:0017:EN:PDF",
+        "https://www.fsai.ie/business-advice/running-a-food-business/food-safety-and-hygiene/additives/labelling-requirements",
+        "https://en.wikipedia.org/wiki/Allura_Red_AC",
+        "https://iacmcolor.org/color-profile/allura-red-ac-fdc-red-no-40/",
+        "https://www.fda.gov/food/color-additives-information-consumers/color-additives-foods"
+      ],
+      "notes": "Bekræftet: azofarvestof, petrokemisk oprindelse, FD&C Red No. 40, ADI 7 (2009), forfinet eksponering 2015 under ADI, Kwon 2022, Californiens AB 2316, McCann 2007, EFSA 2008-vurderingen og bilag V-advarslen fra 20.7.2010. Rettet: 'seks azofarvestoffer' (quinolingult indgik i blanding B; allura red kun i blanding B), farvebeskrivelse, overfølsomhed præciseret efter EFSA 2010, EFSA 2009-konklusion om børns mulige overskridelse tilføjet, beskrivelse af gen-evalueringen konkretiseret, Californien-lovgivning præciseret. Fjernet: 'snacks' og 'stabil'."
+    },
+    "wikipedia": "",
+    "wikidata": "Q419895",
+    "claims": [
+      {
+        "claim": "Dansk navn: Allura red AC",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1327",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kategori: rødt azofarvestof",
+        "source": "https://en.wikipedia.org/wiki/Allura_Red_AC",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Syntetisk, vandopløseligt azofarvestof (natriumsalt)",
+        "source": "https://en.wikipedia.org/wiki/Allura_Red_AC",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstillet af petrokemiske udgangsstoffer",
+        "source": "https://iacmcolor.org/color-profile/allura-red-ac-fdc-red-no-40/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Udbredt i USA som FD&C Red No. 40",
+        "source": "https://www.fda.gov/food/color-additives-information-consumers/color-additives-foods",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Farven 'orange-rød og stabil' kunne ikke bekræftes -> 'rød'",
+        "source": "https://en.wikipedia.org/wiki/Allura_Red_AC",
+        "result": "rettet"
+      },
+      {
+        "claim": "Ét af de seks Southampton-farvestoffer",
+        "source": "https://www.fsai.ie/business-advice/running-a-food-business/food-safety-and-hygiene/additives/labelling-requirements",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: slik, drikke, is/frosne desserter, gelé/budding, mejeri, morgenmadsprodukter, bagværk, glasur, dressinger, saucer",
+        "source": "https://iacmcolor.org/color-profile/allura-red-ac-fdc-red-no-40/",
+        "result": "rettet"
+      },
+      {
+        "claim": "'Snacks' kunne ikke bekræftes og er fjernet",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Advarselsmærkning efter bilag V fra 20. juli 2010",
+        "source": "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ:L:2010:075:0017:0017:EN:PDF",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA bibeholdt ADI 7 mg/kg lgv/dag i 2009",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1327",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2009: højtforbrugende børn 1-10 år kunne overskride ADI (tilføjet præcisering)",
+        "source": "https://efsa.europa.eu/en/efsajournal/pub/4007",
+        "result": "rettet"
+      },
+      {
+        "claim": "Forfinet eksponeringsvurdering 2015: ingen estimater over ADI",
+        "source": "https://efsa.europa.eu/en/efsajournal/pub/4007",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Sjældne overfølsomhedsreaktioner -> EFSA 2010: alvorlige reaktioner usandsynlige ved nuværende niveauer; intolerans beskrevet hos enkelte",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1778",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2009: negativ in vitro-genotoksicitet og kræft i langtidsstudier; comet-fund forventes ikke at føre til kræft",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1327",
+        "result": "rettet"
+      },
+      {
+        "claim": "Kwon et al. 2022 Nat Commun: kronisk eksponering øger modtagelighed for colitis via serotonin i mus",
+        "source": "https://www.nature.com/articles/s41467-022-35309-y",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Californien har vedtaget begrænsninger i skolemad (AB 2316, 2024, gældende fra 31.12.2027)",
+        "source": "https://leginfo.legislature.ca.gov/faces/billNavClient.xhtml?bill_id=202320240AB2316",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "McCann 2007: lille, signifikant øgning i hyperaktivitet med blandinger + natriumbenzoat",
+        "source": "https://www.cspi.org/sites/default/files/media/documents/resource/mccann.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'Seks azofarvestoffer' -> blandingerne indeholdt syntetiske farvestoffer, bl.a. quinolingult; allura red kun i blanding B",
+        "source": "https://www.cspi.org/sites/default/files/media/documents/resource/mccann.pdf",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2008: begrænset evidens, lille og inkonsistent effekt, kan ikke bruges til at ændre ADI",
+        "source": "https://www.efsa.europa.eu/en/news/efsa-evaluates-southampton-study-food-additives-and-child-behaviour",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EU indførte alligevel mærkningskrav",
+        "source": "https://www.fsai.ie/business-advice/running-a-food-business/food-safety-and-hygiene/additives/labelling-requirements",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'Gen-evalueringsprogram 2009-2015 byggede på dyreforsøg med toksicitet, genotoksicitet og kræft' - omformuleret til de konkrete fund",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/1327",
+        "result": "rettet"
+      },
+      {
+        "claim": "keyReference McCann et al. Lancet 2007",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "keyReference Kwon et al. Nat Commun 2022",
+        "source": "https://www.nature.com/articles/s41467-022-35309-y",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Flag children_caution: begrundet i EU's advarselsmærkning (bilag V)",
+        "source": "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ:L:2010:075:0017:0017:EN:PDF",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2015-udtalelse (titel, URL, dato)",
+        "source": "https://efsa.europa.eu/en/efsajournal/pub/4007",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "euStatus approved",
+        "source": "https://efsa.europa.eu/en/efsajournal/pub/4007",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E131",
+    "nameDa": "Patentblåt V",
+    "nameEn": "Patent blue V",
+    "category": "Farvestof (blå)",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Syntetisk blåt triarylmethan-farvestof.",
+    "description": "Patentblåt V er et syntetisk triarylmethan-farvestof, der hovedsageligt består af calcium- eller natriumforbindelsen. Det giver en klar blå farve og bruges også i medicin til at markere lymfebaner og skildvagtslymfeknuder ved bl.a. brystkræftoperationer. Farven er pH-afhængig: dybblå i basisk til svagt surt miljø og gul-orange i stærkt surt miljø. Stoffet er ikke godkendt som fødevarefarvestof i USA.",
+    "uses": "Slik og konfekture, sodavand og andre drikke, is og desserter, kager og kiks samt bl.a. forarbejdet ost og saucer; blandes ofte med andre farvestoffer for at opnå andre nuancer.",
+    "health": "EFSA fastsatte i 2013 en ADI på 5 mg/kg legemsvægt/dag. Allergiske reaktioner, fra hududslæt og nældefeber til livstruende anafylaksi, er beskrevet ved medicinsk brug som injektion under operationer.",
+    "research": "EFSA's gen-evaluering i 2013 sænkede ADI fra SCF's 15 til 5 mg/kg legemsvægt/dag på baggrund af en NOAEL på 500 mg/kg legemsvægt/dag i et kronisk studie i mus; ved maksimalt tilladte niveauer kunne højforbrugende småbørn og børn overskride ADI, men ved rapporterede brugsniveauer lå alle grupper under. Anafylaksi efter kirurgisk brug er beskrevet i kasuistikker og caseserier.",
+    "keyReferences": [],
+    "pubmedTerm": "patent blue V",
+    "flags": [
+      "allergen"
+    ],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re‐evaluation of Patent Blue V (E 131) as a food additive",
+      "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2013.2818",
+      "date": "2013/03/01",
+      "adi": "5",
+      "overexposureRisk": "en:moderate"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.efsa.europa.eu/en/efsajournal/pub/2818",
+        "https://www.foodnavigator.com/Article/2013/03/04/EFSA-revises-downward-ADI-for-synthetic-blue-colour/",
+        "https://en.wikipedia.org/wiki/Patent_Blue_V",
+        "https://pubmed.ncbi.nlm.nih.gov/24649137",
+        "https://pubmed.ncbi.nlm.nih.gov/19793057/",
+        "https://pubmed.ncbi.nlm.nih.gov/16430550/",
+        "https://pubmed.ncbi.nlm.nih.gov/36185281/",
+        "https://pubs.acs.org/doi/abs/10.1021/ac50137a008",
+        "https://infocons.org/blog/2024/05/27/e131-patent-blue-v/",
+        "https://www.fda.gov/food/color-additives-information-consumers/color-additives-foods",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC3269606/"
+      ],
+      "notes": "Bekræftet: triarylmethan-farvestof (Ca/Na), medicinsk brug ved lymfekortlægning, pH-afhængig farve, ikke godkendt som fødevarefarve i USA, EFSA 2013 ADI 5 (sænket fra 15), NOAEL 500 i kronisk musestudie, eksponeringskonklusion, anafylaksi ved kirurgisk brug. Rettet: anvendelsesliste og formulering om blanding med andre farver; 'mange kasuistikker' til kasuistikker og caseserier. Fjernet: skalfarvning af æg og udsagnet om at reaktioner ved fødevareindtag er sjældne (ikke belagt)."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Patent_Blue_V",
+    "wikidata": "Q420087",
+    "claims": [
+      {
+        "claim": "Dansk navn: Patentblåt V",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/2818",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kategori: blåt farvestof",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/2818",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Syntetisk triarylmethan-farvestof",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/24649137",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Calcium- eller natriumsalt",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/2818",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Klar blå farve",
+        "source": "https://en.wikipedia.org/wiki/Patent_Blue_V",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bruges medicinsk til markering af lymfebaner/skildvagtslymfeknuder",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/24649137",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Farven er pH-afhængig",
+        "source": "https://pubs.acs.org/doi/abs/10.1021/ac50137a008",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ikke tilladt i fødevarer i USA (ikke på FDA's liste over godkendte fødevarefarvestoffer)",
+        "source": "https://www.fda.gov/food/color-additives-information-consumers/color-additives-foods",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: slik, desserter, is, drikke, kager (+ kiks, forarbejdet ost, saucer)",
+        "source": "https://infocons.org/blog/2024/05/27/e131-patent-blue-v/",
+        "result": "rettet"
+      },
+      {
+        "claim": "'Farvede æg (skalfarvning)' kunne ikke bekræftes og er fjernet",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "'I kombination med gule farver for grøn' -> blandes ofte med andre farvestoffer",
+        "source": "https://infocons.org/blog/2024/05/27/e131-patent-blue-v/",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2013 ADI 5 mg/kg lgv/dag",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/2818",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Allergiske reaktioner inkl. anafylaksi, især ved medicinsk injektion",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/19793057/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'Ved fødevareindtag er sådanne reaktioner sjældne' kunne ikke bekræftes og er fjernet",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "ADI sænket fra SCF's 15 til 5",
+        "source": "https://www.foodnavigator.com/Article/2013/03/04/EFSA-revises-downward-ADI-for-synthetic-blue-colour/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "NOAEL 500 mg/kg lgv/dag i kronisk musestudie",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/2818",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Højforbrugende småbørn/børn over ADI ved maksimalt tilladte niveauer; alle under ved rapporterede niveauer",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/2818",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anafylaksi efter kirurgisk brug i 'mange kasuistikker' -> kasuistikker og caseserier",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/16430550/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Flag allergen: begrundet i beskrevne allergiske reaktioner/anafylaksi",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/36185281/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA-udtalelse 2013 (titel, URL, dato, ADI 5, overexposureRisk moderat)",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/2818",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "euStatus approved",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/2818",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E132",
+    "nameDa": "Indigotin (indigokarmin)",
+    "nameEn": "Indigotine / Indigo carmine",
+    "category": "Farvestof (blå)",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Syntetisk blåt farvestof afledt af indigo.",
+    "description": "Indigotin er natriumsaltet af indigo-5,5'-disulfonsyre og fremstilles ved sulfonering af indigo, hvilket gør stoffet vandopløseligt. Det giver en mørkeblå farve, men har ringe stabilitet over for lys og oxidation. Det bruges også i medicinsk diagnostik, bl.a. til at vise urinlederens åbenhed under urologiske og gynækologiske operationer.",
+    "uses": "Slik og konfekture, desserter, is, drikke, kager og bagværk.",
+    "health": "EFSA bekræftede i 2014 den ADI på 5 mg/kg legemsvægt/dag, som JECFA og SCF fastsatte i 1975. Stoffet absorberes kun i ringe grad fra tarmen.",
+    "research": "EFSA's gen-evaluering i 2014 fandt, at stoffet ikke giver anledning til bekymring for genotoksicitet, og at der ikke sås skadelige effekter i subakutte, kroniske, reproduktions- og udviklingstoksicitetsstudier ved doser op til 500 mg/kg legemsvægt/dag. Eksponeringsestimaterne viste ikke overskridelse af ADI for nogen befolkningsgruppe. ADI'en gælder for materiale med mindst 93 % rent farvestof.",
+    "keyReferences": [],
+    "pubmedTerm": "indigo carmine",
+    "flags": [],
+    "classes": [
+      "colour"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re‐evaluation of Indigo Carmine (E 132) as a food additive",
+      "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3768",
+      "date": "2014/07/25",
+      "adi": "5",
+      "overexposureRisk": "en:no"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.efsa.europa.eu/en/efsajournal/pub/3768",
+        "https://pubmed.ncbi.nlm.nih.gov/37502014/",
+        "https://en.wikipedia.org/wiki/Indigo_carmine",
+        "https://clinicaltrials.gov/study/NCT04228445",
+        "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/indigo-carmine",
+        "https://www.atamanchemicals.com/e132-indigo-carmine_u27759/"
+      ],
+      "notes": "Bekræftet: disulfoneret indigo (natriumsalt), fremstilling ved sulfonering, diagnostisk brug, ringe absorption, ingen genotoksicitetsbekymring, eksponering under ADI, ADI 5. Rettet: ADI blev bekræftet (JECFA/SCF 1975), ikke nyfastsat i 2014; kræftudsagnet omformuleret til de kroniske studiers fund; lys-/oxidationsfølsomhed præciseret; 'syntetisk indigo' ændret til indigo. Fjernet: blanding med gult for grønt og udsagnet om risikogrupper/overfølsomhed (ikke belagt)."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Indigo_carmine",
+    "wikidata": "Q410120",
+    "claims": [
+      {
+        "claim": "Dansk navn: Indigotin (indigokarmin)",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3768",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kategori: blåt farvestof",
+        "source": "https://en.wikipedia.org/wiki/Indigo_carmine",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Syntetisk blåt farvestof afledt af indigo",
+        "source": "https://en.wikipedia.org/wiki/Indigo_carmine",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Dinatriumsalt af indigo-5,5'-disulfonsyre",
+        "source": "https://en.wikipedia.org/wiki/Indigo_carmine",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles ved sulfonering af 'syntetisk' indigo -> sulfonering af indigo ('syntetisk' ikke bekræftet)",
+        "source": "https://en.wikipedia.org/wiki/Indigo_carmine",
+        "result": "rettet"
+      },
+      {
+        "claim": "Mørkeblå farve",
+        "source": "https://clinicaltrials.gov/study/NCT04228445",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Følsomt over for lys og oxidation -> ringe lys- og oxidationsstabilitet",
+        "source": "https://www.atamanchemicals.com/e132-indigo-carmine_u27759/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Bruges i medicinsk diagnostik (urinlederens åbenhed)",
+        "source": "https://clinicaltrials.gov/study/NCT04228445",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: slik, desserter, is, drikke, kager og konfekture",
+        "source": "https://www.atamanchemicals.com/e132-indigo-carmine_u27759/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'Ofte blandet med gult til grønne farver' kunne ikke bekræftes og er fjernet",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EFSA 'fastsatte' ADI 5 i 2014 -> bekræftede JECFA/SCF's ADI fra 1975",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/37502014/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Absorberes kun i ringe grad",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/37502014/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'Ingen særlige risikogrupper ud over sjældne overfølsomhedsreaktioner' kunne ikke bekræftes og er fjernet",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Ingen tegn på genotoksicitet",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/37502014/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'Ingen kræftfremkaldende effekt' -> ingen skadelige effekter i kroniske m.fl. studier op til 500 mg/kg",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3768",
+        "result": "rettet"
+      },
+      {
+        "claim": "Eksponering under ADI for alle grupper",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/37502014/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA-udtalelse 2014 (titel, URL, dato, ADI 5)",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3768",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "euStatus approved (opfølgning 2023)",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/37502014/",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E133",
+    "nameDa": "Brilliant blue FCF",
+    "nameEn": "Brilliant blue FCF",
+    "category": "Farvestof (blå)",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Syntetisk klart blåt triarylmethan-farvestof.",
+    "description": "Brilliant blue FCF er et syntetisk triarylmethan-farvestof, hovedsageligt et dinatriumsalt, fremstillet af petrokemiske udgangsstoffer. Det giver en klar blå farve og er et af de mest stabile farvestoffer over for lys, varme og syre. Det er tilladt i både EU og USA (FD&C Blue No. 1).",
+    "uses": "Slik, is, drikke (fx blå sodavand og sportsdrikke), desserter, kagepynt og konfekture.",
+    "health": "EFSA fastsatte i 2010 en ADI på 6 mg/kg legemsvægt/dag. Kun en meget lille del optages fra tarmen; i rotteforsøg blev ca. 96 % af en oral dosis udskilt uændret med fæces. EFSA bemærkede, at overfølsomhedsreaktioner kan forekomme hos følsomme personer.",
+    "research": "EFSA's gen-evaluering i 2010 fastsatte en ny ADI på 6 mg/kg legemsvægt/dag (lavere end SCF's ADI på 10 mg/kg fra 1984) ud fra en NOAEL på 631 mg/kg legemsvægt/dag i et kronisk toksicitetsstudie i rotter og en usikkerhedsfaktor på 100. EFSA fandt ingen bekymring for genotoksicitet eller kræftfremkaldende effekt. Ved maksimale anvendelsesniveauer lå børns eksponering over ADI ved 95. percentil i Tier 2-beregningen, men de forfinede Tier 3-estimater lå under ADI.",
+    "keyReferences": [],
+    "pubmedTerm": "brilliant blue FCF",
+    "flags": [],
+    "classes": [
+      "colour"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re‐evaluation of Brilliant Blue FCF (E 133) as a food additive",
+      "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1853",
+      "date": "2010/11/22",
+      "adi": "",
+      "overexposureRisk": "en:moderate"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1853",
+        "https://pubmed.ncbi.nlm.nih.gov/42079524/",
+        "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-74/subpart-A/section-74.101",
+        "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=ColorAdditives&id=FDCBlue1",
+        "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/brilliant-blue-fcf",
+        "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng"
+      ],
+      "notes": "Bekræftet: kemi (triarylmethan, dinatriumsalt, petrokemisk), EU- og USA-godkendelse (FD&C Blue No. 1, 21 CFR 74.101), anvendelser, ADI 6 mg/kg (2010) vs. SCF 10 mg/kg, NOAEL fra kronisk rottestudie, ingen genotoksicitet. Rettet: eksponeringskonklusionen (børn over ADI ved 95. percentil i Tier 2, under i Tier 3); stabilitet præciseret; overfølsomhed omformuleret til EFSA's formulering; optagelse præciseret med rottedata. Flags: ingen; euStatus approved bekræftet. Bemærk: WebFetch til EFSA/EUR-Lex var blokeret, så belæg bygger på WebSearch-uddrag af kilderne."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Brilliant_Blue_FCF",
+    "wikidata": "Q420093",
+    "claims": [
+      {
+        "claim": "Navn: Brilliant blue FCF (E133)",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kategori: blåt farvestof",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Syntetisk triarylmethan-farvestof",
+        "source": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-74/subpart-A/section-74.101",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Hovedsageligt dinatriumsalt",
+        "source": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-74/subpart-A/section-74.101",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstillet af petrokemiske udgangsstoffer",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/brilliant-blue-fcf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Giver klar blå farve",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'Ret stabilt' præciseret: stabil over for lys, varme og syre",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/brilliant-blue-fcf",
+        "result": "rettet"
+      },
+      {
+        "claim": "Tilladt i EU",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Tilladt i USA som FD&C Blue No. 1",
+        "source": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A/part-74/subpart-A/section-74.101",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i slik",
+        "source": "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=ColorAdditives&id=FDCBlue1",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i is",
+        "source": "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=ColorAdditives&id=FDCBlue1",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i drikke, fx sodavand og sportsdrikke",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/brilliant-blue-fcf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i desserter",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/brilliant-blue-fcf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i kagepynt",
+        "source": "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=ColorAdditives&id=FDCBlue1",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i konfekture",
+        "source": "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=ColorAdditives&id=FDCBlue1",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA fastsatte i 2010 ADI 6 mg/kg lgv/dag",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1853",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kun en meget lille del optages fra tarmen (ca. 96 % udskilles uændret i fæces hos rotter)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1853",
+        "result": "rettet"
+      },
+      {
+        "claim": "'Sjældne overfølsomhedsreaktioner er rapporteret' omformuleret til EFSA's bemærkning om overfølsomhedsreaktioner hos følsomme personer",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1853",
+        "result": "rettet"
+      },
+      {
+        "claim": "ADI lavere end SCF's tidligere 10 mg/kg (1984)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1853",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "ADI baseret på kronisk studie i rotter (NOAEL 631 mg/kg, usikkerhedsfaktor 100)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1853",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ingen bekymring for genotoksicitet (og kræft)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1853",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'Eksponering for højforbrugende børn tæt på eller under ADI' rettet: over ADI ved 95. percentil i Tier 2, under ADI i Tier 3",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1853",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA-udtalelse: titel, url og dato 2010",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/42079524/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "euStatus approved (specifikation i forordning 231/2012)",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E140",
+    "nameDa": "Klorofyl og klorofylliner",
+    "nameEn": "Chlorophylls and chlorophyllins",
+    "category": "Farvestof (grøn)",
+    "euStatus": "approved",
+    "origin": "natural",
+    "summary": "Grønt plantepigment udvundet af fx græs, lucerne og brændenælder.",
+    "description": "Klorofyl er det grønne pigment i planter, der bruges i fotosyntesen; molekylet har magnesium i centrum. E140(i) er klorofyl, udvundet med organiske opløsningsmidler (fx acetone, methanol, ethanol eller hexan) fra fx græs, lucerne og brændenælder; det er fedtopløseligt. E140(ii) er klorofylliner, dannet ved alkalisk behandling, hvor fytolkæden fjernes, så pigmentet bliver vandopløseligt (natrium- eller kaliumsalte). Naturligt klorofyl er ustabilt: ved varme eller syre mister det magnesium og bliver olivengrønt til brunligt.",
+    "uses": "Is, slik, desserter, mejeriprodukter som urteost, grøntsager i lage, sauce, suppe og drikke. Tilladt quantum satis i en række fødevarekategorier (gruppe II-farvestoffer).",
+    "health": "Klorofyl er en naturlig del af mange grøntsager, og EFSA vurderede, at eksponeringen fra E140(i) som tilsætningsstof er lavere end fra den almindelige kost. For klorofyller (E140(i)) kunne EFSA i 2015 ikke fastsætte en ADI pga. mangelfulde toksikologiske data, men fandt ingen sikkerhedsbekymring ved de rapporterede anvendelsesniveauer. For klorofylliner (E140(ii)) kunne EFSA ikke vurdere sikkerheden, fordi data om optagelse og toksicitet manglede.",
+    "research": "EFSA udsendte i 2015 to separate gen-evalueringer. For klorofyller (E140(i)) konkluderede panelet, at de ved de rapporterede anvendelsesniveauer ikke giver anledning til sikkerhedsbekymring, selv om databasen ikke tillod at fastsætte en ADI. For klorofylliner (E140(ii)) var det ikke muligt at vurdere sikkerheden, bl.a. fordi materialet i mange studier reelt var kobberklorofylliner (E141(ii)); panelet anbefalede at gennemgå definitionen af E140(ii). Klorofyllin er desuden undersøgt i et randomiseret forsøg i Qidong, Kina, hvor 100 mg tre gange dagligt i 4 måneder sænkede aflatoksin-DNA-addukter i urinen, formentlig ved at mindske optagelsen af aflatoksin fra tarmen; dette er ikke relevant for brugen som farve.",
+    "keyReferences": [],
+    "pubmedTerm": "chlorophyllin",
+    "flags": [],
+    "classes": [
+      "colour"
+    ],
+    "variants": [
+      {
+        "code": "E140(i)",
+        "nameDa": "Chlorophyll",
+        "nameEn": "Chlorophylls"
+      },
+      {
+        "code": "E140(ii)",
+        "nameDa": "Chlorophylliner",
+        "nameEn": "Chlorophyllins"
+      }
+    ],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluation of chlorophylls (E 140(i)) as food additives",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2015.4089",
+      "date": "2015-05-07",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4089",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4085",
+        "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng",
+        "https://ec.europa.eu/food/food-feed-portal/screen/food-additives/search/details/POL-FAD-IMPORT-2982",
+        "https://proe.info/en/additives/e140",
+        "https://proe.info/en/additives/e140i",
+        "https://proe.info/en/additives/e140ii",
+        "https://iacmcolor.org/color-profile/chlorophylls-and-chlorophyllins/",
+        "https://iacmcolor.org/color-profile/copper-complexes-of-chlorophylls-chlorophyllins/",
+        "https://foodcom.pl/en/term-e/e140/",
+        "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/chlorophyllin",
+        "https://pubmed.ncbi.nlm.nih.gov/11724948/",
+        "https://pubmed.ncbi.nlm.nih.gov/19952359/"
+      ],
+      "notes": "Bekræftet: kilder (græs, lucerne, brændenælde), opløsningsmiddelekstraktion, magnesium, opløselighed, gruppe II quantum satis, EFSA 2015 for E140(i) (ingen ADI, ingen bekymring ved rapporterede niveauer, eksponering lavere end fra kost), aflatoksin-forskning. Rettet: EFSA's konklusion om 'ingen bekymring' gjaldt kun E140(i); for E140(ii) kunne sikkerheden ikke vurderes. Farveændring præciseret (olivengrøn/brunlig ved magnesiumtab), 'esterkæde' præciseret til fytolkæde, ost præciseret til urteost. Fjernet: pasta (ingen kilde) og 'ingen særlige risikogrupper' (ingen kilde). Flags: ingen. WebFetch til EFSA/EUR-Lex var blokeret; belæg fra WebSearch-uddrag."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Chlorophyll",
+    "wikidata": "Q26806091",
+    "claims": [
+      {
+        "claim": "Navn: klorofyl og klorofylliner (E140)",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kategori: grønt farvestof",
+        "source": "https://ec.europa.eu/food/food-feed-portal/screen/food-additives/search/details/POL-FAD-IMPORT-2982",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Varianter: E140(i) klorofyller, E140(ii) klorofylliner",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Udvundet af fx græs, lucerne og brændenælder",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4089",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Grønt pigment brugt i fotosyntese",
+        "source": "https://foodcom.pl/en/term-e/e140/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Magnesium i centrum",
+        "source": "https://proe.info/en/additives/e140i",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "E140(i) udvindes med organiske opløsningsmidler",
+        "source": "https://proe.info/en/additives/e140i",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "E140(i) er fedtopløseligt",
+        "source": "https://iacmcolor.org/color-profile/copper-complexes-of-chlorophylls-chlorophyllins/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "E140(ii) dannes ved alkalisk behandling hvor fytolkæden fjernes (tidl. 'esterkæden', præciseret)",
+        "source": "https://proe.info/en/additives/e140ii",
+        "result": "rettet"
+      },
+      {
+        "claim": "E140(ii) er vandopløseligt, natrium- eller kaliumsalte",
+        "source": "https://proe.info/en/additives/e140ii",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Naturligt klorofyl er ustabilt ved varme og syre (mister magnesium) og bliver olivengrønt/brunligt",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/chlorophyllin",
+        "result": "rettet"
+      },
+      {
+        "claim": "Anvendes i is, slik, desserter, drikke",
+        "source": "https://iacmcolor.org/color-profile/chlorophylls-and-chlorophyllins/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i ost (urteost)",
+        "source": "https://proe.info/en/additives/e140",
+        "result": "rettet"
+      },
+      {
+        "claim": "Anvendes i grøntsager i lage (pickles), sauce, suppe",
+        "source": "https://iacmcolor.org/color-profile/chlorophylls-and-chlorophyllins/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i pasta",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Tilladt quantum satis (gruppe II)",
+        "source": "https://ec.europa.eu/food/food-feed-portal/screen/food-additives/search/details/POL-FAD-IMPORT-2982",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Eksponering fra tilsætningsstof lavere end fra almindelig kost (E140(i))",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4089",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2015: ingen ADI pga. mangelfulde data (E140(i))",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4089",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2015: ingen sikkerhedsbekymring ved rapporterede niveauer – gælder kun E140(i)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4089",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2015: klorofylliner (E140(ii)) – sikkerheden kunne ikke vurderes (tidligere fejlagtigt 'ingen bekymring')",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4085",
+        "result": "rettet"
+      },
+      {
+        "claim": "To separate EFSA-udtalelser i 2015",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4085",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ingen kendte særlige risikogrupper",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Klorofyllin undersøgt i humant forsøg som binder af aflatoksin (Qidong-forsøget)",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/11724948/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Mindsket biotilgængelighed af aflatoksin i tarmen",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/19952359/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "euStatus approved (gruppe II, 1333/2008)",
+        "source": "https://ec.europa.eu/food/food-feed-portal/screen/food-additives/search/details/POL-FAD-IMPORT-2982",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E141",
+    "nameDa": "Kobberkomplekser af klorofyl og klorofylliner",
+    "nameEn": "Copper complexes of chlorophylls and chlorophyllins",
+    "category": "Farvestof (grøn)",
+    "euStatus": "approved",
+    "origin": "mixed",
+    "summary": "Mere stabile grønne farvestoffer, hvor klorofyls magnesium er erstattet af kobber.",
+    "description": "E141 fremstilles ud fra klorofyl fra planter (fx brændenælder, spinat eller græs), hvor magnesiumionen erstattes med kobber, hvilket giver en langt mere lys- og varmestabil klar grøn farve. E141(i) er kobberkomplekser af klorofyller (fedtopløselige), og E141(ii) er natrium- eller kaliumsalte af kobberkomplekser af klorofylliner (vandopløselige). Udgangsmaterialet er naturligt, men selve komplekset er kemisk modificeret.",
+    "uses": "Is, slik, tyggegummi, desserter, konserverede grøntsager, ost (fx den grønmarmorerede Sage Derby) og drikke. Tilladt quantum satis i en række fødevarekategorier (gruppe II-farvestoffer).",
+    "health": "EFSA konkluderede i 2015, at der manglede pålidelige data om optagelse, fordeling, omsætning og udskillelse, genotoksicitet, (kronisk) toksicitet, kræftfremkaldende effekt samt reproduktions- og udviklingstoksicitet, så sikkerheden ikke kunne vurderes, og anbefalede at den eksisterende ADI (0–15 mg/kg legemsvægt/dag, fastsat af JECFA) blev trukket tilbage. EFSA vurderede også kobbereksponeringen ud fra et kobberindhold på op til 8 % ifølge specifikationen. Stoffet er fortsat tilladt i EU, og Kommissionen har indkaldt nye data.",
+    "research": "EFSA's gen-evaluering 2015 af E141(i) og E141(ii) fandt databasen utilstrækkelig, kunne ikke vurdere sikkerheden og anbefalede, at den gældende ADI blev trukket tilbage. Data for kobberklorofylliner (E141(ii)) kunne ikke overføres til kobberklorofyller (E141(i)) pga. forskelle i renhed, egenskaber, stabilitet og fremstilling, og specifikationerne bør opdateres, bl.a. fordi op til 90 % af E141(i)-ekstraktet kan være ikke-klorofylkomponenter. Europa-Kommissionen har efterfølgende udsendt en indkaldelse af videnskabelige og tekniske data om E140 og E141.",
+    "keyReferences": [],
+    "pubmedTerm": "sodium copper chlorophyllin",
+    "flags": [],
+    "classes": [
+      "colour"
+    ],
+    "variants": [
+      {
+        "code": "E141(i)",
+        "nameDa": "Chlorophyll-kobber-kompleks",
+        "nameEn": "Copper complexes of chlorophylls"
+      },
+      {
+        "code": "E141(ii)",
+        "nameDa": "Chlorophyllin-kobber-kompleks",
+        "nameEn": "Copper complexes of chlorophyllins"
+      }
+    ],
+    "efsa": {
+      "title": "Scientific Opinion on re-evaluation of copper complexes of chlorophylls (E 141(i)) and chlorophyllins (E 141(ii)) as food additives",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2015.4151",
+      "date": "2015-06-30",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4151",
+        "https://www.inchem.org/documents/jecfa/jecmono/v46aje04.htm",
+        "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-127.pdf",
+        "https://food.ec.europa.eu/document/download/56913f86-40ca-45d9-b9ba-6fd10c739267_en",
+        "https://food.ec.europa.eu/document/download/5860507b-03cc-4292-8b7f-4c6bd3c37c15_en?filename=fs_food-improvement-agents_reeval_call_20170407_e140-e141_outcome-1.pdf",
+        "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+        "https://ec.europa.eu/food/food-feed-portal/screen/food-additives/search/details/POL-FAD-IMPORT-2982",
+        "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng",
+        "https://proe.info/en/additives/e141i",
+        "https://proe.info/en/additives/e141ii",
+        "https://iacmcolor.org/color-profile/copper-complexes-of-chlorophylls-chlorophyllins/",
+        "https://artgerecht.com/en/glossary/e141/",
+        "https://www.food-info.net/uk/e/e141.htm",
+        "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/chlorophyllin"
+      ],
+      "notes": "EFSA 2015-konklusionen er korrekt gengivet: pålidelige data manglede, sikkerheden kunne ikke vurderes, og den gældende ADI (0–15 mg/kg, JECFA) bør trækkes tilbage; tilføjet at read-across ikke var muligt og at specifikationerne bør opdateres. Kommissionens dataindkaldelse for E140(i), E140(ii), E141(i) og E141(ii) bekræftet (food.ec.europa.eu; opfølgningsdokument fra 2017); årstal ikke angivet. Rettet: ADI-værdi præciseret med kilde; anvendelse 'konserverede ærter/grøntsager i lage' → 'konserverede grøntsager'; 'maksimumsgrænser' fjernet (gruppe II = quantum satis); kobbersætning omformuleret til EFSA's kobbereksponeringsvurdering. Fjernet: 'ingen kendte skadevirkninger ved normalt indtag' (ingen kilde). Flags: ingen. WebFetch til EFSA/EUR-Lex var blokeret; belæg fra WebSearch-uddrag."
+    },
+    "wikipedia": "",
+    "wikidata": "Q18967203",
+    "claims": [
+      {
+        "claim": "Navn: kobberkomplekser af klorofyl og klorofylliner (E141)",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kategori: grønt farvestof",
+        "source": "https://ec.europa.eu/food/food-feed-portal/screen/food-additives/search/details/POL-FAD-IMPORT-2982",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Varianter: E141(i) kobberkomplekser af klorofyller, E141(ii) kobberkomplekser af klorofylliner",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4151",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Magnesium erstattes med kobber",
+        "source": "https://proe.info/en/additives/e141i",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Udgangsmateriale: klorofyl fra planter (fx brændenælder, spinat, græs)",
+        "source": "https://artgerecht.com/en/glossary/e141/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Langt mere lys- og varmestabil grøn farve",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/chlorophyllin",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "E141(i) fedtopløseligt, E141(ii) vandopløseligt",
+        "source": "https://proe.info/en/additives/e141ii",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "E141(ii) er natrium- eller kaliumsalte",
+        "source": "https://proe.info/en/additives/e141ii",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kemisk modificeret kompleks af naturligt udgangsmateriale",
+        "source": "https://proe.info/en/additives/e141i",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i is, slik, desserter, drikke",
+        "source": "https://iacmcolor.org/color-profile/copper-complexes-of-chlorophylls-chlorophyllins/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i tyggegummi",
+        "source": "https://artgerecht.com/en/glossary/e141/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i ost (Sage Derby)",
+        "source": "https://artgerecht.com/en/glossary/e141/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'Grøntsager i lage, konserverede ærter' omformuleret til 'konserverede grøntsager'",
+        "source": "https://www.food-info.net/uk/e/e141.htm",
+        "result": "rettet"
+      },
+      {
+        "claim": "'Maksimumsgrænser/quantum satis afhængigt af kategori' rettet til quantum satis (gruppe II)",
+        "source": "https://ec.europa.eu/food/food-feed-portal/screen/food-additives/search/details/POL-FAD-IMPORT-2982",
+        "result": "rettet"
+      },
+      {
+        "claim": "'Primær sikkerhedsovervejelse er kobberindholdet' omformuleret: EFSA vurderede kobbereksponering ud fra op til 8 % kobber",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4151",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2015: manglende pålidelige data om ADME, genotoksicitet, kronisk toksicitet, kræft og reproduktions-/udviklingstoksicitet",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4151",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2015: sikkerheden kunne ikke vurderes; eksisterende ADI bør trækkes tilbage",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4151",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Eksisterende ADI 15 mg/kg lgv/dag (præciseret: 0–15 mg/kg, JECFA)",
+        "source": "https://www.inchem.org/documents/jecfa/jecmono/v46aje04.htm",
+        "result": "rettet"
+      },
+      {
+        "claim": "Read-across fra E141(ii) til E141(i) ikke muligt",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4151",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Op til 90 % af E141(i) kan være ikke-klorofylkomponenter; specifikationer bør opdateres",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4151",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Stoffet er fortsat tilladt i EU",
+        "source": "https://ec.europa.eu/food/food-feed-portal/screen/food-additives/search/details/POL-FAD-IMPORT-2982",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kommissionen har efterfølgende indkaldt data om E140/E141",
+        "source": "https://food.ec.europa.eu/document/download/56913f86-40ca-45d9-b9ba-6fd10c739267_en",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Der kendes ingen konkrete skadevirkninger ved normalt indtag",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "euStatus approved (gruppe II, 1333/2008)",
+        "source": "https://ec.europa.eu/food/food-feed-portal/screen/food-additives/search/details/POL-FAD-IMPORT-2982",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E142",
+    "nameDa": "Grøn S",
+    "nameEn": "Green S",
+    "category": "Farvestof (grøn)",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Syntetisk grønt triarylmethan-farvestof.",
+    "description": "Grøn S (også kaldet lissamingrøn eller Acid Green 50) er et syntetisk triarylmethan-farvestof (natriumsalt), som giver en grøn farve. Det er vandopløseligt og oprindeligt et stenkulstjærefarvestof. Det er ikke tilladt i fødevarer i USA, Canada og Japan.",
+    "uses": "Grønne ærter på dåse, mintsauce, slik, desserter, is og sovsegranulat.",
+    "health": "EFSA bibeholdt i 2010 den ADI på 5 mg/kg legemsvægt/dag, som SCF fastsatte i 1984. Stoffet optages dårligt og udskilles hovedsageligt uændret med fæces. Overfølsomhedsreaktioner er rapporteret.",
+    "research": "EFSA's gen-evaluering i 2010 fandt, at data om optagelse, omsætning, subkronisk, reproduktions-, udviklings- og langtidstoksicitet samt kræftfremkaldende effekt ikke gav grund til at ændre ADI på 5 mg/kg legemsvægt/dag. Manglen på tilstrækkelige genotoksicitetsdata blev opvejet af negative kræft- og reproduktionsstudier. Ved maksimale anvendelsesniveauer kunne højforbrugende børn (95./97,5. percentil) overskride ADI i Tier 2, men ikke i den forfinede Tier 3-vurdering; for voksne blev ADI ikke overskredet.",
+    "keyReferences": [],
+    "pubmedTerm": "lissamine green",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re‐evaluation of Green S (E 142) as a food additive",
+      "url": "https://efsa.onlinelibrary.wiley.com/doi/epdf/10.2903/j.efsa.2010.1851",
+      "date": "2010/11/22",
+      "adi": "",
+      "overexposureRisk": "en:moderate"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1851",
+        "https://pubmed.ncbi.nlm.nih.gov/42079527/",
+        "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/green-s",
+        "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng",
+        "https://en.wikipedia.org/wiki/Green_S",
+        "https://world.openfoodfacts.org/facets/additives/e142-green-s",
+        "https://www.caymanchem.com/product/44535/acid-green-50"
+      ],
+      "notes": "Bekræftet: triarylmethan, natriumsalt, vandopløselig, synonymer, forbud i USA/Canada/Japan, anvendelser (ærter på dåse, mintsauce, slik, desserter, is), dårlig optagelse, Tier 2/Tier 3-konklusion. Rettet: EFSA fastsatte ikke ny ADI men bibeholdt SCF's ADI på 5 mg/kg fra 1984; genotoksicitet: data utilstrækkelige, opvejet af negative kræft- og reproduktionsstudier (ikke 'fandt ikke genotoksicitet'); 'petrokemisk' → stenkulstjærefarvestof; farve 'blågrøn' → grøn. Fjernet: drikke (ingen kilde), 'marrowfat'. Tilføjet sovsegranulat fra kilden. Flags: ingen. WebFetch til EFSA/EUR-Lex var blokeret; belæg fra WebSearch-uddrag."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Green_S",
+    "wikidata": "Q420143",
+    "claims": [
+      {
+        "claim": "Navn: Grøn S (E142)",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kategori: grønt farvestof",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Synonym lissamingrøn (Lissamine Green B, Acid Green 50)",
+        "source": "https://www.caymanchem.com/product/44535/acid-green-50",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Syntetisk triarylmethan-farvestof",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/42079527/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Natriumsalt",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'Blågrøn farve' rettet til grøn farve",
+        "source": "https://en.wikipedia.org/wiki/Green_S",
+        "result": "rettet"
+      },
+      {
+        "claim": "Vandopløseligt",
+        "source": "https://www.caymanchem.com/product/44535/acid-green-50",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'Fremstilles af petrokemiske udgangsstoffer' rettet til stenkulstjærefarvestof",
+        "source": "https://en.wikipedia.org/wiki/Green_S",
+        "result": "rettet"
+      },
+      {
+        "claim": "Ikke tilladt i fødevarer i USA, Canada og Japan",
+        "source": "https://en.wikipedia.org/wiki/Green_S",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i ærter på dåse ('marrowfat' fjernet – ikke specifikt belagt)",
+        "source": "https://en.wikipedia.org/wiki/Green_S",
+        "result": "rettet"
+      },
+      {
+        "claim": "Anvendes i mintsauce, slik, desserter, is",
+        "source": "https://en.wikipedia.org/wiki/Green_S",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendes i drikke",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Anvendes i sovsegranulat (tilføjet fra kilden)",
+        "source": "https://en.wikipedia.org/wiki/Green_S",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'EFSA fastsatte i 2010 ADI 5' rettet: EFSA bibeholdt SCF's ADI 5 mg/kg fra 1984",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1851",
+        "result": "rettet"
+      },
+      {
+        "claim": "Kun en lille del optages; udskilles hovedsageligt uændret med fæces",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/green-s",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Overfølsomhedsreaktioner er rapporteret",
+        "source": "https://en.wikipedia.org/wiki/Green_S",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'Fandt ikke genotoksicitet' rettet: genotoksicitetsdata utilstrækkelige, opvejet af negative kræft- og reproduktionsstudier",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1851",
+        "result": "rettet"
+      },
+      {
+        "claim": "Ingen kræftfremkaldende effekt (negative carcinogenicitetsstudier)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1851",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Børn (høje percentiler) over ADI i Tier 2, ikke i Tier 3",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1851",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Voksne overskrider ikke ADI",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1851",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA-udtalelse: titel, url og dato 2010",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/42079527/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "euStatus approved (specifikation i forordning 231/2012)",
+        "source": "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E150",
+    "nameDa": "Karamel (karamelfarve)",
+    "nameEn": "Caramel",
+    "category": "Farvestof (brun)",
+    "euStatus": "approved",
+    "origin": "mixed",
+    "summary": "Fællesbetegnelse for fire typer brune karamelfarver (E150a-d).",
+    "description": "Karamelfarve fremstilles ved kontrolleret varmebehandling af kulhydrater som glukose eller sukker (saccharose), eventuelt med tilsætning af syrer, baser eller salte samt sulfit- og/eller ammoniumforbindelser. Afhængigt af reagenserne opdeles de i fire klasser: E150a (almindelig karamel), E150b (kaustisk sulfitkaramel), E150c (ammoniakkaramel) og E150d (sulfit-ammoniakkaramel). Karamelfarve angives at være det mest anvendte farvestof i fødevarer og drikkevarer målt i vægt. Den adskiller sig fra karamel som slik ved at være mere fuldstændigt oxideret og har en duft af brændt sukker og en let bitter smag.",
+    "uses": "Cola og andre mørke sodavand, øl (især mørkt øl), spiritus (fx whisky og rom), saucer, sovsekulør og sojasauce, supper og bouillon, lakrids, bagværk, mørkt brød og rugbrød samt eddike (fx balsamico). I EU tilladt quantum satis som en del af gruppe II-farvestofferne i mange fødevarekategorier.",
+    "health": "Karamelfarver er vurderet sikre af EFSA inden for ADI, men E150c og E150d kan indeholde biproduktet 4-MEI, og E150c desuden THI; begge er begrænset i EU-specifikationerne. EFSA fastsatte i 2011 en gruppe-ADI på 300 mg/kg legemsvægt/dag (100 mg/kg for E150c).",
+    "research": "EFSA's gen-evaluering af karamelfarver (2011) fastsatte en gruppe-ADI på 300 mg/kg legemsvægt/dag for E150a-d (usikkerhedsfaktor 100 på en NOAEL på 30 g/kg legemsvægt/dag fra 13-ugers rotteforsøg med klasse IV) samt en individuel ADI på 100 mg/kg for E150c på grund af usikkerheder om mulige effekter på immunsystemet fra biproduktet THI (2-acetyl-4-tetrahydroxybutylimidazol). Den forfinede eksponeringsvurdering fra 2012 viste, at eksponeringen var betydeligt lavere end tidligere anslået, og at gruppe-ADI ikke blev overskredet for nogen befolkningsgruppe; dog kan småbørn og voksne med højt forbrug stadig overskride ADI for E150c. Biproduktet 4-MEI (4-methylimidazol), som kan forekomme i E150c og E150d, er af IARC klassificeret i gruppe 2B (muligvis kræftfremkaldende), bl.a. på baggrund af det amerikanske NTP-studie, hvor 4-MEI gav lungetumorer i mus, men ikke i rotter. EU's specifikationer (forordning 231/2012) begrænser 4-MEI til 200 mg/kg i E150c og 250 mg/kg i E150d samt THI til 10 mg/kg i E150c (på farveækvivalent basis).",
+    "keyReferences": [],
+    "pubmedTerm": "caramel color",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Refined exposure assessment for caramel colours (E 150a, c, d)",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2012.3030",
+      "date": "2012-12-03",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=celex%3A32012R0231",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02012R0231-20231029",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2012.3030",
+        "https://www.efsa.europa.eu/en/press/news/121219",
+        "https://www.europarl.europa.eu/doceo/document/E-7-2011-003791_DA.html",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32019R0787",
+        "https://monographs.iarc.who.int/wp-content/uploads/2018/09/ClassificationsAlphaOrder.pdf",
+        "https://pubmed.ncbi.nlm.nih.gov/17342198/",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC5088675/",
+        "https://www.inchem.org/documents/jecfa/jecmono/v20je11.htm",
+        "https://learn.ddwcolor.com/what-is-caramel-color/",
+        "https://www.cspi.org/chemical-cuisine/caramel-coloring",
+        "https://en.wikipedia.org/wiki/Caramel_color",
+        "https://www.beerandbrewing.com/dictionary/jZVLvgd6vM",
+        "https://wellnd.com/what-foods-contain-e150-a-guide-to-caramel-coloring",
+        "https://www.caramelfacts.org/Types.html",
+        "https://minopskriftsbog.dk/ingredient/karamelfarve-e150"
+      ],
+      "notes": "Bekræftet: EU-godkendelse (1333/2008 bilag II, quantum satis gruppe II), klasseinddeling og fremstilling, ADI-værdier (EFSA 2011), 4-MEI/THI-grænser (231/2012), IARC 2B og NTP-studiet, anvendelser. Rettet: 'mest anvendte farvestof' omformuleret som angivelse målt i vægt (kun sekundære kilder); smagsbeskrivelse rettet til let bitter/brændt sukker; 2012-eksponering præciseret (E150c kan overskrides hos småbørn/højforbrugere); THI-formulering tilpasset EFSA. Fjernet: 'E150d er største kilde ved stort forbrug af cola og mørkt øl' (ikke kildebelagt). origin 'mixed' bibeholdt: fremstillet af naturlige kulhydrater, men klasserne varierer fra simpel karamellisering til kemisk reaktion med ammoniak/sulfit. Flags: ingen, bibeholdt. Bemærk: EFSA/Wiley/EUR-Lex kunne ikke hentes direkte (netværksblokering); indhold bekræftet via søgeresultater."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Caramel",
+    "wikidata": "Q183440",
+    "claims": [
+      {
+        "claim": "Fællesbetegnelse for fire typer karamelfarver E150a-d",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=celex%3A32012R0231",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles ved kontrolleret varmebehandling af kulhydrater (glukose, saccharose m.fl.)",
+        "source": "https://learn.ddwcolor.com/what-is-caramel-color/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Evt. med syrer, baser/salte, sulfit- og/eller ammoniumforbindelser afhængigt af klasse",
+        "source": "https://www.inchem.org/documents/jecfa/jecmono/v20je11.htm",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fire klasser: E150a almindelig, E150b kaustisk sulfit, E150c ammoniak, E150d sulfit-ammoniak",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=celex%3A32012R0231",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Mest anvendte farvestof målt i mængde – omformuleret til 'angives ... målt i vægt' (kilder: CSPI/Wikipedia, ingen EU-kilde)",
+        "source": "https://www.cspi.org/chemical-cuisine/caramel-coloring",
+        "result": "rettet"
+      },
+      {
+        "claim": "'Stærkt farvende og kun svagt sød' – rettet til: mere oxideret end karamelslik, duft af brændt sukker, let bitter smag",
+        "source": "https://en.wikipedia.org/wiki/Caramel_color",
+        "result": "rettet"
+      },
+      {
+        "claim": "Anvendelse: cola og mørke sodavand",
+        "source": "https://www.europarl.europa.eu/doceo/document/E-7-2011-003791_DA.html",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelse: øl, herunder mørkt øl",
+        "source": "https://www.beerandbrewing.com/dictionary/jZVLvgd6vM",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelse: whisky og rom",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32019R0787",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelse: saucer, sovsekulør, sojasauce",
+        "source": "https://www.europarl.europa.eu/doceo/document/E-7-2011-003791_DA.html",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelse: supper og bouillon",
+        "source": "https://wellnd.com/what-foods-contain-e150-a-guide-to-caramel-coloring",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelse: lakrids",
+        "source": "https://www.inchem.org/documents/jecfa/jecmono/v20je11.htm",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelse: kager -> bagværk",
+        "source": "https://www.caramelfacts.org/Types.html",
+        "result": "rettet"
+      },
+      {
+        "claim": "Anvendelse: rugbrød/mørkt brød",
+        "source": "https://minopskriftsbog.dk/ingredient/karamelfarve-e150",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelse: eddike (balsamico)",
+        "source": "https://www.europarl.europa.eu/doceo/document/E-7-2011-003791_DA.html",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Quantum satis (gruppe II) i mange kategorier",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "4-MEI i E150c/E150d og THI (E150c) reguleret i specifikationerne",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02012R0231-20231029",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'Ved stort forbrug af cola og mørkt øl er E150d den største kilde' – ikke bekræftet i kilde",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EFSA-titel/dato: Refined exposure assessment for caramel colours (E 150a, c, d), 2012",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2012.3030",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "euStatus approved (E150a-d i bilag II til 1333/2008)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Gruppe-ADI 300 mg/kg legemsvægt/dag for E150a-d (EFSA 2011)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Grundlag: NOAEL 30 g/kg lgv/dag i 13-ugers rotteforsøg med klasse IV, usikkerhedsfaktor 100",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Individuel ADI 100 mg/kg for E150c pga. THI's mulige immuneffekter",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'THI kan påvirke immunsystemet i gnavere' præciseret til EFSA's formulering (usikkerheder om mulige immuneffekter)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "result": "rettet"
+      },
+      {
+        "claim": "2012: eksponeringen 'generelt under ADI' – rettet: betydeligt lavere, gruppe-ADI ikke overskredet, men småbørn/højforbrugere kan overskride ADI for E150c",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2012.3030",
+        "result": "rettet"
+      },
+      {
+        "claim": "4-MEI forekommer i E150c og E150d",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02012R0231-20231029",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "4-MEI i IARC gruppe 2B (muligvis kræftfremkaldende)",
+        "source": "https://monographs.iarc.who.int/wp-content/uploads/2018/09/ClassificationsAlphaOrder.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Baggrund: NTP-studiet (lungetumorer i mus, ikke i rotter)",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/17342198/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EU-grænser i specifikationerne: 4-MEI 200 mg/kg (E150c), 250 mg/kg (E150d); THI 10 mg/kg (E150c)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02012R0231-20231029",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E150a",
+    "nameDa": "Karamel (almindelig karamel, madkulør)",
+    "nameEn": "Plain caramel",
+    "category": "Farvestof (brun)",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Brun farve fremstillet ved opvarmning af kulhydrater uden ammonium- eller sulfitforbindelser.",
+    "description": "E150a (klasse I) fremstilles ved kontrolleret opvarmning af kulhydrater, typisk glukose eller saccharose, eventuelt med syrer, baser eller salte (men ikke ammonium- eller sulfitforbindelser). Den giver gullige til rødbrune toner. Da der ikke bruges ammoniumforbindelser, indeholder den ikke 4-MEI, og den indeholder heller ikke sulfit.",
+    "uses": "Whisky (i EU den eneste tilladte karamelfarve i whisky), anden spiritus som rom, brandy og cognac, brød og bagværk, mejeriprodukter, desserter, konfekture, saucer og drikkevarer. Quantum satis i mange kategorier.",
+    "health": "E150a er omfattet af EFSA's gruppe-ADI for karamelfarver på 300 mg/kg legemsvægt/dag. Den dannes uden ammoniak og indeholder derfor ikke biproduktet 4-MEI; EFSA's særlige bekymring om THI gjaldt klasse III (E150c).",
+    "research": "EFSA's gen-evaluering af karamelfarver (2011) fastsatte en gruppe-ADI på 300 mg/kg legemsvægt/dag for E150a-d (usikkerhedsfaktor 100 på en NOAEL på 30 g/kg legemsvægt/dag fra 13-ugers rotteforsøg med klasse IV) samt en individuel ADI på 100 mg/kg for E150c på grund af usikkerheder om mulige effekter på immunsystemet fra biproduktet THI (2-acetyl-4-tetrahydroxybutylimidazol). Den forfinede eksponeringsvurdering fra 2012 viste, at eksponeringen var betydeligt lavere end tidligere anslået, og at gruppe-ADI ikke blev overskredet for nogen befolkningsgruppe; dog kan småbørn og voksne med højt forbrug stadig overskride ADI for E150c. Biproduktet 4-MEI (4-methylimidazol), som kan forekomme i E150c og E150d, er af IARC klassificeret i gruppe 2B (muligvis kræftfremkaldende), bl.a. på baggrund af det amerikanske NTP-studie, hvor 4-MEI gav lungetumorer i mus, men ikke i rotter. EU's specifikationer (forordning 231/2012) begrænser 4-MEI til 200 mg/kg i E150c og 250 mg/kg i E150d samt THI til 10 mg/kg i E150c (på farveækvivalent basis).",
+    "keyReferences": [],
+    "pubmedTerm": "caramel color",
+    "flags": [],
+    "classes": [
+      "colour"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Refined exposure assessment for caramel colours (E 150a, c, d)",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2012.3030",
+      "date": "2012-12-03",
+      "adi": "300",
+      "overexposureRisk": "en:no"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=celex%3A32012R0231",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02012R0231-20231029",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32019R0787",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2012.3030",
+        "https://www.efsa.europa.eu/en/press/news/121219",
+        "https://monographs.iarc.who.int/wp-content/uploads/2018/09/ClassificationsAlphaOrder.pdf",
+        "https://pubmed.ncbi.nlm.nih.gov/17342198/",
+        "https://learn.ddwcolor.com/what-is-caramel-color/",
+        "https://insidethecask.com/2026/02/17/whisky-science-caramel-e150/",
+        "https://www.caramelfacts.org/Types.html",
+        "https://www.inchem.org/documents/jecfa/jecmono/v20je11.htm",
+        "https://pubmed.ncbi.nlm.nih.gov/1644383"
+      ],
+      "notes": "Bekræftet: definition (ingen ammonium/sulfit), ADI 300, EU-godkendelse, whisky-reglen (2019/787: kun E150a), øvrige anvendelser. Rettet: farvetone (gul-rødbrun), 4-MEI/THI-formulering, sovsekulør erstattet af saucer, summary præciseret (kulhydrater). Fjernet: 'svarer til brændt sukker', 'mest uproblematiske', 'ingen kendte risikogrupper'. origin 'nature_identical' bibeholdt som rimelig (simpel karamellisering af sukker). Flags: ingen."
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Caramel_color",
+    "wikidata": "Q227816",
+    "claims": [
+      {
+        "claim": "Klasse I, fremstillet ved opvarmning af kulhydrater (glukose/saccharose)",
+        "source": "https://learn.ddwcolor.com/what-is-caramel-color/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Evt. med syre/base/salte, men ikke ammonium- eller sulfitforbindelser",
+        "source": "https://insidethecask.com/2026/02/17/whisky-science-caramel-e150/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'Svarer i princippet til brændt sukker' – ikke specifikt belagt for klasse I",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "'Gyldne til brune toner' rettet til 'gullige til rødbrune'",
+        "source": "https://learn.ddwcolor.com/what-is-caramel-color/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Indeholder ikke 4-MEI (ingen ammoniak) – 'THI i betydende mængder' omformuleret; THI-effekter kun set med klasse III",
+        "source": "https://insidethecask.com/2026/02/17/whisky-science-caramel-e150/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Anvendelse: whisky (i EU kun E150a tilladt)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32019R0787",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelse: anden spiritus (rom, brandy, cognac)",
+        "source": "https://www.inchem.org/documents/jecfa/jecmono/v20je11.htm",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelse: sovsekulør – ikke specifikt belagt for E150a; erstattet af 'saucer'",
+        "source": "https://www.caramelfacts.org/Types.html",
+        "result": "rettet"
+      },
+      {
+        "claim": "Anvendelse: bagværk, desserter, mejeri/is, konfekture, drikke",
+        "source": "https://www.caramelfacts.org/Types.html",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Quantum satis i mange kategorier",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'Den mest uproblematiske karamelfarve' – vurdering uden kilde",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Gruppe-ADI 300 mg/kg lgv/dag",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'Ingen kendte særlige risikogrupper' – ikke kildebelagt",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EFSA ADI-felt 300 og overexposureRisk nej (2012: E150a overskrider ikke ADI)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2012.3030",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "euStatus approved",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Gruppe-ADI 300 mg/kg legemsvægt/dag for E150a-d (EFSA 2011)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Grundlag: NOAEL 30 g/kg lgv/dag i 13-ugers rotteforsøg med klasse IV, usikkerhedsfaktor 100",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Individuel ADI 100 mg/kg for E150c pga. THI's mulige immuneffekter",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'THI kan påvirke immunsystemet i gnavere' præciseret til EFSA's formulering (usikkerheder om mulige immuneffekter)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "result": "rettet"
+      },
+      {
+        "claim": "2012: eksponeringen 'generelt under ADI' – rettet: betydeligt lavere, gruppe-ADI ikke overskredet, men småbørn/højforbrugere kan overskride ADI for E150c",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2012.3030",
+        "result": "rettet"
+      },
+      {
+        "claim": "4-MEI forekommer i E150c og E150d",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02012R0231-20231029",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "4-MEI i IARC gruppe 2B (muligvis kræftfremkaldende)",
+        "source": "https://monographs.iarc.who.int/wp-content/uploads/2018/09/ClassificationsAlphaOrder.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Baggrund: NTP-studiet (lungetumorer i mus, ikke i rotter)",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/17342198/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EU-grænser i specifikationerne: 4-MEI 200 mg/kg (E150c), 250 mg/kg (E150d); THI 10 mg/kg (E150c)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02012R0231-20231029",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E150b",
+    "nameDa": "Kaustisk sulfitkaramel",
+    "nameEn": "Caustic sulphite caramel",
+    "category": "Farvestof (brun)",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Karamelfarve fremstillet med sulfitforbindelser, men uden ammoniumforbindelser.",
+    "description": "E150b (klasse II) fremstilles ved kontrolleret opvarmning af kulhydrater med sulfitforbindelser (fx svovlsyrling, natrium- og kaliumsulfit/-bisulfit), men uden ammoniumforbindelser. Den kaldes også 'spirit caramel', fordi den især bruges i spiritus som cognac, brandy og sherry. Den har en negativ ionisk ladning.",
+    "uses": "Spiritus som brandy og cognac, sherry og visse eddiker.",
+    "health": "E150b er omfattet af EFSA's gruppe-ADI for karamelfarver på 300 mg/kg legemsvægt/dag; EFSA's eksponeringsestimater for E150b lå under ADI. Farvestoffet kan indeholde spor af sulfitrester, som sulfitoverfølsomme personer kan reagere på; restindholdet angives dog som lavt.",
+    "research": "EFSA's gen-evaluering af karamelfarver (2011) fastsatte en gruppe-ADI på 300 mg/kg legemsvægt/dag for E150a-d (usikkerhedsfaktor 100 på en NOAEL på 30 g/kg legemsvægt/dag fra 13-ugers rotteforsøg med klasse IV) samt en individuel ADI på 100 mg/kg for E150c på grund af usikkerheder om mulige effekter på immunsystemet fra biproduktet THI (2-acetyl-4-tetrahydroxybutylimidazol). Den forfinede eksponeringsvurdering fra 2012 viste, at eksponeringen var betydeligt lavere end tidligere anslået, og at gruppe-ADI ikke blev overskredet for nogen befolkningsgruppe; dog kan småbørn og voksne med højt forbrug stadig overskride ADI for E150c. Biproduktet 4-MEI (4-methylimidazol), som kan forekomme i E150c og E150d, er af IARC klassificeret i gruppe 2B (muligvis kræftfremkaldende), bl.a. på baggrund af det amerikanske NTP-studie, hvor 4-MEI gav lungetumorer i mus, men ikke i rotter. EU's specifikationer (forordning 231/2012) begrænser 4-MEI til 200 mg/kg i E150c og 250 mg/kg i E150d samt THI til 10 mg/kg i E150c (på farveækvivalent basis).",
+    "keyReferences": [],
+    "pubmedTerm": "caramel color",
+    "flags": [],
+    "classes": [
+      "colour"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific opinion on the re-evaluation of caramel colours (E 150 a,b,c,d) as food additives",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2011.2004",
+      "date": "2011-03-08",
+      "adi": "300",
+      "overexposureRisk": "en:no"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=celex%3A32012R0231",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02012R0231-20231029",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2012.3030",
+        "https://www.efsa.europa.eu/en/press/news/121219",
+        "https://monographs.iarc.who.int/wp-content/uploads/2018/09/ClassificationsAlphaOrder.pdf",
+        "https://pubmed.ncbi.nlm.nih.gov/17342198/",
+        "https://www.inchem.org/documents/jecfa/jecmono/v20je11.htm",
+        "https://learn.ddwcolor.com/what-is-caramel-color/",
+        "https://fstdesk.com/articles/food-additive-e150b-caustic-sulfite-caramel",
+        "https://sulfitesabc.com/e150b-caustic-sulfite-caramel-color/"
+      ],
+      "notes": "Bekræftet: definition (sulfit, ingen ammonium), ADI 300, eksponering under ADI, EU-godkendelse, brug i brandy/cognac/sherry og visse eddiker. Rettet: beskrivelse ('spirit caramel', negativ ladning), sulfitformulering. Fjernet: 'visse vine', 'mindre udbredt end E150a/E150d', likører, sovse. Sulfitoplysningen stammer fra sekundære kilder; derfor intet astma-flag. origin 'nature_identical' bibeholdt, men bemærk at stoffet fremstilles ved kemisk reaktion med sulfit og ikke forekommer i naturen som sådan."
+    },
+    "wikipedia": "",
+    "wikidata": "",
+    "claims": [
+      {
+        "claim": "Klasse II: opvarmning af kulhydrater med sulfitforbindelser, uden ammoniumforbindelser",
+        "source": "https://fstdesk.com/articles/food-additive-e150b-caustic-sulfite-caramel",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'Stabil i alkohol, bruges i spiritus og visse vine' – rettet til 'spirit caramel', brugt i cognac, brandy og sherry (vin fjernet)",
+        "source": "https://learn.ddwcolor.com/what-is-caramel-color/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Negativ ionisk ladning (tilføjet præcisering fra kilde)",
+        "source": "https://learn.ddwcolor.com/what-is-caramel-color/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'Mindre udbredt end E150a og E150d' – ikke kildebelagt",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Anvendelse: brandy og cognac",
+        "source": "https://www.inchem.org/documents/jecfa/jecmono/v20je11.htm",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelse: visse eddiker",
+        "source": "https://www.inchem.org/documents/jecfa/jecmono/v20je11.htm",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelse: likører – ikke belagt for E150b",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Anvendelse: sovse – ikke belagt i pålidelig kilde",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Gruppe-ADI 300 mg/kg lgv/dag",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Eksponering for E150b under ADI (derfor ikke med i 2012-vurderingen)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2012.3030",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Sulfitoverfølsomme kan reagere; lavt restindhold af sulfit",
+        "source": "https://sulfitesabc.com/e150b-caustic-sulfite-caramel-color/",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA-titel/dato 2011 (Scientific opinion on the re-evaluation of caramel colours)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "euStatus approved",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Gruppe-ADI 300 mg/kg legemsvægt/dag for E150a-d (EFSA 2011)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Grundlag: NOAEL 30 g/kg lgv/dag i 13-ugers rotteforsøg med klasse IV, usikkerhedsfaktor 100",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Individuel ADI 100 mg/kg for E150c pga. THI's mulige immuneffekter",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'THI kan påvirke immunsystemet i gnavere' præciseret til EFSA's formulering (usikkerheder om mulige immuneffekter)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "result": "rettet"
+      },
+      {
+        "claim": "2012: eksponeringen 'generelt under ADI' – rettet: betydeligt lavere, gruppe-ADI ikke overskredet, men småbørn/højforbrugere kan overskride ADI for E150c",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2012.3030",
+        "result": "rettet"
+      },
+      {
+        "claim": "4-MEI forekommer i E150c og E150d",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02012R0231-20231029",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "4-MEI i IARC gruppe 2B (muligvis kræftfremkaldende)",
+        "source": "https://monographs.iarc.who.int/wp-content/uploads/2018/09/ClassificationsAlphaOrder.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Baggrund: NTP-studiet (lungetumorer i mus, ikke i rotter)",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/17342198/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EU-grænser i specifikationerne: 4-MEI 200 mg/kg (E150c), 250 mg/kg (E150d); THI 10 mg/kg (E150c)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02012R0231-20231029",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E150c",
+    "nameDa": "Ammoniakkaramel",
+    "nameEn": "Ammonia caramel",
+    "category": "Farvestof (brun)",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Karamelfarve fremstillet med ammoniumforbindelser.",
+    "description": "E150c (klasse III) fremstilles ved kontrolleret opvarmning af kulhydrater, eventuelt med syrer eller baser, i nærvær af ammoniumforbindelser, men uden sulfit. Den har en positiv ionisk ladning, hvilket gør den stabil i øl, og bruges især til øl, saucer og bagværk. Processen kan danne 4-MEI og THI, som er begrænset i EU-specifikationen (højst 200 mg/kg 4-MEI og 10 mg/kg THI på farveækvivalent basis).",
+    "uses": "Øl, sojasauce og andre saucer, sovsekulør, bagværk, lakrids og konfekture.",
+    "health": "EFSA fastsatte i 2011 en individuel ADI på 100 mg/kg legemsvægt/dag for E150c på grund af usikkerheder om mulige effekter på immunsystemet fra THI, som i rotteforsøg har nedsat antallet af lymfocytter (især ved lavt indhold af vitamin B6 i foderet). 4-MEI er klassificeret af IARC i gruppe 2B. EFSA's forfinede vurdering fra 2012 fandt, at småbørn og voksne med højt forbrug stadig kan overskride ADI for E150c.",
+    "research": "EFSA's gen-evaluering af karamelfarver (2011) fastsatte en gruppe-ADI på 300 mg/kg legemsvægt/dag for E150a-d (usikkerhedsfaktor 100 på en NOAEL på 30 g/kg legemsvægt/dag fra 13-ugers rotteforsøg med klasse IV) samt en individuel ADI på 100 mg/kg for E150c på grund af usikkerheder om mulige effekter på immunsystemet fra biproduktet THI (2-acetyl-4-tetrahydroxybutylimidazol). Den forfinede eksponeringsvurdering fra 2012 viste, at eksponeringen var betydeligt lavere end tidligere anslået, og at gruppe-ADI ikke blev overskredet for nogen befolkningsgruppe; dog kan småbørn og voksne med højt forbrug stadig overskride ADI for E150c. Biproduktet 4-MEI (4-methylimidazol), som kan forekomme i E150c og E150d, er af IARC klassificeret i gruppe 2B (muligvis kræftfremkaldende), bl.a. på baggrund af det amerikanske NTP-studie, hvor 4-MEI gav lungetumorer i mus, men ikke i rotter. EU's specifikationer (forordning 231/2012) begrænser 4-MEI til 200 mg/kg i E150c og 250 mg/kg i E150d samt THI til 10 mg/kg i E150c (på farveækvivalent basis).",
+    "keyReferences": [],
+    "pubmedTerm": "caramel color",
+    "flags": [],
+    "classes": [
+      "colour"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Refined exposure assessment for caramel colours (E 150a, c, d)",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2012.3030",
+      "date": "2012-12-03",
+      "adi": "100",
+      "overexposureRisk": "en:moderate"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=celex%3A32012R0231",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02012R0231-20231029",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2012.3030",
+        "https://www.efsa.europa.eu/en/press/news/121219",
+        "https://monographs.iarc.who.int/wp-content/uploads/2018/09/ClassificationsAlphaOrder.pdf",
+        "https://pubmed.ncbi.nlm.nih.gov/17342198/",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC5088675/",
+        "https://pubmed.ncbi.nlm.nih.gov/1644383",
+        "https://www.sciencedirect.com/science/article/abs/pii/0041008X9290007F",
+        "https://www.sethness.com/class-iii/",
+        "https://www.inchem.org/documents/jecfa/jecmono/v20je11.htm",
+        "https://wellnd.com/what-foods-contain-e150-a-guide-to-caramel-coloring"
+      ],
+      "notes": "Bekræftet: definition, positiv ladning, ADI 100 (EFSA 2011) pga. THI, THI-effekt på lymfocytter i rotter (PubMed 1644383; effekten ses især ved lavt vitamin B6-indhold), 4-MEI IARC 2B, specifikationsgrænser, EU-godkendelse. Rettet: eksponeringsudsagn (2012: småbørn og højforbrugere kan overskride ADI), THI-formulering, anvendelser. Fjernet: bouillon og rugbrød (ikke belagt for E150c specifikt). origin 'nature_identical' bibeholdt, men bemærk at stoffet fremstilles ved kemisk reaktion med ammoniak. Flags: ingen."
+    },
+    "wikipedia": "",
+    "wikidata": "Q11735907",
+    "claims": [
+      {
+        "claim": "Klasse III: kulhydrater + ammoniumforbindelser, uden sulfit",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02012R0231-20231029",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Positivt ladet",
+        "source": "https://www.sethness.com/class-iii/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bruges især til øl, saucer og bagværk",
+        "source": "https://www.sethness.com/class-iii/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Processen kan danne 4-MEI og THI, reguleret i specifikationen (200 / 10 mg/kg)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02012R0231-20231029",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelse: øl",
+        "source": "https://www.sethness.com/class-iii/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelse: sojasauce og andre saucer, sovsekulør",
+        "source": "https://wellnd.com/what-foods-contain-e150-a-guide-to-caramel-coloring",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelse: bouillon – ikke belagt for E150c specifikt",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Anvendelse: bagværk",
+        "source": "https://www.sethness.com/class-iii/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelse: rugbrød – ikke belagt for E150c specifikt",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Anvendelse: lakrids og konfekture (tilføjet fra kilde)",
+        "source": "https://www.inchem.org/documents/jecfa/jecmono/v20je11.htm",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Individuel ADI 100 mg/kg (EFSA 2011) pga. THI",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "THI nedsætter antallet af lymfocytter i rotter (præciseret: især ved lavt B6-indhold)",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/1644383",
+        "result": "rettet"
+      },
+      {
+        "claim": "4-MEI IARC gruppe 2B",
+        "source": "https://monographs.iarc.who.int/wp-content/uploads/2018/09/ClassificationsAlphaOrder.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'Eksponeringen for de fleste ligger under ADI' – rettet: småbørn og højforbrugere kan overskride ADI",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2012.3030",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA ADI-felt 100 og overexposureRisk moderat",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2012.3030",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "euStatus approved",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Gruppe-ADI 300 mg/kg legemsvægt/dag for E150a-d (EFSA 2011)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Grundlag: NOAEL 30 g/kg lgv/dag i 13-ugers rotteforsøg med klasse IV, usikkerhedsfaktor 100",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Individuel ADI 100 mg/kg for E150c pga. THI's mulige immuneffekter",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "'THI kan påvirke immunsystemet i gnavere' præciseret til EFSA's formulering (usikkerheder om mulige immuneffekter)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "result": "rettet"
+      },
+      {
+        "claim": "2012: eksponeringen 'generelt under ADI' – rettet: betydeligt lavere, gruppe-ADI ikke overskredet, men småbørn/højforbrugere kan overskride ADI for E150c",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2012.3030",
+        "result": "rettet"
+      },
+      {
+        "claim": "4-MEI forekommer i E150c og E150d",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02012R0231-20231029",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "4-MEI i IARC gruppe 2B (muligvis kræftfremkaldende)",
+        "source": "https://monographs.iarc.who.int/wp-content/uploads/2018/09/ClassificationsAlphaOrder.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Baggrund: NTP-studiet (lungetumorer i mus, ikke i rotter)",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/17342198/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EU-grænser i specifikationerne: 4-MEI 200 mg/kg (E150c), 250 mg/kg (E150d); THI 10 mg/kg (E150c)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02012R0231-20231029",
+        "result": "bekræftet"
+      }
+    ]
+  }
+]
