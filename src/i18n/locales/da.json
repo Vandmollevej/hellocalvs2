@@ -1216,7 +1216,12 @@
       "save": "Spar {pct} %",
       "renewalNote": "Abonnementet fornyes automatisk for samme periode, indtil du opsiger det. Du kan opsige når som helst.",
       "buyCta": "Abonner",
-      "buyError": "Købet kunne ikke startes lige nu"
+      "buyError": "Købet kunne ikke startes lige nu",
+      "summaryPrice": "{price} kr. pr. {unit}",
+      "unit": { "1": "måned", "3": "kvartal (3 måneder)", "12": "år" },
+      "summaryBinding": "Bindingsperiode: {period}. Betales forud for hele perioden.",
+      "bindingPeriod": { "1": "1 måned", "3": "3 måneder", "12": "12 måneder" },
+      "fromPrice": "Fra {price} kr. pr. måned · binding fra 1 måned"
     }
   },
   "profileSleep": {

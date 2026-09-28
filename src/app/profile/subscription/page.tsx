@@ -7,7 +7,7 @@ import { HfScreen } from "@/components/HfScreen";
 import { TermsSheet } from "@/components/hf/TermsSheet";
 import { SUBSCRIPTION_OVERVIEW_TERMS } from "@/lib/terms-hints";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { SUBSCRIPTION_PLANS } from "@/lib/subscription-plans";
+import { SUBSCRIPTION_PLANS, SUBSCRIPTION_PRICES_DKK } from "@/lib/subscription-plans";
 import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
 type SubscriptionData = {
@@ -184,6 +184,9 @@ export default function SubscriptionPage() {
               <div className="min-w-0 flex-1">
                 <p className="hf-type-section-title">{t(`subscription.plans.${plan}.title`)}</p>
                 <p className="text-text-secondary hf-type-body mt-1">{t(`subscription.plans.${plan}.teaser`)}</p>
+                <p className="hf-type-body hf-type-strong mt-1">
+                  {t("subscription.planPage.fromPrice", { price: SUBSCRIPTION_PRICES_DKK[plan][1] })}
+                </p>
               </div>
               <IconChevronRight size={20} aria-hidden="true" className="shrink-0 opacity-60" />
             </Link>

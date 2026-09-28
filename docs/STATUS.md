@@ -151,6 +151,10 @@ Ingredienslister vises via `IngredientsText` (`src/lib/allergen-highlight.ts`): 
 - Ved slåede E-nummer-advarsler vises en særskilt E-nummerblok før energifordelingen (stort grønt E, advarsel, klikbar liste). E-numre i ingredienslisten er også klikbare (`splitENumbers` i `src/lib/additives.ts`).
 - "Energifordeling" er en rigtig fed overskrift; kcal-reference står i parentes; mængde og kalorier ("17 kalorier") står større; mængdeboksen er smallere; plus/minus er store, fede og uden cirkel.
 - Advarselslinket "Fejl" ved overskriften er fjernet; "Indberet fejl" står nu som almindelig tekst nederst.
+## 2026-09-28: Abonnement — pris og bindingsperiode (opgave 25)
+
+- Planside (`/profile/subscription/[plan]`): under periodeboksene vises en boks med prisen for den valgte periode ("1.071 kr. pr. år") og bindingsperioden ("Bindingsperiode: 12 måneder").
+- Oversigten (`/profile/subscription`): hver abonnementsboks viser "Fra X kr. pr. måned · binding fra 1 måned".
 
 ## 2026-09-28: Open Food Facts ude af søgningen
 
