@@ -1178,7 +1178,6 @@
       "upgradeUnavailable": "Betaling er ikke tilsluttet endnu — brug en gavekode eller indløs points for at blive Seriøs, indtil en betalingsudbyder er på plads.",
       "withdrawalConsent": "Jeg ønsker, at abonnementet starter med det samme, og er klar over, at jeg ved fortrydelse inden for 14 dage kun får refunderet den del af perioden, jeg ikke har brugt."
     },
-    "retentionNote": "Data ældre end 3 måneder slettes aldrig — det gemmes og vises igen, så snart du bliver Seriøs.",
     "plansHeading": "Abonnementer",
     "plans": {
       "serious": {
