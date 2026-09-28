@@ -454,7 +454,7 @@ export async function getAdminStatistics(filter: StatsFilterInput, now = new Dat
   const trendSource: { metric: string; k: Kpi; unit?: string }[] = [
     { metric: "Nye oprettelser", k: kpis.newUsers },
     { metric: "Aktive brugere (har logget mad)", k: kpis.activeUsers },
-    { metric: "Loggede produkter", k: kpis.registrations },
+    { metric: "Loggede varer", k: kpis.registrations },
     {
       metric: "Registreringer pr. aktiv bruger",
       k: kpi(perActive(kpis.registrations.current, kpis.activeUsers.current), perActive(kpis.registrations.previous, kpis.activeUsers.previous)),

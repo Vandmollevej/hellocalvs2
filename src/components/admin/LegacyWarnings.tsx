@@ -52,7 +52,7 @@ export async function LegacyWarnings() {
           Mulige dubletter ({duplicateGroups.length})
         </h2>
         {duplicateGroups.length === 0 ? (
-          <p className="hf-type-body text-text-secondary">Ingen produkter med samme navn fundet.</p>
+          <p className="hf-type-body text-text-secondary">Ingen varer med samme navn fundet.</p>
         ) : (
           duplicateGroups.map((group) => {
             const conflict = group.some((p, i) => i > 0 && macrosDiffer(group[0], p));
@@ -75,8 +75,8 @@ export async function LegacyWarnings() {
                     >
                       <span>
                         {p.brand?.name ? `${p.brand.name} · ` : ""}
-                        {p.status} · {Math.round(p.kcalPer100g)} kcal · P {p.proteinPer100g}g · K {p.carbsPer100g}g · F{" "}
-                        {p.fatPer100g}g
+                        {p.status} · {Math.round(p.kcalPer100g)} kalorier · Protein {p.proteinPer100g} g · Kulhydrat{" "}
+                        {p.carbsPer100g} g · Fedt {p.fatPer100g} g
                       </span>
                       <span className="hf-type-small text-hf-green-dark underline">Åbn / merge</span>
                     </Link>

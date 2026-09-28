@@ -40,7 +40,7 @@ export default function PrivatlivspolitikPage() {
             <li><b>Konto:</b> e-mail, navn, adgangskode (gemt som envejs-hash, så heller ikke vi kan læse den) og passkeys samt evt. login via Google, Apple eller Facebook (kun navn og e-mail).</li>
             <li><b>Profil:</b> fødselsdato, køn, højde, region og sprog.</li>
             <li><b>Helbredsoplysninger:</b> kost, væske, vægt, kropsmål, aktivitet, søvn, fotodagbog og, hvis du slår det til, menstruationscyklus.</li>
-            <li><b>Indhold:</b> egne retter, ingredienser, produkter, billeder, fejlindberetninger og supporthenvendelser.</li>
+            <li><b>Indhold:</b> egne retter, ingredienser, varer, billeder, fejlindberetninger og supporthenvendelser.</li>
             <li><b>Integrationer:</b> data, du selv vælger at hente fra fx Apple Sundhed, Health Connect, Fitbit eller Withings.</li>
             <li><b>Sikkerhed:</b> enhedstype og land ved login, så vi kan advare dig om login fra en ny enhed eller et nyt land.</li>
             <li><b>Abonnement:</b> abonnementsstatus, points og gavekoder. Kortoplysninger håndteres af betalingsudbyderen, ikke af os.</li>
@@ -62,9 +62,9 @@ export default function PrivatlivspolitikPage() {
         <Section title="4. AI-genkendelse">
           <p>
             Når du fotograferer en vare, en varedeklaration eller et måltid, kan billedet sendes til
-            OpenAI for at aflæse produktet. Før afsendelse fjerner vi billedets metadata (fx
+            OpenAI for at aflæse varen. Før afsendelse fjerner vi billedets metadata (fx
             GPS-position, telefonmodel og tidspunkt), og vi sender ingen oplysninger om, hvem du er.
-            Selve billedet kan dog vise noget personligt. Tag derfor billedet tæt på produktet.
+            Selve billedet kan dog vise noget personligt. Tag derfor billedet tæt på varen.
           </p>
           <p>
             Telefonen forsøger først selv at læse varedeklarationen. Kun det, den ikke kan læse
@@ -111,7 +111,7 @@ export default function PrivatlivspolitikPage() {
           </p>
           <p>
             Regnskabsmateriale opbevares i 5 år efter bogføringsloven. Godkendte bidrag til den fælles
-            produktdatabase bliver i databasen uden dit navn.
+            varedatabase bliver i databasen uden dit navn.
           </p>
         </Section>
 

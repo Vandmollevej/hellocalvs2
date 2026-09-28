@@ -9,7 +9,7 @@ import type { Locale } from "@prisma/client";
 const DICTIONARY = {
   nav_overview: { DA: "Oversigt", EN: "Overview" },
   nav_analytics: { DA: "Analyse", EN: "Analytics" },
-  nav_products: { DA: "Nye produkter", EN: "New products" },
+  nav_products: { DA: "Nye varer", EN: "New products" },
   nav_users: { DA: "Brugere", EN: "Users" },
   nav_bug_reports: { DA: "Fejlrapporter", EN: "Bug reports" },
   nav_messaging: { DA: "Besked automatisering", EN: "Message automation" },
@@ -35,9 +35,9 @@ const DICTIONARY = {
   nav_language_name: { DA: "Dansk", EN: "English" },
   nav_country_title: { DA: "Vælg land og sprog", EN: "Choose country and language" },
   nav_country_close: { DA: "Luk", EN: "Close" },
-  nav_group_approval: { DA: "Produktgodkendelse", EN: "Product approval" },
-  nav_product_database: { DA: "Produkt-database", EN: "Product database" },
-  nav_product_database_products: { DA: "Produkter", EN: "Products" },
+  nav_group_approval: { DA: "Varegodkendelse", EN: "Product approval" },
+  nav_product_database: { DA: "Varedatabase", EN: "Product database" },
+  nav_product_database_products: { DA: "Varer", EN: "Products" },
   nav_product_database_brands: { DA: "Brands", EN: "Brands" },
   nav_group_dishes: { DA: "Retter", EN: "Dishes" },
   nav_dishes_user: { DA: "Brugeroprettede", EN: "User-created" },
@@ -68,7 +68,7 @@ const DICTIONARY = {
 
   quality_control_title: { DA: "Kvalitetskontrol", EN: "Quality control" },
   quality_control_empty: { DA: "Intet afventer gennemgang.", EN: "Nothing awaiting review." },
-  quality_control_tab_products: { DA: "Produkter", EN: "Products" },
+  quality_control_tab_products: { DA: "Varer", EN: "Products" },
   quality_control_tab_shared_recipes: { DA: "Delte retter", EN: "Shared dishes" },
   shared_recipes_owner: { DA: "Ejer", EN: "Owner" },
   shared_recipes_reports: { DA: "anmeldelser", EN: "reports" },
@@ -81,7 +81,7 @@ const DICTIONARY = {
     EN: "Reported dishes are listed first. Reject makes the dish private to its owner. Block sharing stops the publisher (pseudonym) from sharing more dishes and hides all their shared dishes.",
   },
   quality_control_col_date: { DA: "Dato", EN: "Date" },
-  quality_control_col_product: { DA: "Produkt", EN: "Product" },
+  quality_control_col_product: { DA: "Vare", EN: "Product" },
   quality_control_col_issue: { DA: "Problem", EN: "Issue" },
   quality_control_col_confidence: { DA: "Confidence", EN: "Confidence" },
   quality_control_col_usage: { DA: "Valgt 30 dage", EN: "Chosen (30 days)" },
@@ -90,7 +90,7 @@ const DICTIONARY = {
   quality_control_user_reported: { DA: "Brugerindberettet", EN: "User-reported" },
   quality_control_user_report_count: { DA: "brugerindberetninger", EN: "user reports" },
 
-  products_title: { DA: "Nye produkter", EN: "New products" },
+  products_title: { DA: "Nye varer", EN: "New products" },
   products_tab_user: { DA: "Bruger-indsendte", EN: "User-submitted" },
   products_tab_auto: { DA: "Auto-importerede", EN: "Auto-imported" },
 

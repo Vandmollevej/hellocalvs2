@@ -102,7 +102,7 @@ export default async function AdminDashboardPage() {
     { href: "/admin/users", label: "Nye brugere i dag", value: stats.newUsersToday },
     { href: "/admin/users", label: "Nye brugere (7 dage)", value: stats.newUsersWeek },
     { href: "/admin/statistics", label: "Registreringer i dag", value: stats.registrationsToday },
-    { href: "/admin/product-database", label: "Godkendte produkter", value: stats.approvedProducts },
+    { href: "/admin/product-database", label: "Godkendte varer", value: stats.approvedProducts },
     { href: "/admin/messaging", label: "Mails/push sendt (24 t)", value: messages.sent24h },
   ];
 
@@ -118,7 +118,7 @@ export default async function AdminDashboardPage() {
           note={counts.support.overdue > 0 ? `${counts.support.overdue} over 24 timer` : null}
           alert={counts.support.overdue > 0}
         />
-        <StatCard href="/admin/products" label="Nye produkter" value={counts.pendingProducts} />
+        <StatCard href="/admin/products" label="Nye varer" value={counts.pendingProducts} />
         <StatCard
           href="/admin/uncertainties"
           label="Usikkerheder"
@@ -188,13 +188,13 @@ export default async function AdminDashboardPage() {
         </Widget>
 
         <Widget
-          title="Seneste produkter til godkendelse"
+          title="Seneste varer til godkendelse"
           href="/admin/products"
           count={counts.pendingProducts}
           className="lg:col-span-2"
         >
           {latestProducts.length === 0 ? (
-            <Empty text="Ingen produkter afventer godkendelse." />
+            <Empty text="Ingen varer afventer godkendelse." />
           ) : (
             <ul className="divide-y divide-border-strong">
               {latestProducts.map((product) => (
@@ -244,7 +244,7 @@ export default async function AdminDashboardPage() {
         </Widget>
 
         <Widget
-          title="Produkter med lav sikkerhed"
+          title="Varer med lav sikkerhed"
           href="/admin/uncertainties"
           count={counts.uncertainties.total}
           className="lg:col-span-2"
@@ -264,7 +264,7 @@ export default async function AdminDashboardPage() {
             </span>
           </div>
           {counts.uncertainties.top.length === 0 ? (
-            <Empty text="Ingen usikre produkter." />
+            <Empty text="Ingen usikre varer." />
           ) : (
             <ul className="divide-y divide-border-strong">
               {counts.uncertainties.top.map((row) => (

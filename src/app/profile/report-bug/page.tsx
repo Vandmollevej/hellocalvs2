@@ -17,7 +17,7 @@ const BUG_REPORT_CATEGORIES: { value: string; label: string; icon: React.ReactNo
   { value: "EAN", label: "EAN", icon: <IconBarcode size={22} stroke={1.75} /> },
   { value: "ENERGY", label: "Energi", icon: <IconBolt size={22} stroke={1.75} /> },
   { value: "CONTENT", label: "Indhold", icon: <IconList size={22} stroke={1.75} /> },
-  { value: "PRODUCT_IMAGE", label: "Produktbillede", icon: <IconPhoto size={22} stroke={1.75} /> },
+  { value: "PRODUCT_IMAGE", label: "Varebillede", icon: <IconPhoto size={22} stroke={1.75} /> },
 ];
 
 // "Indberet fejl" (docs/DECISIONS.md 2026-09-02): 10 points ved godkendt

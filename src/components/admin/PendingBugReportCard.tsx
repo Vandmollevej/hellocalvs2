@@ -47,7 +47,7 @@ export function PendingBugReportCard({ report }: { report: BugReport }) {
           </p>
           {report.product && (
             <p className="hf-type-small hf-type-strong mt-1 text-hf-green-dark">
-              Produktrettelse: {report.product.brand?.name ? `${report.product.brand.name} ` : ""}
+              Varerettelse: {report.product.brand?.name ? `${report.product.brand.name} ` : ""}
               {report.product.name}
             </p>
           )}

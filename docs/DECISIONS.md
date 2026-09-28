@@ -3222,3 +3222,6 @@ Mens et foto arbejder i kameraflowet under Tilføj, vises en bred hvid/lys gradi
 ## 2026-09-28 — Kamera: 3D-scanningseffekt
 
 Når scanningsstriben passerer midten af fotoet (objektet i fokus), bliver striben bredere og lysere, og fotoet løfter/zoomer sig let (`.hf-scan-lift`, skala 1,06). Stribe og løft deler varighed (1,8 s) og starter samtidig, så de er i takt. Ved reduceret bevægelse løfter billedet sig ikke.
+## 2026-09-28 — Terminologi: "vare" i stedet for "produkt"
+
+Synlige tekster i app og admin kalder madvarer "vare/varer", og "Produktdatabase" hedder "Varedatabase". Kode-identifikatorer, URL'er, databasefelter og AI-prompts under `src/app/api/ai/` er uændrede.

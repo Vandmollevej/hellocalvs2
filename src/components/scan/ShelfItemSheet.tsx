@@ -86,7 +86,7 @@ export function ShelfItemSheet({ item, onClose, onChanged }: { item: ShelfItem; 
           </button>
         ) : (
           <div className="flex flex-col gap-2">
-            <TextField variant="standard" label="Søg produkt" value={query} onChange={(event) => setQuery(event.target.value)} />
+            <TextField variant="standard" label="Søg vare" value={query} onChange={(event) => setQuery(event.target.value)} />
             <ul className="flex flex-col rounded-[8px]" style={{ background: "var(--hf-color-card)" }}>
               {results.map((product) => (
                 <li key={product.id}>

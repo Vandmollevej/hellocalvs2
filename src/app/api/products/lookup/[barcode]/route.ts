@@ -120,7 +120,7 @@ export async function GET(
       {
         source: "error",
         product: null,
-        message: "Produktopslag er midlertidigt utilgængeligt",
+        message: "Vareopslag er midlertidigt utilgængeligt",
       },
       { status: 503 }
     );

@@ -14,7 +14,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   const item = await prisma.shelfPhotoItem.findFirst({ where: { id, shelfPhoto: { workerId: worker.id } } });
   if (!item) return NextResponse.json({ error: "not_found" }, { status: 404 });
   if (productId && !(await prisma.product.findUnique({ where: { id: productId }, select: { id: true } }))) {
-    return NextResponse.json({ message: "Produktet findes ikke" }, { status: 400 });
+    return NextResponse.json({ message: "Varen findes ikke" }, { status: 400 });
   }
 
   const updated = await prisma.shelfPhotoItem.update({

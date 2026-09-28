@@ -268,7 +268,7 @@ type Badges = { support: { unanswered: number; overdue: number } | null; uncerta
 
 function LinkBadge({ href, badges }: { href: string; badges: Badges }) {
   if (href === "/admin/uncertainties" && badges.uncertainties) {
-    return <span aria-label="Usikre produkter" className="ml-auto h-2 w-2 shrink-0 rounded-full bg-hf-red-dark" />;
+    return <span aria-label="Usikre varer" className="ml-auto h-2 w-2 shrink-0 rounded-full bg-hf-red-dark" />;
   }
   if (href === "/admin/support" && badges.support && badges.support.unanswered > 0) {
     return (

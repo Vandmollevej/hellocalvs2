@@ -341,7 +341,7 @@ export async function POST(req: Request) {
     const existingBarcode = await prisma.barcode.findUnique({ where: { code: barcode } });
     if (existingBarcode) {
       return NextResponse.json(
-        { message: "Stregkoden er allerede knyttet til et andet produkt" },
+        { message: "Stregkoden er allerede knyttet til en anden vare" },
         { status: 409 }
       );
     }

@@ -189,7 +189,7 @@ export const KEY_SERVICES: KeyService[] = [
     id: "openai",
     name: "OpenAI",
     group: "ai",
-    purpose: "Stemme-tolkning af måltider og billedgenkendelse ved oprettelse af produkter.",
+    purpose: "Stemme-tolkning af måltider og billedgenkendelse ved oprettelse af varer.",
     fields: [
       { key: "OPENAI_API_KEY", label: "API-nøgle", kind: "secret" },
       {

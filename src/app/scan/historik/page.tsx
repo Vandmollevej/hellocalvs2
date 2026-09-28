@@ -19,7 +19,7 @@ export default async function ScanHistorikPage() {
         <div className="grid grid-cols-2 gap-4">
           <div className="rounded-[12px] p-4" style={{ background: "var(--hf-color-card)" }}>
             <p className="hf-type-section-title">{rows.length}</p>
-            <p className="hf-type-caption">Oprettede produkter</p>
+            <p className="hf-type-caption">Oprettede varer</p>
           </div>
           <div className="rounded-[12px] p-4" style={{ background: "var(--hf-color-card)" }}>
             <p className="hf-type-section-title">{formatKroner(paidOre)}</p>

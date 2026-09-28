@@ -11,7 +11,7 @@ export const CORRECTION_ERRORS: Record<string, string> = {
   INVALID_NUMBER: "Et af tallene er ugyldigt.",
   MISSING_CORE: "Energi, protein, kulhydrat og fedt skal udfyldes.",
   INVALID_GTIN: "EAN-koden har et forkert kontrolciffer.",
-  BARCODE_TAKEN: "EAN-koden hører allerede til et andet produkt.",
+  BARCODE_TAKEN: "EAN-koden hører allerede til en anden vare.",
 };
 
 type Tx = Prisma.TransactionClient;

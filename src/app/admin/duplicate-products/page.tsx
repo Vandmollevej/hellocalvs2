@@ -14,7 +14,7 @@ import {
 // To faner, der håndteres hver for sig:
 // - Produktbilleder (?tab=billeder): billed-varianter af samme vare
 //   (EAN.png, EAN_2.png …) på én linje; vælg hovedbillede og fravælg resten.
-// - Produkter (?tab=produkter): op til 6 kolonner side om side; vælg felt
+// - Produkter (?tab=varer): op til 6 kolonner side om side; vælg felt
 //   for felt, hvad der skal i den endelige (grøn ramme). Logik i
 //   src/lib/duplicate-review.ts.
 export default async function AdminDuplicateProductsPage({
@@ -26,20 +26,20 @@ export default async function AdminDuplicateProductsPage({
   if (!admin) redirect("/admin/login");
 
   const params = await searchParams;
-  const tab = params.tab === "produkter" ? "produkter" : "billeder";
+  const tab = params.tab === "varer" ? "varer" : "billeder";
   const page = Math.max(1, Number.parseInt(params.side ?? "1", 10) || 1);
 
   const [counts, images, products] = await Promise.all([
     countDuplicateReviews(),
     tab === "billeder" ? loadDuplicateImagePage(page) : null,
-    tab === "produkter" ? loadDuplicateProductPage(page) : null,
+    tab === "varer" ? loadDuplicateProductPage(page) : null,
   ]);
   const total = images?.total ?? products?.total ?? 0;
   const pages = Math.max(1, Math.ceil(total / GROUPS_PER_PAGE));
 
   const tabs = [
-    { key: "billeder", label: "Produktbilleder", count: counts.images },
-    { key: "produkter", label: "Produkter", count: counts.products },
+    { key: "billeder", label: "Varebilleder", count: counts.images },
+    { key: "varer", label: "Varer", count: counts.products },
   ] as const;
 
   return (
@@ -82,7 +82,7 @@ export default async function AdminDuplicateProductsPage({
 
       {products &&
         (products.groups.length === 0 ? (
-          <p className="hf-type-body text-text-secondary">Ingen produkt-dubletter afventer gennemgang.</p>
+          <p className="hf-type-body text-text-secondary">Ingen vare-dubletter afventer gennemgang.</p>
         ) : (
           <div className="flex flex-col gap-4">
             {products.groups.map((group) => (

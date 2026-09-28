@@ -8,6 +8,6 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
 
   const { id } = await params;
   const product = await rejectProduct(id);
-  if (!product) return NextResponse.json({ message: "Produktet findes ikke" }, { status: 404 });
+  if (!product) return NextResponse.json({ message: "Varen findes ikke" }, { status: 404 });
   return NextResponse.json({ product });
 }

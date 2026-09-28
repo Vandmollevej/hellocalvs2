@@ -99,7 +99,7 @@ export function UncertaintiesBoard({
       </div>
 
       {visible.length === 0 ? (
-        <p className="hf-type-body text-text-secondary">Ingen usikre produkter i denne fane.</p>
+        <p className="hf-type-body text-text-secondary">Ingen usikre varer i denne fane.</p>
       ) : (
         <div className="flex flex-col gap-2">
           {visible.map((row) => (
@@ -126,7 +126,7 @@ export function UncertaintiesBoard({
                     onClick={() => setProductOverlay(row.productId)}
                     className="hf-btn-text text-hf-green-dark"
                   >
-                    Se produkt
+                    Se vare
                   </button>
                 </p>
               </div>
@@ -153,7 +153,7 @@ export function UncertaintiesBoard({
         <Overlay onClose={() => setProductOverlay(null)}>
           <iframe
             src={`/admin/products/${productOverlay}`}
-            title="Produkt"
+            title="Vare"
             className="h-[80vh] w-full rounded-md bg-page-bg"
           />
         </Overlay>
@@ -388,7 +388,7 @@ function ImageLightbox({ row, onSaved }: { row: UncertaintyRow; onSaved: () => v
       <div>
         <p className="hf-type-strong pr-8 text-hf-black">{row.productName}</p>
         <p className="hf-type-small text-text-muted">
-          {row.uncertaintyPercent} % usikkerhed på, at fotoet hører til produktet
+          {row.uncertaintyPercent} % usikkerhed på, at fotoet hører til varen
         </p>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
@@ -414,7 +414,7 @@ function ImageLightbox({ row, onSaved }: { row: UncertaintyRow; onSaved: () => v
           onClick={() => decide("WRONG")}
           className="hf-type-body rounded-md border border-hf-red-dark px-3 py-2 text-hf-red-dark disabled:opacity-50"
         >
-          Forkert produkt
+          Forkert vare
         </button>
         <button
           type="button"
@@ -430,7 +430,7 @@ function ImageLightbox({ row, onSaved }: { row: UncertaintyRow; onSaved: () => v
           onClick={() => decide("CORRECT")}
           className="hf-btn-primary px-3 py-2 disabled:opacity-50"
         >
-          Samme produkt
+          Samme vare
         </button>
       </div>
     </div>

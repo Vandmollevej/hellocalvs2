@@ -92,7 +92,7 @@ function ListView({ rows }: { rows: ProductDatabaseRow[] }) {
     <div className="overflow-hidden rounded-lg border border-hf-tan-dark bg-hf-white">
       <div className="hf-type-small hidden grid-cols-[48px_minmax(0,2.4fr)_minmax(0,1.2fr)_minmax(0,1fr)_88px_96px] gap-4 border-b border-hf-tan-dark px-4 py-2 text-text-secondary lg:grid">
         <span />
-        <span>Produkt</span>
+        <span>Vare</span>
         <span>Kæder</span>
         <span>Kategori · kilde</span>
         <span className="text-right">Kcal/100</span>
@@ -219,14 +219,14 @@ export default async function AdminProductDatabasePage({
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-1">
-        <h1 className="hf-type-title text-hf-black">Produkter</h1>
+        <h1 className="hf-type-title text-hf-black">Varer</h1>
         <p className="hf-type-body text-text-secondary">
-          Alle produkter i Hello Cal. Søg, filtrér og sortér — klik på et produkt for at åbne dets produktside.
+          Alle varer i Hello Cal. Søg, filtrér og sortér — klik på en vare for at åbne dens vareside.
         </p>
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard href={productDatabaseHref(clean)} label="Produkter i alt" value={numberFormat.format(overview.total)} note="Vis alle" />
+        <StatCard href={productDatabaseHref(clean)} label="Varer i alt" value={numberFormat.format(overview.total)} note="Vis alle" />
         <StatCard
           href={productDatabaseHref(clean, { image: "with" })}
           label="Med billede"
@@ -258,11 +258,11 @@ export default async function AdminProductDatabasePage({
       <div className="flex flex-col gap-4">
         <p className="hf-type-body text-text-secondary">
           {data.matching === 0 ? (
-            "Ingen produkter matcher."
+            "Ingen varer matcher."
           ) : (
             <>
               Viser <span className="hf-type-strong text-hf-black">{numberFormat.format(firstIndex)}–{numberFormat.format(lastIndex)}</span> af{" "}
-              <span className="hf-type-strong text-hf-black">{numberFormat.format(data.matching)}</span> produkter
+              <span className="hf-type-strong text-hf-black">{numberFormat.format(data.matching)}</span> varer
             </>
           )}
         </p>

@@ -71,7 +71,7 @@ export default async function ClaudeIntegrationPage() {
           ))}
         </ul>
         <p className="mt-3 text-text-secondary">
-          Claude har kun adgang til roadmap og jobs — ikke brugere, produkter eller andre data. Spær eller forny adressen
+          Claude har kun adgang til roadmap og jobs — ikke brugere, varer eller andre data. Spær eller forny adressen
           under Agenter, hvis den er blevet delt ved en fejl.
         </p>
       </div>

@@ -87,7 +87,7 @@ export function ProductTablesPanel({
           ["Navn", basics.name],
           ["Brand", basics.brand],
           ["Sub brand", basics.subbrand],
-          ["Produkttype", basics.productType],
+          ["Varetype", basics.productType],
           ["Variant", basics.variant],
           ["Smag", basics.flavor],
           ["Mængde", basics.packageSizeText],

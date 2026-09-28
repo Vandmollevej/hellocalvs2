@@ -57,7 +57,7 @@ export async function POST(req: Request) {
     )
   ) {
     return NextResponse.json(
-      { message: "Mindst én ingrediens (produkt + gram > 0) er påkrævet" },
+      { message: "Mindst én ingrediens (vare + gram > 0) er påkrævet" },
       { status: 400 }
     );
   }

@@ -30,7 +30,7 @@ export const DUPLICATE_FIELDS: DuplicateField[] = [
   { key: "name", label: "Navn", kind: "text", section: "Basis", required: true },
   { key: "brand", label: "Brand", kind: "text", section: "Basis" },
   { key: "subbrand", label: "Subbrand", kind: "text", section: "Basis" },
-  { key: "productType", label: "Produkttype", kind: "text", section: "Basis" },
+  { key: "productType", label: "Varetype", kind: "text", section: "Basis" },
   { key: "variant", label: "Variant", kind: "text", section: "Basis" },
   { key: "flavor", label: "Smag", kind: "text", section: "Basis" },
   { key: "packageSizeText", label: "Mængde", kind: "text", section: "Basis" },

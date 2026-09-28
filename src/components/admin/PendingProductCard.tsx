@@ -206,13 +206,13 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
               .filter(Boolean)
               .join(" · ")}
           </p>
-          <p className="hf-type-small text-text-muted">
-            P {product.proteinPer100g}g · K {product.carbsPer100g}g · F {product.fatPer100g}g
+          <p className="hf-type-small whitespace-nowrap text-text-muted">
+            Protein {product.proteinPer100g} g · Kulhydrat {product.carbsPer100g} g · Fedt {product.fatPer100g} g
           </p>
         </div>
         </a>
         <div className="flex flex-shrink-0 items-center gap-3">
-          <div className="flex flex-col items-end" title="Laveste AI-/billedsikkerhed for produktet">
+          <div className="flex flex-col items-end" title="Laveste AI-/billedsikkerhed for varen">
             <span className={`hf-type-page-title leading-none ${confidenceClass(product.confidencePercent)}`}>
               {product.confidencePercent === null ? "–" : `${product.confidencePercent} %`}
             </span>
@@ -264,10 +264,10 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
       {expanded && (
         <div className="border-t border-hf-tan-dark">
           <Section
-            title="Produkt"
+            title="Vare"
             action={
               <a href={`/admin/products/${product.id}`} className="hf-type-small text-hf-green-dark underline">
-                Åbn produktside (merge m.m.)
+                Åbn vareside (merge m.m.)
               </a>
             }
           >
@@ -281,7 +281,7 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
                 )}
               </div>
               <div className="grid flex-1 grid-cols-2 gap-4 lg:grid-cols-4">
-                <Field label="Produkttype" value={form.productType} onChange={set("productType")} />
+                <Field label="Varetype" value={form.productType} onChange={set("productType")} />
                 <Field label="Brand" value={form.brand} onChange={set("brand")} />
                 <Field label="Subbrand" value={form.subbrand} onChange={set("subbrand")} />
                 <Field label="Variant" value={form.variant} onChange={set("variant")} />
@@ -314,7 +314,7 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
             </div>
           </Section>
 
-          <Section title="Produktdetaljer">
+          <Section title="Varedetaljer">
             <div className="mb-4 max-w-xl">
               <Field label="Navn" value={form.name} onChange={set("name")} />
             </div>
@@ -322,7 +322,7 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
               <Detail label="EAN" value={product.barcodes.join(", ")} />
               <Detail label="Pakningsstørrelse" value={product.packageSizeText} />
               <Detail
-                label="Produktkategori"
+                label="Varekategori"
                 value={isProductCategory(product.productCategory) ? PRODUCT_CATEGORY_LABELS[product.productCategory] : null}
               />
               <Detail label="Kategori" value={product.categoryName} />

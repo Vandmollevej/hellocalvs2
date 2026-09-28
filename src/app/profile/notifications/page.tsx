@@ -20,8 +20,8 @@ type Preference = { event: string; email: boolean; push: boolean };
 
 const EVENT_LABELS: Record<string, string> = {
   FRIEND_REFERRAL: "Invitér en ven",
-  PRODUCT_APPROVED: "Produkt godkendt",
-  PRODUCT_REJECTED: "Produkt afvist",
+  PRODUCT_APPROVED: "Vare godkendt",
+  PRODUCT_REJECTED: "Vare afvist",
   BUG_REPORT_RESOLVED: "Fejlrapport løst",
   BUG_REPORT_REJECTED: "Fejlrapport afvist",
   POINTS_AWARDED: "Points optjent",

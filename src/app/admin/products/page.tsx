@@ -150,7 +150,7 @@ export default async function AdminProductsPage({
         </Link>
       </div>
       {products.length === 0 ? (
-        <p className="hf-type-body text-text-secondary">Ingen produkter afventer godkendelse i denne fane.</p>
+        <p className="hf-type-body text-text-secondary">Ingen varer afventer godkendelse i denne fane.</p>
       ) : (
         <div className="flex flex-col gap-4">
           {products.map((product) => (
