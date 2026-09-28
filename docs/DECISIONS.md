@@ -3042,3 +3042,9 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
   data sig, vises konflikten igen.
 - Erstatter det tidligere par-kort (`DuplicateProductCard`) og ruterne
   `/api/admin/duplicate-products/[id]/merge|dismiss`.
+
+## 2026-09-28 – Varesidens titel, certificeringer og "Branded"
+
+- Varetitlen er venstrestillet, stor, fed og sort (`h1`); brand og pakningsstørrelse står under den med mindre grøn tekst.
+- Certificeringer (Øko, Nøglehul, Fairtrade, MSC) udledes af varenavnet (`src/lib/product-certifications.ts`), fjernes fra titlen og vises som logoer på produktcirklen. Limefrugt-ikonet er fjernet; uden certificering står "Branded" i grønt, når varen har et brand.
+- "Detaljer" hedder nu "Produktdetaljer" og ligger mellem mængdevalget og Tilføj-knappen.

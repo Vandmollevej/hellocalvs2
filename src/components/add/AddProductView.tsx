@@ -33,6 +33,8 @@ import { fromDisplayAmount, getProductDisplayUnit, toDisplayAmount } from "@/lib
 import { NUTRIENT_BY_KEY, type ResolvedNutrient } from "@/lib/nutrients";
 import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
 import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
+import { extractCertifications } from "@/lib/product-certifications";
+import { CertificationLogo } from "@/components/hf/CertificationLogo";
 import { Skeleton, SkeletonDetail, SkeletonScreen } from "@/components/hf/Skeleton";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): mens OpenAI stadig læser
@@ -499,6 +501,9 @@ export function AddProductView({
     router.push("/create-dish");
   }
 
+  const { title: productTitle, certifications } =
+    state.status === "loaded" ? extractCertifications(state.product.name) : { title: "", certifications: [] };
+
   const title = forDish ? t("addProduct.titleForDish") : t("addProduct.title");
   const Frame = inSheet ? SheetFrame : ScreenFrame;
 
@@ -568,8 +573,8 @@ export function AddProductView({
                   <ForwardButton kind="PRODUCT" itemId={state.product.id} name={state.product.name} />
                 </div>
               )}
-              <div className="flex flex-col items-center gap-2 pt-2 text-center">
-                <div className="relative h-[190px] w-[190px] min-h-[190px] min-w-[190px] max-h-[190px] max-w-[190px] shrink-0 overflow-visible">
+              <div className="flex flex-col items-start gap-2 pt-2 text-left">
+                <div className="relative self-center h-[190px] w-[190px] min-h-[190px] min-w-[190px] max-h-[190px] max-w-[190px] shrink-0 overflow-visible">
                   <div className="flex h-[190px] w-[190px] min-h-[190px] min-w-[190px] items-center justify-center overflow-hidden rounded-full bg-hf-tan">
                     {displayImageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -594,15 +599,15 @@ export function AddProductView({
                       {isFavorite ? <IconBookmarkFilled size={24} /> : <IconBookmark size={24} />}
                     </button>
                   )}
-                  {/* Logo sits on top of the product circle: its bottom-left
-                      corner halfway between the circle's centre and its bottom
-                      edge (half a radius up), spanning one radius to the right. */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/hello-cal-fruit.png"
-                    alt=""
-                    className="pointer-events-none absolute bottom-1/4 left-1/2 z-10 h-[95px] w-[95px] object-contain object-left-bottom"
-                  />
+                  {/* Certificeringslogoer (Øko m.fl.) på produktcirklen; uden
+                      certificering vises intet logo (docs/DECISIONS.md 2026-09-28). */}
+                  {certifications.length > 0 && (
+                    <div className="pointer-events-none absolute bottom-2 right-0 z-10 flex gap-1">
+                      {certifications.map((certification) => (
+                        <CertificationLogo key={certification} certification={certification} />
+                      ))}
+                    </div>
+                  )}
                 </div>
                 {!!state.product.barcodes?.length && state.product.createdByUserId !== profile?.id && (
                   <Link
@@ -618,7 +623,7 @@ export function AddProductView({
                     <Skeleton type="body-lg" width={200} />
                   </ReadingSkeleton>
                 ) : (
-                  <p className="hf-type-body-lg hf-heading text-hf-black">{state.product.name}</p>
+                  <h1 className="hf-type-title hf-type-strong text-hf-black">{productTitle}</h1>
                 )}
                 {isPending("brand") ? (
                   <ReadingSkeleton label={t("addProduct.reading")}>
@@ -626,10 +631,16 @@ export function AddProductView({
                   </ReadingSkeleton>
                 ) : (
                   state.product.brand && (
-                    <p className="hf-type-body hf-type-strong text-hf-green">
+                    <p className="hf-type-small hf-type-strong text-hf-green">
                       {state.product.brand.name}
                     </p>
                   )
+                )}
+                {state.product.packageSizeText && (
+                  <p className="hf-type-small text-hf-green">{state.product.packageSizeText}</p>
+                )}
+                {certifications.length === 0 && state.product.brand && (
+                  <p className="hf-type-small hf-type-strong text-hf-green">{t("addProduct.branded")}</p>
                 )}
                 <p className="hf-type-body hf-type-strong text-hf-black">
                   {isPending("nutrition") ? (
@@ -648,7 +659,7 @@ export function AddProductView({
                     : t("addProduct.kcalPer100ml", { kcal: Math.round(state.product.kcalPer100g) })}
                 </p>
                 {!!confidentAlternativeServings.length && (
-                  <div className="mt-1 flex flex-col items-center gap-0.5">
+                  <div className="mt-1 flex flex-col items-start gap-0.5">
                     {confidentAlternativeServings.map((serving: AlternativeServing, index: number) => (
                       <p key={`${serving.label}-${index}`} className="hf-type-small text-text-secondary">
                         {t("addProduct.alternativeServing", { label: serving.label, kcal: Math.round(serving.kcal as number) })}
@@ -657,16 +668,6 @@ export function AddProductView({
                   </div>
                 )}
 
-                <div className="mt-2 flex items-center justify-center gap-4">
-                  <button
-                    type="button"
-                    onClick={scrollToDetails}
-                    className="hf-btn-text flex items-center gap-1 text-hf-black"
-                  >
-                    {t("addProduct.details")}
-                    <IconChevronDown size={15} />
-                  </button>
-                </div>
               </div>
 
               {!forDish && (
@@ -750,6 +751,14 @@ export function AddProductView({
                 </button>
               </div>
 
+              <button
+                type="button"
+                onClick={scrollToDetails}
+                className="hf-btn-text flex items-center gap-1 self-start text-hf-black"
+              >
+                {t("addProduct.details")}
+                <IconChevronDown size={15} />
+              </button>
             </div>
 
             <div ref={detailsRef} className="flex flex-col gap-8 border-t border-hf-tan-dark p-4">
