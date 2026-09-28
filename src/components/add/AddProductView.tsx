@@ -706,21 +706,26 @@ export function AddProductView({
                       {isFavorite ? <IconBookmarkFilled size={24} /> : <IconBookmark size={24} />}
                     </button>
                   )}
-                  {/* Only a real brand logo goes on the circle (bottom-left
-                      corner at the circle's bottom point, one radius wide).
-                      Without a logo the brand name below is the only mark. */}
-                  {state.product.brand?.logoUrl && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={state.product.brand.logoUrl}
-                      alt={state.product.brand.name}
-                      className="pointer-events-none absolute bottom-0 left-1/2 z-10 h-[95px] w-[95px] object-contain object-left-bottom"
-                    />
-                  )}
+                  {/* Brandet vises kun på cirklen: logoet med bunden i cirklens
+                      bund og venstre kant 3/4 inde; uden logo brandnavnet i
+                      fed grøn tekst samme sted (DECISIONS 2026-09-28). */}
+                  {state.product.brand &&
+                    (state.product.brand.logoUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={state.product.brand.logoUrl}
+                        alt={state.product.brand.name}
+                        className="pointer-events-none absolute bottom-0 left-3/4 z-10 h-[95px] w-[95px] object-contain object-left-bottom"
+                      />
+                    ) : (
+                      <p className="hf-type-title hf-type-strong pointer-events-none absolute bottom-0 left-3/4 z-10 whitespace-nowrap text-hf-green">
+                        {state.product.brand.name}
+                      </p>
+                    ))}
                   {/* Certificeringslogoer (Øko m.fl.) på produktcirklen; uden
                       certificering vises intet logo (docs/DECISIONS.md 2026-09-28). */}
                   {certifications.length > 0 && (
-                    <div className="pointer-events-none absolute bottom-2 right-0 z-10 flex gap-1">
+                    <div className="pointer-events-none absolute bottom-2 left-0 z-10 flex gap-1">
                       {certifications.map((certification) => (
                         <CertificationLogo key={certification} certification={certification} />
                       ))}
@@ -736,17 +741,6 @@ export function AddProductView({
                 )}
                 {state.product.packageSizeText && (
                   <h2 className="hf-type-title hf-type-strong text-hf-green">{state.product.packageSizeText}</h2>
-                )}
-                {isPending("brand") ? (
-                  <ReadingSkeleton label={t("addProduct.reading")}>
-                    <Skeleton type="body" width={120} />
-                  </ReadingSkeleton>
-                ) : (
-                  state.product.brand && (
-                    <p className="hf-type-small hf-type-strong text-hf-green">
-                      {state.product.brand.name}
-                    </p>
-                  )
                 )}
               </div>
 
