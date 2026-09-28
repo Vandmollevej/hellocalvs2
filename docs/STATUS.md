@@ -1,6 +1,20 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-27
+Last updated: 2026-09-28
+
+## 2026-09-28: Google OAuth-klienten klar til hellocal.io
+
+- Google Cloud (projekt `hellocal`, "OAuth client"): redirect-URI'erne
+  `https://hellocal.io/api/auth/oauth/google/callback`,
+  `…/api/integrations/google-health/callback` og `…/api/google-health/callback`
+  samt origin `https://hellocal.io` er tilføjet. Google bekræfter alle som
+  registreret (ingen `redirect_uri_mismatch`).
+- Serveren brugte allerede `APP_BASE_URL=https://hellocal.io`, og
+  `hellocal.packroff.dk` 308-videresender dertil (Cloudflare).
+- Google-login manglede `GOOGLE_CLIENT_ID/SECRET` i `.env.production`
+  (`google-not-configured`). De er sat til samme OAuth-klient som Google Health
+  (backup `.env.production.bak-20260928-google-login`); træder i kraft ved
+  næste deploy (`up -d app`).
 
 ## 2026-09-27: Admin kunne ikke scrolle på mobil
 
