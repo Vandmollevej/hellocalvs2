@@ -200,8 +200,8 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
               .filter(Boolean)
               .join(" · ")}
           </p>
-          <p className="hf-type-small text-text-muted">
-            P {product.proteinPer100g}g · K {product.carbsPer100g}g · F {product.fatPer100g}g
+          <p className="hf-type-small whitespace-nowrap text-text-muted">
+            Protein {product.proteinPer100g} g · Kulhydrat {product.carbsPer100g} g · Fedt {product.fatPer100g} g
           </p>
         </div>
         <div className="flex flex-shrink-0 items-center gap-3">

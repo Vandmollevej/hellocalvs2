@@ -75,8 +75,8 @@ export async function LegacyWarnings() {
                     >
                       <span>
                         {p.brand?.name ? `${p.brand.name} · ` : ""}
-                        {p.status} · {Math.round(p.kcalPer100g)} kcal · P {p.proteinPer100g}g · K {p.carbsPer100g}g · F{" "}
-                        {p.fatPer100g}g
+                        {p.status} · {Math.round(p.kcalPer100g)} kalorier · Protein {p.proteinPer100g} g · Kulhydrat{" "}
+                        {p.carbsPer100g} g · Fedt {p.fatPer100g} g
                       </span>
                       <span className="hf-type-small text-hf-green-dark underline">Åbn / merge</span>
                     </Link>
