@@ -36,6 +36,9 @@ sat fra 7 dage til 1 time (`src/lib/email-verification.ts`), så teksten er sand
 
 Forsiden er låst til skærmhøjden (`h-dvh overflow-hidden`); topbar, hero og bundmenu står fast, og kun listen scroller internt.
 
+## 2026-09-28: Forside — kun "Dagens tilføjelser" scroller
+
+Forsiden er låst til skærmhøjden (`h-dvh overflow-hidden`); topbar, hero og bundmenu står fast, og kun listen scroller internt.
 ## 2026-09-28: Abonnement — boilerplate fjernet
 
 - `/profile/subscription`: datalagringsnoten (`subscription.retentionNote`)
