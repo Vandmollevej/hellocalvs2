@@ -128,6 +128,15 @@ export async function middleware(req: NextRequest) {
   const url = req.nextUrl.clone();
   let pathname = url.pathname;
 
+  // Favicon, app-ikoner, manifest og andre filer fra public/ skal serveres
+  // uændret — ellers omskrives fx /icon.png til /admin/icon.png og ender på
+  // login-siden, så browseren falder tilbage til et gammelt cachet favicon.
+  const isStaticAsset =
+    !pathname.startsWith("/admin") &&
+    !pathname.startsWith("/api/") &&
+    (/\.(png|jpe?g|svg|webp|gif|ico|woff2?|txt)$/i.test(pathname) || pathname === "/manifest.webmanifest");
+  if (isAdminHost && isStaticAsset) return NextResponse.next();
+
   if (isAdminHost && !pathname.startsWith("/admin") && !pathname.startsWith("/api/admin")) {
     pathname = pathname === "/" ? "/admin" : `/admin${pathname}`;
   }

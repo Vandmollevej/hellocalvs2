@@ -2,6 +2,17 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Favicon — korrekt ikon overalt
+
+- Ikonfilerne i `src/app/` var allerede korrekte, men `middleware.ts`
+  omskrev på admin-værten `/icon.png`, `/apple-icon.png`,
+  `/manifest.webmanifest` og `/icons/*` til `/admin/...` → login-redirect.
+  Browseren fik kun den 16 px `favicon.ico` og holdt fast i sit gamle cachede
+  ikon. Statiske filer uden for `/admin` serveres nu uændret.
+- `src/app/favicon.ico` genereret i 16/32/48 px fra `icon.png` (før kun 16 px).
+- Efter deploy kan en hård genindlæsning/rydning af browser-cache være
+  nødvendig, fordi `/favicon.ico` caches uden versions-hash.
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen
