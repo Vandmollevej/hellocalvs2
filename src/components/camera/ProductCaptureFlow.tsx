@@ -27,6 +27,7 @@ import {
   type CaptureData,
   type CaptureStep,
 } from "@/lib/product-capture";
+import { useAutoCapture } from "./useAutoCapture";
 import { newScanFlowId, scanFlowHeaders, scanLog } from "@/lib/scan-debug-log";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -409,6 +410,11 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     return () => clearInterval(interval);
   }, [scanning]);
 
+  const capturePhotoRef = useRef(capturePhoto);
+  useEffect(() => {
+    capturePhotoRef.current = capturePhoto;
+  });
+
   async function capturePhoto() {
     if (working || step === "barcode") return;
     const frame = captureFrame(videoRef.current);
@@ -527,6 +533,12 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     nutrition: t("cameraCreate.stepNutrition"),
     ingredients: t("cameraCreate.stepIngredients"),
   };
+  const autoCaptureProgress = useAutoCapture(
+    videoRef,
+    step !== "barcode" && cameraStatus === "active" && !working && !photo && !createFailed,
+    () => void capturePhotoRef.current(),
+  );
+
   const stepHints: Record<CaptureStep, string> = {
     barcode: lookupError ? t("camera.barcodeLookupError") : t("camera.holdCameraStill"),
     front: t("cameraCreate.hintFront"),
@@ -571,7 +583,15 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
         )}
 
         {!scanning && !photo && (
-          <div className="pointer-events-none absolute inset-[12%] rounded-[12px] border-2 border-white/80 shadow-[0_0_0_999px_rgba(0,0,0,0.2)]" />
+          <div
+            className="pointer-events-none absolute inset-[12%] rounded-[12px] border-2 shadow-[0_0_0_999px_rgba(0,0,0,0.2)] transition-colors"
+            style={{ borderColor: autoCaptureProgress > 0 ? "var(--hf-color-brand)" : "rgba(255,255,255,0.8)" }}
+          >
+            <div
+              className="absolute bottom-0 left-0 h-1 rounded-full transition-[width]"
+              style={{ width: `${autoCaptureProgress * 100}%`, background: "var(--hf-color-brand)" }}
+            />
+          </div>
         )}
 
         {cameraMessage && (
@@ -624,6 +644,9 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
       ) : (
         <>
           <p className="hf-type-small text-text-secondary text-center">{stepHints[step]}</p>
+          {step !== "barcode" && (
+            <p className="hf-type-micro text-text-secondary text-center">{t("camera.autoCaptureHint")}</p>
+          )}
           {step !== "barcode" && (
             <div className="flex justify-center">
               <button

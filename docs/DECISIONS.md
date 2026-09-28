@@ -3042,3 +3042,7 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
   data sig, vises konflikten igen.
 - Erstatter det tidligere par-kort (`DuplicateProductCard`) og ruterne
   `/api/admin/duplicate-products/[id]/merge|dismiss`.
+
+## 2026-09-28 — Automatisk fotografering (punkt 15)
+
+Foto-trinnene i kamera-flowet (forside, næring, ingredienser) udløser automatisk, når varen er i fokus: skarphed (Laplace-varians) i midterrammen skal være over et minimum og tæt på den bedste målte, og billedet skal være stillestående i 4 målinger i træk (200 ms interval, 1,2 s opstart pr. trin). Beregnes lokalt på et 160×160-udsnit (`src/lib/focus-detection.ts`, `useAutoCapture`). "Tag billede"-knappen bevares som manuel reserve. Stregkodetrinnet er uændret.
