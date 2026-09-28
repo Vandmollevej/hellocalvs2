@@ -661,9 +661,13 @@ testbrugere. Connect/callback sendte desuden brugeren til
 `https://0.0.0.0:3000/…` (req.url i containeren); redirects bygges nu fra
 `INTEGRATIONS_REDIRECT_BASE_URL` (`publicUrl` i `src/lib/integrations/registry.ts`).
 
-Next work: Brugeren tilføjer `https://hellocal.packroff.dk/api/google-health/callback`
-som redirect-URI på klienten og `packroff@gmail.com` som testbruger (Google Auth
-Platform → Audience). Test derefter forbindelsen på iPhone.
+2026-09-28: Redirect-delen er løst med domæneskiftet — Google accepterer den
+hellocal.io-URI, serveren nu sender, og callbacken rammer appen (tjekket uden at
+vise værdier).
+
+Next work: Tilføj `packroff@gmail.com` som testbruger (Google Auth Platform →
+Audience; appen står i Testing), hvis det ikke allerede er gjort. Test derefter
+forbindelsen på iPhone.
 ## 2026-09-25: Tilføj-menu tekster og vandglas-ikon
 
 - "Kamera" → "Scan med kamera", "Mikrofon" → "Indtal" (`addButton.*` i
