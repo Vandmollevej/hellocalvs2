@@ -707,7 +707,12 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=50)
     ap.add_argument("--all", action="store_true")
+    # The full catalogue is too big for git: build it into a folder that is
+    # copied to the NAS (data/store-products-import, see compose).
+    ap.add_argument("--out", default=None)
     args = ap.parse_args()
+    out_dir = args.out or OUT_DIR
+    out_images = os.path.join(out_dir, "images")
 
     bilka = load(BILKA_SHEET)
     rema = load(REMA_SHEET)
@@ -764,20 +769,20 @@ def main():
         n_bilka = args.limit * 2 // 5
         products = spread(both, n_both) + spread(bilka_only, n_bilka) + spread(rema_only, args.limit - n_both - n_bilka)
 
-    if os.path.isdir(OUT_IMAGES):
-        shutil.rmtree(OUT_IMAGES)
-    os.makedirs(OUT_IMAGES, exist_ok=True)
+    if os.path.isdir(out_images):
+        shutil.rmtree(out_images)
+    os.makedirs(out_images, exist_ok=True)
     for p in products:
         # Primary = "<EAN>.<ext>" as before; further variants "<EAN>_2.<ext>" …
         p["images"] = []
         for i, (src, tags) in enumerate(p.pop("_imagePaths")):
             ext = os.path.splitext(src)[1].lower()
             name = f"{p['ean']}{ext}" if i == 0 else f"{p['ean']}_{i + 1}{ext}"
-            shutil.copyfile(src, os.path.join(OUT_IMAGES, name))
+            shutil.copyfile(src, os.path.join(out_images, name))
             p["images"].append({"file": name, "tags": tags})
         p["image"] = p["images"][0]["file"] if p["images"] else None
 
-    with open(os.path.join(OUT_DIR, "store_products.json"), "w", encoding="utf-8") as f:
+    with open(os.path.join(out_dir, "store_products.json"), "w", encoding="utf-8") as f:
         json.dump(products, f, ensure_ascii=False, indent=1)
     print(f"wrote {len(products)} products; skipped {skipped}; "
           f"both={sum(len(p['stores']) == 2 for p in products)} "

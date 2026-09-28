@@ -54,6 +54,40 @@ export async function createFrontCutoutJobs({
   await prisma.imageCutoutJob.createMany({ data: jobs });
 }
 
+// Logoet fra stregkode-fotoet (docs/DECISIONS.md 2026-09-28) — oprettes
+// når varen findes, så jobbet kobles direkte til vare og brand.
+export async function createBarcodeLogoCutoutJob({
+  analysisId,
+  sourceUrl,
+  logoBox,
+  logoText,
+  logoConfidence,
+  productId,
+  brandMatch,
+}: {
+  analysisId: string;
+  sourceUrl: string;
+  logoBox: ImageBox;
+  logoText: string | null;
+  logoConfidence: number;
+  productId: string;
+  brandMatch: BrandMatch | null;
+}) {
+  await prisma.imageCutoutJob.create({
+    data: {
+      kind: "BRAND_LOGO",
+      sourceUrl,
+      analysisId,
+      productId,
+      cropBox: padBox(logoBox, 0.15),
+      recognizedText: logoText,
+      confidence: logoConfidence,
+      brandId: brandMatch?.id,
+      matchScore: brandMatch?.score,
+    },
+  });
+}
+
 // Kaldes når produktet oprettes: kobler forsidens jobs til produktet og
 // logo-jobbet til det brand, brugeren endte med at bekræfte.
 export async function linkCutoutJobsToProduct({

@@ -289,6 +289,9 @@ services:
       DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env.production}
     volumes:
       - ./data/product-images:/images
+      # Hele kataloget (JSON + billeder) kopieres hertil fra arbejdsstationen;
+      # for stort til git. Tom mappe = kun den lille prøve i billedet.
+      - ./data/store-products-import:/import:ro
     depends_on:
       db:
         condition: service_healthy
