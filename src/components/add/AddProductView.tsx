@@ -582,13 +582,13 @@ export function AddProductView({
                     </button>
                   )}
                   {/* Logo sits on top of the product circle: its bottom-left
-                      corner at the circle's bottom point, spanning one radius
-                      to the right. */}
+                      corner halfway between the circle's centre and its bottom
+                      edge (half a radius up), spanning one radius to the right. */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="/hello-cal-fruit.png"
                     alt=""
-                    className="pointer-events-none absolute bottom-0 left-1/2 z-10 h-[95px] w-[95px] object-contain object-left-bottom"
+                    className="pointer-events-none absolute bottom-1/4 left-1/2 z-10 h-[95px] w-[95px] object-contain object-left-bottom"
                   />
                 </div>
                 {!!state.product.barcodes?.length && state.product.createdByUserId !== profile?.id && (
