@@ -732,6 +732,9 @@ export function AddProductView({
                 ) : (
                   <h1 className="hf-type-title hf-type-strong text-hf-black">{productTitle}</h1>
                 )}
+                {state.product.packageSizeText && (
+                  <h2 className="hf-type-body-lg text-hf-green">{state.product.packageSizeText}</h2>
+                )}
                 {isPending("brand") ? (
                   <ReadingSkeleton label={t("addProduct.reading")}>
                     <Skeleton type="body" width={120} />
@@ -742,9 +745,6 @@ export function AddProductView({
                       {state.product.brand.name}
                     </p>
                   )
-                )}
-                {state.product.packageSizeText && (
-                  <p className="hf-type-small text-hf-green">{state.product.packageSizeText}</p>
                 )}
               </div>
 
