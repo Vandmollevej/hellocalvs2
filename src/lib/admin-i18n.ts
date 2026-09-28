@@ -45,6 +45,7 @@ const DICTIONARY = {
   nav_group_administration: { DA: "Administration", EN: "Administration" },
   nav_jobs: { DA: "Jobs", EN: "Jobs" },
   nav_agents: { DA: "Agenter", EN: "Agents" },
+  nav_robots: { DA: "Robotter", EN: "Robots" },
   nav_group_settings: { DA: "Indstillinger", EN: "Settings" },
   nav_standard_mails: { DA: "Standard-mails", EN: "Standard emails" },
   nav_group_design: { DA: "Design og opbygning", EN: "Design and structure" },

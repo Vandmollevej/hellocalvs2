@@ -28,7 +28,11 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ key: s
   if (body.runNow === true) data.runRequestedAt = new Date();
   if ("schedule" in body) {
     const schedule = body.schedule as { type?: unknown; value?: unknown } | null;
-    if (schedule?.type === "time") {
+    if (schedule?.type === "continuous") {
+      // 0 = "Løbende" (src/lib/jobs/schedule.ts, scripts/*/job_control.py).
+      data.intervalMinutes = 0;
+      data.runAtTime = null;
+    } else if (schedule?.type === "time") {
       const value = typeof schedule.value === "string" ? schedule.value.trim() : "";
       if (parseRunAtTime(value) === null) return NextResponse.json({ message: "Angiv tidspunkt som TT:MM" }, { status: 400 });
       data.runAtTime = value.padStart(5, "0");
