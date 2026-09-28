@@ -1500,6 +1500,7 @@
     "details": "Detaljer",
     "additivesWarningTitle": "Indeholder E-numre",
     "additivesWarningBody": "Varen indeholder {count} E-numre. Tryk for at læse mere.",
+    "branded": "Branded",
     "additives": "E-numre",
     "time": "Tidspunkt",
     "millilitresUnit": "Milliliter",
