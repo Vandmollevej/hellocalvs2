@@ -3085,6 +3085,9 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
 - Erstatter det tidligere par-kort (`DuplicateProductCard`) og ruterne
   `/api/admin/duplicate-products/[id]/merge|dismiss`.
 
+## 2026-09-28 — Kamera: scanningsstribe i stedet for load-cirkel
+
+Mens et foto arbejder i kameraflowet under Tilføj, vises en bred hvid/lys gradientstribe (`.hf-scan-sweep`), der fejer hen over billedet, i stedet for det hvide overlay med load-cirklen. Billedet forbliver synligt, så varen ser ud til at blive scannet.
 ## 2026-09-28: Redigering af en tilføjet registrering
 
 - Et tryk på en tilføjet vare (`/registration/[id]`) åbner samme visning som
