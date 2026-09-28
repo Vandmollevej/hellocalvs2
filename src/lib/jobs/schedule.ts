@@ -38,6 +38,8 @@ export function isJobDue(state: JobScheduleState, now: Date = new Date()): boole
   const { enabled, runAtTime, intervalMinutes, runRequestedAt, lastStartedAt } = state;
   if (runRequestedAt && (!lastStartedAt || runRequestedAt > lastStartedAt)) return true;
   if (!enabled) return false;
+  // 0 = "Løbende": kør ved hvert tjek (som job_control.py).
+  if (intervalMinutes === 0) return true;
   if (intervalMinutes) {
     return !lastStartedAt || now.getTime() - lastStartedAt.getTime() >= intervalMinutes * 60_000;
   }
@@ -55,6 +57,7 @@ export function isJobDue(state: JobScheduleState, now: Date = new Date()): boole
 // Til admin-siden: hvornår kører jobbet næste gang (omtrent), eller null.
 export function describeNextRun(state: JobScheduleState): string {
   if (!state.enabled) return "Pauset";
+  if (state.intervalMinutes === 0) return "Løbende (venter på nye produkter)";
   if (state.intervalMinutes) {
     const m = state.intervalMinutes;
     if (m === 1) return "Hvert minut";
