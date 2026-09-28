@@ -406,6 +406,7 @@ function WheelItem({
   // are dimmed an extra 30% so the centered stat stands out; the factor eases
   // in with `focus`, so the fade stays continuous while dragging.
   const opacity = (1 - absDistance / visibleRange) * (0.7 + 0.3 * focus);
+  const captionOpacity = Math.min(1, 2 * (1 - absDistance / visibleRange));
   const transition = animate ? "transition-[transform,opacity,color] duration-300 ease-out" : "";
   // The items sit on a circular arc like the rim of a wheel: the centered item
   // is inset MAX_INSET from the right edge and the others curve back out to
@@ -434,22 +435,27 @@ function WheelItem({
       style={{
         top: "50%",
         transform: `translateY(calc(-50% + ${translateY}px)) translateX(-${inset}px) rotate(${tilt}deg) scale(${scale})`,
-        opacity,
       }}
     >
       <span className="hf-type-strong relative leading-none" style={{ fontSize: FONT_SIZE }}>
-        {stat.value}
-        {stat.unit && <span className="hf-type-strong"> {stat.unit}</span>}
+        <span className={transition} style={{ opacity }}>
+          {stat.value}
+          {stat.unit && <span className="hf-type-strong"> {stat.unit}</span>}
+        </span>
+        {/* The caption only fades out at the wheel's ends, not with the
+            neighbour dimming (user 2026-09-28: it vanished as soon as a row
+            left the center). */}
         <span
           aria-hidden="true"
-          className="hf-type-small absolute right-0 top-full mt-1 text-text-secondary"
+          className={`hf-type-small absolute right-0 top-full mt-1 text-text-secondary ${transition}`}
+          style={{ opacity: captionOpacity }}
         >
           {CAPTION_PLACEHOLDER}
         </span>
       </span>
       <span
         className={`flex ${transition}`}
-        style={{ color: `color-mix(in srgb, var(--hf-green) ${Math.round(focus * 100)}%, var(--hf-black))` }}
+        style={{ opacity, color: `color-mix(in srgb, var(--hf-green) ${Math.round(focus * 100)}%, var(--hf-black))` }}
       >
         <StatIcon size={ICON_SIZE} color="currentColor" stroke={2.2} aria-hidden="true" />
       </span>
