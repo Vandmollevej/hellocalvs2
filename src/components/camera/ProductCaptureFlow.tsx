@@ -7,6 +7,7 @@ import { IconBarcode, IconCamera, IconFlame, IconList, IconPhoto, type Icon } fr
 import { BarcodeScanOverlay, type BarcodeDetection } from "@/components/hf/BarcodeScanOverlay";
 import { CaptureCheckOverlay } from "@/components/hf/CaptureCheckOverlay";
 import { PhotoWorkingOverlay } from "@/components/hf/HfLoader";
+import { ProductOutlineOverlay } from "@/components/camera/ProductOutlineOverlay";
 import {
   barcodeGuideBoxFraction,
   barcodePoseFromPoints,
@@ -573,6 +574,12 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
         {!scanning && !photo && (
           <div className="pointer-events-none absolute inset-[12%] rounded-[12px] border-2 border-white/80 shadow-[0_0_0_999px_rgba(0,0,0,0.2)]" />
         )}
+
+        <ProductOutlineOverlay
+          videoRef={videoRef}
+          active={!scanning && !photo && !working && cameraStatus === "active"}
+          flowId={flowId}
+        />
 
         {cameraMessage && (
           <div
