@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAdminUser } from "@/lib/require-admin";
 import { PendingBugReportCard } from "@/components/admin/PendingBugReportCard";
+import type { BugReportSections } from "@/lib/bug-report-sections";
 import { t } from "@/lib/admin-i18n";
 
 export default async function AdminBugReportsPage() {
@@ -14,6 +15,7 @@ export default async function AdminBugReportsPage() {
       id: true,
       description: true,
       screenshotUrl: true,
+      sections: true,
       createdAt: true,
       source: true,
       user: { select: { displayName: true, email: true } },
@@ -38,6 +40,7 @@ export default async function AdminBugReportsPage() {
               key={report.id}
               report={{
                 ...report,
+                sections: report.sections as BugReportSections | null,
                 createdAt: report.createdAt.toISOString(),
                 notes: report.notes.map((n) => ({ ...n, createdAt: n.createdAt.toISOString() })),
               }}
