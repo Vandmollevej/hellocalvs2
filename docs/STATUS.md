@@ -2,6 +2,10 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: E-nummer-advarsel på produktsiden (#30)
+
+- Når "Vis E-numre" er slået til i Opsætning, vises en særskilt advarselsblok før energifordelingen: stort grønt E i grøn firkant med advarselstrekant, overskrift "Indeholder E-numre" og varens E-numre som chips (tryk åbner infomodal). Den tidligere sammenklappelige E-nummer-liste under energifordelingen er erstattet af blokken.
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen

@@ -183,7 +183,6 @@ export function AddProductView({
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [openAdditive, setOpenAdditive] = useState<string | null>(null);
-  const [additivesOpen, setAdditivesOpen] = useState(false);
   // Åben som standard (G11, 2026-09-24) — brugeren har selv slået panelet til.
   const [extendedNutritionOpen, setExtendedNutritionOpen] = useState(true);
   const [toxinsOpen, setToxinsOpen] = useState(false);
@@ -753,6 +752,54 @@ export function AddProductView({
             </div>
 
             <div ref={detailsRef} className="flex flex-col gap-8 border-t border-hf-tan-dark p-4">
+              {/* E-nummer-advarsel (#30): særskilt blok før energifordelingen,
+                  når brugeren har slået E-numre til i Opsætning. */}
+              {profile?.showAdditives && !!state.product.additives?.length && (
+                <section
+                  role="alert"
+                  aria-label={t("addProduct.additivesWarningTitle")}
+                  className="flex gap-4 rounded-2xl border-2 border-hf-green bg-hf-tan p-4"
+                >
+                  <div
+                    aria-hidden
+                    className="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-hf-green text-hf-white"
+                  >
+                    <span className="text-4xl font-bold leading-none">E</span>
+                    <span className="absolute -right-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full bg-hf-white text-hf-black shadow">
+                      <IconAlertTriangle size={18} />
+                    </span>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="hf-type-body hf-heading flex items-center gap-1.5 text-hf-black">
+                      <IconAlertTriangle size={18} className="shrink-0" aria-hidden />
+                      {t("addProduct.additivesWarningTitle")}
+                    </p>
+                    <p className="hf-type-small mb-2 text-text-secondary">
+                      {t("addProduct.additivesWarningBody", { count: state.product.additives.length })}
+                    </p>
+                    <ul className="flex flex-wrap gap-2">
+                      {state.product.additives.map((code) => {
+                        const name = additiveNames[code];
+                        return (
+                          <li key={code}>
+                            <button
+                              type="button"
+                              onClick={() => setOpenAdditive(code)}
+                              className="hf-type-small rounded-full bg-hf-white px-3 py-1 text-hf-black"
+                            >
+                              <span className="hf-type-strong">{code.toUpperCase()}</span>
+                              {name && name !== code.toUpperCase() && (
+                                <span className="text-text-secondary"> · <span className="underline underline-offset-2">{name}</span></span>
+                              )}
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                </section>
+              )}
+
               <div>
                 <div className="mb-4 flex items-center justify-between">
                   <p className="hf-type-body hf-heading text-hf-black">{t("common.macroBreakdown")}</p>
@@ -817,49 +864,6 @@ export function AddProductView({
                 </div>
                 )}
               </div>
-
-              {profile?.showAdditives && !!state.product.additives?.length && (
-                <div>
-                  <button
-                    type="button"
-                    onClick={() => setAdditivesOpen((open) => !open)}
-                    className="mb-4 flex w-full items-center justify-between"
-                  >
-                    <p className="hf-type-body hf-heading text-hf-black">{t("addProduct.additives")}</p>
-                    <IconChevronDown
-                      size={18}
-                      className={`text-hf-black transition-transform ${additivesOpen ? "rotate-180" : ""}`}
-                    />
-                  </button>
-                  {additivesOpen && (
-                  <div className="flex flex-col gap-1 overflow-hidden rounded-2xl bg-hf-tan">
-                    {state.product.additives.map((code, index) => {
-                      const name = additiveNames[code] ?? code.toUpperCase();
-                      return (
-                        <button
-                          key={code}
-                          type="button"
-                          onClick={() => setOpenAdditive(code)}
-                          className={`hf-control-row flex items-center gap-3 px-4 text-left ${
-                            index < (state.product.additives?.length ?? 0) - 1
-                              ? "border-b border-hf-tan-dark"
-                              : ""
-                          }`}
-                        >
-                          <span className="hf-type-micro hf-type-strong flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-hf-green text-hf-white">
-                            E
-                          </span>
-                          <span className="hf-type-small text-text-secondary">
-                            ({code.toUpperCase()}){" "}
-                            <span className="underline underline-offset-2">{name}</span>
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                  )}
-                </div>
-              )}
 
               {/* Toksiner (G11): kendte stoffer ud fra navn + indholdsfortegnelse,
                   kun når brugeren har slået det til i Opsætning. */}
