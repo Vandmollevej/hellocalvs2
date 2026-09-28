@@ -127,6 +127,51 @@ export function frontText(input: ContextLines & { knownBrands: string[] }) {
     .join("\n");
 }
 
+// --- Stregkode-foto: logo og variant ----------------------------------------
+
+// barcode-logo-v1 (2026-09-28): logoet står ikke altid på forsiden — på fx
+// en vandflaske stod det ved siden af stregkoden. Stregkode-fotoet læses
+// derfor også for logo (til fritskrabning) og variant (fx "Uden brus").
+export const BARCODE_LOGO_PROMPT_VERSION = "barcode-logo-v1-2026-09-28";
+
+export const BARCODE_LOGO_SCHEMA = {
+  type: "object",
+  properties: {
+    logoText: { type: ["string", "null"] },
+    logoConfidence: { type: "number" },
+    logoBox: IMAGE_BOX_SCHEMA,
+    variant: { type: ["string", "null"] },
+    variantConfidence: { type: "number" },
+  },
+  required: ["logoText", "logoConfidence", "logoBox", "variant", "variantConfidence"],
+  additionalProperties: false,
+};
+
+export const BARCODE_LOGO_SYSTEM = [
+  "Du ser et foto af en dagligvareemballage taget for at læse stregkoden, for Hello Cal.",
+  "Find et brand-logo, hvis et ses nogen steder i fotoet (ofte ved siden af stregkoden).",
+  "Genkend logo visuelt; stol ikke kun på almindelig OCR. Logoer kan være stiliserede, skrå, håndskrevne eller grafiske.",
+  "logoText = navnet som logoet viser, stavet som mærket selv staver det (uden ® og ™). null hvis intet logo ses.",
+  "Stregkodens cifre, genbrugsmærker, pant-mærker og certificeringsmærker er ikke logoer.",
+  "logoConfidence = 0-1 hvor sikker du er på logoText.",
+  "logoBox = rektangel om logoet (kun logoet) i brøkdele 0-1 af billedets bredde/højde: x,y = øverste venstre hjørne. null hvis intet logo ses.",
+  "variant = tydeligt synlig smag/type/styrke/fedtprocent eller anden variant, fx Uden brus, Let eller Jordbær. null hvis ingen ses.",
+  "variantConfidence = 0-1 hvor sikker du er på variant.",
+  "Brug ikke producentens juridiske firmanavn fra småt tekst som logo.",
+  "Hvis et felt ikke kan afgøres, returnér null og lav confidence lavere. Gæt ikke.",
+].join(" ");
+
+export function barcodeLogoText(input: ContextLines & { knownBrands: string[] }) {
+  const knownBrandText = input.knownBrands.join(", ");
+  return [
+    ...contextLines(input),
+    knownBrandText ? `Kendte brandnavne i databasen (kun som støtte, ikke facit): ${knownBrandText}` : "",
+    "Find logo og variant i stregkode-fotoet.",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
 // --- Næringsdeklaration -----------------------------------------------------
 
 // v3 (2026-09-27): pakningens samlede indhold er ikke en portion — test med

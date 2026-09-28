@@ -87,6 +87,7 @@ const NAV: NavEntry[] = [
       { href: "/admin/scan-invites", key: "nav_scan_invites" },
       { href: "/admin/jobs", key: "nav_jobs" },
       { href: "/admin/agents", key: "nav_agents" },
+      { href: "/admin/robots", key: "nav_robots" },
     ],
   },
   {
