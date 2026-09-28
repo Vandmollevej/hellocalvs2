@@ -2,6 +2,11 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Tilmelding — kompakt landvalg (opgave 38)
+
+- Landvalget på `/login` er nu en kompakt pille ud for "Vælg land": flag + landekode (fx DK) + chevron, i stedet for en bred række med landenavnet. `LOGIN_COUNTRIES` har fået et `code`-felt (ISO 3166-1 alpha-2).
+- HelloFreshs aktuelle signup-flow kunne ikke kontrolleres fra cloud-miljøet (hellofresh.dk blokeret af netværkspolitikken). Åbent: skal verificeres manuelt, om e-mailfeltet vises direkte eller om man først vælger metode.
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen
