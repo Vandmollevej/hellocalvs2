@@ -2,6 +2,14 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Indberet fejl — notesystem (punkt 4)
+
+- Ny model `BugReportNote` (migration `20260928170000_bug_report_notes`).
+  Brugeren kan tilføje noter til sin afventende fejlrapport på
+  `/profile/report-bug` (under "Redigér"); API
+  `GET/POST /api/bug-reports/[id]/notes` (kun egen, PENDING, maks 1000 tegn).
+- Admin ser "Brugerens noter" på kortene i `/admin/bug-reports`.
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen
