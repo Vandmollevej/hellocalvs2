@@ -36,6 +36,9 @@ sat fra 7 dage til 1 time (`src/lib/email-verification.ts`), så teksten er sand
 
 Forsiden er låst til skærmhøjden (`h-dvh overflow-hidden`); topbar, hero og bundmenu står fast, og kun listen scroller internt.
 
+## 2026-09-28: Indberet fejl — sammenfoldelig "Note"
+
+- `/profile/report-bug`: feltet "Beskriv fejlen" er erstattet af en "Note"-header med pil ned, der folder noteområdet ud/ind. Foldes automatisk ud ved "Redigér" og ved afsendelse uden gyldig note (min. 10 tegn).
 ## 2026-09-28: Forside — kun "Dagens tilføjelser" scroller
 
 Forsiden er låst til skærmhøjden (`h-dvh overflow-hidden`); topbar, hero og bundmenu står fast, og kun listen scroller internt.
