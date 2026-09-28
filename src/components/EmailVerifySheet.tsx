@@ -2,15 +2,15 @@
 
 import { useState } from "react";
 import { IconMail } from "@tabler/icons-react";
-import { BottomSheet, BottomSheetCloseButton } from "@/components/hf/BottomSheet";
+import { BottomSheet } from "@/components/hf/BottomSheet";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 const DISMISS_KEY = "hc_verify_email_banner_dismissed";
 
 // Blød e-mailbekræftelse (docs/DECISIONS.md 2026-09-25): vises af AuthGate,
 // så længe den indloggede brugers e-mail ikke er bekræftet. Siden 2026-09-27
-// i bundarket (KRAV.md "Bundark") i stedet for bjælken øverst. "Senere" eller
-// et træk ned lukker det for resten af browsersessionen.
+// i bundarket (KRAV.md "Bundark") i stedet for bjælken øverst. Et træk ned
+// lukker det for resten af browsersessionen.
 export function EmailVerifySheet() {
   const { t } = useTranslation();
   const [dismissed, setDismissed] = useState(() => {
@@ -59,7 +59,7 @@ export function EmailVerifySheet() {
               {t("verifyEmail.resend")}
             </button>
           )}
-          <BottomSheetCloseButton className="hf-bottom-sheet__skip">{t("verifyEmail.later")}</BottomSheetCloseButton>
+          <p className="hf-type-small pt-3 text-center text-text-secondary">{t("verifyEmail.linkValidity")}</p>
         </>
       }
     >

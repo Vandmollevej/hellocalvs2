@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
 import { Toggle } from "@/components/ui/Toggle";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -12,13 +13,24 @@ import { SkeletonScreen, SkeletonToggle } from "@/components/hf/Skeleton";
 export default function SleepQualityDisplaySettingsPage() {
   const { t } = useTranslation();
   const [enabled, setEnabled] = useState<boolean | null>(null);
+  // ?focus=toggle — opened from "Slå fra" in the sleep question overlay: the
+  // toggle gets a thin green ring and keyboard focus.
+  const focusToggle = useSearchParams().get("focus") === "toggle";
+  const toggleRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (focusToggle && enabled !== null)
+      toggleRef.current?.querySelector<HTMLElement>("[role=switch]")?.focus();
+  }, [focusToggle, enabled]);
 
   useEffect(() => {
     let cancelled = false;
     fetch("/api/profile")
       .then(async (response) => {
         if (!response.ok) throw new Error("failed");
-        return (await response.json()) as { user: { sleepQualityPromptEnabled: boolean } };
+        return (await response.json()) as {
+          user: { sleepQualityPromptEnabled: boolean };
+        };
       })
       .then((data) => {
         if (!cancelled) setEnabled(data.user.sleepQualityPromptEnabled);
@@ -46,12 +58,19 @@ export default function SleepQualityDisplaySettingsPage() {
             <SkeletonToggle />
           </SkeletonScreen>
         ) : (
-          <Toggle
-            checked={enabled}
-            onChange={toggle}
-            label={t("sleepQualitySettings.toggleLabel")}
-            description={t("sleepQualitySettings.toggleDescription")}
-          />
+          <div
+            ref={toggleRef}
+            className={
+              focusToggle ? "rounded-xl ring-2 ring-hf-green" : undefined
+            }
+          >
+            <Toggle
+              checked={enabled}
+              onChange={toggle}
+              label={t("sleepQualitySettings.toggleLabel")}
+              description={t("sleepQualitySettings.toggleDescription")}
+            />
+          </div>
         )}
       </div>
     </HfScreen>

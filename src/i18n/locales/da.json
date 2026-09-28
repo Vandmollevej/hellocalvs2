@@ -84,7 +84,7 @@
     "dismiss": "Luk",
     "sheetTitle": "Bekræft din e-mail",
     "sheetText": "Vi har sendt dig en mail med et link. Tryk på linket for at aktivere din konto.",
-    "later": "Senere"
+    "linkValidity": "Linket er aktivt i 1 time."
   },
   "welcomeSheet": {
     "slide1Title": "Velkommen til Hello Cal",
@@ -362,7 +362,7 @@
     "disable": "Slå fra",
     "ratingAriaLabel": "Vurdér nattens søvn til {rating} af 5",
     "infoAriaLabel": "Hvad bruges det til?",
-    "info": "Vurdér hvordan du har sovet i nat — 1 er meget dårligt og 5 er rigtig godt. Når der er samlet nok data, kan du se din søvnkvalitet i forhold til dit kalorieindtag og eventuelle ændringer i din kost. Du kan slå spørgsmålet fra under Indstillinger → Oplevelse af søvn.",
+    "info": "Vurdér hvordan du har sovet i nat — 1 er meget dårligt og 5 er rigtig godt. Når der er samlet nok data, kan du se din søvnkvalitet i forhold til dit kalorieindtag og eventuelle ændringer i din kost.",
     "calendarBar": "Søvnkvalitet: {rating} af 5"
   },
   "menstrualCycleSettings": {
