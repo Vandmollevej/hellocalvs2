@@ -155,14 +155,16 @@ export function DailyList() {
               <Link href={`/registration/${entry.id}`} className="block">
                 <FoodRow
                   image={entry.image}
+                  overline={
+                    <p className="hf-type-small font-bold text-hf-black">
+                      {t("dailyList.atTime", { time: formatTime(entry.createdAt) })}
+                    </p>
+                  }
                   title={entry.title}
                   subtitle={
-                    <div className="mt-1 flex justify-between">
-                      <span className="hf-type-small text-text-secondary">
-                        {Math.round(entry.kcalPer100g)} kcal / 100 g
-                      </span>
-                      <span className="hf-type-small text-text-secondary">{t("dailyList.atTime", { time: formatTime(entry.createdAt) })}</span>
-                    </div>
+                    <p className="hf-type-small mt-1 text-text-secondary">
+                      {Math.round(entry.kcalPer100g)} kcal / 100 g
+                    </p>
                   }
                   right={<IconChevronRight size={18} className="text-hf-black opacity-40" />}
                 />

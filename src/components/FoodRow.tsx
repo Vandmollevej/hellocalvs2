@@ -8,6 +8,7 @@ import type { ReactNode } from "react";
 export function FoodRow({
   image,
   thumbnail,
+  overline,
   title,
   subtitle,
   right,
@@ -15,6 +16,8 @@ export function FoodRow({
   image?: string | null;
   // Icon rendered in the image slot for non-product entries (e.g. water).
   thumbnail?: ReactNode;
+  // Optional line shown above the title (e.g. the front-page time).
+  overline?: ReactNode;
   title: string;
   subtitle?: ReactNode;
   right?: ReactNode;
@@ -29,6 +32,7 @@ export function FoodRow({
         )}
       </div>
       <div className="min-w-0 flex-1">
+        {overline}
         <p className="hf-type-body line-clamp-2 text-hf-black">{title}</p>
         {subtitle}
       </div>
