@@ -879,7 +879,7 @@ export function AddProductView({
                       E
                     </span>
                     <div className="flex flex-col">
-                      <h2 id="product-additives-heading" className="hf-type-section-title font-bold text-hf-black">
+                      <h2 id="product-additives-heading" className="hf-type-title hf-type-strong text-hf-black">
                         {t("addProduct.additives")}
                       </h2>
                       <p className="hf-type-small hf-type-strong flex items-center gap-1 text-hf-black">
@@ -913,7 +913,7 @@ export function AddProductView({
 
               <div>
                 <div className="mb-4 flex items-center justify-between">
-                  <h2 className="hf-type-section-title font-bold text-hf-black">{t("common.macroBreakdown")}</h2>
+                  <h2 className="hf-type-title hf-type-strong text-hf-black">{t("common.macroBreakdown")}</h2>
                   <div className="-my-3 -mr-3 flex items-center">
                     {isProductEditingUnlocked && (
                       <button
