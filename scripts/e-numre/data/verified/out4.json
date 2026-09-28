@@ -716,12 +716,14 @@
   "wikipedia": "",
   "wikidata": "Q18636149",
   "verification": {
-   "status": "uncertain",
+   "status": "verified",
    "sources": [
     "https://efsa.europa.eu/en/topics/topic/food-additive-re-evaluations",
-    "https://en.wikipedia.org/wiki/Polyoxyethylene_stearate"
+    "https://en.wikipedia.org/wiki/Polyoxyethylene_stearate",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20221031",
+    "https://www.efsa.europa.eu/sites/default/files/event/121023-m.pdf"
    ],
-   "notes": "euStatus rettet fra \"approved\" til \"not_approved\" i overensstemmelse med teksten: E431 indgår ikke i EFSA's genvurderingsprogram for EU-godkendte stoffer. Kilderne er dog modstridende (UK FSA-register angiver \"authorised\"), og EUR-Lex kunne ikke tilgås direkte. EU-status: opført i FSA-registret som godkendt; ikke omfattet af EFSA-genevaluering — bekræft mod bilag II."
+   "notes": "EU-godkendelse bekræftet i den konsoliderede forordning (EF) 1333/2008 bilag II på EUR-Lex. euStatus rettet fra \"approved\" til \"not_approved\" i overensstemmelse med teksten: E431 indgår ikke i EFSA's genvurderingsprogram for EU-godkendte stoffer. Kilderne er dog modstridende (UK FSA-register angiver \"authorised\"), og EUR-Lex kunne ikke tilgås direkte."
   }
  },
  {
