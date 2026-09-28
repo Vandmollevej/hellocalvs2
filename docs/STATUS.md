@@ -2,6 +2,11 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Admin "Nye varer" — klikbar vare + kompakt sortering
+
+- Billede og navn på hvert kort i `/admin/products` linker til den fulde varevisning (`/admin/products/[id]`), så alle detaljer kan læses før godkend/afvis.
+- Den store "Sortér: …"-knap er erstattet af et kompakt sorteringsikon, der åbner en menu. Titel og ikon står på én linje på mobil.
+
 ## 2026-09-28: Aktivitetsniveau i 5 trin + mails mod spam
 
 - Profil → Profil: aktivitetsniveau i 5 trin (Meget lav … Meget høj), gemmes
