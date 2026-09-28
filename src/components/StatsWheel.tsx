@@ -95,12 +95,14 @@ const TILT_PER_ROW = 2;
 const MAX_INSET = 25;
 /** Pointer travel that moves the wheel one row. */
 const DRAG_STEP = 38;
-/** Extra room above and below the centered row for its grey caption. */
+/** Height of the grey caption under every number (user 2026-09-28: shown on all rows, not just the centered one, so the spacing stays constant while scrolling). */
 const CAPTION_SPACE = 16;
-const WHEEL_HEIGHT = 2 * (rowOffset(SIDE_ROWS) + FONT_SIZE);
+/** A row is its number plus the caption under it. */
+const ROW_HEIGHT = FONT_SIZE + CAPTION_SPACE;
+const WHEEL_HEIGHT = 2 * (rowOffset(SIDE_ROWS) + ROW_HEIGHT);
 /** Distance from the screen edge (user 2026-09-27: right-side wheel a little further right). */
 const EDGE_OFFSET = { left: 22, right: 12 } as const;
-// Temporary grey caption under the centered number (user 2026-09-27) until
+// Temporary grey caption under every number (user 2026-09-27) until
 // the real text is decided.
 const CAPTION_PLACEHOLDER = "Dummytekst";
 
@@ -113,16 +115,15 @@ const PLACEHOLDER_STATS: Stat[] = [
   { key: "placeholder-pulse", label: "Puls (eksempel)", icon: IconHeartbeat, value: "62", unit: "bpm" },
 ];
 
-/** offsetAt plus the caption room, which eases in over the first row away from the center. */
 function rowOffset(absDistance: number) {
-  return offsetAt(absDistance) + CAPTION_SPACE * Math.min(1, absDistance);
+  return offsetAt(absDistance);
 }
 
 function scaleAt(absDistance: number) {
   return Math.max(MIN_SCALE, 1 - absDistance * SCALE_STEP);
 }
 
-// Distance from the wheel's center to a row's center. A row is FONT_SIZE × its
+// Distance from the wheel's center to a row's center. A row is ROW_HEIGHT × its
 // scale tall, so adding up that height along the way (plus ROW_GAP per row)
 // leaves exactly ROW_GAP of empty space between any two neighbouring rows —
 // the rows shrink towards the ends without bunching up near the center.
@@ -132,8 +133,8 @@ function offsetAt(absDistance: number) {
   const flat = Math.max(0, absDistance - knee);
   return (
     ROW_GAP * absDistance +
-    FONT_SIZE * (shrinking - (SCALE_STEP / 2) * shrinking * shrinking) +
-    FONT_SIZE * MIN_SCALE * flat
+    ROW_HEIGHT * (shrinking - (SCALE_STEP / 2) * shrinking * shrinking) +
+    ROW_HEIGHT * MIN_SCALE * flat
   );
 }
 
@@ -424,8 +425,7 @@ function WheelItem({
         {stat.unit && <span className="hf-type-strong"> {stat.unit}</span>}
         <span
           aria-hidden="true"
-          className={`hf-type-small absolute right-0 top-full mt-1 text-text-secondary ${transition}`}
-          style={{ opacity: focus }}
+          className="hf-type-small absolute right-0 top-full mt-1 text-text-secondary"
         >
           {CAPTION_PLACEHOLDER}
         </span>
