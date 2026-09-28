@@ -106,7 +106,7 @@ export default function HelloDocTokenPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-hf-cream">
+    <div className="flex h-dvh flex-col overflow-y-auto bg-hf-cream">
       <header className="flex h-14 flex-shrink-0 items-center justify-center border-b" style={{ borderColor: "var(--hf-color-line)", background: "var(--hf-color-brand)" }}>
         <span className="hf-type-nav-title" style={{ color: "var(--hf-color-white)" }}>
           Hello Doc

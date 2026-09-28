@@ -633,12 +633,17 @@ export function AdminShell({
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  // html/body er låst mod scroll globalt (globals.css), så admin scroller i
+  // sin egen rod-container. Skuffen låser derfor den container, ikke body.
+  const scrollRootRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!drawerOpen) return;
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    const root = scrollRootRef.current;
+    if (!root) return;
+    const previous = root.style.overflow;
+    root.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = previous;
+      root.style.overflow = previous;
     };
   }, [drawerOpen]);
 
@@ -680,7 +685,7 @@ export function AdminShell({
   const searchLabel = t(currentLocale, "nav_quick_search");
 
   return (
-    <div className="flex min-h-dvh bg-page-bg text-hf-black">
+    <div ref={scrollRootRef} className="flex h-dvh overflow-y-auto bg-page-bg text-hf-black">
       {/* Sidebjælken går i ét stykke fra top til bund (som Cloudflare): logo
           og "Gå til…"-søgning ligger øverst i kolonnen, ikke i topbaren. */}
       <aside
