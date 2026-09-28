@@ -1212,7 +1212,7 @@
       "perMonth": "{price} kr./md.",
       "save": "Spar {pct} %",
       "renewalNote": "Abonnementet fornyes automatisk for samme periode, indtil du opsiger det. Du kan opsige når som helst.",
-      "buyCta": "Køb — {price} kr.",
+      "buyCta": "Abonner",
       "buyError": "Købet kunne ikke startes lige nu"
     }
   },

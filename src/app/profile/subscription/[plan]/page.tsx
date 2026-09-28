@@ -59,7 +59,6 @@ export default function SubscriptionPlanPage() {
 
   const prices = SUBSCRIPTION_PRICES_DKK[plan];
   const monthlyBase = prices[1];
-  const price = prices[months];
 
   async function buy() {
     if (!paymentAvailable || !withdrawalAck || buying) return;
@@ -102,7 +101,7 @@ export default function SubscriptionPlanPage() {
             aria-busy={buying}
             className="hf-control hf-btn-primary w-full disabled:opacity-40"
           >
-            {t("subscription.planPage.buyCta", { price: formatDkk(price) })}
+            {t("subscription.planPage.buyCta")}
           </button>
           {error && <p className="hf-type-caption text-center text-hf-red-dark">{error}</p>}
           {!paymentAvailable && (

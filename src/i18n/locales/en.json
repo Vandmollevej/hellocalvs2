@@ -1212,7 +1212,7 @@
       "perMonth": "{price} kr./mo.",
       "save": "Save {pct}%",
       "renewalNote": "The subscription renews automatically for the same period until you cancel. You can cancel at any time.",
-      "buyCta": "Buy — {price} kr.",
+      "buyCta": "Subscribe",
       "buyError": "The purchase couldn't be started right now"
     }
   },
