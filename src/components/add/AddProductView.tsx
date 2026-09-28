@@ -28,7 +28,6 @@ import { IngredientsText } from "@/components/hf/IngredientsText";
 import { labelForAllergen } from "@/lib/allergens";
 import { matchToxins, type ToxinInfo } from "@/lib/toxins";
 import { ToxinInfoModal } from "@/components/hf/ToxinInfoModal";
-import { TimeSection } from "@/components/hf/TimeSection";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { isAlternativeServingConfident } from "@/lib/alternative-servings";
 import type { AlternativeServing } from "@/lib/product-analysis-types";
@@ -246,7 +245,7 @@ export function AddProductView({
   // er kun en mulighed, når varen faktisk har en defineret portionsstørrelse,
   // og må ikke være default-valget selv når den findes.
   const [amountUnit, setAmountUnit] = useState<"personer" | "gram">("gram");
-  const [time, setTime] = useState(
+  const [time] = useState(
     () => (registration ? localTimeString(new Date(registration.createdAt)) : initialTime) ?? currentTimeString(),
   );
   const [date] = useState(
@@ -679,7 +678,7 @@ export function AddProductView({
                   <ForwardButton kind="PRODUCT" itemId={state.product.id} name={state.product.name} />
                 </div>
               )}
-              <div className="flex flex-col items-start gap-2 pt-2 text-left">
+              <div className="flex flex-col items-center gap-2 pt-2 text-center">
                 <div className="relative self-center h-[190px] w-[190px] min-h-[190px] min-w-[190px] max-h-[190px] max-w-[190px] shrink-0 overflow-visible">
                   <div className="flex h-[190px] w-[190px] min-h-[190px] min-w-[190px] items-center justify-center overflow-hidden rounded-full bg-hf-tan">
                     {displayImageUrl ? (
@@ -733,6 +732,9 @@ export function AddProductView({
                 ) : (
                   <h1 className="hf-type-title hf-type-strong text-hf-black">{productTitle}</h1>
                 )}
+                {state.product.packageSizeText && (
+                  <h2 className="hf-type-body-lg text-hf-green">{state.product.packageSizeText}</h2>
+                )}
                 {isPending("brand") ? (
                   <ReadingSkeleton label={t("addProduct.reading")}>
                     <Skeleton type="body" width={120} />
@@ -744,45 +746,7 @@ export function AddProductView({
                     </p>
                   )
                 )}
-                {state.product.packageSizeText && (
-                  <p className="hf-type-small text-hf-green">{state.product.packageSizeText}</p>
-                )}
-                {certifications.length === 0 && state.product.brand && (
-                  <p className="hf-type-small hf-type-strong text-hf-green">{t("addProduct.branded")}</p>
-                )}
-                <p className="hf-type-body hf-type-strong text-hf-black">
-                  {isPending("nutrition") ? (
-                    <ReadingSkeleton label={t("addProduct.reading")}>
-                      <Skeleton type="body" width={150} />
-                    </ReadingSkeleton>
-                  ) : state.product.isGenericIngredient && state.product.hasKnownNutrition === false
-                    ? t("addProduct.nutritionUnknown")
-                    : servingSizeGrams && hasServingUnit
-                    ? t("addProduct.kcalPerServing", {
-                        kcal: Math.round((state.product.kcalPer100g * servingSizeGrams) / 100),
-                        unit: servingSizeUnitSingular as string,
-                      })
-                    : displayUnit === "g"
-                    ? t("addProduct.kcalPer100g", { kcal: Math.round(state.product.kcalPer100g) })
-                    : t("addProduct.kcalPer100ml", { kcal: Math.round(state.product.kcalPer100g) })}
-                </p>
-                {!!confidentAlternativeServings.length && (
-                  <div className="mt-1 flex flex-col items-start gap-0.5">
-                    {confidentAlternativeServings.map((serving: AlternativeServing, index: number) => (
-                      <p key={`${serving.label}-${index}`} className="hf-type-small text-text-secondary">
-                        {t("addProduct.alternativeServing", { label: serving.label, kcal: Math.round(serving.kcal as number) })}
-                      </p>
-                    ))}
-                  </div>
-                )}
-
               </div>
-
-              {/* Tidspunkt hører til den konkrete registrering, ikke varen: vises
-                  kun når en registrering er åbnet (/registration/[id]). */}
-              {isEditing && !forDish && (
-                <TimeSection value={time} onChange={setTime} className="mb-4 mt-8" />
-              )}
 
               {hasServingUnit && (
                 <div className="mb-4 flex justify-center gap-2">
@@ -863,10 +827,38 @@ export function AddProductView({
                 </button>
               </div>
 
+              <div className="mb-4 flex flex-col items-center text-center">
+                <p className="hf-type-body hf-type-strong text-hf-black">
+                  {isPending("nutrition") ? (
+                    <ReadingSkeleton label={t("addProduct.reading")}>
+                      <Skeleton type="body" width={150} />
+                    </ReadingSkeleton>
+                  ) : state.product.isGenericIngredient && state.product.hasKnownNutrition === false
+                    ? t("addProduct.nutritionUnknown")
+                    : servingSizeGrams && hasServingUnit
+                    ? t("addProduct.kcalPerServing", {
+                        kcal: Math.round((state.product.kcalPer100g * servingSizeGrams) / 100),
+                        unit: servingSizeUnitSingular as string,
+                      })
+                    : displayUnit === "g"
+                    ? t("addProduct.kcalPer100g", { kcal: Math.round(state.product.kcalPer100g) })
+                    : t("addProduct.kcalPer100ml", { kcal: Math.round(state.product.kcalPer100g) })}
+                </p>
+                {!!confidentAlternativeServings.length && (
+                  <div className="mt-1 flex flex-col items-center gap-0.5">
+                    {confidentAlternativeServings.map((serving: AlternativeServing, index: number) => (
+                      <p key={`${serving.label}-${index}`} className="hf-type-small text-text-secondary">
+                        {t("addProduct.alternativeServing", { label: serving.label, kcal: Math.round(serving.kcal as number) })}
+                      </p>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               <button
                 type="button"
                 onClick={scrollToDetails}
-                className="hf-btn-text flex items-center gap-1 self-start text-hf-black"
+                className="hf-btn-text flex items-center gap-1 self-start font-normal text-hf-black"
               >
                 {t("addProduct.details")}
                 <IconChevronDown size={15} />
@@ -887,7 +879,7 @@ export function AddProductView({
                       E
                     </span>
                     <div className="flex flex-col">
-                      <h2 id="product-additives-heading" className="hf-type-section-title font-bold text-hf-black">
+                      <h2 id="product-additives-heading" className="hf-type-title hf-type-strong text-hf-black">
                         {t("addProduct.additives")}
                       </h2>
                       <p className="hf-type-small hf-type-strong flex items-center gap-1 text-hf-black">
@@ -921,7 +913,7 @@ export function AddProductView({
 
               <div>
                 <div className="mb-4 flex items-center justify-between">
-                  <h2 className="hf-type-section-title font-bold text-hf-black">{t("common.macroBreakdown")}</h2>
+                  <h2 className="hf-type-title hf-type-strong text-hf-black">{t("common.macroBreakdown")}</h2>
                   <div className="-my-3 -mr-3 flex items-center">
                     {isProductEditingUnlocked && (
                       <button

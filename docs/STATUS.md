@@ -2,6 +2,12 @@
 
 Last updated: 2026-09-28
 
+
+## 2026-09-28: Produktsiden — centreret, kcal under mængdeboksen (PR #90)
+
+- Tidspunkt vises ikke længere på produktsiden (ses i kalender og oversigt); registreringens tid bevares ved gem.
+- Navn, brand og pakningsstørrelse er centreret over mængdeboksen; "XX kcal pr. 100 g" står lige under mængdeboksen.
+- "Branded" vises aldrig (se DECISIONS 2026-09-28).
 ## 2026-09-28: Statistiksiden — frit layout med sektionerne Grafer og Kort
 
 - Statistiksiden er delt i to sektioner med overskrift, "Grafer" og "Kort"
