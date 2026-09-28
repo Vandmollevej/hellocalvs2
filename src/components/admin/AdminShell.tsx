@@ -13,7 +13,7 @@ import { t, type AdminI18nKey } from "@/lib/admin-i18n";
 // brødkrummer og brugermenu. Under lg bliver sidebjælken en skuffe bag en menuknap.
 // Farverne er de eksisterende Hello Cal-tokens.
 
-type IconName = "home" | "chart" | "box" | "database" | "users" | "handshake" | "shield" | "cog" | "palette" | "road" | "flow" | "pot";
+type IconName = "home" | "chart" | "box" | "database" | "users" | "handshake" | "shield" | "cog" | "palette" | "road" | "flow" | "pot" | "log";
 type NavLink = { href: string; key: AdminI18nKey };
 type NavEntry =
   | { kind: "link"; href: string; key: AdminI18nKey; icon: IconName }
@@ -26,6 +26,8 @@ const NAV: NavEntry[] = [
   { kind: "link", href: "/admin", key: "nav_overview", icon: "home" },
   { kind: "link", href: "/admin/analytics", key: "nav_analytics", icon: "chart" },
   { kind: "link", href: "/admin/statistics", key: "nav_statistics", icon: "chart" },
+  // Test-log indtil appen går live (docs/DECISIONS.md 2026-09-28).
+  { kind: "link", href: "/admin/log", key: "nav_log", icon: "log" },
   {
     kind: "group",
     id: "approval",
@@ -214,6 +216,12 @@ function Icon({ name, className = "h-5 w-5" }: { name: IconName | "search" | "ch
       </>
     ),
     road: <path d="M5 21 9 3M19 21 15 3M12 4v2.5M12 10.5v3M12 17.5V20" />,
+    log: (
+      <>
+        <rect x="4" y="3" width="16" height="18" rx="2" />
+        <path d="M8 8h8M8 12h8M8 16h5" />
+      </>
+    ),
     pot: (
       <>
         <path d="M4 11h16v5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-5zM2 11h2M20 11h2M8 8h8" />

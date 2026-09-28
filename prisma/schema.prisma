@@ -3243,6 +3243,40 @@ model SearchMiss {
   @@map("search_misses")
 }
 
+// Admin "Log" (docs/DECISIONS.md 2026-09-28): test-log indtil appen går live.
+// Hvert trin i scan-flowet (flowId samler én scanning), hvert OpenAI-kald,
+// hver cron-kørsel og fejl i app-flowene. Slås til/fra på admin-siden
+// (DebugLogSettings); rækker ældre end 30 dage ryddes automatisk.
+model DebugLog {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  // "scan" | "ai" | "cron" | "error"
+  category   String
+  event      String
+  // "info" | "warn" | "error"
+  level      String   @default("info")
+  flowId     String?
+  userId     String?
+  barcode    String?
+  productId  String?
+  durationMs Int?
+  message    String
+  data       Json?
+
+  @@index([createdAt])
+  @@index([category, createdAt])
+  @@index([flowId])
+  @@map("debug_logs")
+}
+
+model DebugLogSettings {
+  id        String   @id @default("default")
+  enabled   Boolean  @default(true)
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("debug_log_settings")
+}
+
 // Admin guide-builder (docs/DECISIONS.md 2026-09-27): én række pr. slags
 // ("startup" = startup-guiden, "tooltips" = tooltips). `config` er den
 // saniterede builder-opsætning fra src/lib/guide-builder.ts.

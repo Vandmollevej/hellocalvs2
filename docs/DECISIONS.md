@@ -2,6 +2,15 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-28: Admin "Log" — test-log indtil go-live
+
+- Brugerens krav: log hver gang et produkt scannes, indtil appen går live, så alle trin kan testes; plus andre relevante logs.
+- Ny tabel `debug_logs` (`DebugLog`) + `debug_log_settings` (til/fra). Logik: `src/lib/debug-log.ts` (server, sluger alle fejl, må aldrig vælte flowet), `src/lib/scan-debug-log.ts` (klient → `POST /api/debug-log`, kun indloggede brugere).
+- Kameraflowet (`ProductCaptureFlow`) får ét flow-id pr. åbning, som sendes i headeren `x-scan-flow` til flowets API-kald. Logges: kamera klar/fejl, stregkode aflæst, opslag (egen DB / Open Food Facts / USDA / ukendt), stregkode-foto, forside-OCR + dublet-tjek, energi- og ingrediens-OCR (tid, sikkerhed, fundne værdier), oprettelse, AI-berigelse (navn/brand, energi/ingredienser og om det kom fra telefonens OCR eller OpenAI), "varen færdig" med ventende felter, samt forladte flows.
+- Hvert OpenAI-kald (`callStructuredVision`) logges med tid, model og tokens; under berigelsen arver de scanningens flow-id via AsyncLocalStorage (`withDebugContext`). Hver app-cron-kørsel logges med status og tid.
+- `/admin/log` (topniveau i menuen): faner Scanninger (én tidslinje pr. scanning, søgning på stregkode/vare-id), AI-kald, Cron, Fejl, og de eksisterende logs Logins, Mails og push, Admin-handlinger, Søgninger uden resultat. Knapperne "Slå fra/til" og "Ryd log". Rækker ældre end 30 dage ryddes automatisk.
+- Ved go-live: slå logningen fra på siden (eller fjern den i en senere opgave).
+
 ## 2026-09-28: Produkt-database er en menugruppe (Produkter + Brands)
 
 - Produkt-database i admin-menuen er nu en gruppe med to undersider: "Produkter" (den hidtidige produktliste, flyttet til `/admin/product-database/products`) og "Brands" (`/admin/product-database/brands`).

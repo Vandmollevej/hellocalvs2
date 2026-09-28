@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { JOBS } from "@/lib/jobs/registry";
 import { isJobDue } from "@/lib/jobs/schedule";
+import { debugLog, errorText } from "@/lib/debug-log";
 
 // Kører app-processens jobs (runtime "app" i src/lib/jobs/registry.ts), når
 // scheduled_jobs-rækken siger det (admin "Cron-jobs", docs/DECISIONS.md
@@ -48,15 +49,18 @@ export async function runDueAppJobs(runners: Record<string, AppJobRunner>) {
     const started = Date.now();
     // Jobs kører ikke parallelt med sig selv, men et langt job (fx den
     // natlige AI-genkørsel) må ikke blokere de øvrige — derfor uden await.
+    // Hver kørsel står også i admin "Log" (docs/DECISIONS.md 2026-09-28).
     void runner()
-      .then((message) =>
-        prisma.scheduledJob.update({
+      .then((message) => {
+        void debugLog({ category: "cron", event: row.key, message: message ?? "OK", durationMs: Date.now() - started });
+        return prisma.scheduledJob.update({
           where: { key: row.key },
           data: { lastRunAt: new Date(), lastStatus: "OK", lastMessage: (message ?? "OK").slice(0, 1000), lastDurationMs: Date.now() - started },
-        }),
-      )
+        });
+      })
       .catch((error: unknown) => {
         console.error(`[jobs] ${row.key} fejlede`, error);
+        void debugLog({ category: "cron", event: row.key, level: "error", message: errorText(error), durationMs: Date.now() - started });
         return prisma.scheduledJob.update({
           where: { key: row.key },
           data: {

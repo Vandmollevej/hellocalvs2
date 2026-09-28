@@ -1,4 +1,5 @@
 import { sanitizeAiPhoto } from "@/lib/image-metadata";
+import { debugLog, errorText } from "@/lib/debug-log";
 type JsonSchema = Record<string, unknown>;
 
 type StructuredVisionArgs = {
@@ -17,6 +18,7 @@ type OpenAiResponsesPayload = {
   output_text?: string;
   output?: { content?: { type?: string; text?: string }[] }[];
   id?: string;
+  usage?: { input_tokens?: number; output_tokens?: number; total_tokens?: number };
 };
 
 function readOutputText(data: OpenAiResponsesPayload): string | null {
@@ -42,7 +44,10 @@ export async function callStructuredVision<T>({
   schema,
 }: StructuredVisionArgs): Promise<{ value: T; model: string; responseId: string | null }> {
   const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) throw new Error("OPENAI_API_KEY er ikke sat");
+  if (!apiKey) {
+    void debugLog({ category: "ai", event: schemaName, level: "error", message: "OPENAI_API_KEY er ikke sat — intet AI-kald" });
+    throw new Error("OPENAI_API_KEY er ikke sat");
+  }
   if (!photo.startsWith("data:image/") && !photo.startsWith("https://")) {
     throw new Error("photo skal være data:image/... eller https URL");
   }
@@ -51,6 +56,49 @@ export async function callStructuredVision<T>({
   // svaret må ikke gemmes hos OpenAI (store: false).
   const cleanPhoto = sanitizeAiPhoto(photo);
   const model = getProductVisionModel();
+  const startedAt = Date.now();
+  try {
+    const result = await requestStructuredVision<T>({ apiKey, model, cleanPhoto, system, text, schemaName, schema });
+    // Admin "Log" (docs/DECISIONS.md 2026-09-28): hvert OpenAI-kald med tid
+    // og tokens; scanningens flow/vare kommer fra debug-konteksten.
+    void debugLog({
+      category: "ai",
+      event: schemaName,
+      message: `OpenAI ${schemaName} (${model}) OK`,
+      durationMs: Date.now() - startedAt,
+      data: { model, schemaName, responseId: result.responseId, usage: result.usage },
+    });
+    return { value: result.value, model, responseId: result.responseId };
+  } catch (error) {
+    void debugLog({
+      category: "ai",
+      event: schemaName,
+      level: "error",
+      message: `OpenAI ${schemaName} (${model}) fejlede: ${errorText(error).slice(0, 500)}`,
+      durationMs: Date.now() - startedAt,
+      data: { model, schemaName },
+    });
+    throw error;
+  }
+}
+
+async function requestStructuredVision<T>({
+  apiKey,
+  model,
+  cleanPhoto,
+  system,
+  text,
+  schemaName,
+  schema,
+}: {
+  apiKey: string;
+  model: string;
+  cleanPhoto: string;
+  system: string;
+  text: string;
+  schemaName: string;
+  schema: JsonSchema;
+}): Promise<{ value: T; responseId: string | null; usage: OpenAiResponsesPayload["usage"] | null }> {
   const response = await fetch("https://api.openai.com/v1/responses", {
     method: "POST",
     headers: {
@@ -94,7 +142,7 @@ export async function callStructuredVision<T>({
 
   return {
     value: JSON.parse(output) as T,
-    model,
     responseId: typeof data.id === "string" ? data.id : null,
+    usage: data.usage ?? null,
   };
 }

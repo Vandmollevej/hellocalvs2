@@ -2,6 +2,16 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Admin "Log" — hver scanning trin for trin
+
+- Nyt menupunkt `/admin/log`: Scanninger (tidslinje pr. kameraflow med
+  telefonens og serverens trin + OpenAI-kald), AI-kald, Cron, Fejl, Logins,
+  Mails og push, Admin-handlinger, Søgninger uden resultat. Til/fra + "Ryd log".
+  Beslutning: DECISIONS 2026-09-28.
+- Ny migration `20260928150000_debug_log` (`debug_logs`, `debug_log_settings`).
+  Køres af deploy. Logningen er slået til som standard.
+- Lint, typecheck og build kørt; ikke testet mod en database (lokalt er der ingen DB).
+
 ## 2026-09-28: Admin "Dubletter" — faner for billeder og produkter
 
 - `/admin/duplicate-products` har nu fanerne "Produktbilleder" (billed-varianter

@@ -325,6 +325,7 @@ export const PAGE_TREE: PageArea[] = [
             children: [{ path: "/admin/warnings", label: "Advarsler", note: "Gammel adresse — sender videre" }],
           },
           { path: "/admin/cron-jobs", label: "Cron-jobs" },
+          { path: "/admin/log", label: "Log", note: "Test-log indtil go-live: scanninger trin for trin, AI-kald, cron, fejl" },
           { path: "/admin/duplicate-products", label: "Dubletter" },
           {
             path: "/admin/product-database",

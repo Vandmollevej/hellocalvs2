@@ -16,6 +16,7 @@ import { flagSimultaneousDuplicates } from "@/lib/product-duplicates";
 import { recordNutrientSources } from "@/lib/product-nutrient-sources";
 import { syncProductNutritionFeaturesSafely } from "@/lib/product-nutrition-features";
 import type { IngredientsAnalysis, NutritionAnalysis } from "@/lib/product-analysis-types";
+import { debugLog, errorText } from "@/lib/debug-log";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): kameraflowet opretter varen,
 // så snart den lokale OCR er kørt, og sender brugeren videre til /add/[id].
@@ -85,6 +86,7 @@ async function refreshRegistrationSnapshots(productId: string) {
 
 async function enrichFront(input: QuickEnrichmentInput) {
   const { productId } = input;
+  const startedAt = Date.now();
   try {
     const { analysisId, result, brandMatch } = await analyzeFrontPhoto({
       photo: input.frontPhoto,
@@ -118,8 +120,32 @@ async function enrichFront(input: QuickEnrichmentInput) {
       productId,
       brand: brand ? { id: brand.id, name: brand.name } : null,
     }).catch((error) => console.error("Could not link cutout jobs", error));
+    await debugLog({
+      category: "scan",
+      event: "enrich_front",
+      message: `Forside læst af AI: ${brand ? `${brand.name} — ` : ""}${name}${result.productName?.trim() ? "" : " (intet navn fundet, reservenavn beholdt)"}`,
+      level: result.productName?.trim() ? "info" : "warn",
+      productId,
+      durationMs: Date.now() - startedAt,
+      data: {
+        name,
+        brand: brand?.name ?? null,
+        brandMatchedDatabase: Boolean(brandMatch),
+        subbrand: result.subbrand ?? null,
+        variant: result.variant ?? null,
+        packageSizeText: result.packageSizeText ?? null,
+      },
+    });
   } catch (error) {
     console.error("Quick product front enrichment failed", productId, error);
+    await debugLog({
+      category: "scan",
+      event: "enrich_front",
+      level: "error",
+      message: `Forside-aflæsningen fejlede: ${errorText(error)}`,
+      productId,
+      durationMs: Date.now() - startedAt,
+    });
   } finally {
     await clearPending(productId, ["name", "brand"]);
     // Navnet indgår i registreringernes titleSnapshot.
@@ -148,9 +174,14 @@ async function enrichLabel(input: QuickEnrichmentInput) {
 
   let nutrition: Read<NutritionAnalysis> = null;
   let ingredients: Read<IngredientsAnalysis> = null;
+  const startedAt = Date.now();
+  // Til admin "Log": hvilken vej aflæsningen tog, og hvad der evt. fejlede.
+  let labelPath = "local";
+  const labelErrors: string[] = [];
 
   try {
     if (!localN && !input.ingredientsPhoto) {
+      labelPath = "openai-combined";
       const both = await analyzeLabelPhoto({ ...base, photo: input.nutritionPhoto, ocrText: nutritionText });
       nutrition = both.nutrition;
       // En sikker lokal ingrediensliste beholdes kun, hvis OpenAI intet fandt.
@@ -158,16 +189,19 @@ async function enrichLabel(input: QuickEnrichmentInput) {
     } else {
       const wantIngredients =
         !localI && (Boolean(input.ingredientsPhoto) || !ingredientsText || hasIngredientsHeading(ingredientsText));
+      labelPath = `nutrition:${localN ? "local" : "openai"}, ingredients:${wantIngredients ? "openai" : localI ? "local" : "skipped"}`;
       const [nutritionRead, ingredientsRead] = await Promise.all([
         localN
           ? Promise.resolve(null)
           : analyzeNutritionPhoto({ ...base, photo: input.nutritionPhoto, ocrText: nutritionText }).catch((error) => {
               console.error("Quick product nutrition enrichment failed", productId, error);
+              labelErrors.push(`nutrition: ${errorText(error)}`);
               return null;
             }),
         wantIngredients
           ? analyzeIngredientsPhoto({ ...base, photo: ingredientsPhoto, ocrText: ingredientsText }).catch((error) => {
               console.error("Quick product ingredients enrichment failed", productId, error);
+              labelErrors.push(`ingredients: ${errorText(error)}`);
               return null;
             })
           : Promise.resolve(null),
@@ -177,7 +211,10 @@ async function enrichLabel(input: QuickEnrichmentInput) {
     }
   } catch (error) {
     console.error("Quick product label enrichment failed", productId, error);
+    labelErrors.push(`label: ${errorText(error)}`);
   }
+  const nutritionFromAi = Boolean(nutrition);
+  const ingredientsFromAi = Boolean(ingredients);
 
   try {
     if (!nutrition && localN) {
@@ -229,14 +266,58 @@ async function enrichLabel(input: QuickEnrichmentInput) {
     }
   } catch (error) {
     console.error("Quick product label could not be saved", productId, error);
+    labelErrors.push(`save: ${errorText(error)}`);
   } finally {
     await recordNutrientSources(productId, nutrition?.analysisId ?? null);
     await clearPending(productId, ["nutrition", "ingredients"]);
     await refreshRegistrationSnapshots(productId).catch(() => {});
   }
+
+  const read = nutrition?.result;
+  const nutritionComplete =
+    read != null && read.kcalPer100g != null && read.proteinPer100g != null && read.carbsPer100g != null && read.fatPer100g != null;
+  const nutritionSource = nutrition ? (nutritionFromAi ? "OpenAI" : "telefonens OCR") : "ingen";
+  const ingredientsSource = ingredients ? (ingredientsFromAi ? "OpenAI" : "telefonens OCR") : "ingen";
+  await debugLog({
+    category: "scan",
+    event: "enrich_label",
+    level: labelErrors.length || !nutritionComplete ? (nutrition ? "warn" : "error") : "info",
+    message: `Energi: ${nutritionComplete ? `${read!.kcalPer100g} kcal/100 (${nutritionSource})` : `ikke komplet (${nutritionSource})`} · Ingredienser: ${
+      ingredients?.result.ingredientsText ? `${ingredients.result.ingredientsText.length} tegn (${ingredientsSource})` : `ingen (${ingredientsSource})`
+    }`,
+    productId,
+    durationMs: Date.now() - startedAt,
+    data: {
+      path: labelPath,
+      nutrition: read ?? null,
+      ingredientsText: ingredients?.result.ingredientsText?.slice(0, 500) ?? null,
+      errors: labelErrors,
+    },
+  });
 }
 
 export async function enrichQuickProduct(input: QuickEnrichmentInput) {
+  const startedAt = Date.now();
   await Promise.all([enrichFront(input), enrichLabel(input)]);
   await syncProductNutritionFeaturesSafely(input.productId);
+
+  const product = await prisma.product
+    .findUnique({
+      where: { id: input.productId },
+      select: { name: true, pendingFields: true, kcalPer100g: true, brand: { select: { name: true } } },
+    })
+    .catch(() => null);
+  await debugLog({
+    category: "scan",
+    event: "enrichment_done",
+    level: product && product.pendingFields.length === 0 ? "info" : "warn",
+    message: product
+      ? `Varen er færdig: ${product.brand ? `${product.brand.name} — ` : ""}${product.name} (${product.kcalPer100g} kcal/100)${
+          product.pendingFields.length ? ` · stadig ventende felter: ${product.pendingFields.join(", ")}` : ""
+        }`
+      : "Varen findes ikke længere",
+    productId: input.productId,
+    durationMs: Date.now() - startedAt,
+    data: product ? { pendingFields: product.pendingFields } : null,
+  });
 }

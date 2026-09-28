@@ -4,6 +4,7 @@ import { getSessionUser } from "@/lib/session";
 import { inferGs1OriginCountryCode } from "@/lib/regions";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
 import { enrichQuickProduct, type PendingField } from "@/lib/quick-product-enrichment";
+import { debugLog, errorText, flowIdFromRequest, withDebugContext } from "@/lib/debug-log";
 
 // POST /api/products/quick — "opret straks" fra kameraflowet under Tilføj
 // (docs/DECISIONS.md 2026-09-27). Varen oprettes, så snart den lokale OCR er
@@ -22,6 +23,8 @@ function cleanNumber(value: unknown): number | null {
 }
 
 export async function POST(req: Request) {
+  const startedAt = Date.now();
+  const flowId = flowIdFromRequest(req);
   const body = await req.json().catch(() => null);
   const barcode = typeof body?.barcode === "string" ? body.barcode.replace(/\D/g, "") : "";
   const marketRegion = typeof body?.marketRegion === "string" ? body.marketRegion : "DK";
@@ -54,6 +57,15 @@ export async function POST(req: Request) {
       : null;
 
   if (!barcode || !isPhoto(frontPhoto) || !isPhoto(nutritionPhoto)) {
+    void debugLog({
+      category: "scan",
+      event: "product_create",
+      level: "error",
+      message: "Afvist: stregkode, forside eller energi-foto mangler",
+      flowId,
+      barcode: barcode || null,
+      data: { hasBarcode: Boolean(barcode), hasFront: isPhoto(frontPhoto), hasNutrition: isPhoto(nutritionPhoto) },
+    });
     return NextResponse.json({ message: "Stregkode, forside og energi er påkrævet" }, { status: 400 });
   }
 
@@ -61,7 +73,19 @@ export async function POST(req: Request) {
     // Samme stregkode kan være oprettet imens (fx af en anden bruger) — så
     // går brugeren bare til den eksisterende vare.
     const existing = await prisma.barcode.findUnique({ where: { code: barcode }, select: { productId: true } });
-    if (existing?.productId) return NextResponse.json({ product: { id: existing.productId } });
+    if (existing?.productId) {
+      void debugLog({
+        category: "scan",
+        event: "product_create",
+        level: "warn",
+        message: "Stregkoden blev oprettet imens — bruger den eksisterende vare",
+        flowId,
+        barcode,
+        productId: existing.productId,
+        durationMs: Date.now() - startedAt,
+      });
+      return NextResponse.json({ product: { id: existing.productId } });
+    }
 
     const sessionUser = await getSessionUser();
     const imageUrl = (await saveDataUrlImage(frontPhoto).catch(() => null)) ?? undefined;
@@ -93,26 +117,69 @@ export async function POST(req: Request) {
         .catch(() => {});
     }
 
-    after(() =>
-      enrichQuickProduct({
-        productId: product.id,
-        barcode,
-        marketRegion,
-        signals,
-        frontPhoto,
-        nutritionPhoto,
-        ingredientsPhoto,
-        nutritionOcrText,
+    void debugLog({
+      category: "scan",
+      event: "product_create",
+      message: `Vare oprettet som "${fallbackName}" — AI udfylder navn, brand${localNutrition ? "" : ", næring"} og ingredienser`,
+      flowId,
+      userId: sessionUser?.id,
+      barcode,
+      productId: product.id,
+      durationMs: Date.now() - startedAt,
+      data: {
+        frontImageSaved: Boolean(imageUrl),
+        localNutrition,
+        localIngredientsLength: localIngredients.length,
+        separateIngredientsPhoto: Boolean(ingredientsPhoto),
         nutritionOcrConfidence,
-        ingredientsOcrText,
         ingredientsOcrConfidence,
-        fallbackName,
-      }).catch((error) => console.error("Quick product enrichment failed", product.id, error)),
+        barcodeAnalysisLinked: Boolean(barcodeAnalysisId),
+        marketRegion,
+      },
+    });
+
+    // Berigelsens trin og OpenAI-kald logges med samme flow/vare i admin "Log".
+    const debugContext = { flowId, userId: sessionUser?.id ?? null, barcode, productId: product.id };
+    after(() =>
+      withDebugContext(debugContext, () =>
+        enrichQuickProduct({
+          productId: product.id,
+          barcode,
+          marketRegion,
+          signals,
+          frontPhoto,
+          nutritionPhoto,
+          ingredientsPhoto,
+          nutritionOcrText,
+          nutritionOcrConfidence,
+          ingredientsOcrText,
+          ingredientsOcrConfidence,
+          fallbackName,
+        }),
+      ).catch((error) => {
+        console.error("Quick product enrichment failed", product.id, error);
+        void debugLog({
+          category: "scan",
+          event: "enrichment_done",
+          level: "error",
+          message: `Berigelsen fejlede: ${errorText(error)}`,
+          ...debugContext,
+        });
+      }),
     );
 
     return NextResponse.json({ product }, { status: 201 });
   } catch (error) {
     console.error("Quick product creation failed", error);
+    void debugLog({
+      category: "scan",
+      event: "product_create",
+      level: "error",
+      message: `Oprettelsen fejlede: ${errorText(error)}`,
+      flowId,
+      barcode,
+      durationMs: Date.now() - startedAt,
+    });
     return NextResponse.json({ message: "Database ikke tilgængelig" }, { status: 503 });
   }
 }

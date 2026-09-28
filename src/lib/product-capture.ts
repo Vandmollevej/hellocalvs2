@@ -1,6 +1,7 @@
 import { findIngredientsSection, parseNutritionText, type ParsedNutrition } from "@/lib/product-ocr";
 import { extractTextPrioritized, usableOcrText } from "@/lib/product-ocr-prioritized";
 import type { LanguageSignals } from "@/lib/regions";
+import { scanFlowHeaders } from "@/lib/scan-debug-log";
 
 // Klientlogik for kameraflowet under Tilføj (docs/DECISIONS.md 2026-09-27):
 // stregkode → forside → energi → indhold. Hvert foto læses kun med lokal OCR
@@ -12,6 +13,8 @@ export type CaptureStep = "barcode" | "front" | "nutrition" | "ingredients";
 export const CAPTURE_STEPS: CaptureStep[] = ["barcode", "front", "nutrition", "ingredients"];
 
 export type CaptureData = {
+  // Admin "Log" (src/lib/scan-debug-log.ts): samler scanningens trin.
+  flowId?: string;
   barcode?: string;
   barcodeAnalysisId?: string;
   // Telefonens land (tidszone), appens sprog og telefonens sprog —
@@ -45,21 +48,27 @@ async function ocr(photo: string, languages: string[], tableLayout = false) {
 }
 
 // Forsiden: lokal OCR bruges kun til dublet-tjek mod databasen. Returnerer
-// id'et på en eksisterende vare, hvis teksten matcher en.
-export async function readFrontPhoto(photo: string, languages: string[]): Promise<{ duplicateId: string | null }> {
-  const { text } = await ocr(photo, languages);
-  if (!text) return { duplicateId: null };
+// id'et på en eksisterende vare, hvis teksten matcher en (plus OCR-tallene
+// til admin "Log").
+export async function readFrontPhoto(
+  photo: string,
+  languages: string[],
+  flowId?: string,
+): Promise<{ duplicateId: string | null; textLength: number; confidence: number; lookupFailed: boolean }> {
+  const { text, confidence } = await ocr(photo, languages);
+  const stats = { textLength: text.length, confidence };
+  if (!text) return { duplicateId: null, lookupFailed: false, ...stats };
   try {
     const response = await fetch("/api/products/recognize-text", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...scanFlowHeaders(flowId) },
       body: JSON.stringify({ text }),
     });
-    if (!response.ok) return { duplicateId: null };
+    if (!response.ok) return { duplicateId: null, lookupFailed: true, ...stats };
     const data = (await response.json()) as { product: { id: string } | null };
-    return { duplicateId: data.product?.id ?? null };
+    return { duplicateId: data.product?.id ?? null, lookupFailed: false, ...stats };
   } catch {
-    return { duplicateId: null };
+    return { duplicateId: null, lookupFailed: true, ...stats };
   }
 }
 
@@ -87,11 +96,12 @@ export async function saveBarcodePhoto(
   barcode: string,
   marketRegion: string,
   signals?: LanguageSignals,
+  flowId?: string,
 ): Promise<string | null> {
   try {
     const response = await fetch("/api/ai/save-barcode-photo", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...scanFlowHeaders(flowId) },
       body: JSON.stringify({ photo, barcode, marketRegion, signals }),
     });
     const data = response.ok ? ((await response.json()) as { analysisId?: string }) : null;
@@ -104,7 +114,7 @@ export async function saveBarcodePhoto(
 export async function createQuickProduct(data: CaptureData, marketRegion: string): Promise<string> {
   const response = await fetch("/api/products/quick", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...scanFlowHeaders(data.flowId) },
     body: JSON.stringify({
       barcode: data.barcode,
       marketRegion,

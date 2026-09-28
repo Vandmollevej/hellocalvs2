@@ -27,6 +27,7 @@ import {
   type CaptureData,
   type CaptureStep,
 } from "@/lib/product-capture";
+import { newScanFlowId, scanFlowHeaders, scanLog } from "@/lib/scan-debug-log";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 // Kameraflowet under Tilføj (docs/DECISIONS.md 2026-09-27). Fire knapper under
@@ -84,6 +85,12 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
   const lastBarcodeSeenAtRef = useRef(0);
   const dataRef = useRef<CaptureData>({});
   const leavingRef = useRef(false);
+  // Admin "Log" (docs/DECISIONS.md 2026-09-28): ét flow-id pr. åbning af
+  // kameraet samler alle trin, telefonens og serverens.
+  const [flowId] = useState(newScanFlowId);
+  const flowStartedAtRef = useRef(0);
+  const cameraReadyAtRef = useRef(0);
+  const stepRef = useRef<CaptureStep>("barcode");
 
   const [cameraStatus, setCameraStatus] = useState<CameraStatus>("starting");
   const [restartKey, setRestartKey] = useState(0);
@@ -100,6 +107,35 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
   const fakeBarcode = useMemo(() => buildFakeBarcodeForRegion(region), [region]);
 
   const scanning = step === "barcode" && !done.barcode;
+
+  useEffect(() => {
+    stepRef.current = step;
+  }, [step]);
+
+  // Flowets start og — hvis brugeren går uden at nå en vare — hvor langt
+  // hen scanningen kom. Under 0,5 s er React's dobbelte montering i udvikling.
+  useEffect(() => {
+    const startedAt = Date.now();
+    flowStartedAtRef.current = startedAt;
+    const leaving = leavingRef;
+    const data = dataRef;
+    const currentStep = stepRef;
+    scanLog(flowId, "flow_start", {
+      message: "Kameraflow åbnet",
+      data: { userAgent: navigator.userAgent.slice(0, 200), language: navigator.language },
+    });
+    return () => {
+      const durationMs = Date.now() - startedAt;
+      if (leaving.current || durationMs < 500) return;
+      scanLog(flowId, "flow_abandoned", {
+        level: "warn",
+        message: `Forladt uden vare på trinnet "${currentStep.current}"`,
+        barcode: data.current.barcode,
+        durationMs,
+        data: { step: currentStep.current },
+      });
+    };
+  }, [flowId]);
 
   // Brugerens region er det primære sprogsignal (docs/DECISIONS.md 2026-09-12)
   // og giver den fiktive stregkode-guide det rigtige GS1-præfiks.
@@ -146,8 +182,10 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     async function start() {
       if (!navigator.mediaDevices?.getUserMedia || !videoRef.current) {
         setCameraStatus("unavailable");
+        scanLog(flowId, "camera_failed", { level: "error", message: "Kamera ikke tilgængeligt i browseren" });
         return;
       }
+      const requestedAt = Date.now();
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: false,
@@ -160,9 +198,25 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
         streamRef.current = stream;
         videoRef.current.srcObject = stream;
         await videoRef.current.play();
-        if (!cancelled) setCameraStatus("active");
+        if (!cancelled) {
+          setCameraStatus("active");
+          cameraReadyAtRef.current = Date.now();
+          scanLog(flowId, "camera_ready", {
+            message: `Kamera klar (${videoRef.current.videoWidth}×${videoRef.current.videoHeight})`,
+            durationMs: Date.now() - requestedAt,
+            data: { width: videoRef.current.videoWidth, height: videoRef.current.videoHeight, restart: restartKey },
+          });
+        }
       } catch (error) {
-        if (!cancelled) setCameraStatus(statusFromCameraError(error));
+        if (!cancelled) {
+          const status = statusFromCameraError(error);
+          setCameraStatus(status);
+          scanLog(flowId, "camera_failed", {
+            level: "error",
+            message: `Kamera kunne ikke starte (${status})`,
+            data: { status, name: error instanceof DOMException ? error.name : null, error: String(error).slice(0, 300) },
+          });
+        }
       }
     }
     void start();
@@ -170,7 +224,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
       cancelled = true;
       stopCamera();
     };
-  }, [restartKey, stopCamera]);
+  }, [restartKey, stopCamera, flowId]);
 
   function goToNextStep(completed: Partial<Record<CaptureStep, boolean>>) {
     const next = CAPTURE_STEPS.find((item) => !completed[item]);
@@ -192,10 +246,25 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
   async function createProduct() {
     setWorking(true);
     setCreateFailed(false);
+    const startedAt = Date.now();
+    const barcode = dataRef.current.barcode;
     try {
-      const id = await createQuickProduct(dataRef.current, marketRegion());
+      const id = await createQuickProduct({ ...dataRef.current, flowId }, marketRegion());
+      scanLog(flowId, "flow_done", {
+        message: "Vare oprettet — går til varen (AI udfylder resten i baggrunden)",
+        barcode,
+        productId: id,
+        durationMs: Date.now() - flowStartedAtRef.current,
+        data: { outcome: "created", createMs: Date.now() - startedAt },
+      });
       leaveTo(`/add/${id}${returnSuffix}`);
-    } catch {
+    } catch (error) {
+      scanLog(flowId, "product_create_failed", {
+        level: "error",
+        message: `Oprettelsen fejlede: ${String(error).slice(0, 200)}`,
+        barcode,
+        durationMs: Date.now() - startedAt,
+      });
       setWorking(false);
       setCreateFailed(true);
     }
@@ -217,14 +286,24 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
       if (lookupInProgressRef.current) return;
       lookupInProgressRef.current = true;
       setLookupError(false);
+      const startedAt = Date.now();
       try {
-        const response = await fetch(`/api/products/lookup/${encodeURIComponent(code)}`);
+        const response = await fetch(`/api/products/lookup/${encodeURIComponent(code)}`, {
+          headers: scanFlowHeaders(flowId),
+        });
         if (response.ok) {
-          const data = (await response.json()) as { product: { id: string } };
+          const data = (await response.json()) as { product: { id: string }; source?: string };
+          scanLog(flowId, "flow_done", {
+            message: `Kendt stregkode (${data.source ?? "ukendt kilde"}) — går direkte til varen`,
+            barcode: code,
+            productId: data.product.id,
+            durationMs: Date.now() - flowStartedAtRef.current,
+            data: { outcome: "existing", source: data.source ?? null, lookupMs: Date.now() - startedAt },
+          });
           leaveTo(`/add/${data.product.id}${returnSuffix}`);
           return;
         }
-        if (response.status !== 404) throw new Error("Product lookup failed");
+        if (response.status !== 404) throw new Error(`Product lookup failed (${response.status})`);
 
         // Ukendt vare: gem stregkoden og gå videre til forsiden.
         const frame = captureFrame(videoRef.current);
@@ -232,9 +311,12 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
         dataRef.current.languageSignals = readLanguageSignals(locale);
         const context = buildBarcodeContext(code, region, dataRef.current.languageSignals);
         if (frame) {
-          void saveBarcodePhoto(frame, code, context.marketRegion, context.signals).then((id) => {
+          void saveBarcodePhoto(frame, code, context.marketRegion, context.signals, flowId).then((id) => {
             if (id) dataRef.current.barcodeAnalysisId = id;
+            else scanLog(flowId, "barcode_photo_failed", { level: "warn", message: "Stregkode-fotoet blev ikke gemt", barcode: code });
           });
+        } else {
+          scanLog(flowId, "barcode_photo_failed", { level: "warn", message: "Intet kamerabillede til stregkode-fotoet", barcode: code });
         }
         stopScanner();
         setBarcodeDetection(null);
@@ -242,14 +324,20 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
         lookupInProgressRef.current = false;
         setDone((current) => ({ ...current, barcode: true }));
         setStep("front");
-      } catch {
+      } catch (error) {
+        scanLog(flowId, "barcode_lookup_error", {
+          level: "error",
+          message: `Stregkodeopslaget fejlede: ${String(error).slice(0, 200)}`,
+          barcode: code,
+          durationMs: Date.now() - startedAt,
+        });
         setLookupError(true);
         setBarcodeDetection(null);
         activeCodeRef.current = null;
         lookupInProgressRef.current = false;
       }
     },
-    [leaveTo, locale, region, returnSuffix, stopScanner],
+    [flowId, leaveTo, locale, region, returnSuffix, stopScanner],
   );
 
   // Hver aflæsning: start decode-animationen på en ny kode (og opslaget, når
@@ -274,6 +362,12 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
       activeCodeRef.current = code;
       setLookupError(false);
       setBarcodeDetection({ code, symbology, pose, tone: "reading" });
+      scanLog(flowId, "barcode_read", {
+        message: `Stregkode aflæst (${symbology})`,
+        barcode: code,
+        durationMs: cameraReadyAtRef.current ? Date.now() - cameraReadyAtRef.current : null,
+        data: { symbology, orientation },
+      });
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       lookupTimerRef.current = setTimeout(
         () => {
@@ -283,7 +377,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
         reducedMotion ? DECODE_ANIMATION_REDUCED_MS : DECODE_ANIMATION_MS,
       );
     },
-    [lookupBarcode],
+    [flowId, lookupBarcode],
   );
   const handleBarcodeReadRef = useRef(handleBarcodeRead);
   useEffect(() => {
@@ -318,18 +412,39 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
   async function capturePhoto() {
     if (working || step === "barcode") return;
     const frame = captureFrame(videoRef.current);
-    if (!frame) return;
+    if (!frame) {
+      scanLog(flowId, "photo_capture_failed", { level: "warn", message: `Intet kamerabillede på trinnet "${step}"`, barcode: dataRef.current.barcode });
+      return;
+    }
     setPhoto(frame);
     setWorking(true);
     const languages = ocrLanguages();
     const data = dataRef.current;
+    const startedAt = Date.now();
 
     if (step === "front") {
       data.frontPhoto = frame;
-      const { duplicateId } = await readFrontPhoto(frame, languages);
+      const front = await readFrontPhoto(frame, languages, flowId);
+      scanLog(flowId, "front_photo", {
+        level: front.lookupFailed ? "warn" : "info",
+        message: front.textLength
+          ? `Forside læst lokalt (${front.textLength} tegn, sikkerhed ${Math.round(front.confidence)} %)${front.duplicateId ? " — dublet fundet" : ""}`
+          : "Forside: ingen læsbar tekst lokalt (AI læser den efter oprettelse)",
+        barcode: data.barcode,
+        productId: front.duplicateId,
+        durationMs: Date.now() - startedAt,
+        data: { ...front, languages },
+      });
       if (leavingRef.current) return;
-      if (duplicateId) {
-        leaveTo(`/add/${duplicateId}${returnSuffix}`);
+      if (front.duplicateId) {
+        scanLog(flowId, "flow_done", {
+          message: "Forsideteksten matcher en eksisterende vare — går til den",
+          barcode: data.barcode,
+          productId: front.duplicateId,
+          durationMs: Date.now() - flowStartedAtRef.current,
+          data: { outcome: "duplicate" },
+        });
+        leaveTo(`/add/${front.duplicateId}${returnSuffix}`);
         return;
       }
       goToNextStep(markDone("front"));
@@ -338,6 +453,20 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
 
     if (step === "nutrition") {
       const result = await readNutritionPhoto(frame, languages);
+      scanLog(flowId, "nutrition_photo", {
+        message: result.nutrition
+          ? `Energi læst lokalt (sikkerhed ${Math.round(result.confidence)} %)${result.ingredientsText ? " + ingrediensliste på samme foto" : ""}`
+          : `Energi: næringstabellen kunne ikke læses lokalt (${result.text.length} tegn) — AI læser den`,
+        barcode: data.barcode,
+        durationMs: Date.now() - startedAt,
+        data: {
+          textLength: result.text.length,
+          confidence: result.confidence,
+          nutrition: result.nutrition,
+          ingredientsOnSamePhoto: Boolean(result.ingredientsText),
+          languages,
+        },
+      });
       if (leavingRef.current) return;
       data.nutritionPhoto = frame;
       data.nutritionOcrText = result.text;
@@ -356,6 +485,19 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     }
 
     const result = await readIngredientsPhoto(frame, languages);
+    scanLog(flowId, "ingredients_photo", {
+      message: result.ingredientsText
+        ? `Ingredienser læst lokalt (${result.ingredientsText.length} tegn, sikkerhed ${Math.round(result.confidence)} %)`
+        : `Ingredienser: ingen ingrediensliste fundet lokalt (${result.text.length} tegn) — AI læser den`,
+      barcode: data.barcode,
+      durationMs: Date.now() - startedAt,
+      data: {
+        textLength: result.text.length,
+        confidence: result.confidence,
+        ingredientsLength: result.ingredientsText.length,
+        languages,
+      },
+    });
     if (leavingRef.current) return;
     data.ingredientsPhoto = frame;
     data.ingredientsOcrText = result.text;

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { buildBarcodeContext } from "@/lib/barcode-context";
 import { saveDataUrlImage } from "@/lib/qc-image-storage";
+import { debugLog, flowIdFromRequest } from "@/lib/debug-log";
 
 // Kvalitetskontrol/billed-match (docs/DECISIONS.md 2026-09-19): stregkode-
 // fotoet fra det guidede kamera-flow (/camera/create) blev tidligere kun
@@ -23,8 +24,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "barcode er påkrævet" }, { status: 400 });
   }
 
+  const startedAt = Date.now();
+  const flowId = flowIdFromRequest(req);
   const imageUrl = await saveDataUrlImage(photo).catch(() => null);
   if (!imageUrl) {
+    void debugLog({ category: "scan", event: "barcode_photo_saved", level: "error", message: "Stregkode-fotoet kunne ikke gemmes", flowId, barcode, durationMs: Date.now() - startedAt });
     return NextResponse.json({ analysisId: null, message: "Kunne ikke gemme billedet" }, { status: 503 });
   }
 
@@ -42,6 +46,15 @@ export async function POST(req: Request) {
       imageUrl,
     },
     select: { id: true },
+  });
+  void debugLog({
+    category: "scan",
+    event: "barcode_photo_saved",
+    message: "Stregkode-foto gemt til kvalitetskontrol",
+    flowId,
+    barcode,
+    durationMs: Date.now() - startedAt,
+    data: { imageUrl, analysisId: analysis.id, languages: context.primaryOcrLanguages },
   });
 
   return NextResponse.json({ analysisId: analysis.id });
