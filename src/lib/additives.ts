@@ -67,6 +67,20 @@ export function useAdditiveLookup() {
   return loadAdditives;
 }
 
+// Anchor id for an E-number on the /e-numre page, e.g. "E330" -> "e330".
+export function additiveAnchorId(code: string): string {
+  return code.trim().toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+export function additiveHref(code: string): string {
+  return `/e-numre#${additiveAnchorId(code)}`;
+}
+
+export async function getAllAdditives(): Promise<AdditiveInfo[]> {
+  const map = await loadAdditives();
+  return Array.from(map.values());
+}
+
 export async function getAdditiveInfo(code: string): Promise<AdditiveInfo> {
   const normalized = code.toUpperCase();
   try {

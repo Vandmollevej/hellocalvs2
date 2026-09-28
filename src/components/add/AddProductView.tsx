@@ -20,9 +20,8 @@ import { ForwardButton } from "@/components/ForwardButton";
 import { appendDishDraftIngredient } from "@/lib/dish-draft";
 import { selectRawContextImageUrl } from "@/lib/image-tags";
 import { MacroSliderBar } from "@/components/hf/MacroSliderBar";
-import { AdditiveInfoModal } from "@/components/hf/AdditiveInfoModal";
 import { TimeSection } from "@/components/hf/TimeSection";
-import { getAdditiveInfo } from "@/lib/additives";
+import { additiveHref, getAdditiveInfo } from "@/lib/additives";
 import { labelForAllergen } from "@/lib/allergens";
 import { matchToxins, type ToxinInfo } from "@/lib/toxins";
 import { ToxinInfoModal } from "@/components/hf/ToxinInfoModal";
@@ -182,7 +181,6 @@ export function AddProductView({
   const [date] = useState(() => initialDate ?? currentDateString());
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
-  const [openAdditive, setOpenAdditive] = useState<string | null>(null);
   const [additivesOpen, setAdditivesOpen] = useState(false);
   // Åben som standard (G11, 2026-09-24) — brugeren har selv slået panelet til.
   const [extendedNutritionOpen, setExtendedNutritionOpen] = useState(true);
@@ -836,10 +834,9 @@ export function AddProductView({
                     {state.product.additives.map((code, index) => {
                       const name = additiveNames[code] ?? code.toUpperCase();
                       return (
-                        <button
+                        <Link
                           key={code}
-                          type="button"
-                          onClick={() => setOpenAdditive(code)}
+                          href={additiveHref(code)}
                           className={`hf-control-row flex items-center gap-3 px-4 text-left ${
                             index < (state.product.additives?.length ?? 0) - 1
                               ? "border-b border-hf-tan-dark"
@@ -853,7 +850,7 @@ export function AddProductView({
                             ({code.toUpperCase()}){" "}
                             <span className="underline underline-offset-2">{name}</span>
                           </span>
-                        </button>
+                        </Link>
                       );
                     })}
                   </div>
@@ -1040,9 +1037,6 @@ export function AddProductView({
         )}
       </div>
 
-      {openAdditive && (
-        <AdditiveInfoModal code={openAdditive} onClose={() => setOpenAdditive(null)} />
-      )}
       {openToxin && <ToxinInfoModal toxin={openToxin} onClose={() => setOpenToxin(null)} />}
     </Frame>
   );
