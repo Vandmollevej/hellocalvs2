@@ -3257,3 +3257,9 @@ Produktsiden viser aldrig teksten "Branded". Brandet vises kun som brandnavn/log
   fra Open Food Facts (kræver netadgang; dry run som standard).
 - Senere: AI-beregnet median pr. produkttype (fx smørrist) kan erstatte den
   håndskrevne tabel i `src/lib/default-amount.ts`.
+- Enhedsstørrelse = `Product.servingSizeGrams` + `servingSizeUnitSingular/Plural`
+  (fx 18 g, "skive"/"skiver"). Ingen ny kolonne.
+- `scripts/store-products-import/build_data.py` læser skivevægt fra butikkernes
+  originale tekster: "x g pr. skive" direkte, eller "N skiver" + pakkevægt
+  (vægt ÷ N). Aldrig gættet; 2-80 g. Agenten skriver den kun, når varen ikke
+  har en portionsstørrelse.
