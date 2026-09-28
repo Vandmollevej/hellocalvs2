@@ -1856,6 +1856,10 @@ function DayDetails({
   const remaining = DAILY_KCAL_GOAL - dayKcal;
   const hasEntries = registrations.length > 0;
   const met = hasEntries && dayKcal <= DAILY_KCAL_GOAL;
+  // Dagsstatus: fremtidige dage viser ingen status, historiske dage i datid.
+  const todayKey = dayKey(new Date());
+  const isFutureDay = dateKey > todayKey;
+  const isPastDay = dateKey < todayKey;
 
   function goToAddFlow(hour: number) {
     // Opens the same "everything you can add" menu as the front page's
@@ -2112,10 +2116,11 @@ function DayDetails({
           </>
         )}
 
-        <div className="mt-4 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-x-2 gap-y-1 pr-1">
-          <div className="flex min-w-0 items-center gap-2">
+        <div className="mt-4 space-y-1 pr-1">
+          {!isFutureDay && (
+          <div className="flex items-start gap-2">
             <span
-              className={`flex size-5 shrink-0 items-center justify-center rounded-full ${
+              className={`mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full ${
                 met ? "bg-hf-green" : hasEntries ? "bg-hf-red-dark" : "bg-hf-gray"
               }`}
             >
@@ -2125,18 +2130,18 @@ function DayDetails({
                 <span className="size-2 rounded-full bg-hf-white" aria-hidden="true" />
               )}
             </span>
-            <p className="hf-type-body hf-type-strong min-w-0 truncate text-hf-black">
+            <p className="hf-type-body hf-type-strong min-w-0 text-hf-black">
               {hasEntries
                 ? met
-                  ? t("calendar.dailyGoalReached")
-                  : t("calendar.dailyGoalExceeded")
-                : t("calendar.dailyGoalNone")}
+                  ? t(isPastDay ? "calendar.dailyGoalReachedPast" : "calendar.dailyGoalReached")
+                  : t(isPastDay ? "calendar.dailyGoalExceededPast" : "calendar.dailyGoalExceeded")
+                : t(isPastDay ? "calendar.dailyGoalNonePast" : "calendar.dailyGoalNone")}
             </p>
           </div>
+          )}
           <p className="hf-type-body whitespace-nowrap text-right text-text-muted">
             {t("calendar.goalLabel", { goal: DAILY_KCAL_GOAL })}
           </p>
-          <div aria-hidden="true" />
           {remaining >= 0 ? (
             <p className="hf-type-body whitespace-nowrap text-right text-hf-black">
               {t("calendar.remainingToday", { amount: Math.round(remaining) })}
