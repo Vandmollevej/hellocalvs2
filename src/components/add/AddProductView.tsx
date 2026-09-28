@@ -801,22 +801,23 @@ export function AddProductView({
                 </div>
               )}
 
-              <div className="mb-4 flex items-center gap-2">
+              <div className="mx-auto mb-4 flex w-full max-w-[320px] items-center gap-2">
                 <button
+                  type="button"
                   onClick={() => setAmount((a) => Math.max(step, a - step))}
-                  className="hf-type-title h-11 w-11 rounded-full bg-hf-tan text-hf-black"
+                  className="h-11 w-11 text-[34px] font-bold leading-none text-hf-black"
                 >
                   −
                 </button>
                 <div className="flex-1 rounded-2xl bg-hf-tan py-3 text-center text-hf-black">
                   {hasServingUnit && amountUnit === "personer" ? (
-                    <p className="hf-type-title capitalize">
+                    <p className="hf-type-page-title capitalize">
                       {`${Math.round(amount / (servingSizeGrams as number))} ${
                         amount === servingSizeGrams ? servingSizeUnitSingular : servingSizeUnitPlural
                       }`}
                     </p>
                   ) : (
-                    <label className="hf-type-title flex items-baseline justify-center text-hf-black">
+                    <label className="hf-type-page-title flex items-baseline justify-center text-hf-black">
                       <input
                         type="number"
                         inputMode="numeric"
@@ -833,19 +834,20 @@ export function AddProductView({
                       <span>&nbsp;{displayUnit}</span>
                     </label>
                   )}
-                  <p className="hf-type-small text-text-secondary flex justify-center">
+                  <p className="hf-type-body text-text-secondary flex justify-center">
                     {isPending("nutrition") ? (
                       <ReadingSkeleton label={t("addProduct.reading")}>
                         <Skeleton type="caption" width={64} height={14} className="my-0.5" />
                       </ReadingSkeleton>
                     ) : state.product.isGenericIngredient && state.product.hasKnownNutrition === false
                       ? t("addProduct.nutritionUnknown")
-                      : `${Math.round((state.product.kcalPer100g * amount) / 100)} kcal`}
+                      : t("addProduct.kcalAmount", { kcal: Math.round((state.product.kcalPer100g * amount) / 100) })}
                   </p>
                 </div>
                 <button
+                  type="button"
                   onClick={() => setAmount((a) => a + step)}
-                  className="hf-type-title h-11 w-11 rounded-full bg-hf-tan text-hf-black"
+                  className="h-11 w-11 text-[34px] font-bold leading-none text-hf-black"
                 >
                   +
                 </button>
@@ -904,7 +906,7 @@ export function AddProductView({
 
               <div>
                 <div className="mb-4 flex items-center justify-between">
-                  <p className="hf-type-body hf-heading text-hf-black">{t("common.macroBreakdown")}</p>
+                  <h2 className="hf-type-section-title font-bold text-hf-black">{t("common.macroBreakdown")}</h2>
                   <div className="-my-3 -mr-3 flex items-center">
                     {isProductEditingUnlocked && (
                       <button
