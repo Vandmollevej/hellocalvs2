@@ -10,10 +10,12 @@ type Props = {
   confirm: string;
   onPasswordChange: (value: string) => void;
   onConfirmChange: (value: string) => void;
+  // Efter et forsøg på at gå videre vises uopfyldte krav med rødt.
+  showErrors?: boolean;
 };
 
 // Ny adgangskode + gentagelse med vis/skjul-øje og live-tjekliste over kravene.
-export function AdminNewPasswordFields({ label, password, confirm, onPasswordChange, onConfirmChange }: Props) {
+export function AdminNewPasswordFields({ label, password, confirm, onPasswordChange, onConfirmChange, showErrors = false }: Props) {
   const [visible, setVisible] = useState(false);
   const mismatch = confirm.length > 0 && confirm !== password;
   const inputClass = "hf-type-body hf-field w-full rounded-md border border-hf-tan-dark bg-hf-white pl-3 pr-11";
@@ -52,7 +54,7 @@ export function AdminNewPasswordFields({ label, password, confirm, onPasswordCha
         {ADMIN_PASSWORD_RULES.map((rule) => {
           const ok = rule.test(password);
           return (
-            <li key={rule.id} className={`flex items-center gap-1.5 ${ok ? "text-hf-green-dark" : "text-text-muted"}`}>
+            <li key={rule.id} className={`flex items-center gap-1.5 ${ok ? "text-hf-green-dark" : showErrors ? "text-hf-red-dark" : "text-text-muted"}`}>
               {ok ? <IconCheck size={16} aria-hidden /> : <IconX size={16} aria-hidden />}
               {rule.label}
             </li>

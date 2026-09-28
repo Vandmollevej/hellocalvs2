@@ -15,10 +15,12 @@ export function AdminResetPasswordForm({ token }: { token: string }) {
   const [secret, setSecret] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [attempted, setAttempted] = useState(false);
 
   async function onSubmitPassword(event: React.FormEvent) {
     event.preventDefault();
     setError(null);
+    setAttempted(true);
     if (!isAdminPasswordValid(password)) {
       setError(ADMIN_PASSWORD_REQUIREMENTS_MESSAGE);
       return;
@@ -124,11 +126,12 @@ export function AdminResetPasswordForm({ token }: { token: string }) {
             confirm={passwordConfirm}
             onPasswordChange={setPassword}
             onConfirmChange={setPasswordConfirm}
+            showErrors={attempted}
           />
           {error && <p className="hf-type-body text-hf-red-dark">{error}</p>}
           <button
             type="submit"
-            disabled={loading || !isAdminPasswordValid(password) || password !== passwordConfirm}
+            disabled={loading}
             className="hf-type-body hf-type-strong rounded-md bg-hf-green-dark px-4 py-2.5 text-hf-white disabled:opacity-60"
           >
             {loading ? "Gemmer…" : "Fortsæt til QR-kode"}
