@@ -1,0 +1,2811 @@
+[
+ {
+  "code": "E903",
+  "nameDa": "Carnaubavoks",
+  "nameEn": "Carnauba wax",
+  "category": "Overfladebehandlingsmiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "En hård plantevoks fra bladene på den brasilianske carnaubapalme, som i EU bruges som glansmiddel, bl.a. på sukkervarer, chokoladeprodukter og friske frugter.",
+  "description": "Carnaubavoks udvindes fra bladene af palmen Copernicia prunifera (synonym: C. cerifera), som vokser vildt i det nordøstlige Brasilien. Bladene tørres, hvorefter de bankes, så vokspulveret løsnes; den rå voks raffineres og kan bleges. Voksen er en kompleks blanding, hovedsageligt af alifatiske estere samt diestere af 4-hydroxykanelsyre, ω-hydroxycarboxylsyrer og fedtalkoholer. Den regnes for den hårdeste naturlige voks og har et smeltepunkt på ca. 82–86 °C.",
+  "uses": "Kun som glansmiddel (overfladebehandling). Anvendes i sukkervarer og chokoladeprodukter (fx dragéer) med op til 500 mg/kg, i tyggegummi med op til 1.200 mg/kg og med op til 200 mg/kg i bl.a. kosttilskud, små chokoladeovertrukne finere bagværksprodukter, snacks, nødder og kaffebønner. Desuden til overfladebehandling af friske citrusfrugter, meloner, æbler, pærer, ferskner og ananas (200 mg/kg) og – siden forordning (EU) nr. 1147/2012 – af visse frugter, der hovedsageligt importeres fra tropiske lande, fx mango, avocado, granatæble og papaya.",
+  "health": "EFSA vurderede i 2012, at carnaubavoks ikke forventes at blive optaget i nævneværdig grad fra kosten; hvis den nedbrydes (hydrolyseres), kan hovedbestanddelene indgå i kroppens normale stofskifte. JECFA har fastsat en ADI på 7 mg/kg legemsvægt/dag. EFSA fastsatte ingen ADI, men konkluderede, at de godkendte anvendelser ikke giver anledning til sikkerhedsbekymring.",
+  "research": "EFSA's gen-evaluering (2012) fandt ingen grund til bekymring for genotoksicitet, og de tilgængelige subkroniske studier samt reproduktions- og udviklingstoksicitetsstudier viste ingen skadelige effekter. Der fandtes derimod ingen studier af kronisk toksicitet eller kræftfremkaldende effekt, og derfor fastsatte panelet ingen ADI. De estimerede eksponeringer gav dog tilstrækkelige sikkerhedsmarginer i forhold til de identificerede NOAEL-værdier.",
+  "keyReferences": [],
+  "pubmedTerm": "carnauba wax",
+  "flags": [],
+  "classes": [
+   "carrier"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of carnauba wax (E 903) as a food additive",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2012.2880",
+   "date": "2012-10-04",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2012.2880",
+    "https://www.efsa.europa.eu/en/efsajournal/pub/2880",
+    "https://www.foodnavigator.com/Article/2012/10/10/EFSA-reaffirms-carnauba-wax-safety-at-current-usage-levels/",
+    "https://en.wikipedia.org/wiki/Carnauba_wax",
+    "https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/carnauba-wax",
+    "https://healthjade.net/carnauba-wax/",
+    "https://eur-lex.europa.eu/eli/reg/2012/1147/oj/eng",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005"
+   ],
+   "notes": "Bekræftet: botanisk oprindelse, glansmiddelfunktion, JECFA-ADI 7 mg/kg, EFSA 2012 uden ADI men uden sikkerhedsbekymring, ingen genotoksicitet. Rettet: frugtbehandling er 200 mg/kg (ikke quantum satis); tilføjet 500 mg/kg i sukkervarer og 1.200 mg/kg i tyggegummi og tropiske frugter (forordning 1147/2012); EFSA fandt manglende KRONISKE/kræftstudier, mens reproduktions-/udviklingsstudier ikke viste effekter (teksten sagde det omvendte). Fjernet: konkrete produkteksempler, 'ingen risikogrupper' og 'ingen nyere signaler'. Bemærk: EUR-Lex/EFSA-sider kunne kun læses via søgeresultater (direkte adgang blokeret); maksimalniveauerne er bekræftet via sekundær kilde, der gengiver bilag II."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Carnauba_wax",
+  "wikidata": "Q839494",
+  "claims": [
+   {
+    "claim": "Carnaubavoks udvindes fra bladene af Copernicia prunifera (synonym C. cerifera) i det nordøstlige Brasilien",
+    "source": "https://en.wikipedia.org/wiki/Carnauba_wax",
+    "result": "rettet"
+   },
+   {
+    "claim": "Bladene tørres og bankes, så vokspulveret løsnes; voksen raffineres og kan bleges",
+    "source": "https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/carnauba-wax",
+    "result": "rettet"
+   },
+   {
+    "claim": "Voksen består hovedsageligt af alifatiske estere, diestere af 4-hydroxykanelsyre, ω-hydroxycarboxylsyrer og fedtalkoholer",
+    "source": "https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/carnauba-wax",
+    "result": "rettet"
+   },
+   {
+    "claim": "Den hårdeste naturlige voks; smeltepunkt 82–86 °C",
+    "source": "https://en.wikipedia.org/wiki/Carnauba_wax",
+    "result": "rettet"
+   },
+   {
+    "claim": "Godkendt i EU kun som glansmiddel",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2012.2880",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt i kosttilskud, små chokoladeovertrukne bagværksprodukter, snacks, nødder og kaffebønner",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/2880",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Maksimalniveau 200 mg/kg; sukkervarer op til 500 mg/kg; tyggegummi op til 1.200 mg/kg",
+    "source": "https://healthjade.net/carnauba-wax/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Overfladebehandling af citrusfrugter, meloner, æbler, pærer, ferskner og ananas med op til 200 mg/kg (tidligere angivet som quantum satis)",
+    "source": "https://healthjade.net/carnauba-wax/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Forordning (EU) nr. 1147/2012 udvidede brugen til visse tropiske frugter (bl.a. mango, avocado, granatæble, papaya)",
+    "source": "https://eur-lex.europa.eu/eli/reg/2012/1147/oj/eng",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Vingummi/gelébønner og 'overtrukne chokoladelinser' som konkrete eksempler",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2012.2880",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Optages ikke i nævneværdig grad; hydrolyseprodukter indgår i normalt stofskifte",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2012.2880",
+    "result": "rettet"
+   },
+   {
+    "claim": "'Ingen kendte særlige risikogrupper'",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2012.2880",
+    "result": "fjernet"
+   },
+   {
+    "claim": "JECFA ADI 7 mg/kg legemsvægt/dag",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2012.2880",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2012: ingen ADI; godkendte anvendelser ikke til bekymring",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2012.2880",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen genotoksicitetsbekymring; subkroniske og reproduktions-/udviklingsstudier uden skadelige effekter",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2012.2880",
+    "result": "rettet"
+   },
+   {
+    "claim": "Påstanden om 'kroniske forsøg uden toksicitet' og 'begrænsede reproduktionsdata' – EFSA angiver at kroniske/kræftstudier manglede, mens reproduktionsstudier ikke viste effekter",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2012.2880",
+    "result": "rettet"
+   },
+   {
+    "claim": "'Ingen nyere signaler har rejst tvivl'",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2012.2880",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA-udtalelse om carnaubavoks (E 903), EFSA Journal oktober 2012",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2012.2880",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E904",
+  "nameDa": "Shellak",
+  "nameEn": "Shellac",
+  "category": "Overfladebehandlingsmiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "En naturlig harpiks udskilt af lakskjoldlus, som bruges til at give slik, tabletter og frugt en blank, beskyttende overflade.",
+  "description": "Shellak er en harpiks, som hunnerne af lakskjoldlusen (Kerria lacca) udskiller på værtstræer; den høstes kommercielt især i Indien, Thailand, Kina og Myanmar. Harpiksen skrabes af, renses og forarbejdes. Til fødevarebrug bleges den typisk ved at opløse den rensede lak i vandig natriumcarbonat og blege med natriumhypochlorit, og voksen fjernes ved filtrering. Kemisk er shellak en blanding af polyestere af alifatiske hydroxysyrer (især aleuritinsyre) og sesquiterpensyrer (fx jalarsyre og shellolsyre). Den danner en blank, beskyttende film og kendes i fødevareindustrien også som 'confectioner's glaze'.",
+  "uses": "Glansmiddel i quantum satis i 11 fødevarekategorier i bilag II, bl.a. chokolade- og sukkervarer (fx chokoladestykker og mintpastiller), kosttilskud, som glansmiddel på nødder og til overfladebehandling af friske frugter som citrusfrugter, meloner, æbler, pærer, ferskner, ananas, granatæbler, mango, avocado og papaya. Siden 2026 (forordning (EU) 2026/189) også tilladt som glansmiddel på tabletter og overtrukne tabletter af fødevarer til særlige medicinske formål med op til 46.000 mg/kg.",
+  "health": "Optagelsen fra tarmen er meget lav ifølge de dyreforsøg, EFSA gennemgik. Da shellak stammer fra insekter, er den ikke vegansk og kan være uønsket af etiske eller religiøse grunde. Kontaktallergi er sjælden, men beskrevet ved kosmetisk brug (fx øjenlågseksem fra mascara og læbebetændelse fra læbestift). EFSA fastsatte i 2024 en ADI på 4 mg/kg legemsvægt/dag for voksfri shellak; ADI blev overskredet ved 95-percentilen for flere aldersgrupper i nogle eksponeringsscenarier, men EFSA vurderede ikke dette som en sikkerhedsbekymring, fordi overskridelsen var lille, og både eksponeringsberegning og toksikologisk vurdering var konservative.",
+  "research": "EFSA's FAF-panel gen-evaluerede shellak i 2024 (\"Re-evaluation of shellac (E 904) as a food additive and a new application on the extension of use of shellac (E 904) in dietary foods for special medical purposes\") og fastsatte en ADI på 4 mg/kg legemsvægt/dag for voksfri shellak fremstillet ved fysisk affarvning, baseret på en NOAEL på 400 mg/kg legemsvægt/dag og en usikkerhedsfaktor på 100. For voksfri shellak fremstillet ved kemisk blegning er ADI midlertidig, indtil der foreligger nye data om identitet og indhold af organochlor-urenheder, som dannes ved blegning med natriumhypochlorit.",
+  "keyReferences": [
+   {
+    "citation": "EFSA FAF Panel. Re-evaluation of shellac (E 904) as a food additive and a new application on the extension of use of shellac (E 904) in dietary foods for special medical purposes. EFSA Journal. 2024;22(8):e8897.",
+    "searchTitle": "Re-evaluation of shellac (E 904) as a food additive"
+   }
+  ],
+  "pubmedTerm": "shellac",
+  "flags": [
+   "animal_origin"
+  ],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of shellac (E 904) as a food additive and a new application on the extension of use of shellac (E 904) in dietary foods for special medical purposes",
+   "url": "https://doi.org/10.2903/j.efsa.2024.8897",
+   "date": "2024-08-01",
+   "adi": "4 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://pubmed.ncbi.nlm.nih.gov/39099614/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8897",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11292212/",
+    "https://eur-lex.europa.eu/eli/reg/2026/189/oj/eng",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ%3AL_202600189",
+    "https://en.wikipedia.org/wiki/Shellac",
+    "https://www.sciencedirect.com/science/article/pii/S0141813024059087",
+    "https://www.madehow.com/Volume-4/Shellac.html",
+    "https://dermnetnz.org/topics/contact-allergy-to-shellac",
+    "https://pubmed.ncbi.nlm.nih.gov/16191026/",
+    "https://www.mcgill.ca/oss/article/nutrition-you-asked/why-there-shellac-my-chocolate-mints"
+   ],
+   "notes": "Bekræftet: oprindelse (Kerria lacca), kemisk sammensætning, EFSA 2024 ADI 4 mg/kg bw/dag (NOAEL 400, UF 100), midlertidig ADI for kemisk bleget shellak, 95-percentil-overskridelse uden bekymring, sjælden kontaktallergi. Rettet: fremstilling (blegning med natriumcarbonat/hypochlorit, voks fjernet ved filtrering i stedet for 'opløst i alkohol'); oprindelseslande udvidet; anvendelser præciseret til 11 kategorier i quantum satis, frugtlisten udvidet, og tilføjet ny FSMP-tilladelse (forordning (EU) 2026/189, 46.000 mg/kg). Fjernet: kaffebønner og 'kosmetiske sukkerovertræk' (ikke bekræftet), 'begrænset moderne forskning'. Direkte adgang til EFSA/EUR-Lex blokeret; indhold bekræftet via søgeresultater fra disse kilder."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Shellac",
+  "wikidata": "Q429659",
+  "claims": [
+   {
+    "claim": "Harpiks udskilt af hunner af lakskjoldlusen Kerria lacca",
+    "source": "https://en.wikipedia.org/wiki/Shellac",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Høstes især i Indien og Thailand (samt Kina og Myanmar)",
+    "source": "https://en.wikipedia.org/wiki/Shellac",
+    "result": "rettet"
+   },
+   {
+    "claim": "Skrabes af, renses; bleges med natriumcarbonat/natriumhypochlorit; voks fjernes ved filtrering (tidligere: 'opløses i alkohol')",
+    "source": "https://www.madehow.com/Volume-4/Shellac.html",
+    "result": "rettet"
+   },
+   {
+    "claim": "Voksfri shellak er defineret som renset og bleget lak med voksen fjernet ved filtrering",
+    "source": "https://eur-lex.europa.eu/eli/reg/2026/189/oj/eng",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Polyestere af alifatiske hydroxysyrer (aleuritinsyre) og sesquiterpensyrer (jalarsyre, shellolsyre)",
+    "source": "https://www.sciencedirect.com/science/article/pii/S0141813024059087",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kaldes 'confectioner's glaze'",
+    "source": "https://www.mcgill.ca/oss/article/nutrition-you-asked/why-there-shellac-my-chocolate-mints",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt quantum satis i 11 fødevarekategorier",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8897",
+    "result": "rettet"
+   },
+   {
+    "claim": "Anvendes i chokolade- og sukkervarer (Mintel-data i EFSA-udtalelsen)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11292212/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kosttilskud indgår i EFSA's eksponeringsscenarier",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11292212/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Overfladebehandling af citrusfrugter, meloner, æbler, pærer, ferskner, ananas, granatæbler, mango, avocado, papaya og glansmiddel på nødder",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8897",
+    "result": "rettet"
+   },
+   {
+    "claim": "Kaffebønner og 'kosmetiske sukkerovertræk'",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8897",
+    "result": "fjernet"
+   },
+   {
+    "claim": "FSMP-tabletter tilladt med op til 46.000 mg/kg ved forordning (EU) 2026/189",
+    "source": "https://eur-lex.europa.eu/eli/reg/2026/189/oj/eng",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Meget lav optagelse",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/39099614/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Insektoprindelse; ikke vegansk",
+    "source": "https://en.wikipedia.org/wiki/Shellac",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kontaktallergi sjælden, beskrevet ved mascara/læbestift",
+    "source": "https://dermnetnz.org/topics/contact-allergy-to-shellac",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "ADI 4 mg/kg legemsvægt/dag for voksfri shellak (2024)",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/39099614/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "ADI overskredet ved 95-percentilen for flere aldersgrupper, men ingen sikkerhedsbekymring pga. lav overskridelse og konservative antagelser",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/39099614/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "NOAEL 400 mg/kg legemsvægt/dag, usikkerhedsfaktor 100",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/39099614/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Midlertidig ADI for kemisk bleget shellak indtil data om organochlor-urenheder",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/39099614/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Begrænset moderne forskning i stoffet'",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/39099614/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA Journal 2024;22(8):e8897, offentliggjort 1. august 2024",
+    "source": "https://eur-lex.europa.eu/eli/reg/2026/189/oj/eng",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E905",
+  "nameDa": "Mikrokrystallinsk voks",
+  "nameEn": "Microcrystalline wax",
+  "category": "Overfladebehandlingsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En raffineret voks fra råolie, som i EU kun må bruges til overfladebehandling af visse sukkervarer, tyggegummi og frugter.",
+  "description": "Mikrokrystallinsk voks er en blanding af faste, mættede kulbrinter – overvejende forgrenede – med kædelængder over ca. C60, udvundet af råolie ved bl.a. afasfaltering, raffinering og afvoksning. Den affarves og renses med ler eller bauxit eller ved katalytisk hydrogenering. Sammenlignet med paraffinvoks har den mindre krystaller, højere molekylvægt og smeltepunkt og er mere smidig. EU-specifikationen (forordning (EU) nr. 231/2012) fastsætter bl.a. en grænse på 50 µg/kg for benzo(a)pyren.",
+  "uses": "Kun som overfladebehandlingsmiddel (quantum satis) på sukkervarer undtagen chokolade, tyggegummi samt dekorationer, overtræk og fyld (undtagen frugtbaseret fyld), og til overfladebehandling af meloner, papaya, mango og avocado.",
+  "health": "EFSA bemærkede, at mineralolieprodukter ophobes i væv afhængigt af dosis og tid – med undtagelse af mikrokrystallinske vokser. EFSA konkluderede i 2013, at der ikke er bekymring for genotoksicitet, og at de godkendte anvendelser ikke giver anledning til sikkerhedsbekymring, men fastsatte ingen ADI, fordi der ikke fandtes langtidsstudier. JECFA har en gruppe-ADI på 20 mg/kg legemsvægt/dag for mineralolier, paraffiner og mikrokrystallinske vokser. Da stoffet er et råolieprodukt, sætter EU-specifikationen grænser for urenheder som benzo(a)pyren.",
+  "research": "EFSA's gen-evaluering (2013) konkluderede, at den konservative eksponering ved maksimalt tilladte niveauer gav tilstrækkelig sikkerhedsmargin i forhold til den NOAEL, panelet fastsatte for de nært beslægtede højviskøse mineralolier. Toksicitetsstudier med kemisk beslægtede mineralske kulbrinter viste konsekvent ingen effekter af betydning. Der forelå ingen langtids- eller kræftstudier med E 905 selv, og derfor blev der ikke fastsat nogen ADI.",
+  "keyReferences": [],
+  "pubmedTerm": "microcrystalline wax",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of microcrystalline wax (E 905) as a food additive.",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2013.3146",
+   "date": "2013-04-04",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2013.3146",
+    "https://www.efsa.europa.eu/en/efsajournal/pub/3146",
+    "https://www.researchgate.net/publication/307740817_Scientific_Opinion_on_the_re-evaluation_of_microcrystalline_wax_E_905_as_a_food_additive",
+    "https://doi.usp.org/USPNF/USPNF_M88990_03_01.html",
+    "https://www.drugs.com/inactive/microcrystalline-wax-289.html",
+    "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng",
+    "https://www.researchgate.net/publication/280737353_Scientific_Opinion_on_the_re-evaluation_of_microcrystalline_wax_E_905_as_a_food_additive_EFSA_Panel_on_Food_Additives_and_Nutrient_Sources_added_to_Food_ANS"
+   ],
+   "notes": "Bekræftet: EFSA 2013 (ingen ADI, ingen bekymring, sikkerhedsmargin vs. højviskøse mineralolier), ingen genotoksicitet, JECFA gruppe-ADI 20 mg/kg, fysiske egenskaber vs. paraffin. Rettet: kemisk definition (>C60, forgrenede), fremstilling/rensning (ler/bauxit eller hydrogenering), anvendelser (tilføjet dekorationer/overtræk/fyld), optagelse omformuleret til EFSA's udsagn om manglende vævsophobning. Fjernet: påstand om EFSA-anbefaling af strammere specifikationer for molekylvægt/PAH og MOSH/MOAH-sætning (kunne ikke bekræftes); erstattet af EU-specifikationens benzo(a)pyren-grænse."
+  },
+  "wikipedia": "",
+  "wikidata": "Q579764",
+  "claims": [
+   {
+    "claim": "Blanding af faste, mættede, overvejende forgrenede kulbrinter over C60",
+    "source": "https://www.researchgate.net/publication/307740817_Scientific_Opinion_on_the_re-evaluation_of_microcrystalline_wax_E_905_as_a_food_additive",
+    "result": "rettet"
+   },
+   {
+    "claim": "Fremstilles af råolie (afasfaltering, raffinering, afvoksning); affarves med ler/bauxit eller katalytisk hydrogenering",
+    "source": "https://www.researchgate.net/publication/307740817_Scientific_Opinion_on_the_re-evaluation_of_microcrystalline_wax_E_905_as_a_food_additive",
+    "result": "rettet"
+   },
+   {
+    "claim": "Mindre krystaller, højere molekylvægt, mere smidig end paraffin",
+    "source": "https://doi.usp.org/USPNF/USPNF_M88990_03_01.html",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Specifikation: benzo(a)pyren højst 50 µg/kg",
+    "source": "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt quantum satis på sukkervarer (ikke chokolade), tyggegummi, dekorationer/overtræk/fyld (ikke frugtfyld) samt meloner, papaya, mango, avocado",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3146",
+    "result": "rettet"
+   },
+   {
+    "claim": "'Ikke tilladt som generel ingrediens'",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2013.3146",
+    "result": "rettet"
+   },
+   {
+    "claim": "Ophobes ikke i væv i modsætning til andre mineralolieprodukter",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2013.3146",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA 2013: ingen sikkerhedsbekymring; ingen ADI",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2013.3146",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen genotoksicitetsbekymring",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2013.3146",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "JECFA gruppe-ADI 20 mg/kg bw/dag",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2013.3146",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilstrækkelig sikkerhedsmargin i forhold til NOAEL for højviskøse mineralolier",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2013.3146",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Panelet anbefalede strammere specifikationer for molekylvægt og PAH'",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2013.3146",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Udsagn om MOSH/MOAH-forskningens fokus på lavere molekylvægte",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2013.3146",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA Journal 2013;11(4):3146, 4. april 2013",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3146",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E907",
+  "nameDa": "Hydrogeneret poly-1-decen",
+  "nameEn": "Hydrogenated poly-1-decene",
+  "category": "Overfladebehandlingsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En syntetisk, flydende kulbrinte-oligomer, der i EU er godkendt som glansmiddel, bl.a. på sukkervarer og tørret frugt.",
+  "description": "Hydrogeneret poly-1-decen fremstilles ved oligomerisering af 1-decen (en alfa-olefin) med en katalysator til en blanding af primært trimerer, tetramerer, pentamerer og hexamerer, som derefter hydrogeneres katalytisk, så de bliver mættede. Produktet består af forgrenede, isomere kulbrinter med overvejende mere end 30 kulstofatomer og er en farveløs, lugtfri, olieagtig væske. Stoffet er opført i bilag II til forordning (EF) nr. 1333/2008.",
+  "uses": "Kun som glansmiddel i fire fødevarekategorier med fastsatte maksimalniveauer, bl.a. sukkervarer (herunder mintpastiller) og tørret frugt. Samme type stof (hydrogenated polydecene) bruges desuden som blødgørende middel i kosmetik, og hydrogenerede 1-decen-oligomerer (polyalfaolefiner) bruges som smøremidler.",
+  "health": "Stoffet er godkendt i EU (forordning 1333/2008) som glansmiddel. Det optages dårligt fra mave-tarm-kanalen og udskilles hovedsageligt med afføringen. Det har lav akut toksicitet og giver ikke anledning til bekymring for genotoksicitet. EFSA fastsatte i 2020 en ADI på 20 mg/kg legemsvægt/dag og fandt, at eksponeringen ved de maksimalt tilladte niveauer ikke overskred denne for nogen befolkningsgruppe.",
+  "research": "JECFA (1997, 2001) og SCF (2001) fastsatte en ADI på 0–6 mg/kg legemsvægt/dag. EFSA's FAF-panel gen-evaluerede stoffet i 2020 og fastsatte en ny ADI på 20 mg/kg legemsvægt/dag ud fra en NOAEL på 4.160 mg/kg/dag (højeste testede dosis i et subkronisk rotteforsøg) med en usikkerhedsfaktor på 100 og en tidsjusteringsfaktor på 2. Der forelå ingen studier af kronisk toksicitet, kræft eller reproduktions- og udviklingstoksicitet. Panelet konkluderede, at brugen ved de maksimalt tilladte niveauer ikke giver sikkerhedsbekymring.",
+  "keyReferences": [
+   {
+    "citation": "EFSA FAF Panel. Re-evaluation of name of hydrogenated poly-1-decene (E 907) as food additive. EFSA Journal. 2020;18(2):e06034.",
+    "searchTitle": "Re-evaluation of name of hydrogenated poly-1-decene (E 907) as food additive"
+   }
+  ],
+  "pubmedTerm": "hydrogenated polydecene",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of name of hydrogenated poly-1-decene (E 907) as food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2020.6034",
+   "date": "2020-02-28",
+   "adi": "20 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6034",
+    "https://www.efsa.europa.eu/en/efsajournal/pub/6034",
+    "https://pubmed.ncbi.nlm.nih.gov/32874237/",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7448092/",
+    "https://www.inchem.org/documents/jecfa/jecmono/v48je05.htm",
+    "https://cosmetics.specialchem.com/inci-ingredients/hydrogenated-polydecene",
+    "https://pubs.rsc.org/en/content/articlelanding/2002/gc/b206081g"
+   ],
+   "notes": "Bekræftet: EU-godkendelse, ADI 20 mg/kg bw/dag (NOAEL 4.160, UF 100 × 2), JECFA/SCF ADI 0–6, lav akut toksicitet, ingen genotoksicitet, dårlig optagelse, eksponering under ADI. Rettet: fremstilling præciseret (trimerer–hexamerer, >C30), anvendelser præciseret til fire kategorier som glansmiddel, bl.a. sukkervarer og tørret frugt; EFSA-titel/keyReference rettet til den faktiske titel ('Re-evaluation of name of ...', e06034). Fjernet: 'fra petrokemisk industri', 'mere ensartet sammensætning', 'meget lidt forskning'. De konkrete maksimalniveauer i bilag II kunne ikke hentes (EUR-Lex blokeret) og er derfor ikke angivet."
+  },
+  "wikipedia": "",
+  "wikidata": "Q18967207",
+  "claims": [
+   {
+    "claim": "Oligomerisering af 1-decen til trimerer–hexamerer efterfulgt af katalytisk hydrogenering",
+    "source": "https://www.inchem.org/documents/jecfa/jecmono/v48je05.htm",
+    "result": "rettet"
+   },
+   {
+    "claim": "Forgrenede isomere kulbrinter overvejende >C30; farveløs, lugtfri olieagtig væske",
+    "source": "https://www.inchem.org/documents/jecfa/jecmono/v48je05.htm",
+    "result": "rettet"
+   },
+   {
+    "claim": "'1-decen fra petrokemisk industri' og 'mere ensartet sammensætning end mineralolie'",
+    "source": "https://www.inchem.org/documents/jecfa/jecmono/v48je05.htm",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Opført i bilag II til forordning 1333/2008",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/32874237/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kun som glansmiddel i fire fødevarekategorier, bl.a. 'kun tørret frugt' (04.2.1) og 'kun sukkervarer' (05.2)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7448092/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Bruges i kosmetik (blødgørende middel)",
+    "source": "https://cosmetics.specialchem.com/inci-ingredients/hydrogenated-polydecene",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hydrogenerede 1-decen-oligomerer (polyalfaolefiner) bruges som smøremidler",
+    "source": "https://pubs.rsc.org/en/content/articlelanding/2002/gc/b206081g",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Optages dårligt, udskilles hovedsageligt med fæces",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/32874237/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Lav akut toksicitet; ingen genotoksicitetsbekymring",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/32874237/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2020 ADI 20 mg/kg bw/dag; eksponering overskred ikke ADI",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/32874237/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "JECFA 1997/2001 og SCF 2001: ADI 0–6 mg/kg bw",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/32874237/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "NOAEL 4.160 mg/kg bw/dag (højeste dosis, subkronisk rotteforsøg); UF 100 og tidsfaktor 2",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6034",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen kroniske, kræft- eller reproduktionsstudier",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6034",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Meget lidt forskning i fødevaresammenhæng'",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6034",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA Journal 2020;18(2):e06034, offentliggjort 28. februar 2020 (korrekt titel indeholder 'name of')",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/32874237/",
+    "result": "rettet"
+   }
+  ]
+ },
+ {
+  "code": "E912",
+  "nameDa": "Montansyreestere",
+  "nameEn": "Montan acid esters",
+  "category": "Overfladebehandlingsmiddel",
+  "euStatus": "not_approved",
+  "origin": "synthetic",
+  "summary": "Estere fremstillet af montanvoks fra brunkul, som tidligere måtte bruges på skrællen af visse frugter, men som blev fjernet fra EU's liste over godkendte tilsætningsstoffer i 2014.",
+  "description": "Montanvoks ekstraheres fra brunkul (lignit) med opløsningsmidler. Voksen oxideres (med kromsvovlsyre), hvorved der dannes montansyrer, som derefter forestres med diolerne ethylenglycol og/eller 1,3-butandiol eller med glycerol. Som glansmiddel gav stoffet frugtskræl en blank, beskyttende overflade. I EU var anvendelsen begrænset til overfladebehandling af visse friske frugter, indtil stoffet blev fjernet fra EU-listen ved forordning (EU) nr. 957/2014.",
+  "uses": "Ikke længere tilladt i EU. Indtil 2014 var stoffet kun godkendt som glansmiddel til overfladebehandling af citrusfrugter, meloner, papaya, mango, avocado og ananas. Fødevarer, der lovligt var markedsført før forordning (EU) nr. 957/2014 trådte i kraft, måtte sælges, indtil lagrene var opbrugt.",
+  "health": "EFSA konkluderede i 2013, at stoffet ikke kunne vurderes pga. begrænsninger i de toksikologiske data, og der er ingen ADI. Der manglede data om bl.a. toksikokinetik og reproduktions- og udviklingstoksicitet, og data om korttids-, subkronisk og kronisk toksicitet, genotoksicitet og kræftfremkaldende effekt var begrænsede.",
+  "research": "EFSA's gen-evaluering (2013) kunne ikke konkludere om sikkerheden. Data efterspurgt siden 1990'erne (kromosomaberrationstest in vitro, reproduktions- og teratogenicitetsstudier, materialekarakteristik, urenheder og indhold af PAH) var ikke indsendt, og der kom ingen data efter EFSA's offentlige dataindkaldelse i 2012. Europa-Kommissionen fjernede derfor ved forordning (EU) nr. 957/2014 af 10. september 2014 montansyreestere (E 912) fra EU-listen over godkendte fødevaretilsætningsstoffer og fra specifikationerne i forordning (EU) nr. 231/2012, da optagelsen på listen ikke længere kunne begrundes uden nyere videnskabelig dokumentation.",
+  "keyReferences": [],
+  "pubmedTerm": "montan wax",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of montan acid esters (E 912) as a food additive.",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2013.3236",
+   "date": "2013-06-07",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2013.3236",
+    "https://www.efsa.europa.eu/en/efsajournal/pub/3236",
+    "https://eur-lex.europa.eu/eli/reg/2014/957/oj",
+    "https://eur-lex.europa.eu/legal-content/GA/TXT/?uri=CELEX:32014R0957",
+    "https://www.researchgate.net/publication/307679775_Scientific_Opinion_on_the_re-evaluation_of_montan_acid_esters_E_912_as_a_food_additive",
+    "https://www.altmeyers.org/en/allergology/montanic-acid-esters-134190"
+   ],
+   "notes": "Væsentlig rettelse: E 912 blev fjernet fra EU's liste over godkendte tilsætningsstoffer ved Kommissionens forordning (EU) nr. 957/2014 af 10. september 2014; euStatus ændret fra 'approved' til 'not_approved', og summary/description/uses/research omskrevet til fortid. Bekræftet: råvare (montanvoks fra brunkul), forestring med ethylenglycol/1,3-butandiol, tidligere frugtliste, EFSA 2013-konklusion og datamangler, manglende data fra 1990'erne og dataindkaldelse 2012. Fjernet: 'hård voks', råd om citrusskal, udsagn om eksponering og risikogrupper (ikke kildebelagt)."
+  },
+  "wikipedia": "",
+  "wikidata": "Q18935695",
+  "claims": [
+   {
+    "claim": "Montanvoks ekstraheres fra brunkul (lignit) med opløsningsmidler",
+    "source": "https://www.researchgate.net/publication/307679775_Scientific_Opinion_on_the_re-evaluation_of_montan_acid_esters_E_912_as_a_food_additive",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Montanvoks oxideres (kromsvovlsyre) til montansyrer",
+    "source": "https://www.altmeyers.org/en/allergology/montanic-acid-esters-134190",
+    "result": "rettet"
+   },
+   {
+    "claim": "Forestres med ethylenglycol og/eller 1,3-butandiol (eller glycerol)",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3236",
+    "result": "rettet"
+   },
+   {
+    "claim": "'Giver en hård voks' og 'mindsker vandtab'",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2013.3236",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Tidligere kun godkendt til overfladebehandling af citrusfrugter, meloner, papaya, mango, avocado og ananas",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3236",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Stoffet er 'fortsat godkendt' / euStatus 'approved' – rettet: fjernet fra EU-listen ved forordning (EU) nr. 957/2014 af 10. september 2014",
+    "source": "https://eur-lex.europa.eu/eli/reg/2014/957/oj",
+    "result": "rettet"
+   },
+   {
+    "claim": "Fødevarer lovligt markedsført før ikrafttræden måtte sælges til lagrene var opbrugt",
+    "source": "https://eur-lex.europa.eu/legal-content/GA/TXT/?uri=CELEX:32014R0957",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Råd om ikke at bruge citrusskal i madlavning",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2013.3236",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA 2013: kunne ikke vurderes; ingen ADI",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2013.3236",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Eksponering lav men stiger ved brug af citrusskal; ingen særlige risikogrupper",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2013.3236",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Manglende data om toksikokinetik og reproduktion; begrænsede data om genotoksicitet og langtidstoksicitet",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2013.3236",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Data efterspurgt i 1990'erne (bl.a. reproduktion/teratogenicitet, urenheder, PAH) ikke indsendt; ingen data efter dataindkaldelse 2012",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2013.3236",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Panelet efterlyste bedre specifikationer for PAH fra brunkulsråmaterialet'",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2013.3236",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA Journal 2013;11(6):3236, 7. juni 2013",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3236",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E914",
+  "nameDa": "Oxideret polyethylenvoks",
+  "nameEn": "Oxidised polyethylene wax",
+  "category": "Overfladebehandlingsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En syntetisk voks fremstillet ved oxidation af polyethylen, som i EU kun må bruges til overfladebehandling af visse friske frugter.",
+  "description": "Oxideret polyethylenvoks fremstilles ved kontrolleret oxidation af polyethylenvoks med lav molekylvægt, hvorved der dannes polære grupper (bl.a. carboxylsyre- og hydroxylgrupper). Det gør voksen let at emulgere i vand, så den kan påføres frugt som en tynd film. Voksbelægninger på frugt mindsker vandtab, forlænger holdbarheden og giver glans. Ifølge EFSA er stoffet stabilt i fødevarer.",
+  "uses": "Kun overfladebehandling af friske citrusfrugter, meloner, papaya, mango, avocado og ananas (quantum satis). Løse overfladebehandlede citrusfrugter skiltes i Danmark typisk som 'overfladebehandlet'.",
+  "health": "EFSA konkluderede i sin gen-evaluering (EFSA Journal 2015;13(6):4145), at datagrundlaget var utilstrækkeligt til at fastsætte en ADI, men at den godkendte anvendelse ikke giver anledning til sikkerhedsbekymring, fordi eksponeringen er meget lav: sikkerhedsmarginen var ca. 4.400 ved det højeste estimerede indtag (0,18 mg/kg legemsvægt/dag) i forhold til en NOAEL på 800 mg/kg legemsvægt/dag.",
+  "research": "EFSA's gen-evaluering (2015) byggede bl.a. på flere 90-dages studier i rotter og et 90-dages studie i hunde, som ikke viste tegn på ophobning, samt genotoksicitetsdata; stoffet blev vurderet som ikke genotoksisk. Da der manglede kroniske studier og kræftstudier, reproduktionsstudiet havde begrænsninger, og nøglestudiet (90 dage) ikke var tilgængeligt, blev der ikke fastsat en ADI.",
+  "keyReferences": [],
+  "pubmedTerm": "oxidized polyethylene wax",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of oxidised polyethylene wax (E 914) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2015.4145",
+   "date": "2015-07-02",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4145",
+    "https://www.efsa.europa.eu/en/efsajournal/pub/4145",
+    "https://food-detektiv.de/en/additives/?enummer=Oxidised+polyethylene+wax",
+    "https://patents.google.com/patent/US3201381",
+    "https://trecora.com/trecoras-complete-guide-to-oxidized-polyethylene-wax/",
+    "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/wax-coatings",
+    "https://varefakta.dk/viden/hvad-betyder-de-forskellige-ord-og-begreber-i-varedeklarationen-paa-din-mad/frugt-og-groentsager/"
+   ],
+   "notes": "Bekræftet: fremstilling ved oxidation, polære grupper/emulgerbarhed, funktion som frugtvoks, EU-anvendelse (kun overfladebehandling af citrus, melon, papaya, mango, avocado, ananas; quantum satis), EFSA 2015-konklusion (ingen ADI, ingen bekymring, MoS 4.400 ved 0,18 mg/kg lgv/dag, NOAEL 800 mg/kg lgv/dag), 90-dages studier, ikke genotoksisk. Rettet: mærkningsudsagn omformuleret til dansk skiltningspraksis; begrundelse for manglende ADI præciseret; 'kemisk stabil' præciseret til EFSA's formulering. Fjernet: 'optages kun meget lidt', 'ingen kendte særlige risikogrupper', 'begrænset uafhængig forskning' (ikke kildebelagt). Direkte adgang til eur-lex/EFSA var blokeret; bekræftet via søgeresultater fra EFSA-udtalelsen."
+  },
+  "wikipedia": "",
+  "wikidata": "Q18608846",
+  "claims": [
+   {
+    "claim": "Oxideret polyethylenvoks er syntetisk og fremstilles ved kontrolleret oxidation af polyethylenvoks med lav molekylvægt",
+    "source": "https://patents.google.com/patent/US3201381",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Oxidationen danner polære grupper (carboxylsyre-, hydroxylgrupper), der gør voksen let at emulgere i vand",
+    "source": "https://trecora.com/trecoras-complete-guide-to-oxidized-polyethylene-wax/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Voksbelægning på frugt mindsker vandtab, forlænger holdbarheden og giver glans",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/wax-coatings",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Stoffet er kemisk stabilt (EFSA: stabilt i fødevarematrixer)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4145",
+    "result": "rettet"
+   },
+   {
+    "claim": "Optages kun meget lidt",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4145",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Tilladt quantum satis kun til overfladebehandling af visse frugter i EU",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4145",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Frugterne er citrusfrugter, meloner, papaya, mango, avocado og ananas",
+    "source": "https://food-detektiv.de/en/additives/?enummer=Oxidised+polyethylene+wax",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Mærkning af løs frugt som 'overfladebehandlet' (omformuleret til dansk skiltningspraksis)",
+    "source": "https://varefakta.dk/viden/hvad-betyder-de-forskellige-ord-og-begreber-i-varedeklarationen-paa-din-mad/frugt-og-groentsager/",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA 2015 (EFSA Journal 2015;13(6):4145): utilstrækkelige data til ADI, men ingen sikkerhedsbekymring ved godkendt anvendelse",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4145",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Sikkerhedsmargin ca. 4.400 ved højeste indtag (0,18 mg/kg lgv/dag; NOAEL 800 mg/kg lgv/dag)",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/4145",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen kendte særlige risikogrupper",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "90-dages studier i rotter og et i hunde; ingen ophobning; ikke genotoksisk",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4145",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen ADI pga. manglende kroniske/kræftstudier, begrænset reproduktionsstudie og utilgængeligt 90-dages nøglestudie",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4145",
+    "result": "rettet"
+   },
+   {
+    "claim": "Der er begrænset uafhængig forskning i stoffet",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA-udtalelsen blev offentliggjort 2. juli 2015",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/4145",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E920",
+  "nameDa": "L-cystein",
+  "nameEn": "L-cysteine",
+  "category": "Melbehandlingsmiddel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "En svovlholdig aminosyre, som bruges som melbehandlingsmiddel for at gøre dejen blødere, mere strækbar og lettere at forarbejde.",
+  "description": "L-cystein er en naturligt forekommende aminosyre med en thiolgruppe (-SH). Som melbehandlingsmiddel reducerer den disulfidbroerne i glutennetværket, så dejen bliver blødere, mere strækbar og kræver kortere æltetid. Industrielt er L-cystein traditionelt fremstillet ved syrehydrolyse af keratinrigt animalsk materiale som fjer og svinebørster; menneskehår må ikke bruges som kilde i EU. En mindre, men voksende del fremstilles ved mikrobiel fermentering.",
+  "uses": "Tilladt i EU som melbehandlingsmiddel (quantum satis) i fødevarekategori 06.2.1 Mel; stoffet virker først under dejtilberedningen og bruges især i industriel bagning. Cystein bruges desuden som udgangsstof i reaktionsaromaer (Maillard-reaktion med sukre, fx kødaroma).",
+  "health": "L-cystein er en naturligt forekommende aminosyre og en normal bestanddel af proteiner i kosten. Stoffet kan være af animalsk oprindelse (fjer, svinebørster), hvilket kan være relevant for vegetarer, veganere og af religiøse grunde; producenterne er ikke forpligtet til at angive fremstillingsmetoden på etiketten.",
+  "research": "EFSA's AFC-panel afgav i 2006 en udtalelse om brugen af L-cystein i fødevarer til spædbørn og småbørn. Nyere forskning fokuserer bl.a. på bageteknologi og på fermenteringsbaseret produktion (fx med E. coli) som alternativ til udvinding fra animalsk keratin.",
+  "keyReferences": [],
+  "pubmedTerm": "cysteine",
+  "flags": [
+   "animal_origin"
+  ],
+  "classes": [],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://food.ec.europa.eu/document/download/44025aee-c1f5-479f-bfe2-c6b281106ab9_en?filename=reg-com_toxic_20160621_sum.pdf",
+    "https://en.wikipedia.org/wiki/Cysteine",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10821248/",
+    "https://food.ec.europa.eu/document/download/1586e0f2-64c8-400d-9a23-d00213f91309_en?filename=sci-com_ssc_out110_en.pdf&prefLang=ga",
+    "https://bakerpedia.com/ingredients/l-cysteine/",
+    "https://onlinelibrary.wiley.com/doi/full/10.1002/fsn3.1937",
+    "https://www.frontiersin.org/journals/nutrition/articles/10.3389/fnut.2022.973677/full",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2006.390",
+    "https://this-is-vegan.com/en/is-l-cysteine-vegan/"
+   ],
+   "notes": "Bekræftet: aminosyre med thiolgruppe, reduktion af disulfidbroer i gluten, blødere/mere strækbar dej og kortere æltetid, udvinding fra fjer/svinebørster, fermentering, animalsk oprindelse. Rettet: EU-anvendelse præciseret til kategori 06.2.1 Mel (quantum satis) efter Kommissionens PAFF-referat; menneskehår omformuleret (ikke tilladt kilde i EU); reaktionsaroma-udsagn præciseret; mærkningsudsagn og EFSA-udsagn omformuleret. Fjernet: konkrete produkteksempler (pizzabunde m.m.), kosttilskud, 'ingen kendte sundhedsrisici', specifikationens hydrochloridformer og generelt udsagn om ernæringsrolle (ikke bekræftet i EU-kilde). Britiske kilder (nutrasafe.co.uk) fjernet. Ingen EFSA-gen-evaluering af E 920 kunne bekræftes; efsa-feltet står fortsat tomt."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Cysteine",
+  "wikidata": "Q186474",
+  "claims": [
+   {
+    "claim": "L-cystein er en naturligt forekommende, svovlholdig aminosyre med thiolgruppe",
+    "source": "https://en.wikipedia.org/wiki/Cysteine",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Som melbehandlingsmiddel bryder den disulfidbroer i glutenet",
+    "source": "https://bakerpedia.com/ingredients/l-cysteine/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Dejen bliver blødere, mere strækbar og kræver kortere æltetid",
+    "source": "https://onlinelibrary.wiley.com/doi/full/10.1002/fsn3.1937",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Udvindes ved (syre)hydrolyse af keratin fra fjer og svinebørster",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10821248/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Historisk udvundet af menneskehår (omformuleret: menneskehår må ikke bruges som kilde i EU)",
+    "source": "https://food.ec.europa.eu/document/download/1586e0f2-64c8-400d-9a23-d00213f91309_en?filename=sci-com_ssc_out110_en.pdf&prefLang=ga",
+    "result": "rettet"
+   },
+   {
+    "claim": "En stigende del fremstilles ved mikrobiel fermentering (omformuleret: mindre, men voksende del)",
+    "source": "https://en.wikipedia.org/wiki/Cysteine",
+    "result": "rettet"
+   },
+   {
+    "claim": "I EU omfatter specifikationen hydrochlorid- og hydrochloridmonohydrat-formerne",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Tilladt quantum satis som melbehandlingsmiddel i kategori 06.2.1 Mel; virker under dejtilberedning",
+    "source": "https://food.ec.europa.eu/document/download/44025aee-c1f5-479f-bfe2-c6b281106ab9_en?filename=reg-com_toxic_20160621_sum.pdf",
+    "result": "rettet"
+   },
+   {
+    "claim": "Eksempler: pizzabunde, tortillas, kiks, burgerboller, kiksdej",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Findes i reaktionsaromaer (Maillard med sukre, kødaroma)",
+    "source": "https://www.frontiersin.org/journals/nutrition/articles/10.3389/fnut.2022.973677/full",
+    "result": "rettet"
+   },
+   {
+    "claim": "Bruges som næringsstof i kosttilskud",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Normal bestanddel af kostens proteiner",
+    "source": "https://en.wikipedia.org/wiki/Cysteine",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen kendte sundhedsrisici ved anvendt mængde",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Animalsk oprindelse relevant for vegetarer/veganere/religiøse grunde",
+    "source": "https://this-is-vegan.com/en/is-l-cysteine-vegan/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Oprindelsen fremgår sjældent af mærkningen (omformuleret: ikke pligt til at angive fremstillingsmetode)",
+    "source": "https://en.wikipedia.org/wiki/Cysteine",
+    "result": "rettet"
+   },
+   {
+    "claim": "Ingen nyere EFSA-gen-evaluering har rejst bekymringer (erstattet af EFSA 2006-udtalelse om spædbørn/småbørn)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2006.390",
+    "result": "rettet"
+   },
+   {
+    "claim": "Forskning i fermenteringsbaseret produktion som alternativ til animalske kilder",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10821248/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Aminosyrens veldokumenterede rolle i ernæring og stofskifte",
+    "source": "",
+    "result": "fjernet"
+   }
+  ]
+ },
+ {
+  "code": "E943a",
+  "nameDa": "Butan",
+  "nameEn": "Butane",
+  "category": "Drivgas",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Butan er en brændbar gas fra naturgas og råolie, som i EU må bruges som drivgas i sprayolie og slipmiddelspray.",
+  "description": "Butan (C4H10) er en kortkædet, mættet kulbrinte (alkan), der er på gasform ved stuetemperatur og udvindes ved forarbejdning af naturgas og ved raffinering af råolie. Under tryk bliver den flydende, og ved frigivelse fordamper den og driver indholdet ud af spraydåsen. I EU er brugen stærkt begrænset: den må kun anvendes som drivgas i spray med vegetabilsk olie til professionel brug og i vandbaserede emulsionssprays. Ifølge EFSA er eksponeringen via kosten meget lav.",
+  "uses": "Kun som drivgas i sprayolie til stegepander og bageforme (vegetabilsk olie, kun til professionel brug; fødevarekategori 02.3) samt vandbaserede emulsionssprays, quantum satis. Må desuden bruges i farvestofpræparater med maks. 1 mg/kg restindhold i fødevaren.",
+  "health": "EFSA konkluderede i 2025, at den nuværende anvendelse ikke giver anledning til sikkerhedsbekymring, fordi gasserne er af lav toksikologisk betydning som tilsætningsstoffer, og eksponeringen via kosten er meget lav. Gasserne er brandfarlige, og bevidst indånding (sniffing) af drivgasser som butan kan give hjerterytmeforstyrrelser og pludselig død; indånding blev af EFSA ikke anset for relevant for vurderingen som tilsætningsstof.",
+  "research": "EFSA's gen-evaluering (EFSA Journal 2025, DOI 10.2903/j.efsa.2025.9203) vurderede butan, isobutan og propan som af lav toksikologisk betydning med meget lav eksponering via kosten og konkluderede, at de ikke giver anledning til sikkerhedsbekymring. EU-specifikationerne indeholder allerede grænser for den giftige urenhed 1,3-butadien, men pga. manglende oplysninger om fremstillingsprocesserne er der usikkerhed om andre urenheder; panelet anbefalede bl.a. at tilføje CAS-numre til specifikationerne. Der findes desuden retsmedicinsk litteratur om dødsfald ved bevidst indånding af butan og propan.",
+  "keyReferences": [],
+  "pubmedTerm": "butane",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of butane (E 943a), isobutane (E 943b) and propane (E 944) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2025.9203",
+   "date": "2025-01-31",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9203",
+    "https://pubmed.ncbi.nlm.nih.gov/39896351/",
+    "https://en.wikipedia.org/wiki/Liquefied_petroleum_gas",
+    "https://webbook.nist.gov/cgi/cbook.cgi?ID=C75285&Mask=1",
+    "https://pubmed.ncbi.nlm.nih.gov/38484484/",
+    "https://www.sciencedirect.com/science/article/abs/pii/S0379073816302407"
+   ],
+   "notes": "Bekræftet: kemi (kortkædede alkaner, formel), udvinding fra naturgas/råolie, EU-anvendelse (sprayolie til professionel brug i kategori 02.3 og vandbaserede emulsionssprays, quantum satis; farvestofpræparater maks. 1 mg/kg), EFSA 2025-konklusion (lav toksikologisk betydning, meget lav eksponering, ingen sikkerhedsbekymring, inhalation ikke relevant), 1,3-butadien i specifikationerne, risiko ved sniffing, dato 31.01.2025. Rettet: restmængdeudsagn omformuleret til EFSA's eksponeringsvurdering; specifikationsanbefalinger præciseret (CAS-numre, usikkerhed om andre urenheder); forskningsudsagn om misbrug gjort neutralt. Fjernet: 'ingen ADI, da restmængderne er ubetydelige' (begrundelsen ikke bekræftet). PMC-link fjernet fra kilder (utilgængeligt), erstattet af PubMed."
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "claims": [
+   {
+    "claim": "Butan er en kortkædet (C3–C4), mættet alkan på gasform ved stuetemperatur",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9203",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kemisk formel C4H10",
+    "source": "https://webbook.nist.gov/cgi/cbook.cgi?ID=C75285&Mask=1",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Udvindes fra naturgas og ved raffinering af råolie",
+    "source": "https://en.wikipedia.org/wiki/Liquefied_petroleum_gas",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bliver flydende under tryk og driver indholdet ud af spraydåsen",
+    "source": "https://en.wikipedia.org/wiki/Liquefied_petroleum_gas",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Brændbar gas",
+    "source": "https://en.wikipedia.org/wiki/Liquefied_petroleum_gas",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kun tilladt i sprayolie (vegetabilsk olie, professionel brug, kategori 02.3) og vandbaserede emulsionssprays, quantum satis",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9203",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Farvestofpræparater med maks. 1 mg/kg restindhold i fødevaren",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/39896351/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Gassen fordamper næsten fuldstændigt, så resterne er meget små (omformuleret til EFSA: meget lav eksponering)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9203",
+    "result": "rettet"
+   },
+   {
+    "claim": "Bevidst indånding kan give hjerterytmeforstyrrelser og pludselig død",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/38484484/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Der er ingen ADI, da restmængderne er ubetydelige",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA 2025: lav toksikologisk betydning, meget lav eksponering, ingen sikkerhedsbekymring",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9203",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Inhalationsfarer ikke relevante for vurderingen som tilsætningsstof",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9203",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Specifikationsanbefalinger: usikkerhed om urenheder ud over 1,3-butadien; anbefaling om CAS-numre (præciseret)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9203",
+    "result": "rettet"
+   },
+   {
+    "claim": "Forskning drejer sig især om misbrug ved indånding (omformuleret til: der findes retsmedicinsk litteratur om dødsfald)",
+    "source": "https://www.sciencedirect.com/science/article/abs/pii/S0379073816302407",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA-udtalelsen offentliggjort 31. januar 2025",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/39896351/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E943b",
+  "nameDa": "Isobutan",
+  "nameEn": "Isobutane",
+  "category": "Drivgas",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Isobutan er en brændbar gas fra naturgas og råolie, som i EU må bruges som drivgas i sprayolie og slipmiddelspray.",
+  "description": "Isobutan (C4H10, forgrenet) er en kortkædet, mættet kulbrinte (alkan), der er på gasform ved stuetemperatur og udvindes ved forarbejdning af naturgas og ved raffinering af råolie. Under tryk bliver den flydende, og ved frigivelse fordamper den og driver indholdet ud af spraydåsen. I EU er brugen stærkt begrænset: den må kun anvendes som drivgas i spray med vegetabilsk olie til professionel brug og i vandbaserede emulsionssprays. Ifølge EFSA er eksponeringen via kosten meget lav.",
+  "uses": "Kun som drivgas i sprayolie til stegepander og bageforme (vegetabilsk olie, kun til professionel brug; fødevarekategori 02.3) samt vandbaserede emulsionssprays, quantum satis. Må desuden bruges i farvestofpræparater med maks. 1 mg/kg restindhold i fødevaren.",
+  "health": "EFSA konkluderede i 2025, at den nuværende anvendelse ikke giver anledning til sikkerhedsbekymring, fordi gasserne er af lav toksikologisk betydning som tilsætningsstoffer, og eksponeringen via kosten er meget lav. Gasserne er brandfarlige, og bevidst indånding (sniffing) af drivgasser som butan kan give hjerterytmeforstyrrelser og pludselig død; indånding blev af EFSA ikke anset for relevant for vurderingen som tilsætningsstof.",
+  "research": "EFSA's gen-evaluering (EFSA Journal 2025, DOI 10.2903/j.efsa.2025.9203) vurderede butan, isobutan og propan som af lav toksikologisk betydning med meget lav eksponering via kosten og konkluderede, at de ikke giver anledning til sikkerhedsbekymring. EU-specifikationerne indeholder allerede grænser for den giftige urenhed 1,3-butadien, men pga. manglende oplysninger om fremstillingsprocesserne er der usikkerhed om andre urenheder; panelet anbefalede bl.a. at tilføje CAS-numre til specifikationerne. Der findes desuden retsmedicinsk litteratur om dødsfald ved bevidst indånding af butan og propan.",
+  "keyReferences": [],
+  "pubmedTerm": "isobutane",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of butane (E 943a), isobutane (E 943b) and propane (E 944) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2025.9203",
+   "date": "2025-01-31",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9203",
+    "https://pubmed.ncbi.nlm.nih.gov/39896351/",
+    "https://en.wikipedia.org/wiki/Liquefied_petroleum_gas",
+    "https://webbook.nist.gov/cgi/cbook.cgi?ID=C75285&Mask=1",
+    "https://pubmed.ncbi.nlm.nih.gov/38484484/",
+    "https://www.sciencedirect.com/science/article/abs/pii/S0379073816302407"
+   ],
+   "notes": "Bekræftet: kemi (kortkædede alkaner, formel), udvinding fra naturgas/råolie, EU-anvendelse (sprayolie til professionel brug i kategori 02.3 og vandbaserede emulsionssprays, quantum satis; farvestofpræparater maks. 1 mg/kg), EFSA 2025-konklusion (lav toksikologisk betydning, meget lav eksponering, ingen sikkerhedsbekymring, inhalation ikke relevant), 1,3-butadien i specifikationerne, risiko ved sniffing, dato 31.01.2025. Rettet: restmængdeudsagn omformuleret til EFSA's eksponeringsvurdering; specifikationsanbefalinger præciseret (CAS-numre, usikkerhed om andre urenheder); forskningsudsagn om misbrug gjort neutralt. Fjernet: 'ingen ADI, da restmængderne er ubetydelige' (begrundelsen ikke bekræftet). PMC-link fjernet fra kilder (utilgængeligt), erstattet af PubMed."
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "claims": [
+   {
+    "claim": "Isobutan er en kortkædet (C3–C4), mættet alkan på gasform ved stuetemperatur",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9203",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kemisk formel C4H10, forgrenet",
+    "source": "https://webbook.nist.gov/cgi/cbook.cgi?ID=C75285&Mask=1",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Udvindes fra naturgas og ved raffinering af råolie",
+    "source": "https://en.wikipedia.org/wiki/Liquefied_petroleum_gas",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bliver flydende under tryk og driver indholdet ud af spraydåsen",
+    "source": "https://en.wikipedia.org/wiki/Liquefied_petroleum_gas",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Brændbar gas",
+    "source": "https://en.wikipedia.org/wiki/Liquefied_petroleum_gas",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kun tilladt i sprayolie (vegetabilsk olie, professionel brug, kategori 02.3) og vandbaserede emulsionssprays, quantum satis",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9203",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Farvestofpræparater med maks. 1 mg/kg restindhold i fødevaren",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/39896351/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Gassen fordamper næsten fuldstændigt, så resterne er meget små (omformuleret til EFSA: meget lav eksponering)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9203",
+    "result": "rettet"
+   },
+   {
+    "claim": "Bevidst indånding kan give hjerterytmeforstyrrelser og pludselig død",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/38484484/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Der er ingen ADI, da restmængderne er ubetydelige",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA 2025: lav toksikologisk betydning, meget lav eksponering, ingen sikkerhedsbekymring",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9203",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Inhalationsfarer ikke relevante for vurderingen som tilsætningsstof",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9203",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Specifikationsanbefalinger: usikkerhed om urenheder ud over 1,3-butadien; anbefaling om CAS-numre (præciseret)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9203",
+    "result": "rettet"
+   },
+   {
+    "claim": "Forskning drejer sig især om misbrug ved indånding (omformuleret til: der findes retsmedicinsk litteratur om dødsfald)",
+    "source": "https://www.sciencedirect.com/science/article/abs/pii/S0379073816302407",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA-udtalelsen offentliggjort 31. januar 2025",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/39896351/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E944",
+  "nameDa": "Propan",
+  "nameEn": "Propane",
+  "category": "Drivgas",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Propan er en brændbar gas fra naturgas og råolie, som i EU må bruges som drivgas i sprayolie og slipmiddelspray.",
+  "description": "Propan (C3H8) er en kortkædet, mættet kulbrinte (alkan), der er på gasform ved stuetemperatur og udvindes ved forarbejdning af naturgas og ved raffinering af råolie. Under tryk bliver den flydende, og ved frigivelse fordamper den og driver indholdet ud af spraydåsen. I EU er brugen stærkt begrænset: den må kun anvendes som drivgas i spray med vegetabilsk olie til professionel brug og i vandbaserede emulsionssprays. Ifølge EFSA er eksponeringen via kosten meget lav.",
+  "uses": "Kun som drivgas i sprayolie til stegepander og bageforme (vegetabilsk olie, kun til professionel brug; fødevarekategori 02.3) samt vandbaserede emulsionssprays, quantum satis. Må desuden bruges i farvestofpræparater med maks. 1 mg/kg restindhold i fødevaren.",
+  "health": "EFSA konkluderede i 2025, at den nuværende anvendelse ikke giver anledning til sikkerhedsbekymring, fordi gasserne er af lav toksikologisk betydning som tilsætningsstoffer, og eksponeringen via kosten er meget lav. Gasserne er brandfarlige, og bevidst indånding (sniffing) af drivgasser som butan kan give hjerterytmeforstyrrelser og pludselig død; indånding blev af EFSA ikke anset for relevant for vurderingen som tilsætningsstof.",
+  "research": "EFSA's gen-evaluering (EFSA Journal 2025, DOI 10.2903/j.efsa.2025.9203) vurderede butan, isobutan og propan som af lav toksikologisk betydning med meget lav eksponering via kosten og konkluderede, at de ikke giver anledning til sikkerhedsbekymring. EU-specifikationerne indeholder allerede grænser for den giftige urenhed 1,3-butadien, men pga. manglende oplysninger om fremstillingsprocesserne er der usikkerhed om andre urenheder; panelet anbefalede bl.a. at tilføje CAS-numre til specifikationerne. Der findes desuden retsmedicinsk litteratur om dødsfald ved bevidst indånding af butan og propan.",
+  "keyReferences": [],
+  "pubmedTerm": "propane",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of butane (E 943a), isobutane (E 943b) and propane (E 944) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2025.9203",
+   "date": "2025-01-31",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9203",
+    "https://pubmed.ncbi.nlm.nih.gov/39896351/",
+    "https://en.wikipedia.org/wiki/Liquefied_petroleum_gas",
+    "https://en.wikipedia.org/wiki/Propane",
+    "https://pubmed.ncbi.nlm.nih.gov/38484484/",
+    "https://www.sciencedirect.com/science/article/abs/pii/S0379073816302407"
+   ],
+   "notes": "Bekræftet: kemi (kortkædede alkaner, formel), udvinding fra naturgas/råolie, EU-anvendelse (sprayolie til professionel brug i kategori 02.3 og vandbaserede emulsionssprays, quantum satis; farvestofpræparater maks. 1 mg/kg), EFSA 2025-konklusion (lav toksikologisk betydning, meget lav eksponering, ingen sikkerhedsbekymring, inhalation ikke relevant), 1,3-butadien i specifikationerne, risiko ved sniffing, dato 31.01.2025. Rettet: restmængdeudsagn omformuleret til EFSA's eksponeringsvurdering; specifikationsanbefalinger præciseret (CAS-numre, usikkerhed om andre urenheder); forskningsudsagn om misbrug gjort neutralt. Fjernet: 'ingen ADI, da restmængderne er ubetydelige' (begrundelsen ikke bekræftet). PMC-link fjernet fra kilder (utilgængeligt), erstattet af PubMed."
+  },
+  "wikipedia": "",
+  "wikidata": "Q131189",
+  "claims": [
+   {
+    "claim": "Propan er en kortkædet (C3–C4), mættet alkan på gasform ved stuetemperatur",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9203",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kemisk formel C3H8",
+    "source": "https://en.wikipedia.org/wiki/Propane",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Udvindes fra naturgas og ved raffinering af råolie",
+    "source": "https://en.wikipedia.org/wiki/Liquefied_petroleum_gas",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bliver flydende under tryk og driver indholdet ud af spraydåsen",
+    "source": "https://en.wikipedia.org/wiki/Liquefied_petroleum_gas",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Brændbar gas",
+    "source": "https://en.wikipedia.org/wiki/Liquefied_petroleum_gas",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kun tilladt i sprayolie (vegetabilsk olie, professionel brug, kategori 02.3) og vandbaserede emulsionssprays, quantum satis",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9203",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Farvestofpræparater med maks. 1 mg/kg restindhold i fødevaren",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/39896351/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Gassen fordamper næsten fuldstændigt, så resterne er meget små (omformuleret til EFSA: meget lav eksponering)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9203",
+    "result": "rettet"
+   },
+   {
+    "claim": "Bevidst indånding kan give hjerterytmeforstyrrelser og pludselig død",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/38484484/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Der er ingen ADI, da restmængderne er ubetydelige",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA 2025: lav toksikologisk betydning, meget lav eksponering, ingen sikkerhedsbekymring",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9203",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Inhalationsfarer ikke relevante for vurderingen som tilsætningsstof",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9203",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Specifikationsanbefalinger: usikkerhed om urenheder ud over 1,3-butadien; anbefaling om CAS-numre (præciseret)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9203",
+    "result": "rettet"
+   },
+   {
+    "claim": "Forskning drejer sig især om misbrug ved indånding (omformuleret til: der findes retsmedicinsk litteratur om dødsfald)",
+    "source": "https://www.sciencedirect.com/science/article/abs/pii/S0379073816302407",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA-udtalelsen offentliggjort 31. januar 2025",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/39896351/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E948",
+  "nameDa": "Oxygen (ilt)",
+  "nameEn": "Oxygen",
+  "category": "Emballagegas",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Ilt udvundet af luften, som bruges som emballagegas – især til at bevare den røde farve på fersk kød.",
+  "description": "Oxygen (O2) udvindes industrielt ved kryogen destillation af flydende luft eller ved adsorptionsteknik (PSA). I emballage med modificeret atmosfære til fersk kød bruges ofte 70-80 % ilt, fordi ilt bevarer den klarrøde oxymyoglobin. Ilt hæmmer desuden strengt anaerobe bakterier som Clostridium. Til gengæld fremmer høje iltkoncentrationer oxidation af fedt og proteiner i kødet.",
+  "uses": "Tilladt quantum satis i alle fødevarekategorier i EU, også i fødevarer til spædbørn og småbørn, samt i tilsætningsstofpræparater, fødevareenzymer og næringsstoffer. Bruges især som emballagegas til fersk rødt kød i høj-ilt-atmosfære.",
+  "health": "EFSA vurderede i 2025, at ilt som tilsætningsstof er af lav toksikologisk betydning med meget lav eksponering via kosten og ikke giver anledning til sikkerhedsbekymring. Høje iltkoncentrationer i kødpakninger fremmer dog oxidation af fedt og protein, hvilket kan give mindre mørt og saftigt kød og harsk, oxideret smag.",
+  "research": "Forskning fra bl.a. Københavns Universitet (Lund m.fl., Meat Science 2007) viste, at emballering i 70 % ilt/30 % CO2 gav proteinoxidation, tværbinding af myosin og mindre mørt og saftigt svinekød. Andre studier har vist, at hakket oksekød fra høj-ilt-emballage giver 'for tidlig brunfarvning' ved stegning, så kødet kan se gennemstegt ud, før det har nået en sikker kernetemperatur. EFSA's gen-evaluering (2025, DOI 10.2903/j.efsa.2025.9595) konkluderede, at ilt som tilsætningsstof ikke giver anledning til sikkerhedsbekymring, og anbefalede ændringer af EU-specifikationerne.",
+  "keyReferences": [],
+  "pubmedTerm": "high oxygen modified atmosphere packaging meat",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxygen (E 948) and hydrogen (E 949) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2025.9595",
+   "date": "2025",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9595",
+    "https://pubmed.ncbi.nlm.nih.gov/40777209/",
+    "https://onlinelibrary.wiley.com/doi/10.1155/2023/2308227",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC6857183/",
+    "https://porkgateway.org/resource/modified-atmosphere-packaging-map-microbial-control-and-quality/",
+    "https://pubmed.ncbi.nlm.nih.gov/22061781",
+    "https://pubmed.ncbi.nlm.nih.gov/38876067",
+    "https://ift.onlinelibrary.wiley.com/doi/10.1111/j.1750-3841.2011.02506.x"
+   ],
+   "notes": "Bekræftet: fremstilling (destillation af flydende luft/PSA), 70-80 % ilt i høj-ilt-MAP, oxymyoglobin, oxidation af fedt/protein, KU-studie (Lund m.fl. 2007) om proteinoxidation og mørhed, for tidlig brunfarvning, EFSA 2025-konklusion. Rettet: anvendelse ændret til EU-godkendelsen (alle fødevarekategorier QS inkl. spædbørnsmad) jf. EFSA; anaerobe bakterier præciseret til strengt anaerobe; 'varmet-op'-smag omformuleret til harsk/oxideret smag; sundhedsudsagn omformuleret til EFSA-konklusion. Fjernet: 'visse fisk og grøntsager' og 'ingen ADI nødvendig' (ikke bekræftet)."
+  },
+  "wikipedia": "",
+  "wikidata": "Q629",
+  "claims": [
+   {
+    "claim": "Ilt udvindes ved (kryogen) destillation af flydende luft eller ved adsorptionsteknik (PSA)",
+    "source": "https://onlinelibrary.wiley.com/doi/10.1155/2023/2308227",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Høj-ilt-MAP til fersk kød bruger ofte 70-80 % ilt",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6857183/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ilt bevarer den røde farve via oxymyoglobin (omformuleret fra 'lyserød' til klarrød)",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6857183/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Ilt hæmmer (strengt) anaerobe bakterier",
+    "source": "https://porkgateway.org/resource/modified-atmosphere-packaging-map-microbial-control-and-quality/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Ilt fremmer oxidation af fedt og proteiner",
+    "source": "https://ift.onlinelibrary.wiley.com/doi/10.1111/j.1750-3841.2011.02506.x",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendelse: hakket kød, bøffer, rødt kød i beskyttende atmosfære (omformuleret til EU-godkendelse: alle fødevarekategorier QS)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9595",
+    "result": "rettet"
+   },
+   {
+    "claim": "Visse fisk og grøntsager",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Ilt er ugiftigt i de anvendte sammenhænge (omformuleret til EFSA-konklusion)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9595",
+    "result": "rettet"
+   },
+   {
+    "claim": "Mindre mørt kød",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/22061781",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Varmet-op'-smag (omformuleret til harsk, oxideret smag)",
+    "source": "https://ift.onlinelibrary.wiley.com/doi/10.1111/j.1750-3841.2011.02506.x",
+    "result": "rettet"
+   },
+   {
+    "claim": "Ingen ADI nødvendig",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Forskning fra Københavns Universitet viste øget proteinoxidation og sejere kød ved høj-ilt-emballage",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/22061781",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "For tidlig brunfarvning ved stegning af kød fra høj-ilt-emballage",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/38876067",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2025 (DOI 10.2903/j.efsa.2025.9595): ingen sikkerhedsbekymring; anbefalede ændrede specifikationer",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/40777209/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E949",
+  "nameDa": "Brint (hydrogen)",
+  "nameEn": "Hydrogen",
+  "category": "Emballagegas",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Brintgas, som er godkendt som tilsætningsstof (emballagegas) i EU, men som ingen virksomheder indsendte data om ved EFSA's gen-evaluering.",
+  "description": "Hydrogen (H2) er det letteste grundstof og fremstilles industrielt overvejende ved dampreformering af naturgas; elektrolyse af vand udgør en lille del af produktionen. Brint er ekstremt brandfarligt. Ved EU's oprindelige vurdering i 1990 var anvendelsen som emballagegas. I fødevareindustrien bruges brint desuden til hydrogenering (hærdning) af vegetabilske olier.",
+  "uses": "Tilladt quantum satis i alle fødevarekategorier i EU, også i fødevarer til spædbørn og småbørn, samt i tilsætningsstofpræparater, fødevareenzymer og næringsstoffer; oprindeligt vurderet som emballagegas. Bruges desuden ved fremstilling af hærdet fedt (hydrogenering).",
+  "health": "EFSA vurderede i 2025, at brint som tilsætningsstof er af lav toksikologisk betydning med meget lav eksponering via kosten og ikke giver anledning til sikkerhedsbekymring; den praktiske risiko ved gassen er brand og eksplosion. Delvis hydrogenering af olier kan danne transfedtsyrer, men det skyldes processen og ikke brint som tilsætningsstof; i EU må indholdet af transfedt (bortset fra naturligt forekommende transfedt i animalsk fedt) i fødevarer til forbrugere siden april 2021 ikke overstige 2 g pr. 100 g fedt (forordning (EU) 2019/649).",
+  "research": "EFSA's gen-evaluering (2025, DOI 10.2903/j.efsa.2025.9595) konkluderede, at brint som tilsætningsstof er af lav toksikologisk betydning og ikke giver anledning til sikkerhedsbekymring, og anbefalede ændringer af EU-specifikationerne. Der forskes i brintberiget vand ('brintvand') som sundhedsprodukt, men en systematisk gennemgang fandt, at evidensen er begrænset og bygger på små studier.",
+  "keyReferences": [],
+  "pubmedTerm": "hydrogen gas",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxygen (E 948) and hydrogen (E 949) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2025.9595",
+   "date": "2025",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9595",
+    "https://pubmed.ncbi.nlm.nih.gov/40777209/",
+    "https://www.energy.gov/cmei/fuels/hydrogen-production-natural-gas-reforming",
+    "https://www.sciencedirect.com/science/article/pii/S0360544225001823",
+    "https://en.wikipedia.org/wiki/Hydrogen",
+    "https://www.britannica.com/science/fat-processing/Hydrogenation",
+    "https://food.ec.europa.eu/food-safety/labelling-and-nutrition/trans-fat-food_en",
+    "https://eur-lex.europa.eu/eli/reg/2019/649/oj",
+    "https://pubmed.ncbi.nlm.nih.gov/38256045/"
+   ],
+   "notes": "Bekræftet: letteste grundstof, brandfarlighed, dampreformering som hovedkilde, anvendelse som emballagegas, hydrogenering af olier og transfedtdannelse, EFSA 2025-konklusion, begrænset evidens for brintvand. Rettet: EU-anvendelse præciseret (alle fødevarekategorier QS inkl. spædbørnsmad); 'sjældent brugt' erstattet af at ingen virksomheder indsendte data til EFSA; transfedtgrænsen præciseret (2 g/100 g fedt, undtaget naturligt animalsk transfedt, fra april 2021, forordning (EU) 2019/649); elektrolyse angivet som lille andel. Fjernet: 'ingen ADI' og at brint ved hydrogenering ikke regnes som tilsætningsstof (ikke bekræftet i EU-kilde)."
+  },
+  "wikipedia": "",
+  "wikidata": "Q556",
+  "claims": [
+   {
+    "claim": "Hydrogen er det letteste grundstof og ekstremt brandfarligt",
+    "source": "https://en.wikipedia.org/wiki/Hydrogen",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fremstilles især ved dampreformering af naturgas; elektrolyse udgør en lille del (præciseret)",
+    "source": "https://www.sciencedirect.com/science/article/pii/S0360544225001823",
+    "result": "rettet"
+   },
+   {
+    "claim": "Godkendt som emballagegas (EU-vurdering 1990)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9595",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendes sjældent (omformuleret: ingen virksomheder indsendte data til EFSA)",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/40777209/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Bruges som procesgas til hydrogenering (hærdning) af vegetabilske olier",
+    "source": "https://www.britannica.com/science/fat-processing/Hydrogenation",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ved hydrogenering regnes brint ikke som tilsætningsstof",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Godkendt quantum satis (præciseret: alle fødevarekategorier inkl. spædbørnsmad)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9595",
+    "result": "rettet"
+   },
+   {
+    "claim": "Brint er ugiftigt (omformuleret til EFSA: lav toksikologisk betydning, ingen sikkerhedsbekymring)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9595",
+    "result": "rettet"
+   },
+   {
+    "claim": "Der er ingen ADI",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Delvis hydrogenering kan danne transfedtsyrer",
+    "source": "https://www.britannica.com/science/fat-processing/Hydrogenation",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Transfedt i EU begrænset til 2 g pr. 100 g fedt (præciseret: gælder ikke naturligt transfedt fra animalsk fedt; fra april 2021; forordning 2019/649)",
+    "source": "https://food.ec.europa.eu/food-safety/labelling-and-nutrition/trans-fat-food_en",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA 2025: lav toksikologisk betydning og ingen sikkerhedsbekymring",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/40777209/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Forskning i brintvand; evidensen er svag/begrænset",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/38256045/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E950",
+  "nameDa": "Acesulfam K",
+  "nameEn": "Acesulfame potassium",
+  "category": "Sødemiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Et kaloriefrit, kunstigt sødemiddel, ca. 200 gange sødere end sukker, som ofte kombineres med andre sødestoffer.",
+  "description": "Acesulfam K er kaliumsaltet af 6-methyl-1,2,3-oxathiazin-4(3H)-on-2,2-dioxid og blev opdaget ved et tilfælde i 1967 af den tyske kemiker Karl Clauss hos Hoechst AG. Det fremstilles kemisk, fx ved at behandle acetoacetamid med svovltrioxid, hvorefter produktet neutraliseres med kaliumhydroxid. Det er stabilt ved opvarmning og bruges bl.a. i bagværk (ved pH under 3 og høj temperatur nedbrydes en del). Det har en let bitter eftersmag, især ved høje koncentrationer; derfor blandes det ofte med aspartam eller sucralose, hvilket giver en mere sukkerlignende smag, fordi stofferne maskerer hinandens eftersmag og virker synergistisk. Stoffet omsættes ikke i kroppen og udskilles uændret.",
+  "uses": "Light- og zero-læskedrikke, sukkerfrit tyggegummi, sukkerfri slik, light-yoghurt og desserter, bagværk, proteinpulver/-drikke, bordsødemidler samt lægemidler (fx tyggetabletter og sirupper). Tilladt i EU med maksimalniveauer, fx 350 mg/l i energireducerede læskedrikke eller læskedrikke uden tilsat sukker.",
+  "health": "Acesulfam K omsættes ikke og giver derfor ingen energi. SCF fastsatte i 2000 en ADI på 9 mg/kg legemsvægt/dag. EFSA har i sin gen-evaluering (2025) hævet ADI til 15 mg/kg legemsvægt/dag, baseret på et NOAEL hos rotter på 1500 mg/kg legemsvægt/dag (højeste testede dosis); det højeste beregnede indtag lå generelt under ADI i alle befolkningsgrupper. EFSA vurderede det usandsynligt, at indtag er forbundet med forstyrret glukose- eller insulinregulering. Studier har vist, at acesulfam K går over i modermælk efter moderens indtag.",
+  "research": "EFSA's gen-evaluering (EFSA Journal 2025, DOI 10.2903/j.efsa.2025.9317) fandt ingen bekymring for genotoksicitet og vurderede det usandsynligt, at indtag er forbundet med kræft, forstyrret glukose-/insulinregulering eller hjerte-kar-risikofaktorer og -sygdom. EFSA anbefalede desuden grænser for urenhederne 5-chlor-acesulfam (0,1 mg/kg) og acetylacetamid (1 mg/kg). Observationsstudiet NutriNet-Santé (Debras et al., PLoS Med 2022; ca. 103.000 franske voksne) fandt en sammenhæng mellem indtag af acesulfam K og øget kræftrisiko (HR 1,13), men sådanne studier kan ikke vise årsagssammenhæng. WHO udgav i 2023 en retningslinje, der fraråder brug af ikke-sukker-sødemidler til vægtkontrol eller forebyggelse af ikke-smitsomme sygdomme (betinget anbefaling baseret på evidens af lav sikkerhed). Et forsøg med CD-1-mus har vist, at acesulfam K ændrede tarmfloraen.",
+  "keyReferences": [
+   {
+    "citation": "Debras C, Chazelas E, Srour B, et al. Artificial sweeteners and cancer risk: Results from the NutriNet-Santé population-based cohort study. PLoS Med. 2022.",
+    "searchTitle": "Artificial sweeteners and cancer risk: Results from the NutriNet-Santé population-based cohort study"
+   },
+   {
+    "citation": "EFSA FAF Panel. Re-evaluation of acesulfame K (E 950) as food additive. EFSA Journal. 2025;23(4):9317.",
+    "searchTitle": "Re-evaluation of acesulfame K (E 950) as food additive"
+   }
+  ],
+  "pubmedTerm": "acesulfame potassium",
+  "flags": [],
+  "classes": [
+   "sweetener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of acesulfame K (E 950) as food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2025.9317",
+   "date": "2025-04-30",
+   "adi": "15 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9317",
+    "https://www.efsa.europa.eu/en/plain-language-summary/re-evaluation-acesulfame-k-e-950-food-additive",
+    "https://pubmed.ncbi.nlm.nih.gov/40309404/",
+    "https://www.sciencedirect.com/topics/food-science/acesulfame-potassium",
+    "https://en.wikipedia.org/wiki/Acesulfame_potassium",
+    "https://drugs.ncats.io/drug/23OV73Q5G9",
+    "https://cspi.org/article/acesulfame-potassium",
+    "https://www.amerigoscientific.com/acesulfame-potassium-uses-benefits-and-scientific-insights-for-biomedical-and-life-science-applications.html",
+    "https://ajcn.nutrition.org/article/S0002-9165(24)00657-9/fulltext",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5464538/",
+    "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1003950",
+    "https://www.who.int/news/item/15-05-2023-who-advises-not-to-use-non-sugar-sweeteners-for-weight-control-in-newly-released-guideline",
+    "https://www.ncbi.nlm.nih.gov/books/NBK592246/",
+    "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32018R0097"
+   ],
+   "notes": "Bekræftet: kemisk navn, opdagelse 1967 (Clauss/Hoechst), sødekraft ~200x, fremstilling, eftersmag/blandinger, udskilles uændret, ADI 9 (SCF 2000) og 15 mg/kg (EFSA 2025) med NOAEL 1500 mg/kg, EFSA-konklusioner, 350 mg/l i drikkevarer, Debras 2022, WHO 2023, overgang til modermælk. Rettet: varmestabilitet præciseret (nedbrydning ved pH<3), WHO-evidens præciseret, tarmflora-udsagn gjort konkret (musestudie), 'påvirker ikke blodsukkeret' omformuleret til EFSA's konklusion. Fjernet: proteinbarer, generel bemærkning om børn/gravide, kaliumindhold uden betydning. Tilføjet EFSA's urenhedsgrænser. Bemærk: eur-lex/EFSA-sider kunne kun tilgås via søgeresultater (WebFetch blokeret)."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Acesulfame_potassium",
+  "wikidata": "Q132037",
+  "claims": [
+   {
+    "claim": "nameDa 'Acesulfam K' / kategori sødemiddel (E 950)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9317",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kaloriefrit (omsættes ikke, bidrager ikke med energi)",
+    "source": "https://www.sciencedirect.com/topics/food-science/acesulfame-potassium",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ca. 200 gange sødere end sukker",
+    "source": "https://www.sciencedirect.com/topics/food-science/acesulfame-potassium",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ofte kombineret med andre sødestoffer (aspartam, sucralose)",
+    "source": "https://en.wikipedia.org/wiki/Acesulfame_potassium",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kaliumsalt af 6-methyl-1,2,3-oxathiazin-4(3H)-on-2,2-dioxid",
+    "source": "https://drugs.ncats.io/drug/23OV73Q5G9",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Opdaget 1967 (Karl Clauss, Hoechst AG)",
+    "source": "https://www.sciencedirect.com/topics/food-science/acesulfame-potassium",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fremstilling: acetoacetamid + svovltrioxid, neutralisering med kaliumhydroxid",
+    "source": "https://en.wikipedia.org/wiki/Acesulfame_potassium",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Varmestabil/kan bruges i bagning – præciseret: nedbrydes delvist ved pH < 3 og stigende temperatur",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/40309404/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Let bitter eftersmag ved høje koncentrationer",
+    "source": "https://en.wikipedia.org/wiki/Acesulfame_potassium",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Blandinger med aspartam/sucralose giver mere sukkerlignende smag (maskering/synergi)",
+    "source": "https://en.wikipedia.org/wiki/Acesulfame_potassium",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Omsættes ikke og udskilles uændret ('med urinen' forenklet til 'uændret')",
+    "source": "https://www.sciencedirect.com/topics/food-science/acesulfame-potassium",
+    "result": "rettet"
+   },
+   {
+    "claim": "Anvendelser: læskedrikke, tyggegummi, slik, yoghurt, desserter, bagværk, bordsødemidler",
+    "source": "https://cspi.org/article/acesulfame-potassium",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Proteinpulver/-drikke",
+    "source": "https://cspi.org/article/acesulfame-potassium",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Proteinbarer",
+    "source": "https://cspi.org/article/acesulfame-potassium",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Lægemidler (tyggetabletter, sirupper)",
+    "source": "https://www.amerigoscientific.com/acesulfame-potassium-uses-benefits-and-scientific-insights-for-biomedical-and-life-science-applications.html",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Maksimalniveau 350 mg/l i energireducerede læskedrikke/uden tilsat sukker",
+    "source": "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Påvirker ikke blodsukkeret direkte' omformuleret til EFSA's konklusion om glukose-/insulinregulering",
+    "source": "https://www.efsa.europa.eu/en/plain-language-summary/re-evaluation-acesulfame-k-e-950-food-additive",
+    "result": "rettet"
+   },
+   {
+    "claim": "SCF-ADI 9 mg/kg lgv/dag (2000)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9317",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2025: ADI 15 mg/kg lgv/dag",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9317",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "NOAEL 1500 mg/kg lgv/dag hos rotter, højeste testede dosis",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9317",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Indtag under ADI i alle befolkningsgrupper ('generelt' tilføjet som hos EFSA)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9317",
+    "result": "rettet"
+   },
+   {
+    "claim": "Passerer over i modermælk",
+    "source": "https://ajcn.nutrition.org/article/S0002-9165(24)00657-9/fulltext",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Diskussion om sødemidler for børn og gravide, ingen konkrete skadevirkninger fundet'",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9317",
+    "result": "fjernet"
+   },
+   {
+    "claim": "'Kaliumindholdet er uden praktisk betydning'",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9317",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA: ingen genotoksicitetsbekymring",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9317",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA: usandsynligt forbundet med kræft, glukose/insulin, hjerte-kar",
+    "source": "https://www.efsa.europa.eu/en/plain-language-summary/re-evaluation-acesulfame-k-e-950-food-additive",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA anbefalede grænser for 5-chlor-acesulfam og acetylacetamid (tilføjet)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9317",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "NutriNet-Santé (Debras 2022): sammenhæng acesulfam K–kræftrisiko (HR 1,13)",
+    "source": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1003950",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Observationsstudier kan ikke vise årsagssammenhæng",
+    "source": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1003950",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "WHO 2023-retningslinje fraråder NSS til vægtkontrol; 'svag evidens' præciseret til betinget anbefaling/lav evidenssikkerhed",
+    "source": "https://www.ncbi.nlm.nih.gov/books/NBK592246/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Tarmflora: 'blandede resultater, åbent spørgsmål' omformuleret til konkret musefund",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5464538/",
+    "result": "rettet"
+   },
+   {
+    "claim": "keyReferences: Debras et al. PLoS Med 2022",
+    "source": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1003950",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "keyReferences/efsa: EFSA Journal 2025;23(4):9317, publiceret april 2025",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/40309404/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "flags: ingen",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9317",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E951",
+  "nameDa": "Aspartam",
+  "nameEn": "Aspartame",
+  "category": "Sødemiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Et kunstigt sødemiddel, ca. 200 gange sødere end sukker, opbygget af aminosyrerne asparaginsyre og phenylalanin.",
+  "description": "Aspartam er methylesteren af dipeptidet L-aspartyl-L-phenylalanin og blev opdaget ved et tilfælde i 1965 af kemikeren James Schlatter. Det fremstilles ved kemisk eller enzymatisk kobling af de to aminosyrer (fx med enzymet thermolysin). I mave-tarm-kanalen nedbrydes aspartam hurtigt og fuldstændigt til asparaginsyre, phenylalanin og methanol – stoffer, der er identiske med dem, der optages fra almindelige fødevarer; aspartam som sådan når ikke blodbanen. Stoffet er ikke varmestabilt og taber sødme ved opvarmning, så det bruges sjældent i bagværk; i opløsning afhænger holdbarheden af pH (mest stabilt ved ca. pH 4,3). Det giver ca. 4 kcal/g, men pga. den høje sødekraft er energibidraget ubetydeligt.",
+  "uses": "Light- og zero-læskedrikke og andre drikkevarer, sukkerfrit tyggegummi, light-yoghurt og andre mejeriprodukter, desserter, bordsødemidler (tabletter og pulver), sukkerfri slik samt som hjælpestof i lægemidler. Tilladt i EU med maksimalniveauer, fx 600 mg/l i energireducerede læskedrikke eller læskedrikke uden tilsat sukker.",
+  "health": "EFSA fastholdt i sin fulde gen-evaluering (2013) en ADI på 40 mg/kg legemsvægt/dag og konkluderede, at nedbrydningsprodukterne ikke udgør en sikkerhedsrisiko ved det nuværende indtag. Personer med den arvelige sygdom fenylketonuri (PKU) skal holde en streng phenylalaninfattig diæt, og ADI gælder ikke for dem; derfor skal produkter med aspartam mærkes 'indeholder en phenylalaninkilde'. Hos gravide med PKU er forhøjet phenylalanin i blodet skadeligt for fostret, så de skal være særligt forsigtige. Nogle personer oplever hovedpine, men et dobbeltblindet studie (Schiffman et al., NEJM 1987) fandt ikke flere tilfælde af hovedpine efter aspartam end efter placebo.",
+  "research": "Ramazzini-instituttets rotteforsøg (Soffritti et al., 2005/2006) rapporterede øget forekomst af lymfomer og leukæmi, men EFSA vurderede, at disse fund ikke skyldtes aspartam, bl.a. pga. en høj baggrundsforekomst af kroniske betændelsesforandringer hos dyrene. I juli 2023 klassificerede IARC aspartam som 'muligvis kræftfremkaldende for mennesker' (gruppe 2B) baseret på begrænset evidens for leverkræft (hepatocellulært karcinom), mens JECFA samtidig fastholdt ADI på 0–40 mg/kg. NutriNet-Santé-kohorten (Debras et al., PLoS Med 2022) fandt en sammenhæng mellem højt aspartamindtag og kræft (HR 1,15). IARC vurderer fare (om stoffet kan give kræft), mens JECFA og EFSA vurderer risiko ved faktisk indtag, hvilket forklarer de forskellige konklusioner.",
+  "keyReferences": [
+   {
+    "citation": "Soffritti M, Belpoggi F, Degli Esposti D, et al. First experimental demonstration of the multipotential carcinogenic effects of aspartame administered in the feed to Sprague-Dawley rats. Environ Health Perspect. 2006.",
+    "searchTitle": "First experimental demonstration of the multipotential carcinogenic effects of aspartame administered in the feed to Sprague-Dawley rats"
+   },
+   {
+    "citation": "Debras C, Chazelas E, Srour B, et al. Artificial sweeteners and cancer risk: Results from the NutriNet-Santé population-based cohort study. PLoS Med. 2022.",
+    "searchTitle": "Artificial sweeteners and cancer risk: Results from the NutriNet-Santé population-based cohort study"
+   }
+  ],
+  "pubmedTerm": "aspartame",
+  "flags": [
+   "pku",
+   "pregnancy_caution"
+  ],
+  "classes": [
+   "sweetener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of aspartame (E 951) as a food additive.",
+   "url": "https://doi.org/10.2903/j.efsa.2013.3496",
+   "date": "2013-12-10",
+   "adi": "40 mg/kg bw/day",
+   "overexposureRisk": "en:no"
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2013.3496",
+    "https://www.efsa.europa.eu/en/topics/topic/aspartame",
+    "https://www.efsa.europa.eu/sites/default/files/corporate_publications/files/factsheetaspartame.pdf",
+    "https://en.wikipedia.org/wiki/Aspartame",
+    "https://en.wikipedia.org/wiki/James_M._Schlatter",
+    "https://www.sciencedirect.com/topics/food-science/aspartame",
+    "https://www.eufic.org/en/whats-in-food/article/aspartame-qa",
+    "https://www.ema.europa.eu/en/documents/scientific-guideline/information-package-leaflet-regarding-aspartame-and-phenylalanine-used-excipients-medicinal-products-human-use_en.pdf",
+    "https://en.wikipedia.org/wiki/Canderel",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A02011R1169-20250401",
+    "https://food.ec.europa.eu/food-safety/labelling-and-nutrition/food-information-consumers-legislation/mandatory-food-information_en",
+    "https://publications.aap.org/pediatrics/article/122/2/445/73049/Maternal-Phenylketonuria",
+    "https://pubmed.ncbi.nlm.nih.gov/3657889/",
+    "https://pubmed.ncbi.nlm.nih.gov/16507461/",
+    "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/sp.efsa.2013.EN-523",
+    "https://monographs.iarc.who.int/news-events/iarc-monographs-evaluation-of-the-carcinogenicity-of-aspartame-methyleugenol-and-isoeugenol",
+    "https://www.who.int/news/item/14-07-2023-aspartame-hazard-and-risk-assessment-results-released",
+    "https://cdn.who.int/media/docs/default-source/nutrition-and-food-safety/jecfa-summary-of-findings-aspartame.pdf",
+    "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1003950",
+    "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF"
+   ],
+   "notes": "Bekræftet: kemi, opdagelse 1965 (Schlatter), sødekraft ~200x, nedbrydning til asparaginsyre/phenylalanin/methanol, ikke varmestabil, 4 kcal/g, ADI 40 mg/kg (EFSA 2013, JECFA 2023), PKU og mærkning, IARC 2B (leverkræft), Soffritti 2006, Debras 2022, 600 mg/l i drikkevarer, anvendelser. Rettet: stabilitet i sure drikke præciseret (pH-afhængig), hovedpine knyttet til konkret studie, EFSA's vurdering af Soffritti præciseret, 'svag sammenhæng' erstattet af HR, 'indtag under ADI for alle grupper' omformuleret, ubelagt vurdering om 'mest omtalte eksempel' fjernet. Fjernet: fermentering af aminosyrer, saftevand som specifik anvendelse. Bemærk: EFSA har ikke publiceret en ny aspartam-udtalelse efter 2013 i de fundne kilder."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Aspartame",
+  "wikidata": "Q182040",
+  "claims": [
+   {
+    "claim": "nameDa 'Aspartam' / sødemiddel E 951",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2013.3496",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ca. 200 gange sødere end sukker",
+    "source": "https://en.wikipedia.org/wiki/James_M._Schlatter",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Opbygget af asparaginsyre og phenylalanin",
+    "source": "https://www.efsa.europa.eu/sites/default/files/corporate_publications/files/factsheetaspartame.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Methylester af L-aspartyl-L-phenylalanin",
+    "source": "https://en.wikipedia.org/wiki/Aspartame",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Opdaget 1965 (James Schlatter)",
+    "source": "https://en.wikipedia.org/wiki/James_M._Schlatter",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kemisk eller enzymatisk kobling (thermolysin)",
+    "source": "https://www.sciencedirect.com/topics/food-science/aspartame",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Aminosyrerne 'ofte produceret ved fermentering'",
+    "source": "https://www.sciencedirect.com/topics/food-science/aspartame",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Fuldstændig nedbrydning i tarmen til asparaginsyre, phenylalanin og methanol",
+    "source": "https://www.efsa.europa.eu/en/topics/topic/aspartame",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Optages som fra andre fødevarer; aspartam når ikke blodbanen",
+    "source": "https://cdn.who.int/media/docs/default-source/nutrition-and-food-safety/jecfa-summary-of-findings-aspartame.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ikke varmestabilt, taber sødme ved opvarmning/bagning",
+    "source": "https://en.wikipedia.org/wiki/Aspartame",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Taber sødme ved langtidsopbevaring i sure drikke' omformuleret til pH-afhængig stabilitet (mest stabil ved pH 4,3)",
+    "source": "https://en.wikipedia.org/wiki/Aspartame",
+    "result": "rettet"
+   },
+   {
+    "claim": "4 kcal/g, energibidrag ubetydeligt",
+    "source": "https://en.wikipedia.org/wiki/Aspartame",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendelser: drikkevarer, desserter, slik, mejeriprodukter, tyggegummi",
+    "source": "https://www.eufic.org/en/whats-in-food/article/aspartame-qa",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bordsødemidler (tabletter)",
+    "source": "https://en.wikipedia.org/wiki/Canderel",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Lægemidler (hjælpestof)",
+    "source": "https://www.ema.europa.eu/en/documents/scientific-guideline/information-package-leaflet-regarding-aspartame-and-phenylalanine-used-excipients-medicinal-products-human-use_en.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Saftevand uden sukker' som specifik anvendelse",
+    "source": "https://www.eufic.org/en/whats-in-food/article/aspartame-qa",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Maksimalniveau 600 mg/l i læskedrikke",
+    "source": "https://www.eufic.org/en/whats-in-food/article/aspartame-qa",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2013: ADI 40 mg/kg lgv/dag",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2013.3496",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Indtaget ligger under ADI for alle grupper' omformuleret til EFSA's konklusion om nedbrydningsprodukter ved nuværende indtag",
+    "source": "https://www.efsa.europa.eu/en/topics/topic/aspartame",
+    "result": "rettet"
+   },
+   {
+    "claim": "PKU: ADI gælder ikke, streng phenylalaninfattig diæt",
+    "source": "https://www.efsa.europa.eu/en/topics/topic/aspartame",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Mærkning 'indeholder en phenylalaninkilde'",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A02011R1169-20250401",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Gravide med PKU: forhøjet phenylalanin skadeligt for fostret",
+    "source": "https://publications.aap.org/pediatrics/article/122/2/445/73049/Maternal-Phenylketonuria",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hovedpine: 'kontrollerede studier har ikke bekræftet' præciseret til Schiffman 1987",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/3657889/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Soffritti et al. 2006 (EHP) rapporterede lymfomer og leukæmi hos rotter",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/16507461/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA: fundene skyldtes ikke aspartam (metodiske problemer præciseret)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/sp.efsa.2013.EN-523",
+    "result": "rettet"
+   },
+   {
+    "claim": "IARC 2023: gruppe 2B, begrænset evidens for leverkræft",
+    "source": "https://monographs.iarc.who.int/news-events/iarc-monographs-evaluation-of-the-carcinogenicity-of-aspartame-methyleugenol-and-isoeugenol",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "JECFA 2023 fastholdt ADI 0–40 mg/kg",
+    "source": "https://www.who.int/news/item/14-07-2023-aspartame-hazard-and-risk-assessment-results-released",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Debras 2022: sammenhæng aspartam–kræft ('svag' erstattet af HR 1,15)",
+    "source": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1003950",
+    "result": "rettet"
+   },
+   {
+    "claim": "Fare (IARC) vs. risiko (JECFA/EFSA); 'et af de mest omtalte eksempler' fjernet som ubelagt vurdering",
+    "source": "https://www.who.int/news/item/14-07-2023-aspartame-hazard-and-risk-assessment-results-released",
+    "result": "rettet"
+   },
+   {
+    "claim": "keyReferences: Soffritti 2006 EHP; Debras 2022 PLoS Med",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/16507461/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "efsa: EFSA Journal 2013;11(12):3496, ADI 40 mg/kg",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2013.3496",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "flags: pku, pregnancy_caution",
+    "source": "https://www.efsa.europa.eu/en/topics/topic/aspartame",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E952",
+  "nameDa": "Cyclaminsyre og natrium- og calciumsalte heraf",
+  "nameEn": "Cyclamic acid and its Na and Ca salts",
+  "category": "Sødemiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Et kunstigt sødemiddel (cyclamat), ca. 30-40 gange sødere end sukker, som ofte blandes med saccharin.",
+  "description": "Cyclamat er baseret på cyclohexylsulfaminsyre og blev opdaget i 1937 af Michael Sveda ved University of Illinois. Det fremstilles kemisk ved sulfonering af cyclohexylamin (fx med sulfaminsyre eller svovltrioxid), hvorefter syren omdannes til natrium- eller calciumsaltet. I EU omfatter E 952 (i) cyclaminsyre, (ii) natriumcyclamat og (iii) calciumcyclamat. Stoffet er varmestabilt og har kun lidt ubehagelig eftersmag; det blandes ofte med saccharin (typisk 10:1), hvor de to stoffer maskerer hinandens bismag. Nogle mennesker har tarmbakterier, der kan omdanne cyclamat til cyclohexylamin, som har vist toksiske virkninger (bl.a. på testikler hos rotter).",
+  "uses": "Bordsødemidler, light-læskedrikke og andre energireducerede drikkevarer, sukkerfri desserter og frugtkonserves. Tilladt i EU med maksimalniveauer (fx 250 mg/l i energireducerede drikkevarer eller drikkevarer uden tilsat sukker). FDA forbød stoffet i USA i 1969.",
+  "health": "SCF fastsatte i 2000 en ADI på 0–7 mg/kg legemsvægt/dag (udtrykt som cyclaminsyre), baseret på testikelforandringer hos rotter forårsaget af omdannelsesproduktet cyclohexylamin. Beregninger af indtaget viste, at nogle små børn med højt forbrug af søde drikke kunne overskride ADI, og EU sænkede derfor i 2003 (direktiv 2003/115/EF) maksimalgrænsen i drikkevarer fra 400 til 250 mg/l. Cyclamat kan passere moderkagen og er påvist i fosterets blod og fostervand, og nogle fagkilder fraråder gravide at indtage det.",
+  "research": "FDA besluttede i oktober 1969 at forbyde cyclamat i USA, efter at et studie havde vist blæretumorer hos rotter fodret med en 10:1-blanding af cyclamat og saccharin. IARC har klassificeret cyclamater i gruppe 3 (ikke klassificerbar med hensyn til kræftfremkaldende effekt hos mennesker), senest i 1999. SCF's revurdering (2000) fastsatte ADI på baggrund af cyclohexylamins virkning på testikler hos rotter og en antaget omdannelse på ca. 18,9 % af det daglige indtag. Omdannelsen til cyclohexylamin varierer meget mellem og inden for personer, hvilket er et vigtigt usikkerhedsmoment. Cyclamat indgår i EFSA's igangværende gen-evaluering af sødemidler; pr. september 2026 er der ikke offentliggjort en EFSA-udtalelse om E 952.",
+  "keyReferences": [],
+  "pubmedTerm": "cyclamate",
+  "flags": [
+   "children_caution",
+   "pregnancy_caution"
+  ],
+  "classes": [
+   "sweetener"
+  ],
+  "variants": [
+   {
+    "code": "E952(i)",
+    "nameDa": "Cyclaminsyre",
+    "nameEn": "Cyclamic acid"
+   },
+   {
+    "code": "E952(ii)",
+    "nameDa": "Natriumcyclamat",
+    "nameEn": "Sodium cyclamate"
+   },
+   {
+    "code": "E952(iii)",
+    "nameDa": "Calciumcyclamat",
+    "nameEn": "Calcium cyclamate"
+   }
+  ],
+  "efsa": null,
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Cyclamate",
+    "https://encyclopedia.pub/entry/28481",
+    "https://www.pku.dk/kost-og-ernaering/sodemidler/",
+    "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=CELEX:32003L0115:DA:HTML",
+    "https://eur-lex.europa.eu/eli/reg/2012/231/2026-05-09/eng",
+    "https://ec.europa.eu/food/fs/sc/scf/out53_en.pdf",
+    "https://www.bfr.bund.de/cm/349/do-mixtures-of-several-sweeteners-pose-risks-for-human-health.pdf",
+    "https://www.europarl.europa.eu/doceo/document/E-6-2009-1020-ASW_EN.html",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:52003PC0277",
+    "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+    "https://www.fda.gov/media/89206/download",
+    "https://www.ebsco.com/research-starters/politics-and-government/artificial-sweetener-cyclamate-banned-us-consumer-markets",
+    "https://inchem.org/documents/iarc/vol73/73-07.html",
+    "https://www.ncbi.nlm.nih.gov/books/NBK533628/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC1177029/",
+    "https://www.sciencedirect.com/science/article/abs/pii/S0041008X04000675",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10181363/",
+    "https://americanpregnancy.org/pregnancy/artificial-sweeteners-and-pregnancy/",
+    "https://proe.info/en/additives/e952",
+    "https://www.efsa.europa.eu/sites/default/files/2024-03/02a-state-of-play-lessons-learnt-from-re-evaluation-sweeteners.pdf",
+    "https://www.efsa.europa.eu/sites/default/files/2026-07/Annex%20II_10.1%20Update%20on%20the%20re-evaluation%20of%20sweeteners_%201-2%20July%202026.pdf"
+   ],
+   "notes": "Bekræftet: opdagelse 1937 (Sveda), sødekraft 30-40x, 10:1-blanding med saccharin, fremstilling ved sulfonering af cyclohexylamin, varmestabil, SCF-ADI 0–7 mg/kg (2000) baseret på testikeltoksicitet af cyclohexylamin, 250 mg/l i drikkevarer og EU-sænkningen (400→250 mg/l, direktiv 2003/115/EF) pga. børns indtag, US-forbud 1969, IARC gruppe 3 (1999), individuel variation i omdannelse. Rettet: varianter – E952(iv) findes ikke i EU; korrekte er (i) cyclaminsyre, (ii) natriumcyclamat, (iii) calciumcyclamat (forordning 231/2012); 'mere toksisk' og gravide-udsagn omformuleret til dokumenterede fund. Fjernet: 'senere studier har ikke bekræftet kræfteffekt'. EFSA: gen-evaluering af E 952 stadig i gang (EFSA FAF-plenar juli 2026); ingen publiceret udtalelse fundet, så efsa forbliver null. keyReferences er tom (uændret)."
+  },
+  "wikipedia": "",
+  "wikidata": "Q2130929",
+  "claims": [
+   {
+    "claim": "nameDa 'Cyclaminsyre og natrium- og calciumsalte heraf' (E 952)",
+    "source": "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=CELEX:32003L0115:DA:HTML",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Sødemiddel, ca. 30-40 gange sødere end sukker",
+    "source": "https://en.wikipedia.org/wiki/Cyclamate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ofte blandet med saccharin, typisk 10:1",
+    "source": "https://en.wikipedia.org/wiki/Cyclamate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Baseret på cyclohexylsulfaminsyre",
+    "source": "https://www.pku.dk/kost-og-ernaering/sodemidler/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Opdaget 1937 (Michael Sveda, University of Illinois)",
+    "source": "https://en.wikipedia.org/wiki/Cyclamate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fremstilling ved sulfonering af cyclohexylamin",
+    "source": "https://en.wikipedia.org/wiki/Cyclamate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Varianter (i) cyclaminsyre, (ii) natriumcyclamat, (iii) calciumcyclamat iht. forordning 231/2012",
+    "source": "https://eur-lex.europa.eu/eli/reg/2012/231/2026-05-09/eng",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Variant E952(iv) findes ikke i EU; E952(ii) var fejlagtigt navngivet 'Calcium cyclamate' – rettet til (ii) natriumcyclamat og (iii) calciumcyclamat",
+    "source": "https://eur-lex.europa.eu/eli/reg/2012/231/2026-05-09/eng",
+    "result": "rettet"
+   },
+   {
+    "claim": "Varmestabil",
+    "source": "https://encyclopedia.pub/entry/28481",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'God smagsprofil' præciseret til 'kun lidt ubehagelig eftersmag'",
+    "source": "https://en.wikipedia.org/wiki/Cyclamate",
+    "result": "rettet"
+   },
+   {
+    "claim": "Blanding med saccharin maskerer hinandens bismag",
+    "source": "https://en.wikipedia.org/wiki/Cyclamate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tarmbakterier hos nogle personer omdanner cyclamat til cyclohexylamin",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC1177029/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Cyclohexylamin 'mere toksisk' omformuleret til dokumenteret testikeltoksicitet hos rotter",
+    "source": "https://ec.europa.eu/food/fs/sc/scf/out53_en.pdf",
+    "result": "rettet"
+   },
+   {
+    "claim": "Anvendelser: bordsødemidler, drikkevarer, desserter, konserves",
+    "source": "https://proe.info/en/additives/e952",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Maksimalniveau 250 mg/l i drikkevarer",
+    "source": "https://www.europarl.europa.eu/doceo/document/E-6-2009-1020-ASW_EN.html",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Forbudt i USA siden 1969 (FDA-beslutning okt. 1969)",
+    "source": "https://www.fda.gov/media/89206/download",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "SCF 2000: ADI 0–7 mg/kg lgv/dag udtrykt som cyclaminsyre",
+    "source": "https://ec.europa.eu/food/fs/sc/scf/out53_en.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "ADI baseret på testikelforandringer hos rotter fra cyclohexylamin",
+    "source": "https://www.bfr.bund.de/cm/349/do-mixtures-of-several-sweeteners-pose-risks-for-human-health.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Børn med højt forbrug kan overskride ADI",
+    "source": "https://www.europarl.europa.eu/doceo/document/E-6-2009-1020-ASW_EN.html",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EU sænkede maksimalgrænsen i drikkevarer (400→250 mg/l, direktiv 2003/115/EF)",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:52003PC0277",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Gravide og børn bør ikke indtage store mængder' omformuleret til dokumenteret placentapassage og fagkilders fraråden",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10181363/",
+    "result": "rettet"
+   },
+   {
+    "claim": "US-forbud efter rotteforsøg med 10:1 cyclamat/saccharin med blæretumorer",
+    "source": "https://www.ebsco.com/research-starters/politics-and-government/artificial-sweetener-cyclamate-banned-us-consumer-markets",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Senere studier har ikke bekræftet kræftfremkaldende effekt'",
+    "source": "https://inchem.org/documents/iarc/vol73/73-07.html",
+    "result": "fjernet"
+   },
+   {
+    "claim": "IARC gruppe 3 (Vol. 73, 1999)",
+    "source": "https://inchem.org/documents/iarc/vol73/73-07.html",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "SCF 2000 ADI baseret på testikelvirkning; antaget omdannelse 18,9 %",
+    "source": "https://www.bfr.bund.de/cm/349/do-mixtures-of-several-sweeteners-pose-risks-for-human-health.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Stor inter-/intraindividuel variation i omdannelse",
+    "source": "https://www.sciencedirect.com/science/article/abs/pii/S0041008X04000675",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA-gen-evaluering af cyclamat pågår; ingen udtalelse offentliggjort pr. 2026 (efsa forbliver null)",
+    "source": "https://www.efsa.europa.eu/sites/default/files/2026-07/Annex%20II_10.1%20Update%20on%20the%20re-evaluation%20of%20sweeteners_%201-2%20July%202026.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "flags: children_caution",
+    "source": "https://www.europarl.europa.eu/doceo/document/E-6-2009-1020-ASW_EN.html",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "flags: pregnancy_caution",
+    "source": "https://americanpregnancy.org/pregnancy/artificial-sweeteners-and-pregnancy/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E953",
+  "nameDa": "Isomalt",
+  "nameEn": "Isomalt",
+  "category": "Sødemiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En sukkeralkohol fremstillet af roesukker med ca. halvt så stor sødme og færre kalorier end sukker, og som ikke fremmer huller i tænderne.",
+  "description": "Isomalt er en blanding af to disaccharid-alkoholer: 6-O-α-D-glucopyranosyl-D-sorbitol (1,6-GPS) og 1-O-α-D-glucopyranosyl-D-mannitol (1,1-GPM). Den fremstilles af sukker (saccharose), som først omdannes enzymatisk til isomaltulose, der derefter hydrogeneres. Isomalt har, afhængigt af koncentrationen, ca. 45-60 % af sukkers sødme, og i EU's næringsdeklaration regnes polyoler med 2,4 kcal/g. Kun en del optages i tyndtarmen; resten fermenteres af tarmbakterierne i tyktarmen. Isomalt tåler høje temperaturer og optager meget lidt fugt, og bruges derfor især til sukkerfri hårde bolcher og spiselige dekorationer.",
+  "uses": "Sukkerfri bolcher og pastiller, sukkerfri chokolade, tyggegummi, bagværk, is, kagedekorationer og sukkerskulpturer samt kosttilskud. Polyoler som isomalt er i EU tilladt 'quantum satis' (efter behov) og må generelt ikke bruges i drikkevarer pga. deres afførende virkning.",
+  "health": "Som andre polyoler kan isomalt i større mængder give luft i maven og diarré. JECFA beskriver diarré hos ca. 25 % af voksne forsøgspersoner ved 40 g, mens enkeltdoser på 20 g blev tålt af børn uden diarré, men gav lette mave-tarm-gener hos ca. 10 %; børn tåler således mindre. Produkter med over 10 % tilsatte polyoler skal mærkes 'Overdrevent indtag kan virke afførende'. Isomalt giver en meget lav blodsukkerstigning og fremmer ikke caries. Der er ikke fastsat en numerisk ADI ('not specified').",
+  "research": "JECFA har vurderet isomalt og fastsat ADI 'not specified' (ingen numerisk grænse nødvendig). EFSA vurderede i 2011, at indtag af fødevarer, hvor sukker er erstattet af sukkererstatninger som isomalt, bidrager til at bevare tændernes mineralisering og giver en lavere blodsukkerstigning efter måltidet end sukker. Forskningen fokuserer på fordøjelsestolerance og effekter på tarmfloraen, hvor isomalt i forsøg har øget antallet af bifidobakterier (mulig præbiotisk virkning). EFSA's gen-evaluering af isomalt som tilsætningsstof er endnu ikke afsluttet (status juli 2026).",
+  "keyReferences": [],
+  "pubmedTerm": "isomalt",
+  "flags": [
+   "laxative",
+   "children_caution"
+  ],
+  "classes": [
+   "stabiliser",
+   "sweetener",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.sciencedirect.com/topics/medicine-and-dentistry/isomalt",
+    "https://link.springer.com/chapter/10.1007/978-1-4613-1229-1_6",
+    "https://www.beneo.com/human-nutrition/human-nutrition-products/functional-carbohydrates/isomalt",
+    "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/isomalt",
+    "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/6A531EF1E4556141D7DBF3BA6155FD15/S0007114505002199a.pdf/effects_of_isomalt_consumption_on_gastrointestinal_and_metabolic_parameters_in_healthy_volunteers.pdf",
+    "https://polyols-eu.org/legislation/food/",
+    "https://www.cargill.com/food-beverage/emea/sweeteners/eu-labeling-and-legislation",
+    "https://inchem.org/documents/jecfa/jecmono/v20je14.htm",
+    "https://efsa.onlinelibrary.wiley.com/doi/pdf/10.2903/j.efsa.2011.2076",
+    "https://www.efsa.europa.eu/sites/default/files/2026-07/Annex%20II_10.1%20Update%20on%20the%20re-evaluation%20of%20sweeteners_%201-2%20July%202026.pdf",
+    "https://www.efsa.europa.eu/sites/default/files/2024-03/02a-state-of-play-lessons-learnt-from-re-evaluation-sweeteners.pdf"
+   ],
+   "notes": "Kemi (1,6-GPS/1,1-GPM), fremstilling via isomaltulose fra roesukker, 2,4 kcal/g, delvis optagelse, varmestabilitet/lav hygroskopicitet, quantum satis, mærkningskrav, JECFA ADI not specified, EFSA-anprisningsudtalelse 2011 og bifidogen effekt bekræftet. Rettet: sødme 45-65 % → 45-60 %; afførings-tærskel erstattet med JECFA-data; EFSA-anprisning omformuleret til udtalelsens ordlyd. Fjernet: 'diabetiker'-slik og 'nogle tabletter'. Tilføjet: polyoler må generelt ikke bruges i drikkevarer. EFSA's gen-evaluering af E 953 er ikke afsluttet (FAF-plenarmøde juli 2026), så efsa forbliver null."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Isomalt",
+  "wikidata": "Q412068",
+  "claims": [
+   {
+    "claim": "Isomalt er en sukkeralkohol (polyol) og et sødemiddel",
+    "source": "https://polyols-eu.org/legislation/food/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Isomalt fremstilles af roesukker",
+    "source": "https://www.beneo.com/human-nutrition/human-nutrition-products/functional-carbohydrates/isomalt",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Blanding af 1,6-GPS (glucose-sorbitol) og 1,1-GPM (glucose-mannitol)",
+    "source": "https://www.sciencedirect.com/topics/medicine-and-dentistry/isomalt",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Saccharose omdannes enzymatisk til isomaltulose, som hydrogeneres",
+    "source": "https://link.springer.com/chapter/10.1007/978-1-4613-1229-1_6",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Sødme ca. 45-60 % af sukker (tidligere 45-65 %)",
+    "source": "https://www.sciencedirect.com/topics/medicine-and-dentistry/isomalt",
+    "result": "rettet"
+   },
+   {
+    "claim": "Energiværdi 2,4 kcal/g (EU-mærkningsværdi for polyoler, forordning 1169/2011 bilag XIV)",
+    "source": "https://www.cargill.com/food-beverage/emea/sweeteners/eu-labeling-and-legislation",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Optages kun delvist i tyndtarmen; resten fermenteres i tyktarmen",
+    "source": "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/6A531EF1E4556141D7DBF3BA6155FD15/S0007114505002199a.pdf/effects_of_isomalt_consumption_on_gastrointestinal_and_metabolic_parameters_in_healthy_volunteers.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Varmestabil og lavt fugtoptag; bruges til hårde bolcher, spiselige dekorationer og sukkerskulpturer",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/isomalt",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendes i sukkerfri bolcher/pastiller, chokolade, tyggegummi, bagværk, is og kosttilskud",
+    "source": "https://polyols-eu.org/legislation/food/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Diabetiker'-slik og 'nogle tabletter' som anvendelse",
+    "source": "ingen kilde fundet",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Polyoler tilladt quantum satis og generelt ikke i drikkevarer",
+    "source": "https://polyols-eu.org/legislation/food/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Afførende virkning i store mængder; tidligere tærskel 'flere end 20-30 g ad gangen' erstattet med JECFA's konkrete data (40 g voksne, 20 g børn)",
+    "source": "https://inchem.org/documents/jecfa/jecmono/v20je14.htm",
+    "result": "rettet"
+   },
+   {
+    "claim": "Mærkning 'Overdrevent indtag kan virke afførende' ved over 10 % tilsatte polyoler",
+    "source": "https://www.cargill.com/food-beverage/emea/sweeteners/eu-labeling-and-legislation",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Børn er mere følsomme (lavere tolerance)",
+    "source": "https://inchem.org/documents/jecfa/jecmono/v20je14.htm",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Lav glykæmisk påvirkning og fremmer ikke caries",
+    "source": "https://www.beneo.com/human-nutrition/human-nutrition-products/functional-carbohydrates/isomalt",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "JECFA ADI 'not specified'",
+    "source": "https://inchem.org/documents/jecfa/jecmono/v20je14.htm",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA-udtalelse 2011 om tandmineralisering og lavere blodsukkerstigning ved erstatning af sukker (omformuleret fra 'sukkerfrie produkter med polyoler')",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/pdf/10.2903/j.efsa.2011.2076",
+    "result": "rettet"
+   },
+   {
+    "claim": "Isomalt øger bifidobakterier (mulig præbiotisk effekt)",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/isomalt",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA's gen-evaluering af isomalt (E 953) er stadig i gang; efsa-feltet forbliver null",
+    "source": "https://www.efsa.europa.eu/sites/default/files/2026-07/Annex%20II_10.1%20Update%20on%20the%20re-evaluation%20of%20sweeteners_%201-2%20July%202026.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flag laxative og children_caution",
+    "source": "https://inchem.org/documents/jecfa/jecmono/v20je14.htm",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E954",
+  "nameDa": "Saccharin og natrium-, kalium- og calciumsalte heraf",
+  "nameEn": "Saccharin and its Na, K and Ca salts",
+  "category": "Sødemiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Det ældste kunstige sødemiddel, ca. 200-700 gange sødere end sukker afhængigt af koncentrationen, kendt fra sødetabletter.",
+  "description": "Saccharin (o-benzoesyresulfimid) blev opdaget i 1879 af Constantin Fahlberg i Ira Remsens laboratorium og fremstilles kemisk, enten ud fra toluen (Remsen-Fahlberg-metoden) eller ud fra phthalsyreanhydrid (Maumee-metoden). I EU omfatter E954 (i) saccharin, (ii) natriumsaccharin, (iii) calciumsaccharin og (iv) kaliumsaccharin; saltene er mere vandopløselige end selve saccharin. Stoffet optages, men omsættes ikke i kroppen og udskilles uændret, primært med urinen. Det er varmestabilt, men har en bitter, metallisk eftersmag og kombineres derfor ofte med cyclamat, hvor de to sødemidler maskerer hinandens bismag.",
+  "uses": "Bordsødemidler (tabletter), light-læskedrikke og saftevand, sukkerfrit tyggegummi og slik, sursøde frugt- og grøntsagskonserves, desuden tandpasta og lægemidler. Tilladt med maksimalniveauer i bilag II til forordning 1333/2008, fx 80 mg/l i energireducerede eller sukkerfri aromatiserede drikkevarer.",
+  "health": "EFSA hævede i sin gen-evaluering (2024, DOI 10.2903/j.efsa.2024.9044) ADI fra 5 mg/kg legemsvægt/dag (SCF 1995, udtrykt som natriumsaccharin) til 9 mg/kg legemsvægt/dag, som gælder for alle befolkningsgrupper, og fandt, at indtaget (95-percentil) ligger under denne grænse i alle befolkningsgrupper. Saccharin passerer moderkagen og udskilles i små mængder i modermælk. Saccharin er kemisk et sulfonamid, og der er beskrevet enkeltstående tilfælde af overfølsomhed med krydsreaktion til sulfonamid-lægemidler, men klinisk betydende krydsreaktion anses ikke for påvist.",
+  "research": "I 1970'erne viste rotteforsøg blæretumorer hos hanrotter, men senere forskning viste, at mekanismen (et calciumphosphatholdigt bundfald i rotteurin, der skader blæreslimhinden) skyldes rotternes særlige urinsammensætning og ikke er relevant for mennesker. IARC nedklassificerede derfor saccharin til gruppe 3 i 1999, og den amerikanske NTP fjernede det i 2000 fra listen over stoffer, der med rimelighed kan forventes at være kræftfremkaldende. Suez et al. (Nature 2014) rapporterede, at saccharin kunne ændre tarmfloraen og nedsætte glukosetolerancen hos mus og hos fire ud af syv forsøgspersoner; et senere placebokontrolleret forsøg (Serrano et al. 2021) fandt ingen effekt hos raske voksne, og Suez et al. (Cell 2022) fandt store individuelle forskelle. EFSA's gen-evaluering (2024) fandt ikke bekymring for genotoksicitet ved saccharin fremstillet efter Remsen-Fahlberg-metoden, men kunne ikke udelukke genotoksicitet for mulige urenheder fra Maumee-metoden og vurderede derfor kun Remsen-Fahlberg-saccharin.",
+  "keyReferences": [
+   {
+    "citation": "Suez J, Korem T, Zeevi D, et al. Artificial sweeteners induce glucose intolerance by altering the gut microbiota. Nature. 2014.",
+    "searchTitle": "Artificial sweeteners induce glucose intolerance by altering the gut microbiota"
+   },
+   {
+    "citation": "EFSA FAF Panel. Re-evaluation of saccharin and its sodium, potassium and calcium salts (E 954) as food additives. EFSA Journal. 2024;22(11):e9044.",
+    "searchTitle": "Re-evaluation of saccharin and its sodium, potassium and calcium salts (E 954) as food additives"
+   }
+  ],
+  "pubmedTerm": "saccharin",
+  "flags": [
+   "pregnancy_caution"
+  ],
+  "classes": [
+   "sweetener"
+  ],
+  "variants": [
+   {
+    "code": "E954(i)",
+    "nameDa": "Saccharin",
+    "nameEn": "Saccharin"
+   },
+   {
+    "code": "E954(ii)",
+    "nameDa": "Natriumsaccharin",
+    "nameEn": "Sodium saccharin"
+   },
+   {
+    "code": "E954(iii)",
+    "nameDa": "Calciumsaccharin",
+    "nameEn": "Calcium saccharin"
+   },
+   {
+    "code": "E954(iv)",
+    "nameDa": "Kaliumsaccharin",
+    "nameEn": "Potassium saccharin"
+   }
+  ],
+  "efsa": {
+   "title": "Re-evaluation of saccharin and its sodium, potassium and calcium salts (E 954) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2024.9044",
+   "date": "2024-11-15",
+   "adi": "9 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.9044",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC11565076/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC11565076/table/efs29044-tbl-0001/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC11565076/table/efs29044-tbl-0003/",
+    "https://www.efsa.europa.eu/en/plain-language-summary/re-evaluation-saccharin-and-its-sodium-potassium-and-calcium-salts-e-954",
+    "https://www.efsa.europa.eu/en/news/saccharin-safety-threshold-increased",
+    "https://en.wikipedia.org/wiki/Saccharin",
+    "https://en.wikipedia.org/wiki/Constantin_Fahlberg",
+    "https://www.sigmaaldrich.com/US/en/product/aldrich/240931",
+    "https://academic.oup.com/nutritionreviews/article/74/11/670/2281652",
+    "https://www.inchem.org/documents/iarc/vol73/73-19.html",
+    "https://pubmed.ncbi.nlm.nih.gov/10753216/",
+    "https://oehha.ca.gov/sites/default/files/media/downloads/crnr/sodiumsaccharinfinalhid.pdf",
+    "https://www.nature.com/articles/nature13793",
+    "https://www.suezlab.org/highlights/project-one-5zlny",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7802287/",
+    "https://www.sciencedirect.com/science/article/pii/S0092867422009199",
+    "https://www.ncbi.nlm.nih.gov/books/NBK501521/",
+    "https://www.cambridge.org/core/journals/proceedings-of-the-nutrition-society/article/impact-of-nonnutritive-sweeteners-on-fertility-maternal-and-child-health-outcomes-a-review-of-human-and-animal-studies/DFE94AB87E8AFD118CC6A8D757E74978",
+    "https://pubmed.ncbi.nlm.nih.gov/14915213",
+    "https://www.sciencedirect.com/topics/medicine-and-dentistry/saccharin-sodium",
+    "https://www.chemicalbook.com/ChemicalProductProperty_EN_CB6485865.htm"
+   ],
+   "notes": "Bekræftet: opdagelse 1879, Remsen-Fahlberg/Maumee, opløselighed af salte, uændret udskillelse, varmestabilitet/eftersmag/cyclamat, anvendelser, 80 mg/l, EFSA 2024 (ADI 9 mg/kg, erstatter SCF 5 mg/kg, indtag under ADI), IARC gruppe 3 1999, NTP 2000, Suez 2014, placenta/modermælk. Rettet: variantlisten (E954(ii) er natriumsaccharin, (iii) calcium-, (iv) kaliumsaccharin – alle navne udfyldt); sødekraft 300-500 → 200-700; synonym → o-benzoesyresulfimid; rotte-mekanisme præciseret (calciumphosphat-bundfald); EFSA-genotoksicitet præciseret (Maumee-urenheder); sulfonamid-overfølsomhed nuanceret; syltede grøntsager → sursøde konserves. Fjernet: 'gravide rådes ofte til moderation' og 'ingen særlige risikogrupper'. Wiley/EFSA-sider kunne ikke hentes direkte (netværksblokering) – indhold bekræftet via søgeresultater/resuméer."
+  },
+  "wikipedia": "",
+  "wikidata": "Q191381",
+  "claims": [
+   {
+    "claim": "E954 omfatter saccharin og dets natrium-, kalium- og calciumsalte; sødemiddel",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11565076/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Variantnavne iht. forordning 231/2012: (i) saccharin, (ii) natriumsaccharin, (iii) calciumsaccharin, (iv) kaliumsaccharin (variantlisten havde (ii)/(iii) forkert og manglende navne)",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11565076/table/efs29044-tbl-0001/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Ældste kunstige sødemiddel, opdaget 1879 (Fahlberg i Remsens laboratorium)",
+    "source": "https://en.wikipedia.org/wiki/Constantin_Fahlberg",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Sødekraft: 300-500 gange rettet til ca. 200-700 gange afhængigt af koncentration",
+    "source": "https://en.wikipedia.org/wiki/Saccharin",
+    "result": "rettet"
+   },
+   {
+    "claim": "Synonym 'benzosulfimid' rettet til o-benzoesyresulfimid (o-benzoic sulfimide)",
+    "source": "https://www.sigmaaldrich.com/US/en/product/aldrich/240931",
+    "result": "rettet"
+   },
+   {
+    "claim": "Fremstilling fra toluen (Remsen-Fahlberg) eller phthalsyreanhydrid (Maumee)",
+    "source": "https://en.wikipedia.org/wiki/Saccharin",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Saltene er mere vandopløselige end syreformen",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11565076/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Omsættes ikke og udskilles uændret med urinen",
+    "source": "https://academic.oup.com/nutritionreviews/article/74/11/670/2281652",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Varmestabilt; bitter/metallisk eftersmag; kombineres ofte med cyclamat",
+    "source": "https://en.wikipedia.org/wiki/Saccharin",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendelser: bordsødemidler, læskedrikke, tyggegummi, slik, tandpasta, lægemidler",
+    "source": "https://www.chemicalbook.com/ChemicalProductProperty_EN_CB6485865.htm",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Konserves og syltede grøntsager' præciseret til sursøde frugt- og grøntsagskonserves (kategori i bilag II)",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11565076/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Maksimalniveau 80 mg/l i (energireducerede/sukkerfri) aromatiserede drikkevarer",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11565076/table/efs29044-tbl-0003/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2024: ADI 9 mg/kg lgv/dag erstatter SCF 1995-ADI på 5 mg/kg (som natriumsaccharin)",
+    "source": "https://www.efsa.europa.eu/en/news/saccharin-safety-threshold-increased",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Indtaget (P95) under ADI i alle befolkningsgrupper",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11565076/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Passerer moderkagen og over i modermælk (små mængder)",
+    "source": "https://www.ncbi.nlm.nih.gov/books/NBK501521/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Gravide rådes ofte til moderation'",
+    "source": "ingen autoritativ EU-kilde fundet",
+    "result": "fjernet"
+   },
+   {
+    "claim": "'Ingen kendte særlige risikogrupper' – erstattet af EFSA: ADI gælder alle befolkningsgrupper",
+    "source": "https://www.efsa.europa.eu/en/news/saccharin-safety-threshold-increased",
+    "result": "rettet"
+   },
+   {
+    "claim": "Sulfonamid-overfølsomhed: præciseret til enkeltstående kasuistikker; klinisk betydende krydsreaktion ikke påvist",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/14915213",
+    "result": "rettet"
+   },
+   {
+    "claim": "Blæretumorer hos hanrotter; mekanisme (calciumphosphat-bundfald, ikke 'krystaldannelse') specifik for rotter",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/10753216/",
+    "result": "rettet"
+   },
+   {
+    "claim": "IARC gruppe 3 i 1999",
+    "source": "https://www.inchem.org/documents/iarc/vol73/73-19.html",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fjernet fra NTP's Report on Carcinogens i 2000",
+    "source": "https://oehha.ca.gov/sites/default/files/media/downloads/crnr/sodiumsaccharinfinalhid.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Suez et al. Nature 2014: ændret tarmflora og glukoseintolerance hos mus og 4 af 7 personer",
+    "source": "https://www.suezlab.org/highlights/project-one-5zlny",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Resultater varierer og er ikke entydigt bekræftet (Serrano 2021; Suez 2022)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7802287/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2024 fandt ingen genotoksicitetsbekymring – præciseret: gælder Remsen-Fahlberg-saccharin; bekymring for mulige Maumee-urenheder",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.9044",
+    "result": "rettet"
+   },
+   {
+    "claim": "efsa-objekt: titel, DOI 10.2903/j.efsa.2024.9044, november 2024, ADI 9 mg/kg",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.9044",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flag pregnancy_caution (begrundet i placentapassage)",
+    "source": "https://www.cambridge.org/core/journals/proceedings-of-the-nutrition-society/article/impact-of-nonnutritive-sweeteners-on-fertility-maternal-and-child-health-outcomes-a-review-of-human-and-animal-studies/DFE94AB87E8AFD118CC6A8D757E74978",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E955",
+  "nameDa": "Sucralose",
+  "nameEn": "Sucralose",
+  "category": "Sødemiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Et kaloriefrit, kunstigt sødemiddel fremstillet af sukker, ca. 600 gange sødere end sukker.",
+  "description": "Sucralose er et chloreret derivat af saccharose, hvor tre hydroxylgrupper er erstattet med chloratomer. Det fremstilles i en flertrinsproces ud fra almindeligt sukker. Ændringen gør, at kroppen ikke kan udnytte stoffet som sukker; størstedelen (ca. 65-95 %) optages ikke og udskilles med afføringen. Sucralose har en sukkerlignende smag uden bitter eftersmag og er stabilt over for lys, varme og pH ved normal brug, bl.a. i sure produkter.",
+  "uses": "Light- og zero-læskedrikke, saftevand og drikkepulver, proteindrikke, bordsødemidler, yoghurt, is og tabletter. Tilladt med maksimalniveauer, fx 300 mg/l i energireducerede eller sukkerfri vandbaserede aromatiserede drikkevarer.",
+  "health": "SCF fastsatte i 2000 en ADI på 15 mg/kg legemsvægt/dag, som også er JECFA's ADI, og EFSA's gen-evaluering (2026) fastholdt denne ADI; indtaget ved de nuværende anvendelser ligger under ADI, og EFSA fandt ingen sikkerhedsbekymring. Ved opvarmning over ca. 120 °C nedbrydes og dechloreres sucralose gradvist, og der kan dannes chlorerede forbindelser (fx chlorpropanoler i nærvær af glycerol). Det tyske BfR påpegede i 2019, at det er uklart, hvilke stoffer og mængder der dannes, og EFSA kunne i 2026 af samme grund ikke konkludere om sikkerheden ved brug i bagværk. Undersøgelser af effekter på blodsukker og insulinfølsomhed har givet modstridende resultater.",
+  "research": "EFSA's gen-evaluering (EFSA Journal 2026, DOI 10.2903/j.efsa.2026.9854), som også omfattede en ansøgning om udvidet brug i finere bagværk, fandt ingen bekymring for genotoksicitet af sucralose, dets urenheder og nedbrydningsprodukter og fastholdt ADI på 15 mg/kg; panelet kunne dog ikke konkludere om sikkerheden ved den foreslåede brug i bagværk pga. usikkerhed om dannelse af chlorerede forbindelser under bagning. Schiffman et al. (J Toxicol Environ Health B, 2023) rapporterede, at urenheden sucralose-6-acetat var genotoksisk i laboratorietest, hvilket skabte debat; EFSA vurderede disse screeningsdata som af begrænset relevans. Ramazzini-instituttet rapporterede i 2016 øget forekomst af blodkræft (hæmatopoietiske neoplasier) hos hanmus, men EFSA vurderede i 2017, at studiets konklusioner ikke var underbygget. Effekter på tarmflora og glukoseregulering er undersøgt med modstridende resultater.",
+  "keyReferences": [
+   {
+    "citation": "Schiffman SS, Scholl EH, Furey TS, Nagle HT. Toxicological and pharmacokinetic properties of sucralose-6-acetate and its parent sucralose: in vitro screening assays. J Toxicol Environ Health B Crit Rev. 2023.",
+    "searchTitle": "Toxicological and pharmacokinetic properties of sucralose-6-acetate and its parent sucralose: in vitro screening assays"
+   }
+  ],
+  "pubmedTerm": "sucralose",
+  "flags": [],
+  "classes": [
+   "sweetener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of sucralose (E 955) as a food additive and evaluation of a new application on extension of use of sucralose (E 955) in fine bakery wares",
+   "url": "https://doi.org/10.2903/j.efsa.2026.9854",
+   "date": "2026-02-17",
+   "adi": "15 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2026.9854",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12911467/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC12911443/",
+    "https://www.food-safety.com/articles/11145-eu-maintains-current-stance-on-safety-of-sucralose-after-reevaluation",
+    "https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/sucralose",
+    "https://www.sciencedirect.com/topics/food-science/sucralose",
+    "https://en.wikipedia.org/wiki/Sucralose",
+    "https://ec.europa.eu/food/fs/sc/scf/out68_en.pdf",
+    "https://www.bfr.bund.de/en/notification/sucralose-heating-above-120c-can-produce-substances-that-are-harmful-to-health/",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32016R1776",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4784",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC7010144/",
+    "https://www.tandfonline.com/doi/full/10.1080/10937404.2023.2213903",
+    "https://pubmed.ncbi.nlm.nih.gov/37246822/",
+    "https://www.mdpi.com/1422-0067/27/18/8377",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8880058/"
+   ],
+   "notes": "Bekræftet: kemi, ca. 600x sødme, udskillelse med fæces, smag/stabilitet, 300 mg/l, SCF 2000/JECFA ADI 15, EFSA 2026 (ADI fastholdt, ingen genotoksicitetsbekymring, indtag under ADI), BfR 2019 om opvarmning >120 °C, Schiffman 2023, Ramazzini 2016/EFSA 2017, modstridende tarmflora-/glukosedata. Rettet/tilføjet: EFSA kunne ikke konkludere om brug i finere bagværk (chlorerede forbindelser); 'energireducerede' fjernet fra bagværksansøgningen; 'påvirker ikke blodsukkeret' erstattet med modstridende evidens; EFSA's vurdering af sucralose-6-acetat-data tilføjet. Fjernet: proteinbarer, slik/tyggegummi, desserter og bagværk som anvendelser samt 'ingen særlige risikogrupper'. Wiley/EFSA/PMC kunne ikke hentes direkte – bekræftet via søgeresultater."
+  },
+  "wikipedia": "",
+  "wikidata": "Q410209",
+  "claims": [
+   {
+    "claim": "Kaloriefrit kunstigt sødemiddel fremstillet af sukker, ca. 600 gange sødere",
+    "source": "https://en.wikipedia.org/wiki/Sucralose",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tre hydroxylgrupper erstattet af chlor",
+    "source": "https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/sucralose",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flertrinsproces ud fra saccharose",
+    "source": "https://en.wikipedia.org/wiki/Sucralose",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Størstedelen (65-95 %) udskilles med afføringen",
+    "source": "https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/sucralose",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Sukkerlignende smag uden bitter eftersmag; stabil over for varme og pH",
+    "source": "https://www.sciencedirect.com/topics/food-science/sucralose",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendelser: læskedrikke, drikkepulver, proteindrikke, bordsødemidler, yoghurt, is, tabletter",
+    "source": "https://www.sciencedirect.com/topics/food-science/sucralose",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Proteinbarer', 'sukkerfri slik og tyggegummi', 'desserter' og 'nogle bagværk' som anvendelser (brug i finere bagværk er netop ikke godkendt af EFSA)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12911467/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "300 mg/l i energireducerede/sukkerfri vandbaserede aromatiserede drikkevarer",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32016R1776",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "SCF 2000 ADI 15 mg/kg; JECFA ADI 15 mg/kg",
+    "source": "https://ec.europa.eu/food/fs/sc/scf/out68_en.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2026 fastholdt ADI 15; indtag under ADI, ingen sikkerhedsbekymring ved nuværende brug",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12911467/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Påvirker ikke blodsukkeret direkte' – erstattet af modstridende forskningsresultater",
+    "source": "https://www.mdpi.com/1422-0067/27/18/8377",
+    "result": "rettet"
+   },
+   {
+    "claim": "Opvarmning over 120 °C: dechlorering og chlorerede forbindelser (chlorpropanoler med glycerol); BfR 2019: uafklaret",
+    "source": "https://www.bfr.bund.de/en/notification/sucralose-heating-above-120c-can-produce-substances-that-are-harmful-to-health/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2026 kunne ikke konkludere om sikkerhed ved brug i finere bagværk (tilføjet)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12911467/",
+    "result": "rettet"
+   },
+   {
+    "claim": "'Ingen kendte særlige risikogrupper'",
+    "source": "ingen kilde fundet",
+    "result": "fjernet"
+   },
+   {
+    "claim": "'Energireducerede' finere bagværk i ansøgningen – ikke bekræftet, ændret til 'finere bagværk'",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12911467/",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA 2026: ingen genotoksicitetsbekymring for sucralose, urenheder og nedbrydningsprodukter",
+    "source": "https://www.food-safety.com/articles/11145-eu-maintains-current-stance-on-safety-of-sucralose-after-reevaluation",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Schiffman et al. 2023: sucralose-6-acetat genotoksisk in vitro",
+    "source": "https://www.tandfonline.com/doi/full/10.1080/10937404.2023.2213903",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ramazzini 2016 (Soffritti) hæmatopoietiske neoplasier hos hanmus; EFSA 2017: konklusioner ikke underbygget",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4784",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Modstridende resultater om tarmflora og glukoseregulering",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8880058/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "efsa-objekt: titel, DOI 10.2903/j.efsa.2026.9854, februar 2026, ADI 15 mg/kg",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12911467/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E957",
+  "nameDa": "Thaumatin",
+  "nameEn": "Thaumatin",
+  "category": "Sødemiddel / smagsforstærker",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Et naturligt sødt protein fra en vestafrikansk frugt, ca. 1600-3000 gange sødere end sukker.",
+  "description": "Thaumatin består hovedsageligt af de søde proteiner thaumatin I og II og udvindes ved sur vandig ekstraktion (pH 2,5-4) af arillerne (frøkapperne) i frugten fra katemfe-planten (Thaumatococcus daniellii) fra Vestafrika. Sødmen kommer langsomt og varer længe, med en lakridsagtig eftersmag. Som protein fordøjes thaumatin ligesom andre proteiner. Under sødmetærsklen virker det som smagsforstærker og maskerer bitter og metallisk bismag.",
+  "uses": "Sukkerfrit tyggegummi, sukkervarer, desserter, visse drikkevarer, kosttilskud og i blandinger med andre sødemidler for at forbedre smagen. Tilladt i EU som sødemiddel og smagsforstærker med maksimalniveauer i specifikke kategorier.",
+  "health": "Thaumatin anses for sikkert, fordi det fordøjes som andre proteiner. JECFA (1985) og EFSA (2021) har fastsat ADI 'not specified'. EFSA vurderede, at allergi ved indtagelse er usandsynlig ud fra dyreforsøg (menneskedata var utilstrækkelige til en konklusion), mens allergi ved indånding er mulig: bl.a. fik arbejdere på en tyggegummifabrik, der indåndede thaumatinholdigt pulver, allergisk snue. Dette anses ikke for relevant for indtag via kosten.",
+  "research": "EFSA's gen-evaluering (EFSA Journal 2021, DOI 10.2903/j.efsa.2021.6884) konkluderede, at der ikke er behov for en numerisk ADI, og at thaumatin ikke giver anledning til sikkerhedsbekymring (sikkerhedsmargin 5.417, anset for undervurderet); panelet anbefalede skærpede specifikationer (bl.a. minimumsindhold af thaumatin I og II, mikrobiologiske grænser og lavere/nye grænser for arsen, kviksølv og cadmium). EFSA vurderede desuden i 2015 sikkerheden ved en udvidet anvendelse. Forskningen fokuserer på proteinets binding til sødmereceptoren (T1R2/T1R3) samt på rekombinant produktion i mikroorganismer som gæren Pichia pastoris.",
+  "keyReferences": [],
+  "pubmedTerm": "thaumatin",
+  "flags": [
+   "allergen"
+  ],
+  "classes": [
+   "sweetener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of thaumatin (E 957) as food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2021.6884",
+   "date": "2021-11",
+   "adi": "not specified",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2021.6884",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8630604/",
+    "https://iris.hi.is/ws/files/45081682/EFSA_Journal_2021_Re_evaluation_of_thaumatin_E_957_as_food_additive.pdf",
+    "https://www.traceone.com/resources/plm-compliance-blog/eu-re-evaluates-thaumatin-e-957-as-a-food-additive",
+    "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/thaumatococcus-daniellii",
+    "https://www.sciencedirect.com/topics/nursing-and-health-professions/thaumatin",
+    "https://www.inchem.org/documents/jecfa/jecmono/v20je15.htm",
+    "https://www.sweeteners.org/wp-content/uploads/2020/09/thaumatin-fact-sheet_2015.pdf",
+    "https://pubmed.ncbi.nlm.nih.gov/28543634/",
+    "https://efsa.onlinelibrary.wiley.com/doi/pdf/10.2903/j.efsa.2015.4290",
+    "https://www.foodnavigator.com/Article/2015/12/01/EFSA-gives-green-light-to-new-applications-for-thaumatin/",
+    "https://www.sciencedirect.com/science/article/abs/pii/S0006291X11002555",
+    "https://analyticalsciencejournals.onlinelibrary.wiley.com/doi/abs/10.1002/bit.10786"
+   ],
+   "notes": "Bekræftet: oprindelse, proteinsammensætning, smagsprofil, fordøjelse, smagsforstærker/maskering, anvendelser, JECFA 1985 og EFSA 2021 ADI not specified, specifikationsanbefalinger, EFSA 2015-udtalelse, T1R2/T1R3 og rekombinant produktion. Rettet: 'frøkapsler' → arillerne (sur vandig ekstraktion pH 2,5-4); sødekraft 2000-3000 → ca. 1600-3000; sikkerhedsmargin præciseret til 5.417; allergiafsnit omformuleret efter EFSA 2021 (oral allergi usandsynlig ud fra dyreforsøg, inhalation mulig, ikke relevant for kosten); 'relativt lave' maksimalniveauer fjernet. Wiley/PMC kunne ikke hentes direkte – bekræftet via søgeresultater."
+  },
+  "wikipedia": "",
+  "wikidata": "Q414048",
+  "claims": [
+   {
+    "claim": "Sødt protein (thaumatin I og II) fra Thaumatococcus daniellii, Vestafrika",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8630604/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Udvindes ved vandig ekstraktion – 'frøkapslerne' rettet til arillerne (frøkapperne), sur ekstraktion pH 2,5-4",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8630604/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Sødekraft 2000-3000 rettet til ca. 1600-3000 gange",
+    "source": "https://www.sciencedirect.com/topics/nursing-and-health-professions/thaumatin",
+    "result": "rettet"
+   },
+   {
+    "claim": "Langsom, langvarig sødme med lakridsagtig eftersmag",
+    "source": "https://www.sciencedirect.com/topics/nursing-and-health-professions/thaumatin",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fordøjes som andre proteiner",
+    "source": "https://www.sciencedirect.com/topics/nursing-and-health-professions/thaumatin",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Smagsforstærker og maskerer bitter/metallisk smag",
+    "source": "https://www.sciencedirect.com/topics/nursing-and-health-professions/thaumatin",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kategori sødemiddel og smagsforstærker i EU",
+    "source": "https://www.sweeteners.org/wp-content/uploads/2020/09/thaumatin-fact-sheet_2015.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendelser: tyggegummi, sukkervarer, desserter, drikkevarer, kosttilskud",
+    "source": "https://www.sweeteners.org/wp-content/uploads/2020/09/thaumatin-fact-sheet_2015.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Maksimalniveauer i specifikke kategorier ('relativt lave' fjernet)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/pdf/10.2903/j.efsa.2015.4290",
+    "result": "rettet"
+   },
+   {
+    "claim": "JECFA (1985) ADI 'not specified'",
+    "source": "https://www.inchem.org/documents/jecfa/jecmono/v20je15.htm",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2021: ingen numerisk ADI nødvendig",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8630604/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Allergi ved indtagelse usandsynlig (dyreforsøg), ved indånding mulig; ikke relevant for kost (omformuleret efter EFSA)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8630604/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Erhvervsmæssig sensibilisering ved indånding (tyggegummifabrik)",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/28543634/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Sikkerhedsmargin > 5.000 præciseret til 5.417 (undervurderet)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8630604/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Anbefalede skærpede specifikationer (thaumatin I+II, mikrobiologi, arsen, kviksølv, cadmium)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8630604/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2015 vurderede udvidet anvendelse",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/pdf/10.2903/j.efsa.2015.4290",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Forskning i binding til T1R2/T1R3",
+    "source": "https://www.sciencedirect.com/science/article/abs/pii/S0006291X11002555",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Rekombinant produktion i mikroorganismer (Pichia pastoris)",
+    "source": "https://analyticalsciencejournals.onlinelibrary.wiley.com/doi/abs/10.1002/bit.10786",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "efsa-objekt: titel, DOI 10.2903/j.efsa.2021.6884, november 2021, ADI not specified",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8630604/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flag allergen (inhalationsallergi dokumenteret)",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/28543634/",
+    "result": "bekræftet"
+   }
+  ]
+ }
+]
