@@ -1,0 +1,1332 @@
+[
+ {
+  "code": "E1103",
+  "nameDa": "Invertase",
+  "nameEn": "Invertase",
+  "category": "Stabilisator (enzym)",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Et enzym, der spalter sukker (saccharose) til glucose og fructose. Det bruges til at holde fyld blødt i fx chokolader.",
+  "description": "Invertase (β-fructofuranosidase) udvindes typisk fra gær (Saccharomyces cerevisiae). Enzymet hydrolyserer saccharose til invertsukker, en blanding af glucose og fructose, som er sødere og mindre tilbøjelig til at krystallisere. I konfekture tilsættes det til fyld, så det over dage og uger bliver blødt og flydende inde i chokoladeovertrækket. Det er et af de få enzymer med E-nummer i EU's liste over tilsætningsstoffer.",
+  "uses": "Chokolader med flydende fyld (fx cherry-fyld og fondantfyldte konfekter), marcipan, fondant og visse sirupper. Tilladt quantum satis i de relevante kategorier.",
+  "health": "Invertase anses for sikkert og har ingen fastsat ADI ('not specified'). Enzymet er et protein fra gær, og allergi er meget sjælden. Det nedbryder sukker, men produktets sukkerindhold og energi ændres ikke nævneværdigt. Der er ingen kendte særlige risikogrupper.",
+  "research": "Invertase har lang historik i fødevareproduktion og er ikke forbundet med sikkerhedsproblemer. Stoffet er ikke gen-evalueret som tilsætningsstof, men EFSA's panel for fødevareenzymer har de senere år vurderet flere β-fructofuranosidase-præparater (bl.a. fra ikke-genmodificeret Saccharomyces cerevisiae, 2024) og fundet, at de ikke giver anledning til sikkerhedsbekymring under de tilsigtede anvendelser. Forskningen fokuserer i øvrigt på teknologiske anvendelser og produktion af invertsukker.",
+  "keyReferences": [
+   {
+    "citation": "EFSA CEP Panel (2024). Safety evaluation of the food enzyme β-fructofuranosidase from the non-genetically modified Saccharomyces cerevisiae strain CNCM I-3399. EFSA Journal 22:e9128.",
+    "searchTitle": "Safety evaluation of the food enzyme β-fructofuranosidase from the non-genetically modified Saccharomyces cerevisiae strain CNCM I-3399"
+   }
+  ],
+  "pubmedTerm": "invertase",
+  "flags": [],
+  "classes": [
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": null,
+  "wikipedia": "https://en.wikipedia.org/wiki/Invertase",
+  "wikidata": "Q419189",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.9128",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC10897736/"
+   ],
+   "notes": "Godkendt (bilag II). Kemi og brug bekræftet. Tilføjet EFSA's nyere enzymvurderinger af β-fructofuranosidase (2024); ingen gen-evaluering som tilsætningsstof."
+  }
+ },
+ {
+  "code": "E1105",
+  "nameDa": "Lysozym",
+  "nameEn": "Lysozyme",
+  "category": "Konserveringsmiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Et enzym fra hønseæggehvide, som nedbryder bakteriers cellevægge. Det bruges til at forhindre, at modne oste 'blæser'.",
+  "description": "Lysozym er et lille protein, som findes naturligt i æggehvide, tårer, spyt og modermælk. Kommercielt udvindes det fra hønseæggehvide ved ionbytning og krystallisation. Enzymet spalter peptidoglycan i cellevæggen hos grampositive bakterier. I ost hæmmer det især Clostridium tyrobutyricum, hvis sporer ellers giver gasdannelse og revner ('sen blæsning'). Det bruges også i vinproduktion til at kontrollere mælkesyrebakterier.",
+  "uses": "Modnede oste (fx grana padano og andre hårde oste) og vin. I EU tilladt quantum satis i modnet ost og i vin efter vinforordningen.",
+  "health": "Lysozym stammer fra æg, og produkter med stoffet skal derfor mærkes med æg som allergen. Personer med æggeallergi bør undgå det. Der er ikke fastsat en numerisk ADI. For personer uden æggeallergi anses det for helt ufarligt.",
+  "research": "Kommissionen besluttede, at lysozym skal vurderes som fødevareenzym frem for at blive gen-evalueret som tilsætningsstof. EFSA's enzympanel konkluderede i 2023, at lysozym fra hønseæg ikke giver sikkerhedsbekymring under de tilsigtede anvendelser (ost, øl, vin og vineddike), bortset fra kendte allergiske reaktioner: restmængder i de behandlede produkter kan udløse reaktioner hos æggeallergikere. JECFA har tidligere vurderet lysozym som acceptabelt. Lysozym undersøges også som naturligt antimikrobielt middel i andre fødevarer.",
+  "keyReferences": [
+   {
+    "citation": "EFSA CEP Panel (2023). Safety evaluation of the food enzyme lysozyme from hens' eggs. EFSA Journal 21:e07916.",
+    "searchTitle": "Safety evaluation of the food enzyme lysozyme from hens' eggs"
+   }
+  ],
+  "pubmedTerm": "lysozyme",
+  "flags": [
+   "allergen",
+   "animal_origin"
+  ],
+  "classes": [
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Safety evaluation of the food enzyme lysozyme from hens' eggs",
+   "url": "https://doi.org/10.2903/j.efsa.2023.7916",
+   "date": "2023",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Lysozyme",
+  "wikidata": "Q21114915",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.7916",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC10043762/"
+   ],
+   "notes": "Godkendt. Tilføjet EFSA-vurdering 2023 (fødevareenzym) og dens allergikonklusion; research omskrevet."
+  }
+ },
+ {
+  "code": "E1200",
+  "nameDa": "Polydextrose",
+  "nameEn": "Polydextrose",
+  "category": "Fyldstof / fortykningsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Et syntetisk, kalorielet kulhydrat lavet af glucose. Det bruges som fyldstof og kostfiber i fedt- og sukkerreducerede produkter.",
+  "description": "Polydextrose fremstilles ved at opvarme glucose med små mængder sorbitol og citronsyre under vakuum, så glucosemolekylerne sammenkobles tilfældigt til en forgrenet polymer. De usædvanlige bindinger kan ikke nedbrydes af menneskets enzymer, så stoffet giver kun ca. 1 kcal/g og fungerer som opløselige kostfibre. Det er ikke sødt, men giver fylde og tekstur, når sukker eller fedt fjernes. Det er også fugtighedsbevarende og stabiliserende.",
+  "uses": "Sukkerreducerede kager, kiks, is, slik, proteinbarer, drikkevarer med fibre, desserter og slankeprodukter. Tilladt quantum satis i mange kategorier.",
+  "health": "I større mængder (JECFA/SCF angiver en afførende tærskel omkring 90 g/dag, og enkeltdoser på ca. 50 g kan give gener) kan det give luft, oppustethed og afføringsændringer. EFSA's gen-evaluering fra 2021 konkluderede, at en numerisk ADI ikke er nødvendig, og at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser. Det påvirker ikke blodsukkeret nævneværdigt. Personer med IBS kan være følsomme.",
+  "research": "SCF (1990) og JECFA (1987) tildelte polydextrose ADI 'not specified'. EFSA's FAF-panel gen-evaluerede stoffet i 2021 og fandt ingen sikkerhedsbekymring og intet behov for numerisk ADI; panelet anbefalede lavere grænse for bly og nye grænser for arsen, cadmium og kviksølv i specifikationerne. Kliniske studier tyder på, at det virker som prebiotisk fiber og kan øge mæthed og forbedre afføringsmønster. Resultaterne om vægt og appetit er dog blandede og ofte fra producentfinansierede studier.",
+  "keyReferences": [
+   {
+    "citation": "EFSA FAF Panel (2021). Re-evaluation of polydextrose (E 1200) as a food additive. EFSA Journal 19(1):6363.",
+    "searchTitle": "Re-evaluation of polydextrose (E 1200) as a food additive"
+   }
+  ],
+  "pubmedTerm": "polydextrose",
+  "flags": [
+   "laxative"
+  ],
+  "classes": [
+   "humectant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of polydextrose (E 1200) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2021.6363",
+   "date": "2021",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q424616",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2021.6363",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7792022/"
+   ],
+   "notes": "Fjernet påstand om EU-krav om afføringsadvarsel (polydextrose står ikke i mærkningsforordningens bilag III); tilføjet EFSA-gen-evaluering 2021."
+  }
+ },
+ {
+  "code": "E1201",
+  "nameDa": "Polyvinylpyrrolidon",
+  "nameEn": "Polyvinylpyrrolidone",
+  "category": "Stabilisator / bærestof",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En syntetisk, vandopløselig polymer (povidon), der bruges i kosttilskud og tabletter som bindemiddel.",
+  "description": "Polyvinylpyrrolidon (PVP, povidon) fremstilles ved polymerisering af N-vinylpyrrolidon. Den er opløselig i vand og danner film og klæber tabletter sammen. I fødevarer bruges den primært som bindemiddel og stabilisator i tabletter og kapsler. Den anvendes også i lægemidler og tidligere som klaringsmiddel. Molekylerne optages stort set ikke fra tarmen.",
+  "uses": "Kosttilskud i tablet- og kapselform samt sødemiddeltabletter; tilladt quantum satis i kosttilskud. Bruges ikke i almindelige dagligvarer i nævneværdigt omfang.",
+  "health": "PVP optages kun minimalt og har meget lav toksicitet. JECFA har fastsat en ADI på 0-50 mg/kg legemsvægt/dag. Sjældne tilfælde af allergi over for povidon er beskrevet, primært fra lægemidler. Indtaget fra kosttilskud er lavt.",
+  "research": "JECFA har vurderet PVP (ADI 0-50 mg/kg) og fundet det sikkert ved de anvendte niveauer. EFSA's FAF-panel gen-evaluerede PVP og PVPP i 2020 og konkluderede, at der ikke er sikkerhedsbekymring ved de godkendte anvendelser; samtidig vurderedes en udvidelse af brugen af PVP til fødevarer til særlige medicinske formål. Forskningen er primært farmaceutisk.",
+  "keyReferences": [
+   {
+    "citation": "EFSA FAF Panel (2020). Re-evaluation of polyvinylpyrrolidone (E 1201) and polyvinylpolypyrrolidone (E 1202) as food additives and extension of use of polyvinylpyrrolidone (E 1201). EFSA Journal 18(8):6215.",
+    "searchTitle": "Re-evaluation of polyvinylpyrrolidone (E 1201) and polyvinylpolypyrrolidone (E 1202) as food additives"
+   }
+  ],
+  "pubmedTerm": "povidone",
+  "flags": [],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of polyvinylpyrrolidone (E 1201) and polyvinylpolypyrrolidone (E 1202) as food additives and extension of use of polyvinylpyrrolidone (E 1201)",
+   "url": "https://doi.org/10.2903/j.efsa.2020.6215",
+   "date": "2020-08-10",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q413433",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6215",
+    "https://pubmed.ncbi.nlm.nih.gov/32788942/"
+   ],
+   "notes": "Tilføjet EFSA-gen-evaluering 2020 (ingen bekymring); vag formulering om EFSA erstattet."
+  }
+ },
+ {
+  "code": "E1202",
+  "nameDa": "Polyvinylpolypyrrolidon",
+  "nameEn": "Polyvinylpolypyrrolidone",
+  "category": "Stabilisator / klaringsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En uopløselig, tværbundet form af PVP (crospovidon), som bruges i tabletter og til at klare øl og vin.",
+  "description": "Polyvinylpolypyrrolidon (PVPP, crospovidon) fremstilles ved polymerisering af N-vinylpyrrolidon under betingelser, der giver en tværbundet, vanduopløselig polymer. Den binder polyphenoler (garvestoffer), så den kan fjerne uklarhed i øl, vin og saft og derefter filtreres fra. I tabletter sveller den i vand og får tabletten til at gå i opløsning. Den optages ikke fra tarmen.",
+  "uses": "Kosttilskud i tabletform samt som teknisk hjælpestof ved klaring af øl, vin og frugtsaft (hvor den filtreres fra). Tilladt quantum satis i kosttilskud.",
+  "health": "Stoffet optages ikke og udskilles uændret; toksiciteten er meget lav. JECFA har ikke fundet behov for en begrænsende ADI. Der er ikke kendte risikogrupper. Rester i drikkevarer er ubetydelige efter filtrering.",
+  "research": "PVPP er tidligere vurderet af JECFA og SCF uden sikkerhedsbekymringer. EFSA's FAF-panel gen-evaluerede PVP og PVPP samlet i 2020 og fandt ingen sikkerhedsbekymring ved de godkendte anvendelser. Forskningen handler overvejende om teknologisk anvendelse i bryggeri og farmaci.",
+  "keyReferences": [
+   {
+    "citation": "EFSA FAF Panel (2020). Re-evaluation of polyvinylpyrrolidone (E 1201) and polyvinylpolypyrrolidone (E 1202) as food additives and extension of use of polyvinylpyrrolidone (E 1201). EFSA Journal 18(8):6215.",
+    "searchTitle": "Re-evaluation of polyvinylpyrrolidone (E 1201) and polyvinylpolypyrrolidone (E 1202) as food additives"
+   }
+  ],
+  "pubmedTerm": "crospovidone",
+  "flags": [],
+  "classes": [
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of polyvinylpyrrolidone (E 1201) and polyvinylpolypyrrolidone (E 1202) as food additives and extension of use of polyvinylpyrrolidone (E 1201)",
+   "url": "https://doi.org/10.2903/j.efsa.2020.6215",
+   "date": "2020-08-10",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q3003746",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6215",
+    "https://pubmed.ncbi.nlm.nih.gov/32788942/"
+   ],
+   "notes": "Tilføjet EFSA-gen-evaluering 2020; fjernet 'ingen nyere studier'."
+  }
+ },
+ {
+  "code": "E1203",
+  "nameDa": "Polyvinylalkohol",
+  "nameEn": "Polyvinyl alcohol",
+  "category": "Filmdannende middel / overtræk",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En syntetisk, vandopløselig polymer, der bruges som filmovertræk på kosttilskudstabletter.",
+  "description": "Polyvinylalkohol (PVA) fremstilles ved hydrolyse af polyvinylacetat, som igen laves ved polymerisering af vinylacetat. Den danner stærke, fleksible film, der beskytter mod fugt og ilt og gør tabletter lettere at synke. PVA optages meget dårligt fra fordøjelseskanalen. Den bruges også bredt i lægemidler og emballage.",
+  "uses": "Filmovertræk på kosttilskud i tablet- og kapselform (maks. 18 g/kg). Ikke tilladt i almindelige fødevarer.",
+  "health": "PVA optages minimalt og har lav toksicitet. EFSA's AFC-panel vurderede i december 2005 (offentliggjort 2006) stoffet sikkert ved brug i kosttilskud, og JECFA har fastsat en ADI på 0-50 mg/kg legemsvægt/dag. Indtaget fra kosttilskud er lavt. Der er ingen kendte særlige risikogrupper.",
+  "research": "EFSA's AFC-panel (vedtaget 2005, EFSA Journal 2006) konkluderede, at PVA som overtræk på kosttilskud ikke giver sikkerhedsbekymring, og JECFA (2003) har fastsat ADI 0-50 mg/kg. Der har været miljødebat om PVA fra fx opvasketabs, men det vedrører ikke fødevaresikkerhed. Forskning i helbredseffekter ved fødevarebrug er begrænset.",
+  "keyReferences": [
+   {
+    "citation": "EFSA AFC Panel (2006). Opinion related to the use of polyvinyl alcohol as a coating agent for food supplements. EFSA Journal 294.",
+    "searchTitle": "polyvinyl alcohol as a coating agent for food supplements EFSA"
+   }
+  ],
+  "pubmedTerm": "polyvinyl alcohol",
+  "flags": [],
+  "classes": [
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Opinion of the AFC Panel related to the use of polyvinyl alcohol as a coating agent for food supplements",
+   "url": "https://doi.org/10.2903/j.efsa.2006.294",
+   "date": "2006",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q146339",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://www.efsa.europa.eu/en/efsajournal/pub/294"
+   ],
+   "notes": "EFSA-udtalelse (vedtaget dec. 2005) bekræftet; efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E1204",
+  "nameDa": "Pullulan",
+  "nameEn": "Pullulan",
+  "category": "Filmdannende middel / fortykningsmiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Et polysaccharid dannet af svampen Aureobasidium pullulans. Det bruges til vegetabilske kapsler og spiselige film.",
+  "description": "Pullulan er en lineær polymer af maltotriose-enheder, som dannes, når svampen Aureobasidium pullulans fermenterer stivelse eller sukker. Efter fermenteringen fjernes cellerne, og pullulan renses og tørres. Det danner klare, stærke og iltbarriere-film, som opløses i vand. Det er et vegetabilsk alternativ til gelatine i kapsler. Pullulan nedbrydes kun langsomt og fungerer delvist som kostfiber.",
+  "uses": "Kapsler og tabletter i kosttilskud, spiselige film (fx mundfriskende strips) og overtræk på konfekture. Tilladt quantum satis i kosttilskud og i visse konfekturer.",
+  "health": "Pullulan har lav toksicitet. EFSA vurderede det i 2004 som sikkert, og EFSA's gen-evaluering fra 2025 konkluderede, at en numerisk ADI ikke er nødvendig, og at der ikke er sikkerhedsbekymring ved nuværende eller foreslåede udvidede anvendelser. Fra ca. 10 g/dag kan der opstå milde maveproblemer som luft, oppustethed og mavekneb, som ved andre svært fordøjelige kulhydratpolymerer. Det er egnet for vegetarer og veganere.",
+  "research": "EFSA's AFC-panel vurderede pullulan (PI-20) i 2004 til kapsler, overtrukne tabletter og spiselige film. I 2025 gen-evaluerede EFSA's FAF-panel stoffet og fandt ingen sikkerhedsbekymring og intet behov for numerisk ADI. Humane forsøg med raske voksne tyder på, at virkningen svarer til andre svært fordøjelige kulhydrater, med milde mave-tarm-gener ved 10 g/dag og derover.",
+  "keyReferences": [
+   {
+    "citation": "EFSA FAF Panel (2025). Re-evaluation of pullulan (E 1204) as a food additive and new application for its extension of use. EFSA Journal 23:e9267.",
+    "searchTitle": "Re-evaluation of pullulan (E 1204) as a food additive"
+   },
+   {
+    "citation": "EFSA AFC Panel (2004). Opinion related to Pullulan PI-20 for use as a new food additive. EFSA Journal 85.",
+    "searchTitle": "Pullulan PI-20 for use as a new food additive"
+   }
+  ],
+  "pubmedTerm": "pullulan",
+  "flags": [],
+  "classes": [
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of pullulan (E 1204) as a food additive and new application for its extension of use",
+   "url": "https://doi.org/10.2903/j.efsa.2025.9267",
+   "date": "2025",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q419779",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2025.9267",
+    "https://www.efsa.europa.eu/en/efsajournal/pub/85"
+   ],
+   "notes": "Tilføjet gen-evaluering 2025; rettet tolerance: milde gener ved ≥10 g/dag (ikke 'god tolerance')."
+  }
+ },
+ {
+  "code": "E1205",
+  "nameDa": "Basisk methacrylat-copolymer",
+  "nameEn": "Basic methacrylate copolymer",
+  "category": "Filmdannende middel / overtræk",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En syntetisk polymer, der bruges som overtræk på kosttilskud i tablet- eller kapselform.",
+  "description": "Basisk methacrylat-copolymer er en polymer af dimethylaminoethylmethacrylat, butylmethacrylat og methylmethacrylat, fremstillet ved polymerisering. Den er opløselig i surt miljø (mavesaft) og bruges som fugtbeskyttende og smagsmaskerende overtræk, så tabletten beskyttes under opbevaring men opløses i maven. Polymeren optages meget dårligt fra tarmen og udskilles stort set uændret med afføringen. Den er udviklet til lægemidler, hvor lignende polymerer har været brugt i årtier, og er derefter godkendt til kosttilskud.",
+  "uses": "Kosttilskud i fast form (tabletter og kapsler); ikke i almindelige fødevarer.",
+  "health": "Stoffet optages kun i meget ringe grad, og toksiciteten er lav. Eksponeringen er begrænset, da stoffet kun må bruges i kosttilskud. Der er ikke beskrevet særlige risikogrupper. Restmonomerer er begrænset af strenge renhedskrav.",
+  "research": "EFSA's ANS-panel vurderede stoffet i 2010 (EFSA Journal 8(2):1513) som glansmiddel i faste kosttilskud og fødevarer til særlige medicinske formål uden sikkerhedsbekymring. I 2016 vurderede EFSA en ændring af specifikationerne (definition og partikelstørrelse, efter skift fra bulk- til opløsningspolymerisering) og konkluderede, at den ikke gav sikkerhedsbekymring. Der foreligger kun dyreforsøg og ingen særskilte humane studier.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2010). Scientific Opinion on the use of Basic Methacrylate Copolymer as a food additive. EFSA Journal 8(2):1513.",
+    "searchTitle": "Scientific Opinion on the use of Basic Methacrylate Copolymer as a food additive"
+   },
+   {
+    "citation": "EFSA ANS Panel (2016). Safety of the proposed amendment of the specifications for basic methacrylate copolymer (E 1205) as a food additive. EFSA Journal 14(5):4490.",
+    "searchTitle": "amendment of the specifications for basic methacrylate copolymer (E 1205)"
+   }
+  ],
+  "pubmedTerm": "basic butylated methacrylate copolymer",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Safety of the proposed amendment of the specifications for basic methacrylate copolymer (E 1205) as a food additive",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2016.4490",
+   "date": "2016-05-27",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q18967186",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.efsa.europa.eu/en/efsajournal/pub/1513",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2016.4490"
+   ],
+   "notes": "Rettet 2016-ændringens indhold (definition og partikelstørrelse, ikke restopløsningsmidler)."
+  }
+ },
+ {
+  "code": "E1206",
+  "nameDa": "Neutral methacrylat-copolymer",
+  "nameEn": "Neutral methacrylate copolymer",
+  "category": "Filmdannende middel / overtræk",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En syntetisk polymer, der bruges som overtræk på kosttilskud i tablet- eller kapselform.",
+  "description": "Neutral methacrylat-copolymer er en polymer af ethylacrylat og methylmethacrylat uden ioniske grupper. Den er uopløselig i vand ved alle pH-værdier men gennemtrængelig, og bruges derfor til overtræk, der styrer frigivelsen af indholdet over tid. Polymeren optages meget dårligt fra tarmen og udskilles stort set uændret med afføringen. Den er udviklet til lægemidler, hvor lignende polymerer har været brugt i årtier, og er derefter godkendt til kosttilskud.",
+  "uses": "Kosttilskud i tabletter og kapsler (overtræk med forsinket eller langsom frigivelse). Ikke tilladt i almindelige fødevarer.",
+  "health": "Stoffet optages kun i meget ringe grad, og toksiciteten er lav. Eksponeringen er begrænset, da stoffet kun må bruges i kosttilskud. Der er ikke beskrevet særlige risikogrupper. Restmonomerer er begrænset af strenge renhedskrav.",
+  "research": "EFSA's ANS-panel vurderede neutral methacrylat-copolymer i 2010 (EFSA Journal 8(7):1655) som glansmiddel i faste kosttilskud og fødevarer til særlige medicinske formål. Studier af optagelse, akut og subkronisk toksicitet, genotoksicitet og fosterudvikling viste, at stoffet praktisk talt ikke optages; der forelå ikke langtids- eller reproduktionsstudier. Der er ingen kendte helbredsbekymringer, men uafhængig forskning er sparsom.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2010). Scientific Opinion on the safety of neutral methacrylate copolymer for the proposed uses as a food additive. EFSA Journal 8(7):1655.",
+    "searchTitle": "safety of neutral methacrylate copolymer for the proposed uses as a food additive"
+   }
+  ],
+  "pubmedTerm": "methacrylate copolymer",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the safety of neutral methacrylate copolymer for the proposed uses as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2010.1655",
+   "date": "2010",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1655"
+   ],
+   "notes": "EFSA 2010 bekræftet; præciseret datagrundlag, efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E1207",
+  "nameDa": "Anionisk methacrylat-copolymer",
+  "nameEn": "Anionic methacrylate copolymer",
+  "category": "Filmdannende middel / overtræk",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En syntetisk polymer, der bruges som overtræk på kosttilskud i tablet- eller kapselform.",
+  "description": "Anionisk methacrylat-copolymer er en polymer af methacrylsyre, methylacrylat og methylmethacrylat. Den har sure grupper, så den er uopløselig i mavesyre men opløses i det mindre sure miljø i tarmen; den bruges til enterisk (mavesaftresistent) overtræk. Polymeren optages meget dårligt fra tarmen og udskilles stort set uændret med afføringen. Den er udviklet til lægemidler, hvor lignende polymerer har været brugt i årtier, og er derefter godkendt til kosttilskud.",
+  "uses": "Kosttilskud i form af mavesaftresistente tabletter og kapsler (fx probiotika og visse fiskeolier). Ikke i almindelige fødevarer.",
+  "health": "Stoffet optages kun i meget ringe grad, og toksiciteten er lav. Eksponeringen er begrænset, da stoffet kun må bruges i kosttilskud. Der er ikke beskrevet særlige risikogrupper. Restmonomerer er begrænset af strenge renhedskrav.",
+  "research": "EFSA's ANS-panel vurderede stoffet i 2010 (EFSA Journal 8(7):1656) som overtræk til faste kosttilskud og konkluderede, at brugen i kosttilskud ikke giver sikkerhedsbekymring. Stoffet optages praktisk talt ikke, og eventuelle spormængder ophobes ikke i vævet. Der er ingen kendte helbredsbekymringer, men data fra uafhængige studier er begrænsede.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2010). Scientific Opinion on the safety of anionic methacrylate copolymer for the proposed uses as a food additive. EFSA Journal 8(7):1656.",
+    "searchTitle": "safety of anionic methacrylate copolymer for the proposed uses as a food additive"
+   }
+  ],
+  "pubmedTerm": "methacrylic acid copolymer",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the safety of anionic methacrylate copolymer for the proposed uses as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2010.1656",
+   "date": "2010",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1656"
+   ],
+   "notes": "EFSA 2010 bekræftet; efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E1208",
+  "nameDa": "Polyvinylpyrrolidon-vinylacetat-copolymer",
+  "nameEn": "Polyvinylpyrrolidone-vinyl acetate copolymer",
+  "category": "Filmdannende middel / overtræk",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En syntetisk polymer, der bruges som overtræk på kosttilskud i tablet- eller kapselform.",
+  "description": "Stoffet (copovidon) er en copolymer af N-vinylpyrrolidon og vinylacetat i forholdet ca. 6:4. Den er vandopløselig og bruges som bindemiddel og filmdanner i tabletter, hvor den giver bedre elasticitet end ren PVP. Polymeren optages meget dårligt fra tarmen og udskilles stort set uændret med afføringen. Den er udviklet til lægemidler, hvor lignende polymerer har været brugt i årtier, og er derefter godkendt til kosttilskud.",
+  "uses": "Kosttilskud i tabletform (bindemiddel og overtræk). Ikke tilladt i almindelige fødevarer.",
+  "health": "Stoffet optages kun i meget ringe grad, og toksiciteten er lav. Eksponeringen er begrænset, da stoffet kun må bruges i kosttilskud. Der er ikke beskrevet særlige risikogrupper. Restmonomerer er begrænset af strenge renhedskrav.",
+  "research": "EFSA's ANS-panel vurderede copovidon i 2010 (EFSA Journal 8(12):1948): stoffet optages dårligt og udskilles stort set intakt; 90-dages, 24-måneders (rotter) og 52-ugers (hunde) studier viste ingen skadelige effekter ved højeste dosis. Brugen som binde-/overtræksmiddel i faste kosttilskud blev vurderet ikke at give sikkerhedsbekymring. Der er ingen kendte helbredsbekymringer.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2010). Scientific Opinion on the safety of polyvinylpyrrolidone-vinyl acetate copolymer for the proposed uses as a food additive. EFSA Journal 8(12):1948.",
+    "searchTitle": "safety of polyvinylpyrrolidone-vinyl acetate copolymer"
+   }
+  ],
+  "pubmedTerm": "copovidone",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the safety of polyvinylpyrrolidone-vinyl acetate copolymer for the proposed uses as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2010.1948",
+   "date": "2010",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1948",
+    "https://www.efsa.europa.eu/en/efsajournal/pub/1948"
+   ],
+   "notes": "EFSA 2010 bekræftet og uddybet."
+  }
+ },
+ {
+  "code": "E1209",
+  "nameDa": "Polyvinylalkohol-polyethylenglycol-podet copolymer",
+  "nameEn": "Polyvinyl alcohol-polyethylene glycol-graft-co-polymer",
+  "category": "Filmdannende middel / overtræk",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En syntetisk polymer, der bruges som overtræk på kosttilskud i tablet- eller kapselform.",
+  "description": "Stoffet består af en polyethylenglycol-kerne, hvorpå der er podet sidekæder af polyvinylalkohol. Det danner fleksible, hurtigt opløselige film og bruges som overtræk, der opløses straks i maven. Polymeren optages meget dårligt fra tarmen og udskilles stort set uændret med afføringen. Den er udviklet til lægemidler, hvor lignende polymerer har været brugt i årtier, og er derefter godkendt til kosttilskud.",
+  "uses": "Kosttilskud i tablet- og kapselform (hurtigt opløseligt filmovertræk). Ikke i almindelige fødevarer.",
+  "health": "Stoffet optages kun i meget ringe grad, og toksiciteten er lav. Eksponeringen er begrænset, da stoffet kun må bruges i kosttilskud. Der er ikke beskrevet særlige risikogrupper. Restmonomerer er begrænset af strenge renhedskrav.",
+  "research": "EFSA's ANS-panel vurderede stoffet i 2013 (EFSA Journal 11(7):3303) og fandt brugen som filmovertræk på kosttilskud uden sikkerhedsbekymring; polymeren består af ca. 75 % PVA og 25 % PEG og optages ikke. I 2017 vurderede EFSA en ændring af specifikationerne uden at finde bekymring. Der er ingen kendte helbredsbekymringer.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2013). Scientific Opinion on the safety of polyvinyl alcohol-polyethylene glycol-graft-co-polymer as a food additive. EFSA Journal 11(7):3303.",
+    "searchTitle": "safety of polyvinyl alcohol-polyethylene glycol-graft-co-polymer as a food additive"
+   }
+  ],
+  "pubmedTerm": "polyvinyl alcohol-polyethylene glycol graft copolymer",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Safety of the proposed amendment of the specifications for the food additive polyvinyl alcohol-polyethylene glycol-graft-co-polymer (E 1209)",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4865",
+   "date": "2017",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2013.3303",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4865"
+   ],
+   "notes": "EFSA 2013 bekræftet; tilføjet 2017-specifikationsvurdering."
+  }
+ },
+ {
+  "code": "E1210",
+  "nameDa": "Carbomer",
+  "nameEn": "Carbomer",
+  "category": "Filmdannende middel / overtræk",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En syntetisk polymer, der bruges som overtræk på kosttilskud i tablet- eller kapselform.",
+  "description": "Carbomer er en højmolekylær, tværbundet polymer af acrylsyre. Den kan binde store mængder vand og danner geler, og bruges i tabletter til at styre frigivelsen af indholdsstoffer. Polymeren optages meget dårligt fra tarmen og udskilles stort set uændret med afføringen. Den er udviklet til lægemidler, hvor lignende polymerer har været brugt i årtier, og er derefter godkendt til kosttilskud.",
+  "uses": "Kosttilskud i tabletform (styret frigivelse). Kendes ellers bredt fra kosmetik og lægemidler. Ikke i almindelige fødevarer.",
+  "health": "Stoffet optages ikke systemisk og er ikke genotoksisk. EFSA fastsatte i 2021 en ADI på 190 mg/kg legemsvægt/dag. Eksponeringen er begrænset, da stoffet kun må bruges i kosttilskud. Der er ikke beskrevet særlige risikogrupper.",
+  "research": "EFSA's FAF-panel vurderede carbomer som nyt tilsætningsstof i 2021 og fastsatte en ADI på 190 mg/kg legemsvægt/dag (NOAEL 1.500 mg/kg fra et 13-ugers rottestudie, stofspecifik usikkerhedsfaktor 8). Brug i flydende kosttilskud (op til 30.000 mg/kg) og faste kosttilskud (typisk 200.000 mg/kg) blev vurderet uden sikkerhedsbekymring. Carbomer er siden optaget på EU-listen som E 1210 med specifikationer i forordning 231/2012.",
+  "keyReferences": [
+   {
+    "citation": "EFSA FAF Panel (2021). Safety evaluation of crosslinked polyacrylic acid polymers (carbomer) as a new food additive. EFSA Journal 19(8):6693.",
+    "searchTitle": "Safety evaluation of crosslinked polyacrylic acid polymers (carbomer) as a new food additive"
+   }
+  ],
+  "pubmedTerm": "carbomer",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Safety evaluation of crosslinked polyacrylic acid polymers (carbomer) as a new food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2021.6693",
+   "date": "2021",
+   "adi": "190 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2021.6693",
+    "https://pubmed.ncbi.nlm.nih.gov/34400972/"
+   ],
+   "notes": "Tilføjet ADI 190 mg/kg (EFSA 2021) og godkendelse bekræftet; fjernet usikkerhedsforbehold og uspecifik restmonomer-sætning."
+  }
+ },
+ {
+  "code": "E1404",
+  "nameDa": "Oxideret stivelse",
+  "nameEn": "Oxidised starch",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Stivelse, der er behandlet med natriumhypochlorit, så den giver klare, bløde og stabile geler.",
+  "description": "Oxideret stivelse fremstilles ved at behandle stivelse med natriumhypochlorit i basisk miljø, hvorved en del af hydroxylgrupperne omdannes til carboxyl- og carbonylgrupper. Udgangsmaterialet er typisk majs-, kartoffel-, tapioka-, hvede- eller risstivelse. Formålet er at give stivelse bedre egenskaber end naturlig stivelse, fx modstandsdygtighed over for varme, syre, frost eller omrøring. Produktet er et hvidt pulver uden smag, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Supper, saucer, dressinger, færdigretter, desserter og budding, frugtfyld og yoghurt samt panering og belægning på kød og fisk. Tilladt quantum satis i de fleste fødevarer; begrænset i fødevarer til spædbørn.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser, og at en numerisk ADI ikke er nødvendig. Stofferne nedbrydes i vid udstrækning som almindelig stivelse og giver ca. 4 kcal/g, men nogle typer er delvist resistente og virker som kostfiber. Ved meget høje indtag er der rapporteret mild afføringspåvirkning. Stivelse fra hvede kan i princippet indeholde spor af gluten, og kilden skal fremgå, hvis den er fra hvede. Anvendelsen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI og anbefalede strammere specifikationer for urenheder (fx tungmetaller). JECFA har tidligere nået lignende konklusioner. Der er kun få humane studier, primært om tolerance og fordøjelighed.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   }
+  ],
+  "pubmedTerm": "oxidized starch",
+  "flags": [
+   "may_contain_gluten"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q18967259",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4911",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/"
+   ],
+   "notes": "Godkendt; EFSA-gen-evaluering 2017 (DOI) bekræftet og præciseret; efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E1410",
+  "nameDa": "Monostivelsesphosphat",
+  "nameEn": "Monostarch phosphate",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Stivelse, hvor en del af hydroxylgrupperne er forestret med phosphorsyre. Det giver bedre stabilitet ved frysning og optøning.",
+  "description": "Monostivelsesphosphat fremstilles ved at opvarme stivelse med orthophosphorsyre eller natrium-/kaliumphosphater, så enkelte phosphatgrupper bindes til stivelseskæderne. Udgangsmaterialet er typisk majs-, kartoffel-, tapioka-, hvede- eller risstivelse. Formålet er at give stivelse bedre egenskaber end naturlig stivelse, fx modstandsdygtighed over for varme, syre, frost eller omrøring. Produktet er et hvidt pulver uden smag, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Supper, saucer, dressinger, færdigretter, desserter og budding, frugtfyld og yoghurt, frosne færdigretter og instant-produkter. Tilladt quantum satis i de fleste fødevarer.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser, og at en numerisk ADI ikke er nødvendig. Stofferne nedbrydes i vid udstrækning som almindelig stivelse og giver ca. 4 kcal/g, men nogle typer er delvist resistente og virker som kostfiber. Ved meget høje indtag er der rapporteret mild afføringspåvirkning. Stivelse fra hvede kan i princippet indeholde spor af gluten, og kilden skal fremgå, hvis den er fra hvede. Anvendelsen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI og anbefalede strammere specifikationer for urenheder (fx tungmetaller). JECFA har tidligere nået lignende konklusioner. Der er kun få humane studier, primært om tolerance og fordøjelighed.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   }
+  ],
+  "pubmedTerm": "starch phosphate",
+  "flags": [
+   "may_contain_gluten"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q18631008",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4911",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/"
+   ],
+   "notes": "Godkendt; EFSA-gen-evaluering 2017 (DOI) bekræftet og præciseret; efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E1412",
+  "nameDa": "Distivelsesphosphat",
+  "nameEn": "Distarch phosphate",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Stivelse, hvor kæderne er tværbundet med phosphatbroer. Den tåler kogning, syre og omrøring.",
+  "description": "Distivelsesphosphat fremstilles ved at behandle stivelse med natriumtrimetaphosphat eller phosphoroxychlorid, som danner phosphatbroer mellem stivelseskæderne. Udgangsmaterialet er typisk majs-, kartoffel-, tapioka-, hvede- eller risstivelse. Formålet er at give stivelse bedre egenskaber end naturlig stivelse, fx modstandsdygtighed over for varme, syre, frost eller omrøring. Produktet er et hvidt pulver uden smag, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Supper, saucer, dressinger, færdigretter, desserter og budding, frugtfyld og yoghurt, frugtfyld til bagværk og konserves. Tilladt quantum satis i de fleste fødevarer.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser, og at en numerisk ADI ikke er nødvendig. Stofferne nedbrydes i vid udstrækning som almindelig stivelse og giver ca. 4 kcal/g, men nogle typer er delvist resistente og virker som kostfiber. Ved meget høje indtag er der rapporteret mild afføringspåvirkning. Stivelse fra hvede kan i princippet indeholde spor af gluten, og kilden skal fremgå, hvis den er fra hvede. Anvendelsen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI og anbefalede strammere specifikationer for urenheder (fx tungmetaller). JECFA har tidligere nået lignende konklusioner. Der er kun få humane studier, primært om tolerance og fordøjelighed.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   }
+  ],
+  "pubmedTerm": "distarch phosphate",
+  "flags": [
+   "may_contain_gluten"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q18967218",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4911",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/"
+   ],
+   "notes": "Godkendt; EFSA-gen-evaluering 2017 (DOI) bekræftet og præciseret; efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E1413",
+  "nameDa": "Phosphateret distivelsesphosphat",
+  "nameEn": "Phosphated distarch phosphate",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Stivelse, der både er tværbundet med phosphat og har ekstra phosphatgrupper, hvilket gør den meget stabil.",
+  "description": "Phosphateret distivelsesphosphat fremstilles ved en kombination af behandlingerne for E 1410 og E 1412, dvs. både enkelte phosphatestere og phosphatbroer. Udgangsmaterialet er typisk majs-, kartoffel-, tapioka-, hvede- eller risstivelse. Formålet er at give stivelse bedre egenskaber end naturlig stivelse, fx modstandsdygtighed over for varme, syre, frost eller omrøring. Produktet er et hvidt pulver uden smag, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Supper, saucer, dressinger, færdigretter, desserter og budding, frugtfyld og yoghurt, frosne produkter og bageriprodukter. Tilladt quantum satis i de fleste fødevarer.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser, og at en numerisk ADI ikke er nødvendig. Stofferne nedbrydes i vid udstrækning som almindelig stivelse og giver ca. 4 kcal/g, men nogle typer er delvist resistente og virker som kostfiber. Ved meget høje indtag er der rapporteret mild afføringspåvirkning. Stivelse fra hvede kan i princippet indeholde spor af gluten, og kilden skal fremgå, hvis den er fra hvede. Anvendelsen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI og anbefalede strammere specifikationer for urenheder (fx tungmetaller). JECFA har tidligere nået lignende konklusioner. Der er kun få humane studier, primært om tolerance og fordøjelighed.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   }
+  ],
+  "pubmedTerm": "phosphated distarch phosphate",
+  "flags": [
+   "may_contain_gluten"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q7187438",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4911",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/"
+   ],
+   "notes": "Godkendt; EFSA-gen-evaluering 2017 (DOI) bekræftet og præciseret; efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E1414",
+  "nameDa": "Acetyleret distivelsesphosphat",
+  "nameEn": "Acetylated distarch phosphate",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Stivelse, der er både tværbundet med phosphat og acetyleret. Den er en af de mest anvendte modificerede stivelser.",
+  "description": "Acetyleret distivelsesphosphat fremstilles ved at tværbinde stivelse med natriumtrimetaphosphat eller phosphoroxychlorid og forestre den med eddikesyreanhydrid eller vinylacetat. Tværbindingen giver varme- og syrestabilitet, og acetyleringen forhindrer, at gelen bliver grumset eller skiller ved afkøling og frysning. Udgangsmaterialet er typisk majs-, kartoffel-, tapioka-, hvede- eller risstivelse. Formålet er at give stivelse bedre egenskaber end naturlig stivelse, fx modstandsdygtighed over for varme, syre, frost eller omrøring. Produktet er et hvidt pulver uden smag, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Supper, saucer, dressinger, færdigretter, desserter og budding, frugtfyld og yoghurt, ketchup, frugtyoghurt, is og frosne færdigretter. Tilladt quantum satis i de fleste fødevarer.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser, og at en numerisk ADI ikke er nødvendig. Stofferne nedbrydes i vid udstrækning som almindelig stivelse og giver ca. 4 kcal/g, men nogle typer er delvist resistente og virker som kostfiber. Ved meget høje indtag er der rapporteret mild afføringspåvirkning. Stivelse fra hvede kan i princippet indeholde spor af gluten, og kilden skal fremgå, hvis den er fra hvede. Anvendelsen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI og anbefalede strammere specifikationer for urenheder (fx tungmetaller). JECFA har tidligere nået lignende konklusioner. Der er kun få humane studier, primært om tolerance og fordøjelighed.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   }
+  ],
+  "pubmedTerm": "acetylated distarch phosphate",
+  "flags": [
+   "may_contain_gluten"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q18967180",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4911",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/"
+   ],
+   "notes": "Godkendt; EFSA-gen-evaluering 2017 (DOI) bekræftet og præciseret; efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E1420",
+  "nameDa": "Acetyleret stivelse",
+  "nameEn": "Acetylated starch",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Stivelse, hvor en del af hydroxylgrupperne er forestret med eddikesyre. Den giver klare, stabile fortykninger.",
+  "description": "Acetyleret stivelse fremstilles ved at behandle stivelse med eddikesyreanhydrid eller vinylacetat i let basisk miljø, så acetylgrupper bindes til kæderne. Det sænker forklistringstemperaturen og mindsker retrogradering (at stivelsen bliver grumset og vandskiller). Udgangsmaterialet er typisk majs-, kartoffel-, tapioka-, hvede- eller risstivelse. Formålet er at give stivelse bedre egenskaber end naturlig stivelse, fx modstandsdygtighed over for varme, syre, frost eller omrøring. Produktet er et hvidt pulver uden smag, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Supper, saucer, dressinger, færdigretter, desserter og budding, frugtfyld og yoghurt, frosne produkter og nudler. Tilladt quantum satis i de fleste fødevarer.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser, og at en numerisk ADI ikke er nødvendig. Stofferne nedbrydes i vid udstrækning som almindelig stivelse og giver ca. 4 kcal/g, men nogle typer er delvist resistente og virker som kostfiber. Ved meget høje indtag er der rapporteret mild afføringspåvirkning. Stivelse fra hvede kan i princippet indeholde spor af gluten, og kilden skal fremgå, hvis den er fra hvede. Anvendelsen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI og anbefalede strammere specifikationer for urenheder (fx tungmetaller). JECFA har tidligere nået lignende konklusioner. Der er kun få humane studier, primært om tolerance og fordøjelighed.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   }
+  ],
+  "pubmedTerm": "acetylated starch",
+  "flags": [
+   "may_contain_gluten"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q18935684",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4911",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/"
+   ],
+   "notes": "Godkendt; EFSA-gen-evaluering 2017 (DOI) bekræftet og præciseret; efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E1422",
+  "nameDa": "Acetyleret distivelsesadipat",
+  "nameEn": "Acetylated distarch adipate",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Stivelse, der er tværbundet med adipinsyre og acetyleret. Den er meget stabil over for varme, syre og frost.",
+  "description": "Acetyleret distivelsesadipat fremstilles ved at behandle stivelse med adipinsyreanhydrid (tværbinding) og eddikesyreanhydrid (acetylering). Udgangsmaterialet er typisk majs-, kartoffel-, tapioka-, hvede- eller risstivelse. Formålet er at give stivelse bedre egenskaber end naturlig stivelse, fx modstandsdygtighed over for varme, syre, frost eller omrøring. Produktet er et hvidt pulver uden smag, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Supper, saucer, dressinger, færdigretter, desserter og budding, frugtfyld og yoghurt, mayonnaise og dressinger, frugtfyld og frosne retter. Tilladt quantum satis i de fleste fødevarer.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser, og at en numerisk ADI ikke er nødvendig. Stofferne nedbrydes i vid udstrækning som almindelig stivelse og giver ca. 4 kcal/g, men nogle typer er delvist resistente og virker som kostfiber. Ved meget høje indtag er der rapporteret mild afføringspåvirkning. Stivelse fra hvede kan i princippet indeholde spor af gluten, og kilden skal fremgå, hvis den er fra hvede. Anvendelsen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI og anbefalede strammere specifikationer for urenheder (fx tungmetaller). JECFA har tidligere nået lignende konklusioner. Der er kun få humane studier, primært om tolerance og fordøjelighed.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   }
+  ],
+  "pubmedTerm": "acetylated distarch adipate",
+  "flags": [
+   "may_contain_gluten"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q2824457",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4911",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/"
+   ],
+   "notes": "Godkendt; EFSA-gen-evaluering 2017 (DOI) bekræftet og præciseret; efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E1440",
+  "nameDa": "Hydroxypropylstivelse",
+  "nameEn": "Hydroxypropyl starch",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Stivelse behandlet med propylenoxid, så den bliver mere stabil ved frysning og optøning.",
+  "description": "Hydroxypropylstivelse fremstilles ved at lade stivelse reagere med propylenoxid, så der dannes hydroxypropylethergrupper på kæderne. Der er grænser for rester af propylenchlorhydrin i produktet. Udgangsmaterialet er typisk majs-, kartoffel-, tapioka-, hvede- eller risstivelse. Formålet er at give stivelse bedre egenskaber end naturlig stivelse, fx modstandsdygtighed over for varme, syre, frost eller omrøring. Produktet er et hvidt pulver uden smag, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Supper, saucer, dressinger, færdigretter, desserter og budding, frugtfyld og yoghurt, frosne færdigretter og is. Tilladt quantum satis i de fleste fødevarer.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser, og at en numerisk ADI ikke er nødvendig. Stofferne nedbrydes i vid udstrækning som almindelig stivelse og giver ca. 4 kcal/g, men nogle typer er delvist resistente og virker som kostfiber. Ved meget høje indtag er der rapporteret mild afføringspåvirkning. Stivelse fra hvede kan i princippet indeholde spor af gluten, og kilden skal fremgå, hvis den er fra hvede. Anvendelsen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI og anbefalede strammere specifikationer for urenheder (fx tungmetaller). JECFA har tidligere nået lignende konklusioner. Der er kun få humane studier, primært om tolerance og fordøjelighed.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   }
+  ],
+  "pubmedTerm": "hydroxypropyl starch",
+  "flags": [
+   "may_contain_gluten"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q1640437",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4911",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/"
+   ],
+   "notes": "Godkendt; EFSA-gen-evaluering 2017 (DOI) bekræftet og præciseret; efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E1442",
+  "nameDa": "Hydroxypropyl-distivelsesphosphat",
+  "nameEn": "Hydroxypropyl distarch phosphate",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Stivelse, der både er hydroxypropyleret og tværbundet med phosphat. Den er meget udbredt i frosne og syrlige produkter.",
+  "description": "Hydroxypropyl-distivelsesphosphat fremstilles ved at behandle stivelse med propylenoxid og tværbinde den med natriumtrimetaphosphat eller phosphoroxychlorid. Udgangsmaterialet er typisk majs-, kartoffel-, tapioka-, hvede- eller risstivelse. Formålet er at give stivelse bedre egenskaber end naturlig stivelse, fx modstandsdygtighed over for varme, syre, frost eller omrøring. Produktet er et hvidt pulver uden smag, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Supper, saucer, dressinger, færdigretter, desserter og budding, frugtfyld og yoghurt, frosne retter, is og mejeriprodukter. Tilladt quantum satis i de fleste fødevarer.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser, og at en numerisk ADI ikke er nødvendig. Stofferne nedbrydes i vid udstrækning som almindelig stivelse og giver ca. 4 kcal/g, men nogle typer er delvist resistente og virker som kostfiber. Ved meget høje indtag er der rapporteret mild afføringspåvirkning. Stivelse fra hvede kan i princippet indeholde spor af gluten, og kilden skal fremgå, hvis den er fra hvede. Anvendelsen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI og anbefalede strammere specifikationer for urenheder (fx tungmetaller). JECFA har tidligere nået lignende konklusioner. Der er kun få humane studier, primært om tolerance og fordøjelighed.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   }
+  ],
+  "pubmedTerm": "hydroxypropyl distarch phosphate",
+  "flags": [
+   "may_contain_gluten"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q10528966",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4911",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/"
+   ],
+   "notes": "Godkendt; EFSA-gen-evaluering 2017 (DOI) bekræftet og præciseret; efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E1450",
+  "nameDa": "Stivelsesnatriumoctenylsuccinat",
+  "nameEn": "Starch sodium octenyl succinate",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Stivelse gjort fedtbindende med octenylravsyre, så den virker som emulgator. Bruges bl.a. til at indkapsle aromaer og vitaminer.",
+  "description": "Stivelsesnatriumoctenylsuccinat (OSA-stivelse) fremstilles ved at lade stivelse reagere med octenylravsyreanhydrid i basisk miljø. Den fedtelskende octenylgruppe gør stivelsen i stand til at stabilisere olie-i-vand-emulsioner. Udgangsmaterialet er typisk majs-, kartoffel-, tapioka-, hvede- eller risstivelse. Formålet er at give stivelse bedre egenskaber end naturlig stivelse, fx modstandsdygtighed over for varme, syre, frost eller omrøring. Produktet er et hvidt pulver uden smag, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Drikkevareemulsioner (fx sodavand med citrusolie), indkapslede aromaer og vitaminer, dressinger, kosttilskud og visse modermælkserstatninger og babymad (begrænset mængde). Tilladt quantum satis i mange fødevarer.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser, og at en numerisk ADI ikke er nødvendig. Stofferne nedbrydes i vid udstrækning som almindelig stivelse og giver ca. 4 kcal/g, men nogle typer er delvist resistente og virker som kostfiber. Ved meget høje indtag er der rapporteret mild afføringspåvirkning. Stivelse fra hvede kan i princippet indeholde spor af gluten, og kilden skal fremgå, hvis den er fra hvede. Anvendelsen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI og anbefalede strammere specifikationer for urenheder (fx tungmetaller). JECFA har tidligere nået lignende konklusioner. Der er kun få humane studier, primært om tolerance og fordøjelighed. I 2020 vurderede EFSA's FAF-panel desuden E 1450 i mad til spædbørn under 16 uger og fandt ingen indikation af sikkerhedsbekymring ved indtag op til de niveauer, der indgik i de kliniske studier (op til ca. 2.725 mg/kg legemsvægt/dag).",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   },
+   {
+    "citation": "EFSA FAF Panel (2020). Opinion on the re-evaluation of starch sodium octenyl succinate (E 1450) as a food additive in foods for infants below 16 weeks of age and the follow-up of its re-evaluation. EFSA Journal 18:5874.",
+    "searchTitle": "re-evaluation of starch sodium octenyl succinate (E 1450) in foods for infants below 16 weeks"
+   }
+  ],
+  "pubmedTerm": "octenyl succinic anhydride starch",
+  "flags": [
+   "may_contain_gluten"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q18967290",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4911",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.5874"
+   ],
+   "notes": "Tilføjet EFSA 2020-udtalelse om spædbørn <16 uger."
+  }
+ },
+ {
+  "code": "E1451",
+  "nameDa": "Acetyleret oxideret stivelse",
+  "nameEn": "Acetylated oxidised starch",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Stivelse, der både er oxideret og acetyleret. Den bruges især i geléslik.",
+  "description": "Acetyleret oxideret stivelse fremstilles ved at oxidere stivelse med natriumhypochlorit og derefter acetylere den med eddikesyreanhydrid. Udgangsmaterialet er typisk majs-, kartoffel-, tapioka-, hvede- eller risstivelse. Formålet er at give stivelse bedre egenskaber end naturlig stivelse, fx modstandsdygtighed over for varme, syre, frost eller omrøring. Produktet er et hvidt pulver uden smag, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Vingummi og geléslik, desserter og saucer. Tilladt quantum satis i de fleste fødevarer.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser, og at en numerisk ADI ikke er nødvendig. Stofferne nedbrydes i vid udstrækning som almindelig stivelse og giver ca. 4 kcal/g, men nogle typer er delvist resistente og virker som kostfiber. Ved meget høje indtag er der rapporteret mild afføringspåvirkning. Stivelse fra hvede kan i princippet indeholde spor af gluten, og kilden skal fremgå, hvis den er fra hvede. Anvendelsen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI og anbefalede strammere specifikationer for urenheder (fx tungmetaller). JECFA har tidligere nået lignende konklusioner. Der er kun få humane studier, primært om tolerance og fordøjelighed.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   }
+  ],
+  "pubmedTerm": "acetylated oxidized starch",
+  "flags": [
+   "may_contain_gluten"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q2633813",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4911",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/"
+   ],
+   "notes": "Godkendt; EFSA-gen-evaluering 2017 (DOI) bekræftet og præciseret; efsa-objekt tilføjet."
+  }
+ },
+ {
+  "code": "E1452",
+  "nameDa": "Stivelsesaluminiumoctenylsuccinat",
+  "nameEn": "Starch aluminium octenyl succinate",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "OSA-stivelse som aluminiumsalt. Den må kun bruges til at indkapsle vitaminer i kosttilskud.",
+  "description": "Stivelsesaluminiumoctenylsuccinat fremstilles som E 1450, men behandles desuden med aluminiumsulfat, så der dannes et aluminiumsalt, der giver et frit flydende pulver. Udgangsmaterialet er typisk majs-, kartoffel-, tapioka-, hvede- eller risstivelse. Formålet er at give stivelse bedre egenskaber end naturlig stivelse, fx modstandsdygtighed over for varme, syre, frost eller omrøring. Produktet er et hvidt pulver uden smag, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Kun tilladt i indkapslede vitaminpræparater i kosttilskud. Findes ikke i almindelige fødevarer.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser, og at en numerisk ADI ikke er nødvendig. Stofferne nedbrydes i vid udstrækning som almindelig stivelse og giver ca. 4 kcal/g, men nogle typer er delvist resistente og virker som kostfiber. Ved meget høje indtag er der rapporteret mild afføringspåvirkning. Stivelse fra hvede kan i princippet indeholde spor af gluten, og kilden skal fremgå, hvis den er fra hvede. Anvendelsen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser. Stoffet indeholder aluminium, og EFSA har fastsat et tolerabelt ugentligt indtag (TWI) for aluminium på 1 mg/kg legemsvægt; bidraget fra dette stof er dog meget lille. Personer med nedsat nyrefunktion udskiller aluminium dårligere.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI og anbefalede strammere specifikationer for urenheder (fx tungmetaller). JECFA har tidligere nået lignende konklusioner. Der er kun få humane studier, primært om tolerance og fordøjelighed.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   }
+  ],
+  "pubmedTerm": "starch aluminum octenyl succinate",
+  "flags": [
+   "kidney_caution"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q18967287",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4911",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/"
+   ],
+   "notes": "Godkendt; EFSA-gen-evaluering 2017 (DOI) bekræftet og præciseret; efsa-objekt tilføjet. Aluminium-TWI 1 mg/kg/uge (EFSA 2008) bekræftet."
+  }
+ },
+ {
+  "code": "E1505",
+  "nameDa": "Triethylcitrat",
+  "nameEn": "Triethyl citrate",
+  "category": "Bærestof / skumstabilisator",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En ester af citronsyre og ethanol. Den bruges til at stabilisere skum i æggehvide og som bærestof for aromaer.",
+  "description": "Triethylcitrat fremstilles ved forestring af citronsyre med ethanol. Det er en farveløs, næsten lugtfri væske, der er let opløselig i både vand og fedt. I kroppen spaltes den til citronsyre og ethanol, som indgår i det normale stofskifte. Den bruges til at stabilisere skum i tørret æggehvide, som opløsningsmiddel for aromaer og som blødgører i overtræk på tabletter.",
+  "uses": "Tørret æggehvide (quantum satis, skumstabilisator) og som bærestof i aromaer, hvor E 1505, E 1517, E 1518, E 1519 og E 1520 tilsammen højst må udgøre 3.000 mg/kg i den færdige fødevare.",
+  "health": "Triethylcitrat anses for sikkert ved de anvendte niveauer. JECFA har fastsat en ADI på 0-20 mg/kg legemsvægt/dag. Nedbrydningsprodukterne er normale stoffer i kroppen. Der er ingen kendte særlige risikogrupper.",
+  "research": "JECFA fastsatte i 1984 ADI 0-20 mg/kg og fastholdt den i 1999; stoffet vurderes også uden bekymring som aromastof. Stoffet har også været undersøgt som blødgører i plast (som alternativ til phthalater) med lav toksicitet. Der er ikke fundet en offentliggjort EFSA-gen-evaluering af E 1505, og der foreligger ingen nyere væsentlige sikkerhedsspørgsmål.",
+  "keyReferences": [
+   {
+    "citation": "JECFA (1984). Triethyl citrate. WHO Food Additives Series 19.",
+    "searchTitle": "Triethyl citrate WHO Food Additives Series 19"
+   }
+  ],
+  "pubmedTerm": "triethyl citrate",
+  "flags": [],
+  "classes": [
+   "carrier",
+   "emulsifier",
+   "sequestrant",
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": null,
+  "wikipedia": "https://en.wikipedia.org/wiki/Triethyl_citrate",
+  "wikidata": "Q418057",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://inchem.org/documents/jecfa/jecmono/v19je12.htm",
+    "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/3286"
+   ],
+   "notes": "ADI 0-20 (JECFA 1984/1999) bekræftet; anvendelser rettet til bilag II/III (tyggegummi/tabletovertræk kunne ikke bekræftes)."
+  }
+ },
+ {
+  "code": "E1517",
+  "nameDa": "Glyceryldiacetat",
+  "nameEn": "Glyceryl diacetate",
+  "category": "Bærestof",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En ester af glycerol og eddikesyre (diacetin), der bruges som bærestof for aromaer.",
+  "description": "Glyceryldiacetat (diacetin) fremstilles ved forestring af glycerol med eddikesyre, hvorved to af glycerols tre hydroxylgrupper bindes til acetylgrupper. Det er en farveløs, lidt olieagtig væske, der opløser aromastoffer godt. I kroppen spaltes den til glycerol og eddikesyre. Den bruges primært som bærestof.",
+  "uses": "Kun som bærestof i aromaer (bilag III), fx i drikkevarer, slik og bagværk; højst 3.000 mg/kg i den færdige fødevare fra alle kilder, alene eller sammen med E 1505, E 1518, E 1519 og E 1520.",
+  "health": "Stoffet nedbrydes til glycerol og eddikesyre og anses for at have lav toksicitet. Der er ikke fastsat en numerisk ADI, og der er ikke fundet en særskilt EFSA-udtalelse om stoffet. Eksponeringen er meget lav, da stoffet kun bruges i aromaer. Der er ingen kendte særlige risikogrupper.",
+  "research": "Der findes kun sparsom specifik forskning og ingen offentliggjort EFSA-gen-evaluering af E 1517. Sikkerheden understøttes af data for glyceryltriacetat (E 1518) og de enkelte nedbrydningsprodukter.",
+  "keyReferences": [],
+  "pubmedTerm": "diacetin",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": null,
+  "wikipedia": "",
+  "wikidata": "Q904648",
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://data.food.gov.uk/regulated-products/food_authorisations/e-1517",
+    "https://lexparency.org/eu/32008R1333/ANX_III/"
+   ],
+   "notes": "Godkendt i bilag III; brugsgrænse præciseret. Ingen EFSA-udtalelse fundet; 'vurderet uden bekymring' blødt op."
+  }
+ },
+ {
+  "code": "E1518",
+  "nameDa": "Glyceryltriacetat",
+  "nameEn": "Glyceryl triacetate",
+  "category": "Bærestof / fugtighedsbevarende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En ester af glycerol og eddikesyre (triacetin). Den bruges som bærestof for aromaer og i tyggegummi.",
+  "description": "Glyceryltriacetat (triacetin) fremstilles ved at forestre alle tre hydroxylgrupper i glycerol med eddikesyre. Den er en farveløs væske med let bitter smag og er et godt opløsningsmiddel for aromastoffer. I tyggegummi fungerer den som blødgører og fugtighedsbevarende middel. I kroppen spaltes den til glycerol og eddikesyre, som er normale stofskifteprodukter. Den bruges også i cigaretfiltre og lægemidler.",
+  "uses": "Bærestof i aromaer (højst 3.000 mg/kg i færdig fødevare sammen med E 1505, E 1517, E 1519 og E 1520) samt tyggegummi (quantum satis).",
+  "health": "Triacetin har meget lav toksicitet; SCF (1990) og JECFA (1975) tildelte ADI 'not specified', da stoffet hurtigt spaltes til glycerol og eddikesyre. Nedbrydningsprodukterne indgår i normalt stofskifte. Eksponeringen fra fødevarer er lav. Der er ingen kendte særlige risikogrupper.",
+  "research": "SCF's seneste vurdering (1990) og JECFA's (1975) gav ADI 'not specified'. Der er ikke fundet en offentliggjort EFSA-gen-evaluering af E 1518. Triacetin har været undersøgt som energikilde i sondeernæring og i dyreforsøg. Der er ingen kontroverser om brug i fødevarer.",
+  "keyReferences": [],
+  "pubmedTerm": "triacetin",
+  "flags": [],
+  "classes": [
+   "carrier",
+   "emulsifier",
+   "humectant"
+  ],
+  "variants": [],
+  "efsa": null,
+  "wikipedia": "",
+  "wikidata": "Q83253",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://data.food.gov.uk/regulated-products/food_authorisations/e-1518"
+   ],
+   "notes": "Fjernet ubekræftet 'EFSA-gen-evaluering 2016'; ADI not specified tilskrevet SCF 1990/JECFA 1975. Overtræk på kosttilskud fjernet (ikke bekræftet)."
+  }
+ },
+ {
+  "code": "E1519",
+  "nameDa": "Benzylalkohol",
+  "nameEn": "Benzyl alcohol",
+  "category": "Bærestof",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "En aromatisk alkohol med svag, sød duft. Den bruges som bærestof for aromaer i drikkevarer og slik.",
+  "description": "Benzylalkohol findes naturligt i mange frugter, te og æteriske olier (fx jasmin). Industrielt fremstilles den typisk ud fra benzylchlorid eller ved reduktion af benzaldehyd. Den fungerer som opløsningsmiddel for aromaer og har også svag konserverende virkning. I kroppen omdannes den til benzoesyre, der udskilles som hippursyre. Den bruges bredt i lægemidler og kosmetik.",
+  "uses": "Tilladt i EU kun som bærestof i aromaer til bl.a. likører, aromatiserede vine og drikkevarer, konfekture, chokolade og bagværk, med maksimumgrænser i det færdige produkt.",
+  "health": "EFSA's gen-evaluering fra 2019 fastsatte en selvstændig ADI på 4 mg/kg legemsvægt/dag og fandt eksponeringen fra tilsætningsstofbrug langt under (højst ca. 0,8 mg/kg/dag hos småbørn i høj-eksponeringsscenariet). Nyfødte, især for tidligt fødte, kan ikke omsætte stoffet effektivt, og det har i lægemidler forårsaget alvorlig forgiftning ('gasping syndrome'). Stoffet er kendt kontaktallergen i kosmetik. Personer, der reagerer på benzoater, kan være følsomme.",
+  "research": "EFSA's FAF-panel gen-evaluerede benzylalkohol (E 1519) i 2019: lav akut toksicitet, ingen bekymring for genotoksicitet eller kræft, og ADI 4 mg/kg legemsvægt/dag baseret på NOAEL 400 mg/kg fra et kræftstudie i rotter. Gasping syndrome hos præmature spædbørn blev beskrevet i 1980'erne i forbindelse med intravenøse opløsninger med benzylalkohol. Der er ingen tegn på risiko ved de lave mængder i aromaer.",
+  "keyReferences": [
+   {
+    "citation": "EFSA FAF Panel (2019). Re-evaluation of benzyl alcohol (E 1519) as food additive. EFSA Journal 17(10):5876.",
+    "searchTitle": "Re-evaluation of benzyl alcohol (E 1519) as food additive"
+   }
+  ],
+  "pubmedTerm": "benzyl alcohol",
+  "flags": [
+   "children_caution",
+   "allergen"
+  ],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of benzyl alcohol (E 1519) as food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2019.5876",
+   "date": "2019-10-01",
+   "adi": "4 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q52353",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5876",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7008871/"
+   ],
+   "notes": "Væsentlig rettelse: EFSA 2019 fastsatte selvstændig ADI 4 mg/kg; stoffet indgår ikke i benzoat-gruppe-ADI'en."
+  }
+ },
+ {
+  "code": "E1520",
+  "nameDa": "Propan-1,2-diol (propylenglycol)",
+  "nameEn": "Propylene glycol",
+  "category": "Bærestof / fugtighedsbevarende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En syntetisk, farveløs væske, der bruges som opløsningsmiddel og bærestof for aromaer, farvestoffer og emulgatorer.",
+  "description": "Propan-1,2-diol (propylenglycol) fremstilles ved hydrolyse af propylenoxid, som stammer fra petrokemisk propylen; det kan også laves af glycerol. Den er fugtbindende, blandbar med vand og et godt opløsningsmiddel. I kroppen omdannes den til mælkesyre og pyrodruesyre. I fødevarer bruges den primært som bærestof for aromaer, farve- og antioxidanter samt som fugtighedsbevarende middel. Den findes også i e-cigaretvæsker, lægemidler og kosmetik.",
+  "uses": "Bærestof for farvestoffer, emulgatorer og antioxidanter (højst 1.000 mg/kg i den færdige fødevare) og for aromaer (højst 3.000 mg/kg sammen med E 1505, E 1517, E 1518 og E 1519; i drikkevarer højst 1.000 mg/l), i fx drikkevarer, slik, bagværk og is.",
+  "health": "EFSA's gen-evaluering fra 2018 fastsatte en ADI på 25 mg/kg legemsvægt/dag og konkluderede, at eksponeringen ikke overstiger ADI for nogen befolkningsgruppe. Meget høje doser (typisk fra lægemidler) kan give mælkesyreforgiftning og påvirke nervesystemet, især hos nyfødte og personer med nedsat nyre- eller leverfunktion. Stoffet kan give kontakteksem hos følsomme. Katte er særligt følsomme, men det er ikke relevant for mennesker.",
+  "research": "EFSA's ANS-panel gen-evaluerede propan-1,2-diol i 2018 og fastsatte ADI på 25 mg/kg baseret på et toårigt studie i hunde, med den konklusion at der ikke var bekymring for genotoksicitet eller kræft. JECFA har tilsvarende fastsat ADI på 0-25 mg/kg. Der forskes i indånding via e-cigaretter, som er et andet eksponeringsscenarie end fødevarer.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2018). Re-evaluation of propane-1,2-diol (E 1520) as a food additive. EFSA Journal 16(4):5235.",
+    "searchTitle": "Re-evaluation of propane-1,2-diol (E 1520) as a food additive"
+   }
+  ],
+  "pubmedTerm": "propylene glycol",
+  "flags": [
+   "children_caution",
+   "kidney_caution"
+  ],
+  "classes": [
+   "emulsifier",
+   "humectant"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of propane‐1,2‐diol (E 1520) as a food additive",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5235",
+   "date": "2018/04/05",
+   "adi": "25",
+   "overexposureRisk": "en:no"
+  },
+  "wikipedia": "",
+  "wikidata": "Q18967269",
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5235",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009459/"
+   ],
+   "notes": "EFSA 2018 (ADI 25 mg/kg, hundestudie) bekræftet; maks.-niveauer rettet (3.000 mg/kg i tyggegummi kunne ikke bekræftes)."
+  }
+ },
+ {
+  "code": "E1521",
+  "nameDa": "Polyethylenglycol",
+  "nameEn": "Polyethylene glycol",
+  "category": "Overtræk / bærestof",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Syntetiske polymerer af ethylenoxid (PEG), der bruges som overtræk på kosttilskud og som bærestof.",
+  "description": "Polyethylenglycol fremstilles ved polymerisering af ethylenoxid og findes i forskellige kædelængder (fx PEG 6000). Det er vandopløseligt, ikke-giftigt og optages kun ringe fra tarmen, hvor det binder vand. Denne egenskab udnyttes i afføringsmidler (makrogol). I fødevarer bruges det primært som filmovertræk og glansmiddel på kosttilskud og som bærestof for sødestoffer.",
+  "uses": "Overtræk på kosttilskud (quantum satis) og bærestof i sødemiddelpræparater. Findes ikke i almindelige dagligvarer i nævneværdigt omfang.",
+  "health": "PEG har lav toksicitet ved oral indtagelse, fordi det næsten ikke optages; store doser virker afførende. JECFA har fastsat en ADI på 0-10 mg/kg legemsvægt/dag. EFSA's opdaterede eksponeringsvurdering i 2018 bekræftede lav eksponering fra fødevarebrug. Der er beskrevet sjældne, men alvorlige allergiske reaktioner på PEG (fx i lægemidler og mRNA-vacciner), så personer med kendt PEG-allergi bør være opmærksomme.",
+  "research": "EFSA offentliggjorde i 2018 en forfinet eksponeringsvurdering af PEG (E 1521), der viste, at eksponeringen fra tilsætningsstofbrug er lav. PEG-allergi har fået øget opmærksomhed siden 2020 i forbindelse med COVID-19-vacciner. Makrogol er veldokumenteret som sikkert laksantium i kliniske studier.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2018). Refined exposure assessment of polyethylene glycol (E 1521) from its use as a food additive. EFSA Journal 16(6):5293.",
+    "searchTitle": "Refined exposure assessment of polyethylene glycol (E 1521)"
+   }
+  ],
+  "pubmedTerm": "polyethylene glycol",
+  "flags": [
+   "allergen",
+   "laxative"
+  ],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Refined exposure assessment of polyethylene glycol (E 1521) from its use as a food additive",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5293",
+   "date": "2018/06/22",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "wikipedia": "",
+  "wikidata": "Q410083",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5293",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009417/"
+   ],
+   "notes": "EFSA 2018 eksponeringsvurdering og JECFA ADI 0-10 bekræftet."
+  }
+ }
+]
