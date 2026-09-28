@@ -2,6 +2,11 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Kamera — scanningsstribe i stedet for load-cirkel
+
+- `PhotoWorkingOverlay` viser en hvid/lys gradientstribe (`.hf-scan-sweep`),
+  der fejer hen over fotoet, mens det analyseres. Beslutning: DECISIONS 2026-09-28.
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen
