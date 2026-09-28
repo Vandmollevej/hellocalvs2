@@ -1045,7 +1045,7 @@ export function AddProductView({
 
               {(isPending("ingredients") || !!state.product.ingredientsText) && (
                 <div>
-                  <p className="hf-type-body hf-heading mb-2 text-hf-black">{t("createDish.ingredients")}</p>
+                  <p className="hf-type-body mb-2 text-hf-black">{t("createDish.ingredients")}</p>
                   {isPending("ingredients") ? (
                     <div role="status" aria-busy="true" className="flex flex-col gap-2">
                       <span className="sr-only">{t("addProduct.reading")}</span>
