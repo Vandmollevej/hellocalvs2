@@ -4801,3 +4801,4 @@ Registreringer uden produkt (retter/generiske ingredienser) linker til den
 generelle indberetning. Punktlogik i `src/lib/registration-report-points.ts`.
 Trin 1–2 af brugerens nummererede spec kendes ikke i denne session.
 Lint + build grønne; ikke verificeret i browser (ingen database).
+- 2026-09-28 (opgave 40): Admin-brugermenu viser nu "Dansk"/"English" + flag + pil ned i stedet for "DA / EN"-knapperne. Rækken åbner `AdminCountryDialog` (HelloFresh-stil landeliste): fuldskærm på mobil, centreret dialog på desktop. Danmark → DA, øvrige lande → EN; valgt land huskes i localStorage.

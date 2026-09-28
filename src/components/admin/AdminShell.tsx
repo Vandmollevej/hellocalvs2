@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import type { Locale } from "@prisma/client";
 import { t, type AdminI18nKey } from "@/lib/admin-i18n";
+import { AdminCountryDialog, readAdminCountry } from "@/components/admin/AdminCountryDialog";
 
 // Admin-skal efter Cloudflare-dashboardets struktur (docs/DECISIONS.md
 // 2026-09-27): venstre sidebjælke i fuld højde med logo, "Gå til…"-søgning
@@ -484,6 +485,8 @@ function UserMenu({
   onLogout: () => void;
 }) {
   const [open, setOpen] = useState(false);
+  const [countryOpen, setCountryOpen] = useState(false);
+  const [country, setCountry] = useState(locale === "DA" ? "denmark" : "united-kingdom");
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -499,7 +502,10 @@ function UserMenu({
     <div ref={ref} className="relative">
       <button
         type="button"
-        onClick={() => setOpen((value) => !value)}
+        onClick={() => {
+          setCountry(readAdminCountry(locale));
+          setOpen((value) => !value);
+        }}
         aria-expanded={open}
         aria-label={email}
         className="hf-type-body hf-type-strong flex h-8 w-8 items-center justify-center rounded-full bg-hf-green-dark uppercase text-hf-white"
@@ -512,23 +518,18 @@ function UserMenu({
             <p className="hf-type-small text-text-muted">{t(locale, "nav_signed_in_as")}</p>
             <p className="hf-type-body truncate text-hf-black">{email}</p>
           </div>
-          <div className="flex items-center justify-between px-2.5 py-2">
-            <span className="hf-type-body text-text-secondary">DA / EN</span>
-            <div className="hf-type-small flex overflow-hidden rounded-md border border-hf-tan-dark">
-              {(["DA", "EN"] as const).map((option) => (
-                <button
-                  key={option}
-                  type="button"
-                  onClick={() => onLocale(option)}
-                  className={`px-2 py-1 ${
-                    locale === option ? "bg-hf-green-dark text-hf-white" : "text-text-secondary hover:bg-hf-tan"
-                  }`}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+              setCountryOpen(true);
+            }}
+            className="flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left hover:bg-hf-tan"
+          >
+            <span className="hf-type-body flex-1 text-text-secondary">{t(locale, "nav_language_name")}</span>
+            <Image src={`/flags/${country}.png`} alt="" width={24} height={18} className="rounded-[2px]" />
+            <Icon name="chevron" className="h-4 w-4 text-text-secondary" />
+          </button>
           <button
             type="button"
             onClick={onLogout}
@@ -537,6 +538,18 @@ function UserMenu({
             {t(locale, "nav_logout")}
           </button>
         </div>
+      )}
+      {countryOpen && (
+        <AdminCountryDialog
+          locale={locale}
+          selected={country}
+          onClose={() => setCountryOpen(false)}
+          onSelect={(flag, next) => {
+            setCountry(flag);
+            setCountryOpen(false);
+            onLocale(next);
+          }}
+        />
       )}
     </div>
   );
