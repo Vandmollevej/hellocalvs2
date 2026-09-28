@@ -616,6 +616,7 @@
     "retry": "Prøv igen",
     "title": "Tilføj vare",
     "analyzingDefault": "Analyserer billedet...",
+    "labelTextFound": "Næringsindhold eller ingredienser fundet på billedet",
     "readingImage": "Læser billedet...",
     "searchingDatabase": "Søger i databasen...",
     "comparingKnownItems": "Sammenligner med kendte varer...",

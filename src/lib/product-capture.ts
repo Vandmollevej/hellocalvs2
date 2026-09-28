@@ -1,5 +1,7 @@
 import { findIngredientsSection, parseNutritionText, type ParsedNutrition } from "@/lib/product-ocr";
+export type { OcrBox } from "@/lib/product-ocr-prioritized";
 import { extractTextPrioritized, usableOcrText } from "@/lib/product-ocr-prioritized";
+import { findLabelRegions, type LabelRegions } from "@/lib/label-text-regions";
 import type { LanguageSignals } from "@/lib/regions";
 import { scanFlowHeaders } from "@/lib/scan-debug-log";
 
@@ -72,21 +74,52 @@ export async function readFrontPhoto(
   }
 }
 
+export type LabelRead = {
+  text: string;
+  confidence: number;
+  // Hvor næringstabellen/ingredienslisten står på fotoet (grøn ramme), fundet
+  // ud fra linjerne — også når teksten som helhed er for usikker til at bruges.
+  regions: LabelRegions;
+  nutrition: ParsedNutrition | null;
+  ingredientsText: string | null;
+};
+
+// Næring + ingredienser på ét foto. "Ingredienser" (på regionernes sprog)
+// tæller som fundet, selv om listen ikke kan læses lokalt — så læser
+// OpenAI den fra samme foto (docs/DECISIONS.md 2026-09-28).
+async function readLabel(photo: string, languages: string[], tableLayout: boolean): Promise<LabelRead> {
+  try {
+    const result = await extractTextPrioritized(photo, languages, undefined, { tableLayout, layout: true });
+    const text = usableOcrText(result);
+    return {
+      text,
+      confidence: text ? result.confidence : 0,
+      regions: findLabelRegions(result.lines),
+      nutrition: text ? parseNutritionText(text) : null,
+      ingredientsText: text ? findIngredientsSection(text) : null,
+    };
+  } catch {
+    return { text: "", confidence: 0, regions: { nutrition: null, ingredients: null }, nutrition: null, ingredientsText: null };
+  }
+}
+
 // Energi: næringstabellen læses lokalt; står ingredienslisten ved siden af,
 // er indholds-trinnet også klaret.
-export async function readNutritionPhoto(photo: string, languages: string[]) {
-  const { text, confidence } = await ocr(photo, languages, true);
-  return {
-    text,
-    confidence,
-    nutrition: text ? parseNutritionText(text) : null,
-    ingredientsText: text ? findIngredientsSection(text) : null,
-  };
+export function readNutritionPhoto(photo: string, languages: string[]) {
+  return readLabel(photo, languages, true);
+}
+
+// Stregkodefotoet: står næringstabellen og/eller ingredienslisten ved
+// stregkoden, klares de trin med samme foto. Et helt kamerabillede med
+// baggrund læses med tesseracts almindelige segmentering. Kører i
+// baggrunden, mens brugeren fotograferer forsiden.
+export function readBarcodePhoto(photo: string, languages: string[]) {
+  return readLabel(photo, languages, false);
 }
 
 export async function readIngredientsPhoto(photo: string, languages: string[]) {
-  const { text, confidence } = await ocr(photo, languages, true);
-  return { text, confidence, ingredientsText: text ? (findIngredientsSection(text) ?? "") : "" };
+  const result = await readLabel(photo, languages, true);
+  return { ...result, ingredientsText: result.ingredientsText ?? "" };
 }
 
 // Stregkode-fotoet gemmes i baggrunden til kvalitetskontrol
