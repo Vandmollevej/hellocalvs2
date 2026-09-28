@@ -90,18 +90,18 @@ function LogIndContent() {
       </div>
 
       <form id="login-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-4 pt-4">
-        <p className="hf-type-body">{t("login.chooseCountry")}</p>
-        <div className="mt-2 h-px bg-hf-gray-border" />
-        <Link
-          href="/login/country"
-          className="hf-control-row flex items-center justify-between border-b border-hf-gray-border"
-        >
-          <div className="hf-type-body flex items-center gap-3">
+        <div className="flex items-center justify-between">
+          <p className="hf-type-body">{t("login.chooseCountry")}</p>
+          <Link
+            href="/login/country"
+            aria-label={t(`country.countries.${country.key}`)}
+            className="hf-type-body inline-flex min-h-[44px] items-center gap-2 rounded-full border border-hf-gray-border px-3"
+          >
             <Image src={`/flags/${country.flag}.png`} alt="" width={22} height={16} className="rounded-[2px]" />
-            <span>{t(`country.countries.${country.key}`)}</span>
-          </div>
-          <HfChevron className="text-text-muted" />
-        </Link>
+            <span className="font-semibold">{country.code}</span>
+            <HfChevron className="text-text-muted" />
+          </Link>
+        </div>
 
         <div className="mt-8 flex flex-col gap-4">
           {faceIdOnDevice && (
