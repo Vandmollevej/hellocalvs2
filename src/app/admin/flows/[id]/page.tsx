@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { requireAdminUser } from "@/lib/require-admin";
 import { getFlow } from "@/lib/flows";
 import { FlowEditor } from "@/components/admin/FlowEditor";
+import { HfChevron } from "@/components/hf/HfChevron";
 
 export const dynamic = "force-dynamic";
 
@@ -17,8 +18,9 @@ export default async function AdminFlowPage({ params }: { params: Promise<{ id: 
 
   return (
     <div className="flex flex-col gap-4">
-      <Link href="/admin/flows" className="hf-type-body text-text-secondary hover:text-hf-black">
-        ← Alle flows
+      <Link href="/admin/flows" className="hf-btn-text w-fit text-hf-black">
+        <HfChevron direction="left" compact />
+        Alle flows
       </Link>
       <FlowEditor
         flow={{
