@@ -2,6 +2,15 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Forside — kun "Dagens tilføjelser" scroller
+
+Forsiden er låst til skærmhøjden (`h-dvh overflow-hidden`); topbar, hero og bundmenu står fast, og kun listen scroller internt.
+## 2026-09-28: Abonnement — boilerplate fjernet
+
+- `/profile/subscription`: datalagringsnoten (`subscription.retentionNote`)
+  er fjernet fra hovedindholdet og fra da/en. Betingelser ligger fortsat i
+  footerens `TermsSheet`.
+
 ## 2026-09-28: Kamera — scanningsstribe i stedet for load-cirkel
 
 - `PhotoWorkingOverlay` viser en hvid/lys gradientstribe (`.hf-scan-sweep`),
@@ -42,6 +51,12 @@ Next work:
 - 10.524 varer med næring (2.408 uden kcal/protein/kulhydrat/fedt springes over) og 7.218 billeder (5 GB) ligger på NAS'en i `data/store-products-import/` (kopieret med tar over SSH – for stort til git).
 - `store-products-agent` læser `/import` (compose-volume), når `store_products.json` findes dér; ellers den lille prøve i billedet. Billeder, der allerede er kopieret, springes over ved genstart.
 - Opdatering af kataloget: `py build_data.py --all --out <mappe>` og kopiér mappen til NAS'en igen; agenten kører ved næste start eller "Kør nu" i admin → Cron-jobs (`store-products-import`).
+## 2026-09-28: Selected state i HelloFresh-stil (punkt 46)
+
+- Ny `.hf-selected` (+ `.hf-selected-open` til accordions) med lysegrøn flade,
+  grøn stroke og mørkegrøn tekst. Brugt i `.hf-choice`, `.hf-chip`,
+  `AccordionSection`, onboarding, periodevælger, kalenderens valgte dag,
+  forsidens FAB-side, vandbeholdere, widgets-valg og måltidsdeling.
 
 ## 2026-09-28: Open Food Facts ude af søgningen
 
@@ -4693,6 +4708,16 @@ låser porten/mappen på tværs af port-forsøg), og denne sessions Browser-pane
 kan ikke nå den server. Denne ændring bør derfor tjekkes visuelt af brugeren
 selv (eller i en senere session, når den anden dev-server ikke kører), særligt
 justeringen af scroll-fligen ved forskellige stå-op-tidspunkter.
+
+- 2026-09-28 (opgave #34 E-nummer-side – indhold): Ny detaljeside
+  `/e-numre/[code]` (`src/app/e-numre/[code]/page.tsx`) med sektionerne Navn,
+  Forklaring, Risici og relevante oplysninger, Forskning, Primær kilde og
+  Alternative kilder. Alternative kilder bygges i `src/lib/additive-sources.ts`
+  (EFSA-søgning, EU's tilsætningsstofdatabase, Fødevarestyrelsen, Open Food
+  Facts, PubMed) ud fra E-nummer/navn, så alle rækker i `additives` får dem.
+  `AdditiveInfoModal` linker til siden. Lint/typecheck/build grønne; ikke
+  verificeret mod live-data (kræver DB med `additives`-tabellen).
+- 2026-09-28 (opgave 33): Ny side `/e-numre` viser hele E-nummer-databasen med søgefelt øverst (søg på nummer, fx "330"/"E330", eller dansk/internationalt navn/funktion). Logik i `src/lib/additives.ts`, UI i `src/components/additives/AdditiveList.tsx`.
 
 ## 2026-09-28: Punkt 33 — Tidspunkt hører til registreringen
 

@@ -135,7 +135,7 @@ export default function WidgetsPreviewPage() {
                         type="button"
                         onClick={() => toggleAddKey(action.key)}
                         className={`hf-type-caption min-h-8 rounded-full px-3 ${
-                          selected ? "bg-hf-black text-hf-white" : "bg-hf-tan text-hf-black"
+                          selected ? "hf-selected" : "bg-hf-tan text-hf-black"
                         }`}
                       >
                         {action.label}

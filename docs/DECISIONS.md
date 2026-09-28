@@ -3085,6 +3085,9 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
 - Erstatter det tidligere par-kort (`DuplicateProductCard`) og ruterne
   `/api/admin/duplicate-products/[id]/merge|dismiss`.
 
+- 2026-09-28 (#34): Hvert E-nummer har en egen side `/e-numre/[code]`. Alternative
+  troværdige kilder genereres ud fra E-nummeret (ingen ny DB-kolonne); den
+  primære kilde forbliver `Additive.link`/`source`. Modalen er fortsat hurtigvisning.
 ## 2026-09-28 — Kamera: scanningsstribe i stedet for load-cirkel
 
 Mens et foto arbejder i kameraflowet under Tilføj, vises en bred hvid/lys gradientstribe (`.hf-scan-sweep`), der fejer hen over billedet, i stedet for det hvide overlay med load-cirklen. Billedet forbliver synligt, så varen ser ud til at blive scannet.
@@ -3115,3 +3118,9 @@ Mens et foto arbejder i kameraflowet under Tilføj, vises en bred hvid/lys gradi
   robot-containere (runtime "agent") og kolonnerne Robot, On/Off, Kør,
   Cron-job (Løbende / dagligt kl. / interval / kun manuelt) og Sidst kørt.
   Samme rækker og API som "Cron-jobs".
+## 2026-09-28 — Fælles selected state (punkt 46)
+
+Valgte bokse, åbne accordions og andre selection-komponenter bruger HelloFresh-stilen:
+lysegrøn baggrund, grøn stroke og mørkegrøn tekst via `.hf-selected` og tokens
+`--hf-color-selected-*` i `globals.css`. Kraftigt grønne/sorte valgte flader er udfaset.
+Admin-flader er ikke omfattet.

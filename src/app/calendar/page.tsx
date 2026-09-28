@@ -997,7 +997,7 @@ function MonthView({
                       }${hasGoal ? t("calendar.targetDateSuffix") : ""}`}
                       className={`hf-type-body hf-type-strong relative flex aspect-square items-center justify-center rounded-lg border focus-visible:outline-2 focus-visible:outline-hf-black ${
                         current
-                          ? "border-hf-green bg-hf-green text-hf-white"
+                          ? "border-transparent hf-selected"
                           : isOtherMonth
                             ? "border-hf-gray-border bg-transparent text-text-muted"
                             : "border-transparent bg-hf-tan text-hf-black"
@@ -1082,7 +1082,7 @@ function WeekView({
             <span className="hf-type-small hf-type-strong text-text-secondary w-10 uppercase">{date.toLocaleDateString("da-DK", { weekday: "short" })}</span>
             <span
               className={`hf-type-body hf-type-strong flex size-9 shrink-0 items-center justify-center rounded-lg border ${
-                current ? "border-hf-green bg-hf-green text-hf-white" : "border-hf-gray bg-hf-white text-hf-black"
+                current ? "border-transparent hf-selected" : "border-hf-gray bg-hf-white text-hf-black"
               }`}
             >
               {date.getDate()}
@@ -1294,7 +1294,7 @@ function ListView({
             <span className="hf-type-small hf-type-strong text-text-secondary w-10 uppercase">{date.toLocaleDateString("da-DK", { weekday: "short" })}</span>
             <span
               className={`hf-type-body hf-type-strong flex size-9 shrink-0 items-center justify-center rounded-lg border ${
-                current ? "border-hf-green bg-hf-green text-hf-white" : "border-hf-gray bg-hf-white text-hf-black"
+                current ? "border-transparent hf-selected" : "border-hf-gray bg-hf-white text-hf-black"
               }`}
             >
               {date.getDate()}
@@ -1426,7 +1426,7 @@ function WeekTimelineView({
               type="button"
               onClick={() => onOpenDate(date)}
               className={`flex h-12 min-w-[92px] flex-1 flex-col items-center justify-center border-b border-r border-hf-tan last:border-r-0 focus-visible:outline-2 focus-visible:outline-hf-black ${
-                current ? "bg-hf-green text-hf-white" : "text-hf-black"
+                current ? "hf-selected" : "text-hf-black"
               }`}
             >
               <span className="hf-type-micro hf-type-strong text-text-secondary uppercase">
