@@ -24,7 +24,7 @@ async function handle(req: Request, provider: string, fields: URLSearchParams) {
 
   try {
     const profile = await fetchProfile(provider, code, state.nonce, fields.get("user"));
-    const result = await findOrCreateUser(provider, profile);
+    const result = await findOrCreateUser(provider, profile, state.consent);
     if (!result) return fail("oauth");
     const response = NextResponse.redirect(appUrl(state.next, req), 303);
     response.cookies.set(OAUTH_STATE_COOKIE, "", { path: "/api/auth/oauth", maxAge: 0 });

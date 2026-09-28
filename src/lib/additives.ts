@@ -76,3 +76,38 @@ export async function getAdditiveInfo(code: string): Promise<AdditiveInfo> {
     return { ...FALLBACK, eNumber: normalized };
   }
 }
+
+export type IngredientTextPart = { text: string; code?: string };
+
+// Splits an ingredient list into plain text and E-number tokens ("E330",
+// "E 150d", "e-471") so the UI can render the E-numbers as clickable links.
+export function splitENumbers(text: string): IngredientTextPart[] {
+  const parts: IngredientTextPart[] = [];
+  const pattern = /\bE[\s-]?(\d{3,4}[a-z]?(?:\([iv]+\))?)(?![\w])/gi;
+  let last = 0;
+  for (const match of text.matchAll(pattern)) {
+    const start = match.index ?? 0;
+    if (start > last) parts.push({ text: text.slice(last, start) });
+    const code = `E${match[1].replace(/\(.*\)$/, "")}`.toUpperCase();
+    parts.push({ text: match[0], code });
+    last = start + match[0].length;
+  }
+  if (last < text.length) parts.push({ text: text.slice(last) });
+  return parts;
+}
+
+// All E-numbers sorted by number (E100 before E1100), for the E-number page.
+export async function listAdditives(): Promise<AdditiveInfo[]> {
+  const map = await loadAdditives();
+  const num = (code: string) => parseInt(code.replace(/\D/g, ""), 10) || 0;
+  return [...map.values()].sort((a, b) => num(a.eNumber) - num(b.eNumber) || a.eNumber.localeCompare(b.eNumber));
+}
+
+// Matches an E-number by code ("e330", "330") or by Danish/international name.
+export function matchesAdditive(additive: AdditiveInfo, query: string): boolean {
+  const q = query.trim().toLowerCase();
+  if (!q) return true;
+  const code = additive.eNumber.toLowerCase();
+  if (code.includes(q) || code.replace(/^e/, "").startsWith(q.replace(/^e\s*/, ""))) return true;
+  return `${additive.danishName} ${additive.internationalName} ${additive.function}`.toLowerCase().includes(q);
+}

@@ -50,14 +50,15 @@ function stateSecret() {
   return new TextEncoder().encode(secret);
 }
 
-type OAuthState = { provider: ProviderSlug; state: string; nonce: string; next: string };
+type OAuthState = { provider: ProviderSlug; state: string; nonce: string; next: string; consent: boolean };
 
-export async function createState(provider: ProviderSlug, next: string) {
+export async function createState(provider: ProviderSlug, next: string, consent = false) {
   const data: OAuthState = {
     provider,
     state: randomBytes(16).toString("base64url"),
     nonce: randomBytes(16).toString("base64url"),
     next: next.startsWith("/") && !next.startsWith("//") ? next : "/",
+    consent,
   };
   const token = await new SignJWT({ ...data, purpose: "oauth-state" })
     .setProtectedHeader({ alg: "HS256" })
@@ -72,10 +73,10 @@ export async function readState(token: string | undefined): Promise<OAuthState |
   try {
     const { payload } = await jwtVerify(token, stateSecret());
     if (payload.purpose !== "oauth-state") return null;
-    const { provider, state, nonce, next } = payload as Record<string, unknown>;
+    const { provider, state, nonce, next, consent } = payload as Record<string, unknown>;
     if (typeof provider !== "string" || !isProviderSlug(provider)) return null;
     if (typeof state !== "string" || typeof nonce !== "string" || typeof next !== "string") return null;
-    return { provider, state, nonce, next };
+    return { provider, state, nonce, next, consent: consent === true };
   } catch {
     return null;
   }
@@ -243,7 +244,9 @@ export async function fetchProfile(
 
 // ---- trin 3: find eller opret kontoen ----
 
-export async function findOrCreateUser(provider: ProviderSlug, profile: ProviderProfile) {
+// consent: brugeren har slået samtykket til på tilmeldingssiden, før de
+// valgte Google/Apple/Facebook (docs/DECISIONS.md 2026-09-28).
+export async function findOrCreateUser(provider: ProviderSlug, profile: ProviderProfile, consent = false) {
   const providerEnum = PROVIDER_ENUM[provider];
   const now = new Date();
 
@@ -253,6 +256,9 @@ export async function findOrCreateUser(provider: ProviderSlug, profile: Provider
   });
   if (linked) {
     await prisma.userOAuthAccount.update({ where: { id: linked.id }, data: { lastUsedAt: now } });
+    if (consent && !linked.user.healthDataConsentAt) {
+      await prisma.user.update({ where: { id: linked.user.id }, data: { healthDataConsentAt: now } });
+    }
     return linked.user.forgottenAt ? null : { user: linked.user, created: false };
   }
 
@@ -280,6 +286,7 @@ export async function findOrCreateUser(provider: ProviderSlug, profile: Provider
         email: profile.email ?? `no-email+${provider}-${profile.providerAccountId}@invalid.hellocal`,
         displayName: profile.name?.trim() || profile.email?.split("@")[0] || "",
         emailVerifiedAt: profile.email && profile.emailVerified ? now : null,
+        healthDataConsentAt: consent ? now : null,
       },
     }));
 

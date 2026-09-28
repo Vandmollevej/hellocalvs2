@@ -2,6 +2,52 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Samtykke direkte på tilmeldingssiden (opgave 35)
+
+- Siden `/samtykke`, `ConsentGate` og `POST /api/auth/consent` er fjernet.
+- Samtykke-rækken (Hello Cals Toggle, ikke native checkbox) ligger lige under
+  e-mailfeltet på `/signup`, med klikbart link til `/betingelser`. Uden den
+  kan hverken e-mail- eller Google/Apple/Facebook-tilmelding gennemføres;
+  OAuth sender `consent=1` med i den signerede state og sætter
+  `healthDataConsentAt`. Beslutning: DECISIONS 2026-09-28.
+## 2026-09-28: Favicon rettet
+
+- `src/app/favicon.ico` var kun én sløret 16×16-udgave; nu genereret fra `Original images - Hi-res/Hello Cal Favicon.png` i 16/32/48/64 px.
+- Middleware omskrev `/icon.png`, `/apple-icon.png`, `/icons/*` og manifestet til `/admin/...` på admin-domænet (404). Rod-assets springes nu over.
+- Browsere cacher favicons hårdt: tving genindlæsning / ryd cache efter deploy.
+
+## 2026-09-28: Bekræft e-mail-arket — "Senere" fjernet
+
+Knappen "Senere" er fjernet fra `EmailVerifySheet`; under "Send igen" står nu
+diskret grå tekst "Linket er aktivt i 1 time." Bekræftelseslinkets levetid er
+sat fra 7 dage til 1 time (`src/lib/email-verification.ts`), så teksten er sand.
+
+## 2026-09-28: Søvnspørgsmålet — Slå fra-link, infotekst og bundark (punkt 34)
+
+- "Slå fra" er understreget tekst, der åbner Indstillinger → Visning → Oplevelse af søvn med grøn ring om kontakten.
+- Grå infotekst under spørgsmålet følger "Vis tooltips". Store tal; valgt = grøn fyldt cirkel, hvidt tal, ingen Luk.
+- Efter 0,5 s glider popup'en ned som bundark med håndtag og forsvinder. Afventer test på telefon.
+
+
+## 2026-09-28: Indberet fejl — sammenfoldelig "Note"
+
+- `/profile/report-bug`: feltet "Beskriv fejlen" er erstattet af en "Note"-header med pil ned, der folder noteområdet ud/ind. Foldes automatisk ud ved "Redigér" og ved afsendelse uden gyldig note (min. 10 tegn).
+## 2026-09-28: Forside — kun "Dagens tilføjelser" scroller
+
+Forsiden er låst til skærmhøjden (`h-dvh overflow-hidden`); topbar, hero og bundmenu står fast, og kun listen scroller internt.
+
+## 2026-09-28: Abonnement — boilerplate fjernet
+
+- `/profile/subscription`: datalagringsnoten (`subscription.retentionNote`)
+  er fjernet fra hovedindholdet og fra da/en. Betingelser ligger fortsat i
+  footerens `TermsSheet`.
+
+## 2026-09-28: Kamera — scanningsstribe i stedet for load-cirkel
+
+- `PhotoWorkingOverlay` viser en hvid/lys gradientstribe (`.hf-scan-sweep`),
+  der fejer hen over fotoet, mens det analyseres. Beslutning: DECISIONS 2026-09-28.
+
+
 ## 2026-09-28: Aktivitetsniveau i 5 trin + mails mod spam
 
 - Profil → Profil: aktivitetsniveau i 5 trin (Meget lav … Meget høj), gemmes
@@ -37,6 +83,22 @@ Next work:
 - 10.524 varer med næring (2.408 uden kcal/protein/kulhydrat/fedt springes over) og 7.218 billeder (5 GB) ligger på NAS'en i `data/store-products-import/` (kopieret med tar over SSH – for stort til git).
 - `store-products-agent` læser `/import` (compose-volume), når `store_products.json` findes dér; ellers den lille prøve i billedet. Billeder, der allerede er kopieret, springes over ved genstart.
 - Opdatering af kataloget: `py build_data.py --all --out <mappe>` og kopiér mappen til NAS'en igen; agenten kører ved næste start eller "Kør nu" i admin → Cron-jobs (`store-products-import`).
+## 2026-09-28: Selected state i HelloFresh-stil (punkt 46)
+
+- Ny `.hf-selected` (+ `.hf-selected-open` til accordions) med lysegrøn flade,
+  grøn stroke og mørkegrøn tekst. Brugt i `.hf-choice`, `.hf-chip`,
+  `AccordionSection`, onboarding, periodevælger, kalenderens valgte dag,
+  forsidens FAB-side, vandbeholdere, widgets-valg og måltidsdeling.
+
+## 2026-09-28: Flere objekter i kameraet
+
+- Når et foto tages (forsidefotoet i produktflowet samt Måltid/HelloFresh),
+  finder `/api/ai/detect-objects` (gpt-4o-mini) de mulige objekter som bokse.
+  Ved to eller flere vises grønne cirkler (`ObjectPickerOverlay`); brugeren
+  trykker på det objekt, billedet skal handle om, og fotoet beskæres til det
+  (`src/lib/object-picker.ts`) før analysen. "Brug hele billedet" springer
+  over. Ét/ingen objekt eller fejl: hele billedet bruges som før.
+- Ikke live-testet på telefon (kræver login + OPENAI_API_KEY).
 
 ## 2026-09-28: Open Food Facts ude af søgningen
 
@@ -4688,3 +4750,23 @@ låser porten/mappen på tværs af port-forsøg), og denne sessions Browser-pane
 kan ikke nå den server. Denne ændring bør derfor tjekkes visuelt af brugeren
 selv (eller i en senere session, når den anden dev-server ikke kører), særligt
 justeringen af scroll-fligen ved forskellige stå-op-tidspunkter.
+
+- 2026-09-28: Punkt 15 automatisk fotografering bygget (PR #35): foto-trinnene i kamera-flowet udløser selv, når varen er skarp og stille; knappen er manuel reserve. Lint + build grønne.
+- 2026-09-28 (opgave #34 E-nummer-side – indhold): Ny detaljeside
+  `/e-numre/[code]` (`src/app/e-numre/[code]/page.tsx`) med sektionerne Navn,
+  Forklaring, Risici og relevante oplysninger, Forskning, Primær kilde og
+  Alternative kilder. Alternative kilder bygges i `src/lib/additive-sources.ts`
+  (EFSA-søgning, EU's tilsætningsstofdatabase, Fødevarestyrelsen, Open Food
+  Facts, PubMed) ud fra E-nummer/navn, så alle rækker i `additives` får dem.
+  `AdditiveInfoModal` linker til siden. Lint/typecheck/build grønne; ikke
+  verificeret mod live-data (kræver DB med `additives`-tabellen).
+- 2026-09-28 (opgave 33): Ny side `/e-numre` viser hele E-nummer-databasen med søgefelt øverst (søg på nummer, fx "330"/"E330", eller dansk/internationalt navn/funktion). Logik i `src/lib/additives.ts`, UI i `src/components/additives/AdditiveList.tsx`.
+
+## 2026-09-28: Punkt 33 — Tidspunkt hører til registreringen
+
+- Den generelle vareside (`AddProductView`) viser ikke længere Tidspunkt; ny
+  registrering får stadig nu eller det tidspunkt, kalenderen åbnede med.
+- Konkret registrering (`/registration/[id]`, åbnes fra kalender, Dagens
+  tilføjelser og tale) viser `TimeSection` (kun når `AddProductView` redigerer
+  en registrering): "Tidspunkt" med klokkeslættet lige under, uden streger og
+  uden "Kl."-præfiks.

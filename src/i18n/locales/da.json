@@ -84,7 +84,7 @@
     "dismiss": "Luk",
     "sheetTitle": "Bekræft din e-mail",
     "sheetText": "Vi har sendt dig en mail med et link. Tryk på linket for at aktivere din konto.",
-    "later": "Senere"
+    "linkValidity": "Linket er aktivt i 1 time."
   },
   "welcomeSheet": {
     "slide1Title": "Velkommen til Hello Cal",
@@ -125,15 +125,6 @@
       "oestrig": "Østrig"
     }
   },
-  "consent": {
-    "title": "Dit samtykke",
-    "intro": "En kalorietæller kan ikke tælle uden at kende det, du spiser og vejer. Det er helbredsoplysninger, og dem må vi kun behandle med dit udtrykkelige samtykke.",
-    "submit": "Giv samtykke og fortsæt",
-    "submitting": "Gemmer…",
-    "declineNote": "Vil du ikke give samtykke, kan du ikke bruge Hello Cal. Du kan logge ud eller bede om at få kontoen slettet via Hjælpecenter.",
-    "logout": "Log ud",
-    "error": "Samtykket kunne ikke gemmes. Prøv igen."
-  },
   "signup": {
     "title": "Opret konto",
     "back": "Tilbage",
@@ -146,10 +137,9 @@
     "submitting": "Opretter konto…",
     "genericError": "Noget gik galt — prøv igen",
     "networkError": "Kunne ikke oprette kontoen — tjek din forbindelse og prøv igen",
-    "healthConsent": "Jeg giver udtrykkeligt samtykke til, at Hello Cal behandler mine helbredsoplysninger (fx kost, vægt og kropsmål) for at levere appen. Jeg accepterer Betingelserne.",
-    "legalLinksTerms": "Betingelser",
-    "legalLinksPrivacy": "Privatlivspolitik",
-    "consentRequired": "Slå samtykket til, før du opretter kontoen."
+    "healthConsent": "Jeg giver udtrykkeligt samtykke til, at Hello Cal behandler mine helbredsoplysninger (fx kost, vægt og kropsmål) for at levere appen, og jeg accepterer",
+    "healthConsentTermsLink": "betingelserne",
+    "consentRequired": "Slå samtykket til, før du tilmelder dig."
   },
   "nav": {
     "add": "Tilføj",
@@ -362,7 +352,7 @@
     "disable": "Slå fra",
     "ratingAriaLabel": "Vurdér nattens søvn til {rating} af 5",
     "infoAriaLabel": "Hvad bruges det til?",
-    "info": "Vurdér hvordan du har sovet i nat — 1 er meget dårligt og 5 er rigtig godt. Når der er samlet nok data, kan du se din søvnkvalitet i forhold til dit kalorieindtag og eventuelle ændringer i din kost. Du kan slå spørgsmålet fra under Indstillinger → Oplevelse af søvn.",
+    "info": "Vurdér hvordan du har sovet i nat — 1 er meget dårligt og 5 er rigtig godt. Når der er samlet nok data, kan du se din søvnkvalitet i forhold til dit kalorieindtag og eventuelle ændringer i din kost.",
     "calendarBar": "Søvnkvalitet: {rating} af 5"
   },
   "menstrualCycleSettings": {
@@ -582,17 +572,22 @@
     "photoAlt": "Dit fotograferede billede",
     "liveViewAriaLabel": "Live kameravisning",
     "notRecognizedRetry": "Produkt ikke genkendt, prøv igen",
+    "holdStill": "Hold stille",
     "holdCameraStill": "Hold kameraet stille over stregkoden",
     "barcodeHintOutsideFrame": "Hold hele stregkoden inde i billedet — den må gerne vende lodret.",
     "barcodeHintBlurry": "Stregkoden er sløret? Prøv at holde lidt længere afstand, til den er skarp.",
     "placeProductInCircle": "Placér produktet i cirklen",
     "placePlateInCircle": "Placér tallerkenen i cirklen",
     "takePhotoOfProduct": "Tag billede af produktet",
+    "pickObjectHint": "Tryk på det objekt, billedet skal handle om",
+    "useWholePhoto": "Brug hele billedet",
+    "pickObjectAria": "Vælg {name}",
     "retakePhoto": "Tag billedet om",
     "takePhoto": "Tag billede",
     "lookingUp": "Slår {code} op...",
     "barcodeNotFound": "Stregkoden blev læst, men produktet blev ikke fundet. Prøv en anden kode.",
     "barcodeLookupError": "Stregkoden blev læst, men produktopslaget fejlede. Prøv igen.",
+    "autoCaptureHint": "Billedet tages automatisk, når varen er skarp og holdes stille.",
     "autoScanHint": "Kameraet scanner automatisk. Du kan også indtaste nummeret under stregkoden.",
     "barcodeNumberAriaLabel": "Stregkodenummer",
     "lookUp": "Slå op",
@@ -1179,7 +1174,6 @@
       "upgradeUnavailable": "Betaling er ikke tilsluttet endnu — brug en gavekode eller indløs points for at blive Seriøs, indtil en betalingsudbyder er på plads.",
       "withdrawalConsent": "Jeg ønsker, at abonnementet starter med det samme, og er klar over, at jeg ved fortrydelse inden for 14 dage kun får refunderet den del af perioden, jeg ikke har brugt."
     },
-    "retentionNote": "Data ældre end 3 måneder slettes aldrig — det gemmes og vises igen, så snart du bliver Seriøs.",
     "plansHeading": "Abonnementer",
     "plans": {
       "serious": {

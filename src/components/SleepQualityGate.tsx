@@ -16,7 +16,6 @@ import {
 // rating for today yet is asked how last night felt. Never on login,
 // consent, legal or admin pages.
 const SKIP_PREFIXES = [
-  "/samtykke",
   "/betingelser",
   "/privatlivspolitik",
   "/welcome",
@@ -70,14 +69,6 @@ export function SleepQualityGate() {
         saveSleepQuality(dateKey, rating).catch(() => undefined);
       }}
       onClose={() => setDateKey(null)}
-      onDisable={() => {
-        setDateKey(null);
-        fetch("/api/profile", {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sleepQualityPromptEnabled: false }),
-        }).catch(() => undefined);
-      }}
     />
   );
 }

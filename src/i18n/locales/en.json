@@ -84,7 +84,7 @@
     "dismiss": "Close",
     "sheetTitle": "Confirm your email",
     "sheetText": "We sent you an email with a link. Tap the link to activate your account.",
-    "later": "Later"
+    "linkValidity": "The link is active for 1 hour."
   },
   "welcomeSheet": {
     "slide1Title": "Welcome to Hello Cal",
@@ -125,15 +125,6 @@
       "oestrig": "Austria"
     }
   },
-  "consent": {
-    "title": "Your consent",
-    "intro": "A calorie counter can't count without knowing what you eat and weigh. That is health data, and we may only process it with your explicit consent.",
-    "submit": "Give consent and continue",
-    "submitting": "Saving…",
-    "declineNote": "If you don't consent, you can't use Hello Cal. You can log out or ask for your account to be deleted via the Help center.",
-    "logout": "Log out",
-    "error": "Your consent couldn't be saved. Please try again."
-  },
   "signup": {
     "title": "Create account",
     "back": "Back",
@@ -146,10 +137,9 @@
     "submitting": "Creating account…",
     "genericError": "Something went wrong — try again",
     "networkError": "Could not create the account — check your connection and try again",
-    "healthConsent": "I explicitly consent to Hello Cal processing my health data (such as food, weight and body measurements) to provide the app. I accept the Terms.",
-    "legalLinksTerms": "Terms",
-    "legalLinksPrivacy": "Privacy policy",
-    "consentRequired": "Turn on your consent before creating the account."
+    "healthConsent": "I explicitly consent to Hello Cal processing my health data (such as food, weight and body measurements) to provide the app, and I accept the",
+    "healthConsentTermsLink": "Terms and Conditions",
+    "consentRequired": "Turn on your consent before signing up."
   },
   "nav": {
     "add": "Add",
@@ -582,17 +572,22 @@
     "photoAlt": "Your captured photo",
     "liveViewAriaLabel": "Live camera view",
     "notRecognizedRetry": "Product not recognized, try again",
+    "holdStill": "Hold still",
     "holdCameraStill": "Hold the camera steady over the barcode",
     "barcodeHintOutsideFrame": "Keep the whole barcode in the picture — upright or sideways both work.",
     "barcodeHintBlurry": "Barcode blurry? Try holding a bit further back until it's in focus.",
     "placeProductInCircle": "Place the product in the circle",
     "placePlateInCircle": "Place the plate in the circle",
     "takePhotoOfProduct": "Take a photo of the product",
+    "pickObjectHint": "Tap the object the photo should be about",
+    "useWholePhoto": "Use the whole photo",
+    "pickObjectAria": "Choose {name}",
     "retakePhoto": "Retake the photo",
     "takePhoto": "Take photo",
     "lookingUp": "Looking up {code}...",
     "barcodeNotFound": "The barcode was read, but the product was not found. Try a different code.",
     "barcodeLookupError": "The barcode was read, but the product lookup failed. Try again.",
+    "autoCaptureHint": "The photo is taken automatically when the product is sharp and held still.",
     "autoScanHint": "The camera scans automatically. You can also enter the number below the barcode.",
     "barcodeNumberAriaLabel": "Barcode number",
     "lookUp": "Look up",
@@ -1179,7 +1174,6 @@
       "upgradeUnavailable": "Payment isn't connected yet — use a gift code or redeem points to go Serious until a payment provider is in place.",
       "withdrawalConsent": "I want the subscription to start right away, and I understand that if I withdraw within 14 days, I will only be refunded for the part of the period I haven't used."
     },
-    "retentionNote": "Data older than 3 months is never deleted — it's kept and shown again as soon as you go Serious.",
     "plansHeading": "Subscriptions",
     "plans": {
       "serious": {

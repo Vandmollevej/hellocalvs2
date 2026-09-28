@@ -3088,6 +3088,32 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
 ## 2026-09-28 — Administratorer er altid Seriøs
 
 Brugere med `role = ADMIN` behandles som Seriøs i `getUserSubscriptionTier` og `/api/subscription`, uden en Subscription-række, så alle Seriøs-funktioner kan testes. Ingen databaseændring.
+
+## 2026-09-28: Samtykke på tilmeldingssiden i stedet for separat side
+
+Brugerens opgave 35: det separate samtykke-step (`/samtykke`) fjernes. Samtykket
+til helbredsoplysninger + accept af betingelserne gives på tilmeldingssiden
+under e-mailfeltet med Hello Cals eget on/off-design (Toggle, jf. 2026-09-02:
+ingen native checkboxe) og et klikbart link til Betingelser. Det kræves før
+både e-mail- og social-tilmelding. Konsekvens: brugere, der logger ind via
+Google/Apple/Facebook fra login-siden uden at have været forbi tilmeldingen,
+eller ældre konti uden samtykke, bliver ikke længere stoppet af en gate.
+## 2026-09-28 — Søvnspørgsmålets adfærd (punkt 34)
+
+"Hvordan oplever du, at din nat har været?": ingen slider ved "Slå fra" — kun understreget tekst, der åbner Indstillinger → Visning → Oplevelse af søvn (`?focus=toggle`, grøn ring + fokus på kontakten). Grå infotekst under spørgsmålet følger "Vis tooltips". Store, ikke-understregede tal; valgt tal får grøn fyldt cirkel og hvidt tal, og Luk skjules. Efter 0,5 s glider popup'en ned til et lille bundark med håndtag (kan trækkes/trykkes op igen) og forsvinder kort efter.
+
+
+## 2026-09-28 — Automatisk fotografering (punkt 15)
+
+Foto-trinnene i kamera-flowet (forside, næring, ingredienser) udløser automatisk, når varen er i fokus: skarphed (Laplace-varians) i midterrammen skal være over et minimum og tæt på den bedste målte, og billedet skal være stillestående i 4 målinger i træk (200 ms interval, 1,2 s opstart pr. trin). Beregnes lokalt på et 160×160-udsnit (`src/lib/focus-detection.ts`, `useAutoCapture`). "Tag billede"-knappen bevares som manuel reserve. Stregkodetrinnet er uændret.
+- 2026-09-28 (#34): Hvert E-nummer har en egen side `/e-numre/[code]`. Alternative
+  troværdige kilder genereres ud fra E-nummeret (ingen ny DB-kolonne); den
+  primære kilde forbliver `Additive.link`/`source`. Modalen er fortsat hurtigvisning.
+
+## 2026-09-28 — Kamera: scanningsstribe i stedet for load-cirkel
+
+Mens et foto arbejder i kameraflowet under Tilføj, vises en bred hvid/lys gradientstribe (`.hf-scan-sweep`), der fejer hen over billedet, i stedet for det hvide overlay med load-cirklen. Billedet forbliver synligt, så varen ser ud til at blive scannet.
+
 ## 2026-09-28: Redigering af en tilføjet registrering
 
 - Et tryk på en tilføjet vare (`/registration/[id]`) åbner samme visning som
@@ -3098,6 +3124,7 @@ Brugere med `role = ADMIN` behandles som Seriøs i `getUserSubscriptionTier` og 
   forholdsmæssigt med den nye mængde. Varen selv ændres aldrig, og der oprettes
   ingen kontrolsag til admin ved redigering.
 - Egne retter uden vare vises med en vare bygget af snapshottet.
+
 
 ## 2026-09-28: Billedrobotten kører løbende + admin "Robotter"
 
@@ -3115,3 +3142,21 @@ Brugere med `role = ADMIN` behandles som Seriøs i `getUserSubscriptionTier` og 
   robot-containere (runtime "agent") og kolonnerne Robot, On/Off, Kør,
   Cron-job (Løbende / dagligt kl. / interval / kun manuelt) og Sidst kørt.
   Samme rækker og API som "Cron-jobs".
+
+
+## 2026-09-28 — Fælles selected state (punkt 46)
+
+Valgte bokse, åbne accordions og andre selection-komponenter bruger HelloFresh-stilen:
+lysegrøn baggrund, grøn stroke og mørkegrøn tekst via `.hf-selected` og tokens
+`--hf-color-selected-*` i `globals.css`. Kraftigt grønne/sorte valgte flader er udfaset.
+Admin-flader er ikke omfattet.
+
+
+
+## 2026-09-28: Flere objekter i kameraet — brugeren vælger
+
+- Ved flere mulige objekter i et taget foto markeres de med grønne cirkler,
+  og brugeren trykker på det, der skal være fokus. Fotoet beskæres til det
+  valgte objekt (15 % luft), før genkendelse/OCR kører. Gælder forsidefotoet
+  (ikke stregkode, energi, indhold) og Måltid/HelloFresh. Detektionen er et
+  AI-kald; fejler det, fortsættes med hele billedet.

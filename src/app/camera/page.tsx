@@ -8,6 +8,8 @@ import Link from "next/link";
 import { HfScreen } from "@/components/HfScreen";
 import { HelloFreshMatchReview } from "@/components/HelloFreshMatchReview";
 import { ProductCaptureFlow } from "@/components/camera/ProductCaptureFlow";
+import { ObjectPickerOverlay } from "@/components/camera/ObjectPickerOverlay";
+import { cropToObject, detectObjects, type ObjectBox } from "@/lib/object-picker";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
 type CameraStatus = "starting" | "active" | "denied" | "unavailable" | "error";
@@ -110,7 +112,12 @@ function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forD
   const streamRef = useRef<MediaStream | null>(null);
   const [cameraStatus, setCameraStatus] = useState<CameraStatus>("starting");
   const [restartKey, setRestartKey] = useState(0);
+  // `capture` er det tagne billede; `photo` sættes først, når objektet er
+  // valgt (ved flere objekter), og starter analysen.
+  const [capture, setCapture] = useState<string | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
+  const [pickObjects, setPickObjects] = useState<ObjectBox[] | null>(null);
+  const captureIdRef = useRef(0);
   const [recognizeStatus, setRecognizeStatus] = useState<RecognizeStatus>("idle");
   const [matchedProduct, setMatchedProduct] = useState<MatchedHelloFreshProduct | null>(null);
   const [mealAnalyzeStatus, setMealAnalyzeStatus] = useState<MealAnalyzeStatus>("idle");
@@ -158,19 +165,39 @@ function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forD
     };
   }, [mode, restartKey, stopCamera]);
 
-  function capturePhoto() {
+  async function capturePhoto() {
     const video = videoRef.current;
     if (!video || !video.videoWidth || !video.videoHeight) return;
     const canvas = document.createElement("canvas");
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     canvas.getContext("2d")?.drawImage(video, 0, 0, canvas.width, canvas.height);
-    setPhoto(canvas.toDataURL("image/jpeg", 0.88));
+    const frame = canvas.toDataURL("image/jpeg", 0.88);
+    const captureId = ++captureIdRef.current;
+    setCapture(frame);
     stopCamera();
+    // Flere objekter i billedet: grønne cirkler, brugeren vælger.
+    const objects = await detectObjects(frame);
+    if (captureId !== captureIdRef.current) return;
+    if (objects.length < 2) setPhoto(frame);
+    else setPickObjects(objects);
+  }
+
+  async function pickObject(object: ObjectBox | null) {
+    if (!capture) return;
+    const captureId = captureIdRef.current;
+    setPickObjects(null);
+    const chosen = object ? await cropToObject(capture, object, 0.88) : capture;
+    if (captureId !== captureIdRef.current) return;
+    setCapture(chosen);
+    setPhoto(chosen);
   }
 
   function restartCamera() {
     stopCamera();
+    captureIdRef.current += 1;
+    setCapture(null);
+    setPickObjects(null);
     setPhoto(null);
     setCameraStatus("starting");
     setRecognizeStatus("idle");
@@ -283,14 +310,23 @@ function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forD
       {mode === "hellofresh" && forDish && <ModeTabs mode={mode} />}
 
       <div className="relative aspect-square w-full overflow-hidden rounded-[12px] bg-hf-black">
-        {photo ? (
+        {capture ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={photo} alt={t("camera.photoAlt")} className="h-full w-full object-cover" />
+          <img src={capture} alt={t("camera.photoAlt")} className="h-full w-full object-cover" />
         ) : (
           <video ref={videoRef} className="h-full w-full object-cover" autoPlay muted playsInline aria-label={t("camera.liveViewAriaLabel")} />
         )}
 
-        {!photo && (
+        {capture && pickObjects && (
+          <ObjectPickerOverlay
+            photo={capture}
+            objects={pickObjects}
+            onPick={(object) => void pickObject(object)}
+            onUseWhole={() => void pickObject(null)}
+          />
+        )}
+
+        {!capture && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
             <div className="aspect-square w-[68%] rounded-full border-2 border-hf-white/80 shadow-[0_0_0_999px_rgba(0,0,0,0.2)]" />
           </div>
@@ -305,7 +341,7 @@ function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forD
           </div>
         )}
 
-        {cameraStatus === "active" && !photo && (
+        {cameraStatus === "active" && !capture && (
           <p className="hf-type-small hf-type-strong absolute inset-x-4 top-4 rounded-full bg-hf-black/60 px-4 py-2 text-center text-hf-white">
             {mode === "hellofresh" ? t("camera.placeProductInCircle") : t("camera.placePlateInCircle")}
           </p>
@@ -323,7 +359,7 @@ function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forD
       </div>
 
       {mode === "hellofresh" ? (
-        photo ? (
+        capture ? (
           recognizeStatus !== "not_found" && (
             <HelloFreshMatchReview
               status={recognizeStatus === "idle" ? "processing" : recognizeStatus}
@@ -334,7 +370,7 @@ function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forD
           )
         ) : (
           <div className="flex justify-center py-1">
-            <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-control hf-btn-primary gap-2 px-6 disabled:opacity-40">
+            <button onClick={() => void capturePhoto()} disabled={cameraStatus !== "active"} className="hf-control hf-btn-primary gap-2 px-6 disabled:opacity-40">
               <IconCamera size={19} /> {t("camera.takePhotoOfProduct")}
             </button>
           </div>
@@ -342,18 +378,18 @@ function PhotoModeContent({ mode, forDish }: { mode: "meal" | "hellofresh"; forD
       ) : (
         <div className="flex flex-col gap-4">
           <div className="flex justify-center py-1">
-            {photo ? (
+            {capture ? (
               <button onClick={restartCamera} className="hf-control hf-btn-secondary gap-2 px-5">
                 {t("camera.retakePhoto")}
               </button>
             ) : (
-              <button onClick={capturePhoto} disabled={cameraStatus !== "active"} className="hf-control hf-btn-primary gap-2 px-6 disabled:opacity-40">
+              <button onClick={() => void capturePhoto()} disabled={cameraStatus !== "active"} className="hf-control hf-btn-primary gap-2 px-6 disabled:opacity-40">
                 <IconCamera size={19} /> {t("camera.takePhoto")}
               </button>
             )}
           </div>
 
-          {photo && mealAnalyzeStatus === "idle" && (
+          {capture && !pickObjects && mealAnalyzeStatus === "idle" && (
             <p className="hf-type-small hf-type-strong text-text-secondary text-center">{t("camera.analyzingMeal")}</p>
           )}
           {photo && mealAnalyzeStatus === "error" && (
