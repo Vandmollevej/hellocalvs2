@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { countSupportInbox } from "@/lib/support-inbox";
 import { UNCERTAINTY_TABS, listUncertainties, type UncertaintyRow } from "@/lib/uncertainties";
 import { HIDE_FROM_SEARCH_BELOW } from "@/lib/uncertainty-thresholds";
+import { countDuplicateReviews } from "@/lib/duplicate-review";
 import { QUALITY_CONTROL_PHOTO_TYPES } from "@/lib/quality-control-photo-types";
 import { JOBS } from "@/lib/jobs/registry";
 import { ensureSecretsLoaded } from "@/lib/api-keys/store";
@@ -99,7 +100,7 @@ export async function loadAdminDashboard(now: Date = new Date()) {
       0,
     ),
     safe(prisma.productNutritionReport.count({ where: { status: "PENDING" } }), 0),
-    safe(prisma.productDuplicateLink.count({ where: { status: "PENDING" } }), 0),
+    safe(countDuplicateReviews().then((c) => c.images + c.products), 0),
     safe(prisma.ingredientRequest.count({ where: { status: "PENDING" } }), 0),
     safe(
       prisma.supportRequest.findMany({

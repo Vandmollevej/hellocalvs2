@@ -31,6 +31,11 @@ Kode: `scripts/store-products-import/` (`build_data.py` lokalt → JSON,
 - Billeder: fritlagt > Bilka-original > REMA-original. Også ikke-fritlagte
   bruges nu og erstattes senere. Filerne bruges uændret i fuld opløsning
   (retina) og vises bag produktcirklens maske.
+- Alle varianter i det vindende niveau (EAN, EAN_2, EAN_3, .jpg + .png …)
+  gemmes som ekstra billeder med tag `Import` og vises under admin
+  "Dubletter" → Produktbilleder, til admin har valgt.
+- Varer i begge kæder får hver butiks egne felter i `product_source_records`
+  (admin "Dubletter" → Produkter). Det admin har gennemgået, overskrives ikke.
 - Senere: kun fritlagte PNG'er bryder cirklen – portræt 10 % over toppen,
   vandrette 10 % ud til højre (som HelloFresh).
 

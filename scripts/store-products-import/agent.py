@@ -14,6 +14,9 @@ One product per EAN: an existing product with the same barcode is updated
 Bilka wins over REMA already in the JSON. Images are copied to
 /images/store/ (the app's /product-images volume) and used as-is — only
 cut-outs are tagged "Cutout" so the product circle can let them break out.
+All image variants and, for products in both chains, each store's own
+fields (product_source_records) are stored for admin "Dubletter"; what admin
+has reviewed there is not overwritten (docs/DECISIONS.md 2026-09-28).
 
 rema1000-agent rewrites its rows on every container start, so this agent
 waits START_DELAY_SECONDS first and runs after it.
@@ -88,12 +91,54 @@ def copy_image(filename):
     return f"{PUBLIC_PATH_PREFIX}/{IMAGE_SUBDIR}/{filename}"
 
 
+def find_product(cur, p):
+    cur.execute('SELECT "productId" FROM "barcodes" WHERE code = %s', (p["ean"],))
+    row = cur.fetchone()
+    if row is None:
+        cur.execute(
+            """SELECT id FROM "products" WHERE "externalSource" = %s::"ExternalProductSource"
+               AND "externalId" = %s""",
+            (p["externalSource"], p["ean"]),
+        )
+        row = cur.fetchone()
+    return row[0] if row else None
+
+
+def review_state(cur, product_id):
+    """What admin already decided under "Dubletter" (docs/DECISIONS.md
+    2026-09-28): reviewed images and reviewed store data are never overwritten."""
+    if product_id is None:
+        return False, False
+    cur.execute('SELECT "imagesReviewedAt" IS NOT NULL FROM "products" WHERE id = %s', (product_id,))
+    images_reviewed = bool(cur.fetchone()[0])
+    cur.execute(
+        'SELECT count(*) > 0 FROM "product_source_records" WHERE "productId" = %s AND "reviewedAt" IS NOT NULL',
+        (product_id,),
+    )
+    return images_reviewed, bool(cur.fetchone()[0])
+
+
+def image_list(p):
+    if p.get("images"):
+        return p["images"]
+    return [{"file": p["image"], "tags": p.get("imageTags") or []}] if p.get("image") else []
+
+
 def upsert_product(cur, p, store_ids):
+    existing_id = find_product(cur, p)
+    images_reviewed, fields_reviewed = review_state(cur, existing_id)
+
     n = p["nutrition"]
     brand_id = get_or_create_id(cur, "brands", p["brand"]) if p.get("brand") else None
     category_name = p.get("storeDepartment") or p.get("productType") or "Ukategoriseret"
     category_id = get_or_create_id(cur, "categories", category_name)
-    image_url = copy_image(p["image"]) if p.get("image") else None
+    images = []
+    if not images_reviewed:
+        for img in image_list(p):
+            url = copy_image(img["file"])
+            if url:
+                images.append((url, img.get("tags") or []))
+    image_url = images[0][0] if images else None
 
     params = {
         "name": p["name"],
@@ -120,18 +165,15 @@ def upsert_product(cur, p, store_ids):
         "externalId": p["ean"],
     }
 
-    cur.execute('SELECT "productId" FROM "barcodes" WHERE code = %s', (p["ean"],))
-    row = cur.fetchone()
-    if row is None:
+    if existing_id and fields_reviewed:
+        # Admin chose the final values field by field — keep them.
+        product_id = existing_id
         cur.execute(
-            """SELECT id FROM "products" WHERE "externalSource" = %(externalSource)s::"ExternalProductSource"
-               AND "externalId" = %(externalId)s""",
-            params,
+            'UPDATE "products" SET "imageUrl" = %s WHERE id = %s AND "imageUrl" IS NULL',
+            (image_url, product_id),
         )
-        row = cur.fetchone()
-
-    if row:
-        product_id = row[0]
+    elif existing_id:
+        product_id = existing_id
         params["id"] = product_id
         cur.execute(
             """
@@ -186,17 +228,43 @@ def upsert_product(cur, p, store_ids):
             (product_id, store_ids[store]),
         )
 
-    if image_url:
-        cur.execute('DELETE FROM "product_images" WHERE "productId" = %s AND url = %s', (product_id, image_url))
+    # All variants (EAN, EAN_2 …) tagged "Import": two or more show up under
+    # admin "Dubletter" → Produktbilleder until admin has picked.
+    if images:
         cur.execute(
-            """INSERT INTO "product_images" (id, "productId", url, tags, "order", "createdAt")
-               VALUES (%s, %s, %s, %s, 0, now())""",
-            (new_id(), product_id, image_url, p.get("imageTags") or []),
+            'DELETE FROM "product_images" WHERE "productId" = %s AND url = ANY(%s)',
+            (product_id, [url for url, _ in images]),
         )
+        for order, (url, tags) in enumerate(images):
+            cur.execute(
+                """INSERT INTO "product_images" (id, "productId", url, tags, "order", "createdAt")
+                   VALUES (%s, %s, %s, %s, %s, now())""",
+                (new_id(), product_id, url, list(dict.fromkeys([*tags, "Import"])), order),
+            )
 
-    upsert_nutrition(cur, product_id, p.get("productCategory"), n)
-    upsert_filters(cur, product_id, p["filters"])
+    if not fields_reviewed:
+        upsert_nutrition(cur, product_id, p.get("productCategory"), n)
+        upsert_filters(cur, product_id, p["filters"])
+    upsert_sources(cur, product_id, p.get("sources") or {})
     return product_id
+
+
+def upsert_sources(cur, product_id, sources):
+    """Each store's own version (Bilka + REMA 1000 with the same EAN). Changed
+    store data is shown to admin again; unchanged keeps its review."""
+    for source, data in sources.items():
+        cur.execute(
+            """
+            INSERT INTO "product_source_records" (id, "productId", source, data, "createdAt", "updatedAt")
+            VALUES (%s, %s, %s::"ExternalProductSource", %s, now(), now())
+            ON CONFLICT ("productId", source) DO UPDATE SET
+                "reviewedAt" = CASE WHEN "product_source_records".data = EXCLUDED.data
+                                    THEN "product_source_records"."reviewedAt" ELSE NULL END,
+                data = EXCLUDED.data,
+                "updatedAt" = now()
+            """,
+            (new_id(), product_id, source, psycopg2.extras.Json(data)),
+        )
 
 
 def upsert_nutrition(cur, product_id, category, n):

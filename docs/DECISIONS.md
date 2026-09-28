@@ -2990,3 +2990,33 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
 - Trends beregnes gratis; "Analysér med AI" sender kun aggregater (ingen
   navne/e-mails/id'er, `store: false`) til OpenAI (`OPENAI_STATS_MODEL`,
   ellers produktmodellen). Kode: `src/lib/admin-stats*.ts`.
+
+## 2026-09-28: Admin "Dubletter" — Produktbilleder og Produkter
+
+- `/admin/duplicate-products` har to faner, der håndteres hver for sig:
+  **Produktbilleder** og **Produkter**. Logik: `src/lib/duplicate-review.ts`,
+  felter: `src/lib/duplicate-fields.ts`.
+- Produktbilleder: varer med to eller flere billeder tagget `Import`
+  (butiksimportens varianter EAN.png, EAN_2.png, .jpg + .png …) eller
+  `Flettet` (flyttet over ved en fletning) vises på én linje. Admin vælger
+  hovedbillede og fravælger resten; fravalgte billed-rækker slettes (filerne
+  bliver liggende), og `products.imagesReviewedAt` sættes.
+- Produkter: op til 6 kolonner side om side. Kildekolonner har grå ramme; den
+  endelige er lysegrå med grøn ramme. Ud for hvert felt, hvor en kolonne har
+  en værdi, der ikke står i den endelige, peger en grøn pil mod den endelige
+  (→ eller ←); klik tager værdien over, "Fortryd" sætter den tilbage.
+  Grupperne kommer fra: (1) Bilka + REMA 1000 med samme stregkode og
+  forskellige felter — hver butiks egne data gemmes i den nye tabel
+  `product_source_records`; (2) samtidige dobbeltoprettelser
+  (`product_duplicate_links`); (3) samme navn + brand + mængde.
+- Gem: butiks-konflikter skriver de valgte felter på produktet og markerer
+  butiksdataene som gennemgået. Produkt-grupper fletter de øvrige ind i den
+  endelige (registreringer beholder deres snapshot; stregkoder, butikker,
+  favoritter og billeder flyttes med) og sletter dem. "Ikke dubletter" gemmes
+  som `DISMISSED`-par, så gruppen ikke vender tilbage.
+- Importen (`scripts/store-products-import`) overskriver ikke det, admin har
+  gennemgået: produkter med gennemgåede butiksdata får ikke felter, næring og
+  filtre overskrevet, og gennemgåede billeder røres ikke. Ændrer en butiks
+  data sig, vises konflikten igen.
+- Erstatter det tidligere par-kort (`DuplicateProductCard`) og ruterne
+  `/api/admin/duplicate-products/[id]/merge|dismiss`.

@@ -2,6 +2,24 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Admin "Dubletter" — faner for billeder og produkter
+
+- `/admin/duplicate-products` har nu fanerne "Produktbilleder" (billed-varianter
+  _1/_2/_3 på én linje, vælg hovedbillede) og "Produkter" (op til 6 kolonner,
+  grønne pile tager en værdi over i den endelige kolonne med grøn ramme).
+  Beslutning: DECISIONS 2026-09-28.
+- Ny migration `20260928120000_duplicate_review` (`product_source_records`,
+  `products.imagesReviewedAt`). Køres af deploy.
+- Butiksimporten gemmer nu alle billed-varianter og Bilka/REMA's egne data;
+  de 50 prøvevarer er genbygget (7 med flere billeder, 20 i begge kæder).
+- Analyse af arkene: 500 stregkoder findes hos både Bilka og REMA 1000. 480
+  har forskellig tekst i mindst ét felt (mest navn/produkttype-formulering,
+  121 mængde, 102 brand); 15 har reelt forskellig næring (fx Fiskeboller
+  63 vs. 121 kcal, Plantepostej 299 vs. 231 kcal).
+- Rettet: manglende `}` efter `RoadmapItem` i `prisma/schema.prisma` på master
+  (skemaet kunne ikke valideres).
+- Lint, typecheck og build kørt; ikke testet mod en database (lokalt er der ingen DB).
+
 ## 2026-09-28: Produkt-database → Produkter + Brands
 
 - Admin-menuens Produkt-database er nu en gruppe: "Produkter" (flyttet til `/admin/product-database/products`) og ny "Brands" (`/admin/product-database/brands`, alle brands med logo, søgning, med/uden logo). Gamle adresser sender videre. Ingen migration.

@@ -988,8 +988,15 @@ model Product {
   flavor          String?
   packCount       Int?
   keywords        String[]         @default([])
+  // Admin "Dubletter" → Produktbilleder (docs/DECISIONS.md 2026-09-28): sat,
+  // når admin har gennemgået produktets billed-varianter (_2, _3 …), så
+  // produktet ikke vises på fanen igen. Nulstilles ikke af importen.
+  imagesReviewedAt DateTime?
 
   barcodes           Barcode[]
+  // Butikkernes egne versioner af samme vare (Bilka + REMA 1000 med samme
+  // stregkode), så admin kan sammenligne dem under "Dubletter" → Produkter.
+  sourceRecords      ProductSourceRecord[]
   // Normaliserede søge-/ernæringsparametre (fiber-%, sukker-%, fuldkorn …),
   // docs/DECISIONS.md 2026-09-23. Højst én række pr. produkt.
   nutritionFeatures  ProductNutritionFeatures?
@@ -1353,6 +1360,29 @@ enum ProductDuplicateLinkStatus {
   PENDING
   MERGED
   DISMISSED
+}
+
+// Én butiks egen version af en vare (docs/DECISIONS.md 2026-09-28): Bilka og
+// REMA 1000 sælger ofte samme stregkode med forskellig titel, mængde eller
+// næring. Importen fletter dem til ét produkt (Bilka vinder), men gemmer
+// hver butiks rå felter her, så admin under "Dubletter" → Produkter kan se
+// dem side om side og vælge den endelige værdi felt for felt. data følger
+// feltnøglerne i scripts/store-products-import/build_data.py (name, brand,
+// quantity, nutrition{…}, filters{…} …). reviewedAt sættes, når admin har
+// gemt sit valg.
+model ProductSourceRecord {
+  id         String                @id @default(cuid())
+  product    Product               @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId  String
+  source     ExternalProductSource
+  data       Json
+  reviewedAt DateTime?
+  createdAt  DateTime              @default(now())
+  updatedAt  DateTime              @updatedAt
+
+  @@unique([productId, source])
+  @@index([reviewedAt])
+  @@map("product_source_records")
 }
 
 // Up to 3 additional photos alongside the primary Product.imageUrl (e.g. the

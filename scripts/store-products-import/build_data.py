@@ -8,6 +8,10 @@ Rules (docs/DECISIONS.md 2026-09-27 "Butiksvarer i tre tabeller"):
 - One product per EAN. Bilka wins on conflicting fields, REMA fills blanks.
 - Filter values are the word/label shown ("Økologisk"), never "Yes"/"Ja".
 - Image priority: finished cut-out (tag "Cutout") > Bilka original > REMA original.
+  All variants of the winning tier (EAN_2, EAN_3, .jpg + .png …) are kept as
+  extra images for admin "Dubletter" → Produktbilleder.
+- Products in both chains also get "sources": each store's own fields, for
+  admin "Dubletter" → Produkter (docs/DECISIONS.md 2026-09-28).
 - Drinks (ml) = Bilka "Drikkevarer", REMA "Drikkevare" or a liquid quantity
   (l/cl/ml), except drinking yoghurt. Everything else is grams.
 
@@ -22,7 +26,10 @@ import shutil
 
 import openpyxl
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "Hello Cal"))
+# HELLO_CAL_ROOT: the main checkout (with the sheets), when run from a worktree.
+ROOT = os.environ.get("HELLO_CAL_ROOT") or os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "..", "..", "Hello Cal")
+)
 SHEETS = os.path.join(ROOT, "Produkter klar til import", "Produktark")
 BILKA_SHEET = os.path.join(SHEETS, "bilka.xlsx")
 REMA_SHEET = os.path.join(SHEETS, "rema1000_version 2.xlsx")
@@ -378,6 +385,52 @@ def pick_image(ean, b, r, cutouts, originals):
     return None, []
 
 
+def stem_variants(index, stem):
+    """EAN, EAN_1, EAN_2 … in one folder — the admin "Dubletter" →
+    Produktbilleder tab shows them on one line (docs/DECISIONS.md 2026-09-28)."""
+    names = list(index[0].get(stem.lower(), []))
+    for n in range(1, 10):
+        names += index[0].get(f"{stem.lower()}_{n}", [])
+    return names
+
+
+def image_candidates(ean, b, r, cutouts, originals):
+    """Every image of the winning tier, primary first (same one pick_image
+    chooses): all cut-out variants if there is a cut-out, else every original
+    (Bilka file, EAN variants in any format, REMA file)."""
+    primary, tags = pick_image(ean, b, r, cutouts, originals)
+    if primary is None:
+        return []
+    if "Cutout" in tags:
+        folder, names, tags = CUTOUT_DIR, stem_variants(cutouts, ean), ["Cutout"]
+    else:
+        folder, tags = ORIGINAL_DIR, ["Original"]
+        names = []
+        for c in [text(b.get("Image File")) if b else None, text(r.get("Image file")) if r else None]:
+            if c:
+                real = originals[1].get(c.lower())
+                names += [real] if real else originals[0].get(os.path.splitext(c)[0].lower(), [])
+        names += stem_variants(originals, ean) if ean else []
+    out = [(primary, tags)]
+    seen = {os.path.basename(primary).lower()}
+    for name in names:
+        if name.lower() not in seen:
+            seen.add(name.lower())
+            out.append((os.path.join(folder, name), tags))
+    return out
+
+
+SOURCE_FIELDS = (
+    "name", "brand", "subbrand", "productType", "variant", "flavor", "quantity", "packCount",
+    "productCategory", "keywords", "ingredients", "allergens", "additives", "sourceUrl", "nutrition", "filters",
+)
+
+
+def store_record(p):
+    """One store's own version of the product (ProductSourceRecord.data)."""
+    return {"ean": p["ean"], "stores": p["stores"], **{k: p.get(k) for k in SOURCE_FIELDS}}
+
+
 # ---------- build ----------
 
 
@@ -406,7 +459,8 @@ def build_product(ean, b, r, b_info, r_info, cutouts, originals):
     seen = set()
     keywords = [k for k in keywords if k and not (k.lower() in seen or seen.add(k.lower()))]
 
-    image_path, image_tags = pick_image(ean, b, r, cutouts, originals)
+    images = image_candidates(ean, b, r, cutouts, originals)
+    image_path, image_tags = images[0] if images else (None, [])
     stores = (["Bilka"] if b else []) + (["Rema 1000"] if r else [])
 
     return {
@@ -432,7 +486,7 @@ def build_product(ean, b, r, b_info, r_info, cutouts, originals):
         "filters": filters,
         "image": os.path.basename(image_path) if image_path else None,
         "imageTags": image_tags,
-        "_imagePath": image_path,
+        "_imagePaths": images,
     }
 
 
@@ -476,6 +530,13 @@ def main():
         if any(n.get(k) is None for k in ("kcal", "protein", "carbs", "fat")):
             skipped["no_macros"] += 1
             continue
+        if b and r:
+            # Both chains: keep each store's own fields so admin can compare
+            # them side by side under "Dubletter" → Produkter.
+            p["sources"] = {
+                "BILKA": store_record(build_product(ean, b, None, bilka_info.get(ean), None, cutouts, originals)),
+                "REMA1000": store_record(build_product(ean, None, r, None, r_info, cutouts, originals)),
+            }
         products.append(p)
 
     if not args.all:
@@ -490,11 +551,14 @@ def main():
         shutil.rmtree(OUT_IMAGES)
     os.makedirs(OUT_IMAGES, exist_ok=True)
     for p in products:
-        src = p.pop("_imagePath")
-        if src:
+        # Primary = "<EAN>.<ext>" as before; further variants "<EAN>_2.<ext>" …
+        p["images"] = []
+        for i, (src, tags) in enumerate(p.pop("_imagePaths")):
             ext = os.path.splitext(src)[1].lower()
-            p["image"] = f"{p['ean']}{ext}"
-            shutil.copyfile(src, os.path.join(OUT_IMAGES, p["image"]))
+            name = f"{p['ean']}{ext}" if i == 0 else f"{p['ean']}_{i + 1}{ext}"
+            shutil.copyfile(src, os.path.join(OUT_IMAGES, name))
+            p["images"].append({"file": name, "tags": tags})
+        p["image"] = p["images"][0]["file"] if p["images"] else None
 
     with open(os.path.join(OUT_DIR, "store_products.json"), "w", encoding="utf-8") as f:
         json.dump(products, f, ensure_ascii=False, indent=1)
