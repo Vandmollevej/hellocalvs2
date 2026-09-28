@@ -132,7 +132,7 @@ function TilmeldContent() {
         >
           {submitting ? t("signup.submitting") : t("signup.submit")}
         </button>
-        <p className="hf-type-body-lg mb-8 mt-1 text-center">
+        <p className="hf-type-body-lg mb-6 mt-1 text-center">
           {t("signup.haveAccount")} <Link href="/login" className="underline">{t("signup.logIn")}</Link>
         </p>
       </form>

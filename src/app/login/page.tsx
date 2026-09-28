@@ -20,7 +20,9 @@ function LogIndContent() {
   const next = searchParams.get("next") ?? "/";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const oauthError = oauthErrorKey(searchParams.get("error"));
+  // En afbrudt Apple/Google/Facebook-dialog er brugerens eget valg og vises ikke som fejl.
+  const oauthCode = searchParams.get("error");
+  const oauthError = oauthCode === "oauth-cancelled" ? null : oauthErrorKey(oauthCode);
   const [error, setError] = useState<string | null>(
     oauthError ? t(oauthError.key, oauthError.vars) : null
   );
@@ -153,7 +155,7 @@ function LogIndContent() {
         </p>
       </form>
 
-      <div className="px-4 pb-8 pt-4">
+      <div className="px-4 pb-6 pt-4">
         <button
           type="submit"
           form="login-form"
