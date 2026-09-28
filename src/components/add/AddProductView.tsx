@@ -23,6 +23,7 @@ import { MacroSliderBar } from "@/components/hf/MacroSliderBar";
 import { AdditiveInfoModal } from "@/components/hf/AdditiveInfoModal";
 import { TimeSection } from "@/components/hf/TimeSection";
 import { getAdditiveInfo } from "@/lib/additives";
+import { IngredientsText } from "@/components/hf/IngredientsText";
 import { labelForAllergen } from "@/lib/allergens";
 import { matchToxins, type ToxinInfo } from "@/lib/toxins";
 import { ToxinInfoModal } from "@/components/hf/ToxinInfoModal";
@@ -936,7 +937,7 @@ export function AddProductView({
                     </div>
                   ) : (
                     <p className="hf-type-small text-text-secondary">
-                      {state.product.ingredientsText}
+                      <IngredientsText text={state.product.ingredientsText ?? ""} />
                     </p>
                   )}
                 </div>

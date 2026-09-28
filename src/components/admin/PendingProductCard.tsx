@@ -1,5 +1,6 @@
 "use client";
 
+import { IngredientsText } from "@/components/hf/IngredientsText";
 import { useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { NUTRIENTS, NUTRIENT_BY_KEY, isNutrientKey, type NutrientKey } from "@/lib/nutrients";
@@ -338,7 +339,7 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
             </dl>
             <div className="hf-type-body mt-4">
               <p className="hf-type-small text-text-secondary">Ingredienser</p>
-              <p className="mt-1 whitespace-pre-line text-hf-black">{product.ingredientsText || "—"}</p>
+              <p className="mt-1 whitespace-pre-line text-hf-black">{product.ingredientsText ? <IngredientsText text={product.ingredientsText} /> : "—"}</p>
             </div>
             <div className="mt-4">
               <p className="hf-type-small text-text-secondary">Øvrig næring pr. 100 g</p>
