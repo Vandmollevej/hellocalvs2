@@ -2,6 +2,12 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Abonnement — boilerplate fjernet
+
+- `/profile/subscription`: datalagringsnoten (`subscription.retentionNote`)
+  er fjernet fra hovedindholdet og fra da/en. Betingelser ligger fortsat i
+  footerens `TermsSheet`.
+
 ## 2026-09-28: Kamera — scanningsstribe i stedet for load-cirkel
 
 - `PhotoWorkingOverlay` viser en hvid/lys gradientstribe (`.hf-scan-sweep`),
