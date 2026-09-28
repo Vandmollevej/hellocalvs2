@@ -6,7 +6,7 @@ import { queueMessage } from "@/lib/messaging";
 // brugeren kommer ind med det samme, men emailVerifiedAt sættes først, når
 // linket i mailen er åbnet. Tokenet er et signeret JWT (bruger-ID + e-mail),
 // så der ikke skal gemmes noget; skifter e-mailen, bliver gamle links ugyldige.
-const TOKEN_TTL = "7d";
+const TOKEN_TTL = "1h"; // vises i arket som "Linket er aktivt i 1 time."
 const APP_BASE_URL = process.env.APP_BASE_URL || "https://hellocal.io";
 
 function secretKey() {

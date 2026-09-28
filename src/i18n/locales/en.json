@@ -84,7 +84,7 @@
     "dismiss": "Close",
     "sheetTitle": "Confirm your email",
     "sheetText": "We sent you an email with a link. Tap the link to activate your account.",
-    "later": "Later"
+    "linkValidity": "The link is active for 1 hour."
   },
   "welcomeSheet": {
     "slide1Title": "Welcome to Hello Cal",
