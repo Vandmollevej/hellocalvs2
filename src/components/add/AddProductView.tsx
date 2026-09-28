@@ -37,7 +37,7 @@ import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
 import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
 import { extractCertifications } from "@/lib/product-certifications";
 import { CertificationLogo } from "@/components/hf/CertificationLogo";
-import { Skeleton, SkeletonDetail, SkeletonScreen } from "@/components/hf/Skeleton";
+import { Skeleton } from "@/components/hf/Skeleton";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): mens OpenAI stadig læser
 // felter (Product.pendingFields), eller den fritlagte forside endnu ikke er
@@ -204,6 +204,18 @@ function localDateString(date: Date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }
 
+// Tom vare til skelet-visningen, mens den rigtige hentes.
+const LOADING_PRODUCT: Product = {
+  id: "",
+  name: "",
+  kcalPer100g: 0,
+  proteinPer100g: 0,
+  carbsPer100g: 0,
+  fatPer100g: 0,
+  brand: null,
+  isGenericIngredient: false,
+};
+
 type LoadState =
   | { status: "loading" }
   | { status: "loaded"; product: Product }
@@ -324,7 +336,12 @@ export function AddProductView({
   // Tidspunktet siden blev åbnet — ventetiden på fritlægning måles fra det.
   const [openedAt] = useState(() => Date.now());
   const pendingFields = state.status === "loaded" ? (state.product.pendingFields ?? []) : [];
-  const isPending = (field: "name" | "brand" | "nutrition" | "ingredients") => pendingFields.includes(field);
+  // Mens varen hentes, tegnes den rigtige produktside med skelet-flader i
+  // stedet for hvert datafelt (design.md §6.14) — præcis som felter, OpenAI
+  // stadig læser. Dermed følger skelettet altid sidens layout.
+  const isLoading = state.status === "loading";
+  const isPending = (field: "name" | "brand" | "nutrition" | "ingredients") =>
+    isLoading || pendingFields.includes(field);
   const ownProduct =
     state.status === "loaded" && !!profile?.id && state.product.createdByUserId === profile.id;
   const awaitingCutout =
@@ -603,6 +620,8 @@ export function AddProductView({
 
   const { title: productTitle, certifications } =
     state.status === "loaded" ? extractCertifications(state.product.name) : { title: "", certifications: [] };
+  // Siden tegnes med en tom vare, mens den rigtige hentes.
+  const view = state.status === "loaded" ? state.product : isLoading ? LOADING_PRODUCT : null;
 
   const title = forDish ? t("addProduct.titleForDish") : t("addProduct.title");
   const Frame = inSheet ? SheetFrame : ScreenFrame;
@@ -636,16 +655,12 @@ export function AddProductView({
                     : t("addProduct.add")}
             </button>
           </>
+        ) : isLoading ? (
+          <Skeleton type="button" />
         ) : undefined
       }
     >
       <div className="flex h-full flex-col overflow-y-auto">
-        {state.status === "loading" && (
-          <SkeletonScreen>
-            <SkeletonDetail />
-          </SkeletonScreen>
-        )}
-
         {(state.status === "not_found" || state.status === "error") && (
           <div className="m-4 rounded-2xl bg-hf-tan p-4 text-center">
             <p className="hf-type-body text-text-secondary">
@@ -656,9 +671,9 @@ export function AddProductView({
           </div>
         )}
 
-        {state.status === "loaded" && (
+        {view && (
           <>
-            {!forDish && !!id && photoAwards.length > 0 && (
+            {!isLoading && !forDish && !!id && photoAwards.length > 0 && (
               <Link
                 href={`/add/${id}/photo-award`}
                 className="hf-type-small hf-type-strong hf-control flex items-center justify-center bg-hf-black px-4 text-center text-hf-white"
@@ -676,9 +691,9 @@ export function AddProductView({
             <div className="relative flex flex-col p-4">
               {/* Del-knappen ligger oven på hjørnet, så cirklen står 16 px under
                   headeren – samme afstand som mellem sektionerne. */}
-              {!forDish && !!id && (
+              {!isLoading && !forDish && !!id && (
                 <div className="absolute right-4 top-2 z-20">
-                  <ForwardButton kind="PRODUCT" itemId={state.product.id} name={state.product.name} />
+                  <ForwardButton kind="PRODUCT" itemId={view.id} name={view.name} />
                 </div>
               )}
               <div className="flex flex-col items-start gap-2 pt-4 text-left">
@@ -691,13 +706,13 @@ export function AddProductView({
                         alt=""
                         className="block h-full w-full max-h-full max-w-full object-cover"
                       />
-                    ) : shouldPoll ? (
+                    ) : shouldPoll || isLoading ? (
                       <Skeleton type="circle" width="100%" height="100%" />
                     ) : (
                       <div aria-hidden="true" className="h-full w-full" />
                     )}
                   </div>
-                  {!state.product.isGenericIngredient && (
+                  {!isLoading && !view.isGenericIngredient && (
                     <button
                       type="button"
                       onClick={handleToggleFavorite}
@@ -710,17 +725,17 @@ export function AddProductView({
                   {/* Brandet vises kun på cirklen: logoet med bunden i cirklens
                       bund og venstre kant 3/4 inde; uden logo brandnavnet i
                       fed grøn tekst samme sted (DECISIONS 2026-09-28). */}
-                  {state.product.brand &&
-                    (state.product.brand.logoUrl ? (
+                  {view.brand &&
+                    (view.brand.logoUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={state.product.brand.logoUrl}
-                        alt={state.product.brand.name}
+                        src={view.brand.logoUrl}
+                        alt={view.brand.name}
                         className="pointer-events-none absolute bottom-0 left-3/4 z-10 h-[95px] w-[95px] object-contain object-left-bottom"
                       />
                     ) : (
                       <p className="hf-type-title hf-type-strong pointer-events-none absolute bottom-0 left-3/4 z-10 whitespace-nowrap text-hf-green">
-                        {state.product.brand.name}
+                        {view.brand.name}
                       </p>
                     ))}
                   {/* Certificeringslogoer (Øko m.fl.) på produktcirklen; uden
@@ -740,9 +755,9 @@ export function AddProductView({
                 ) : (
                   <h1 className="hf-type-page-title text-hf-black">{productTitle}</h1>
                 )}
-                {(state.product.packageSizeText || state.product.variant) && (
+                {(view.packageSizeText || view.variant) && (
                   <h2 className="hf-type-title hf-type-strong text-hf-green">
-                    {[state.product.packageSizeText, state.product.variant].filter(Boolean).join(" · ")}
+                    {[view.packageSizeText, view.variant].filter(Boolean).join(" · ")}
                   </h2>
                 )}
               </div>
@@ -792,7 +807,11 @@ export function AddProductView({
                   −
                 </button>
                 <div className="flex-1 rounded-2xl bg-hf-tan py-3 text-center text-hf-black">
-                  {hasServingUnit && amountUnit === "personer" ? (
+                  {isLoading ? (
+                    <ReadingSkeleton label={t("addProduct.reading")}>
+                      <Skeleton type="page-title" width={96} />
+                    </ReadingSkeleton>
+                  ) : hasServingUnit && amountUnit === "personer" ? (
                     <p className="hf-type-page-title capitalize">
                       {`${Math.round(amount / (servingSizeGrams as number))} ${
                         amount === servingSizeGrams ? servingSizeUnitSingular : servingSizeUnitPlural
@@ -821,9 +840,9 @@ export function AddProductView({
                       <ReadingSkeleton label={t("addProduct.reading")}>
                         <Skeleton type="caption" width={64} height={14} className="my-0.5" />
                       </ReadingSkeleton>
-                    ) : state.product.isGenericIngredient && state.product.hasKnownNutrition === false
+                    ) : view.isGenericIngredient && view.hasKnownNutrition === false
                       ? t("addProduct.nutritionUnknown")
-                      : t("addProduct.kcalAmount", { kcal: Math.round((state.product.kcalPer100g * amount) / 100) })}
+                      : t("addProduct.kcalAmount", { kcal: Math.round((view.kcalPer100g * amount) / 100) })}
                   </p>
                 </div>
                 <button
@@ -841,16 +860,16 @@ export function AddProductView({
                     <ReadingSkeleton label={t("addProduct.reading")}>
                       <Skeleton type="body" width={150} />
                     </ReadingSkeleton>
-                  ) : state.product.isGenericIngredient && state.product.hasKnownNutrition === false
+                  ) : view.isGenericIngredient && view.hasKnownNutrition === false
                     ? t("addProduct.nutritionUnknown")
                     : servingSizeGrams && hasServingUnit
                     ? t("addProduct.kcalPerServing", {
-                        kcal: Math.round((state.product.kcalPer100g * servingSizeGrams) / 100),
+                        kcal: Math.round((view.kcalPer100g * servingSizeGrams) / 100),
                         unit: servingSizeUnitSingular as string,
                       })
                     : displayUnit === "g"
-                    ? t("addProduct.kcalPer100g", { kcal: Math.round(state.product.kcalPer100g) })
-                    : t("addProduct.kcalPer100ml", { kcal: Math.round(state.product.kcalPer100g) })}
+                    ? t("addProduct.kcalPer100g", { kcal: Math.round(view.kcalPer100g) })
+                    : t("addProduct.kcalPer100ml", { kcal: Math.round(view.kcalPer100g) })}
                 </p>
                 {!!confidentAlternativeServings.length && (
                   <div className="mt-1 flex flex-col items-center gap-0.5">
@@ -866,7 +885,7 @@ export function AddProductView({
             </div>
 
             <div ref={detailsRef} className="flex flex-col gap-8 border-t border-hf-tan-dark p-4">
-              {profile?.showAdditives && !!state.product.additives?.length && (
+              {profile?.showAdditives && !!view.additives?.length && (
                 <section
                   aria-labelledby="product-additives-heading"
                   className="rounded-2xl border-2 border-hf-green bg-hf-tan p-4"
@@ -889,7 +908,7 @@ export function AddProductView({
                     </div>
                   </div>
                   <div className="flex flex-col">
-                    {state.product.additives.map((code, index) => {
+                    {view.additives.map((code, index) => {
                       const name = additiveNames[code] ?? code.toUpperCase();
                       return (
                         <button
@@ -897,7 +916,7 @@ export function AddProductView({
                           type="button"
                           onClick={() => setOpenAdditive(code)}
                           className={`hf-control-row flex items-center gap-3 text-left ${
-                            index < (state.product.additives?.length ?? 0) - 1
+                            index < (view.additives?.length ?? 0) - 1
                               ? "border-b border-hf-tan-dark"
                               : ""
                           }`}
@@ -914,7 +933,7 @@ export function AddProductView({
               <div>
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="hf-type-title hf-type-strong text-hf-black">{t("common.macroBreakdown")}</h2>
-                  <div className="-my-3 -mr-3 flex items-center">
+                  <div className={`-my-3 -mr-3 flex items-center ${isLoading ? "invisible" : ""}`}>
                     {isProductEditingUnlocked && (
                       <button
                         type="button"
@@ -974,7 +993,7 @@ export function AddProductView({
                   />
                 </div>
                 )}
-                <CertificationLogos badges={certificationBadges(state.product.filters)} className="mt-4" />
+                <CertificationLogos badges={certificationBadges(view.filters)} className="mt-4" />
               </div>
 
               {/* Toksiner (G11): kendte stoffer ud fra navn + indholdsfortegnelse,
@@ -1040,7 +1059,7 @@ export function AddProductView({
                 </div>
               )}
 
-              {(isPending("ingredients") || !!state.product.ingredientsText) && (
+              {(isPending("ingredients") || !!view.ingredientsText) && (
                 <div>
                   <p className="hf-type-body mb-2 text-hf-black">{t("createDish.ingredients")}</p>
                   {isPending("ingredients") ? (
@@ -1052,7 +1071,7 @@ export function AddProductView({
                     </div>
                   ) : (
                     <p className="hf-type-small text-text-secondary">
-                      {splitENumbers(state.product.ingredientsText ?? "").map((part, index) =>
+                      {splitENumbers(view.ingredientsText ?? "").map((part, index) =>
                         part.code ? (
                           <button
                             key={index}
@@ -1164,7 +1183,7 @@ export function AddProductView({
                   )}
                 </div>
               )}
-              {!!state.product.barcodes?.length && state.product.createdByUserId !== profile?.id && (
+              {!!view.barcodes?.length && view.createdByUserId !== profile?.id && (
                 <Link
                   href={`/profile/report-bug?productId=${id}`}
                   className="hf-button hf-button--primary mt-2 flex items-center justify-center gap-2"

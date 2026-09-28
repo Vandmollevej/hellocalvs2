@@ -3,6 +3,15 @@
 Last updated: 2026-09-28
 
 
+
+## 2026-09-28: Produktsidens skelet følger layoutet
+
+- `AddProductView` tegner under hentning den rigtige produktside med tom vare;
+  cirkel, navn, mængde, kcal, makroer, ingredienser og Tilføj-knap er flader
+  på deres egne pladser. Det generiske `SkeletonDetail` er fjernet derfra.
+- Strategien er skrevet ind i design.md §6.14; andre sider med eget layout
+  bør omlægges på samme måde.
+
 ## 2026-09-28: Produktsiden — centreret, kcal under mængdeboksen (PR #90)
 
 - Tidspunkt vises ikke længere på produktsiden (ses i kalender og oversigt); registreringens tid bevares ved gem.
