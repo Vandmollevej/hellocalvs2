@@ -86,7 +86,7 @@ type Product = {
   servingSizeGrams?: number | null;
   servingSizeUnitSingular?: string | null;
   servingSizeUnitPlural?: string | null;
-  brand: { name: string } | null;
+  brand: { name: string; logoUrl?: string | null } | null;
   // Produktkategori + pakningsstørrelse bestemmer mængdeenheden (drikkevare =
   // ml/cl, ellers g), se src/lib/product-display-unit.ts.
   productCategory?: string | null;
@@ -699,15 +699,17 @@ export function AddProductView({
                       {isFavorite ? <IconBookmarkFilled size={24} /> : <IconBookmark size={24} />}
                     </button>
                   )}
-                  {/* Logo sits on top of the product circle: its bottom-left
-                      corner at the circle's bottom point, spanning one radius
-                      to the right, so it never covers the photo's centre. */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/hello-cal-fruit.png"
-                    alt=""
-                    className="pointer-events-none absolute bottom-0 left-1/2 z-10 h-[95px] w-[95px] object-contain object-left-bottom"
-                  />
+                  {/* Only a real brand logo goes on the circle (bottom-left
+                      corner at the circle's bottom point, one radius wide).
+                      Without a logo the brand name below is the only mark. */}
+                  {state.product.brand?.logoUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={state.product.brand.logoUrl}
+                      alt={state.product.brand.name}
+                      className="pointer-events-none absolute bottom-0 left-1/2 z-10 h-[95px] w-[95px] object-contain object-left-bottom"
+                    />
+                  )}
                 </div>
                 {isPending("name") ? (
                   <ReadingSkeleton label={t("addProduct.reading")}>
