@@ -204,19 +204,32 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
             P {product.proteinPer100g}g · K {product.carbsPer100g}g · F {product.fatPer100g}g
           </p>
         </div>
-        <div className="flex flex-shrink-0 items-center gap-3">
-          <div className="flex flex-col items-end" title="Laveste AI-/billedsikkerhed for produktet">
-            <span className={`hf-type-page-title leading-none ${confidenceClass(product.confidencePercent)}`}>
-              {product.confidencePercent === null ? "–" : `${product.confidencePercent} %`}
-            </span>
-            <span className="hf-type-micro hf-type-strong mt-1 uppercase tracking-wide text-text-muted">Sikkerhed</span>
-          </div>
+        <div className="flex flex-shrink-0 items-center gap-3 self-end sm:self-center">
+          {/* Uden AI-/billedmålinger findes der ingen sikkerhed at vise, så
+              feltet skjules helt i stedet for en meningsløs streg (opgave 43). */}
+          {product.confidencePercent !== null && (
+            <div
+              className="flex min-w-[4.5rem] flex-col items-end whitespace-nowrap"
+              title="Laveste AI-/billedsikkerhed for produktet"
+            >
+              <span
+                className={`hf-type-page-title leading-none tabular-nums ${confidenceClass(
+                  product.confidencePercent,
+                )}`}
+              >
+                {product.confidencePercent}%
+              </span>
+              <span className="hf-type-micro hf-type-strong mt-1 uppercase tracking-wide leading-none text-text-muted">
+                Sikkerhed
+              </span>
+            </div>
+          )}
           <button
             type="button"
             onClick={() => setExpanded((v) => !v)}
             title={expanded ? "Skjul detaljer" : "Vis alle detaljer"}
             aria-expanded={expanded}
-            className="flex h-8 w-8 items-center justify-center text-text-muted"
+            className="flex h-8 w-8 flex-shrink-0 items-center justify-center text-text-muted"
           >
             <svg
               width="18"
@@ -225,6 +238,7 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
+              className="block"
               style={{ transform: expanded ? "rotate(180deg)" : undefined, transition: "transform .15s" }}
             >
               <path d="M6 9l6 6 6-6" />
