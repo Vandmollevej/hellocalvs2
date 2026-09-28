@@ -7,6 +7,8 @@ import { IconBarcode, IconCamera, IconFlame, IconList, IconPhoto, type Icon } fr
 import { BarcodeScanOverlay, type BarcodeDetection } from "@/components/hf/BarcodeScanOverlay";
 import { CaptureCheckOverlay } from "@/components/hf/CaptureCheckOverlay";
 import { PhotoWorkingOverlay } from "@/components/hf/HfLoader";
+import { ObjectPickerOverlay } from "@/components/camera/ObjectPickerOverlay";
+import { cropToObject, detectObjects, type ObjectBox } from "@/lib/object-picker";
 import { ProductOutlineOverlay } from "@/components/camera/ProductOutlineOverlay";
 import {
   barcodeGuideBoxFraction,
@@ -126,6 +128,9 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
   const workingRef = useRef(false);
   const [photo, setPhoto] = useState<string | null>(null);
   const [working, setWorking] = useState(false);
+  // Flere mulige objekter på forsidefotoet: brugeren trykker på det rigtige.
+  const [pickObjects, setPickObjects] = useState<ObjectBox[] | null>(null);
+  const pickResolveRef = useRef<((object: ObjectBox | null) => void) | null>(null);
   const [highlight, setHighlight] = useState<Highlight | null>(null);
   const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const barcodeLabelJobRef = useRef<{ frame: Frame; startedAt: number; result: Promise<LabelRead> } | null>(null);
@@ -546,6 +551,25 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     return () => clearInterval(interval);
   }, [scanning]);
 
+  // Ved flere objekter på billedet vises grønne cirkler, og billedet beskæres
+  // til det objekt, brugeren trykker på. Ét eller ingen objekt: hele billedet.
+  async function chooseObject(frame: string): Promise<string> {
+    const objects = await detectObjects(frame);
+    if (objects.length < 2 || leavingRef.current) return frame;
+    setWorking(false);
+    const picked = await new Promise<ObjectBox | null>((resolve) => {
+      pickResolveRef.current = resolve;
+      setPickObjects(objects);
+    });
+    pickResolveRef.current = null;
+    setPickObjects(null);
+    setWorking(true);
+    if (!picked) return frame;
+    const cropped = await cropToObject(frame, picked);
+    setPhoto(cropped);
+    return cropped;
+  }
+
   const capturePhotoRef = useRef(capturePhoto);
   useEffect(() => {
     capturePhotoRef.current = capturePhoto;
@@ -573,8 +597,10 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     const startedAt = Date.now();
 
     if (step === "front") {
-      data.frontPhoto = frame.url;
-      const front = await readFrontPhoto(frame.url, languages, flowId);
+      const chosen = await chooseObject(frame.url);
+      if (leavingRef.current) return;
+      data.frontPhoto = chosen;
+      const front = await readFrontPhoto(chosen, languages, flowId);
       scanLog(flowId, "front_photo", {
         level: front.lookupFailed ? "warn" : "info",
         message: front.textLength
@@ -669,7 +695,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
   }
 
   function selectStep(next: CaptureStep) {
-    if (working || next === step) return;
+    if (working || pickObjects || next === step) return;
     // Uden stregkode kan intet andet trin aflæses (sprog/region følger den).
     if (next !== "barcode" && !done.barcode) return;
     if (next === "barcode" && done.barcode) return;
@@ -693,7 +719,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
   };
   const autoCaptureProgress = useAutoCapture(
     videoRef,
-    step !== "barcode" && cameraStatus === "active" && !working && !photo && !highlight && !createFailed,
+    step !== "barcode" && cameraStatus === "active" && !working && !pickObjects && !photo && !highlight && !createFailed,
     () => void capturePhotoRef.current(),
   );
 
@@ -768,6 +794,14 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
           </div>
         )}
 
+        {photo && pickObjects && (
+          <ObjectPickerOverlay
+            photo={photo}
+            objects={pickObjects}
+            onPick={(object) => pickResolveRef.current?.(object)}
+            onUseWhole={() => pickResolveRef.current?.(null)}
+          />
+        )}
         {working && <PhotoWorkingOverlay label={t("cameraCreate.analyzingDefault")} />}
 
         {highlight && (
@@ -827,7 +861,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
               <button
                 type="button"
                 onClick={() => void capturePhoto()}
-                disabled={cameraStatus !== "active" || working}
+                disabled={cameraStatus !== "active" || working || !!pickObjects}
                 className="hf-control hf-btn-primary gap-2 px-6 disabled:opacity-40"
               >
                 <IconCamera size={19} /> {t("camera.takePhoto")}

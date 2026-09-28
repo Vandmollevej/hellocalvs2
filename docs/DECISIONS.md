@@ -3138,3 +3138,12 @@ lysegrøn baggrund, grøn stroke og mørkegrøn tekst via `.hf-selected` og toke
 `--hf-color-selected-*` i `globals.css`. Kraftigt grønne/sorte valgte flader er udfaset.
 Admin-flader er ikke omfattet.
 
+
+
+## 2026-09-28: Flere objekter i kameraet — brugeren vælger
+
+- Ved flere mulige objekter i et taget foto markeres de med grønne cirkler,
+  og brugeren trykker på det, der skal være fokus. Fotoet beskæres til det
+  valgte objekt (15 % luft), før genkendelse/OCR kører. Gælder forsidefotoet
+  (ikke stregkode, energi, indhold) og Måltid/HelloFresh. Detektionen er et
+  AI-kald; fejler det, fortsættes med hele billedet.
