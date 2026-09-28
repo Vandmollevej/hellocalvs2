@@ -93,6 +93,7 @@ type Product = {
   // ml/cl, ellers g), se src/lib/product-display-unit.ts.
   productCategory?: string | null;
   packageSizeText?: string | null;
+  variant?: string | null;
   imageUrl?: string | null;
   // Fritlagt forside, der venter på admin-godkendelse — vises kun for den,
   // der selv oprettede varen (docs/DECISIONS.md 2026-09-27).
@@ -739,8 +740,10 @@ export function AddProductView({
                 ) : (
                   <h1 className="hf-type-page-title text-hf-black">{productTitle}</h1>
                 )}
-                {state.product.packageSizeText && (
-                  <h2 className="hf-type-title hf-type-strong text-hf-green">{state.product.packageSizeText}</h2>
+                {(state.product.packageSizeText || state.product.variant) && (
+                  <h2 className="hf-type-title hf-type-strong text-hf-green">
+                    {[state.product.packageSizeText, state.product.variant].filter(Boolean).join(" · ")}
+                  </h2>
                 )}
               </div>
 
