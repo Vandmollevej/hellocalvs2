@@ -1216,7 +1216,12 @@
       "save": "Save {pct}%",
       "renewalNote": "The subscription renews automatically for the same period until you cancel. You can cancel at any time.",
       "buyCta": "Buy — {price} kr.",
-      "buyError": "The purchase couldn't be started right now"
+      "buyError": "The purchase couldn't be started right now",
+      "summaryPrice": "DKK {price} per {unit}",
+      "unit": { "1": "month", "3": "quarter (3 months)", "12": "year" },
+      "summaryBinding": "Commitment period: {period}. Paid upfront for the whole period.",
+      "bindingPeriod": { "1": "1 month", "3": "3 months", "12": "12 months" },
+      "fromPrice": "From DKK {price} per month · commitment from 1 month"
     }
   },
   "profileSleep": {

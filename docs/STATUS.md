@@ -2,6 +2,11 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Abonnement — pris og bindingsperiode (opgave 25)
+
+- Planside (`/profile/subscription/[plan]`): under periodeboksene vises en boks med prisen for den valgte periode ("1.071 kr. pr. år") og bindingsperioden ("Bindingsperiode: 12 måneder").
+- Oversigten (`/profile/subscription`): hver abonnementsboks viser "Fra X kr. pr. måned · binding fra 1 måned".
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen
