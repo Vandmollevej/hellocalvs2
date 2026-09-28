@@ -116,16 +116,19 @@ export default async function AdminProductsPage({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between gap-4">
-        <h1 className="hf-type-title text-hf-black">{t(admin.locale, "products_title")}</h1>
+      <div className="flex items-center justify-between gap-2">
+        <h1 className="hf-type-title min-w-0 truncate text-hf-black">{t(admin.locale, "products_title")}</h1>
         <details className="relative">
-          <summary className="hf-type-body flex cursor-pointer list-none items-center gap-2 rounded-md border border-hf-tan-dark bg-hf-white px-3 py-1.5 text-text-secondary [&::-webkit-details-marker]:hidden">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+          <summary
+            title={`Sortér: ${activeSort.label}`}
+            aria-label={`Sortér: ${activeSort.label}`}
+            className="flex h-9 w-9 cursor-pointer list-none items-center justify-center rounded-md border border-hf-tan-dark bg-hf-white text-text-secondary [&::-webkit-details-marker]:hidden"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
               <path d="M3 6h18M6 12h12M10 18h4" />
             </svg>
-            Sortér: {activeSort.label}
           </summary>
-          <div className="absolute right-0 z-10 mt-1 flex min-w-[240px] flex-col rounded-md border border-hf-tan-dark bg-hf-white py-1 shadow-lg">
+          <div className="absolute right-0 z-10 mt-1 flex w-max max-w-[calc(100vw-2rem)] flex-col rounded-md border border-hf-tan-dark bg-hf-white py-1 shadow-lg">
             {SORTS.map((s) => (
               <Link
                 key={s.key}

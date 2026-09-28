@@ -54,6 +54,10 @@ Forsiden er låst til skærmhøjden (`h-dvh overflow-hidden`); topbar, hero og b
   `/profile/report-bug` (under "Redigér"); API
   `GET/POST /api/bug-reports/[id]/notes` (kun egen, PENDING, maks 1000 tegn).
 - Admin ser "Brugerens noter" på kortene i `/admin/bug-reports`.
+## 2026-09-28: Admin "Nye varer" — klikbar vare + kompakt sortering
+
+- Billede og navn på hvert kort i `/admin/products` linker til den fulde varevisning (`/admin/products/[id]`), så alle detaljer kan læses før godkend/afvis.
+- Den store "Sortér: …"-knap er erstattet af et kompakt sorteringsikon, der åbner en menu. Titel og ikon står på én linje på mobil.
 
 ## 2026-09-28: Aktivitetsniveau i 5 trin + mails mod spam
 
