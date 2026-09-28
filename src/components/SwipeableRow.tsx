@@ -32,25 +32,33 @@ export function SwipeableRow({
   const startX = useRef<number | null>(null);
   const dragging = useRef(false);
 
+  const startOffset = useRef(0);
+  // Som på iPhone: én bevægelse åbner kun én side. Fra lukket låses siden af
+  // første retning; en åben række kan kun lukkes, ikke trækkes over i modsat side.
+  const side = useRef<"left" | "right" | null>(null);
+
   function handlePointerDown(e: React.PointerEvent) {
     startX.current = e.clientX;
+    startOffset.current = dragX;
+    side.current = dragX > 0 ? "left" : dragX < 0 ? "right" : null;
     dragging.current = true;
     setIsDragging(true);
   }
 
   function handlePointerMove(e: React.PointerEvent) {
     if (!dragging.current || startX.current === null) return;
-    const delta = e.clientX - startX.current;
-    const minimum = -rightActionsWidth;
-    const maximum = leftActionsWidth;
-    const clamped = Math.max(minimum, Math.min(maximum, delta));
-    setDragX(clamped);
+    const next = startOffset.current + e.clientX - startX.current;
+    if (side.current === null && next !== 0) side.current = next > 0 ? "left" : "right";
+    const minimum = side.current === "right" ? -rightActionsWidth : 0;
+    const maximum = side.current === "left" ? leftActionsWidth : 0;
+    setDragX(Math.max(minimum, Math.min(maximum, next)));
   }
 
   function handlePointerUp() {
     dragging.current = false;
     setIsDragging(false);
     startX.current = null;
+    side.current = null;
     // Snap to a fully open/closed position instead of a random in-between one.
     setDragX((x) => {
       if (leftActionsWidth > 0 && x > leftActionsWidth / 2) return leftActionsWidth;
