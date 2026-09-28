@@ -106,10 +106,15 @@ tysk mælkekarton. Testscripts ligger kun i sessionens scratchpad.
     billedmodeller returnerede andre formater end fotoet (test 2026-09-18).
 - Pris pr. vare: forside ~4.300 tokens + enten 0 (lokalt læst) eller ~4.800
   (samlet kald). Før: ~12.400.
-- Ikke testet: Google Vision. Den lokale Places-nøgle virker til Places, men
-  Google blokerer den til Vision (nøglen er låst til bestemte API'er). På
-  serveren findes hverken Places- eller Vision-nøgle. Afventer, at brugeren
-  åbner nøglen for Cloud Vision API.
+- Google Vision testet 2026-09-28 med brugerens servicekonto `vision-api`
+  (projekt hellocal, nøglefilen ligger lokalt og er git-ignoreret): forsiden
+  gav "Edeka" 97 % (+ DFB-logoet 80 %) og tekst, det fritskrabede logo "Edeka"
+  98 %; intet vartegn (køkken). Alle API-nøgler (Places, Maps, "APInøgle til
+  Google") afvises af Vision. Logo-robotten kan nu bruge servicekontoen
+  (`GOOGLE_VISION_CREDENTIALS`, `google-auth`, compose-mount `./secrets`).
+  Mangler på serveren: nøglefilen i `/volume1/docker/App/hellocal-v2/secrets/`
+  og `GOOGLE_VISION_CREDENTIALS=/secrets/google-vision.json` i
+  `.env.production`.
 - Logo-firkanten på EDEKA-fotoet er reelt næsten sort (RGB ~8,1,8) — farven
   kan ikke hentes ud af fotoet. Det rene logo skal komme fra logo-robotten
   (Google Vision web-søgning).

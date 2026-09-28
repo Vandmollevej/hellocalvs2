@@ -43,6 +43,10 @@ log = logging.getLogger("logo-agent")
 
 DATABASE_URL = os.environ["DATABASE_URL"].split("?")[0]
 VISION_API_KEY = os.environ.get("GOOGLE_VISION_API_KEY") or os.environ.get("GOOGLE_API_KEY", "")
+# Servicekontoens nøglefil (JSON) — foretrækkes frem for en API-nøgle. Brugerens
+# Vision-adgang er en servicekonto (vision-api@hellocal), ikke en API-nøgle
+# (test 2026-09-28: alle API-nøgler blev afvist af Vision, servicekontoen virker).
+VISION_CREDENTIALS_FILE = os.environ.get("GOOGLE_VISION_CREDENTIALS", "").strip()
 IMAGES_DIR = os.environ.get("IMAGE_OUTPUT_DIR", "/images")
 PUBLIC_PATH_PREFIX = os.environ.get("PUBLIC_PATH_PREFIX", "/product-images")
 RUN_HOUR = int(os.environ.get("LOGO_AGENT_RUN_HOUR", "3"))
@@ -92,9 +96,30 @@ def load_product_image(image_url):
     return None
 
 
+_vision_credentials = None
+
+
+def vision_auth():
+    """Headers og query-parametre til Vision: servicekonto, ellers API-nøgle."""
+    global _vision_credentials
+    if VISION_CREDENTIALS_FILE:
+        from google.auth.transport.requests import Request
+        from google.oauth2 import service_account
+
+        if _vision_credentials is None:
+            _vision_credentials = service_account.Credentials.from_service_account_file(
+                VISION_CREDENTIALS_FILE, scopes=["https://www.googleapis.com/auth/cloud-vision"]
+            )
+        if not _vision_credentials.valid:
+            _vision_credentials.refresh(Request())
+        return {"Authorization": f"Bearer {_vision_credentials.token}"}, {}
+    return {}, {"key": VISION_API_KEY}
+
+
 def vision(requests_payload):
+    headers, params = vision_auth()
     response = requests.post(
-        VISION_URL, params={"key": VISION_API_KEY}, json={"requests": requests_payload}, timeout=60
+        VISION_URL, params=params, headers=headers, json={"requests": requests_payload}, timeout=60
     )
     response.raise_for_status()
     return response.json().get("responses", [])
@@ -373,8 +398,11 @@ def cleanup(conn):
 
 
 def run_once():
-    if not VISION_API_KEY:
-        log.error("GOOGLE_VISION_API_KEY (eller GOOGLE_API_KEY) mangler — springer kørslen over")
+    if not VISION_CREDENTIALS_FILE and not VISION_API_KEY:
+        log.error("GOOGLE_VISION_CREDENTIALS (eller GOOGLE_VISION_API_KEY/GOOGLE_API_KEY) mangler — springer kørslen over")
+        return
+    if VISION_CREDENTIALS_FILE and not os.path.exists(VISION_CREDENTIALS_FILE):
+        log.error("GOOGLE_VISION_CREDENTIALS peger på en fil, der ikke findes (%s) — springer kørslen over", VISION_CREDENTIALS_FILE)
         return
     with psycopg2.connect(DATABASE_URL) as conn:
         cleanup(conn)

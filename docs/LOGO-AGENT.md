@@ -47,7 +47,8 @@ det, robotten skal. Besluttet af brugeren 2026-09-24.
 
 | Variabel | Standard | Formål |
 | --- | --- | --- |
-| `GOOGLE_VISION_API_KEY` | — | Nøgle med Cloud Vision API slået til. Mangler den, bruges `GOOGLE_API_KEY`; mangler begge, logger robotten og springer natten over. |
+| `GOOGLE_VISION_CREDENTIALS` | — | Sti inde i containeren til servicekontoens nøglefil (JSON), fx `/secrets/google-vision.json`. Filen lægges i `secrets/` ved siden af compose-filen på serveren. Foretrækkes frem for en API-nøgle. Brugerens Vision-adgang er servicekontoen `vision-api` i projektet hellocal (testet 2026-09-28: EDEKA-logoet genkendt med 98 %). |
+| `GOOGLE_VISION_API_KEY` | — | Bruges kun uden `GOOGLE_VISION_CREDENTIALS`: API-nøgle med Cloud Vision API tilladt. Mangler den, bruges `GOOGLE_API_KEY`; mangler alt, logger robotten og springer natten over. |
 | `LOGO_AGENT_RUN_HOUR` | `3` | Time (dansk tid) for natkørslen |
 | `LOGO_AGENT_BATCH_SIZE` | `25` | Maks. antal brands pr. nat |
 

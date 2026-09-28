@@ -173,12 +173,15 @@ services:
     restart: unless-stopped
     environment:
       DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env.production}
+      # Servicekontoens nøglefil (foretrukket), fx /secrets/google-vision.json.
+      GOOGLE_VISION_CREDENTIALS: ${GOOGLE_VISION_CREDENTIALS:-}
       GOOGLE_VISION_API_KEY: ${GOOGLE_VISION_API_KEY:-}
       GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
       LOGO_AGENT_RUN_HOUR: ${LOGO_AGENT_RUN_HOUR:-3}
       LOGO_AGENT_BATCH_SIZE: ${LOGO_AGENT_BATCH_SIZE:-25}
     volumes:
       - ./data/product-images:/images
+      - ./secrets:/secrets:ro
     depends_on:
       db:
         condition: service_healthy

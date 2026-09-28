@@ -70,6 +70,8 @@ jobs:
           fi
           # Bind mount-mapper i compose.production.yaml skal findes, før containerne starter.
           mkdir -p /deploy/data/product-images /deploy/data/hellofresh-images /deploy/data/quality-control-model-cache
+          # Servicekonto-nøgler (fx Google Vision til logo-agent) lægges manuelt her.
+          mkdir -p /deploy/secrets
 
       - name: Select release and pull images
         run: |
