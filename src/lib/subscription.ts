@@ -41,7 +41,12 @@ export function getSubscriptionTier(
 }
 
 export async function getUserSubscriptionTier(userId: string, now: Date = new Date()): Promise<SubscriptionTier> {
-  const subscription = await prisma.subscription.findUnique({ where: { userId } });
+  const [subscription, user] = await Promise.all([
+    prisma.subscription.findUnique({ where: { userId } }),
+    prisma.user.findUnique({ where: { id: userId }, select: { role: true } }),
+  ]);
+  // Administratorer er altid Seriøs, så de kan teste alle funktioner (docs/DECISIONS.md 2026-09-28).
+  if (user?.role === "ADMIN") return "SERIOUS";
   if (getSubscriptionTier(subscription, now) === "SERIOUS") return "SERIOUS";
   return (await isCoveredByFamilyPlan(userId, now)) ? "SERIOUS" : "FREE";
 }
