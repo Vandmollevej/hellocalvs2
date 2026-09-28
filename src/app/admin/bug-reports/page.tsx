@@ -18,6 +18,7 @@ export default async function AdminBugReportsPage() {
       source: true,
       user: { select: { displayName: true, email: true } },
       product: { select: { id: true, name: true, brand: { select: { name: true } } } },
+      notes: { select: { id: true, text: true, createdAt: true }, orderBy: { createdAt: "asc" } },
     },
     orderBy: { createdAt: "desc" },
   });
@@ -35,7 +36,11 @@ export default async function AdminBugReportsPage() {
           {reports.map((report) => (
             <PendingBugReportCard
               key={report.id}
-              report={{ ...report, createdAt: report.createdAt.toISOString() }}
+              report={{
+                ...report,
+                createdAt: report.createdAt.toISOString(),
+                notes: report.notes.map((n) => ({ ...n, createdAt: n.createdAt.toISOString() })),
+              }}
             />
           ))}
         </div>
