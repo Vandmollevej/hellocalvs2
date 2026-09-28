@@ -6,7 +6,8 @@ Last updated: 2026-09-27
 
 - Årsag: `globals.css` låser html/body mod scroll (`overflow: hidden`), fordi appen scroller i sine egne indre containere. Admin-skallen, admin-login-layoutet og `/hello-doc/[token]` lå uden for telefonrammen og regnede med dokument-scroll, som derfor var blokeret.
 - Rettet: de tre rødder er nu `h-dvh overflow-y-auto` (egen scroll-container). Sticky topbar/sidebjælke virker uændret, fordi de klæber til den nærmeste scroll-container. Menuskuffen låser nu skallens container i stedet for body.
-- Lint, typecheck og build kørt.
+- Lint, typecheck og build kørt. Verificeret i headless Chromium (Playwright) mod en midlertidig testside med AdminShell: uden rettelsen scroller hverken musehjul (1400×800) eller touch-swipe (iPhone-viewport); med rettelsen når begge bunden. Fejlen ramte altså også PC.
+- Ikke i drift før PR #22 er merget til `master` (deploy kører kun ved push til master).
 
 ## 2026-09-27: Produkt-database — filtre som dropdowns
 
