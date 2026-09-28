@@ -284,7 +284,7 @@ function ChoiceButton({
     <button
       onClick={onClick}
       className={`hf-type-body hf-type-strong hf-control flex-1 rounded-xl px-4 transition-colors ${
-        selected ? "bg-hf-green text-hf-white" : "bg-hf-tan text-hf-black"
+        selected ? "hf-selected" : "bg-hf-tan text-hf-black"
       }`}
     >
       {label}

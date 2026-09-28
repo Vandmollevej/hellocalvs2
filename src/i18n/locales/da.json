@@ -582,6 +582,7 @@
     "photoAlt": "Dit fotograferede billede",
     "liveViewAriaLabel": "Live kameravisning",
     "notRecognizedRetry": "Produkt ikke genkendt, prøv igen",
+    "holdStill": "Hold stille",
     "holdCameraStill": "Hold kameraet stille over stregkoden",
     "barcodeHintOutsideFrame": "Hold hele stregkoden inde i billedet — den må gerne vende lodret.",
     "barcodeHintBlurry": "Stregkoden er sløret? Prøv at holde lidt længere afstand, til den er skarp.",
@@ -613,6 +614,7 @@
     "retry": "Prøv igen",
     "title": "Tilføj vare",
     "analyzingDefault": "Analyserer billedet...",
+    "labelTextFound": "Næringsindhold eller ingredienser fundet på billedet",
     "readingImage": "Læser billedet...",
     "searchingDatabase": "Søger i databasen...",
     "comparingKnownItems": "Sammenligner med kendte varer...",
@@ -1178,7 +1180,6 @@
       "upgradeUnavailable": "Betaling er ikke tilsluttet endnu — brug en gavekode eller indløs points for at blive Seriøs, indtil en betalingsudbyder er på plads.",
       "withdrawalConsent": "Jeg ønsker, at abonnementet starter med det samme, og er klar over, at jeg ved fortrydelse inden for 14 dage kun får refunderet den del af perioden, jeg ikke har brugt."
     },
-    "retentionNote": "Data ældre end 3 måneder slettes aldrig — det gemmes og vises igen, så snart du bliver Seriøs.",
     "plansHeading": "Abonnementer",
     "plans": {
       "serious": {
@@ -1443,7 +1444,9 @@
     "notFound": "Registreringen findes ikke.",
     "loadError": "Kunne ikke hente registreringen.",
     "per100g": "pr. 100 g",
-    "perUnit": "pr. {unit}"
+    "perUnit": "pr. {unit}",
+    "save": "Gem ændringer",
+    "saveError": "Kunne ikke gemme ændringerne. Prøv igen."
   },
   "registrationReportError": {
     "title": "Indberet fejl",

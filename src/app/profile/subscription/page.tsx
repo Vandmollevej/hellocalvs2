@@ -189,8 +189,6 @@ export default function SubscriptionPage() {
             </Link>
           ))}
 
-          <p className="hf-type-caption">{t("subscription.retentionNote")}</p>
-
         </div>
       )}
     </HfScreen>
