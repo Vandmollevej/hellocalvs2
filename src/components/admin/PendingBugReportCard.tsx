@@ -14,6 +14,7 @@ type BugReport = {
   user: { displayName: string; email: string } | null;
   source: "USER" | "AI";
   product: { id: string; name: string; brand: { name: string } | null } | null;
+  notes: { id: string; text: string; createdAt: string }[];
 };
 
 export function PendingBugReportCard({ report }: { report: BugReport }) {
@@ -51,6 +52,19 @@ export function PendingBugReportCard({ report }: { report: BugReport }) {
             </p>
           )}
           <p className="hf-type-body mt-1 whitespace-pre-wrap text-hf-black">{report.description}</p>
+          {report.notes.length > 0 && (
+            <div className="mt-2 flex flex-col gap-1 border-l-2 border-hf-tan-dark pl-3">
+              <p className="hf-type-small hf-type-strong text-text-muted">Brugerens noter</p>
+              {report.notes.map((note) => (
+                <p key={note.id} className="hf-type-body whitespace-pre-wrap text-hf-black">
+                  <span className="hf-type-small text-text-muted">
+                    {new Date(note.createdAt).toLocaleDateString("da-DK")}:{" "}
+                  </span>
+                  {note.text}
+                </p>
+              ))}
+            </div>
+          )}
           {report.screenshotUrl && (
             // eslint-disable-next-line @next/next/no-img-element
             <img

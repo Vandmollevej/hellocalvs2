@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { IconBarcode, IconBolt, IconChevronDown, IconList, IconPhoto } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { PointsPromoBanner } from "@/components/hf/PointsPromoBanner";
+import { BugReportNotes } from "@/components/BugReportNotes";
 
 type BugReport = { id: string; description: string; status: string; categories?: string[] };
 
@@ -131,6 +132,9 @@ function ReportBugContent() {
             >
               Redigér
             </button>
+            <div className="mb-8 mt-4 w-full">
+              <BugReportNotes bugReportId={pending.id} />
+            </div>
           </div>
         ) : showForm ? (
           <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">

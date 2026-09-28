@@ -204,6 +204,7 @@ model User {
   sentInvitations         SentInvitation[]
   pointsTransactions      PointsTransaction[]
   bugReports              BugReport[]
+  bugReportNotes          BugReportNote[]
   notificationPreferences NotificationPreference[]
   pushSubscriptions       PushSubscription[]
   forwardsSent            Forward[]                @relation("ForwardSender")
@@ -1989,9 +1990,26 @@ model BugReport {
   escalationSentAt DateTime?
 
   pointsTransactions PointsTransaction[]
+  notes              BugReportNote[]
 
   @@index([userId, productId])
   @@map("bug_reports")
+}
+
+// Brugerens noter til en fejlrapport (Indberet fejl, punkt 4 — notesystem):
+// supplerende oplysninger tilføjet efter indsendelse, uden at overskrive
+// den oprindelige beskrivelse. Vises for admin på /admin/bug-reports.
+model BugReportNote {
+  id          String    @id @default(cuid())
+  bugReport   BugReport @relation(fields: [bugReportId], references: [id], onDelete: Cascade)
+  bugReportId String
+  user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId      String?
+  text        String
+  createdAt   DateTime  @default(now())
+
+  @@index([bugReportId, createdAt])
+  @@map("bug_report_notes")
 }
 
 // --- Besked automatisering (mail + push, docs/DECISIONS.md 2026-09-02) ---
