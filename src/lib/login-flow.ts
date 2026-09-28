@@ -32,8 +32,9 @@ export function afterLoginPath(next: string) {
   return `/login/face-id?next=${encodeURIComponent(safeNext)}`;
 }
 
-export function startOAuth(provider: OAuthProviderSlug, next: string) {
-  window.location.href = `/api/auth/oauth/${provider}?next=${encodeURIComponent(afterLoginPath(next))}`;
+export function startOAuth(provider: OAuthProviderSlug, next: string, consent = false) {
+  const consentParam = consent ? "&consent=1" : "";
+  window.location.href = `/api/auth/oauth/${provider}?next=${encodeURIComponent(afterLoginPath(next))}${consentParam}`;
 }
 
 const PROVIDER_NAMES: Record<OAuthProviderSlug, string> = { google: "Google", apple: "Apple", facebook: "Facebook" };

@@ -2,6 +2,14 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Samtykke direkte på tilmeldingssiden (opgave 35)
+
+- Siden `/samtykke`, `ConsentGate` og `POST /api/auth/consent` er fjernet.
+- Samtykke-rækken (Hello Cals Toggle, ikke native checkbox) ligger lige under
+  e-mailfeltet på `/signup`, med klikbart link til `/betingelser`. Uden den
+  kan hverken e-mail- eller Google/Apple/Facebook-tilmelding gennemføres;
+  OAuth sender `consent=1` med i den signerede state og sætter
+  `healthDataConsentAt`. Beslutning: DECISIONS 2026-09-28.
 ## 2026-09-28: Favicon rettet
 
 - `src/app/favicon.ico` var kun én sløret 16×16-udgave; nu genereret fra `Original images - Hi-res/Hello Cal Favicon.png` i 16/32/48/64 px.

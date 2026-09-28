@@ -10,7 +10,6 @@ import { nextStartupTip, type StartupTip } from "@/lib/startup-tips";
 // user who has given health-data consent, and never on login, consent, legal
 // or admin pages.
 const SKIP_PREFIXES = [
-  "/samtykke",
   "/betingelser",
   "/privatlivspolitik",
   "/welcome",

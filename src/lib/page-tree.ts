@@ -32,7 +32,6 @@ export const PAGE_TREE: PageArea[] = [
             label: "Opret bruger",
             children: [
               { path: "/verify-email", label: "Bekræft e-mail" },
-              { path: "/samtykke", label: "Samtykke", note: "Vises til alle, der mangler at give samtykke" },
             ],
           },
           {
