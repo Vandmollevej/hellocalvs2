@@ -24,6 +24,14 @@ Next work:
   Beslutning: DECISIONS 2026-09-28.
 - Lint, typecheck og build kørt; ikke afprøvet på en telefon (brugeren tjekker udseendet).
 
+## 2026-09-28: Kameraflowet — "Uden brus" i navnet + logo fra stregkode-fotoet
+
+- Testscanning af AQUA-vand: AI læste "Uden brus" men gemte det kun som
+  variant (navn "Vand"). Nu kommer varianten med i navnet.
+- Stregkode-fotoet læses for logo + variant (`enrich_barcode_logo` i admin
+  "Log"); logoet bliver et fritskrabningsjob. Beslutning: DECISIONS 2026-09-28.
+- Eksisterende vare "Vand" (AQUA) skal rettes manuelt i admin.
+- Lint, typecheck og build kørt; ikke testet mod database/OpenAI lokalt.
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen

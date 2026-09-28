@@ -4,6 +4,10 @@ import { readRegions } from "@/lib/ai-regions";
 import { buildBarcodeContext } from "@/lib/barcode-context";
 import { callStructuredVision } from "@/lib/product-ai";
 import {
+  BARCODE_LOGO_PROMPT_VERSION,
+  BARCODE_LOGO_SCHEMA,
+  BARCODE_LOGO_SYSTEM,
+  barcodeLogoText,
   FRONT_PROMPT_VERSION,
   FRONT_SCHEMA,
   FRONT_SYSTEM,
@@ -22,12 +26,13 @@ import {
   nutritionText,
 } from "@/lib/product-ai-tasks";
 import { LOCAL_OCR_MODEL, LOCAL_OCR_PROMPT_VERSION } from "@/lib/local-label";
-import { saveDataUrlImage } from "@/lib/qc-image-storage";
+import { readStoredImageAsDataUrl, saveDataUrlImage } from "@/lib/qc-image-storage";
 import { matchBrand, type BrandMatch } from "@/lib/brand-match";
 import { createFrontCutoutJobs } from "@/lib/image-cutout-jobs";
 import { deriveFiberPercent } from "@/lib/nutrition-normalize";
 import { parseWholeGrain } from "@/lib/whole-grain";
 import type {
+  BarcodeLogoAnalysis,
   IngredientsAiResult,
   IngredientsAnalysis,
   NutritionAiResult,
@@ -125,6 +130,54 @@ export async function analyzeFrontPhoto({ photo, barcode, marketRegion, signals 
   }
 
   return { analysisId: analysis.id, result: value, brandMatch };
+}
+
+// Stregkode-fotoet (gemt af POST /api/ai/save-barcode-photo) læses for logo
+// og variant, fordi logoet ikke altid står på forsiden (docs/DECISIONS.md
+// 2026-09-28). Resultatet lægges i BARCODE-rækkens prediction ved siden af
+// stregkoden. Returnerer null, hvis rækken eller fotoet mangler.
+export async function analyzeBarcodePhotoLogo({
+  analysisId,
+  barcode,
+  marketRegion,
+  signals,
+}: {
+  analysisId: string;
+  barcode: string;
+  marketRegion: string;
+  signals?: unknown;
+}): Promise<{ imageUrl: string; result: BarcodeLogoAnalysis; brandMatch: BrandMatch | null } | null> {
+  const row = await prisma.aiProductAnalysis.findFirst({
+    where: { id: analysisId, kind: "BARCODE" },
+    select: { imageUrl: true, prediction: true },
+  });
+  const photo = row?.imageUrl ? await readStoredImageAsDataUrl(row.imageUrl) : null;
+  if (!row?.imageUrl || !photo) return null;
+
+  const context = buildBarcodeContext(barcode, marketRegion, signals);
+  const knownBrands = await prisma.brand.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } });
+  const { value, model } = await callStructuredVision<BarcodeLogoAnalysis>({
+    photo,
+    schemaName: "hello_cal_barcode_logo",
+    schema: BARCODE_LOGO_SCHEMA,
+    system: BARCODE_LOGO_SYSTEM,
+    text: barcodeLogoText({ barcode, context, knownBrands: knownBrands.slice(0, 750).map((item) => item.name) }),
+  });
+  const result: BarcodeLogoAnalysis = { ...value, logoBox: cleanBox(value.logoBox) };
+  const brandMatch = matchBrand(result.logoText, knownBrands);
+
+  const previous = row.prediction && typeof row.prediction === "object" && !Array.isArray(row.prediction) ? row.prediction : {};
+  await prisma.aiProductAnalysis.update({
+    where: { id: analysisId },
+    data: {
+      prediction: {
+        ...previous,
+        logo: { ...result, brandMatch, model, promptVersion: BARCODE_LOGO_PROMPT_VERSION },
+      } as unknown as Prisma.InputJsonValue,
+    },
+  });
+
+  return { imageUrl: row.imageUrl, result, brandMatch };
 }
 
 export async function analyzeNutritionPhoto({ photo, barcode, marketRegion, ocrText = "", signals }: PhotoAnalysisInput): Promise<{

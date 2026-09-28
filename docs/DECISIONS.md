@@ -26,6 +26,16 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - Masken udglattes over billederne; stregen skjules, hvis objektet fylder under 1 % eller over 80 % af billedet, eller hvis midten ikke rammer noget. Kan genkendelsen ikke indlæses, vises bare den faste ramme som før (log-trin `outline_unavailable`).
 - Kode: `src/lib/product-outline.ts` (logik) og `src/components/camera/ProductOutlineOverlay.tsx` (takt/tegning).
 
+## 2026-09-28: Kameraflowet — variant i navnet + logo fra stregkode-fotoet
+
+- Varenavnet fra "opret straks" sammensættes som ved manuel oprettelse:
+  produkttype + variant (fx "Vand Uden brus"), medmindre navnet allerede
+  indeholder varianten. Før endte varianten kun i variant-feltet.
+- Logoet står ikke altid på forsiden. Stregkode-fotoet læses derfor også af
+  OpenAI (ét ekstra kald pr. ny vare, `barcode-logo-v1`) for logo og variant.
+  Et logo i fotoet bliver altid et BRAND_LOGO-fritskrabningsjob (logo-kandidat).
+  Brand og variant fra stregkode-fotoet bruges kun, når forsiden ikke gav dem.
+  Resultatet gemmes i BARCODE-rækkens `prediction.logo`.
 ## 2026-09-28: Open Food Facts kun som backup ved scanning
 
 - Brugerens krav: Open Food Facts må kun vises ved scanning som backup, aldrig i søgeresultater.
