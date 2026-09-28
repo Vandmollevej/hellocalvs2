@@ -136,6 +136,11 @@ Google-knappen uden hvid ikonboks, Afbryd-linket fjernet fra login, ingen rød f
 ## 2026-09-28: Allergener fremhævet i ingredienslisten (punkt 28)
 
 Ingredienslister vises via `IngredientsText` (`src/lib/allergen-highlight.ts`): de 14 EU-allergener (dansk/engelsk ordstamme, fx "hvedemel", "mælkepulver") står med STORE BOGSTAVER og fed. Bruges på produktsiden og i admin-godkendelse. PR #58.
+## 2026-09-28: Varesiden — E-numre, energifordeling og "Indberet fejl" (opgave 30)
+
+- Ved slåede E-nummer-advarsler vises en særskilt E-nummerblok før energifordelingen (stort grønt E, advarsel, klikbar liste). E-numre i ingredienslisten er også klikbare (`splitENumbers` i `src/lib/additives.ts`).
+- "Energifordeling" er en rigtig fed overskrift; kcal-reference står i parentes; mængde og kalorier ("17 kalorier") står større; mængdeboksen er smallere; plus/minus er store, fede og uden cirkel.
+- Advarselslinket "Fejl" ved overskriften er fjernet; "Indberet fejl" står nu som almindelig tekst nederst.
 
 ## 2026-09-28: Open Food Facts ude af søgningen
 
