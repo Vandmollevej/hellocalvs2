@@ -1467,6 +1467,7 @@
     }
   },
   "addProduct": {
+    "reportBug": "Indberet fejl",
     "reading": "Læses…",
     "title": "Tilføj",
     "titleForDish": "Tilføj ingrediens",

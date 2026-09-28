@@ -709,15 +709,6 @@ export function AddProductView({
                     className="pointer-events-none absolute bottom-0 left-1/2 z-10 h-[95px] w-[95px] object-contain object-left-bottom"
                   />
                 </div>
-                {!!state.product.barcodes?.length && state.product.createdByUserId !== profile?.id && (
-                  <Link
-                    href={`/profile/report-bug?productId=${id}`}
-                    className="hf-type-small hf-type-strong text-text-secondary flex items-center gap-1 self-start"
-                  >
-                    <IconAlertTriangle size={16} />
-                    {t("swipeableRow.reportError")}
-                  </Link>
-                )}
                 {isPending("name") ? (
                   <ReadingSkeleton label={t("addProduct.reading")}>
                     <Skeleton type="body-lg" width={200} />
@@ -1160,6 +1151,15 @@ export function AddProductView({
                     </div>
                   )}
                 </div>
+              )}
+              {!!state.product.barcodes?.length && state.product.createdByUserId !== profile?.id && (
+                <Link
+                  href={`/profile/report-bug?productId=${id}`}
+                  className="hf-button hf-button--primary mt-2 flex items-center justify-center gap-2"
+                >
+                  <IconAlertTriangle size={18} />
+                  {t("addProduct.reportBug")}
+                </Link>
               )}
             </div>
           </>
