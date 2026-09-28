@@ -3267,8 +3267,9 @@ Produktsiden viser aldrig teksten "Branded". Brandet vises kun som brandnavn/log
 ## 2026-09-28: Produktsidens lodrette rytme + beskårne brand-logoer
 
 - Produktsiden (`AddProductView`): 32 px fra produktcirklen til titlen (som
-  HelloFresh-heroen, design.md §5), 8 px inde i tekstblokken, 16 px til
-  "Produktdetaljer" og mængdevælgeren, 8 px fra mængdeboksen til kcal/100 g.
+  HelloFresh-heroen, design.md §6 Velkomst), titel + grøn linje er én
+  tekstblok uden mellemrum, 24 px til "Produktdetaljer", 16 px til
+  mængdevælgeren, 8 px fra mængdeboksen til kcal/100 g.
 - Brand-logoer beskæres til deres synlige pixels (logo-robotten,
   `trim_transparent`), så logoets bund flugter med cirklens bund. Allerede
   valgte logoer beskæres ved robottens næste kørsel.
