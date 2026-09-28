@@ -2,6 +2,10 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Forside — kun "Dagens tilføjelser" scroller
+
+Forsiden er låst til skærmhøjden (`h-dvh overflow-hidden`); topbar, hero og bundmenu står fast, og kun listen scroller internt.
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen
