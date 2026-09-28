@@ -133,6 +133,9 @@ Next work:
 ## 2026-09-28: Login-/tilmeldingsside ryddet op (punkt 37)
 
 Google-knappen uden hvid ikonboks, Afbryd-linket fjernet fra login, ingen rød fejl når brugeren selv afbryder OAuth (fx Apple). "Ny på Hello Cal? Opret konto" / "Har du allerede en konto? Log ind" ligger nu nederst under hovedknappen, større og understreget.
+## 2026-09-28: Allergener fremhævet i ingredienslisten (punkt 28)
+
+Ingredienslister vises via `IngredientsText` (`src/lib/allergen-highlight.ts`): de 14 EU-allergener (dansk/engelsk ordstamme, fx "hvedemel", "mælkepulver") står med STORE BOGSTAVER og fed. Bruges på produktsiden og i admin-godkendelse. PR #58.
 
 ## 2026-09-28: Open Food Facts ude af søgningen
 

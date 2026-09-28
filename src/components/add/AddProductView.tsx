@@ -24,6 +24,7 @@ import { CertificationLogos } from "@/components/hf/CertificationLogos";
 import { certificationBadges, type CertificationFilters } from "@/lib/certification-badges";
 import { AdditiveInfoModal } from "@/components/hf/AdditiveInfoModal";
 import { getAdditiveInfo, splitENumbers } from "@/lib/additives";
+import { IngredientsText } from "@/components/hf/IngredientsText";
 import { labelForAllergen } from "@/lib/allergens";
 import { matchToxins, type ToxinInfo } from "@/lib/toxins";
 import { ToxinInfoModal } from "@/components/hf/ToxinInfoModal";
@@ -1071,7 +1072,7 @@ export function AddProductView({
                             {part.text}
                           </button>
                         ) : (
-                          <span key={index}>{part.text}</span>
+                          <IngredientsText key={index} text={part.text} />
                         ),
                       )}
                     </p>
