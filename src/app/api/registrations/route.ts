@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { productImageForViewer } from "@/lib/product-display-image";
 import { unauthorized } from "@/lib/session";
 import { getProfileContext, getProfileUser, shareRegistration } from "@/lib/family-access";
 import { fulfillMatchingForward } from "@/lib/forwards";
@@ -29,6 +30,8 @@ export async function GET() {
         product: {
           select: {
             imageUrl: true,
+            pendingImageUrl: true,
+            createdByUserId: true,
             servingSizeGrams: true,
             servingSizeUnitSingular: true,
             servingSizeUnitPlural: true,
@@ -52,7 +55,7 @@ export async function GET() {
         ...registration,
         product: product
           ? {
-              imageUrl: product.imageUrl,
+              imageUrl: productImageForViewer(product, user.id),
               servingSizeGrams: product.servingSizeGrams,
               servingSizeUnitSingular: product.servingSizeUnitSingular,
               servingSizeUnitPlural: product.servingSizeUnitPlural,

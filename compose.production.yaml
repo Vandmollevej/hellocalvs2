@@ -31,6 +31,27 @@ services:
     networks:
       - backend
 
+  # Appen kører som nextjs (uid 1001), men Synologys ACL på data/product-images
+  # giver kun "everyone" læseadgang — appens egne uploads (forsidefotos til
+  # fritlægning, opskriftsbilleder, hyldefotos, brandlogoer) fejlede derfor
+  # stille. Kører som root før app/scan-app: opretter mapperne og giver dem
+  # Linux-rettigheder ejet af 1001 (chmod slår Synology-ACL'en fra på netop
+  # de mapper). Agenterne kører som root og kan stadig læse/skrive.
+  product-images-init:
+    image: ${HELLOCAL_IMAGE:?Set HELLOCAL_IMAGE in .env.production}:${HELLOCAL_TAG:-latest}
+    restart: "no"
+    user: "0:0"
+    network_mode: none
+    entrypoint: ["sh", "-c"]
+    command:
+      - >-
+        cd /images &&
+        mkdir -p qc-uploads recipe-images scan-shelves brand-logos cutouts &&
+        chown 1001:1001 qc-uploads recipe-images scan-shelves brand-logos cutouts &&
+        chmod 775 qc-uploads recipe-images scan-shelves brand-logos cutouts
+    volumes:
+      - ./data/product-images:/images
+
   app:
     image: ${HELLOCAL_IMAGE:?Set HELLOCAL_IMAGE in .env.production}:${HELLOCAL_TAG:-latest}
     restart: unless-stopped

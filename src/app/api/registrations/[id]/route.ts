@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { productImageForViewer } from "@/lib/product-display-image";
 import { unauthorized } from "@/lib/session";
 import { getProfileContext, getProfileUser, mayDeleteRegistration } from "@/lib/family-access";
 
@@ -18,6 +19,8 @@ export async function GET(_req: Request, { params }: RouteContext) {
         product: {
           select: {
             imageUrl: true,
+            pendingImageUrl: true,
+            createdByUserId: true,
             servingSizeGrams: true,
             servingSizeUnitSingular: true,
             servingSizeUnitPlural: true,
@@ -30,7 +33,20 @@ export async function GET(_req: Request, { params }: RouteContext) {
       return NextResponse.json({ registration: null }, { status: 404 });
     }
 
-    return NextResponse.json({ registration });
+    const { product, ...rest } = registration;
+    return NextResponse.json({
+      registration: {
+        ...rest,
+        product: product
+          ? {
+              imageUrl: productImageForViewer(product, user.id),
+              servingSizeGrams: product.servingSizeGrams,
+              servingSizeUnitSingular: product.servingSizeUnitSingular,
+              servingSizeUnitPlural: product.servingSizeUnitPlural,
+            }
+          : null,
+      },
+    });
   } catch (error) {
     console.error("Registration fetch failed", error);
     return NextResponse.json(

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { HfScreen } from "@/components/HfScreen";
+import { ProductImageCircle } from "@/components/ProductImageCircle";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { Skeleton, SkeletonCards, SkeletonScreen, SkeletonText } from "@/components/hf/Skeleton";
 
@@ -69,7 +70,9 @@ export default function RegistrationPage() {
       <HfScreen title={t("addProduct.title")}>
         {status === "loading" ? (
           <SkeletonScreen className="flex flex-col gap-4">
-            <Skeleton type="image" height={176} style={{ borderRadius: 0 }} />
+            <div className="flex justify-center p-4 pt-6">
+              <Skeleton type="image" width={190} height={190} style={{ borderRadius: "9999px" }} />
+            </div>
             <div className="flex flex-col gap-4 px-4">
               <Skeleton type="page-title" width="70%" />
               <SkeletonText lines={2} />
@@ -85,11 +88,9 @@ export default function RegistrationPage() {
 
   return (
     <HfScreen title={t("addProduct.title")}>
-      <div className="flex h-44 items-center justify-center bg-hf-tan">
-        {registration.product?.imageUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={registration.product.imageUrl} alt="" className="h-full w-full object-contain p-3" />
-        )}
+      {/* Samme faste billedcirkel som produktskærmen — ens højde med og uden billede. */}
+      <div className="flex justify-center p-4 pt-6">
+        <ProductImageCircle imageUrl={registration.product?.imageUrl ?? null} />
       </div>
 
       <div className="hf-page">
