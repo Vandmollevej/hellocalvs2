@@ -19,11 +19,36 @@ This file records durable decisions. Add a dated entry when a later decision cha
   `support@hellocal.io` (`src/lib/email-format.ts`). Kan overstyres med
   `SMTP_REPLY_TO`.
 
+## 2026-09-28: Levende omrids om varen i Tilføj-kameraet
+
+- Brugerens valg: på trinnene Forside, Energi og Indhold tegnes en hvid streg, der følger konturen af varen midt i kameraet, mens brugeren sigter (live, ikke først på det tagne billede). Stregkode-trinnet har sit eget overlay og er uændret.
+- Genkendelsen kører på telefonen med MediaPipe `InteractiveSegmenter` (magic touch, int8) med et positivt punkt midt i billedet. Biblioteket (`@mediapipe/tasks-vision` 1.0.1) og modellen hentes først, når kameraet bruges (jsDelivr + Google's model-storage) — ikke i app-bundlen, ingen npm-afhængighed. Modellen er ca. 30 MB og hentes kun første gang (browser-cache). Analysen kører på hovedtråden, så pausen mellem billeder er mindst dobbelt så lang som selve analysen.
+- Masken udglattes over billederne; stregen skjules, hvis objektet fylder under 1 % eller over 80 % af billedet, eller hvis midten ikke rammer noget. Kan genkendelsen ikke indlæses, vises bare den faste ramme som før (log-trin `outline_unavailable`).
+- Kode: `src/lib/product-outline.ts` (logik) og `src/components/camera/ProductOutlineOverlay.tsx` (takt/tegning).
+
+## 2026-09-28: Kameraflowet — variant i navnet + logo fra stregkode-fotoet
+
+- Varenavnet fra "opret straks" sammensættes som ved manuel oprettelse:
+  produkttype + variant (fx "Vand Uden brus"), medmindre navnet allerede
+  indeholder varianten. Før endte varianten kun i variant-feltet.
+- Logoet står ikke altid på forsiden. Stregkode-fotoet læses derfor også af
+  OpenAI (ét ekstra kald pr. ny vare, `barcode-logo-v1`) for logo og variant.
+  Et logo i fotoet bliver altid et BRAND_LOGO-fritskrabningsjob (logo-kandidat).
+  Brand og variant fra stregkode-fotoet bruges kun, når forsiden ikke gav dem.
+  Resultatet gemmes i BARCODE-rækkens `prediction.logo`.
 ## 2026-09-28: Open Food Facts kun som backup ved scanning
 
 - Brugerens krav: Open Food Facts må kun vises ved scanning som backup, aldrig i søgeresultater.
 - `GET /api/products` (Madvarer/Søg) søger kun i egen database og udelukker varer med `externalSource = OPEN_FOOD_FACTS` — også via `?source=`. Den live OFF-tekstsøgning (`searchOpenFoodFacts`, der importerede OFF-varer ved få lokale hits) er fjernet. Admin-søgeprøven (`/api/admin/search-ranking/preview`) følger samme regel.
 - Stregkodeopslaget (`/api/products/lookup/[barcode]`) er uændret: egen database → Open Food Facts → USDA.
+
+## 2026-09-28: Stregkodefotoet læses for næring og ingredienser + grøn ramme
+
+- Brugerens krav: står ingredienslisten (eller næringstabellen) ved stregkoden, skal trinnet klares automatisk fra samme foto. Ordet "Ingredienser" på regionernes sprog (`INGREDIENTS_HEADING` i `src/lib/product-ocr.ts`) udløser altid Indhold — kan listen ikke læses lokalt, læser OpenAI den fra fotoet.
+- Stregkodefotoet OCR-læses i baggrunden (`readBarcodePhoto`), mens brugeren fotograferer forsiden; det blokerer aldrig flowet. Fundne trin får flueben, og trin brugeren allerede selv har fotograferet, røres ikke.
+- Tesseract giver linjernes placering (`layout`), og `src/lib/label-text-regions.ts` finder tekstfeltet: ingredienslisten fra overskriften og nedad, næringstabellen ved mindst to forskellige tabelrækker (overskrift, energi, fedt, kulhydrat, protein).
+- En grøn ramme (kun kant, `--hf-color-positive`) vises om feltet: stregkodefotoet vises 1,8 s, energi-/indholdsfotoet 1,1 s før flowet går videre (`LabelTextHighlight`).
+- Samme regel på energifotoet: "Ingredienser" på fotoet giver også Indhold flueben, selv om listen ikke kan læses lokalt.
 
 ## 2026-09-28: Admin "Log" — test-log indtil go-live
 
@@ -3079,3 +3104,20 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
   forholdsmæssigt med den nye mængde. Varen selv ændres aldrig, og der oprettes
   ingen kontrolsag til admin ved redigering.
 - Egne retter uden vare vises med en vare bygget af snapshottet.
+
+## 2026-09-28: Billedrobotten kører løbende + admin "Robotter"
+
+- Brugerregel: robotten der fritlægger og retter billeder til skal ikke kun
+  køre om natten, men hele tiden vente på nye produkter. Fritlægningen
+  (`scripts/image-agent/cutout.py`) er nu sit eget job `image-cutout` med
+  planen "Løbende" (`intervalMinutes = 0`), tjekket hvert
+  `CUTOUT_POLL_INTERVAL_SECONDS` (standard 15 s).
+- "Løbende" er en ny plantype i `scheduled_jobs` (ingen migration): 0
+  minutter = kør ved hvert tjek. Samme regel i `job_control.py` (alle kopier)
+  og `src/lib/jobs/schedule.ts`.
+- Logo-robotten (`scripts/logo-agent`) styres nu også af `job_control.py`
+  (job `logo-agent`, standard 03:00), så den kan slås til/fra og køres fra admin.
+- Ny admin-side `/admin/robots` ("Administration → Robotter"): tabel med alle
+  robot-containere (runtime "agent") og kolonnerne Robot, On/Off, Kør,
+  Cron-job (Løbende / dagligt kl. / interval / kun manuelt) og Sidst kørt.
+  Samme rækker og API som "Cron-jobs".
