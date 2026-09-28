@@ -16,6 +16,9 @@ export async function GET(
         brand: true,
         barcodes: true,
         images: { orderBy: { order: "asc" } },
+        filters: {
+          select: { organic: true, keyhole: true, wholeGrain: true, animalWelfare: true, certifications: true },
+        },
         nutritionFeatures: {
           select: {
             sugarsPer100g: true,

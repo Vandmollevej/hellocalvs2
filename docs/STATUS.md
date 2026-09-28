@@ -102,6 +102,10 @@ Next work:
 ## 2026-09-28: Scroll-numre — snap rettet (punkt 8)
 
 - `WheelPicker` og `BirthDatePicker` delte en 120 ms-timer, der committede midt i momentum-scroll; re-render satte `scrollTop` og hjulet landede tilfældigt. Ny hook `src/components/ui/useWheelSnap.ts` committer først når scroll er stoppet på et snap-punkt (`scrollend`, ellers timer der venter på stabil, justeret position), og `BirthDatePicker` flytter ikke hjulet mens brugeren scroller. `overscroll-contain` tilføjet.
+## 2026-09-28: Certifikater som logoer (opgave 29)
+
+- Produktsiden viser mærkninger (økologisk, nøglehul, fuldkorn, dyrevelfærd, MSC/ASC/Fairtrade/Rainforest m.fl.) som logoer højrestillet under energifordelingen.
+- Kilde: `ProductFilters` via `/api/products/[id]`; logik i `src/lib/certification-badges.ts`, visning i `src/components/hf/CertificationLogos.tsx` (stiliserede SVG-logoer, ikke officielle grafikfiler).
 
 ## 2026-09-28: Open Food Facts ude af søgningen
 
