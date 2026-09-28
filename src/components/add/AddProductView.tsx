@@ -21,7 +21,6 @@ import { appendDishDraftIngredient } from "@/lib/dish-draft";
 import { selectRawContextImageUrl } from "@/lib/image-tags";
 import { MacroSliderBar } from "@/components/hf/MacroSliderBar";
 import { AdditiveInfoModal } from "@/components/hf/AdditiveInfoModal";
-import { TimeSection } from "@/components/hf/TimeSection";
 import { getAdditiveInfo } from "@/lib/additives";
 import { labelForAllergen } from "@/lib/allergens";
 import { matchToxins, type ToxinInfo } from "@/lib/toxins";
@@ -178,7 +177,7 @@ export function AddProductView({
   // er kun en mulighed, når varen faktisk har en defineret portionsstørrelse,
   // og må ikke være default-valget selv når den findes.
   const [amountUnit, setAmountUnit] = useState<"personer" | "gram">("gram");
-  const [time, setTime] = useState(() => initialTime ?? currentTimeString());
+  const [time] = useState(() => initialTime ?? currentTimeString());
   const [date] = useState(() => initialDate ?? currentDateString());
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -669,9 +668,9 @@ export function AddProductView({
                 </div>
               </div>
 
-              {!forDish && (
-                <TimeSection value={time} onChange={setTime} className="mb-4 mt-8" />
-              )}
+              {/* Tidspunkt vises ikke på den generelle vareside — det hører til
+                  den konkrete registrering (vises på /registration/[id]). Ny
+                  registrering får nu eller det valgte kalender-tidspunkt. */}
 
               {hasServingUnit && (
                 <div className="mb-4 flex justify-center gap-2">

@@ -4623,3 +4623,11 @@ låser porten/mappen på tværs af port-forsøg), og denne sessions Browser-pane
 kan ikke nå den server. Denne ændring bør derfor tjekkes visuelt af brugeren
 selv (eller i en senere session, når den anden dev-server ikke kører), særligt
 justeringen af scroll-fligen ved forskellige stå-op-tidspunkter.
+
+## 2026-09-28: Punkt 33 — Tidspunkt hører til registreringen
+
+- Den generelle vareside (`AddProductView`) viser ikke længere Tidspunkt; ny
+  registrering får stadig nu eller det tidspunkt, kalenderen åbnede med.
+- Konkret registrering (`/registration/[id]`, åbnes fra kalender, Dagens
+  tilføjelser og tale) viser "Tidspunkt" med klokkeslættet lige under — uden
+  stregerne fra `.hf-type-section-title`.

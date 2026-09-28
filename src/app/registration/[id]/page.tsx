@@ -15,6 +15,7 @@ type Registration = {
   carbsSnapshot: number;
   fatSnapshot: number;
   amountGrams: number;
+  createdAt: string;
   product: {
     imageUrl: string | null;
     servingSizeGrams: number | null;
@@ -41,7 +42,7 @@ function MacroBar({ label, grams, max }: { label: string; grams: number; max: nu
 }
 
 export default function RegistrationPage() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const [registration, setRegistration] = useState<Registration | null>(null);
   const [status, setStatus] = useState<"loading" | "not_found" | "error" | "loaded">("loading");
@@ -116,6 +117,18 @@ export default function RegistrationPage() {
             </p>
           );
         })()}
+
+        {/* Tidspunkt hører til den konkrete registrering (ikke varen): enkel
+            overskrift med klokkeslættet lige under — ingen streger. */}
+        <div className="text-center">
+          <p className="hf-type-body hf-heading text-hf-black">{t("common.timeHeading")}</p>
+          <p className="hf-type-body text-hf-black">
+            {new Date(registration.createdAt).toLocaleTimeString(locale === "da" ? "da-DK" : "en-GB", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </p>
+        </div>
 
         <div className="hf-card hf-card--form">
           <p className="hf-type-body hf-heading text-hf-black">{t("common.macroBreakdown")}</p>
