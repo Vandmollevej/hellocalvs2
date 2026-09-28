@@ -680,7 +680,7 @@ export function AddProductView({
                   <ForwardButton kind="PRODUCT" itemId={state.product.id} name={state.product.name} />
                 </div>
               )}
-              <div className="flex flex-col items-center gap-2 text-center">
+              <div className="flex flex-col items-start gap-2 text-left">
                 <div className="relative self-center h-[190px] w-[190px] min-h-[190px] min-w-[190px] max-h-[190px] max-w-[190px] shrink-0 overflow-visible">
                   <div className="flex h-[190px] w-[190px] min-h-[190px] min-w-[190px] items-center justify-center overflow-hidden rounded-full bg-hf-tan">
                     {displayImageUrl ? (
@@ -732,10 +732,10 @@ export function AddProductView({
                     <Skeleton type="body-lg" width={200} />
                   </ReadingSkeleton>
                 ) : (
-                  <h1 className="hf-type-title hf-type-strong text-hf-black">{productTitle}</h1>
+                  <h1 className="hf-type-page-title text-hf-black">{productTitle}</h1>
                 )}
                 {state.product.packageSizeText && (
-                  <h2 className="hf-type-body-lg text-hf-green">{state.product.packageSizeText}</h2>
+                  <h2 className="hf-type-title hf-type-strong text-hf-green">{state.product.packageSizeText}</h2>
                 )}
                 {isPending("brand") ? (
                   <ReadingSkeleton label={t("addProduct.reading")}>
@@ -749,6 +749,15 @@ export function AddProductView({
                   )
                 )}
               </div>
+
+              <button
+                type="button"
+                onClick={scrollToDetails}
+                className="hf-btn-text flex items-center gap-1 self-center mb-4 font-normal text-hf-black"
+              >
+                {t("addProduct.details")}
+                <IconChevronDown size={15} />
+              </button>
 
               {hasServingUnit && (
                 <div className="mb-4 flex justify-center gap-2">
@@ -857,14 +866,6 @@ export function AddProductView({
                 )}
               </div>
 
-              <button
-                type="button"
-                onClick={scrollToDetails}
-                className="hf-btn-text flex items-center gap-1 self-start font-normal text-hf-black"
-              >
-                {t("addProduct.details")}
-                <IconChevronDown size={15} />
-              </button>
             </div>
 
             <div ref={detailsRef} className="flex flex-col gap-8 border-t border-hf-tan-dark p-4">
