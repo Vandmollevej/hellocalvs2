@@ -28,7 +28,6 @@ import { IngredientsText } from "@/components/hf/IngredientsText";
 import { labelForAllergen } from "@/lib/allergens";
 import { matchToxins, type ToxinInfo } from "@/lib/toxins";
 import { ToxinInfoModal } from "@/components/hf/ToxinInfoModal";
-import { TimeSection } from "@/components/hf/TimeSection";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { isAlternativeServingConfident } from "@/lib/alternative-servings";
 import type { AlternativeServing } from "@/lib/product-analysis-types";
@@ -246,7 +245,7 @@ export function AddProductView({
   // er kun en mulighed, når varen faktisk har en defineret portionsstørrelse,
   // og må ikke være default-valget selv når den findes.
   const [amountUnit, setAmountUnit] = useState<"personer" | "gram">("gram");
-  const [time, setTime] = useState(
+  const [time] = useState(
     () => (registration ? localTimeString(new Date(registration.createdAt)) : initialTime) ?? currentTimeString(),
   );
   const [date] = useState(
@@ -777,12 +776,6 @@ export function AddProductView({
                 )}
 
               </div>
-
-              {/* Tidspunkt hører til den konkrete registrering, ikke varen: vises
-                  kun når en registrering er åbnet (/registration/[id]). */}
-              {isEditing && !forDish && (
-                <TimeSection value={time} onChange={setTime} className="mb-4 mt-8" />
-              )}
 
               {hasServingUnit && (
                 <div className="mb-4 flex justify-center gap-2">
