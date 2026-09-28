@@ -2,6 +2,16 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Flere objekter i kameraet
+
+- Når et foto tages (forsidefotoet i produktflowet samt Måltid/HelloFresh),
+  finder `/api/ai/detect-objects` (gpt-4o-mini) de mulige objekter som bokse.
+  Ved to eller flere vises grønne cirkler (`ObjectPickerOverlay`); brugeren
+  trykker på det objekt, billedet skal handle om, og fotoet beskæres til det
+  (`src/lib/object-picker.ts`) før analysen. "Brug hele billedet" springer
+  over. Ét/ingen objekt eller fejl: hele billedet bruges som før.
+- Ikke live-testet på telefon (kræver login + OPENAI_API_KEY).
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen

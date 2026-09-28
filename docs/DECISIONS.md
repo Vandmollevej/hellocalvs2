@@ -3042,3 +3042,11 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
   data sig, vises konflikten igen.
 - Erstatter det tidligere par-kort (`DuplicateProductCard`) og ruterne
   `/api/admin/duplicate-products/[id]/merge|dismiss`.
+
+## 2026-09-28: Flere objekter i kameraet — brugeren vælger
+
+- Ved flere mulige objekter i et taget foto markeres de med grønne cirkler,
+  og brugeren trykker på det, der skal være fokus. Fotoet beskæres til det
+  valgte objekt (15 % luft), før genkendelse/OCR kører. Gælder forsidefotoet
+  (ikke stregkode, energi, indhold) og Måltid/HelloFresh. Detektionen er et
+  AI-kald; fejler det, fortsættes med hele billedet.
