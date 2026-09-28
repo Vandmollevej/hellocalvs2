@@ -2,6 +2,10 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Admin — sikkerhedsfeltet (opgave 43)
+
+- `PendingProductCard`: sikkerhed skjules, når der ingen værdi er; procent står samlet (`83%`, ingen ombrydning), og pil-knappen holder fast position.
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen
