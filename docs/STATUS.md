@@ -2,6 +2,21 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Aktivitetsniveau i 5 trin + mails mod spam
+
+- Profil → Profil: aktivitetsniveau i 5 trin (Meget lav … Meget høj), gemmes
+  straks (`User.activityLevel`, migration `20260928160000_user_activity_level`).
+  Bruges som BMR-faktor i kalenderens ugeestimat og i opskrifternes
+  portionsstørrelse (DECISIONS 2026-09-28).
+- Alle mails (kø + direkte) får fuldt HTML-dokument med bundtekst,
+  tekstversion og Reply-To `support@hellocal.io`. DNS (SPF/DKIM/DMARC) for
+  hellocal.io er tjekket og korrekt; resten er nyt domænes omdømme.
+
+Next work:
+1. Deploy med migrationen (sker ved push til master).
+2. Brugeren opretter selv sin private konto (peter@packroff.dk) og udfylder
+   vægt/højde/fødselsdato/aktivitetsniveau i profilen.
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen

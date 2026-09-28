@@ -2,6 +2,23 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-28: Aktivitetsniveau i 5 trin
+
+- Brugerens krav: aktivitetsniveau i 5 trin i profilen. Niveauet beskriver
+  hverdagen (arbejde, gang, husarbejde) *uden* logget træning, så træning
+  ikke tælles to gange — logget `Activity.caloriesBurned` lægges fortsat oveni.
+- BMR-faktorer (`src/lib/activity-level.ts`): Meget lav 1,2 · Lav 1,375 ·
+  Moderat 1,55 · Høj 1,725 · Meget høj 1,9. Ikke valgt = 1,2 i kalenderen
+  (som før) og 1,4 i opskriftsportioner (som før). Børn bruger stadig EFSA's
+  aldersværdier.
+
+## 2026-09-28: Mailformat mod spamfiltre
+
+- Alle mails sendes som fuldt HTML-dokument med fast bundtekst (hvorfor man
+  får mailen + support-adresse), med tekstversion og Reply-To
+  `support@hellocal.io` (`src/lib/email-format.ts`). Kan overstyres med
+  `SMTP_REPLY_TO`.
+
 ## 2026-09-28: Open Food Facts kun som backup ved scanning
 
 - Brugerens krav: Open Food Facts må kun vises ved scanning som backup, aldrig i søgeresultater.
