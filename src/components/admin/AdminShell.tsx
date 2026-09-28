@@ -523,11 +523,10 @@ function SearchField({ label, collapsed, onOpen }: { label: string; collapsed: b
     <button
       type="button"
       onClick={onOpen}
-      className="hf-type-body flex h-9 w-full items-center gap-2 rounded-md border border-hf-tan-dark bg-page-bg px-3 text-text-muted hover:border-hf-green"
+      className="hf-type-body flex h-9 w-full items-center gap-2 rounded-md border border-hf-tan-dark bg-hf-white px-3 text-text-muted hover:border-hf-green"
     >
       <Icon name="search" className="h-4 w-4" />
       <span className="flex-1 text-left">{label}</span>
-      <kbd className="hf-type-micro rounded border border-hf-tan-dark px-1.5">Ctrl K</kbd>
     </button>
   );
 }
@@ -694,8 +693,8 @@ export function AdminShell({
           collapsed ? "w-16" : "w-64"
         }`}
       >
-        <div className={`flex h-14 shrink-0 items-center ${collapsed ? "justify-center" : "px-4"}`}>
-          <Link href="/admin" className="flex items-center gap-2" title={collapsed ? "Hello Cal Admin" : undefined}>
+        <div className={`flex h-14 shrink-0 items-center border-b border-hf-tan-dark ${collapsed ? "justify-center" : "px-4"}`}>
+          <Link href="/admin" className="flex items-center" title={collapsed ? "Hello Cal Admin" : undefined}>
             <Image
               src="/hello-cal-logo.png"
               alt="Hello Cal"
@@ -703,15 +702,12 @@ export function AdminShell({
               height={collapsed ? 20 : 40}
               priority
             />
-            {!collapsed && (
-              <span className="hf-type-body hf-type-strong border-l border-hf-tan-dark pl-2 text-hf-green-dark">Admin</span>
-            )}
           </Link>
         </div>
-        <div className="shrink-0 px-2.5 pb-2.5">
+        <div className="shrink-0 px-2.5 pt-2.5">
           <SearchField label={searchLabel} collapsed={collapsed} onOpen={() => setSearchOpen(true)} />
         </div>
-        <nav className="flex-1 overflow-y-auto border-t border-hf-tan-dark p-2.5">
+        <nav className="flex-1 overflow-y-auto p-2.5">
           <SidebarNav
             locale={currentLocale}
             pathname={pathname}
@@ -770,11 +766,8 @@ export function AdminShell({
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-hf-black/40" onClick={() => setDrawerOpen(false)} />
           <aside className="absolute inset-y-0 left-0 flex w-[85vw] max-w-xs flex-col bg-hf-white shadow-xl">
-            <div className="flex h-14 items-center justify-between px-3">
-              <span className="flex items-center gap-2">
-                <Image src="/hello-cal-logo.png" alt="Hello Cal" width={90} height={40} />
-                <span className="hf-type-body hf-type-strong border-l border-hf-tan-dark pl-2 text-hf-green-dark">Admin</span>
-              </span>
+            <div className="flex h-14 items-center justify-between border-b border-hf-tan-dark px-3">
+              <Image src="/hello-cal-logo.png" alt="Hello Cal" width={90} height={40} />
               <button
                 type="button"
                 onClick={() => setDrawerOpen(false)}
@@ -784,7 +777,7 @@ export function AdminShell({
                 <Icon name="close" />
               </button>
             </div>
-            <div className="px-2.5 pb-2.5">
+            <div className="px-2.5 pt-2.5">
               <SearchField
                 label={searchLabel}
                 collapsed={false}
@@ -794,7 +787,7 @@ export function AdminShell({
                 }}
               />
             </div>
-            <nav className="flex-1 overflow-y-auto border-t border-hf-tan-dark p-2.5">
+            <nav className="flex-1 overflow-y-auto p-2.5">
               <SidebarNav
                 locale={currentLocale}
                 pathname={pathname}
