@@ -38,7 +38,14 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(mess
 log = logging.getLogger("store-products-agent")
 
 DATABASE_URL = os.environ["DATABASE_URL"].split("?")[0]
-DATA_DIR = os.environ.get("STORE_PRODUCTS_DATA_DIR", "/app/data")
+# The full catalogue (JSON + images) is copied to the NAS volume /import;
+# the small sample baked into the image is only used when that is empty.
+IMPORT_DIR = os.environ.get("STORE_PRODUCTS_IMPORT_DIR", "/import")
+DATA_DIR = (
+    IMPORT_DIR
+    if os.path.isfile(os.path.join(IMPORT_DIR, "store_products.json"))
+    else os.environ.get("STORE_PRODUCTS_DATA_DIR", "/app/data")
+)
 IMAGE_OUTPUT_DIR = os.environ.get("IMAGE_OUTPUT_DIR", "/images")
 PUBLIC_PATH_PREFIX = os.environ.get("PUBLIC_PATH_PREFIX", "/product-images")
 START_DELAY_SECONDS = int(os.environ.get("START_DELAY_SECONDS", "180"))
@@ -121,7 +128,10 @@ def copy_image(filename):
         return None
     target_dir = os.path.join(IMAGE_OUTPUT_DIR, IMAGE_SUBDIR)
     os.makedirs(target_dir, exist_ok=True)
-    shutil.copyfile(src, os.path.join(target_dir, filename))
+    target = os.path.join(target_dir, filename)
+    # Skip unchanged files, so a restart does not copy GBs of images again.
+    if not (os.path.isfile(target) and os.path.getsize(target) == os.path.getsize(src)):
+        shutil.copyfile(src, target)
     return f"{PUBLIC_PATH_PREFIX}/{IMAGE_SUBDIR}/{filename}"
 
 
