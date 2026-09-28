@@ -76,3 +76,22 @@ export async function getAdditiveInfo(code: string): Promise<AdditiveInfo> {
     return { ...FALLBACK, eNumber: normalized };
   }
 }
+
+export type IngredientTextPart = { text: string; code?: string };
+
+// Splits an ingredient list into plain text and E-number tokens ("E330",
+// "E 150d", "e-471") so the UI can render the E-numbers as clickable links.
+export function splitENumbers(text: string): IngredientTextPart[] {
+  const parts: IngredientTextPart[] = [];
+  const pattern = /\bE[\s-]?(\d{3,4}[a-z]?(?:\([iv]+\))?)(?![\w])/gi;
+  let last = 0;
+  for (const match of text.matchAll(pattern)) {
+    const start = match.index ?? 0;
+    if (start > last) parts.push({ text: text.slice(last, start) });
+    const code = `E${match[1].replace(/\(.*\)$/, "")}`.toUpperCase();
+    parts.push({ text: match[0], code });
+    last = start + match[0].length;
+  }
+  if (last < text.length) parts.push({ text: text.slice(last) });
+  return parts;
+}
