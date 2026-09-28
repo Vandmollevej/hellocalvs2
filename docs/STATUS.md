@@ -23,6 +23,11 @@ Last updated: 2026-09-28
 - Lint, typecheck og build kørt. Verificeret i headless Chromium (Playwright) mod en midlertidig testside med AdminShell: uden rettelsen scroller hverken musehjul (1400×800) eller touch-swipe (iPhone-viewport); med rettelsen når begge bunden. Fejlen ramte altså også PC.
 - Ikke i drift før PR #22 er merget til `master` (deploy kører kun ved push til master).
 
+## 2026-09-28: Admin "Retter" + billed-fallback
+
+- Ny menugruppe Retter (Brugeroprettede, HelloFresh, Valdemarsro); HelloFresh-retter står ikke længere i Produkt-database. Ingen migration.
+- Fallback-route for billeder lagt op efter app-start (product-images, hellofresh-images).
+- Lint, typecheck og build kørt; ikke set i browseren.
 ## 2026-09-27: Produkt-database — filtre som dropdowns
 
 - Alle filtre på `/admin/product-database` er nu dropdowns; mærke, sub brand, kategori, varetype og kilde kan vælge flere på én gang (afkrydsning + søgning). Én chip pr. valgt værdi. Lint, typecheck og build kørt.

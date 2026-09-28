@@ -13,7 +13,7 @@ import { t, type AdminI18nKey } from "@/lib/admin-i18n";
 // brødkrummer og brugermenu. Under lg bliver sidebjælken en skuffe bag en menuknap.
 // Farverne er de eksisterende Hello Cal-tokens.
 
-type IconName = "home" | "chart" | "box" | "database" | "users" | "handshake" | "shield" | "cog" | "palette" | "road" | "flow";
+type IconName = "home" | "chart" | "box" | "database" | "users" | "handshake" | "shield" | "cog" | "palette" | "road" | "flow" | "pot";
 type NavLink = { href: string; key: AdminI18nKey };
 type NavEntry =
   | { kind: "link"; href: string; key: AdminI18nKey; icon: IconName }
@@ -42,6 +42,19 @@ const NAV: NavEntry[] = [
     ],
   },
   { kind: "link", href: "/admin/product-database", key: "nav_product_database", icon: "database" },
+  // Retter (docs/DECISIONS.md 2026-09-28): opskrifter er ikke produkter og
+  // står derfor ikke i Produkt-database.
+  {
+    kind: "group",
+    id: "dishes",
+    key: "nav_group_dishes",
+    icon: "pot",
+    links: [
+      { href: "/admin/dishes/user", key: "nav_dishes_user" },
+      { href: "/admin/dishes/hellofresh", key: "nav_dishes_hellofresh" },
+      { href: "/admin/dishes/valdemarsro", key: "nav_dishes_valdemarsro" },
+    ],
+  },
   {
     kind: "group",
     id: "people",
@@ -192,6 +205,12 @@ function Icon({ name, className = "h-5 w-5" }: { name: IconName | "search" | "ch
       </>
     ),
     road: <path d="M5 21 9 3M19 21 15 3M12 4v2.5M12 10.5v3M12 17.5V20" />,
+    pot: (
+      <>
+        <path d="M4 11h16v5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-5zM2 11h2M20 11h2M8 8h8" />
+        <path d="M9 5c0-1 1-1 1-2M14 5c0-1 1-1 1-2" />
+      </>
+    ),
     flow: (
       <>
         <rect x="3" y="3.5" width="7" height="5" rx="1.5" />

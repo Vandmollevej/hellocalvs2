@@ -1,6 +1,7 @@
 import type { Prisma, ProductStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import {
+  DISH_SOURCES,
   PRODUCT_CATEGORY_LABELS,
   PRODUCT_DATABASE_PAGE_SIZE,
   PRODUCT_SOURCE_LABELS,
@@ -15,8 +16,14 @@ import {
 
 const insensitive = { mode: "insensitive" as const };
 
+// Kun rigtige produkter: private ingredienser og retter (HelloFresh o.l.) er udeladt.
+const PRODUCTS_ONLY: Prisma.ProductWhereInput = {
+  privateOwnerId: null,
+  OR: [{ externalSource: null }, { externalSource: { notIn: [...DISH_SOURCES] } }],
+};
+
 function buildWhere(filters: ProductDatabaseFilters): Prisma.ProductWhereInput {
-  const and: Prisma.ProductWhereInput[] = [{ privateOwnerId: null }];
+  const and: Prisma.ProductWhereInput[] = [PRODUCTS_ONLY];
 
   if (filters.q) {
     // Hvert ord skal findes i navn, mærke, sub brand, variant, produkttype
@@ -179,7 +186,7 @@ export async function loadProductDatabase(filters: ProductDatabaseFilters) {
 }
 
 async function loadOverview(): Promise<ProductDatabaseOverview> {
-  const base: Prisma.ProductWhereInput = { privateOwnerId: null };
+  const base: Prisma.ProductWhereInput = PRODUCTS_ONLY;
   const [total, withImage, approved, pending] = await Promise.all([
     prisma.product.count({ where: base }),
     prisma.product.count({ where: { ...base, imageUrl: { not: null } } }),
@@ -194,7 +201,7 @@ async function loadOverview(): Promise<ProductDatabaseOverview> {
 export async function loadProductDatabaseSuggestions(brands: string[]) {
   const [brandRows, subbrands] = await Promise.all([
     prisma.brand.findMany({
-      where: { products: { some: { privateOwnerId: null } } },
+      where: { products: { some: PRODUCTS_ONLY } },
       orderBy: { name: "asc" },
       select: { name: true },
       take: 3000,

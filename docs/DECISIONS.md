@@ -2,6 +2,12 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-28: Admin "Retter" + HelloFresh ud af Produkt-database
+
+- Opskrifter er ikke produkter. Ny hovedgruppe "Retter" i admin-menuen med Brugeroprettede (delte brugerretter, `SharedRecipe`; private retter vises aldrig), HelloFresh (alle HelloFresh-retter) og Valdemarsro (tom, indtil importen bygges).
+- Produkt-database udelader kilder i `DISH_SOURCES` (i dag HELLOFRESH), også i overblikstal og mærke-forslag.
+- Kolonnen "Kæder" i Produkt-database er de butikskæder, varen findes i (Bilka, Rema 1000).
+- Billeder, som agenterne lægger i `/product-images` og `/hellofresh-images` efter app-start, serveres af en fallback-route (`src/lib/public-volume-file.ts`), fordi Next's standalone-server kun kender public-filer fra opstarten.
 ## 2026-09-27: Butiksvarer i tre tabeller (Bilka + REMA 1000)
 
 - Varer fra butikkernes produktark ligger i tre tabeller:
