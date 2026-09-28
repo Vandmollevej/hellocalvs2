@@ -1000,6 +1000,39 @@ textarea::selection,
   }
 }
 
+/* Scanningsstribe over et foto, der analyseres (PhotoWorkingOverlay). */
+@keyframes hf-scan-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+.hf-scan-sweep {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  background: linear-gradient(
+    to right,
+    rgb(255 255 255 / 0%),
+    rgb(255 255 255 / 35%) 40%,
+    rgb(255 255 255 / 85%) 50%,
+    rgb(255 255 255 / 35%) 60%,
+    rgb(255 255 255 / 0%)
+  );
+  animation: hf-scan-sweep 1.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hf-scan-sweep {
+    animation-duration: 4s;
+  }
+}
+
 /* Live stregkode-afkodning, jf. design.md §6.11 — BarcodeScanOverlay tegner
    den aflæste kodes rigtige streger én for én, en lyslinje fejer hen over,
    og cifrene skrives bagefter. Forsinkelser sættes inline pr. streg/ciffer. */

@@ -38,6 +38,16 @@ export type ProductFrontAnalysis = {
   };
 };
 
+// Stregkode-fotoet læst for logo og variant (BARCODE_LOGO_SCHEMA i
+// src/lib/product-ai-tasks.ts, docs/DECISIONS.md 2026-09-28).
+export type BarcodeLogoAnalysis = {
+  logoText: string | null;
+  logoConfidence: number;
+  logoBox: ImageBox | null;
+  variant: string | null;
+  variantConfidence: number;
+};
+
 // The AI's raw answer (schema in /api/ai/extract-ingredients-photo).
 export type IngredientsAiResult = {
   rawText: string;
