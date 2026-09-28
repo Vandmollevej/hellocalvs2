@@ -1,0 +1,2180 @@
+[
+  {
+    "code": "E150d",
+    "nameDa": "Sulfit-ammoniakkaramel",
+    "nameEn": "Sulphite ammonia caramel",
+    "category": "Farvestof (brun)",
+    "euStatus": "approved",
+    "origin": "nature_identical",
+    "summary": "Karamelfarve fremstillet med både sulfit- og ammoniumforbindelser; den typiske colafarve.",
+    "description": "E150d (klasse IV) fremstilles ved opvarmning af kulhydrater med både sulfit- og ammoniumforbindelser. Den har en stærk negativ ladning over et bredt pH-område og er stabil i sure drikke, hvorfor den er udbredt i colaer. Den kan indeholde biproduktet 4-MEI (4-methylimidazol), som EU-specifikationen begrænser til højst 250 mg/kg (på farveækvivalent basis).",
+    "uses": "Cola og andre mørke læskedrikke, øl, eddike, sojasauce og andre saucer samt konfekture.",
+    "health": "EFSA's gruppe-ADI for karamelfarver er 300 mg/kg legemsvægt/dag. Biproduktet 4-MEI er af IARC klassificeret som muligvis kræftfremkaldende (gruppe 2B), og Coca-Cola og PepsiCo har reduceret indholdet af 4-MEI i karamelfarven i deres læskedrikke for at undgå advarselsmærkning efter californisk lov.",
+    "research": "EFSA's gen-evaluering af karamelfarver (2011) fastsatte en gruppe-ADI på 300 mg/kg legemsvægt/dag for E150a-d (NOAEL 30 g/kg legemsvægt/dag i 13-ugers studier og usikkerhedsfaktor 100) med en individuel ADI på 100 mg/kg for E150c pga. mulige effekter på immunsystemet hos forsøgsdyr af biproduktet THI (2-acetyl-4-tetrahydroxybutylimidazol), og vurderede, at eksponeringen kunne overskride ADI for klasse I, III og IV. Den forfinede eksponeringsvurdering i 2012 fandt markant lavere eksponering: kun E150c overskred fortsat ADI hos småbørn og voksne med højt forbrug, og gruppe-ADI blev ikke overskredet i nogen befolkningsgruppe. Biproduktet 4-MEI i E150c og E150d er af IARC klassificeret i gruppe 2B på baggrund af NTP-studier, der viste lungetumorer hos mus; EU-specifikationerne begrænser indholdet af 4-MEI.",
+    "keyReferences": [],
+    "pubmedTerm": "caramel color",
+    "flags": [],
+    "classes": [
+      "colour"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Refined exposure assessment for caramel colours (E 150a, c, d)",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2012.3030",
+      "date": "2012-12-03",
+      "adi": "300",
+      "overexposureRisk": "en:no"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "https://www.efsa.europa.eu/en/efsajournal/pub/3030",
+        "https://www.foodnavigator.com/Article/2011/03/09/EFSA-establishes-new-ADIs-for-caramel-colours/",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02012R0231-20241027",
+        "https://www.ncbi.nlm.nih.gov/books/NBK373183/",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC5088675/",
+        "https://dicentra.com/blog/regulatory-affairs-consultants/4-methylimidazole-a-cause-concern-caramel-colouring",
+        "https://en.wikipedia.org/wiki/Caramel_color",
+        "https://www.atamanchemicals.com/e150d-sulphite-ammonia-caramel_u27777/",
+        "https://en.qianhefood.com/caramel-color-class-i-iv-explained/"
+      ],
+      "notes": "Runde 3 (udsagn-for-udsagn, WebSearch). Bekræftet: fremstilling med sulfit og ammoniak, negativ ladning/syrestabilitet og brug i cola, gruppe-ADI 300 og E150c-ADI 100 (THI, immuntoksicitet) fra 2011, IARC 2B for 4-MEI på baggrund af NTP-musestudier, EU-grænse for 4-MEI (250 mg/kg i E150d), producenters reduktion af 4-MEI. Rettet: 2012-vurderingen præciseret (E150c fortsat over ADI hos småbørn og voksne med højt forbrug; gruppe-ADI ikke overskredet); 2011-konklusionen om mulig ADI-overskridelse tilføjet; 4-MEI-reduktionen præciseret til Coca-Cola/PepsiCo og californisk lov; anvendelser justeret til kildernes (øl, eddike, sojasauce, saucer, konfekture). Fjernet: 'store forbrugere af cola får den største eksponering' (ikke fundet belæg).",
+      "previousStatus": "uncertain"
+    },
+    "wikipedia": "",
+    "wikidata": "Q13081740",
+    "claims": [
+      {
+        "claim": "E150d (klasse IV) fremstilles ved opvarmning af kulhydrater med sulfit- og ammoniumforbindelser",
+        "source": "https://en.wikipedia.org/wiki/Caramel_color",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Negativt ladet og stabil i sure drikke; dominerer i colaer",
+        "source": "https://en.qianhefood.com/caramel-color-class-i-iv-explained/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kan indeholde 4-MEI, begrænset i EU-specifikationen (250 mg/kg for E150d)",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02012R0231-20241027",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: cola/mørke læskedrikke, øl, eddike, saucer, konfekture",
+        "source": "https://www.atamanchemicals.com/e150d-sulphite-ammonia-caramel_u27777/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Gruppe-ADI 300 mg/kg lgv/dag (NOAEL 30 g/kg, UF 100)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Individuel ADI 100 mg/kg for E150c pga. THI's immuntoksicitet i forsøgsdyr",
+        "source": "https://www.foodnavigator.com/Article/2011/03/09/EFSA-establishes-new-ADIs-for-caramel-colours/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "2011: eksponering kan overskride ADI for klasse I, III og IV",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2004",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "2012 forfinet vurdering: eksponering generelt under ADI",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3030",
+        "result": "rettet"
+      },
+      {
+        "claim": "4-MEI IARC gruppe 2B på baggrund af NTP-studier i mus",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5088675/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Producenter har reduceret 4-MEI frivilligt (Coca-Cola/PepsiCo, californisk lov)",
+        "source": "https://dicentra.com/blog/regulatory-affairs-consultants/4-methylimidazole-a-cause-concern-caramel-colouring",
+        "result": "rettet"
+      },
+      {
+        "claim": "Store forbrugere af cola får den største eksponering",
+        "source": "",
+        "result": "fjernet"
+      }
+    ]
+  },
+  {
+    "code": "E151",
+    "nameDa": "Brillantsort BN (sort PN)",
+    "nameEn": "Brilliant black BN",
+    "category": "Farvestof (sort, azo)",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Syntetisk sort azofarvestof.",
+    "description": "Brillantsort BN er et syntetisk bis-azofarvestof (tetranatriumsalt), der forekommer som sort pulver eller granulat. Stoffet er ikke tilladt som fødevarefarve i USA.",
+    "uses": "Stenbiderrogn (som 'kaviar'-erstatning), lakrids og tyggegummi, slik, desserter, is, sennep og læskedrikke.",
+    "health": "EFSA bekræftede i 2010 SCF's ADI på 5 mg/kg legemsvægt/dag (JECFA: 1 mg/kg) og vurderede, at eksponeringen hos børn på 1-10 år med højt forbrug kunne overskride ADI i den øvre ende af intervallet. EFSA fandt i 2010 ingen data om overfølsomhed over for brillantsort BN og ingen veldokumenterede tilfælde af intoleransreaktioner efter indtag. Den forfinede eksponeringsvurdering i 2015 viste indtag under ADI i de forfinede scenarier.",
+    "research": "EFSA's gen-evaluering 2010 fandt ingen tegn på genotoksicitet eller kræftfremkaldende effekt (negative langtidsstudier), men at børn med højt forbrug kunne overskride ADI. Den forfinede eksponeringsvurdering fra 2015 viste, at eksponeringen lå under ADI i alle aldersgrupper i de forfinede scenarier (mærkeloyalt og ikke-mærkeloyalt); i scenariet baseret på maksimalt tilladte niveauer overskred småbørn og børn ADI i fire kostundersøgelser.",
+    "keyReferences": [],
+    "pubmedTerm": "brilliant black BN",
+    "flags": [],
+    "classes": [
+      "colour"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Refined exposure assessment for Brilliant Black BN (E 151)",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2015.3960",
+      "date": "2015-01-09",
+      "adi": "5",
+      "overexposureRisk": "en:no"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1540",
+        "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.3960",
+        "https://en.wikipedia.org/wiki/Brilliant_Black_BN",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1778"
+      ],
+      "notes": "Runde 3 (udsagn-for-udsagn, WebSearch). Bekræftet: bis-azo, tetranatriumsalt, ikke tilladt i USA, anvendelser i stenbiderrogn, lakrids, slik, desserter, is og læskedrikke, ADI 5 (SCF/EFSA) og 1 (JECFA), børn 1-10 år kunne overskride ADI (2010), ingen genotoksicitet/kræft, 2015-vurderingen under ADI. Rettet: farve 'sort-violet' -> sort; 'sjældne overfølsomhedsreaktioner er beskrevet' rettet til EFSA's konklusion om, at der ikke findes data eller veldokumenterede tilfælde; 2015-resultatet præciseret til de forfinede scenarier. Fjernet: 'fremstilles af petrokemiske udgangsstoffer' og 'saucer' (ikke fundet belæg).",
+      "previousStatus": "uncertain"
+    },
+    "wikipedia": "",
+    "wikidata": "Q420079",
+    "claims": [
+      {
+        "claim": "Syntetisk bis-azofarvestof, tetranatriumsalt",
+        "source": "https://en.wikipedia.org/wiki/Brilliant_Black_BN",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Giver sort-violet farve",
+        "source": "https://en.wikipedia.org/wiki/Brilliant_Black_BN",
+        "result": "rettet"
+      },
+      {
+        "claim": "Fremstilles af petrokemiske udgangsstoffer",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Ikke tilladt i USA",
+        "source": "https://en.wikipedia.org/wiki/Brilliant_Black_BN",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: fiskerogn/stenbiderrogn, lakrids, slik, desserter, drikke",
+        "source": "https://en.wikipedia.org/wiki/Brilliant_Black_BN",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelse i saucer",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EFSA 2010 bibeholdt SCF's ADI 5 mg/kg; JECFA 1 mg/kg",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.3960",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Højforbrugende børn 1-10 år kunne overskride ADI",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1540",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Sjældne overfølsomhedsreaktioner beskrevet",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1778",
+        "result": "rettet"
+      },
+      {
+        "claim": "Ingen genotoksicitet eller kræftfremkaldende effekt (2010)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1540",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "2015: eksponering under ADI i alle aldersgrupper",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.3960",
+        "result": "rettet"
+      }
+    ]
+  },
+  {
+    "code": "E153",
+    "nameDa": "Vegetabilsk kul",
+    "nameEn": "Vegetable carbon",
+    "category": "Farvestof (sort)",
+    "euStatus": "approved",
+    "origin": "natural",
+    "summary": "Sort farve fremstillet ved forkulning af plantemateriale.",
+    "description": "Vegetabilsk kul fremstilles ved forkulning af plantemateriale som træ, celluloserester, tørv samt kokos- og andre skaller ved høj temperatur. Det er et fint sort pulver med mindst 95 % kulstof (askefri basis). Det er uopløseligt i vand og organiske opløsningsmidler og farver som et fint fordelt pigment. EU-specifikationen begrænser indholdet af polycykliske aromatiske kulbrinter (PAH), målt som benzo[a]pyren.",
+    "uses": "Sort lakrids og slik, bagværk og kagepynt, ostebelægning og 'kaviar'-erstatning. Tilladt quantum satis i en lang række fødevarekategorier (gruppe II-farvestoffer).",
+    "health": "Vegetabilsk kul er et inert stof, som stort set ikke optages fra mave-tarmkanalen. Den primære bekymring er urenheder af PAH'er, herunder benzo[a]pyren, som begrænses i specifikationen. I 2026 konkluderede EFSA, at E153 indeholder en fraktion af små partikler inklusive nanopartikler, og at vurderingen fra 2012 bør suppleres med nano-overvejelser; eksponeringsmarginerne for PAH lå over bekymringsniveauet, men EFSA anbefalede en lavere grænse for benzo[a]pyren og en ny grænse for PAH4.",
+    "research": "EFSA's gen-evaluering 2012 konkluderede, at E153 med under 1,0 µg/kg resterende kræftfremkaldende PAH'er (udtrykt som benzo[a]pyren) ikke giver sikkerhedsbekymring ved de rapporterede anvendelser, bl.a. fordi stoffet er inert og stort set ikke optages. EFSA anbefalede ændrede specifikationer: PAH-krav med en følsom analysemetode, en grænse for aluminium, revideret blygrænse og en begrænsning af partikelstørrelsen for at udelukke nanopartikler.",
+    "keyReferences": [],
+    "pubmedTerm": "vegetable carbon",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluation of vegetable carbon (E 153) as a food additive",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2012.2592",
+      "date": "2012-04-27",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2012.2592",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2026.9855",
+        "https://natcol.org/vegetable-carbon-ins-153-e-153/",
+        "https://iacmcolor.org/color-profile/vegetable-carbon/",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02008R1333-20230720",
+        "https://food-detektiv.de/en/additives/?enummer=Vegetable+Carbon",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02012R0231-20241027"
+      ],
+      "notes": "Runde 3 (udsagn-for-udsagn, WebSearch). Bekræftet: forkulning af træ, tørv og kokosskaller, uopløseligt fint sort pulver, PAH/benzo[a]pyren i specifikationen, ingen optagelse, gruppe II quantum satis, anvendelser i lakrids, slik, bagværk, pynt og ostebelægning, EFSA 2012-konklusion og anbefalinger. Rettet: 'næsten rent kulstof' -> mindst 95 % kulstof; nanopartikel-udsagnet ('kunne ikke konkludere helt ... ingen tegn på bekymring') rettet til EFSA 2012-anbefalingen og EFSA's 2026-udtalelse; 2012-konklusionen præciseret med PAH-grænsen <1,0 µg/kg. Fjernet: 'sorte pastaer' (ikke fundet belæg).",
+      "previousStatus": "uncertain"
+    },
+    "wikipedia": "",
+    "wikidata": "Q59557415",
+    "claims": [
+      {
+        "claim": "Forkulning af træ, kokosskaller eller tørv ved høj temperatur",
+        "source": "https://natcol.org/vegetable-carbon-ins-153-e-153/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Meget fint sort pulver af næsten rent kulstof",
+        "source": "https://food-detektiv.de/en/additives/?enummer=Vegetable+Carbon",
+        "result": "rettet"
+      },
+      {
+        "claim": "Uopløseligt; farver som fint fordelt pigment",
+        "source": "https://iacmcolor.org/color-profile/vegetable-carbon/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Specifikationen begrænser PAH",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02012R0231-20241027",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: sort lakrids, ostevoks/-skorper, slik, kagepynt, bagværk",
+        "source": "https://natcol.org/vegetable-carbon-ins-153-e-153/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelse i sorte pastaer",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Quantum satis i mange kategorier (gruppe II)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2026.9855",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Optages ikke fra tarmen",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2012.2592",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Primær bekymring: PAH'er inkl. benzo[a]pyren",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2026.9855",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2012 kunne ikke konkludere helt om nanopartikler, men ingen bekymring",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2026.9855",
+        "result": "rettet"
+      },
+      {
+        "claim": "2012: ingen sikkerhedsbekymring ved lavt PAH-indhold; anbefalede strammere specifikationer og partikelstørrelsesdata",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2012.2592",
+        "result": "rettet"
+      }
+    ]
+  },
+  {
+    "code": "E155",
+    "nameDa": "Brun HT",
+    "nameEn": "Brown HT",
+    "category": "Farvestof (brun, azo)",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Syntetisk chokoladebrunt azofarvestof.",
+    "description": "Brun HT er et syntetisk bis-azofarvestof (primært dinatriumsalt), der giver en chokoladebrun farve og bruges som erstatning for kakao eller karamel som farve. Stoffet har aldrig været godkendt til fødevarer i USA.",
+    "uses": "Konfekture, bagværk, mejeriprodukter, kød- og fiskeprodukter, snacks, krydderiblandinger og frugtpræparater.",
+    "health": "EFSA sænkede i 2010 ADI fra 3 til 1,5 mg/kg legemsvægt/dag og vurderede, at eksponeringen hos både voksne og børn på 1-10 år med højt forbrug kunne overskride den, hvorefter Kommissionen bad EFSA om en forfinet eksponeringsvurdering. I 2014 lå eksponeringen under ADI for alle grupper, når kun rapporterede brugsniveauer blev lagt til grund, men over ADI for alle aldersgrupper undtagen ældre i scenarierne baseret på maksimalt tilladte niveauer. EFSA fandt i 2010 ingen data om overfølsomhed over for brun HT og ingen veldokumenterede tilfælde af intoleransreaktioner efter indtag.",
+    "research": "EFSA's gen-evaluering 2010 og forfinede eksponeringsvurdering 2014. ADI blev halveret på baggrund af NOAEL 143 mg/kg legemsvægt/dag i et langtids-toksicitets- og kræftstudie i mus og en usikkerhedsfaktor på 100.",
+    "keyReferences": [],
+    "pubmedTerm": "brown HT",
+    "flags": [
+      "children_caution"
+    ],
+    "classes": [
+      "colour"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Refined exposure assessment of Brown HT (E 155)",
+      "url": "https://efsa.onlinelibrary.wiley.com/doi/epdf/10.2903/j.efsa.2014.3719",
+      "date": "2014/05/28",
+      "adi": "",
+      "overexposureRisk": "en:high"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1536",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3719",
+        "https://en.wikipedia.org/wiki/Brown_HT",
+        "https://iacmcolor.org/color-profile/brown-ht/",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1778"
+      ],
+      "notes": "Runde 3 (udsagn-for-udsagn, WebSearch). Bekræftet: bis-azo dinatriumsalt, chokoladebrun farve, ikke godkendt i USA, ADI sænket fra 3 til 1,5 (NOAEL 143 i mus, UF 100), børn/voksne med højt forbrug kunne overskride ADI (2010), 2014-vurderingen, anvendelser i konfekture og bagværk. Rettet: 2014-resultatet ('lavere indtag') præciseret til scenarieafhængige resultater; 'hvilket førte til lavere maksimumsgrænser' rettet til Kommissionens anmodning om forfinet vurdering; 'sjældne overfølsomhedsreaktioner er beskrevet' rettet til EFSA's konklusion (ingen data/veldokumenterede tilfælde); anvendelser tilpasset kilden. Fjernet: 'fremstilles af petrokemiske udgangsstoffer' og 'chokoladekager, kiks, desserter, saucer og drikke' som specifikke anvendelser (ikke fundet belæg).",
+      "previousStatus": "uncertain"
+    },
+    "wikipedia": "",
+    "wikidata": "Q424541",
+    "claims": [
+      {
+        "claim": "Syntetisk bis-azofarvestof, dinatriumsalt",
+        "source": "https://en.wikipedia.org/wiki/Brown_HT",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Rødbrun, chokoladeagtig farve",
+        "source": "https://en.wikipedia.org/wiki/Brown_HT",
+        "result": "rettet"
+      },
+      {
+        "claim": "Fremstilles af petrokemiske udgangsstoffer",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Ikke tilladt i USA",
+        "source": "https://iacmcolor.org/color-profile/brown-ht/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: chokoladekager, kiks, desserter, slik, saucer, drikke",
+        "source": "https://iacmcolor.org/color-profile/brown-ht/",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2010 sænkede ADI fra 3 til 1,5 mg/kg",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1536",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Børn med højt forbrug kunne overskride ADI",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3719",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Førte til lavere maksimumsgrænser",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3719",
+        "result": "rettet"
+      },
+      {
+        "claim": "2014 forfinet vurdering viste lavere indtag",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3719",
+        "result": "rettet"
+      },
+      {
+        "claim": "Sjældne overfølsomhedsreaktioner beskrevet",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1778",
+        "result": "rettet"
+      },
+      {
+        "claim": "NOAEL 143 mg/kg bw/dag i langtids-tox/kræftstudie i mus",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1536",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E160",
+    "nameDa": "Carotenoider",
+    "nameEn": "Carotenoids",
+    "category": "Farvestof (gul-orange-rød)",
+    "euStatus": "approved",
+    "origin": "mixed",
+    "summary": "Fællesbetegnelse for gule til røde carotenoidfarver under E160.",
+    "description": "Carotenoider er fedtopløselige gule, orange og røde pigmenter, som dannes af planter, alger, svampe og bakterier og findes i dyr via føden. EU-gruppen omfatter bl.a. carotener (E160a), annatto (E160b), paprikaekstrakt (E160c), lycopen (E160d) og beta-apo-8'-carotenal (E160e). De kan udvindes fra naturlige kilder, fremstilles ved fermentering eller syntetiseres kemisk. Nogle af dem, fx beta-caroten, er provitamin A.",
+    "uses": "Margarine, smør, ost, juice og drikke, desserter, is, bagværk, snacks og kosttilskud.",
+    "health": "Sikkerheden afhænger af det enkelte stof; se de enkelte koder. Højdosis-tilskud med beta-caroten (20-30 mg/dag) øgede forekomsten af lungekræft hos rygere i ATBC- og CARET-studierne.",
+    "research": "EFSA har vurderet carotenoiderne enkeltvis: beta-caroten (2012), beta-apo-8'-carotenal (2012, ADI revurderet i 2014), paprikaekstrakt (2015) og annatto (2016 med opfølgning i 2019). For lycopen fastsatte EFSA en ADI i 2008 og revurderede eksponeringen i 2010.",
+    "keyReferences": [],
+    "pubmedTerm": "carotenoids",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the reconsideration of the ADI and a refined exposure assessment of beta-apo-8'-carotenal (E 160e)",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2014.3492",
+      "date": "2014-01-22",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://lpi.oregonstate.edu/mic/dietary-factors/phytochemicals/carotenoids",
+        "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/carotenoid",
+        "https://natcol.org/carotenes-ins-160-a-to-160-g-e-160-a-to-e-160-g/",
+        "https://efsa.onlinelibrary.wiley.com/doi/pdf/10.2903/j.efsa.2012.2593",
+        "https://www.efsa.europa.eu/en/efsajournal/pub/4544",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5626",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4320",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2012.2499",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3492",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1444",
+        "https://pubmed.ncbi.nlm.nih.gov/8127329/",
+        "https://www.nejm.org/doi/full/10.1056/NEJM199605023341802",
+        "https://www.ams.usda.gov/sites/default/files/media/Beta%20Carotene%20Synthetic%20Supplemental%20TR.pdf",
+        "https://en.wikipedia.org/wiki/Annatto"
+      ],
+      "notes": "Runde 3 (udsagn-for-udsagn, WebSearch). Bekræftet: carotenoider er fedtopløselige gule-røde pigmenter fra planter/alger (og findes i dyr), E160a-e som EU-medlemmer, udvinding/fermentering/syntese, beta-caroten som provitamin A, anvendelser (via E160a/E160b-kilder), lungekræft hos rygere ved højdosis. Rettet: summary 'E160a-f' ændret (E160f's nuværende EU-status kunne ikke bekræftes); tidsrummet for EFSA's vurderinger rettet fra '2010-2016' til de faktiske udtalelser (2012-2019, lycopen 2008/2010). Fjernet: 'generelt regnes carotenoider i farvemængder for sikre' (generalisering uden kilde).",
+      "previousStatus": "uncertain"
+    },
+    "wikipedia": "",
+    "wikidata": "Q191907",
+    "claims": [
+      {
+        "claim": "Fællesbetegnelse for E160a-f",
+        "source": "",
+        "result": "rettet"
+      },
+      {
+        "claim": "Fedtopløselige pigmenter, gul/orange/rød, i planter, alger og dyr",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/carotenoid",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EU-gruppen omfatter E160a, E160b, E160c, E160d, E160e",
+        "source": "https://natcol.org/carotenes-ins-160-a-to-160-g-e-160-a-to-e-160-g/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Udvindes naturligt, ved fermentering eller kemisk syntese",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/carotenoid",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Beta-caroten er provitamin A",
+        "source": "https://lpi.oregonstate.edu/mic/dietary-factors/phytochemicals/carotenoids",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: margarine, smør, ost, juice, desserter, is, bagværk, snacks, kosttilskud",
+        "source": "https://www.ams.usda.gov/sites/default/files/media/Beta%20Carotene%20Synthetic%20Supplemental%20TR.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Carotenoider i farvemængder regnes generelt for sikre",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Højdosis-beta-caroten øger lungekræftrisiko hos rygere",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/8127329/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA gen-evaluerede carotenoiderne 2010-2016",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5626",
+        "result": "rettet"
+      },
+      {
+        "claim": "Revurdering af ADI for beta-apo-8'-carotenal i 2014",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3492",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E160a",
+    "nameDa": "Carotener (beta-caroten)",
+    "nameEn": "Carotenes",
+    "category": "Farvestof (orange); provitamin A",
+    "euStatus": "approved",
+    "origin": "mixed",
+    "summary": "Orange carotener, især beta-caroten, som kroppen kan omdanne til vitamin A.",
+    "description": "E160a omfatter fire varianter: (i) syntetisk beta-caroten, (ii) plantecarotener udvundet med opløsningsmidler af fx gulerødder, palmefrugtolie eller søde kartofler, (iii) beta-caroten fremstillet ved fermentering med svampen Blakeslea trispora og (iv) algecarotener fra Dunaliella salina. Beta-caroten er fedtopløseligt og findes derfor som oliesuspension, emulsion eller vanddispergerbart pulver til vandige produkter. Det giver gul til orange farve og kan omdannes til vitamin A i tyndtarmens slimhinde.",
+    "uses": "Margarine og smør, ost, juice og andre drikke, is, yoghurt, desserter, kagefyld og vitamintilskud.",
+    "health": "Ved normalt indtag via fødevarer er beta-caroten uproblematisk; stort indtag kan farve huden gul-orange (carotenodermi), hvilket er godartet. EFSA fastsatte i 2012 ingen ADI, men konkluderede, at et samlet indtag af beta-caroten under 15 mg/dag fra brug som farvestof og kosttilskud ikke giver bekymring for befolkningen, herunder storrygere. Højdosis-tilskud (20-30 mg/dag) øgede lungekræftrisikoen hos rygere i ATBC- og CARET-studierne.",
+    "research": "ATBC-studiet (NEJM 1994; 29.133 mandlige rygere, 20 mg beta-caroten/dag) fandt 18 % flere tilfælde af lungekræft, og CARET-studiet (Omenn et al., NEJM 1996; rygere, tidligere rygere og asbestudsatte, 30 mg beta-caroten plus retinylpalmitat/dag) blev stoppet før tid pga. 28 % flere tilfælde af lungekræft. EFSA's gen-evaluering 2012 af blandede carotener og beta-caroten fastsatte ingen ADI, og en EFSA-udtalelse fra 2016 fandt, at brug af syntetisk beta-caroten (5 mg/l) i fødevarer til særlige medicinske formål til børn på 1-3 år ikke gav sikkerhedsbekymring.",
+    "keyReferences": [
+      {
+        "citation": "Alpha-Tocopherol, Beta Carotene Cancer Prevention Study Group. The effect of vitamin E and beta carotene on the incidence of lung cancer and other cancers in male smokers. N Engl J Med. 1994.",
+        "searchTitle": "The effect of vitamin E and beta carotene on the incidence of lung cancer and other cancers in male smokers"
+      },
+      {
+        "citation": "Omenn GS et al. Effects of a combination of beta carotene and vitamin A on lung cancer and cardiovascular disease. N Engl J Med. 1996.",
+        "searchTitle": "Effects of a combination of beta carotene and vitamin A on lung cancer and cardiovascular disease"
+      }
+    ],
+    "pubmedTerm": "beta-carotene",
+    "flags": [],
+    "classes": [
+      "colour"
+    ],
+    "variants": [
+      {
+        "code": "E160a(i)",
+        "nameDa": "Beta-caroten",
+        "nameEn": "Beta-carotene"
+      },
+      {
+        "code": "E160a(ii)",
+        "nameDa": "Plantecarotener",
+        "nameEn": "Plant carotenes"
+      },
+      {
+        "code": "E160a(iii)",
+        "nameDa": "Beta-caroten fra blakeslea trispora",
+        "nameEn": "Beta-carotene from blakeslea trispora"
+      },
+      {
+        "code": "E160a(iv)",
+        "nameDa": "Algecarotener",
+        "nameEn": "Algal carotenes"
+      }
+    ],
+    "efsa": {
+      "title": "Safety of the proposed extension of use of synthetic Beta-carotene [E 160a(ii)] in foods for special medical purposes in young children",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2016.4434",
+      "date": "2016-03-18",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/pdf/10.2903/j.efsa.2012.2593",
+        "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2012.2953",
+        "https://efsa.onlinelibrary.wiley.com/doi/pdf/10.2903/j.efsa.2016.4434",
+        "https://pubmed.ncbi.nlm.nih.gov/8127329/",
+        "https://www.nejm.org/doi/full/10.1056/NEJM199605023341802",
+        "https://dermnetnz.org/topics/carotenoderma",
+        "https://natcol.org/carotenes-ins-160-a-to-160-g-e-160-a-to-e-160-g/",
+        "https://www.ams.usda.gov/sites/default/files/media/Beta%20Carotene%20Synthetic%20Supplemental%20TR.pdf",
+        "https://www.chm.bris.ac.uk/motm/carotene/beta-carotene_vita.html",
+        "https://www.scientistlive.com/content/beta-carotene-better-and-healthy-way-food-colouring"
+      ],
+      "notes": "Runde 3 (udsagn-for-udsagn, WebSearch). Bekræftet: de fire varianter og deres kilder, fedtopløselighed og formuleringer (emulsion/pulver), omdannelse til vitamin A i tarmslimhinden, carotenodermi, ingen ADI i 2012, 15 mg/dag-grænsen, ATBC/CARET-doser og resultater, anvendelser. Rettet: plantekilde 'græs' -> søde kartofler (specifikationens eksempler); 15 mg/dag præciseret til EFSA's formulering (farvestof + kosttilskud samlet, 'under' ikke 'langt under'); 2016-udtalelsen handlede om syntetisk beta-caroten i FSMP til småbørn, ikke om variant (iv); 2012-udtalelsen præciseret til 'blandede carotener og beta-caroten'. Fjernet: anbefalingen 'rygere bør derfor undgå højdosis-tilskud' (råd uden direkte kildebelæg) og 'sodavand' som særskilt anvendelse.",
+      "previousStatus": "uncertain"
+    },
+    "wikipedia": "",
+    "wikidata": "Q190156",
+    "claims": [
+      {
+        "claim": "Fire varianter: syntetisk, plantecarotener, Blakeslea trispora, Dunaliella salina",
+        "source": "https://natcol.org/carotenes-ins-160-a-to-160-g-e-160-a-to-e-160-g/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Plantecarotener fra gulerødder, palmeolie eller græs",
+        "source": "https://natcol.org/carotenes-ins-160-a-to-160-g-e-160-a-to-e-160-g/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Fedtopløseligt; emulsion eller pulver til vandige produkter",
+        "source": "https://www.ams.usda.gov/sites/default/files/media/Beta%20Carotene%20Synthetic%20Supplemental%20TR.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Omdannes til vitamin A i tarmen",
+        "source": "https://www.chm.bris.ac.uk/motm/carotene/beta-carotene_vita.html",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: margarine, ost, juice, is, desserter, bagværk, vitamintilskud",
+        "source": "https://www.scientistlive.com/content/beta-carotene-better-and-healthy-way-food-colouring",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelse i sodavand som særskilt kategori",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Stort indtag kan farve huden gullig (carotenodermi)",
+        "source": "https://dermnetnz.org/topics/carotenoderma",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2012: ingen ADI; ingen bekymring langt under 15 mg/dag",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2012.2953",
+        "result": "rettet"
+      },
+      {
+        "claim": "Højdosis 20-30 mg/dag øgede lungekræft hos rygere (ATBC, CARET)",
+        "source": "https://www.nejm.org/doi/full/10.1056/NEJM199605023341802",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Rygere bør undgå højdosis-tilskud",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "ATBC (NEJM 1994) og CARET (Omenn, NEJM 1996)",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/8127329/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA-udtalelse 2016 om variant (iv)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/pdf/10.2903/j.efsa.2016.4434",
+        "result": "rettet"
+      }
+    ]
+  },
+  {
+    "code": "E160b",
+    "nameDa": "Annatto (bixin, norbixin)",
+    "nameEn": "Annatto",
+    "category": "Farvestof (gul-orange)",
+    "euStatus": "approved",
+    "origin": "natural",
+    "summary": "Orange farve fra frøene af busken Bixa orellana (annatto).",
+    "description": "Annatto udvindes af den rødlige ydre belægning på frøene fra Bixa orellana. Hovedpigmentet er det fedtopløselige bixin; ved alkalisk hydrolyse dannes norbixin, som er vandopløseligt ved pH over 6. Indtil 2020 omfattede EU-specifikationen (i) opløsningsmiddelekstraheret bixin og norbixin, (ii) alkali-ekstraheret annatto og (iii) olie-ekstraheret annatto; med forordning (EU) 2020/771 blev E160b opdelt i E160b(i) annattobixin og E160b(ii) annattonorbixin. Annatto har traditionelt været brugt til at farve ost; Red Leicester er farvet med annatto siden 1700-tallet.",
+    "uses": "Ost (fx farvet cheddar, Red Leicester og Cheshire), smør og margarine, snacks, bagværk, morgenmadsprodukter, røget fisk og pølser. Tilladt med maksimumsgrænser pr. fødevarekategori, fastsat ved forordning (EU) 2020/771.",
+    "health": "Annatto kan i sjældne tilfælde udløse allergiske reaktioner, herunder nældefeber, angioødem og anafylaksi. EFSA fastsatte i 2016 en ADI på 6 mg bixin/kg legemsvægt/dag og 0,3 mg norbixin/kg legemsvægt/dag. I EFSA's opfølgning i 2019 blev ADI for norbixin nået ved højt forbrug (95. percentil) hos småbørn i ét land i de forfinede scenarier, men EFSA konkluderede, at eksponeringen ikke giver sundhedsmæssig bekymring.",
+    "research": "EFSA's vurdering 2016 fastsatte separate ADI'er for bixin og norbixin, men kunne ikke vurdere sikkerheden af de dengang godkendte ekstrakter (opløsningsmiddel-, alkali- og olie-ekstraheret annatto) pga. manglende data om både identitet og toksikologi. Allergi over for annatto er beskrevet i kasuistikker, bl.a. anafylaksi efter indtag af et morgenmadsprodukt med annatto.",
+    "keyReferences": [],
+    "pubmedTerm": "annatto",
+    "flags": [
+      "allergen",
+      "children_caution"
+    ],
+    "classes": [
+      "colour"
+    ],
+    "variants": [
+      {
+        "code": "E160b(i)",
+        "nameDa": "Annattobixin",
+        "nameEn": "Annatto bixin"
+      },
+      {
+        "code": "E160b(ii)",
+        "nameDa": "Annattonorbixin",
+        "nameEn": "Annatto norbixin"
+      }
+    ],
+    "efsa": {
+      "title": "The safety of annatto extracts (E 160b) as a food additive",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2016.4544",
+      "date": "2016-08-24",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://www.efsa.europa.eu/en/efsajournal/pub/4544",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5626",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A32020R0771",
+        "https://pubmed.ncbi.nlm.nih.gov/1994783/",
+        "https://en.wikipedia.org/wiki/Annatto",
+        "https://en.wikipedia.org/wiki/Red_Leicester",
+        "https://www.researchgate.net/publication/230065304_Properties_of_bixin_and_norbixin_and_composition_of_annatto_extracts"
+      ],
+      "notes": "Runde 3 (udsagn-for-udsagn, WebSearch). Bekræftet: udvinding af frøbelægningen fra Bixa orellana, bixin fedtopløseligt og norbixin dannet ved alkalisk hydrolyse, de tre ekstrakttyper før 2020, ostefarvning (cheddar, Red Leicester), anvendelser, anafylaksi/nældefeber i kasuistikker, ADI 6 og 0,3 (2016), manglende data for ekstrakterne. Rettet: variantlisten opdateret til forordning (EU) 2020/771 (E160b(i) annattobixin, E160b(ii) annattonorbixin); 'olie-ekstraheret annatto' som selvstændig E160b(iii) fjernet, da den ikke kunne bekræftes i gældende EU-ret; udsagnet om børn tæt på norbixin-ADI præciseret til EFSA 2019 (småbørn i ét land; ingen sundhedsbekymring); 'manglede data for ekstrakter med lavt pigmentindhold' rettet til EFSA's egentlige konklusion. Fjernet: 'visse gule danske oste' og danske plantenavn 'orleanbusken' (ikke fundet belæg).",
+      "previousStatus": "uncertain"
+    },
+    "wikipedia": "",
+    "wikidata": "Q425902",
+    "claims": [
+      {
+        "claim": "Udvindes af rødlig frøkappe fra Bixa orellana",
+        "source": "https://en.wikipedia.org/wiki/Annatto",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bixin fedtopløseligt; norbixin dannes ved alkalisk hydrolyse og er vandopløseligt",
+        "source": "https://www.researchgate.net/publication/230065304_Properties_of_bixin_and_norbixin_and_composition_of_annatto_extracts",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Varianter (i) opløsningsmiddel, (ii) alkali, (iii) olie-ekstraheret",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A32020R0771",
+        "result": "rettet"
+      },
+      {
+        "claim": "Traditionel anvendelse: farvning af ost",
+        "source": "https://en.wikipedia.org/wiki/Red_Leicester",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: cheddar, rød Leicester, smør, margarine, snacks, bagværk, røget fisk, desserter",
+        "source": "https://en.wikipedia.org/wiki/Annatto",
+        "result": "rettet"
+      },
+      {
+        "claim": "Visse gule danske oste",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Maksimumsgrænser pr. kategori",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A32020R0771",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Sjældne allergiske reaktioner inkl. nældefeber og anafylaksi",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/1994783/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2016: ADI bixin 6 og norbixin 0,3 mg/kg",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5626",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Børn med højt forbrug tæt på norbixin-ADI",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5626",
+        "result": "rettet"
+      },
+      {
+        "claim": "2016: manglende data for ekstrakter med lavt pigmentindhold",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/4544",
+        "result": "rettet"
+      },
+      {
+        "claim": "Variant E160b(iii) 'Oil-extracted annatto'",
+        "source": "",
+        "result": "fjernet"
+      }
+    ]
+  },
+  {
+    "code": "E160c",
+    "nameDa": "Paprikaekstrakt (capsanthin, capsorubin)",
+    "nameEn": "Paprika extract",
+    "category": "Farvestof (orange-rød)",
+    "euStatus": "approved",
+    "origin": "natural",
+    "summary": "Orange-rød farve udvundet af rød peberfrugt/paprika.",
+    "description": "Paprikaekstrakt udvindes med opløsningsmidler fra tørrede, malede frugter af Capsicum annuum. Hovedpigmenterne er carotenoiderne capsanthin og capsorubin. Ekstraktet bruges som fedtopløseligt farvestof og kan afhængigt af fremstillingen give en vis paprikasmag; EU-specifikationen begrænser capsaicin (det stærke stof) til højst 250 mg/kg.",
+    "uses": "Pølser og kødprodukter, snacks og chips, saucer, supper, ost og krydderiblandinger.",
+    "health": "EFSA fastsatte i 2015 en ADI på 24 mg paprikaekstrakt/kg legemsvægt/dag (svarende til 1,7 mg carotenoider/kg legemsvægt/dag) og fandt, at eksponeringen i de forfinede scenarier lå under ADI. Allergi over for paprika/peberfrugt er sjælden, men beskrevet.",
+    "research": "EFSA's gen-evaluering 2015 byggede ADI på NOAEL for histopatologiske forandringer i et kronisk toksicitets- og kræftstudie med et specificeret paprikaekstrakt og konkluderede, at paprikaekstrakt ikke giver genotoksisk bekymring og ikke var kræftfremkaldende ved de testede doser. Eksponeringen i de forfinede scenarier lå under ADI.",
+    "keyReferences": [],
+    "pubmedTerm": "paprika oleoresin",
+    "flags": [],
+    "classes": [
+      "colour"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluation of paprika extract (E 160c) as a food additive",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2015.4320",
+      "date": "2015-12-10",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4320",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02012R0231-20241027",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6023",
+        "https://en.wikipedia.org/wiki/Paprika_oleoresin",
+        "https://food-detektiv.de/en/additives/?enummer=Paprika+extract",
+        "https://www.nature.com/articles/s41598-023-44775-3",
+        "https://natcol.org/paprika-extract-ins-160-c-i-e-160-c/"
+      ],
+      "notes": "Runde 3 (udsagn-for-udsagn, WebSearch). Bekræftet: opløsningsmiddelekstraktion af Capsicum annuum, capsanthin/capsorubin, fedtopløselig anvendelse, paprikasmag, capsaicin-grænse (250 mg/kg), ADI 24 og 1,7 mg carotenoider/kg (2015), histopatologisk NOAEL, eksponering under ADI, anvendelser, paprika-allergi beskrevet. Rettet: 'på baggrund af et rottestudie' ændret til 'kronisk toksicitets- og kræftstudie' (dyreart ikke bekræftet); allergiudsagnet omformuleret til kildens ('sjælden, men beskrevet'). Fjernet: 'regnes for sikkert/udbredt', 'røget fisk' og 'dressinger' som anvendelser, og varianterne E160c(i)/(ii) (uden navne; kun Codex/INS-underopdeling, ikke EU-numre).",
+      "previousStatus": "uncertain"
+    },
+    "wikipedia": "",
+    "wikidata": "",
+    "claims": [
+      {
+        "claim": "Oleoresin udvindes med opløsningsmidler fra tørret Capsicum annuum",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4320",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Hovedpigmenter capsanthin og capsorubin",
+        "source": "https://en.wikipedia.org/wiki/Paprika_oleoresin",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fedtopløseligt; kan have svag paprikasmag",
+        "source": "https://food-detektiv.de/en/additives/?enummer=Paprika+extract",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Specifikationen kræver lavt capsaicin (maks. 250 mg/kg)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6023",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bruges indirekte som krydderiaroma",
+        "source": "https://food-detektiv.de/en/additives/?enummer=Paprika+extract",
+        "result": "rettet"
+      },
+      {
+        "claim": "Anvendelser: pølser, snacks/chips, saucer, ost, supper, krydderiblandinger",
+        "source": "https://en.wikipedia.org/wiki/Paprika_oleoresin",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelse i røget fisk og dressinger",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Udbredt og regnes for sikkert",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "ADI 24 mg/kg (1,7 mg carotenoider/kg) i 2015",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4320",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Personer med paprika-allergi bør være opmærksomme",
+        "source": "https://www.nature.com/articles/s41598-023-44775-3",
+        "result": "rettet"
+      },
+      {
+        "claim": "ADI på baggrund af histopatologiske fund i rottestudie",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4320",
+        "result": "rettet"
+      },
+      {
+        "claim": "Eksponering under ADI",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4320",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Varianter E160c(i)/E160c(ii)",
+        "source": "https://natcol.org/paprika-extract-ins-160-c-i-e-160-c/",
+        "result": "fjernet"
+      }
+    ]
+  },
+  {
+    "code": "E160d",
+    "nameDa": "Lycopen",
+    "nameEn": "Lycopene",
+    "category": "Farvestof (rød)",
+    "euStatus": "approved",
+    "origin": "mixed",
+    "summary": "Rødt carotenoid, som giver tomater deres farve.",
+    "description": "Lycopen er et fedtopløseligt carotenoid uden provitamin A-aktivitet. I EU er der tre varianter: (i) syntetisk lycopen, (ii) lycopen udvundet af røde tomater og (iii) lycopen fremstillet ved fermentering med svampen Blakeslea trispora. Det giver en rød til orangerød farve og er følsomt over for lys og ilt.",
+    "uses": "Drikke, supper, saucer og dressinger, konfekture, bagværk, mejeriprodukter og kosttilskud.",
+    "health": "EFSA fastsatte i 2008 en ADI på 0,5 mg/kg legemsvægt/dag for lycopen fra alle kilder; høje indtag hos førskole- og skolebørn kunne overskride den, og drikke var den største kilde. I den reviderede eksponeringsvurdering i 2010 kunne især børn overskride ADI, når indtag fra berigede fødevarer blev medregnet. Meget højt indtag af lycopenrige fødevarer (især tomater) kan give en godartet orange hudfarvning (lycopenæmi).",
+    "research": "EFSA fastsatte ADI 0,5 mg/kg legemsvægt/dag i 2008 og gennemgik eksponeringen igen i 2010 (især børn kunne overskride ADI, når berigede fødevarer blev medregnet). Epidemiologiske studier af tomat/lycopen og prostatakræft har givet uensartede resultater, og metaanalyser er ikke entydige.",
+    "keyReferences": [],
+    "pubmedTerm": "lycopene",
+    "flags": [
+      "children_caution"
+    ],
+    "classes": [
+      "colour"
+    ],
+    "variants": [
+      {
+        "code": "E160d(i)",
+        "nameDa": "Syntetisk lycopen",
+        "nameEn": "Synthetic lycopene"
+      },
+      {
+        "code": "E160d(ii)",
+        "nameDa": "Lycopen fra røde tomater",
+        "nameEn": "Lycopene from red tomatoes"
+      },
+      {
+        "code": "E160d(iii)",
+        "nameDa": "Lycopen fra Blakeslea trispora",
+        "nameEn": "Lycopene from Blakeslea trispora"
+      }
+    ],
+    "efsa": {
+      "title": "Revised exposure assessment for lycopene as a food colour",
+      "url": "https://doi.org/10.2903/j.efsa.2010.1444",
+      "date": "2010",
+      "adi": "0.5 mg/kg bw/day",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1444",
+        "https://www.foodnavigator.com/Article/2010/01/29/Lycopene-s-use-levels-as-a-food-colour-up-for-review-EC/",
+        "https://iacmcolor.org/color-profile/lycopene/",
+        "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/lycopene",
+        "https://pubmed.ncbi.nlm.nih.gov/35938228/",
+        "https://www.nature.com/articles/srep37091",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC3368367/",
+        "https://www.atamanchemicals.com/e160d-lycopene_u27784/"
+      ],
+      "notes": "Runde 3 (udsagn-for-udsagn, WebSearch). Bekræftet: fedtopløseligt carotenoid uden provitamin A, de tre EU-varianter, følsomhed for lys og ilt, ADI 0,5 fra alle kilder (2008), revurdering 2010 med mulig overskridelse hos børn ved berigede fødevarer, uensartet evidens for prostatakræft, anvendelser. Rettet: 'gruppe-ADI' -> ADI for lycopen fra alle kilder; hudfarvning præciseret til højt indtag af lycopenrige fødevarer (kilderne beskriver tomater, ikke kosttilskud); variantnavne (var ødelagte 'Lycopene\\\\') udfyldt; 'desserter, is, kager' erstattet af kildernes kategorier. Fjernet: intet ud over de ubelagte anvendelseseksempler.",
+      "previousStatus": "uncertain"
+    },
+    "wikipedia": "",
+    "wikidata": "Q208130",
+    "claims": [
+      {
+        "claim": "Fedtopløseligt carotenoid uden provitamin A-aktivitet",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/lycopene",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Tre EU-varianter: syntetisk, fra tomater, fra Blakeslea trispora",
+        "source": "https://iacmcolor.org/color-profile/lycopene/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Rød farve; følsomt over for lys og ilt",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/lycopene",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: supper, saucer, drikke, desserter, is, kager, kosttilskud",
+        "source": "https://www.atamanchemicals.com/e160d-lycopene_u27784/",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2008 gruppe-ADI 0,5 mg/kg for alle lycopenkilder",
+        "source": "https://www.foodnavigator.com/Article/2010/01/29/Lycopene-s-use-levels-as-a-food-colour-up-for-review-EC/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Eksponering revurderet i 2010; børn kan overskride ADI (berigede fødevarer)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1444",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Store indtag fra kosttilskud kan give orange hudfarvning (lycopenodermi)",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/35938228/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Prostatakræft-studier ikke entydige",
+        "source": "https://www.nature.com/articles/srep37091",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Variantnavne ('Lycopene\\\\')",
+        "source": "https://iacmcolor.org/color-profile/lycopene/",
+        "result": "rettet"
+      }
+    ]
+  },
+  {
+    "code": "E160e",
+    "nameDa": "Beta-apo-8'-carotenal (C30)",
+    "nameEn": "Beta-apo-8'-carotenal (C30)",
+    "category": "Farvestof (orange)",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Syntetisk orange carotenoid.",
+    "description": "Beta-apo-8'-carotenal er et carotenoid, der findes naturligt i fx spinat og citrusfrugter, men som tilsætningsstof fremstilles det ved kemisk syntese. Det giver en orange til rødlig farve og har provitamin A-aktivitet (omtrent halvt så meget som beta-caroten). Det er fedtopløseligt og findes bl.a. som olieopløsning til fødevarer og drikke.",
+    "uses": "Fedtbaserede fødevarer (margarine, saucer og dressinger), drikke, mejeriprodukter og slik.",
+    "health": "EFSA fastsatte i 2012 en ADI på 0,05 mg/kg legemsvægt/dag og hævede den efter en revurdering i 2014 til 0,3 mg/kg. EFSA's tier 3-beregninger viste, at ADI kunne overskrides af børn (både i gennemsnit og ved højt forbrug), men i 2014 konkluderede EFSA ud fra de af industrien rapporterede anvendelser og brugsniveauer, at brugen ikke giver sikkerhedsbekymring.",
+    "research": "EFSA's ADI fra 2012 byggede på LOAEL 10 mg/kg legemsvægt/dag i et 13-ugers rottestudie og en usikkerhedsfaktor på 200. I revurderingen 2014 blev de oprindelige nyresnit fra samme studie genvurderet, hvilket gav en NOAEL på 30 mg/kg legemsvægt/dag; med usikkerhedsfaktor 100 blev ADI fastsat til 0,3 mg/kg legemsvægt/dag.",
+    "keyReferences": [],
+    "pubmedTerm": "beta-apo-8'-carotenal",
+    "flags": [
+      "children_caution"
+    ],
+    "classes": [
+      "colour"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the reconsideration of the ADI and a refined exposure assessment of beta-apo-8'-carotenal (E 160e)",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2014.3492",
+      "date": "2014-01-22",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "uncertain",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2012.2499",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3492",
+        "https://en.wikipedia.org/wiki/Apocarotenal",
+        "https://natcol.org/beta-apo-8-carotenal-e-160-e-ins-160-e/"
+      ],
+      "notes": "Runde 3 (udsagn-for-udsagn, WebSearch). Bekræftet: naturlig forekomst i spinat og citrus, syntetisk fremstilling som tilsætningsstof, orange-rød farve, provitamin A-aktivitet (ca. 50 % af beta-caroten), fedtbaserede anvendelser, ADI 0,05 (2012) og 0,3 (2014), 13-ugers rottestudie, UF 100 og NOAEL 30, 2014-konklusion (ingen sikkerhedsbekymring ved rapporteret brug). Rettet: 2012-ADI'ens grundlag tilføjet (LOAEL 10, UF 200); formulering 'emulsioner eller pulvere' ændret til olieopløsning (kildebelagt). Usikkert: udsagnet om, at børn med højt forbrug kan overskride ADI — søgeresultaterne tilskriver tier 3-overskridelsen hos børn både 2012- og 2014-udtalelsen, så det er ikke entydigt, om det gælder den nuværende ADI på 0,3 mg/kg; flaget children_caution er bevaret, men bør efterprøves mod EFSA Journal 2014;12(1):3492. Fjernet: 'is, ost, kager' som specifikke anvendelser (erstattet af kildens kategorier).",
+      "previousStatus": "uncertain"
+    },
+    "wikipedia": "",
+    "wikidata": "",
+    "claims": [
+      {
+        "claim": "Findes naturligt i små mængder i citrusfrugter og spinat",
+        "source": "https://en.wikipedia.org/wiki/Apocarotenal",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles syntetisk som tilsætningsstof",
+        "source": "https://natcol.org/beta-apo-8-carotenal-e-160-e-ins-160-e/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Orange til rødlig farve; vis provitamin A-aktivitet",
+        "source": "https://en.wikipedia.org/wiki/Apocarotenal",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fedtopløseligt; markedsføres som emulsioner eller pulvere",
+        "source": "https://natcol.org/beta-apo-8-carotenal-e-160-e-ins-160-e/",
+        "result": "rettet"
+      },
+      {
+        "claim": "Anvendelser: drikke, desserter, is, ost, kager, saucer",
+        "source": "https://natcol.org/beta-apo-8-carotenal-e-160-e-ins-160-e/",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2012 ADI 0,05 mg/kg; hævet til 0,3 mg/kg i 2014",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3492",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Børn med højt forbrug kunne overskride ADI 0,3",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3492",
+        "result": "rettet"
+      },
+      {
+        "claim": "2014: ny information om 13-ugers rottestudie, UF 100",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3492",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E161",
+    "nameDa": "Xanthophyller",
+    "nameEn": "Xanthophylls",
+    "category": "Farvestof (gul-orange)",
+    "euStatus": "approved",
+    "origin": "mixed",
+    "summary": "Fællesbetegnelse for iltholdige carotenoider (xanthophyller) under E161.",
+    "description": "Xanthophyller er carotenoider, der indeholder ilt, og som bl.a. giver gul farve i blomster og æggeblommer. Gruppen omfatter bl.a. lutein, zeaxanthin, canthaxanthin og astaxanthin. Kun lutein (E161b) og canthaxanthin (E161g) er godkendt som fødevarefarve i EU. Canthaxanthin og lutein bruges desuden i foder, hvor canthaxanthin farver æggeblommer, fjerkræ og opdrætslaks.",
+    "uses": "Via godkendte stoffer: drikke, bagværk, saucer og kosttilskud (lutein) samt saucisses de Strasbourg (canthaxanthin). Indirekte via foder i æg, fjerkræ og opdrætslaks.",
+    "health": "Sikkerheden afhænger af det enkelte stof. Canthaxanthin kan ved høje doser aflejre krystaller i nethinden, og ADI for canthaxanthin (0,03 mg/kg legemsvægt/dag) er derfor fastsat på baggrund af disse fund.",
+    "research": "EFSA's gen-evalueringer af canthaxanthin (2010) og lutein (2010) er de centrale vurderinger af de EU-godkendte xanthophyller.",
+    "keyReferences": [],
+    "pubmedTerm": "xanthophylls",
+    "flags": [],
+    "classes": [],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluation of canthaxanthin (E 161 g) as a food additive",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2010.1852",
+      "date": "2010-10-22",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1852",
+        "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1678",
+        "https://infocons.org/blog/2026/08/10/food-colours-explained-the-full-list-of-authorised-colour-additives-and-what-each-one-is/",
+        "https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/lutein",
+        "https://en.wikipedia.org/wiki/Canthaxanthin",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11513604/",
+        "https://ec.europa.eu/food/fs/sc/scan/out81_en.pdf"
+      ],
+      "notes": "Runde 3 (udsagn-for-udsagn, WebSearch). Bekræftet: xanthophyller er iltholdige carotenoider, gruppens medlemmer, kun E161b og E161g godkendt i EU, canthaxanthin i foder (æg, fjerkræ, laks), lutein i foder, anvendelser, nethindekrystaller og ADI-grundlag, EFSA 2010-vurderingerne. Rettet: summary 'E161a-j' ændret til 'under E161'; 'flere xanthophyller bruges i foder' præciseret til canthaxanthin og lutein; anvendelser tilpasset kilder. Fjernet: 'de øvrige xanthophyller er primært vurderet som foderstoffer eller nye fødevarer' (ikke fundet belæg) og 'laks' som eksempel på naturlig farve.",
+      "previousStatus": "uncertain"
+    },
+    "wikipedia": "",
+    "wikidata": "",
+    "claims": [
+      {
+        "claim": "Fællesbetegnelse for E161a-j",
+        "source": "",
+        "result": "rettet"
+      },
+      {
+        "claim": "Xanthophyller er iltholdige carotenoider; gule/orange farver i blomster, æggeblommer",
+        "source": "https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/lutein",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Gruppen omfatter lutein, zeaxanthin, canthaxanthin, astaxanthin",
+        "source": "https://infocons.org/blog/2026/08/10/food-colours-explained-the-full-list-of-authorised-colour-additives-and-what-each-one-is/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Kun E161b og E161g godkendt i EU",
+        "source": "https://infocons.org/blog/2026/08/10/food-colours-explained-the-full-list-of-authorised-colour-additives-and-what-each-one-is/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Flere xanthophyller bruges i foder (æggeblommer, laks)",
+        "source": "https://en.wikipedia.org/wiki/Canthaxanthin",
+        "result": "rettet"
+      },
+      {
+        "claim": "Anvendelser: desserter, drikke, slik; canthaxanthin i Strasbourg-pølser",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1852",
+        "result": "rettet"
+      },
+      {
+        "claim": "Canthaxanthin aflejrer krystaller i nethinden; lav ADI",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1852",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA gen-evaluerede canthaxanthin og lutein i 2010",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1678",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Øvrige xanthophyller primært vurderet som foder/nye fødevarer",
+        "source": "",
+        "result": "fjernet"
+      }
+    ]
+  },
+  {
+    "code": "E161b",
+    "nameDa": "Lutein",
+    "nameEn": "Lutein",
+    "category": "Farvestof (gul)",
+    "euStatus": "approved",
+    "origin": "natural",
+    "summary": "Gult carotenoid udvundet af fløjlsblomst (Tagetes erecta).",
+    "description": "Lutein er et xanthophyll, der især findes i grønne bladgrøntsager, majs og æggeblomme, og som sammen med zeaxanthin ophobes i øjets gule plet (macula). Som tilsætningsstof udvindes det med organiske opløsningsmidler fra kronbladene af Tagetes erecta (fløjlsblomst); ekstraktet indeholder lutein, lutein-estere og andre carotenoider, bl.a. zeaxanthin. EFSA's ADI gælder lutein fra Tagetes erecta med mindst 80 % carotenoider (lutein og zeaxanthin). Det er fedtopløseligt og giver gul farve.",
+    "uses": "Drikke, bagværk, morgenmadsprodukter, tyggegummi, saucer og kosttilskud (øjenprodukter).",
+    "health": "Lutein regnes for sikkert i de anvendte mængder. EFSA fastsatte i 2010 en ADI på 1 mg/kg legemsvægt/dag og beregnede, at eksponeringen (tier 3) kunne overskride ADI i den øvre ende af intervallet; i 2011 indsendte industrien korrigerede brugsniveauer, som var væsentligt lavere.",
+    "research": "EFSA's gen-evaluering 2010 fastsatte ADI på 1 mg/kg legemsvægt/dag. Det store kliniske forsøg AREDS2 (JAMA 2013) fandt i den primære analyse ingen signifikant effekt af lutein/zeaxanthin-tilskud på progression til fremskreden aldersrelateret makuladegeneration, men sekundære analyser tydede på gavn, bl.a. hos deltagere med lavt indtag af lutein/zeaxanthin fra kosten.",
+    "keyReferences": [],
+    "pubmedTerm": "lutein",
+    "flags": [],
+    "classes": [
+      "colour"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluation of lutein (E 161b) as a food additive",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2010.1678",
+      "date": "2010-07-28",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1678",
+        "https://www.efsa.europa.eu/en/efsajournal/pub/2144",
+        "https://pubmed.ncbi.nlm.nih.gov/23644932/",
+        "https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/lutein",
+        "https://www.fao.org/fileadmin/templates/agns/pdf/jecfa/cta/63/Lutein.pdf",
+        "https://infocons.org/blog/2026/08/10/food-colours-explained-the-full-list-of-authorised-colour-additives-and-what-each-one-is/"
+      ],
+      "notes": "Runde 3 (udsagn-for-udsagn, WebSearch). Bekræftet: forekomst i bladgrøntsager og æggeblomme, ophobning i macula, opløsningsmiddelekstraktion fra Tagetes erecta med indhold af zeaxanthin og lutein-estere, ADI 1 mg/kg (2010), AREDS2-resultaterne, anvendelser. Rettet: 'børn med højt forbrug kunne overskride ADI' rettet til EFSA's formulering (tier 3-overskridelse i den øvre ende af intervallet; korrigerede, lavere brugsniveauer i 2011) — flaget children_caution fjernet, da børn ikke specifikt er nævnt i kilden. Fjernet: varianterne E161b(i)/(ii)/(iii) (Codex/INS-underopdeling, ikke EU-numre; E161b(ii) var uden navn).",
+      "previousStatus": "uncertain"
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Lutein",
+    "wikidata": "Q422067",
+    "claims": [
+      {
+        "claim": "Lutein findes i grønne bladgrøntsager og æggeblomme og ophobes i macula",
+        "source": "https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/lutein",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Udvindes med opløsningsmidler fra Tagetes erecta; kan indeholde zeaxanthin",
+        "source": "https://www.fao.org/fileadmin/templates/agns/pdf/jecfa/cta/63/Lutein.pdf",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Varianter: lutein fra Tagetes erecta og lutein-estere",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Fedtopløseligt; gul farve",
+        "source": "https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/lutein",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: drikke, desserter, is, slik, bagværk, saucer, kosttilskud",
+        "source": "https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/lutein",
+        "result": "rettet"
+      },
+      {
+        "claim": "EFSA 2010 ADI 1 mg/kg",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1678",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Børn med højt forbrug kunne overskride ADI",
+        "source": "https://www.efsa.europa.eu/en/efsajournal/pub/2144",
+        "result": "rettet"
+      },
+      {
+        "claim": "AREDS2 (2013): ingen signifikant effekt på primært endepunkt, mulig gavn i sekundære analyser",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/23644932/",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E161g",
+    "nameDa": "Canthaxanthin",
+    "nameEn": "Canthaxanthin",
+    "category": "Farvestof (orange-rød)",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Orange-rødt carotenoid med stærkt begrænset anvendelse i fødevarer.",
+    "description": "Canthaxanthin er et orange-rødt keto-carotenoid (xanthophyll), der findes naturligt i fx svampe (kantareller), krebsdyr, fisk og æggeblommer; som tilsætningsstof fremstilles det syntetisk. Det bruges primært i dyrefoder til at farve æggeblommer, fjerkræ og opdrætslaks, mens brugen direkte i fødevarer er meget begrænset.",
+    "uses": "I EU kun tilladt i saucisses de Strasbourg (maks. 15 mg/kg). Forekommer indirekte i æg, fjerkræ og opdrætslaks via foder.",
+    "health": "Høje doser (tidligere brugt i 'solpiller' til brunfarvning) er forbundet med krystalaflejringer i nethinden (canthaxanthin-retinopati), som i de fleste tilfælde svinder igen. EFSA bibeholdt i 2010 ADI på 0,03 mg/kg legemsvægt/dag og påpegede, at brugen i foder bidrager til eksponeringen.",
+    "research": "EFSA's gen-evaluering 2010 bekræftede ADI på 0,03 mg/kg legemsvægt/dag, baseret på krystalaflejringer i nethinden hos aber og mennesker. EU's Videnskabelige Komité for Dyreernæring (SCAN) vurderede i 2002, at de dengang tilladte niveauer i foder (op til 80 mg/kg) var for høje, og anbefalede 25 mg/kg for laksefisk og slagtekyllinger og 8 mg/kg for æglæggende høns.",
+    "keyReferences": [],
+    "pubmedTerm": "canthaxanthin",
+    "flags": [],
+    "classes": [
+      "colour"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluation of canthaxanthin (E 161 g) as a food additive",
+      "url": "http://dx.doi.org/10.2903/j.efsa.2010.1852",
+      "date": "2010-10-22",
+      "adi": "",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1852",
+        "https://en.wikipedia.org/wiki/Canthaxanthin",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3833018/",
+        "https://ec.europa.eu/food/fs/sc/scan/out81_en.pdf",
+        "https://www.lebensmittellexikon.de/c0002090.php",
+        "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/canthaxanthin"
+      ],
+      "notes": "Runde 3 (udsagn-for-udsagn, WebSearch). Bekræftet: naturlig forekomst i svampe og krebsdyr, syntetisk fremstilling, primær brug i foder (æggeblommer, laks), kun tilladt i saucisses de Strasbourg (15 mg/kg), solpiller og nethindekrystaller, ADI 0,03 baseret på fund hos aber og mennesker, foderets bidrag til eksponering, sænkede fodergrænser. Rettet: fodergrænse-udsagnet præciseret til SCAN 2002 (80 -> 25/8 mg/kg); retinopatien suppleret med, at den som regel svinder. Fjernet: 'eksponering fra fødevarer i EU er lav' (ikke fundet belæg; EFSA fremhævede i stedet foderets bidrag).",
+      "previousStatus": "uncertain"
+    },
+    "wikipedia": "",
+    "wikidata": "",
+    "claims": [
+      {
+        "claim": "Findes naturligt i svampe og krebsdyr; syntetisk som tilsætningsstof",
+        "source": "https://en.wikipedia.org/wiki/Canthaxanthin",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fedtopløseligt; orange-røde farver",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/canthaxanthin",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bruges i langt større omfang i foder (æggeblommer, laks)",
+        "source": "https://en.wikipedia.org/wiki/Canthaxanthin",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "I EU kun tilladt i saucisses de Strasbourg (maks. 15 mg/kg)",
+        "source": "https://www.lebensmittellexikon.de/c0002090.php",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Høje doser i solpiller giver canthaxanthin-retinopati",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3833018/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2010 bibeholdt ADI 0,03 mg/kg baseret på øjenfund hos mennesker og aber",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1852",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Eksponering fra fødevarer i EU er lav",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Grænsen for canthaxanthin i foder blev sænket",
+        "source": "https://ec.europa.eu/food/fs/sc/scan/out81_en.pdf",
+        "result": "rettet"
+      }
+    ]
+  },
+  {
+    "code": "E200",
+    "nameDa": "Sorbinsyre",
+    "nameEn": "Sorbic acid",
+    "category": "Konserveringsmiddel",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Sorbinsyre er et udbredt konserveringsmiddel mod skimmel og gær. Det blev første gang isoleret fra rønnebær, men fremstilles i dag syntetisk.",
+    "description": "Sorbinsyre (2,4-hexadiensyre) er en kortkædet, umættet fedtsyre, som A. W. von Hofmann første gang isolerede fra rønnebær i 1859. Industrielt fremstilles den syntetisk ud fra keten og crotonaldehyd. Den hæmmer vækst af skimmelsvampe og gær og virker bedst i sure fødevarer, hvor en større del findes som den udissocierede syre. Da sorbinsyre er tungtopløselig i vand, bruges saltet kaliumsorbat (E202) ofte i stedet. Kroppen nedbryder sorbinsyre ved beta-oxidation som andre fedtsyrer.",
+    "uses": "Ost, bagværk og kager, marmelade og syltetøj, vin, frugtjuice og læskedrikke, saucer, pølser og røget fisk.",
+    "health": "EFSA fandt ingen tegn på genotoksisk aktivitet for sorbinsyre eller kaliumsorbat. Sorbinsyre kan i sjældne tilfælde give kontakturticaria, allergisk kontakteksem og ikke-immunologiske pseudoallergiske reaktioner, især ved hudkontakt. EFSA fastsatte i 2015 en midlertidig gruppe-ADI på 3 mg/kg legemsvægt/dag for sorbinsyre og kaliumsorbat og fandt, at den blev overskredet ved højt forbrug hos småbørn og børn i ét land; i 2019 blev gruppe-ADI på baggrund af et nyt reproduktionsstudie fastsat til 11 mg/kg legemsvægt/dag, og eksponeringen lå herefter et godt stykke under ADI i alle befolkningsgrupper.",
+    "research": "EFSA's gen-evaluering fra 2015 fastsatte en midlertidig gruppe-ADI på 3 mg/kg legemsvægt/dag ud fra en NOAEL på 300 mg/kg legemsvægt/dag i et to-generationers reproduktionsstudie og usikkerhedsfaktor 100 og efterlyste et udvidet en-generations reproduktionsstudie. EFSA's opfølgning i 2019 fandt i dette studie en BMDL på 1.110 mg/kg legemsvægt/dag og fastsatte med usikkerhedsfaktor 100 en gruppe-ADI på 11 mg/kg legemsvægt/dag for sorbinsyre og kaliumsorbat.",
+    "keyReferences": [],
+    "pubmedTerm": "sorbic acid",
+    "flags": [],
+    "classes": [
+      "preservative"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Opinion on the follow-up of the re-evaluation of sorbic acid (E200) and potassium sorbate (E202) as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2019.5625",
+      "date": "2019-03-01",
+      "adi": "11 mg/kg bw/day",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4144",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5625",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32020R0268",
+        "https://en.wikipedia.org/wiki/Sorbic_acid",
+        "https://www.altmeyers.org/en/allergology/sorbic-acid-133758",
+        "https://pubmed.ncbi.nlm.nih.gov/33656744/",
+        "https://www.sciencedirect.com/topics/immunology-and-microbiology/potassium-sorbate",
+        "https://www.sciencedirect.com/topics/nursing-and-health-professions/sorbate-potassium"
+      ],
+      "notes": "Runde 3 (udsagn-for-udsagn, WebSearch). Bekræftet: kemi (2,4-hexadiensyre), isoleret fra rønnebær (Hofmann 1859), syntese fra keten og crotonaldehyd, virkning mod skimmel og gær og pH-afhængighed, tungtopløselighed, beta-oxidation, ingen genotoksicitet, sjældne hud-/pseudoallergiske reaktioner, midlertidig ADI 3 (2015) og ADI 11 (2019). Rettet: overskridelse af den midlertidige ADI præciseret til småbørn og børn i ét land ved højt forbrug; 2015-ADI'ens grundlag (NOAEL 300, to-generationsstudie) og 2019-BMDL tilføjet; 'et af de mest brugte' ændret til 'udbredt'. Fjernet: 'ikke kræftfremkaldende' og 'et af de mindst problematiske' (ikke direkte kildebelagt i søgningerne), 'ingen væsentlig videnskabelig uenighed', maksimumsgrænser '200-2000 mg/kg' samt pålægssalater, dressinger/mayonnaise, cider og tørret frugt som anvendelser (ikke fundet belæg).",
+      "previousStatus": "uncertain"
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Sorbic_acid",
+    "wikidata": "Q407131",
+    "claims": [
+      {
+        "claim": "2,4-hexadiensyre; kortkædet umættet fedtsyre, først isoleret fra rønnebær",
+        "source": "https://en.wikipedia.org/wiki/Sorbic_acid",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Syntetisk fremstilling ud fra keten og crotonaldehyd",
+        "source": "https://en.wikipedia.org/wiki/Sorbic_acid",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Hæmmer skimmel og gær; virker bedst i sure fødevarer",
+        "source": "https://www.sciencedirect.com/topics/immunology-and-microbiology/potassium-sorbate",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Tungtopløselig; kaliumsorbat bruges ofte i stedet",
+        "source": "https://www.sciencedirect.com/topics/immunology-and-microbiology/potassium-sorbate",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Nedbrydes som almindelig fedtsyre",
+        "source": "https://en.wikipedia.org/wiki/Sorbic_acid",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: ost, bagværk, marmelade, vin",
+        "source": "https://www.sciencedirect.com/topics/nursing-and-health-professions/sorbate-potassium",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: pålægssalater, dressinger, mayonnaise, cider, tørret frugt",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Maksimumsgrænser typisk 200-2000 mg/kg",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Ikke genotoksisk",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5625",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ikke kræftfremkaldende; et af de mindst problematiske",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Sjældne hudirritation/pseudoallergiske reaktioner ved hudkontakt",
+        "source": "https://www.altmeyers.org/en/allergology/sorbic-acid-133758",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "2015 midlertidig gruppe-ADI 3 mg/kg; børn kunne overskride",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32020R0268",
+        "result": "rettet"
+      },
+      {
+        "claim": "2019 gruppe-ADI 11 mg/kg; ingen overskridelse",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5625",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ingen væsentlig videnskabelig uenighed",
+        "source": "",
+        "result": "fjernet"
+      }
+    ]
+  },
+  {
+    "code": "E202",
+    "nameDa": "Kaliumsorbat",
+    "nameEn": "Potassium sorbate",
+    "category": "Konserveringsmiddel",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Kaliumsorbat er kaliumsaltet af sorbinsyre og et meget udbredt konserveringsmiddel mod skimmel og gær.",
+    "description": "Kaliumsorbat fremstilles ved at neutralisere sorbinsyre (E200) med kaliumhydroxid. Det er langt mere vandopløseligt end sorbinsyre og derfor lettere at bruge i drikke og andre vandige produkter. Den aktive form er den udissocierede sorbinsyre, og virkningen er derfor bedst ved lav pH. Det hæmmer skimmel og gær, men er mindre effektivt mod bakterier; mælkesyrebakterier er modstandsdygtige.",
+    "uses": "Vin, frugtjuice og læskedrikke, ost og yoghurt, brød og kager, marmelade og syltetøj, saucer og supper.",
+    "health": "EFSA fandt ingen tegn på genotoksisk aktivitet for sorbinsyre eller kaliumsorbat. Sorbater betragtes som sjældne hudsensibilisatorer; kontakturticaria, kontakteksem og pseudoallergiske reaktioner er beskrevet sporadisk. EFSA fastsatte i 2015 en midlertidig gruppe-ADI på 3 mg/kg legemsvægt/dag for sorbinsyre og kaliumsorbat og fandt, at den blev overskredet ved højt forbrug hos småbørn og børn i ét land; i 2019 blev gruppe-ADI på baggrund af et nyt reproduktionsstudie fastsat til 11 mg/kg legemsvægt/dag, og eksponeringen lå herefter et godt stykke under ADI i alle befolkningsgrupper.",
+    "research": "EFSA gen-evaluerede sorbinsyre og sorbater i 2015 og fastsatte en midlertidig gruppe-ADI på 3 mg/kg legemsvægt/dag. En opfølgende EFSA-udtalelse i 2019, baseret på et nyt udvidet en-generations reproduktionsstudie, fastsatte gruppe-ADI til 11 mg/kg legemsvægt/dag for sorbinsyre og kaliumsorbat. Et in vitro-studie har fundet kromosomafvigelser og DNA-skader i humane lymfocytter ved høje koncentrationer, men ingen effekt i mikrokernetesten, og EFSA vurderede i 2019 samlet, at der ikke er tegn på genotoksisk aktivitet.",
+    "keyReferences": [],
+    "pubmedTerm": "potassium sorbate",
+    "flags": [],
+    "classes": [
+      "preservative"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Opinion on the follow-up of the re-evaluation of sorbic acid (E200) and potassium sorbate (E202) as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2019.5625",
+      "date": "2019-03-01",
+      "adi": "11 mg/kg bw/day",
+      "overexposureRisk": ""
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4144",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5625",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32020R0268",
+        "https://en.wikipedia.org/wiki/Potassium_sorbate",
+        "https://www.sciencedirect.com/topics/immunology-and-microbiology/potassium-sorbate",
+        "https://pubmed.ncbi.nlm.nih.gov/20036729/",
+        "https://pubmed.ncbi.nlm.nih.gov/33656744/",
+        "https://www.altmeyers.org/en/allergology/sorbic-acid-133758",
+        "https://chemicalstore.com/potassium-sorbate/"
+      ],
+      "notes": "Runde 3 (udsagn-for-udsagn, WebSearch). Bekræftet: neutralisering med kaliumhydroxid, høj vandopløselighed, sorbinsyre som aktiv form og pH-afhængighed, svagere mod bakterier, anvendelser (vin, juice, sodavand, ost, yoghurt, brød, kager, marmelade), sjældne hud-/pseudoallergiske reaktioner, ADI 3 (2015) og 11 (2019), in vitro-fund i lymfocytter, EFSA's konklusion om ingen genotoksisk aktivitet. Rettet: overskridelse af den midlertidige ADI præciseret (småbørn og børn i ét land); in vitro-udsagnet præciseret til konkrete fund og EFSA's samlede vurdering. Fjernet: 'ikke kræftfremkaldende' (ikke direkte kildebelagt i søgningerne), 'omdannes delvist til sorbinsyre i fødevaren' formuleret om, og pålægssalater, dressinger, remoulade, oliven og syltede grøntsager som anvendelser (ikke fundet belæg).",
+      "previousStatus": "uncertain"
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Potassium_sorbate",
+    "wikidata": "Q410744",
+    "claims": [
+      {
+        "claim": "Fremstilles ved neutralisering af sorbinsyre med kaliumhydroxid",
+        "source": "https://en.wikipedia.org/wiki/Potassium_sorbate",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Langt mere vandopløseligt end sorbinsyre",
+        "source": "https://en.wikipedia.org/wiki/Potassium_sorbate",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Sorbinsyre er den aktive form; bedst ved lav pH",
+        "source": "https://www.sciencedirect.com/topics/immunology-and-microbiology/potassium-sorbate",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Hæmmer skimmel og gær; mindre effektivt mod bakterier",
+        "source": "https://www.sciencedirect.com/topics/immunology-and-microbiology/potassium-sorbate",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: saftevand/læskedrikke, vin, ost, brød og kager, marmelade",
+        "source": "https://chemicalstore.com/potassium-sorbate/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: pålægssalater, dressinger, remoulade, oliven, syltede grøntsager",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Ikke genotoksisk",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5625",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ikke kræftfremkaldende",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Enkelte får kløe, nældefeber eller pseudoallergiske reaktioner",
+        "source": "https://www.altmeyers.org/en/allergology/sorbic-acid-133758",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Midlertidig ADI 3 (2015, risiko for overskridelse hos børn); 11 i 2019",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32020R0268",
+        "result": "rettet"
+      },
+      {
+        "claim": "2019 baseret på udvidet en-generations reproduktionsstudie",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5625",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "In vitro-genotoksicitet ved høje koncentrationer, ikke bekræftet in vivo",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/20036729/",
+        "result": "rettet"
+      }
+    ]
+  },
+  {
+    "code": "E210",
+    "nameDa": "Benzoesyre",
+    "nameEn": "Benzoic acid",
+    "category": "Konserveringsmiddel",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Benzoesyre er et klassisk konserveringsmiddel mod gær og skimmel i sure fødevarer. Det forekommer også naturligt i fx tranebær og kanel.",
+    "description": "Benzoesyre (C6H5COOH) er den simpleste aromatiske carboxylsyre. Den findes naturligt i bær, krydderier og fermenterede mejeriprodukter, men fremstilles industrielt ved oxidation af toluen. Den virker bedst ved lav pH (ca. 2,5–4,5), hvor den udissocierede syre er den aktive form. Da selve syren er tungtopløselig i vand, bruges ofte saltene E211–E213. I kroppen bindes benzoesyre til glycin og udskilles som hippursyre med urinen.",
+    "uses": "Læskedrikke og saftevand (ikke-alkoholiske aromatiserede drikke maks. 150 mg/l udtrykt som benzoesyre), syltede grøntsager og oliven, sild og makrel i lage, salater, saucer, marmelade og syltetøj samt frugtpuré.",
+    "health": "EFSA fastsatte i 2016 en gruppe-ADI på 5 mg/kg legemsvægt/dag (udtrykt som benzoesyre) for benzoesyre og benzoater og fandt, at den blev overskredet i det 'mærkeloyale' scenarie, især for småbørn og børn, der jævnligt drikker aromatiserede drikke. Benzoater kan udløse pseudoallergiske reaktioner som nældefeber, angioødem og astma hos følsomme personer. I drikke med både benzoat og C-vitamin (ascorbinsyre) kan der dannes små mængder af det kræftfremkaldende stof benzen, især ved varme og lys. Tilsætningsstoffer må ifølge forordning (EF) nr. 1333/2008 ikke bruges i fødevarer til spædbørn og småbørn, medmindre bilag II udtrykkeligt tillader det, og benzoater er ikke tilladt i modermælkserstatning.",
+    "research": "EFSA's gen-evaluering fra 2016 (EFSA Journal 2016;14(3):4433) fastsatte gruppe-ADI 5 mg/kg legemsvægt/dag og fandt, at benzoesyre og benzoater ikke giver anledning til bekymring for genotoksicitet. Southampton-studiet (McCann et al., Lancet 2007) gav 153 treårige og 144 otte-/niårige børn en drik med natriumbenzoat og én af to blandinger af kunstige farvestoffer og fandt øget hyperaktivitet; da der blev testet blandinger, kunne effekten ikke henføres til enkelte stoffer, og EFSA konkluderede i 2008, at resultaterne ikke kunne danne grundlag for at ændre ADI for farvestofferne eller natriumbenzoat. Efter fund af benzen i visse læskedrikke i 2005–2006 reformulerede producenterne de produkter, som FDA fandt med over 5 ppb benzen. Benzoesyre findes også naturligt i fx tranebær, kanel og fermenterede mejeriprodukter.",
+    "keyReferences": [
+      {
+        "citation": "McCann D et al. Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial. Lancet. 2007;370(9598):1560-1567.",
+        "searchTitle": "Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial"
+      }
+    ],
+    "pubmedTerm": "benzoic acid",
+    "flags": [
+      "children_caution",
+      "asthma_caution"
+    ],
+    "classes": [
+      "preservative"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluation of benzoic acid (E 210), sodium benzoate (E 211), potassium benzoate (E 212) and calcium benzoate (E 213) as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2016.4433",
+      "date": "2016-03-31",
+      "adi": "5",
+      "overexposureRisk": "en:high"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4433",
+        "https://pubmed.ncbi.nlm.nih.gov/17825405/",
+        "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2008.660",
+        "https://www.fda.gov/food/environmental-contaminants-food/questions-and-answers-occurrence-benzene-soft-drinks-and-other-beverages",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02008R1333-20230720",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC11250213/",
+        "https://journals.sagepub.com/doi/abs/10.1177/039463200401700215",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11670729/",
+        "https://en.wikipedia.org/wiki/Sodium_benzoate",
+        "https://en.wikipedia.org/wiki/Benzoic_acid",
+        "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/benzoic-acid",
+        "https://patents.google.com/patent/US3631204A/en",
+        "https://en.wikipedia.org/wiki/Hippuric_acid"
+      ],
+      "notes": "Runde 3 (udsagn-for-udsagn, WebSearch). Bekræftet (E210-specifikt): simpleste aromatiske carboxylsyre, naturlig forekomst, fremstilling ved oxidation af toluen, pH-afhængig virkning via udissocieret syre (maksimal ved pH 2,5–4,5), glycinkonjugering til hippursyre. Rettet: 'visse bakterier' fjernet fra summary (kilderne nævner gær og skimmel); 'kan trænge ind i mikroorganismernes celler' forenklet til 'aktive form'. Fælles for benzoaterne — Bekræftet: gruppe-ADI 5 mg/kg (2016), overskridelse i det mærkeloyale scenarie for småbørn/børn med aromatiserede drikke, ingen genotoksisk bekymring, pseudoallergiske reaktioner (nældefeber, angioødem, astma), benzendannelse med ascorbinsyre fremmet af varme og lys, 150 mg/l i aromatiserede drikke, forbud mod tilsætningsstoffer i spæd- og småbørnsmad medmindre bilag II tillader det, McCann 2007, EFSA 2008, benzen 2005-2006 og reformulering, naturlig forekomst i tranebær, kanel og fermenterede mejeriprodukter. Rettet: 'fastholdt' ADI -> 'fastsatte'; reformuleringen præciseret til produkter med >5 ppb benzen (FDA); McCann-studiets design præciseret. Fjernet: 'ofte hos dem, der også reagerer på acetylsalicylsyre' og 'ingen kræftfremkaldende effekt' (ikke fundet belæg i søgningerne); 'ketchup' og 'mayonnaisebaserede salater' samt 'marmelade med lavt sukkerindhold' som specifikke anvendelser.",
+      "previousStatus": "uncertain"
+    },
+    "wikipedia": "",
+    "wikidata": "Q191700",
+    "claims": [
+      {
+        "claim": "Simpleste aromatiske carboxylsyre (C6H5COOH)",
+        "source": "https://en.wikipedia.org/wiki/Benzoic_acid",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Findes naturligt i bær, krydderier, fermenterede mejeriprodukter",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11670729/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Fremstilles industrielt ved oxidation af toluen",
+        "source": "https://patents.google.com/patent/US3631204A/en",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Virker bedst ved pH under ca. 4,5 som udissocieret syre",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/benzoic-acid",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Tungtopløselig; saltene E211-E213 bruges ofte",
+        "source": "https://en.wikipedia.org/wiki/Sodium_benzoate",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bindes til glycin og udskilles som hippursyre",
+        "source": "https://en.wikipedia.org/wiki/Hippuric_acid",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Virker mod visse bakterier",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Læskedrikke/saftevand typisk maks. 150 mg/l",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02008R1333-20230720",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: syltede agurker/rødbeder, marinerede sild, marmelade, frugtfyld, saucer, pålægssalater",
+        "source": "https://en.wikipedia.org/wiki/Sodium_benzoate",
+        "result": "rettet"
+      },
+      {
+        "claim": "Anvendelse i ketchup og mayonnaisebaserede salater",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EFSA 2016 fastholdt gruppe-ADI 5 mg/kg (som benzoesyre)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4433",
+        "result": "rettet"
+      },
+      {
+        "claim": "ADI overskredet i mærkeloyalt scenarie, især småbørn/børn med læskedrikke",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4433",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Pseudoallergiske reaktioner: nældefeber, astma",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11250213/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ofte hos dem, der reagerer på acetylsalicylsyre",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Benzen kan dannes med ascorbinsyre ved varme/lys",
+        "source": "https://www.fda.gov/food/environmental-contaminants-food/questions-and-answers-occurrence-benzene-soft-drinks-and-other-beverages",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Benzoater ikke tilladt i modermælkserstatning",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02008R1333-20230720",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ingen genotoksicitet (2016)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4433",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ingen kræftfremkaldende effekt (2016)",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "McCann et al., Lancet 2007;370(9598):1560-1567: blanding af natriumbenzoat og farvestoffer øgede hyperaktivitet",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2008: resultaterne kan ikke danne grundlag for at ændre ADI",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2008.660",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Benzen i læskedrikke 2005-2006 fik industrien til at reformulere mange produkter",
+        "source": "https://www.fda.gov/food/environmental-contaminants-food/questions-and-answers-occurrence-benzene-soft-drinks-and-other-beverages",
+        "result": "rettet"
+      },
+      {
+        "claim": "Benzoesyre findes naturligt i tranebær, kanel, fermenterede mejeriprodukter",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11670729/",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E211",
+    "nameDa": "Natriumbenzoat",
+    "nameEn": "Sodium benzoate",
+    "category": "Konserveringsmiddel",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Natriumbenzoat er natriumsaltet af benzoesyre og et af de mest udbredte konserveringsmidler i læskedrikke og sure fødevarer.",
+    "description": "Natriumbenzoat fremstilles ved at neutralisere benzoesyre med natriumhydroxid. Saltet er let opløseligt i vand, og i sure fødevarer dannes den aktive, udissocierede benzoesyre. Det hæmmer især gær og skimmel. I kroppen bindes benzoatet til glycin og udskilles som hippursyre med urinen. Stoffet bruges også medicinsk til behandling af hyperammoniæmi ved medfødte ureacyklusdefekter.",
+    "uses": "Læskedrikke og saftevand (ikke-alkoholiske aromatiserede drikke maks. 150 mg/l udtrykt som benzoesyre), syltede grøntsager og oliven, sild og makrel i lage, salater, saucer, marmelade og syltetøj samt frugtpuré.",
+    "health": "EFSA fastsatte i 2016 en gruppe-ADI på 5 mg/kg legemsvægt/dag (udtrykt som benzoesyre) for benzoesyre og benzoater og fandt, at den blev overskredet i det 'mærkeloyale' scenarie, især for småbørn og børn, der jævnligt drikker aromatiserede drikke. Benzoater kan udløse pseudoallergiske reaktioner som nældefeber, angioødem og astma hos følsomme personer. I drikke med både benzoat og C-vitamin (ascorbinsyre) kan der dannes små mængder af det kræftfremkaldende stof benzen, især ved varme og lys. Tilsætningsstoffer må ifølge forordning (EF) nr. 1333/2008 ikke bruges i fødevarer til spædbørn og småbørn, medmindre bilag II udtrykkeligt tillader det, og benzoater er ikke tilladt i modermælkserstatning.",
+    "research": "EFSA's gen-evaluering fra 2016 (EFSA Journal 2016;14(3):4433) fastsatte gruppe-ADI 5 mg/kg legemsvægt/dag og fandt, at benzoesyre og benzoater ikke giver anledning til bekymring for genotoksicitet. Southampton-studiet (McCann et al., Lancet 2007) gav 153 treårige og 144 otte-/niårige børn en drik med natriumbenzoat og én af to blandinger af kunstige farvestoffer og fandt øget hyperaktivitet; da der blev testet blandinger, kunne effekten ikke henføres til enkelte stoffer, og EFSA konkluderede i 2008, at resultaterne ikke kunne danne grundlag for at ændre ADI for farvestofferne eller natriumbenzoat. Efter fund af benzen i visse læskedrikke i 2005–2006 reformulerede producenterne de produkter, som FDA fandt med over 5 ppb benzen. Benzoesyre findes også naturligt i fx tranebær, kanel og fermenterede mejeriprodukter.",
+    "keyReferences": [
+      {
+        "citation": "McCann D et al. Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial. Lancet. 2007;370(9598):1560-1567.",
+        "searchTitle": "Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial"
+      }
+    ],
+    "pubmedTerm": "sodium benzoate",
+    "flags": [
+      "children_caution",
+      "asthma_caution"
+    ],
+    "classes": [
+      "preservative"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluation of benzoic acid (E 210), sodium benzoate (E 211), potassium benzoate (E 212) and calcium benzoate (E 213) as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2016.4433",
+      "date": "2016-03-31",
+      "adi": "5",
+      "overexposureRisk": "en:high"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4433",
+        "https://pubmed.ncbi.nlm.nih.gov/17825405/",
+        "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2008.660",
+        "https://www.fda.gov/food/environmental-contaminants-food/questions-and-answers-occurrence-benzene-soft-drinks-and-other-beverages",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02008R1333-20230720",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC11250213/",
+        "https://journals.sagepub.com/doi/abs/10.1177/039463200401700215",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11670729/",
+        "https://en.wikipedia.org/wiki/Sodium_benzoate",
+        "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/benzoic-acid",
+        "https://en.wikipedia.org/wiki/Hippuric_acid",
+        "https://www.ncbi.nlm.nih.gov/books/NBK547972/"
+      ],
+      "notes": "Runde 3 (udsagn-for-udsagn, WebSearch). Bekræftet (E211-specifikt): fremstilling ved neutralisering med natriumhydroxid, vandopløselighed, dannelse af benzoesyre i sure fødevarer, virkning mod gær og skimmel, hippursyre, medicinsk brug ved ureacyklusdefekter. Fjernet: 'billigt og smagsneutralt i lave doser' (ikke fundet belæg). Fælles for benzoaterne — Bekræftet: gruppe-ADI 5 mg/kg (2016), overskridelse i det mærkeloyale scenarie for småbørn/børn med aromatiserede drikke, ingen genotoksisk bekymring, pseudoallergiske reaktioner (nældefeber, angioødem, astma), benzendannelse med ascorbinsyre fremmet af varme og lys, 150 mg/l i aromatiserede drikke, forbud mod tilsætningsstoffer i spæd- og småbørnsmad medmindre bilag II tillader det, McCann 2007, EFSA 2008, benzen 2005-2006 og reformulering, naturlig forekomst i tranebær, kanel og fermenterede mejeriprodukter. Rettet: 'fastholdt' ADI -> 'fastsatte'; reformuleringen præciseret til produkter med >5 ppb benzen (FDA); McCann-studiets design præciseret. Fjernet: 'ofte hos dem, der også reagerer på acetylsalicylsyre' og 'ingen kræftfremkaldende effekt' (ikke fundet belæg i søgningerne); 'ketchup' og 'mayonnaisebaserede salater' samt 'marmelade med lavt sukkerindhold' som specifikke anvendelser.",
+      "previousStatus": "uncertain"
+    },
+    "wikipedia": "https://en.wikipedia.org/wiki/Sodium_benzoate",
+    "wikidata": "Q423971",
+    "claims": [
+      {
+        "claim": "Fremstilles ved neutralisering af benzoesyre med natriumhydroxid",
+        "source": "https://en.wikipedia.org/wiki/Sodium_benzoate",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Let opløseligt; omdannes i sure fødevarer til aktiv benzoesyre",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/benzoic-acid",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Hæmmer især gær og skimmel",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/benzoic-acid",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Billigt og smagsneutralt i lave doser",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Omdannes til hippursyre og udskilles med urinen",
+        "source": "https://www.ncbi.nlm.nih.gov/books/NBK547972/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Bruges medicinsk mod ureacyklusdefekter",
+        "source": "https://www.ncbi.nlm.nih.gov/books/NBK547972/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Læskedrikke/saftevand typisk maks. 150 mg/l",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02008R1333-20230720",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: syltede agurker/rødbeder, marinerede sild, marmelade, frugtfyld, saucer, pålægssalater",
+        "source": "https://en.wikipedia.org/wiki/Sodium_benzoate",
+        "result": "rettet"
+      },
+      {
+        "claim": "Anvendelse i ketchup og mayonnaisebaserede salater",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EFSA 2016 fastholdt gruppe-ADI 5 mg/kg (som benzoesyre)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4433",
+        "result": "rettet"
+      },
+      {
+        "claim": "ADI overskredet i mærkeloyalt scenarie, især småbørn/børn med læskedrikke",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4433",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Pseudoallergiske reaktioner: nældefeber, astma",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11250213/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ofte hos dem, der reagerer på acetylsalicylsyre",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Benzen kan dannes med ascorbinsyre ved varme/lys",
+        "source": "https://www.fda.gov/food/environmental-contaminants-food/questions-and-answers-occurrence-benzene-soft-drinks-and-other-beverages",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Benzoater ikke tilladt i modermælkserstatning",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02008R1333-20230720",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ingen genotoksicitet (2016)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4433",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ingen kræftfremkaldende effekt (2016)",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "McCann et al., Lancet 2007;370(9598):1560-1567: blanding af natriumbenzoat og farvestoffer øgede hyperaktivitet",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2008: resultaterne kan ikke danne grundlag for at ændre ADI",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2008.660",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Benzen i læskedrikke 2005-2006 fik industrien til at reformulere mange produkter",
+        "source": "https://www.fda.gov/food/environmental-contaminants-food/questions-and-answers-occurrence-benzene-soft-drinks-and-other-beverages",
+        "result": "rettet"
+      },
+      {
+        "claim": "Benzoesyre findes naturligt i tranebær, kanel, fermenterede mejeriprodukter",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11670729/",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E212",
+    "nameDa": "Kaliumbenzoat",
+    "nameEn": "Potassium benzoate",
+    "category": "Konserveringsmiddel",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Kaliumbenzoat er kaliumsaltet af benzoesyre. Det bruges som natriumbenzoat, fx når natriumindholdet skal holdes nede.",
+    "description": "Kaliumbenzoat fremstilles ved at neutralisere benzoesyre med kaliumhydroxid. Det virker på samme måde som natriumbenzoat og bruges som erstatning for dette i sure fødevarer, hvor natriumindholdet skal være lavere. I sure fødevarer dannes den aktive benzoesyre, og omsætningen i kroppen svarer til de andre benzoaters.",
+    "uses": "Læskedrikke og saftevand (ikke-alkoholiske aromatiserede drikke maks. 150 mg/l udtrykt som benzoesyre), syltede grøntsager og oliven, sild og makrel i lage, salater, saucer, marmelade og syltetøj samt frugtpuré.",
+    "health": "EFSA fastsatte i 2016 en gruppe-ADI på 5 mg/kg legemsvægt/dag (udtrykt som benzoesyre) for benzoesyre og benzoater og fandt, at den blev overskredet i det 'mærkeloyale' scenarie, især for småbørn og børn, der jævnligt drikker aromatiserede drikke. Benzoater kan udløse pseudoallergiske reaktioner som nældefeber, angioødem og astma hos følsomme personer. I drikke med både benzoat og C-vitamin (ascorbinsyre) kan der dannes små mængder af det kræftfremkaldende stof benzen, især ved varme og lys. Tilsætningsstoffer må ifølge forordning (EF) nr. 1333/2008 ikke bruges i fødevarer til spædbørn og småbørn, medmindre bilag II udtrykkeligt tillader det, og benzoater er ikke tilladt i modermælkserstatning.",
+    "research": "EFSA's gen-evaluering fra 2016 (EFSA Journal 2016;14(3):4433) fastsatte gruppe-ADI 5 mg/kg legemsvægt/dag og fandt, at benzoesyre og benzoater ikke giver anledning til bekymring for genotoksicitet. Southampton-studiet (McCann et al., Lancet 2007) gav 153 treårige og 144 otte-/niårige børn en drik med natriumbenzoat og én af to blandinger af kunstige farvestoffer og fandt øget hyperaktivitet; da der blev testet blandinger, kunne effekten ikke henføres til enkelte stoffer, og EFSA konkluderede i 2008, at resultaterne ikke kunne danne grundlag for at ændre ADI for farvestofferne eller natriumbenzoat. Efter fund af benzen i visse læskedrikke i 2005–2006 reformulerede producenterne de produkter, som FDA fandt med over 5 ppb benzen. Benzoesyre findes også naturligt i fx tranebær, kanel og fermenterede mejeriprodukter.",
+    "keyReferences": [
+      {
+        "citation": "McCann D et al. Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial. Lancet. 2007;370(9598):1560-1567.",
+        "searchTitle": "Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial"
+      }
+    ],
+    "pubmedTerm": "potassium benzoate",
+    "flags": [
+      "children_caution",
+      "asthma_caution"
+    ],
+    "classes": [
+      "preservative"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluation of benzoic acid (E 210), sodium benzoate (E 211), potassium benzoate (E 212) and calcium benzoate (E 213) as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2016.4433",
+      "date": "2016-03-31",
+      "adi": "5",
+      "overexposureRisk": "en:high"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4433",
+        "https://pubmed.ncbi.nlm.nih.gov/17825405/",
+        "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2008.660",
+        "https://www.fda.gov/food/environmental-contaminants-food/questions-and-answers-occurrence-benzene-soft-drinks-and-other-beverages",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02008R1333-20230720",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC11250213/",
+        "https://journals.sagepub.com/doi/abs/10.1177/039463200401700215",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11670729/",
+        "https://en.wikipedia.org/wiki/Sodium_benzoate",
+        "https://en.wikipedia.org/wiki/Potassium_benzoate",
+        "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/benzoic-acid"
+      ],
+      "notes": "Runde 3 (udsagn-for-udsagn, WebSearch). Bekræftet (E212-specifikt): kaliumsalt fremstillet med kaliumhydroxid, bruges som natriumfri erstatning for natriumbenzoat i sure fødevarer, samme virkemåde. Fjernet: 'let vandopløseligt' som særskilt udsagn (ikke kildebelagt i søgningerne). Fælles for benzoaterne — Bekræftet: gruppe-ADI 5 mg/kg (2016), overskridelse i det mærkeloyale scenarie for småbørn/børn med aromatiserede drikke, ingen genotoksisk bekymring, pseudoallergiske reaktioner (nældefeber, angioødem, astma), benzendannelse med ascorbinsyre fremmet af varme og lys, 150 mg/l i aromatiserede drikke, forbud mod tilsætningsstoffer i spæd- og småbørnsmad medmindre bilag II tillader det, McCann 2007, EFSA 2008, benzen 2005-2006 og reformulering, naturlig forekomst i tranebær, kanel og fermenterede mejeriprodukter. Rettet: 'fastholdt' ADI -> 'fastsatte'; reformuleringen præciseret til produkter med >5 ppb benzen (FDA); McCann-studiets design præciseret. Fjernet: 'ofte hos dem, der også reagerer på acetylsalicylsyre' og 'ingen kræftfremkaldende effekt' (ikke fundet belæg i søgningerne); 'ketchup' og 'mayonnaisebaserede salater' samt 'marmelade med lavt sukkerindhold' som specifikke anvendelser.",
+      "previousStatus": "uncertain"
+    },
+    "wikipedia": "",
+    "wikidata": "Q413611",
+    "claims": [
+      {
+        "claim": "Fremstilles ved neutralisering af benzoesyre med kaliumhydroxid",
+        "source": "https://en.wikipedia.org/wiki/Potassium_benzoate",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Virker som natriumbenzoat; vælges for lavere natriumindhold",
+        "source": "https://en.wikipedia.org/wiki/Potassium_benzoate",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Let vandopløseligt",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Omdannes til benzoesyre ved lav pH",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/benzoic-acid",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Læskedrikke/saftevand typisk maks. 150 mg/l",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02008R1333-20230720",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: syltede agurker/rødbeder, marinerede sild, marmelade, frugtfyld, saucer, pålægssalater",
+        "source": "https://en.wikipedia.org/wiki/Sodium_benzoate",
+        "result": "rettet"
+      },
+      {
+        "claim": "Anvendelse i ketchup og mayonnaisebaserede salater",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EFSA 2016 fastholdt gruppe-ADI 5 mg/kg (som benzoesyre)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4433",
+        "result": "rettet"
+      },
+      {
+        "claim": "ADI overskredet i mærkeloyalt scenarie, især småbørn/børn med læskedrikke",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4433",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Pseudoallergiske reaktioner: nældefeber, astma",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11250213/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ofte hos dem, der reagerer på acetylsalicylsyre",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Benzen kan dannes med ascorbinsyre ved varme/lys",
+        "source": "https://www.fda.gov/food/environmental-contaminants-food/questions-and-answers-occurrence-benzene-soft-drinks-and-other-beverages",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Benzoater ikke tilladt i modermælkserstatning",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02008R1333-20230720",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ingen genotoksicitet (2016)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4433",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ingen kræftfremkaldende effekt (2016)",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "McCann et al., Lancet 2007;370(9598):1560-1567: blanding af natriumbenzoat og farvestoffer øgede hyperaktivitet",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2008: resultaterne kan ikke danne grundlag for at ændre ADI",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2008.660",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Benzen i læskedrikke 2005-2006 fik industrien til at reformulere mange produkter",
+        "source": "https://www.fda.gov/food/environmental-contaminants-food/questions-and-answers-occurrence-benzene-soft-drinks-and-other-beverages",
+        "result": "rettet"
+      },
+      {
+        "claim": "Benzoesyre findes naturligt i tranebær, kanel, fermenterede mejeriprodukter",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11670729/",
+        "result": "bekræftet"
+      }
+    ]
+  },
+  {
+    "code": "E213",
+    "nameDa": "Calciumbenzoat",
+    "nameEn": "Calcium benzoate",
+    "category": "Konserveringsmiddel",
+    "euStatus": "approved",
+    "origin": "synthetic",
+    "summary": "Calciumbenzoat er calciumsaltet af benzoesyre og bruges sjældnere end natrium- og kaliumbenzoat.",
+    "description": "Calciumbenzoat fremstilles ved reaktion mellem benzoesyre og en calciumforbindelse, fx calciumhydroxid eller calciumhydrogencarbonat. Det er kun lidt opløseligt i koldt vand (i modsætning til det letopløselige natriumsalt), men virker på samme måde, når det omdannes til benzoesyre i sure fødevarer. Det er omfattet af samme gruppe-ADI som de øvrige benzoater, og EFSA overførte konklusionen om genotoksicitet til calciumbenzoat ved analogi (read-across).",
+    "uses": "Læskedrikke og saftevand (ikke-alkoholiske aromatiserede drikke maks. 150 mg/l udtrykt som benzoesyre), syltede grøntsager og oliven, sild og makrel i lage, salater, saucer, marmelade og syltetøj samt frugtpuré.",
+    "health": "EFSA fastsatte i 2016 en gruppe-ADI på 5 mg/kg legemsvægt/dag (udtrykt som benzoesyre) for benzoesyre og benzoater og fandt, at den blev overskredet i det 'mærkeloyale' scenarie, især for småbørn og børn, der jævnligt drikker aromatiserede drikke. Benzoater kan udløse pseudoallergiske reaktioner som nældefeber, angioødem og astma hos følsomme personer. I drikke med både benzoat og C-vitamin (ascorbinsyre) kan der dannes små mængder af det kræftfremkaldende stof benzen, især ved varme og lys. Tilsætningsstoffer må ifølge forordning (EF) nr. 1333/2008 ikke bruges i fødevarer til spædbørn og småbørn, medmindre bilag II udtrykkeligt tillader det, og benzoater er ikke tilladt i modermælkserstatning.",
+    "research": "EFSA's gen-evaluering fra 2016 (EFSA Journal 2016;14(3):4433) fastsatte gruppe-ADI 5 mg/kg legemsvægt/dag og fandt, at benzoesyre og benzoater ikke giver anledning til bekymring for genotoksicitet. Southampton-studiet (McCann et al., Lancet 2007) gav 153 treårige og 144 otte-/niårige børn en drik med natriumbenzoat og én af to blandinger af kunstige farvestoffer og fandt øget hyperaktivitet; da der blev testet blandinger, kunne effekten ikke henføres til enkelte stoffer, og EFSA konkluderede i 2008, at resultaterne ikke kunne danne grundlag for at ændre ADI for farvestofferne eller natriumbenzoat. Efter fund af benzen i visse læskedrikke i 2005–2006 reformulerede producenterne de produkter, som FDA fandt med over 5 ppb benzen. Benzoesyre findes også naturligt i fx tranebær, kanel og fermenterede mejeriprodukter.",
+    "keyReferences": [
+      {
+        "citation": "McCann D et al. Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial. Lancet. 2007;370(9598):1560-1567.",
+        "searchTitle": "Food additives and hyperactive behaviour in 3-year-old and 8/9-year-old children in the community: a randomised, double-blinded, placebo-controlled trial"
+      }
+    ],
+    "pubmedTerm": "calcium benzoate",
+    "flags": [
+      "children_caution",
+      "asthma_caution"
+    ],
+    "classes": [
+      "preservative"
+    ],
+    "variants": [],
+    "efsa": {
+      "title": "Scientific Opinion on the re-evaluation of benzoic acid (E 210), sodium benzoate (E 211), potassium benzoate (E 212) and calcium benzoate (E 213) as food additives",
+      "url": "https://doi.org/10.2903/j.efsa.2016.4433",
+      "date": "2016-03-31",
+      "adi": "5",
+      "overexposureRisk": "en:high"
+    },
+    "verification": {
+      "status": "corrected",
+      "sources": [
+        "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4433",
+        "https://pubmed.ncbi.nlm.nih.gov/17825405/",
+        "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2008.660",
+        "https://www.fda.gov/food/environmental-contaminants-food/questions-and-answers-occurrence-benzene-soft-drinks-and-other-beverages",
+        "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02008R1333-20230720",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC11250213/",
+        "https://journals.sagepub.com/doi/abs/10.1177/039463200401700215",
+        "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11670729/",
+        "https://en.wikipedia.org/wiki/Sodium_benzoate",
+        "https://www.chemicalbook.com/ChemicalProductProperty_EN_CB8348713.htm",
+        "https://patents.google.com/patent/CN102050727A/en",
+        "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/benzoic-acid"
+      ],
+      "notes": "Runde 3 (udsagn-for-udsagn, WebSearch). Bekræftet (E213-specifikt): fremstilling af benzoesyre og calciumforbindelse, ringe opløselighed i koldt vand sammenlignet med natriumsaltet, samme virkemåde, samme gruppe-ADI, read-across fra natrium-/kaliumsalt. Rettet: 'calciumkarbonat' -> calciumhydrogencarbonat (kilde); 'bruges sjældnere' er bevaret som omtrentlig (salte E211/E212 omtales som de udbredte). Fælles for benzoaterne — Bekræftet: gruppe-ADI 5 mg/kg (2016), overskridelse i det mærkeloyale scenarie for småbørn/børn med aromatiserede drikke, ingen genotoksisk bekymring, pseudoallergiske reaktioner (nældefeber, angioødem, astma), benzendannelse med ascorbinsyre fremmet af varme og lys, 150 mg/l i aromatiserede drikke, forbud mod tilsætningsstoffer i spæd- og småbørnsmad medmindre bilag II tillader det, McCann 2007, EFSA 2008, benzen 2005-2006 og reformulering, naturlig forekomst i tranebær, kanel og fermenterede mejeriprodukter. Rettet: 'fastholdt' ADI -> 'fastsatte'; reformuleringen præciseret til produkter med >5 ppb benzen (FDA); McCann-studiets design præciseret. Fjernet: 'ofte hos dem, der også reagerer på acetylsalicylsyre' og 'ingen kræftfremkaldende effekt' (ikke fundet belæg i søgningerne); 'ketchup' og 'mayonnaisebaserede salater' samt 'marmelade med lavt sukkerindhold' som specifikke anvendelser.",
+      "previousStatus": "uncertain"
+    },
+    "wikipedia": "",
+    "wikidata": "Q414509",
+    "claims": [
+      {
+        "claim": "Fremstilles med calciumhydroxid eller calciumkarbonat",
+        "source": "https://www.chemicalbook.com/ChemicalProductProperty_EN_CB8348713.htm",
+        "result": "rettet"
+      },
+      {
+        "claim": "Mindre opløseligt end natriumsaltet",
+        "source": "https://www.chemicalbook.com/ChemicalProductProperty_EN_CB8348713.htm",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Virker på samme måde ved omdannelse til benzoesyre i sure fødevarer",
+        "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/benzoic-acid",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Samme regler og gruppe-ADI som øvrige benzoater",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4433",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Læskedrikke/saftevand typisk maks. 150 mg/l",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02008R1333-20230720",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Anvendelser: syltede agurker/rødbeder, marinerede sild, marmelade, frugtfyld, saucer, pålægssalater",
+        "source": "https://en.wikipedia.org/wiki/Sodium_benzoate",
+        "result": "rettet"
+      },
+      {
+        "claim": "Anvendelse i ketchup og mayonnaisebaserede salater",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "EFSA 2016 fastholdt gruppe-ADI 5 mg/kg (som benzoesyre)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4433",
+        "result": "rettet"
+      },
+      {
+        "claim": "ADI overskredet i mærkeloyalt scenarie, især småbørn/børn med læskedrikke",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4433",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Pseudoallergiske reaktioner: nældefeber, astma",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11250213/",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ofte hos dem, der reagerer på acetylsalicylsyre",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "Benzen kan dannes med ascorbinsyre ved varme/lys",
+        "source": "https://www.fda.gov/food/environmental-contaminants-food/questions-and-answers-occurrence-benzene-soft-drinks-and-other-beverages",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Benzoater ikke tilladt i modermælkserstatning",
+        "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02008R1333-20230720",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ingen genotoksicitet (2016)",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4433",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Ingen kræftfremkaldende effekt (2016)",
+        "source": "",
+        "result": "fjernet"
+      },
+      {
+        "claim": "McCann et al., Lancet 2007;370(9598):1560-1567: blanding af natriumbenzoat og farvestoffer øgede hyperaktivitet",
+        "source": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(07)61306-3/abstract",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "EFSA 2008: resultaterne kan ikke danne grundlag for at ændre ADI",
+        "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2008.660",
+        "result": "bekræftet"
+      },
+      {
+        "claim": "Benzen i læskedrikke 2005-2006 fik industrien til at reformulere mange produkter",
+        "source": "https://www.fda.gov/food/environmental-contaminants-food/questions-and-answers-occurrence-benzene-soft-drinks-and-other-beverages",
+        "result": "rettet"
+      },
+      {
+        "claim": "Benzoesyre findes naturligt i tranebær, kanel, fermenterede mejeriprodukter",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11670729/",
+        "result": "bekræftet"
+      }
+    ]
+  }
+]
