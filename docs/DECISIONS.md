@@ -3042,3 +3042,11 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
   data sig, vises konflikten igen.
 - Erstatter det tidligere par-kort (`DuplicateProductCard`) og ruterne
   `/api/admin/duplicate-products/[id]/merge|dismiss`.
+
+## 2026-09-28: Emballeret vand hedder "Flaskevand"
+
+- En fotograferet/emballeret vare er aldrig postevand. Forsideaflæsningen beder
+  AI'en bruge "Flaskevand" (eller "Kildevand"/"Mineralvand" når emballagen siger
+  det), og et bart "Vand" normaliseres til "Flaskevand" (`normalizeProductType`
+  i `src/lib/product-naming.ts`), så søgning på "vand" viser en præcis betegnelse.
+- Eksisterende produkter, der allerede hedder "Vand", omdøbes ikke automatisk.
