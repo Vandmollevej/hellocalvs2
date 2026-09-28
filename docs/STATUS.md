@@ -2,6 +2,12 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Abonnement — boilerplate fjernet
+
+- `/profile/subscription`: datalagringsnoten (`subscription.retentionNote`)
+  er fjernet fra hovedindholdet og fra da/en. Betingelser ligger fortsat i
+  footerens `TermsSheet`.
+
 ## 2026-09-28: Aktivitetsniveau i 5 trin + mails mod spam
 
 - Profil → Profil: aktivitetsniveau i 5 trin (Meget lav … Meget høj), gemmes
