@@ -1444,7 +1444,27 @@
   },
   "registrationReportError": {
     "title": "Indberet fejl",
-    "placeholder": "Indberetning af fejl for denne registrering kommer snart."
+    "intro": "Tryk på det grønne udråbstegn ud for det punkt, der er forkert, og skriv hvad der er rigtigt.",
+    "selectPoint": "Markér fejl i {point}",
+    "correctionPlaceholder": "Hvad er forkert, og hvad er det rigtige?",
+    "missingValue": "Ikke angivet",
+    "submit": "Send indberetning",
+    "sending": "Sender…",
+    "submitFailed": "Kunne ikke sende fejlrapporten — prøv igen",
+    "sent": "Tak! Vi har modtaget din rettelse, som afventer gennemgang.",
+    "alreadyPending": "Du har allerede en rettelse på dette produkt, som afventer gennemgang.",
+    "editPending": "Redigér",
+    "noProduct": "Denne registrering er ikke knyttet til et produkt, så der er ingen felter at vælge.",
+    "generalReport": "Indberet en generel fejl",
+    "point": {
+      "image": "Produktbillede",
+      "name": "Navn",
+      "brand": "Mærke",
+      "ean": "EAN",
+      "energy": "Energi",
+      "macros": "Protein, kulhydrat og fedt",
+      "ingredients": "Indhold"
+    }
   },
   "addProduct": {
     "reading": "Læses…",
