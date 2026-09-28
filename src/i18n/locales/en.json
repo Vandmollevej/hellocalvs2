@@ -613,6 +613,7 @@
     "retry": "Try again",
     "title": "Add item",
     "analyzingDefault": "Analyzing the photo...",
+    "labelTextFound": "Nutrition facts or ingredients found in the photo",
     "readingImage": "Reading the photo...",
     "searchingDatabase": "Searching the database...",
     "comparingKnownItems": "Comparing with known items...",

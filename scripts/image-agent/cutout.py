@@ -393,6 +393,9 @@ def apply_finished_jobs(conn):
 
 
 def run_cutouts(conn):
-    for job_id, source_url, crop_box, kind in fetch_pending_jobs(conn):
+    """Én runde; returnerer statusbeskeden til admin "Robotter"."""
+    jobs = fetch_pending_jobs(conn)
+    for job_id, source_url, crop_box, kind in jobs:
         process_job(conn, job_id, source_url, crop_box, kind)
     apply_finished_jobs(conn)
+    return f"{len(jobs)} billeder fritlagt" if jobs else "Venter på nye produkter"
