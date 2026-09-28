@@ -2,6 +2,13 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Login/tilmelding — punkt 37
+
+- Afbrudt OAuth-login (`oauth-cancelled`) giver ikke længere rød fejltekst på `/login`.
+- Google-knappen har ikke længere hvid boks om logoet (`SocialLoginButton`).
+- Afbryd-linket i login-headeren er fjernet.
+- "Ny på Hello Cal? Opret konto" ligger nederst under Fortsæt (17 px, understreget); `/signup` har tilsvarende "Har du allerede en konto? Log ind".
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen
