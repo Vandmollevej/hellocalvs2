@@ -838,7 +838,7 @@ export function AddProductView({
                 </button>
               </div>
 
-              <div className="mb-4 flex flex-col items-center text-center">
+              <div className="-mt-2 mb-4 flex flex-col items-center text-center">
                 <p className="hf-type-body hf-type-strong text-hf-black">
                   {isPending("nutrition") ? (
                     <ReadingSkeleton label={t("addProduct.reading")}>
