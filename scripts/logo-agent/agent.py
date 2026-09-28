@@ -38,6 +38,8 @@ import psycopg2
 import requests
 from PIL import Image
 
+from job_control import run_forever
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger("logo-agent")
 
@@ -397,42 +399,30 @@ def cleanup(conn):
     conn.commit()
 
 
-def run_once():
+def run_once(conn):
+    # Fejlen skal kunne ses på admin "Robotter", så den kastes i stedet for
+    # kun at blive logget.
     if not VISION_CREDENTIALS_FILE and not VISION_API_KEY:
-        log.error("GOOGLE_VISION_CREDENTIALS (eller GOOGLE_VISION_API_KEY/GOOGLE_API_KEY) mangler — springer kørslen over")
-        return
+        raise RuntimeError("GOOGLE_VISION_CREDENTIALS (eller GOOGLE_VISION_API_KEY/GOOGLE_API_KEY) mangler")
     if VISION_CREDENTIALS_FILE and not os.path.exists(VISION_CREDENTIALS_FILE):
-        log.error("GOOGLE_VISION_CREDENTIALS peger på en fil, der ikke findes (%s) — springer kørslen over", VISION_CREDENTIALS_FILE)
-        return
-    with psycopg2.connect(DATABASE_URL) as conn:
-        cleanup(conn)
-        for brand_id, brand_name, product_id, image_url in fetch_brands_without_logo(conn, BATCH_SIZE):
-            try:
-                process_brand(conn, brand_id, brand_name, product_id, image_url)
-            except Exception:  # noqa: BLE001 - ét brand må ikke stoppe natkørslen
-                conn.rollback()
-                log.exception("fejl for brand %s", brand_name)
-
-
-def seconds_until_next_run():
-    now = dt.datetime.now(TIMEZONE)
-    target = now.replace(hour=RUN_HOUR, minute=0, second=0, microsecond=0)
-    if target <= now:
-        target += dt.timedelta(days=1)
-    return (target - now).total_seconds()
+        raise RuntimeError(f"GOOGLE_VISION_CREDENTIALS peger på en fil, der ikke findes ({VISION_CREDENTIALS_FILE})")
+    cleanup(conn)
+    brands = fetch_brands_without_logo(conn, BATCH_SIZE)
+    for brand_id, brand_name, product_id, image_url in brands:
+        try:
+            process_brand(conn, brand_id, brand_name, product_id, image_url)
+        except Exception:  # noqa: BLE001 - ét brand må ikke stoppe kørslen
+            conn.rollback()
+            log.exception("fejl for brand %s", brand_name)
+    return f"{len(brands)} brands gennemgået"
 
 
 def main():
     os.makedirs(LOGO_DIR, exist_ok=True)
-    log.info("logo-robot startet; kører hver nat kl. %02d:00 (%s)", RUN_HOUR, TIMEZONE)
-    if RUN_ON_START:
-        run_once()
-    while True:
-        time.sleep(seconds_until_next_run())
-        try:
-            run_once()
-        except Exception:  # noqa: BLE001 - en fejlet nat må ikke stoppe servicen
-            log.exception("natkørsel fejlede")
+    # Planen styres fra admin "Robotter"/"Cron-jobs" (job_control.py);
+    # LOGO_AGENT_RUN_HOUR er kun standard-tidspunktet, når rækken oprettes.
+    log.info("logo-robot startet; standard hver nat kl. %02d:00 (%s)", RUN_HOUR, TIMEZONE)
+    run_forever(DATABASE_URL, "logo-agent", run_once, run_at_time=f"{RUN_HOUR:02d}:00", run_on_start=RUN_ON_START)
 
 
 if __name__ == "__main__":

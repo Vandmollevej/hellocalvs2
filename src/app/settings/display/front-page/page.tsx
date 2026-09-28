@@ -77,11 +77,9 @@ export default function FrontPageDisplaySettingsPage() {
                 key={side}
                 type="button"
                 onClick={() => saveFabSide(side)}
-                className="hf-type-body hf-type-strong flex flex-col items-center justify-center gap-2 rounded-2xl py-3 transition-colors"
-                style={{
-                  background: isSelected ? "var(--hf-green)" : "var(--hf-tan)",
-                  color: isSelected ? "var(--hf-white)" : "var(--hf-black)",
-                }}
+                className={`hf-type-body hf-type-strong flex flex-col items-center justify-center gap-2 rounded-2xl py-3 transition-colors ${
+                  isSelected ? "hf-selected" : "bg-hf-tan text-hf-black"
+                }`}
                 aria-pressed={isSelected}
               >
                 <FrontPagePreview side={side} selected={isSelected} />

@@ -21,11 +21,11 @@ import { appendDishDraftIngredient } from "@/lib/dish-draft";
 import { selectRawContextImageUrl } from "@/lib/image-tags";
 import { MacroSliderBar } from "@/components/hf/MacroSliderBar";
 import { AdditiveInfoModal } from "@/components/hf/AdditiveInfoModal";
-import { TimeSection } from "@/components/hf/TimeSection";
 import { getAdditiveInfo } from "@/lib/additives";
 import { labelForAllergen } from "@/lib/allergens";
 import { matchToxins, type ToxinInfo } from "@/lib/toxins";
 import { ToxinInfoModal } from "@/components/hf/ToxinInfoModal";
+import { TimeSection } from "@/components/hf/TimeSection";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { isAlternativeServingConfident } from "@/lib/alternative-servings";
 import type { AlternativeServing } from "@/lib/product-analysis-types";
@@ -145,6 +145,58 @@ type ProfileUser = {
 // Mættet fedt og transfedt får en advarselstrekant (G11, 56f30763).
 const UNHEALTHY_FAT_KEYS = new Set(["saturatedFat", "transFat"]);
 
+// En allerede tilføjet registrering, der redigeres (/registration/[id]).
+export type EditableRegistration = {
+  id: string;
+  titleSnapshot: string;
+  kcalSnapshot: number;
+  proteinSnapshot: number;
+  carbsSnapshot: number;
+  fatSnapshot: number;
+  amountGrams: number;
+  createdAt: string;
+};
+
+// Snapshot-semantik (docs/DATABASE.md): ved redigering regnes kalorier og
+// makroer ud fra registreringens egne snapshot-værdier pr. 100 g — aldrig fra
+// varens nuværende data, som kan være ændret siden.
+function applyRegistrationSnapshot(product: Product, registration: EditableRegistration | undefined): Product {
+  if (!registration || registration.amountGrams <= 0) return product;
+  const per100g = (value: number) => (value / registration.amountGrams) * 100;
+  return {
+    ...product,
+    kcalPer100g: per100g(registration.kcalSnapshot),
+    proteinPer100g: per100g(registration.proteinSnapshot),
+    carbsPer100g: per100g(registration.carbsSnapshot),
+    fatPer100g: per100g(registration.fatSnapshot),
+  };
+}
+
+// Registreringer uden vare (egne retter) får en vare bygget af snapshottet.
+function productFromRegistration(registration: EditableRegistration): Product {
+  return applyRegistrationSnapshot(
+    {
+      id: "",
+      name: registration.titleSnapshot,
+      kcalPer100g: 0,
+      proteinPer100g: 0,
+      carbsPer100g: 0,
+      fatPer100g: 0,
+      brand: null,
+      isGenericIngredient: true,
+    },
+    registration,
+  );
+}
+
+function localTimeString(date: Date) {
+  return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+}
+
+function localDateString(date: Date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
 type LoadState =
   | { status: "loading" }
   | { status: "loaded"; product: Product }
@@ -154,6 +206,8 @@ type LoadState =
 // "Tilføj produkt": mængde, tidspunkt, energifordeling og næringsindhold.
 // Vises som egen side (/add/[id]) og — når man trykker "Tilføj" ud for et
 // produkt i søgelisten — i bundarket (inSheet, KRAV.md "Bundark").
+// Med `registration` redigeres en allerede tilføjet registrering i stedet
+// (/registration/[id]); id er da varens id, eller "" for en egen ret.
 export function AddProductView({
   id,
   forDish,
@@ -161,6 +215,7 @@ export function AddProductView({
   initialDate,
   inSheet = false,
   onClose,
+  registration,
 }: {
   id: string;
   forDish: boolean;
@@ -168,18 +223,28 @@ export function AddProductView({
   initialDate?: string | null;
   inSheet?: boolean;
   onClose?: () => void;
+  registration?: EditableRegistration;
 }) {
   const { t } = useTranslation();
   const router = useRouter();
-  const [state, setState] = useState<LoadState>({ status: "loading" });
+  const isEditing = Boolean(registration);
+  const [state, setState] = useState<LoadState>(() =>
+    !id && registration
+      ? { status: "loaded", product: productFromRegistration(registration) }
+      : { status: "loading" },
+  );
   const [profile, setProfile] = useState<ProfileUser | null>(null);
-  const [amount, setAmount] = useState(100);
+  const [amount, setAmount] = useState(() => registration?.amountGrams ?? 100);
   // Standard skal altid være gram (Fejlretninger/FEJLLISTE.md #1/#22): "personer"
   // er kun en mulighed, når varen faktisk har en defineret portionsstørrelse,
   // og må ikke være default-valget selv når den findes.
   const [amountUnit, setAmountUnit] = useState<"personer" | "gram">("gram");
-  const [time, setTime] = useState(() => initialTime ?? currentTimeString());
-  const [date] = useState(() => initialDate ?? currentDateString());
+  const [time, setTime] = useState(
+    () => (registration ? localTimeString(new Date(registration.createdAt)) : initialTime) ?? currentTimeString(),
+  );
+  const [date] = useState(
+    () => (registration ? localDateString(new Date(registration.createdAt)) : initialDate) ?? currentDateString(),
+  );
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [openAdditive, setOpenAdditive] = useState<string | null>(null);
@@ -212,23 +277,29 @@ export function AddProductView({
   const detailsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetch(`/api/products/${id}`)
-      .then(async (res) => {
-        if (res.status === 404) return setState({ status: "not_found" });
-        if (!res.ok) return setState({ status: "error" });
-        const data = await res.json();
-        setState({ status: "loaded", product: data.product });
-        // Dishes with a fixed serving size (e.g. HelloFresh, see
-        // scripts/hellofresh-import) are counted in servings, not grams — start
-        // at 1 serving instead of the usual 100 g default.
-        if (data.product?.servingSizeGrams) setAmount(data.product.servingSizeGrams);
-      })
-      .catch(() => setState({ status: "error" }));
-
     fetch("/api/profile")
       .then((res) => res.json())
       .then((data) => setProfile(data.user ?? null))
       .catch(() => setProfile(null));
+
+    // Egen ret uden vare: state er allerede sat fra snapshottet.
+    if (!id && registration) return;
+
+    fetch(`/api/products/${id}`)
+      .then(async (res) => {
+        if (res.status === 404) {
+          if (registration) return setState({ status: "loaded", product: productFromRegistration(registration) });
+          return setState({ status: "not_found" });
+        }
+        if (!res.ok) return setState({ status: "error" });
+        const data = await res.json();
+        setState({ status: "loaded", product: applyRegistrationSnapshot(data.product, registration) });
+        // Dishes with a fixed serving size (e.g. HelloFresh, see
+        // scripts/hellofresh-import) are counted in servings, not grams — start
+        // at 1 serving instead of the usual 100 g default.
+        if (!registration && data.product?.servingSizeGrams) setAmount(data.product.servingSizeGrams);
+      })
+      .catch(() => setState({ status: "error" }));
 
     fetch("/api/favorites")
       .then((res) => res.json())
@@ -242,7 +313,7 @@ export function AddProductView({
       .then((res) => res.json())
       .then((data) => setPhotoAwards(data.awards ?? []))
       .catch(() => setPhotoAwards([]));
-  }, [id]);
+  }, [id, registration]);
 
   // Tidspunktet siden blev åbnet — ventetiden på fritlægning måles fra det.
   const [openedAt] = useState(() => Date.now());
@@ -266,13 +337,15 @@ export function AddProductView({
         .then((data) => {
           if (!data?.product) return;
           setState((current) =>
-            current.status === "loaded" ? { status: "loaded", product: { ...data.product } } : current,
+            current.status === "loaded"
+              ? { status: "loaded", product: applyRegistrationSnapshot({ ...data.product }, registration) }
+              : current,
           );
         })
         .catch(() => {});
     }, PENDING_POLL_MS);
     return () => clearTimeout(timer);
-  }, [shouldPoll, state, id]);
+  }, [shouldPoll, state, id, registration]);
 
   async function handleToggleFavorite() {
     if (favoritePending) return;
@@ -454,6 +527,29 @@ export function AddProductView({
       const [hours, minutes] = time.split(":").map(Number);
       const createdAt = new Date(year, month - 1, day, hours, minutes, 0, 0);
 
+      if (registration) {
+        const res = await fetch(`/api/registrations/${registration.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amountGrams: amount,
+            createdAt: createdAt.toISOString(),
+            kcalSnapshot: ((product?.kcalPer100g ?? 0) * amount) / 100,
+            proteinSnapshot: macros.protein,
+            carbsSnapshot: macros.carbs,
+            fatSnapshot: macros.fat,
+          }),
+        });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          setSaveError(data.message ?? t("registration.saveError"));
+          return;
+        }
+        if (window.history.length > 1) router.back();
+        else router.push("/");
+        return;
+      }
+
       const res = await fetch("/api/registrations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -509,7 +605,7 @@ export function AddProductView({
       footer={
         state.status === "loaded" ? (
           <>
-            {!forDish && (
+            {!forDish && !isEditing && (
               <div className="mb-4">
                 <MealShareBar />
               </div>
@@ -522,7 +618,13 @@ export function AddProductView({
               disabled={saving}
               className="hf-control hf-btn-primary w-full disabled:opacity-60"
             >
-              {forDish ? t("addProduct.addToDish") : saving ? t("createDish.saving") : t("addProduct.add")}
+              {forDish
+                ? t("addProduct.addToDish")
+                : saving
+                  ? t("createDish.saving")
+                  : isEditing
+                    ? t("registration.save")
+                    : t("addProduct.add")}
             </button>
           </>
         ) : undefined
@@ -547,7 +649,7 @@ export function AddProductView({
 
         {state.status === "loaded" && (
           <>
-            {!forDish && photoAwards.length > 0 && (
+            {!forDish && !!id && photoAwards.length > 0 && (
               <Link
                 href={`/add/${id}/photo-award`}
                 className="hf-type-small hf-type-strong hf-control flex items-center justify-center bg-hf-black px-4 text-center text-hf-white"
@@ -563,7 +665,7 @@ export function AddProductView({
               </Link>
             )}
             <div className="flex flex-col p-4">
-              {!forDish && (
+              {!forDish && !!id && (
                 <div className="flex justify-end">
                   <ForwardButton kind="PRODUCT" itemId={state.product.id} name={state.product.name} />
                 </div>
@@ -576,7 +678,7 @@ export function AddProductView({
                       <img
                         src={displayImageUrl}
                         alt=""
-                        className="block h-full w-full max-h-full max-w-full object-contain p-8"
+                        className="block h-full w-full max-h-full max-w-full object-cover"
                       />
                     ) : shouldPoll ? (
                       <Skeleton type="circle" width="100%" height="100%" />
@@ -595,13 +697,13 @@ export function AddProductView({
                     </button>
                   )}
                   {/* Logo sits on top of the product circle: its bottom-left
-                      corner halfway between the circle's centre and its bottom
-                      edge (half a radius up), spanning one radius to the right. */}
+                      corner at the circle's bottom point, spanning one radius
+                      to the right, so it never covers the photo's centre. */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="/hello-cal-fruit.png"
                     alt=""
-                    className="pointer-events-none absolute bottom-1/4 left-1/2 z-10 h-[95px] w-[95px] object-contain object-left-bottom"
+                    className="pointer-events-none absolute bottom-0 left-1/2 z-10 h-[95px] w-[95px] object-contain object-left-bottom"
                   />
                 </div>
                 {!!state.product.barcodes?.length && state.product.createdByUserId !== profile?.id && (
@@ -669,7 +771,9 @@ export function AddProductView({
                 </div>
               </div>
 
-              {!forDish && (
+              {/* Tidspunkt hører til den konkrete registrering, ikke varen: vises
+                  kun når en registrering er åbnet (/registration/[id]). */}
+              {isEditing && !forDish && (
                 <TimeSection value={time} onChange={setTime} className="mb-4 mt-8" />
               )}
 

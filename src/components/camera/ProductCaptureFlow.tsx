@@ -1,12 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { IconBarcode, IconCamera, IconFlame, IconList, IconPhoto, type Icon } from "@tabler/icons-react";
 import { BarcodeScanOverlay, type BarcodeDetection } from "@/components/hf/BarcodeScanOverlay";
 import { CaptureCheckOverlay } from "@/components/hf/CaptureCheckOverlay";
 import { PhotoWorkingOverlay } from "@/components/hf/HfLoader";
+import { ProductOutlineOverlay } from "@/components/camera/ProductOutlineOverlay";
 import {
   barcodeGuideBoxFraction,
   barcodePoseFromPoints,
@@ -17,16 +18,22 @@ import { startBarcodeFrameScanner, type BarcodeRead } from "@/lib/barcode-frame-
 import { buildBarcodeContext } from "@/lib/barcode-context";
 import { readLanguageSignals } from "@/lib/language-signals";
 import { buildFakeBarcodeForRegion } from "@/lib/regions";
+import { LabelTextHighlight } from "@/components/hf/LabelTextHighlight";
+import type { LabelRegions } from "@/lib/label-text-regions";
+import type { OcrBox } from "@/lib/product-ocr-prioritized";
 import {
   CAPTURE_STEPS,
   createQuickProduct,
+  readBarcodePhoto,
   readFrontPhoto,
   readIngredientsPhoto,
   readNutritionPhoto,
   saveBarcodePhoto,
   type CaptureData,
+  type LabelRead,
   type CaptureStep,
 } from "@/lib/product-capture";
+import { useAutoCapture } from "./useAutoCapture";
 import { newScanFlowId, scanFlowHeaders, scanLog } from "@/lib/scan-debug-log";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -64,13 +71,30 @@ function statusFromCameraError(error: unknown): CameraStatus {
 
 // Hele videobilledet i fuld opløsning — bevidst ingen beskæring
 // (docs/DECISIONS.md 2026-09-17).
-function captureFrame(video: HTMLVideoElement | null): string | null {
+type Frame = { url: string; width: number; height: number };
+
+function captureFrame(video: HTMLVideoElement | null): Frame | null {
   if (!video || !video.videoWidth || !video.videoHeight) return null;
   const canvas = document.createElement("canvas");
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
   canvas.getContext("2d")?.drawImage(video, 0, 0, canvas.width, canvas.height);
-  return canvas.toDataURL("image/jpeg", 0.9);
+  return { url: canvas.toDataURL("image/jpeg", 0.9), width: canvas.width, height: canvas.height };
+}
+
+// Den grønne ramme om næring/ingredienser vises så længe, før flowet går
+// videre (energi-/indholdsfoto) eller forsvinder igen (stregkodefotoet).
+const HIGHLIGHT_HOLD_MS = 1100;
+const BARCODE_HIGHLIGHT_MS = 1800;
+
+type Highlight = Frame & { boxes: OcrBox[] };
+
+function regionBoxes(regions: LabelRegions): OcrBox[] {
+  return [regions.nutrition, regions.ingredients].filter((box): box is OcrBox => box !== null);
+}
+
+function wait(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
@@ -96,8 +120,15 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
   const [restartKey, setRestartKey] = useState(0);
   const [step, setStep] = useState<CaptureStep>("barcode");
   const [done, setDone] = useState<Partial<Record<CaptureStep, boolean>>>({});
+  // Spejler `done`/`working` til stregkodefotoets baggrunds-OCR, som bliver
+  // færdig på et vilkårligt tidspunkt senere i flowet.
+  const doneRef = useRef<Partial<Record<CaptureStep, boolean>>>({});
+  const workingRef = useRef(false);
   const [photo, setPhoto] = useState<string | null>(null);
   const [working, setWorking] = useState(false);
+  const [highlight, setHighlight] = useState<Highlight | null>(null);
+  const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const barcodeLabelJobRef = useRef<{ frame: Frame; startedAt: number; result: Promise<LabelRead> } | null>(null);
   const [createFailed, setCreateFailed] = useState(false);
   const [lookupError, setLookupError] = useState(false);
   const [region, setRegion] = useState("DK");
@@ -111,6 +142,35 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
   useEffect(() => {
     stepRef.current = step;
   }, [step]);
+
+  useEffect(() => {
+    workingRef.current = working;
+  }, [working]);
+
+  function showHighlight(frame: Frame, regions: LabelRegions, durationMs: number | null) {
+    const boxes = regionBoxes(regions);
+    if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
+    highlightTimerRef.current = null;
+    if (!boxes.length) {
+      setHighlight(null);
+      return false;
+    }
+    setHighlight({ ...frame, boxes });
+    if (durationMs !== null) {
+      highlightTimerRef.current = setTimeout(() => {
+        highlightTimerRef.current = null;
+        setHighlight(null);
+      }, durationMs);
+    }
+    return true;
+  }
+
+  useEffect(
+    () => () => {
+      if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
+    },
+    [],
+  );
 
   // Flowets start og — hvis brugeren går uden at nå en vare — hvor langt
   // hen scanningen kom. Under 0,5 s er React's dobbelte montering i udvikling.
@@ -238,9 +298,65 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
   }
 
   function markDone(...steps: CaptureStep[]) {
-    const completed = { ...done, ...Object.fromEntries(steps.map((item) => [item, true])) };
+    const completed = { ...doneRef.current, ...Object.fromEntries(steps.map((item) => [item, true])) };
+    doneRef.current = completed;
     setDone(completed);
     return completed;
+  }
+
+  // Stregkodefotoets baggrunds-OCR (docs/DECISIONS.md 2026-09-28): står
+  // næringstabellen og/eller ingredienslisten ved stregkoden, får Energi/
+  // Indhold flueben, og fotoet vises kort med den grønne ramme. Trin, som
+  // brugeren allerede selv har fotograferet, røres ikke.
+  function applyBarcodeLabel(frame: Frame, result: LabelRead, startedAt: number) {
+    if (leavingRef.current) return;
+    const data = dataRef.current;
+    const already = doneRef.current;
+    const nutritionFound = Boolean(result.nutrition || result.regions.nutrition);
+    const ingredientsFound = Boolean(result.ingredientsText || result.regions.ingredients);
+    const fillNutrition = nutritionFound && !already.nutrition;
+    const fillIngredients = ingredientsFound && !already.ingredients;
+    scanLog(flowId, "barcode_label", {
+      message:
+        nutritionFound || ingredientsFound
+          ? `Stregkodefotoet: ${[nutritionFound && "næringstabel", ingredientsFound && "ingrediensliste"].filter(Boolean).join(" + ")} fundet${fillNutrition || fillIngredients ? "" : " (trinnene var allerede klaret)"}`
+          : `Stregkodefotoet: hverken næringstabel eller ingrediensliste fundet (${result.text.length} tegn)`,
+      barcode: data.barcode,
+      durationMs: Date.now() - startedAt,
+      data: {
+        textLength: result.text.length,
+        confidence: result.confidence,
+        nutritionRegion: Boolean(result.regions.nutrition),
+        ingredientsRegion: Boolean(result.regions.ingredients),
+        localNutrition: Boolean(result.nutrition),
+        localIngredients: Boolean(result.ingredientsText),
+        filled: [fillNutrition && "nutrition", fillIngredients && "ingredients"].filter(Boolean),
+      },
+    });
+    if (!fillNutrition && !fillIngredients) return;
+
+    if (fillNutrition) {
+      data.nutritionPhoto = frame.url;
+      data.nutritionOcrText = result.text;
+      data.nutritionOcrConfidence = result.confidence;
+      data.localNutrition = result.nutrition;
+      data.ingredientsOnNutritionPhoto = fillIngredients;
+    }
+    if (fillIngredients) {
+      // Også som eget indholdsfoto, hvis energifotoet senere tages om.
+      data.ingredientsPhoto = frame.url;
+      data.ingredientsOcrText = result.text;
+      data.ingredientsOcrConfidence = result.confidence;
+      if (result.ingredientsText) data.localIngredientsText = result.ingredientsText;
+    }
+    const steps: CaptureStep[] = [];
+    if (fillNutrition) steps.push("nutrition");
+    if (fillIngredients) steps.push("ingredients");
+    const completed = markDone(...steps);
+    if (workingRef.current) return;
+    showHighlight(frame, result.regions, BARCODE_HIGHLIGHT_MS);
+    // Stod brugeren på et trin, der nu er klaret, går flowet videre.
+    if (completed[stepRef.current]) goToNextStep(completed);
   }
 
   async function createProduct() {
@@ -311,10 +427,17 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
         dataRef.current.languageSignals = readLanguageSignals(locale);
         const context = buildBarcodeContext(code, region, dataRef.current.languageSignals);
         if (frame) {
-          void saveBarcodePhoto(frame, code, context.marketRegion, context.signals, flowId).then((id) => {
+          void saveBarcodePhoto(frame.url, code, context.marketRegion, context.signals, flowId).then((id) => {
             if (id) dataRef.current.barcodeAnalysisId = id;
             else scanLog(flowId, "barcode_photo_failed", { level: "warn", message: "Stregkode-fotoet blev ikke gemt", barcode: code });
           });
+          // Næring/ingredienser ved stregkoden læses i baggrunden fra samme
+          // foto, mens brugeren går videre til forsiden.
+          barcodeLabelJobRef.current = {
+            frame,
+            startedAt: Date.now(),
+            result: readBarcodePhoto(frame.url, context.tesseractLanguages),
+          };
         } else {
           scanLog(flowId, "barcode_photo_failed", { level: "warn", message: "Intet kamerabillede til stregkode-fotoet", barcode: code });
         }
@@ -322,7 +445,8 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
         setBarcodeDetection(null);
         activeCodeRef.current = null;
         lookupInProgressRef.current = false;
-        setDone((current) => ({ ...current, barcode: true }));
+        doneRef.current = { ...doneRef.current, barcode: true };
+        setDone(doneRef.current);
         setStep("front");
       } catch (error) {
         scanLog(flowId, "barcode_lookup_error", {
@@ -384,6 +508,19 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     handleBarcodeReadRef.current = handleBarcodeRead;
   }, [handleBarcodeRead]);
 
+  const onBarcodeLabel = useEffectEvent((frame: Frame, result: LabelRead, startedAt: number) =>
+    applyBarcodeLabel(frame, result, startedAt),
+  );
+
+  // Stregkodefotoets aflæsning startes i opslaget og afleveres her, når den
+  // er færdig — også hvis brugeren er nået længere i flowet.
+  useEffect(() => {
+    const job = barcodeLabelJobRef.current;
+    if (!done.barcode || !job) return;
+    barcodeLabelJobRef.current = null;
+    void job.result.then((result) => onBarcodeLabel(job.frame, result, job.startedAt));
+  }, [done.barcode]);
+
   // Stregkode-scanneren kører kun på Stregkode-trinnet.
   useEffect(() => {
     if (!scanning || cameraStatus !== "active" || !videoRef.current) return;
@@ -409,6 +546,18 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     return () => clearInterval(interval);
   }, [scanning]);
 
+  const capturePhotoRef = useRef(capturePhoto);
+  useEffect(() => {
+    capturePhotoRef.current = capturePhoto;
+  });
+  // Energi-/indholdsfotoet: står næring/ingredienser på fotoet, vises det
+  // kort med den grønne ramme, før flowet går videre.
+  async function holdHighlight(frame: Frame, regions: LabelRegions) {
+    if (!showHighlight(frame, regions, null)) return;
+    await wait(HIGHLIGHT_HOLD_MS);
+    setHighlight(null);
+  }
+
   async function capturePhoto() {
     if (working || step === "barcode") return;
     const frame = captureFrame(videoRef.current);
@@ -416,15 +565,16 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
       scanLog(flowId, "photo_capture_failed", { level: "warn", message: `Intet kamerabillede på trinnet "${step}"`, barcode: dataRef.current.barcode });
       return;
     }
-    setPhoto(frame);
+    showHighlight(frame, { nutrition: null, ingredients: null }, null);
+    setPhoto(frame.url);
     setWorking(true);
     const languages = ocrLanguages();
     const data = dataRef.current;
     const startedAt = Date.now();
 
     if (step === "front") {
-      data.frontPhoto = frame;
-      const front = await readFrontPhoto(frame, languages, flowId);
+      data.frontPhoto = frame.url;
+      const front = await readFrontPhoto(frame.url, languages, flowId);
       scanLog(flowId, "front_photo", {
         level: front.lookupFailed ? "warn" : "info",
         message: front.textLength
@@ -452,30 +602,38 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     }
 
     if (step === "nutrition") {
-      const result = await readNutritionPhoto(frame, languages);
+      const result = await readNutritionPhoto(frame.url, languages);
+      // "Ingredienser" på fotoet udløser altid indholds-trinnet — kan listen
+      // ikke læses lokalt, læser OpenAI den fra samme foto.
+      const ingredientsFound = Boolean(result.ingredientsText || result.regions.ingredients);
       scanLog(flowId, "nutrition_photo", {
         message: result.nutrition
-          ? `Energi læst lokalt (sikkerhed ${Math.round(result.confidence)} %)${result.ingredientsText ? " + ingrediensliste på samme foto" : ""}`
-          : `Energi: næringstabellen kunne ikke læses lokalt (${result.text.length} tegn) — AI læser den`,
+          ? `Energi læst lokalt (sikkerhed ${Math.round(result.confidence)} %)${ingredientsFound ? " + ingrediensliste på samme foto" : ""}`
+          : `Energi: næringstabellen kunne ikke læses lokalt (${result.text.length} tegn) — AI læser den${ingredientsFound ? " (+ ingrediensliste på samme foto)" : ""}`,
         barcode: data.barcode,
         durationMs: Date.now() - startedAt,
         data: {
           textLength: result.text.length,
           confidence: result.confidence,
           nutrition: result.nutrition,
-          ingredientsOnSamePhoto: Boolean(result.ingredientsText),
+          ingredientsOnSamePhoto: ingredientsFound,
+          localIngredients: Boolean(result.ingredientsText),
+          nutritionRegion: Boolean(result.regions.nutrition),
+          ingredientsRegion: Boolean(result.regions.ingredients),
           languages,
         },
       });
       if (leavingRef.current) return;
-      data.nutritionPhoto = frame;
+      data.nutritionPhoto = frame.url;
       data.nutritionOcrText = result.text;
       data.nutritionOcrConfidence = result.confidence;
       data.localNutrition = result.nutrition;
-      if (result.ingredientsText) {
+      await holdHighlight(frame, result.regions);
+      if (leavingRef.current) return;
+      if (ingredientsFound) {
         // Indholdet står ved siden af næringstabellen: begge får flueben.
         data.ingredientsOnNutritionPhoto = true;
-        data.localIngredientsText = result.ingredientsText;
+        data.localIngredientsText = result.ingredientsText ?? undefined;
         goToNextStep(markDone("nutrition", "ingredients"));
       } else {
         data.ingredientsOnNutritionPhoto = false;
@@ -484,7 +642,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
       return;
     }
 
-    const result = await readIngredientsPhoto(frame, languages);
+    const result = await readIngredientsPhoto(frame.url, languages);
     scanLog(flowId, "ingredients_photo", {
       message: result.ingredientsText
         ? `Ingredienser læst lokalt (${result.ingredientsText.length} tegn, sikkerhed ${Math.round(result.confidence)} %)`
@@ -495,15 +653,18 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
         textLength: result.text.length,
         confidence: result.confidence,
         ingredientsLength: result.ingredientsText.length,
+        ingredientsRegion: Boolean(result.regions.ingredients),
         languages,
       },
     });
     if (leavingRef.current) return;
-    data.ingredientsPhoto = frame;
+    data.ingredientsPhoto = frame.url;
     data.ingredientsOcrText = result.text;
     data.ingredientsOcrConfidence = result.confidence;
     data.ingredientsOnNutritionPhoto = false;
     if (result.ingredientsText) data.localIngredientsText = result.ingredientsText;
+    await holdHighlight(frame, { nutrition: null, ingredients: result.regions.ingredients });
+    if (leavingRef.current) return;
     goToNextStep(markDone("ingredients"));
   }
 
@@ -512,6 +673,9 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     // Uden stregkode kan intet andet trin aflæses (sprog/region følger den).
     if (next !== "barcode" && !done.barcode) return;
     if (next === "barcode" && done.barcode) return;
+    if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
+    highlightTimerRef.current = null;
+    setHighlight(null);
     setPhoto(null);
     setStep(next);
   }
@@ -527,6 +691,12 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     nutrition: t("cameraCreate.stepNutrition"),
     ingredients: t("cameraCreate.stepIngredients"),
   };
+  const autoCaptureProgress = useAutoCapture(
+    videoRef,
+    step !== "barcode" && cameraStatus === "active" && !working && !photo && !highlight && !createFailed,
+    () => void capturePhotoRef.current(),
+  );
+
   const stepHints: Record<CaptureStep, string> = {
     barcode: lookupError ? t("camera.barcodeLookupError") : t("camera.holdCameraStill"),
     front: t("cameraCreate.hintFront"),
@@ -567,12 +737,27 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
             fakeCode={fakeBarcode}
             detection={barcodeDetection}
             hintText={null}
+            holdStillText={t("camera.holdStill")}
           />
         )}
 
         {!scanning && !photo && (
-          <div className="pointer-events-none absolute inset-[12%] rounded-[12px] border-2 border-white/80 shadow-[0_0_0_999px_rgba(0,0,0,0.2)]" />
+          <div
+            className="pointer-events-none absolute inset-[12%] rounded-[12px] border-2 shadow-[0_0_0_999px_rgba(0,0,0,0.2)] transition-colors"
+            style={{ borderColor: autoCaptureProgress > 0 ? "var(--hf-color-brand)" : "rgba(255,255,255,0.8)" }}
+          >
+            <div
+              className="absolute bottom-0 left-0 h-1 rounded-full transition-[width]"
+              style={{ width: `${autoCaptureProgress * 100}%`, background: "var(--hf-color-brand)" }}
+            />
+          </div>
         )}
+
+        <ProductOutlineOverlay
+          videoRef={videoRef}
+          active={!scanning && !photo && !highlight && !working && cameraStatus === "active"}
+          flowId={flowId}
+        />
 
         {cameraMessage && (
           <div
@@ -584,6 +769,16 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
         )}
 
         {working && <PhotoWorkingOverlay label={t("cameraCreate.analyzingDefault")} />}
+
+        {highlight && (
+          <LabelTextHighlight
+            photo={highlight.url}
+            width={highlight.width}
+            height={highlight.height}
+            boxes={highlight.boxes}
+            label={t("cameraCreate.labelTextFound")}
+          />
+        )}
       </div>
 
       <div className="grid grid-cols-4 gap-2">
@@ -624,6 +819,9 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
       ) : (
         <>
           <p className="hf-type-small text-text-secondary text-center">{stepHints[step]}</p>
+          {step !== "barcode" && (
+            <p className="hf-type-micro text-text-secondary text-center">{t("camera.autoCaptureHint")}</p>
+          )}
           {step !== "barcode" && (
             <div className="flex justify-center">
               <button

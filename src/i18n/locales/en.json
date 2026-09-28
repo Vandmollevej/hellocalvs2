@@ -582,6 +582,7 @@
     "photoAlt": "Your captured photo",
     "liveViewAriaLabel": "Live camera view",
     "notRecognizedRetry": "Product not recognized, try again",
+    "holdStill": "Hold still",
     "holdCameraStill": "Hold the camera steady over the barcode",
     "barcodeHintOutsideFrame": "Keep the whole barcode in the picture — upright or sideways both work.",
     "barcodeHintBlurry": "Barcode blurry? Try holding a bit further back until it's in focus.",
@@ -593,6 +594,7 @@
     "lookingUp": "Looking up {code}...",
     "barcodeNotFound": "The barcode was read, but the product was not found. Try a different code.",
     "barcodeLookupError": "The barcode was read, but the product lookup failed. Try again.",
+    "autoCaptureHint": "The photo is taken automatically when the product is sharp and held still.",
     "autoScanHint": "The camera scans automatically. You can also enter the number below the barcode.",
     "barcodeNumberAriaLabel": "Barcode number",
     "lookUp": "Look up",
@@ -613,6 +615,7 @@
     "retry": "Try again",
     "title": "Add item",
     "analyzingDefault": "Analyzing the photo...",
+    "labelTextFound": "Nutrition facts or ingredients found in the photo",
     "readingImage": "Reading the photo...",
     "searchingDatabase": "Searching the database...",
     "comparingKnownItems": "Comparing with known items...",
@@ -1178,7 +1181,6 @@
       "upgradeUnavailable": "Payment isn't connected yet — use a gift code or redeem points to go Serious until a payment provider is in place.",
       "withdrawalConsent": "I want the subscription to start right away, and I understand that if I withdraw within 14 days, I will only be refunded for the part of the period I haven't used."
     },
-    "retentionNote": "Data older than 3 months is never deleted — it's kept and shown again as soon as you go Serious.",
     "plansHeading": "Subscriptions",
     "plans": {
       "serious": {
@@ -1443,7 +1445,9 @@
     "notFound": "The registration doesn't exist.",
     "loadError": "Couldn't load the registration.",
     "per100g": "per 100 g",
-    "perUnit": "per {unit}"
+    "perUnit": "per {unit}",
+    "save": "Save changes",
+    "saveError": "Couldn't save the changes. Please try again."
   },
   "registrationReportError": {
     "title": "Report error",
