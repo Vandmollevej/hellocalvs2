@@ -88,6 +88,16 @@ export async function createBarcodeLogoCutoutJob({
   });
 }
 
+// Varer hentet fra en ekstern kilde (Open Food Facts/USDA) skal se ud præcis
+// som scannede varer (docs/DECISIONS.md 2026-09-28): deres billede fritskrabes
+// i samme pipeline og går samme vej via pendingImageUrl + admin-godkendelse.
+export async function createExternalImageCutoutJob(productId: string, imageUrl: string | null) {
+  if (!imageUrl?.startsWith("https://")) return;
+  await prisma.imageCutoutJob.create({
+    data: { kind: "PRODUCT_FRONT", sourceUrl: imageUrl, productId },
+  });
+}
+
 // Kaldes når produktet oprettes: kobler forsidens jobs til produktet og
 // logo-jobbet til det brand, brugeren endte med at bekræfte.
 export async function linkCutoutJobsToProduct({

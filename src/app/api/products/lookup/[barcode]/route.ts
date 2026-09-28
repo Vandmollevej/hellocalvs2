@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { lookupOpenFoodFacts } from "@/lib/openFoodFacts";
 import { lookupFoodDataCentral } from "@/lib/foodDataCentral";
 import { inferGs1OriginCountryCode } from "@/lib/regions";
+import { createExternalImageCutoutJob } from "@/lib/image-cutout-jobs";
 import { syncProductNutritionFeaturesSafely } from "@/lib/product-nutrition-features";
 import { debugLog, errorText, flowIdFromRequest } from "@/lib/debug-log";
 
@@ -98,6 +99,9 @@ export async function GET(
       include: { brand: true },
     });
     await syncProductNutritionFeaturesSafely(product.id);
+    await createExternalImageCutoutJob(product.id, product.imageUrl).catch((error) =>
+      console.error("Could not queue cutout for external image", error),
+    );
     log("barcode_lookup", `Hentet fra ${offProduct ? "Open Food Facts" : "USDA"} og oprettet: ${product.name}`, {
       productId: product.id,
       data: { source: offProduct ? "openfoodfacts" : "usda", kcalPer100g: product.kcalPer100g },
