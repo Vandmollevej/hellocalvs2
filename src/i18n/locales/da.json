@@ -1443,7 +1443,9 @@
     "notFound": "Registreringen findes ikke.",
     "loadError": "Kunne ikke hente registreringen.",
     "per100g": "pr. 100 g",
-    "perUnit": "pr. {unit}"
+    "perUnit": "pr. {unit}",
+    "save": "Gem ændringer",
+    "saveError": "Kunne ikke gemme ændringerne. Prøv igen."
   },
   "registrationReportError": {
     "title": "Indberet fejl",
