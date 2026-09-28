@@ -14,6 +14,14 @@ Last updated: 2026-09-28
   den løbende gradient (design.md §6.14) i stedet for `HfLoader`-cirkler.
   Den tomme produktcirkel glimter også, mens billedet ventes.
 
+## 2026-09-28: Tilføjede produkter kan redigeres
+
+- `/registration/[id]` viser nu samme side som "Tilføj produkt" (mængde +/−,
+  kcal, tidspunkt, energifordeling med lås) med knappen "Gem ændringer".
+- `PATCH /api/registrations/[id]` tager nu også `amountGrams` + snapshot-værdier;
+  øvrige snapshots skaleres med mængden. Beslutning: DECISIONS 2026-09-28.
+- Lint, typecheck og build kørt; ikke testet mod en database.
+
 ## 2026-09-28: Admin "Log" — hver scanning trin for trin
 
 - Nyt menupunkt `/admin/log`: Scanninger (tidslinje pr. kameraflow med

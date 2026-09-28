@@ -3042,3 +3042,14 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
   data sig, vises konflikten igen.
 - Erstatter det tidligere par-kort (`DuplicateProductCard`) og ruterne
   `/api/admin/duplicate-products/[id]/merge|dismiss`.
+
+## 2026-09-28: Redigering af en tilføjet registrering
+
+- Et tryk på en tilføjet vare (`/registration/[id]`) åbner samme visning som
+  "Tilføj produkt", så mængde, tidspunkt og energifordeling kan ændres og gemmes.
+- Snapshot-semantik bevares: kcal og makroer pr. 100 g regnes ud fra
+  registreringens egne snapshot-værdier, aldrig fra varens nuværende data.
+  Øvrige snapshots (sukker, fibre, vitaminer, `nutrientSnapshot` osv.) skaleres
+  forholdsmæssigt med den nye mængde. Varen selv ændres aldrig, og der oprettes
+  ingen kontrolsag til admin ved redigering.
+- Egne retter uden vare vises med en vare bygget af snapshottet.
