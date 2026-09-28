@@ -27,6 +27,7 @@ import {
   type CaptureData,
   type CaptureStep,
 } from "@/lib/product-capture";
+import { boxToViewFraction, cropToObject, detectCameraObjects, type CameraObject } from "@/lib/camera-objects";
 import { newScanFlowId, scanFlowHeaders, scanLog } from "@/lib/scan-debug-log";
 import { useTranslation } from "@/i18n/LocaleProvider";
 
@@ -100,6 +101,8 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
   const [working, setWorking] = useState(false);
   const [createFailed, setCreateFailed] = useState(false);
   const [lookupError, setLookupError] = useState(false);
+  // Flere objekter på forsidefotoet: grønne cirkler, brugeren vælger ét.
+  const [objects, setObjects] = useState<{ items: CameraObject[]; width: number; height: number } | null>(null);
   const [region, setRegion] = useState("DK");
   const [barcodeDetection, setBarcodeDetection] = useState<BarcodeDetection | null>(null);
   const [barcodeOrientation, setBarcodeOrientation] = useState<BarcodeOrientation>("horizontal");
@@ -418,11 +421,62 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     }
     setPhoto(frame);
     setWorking(true);
+
+    if (step === "front") {
+      const found = await detectCameraObjects(frame, scanFlowHeaders(flowId));
+      if (leavingRef.current) return;
+      if (found.length >= 2) {
+        const size = await imageSize(frame);
+        setObjects({ items: found, ...size });
+        setWorking(false);
+        return;
+      }
+      await readFront(frame);
+      return;
+    }
+    await readInfoPhoto(frame);
+  }
+
+  async function imageSize(src: string) {
+    const image = new Image();
+    image.src = src;
+    await image.decode();
+    return { width: image.naturalWidth, height: image.naturalHeight };
+  }
+
+  async function selectObject(item: CameraObject) {
+    if (!photo || working) return;
+    setObjects(null);
+    setWorking(true);
+    const cropped = await cropToObject(photo, item.box).catch(() => photo);
+    scanLog(flowId, "camera_object_selected", {
+      message: `Objekt valgt som fokus: "${item.label}"`,
+      barcode: dataRef.current.barcode,
+      data: { label: item.label, box: item.box },
+    });
+    setPhoto(cropped);
+    await readFront(cropped);
+  }
+
+  // Ét handler-objekt til alle cirkler (indekset står på elementet).
+  function handleObjectPress(event: React.MouseEvent<SVGCircleElement> | React.KeyboardEvent<SVGCircleElement>) {
+    if ("key" in event && event.key !== "Enter" && event.key !== " ") return;
+    const item = objects?.items[Number(event.currentTarget.dataset.index)];
+    if (item) void selectObject(item);
+  }
+
+  async function keepWholePhoto() {
+    if (!photo || working) return;
+    setObjects(null);
+    setWorking(true);
+    await readFront(photo);
+  }
+
+  async function readFront(frame: string) {
     const languages = ocrLanguages();
     const data = dataRef.current;
     const startedAt = Date.now();
-
-    if (step === "front") {
+    {
       data.frontPhoto = frame;
       const front = await readFrontPhoto(frame, languages, flowId);
       scanLog(flowId, "front_photo", {
@@ -448,9 +502,13 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
         return;
       }
       goToNextStep(markDone("front"));
-      return;
     }
+  }
 
+  async function readInfoPhoto(frame: string) {
+    const languages = ocrLanguages();
+    const data = dataRef.current;
+    const startedAt = Date.now();
     if (step === "nutrition") {
       const result = await readNutritionPhoto(frame, languages);
       scanLog(flowId, "nutrition_photo", {
@@ -513,6 +571,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
     if (next !== "barcode" && !done.barcode) return;
     if (next === "barcode" && done.barcode) return;
     setPhoto(null);
+    setObjects(null);
     setStep(next);
   }
 
@@ -570,6 +629,38 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
           />
         )}
 
+        {objects && photo && (
+          <svg
+            className="absolute inset-0 h-full w-full"
+            viewBox="0 0 100 100"
+            role="group"
+            aria-label={t("cameraCreate.chooseObject")}
+          >
+            {objects.items.map((item, index) => {
+              const view = boxToViewFraction(item.box, objects.width, objects.height);
+              return (
+                <circle
+                  key={index}
+                  cx={view.cx * 100}
+                  cy={view.cy * 100}
+                  r={Math.max(view.r * 100, 6)}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={item.label}
+                  data-index={index}
+                  onClick={handleObjectPress}
+                  onKeyDown={handleObjectPress}
+                  className="cursor-pointer"
+                  fill="rgba(0,0,0,0.001)"
+                  stroke="var(--hf-green-light)"
+                  strokeWidth={3}
+                  vectorEffect="non-scaling-stroke"
+                />
+              );
+            })}
+          </svg>
+        )}
+
         {!scanning && !photo && (
           <div className="pointer-events-none absolute inset-[12%] rounded-[12px] border-2 border-white/80 shadow-[0_0_0_999px_rgba(0,0,0,0.2)]" />
         )}
@@ -623,13 +714,26 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
         </div>
       ) : (
         <>
-          <p className="hf-type-small text-text-secondary text-center">{stepHints[step]}</p>
-          {step !== "barcode" && (
+          <p className="hf-type-small text-text-secondary text-center">
+            {objects ? t("cameraCreate.chooseObject") : stepHints[step]}
+          </p>
+          {objects && (
+            <div className="flex justify-center">
+              <button
+                type="button"
+                onClick={() => void keepWholePhoto()}
+                className="hf-control hf-btn-secondary w-full justify-center"
+              >
+                {t("cameraCreate.useWholePhoto")}
+              </button>
+            </div>
+          )}
+          {step !== "barcode" && !objects && (
             <div className="flex justify-center">
               <button
                 type="button"
                 onClick={() => void capturePhoto()}
-                disabled={cameraStatus !== "active" || working}
+                disabled={cameraStatus !== "active" || working || !!objects}
                 className="hf-control hf-btn-primary gap-2 px-6 disabled:opacity-40"
               >
                 <IconCamera size={19} /> {t("camera.takePhoto")}

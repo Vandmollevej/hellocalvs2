@@ -634,7 +634,9 @@
     "stepNutrition": "Energy",
     "stepIngredients": "Contents",
     "stepDone": "{step}: captured and read",
-    "bothFound": "Energy and contents found in the same photo"
+    "bothFound": "Energy and contents found in the same photo",
+    "chooseObject": "Tap the item that should be in focus",
+    "useWholePhoto": "Use the whole photo"
   },
   "foods": {
     "title": "Foods",
