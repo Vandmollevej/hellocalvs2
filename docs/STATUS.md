@@ -2,6 +2,13 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Selected state i HelloFresh-stil (punkt 46)
+
+- Ny `.hf-selected` (+ `.hf-selected-open` til accordions) med lysegrøn flade,
+  grøn stroke og mørkegrøn tekst. Brugt i `.hf-choice`, `.hf-chip`,
+  `AccordionSection`, onboarding, periodevælger, kalenderens valgte dag,
+  forsidens FAB-side, vandbeholdere, widgets-valg og måltidsdeling.
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen

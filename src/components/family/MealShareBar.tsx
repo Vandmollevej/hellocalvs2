@@ -66,7 +66,7 @@ export function MealShareBar() {
               onClick={() => toggle(profile.id)}
               aria-pressed={Boolean(selected)}
               className={`flex h-10 items-center gap-2 rounded-full border pl-1 pr-4 ${
-                selected ? "border-hf-black bg-hf-black text-hf-white" : "border-hf-gray-border bg-hf-cream text-hf-black"
+                selected ? "border-transparent hf-selected" : "border-hf-gray-border bg-hf-cream text-hf-black"
               }`}
             >
               <ProfileCircle name={profile.displayName} tone="card" />

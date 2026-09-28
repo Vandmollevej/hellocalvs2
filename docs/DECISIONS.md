@@ -3042,3 +3042,10 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
   data sig, vises konflikten igen.
 - Erstatter det tidligere par-kort (`DuplicateProductCard`) og ruterne
   `/api/admin/duplicate-products/[id]/merge|dismiss`.
+
+## 2026-09-28 — Fælles selected state (punkt 46)
+
+Valgte bokse, åbne accordions og andre selection-komponenter bruger HelloFresh-stilen:
+lysegrøn baggrund, grøn stroke og mørkegrøn tekst via `.hf-selected` og tokens
+`--hf-color-selected-*` i `globals.css`. Kraftigt grønne/sorte valgte flader er udfaset.
+Admin-flader er ikke omfattet.
