@@ -141,11 +141,38 @@ def has_alpha(image):
     return image.mode == "RGBA" and image.getextrema()[3][0] < 250
 
 
+def trim_transparent(image):
+    """Skærer gennemsigtig luft væk, så logoets bund flugter med cirklens bund."""
+    if image.mode != "RGBA":
+        return image
+    bbox = image.getchannel("A").point(lambda a: 255 if a > 8 else 0).getbbox()
+    return image.crop(bbox) if bbox and bbox != (0, 0, *image.size) else image
+
+
+def trim_existing_logos():
+    """Engangsoprydning (idempotent): valgte logoer brand-logos/<id>.png uden luft."""
+    if not os.path.isdir(LOGO_DIR):
+        return
+    for name in os.listdir(LOGO_DIR):
+        path = os.path.join(LOGO_DIR, name)
+        if not name.endswith(".png") or not os.path.isfile(path):
+            continue
+        try:
+            with Image.open(path) as image:
+                image.load()
+                trimmed = trim_transparent(image.convert("RGBA")) if "A" in image.getbands() else image
+            if trimmed.size != image.size:
+                trimmed.save(path, format="PNG")
+                log.info("beskar %s %s -> %s", name, image.size, trimmed.size)
+        except Exception as error:  # et enkelt dårligt billede må ikke stoppe robotten
+            log.warning("kunne ikke beskære %s: %s", name, error)
+
+
 def make_background_transparent(image, tolerance=18):
     """Ensfarvet baggrund (alle fire hjørner ens) gøres transparent."""
     image = image.convert("RGBA")
     if has_alpha(image):
-        return image, True
+        return trim_transparent(image), True
     w, h = image.size
     corners = [image.getpixel((0, 0)), image.getpixel((w - 1, 0)), image.getpixel((0, h - 1)), image.getpixel((w - 1, h - 1))]
     ref = corners[0]
@@ -316,6 +343,7 @@ def score_candidates(brand_name, logo_name, crop, candidates):
 # --- gem -----------------------------------------------------------------------
 
 def save_png(image, relative):
+    image = trim_transparent(image)
     path = os.path.join(LOGO_DIR, relative)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     image.save(path, format="PNG")
@@ -400,6 +428,7 @@ def cleanup(conn):
 
 
 def run_once(conn):
+    trim_existing_logos()
     # Fejlen skal kunne ses på admin "Robotter", så den kastes i stedet for
     # kun at blive logget.
     if not VISION_CREDENTIALS_FILE and not VISION_API_KEY:

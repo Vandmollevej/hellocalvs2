@@ -681,7 +681,9 @@ export function AddProductView({
                   <ForwardButton kind="PRODUCT" itemId={state.product.id} name={state.product.name} />
                 </div>
               )}
-              <div className="flex flex-col items-start gap-2 pt-4 text-left">
+              {/* Rytme (design.md §5): 32 px fra cirklen til titlen som HelloFresh-
+                  heroen, 8 px inde i tekstblokken, 16 px mellem blokkene. */}
+              <div className="flex flex-col items-start gap-8 pt-4 text-left">
                 <div className="relative self-center h-[190px] w-[190px] min-h-[190px] min-w-[190px] max-h-[190px] max-w-[190px] shrink-0 overflow-visible">
                   <div className="flex h-[190px] w-[190px] min-h-[190px] min-w-[190px] items-center justify-center overflow-hidden rounded-full bg-hf-tan">
                     {displayImageUrl ? (
@@ -733,6 +735,7 @@ export function AddProductView({
                     </div>
                   )}
                 </div>
+                <div className="flex w-full flex-col items-start gap-2">
                 {isPending("name") ? (
                   <ReadingSkeleton label={t("addProduct.reading")}>
                     <Skeleton type="body-lg" width={200} />
@@ -745,12 +748,13 @@ export function AddProductView({
                     {[state.product.packageSizeText, state.product.variant].filter(Boolean).join(" · ")}
                   </h2>
                 )}
+                </div>
               </div>
 
               <button
                 type="button"
                 onClick={scrollToDetails}
-                className="hf-btn-text flex items-center gap-1 self-center mb-4 font-normal text-hf-black"
+                className="hf-btn-text mt-4 mb-4 flex items-center gap-1 self-center font-normal text-hf-black"
               >
                 {t("addProduct.details")}
                 <IconChevronDown size={15} />
@@ -783,7 +787,7 @@ export function AddProductView({
                 </div>
               )}
 
-              <div className="mx-auto mb-4 flex w-full max-w-[320px] items-center gap-2">
+              <div className="mx-auto mb-2 flex w-full max-w-[320px] items-center gap-2">
                 <button
                   type="button"
                   onClick={() => setAmount((a) => Math.max(step, a - step))}
@@ -835,7 +839,7 @@ export function AddProductView({
                 </button>
               </div>
 
-              <div className="-mt-2 mb-4 flex flex-col items-center text-center">
+              <div className="mb-4 flex flex-col items-center text-center">
                 <p className="hf-type-body text-hf-black">
                   {isPending("nutrition") ? (
                     <ReadingSkeleton label={t("addProduct.reading")}>

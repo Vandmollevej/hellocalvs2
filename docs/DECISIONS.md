@@ -3263,3 +3263,12 @@ Produktsiden viser aldrig teksten "Branded". Brandet vises kun som brandnavn/log
   originale tekster: "x g pr. skive" direkte, eller "N skiver" + pakkevægt
   (vægt ÷ N). Aldrig gættet; 2-80 g. Agenten skriver den kun, når varen ikke
   har en portionsstørrelse.
+
+## 2026-09-28: Produktsidens lodrette rytme + beskårne brand-logoer
+
+- Produktsiden (`AddProductView`): 32 px fra produktcirklen til titlen (som
+  HelloFresh-heroen, design.md §5), 8 px inde i tekstblokken, 16 px til
+  "Produktdetaljer" og mængdevælgeren, 8 px fra mængdeboksen til kcal/100 g.
+- Brand-logoer beskæres til deres synlige pixels (logo-robotten,
+  `trim_transparent`), så logoets bund flugter med cirklens bund. Allerede
+  valgte logoer beskæres ved robottens næste kørsel.
