@@ -181,6 +181,11 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
   return (
     <div className="rounded-lg border border-hf-tan-dark bg-hf-white">
       <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center">
+        <a
+          href={`/admin/products/${product.id}`}
+          title="Åbn fuld varevisning"
+          className="flex min-w-0 flex-1 items-center gap-4 rounded-md hover:opacity-80"
+        >
         <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-hf-tan">
           {product.imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -204,6 +209,7 @@ export function PendingProductCard({ product }: { product: PendingProduct }) {
             Protein {product.proteinPer100g} g · Kulhydrat {product.carbsPer100g} g · Fedt {product.fatPer100g} g
           </p>
         </div>
+        </a>
         <div className="flex flex-shrink-0 items-center gap-3">
           <div className="flex flex-col items-end" title="Laveste AI-/billedsikkerhed for varen">
             <span className={`hf-type-page-title leading-none ${confidenceClass(product.confidencePercent)}`}>
