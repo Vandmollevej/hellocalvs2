@@ -4712,6 +4712,7 @@ kan ikke nå den server. Denne ændring bør derfor tjekkes visuelt af brugeren
 selv (eller i en senere session, når den anden dev-server ikke kører), særligt
 justeringen af scroll-fligen ved forskellige stå-op-tidspunkter.
 
+- 2026-09-28: Punkt 15 automatisk fotografering bygget (PR #35): foto-trinnene i kamera-flowet udløser selv, når varen er skarp og stille; knappen er manuel reserve. Lint + build grønne.
 - 2026-09-28 (opgave #34 E-nummer-side – indhold): Ny detaljeside
   `/e-numre/[code]` (`src/app/e-numre/[code]/page.tsx`) med sektionerne Navn,
   Forklaring, Risici og relevante oplysninger, Forskning, Primær kilde og
