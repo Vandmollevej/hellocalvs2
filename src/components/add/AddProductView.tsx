@@ -739,13 +739,13 @@ export function AddProductView({
                 <div className="flex w-full flex-col items-start">
                 {isPending("name") ? (
                   <ReadingSkeleton label={t("addProduct.reading")}>
-                    <Skeleton type="body-lg" width={200} />
+                    <Skeleton type="hero" width={200} />
                   </ReadingSkeleton>
                 ) : (
-                  <h1 className="hf-type-page-title text-hf-black">{productTitle}</h1>
+                  <h1 className="hf-type-hero text-hf-black">{productTitle}</h1>
                 )}
                 {(state.product.packageSizeText || state.product.variant) && (
-                  <h2 className="hf-type-title hf-type-strong text-hf-green">
+                  <h2 className="hf-type-hero text-hf-green">
                     {[state.product.packageSizeText, state.product.variant].filter(Boolean).join(" · ")}
                   </h2>
                 )}
