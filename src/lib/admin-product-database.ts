@@ -17,7 +17,7 @@ import {
 const insensitive = { mode: "insensitive" as const };
 
 // Kun rigtige produkter: private ingredienser og retter (HelloFresh o.l.) er udeladt.
-const PRODUCTS_ONLY: Prisma.ProductWhereInput = {
+export const PRODUCTS_ONLY: Prisma.ProductWhereInput = {
   privateOwnerId: null,
   OR: [{ externalSource: null }, { externalSource: { notIn: [...DISH_SOURCES] } }],
 };

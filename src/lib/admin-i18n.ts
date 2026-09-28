@@ -33,6 +33,8 @@ const DICTIONARY = {
   nav_logout: { DA: "Log ud", EN: "Log out" },
   nav_group_approval: { DA: "Produktgodkendelse", EN: "Product approval" },
   nav_product_database: { DA: "Produkt-database", EN: "Product database" },
+  nav_product_database_products: { DA: "Produkter", EN: "Products" },
+  nav_product_database_brands: { DA: "Brands", EN: "Brands" },
   nav_group_dishes: { DA: "Retter", EN: "Dishes" },
   nav_dishes_user: { DA: "Brugeroprettede", EN: "User-created" },
   nav_dishes_hellofresh: { DA: "HelloFresh", EN: "HelloFresh" },

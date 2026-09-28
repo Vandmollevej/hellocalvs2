@@ -4,5 +4,5 @@ import { redirect } from "next/navigation";
 // 2026-09-27); gamle links sender videre med søgeordet.
 export default async function AdminSearchPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const { q } = await searchParams;
-  redirect(q ? `/admin/product-database?q=${encodeURIComponent(q)}` : "/admin/product-database");
+  redirect(q ? `/admin/product-database/products?q=${encodeURIComponent(q)}` : "/admin/product-database/products");
 }

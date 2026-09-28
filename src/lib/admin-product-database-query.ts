@@ -136,5 +136,5 @@ export function productDatabaseHref(filters: ProductDatabaseFilters, changes: Pa
     params.set(key, String(value));
   }
   const query = params.toString();
-  return query ? `/admin/product-database?${query}` : "/admin/product-database";
+  return query ? `/admin/product-database/products?${query}` : "/admin/product-database/products";
 }

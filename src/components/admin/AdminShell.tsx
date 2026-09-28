@@ -41,7 +41,16 @@ const NAV: NavEntry[] = [
       { href: "/admin/logos", key: "nav_logos" },
     ],
   },
-  { kind: "link", href: "/admin/product-database", key: "nav_product_database", icon: "database" },
+  {
+    kind: "group",
+    id: "product-database",
+    key: "nav_product_database",
+    icon: "database",
+    links: [
+      { href: "/admin/product-database/products", key: "nav_product_database_products" },
+      { href: "/admin/product-database/brands", key: "nav_product_database_brands" },
+    ],
+  },
   // Retter (docs/DECISIONS.md 2026-09-28): opskrifter er ikke produkter og
   // står derfor ikke i Produkt-database.
   {

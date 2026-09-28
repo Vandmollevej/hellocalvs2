@@ -2,6 +2,11 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Produkt-database → Produkter + Brands
+
+- Admin-menuens Produkt-database er nu en gruppe: "Produkter" (flyttet til `/admin/product-database/products`) og ny "Brands" (`/admin/product-database/brands`, alle brands med logo, søgning, med/uden logo). Gamle adresser sender videre. Ingen migration.
+- Lint, typecheck og build kørt; ikke testet mod data (lokalt er der ingen DB).
+
 ## 2026-09-28: Admin-oversigten udvidet til komplet overblik
 
 `/admin` har nu også usikre produkter pr. fane, scan-opgaver, fejlede/køede

@@ -2,6 +2,12 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-28: Produkt-database er en menugruppe (Produkter + Brands)
+
+- Produkt-database i admin-menuen er nu en gruppe med to undersider: "Produkter" (den hidtidige produktliste, flyttet til `/admin/product-database/products`) og "Brands" (`/admin/product-database/brands`).
+- `/admin/product-database` og `/admin/search` sender videre til Produkter med filtrene/søgeordet.
+- Brands viser alle rækker i `brands` som kort med logo (`Brand.logoUrl`; uden logo vises forbogstavet), navn og antal produkter (talt som Produkter-listen). Søgning på navn, filter med/uden logo, 120 pr. side. Et klik åbner Produkter filtreret på brandet. Logik: `src/lib/admin-brands.ts`.
+
 ## 2026-09-28: Admin "Retter" + HelloFresh ud af Produkt-database
 
 - Opskrifter er ikke produkter. Ny hovedgruppe "Retter" i admin-menuen med Brugeroprettede (delte brugerretter, `SharedRecipe`; private retter vises aldrig), HelloFresh (alle HelloFresh-retter) og Valdemarsro (tom, indtil importen bygges).
