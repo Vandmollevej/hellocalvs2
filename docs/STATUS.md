@@ -2,6 +2,13 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Produktsiden — skelet-gradient i stedet for load-cirkler
+
+- `AddProductView`: mens OpenAI stadig læser felter (`pendingFields`), vises
+  navn, brand, kcal, makro-sliders og ingredienser som `Skeleton`-flader med
+  den løbende gradient (design.md §6.14) i stedet for `HfLoader`-cirkler.
+  Den tomme produktcirkel glimter også, mens billedet ventes.
+
 ## 2026-09-28: Admin "Log" — hver scanning trin for trin
 
 - Nyt menupunkt `/admin/log`: Scanninger (tidslinje pr. kameraflow med

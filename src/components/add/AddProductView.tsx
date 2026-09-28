@@ -1,7 +1,7 @@
 "use client";
 
 import { mealShareBody } from "@/lib/meal-share";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -33,8 +33,7 @@ import { fromDisplayAmount, getProductDisplayUnit, toDisplayAmount } from "@/lib
 import { NUTRIENT_BY_KEY, type ResolvedNutrient } from "@/lib/nutrients";
 import { UncertaintyTilde } from "@/components/ui/UncertaintyTilde";
 import { UncertaintyLine } from "@/components/ui/UncertaintyLine";
-import { SkeletonDetail, SkeletonScreen } from "@/components/hf/Skeleton";
-import { HfLoader } from "@/components/hf/HfLoader";
+import { Skeleton, SkeletonDetail, SkeletonScreen } from "@/components/hf/Skeleton";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): mens OpenAI stadig læser
 // felter (Product.pendingFields), eller den fritlagte forside endnu ikke er
@@ -42,6 +41,18 @@ import { HfLoader } from "@/components/hf/HfLoader";
 const PENDING_POLL_MS = 2500;
 // Så længe efter oprettelsen ventes der på den fritlagte forside.
 const CUTOUT_WAIT_MS = 3 * 60 * 1000;
+
+// Felter, OpenAI stadig læser, tegnes som skelet-flader med den løbende
+// gradient (design.md §6.14) i stedet for load-cirkler; skærmlæsere hører
+// "Læser…".
+function ReadingSkeleton({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <span role="status" aria-busy="true" className="inline-flex max-w-full flex-col items-center gap-2 align-middle">
+      <span className="sr-only">{label}</span>
+      {children}
+    </span>
+  );
+}
 
 const PHOTO_AWARD_TYPE_KEY: Record<string, "photoAward.photoTypeBarcode" | "photoAward.photoTypeNutrition" | "photoAward.photoTypeIngredients"> = {
   BARCODE: "photoAward.photoTypeBarcode",
@@ -567,6 +578,8 @@ export function AddProductView({
                         alt=""
                         className="block h-full w-full max-h-full max-w-full object-contain p-8"
                       />
+                    ) : shouldPoll ? (
+                      <Skeleton type="circle" width="100%" height="100%" />
                     ) : (
                       <div aria-hidden="true" className="h-full w-full" />
                     )}
@@ -601,12 +614,16 @@ export function AddProductView({
                   </Link>
                 )}
                 {isPending("name") ? (
-                  <HfLoader size={24} label={t("addProduct.reading")} />
+                  <ReadingSkeleton label={t("addProduct.reading")}>
+                    <Skeleton type="body-lg" width={200} />
+                  </ReadingSkeleton>
                 ) : (
                   <p className="hf-type-body-lg hf-heading text-hf-black">{state.product.name}</p>
                 )}
                 {isPending("brand") ? (
-                  <HfLoader size={20} label={t("addProduct.reading")} />
+                  <ReadingSkeleton label={t("addProduct.reading")}>
+                    <Skeleton type="body" width={120} />
+                  </ReadingSkeleton>
                 ) : (
                   state.product.brand && (
                     <p className="hf-type-body hf-type-strong text-hf-green">
@@ -616,7 +633,9 @@ export function AddProductView({
                 )}
                 <p className="hf-type-body hf-type-strong text-hf-black">
                   {isPending("nutrition") ? (
-                    <HfLoader size={20} label={t("addProduct.reading")} />
+                    <ReadingSkeleton label={t("addProduct.reading")}>
+                      <Skeleton type="body" width={150} />
+                    </ReadingSkeleton>
                   ) : state.product.isGenericIngredient && state.product.hasKnownNutrition === false
                     ? t("addProduct.nutritionUnknown")
                     : servingSizeGrams && hasServingUnit
@@ -715,7 +734,9 @@ export function AddProductView({
                   )}
                   <p className="hf-type-small text-text-secondary flex justify-center">
                     {isPending("nutrition") ? (
-                      <HfLoader size={16} label={t("addProduct.reading")} />
+                      <ReadingSkeleton label={t("addProduct.reading")}>
+                        <Skeleton type="caption" width={64} height={14} className="my-0.5" />
+                      </ReadingSkeleton>
                     ) : state.product.isGenericIngredient && state.product.hasKnownNutrition === false
                       ? t("addProduct.nutritionUnknown")
                       : `${Math.round((state.product.kcalPer100g * amount) / 100)} kcal`}
@@ -758,8 +779,17 @@ export function AddProductView({
                   </div>
                 </div>
                 {isPending("nutrition") ? (
-                  <div className="flex justify-center py-4">
-                    <HfLoader size={28} label={t("addProduct.reading")} />
+                  <div role="status" aria-busy="true" className="flex flex-col gap-4">
+                    <span className="sr-only">{t("addProduct.reading")}</span>
+                    {["22%", "36%", "18%"].map((width) => (
+                      <div key={width} aria-hidden>
+                        <div className="mb-2 flex items-center justify-between">
+                          <Skeleton type="body-sm" width={width} height={18} />
+                          <Skeleton type="body" width={44} height={20} />
+                        </div>
+                        <Skeleton type="row" height={8} className="my-1.5" style={{ borderRadius: 4 }} />
+                      </div>
+                    ))}
                   </div>
                 ) : (
                 <div className="flex flex-col gap-4">
@@ -898,7 +928,12 @@ export function AddProductView({
                 <div>
                   <p className="hf-type-body hf-heading mb-2 text-hf-black">{t("createDish.ingredients")}</p>
                   {isPending("ingredients") ? (
-                    <HfLoader size={24} label={t("addProduct.reading")} />
+                    <div role="status" aria-busy="true" className="flex flex-col gap-2">
+                      <span className="sr-only">{t("addProduct.reading")}</span>
+                      {["94%", "82%", "88%", "46%"].map((width) => (
+                        <Skeleton key={width} type="body-sm" width={width} height={16} />
+                      ))}
+                    </div>
                   ) : (
                     <p className="hf-type-small text-text-secondary">
                       {state.product.ingredientsText}
