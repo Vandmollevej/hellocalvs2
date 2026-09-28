@@ -678,7 +678,7 @@ export function AddProductView({
                   <ForwardButton kind="PRODUCT" itemId={state.product.id} name={state.product.name} />
                 </div>
               )}
-              <div className="flex flex-col items-start gap-2 pt-2 text-left">
+              <div className="flex flex-col items-center gap-2 pt-2 text-center">
                 <div className="relative self-center h-[190px] w-[190px] min-h-[190px] min-w-[190px] max-h-[190px] max-w-[190px] shrink-0 overflow-visible">
                   <div className="flex h-[190px] w-[190px] min-h-[190px] min-w-[190px] items-center justify-center overflow-hidden rounded-full bg-hf-tan">
                     {displayImageUrl ? (
@@ -746,35 +746,6 @@ export function AddProductView({
                 {state.product.packageSizeText && (
                   <p className="hf-type-small text-hf-green">{state.product.packageSizeText}</p>
                 )}
-                {certifications.length === 0 && state.product.brand && (
-                  <p className="hf-type-small hf-type-strong text-hf-green">{t("addProduct.branded")}</p>
-                )}
-                <p className="hf-type-body hf-type-strong text-hf-black">
-                  {isPending("nutrition") ? (
-                    <ReadingSkeleton label={t("addProduct.reading")}>
-                      <Skeleton type="body" width={150} />
-                    </ReadingSkeleton>
-                  ) : state.product.isGenericIngredient && state.product.hasKnownNutrition === false
-                    ? t("addProduct.nutritionUnknown")
-                    : servingSizeGrams && hasServingUnit
-                    ? t("addProduct.kcalPerServing", {
-                        kcal: Math.round((state.product.kcalPer100g * servingSizeGrams) / 100),
-                        unit: servingSizeUnitSingular as string,
-                      })
-                    : displayUnit === "g"
-                    ? t("addProduct.kcalPer100g", { kcal: Math.round(state.product.kcalPer100g) })
-                    : t("addProduct.kcalPer100ml", { kcal: Math.round(state.product.kcalPer100g) })}
-                </p>
-                {!!confidentAlternativeServings.length && (
-                  <div className="mt-1 flex flex-col items-start gap-0.5">
-                    {confidentAlternativeServings.map((serving: AlternativeServing, index: number) => (
-                      <p key={`${serving.label}-${index}`} className="hf-type-small text-text-secondary">
-                        {t("addProduct.alternativeServing", { label: serving.label, kcal: Math.round(serving.kcal as number) })}
-                      </p>
-                    ))}
-                  </div>
-                )}
-
               </div>
 
               {hasServingUnit && (
@@ -854,6 +825,34 @@ export function AddProductView({
                 >
                   +
                 </button>
+              </div>
+
+              <div className="mb-4 flex flex-col items-center text-center">
+                <p className="hf-type-body hf-type-strong text-hf-black">
+                  {isPending("nutrition") ? (
+                    <ReadingSkeleton label={t("addProduct.reading")}>
+                      <Skeleton type="body" width={150} />
+                    </ReadingSkeleton>
+                  ) : state.product.isGenericIngredient && state.product.hasKnownNutrition === false
+                    ? t("addProduct.nutritionUnknown")
+                    : servingSizeGrams && hasServingUnit
+                    ? t("addProduct.kcalPerServing", {
+                        kcal: Math.round((state.product.kcalPer100g * servingSizeGrams) / 100),
+                        unit: servingSizeUnitSingular as string,
+                      })
+                    : displayUnit === "g"
+                    ? t("addProduct.kcalPer100g", { kcal: Math.round(state.product.kcalPer100g) })
+                    : t("addProduct.kcalPer100ml", { kcal: Math.round(state.product.kcalPer100g) })}
+                </p>
+                {!!confidentAlternativeServings.length && (
+                  <div className="mt-1 flex flex-col items-center gap-0.5">
+                    {confidentAlternativeServings.map((serving: AlternativeServing, index: number) => (
+                      <p key={`${serving.label}-${index}`} className="hf-type-small text-text-secondary">
+                        {t("addProduct.alternativeServing", { label: serving.label, kcal: Math.round(serving.kcal as number) })}
+                      </p>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <button
