@@ -3225,3 +3225,8 @@ Når scanningsstriben passerer midten af fotoet (objektet i fokus), bliver strib
 ## 2026-09-28 — Terminologi: "vare" i stedet for "produkt"
 
 Synlige tekster i app og admin kalder madvarer "vare/varer", og "Produktdatabase" hedder "Varedatabase". Kode-identifikatorer, URL'er, databasefelter og AI-prompts under `src/app/api/ai/` er uændrede.
+
+
+## 2026-09-28: Ingen "Branded"-mærkat
+
+Produktsiden viser aldrig teksten "Branded". Brandet vises kun som brandnavn/logo.
