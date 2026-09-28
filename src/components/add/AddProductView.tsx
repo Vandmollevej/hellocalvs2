@@ -22,7 +22,7 @@ import { selectRawContextImageUrl } from "@/lib/image-tags";
 import { MacroSliderBar } from "@/components/hf/MacroSliderBar";
 import { AdditiveInfoModal } from "@/components/hf/AdditiveInfoModal";
 import { TimeSection } from "@/components/hf/TimeSection";
-import { getAdditiveInfo } from "@/lib/additives";
+import { getAdditiveInfo, splitENumbers } from "@/lib/additives";
 import { labelForAllergen } from "@/lib/allergens";
 import { matchToxins, type ToxinInfo } from "@/lib/toxins";
 import { ToxinInfoModal } from "@/components/hf/ToxinInfoModal";
@@ -183,7 +183,6 @@ export function AddProductView({
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [openAdditive, setOpenAdditive] = useState<string | null>(null);
-  const [additivesOpen, setAdditivesOpen] = useState(false);
   // Åben som standard (G11, 2026-09-24) — brugeren har selv slået panelet til.
   const [extendedNutritionOpen, setExtendedNutritionOpen] = useState(true);
   const [toxinsOpen, setToxinsOpen] = useState(false);
@@ -604,15 +603,6 @@ export function AddProductView({
                     className="pointer-events-none absolute bottom-1/4 left-1/2 z-10 h-[95px] w-[95px] object-contain object-left-bottom"
                   />
                 </div>
-                {!!state.product.barcodes?.length && state.product.createdByUserId !== profile?.id && (
-                  <Link
-                    href={`/profile/report-bug?productId=${id}`}
-                    className="hf-type-small hf-type-strong text-text-secondary flex items-center gap-1 self-start"
-                  >
-                    <IconAlertTriangle size={16} />
-                    {t("swipeableRow.reportError")}
-                  </Link>
-                )}
                 {isPending("name") ? (
                   <ReadingSkeleton label={t("addProduct.reading")}>
                     <Skeleton type="body-lg" width={200} />
@@ -700,22 +690,23 @@ export function AddProductView({
                 </div>
               )}
 
-              <div className="mb-4 flex items-center gap-2">
+              <div className="mx-auto mb-4 flex w-full max-w-[320px] items-center gap-2">
                 <button
+                  type="button"
                   onClick={() => setAmount((a) => Math.max(step, a - step))}
-                  className="hf-type-title h-11 w-11 rounded-full bg-hf-tan text-hf-black"
+                  className="h-11 w-11 text-[34px] font-bold leading-none text-hf-black"
                 >
                   −
                 </button>
                 <div className="flex-1 rounded-2xl bg-hf-tan py-3 text-center text-hf-black">
                   {hasServingUnit && amountUnit === "personer" ? (
-                    <p className="hf-type-title capitalize">
+                    <p className="hf-type-page-title capitalize">
                       {`${Math.round(amount / (servingSizeGrams as number))} ${
                         amount === servingSizeGrams ? servingSizeUnitSingular : servingSizeUnitPlural
                       }`}
                     </p>
                   ) : (
-                    <label className="hf-type-title flex items-baseline justify-center text-hf-black">
+                    <label className="hf-type-page-title flex items-baseline justify-center text-hf-black">
                       <input
                         type="number"
                         inputMode="numeric"
@@ -732,19 +723,20 @@ export function AddProductView({
                       <span>&nbsp;{displayUnit}</span>
                     </label>
                   )}
-                  <p className="hf-type-small text-text-secondary flex justify-center">
+                  <p className="hf-type-body text-text-secondary flex justify-center">
                     {isPending("nutrition") ? (
                       <ReadingSkeleton label={t("addProduct.reading")}>
                         <Skeleton type="caption" width={64} height={14} className="my-0.5" />
                       </ReadingSkeleton>
                     ) : state.product.isGenericIngredient && state.product.hasKnownNutrition === false
                       ? t("addProduct.nutritionUnknown")
-                      : `${Math.round((state.product.kcalPer100g * amount) / 100)} kcal`}
+                      : t("addProduct.kcalAmount", { kcal: Math.round((state.product.kcalPer100g * amount) / 100) })}
                   </p>
                 </div>
                 <button
+                  type="button"
                   onClick={() => setAmount((a) => a + step)}
-                  className="hf-type-title h-11 w-11 rounded-full bg-hf-tan text-hf-black"
+                  className="h-11 w-11 text-[34px] font-bold leading-none text-hf-black"
                 >
                   +
                 </button>
@@ -753,9 +745,54 @@ export function AddProductView({
             </div>
 
             <div ref={detailsRef} className="flex flex-col gap-8 border-t border-hf-tan-dark p-4">
+              {profile?.showAdditives && !!state.product.additives?.length && (
+                <section
+                  aria-labelledby="product-additives-heading"
+                  className="rounded-2xl border-2 border-hf-green bg-hf-tan p-4"
+                >
+                  <div className="mb-3 flex items-center gap-3">
+                    <span
+                      aria-hidden
+                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-hf-green text-[30px] font-bold leading-none text-hf-white"
+                    >
+                      E
+                    </span>
+                    <div className="flex flex-col">
+                      <h2 id="product-additives-heading" className="hf-type-section-title font-bold text-hf-black">
+                        {t("addProduct.additives")}
+                      </h2>
+                      <p className="hf-type-small hf-type-strong flex items-center gap-1 text-hf-black">
+                        <IconAlertTriangle size={16} className="shrink-0" />
+                        {t("addProduct.additivesWarning")}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col">
+                    {state.product.additives.map((code, index) => {
+                      const name = additiveNames[code] ?? code.toUpperCase();
+                      return (
+                        <button
+                          key={code}
+                          type="button"
+                          onClick={() => setOpenAdditive(code)}
+                          className={`hf-control-row flex items-center gap-3 text-left ${
+                            index < (state.product.additives?.length ?? 0) - 1
+                              ? "border-b border-hf-tan-dark"
+                              : ""
+                          }`}
+                        >
+                          <span className="hf-type-small hf-type-strong text-hf-black">{code.toUpperCase()}</span>
+                          <span className="hf-type-small text-text-secondary underline underline-offset-2">{name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </section>
+              )}
+
               <div>
                 <div className="mb-4 flex items-center justify-between">
-                  <p className="hf-type-body hf-heading text-hf-black">{t("common.macroBreakdown")}</p>
+                  <h2 className="hf-type-section-title font-bold text-hf-black">{t("common.macroBreakdown")}</h2>
                   <div className="-my-3 -mr-3 flex items-center">
                     {isProductEditingUnlocked && (
                       <button
@@ -817,49 +854,6 @@ export function AddProductView({
                 </div>
                 )}
               </div>
-
-              {profile?.showAdditives && !!state.product.additives?.length && (
-                <div>
-                  <button
-                    type="button"
-                    onClick={() => setAdditivesOpen((open) => !open)}
-                    className="mb-4 flex w-full items-center justify-between"
-                  >
-                    <p className="hf-type-body hf-heading text-hf-black">{t("addProduct.additives")}</p>
-                    <IconChevronDown
-                      size={18}
-                      className={`text-hf-black transition-transform ${additivesOpen ? "rotate-180" : ""}`}
-                    />
-                  </button>
-                  {additivesOpen && (
-                  <div className="flex flex-col gap-1 overflow-hidden rounded-2xl bg-hf-tan">
-                    {state.product.additives.map((code, index) => {
-                      const name = additiveNames[code] ?? code.toUpperCase();
-                      return (
-                        <button
-                          key={code}
-                          type="button"
-                          onClick={() => setOpenAdditive(code)}
-                          className={`hf-control-row flex items-center gap-3 px-4 text-left ${
-                            index < (state.product.additives?.length ?? 0) - 1
-                              ? "border-b border-hf-tan-dark"
-                              : ""
-                          }`}
-                        >
-                          <span className="hf-type-micro hf-type-strong flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-hf-green text-hf-white">
-                            E
-                          </span>
-                          <span className="hf-type-small text-text-secondary">
-                            ({code.toUpperCase()}){" "}
-                            <span className="underline underline-offset-2">{name}</span>
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                  )}
-                </div>
-              )}
 
               {/* Toksiner (G11): kendte stoffer ud fra navn + indholdsfortegnelse,
                   kun når brugeren har slået det til i Opsætning. */}
@@ -936,7 +930,20 @@ export function AddProductView({
                     </div>
                   ) : (
                     <p className="hf-type-small text-text-secondary">
-                      {state.product.ingredientsText}
+                      {splitENumbers(state.product.ingredientsText ?? "").map((part, index) =>
+                        part.code ? (
+                          <button
+                            key={index}
+                            type="button"
+                            onClick={() => setOpenAdditive(part.code as string)}
+                            className="hf-type-strong text-hf-black underline underline-offset-2"
+                          >
+                            {part.text}
+                          </button>
+                        ) : (
+                          <span key={index}>{part.text}</span>
+                        ),
+                      )}
                     </p>
                   )}
                 </div>
@@ -1034,6 +1041,15 @@ export function AddProductView({
                     </div>
                   )}
                 </div>
+              )}
+
+              {!!state.product.barcodes?.length && state.product.createdByUserId !== profile?.id && (
+                <Link
+                  href={`/profile/report-bug?productId=${id}`}
+                  className="hf-type-small self-center text-text-secondary no-underline"
+                >
+                  {t("addProduct.reportError")}
+                </Link>
               )}
             </div>
           </>
