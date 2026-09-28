@@ -9,6 +9,7 @@ import {
   IconBookmark,
   IconBookmarkFilled,
   IconAlertTriangle,
+  IconMessage,
   IconLock,
   IconLockOpen,
   IconRefresh,
@@ -1169,7 +1170,7 @@ export function AddProductView({
                   href={`/profile/report-bug?productId=${id}`}
                   className="hf-button hf-button--primary mt-2 flex items-center justify-center gap-2"
                 >
-                  <IconAlertTriangle size={18} />
+                  <IconMessage size={18} />
                   {t("addProduct.reportBug")}
                 </Link>
               )}
