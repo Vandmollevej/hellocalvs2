@@ -87,7 +87,7 @@ export const PAGE_TREE: PageArea[] = [
             label: "Madvarer",
             children: [
               { path: "/foods/new", label: "Ny madvare" },
-              { path: "/product/create", label: "Opret produkt" },
+              { path: "/product/create", label: "Opret vare" },
               { path: "/create-dish", label: "Opret ret" },
               {
                 path: "/ingredients",
@@ -245,13 +245,13 @@ export const PAGE_TREE: PageArea[] = [
     description: "Sider man kun når via et link i en mail eller en delt adresse.",
     pages: [
       { path: "/hello-doc/[token]", label: "Hello Doc (behandlerens visning)" },
-      { path: "/forward/[token]", label: "Videresendt produkt" },
+      { path: "/forward/[token]", label: "Videresendt vare" },
     ],
   },
   {
     id: "scan",
     title: "Oprettelses-app (scan)",
-    description: "Den separate app til at oprette produkter i butikken.",
+    description: "Den separate app til at oprette varer i butikken.",
     pages: [
       {
         path: "/scan/login",
@@ -264,7 +264,7 @@ export const PAGE_TREE: PageArea[] = [
         label: "Menu",
         children: [
           { path: "/scan", label: "Billede af hylde" },
-          { path: "/scan/opret", label: "Opret produkt" },
+          { path: "/scan/opret", label: "Opret vare" },
           { path: "/scan/historik", label: "Historik" },
           { path: "/scan/ikke-afregnet", label: "Ikke afregnet" },
           { path: "/scan/bank", label: "Bank" },
@@ -294,8 +294,8 @@ export const PAGE_TREE: PageArea[] = [
         children: [
           {
             path: "/admin/products",
-            label: "Nye produkter",
-            children: [{ path: "/admin/products/[id]", label: "Produkt" }],
+            label: "Nye varer",
+            children: [{ path: "/admin/products/[id]", label: "Vare" }],
           },
           { path: "/admin/users", label: "Brugere" },
           {
@@ -329,14 +329,14 @@ export const PAGE_TREE: PageArea[] = [
           { path: "/admin/duplicate-products", label: "Dubletter" },
           {
             path: "/admin/product-database",
-            label: "Produkt-database",
-            note: "Sender videre til Produkter",
+            label: "Varedatabase",
+            note: "Sender videre til Varer",
             children: [
-              { path: "/admin/product-database/products", label: "Produkter" },
+              { path: "/admin/product-database/products", label: "Varer" },
               { path: "/admin/product-database/brands", label: "Brands" },
             ],
           },
-          { path: "/admin/search", label: "Søg", note: "Gammel adresse — sender videre til Produkter" },
+          { path: "/admin/search", label: "Søg", note: "Gammel adresse — sender videre til Varer" },
           { path: "/admin/search-ranking", label: "Søgealgoritmer" },
           { path: "/admin/passkeys", label: "Passkeys" },
           {

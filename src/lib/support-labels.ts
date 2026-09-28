@@ -3,7 +3,7 @@
 export const SUPPORT_CATEGORY_LABELS: Record<string, string> = {
   ACCOUNT: "Konto og login",
   DATA: "Mine data",
-  PRODUCTS: "Produkter og søgning",
+  PRODUCTS: "Varer og søgning",
   PAYMENT: "Abonnement og betaling",
   BUG: "Fejl i appen",
   OTHER: "Andet",

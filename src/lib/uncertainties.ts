@@ -15,7 +15,7 @@ import { UNCERTAINTY_TARGET, URGENT_BELOW } from "@/lib/uncertainty-thresholds";
 export { UNCERTAINTY_TARGET };
 
 export const UNCERTAINTY_TABS = [
-  { key: "product", label: "Produkt" },
+  { key: "product", label: "Vare" },
   { key: "energy", label: "Energi" },
   { key: "content", label: "Indhold" },
   { key: "ean", label: "EAN" },
@@ -35,8 +35,8 @@ const TAB_BY_KIND: Record<AiAnalysisKind, UncertaintyTabKey> = {
 // uncertainRegions[].field kan kobles til det rigtige input (rød ramme).
 export const UNCERTAINTY_FIELDS: Record<UncertaintyTabKey, { key: string; label: string; kind: "text" | "number" | "textarea" }[]> = {
   product: [
-    { key: "productName", label: "Produktnavn", kind: "text" },
-    { key: "subbrand", label: "Produktserie", kind: "text" },
+    { key: "productName", label: "Varenavn", kind: "text" },
+    { key: "subbrand", label: "Vareserie", kind: "text" },
     { key: "variant", label: "Variant", kind: "text" },
     { key: "packageSizeText", label: "Pakningsstørrelse", kind: "text" },
   ],

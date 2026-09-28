@@ -108,18 +108,18 @@ export default function BetingelserPage() {
 
         <Section id="indhold" title="6. Indhold du bidrager med">
           <p>
-            Når du opretter et produkt, indberetter en fejl, uploader billeder eller deler en opskrift,
+            Når du opretter en vare, indberetter en fejl, uploader billeder eller deler en opskrift,
             indestår du for, at oplysningerne efter bedste evne er korrekte, og at du har ret til
             billederne.
           </p>
           <p>
             Du bevarer ophavsretten. Du giver Hello Cal en vederlagsfri, ikke-eksklusiv ret til at
-            bruge, redigere og vise bidrag til den fælles produktdatabase i Tjenesten. Bidrag til den
+            bruge, redigere og vise bidrag til den fælles varedatabase i Tjenesten. Bidrag til den
             fælles database bliver, når de er godkendt, en del af databasen, også hvis du senere
             sletter din konto. De vises ikke med dit navn.
           </p>
           <p>
-            Bruger-indsendte produkter gennemgås af en administrator, før andre kan se dem. Private
+            Bruger-indsendte varer gennemgås af en administrator, før andre kan se dem. Private
             data som din dagbog, dine vægtmålinger og dine private opskrifter bliver aldrig en del af
             den fælles database.
           </p>
@@ -143,11 +143,11 @@ export default function BetingelserPage() {
         <Section id="pointsystem" title="8. Pointsystem">
           <p>Du kan optjene points på følgende måder:</p>
           <ul className="list-disc pl-5">
-            <li>10 points, når et nyt produkt, du har oprettet (titel, producent, næringsindhold og billede), bliver godkendt.</li>
-            <li>+5 points ekstra, hvis produktet også har en varedeklaration (indholdsfortegnelse).</li>
-            <li>+5 points ekstra, hvis produktet har billeder fra flere vinkler.</li>
+            <li>10 points, når en ny vare, du har oprettet (titel, producent, næringsindhold og billede), bliver godkendt.</li>
+            <li>+5 points ekstra, hvis varen også har en varedeklaration (indholdsfortegnelse).</li>
+            <li>+5 points ekstra, hvis varen har billeder fra flere vinkler.</li>
             <li>10 points, når en fejlindberetning, du har sendt, bliver godkendt og rettet.</li>
-            <li>5 points, hver gang en ven rent faktisk tilføjer et produkt eller en ret, du har videresendt, dog højst 50 points pr. kalendermåned.</li>
+            <li>5 points, hver gang en ven rent faktisk tilføjer en vare eller en ret, du har videresendt, dog højst 50 points pr. kalendermåned.</li>
             <li>300 points til både dig og din ven, når en ven, du har inviteret, har haft en konto i mindst 3 måneder.</li>
           </ul>
           <p>
@@ -156,7 +156,7 @@ export default function BetingelserPage() {
           </p>
           <p>
             Vi kan annullere points, der er optjent ved misbrug, fx gentagne videresendelser mellem de
-            samme to konti eller åbenlyst falske produkter og fejlindberetninger.
+            samme to konti eller åbenlyst falske varer og fejlindberetninger.
           </p>
         </Section>
 
@@ -193,7 +193,7 @@ export default function BetingelserPage() {
         <Section id="ansvar" title="11. Ansvar">
           <p>
             Vi gør vores bedste for, at Tjenesten virker og at data er korrekte, men vi kan ikke love
-            fejlfri drift eller fejlfri næringsdata. Mange produktdata kommer fra brugere, producenter
+            fejlfri drift eller fejlfri næringsdata. Mange varedata kommer fra brugere, producenter
             og offentlige databaser.
           </p>
           <p>

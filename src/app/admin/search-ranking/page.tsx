@@ -23,7 +23,7 @@ export default async function AdminSearchRankingPage() {
         <p className="hf-type-body text-text-secondary">
           Justér prioriteringen af søgerangeringens parametre og test live, hvordan ændringerne påvirker
           søgeresultatet, før du committer dem. Tekstmatch er altid grundlaget og kan ikke justeres her — det
-          er en fast produktbeslutning (docs/DECISIONS.md), så et forkert produkt aldrig kan vinde over et
+          er en fast varebeslutning (docs/DECISIONS.md), så en forkert vare aldrig kan vinde over et
           korrekt tekstmatch, uanset hvor højt de øvrige parametre skrues op.
         </p>
       </div>

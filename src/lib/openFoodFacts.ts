@@ -97,7 +97,7 @@ function mapOffProduct(p: Record<string, unknown>): OffProduct | null {
 
   return {
     barcode: code,
-    name: (p.product_name_da as string) || (p.product_name as string) || "Ukendt produkt",
+    name: (p.product_name_da as string) || (p.product_name as string) || "Ukendt vare",
     brand: (p.brands as string) ?? null,
     imageUrl: (p.image_front_url as string) ?? (p.image_url as string) ?? null,
     kcalPer100g: (n["energy-kcal_100g"] as number) ?? 0,

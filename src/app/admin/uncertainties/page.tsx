@@ -19,9 +19,9 @@ export default async function AdminUncertaintiesPage() {
       <div>
         <h1 className="hf-type-title text-hf-black">Usikkerheder</h1>
         <p className="hf-type-body text-text-secondary">
-          Produkter hvor AI&apos;en var mindre end {Math.round(UNCERTAINTY_TARGET * 100)} % sikker på forside,
+          Varer hvor AI&apos;en var mindre end {Math.round(UNCERTAINTY_TARGET * 100)} % sikker på forside,
           næringsindhold, ingrediensliste eller EAN, og fotos hvor billedrobotten er usikker på, om de hører til
-          produktet. Ret værdierne i lightboxen — rettelsen skrives til produktet
+          varen. Ret værdierne i lightboxen — rettelsen skrives til varen
           og gemmes som træningsdata.
         </p>
       </div>

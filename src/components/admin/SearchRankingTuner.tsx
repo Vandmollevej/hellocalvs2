@@ -36,7 +36,7 @@ const CATEGORIES: WeightCategory[] = [
     key: "verification",
     title: "Verificering",
     description:
-      "Er verificeret med stregkode, mindst 2 billeder af produktet, billede af varedeklaration og energifordeling.",
+      "Er verificeret med stregkode, mindst 2 billeder af varen, billede af varedeklaration og energifordeling.",
   },
   {
     key: "regionEan",
@@ -65,12 +65,12 @@ const CATEGORIES: WeightCategory[] = [
     key: "personalHistory",
     title: "Personlig historik",
     description:
-      "Personligt tidligere søgte og klikkede produkter. Kan slettes af brugeren via \"Ret til at blive glemt\".",
+      "Personligt tidligere søgte og klikkede varer. Kan slettes af brugeren via \"Ret til at blive glemt\".",
   },
   {
     key: "regionalPopularity",
     title: "Regional popularitet",
-    description: "Produktets egne søgninger/klik i regionen (eksisterende signal).",
+    description: "Varens egne søgninger/klik i regionen (eksisterende signal).",
   },
 ];
 

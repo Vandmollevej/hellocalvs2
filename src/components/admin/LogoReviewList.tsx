@@ -65,7 +65,7 @@ export function LogoReviewList({ searches }: { searches: Search[] }) {
             <div className="grid grid-cols-2 gap-4">
               <figure className="flex flex-col items-center gap-2">
                 <Thumb src={open.originalUrl} alt="Original" size="h-48 w-full" />
-                <figcaption className="hf-type-small text-text-secondary">Original fra produktfoto</figcaption>
+                <figcaption className="hf-type-small text-text-secondary">Original fra varefoto</figcaption>
               </figure>
               {open.candidates[0] && (
                 <figure className="flex flex-col items-center gap-2">

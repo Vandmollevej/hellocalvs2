@@ -3042,3 +3042,7 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
   data sig, vises konflikten igen.
 - Erstatter det tidligere par-kort (`DuplicateProductCard`) og ruterne
   `/api/admin/duplicate-products/[id]/merge|dismiss`.
+
+## 2026-09-28 — Terminologi: "vare" i stedet for "produkt"
+
+Synlige tekster i app og admin kalder madvarer "vare/varer", og "Produktdatabase" hedder "Varedatabase". Kode-identifikatorer, URL'er, databasefelter og AI-prompts under `src/app/api/ai/` er uændrede.

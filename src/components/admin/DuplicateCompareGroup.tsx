@@ -212,7 +212,7 @@ export function DuplicateCompareGroup({ group }: { group: CompareGroup }) {
                             rel="noreferrer"
                             className="hf-type-caption self-start text-text-secondary underline"
                           >
-                            Åbn produkt
+                            Åbn vare
                           </a>
                         )}
                       </div>
@@ -277,8 +277,8 @@ export function DuplicateCompareGroup({ group }: { group: CompareGroup }) {
 
       <p className="hf-type-caption text-text-secondary">
         {group.kind === "sources"
-          ? "Butikkernes egne data til venstre. Den endelige er produktet, som appen viser."
-          : "De andre produkter flettes ind i den endelige og slettes. Registreringer, favoritter, stregkoder og billeder flyttes med; tidligere registreringer beholder deres egne gemte værdier."}
+          ? "Butikkernes egne data til venstre. Den endelige er varen, som appen viser."
+          : "De andre varer flettes ind i den endelige og slettes. Registreringer, favoritter, stregkoder og billeder flyttes med; tidligere registreringer beholder deres egne gemte værdier."}
       </p>
 
       {error && <p className="hf-type-small text-hf-red-dark">{error}</p>}

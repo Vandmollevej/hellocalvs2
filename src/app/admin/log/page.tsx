@@ -379,7 +379,7 @@ export default async function AdminLogPage({
       <div>
         <h1 className="hf-type-page-title text-hf-black">Log</h1>
         <p className="hf-type-body text-text-secondary">
-          Test-log indtil appen går live: hvert scannet produkt trin for trin, alle OpenAI-kald, cron-kørsler og fejl.
+          Test-log indtil appen går live: hver scannet vare trin for trin, alle OpenAI-kald, cron-kørsler og fejl.
           Tider er dansk tid.
         </p>
       </div>

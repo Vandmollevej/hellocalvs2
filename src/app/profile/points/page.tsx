@@ -12,7 +12,7 @@ type Transaction = {
 };
 
 const REASON_LABELS: Record<string, string> = {
-  PRODUCT_APPROVED: "Produkt godkendt",
+  PRODUCT_APPROVED: "Vare godkendt",
   PRODUCT_INGREDIENTS_BONUS: "Varedeklaration tilføjet",
   PRODUCT_PHOTOS_BONUS: "Billeder fra flere vinkler",
   BUG_REPORT_APPROVED: "Fejlrapport godkendt",

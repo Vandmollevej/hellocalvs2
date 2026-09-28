@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     where: { id: productId },
     include: { images: { orderBy: { order: "asc" } } },
   });
-  if (!product) return NextResponse.json({ message: "Produktet findes ikke længere" }, { status: 404 });
+  if (!product) return NextResponse.json({ message: "Varen findes ikke længere" }, { status: 404 });
 
   const primaryUrl =
     primaryImageId === "primary" ? product.imageUrl : product.images.find((img) => img.id === primaryImageId)?.url;

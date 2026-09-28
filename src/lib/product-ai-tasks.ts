@@ -99,9 +99,9 @@ export const FRONT_SCHEMA = {
 
 export const FRONT_SYSTEM = [
   "Du analyserer FORSIDEN af en dagligvareemballage for Hello Cal.",
-  "Skeln meget strengt mellem brand, subbrand, produktnavn og variant.",
+  "Skeln meget strengt mellem brand, subbrand, varenavn og variant.",
   "brand = hovedmærket/kommercielt logo, fx Arla.",
-  "subbrand = produktserie/familie, fx LactoFREE.",
+  "subbrand = vareserie/familie, fx LactoFREE.",
   "productName = hvad varen faktisk er, fx Letmælk.",
   "variant = smag/type/styrke/fedtprocent eller anden variant, når den tydeligt er en variant.",
   "packageSizeText = synlig mængde/størrelse, fx 1 L eller 500 g.",
@@ -121,7 +121,7 @@ export function frontText(input: ContextLines & { knownBrands: string[] }) {
   return [
     ...contextLines(input),
     knownBrandText ? `Kendte brandnavne i databasen (kun som støtte, ikke facit): ${knownBrandText}` : "",
-    "Udtræk felterne fra produktforsiden.",
+    "Udtræk felterne fra vareforsiden.",
   ]
     .filter(Boolean)
     .join("\n");

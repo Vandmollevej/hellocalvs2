@@ -21,7 +21,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   }
   const keepId = body.intoProductId;
   if (!keepId || keepId === duplicateId) {
-    return NextResponse.json({ message: "Vælg et andet produkt at flette ind i" }, { status: 400 });
+    return NextResponse.json({ message: "Vælg en anden vare at flette ind i" }, { status: 400 });
   }
 
   const [duplicate, keep] = await Promise.all([
@@ -29,7 +29,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     prisma.product.findUnique({ where: { id: keepId } }),
   ]);
   if (!duplicate || !keep) {
-    return NextResponse.json({ message: "Produkt ikke fundet" }, { status: 404 });
+    return NextResponse.json({ message: "Vare ikke fundet" }, { status: 404 });
   }
 
   await prisma.$transaction(async (tx) => {

@@ -130,9 +130,9 @@ export async function analyzeShelfPhoto(shelfPhotoId: string) {
       schemaName: "shelf_products",
       schema: DETECT_SCHEMA,
       system:
-        "Du analyserer et foto af en butikshylde. Find hvert synligt, forskelligt emballeret produkt (én post pr. produkt-facing-gruppe, ikke pr. enkelt pakke hvis flere ens står side om side). Svar kun med det der faktisk kan ses.",
+        "Du analyserer et foto af en butikshylde. Find hver synlig, forskellig emballeret vare (én post pr. vare-facing-gruppe, ikke pr. enkelt pakke hvis flere ens står side om side). Svar kun med det der faktisk kan ses.",
       text:
-        "List produkterne. name = varens navn/type som skrevet på emballagen, brand = mærke/logo-tekst (null hvis ukendt), visibleText = øvrig læsbar tekst (smag, størrelse), box = afgrænsningsboks normaliseret 0..1 (x,y = øverste venstre hjørne, w,h = bredde/højde) i forhold til hele billedet.",
+        "List varerne. name = varens navn/type som skrevet på emballagen, brand = mærke/logo-tekst (null hvis ukendt), visibleText = øvrig læsbar tekst (smag, størrelse), box = afgrænsningsboks normaliseret 0..1 (x,y = øverste venstre hjørne, w,h = bredde/højde) i forhold til hele billedet.",
     });
 
     const items = detection.value.items.slice(0, 40);
@@ -152,8 +152,8 @@ export async function analyzeShelfPhoto(shelfPhotoId: string) {
         schemaName: "shelf_matches",
         schema: MATCH_SCHEMA,
         system:
-          "Du afgør om produkter på et hyldefoto allerede findes i en produktdatabase. Sammenlign navn, mærke/logo, smag/variant og størrelse. Vælg kun en kandidat, hvis det er samme vare (samme variant). confidence er 0..1.",
-        text: `Produkter fundet på billedet og deres databasekandidater:\n${listing}\n\nGiv ét svar pr. produkt (itemIndex). productId = kandidatens id eller null.`,
+          "Du afgør om varer på et hyldefoto allerede findes i en varedatabase. Sammenlign navn, mærke/logo, smag/variant og størrelse. Vælg kun en kandidat, hvis det er samme vare (samme variant). confidence er 0..1.",
+        text: `Varer fundet på billedet og deres databasekandidater:\n${listing}\n\nGiv ét svar pr. vare (itemIndex). productId = kandidatens id eller null.`,
       });
       for (const match of matched.value.matches) {
         const allowed = candidatesByItem[match.itemIndex]?.some((c) => c.id === match.productId);

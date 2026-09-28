@@ -73,7 +73,7 @@ export async function POST(req: Request) {
     });
     if (pending) {
       return NextResponse.json(
-        { message: "Du har allerede en rettelse på dette produkt, som afventer gennemgang", bugReport: pending },
+        { message: "Du har allerede en rettelse på denne vare, som afventer gennemgang", bugReport: pending },
         { status: 409 }
       );
     }

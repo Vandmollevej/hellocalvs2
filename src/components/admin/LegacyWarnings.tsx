@@ -52,7 +52,7 @@ export async function LegacyWarnings() {
           Mulige dubletter ({duplicateGroups.length})
         </h2>
         {duplicateGroups.length === 0 ? (
-          <p className="hf-type-body text-text-secondary">Ingen produkter med samme navn fundet.</p>
+          <p className="hf-type-body text-text-secondary">Ingen varer med samme navn fundet.</p>
         ) : (
           duplicateGroups.map((group) => {
             const conflict = group.some((p, i) => i > 0 && macrosDiffer(group[0], p));

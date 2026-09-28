@@ -45,7 +45,7 @@ const SECTIONS = [
   { id: "oprettelser", label: "Nye oprettelser" },
   { id: "abonnement", label: "Betalende vs. gratis" },
   { id: "logins", label: "Log-ins" },
-  { id: "logget", label: "Produkter logget" },
+  { id: "logget", label: "Varer logget" },
   { id: "trends", label: "Trends" },
   { id: "hellofresh", label: "HelloFresh-menuer" },
   { id: "fastholdelse", label: "Fastholdelse & churn" },
@@ -226,7 +226,7 @@ export default async function AdminStatisticsPage({
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <Tile label="Nye oprettelser" k={s.kpis.newUsers} />
           <Tile label="Aktive brugere (har logget)" k={s.kpis.activeUsers} />
-          <Tile label="Produkter logget" k={s.kpis.registrations} />
+          <Tile label="Varer logget" k={s.kpis.registrations} />
           <Tile label="Log-ins" k={s.kpis.logins} />
           <Tile label="HelloFresh-retter logget" k={s.kpis.hellofresh} />
           <Tile label="Omsætning" k={s.kpis.revenueDkk} unit="kr." />
@@ -281,7 +281,7 @@ export default async function AdminStatisticsPage({
         <Table head={["Metode", "Log-ins"]} rows={s.loginsByMethod} />
       </Section>
 
-      <Section id="logget" title="Produkter logget over tid">
+      <Section id="logget" title="Varer logget over tid">
         <Card>
           <StatsBarChart points={s.registrations} series={REG_SERIES} />
         </Card>
@@ -311,7 +311,7 @@ export default async function AdminStatisticsPage({
         </Card>
       </Section>
 
-      <Section id="fastholdelse" title="Fastholdelse & churn" intro="Aktiv = har logget mindst ét produkt.">
+      <Section id="fastholdelse" title="Fastholdelse & churn" intro="Aktiv = har logget mindst én vare.">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <Plain label="Aktive seneste døgn" value={r.dau} />
           <Plain label="Aktive seneste 7 dage" value={r.wau} />
@@ -354,17 +354,17 @@ export default async function AdminStatisticsPage({
         </div>
       </Section>
 
-      <Section id="top" title="Top-produkter & søgninger">
+      <Section id="top" title="Top-varer & søgninger">
         <Card title="Mest loggede">
-          <Table head={["Produkt/ret", "Gange logget", "Brugere"]} rows={s.top.logged} />
+          <Table head={["Vare/ret", "Gange logget", "Brugere"]} rows={s.top.logged} />
         </Card>
         <Card title="Mest søgte">
-          <p className="text-xs text-text-muted">Produkter søgt frem i perioden; søgninger og klik er brugernes samlede antal.</p>
-          <Table head={["Produkt", "Søgninger", "Klik", "Brugere"]} rows={s.top.searched} />
+          <p className="text-xs text-text-muted">Varer søgt frem i perioden; søgninger og klik er brugernes samlede antal.</p>
+          <Table head={["Vare", "Søgninger", "Klik", "Brugere"]} rows={s.top.searched} />
         </Card>
         <Card title={`Søgninger uden resultat (${num.format(s.top.missTotal)} i alt)`}>
           <p className="text-xs text-text-muted">
-            Produktsøgninger på mindst 3 tegn uden et eneste produkt-hit. Registreres fra 27. september 2026; filtreres kun
+            Varesøgninger på mindst 3 tegn uden et eneste vare-hit. Registreres fra 27. september 2026; filtreres kun
             på land.
           </p>
           <Table head={["Søgetekst", "Antal"]} rows={s.top.misses} />

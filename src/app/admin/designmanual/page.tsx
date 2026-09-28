@@ -205,7 +205,7 @@ export default async function DesignManualPage() {
           <Section id="infoboks" number={2} title="Infoboks" intro="Korte beskeder inde på en side. Kortflade (#EEE9DF), 8 px radius, 16 px padding, 20 px ikon med 12 px afstand til teksten.">
             <div className="grid gap-4 sm:grid-cols-2">
               <InfoBox tone="info" title="Information" text="Neutrale forklaringer og tips. Standardvarianten." />
-              <InfoBox tone="success" title="Bekræftelse" text="Noget lykkedes, fx at et produkt er gemt." />
+              <InfoBox tone="success" title="Bekræftelse" text="Noget lykkedes, fx at en vare er gemt." />
               <InfoBox tone="warning" title="Advarsel" text="Brugeren bør være opmærksom, men kan fortsætte." />
               <InfoBox tone="danger" title="Fejl" text="Handlingen fejlede eller værdien er ugyldig." />
             </div>
@@ -278,7 +278,7 @@ export default async function DesignManualPage() {
                 "Trækstregen øverst (.hf-bottom-sheet__handle) er samme streg som kalenderens nat/dag-håndtag: 40 × 4 px, grå, rund.",
                 "Arket kan trækkes ned. Et hurtigt swipe ned eller et træk forbi 30 % af højden lukker det; ellers glider det tilbage. Klik på scrim og Escape lukker også.",
                 "Fast bund: prikker (aktiv = brand-grøn) og pil ved flere sider, primær knap i fuld bredde og tekstknappen \"Spring over\" (.hf-bottom-sheet__skip), som lukker med samme animation.",
-                "Bruges ved velkomst efter kontooprettelse, guiden, e-mailbekræftelse, \"Tilføj\" ud for et produkt, kalenderens \"Tilføj\" og \"Se alle\" i tilføj-hjulet.",
+                "Bruges ved velkomst efter kontooprettelse, guiden, e-mailbekræftelse, \"Tilføj\" ud for en vare, kalenderens \"Tilføj\" og \"Se alle\" i tilføj-hjulet.",
                 "Fuldskærm: baggrund #FAF8F3, \"Luk\" øverst til højre, ikon + titel + tekst centreret, \"Slå fra\" nederst til højre.",
                 "Slår man \"Slå fra\" fra, tæller \"Luk\" ned 3–1 før overlayet lukker og slås fra.",
                 "Dialog: scrim --hf-color-overlay, hvid flade, 12 px radius, 16 px padding. Klik udenfor lukker.",
