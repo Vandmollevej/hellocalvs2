@@ -3205,3 +3205,13 @@ hos HelloFresh. Ingen ny farvetoken; mørkere/off-white blev fravalgt.
   fx broccoli til "synder"). Styres af `SINNERS_ENABLED = false` i
   `src/lib/food-classification.ts`; koden er bevaret. Siden
   `/statistics/month-sinners` findes stadig, men linkes ikke.
+## 2026-09-28: Eksternt hentede varer — samme design
+
+Varer fra Open Food Facts/USDA vises i præcis samme design som varer scannet i
+Hello Cal; datakilden må ikke ændre UI'et. Produktsiden har ingen
+kilde-afhængig visning, men eksterne varers billede var et råt foto med
+baggrund. Ved oprettelsen i `/api/products/lookup/[barcode]` lægges nu et
+PRODUCT_FRONT-fritskrabningsjob for det eksterne billede (https), som
+`scripts/image-agent/cutout.py` henter, fritskraber og skriver til
+`pendingImageUrl` via samme admin-godkendelse som kamerafotos.
+

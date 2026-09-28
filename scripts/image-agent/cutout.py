@@ -18,6 +18,7 @@ import io
 import logging
 import os
 
+import requests
 import cv2  # følger med rembg (opencv-python-headless)
 import numpy as np
 from PIL import Image
@@ -41,6 +42,22 @@ def local_path(public_url):
     if not path.startswith(os.path.normpath(OUTPUT_DIR) + os.sep):
         raise ValueError(f"invalid source path: {public_url}")
     return path
+
+
+# Varer hentet fra Open Food Facts/USDA har et eksternt billede (https). Det
+# fritskrabes ligesom kamerafotos, så datakilden ikke ændrer varens design
+# (docs/DECISIONS.md 2026-09-28).
+REMOTE_MAX_BYTES = 15 * 1024 * 1024
+
+
+def open_source(source_url):
+    if source_url.startswith("https://"):
+        response = requests.get(source_url, timeout=20, headers={"User-Agent": "HelloCal image-agent"})
+        response.raise_for_status()
+        if len(response.content) > REMOTE_MAX_BYTES:
+            raise ValueError(f"remote image too large: {source_url}")
+        return io.BytesIO(response.content)
+    return local_path(source_url)
 
 
 def crop(image, box):
@@ -307,7 +324,7 @@ def fetch_pending_jobs(conn):
 
 def process_job(conn, job_id, source_url, crop_box, kind):
     try:
-        cutout = make_cutout(local_path(source_url), crop_box, kind)
+        cutout = make_cutout(open_source(source_url), crop_box, kind)
         os.makedirs(os.path.join(OUTPUT_DIR, CUTOUT_DIR), exist_ok=True)
         cutout.save(os.path.join(OUTPUT_DIR, CUTOUT_DIR, f"{job_id}.png"), format="PNG")
         result_url = f"{PUBLIC_PATH_PREFIX}/{CUTOUT_DIR}/{job_id}.png"
