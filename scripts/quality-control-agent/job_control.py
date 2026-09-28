@@ -8,6 +8,8 @@ som admin-siden redigerer), om jobbet skal køre nu:
 
 - `enabled` = false → pause (en "kør nu" virker stadig).
 - `runRequestedAt` nyere end sidste start → kør nu.
+- `intervalMinutes` = 0 → "Løbende": kør ved hvert tjek (fx billedrobotten,
+  der hele tiden venter på nye produkter; tjekket er `check_seconds`).
 - `intervalMinutes` → kør når der er gået så længe siden sidste start.
 - `runAtTime` ("HH:MM", dansk tid) → kør én gang dagligt på det tidspunkt.
 
@@ -45,6 +47,8 @@ def is_due(enabled, run_at_time, interval_minutes, run_requested_at, last_starte
         return True
     if not enabled:
         return False
+    if interval_minutes == 0:
+        return True
     if interval_minutes:
         return last_started_at is None or now - last_started_at >= datetime.timedelta(minutes=interval_minutes)
     if run_at_time:
@@ -115,11 +119,12 @@ def _request_run(conn, key):
     conn.commit()
 
 
-def run_forever(database_url, key, job, interval_minutes=None, run_at_time=None, run_on_start=False):
+def run_forever(database_url, key, job, interval_minutes=None, run_at_time=None, run_on_start=False, check_seconds=CHECK_SECONDS):
     """Kører `job(conn)` hver gang admin-planen siger det. `job` må returnere
     en kort statusbesked (vises på admin-siden). run_on_start: kør også én gang
     ved hver container-start (fx efter en deploy med nye data), medmindre
-    jobbet er pauset."""
+    jobbet er pauset. check_seconds: hvor tit planen tjekkes (og dermed hvor
+    tit et "Løbende" job kører)."""
     log.info("job %s under admin-styring (standard: interval=%s min, tidspunkt=%s)", key, interval_minutes, run_at_time)
     ensured = False
     while True:
@@ -146,4 +151,4 @@ def run_forever(database_url, key, job, interval_minutes=None, run_at_time=None,
         finally:
             if conn is not None:
                 conn.close()
-        time.sleep(CHECK_SECONDS)
+        time.sleep(check_seconds)

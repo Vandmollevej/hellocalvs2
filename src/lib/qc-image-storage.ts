@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { mkdir, writeFile } from "fs/promises";
+import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import { stripImageMetadata } from "@/lib/image-metadata";
 
@@ -18,6 +18,18 @@ const EXTENSION_BY_MIME: Record<string, string> = {
   jpg: "jpg",
   webp: "webp",
 };
+
+const MIME_BY_EXTENSION: Record<string, string> = { png: "image/png", jpg: "image/jpeg", webp: "image/webp" };
+
+// Læser et foto gemt af saveDataUrlImage tilbage som data-URL (fx til et
+// senere AI-kald). Kun filer i qc-uploads; null hvis stien ikke passer.
+export async function readStoredImageAsDataUrl(publicUrl: string): Promise<string | null> {
+  const match = /^\/product-images\/qc-uploads\/([0-9a-f-]{36})\.(png|jpg|webp)$/i.exec(publicUrl);
+  if (!match) return null;
+  const buffer = await readFile(path.join(OUTPUT_DIR, `${match[1]}.${match[2]}`)).catch(() => null);
+  if (!buffer) return null;
+  return `data:${MIME_BY_EXTENSION[match[2].toLowerCase()]};base64,${buffer.toString("base64")}`;
+}
 
 export async function saveDataUrlImage(dataUrl: string): Promise<string | null> {
   const match = /^data:image\/(png|jpe?g|webp);base64,(.+)$/i.exec(dataUrl.trim());

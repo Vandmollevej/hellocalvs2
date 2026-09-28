@@ -613,6 +613,7 @@
     "retry": "Prøv igen",
     "title": "Tilføj vare",
     "analyzingDefault": "Analyserer billedet...",
+    "labelTextFound": "Næringsindhold eller ingredienser fundet på billedet",
     "readingImage": "Læser billedet...",
     "searchingDatabase": "Søger i databasen...",
     "comparingKnownItems": "Sammenligner med kendte varer...",
@@ -1443,7 +1444,9 @@
     "notFound": "Registreringen findes ikke.",
     "loadError": "Kunne ikke hente registreringen.",
     "per100g": "pr. 100 g",
-    "perUnit": "pr. {unit}"
+    "perUnit": "pr. {unit}",
+    "save": "Gem ændringer",
+    "saveError": "Kunne ikke gemme ændringerne. Prøv igen."
   },
   "registrationReportError": {
     "title": "Indberet fejl",
