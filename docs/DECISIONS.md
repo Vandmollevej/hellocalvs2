@@ -3160,3 +3160,13 @@ Admin-flader er ikke omfattet.
   valgte objekt (15 % luft), før genkendelse/OCR kører. Gælder forsidefotoet
   (ikke stregkode, energi, indhold) og Måltid/HelloFresh. Detektionen er et
   AI-kald; fejler det, fortsættes med hele billedet.
+
+## 2026-09-28: Mail-handlinger er sorte knapper, ikke links
+
+Handlingen i en mail (nulstil adgangskode, bekræft e-mail, ændr startvægt)
+vises som appens primære knap: sort `#232323`, hvid fed tekst, radius 8 px.
+Skabeloner skriver `<a class="hc-button" href="…">Tekst</a>`, og
+`wrapEmailHtml()` (src/lib/email-format.ts) gør den til en tabel-knap med
+inline styles. Linjen "kopiér dette link" er fjernet; tekstversionen af
+mailen har stadig linket. Uredigerede gamle standardtekster i databasen
+erstattes automatisk (LEGACY_DEFAULT_BODIES i src/lib/messaging.ts).

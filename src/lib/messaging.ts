@@ -68,7 +68,7 @@ export async function queueMessage(
       event,
       channel: template.channel,
       subject: renderTemplate(template.subject, vars),
-      bodyHtml: renderTemplate(template.bodyHtml, vars),
+      bodyHtml: renderTemplate(currentBody(event, template.bodyHtml), vars),
       status: "QUEUED",
     },
   });
@@ -92,12 +92,13 @@ const DEFAULT_TEMPLATES: Record<MessageEventType, { subject: string; bodyHtml: s
   },
   EMAIL_VERIFICATION: {
     subject: "Bekræft din e-mail",
-    bodyHtml: "<p>Hej {{displayName}},</p><p><a href=\"{{verificationLink}}\">Bekræft din e-mail</a></p><p>Virker knappen ikke, så kopiér dette link: {{verificationLink}}</p>",
+    bodyHtml: "<p>Hej {{displayName}},</p><p>Tryk på knappen for at bekræfte din e-mail.</p><p><a class=\"hc-button\" href=\"{{verificationLink}}\">Bekræft din e-mail</a></p>",
     channel: "EMAIL",
   },
+  // class="hc-button" gøres til en sort knap af wrapEmailHtml() (src/lib/email-format.ts).
   PASSWORD_RESET: {
     subject: "Nulstil din adgangskode",
-    bodyHtml: "<p>Hej {{displayName}},</p><p><a href=\"{{resetLink}}\">Nulstil din adgangskode</a> (linket virker i 1 time).</p><p>Virker linket ikke, så kopiér dette: {{resetLink}}</p><p>Har du ikke bedt om det, kan du se bort fra mailen.</p>",
+    bodyHtml: "<p>Hej {{displayName}},</p><p>Tryk på knappen for at vælge en ny adgangskode. Knappen virker i 1 time.</p><p><a class=\"hc-button\" href=\"{{resetLink}}\">Nulstil adgangskode</a></p><p>Har du ikke bedt om det, kan du se bort fra mailen.</p>",
     channel: "EMAIL",
   },
   PASSWORD_CHANGED: {
@@ -109,7 +110,7 @@ const DEFAULT_TEMPLATES: Record<MessageEventType, { subject: string; bodyHtml: s
   START_WEIGHT_CHANGE: {
     subject: "Ændr din startvægt",
     bodyHtml:
-      "<p>Hej {{displayName}},</p><p>Du har bedt om adgang til at ændre din startvægt i Hello Cal.</p><p>Tryk på linket nedenfor for at fortsætte.</p><p><a href=\"{{verificationLink}}\">Ændr startvægt</a></p><p>Linket kan kun bruges én gang og udløber efter 30 minutter.</p><p>Hvis du ikke har bedt om denne ændring, kan du ignorere denne e-mail.</p>",
+      "<p>Hej {{displayName}},</p><p>Du har bedt om adgang til at ændre din startvægt i Hello Cal.</p><p>Tryk på knappen nedenfor for at fortsætte.</p><p><a class=\"hc-button\" href=\"{{verificationLink}}\">Ændr startvægt</a></p><p>Knappen kan kun bruges én gang og udløber efter 30 minutter.</p><p>Hvis du ikke har bedt om denne ændring, kan du ignorere denne e-mail.</p>",
     channel: "EMAIL",
   },
   FRIEND_REFERRAL: {
@@ -212,7 +213,20 @@ const DEFAULT_TEMPLATES: Record<MessageEventType, { subject: string; bodyHtml: s
 const LEGACY_DEFAULT_BODIES: Partial<Record<MessageEventType, string>> = {
   FRIEND_INVITATION:
     "<p>{{inviterName}} synes du skulle prøve Hello Cal.</p><p><a href=\"{{inviteUrl}}\">Opret din konto</a> — I optjener begge 300 points, når du er med. Linket er gyldigt i 7 dage.</p>",
+  // Almindelige links + "kopiér dette link" → sort knap (2026-09-28).
+  EMAIL_VERIFICATION:
+    "<p>Hej {{displayName}},</p><p><a href=\"{{verificationLink}}\">Bekræft din e-mail</a></p><p>Virker knappen ikke, så kopiér dette link: {{verificationLink}}</p>",
+  PASSWORD_RESET:
+    "<p>Hej {{displayName}},</p><p><a href=\"{{resetLink}}\">Nulstil din adgangskode</a> (linket virker i 1 time).</p><p>Virker linket ikke, så kopiér dette: {{resetLink}}</p><p>Har du ikke bedt om det, kan du se bort fra mailen.</p>",
+  START_WEIGHT_CHANGE:
+    "<p>Hej {{displayName}},</p><p>Du har bedt om adgang til at ændre din startvægt i Hello Cal.</p><p>Tryk på linket nedenfor for at fortsætte.</p><p><a href=\"{{verificationLink}}\">Ændr startvægt</a></p><p>Linket kan kun bruges én gang og udløber efter 30 minutter.</p><p>Hvis du ikke har bedt om denne ændring, kan du ignorere denne e-mail.</p>",
 };
+
+// Uredigeret gammel standardtekst i databasen → brug den nye med det samme,
+// også før admin har åbnet "Besked automatisering".
+function currentBody(event: MessageEventType, bodyHtml: string) {
+  return LEGACY_DEFAULT_BODIES[event] === bodyHtml ? DEFAULT_TEMPLATES[event].bodyHtml : bodyHtml;
+}
 
 export async function ensureDefaultMessageTemplates() {
   await Promise.all(
