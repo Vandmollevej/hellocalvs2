@@ -406,3 +406,8 @@ explicitly approved.
 - Læg nøglerne i admin → API-nøgler → Betaling → MobilePay (eller i `.env.production`): `MOBILEPAY_CLIENT_ID`, `MOBILEPAY_CLIENT_SECRET`, `MOBILEPAY_SUBSCRIPTION_KEY`, `MOBILEPAY_MERCHANT_SERIAL_NUMBER`. `MOBILEPAY_ENV=test` bruger testmiljøet; tomt = produktion. Tryk "Test".
 - Webhooken (`APP_BASE_URL/api/payments/mobilepay/webhook`) registreres automatisk ved første scheduler-kørsel efter nøglerne er sat. Adressen skal kunne nås udefra.
 - Migration: `20260926120000_mobilepay_recurring`.
+
+## Lettere deploy (2026-09-28)
+
+- Push til master, der kun ændrer `docs/**` eller `*.md`, starter intet build/deploy (`paths-ignore` i `build.yml`).
+- `.dockerignore` udelukker `docs`, rod-`*.md`, `.github` og `.claude`, så de ikke sendes med til Docker-buildet.
