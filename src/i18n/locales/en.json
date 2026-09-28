@@ -1180,7 +1180,6 @@
       "upgradeUnavailable": "Payment isn't connected yet — use a gift code or redeem points to go Serious until a payment provider is in place.",
       "withdrawalConsent": "I want the subscription to start right away, and I understand that if I withdraw within 14 days, I will only be refunded for the part of the period I haven't used."
     },
-    "retentionNote": "Data older than 3 months is never deleted — it's kept and shown again as soon as you go Serious.",
     "plansHeading": "Subscriptions",
     "plans": {
       "serious": {

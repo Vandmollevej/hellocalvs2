@@ -2,6 +2,20 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Forside — kun "Dagens tilføjelser" scroller
+
+Forsiden er låst til skærmhøjden (`h-dvh overflow-hidden`); topbar, hero og bundmenu står fast, og kun listen scroller internt.
+## 2026-09-28: Abonnement — boilerplate fjernet
+
+- `/profile/subscription`: datalagringsnoten (`subscription.retentionNote`)
+  er fjernet fra hovedindholdet og fra da/en. Betingelser ligger fortsat i
+  footerens `TermsSheet`.
+
+## 2026-09-28: Kamera — scanningsstribe i stedet for load-cirkel
+
+- `PhotoWorkingOverlay` viser en hvid/lys gradientstribe (`.hf-scan-sweep`),
+  der fejer hen over fotoet, mens det analyseres. Beslutning: DECISIONS 2026-09-28.
+
 ## 2026-09-28: Aktivitetsniveau i 5 trin + mails mod spam
 
 - Profil → Profil: aktivitetsniveau i 5 trin (Meget lav … Meget høj), gemmes
@@ -4690,3 +4704,4 @@ selv (eller i en senere session, når den anden dev-server ikke kører), særlig
 justeringen af scroll-fligen ved forskellige stå-op-tidspunkter.
 
 - 2026-09-28: Punkt 15 automatisk fotografering bygget (PR #35): foto-trinnene i kamera-flowet udløser selv, når varen er skarp og stille; knappen er manuel reserve. Lint + build grønne.
+- 2026-09-28 (opgave 33): Ny side `/e-numre` viser hele E-nummer-databasen med søgefelt øverst (søg på nummer, fx "330"/"E330", eller dansk/internationalt navn/funktion). Logik i `src/lib/additives.ts`, UI i `src/components/additives/AdditiveList.tsx`.
