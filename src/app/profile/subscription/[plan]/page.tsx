@@ -59,6 +59,7 @@ export default function SubscriptionPlanPage() {
 
   const prices = SUBSCRIPTION_PRICES_DKK[plan];
   const monthlyBase = prices[1];
+  const price = prices[months];
 
   async function buy() {
     if (!paymentAvailable || !withdrawalAck || buying) return;
