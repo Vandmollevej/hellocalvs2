@@ -42,6 +42,14 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - `GET /api/products` (Madvarer/Søg) søger kun i egen database og udelukker varer med `externalSource = OPEN_FOOD_FACTS` — også via `?source=`. Den live OFF-tekstsøgning (`searchOpenFoodFacts`, der importerede OFF-varer ved få lokale hits) er fjernet. Admin-søgeprøven (`/api/admin/search-ranking/preview`) følger samme regel.
 - Stregkodeopslaget (`/api/products/lookup/[barcode]`) er uændret: egen database → Open Food Facts → USDA.
 
+## 2026-09-28: Stregkodefotoet læses for næring og ingredienser + grøn ramme
+
+- Brugerens krav: står ingredienslisten (eller næringstabellen) ved stregkoden, skal trinnet klares automatisk fra samme foto. Ordet "Ingredienser" på regionernes sprog (`INGREDIENTS_HEADING` i `src/lib/product-ocr.ts`) udløser altid Indhold — kan listen ikke læses lokalt, læser OpenAI den fra fotoet.
+- Stregkodefotoet OCR-læses i baggrunden (`readBarcodePhoto`), mens brugeren fotograferer forsiden; det blokerer aldrig flowet. Fundne trin får flueben, og trin brugeren allerede selv har fotograferet, røres ikke.
+- Tesseract giver linjernes placering (`layout`), og `src/lib/label-text-regions.ts` finder tekstfeltet: ingredienslisten fra overskriften og nedad, næringstabellen ved mindst to forskellige tabelrækker (overskrift, energi, fedt, kulhydrat, protein).
+- En grøn ramme (kun kant, `--hf-color-positive`) vises om feltet: stregkodefotoet vises 1,8 s, energi-/indholdsfotoet 1,1 s før flowet går videre (`LabelTextHighlight`).
+- Samme regel på energifotoet: "Ingredienser" på fotoet giver også Indhold flueben, selv om listen ikke kan læses lokalt.
+
 ## 2026-09-28: Admin "Log" — test-log indtil go-live
 
 - Brugerens krav: log hver gang et produkt scannes, indtil appen går live, så alle trin kan testes; plus andre relevante logs.

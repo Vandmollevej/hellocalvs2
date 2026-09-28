@@ -61,6 +61,14 @@ Next work:
 - Deploy: genbyg `image-agent` og `logo-agent` (ingen migration).
 - Lint og build kørt; ikke testet mod en database (lokalt er der ingen DB).
 
+## 2026-09-28: Kameraflow — stregkodefotoet udfylder Energi/Indhold
+
+- Årsag til fejlen (vandflaske): stregkodefotoet blev kun gemt, aldrig OCR-læst.
+  Nu læses det i baggrunden; "Ingredienser"/næringstabel på fotoet giver
+  flueben på Indhold/Energi, og en grøn ramme viser feltet. Beslutning:
+  DECISIONS 2026-09-28. Nyt log-trin `barcode_label` i admin "Log".
+- Lint, typecheck og build kørt; ikke testet på telefon.
+
 ## 2026-09-28: Admin "Log" — hver scanning trin for trin
 
 - Nyt menupunkt `/admin/log`: Scanninger (tidslinje pr. kameraflow med
