@@ -3,12 +3,34 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FlowPagePreview, PhonePreviewEditor } from "@/components/admin/PhonePreviewEditor";
+import { HfChevron } from "@/components/hf/HfChevron";
 
 type FlowPage = { id?: string; title: string; bodyHtml: string; buttonLabel: string };
 type Flow = { id: string; name: string; description: string; enabled: boolean; pages: FlowPage[] };
 type EditablePage = FlowPage & { key: string };
 
-const fieldClass = "rounded-md border border-hf-tan-dark bg-hf-cream px-2.5 py-1.5 hf-type-body text-hf-black";
+// Felter og kort følger design.md §6.4/§6.6: 48 px høje felter, radius 8,
+// 1 px kant, 17 px inputtekst og 13 px label over feltet.
+const fieldClass = "hf-field w-full rounded-lg border border-hf-gray-border bg-hf-white px-4 hf-type-input text-hf-black";
+const textareaClass = "w-full rounded-lg border border-hf-gray-border bg-hf-white px-4 py-3 hf-type-small font-mono text-hf-black";
+const labelClass = "flex flex-col gap-1 hf-type-label text-text-secondary";
+const cardClass = "flex flex-col gap-4 rounded-lg border border-hf-tan-dark bg-hf-white p-4";
+
+function CloseIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" strokeWidth={2.25} strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function PlusIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path d="M10 4v12M4 10h12" stroke="currentColor" strokeWidth={2.25} strokeLinecap="round" />
+    </svg>
+  );
+}
 
 let nextKey = 0;
 function withKey(page: FlowPage): EditablePage {
@@ -49,7 +71,7 @@ export function NewFlowForm() {
         event.preventDefault();
         if (name.trim()) void create();
       }}
-      className="flex flex-wrap items-center gap-2 rounded-lg border border-hf-tan-dark bg-hf-white p-4"
+      className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4 sm:flex-row sm:items-center"
     >
       <input
         value={name}
@@ -57,15 +79,16 @@ export function NewFlowForm() {
         onChange={(event) => setName(event.target.value)}
         placeholder="Navn på nyt flow, fx 'Velkomst'"
         className={`min-w-0 flex-1 ${fieldClass}`}
+        aria-label="Navn på nyt flow"
       />
       <button
         type="submit"
         disabled={busy || !name.trim()}
-        className="hf-btn-primary"
+        className="hf-btn-primary h-12 w-full shrink-0 px-4 sm:w-auto"
       >
         Opret flow
       </button>
-      {error && <p className="w-full hf-type-body text-hf-red-dark">{error}</p>}
+      {error && <p className="hf-type-body text-hf-red-dark sm:basis-full">{error}</p>}
     </form>
   );
 }
@@ -177,12 +200,12 @@ export function FlowEditor({ flow }: { flow: Flow }) {
             total={pages.length}
           />
         ) : (
-          <div className="flex flex-1 items-center justify-center bg-[#FAF8F3] hf-type-body text-black/50">Ingen sider</div>
+          <div className="flex flex-1 items-center justify-center bg-hf-cream hf-type-body text-text-muted">Ingen sider</div>
         )
       }
     >
-      <div className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
-        <label className="flex flex-col gap-1 hf-type-small text-text-secondary">
+      <div className={cardClass}>
+        <label className={labelClass}>
           Navn
           <input
             value={name}
@@ -194,7 +217,7 @@ export function FlowEditor({ flow }: { flow: Flow }) {
             className={fieldClass}
           />
         </label>
-        <label className="flex flex-col gap-1 hf-type-small text-text-secondary">
+        <label className={labelClass}>
           Beskrivelse (kun til admin)
           <input
             value={description}
@@ -206,57 +229,80 @@ export function FlowEditor({ flow }: { flow: Flow }) {
             className={fieldClass}
           />
         </label>
-        <label className="flex items-center gap-2 hf-type-body text-text-secondary">
-          <input
-            type="checkbox"
-            checked={enabled}
-            onChange={(event) => {
-              setEnabled(event.target.checked);
-              touch();
-            }}
-          />
-          Aktiv (ellers kladde)
-        </label>
+        <div className="flex flex-col gap-1">
+          <span className="hf-type-label text-text-secondary">Status</span>
+          <div className="flex gap-2" role="radiogroup" aria-label="Status">
+            {[
+              { value: true, label: "Aktiv" },
+              { value: false, label: "Kladde" },
+            ].map((option) => (
+              <button
+                key={option.label}
+                type="button"
+                role="radio"
+                aria-checked={enabled === option.value}
+                onClick={() => {
+                  if (enabled === option.value) return;
+                  setEnabled(option.value);
+                  touch();
+                }}
+                className="hf-choice flex-1 sm:flex-none sm:px-6"
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <p className="hf-type-strong text-hf-black">Sider</p>
-        <ol className="flex flex-col gap-1">
+      <div className="flex flex-col gap-3">
+        <p className="hf-type-title text-hf-black">Sider</p>
+        <ol className="flex flex-col gap-2">
           {pages.map((page, index) => (
             <li
               key={page.key}
-              className={`flex items-center gap-2 rounded-md border px-3 py-2 hf-type-body ${
-                index === currentIndex ? "border-hf-green bg-hf-tan" : "border-hf-tan-dark bg-hf-white"
+              className={`hf-control-row flex items-center gap-1 rounded-lg pl-4 pr-1 ${
+                index === currentIndex
+                  ? "border-[1.5px] border-hf-black bg-hf-tan"
+                  : "border border-hf-tan-dark bg-hf-white"
               }`}
             >
-              <button type="button" onClick={() => setSelected(index)} className="min-w-0 flex-1 truncate text-left text-hf-black">
-                {index + 1}. {page.title || "(uden titel)"}
+              <button
+                type="button"
+                onClick={() => setSelected(index)}
+                aria-current={index === currentIndex ? "step" : undefined}
+                className={`flex min-w-0 flex-1 items-center gap-3 text-left text-hf-black ${
+                  index === currentIndex ? "hf-type-body hf-type-strong" : "hf-type-body"
+                }`}
+              >
+                <span className="shrink-0 tabular-nums text-text-secondary">{index + 1}</span>
+                <span className="truncate">{page.title || "(uden titel)"}</span>
               </button>
               <button
                 type="button"
                 onClick={() => movePage(index, -1)}
                 disabled={index === 0}
                 aria-label="Flyt op"
-                className="px-1.5 text-text-secondary hover:text-hf-black disabled:opacity-30"
+                className="hf-btn-icon text-hf-black hover:bg-hf-tan"
               >
-                ↑
+                <HfChevron direction="up" compact />
               </button>
               <button
                 type="button"
                 onClick={() => movePage(index, 1)}
                 disabled={index === pages.length - 1}
                 aria-label="Flyt ned"
-                className="px-1.5 text-text-secondary hover:text-hf-black disabled:opacity-30"
+                className="hf-btn-icon text-hf-black hover:bg-hf-tan"
               >
-                ↓
+                <HfChevron direction="down" compact />
               </button>
               <button
                 type="button"
                 onClick={() => removePage(index)}
                 aria-label="Slet side"
-                className="px-1.5 text-hf-red-dark hover:opacity-80"
+                className="hf-btn-icon text-hf-red-dark hover:bg-hf-tan"
               >
-                ✕
+                <CloseIcon />
               </button>
             </li>
           ))}
@@ -264,16 +310,17 @@ export function FlowEditor({ flow }: { flow: Flow }) {
         <button
           type="button"
           onClick={addPage}
-          className="hf-btn-secondary w-fit"
+          className="hf-btn-secondary h-12 w-full px-4 sm:w-fit"
         >
-          + Tilføj side
+          <PlusIcon />
+          Tilføj side
         </button>
       </div>
 
       {current && (
-        <div className="flex flex-col gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4">
-          <p className="hf-type-strong text-hf-black">Side {currentIndex + 1}</p>
-          <label className="flex flex-col gap-1 hf-type-small text-text-secondary">
+        <div className={cardClass}>
+          <p className="hf-type-title text-hf-black">Side {currentIndex + 1}</p>
+          <label className={labelClass}>
             Overskrift
             <input
               value={current.title}
@@ -282,16 +329,16 @@ export function FlowEditor({ flow }: { flow: Flow }) {
               className={fieldClass}
             />
           </label>
-          <label className="flex flex-col gap-1 hf-type-small text-text-secondary">
+          <label className={labelClass}>
             Indhold (tekst eller HTML)
             <textarea
               rows={14}
               value={current.bodyHtml}
               onChange={(event) => updatePage({ bodyHtml: event.target.value })}
-              className={`${fieldClass} hf-type-small font-mono`}
+              className={textareaClass}
             />
           </label>
-          <label className="flex flex-col gap-1 hf-type-small text-text-secondary">
+          <label className={labelClass}>
             Tekst på knappen
             <input
               value={current.buttonLabel}
@@ -303,13 +350,13 @@ export function FlowEditor({ flow }: { flow: Flow }) {
         </div>
       )}
 
-      <div className="flex items-center justify-end gap-3">
-        {message && <span className="mr-auto hf-type-body text-text-secondary">{message}</span>}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
+        {message && <span className="hf-type-body text-text-secondary sm:mr-auto">{message}</span>}
         <button
           type="button"
           onClick={remove}
           disabled={busy}
-          className="hf-btn-danger"
+          className="hf-btn-danger order-2 h-12 w-full px-4 sm:order-none sm:w-auto"
         >
           Slet flow
         </button>
@@ -317,7 +364,7 @@ export function FlowEditor({ flow }: { flow: Flow }) {
           type="button"
           onClick={save}
           disabled={busy || !dirty || !name.trim()}
-          className="hf-btn-primary"
+          className="hf-btn-primary order-1 h-12 w-full px-6 sm:order-none sm:w-auto"
         >
           Gem
         </button>

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { requireAdminUser } from "@/lib/require-admin";
 import { listFlows } from "@/lib/flows";
 import { NewFlowForm } from "@/components/admin/FlowEditor";
+import { HfChevron } from "@/components/hf/HfChevron";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +18,7 @@ export default async function AdminFlowsPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="hf-type-title text-hf-black">Flow-sider</h1>
+        <h1 className="hf-type-page-title text-hf-black">Flow-sider</h1>
         <p className="mt-1 hf-type-body text-text-secondary">
           Egne flows: en række sider, der vises efter hinanden. Tryk på et flow for at redigere siderne på telefonen.
         </p>
@@ -28,22 +29,23 @@ export default async function AdminFlowsPage() {
           <li key={flow.id}>
             <Link
               href={`/admin/flows/${flow.id}`}
-              className="flex items-center gap-3 rounded-lg border border-hf-tan-dark bg-hf-white p-4 hover:border-hf-green"
+              className="hf-control-row flex items-center gap-3 rounded-lg border border-hf-tan-dark bg-hf-white px-4 hover:border-hf-black"
             >
               <div className="min-w-0 flex-1">
-                <p className="hf-type-strong text-hf-black">{flow.name}</p>
+                <p className="truncate hf-type-title text-hf-black">{flow.name}</p>
                 {flow.description && <p className="truncate hf-type-small text-text-muted">{flow.description}</p>}
               </div>
-              <span className="hf-type-small text-text-secondary">
+              <span className="shrink-0 hf-type-caption">
                 {flow._count.pages} {flow._count.pages === 1 ? "side" : "sider"}
               </span>
               <span
-                className={`rounded-full px-2 py-0.5 hf-type-small ${
+                className={`shrink-0 rounded-full px-2 py-0.5 hf-type-micro hf-type-strong ${
                   flow.enabled ? "bg-hf-green-light text-hf-green-dark" : "bg-hf-tan text-text-secondary"
                 }`}
               >
                 {flow.enabled ? "Aktiv" : "Kladde"}
               </span>
+              <HfChevron className="shrink-0 text-hf-black" />
             </Link>
           </li>
         ))}
