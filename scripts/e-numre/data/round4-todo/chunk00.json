@@ -1,0 +1,1191 @@
+[
+ {
+  "code": "E576",
+  "nameDa": "Natriumgluconat",
+  "nameEn": "Sodium gluconate",
+  "category": "Kompleksdanner / stabilisator",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Natriumgluconat er natriumsaltet af gluconsyre, der bruges til at binde metalioner og stabilisere fødevarer.",
+  "description": "Natriumgluconat fremstilles ved fermentering af glukose til gluconsyre, som derefter neutraliseres med natriumhydroxid. Det er en effektiv kompleksdanner, der binder calcium, jern og andre metalioner, hvilket kan forhindre misfarvning og uklarhed. Det kan også maskere bitter smag og bruges i nogle saltreducerede produkter.",
+  "uses": "Forarbejdet kød, drikkevarer, mejeriprodukter og saltreducerede produkter. Tilladt i EU som gruppe I-tilsætningsstof (quantum satis) i mange fødevarekategorier.",
+  "health": "Natriumgluconat anses for at have lav toksicitet. JECFA fastsatte i 1998 en gruppe-ADI \"ikke specificeret\" for glucono-delta-lacton og gluconaterne (undtagen ferrogluconat).",
+  "research": "EFSA's gen-evaluering af gluconsyre og gluconaterne (E 574–E 579) er ikke afsluttet; EFSA indkaldte data i 2023 med frist i 2024. Forsøg med smagspaneler har vist, at natriumgluconat kan dæmpe bitter smag.",
+  "keyReferences": [
+   {
+    "citation": "JECFA. Glucono-delta-lactone and the calcium, magnesium, potassium and sodium salts of gluconic acid. WHO Food Additives Series 42. 1999 (51. møde, 1998).",
+    "searchTitle": "Glucono-delta-lactone gluconic acid salts JECFA WHO Food Additives Series 42"
+   }
+  ],
+  "pubmedTerm": "sodium gluconate",
+  "flags": [],
+  "classes": [
+   "sequestrant",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Call for data for the re-evaluation of gluconic acid (E 574) and related food additives (E 575-579)",
+   "url": "https://www.efsa.europa.eu/en/call/call-data-re-evaluation-gluconic-acid-e-574-and-related-food-additives-e-575-579",
+   "date": "2023",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.efsa.europa.eu/en/call/call-data-re-evaluation-gluconic-acid-e-574-and-related-food-additives-e-575-579",
+    "https://inchem.org/documents/jecfa/jecmono/v042je12.htm",
+    "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+    "https://en.wikipedia.org/wiki/Sodium_gluconate",
+    "https://www.jungbunzlauer.com/ingredients/sodium-gluconate/",
+    "https://www.researchgate.net/publication/233879813_Evaluation_of_the_Suppressive_Effect_on_Bitter_Taste_of_Gluconate",
+    "https://pubs.acs.org/doi/10.1021/ie50506a061"
+   ],
+   "notes": "RETTET: Påstanden om en EFSA-gen-evaluering fra 2018 (pub/5426) uden numerisk ADI kunne ikke findes; EFSA's gen-evaluering af E 574–E 579 er fortsat i gang (dataindkaldelse 2023–2024). Erstattet med JECFA's gruppe-ADI 'ikke specificeret' (1998). Fjernet 'bidraget til natriumindtaget er lille' (ikke kildebelagt). Bekræftet: fremstilling ved fermentering og neutralisering med NaOH, kompleksbinding af Ca/Fe, bitterdæmpning, gruppe I quantum satis (EU-forordning 1129/2011). Konkrete fødevarekategorier (kød, mejeri) er ikke enkeltvis bekræftet."
+  },
+  "wikipedia": "",
+  "wikidata": "Q264552",
+  "claims": [
+   {
+    "claim": "Natriumsalt af gluconsyre",
+    "source": "https://inchem.org/documents/jecfa/jecmono/v042je12.htm",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fremstilles ved fermentering af glukose og neutralisering med NaOH",
+    "source": "https://pubs.acs.org/doi/10.1021/ie50506a061",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Binder calcium, jern og andre metalioner",
+    "source": "https://www.jungbunzlauer.com/ingredients/sodium-gluconate/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kan maskere bitter smag",
+    "source": "https://www.researchgate.net/publication/233879813_Evaluation_of_the_Suppressive_Effect_on_Bitter_Taste_of_Gluconate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Gruppe I, quantum satis i EU",
+    "source": "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2018: ingen numerisk ADI",
+    "source": "https://www.efsa.europa.eu/en/call/call-data-re-evaluation-gluconic-acid-e-574-and-related-food-additives-e-575-579",
+    "result": "rettet"
+   },
+   {
+    "claim": "JECFA gruppe-ADI ikke specificeret (1998)",
+    "source": "https://inchem.org/documents/jecfa/jecmono/v042je12.htm",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bidrag til natriumindtag er lille",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Anvendelse i forarbejdet kød, drikkevarer, mejeri",
+    "source": "",
+    "result": "ikke enkeltvis bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E586",
+  "nameDa": "4-hexylresorcinol",
+  "nameEn": "4-Hexylresorcinol",
+  "category": "Antioxidant",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "4-hexylresorcinol er et stof, der forhindrer sorte pletter (melanose) på rejer og andre krebsdyr.",
+  "description": "4-hexylresorcinol er en resorcinol-forbindelse med en hexyl-sidekæde. Den hæmmer enzymet polyphenoloxidase, som ellers danner sorte pletter (melanose) på rejer og krebsdyr. Det bruges som alternativ til sulfitter til samme formål. Stoffet bruges også i kosmetik og som antiseptisk middel i halstabletter.",
+  "uses": "Krebsdyr som rejer. I EU er restindholdet i krebsdyrkødet begrænset til 2 mg/kg.",
+  "health": "EFSA's gen-evaluering fra 2014 fandt stoffet toksikologisk acceptabelt til krebsdyr, forudsat at restindholdet ikke overstiger 2 mg/kg. Der er rapporteret allergisk kontakteksem ved kosmetisk brug.",
+  "research": "EFSA's ANS-panel vurderede 4-hexylresorcinol i 2014 og fandt det toksikologisk acceptabelt til at forhindre melanose i rejer og krebsdyr, forudsat at restindholdet i kødet ikke overstiger 2 mg/kg; enhver udvidelse af brugen ville kræve nye reproduktionsstudier, og panelet anbefalede overvågning af restniveauer. Kræftforsøg fra det amerikanske National Toxicology Program (1988) fandt ingen tegn på kræftfremkaldende effekt i rotter og tvetydige tegn (equivocal evidence) hos hanmus. Cellestudier om mulig østrogen-lignende aktivitet har givet modstridende resultater.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel. Scientific Opinion on the re-evaluation of 4-hexylresorcinol (E 586) as a food additive. EFSA Journal. 2014.",
+    "searchTitle": "Scientific Opinion on the re-evaluation of 4-hexylresorcinol (E 586) as a food additive"
+   }
+  ],
+  "pubmedTerm": "4-hexylresorcinol",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of 4-hexylresorcinol (E 586) as a food additive",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2014.3643",
+   "date": "2014-04-24",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.efsa.europa.eu/en/efsajournal/pub/3643",
+    "https://ntp.niehs.nih.gov/publications/reports/tr/tr330",
+    "https://www.globalseafood.org/advocate/4-hexylresorcinol-sulfite-free-control-for-melanosis-in-crustaceans/",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7041292/",
+    "https://onlinelibrary.wiley.com/doi/10.1111/cod.14785",
+    "https://www.academia.edu/58236940/4_Hexylresorcinol_Exhibits_Different_Characteristics_to_Estrogen",
+    "https://en.wikipedia.org/wiki/4-Hexylresorcinol"
+   ],
+   "notes": "Bekræftet: EFSA 2014-konklusion (2 mg/kg, reproduktionsstudier, overvågning), PPO-hæmning, sulfit-alternativ, halstabletter, kosmetik, kontaktallergi. RETTET: NTP 1988 viste 'equivocal evidence' hos hanmus (ikke blot 'ingen klare tegn'); østrogen-udsagn omformuleret til modstridende cellefund. FJERNET: 'syntetisk', 'hummer og jomfruhummer', 'friske, frosne og dybfrosne' (EU-ordlyd ikke søgt op), 'ikke kendt for at udløse astma' og 'betydning ved fødevareeksponering lav'."
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "claims": [
+   {
+    "claim": "EFSA 2014: acceptabel ved rest ≤2 mg/kg",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3643",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Udvidet brug kræver reproduktionsstudier; overvågning anbefalet",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3643",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hæmmer polyphenoloxidase/melanose",
+    "source": "https://www.globalseafood.org/advocate/4-hexylresorcinol-sulfite-free-control-for-melanosis-in-crustaceans/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Alternativ til sulfitter",
+    "source": "https://www.globalseafood.org/advocate/4-hexylresorcinol-sulfite-free-control-for-melanosis-in-crustaceans/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Halstabletter",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7041292/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hudallergi ved kosmetik",
+    "source": "https://onlinelibrary.wiley.com/doi/10.1111/cod.14785",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "NTP 1988 kræftforsøg",
+    "source": "https://ntp.niehs.nih.gov/publications/reports/tr/tr330",
+    "result": "rettet"
+   },
+   {
+    "claim": "Østrogen-lignende aktivitet i celler",
+    "source": "https://www.academia.edu/58236940/4_Hexylresorcinol_Exhibits_Different_Characteristics_to_Estrogen",
+    "result": "rettet"
+   },
+   {
+    "claim": "Syntetisk fremstillet",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Hummer, jomfruhummer; friske/frosne/dybfrosne",
+    "source": "",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Ikke kendt for astmaanfald",
+    "source": "",
+    "result": "fjernet"
+   }
+  ]
+ },
+ {
+  "code": "E942",
+  "nameDa": "Dinitrogenoxid (lattergas)",
+  "nameEn": "Nitrous oxide",
+  "category": "Drivgas",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Lattergas, som bruges som drivgas i flødeskumsspray og til at piske fløde.",
+  "description": "Dinitrogenoxid (N2O) fremstilles industrielt ved forsigtig opvarmning af ammoniumnitrat. Gassen opløses godt i fedt, så når den frigives fra en trykbeholder, udvider den sig og pisker fløden op. Den har en let sødlig smag og hæmmer også oxidation. Medicinsk bruges gassen som bedøvelses- og smertestillende middel.",
+  "uses": "Flødeskum på spraydåse, flødeskumsbeholdere (patroner til sifoner), visse desserter og mousser (quantum satis som drivgas).",
+  "health": "I de mængder, der følger med flødeskum, er gassen uproblematisk. Misbrug ved indånding som rusmiddel er dog et voksende problem, især blandt unge: gassen inaktiverer vitamin B12 og kan ved hyppig brug give alvorlige nerveskader, og indånding direkte fra beholdere kan give frostskader og iltmangel. Salg af lattergas til rusbrug er forbudt i Danmark. Ingen ADI er fastsat.",
+  "research": "Forskningen i N2O drejer sig især om rekreativt misbrug og B12-relaterede neurologiske skader (myelopati), med stigende antal case-rapporter i Europa siden ca. 2015. Lattergas er desuden en kraftig drivhusgas. Som fødevaretilsætning er der ingen nyere bekymringer.",
+  "keyReferences": [],
+  "pubmedTerm": "nitrous oxide",
+  "flags": [
+   "children_caution"
+  ],
+  "classes": [
+   "antioxidant",
+   "propellent-gas"
+  ],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://artgerecht.com/en/glossary/e942/",
+    "https://en.wikipedia.org/wiki/Nitrous_oxide",
+    "https://politi.dk/koebenhavns-vestegns-politi/nyhedsliste/nu-bliver-lattergas-ulovligt/2023/06/30",
+    "https://cremenco.com/blogs/tools/mastering-the-whip-how-to-use-nitrous-oxide-to-achieve-perfect-whippe"
+   ],
+   "notes": "Runde 2 kun delvist gennemført: dansk salgsforbud og opløsning i fedt/piskning bekræftet. Fremstilling af ammoniumnitrat, sødlig smag, medicinsk brug, B12-inaktivering/myelopati, frostskader, drivhusgas og 'case-rapporter siden 2015' IKKE søgt op i runde 2 (søgebudget opbrugt). Runde 1-noter: Fremstilling, anvendelse som drivgas og B12-relaterede skader ved misbrug bekræftet; dansk forbud mod salg til rusbrug er i overensstemmelse med lovgivningen fra 2023. Ingen offentliggjort EFSA-gen-evaluering fundet."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Nitrous_oxide",
+  "wikidata": "Q905750",
+  "claims": [
+   {
+    "claim": "Salg af lattergas som rusmiddel forbudt i Danmark (fra 1. juli 2023)",
+    "source": "https://politi.dk/koebenhavns-vestegns-politi/nyhedsliste/nu-bliver-lattergas-ulovligt/2023/06/30",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "N2O opløses i fedt og pisker fløden ved frigivelse",
+    "source": "https://cremenco.com/blogs/tools/mastering-the-whip-how-to-use-nitrous-oxide-to-achieve-perfect-whippe",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E1210",
+  "nameDa": "Carbomer",
+  "nameEn": "Carbomer",
+  "category": "Filmdannende middel / overtræk",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En syntetisk polymer, der bruges som overtræk på kosttilskud i tablet- eller kapselform.",
+  "description": "Carbomer er en højmolekylær, tværbundet polymer af acrylsyre. Den kan binde store mængder vand og danner geler, og bruges i tabletter til at styre frigivelsen af indholdsstoffer. Polymeren optages meget dårligt fra tarmen og udskilles stort set uændret med afføringen. Den er udviklet til lægemidler, hvor lignende polymerer har været brugt i årtier, og er derefter godkendt til kosttilskud.",
+  "uses": "Kosttilskud i tabletform (styret frigivelse). Kendes ellers bredt fra kosmetik og lægemidler. Ikke i almindelige fødevarer.",
+  "health": "Carbomer optages ikke systemisk og giver ikke anledning til bekymring for genotoksicitet. EFSA fastsatte i 2021 en ADI på 190 mg/kg legemsvægt/dag.",
+  "research": "EFSA's FAF-panel vurderede carbomer som nyt tilsætningsstof til faste og flydende kosttilskud i 2021 og fastsatte en ADI på 190 mg/kg legemsvægt/dag (NOAEL 1.500 mg/kg legemsvægt/dag fra et 13-ugers rottestudie, stofspecifik usikkerhedsfaktor 8).",
+  "keyReferences": [
+   {
+    "citation": "EFSA FAF Panel (2021). Safety evaluation of crosslinked polyacrylic acid polymers (carbomer) as a new food additive. EFSA Journal 19(8):6693.",
+    "searchTitle": "Safety evaluation of crosslinked polyacrylic acid polymers (carbomer) as a new food additive"
+   }
+  ],
+  "pubmedTerm": "carbomer",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Safety evaluation of crosslinked polyacrylic acid polymers (carbomer) as a new food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2021.6693",
+   "date": "2021",
+   "adi": "190 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8356569/",
+    "https://pubmed.ncbi.nlm.nih.gov/34400972/"
+   ],
+   "notes": "Bekræftet: EFSA 2021, ADI 190, NOAEL 1.500, UF 8, ingen genotoksicitet, ingen systemisk optagelse, faste og flydende kosttilskud. Fjernet fra research: anvendelsesniveauer 30.000/200.000 mg/kg og optagelse som E 1210 i forordning 231/2012 (kunne ikke bekræftes, søgebudget opbrugt). Ikke kontrolleret: beskrivelse (kemi, gel, styret frigivelse, kosmetik) og anvendelsestekst."
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "claims": [
+   {
+    "claim": "ADI 190",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8356569/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "NOAEL 1500, UF 8",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8356569/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ikke genotoksisk",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8356569/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen systemisk optagelse",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8356569/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "30.000/200.000 mg/kg",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8356569/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "E 1210 i 231/2012",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8356569/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Tværbundet polyacrylsyre",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8356569/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Styret frigivelse/kosmetik",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8356569/",
+    "result": "ikke kontrolleret"
+   }
+  ]
+ },
+ {
+  "code": "E1404",
+  "nameDa": "Oxideret stivelse",
+  "nameEn": "Oxidised starch",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Stivelse, der er behandlet med natriumhypochlorit, så den giver klare, bløde og stabile geler.",
+  "description": "Oxideret stivelse fremstilles ved at behandle stivelse med natriumhypochlorit i basisk miljø, hvorved en del af hydroxylgrupperne omdannes til carboxyl- og carbonylgrupper. Udgangsmaterialet er typisk majs-, kartoffel-, tapioka-, hvede- eller risstivelse. Formålet er at give stivelse bedre egenskaber end naturlig stivelse, fx modstandsdygtighed over for varme, syre, frost eller omrøring. Produktet er et hvidt pulver uden smag, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Supper, saucer, dressinger, færdigretter, desserter og budding, frugtfyld og yoghurt samt panering og belægning på kød og fisk. Tilladt quantum satis i de fleste fødevarer; begrænset i fødevarer til spædbørn.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser, og at en numerisk ADI ikke er nødvendig. Stofferne nedbrydes i vid udstrækning som almindelig stivelse og giver ca. 4 kcal/g, men nogle typer er delvist resistente og virker som kostfiber. Ved meget høje indtag er der rapporteret mild afføringspåvirkning. Stivelse fra hvede kan i princippet indeholde spor af gluten, og kilden skal fremgå, hvis den er fra hvede. Anvendelsen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   }
+  ],
+  "pubmedTerm": "oxidized starch",
+  "flags": [
+   "may_contain_gluten"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2017.4911"
+   ],
+   "notes": "Bekræftet i EFSA 2017-gen-evalueringen: 12 stivelser, ingen numerisk ADI/ingen bekymring, hydrolyse og fermentering, ikke genotoksisk, 31.000 mg/kg i rotter. Fjernet: tungmetalanbefaling, JECFA-sammenligning og 'få humane studier' (ikke fundet). IKKE KONTROLLERET (sessionens søgebudget blev opbrugt): fremstillingskemi, udgangsmaterialer, fødevareeksempler, kcal/fiber, afføring, gluten, spædbørnsgrænser."
+  },
+  "wikipedia": "",
+  "wikidata": "Q18967259",
+  "claims": [
+   {
+    "claim": "12 modificerede stivelser gen-evalueret 2017",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen numerisk ADI, ingen sikkerhedsbekymring",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hydrolyseres og fermenteres, optages ikke intakt",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ikke genotoksiske",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen effekter op til 31.000 mg/kg",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anbefalede strammere tungmetalspecifikationer",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "JECFA lignende konklusioner",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Få humane studier",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Fremstillingskemi",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Udgangsmaterialer",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Konkrete fødevareanvendelser og quantum satis",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Ca. 4 kcal/g, delvist resistent",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Mild afføringspåvirkning ved høje indtag",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Glutenspor og kildeangivelse",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Grænser i spædbørnsmad",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   }
+  ]
+ },
+ {
+  "code": "E1410",
+  "nameDa": "Monostivelsesphosphat",
+  "nameEn": "Monostarch phosphate",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Stivelse, hvor en del af hydroxylgrupperne er forestret med phosphorsyre. Det giver bedre stabilitet ved frysning og optøning.",
+  "description": "Monostivelsesphosphat fremstilles ved at opvarme stivelse med orthophosphorsyre eller natrium-/kaliumphosphater, så enkelte phosphatgrupper bindes til stivelseskæderne. Udgangsmaterialet er typisk majs-, kartoffel-, tapioka-, hvede- eller risstivelse. Formålet er at give stivelse bedre egenskaber end naturlig stivelse, fx modstandsdygtighed over for varme, syre, frost eller omrøring. Produktet er et hvidt pulver uden smag, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Supper, saucer, dressinger, færdigretter, desserter og budding, frugtfyld og yoghurt, frosne færdigretter og instant-produkter. Tilladt quantum satis i de fleste fødevarer.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser, og at en numerisk ADI ikke er nødvendig. Stofferne nedbrydes i vid udstrækning som almindelig stivelse og giver ca. 4 kcal/g, men nogle typer er delvist resistente og virker som kostfiber. Ved meget høje indtag er der rapporteret mild afføringspåvirkning. Stivelse fra hvede kan i princippet indeholde spor af gluten, og kilden skal fremgå, hvis den er fra hvede. Anvendelsen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   }
+  ],
+  "pubmedTerm": "starch phosphate",
+  "flags": [
+   "may_contain_gluten"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2017.4911"
+   ],
+   "notes": "Bekræftet i EFSA 2017-gen-evalueringen: 12 stivelser, ingen numerisk ADI/ingen bekymring, hydrolyse og fermentering, ikke genotoksisk, 31.000 mg/kg i rotter. Fjernet: tungmetalanbefaling, JECFA-sammenligning og 'få humane studier' (ikke fundet). IKKE KONTROLLERET (sessionens søgebudget blev opbrugt): fremstillingskemi, udgangsmaterialer, fødevareeksempler, kcal/fiber, afføring, gluten, spædbørnsgrænser."
+  },
+  "wikipedia": "",
+  "wikidata": "Q18631008",
+  "claims": [
+   {
+    "claim": "12 modificerede stivelser gen-evalueret 2017",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen numerisk ADI, ingen sikkerhedsbekymring",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hydrolyseres og fermenteres, optages ikke intakt",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ikke genotoksiske",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen effekter op til 31.000 mg/kg",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anbefalede strammere tungmetalspecifikationer",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "JECFA lignende konklusioner",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Få humane studier",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Fremstillingskemi",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Udgangsmaterialer",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Konkrete fødevareanvendelser og quantum satis",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Ca. 4 kcal/g, delvist resistent",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Mild afføringspåvirkning ved høje indtag",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Glutenspor og kildeangivelse",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Grænser i spædbørnsmad",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   }
+  ]
+ },
+ {
+  "code": "E1412",
+  "nameDa": "Distivelsesphosphat",
+  "nameEn": "Distarch phosphate",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Stivelse, hvor kæderne er tværbundet med phosphatbroer. Den tåler kogning, syre og omrøring.",
+  "description": "Distivelsesphosphat fremstilles ved at behandle stivelse med natriumtrimetaphosphat eller phosphoroxychlorid, som danner phosphatbroer mellem stivelseskæderne. Udgangsmaterialet er typisk majs-, kartoffel-, tapioka-, hvede- eller risstivelse. Formålet er at give stivelse bedre egenskaber end naturlig stivelse, fx modstandsdygtighed over for varme, syre, frost eller omrøring. Produktet er et hvidt pulver uden smag, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Supper, saucer, dressinger, færdigretter, desserter og budding, frugtfyld og yoghurt, frugtfyld til bagværk og konserves. Tilladt quantum satis i de fleste fødevarer.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser, og at en numerisk ADI ikke er nødvendig. Stofferne nedbrydes i vid udstrækning som almindelig stivelse og giver ca. 4 kcal/g, men nogle typer er delvist resistente og virker som kostfiber. Ved meget høje indtag er der rapporteret mild afføringspåvirkning. Stivelse fra hvede kan i princippet indeholde spor af gluten, og kilden skal fremgå, hvis den er fra hvede. Anvendelsen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   }
+  ],
+  "pubmedTerm": "distarch phosphate",
+  "flags": [
+   "may_contain_gluten"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2017.4911"
+   ],
+   "notes": "Bekræftet i EFSA 2017-gen-evalueringen: 12 stivelser, ingen numerisk ADI/ingen bekymring, hydrolyse og fermentering, ikke genotoksisk, 31.000 mg/kg i rotter. Fjernet: tungmetalanbefaling, JECFA-sammenligning og 'få humane studier' (ikke fundet). IKKE KONTROLLERET (sessionens søgebudget blev opbrugt): fremstillingskemi, udgangsmaterialer, fødevareeksempler, kcal/fiber, afføring, gluten, spædbørnsgrænser."
+  },
+  "wikipedia": "",
+  "wikidata": "Q18967218",
+  "claims": [
+   {
+    "claim": "12 modificerede stivelser gen-evalueret 2017",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen numerisk ADI, ingen sikkerhedsbekymring",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hydrolyseres og fermenteres, optages ikke intakt",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ikke genotoksiske",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen effekter op til 31.000 mg/kg",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anbefalede strammere tungmetalspecifikationer",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "JECFA lignende konklusioner",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Få humane studier",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Fremstillingskemi",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Udgangsmaterialer",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Konkrete fødevareanvendelser og quantum satis",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Ca. 4 kcal/g, delvist resistent",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Mild afføringspåvirkning ved høje indtag",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Glutenspor og kildeangivelse",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Grænser i spædbørnsmad",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   }
+  ]
+ },
+ {
+  "code": "E1413",
+  "nameDa": "Phosphateret distivelsesphosphat",
+  "nameEn": "Phosphated distarch phosphate",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Stivelse, der både er tværbundet med phosphat og har ekstra phosphatgrupper, hvilket gør den meget stabil.",
+  "description": "Phosphateret distivelsesphosphat fremstilles ved en kombination af behandlingerne for E 1410 og E 1412, dvs. både enkelte phosphatestere og phosphatbroer. Udgangsmaterialet er typisk majs-, kartoffel-, tapioka-, hvede- eller risstivelse. Formålet er at give stivelse bedre egenskaber end naturlig stivelse, fx modstandsdygtighed over for varme, syre, frost eller omrøring. Produktet er et hvidt pulver uden smag, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Supper, saucer, dressinger, færdigretter, desserter og budding, frugtfyld og yoghurt, frosne produkter og bageriprodukter. Tilladt quantum satis i de fleste fødevarer.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser, og at en numerisk ADI ikke er nødvendig. Stofferne nedbrydes i vid udstrækning som almindelig stivelse og giver ca. 4 kcal/g, men nogle typer er delvist resistente og virker som kostfiber. Ved meget høje indtag er der rapporteret mild afføringspåvirkning. Stivelse fra hvede kan i princippet indeholde spor af gluten, og kilden skal fremgå, hvis den er fra hvede. Anvendelsen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   }
+  ],
+  "pubmedTerm": "phosphated distarch phosphate",
+  "flags": [
+   "may_contain_gluten"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2017.4911"
+   ],
+   "notes": "Bekræftet i EFSA 2017-gen-evalueringen: 12 stivelser, ingen numerisk ADI/ingen bekymring, hydrolyse og fermentering, ikke genotoksisk, 31.000 mg/kg i rotter. Fjernet: tungmetalanbefaling, JECFA-sammenligning og 'få humane studier' (ikke fundet). IKKE KONTROLLERET (sessionens søgebudget blev opbrugt): fremstillingskemi, udgangsmaterialer, fødevareeksempler, kcal/fiber, afføring, gluten, spædbørnsgrænser."
+  },
+  "wikipedia": "",
+  "wikidata": "Q7187438",
+  "claims": [
+   {
+    "claim": "12 modificerede stivelser gen-evalueret 2017",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen numerisk ADI, ingen sikkerhedsbekymring",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hydrolyseres og fermenteres, optages ikke intakt",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ikke genotoksiske",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen effekter op til 31.000 mg/kg",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anbefalede strammere tungmetalspecifikationer",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "JECFA lignende konklusioner",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Få humane studier",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Fremstillingskemi",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Udgangsmaterialer",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Konkrete fødevareanvendelser og quantum satis",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Ca. 4 kcal/g, delvist resistent",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Mild afføringspåvirkning ved høje indtag",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Glutenspor og kildeangivelse",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Grænser i spædbørnsmad",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   }
+  ]
+ },
+ {
+  "code": "E1414",
+  "nameDa": "Acetyleret distivelsesphosphat",
+  "nameEn": "Acetylated distarch phosphate",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Stivelse, der er både tværbundet med phosphat og acetyleret. Den er en af de mest anvendte modificerede stivelser.",
+  "description": "Acetyleret distivelsesphosphat fremstilles ved at tværbinde stivelse med natriumtrimetaphosphat eller phosphoroxychlorid og forestre den med eddikesyreanhydrid eller vinylacetat. Tværbindingen giver varme- og syrestabilitet, og acetyleringen forhindrer, at gelen bliver grumset eller skiller ved afkøling og frysning. Udgangsmaterialet er typisk majs-, kartoffel-, tapioka-, hvede- eller risstivelse. Formålet er at give stivelse bedre egenskaber end naturlig stivelse, fx modstandsdygtighed over for varme, syre, frost eller omrøring. Produktet er et hvidt pulver uden smag, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Supper, saucer, dressinger, færdigretter, desserter og budding, frugtfyld og yoghurt, ketchup, frugtyoghurt, is og frosne færdigretter. Tilladt quantum satis i de fleste fødevarer.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser, og at en numerisk ADI ikke er nødvendig. Stofferne nedbrydes i vid udstrækning som almindelig stivelse og giver ca. 4 kcal/g, men nogle typer er delvist resistente og virker som kostfiber. Ved meget høje indtag er der rapporteret mild afføringspåvirkning. Stivelse fra hvede kan i princippet indeholde spor af gluten, og kilden skal fremgå, hvis den er fra hvede. Anvendelsen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   }
+  ],
+  "pubmedTerm": "acetylated distarch phosphate",
+  "flags": [
+   "may_contain_gluten"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2017.4911"
+   ],
+   "notes": "Bekræftet i EFSA 2017-gen-evalueringen: 12 stivelser, ingen numerisk ADI/ingen bekymring, hydrolyse og fermentering, ikke genotoksisk, 31.000 mg/kg i rotter. Fjernet: tungmetalanbefaling, JECFA-sammenligning og 'få humane studier' (ikke fundet). IKKE KONTROLLERET (sessionens søgebudget blev opbrugt): fremstillingskemi, udgangsmaterialer, fødevareeksempler, kcal/fiber, afføring, gluten, spædbørnsgrænser."
+  },
+  "wikipedia": "",
+  "wikidata": "Q18967180",
+  "claims": [
+   {
+    "claim": "12 modificerede stivelser gen-evalueret 2017",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen numerisk ADI, ingen sikkerhedsbekymring",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hydrolyseres og fermenteres, optages ikke intakt",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ikke genotoksiske",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen effekter op til 31.000 mg/kg",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anbefalede strammere tungmetalspecifikationer",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "JECFA lignende konklusioner",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Få humane studier",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Fremstillingskemi",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Udgangsmaterialer",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Konkrete fødevareanvendelser og quantum satis",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Ca. 4 kcal/g, delvist resistent",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Mild afføringspåvirkning ved høje indtag",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Glutenspor og kildeangivelse",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Grænser i spædbørnsmad",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   }
+  ]
+ },
+ {
+  "code": "E1420",
+  "nameDa": "Acetyleret stivelse",
+  "nameEn": "Acetylated starch",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Stivelse, hvor en del af hydroxylgrupperne er forestret med eddikesyre. Den giver klare, stabile fortykninger.",
+  "description": "Acetyleret stivelse fremstilles ved at behandle stivelse med eddikesyreanhydrid eller vinylacetat i let basisk miljø, så acetylgrupper bindes til kæderne. Det sænker forklistringstemperaturen og mindsker retrogradering (at stivelsen bliver grumset og vandskiller). Udgangsmaterialet er typisk majs-, kartoffel-, tapioka-, hvede- eller risstivelse. Formålet er at give stivelse bedre egenskaber end naturlig stivelse, fx modstandsdygtighed over for varme, syre, frost eller omrøring. Produktet er et hvidt pulver uden smag, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Supper, saucer, dressinger, færdigretter, desserter og budding, frugtfyld og yoghurt, frosne produkter og nudler. Tilladt quantum satis i de fleste fødevarer.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser, og at en numerisk ADI ikke er nødvendig. Stofferne nedbrydes i vid udstrækning som almindelig stivelse og giver ca. 4 kcal/g, men nogle typer er delvist resistente og virker som kostfiber. Ved meget høje indtag er der rapporteret mild afføringspåvirkning. Stivelse fra hvede kan i princippet indeholde spor af gluten, og kilden skal fremgå, hvis den er fra hvede. Anvendelsen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   }
+  ],
+  "pubmedTerm": "acetylated starch",
+  "flags": [
+   "may_contain_gluten"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2017.4911"
+   ],
+   "notes": "Bekræftet i EFSA 2017-gen-evalueringen: 12 stivelser, ingen numerisk ADI/ingen bekymring, hydrolyse og fermentering, ikke genotoksisk, 31.000 mg/kg i rotter. Fjernet: tungmetalanbefaling, JECFA-sammenligning og 'få humane studier' (ikke fundet). IKKE KONTROLLERET (sessionens søgebudget blev opbrugt): fremstillingskemi, udgangsmaterialer, fødevareeksempler, kcal/fiber, afføring, gluten, spædbørnsgrænser."
+  },
+  "wikipedia": "",
+  "wikidata": "Q18935684",
+  "claims": [
+   {
+    "claim": "12 modificerede stivelser gen-evalueret 2017",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen numerisk ADI, ingen sikkerhedsbekymring",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hydrolyseres og fermenteres, optages ikke intakt",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ikke genotoksiske",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen effekter op til 31.000 mg/kg",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anbefalede strammere tungmetalspecifikationer",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "JECFA lignende konklusioner",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Få humane studier",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Fremstillingskemi",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Udgangsmaterialer",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Konkrete fødevareanvendelser og quantum satis",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Ca. 4 kcal/g, delvist resistent",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Mild afføringspåvirkning ved høje indtag",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Glutenspor og kildeangivelse",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Grænser i spædbørnsmad",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   }
+  ]
+ },
+ {
+  "code": "E1422",
+  "nameDa": "Acetyleret distivelsesadipat",
+  "nameEn": "Acetylated distarch adipate",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Stivelse, der er tværbundet med adipinsyre og acetyleret. Den er meget stabil over for varme, syre og frost.",
+  "description": "Acetyleret distivelsesadipat fremstilles ved at behandle stivelse med adipinsyreanhydrid (tværbinding) og eddikesyreanhydrid (acetylering). Udgangsmaterialet er typisk majs-, kartoffel-, tapioka-, hvede- eller risstivelse. Formålet er at give stivelse bedre egenskaber end naturlig stivelse, fx modstandsdygtighed over for varme, syre, frost eller omrøring. Produktet er et hvidt pulver uden smag, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Supper, saucer, dressinger, færdigretter, desserter og budding, frugtfyld og yoghurt, mayonnaise og dressinger, frugtfyld og frosne retter. Tilladt quantum satis i de fleste fødevarer.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser, og at en numerisk ADI ikke er nødvendig. Stofferne nedbrydes i vid udstrækning som almindelig stivelse og giver ca. 4 kcal/g, men nogle typer er delvist resistente og virker som kostfiber. Ved meget høje indtag er der rapporteret mild afføringspåvirkning. Stivelse fra hvede kan i princippet indeholde spor af gluten, og kilden skal fremgå, hvis den er fra hvede. Anvendelsen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   }
+  ],
+  "pubmedTerm": "acetylated distarch adipate",
+  "flags": [
+   "may_contain_gluten"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "uncertain",
+   "sources": [
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2017.4911"
+   ],
+   "notes": "Bekræftet i EFSA 2017-gen-evalueringen: 12 stivelser, ingen numerisk ADI/ingen bekymring, hydrolyse og fermentering, ikke genotoksisk, 31.000 mg/kg i rotter. Fjernet: tungmetalanbefaling, JECFA-sammenligning og 'få humane studier' (ikke fundet). IKKE KONTROLLERET (sessionens søgebudget blev opbrugt): fremstillingskemi, udgangsmaterialer, fødevareeksempler, kcal/fiber, afføring, gluten, spædbørnsgrænser."
+  },
+  "wikipedia": "",
+  "wikidata": "Q2824457",
+  "claims": [
+   {
+    "claim": "12 modificerede stivelser gen-evalueret 2017",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen numerisk ADI, ingen sikkerhedsbekymring",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hydrolyseres og fermenteres, optages ikke intakt",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ikke genotoksiske",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen effekter op til 31.000 mg/kg",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anbefalede strammere tungmetalspecifikationer",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "JECFA lignende konklusioner",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Få humane studier",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Fremstillingskemi",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Udgangsmaterialer",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Konkrete fødevareanvendelser og quantum satis",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Ca. 4 kcal/g, delvist resistent",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Mild afføringspåvirkning ved høje indtag",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Glutenspor og kildeangivelse",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   },
+   {
+    "claim": "Grænser i spædbørnsmad",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "ikke kontrolleret"
+   }
+  ]
+ }
+]
