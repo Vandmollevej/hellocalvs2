@@ -2,12 +2,20 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Søvnspørgsmålet — Slå fra-link, infotekst og bundark (punkt 34)
+
+- "Slå fra" er understreget tekst, der åbner Indstillinger → Visning → Oplevelse af søvn med grøn ring om kontakten.
+- Grå infotekst under spørgsmålet følger "Vis tooltips". Store tal; valgt = grøn fyldt cirkel, hvidt tal, ingen Luk.
+- Efter 0,5 s glider popup'en ned som bundark med håndtag og forsvinder. Afventer test på telefon.
+
+
 ## 2026-09-28: Indberet fejl — sammenfoldelig "Note"
 
 - `/profile/report-bug`: feltet "Beskriv fejlen" er erstattet af en "Note"-header med pil ned, der folder noteområdet ud/ind. Foldes automatisk ud ved "Redigér" og ved afsendelse uden gyldig note (min. 10 tegn).
 ## 2026-09-28: Forside — kun "Dagens tilføjelser" scroller
 
 Forsiden er låst til skærmhøjden (`h-dvh overflow-hidden`); topbar, hero og bundmenu står fast, og kun listen scroller internt.
+
 ## 2026-09-28: Abonnement — boilerplate fjernet
 
 - `/profile/subscription`: datalagringsnoten (`subscription.retentionNote`)
@@ -18,6 +26,7 @@ Forsiden er låst til skærmhøjden (`h-dvh overflow-hidden`); topbar, hero og b
 
 - `PhotoWorkingOverlay` viser en hvid/lys gradientstribe (`.hf-scan-sweep`),
   der fejer hen over fotoet, mens det analyseres. Beslutning: DECISIONS 2026-09-28.
+
 
 ## 2026-09-28: Aktivitetsniveau i 5 trin + mails mod spam
 
