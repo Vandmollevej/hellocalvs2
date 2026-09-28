@@ -4623,3 +4623,8 @@ låser porten/mappen på tværs af port-forsøg), og denne sessions Browser-pane
 kan ikke nå den server. Denne ændring bør derfor tjekkes visuelt af brugeren
 selv (eller i en senere session, når den anden dev-server ikke kører), særligt
 justeringen af scroll-fligen ved forskellige stå-op-tidspunkter.
+
+## 2026-09-28: Opgave 32 — samlet E-nummer-side
+
+- Ny offentlig side `/e-numre` (`src/app/e-numre/page.tsx`) med hele E-nummer-databasen, numerisk sorteret, et hurtignavigations-chipfelt og ét `<section>` pr. E-nummer med eget anchor (`/e-numre#e100`, `#e150a`; se `src/lib/additive-anchor.ts`).
+- Info-vinduet (`AdditiveInfoModal`) linker nu til nummerets anchor ("Se alle E-numre").

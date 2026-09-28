@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { getAdditiveInfo, type AdditiveInfo } from "@/lib/additives";
+import { additivePageHref } from "@/lib/additive-anchor";
 
 export function AdditiveInfoModal({
   code,
@@ -83,6 +84,12 @@ export function AdditiveInfoModal({
                   Læs mere ({info.source || "kilde"})
                 </a>
               )}
+              <a
+                href={additivePageHref(code)}
+                className="hf-type-small text-hf-green underline underline-offset-2"
+              >
+                Se alle E-numre
+              </a>
             </div>
           )}
           <p className="hf-type-small text-text-secondary mt-4">
