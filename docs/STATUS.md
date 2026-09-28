@@ -8,6 +8,9 @@ Knappen "Senere" er fjernet fra `EmailVerifySheet`; under "Send igen" står nu
 diskret grå tekst "Linket er aktivt i 1 time." Bekræftelseslinkets levetid er
 sat fra 7 dage til 1 time (`src/lib/email-verification.ts`), så teksten er sand.
 
+## 2026-09-28: Indberet fejl — sammenfoldelig "Note"
+
+- `/profile/report-bug`: feltet "Beskriv fejlen" er erstattet af en "Note"-header med pil ned, der folder noteområdet ud/ind. Foldes automatisk ud ved "Redigér" og ved afsendelse uden gyldig note (min. 10 tegn).
 ## 2026-09-28: Forside — kun "Dagens tilføjelser" scroller
 
 Forsiden er låst til skærmhøjden (`h-dvh overflow-hidden`); topbar, hero og bundmenu står fast, og kun listen scroller internt.
@@ -57,6 +60,12 @@ Next work:
 - 10.524 varer med næring (2.408 uden kcal/protein/kulhydrat/fedt springes over) og 7.218 billeder (5 GB) ligger på NAS'en i `data/store-products-import/` (kopieret med tar over SSH – for stort til git).
 - `store-products-agent` læser `/import` (compose-volume), når `store_products.json` findes dér; ellers den lille prøve i billedet. Billeder, der allerede er kopieret, springes over ved genstart.
 - Opdatering af kataloget: `py build_data.py --all --out <mappe>` og kopiér mappen til NAS'en igen; agenten kører ved næste start eller "Kør nu" i admin → Cron-jobs (`store-products-import`).
+## 2026-09-28: Selected state i HelloFresh-stil (punkt 46)
+
+- Ny `.hf-selected` (+ `.hf-selected-open` til accordions) med lysegrøn flade,
+  grøn stroke og mørkegrøn tekst. Brugt i `.hf-choice`, `.hf-chip`,
+  `AccordionSection`, onboarding, periodevælger, kalenderens valgte dag,
+  forsidens FAB-side, vandbeholdere, widgets-valg og måltidsdeling.
 
 ## 2026-09-28: Open Food Facts ude af søgningen
 
@@ -4709,6 +4718,7 @@ kan ikke nå den server. Denne ændring bør derfor tjekkes visuelt af brugeren
 selv (eller i en senere session, når den anden dev-server ikke kører), særligt
 justeringen af scroll-fligen ved forskellige stå-op-tidspunkter.
 
+- 2026-09-28: Punkt 15 automatisk fotografering bygget (PR #35): foto-trinnene i kamera-flowet udløser selv, når varen er skarp og stille; knappen er manuel reserve. Lint + build grønne.
 - 2026-09-28 (opgave #34 E-nummer-side – indhold): Ny detaljeside
   `/e-numre/[code]` (`src/app/e-numre/[code]/page.tsx`) med sektionerne Navn,
   Forklaring, Risici og relevante oplysninger, Forskning, Primær kilde og
