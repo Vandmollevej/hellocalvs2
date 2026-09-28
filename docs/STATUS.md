@@ -2,6 +2,10 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Scroll-numre — snap rettet (punkt 8)
+
+- `WheelPicker` og `BirthDatePicker` delte en 120 ms-timer, der committede midt i momentum-scroll; re-render satte `scrollTop` og hjulet landede tilfældigt. Ny hook `src/components/ui/useWheelSnap.ts` committer først når scroll er stoppet på et snap-punkt (`scrollend`, ellers timer der venter på stabil, justeret position), og `BirthDatePicker` flytter ikke hjulet mens brugeren scroller. `overscroll-contain` tilføjet.
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen
