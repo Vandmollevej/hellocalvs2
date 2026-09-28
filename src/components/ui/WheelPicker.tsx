@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { useWheelSnap } from "./useWheelSnap";
 
 const ITEM_HEIGHT = 40;
 
@@ -34,8 +35,7 @@ export function WheelPicker({
   const options: number[] = [];
   for (let n = max; n >= min; n -= 1) options.push(n);
 
-  const scrollRef = useRef<HTMLDivElement | null>(null);
-  const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { scrollRef } = useWheelSnap(ITEM_HEIGHT, commitFromScroll, open);
 
   useEffect(() => {
     if (!open || !scrollRef.current) return;
@@ -50,9 +50,7 @@ export function WheelPicker({
     }
   }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  function commitFromScroll() {
-    if (!scrollRef.current) return;
-    const index = Math.round(scrollRef.current.scrollTop / ITEM_HEIGHT);
+  function commitFromScroll(index: number) {
     const clamped = Math.max(0, Math.min(options.length - 1, index));
     setPendingValue(options[clamped]);
   }
@@ -102,11 +100,7 @@ export function WheelPicker({
               />
               <div
                 ref={scrollRef}
-                onScroll={() => {
-                  if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
-                  scrollTimeout.current = setTimeout(commitFromScroll, 120);
-                }}
-                className="relative z-10 h-[200px] snap-y snap-mandatory overflow-y-auto"
+                className="relative z-10 h-[200px] snap-y snap-mandatory overflow-y-auto overscroll-contain"
                 style={{ scrollPaddingTop: 80, scrollPaddingBottom: 80 }}
               >
                 <div style={{ height: 80 }} />

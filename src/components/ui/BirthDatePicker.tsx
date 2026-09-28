@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { useWheelSnap } from "./useWheelSnap";
 
 const ITEM_HEIGHT = 40;
 const MIN_YEAR = 1900;
@@ -149,23 +150,21 @@ function WheelColumn({
   render: (option: number) => string;
   onSelect: (option: number) => void;
 }) {
-  const scrollRef = useRef<HTMLDivElement | null>(null);
-  const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const selectedIndex = options.indexOf(selected);
+  const { scrollRef, isScrolling } = useWheelSnap(ITEM_HEIGHT, commitFromScroll);
 
   // Keeps the wheel aligned when the value is set or clamped from outside
   // (initial open, shorter month, future date).
   useEffect(() => {
     const element = scrollRef.current;
-    if (!element || selectedIndex < 0) return;
+    // Never fight an active fling; the settle handler commits afterwards.
+    if (!element || selectedIndex < 0 || isScrolling()) return;
     if (Math.round(element.scrollTop / ITEM_HEIGHT) !== selectedIndex) {
       element.scrollTop = selectedIndex * ITEM_HEIGHT;
     }
-  }, [selectedIndex, options.length]);
+  }, [selectedIndex, options.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  function commitFromScroll() {
-    if (!scrollRef.current) return;
-    const index = Math.round(scrollRef.current.scrollTop / ITEM_HEIGHT);
+  function commitFromScroll(index: number) {
     const clamped = Math.max(0, Math.min(options.length - 1, index));
     if (options[clamped] !== selected) onSelect(options[clamped]);
   }
@@ -173,11 +172,7 @@ function WheelColumn({
   return (
     <div
       ref={scrollRef}
-      onScroll={() => {
-        if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
-        scrollTimeout.current = setTimeout(commitFromScroll, 120);
-      }}
-      className="h-[200px] snap-y snap-mandatory overflow-y-auto"
+      className="h-[200px] snap-y snap-mandatory overflow-y-auto overscroll-contain"
       style={{ scrollPaddingTop: 80, scrollPaddingBottom: 80 }}
     >
       <div style={{ height: 80 }} />
