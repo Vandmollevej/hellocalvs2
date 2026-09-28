@@ -3042,3 +3042,13 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
   data sig, vises konflikten igen.
 - Erstatter det tidligere par-kort (`DuplicateProductCard`) og ruterne
   `/api/admin/duplicate-products/[id]/merge|dismiss`.
+
+## 2026-09-28: Samtykke på tilmeldingssiden i stedet for separat side
+
+Brugerens opgave 35: det separate samtykke-step (`/samtykke`) fjernes. Samtykket
+til helbredsoplysninger + accept af betingelserne gives på tilmeldingssiden
+under e-mailfeltet med Hello Cals eget on/off-design (Toggle, jf. 2026-09-02:
+ingen native checkboxe) og et klikbart link til Betingelser. Det kræves før
+både e-mail- og social-tilmelding. Konsekvens: brugere, der logger ind via
+Google/Apple/Facebook fra login-siden uden at have været forbi tilmeldingen,
+eller ældre konti uden samtykke, bliver ikke længere stoppet af en gate.

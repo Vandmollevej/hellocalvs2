@@ -16,7 +16,6 @@ import {
 // rating for today yet is asked how last night felt. Never on login,
 // consent, legal or admin pages.
 const SKIP_PREFIXES = [
-  "/samtykke",
   "/betingelser",
   "/privatlivspolitik",
   "/welcome",

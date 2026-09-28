@@ -2,6 +2,15 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Samtykke direkte på tilmeldingssiden (opgave 35)
+
+- Siden `/samtykke`, `ConsentGate` og `POST /api/auth/consent` er fjernet.
+- Samtykke-rækken (Hello Cals Toggle, ikke native checkbox) ligger lige under
+  e-mailfeltet på `/signup`, med klikbart link til `/betingelser`. Uden den
+  kan hverken e-mail- eller Google/Apple/Facebook-tilmelding gennemføres;
+  OAuth sender `consent=1` med i den signerede state og sætter
+  `healthDataConsentAt`. Beslutning: DECISIONS 2026-09-28.
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen

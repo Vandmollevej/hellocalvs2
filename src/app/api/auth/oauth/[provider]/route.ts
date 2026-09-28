@@ -18,8 +18,9 @@ export async function GET(req: Request, { params }: { params: Promise<{ provider
     return NextResponse.redirect(appUrl(`/login?error=${provider}-not-configured`, req));
   }
 
-  const next = new URL(req.url).searchParams.get("next") ?? "/";
-  const { data, token } = await createState(provider, next);
+  const searchParams = new URL(req.url).searchParams;
+  const next = searchParams.get("next") ?? "/";
+  const { data, token } = await createState(provider, next, searchParams.get("consent") === "1");
   const response = NextResponse.redirect(authorizationUrl(provider, data));
   // SameSite=None: Apple sender svaret som en POST fra appleid.apple.com.
   response.cookies.set(OAUTH_STATE_COOKIE, token, {

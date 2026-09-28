@@ -125,15 +125,6 @@
       "oestrig": "Austria"
     }
   },
-  "consent": {
-    "title": "Your consent",
-    "intro": "A calorie counter can't count without knowing what you eat and weigh. That is health data, and we may only process it with your explicit consent.",
-    "submit": "Give consent and continue",
-    "submitting": "Saving…",
-    "declineNote": "If you don't consent, you can't use Hello Cal. You can log out or ask for your account to be deleted via the Help center.",
-    "logout": "Log out",
-    "error": "Your consent couldn't be saved. Please try again."
-  },
   "signup": {
     "title": "Create account",
     "back": "Back",
@@ -146,10 +137,9 @@
     "submitting": "Creating account…",
     "genericError": "Something went wrong — try again",
     "networkError": "Could not create the account — check your connection and try again",
-    "healthConsent": "I explicitly consent to Hello Cal processing my health data (such as food, weight and body measurements) to provide the app. I accept the Terms.",
-    "legalLinksTerms": "Terms",
-    "legalLinksPrivacy": "Privacy policy",
-    "consentRequired": "Turn on your consent before creating the account."
+    "healthConsent": "I explicitly consent to Hello Cal processing my health data (such as food, weight and body measurements) to provide the app, and I accept the",
+    "healthConsentTermsLink": "Terms and Conditions",
+    "consentRequired": "Turn on your consent before signing up."
   },
   "nav": {
     "add": "Add",

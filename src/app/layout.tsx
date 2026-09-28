@@ -9,7 +9,6 @@ import { AuthGate } from "@/components/AuthGate";
 import { FamilyStatusProvider } from "@/components/family/FamilyStatusProvider";
 import { FamilyWatchFrame } from "@/components/family/FamilyWatchFrame";
 import { AccessLogPanel } from "@/components/family/AccessLogPanel";
-import { ConsentGate } from "@/components/ConsentGate";
 import { StartupTipsGate } from "@/components/StartupTipsGate";
 import { SleepQualityGate } from "@/components/SleepQualityGate";
 import { UmamiTracker } from "@/components/UmamiTracker";
@@ -60,7 +59,6 @@ export default function RootLayout({
         <UmamiTracker />
         <LocaleProvider>
           <AuthGate />
-          <ConsentGate />
           <StartupTipsGate />
           <SleepQualityGate />
           <OfflineQueueBanner />
