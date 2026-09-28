@@ -2,6 +2,10 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Login-/tilmeldingsside ryddet op (punkt 37)
+
+Google-knappen uden hvid ikonboks, Afbryd-linket fjernet fra login, ingen rød fejl når brugeren selv afbryder OAuth (fx Apple). "Ny på Hello Cal? Opret konto" / "Har du allerede en konto? Log ind" ligger nu nederst under hovedknappen, større og understreget.
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen

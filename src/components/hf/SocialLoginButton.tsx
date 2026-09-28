@@ -22,10 +22,7 @@ export function SocialLoginButton({
       className="hf-control grid w-full items-center overflow-hidden rounded-[8px] text-hf-white"
       style={{ gridTemplateColumns: "47px 1fr 47px", background: PROVIDER_BG[provider] }}
     >
-      <span
-        className="flex h-full items-center justify-center"
-        style={provider === "google" ? { background: "var(--hf-white)" } : undefined}
-      >
+      <span className="flex h-full items-center justify-center">
         <Image src={`/icon-${provider}.png`} alt="" width={20} height={20} />
       </span>
       <span className="hf-type-button col-start-2 text-hf-white">{label}</span>
