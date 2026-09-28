@@ -1482,6 +1482,8 @@
     "alternativeServing": "{label}: {kcal} kcal",
     "nutritionUnknown": "Nutrition unknown",
     "details": "Details",
+    "additivesWarningTitle": "Contains E-numbers",
+    "additivesWarningBody": "This product contains {count} E-numbers. Tap to read more.",
     "additives": "E-additives",
     "time": "Time",
     "millilitresUnit": "Millilitres",

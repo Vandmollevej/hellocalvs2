@@ -106,6 +106,9 @@ Next work:
 
 - Produktsiden viser mærkninger (økologisk, nøglehul, fuldkorn, dyrevelfærd, MSC/ASC/Fairtrade/Rainforest m.fl.) som logoer højrestillet under energifordelingen.
 - Kilde: `ProductFilters` via `/api/products/[id]`; logik i `src/lib/certification-badges.ts`, visning i `src/components/hf/CertificationLogos.tsx` (stiliserede SVG-logoer, ikke officielle grafikfiler).
+## 2026-09-28: E-nummer-advarsel på produktsiden (#30)
+
+- Når "Vis E-numre" er slået til i Opsætning, vises en særskilt advarselsblok før energifordelingen: stort grønt E i grøn firkant med advarselstrekant, overskrift "Indeholder E-numre" og varens E-numre som chips (tryk åbner infomodal). Den tidligere sammenklappelige E-nummer-liste under energifordelingen er erstattet af blokken.
 
 ## 2026-09-28: Open Food Facts ude af søgningen
 

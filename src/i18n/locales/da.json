@@ -1482,6 +1482,8 @@
     "alternativeServing": "{label}: {kcal} kcal",
     "nutritionUnknown": "Næringsindhold ukendt",
     "details": "Detaljer",
+    "additivesWarningTitle": "Indeholder E-numre",
+    "additivesWarningBody": "Varen indeholder {count} E-numre. Tryk for at læse mere.",
     "additives": "E-numre",
     "time": "Tidspunkt",
     "millilitresUnit": "Milliliter",
