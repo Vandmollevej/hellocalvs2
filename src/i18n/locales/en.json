@@ -1709,8 +1709,8 @@
     "sleepQualityChart": "Sleep quality and calories"
   },
   "statUnusedCards": {
-    "title": "Unused stat cards",
-    "hint": "Tap a card to add it to your statistics page.",
+    "title": "Add to statistics",
+    "hint": "Tap a chart or card to add it to your statistics page.",
     "category": {
       "carbsFibre": "Carb types and fibre",
       "minerals": "Minerals",
@@ -1720,9 +1720,9 @@
       "sleep": "Sleep",
       "other": "Other data"
     },
-    "searchPlaceholder": "Search all cards",
+    "searchPlaceholder": "Search all charts and cards",
     "searchResults": "Search results",
-    "noSearchResults": "No cards match your search.",
+    "noSearchResults": "No charts or cards match your search.",
     "add": "+ Add",
     "noCardsYet": "No cards here yet.",
     "addHeading": "+ Heading",
@@ -2105,5 +2105,12 @@
       "portionFor": "{name}",
       "portionOption": "{factor} portion"
     }
+  },
+  "statSections": {
+    "chartsHeading": "Charts",
+    "cardsHeading": "Cards",
+    "add": "Add",
+    "moveUp": "Move section up",
+    "moveDown": "Move section down"
   }
 }

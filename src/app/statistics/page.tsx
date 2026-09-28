@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { IconPlus } from "@tabler/icons-react";
+import { IconChevronDown, IconChevronUp, IconPlus } from "@tabler/icons-react";
 import { HfScreen } from "@/components/HfScreen";
 import { TrendIcon } from "@/components/BottomNav";
 import { StatChart, type ChartSeries } from "@/components/StatChart";
@@ -27,6 +27,13 @@ import { dailyChartLabel, statChartDef } from "@/lib/stat-charts";
 import { computeTrendWeight, type WeightSample, type MealSample } from "@/lib/weight-trend";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { fetchSleepQuality, localDateKey } from "@/lib/sleep-quality";
+import {
+  DEFAULT_STAT_SECTION_ORDER,
+  loadSectionOrder,
+  moveSection,
+  saveSectionOrder,
+  type StatSectionKey,
+} from "@/lib/stat-sections";
 
 const DAY_COUNT = 7;
 
@@ -110,15 +117,30 @@ export default function StatisticsPage() {
   const [warnOnRecommendedLimits, setWarnOnRecommendedLimits] = useState(false);
   const [autoExpandUncertainty, setAutoExpandUncertainty] = useState(false);
   const [loading, setLoading] = useState(true);
-  // "+ Tilføj kort" vises kun, mens hhv. graferne/kortene vibrerer (eller sektionen er tom).
-  const [showAddChart, setShowAddChart] = useState(false);
-  const [showAddCard, setShowAddCard] = useState(false);
+  // Brugeren vælger selv, om Grafer eller Kort står øverst. localStorage er
+  // usynlig for serveren: render standarden først og skift efter mount.
+  const [sectionOrder, setSectionOrder] = useState<StatSectionKey[]>(DEFAULT_STAT_SECTION_ORDER);
   const [periodSelection, setPeriodSelection] = useState<StatPeriodSelection>(DEFAULT_STAT_SELECTION);
   // G3: registreringer med klassifikation til kød/drikke-kortene og "Største syndere".
   const { registrations: sourceRegistrations, loading: sourcesLoading } = useSourceRegistrations();
   // Oplevelse af søvn (docs/DECISIONS.md 2026-09-26): 1–5 per day, plotted
   // next to the calorie intake.
   const [sleepEntries, setSleepEntries] = useState<{ date: string; rating: number }[]>([]);
+
+  useEffect(() => {
+    function syncSectionOrder() {
+      setSectionOrder(loadSectionOrder());
+    }
+    syncSectionOrder();
+  }, []);
+
+  function onMoveSection(key: StatSectionKey, delta: -1 | 1) {
+    setSectionOrder((prev) => {
+      const next = moveSection(prev, key, delta);
+      saveSectionOrder(next);
+      return next;
+    });
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -353,47 +375,83 @@ export default function StatisticsPage() {
     [t, chartSeries, sleepChartSeries, recentRegistrations, activePeriodDays, allDays],
   );
 
+  function renderSectionHeader(key: StatSectionKey, title: string) {
+    const index = sectionOrder.indexOf(key);
+    return (
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="hf-type-body-lg hf-heading text-hf-black">{title}</h2>
+        <div className="flex items-center">
+          <button
+            type="button"
+            onClick={() => onMoveSection(key, -1)}
+            disabled={index <= 0}
+            aria-label={t("statSections.moveUp")}
+            className="flex size-8 items-center justify-center text-hf-black disabled:opacity-25"
+          >
+            <IconChevronUp size={18} stroke={2} />
+          </button>
+          <button
+            type="button"
+            onClick={() => onMoveSection(key, 1)}
+            disabled={index >= sectionOrder.length - 1}
+            aria-label={t("statSections.moveDown")}
+            className="flex size-8 items-center justify-center text-hf-black disabled:opacity-25"
+          >
+            <IconChevronDown size={18} stroke={2} />
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  function renderSection(key: StatSectionKey) {
+    if (key === "charts") {
+      return (
+        <>
+          {renderSectionHeader(key, t("statSections.chartsHeading"))}
+          <StatChartsSection renderChart={renderChart} />
+        </>
+      );
+    }
+    return (
+      <>
+        {renderSectionHeader(key, t("statSections.cardsHeading"))}
+        <div className="relative z-40">
+          <StatPeriodPicker selection={periodSelection} onChange={setPeriodSelection} />
+        </div>
+        <StatCardsGrid
+          cards={statCards}
+          defaultActiveKeys={DEFAULT_ACTIVE_STAT_KEYS}
+          highlightRecommendedLimits={warnOnRecommendedLimits}
+          autoExpandUncertainty={autoExpandUncertainty}
+        />
+        <TopSinnersCard registrations={periodSources} loading={sourcesLoading} />
+      </>
+    );
+  }
+
   return (
     <HfScreen title={t("statistics.title")} icon={<TrendIcon color="currentColor" size={20} />}>
       <div className="hf-page">
-        {showAddChart && (
-          <div className="flex justify-end">
-            <Link
-              href="/statistics/unused-charts"
-              className="hf-type-small hf-type-strong flex min-h-8 items-center gap-1 text-hf-black"
-            >
-              <IconPlus size={14} stroke={2.5} />
-              {t("statCardsGrid.addCard")}
-            </Link>
-          </div>
-        )}
-
-        <StatChartsSection renderChart={renderChart} onShowAddChange={setShowAddChart} />
-
-        <div className="flex flex-col gap-4 border-t border-hf-tan-dark pt-4">
-          <div className="relative z-40 flex items-center justify-between gap-2">
-            <StatPeriodPicker selection={periodSelection} onChange={setPeriodSelection} />
-            {showAddCard && (
-              <Link
-                href="/statistics/unused-cards"
-                className="hf-type-small hf-type-strong flex min-h-8 items-center gap-1 text-hf-black"
-              >
-                <IconPlus size={14} stroke={2.5} />
-                {t("statCardsGrid.addCard")}
-              </Link>
-            )}
-          </div>
-
-          <StatCardsGrid
-            cards={statCards}
-            defaultActiveKeys={DEFAULT_ACTIVE_STAT_KEYS}
-            highlightRecommendedLimits={warnOnRecommendedLimits}
-            autoExpandUncertainty={autoExpandUncertainty}
-            onShowAddChange={setShowAddCard}
-          />
-
-          <TopSinnersCard registrations={periodSources} loading={sourcesLoading} />
+        {/* Ét samlet "Tilføj" øverst: grafer og kort vælges på samme side. */}
+        <div className="flex justify-end">
+          <Link
+            href="/statistics/unused-cards"
+            className="hf-type-small hf-type-strong flex min-h-8 items-center gap-1 text-hf-black"
+          >
+            <IconPlus size={14} stroke={2.5} />
+            {t("statSections.add")}
+          </Link>
         </div>
+
+        {sectionOrder.map((key, index) => (
+          <section
+            key={key}
+            className={`flex flex-col gap-4 ${index > 0 ? "border-t border-hf-tan-dark pt-4" : ""}`}
+          >
+            {renderSection(key)}
+          </section>
+        ))}
       </div>
     </HfScreen>
   );
