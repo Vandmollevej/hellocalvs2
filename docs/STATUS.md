@@ -32,6 +32,12 @@ Next work:
   "Log"); logoet bliver et fritskrabningsjob. Beslutning: DECISIONS 2026-09-28.
 - Eksisterende vare "Vand" (AQUA) skal rettes manuelt i admin.
 - Lint, typecheck og build kørt; ikke testet mod database/OpenAI lokalt.
+## 2026-09-28: Hele Bilka + REMA 1000-kataloget importeres
+
+- 10.524 varer med næring (2.408 uden kcal/protein/kulhydrat/fedt springes over) og 7.218 billeder (5 GB) ligger på NAS'en i `data/store-products-import/` (kopieret med tar over SSH – for stort til git).
+- `store-products-agent` læser `/import` (compose-volume), når `store_products.json` findes dér; ellers den lille prøve i billedet. Billeder, der allerede er kopieret, springes over ved genstart.
+- Opdatering af kataloget: `py build_data.py --all --out <mappe>` og kopiér mappen til NAS'en igen; agenten kører ved næste start eller "Kør nu" i admin → Cron-jobs (`store-products-import`).
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen
