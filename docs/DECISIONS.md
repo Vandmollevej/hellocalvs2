@@ -3090,6 +3090,12 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
 - "Slå fra" i søvn-popup'en er et understreget tekstlink (ingen slider/nedtælling). Det åbner Indstillinger → Visning → Oplevelse af søvn (`?focus=toggle`), hvor indstillingen står markeret med en tynd grøn ring.
 - Den grå infotekst står under spørgsmålet og følger den globale tooltip-indstilling (`useShowTooltips`); info-ikonet er fjernet.
 - Tallene er store og ikke understregede. Valgt tal: grøn fyldt cirkel, hvidt tal, ingen Luk/Slå fra. Efter ~0,5 s glider popup'en ned til et lille bottom-sheet med håndtag, bliver liggende ~1,3 s og forsvinder.
+- 2026-09-28 (#34): Hvert E-nummer har en egen side `/e-numre/[code]`. Alternative
+  troværdige kilder genereres ud fra E-nummeret (ingen ny DB-kolonne); den
+  primære kilde forbliver `Additive.link`/`source`. Modalen er fortsat hurtigvisning.
+## 2026-09-28 — Kamera: scanningsstribe i stedet for load-cirkel
+
+Mens et foto arbejder i kameraflowet under Tilføj, vises en bred hvid/lys gradientstribe (`.hf-scan-sweep`), der fejer hen over billedet, i stedet for det hvide overlay med load-cirklen. Billedet forbliver synligt, så varen ser ud til at blive scannet.
 ## 2026-09-28: Redigering af en tilføjet registrering
 
 - Et tryk på en tilføjet vare (`/registration/[id]`) åbner samme visning som
@@ -3117,3 +3123,9 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
   robot-containere (runtime "agent") og kolonnerne Robot, On/Off, Kør,
   Cron-job (Løbende / dagligt kl. / interval / kun manuelt) og Sidst kørt.
   Samme rækker og API som "Cron-jobs".
+## 2026-09-28 — Fælles selected state (punkt 46)
+
+Valgte bokse, åbne accordions og andre selection-komponenter bruger HelloFresh-stilen:
+lysegrøn baggrund, grøn stroke og mørkegrøn tekst via `.hf-selected` og tokens
+`--hf-color-selected-*` i `globals.css`. Kraftigt grønne/sorte valgte flader er udfaset.
+Admin-flader er ikke omfattet.

@@ -176,12 +176,15 @@ export function BarcodeScanOverlay({
   fakeCode,
   detection,
   hintText,
+  holdStillText = null,
 }: {
   guideBox: FractionRect;
   orientation?: BarcodeOrientation;
   fakeCode: string;
   detection: BarcodeDetection | null;
   hintText: string | null;
+  /** Shown while a found barcode is being read, so the user keeps still. */
+  holdStillText?: string | null;
 }) {
   const guidePattern = barcodePattern(fakeCode, "ean13");
   const guideLong = BARCODE_GUIDE_WIDTH_FRACTION * 100;
@@ -214,6 +217,15 @@ export function BarcodeScanOverlay({
       </div>
 
       {detection && <DecodeOverlay key={detection.code} detection={detection} />}
+
+      {holdStillText && detection?.tone === "reading" && (
+        <p
+          role="status"
+          className="hf-type-body hf-type-strong absolute inset-x-4 bottom-4 rounded-full bg-hf-black/70 px-4 py-2 text-center text-hf-white"
+        >
+          {holdStillText}
+        </p>
+      )}
 
       {hintText && !detection && (
         <p className="hf-type-small hf-type-strong absolute inset-x-4 bottom-4 rounded-full bg-hf-black/70 px-4 py-2 text-center text-hf-white">

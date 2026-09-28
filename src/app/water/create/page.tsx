@@ -137,10 +137,9 @@ export default function WaterCreatePage() {
                 key={key}
                 type="button"
                 onClick={() => pickContainer(key, ml)}
-                className="flex aspect-square flex-col items-center justify-center gap-1 rounded-2xl transition-colors"
-                style={{
-                  background: isSelected ? "var(--hf-green)" : "var(--hf-tan)",
-                }}
+                className={`flex aspect-square flex-col items-center justify-center gap-1 rounded-2xl transition-colors ${
+                  isSelected ? "hf-selected" : "bg-hf-tan text-hf-black"
+                }`}
               >
                 <span className="flex h-14 w-full items-center justify-center">
                   <Image
@@ -155,7 +154,6 @@ export default function WaterCreatePage() {
                 </span>
                 <span
                   className="hf-type-micro hf-type-strong"
-                  style={{ color: isSelected ? "var(--hf-white)" : "var(--hf-black)" }}
                 >
                   {ml / 10}cl
                 </span>
