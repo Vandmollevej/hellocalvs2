@@ -672,13 +672,15 @@ export function AddProductView({
                     })}
               </Link>
             )}
-            <div className="flex flex-col p-4">
+            <div className="relative flex flex-col p-4">
+              {/* Del-knappen ligger oven på hjørnet, så cirklen står 16 px under
+                  headeren – samme afstand som mellem sektionerne. */}
               {!forDish && !!id && (
-                <div className="flex justify-end">
+                <div className="absolute right-4 top-4 z-20">
                   <ForwardButton kind="PRODUCT" itemId={state.product.id} name={state.product.name} />
                 </div>
               )}
-              <div className="flex flex-col items-center gap-2 pt-2 text-center">
+              <div className="flex flex-col items-center gap-2 text-center">
                 <div className="relative self-center h-[190px] w-[190px] min-h-[190px] min-w-[190px] max-h-[190px] max-w-[190px] shrink-0 overflow-visible">
                   <div className="flex h-[190px] w-[190px] min-h-[190px] min-w-[190px] items-center justify-center overflow-hidden rounded-full bg-hf-tan">
                     {displayImageUrl ? (
