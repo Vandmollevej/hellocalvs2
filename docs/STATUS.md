@@ -65,6 +65,16 @@ Forsiden er låst til skærmhøjden (`h-dvh overflow-hidden`); topbar, hero og b
 - Billede og navn på hvert kort i `/admin/products` linker til den fulde varevisning (`/admin/products/[id]`), så alle detaljer kan læses før godkend/afvis.
 - Den store "Sortér: …"-knap er erstattet af et kompakt sorteringsikon, der åbner en menu. Titel og ikon står på én linje på mobil.
 
+## 2026-09-28: E-nummer-side (`/e-numre`)
+
+- Ny samlet side med søgefelt øverst og ét afsnit pr. E-nummer med eget anker
+  (`/e-numre#e330`, `E101(i)` → `#e101i`). Viser navn, dansk navn, forklaring
+  (funktion), sundhed/anvendelse (risici), forskning, forskningslinks (kilde fra
+  databasen + PubMed/EFSA-søgning) og andre kilder (EU-database,
+  Fødevarestyrelsen, Open Food Facts, Wikipedia).
+- Produktsidens E-nummer-rækker og E-numre i indholdsfortegnelsen linker nu
+  direkte til afsnittet (erstatter info-vinduet). Beslutning: DECISIONS 2026-09-28.
+- Lint og build kørt; ikke testet mod en database (lokalt er der ingen DB).
 ## 2026-09-28: Aktivitetsniveau i 5 trin + mails mod spam
 
 - Profil → Profil: aktivitetsniveau i 5 trin (Meget lav … Meget høj), gemmes

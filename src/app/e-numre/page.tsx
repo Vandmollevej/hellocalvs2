@@ -1,17 +1,32 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { AdditiveList } from "@/components/additives/AdditiveList";
+import { prisma } from "@/lib/prisma";
+import { ENumberDirectory } from "./ENumberDirectory";
 
-export const metadata: Metadata = { title: "E-numre", robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: "E-numre" };
+export const dynamic = "force-dynamic";
 
-export default function AdditivesPage() {
+// Samlet E-nummer-side: ét afsnit pr. E-nummer med eget anker (#e330), så
+// varer og ingredienslister kan linke direkte til det (DECISIONS 2026-09-28).
+export default async function ENumbersPage() {
+  const additives = await prisma.additive
+    .findMany({
+      orderBy: { eNumber: "asc" },
+      select: {
+        eNumber: true,
+        internationalName: true,
+        danishName: true,
+        function: true,
+        risks: true,
+        research: true,
+        link: true,
+        source: true,
+      },
+    })
+    .catch((error) => {
+      console.error("E-number page lookup failed", error);
+      return [];
+    });
   return (
-    <div className="fixed inset-0 overflow-y-auto bg-white px-4 py-10 text-neutral-900">
-      <div className="mx-auto max-w-xl">
-        <Link href="/" className="text-sm text-[#067a46] hover:underline">← Forside</Link>
-        <h1 className="mt-6 text-3xl font-semibold">E-numre</h1>
-        <AdditiveList />
-      </div>
-    </div>
+    <ENumberDirectory additives={additives} />
   );
 }

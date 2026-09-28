@@ -3127,6 +3127,15 @@ Mens et foto arbejder i kameraflowet under Tilføj, vises en bred hvid/lys gradi
 - Certificeringer (Øko, Nøglehul, Fairtrade, MSC) udledes af varenavnet (`src/lib/product-certifications.ts`), fjernes fra titlen og vises som logoer på produktcirklen. Limefrugt-ikonet er fjernet; uden certificering står "Branded" i grønt, når varen har et brand.
 - "Detaljer" hedder nu "Produktdetaljer" og ligger mellem mængdevalget og Tilføj-knappen.
 
+## 2026-09-28: Samlet E-nummer-side
+
+- `/e-numre` er den fælles side for alle E-numre, læst fra `additives`-tabellen.
+  Hvert E-nummer har ankeret `eNumberAnchor()` (`src/lib/e-number-links.ts`):
+  små bogstaver uden tegn, fx `#e330`, `#e101i`.
+- Klik på et E-nummer fra en vare eller en indholdsfortegnelse går til siden i
+  stedet for at åbne `AdditiveInfoModal` (komponenten står ubrugt tilbage).
+- Forsknings- og alternative kildelinks er faste søge-/opslagslinks bygget ud
+  fra nummer og navn; kun `link`/`source` kommer fra databasen.
 ## 2026-09-28: Redigering af en tilføjet registrering
 
 - Et tryk på en tilføjet vare (`/registration/[id]`) åbner samme visning som
