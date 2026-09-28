@@ -1446,8 +1446,7 @@
     "perUnit": "per {unit}"
   },
   "registrationReportError": {
-    "title": "Report error",
-    "placeholder": "Reporting an error for this registration is coming soon."
+    "title": "Report error"
   },
   "addProduct": {
     "reading": "Reading…",

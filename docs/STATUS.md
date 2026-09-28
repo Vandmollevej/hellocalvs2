@@ -2,6 +2,14 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: "Indberet fejl" på en vare — rigtig fejlside
+
+- `/registration/[id]/report-error` (swipe "Fejl") var en tom placeholder.
+  Viser nu varens billedcirkel (`ProductImageCircle`) og navn som på
+  varesiden, efterfulgt af fejlformularen knyttet til produktet.
+- Formularen er flyttet til den fælles `src/components/ReportBugForm.tsx`,
+  som også bruges af `/profile/report-bug`.
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen

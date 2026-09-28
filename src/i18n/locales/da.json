@@ -1446,8 +1446,7 @@
     "perUnit": "pr. {unit}"
   },
   "registrationReportError": {
-    "title": "Indberet fejl",
-    "placeholder": "Indberetning af fejl for denne registrering kommer snart."
+    "title": "Indberet fejl"
   },
   "addProduct": {
     "reading": "Læses…",
