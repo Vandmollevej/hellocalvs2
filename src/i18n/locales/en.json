@@ -1443,7 +1443,9 @@
     "notFound": "The registration doesn't exist.",
     "loadError": "Couldn't load the registration.",
     "per100g": "per 100 g",
-    "perUnit": "per {unit}"
+    "perUnit": "per {unit}",
+    "save": "Save changes",
+    "saveError": "Couldn't save the changes. Please try again."
   },
   "registrationReportError": {
     "title": "Report error",
