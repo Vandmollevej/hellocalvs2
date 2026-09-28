@@ -3169,6 +3169,8 @@ model RoadmapItem {
 
   @@index([status, sortOrder])
   @@map("roadmap_items")
+}
+
 // Admin-statistik (docs/DECISIONS.md 2026-09-27 "Admin: Statistik"): ét
 // rækkeelement pr. gennemført login (alle metoder via completeLogin i
 // src/lib/user-login.ts), så /admin/statistics kan tælle log-ins over tid.
