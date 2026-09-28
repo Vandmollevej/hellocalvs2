@@ -3088,6 +3088,9 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
 - 2026-09-28 (#34): Hvert E-nummer har en egen side `/e-numre/[code]`. Alternative
   troværdige kilder genereres ud fra E-nummeret (ingen ny DB-kolonne); den
   primære kilde forbliver `Additive.link`/`source`. Modalen er fortsat hurtigvisning.
+## 2026-09-28 — Kamera: scanningsstribe i stedet for load-cirkel
+
+Mens et foto arbejder i kameraflowet under Tilføj, vises en bred hvid/lys gradientstribe (`.hf-scan-sweep`), der fejer hen over billedet, i stedet for det hvide overlay med load-cirklen. Billedet forbliver synligt, så varen ser ud til at blive scannet.
 ## 2026-09-28: Redigering af en tilføjet registrering
 
 - Et tryk på en tilføjet vare (`/registration/[id]`) åbner samme visning som
