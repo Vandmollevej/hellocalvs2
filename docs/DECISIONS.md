@@ -3170,3 +3170,6 @@ Skabeloner skriver `<a class="hc-button" href="…">Tekst</a>`, og
 inline styles. Linjen "kopiér dette link" er fjernet; tekstversionen af
 mailen har stadig linket. Uredigerede gamle standardtekster i databasen
 erstattes automatisk (LEGACY_DEFAULT_BODIES i src/lib/messaging.ts).
+## 2026-09-28 — Flaskevand i stedet for "Vand" (punkt 7)
+
+Et produkt, hvis produkttype/navn starter med ordet "Vand" alene, hedder "Flaskevand" (`normalizeProductType`/`normalizeProductName` i `src/lib/product-naming.ts`, AI-forsideprompten og migration `20260928170000_flaskevand_product_names`). "Kildevand", "Danskvand" m.fl. er urørte, og søgning på "vand" finder stadig varerne. Registreringers snapshots ændres ikke.

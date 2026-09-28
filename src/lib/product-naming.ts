@@ -11,10 +11,22 @@ export function composeProductName(parts: {
   productType: string;
   variant?: string;
 }) {
-  return [parts.subbrand, parts.productType, parts.variant]
+  return [parts.subbrand, normalizeProductType(parts.productType), parts.variant]
     .map((part) => part?.trim())
     .filter(Boolean)
     .join(" ");
+}
+
+// En emballeret vare med produkttypen "Vand" er flaskevand; "Vand" alene er
+// også app'ens vandregistrering, så søgeresultatet skal skelne (punkt 7).
+// Kun præcis "Vand" omdøbes — "Kildevand", "Danskvand" osv. står urørt.
+export function normalizeProductType(productType: string) {
+  return productType.trim().toLowerCase() === "vand" ? "Flaskevand" : productType;
+}
+
+// Samme regel på et færdigt navn: "Vand" / "Vand Uden brus" → "Flaskevand …".
+export function normalizeProductName(name: string) {
+  return name.replace(/^vand(?=\s|$)/i, "Flaskevand");
 }
 
 // "500" + "g" → "500 g"; accepts Danish decimal comma ("1,5" → "1.5 L").

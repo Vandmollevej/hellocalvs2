@@ -19,7 +19,7 @@ import { recordNutrientSources } from "@/lib/product-nutrient-sources";
 import { syncProductNutritionFeaturesSafely } from "@/lib/product-nutrition-features";
 import type { IngredientsAnalysis, NutritionAnalysis } from "@/lib/product-analysis-types";
 import { debugLog, errorText } from "@/lib/debug-log";
-import { composeProductName } from "@/lib/product-naming";
+import { composeProductName, normalizeProductName } from "@/lib/product-naming";
 
 // "Opret straks" (docs/DECISIONS.md 2026-09-27): kameraflowet opretter varen,
 // så snart den lokale OCR er kørt, og sender brugeren videre til /add/[id].
@@ -116,7 +116,7 @@ async function enrichFront(input: QuickEnrichmentInput) {
     const name = productName
       ? variant && !productName.toLowerCase().includes(variant.toLowerCase())
         ? composeProductName({ productType: productName, variant })
-        : productName
+        : normalizeProductName(productName)
       : input.fallbackName;
     const product = await prisma.product.update({
       where: { id: productId },
