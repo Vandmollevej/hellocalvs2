@@ -128,7 +128,12 @@ export async function middleware(req: NextRequest) {
   const url = req.nextUrl.clone();
   let pathname = url.pathname;
 
-  if (isAdminHost && !pathname.startsWith("/admin") && !pathname.startsWith("/api/admin")) {
+  // Metadata files (icon.png, apple-icon.png, manifest.webmanifest, /icons/*)
+  // live at the root; prefixing them with /admin would 404 and leave the
+  // browser on the low-res favicon.ico only.
+  const isRootAsset =
+    /\.(png|jpe?g|svg|webp|ico|woff2?|webmanifest)$/i.test(pathname) || pathname.startsWith("/icons/");
+  if (isAdminHost && !isRootAsset && !pathname.startsWith("/admin") && !pathname.startsWith("/api/admin")) {
     pathname = pathname === "/" ? "/admin" : `/admin${pathname}`;
   }
 
