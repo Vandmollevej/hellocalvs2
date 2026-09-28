@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import { prisma } from "@/lib/prisma";
+import { DEFAULT_REPLY_TO, htmlToText, wrapEmailHtml } from "@/lib/email-format";
 
 // Reel SMTP-afsendelse, forberedt men ikke aktiveret (docs/DECISIONS.md
 // 2026-09-02): uden SMTP_HOST/SMTP_PORT/SMTP_USER/SMTP_PASS i miljøet er
@@ -73,7 +74,14 @@ async function flushOnce(limit: number) {
       continue;
     }
     try {
-      await transport.sendMail({ from: fromAddress, to, subject: message.subject, html: message.bodyHtml });
+      await transport.sendMail({
+        from: fromAddress,
+        replyTo: process.env.SMTP_REPLY_TO || DEFAULT_REPLY_TO,
+        to,
+        subject: message.subject,
+        html: wrapEmailHtml(message.bodyHtml),
+        text: htmlToText(message.bodyHtml),
+      });
       await prisma.outboundMessage.update({
         where: { id: message.id },
         data: { status: "SENT", sentAt: new Date() },

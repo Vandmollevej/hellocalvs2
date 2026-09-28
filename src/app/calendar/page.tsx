@@ -400,7 +400,7 @@ export default function CalendarPage() {
       dailyTotals,
       weighIns,
       endExclusive: asOf,
-      formulaMaintenance: formulaMaintenanceEstimate(bmr, activities),
+      formulaMaintenance: formulaMaintenanceEstimate(bmr, activities, energyProfile.activityLevel),
     });
     return estimateWeeklyWeightChange({
       days: weekDays,
@@ -409,6 +409,7 @@ export default function CalendarPage() {
       activityByDay: activityKcalByDay(activities),
       bmr,
       adaptiveMaintenance,
+      activityLevel: energyProfile.activityLevel,
     });
   }, [energyProfile, weighIns, activities, dailyTotals, weekDays, today]);
 
@@ -541,6 +542,7 @@ export default function CalendarPage() {
             heightCm: user.heightCm ?? null,
             age: computeAge(user.birthDate),
             sex: user.sex ?? null,
+            activityLevel: user.activityLevel ?? null,
           });
         }
         const byWeekday: Record<number, SleepScheduleEntry> = {};

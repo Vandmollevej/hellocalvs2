@@ -20,6 +20,9 @@ model User {
   // for år i stedet for kun "indeværende år minus fødselsår". Se src/lib/age.ts.
   birthDate   DateTime?
   sex         Sex?
+  // Hverdagens aktivitetsniveau i 5 trin (src/lib/activity-level.ts).
+  // Null = ikke valgt; så regnes der med stillesiddende.
+  activityLevel ActivityLevel?
   // Målvægt: brugerens eget mål, sat via /profile/target-weight. Adskilt fra
   // weightKg (start-vægt, låst felt) og weight_entries (løbende vejninger).
   targetWeightKg Float?
@@ -296,6 +299,14 @@ enum Locale {
 enum Sex {
   FEMALE
   MALE
+}
+
+enum ActivityLevel {
+  VERY_LOW
+  LOW
+  MODERATE
+  HIGH
+  VERY_HIGH
 }
 
 enum DailyLogPreference {

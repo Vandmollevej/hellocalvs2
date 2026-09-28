@@ -11,6 +11,7 @@ import { BIRTH_DATE_MIN_AGE_YEARS, BirthDatePicker } from "@/components/ui/Birth
 import { WheelPicker } from "@/components/ui/WheelPicker";
 import { latestTrendWeight, type MealSample, type WeightSample } from "@/lib/weight-trend";
 import { computeAge } from "@/lib/age";
+import { ACTIVITY_LEVELS, type ActivityLevel } from "@/lib/activity-level";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { FaceIdButton } from "@/components/FaceIdButton";
 import { SkeletonForm, SkeletonScreen } from "@/components/hf/Skeleton";
@@ -27,6 +28,7 @@ type ProfileUser = {
   heightCm: number | null;
   birthDate: string | null;
   sex: Sex | null;
+  activityLevel: ActivityLevel | null;
   wantsPushNotifications: boolean;
   wantsUpdateNewsEmails: boolean;
   wantsAdviceEmails: boolean;
@@ -57,6 +59,54 @@ function Field({
       </span>
       {children}
     </label>
+  );
+}
+
+// Aktivitetsniveau i 5 trin (src/lib/activity-level.ts): fem søjler med
+// stigende højde; det valgte trin og dem under er sorte.
+function ActivityLevelPicker({
+  value,
+  onChange,
+}: {
+  value: ActivityLevel | null;
+  onChange: (value: ActivityLevel) => void;
+}) {
+  const { t } = useTranslation();
+  const selectedIndex = value ? ACTIVITY_LEVELS.indexOf(value) : -1;
+  return (
+    <div className="flex flex-col gap-2">
+      <span className="hf-type-small hf-type-strong text-text-secondary uppercase tracking-[0.06em]">
+        {t("profile.field.activityLevel")}
+      </span>
+      <div role="radiogroup" aria-label={t("profile.field.activityLevel")} className="grid grid-cols-5 gap-2">
+        {ACTIVITY_LEVELS.map((level, index) => (
+          <button
+            key={level}
+            type="button"
+            role="radio"
+            aria-checked={value === level}
+            aria-label={t(`profile.activityLevel.${level}.label`)}
+            onClick={() => onChange(level)}
+            className="flex h-16 items-end justify-center rounded-xl bg-hf-tan px-2 pb-2"
+          >
+            <span
+              className={`w-full rounded ${index <= selectedIndex ? "bg-hf-black" : "bg-hf-black/15"}`}
+              style={{ height: `${8 + index * 8}px` }}
+            />
+          </button>
+        ))}
+      </div>
+      {value ? (
+        <div className="flex flex-col gap-1">
+          <span className="hf-type-body hf-type-strong">{t(`profile.activityLevel.${value}.label`)}</span>
+          <span className="hf-type-small text-text-secondary">
+            {t(`profile.activityLevel.${value}.description`)} {t("profile.activityLevel.note")}
+          </span>
+        </div>
+      ) : (
+        <span className="hf-type-small text-text-secondary">{t("profile.activityLevel.notSet")}</span>
+      )}
+    </div>
   );
 }
 
@@ -261,6 +311,8 @@ export default function ProfileEditPage() {
               </select>
             </Field>
           </div>
+
+          <ActivityLevelPicker value={user.activityLevel} onChange={(value) => updateNow("activityLevel", value)} />
 
           {/* Fire ens, kvadratiske genveje (1:1) — teksten må ikke gøre en kasse større. */}
           <div className="mt-2 grid grid-cols-4 gap-2.5">

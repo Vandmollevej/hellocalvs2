@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { DEFAULT_REPLY_TO, htmlToText, wrapEmailHtml } from "@/lib/email-format";
 
 // docs/PRIVACY.md "Login og e-mail": mails til almindelige brugere sendes
 // direkte til den adresse, brugeren netop har tastet, og adressen gemmes
@@ -44,8 +45,10 @@ export async function sendTransientMail({
   });
   await transport.sendMail({
     from: process.env.SMTP_FROM || "Hello Cal <no-reply@hellocal.local>",
+    replyTo: process.env.SMTP_REPLY_TO || DEFAULT_REPLY_TO,
     to,
     subject,
-    html,
+    html: wrapEmailHtml(html),
+    text: htmlToText(html),
   });
 }

@@ -4,6 +4,7 @@ import { isValidStartWeight, parseWeightInput } from "@/lib/start-weight-verific
 import { unauthorized } from "@/lib/session";
 import { getProfileUser } from "@/lib/family-access";
 import { getUserSubscriptionTier } from "@/lib/subscription";
+import { isActivityLevel } from "@/lib/activity-level";
 
 export async function GET() {
   try {
@@ -37,6 +38,7 @@ export async function PATCH(req: Request) {
     heightCm,
     birthDate,
     sex,
+    activityLevel,
     cycleTrackingEnabled,
     sleepQualityPromptEnabled,
     averageCycleLengthDays,
@@ -71,6 +73,7 @@ export async function PATCH(req: Request) {
     heightCm?: number | null;
     birthDate?: string | null;
     sex?: "FEMALE" | "MALE" | null;
+    activityLevel?: unknown;
     cycleTrackingEnabled?: boolean;
     sleepQualityPromptEnabled?: boolean;
     averageCycleLengthDays?: number;
@@ -134,6 +137,8 @@ export async function PATCH(req: Request) {
         birthDate:
           birthDate === undefined ? undefined : birthDate === null ? null : new Date(birthDate),
         sex,
+        activityLevel:
+          activityLevel === undefined ? undefined : activityLevel === null ? null : isActivityLevel(activityLevel) ? activityLevel : undefined,
         cycleTrackingEnabled,
         sleepQualityPromptEnabled,
         averageCycleLengthDays,

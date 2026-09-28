@@ -1044,12 +1044,22 @@
       "weight": "Start-vægt",
       "height": "Højde",
       "birthDate": "Fødselsdato",
-      "sex": "Køn"
+      "sex": "Køn",
+      "activityLevel": "Aktivitetsniveau"
     },
     "sexOption": {
       "unspecified": "Ikke angivet",
       "female": "Kvinde",
       "male": "Mand"
+    },
+    "activityLevel": {
+      "notSet": "Vælg det trin, der passer bedst på din hverdag.",
+      "note": "Træning, du logger, lægges oveni.",
+      "VERY_LOW": { "label": "Meget lav", "description": "Sidder det meste af dagen og går næsten ikke." },
+      "LOW": { "label": "Lav", "description": "Stillesiddende arbejde med lidt gang og let bevægelse i hverdagen." },
+      "MODERATE": { "label": "Moderat", "description": "Står og går en stor del af dagen, fx i butik, skole eller institution." },
+      "HIGH": { "label": "Høj", "description": "Fysisk arbejde det meste af dagen, fx håndværker eller lager." },
+      "VERY_HIGH": { "label": "Meget høj", "description": "Hårdt fysisk arbejde hele dagen, fx byggeri, landbrug eller skov." }
     },
     "age": "{age} år",
     "trendWeight": "Trendvægt (AI-estimat): {value} kg",

@@ -1044,12 +1044,22 @@
       "weight": "Starting weight",
       "height": "Height",
       "birthDate": "Date of birth",
-      "sex": "Sex"
+      "sex": "Sex",
+      "activityLevel": "Activity level"
     },
     "sexOption": {
       "unspecified": "Not specified",
       "female": "Female",
       "male": "Male"
+    },
+    "activityLevel": {
+      "notSet": "Pick the step that best fits your everyday life.",
+      "note": "Training you log is added on top.",
+      "VERY_LOW": { "label": "Very low", "description": "Sitting most of the day and hardly walking." },
+      "LOW": { "label": "Low", "description": "Desk job with some walking and light movement during the day." },
+      "MODERATE": { "label": "Moderate", "description": "Standing and walking for much of the day, e.g. in a shop or school." },
+      "HIGH": { "label": "High", "description": "Physical work most of the day, e.g. craftsman or warehouse." },
+      "VERY_HIGH": { "label": "Very high", "description": "Hard physical work all day, e.g. construction, farming or forestry." }
     },
     "age": "{age} years old",
     "trendWeight": "Trend weight (AI estimate): {value} kg",

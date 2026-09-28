@@ -1,3 +1,4 @@
+import { activityLevelFactor, type ActivityLevel } from "@/lib/activity-level";
 import { childPhysicalActivityLevel, estimateBmr } from "@/lib/weekly-energy-summary";
 
 // Anbefalet serveringsstørrelse for en ret (docs/DECISIONS.md 2026-09-25).
@@ -24,6 +25,7 @@ export type PortionProfile = {
   heightCm?: number | null;
   birthDate?: string | Date | null;
   sex?: "MALE" | "FEMALE" | null;
+  activityLevel?: ActivityLevel | null;
 };
 
 function ageFrom(birthDate: string | Date | null | undefined, now = new Date()) {
@@ -47,8 +49,10 @@ export function dailyKcalFor(profile: PortionProfile | null | undefined) {
         sex: profile.sex ?? null,
       })
     : null;
-  // Børn: EFSA's aktivitetsniveau for alderen (docs/FAMILY.md).
-  const pal = childPhysicalActivityLevel(age) ?? PHYSICAL_ACTIVITY_LEVEL;
+  // Børn: EFSA's aktivitetsniveau for alderen (docs/FAMILY.md). Voksne:
+  // brugerens valgte aktivitetsniveau, ellers stillesiddende hverdag.
+  const pal =
+    childPhysicalActivityLevel(age) ?? activityLevelFactor(profile?.activityLevel) ?? PHYSICAL_ACTIVITY_LEVEL;
   return bmr ? bmr * pal : REFERENCE_DAILY_KCAL;
 }
 

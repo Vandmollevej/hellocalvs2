@@ -1,3 +1,5 @@
+import { activityLevelFactor, type ActivityLevel } from "@/lib/activity-level";
+
 // Weekly calorie-balance footer under the calendar's week/list rows.
 // Originally built hidden because the web/PWA layout is short on vertical room
 // while the browser URL bar takes the bottom of the screen; the user chose on
@@ -14,10 +16,15 @@ export const ENABLE_WEEKLY_ENERGY_SUMMARY = true;
 // Swap the maintenance model below for a better one without touching the calendar.
 const KCAL_PER_KG_ESTIMATE = 7700;
 
-// Sedentary multiplier on BMR (everyday movement that isn't a logged activity).
-// Logged Activity.caloriesBurned is added on top per day, so this must stay at
-// the "sedentary" level to avoid counting training twice.
+// Multiplier on BMR for everyday movement that isn't a logged activity: the
+// user's activity level (src/lib/activity-level.ts), which by definition
+// excludes logged training, or "sedentary" when none is chosen. Logged
+// Activity.caloriesBurned is added on top per day.
 const SEDENTARY_FACTOR = 1.2;
+
+function everydayFactor(activityLevel: ActivityLevel | null | undefined) {
+  return activityLevelFactor(activityLevel) ?? SEDENTARY_FACTOR;
+}
 
 // Fewer completed, logged days than this in the week → no weight estimate.
 export const MIN_ESTIMATE_DAYS = 3;
@@ -77,6 +84,7 @@ export type EnergyProfile = {
   heightCm: number | null;
   age: number | null;
   sex: "MALE" | "FEMALE" | null;
+  activityLevel?: ActivityLevel | null;
 };
 
 export type WeighIn = { weightKg: number; weighedAt: string };
@@ -220,6 +228,7 @@ export function estimateWeeklyWeightChange({
   activityByDay,
   bmr,
   adaptiveMaintenance,
+  activityLevel,
 }: {
   days: Date[];
   today: Date;
@@ -227,6 +236,7 @@ export function estimateWeeklyWeightChange({
   activityByDay: Map<string, number>;
   bmr: number | null;
   adaptiveMaintenance: number | null;
+  activityLevel?: ActivityLevel | null;
 }): WeightChangeEstimate | null {
   if (adaptiveMaintenance === null && bmr === null) return null;
   const todayStart = startOfDay(today).getTime();
@@ -238,7 +248,7 @@ export function estimateWeeklyWeightChange({
     const kcal = dailyTotals.get(key) ?? 0;
     if (kcal <= 0) continue;
     // Adaptive maintenance already contains the user's average activity.
-    const maintenance = adaptiveMaintenance ?? bmr! * SEDENTARY_FACTOR + (activityByDay.get(key) ?? 0);
+    const maintenance = adaptiveMaintenance ?? bmr! * everydayFactor(activityLevel) + (activityByDay.get(key) ?? 0);
     balance += kcal - maintenance;
     countedDays += 1;
   }
@@ -250,14 +260,19 @@ export function estimateWeeklyWeightChange({
   };
 }
 
-/** Average formula maintenance (BMR × sedentary + mean logged activity), for sanity-checking. */
-export function formulaMaintenanceEstimate(bmr: number | null, activities: ActivityBurn[], windowDays = ADAPTIVE_WINDOW_DAYS) {
+/** Average formula maintenance (BMR × everyday factor + mean logged activity), for sanity-checking. */
+export function formulaMaintenanceEstimate(
+  bmr: number | null,
+  activities: ActivityBurn[],
+  activityLevel?: ActivityLevel | null,
+  windowDays = ADAPTIVE_WINDOW_DAYS,
+) {
   if (bmr === null) return null;
   const cutoff = Date.now() - windowDays * DAY_MS;
   const burned = activities
     .filter((activity) => new Date(activity.startedAt).getTime() >= cutoff)
     .reduce((sum, activity) => sum + activity.caloriesBurned, 0);
-  return bmr * SEDENTARY_FACTOR + burned / windowDays;
+  return bmr * everydayFactor(activityLevel) + burned / windowDays;
 }
 
 export function formatSignedKcal(value: number) {
