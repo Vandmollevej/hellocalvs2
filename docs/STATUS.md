@@ -2,6 +2,16 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Eksternt hentede varer — samme design
+
+Varer fra Open Food Facts/USDA vises i præcis samme design som varer scannet i
+Hello Cal; datakilden må ikke ændre UI'et. Produktsiden har ingen
+kilde-afhængig visning, men eksterne varers billede var et råt foto med
+baggrund. Ved oprettelsen i `/api/products/lookup/[barcode]` lægges nu et
+PRODUCT_FRONT-fritskrabningsjob for det eksterne billede (https), som
+`scripts/image-agent/cutout.py` henter, fritskraber og skriver til
+`pendingImageUrl` via samme admin-godkendelse som kamerafotos.
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen

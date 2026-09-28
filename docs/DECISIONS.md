@@ -3042,3 +3042,14 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
   data sig, vises konflikten igen.
 - Erstatter det tidligere par-kort (`DuplicateProductCard`) og ruterne
   `/api/admin/duplicate-products/[id]/merge|dismiss`.
+
+## 2026-09-28: Eksternt hentede varer — samme design
+
+Varer fra Open Food Facts/USDA vises i præcis samme design som varer scannet i
+Hello Cal; datakilden må ikke ændre UI'et. Produktsiden har ingen
+kilde-afhængig visning, men eksterne varers billede var et råt foto med
+baggrund. Ved oprettelsen i `/api/products/lookup/[barcode]` lægges nu et
+PRODUCT_FRONT-fritskrabningsjob for det eksterne billede (https), som
+`scripts/image-agent/cutout.py` henter, fritskraber og skriver til
+`pendingImageUrl` via samme admin-godkendelse som kamerafotos.
+
