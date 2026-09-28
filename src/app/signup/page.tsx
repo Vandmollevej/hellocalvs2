@@ -119,10 +119,13 @@ function TilmeldContent() {
         <button
           type="submit"
           disabled={submitting}
-          className="hf-control hf-btn-primary mb-8 w-full disabled:opacity-50"
+          className="hf-control hf-btn-primary w-full disabled:opacity-50"
         >
           {submitting ? t("signup.submitting") : t("signup.submit")}
         </button>
+        <p className="hf-type-body-lg mb-6 mt-1 text-center">
+          {t("signup.haveAccount")} <Link href="/login" className="underline">{t("signup.logIn")}</Link>
+        </p>
       </form>
     </div>
   );

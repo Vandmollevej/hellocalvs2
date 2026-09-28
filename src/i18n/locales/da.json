@@ -36,7 +36,7 @@
     "submitting": "Logger ind…",
     "genericError": "Kunne ikke logge ind",
     "networkError": "Kunne ikke logge ind — tjek din forbindelse og prøv igen",
-    "newHere": "Ny her?",
+    "newHere": "Ny på Hello Cal?",
     "createAccount": "Opret konto",
     "forgotPassword": "Glemt adgangskode?",
     "continueWithFaceId": "Log ind med Face ID",
@@ -136,6 +136,8 @@
   },
   "signup": {
     "title": "Opret konto",
+    "haveAccount": "Har du allerede en konto?",
+    "logIn": "Log ind",
     "back": "Tilbage",
     "nameLabel": "Navn",
     "namePlaceholder": "Dit navn",
