@@ -3094,6 +3094,12 @@ ingen native checkboxe) og et klikbart link til Betingelser. Det kræves før
 både e-mail- og social-tilmelding. Konsekvens: brugere, der logger ind via
 Google/Apple/Facebook fra login-siden uden at have været forbi tilmeldingen,
 eller ældre konti uden samtykke, bliver ikke længere stoppet af en gate.
+- 2026-09-28 (#34): Hvert E-nummer har en egen side `/e-numre/[code]`. Alternative
+  troværdige kilder genereres ud fra E-nummeret (ingen ny DB-kolonne); den
+  primære kilde forbliver `Additive.link`/`source`. Modalen er fortsat hurtigvisning.
+## 2026-09-28 — Kamera: scanningsstribe i stedet for load-cirkel
+
+Mens et foto arbejder i kameraflowet under Tilføj, vises en bred hvid/lys gradientstribe (`.hf-scan-sweep`), der fejer hen over billedet, i stedet for det hvide overlay med load-cirklen. Billedet forbliver synligt, så varen ser ud til at blive scannet.
 ## 2026-09-28: Redigering af en tilføjet registrering
 
 - Et tryk på en tilføjet vare (`/registration/[id]`) åbner samme visning som
@@ -3121,3 +3127,9 @@ eller ældre konti uden samtykke, bliver ikke længere stoppet af en gate.
   robot-containere (runtime "agent") og kolonnerne Robot, On/Off, Kør,
   Cron-job (Løbende / dagligt kl. / interval / kun manuelt) og Sidst kørt.
   Samme rækker og API som "Cron-jobs".
+## 2026-09-28 — Fælles selected state (punkt 46)
+
+Valgte bokse, åbne accordions og andre selection-komponenter bruger HelloFresh-stilen:
+lysegrøn baggrund, grøn stroke og mørkegrøn tekst via `.hf-selected` og tokens
+`--hf-color-selected-*` i `globals.css`. Kraftigt grønne/sorte valgte flader er udfaset.
+Admin-flader er ikke omfattet.

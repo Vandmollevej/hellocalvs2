@@ -453,8 +453,12 @@ fuld bredde).
 | `.hf-btn-danger` | Transparent, 1,5 px rød kant, rød tekst | 17/22 700 | Slet, tilbagekald, log ud af alt |
 | `.hf-btn-text` | Ingen flade, understreget, arver farve | 15/22 700 | Link-lignende handling ("Spring over", "Omdøb") |
 | `.hf-btn-icon` | 44 × 44 rund, gennemsigtig, arver farve | — | Pile, luk, menu, favorit |
-| `.hf-choice` | Beige flade; valgt = sort flade, hvid tekst | 13/18 700 | Segment-/filter-/periodevalg. Valgt via `aria-pressed`, `aria-selected`, `aria-checked` eller `.is-selected` |
+| `.hf-choice` | Beige flade; valgt = `.hf-selected` (lysegrøn flade, grøn stroke, mørkegrøn tekst) | 13/18 700 | Segment-/filter-/periodevalg. Valgt via `aria-pressed`, `aria-selected`, `aria-checked` eller `.is-selected` |
 
+- Selected state (punkt 46): alle valgte bokse, åbne accordion-overskrifter
+  (`.hf-selected-open` + `aria-expanded`) og øvrige valg bruger `.hf-selected`
+  = `--hf-color-selected-bg` #E6F4EC, 1,5 px inset stroke #067A46 og tekst
+  #035624. Aldrig kraftig grøn/sort flade med hvid tekst som valgt-markering.
 - Grønne handlingsknapper er udfaset; brand-grøn bruges kun til flader
   (appbar, brandkort), ikke til knapper.
 - `ActionButton`/`ActionLink` (`src/components/hf/ActionButton.tsx`) tager
