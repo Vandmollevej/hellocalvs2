@@ -6,7 +6,7 @@ import Link from "next/link";
 import { IconBarcode, IconCamera, IconFlame, IconList, IconPhoto, type Icon } from "@tabler/icons-react";
 import { BarcodeScanOverlay, type BarcodeDetection } from "@/components/hf/BarcodeScanOverlay";
 import { CaptureCheckOverlay } from "@/components/hf/CaptureCheckOverlay";
-import { PhotoWorkingOverlay } from "@/components/hf/HfLoader";
+import { ScanningOverlay } from "@/components/hf/ScanningOverlay";
 import {
   barcodeGuideBoxFraction,
   barcodePoseFromPoints,
@@ -583,7 +583,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
           </div>
         )}
 
-        {working && <PhotoWorkingOverlay label={t("cameraCreate.analyzingDefault")} />}
+        {working && <ScanningOverlay label={t("cameraCreate.analyzingDefault")} />}
       </div>
 
       <div className="grid grid-cols-4 gap-2">

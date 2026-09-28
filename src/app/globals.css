@@ -971,32 +971,34 @@ textarea::selection,
    /camera/create analyserer et billede automatisk. */
 @keyframes hf-scan-line {
   0% {
-    left: 0%;
+    left: -35%;
   }
   100% {
     left: 100%;
   }
 }
 
+/* Bred, lys gradientstribe med skarp midte, så billedet ser "scannet" ud. */
 .hf-scan-line {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 3px;
+  width: 35%;
   background: linear-gradient(
-    to bottom,
+    to right,
     rgb(255 255 255 / 0%),
-    rgb(255 255 255 / 90%),
+    rgb(255 255 255 / 35%) 42%,
+    rgb(255 255 255 / 95%) 50%,
+    rgb(255 255 255 / 35%) 58%,
     rgb(255 255 255 / 0%)
   );
-  box-shadow: 0 0 12px 2px rgb(255 255 255 / 60%);
-  animation: hf-scan-line 1.6s ease-in-out infinite alternate;
+  animation: hf-scan-line 1.8s ease-in-out infinite alternate;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .hf-scan-line {
     animation: none;
-    left: 50%;
+    left: 32.5%;
   }
 }
 
