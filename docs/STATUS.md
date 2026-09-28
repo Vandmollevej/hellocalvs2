@@ -2,6 +2,11 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Certifikater som logoer (opgave 29)
+
+- Produktsiden viser mærkninger (økologisk, nøglehul, fuldkorn, dyrevelfærd, MSC/ASC/Fairtrade/Rainforest m.fl.) som logoer højrestillet under energifordelingen.
+- Kilde: `ProductFilters` via `/api/products/[id]`; logik i `src/lib/certification-badges.ts`, visning i `src/components/hf/CertificationLogos.tsx` (stiliserede SVG-logoer, ikke officielle grafikfiler).
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen

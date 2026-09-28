@@ -20,6 +20,8 @@ import { ForwardButton } from "@/components/ForwardButton";
 import { appendDishDraftIngredient } from "@/lib/dish-draft";
 import { selectRawContextImageUrl } from "@/lib/image-tags";
 import { MacroSliderBar } from "@/components/hf/MacroSliderBar";
+import { CertificationLogos } from "@/components/hf/CertificationLogos";
+import { certificationBadges, type CertificationFilters } from "@/lib/certification-badges";
 import { AdditiveInfoModal } from "@/components/hf/AdditiveInfoModal";
 import { TimeSection } from "@/components/hf/TimeSection";
 import { getAdditiveInfo } from "@/lib/additives";
@@ -103,6 +105,8 @@ type Product = {
   ingredientsText?: string | null;
   allergens?: string[];
   additives?: string[];
+  // Mærkninger (økologisk, nøglehul, MSC …) vist som logoer, opgave 29.
+  filters?: CertificationFilters | null;
   barcodes?: { code: string }[];
   createdByUserId?: string | null;
   // HelloFresh-recipe extra nutrition, per Product.servingSizeGrams — see
@@ -816,6 +820,7 @@ export function AddProductView({
                   />
                 </div>
                 )}
+                <CertificationLogos badges={certificationBadges(state.product.filters)} className="mt-4" />
               </div>
 
               {profile?.showAdditives && !!state.product.additives?.length && (
