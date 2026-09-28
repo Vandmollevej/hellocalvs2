@@ -46,7 +46,8 @@ export function oauthErrorKey(code: string | null): { key: string; vars?: Record
   if (notConfigured) {
     return { key: "login.errorNotConfigured", vars: { provider: PROVIDER_NAMES[notConfigured[1] as OAuthProviderSlug] } };
   }
-  if (code === "oauth-cancelled") return { key: "login.errorOauthCancelled" };
+  // Brugeren afbrød selv (fx Apple-arket) — ingen rød fejltekst.
+  if (code === "oauth-cancelled") return null;
   if (code === "oauth-expired") return { key: "login.errorOauthExpired" };
   return { key: "login.errorOauth" };
 }
