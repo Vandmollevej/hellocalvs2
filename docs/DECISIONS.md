@@ -3042,3 +3042,7 @@ Apple Health-adgangsarket (som HelloFresh viser), med alle Hello Cals punkter.
   data sig, vises konflikten igen.
 - Erstatter det tidligere par-kort (`DuplicateProductCard`) og ruterne
   `/api/admin/duplicate-products/[id]/merge|dismiss`.
+
+- 2026-09-28 (#34): Hvert E-nummer har en egen side `/e-numre/[code]`. Alternative
+  troværdige kilder genereres ud fra E-nummeret (ingen ny DB-kolonne); den
+  primære kilde forbliver `Additive.link`/`source`. Modalen er fortsat hurtigvisning.
