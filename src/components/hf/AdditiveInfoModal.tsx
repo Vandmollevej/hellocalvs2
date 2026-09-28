@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { getAdditiveInfo, type AdditiveInfo } from "@/lib/additives";
 
@@ -83,6 +84,12 @@ export function AdditiveInfoModal({
                   Læs mere ({info.source || "kilde"})
                 </a>
               )}
+              <Link
+                href={`/e-numre/${encodeURIComponent(code.toUpperCase())}`}
+                className="hf-type-small hf-heading text-hf-green underline underline-offset-2"
+              >
+                Se hele siden med forskning og alternative kilder
+              </Link>
             </div>
           )}
           <p className="hf-type-small text-text-secondary mt-4">

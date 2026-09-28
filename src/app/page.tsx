@@ -15,14 +15,14 @@ export default async function Home() {
   if (!user) return <LandingPage />;
 
   return (
-    <div className="flex min-h-full flex-1 flex-col bg-hf-cream">
+    <div className="flex h-dvh flex-col overflow-hidden bg-hf-cream">
       <TopBar />
 
-      <div className="mt-8">
+      <div className="mt-8 shrink-0">
         <Hero />
       </div>
 
-      <div className="mx-4 h-px bg-hf-tan-dark" />
+      <div className="mx-4 h-px shrink-0 bg-hf-tan-dark" />
 
       <div className="min-h-0 flex-1 overflow-hidden pt-2">
         <DailyList />

@@ -31,14 +31,14 @@ export function AccordionSection({
           aria-expanded={open}
           aria-controls={panelId}
           onClick={() => setOpen((value) => !value)}
-          className="hf-control-row flex min-w-0 flex-1 items-center gap-2 px-4 text-left focus-visible:outline-2 focus-visible:outline-hf-black"
+          className="hf-control-row hf-selected-open flex min-w-0 flex-1 items-center gap-2 px-4 text-left focus-visible:outline-2 focus-visible:outline-hf-black"
         >
-          {icon && <span className="flex shrink-0 text-hf-black">{icon}</span>}
-          <span className="hf-type-body hf-type-strong flex-1 text-hf-black">{title}</span>
+          {icon && <span className="flex shrink-0">{icon}</span>}
+          <span className="hf-type-body hf-type-strong flex-1">{title}</span>
           {typeof count === "number" && (
             <span className="hf-type-small text-text-secondary">{count}</span>
           )}
-          <HfChevron direction={open ? "down" : "right"} className="text-hf-black" />
+          <HfChevron direction={open ? "down" : "right"} />
         </button>
       </div>
       <div id={panelId} hidden={!open} className="bg-hf-cream p-3">

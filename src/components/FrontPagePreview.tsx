@@ -89,7 +89,7 @@ export function FrontPagePreview({ side, selected = false }: { side: FabSide; se
         height={H - 1}
         rx={9}
         fill="none"
-        stroke={selected ? "var(--hf-white)" : "var(--hf-black)"}
+        stroke={selected ? "var(--hf-color-selected-border)" : "var(--hf-black)"}
         strokeOpacity={selected ? 1 : 0.35}
         strokeWidth={selected ? 1.5 : 1}
       />

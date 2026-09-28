@@ -20,6 +20,11 @@ type Product = {
 
 type Registration = { productId: string | null };
 
+const ROW_COUNT_KEY = "hf:foods:mostUsedCount";
+const SKELETON_DELAY_MS = 300;
+const DEFAULT_SKELETON_ROWS = 3;
+const MAX_SKELETON_ROWS = 8;
+
 type LoadState = "loading" | "ready" | "error";
 
 const FAVORITES_LIMIT = 10;
@@ -114,6 +119,22 @@ function MadvarerContent() {
   const [state, setState] = useState<LoadState>("loading");
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const searchInputRef = useRef<HTMLInputElement>(null);
+  // Skelettet vises først efter en kort pause (hurtige svar blinker ikke) og
+  // med samme antal rækker som sidst, så det ligner det færdige indhold.
+  const [skeletonRows, setSkeletonRows] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (state !== "loading") return;
+    const timer = window.setTimeout(() => {
+      let rows = DEFAULT_SKELETON_ROWS;
+      try {
+        const stored = Number(window.localStorage.getItem(ROW_COUNT_KEY));
+        if (Number.isInteger(stored) && stored > 0) rows = Math.min(stored, MAX_SKELETON_ROWS);
+      } catch {}
+      setSkeletonRows(rows);
+    }, SKELETON_DELAY_MS);
+    return () => window.clearTimeout(timer);
+  }, [state]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -255,6 +276,13 @@ function MadvarerContent() {
   // isSearching is false and gets overwritten by the next real query anyway).
   // While searching, prefer the cached instant result until the live,
   // re-ranked fetch for this exact query has actually landed.
+  useEffect(() => {
+    if (state !== "ready") return;
+    try {
+      window.localStorage.setItem(ROW_COUNT_KEY, String(favorites.length));
+    } catch {}
+  }, [state, favorites.length]);
+
   const visibleProducts = isSearching ? cachedResults ?? searchResults : favorites;
 
   return (
@@ -277,9 +305,9 @@ function MadvarerContent() {
         )}
 
         <div className="max-h-[60vh] overflow-y-auto overflow-x-hidden rounded-[8px] bg-hf-tan">
-          {state === "loading" && (
+          {state === "loading" && skeletonRows !== null && (
             <SkeletonScreen className="px-4">
-              <SkeletonMediaRows rows={8} />
+              <SkeletonMediaRows rows={skeletonRows} />
             </SkeletonScreen>
           )}
           {state === "error" && (
