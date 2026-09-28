@@ -3,3 +3,9 @@ node_modules
 .git
 .env
 npm-debug.log
+# Dokumentation og CI indgår ikke i app-imaget; så genstarter en ren
+# docs-ændring ikke hele Next-buildet.
+docs
+*.md
+.github
+.claude

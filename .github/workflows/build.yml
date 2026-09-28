@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - master
+    # Rene dokumentationsændringer giver intet deploy.
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
 
 jobs:
   build:
