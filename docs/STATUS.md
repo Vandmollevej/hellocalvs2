@@ -4706,4 +4706,12 @@ kan ikke nå den server. Denne ændring bør derfor tjekkes visuelt af brugeren
 selv (eller i en senere session, når den anden dev-server ikke kører), særligt
 justeringen af scroll-fligen ved forskellige stå-op-tidspunkter.
 
+- 2026-09-28 (opgave #34 E-nummer-side – indhold): Ny detaljeside
+  `/e-numre/[code]` (`src/app/e-numre/[code]/page.tsx`) med sektionerne Navn,
+  Forklaring, Risici og relevante oplysninger, Forskning, Primær kilde og
+  Alternative kilder. Alternative kilder bygges i `src/lib/additive-sources.ts`
+  (EFSA-søgning, EU's tilsætningsstofdatabase, Fødevarestyrelsen, Open Food
+  Facts, PubMed) ud fra E-nummer/navn, så alle rækker i `additives` får dem.
+  `AdditiveInfoModal` linker til siden. Lint/typecheck/build grønne; ikke
+  verificeret mod live-data (kræver DB med `additives`-tabellen).
 - 2026-09-28 (opgave 33): Ny side `/e-numre` viser hele E-nummer-databasen med søgefelt øverst (søg på nummer, fx "330"/"E330", eller dansk/internationalt navn/funktion). Logik i `src/lib/additives.ts`, UI i `src/components/additives/AdditiveList.tsx`.
