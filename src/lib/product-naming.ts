@@ -17,6 +17,12 @@ export function composeProductName(parts: {
     .join(" ");
 }
 
+// A packaged product read from a photo is never tap water, so a bare "Vand"
+// is shown as "Flaskevand" in search instead of an ambiguous "Vand".
+export function normalizeProductType(productType: string) {
+  return productType.trim().toLowerCase() === "vand" ? "Flaskevand" : productType;
+}
+
 // "500" + "g" → "500 g"; accepts Danish decimal comma ("1,5" → "1.5 L").
 export function formatPackageSize(amount: string, unit: PackageSizeUnit) {
   const value = parseFloat(amount.replace(",", "."));
