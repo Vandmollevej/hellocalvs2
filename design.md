@@ -712,11 +712,11 @@ knapper, afstande, kort) skal altid bevare de fastlagte HelloFresh-
 proportioner 1:1 med referencedesignet, uanset billedets opløsning,
 dimensioner, billedformat, eller om produktet slet ikke har et billede.
 
-- Billedområdet har fast størrelse/geometri: `190 × 190 px`, cirkulær
+- Billedområdet har fast størrelse/geometri: `180 × 180 px` (ændret fra 190 px 2026-09-28 efter brugerens krav om at være identisk med HelloFresh-velkomsten), 62 px under appbaren, cirkulær
   (`rounded-full`), med `bg-hf-tan` som baggrund.
 - Geometrien låses med redundante Tailwind-klasser
-  (`h-[190px] w-[190px] min-h-[190px] min-w-[190px] max-h-[190px]
-  max-w-[190px] shrink-0`), så hverken et flex-parent, et stort/skævt billede
+  (`h-[180px] w-[180px] min-h-[180px] min-w-[180px] max-h-[180px]
+  max-w-[180px] shrink-0`), så hverken et flex-parent, et stort/skævt billede
   eller en manglende `img` kan ændre boksens mål.
 - Selve billedet tilpasses inde i dette fastlåste område med
   `object-contain` og intern padding (`p-8`) — aldrig `object-fit: cover` på

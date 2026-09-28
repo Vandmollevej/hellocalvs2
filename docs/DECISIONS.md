@@ -3279,3 +3279,6 @@ Produktsiden viser aldrig teksten "Branded". Brandet vises kun som brandnavn/log
   produktsiden: cirkel→h1 40 (HF 41), h1→h2 40 (HF 40), h2→næste 23 (HF 20).
 - Resterende forskel: HelloFresh-appens overskrift er i en smal skrift
   (Agrandir Tight-lignende); Hello Cal bruger systemfonten (design.md §2).
+- Produktsiden målt 1:1 mod HelloFresh-velkomsten (3×): cirkel 180 px (før
+  190) og 62 px under appbaren, 41 px cirkel→h1-tekst, 40 px h1→h2, 20 px
+  h2→næste tekst. Uden h2 bevares linjens 40 px luft, så resten ikke rykker op.

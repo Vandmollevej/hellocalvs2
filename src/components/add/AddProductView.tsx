@@ -681,12 +681,13 @@ export function AddProductView({
                   <ForwardButton kind="PRODUCT" itemId={state.product.id} name={state.product.name} />
                 </div>
               )}
-              {/* Rytme som HelloFresh-heroen (design.md §6 Velkomst): 32 px fra
+              {/* Målt 1:1 på HelloFresh-velkomsten (3×-skærmbillede): cirklen 180 px
+                  og 62 px under appbaren (16 + 46), 33 px fra
                   cirklen til titlen, titel + grøn linje er én tekstblok uden
-                  mellemrum, 16 px videre til næste blok (målt: ca. 20 px ink-til-ink). */}
-              <div className="flex flex-col items-start gap-8 pt-4 text-left">
-                <div className="relative self-center h-[190px] w-[190px] min-h-[190px] min-w-[190px] max-h-[190px] max-w-[190px] shrink-0 overflow-visible">
-                  <div className="flex h-[190px] w-[190px] min-h-[190px] min-w-[190px] items-center justify-center overflow-hidden rounded-full bg-hf-tan">
+                  mellemrum, 14 px videre til næste blok (20 px ink-til-ink som HF). */}
+              <div className="flex flex-col items-start gap-[33px] pt-[46px] text-left">
+                <div className="relative self-center h-[180px] w-[180px] min-h-[180px] min-w-[180px] max-h-[180px] max-w-[180px] shrink-0 overflow-visible">
+                  <div className="flex h-[180px] w-[180px] min-h-[180px] min-w-[180px] items-center justify-center overflow-hidden rounded-full bg-hf-tan">
                     {displayImageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -744,10 +745,13 @@ export function AddProductView({
                 ) : (
                   <h1 className="hf-type-hero text-hf-black">{productTitle}</h1>
                 )}
-                {(state.product.packageSizeText || state.product.variant) && (
+                {/* Uden grøn linje står luften tilbage, så resten ikke rykker op. */}
+                {state.product.packageSizeText || state.product.variant ? (
                   <h2 className="hf-type-hero text-hf-green">
                     {[state.product.packageSizeText, state.product.variant].filter(Boolean).join(" · ")}
                   </h2>
+                ) : (
+                  <div aria-hidden="true" className="hf-type-hero">&nbsp;</div>
                 )}
                 </div>
               </div>
@@ -755,7 +759,7 @@ export function AddProductView({
               <button
                 type="button"
                 onClick={scrollToDetails}
-                className="hf-btn-text mt-4 mb-4 flex items-center gap-1 self-center font-normal text-hf-black"
+                className="hf-btn-text mt-[14px] mb-4 flex items-center gap-1 self-center font-normal text-hf-black"
               >
                 {t("addProduct.details")}
                 <IconChevronDown size={15} />
