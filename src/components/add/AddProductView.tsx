@@ -21,11 +21,11 @@ import { appendDishDraftIngredient } from "@/lib/dish-draft";
 import { selectRawContextImageUrl } from "@/lib/image-tags";
 import { MacroSliderBar } from "@/components/hf/MacroSliderBar";
 import { AdditiveInfoModal } from "@/components/hf/AdditiveInfoModal";
-import { TimeSection } from "@/components/hf/TimeSection";
 import { getAdditiveInfo } from "@/lib/additives";
 import { labelForAllergen } from "@/lib/allergens";
 import { matchToxins, type ToxinInfo } from "@/lib/toxins";
 import { ToxinInfoModal } from "@/components/hf/ToxinInfoModal";
+import { TimeSection } from "@/components/hf/TimeSection";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { isAlternativeServingConfident } from "@/lib/alternative-servings";
 import type { AlternativeServing } from "@/lib/product-analysis-types";
@@ -771,7 +771,9 @@ export function AddProductView({
                 </div>
               </div>
 
-              {!forDish && (
+              {/* Tidspunkt hører til den konkrete registrering, ikke varen: vises
+                  kun når en registrering er åbnet (/registration/[id]). */}
+              {isEditing && !forDish && (
                 <TimeSection value={time} onChange={setTime} className="mb-4 mt-8" />
               )}
 
