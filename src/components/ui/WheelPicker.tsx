@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { useWheelSnap } from "./useWheelSnap";
 
 const ITEM_HEIGHT = 40;
 
@@ -34,8 +35,12 @@ export function WheelPicker({
   const options: number[] = [];
   for (let n = max; n >= min; n -= 1) options.push(n);
 
-  const scrollRef = useRef<HTMLDivElement | null>(null);
-  const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { scrollRef } = useWheelSnap(
+    ITEM_HEIGHT,
+    options.length,
+    (index) => setPendingValue(options[index]),
+    open,
+  );
 
   useEffect(() => {
     if (!open || !scrollRef.current) return;
@@ -49,13 +54,6 @@ export function WheelPicker({
       return () => cancelAnimationFrame(raf);
     }
   }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  function commitFromScroll() {
-    if (!scrollRef.current) return;
-    const index = Math.round(scrollRef.current.scrollTop / ITEM_HEIGHT);
-    const clamped = Math.max(0, Math.min(options.length - 1, index));
-    setPendingValue(options[clamped]);
-  }
 
   function handleDone() {
     if (pendingValue !== null) onChange(pendingValue);
@@ -102,18 +100,13 @@ export function WheelPicker({
               />
               <div
                 ref={scrollRef}
-                onScroll={() => {
-                  if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
-                  scrollTimeout.current = setTimeout(commitFromScroll, 120);
-                }}
-                className="relative z-10 h-[200px] snap-y snap-mandatory overflow-y-auto"
-                style={{ scrollPaddingTop: 80, scrollPaddingBottom: 80 }}
+                className="relative z-10 h-[200px] snap-y snap-mandatory overflow-y-auto overscroll-contain"
               >
                 <div style={{ height: 80 }} />
                 {options.map((option) => (
                   <div
                     key={option}
-                    className={`hf-type-body-lg flex h-10 snap-center items-center justify-center ${
+                    className={`hf-type-body-lg flex h-10 snap-center snap-always items-center justify-center ${
                       option === pendingValue ? "hf-type-strong text-hf-black" : "text-hf-black opacity-50"
                     }`}
                   >

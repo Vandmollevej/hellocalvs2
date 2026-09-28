@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { useWheelSnap } from "./useWheelSnap";
 
 const ITEM_HEIGHT = 40;
 const MIN_YEAR = 1900;
@@ -149,42 +150,32 @@ function WheelColumn({
   render: (option: number) => string;
   onSelect: (option: number) => void;
 }) {
-  const scrollRef = useRef<HTMLDivElement | null>(null);
-  const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const selectedIndex = options.indexOf(selected);
+  const { scrollRef, isScrolling } = useWheelSnap(ITEM_HEIGHT, options.length, (index) => {
+    if (options[index] !== selected) onSelect(options[index]);
+  });
 
   // Keeps the wheel aligned when the value is set or clamped from outside
-  // (initial open, shorter month, future date).
+  // (initial open, shorter month, future date) — never while the user is
+  // still scrolling, since that yanked the wheel mid-momentum.
   useEffect(() => {
     const element = scrollRef.current;
-    if (!element || selectedIndex < 0) return;
+    if (!element || selectedIndex < 0 || isScrolling()) return;
     if (Math.round(element.scrollTop / ITEM_HEIGHT) !== selectedIndex) {
       element.scrollTop = selectedIndex * ITEM_HEIGHT;
     }
-  }, [selectedIndex, options.length]);
-
-  function commitFromScroll() {
-    if (!scrollRef.current) return;
-    const index = Math.round(scrollRef.current.scrollTop / ITEM_HEIGHT);
-    const clamped = Math.max(0, Math.min(options.length - 1, index));
-    if (options[clamped] !== selected) onSelect(options[clamped]);
-  }
+  }, [selectedIndex, options.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div
       ref={scrollRef}
-      onScroll={() => {
-        if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
-        scrollTimeout.current = setTimeout(commitFromScroll, 120);
-      }}
-      className="h-[200px] snap-y snap-mandatory overflow-y-auto"
-      style={{ scrollPaddingTop: 80, scrollPaddingBottom: 80 }}
+      className="h-[200px] snap-y snap-mandatory overflow-y-auto overscroll-contain"
     >
       <div style={{ height: 80 }} />
       {options.map((option) => (
         <div
           key={option}
-          className={`hf-type-body-lg flex h-10 snap-center items-center justify-center ${
+          className={`hf-type-body-lg flex h-10 snap-center snap-always items-center justify-center ${
             option === selected ? "hf-type-strong text-hf-black" : "text-hf-black opacity-50"
           }`}
         >
