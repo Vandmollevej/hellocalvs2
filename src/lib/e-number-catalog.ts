@@ -35,6 +35,7 @@ export type ENumberEntry = {
   flags: string[];
   variants: ENumberVariant[];
   efsa: ENumberEfsa | null;
+  verification?: { status: "verified" | "corrected" | "uncertain"; sources: string[]; notes: string };
   wikipedia: string;
   wikidata: string;
 };

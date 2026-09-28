@@ -154,6 +154,25 @@ function EntryView({ entry, requested }: { entry: ENumberEntry; requested: strin
         </Section>
       )}
 
+      {(entry.verification?.sources.length ?? 0) > 0 && (
+        <Section title="Faktatjekket mod">
+          <ul className="flex flex-col gap-1">
+            {entry.verification?.sources.map((url) => (
+              <li key={url} className="break-all">
+                <a
+                  href={url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hf-type-small text-hf-green underline underline-offset-2"
+                >
+                  {url.replace(/^https?:\/\/(www\.)?/, "")}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </Section>
+      )}
+
       <Section title={`Forskning og kilder om ${entry.code}`}>
         <ul className="flex flex-col gap-2">
           {links.map((link) => (
