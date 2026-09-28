@@ -145,7 +145,7 @@ export async function loadProductDatabase(filters: ProductDatabaseFilters) {
         externalSource: true,
         productCategory: true,
         brand: { select: { name: true } },
-        category: { select: { name: true } },
+        category: { select: { name: true, parent: { select: { name: true } } } },
         stores: { select: { store: { select: { name: true } } } },
         _count: { select: { barcodes: true } },
       },
@@ -170,7 +170,7 @@ export async function loadProductDatabase(filters: ProductDatabaseFilters) {
     status: p.status,
     // Nye kilder i skemaet (fx en kommende kæde-import) vises med deres rå navn.
     sourceLabel: (PRODUCT_SOURCE_LABELS as Record<string, string>)[p.externalSource ?? "USER"] ?? String(p.externalSource),
-    categoryLabel: p.category?.name ?? (p.productCategory ? PRODUCT_CATEGORY_LABELS[p.productCategory] : null),
+    categoryLabel: (p.category ? [p.category.parent?.name, p.category.name].filter(Boolean).join(" › ") : null) ?? (p.productCategory ? PRODUCT_CATEGORY_LABELS[p.productCategory] : null),
     stores: p.stores.map((s) => s.store.name),
     barcodeCount: p._count.barcodes,
   }));

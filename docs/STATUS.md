@@ -60,6 +60,13 @@ mails og push, cron-job-status, manglende API-nøgler og nøgletal (DECISIONS
 - Lint, typecheck og build kørt. Verificeret i headless Chromium (Playwright) mod en midlertidig testside med AdminShell: uden rettelsen scroller hverken musehjul (1400×800) eller touch-swipe (iPhone-viewport); med rettelsen når begge bunden. Fejlen ramte altså også PC.
 - Ikke i drift før PR #22 er merget til `master` (deploy kører kun ved push til master).
 
+## 2026-09-28: Kategoritræ + emballage for butiksvarer
+
+- Migration `20260928130000_category_tree_packaging` (`Category.parentId/sortOrder`, `Product.packaging`). Køres af deploy.
+- store-products-agent opretter træet og lægger de 50 prøvevarer i det; admin viser "Kød › Rå kød" og emballage.
+- Klassifikation af alle 10.524 varer med næring er kørt lokalt (fordeling i DECISIONS). 135 mistænkelige Bilka-rækker er skrevet til en tjekliste.
+- Mangler: import af resten + deres billeder (se punkt nedenfor om billeder og git).
+
 ## 2026-09-28: Admin "Retter" + billed-fallback
 
 - Ny menugruppe Retter (Brugeroprettede, HelloFresh, Valdemarsro); HelloFresh-retter står ikke længere i Produkt-database. Ingen migration.

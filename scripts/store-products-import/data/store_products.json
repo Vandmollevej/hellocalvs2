@@ -59,6 +59,9 @@
   "imageTags": [
    "Cutout"
   ],
+  "category": "Mejeri og æg",
+  "subcategory": null,
+  "packaging": null,
   "sources": {
    "BILKA": {
     "ean": "5711953055706",
@@ -176,548 +179,6 @@
   ]
  },
  {
-  "ean": "5700426293929",
-  "stores": [
-   "Bilka",
-   "Rema 1000"
-  ],
-  "externalSource": "BILKA",
-  "name": "Skummetmælk 0,1% fedt",
-  "brand": "Arla",
-  "subbrand": null,
-  "productType": "skummetmælk",
-  "variant": null,
-  "flavor": null,
-  "quantity": "1 l",
-  "packCount": null,
-  "productCategory": "DRINK",
-  "storeDepartment": "Mejeri & køl",
-  "keywords": [
-   "0,1% fedt"
-  ],
-  "ingredients": "Økologisk SKUMMETMÆLK 0,1% fedt.",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/arla-oeko-skummetmaelk-01-fedt-oeko/19688/",
-  "nutrition": {
-   "energyKj": 141.0,
-   "kcal": 33.0,
-   "fat": 0.1,
-   "saturatedFat": 0.0,
-   "carbs": 4.7,
-   "sugars": 4.7,
-   "fiber": 0.5,
-   "protein": 3.5,
-   "salt": 0.11
-  },
-  "filters": {
-   "organic": "Økologisk",
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": null,
-   "sweeteners": null,
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": null,
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 0.1,
-   "countryOfOrigin": "Danmark",
-   "wholeGrain": null,
-   "keyhole": "Nøglehul",
-   "animalWelfare": [
-    "Bedre Dyrevelfærd 3"
-   ],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5700426293929.png",
-  "imageTags": [
-   "Cutout"
-  ],
-  "sources": {
-   "BILKA": {
-    "ean": "5700426293929",
-    "stores": [
-     "Bilka"
-    ],
-    "name": "Skummetmælk 0,1% fedt",
-    "brand": "Arla",
-    "subbrand": null,
-    "productType": "skummetmælk",
-    "variant": null,
-    "flavor": null,
-    "quantity": "1 l",
-    "packCount": null,
-    "productCategory": "DRINK",
-    "keywords": [],
-    "ingredients": "Økologisk SKUMMETMÆLK 0,1% fedt.",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "https://www.bilkatogo.dk/produkt/arla-oeko-skummetmaelk-01-fedt-oeko/19688/",
-    "nutrition": {
-     "energyKj": 141.0,
-     "kcal": 33.0,
-     "fat": 0.1,
-     "saturatedFat": 0.0,
-     "carbs": 4.7,
-     "sugars": 4.7,
-     "protein": 3.5,
-     "salt": 0.11
-    },
-    "filters": {
-     "organic": "Økologisk",
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": null,
-     "sweeteners": null,
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": 0.1,
-     "countryOfOrigin": null,
-     "wholeGrain": null,
-     "keyhole": null,
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   },
-   "REMA1000": {
-    "ean": "5700426293929",
-    "stores": [
-     "Rema 1000"
-    ],
-    "name": "Skummetmælk",
-    "brand": "Arla",
-    "subbrand": null,
-    "productType": "Skummetmælk",
-    "variant": null,
-    "flavor": null,
-    "quantity": "1Ltr",
-    "packCount": null,
-    "productCategory": "PROCESSED",
-    "keywords": [
-     "0,1% fedt"
-    ],
-    "ingredients": "Økologisk SKUMMETMÆLK 0,1% fedt.",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "Https://shop.rema1000.dk/varer/21513",
-    "nutrition": {
-     "energyKj": 141.0,
-     "kcal": 33.0,
-     "fat": 0.5,
-     "saturatedFat": 0.1,
-     "carbs": 4.7,
-     "sugars": 4.7,
-     "fiber": 0.5,
-     "protein": 3.5,
-     "salt": 0.11
-    },
-    "filters": {
-     "organic": "Økologisk",
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": null,
-     "sweeteners": null,
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": 0.1,
-     "countryOfOrigin": "Danmark",
-     "wholeGrain": null,
-     "keyhole": "Nøglehul",
-     "animalWelfare": [
-      "Bedre Dyrevelfærd 3"
-     ],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   }
-  },
-  "images": [
-   {
-    "file": "5700426293929.png",
-    "tags": [
-     "Cutout"
-    ]
-   },
-   {
-    "file": "5700426293929_2.png",
-    "tags": [
-     "Cutout"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5760466870306",
-  "stores": [
-   "Bilka",
-   "Rema 1000"
-  ],
-  "externalSource": "BILKA",
-  "name": "A38 naturel 0,4% fedt",
-  "brand": "Arla Cultura",
-  "subbrand": null,
-  "productType": "syrnet A38 skummetmælk 0, 5% fedt",
-  "variant": "Cultura",
-  "flavor": "Naturel",
-  "quantity": "1 kg",
-  "packCount": null,
-  "productCategory": "PROCESSED",
-  "storeDepartment": "Mejeri & køl",
-  "keywords": [
-   "0,4% fedt"
-  ],
-  "ingredients": "Økologisk MÆLK, MÆLKESYREKULTUR, L. ACIDOPHILUSKULTUR.",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/arla-cultura-a38-naturel-04-fedt-oeko/19808/",
-  "nutrition": {
-   "energyKj": 163.0,
-   "kcal": 39.0,
-   "fat": 0.4,
-   "saturatedFat": 0.3,
-   "carbs": 3.7,
-   "sugars": 3.7,
-   "fiber": 0.5,
-   "protein": 4.3,
-   "salt": 0.11
-  },
-  "filters": {
-   "organic": "Økologisk",
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": null,
-   "sweeteners": null,
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": null,
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 0.4,
-   "countryOfOrigin": "Danmark",
-   "wholeGrain": null,
-   "keyhole": "Nøglehul",
-   "animalWelfare": [
-    "Bedre Dyrevelfærd 3"
-   ],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5760466870306.png",
-  "imageTags": [
-   "Cutout"
-  ],
-  "sources": {
-   "BILKA": {
-    "ean": "5760466870306",
-    "stores": [
-     "Bilka"
-    ],
-    "name": "A38 naturel 0,4% fedt",
-    "brand": "Arla Cultura",
-    "subbrand": null,
-    "productType": "syrnet A38 skummetmælk 0, 5% fedt",
-    "variant": null,
-    "flavor": null,
-    "quantity": "1 kg",
-    "packCount": null,
-    "productCategory": "PROCESSED",
-    "keywords": [],
-    "ingredients": "Økologisk MÆLK, MÆLKESYREKULTUR, L. ACIDOPHILUSKULTUR.",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "https://www.bilkatogo.dk/produkt/arla-cultura-a38-naturel-04-fedt-oeko/19808/",
-    "nutrition": {
-     "energyKj": 163.0,
-     "kcal": 39.0,
-     "fat": 0.4,
-     "saturatedFat": 0.3,
-     "carbs": 3.7,
-     "sugars": 3.7,
-     "protein": 4.3,
-     "salt": 0.11
-    },
-    "filters": {
-     "organic": "Økologisk",
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": null,
-     "sweeteners": null,
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": 0.4,
-     "countryOfOrigin": null,
-     "wholeGrain": null,
-     "keyhole": null,
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   },
-   "REMA1000": {
-    "ean": "5760466870306",
-    "stores": [
-     "Rema 1000"
-    ],
-    "name": "A38, Cultura, Naturel",
-    "brand": "Arla",
-    "subbrand": null,
-    "productType": "A38",
-    "variant": "Cultura",
-    "flavor": "Naturel",
-    "quantity": "1kg",
-    "packCount": null,
-    "productCategory": "PROCESSED",
-    "keywords": [
-     "0,4% fedt"
-    ],
-    "ingredients": "Økologisk MÆLK , MÆLKESYREKULTUR , L. ACIDOPHILUSKULTUR.",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "Https://shop.rema1000.dk/varer/22006",
-    "nutrition": {
-     "energyKj": 163.0,
-     "kcal": 39.0,
-     "fat": 0.5,
-     "saturatedFat": 0.3,
-     "carbs": 3.7,
-     "sugars": 3.7,
-     "fiber": 0.5,
-     "protein": 4.3,
-     "salt": 0.11
-    },
-    "filters": {
-     "organic": "Økologisk",
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": null,
-     "sweeteners": null,
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": 0.4,
-     "countryOfOrigin": "Danmark",
-     "wholeGrain": null,
-     "keyhole": "Nøglehul",
-     "animalWelfare": [
-      "Bedre Dyrevelfærd 3"
-     ],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   }
-  },
-  "images": [
-   {
-    "file": "5760466870306.png",
-    "tags": [
-     "Cutout"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5700426205373",
-  "stores": [
-   "Bilka",
-   "Rema 1000"
-  ],
-  "externalSource": "BILKA",
-  "name": "Yoghurt m. skovbær 0,1% fedt u. tilsat sukker",
-  "brand": "Cheasy",
-  "subbrand": null,
-  "productType": "Syrnet mælk",
-  "variant": "skovbær 0/ 1% fedt",
-  "flavor": null,
-  "quantity": "1 kg",
-  "packCount": null,
-  "productCategory": "PROCESSED",
-  "storeDepartment": "Mejeri & køl",
-  "keywords": [
-   "Tilsat sukker"
-  ],
-  "ingredients": "SKUMMETMÆLK, jordbær (4,5%), hindbær (1,4%), brombær (1,3%), blåbær (1,2%), modificeret stivelse, hyldebærjuicekoncentrat, surhedsregulerende middel (trinatriumcitrat) sødestof (aspartam**), naturlig aroma, YOGHURTKULTUR. ** Indeholder en phenylalaninkilde.",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/cheasy-yoghurt-m-skovbaer-01-fedt-u-tilsat-sukker/19773/",
-  "nutrition": {
-   "energyKj": 159.0,
-   "kcal": 37.0,
-   "fat": 0.1,
-   "saturatedFat": 0.1,
-   "carbs": 4.3,
-   "sugars": 4.0,
-   "fiber": 0.5,
-   "protein": 4.2,
-   "salt": 0.15
-  },
-  "filters": {
-   "organic": "Økologisk",
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": "Sukkerfri",
-   "sweeteners": "Sødemidler",
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": null,
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 0.1,
-   "countryOfOrigin": "Danmark",
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5700426205373.png",
-  "imageTags": [
-   "Cutout"
-  ],
-  "sources": {
-   "BILKA": {
-    "ean": "5700426205373",
-    "stores": [
-     "Bilka"
-    ],
-    "name": "Yoghurt m. skovbær 0,1% fedt u. tilsat sukker",
-    "brand": "Cheasy",
-    "subbrand": null,
-    "productType": "Syrnet mælk",
-    "variant": "skovbær 0/ 1% fedt",
-    "flavor": null,
-    "quantity": "1 kg",
-    "packCount": null,
-    "productCategory": "PROCESSED",
-    "keywords": [
-     "Tilsat sukker"
-    ],
-    "ingredients": "SKUMMETMÆLK, jordbær (4,5%), hindbær (1,4%), brombær (1,3%), blåbær (1,2%), modificeret stivelse, hyldebærjuicekoncentrat, surhedsregulerende middel (trinatriumcitrat) sødestof (aspartam**), naturlig aroma, YOGHURTKULTUR. ** Indeholder en phenylalaninkilde.",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "https://www.bilkatogo.dk/produkt/cheasy-yoghurt-m-skovbaer-01-fedt-u-tilsat-sukker/19773/",
-    "nutrition": {
-     "energyKj": 159.0,
-     "kcal": 37.0,
-     "fat": 0.1,
-     "saturatedFat": 0.1,
-     "carbs": 4.3,
-     "sugars": 4.0,
-     "protein": 4.2,
-     "salt": 0.15
-    },
-    "filters": {
-     "organic": null,
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": null,
-     "sweeteners": "Sødemidler",
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": 0.1,
-     "countryOfOrigin": null,
-     "wholeGrain": null,
-     "keyhole": null,
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   },
-   "REMA1000": {
-    "ean": "5700426205373",
-    "stores": [
-     "Rema 1000"
-    ],
-    "name": "Skovbær Yoghurt (Sukkerfri)",
-    "brand": "Cheasy",
-    "subbrand": null,
-    "productType": "Skovbær Yoghurt",
-    "variant": "Sukkerfri",
-    "flavor": null,
-    "quantity": "1000g",
-    "packCount": null,
-    "productCategory": "PROCESSED",
-    "keywords": [],
-    "ingredients": "SKUMMETMÆLK , jordbær (4,5%), hindbær (1,4%), brombær (1,3%), blåbær (1,2%), modificeret stivelse, hyldebærjuicekoncentrat, surhedsregulerende middel (trinatriumcitrat) sødestof (aspartam**), naturlig aroma, YOGHURTKULTUR. ** Indeholder en phenylalaninkilde.",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "Https://shop.rema1000.dk/varer/22829",
-    "nutrition": {
-     "energyKj": 159.0,
-     "kcal": 37.0,
-     "fat": 0.5,
-     "saturatedFat": 0.1,
-     "carbs": 4.3,
-     "sugars": 4.0,
-     "fiber": 0.5,
-     "protein": 4.2,
-     "salt": 0.15
-    },
-    "filters": {
-     "organic": "Økologisk",
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": "Sukkerfri",
-     "sweeteners": null,
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": null,
-     "countryOfOrigin": "Danmark",
-     "wholeGrain": null,
-     "keyhole": null,
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   }
-  },
-  "images": [
-   {
-    "file": "5700426205373.png",
-    "tags": [
-     "Cutout"
-    ]
-   }
-  ]
- },
- {
   "ean": "5702024202020",
   "stores": [
    "Bilka",
@@ -779,6 +240,9 @@
   "imageTags": [
    "Original"
   ],
+  "category": "Fisk og skaldyr",
+  "subcategory": "Tilberedt fisk",
+  "packaging": "Dåse",
   "sources": {
    "BILKA": {
     "ean": "5702024202020",
@@ -906,182 +370,6 @@
   ]
  },
  {
-  "ean": "5703985055885",
-  "stores": [
-   "Bilka",
-   "Rema 1000"
-  ],
-  "externalSource": "BILKA",
-  "name": "Hytteost Naturel 1,5% fedt",
-  "brand": "Mammen",
-  "subbrand": null,
-  "productType": "HYTTEOST 1, 5% FEDT",
-  "variant": "Laktosefri",
-  "flavor": null,
-  "quantity": "200 g",
-  "packCount": null,
-  "productCategory": "PROCESSED",
-  "storeDepartment": "Mejeri & køl",
-  "keywords": [
-   "1,5% fedt"
-  ],
-  "ingredients": "Pasteuriseret SKUMMETMÆLK og FLØDE, salt, modificeret kartoffelstivelse, MÆLKESYREKULTUR, mikrobiel OSTELØBE, laktase.",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/mammen-hytteost-naturel-laktosefri-15-fedt/145522/",
-  "nutrition": {
-   "energyKj": 316.0,
-   "kcal": 75.0,
-   "fat": 1.5,
-   "saturatedFat": 1.0,
-   "carbs": 2.3,
-   "sugars": 1.5,
-   "fiber": 0.5,
-   "protein": 13.0,
-   "salt": 0.84
-  },
-  "filters": {
-   "organic": null,
-   "glutenFree": null,
-   "lactoseFree": "Laktosefri",
-   "sugarFree": null,
-   "sweeteners": null,
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": null,
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 1.5,
-   "countryOfOrigin": "Danmark",
-   "wholeGrain": null,
-   "keyhole": "Nøglehul",
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5703985055885.png",
-  "imageTags": [
-   "Cutout"
-  ],
-  "sources": {
-   "BILKA": {
-    "ean": "5703985055885",
-    "stores": [
-     "Bilka"
-    ],
-    "name": "Hytteost Naturel 1,5% fedt",
-    "brand": "Mammen",
-    "subbrand": null,
-    "productType": "HYTTEOST 1, 5% FEDT",
-    "variant": null,
-    "flavor": null,
-    "quantity": "200 g",
-    "packCount": null,
-    "productCategory": "PROCESSED",
-    "keywords": [],
-    "ingredients": "Pasteuriseret SKUMMETMÆLK og FLØDE, salt, modificeret kartoffelstivelse, MÆLKESYREKULTUR, mikrobiel OSTELØBE, laktase.",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "https://www.bilkatogo.dk/produkt/mammen-hytteost-naturel-laktosefri-15-fedt/145522/",
-    "nutrition": {
-     "energyKj": 316.0,
-     "kcal": 75.0,
-     "fat": 1.5,
-     "saturatedFat": 1.0,
-     "carbs": 2.3,
-     "sugars": 1.5,
-     "protein": 13.0,
-     "salt": 0.84
-    },
-    "filters": {
-     "organic": null,
-     "glutenFree": null,
-     "lactoseFree": "Laktosefri",
-     "sugarFree": null,
-     "sweeteners": null,
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": 1.5,
-     "countryOfOrigin": null,
-     "wholeGrain": null,
-     "keyhole": null,
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   },
-   "REMA1000": {
-    "ean": "5703985055885",
-    "stores": [
-     "Rema 1000"
-    ],
-    "name": "Hytteost (Laktosefri)",
-    "brand": "Mammen",
-    "subbrand": null,
-    "productType": "Hytteost",
-    "variant": "Laktosefri",
-    "flavor": null,
-    "quantity": "200g",
-    "packCount": null,
-    "productCategory": "PROCESSED",
-    "keywords": [
-     "1,5% fedt"
-    ],
-    "ingredients": "Pasteuriseret skummetmælk og fløde , salt, modificeret kartoffelstivelse, mælkesyrekultur , mikrobiel osteløbe , laktase",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "Https://shop.rema1000.dk/varer/28825",
-    "nutrition": {
-     "energyKj": 316.0,
-     "kcal": 75.0,
-     "fat": 1.5,
-     "saturatedFat": 1.0,
-     "carbs": 2.3,
-     "sugars": 1.5,
-     "fiber": 0.5,
-     "protein": 13.0,
-     "salt": 0.84
-    },
-    "filters": {
-     "organic": null,
-     "glutenFree": null,
-     "lactoseFree": "Laktosefri",
-     "sugarFree": null,
-     "sweeteners": null,
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": 1.5,
-     "countryOfOrigin": "Danmark",
-     "wholeGrain": null,
-     "keyhole": "Nøglehul",
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   }
-  },
-  "images": [
-   {
-    "file": "5703985055885.png",
-    "tags": [
-     "Cutout"
-    ]
-   }
-  ]
- },
- {
   "ean": "5704080960227",
   "stores": [
    "Bilka",
@@ -1149,6 +437,9 @@
   "imageTags": [
    "Cutout"
   ],
+  "category": "Kød",
+  "subcategory": "Tilberedt kød",
+  "packaging": null,
   "sources": {
    "BILKA": {
     "ean": "5704080960227",
@@ -1334,6 +625,9 @@
   "imageTags": [
    "Original"
   ],
+  "category": "Forarbejdet",
+  "subcategory": null,
+  "packaging": null,
   "sources": {
    "BILKA": {
     "ean": "5701977003432",
@@ -1458,178 +752,6 @@
   ]
  },
  {
-  "ean": "5711953195143",
-  "stores": [
-   "Bilka",
-   "Rema 1000"
-  ],
-  "externalSource": "BILKA",
-  "name": "Protein chokolademousse m chokolade fudgesmag 1,8% fedt",
-  "brand": "Arla Protein",
-  "subbrand": null,
-  "productType": "Protein chokolademousse",
-  "variant": "chokolade fudgesmag 1/ 8% fedt",
-  "flavor": null,
-  "quantity": "200 g",
-  "packCount": null,
-  "productCategory": "PROCESSED",
-  "storeDepartment": "Mejeri & køl",
-  "keywords": [],
-  "ingredients": "SKUMMETMÆLK, 7,2% MÆLKEPROTEIN, FLØDE, sødestoffer (erythritol, steviolglykosider fra Stevia), 2% kakaopulver, modificeret majsstivelse, gelatine, fortykningsmidler (guargummi, carrageenan), naturlig aroma, surhedsregulerende midler (natriumphosphater, natriumcarbonater), fyldemiddel (nitrogen), laktaseenzym.",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/arla-protein-protein-chokolademousse-m-chokolade-fudgesmag-18-fedt-laktosefri/154733/",
-  "nutrition": {
-   "energyKj": 342.0,
-   "kcal": 81.0,
-   "fat": 1.8,
-   "saturatedFat": 1.2,
-   "carbs": 8.7,
-   "sugars": 4.7,
-   "fiber": 0.5,
-   "protein": 10.0,
-   "salt": 0.22
-  },
-  "filters": {
-   "organic": "Økologisk",
-   "glutenFree": null,
-   "lactoseFree": "Laktosefri",
-   "sugarFree": null,
-   "sweeteners": "Sødemidler",
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": null,
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 1.8,
-   "countryOfOrigin": null,
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5711953195143.png",
-  "imageTags": [
-   "Cutout"
-  ],
-  "sources": {
-   "BILKA": {
-    "ean": "5711953195143",
-    "stores": [
-     "Bilka"
-    ],
-    "name": "Protein chokolademousse m chokolade fudgesmag 1,8% fedt",
-    "brand": "Arla Protein",
-    "subbrand": null,
-    "productType": "Protein chokolademousse",
-    "variant": "chokolade fudgesmag 1/ 8% fedt",
-    "flavor": null,
-    "quantity": "200 g",
-    "packCount": null,
-    "productCategory": "PROCESSED",
-    "keywords": [],
-    "ingredients": "SKUMMETMÆLK, 7,2% MÆLKEPROTEIN, FLØDE, sødestoffer (erythritol, steviolglykosider fra Stevia), 2% kakaopulver, modificeret majsstivelse, gelatine, fortykningsmidler (guargummi, carrageenan), naturlig aroma, surhedsregulerende midler (natriumphosphater, natriumcarbonater), fyldemiddel (nitrogen), laktaseenzym.",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "https://www.bilkatogo.dk/produkt/arla-protein-protein-chokolademousse-m-chokolade-fudgesmag-18-fedt-laktosefri/154733/",
-    "nutrition": {
-     "energyKj": 342.0,
-     "kcal": 81.0,
-     "fat": 1.8,
-     "saturatedFat": 1.2,
-     "carbs": 8.7,
-     "sugars": 4.7,
-     "protein": 10.0,
-     "salt": 0.22
-    },
-    "filters": {
-     "organic": null,
-     "glutenFree": null,
-     "lactoseFree": "Laktosefri",
-     "sugarFree": null,
-     "sweeteners": "Sødemidler",
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": 1.8,
-     "countryOfOrigin": null,
-     "wholeGrain": null,
-     "keyhole": null,
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   },
-   "REMA1000": {
-    "ean": "5711953195143",
-    "stores": [
-     "Rema 1000"
-    ],
-    "name": "Protein Mousse Af Chokoladefugde med Smag (Laktosefri)",
-    "brand": "Arla",
-    "subbrand": null,
-    "productType": "Protein Mousse Af Chokoladefugde",
-    "variant": "med Smag",
-    "flavor": null,
-    "quantity": "200g",
-    "packCount": null,
-    "productCategory": "PROCESSED",
-    "keywords": [],
-    "ingredients": "SKUMMETMÆLK , 7,2% MÆLKEPROTEIN , FLØDE , sødestoffer (erythritol, steviolglykosider fra Stevia), 2% kakaopulver, modificeret majsstivelse, gelatine, fortykningsmidler (guargummi, carrageenan), naturlig aroma, surhedsregulerende midler (natriumphosphater, natriumcarbonater), fyldemiddel (nitrogen), laktaseenzym.",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "Https://shop.rema1000.dk/varer/24172",
-    "nutrition": {
-     "energyKj": 342.0,
-     "kcal": 81.0,
-     "fat": 1.8,
-     "saturatedFat": 1.2,
-     "carbs": 8.7,
-     "sugars": 4.7,
-     "fiber": 0.5,
-     "protein": 10.0,
-     "salt": 0.22
-    },
-    "filters": {
-     "organic": "Økologisk",
-     "glutenFree": null,
-     "lactoseFree": "Laktosefri",
-     "sugarFree": null,
-     "sweeteners": null,
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": null,
-     "countryOfOrigin": null,
-     "wholeGrain": null,
-     "keyhole": null,
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   }
-  },
-  "images": [
-   {
-    "file": "5711953195143.png",
-    "tags": [
-     "Cutout"
-    ]
-   }
-  ]
- },
- {
   "ean": "5741000129623",
   "stores": [
    "Bilka",
@@ -1697,6 +819,9 @@
   "imageTags": [
    "Cutout"
   ],
+  "category": "Drikkevarer",
+  "subcategory": "Sodavand",
+  "packaging": null,
   "sources": {
    "BILKA": {
     "ean": "5741000129623",
@@ -1822,6 +947,2536 @@
   ]
  },
  {
+  "ean": "5703161810130",
+  "stores": [
+   "Bilka",
+   "Rema 1000"
+  ],
+  "externalSource": "BILKA",
+  "name": "Abrikosmarmelade u. tilsat sukker",
+  "brand": "Easis",
+  "subbrand": null,
+  "productType": "Abrikosmarmelade",
+  "variant": "Abrikos",
+  "flavor": null,
+  "quantity": "285 g",
+  "packCount": null,
+  "productCategory": "PROCESSED",
+  "storeDepartment": "Kolonial",
+  "keywords": [
+   "Tilsat sukker"
+  ],
+  "ingredients": "Abrikos (Indeholder SVOVLDIOXID) (60%), vand, sødestof (erythritol 5%), fortykningsmiddel (pektin), surhedsregulerende middel (citronsyre), konserveringsmiddel (kaliumsorbat), sødestoffer (sucralose, acesulfamkalium).",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/easis-abrikosmarmelade-u-tilsat-sukker/85301/",
+  "nutrition": {
+   "energyKj": 141.0,
+   "kcal": 34.0,
+   "fat": 0.5,
+   "saturatedFat": 0.0,
+   "carbs": 12.0,
+   "sugars": 4.9,
+   "fiber": 1.4,
+   "protein": 0.5,
+   "salt": 0.03
+  },
+  "filters": {
+   "organic": "Økologisk",
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": "Sukkerfri",
+   "sweeteners": "Sødemidler",
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": null,
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5703161810130.png",
+  "imageTags": [
+   "Cutout"
+  ],
+  "category": "Kolonial og tørvarer",
+  "subcategory": null,
+  "packaging": null,
+  "sources": {
+   "BILKA": {
+    "ean": "5703161810130",
+    "stores": [
+     "Bilka"
+    ],
+    "name": "Abrikosmarmelade u. tilsat sukker",
+    "brand": "Easis",
+    "subbrand": null,
+    "productType": "Abrikosmarmelade",
+    "variant": null,
+    "flavor": null,
+    "quantity": "285 g",
+    "packCount": null,
+    "productCategory": "PROCESSED",
+    "keywords": [
+     "Tilsat sukker"
+    ],
+    "ingredients": "Abrikos (Indeholder SVOVLDIOXID) (60%), vand, sødestof (erythritol 5%), fortykningsmiddel (pektin), surhedsregulerende middel (citronsyre), konserveringsmiddel (kaliumsorbat), sødestoffer (sucralose, acesulfamkalium).",
+    "allergens": [],
+    "additives": [],
+    "sourceUrl": "https://www.bilkatogo.dk/produkt/easis-abrikosmarmelade-u-tilsat-sukker/85301/",
+    "nutrition": {
+     "energyKj": 141.0,
+     "kcal": 34.0,
+     "fat": 0.5,
+     "saturatedFat": 0.0,
+     "carbs": 12.0,
+     "sugars": 4.9,
+     "fiber": 1.4,
+     "protein": 0.5,
+     "salt": 0.03
+    },
+    "filters": {
+     "organic": null,
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": "Sødemidler",
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": null,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   },
+   "REMA1000": {
+    "ean": "5703161810130",
+    "stores": [
+     "Rema 1000"
+    ],
+    "name": "Marmelade, Abrikos (Sukkerfri)",
+    "brand": "Easis",
+    "subbrand": null,
+    "productType": "Marmelade",
+    "variant": "Abrikos",
+    "flavor": null,
+    "quantity": "285g",
+    "packCount": null,
+    "productCategory": "PROCESSED",
+    "keywords": [],
+    "ingredients": "Abrikos (Indeholder SVOVLDIOXID ) (60%), vand, sødestof (erythritol 5%), fortykningsmiddel (pektin), surhedsregulerende middel (citronsyre), konserveringsmiddel (kaliumsorbat), sødestoffer (sucralose, acesulfamkalium).",
+    "allergens": [],
+    "additives": [],
+    "sourceUrl": "Https://shop.rema1000.dk/varer/105041",
+    "nutrition": {
+     "energyKj": 141.0,
+     "kcal": 34.0,
+     "fat": 0.5,
+     "saturatedFat": 0.1,
+     "carbs": 12.0,
+     "sugars": 4.9,
+     "fiber": 1.4,
+     "protein": 0.5,
+     "salt": 0.03
+    },
+    "filters": {
+     "organic": "Økologisk",
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": "Sukkerfri",
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": null,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   }
+  },
+  "images": [
+   {
+    "file": "5703161810130.png",
+    "tags": [
+     "Cutout"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5701246042322",
+  "stores": [
+   "Bilka",
+   "Rema 1000"
+  ],
+  "externalSource": "BILKA",
+  "name": "Protein sandwichbrød",
+  "brand": "Kohberg",
+  "subbrand": null,
+  "productType": "Bagt hvedebrød",
+  "variant": "Protein",
+  "flavor": null,
+  "quantity": "380 g",
+  "packCount": null,
+  "productCategory": "PROCESSED",
+  "storeDepartment": "Brød & kager",
+  "keywords": [],
+  "ingredients": "Vand, FULDKORNSHVEDEMEL^ 21 %, HVEDEGLUTEN, BYGGRYN^ 9 %, RUGGRYN^ 7 %, solsikkekerner 5 %, hørfrø 3 %, chiafrø 3 %, fermenteret HVEDEMEL, DURUMHVEDEMEL 2 %, tørret surdej (HVEDEMEL, surdejskultur), solsikkekernemel (affedtet), salt tilsat jod, sukker, HVEDEMEL, tørgær, BYGMALTEKSTRAKT, fermenteret hestebønnemel (HVEDE, RUG, BYG, HAVRE), rapsolie, eddike, majsstivelse, fortykningsmidler (E412), vegetabilske emulgatorer (E471, E472e), RUGMEL^, syre (E270), dextrose, melbehandlingsmidler (enzymer (HVEDE), E300). Drys: BYGGRYN^ og DURUMHVEDEMEL. ^Fuldkorn.",
+  "allergens": [],
+  "additives": [
+   "E412",
+   "E471",
+   "E472E",
+   "E270",
+   "E300"
+  ],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/kohberg-protein-sandwichbroed/141802/",
+  "nutrition": {
+   "energyKj": 1.092,
+   "kcal": 261.0,
+   "fat": 6.9,
+   "saturatedFat": 0.9,
+   "carbs": 30.0,
+   "sugars": 2.3,
+   "fiber": 7.3,
+   "protein": 16.0,
+   "salt": 1.0
+  },
+  "filters": {
+   "organic": "Økologisk",
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": null,
+   "wholeGrain": "Fuldkorn",
+   "keyhole": "Nøglehul",
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5701246042322.png",
+  "imageTags": [
+   "Cutout"
+  ],
+  "category": "Brød og bagværk",
+  "subcategory": null,
+  "packaging": null,
+  "sources": {
+   "BILKA": {
+    "ean": "5701246042322",
+    "stores": [
+     "Bilka"
+    ],
+    "name": "Protein sandwichbrød",
+    "brand": "Kohberg",
+    "subbrand": null,
+    "productType": "Bagt hvedebrød",
+    "variant": null,
+    "flavor": null,
+    "quantity": "380 g",
+    "packCount": null,
+    "productCategory": "PROCESSED",
+    "keywords": [],
+    "ingredients": "Vand, FULDKORNSHVEDEMEL^ 21 %, HVEDEGLUTEN, BYGGRYN^ 9 %, RUGGRYN^ 7 %, solsikkekerner 5 %, hørfrø 3 %, chiafrø 3 %, fermenteret HVEDEMEL, DURUMHVEDEMEL 2 %, tørret surdej (HVEDEMEL, surdejskultur), solsikkekernemel (affedtet), salt tilsat jod, sukker, HVEDEMEL, tørgær, BYGMALTEKSTRAKT, fermenteret hestebønnemel (HVEDE, RUG, BYG, HAVRE), rapsolie, eddike, majsstivelse, fortykningsmidler (E412), vegetabilske emulgatorer (E471, E472e), RUGMEL^, syre (E270), dextrose, melbehandlingsmidler (enzymer (HVEDE), E300). Drys: BYGGRYN^ og DURUMHVEDEMEL. ^Fuldkorn.",
+    "allergens": [],
+    "additives": [
+     "E412",
+     "E471",
+     "E472E",
+     "E270",
+     "E300"
+    ],
+    "sourceUrl": "https://www.bilkatogo.dk/produkt/kohberg-protein-sandwichbroed/141802/",
+    "nutrition": {
+     "energyKj": 1.092,
+     "kcal": 261.0,
+     "fat": 6.9,
+     "saturatedFat": 0.9,
+     "carbs": 30.0,
+     "sugars": 2.3,
+     "fiber": 7.3,
+     "protein": 16.0,
+     "salt": 1.0
+    },
+    "filters": {
+     "organic": null,
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": null,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   },
+   "REMA1000": {
+    "ean": "5701246042322",
+    "stores": [
+     "Rema 1000"
+    ],
+    "name": "Cafe Sandwich, Protein",
+    "brand": "Kohberg",
+    "subbrand": null,
+    "productType": "Cafe Sandwich",
+    "variant": "Protein",
+    "flavor": null,
+    "quantity": "380g",
+    "packCount": null,
+    "productCategory": "PROCESSED",
+    "keywords": [],
+    "ingredients": "Vand, FULDKORNSHVEDEMEL^ 21 %, HVEDEGLUTEN , BYGGRYN^ 9 %, RUGGRYN^ 7 %, solsikkekerner 5 %, hørfrø 3 %, chiafrø 3 %, fermenteret HVEDEMEL , DURUMHVEDEMEL 2 %, tørret surdej ( HVEDEMEL , surdejskultur), solsikkekernemel (affedtet), salt tilsat jod, sukker, HVEDEMEL , tørgær, BYGMALTEKSTRAKT , fermenteret hestebønnemel ( HVEDE , RUG , BYG , HAVRE ), rapsolie, eddike, majsstivelse, fortykningsmidler (E412), vegetabilske emulgatorer (E471, E472e), rugmel^ , syre (E270), dextrose, melbehandlingsmidler (enzymer ( HVEDE ) , E300). Drys: BYGGRYN^ og DURUMHVEDEMEL . ^Fuldkorn.",
+    "allergens": [],
+    "additives": [],
+    "sourceUrl": "Https://shop.rema1000.dk/varer/60141",
+    "nutrition": {
+     "energyKj": 1092.0,
+     "kcal": 261.0,
+     "fat": 6.9,
+     "saturatedFat": 0.9,
+     "carbs": 30.0,
+     "sugars": 2.3,
+     "fiber": 7.3,
+     "protein": 16.0,
+     "salt": 1.0
+    },
+    "filters": {
+     "organic": "Økologisk",
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": null,
+     "countryOfOrigin": null,
+     "wholeGrain": "Fuldkorn",
+     "keyhole": "Nøglehul",
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   }
+  },
+  "images": [
+   {
+    "file": "5701246042322.png",
+    "tags": [
+     "Cutout"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5711018034899",
+  "stores": [
+   "Bilka",
+   "Rema 1000"
+  ],
+  "externalSource": "BILKA",
+  "name": "Pilsner 0,0%",
+  "brand": "Harboe",
+  "subbrand": null,
+  "productType": "Øl",
+  "variant": "Pilsner",
+  "flavor": null,
+  "quantity": "1,98 l",
+  "packCount": 6,
+  "productCategory": "DRINK",
+  "storeDepartment": "Drikkevarer",
+  "keywords": [],
+  "ingredients": "Vand, BYGMALT, humle, humleekstrakt, naturlig aroma, kulsyre.",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/harboe-harboe-pilsner-00/121101/",
+  "nutrition": {
+   "energyKj": 84.0,
+   "kcal": 20.0,
+   "fat": 0.5,
+   "saturatedFat": 0.1,
+   "carbs": 4.5,
+   "sugars": 2.5,
+   "fiber": 0.5,
+   "protein": 0.5,
+   "salt": 0.01
+  },
+  "filters": {
+   "organic": "Økologisk",
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": "Alkoholfri",
+   "alcoholPercent": 0.0,
+   "fatPercent": null,
+   "countryOfOrigin": null,
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5711018034899.png",
+  "imageTags": [
+   "Cutout"
+  ],
+  "category": "Drikkevarer",
+  "subcategory": null,
+  "packaging": null,
+  "sources": {
+   "BILKA": {
+    "ean": "5711018034899",
+    "stores": [
+     "Bilka"
+    ],
+    "name": "Pilsner 0,0%",
+    "brand": "Harboe",
+    "subbrand": null,
+    "productType": "Øl",
+    "variant": null,
+    "flavor": null,
+    "quantity": "1,98 l",
+    "packCount": null,
+    "productCategory": "DRINK",
+    "keywords": [],
+    "ingredients": "Vand, BYGMALT, humle, humleekstrakt, naturlig aroma, kulsyre.",
+    "allergens": [],
+    "additives": [],
+    "sourceUrl": "https://www.bilkatogo.dk/produkt/harboe-harboe-pilsner-00/121101/",
+    "nutrition": {
+     "energyKj": 84.0,
+     "kcal": 20.0,
+     "fat": 0.5,
+     "saturatedFat": 0.1,
+     "carbs": 4.5,
+     "sugars": 2.5,
+     "protein": 0.5,
+     "salt": 0.01
+    },
+    "filters": {
+     "organic": null,
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": 0.0,
+     "fatPercent": null,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   },
+   "REMA1000": {
+    "ean": "5711018034899",
+    "stores": [
+     "Rema 1000"
+    ],
+    "name": "Øl, Pilsner",
+    "brand": "Harboe",
+    "subbrand": null,
+    "productType": "Øl",
+    "variant": "Pilsner",
+    "flavor": null,
+    "quantity": "1.98Ltr",
+    "packCount": 6,
+    "productCategory": "DRINK",
+    "keywords": [],
+    "ingredients": "Vand, BYGMALT , humleekstrakt, humle, naturlig aroma.",
+    "allergens": [],
+    "additives": [],
+    "sourceUrl": "Https://shop.rema1000.dk/varer/200671",
+    "nutrition": {
+     "energyKj": 84.0,
+     "kcal": 20.0,
+     "fat": 0.5,
+     "saturatedFat": 0.1,
+     "carbs": 4.5,
+     "sugars": 2.5,
+     "fiber": 0.5,
+     "protein": 0.5,
+     "salt": 0.01
+    },
+    "filters": {
+     "organic": "Økologisk",
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": "Alkoholfri",
+     "alcoholPercent": null,
+     "fatPercent": null,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   }
+  },
+  "images": [
+   {
+    "file": "5711018034899.png",
+    "tags": [
+     "Cutout"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5706680028222",
+  "stores": [
+   "Bilka",
+   "Rema 1000"
+  ],
+  "externalSource": "BILKA",
+  "name": "Agurkesalat u. tilsat sukker",
+  "brand": "Samsø Syltefabrik",
+  "subbrand": null,
+  "productType": "Agurkesalat uden",
+  "variant": "Sukkerfri",
+  "flavor": null,
+  "quantity": "320 g",
+  "packCount": null,
+  "productCategory": "VEGETABLES",
+  "storeDepartment": "Kolonial",
+  "keywords": [
+   "Uden",
+   "Tilsat sukker"
+  ],
+  "ingredients": "Agurker med oprindelse i Europa, vand, eddike, salt, sødemiddel natriumsaccharin (E954), naturlig hvid peberekstrakt.",
+  "allergens": [],
+  "additives": [
+   "E954"
+  ],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/samsoe-syltefabrik-agurkesalat-u-tilsat-sukker/18043/",
+  "nutrition": {
+   "energyKj": 43.0,
+   "kcal": 10.0,
+   "fat": 0.5,
+   "saturatedFat": 0.1,
+   "carbs": 1.1,
+   "sugars": 0.8,
+   "fiber": 0.5,
+   "protein": 0.5,
+   "salt": 0.85
+  },
+  "filters": {
+   "organic": null,
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": "Sukkerfri",
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": null,
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": "Konserves",
+   "size": null,
+   "toxins": []
+  },
+  "image": "5706680028222.png",
+  "imageTags": [
+   "Cutout"
+  ],
+  "category": "Grøntsager og rodfrugter",
+  "subcategory": "Tilberedte grøntsager",
+  "packaging": "Dåse",
+  "sources": {
+   "BILKA": {
+    "ean": "5706680028222",
+    "stores": [
+     "Bilka"
+    ],
+    "name": "Agurkesalat u. tilsat sukker",
+    "brand": "Samsø Syltefabrik",
+    "subbrand": null,
+    "productType": "Agurkesalat uden",
+    "variant": null,
+    "flavor": null,
+    "quantity": "320 g",
+    "packCount": null,
+    "productCategory": "PROCESSED",
+    "keywords": [
+     "Uden",
+     "Tilsat sukker"
+    ],
+    "ingredients": "Agurker med oprindelse i Europa, vand, eddike, salt, sødemiddel natriumsaccharin (E954), naturlig hvid peberekstrakt.",
+    "allergens": [],
+    "additives": [
+     "E954"
+    ],
+    "sourceUrl": "https://www.bilkatogo.dk/produkt/samsoe-syltefabrik-agurkesalat-u-tilsat-sukker/18043/",
+    "nutrition": {
+     "energyKj": 43.0,
+     "kcal": 10.0,
+     "fat": 0.5,
+     "saturatedFat": 0.1,
+     "carbs": 1.1,
+     "sugars": 0.8,
+     "fiber": 0.5,
+     "protein": 0.5,
+     "salt": 0.85
+    },
+    "filters": {
+     "organic": null,
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": null,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   },
+   "REMA1000": {
+    "ean": "5706680028222",
+    "stores": [
+     "Rema 1000"
+    ],
+    "name": "Agurkesalat (Sukkerfri)",
+    "brand": "Samsø",
+    "subbrand": null,
+    "productType": "Agurkesalat",
+    "variant": "Sukkerfri",
+    "flavor": null,
+    "quantity": "320g",
+    "packCount": null,
+    "productCategory": "VEGETABLES",
+    "keywords": [],
+    "ingredients": "Agurker med oprindelse i Europa, vand, eddike, salt, sødemiddel natriumsaccharin (E954), naturlig hvid peberekstrakt.",
+    "allergens": [],
+    "additives": [],
+    "sourceUrl": "Https://shop.rema1000.dk/varer/104336",
+    "nutrition": {
+     "energyKj": 43.0,
+     "kcal": 10.0,
+     "fat": 0.5,
+     "saturatedFat": 0.1,
+     "carbs": 1.1,
+     "sugars": 0.8,
+     "fiber": 0.5,
+     "protein": 0.5,
+     "salt": 0.85
+    },
+    "filters": {
+     "organic": null,
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": "Sukkerfri",
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": null,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": "Konserves",
+     "size": null,
+     "toxins": []
+    }
+   }
+  },
+  "images": [
+   {
+    "file": "5706680028222.png",
+    "tags": [
+     "Cutout"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5741000164242",
+  "stores": [
+   "Bilka",
+   "Rema 1000"
+  ],
+  "externalSource": "BILKA",
+  "name": "Sport",
+  "brand": "Shaker",
+  "subbrand": null,
+  "productType": "Drink",
+  "variant": "Sport",
+  "flavor": null,
+  "quantity": "0,275 l",
+  "packCount": null,
+  "productCategory": "DRINK",
+  "storeDepartment": "Drikkevarer",
+  "keywords": [
+   "Tilsat kulsyre",
+   "4% fedt"
+  ],
+  "ingredients": "Vand, sukker, vodka, kuldioxid, syre (E330), naturlig aroma, surhedsregulerende middel (E331), aroma (koffein 0,015 %).",
+  "allergens": [],
+  "additives": [
+   "E330",
+   "E331"
+  ],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/shaker-shaker-sport/71468/",
+  "nutrition": {
+   "energyKj": 264.0,
+   "kcal": 63.0,
+   "fat": 0.0,
+   "saturatedFat": 0.0,
+   "carbs": 9.9,
+   "sugars": 9.9,
+   "fiber": 0.5,
+   "protein": 0.0,
+   "salt": 0.06
+  },
+  "filters": {
+   "organic": null,
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": "Indeholder alkohol",
+   "alcoholPercent": null,
+   "fatPercent": 4.0,
+   "countryOfOrigin": null,
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5741000164242.png",
+  "imageTags": [
+   "Cutout"
+  ],
+  "category": "Alkohol",
+  "subcategory": null,
+  "packaging": null,
+  "sources": {
+   "BILKA": {
+    "ean": "5741000164242",
+    "stores": [
+     "Bilka"
+    ],
+    "name": "Sport",
+    "brand": "Shaker",
+    "subbrand": null,
+    "productType": "Drink",
+    "variant": null,
+    "flavor": null,
+    "quantity": "0,275 l",
+    "packCount": null,
+    "productCategory": "DRINK",
+    "keywords": [
+     "Tilsat kulsyre"
+    ],
+    "ingredients": "Vand, sukker, vodka, kuldioxid, syre (E330), naturlig aroma, surhedsregulerende middel (E331), aroma (koffein 0,015 %).",
+    "allergens": [],
+    "additives": [
+     "E330",
+     "E331"
+    ],
+    "sourceUrl": "https://www.bilkatogo.dk/produkt/shaker-shaker-sport/71468/",
+    "nutrition": {
+     "energyKj": 264.0,
+     "kcal": 63.0,
+     "fat": 0.0,
+     "saturatedFat": 0.0,
+     "carbs": 9.9,
+     "sugars": 9.9,
+     "protein": 0.0,
+     "salt": 0.06
+    },
+    "filters": {
+     "organic": null,
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": "Indeholder alkohol",
+     "alcoholPercent": null,
+     "fatPercent": null,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   },
+   "REMA1000": {
+    "ean": "5741000164242",
+    "stores": [
+     "Rema 1000"
+    ],
+    "name": "Drink, Sport",
+    "brand": "Shaker",
+    "subbrand": null,
+    "productType": "Drink",
+    "variant": "Sport",
+    "flavor": null,
+    "quantity": "27.5cl",
+    "packCount": null,
+    "productCategory": "DRINK",
+    "keywords": [
+     "4% fedt"
+    ],
+    "ingredients": "vand, sukker, vodka, syre (E330), kuldioxid, surhedsregulerende middel (E331), stabilisator (E414), koffein, naturlig aroma, farvestoffer (E104, E110).",
+    "allergens": [],
+    "additives": [],
+    "sourceUrl": "Https://shop.rema1000.dk/varer/210342",
+    "nutrition": {
+     "energyKj": 268.0,
+     "kcal": 64.0,
+     "fat": 0.5,
+     "saturatedFat": 0.1,
+     "carbs": 10.0,
+     "sugars": 10.0,
+     "fiber": 0.5,
+     "protein": 0.5,
+     "salt": 0.1
+    },
+    "filters": {
+     "organic": null,
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": 4.0,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   }
+  },
+  "images": [
+   {
+    "file": "5741000164242.png",
+    "tags": [
+     "Cutout"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5703161907526",
+  "stores": [
+   "Bilka",
+   "Rema 1000"
+  ],
+  "externalSource": "BILKA",
+  "name": "Biscuit bar toffee u. tilsat sukker",
+  "brand": "Easis",
+  "subbrand": null,
+  "productType": "Bar",
+  "variant": "kiks/ karamelsmagfyld/ mælkechokoladeovertræk",
+  "flavor": null,
+  "quantity": "30 g",
+  "packCount": null,
+  "productCategory": "PROCESSED",
+  "storeDepartment": "Slik & snacks",
+  "keywords": [
+   "Tilsat sukker"
+  ],
+  "ingredients": "Fyldemiddel (polydextrose), SOJAprotein, sødestof (erythritol) (8,4%), kakaosmør, hydrolyseret HVEDEgluten, HAVREMEL (glutenfri), kostfiber (inulin), SKUMMETMÆLKpulver, vegetabilsk olie (SOJA), fugtighedsbevarende middel (glycerol), kostfiber (oligofruktose), kakaomasse, SØDMÆLKpulver, vegetabilsk fedt (palme), tapiokastivelse, stabilisator (xylitol), emulgator (SOJAlecithin), sødestoffer (steviolglycosider fra Stevia, sucralose), aromaer, salt. Kan indeholde spor af æg, nødder, peanuts og sesam.",
+  "allergens": [
+   "Kan indeholde spor af æg",
+   "nødder",
+   "peanuts og sesam ."
+  ],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/easis-biscuit-bar-toffee-u-tilsat-sukker/71553/",
+  "nutrition": {
+   "energyKj": 1.355,
+   "kcal": 324.0,
+   "fat": 15.0,
+   "saturatedFat": 6.9,
+   "carbs": 23.0,
+   "sugars": 5.7,
+   "fiber": 30.0,
+   "protein": 19.0,
+   "salt": 0.63
+  },
+  "filters": {
+   "organic": null,
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": "Sukkerfri",
+   "sweeteners": "Sødemidler",
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": null,
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5703161907526.png",
+  "imageTags": [
+   "Cutout"
+  ],
+  "category": "Slik",
+  "subcategory": null,
+  "packaging": null,
+  "sources": {
+   "BILKA": {
+    "ean": "5703161907526",
+    "stores": [
+     "Bilka"
+    ],
+    "name": "Biscuit bar toffee u. tilsat sukker",
+    "brand": "Easis",
+    "subbrand": null,
+    "productType": "Bar",
+    "variant": "kiks/ karamelsmagfyld/ mælkechokoladeovertræk",
+    "flavor": null,
+    "quantity": "30 g",
+    "packCount": null,
+    "productCategory": "PROCESSED",
+    "keywords": [
+     "Tilsat sukker"
+    ],
+    "ingredients": "Fyldemiddel (polydextrose), SOJAprotein, sødestof (erythritol) (8,4%), kakaosmør, hydrolyseret HVEDEgluten, HAVREMEL (glutenfri), kostfiber (inulin), SKUMMETMÆLKpulver, vegetabilsk olie (SOJA), fugtighedsbevarende middel (glycerol), kostfiber (oligofruktose), kakaomasse, SØDMÆLKpulver, vegetabilsk fedt (palme), tapiokastivelse, stabilisator (xylitol), emulgator (SOJAlecithin), sødestoffer (steviolglycosider fra Stevia, sucralose), aromaer, salt. Kan indeholde spor af æg, nødder, peanuts og sesam.",
+    "allergens": [],
+    "additives": [],
+    "sourceUrl": "https://www.bilkatogo.dk/produkt/easis-biscuit-bar-toffee-u-tilsat-sukker/71553/",
+    "nutrition": {
+     "energyKj": 1.355,
+     "kcal": 324.0,
+     "fat": 15.0,
+     "saturatedFat": 6.9,
+     "carbs": 23.0,
+     "sugars": 5.7,
+     "fiber": 30.0,
+     "protein": 19.0,
+     "salt": 0.63
+    },
+    "filters": {
+     "organic": null,
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": "Sødemidler",
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": null,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   },
+   "REMA1000": {
+    "ean": "5703161907526",
+    "stores": [
+     "Rema 1000"
+    ],
+    "name": "Biscuit Bar Toffee (Sukkerfri)",
+    "brand": "Easis",
+    "subbrand": null,
+    "productType": "Biscuit Bar Toffee",
+    "variant": "Sukkerfri",
+    "flavor": null,
+    "quantity": "30g",
+    "packCount": null,
+    "productCategory": "PROCESSED",
+    "keywords": [],
+    "ingredients": "Fyldemiddel (polydextrose), SOJAprotein , sødestof (erythritol) (8,4%), kakaosmør, hydrolyseret HVEDEgluten , HAVREMEL (glutenfri), kostfiber (inulin), SKUMMETMÆLKpulver , vegetabilsk olie ( SOJA ), fugtighedsbevarende middel (glycerol), kostfiber (oligofruktose), kakaomasse, SØDMÆLKpulver , vegetabilsk fedt (palme), tapiokastivelse, stabilisator (xylitol), emulgator ( SOJAlecithin ), sødestoffer (steviolglycosider fra Stevia, sucralose), aromaer, salt.",
+    "allergens": [
+     "Kan indeholde spor af æg",
+     "nødder",
+     "peanuts og sesam ."
+    ],
+    "additives": [],
+    "sourceUrl": "Https://shop.rema1000.dk/varer/82442",
+    "nutrition": {
+     "energyKj": 1355.0,
+     "kcal": 324.0,
+     "fat": 15.0,
+     "saturatedFat": 6.9,
+     "carbs": 23.0,
+     "sugars": 5.7,
+     "fiber": 30.0,
+     "protein": 19.0,
+     "salt": 0.63
+    },
+    "filters": {
+     "organic": null,
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": "Sukkerfri",
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": null,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   }
+  },
+  "images": [
+   {
+    "file": "5703161907526.png",
+    "tags": [
+     "Cutout"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5741200319107",
+  "stores": [
+   "Bilka",
+   "Rema 1000"
+  ],
+  "externalSource": "BILKA",
+  "name": "Forårsruller m oksekød og grøntsager",
+  "brand": "Daloon",
+  "subbrand": null,
+  "productType": "Forårsruller",
+  "variant": "oksekød/ grøntsager",
+  "flavor": null,
+  "quantity": "600 g",
+  "packCount": null,
+  "productCategory": "PROCESSED",
+  "storeDepartment": "Frost",
+  "keywords": [],
+  "ingredients": "Hvidkål (50 %), HVEDEMEL, vand, rapsolie, rismel, champignon (3 %), løg (3 %), oksekød (3 %), majsstivelse, tekstureret hvedeprotein (HVEDEGLUTEN, HVEDEMEL, farvestof (ammoniseret karamel)), soyasauce (vand, SOJABØNNER, salt, HVEDEMEL), vallepulver (fra MÆLK), modificeret stivelse, oksebouillon (oksekød, vand, salt), salt, krydderier, ÆGGEPULVER, sojasaucepulver (SOJABØNNER, HVEDE, salt), hvidløg, fortykningsmiddel (guargummi), glucosesirup, løgpulver.",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/daloon-foraarsruller-m-oksekoed-og-groentsager/70338/",
+  "nutrition": {
+   "energyKj": 658.0,
+   "kcal": 157.0,
+   "fat": 6.4,
+   "saturatedFat": 0.9,
+   "carbs": 19.7,
+   "sugars": 2.0,
+   "fiber": 1.8,
+   "protein": 4.3,
+   "salt": 0.95
+  },
+  "filters": {
+   "organic": null,
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": "Okse",
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": null,
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": "Frost",
+   "size": null,
+   "toxins": []
+  },
+  "image": "5741200319107.png",
+  "imageTags": [
+   "Cutout"
+  ],
+  "category": "Færdigretter",
+  "subcategory": null,
+  "packaging": null,
+  "sources": {
+   "BILKA": {
+    "ean": "5741200319107",
+    "stores": [
+     "Bilka"
+    ],
+    "name": "Forårsruller m oksekød og grøntsager",
+    "brand": "Daloon",
+    "subbrand": null,
+    "productType": "Forårsruller",
+    "variant": "oksekød/ grøntsager",
+    "flavor": null,
+    "quantity": "600 g",
+    "packCount": null,
+    "productCategory": "PROCESSED",
+    "keywords": [],
+    "ingredients": "Hvidkål (50 %), HVEDEMEL, vand, rapsolie, rismel, champignon (3 %), løg (3 %), oksekød (3 %), majsstivelse, tekstureret hvedeprotein (HVEDEGLUTEN, HVEDEMEL, farvestof (ammoniseret karamel)), soyasauce (vand, SOJABØNNER, salt, HVEDEMEL), vallepulver (fra MÆLK), modificeret stivelse, oksebouillon (oksekød, vand, salt), salt, krydderier, ÆGGEPULVER, sojasaucepulver (SOJABØNNER, HVEDE, salt), hvidløg, fortykningsmiddel (guargummi), glucosesirup, løgpulver.",
+    "allergens": [],
+    "additives": [],
+    "sourceUrl": "https://www.bilkatogo.dk/produkt/daloon-foraarsruller-m-oksekoed-og-groentsager/70338/",
+    "nutrition": {
+     "energyKj": 658.0,
+     "kcal": 157.0,
+     "fat": 6.4,
+     "saturatedFat": 0.9,
+     "carbs": 19.7,
+     "sugars": 2.0,
+     "fiber": 1.8,
+     "protein": 4.3,
+     "salt": 0.95
+    },
+    "filters": {
+     "organic": null,
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": "Okse",
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": null,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": "Frost",
+     "size": null,
+     "toxins": []
+    }
+   },
+   "REMA1000": {
+    "ean": "5741200319107",
+    "stores": [
+     "Rema 1000"
+    ],
+    "name": "Forårsulle Ovn, Classic",
+    "brand": "Daloon",
+    "subbrand": null,
+    "productType": "Forårsulle Ovn",
+    "variant": "Classic",
+    "flavor": null,
+    "quantity": "600g",
+    "packCount": null,
+    "productCategory": "PROCESSED",
+    "keywords": [],
+    "ingredients": "Hvidkål (50 %), HVEDEMEL , vand, rapsolie, rismel, champignon (3 %), løg (3 %), oksekød (3 %), majsstivelse, tekstureret hvedeprotein ( HVEDEGLUTEN , HVEDEMEL , farvestof (ammoniseret karamel)), soyasauce (vand, SOJABØNNER , salt, HVEDEMEL ), vallepulver (fra MÆLK ), modificeret stivelse, oksebouillon (oksekød, vand, salt), salt, krydderier, ÆGGEPULVER , sojasaucepulver ( SOJABØNNER , HVEDE , salt), hvidløg, fortykningsmiddel (guargummi), glucosesirup, løgpulver.",
+    "allergens": [],
+    "additives": [],
+    "sourceUrl": "Https://shop.rema1000.dk/varer/44207",
+    "nutrition": {
+     "energyKj": 658.0,
+     "kcal": 157.0,
+     "fat": 6.4,
+     "saturatedFat": 0.9,
+     "carbs": 20.0,
+     "sugars": 2.0,
+     "fiber": 1.8,
+     "protein": 4.3,
+     "salt": 0.95
+    },
+    "filters": {
+     "organic": null,
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": null,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   }
+  },
+  "images": [
+   {
+    "file": "5741200319107.png",
+    "tags": [
+     "Cutout"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5701243992613",
+  "stores": [
+   "Bilka",
+   "Rema 1000"
+  ],
+  "externalSource": "BILKA",
+  "name": "Salatmix",
+  "brand": "Axel Månsson A/S",
+  "subbrand": null,
+  "productType": "blandet salat",
+  "variant": null,
+  "flavor": null,
+  "quantity": "75 g",
+  "packCount": null,
+  "productCategory": "VEGETABLES",
+  "storeDepartment": "Frugt & grønt",
+  "keywords": [
+   "Klasse 1"
+  ],
+  "ingredients": "Produktet kan variere med følgende sorter: Rucola, babyspinat, rød pak choi, rød mangold, Bull's Blood.",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/axel-maansson-a-s-salatmix-oeko/51575/",
+  "nutrition": {
+   "energyKj": 191.0,
+   "kcal": 46.0,
+   "fat": 0.3,
+   "saturatedFat": 0.0,
+   "carbs": 10.0,
+   "sugars": 6.0,
+   "protein": 1.6,
+   "salt": 0.0
+  },
+  "filters": {
+   "organic": "Økologisk",
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": "Italien",
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5701243992613.png",
+  "imageTags": [
+   "Cutout"
+  ],
+  "category": "Grøntsager og rodfrugter",
+  "subcategory": "Rå grøntsager",
+  "packaging": null,
+  "sources": {
+   "BILKA": {
+    "ean": "5701243992613",
+    "stores": [
+     "Bilka"
+    ],
+    "name": "Salatmix",
+    "brand": "Axel Månsson A/S",
+    "subbrand": null,
+    "productType": "blandet salat",
+    "variant": null,
+    "flavor": null,
+    "quantity": "75 g",
+    "packCount": null,
+    "productCategory": "VEGETABLES",
+    "keywords": [],
+    "ingredients": "Produktet kan variere med følgende sorter: Rucola, babyspinat, rød pak choi, rød mangold, Bull's Blood.",
+    "allergens": [],
+    "additives": [],
+    "sourceUrl": "https://www.bilkatogo.dk/produkt/axel-maansson-a-s-salatmix-oeko/51575/",
+    "nutrition": {
+     "energyKj": 191.0,
+     "kcal": 46.0,
+     "fat": 0.3,
+     "saturatedFat": 0.0,
+     "carbs": 10.0,
+     "sugars": 6.0,
+     "protein": 1.6,
+     "salt": 0.0
+    },
+    "filters": {
+     "organic": "Økologisk",
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": null,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   },
+   "REMA1000": {
+    "ean": "5701243992613",
+    "stores": [
+     "Rema 1000"
+    ],
+    "name": "Salat Mix",
+    "brand": null,
+    "subbrand": null,
+    "productType": "Salat Mix",
+    "variant": null,
+    "flavor": null,
+    "quantity": "75g",
+    "packCount": null,
+    "productCategory": "PROCESSED",
+    "keywords": [
+     "Klasse 1"
+    ],
+    "ingredients": null,
+    "allergens": [],
+    "additives": [],
+    "sourceUrl": "Https://shop.rema1000.dk/varer/306445",
+    "nutrition": {},
+    "filters": {
+     "organic": "Økologisk",
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": null,
+     "countryOfOrigin": "Italien",
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   }
+  },
+  "images": [
+   {
+    "file": "5701243992613.png",
+    "tags": [
+     "Cutout"
+    ]
+   },
+   {
+    "file": "5701243992613_2.png",
+    "tags": [
+     "Cutout"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5703161803019",
+  "stores": [
+   "Bilka",
+   "Rema 1000"
+  ],
+  "externalSource": "BILKA",
+  "name": "Chips m paprika fedtreduceret",
+  "brand": "Easis",
+  "subbrand": null,
+  "productType": "Soja- og kartoffelchips",
+  "variant": "paprikasmag",
+  "flavor": null,
+  "quantity": "50 g",
+  "packCount": null,
+  "productCategory": "PROCESSED",
+  "storeDepartment": "Slik & snacks",
+  "keywords": [],
+  "ingredients": "SOJAproteinkoncentrat, kartoffelgranulat, kartoffelflager, solsikkeolie, kartoffelstivelse, tapiokastivelse, vallepulver af MÆLK, salt, løgpulver, krydderi (1,6%) (paprika, cayenne), maltodextrin (majs), aroma, gærekstrakt, hvidløgspulver, farvestof (paprikaekstrakt), antioxidant (rosmarinekstrakt). Kan indeholde spor af gluten.",
+  "allergens": [
+   "Kan indeholde spor af gluten ."
+  ],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/easis-chips-m-paprika-fedtreduceret/43514/",
+  "nutrition": {
+   "energyKj": 1.766,
+   "kcal": 422.0,
+   "fat": 11.0,
+   "saturatedFat": 1.2,
+   "carbs": 53.0,
+   "sugars": 2.1,
+   "fiber": 8.4,
+   "protein": 22.0,
+   "salt": 2.2
+  },
+  "filters": {
+   "organic": null,
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": "Sukkerfri",
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": null,
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5703161803019.png",
+  "imageTags": [
+   "Cutout"
+  ],
+  "category": "Chips",
+  "subcategory": null,
+  "packaging": null,
+  "sources": {
+   "BILKA": {
+    "ean": "5703161803019",
+    "stores": [
+     "Bilka"
+    ],
+    "name": "Chips m paprika fedtreduceret",
+    "brand": "Easis",
+    "subbrand": null,
+    "productType": "Soja- og kartoffelchips",
+    "variant": "paprikasmag",
+    "flavor": null,
+    "quantity": "50 g",
+    "packCount": null,
+    "productCategory": "PROCESSED",
+    "keywords": [],
+    "ingredients": "SOJAproteinkoncentrat, kartoffelgranulat, kartoffelflager, solsikkeolie, kartoffelstivelse, tapiokastivelse, vallepulver af MÆLK, salt, løgpulver, krydderi (1,6%) (paprika, cayenne), maltodextrin (majs), aroma, gærekstrakt, hvidløgspulver, farvestof (paprikaekstrakt), antioxidant (rosmarinekstrakt). Kan indeholde spor af gluten.",
+    "allergens": [],
+    "additives": [],
+    "sourceUrl": "https://www.bilkatogo.dk/produkt/easis-chips-m-paprika-fedtreduceret/43514/",
+    "nutrition": {
+     "energyKj": 1.766,
+     "kcal": 422.0,
+     "fat": 11.0,
+     "saturatedFat": 1.2,
+     "carbs": 53.0,
+     "sugars": 2.1,
+     "fiber": 8.4,
+     "protein": 22.0,
+     "salt": 2.2
+    },
+    "filters": {
+     "organic": null,
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": null,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   },
+   "REMA1000": {
+    "ean": "5703161803019",
+    "stores": [
+     "Rema 1000"
+    ],
+    "name": "Paprika Chips (Sukkerfri)",
+    "brand": "Easis",
+    "subbrand": null,
+    "productType": "Paprika Chips",
+    "variant": "Sukkerfri",
+    "flavor": null,
+    "quantity": "50g",
+    "packCount": null,
+    "productCategory": "PROCESSED",
+    "keywords": [],
+    "ingredients": "SOJAproteinkoncentrat , kartoffelgranulat, kartoffelflager, solsikkeolie, kartoffelstivelse, tapiokastivelse, vallepulver af MÆLK , salt, løgpulver, krydderi (1,6%) (paprika, cayenne), maltodextrin (majs), aroma, gærekstrakt, hvidløgspulver, farvestof (paprikaekstrakt), antioxidant (rosmarinekstrakt).",
+    "allergens": [
+     "Kan indeholde spor af gluten ."
+    ],
+    "additives": [],
+    "sourceUrl": "Https://shop.rema1000.dk/varer/70060",
+    "nutrition": {
+     "energyKj": 1766.0,
+     "kcal": 422.0,
+     "fat": 11.0,
+     "saturatedFat": 1.2,
+     "carbs": 53.0,
+     "sugars": 2.1,
+     "fiber": 8.4,
+     "protein": 22.0,
+     "salt": 2.2
+    },
+    "filters": {
+     "organic": null,
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": "Sukkerfri",
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": null,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   }
+  },
+  "images": [
+   {
+    "file": "5703161803019.png",
+    "tags": [
+     "Cutout"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5701331872995",
+  "stores": [
+   "Bilka",
+   "Rema 1000"
+  ],
+  "externalSource": "BILKA",
+  "name": "Stenfrie røde druer",
+  "brand": "Salling",
+  "subbrand": null,
+  "productType": "røde vindruer",
+  "variant": null,
+  "flavor": null,
+  "quantity": "500 g",
+  "packCount": null,
+  "productCategory": "VEGETABLES",
+  "storeDepartment": "Frugt & grønt",
+  "keywords": [],
+  "ingredients": "Røde vindruer",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/salling-oeko-stenfrie-roede-druer-oeko/72955/",
+  "nutrition": {
+   "energyKj": 0.0,
+   "kcal": 0.0,
+   "fat": 0.0,
+   "saturatedFat": 0.0,
+   "carbs": 0.0,
+   "sugars": 0.0,
+   "protein": 0.0,
+   "salt": 0.0
+  },
+  "filters": {
+   "organic": "Økologisk",
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": null,
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5701331872995.png",
+  "imageTags": [
+   "Cutout"
+  ],
+  "category": "Frugt",
+  "subcategory": null,
+  "packaging": null,
+  "sources": {
+   "BILKA": {
+    "ean": "5701331872995",
+    "stores": [
+     "Bilka"
+    ],
+    "name": "Stenfrie røde druer",
+    "brand": "Salling",
+    "subbrand": null,
+    "productType": "røde vindruer",
+    "variant": null,
+    "flavor": null,
+    "quantity": "500 g",
+    "packCount": null,
+    "productCategory": "VEGETABLES",
+    "keywords": [],
+    "ingredients": "Røde vindruer",
+    "allergens": [],
+    "additives": [],
+    "sourceUrl": "https://www.bilkatogo.dk/produkt/salling-oeko-stenfrie-roede-druer-oeko/72955/",
+    "nutrition": {
+     "energyKj": 0.0,
+     "kcal": 0.0,
+     "fat": 0.0,
+     "saturatedFat": 0.0,
+     "carbs": 0.0,
+     "sugars": 0.0,
+     "protein": 0.0,
+     "salt": 0.0
+    },
+    "filters": {
+     "organic": "Økologisk",
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": null,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   },
+   "REMA1000": {
+    "ean": "5701331872995",
+    "stores": [
+     "Rema 1000"
+    ],
+    "name": "Druer",
+    "brand": null,
+    "subbrand": null,
+    "productType": "Druer",
+    "variant": null,
+    "flavor": null,
+    "quantity": "500g",
+    "packCount": null,
+    "productCategory": "VEGETABLES",
+    "keywords": [],
+    "ingredients": null,
+    "allergens": [],
+    "additives": [],
+    "sourceUrl": "Https://shop.rema1000.dk/varer/304857",
+    "nutrition": {},
+    "filters": {
+     "organic": "Økologisk",
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": null,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   }
+  },
+  "images": [
+   {
+    "file": "5701331872995.png",
+    "tags": [
+     "Cutout"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5700426293929",
+  "stores": [
+   "Bilka",
+   "Rema 1000"
+  ],
+  "externalSource": "BILKA",
+  "name": "Skummetmælk 0,1% fedt",
+  "brand": "Arla",
+  "subbrand": null,
+  "productType": "skummetmælk",
+  "variant": null,
+  "flavor": null,
+  "quantity": "1 l",
+  "packCount": null,
+  "productCategory": "DRINK",
+  "storeDepartment": "Mejeri & køl",
+  "keywords": [
+   "0,1% fedt"
+  ],
+  "ingredients": "Økologisk SKUMMETMÆLK 0,1% fedt.",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/arla-oeko-skummetmaelk-01-fedt-oeko/19688/",
+  "nutrition": {
+   "energyKj": 141.0,
+   "kcal": 33.0,
+   "fat": 0.1,
+   "saturatedFat": 0.0,
+   "carbs": 4.7,
+   "sugars": 4.7,
+   "fiber": 0.5,
+   "protein": 3.5,
+   "salt": 0.11
+  },
+  "filters": {
+   "organic": "Økologisk",
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": 0.1,
+   "countryOfOrigin": "Danmark",
+   "wholeGrain": null,
+   "keyhole": "Nøglehul",
+   "animalWelfare": [
+    "Bedre Dyrevelfærd 3"
+   ],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5700426293929.png",
+  "imageTags": [
+   "Cutout"
+  ],
+  "category": "Mejeri og æg",
+  "subcategory": null,
+  "packaging": null,
+  "sources": {
+   "BILKA": {
+    "ean": "5700426293929",
+    "stores": [
+     "Bilka"
+    ],
+    "name": "Skummetmælk 0,1% fedt",
+    "brand": "Arla",
+    "subbrand": null,
+    "productType": "skummetmælk",
+    "variant": null,
+    "flavor": null,
+    "quantity": "1 l",
+    "packCount": null,
+    "productCategory": "DRINK",
+    "keywords": [],
+    "ingredients": "Økologisk SKUMMETMÆLK 0,1% fedt.",
+    "allergens": [],
+    "additives": [],
+    "sourceUrl": "https://www.bilkatogo.dk/produkt/arla-oeko-skummetmaelk-01-fedt-oeko/19688/",
+    "nutrition": {
+     "energyKj": 141.0,
+     "kcal": 33.0,
+     "fat": 0.1,
+     "saturatedFat": 0.0,
+     "carbs": 4.7,
+     "sugars": 4.7,
+     "protein": 3.5,
+     "salt": 0.11
+    },
+    "filters": {
+     "organic": "Økologisk",
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": 0.1,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   },
+   "REMA1000": {
+    "ean": "5700426293929",
+    "stores": [
+     "Rema 1000"
+    ],
+    "name": "Skummetmælk",
+    "brand": "Arla",
+    "subbrand": null,
+    "productType": "Skummetmælk",
+    "variant": null,
+    "flavor": null,
+    "quantity": "1Ltr",
+    "packCount": null,
+    "productCategory": "PROCESSED",
+    "keywords": [
+     "0,1% fedt"
+    ],
+    "ingredients": "Økologisk SKUMMETMÆLK 0,1% fedt.",
+    "allergens": [],
+    "additives": [],
+    "sourceUrl": "Https://shop.rema1000.dk/varer/21513",
+    "nutrition": {
+     "energyKj": 141.0,
+     "kcal": 33.0,
+     "fat": 0.5,
+     "saturatedFat": 0.1,
+     "carbs": 4.7,
+     "sugars": 4.7,
+     "fiber": 0.5,
+     "protein": 3.5,
+     "salt": 0.11
+    },
+    "filters": {
+     "organic": "Økologisk",
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": 0.1,
+     "countryOfOrigin": "Danmark",
+     "wholeGrain": null,
+     "keyhole": "Nøglehul",
+     "animalWelfare": [
+      "Bedre Dyrevelfærd 3"
+     ],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   }
+  },
+  "images": [
+   {
+    "file": "5700426293929.png",
+    "tags": [
+     "Cutout"
+    ]
+   },
+   {
+    "file": "5700426293929_2.png",
+    "tags": [
+     "Cutout"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5702024008035",
+  "stores": [
+   "Bilka",
+   "Rema 1000"
+  ],
+  "externalSource": "BILKA",
+  "name": "Torskerogn",
+  "brand": "Bornholms",
+  "subbrand": null,
+  "productType": "Torskerogn",
+  "variant": null,
+  "flavor": null,
+  "quantity": "200 g",
+  "packCount": null,
+  "productCategory": "PROCESSED",
+  "storeDepartment": "Kolonial",
+  "keywords": [],
+  "ingredients": "TORSKEROGN 55%, vand, tomatkoncentrat, kartoffelstivelse, rapsolie, salt, kartoffelfibre, maltodextrin, stabilisatorer (carrageenan, johannesbrødkernemel).",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/bornholms-torskerogn/31678/",
+  "nutrition": {
+   "energyKj": 408.0,
+   "kcal": 98.0,
+   "fat": 2.6,
+   "saturatedFat": 0.4,
+   "carbs": 4.6,
+   "sugars": 0.6,
+   "fiber": 1.3,
+   "protein": 13.0,
+   "salt": 1.2
+  },
+  "filters": {
+   "organic": null,
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": "Fisk",
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": null,
+   "wholeGrain": null,
+   "keyhole": "Nøglehul",
+   "animalWelfare": [],
+   "certifications": [
+    "MSC"
+   ],
+   "storage": "Konserves",
+   "size": null,
+   "toxins": []
+  },
+  "image": "5702024008035.png",
+  "imageTags": [
+   "Cutout"
+  ],
+  "category": "Fisk og skaldyr",
+  "subcategory": "Tilberedt fisk",
+  "packaging": "Dåse",
+  "sources": {
+   "BILKA": {
+    "ean": "5702024008035",
+    "stores": [
+     "Bilka"
+    ],
+    "name": "Torskerogn",
+    "brand": "Bornholms",
+    "subbrand": null,
+    "productType": "Torskerogn",
+    "variant": null,
+    "flavor": null,
+    "quantity": "200 g",
+    "packCount": null,
+    "productCategory": "PROCESSED",
+    "keywords": [],
+    "ingredients": "TORSKEROGN 55%, vand, tomatkoncentrat, kartoffelstivelse, rapsolie, salt, kartoffelfibre, maltodextrin, stabilisatorer (carrageenan, johannesbrødkernemel).",
+    "allergens": [],
+    "additives": [],
+    "sourceUrl": "https://www.bilkatogo.dk/produkt/bornholms-torskerogn/31678/",
+    "nutrition": {
+     "energyKj": 408.0,
+     "kcal": 98.0,
+     "fat": 2.6,
+     "saturatedFat": 0.4,
+     "carbs": 4.6,
+     "sugars": 0.6,
+     "fiber": 1.3,
+     "protein": 13.0,
+     "salt": 1.2
+    },
+    "filters": {
+     "organic": null,
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": null,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   },
+   "REMA1000": {
+    "ean": "5702024008035",
+    "stores": [
+     "Rema 1000"
+    ],
+    "name": "Torskerogn",
+    "brand": "Bornholms",
+    "subbrand": null,
+    "productType": "Torskerogn",
+    "variant": null,
+    "flavor": null,
+    "quantity": "200g",
+    "packCount": null,
+    "productCategory": "PROCESSED",
+    "keywords": [],
+    "ingredients": "TORSKEROGN 55%, vand, tomatkoncentrat, kartoffelstivelse, rapsolie, salt, kartoffelfibre, maltodextrin, stabilisatorer (carrageenan, johannesbrødkernemel).",
+    "allergens": [],
+    "additives": [],
+    "sourceUrl": "Https://shop.rema1000.dk/varer/34596",
+    "nutrition": {
+     "energyKj": 408.0,
+     "kcal": 98.0,
+     "fat": 2.6,
+     "saturatedFat": 0.4,
+     "carbs": 4.6,
+     "sugars": 0.6,
+     "fiber": 1.3,
+     "protein": 13.0,
+     "salt": 1.2
+    },
+    "filters": {
+     "organic": null,
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": "Fisk",
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": null,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": "Nøglehul",
+     "animalWelfare": [],
+     "certifications": [
+      "MSC"
+     ],
+     "storage": "Konserves",
+     "size": null,
+     "toxins": []
+    }
+   }
+  },
+  "images": [
+   {
+    "file": "5702024008035.png",
+    "tags": [
+     "Cutout"
+    ]
+   },
+   {
+    "file": "5702024008035_2.png",
+    "tags": [
+     "Cutout"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5707196217940",
+  "stores": [
+   "Bilka",
+   "Rema 1000"
+  ],
+  "externalSource": "BILKA",
+  "name": "Bacon i skiver friland",
+  "brand": "Tulip",
+  "subbrand": null,
+  "productType": "bacon i skiver",
+  "variant": null,
+  "flavor": null,
+  "quantity": "100 g",
+  "packCount": null,
+  "productCategory": "PROCESSED",
+  "storeDepartment": "Mejeri & køl",
+  "keywords": [],
+  "ingredients": "Økologisk bryst af gris, salt",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/tulip-bacon-i-skiver-friland-oeko/58951/",
+  "nutrition": {
+   "energyKj": 1.291,
+   "kcal": 312.0,
+   "fat": 28.0,
+   "saturatedFat": 11.0,
+   "carbs": 0.0,
+   "sugars": 0.0,
+   "fiber": 0.5,
+   "protein": 15.0,
+   "salt": 2.9
+  },
+  "filters": {
+   "organic": "Økologisk",
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": null,
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [
+    "Bedre Dyrevelfærd 3",
+    "Anbefalet Af Dyrenes Beskyttelse"
+   ],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5707196217940.png",
+  "imageTags": [
+   "Cutout"
+  ],
+  "category": "Kød",
+  "subcategory": "Tilberedt kød",
+  "packaging": null,
+  "sources": {
+   "BILKA": {
+    "ean": "5707196217940",
+    "stores": [
+     "Bilka"
+    ],
+    "name": "Bacon i skiver friland",
+    "brand": "Tulip",
+    "subbrand": null,
+    "productType": "bacon i skiver",
+    "variant": null,
+    "flavor": null,
+    "quantity": "100 g",
+    "packCount": null,
+    "productCategory": "PROCESSED",
+    "keywords": [],
+    "ingredients": "Økologisk bryst af gris, salt",
+    "allergens": [],
+    "additives": [],
+    "sourceUrl": "https://www.bilkatogo.dk/produkt/tulip-bacon-i-skiver-friland-oeko/58951/",
+    "nutrition": {
+     "energyKj": 1.291,
+     "kcal": 312.0,
+     "fat": 28.0,
+     "saturatedFat": 11.0,
+     "carbs": 0.0,
+     "sugars": 0.0,
+     "protein": 15.0,
+     "salt": 2.9
+    },
+    "filters": {
+     "organic": "Økologisk",
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": null,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   },
+   "REMA1000": {
+    "ean": "5707196217940",
+    "stores": [
+     "Rema 1000"
+    ],
+    "name": "Bacon Skiver",
+    "brand": "Tulip",
+    "subbrand": null,
+    "productType": "Bacon Skiver",
+    "variant": null,
+    "flavor": null,
+    "quantity": "100g",
+    "packCount": null,
+    "productCategory": "PROCESSED",
+    "keywords": [],
+    "ingredients": "Økologisk bryst af gris, salt",
+    "allergens": [],
+    "additives": [],
+    "sourceUrl": "Https://shop.rema1000.dk/varer/411828",
+    "nutrition": {
+     "energyKj": 1291.0,
+     "kcal": 312.0,
+     "fat": 28.0,
+     "saturatedFat": 11.0,
+     "carbs": 0.5,
+     "sugars": 0.5,
+     "fiber": 0.5,
+     "protein": 15.0,
+     "salt": 2.9
+    },
+    "filters": {
+     "organic": "Økologisk",
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": null,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [
+      "Bedre Dyrevelfærd 3",
+      "Anbefalet Af Dyrenes Beskyttelse"
+     ],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   }
+  },
+  "images": [
+   {
+    "file": "5707196217940.png",
+    "tags": [
+     "Cutout"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5701977000097",
+  "stores": [
+   "Bilka",
+   "Rema 1000"
+  ],
+  "externalSource": "BILKA",
+  "name": "block",
+  "brand": "Naturli'",
+  "subbrand": null,
+  "productType": "vegetabilsk blandingsprodukt 75% fedt",
+  "variant": null,
+  "flavor": null,
+  "quantity": "200 g",
+  "packCount": null,
+  "productCategory": "PROCESSED",
+  "storeDepartment": "Mejeri & køl",
+  "keywords": [],
+  "ingredients": "Sheaolie* (43%), vand, kokosolie* (21%), rapsolie* (11%), salt, MANDELSMØR* (1%), emulgator (lecithin*), gulerodssaft*, citronsaft*, naturlig solsikkeoliearoma.*Økologisk",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/naturli-vegansk-block-oeko/63022/",
+  "nutrition": {
+   "energyKj": 2.783,
+   "kcal": 665.0,
+   "fat": 75.0,
+   "saturatedFat": 39.0,
+   "carbs": 0.5,
+   "sugars": 0.5,
+   "fiber": 0.5,
+   "protein": 0.5,
+   "salt": 1.2
+  },
+  "filters": {
+   "organic": "Økologisk",
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": "Vegansk",
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": 75.0,
+   "countryOfOrigin": null,
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5701977000097.png",
+  "imageTags": [
+   "Cutout"
+  ],
+  "category": "Forarbejdet",
+  "subcategory": null,
+  "packaging": null,
+  "sources": {
+   "BILKA": {
+    "ean": "5701977000097",
+    "stores": [
+     "Bilka"
+    ],
+    "name": "block",
+    "brand": "Naturli'",
+    "subbrand": null,
+    "productType": "vegetabilsk blandingsprodukt 75% fedt",
+    "variant": null,
+    "flavor": null,
+    "quantity": "200 g",
+    "packCount": null,
+    "productCategory": "PROCESSED",
+    "keywords": [],
+    "ingredients": "Sheaolie* (43%), vand, kokosolie* (21%), rapsolie* (11%), salt, MANDELSMØR* (1%), emulgator (lecithin*), gulerodssaft*, citronsaft*, naturlig solsikkeoliearoma.*Økologisk",
+    "allergens": [],
+    "additives": [],
+    "sourceUrl": "https://www.bilkatogo.dk/produkt/naturli-vegansk-block-oeko/63022/",
+    "nutrition": {
+     "energyKj": 2.783,
+     "kcal": 665.0,
+     "fat": 75.0,
+     "saturatedFat": 39.0,
+     "carbs": 0.5,
+     "sugars": 0.5,
+     "protein": 0.5,
+     "salt": 1.2
+    },
+    "filters": {
+     "organic": "Økologisk",
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": null,
+     "vegan": "Vegansk",
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": 75.0,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   },
+   "REMA1000": {
+    "ean": "5701977000097",
+    "stores": [
+     "Rema 1000"
+    ],
+    "name": "Smørbar Blok",
+    "brand": "Naturli",
+    "subbrand": null,
+    "productType": "Smørbar Blok",
+    "variant": null,
+    "flavor": null,
+    "quantity": "200g",
+    "packCount": null,
+    "productCategory": "PROCESSED",
+    "keywords": [],
+    "ingredients": "Sheaolie* (43%), vand, kokosolie* (21%), rapsolie* (11%), salt, MANDELSMØR* (1%), emulgator (lecithin*), gulerodssaft*, citronsaft*, naturlig solsikkeoliearoma.*Økologisk",
+    "allergens": [],
+    "additives": [],
+    "sourceUrl": "Https://shop.rema1000.dk/varer/20062",
+    "nutrition": {
+     "energyKj": 2783.0,
+     "kcal": 665.0,
+     "fat": 75.0,
+     "saturatedFat": 39.0,
+     "carbs": 0.5,
+     "sugars": 0.5,
+     "fiber": 0.5,
+     "protein": 0.5,
+     "salt": 1.2
+    },
+    "filters": {
+     "organic": "Økologisk",
+     "glutenFree": null,
+     "lactoseFree": null,
+     "sugarFree": null,
+     "sweeteners": null,
+     "vegan": null,
+     "vegetarian": null,
+     "meatType": null,
+     "alcohol": null,
+     "alcoholPercent": null,
+     "fatPercent": null,
+     "countryOfOrigin": null,
+     "wholeGrain": null,
+     "keyhole": null,
+     "animalWelfare": [],
+     "certifications": [],
+     "storage": null,
+     "size": null,
+     "toxins": []
+    }
+   }
+  },
+  "images": [
+   {
+    "file": "5701977000097.png",
+    "tags": [
+     "Cutout"
+    ]
+   }
+  ]
+ },
+ {
   "ean": "5741000129395",
   "stores": [
    "Bilka",
@@ -1890,6 +3545,9 @@
   "imageTags": [
    "Cutout"
   ],
+  "category": "Drikkevarer",
+  "subcategory": "Sodavand",
+  "packaging": null,
   "sources": {
    "BILKA": {
     "ean": "5741000129395",
@@ -2016,1641 +3674,6 @@
   ]
  },
  {
-  "ean": "5741000236741",
-  "stores": [
-   "Bilka",
-   "Rema 1000"
-  ],
-  "externalSource": "BILKA",
-  "name": "Lemonade 0 kalorier",
-  "brand": "Faxe Kondi",
-  "subbrand": null,
-  "productType": "Sodavand",
-  "variant": "Lemonade",
-  "flavor": null,
-  "quantity": "1,5 l",
-  "packCount": null,
-  "productCategory": "DRINK",
-  "storeDepartment": "Drikkevarer",
-  "keywords": [
-   "Tilsat kulsyre",
-   "Indeholder en phenylalaninkilde"
-  ],
-  "ingredients": "Vand, kuldioxid, syre (E330), surhedsregulerende middel (E331), æblejuice fra koncentrat, citronjuice fra koncentrat, sødestoffer (aspartam, acesulfam K, natriumcyklamat), stabilisatorer (E414, E444, E445), konserveringsmidler (E202, E211), citronmelisseekstrakt, naturlig aroma, vegetabilske olier (kokos, raps), antioxidant (E300), saflorkoncentrat",
-  "allergens": [],
-  "additives": [
-   "E330",
-   "E331",
-   "E414",
-   "E444",
-   "E445",
-   "E202",
-   "E211",
-   "E300"
-  ],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/faxe-kondi-faxe-kondi-lemonade-0-kalorier/185140/",
-  "nutrition": {
-   "energyKj": 11.0,
-   "kcal": 3.0,
-   "fat": 0.0,
-   "saturatedFat": 0.0,
-   "carbs": 0.3,
-   "sugars": 0.2,
-   "fiber": 0.5,
-   "protein": 0.0,
-   "salt": 0.06
-  },
-  "filters": {
-   "organic": "Økologisk",
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": "Sukkerfri",
-   "sweeteners": "Sødemidler",
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": null,
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 0.0,
-   "countryOfOrigin": null,
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5741000236741.png",
-  "imageTags": [
-   "Cutout"
-  ],
-  "sources": {
-   "BILKA": {
-    "ean": "5741000236741",
-    "stores": [
-     "Bilka"
-    ],
-    "name": "Lemonade 0 kalorier",
-    "brand": "Faxe Kondi",
-    "subbrand": null,
-    "productType": "Sodavand",
-    "variant": null,
-    "flavor": null,
-    "quantity": "1,5 l",
-    "packCount": null,
-    "productCategory": "DRINK",
-    "keywords": [
-     "Tilsat kulsyre",
-     "Indeholder en phenylalaninkilde"
-    ],
-    "ingredients": "Vand, kuldioxid, syre (E330), surhedsregulerende middel (E331), æblejuice fra koncentrat, citronjuice fra koncentrat, sødestoffer (aspartam, acesulfam K, natriumcyklamat), stabilisatorer (E414, E444, E445), konserveringsmidler (E202, E211), citronmelisseekstrakt, naturlig aroma, vegetabilske olier (kokos, raps), antioxidant (E300), saflorkoncentrat",
-    "allergens": [],
-    "additives": [
-     "E330",
-     "E331",
-     "E414",
-     "E444",
-     "E445",
-     "E202",
-     "E211",
-     "E300"
-    ],
-    "sourceUrl": "https://www.bilkatogo.dk/produkt/faxe-kondi-faxe-kondi-lemonade-0-kalorier/185140/",
-    "nutrition": {
-     "energyKj": 11.0,
-     "kcal": 3.0,
-     "fat": 0.0,
-     "saturatedFat": 0.0,
-     "carbs": 0.3,
-     "sugars": 0.2,
-     "protein": 0.0,
-     "salt": 0.06
-    },
-    "filters": {
-     "organic": null,
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": null,
-     "sweeteners": "Sødemidler",
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": null,
-     "countryOfOrigin": null,
-     "wholeGrain": null,
-     "keyhole": null,
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   },
-   "REMA1000": {
-    "ean": "5741000236741",
-    "stores": [
-     "Rema 1000"
-    ],
-    "name": "Sodavand, Lemonade (Sukkerfri)",
-    "brand": "Faxe Kondi",
-    "subbrand": null,
-    "productType": "Sodavand",
-    "variant": "Lemonade",
-    "flavor": null,
-    "quantity": "1.5Ltr",
-    "packCount": null,
-    "productCategory": "DRINK",
-    "keywords": [],
-    "ingredients": "Vand, kuldioxid, syre (E330), surhedsregulerende middel (E331), æblejuice fra koncentrat, citronjuice fra koncentrat, sødestoffer (aspartam, acesulfam K, natriumcyklamat), stabilisatorer (E414, E444, E445), konserveringsmidler (E202, E211), citronmelisseekstrakt, naturlig aroma, vegetabilske olier (kokos, raps), antioxidant (E300), saflorkoncentrat",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "Https://shop.rema1000.dk/varer/210608",
-    "nutrition": {
-     "energyKj": 11.0,
-     "kcal": 3.0,
-     "fat": 0.5,
-     "saturatedFat": 0.1,
-     "carbs": 0.5,
-     "sugars": 0.5,
-     "fiber": 0.5,
-     "protein": 0.5,
-     "salt": 0.06
-    },
-    "filters": {
-     "organic": "Økologisk",
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": "Sukkerfri",
-     "sweeteners": null,
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": 0.0,
-     "countryOfOrigin": null,
-     "wholeGrain": null,
-     "keyhole": null,
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   }
-  },
-  "images": [
-   {
-    "file": "5741000236741.png",
-    "tags": [
-     "Cutout"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5741000129401",
-  "stores": [
-   "Bilka",
-   "Rema 1000"
-  ],
-  "externalSource": "BILKA",
-  "name": "0 kalorier",
-  "brand": "Faxe Kondi",
-  "subbrand": null,
-  "productType": "Sodavand",
-  "variant": "citrussmag",
-  "flavor": null,
-  "quantity": "1,5 l",
-  "packCount": null,
-  "productCategory": "DRINK",
-  "storeDepartment": "Drikkevarer",
-  "keywords": [
-   "Tilsat kulsyre"
-  ],
-  "ingredients": "Vand, syre (E330), kuldioxid, salt, konserveringsmiddel (E211), sødestoffer (aspartam, acesulfam-K), surhedsregulerende midler (E339, E500, E331, E501), stabilisatorer (E415), aroma (herunder koffein og quinin).",
-  "allergens": [],
-  "additives": [
-   "E330",
-   "E211",
-   "E339",
-   "E500",
-   "E331",
-   "E501",
-   "E415"
-  ],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/faxe-kondi-faxe-kondi-0-kalorier/39332/",
-  "nutrition": {
-   "energyKj": 0.0,
-   "kcal": 0.0,
-   "fat": 0.0,
-   "saturatedFat": 0.0,
-   "carbs": 0.0,
-   "sugars": 0.0,
-   "fiber": 0.5,
-   "protein": 0.0,
-   "salt": 0.05
-  },
-  "filters": {
-   "organic": "Økologisk",
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": "Sukkerfri",
-   "sweeteners": "Sødemidler",
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": null,
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 0.0,
-   "countryOfOrigin": null,
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5741000129401.png",
-  "imageTags": [
-   "Cutout"
-  ],
-  "sources": {
-   "BILKA": {
-    "ean": "5741000129401",
-    "stores": [
-     "Bilka"
-    ],
-    "name": "0 kalorier",
-    "brand": "Faxe Kondi",
-    "subbrand": null,
-    "productType": "Sodavand",
-    "variant": "citrussmag",
-    "flavor": null,
-    "quantity": "1,5 l",
-    "packCount": null,
-    "productCategory": "DRINK",
-    "keywords": [
-     "Tilsat kulsyre"
-    ],
-    "ingredients": "Vand, syre (E330), kuldioxid, salt, konserveringsmiddel (E211), sødestoffer (aspartam, acesulfam-K), surhedsregulerende midler (E339, E500, E331, E501), stabilisatorer (E415), aroma (herunder koffein og quinin).",
-    "allergens": [],
-    "additives": [
-     "E330",
-     "E211",
-     "E339",
-     "E500",
-     "E331",
-     "E501",
-     "E415"
-    ],
-    "sourceUrl": "https://www.bilkatogo.dk/produkt/faxe-kondi-faxe-kondi-0-kalorier/39332/",
-    "nutrition": {
-     "energyKj": 0.0,
-     "kcal": 0.0,
-     "fat": 0.0,
-     "saturatedFat": 0.0,
-     "carbs": 0.0,
-     "sugars": 0.0,
-     "protein": 0.0,
-     "salt": 0.05
-    },
-    "filters": {
-     "organic": null,
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": "Sukkerfri",
-     "sweeteners": "Sødemidler",
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": null,
-     "countryOfOrigin": null,
-     "wholeGrain": null,
-     "keyhole": null,
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   },
-   "REMA1000": {
-    "ean": "5741000129401",
-    "stores": [
-     "Rema 1000"
-    ],
-    "name": "Sodavand (Sukkerfri)",
-    "brand": "Faxe Kondi",
-    "subbrand": null,
-    "productType": "Sodavand",
-    "variant": "Sukkerfri",
-    "flavor": null,
-    "quantity": "1.5Ltr",
-    "packCount": null,
-    "productCategory": "DRINK",
-    "keywords": [],
-    "ingredients": "Vand, syre (E330), kuldioxid, salt, konserveringsmiddel (E211), sødestoffer (aspartam, acesulfam-K), surhedsregulerende midler (E339, E500, E331, E501), stabilisatorer (E415), aroma (herunder koffein og quinin).",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "Https://shop.rema1000.dk/varer/214415",
-    "nutrition": {
-     "energyKj": 0.0,
-     "kcal": 0.0,
-     "fat": 0.5,
-     "saturatedFat": 0.1,
-     "carbs": 0.5,
-     "sugars": 0.5,
-     "fiber": 0.5,
-     "protein": 0.5,
-     "salt": 0.05
-    },
-    "filters": {
-     "organic": "Økologisk",
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": "Sukkerfri",
-     "sweeteners": null,
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": 0.0,
-     "countryOfOrigin": null,
-     "wholeGrain": null,
-     "keyhole": null,
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   }
-  },
-  "images": [
-   {
-    "file": "5741000129401.png",
-    "tags": [
-     "Cutout"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5760466793865",
-  "stores": [
-   "Bilka",
-   "Rema 1000"
-  ],
-  "externalSource": "BILKA",
-  "name": "Yoghurt m. vanilje 0,1% fedt u. tilsat sukker",
-  "brand": "Cheasy",
-  "subbrand": null,
-  "productType": "Syrnet mælk",
-  "variant": "vanilje 0/ 1% fedt",
-  "flavor": "Skovbær",
-  "quantity": "1 kg",
-  "packCount": null,
-  "productCategory": "PROCESSED",
-  "storeDepartment": "Mejeri & køl",
-  "keywords": [
-   "Tilsat sukker"
-  ],
-  "ingredients": "SKUMMETMÆLK, vand (7.5%), modificeret stivelse, vaniljeektrakt (0,1%), aroma, sødestof (aspartam**), surhedsregulerende middel (citronsyre), YOGHURTKULTUR, knust vaniljestang. **Indeholder en phenylalaninkilde.",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/cheasy-yoghurt-m-vanilje-01-fedt-u-tilsat-sukker/19774/",
-  "nutrition": {
-   "energyKj": 153.0,
-   "kcal": 36.0,
-   "fat": 0.1,
-   "saturatedFat": 0.1,
-   "carbs": 3.6,
-   "sugars": 3.6,
-   "fiber": 0.5,
-   "protein": 4.3,
-   "salt": 0.13
-  },
-  "filters": {
-   "organic": null,
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": "Sukkerfri",
-   "sweeteners": "Sødemidler",
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": null,
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 0.1,
-   "countryOfOrigin": "Danmark",
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5760466793865.png",
-  "imageTags": [
-   "Cutout"
-  ],
-  "sources": {
-   "BILKA": {
-    "ean": "5760466793865",
-    "stores": [
-     "Bilka"
-    ],
-    "name": "Yoghurt m. vanilje 0,1% fedt u. tilsat sukker",
-    "brand": "Cheasy",
-    "subbrand": null,
-    "productType": "Syrnet mælk",
-    "variant": "vanilje 0/ 1% fedt",
-    "flavor": null,
-    "quantity": "1 kg",
-    "packCount": null,
-    "productCategory": "PROCESSED",
-    "keywords": [
-     "Tilsat sukker"
-    ],
-    "ingredients": "SKUMMETMÆLK, vand (7.5%), modificeret stivelse, vaniljeektrakt (0,1%), aroma, sødestof (aspartam**), surhedsregulerende middel (citronsyre), YOGHURTKULTUR, knust vaniljestang. **Indeholder en phenylalaninkilde.",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "https://www.bilkatogo.dk/produkt/cheasy-yoghurt-m-vanilje-01-fedt-u-tilsat-sukker/19774/",
-    "nutrition": {
-     "energyKj": 153.0,
-     "kcal": 36.0,
-     "fat": 0.1,
-     "saturatedFat": 0.1,
-     "carbs": 3.6,
-     "sugars": 3.6,
-     "protein": 4.3,
-     "salt": 0.13
-    },
-    "filters": {
-     "organic": null,
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": null,
-     "sweeteners": "Sødemidler",
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": 0.1,
-     "countryOfOrigin": null,
-     "wholeGrain": null,
-     "keyhole": null,
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   },
-   "REMA1000": {
-    "ean": "5760466793865",
-    "stores": [
-     "Rema 1000"
-    ],
-    "name": "Yoghurt, Vanilje, Skovbær (Sukkerfri)",
-    "brand": "Cheasy",
-    "subbrand": null,
-    "productType": "Yoghurt",
-    "variant": "Vanilje",
-    "flavor": "Skovbær",
-    "quantity": "1000g",
-    "packCount": null,
-    "productCategory": "PROCESSED",
-    "keywords": [],
-    "ingredients": "SKUMMETMÆLK , vand (7.5%), modificeret stivelse, vaniljeektrakt (0,1%), aroma, sødestof (aspartam**), surhedsregulerende middel (citronsyre), YOGHURTKULTUR, knust vaniljestang. **Indeholder en phenylalaninkilde.",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "Https://shop.rema1000.dk/varer/22823",
-    "nutrition": {
-     "energyKj": 153.0,
-     "kcal": 36.0,
-     "fat": 0.5,
-     "saturatedFat": 0.1,
-     "carbs": 3.6,
-     "sugars": 3.6,
-     "fiber": 0.5,
-     "protein": 4.3,
-     "salt": 0.13
-    },
-    "filters": {
-     "organic": null,
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": "Sukkerfri",
-     "sweeteners": null,
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": null,
-     "countryOfOrigin": "Danmark",
-     "wholeGrain": null,
-     "keyhole": null,
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   }
-  },
-  "images": [
-   {
-    "file": "5760466793865.png",
-    "tags": [
-     "Cutout"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5711953058677",
-  "stores": [
-   "Bilka",
-   "Rema 1000"
-  ],
-  "externalSource": "BILKA",
-  "name": "Skyr m. skovbær 0,2% fedt u. tilsat sukker",
-  "brand": "Cheasy",
-  "subbrand": null,
-  "productType": "Syrnet mælk",
-  "variant": "skovbær 0/ 2% fedt",
-  "flavor": "Passion",
-  "quantity": "1 kg",
-  "packCount": null,
-  "productCategory": "PROCESSED",
-  "storeDepartment": "Mejeri & køl",
-  "keywords": [
-   "Tilsat sukker"
-  ],
-  "ingredients": "MÆLK, jordbær (5,7%), hindbær (1,8%), brombær (1,6%), blåbær (1,5%), modificeret stivelse, hyldebærjuicekoncentrat, surhedsregulerende middel (trinatriumcitrat), sødemiddel (aspartam**), naturlig aroma, yoghurtkultur.**Indeholder en phenylaninkilde.",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/cheasy-skyr-m-skovbaer-02-fedt-u-tilsat-sukker/41377/",
-  "nutrition": {
-   "energyKj": 235.0,
-   "kcal": 55.0,
-   "fat": 0.2,
-   "saturatedFat": 0.1,
-   "carbs": 4.5,
-   "sugars": 4.1,
-   "fiber": 0.5,
-   "protein": 8.2,
-   "salt": 0.15
-  },
-  "filters": {
-   "organic": "Økologisk",
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": "Sukkerfri",
-   "sweeteners": "Sødemidler",
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": null,
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 0.2,
-   "countryOfOrigin": null,
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5711953058677.png",
-  "imageTags": [
-   "Cutout"
-  ],
-  "sources": {
-   "BILKA": {
-    "ean": "5711953058677",
-    "stores": [
-     "Bilka"
-    ],
-    "name": "Skyr m. skovbær 0,2% fedt u. tilsat sukker",
-    "brand": "Cheasy",
-    "subbrand": null,
-    "productType": "Syrnet mælk",
-    "variant": "skovbær 0/ 2% fedt",
-    "flavor": null,
-    "quantity": "1 kg",
-    "packCount": null,
-    "productCategory": "PROCESSED",
-    "keywords": [
-     "Tilsat sukker"
-    ],
-    "ingredients": "MÆLK, jordbær (5,7%), hindbær (1,8%), brombær (1,6%), blåbær (1,5%), modificeret stivelse, hyldebærjuicekoncentrat, surhedsregulerende middel (trinatriumcitrat), sødemiddel (aspartam**), naturlig aroma, yoghurtkultur.**Indeholder en phenylaninkilde.",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "https://www.bilkatogo.dk/produkt/cheasy-skyr-m-skovbaer-02-fedt-u-tilsat-sukker/41377/",
-    "nutrition": {
-     "energyKj": 235.0,
-     "kcal": 55.0,
-     "fat": 0.2,
-     "saturatedFat": 0.1,
-     "carbs": 4.5,
-     "sugars": 4.1,
-     "protein": 8.2,
-     "salt": 0.15
-    },
-    "filters": {
-     "organic": null,
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": null,
-     "sweeteners": "Sødemidler",
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": 0.2,
-     "countryOfOrigin": null,
-     "wholeGrain": null,
-     "keyhole": null,
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   },
-   "REMA1000": {
-    "ean": "5711953058677",
-    "stores": [
-     "Rema 1000"
-    ],
-    "name": "Skyr, Passion, Passion (Sukkerfri)",
-    "brand": "Cheasy",
-    "subbrand": null,
-    "productType": "Skyr",
-    "variant": "Passion",
-    "flavor": "Passion",
-    "quantity": "1000g",
-    "packCount": null,
-    "productCategory": "PROCESSED",
-    "keywords": [],
-    "ingredients": "MÆLK , jordbær (5,7%), hindbær (1,8%), brombær (1,6%), blåbær (1,5%), modificeret stivelse, hyldebærjuicekoncentrat, surhedsregulerende middel (trinatriumcitrat), sødemiddel (aspartam**), naturlig aroma, yoghurtkultur.**Indeholder en phenylaninkilde.",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "Https://shop.rema1000.dk/varer/20252",
-    "nutrition": {
-     "energyKj": 235.0,
-     "kcal": 55.0,
-     "fat": 0.5,
-     "saturatedFat": 0.1,
-     "carbs": 4.5,
-     "sugars": 4.1,
-     "fiber": 0.5,
-     "protein": 8.2,
-     "salt": 0.15
-    },
-    "filters": {
-     "organic": "Økologisk",
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": "Sukkerfri",
-     "sweeteners": null,
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": null,
-     "countryOfOrigin": null,
-     "wholeGrain": null,
-     "keyhole": null,
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   }
-  },
-  "images": [
-   {
-    "file": "5711953058677.png",
-    "tags": [
-     "Cutout"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5700426205366",
-  "stores": [
-   "Bilka",
-   "Rema 1000"
-  ],
-  "externalSource": "BILKA",
-  "name": "Yoghurt m. jordbær og rabarber 0,1% fedt u. tilsat sukker",
-  "brand": "Cheasy",
-  "subbrand": null,
-  "productType": "Syrnet mælk",
-  "variant": "jordbær/ rabarber 0/ 1% fedt",
-  "flavor": null,
-  "quantity": "1 kg",
-  "packCount": null,
-  "productCategory": "PROCESSED",
-  "storeDepartment": "Mejeri & køl",
-  "keywords": [
-   "Tilsat sukker"
-  ],
-  "ingredients": "SKUMMETMÆLK, jordbærpurekoncentrat (6%), rabarber (4,8%), modificeret stivelse, sødestof (aspartam**), naturlig aroma, YOGHURTKULTUR. **Indeholder en PHENYLALANINKILDE.",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/cheasy-yoghurt-m-jordbaer-og-rabarber-01-fedt-u-tilsat-sukker/19772/",
-  "nutrition": {
-   "energyKj": 156.0,
-   "kcal": 37.0,
-   "fat": 0.1,
-   "saturatedFat": 0.1,
-   "carbs": 4.1,
-   "sugars": 4.0,
-   "fiber": 0.5,
-   "protein": 4.2,
-   "salt": 0.13
-  },
-  "filters": {
-   "organic": null,
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": "Sukkerfri",
-   "sweeteners": "Sødemidler",
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": null,
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 0.1,
-   "countryOfOrigin": "Danmark",
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5700426205366.png",
-  "imageTags": [
-   "Cutout"
-  ],
-  "sources": {
-   "BILKA": {
-    "ean": "5700426205366",
-    "stores": [
-     "Bilka"
-    ],
-    "name": "Yoghurt m. jordbær og rabarber 0,1% fedt u. tilsat sukker",
-    "brand": "Cheasy",
-    "subbrand": null,
-    "productType": "Syrnet mælk",
-    "variant": "jordbær/ rabarber 0/ 1% fedt",
-    "flavor": null,
-    "quantity": "1 kg",
-    "packCount": null,
-    "productCategory": "PROCESSED",
-    "keywords": [
-     "Tilsat sukker"
-    ],
-    "ingredients": "SKUMMETMÆLK, jordbærpurekoncentrat (6%), rabarber (4,8%), modificeret stivelse, sødestof (aspartam**), naturlig aroma, YOGHURTKULTUR. **Indeholder en PHENYLALANINKILDE.",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "https://www.bilkatogo.dk/produkt/cheasy-yoghurt-m-jordbaer-og-rabarber-01-fedt-u-tilsat-sukker/19772/",
-    "nutrition": {
-     "energyKj": 156.0,
-     "kcal": 37.0,
-     "fat": 0.1,
-     "saturatedFat": 0.1,
-     "carbs": 4.1,
-     "sugars": 4.0,
-     "protein": 4.2,
-     "salt": 0.13
-    },
-    "filters": {
-     "organic": null,
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": null,
-     "sweeteners": "Sødemidler",
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": 0.1,
-     "countryOfOrigin": null,
-     "wholeGrain": null,
-     "keyhole": null,
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   },
-   "REMA1000": {
-    "ean": "5700426205366",
-    "stores": [
-     "Rema 1000"
-    ],
-    "name": "Yoghurt, Jordbær/ Rabarber/ Passion (Sukkerfri)",
-    "brand": "Cheasy",
-    "subbrand": null,
-    "productType": "Yoghurt",
-    "variant": "Jordbær/ Rabarber/ Passion",
-    "flavor": null,
-    "quantity": "1000g",
-    "packCount": null,
-    "productCategory": "PROCESSED",
-    "keywords": [],
-    "ingredients": "SKUMMETMÆLK , jordbærpurekoncentrat (6%), rabarber (4,8%), modificeretstivelse, sødestof (aspartam**), naturlig aroma, YOGHURTKULTUR. **Indeholder en phenylalaninkilde.",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "Https://shop.rema1000.dk/varer/22824",
-    "nutrition": {
-     "energyKj": 156.0,
-     "kcal": 37.0,
-     "fat": 0.5,
-     "saturatedFat": 0.1,
-     "carbs": 4.1,
-     "sugars": 4.0,
-     "fiber": 0.5,
-     "protein": 4.2,
-     "salt": 0.13
-    },
-    "filters": {
-     "organic": null,
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": "Sukkerfri",
-     "sweeteners": null,
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": null,
-     "countryOfOrigin": "Danmark",
-     "wholeGrain": null,
-     "keyhole": null,
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   }
-  },
-  "images": [
-   {
-    "file": "5700426205366.png",
-    "tags": [
-     "Cutout"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5711953030352",
-  "stores": [
-   "Bilka",
-   "Rema 1000"
-  ],
-  "externalSource": "BILKA",
-  "name": "Ymer 3,5% fedt",
-  "brand": "Arla",
-  "subbrand": null,
-  "productType": "syrnet sødmælk 3, 5% fedt",
-  "variant": "A38",
-  "flavor": null,
-  "quantity": "1 kg",
-  "packCount": null,
-  "productCategory": "PROCESSED",
-  "storeDepartment": "Mejeri & køl",
-  "keywords": [
-   "3,5% fedt"
-  ],
-  "ingredients": "Økologisk MÆLK syrnet med MÆLKESYREKULTUR.",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/arla-oeko-ymer-35-fedt-oeko/63088/",
-  "nutrition": {
-   "energyKj": 296.0,
-   "kcal": 71.0,
-   "fat": 3.5,
-   "saturatedFat": 2.1,
-   "carbs": 3.4,
-   "sugars": 3.4,
-   "fiber": 0.5,
-   "protein": 5.6,
-   "salt": 0.11
-  },
-  "filters": {
-   "organic": "Økologisk",
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": null,
-   "sweeteners": null,
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": null,
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 3.5,
-   "countryOfOrigin": "Danmark",
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [
-    "Bedre Dyrevelfærd 3"
-   ],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5711953030352.png",
-  "imageTags": [
-   "Cutout"
-  ],
-  "sources": {
-   "BILKA": {
-    "ean": "5711953030352",
-    "stores": [
-     "Bilka"
-    ],
-    "name": "Ymer 3,5% fedt",
-    "brand": "Arla",
-    "subbrand": null,
-    "productType": "syrnet sødmælk 3, 5% fedt",
-    "variant": null,
-    "flavor": null,
-    "quantity": "1 kg",
-    "packCount": null,
-    "productCategory": "PROCESSED",
-    "keywords": [],
-    "ingredients": "Økologisk MÆLK syrnet med MÆLKESYREKULTUR.",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "https://www.bilkatogo.dk/produkt/arla-oeko-ymer-35-fedt-oeko/63088/",
-    "nutrition": {
-     "energyKj": 296.0,
-     "kcal": 71.0,
-     "fat": 3.5,
-     "saturatedFat": 2.1,
-     "carbs": 3.4,
-     "sugars": 3.4,
-     "protein": 5.6,
-     "salt": 0.11
-    },
-    "filters": {
-     "organic": "Økologisk",
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": null,
-     "sweeteners": null,
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": 3.5,
-     "countryOfOrigin": null,
-     "wholeGrain": null,
-     "keyhole": null,
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   },
-   "REMA1000": {
-    "ean": "5711953030352",
-    "stores": [
-     "Rema 1000"
-    ],
-    "name": "Ymer, A38",
-    "brand": "Arla",
-    "subbrand": null,
-    "productType": "Ymer",
-    "variant": "A38",
-    "flavor": null,
-    "quantity": "1kg",
-    "packCount": null,
-    "productCategory": "PROCESSED",
-    "keywords": [
-     "3,5% fedt"
-    ],
-    "ingredients": "Økologisk MÆLK syrnet med MÆLKESYREKULTUR .",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "Https://shop.rema1000.dk/varer/22055",
-    "nutrition": {
-     "energyKj": 296.0,
-     "kcal": 71.0,
-     "fat": 3.5,
-     "saturatedFat": 2.1,
-     "carbs": 3.4,
-     "sugars": 3.4,
-     "fiber": 0.5,
-     "protein": 5.6,
-     "salt": 0.11
-    },
-    "filters": {
-     "organic": "Økologisk",
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": null,
-     "sweeteners": null,
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": 3.5,
-     "countryOfOrigin": "Danmark",
-     "wholeGrain": null,
-     "keyhole": null,
-     "animalWelfare": [
-      "Bedre Dyrevelfærd 3"
-     ],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   }
-  },
-  "images": [
-   {
-    "file": "5711953030352.png",
-    "tags": [
-     "Cutout"
-    ]
-   },
-   {
-    "file": "5711953030352_2.png",
-    "tags": [
-     "Cutout"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5702024008035",
-  "stores": [
-   "Bilka",
-   "Rema 1000"
-  ],
-  "externalSource": "BILKA",
-  "name": "Torskerogn",
-  "brand": "Bornholms",
-  "subbrand": null,
-  "productType": "Torskerogn",
-  "variant": null,
-  "flavor": null,
-  "quantity": "200 g",
-  "packCount": null,
-  "productCategory": "PROCESSED",
-  "storeDepartment": "Kolonial",
-  "keywords": [],
-  "ingredients": "TORSKEROGN 55%, vand, tomatkoncentrat, kartoffelstivelse, rapsolie, salt, kartoffelfibre, maltodextrin, stabilisatorer (carrageenan, johannesbrødkernemel).",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/bornholms-torskerogn/31678/",
-  "nutrition": {
-   "energyKj": 408.0,
-   "kcal": 98.0,
-   "fat": 2.6,
-   "saturatedFat": 0.4,
-   "carbs": 4.6,
-   "sugars": 0.6,
-   "fiber": 1.3,
-   "protein": 13.0,
-   "salt": 1.2
-  },
-  "filters": {
-   "organic": null,
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": null,
-   "sweeteners": null,
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": "Fisk",
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": null,
-   "countryOfOrigin": null,
-   "wholeGrain": null,
-   "keyhole": "Nøglehul",
-   "animalWelfare": [],
-   "certifications": [
-    "MSC"
-   ],
-   "storage": "Konserves",
-   "size": null,
-   "toxins": []
-  },
-  "image": "5702024008035.png",
-  "imageTags": [
-   "Cutout"
-  ],
-  "sources": {
-   "BILKA": {
-    "ean": "5702024008035",
-    "stores": [
-     "Bilka"
-    ],
-    "name": "Torskerogn",
-    "brand": "Bornholms",
-    "subbrand": null,
-    "productType": "Torskerogn",
-    "variant": null,
-    "flavor": null,
-    "quantity": "200 g",
-    "packCount": null,
-    "productCategory": "PROCESSED",
-    "keywords": [],
-    "ingredients": "TORSKEROGN 55%, vand, tomatkoncentrat, kartoffelstivelse, rapsolie, salt, kartoffelfibre, maltodextrin, stabilisatorer (carrageenan, johannesbrødkernemel).",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "https://www.bilkatogo.dk/produkt/bornholms-torskerogn/31678/",
-    "nutrition": {
-     "energyKj": 408.0,
-     "kcal": 98.0,
-     "fat": 2.6,
-     "saturatedFat": 0.4,
-     "carbs": 4.6,
-     "sugars": 0.6,
-     "fiber": 1.3,
-     "protein": 13.0,
-     "salt": 1.2
-    },
-    "filters": {
-     "organic": null,
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": null,
-     "sweeteners": null,
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": null,
-     "countryOfOrigin": null,
-     "wholeGrain": null,
-     "keyhole": null,
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   },
-   "REMA1000": {
-    "ean": "5702024008035",
-    "stores": [
-     "Rema 1000"
-    ],
-    "name": "Torskerogn",
-    "brand": "Bornholms",
-    "subbrand": null,
-    "productType": "Torskerogn",
-    "variant": null,
-    "flavor": null,
-    "quantity": "200g",
-    "packCount": null,
-    "productCategory": "PROCESSED",
-    "keywords": [],
-    "ingredients": "TORSKEROGN 55%, vand, tomatkoncentrat, kartoffelstivelse, rapsolie, salt, kartoffelfibre, maltodextrin, stabilisatorer (carrageenan, johannesbrødkernemel).",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "Https://shop.rema1000.dk/varer/34596",
-    "nutrition": {
-     "energyKj": 408.0,
-     "kcal": 98.0,
-     "fat": 2.6,
-     "saturatedFat": 0.4,
-     "carbs": 4.6,
-     "sugars": 0.6,
-     "fiber": 1.3,
-     "protein": 13.0,
-     "salt": 1.2
-    },
-    "filters": {
-     "organic": null,
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": null,
-     "sweeteners": null,
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": "Fisk",
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": null,
-     "countryOfOrigin": null,
-     "wholeGrain": null,
-     "keyhole": "Nøglehul",
-     "animalWelfare": [],
-     "certifications": [
-      "MSC"
-     ],
-     "storage": "Konserves",
-     "size": null,
-     "toxins": []
-    }
-   }
-  },
-  "images": [
-   {
-    "file": "5702024008035.png",
-    "tags": [
-     "Cutout"
-    ]
-   },
-   {
-    "file": "5702024008035_2.png",
-    "tags": [
-     "Cutout"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5703161810130",
-  "stores": [
-   "Bilka",
-   "Rema 1000"
-  ],
-  "externalSource": "BILKA",
-  "name": "Abrikosmarmelade u. tilsat sukker",
-  "brand": "Easis",
-  "subbrand": null,
-  "productType": "Abrikosmarmelade",
-  "variant": "Abrikos",
-  "flavor": null,
-  "quantity": "285 g",
-  "packCount": null,
-  "productCategory": "PROCESSED",
-  "storeDepartment": "Kolonial",
-  "keywords": [
-   "Tilsat sukker"
-  ],
-  "ingredients": "Abrikos (Indeholder SVOVLDIOXID) (60%), vand, sødestof (erythritol 5%), fortykningsmiddel (pektin), surhedsregulerende middel (citronsyre), konserveringsmiddel (kaliumsorbat), sødestoffer (sucralose, acesulfamkalium).",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/easis-abrikosmarmelade-u-tilsat-sukker/85301/",
-  "nutrition": {
-   "energyKj": 141.0,
-   "kcal": 34.0,
-   "fat": 0.5,
-   "saturatedFat": 0.0,
-   "carbs": 12.0,
-   "sugars": 4.9,
-   "fiber": 1.4,
-   "protein": 0.5,
-   "salt": 0.03
-  },
-  "filters": {
-   "organic": "Økologisk",
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": "Sukkerfri",
-   "sweeteners": "Sødemidler",
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": null,
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": null,
-   "countryOfOrigin": null,
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5703161810130.png",
-  "imageTags": [
-   "Cutout"
-  ],
-  "sources": {
-   "BILKA": {
-    "ean": "5703161810130",
-    "stores": [
-     "Bilka"
-    ],
-    "name": "Abrikosmarmelade u. tilsat sukker",
-    "brand": "Easis",
-    "subbrand": null,
-    "productType": "Abrikosmarmelade",
-    "variant": null,
-    "flavor": null,
-    "quantity": "285 g",
-    "packCount": null,
-    "productCategory": "PROCESSED",
-    "keywords": [
-     "Tilsat sukker"
-    ],
-    "ingredients": "Abrikos (Indeholder SVOVLDIOXID) (60%), vand, sødestof (erythritol 5%), fortykningsmiddel (pektin), surhedsregulerende middel (citronsyre), konserveringsmiddel (kaliumsorbat), sødestoffer (sucralose, acesulfamkalium).",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "https://www.bilkatogo.dk/produkt/easis-abrikosmarmelade-u-tilsat-sukker/85301/",
-    "nutrition": {
-     "energyKj": 141.0,
-     "kcal": 34.0,
-     "fat": 0.5,
-     "saturatedFat": 0.0,
-     "carbs": 12.0,
-     "sugars": 4.9,
-     "fiber": 1.4,
-     "protein": 0.5,
-     "salt": 0.03
-    },
-    "filters": {
-     "organic": null,
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": null,
-     "sweeteners": "Sødemidler",
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": null,
-     "countryOfOrigin": null,
-     "wholeGrain": null,
-     "keyhole": null,
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   },
-   "REMA1000": {
-    "ean": "5703161810130",
-    "stores": [
-     "Rema 1000"
-    ],
-    "name": "Marmelade, Abrikos (Sukkerfri)",
-    "brand": "Easis",
-    "subbrand": null,
-    "productType": "Marmelade",
-    "variant": "Abrikos",
-    "flavor": null,
-    "quantity": "285g",
-    "packCount": null,
-    "productCategory": "PROCESSED",
-    "keywords": [],
-    "ingredients": "Abrikos (Indeholder SVOVLDIOXID ) (60%), vand, sødestof (erythritol 5%), fortykningsmiddel (pektin), surhedsregulerende middel (citronsyre), konserveringsmiddel (kaliumsorbat), sødestoffer (sucralose, acesulfamkalium).",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "Https://shop.rema1000.dk/varer/105041",
-    "nutrition": {
-     "energyKj": 141.0,
-     "kcal": 34.0,
-     "fat": 0.5,
-     "saturatedFat": 0.1,
-     "carbs": 12.0,
-     "sugars": 4.9,
-     "fiber": 1.4,
-     "protein": 0.5,
-     "salt": 0.03
-    },
-    "filters": {
-     "organic": "Økologisk",
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": "Sukkerfri",
-     "sweeteners": null,
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": null,
-     "countryOfOrigin": null,
-     "wholeGrain": null,
-     "keyhole": null,
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   }
-  },
-  "images": [
-   {
-    "file": "5703161810130.png",
-    "tags": [
-     "Cutout"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5701075203789",
-  "stores": [
-   "Bilka",
-   "Rema 1000"
-  ],
-  "externalSource": "BILKA",
-  "name": "Havreris",
-  "brand": "Valsemøllen",
-  "subbrand": null,
-  "productType": "Afskallede og varmebehandlede havrekerner",
-  "variant": null,
-  "flavor": null,
-  "quantity": "800 g",
-  "packCount": null,
-  "productCategory": "PROCESSED",
-  "storeDepartment": "Kolonial",
-  "keywords": [],
-  "ingredients": "Afskallede varmebehandlede økologiske HAVREKERNER",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/valsemoellen-havreris-oeko/151849/",
-  "nutrition": {
-   "energyKj": 1.499,
-   "kcal": 358.0,
-   "fat": 5.9,
-   "saturatedFat": 1.1,
-   "carbs": 59.0,
-   "sugars": 0.8,
-   "fiber": 8.5,
-   "protein": 12.0,
-   "salt": 0.03
-  },
-  "filters": {
-   "organic": "Økologisk",
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": null,
-   "sweeteners": null,
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": null,
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": null,
-   "countryOfOrigin": null,
-   "wholeGrain": "Fuldkorn",
-   "keyhole": "Nøglehul",
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5701075203789.png",
-  "imageTags": [
-   "Cutout"
-  ],
-  "sources": {
-   "BILKA": {
-    "ean": "5701075203789",
-    "stores": [
-     "Bilka"
-    ],
-    "name": "Havreris",
-    "brand": "Valsemøllen",
-    "subbrand": null,
-    "productType": "Afskallede og varmebehandlede havrekerner",
-    "variant": null,
-    "flavor": null,
-    "quantity": "800 g",
-    "packCount": null,
-    "productCategory": "PROCESSED",
-    "keywords": [],
-    "ingredients": "Afskallede varmebehandlede økologiske HAVREKERNER",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "https://www.bilkatogo.dk/produkt/valsemoellen-havreris-oeko/151849/",
-    "nutrition": {
-     "energyKj": 1.499,
-     "kcal": 358.0,
-     "fat": 5.9,
-     "saturatedFat": 1.1,
-     "carbs": 59.0,
-     "sugars": 0.8,
-     "fiber": 8.5,
-     "protein": 12.0,
-     "salt": 0.03
-    },
-    "filters": {
-     "organic": "Økologisk",
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": null,
-     "sweeteners": null,
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": null,
-     "countryOfOrigin": null,
-     "wholeGrain": null,
-     "keyhole": null,
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   },
-   "REMA1000": {
-    "ean": "5701075203789",
-    "stores": [
-     "Rema 1000"
-    ],
-    "name": "Havreris",
-    "brand": "Valsemøllen",
-    "subbrand": null,
-    "productType": "Havreris",
-    "variant": null,
-    "flavor": null,
-    "quantity": "800g",
-    "packCount": null,
-    "productCategory": "PROCESSED",
-    "keywords": [],
-    "ingredients": "Afskallede varmebehandlede økologiske HAVREKERNER",
-    "allergens": [],
-    "additives": [],
-    "sourceUrl": "Https://shop.rema1000.dk/varer/91256",
-    "nutrition": {
-     "energyKj": 1499.0,
-     "kcal": 358.0,
-     "fat": 5.9,
-     "saturatedFat": 1.1,
-     "carbs": 59.0,
-     "sugars": 0.8,
-     "fiber": 8.5,
-     "protein": 12.0,
-     "salt": 0.03
-    },
-    "filters": {
-     "organic": "Økologisk",
-     "glutenFree": null,
-     "lactoseFree": null,
-     "sugarFree": null,
-     "sweeteners": null,
-     "vegan": null,
-     "vegetarian": null,
-     "meatType": null,
-     "alcohol": null,
-     "alcoholPercent": null,
-     "fatPercent": null,
-     "countryOfOrigin": null,
-     "wholeGrain": "Fuldkorn",
-     "keyhole": "Nøglehul",
-     "animalWelfare": [],
-     "certifications": [],
-     "storage": null,
-     "size": null,
-     "toxins": []
-    }
-   }
-  },
-  "images": [
-   {
-    "file": "5701075203789.png",
-    "tags": [
-     "Cutout"
-    ]
-   }
-  ]
- },
- {
   "ean": "5411188128588",
   "stores": [
    "Bilka"
@@ -3710,143 +3733,12 @@
   "imageTags": [
    "Original"
   ],
+  "category": "Kolonial og tørvarer",
+  "subcategory": null,
+  "packaging": null,
   "images": [
    {
     "file": "5411188128588.jpg",
-    "tags": [
-     "Original"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5714104001775",
-  "stores": [
-   "Bilka"
-  ],
-  "externalSource": "BILKA",
-  "name": "Tadka dhal af flækærter",
-  "brand": "Edgy Veggie",
-  "subbrand": null,
-  "productType": "inspireret dhal af flækærter",
-  "variant": null,
-  "flavor": null,
-  "quantity": "400 g",
-  "packCount": null,
-  "productCategory": "PROCESSED",
-  "storeDepartment": "Kolonial",
-  "keywords": [],
-  "ingredients": "Vand, gule flækærter* (16%), tomat* (11%), rød peberfrugt*(3%), rismel*, løg*, solsikkeolie*, ingefær* (0,25%), salt, hvidløg*, gurkemeje* (0,18%), korianderblade*, chili*. *=økologisk oprindelse.",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/edgy-veggie-tadka-dhal-af-flaekaerter-vegansk-oeko/151751/",
-  "nutrition": {
-   "energyKj": 322.0,
-   "kcal": 77.0,
-   "fat": 3.4,
-   "saturatedFat": 0.3,
-   "carbs": 8.7,
-   "sugars": 0.4,
-   "fiber": 2.2,
-   "protein": 1.8,
-   "salt": 0.25
-  },
-  "filters": {
-   "organic": "Økologisk",
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": null,
-   "sweeteners": null,
-   "vegan": "Vegansk",
-   "vegetarian": null,
-   "meatType": null,
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": null,
-   "countryOfOrigin": "Indien",
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5714104001775.png",
-  "imageTags": [
-   "Cutout"
-  ],
-  "images": [
-   {
-    "file": "5714104001775.png",
-    "tags": [
-     "Cutout"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5411188140368",
-  "stores": [
-   "Bilka"
-  ],
-  "externalSource": "BILKA",
-  "name": "Plantebaseret proteindrik m vaniljesmag",
-  "brand": "Alpro",
-  "subbrand": null,
-  "productType": "Sojadrik",
-  "variant": "vaniljesmag 2/ 8% fedt",
-  "flavor": null,
-  "quantity": "1.000 ml",
-  "packCount": null,
-  "productCategory": "DRINK",
-  "storeDepartment": "Mejeri & køl",
-  "keywords": [
-   "og"
-  ],
-  "ingredients": "SOJAbas (94,3%) (vand, afskallede SOJAbönor (13,1%)), socker, surhetsreglerande medel (kaliumfosfater), kalcium (kalciumkarbonat), aromer, havssalt, stabiliseringsmedel (gellangummi), vitaminer (B2, B12, D2).",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/alpro-plantebaseret-proteindrik-m-vaniljesmag/138494/",
-  "nutrition": {
-   "energyKj": 281.0,
-   "kcal": 67.0,
-   "fat": 2.8,
-   "saturatedFat": 0.5,
-   "carbs": 4.8,
-   "sugars": 4.8,
-   "fiber": 0.9,
-   "protein": 5.0,
-   "salt": 0.12
-  },
-  "filters": {
-   "organic": null,
-   "glutenFree": null,
-   "lactoseFree": "Laktosefri",
-   "sugarFree": null,
-   "sweeteners": null,
-   "vegan": "Vegansk",
-   "vegetarian": null,
-   "meatType": null,
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 2.8,
-   "countryOfOrigin": null,
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5411188140368.jpg",
-  "imageTags": [
-   "Original"
-  ],
-  "images": [
-   {
-    "file": "5411188140368.jpg",
     "tags": [
      "Original"
     ]
@@ -3909,6 +3801,9 @@
   "imageTags": [
    "Original"
   ],
+  "category": "Mejeri og æg",
+  "subcategory": null,
+  "packaging": null,
   "images": [
    {
     "file": "7350000552874.jpg",
@@ -3976,6 +3871,9 @@
   "imageTags": [
    "Original"
   ],
+  "category": "Kød",
+  "subcategory": "Tilberedt kød",
+  "packaging": null,
   "images": [
    {
     "file": "5712874212605.jpg",
@@ -3999,7 +3897,7 @@
   "flavor": null,
   "quantity": "400 g",
   "packCount": null,
-  "productCategory": "PROCESSED",
+  "productCategory": "RAW",
   "storeDepartment": "Kød & fisk",
   "keywords": [],
   "ingredients": "Økologisk hakket grisekød. Fedtindhold under 12%, Collagen-/kødproteinforholdet under 18%.",
@@ -4041,808 +3939,12 @@
   "imageTags": [
    "Original"
   ],
+  "category": "Kød",
+  "subcategory": "Rå kød",
+  "packaging": null,
   "images": [
    {
     "file": "5707196255386.jpg",
-    "tags": [
-     "Original"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5789000081428",
-  "stores": [
-   "Bilka"
-  ],
-  "externalSource": "BILKA",
-  "name": "Hakket kyllingekød 3-7% fedt",
-  "brand": "De Familiegårde",
-  "subbrand": null,
-  "productType": "Hakket kyllingekød 3-6% fedt",
-  "variant": null,
-  "flavor": null,
-  "quantity": "400 g",
-  "packCount": null,
-  "productCategory": "PROCESSED",
-  "storeDepartment": "Kød & fisk",
-  "keywords": [
-   "Hakket kød og kødfars skal altid gennemsteges"
-  ],
-  "ingredients": "Fersk hakket kyllingekød",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/de-danske-familiegaarde-hakket-kyllingekoed-3-7-fedt/56538/",
-  "nutrition": {
-   "energyKj": 507.0,
-   "kcal": 121.0,
-   "fat": 4.5,
-   "saturatedFat": 1.2,
-   "carbs": 0.0,
-   "sugars": 0.0,
-   "protein": 20.0,
-   "salt": 0.19
-  },
-  "filters": {
-   "organic": null,
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": null,
-   "sweeteners": null,
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": "Kylling",
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 7.0,
-   "countryOfOrigin": "Danmark",
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5789000081428.png",
-  "imageTags": [
-   "Original"
-  ],
-  "images": [
-   {
-    "file": "5789000081428.png",
-    "tags": [
-     "Original"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5712878053785",
-  "stores": [
-   "Bilka"
-  ],
-  "externalSource": "BILKA",
-  "name": "Hakket oksekød 8-12% fedt",
-  "brand": "Salling",
-  "subbrand": null,
-  "productType": "hakket oksekød 8-12% fedt",
-  "variant": null,
-  "flavor": null,
-  "quantity": "0,95 kg",
-  "packCount": null,
-  "productCategory": "PROCESSED",
-  "storeDepartment": "Kød & fisk",
-  "keywords": [],
-  "ingredients": "Hakket økologisk oksekød.",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/salling-oeko-hakket-oksekoed-8-12-fedt-oeko/169252/",
-  "nutrition": {
-   "energyKj": 721.0,
-   "kcal": 172.0,
-   "fat": 10.0,
-   "saturatedFat": 4.3,
-   "carbs": 0.0,
-   "sugars": 0.0,
-   "protein": 20.6,
-   "salt": 0.2
-  },
-  "filters": {
-   "organic": "Økologisk",
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": null,
-   "sweeteners": null,
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": "Okse",
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 12.0,
-   "countryOfOrigin": null,
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5712878053785.jpg",
-  "imageTags": [
-   "Original"
-  ],
-  "images": [
-   {
-    "file": "5712878053785.jpg",
-    "tags": [
-     "Original"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5789000080735",
-  "stores": [
-   "Bilka"
-  ],
-  "externalSource": "BILKA",
-  "name": "Hel kylling",
-  "brand": "De Familiegårde",
-  "subbrand": null,
-  "productType": "hel kylling",
-  "variant": null,
-  "flavor": null,
-  "quantity": "1,2 kg",
-  "packCount": null,
-  "productCategory": "PROCESSED",
-  "storeDepartment": "Kød & fisk",
-  "keywords": [],
-  "ingredients": "Hel kylling uden indmad",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/de-danske-familiegaarde-hel-kylling-oeko/54737/",
-  "nutrition": {
-   "energyKj": 723.0,
-   "kcal": 173.0,
-   "fat": 9.9,
-   "saturatedFat": 2.7,
-   "carbs": 0.0,
-   "sugars": 0.0,
-   "protein": 21.0,
-   "salt": 0.19
-  },
-  "filters": {
-   "organic": "Økologisk",
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": null,
-   "sweeteners": null,
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": "Kylling",
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": null,
-   "countryOfOrigin": "Danmark",
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5789000080735.jpg",
-  "imageTags": [
-   "Original"
-  ],
-  "images": [
-   {
-    "file": "5789000080735.jpg",
-    "tags": [
-     "Original"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5706911027918",
-  "stores": [
-   "Bilka"
-  ],
-  "externalSource": "BILKA",
-  "name": "yoghurt m blåbær 0% fedt",
-  "brand": "Athena",
-  "subbrand": null,
-  "productType": "inspireret yoghurt 0% fedt",
-  "variant": null,
-  "flavor": null,
-  "quantity": "400 g",
-  "packCount": null,
-  "productCategory": "PROCESSED",
-  "storeDepartment": "Mejeri & køl",
-  "keywords": [],
-  "ingredients": "90 % drænet YOGHURT (pasteuriseret SKUMMETMÆLK, YOGHURTKULTUR (MÆLK)), 5 % blåbær, vand, koncentreret citronsaft, modificeret stivelse, koncentreret sort gullerodssaft, sødestoffer (E 950, E 951), naturlig aroma.",
-  "allergens": [],
-  "additives": [
-   "E950",
-   "E951"
-  ],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/athena-graesk-yoghurt-m-blaabaer-0-fedt/154667/",
-  "nutrition": {
-   "energyKj": 236.0,
-   "kcal": 56.0,
-   "fat": 0.0,
-   "saturatedFat": 0.0,
-   "carbs": 4.6,
-   "sugars": 3.5,
-   "protein": 9.3,
-   "salt": 0.09
-  },
-  "filters": {
-   "organic": null,
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": null,
-   "sweeteners": "Sødemidler",
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": null,
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 0.0,
-   "countryOfOrigin": "Grækenland",
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5706911027918.jpg",
-  "imageTags": [
-   "Original"
-  ],
-  "images": [
-   {
-    "file": "5706911027918.jpg",
-    "tags": [
-     "Original"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5706911027895",
-  "stores": [
-   "Bilka"
-  ],
-  "externalSource": "BILKA",
-  "name": "yoghurt 0% fedt",
-  "brand": "Athena",
-  "subbrand": null,
-  "productType": "inspireret yoghurt, 0% fedt",
-  "variant": null,
-  "flavor": null,
-  "quantity": "400 g",
-  "packCount": null,
-  "productCategory": "PROCESSED",
-  "storeDepartment": "Mejeri & køl",
-  "keywords": [],
-  "ingredients": "Pasteuriseret SKUMMETMÆLK, YOGHURTKULTUR (MÆLK), laktase.",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/athena-graesk-yoghurt-0-fedt-laktosefri/154665/",
-  "nutrition": {
-   "energyKj": 247.0,
-   "kcal": 58.0,
-   "fat": 0.0,
-   "saturatedFat": 0.0,
-   "carbs": 4.5,
-   "sugars": 3.5,
-   "protein": 10.0,
-   "salt": 0.1
-  },
-  "filters": {
-   "organic": null,
-   "glutenFree": null,
-   "lactoseFree": "Laktosefri",
-   "sugarFree": null,
-   "sweeteners": null,
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": null,
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 0.0,
-   "countryOfOrigin": "Grækenland",
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5706911027895.jpg",
-  "imageTags": [
-   "Original"
-  ],
-  "images": [
-   {
-    "file": "5706911027895.jpg",
-    "tags": [
-     "Original"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5711953076374",
-  "stores": [
-   "Bilka"
-  ],
-  "externalSource": "BILKA",
-  "name": "Kakaomælk 1,5% fedt",
-  "brand": "Arla LactoFree",
-  "subbrand": null,
-  "productType": "mælkedrik",
-  "variant": "kakao 1/ 5% fedt",
-  "flavor": null,
-  "quantity": "1 l",
-  "packCount": null,
-  "productCategory": "DRINK",
-  "storeDepartment": "Mejeri & køl",
-  "keywords": [],
-  "ingredients": "Økologisk MÆLK 1,5% fedt (89,1%), økologisk sukker (4,6%), økologisk fedtfattig kakao¹ (1,3%), laktase enzym, stabilisator (carrageenan). ¹Rainforest Alliance Certified.",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/arla-lactofree-kakaomaelk-15-fedt-laktosefri-oeko/56324/",
-  "nutrition": {
-   "energyKj": 283.0,
-   "kcal": 67.0,
-   "fat": 1.6,
-   "saturatedFat": 1.0,
-   "carbs": 9.4,
-   "sugars": 9.4,
-   "protein": 3.5,
-   "salt": 0.1
-  },
-  "filters": {
-   "organic": "Økologisk",
-   "glutenFree": null,
-   "lactoseFree": "Laktosefri",
-   "sugarFree": null,
-   "sweeteners": null,
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": null,
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 1.5,
-   "countryOfOrigin": null,
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5711953076374.png",
-  "imageTags": [
-   "Cutout"
-  ],
-  "images": [
-   {
-    "file": "5711953076374.png",
-    "tags": [
-     "Cutout"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5760466995870",
-  "stores": [
-   "Bilka"
-  ],
-  "externalSource": "BILKA",
-  "name": "Skinny Latte iskaffe 0,9% fedt u tilsat sukker",
-  "brand": "Starbucks",
-  "subbrand": null,
-  "productType": "Mælkedrik",
-  "variant": "kaffe",
-  "flavor": null,
-  "quantity": "220 ml",
-  "packCount": null,
-  "productCategory": "DRINK",
-  "storeDepartment": "Mejeri & køl",
-  "keywords": [
-   "Tilsat sukker"
-  ],
-  "ingredients": "MÆLK med 1% fedt (75%), Starbucks® Arabica kaffe (vand, kaffeekstrakt) (24,8%), surhedsregulerende middel (kaliumcarbonat), stabilisatorer (gellangummi, carrageenan), enzym (lactase), sødestof (acesulfamkalium).",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/starbucks-skinny-latte-iskaffe-09-fedt-u-tilsat-sukker-laktosefri/19740/",
-  "nutrition": {
-   "energyKj": 146.0,
-   "kcal": 35.0,
-   "fat": 0.8,
-   "saturatedFat": 0.5,
-   "carbs": 4.0,
-   "sugars": 3.7,
-   "protein": 2.8,
-   "salt": 0.09
-  },
-  "filters": {
-   "organic": null,
-   "glutenFree": null,
-   "lactoseFree": "Laktosefri",
-   "sugarFree": null,
-   "sweeteners": "Sødemidler",
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": null,
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 0.9,
-   "countryOfOrigin": null,
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5760466995870.png",
-  "imageTags": [
-   "Cutout"
-  ],
-  "images": [
-   {
-    "file": "5760466995870.png",
-    "tags": [
-     "Cutout"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5789000080759",
-  "stores": [
-   "Bilka"
-  ],
-  "externalSource": "BILKA",
-  "name": "Kyllingebrystfilet",
-  "brand": "De Familiegårde",
-  "subbrand": null,
-  "productType": "Mørk- og mælkechokolade 50 % kakao",
-  "variant": null,
-  "flavor": null,
-  "quantity": "225 g",
-  "packCount": null,
-  "productCategory": "PROCESSED",
-  "storeDepartment": "Kød & fisk",
-  "keywords": [],
-  "ingredients": "Økologisk kyllingebrystfilet",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/de-danske-familiegaarde-kyllingebrystfilet-oeko/54732/",
-  "nutrition": {
-   "energyKj": 438.0,
-   "kcal": 103.0,
-   "fat": 0.8,
-   "saturatedFat": 0.2,
-   "carbs": 0.0,
-   "sugars": 0.0,
-   "protein": 24.0,
-   "salt": 0.1
-  },
-  "filters": {
-   "organic": "Økologisk",
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": null,
-   "sweeteners": null,
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": "Fisk",
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": null,
-   "countryOfOrigin": "Danmark",
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5789000080759.jpg",
-  "imageTags": [
-   "Original"
-  ],
-  "images": [
-   {
-    "file": "5789000080759.jpg",
-    "tags": [
-     "Original"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5711953197529",
-  "stores": [
-   "Bilka"
-  ],
-  "externalSource": "BILKA",
-  "name": "Protein budding m chokoladesmag 1,5% fedt",
-  "brand": "Arla Protein",
-  "subbrand": null,
-  "productType": "Protein budding",
-  "variant": "chokoladesmag",
-  "flavor": null,
-  "quantity": "200 g",
-  "packCount": null,
-  "productCategory": "PROCESSED",
-  "storeDepartment": "Mejeri & køl",
-  "keywords": [],
-  "ingredients": "MÆLK, MÆLKEPROTEIN, sødestoffer (erythritol, steviolglykosider fra Stevia), fedtreduceret kakao (1,8%), æble koncentrat, naturlige aromaer, fortykningsmidler (carrageenan, guargummi), surhedsregulerende midler (diphosphater, triphosphater), salt, laktaseenzym.",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/arla-protein-protein-budding-m-chokoladesmag-15-fedt-laktosefri/89691/",
-  "nutrition": {
-   "energyKj": 320.0,
-   "kcal": 76.0,
-   "fat": 1.5,
-   "saturatedFat": 0.9,
-   "carbs": 7.8,
-   "sugars": 4.5,
-   "protein": 10.0,
-   "salt": 0.24
-  },
-  "filters": {
-   "organic": null,
-   "glutenFree": null,
-   "lactoseFree": "Laktosefri",
-   "sugarFree": null,
-   "sweeteners": "Sødemidler",
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": null,
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 1.5,
-   "countryOfOrigin": null,
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5711953197529.jpg",
-  "imageTags": [
-   "Original"
-  ],
-  "images": [
-   {
-    "file": "5711953197529.jpg",
-    "tags": [
-     "Original"
-    ]
-   },
-   {
-    "file": "5711953197529_2.png",
-    "tags": [
-     "Original"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5711953195150",
-  "stores": [
-   "Bilka"
-  ],
-  "externalSource": "BILKA",
-  "name": "Protein mousse m banoffee pie-smag 1,4% fedt",
-  "brand": "Arla Protein",
-  "subbrand": null,
-  "productType": "Protein mousse",
-  "variant": "banoffee pie/ smag",
-  "flavor": null,
-  "quantity": "200 g",
-  "packCount": null,
-  "productCategory": "PROCESSED",
-  "storeDepartment": "Mejeri & køl",
-  "keywords": [],
-  "ingredients": "SKUMMETMÆLK, 7,7% MÆLKEPROTEIN, sødestoffer (erythritol, steviolglykosider fra Stevia), FLØDE, gelatine, modificeret majsstivelse, fortykningsmidler (guargummi, carrageenan), surhedsregulerende midler (natriumphosphater, natriumcarbonater), farvestof (blandede carotener), naturlig aroma, laktaseenzym, fyldemiddel (nitrogen).",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/arla-protein-protein-mousse-m-banoffee-pie-smag-14-fedt-laktosefri/169072/",
-  "nutrition": {
-   "energyKj": 326.0,
-   "kcal": 77.0,
-   "fat": 1.4,
-   "saturatedFat": 0.9,
-   "carbs": 11.0,
-   "sugars": 4.7,
-   "protein": 10.0,
-   "salt": 0.35
-  },
-  "filters": {
-   "organic": null,
-   "glutenFree": null,
-   "lactoseFree": "Laktosefri",
-   "sugarFree": null,
-   "sweeteners": "Sødemidler",
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": null,
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 1.4,
-   "countryOfOrigin": null,
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5711953195150.jpg",
-  "imageTags": [
-   "Original"
-  ],
-  "images": [
-   {
-    "file": "5711953195150.jpg",
-    "tags": [
-     "Original"
-    ]
-   },
-   {
-    "file": "5711953195150_2.png",
-    "tags": [
-     "Original"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5712874166380",
-  "stores": [
-   "Bilka"
-  ],
-  "externalSource": "BILKA",
-  "name": "yoghurt 10% fedt",
-  "brand": "Salling",
-  "subbrand": null,
-  "productType": "syrnet fløde 10% fedt",
-  "variant": null,
-  "flavor": null,
-  "quantity": "400 g",
-  "packCount": null,
-  "productCategory": "PROCESSED",
-  "storeDepartment": "Mejeri & køl",
-  "keywords": [],
-  "ingredients": "Økologisk pasteuriseret MÆLK, økologisk pasteuriseret FLØDE, yoghurtkultur.",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/salling-oeko-graesk-yoghurt-10-fedt-oeko/84585/",
-  "nutrition": {
-   "energyKj": 579.0,
-   "kcal": 132.0,
-   "fat": 10.0,
-   "saturatedFat": 7.0,
-   "carbs": 4.5,
-   "sugars": 4.0,
-   "protein": 6.0,
-   "salt": 0.28
-  },
-  "filters": {
-   "organic": "Økologisk",
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": null,
-   "sweeteners": null,
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": null,
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 10.0,
-   "countryOfOrigin": "Grækenland",
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5712874166380.jpg",
-  "imageTags": [
-   "Original"
-  ],
-  "images": [
-   {
-    "file": "5712874166380.jpg",
-    "tags": [
-     "Original"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5706911027772",
-  "stores": [
-   "Bilka"
-  ],
-  "externalSource": "BILKA",
-  "name": "yoghurt 10% fedt",
-  "brand": "Athena",
-  "subbrand": null,
-  "productType": "Syrnet flødeyoghurt 10%",
-  "variant": null,
-  "flavor": null,
-  "quantity": "400 g",
-  "packCount": null,
-  "productCategory": "PROCESSED",
-  "storeDepartment": "Mejeri & køl",
-  "keywords": [],
-  "ingredients": "Pasteuriseret SKUMMETMÆLK, FLØDE, yoghurtkulturer (MÆLK), laktase.",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/athena-graesk-yoghurt-10-fedt-laktosefri/146748/",
-  "nutrition": {
-   "energyKj": 550.0,
-   "kcal": 132.0,
-   "fat": 10.0,
-   "saturatedFat": 6.9,
-   "carbs": 4.3,
-   "sugars": 3.3,
-   "protein": 6.4,
-   "salt": 0.18
-  },
-  "filters": {
-   "organic": null,
-   "glutenFree": null,
-   "lactoseFree": "Laktosefri",
-   "sugarFree": null,
-   "sweeteners": null,
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": null,
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 10.0,
-   "countryOfOrigin": "Grækenland",
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5706911027772.jpg",
-  "imageTags": [
-   "Original"
-  ],
-  "images": [
-   {
-    "file": "5706911027772.jpg",
     "tags": [
      "Original"
     ]
@@ -4906,6 +4008,9 @@
   "imageTags": [
    "Original"
   ],
+  "category": "Fisk og skaldyr",
+  "subcategory": "Tilberedt fisk",
+  "packaging": null,
   "images": [
    {
     "file": "5700001861024.png",
@@ -4916,39 +4021,39 @@
   ]
  },
  {
-  "ean": "5765228397343",
+  "ean": "5701977000554",
   "stores": [
    "Bilka"
   ],
   "externalSource": "BILKA",
-  "name": "Basilikumpesto",
-  "brand": "Urtekram",
+  "name": "Plantebaserede veggie balls",
+  "brand": "Naturli'",
   "subbrand": null,
-  "productType": "Pesto",
-  "variant": "Basilikum",
+  "productType": "boller baseret på sojaprotein",
+  "variant": null,
   "flavor": null,
-  "quantity": "130 g",
+  "quantity": "300 g",
   "packCount": null,
   "productCategory": "PROCESSED",
-  "storeDepartment": "Kolonial",
+  "storeDepartment": "Frost",
   "keywords": [],
-  "ingredients": "Basilikum* (55 %), solsikkeolie*, kartoﬀelﬂager*, havsalt, ekstra jomfruolivenolie*, citronsaft* (fra koncentrat), pinjekerner*. *= Økologisk.",
+  "ingredients": "Vand, SOJAPROTEIN (16%), rapsolie, løg, krydderier, salt, æbleekstrakt, ærtefibre og -stivelse (2%), naturlig aroma, stabilisator (methylcellulose).",
   "allergens": [],
   "additives": [],
-  "sourceUrl": "https://www.bilkatogo.dk/produkt/urtekram-basilikumpesto-vegansk-oeko/17800/",
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/naturli-plantebaserede-veggie-balls/73738/",
   "nutrition": {
-   "energyKj": 1.408,
-   "kcal": 342.0,
-   "fat": 34.0,
-   "saturatedFat": 3.3,
-   "carbs": 6.6,
-   "sugars": 0.0,
-   "fiber": 2.4,
-   "protein": 2.0,
-   "salt": 2.1
+   "energyKj": 668.0,
+   "kcal": 160.0,
+   "fat": 10.0,
+   "saturatedFat": 0.8,
+   "carbs": 4.7,
+   "sugars": 0.7,
+   "fiber": 4.2,
+   "protein": 11.0,
+   "salt": 1.0
   },
   "filters": {
-   "organic": "Økologisk",
+   "organic": null,
    "glutenFree": null,
    "lactoseFree": null,
    "sugarFree": null,
@@ -4964,17 +4069,991 @@
    "keyhole": null,
    "animalWelfare": [],
    "certifications": [],
+   "storage": "Frost",
+   "size": null,
+   "toxins": []
+  },
+  "image": "5701977000554.png",
+  "imageTags": [
+   "Original"
+  ],
+  "category": "Forarbejdet",
+  "subcategory": null,
+  "packaging": null,
+  "images": [
+   {
+    "file": "5701977000554.png",
+    "tags": [
+     "Original"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "8410376037883",
+  "stores": [
+   "Bilka"
+  ],
+  "externalSource": "BILKA",
+  "name": "Cookies u tilsat sukker",
+  "brand": "Gullon",
+  "subbrand": null,
+  "productType": "cookies uden tilsat sukker",
+  "variant": null,
+  "flavor": null,
+  "quantity": "130 g",
+  "packCount": null,
+  "productCategory": "PROCESSED",
+  "storeDepartment": "Brød & kager",
+  "keywords": [
+   "Uden tilsat sukker",
+   "Tilsat sukker"
+  ],
+  "ingredients": "Chokolade stykker indeholder sødestof 25% (kakaomasse, sødestof (maltitol), kakaosmør, emulgator (SOJALECITHIN), aroma), majsmel, rismel, majsstivelse, vegetabilsk olie (solsikkeolie med højt oliesyreindhold) 14%, vegetabilske fibre, sødestof (maltitol), risstivelse, hævemidler (natriumhydrogencarbonat, ammoniumhydrogencarbonat), salt, emulgator (SOJALECITHIN), naturlig aroma, aroma. Kan indeholde spor af nødder og mælk.",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/gullon-cookies-u-tilsat-sukker-glutenfri/175067/",
+  "nutrition": {
+   "energyKj": 1.81,
+   "kcal": 434.0,
+   "fat": 22.0,
+   "saturatedFat": 5.6,
+   "carbs": 58.0,
+   "sugars": 1.0,
+   "fiber": 10.0,
+   "protein": 3.7,
+   "salt": 0.65
+  },
+  "filters": {
+   "organic": null,
+   "glutenFree": "Glutenfri",
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": "Sødemidler",
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": null,
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
    "storage": null,
    "size": null,
    "toxins": []
   },
-  "image": "5765228397343.png",
+  "image": "8410376037883.png",
   "imageTags": [
    "Original"
   ],
+  "category": "Brød og bagværk",
+  "subcategory": null,
+  "packaging": null,
   "images": [
    {
-    "file": "5765228397343.png",
+    "file": "8410376037883.png",
+    "tags": [
+     "Original"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "7340131605129",
+  "stores": [
+   "Bilka"
+  ],
+  "externalSource": "BILKA",
+  "name": "Energidrik m citron, hyldeblomst- og æblesmag",
+  "brand": "Nocco",
+  "subbrand": null,
+  "productType": "Energidrik",
+  "variant": null,
+  "flavor": null,
+  "quantity": "330 ml",
+  "packCount": null,
+  "productCategory": "DRINK",
+  "storeDepartment": "Drikkevarer",
+  "keywords": [
+   "Tilsat kulsyre"
+  ],
+  "ingredients": "Kulsyreholdigt vand, koffein, grøn te-ekstrakt, vitaminer (niacin, B6, folsyre, biotin, B12), surhedsregulerende middel (citronsyre), aromaer, sødestof (sukralose), konserveringsmidler (kaliumsorbat, natriumbenzoat), farvestof (betacaroten).",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/nocco-energidrik-m-citron-hyldeblomst-og-aeblesmag-sukkerfri/140799/",
+  "nutrition": {
+   "energyKj": 5.0,
+   "kcal": 1.0,
+   "fat": 0.0,
+   "saturatedFat": 0.0,
+   "carbs": 0.0,
+   "sugars": 0.0,
+   "fiber": 0.0,
+   "protein": 0.0,
+   "salt": 0.0
+  },
+  "filters": {
+   "organic": null,
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": "Sukkerfri",
+   "sweeteners": "Sødemidler",
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": null,
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "7340131605129.png",
+  "imageTags": [
+   "Original"
+  ],
+  "category": "Drikkevarer",
+  "subcategory": "Sodavand",
+  "packaging": null,
+  "images": [
+   {
+    "file": "7340131605129.png",
+    "tags": [
+     "Original"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5707897130890",
+  "stores": [
+   "Bilka"
+  ],
+  "externalSource": "BILKA",
+  "name": "Flødeis m vanilje, karamel og chokoladeovertræk",
+  "brand": "Hansens",
+  "subbrand": null,
+  "productType": "flødeispinde",
+  "variant": "vanilje/ karamel/ mørk chokoladeovertræk",
+  "flavor": null,
+  "quantity": "280 ml",
+  "packCount": null,
+  "productCategory": "PROCESSED",
+  "storeDepartment": "Frost",
+  "keywords": [],
+  "ingredients": "FLØDE* (54%), chokolade* (20%), (kakao*, rørsukker*, kakaosmør*, kakaonibs* (15 %), kokosolie*, emulgator: SOJAlecithin), kondenseret MÆLK*, karamel* (5%) (kondenseret MÆLK*, rørsukker*), glukose*, vanille*, vanilleekstrakt, stabilisator: Johannesbrødkernemel*. salt. *=økologisk",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/hansens-floedeis-m-vanilje-karamel-og-chokoladeovertraek-oeko/91496/",
+  "nutrition": {
+   "energyKj": 1.165,
+   "kcal": 279.0,
+   "fat": 19.0,
+   "saturatedFat": 12.0,
+   "carbs": 24.0,
+   "sugars": 21.0,
+   "fiber": 2.7,
+   "protein": 4.5,
+   "salt": 0.16
+  },
+  "filters": {
+   "organic": "Økologisk",
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": null,
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": "Frost",
+   "size": null,
+   "toxins": []
+  },
+  "image": "5707897130890.png",
+  "imageTags": [
+   "Original"
+  ],
+  "category": "Slik",
+  "subcategory": null,
+  "packaging": null,
+  "images": [
+   {
+    "file": "5707897130890.png",
+    "tags": [
+     "Original"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "4001724038412",
+  "stores": [
+   "Bilka"
+  ],
+  "externalSource": "BILKA",
+  "name": "Pizza Pancetta Delicata",
+  "brand": "Dr Oetker",
+  "subbrand": null,
+  "productType": "Pizza",
+  "variant": "skinke/ ost",
+  "flavor": null,
+  "quantity": "390 g",
+  "packCount": null,
+  "productCategory": "PROCESSED",
+  "storeDepartment": "Frost",
+  "keywords": [],
+  "ingredients": "HVEDEMEL, vand, 13% flåede tomater, 11% skærefast MOZZARELLA OST, 8,7% brystflæsk (svinekød, spæk, salt, krydderier, krydderiekstrakter, stabilisatorer (natriumnitrit, kaliumnitrat), røg), PISKEFLØDE, 2,4% tomatkoncentrat, ekstra jomfru olivenolie, 1,0% PECORINO HÅRD OST, salt, gær, sukker, basilikum, oregano, hvidløg, løgpulver, paprika, peber. Kan indeholde spor af: SOJA, SENNEP.",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/dr-oetker-pizza-pancetta-delicata/105529/",
+  "nutrition": {
+   "energyKj": 1.019,
+   "kcal": 243.0,
+   "fat": 9.4,
+   "saturatedFat": 4.0,
+   "carbs": 29.0,
+   "sugars": 3.4,
+   "fiber": 1.8,
+   "protein": 9.5,
+   "salt": 1.1
+  },
+  "filters": {
+   "organic": null,
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": "Italien",
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": "Frost",
+   "size": null,
+   "toxins": []
+  },
+  "image": "4001724038412.png",
+  "imageTags": [
+   "Original"
+  ],
+  "category": "Færdigretter",
+  "subcategory": null,
+  "packaging": null,
+  "images": [
+   {
+    "file": "4001724038412.png",
+    "tags": [
+     "Original"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5741000223826",
+  "stores": [
+   "Bilka"
+  ],
+  "externalSource": "BILKA",
+  "name": "Hazy IPA",
+  "brand": "Anarkist",
+  "subbrand": null,
+  "productType": "Pale Ale",
+  "variant": null,
+  "flavor": null,
+  "quantity": "0,44 l",
+  "packCount": null,
+  "productCategory": "DRINK",
+  "storeDepartment": "Drikkevarer",
+  "keywords": [],
+  "ingredients": "Vand, BYGMALT, HVEDEMALT, HAVRE, humle, gær",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/anarkist-hazy-ipa/110453/",
+  "nutrition": {
+   "energyKj": 108.0,
+   "kcal": 26.0,
+   "fat": 0.0,
+   "saturatedFat": 0.0,
+   "carbs": 5.2,
+   "sugars": 4.0,
+   "protein": 0.5,
+   "salt": 0.02
+  },
+  "filters": {
+   "organic": null,
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": "Alkoholfri",
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": "Indien",
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5741000223826.png",
+  "imageTags": [
+   "Original"
+  ],
+  "category": "Drikkevarer",
+  "subcategory": null,
+  "packaging": null,
+  "images": [
+   {
+    "file": "5741000223826.png",
+    "tags": [
+     "Original"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5410316968041",
+  "stores": [
+   "Bilka"
+  ],
+  "externalSource": "BILKA",
+  "name": "Ice",
+  "brand": "Smirnoff",
+  "subbrand": null,
+  "productType": "Drink",
+  "variant": "citronsmag",
+  "flavor": null,
+  "quantity": "0,25 l",
+  "packCount": null,
+  "productCategory": "DRINK",
+  "storeDepartment": "Drikkevarer",
+  "keywords": [],
+  "ingredients": null,
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/smirnoff-smirnoff-ice/110214/",
+  "nutrition": {
+   "energyKj": 187.0,
+   "kcal": 45.0,
+   "fat": 0.0,
+   "saturatedFat": 0.0,
+   "carbs": 4.0,
+   "sugars": 4.0,
+   "protein": 0.0,
+   "salt": 0.1
+  },
+  "filters": {
+   "organic": null,
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": "Sødemidler",
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": "Indeholder alkohol",
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": null,
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5410316968041.jpg",
+  "imageTags": [
+   "Original"
+  ],
+  "category": "Alkohol",
+  "subcategory": null,
+  "packaging": null,
+  "images": [
+   {
+    "file": "5410316968041.jpg",
+    "tags": [
+     "Original"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5708147002875",
+  "stores": [
+   "Bilka"
+  ],
+  "externalSource": "BILKA",
+  "name": "Dadler",
+  "brand": "Green",
+  "subbrand": null,
+  "productType": "dadler",
+  "variant": null,
+  "flavor": null,
+  "quantity": "400 g",
+  "packCount": null,
+  "productCategory": "VEGETABLES",
+  "storeDepartment": "Frugt & grønt",
+  "keywords": [],
+  "ingredients": "Økologiske dadler",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/green-organic-dadler-oeko/18143/",
+  "nutrition": {
+   "energyKj": 1.13,
+   "kcal": 267.0,
+   "fat": 0.0,
+   "saturatedFat": 0.0,
+   "carbs": 61.0,
+   "sugars": 58.0,
+   "fiber": 8.6,
+   "protein": 1.4,
+   "salt": 0.0
+  },
+  "filters": {
+   "organic": "Økologisk",
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": null,
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5708147002875.jpg",
+  "imageTags": [
+   "Original"
+  ],
+  "category": "Frugt",
+  "subcategory": null,
+  "packaging": null,
+  "images": [
+   {
+    "file": "5708147002875.jpg",
+    "tags": [
+     "Original"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "8005110413544",
+  "stores": [
+   "Bilka"
+  ],
+  "externalSource": "BILKA",
+  "name": "Flåede tomater",
+  "brand": "Mutti",
+  "subbrand": null,
+  "productType": "flåede tomater",
+  "variant": null,
+  "flavor": null,
+  "quantity": "400 g",
+  "packCount": null,
+  "productCategory": "VEGETABLES",
+  "storeDepartment": "Kolonial",
+  "keywords": [],
+  "ingredients": "Økologiske flåede tomater, økologisk tomatsaft, surhedsregulerende middel: citronsyre",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/mutti-flaaede-tomater-oeko/30786/",
+  "nutrition": {
+   "energyKj": 92.0,
+   "kcal": 22.0,
+   "fat": 0.5,
+   "saturatedFat": 0.1,
+   "carbs": 3.6,
+   "sugars": 2.9,
+   "fiber": 1.5,
+   "protein": 1.1,
+   "salt": 0.01
+  },
+  "filters": {
+   "organic": "Økologisk",
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": null,
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "8005110413544.png",
+  "imageTags": [
+   "Original"
+  ],
+  "category": "Grøntsager og rodfrugter",
+  "subcategory": "Tilberedte grøntsager",
+  "packaging": null,
+  "images": [
+   {
+    "file": "8005110413544.png",
+    "tags": [
+     "Original"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5701979910370",
+  "stores": [
+   "Bilka"
+  ],
+  "externalSource": "BILKA",
+  "name": "kartofler chips m salt",
+  "brand": "KiMs",
+  "subbrand": null,
+  "productType": "Kartoffelchips",
+  "variant": "salt",
+  "flavor": null,
+  "quantity": "160 g",
+  "packCount": null,
+  "productCategory": "PROCESSED",
+  "storeDepartment": "Slik & snacks",
+  "keywords": [],
+  "ingredients": "70% kartofler, solsikkeolie, salt, 0,5% Mariager sydesalt.",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/kims-franske-kartofler-chips-m-salt/187236/",
+  "nutrition": {
+   "energyKj": 2.116,
+   "kcal": 506.0,
+   "fat": 29.0,
+   "saturatedFat": 2.4,
+   "carbs": 54.0,
+   "sugars": 0.7,
+   "fiber": 4.9,
+   "protein": 5.9,
+   "salt": 1.6
+  },
+  "filters": {
+   "organic": null,
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": "Frankrig",
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5701979910370.png",
+  "imageTags": [
+   "Original"
+  ],
+  "category": "Chips",
+  "subcategory": null,
+  "packaging": null,
+  "images": [
+   {
+    "file": "5701979910370.png",
+    "tags": [
+     "Original"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5703370622128",
+  "stores": [
+   "Bilka"
+  ],
+  "externalSource": "BILKA",
+  "name": "Torskefars",
+  "brand": "Salling",
+  "subbrand": null,
+  "productType": "Fiskefars",
+  "variant": null,
+  "flavor": null,
+  "quantity": "400 g",
+  "packCount": null,
+  "productCategory": "RAW",
+  "storeDepartment": "Kød & fisk",
+  "keywords": [],
+  "ingredients": "52 % TORSK, vand, rapsolie, MÆLKEPROTEIN, kartoffelflager, løgpulver, kartoffelmel, salt, hvid peber, muskatnød, SMØRAROMA, ÆGGEHVIDEPULVER.",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/salling-torskefars/85172/",
+  "nutrition": {
+   "energyKj": 698.0,
+   "kcal": 167.0,
+   "fat": 7.7,
+   "saturatedFat": 0.6,
+   "carbs": 11.0,
+   "sugars": 2.3,
+   "protein": 12.0,
+   "salt": 1.0
+  },
+  "filters": {
+   "organic": null,
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": "Fisk",
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": null,
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5703370622128.jpg",
+  "imageTags": [
+   "Original"
+  ],
+  "category": "Fisk og skaldyr",
+  "subcategory": "Rå fisk",
+  "packaging": null,
+  "images": [
+   {
+    "file": "5703370622128.jpg",
+    "tags": [
+     "Original"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5701225003801",
+  "stores": [
+   "Bilka"
+  ],
+  "externalSource": "BILKA",
+  "name": "Finthakket ingefær",
+  "brand": "Carlsens",
+  "subbrand": null,
+  "productType": "ingefær",
+  "variant": null,
+  "flavor": null,
+  "quantity": "60 g",
+  "packCount": null,
+  "productCategory": "VEGETABLES",
+  "storeDepartment": "Frugt & grønt",
+  "keywords": [
+   "Finthakket"
+  ],
+  "ingredients": "94% ingefær*, eddike*, vand. *=økologisk.",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/carlsens-finthakket-ingefaer-oeko/117927/",
+  "nutrition": {
+   "energyKj": 252.0,
+   "kcal": 60.0,
+   "fat": 0.0,
+   "saturatedFat": 0.0,
+   "carbs": 11.6,
+   "sugars": 1.9,
+   "protein": 1.2,
+   "salt": 0.0
+  },
+  "filters": {
+   "organic": "Økologisk",
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": null,
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5701225003801.png",
+  "imageTags": [
+   "Original"
+  ],
+  "category": "Grøntsager og rodfrugter",
+  "subcategory": "Rå grøntsager",
+  "packaging": null,
+  "images": [
+   {
+    "file": "5701225003801.png",
+    "tags": [
+     "Original"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5038862236973",
+  "stores": [
+   "Bilka"
+  ],
+  "externalSource": "BILKA",
+  "name": "Smoothie m mango, kokos, æble og ingefær",
+  "brand": "Innocent",
+  "subbrand": null,
+  "productType": "Frugtjuice fra flere frugter",
+  "variant": "kokosmælk/ ingefær",
+  "flavor": null,
+  "quantity": "300 ml",
+  "packCount": null,
+  "productCategory": "DRINK",
+  "storeDepartment": "Drikkevarer",
+  "keywords": [],
+  "ingredients": "Ingredienser: 1 ½ presset æble (68%), 3⁄4 moset banan, 1⁄3 moset mango (11%), lidt blendet passionsfrugt, lidt kokosmælk (1,6%). ½ blendet acerola kirsebær, et klem lime, lidt ingefærekstrakt (0,25%), citrusfiber, nogle vitaminer (B1, B2, B6, C, E og niacin).",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/innocent-smoothie-plus-smoothie-m-mango-kokos-aeble-og-ingefaer/76480/",
+  "nutrition": {
+   "energyKj": 200.0,
+   "kcal": 47.0,
+   "fat": 0.32,
+   "saturatedFat": 0.21,
+   "carbs": 11.0,
+   "sugars": 10.0,
+   "fiber": 0.96,
+   "protein": 0.0,
+   "salt": 0.0
+  },
+  "filters": {
+   "organic": null,
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": null,
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5038862236973.png",
+  "imageTags": [
+   "Cutout"
+  ],
+  "category": "Drikkevarer",
+  "subcategory": "Smoothies",
+  "packaging": null,
+  "images": [
+   {
+    "file": "5038862236973.png",
+    "tags": [
+     "Cutout"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5714104001775",
+  "stores": [
+   "Bilka"
+  ],
+  "externalSource": "BILKA",
+  "name": "Tadka dhal af flækærter",
+  "brand": "Edgy Veggie",
+  "subbrand": null,
+  "productType": "inspireret dhal af flækærter",
+  "variant": null,
+  "flavor": null,
+  "quantity": "400 g",
+  "packCount": null,
+  "productCategory": "PROCESSED",
+  "storeDepartment": "Kolonial",
+  "keywords": [],
+  "ingredients": "Vand, gule flækærter* (16%), tomat* (11%), rød peberfrugt*(3%), rismel*, løg*, solsikkeolie*, ingefær* (0,25%), salt, hvidløg*, gurkemeje* (0,18%), korianderblade*, chili*. *=økologisk oprindelse.",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/edgy-veggie-tadka-dhal-af-flaekaerter-vegansk-oeko/151751/",
+  "nutrition": {
+   "energyKj": 322.0,
+   "kcal": 77.0,
+   "fat": 3.4,
+   "saturatedFat": 0.3,
+   "carbs": 8.7,
+   "sugars": 0.4,
+   "fiber": 2.2,
+   "protein": 1.8,
+   "salt": 0.25
+  },
+  "filters": {
+   "organic": "Økologisk",
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": "Vegansk",
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": "Indien",
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5714104001775.png",
+  "imageTags": [
+   "Cutout"
+  ],
+  "category": "Kolonial og tørvarer",
+  "subcategory": null,
+  "packaging": null,
+  "images": [
+   {
+    "file": "5714104001775.png",
+    "tags": [
+     "Cutout"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5706911027918",
+  "stores": [
+   "Bilka"
+  ],
+  "externalSource": "BILKA",
+  "name": "yoghurt m blåbær 0% fedt",
+  "brand": "Athena",
+  "subbrand": null,
+  "productType": "inspireret yoghurt 0% fedt",
+  "variant": null,
+  "flavor": null,
+  "quantity": "400 g",
+  "packCount": null,
+  "productCategory": "PROCESSED",
+  "storeDepartment": "Mejeri & køl",
+  "keywords": [],
+  "ingredients": "90 % drænet YOGHURT (pasteuriseret SKUMMETMÆLK, YOGHURTKULTUR (MÆLK)), 5 % blåbær, vand, koncentreret citronsaft, modificeret stivelse, koncentreret sort gullerodssaft, sødestoffer (E 950, E 951), naturlig aroma.",
+  "allergens": [],
+  "additives": [
+   "E950",
+   "E951"
+  ],
+  "sourceUrl": "https://www.bilkatogo.dk/produkt/athena-graesk-yoghurt-m-blaabaer-0-fedt/154667/",
+  "nutrition": {
+   "energyKj": 236.0,
+   "kcal": 56.0,
+   "fat": 0.0,
+   "saturatedFat": 0.0,
+   "carbs": 4.6,
+   "sugars": 3.5,
+   "protein": 9.3,
+   "salt": 0.09
+  },
+  "filters": {
+   "organic": null,
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": "Sødemidler",
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": 0.0,
+   "countryOfOrigin": "Grækenland",
+   "wholeGrain": null,
+   "keyhole": null,
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5706911027918.jpg",
+  "imageTags": [
+   "Original"
+  ],
+  "category": "Mejeri og æg",
+  "subcategory": null,
+  "packaging": null,
+  "images": [
+   {
+    "file": "5706911027918.jpg",
     "tags": [
      "Original"
     ]
@@ -5042,293 +5121,14 @@
   "imageTags": [
    "Original"
   ],
+  "category": "Kød",
+  "subcategory": "Rå kød",
+  "packaging": null,
   "images": [
    {
     "file": "5701050275930.webp",
     "tags": [
      "Original"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5707196324174",
-  "stores": [
-   "Rema 1000"
-  ],
-  "externalSource": "REMA1000",
-  "name": "Hakket grisekød",
-  "brand": "Friland",
-  "subbrand": null,
-  "productType": "Hakket grisekød",
-  "variant": null,
-  "flavor": null,
-  "quantity": "400g",
-  "packCount": null,
-  "productCategory": "RAW",
-  "storeDepartment": null,
-  "keywords": [
-   "12% fedt"
-  ],
-  "ingredients": "Økologisk hakket grisekød 8-12 % fedt. Fedtindhold under 12 %. Collagen-/kødproteinforholdet under 18 %.",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "Https://shop.rema1000.dk/varer/400556",
-  "nutrition": {
-   "energyKj": 718.0,
-   "kcal": 172.0,
-   "fat": 10.0,
-   "saturatedFat": 3.7,
-   "carbs": 0.5,
-   "sugars": 0.5,
-   "fiber": 0.5,
-   "protein": 20.0,
-   "salt": 0.21
-  },
-  "filters": {
-   "organic": "Økologisk",
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": null,
-   "sweeteners": null,
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": "Gris",
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 12.0,
-   "countryOfOrigin": "Danmark",
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [
-    "Bedre Dyrevelfærd 3",
-    "Anbefalet Af Dyrenes Beskyttelse"
-   ],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5707196324174.png",
-  "imageTags": [
-   "Cutout"
-  ],
-  "images": [
-   {
-    "file": "5707196324174.png",
-    "tags": [
-     "Cutout"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5705830614339",
-  "stores": [
-   "Rema 1000"
-  ],
-  "externalSource": "REMA1000",
-  "name": "Hakket kyllingekød",
-  "brand": "REMA 1000",
-  "subbrand": null,
-  "productType": "Hakket kyllingekød",
-  "variant": null,
-  "flavor": null,
-  "quantity": "400g",
-  "packCount": null,
-  "productCategory": "RAW",
-  "storeDepartment": null,
-  "keywords": [
-   "10% fedt"
-  ],
-  "ingredients": "Hakket kyllingekød",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "Https://shop.rema1000.dk/varer/404899",
-  "nutrition": {
-   "energyKj": 649.0,
-   "kcal": 155.0,
-   "fat": 8.8,
-   "saturatedFat": 2.3,
-   "carbs": 0.5,
-   "sugars": 0.5,
-   "fiber": 0.5,
-   "protein": 19.0,
-   "salt": 0.15
-  },
-  "filters": {
-   "organic": null,
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": null,
-   "sweeteners": null,
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": "Kylling",
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 10.0,
-   "countryOfOrigin": "Danmark",
-   "wholeGrain": null,
-   "keyhole": "Nøglehul",
-   "animalWelfare": [
-    "Bedre Dyrevelfærd 1"
-   ],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5705830614339.png",
-  "imageTags": [
-   "Cutout"
-  ],
-  "images": [
-   {
-    "file": "5705830614339.png",
-    "tags": [
-     "Cutout"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5705830619198",
-  "stores": [
-   "Rema 1000"
-  ],
-  "externalSource": "REMA1000",
-  "name": "Hakket kyllingekød",
-  "brand": null,
-  "subbrand": null,
-  "productType": "Hakket kyllingekød",
-  "variant": null,
-  "flavor": null,
-  "quantity": "400g",
-  "packCount": null,
-  "productCategory": "RAW",
-  "storeDepartment": null,
-  "keywords": [
-   "7% fedt"
-  ],
-  "ingredients": "Hakket kyllingekød.",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "Https://shop.rema1000.dk/varer/404900",
-  "nutrition": {
-   "energyKj": 507.0,
-   "kcal": 121.0,
-   "fat": 4.5,
-   "saturatedFat": 1.1,
-   "carbs": 0.5,
-   "sugars": 0.5,
-   "fiber": 0.5,
-   "protein": 20.0,
-   "salt": 0.23
-  },
-  "filters": {
-   "organic": null,
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": null,
-   "sweeteners": null,
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": "Kylling",
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 7.0,
-   "countryOfOrigin": "Danmark",
-   "wholeGrain": null,
-   "keyhole": "Nøglehul",
-   "animalWelfare": [
-    "Bedre Dyrevelfærd 1"
-   ],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5705830619198.png",
-  "imageTags": [
-   "Cutout"
-  ],
-  "images": [
-   {
-    "file": "5705830619198.png",
-    "tags": [
-     "Cutout"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5705451651065",
-  "stores": [
-   "Rema 1000"
-  ],
-  "externalSource": "REMA1000",
-  "name": "Hakket skinkekød",
-  "brand": "Frilandsgris",
-  "subbrand": null,
-  "productType": "Hakket skinkekød",
-  "variant": null,
-  "flavor": null,
-  "quantity": "400g",
-  "packCount": null,
-  "productCategory": "RAW",
-  "storeDepartment": null,
-  "keywords": [
-   "7% fedt"
-  ],
-  "ingredients": "Hakket skinkekød",
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "Https://shop.rema1000.dk/varer/401002",
-  "nutrition": {
-   "energyKj": 605.0,
-   "kcal": 144.0,
-   "fat": 6.7,
-   "saturatedFat": 2.3,
-   "carbs": 0.5,
-   "sugars": 0.5,
-   "fiber": 0.5,
-   "protein": 21.0,
-   "salt": 0.1
-  },
-  "filters": {
-   "organic": null,
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": null,
-   "sweeteners": null,
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": "Ukendt",
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 7.0,
-   "countryOfOrigin": "Danmark",
-   "wholeGrain": null,
-   "keyhole": "Nøglehul",
-   "animalWelfare": [
-    "Bedre Dyrevelfærd 3",
-    "Anbefalet Af Dyrenes Beskyttelse"
-   ],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5705451651065.png",
-  "imageTags": [
-   "Cutout"
-  ],
-  "images": [
-   {
-    "file": "5705451651065.png",
-    "tags": [
-     "Cutout"
     ]
    }
   ]
@@ -5394,6 +5194,9 @@
   "imageTags": [
    "Cutout"
   ],
+  "category": "Kød",
+  "subcategory": "Tilberedt kød",
+  "packaging": null,
   "images": [
    {
     "file": "5705830603562.png",
@@ -5464,82 +5267,14 @@
   "imageTags": [
    "Original"
   ],
+  "category": "Mejeri og æg",
+  "subcategory": null,
+  "packaging": null,
   "images": [
    {
     "file": "5705425003609.webp",
     "tags": [
      "Original"
-    ]
-   }
-  ]
- },
- {
-  "ean": "5701050258803",
-  "stores": [
-   "Rema 1000"
-  ],
-  "externalSource": "REMA1000",
-  "name": "Medister",
-  "brand": "Friland",
-  "subbrand": null,
-  "productType": "Medister",
-  "variant": null,
-  "flavor": null,
-  "quantity": "400g",
-  "packCount": null,
-  "productCategory": "PROCESSED",
-  "storeDepartment": null,
-  "keywords": [
-   "15% fedt"
-  ],
-  "ingredients": null,
-  "allergens": [],
-  "additives": [],
-  "sourceUrl": "Https://shop.rema1000.dk/varer/400720",
-  "nutrition": {
-   "energyKj": 835.0,
-   "kcal": 201.0,
-   "fat": 14.0,
-   "saturatedFat": 5.1,
-   "carbs": 6.8,
-   "sugars": 0.5,
-   "fiber": 0.5,
-   "protein": 12.0,
-   "salt": 1.7
-  },
-  "filters": {
-   "organic": "Økologisk",
-   "glutenFree": null,
-   "lactoseFree": null,
-   "sugarFree": null,
-   "sweeteners": null,
-   "vegan": null,
-   "vegetarian": null,
-   "meatType": "Gris",
-   "alcohol": null,
-   "alcoholPercent": null,
-   "fatPercent": 15.0,
-   "countryOfOrigin": "Danmark",
-   "wholeGrain": null,
-   "keyhole": null,
-   "animalWelfare": [
-    "Bedre Dyrevelfærd 3",
-    "Anbefalet Af Dyrenes Beskyttelse"
-   ],
-   "certifications": [],
-   "storage": null,
-   "size": null,
-   "toxins": []
-  },
-  "image": "5701050258803.png",
-  "imageTags": [
-   "Cutout"
-  ],
-  "images": [
-   {
-    "file": "5701050258803.png",
-    "tags": [
-     "Cutout"
     ]
    }
   ]
@@ -5603,6 +5338,9 @@
   "imageTags": [
    "Cutout"
   ],
+  "category": "Drikkevarer",
+  "subcategory": null,
+  "packaging": null,
   "images": [
    {
     "file": "5705830010315.png",
@@ -5613,37 +5351,386 @@
   ]
  },
  {
-  "ean": "5700426219547",
+  "ean": "5701075201174",
   "stores": [
    "Rema 1000"
   ],
   "externalSource": "REMA1000",
-  "name": "Yoghurt, Pære/ Banan, Pære/ Banan",
-  "brand": "Arla",
+  "name": "Havregryn Grovvalsede",
+  "brand": "Valsemøllen",
   "subbrand": null,
-  "productType": "Yoghurt",
-  "variant": "Pære/ Banan",
-  "flavor": "Pære/ Banan",
-  "quantity": "1Ltr",
+  "productType": "Havregryn Grovvalsede",
+  "variant": null,
+  "flavor": null,
+  "quantity": "1kg",
+  "packCount": null,
+  "productCategory": "PROCESSED",
+  "storeDepartment": null,
+  "keywords": [],
+  "ingredients": "Grovvalsede Økologiske HAVREGRYN .",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "Https://shop.rema1000.dk/varer/180115",
+  "nutrition": {
+   "energyKj": 1545.0,
+   "kcal": 369.0,
+   "fat": 6.9,
+   "saturatedFat": 1.2,
+   "carbs": 57.0,
+   "sugars": 1.0,
+   "fiber": 9.9,
+   "protein": 14.0,
+   "salt": 0.01
+  },
+  "filters": {
+   "organic": "Økologisk",
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": "Danmark",
+   "wholeGrain": "Fuldkorn",
+   "keyhole": "Nøglehul",
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5701075201174.png",
+  "imageTags": [
+   "Cutout"
+  ],
+  "category": "Kolonial og tørvarer",
+  "subcategory": null,
+  "packaging": null,
+  "images": [
+   {
+    "file": "5701075201174.png",
+    "tags": [
+     "Cutout"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5701542105462",
+  "stores": [
+   "Rema 1000"
+  ],
+  "externalSource": "REMA1000",
+  "name": "Hele Rødspætter",
+  "brand": "REMA 1000",
+  "subbrand": null,
+  "productType": "Hele Rødspætter",
+  "variant": null,
+  "flavor": null,
+  "quantity": "475g",
+  "packCount": null,
+  "productCategory": "RAW",
+  "storeDepartment": null,
+  "keywords": [],
+  "ingredients": "Hele rødspætter (Pleuronectes platessa)( fisk ) med hvidt skind og ben.",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "Https://shop.rema1000.dk/varer/440075",
+  "nutrition": {
+   "energyKj": 362.0,
+   "kcal": 86.0,
+   "fat": 1.5,
+   "saturatedFat": 1.3,
+   "carbs": 0.5,
+   "sugars": 0.5,
+   "fiber": 0.5,
+   "protein": 18.0,
+   "salt": 0.25
+  },
+  "filters": {
+   "organic": null,
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": "Fisk",
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": "Danmark",
+   "wholeGrain": null,
+   "keyhole": "Nøglehul",
+   "animalWelfare": [],
+   "certifications": [
+    "MSC"
+   ],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5701542105462.png",
+  "imageTags": [
+   "Cutout"
+  ],
+  "category": "Fisk og skaldyr",
+  "subcategory": "Rå fisk",
+  "packaging": null,
+  "images": [
+   {
+    "file": "5701542105462.png",
+    "tags": [
+     "Cutout"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5706216504305",
+  "stores": [
+   "Rema 1000"
+  ],
+  "externalSource": "REMA1000",
+  "name": "Pizzabund med",
+  "brand": null,
+  "subbrand": null,
+  "productType": "Pizzabund med",
+  "variant": null,
+  "flavor": null,
+  "quantity": "240g",
+  "packCount": null,
+  "productCategory": "PROCESSED",
+  "storeDepartment": null,
+  "keywords": [],
+  "ingredients": "33% FULDKORNSHVEDEMEL , surdej ( HVEDEMEL , vand, gær), vand, HVEDEMEL , HVEDEKLID , kostfibre, HVEDEFIBRE , salt, solsikkeolie, ekstra jomfruolivenolie, gær, DURUM SEMOLINA HVEDEMEL , konserveringsmiddel: kaliumsorbat.",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "Https://shop.rema1000.dk/varer/419939",
+  "nutrition": {
+   "energyKj": 1217.0,
+   "kcal": 288.0,
+   "fat": 4.5,
+   "saturatedFat": 0.7,
+   "carbs": 50.0,
+   "sugars": 3.1,
+   "fiber": 11.0,
+   "protein": 5.3,
+   "salt": 0.76
+  },
+  "filters": {
+   "organic": "Økologisk",
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": "Italien",
+   "wholeGrain": "Fuldkorn",
+   "keyhole": "Nøglehul",
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5706216504305.webp",
+  "imageTags": [
+   "Original"
+  ],
+  "category": "Færdigretter",
+  "subcategory": null,
+  "packaging": null,
+  "images": [
+   {
+    "file": "5706216504305.webp",
+    "tags": [
+     "Original"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5701338124455",
+  "stores": [
+   "Rema 1000"
+  ],
+  "externalSource": "REMA1000",
+  "name": "Store Rejer, Ekstra Store",
+  "brand": "REMA 1000",
+  "subbrand": null,
+  "productType": "Store Rejer",
+  "variant": "Ekstra Store",
+  "flavor": null,
+  "quantity": "200g",
+  "packCount": null,
+  "productCategory": "PROCESSED",
+  "storeDepartment": null,
+  "keywords": [],
+  "ingredients": "99 % kogte og pillede koldvandsrejer (Pandalus borealis), salt.",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "Https://shop.rema1000.dk/varer/43047",
+  "nutrition": {
+   "energyKj": 309.0,
+   "kcal": 73.0,
+   "fat": 1.0,
+   "saturatedFat": 0.2,
+   "carbs": 0.5,
+   "sugars": 0.5,
+   "fiber": 0.5,
+   "protein": 16.0,
+   "salt": 1.3
+  },
+  "filters": {
+   "organic": null,
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": "Fisk",
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": "Grønland",
+   "wholeGrain": null,
+   "keyhole": "Nøglehul",
+   "animalWelfare": [],
+   "certifications": [
+    "MSC"
+   ],
+   "storage": null,
+   "size": null,
+   "toxins": []
+  },
+  "image": "5701338124455.png",
+  "imageTags": [
+   "Cutout"
+  ],
+  "category": "Fisk og skaldyr",
+  "subcategory": "Tilberedt fisk",
+  "packaging": null,
+  "images": [
+   {
+    "file": "5701338124455.png",
+    "tags": [
+     "Cutout"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5705830005694",
+  "stores": [
+   "Rema 1000"
+  ],
+  "externalSource": "REMA1000",
+  "name": "Flåede Tomatere",
+  "brand": "REMA 1000",
+  "subbrand": null,
+  "productType": "Flåede Tomatere",
+  "variant": null,
+  "flavor": null,
+  "quantity": "400g",
+  "packCount": null,
+  "productCategory": "VEGETABLES",
+  "storeDepartment": null,
+  "keywords": [],
+  "ingredients": "60 % økologiske flåede tomater, 39,9 % økologisk tomatjuice, surhedsregulerende middel (E 330).",
+  "allergens": [],
+  "additives": [],
+  "sourceUrl": "Https://shop.rema1000.dk/varer/110329",
+  "nutrition": {
+   "energyKj": 94.0,
+   "kcal": 22.0,
+   "fat": 0.5,
+   "saturatedFat": 0.1,
+   "carbs": 3.8,
+   "sugars": 3.4,
+   "fiber": 0.6,
+   "protein": 1.2,
+   "salt": 0.03
+  },
+  "filters": {
+   "organic": "Økologisk",
+   "glutenFree": null,
+   "lactoseFree": null,
+   "sugarFree": null,
+   "sweeteners": null,
+   "vegan": null,
+   "vegetarian": null,
+   "meatType": null,
+   "alcohol": null,
+   "alcoholPercent": null,
+   "fatPercent": null,
+   "countryOfOrigin": null,
+   "wholeGrain": null,
+   "keyhole": "Nøglehul",
+   "animalWelfare": [],
+   "certifications": [],
+   "storage": "Konserves",
+   "size": null,
+   "toxins": []
+  },
+  "image": "5705830005694.png",
+  "imageTags": [
+   "Cutout"
+  ],
+  "category": "Grøntsager og rodfrugter",
+  "subcategory": "Tilberedte grøntsager",
+  "packaging": "Dåse",
+  "images": [
+   {
+    "file": "5705830005694.png",
+    "tags": [
+     "Cutout"
+    ]
+   }
+  ]
+ },
+ {
+  "ean": "5705830604880",
+  "stores": [
+   "Rema 1000"
+  ],
+  "externalSource": "REMA1000",
+  "name": "Fraiche",
+  "brand": "Gram Slot",
+  "subbrand": null,
+  "productType": "Fraiche",
+  "variant": null,
+  "flavor": null,
+  "quantity": "190g",
   "packCount": null,
   "productCategory": "PROCESSED",
   "storeDepartment": null,
   "keywords": [
-   "0,4% fedt"
+   "9% fedt"
   ],
-  "ingredients": "Økologisk MÆLK , økologisk rørsukker (5,3%), økologisk pære (3,1%), økologisk banan (2,1%), fortykningsmiddel (pektin), stabilisator (økologisk johannesbrødkernemel), surhedsregulerende middel (økologisk citronjuicekoncentrat), YOGHURTKULTUR.",
+  "ingredients": "99,9 % økologisk FLØDE (9 %), mælkesyrekultur (indeholder MÆLK ).",
   "allergens": [],
   "additives": [],
-  "sourceUrl": "Https://shop.rema1000.dk/varer/21569",
+  "sourceUrl": "Https://shop.rema1000.dk/varer/20369",
   "nutrition": {
-   "energyKj": 266.0,
-   "kcal": 63.0,
-   "fat": 0.5,
-   "saturatedFat": 0.3,
-   "carbs": 9.2,
-   "sugars": 9.2,
+   "energyKj": 447.0,
+   "kcal": 108.0,
+   "fat": 9.0,
+   "saturatedFat": 5.7,
+   "carbs": 3.5,
+   "sugars": 3.5,
    "fiber": 0.5,
-   "protein": 4.8,
+   "protein": 3.2,
    "salt": 0.1
   },
   "filters": {
@@ -5657,8 +5744,8 @@
    "meatType": null,
    "alcohol": null,
    "alcoholPercent": null,
-   "fatPercent": 0.4,
-   "countryOfOrigin": "Danmark",
+   "fatPercent": 9.0,
+   "countryOfOrigin": null,
    "wholeGrain": null,
    "keyhole": null,
    "animalWelfare": [
@@ -5669,13 +5756,16 @@
    "size": null,
    "toxins": []
   },
-  "image": "5700426219547.png",
+  "image": "5705830604880.png",
   "imageTags": [
    "Cutout"
   ],
+  "category": "Forarbejdet",
+  "subcategory": null,
+  "packaging": null,
   "images": [
    {
-    "file": "5700426219547.png",
+    "file": "5705830604880.png",
     "tags": [
      "Cutout"
     ]

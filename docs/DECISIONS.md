@@ -7,6 +7,13 @@ This file records durable decisions. Add a dated entry when a later decision cha
 - Produkt-database i admin-menuen er nu en gruppe med to undersider: "Produkter" (den hidtidige produktliste, flyttet til `/admin/product-database/products`) og "Brands" (`/admin/product-database/brands`).
 - `/admin/product-database` og `/admin/search` sender videre til Produkter med filtrene/søgeordet.
 - Brands viser alle rækker i `brands` som kort med logo (`Brand.logoUrl`; uden logo vises forbogstavet), navn og antal produkter (talt som Produkter-listen). Søgning på navn, filter med/uden logo, 120 pr. side. Et klik åbner Produkter filtreret på brandet. Logik: `src/lib/admin-brands.ts`.
+## 2026-09-28: Hello Cals kategoritræ + emballage
+
+- Hovedkategorier (brugerens, i denne rækkefølge): Drikkevarer (Sodavand, Smoothies), Alkohol, Mejeri og æg, Kød (Rå kød, Tilberedt kød), Fisk og skaldyr (Rå fisk, Tilberedt fisk), Grøntsager og rodfrugter (Rå grøntsager, Tilberedte grøntsager), Frugt, Brød og bagværk, Kolonial og tørvarer, Færdigretter, Forarbejdet, Slik, Chips. Pålæg, plantebaseret, snacks og is får ikke egne kategorier.
+- `Category` har nu `parentId` + `sortOrder`; underkategorier har fulde navne ("Rå kød"), fordi `name` er unik. Varen peger på den dybeste kategori.
+- Placering sker regelbaseret i `scripts/store-products-import/build_data.py` ud fra titlen først; arkets produkttype og kødtype bruges kun, når titlen ikke siger noget, og en kødtype der modsiger titlen droppes. Årsag: ca. 80 reparerede Bilka-rækker har produkttype/kødtype fra en anden række. De står i `Produkter klar til import/Produktark/Tjekliste - mistænkelige rækker.csv`.
+- Mængdeenhed følger kategorien: Drikkevarer, Alkohol og drikkelige mejerivarer (mælk, kakaomælk, kærnemælk – ikke drikkeyoghurt) i ml, alt andet i g.
+- `Product.packaging` (Dåse, Flaske, Karton, Bakke, Pose, Glas, Tube, Bæger, Net) er et hint til genkendelse af varen på fotos. Det udfyldes kun ud fra eksplicitte ord i arkene/titlen og gættes aldrig; i dag har ca. 115 af 10.500 varer det.
 
 ## 2026-09-28: Admin "Retter" + HelloFresh ud af Produkt-database
 

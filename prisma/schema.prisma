@@ -843,8 +843,18 @@ model SearchRankingConfig {
 model Category {
   id       String    @id @default(cuid())
   name     String    @unique
+  // Hello Cals kategoritræ (docs/DECISIONS.md 2026-09-28): hovedkategorier
+  // (fx "Kød") har parentId = null; underkategorier (fx "Rå kød") peger på
+  // deres hovedkategori. Ældre rækker (butiksafdelinger, "Retter") har
+  // hverken forælder eller sortOrder.
+  parent    Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  parentId  String?
+  children  Category[] @relation("CategoryTree")
+  sortOrder Int?
   products Product[]
   dishes   Dish[]
+
+  @@index([parentId])
 
   @@map("categories")
 }
@@ -992,6 +1002,9 @@ model Product {
   // når admin har gennemgået produktets billed-varianter (_2, _3 …), så
   // produktet ikke vises på fanen igen. Nulstilles ikke af importen.
   imagesReviewedAt DateTime?
+  // Emballage/form ("Dåse", "Flaske", "Karton", "Bakke" …) — et hint til
+  // genkendelse af varen på fotos (docs/DECISIONS.md 2026-09-28).
+  packaging       String?
 
   barcodes           Barcode[]
   // Butikkernes egne versioner af samme vare (Bilka + REMA 1000 med samme

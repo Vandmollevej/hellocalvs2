@@ -60,6 +60,24 @@ NUTRITION_COLUMNS = {
 }
 SOURCE_COLUMNS = {"sugars": "sugarSource", "fiber": "fiberSource", "salt": "saltSource"}
 
+# Hello Cals kategoritræ (docs/DECISIONS.md 2026-09-28): hovedkategori →
+# underkategorier, i visningsrækkefølge. build_data.py placerer varerne.
+CATEGORY_TREE = [
+    ("Drikkevarer", ["Sodavand", "Smoothies"]),
+    ("Alkohol", []),
+    ("Mejeri og æg", []),
+    ("Kød", ["Rå kød", "Tilberedt kød"]),
+    ("Fisk og skaldyr", ["Rå fisk", "Tilberedt fisk"]),
+    ("Grøntsager og rodfrugter", ["Rå grøntsager", "Tilberedte grøntsager"]),
+    ("Frugt", []),
+    ("Brød og bagværk", []),
+    ("Kolonial og tørvarer", []),
+    ("Færdigretter", []),
+    ("Forarbejdet", []),
+    ("Slik", []),
+    ("Chips", []),
+]
+
 FILTER_COLUMNS = [
     "organic", "glutenFree", "lactoseFree", "sugarFree", "sweeteners", "vegan", "vegetarian", "meatType",
     "alcohol", "alcoholPercent", "fatPercent", "countryOfOrigin", "wholeGrain", "keyhole", "animalWelfare",
@@ -79,6 +97,22 @@ def get_or_create_id(cur, table, name):
     row_id = new_id()
     cur.execute(f'INSERT INTO "{table}" (id, name) VALUES (%s, %s)', (row_id, name))
     return row_id
+
+
+def ensure_category_tree(cur):
+    """Opretter/opdaterer træet og returnerer {navn: id}."""
+    ids = {}
+    for order, (main, subs) in enumerate(CATEGORY_TREE, start=1):
+        main_id = get_or_create_id(cur, "categories", main)
+        cur.execute('UPDATE "categories" SET "parentId" = NULL, "sortOrder" = %s WHERE id = %s', (order * 10, main_id))
+        ids[main] = main_id
+        for sub_order, sub in enumerate(subs, start=1):
+            sub_id = get_or_create_id(cur, "categories", sub)
+            cur.execute(
+                'UPDATE "categories" SET "parentId" = %s, "sortOrder" = %s WHERE id = %s', (main_id, sub_order, sub_id)
+            )
+            ids[sub] = sub_id
+    return ids
 
 
 def copy_image(filename):
@@ -124,14 +158,13 @@ def image_list(p):
     return [{"file": p["image"], "tags": p.get("imageTags") or []}] if p.get("image") else []
 
 
-def upsert_product(cur, p, store_ids):
+def upsert_product(cur, p, store_ids, category_ids):
     existing_id = find_product(cur, p)
     images_reviewed, fields_reviewed = review_state(cur, existing_id)
 
     n = p["nutrition"]
     brand_id = get_or_create_id(cur, "brands", p["brand"]) if p.get("brand") else None
-    category_name = p.get("storeDepartment") or p.get("productType") or "Ukategoriseret"
-    category_id = get_or_create_id(cur, "categories", category_name)
+    category_id = category_ids.get(p.get("subcategory") or "") or category_ids.get(p.get("category") or "")
     images = []
     if not images_reviewed:
         for img in image_list(p):
@@ -156,6 +189,7 @@ def upsert_product(cur, p, store_ids):
         "variant": p.get("variant"),
         "flavor": p.get("flavor"),
         "packCount": p.get("packCount"),
+        "packaging": p.get("packaging"),
         "keywords": p.get("keywords") or [],
         "packageSize": p.get("quantity"),
         "productType": p.get("productType"),
@@ -183,7 +217,7 @@ def upsert_product(cur, p, store_ids):
                 "fatPer100g" = %(fat)s, "saturatedFatPer100g" = %(satFat)s,
                 "ingredientsText" = %(ingredients)s, allergens = %(allergens)s, additives = %(additives)s,
                 subbrand = %(subbrand)s, variant = %(variant)s, flavor = %(flavor)s,
-                "packCount" = %(packCount)s, keywords = %(keywords)s, "packageSizeText" = %(packageSize)s,
+                "packCount" = %(packCount)s, packaging = %(packaging)s, keywords = %(keywords)s, "packageSizeText" = %(packageSize)s,
                 "productType" = %(productType)s,
                 "productCategory" = %(productCategory)s::"ProductCategory",
                 "imageUrl" = COALESCE(%(imageUrl)s, "imageUrl"),
@@ -202,13 +236,13 @@ def upsert_product(cur, p, store_ids):
                 id, name, "brandId", "categoryId", "kcalPer100g", "proteinPer100g", "carbsPer100g",
                 "fatPer100g", "saturatedFatPer100g", "ingredientsText", allergens, additives,
                 "externalSource", "externalId", "sourceCheckedAt", status, subbrand, variant, flavor,
-                "packCount", keywords, "packageSizeText", "productType", "productCategory",
+                "packCount", packaging, keywords, "packageSizeText", "productType", "productCategory",
                 "imageUrl", "imageStatus", "createdAt"
             ) VALUES (
                 %(id)s, %(name)s, %(brandId)s, %(categoryId)s, %(kcal)s, %(protein)s, %(carbs)s,
                 %(fat)s, %(satFat)s, %(ingredients)s, %(allergens)s, %(additives)s,
                 %(externalSource)s::"ExternalProductSource", %(externalId)s, now(), 'APPROVED',
-                %(subbrand)s, %(variant)s, %(flavor)s, %(packCount)s, %(keywords)s, %(packageSize)s,
+                %(subbrand)s, %(variant)s, %(flavor)s, %(packCount)s, %(packaging)s, %(keywords)s, %(packageSize)s,
                 %(productType)s, %(productCategory)s::"ProductCategory", %(imageUrl)s,
                 CASE WHEN %(imageUrl)s IS NULL THEN 'NONE'::"ImageStatus" ELSE 'APPROVED'::"ImageStatus" END,
                 now()
@@ -308,11 +342,12 @@ def run(conn):
         products = json.load(f)
     cur = conn.cursor()
     store_ids = {name: get_or_create_id(cur, "stores", name) for name in ("Bilka", "Rema 1000")}
+    category_ids = ensure_category_tree(cur)
     imported = 0
     for p in products:
         cur.execute("SAVEPOINT product")
         try:
-            upsert_product(cur, p, store_ids)
+            upsert_product(cur, p, store_ids, category_ids)
             cur.execute("RELEASE SAVEPOINT product")
             imported += 1
         except Exception:  # noqa: BLE001 - one bad row must not stop the batch

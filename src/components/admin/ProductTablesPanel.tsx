@@ -17,6 +17,7 @@ export type ProductTablesBasics = {
   packCount: number | null;
   productCategory: string | null;
   category: string | null;
+  packaging: string | null;
   barcodes: string[];
   stores: string[];
   keywords: string[];
@@ -93,6 +94,7 @@ export function ProductTablesPanel({
           ["Antal i pakken", basics.packCount],
           ["Type", basics.productCategory ? CATEGORY_LABELS[basics.productCategory] ?? basics.productCategory : null],
           ["Kategori", basics.category],
+          ["Emballage", basics.packaging],
           ["Stregkode", basics.barcodes],
           ["Kæder", basics.stores],
           ["Nøgleord", basics.keywords],

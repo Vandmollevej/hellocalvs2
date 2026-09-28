@@ -51,8 +51,9 @@ Kode: `scripts/store-products-import/` (`build_data.py` lokalt → JSON,
 | flavor (ny) | Flavor (info-ark) | taste |
 | packageSizeText | Quantity | Quantity |
 | packCount (ny) | Pack Count | Amount ("6-pak" → 6) |
-| productCategory (g/ml) | se regler | Type |
-| category | Category (afdeling) | – |
+| productCategory (g/ml) | følger Hello Cal-kategorien | følger Hello Cal-kategorien |
+| category | Hello Cal-kategoritræet (regler i build_data.py; Bilka-afdelingen bruges kun som hint) | Type bruges kun som hint |
+| packaging (ny) | ord i titlen (dåse, flaske …) | is_Packaging (Konserves → Dåse, Brik → Karton, Bakke, Flaske) |
 | barcodes | EAN | EAN |
 | product_stores | Bilka | Rema 1000 |
 | keywords (ny) | Keyword 1–5 | Keyword 1, is_Packaging (Bakke, Brik, i Skiver, Færdigretter …), "Light", ikke-alkohol "%" |

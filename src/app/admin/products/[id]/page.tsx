@@ -19,7 +19,7 @@ export default async function AdminProductDetailPage({ params }: { params: Promi
       include: {
         brand: true,
         images: { orderBy: { order: "asc" } },
-        category: { select: { name: true } },
+        category: { select: { name: true, parent: { select: { name: true } } } },
         barcodes: { select: { code: true } },
         stores: { select: { store: { select: { name: true } } } },
         nutritionFeatures: true,
@@ -75,7 +75,10 @@ export default async function AdminProductDetailPage({ params }: { params: Promi
           packageSizeText: product.packageSizeText,
           packCount: product.packCount,
           productCategory: product.productCategory,
-          category: product.category?.name ?? null,
+          category: product.category
+            ? [product.category.parent?.name, product.category.name].filter(Boolean).join(" › ")
+            : null,
+          packaging: product.packaging,
           barcodes: product.barcodes.map((barcode) => barcode.code),
           stores: product.stores.map((entry) => entry.store.name),
           keywords: product.keywords,

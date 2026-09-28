@@ -19,6 +19,7 @@ Usage: py build_data.py [--limit 50] [--all]
 """
 
 import argparse
+import csv
 import json
 import os
 import re
@@ -40,6 +41,7 @@ ORIGINAL_DIR = os.path.join(ROOT, "Productdatabase", "Product Images")
 
 OUT_DIR = os.path.join(os.path.dirname(__file__), "data")
 OUT_IMAGES = os.path.join(OUT_DIR, "images")
+SUSPECT_CSV = os.path.join(SHEETS, "Tjekliste - mistænkelige rækker.csv")
 
 EAN_RE = re.compile(r"^\d{8,14}$")
 
@@ -257,9 +259,11 @@ def rema_filters(r, is_drink):
 
 def rema_keywords(r, is_drink):
     out = [k for k in [text(r.get("Keyword 1"))] if k]
-    packaging = text(r.get("is_Packaging"))
-    if packaging and packaging.lower() not in REMA_STORAGE:
-        out.append(packaging)
+    # Package shapes go to Product.packaging and "Færdigretter" to the category;
+    # only other values (e.g. "i Skiver") stay keywords.
+    for part in split_list(r.get("is_Packaging")):
+        if part.lower() not in REMA_STORAGE and part.lower() not in ("bakke", "brik", "tindåse", "flaske", "færdigretter"):
+            out.append(part)
     if text(r.get("is_sugar_free")) == "Light":
         out.append("Light")
     if text(r.get("%")) and not is_alcoholic(r):
@@ -338,6 +342,188 @@ def rema_name(r, brand):
     if brand and name.lower().startswith(brand.lower() + " "):
         name = name[len(brand) + 1:]
     return name.strip() or text(r.get("Hello Cal product title"))
+
+
+# ---------- Hello Cal categories (docs/DECISIONS.md 2026-09-28) ----------
+# Main categories with optional subcategories; the agent creates the tree.
+# Rules read the product TITLE first: ~80 repaired Bilka rows carry a
+# product type / meat type from another row (e.g. "Nakkekoteletter" with
+# type "Brune kaffefiltre" and meat "Fisk"), so those fields only help when
+# the title is silent, and a meat type that contradicts the title is dropped.
+# Order matters: the first matching rule wins.
+
+FISH_WORDS = (r"fisk|laks|torsk|sej\b|tun\b|tunfisk|rejer|reje\b|makrel|sild|skaldyr|ørred|rødspætte|kuller|hellefisk|"
+              r"muslinger|krabbe|hummer|blæksprutte|ansjos|sardin|rogn|kippers|fiskefrikadelle|fiskefilet|kaviar|surimi")
+FISH_TYPES = {"fisk", "laks", "torsk", "sej", "tun", "rejer", "makrel", "sild", "skaldyr", "ørred", "rødspætte",
+              "kuller", "hellefisk", "muslinger", "krabbe", "hummer", "blæksprutte", "ansjoser", "sardiner", "rogn"}
+MEAT_WORDS = (r"kylling|høns|kalkun|and\b|andebryst|gås|okse|kalv|gris|svin|flæsk|lam\b|lamme|vildt|hjort|ged\b|"
+              r"bacon|pølse|salami|skinke|pancetta|chorizo|kebab|frikadelle|kødboller|medister|koteletter|kotelet|mørbrad|"
+              r"ribben|nakke|culotte|entrecote|bøf|burgerbøf|leverpostej|postej|rullepølse|hamburgerryg|"
+              r"spareribs|pepperoni|pulled|rillette|paté|kød\b|kødpølse|spegepølse|roastbeef|porchetta|pålæg|cervelat|mortadella|jerky|trifler")
+
+
+def has(pattern, *texts):
+    return bool(re.search(pattern, " ".join(t for t in texts if t).lower()))
+
+
+RAW_MEAT = r"(hakket|fars|filet|bryst|hel kylling|mørbrad|kotelet|bøf|culotte|lår|underlår|vinger|steak|entrecote|inderlår|tyndsteg|nakkefilet|svinekam|ribbenssteg|flæskesteg|højreb|gullasch|strimler|kyllingetern|kylling tern|topside)"
+PREPARED = r"(paner|olie|smør\b|røget|stegt|færdigstegt|kogt|paneret|indbagt|grillet|pålæg|pølse|pølser|i skiver|salami|spegep|leverpostej|frikadelle|kebab|bacon|skinke|hamburgerryg|rullepølse|postej|i olie|i tomat|i lage|konserves|paté|salat|nuggets|marry me|fyld|suppe|pizza|nudler|gravad|tatar)"
+FRUIT = r"\b(frugt|æble|banan|pære|appelsin|citron|lime|mandarin|klementin|grapefrugt|druer|melon|ananas|mango|kiwi|blomme|fersken|nektarin|abrikos|jordbær|hindbær|blåbær|brombær|solbær|kirsebær|granatæble|passionsfrugt|avocado|figen|dadler|bærmix|tranebær)"
+NOT_FRUIT = r"snitte|kiks|skiver|vafler|krydderi|snacks|fromage|roulade|måne|mos\b|bamse|ispinde|choco|tærte|marmelade|syltetøj|juice|saft|nektar|drik|kage|tærte|is\b|pops|smoothie|yoghurt|skyr|chips|tørret|soltørret|müsli|granola|bar\b|bars\b|chokolade|karamel"
+VEG = r"\b(coleslaw|grønt|grøntsag|kartof|gulerod|gulerødder|løg|hvidløg|porre|selleri|pastinak|rødbede|kål|broccoli|blomkål|spinat|salat|agurk|tomat|peberfrugt|squash|aubergine|champignon|svampe|majs|ærter|bønner|asparges|radise|ingefær|rodfrugt|græskar|fennikel|krydderurter|persille|basilikum|purløg|dild|koriander|rucola|wokblanding|grøntsagsblanding|edamame)"
+VEG_PREPARED = r"(kroketter|skruer|coleslaw|frites|både|hakkede|flåede|passata|syltede|i lage|pickles|konserves|stegte|kogte|mos|bagte|pommes|gratin|sauce|suppe|pesto|puré|ovnklare|marineret)"
+NOT_VEG = r"pesto|puré|pulver|krydderolie|baguette|oregano|timian|rosmarin|suppe|kage|boller|brød|mel\b|majsmel|kerner|ost\b|salatost|fajita|krydderi|dressing|sauce|pizza|forårsrulle|smoothie|chips"
+SODA = r"\b(soda|sodavand|cola|lemonade|limonade|energidrik|tonic|sportsdrik|sportssodavand|iste|ice tea|faxe kondi|fanta|sprite|pepsi|7up|zero|lemon)\b"
+SMOOTHIE = r"\bsmoothie"
+DAIRY = r"(\bmælk|minimælk|letmælk|sødmælk|skummetmælk|kærnemælk|kakaomælk|yoghurt|yogurt|skyr|ymer|a38|kefir|kvark|ost|oste|hytteost|flødeost|smøreost|smelteost|salatost|mozzarella|feta|parmesan|cheddar|brie|camembert|emmentaler|gouda|havarti|danbo|gorgonzola|mascarpone|ricotta|halloumi|burrata|skæreost|revet|smør|smørbar|fløde|piskefløde|madlavningsfløde|creme fraiche|cremefraiche|æg|koldskål|mælkedrik|protein budding|proteinbudding|mousse|budding)\b|ost\b|æg\b"
+NOT_DAIRY = r"\b(toast|frost|tapenade|fettuccine|cavatappi|fusilli|penne|pappardelle|ravioli|tortellini|gnocchi|m æg|plantedrik|havredrik|mandeldrik|sojadrik|risdrik|plantebaseret|vegansk|pasta|linguine|spaghetti|tagliatelle|nudler|lasagne|pizza|chips|kiks|ostesmag|chokolade|slik|is\b|isvaffel|kage|brød|boller|mayonnaise|æggenudler|æggepasta|pålæg)"
+BREAD = r"(brød|rugbrød|boller|bolle|knækbrød|kiks|kage|kager|croissant|wienerbrød|toast|pita|tortilla|wraps|bagel|baguette|ciabatta|focaccia|flutes|muffin|donut|småkager|cookies|rasp|kringle|lagkage|pandekager|vafler|tærtebund|tarteletter|kammerjunkere|pain au|bao|brunsviger|pølsebrød|burgerboller|sandwichbrød|pizzadej|butterdej|kagemix|bageblanding|krymmel|lagkage|roulade|snitte|vafler|pancake)"
+CHIPS = r"(?<!chocolate )(?<!choco )\b(chips|kartoffelchips|tortillachips|majschips|popcorn|snack chips|rejechips|puffs|nachos|riskiks|majskiks|linsechips|grøntsagschips)"
+CANDY = r"(slik|chokolade|vingummi|lakrids|bolsje|bolcher|marcipan|karamel|pastiller|tyggegummi|flødeboller|skumfiduser|nougat|praliner|konfekt|chokoladebar|godt & blandet|p-tærter|pebernødder|sour|gummies)"
+READY_MEAL = r"\b(færdigret|lasagne|pizza|gryderet|wok m|kyllingewok|risotto|suppe|sandwich|burrito|dumplings|nudelret|boller i karry|biksemad|tikka masala|curry|bourguignon|meal kit|måltidssalat|salad bowl|spring rolls|forårsruller|tarteletfyld|burger\b|mac & cheese|gratin|lasagna|moussaka|chili con carne|stroganoff|paella|pasta med|pasta m |penne m |ret\b|karbonade m)"
+NOT_READY = r"sauce|plader|bund\b|dej\b|\bris\b|risottoris|krydderi|blanding|brød|mix\b"
+NOT_MEAT = r"plante|veggie|vegansk|tofu|sojabaseret|vegansk|vegetar|smag|krydderi|fond|bouillon|sauce|marinade\b"
+BREAKFAST = r"\b(müsli|musli|mysli|granola|havregryn|cornflakes|morgenmad|havrefras|cheerios|breakfast)"
+PANTRY = r"((havre|hvede|rug|spelt|majs|mandel|kokos|kartoffel|grahams|durum)mel|pasta|spaghetti|penne|fusilli|nudler|\bris\b|basmati|jasmin|\bmel\b|hvedemel|gryn|bouillon|fond|krydderi|\bsalt\b|peber\b|sauce|dressing|ketchup|sennep|mayonnaise|remoulade|olie|eddike|sukker|honning|sirup|marmelade|syltetøj|nødder|mandler|cashew|peanut|jordnødder|\bfrø\b|kerner|kikærter|linser|tørret|kaffe|\bte\b|\bte m|urtete|kakao|bagepulver|\bgær\b|vanilje|pesto|tomatpuré|kokosmælk|sojasauce|tahin|nutella|marinade|chilisauce|sambal|salsa|hummus|oliven|kapers|konserves|på dåse|i lage|i vand|chutney|dip\b|smørepålæg|peanutbutter|peanut butter|sødemiddel|spelt|quinoa|bulgur|couscous|polenta)"
+ALCOHOL_TYPE = (
+    r"\b(øl|pilsner|lager|pale ale|ipa|stout|porter|weissbier|vin|rødvin|hvidvin|rosé|rosévin|mousserende|champagne|cava|"
+    r"prosecco|cider|spiritus|whisky|whiskey|vodka|rom|gin|likør|akvavit|snaps|cognac|brandy|tequila|portvin|sherry|"
+    r"hard seltzer|cocktail|ready to drink|bitter|chardonnay|merlot|cabernet|sauvignon|pinot|riesling|shiraz|rioja)\b"
+)
+LIQUID_DAIRY = r"(\bmælk|minimælk|letmælk|sødmælk|skummetmælk|kærnemælk|kakaomælk|mælkedrik|kefir|koldskål|proteindrik)"
+
+
+def trusted_meat(meat, title, dept):
+    """Drops a meat type the title contradicts (repaired rows, see above)."""
+    if not meat:
+        return None
+    m = meat.lower()
+    is_fish = m in FISH_TYPES
+    title_fish, title_meat = has(FISH_WORDS, title), has(MEAT_WORDS, title)
+    if is_fish and title_meat and not title_fish:
+        return None
+    if not is_fish and title_fish and not title_meat:
+        return None
+    if not (title_meat or title_fish) and dept != "Kød & fisk":
+        return None
+    if has(r"fisk", m) and not title_fish and dept not in ("Kød & fisk", "Frost"):
+        return None
+    return meat
+
+
+def classify(p, b, r):
+    """Returns (main category, subcategory or None) and may clear a meat type
+    the title contradicts."""
+    title = " ".join(filter(None, [p.get("name"), text(b.get("Original Title")) if b else None, p.get("variant")]))
+    ptype = p.get("productType") or ""
+    both = title + " " + ptype
+    dept = text(b.get("Category")) if b else None
+    rema_type = (text(r.get("Type")) or "").lower() if r else ""
+    f = p["filters"]
+    sheet_meat = f.get("meatType")
+    f["meatType"] = trusted_meat(sheet_meat, title, dept)
+    stems = [w[:5] for w in re.findall(r"[a-zæøå]{4,}", ptype.lower())]
+    reasons = []
+    if sheet_meat and not f["meatType"]:
+        reasons.append(f"kødtype '{sheet_meat}' passer ikke til titlen")
+    if stems and not any(st in title.lower() for st in stems) and dept in ("Kød & fisk", "Frugt & grønt"):
+        reasons.append(f"produkttype '{ptype}' passer ikke til titlen")
+    p["_suspect"] = "; ".join(reasons) or None
+    p["_sheetMeat"] = sheet_meat
+    meat = (f.get("meatType") or "").lower()
+    liquid = bool(p.get("quantity") and LIQUID_RE.search(p["quantity"]))
+    drink_context = dept == "Drikkevarer" or rema_type == "drikkevare"
+    alcohol_free = f.get("alcohol") == "Alkoholfri" or has(r"alkoholfri|alcohol free|0,0 ?%|\b0 ?%", both)
+
+    def is_(pattern):
+        # Title decides; product type only when the title is silent.
+        return has(pattern, title) or (not title.strip() and has(pattern, ptype))
+
+    if not alcohol_free and (drink_context or liquid) and not has(r"sauce|fond|marinade|eddike|sirup", title) and (
+        (f.get("alcoholPercent") or 0) > 0.5 or f.get("alcohol") == "Indeholder alkohol" or has(ALCOHOL_TYPE, title)
+        or (drink_context and has(ALCOHOL_TYPE, ptype))
+    ):
+        return "Alkohol", None
+    if is_(CHIPS):
+        return "Chips", None
+    if has(r"budding|mousse|risalamande|koldskål|dessert|kvark", title) and not has(r"kage|bar\b|kiks|plante", title):
+        return "Mejeri og æg", None
+    if (is_(DAIRY) or (dept == "Mejeri & køl" and has(DAIRY, ptype))) and not has(NOT_DAIRY, title) and not meat:
+        return "Mejeri og æg", None
+    if drink_context or (liquid and has(r"\b(juice|drik|saft|vand|nektar|most|smoothie|te\b|kaffe|iskaffe|latte)", both)):
+        if has(SMOOTHIE, both):
+            return "Drikkevarer", "Smoothies"
+        if has(SODA, both):
+            return "Drikkevarer", "Sodavand"
+        return "Drikkevarer", None
+    if (is_(READY_MEAL) and not has(NOT_READY, title)) or (r and has(r"færdigret", text(r.get("is_Packaging")) or "")):
+        return "Færdigretter", None
+    raw = (rema_type == "råvarer" or has(RAW_MEAT, title) or has(r"\bhele?\b", title)) and not has(PREPARED, title)
+    raw = raw or has(r"\b(hakket|hakkede|fars)\b", title) and not has(r"paner|stegt|kogt|røget", title)
+    if (has(FISH_WORDS, title) or meat in FISH_TYPES) and not has(NOT_MEAT, title):
+        return "Fisk og skaldyr", ("Rå fisk" if raw and not has(r"sild|marineret|kryddersild", title) else "Tilberedt fisk")
+    if (meat or has(MEAT_WORDS, title)) and not has(NOT_MEAT, title):
+        return "Kød", ("Rå kød" if raw else "Tilberedt kød")
+    if is_(BREAKFAST):
+        return "Kolonial og tørvarer", None
+    if (dept == "Slik & snacks" and not has(PANTRY, title)) or rema_type == "slik" or is_(CANDY):
+        return "Slik", None
+    fresh = dept == "Frugt & grønt" or rema_type in ("grøntsager og frugt", "frisk frugt m.m.", "frisk grønt", "grøntsager")
+    if dept == "Brød & kager" or is_(BREAD):
+        return "Brød og bagværk", None
+    if has(FRUIT, title) and not has(NOT_FRUIT, title) and (fresh or dept == "Frost"):
+        return "Frugt", None
+    if has(VEG, title) and not has(NOT_VEG, title) and (has(VEG_PREPARED, title) or f.get("storage") == "Konserves"):
+        return "Grøntsager og rodfrugter", "Tilberedte grøntsager"
+    if (fresh or dept == "Frost") and has(VEG, title) and not has(NOT_VEG, title):
+        if has(VEG_PREPARED, title) or f.get("storage") == "Konserves":
+            return "Grøntsager og rodfrugter", "Tilberedte grøntsager"
+        return "Grøntsager og rodfrugter", "Rå grøntsager"
+    if fresh and not has(NOT_VEG, title):
+        return "Grøntsager og rodfrugter", "Rå grøntsager"
+    if dept == "Brød & kager" or is_(BREAD):
+        return "Brød og bagværk", None
+    if dept in ("Kolonial", "Mad fra hele verden") or has(PANTRY, title) or has(PANTRY, ptype):
+        return "Kolonial og tørvarer", None
+    return "Forarbejdet", None
+
+
+def unit_category(category, subcategory, title, quantity):
+    """Product.productCategory — only drinks are shown in ml (brugerens regel):
+    drinks, alcohol and drinkable dairy (not drinking yoghurt). The rest is g."""
+    liquid = bool(quantity and LIQUID_RE.search(quantity))
+    if category in ("Drikkevarer", "Alkohol"):
+        return "DRINK"
+    if category == "Mejeri og æg" and liquid and has(LIQUID_DAIRY, title) and not has(r"yoghurt|yogurt|skyr", title):
+        return "DRINK"
+    if category in ("Grøntsager og rodfrugter", "Frugt"):
+        return "VEGETABLES"
+    if subcategory in ("Rå kød", "Rå fisk"):
+        return "RAW"
+    return "PROCESSED"
+
+PACKAGING_WORDS = [
+    (r"\b(dåse|dåser|tindåse|konserves)\b", "Dåse"),
+    (r"\b(flaske|flasker|fl\.)", "Flaske"),
+    (r"\b(karton|brik|tetra)\b", "Karton"),
+    (r"\bbakke\b", "Bakke"),
+    (r"\b(pose|poser)\b", "Pose"),
+    (r"\bglas\b", "Glas"),
+    (r"\btube\b", "Tube"),
+    (r"\b(bæger|bøtte|spand)\b", "Bæger"),
+    (r"\b(net|netpose)\b", "Net"),
+]
+
+
+def packaging(p, b, r):
+    """Package shape as a recognition hint. Only from explicit words — never guessed."""
+    sources = [text(r.get("is_Packaging")) if r else None, text(b.get("Original Title")) if b else None,
+               text(b.get("Product Name")) if b else None, p.get("name"), " ".join(p.get("keywords") or [])]
+    joined = " ".join(s for s in sources if s).lower()
+    for pattern, label in PACKAGING_WORDS:
+        if re.search(pattern, joined):
+            return label
+    return None
 
 
 def pack_count(b, r):
@@ -463,7 +649,7 @@ def build_product(ean, b, r, b_info, r_info, cutouts, originals):
     image_path, image_tags = images[0] if images else (None, [])
     stores = (["Bilka"] if b else []) + (["Rema 1000"] if r else [])
 
-    return {
+    product = {
         "ean": ean,
         "stores": stores,
         "externalSource": "BILKA" if b else "REMA1000",
@@ -488,6 +674,12 @@ def build_product(ean, b, r, b_info, r_info, cutouts, originals):
         "imageTags": image_tags,
         "_imagePaths": images,
     }
+    product["category"], product["subcategory"] = classify(product, b, r)
+    product["productCategory"] = unit_category(
+        product["category"], product["subcategory"], product["name"] or "", product["quantity"]
+    )
+    product["packaging"] = packaging(product, b, r)
+    return product
 
 
 def score(p):
@@ -495,6 +687,20 @@ def score(p):
     f = p["filters"]
     filled = sum(1 for v in f.values() if v not in (None, [], ""))
     return (len(p["stores"]), filled, len(p["nutrition"]), bool(p["ingredients"]))
+
+
+def spread(items, n):
+    """Takes n items round-robin across (category, subcategory), best first,
+    so the sample shows every part of the category tree."""
+    groups = {}
+    for p in items:
+        groups.setdefault((p["category"], p["subcategory"]), []).append(p)
+    out = []
+    while len(out) < n and any(groups.values()):
+        for key in list(groups):
+            if groups[key] and len(out) < n:
+                out.append(groups[key].pop(0))
+    return out
 
 
 def main():
@@ -539,13 +745,24 @@ def main():
             }
         products.append(p)
 
+    suspects = [p for p in products if p.get("_suspect")]
+    with open(SUSPECT_CSV, "w", encoding="utf-8-sig", newline="") as f:
+        w = csv.writer(f, delimiter=";")
+        w.writerow(["EAN", "Kæde", "Navn", "Produkttype i arket", "Kødtype i arket", "Problem"])
+        for p in suspects:
+            w.writerow([p["ean"], ", ".join(p["stores"]), p["name"], p["productType"], p.get("_sheetMeat") or "", p["_suspect"]])
+    print(f"{len(suspects)} suspicious rows -> {SUSPECT_CSV}")
+    for p in products:
+        p.pop("_suspect", None)
+        p.pop("_sheetMeat", None)
+
     if not args.all:
         both = sorted([p for p in products if len(p["stores"]) == 2 and p["image"]], key=score, reverse=True)
         bilka_only = sorted([p for p in products if p["stores"] == ["Bilka"] and p["image"]], key=score, reverse=True)
         rema_only = sorted([p for p in products if p["stores"] == ["Rema 1000"] and p["image"]], key=score, reverse=True)
         n_both = args.limit * 2 // 5
         n_bilka = args.limit * 2 // 5
-        products = both[:n_both] + bilka_only[:n_bilka] + rema_only[: args.limit - n_both - n_bilka]
+        products = spread(both, n_both) + spread(bilka_only, n_bilka) + spread(rema_only, args.limit - n_both - n_bilka)
 
     if os.path.isdir(OUT_IMAGES):
         shutil.rmtree(OUT_IMAGES)
