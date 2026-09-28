@@ -21,7 +21,7 @@ import { appendDishDraftIngredient } from "@/lib/dish-draft";
 import { selectRawContextImageUrl } from "@/lib/image-tags";
 import { MacroSliderBar } from "@/components/hf/MacroSliderBar";
 import { AdditiveInfoModal } from "@/components/hf/AdditiveInfoModal";
-import { getAdditiveInfo } from "@/lib/additives";
+import { getAdditiveInfo, splitENumbers } from "@/lib/additives";
 import { labelForAllergen } from "@/lib/allergens";
 import { matchToxins, type ToxinInfo } from "@/lib/toxins";
 import { ToxinInfoModal } from "@/components/hf/ToxinInfoModal";
@@ -1040,7 +1040,20 @@ export function AddProductView({
                     </div>
                   ) : (
                     <p className="hf-type-small text-text-secondary">
-                      {state.product.ingredientsText}
+                      {splitENumbers(state.product.ingredientsText ?? "").map((part, index) =>
+                        part.code ? (
+                          <button
+                            key={index}
+                            type="button"
+                            onClick={() => setOpenAdditive(part.code!)}
+                            className="text-hf-green underline underline-offset-2"
+                          >
+                            {part.text}
+                          </button>
+                        ) : (
+                          <span key={index}>{part.text}</span>
+                        ),
+                      )}
                     </p>
                   )}
                 </div>
