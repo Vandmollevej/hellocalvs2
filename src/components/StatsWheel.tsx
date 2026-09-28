@@ -149,6 +149,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
   const [loading, setLoading] = useState(true);
   const pointerStartY = useRef<number | null>(null);
   const wheelLocked = useRef(false);
+  const suppressClick = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -272,6 +273,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
         }
       }}
       onPointerDown={(event) => {
+        suppressClick.current = false;
         pointerStartY.current = event.clientY;
         setDragging(true);
         event.currentTarget.setPointerCapture(event.pointerId);
@@ -281,24 +283,39 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
         setDragPixels(pointerStartY.current - event.clientY);
       }}
       onPointerUp={(event) => {
+        // Controlled snap (user 2026-09-28: no "wheel of fortune"): the wheel
+        // settles on the row nearest to where the finger let go, the full
+        // number of rows dragged — never a leftover spin or an extra step.
         if (pointerStartY.current !== null) {
-          const steps = Math.round((pointerStartY.current - event.clientY) / DRAG_STEP);
-          if (steps !== 0) move(steps > 0 ? 1 : -1);
+          const pixels = pointerStartY.current - event.clientY;
+          const steps = Math.round(pixels / DRAG_STEP);
+          if (Math.abs(pixels) > 6) suppressClick.current = true;
+          if (steps !== 0) setActiveIndex((current) => current + steps);
         }
         pointerStartY.current = null;
         setDragging(false);
         setDragPixels(0);
-        event.currentTarget.releasePointerCapture(event.pointerId);
+        if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+          event.currentTarget.releasePointerCapture(event.pointerId);
+        }
       }}
       onPointerCancel={() => {
         pointerStartY.current = null;
         setDragging(false);
         setDragPixels(0);
       }}
+      onClickCapture={(event) => {
+        // The click that ends a drag must not also turn the wheel a step.
+        if (suppressClick.current) {
+          suppressClick.current = false;
+          event.stopPropagation();
+          event.preventDefault();
+        }
+      }}
       // No overflow clipping: a long number simply extends further left
       // instead of being cut off in the middle of the screen. The box itself
       // stays narrow on the right so it never covers the add-button's fan.
-      className="absolute touch-pan-x rounded-3xl text-right transition-[left,right] duration-300 ease-out focus-visible:outline-2 focus-visible:outline-hf-green focus-visible:outline-offset-2"
+      className="absolute touch-none select-none rounded-3xl text-right transition-[left,right] duration-300 ease-out focus-visible:outline-2 focus-visible:outline-hf-green focus-visible:outline-offset-2"
       style={
         {
           [side]: EDGE_OFFSET[side],
@@ -379,7 +396,7 @@ function WheelItem({
   // edge: the center row is level, rows above tilt their left end up and rows
   // below tilt it down, a little more per row. Pivots on the icon (the right
   // end), so the icons stay on the arc.
-  const tilt = (distance < 0 ? 1 : -1) * absDistance * TILT_PER_ROW;
+  const tilt = isActive ? 0 : (distance < 0 ? 1 : -1) * absDistance * TILT_PER_ROW;
   // 1 at the center, 0 one full step away. Drives the icon's green tint so it
   // blends in/out with the motion instead of switching on/off the moment an
   // item becomes active.
@@ -389,6 +406,7 @@ function WheelItem({
   // are dimmed an extra 30% so the centered stat stands out; the factor eases
   // in with `focus`, so the fade stays continuous while dragging.
   const opacity = (1 - absDistance / visibleRange) * (0.7 + 0.3 * focus);
+  const captionOpacity = Math.min(1, 2 * (1 - absDistance / visibleRange));
   const transition = animate ? "transition-[transform,opacity,color] duration-300 ease-out" : "";
   // The items sit on a circular arc like the rim of a wheel: the centered item
   // is inset MAX_INSET from the right edge and the others curve back out to
@@ -417,22 +435,27 @@ function WheelItem({
       style={{
         top: "50%",
         transform: `translateY(calc(-50% + ${translateY}px)) translateX(-${inset}px) rotate(${tilt}deg) scale(${scale})`,
-        opacity,
       }}
     >
       <span className="hf-type-strong relative leading-none" style={{ fontSize: FONT_SIZE }}>
-        {stat.value}
-        {stat.unit && <span className="hf-type-strong"> {stat.unit}</span>}
+        <span className={transition} style={{ opacity }}>
+          {stat.value}
+          {stat.unit && <span className="hf-type-strong"> {stat.unit}</span>}
+        </span>
+        {/* The caption only fades out at the wheel's ends, not with the
+            neighbour dimming (user 2026-09-28: it vanished as soon as a row
+            left the center). */}
         <span
           aria-hidden="true"
-          className="hf-type-small absolute right-0 top-full mt-1 text-text-secondary"
+          className={`hf-type-small absolute right-0 top-full mt-1 text-text-secondary ${transition}`}
+          style={{ opacity: captionOpacity }}
         >
           {CAPTION_PLACEHOLDER}
         </span>
       </span>
       <span
         className={`flex ${transition}`}
-        style={{ color: `color-mix(in srgb, var(--hf-green) ${Math.round(focus * 100)}%, var(--hf-black))` }}
+        style={{ opacity, color: `color-mix(in srgb, var(--hf-green) ${Math.round(focus * 100)}%, var(--hf-black))` }}
       >
         <StatIcon size={ICON_SIZE} color="currentColor" stroke={2.2} aria-hidden="true" />
       </span>
