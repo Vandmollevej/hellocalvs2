@@ -4722,3 +4722,12 @@ justeringen af scroll-fligen ved forskellige stå-op-tidspunkter.
   `AdditiveInfoModal` linker til siden. Lint/typecheck/build grønne; ikke
   verificeret mod live-data (kræver DB med `additives`-tabellen).
 - 2026-09-28 (opgave 33): Ny side `/e-numre` viser hele E-nummer-databasen med søgefelt øverst (søg på nummer, fx "330"/"E330", eller dansk/internationalt navn/funktion). Logik i `src/lib/additives.ts`, UI i `src/components/additives/AdditiveList.tsx`.
+
+## 2026-09-28: Punkt 33 — Tidspunkt hører til registreringen
+
+- Den generelle vareside (`AddProductView`) viser ikke længere Tidspunkt; ny
+  registrering får stadig nu eller det tidspunkt, kalenderen åbnede med.
+- Konkret registrering (`/registration/[id]`, åbnes fra kalender, Dagens
+  tilføjelser og tale) viser `TimeSection` (kun når `AddProductView` redigerer
+  en registrering): "Tidspunkt" med klokkeslættet lige under, uden streger og
+  uden "Kl."-præfiks.
