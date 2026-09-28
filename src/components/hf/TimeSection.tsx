@@ -2,8 +2,9 @@
 
 import { useTranslation } from "@/i18n/LocaleProvider";
 
-// Tidspunkt for en konkret registrering: enkel "Tidspunkt"-overskrift med
-// klokkeslættet umiddelbart under — ingen streger (punkt 33, 2026-09-28).
+// Global Hello Cal-regel for redigerbart tidspunkt: overskriften "Tidspunkt"
+// står alene (uden stiplede streger) med "Kl. 05.28" umiddelbart under, så
+// der ikke opstår unødig luft. Brug altid denne.
 export function TimeSection({
   value,
   onChange,
@@ -16,10 +17,11 @@ export function TimeSection({
   const { t } = useTranslation();
 
   return (
-    <section className={`w-full ${className}`}>
-      <h2 className="hf-type-body hf-heading text-center text-hf-black">{t("common.timeHeading")}</h2>
+    <section className={`flex w-full flex-col items-center ${className}`}>
+      <h2 className="m-0 font-hf-heading text-[15px] font-bold leading-5 text-hf-black">{t("common.timeHeading")}</h2>
       <div className="flex justify-center">
-        <label className="hf-type-body inline-flex min-h-8 items-center gap-1 px-4 text-hf-black">
+        <label className="hf-type-body inline-flex items-center gap-1 px-4 text-hf-black">
+          <span>{t("common.clockPrefix")}</span>
           <input
             type="time"
             value={value}
