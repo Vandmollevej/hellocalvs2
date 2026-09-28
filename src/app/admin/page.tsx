@@ -75,8 +75,10 @@ export default async function AdminDashboardPage() {
   const admin = await requireAdminUser();
   if (!admin) redirect("/admin/login");
 
-  const { counts, latestSupport, latestProducts, latestBugReports } = await loadAdminDashboard();
   const now = new Date();
+  const { counts, latestSupport, latestProducts, latestBugReports, messages, jobs, missingApiKeys, stats } =
+    await loadAdminDashboard(now);
+  const failingJobs = jobs.filter((job) => job.lastStatus === "ERROR").length;
 
   const otherTasks = [
     { href: "/admin/images", label: "Billedforslag", value: counts.pendingImages },
@@ -84,6 +86,24 @@ export default async function AdminDashboardPage() {
     { href: "/admin/quality-control", label: "Kvalitetskontrol", value: counts.qualityControl },
     { href: "/admin/duplicate-products", label: "Dubletter", value: counts.duplicates },
     { href: "/admin/ingredient-requests", label: "Ønskede ingredienser", value: counts.ingredientRequests },
+    { href: "/admin/scan-invites", label: "Scan-indsendelser", value: counts.scanSubmissions },
+    { href: "/admin/scan-invites", label: "Ulæste scan-beskeder", value: counts.scanMessages },
+  ];
+
+  const deliveryTasks = [
+    { href: "/admin/messaging", label: "Mails/push fejlet (24 t)", value: messages.failed24h, alert: true },
+    { href: "/admin/messaging", label: "Mails/push i kø", value: messages.queued },
+    { href: "/admin/cron-jobs", label: "Cron-jobs med fejl", value: failingJobs, alert: true },
+    { href: "/admin/api-keys", label: "Tjenester uden API-nøgle", value: missingApiKeys.length, alert: true },
+  ];
+
+  const keyFigures = [
+    { href: "/admin/users", label: "Brugere i alt", value: stats.totalUsers },
+    { href: "/admin/users", label: "Nye brugere i dag", value: stats.newUsersToday },
+    { href: "/admin/users", label: "Nye brugere (7 dage)", value: stats.newUsersWeek },
+    { href: "/admin/statistics", label: "Registreringer i dag", value: stats.registrationsToday },
+    { href: "/admin/product-database", label: "Godkendte produkter", value: stats.approvedProducts },
+    { href: "/admin/messaging", label: "Mails/push sendt (24 t)", value: messages.sent24h },
   ];
 
   return (
@@ -164,22 +184,7 @@ export default async function AdminDashboardPage() {
         </Widget>
 
         <Widget title="Øvrige opgaver" href="/admin/quality-control">
-          <ul className="divide-y divide-border-strong">
-            {otherTasks.map((task) => (
-              <li key={task.href}>
-                <Link href={task.href} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-hf-tan">
-                  <span className="hf-type-body text-hf-black">{task.label}</span>
-                  <span
-                    className={`hf-type-small hf-type-strong rounded-full px-2 py-0.5 ${
-                      task.value > 0 ? "bg-hf-green-dark text-hf-white" : "bg-hf-tan text-text-muted"
-                    }`}
-                  >
-                    {task.value}
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <TaskList tasks={otherTasks} />
         </Widget>
 
         <Widget
@@ -237,7 +242,151 @@ export default async function AdminDashboardPage() {
             </ul>
           )}
         </Widget>
+
+        <Widget
+          title="Produkter med lav sikkerhed"
+          href="/admin/uncertainties"
+          count={counts.uncertainties.total}
+          className="lg:col-span-2"
+        >
+          <div className="flex flex-wrap gap-2 border-b border-border-strong px-4 py-3">
+            {counts.uncertainties.byTab.map((tab) => (
+              <span key={tab.key} className="hf-type-small rounded-full bg-hf-tan px-2 py-0.5 text-text-secondary">
+                {tab.label} <span className="hf-type-strong text-hf-black">{tab.count}</span>
+              </span>
+            ))}
+            <span
+              className={`hf-type-small rounded-full px-2 py-0.5 ${
+                counts.uncertainties.hiddenFromSearch > 0 ? "bg-hf-red-dark text-hf-white" : "bg-hf-tan text-text-muted"
+              }`}
+            >
+              Skjult i søgning {counts.uncertainties.hiddenFromSearch}
+            </span>
+          </div>
+          {counts.uncertainties.top.length === 0 ? (
+            <Empty text="Ingen usikre produkter." />
+          ) : (
+            <ul className="divide-y divide-border-strong">
+              {counts.uncertainties.top.map((row) => (
+                <li key={row.id}>
+                  <Link
+                    href="/admin/uncertainties"
+                    className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-hf-tan"
+                  >
+                    <div className="min-w-0">
+                      <p className="hf-type-body truncate text-hf-black">
+                        {row.brandName && <span className="hf-type-strong">{row.brandName} </span>}
+                        {row.productName}
+                      </p>
+                      <p className="hf-type-small mt-0.5 truncate text-text-muted">{row.tabLabel}</p>
+                    </div>
+                    <span
+                      className={`hf-type-small shrink-0 rounded-full px-2 py-0.5 ${
+                        row.urgent ? "bg-hf-red-dark text-hf-white" : "bg-hf-warning text-hf-warning-text"
+                      }`}
+                    >
+                      {row.uncertaintyPercent} % usikker
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Widget>
+
+        <Widget title="Drift" href="/admin/cron-jobs">
+          <TaskList tasks={deliveryTasks} />
+          {missingApiKeys.length > 0 && (
+            <p className="hf-type-small border-t border-border-strong px-4 py-3 text-text-muted">
+              Mangler nøgle: {missingApiKeys.join(", ")}
+            </p>
+          )}
+        </Widget>
+
+        <Widget title="Cron-jobs" href="/admin/cron-jobs" className="lg:col-span-2">
+          <ul className="divide-y divide-border-strong">
+            {jobs.map((job) => (
+              <li key={job.key}>
+                <Link href="/admin/cron-jobs" className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-hf-tan">
+                  <div className="min-w-0">
+                    <p className="hf-type-body truncate text-hf-black">{job.name}</p>
+                    {job.lastStatus === "ERROR" && job.lastMessage && (
+                      <p className="hf-type-small mt-0.5 truncate text-hf-red-dark">{job.lastMessage}</p>
+                    )}
+                  </div>
+                  <span
+                    className={`hf-type-small shrink-0 ${
+                      job.lastStatus === "ERROR" ? "text-hf-red-dark" : "text-text-muted"
+                    }`}
+                  >
+                    {!job.enabled
+                      ? "Slået fra"
+                      : job.lastStatus === "ERROR"
+                        ? "Fejl"
+                        : job.lastRunAt
+                          ? `Kørt ${formatAdminTime(job.lastRunAt)}`
+                          : "Ikke kørt endnu"}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          {messages.recentFailed.length > 0 && (
+            <div className="border-t border-border-strong">
+              <p className="hf-type-small hf-type-strong px-4 pt-3 text-text-secondary">Mislykkede beskeder (7 dage)</p>
+              <ul className="divide-y divide-border-strong">
+                {messages.recentFailed.map((message) => (
+                  <li key={message.id} className="flex items-center justify-between gap-3 px-4 py-2">
+                    <p className="hf-type-small min-w-0 truncate text-text-secondary">
+                      {message.event} · {message.channel}
+                      {message.error ? ` · ${message.error}` : ""}
+                    </p>
+                    <span className="hf-type-small shrink-0 text-text-muted">{formatAdminTime(message.createdAt)}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </Widget>
+
+        <Widget title="Nøgletal" href="/admin/statistics">
+          <TaskList tasks={keyFigures} neutral />
+        </Widget>
       </div>
     </div>
+  );
+}
+
+// neutral: rene nøgletal (samme farve uanset værdi). alert: rødt, når > 0.
+function TaskList({
+  tasks,
+  neutral = false,
+}: {
+  tasks: { href: string; label: string; value: number; alert?: boolean }[];
+  neutral?: boolean;
+}) {
+  return (
+    <ul className="divide-y divide-border-strong">
+      {tasks.map((task) => (
+        <li key={task.label}>
+          <Link href={task.href} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-hf-tan">
+            <span className="hf-type-body text-hf-black">{task.label}</span>
+            <span
+              className={`hf-type-small hf-type-strong rounded-full px-2 py-0.5 ${
+                neutral
+                  ? "bg-hf-tan text-hf-black"
+                  : task.value > 0
+                    ? task.alert
+                      ? "bg-hf-red-dark text-hf-white"
+                      : "bg-hf-green-dark text-hf-white"
+                    : "bg-hf-tan text-text-muted"
+              }`}
+            >
+              {task.value.toLocaleString("da-DK")}
+            </span>
+          </Link>
+        </li>
+      ))}
+    </ul>
   );
 }

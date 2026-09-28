@@ -213,6 +213,13 @@ Erstatter gruppelisten i punktet nedenfor (skallen er uændret).
   uddrag af brugerens seneste besked), seneste produkter til godkendelse,
   seneste fejlrapporter og "Øvrige opgaver" (billedforslag, logoer,
   kvalitetskontrol, dubletter, ønskede ingredienser med tal).
+- Udvidet 2026-09-28 (komplet overblik): "Øvrige opgaver" har også
+  scan-indsendelser og ulæste scan-beskeder. Nye bokse: "Produkter med lav
+  sikkerhed" (antal pr. fane, skjult i søgning under 50 %, de mest usikre),
+  "Drift" (fejlede/køede mails og push, cron-jobs med fejl, tjenester uden
+  API-nøgle), "Cron-jobs" (status pr. job + mislykkede beskeder seneste 7
+  dage) og "Nøgletal" (brugere, nye brugere, registreringer i dag, godkendte
+  produkter, sendte beskeder). Rødt tal = haster.
 
 ## 2026-09-27: Designmanualens typografi- og knaptabeller beskriver forlægget
 

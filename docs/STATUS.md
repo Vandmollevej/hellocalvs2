@@ -2,6 +2,12 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Admin-oversigten udvidet til komplet overblik
+
+`/admin` har nu også usikre produkter pr. fane, scan-opgaver, fejlede/køede
+mails og push, cron-job-status, manglende API-nøgler og nøgletal (DECISIONS
+2026-09-27, udvidelse 2026-09-28). Ikke testet mod rigtige data (lokal DB mangler).
+
 ## 2026-09-28: Google OAuth-klienten klar til hellocal.io
 
 - Google Cloud (projekt `hellocal`, "OAuth client"): redirect-URI'erne
