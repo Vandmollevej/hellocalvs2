@@ -1450,6 +1450,7 @@
     "placeholder": "Reporting an error for this registration is coming soon."
   },
   "addProduct": {
+    "reportBug": "Report error",
     "reading": "Reading…",
     "title": "Add",
     "titleForDish": "Add ingredient",

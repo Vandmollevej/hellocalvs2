@@ -1450,6 +1450,7 @@
     "placeholder": "Indberetning af fejl for denne registrering kommer snart."
   },
   "addProduct": {
+    "reportBug": "Indberet fejl",
     "reading": "Læses…",
     "title": "Tilføj",
     "titleForDish": "Tilføj ingrediens",
