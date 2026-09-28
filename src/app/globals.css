@@ -22,6 +22,12 @@
   --hf-color-appbar: #35784a;
   --hf-color-progress-dark: #035624;
   --hf-color-progress: #007838;
+  /* Selected state (HelloFresh, punkt 46): lysegrøn flade, grøn stroke,
+     mørkegrøn tekst. Bruges af valgte bokse, åbne accordions og alle
+     andre selection-komponenter via .hf-selected. */
+  --hf-color-selected-bg: #e6f4ec;
+  --hf-color-selected-border: var(--hf-color-brand);
+  --hf-color-selected-text: var(--hf-color-progress-dark);
   --hf-color-text: #242424;
   --hf-color-action: #232323;
   --hf-color-action-hover: #353535;
@@ -696,8 +702,9 @@ textarea::selection,
   .hf-choice[aria-checked="true"],
   .hf-choice[aria-selected="true"],
   .hf-choice.is-selected {
-    background: var(--hf-color-action);
-    color: var(--hf-color-white);
+    background: var(--hf-color-selected-bg);
+    box-shadow: inset 0 0 0 1.5px var(--hf-color-selected-border);
+    color: var(--hf-color-selected-text);
   }
 }
 
@@ -768,8 +775,19 @@ textarea::selection,
 
 .hf-chip[aria-pressed="true"],
 .hf-chip.is-selected {
-  outline: 2px solid var(--hf-black);
-  outline-offset: -2px;
+  background: var(--hf-color-selected-bg);
+  box-shadow: inset 0 0 0 1.5px var(--hf-color-selected-border);
+  color: var(--hf-color-selected-text);
+}
+
+/* Fælles selected state for bokse, accordions og øvrige valg (punkt 46).
+   Inset box-shadow i stedet for border, så geometrien ikke ændres. Ligger
+   uden for @layer, så den vinder over bg-/text-utilities på samme element. */
+.hf-selected,
+.hf-selected-open[aria-expanded="true"] {
+  background: var(--hf-color-selected-bg) !important;
+  box-shadow: inset 0 0 0 1.5px var(--hf-color-selected-border);
+  color: var(--hf-color-selected-text) !important;
 }
 
 /* Fælles kontrolhøjde (design.md §6, brugerbeslutning 2026-09-26): alle

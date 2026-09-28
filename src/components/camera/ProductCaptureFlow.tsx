@@ -737,6 +737,7 @@ export function ProductCaptureFlow({ returnSuffix }: { returnSuffix: string }) {
             fakeCode={fakeBarcode}
             detection={barcodeDetection}
             hintText={null}
+            holdStillText={t("camera.holdStill")}
           />
         )}
 
