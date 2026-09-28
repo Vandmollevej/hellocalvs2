@@ -11,6 +11,7 @@ export function SwipeableRow({
   onCopyToAccount,
   onReportError,
   onDelete,
+  surfaceClassName = "bg-hf-cream",
   children,
 }: {
   onFavorite?: () => void;
@@ -19,6 +20,8 @@ export function SwipeableRow({
   onCopyToAccount?: () => void;
   onReportError?: () => void;
   onDelete: () => void;
+  // Baggrund på den forreste flade; skal matche listen rækken ligger i.
+  surfaceClassName?: string;
   children: React.ReactNode;
 }) {
   const { t } = useTranslation();
@@ -122,7 +125,7 @@ export function SwipeableRow({
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
-        className="relative bg-hf-cream transition-transform"
+        className={`relative transition-transform ${surfaceClassName}`}
         style={{
           transform: `translateX(${dragX}px)`,
           transitionDuration: isDragging ? "0ms" : "150ms",
