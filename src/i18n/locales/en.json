@@ -84,7 +84,7 @@
     "dismiss": "Close",
     "sheetTitle": "Confirm your email",
     "sheetText": "We sent you an email with a link. Tap the link to activate your account.",
-    "later": "Later"
+    "linkValidity": "The link is active for 1 hour."
   },
   "welcomeSheet": {
     "slide1Title": "Welcome to Hello Cal",
@@ -584,6 +584,7 @@
     "lookingUp": "Looking up {code}...",
     "barcodeNotFound": "The barcode was read, but the product was not found. Try a different code.",
     "barcodeLookupError": "The barcode was read, but the product lookup failed. Try again.",
+    "autoCaptureHint": "The photo is taken automatically when the product is sharp and held still.",
     "autoScanHint": "The camera scans automatically. You can also enter the number below the barcode.",
     "barcodeNumberAriaLabel": "Barcode number",
     "lookUp": "Look up",

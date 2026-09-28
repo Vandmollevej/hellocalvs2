@@ -10,12 +10,26 @@ Last updated: 2026-09-28
   kan hverken e-mail- eller Google/Apple/Facebook-tilmelding gennemføres;
   OAuth sender `consent=1` med i den signerede state og sætter
   `healthDataConsentAt`. Beslutning: DECISIONS 2026-09-28.
+## 2026-09-28: Bekræft e-mail-arket — "Senere" fjernet
+
+Knappen "Senere" er fjernet fra `EmailVerifySheet`; under "Send igen" står nu
+diskret grå tekst "Linket er aktivt i 1 time." Bekræftelseslinkets levetid er
+sat fra 7 dage til 1 time (`src/lib/email-verification.ts`), så teksten er sand.
+
+## 2026-09-28: Søvnspørgsmålet — Slå fra-link, infotekst og bundark (punkt 34)
+
+- "Slå fra" er understreget tekst, der åbner Indstillinger → Visning → Oplevelse af søvn med grøn ring om kontakten.
+- Grå infotekst under spørgsmålet følger "Vis tooltips". Store tal; valgt = grøn fyldt cirkel, hvidt tal, ingen Luk.
+- Efter 0,5 s glider popup'en ned som bundark med håndtag og forsvinder. Afventer test på telefon.
+
+
 ## 2026-09-28: Indberet fejl — sammenfoldelig "Note"
 
 - `/profile/report-bug`: feltet "Beskriv fejlen" er erstattet af en "Note"-header med pil ned, der folder noteområdet ud/ind. Foldes automatisk ud ved "Redigér" og ved afsendelse uden gyldig note (min. 10 tegn).
 ## 2026-09-28: Forside — kun "Dagens tilføjelser" scroller
 
 Forsiden er låst til skærmhøjden (`h-dvh overflow-hidden`); topbar, hero og bundmenu står fast, og kun listen scroller internt.
+
 ## 2026-09-28: Abonnement — boilerplate fjernet
 
 - `/profile/subscription`: datalagringsnoten (`subscription.retentionNote`)
@@ -26,6 +40,7 @@ Forsiden er låst til skærmhøjden (`h-dvh overflow-hidden`); topbar, hero og b
 
 - `PhotoWorkingOverlay` viser en hvid/lys gradientstribe (`.hf-scan-sweep`),
   der fejer hen over fotoet, mens det analyseres. Beslutning: DECISIONS 2026-09-28.
+
 
 ## 2026-09-28: Aktivitetsniveau i 5 trin + mails mod spam
 
@@ -4720,6 +4735,7 @@ kan ikke nå den server. Denne ændring bør derfor tjekkes visuelt af brugeren
 selv (eller i en senere session, når den anden dev-server ikke kører), særligt
 justeringen af scroll-fligen ved forskellige stå-op-tidspunkter.
 
+- 2026-09-28: Punkt 15 automatisk fotografering bygget (PR #35): foto-trinnene i kamera-flowet udløser selv, når varen er skarp og stille; knappen er manuel reserve. Lint + build grønne.
 - 2026-09-28 (opgave #34 E-nummer-side – indhold): Ny detaljeside
   `/e-numre/[code]` (`src/app/e-numre/[code]/page.tsx`) med sektionerne Navn,
   Forklaring, Risici og relevante oplysninger, Forskning, Primær kilde og
@@ -4729,3 +4745,12 @@ justeringen af scroll-fligen ved forskellige stå-op-tidspunkter.
   `AdditiveInfoModal` linker til siden. Lint/typecheck/build grønne; ikke
   verificeret mod live-data (kræver DB med `additives`-tabellen).
 - 2026-09-28 (opgave 33): Ny side `/e-numre` viser hele E-nummer-databasen med søgefelt øverst (søg på nummer, fx "330"/"E330", eller dansk/internationalt navn/funktion). Logik i `src/lib/additives.ts`, UI i `src/components/additives/AdditiveList.tsx`.
+
+## 2026-09-28: Punkt 33 — Tidspunkt hører til registreringen
+
+- Den generelle vareside (`AddProductView`) viser ikke længere Tidspunkt; ny
+  registrering får stadig nu eller det tidspunkt, kalenderen åbnede med.
+- Konkret registrering (`/registration/[id]`, åbnes fra kalender, Dagens
+  tilføjelser og tale) viser `TimeSection` (kun når `AddProductView` redigerer
+  en registrering): "Tidspunkt" med klokkeslættet lige under, uden streger og
+  uden "Kl."-præfiks.
