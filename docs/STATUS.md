@@ -3,6 +3,10 @@
 Last updated: 2026-09-28
 
 
+
+- 2026-09-28: Startmængde i mængdevælgeren = seneste egne mængde, ellers typisk
+  mængde for kategorien (`src/lib/default-amount.ts`), ikke længere producentens
+  portion. OFF-drikkevarer får `productCategory = DRINK`. Se DECISIONS.md.
 ## 2026-09-28: Produktsiden — centreret, kcal under mængdeboksen (PR #90)
 
 - Tidspunkt vises ikke længere på produktsiden (ses i kalender og oversigt); registreringens tid bevares ved gem.

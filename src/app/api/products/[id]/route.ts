@@ -43,7 +43,17 @@ export async function GET(
         console.error("Nutrient resolution failed", error);
         return [];
       });
-      return NextResponse.json({ product: { ...product, nutrients } });
+      // Brugerens seneste mængde for varen — startmængde i mængdevælgeren
+      // (src/lib/default-amount.ts).
+      const user = await getSessionUser().catch(() => null);
+      const last = user
+        ? await prisma.registration.findFirst({
+            where: { userId: user.id, productId: product.id },
+            orderBy: { createdAt: "desc" },
+            select: { amountGrams: true },
+          })
+        : null;
+      return NextResponse.json({ product: { ...product, nutrients, lastAmountGrams: last?.amountGrams ?? null } });
     }
 
     // Not a Product — try the separate GenericIngredient table (loose

@@ -78,6 +78,7 @@ export async function GET(
         carbsPer100g: externalProduct.carbsPer100g,
         fatPer100g: externalProduct.fatPer100g,
         servingSizeGrams: externalProduct.servingSizeGrams,
+        productCategory: offProduct?.isBeverage ? "DRINK" : undefined,
         ingredientsText: offProduct?.ingredientsText ?? null,
         allergens: offProduct?.allergens ?? [],
         additives: offProduct?.additives ?? [],

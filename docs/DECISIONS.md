@@ -3231,3 +3231,17 @@ Synlige tekster i app og admin kalder madvarer "vare/varer", og "Produktdatabase
 ## 2026-09-28: Ingen "Branded"-mærkat
 
 Produktsiden viser aldrig teksten "Branded". Brandet vises kun som brandnavn/logo.
+
+## 2026-09-28 — Startmængde i mængdevælgeren
+
+- Producentens portion (fx Open Food Facts' `serving_quantity`, gemt i
+  `Product.servingSizeGrams`) er ikke længere startmængde: den er ofte
+  urealistisk (musli 30 g, sodavand 10 cl, hamburgerryg 14 g). 100 g er heller
+  ikke standard (brugerens beslutning).
+- Rækkefølge (`src/lib/default-amount.ts`): brugerens seneste mængde for varen →
+  rigtig portionsenhed (servingSizeGrams + enhedsnavne, fx HelloFresh) → typisk
+  mængde for kategorien (nøgleordstabel på produkttype/navn, DRINK → 250 ml) →
+  producentens portion → 100 g.
+- `/api/products/:id` returnerer `lastAmountGrams` for den indloggede bruger.
+- Open Food Facts-varer med `en:beverages` i `categories_tags` oprettes med
+  `productCategory = DRINK`.

@@ -1,5 +1,6 @@
 "use client";
 
+import { defaultAmountGrams } from "@/lib/default-amount";
 import { mealShareBody } from "@/lib/meal-share";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
@@ -300,10 +301,9 @@ export function AddProductView({
         if (!res.ok) return setState({ status: "error" });
         const data = await res.json();
         setState({ status: "loaded", product: applyRegistrationSnapshot(data.product, registration) });
-        // Dishes with a fixed serving size (e.g. HelloFresh, see
-        // scripts/hellofresh-import) are counted in servings, not grams — start
-        // at 1 serving instead of the usual 100 g default.
-        if (!registration && data.product?.servingSizeGrams) setAmount(data.product.servingSizeGrams);
+        // Startmængde: seneste egne mængde, portionsenhed, typisk mængde for
+        // kategorien — se src/lib/default-amount.ts.
+        if (!registration && data.product) setAmount(defaultAmountGrams(data.product));
       })
       .catch(() => setState({ status: "error" }));
 
