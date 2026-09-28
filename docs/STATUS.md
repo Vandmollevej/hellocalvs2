@@ -2,6 +2,10 @@
 
 Last updated: 2026-09-28
 
+## 2026-09-28: Allergener fremhævet i ingredienslisten (punkt 28)
+
+Ingredienslister vises via `IngredientsText` (`src/lib/allergen-highlight.ts`): de 14 EU-allergener (dansk/engelsk ordstamme, fx "hvedemel", "mælkepulver") står med STORE BOGSTAVER og fed. Bruges på produktsiden og i admin-godkendelse. PR #58.
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen
