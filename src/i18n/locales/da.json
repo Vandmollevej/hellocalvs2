@@ -362,7 +362,7 @@
     "disable": "Slå fra",
     "ratingAriaLabel": "Vurdér nattens søvn til {rating} af 5",
     "infoAriaLabel": "Hvad bruges det til?",
-    "info": "Vurdér hvordan du har sovet i nat — 1 er meget dårligt og 5 er rigtig godt. Når der er samlet nok data, kan du se din søvnkvalitet i forhold til dit kalorieindtag og eventuelle ændringer i din kost. Du kan slå spørgsmålet fra under Indstillinger → Oplevelse af søvn.",
+    "info": "Vurdér hvordan du har sovet i nat — 1 er meget dårligt og 5 er rigtig godt. Når der er samlet nok data, kan du se din søvnkvalitet i forhold til dit kalorieindtag og eventuelle ændringer i din kost.",
     "calendarBar": "Søvnkvalitet: {rating} af 5"
   },
   "menstrualCycleSettings": {
@@ -594,6 +594,7 @@
     "lookingUp": "Slår {code} op...",
     "barcodeNotFound": "Stregkoden blev læst, men produktet blev ikke fundet. Prøv en anden kode.",
     "barcodeLookupError": "Stregkoden blev læst, men produktopslaget fejlede. Prøv igen.",
+    "autoCaptureHint": "Billedet tages automatisk, når varen er skarp og holdes stille.",
     "autoScanHint": "Kameraet scanner automatisk. Du kan også indtaste nummeret under stregkoden.",
     "barcodeNumberAriaLabel": "Stregkodenummer",
     "lookUp": "Slå op",

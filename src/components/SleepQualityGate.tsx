@@ -70,14 +70,6 @@ export function SleepQualityGate() {
         saveSleepQuality(dateKey, rating).catch(() => undefined);
       }}
       onClose={() => setDateKey(null)}
-      onDisable={() => {
-        setDateKey(null);
-        fetch("/api/profile", {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sleepQualityPromptEnabled: false }),
-        }).catch(() => undefined);
-      }}
     />
   );
 }
