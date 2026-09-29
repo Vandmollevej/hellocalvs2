@@ -208,6 +208,7 @@ model User {
   customActivityTypes     CustomActivityType[]
   heartRateSpikeReviews   HeartRateSpikeReview[]
   activityProfileSnapshots ActivityProfileSnapshot[]
+  dailyBudgetSnapshots     DailyBudgetSnapshot[]
   deviceTokens            DeviceToken[]
   healthMetrics           HealthMetric[]
   passkeys                Passkey[]
@@ -372,6 +373,23 @@ model ActivityProfileSnapshot {
 
   @@index([userId, validFrom])
   @@map("activity_profile_snapshots")
+}
+
+// Dagligt kaloriebudget pr. dato (docs/ACTIVITY-PAL.md, src/lib/daily-budget.ts).
+// Skrives første gang budgettet regnes den dag; en dato uden egen række
+// bruger den seneste tidligere, og dage før den første beholder det gamle
+// faste mål — budgettet gælder kun fremadrettet (brugerens valg 2026-09-29).
+model DailyBudgetSnapshot {
+  id         String   @id @default(cuid())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  date       DateTime @db.Date
+  budgetKcal Int
+  needKcal   Int
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, date])
+  @@map("daily_budget_snapshots")
 }
 
 enum DailyLogPreference {

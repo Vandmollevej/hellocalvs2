@@ -98,8 +98,9 @@ export function computeWeeklyEnergySummary(
   days: Date[],
   today: Date,
   dailyTotals: Map<string, number>,
-  referenceKcal: number,
+  referenceKcal: number | ((date: Date) => number),
 ): WeeklyEnergySummary | null {
+  const referenceFor = typeof referenceKcal === "function" ? referenceKcal : () => referenceKcal;
   const todayStart = startOfDay(today).getTime();
   let balanceKcal = 0;
   let countedDays = 0;
@@ -107,7 +108,7 @@ export function computeWeeklyEnergySummary(
     if (startOfDay(date).getTime() > todayStart) continue;
     const kcal = dailyTotals.get(dayKey(date)) ?? 0;
     if (kcal <= 0) continue;
-    balanceKcal += kcal - referenceKcal;
+    balanceKcal += kcal - referenceFor(date);
     countedDays += 1;
   }
   return countedDays > 0 ? { balanceKcal, countedDays } : null;

@@ -275,3 +275,42 @@ export async function applyManualLevel(userId: string, level: ActivityLevelKey) 
   });
   return updated;
 }
+
+/** Kalenderdato som UTC-midnat, som Prisma @db.Date forventer. */
+function utcDate(date: Date) {
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+}
+
+/**
+ * Gemmer dagens budget én gang pr. dato (docs/ACTIVITY-PAL.md, kun
+ * fremadrettet): findes rækken, opdateres den — budgettet for i dag følger
+ * altid det nyeste regnestykke, men gårsdagen røres aldrig.
+ */
+export async function recordDailyBudget(userId: string, budgetKcal: number, needKcal: number, now = new Date()) {
+  const date = utcDate(now);
+  await prisma.dailyBudgetSnapshot.upsert({
+    where: { userId_date: { userId, date } },
+    create: { userId, date, budgetKcal: Math.round(budgetKcal), needKcal: Math.round(needKcal) },
+    update: { budgetKcal: Math.round(budgetKcal), needKcal: Math.round(needKcal) },
+  });
+}
+
+/** Snapshots som klienten bruger dem (src/lib/daily-budget.ts). */
+export async function listDailyBudgets(userId: string) {
+  const rows = await prisma.dailyBudgetSnapshot.findMany({
+    where: { userId },
+    orderBy: { date: "asc" },
+    select: { date: true, budgetKcal: true },
+  });
+  return rows.map((row) => ({ date: row.date.toISOString().slice(0, 10), budgetKcal: row.budgetKcal }));
+}
+
+/** Dagens gældende budget (seneste snapshot til og med i dag), eller null. */
+export async function currentDailyBudget(userId: string, now = new Date()) {
+  const row = await prisma.dailyBudgetSnapshot.findFirst({
+    where: { userId, date: { lte: utcDate(now) } },
+    orderBy: { date: "desc" },
+    select: { budgetKcal: true },
+  });
+  return row?.budgetKcal ?? null;
+}

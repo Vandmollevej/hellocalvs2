@@ -25,7 +25,7 @@ import {
   type Icon,
 } from "@tabler/icons-react";
 import { IconWaterGlass } from "@/components/icons/WaterGlass";
-import { DAILY_KCAL_GOAL, DAILY_PROTEIN_GOAL } from "@/lib/goals";
+import { DAILY_PROTEIN_GOAL } from "@/lib/goals";
 
 export type FrontpageStatKey =
   | "calories"
@@ -84,6 +84,8 @@ export type FrontpageMetricTotals = {
 export type FrontpageStatData = {
   totals: FrontpageNutritionTotals;
   metrics: FrontpageMetricTotals;
+  /** Dagens kaloriemål (DailyBudgetSnapshot, ellers DAILY_KCAL_GOAL). */
+  goalKcal: number;
 };
 
 function formatNumber(value: number, maximumFractionDigits = 0) {
@@ -100,7 +102,7 @@ export const FRONTPAGE_STAT_DEFS: {
     key: "calories",
     labelKey: "frontPageStats.calories",
     icon: IconFlame,
-    compute: (data) => ({ value: formatNumber(data.totals.kcal), unit: "kcal", goal: DAILY_KCAL_GOAL }),
+    compute: (data) => ({ value: formatNumber(data.totals.kcal), unit: "kcal", goal: data.goalKcal }),
   },
   {
     key: "kcalRemaining",
@@ -108,7 +110,7 @@ export const FRONTPAGE_STAT_DEFS: {
     // (mål minus indtag, aldrig negativ) — ikke det samme som en overskridelse.
     labelKey: "frontPageStats.kcalRemaining",
     icon: IconGauge,
-    compute: (data) => ({ value: formatNumber(Math.max(0, DAILY_KCAL_GOAL - data.totals.kcal)), unit: "kcal" }),
+    compute: (data) => ({ value: formatNumber(Math.max(0, data.goalKcal - data.totals.kcal)), unit: "kcal" }),
   },
   {
     key: "protein",

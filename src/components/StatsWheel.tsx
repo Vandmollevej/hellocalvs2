@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconHeartbeat, IconMoon, type Icon } from "@tabler/icons-react";
+import { DAILY_KCAL_GOAL } from "@/lib/goals";
 import {
   FRONTPAGE_STAT_DEFS,
   useFrontpageStatKeys,
@@ -154,6 +155,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
   const [dragging, setDragging] = useState(false);
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [metrics, setMetrics] = useState<HealthMetric[]>([]);
+  const [goalKcal, setGoalKcal] = useState<number>(DAILY_KCAL_GOAL);
   const [loading, setLoading] = useState(true);
   const pointerStartY = useRef<number | null>(null);
   const wheelLocked = useRef(false);
@@ -191,6 +193,21 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
     };
   }, []);
 
+  // Dagens kaloriemål (docs/ACTIVITY-PAL.md): regnestykket gemmer dagens
+  // budget som snapshot; den faste konstant er kun fallback.
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/profile/activity")
+      .then(async (response) => (response.ok ? ((await response.json()) as { summary: { budget: { budgetKcal: number } | null } }) : null))
+      .then((data) => {
+        if (!cancelled && data?.summary.budget) setGoalKcal(data.summary.budget.budgetKcal);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const stats = useMemo<Stat[]>(() => {
     const totals = registrations.reduce((sum, item) => {
       sum.kcal += item.kcalSnapshot;
@@ -223,7 +240,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
       .map((key) => FRONTPAGE_STAT_DEFS.find((def) => def.key === key))
       .filter((def): def is NonNullable<typeof def> => Boolean(def))
       .map((def) => {
-        const { value, unit } = def.compute({ totals, metrics: metricTotals });
+        const { value, unit } = def.compute({ totals, metrics: metricTotals, goalKcal });
         return {
           key: def.key,
           label: t(def.labelKey),
@@ -234,7 +251,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
       });
     const missing = Math.max(0, SIDE_ROWS * 2 + 1 - own.length);
     return [...own, ...PLACEHOLDER_STATS.slice(0, missing)];
-  }, [activeKeys, loading, metrics, registrations, t]);
+  }, [activeKeys, goalKcal, loading, metrics, registrations, t]);
 
   // Rows fade out half a row past the outermost visible one. With too few
   // stats for all 7 rows, the range shrinks so the item that wraps from the

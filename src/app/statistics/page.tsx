@@ -23,6 +23,7 @@ import {
 } from "@/lib/stat-cards";
 import { groupByDay, type RegistrationTotals } from "@/lib/daily-totals";
 import { DAILY_KCAL_GOAL, WEIGHT_GOAL_KG } from "@/lib/goals";
+import { makeBudgetLookup, type BudgetSnapshot } from "@/lib/daily-budget";
 import { DEFAULT_STAT_SELECTION, filterDaysInRange, selectionRange, type StatPeriodSelection } from "@/lib/stat-periods";
 import type { IntegrationCardStatus } from "@/lib/integrations";
 import { dailyChartLabel, statChartDef } from "@/lib/stat-charts";
@@ -116,6 +117,30 @@ export default function StatisticsPage() {
   const [activities, setActivities] = useState<ActivityTotals[]>([]);
   const [metrics, setMetrics] = useState<HealthMetricTotals[]>([]);
   const [hasConnectedIntegration, setHasConnectedIntegration] = useState(false);
+  // Kaloriemål pr. dato — kun fremadrettet (src/lib/daily-budget.ts).
+  const [budgetSnapshots, setBudgetSnapshots] = useState<BudgetSnapshot[]>([]);
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/daily-budgets")
+      .then(async (response) => (response.ok ? ((await response.json()) as { snapshots: BudgetSnapshot[] }) : null))
+      .then((data) => {
+        if (!cancelled && data) setBudgetSnapshots(data.snapshots ?? []);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+  const kcalGoalDaily = useMemo(() => {
+    const lookup = makeBudgetLookup(budgetSnapshots, DAILY_KCAL_GOAL);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return Array.from({ length: DAY_COUNT }, (_, i) => {
+      const date = new Date(today);
+      date.setDate(date.getDate() - (DAY_COUNT - 1 - i));
+      return lookup(date);
+    });
+  }, [budgetSnapshots]);
   const [warnOnRecommendedLimits, setWarnOnRecommendedLimits] = useState(false);
   const [autoExpandUncertainty, setAutoExpandUncertainty] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -251,7 +276,8 @@ export default function StatisticsPage() {
         color: "var(--hf-green)",
         unit: "kcal",
         values: kcalDaily,
-        goal: DAILY_KCAL_GOAL,
+        goal: kcalGoalDaily[kcalGoalDaily.length - 1] ?? DAILY_KCAL_GOAL,
+        goals: kcalGoalDaily,
         colorByGoal: true,
       },
       {
@@ -276,7 +302,7 @@ export default function StatisticsPage() {
           ]
         : []),
     ],
-    [kcalDaily, weightDaily, weightTrendDaily, t],
+    [kcalDaily, kcalGoalDaily, weightDaily, weightTrendDaily, t],
   );
 
   const sleepChartSeries = useMemo<ChartSeries[]>(() => {

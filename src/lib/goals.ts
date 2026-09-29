@@ -1,4 +1,6 @@
-// Fixed daily goals, until user-specific goals and account authentication exist.
+// Faste mål som fallback. Kaloriemålet pr. dato kommer nu fra
+// DailyBudgetSnapshot (src/lib/daily-budget.ts, docs/ACTIVITY-PAL.md);
+// DAILY_KCAL_GOAL gælder kun dage før brugerens første snapshot.
 export const DAILY_KCAL_GOAL = 3299;
 export const DAILY_PROTEIN_GOAL = 120;
 // Placeholder for target weight (per docs/SPECIFICATION.md §5 — should be set via

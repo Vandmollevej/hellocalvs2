@@ -7,6 +7,7 @@ import { computeStatCards, STAT_WINDOW_DAYS } from "@/lib/stat-cards";
 import { classifyProduct } from "@/lib/food-classification";
 import { visibleAddActions } from "@/lib/widget-add-actions";
 import { DAILY_KCAL_GOAL, WEIGHT_GOAL_KG } from "@/lib/goals";
+import { currentDailyBudget } from "@/lib/activity-profile";
 import { getRetentionCutoffDate, getSubscriptionTier } from "@/lib/subscription";
 import { translate, type Locale } from "@/i18n";
 import {
@@ -125,7 +126,9 @@ export async function buildWidgetSnapshot(
   const days = lastDayKeys(now, tzOffsetMinutes, WIDGET_CHART_DAYS);
   const todayKey = days[days.length - 1];
   const eatenKcal = Math.round(kcalByDay.get(todayKey) ?? 0);
-  const goalKcal = DAILY_KCAL_GOAL;
+  // Dagens budget (DailyBudgetSnapshot, src/lib/daily-budget.ts); den faste
+  // konstant er kun fallback, til brugeren har set sit regnestykke.
+  const goalKcal = (await currentDailyBudget(userId, now)) ?? DAILY_KCAL_GOAL;
   const leftKcal = goalKcal - eatenKcal;
 
   const charts: WidgetSnapshot["charts"] = [
