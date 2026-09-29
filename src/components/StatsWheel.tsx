@@ -1,7 +1,9 @@
 "use client";
 
+import { activitySummaryUrl } from "@/lib/daily-budget";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconHeartbeat, IconMoon, type Icon } from "@tabler/icons-react";
+import { DAILY_KCAL_GOAL } from "@/lib/goals";
 import {
   FRONTPAGE_STAT_DEFS,
   useFrontpageStatKeys,
@@ -9,7 +11,6 @@ import {
   type FrontpageNutritionTotals,
 } from "@/lib/frontpage-stats";
 import { useTranslation } from "@/i18n/LocaleProvider";
-import { useDailyKcalGoal } from "@/lib/use-daily-kcal-goal";
 
 type Registration = {
   kcalSnapshot: number;
@@ -148,7 +149,6 @@ function offsetAt(absDistance: number) {
 }
 
 export function StatsWheel({ side }: { side: "left" | "right" }) {
-  const goalKcal = useDailyKcalGoal();
   const { t } = useTranslation();
   const activeKeys = useFrontpageStatKeys();
   const [activeIndex, setActiveIndex] = useState(0);
@@ -156,6 +156,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
   const [dragging, setDragging] = useState(false);
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [metrics, setMetrics] = useState<HealthMetric[]>([]);
+  const [goalKcal, setGoalKcal] = useState<number>(DAILY_KCAL_GOAL);
   const [loading, setLoading] = useState(true);
   const pointerStartY = useRef<number | null>(null);
   const wheelLocked = useRef(false);
@@ -188,6 +189,21 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
         if (!cancelled) setLoading(false);
       });
 
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Dagens kaloriemål (docs/ACTIVITY-PAL.md): regnestykket gemmer dagens
+  // budget som snapshot; den faste konstant er kun fallback.
+  useEffect(() => {
+    let cancelled = false;
+    fetch(activitySummaryUrl())
+      .then(async (response) => (response.ok ? ((await response.json()) as { summary: { budget: { budgetKcal: number } | null } }) : null))
+      .then((data) => {
+        if (!cancelled && data?.summary.budget) setGoalKcal(data.summary.budget.budgetKcal);
+      })
+      .catch(() => {});
     return () => {
       cancelled = true;
     };
@@ -236,7 +252,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
       });
     const missing = Math.max(0, SIDE_ROWS * 2 + 1 - own.length);
     return [...own, ...PLACEHOLDER_STATS.slice(0, missing)];
-  }, [activeKeys, loading, metrics, registrations, t, goalKcal]);
+  }, [activeKeys, goalKcal, loading, metrics, registrations, t]);
 
   // Rows fade out half a row past the outermost visible one. With too few
   // stats for all 7 rows, the range shrinks so the item that wraps from the

@@ -1,4 +1,5 @@
 import { activityLevelFactor, type ActivityLevel } from "@/lib/activity-level";
+import { maintenanceKcal, stepsAdjustedPal } from "@/lib/pal-model";
 
 // Weekly calorie-balance footer under the calendar's week/list rows.
 // Originally built hidden because the web/PWA layout is short on vertical room
@@ -16,14 +17,47 @@ export const ENABLE_WEEKLY_ENERGY_SUMMARY = true;
 // Swap the maintenance model below for a better one without touching the calendar.
 const KCAL_PER_KG_ESTIMATE = 7700;
 
-// Multiplier on BMR for everyday movement that isn't a logged activity: the
-// user's activity level (src/lib/activity-level.ts), which by definition
-// excludes logged training, or "sedentary" when none is chosen. Logged
-// Activity.caloriesBurned is added on top per day.
+// Multiplier on BMR for everyday movement that isn't a logged activity
+// (docs/ACTIVITY-PAL.md): the computed everyday PAL (User.palBase), else the
+// chosen level's representative PAL, else "sedentary". Per day, the
+// training allowance is added when nothing is logged, logged activity
+// replaces it, and a device's measured active energy replaces both — see
+// pal-model.maintenanceKcal.
 const SEDENTARY_FACTOR = 1.2;
 
-function everydayFactor(activityLevel: ActivityLevel | null | undefined) {
-  return activityLevelFactor(activityLevel) ?? SEDENTARY_FACTOR;
+export type EverydayEnergy = {
+  activityLevel?: ActivityLevel | null;
+  palBase?: number | null;
+  trainingAllowanceKcal?: number | null;
+};
+
+function everydayFactor(profile: EverydayEnergy | null | undefined) {
+  return profile?.palBase ?? activityLevelFactor(profile?.activityLevel) ?? SEDENTARY_FACTOR;
+}
+
+/** Per-day device data (HealthMetric): measured active energy and steps. */
+export type DeviceDayData = {
+  activeKcalByDay: Map<string, number>;
+  stepsByDay: Map<string, number>;
+};
+
+function dayMaintenance(
+  bmr: number,
+  profile: EverydayEnergy | null | undefined,
+  loggedKcal: number,
+  device: DeviceDayData | null | undefined,
+  key: string,
+) {
+  const measured = device?.activeKcalByDay.get(key) ?? null;
+  const steps = device?.stepsByDay.get(key) ?? null;
+  const pal = measured ? everydayFactor(profile) : stepsAdjustedPal(everydayFactor(profile), steps);
+  return maintenanceKcal({
+    bmr,
+    pal,
+    trainingAllowanceKcal: profile?.trainingAllowanceKcal ?? 0,
+    loggedActivityKcal: loggedKcal,
+    measuredActiveKcal: measured,
+  });
 }
 
 // Fewer completed, logged days than this in the week → no weight estimate.
@@ -64,8 +98,9 @@ export function computeWeeklyEnergySummary(
   days: Date[],
   today: Date,
   dailyTotals: Map<string, number>,
-  referenceKcal: number,
+  referenceKcal: number | ((date: Date) => number),
 ): WeeklyEnergySummary | null {
+  const referenceFor = typeof referenceKcal === "function" ? referenceKcal : () => referenceKcal;
   const todayStart = startOfDay(today).getTime();
   let balanceKcal = 0;
   let countedDays = 0;
@@ -73,18 +108,17 @@ export function computeWeeklyEnergySummary(
     if (startOfDay(date).getTime() > todayStart) continue;
     const kcal = dailyTotals.get(dayKey(date)) ?? 0;
     if (kcal <= 0) continue;
-    balanceKcal += kcal - referenceKcal;
+    balanceKcal += kcal - referenceFor(date);
     countedDays += 1;
   }
   return countedDays > 0 ? { balanceKcal, countedDays } : null;
 }
 
-export type EnergyProfile = {
+export type EnergyProfile = EverydayEnergy & {
   weightKg: number | null;
   heightCm: number | null;
   age: number | null;
   sex: "MALE" | "FEMALE" | null;
-  activityLevel?: ActivityLevel | null;
 };
 
 export type WeighIn = { weightKg: number; weighedAt: string };
@@ -149,6 +183,33 @@ export function activityKcalByDay(activities: ActivityBurn[]): Map<string, numbe
     map.set(key, (map.get(key) ?? 0) + activity.caloriesBurned);
   }
   return map;
+}
+
+export type HealthMetricSample = { type: string; source: string; value: number; recordedAt: string };
+
+/**
+ * Device data per day from HealthMetric rows. Several sources (Apple Health,
+ * a watch, Health Connect) may report the same day: per source the values
+ * are summed, and the highest source wins, so two sources never add up.
+ */
+export function deviceDataByDay(metrics: HealthMetricSample[]): DeviceDayData {
+  const perSource = new Map<string, Map<string, number>>();
+  for (const metric of metrics) {
+    if (metric.type !== "ACTIVE_ENERGY_KCAL" && metric.type !== "STEPS") continue;
+    const key = `${metric.type}|${dayKey(new Date(metric.recordedAt))}`;
+    const bySource = perSource.get(key) ?? new Map<string, number>();
+    bySource.set(metric.source, (bySource.get(metric.source) ?? 0) + metric.value);
+    perSource.set(key, bySource);
+  }
+  const activeKcalByDay = new Map<string, number>();
+  const stepsByDay = new Map<string, number>();
+  for (const [key, bySource] of perSource) {
+    const [type, day] = key.split("|");
+    const best = Math.max(...bySource.values());
+    if (best <= 0) continue;
+    (type === "STEPS" ? stepsByDay : activeKcalByDay).set(day, best);
+  }
+  return { activeKcalByDay, stepsByDay };
 }
 
 /**
@@ -228,7 +289,8 @@ export function estimateWeeklyWeightChange({
   activityByDay,
   bmr,
   adaptiveMaintenance,
-  activityLevel,
+  profile,
+  device,
 }: {
   days: Date[];
   today: Date;
@@ -236,7 +298,8 @@ export function estimateWeeklyWeightChange({
   activityByDay: Map<string, number>;
   bmr: number | null;
   adaptiveMaintenance: number | null;
-  activityLevel?: ActivityLevel | null;
+  profile?: EverydayEnergy | null;
+  device?: DeviceDayData | null;
 }): WeightChangeEstimate | null {
   if (adaptiveMaintenance === null && bmr === null) return null;
   const todayStart = startOfDay(today).getTime();
@@ -248,7 +311,7 @@ export function estimateWeeklyWeightChange({
     const kcal = dailyTotals.get(key) ?? 0;
     if (kcal <= 0) continue;
     // Adaptive maintenance already contains the user's average activity.
-    const maintenance = adaptiveMaintenance ?? bmr! * everydayFactor(activityLevel) + (activityByDay.get(key) ?? 0);
+    const maintenance = adaptiveMaintenance ?? dayMaintenance(bmr!, profile, activityByDay.get(key) ?? 0, device, key);
     balance += kcal - maintenance;
     countedDays += 1;
   }
@@ -260,19 +323,24 @@ export function estimateWeeklyWeightChange({
   };
 }
 
-/** Average formula maintenance (BMR × everyday factor + mean logged activity), for sanity-checking. */
+/** Average formula maintenance over the window (per-day rules above, averaged), for sanity-checking. */
 export function formulaMaintenanceEstimate(
   bmr: number | null,
   activities: ActivityBurn[],
-  activityLevel?: ActivityLevel | null,
+  profile?: EverydayEnergy | null,
+  device?: DeviceDayData | null,
   windowDays = ADAPTIVE_WINDOW_DAYS,
 ) {
   if (bmr === null) return null;
-  const cutoff = Date.now() - windowDays * DAY_MS;
-  const burned = activities
-    .filter((activity) => new Date(activity.startedAt).getTime() >= cutoff)
-    .reduce((sum, activity) => sum + activity.caloriesBurned, 0);
-  return bmr * everydayFactor(activityLevel) + burned / windowDays;
+  const byDay = activityKcalByDay(activities);
+  const end = startOfDay(new Date());
+  let sum = 0;
+  for (let offset = 1; offset <= windowDays; offset += 1) {
+    const date = new Date(end.getFullYear(), end.getMonth(), end.getDate() - offset);
+    const key = dayKey(date);
+    sum += dayMaintenance(bmr, profile, byDay.get(key) ?? 0, device, key);
+  }
+  return sum / windowDays;
 }
 
 export function formatSignedKcal(value: number) {

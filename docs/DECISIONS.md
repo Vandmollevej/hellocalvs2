@@ -2,6 +2,14 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-29: Aktivitetsniveau, PAL og kaloriemål
+
+- Erstatter faktorerne i 2026-09-28 "Aktivitetsniveau i 5 trin" (1,2–1,9). Nye niveauer og PAL-intervaller: se `docs/ACTIVITY-PAL.md` (planen; intet bygget). Ingen aktive brugere, så gamle niveauer erstattes uden overgangslogik.
+- Hverdags-PAL beskriver hverdagen uden motion. Motion fra onboarding lægges på som **fast dagstillæg** (brugerens valg), men erstattes på en dag af logget/målt aktivitet, så træning aldrig tælles to gange. MET regnes netto (MET − 1).
+- Kalibrering mod vægt over tid er **dynamisk og løbende** (ingen bekræftelse), forklaret for brugeren og begrænset af de eksisterende grænser.
+- Guiden dækker også **kaloriemålet** (vedligehold/tabe/tage på med tempo), aldrig under `minimumHealthyKcal`, ingen underskud for børn. Erstatter de faste konstanter i `src/lib/goals.ts`.
+- Estimater vises som "ca." med interval; ikke som laboratorietal.
+
 ## 2026-09-29: Admin-brugere (adgang til admin-panelet)
 
 - Punktet "Admin-brugere" ligger i profil-menuen (avatar øverst til højre) — bevidst uden for sidemenuen. `/admin/admin-users`, kun for fuld administratoradgang.

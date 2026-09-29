@@ -247,6 +247,14 @@ Filer: `src/components/OnboardingWizard.tsx`. Krav i `docs/DESIGN_V2.md` §8.
 `src/components/hf/PointsPromoBanner.tsx`, `src/i18n/locales/*.json`, `src/lib/vault/webauthn-client.ts`.
 Nogle hører muligvis til login-/Mailjet-sessionerne på konto B. Rør dem ikke uden at læse diff'en først.
 
+## G-PAL — Aktivitetsniveau, energibehov og kaloriemål
+Filer: `docs/ACTIVITY-PAL.md`, `src/lib/activity-level.ts`, nye `src/lib/pal-model*`/`energy-budget*`, aktivitetstrinnene i `src/components/OnboardingWizard.tsx`, `src/lib/goals.ts`. Ændringer i kalender/statistik (erstat `DAILY_KCAL_GOAL`) kræver aftale med G1/G2.
+Ejer: cloud-session (2026-09-29)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| pal-plan | Plan for aktivitetsniveau, PAL, MET, kalibrering og kaloriemål (`docs/ACTIVITY-PAL.md`); erstatter de 5 sider i `onboarding-integration` | I gang | F0–F6 færdige på branch `claude/activity-pal-plan` (PR #114). **Bemærk G1:** `src/app/calendar/page.tsx` har fået to små ændringer (energyProfile får `palBase`/`trainingAllowanceKcal`; ny fetch af `/api/health-metrics` sendt til vægtestimatet) — ingen UI-ændring. Kaloriemålet bruges nu pr. dato i kalender, statistik, forside og widgets (kun fremadrettet, efter brugerens ønske; `src/lib/daily-budget.ts`). **Bemærk G1/G2:** `src/app/calendar/page.tsx` (context `DailyGoalContext`, alle `DAILY_KCAL_GOAL`-brug), `src/app/statistics/page.tsx`, `src/components/StatChart.tsx` (`goals` pr. punkt), `src/components/StatsWheel.tsx`, `src/lib/frontpage-stats.ts` og `src/lib/widget-data.ts` er ændret. Næste: brugerens test af guiden på telefon |
+
 ## G-FAM — Familieabonnement og børneprofiler
 Filer: `docs/FAMILY.md`, Prisma-skema (Family*, ProfileAccessLog), `src/lib/family*.ts`, `src/lib/session.ts`, `src/app/api/family/**`, `src/app/profile/family/**`, profilvælger/panel-komponenter, dagbogs-API'erne der skal følge den valgte profil.
 Ejer: cloud-session `claude/lucid-bell-s5vyhv` (2026-09-25)

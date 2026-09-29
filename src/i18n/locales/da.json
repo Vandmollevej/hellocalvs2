@@ -1067,11 +1067,11 @@
     "activityLevel": {
       "notSet": "Vælg det trin, der passer bedst på din hverdag.",
       "note": "Træning, du logger, lægges oveni.",
-      "VERY_LOW": { "label": "Meget lav", "description": "Sidder det meste af dagen og går næsten ikke." },
-      "LOW": { "label": "Lav", "description": "Stillesiddende arbejde med lidt gang og let bevægelse i hverdagen." },
-      "MODERATE": { "label": "Moderat", "description": "Står og går en stor del af dagen, fx i butik, skole eller institution." },
-      "HIGH": { "label": "Høj", "description": "Fysisk arbejde det meste af dagen, fx håndværker eller lager." },
-      "VERY_HIGH": { "label": "Meget høj", "description": "Hårdt fysisk arbejde hele dagen, fx byggeri, landbrug eller skov." }
+      "VERY_LOW": { "short": "Meget lidt", "label": "Meget lav", "description": "Sidder det meste af dagen og går næsten ikke." },
+      "LOW": { "short": "Stillesid.", "label": "Lav", "description": "Stillesiddende arbejde med lidt gang og let bevægelse i hverdagen." },
+      "MODERATE": { "short": "Alm.", "label": "Moderat", "description": "Står og går en stor del af dagen, fx i butik, skole eller institution." },
+      "HIGH": { "short": "Meget", "label": "Høj", "description": "Fysisk arbejde det meste af dagen, fx håndværker eller lager." },
+      "VERY_HIGH": { "short": "Ekstremt", "label": "Meget høj", "description": "Hårdt fysisk arbejde hele dagen, fx byggeri, landbrug eller skov." }
     },
     "age": "{age} år",
     "trendWeight": "Trendvægt (AI-estimat): {value} kg",
@@ -1844,9 +1844,16 @@
     "change": "skift",
     "startedAt": "Starttidspunkt",
     "minutes": "Varighed (minutter)",
+    "intensity": "Hvor anstrengende var det?",
+    "intensityHint": "Taletesten: hvor let var det at tale undervejs?",
+    "distanceKm": "Distance (km) — valgfrit",
+    "kcalEstimated": "ca. {kcal} (anslået)",
+    "kcalHintMet": "Anslået ud fra din vægt og aktivitetens MET-værdi ({met}). Skriv dit eget tal, hvis dit ur kender det.",
+    "kcalHintSpeed": "Anslået ud fra distance, tid og vægt (MET {met}). Skriv dit eget tal, hvis dit ur kender det.",
+    "kcalNoWeight": "Vi kan ikke anslå kalorier uden din vægt — skriv tallet selv eller udfyld vægten under Profil.",
     "kcal": "Forbrændte kalorier",
     "save": "Gem aktivitet",
-    "invalid": "Angiv varighed og kalorier over 0.",
+    "invalid": "Angiv varighed over 0 — og kalorier, hvis de ikke kan anslås.",
     "saveError": "Aktiviteten kunne ikke gemmes."
   },
   "addButton": {
@@ -1881,7 +1888,124 @@
     "remindLater": "Påmind mig senere",
     "doNotShowAgain": "Vis ikke igen",
     "yes": "Ja",
-    "no": "Nej"
+    "no": "Nej",
+    "activity": {
+      "introTitle": "Hvor meget bruger din krop om dagen?",
+      "introBody": "Vi regner det ud i tre dele: hvad kroppen bruger i hvile, hvad din hverdag lægger oveni, og hvad din motion giver. Du ser regnestykket til sidst.",
+      "introNoDouble": "Svar på hverdagen uden at tænke motion med — den spørger vi om for sig, så den ikke tælles to gange.",
+      "workQuestion": "Hvordan foregår det meste af din arbejds- eller studiedag?",
+      "work": {
+        "SITTING": "Næsten kun siddende — fx kontor, studie, kørsel",
+        "MOSTLY_SITTING": "Mest siddende, men jeg går lidt rundt",
+        "MIXED": "Blanding af siddende, stående og gående — fx lærer, pædagog",
+        "MOSTLY_STANDING": "Mest stående eller gående — fx butik, tjener, mekaniker",
+        "PHYSICAL": "Fysisk krævende — fx byggeri, landbrug, lager"
+      },
+      "walkStandQuestion": "Hvor mange timer går eller står du normalt om dagen?",
+      "walkStandHint": "Tænk på en almindelig dag i går — arbejde, indkøb, husarbejde, alt det uden for træning.",
+      "walkStand": {
+        "UNDER_1": "Under 1 time",
+        "H1_2": "1–2 timer",
+        "H2_4": "2–4 timer",
+        "H4_6": "4–6 timer",
+        "OVER_6": "Over 6 timer"
+      },
+      "transportQuestion": "Hvordan kommer du typisk rundt?",
+      "transport": {
+        "MOTORIZED": "Bil eller offentlig transport næsten hele vejen",
+        "LITTLE_WALKING": "Lidt gang til og fra",
+        "SOME_WALKING": "En del gang hver dag",
+        "REGULAR_ACTIVE": "Cykler eller går regelmæssigt",
+        "DAILY_ACTIVE": "Går eller cykler meget hver dag"
+      },
+      "stepsQuestion": "Hvor mange skridt går du cirka om dagen?",
+      "stepsHint": "Kender du tallet fra din telefon eller dit ur, så brug det. Ellers vælg \"Ved ikke\".",
+      "steps": {
+        "UNDER_3K": "Under 3.000",
+        "K3_5": "3.000–5.000",
+        "K5_7_5": "5.000–7.500",
+        "K7_5_10": "7.500–10.000",
+        "K10_15": "10.000–15.000",
+        "OVER_15K": "Over 15.000"
+      },
+      "dontKnow": "Ved ikke",
+      "viaIntegration": "Tilføj gennem integration i stedet",
+      "trainingQuestion": "Hvor ofte motionerer du?",
+      "trainingHint": "Løb, cykling, fitness, holdsport, svømning — alt det, du gør for at røre dig.",
+      "sessionsPerWeek": "Gange om ugen",
+      "sessionMinutes": "Minutter pr. gang",
+      "intensityQuestion": "Hvor anstrengende er det typisk?",
+      "intensityHint": "Taletesten: hvor let er det at føre en samtale, mens du er i gang?",
+      "intensity": {
+        "LIGHT": "Jeg bliver næsten ikke forpustet",
+        "MODERATE": "Jeg bliver let forpustet, men kan tale normalt",
+        "VIGOROUS": "Jeg bliver tydeligt forpustet",
+        "VERY_VIGOROUS": "Det er svært at føre en samtale"
+      },
+      "resultTitle": "Dit energibehov",
+      "resultSuggested": "Dit normale aktivitetsniveau ser ud til at være: {level}",
+      "calculating": "Regner…",
+      "adjustLevel": "Passer det ikke? Ret niveauet her",
+      "farFromSuggestion": "Det er et godt stykke fra det, dine svar peger på. Husk, at motion ikke skal regnes med her — den tæller for sig.",
+      "stepsAreExamples": "Skridttallene er vejledende eksempler, ikke faste grænser."
+    }
+  },
+  "energy": {
+    "title": "Sådan regner vi",
+    "approx": "ca.",
+    "why": "Hvorfor?",
+    "rest": "Hvile (dit stofskifte)",
+    "everyday": "Din hverdag",
+    "training": "Din motion",
+    "need": "Dit energibehov",
+    "goal": "Dit vægtmål",
+    "budget": "Dit daglige budget",
+    "range": "Sandsynligvis mellem {low} og {high} kcal — tallet bliver mere præcist, når appen får vægt- og aktivitetsdata.",
+    "calibrated": "Justeret efter din vægt",
+    "whyCalibrated": "Sådan har vi justeret: over {days} registrerede dage har du i snit spist {intake} kcal, og din trendvægt har ændret sig {slope} kg/uge. Det peger på et forbrug på ca. {learned} kcal. Vi lægger {weight} % vægt på det og resten på formlen, så et enkelt skævt tal ikke vælter regnestykket.",
+    "calibrationStatus": {
+      "OK": "Justeres løbende efter dine registreringer og vejninger.",
+      "NOT_ENOUGH_INTAKE": "Når du har registreret 14 dage, begynder vi at justere tallet efter din vægt.",
+      "NOT_ENOUGH_WEIGHT": "Vej dig jævnligt over mindst to uger, så justerer vi tallet efter din vægt.",
+      "IMPLAUSIBLE": "Dine registreringer og vejninger peger lige nu for langt fra formlen til at justere — ofte fordi ikke alt er registreret."
+    },
+    "whyRest": "Det, kroppen bruger, hvis du lå stille hele dagen. Regnet ud fra vægt, højde, alder og køn (Mifflin-St Jeor).",
+    "whyEveryday": "Arbejde, gang, stående tid og transport — uden motion. Dine svar svarer til niveauet \"{level}\" (PAL {pal}).",
+    "whyTraining": "Din typiske motion fordelt over ugen, regnet netto, så hvilestofskiftet ikke tælles to gange. Logger du en træning, erstatter den tillægget den dag.",
+    "whyGoal": "Forskellen mellem det, du bruger, og det, du bør spise for at nå dit mål i et sundt tempo.",
+    "disclaimer": "Alle tal er estimater, ikke målinger. De erstatter ikke rådgivning fra læge eller diætist.",
+    "missingData": "For at regne dit energibehov mangler vi:",
+    "missing": {
+      "weightKg": "din vægt",
+      "heightCm": "din højde",
+      "birthDate": "din fødselsdato",
+      "sex": "dit køn"
+    },
+    "adjustment": {
+      "CHILD_NO_DEFICIT": "Under 18 år sætter vi ikke et kalorieunderskud — kroppen vokser stadig.",
+      "UNDERWEIGHT_NO_LOSS": "Din vægt er under det, vi regner som sundt, så vi foreslår ikke vægttab.",
+      "TARGET_RAISED_TO_MIN_BMI": "Dit vægtmål er hævet til den laveste vægt, vi regner som sund for din højde.",
+      "PACE_CAPPED": "Tempoet er sat ned til det, der er sundt at tabe om ugen.",
+      "PACE_SLOW_NORMAL_WEIGHT": "Du er normalvægtig, så vi holder tempoet lavt.",
+      "DEFICIT_CAPPED_SHARE": "Underskuddet er begrænset til 20 % af dit energibehov.",
+      "FLOOR_APPLIED": "Budgettet er hævet til det laveste, der er sundt at spise uden lægelig opfølgning.",
+      "BMR_FLOOR_APPLIED": "Budgettet er hævet, så det ikke ligger under dit hvilestofskifte.",
+      "GAIN_PACE_CAPPED": "Tempoet er sat ned til det, der er sundt at tage på om ugen."
+    }
+  },
+  "energyGoal": {
+    "title": "Kaloriemål",
+    "intro": "Vælg, hvad du vil med din vægt. Vi regner et dagligt budget ud fra dit energibehov — altid inden for det, der er sundt.",
+    "mode": "Hvad vil du?",
+    "modes": { "MAINTAIN": "Holde vægten", "LOSE": "Tabe mig", "GAIN": "Tage på" },
+    "pace": "Tempo",
+    "paceValue": "{kg} kg/uge",
+    "paceHintLose": "Sundt tempo for dig: højst {kg} kg om ugen. Hurtigere kan ikke vælges.",
+    "paceHintGain": "Langsom vægtøgning giver mest muskel og mindst fedt.",
+    "targetWeight": "Målvægt (kg)",
+    "targetRaised": "Vi bruger {kg} kg som mål — lavere ligger under det, vi regner som sundt for din højde.",
+    "eta": "Med det tempo tager det ca. {weeks} uger — sandsynligvis mellem {from} og {to}. Datoen flytter sig, når din vægt gør.",
+    "disclaimer": "Budgettet er et estimat og justeres løbende. Ved graviditet, amning, sygdom eller spiseforstyrrelse: tal med din læge, før du følger et kaloriemål."
   },
   "swipeableRow": {
     "saveAsFavorite": "Gem som favorit",

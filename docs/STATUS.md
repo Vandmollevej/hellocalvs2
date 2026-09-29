@@ -7,6 +7,17 @@ Last updated: 2026-09-29
 - Nye fælles klasser i `globals.css` (`.hf-insight*`, `.hf-panel`, `.hf-kpi`, `.hf-avatar-initials`) og komponenter i `src/components/hf/HelloDocInsight.tsx`; dokumenteret i design.md §6.15 og DECISIONS. Bruges af `/hello-doc/[token]`, `/admin/hello-doc` og `/settings/hello-doc/preview`.
 - Lint på de ændrede filer, typecheck og `npm run build` grønne. Ikke visuelt testet i browser (ingen lokal DB/login) — tjek lægevisningen på desktop og telefon.
 - Næste: flyt evt. andre brede rapportsider over på de samme klasser; tilføj dem til admin → Designmanual, hvis ønsket.
+## 2026-09-29: Plan for aktivitetsniveau, PAL og kaloriemål
+
+- Plan `docs/ACTIVITY-PAL.md` + beslutning i DECISIONS.md + række G-PAL i OPEN-TASKS.md.
+- F1 bygget: `src/lib/pal-model.ts` (hverdags-PAL fra svar + skridt, fem niveauer, netto-MET, træningstillæg, dagsestimat med interval) og `src/lib/energy-budget.ts` (kaloriebudget med hårde sundhedsgrænser). Tests: `npm test` (15 nye, grønne). `activity-level.ts` bruger nu 1,30/1,45/1,65/1,85/2,00.
+- Migration `20260929190000_activity_pal_budget` skal køre ved deploy (nye User-felter + `activity_profile_snapshots`). Ingen UI endnu; intet kalder de nye moduler. Lint og typecheck grønne; ikke live-testet (ingen lokal DB).
+- F2 bygget: startguiden har nyt trin "Aktivitet" (8 sider inde i trinnet, `ActivityStep.tsx`); resultatsiden viser regnestykket "hvile + hverdag + motion = energibehov" (`EnergyBreakdown.tsx`) med interval og "Ret niveau". Samme kort vises under aktivitetsniveauet på `/profile/edit`. API: `/api/profile/activity` (GET/PUT/PATCH). Tekster da/en. Ikke live-testet (ingen lokal DB); test guiden på telefon.
+- F3 bygget: `/activity/create` spørger om anstrengelse (taletest) og distance for gang/løb og anslår kalorier fra MET (`src/lib/activity-met.ts`, netto), som placeholder i kcal-feltet; eget tal vinder. Migration `20260929200000_activity_met` (nye kolonner på `activities`). Ikke live-testet.
+- F4 bygget: kalenderens vægtestimat bruger nu beregnet PAL + træningstillæg, og enhedsdata pr. dag (målt aktiv energi erstatter PAL-delen; skridt alene justerer PAL højst ±0,15). Integrationers aktiviteter markeres `energySource = DEVICE`. Ikke live-testet.
+- F5 bygget: løbende kalibrering mod trendvægt (`src/lib/energy-calibration.ts`, tests grønne). Kører ved hver visning af regnestykket; skriver kun ny PAL (kilde CALIBRATED) når den flytter sig, højst én gang i døgnet. Regnestykket forklarer justeringen. Ikke live-testet.
+- F6 bygget: kaloriemål (`/profile/energy-goal`, række på Målsætning, og sidste side i guidens aktivitetstrin): holde/tabe/tage på, tempo inden for sundhedsgrænsen, målvægt, forventet dato-interval og budget. Kalender, statistik, forside og widgets bruger nu budgettet **pr. dato og kun fremadrettet**: dagens budget gemmes som `DailyBudgetSnapshot` (migration `20260929210000_daily_budget_snapshots`), ældre dage beholder det gamle faste mål; datoen følger telefonens tidszone. Ikke live-testet.
+- Bemærk: `page-tree.test.mjs` fejler også på master (uvedkommende).
 
 ## 2026-09-29: Admin-brugere
 

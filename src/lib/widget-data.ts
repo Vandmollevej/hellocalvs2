@@ -6,7 +6,8 @@ import { groupByDay } from "@/lib/daily-totals";
 import { computeStatCards, STAT_WINDOW_DAYS } from "@/lib/stat-cards";
 import { classifyProduct } from "@/lib/food-classification";
 import { visibleAddActions } from "@/lib/widget-add-actions";
-import { resolveDailyKcalGoal, WEIGHT_GOAL_KG } from "@/lib/goals";
+import { DAILY_KCAL_GOAL, WEIGHT_GOAL_KG } from "@/lib/goals";
+import { currentDailyBudget } from "@/lib/activity-profile";
 import { getRetentionCutoffDate, getSubscriptionTier } from "@/lib/subscription";
 import { translate, type Locale } from "@/i18n";
 import {
@@ -53,7 +54,7 @@ export async function buildWidgetSnapshot(
   const labels = WIDGET_LABELS[locale];
 
   const [user, subscription] = await Promise.all([
-    prisma.user.findUnique({ where: { id: userId }, select: { sex: true, cycleTrackingEnabled: true, dailyKcalGoal: true } }),
+    prisma.user.findUnique({ where: { id: userId }, select: { sex: true, cycleTrackingEnabled: true } }),
     prisma.subscription.findUnique({ where: { userId } }),
   ]);
 
@@ -125,7 +126,9 @@ export async function buildWidgetSnapshot(
   const days = lastDayKeys(now, tzOffsetMinutes, WIDGET_CHART_DAYS);
   const todayKey = days[days.length - 1];
   const eatenKcal = Math.round(kcalByDay.get(todayKey) ?? 0);
-  const goalKcal = resolveDailyKcalGoal(user);
+  // Dagens budget (DailyBudgetSnapshot, src/lib/daily-budget.ts); den faste
+  // konstant er kun fallback, til brugeren har set sit regnestykke.
+  const goalKcal = (await currentDailyBudget(userId, tzOffsetMinutes, now)) ?? DAILY_KCAL_GOAL;
   const leftKcal = goalKcal - eatenKcal;
 
   const charts: WidgetSnapshot["charts"] = [
@@ -157,7 +160,6 @@ export async function buildWidgetSnapshot(
 
   // --- Stat boxes: two widget-only boxes + every Statistik card ----------
   const statCards = computeStatCards({
-    goalKcal,
     days: groupByDay(
       registrations.map((r) => ({
         ...r,

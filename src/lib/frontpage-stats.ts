@@ -84,7 +84,7 @@ export type FrontpageMetricTotals = {
 export type FrontpageStatData = {
   totals: FrontpageNutritionTotals;
   metrics: FrontpageMetricTotals;
-  /** The user's daily kcal limit (User.dailyKcalGoal). */
+  /** Dagens kaloriemål (DailyBudgetSnapshot, ellers DAILY_KCAL_GOAL). */
   goalKcal: number;
 };
 

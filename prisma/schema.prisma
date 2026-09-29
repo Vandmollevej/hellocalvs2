@@ -23,6 +23,22 @@ model User {
   // Hverdagens aktivitetsniveau i 5 trin (src/lib/activity-level.ts).
   // Null = ikke valgt; så regnes der med stillesiddende.
   activityLevel ActivityLevel?
+  // 2026-09-29 (docs/ACTIVITY-PAL.md): beregnet hverdags-PAL fra onboarding-
+  // svarene (src/lib/pal-model.ts). activityLevel udledes af palBase; er
+  // palBase null, gælder niveauets repræsentative PAL. palSource fortæller,
+  // om tallet kommer fra spørgeskemaet, manuel rettelse eller kalibrering.
+  palBase                  Float?
+  palSource                PalSource?
+  palConfidence            Float?
+  activityAnswers          Json?
+  activityProfileUpdatedAt DateTime?
+  // Fast dagstillæg for typisk motion (netto-kcal/dag), jf. pal-model.ts.
+  trainingAllowanceKcal    Int?
+  // Kaloriemål: vedligehold/tabe/tage på + ønsket tempo (kg/uge). Det
+  // faktiske budget regnes i src/lib/energy-budget.ts inden for sundheds-
+  // grænserne — det gemte tempo er brugerens ønske, ikke det anvendte.
+  goalMode                 GoalMode?
+  goalPaceKgPerWeek        Float?
   // Målvægt: brugerens eget mål, sat via /profile/target-weight. Adskilt fra
   // weightKg (start-vægt, låst felt) og weight_entries (løbende vejninger).
   targetWeightKg Float?
@@ -200,6 +216,8 @@ model User {
   activities              Activity[]
   customActivityTypes     CustomActivityType[]
   heartRateSpikeReviews   HeartRateSpikeReview[]
+  activityProfileSnapshots ActivityProfileSnapshot[]
+  dailyBudgetSnapshots     DailyBudgetSnapshot[]
   deviceTokens            DeviceToken[]
   healthMetrics           HealthMetric[]
   passkeys                Passkey[]
@@ -333,6 +351,54 @@ enum ActivityLevel {
   MODERATE
   HIGH
   VERY_HIGH
+}
+
+enum PalSource {
+  QUESTIONNAIRE
+  MANUAL
+  STEPS
+  CALIBRATED
+}
+
+enum GoalMode {
+  MAINTAIN
+  LOSE
+  GAIN
+}
+
+// Historik over hverdags-PAL (docs/ACTIVITY-PAL.md): hver ændring — nyt
+// spørgeskema, manuel rettelse eller kalibrering — giver en ny række, så en
+// dag altid kan regnes med den PAL, der gjaldt dengang (snapshot-reglen).
+model ActivityProfileSnapshot {
+  id                    String    @id @default(cuid())
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId                String
+  validFrom             DateTime  @default(now())
+  palBase               Float
+  palConfidence         Float?
+  source                PalSource
+  answers               Json?
+  trainingAllowanceKcal Int?
+
+  @@index([userId, validFrom])
+  @@map("activity_profile_snapshots")
+}
+
+// Dagligt kaloriebudget pr. dato (docs/ACTIVITY-PAL.md, src/lib/daily-budget.ts).
+// Skrives første gang budgettet regnes den dag; en dato uden egen række
+// bruger den seneste tidligere, og dage før den første beholder det gamle
+// faste mål — budgettet gælder kun fremadrettet (brugerens valg 2026-09-29).
+model DailyBudgetSnapshot {
+  id         String   @id @default(cuid())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  date       DateTime @db.Date
+  budgetKcal Int
+  needKcal   Int
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, date])
+  @@map("daily_budget_snapshots")
 }
 
 enum DailyLogPreference {
@@ -671,10 +737,30 @@ model Activity {
   sportType       String
   startedAt       DateTime
   durationMinutes Int
+  // Netto-kcal (ekstra over hvile). Brugerens eget tal, et MET-estimat
+  // (src/lib/activity-met.ts) eller enhedens aktive energi — se energySource.
   caloriesBurned  Float
+  // 2026-09-29 (docs/ACTIVITY-PAL.md F3): grundlaget for kcal-tallet.
+  met             Float?
+  distanceKm      Float?
+  perceivedEffort TrainingIntensity?
+  energySource    ActivityEnergySource @default(USER)
   createdAt       DateTime       @default(now())
 
   @@map("activities")
+}
+
+enum TrainingIntensity {
+  LIGHT
+  MODERATE
+  VIGOROUS
+  VERY_VIGOROUS
+}
+
+enum ActivityEnergySource {
+  USER
+  ESTIMATED_MET
+  DEVICE
 }
 
 // 2026-09-29: aktiviteter, brugeren selv har tilføjet i aktivitetssøgningen

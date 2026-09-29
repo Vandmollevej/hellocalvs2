@@ -43,7 +43,7 @@ export function termsParagraphs(text: string) {
 }
 
 // Startguidens trin (samme id'er som i OnboardingWizard).
-export type OnboardingTermsStep = "sleep-pattern" | "shift-work" | "daily-log-preference" | "calendar-view" | "health-import";
+export type OnboardingTermsStep = "sleep-pattern" | "shift-work" | "daily-log-preference" | "calendar-view" | "activity" | "health-import";
 
 export const ONBOARDING_TERMS: Record<OnboardingTermsStep, TermsHint> = {
   "sleep-pattern": {
@@ -74,6 +74,14 @@ export const ONBOARDING_TERMS: Record<OnboardingTermsStep, TermsHint> = {
     paragraphs: [
       "Valget af kalendervisning gemmes kun på denne enhed og bestemmer blot, hvordan kalenderen åbner.",
       "Du kan altid skifte visning i kalenderen eller ændre standarden under Indstillinger → Visning → Kalendervisning.",
+    ],
+  },
+  activity: {
+    anchor: "hvad-er-hello-cal",
+    paragraphs: [
+      "Dine svar om arbejde, gang, transport og motion bruges kun til at anslå dit daglige energibehov. Tallet er et estimat med et interval — ikke en måling.",
+      "Hello Cal foreslår aldrig et kaloriemål under det, der regnes som sundt, og tallene erstatter ikke rådgivning fra en læge eller diætist.",
+      "Du kan altid ændre dit aktivitetsniveau under Profil, og estimatet justeres løbende, når appen får vægt- og aktivitetsdata.",
     ],
   },
   "health-import": {

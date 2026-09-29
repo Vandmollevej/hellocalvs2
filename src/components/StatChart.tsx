@@ -18,6 +18,8 @@ export type ChartSeries = {
    * colored by whether they are below or above the goal.
    */
   goal?: number;
+  /** Mål pr. punkt (samme længde som values); vinder over `goal`, når sat. Bruges når målet er ændret undervejs (src/lib/daily-budget.ts). */
+  goals?: number[];
   /** Color used for points below the goal (default: hf-green). */
   underGoalColor?: string;
   /** Color used for points above the goal (default: hf-black). */
@@ -64,8 +66,8 @@ function normalize(values: number[]) {
 }
 
 /** Like normalize, but the points reflect the deviation from `goal` (0 at the middle of the chart). */
-function normalizeDeviation(values: number[], goal: number) {
-  const deviations = values.map((value) => (value > 0 ? value - goal : null));
+function normalizeDeviation(values: number[], goal: number, goals?: number[]) {
+  const deviations = values.map((value, i) => (value > 0 ? value - (goals?.[i] ?? goal) : null));
   const maxAbs = Math.max(...deviations.map((d) => (d === null ? 0 : Math.abs(d))), 1);
 
   return values.map((value, i) => {
@@ -158,7 +160,7 @@ export function StatChart({
         {visibleSeries.map((s) => {
           const underColor = s.underGoalColor ?? "var(--hf-green)";
           const overColor = s.overGoalColor ?? "var(--hf-black)";
-          const points = s.goal != null ? normalizeDeviation(s.values, s.goal) : normalize(s.values);
+          const points = s.goal != null ? normalizeDeviation(s.values, s.goal, s.goals) : normalize(s.values);
 
           const useGoalColor = s.goal != null && s.colorByGoal;
 
