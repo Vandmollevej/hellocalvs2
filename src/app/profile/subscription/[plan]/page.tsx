@@ -9,7 +9,8 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 import { TermsSheet } from "@/components/hf/TermsSheet";
 import { SUBSCRIPTION_PLAN_TERMS } from "@/lib/terms-hints";
 import { isSubscriptionPlan, SUBSCRIPTION_PERIODS, type SubscriptionPeriodMonths } from "@/lib/subscription-plans";
-import { marketPrice, type StripeMarket } from "@/lib/payments/stripe-markets";
+import { marketPrice, STRIPE_MARKETS, type StripeMarket } from "@/lib/payments/stripe-markets";
+import { PaymentMethodBadges } from "@/components/hf/PaymentMethodBadges";
 
 // Egen side pr. abonnement — Seriøs og Seriøs Familie — med tre vandrette
 // periodebokse: 1, 3 eller 12 måneder med fuld adgang (docs/DECISIONS.md
@@ -53,7 +54,20 @@ export default function SubscriptionPlanPage() {
   const [buying, setBuying] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Dummy-visning uden Stripe-nøgle: /profile/subscription/serious?preview=DK eller =DE.
+  const [preview, setPreview] = useState(false);
+
   useEffect(() => {
+    const previewCountry = new URLSearchParams(window.location.search).get("preview")?.toUpperCase();
+    if (previewCountry === "DK" || previewCountry === "DE") {
+      queueMicrotask(() => {
+        setPreview(true);
+        setUseStripe(true);
+        setMarket(STRIPE_MARKETS[previewCountry]);
+        setPaymentAvailable(true);
+      });
+      return;
+    }
     fetch("/api/subscription")
       .then((res) => (res.ok ? res.json() : null))
       .then((json: { mobilePayAvailable?: boolean; stripeAvailable?: boolean; paymentMarket?: StripeMarket | null } | null) => {
@@ -73,6 +87,7 @@ export default function SubscriptionPlanPage() {
 
   async function buy() {
     if (!paymentAvailable || !withdrawalAck || buying) return;
+    if (preview) return; // dummy: ingen rigtig betaling
     setBuying(true);
     setError(null);
     try {
@@ -105,6 +120,7 @@ export default function SubscriptionPlanPage() {
             onChange={setWithdrawalAck}
             label={t("subscription.seriousPlan.withdrawalConsent")}
           />
+          {market && <PaymentMethodBadges country={market.country} />}
           <button
             type="button"
             onClick={buy}

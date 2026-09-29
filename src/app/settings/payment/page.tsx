@@ -48,6 +48,23 @@ export default function PaymentPage() {
   const [error, setError] = useState<string | null>(null);
 
   function load() {
+    // Dummy-visning uden Stripe-nøgle: /settings/payment?preview=DK eller =DE.
+    const previewCountry = new URLSearchParams(window.location.search).get("preview")?.toUpperCase();
+    if (previewCountry === "DK" || previewCountry === "DE") {
+      const end = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+      queueMicrotask(() => setData({
+        subscription: { status: "ACTIVE", freeMonthsRemaining: 0, currentPeriodEnd: end },
+        paymentMethods: [
+          previewCountry === "DK"
+            ? { id: "preview", brand: "MOBILEPAY", provider: "STRIPE", last4: null }
+            : { id: "preview", brand: "GIROCARD", provider: "STRIPE", last4: "4242" },
+        ],
+        mobilePayAvailable: false,
+        stripeAvailable: true,
+        mobilePayPending: false,
+      }));
+      return;
+    }
     fetch("/api/subscription")
       .then((res) => (res.ok ? res.json() : null))
       .then((json) => {
@@ -60,6 +77,10 @@ export default function PaymentPage() {
   }, []);
 
   async function stopAgreement() {
+    if (new URLSearchParams(window.location.search).get("preview")) {
+      setConfirmStop(false);
+      return;
+    }
     setStopping(true);
     setError(null);
     try {
