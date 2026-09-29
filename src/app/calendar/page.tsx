@@ -208,7 +208,7 @@ const HOUR_MARKS = Array.from({ length: 25 }, (_, hour) => hour);
 // Dagvisningens tidskolonne: smal, med tallene centreret (lige meget luft på
 // begge sider) — "Kl."-overskriften bruger samme bredde, så de flugter.
 const DAY_TIME_GUTTER_WIDTH = 32;
-const ADD_BAR_HOLD_MS = 1000;
+const ADD_BAR_HOLD_MS = 500;
 const ADD_BAR_MOVE_TOLERANCE = 10;
 const MOVE_ENTRY_HOLD_MS = 500;
 const MOVE_ENTRY_MOVE_TOLERANCE = 10;
@@ -2012,6 +2012,7 @@ function DayDetails({
               onPointerMove={handleTimelinePointerMove}
               onPointerUp={handleTimelinePointerEnd}
               onPointerCancel={handleTimelinePointerEnd}
+              onScroll={() => setAddBarHour(null)}
             >
               <div className="relative" style={{ height: timelineHeight, marginLeft: DAY_TIME_GUTTER_WIDTH }}>
                 <div
