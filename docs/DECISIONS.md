@@ -2,6 +2,13 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-29: Vitaminer og mineraler har egen info-side som E-numre
+
+Vitaminer/mineraler på varesiden er klikbare på samme måde som E-numre: popup
+→ `/vitaminer` med ét ankret afsnit pr. næringsstof. Indholdet ligger statisk
+i koden (ikke i databasen), da det er ~24 faste poster; referenceindtag er
+EU's NRV (forordning 1169/2011 bilag XIII), samme tal som "% RI".
+
 ## 2026-09-28: Produktcirklen viser kun brandets eget logo
 
 Hello Cal-frugten ligger ikke længere oven på produktcirklen. Har brandet et

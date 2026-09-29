@@ -29,6 +29,8 @@ import { IngredientsText } from "@/components/hf/IngredientsText";
 import { labelForAllergen } from "@/lib/allergens";
 import { matchToxins, type ToxinInfo } from "@/lib/toxins";
 import { ToxinInfoModal } from "@/components/hf/ToxinInfoModal";
+import { MicronutrientInfoModal } from "@/components/hf/MicronutrientInfoModal";
+import { MICRONUTRIENT_INFO_BY_KEY } from "@/lib/micronutrient-info";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { isAlternativeServingConfident } from "@/lib/alternative-servings";
 import type { AlternativeServing } from "@/lib/product-analysis-types";
@@ -272,6 +274,7 @@ export function AddProductView({
   const [extendedNutritionOpen, setExtendedNutritionOpen] = useState(true);
   const [toxinsOpen, setToxinsOpen] = useState(false);
   const [openToxin, setOpenToxin] = useState<ToxinInfo | null>(null);
+  const [openMicronutrient, setOpenMicronutrient] = useState<string | null>(null);
   // Rækker hvor brugeren selv har vendt den grå usikkerhedslinje i forhold
   // til udgangspunktet (profilens autoExpandUncertainty).
   const [uncertaintyToggled, setUncertaintyToggled] = useState<Set<string>>(() => new Set());
@@ -533,6 +536,15 @@ export function AddProductView({
     () => (product && profile?.showToxins ? matchToxins(product.name, product.ingredientsText) : []),
     [product, profile?.showToxins]
   );
+
+  function toggleUncertainty(key: string) {
+    setUncertaintyToggled((current) => {
+      const next = new Set(current);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  }
 
   function handleToggleEditLock() {
     if (!isProductEditingUnlocked) setMacroOverrideSnapshot(macroOverride);
@@ -1131,7 +1143,21 @@ export function AddProductView({
                               {UNHEALTHY_FAT_KEYS.has(row.key) && (
                                 <IconAlertTriangle size={15} className="shrink-0" aria-label={t("addProduct.unhealthyFat")} />
                               )}
-                              <span className="opacity-70">{row.label}</span>
+                              {MICRONUTRIENT_INFO_BY_KEY[row.key] ? (
+                                // Vitaminer og mineraler er klikbare som E-numre.
+                                <button
+                                  type="button"
+                                  onClick={(event) => {
+                                    event.stopPropagation();
+                                    setOpenMicronutrient(row.key);
+                                  }}
+                                  className="underline underline-offset-2"
+                                >
+                                  {row.label}
+                                </button>
+                              ) : (
+                                <span className="opacity-70">{row.label}</span>
+                              )}
                               {hasUncertainty && (
                                 <IconChevronDown
                                   size={13}
@@ -1155,22 +1181,25 @@ export function AddProductView({
                           </>
                         );
                         return hasUncertainty ? (
-                          <button
+                          // div i stedet for button, så vitamin-navnet indeni
+                          // kan være sin egen knap.
+                          <div
                             key={row.key}
-                            type="button"
-                            className={rowClass}
+                            role="button"
+                            tabIndex={0}
+                            className={`${rowClass} cursor-pointer`}
                             aria-expanded={expanded}
-                            onClick={() =>
-                              setUncertaintyToggled((current) => {
-                                const next = new Set(current);
-                                if (next.has(row.key)) next.delete(row.key);
-                                else next.add(row.key);
-                                return next;
-                              })
-                            }
+                            onClick={() => toggleUncertainty(row.key)}
+                            onKeyDown={(event) => {
+                              if (event.target !== event.currentTarget) return;
+                              if (event.key === "Enter" || event.key === " ") {
+                                event.preventDefault();
+                                toggleUncertainty(row.key);
+                              }
+                            }}
                           >
                             {content}
-                          </button>
+                          </div>
                         ) : (
                           <div key={row.key} className={rowClass}>
                             {content}
@@ -1200,6 +1229,9 @@ export function AddProductView({
 
       {openAdditive && (
         <AdditiveInfoModal code={openAdditive} onClose={() => setOpenAdditive(null)} />
+      )}
+      {openMicronutrient && (
+        <MicronutrientInfoModal nutrientKey={openMicronutrient} onClose={() => setOpenMicronutrient(null)} />
       )}
       {openToxin && <ToxinInfoModal toxin={openToxin} onClose={() => setOpenToxin(null)} />}
     </Frame>
