@@ -10,6 +10,12 @@ Last updated: 2026-09-29
 - **Roadmap (brugerønske):** "Væske" (kropsvand) findes nu som `BODY_WATER_PERCENT`. Sæt statistik op, der sammenholder kropsvæske med kalorieindtag og typer af madvarer (fx salt/alkohol) som mulige årsager til udsving. Ikke bygget — kun data er klar.
 - Kropsmål-siden: halsmål fjernet (kolonnen `neckCm` findes stadig i databasen); tegningerne vises nu også uden valgt køn (kvindelige som standard, hint står stadig).
 
+## 2026-09-29: Partnere — Reklamer, Kontakter, Rapporter
+
+- Admin → Partnere har nu undermenuerne Reklamer (lokationer med visninger/klik/klikrate) og Kontakter (partnere + kontaktpersoner). Ny side Rapporter: vælg partnere → "Opret rapport" → bekræftelse med modtagere → send nu eller sæt op ugentligt/månedligt. Se DECISIONS.md for sikkerhedsreglerne.
+- Migration `20260929160000_partner_ads_reports` skal køre ved deploy. Lint og type-tjek grønne; ikke live-testet (ingen lokal DB).
+- Mangler: `report@hellocal.io` skal være godkendt afsender i Mailjet (domænet `hellocal.io` er allerede verificeret) — ellers afvises mails. Ingen reklamevisning i appen kalder endnu `/api/ads/track`.
+
 ## 2026-09-29: Klikbare vitaminer og mineraler
 
 Samme mønster som E-numre: i varesidens "Vis mere"-tabel er hvert vitamin/

@@ -123,7 +123,17 @@ const NAV: NavEntry[] = [
       { href: "/admin/robots", key: "nav_robots" },
     ],
   },
-  { kind: "link", href: "/admin/partners", key: "nav_partners", icon: "handshake" },
+  {
+    kind: "group",
+    id: "partners",
+    key: "nav_partners",
+    icon: "handshake",
+    links: [
+      { href: "/admin/partners/ads", key: "nav_partners_ads" },
+      { href: "/admin/partners/contacts", key: "nav_partners_contacts" },
+    ],
+  },
+  { kind: "link", href: "/admin/reports", key: "nav_reports", icon: "chart" },
   {
     kind: "group",
     id: "roadmap",

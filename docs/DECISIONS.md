@@ -3353,3 +3353,11 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Status hentes altid fra Stripe. Webhook (`/api/payments/stripe/webhook`, registreres automatisk af scheduleren, hemmelighed krypteret i `payment_webhooks`, eller manuelt via `STRIPE_WEBHOOK_SECRET`) er kun et signal. Retursiden `/settings/payment/stripe` kobler sessionen med det samme.
 - Opsigelse = `cancel_at_period_end`; Seriøs løber perioden ud. Kører der allerede en gavekode/points-periode ≥ 48 t, bruges den som `trial_end`, så første træk først sker bagefter. **Gratis måneder fra points (freeMonthsRemaining) bruges endnu ikke mod Stripe-fornyelser.**
 - Nøgler: admin → API-nøgler → Betaling → Stripe (`STRIPE_SECRET_KEY`, valgfri `STRIPE_WEBHOOK_SECRET`). Migration `20260929150000_stripe_payments` (brand CARD/GIROCARD).
+
+## 2026-09-29: Partnere — Reklamer, Kontakter og Rapporter
+
+- Menu: **Partnere** er en gruppe med **Reklamer** (`/admin/partners/ads`) og **Kontakter** (`/admin/partners/contacts`); ny side **Rapporter** (`/admin/reports`) under Partnere.
+- Tabeller: `partners`, `partner_contacts`, `ad_locations`, `ad_events` (IMPRESSION/CLICK), `partner_report_schedules`, `partner_report_sends` (log). Reklamer viser visninger, klik og klikrate pr. lokation (7/30/90 dage). Statistik → Reklamer læser samme tabeller.
+- `POST /api/ads/track` ({locationId, type}) registrerer visning/klik; der findes endnu ingen reklamevisning i appen, der kalder det.
+- Rapporter afsendes fra `report@hellocal.io` (`REPORT_SMTP_FROM`, samme Mailjet-SMTP som øvrige mails). Kan sendes straks ("Send nu", seneste 7/30/90 dage) eller sættes op til interval (ugentligt/månedligt; kører i scheduler-ticket).
+- **Sikkerhed mod forkerte modtagere:** klienten sender kun et partnerId; modtagere er altid den partners egne aktive kontakter (server-side), data hentes kun for den partners lokationer, og begge dele kontrolleres igen før afsendelse. Én mail pr. modtager, hver logget. Bekræftelsesdialog viser partner → adresser, og serveren afviser afsendelsen (409), hvis modtagerlisten er ændret siden dialogen. Intervalplaner kan kun oprettes, hvis partneren har aktive kontakter.
