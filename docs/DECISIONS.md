@@ -3368,7 +3368,7 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 
 ## 2026-09-29: Partnere — Reklamer, Kontakter og Rapporter
 
-- Menu: **Partnere** er en gruppe med **Reklamer** (`/admin/partners/ads`) og **Kontakter** (`/admin/partners/contacts`); ny side **Rapporter** (`/admin/reports`) under Partnere.
+- Menu: **Partnere** er en gruppe med **Reklamer** (`/admin/partners/ads`) og **Kontakter** (`/admin/partners/contacts`); ny side **Rapporter** (`/admin/partners/reports`) som tredje punkt i gruppen Partnere.
 - Tabeller: `partners`, `partner_contacts`, `ad_locations`, `ad_events` (IMPRESSION/CLICK), `partner_report_schedules`, `partner_report_sends` (log). Reklamer viser visninger, klik og klikrate pr. lokation (7/30/90 dage). Statistik → Reklamer læser samme tabeller.
 - `POST /api/ads/track` ({locationId, type}) registrerer visning/klik; der findes endnu ingen reklamevisning i appen, der kalder det.
 - Rapporter afsendes fra `report@hellocal.io` (`REPORT_SMTP_FROM`, samme Mailjet-SMTP som øvrige mails). Kan sendes straks ("Send nu", seneste 7/30/90 dage) eller sættes op til interval (ugentligt/månedligt; kører i scheduler-ticket).
