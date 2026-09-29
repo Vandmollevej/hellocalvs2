@@ -111,6 +111,7 @@ export const WIDGET_ADD_ACTIONS: Record<AddActionKey, { path: string; labelKey: 
   search: { path: "/search", labelKey: "addButton.search" },
   weight: { path: "/weight/create", labelKey: "addButton.weight" },
   water: { path: "/water/create", labelKey: "addButton.water" },
+  activity: { path: "/activity/create", labelKey: "addButton.activity" },
   camera: { path: "/camera?mode=product", labelKey: "addButton.camera" },
   targetWeight: { path: "/profile/goals", labelKey: "profile.actions.target" },
   bodyMeasurements: { path: "/profile/body-measurements", labelKey: "profile.row.bodyMeasurements" },

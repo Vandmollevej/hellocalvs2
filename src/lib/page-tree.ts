@@ -67,6 +67,7 @@ export const PAGE_TREE: PageArea[] = [
             children: [
               { path: "/weight/create", label: "Registrér vægt" },
               { path: "/water/create", label: "Registrér vand" },
+              { path: "/activity/create", label: "Tilføj aktivitet" },
               { path: "/period/create", label: "Registrér menstruation" },
               {
                 path: "/add/[id]",
@@ -315,8 +316,12 @@ export const PAGE_TREE: PageArea[] = [
           {
             path: "/admin/quality-control",
             label: "Kvalitetskontrol",
-            children: [{ path: "/admin/quality-control/shared-recipes", label: "Delte retter" }],
+            children: [
+              { path: "/admin/quality-control/shared-recipes", label: "Delte retter" },
+              { path: "/admin/quality-control/activities", label: "Aktiviteter" },
+            ],
           },
+          { path: "/admin/activities", label: "Aktiviteter" },
           { path: "/admin/ingredient-requests", label: "Ønskede ingredienser" },
           {
             path: "/admin/uncertainties",

@@ -1810,6 +1810,24 @@
       "micCouldNotStart": "Mikrofonen kunne ikke startes. Prøv igen."
     }
   },
+  "activity": {
+    "title": "Aktivitet",
+    "searchPlaceholder": "Søg efter aktivitet",
+    "addManual": "Tilføj \"{name}\" som aktivitet",
+    "pending": "afventer godkendelse",
+    "spikeTitle": "Du har {day} forbrændt {kcal} ekstra kalorier. Hvad foretog du dig?",
+    "spikeHint": "Pulsen var op til {peak} (hvilepuls {rest}) i {minutes} min.",
+    "spikeQuestion": "Vælg aktivitet",
+    "today": "i dag",
+    "skip": "Spring over",
+    "change": "skift",
+    "startedAt": "Starttidspunkt",
+    "minutes": "Varighed (minutter)",
+    "kcal": "Forbrændte kalorier",
+    "save": "Gem aktivitet",
+    "invalid": "Angiv varighed og kalorier over 0.",
+    "saveError": "Aktiviteten kunne ikke gemmes."
+  },
   "addButton": {
     "closeMenu": "Luk tilføj-menu",
     "openMenu": "Åbn tilføj-menu",
@@ -1818,6 +1836,7 @@
     "search": "Søg",
     "weight": "Vægt",
     "water": "Vand",
+    "activity": "Aktivitet",
     "camera": "Scan med kamera",
     "list": "Se alle",
     "menstrualCycle": "Menstruation",

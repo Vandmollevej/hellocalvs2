@@ -29,6 +29,21 @@ Lint og build grønne.
 
 
 
+## 2026-09-29: Pulsudsving → "Hvad foretog du dig?" + aktiviteter overalt
+
+- Forsiden åbner med `HeartRateSpikePrompt`, når en integration har sendt puls
+  med et mærkbart udsving de sidste 48 timer (`src/lib/heart-rate-spikes.ts`):
+  graf over 4 timer med udsvinget i midten, tider under, og overskriften
+  "Du har i dag/d. X forbrændt N ekstra kalorier. Hvad foretog du dig?".
+  Søgefelt blandt aktiviteter + "Tilføj … som aktivitet". Valg gemmer en
+  aktivitet med udsvingets tid/varighed/kcal; "Spring over" spørger ikke igen.
+- Ny side `/activity/create` og "Aktivitet" i tilføj-menuen (også kalenderens
+  "Tilføj"-ark) og widget-listen.
+- Brugertilføjede aktiviteter (`CustomActivityType`) venter i admin →
+  Kvalitetskontrol → Aktiviteter; alle aktiviteter listes på `/admin/activities`.
+- Migration `20260929120000_activity_spikes`. Ikke live-testet: ingen lokal DB
+  og ingen integration sender pulsdata endnu.
+
 ## 2026-09-28: Produktsidens skelet følger layoutet
 
 - `AddProductView` tegner under hentning den rigtige produktside med tom vare;
