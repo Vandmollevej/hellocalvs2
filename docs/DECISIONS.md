@@ -3395,3 +3395,23 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Grænsen er ikke længere den faste konstant 3299 for alle: den ligger på `User.dailyKcalGoal` (null = `DAILY_KCAL_GOAL` som standard, `resolveDailyKcalGoal` i `src/lib/goals.ts`). Kalender, forside-hjul, statistik, statistikkort og widgets bruger brugerens værdi (klient: `useDailyKcalGoal`).
 - Popuppen (`KcalGoalPrompt`) kommer dynamisk ved uoverensstemmelse: når de seneste 4 uger har registreringer på mindst 25 af 28 dage, mindst 3 vejninger over 14+ dage, og den lærte vedligeholdelse (`estimateAdaptiveMaintenance`) flytter grænsen ≥ 100 kcal. Forslag = nuværende grænse + (lært − formel-vedligeholdelse), rundet til 50 kcal, så brugerens eget underskud/overskud bevares.
 - "Opdater" gemmer, "Senere" udsætter 3 dage, "Spørg ikke igen" slår popuppen fra (`kcalGoalPromptDisabled`). Ingen tidsplan for genvisning ud over uoverensstemmelsen selv.
+## 2026-09-29: Desktop-version bygget på admin-skallen; ingen telefonramme
+
+- Telefonrammen (bezel) er fjernet overalt. Appen fylder altid browserens
+  viewport; `PhoneFrame` hedder nu `AppFrame`.
+- Bredde ≥ 1024 px viser appen i `WebShell` (`src/components/web/`), der
+  følger `AdminShell` 1:1 i struktur og farver: sidebjælke i fuld højde med
+  logo, søgefelt, genveje øverst og indstillinger nedenunder (sammenfoldelig,
+  husket i localStorage); hvid topbjælke med appens bundmenu uden kamera og
+  stemme, med Chat i stedet; "Profilindstillinger" yderst til højre.
+- Desktop starter i kalenderens dagsvisning (`/calendar?view=day`); roden `/`
+  sender videre dertil. Forsidens drejehjul og tilføj-cirkel findes ikke på
+  desktop — deres handlinger er genveje i sidebjælken.
+- Appens grønne app-bjælke bliver i skallen en lys sideoverskrift med mørk
+  tekst (som admin). Profilcirklen i bjælken skjules (den sidder i topbjælken).
+  Sider, sidebjælken linker til, er topniveau og får ingen tilbagepil.
+- `/chat` afløser mikrofonen: fritekst → `/api/ai/interpret-meal` → "Tilføj
+  til dagen" gemmer registreringer.
+- Landingpagen (`/` uden login) fylder hele skærmen; "Log ind" er et diskret
+  tekstlink øverst til højre til `/welcome`. Login/opret vises uden ramme.
+- Menuerne ligger i `src/lib/web-nav.ts`; tekster under `web` i da/en.

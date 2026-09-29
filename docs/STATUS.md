@@ -5021,3 +5021,39 @@ Flettet: #100, #98, #104, #105, #107, #108, #109, #110, #111, #112, #103 og ligh
 ## 2026-09-29 — Daglig kaloriegrænse pr. bruger + popup
 
 Se DECISIONS samme dato. Ny migration `20260929190000_daily_kcal_goal` (skal køres af deployet), `GET/POST /api/profile/kcal-goal`, `KcalGoalPrompt` i `layout.tsx`, `src/lib/kcal-goal-suggestion.ts`. Nyt: grænsen var før en fast konstant. Lint, `tsc` og build grønne; forslagsberegningen testet med syntetiske data. Ikke testet i browser (kræver login + 4 ugers data). Der er endnu ingen side til manuelt at ændre grænsen.
+## 2026-09-29: Ny landingpage (app først, mobile-first)
+
+`src/components/landing/LandingPage.tsx` er bygget om: sticky topbar med
+logo + Log ind, hero med overskrift og App Store/Google Play-knapper, telefon-
+mockup, fire fordelskort, grøn afsluttende CTA, footer og en fast "Hent Hello
+Cal"-bjælke nederst på mobil. Farver efter design.md. Butiks-URL'erne er stadig
+generiske forsider og skal erstattes med de rigtige app-links, når appen er
+udgivet. Lint og typecheck kørt; `npm run build` og visuel test ikke kørt.
+
+## 2026-09-29: Desktop-version af appen (WebShell)
+
+Telefonrammen er fjernet helt (bruger 2026-09-29): `AppFrame` (tidl. PhoneFrame) tegner ingen
+bezel mere. Bredde ≥1024 px viser appen i
+`src/components/web/WebShell.tsx`, bygget på admin-skallen (`AdminShell`): sidebjælke til venstre med logo, søgefelt, genveje
+øverst (Tilføj, Madvarer, Retter, Ingredienser, Kalender, Statistik, Vand, Vægt,
+Aktivitet, Chat) og indstillinger nedenunder; appens bundmenu ligger som
+topbjælke (uden kamera og stemme, med Chat) og "Profilindstillinger" sidder i
+samme bjælke. Menuerne ligger i `src/lib/web-nav.ts`. Bundmenuen skjules i
+skallen via `.web-shell .hf-bottom-nav`. Offentlige sider (login, opret m.fl.)
+vises som centreret kolonne uden ramme; landingpagen skjuler skallen via en
+`<style>` i `LandingPage`. Ny side `/chat` afløser mikrofonen: skriv et måltid,
+tolkes af `/api/ai/interpret-meal`, og "Tilføj til dagen" gemmer registreringer.
+Landingpagens "Log ind" er nu et diskret tekstlink øverst, der fører til
+`/welcome` (opret/log ind). Nye tekster ligger under `web` i da/en.
+Lint, typecheck og `npm run build` kørt; skal og landingpage set i Chromium
+(login mocket, ingen database). Siderne er stadig bygget til smal bredde og
+vises i en 760 px kolonne; bredere desktop-layouts pr. side er næste skridt.
+
+Opfølgning samme dag: desktop starter nu i kalenderens dagsvisning
+(`/calendar?view=day`, roden sender videre), forsidens drejehjul/tilføj-cirkel
+er ikke i desktop-menuerne, den grønne app-bjælke er i skallen en lys
+sideoverskrift uden profilcirkel, og topniveau-sider (alt i sidebjælken) har
+ingen tilbagepil (`useInWebShell` + `isWebRootPath`). Set i Chromium ved
+1440×900 med login mocket: kalender/dag, søg, indstillinger, chat, statistik.
+Beslutning: docs/DECISIONS.md 2026-09-29. Butiksknapperne på landingpagen er
+uafklarede (spørgsmål stillet, ikke besvaret).

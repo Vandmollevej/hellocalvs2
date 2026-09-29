@@ -10,6 +10,8 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 import { useIsCompactLandscape } from "@/hooks/useIsCompactLandscape";
 import { useFamilyStatus } from "@/components/family/FamilyStatusProvider";
 import { WatchPhoneIcon } from "@/components/family/WatchPhoneIcon";
+import { useInWebShell } from "@/components/web/WebShell";
+import { isWebRootPath } from "@/lib/web-nav";
 
 // Tilbagepilen sidder altid til venstre, profilcirklen altid til højre —
 // magen til Hello Fresh, ikke omvendt (rettet 2026-09-06, se
@@ -52,8 +54,11 @@ export function ScreenHeader({
   // (docs/FAMILY.md) — på barnets telefon forælderen, på forælderens egen
   // telefon forælderen selv, mens den ser barnets profil.
   const watcher = status?.presence[0] ?? null;
-  const showBack =
-    !hideBackButton && (alwaysShowBackButton || !isMainFooterRoute(pathname, footerRoots));
+  // I desktop-skallen er sidebjælkens og topbjælkens sider topniveau (som i
+  // admin) — ikke kun mobilens footer-rødder.
+  const inWebShell = useInWebShell();
+  const isRoot = inWebShell ? isWebRootPath(pathname) : isMainFooterRoute(pathname, footerRoots);
+  const showBack = !hideBackButton && (alwaysShowBackButton || !isRoot);
 
   function handleBack() {
     if (onBack) {

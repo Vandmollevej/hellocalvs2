@@ -620,7 +620,7 @@ export function BottomNav() {
   const draggedOverBar = drag?.moved && drag.source === "inactive" && drag.overTarget;
 
   return (
-    <div className="relative select-none [-webkit-touch-callout:none]">
+    <div className="hf-bottom-nav relative select-none [-webkit-touch-callout:none]">
       {editMode && (
         <div
           className="fixed inset-0 z-40 bg-hf-black/10"

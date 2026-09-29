@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
-import { PhoneFrame } from "@/components/PhoneFrame";
+import { AppFrame } from "@/components/AppFrame";
 import { LocaleProvider } from "@/i18n/LocaleProvider";
 import { OfflineQueueBanner } from "@/components/OfflineQueueBanner";
 import { GlobalClipboardGuard } from "@/components/GlobalClipboardGuard";
@@ -65,11 +65,11 @@ export default function RootLayout({
           <SleepQualityGate />
           <OfflineQueueBanner />
           <FamilyStatusProvider>
-            <PhoneFrame>
+            <AppFrame>
               {children}
               <FamilyWatchFrame />
               <AccessLogPanel />
-            </PhoneFrame>
+            </AppFrame>
           </FamilyStatusProvider>
         </LocaleProvider>
       </body>
