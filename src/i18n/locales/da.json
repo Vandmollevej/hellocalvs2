@@ -351,7 +351,7 @@
     "toggleDescription": "Første gang du åbner appen hver dag, bliver du bedt om at vurdere nattens søvn fra 1 til 5. Vurderingen vises på dagen i kalenderen og i statistikken."
   },
   "sleepQuality": {
-    "question": "Hvordan oplever du at din nat har været?",
+    "question": "Hvordan har du oplevet din søvnkvalitet?",
     "close": "Luk",
     "disable": "Slå fra",
     "ratingAriaLabel": "Vurdér nattens søvn til {rating} af 5",
