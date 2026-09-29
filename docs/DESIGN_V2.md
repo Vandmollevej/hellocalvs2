@@ -106,6 +106,10 @@ Søvnmønster (fast sengetid/stå-op-tid, evt. pr. ugedag), skiftende arbejdstid
 
 Fuldskærms first-run-wizard med trin-progression, "Næste"/"Påmind mig senere"/"Vis ikke igen", spørgsmål om søvnmønster/skiftearbejde og smartwatch-import. **Status: delvist implementeret** (`OnboardingWizard` — kun de tre specificerede spørgsmål; resten af `SPECIFICATION.md` §5-onboarding er ikke defineret, jf. `DECISIONS.md` 2026-08-27).
 
+**Krav (bruger 2026-09-29, ikke bygget endnu):**
+- Trinene **Vægt** og **Aktivitetsniveau** skal nederst have tekstlinket "Tilføj gennem integration i stedet", som fører til Integrationer (Apple Health, Withings, Google Health m.fl.) i stedet for manuel indtastning.
+- **Aktivitetsniveau** bygges som HelloFresh-slidersider: en side pr. spørgsmål, der glider sidelæns (sider i siden) inde i guidens trin, med egen trin-progression. Niveauet beregnes ud fra svarene (jf. `SPECIFICATION.md` §5: kan ikke vælges manuelt). De konkrete spørgsmål er ikke fastlagt og skal afklares med brugeren før bygning.
+
 ## 9. Bundmenu
 
 Større ikoner (match HelloFresh-proportioner), langt-tryk-redigeringstilstand med drag-reorder og panel med ubrugte ikoner (iOS Control Center-inspireret).
