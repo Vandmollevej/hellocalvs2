@@ -3235,3 +3235,9 @@ Synlige tekster i app og admin kalder madvarer "vare/varer", og "Produktdatabase
 ## 2026-09-28: Ingen "Branded"-mærkat
 
 Produktsiden viser aldrig teksten "Branded". Brandet vises kun som brandnavn/logo.
+
+## 2026-09-29 — Oplevelse af søvn som bundark, aldrig "Luk"
+
+- "Oplevelse af søvn" vises som bundark (popup, lukkes ved træk ned) i stedet for fuldskærmsside.
+- Der må aldrig bruges "Luk" på overlays/sider i HELLO CAL, selvom HelloFresh gør det — lukning sker ved træk ned.
+- Tallene 1–5 står i skærmens lodrette midte; "Slå fra" står nederst til venstre uden understregning.
