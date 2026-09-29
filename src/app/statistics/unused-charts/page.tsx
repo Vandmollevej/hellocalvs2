@@ -50,6 +50,9 @@ function chartOption(def: StatChartDef, t: (key: string) => string): ChartOption
   if (def.kind === "intradayKcal") {
     return { key: def.key, label: t("statUnusedCharts.intradayKcal"), subtitle: t("statUnusedCharts.dayProfile") };
   }
+  if (def.kind === "sleepInsight") {
+    return { key: def.key, label: t(`sleepStats.chart.${def.insight}`), subtitle: t("statChart.last7Days") };
+  }
   return { key: def.key, label: dailyChartLabel(def.field), subtitle: t("statChart.last7Days") };
 }
 

@@ -3325,4 +3325,9 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
   sprunget over (`HeartRateSpikeReview`), vises ikke.
 - Egne aktiviteter kan bruges straks af den, der tilføjede dem; andre ser dem
   først efter godkendelse i Kvalitetskontrol → Aktiviteter.
+## 2026-09-29: Søvnstatistik sammenholder natten med dagen før
+
+- En søvnvurdering gælder datoen man vågnede; kalorier, sidste indtag, koffein og sport tages fra dagen FØR (aftenen op til natten). Målt søvn (HealthMetric `SLEEP_MINUTES`) tælles på vågne-datoen.
+- "Kaffe" genkendes med koffein-ordlisten fra `src/lib/toxins.ts` (kaffe, te, cola, energidrik) mod registreringens titel; mængde = antal registreringer.
+- Tidspunkter er registreringens `createdAt`; tidsbjælker skaleres fra kl. 12.
 

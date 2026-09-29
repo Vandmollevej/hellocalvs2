@@ -9,6 +9,8 @@ import { StatChart, type ChartSeries } from "@/components/StatChart";
 import { StatCardsGrid } from "@/components/StatCardsGrid";
 import { StatChartsSection } from "@/components/StatChartsSection";
 import { StatPeriodPicker } from "@/components/StatPeriodPicker";
+import { SleepInsightChart } from "@/components/SleepInsightChart";
+import { buildSleepStatDays, sleepPeriodDays } from "@/lib/sleep-stats";
 import { IntradayKcalChart } from "@/components/IntradayKcalChart";
 import { TopSinnersCard } from "@/components/TopSinnersCard";
 import { filterRegistrationsInRange, SINNERS_ENABLED } from "@/lib/food-classification";
@@ -303,6 +305,13 @@ export default function StatisticsPage() {
     ];
   }, [sleepEntries, kcalDaily, t]);
 
+  // Søvnstatistikkens grafer, når de er tilføjet her: altid de seneste 7 dage
+  // som de øvrige grafer.
+  const sleepStatDays = useMemo(
+    () => buildSleepStatDays({ days: sleepPeriodDays("last7"), ratings: sleepEntries, registrations, activities, metrics }),
+    [sleepEntries, registrations, activities, metrics],
+  );
+
   const activePeriodRange = useMemo(() => selectionRange(periodSelection), [periodSelection]);
 
   const activePeriodDays = useMemo(
@@ -355,6 +364,9 @@ export default function StatisticsPage() {
           />
         );
       }
+      if (def.kind === "sleepInsight") {
+        return <SleepInsightChart kind={def.insight} days={sleepStatDays} />;
+      }
       if (def.kind === "intradayKcal") {
         return <IntradayKcalChart registrations={recentRegistrations} windowDays={activePeriodDays} />;
       }
@@ -372,7 +384,7 @@ export default function StatisticsPage() {
         />
       );
     },
-    [t, chartSeries, sleepChartSeries, recentRegistrations, activePeriodDays, allDays],
+    [t, chartSeries, sleepChartSeries, sleepStatDays, recentRegistrations, activePeriodDays, allDays],
   );
 
   function renderSectionHeader(key: StatSectionKey, title: string) {

@@ -43,6 +43,7 @@ function chartLabel(def: StatChartDef, t: (key: string) => string): string {
   if (def.kind === "caloriesAndWeight") return t("statistics.caloriesAndWeightChart");
   if (def.kind === "sleepQuality") return t("statistics.sleepQualityChart");
   if (def.kind === "intradayKcal") return t("statUnusedCharts.intradayKcal");
+  if (def.kind === "sleepInsight") return t(`sleepStats.chart.${def.insight}`);
   return dailyChartLabel(def.field);
 }
 

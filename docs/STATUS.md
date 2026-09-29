@@ -44,6 +44,14 @@ Lint og build grønne.
 - Migration `20260929120000_activity_spikes`. Ikke live-testet: ingen lokal DB
   og ingen integration sender pulsdata endnu.
 
+## 2026-09-29: Søvnstatistik (/statistics/sleep)
+
+- Kalenderens søvnbjælke har "Statistik" i lille skrift til venstre (ikke understreget), som linker til `/statistics/sleep`.
+- Siden har periodevalg (sidste 7 dage, seneste 30 dage, sidste måned, seneste tre måneder, i år) og graferne: søvnkvalitet 1–5 med tilvalg af sidste indtag om aftenen, kalorier, kaffe (antal + sidste tidspunkt), sport (minutter + sluttidspunkt) og — kun med tilsluttet smartudstyr — oplevet mod målt søvn. Uden tilsluttet udstyr vises integrationerne nederst.
+- Grafen "Fedtprocent og søvn" viser fedtprocent, oplevet søvn (1–5 som 20–100) og målt søvn (8 t = 100) på én 0–100-akse uden %-tegn.
+- Graferne kan også tilføjes i statistikmodulet (`sleep:*` i `src/lib/stat-charts.ts`). Logik: `src/lib/sleep-stats.ts`.
+- Ikke visuelt testet (kræver login + DB). Lint og build er grønne.
+
 ## 2026-09-28: Produktsidens skelet følger layoutet
 
 - `AddProductView` tegner under hentning den rigtige produktside med tom vare;
