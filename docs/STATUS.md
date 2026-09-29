@@ -220,6 +220,14 @@ Forsiden er låst til skærmhøjden (`h-dvh overflow-hidden`); topbar, hero og b
 - Afbryd-linket i login-headeren er fjernet.
 - "Ny på Hello Cal? Opret konto" ligger nederst under Fortsæt (17 px, understreget); `/signup` har tilsvarende "Har du allerede en konto? Log ind".
 
+## 2026-09-28: "Indberet fejl" på en vare — rigtig fejlside
+
+- `/registration/[id]/report-error` (swipe "Fejl") var en tom placeholder.
+  Viser nu varens billedcirkel (`ProductImageCircle`) og navn som på
+  varesiden, efterfulgt af fejlformularen knyttet til produktet.
+- Formularen er flyttet til den fælles `src/components/ReportBugForm.tsx`,
+  som også bruges af `/profile/report-bug`.
+
 ## 2026-09-28: Aktivitetsniveau i 5 trin + mails mod spam
 
 - Profil → Profil: aktivitetsniveau i 5 trin (Meget lav … Meget høj), gemmes
