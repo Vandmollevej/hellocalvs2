@@ -59,7 +59,22 @@ function PhoneMockup() {
   );
 }
 
+// Landingpagen er offentlig og fylder hele viewporten: på desktop skjules
+// app-skallens sidebjælke og topbjælke, og indholdsfladen mister sin bredde-
+// og indeslutningsgrænse, så position: fixed rammer hele skærmen.
+const LANDING_OVERRIDES =
+  ".web-shell>aside,.web-shell>div>header{display:none}.web-shell-content{max-width:none!important;transform:none!important}";
+
 export function LandingPage() {
+  return (
+    <>
+      <style>{LANDING_OVERRIDES}</style>
+      <LandingContent />
+    </>
+  );
+}
+
+function LandingContent() {
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-[#faf8f3] text-[#242424]">
       <header className="sticky top-0 z-20 flex items-center justify-between border-b border-[#dfd9cc] bg-[#faf8f3]/95 px-4 py-3 backdrop-blur sm:px-8">

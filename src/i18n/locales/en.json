@@ -147,7 +147,9 @@
     "consentRequired": "Turn on your consent before signing up."
   },
   "web": {
-      "shortcuts": "Shortcuts",
+      "collapse": "Hide side menu",
+    "expand": "Show side menu",
+    "shortcuts": "Shortcuts",
       "settings": "Settings",
       "searchPlaceholder": "Search the menu…",
       "noResults": "No results",

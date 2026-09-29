@@ -3,34 +3,55 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { useState } from "react";
-import { IconSearch, IconUser } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
+import { IconChevronLeft, IconSearch, IconUser } from "@tabler/icons-react";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { WEB_SETTINGS, WEB_SHORTCUTS, WEB_TOP_NAV, type WebNavItem } from "@/lib/web-nav";
 
-// Desktop-version af appen (docs/DECISIONS.md 2026-09-29). Rammen følger
-// admin-skallen: sidebjælke til venstre med logo og søgefelt, genveje øverst og
-// indstillinger nedenunder; appens bundmenu ligger som topbjælke, og
-// profilindstillinger sidder i samme bjælke. Selve siderne er appens egne.
+// Desktop-version af appen (docs/DECISIONS.md 2026-09-29), bygget på
+// admin-skallen (`AdminShell`): sidebjælke i fuld højde med logo og søgefelt,
+// genveje øverst og indstillinger nedenunder, hvid topbjælke med appens
+// bundmenu (uden kamera og stemme, med chat) og profilindstillinger yderst til
+// højre. Ingen telefonramme. Selve siderne er appens egne.
+const COLLAPSED_KEY = "hc-web-sidebar-collapsed";
+
 function isActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function SideLink({ item, pathname, label }: { item: WebNavItem; pathname: string; label: string }) {
-  const active = isActive(pathname, item.href);
+// Kun det længste match er aktivt, så /profile/edit ikke også markerer /profile.
+const ALL_HREFS = [...WEB_SHORTCUTS, ...WEB_SETTINGS].map((item) => item.href);
+function isBestMatch(pathname: string, href: string) {
+  if (!isActive(pathname, href)) return false;
+  return !ALL_HREFS.some((other) => other.length > href.length && isActive(pathname, other));
+}
+
+function readCollapsed() {
+  try {
+    return window.localStorage.getItem(COLLAPSED_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function SideLink({ item, pathname, label, collapsed }: { item: WebNavItem; pathname: string; label: string; collapsed: boolean }) {
+  const active = isBestMatch(pathname, item.href);
   const Icon = item.icon;
   return (
     <li>
       <Link
         href={item.href}
+        title={collapsed ? label : undefined}
         aria-current={active ? "page" : undefined}
-        className={`flex h-10 items-center gap-3 rounded-lg px-3 text-[15px] transition ${
-          active ? "bg-hf-tan font-semibold text-hf-black" : "text-[var(--hf-color-text-secondary)] hover:bg-hf-tan/60"
+        className={`hf-type-body flex w-full items-center gap-3 rounded-md px-2.5 py-2 ${collapsed ? "justify-center" : ""} ${
+          active
+            ? "hf-type-strong bg-hf-tan text-hf-green-dark"
+            : "text-text-secondary hover:bg-hf-tan hover:text-text-primary"
         }`}
       >
-        <Icon size={20} stroke={1.6} />
-        <span className="truncate">{label}</span>
+        <Icon size={20} stroke={1.75} />
+        {!collapsed && <span className="truncate">{label}</span>}
       </Link>
     </li>
   );
@@ -41,6 +62,24 @@ export function WebShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() ?? "/";
   const router = useRouter();
   const [query, setQuery] = useState("");
+  const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    // localStorage findes først efter hydrering.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCollapsed(readCollapsed());
+  }, []);
+
+  function toggleCollapsed() {
+    setCollapsed((value) => {
+      try {
+        window.localStorage.setItem(COLLAPSED_KEY, value ? "0" : "1");
+      } catch {
+        // Privat vindue o.l. — valget huskes bare ikke.
+      }
+      return !value;
+    });
+  }
 
   const q = query.trim().toLowerCase();
   const match = (item: WebNavItem) => !q || t(item.labelKey).toLowerCase().includes(q);
@@ -55,61 +94,99 @@ export function WebShell({ children }: { children: React.ReactNode }) {
     setQuery("");
   }
 
+  const profileActive = isActive(pathname, "/profile") || isActive(pathname, "/settings");
+
   return (
-    <div className="web-shell flex h-dvh bg-hf-cream text-hf-black">
+    <div className="web-shell flex h-dvh bg-page-bg text-hf-black">
       <aside
         aria-label={t("web.sideNav")}
-        className="flex w-64 shrink-0 flex-col border-r border-hf-tan-dark bg-white"
+        className={`relative z-30 flex h-dvh shrink-0 flex-col border-r border-hf-tan-dark bg-hf-white ${collapsed ? "w-16" : "w-64"}`}
       >
-        <Link href="/" className="flex h-16 shrink-0 items-center px-5">
-          <Image src="/hello-cal-logo.png" alt="Hello Cal" width={240} height={80} className="h-auto w-28" priority />
-        </Link>
-
-        <form onSubmit={onSearchSubmit} className="px-4 pb-3" role="search">
-          <label className="flex h-10 items-center gap-2 rounded-lg border border-[var(--hf-color-field-border)] px-3 focus-within:border-hf-black">
-            <IconSearch size={18} stroke={1.6} className="shrink-0 text-[var(--hf-color-text-secondary)]" />
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder={t("web.searchPlaceholder")}
-              aria-label={t("web.searchPlaceholder")}
-              className="min-w-0 flex-1 bg-transparent text-[15px] outline-none placeholder:text-[var(--hf-color-text-secondary)]"
+        <div className={`flex h-14 shrink-0 items-center border-b border-hf-tan-dark ${collapsed ? "justify-center" : "px-4"}`}>
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/hello-cal-logo.png"
+              alt="Hello Cal"
+              width={collapsed ? 44 : 90}
+              height={collapsed ? 20 : 40}
+              priority
             />
-          </label>
-        </form>
+          </Link>
+        </div>
 
-        <nav className="min-h-0 flex-1 overflow-y-auto px-3 pb-4">
+        <div className="shrink-0 px-2.5 pt-2.5">
+          {collapsed ? (
+            <button
+              type="button"
+              onClick={toggleCollapsed}
+              title={t("web.searchPlaceholder")}
+              aria-label={t("web.searchPlaceholder")}
+              className="flex h-9 w-full items-center justify-center rounded-md text-text-secondary hover:bg-hf-tan"
+            >
+              <IconSearch size={16} stroke={1.75} />
+            </button>
+          ) : (
+            <form onSubmit={onSearchSubmit} role="search">
+              <label className="hf-type-body flex h-9 w-full items-center gap-2 rounded-md border border-hf-tan-dark bg-hf-white px-3 focus-within:border-hf-green">
+                <IconSearch size={16} stroke={1.75} className="shrink-0 text-text-muted" />
+                <input
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder={t("web.searchPlaceholder")}
+                  aria-label={t("web.searchPlaceholder")}
+                  className="min-w-0 flex-1 bg-transparent text-hf-black outline-none placeholder:text-text-muted"
+                />
+              </label>
+            </form>
+          )}
+        </div>
+
+        <nav className="min-h-0 flex-1 overflow-y-auto p-2.5">
           {shortcuts.length > 0 && (
             <section>
-              <h2 className="px-3 pb-1 pt-2 text-xs font-semibold uppercase tracking-wide text-[var(--hf-color-text-secondary)]">
-                {t("web.shortcuts")}
-              </h2>
+              {!collapsed && (
+                <h2 className="hf-type-small px-2.5 pb-1 pt-1 font-semibold uppercase tracking-wide text-text-muted">
+                  {t("web.shortcuts")}
+                </h2>
+              )}
               <ul className="flex flex-col gap-0.5">
                 {shortcuts.map((item) => (
-                  <SideLink key={item.key} item={item} pathname={pathname} label={t(item.labelKey)} />
+                  <SideLink key={item.key} item={item} pathname={pathname} label={t(item.labelKey)} collapsed={collapsed} />
                 ))}
               </ul>
             </section>
           )}
           {settings.length > 0 && (
-            <section className="mt-4 border-t border-hf-tan-dark pt-2">
-              <h2 className="px-3 pb-1 pt-2 text-xs font-semibold uppercase tracking-wide text-[var(--hf-color-text-secondary)]">
-                {t("web.settings")}
-              </h2>
+            <section className="mt-3 border-t border-hf-tan-dark pt-3">
+              {!collapsed && (
+                <h2 className="hf-type-small px-2.5 pb-1 font-semibold uppercase tracking-wide text-text-muted">
+                  {t("web.settings")}
+                </h2>
+              )}
               <ul className="flex flex-col gap-0.5">
                 {settings.map((item) => (
-                  <SideLink key={item.key} item={item} pathname={pathname} label={t(item.labelKey)} />
+                  <SideLink key={item.key} item={item} pathname={pathname} label={t(item.labelKey)} collapsed={collapsed} />
                 ))}
               </ul>
             </section>
           )}
-          {noResults && <p className="px-3 py-4 text-sm text-[var(--hf-color-text-secondary)]">{t("web.noResults")}</p>}
+          {noResults && <p className="hf-type-body px-2.5 py-4 text-text-muted">{t("web.noResults")}</p>}
         </nav>
+
+        <button
+          type="button"
+          onClick={toggleCollapsed}
+          title={t(collapsed ? "web.expand" : "web.collapse")}
+          aria-label={t(collapsed ? "web.expand" : "web.collapse")}
+          className="absolute left-full top-16 z-30 flex h-9 w-7 items-center justify-center rounded-r-md border border-l-0 border-hf-tan-dark bg-hf-white text-text-secondary hover:bg-hf-tan"
+        >
+          <IconChevronLeft size={16} stroke={1.75} className={`transition-transform ${collapsed ? "rotate-180" : ""}`} />
+        </button>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-16 shrink-0 items-center justify-between border-b border-hf-tan-dark bg-hf-tan-dark/60 px-6">
+        <header className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-hf-tan-dark bg-hf-white px-6">
           <nav aria-label={t("web.mainNav")}>
             <ul className="flex items-center gap-1">
               {WEB_TOP_NAV.map((item) => {
@@ -120,11 +197,13 @@ export function WebShell({ children }: { children: React.ReactNode }) {
                     <Link
                       href={item.href}
                       aria-current={active ? "page" : undefined}
-                      className={`flex h-10 items-center gap-2 rounded-lg px-4 text-[15px] transition ${
-                        active ? "bg-white font-semibold text-hf-black shadow-sm" : "text-[var(--hf-color-text-secondary)] hover:bg-white/60"
+                      className={`hf-type-body flex h-9 items-center gap-2 rounded-md px-3 ${
+                        active
+                          ? "hf-type-strong bg-hf-tan text-hf-green-dark"
+                          : "text-text-secondary hover:bg-hf-tan hover:text-text-primary"
                       }`}
                     >
-                      <Icon size={20} stroke={1.6} />
+                      <Icon size={20} stroke={1.75} />
                       {t(item.labelKey)}
                     </Link>
                   </li>
@@ -135,21 +214,23 @@ export function WebShell({ children }: { children: React.ReactNode }) {
           <Link
             href="/profile"
             aria-label={t("web.profileSettings")}
-            className={`flex h-11 items-center gap-2 rounded-lg px-4 text-[15px] transition ${
-              isActive(pathname, "/profile") || isActive(pathname, "/settings")
-                ? "bg-white font-semibold shadow-sm"
-                : "text-[var(--hf-color-text-secondary)] hover:bg-white/60"
+            className={`hf-type-body flex h-9 items-center gap-2 rounded-md pl-1.5 pr-3 ${
+              profileActive
+                ? "hf-type-strong bg-hf-tan text-hf-green-dark"
+                : "text-text-secondary hover:bg-hf-tan hover:text-text-primary"
             }`}
           >
-            <IconUser size={20} stroke={1.6} />
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-hf-green-dark text-hf-white">
+              <IconUser size={16} stroke={1.75} />
+            </span>
             {t("web.profileSettings")}
           </Link>
         </header>
 
-        <main className="min-h-0 flex-1 overflow-y-auto bg-hf-cream">
-          {/* transform gør, at appens position: fixed-ark og -menuer holdes inde i indholdsfladen. */}
+        <main className="min-h-0 min-w-0 flex-1 overflow-y-auto">
+          {/* transform holder appens position: fixed-ark og -menuer inde i indholdsfladen. */}
           <div
-            className="web-shell-content mx-auto flex h-full w-full max-w-[760px] flex-col overflow-hidden border-x border-hf-tan-dark bg-hf-cream"
+            className="web-shell-content mx-auto flex h-full w-full max-w-4xl flex-col overflow-hidden bg-hf-cream"
             style={{ transform: "translateZ(0)" }}
           >
             {children}

@@ -147,7 +147,9 @@
     "consentRequired": "Slå samtykket til, før du tilmelder dig."
   },
   "web": {
-      "shortcuts": "Genveje",
+      "collapse": "Skjul sidemenu",
+    "expand": "Vis sidemenu",
+    "shortcuts": "Genveje",
       "settings": "Indstillinger",
       "searchPlaceholder": "Søg i menuen…",
       "noResults": "Ingen resultater",
