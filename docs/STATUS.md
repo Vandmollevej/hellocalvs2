@@ -13,10 +13,9 @@ Last updated: 2026-09-29
 - `SCAN_PII_KEY`: CPR/bank krypteret med `ADMIN_SESSION_SECRET` før nøglen
   blev sat, kan stadig læses (reserve-nøgle) — så nøglen kan sættes nu uden
   datatab.
-- Mangler (brugeren): sæt `SCAN_SESSION_SECRET` og `SCAN_PII_KEY` i
-  `/deploy/.env.production` på NAS'en (fx `openssl rand -hex 32`), og tag
-  backup af `SCAN_PII_KEY` — den må aldrig skiftes. Et automatisk deploy-trin
-  til det blev ikke tilføjet (kræver brugerens godkendelse).
+- Deployet genererer `SCAN_SESSION_SECRET` og `SCAN_PII_KEY` i
+  `/deploy/.env.production`, hvis de mangler (røres aldrig igen; backup i `.env.production.bak-scan-secrets`). Tag
+  selv en kopi af `SCAN_PII_KEY` — den må aldrig skiftes.
 - Mangler stadig: test af hyldebillede med rigtig hylde.
 
 
