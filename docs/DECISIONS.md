@@ -3235,3 +3235,12 @@ Synlige tekster i app og admin kalder madvarer "vare/varer", og "Produktdatabase
 ## 2026-09-28: Ingen "Branded"-mærkat
 
 Produktsiden viser aldrig teksten "Branded". Brandet vises kun som brandnavn/logo.
+
+## 2026-09-29: Face ID-login i Oprettelses-appen
+
+- En verificeret passkey med brugerbekræftelse giver fuld medarbejdersession
+  (som admin-passkey): den erstatter adgangskode + TOTP, ikke kun TOTP.
+- Medarbejder-passkeys ligger i egen tabel `scan_worker_passkeys`, da
+  medarbejdere ikke er `User`.
+- `SCAN_PII_KEY` indføres uden datatab: dekryptering prøver `SCAN_PII_KEY`
+  og derefter `ADMIN_SESSION_SECRET`; nye værdier krypteres med `SCAN_PII_KEY`.

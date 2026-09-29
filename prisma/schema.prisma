@@ -2899,8 +2899,29 @@ model ScanWorker {
   submissions     ScanSubmission[]
   payouts         ScanPayout[]
   messages        ScanMessage[]
+  passkeys        ScanWorkerPasskey[]
 
   @@map("scan_workers")
+}
+
+// Face ID/passkey som alternativ til adgangskode + TOTP i Oprettelses-appen.
+// Egen tabel (ikke Passkey), da medarbejdere ikke er User-rækker.
+model ScanWorkerPasskey {
+  id           String     @id @default(cuid())
+  worker       ScanWorker @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  workerId     String
+  credentialId String     @unique
+  publicKey    Bytes
+  counter      Int        @default(0)
+  transports   String[]   @default([])
+  deviceType   String?
+  backedUp     Boolean    @default(false)
+  name         String?
+  createdAt    DateTime   @default(now())
+  lastUsedAt   DateTime?
+
+  @@index([workerId])
+  @@map("scan_worker_passkeys")
 }
 
 model ScanWorkerProfileVersion {

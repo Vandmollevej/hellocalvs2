@@ -1,6 +1,23 @@
 # HELLO CAL — project status
 
-Last updated: 2026-09-28
+Last updated: 2026-09-29
+
+
+
+## 2026-09-29: Oprettelses-appen — Face ID-login og egne nøgler
+
+- Face ID/passkey som alternativ til adgangskode + TOTP: tabel
+  `scan_worker_passkeys` (migration `20260929090000_scan_worker_passkeys`),
+  `/api/scan/passkey/*`, "Log ind med Face ID" på `/scan/login` (vises når
+  Face ID er slået til på telefonen) og "Face ID" under Profil (slå til/fjern).
+- `SCAN_PII_KEY`: CPR/bank krypteret med `ADMIN_SESSION_SECRET` før nøglen
+  blev sat, kan stadig læses (reserve-nøgle) — så nøglen kan sættes nu uden
+  datatab.
+- Mangler (brugeren): sæt `SCAN_SESSION_SECRET` og `SCAN_PII_KEY` i
+  `/deploy/.env.production` på NAS'en (fx `openssl rand -hex 32`), og tag
+  backup af `SCAN_PII_KEY` — den må aldrig skiftes. Et automatisk deploy-trin
+  til det blev ikke tilføjet (kræver brugerens godkendelse).
+- Mangler stadig: test af hyldebillede med rigtig hylde.
 
 
 
