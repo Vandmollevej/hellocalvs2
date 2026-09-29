@@ -45,6 +45,7 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 import { fetchSleepQuality, localDateKey } from "@/lib/sleep-quality";
 import { IconPartyPopper, PartyPopperImage } from "@/components/icons/PartyPopper";
 import { BODY_MEASUREMENT_FIELDS } from "@/lib/body-measurements";
+import { COMPOSITION_GOAL_FIELDS } from "@/lib/goal-composition";
 import type { GoalDTO, GoalTargetDTO } from "@/lib/user-goals";
 import { Skeleton, SkeletonCards, SkeletonScreen } from "@/components/hf/Skeleton";
 
@@ -115,7 +116,11 @@ function formatGoalValue(value: number) {
 
 function goalTargetNameKey(type: GoalTargetDTO["type"]) {
   if (type === "weight") return "goals.weight";
-  return BODY_MEASUREMENT_FIELDS.find(({ field }) => field === type)?.nameKey ?? type;
+  return (
+    BODY_MEASUREMENT_FIELDS.find(({ field }) => field === type)?.nameKey ??
+    COMPOSITION_GOAL_FIELDS.find(({ field }) => field === type)?.nameKey ??
+    type
+  );
 }
 
 // Den target, der vises i cirklen/overlayet: vægten hvis målsætningen har en,

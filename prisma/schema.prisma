@@ -805,6 +805,12 @@ enum HealthMetricType {
   SLEEP_EFFICIENCY_PERCENT
   SLEEP_AWAKENINGS
 
+  // Kropssammensætning fra smartvægte (2026-09-29): samme sprog på tværs af
+  // Withings, Apple Health, Health Connect m.fl. Fedtprocent er BODY_FAT_PERCENT;
+  // muskelmasse i kg og kropsvand (væske) som % af kropsvægt.
+  MUSCLE_MASS_KG
+  BODY_WATER_PERCENT
+
   // Micronutrients (Statistik "Mineraler"/"Vitaminer" groups), shown with
   // periodic-table icons (public/icons/minerals) in StatCardsGrid.tsx.
   SODIUM_MG

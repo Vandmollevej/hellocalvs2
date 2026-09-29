@@ -130,6 +130,8 @@ Appen henter valget og de data, den skal **skrive** til telefonen, her:
 | `HKQuantityType(.heartRate)` | `HEART_RATE_BPM` |
 | `HKCategoryType(.sleepAnalysis)` | `SLEEP_MINUTES` (summér i appen) |
 | `HKQuantityType(.bodyFatPercentage)` | `BODY_FAT_PERCENT` |
+| `HKQuantityType(.leanBodyMass)` | `MUSCLE_MASS_KG` (kg; smartvægte skriver muskelmasse hertil) |
+| Kropsvand (smartvægt, % af kropsvægt) | `BODY_WATER_PERCENT` |
 | `HKQuantityType(.height)` | `HEIGHT_CM` |
 | `HKQuantityType(.bodyMassIndex)` | `BMI` |
 | `HKQuantityType(.dietaryWater)` | `WATER_ML` |

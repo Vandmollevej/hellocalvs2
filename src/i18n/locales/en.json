@@ -1358,6 +1358,9 @@
       "body": "Body measurements",
       "nutrition": "Nutrition"
     },
+    "compositionHeading": "Body composition",
+    "composition": {"bodyFatPercent":"Body fat","muscleMassKg":"Muscle mass"},
+    "compositionPlaceholder": {"bodyFatPercent":"e.g. 20","muscleMassKg":"e.g. 35"},
     "nutritionHeading": "Nutrition per day",
     "nutrition": {
       "kcal": "Calories",

@@ -189,9 +189,9 @@ export default function BodyMeasurementsPage() {
           {BODY_MEASUREMENT_FIELDS.map(({ field, labelKey, image }) => (
             <label key={field} className="flex items-center gap-4 rounded-2xl bg-hf-tan p-4 text-left">
               <span className="flex h-[108px] w-20 shrink-0 items-center justify-center">
-                {image && sex && (
+                {image && (
                   <Image
-                    src={image[sex]}
+                    src={image[sex ?? "FEMALE"]}
                     alt=""
                     width={80}
                     height={108}

@@ -1,4 +1,5 @@
 import { BODY_MEASUREMENT_FIELDS } from "@/lib/body-measurements";
+import { COMPOSITION_GOAL_FIELDS, isCompositionGoalField } from "@/lib/goal-composition";
 import { isNutritionGoalField, NUTRITION_GOAL_FIELDS } from "@/lib/goal-nutrition";
 import type { GoalDTO, GoalTargetDTO } from "@/lib/user-goals";
 
@@ -18,6 +19,7 @@ export function goalTargetNameKey(type: GoalTargetDTO["type"]) {
   if (type === "weight") return "goals.weight";
   return (
     BODY_MEASUREMENT_FIELDS.find(({ field }) => field === type)?.nameKey ??
+    COMPOSITION_GOAL_FIELDS.find(({ field }) => field === type)?.nameKey ??
     NUTRITION_GOAL_FIELDS.find(({ field }) => field === type)?.nameKey ??
     type
   );
@@ -40,7 +42,7 @@ export type GoalTargetCategory = "weight" | "body" | "nutrition";
 
 export function goalTargetCategory(type: string): GoalTargetCategory {
   if (type === "weight") return "weight";
-  if (BODY_MEASUREMENT_FIELDS.some(({ field }) => field === type)) return "body";
+  if (BODY_MEASUREMENT_FIELDS.some(({ field }) => field === type) || isCompositionGoalField(type)) return "body";
   return "nutrition";
 }
 

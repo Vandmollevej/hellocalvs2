@@ -10,6 +10,11 @@ import {
   emptyBodyMeasurementValues,
   type BodyMeasurementField,
 } from "@/lib/body-measurements";
+import {
+  COMPOSITION_GOAL_FIELDS,
+  emptyCompositionGoalValues,
+  type CompositionGoalField,
+} from "@/lib/goal-composition";
 import { emptyNutritionGoalValues, NUTRITION_GOAL_FIELDS, type NutritionGoalField } from "@/lib/goal-nutrition";
 
 // Formularen til at oprette og redigere en målsætning (dato, vægt, kropsmål,
@@ -20,11 +25,12 @@ export type GoalFormValues = {
   targetDate: string;
   weight: string;
   measurements: Record<BodyMeasurementField, string>;
+  composition: Record<CompositionGoalField, string>;
   nutrition: Record<NutritionGoalField, string>;
 };
 
 export function emptyGoalFormValues(): GoalFormValues {
-  return { targetDate: "", weight: "", measurements: emptyBodyMeasurementValues(), nutrition: emptyNutritionGoalValues() };
+  return { targetDate: "", weight: "", measurements: emptyBodyMeasurementValues(), composition: emptyCompositionGoalValues(), nutrition: emptyNutritionGoalValues() };
 }
 
 // "" = tomt felt (ignoreres), null = ugyldig værdi, ellers det parsede tal.
@@ -99,6 +105,7 @@ export function GoalForm({
   const [targetDate, setTargetDate] = useState(initial.targetDate);
   const [weight, setWeight] = useState(initial.weight);
   const [measurements, setMeasurements] = useState(initial.measurements);
+  const [composition, setComposition] = useState(initial.composition);
   const [nutrition, setNutrition] = useState(initial.nutrition);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
@@ -106,6 +113,7 @@ export function GoalForm({
   const parsed = {
     weight: parseValue(weight),
     ...Object.fromEntries(BODY_MEASUREMENT_FIELDS.map(({ field }) => [field, parseValue(measurements[field])])),
+    ...Object.fromEntries(COMPOSITION_GOAL_FIELDS.map(({ field }) => [field, parseValue(composition[field])])),
     ...Object.fromEntries(NUTRITION_GOAL_FIELDS.map(({ field }) => [field, parseValue(nutrition[field])])),
   } as Record<string, number | "" | null>;
   const hasInvalid = Object.values(parsed).some((value) => value === null);
@@ -215,6 +223,23 @@ export function GoalForm({
                 placeholder={t("goals.measurementPlaceholder")}
                 autoFocus={focus === field}
                 onChange={(value) => setMeasurements((current) => ({ ...current, [field]: value }))}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="hf-card hf-card--form">
+          <p className="hf-type-body hf-type-strong text-hf-black">{t("goals.compositionHeading")}</p>
+          <div className="grid grid-cols-2 gap-4">
+            {COMPOSITION_GOAL_FIELDS.map(({ field, unit, nameKey }) => (
+              <GoalInput
+                key={field}
+                label={t(nameKey)}
+                unit={unit}
+                value={composition[field]}
+                placeholder={t(`goals.compositionPlaceholder.${field}`)}
+                autoFocus={focus === field}
+                onChange={(value) => setComposition((current) => ({ ...current, [field]: value }))}
               />
             ))}
           </div>

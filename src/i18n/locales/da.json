@@ -1358,6 +1358,9 @@
       "body": "Kropsmål",
       "nutrition": "Ernæring"
     },
+    "compositionHeading": "Kropssammensætning",
+    "composition": {"bodyFatPercent":"Fedtprocent","muscleMassKg":"Muskelmasse"},
+    "compositionPlaceholder": {"bodyFatPercent":"fx 20","muscleMassKg":"fx 35"},
     "nutritionHeading": "Ernæring pr. dag",
     "nutrition": {
       "kcal": "Kalorier",

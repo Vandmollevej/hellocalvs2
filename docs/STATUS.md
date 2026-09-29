@@ -2,6 +2,14 @@
 
 Last updated: 2026-09-29
 
+## 2026-09-29: Fedtprocent + muskelmasse i Målsætning, fælles kropssammensætning, hals fjernet
+
+- Målsætning har nyt kort "Kropssammensætning": Fedtprocent (%) og Muskelmasse (kg). Målene gemmes som GoalTarget (`bodyFatPercent`, `muscleMassKg`) og vurderes mod `HealthMetric` (`BODY_FAT_PERCENT`, `MUSCLE_MASS_KG`) — samme felter, alle integrationer skriver til (`src/lib/goal-composition.ts`).
+- Fælles sprog: nye `HealthMetricType` `MUSCLE_MASS_KG` og `BODY_WATER_PERCENT` (migration `20260929170000_body_composition_metrics`). Withings henter nu også muskelmasse (76) og kropsvand (77, omregnet til % af vægt). Apple Health/Health Connect sender via ingest-ruten med samme typenavne (`docs/HEALTHKIT_COMPANION.md`). Vægt og fedtprocent brugte allerede fælles lagre.
+- **Ikke bygget endnu — Google Health og Fitbit** henter kun vægt/aktiviteter/skridt; kropsfedt/muskelmasse fra dem er ikke koblet på (API-datatyper skal verificeres).
+- **Roadmap (brugerønske):** "Væske" (kropsvand) findes nu som `BODY_WATER_PERCENT`. Sæt statistik op, der sammenholder kropsvæske med kalorieindtag og typer af madvarer (fx salt/alkohol) som mulige årsager til udsving. Ikke bygget — kun data er klar.
+- Kropsmål-siden: halsmål fjernet (kolonnen `neckCm` findes stadig i databasen); tegningerne vises nu også uden valgt køn (kvindelige som standard, hint står stadig).
+
 ## 2026-09-29: Klikbare vitaminer og mineraler
 
 Samme mønster som E-numre: i varesidens "Vis mere"-tabel er hvert vitamin/

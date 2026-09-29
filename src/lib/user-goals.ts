@@ -6,6 +6,7 @@ import {
   isBodyMeasurementField,
   type BodyMeasurementField,
 } from "@/lib/body-measurements";
+import { COMPOSITION_GOAL_FIELDS, isCompositionGoalField, type CompositionGoalField } from "@/lib/goal-composition";
 import { isNutritionGoalField, NUTRITION_GOAL_FIELDS, type NutritionGoalField } from "@/lib/goal-nutrition";
 
 // Målsætninger (docs/DECISIONS.md, 2026-09-22). En målsætning er et dateret
@@ -13,22 +14,25 @@ import { isNutritionGoalField, NUTRITION_GOAL_FIELDS, type NutritionGoalField } 
 // server-side og gemmes som completedAt, der aldrig ryddes igen.
 
 export const WEIGHT_TARGET = "weight";
-export type GoalTargetType = typeof WEIGHT_TARGET | BodyMeasurementField | NutritionGoalField;
+export type GoalTargetType = typeof WEIGHT_TARGET | BodyMeasurementField | CompositionGoalField | NutritionGoalField;
 
 // Rækkefølgen målsætningens targets vises i: vægt øverst, derefter kropsmålene
 // i samme rækkefølge som på Kropsmål-siden, til sidst ernæring.
 export const GOAL_TARGET_TYPES: GoalTargetType[] = [
   WEIGHT_TARGET,
   ...BODY_MEASUREMENT_FIELDS.map(({ field }) => field),
+  ...COMPOSITION_GOAL_FIELDS.map(({ field }) => field),
   ...NUTRITION_GOAL_FIELDS.map(({ field }) => field),
 ];
 
 export function isGoalTargetType(value: string): value is GoalTargetType {
-  return value === WEIGHT_TARGET || isBodyMeasurementField(value) || isNutritionGoalField(value);
+  return value === WEIGHT_TARGET || isBodyMeasurementField(value) || isCompositionGoalField(value) || isNutritionGoalField(value);
 }
 
 export function unitForTarget(type: GoalTargetType) {
   if (type === WEIGHT_TARGET) return "kg";
+  const composition = COMPOSITION_GOAL_FIELDS.find(({ field }) => field === type);
+  if (composition) return composition.unit;
   const nutrition = NUTRITION_GOAL_FIELDS.find(({ field }) => field === type);
   return nutrition ? nutrition.unit : BODY_MEASUREMENT_UNIT;
 }
@@ -59,7 +63,7 @@ type Reading = { value: number; at: Date };
 
 // Alle registrerede værdier pr. target-type siden `since`, ældste først.
 async function loadReadings(userId: string, since: Date) {
-  const [weights, measurements] = await Promise.all([
+  const [weights, measurements, metrics] = await Promise.all([
     prisma.weightEntry.findMany({
       where: { userId, weighedAt: { gte: since } },
       orderBy: { weighedAt: "asc" },
@@ -68,6 +72,11 @@ async function loadReadings(userId: string, since: Date) {
     prisma.bodyMeasurement.findMany({
       where: { userId, measuredAt: { gte: since } },
       orderBy: { measuredAt: "asc" },
+    }),
+    prisma.healthMetric.findMany({
+      where: { userId, type: { in: COMPOSITION_GOAL_FIELDS.map(({ metricType }) => metricType) }, recordedAt: { gte: since } },
+      orderBy: { recordedAt: "asc" },
+      select: { type: true, value: true, recordedAt: true },
     }),
   ]);
 
@@ -84,13 +93,19 @@ async function loadReadings(userId: string, since: Date) {
     }
     readings.set(field, list);
   }
+  for (const { field, metricType } of COMPOSITION_GOAL_FIELDS) {
+    readings.set(
+      field,
+      metrics.filter((metric) => metric.type === metricType).map((metric) => ({ value: metric.value, at: metric.recordedAt })),
+    );
+  }
   return readings;
 }
 
 // Seneste registrerede værdi pr. target-type — bruges som startværdi, når en
 // ny målsætning oprettes.
 export async function getLatestValues(userId: string) {
-  const [latestWeight, user, measurements] = await Promise.all([
+  const [latestWeight, user, measurements, metrics] = await Promise.all([
     prisma.weightEntry.findFirst({
       where: { userId },
       orderBy: { weighedAt: "desc" },
@@ -102,6 +117,12 @@ export async function getLatestValues(userId: string) {
       orderBy: { measuredAt: "desc" },
       take: 200,
     }),
+    prisma.healthMetric.findMany({
+      where: { userId, type: { in: COMPOSITION_GOAL_FIELDS.map(({ metricType }) => metricType) } },
+      orderBy: { recordedAt: "desc" },
+      take: 200,
+      select: { type: true, value: true },
+    }),
   ]);
 
   const latest = new Map<GoalTargetType, number>();
@@ -110,6 +131,10 @@ export async function getLatestValues(userId: string) {
   for (const { field } of BODY_MEASUREMENT_FIELDS) {
     const row = measurements.find((measurement) => measurement[field] != null);
     if (row) latest.set(field, row[field] as number);
+  }
+  for (const { field, metricType } of COMPOSITION_GOAL_FIELDS) {
+    const metric = metrics.find((entry) => entry.type === metricType);
+    if (metric) latest.set(field, metric.value);
   }
   return latest;
 }

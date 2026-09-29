@@ -86,6 +86,8 @@ const METRIC_READ_TYPE: Record<string, ReadType> = {
   VO2_MAX: "heart",
   SLEEP_MINUTES: "sleep",
   BODY_FAT_PERCENT: "bodyFat",
+  MUSCLE_MASS_KG: "bodyFat",
+  BODY_WATER_PERCENT: "bodyFat",
   HEIGHT_CM: "body",
   BMI: "body",
   WATER_ML: "water",

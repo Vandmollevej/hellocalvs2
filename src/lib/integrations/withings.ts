@@ -12,6 +12,9 @@ const SCOPES = "user.info,user.metrics";
 // Withings-måletyper: 1 = vægt (kg), 6 = fedtprocent. Værdi = value * 10^unit.
 const WEIGHT = 1;
 const FAT_RATIO = 6;
+// 76 = muskelmasse (kg), 77 = kropsvand (kg; gemmes som % af vægten i samme måling).
+const MUSCLE_MASS = 76;
+const HYDRATION = 77;
 
 type WithingsEnvelope<T> = { status: number; body: T; error?: string };
 
@@ -35,7 +38,7 @@ async function fetchMeasureGroups(accessToken: string, sinceUnixSeconds: number)
   for (let page = 0; page < 20; page++) {
     const params: Record<string, string> = {
       action: "getmeas",
-      meastypes: `${WEIGHT},${FAT_RATIO}`,
+      meastypes: `${WEIGHT},${FAT_RATIO},${MUSCLE_MASS},${HYDRATION}`,
       category: "1",
       lastupdate: String(sinceUnixSeconds),
     };
@@ -78,12 +81,24 @@ export const withings: OAuthProviderAdapter = {
     const items: IntegrationItem[] = [];
     for (const group of groups) {
       const at = new Date(group.date * 1000).toISOString();
+      const valueOf = (type: number) => {
+        const found = group.measures.find((measure) => measure.type === type);
+        return found ? found.value * Math.pow(10, found.unit) : null;
+      };
       for (const m of group.measures) {
         const value = m.value * Math.pow(10, m.unit);
         if (m.type === WEIGHT) {
           items.push({ kind: "weight", payload: { source: "WITHINGS", weightKg: value, weighedAt: at } });
         } else if (m.type === FAT_RATIO) {
           items.push({ kind: "metric", payload: { source: "WITHINGS", type: "BODY_FAT_PERCENT", value, recordedAt: at } });
+        } else if (m.type === MUSCLE_MASS) {
+          items.push({ kind: "metric", payload: { source: "WITHINGS", type: "MUSCLE_MASS_KG", value, recordedAt: at } });
+        } else if (m.type === HYDRATION) {
+          const weight = valueOf(WEIGHT);
+          if (weight && weight > 0) {
+            const percent = Math.round((value / weight) * 1000) / 10;
+            items.push({ kind: "metric", payload: { source: "WITHINGS", type: "BODY_WATER_PERCENT", value: percent, recordedAt: at } });
+          }
         }
       }
     }

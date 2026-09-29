@@ -5,8 +5,8 @@
 // Illustrationerne er brugerens egne tegninger (Icons/Kropsmål), kopieret
 // uændret til public/body-measurements (2026-09-25). Billedet vælges ud fra
 // profilens køn (User.sex) — aldrig gemt på selve målingen. Hofte har ingen
-// godkendt tegning og vises derfor uden billede. Hals kom til 2026-09-26
-// (BodyMeasurement.neckCm), så alle fem tegninger er i brug.
+// godkendt tegning og vises derfor uden billede. Hals blev fjernet igen
+// 2026-09-29 (BodyMeasurement.neckCm findes stadig i databasen, men bruges ikke).
 export type BodyMeasurementSex = "FEMALE" | "MALE";
 
 function drawing(name: string): Record<BodyMeasurementSex, string> {
@@ -17,12 +17,6 @@ function drawing(name: string): Record<BodyMeasurementSex, string> {
 }
 
 export const BODY_MEASUREMENT_FIELDS = [
-  {
-    field: "neckCm",
-    labelKey: "bodyMeasurements.neck",
-    nameKey: "bodyMeasurements.names.neck",
-    image: drawing("neck"),
-  },
   {
     field: "chestCm",
     labelKey: "bodyMeasurements.chest",
