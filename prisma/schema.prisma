@@ -710,10 +710,30 @@ model Activity {
   sportType       String
   startedAt       DateTime
   durationMinutes Int
+  // Netto-kcal (ekstra over hvile). Brugerens eget tal, et MET-estimat
+  // (src/lib/activity-met.ts) eller enhedens aktive energi — se energySource.
   caloriesBurned  Float
+  // 2026-09-29 (docs/ACTIVITY-PAL.md F3): grundlaget for kcal-tallet.
+  met             Float?
+  distanceKm      Float?
+  perceivedEffort TrainingIntensity?
+  energySource    ActivityEnergySource @default(USER)
   createdAt       DateTime       @default(now())
 
   @@map("activities")
+}
+
+enum TrainingIntensity {
+  LIGHT
+  MODERATE
+  VIGOROUS
+  VERY_VIGOROUS
+}
+
+enum ActivityEnergySource {
+  USER
+  ESTIMATED_MET
+  DEVICE
 }
 
 // 2026-09-29: aktiviteter, brugeren selv har tilføjet i aktivitetssøgningen

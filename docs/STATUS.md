@@ -8,6 +8,7 @@ Last updated: 2026-09-29
 - F1 bygget: `src/lib/pal-model.ts` (hverdags-PAL fra svar + skridt, fem niveauer, netto-MET, træningstillæg, dagsestimat med interval) og `src/lib/energy-budget.ts` (kaloriebudget med hårde sundhedsgrænser). Tests: `npm test` (15 nye, grønne). `activity-level.ts` bruger nu 1,30/1,45/1,65/1,85/2,00.
 - Migration `20260929190000_activity_pal_budget` skal køre ved deploy (nye User-felter + `activity_profile_snapshots`). Ingen UI endnu; intet kalder de nye moduler. Lint og typecheck grønne; ikke live-testet (ingen lokal DB).
 - F2 bygget: startguiden har nyt trin "Aktivitet" (8 sider inde i trinnet, `ActivityStep.tsx`); resultatsiden viser regnestykket "hvile + hverdag + motion = energibehov" (`EnergyBreakdown.tsx`) med interval og "Ret niveau". Samme kort vises under aktivitetsniveauet på `/profile/edit`. API: `/api/profile/activity` (GET/PUT/PATCH). Tekster da/en. Ikke live-testet (ingen lokal DB); test guiden på telefon.
+- F3 bygget: `/activity/create` spørger om anstrengelse (taletest) og distance for gang/løb og anslår kalorier fra MET (`src/lib/activity-met.ts`, netto), som placeholder i kcal-feltet; eget tal vinder. Migration `20260929200000_activity_met` (nye kolonner på `activities`). Ikke live-testet.
 - Bemærk: `page-tree.test.mjs` fejler også på master (uvedkommende).
 
 ## 2026-09-29: Admin-brugere

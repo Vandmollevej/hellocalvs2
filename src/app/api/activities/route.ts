@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { unauthorized } from "@/lib/session";
 import { getProfileUser } from "@/lib/family-access";
+import { estimateActivityKcal, isTrainingIntensity } from "@/lib/activity-met";
 
 export async function GET() {
   try {
@@ -29,19 +30,25 @@ export async function GET() {
 // instead of calling this route, since it writes source=FITBIT/GARMIN.
 export async function POST(req: Request) {
   const body = await req.json();
-  const { sportType, startedAt, durationMinutes, caloriesBurned } = body as {
+  const { sportType, startedAt, durationMinutes, caloriesBurned, intensity, distanceKm } = body as {
     sportType?: string;
     startedAt?: string;
     durationMinutes?: number;
     caloriesBurned?: number;
+    intensity?: unknown;
+    distanceKm?: number | null;
   };
 
-  if (!sportType || !durationMinutes || durationMinutes <= 0 || !caloriesBurned || caloriesBurned <= 0) {
+  // Kalorier må udelades: så anslås de fra MET (docs/ACTIVITY-PAL.md F3) ud
+  // fra sport, intensitet (taletest), evt. distance og brugerens vægt.
+  if (!sportType || !durationMinutes || durationMinutes <= 0 || (caloriesBurned !== undefined && caloriesBurned <= 0)) {
     return NextResponse.json(
-      { message: "sportType, durationMinutes og caloriesBurned (> 0) er påkrævet" },
+      { message: "sportType og durationMinutes (> 0) er påkrævet; caloriesBurned skal være > 0, hvis angivet" },
       { status: 400 }
     );
   }
+  const perceivedEffort = isTrainingIntensity(intensity) ? intensity : null;
+  const distance = typeof distanceKm === "number" && distanceKm > 0 ? distanceKm : null;
 
   const parsedStartedAt = startedAt ? new Date(startedAt) : new Date();
   if (Number.isNaN(parsedStartedAt.getTime())) {
@@ -52,6 +59,11 @@ export async function POST(req: Request) {
     const user = await getProfileUser("activities", "CREATED");
 
     if (!user) return unauthorized();
+    const estimate = estimateActivityKcal({ sportType, minutes: durationMinutes, weightKg: user.weightKg, intensity: perceivedEffort, distanceKm: distance });
+    const kcal = caloriesBurned ?? estimate.kcal;
+    if (kcal === null) {
+      return NextResponse.json({ message: "Angiv kalorier — vægt mangler, så de kan ikke anslås" }, { status: 400 });
+    }
     const activity = await prisma.activity.create({
       data: {
         userId: user.id,
@@ -59,7 +71,11 @@ export async function POST(req: Request) {
         sportType,
         startedAt: parsedStartedAt,
         durationMinutes,
-        caloriesBurned,
+        caloriesBurned: kcal,
+        met: estimate.met,
+        distanceKm: distance,
+        perceivedEffort,
+        energySource: caloriesBurned === undefined ? "ESTIMATED_MET" : "USER",
       },
     });
 

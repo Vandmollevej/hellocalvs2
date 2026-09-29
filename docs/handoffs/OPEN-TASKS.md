@@ -245,7 +245,7 @@ Ejer: cloud-session (2026-09-29)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| pal-plan | Plan for aktivitetsniveau, PAL, MET, kalibrering og kaloriemål (`docs/ACTIVITY-PAL.md`); erstatter de 5 sider i `onboarding-integration` | I gang | F0–F2 færdige på branch `claude/activity-pal-plan` (PR #114): beregning, tests, skema, onboarding-trin, regnestykke, API. Næste: F3 MET/taletest ved aktivitetslogning, derefter F4 enhedsdata, F5 kalibrering, F6 kaloriemål-UI |
+| pal-plan | Plan for aktivitetsniveau, PAL, MET, kalibrering og kaloriemål (`docs/ACTIVITY-PAL.md`); erstatter de 5 sider i `onboarding-integration` | I gang | F0–F3 færdige på branch `claude/activity-pal-plan` (PR #114): beregning, tests, skema, onboarding-trin, regnestykke, API, MET ved aktivitetslogning. Næste: F4 enhedsdata (aktiv energi erstatter PAL-del pr. dag i kalenderen), F5 kalibrering, F6 kaloriemål-UI |
 
 ## G-FAM — Familieabonnement og børneprofiler
 Filer: `docs/FAMILY.md`, Prisma-skema (Family*, ProfileAccessLog), `src/lib/family*.ts`, `src/lib/session.ts`, `src/app/api/family/**`, `src/app/profile/family/**`, profilvælger/panel-komponenter, dagbogs-API'erne der skal følge den valgte profil.

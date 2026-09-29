@@ -1837,9 +1837,16 @@
     "change": "skift",
     "startedAt": "Starttidspunkt",
     "minutes": "Varighed (minutter)",
+    "intensity": "Hvor anstrengende var det?",
+    "intensityHint": "Taletesten: hvor let var det at tale undervejs?",
+    "distanceKm": "Distance (km) — valgfrit",
+    "kcalEstimated": "ca. {kcal} (anslået)",
+    "kcalHintMet": "Anslået ud fra din vægt og aktivitetens MET-værdi ({met}). Skriv dit eget tal, hvis dit ur kender det.",
+    "kcalHintSpeed": "Anslået ud fra distance, tid og vægt (MET {met}). Skriv dit eget tal, hvis dit ur kender det.",
+    "kcalNoWeight": "Vi kan ikke anslå kalorier uden din vægt — skriv tallet selv eller udfyld vægten under Profil.",
     "kcal": "Forbrændte kalorier",
     "save": "Gem aktivitet",
-    "invalid": "Angiv varighed og kalorier over 0.",
+    "invalid": "Angiv varighed over 0 — og kalorier, hvis de ikke kan anslås.",
     "saveError": "Aktiviteten kunne ikke gemmes."
   },
   "addButton": {

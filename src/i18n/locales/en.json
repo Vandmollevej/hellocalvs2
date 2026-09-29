@@ -1837,9 +1837,16 @@
     "change": "change",
     "startedAt": "Start time",
     "minutes": "Duration (minutes)",
+    "intensity": "How strenuous was it?",
+    "intensityHint": "The talk test: how easy was it to talk along the way?",
+    "distanceKm": "Distance (km) — optional",
+    "kcalEstimated": "approx. {kcal} (estimated)",
+    "kcalHintMet": "Estimated from your weight and the activity's MET value ({met}). Enter your own number if your watch knows it.",
+    "kcalHintSpeed": "Estimated from distance, time and weight (MET {met}). Enter your own number if your watch knows it.",
+    "kcalNoWeight": "We can't estimate calories without your weight — enter the number yourself or fill in your weight under Profile.",
     "kcal": "Calories burned",
     "save": "Save activity",
-    "invalid": "Enter a duration and calories above 0.",
+    "invalid": "Enter a duration above 0 — and calories if they can't be estimated.",
     "saveError": "The activity could not be saved."
   },
   "addButton": {
