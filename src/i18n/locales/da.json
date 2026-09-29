@@ -1102,7 +1102,7 @@
       "points": "Points",
       "inviteFriend": "Invitér en ven",
       "notifications": "Kommunikation",
-      "reportBug": "Indberet fejl",
+      "reportBug": "Har du fundet en fejl?",
       "recipes": "Opskrifter",
       "settings": "Indstillinger"
     },
@@ -1455,7 +1455,7 @@
     "saveError": "Kunne ikke gemme ændringerne. Prøv igen."
   },
   "registrationReportError": {
-    "title": "Indberet fejl",
+    "title": "Har du fundet en fejl?",
     "intro": "Tryk på det grønne udråbstegn ud for det punkt, der er forkert, og skriv hvad der er rigtigt.",
     "selectPoint": "Markér fejl i {point}",
     "correctionPlaceholder": "Hvad er forkert, og hvad er det rigtige?",
@@ -1494,7 +1494,7 @@
     "kcalPer100ml": "({kcal} kcal/100ml)",
     "kcalAmount": "{kcal} kalorier",
     "additivesWarning": "Varen indeholder E-numre",
-    "reportError": "Indberet fejl",
+    "reportError": "Har du fundet en fejl?",
     "alternativeServing": "{label}: {kcal} kcal",
     "nutritionUnknown": "Næringsindhold ukendt",
     "additivesWarningTitle": "Indeholder E-numre",
@@ -1842,7 +1842,7 @@
   "swipeableRow": {
     "saveAsFavorite": "Gem som favorit",
     "favorite": "Favorit",
-    "reportErrorAria": "Indberet fejl",
+    "reportErrorAria": "Har du fundet en fejl?",
     "reportError": "Fejl",
     "delete": "Slet"
   },
