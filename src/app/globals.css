@@ -576,6 +576,191 @@ textarea::selection,
 
 }
 
+/* ---- Insight/dashboard-primitiver, bygget på adminfladens design
+   (docs/DECISIONS.md 2026-09-29, design.md §6.15). Bruges af alle brede,
+   skrivebordsvenlige sider uden telefonramme: Hello Doc-lægevisningen
+   (/hello-doc/[token]), admins Hello Doc og senere andre rapportsider.
+   Samme tokens som appen: side #FAF8F3, hvid topbjælke/panel med 1 px
+   #DFD9CC kant, kort #EEE9DF, radius 8, afstande 8/16/32 px.
+   Skrift sættes med .hf-type-* og farve med farveklasser — ikke her. ---- */
+@layer components {
+  /* Rod: egen scroll-container (html/body er låst mod scroll). */
+  .hf-insight {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    overflow-y: auto;
+    background: var(--hf-color-page);
+    color: var(--hf-color-text);
+  }
+
+  /* Topbjælke som admin: 56 px, hvid, 1 px bundkant, logo til venstre. */
+  .hf-insight__topbar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--hf-space-block);
+    height: 56px;
+    padding: 0 var(--hf-gutter);
+    border-bottom: 1px solid var(--hf-color-nav);
+    background: var(--hf-color-surface);
+  }
+
+  .hf-insight__topbar-end {
+    margin-left: auto;
+  }
+
+  /* Indhold: samme maksbredde som admins hovedområde. */
+  .hf-insight__main {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--hf-space-block);
+    width: 100%;
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: var(--hf-space-block) var(--hf-gutter) var(--hf-space-section);
+  }
+
+  .hf-insight__head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--hf-space-inline);
+  }
+
+  .hf-insight__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--hf-space-inline);
+  }
+
+  /* Nøgletal-række: 2 kolonner på telefon, 4 fra tablet. */
+  .hf-insight__kpis {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--hf-space-block);
+  }
+
+  /* Panelgitter: 1 kolonne på telefon, 2 fra desktop. */
+  .hf-insight__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--hf-space-block);
+  }
+
+  /* Sidebjælke + indhold (lægevisningens profilkolonne). */
+  .hf-insight__layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--hf-space-block);
+  }
+
+  .hf-insight__aside {
+    display: flex;
+    flex-direction: column;
+    gap: var(--hf-space-block);
+  }
+
+  /* Faktablok under profilen: adskilt med en tynd linje. */
+  .hf-insight__facts {
+    display: flex;
+    flex-direction: column;
+    gap: var(--hf-space-block);
+    padding-top: var(--hf-space-block);
+    border-top: 1px solid var(--hf-color-line);
+  }
+
+  .hf-insight__content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--hf-space-block);
+    min-width: 0;
+  }
+
+  .hf-insight__footer {
+    padding: var(--hf-space-block) var(--hf-gutter) var(--hf-space-section);
+    text-align: center;
+  }
+
+  /* Enkelt centreret statuskort (afventer/udløbet/ikke fundet). */
+  .hf-insight__center {
+    width: 100%;
+    max-width: 28rem;
+    margin: var(--hf-space-section) auto 0;
+    text-align: center;
+  }
+
+  /* Panel: adminens hvide kort med tynd kant — bruges til grafer og tabeller. */
+  .hf-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--hf-space-inline);
+    padding: var(--hf-space-block);
+    border: 1px solid var(--hf-color-nav);
+    border-radius: var(--hf-radius-card);
+    background: var(--hf-color-surface);
+  }
+
+  /* Nøgletal: lille label over stor værdi på kortfarven. */
+  .hf-kpi {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: var(--hf-space-block);
+    border-radius: var(--hf-radius-card);
+    background: var(--hf-color-card);
+  }
+
+  /* Rund initialer-badge (erstatter profilbillede). */
+  .hf-avatar-initials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 96px;
+    height: 96px;
+    border-radius: 9999px;
+    background: var(--hf-color-nav);
+    color: var(--hf-color-action);
+  }
+
+  @media (min-width: 640px) {
+    .hf-insight__kpis {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hf-insight__topbar,
+    .hf-insight__footer {
+      padding-left: var(--hf-space-section);
+      padding-right: var(--hf-space-section);
+    }
+
+    .hf-insight__main {
+      padding-left: var(--hf-space-section);
+      padding-right: var(--hf-space-section);
+    }
+
+    .hf-insight__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .hf-insight__layout {
+      flex-direction: row;
+      align-items: flex-start;
+    }
+
+    .hf-insight__aside {
+      flex-shrink: 0;
+      width: 256px;
+    }
+  }
+}
+
 /* Følgende regler ligger uden for @layer, så de vinder over .hf-type-section-title (som ligger i @layer components). */
 /* I en .hf-page kommer en del af luften fra stakkens gap (16px), så
    overskriftens egne margener trækkes fra: resultatet er stadig 32px over
