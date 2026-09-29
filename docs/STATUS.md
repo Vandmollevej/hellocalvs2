@@ -5071,3 +5071,7 @@ ingen tilbagepil (`useInWebShell` + `isWebRootPath`). Set i Chromium ved
 1440×900 med login mocket: kalender/dag, søg, indstillinger, chat, statistik.
 Beslutning: docs/DECISIONS.md 2026-09-29. Butiksknapperne på landingpagen er
 uafklarede (spørgsmål stillet, ikke besvaret).
+## 2026-09-28: Opgave 32 — samlet E-nummer-side
+
+- Ny offentlig side `/e-numre` (`src/app/e-numre/page.tsx`) med hele E-nummer-databasen, numerisk sorteret, et hurtignavigations-chipfelt og ét `<section>` pr. E-nummer med eget anchor (`/e-numre#e100`, `#e150a`; se `src/lib/additive-anchor.ts`).
+- Info-vinduet (`AdditiveInfoModal`) linker nu til nummerets anchor ("Se alle E-numre").
