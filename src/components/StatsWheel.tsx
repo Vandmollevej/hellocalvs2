@@ -437,7 +437,14 @@ function WheelItem({
         transform: `translateY(calc(-50% + ${translateY}px)) translateX(-${inset}px) rotate(${tilt}deg) scale(${scale})`,
       }}
     >
-      <span className="hf-type-strong relative leading-none" style={{ fontSize: FONT_SIZE }}>
+      {/* text-box trims the line box to the digits' cap height, so the
+          flex centering lines the icon up with the digits' visual middle —
+          otherwise the icon sat lower than the number and the centered row
+          looked slightly tilted (user 2026-09-29). */}
+      <span
+        className="hf-type-strong relative leading-none"
+        style={{ fontSize: FONT_SIZE, textBox: "trim-both cap alphabetic" } as React.CSSProperties}
+      >
         <span className={transition} style={{ opacity }}>
           {stat.value}
           {stat.unit && <span className="hf-type-strong"> {stat.unit}</span>}
