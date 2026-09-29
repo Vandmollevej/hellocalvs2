@@ -4971,3 +4971,6 @@ DECISIONS.md). Næste skridt: indfør grænser og sæt flaget til `true`.
 - Indstillinger → Visning → Kalendervisning har nu fire valg: Liste, Måned, Uge, Dag (`src/lib/calendar-view-pref.ts`). "Dag" åbner dagens fuldskærms dagsvisning (`DayDetails`) når kalenderen indlæses.
 - Opsætningsguiden (`OnboardingWizard`) har fået trinnet "calendar-view" før sundhedsimport, så standardvisningen vælges ved opstart.
 - Lint og build kørt grønt.
+
+## 2026-09-29 — Samlet merge af åbne PR'er
+Flettet: #100, #98, #104, #105, #107, #108, #109, #110, #111, #112, #103 og lighter-deploy. Docs-konflikter løst ved at beholde begge sider. Ikke flettet: #6 og #8 (ingen fælles historik med master) samt dubletterne #26, #32, #41, #43, #45, #54, #57, #59 (erstattet af nyere grene i master). Lint, tsc og build grønne.
