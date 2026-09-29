@@ -1,6 +1,6 @@
 # Aktivitetsniveau, energibehov og kaloriemål — plan
 
-Status: **F0 og F1 bygget** (2026-09-29): beregningsmoduler `src/lib/pal-model.ts` og `src/lib/energy-budget.ts` med tests, skema + migration `20260929190000_activity_pal_budget`. F2–F6 mangler. Beslutningerne står i `DECISIONS.md` (2026-09-29: Aktivitetsniveau, PAL og kaloriemål). Kilderækkefølge: WHO og Sundhedsstyrelsen (definitioner af intensitet), DGE (PAL), Compendium of Physical Activities (MET). Kildelinks: se brugerens oprindelige brief i sessionen; de vigtigste er `pacompendium.com`, `dge.de/wissenschaft/referenzwerte/energie/` og sst.dk's anbefalinger for voksne 18–64 år.
+Status: **F0–F2 bygget** (2026-09-29): beregningsmoduler med tests, skema + migration `20260929190000_activity_pal_budget`, onboarding-trin `activity` med 8 sider, regnestykke-kort (`EnergyBreakdown`) i guiden og på Profil, API `/api/profile/activity`. F3–F6 mangler. Beslutningerne står i `DECISIONS.md` (2026-09-29: Aktivitetsniveau, PAL og kaloriemål). Kilderækkefølge: WHO og Sundhedsstyrelsen (definitioner af intensitet), DGE (PAL), Compendium of Physical Activities (MET). Kildelinks: se brugerens oprindelige brief i sessionen; de vigtigste er `pacompendium.com`, `dge.de/wissenschaft/referenzwerte/energie/` og sst.dk's anbefalinger for voksne 18–64 år.
 
 ## Formål
 
@@ -136,7 +136,7 @@ Puls omsættes ikke direkte til kalorier; den bruges kun som intensitetssignal.
 |---|---|
 | F0 | **Færdig.** Plan, `DECISIONS.md`, `OPEN-TASKS.md`; `caloriesBurned` afklaret som netto. |
 | F1 | **Færdig.** `src/lib/pal-model.ts` (PAL, niveauer, netto-MET, tillæg, dagsestimat) og `src/lib/energy-budget.ts` (budget med sundhedsgrænser), tests i `*.test.mjs`; `activity-level.ts` bruger nu niveauernes repræsentative PAL; skema: `User.palBase/palSource/palConfidence/activityAnswers/trainingAllowanceKcal/goalMode/goalPaceKgPerWeek`, ny `ActivityProfileSnapshot`. |
-| F2 | Onboarding-sider og regnestykke-visning (læs `design.md`; da/en-tekster); profil-redigering. |
+| F2 | **Færdig.** `src/components/onboarding/ActivityStep.tsx` (intro, arbejde, gang/stående, transport, skridt, motion, intensitet, resultat; intensitet springes over uden motion), `src/components/EnergyBreakdown.tsx` (regnestykke med "Hvorfor?" pr. linje, interval, sundhedsjusteringer), `src/lib/activity-profile.ts` + `src/app/api/profile/activity/route.ts` (GET regnestykke, PUT svar, PATCH manuelt niveau). Manuelt valg i Profil går også gennem `applyManualLevel`. Vilkårsuddrag i `terms-hints.ts`. Kaloriemål vises kun, når `goalMode` er sat — der er endnu ingen UI til det (F6). |
 | F3 | MET og netto i aktivitetslogning; taletest ved logning. |
 | F4 | Dagsjustering fra enhedsdata (aktiv energi, distance/tid, skridt). |
 | F5 | Dynamisk kalibrering og "Sådan har vi justeret". |

@@ -15,6 +15,8 @@ import { ACTIVITY_LEVELS, type ActivityLevel } from "@/lib/activity-level";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { FaceIdButton } from "@/components/FaceIdButton";
 import { SkeletonForm, SkeletonScreen } from "@/components/hf/Skeleton";
+import { EnergyBreakdown } from "@/components/EnergyBreakdown";
+import type { EnergySummary } from "@/lib/activity-profile";
 
 type Sex = "FEMALE" | "MALE";
 
@@ -122,7 +124,27 @@ export default function ProfileEditPage() {
   const [user, setUser] = useState<ProfileUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [trendWeightKg, setTrendWeightKg] = useState<number | null>(null);
+  const [energySummary, setEnergySummary] = useState<EnergySummary | null>(null);
   const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Regnestykket (docs/ACTIVITY-PAL.md) hentes igen, hver gang profilen
+  // gemmes, så det følger vægt, højde, alder, køn og niveau.
+  const energyVersion = user
+    ? [user.weightKg, user.heightCm, user.birthDate, user.sex, user.activityLevel].join("|")
+    : null;
+  useEffect(() => {
+    if (energyVersion === null) return;
+    let cancelled = false;
+    fetch("/api/profile/activity")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { summary: EnergySummary } | null) => {
+        if (!cancelled && data) setEnergySummary(data.summary);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [energyVersion]);
 
   useEffect(() => {
     let cancelled = false;
@@ -313,6 +335,8 @@ export default function ProfileEditPage() {
           </div>
 
           <ActivityLevelPicker value={user.activityLevel} onChange={(value) => updateNow("activityLevel", value)} />
+
+          {energySummary && <EnergyBreakdown summary={energySummary} />}
 
           {/* Fire ens, kvadratiske genveje (1:1) — teksten må ikke gøre en kasse større. */}
           <div className="mt-2 grid grid-cols-4 gap-2.5">

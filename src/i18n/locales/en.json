@@ -1060,11 +1060,11 @@
     "activityLevel": {
       "notSet": "Pick the step that best fits your everyday life.",
       "note": "Training you log is added on top.",
-      "VERY_LOW": { "label": "Very low", "description": "Sitting most of the day and hardly walking." },
-      "LOW": { "label": "Low", "description": "Desk job with some walking and light movement during the day." },
-      "MODERATE": { "label": "Moderate", "description": "Standing and walking for much of the day, e.g. in a shop or school." },
-      "HIGH": { "label": "High", "description": "Physical work most of the day, e.g. craftsman or warehouse." },
-      "VERY_HIGH": { "label": "Very high", "description": "Hard physical work all day, e.g. construction, farming or forestry." }
+      "VERY_LOW": { "short": "Very low", "label": "Very low", "description": "Sitting most of the day and hardly walking." },
+      "LOW": { "short": "Sedentary", "label": "Low", "description": "Desk job with some walking and light movement during the day." },
+      "MODERATE": { "short": "Normal", "label": "Moderate", "description": "Standing and walking for much of the day, e.g. in a shop or school." },
+      "HIGH": { "short": "Very", "label": "High", "description": "Physical work most of the day, e.g. craftsman or warehouse." },
+      "VERY_HIGH": { "short": "Extreme", "label": "Very high", "description": "Hard physical work all day, e.g. construction, farming or forestry." }
     },
     "age": "{age} years old",
     "trendWeight": "Trend weight (AI estimate): {value} kg",
@@ -1874,7 +1874,102 @@
     "remindLater": "Remind me later",
     "doNotShowAgain": "Don't show again",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "activity": {
+      "introTitle": "How much does your body use in a day?",
+      "introBody": "We work it out in three parts: what your body uses at rest, what your everyday adds, and what your exercise adds. You see the sum at the end.",
+      "introNoDouble": "Answer about your everyday without counting exercise — we ask about that separately so it isn't counted twice.",
+      "workQuestion": "What does most of your work or study day look like?",
+      "work": {
+        "SITTING": "Almost only sitting — e.g. office, studies, driving",
+        "MOSTLY_SITTING": "Mostly sitting, but I walk around a bit",
+        "MIXED": "A mix of sitting, standing and walking — e.g. teacher",
+        "MOSTLY_STANDING": "Mostly standing or walking — e.g. shop, waiter, mechanic",
+        "PHYSICAL": "Physically demanding — e.g. construction, farming, warehouse"
+      },
+      "walkStandQuestion": "How many hours do you usually walk or stand per day?",
+      "walkStandHint": "Think of an ordinary day like yesterday — work, shopping, housework, everything outside exercise.",
+      "walkStand": {
+        "UNDER_1": "Under 1 hour",
+        "H1_2": "1–2 hours",
+        "H2_4": "2–4 hours",
+        "H4_6": "4–6 hours",
+        "OVER_6": "Over 6 hours"
+      },
+      "transportQuestion": "How do you usually get around?",
+      "transport": {
+        "MOTORIZED": "Car or public transport almost all the way",
+        "LITTLE_WALKING": "A little walking to and from",
+        "SOME_WALKING": "A fair bit of walking every day",
+        "REGULAR_ACTIVE": "I cycle or walk regularly",
+        "DAILY_ACTIVE": "I walk or cycle a lot every day"
+      },
+      "stepsQuestion": "Roughly how many steps do you take per day?",
+      "stepsHint": "If your phone or watch knows the number, use it. Otherwise choose \"Don't know\".",
+      "steps": {
+        "UNDER_3K": "Under 3,000",
+        "K3_5": "3,000–5,000",
+        "K5_7_5": "5,000–7,500",
+        "K7_5_10": "7,500–10,000",
+        "K10_15": "10,000–15,000",
+        "OVER_15K": "Over 15,000"
+      },
+      "dontKnow": "Don't know",
+      "viaIntegration": "Add through an integration instead",
+      "trainingQuestion": "How often do you exercise?",
+      "trainingHint": "Running, cycling, gym, team sports, swimming — anything you do to move.",
+      "sessionsPerWeek": "Times per week",
+      "sessionMinutes": "Minutes per session",
+      "intensityQuestion": "How strenuous is it typically?",
+      "intensityHint": "The talk test: how easy is it to hold a conversation while you're at it?",
+      "intensity": {
+        "LIGHT": "I hardly get out of breath",
+        "MODERATE": "I get slightly out of breath but can talk normally",
+        "VIGOROUS": "I get clearly out of breath",
+        "VERY_VIGOROUS": "It's hard to hold a conversation"
+      },
+      "resultTitle": "Your energy needs",
+      "resultSuggested": "Your usual activity level looks like: {level}",
+      "calculating": "Calculating…",
+      "adjustLevel": "Doesn't fit? Adjust the level here",
+      "farFromSuggestion": "That's quite far from what your answers suggest. Remember exercise isn't counted here — it counts separately.",
+      "stepsAreExamples": "Step counts are rough examples, not fixed limits."
+    }
+  },
+  "energy": {
+    "title": "How we work it out",
+    "approx": "approx.",
+    "why": "Why?",
+    "rest": "Rest (your metabolism)",
+    "everyday": "Your everyday",
+    "training": "Your exercise",
+    "need": "Your energy needs",
+    "goal": "Your weight goal",
+    "budget": "Your daily budget",
+    "range": "Probably between {low} and {high} kcal — it gets more precise as the app receives weight and activity data.",
+    "whyRest": "What your body uses if you lay still all day. Based on weight, height, age and sex (Mifflin-St Jeor).",
+    "whyEveryday": "Work, walking, standing and transport — without exercise. Your answers match the level \"{level}\" (PAL {pal}).",
+    "whyTraining": "Your typical exercise spread over the week, counted net so resting metabolism isn't counted twice. When you log a workout it replaces this allowance for that day.",
+    "whyGoal": "The difference between what you use and what you should eat to reach your goal at a healthy pace.",
+    "disclaimer": "All numbers are estimates, not measurements. They don't replace advice from a doctor or dietitian.",
+    "missingData": "To work out your energy needs we still need:",
+    "missing": {
+      "weightKg": "your weight",
+      "heightCm": "your height",
+      "birthDate": "your date of birth",
+      "sex": "your sex"
+    },
+    "adjustment": {
+      "CHILD_NO_DEFICIT": "Under 18 we don't set a calorie deficit — the body is still growing.",
+      "UNDERWEIGHT_NO_LOSS": "Your weight is below what we consider healthy, so we don't suggest weight loss.",
+      "TARGET_RAISED_TO_MIN_BMI": "Your target weight was raised to the lowest weight we consider healthy for your height.",
+      "PACE_CAPPED": "The pace was lowered to what is healthy to lose per week.",
+      "PACE_SLOW_NORMAL_WEIGHT": "You're at a normal weight, so we keep the pace slow.",
+      "DEFICIT_CAPPED_SHARE": "The deficit is limited to 20% of your energy needs.",
+      "FLOOR_APPLIED": "The budget was raised to the lowest amount that is healthy to eat without medical supervision.",
+      "BMR_FLOOR_APPLIED": "The budget was raised so it doesn't fall below your resting metabolism.",
+      "GAIN_PACE_CAPPED": "The pace was lowered to what is healthy to gain per week."
+    }
   },
   "swipeableRow": {
     "saveAsFavorite": "Save as favorite",

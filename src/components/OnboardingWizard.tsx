@@ -10,6 +10,9 @@ import {
   saveDefaultCalendarView,
   useDefaultCalendarView,
 } from "@/lib/calendar-view-pref";
+import { ACTIVITY_PAGES, ActivityStep, EMPTY_ACTIVITY_ANSWERS, type ActivityPage } from "@/components/onboarding/ActivityStep";
+import type { EnergySummary } from "@/lib/activity-profile";
+import type { ActivityAnswers, ActivityLevelKey } from "@/lib/pal-model";
 
 // Hvordan arket blev lukket — bestemmer hvad der gemmes, når glid-ud-
 // animationen er færdig. Træk ned/scrim/Escape tæller som "Påmind mig senere".
@@ -36,6 +39,7 @@ type StepId =
   | "shift-work"
   | "daily-log-preference"
   | "calendar-view"
+  | "activity"
   | "health-import";
 
 const ALL_STEPS: StepId[] = [
@@ -43,8 +47,15 @@ const ALL_STEPS: StepId[] = [
   "shift-work",
   "daily-log-preference",
   "calendar-view",
+  "activity",
   "health-import",
 ];
+
+// Aktivitetstrinnet har egne sider (docs/ACTIVITY-PAL.md). Intensitet
+// springes over uden motion.
+function visibleActivityPages(answers: ActivityAnswers): ActivityPage[] {
+  return ACTIVITY_PAGES.filter((page) => page !== "intensity" || Boolean(answers.training));
+}
 
 function visibleSteps(hasRegularSleep: boolean | null, shiftWork: boolean | null): StepId[] {
   return ALL_STEPS.filter((step) => {
@@ -68,6 +79,10 @@ export function OnboardingWizard({
   const [canDismissPermanently, setCanDismissPermanently] = useState(false);
   const exitRef = useRef<ExitReason>("remind");
   const calendarView = useDefaultCalendarView();
+  const [activityPageIndex, setActivityPageIndex] = useState(0);
+  const [activityAnswers, setActivityAnswers] = useState<ActivityAnswers>(EMPTY_ACTIVITY_ANSWERS);
+  const [activitySummary, setActivitySummary] = useState<EnergySummary | null>(null);
+  const [suggestedLevel, setSuggestedLevel] = useState<ActivityLevelKey | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -115,7 +130,46 @@ export function OnboardingWizard({
     onClose?.();
   }
 
+  const activityPages = visibleActivityPages(activityAnswers);
+  const activityPage = activityPages[Math.min(activityPageIndex, activityPages.length - 1)];
+  const onActivityLastPage = activityPageIndex + 1 >= activityPages.length;
+
+  // Svarene sendes til serveren, når resultatsiden åbnes; den regner PAL og
+  // regnestykket (src/lib/activity-profile.ts) og gemmer en snapshot.
+  function submitActivityAnswers() {
+    fetch("/api/profile/activity", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ answers: activityAnswers }),
+    })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { summary: EnergySummary } | null) => {
+        if (!data) return;
+        setActivitySummary(data.summary);
+        setSuggestedLevel(data.summary.level);
+      })
+      .catch(() => {});
+  }
+
+  function pickActivityLevel(level: ActivityLevelKey) {
+    setActivitySummary((current) => (current ? { ...current, level } : current));
+    fetch("/api/profile/activity", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ activityLevel: level }),
+    })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { summary: EnergySummary } | null) => data && setActivitySummary(data.summary))
+      .catch(() => {});
+  }
+
   function goNext() {
+    if (currentStep === "activity" && !onActivityLastPage) {
+      const nextPage = activityPageIndex + 1;
+      setActivityPageIndex(nextPage);
+      if (activityPages[nextPage] === "result") submitActivityAnswers();
+      return;
+    }
     const nextIndex = stepIndex + 1;
     setStepIndex(nextIndex);
     save({ onboardingStep: nextIndex });
@@ -229,6 +283,17 @@ export function OnboardingWizard({
               ))}
             </div>
           </div>
+        )}
+
+        {currentStep === "activity" && (
+          <ActivityStep
+            page={activityPage}
+            answers={activityAnswers}
+            onChange={setActivityAnswers}
+            summary={activitySummary}
+            suggestedLevel={suggestedLevel}
+            onPickLevel={pickActivityLevel}
+          />
         )}
 
         {currentStep === "health-import" && (

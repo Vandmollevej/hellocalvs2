@@ -5,6 +5,7 @@ import { unauthorized } from "@/lib/session";
 import { getProfileUser } from "@/lib/family-access";
 import { getUserSubscriptionTier } from "@/lib/subscription";
 import { isActivityLevel } from "@/lib/activity-level";
+import { applyManualLevel } from "@/lib/activity-profile";
 
 export async function GET() {
   try {
@@ -179,8 +180,12 @@ export async function PATCH(req: Request) {
       },
     });
 
+    // Vælger brugeren niveauet selv, gælder niveauets PAL (kilde MANUAL) —
+    // docs/ACTIVITY-PAL.md.
+    const finalUser = isActivityLevel(activityLevel) ? await applyManualLevel(user.id, activityLevel) : updated;
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { passwordHash, totpSecret, ...safeUpdated } = updated;
+    const { passwordHash, totpSecret, ...safeUpdated } = finalUser;
     return NextResponse.json({ user: safeUpdated });
   } catch (error) {
     console.error("Profile update failed", error);
