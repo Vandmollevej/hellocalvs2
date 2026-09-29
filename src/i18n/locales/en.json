@@ -1954,6 +1954,14 @@
     "goal": "Your weight goal",
     "budget": "Your daily budget",
     "range": "Probably between {low} and {high} kcal — it gets more precise as the app receives weight and activity data.",
+    "calibrated": "Adjusted to your weight",
+    "whyCalibrated": "How we adjusted: over {days} logged days you ate {intake} kcal on average, and your trend weight changed {slope} kg/week. That points to roughly {learned} kcal. We give that {weight}% weight and the rest to the formula, so a single odd number doesn't tip the calculation.",
+    "calibrationStatus": {
+      "OK": "Adjusted continuously from your logs and weigh-ins.",
+      "NOT_ENOUGH_INTAKE": "Once you've logged 14 days, we start adjusting the number to your weight.",
+      "NOT_ENOUGH_WEIGHT": "Weigh yourself regularly over at least two weeks and we'll adjust the number to your weight.",
+      "IMPLAUSIBLE": "Your logs and weigh-ins currently point too far from the formula to adjust — often because not everything was logged."
+    },
     "whyRest": "What your body uses if you lay still all day. Based on weight, height, age and sex (Mifflin-St Jeor).",
     "whyEveryday": "Work, walking, standing and transport — without exercise. Your answers match the level \"{level}\" (PAL {pal}).",
     "whyTraining": "Your typical exercise spread over the week, counted net so resting metabolism isn't counted twice. When you log a workout it replaces this allowance for that day.",

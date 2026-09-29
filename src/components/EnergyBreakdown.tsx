@@ -54,7 +54,7 @@ function Line({
 
 export function EnergyBreakdown({ summary }: { summary: EnergySummary }) {
   const { t } = useTranslation();
-  const { bmr, pal, daily, budget, trainingAllowanceKcal, level } = summary;
+  const { bmr, pal, daily, budget, trainingAllowanceKcal, level, calibration, needKcal } = summary;
 
   if (!daily || bmr === null || pal === null) {
     return (
@@ -72,6 +72,8 @@ export function EnergyBreakdown({ summary }: { summary: EnergySummary }) {
 
   const everydayKcal = daily.baselineKcal - bmr;
   const goalDelta = budget?.deltaKcal ?? 0;
+  const calibratedDelta = needKcal !== null && calibration?.reason === "OK" && calibration.weight > 0 ? needKcal - daily.kcal : 0;
+  const finalNeed = needKcal ?? daily.kcal;
   const lines: Record<LineKey, string> = {
     rest: t("energy.whyRest"),
     everyday: t("energy.whyEveryday", { pal: formatPal(pal), level: level ? t(`profile.activityLevel.${level}.label`) : "" }),
@@ -87,15 +89,32 @@ export function EnergyBreakdown({ summary }: { summary: EnergySummary }) {
       {trainingAllowanceKcal > 0 && (
         <Line label={t("energy.training")} value={formatKcal(trainingAllowanceKcal)} sign="+" why={lines.training} />
       )}
+      {calibratedDelta !== 0 && (
+        <Line
+          label={t("energy.calibrated")}
+          value={formatKcal(Math.abs(calibratedDelta))}
+          sign={calibratedDelta < 0 ? "−" : "+"}
+          why={t("energy.whyCalibrated", {
+            days: calibration!.loggedDays,
+            intake: formatKcal(calibration!.averageIntakeKcal ?? 0),
+            slope: new Intl.NumberFormat("da-DK", { maximumFractionDigits: 2 }).format(calibration!.slopeKgPerWeek ?? 0),
+            learned: formatKcal(calibration!.learnedKcal ?? 0),
+            weight: Math.round(calibration!.weight * 100),
+          })}
+        />
+      )}
       <Line
         label={t("energy.need")}
-        value={`${t("energy.approx")} ${formatKcal(daily.kcal)}`}
+        value={`${t("energy.approx")} ${formatKcal(finalNeed)}`}
         sign="="
         strong
       />
       <p className="hf-type-small text-text-secondary">
-        {t("energy.range", { low: formatKcal(daily.low), high: formatKcal(daily.high) })}
+        {t("energy.range", { low: formatKcal(daily.low + calibratedDelta), high: formatKcal(daily.high + calibratedDelta) })}
       </p>
+      {calibration && calibratedDelta === 0 && (
+        <p className="hf-type-small text-text-secondary">{t(`energy.calibrationStatus.${calibration.reason}`)}</p>
+      )}
       {budget && goalDelta !== 0 && (
         <>
           <Line label={t("energy.goal")} value={formatKcal(Math.abs(goalDelta))} sign={goalDelta < 0 ? "−" : "+"} why={lines.goal} />

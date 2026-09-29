@@ -10,6 +10,7 @@ Last updated: 2026-09-29
 - F2 bygget: startguiden har nyt trin "Aktivitet" (8 sider inde i trinnet, `ActivityStep.tsx`); resultatsiden viser regnestykket "hvile + hverdag + motion = energibehov" (`EnergyBreakdown.tsx`) med interval og "Ret niveau". Samme kort vises under aktivitetsniveauet på `/profile/edit`. API: `/api/profile/activity` (GET/PUT/PATCH). Tekster da/en. Ikke live-testet (ingen lokal DB); test guiden på telefon.
 - F3 bygget: `/activity/create` spørger om anstrengelse (taletest) og distance for gang/løb og anslår kalorier fra MET (`src/lib/activity-met.ts`, netto), som placeholder i kcal-feltet; eget tal vinder. Migration `20260929200000_activity_met` (nye kolonner på `activities`). Ikke live-testet.
 - F4 bygget: kalenderens vægtestimat bruger nu beregnet PAL + træningstillæg, og enhedsdata pr. dag (målt aktiv energi erstatter PAL-delen; skridt alene justerer PAL højst ±0,15). Integrationers aktiviteter markeres `energySource = DEVICE`. Ikke live-testet.
+- F5 bygget: løbende kalibrering mod trendvægt (`src/lib/energy-calibration.ts`, tests grønne). Kører ved hver visning af regnestykket; skriver kun ny PAL (kilde CALIBRATED) når den flytter sig, højst én gang i døgnet. Regnestykket forklarer justeringen. Ikke live-testet.
 - Bemærk: `page-tree.test.mjs` fejler også på master (uvedkommende).
 
 ## 2026-09-29: Admin-brugere

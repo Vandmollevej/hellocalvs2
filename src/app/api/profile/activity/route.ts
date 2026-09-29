@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getProfileUser } from "@/lib/family-access";
 import { unauthorized } from "@/lib/session";
 import { isActivityLevel } from "@/lib/activity-level";
-import { applyActivityAnswers, applyManualLevel, energySummaryFor, parseActivityAnswers } from "@/lib/activity-profile";
+import { applyActivityAnswers, applyManualLevel, calibrateUser, energySummaryFor, parseActivityAnswers } from "@/lib/activity-profile";
 
 // Aktivitetsniveau og regnestykke (docs/ACTIVITY-PAL.md).
 // GET: regnestykket for profilen. PUT: gem onboarding-svar og beregn PAL.
@@ -12,7 +12,10 @@ export async function GET() {
   try {
     const user = await getProfileUser("profile", "VIEWED");
     if (!user) return unauthorized();
-    return NextResponse.json({ summary: energySummaryFor(user), answers: user.activityAnswers });
+    // Kalibreringen kører ved hver visning (dynamisk, docs/ACTIVITY-PAL.md);
+    // den skriver kun til databasen, når PAL faktisk flytter sig.
+    const { calibration, user: calibrated } = await calibrateUser(user);
+    return NextResponse.json({ summary: energySummaryFor(calibrated, calibration), answers: user.activityAnswers });
   } catch (error) {
     console.error("Activity summary failed", error);
     return NextResponse.json({ message: "Database ikke tilgængelig" }, { status: 503 });

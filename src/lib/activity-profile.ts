@@ -18,7 +18,20 @@ import {
   type DailyEnergyEstimate,
 } from "@/lib/pal-model";
 import { computeDailyBudget, type DailyBudget, type GoalMode } from "@/lib/energy-budget";
-import { childPhysicalActivityLevel, estimateBmr } from "@/lib/weekly-energy-summary";
+import {
+  CALIBRATION_WINDOW_DAYS,
+  calibrateMaintenance,
+  calibrationDayKey,
+  type Calibration,
+} from "@/lib/energy-calibration";
+import { minimumHealthyKcal } from "@/lib/healthy-intake";
+import { computeTrendWeight } from "@/lib/weight-trend";
+import {
+  childPhysicalActivityLevel,
+  deviceDataByDay,
+  estimateBmr,
+  formulaMaintenanceEstimate,
+} from "@/lib/weekly-energy-summary";
 
 // Server-siden af aktivitetsniveauet (docs/ACTIVITY-PAL.md): gemmer svarene
 // fra onboarding, den beregnede hverdags-PAL og en snapshot-række, og samler
@@ -83,13 +96,17 @@ export type EnergySummary = {
   level: ActivityLevelKey | null;
   trainingAllowanceKcal: number;
   daily: DailyEnergyEstimate | null;
+  /** Løbende kalibrering mod vægt (docs/ACTIVITY-PAL.md); null når den ikke er kørt. */
+  calibration: Calibration | null;
+  /** Energibehovet budgettet bygger på: kalibreret når muligt, ellers dagsestimatet. */
+  needKcal: number | null;
   budget: DailyBudget | null;
   /** Felter der mangler for at kunne regne (vises som opfordring i UI). */
   missing: ("weightKg" | "heightCm" | "birthDate" | "sex")[];
 };
 
 /** Regnestykket for en profil. Alt er "ca."; null hvor grundlaget mangler. */
-export function energySummaryFor(user: ProfileFields): EnergySummary {
+export function energySummaryFor(user: ProfileFields, calibration: Calibration | null = null): EnergySummary {
   const age = computeAge(user.birthDate);
   const bmr = estimateBmr({ weightKg: user.weightKg, heightCm: user.heightCm, age, sex: user.sex });
   const missing: EnergySummary["missing"] = [];
@@ -104,9 +121,11 @@ export function energySummaryFor(user: ProfileFields): EnergySummary {
   const palUncertainty = user.palConfidence ?? (user.palSource === "MANUAL" ? 0.2 : 0.15);
   const trainingAllowanceKcal = user.trainingAllowanceKcal ?? 0;
   const daily = bmr !== null && pal !== null ? estimateDailyEnergy({ bmr, pal, palUncertainty, trainingAllowanceKcal }) : null;
-  const budget = daily
+  const calibrated = calibration && calibration.reason === "OK" && calibration.weight > 0 ? Math.round(calibration.usedKcal / 10) * 10 : null;
+  const needKcal = calibrated ?? daily?.kcal ?? null;
+  const budget = daily && needKcal !== null
     ? computeDailyBudget({
-        tdeeKcal: daily.kcal,
+        tdeeKcal: needKcal,
         bmrKcal: bmr,
         weightKg: user.weightKg,
         heightCm: user.heightCm,
@@ -127,9 +146,90 @@ export function energySummaryFor(user: ProfileFields): EnergySummary {
     level: pal !== null ? levelForPal(pal) : null,
     trainingAllowanceKcal,
     daily,
+    calibration,
+    needKcal,
     budget,
     missing,
   };
+}
+
+// Kalibreringen skriver højst én ny PAL i døgnet, og kun når den flytter sig.
+const CALIBRATION_PERSIST_MIN_HOURS = 24;
+const CALIBRATION_PERSIST_MIN_PAL_DELTA = 0.02;
+
+/**
+ * Løbende kalibrering (docs/ACTIVITY-PAL.md): lærer vedligeholdet af de
+ * sidste 56 dages indtag og trendvægt, blander det med formlen og — når
+ * blandingen flytter PAL — gemmer den nye hverdags-PAL med kilde CALIBRATED
+ * (og en snapshot). Returnerer kalibreringen og den (evt. opdaterede) bruger.
+ */
+export async function calibrateUser(user: ProfileFields & { id: string; activityProfileUpdatedAt: Date | null }) {
+  const age = computeAge(user.birthDate);
+  const bmr = estimateBmr({ weightKg: user.weightKg, heightCm: user.heightCm, age, sex: user.sex });
+  if (bmr === null || childPhysicalActivityLevel(age) !== null) return { calibration: null, user };
+  const palBase = user.palBase ?? (user.activityLevel ? representativePal(user.activityLevel) : null);
+  if (palBase === null) return { calibration: null, user };
+
+  const end = new Date();
+  end.setHours(0, 0, 0, 0);
+  const start = new Date(end.getTime() - CALIBRATION_WINDOW_DAYS * 24 * 60 * 60 * 1000);
+  const [registrations, weighIns, activities, metrics] = await Promise.all([
+    prisma.registration.findMany({ where: { userId: user.id, createdAt: { gte: start } }, select: { createdAt: true, kcalSnapshot: true } }),
+    prisma.weightEntry.findMany({ where: { userId: user.id, weighedAt: { gte: start } }, select: { weightKg: true, weighedAt: true, timeOfDay: true } }),
+    prisma.activity.findMany({ where: { userId: user.id, startedAt: { gte: start } }, select: { startedAt: true, caloriesBurned: true } }),
+    prisma.healthMetric.findMany({
+      where: { userId: user.id, recordedAt: { gte: start }, type: { in: ["ACTIVE_ENERGY_KCAL", "STEPS"] } },
+      select: { type: true, source: true, value: true, recordedAt: true },
+    }),
+  ]);
+
+  const intakeByDay = new Map<string, number>();
+  for (const row of registrations) {
+    const key = calibrationDayKey(row.createdAt);
+    intakeByDay.set(key, (intakeByDay.get(key) ?? 0) + row.kcalSnapshot);
+  }
+  const profile = { activityLevel: user.activityLevel, palBase, trainingAllowanceKcal: user.trainingAllowanceKcal };
+  const device = deviceDataByDay(metrics.map((m) => ({ ...m, recordedAt: m.recordedAt.toISOString() })));
+  const formulaKcal = formulaMaintenanceEstimate(
+    bmr,
+    activities.map((a) => ({ startedAt: a.startedAt.toISOString(), caloriesBurned: a.caloriesBurned })),
+    profile,
+    device,
+    CALIBRATION_WINDOW_DAYS,
+  );
+  if (formulaKcal === null) return { calibration: null, user };
+  const trend =
+    computeTrendWeight(
+      weighIns.map((w) => ({ weightKg: w.weightKg, weighedAt: w.weighedAt.toISOString(), timeOfDay: w.timeOfDay })),
+      registrations.map((r) => ({ createdAt: r.createdAt.toISOString() })),
+    ) ?? [];
+  const calibration = calibrateMaintenance({
+    formulaKcal,
+    intakeByDay,
+    trend,
+    endExclusive: end,
+    minimumKcal: minimumHealthyKcal({ weightKg: user.weightKg, heightCm: user.heightCm, age, sex: user.sex }),
+  });
+
+  // Skalér hverdags-PAL med forholdet brugt/formel, så hele regnestykket
+  // følger med — og gem kun, når det flytter sig og højst én gang i døgnet.
+  if (calibration.reason === "OK" && calibration.weight > 0) {
+    const scaled = Math.round(Math.min(2.4, Math.max(1.1, palBase * (calibration.usedKcal / formulaKcal))) * 100) / 100;
+    const staleEnough =
+      !user.activityProfileUpdatedAt || Date.now() - user.activityProfileUpdatedAt.getTime() >= CALIBRATION_PERSIST_MIN_HOURS * 3600 * 1000;
+    if (Math.abs(scaled - palBase) >= CALIBRATION_PERSIST_MIN_PAL_DELTA && staleEnough) {
+      const palConfidence = Math.round((0.15 * (1 - calibration.weight) + 0.05) * 100) / 100;
+      const updated = await prisma.user.update({
+        where: { id: user.id },
+        data: { palBase: scaled, palSource: "CALIBRATED", palConfidence, activityProfileUpdatedAt: new Date() },
+      });
+      await prisma.activityProfileSnapshot.create({
+        data: { userId: user.id, palBase: scaled, palConfidence, source: "CALIBRATED", trainingAllowanceKcal: user.trainingAllowanceKcal },
+      });
+      return { calibration, user: updated };
+    }
+  }
+  return { calibration, user };
 }
 
 /** Gem onboarding-svar: beregn PAL + tillæg, opdatér brugeren og skriv en snapshot. */

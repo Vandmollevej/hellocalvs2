@@ -1954,6 +1954,14 @@
     "goal": "Dit vægtmål",
     "budget": "Dit daglige budget",
     "range": "Sandsynligvis mellem {low} og {high} kcal — tallet bliver mere præcist, når appen får vægt- og aktivitetsdata.",
+    "calibrated": "Justeret efter din vægt",
+    "whyCalibrated": "Sådan har vi justeret: over {days} registrerede dage har du i snit spist {intake} kcal, og din trendvægt har ændret sig {slope} kg/uge. Det peger på et forbrug på ca. {learned} kcal. Vi lægger {weight} % vægt på det og resten på formlen, så et enkelt skævt tal ikke vælter regnestykket.",
+    "calibrationStatus": {
+      "OK": "Justeres løbende efter dine registreringer og vejninger.",
+      "NOT_ENOUGH_INTAKE": "Når du har registreret 14 dage, begynder vi at justere tallet efter din vægt.",
+      "NOT_ENOUGH_WEIGHT": "Vej dig jævnligt over mindst to uger, så justerer vi tallet efter din vægt.",
+      "IMPLAUSIBLE": "Dine registreringer og vejninger peger lige nu for langt fra formlen til at justere — ofte fordi ikke alt er registreret."
+    },
     "whyRest": "Det, kroppen bruger, hvis du lå stille hele dagen. Regnet ud fra vægt, højde, alder og køn (Mifflin-St Jeor).",
     "whyEveryday": "Arbejde, gang, stående tid og transport — uden motion. Dine svar svarer til niveauet \"{level}\" (PAL {pal}).",
     "whyTraining": "Din typiske motion fordelt over ugen, regnet netto, så hvilestofskiftet ikke tælles to gange. Logger du en træning, erstatter den tillægget den dag.",
