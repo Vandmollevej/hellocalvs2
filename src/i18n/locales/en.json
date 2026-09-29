@@ -2165,6 +2165,20 @@
     "moveUp": "Move section up",
     "moveDown": "Move section down"
   },
+  "waterStats": {
+    "title": "Body water",
+    "link": "See body-water statistics",
+    "intro": "Body water (% of body weight) from your smart scale compared with the same day's calories, salt and sugar — to spot what may cause fluid-balance swings.",
+    "noData": "No body-water measurements in this period. Connect a smart scale (e.g. Withings) under Integrations.",
+    "water": "Body water (%)",
+    "correlation": "Correlation: {value} — close to 1 or −1 means a strong relationship, close to 0 none. It is not proof of cause.",
+    "correlationNone": "Too few days with both measurements to calculate a relationship.",
+    "factor": {
+      "kcal": "Calories",
+      "salt": "Salt",
+      "sugar": "Sugar"
+    }
+  },
   "sleepStats": {
     "title": "Sleep statistics",
     "calendarLink": "Statistics",

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { HfScreen } from "@/components/HfScreen";
 import { useTranslation } from "@/i18n/LocaleProvider";
@@ -214,6 +215,9 @@ export default function BodyMeasurementsPage() {
             </label>
           ))}
         </div>
+        <Link href="/statistics/body-water" className="hf-type-small hf-type-strong text-hf-black underline text-center">
+          {t("waterStats.link")}
+        </Link>
         {saving && (
           <p className="hf-type-micro text-text-secondary text-center">
             {t("bodyMeasurements.saving")}

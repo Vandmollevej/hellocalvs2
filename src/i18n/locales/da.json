@@ -2165,6 +2165,20 @@
     "moveUp": "Flyt sektion op",
     "moveDown": "Flyt sektion ned"
   },
+  "waterStats": {
+    "title": "Væske",
+    "link": "Se væskestatistik",
+    "intro": "Kropsvand (% af kropsvægt) fra din smartvægt sammenholdt med samme dags kalorier, salt og sukker — for at spotte, hvad der kan give udsving i væskebalancen.",
+    "noData": "Ingen kropsvand-målinger i perioden. Tilslut en smartvægt (fx Withings) under Integrationer.",
+    "water": "Kropsvand (%)",
+    "correlation": "Sammenhæng (korrelation): {value} — tæt på 1 eller −1 betyder stærk sammenhæng, tæt på 0 ingen. Det er ikke bevis for årsag.",
+    "correlationNone": "For få dage med begge målinger til at beregne en sammenhæng.",
+    "factor": {
+      "kcal": "Kalorier",
+      "salt": "Salt",
+      "sugar": "Sukker"
+    }
+  },
   "sleepStats": {
     "title": "Søvnstatistik",
     "calendarLink": "Statistik",
