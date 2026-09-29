@@ -22,7 +22,10 @@ export default async function Home() {
         <Hero />
       </div>
 
-      <div className="min-h-0 flex-1 overflow-hidden pt-2">
+      {/* Ligger over tal-hjulet (z-10 + baggrund), så hjulets rækker drejer
+          ind bag listen i stedet for ned over skillestregen (bruger
+          2026-09-29). Tilføj-knappens vifte (z-30) ligger stadig øverst. */}
+      <div className="relative z-10 min-h-0 flex-1 overflow-hidden bg-hf-cream pt-2">
         <DailyList />
       </div>
 
