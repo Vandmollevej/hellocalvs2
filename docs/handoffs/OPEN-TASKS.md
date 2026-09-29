@@ -245,7 +245,7 @@ Ejer: cloud-session (2026-09-29)
 
 | Id | Opgave | Status | Næste skridt |
 | --- | --- | --- | --- |
-| pal-plan | Plan for aktivitetsniveau, PAL, MET, kalibrering og kaloriemål (`docs/ACTIVITY-PAL.md`); erstatter de 5 sider i `onboarding-integration` | Venter på bruger | Brugeren godkender planen; derefter F0-afklaringer og F1 (beregningsmodul + tests) |
+| pal-plan | Plan for aktivitetsniveau, PAL, MET, kalibrering og kaloriemål (`docs/ACTIVITY-PAL.md`); erstatter de 5 sider i `onboarding-integration` | I gang | F0+F1 færdige på branch `claude/activity-pal-plan` (PR #114): beregningsmoduler, tests, skema + migration. Næste: F2 onboarding-sider + regnestykke-visning (læs `design.md` først) |
 
 ## G-FAM — Familieabonnement og børneprofiler
 Filer: `docs/FAMILY.md`, Prisma-skema (Family*, ProfileAccessLog), `src/lib/family*.ts`, `src/lib/session.ts`, `src/app/api/family/**`, `src/app/profile/family/**`, profilvælger/panel-komponenter, dagbogs-API'erne der skal følge den valgte profil.

@@ -4,7 +4,10 @@ Last updated: 2026-09-29
 
 ## 2026-09-29: Plan for aktivitetsniveau, PAL og kaloriemål
 
-- Ny plan `docs/ACTIVITY-PAL.md` + beslutning i DECISIONS.md + række G-PAL i OPEN-TASKS.md. Intet kode bygget; venter på brugerens godkendelse, derefter F0–F6 (beregningsmodul, onboarding, MET, enhedsdata, kalibrering, kaloriemål).
+- Plan `docs/ACTIVITY-PAL.md` + beslutning i DECISIONS.md + række G-PAL i OPEN-TASKS.md.
+- F1 bygget: `src/lib/pal-model.ts` (hverdags-PAL fra svar + skridt, fem niveauer, netto-MET, træningstillæg, dagsestimat med interval) og `src/lib/energy-budget.ts` (kaloriebudget med hårde sundhedsgrænser). Tests: `npm test` (15 nye, grønne). `activity-level.ts` bruger nu 1,30/1,45/1,65/1,85/2,00.
+- Migration `20260929190000_activity_pal_budget` skal køre ved deploy (nye User-felter + `activity_profile_snapshots`). Ingen UI endnu; intet kalder de nye moduler. Lint og typecheck grønne; ikke live-testet (ingen lokal DB).
+- Bemærk: `page-tree.test.mjs` fejler også på master (uvedkommende).
 
 ## 2026-09-29: Admin-brugere
 

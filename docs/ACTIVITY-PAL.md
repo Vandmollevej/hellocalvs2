@@ -1,6 +1,6 @@
 # Aktivitetsniveau, energibehov og kaloriemål — plan
 
-Status: **plan, intet bygget** (2026-09-29). Beslutningerne står i `DECISIONS.md` (2026-09-29: Aktivitetsniveau, PAL og kaloriemål). Kilderækkefølge: WHO og Sundhedsstyrelsen (definitioner af intensitet), DGE (PAL), Compendium of Physical Activities (MET). Kildelinks: se brugerens oprindelige brief i sessionen; de vigtigste er `pacompendium.com`, `dge.de/wissenschaft/referenzwerte/energie/` og sst.dk's anbefalinger for voksne 18–64 år.
+Status: **F0 og F1 bygget** (2026-09-29): beregningsmoduler `src/lib/pal-model.ts` og `src/lib/energy-budget.ts` med tests, skema + migration `20260929190000_activity_pal_budget`. F2–F6 mangler. Beslutningerne står i `DECISIONS.md` (2026-09-29: Aktivitetsniveau, PAL og kaloriemål). Kilderækkefølge: WHO og Sundhedsstyrelsen (definitioner af intensitet), DGE (PAL), Compendium of Physical Activities (MET). Kildelinks: se brugerens oprindelige brief i sessionen; de vigtigste er `pacompendium.com`, `dge.de/wissenschaft/referenzwerte/energie/` og sst.dk's anbefalinger for voksne 18–64 år.
 
 ## Formål
 
@@ -134,8 +134,8 @@ Puls omsættes ikke direkte til kalorier; den bruges kun som intensitetssignal.
 
 | Fase | Indhold |
 |---|---|
-| F0 | Denne plan, `DECISIONS.md`, `OPEN-TASKS.md`. Læs `OnboardingWizard.tsx`, `HEALTHKIT_COMPANION.md` og `weight-trend.ts`; afklar om `Activity.caloriesBurned` er netto eller brutto. |
-| F1 | Ren beregningsmodul (`pal-model`, `energy-budget`) med enhedstests; skema + migration (ingen aktive brugere, så gamle niveauer erstattes direkte). |
+| F0 | **Færdig.** Plan, `DECISIONS.md`, `OPEN-TASKS.md`; `caloriesBurned` afklaret som netto. |
+| F1 | **Færdig.** `src/lib/pal-model.ts` (PAL, niveauer, netto-MET, tillæg, dagsestimat) og `src/lib/energy-budget.ts` (budget med sundhedsgrænser), tests i `*.test.mjs`; `activity-level.ts` bruger nu niveauernes repræsentative PAL; skema: `User.palBase/palSource/palConfidence/activityAnswers/trainingAllowanceKcal/goalMode/goalPaceKgPerWeek`, ny `ActivityProfileSnapshot`. |
 | F2 | Onboarding-sider og regnestykke-visning (læs `design.md`; da/en-tekster); profil-redigering. |
 | F3 | MET og netto i aktivitetslogning; taletest ved logning. |
 | F4 | Dagsjustering fra enhedsdata (aktiv energi, distance/tid, skridt). |
@@ -145,6 +145,6 @@ Puls omsættes ikke direkte til kalorier; den bruges kun som intensitetssignal.
 ## Åbne punkter
 
 1. `SPECIFICATION.md` §5 siger, at niveauet ikke kan vælges manuelt; kravet om manuel korrektion (punkt 11) er en ændring. Foreslået: tilladt via "Ret niveau" med advarsel og `palSource = MANUAL` (kræver at §5 opdateres).
-2. `Activity.caloriesBurned`: netto eller brutto? Skal undersøges i F0.
+2. `Activity.caloriesBurned` er **netto** (afklaret i F0): feltet er brugerindtastet eller enhedens aktive energi, og pulsudsving regnes som ekstra over hvile. Nye MET-beregninger skal derfor også være netto.
 3. Graviditets-/amme-flag findes måske ikke; afklar hvordan de beskyttes mod underskud.
 4. Hvordan tabellerne (arbejde, gang, transport, skridt) og MET-klasserne kalibreres: enhedstest mod de fem niveaueksempler, derefter nøgtern gennemgang af en række profiler.

@@ -23,6 +23,22 @@ model User {
   // Hverdagens aktivitetsniveau i 5 trin (src/lib/activity-level.ts).
   // Null = ikke valgt; så regnes der med stillesiddende.
   activityLevel ActivityLevel?
+  // 2026-09-29 (docs/ACTIVITY-PAL.md): beregnet hverdags-PAL fra onboarding-
+  // svarene (src/lib/pal-model.ts). activityLevel udledes af palBase; er
+  // palBase null, gælder niveauets repræsentative PAL. palSource fortæller,
+  // om tallet kommer fra spørgeskemaet, manuel rettelse eller kalibrering.
+  palBase                  Float?
+  palSource                PalSource?
+  palConfidence            Float?
+  activityAnswers          Json?
+  activityProfileUpdatedAt DateTime?
+  // Fast dagstillæg for typisk motion (netto-kcal/dag), jf. pal-model.ts.
+  trainingAllowanceKcal    Int?
+  // Kaloriemål: vedligehold/tabe/tage på + ønsket tempo (kg/uge). Det
+  // faktiske budget regnes i src/lib/energy-budget.ts inden for sundheds-
+  // grænserne — det gemte tempo er brugerens ønske, ikke det anvendte.
+  goalMode                 GoalMode?
+  goalPaceKgPerWeek        Float?
   // Målvægt: brugerens eget mål, sat via /profile/target-weight. Adskilt fra
   // weightKg (start-vægt, låst felt) og weight_entries (løbende vejninger).
   targetWeightKg Float?
@@ -191,6 +207,7 @@ model User {
   activities              Activity[]
   customActivityTypes     CustomActivityType[]
   heartRateSpikeReviews   HeartRateSpikeReview[]
+  activityProfileSnapshots ActivityProfileSnapshot[]
   deviceTokens            DeviceToken[]
   healthMetrics           HealthMetric[]
   passkeys                Passkey[]
@@ -324,6 +341,37 @@ enum ActivityLevel {
   MODERATE
   HIGH
   VERY_HIGH
+}
+
+enum PalSource {
+  QUESTIONNAIRE
+  MANUAL
+  STEPS
+  CALIBRATED
+}
+
+enum GoalMode {
+  MAINTAIN
+  LOSE
+  GAIN
+}
+
+// Historik over hverdags-PAL (docs/ACTIVITY-PAL.md): hver ændring — nyt
+// spørgeskema, manuel rettelse eller kalibrering — giver en ny række, så en
+// dag altid kan regnes med den PAL, der gjaldt dengang (snapshot-reglen).
+model ActivityProfileSnapshot {
+  id                    String    @id @default(cuid())
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId                String
+  validFrom             DateTime  @default(now())
+  palBase               Float
+  palConfidence         Float?
+  source                PalSource
+  answers               Json?
+  trainingAllowanceKcal Int?
+
+  @@index([userId, validFrom])
+  @@map("activity_profile_snapshots")
 }
 
 enum DailyLogPreference {
