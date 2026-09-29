@@ -5000,3 +5000,12 @@ DECISIONS.md). Næste skridt: indfør grænser og sæt flaget til `true`.
 
 ## 2026-09-29 — Samlet merge af åbne PR'er
 Flettet: #100, #98, #104, #105, #107, #108, #109, #110, #111, #112, #103 og lighter-deploy. Docs-konflikter løst ved at beholde begge sider. Ikke flettet: #6 og #8 (ingen fælles historik med master) samt dubletterne #26, #32, #41, #43, #45, #54, #57, #59 (erstattet af nyere grene i master). Lint, tsc og build grønne.
+
+## 2026-09-29: Ny landingpage (app først, mobile-first)
+
+`src/components/landing/LandingPage.tsx` er bygget om: sticky topbar med
+logo + Log ind, hero med overskrift og App Store/Google Play-knapper, telefon-
+mockup, fire fordelskort, grøn afsluttende CTA, footer og en fast "Hent Hello
+Cal"-bjælke nederst på mobil. Farver efter design.md. Butiks-URL'erne er stadig
+generiske forsider og skal erstattes med de rigtige app-links, når appen er
+udgivet. Lint og typecheck kørt; `npm run build` og visuel test ikke kørt.
