@@ -5028,3 +5028,12 @@ Landingpagens "Log ind" er nu et diskret tekstlink øverst, der fører til
 Lint, typecheck og `npm run build` kørt; skal og landingpage set i Chromium
 (login mocket, ingen database). Siderne er stadig bygget til smal bredde og
 vises i en 760 px kolonne; bredere desktop-layouts pr. side er næste skridt.
+
+Opfølgning samme dag: desktop starter nu i kalenderens dagsvisning
+(`/calendar?view=day`, roden sender videre), forsidens drejehjul/tilføj-cirkel
+er ikke i desktop-menuerne, den grønne app-bjælke er i skallen en lys
+sideoverskrift uden profilcirkel, og topniveau-sider (alt i sidebjælken) har
+ingen tilbagepil (`useInWebShell` + `isWebRootPath`). Set i Chromium ved
+1440×900 med login mocket: kalender/dag, søg, indstillinger, chat, statistik.
+Beslutning: docs/DECISIONS.md 2026-09-29. Butiksknapperne på landingpagen er
+uafklarede (spørgsmål stillet, ikke besvaret).

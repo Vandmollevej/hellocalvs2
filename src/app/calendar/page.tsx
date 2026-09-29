@@ -319,8 +319,10 @@ export default function CalendarPage() {
     if (appliedDefaultView.current) return;
     appliedDefaultView.current = true;
     // "Dag" opens today's full-screen day view (DayDetails) over the month view.
+    // ?view=day does the same: desktop-skallen starter dér (src/lib/web-nav.ts).
+    const forcedDay = new URLSearchParams(window.location.search).get("view") === "day";
     // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage-præferencen findes først efter hydrering
-    if (defaultView === "day") setSelectedDate(new Date(today));
+    if (defaultView === "day" || forcedDay) setSelectedDate(new Date(today));
     else setView(defaultView);
   }, [defaultView, today]);
   const [monthMenuOpen, setMonthMenuOpen] = useState(false);
@@ -636,7 +638,9 @@ export default function CalendarPage() {
       title={isLandscape ? periodLabel : t("nav.calendar")}
       titleClassName={isLandscape ? "hf-appbar__title--tight capitalize" : undefined}
       icon={
-        <div className="relative z-[100]">
+        // z-[100] lader dropdownen ligge over sidens indhold — men ikke over
+        // dagsvisningens dialog (z-50), hvor ikonet ellers stikker igennem.
+        <div className={`relative ${selectedDate ? "" : "z-[100]"}`}>
           <button
             type="button"
             aria-label={t("calendar.switchViewAriaLabel", { view: activeView.label })}

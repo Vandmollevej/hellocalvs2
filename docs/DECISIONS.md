@@ -3375,3 +3375,24 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - **Sikkerhed mod forkerte modtagere:** klienten sender kun et partnerId; modtagere er altid den partners egne aktive kontakter (server-side), data hentes kun for den partners lokationer, og begge dele kontrolleres igen før afsendelse. Én mail pr. modtager, hver logget. Bekræftelsesdialog viser partner → adresser, og serveren afviser afsendelsen (409), hvis modtagerlisten er ændret siden dialogen. Intervalplaner kan kun oprettes, hvis partneren har aktive kontakter.
 
 - Afsendere pr. formål (`src/lib/mail-senders.ts`): `signup@hellocal.io` (konto/e-mailbekræftelse), `invite@hellocal.io` (invitationer, deling, scan-invites), `noreply@hellocal.io` (alt andet), `report@hellocal.io` (partnerrapporter). Alle på det verificerede Mailjet-domæne.
+
+## 2026-09-29: Desktop-version bygget på admin-skallen; ingen telefonramme
+
+- Telefonrammen (bezel) er fjernet overalt. Appen fylder altid browserens
+  viewport; `PhoneFrame` hedder nu `AppFrame`.
+- Bredde ≥ 1024 px viser appen i `WebShell` (`src/components/web/`), der
+  følger `AdminShell` 1:1 i struktur og farver: sidebjælke i fuld højde med
+  logo, søgefelt, genveje øverst og indstillinger nedenunder (sammenfoldelig,
+  husket i localStorage); hvid topbjælke med appens bundmenu uden kamera og
+  stemme, med Chat i stedet; "Profilindstillinger" yderst til højre.
+- Desktop starter i kalenderens dagsvisning (`/calendar?view=day`); roden `/`
+  sender videre dertil. Forsidens drejehjul og tilføj-cirkel findes ikke på
+  desktop — deres handlinger er genveje i sidebjælken.
+- Appens grønne app-bjælke bliver i skallen en lys sideoverskrift med mørk
+  tekst (som admin). Profilcirklen i bjælken skjules (den sidder i topbjælken).
+  Sider, sidebjælken linker til, er topniveau og får ingen tilbagepil.
+- `/chat` afløser mikrofonen: fritekst → `/api/ai/interpret-meal` → "Tilføj
+  til dagen" gemmer registreringer.
+- Landingpagen (`/` uden login) fylder hele skærmen; "Log ind" er et diskret
+  tekstlink øverst til højre til `/welcome`. Login/opret vises uden ramme.
+- Menuerne ligger i `src/lib/web-nav.ts`; tekster under `web` i da/en.

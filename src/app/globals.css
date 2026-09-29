@@ -1451,3 +1451,43 @@ textarea::selection,
 .web-shell .hf-bottom-nav {
   display: none;
 }
+
+/* I desktop-skallen bliver appens grønne app-bjælke til en sideoverskrift som
+   i admin: lys flade, mørk tekst, venstrestillet titel. Profilcirklen sidder i
+   skallens topbjælke, så den skjules her; forsidens topbar er ikke i brug. */
+.web-shell .hf-appbar {
+  min-height: 60px;
+  padding: 0 32px;
+  background: var(--hf-color-page);
+  color: var(--hf-color-text);
+  border-bottom: 1px solid var(--hf-color-nav);
+}
+
+.web-shell .hf-appbar .text-hf-white,
+.web-shell .hf-appbar .hf-appbar__title {
+  color: var(--hf-color-text);
+}
+
+.web-shell .hf-appbar > div:nth-child(2) {
+  justify-content: flex-start;
+}
+
+.web-shell .hf-appbar__title {
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 700;
+}
+
+.web-shell a.hf-appbar__slot[href="/profile"],
+.web-shell .hf-topbar {
+  display: none;
+}
+
+/* Uden tilbagepil rykker titlen helt ud til venstre (ingen tom 44 px-slot). */
+.web-shell .hf-appbar {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+.web-shell .hf-appbar__slot:first-child:empty {
+  width: 0;
+}

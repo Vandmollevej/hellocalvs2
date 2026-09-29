@@ -147,6 +147,7 @@
     "consentRequired": "Slå samtykket til, før du tilmelder dig."
   },
   "web": {
+    "createDish": "Opret ret",
       "collapse": "Skjul sidemenu",
     "expand": "Vis sidemenu",
     "shortcuts": "Genveje",
