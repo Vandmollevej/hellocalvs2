@@ -101,8 +101,9 @@ Puls omsættes ikke direkte til kalorier; den bruges kun som intensitetssignal.
 ## Kaloriemål
 
 - Målformer: vedligehold, tabe sig, tage på. Vægtmål og tempo (kg/uge).
-- Tempo: tabe 0,25 / 0,5 / 0,75 kg/uge (højst 1 % af kropsvægt/uge og aldrig under gulvet); tage på 0,1–0,25 kg/uge.
+- Tempo: tabe 0,25 / 0,5 / 0,75 kg/uge (inden for sundhedsgrænserne nedenfor); tage på 0,1–0,25 kg/uge.
 - `underskud/dag = tempo × 7700 ÷ 7` (0,5 kg/uge ≈ 550 kcal). `budget = energibehov ± underskud`, aldrig under `minimumHealthyKcal` (`healthy-intake.ts`).
+- **Sundhedsgrænser (hårde, kan ikke overstyres af brugeren):** budget aldrig under BMR og aldrig under 1.200 kcal (kvinde/ukendt) eller 1.500 kcal (mand); underskud højst 20 % af energibehovet; tempo højst 0,5 kg/uge (0,75 kun ved BMI ≥ 30) og aldrig over 1 % af kropsvægten; vægtmål aldrig under BMI 18,5 (appen foreslår ikke under BMI 20); ved BMI under 25 kun vedligehold eller langsomt tempo (højst 0,25 kg/uge); tage på højst 0,25 kg/uge. Viser brugerens ønske noget lavere, vises det sunde alternativ med forklaring. Ekstreme svar (fx meget lavt vægtmål eller gentagne dage under gulvet) giver en rolig henvisning til læge, ikke et strengere mål.
 - Under 18 år: ingen underskud, kun vedligehold (jf. FAMILY.md). Undervægt (BMI under 18,5): ingen vægttabsmål. Gravide/ammende: anbefal læge, ingen underskud.
 - Forventet dato vises som interval og genberegnes ved hver ny vægt.
 - Erstatter de faste konstanter `DAILY_KCAL_GOAL` (3299), `DAILY_PROTEIN_GOAL` og `WEIGHT_GOAL_KG` i `src/lib/goals.ts` (rør kalender/statistik kun efter aftale med G1/G2).
