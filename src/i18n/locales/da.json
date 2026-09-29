@@ -356,8 +356,8 @@
     "disable": "Slå fra",
     "ratingAriaLabel": "Vurdér nattens søvn til {rating} af 5",
     "infoAriaLabel": "Hvad bruges det til?",
-    "info": "Vurdér hvordan du har sovet i nat — 1 er meget dårligt og 5 er rigtig godt. Når der er samlet nok data, kan du se din søvnkvalitet i forhold til dit kalorieindtag og eventuelle ændringer i din kost.",
-    "calendarBar": "Søvnkvalitet: {rating} af 5"
+    "info": "Vurdér hvordan du har sovet i nat — 1 er meget dårligt og 5 er rigtig godt. Når der er samlet nok data, kan du se din oplevede søvnkvalitet i forhold til dit kalorieindtag og eventuelle ændringer i din kost.",
+    "calendarBar": "Oplevet søvnkvalitet: {rating} af 5"
   },
   "menstrualCycleSettings": {
     "intro": "Log din menstruationscyklus og få den som en mulighed i tilføj-menuen.",
@@ -1719,8 +1719,8 @@
     "weight": "Vægt",
     "trendWeight": "Trendvægt (AI-estimat)",
     "caloriesAndWeightChart": "Kalorier og vægt",
-    "sleepQuality": "Søvnkvalitet",
-    "sleepQualityChart": "Søvnkvalitet og kalorier"
+    "sleepQuality": "Oplevet søvnkvalitet",
+    "sleepQualityChart": "Oplevet søvnkvalitet og kalorier"
   },
   "statUnusedCards": {
     "title": "Tilføj til statistik",
