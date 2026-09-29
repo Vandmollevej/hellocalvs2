@@ -3423,3 +3423,10 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Landingpagen (`/` uden login) fylder hele skærmen; "Log ind" er et diskret
   tekstlink øverst til højre til `/welcome`. Login/opret vises uden ramme.
 - Menuerne ligger i `src/lib/web-nav.ts`; tekster under `web` i da/en.
+## 2026-09-28: Emballeret vand hedder "Flaskevand"
+
+- En fotograferet/emballeret vare er aldrig postevand. Forsideaflæsningen beder
+  AI'en bruge "Flaskevand" (eller "Kildevand"/"Mineralvand" når emballagen siger
+  det), og et bart "Vand" normaliseres til "Flaskevand" (`normalizeProductType`
+  i `src/lib/product-naming.ts`), så søgning på "vand" viser en præcis betegnelse.
+- Eksisterende produkter, der allerede hedder "Vand", omdøbes ikke automatisk.
