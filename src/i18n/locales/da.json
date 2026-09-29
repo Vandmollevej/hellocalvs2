@@ -1479,7 +1479,7 @@
     }
   },
   "addProduct": {
-    "reportBug": "Indberet fejl",
+    "reportBug": "Har du fundet en fejl?",
     "reading": "Læses…",
     "title": "Tilføj",
     "titleForDish": "Tilføj ingrediens",

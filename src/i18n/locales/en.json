@@ -1479,7 +1479,7 @@
     }
   },
   "addProduct": {
-    "reportBug": "Report error",
+    "reportBug": "Found a mistake?",
     "reading": "Reading…",
     "title": "Add",
     "titleForDish": "Add ingredient",
