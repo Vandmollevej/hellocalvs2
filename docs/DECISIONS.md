@@ -3331,3 +3331,8 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - "Kaffe" genkendes med koffein-ordlisten fra `src/lib/toxins.ts` (kaffe, te, cola, energidrik) mod registreringens titel; mængde = antal registreringer.
 - Tidspunkter er registreringens `createdAt`; tidsbjælker skaleres fra kl. 12.
 
+## 2026-09-29 — Oplevelse af søvn som bundark, aldrig "Luk"
+
+- "Oplevelse af søvn" vises som bundark (popup, lukkes ved træk ned) i stedet for fuldskærmsside.
+- Der må aldrig bruges "Luk" på overlays/sider i HELLO CAL, selvom HelloFresh gør det — lukning sker ved træk ned.
+- Tallene 1–5 står i skærmens lodrette midte; "Slå fra" står nederst til venstre uden understregning.
