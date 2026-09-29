@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { ActionButton } from "@/components/hf/ActionButton";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import type { KcalGoalSuggestion } from "@/lib/kcal-goal-suggestion";
-import { setDailyKcalGoal } from "@/lib/use-daily-kcal-goal";
+import { clientTzOffsetMinutesEast } from "@/lib/daily-budget";
 
 // Popup that offers a new daily kcal limit once the app has enough logged
 // intake + weight data to see that the current limit is off
@@ -49,7 +49,7 @@ export function KcalGoalPrompt() {
     if (checkedThisVisit) return;
     if (SKIP_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`))) return;
     checkedThisVisit = true;
-    fetch("/api/profile/kcal-goal")
+    fetch(`/api/profile/kcal-goal?tz=${clientTzOffsetMinutesEast()}`)
       .then((res) => (res.ok ? (res.json() as Promise<{ suggestion: KcalGoalSuggestion | null }>) : null))
       .then((data) => setSuggestion(data?.suggestion ?? null))
       .catch(() => undefined);
@@ -58,12 +58,11 @@ export function KcalGoalPrompt() {
   if (!suggestion) return null;
   const current = suggestion;
 
-  async function run(body: object, afterOk?: () => void) {
+  async function run(body: object) {
     setBusy(true);
     try {
-      const res = await post(body);
+      const res = await post({ ...body, tz: clientTzOffsetMinutesEast() });
       if (res.ok) {
-        afterOk?.();
         setSuggestion(null);
       }
     } catch {
@@ -85,7 +84,7 @@ export function KcalGoalPrompt() {
         <ActionButton
           className="mt-6"
           disabled={busy}
-          onClick={() => run({ action: "apply", kcal: current.suggestedKcal }, () => setDailyKcalGoal(current.suggestedKcal))}
+          onClick={() => run({ action: "apply", kcal: current.suggestedKcal })}
         >
           {t("kcalGoalPrompt.update")}
         </ActionButton>

@@ -63,7 +63,7 @@ export function suggestDailyKcalGoal({
   if (loggedDays < MIN_LOGGED_DAYS) return null;
 
   const bmr = estimateBmr({ ...profile, weightKg: weightAt(weighIns, endExclusive, profile.weightKg) });
-  const formula = formulaMaintenanceEstimate(bmr, activities, profile.activityLevel, WINDOW_DAYS);
+  const formula = formulaMaintenanceEstimate(bmr, activities, profile, null, WINDOW_DAYS);
   if (formula === null) return null;
   const learned = estimateAdaptiveMaintenance({ dailyTotals, weighIns, endExclusive, formulaMaintenance: formula });
   if (learned === null) return null;
