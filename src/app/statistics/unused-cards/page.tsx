@@ -28,6 +28,7 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 import { useSourceRegistrations } from "@/lib/use-source-registrations";
 import { registrationsWithinLastDays } from "@/lib/food-classification";
 import { TrendIcon } from "@/components/BottomNav";
+import { useDailyKcalGoal } from "@/lib/use-daily-kcal-goal";
 import {
   addChartsToLayout,
   dailyChartLabel,
@@ -129,6 +130,7 @@ function categoryDefs(t: (key: string) => string, region: string): CategoryDef[]
 }
 
 export default function UnusedStatCardsPage() {
+  const goalKcal = useDailyKcalGoal();
   const { t } = useTranslation();
   const router = useRouter();
   const [registrations, setRegistrations] = useState<RegistrationTotals[]>([]);
@@ -217,13 +219,14 @@ export default function UnusedStatCardsPage() {
     const recentMetrics = withinLastDaysMetrics(metrics, STAT_WINDOW_DAYS);
     return computeStatCards({
       days,
+      goalKcal,
       activities: hasConnectedIntegration ? recentActivities : undefined,
       metrics: recentMetrics,
       sources: sourcesLoading
         ? undefined
         : registrationsWithinLastDays(sourceRegistrations, STAT_WINDOW_DAYS),
     });
-  }, [registrations, activities, metrics, hasConnectedIntegration, sourceRegistrations, sourcesLoading]);
+  }, [registrations, activities, metrics, hasConnectedIntegration, sourceRegistrations, sourcesLoading, goalKcal]);
 
   const cardByKey = useMemo(() => new Map(allCards.map((c) => [c.key, c])), [allCards]);
 

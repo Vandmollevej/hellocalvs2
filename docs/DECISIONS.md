@@ -3382,3 +3382,8 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Udseende følger admin: hvid topbjælke med logo, sidefarve #FAF8F3, hvide paneler med tynd #DFD9CC kant; lægevisningens grønne topbjælke er droppet. Tokens er appens egne — ingen nye farver, størrelser eller afstande.
 - Delekategorier styrer stadig, hvad lægen ser (`show.food`/`show.vitamins`, udeladte felter skjules).
 
+## 2026-09-29 — Daglig kaloriegrænse pr. bruger + popup med forslag
+
+- Grænsen er ikke længere den faste konstant 3299 for alle: den ligger på `User.dailyKcalGoal` (null = `DAILY_KCAL_GOAL` som standard, `resolveDailyKcalGoal` i `src/lib/goals.ts`). Kalender, forside-hjul, statistik, statistikkort og widgets bruger brugerens værdi (klient: `useDailyKcalGoal`).
+- Popuppen (`KcalGoalPrompt`) kommer dynamisk ved uoverensstemmelse: når de seneste 4 uger har registreringer på mindst 25 af 28 dage, mindst 3 vejninger over 14+ dage, og den lærte vedligeholdelse (`estimateAdaptiveMaintenance`) flytter grænsen ≥ 100 kcal. Forslag = nuværende grænse + (lært − formel-vedligeholdelse), rundet til 50 kcal, så brugerens eget underskud/overskud bevares.
+- "Opdater" gemmer, "Senere" udsætter 3 dage, "Spørg ikke igen" slår popuppen fra (`kcalGoalPromptDisabled`). Ingen tidsplan for genvisning ud over uoverensstemmelsen selv.
