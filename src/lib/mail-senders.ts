@@ -20,3 +20,8 @@ export function fromForEvent(event: string) {
   if (INVITE_EVENTS.has(event)) return INVITE_FROM;
   return defaultFrom();
 }
+
+// Mailjet omskriver ellers alle links til mjt.lu og lægger et sporingsbillede
+// i mailen — begge dele giver spam-flag hos bl.a. Simply. Transaktionsmails
+// skal have de rigtige links og intet sporingspixel.
+export const NO_TRACKING_HEADERS = { "X-Mailjet-TrackOpen": "0", "X-Mailjet-TrackClick": "0" };

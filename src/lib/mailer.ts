@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import { prisma } from "@/lib/prisma";
-import { fromForEvent } from "@/lib/mail-senders";
+import { NO_TRACKING_HEADERS, fromForEvent } from "@/lib/mail-senders";
 import { DEFAULT_REPLY_TO, htmlToText, wrapEmailHtml } from "@/lib/email-format";
 
 // Reel SMTP-afsendelse, forberedt men ikke aktiveret (docs/DECISIONS.md
@@ -76,6 +76,7 @@ async function flushOnce(limit: number) {
     try {
       await transport.sendMail({
         from: fromForEvent(message.event),
+        headers: NO_TRACKING_HEADERS,
         replyTo: process.env.SMTP_REPLY_TO || DEFAULT_REPLY_TO,
         to,
         subject: message.subject,
