@@ -536,6 +536,40 @@ def pack_count(b, r):
 # ---------- images ----------
 
 
+# ---------- slice weight ----------
+
+# "18 g pr. skive", "ca. 12 g/skive", "vægt pr. skive: 20 g"
+PER_SLICE_RE = re.compile(r"(\d+(?:[.,]\d+)?)\s*g(?:ram)?\s*(?:pr\.?|per|/|à|a)\s*skive"
+                          r"|(?:pr\.?|per)\s*skive\D{0,12}?(\d+(?:[.,]\d+)?)\s*g\b", re.I)
+# "10 skiver", "ca. 8 stk. skiver", "12 tynde skiver"
+SLICE_COUNT_RE = re.compile(r"(\d+)\s*(?:stk\.?\s*)?(?:\w+\s+)?skiver\b", re.I)
+GRAMS_RE = re.compile(r"(\d+(?:[.,]\d+)?)\s*(kg|g)\b", re.I)
+
+
+def all_text(*rows):
+    return " ".join(str(v) for row in rows if row for v in row.values() if isinstance(v, str))
+
+
+def slice_weight(quantity, *rows):
+    """Grams per slice from the stores' original texts, or None.
+
+    Only explicit statements count: "x g pr. skive", or "N skiver" together with
+    the package weight. Never guessed. A slice over 80 g is not a slice.
+    """
+    joined = all_text(*rows)
+    m = PER_SLICE_RE.search(joined)
+    if m:
+        grams = float((m.group(1) or m.group(2)).replace(",", "."))
+    else:
+        count = SLICE_COUNT_RE.search(joined)
+        weight = GRAMS_RE.search(quantity or "")
+        if not count or not weight or int(count.group(1)) < 2:
+            return None
+        total = float(weight.group(1).replace(",", ".")) * (1000 if weight.group(2).lower() == "kg" else 1)
+        grams = total / int(count.group(1))
+    return round(grams, 1) if 2 <= grams <= 80 else None
+
+
 def index_dir(path):
     by_stem = {}
     by_name = {}
@@ -607,7 +641,7 @@ def image_candidates(ean, b, r, cutouts, originals):
 
 
 SOURCE_FIELDS = (
-    "name", "brand", "subbrand", "productType", "variant", "flavor", "quantity", "packCount",
+    "name", "brand", "subbrand", "productType", "variant", "flavor", "quantity", "packCount", "sliceWeightGrams",
     "productCategory", "keywords", "ingredients", "allergens", "additives", "sourceUrl", "nutrition", "filters",
 )
 
@@ -661,6 +695,7 @@ def build_product(ean, b, r, b_info, r_info, cutouts, originals):
         "flavor": first(bx.get("flavor"), text(r.get("taste")) if r else None, rx.get("flavor")),
         "quantity": quantity,
         "packCount": pack_count(b, r),
+        "sliceWeightGrams": slice_weight(quantity, b, r, b_info, r_info),
         "productCategory": category,
         "storeDepartment": text(b.get("Category")) if b else None,
         "keywords": keywords,

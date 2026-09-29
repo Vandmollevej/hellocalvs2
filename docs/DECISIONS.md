@@ -3235,3 +3235,54 @@ Synlige tekster i app og admin kalder madvarer "vare/varer", og "Produktdatabase
 ## 2026-09-28: Ingen "Branded"-mærkat
 
 Produktsiden viser aldrig teksten "Branded". Brandet vises kun som brandnavn/logo.
+
+## 2026-09-28 — Startmængde i mængdevælgeren
+
+- Producentens portion (fx Open Food Facts' `serving_quantity`, gemt i
+  `Product.servingSizeGrams`) er ikke længere startmængde: den er ofte
+  urealistisk (musli 30 g, sodavand 10 cl, hamburgerryg 14 g). 100 g er heller
+  ikke standard (brugerens beslutning).
+- Rækkefølge (`src/lib/default-amount.ts`): brugerens seneste mængde for varen →
+  rigtig portionsenhed (servingSizeGrams + enhedsnavne, fx HelloFresh) → typisk
+  mængde for kategorien (nøgleordstabel på produkttype/navn, DRINK → 250 ml) →
+  producentens portion → 100 g.
+- `/api/products/:id` returnerer `lastAmountGrams` for den indloggede bruger.
+- Open Food Facts-varer med `en:beverages` i `categories_tags` oprettes med
+  `productCategory = DRINK`.
+
+### Tilføjelse 2026-09-28 — skiver og pakkestørrelse
+
+- Skivevarer (pålæg, skiveost): producentens portion er én skive og bruges som
+  startmængde, i enheden "skive/skiver". OFF-opslag sætter enheden, når
+  `serving_size` nævner skive/slice.
+- Drikkevarer: pakke ≤ 50 cl (juicebrik, dåse) = hele pakken; vin = 150 ml pr.
+  glas; større flasker = 250 ml pr. glas.
+- Vores REMA-data har ingen skivevægt. `scripts/off-slice-weights/` henter den
+  fra Open Food Facts (kræver netadgang; dry run som standard).
+- Senere: AI-beregnet median pr. produkttype (fx smørrist) kan erstatte den
+  håndskrevne tabel i `src/lib/default-amount.ts`.
+- Enhedsstørrelse = `Product.servingSizeGrams` + `servingSizeUnitSingular/Plural`
+  (fx 18 g, "skive"/"skiver"). Ingen ny kolonne.
+- `scripts/store-products-import/build_data.py` læser skivevægt fra butikkernes
+  originale tekster: "x g pr. skive" direkte, eller "N skiver" + pakkevægt
+  (vægt ÷ N). Aldrig gættet; 2-80 g. Agenten skriver den kun, når varen ikke
+  har en portionsstørrelse.
+
+## 2026-09-28: Produktsidens lodrette rytme + beskårne brand-logoer
+
+- Produktsiden (`AddProductView`): 32 px fra produktcirklen til titlen (som
+  HelloFresh-heroen, design.md §6 Velkomst), titel + grøn linje er én
+  tekstblok uden mellemrum, begge i `.hf-type-hero` (32/38) som "Spis Bedre /
+  hver dag!" (målt på skærmbilledet), 16 px til "Produktdetaljer", 16 px til
+  mængdevælgeren, 8 px fra mængdeboksen til kcal/100 g.
+- Brand-logoer beskæres til deres synlige pixels (logo-robotten,
+  `trim_transparent`), så logoets bund flugter med cirklens bund. Allerede
+  valgte logoer beskæres ved robottens næste kørsel.
+- `.hf-type-hero` er nu 32/40 (før 32/38). Målt i 3×-skærmbilledet af
+  HelloFresh-appen: 40 px mellem h1 og h2. Kontrolleret med skærmbillede af
+  produktsiden: cirkel→h1 40 (HF 41), h1→h2 40 (HF 40), h2→næste 23 (HF 20).
+- Resterende forskel: HelloFresh-appens overskrift er i en smal skrift
+  (Agrandir Tight-lignende); Hello Cal bruger systemfonten (design.md §2).
+- Produktsiden målt 1:1 mod HelloFresh-velkomsten (3×): cirkel 180 px (før
+  190) og 62 px under appbaren, 41 px cirkel→h1-tekst, 40 px h1→h2, 20 px
+  h2→næste tekst. Uden h2 bevares linjens 40 px luft, så resten ikke rykker op.

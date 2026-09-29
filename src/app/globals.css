@@ -265,7 +265,7 @@ textarea::selection,
     font-family: var(--font-hf-heading);
     font-size: 32px;
     font-weight: 700;
-    line-height: 38px;
+    line-height: 40px;
   }
 
   /* 22 px */

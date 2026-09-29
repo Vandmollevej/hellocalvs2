@@ -10,6 +10,10 @@ export type OffProduct = {
   carbsPer100g: number;
   fatPer100g: number;
   servingSizeGrams: number | null;
+  // OFF's categories_tags indeholder "en:beverages" for drikkevarer.
+  isBeverage: boolean;
+  // serving_size som "1 skive (14 g)" / "1 slice" → portionen er én skive.
+  servingIsSlice: boolean;
   ingredientsText: string | null;
   allergens: string[];
   additives: string[];
@@ -105,6 +109,8 @@ function mapOffProduct(p: Record<string, unknown>): OffProduct | null {
     carbsPer100g: (n.carbohydrates_100g as number) ?? 0,
     fatPer100g,
     servingSizeGrams,
+    servingIsSlice: servingSizeGrams !== null && /skive|slice/i.test(String(p.serving_size ?? "")),
+    isBeverage: Array.isArray(p.categories_tags) && (p.categories_tags as unknown[]).includes("en:beverages"),
     ingredientsText: (p.ingredients_text_da as string) || (p.ingredients_text as string) || null,
     allergens: mapOffAllergenTags(p.allergens_tags as unknown[]),
     additives,

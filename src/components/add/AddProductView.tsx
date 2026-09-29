@@ -1,5 +1,6 @@
 "use client";
 
+import { defaultAmountGrams } from "@/lib/default-amount";
 import { mealShareBody } from "@/lib/meal-share";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
@@ -313,10 +314,9 @@ export function AddProductView({
         if (!res.ok) return setState({ status: "error" });
         const data = await res.json();
         setState({ status: "loaded", product: applyRegistrationSnapshot(data.product, registration) });
-        // Dishes with a fixed serving size (e.g. HelloFresh, see
-        // scripts/hellofresh-import) are counted in servings, not grams — start
-        // at 1 serving instead of the usual 100 g default.
-        if (!registration && data.product?.servingSizeGrams) setAmount(data.product.servingSizeGrams);
+        // Startmængde: seneste egne mængde, portionsenhed, typisk mængde for
+        // kategorien — se src/lib/default-amount.ts.
+        if (!registration && data.product) setAmount(defaultAmountGrams(data.product));
       })
       .catch(() => setState({ status: "error" }));
 
@@ -697,9 +697,13 @@ export function AddProductView({
                   <ForwardButton kind="PRODUCT" itemId={view.id} name={view.name} />
                 </div>
               )}
-              <div className="flex flex-col items-start gap-2 pt-4 text-left">
-                <div className="relative self-center h-[190px] w-[190px] min-h-[190px] min-w-[190px] max-h-[190px] max-w-[190px] shrink-0 overflow-visible">
-                  <div className="flex h-[190px] w-[190px] min-h-[190px] min-w-[190px] items-center justify-center overflow-hidden rounded-full bg-hf-tan">
+              {/* Målt 1:1 på HelloFresh-velkomsten (3×-skærmbillede): cirklen 180 px
+                  og 62 px under appbaren (16 + 46), 33 px fra
+                  cirklen til titlen, titel + grøn linje er én tekstblok uden
+                  mellemrum, 14 px videre til næste blok (20 px ink-til-ink som HF). */}
+              <div className="flex flex-col items-start gap-[33px] pt-[46px] text-left">
+                <div className="relative self-center h-[180px] w-[180px] min-h-[180px] min-w-[180px] max-h-[180px] max-w-[180px] shrink-0 overflow-visible">
+                  <div className="flex h-[180px] w-[180px] min-h-[180px] min-w-[180px] items-center justify-center overflow-hidden rounded-full bg-hf-tan">
                     {displayImageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -749,24 +753,29 @@ export function AddProductView({
                     </div>
                   )}
                 </div>
+                <div className="flex w-full flex-col items-start">
                 {isPending("name") ? (
                   <ReadingSkeleton label={t("addProduct.reading")}>
-                    <Skeleton type="body-lg" width={200} />
+                    <Skeleton type="hero" width={200} />
                   </ReadingSkeleton>
                 ) : (
-                  <h1 className="hf-type-page-title text-hf-black">{productTitle}</h1>
+                  <h1 className="hf-type-hero text-hf-black">{productTitle}</h1>
                 )}
-                {(view.packageSizeText || view.variant) && (
-                  <h2 className="hf-type-title hf-type-strong text-hf-green">
+                {/* Uden grøn linje står luften tilbage, så resten ikke rykker op. */}
+                {view.packageSizeText || view.variant ? (
+                  <h2 className="hf-type-hero text-hf-green">
                     {[view.packageSizeText, view.variant].filter(Boolean).join(" · ")}
                   </h2>
+                ) : (
+                  <div aria-hidden="true" className="hf-type-hero">&nbsp;</div>
                 )}
+                </div>
               </div>
 
               <button
                 type="button"
                 onClick={scrollToDetails}
-                className="hf-btn-text flex items-center gap-1 self-center mb-4 font-normal text-hf-black"
+                className="hf-btn-text mt-[14px] mb-4 flex items-center gap-1 self-center font-normal text-hf-black"
               >
                 {t("addProduct.details")}
                 <IconChevronDown size={15} />
@@ -799,7 +808,7 @@ export function AddProductView({
                 </div>
               )}
 
-              <div className="mx-auto mb-4 flex w-full max-w-[320px] items-center gap-2">
+              <div className="mx-auto mb-2 flex w-full max-w-[320px] items-center gap-2">
                 <button
                   type="button"
                   onClick={() => setAmount((a) => Math.max(step, a - step))}
@@ -855,7 +864,7 @@ export function AddProductView({
                 </button>
               </div>
 
-              <div className="-mt-2 mb-4 flex flex-col items-center text-center">
+              <div className="mb-4 flex flex-col items-center text-center">
                 <p className="hf-type-body text-hf-black">
                   {isPending("nutrition") ? (
                     <ReadingSkeleton label={t("addProduct.reading")}>

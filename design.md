@@ -243,7 +243,7 @@ side-for-side lappeløsninger. Hele appen bruger **kun 6 størrelser** og **kun
 
 | Størrelse | Klasse | Line-height | Vægt | Brug |
 | --- | --- | --- | --- | --- |
-| 32 px | `.hf-type-hero` | 38 | 700 | Stort tal/velkomst (fx points-saldo) |
+| 32 px | `.hf-type-hero` | 40 | 700 | Stort tal/velkomst (fx points-saldo) |
 | 22 px | `.hf-type-page-title` | 28 | 700 | Sidens indholdsoverskrift |
 | 17 px | `.hf-type-title` (= `.hf-type-card-title`) | 22 | 700 | Kort-, række- og dialogtitel |
 | 17 px | `.hf-type-nav-title` | 22 | 700 | Titel i grøn appbar (hvid) |
@@ -558,7 +558,7 @@ fuld bredde).
 - Centreret horisontalt.
 - 32 px layoutafstand fra landevælger-blokken.
 - 32 px layoutafstand til hero-overskriftsblokken.
-- Hero-overskrift bruger 32/38; de to farvelinjer er én typografiblok.
+- Hero-overskrift bruger 32/40 (målt i HelloFresh-appen 2026-09-28: 40 px linjeafstand); de to farvelinjer er én typografiblok.
 - Standardafstand fra hero-overskrift til brødtekst er 24-32 px, ikke 48 px.
 
 ### 6.10 Fast actionbar og bundnavigation
@@ -712,11 +712,11 @@ knapper, afstande, kort) skal altid bevare de fastlagte HelloFresh-
 proportioner 1:1 med referencedesignet, uanset billedets opløsning,
 dimensioner, billedformat, eller om produktet slet ikke har et billede.
 
-- Billedområdet har fast størrelse/geometri: `190 × 190 px`, cirkulær
+- Billedområdet har fast størrelse/geometri: `180 × 180 px` (ændret fra 190 px 2026-09-28 efter brugerens krav om at være identisk med HelloFresh-velkomsten), 62 px under appbaren, cirkulær
   (`rounded-full`), med `bg-hf-tan` som baggrund.
 - Geometrien låses med redundante Tailwind-klasser
-  (`h-[190px] w-[190px] min-h-[190px] min-w-[190px] max-h-[190px]
-  max-w-[190px] shrink-0`), så hverken et flex-parent, et stort/skævt billede
+  (`h-[180px] w-[180px] min-h-[180px] min-w-[180px] max-h-[180px]
+  max-w-[180px] shrink-0`), så hverken et flex-parent, et stort/skævt billede
   eller en manglende `img` kan ændre boksens mål.
 - Selve billedet tilpasses inde i dette fastlåste område med
   `object-contain` og intern padding (`p-8`) — aldrig `object-fit: cover` på

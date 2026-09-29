@@ -261,6 +261,16 @@ def upsert_product(cur, p, store_ids, category_ids):
             params,
         )
 
+    # Skivevægt fra butikkernes tekster ("10 skiver", "18 g pr. skive") — kun
+    # hvis varen ikke allerede har en portionsstørrelse (docs/DECISIONS.md
+    # 2026-09-28).
+    if p.get("sliceWeightGrams"):
+        cur.execute(
+            """UPDATE "products" SET "servingSizeGrams" = %s,
+                   "servingSizeUnitSingular" = 'skive', "servingSizeUnitPlural" = 'skiver'
+               WHERE id = %s AND "servingSizeGrams" IS NULL""",
+            (p["sliceWeightGrams"], product_id),
+        )
     cur.execute(
         'INSERT INTO "barcodes" (code, "productId") VALUES (%s, %s) ON CONFLICT (code) DO NOTHING',
         (p["ean"], product_id),
