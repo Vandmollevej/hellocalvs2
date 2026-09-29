@@ -1,0 +1,1558 @@
+[
+ {
+  "code": "E1440",
+  "nameDa": "Hydroxypropylstivelse",
+  "nameEn": "Hydroxypropyl starch",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Stivelse behandlet med propylenoxid, så den bliver mere stabil ved frysning og optøning.",
+  "description": "Hydroxypropylstivelse fremstilles ved at lade stivelse reagere med propylenoxid (forethring), så hydroxylgrupper på kæderne erstattes af 2-hydroxypropylethergrupper. Ved processen dannes små mængder af biproduktet propylenchlorhydrin, og specifikationerne begrænser resten til højst 1 mg/kg. Udgangsmaterialet er typisk stivelse fra majs, kartoffel, tapioka eller hvede. Formålet er at give stivelsen bedre egenskaber end naturlig stivelse, fx større stabilitet over for varme, syre og frysning. Produktet er et hvidt til råhvidt pulver, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Bl.a. supper, saucer, dressinger, desserter, mejeriprodukter som yoghurt, is og frosne færdigretter, hvor stabiliteten ved frysning og optøning udnyttes. Tilladt quantum satis i de fleste fødevarer, der må indeholde tilsætningsstoffer.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser og anvendelsesniveauer for den almindelige befolkning, og at en numerisk ADI ikke er nødvendig. Stofferne optages ikke intakt, men nedbrydes i betydelig grad af tarmens enzymer, og resten fermenteres af tarmfloraen. I humane studier blev flere modificerede stivelser (E 1413, E 1414, E 1420 og E 1450) tolereret af voksne i doser op til 60 g om dagen. Modificeret stivelse fremstillet af hvede er ikke fritaget for allergenmærkning og skal deklareres som hvede. Brugen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser (20.000 eller 50.000 mg/kg), og EFSA fandt i 2017, at data ikke var tilstrækkelige til at vurdere sikkerheden for spædbørn og småbørn ved disse niveauer.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   }
+  ],
+  "pubmedTerm": "hydroxypropyl starch",
+  "flags": [
+   "may_contain_gluten"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4911",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7425341/",
+    "https://www.inchem.org/documents/jecfa/jecmono/v17je18.htm",
+    "https://doi.org/10.1093/jaoacint/qsad042",
+    "https://foodcom.pl/en/term-e/e1440/",
+    "https://link.springer.com/article/10.1007/s10068-015-0170-4",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20181029",
+    "https://www.kosnature.com/product/sodium-starch-octenylsuccinate-modified-starch-e1450/",
+    "https://starch.eu/priority/gluten-free-labelling-allergen-labelling-exemption-granted-wheat-starch-derivatives/"
+   ],
+   "notes": "Runde 4: alle tidligere ukontrollerede udsagn søgt op. Bekræftet: propylenoxid-fremstilling, propylenchlorhydrin-grænse (1 mg/kg), frost/optø-stabilitet, fødevareeksempler, quantum satis, spædbørnsgrænser. Rettet: udgangsmaterialer (ris fjernet), formål ('omrøring' fjernet), 'uden smag' fjernet, fiber-udsagn omformuleret til fermentering, afføringsudsagn erstattet af EFSA's tolerancedata (60 g/dag), gluten omformuleret til allergenmærkning af hvede. Fjernet: 4 kcal/g, budding/frugtfyld (ikke fundet). Bemærk: fødevareeksempler hviler på branchekilder, ikke EU-kilder."
+  },
+  "wikipedia": "",
+  "wikidata": "Q1640437",
+  "claims": [
+   {
+    "claim": "12 modificerede stivelser gen-evalueret 2017",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen numerisk ADI, ingen sikkerhedsbekymring",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hydrolyseres og fermenteres, optages ikke intakt",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ikke genotoksiske",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen effekter op til 31.000 mg/kg",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anbefalede strammere tungmetalspecifikationer",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "JECFA lignende konklusioner",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Få humane studier",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Fremstilles med propylenoxid; hydroxypropylethergrupper",
+    "source": "https://www.inchem.org/documents/jecfa/jecmono/v17je18.htm ; https://foodcom.pl/en/term-e/e1440/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Grænse for propylenchlorhydrin (højst 1 mg/kg)",
+    "source": "https://doi.org/10.1093/jaoacint/qsad042",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Mere stabil ved frysning/optøning (summary)",
+    "source": "https://link.springer.com/article/10.1007/s10068-015-0170-4",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fødevareeksempler: supper, saucer, dressinger, desserter, yoghurt, is, frosne retter",
+    "source": "https://foodcom.pl/en/term-e/e1440/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Budding og frugtfyld",
+    "source": "https://foodcom.pl/en/term-e/e1440/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Udgangsmaterialer: majs, kartoffel, tapioka, hvede (ris fjernet – ikke fundet)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/ ; https://www.kosnature.com/product/sodium-starch-octenylsuccinate-modified-starch-e1450/ ; https://starch.eu/priority/gluten-free-labelling-allergen-labelling-exemption-granted-wheat-starch-derivatives/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Formål: bedre modstandsdygtighed over for varme, syre og frost ('omrøring' fjernet)",
+    "source": "https://en.wikipedia.org/wiki/Hydroxypropyl_distarch_phosphate ; https://link.springer.com/article/10.1007/s10068-015-0170-4",
+    "result": "rettet"
+   },
+   {
+    "claim": "Hvidt pulver uden smag -> hvidt til råhvidt pulver ('uden smag' ikke bekræftet)",
+    "source": "https://www.kosnature.com/product/sodium-starch-octenylsuccinate-modified-starch-e1450/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Tilladt quantum satis (E 1404-E 1451)",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20181029",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ca. 4 kcal/g",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Delvist resistent/virker som kostfiber -> en del fermenteres af tarmfloraen",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Mild afføringspåvirkning ved høje indtag -> veltolereret hos voksne op til 60 g/dag (E 1413, E 1414, E 1420, E 1450)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Glutenspor -> modificeret hvedestivelse skal fortsat deklareres som hvede",
+    "source": "https://starch.eu/priority/gluten-free-labelling-allergen-labelling-exemption-granted-wheat-starch-derivatives/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Særlige maksimumgrænser i fødevarer til spædbørn og småbørn (20.000/50.000 mg/kg)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7425341/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E1442",
+  "nameDa": "Hydroxypropyl-distivelsesphosphat",
+  "nameEn": "Hydroxypropyl distarch phosphate",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Stivelse, der både er hydroxypropyleret og tværbundet med phosphat. Den er stabil over for varme, kulde og syre.",
+  "description": "Hydroxypropyl-distivelsesphosphat fremstilles ved at forestre stivelse med natriumtrimetaphosphat eller phosphoroxychlorid (tværbinding) kombineret med forethring med propylenoxid. Udgangsmaterialet er typisk stivelse fra majs, kartoffel, tapioka eller hvede. Formålet er at give stivelsen bedre egenskaber end naturlig stivelse, fx større stabilitet over for varme, syre og frysning. Produktet er et hvidt til råhvidt pulver, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Bl.a. saucer og sovs, frugtfyld, dressinger og mejeriprodukter som hytteost, fløde, yoghurt og is. Tilladt quantum satis i de fleste fødevarer, der må indeholde tilsætningsstoffer.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser og anvendelsesniveauer for den almindelige befolkning, og at en numerisk ADI ikke er nødvendig. Stofferne optages ikke intakt, men nedbrydes i betydelig grad af tarmens enzymer, og resten fermenteres af tarmfloraen. I humane studier blev flere modificerede stivelser (E 1413, E 1414, E 1420 og E 1450) tolereret af voksne i doser op til 60 g om dagen. Modificeret stivelse fremstillet af hvede er ikke fritaget for allergenmærkning og skal deklareres som hvede. Brugen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser (20.000 eller 50.000 mg/kg), og EFSA fandt i 2017, at data ikke var tilstrækkelige til at vurdere sikkerheden for spædbørn og småbørn ved disse niveauer.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   }
+  ],
+  "pubmedTerm": "hydroxypropyl distarch phosphate",
+  "flags": [
+   "may_contain_gluten"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4911",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7425341/",
+    "https://openknowledge.fao.org/handle/20.500.14283/ca5352en",
+    "https://en.wikipedia.org/wiki/Hydroxypropyl_distarch_phosphate",
+    "https://foodcom.pl/en/hydroxypropyl-distarch-phosphate-e1442-properties-and-common-uses/",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20181029",
+    "https://www.kosnature.com/product/sodium-starch-octenylsuccinate-modified-starch-e1450/",
+    "https://starch.eu/priority/gluten-free-labelling-allergen-labelling-exemption-granted-wheat-starch-derivatives/",
+    "https://link.springer.com/article/10.1007/s10068-015-0170-4"
+   ],
+   "notes": "Runde 4: alle tidligere ukontrollerede udsagn søgt op. Bekræftet: fremstillingskemi (FAO/JECFA-definition), stabilitet over for varme/kulde/syre, fødevareeksempler (saucer, frugtfyld, dressinger, mejeriprodukter, is), quantum satis, spædbørnsgrænser. Rettet: 'meget udbredt i frosne og syrlige produkter' blødt op, udgangsmaterialer (ris fjernet), formål, pulverbeskrivelse, fiber, afføring, gluten. Fjernet: 4 kcal/g samt supper/færdigretter/budding/frosne retter (ikke fundet for E 1442)."
+  },
+  "wikipedia": "",
+  "wikidata": "Q10528966",
+  "claims": [
+   {
+    "claim": "12 modificerede stivelser gen-evalueret 2017",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen numerisk ADI, ingen sikkerhedsbekymring",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hydrolyseres og fermenteres, optages ikke intakt",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ikke genotoksiske",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen effekter op til 31.000 mg/kg",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anbefalede strammere tungmetalspecifikationer",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "JECFA lignende konklusioner",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Få humane studier",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Fremstilling: natriumtrimetaphosphat eller phosphoroxychlorid + propylenoxid",
+    "source": "https://openknowledge.fao.org/handle/20.500.14283/ca5352en",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Stabil over for varme, kulde og syre (summary)",
+    "source": "https://en.wikipedia.org/wiki/Hydroxypropyl_distarch_phosphate",
+    "result": "rettet"
+   },
+   {
+    "claim": "'Meget udbredt i frosne og syrlige produkter'",
+    "source": "https://en.wikipedia.org/wiki/Hydroxypropyl_distarch_phosphate",
+    "result": "rettet"
+   },
+   {
+    "claim": "Fødevareeksempler: saucer, frugtfyld, dressinger, yoghurt, is, mejeriprodukter",
+    "source": "https://foodcom.pl/en/hydroxypropyl-distarch-phosphate-e1442-properties-and-common-uses/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Supper, færdigretter, desserter/budding, frosne retter",
+    "source": "https://foodcom.pl/en/hydroxypropyl-distarch-phosphate-e1442-properties-and-common-uses/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Udgangsmaterialer: majs, kartoffel, tapioka, hvede (ris fjernet – ikke fundet)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/ ; https://www.kosnature.com/product/sodium-starch-octenylsuccinate-modified-starch-e1450/ ; https://starch.eu/priority/gluten-free-labelling-allergen-labelling-exemption-granted-wheat-starch-derivatives/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Formål: bedre modstandsdygtighed over for varme, syre og frost ('omrøring' fjernet)",
+    "source": "https://en.wikipedia.org/wiki/Hydroxypropyl_distarch_phosphate ; https://link.springer.com/article/10.1007/s10068-015-0170-4",
+    "result": "rettet"
+   },
+   {
+    "claim": "Hvidt pulver uden smag -> hvidt til råhvidt pulver ('uden smag' ikke bekræftet)",
+    "source": "https://www.kosnature.com/product/sodium-starch-octenylsuccinate-modified-starch-e1450/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Tilladt quantum satis (E 1404-E 1451)",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20181029",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ca. 4 kcal/g",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Delvist resistent/virker som kostfiber -> en del fermenteres af tarmfloraen",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Mild afføringspåvirkning ved høje indtag -> veltolereret hos voksne op til 60 g/dag (E 1413, E 1414, E 1420, E 1450)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Glutenspor -> modificeret hvedestivelse skal fortsat deklareres som hvede",
+    "source": "https://starch.eu/priority/gluten-free-labelling-allergen-labelling-exemption-granted-wheat-starch-derivatives/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Særlige maksimumgrænser i fødevarer til spædbørn og småbørn (20.000/50.000 mg/kg)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7425341/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E1450",
+  "nameDa": "Stivelsesnatriumoctenylsuccinat",
+  "nameEn": "Starch sodium octenyl succinate",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Stivelse gjort fedtbindende med octenylravsyre, så den virker som emulgator. Bruges bl.a. i drikkevareemulsioner og til at indkapsle aromaer.",
+  "description": "Stivelsesnatriumoctenylsuccinat (OSA-stivelse) fremstilles ved at forestre stivelse med octenylravsyreanhydrid. De fedtelskende octenylsuccinatgrupper gør stivelsen overfladeaktiv, så den kan stabilisere olie-i-vand-emulsioner og beskytte følsomme ingredienser. Udgangsmaterialet er typisk stivelse fra majs, kartoffel, tapioka eller hvede. Formålet er at give stivelsen bedre egenskaber end naturlig stivelse, fx større stabilitet over for varme, syre og frysning. Produktet er et hvidt til råhvidt pulver, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Drikkevareemulsioner, indkapslede aromaer, dressinger og mayonnaise. Tilladt i modermælkserstatninger og tilskudsblandinger til spædbørn med en maksimumgrænse (20.000 mg/kg). Tilladt quantum satis i de fleste fødevarer, der må indeholde tilsætningsstoffer.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser og anvendelsesniveauer for den almindelige befolkning, og at en numerisk ADI ikke er nødvendig. Stofferne optages ikke intakt, men nedbrydes i betydelig grad af tarmens enzymer, og resten fermenteres af tarmfloraen. I humane studier blev flere modificerede stivelser (E 1413, E 1414, E 1420 og E 1450) tolereret af voksne i doser op til 60 g om dagen. Modificeret stivelse fremstillet af hvede er ikke fritaget for allergenmærkning og skal deklareres som hvede. Brugen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser (20.000 eller 50.000 mg/kg), og EFSA fandt i 2017, at data ikke var tilstrækkelige til at vurdere sikkerheden for spædbørn og småbørn ved disse niveauer.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI. I 2020 vurderede EFSA's FAF-panel desuden E 1450 i mad til spædbørn under 16 uger og fandt ingen indikation af sikkerhedsbekymring ved indtag op til de niveauer, der indgik i de kliniske studier (op til ca. 2.725 mg/kg legemsvægt/dag).",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   },
+   {
+    "citation": "EFSA FAF Panel (2020). Opinion on the re-evaluation of starch sodium octenyl succinate (E 1450) as a food additive in foods for infants below 16 weeks of age and the follow-up of its re-evaluation. EFSA Journal 18:5874.",
+    "searchTitle": "re-evaluation of starch sodium octenyl succinate (E 1450) in foods for infants below 16 weeks"
+   }
+  ],
+  "pubmedTerm": "octenyl succinic anhydride starch",
+  "flags": [
+   "may_contain_gluten"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4911",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7425341/",
+    "https://www.efsa.europa.eu/en/efsajournal/pub/5874",
+    "https://en.wikipedia.org/wiki/Starch_sodium_octenyl_succinate",
+    "https://www.sciencedirect.com/science/article/abs/pii/S0268005X16310207",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20181029",
+    "https://www.kosnature.com/product/sodium-starch-octenylsuccinate-modified-starch-e1450/",
+    "https://starch.eu/priority/gluten-free-labelling-allergen-labelling-exemption-granted-wheat-starch-derivatives/"
+   ],
+   "notes": "Runde 4: alle tidligere ukontrollerede udsagn søgt op. Bekræftet: fremstilling med octenylravsyreanhydrid, emulgerende virkning, drikkevareemulsioner/aromaindkapsling/dressinger, modermælkserstatning (20.000 mg/kg), EFSA 2020. Rettet: summary (vitaminer fjernet), udgangsmaterialer, formål, pulverbeskrivelse, fiber, afføring, gluten. Fjernet: 'basisk miljø', citrusolie-eksempel, vitaminer/kosttilskud, 4 kcal/g."
+  },
+  "wikipedia": "",
+  "wikidata": "Q18967290",
+  "claims": [
+   {
+    "claim": "12 modificerede stivelser gen-evalueret 2017",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen numerisk ADI, ingen sikkerhedsbekymring",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hydrolyseres og fermenteres, optages ikke intakt",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ikke genotoksiske",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen effekter op til 31.000 mg/kg",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anbefalede strammere tungmetalspecifikationer",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "JECFA lignende konklusioner",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Få humane studier",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA 2020: spædbørn <16 uger, op til 2.725 mg/kg/dag ingen bekymring",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7425341/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fremstilles med octenylravsyreanhydrid",
+    "source": "https://en.wikipedia.org/wiki/Starch_sodium_octenyl_succinate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'i basisk miljø'",
+    "source": "https://en.wikipedia.org/wiki/Starch_sodium_octenyl_succinate",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Stabiliserer olie-i-vand-emulsioner",
+    "source": "https://www.sciencedirect.com/science/article/abs/pii/S0268005X16310207",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Drikkevareemulsioner, indkapslede aromaer, dressinger",
+    "source": "https://www.sciencedirect.com/science/article/abs/pii/S0268005X16310207",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Indkapslede vitaminer og kosttilskud (for E 1450)",
+    "source": "https://www.sciencedirect.com/science/article/abs/pii/S0268005X16310207",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Sodavand med citrusolie (konkret eksempel)",
+    "source": "https://www.sciencedirect.com/science/article/abs/pii/S0268005X16310207",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Modermælkserstatninger (maks. 20.000 mg/kg)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7425341/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Udgangsmaterialer: majs, kartoffel, tapioka, hvede (ris fjernet – ikke fundet)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/ ; https://www.kosnature.com/product/sodium-starch-octenylsuccinate-modified-starch-e1450/ ; https://starch.eu/priority/gluten-free-labelling-allergen-labelling-exemption-granted-wheat-starch-derivatives/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Formål: bedre modstandsdygtighed over for varme, syre og frost ('omrøring' fjernet)",
+    "source": "https://en.wikipedia.org/wiki/Hydroxypropyl_distarch_phosphate ; https://link.springer.com/article/10.1007/s10068-015-0170-4",
+    "result": "rettet"
+   },
+   {
+    "claim": "Hvidt pulver uden smag -> hvidt til råhvidt pulver ('uden smag' ikke bekræftet)",
+    "source": "https://www.kosnature.com/product/sodium-starch-octenylsuccinate-modified-starch-e1450/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Tilladt quantum satis (E 1404-E 1451)",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20181029",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ca. 4 kcal/g",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Delvist resistent/virker som kostfiber -> en del fermenteres af tarmfloraen",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Mild afføringspåvirkning ved høje indtag -> veltolereret hos voksne op til 60 g/dag (E 1413, E 1414, E 1420, E 1450)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Glutenspor -> modificeret hvedestivelse skal fortsat deklareres som hvede",
+    "source": "https://starch.eu/priority/gluten-free-labelling-allergen-labelling-exemption-granted-wheat-starch-derivatives/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Særlige maksimumgrænser i fødevarer til spædbørn og småbørn (20.000/50.000 mg/kg)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7425341/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E1451",
+  "nameDa": "Acetyleret oxideret stivelse",
+  "nameEn": "Acetylated oxidised starch",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Stivelse, der både er oxideret og acetyleret. Den bruges bl.a. i geléslik og vingummi.",
+  "description": "Acetyleret oxideret stivelse fremstilles ved at oxidere stivelse med natriumhypochlorit og derefter forestre den med eddikesyreanhydrid. Kombinationen giver en klar gel med god gelstyrke. Udgangsmaterialet er typisk stivelse fra majs, kartoffel, tapioka eller hvede. Formålet er at give stivelsen bedre egenskaber end naturlig stivelse, fx større stabilitet over for varme, syre og frysning. Produktet er et hvidt til råhvidt pulver, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Vingummi og geléslik, desserter, saucer og yoghurt. Tilladt quantum satis i de fleste fødevarer, der må indeholde tilsætningsstoffer.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser og anvendelsesniveauer for den almindelige befolkning, og at en numerisk ADI ikke er nødvendig. Stofferne optages ikke intakt, men nedbrydes i betydelig grad af tarmens enzymer, og resten fermenteres af tarmfloraen. I humane studier blev flere modificerede stivelser (E 1413, E 1414, E 1420 og E 1450) tolereret af voksne i doser op til 60 g om dagen. Modificeret stivelse fremstillet af hvede er ikke fritaget for allergenmærkning og skal deklareres som hvede. Brugen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser (20.000 eller 50.000 mg/kg), og EFSA fandt i 2017, at data ikke var tilstrækkelige til at vurdere sikkerheden for spædbørn og småbørn ved disse niveauer.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   }
+  ],
+  "pubmedTerm": "acetylated oxidized starch",
+  "flags": [
+   "may_contain_gluten"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4911",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7425341/",
+    "https://www.inchem.org/documents/jecfa/jecmono/v48je09.htm",
+    "https://www.linkedin.com/pulse/acetylated-oxidized-starch-e1451-properties-uses-nguyen-nguyen-avrlc",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20181029",
+    "https://www.kosnature.com/product/sodium-starch-octenylsuccinate-modified-starch-e1450/",
+    "https://starch.eu/priority/gluten-free-labelling-allergen-labelling-exemption-granted-wheat-starch-derivatives/",
+    "https://en.wikipedia.org/wiki/Hydroxypropyl_distarch_phosphate",
+    "https://link.springer.com/article/10.1007/s10068-015-0170-4"
+   ],
+   "notes": "Runde 4: alle tidligere ukontrollerede udsagn søgt op. Bekræftet: fremstillingskemi, brug i geléslik/vingummi, desserter, saucer, quantum satis, spædbørnsgrænser. Rettet: 'især' blødt op, udgangsmaterialer, formål, pulverbeskrivelse, fiber, afføring, gluten. Fjernet: 4 kcal/g. Bemærk: anvendelseseksempler hviler på branchekilde."
+  },
+  "wikipedia": "",
+  "wikidata": "Q2633813",
+  "claims": [
+   {
+    "claim": "12 modificerede stivelser gen-evalueret 2017",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen numerisk ADI, ingen sikkerhedsbekymring",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hydrolyseres og fermenteres, optages ikke intakt",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ikke genotoksiske",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen effekter op til 31.000 mg/kg",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anbefalede strammere tungmetalspecifikationer",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "JECFA lignende konklusioner",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Få humane studier",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Fremstilling: natriumhypochlorit + eddikesyreanhydrid",
+    "source": "https://www.inchem.org/documents/jecfa/jecmono/v48je09.htm ; https://www.linkedin.com/pulse/acetylated-oxidized-starch-e1451-properties-uses-nguyen-nguyen-avrlc",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bruges i geléslik/vingummi",
+    "source": "https://www.linkedin.com/pulse/acetylated-oxidized-starch-e1451-properties-uses-nguyen-nguyen-avrlc",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'især' i geléslik -> 'bl.a.'",
+    "source": "https://www.linkedin.com/pulse/acetylated-oxidized-starch-e1451-properties-uses-nguyen-nguyen-avrlc",
+    "result": "rettet"
+   },
+   {
+    "claim": "Desserter og saucer",
+    "source": "https://www.linkedin.com/pulse/acetylated-oxidized-starch-e1451-properties-uses-nguyen-nguyen-avrlc",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Udgangsmaterialer: majs, kartoffel, tapioka, hvede (ris fjernet – ikke fundet)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/ ; https://www.kosnature.com/product/sodium-starch-octenylsuccinate-modified-starch-e1450/ ; https://starch.eu/priority/gluten-free-labelling-allergen-labelling-exemption-granted-wheat-starch-derivatives/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Formål: bedre modstandsdygtighed over for varme, syre og frost ('omrøring' fjernet)",
+    "source": "https://en.wikipedia.org/wiki/Hydroxypropyl_distarch_phosphate ; https://link.springer.com/article/10.1007/s10068-015-0170-4",
+    "result": "rettet"
+   },
+   {
+    "claim": "Hvidt pulver uden smag -> hvidt til råhvidt pulver ('uden smag' ikke bekræftet)",
+    "source": "https://www.kosnature.com/product/sodium-starch-octenylsuccinate-modified-starch-e1450/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Tilladt quantum satis (E 1404-E 1451)",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20181029",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ca. 4 kcal/g",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Delvist resistent/virker som kostfiber -> en del fermenteres af tarmfloraen",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Mild afføringspåvirkning ved høje indtag -> veltolereret hos voksne op til 60 g/dag (E 1413, E 1414, E 1420, E 1450)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Glutenspor -> modificeret hvedestivelse skal fortsat deklareres som hvede",
+    "source": "https://starch.eu/priority/gluten-free-labelling-allergen-labelling-exemption-granted-wheat-starch-derivatives/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Særlige maksimumgrænser i fødevarer til spædbørn og småbørn (20.000/50.000 mg/kg)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7425341/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E1452",
+  "nameDa": "Stivelsesaluminiumoctenylsuccinat",
+  "nameEn": "Starch aluminium octenyl succinate",
+  "category": "Fortykningsmiddel / stabilisator (modificeret stivelse)",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "OSA-stivelse som aluminiumsalt. Den er i EU kun godkendt til indkapslede vitaminpræparater.",
+  "description": "Stivelsesaluminiumoctenylsuccinat fremstilles ved at forestre stivelse med octenylravsyreanhydrid og derefter behandle den med aluminiumsulfat, så der dannes et aluminiumsalt. EU's renhedskrav begrænser bl.a. aluminiumindholdet til højst 0,3 %. Udgangsmaterialet er typisk stivelse fra majs, kartoffel, tapioka eller hvede. Formålet er at give stivelsen bedre egenskaber end naturlig stivelse, fx større stabilitet over for varme, syre og frysning. Produktet er et hvidt til råhvidt pulver, som bruges til at fortykke og stabilisere fødevarer.",
+  "uses": "Kun godkendt i indkapslede vitaminpræparater (fx i kosttilskud). Findes ikke i almindelige fødevarer.",
+  "health": "EFSA's gen-evaluering af modificerede stivelser fra 2017 konkluderede, at der ikke er sikkerhedsbekymring ved de rapporterede anvendelser og anvendelsesniveauer for den almindelige befolkning, og at en numerisk ADI ikke er nødvendig. Stofferne optages ikke intakt, men nedbrydes i betydelig grad af tarmens enzymer, og resten fermenteres af tarmfloraen. I humane studier blev flere modificerede stivelser (E 1413, E 1414, E 1420 og E 1450) tolereret af voksne i doser op til 60 g om dagen. Modificeret stivelse fremstillet af hvede er ikke fritaget for allergenmærkning og skal deklareres som hvede. Brugen i fødevarer til spædbørn og småbørn er begrænset af særlige maksimumgrænser (20.000 eller 50.000 mg/kg), og EFSA fandt i 2017, at data ikke var tilstrækkelige til at vurdere sikkerheden for spædbørn og småbørn ved disse niveauer. Stoffet indeholder aluminium; EFSA fastsatte i 2008 et tolerabelt ugentligt indtag (TWI) for aluminium på 1 mg/kg legemsvægt. Hos personer med nedsat nyrefunktion kan aluminium ophobes.",
+  "research": "EFSA's ANS-panel gen-evaluerede i 2017 samlet de 12 godkendte modificerede stivelser (E 1404-E 1452). Modificerede stivelser optages ikke intakt, men hydrolyseres i betydelig grad af tarmens enzymer og fermenteres af tarmfloraen; de vurderes ikke at være genotoksiske, og rotter fodret med meget høje doser (op til ca. 31.000 mg/kg legemsvægt/dag) viste ingen relevante effekter. Panelet fandt intet behov for numerisk ADI.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2017). Re-evaluation of oxidised starch (E 1404) ... and starch aluminium octenyl succinate (E 1452) as food additives. EFSA Journal 15(10):4911.",
+    "searchTitle": "Re-evaluation of oxidised starch (E 1404) monostarch phosphate modified starches as food additives"
+   }
+  ],
+  "pubmedTerm": "starch aluminum octenyl succinate",
+  "flags": [
+   "kidney_caution"
+  ],
+  "classes": [
+   "emulsifier",
+   "stabiliser",
+   "thickener"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of oxidised starch (E 1404), monostarch phosphate (E 1410), distarch phosphate (E 1412), phosphated distarch phosphate (E 1413), acetylated distarch phosphate (E 1414), acetylated starch (E 1420), acetylated distarch adipate (E 1422), hydroxypropyl starch (E 1440), hydroxypropyl distarch phosphate (E 1442), starch sodium octenyl succinate (E 1450), acetylated oxidised starch (E 1451) and starch aluminium octenyl succinate (E 1452) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4911",
+   "date": "2017-10-05",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4911",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7425341/",
+    "https://precision.fda.gov/uniisearch/srs/unii/i9pj0o6294",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20181029",
+    "https://www.eufic.org/en/food-safety/article/aluminium-qa",
+    "https://pubmed.ncbi.nlm.nih.gov/37213837/",
+    "https://www.kosnature.com/product/sodium-starch-octenylsuccinate-modified-starch-e1450/",
+    "https://starch.eu/priority/gluten-free-labelling-allergen-labelling-exemption-granted-wheat-starch-derivatives/",
+    "https://en.wikipedia.org/wiki/Hydroxypropyl_distarch_phosphate",
+    "https://link.springer.com/article/10.1007/s10068-015-0170-4"
+   ],
+   "notes": "Runde 4: alle tidligere ukontrollerede udsagn søgt op. Bekræftet: aluminiumsulfat-trin, kun indkapslede vitaminpræparater, aluminium maks. 0,3 %, TWI 1 mg/kg (EFSA 2008), ophobning ved nyresvigt. Rettet: udgangsmaterialer, formål, pulverbeskrivelse, fiber, afføring, gluten. Fjernet: 'frit flydende pulver', 'bidraget er meget lille', 4 kcal/g."
+  },
+  "wikipedia": "",
+  "wikidata": "Q18967287",
+  "claims": [
+   {
+    "claim": "12 modificerede stivelser gen-evalueret 2017",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen numerisk ADI, ingen sikkerhedsbekymring",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hydrolyseres og fermenteres, optages ikke intakt",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ikke genotoksiske",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen effekter op til 31.000 mg/kg",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anbefalede strammere tungmetalspecifikationer",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "JECFA lignende konklusioner",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Få humane studier",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Fremstilles som E 1450 + aluminiumsulfat",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'frit flydende pulver'",
+    "source": "https://precision.fda.gov/uniisearch/srs/unii/i9pj0o6294",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Aluminium højst 0,3 % (EU-renhedskrav)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kun i indkapslede vitaminpræparater",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Aluminium-TWI 1 mg/kg (EFSA 2008)",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/37213837/ ; https://www.eufic.org/en/food-safety/article/aluminium-qa",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Bidraget fra dette stof er meget lille'",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Nedsat nyrefunktion -> ophobning",
+    "source": "https://www.eufic.org/en/food-safety/article/aluminium-qa",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Udgangsmaterialer: majs, kartoffel, tapioka, hvede (ris fjernet – ikke fundet)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/ ; https://www.kosnature.com/product/sodium-starch-octenylsuccinate-modified-starch-e1450/ ; https://starch.eu/priority/gluten-free-labelling-allergen-labelling-exemption-granted-wheat-starch-derivatives/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Formål: bedre modstandsdygtighed over for varme, syre og frost ('omrøring' fjernet)",
+    "source": "https://en.wikipedia.org/wiki/Hydroxypropyl_distarch_phosphate ; https://link.springer.com/article/10.1007/s10068-015-0170-4",
+    "result": "rettet"
+   },
+   {
+    "claim": "Hvidt pulver uden smag -> hvidt til råhvidt pulver ('uden smag' ikke bekræftet)",
+    "source": "https://www.kosnature.com/product/sodium-starch-octenylsuccinate-modified-starch-e1450/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Ca. 4 kcal/g",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Delvist resistent/virker som kostfiber -> en del fermenteres af tarmfloraen",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Mild afføringspåvirkning ved høje indtag -> veltolereret hos voksne op til 60 g/dag (E 1413, E 1414, E 1420, E 1450)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009865/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Glutenspor -> modificeret hvedestivelse skal fortsat deklareres som hvede",
+    "source": "https://starch.eu/priority/gluten-free-labelling-allergen-labelling-exemption-granted-wheat-starch-derivatives/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Særlige maksimumgrænser i fødevarer til spædbørn og småbørn (20.000/50.000 mg/kg)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7425341/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E1505",
+  "nameDa": "Triethylcitrat",
+  "nameEn": "Triethyl citrate",
+  "category": "Bærestof / skumstabilisator",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En ester af citronsyre og ethanol. Den bruges til at stabilisere skum i æggehvide og som bærestof for aromaer.",
+  "description": "Triethylcitrat er en ester af citronsyre og ethanol. Det er en farveløs, lugtfri, olieagtig væske med bitter smag; den er moderat opløselig i vand (ca. 65 g/l), men uopløselig i olier. I kroppen spaltes den til citronsyre og ethanol. Den bruges til at stabilisere skum i æggehvide, som opløsningsmiddel for aromaer og som blødgører i lægemiddelovertræk og plast.",
+  "uses": "Forarbejdede æg og ægprodukter (fx som piskehjælp i æggehvide) og som bærestof i aromaer, hvor E 1505, E 1517, E 1518 og E 1520 tilsammen højst må udgøre 3.000 mg/kg i den færdige fødevare.",
+  "health": "JECFA har fastsat en ADI på 0-20 mg/kg legemsvægt/dag. Stoffet spaltes til citronsyre og ethanol, som har lav toksicitet. Der er ikke fundet oplysninger om særlige risikogrupper.",
+  "research": "JECFA fastsatte i 1984 ADI 0-20 mg/kg (efter en midlertidig ADI på 10 mg/kg fra 1979) og fastholdt den i 1999, hvor stoffet også blev vurderet uden sikkerhedsbekymring som aromastof. Stoffet bruges som blødgører i plast og lægemiddelovertræk. EFSA har indsamlet data til en gen-evaluering af E 1505, men der er ikke fundet en offentliggjort EFSA-udtalelse.",
+  "keyReferences": [
+   {
+    "citation": "JECFA (1984). Triethyl citrate. WHO Food Additives Series 19.",
+    "searchTitle": "Triethyl citrate WHO Food Additives Series 19"
+   }
+  ],
+  "pubmedTerm": "triethyl citrate",
+  "flags": [],
+  "classes": [
+   "carrier",
+   "emulsifier",
+   "sequestrant",
+   "stabiliser"
+  ],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://inchem.org/documents/jecfa/jecmono/v19je12.htm",
+    "http://apps.who.int/food-additives-contaminants-jecfa-database/chemical.aspx?chemID=3286",
+    "https://www.inchem.org/documents/jecfa/jeceval/jec_2316.htm",
+    "https://en.wikipedia.org/wiki/Triethyl_citrate",
+    "https://www.ams.usda.gov/sites/default/files/media/Triethyl%20Citrate%20report%202014.pdf",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32015R0647",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009459/",
+    "https://lexparency.org/eu/32008R1333/ANX_III/",
+    "https://www.efsa.europa.eu/sites/default/files/consultation/120706a.pdf"
+   ],
+   "notes": "Runde 4: alle udsagn søgt op. Bekræftet: kemi, hydrolyse, JECFA-ADI 1984/1999, aromastofvurdering, skumstabilisering, tabletovertræk, brug i ægprodukter, ingen EFSA-udtalelse (kun dataindkaldelse). Rettet: opløselighed (uopløselig i olier), 'quantum satis' for tørret æggehvide ikke bekræftet -> kategori 10.2, E 1519 fjernet fra 3.000 mg/kg-gruppen (benzylalkohol har egne grænser), phthalat-udsagn blødt op, risikogrupper omformuleret."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Triethyl_citrate",
+  "wikidata": "Q418057",
+  "claims": [
+   {
+    "claim": "Ester af citronsyre og ethanol (forestring)",
+    "source": "https://www.inchem.org/documents/jecfa/jeceval/jec_2316.htm",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Farveløs, næsten lugtfri væske -> farveløs, lugtfri, bitter smag",
+    "source": "https://en.wikipedia.org/wiki/Triethyl_citrate",
+    "result": "rettet"
+   },
+   {
+    "claim": "Let opløselig i både vand og fedt -> ca. 65 g/l i vand, uopløselig i olier",
+    "source": "https://en.wikipedia.org/wiki/Triethyl_citrate",
+    "result": "rettet"
+   },
+   {
+    "claim": "Spaltes til citronsyre og ethanol",
+    "source": "https://www.inchem.org/documents/jecfa/jeceval/jec_2316.htm ; https://www.ams.usda.gov/sites/default/files/media/Triethyl%20Citrate%20report%202014.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Skumstabilisator i æggehvide",
+    "source": "https://en.wikipedia.org/wiki/Triethyl_citrate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Opløsningsmiddel/bærestof for aromaer",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009459/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Blødgører i overtræk på tabletter",
+    "source": "https://www.ams.usda.gov/sites/default/files/media/Triethyl%20Citrate%20report%202014.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendelse i forarbejdede æg (kategori 10.2)",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32015R0647",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Tørret æggehvide quantum satis'",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32015R0647",
+    "result": "rettet"
+   },
+   {
+    "claim": "Gruppegrænse 3.000 mg/kg: E 1505, E 1517, E 1518, E 1520 (E 1519 indgår ikke)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009459/",
+    "result": "rettet"
+   },
+   {
+    "claim": "JECFA ADI 0-20 mg/kg (1984), fastholdt 1999",
+    "source": "https://www.inchem.org/documents/jecfa/jeceval/jec_2316.htm",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Vurderet uden bekymring som aromastof (1999)",
+    "source": "http://apps.who.int/food-additives-contaminants-jecfa-database/chemical.aspx?chemID=3286",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Blødgører i plast som alternativ til phthalater med lav toksicitet",
+    "source": "https://www.ams.usda.gov/sites/default/files/media/Triethyl%20Citrate%20report%202014.pdf",
+    "result": "rettet"
+   },
+   {
+    "claim": "Ingen offentliggjort EFSA-gen-evaluering",
+    "source": "https://www.efsa.europa.eu/sites/default/files/consultation/120706a.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Ingen nyere væsentlige sikkerhedsspørgsmål' / 'ingen kendte risikogrupper'",
+    "source": "https://www.inchem.org/documents/jecfa/jeceval/jec_2316.htm",
+    "result": "rettet"
+   }
+  ]
+ },
+ {
+  "code": "E1517",
+  "nameDa": "Glyceryldiacetat",
+  "nameEn": "Glyceryl diacetate",
+  "category": "Bærestof",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En ester af glycerol og eddikesyre (diacetin), der bruges som bærestof for aromaer.",
+  "description": "Glyceryldiacetat (diacetin) fremstilles ved forestring af glycerol med eddikesyre, hvorved to af glycerols tre hydroxylgrupper bindes til acetylgrupper. Det er en farveløs, olieagtig væske med svag lugt, der bruges som opløsningsmiddel og bærestof for aromaer. I kroppen spaltes den til glycerol og eddikesyre.",
+  "uses": "Kun som bærestof i aromaer (bilag III); højst 3.000 mg/kg i den færdige fødevare fra alle kilder, alene eller sammen med E 1505, E 1518 og E 1520.",
+  "health": "Stoffet spaltes til glycerol og eddikesyre, som indgår i normalt stofskifte. Der er ikke fundet en fastsat ADI eller en særskilt EFSA-udtalelse om stoffet. Stoffet bruges kun i aromaer. Der er ikke fundet oplysninger om særlige risikogrupper.",
+  "research": "Der er kun fundet sparsom specifik forskning og ingen offentliggjort EFSA-gen-evaluering af E 1517.",
+  "keyReferences": [],
+  "pubmedTerm": "diacetin",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://lexparency.org/eu/32008R1333/ANX_III/",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009459/",
+    "https://en.wikipedia.org/wiki/Glyceryl_diacetate",
+    "https://foodcom.pl/en/term-e/e1517/"
+   ],
+   "notes": "Runde 4: alle udsagn søgt op. Bekræftet: kemi, udseende, hydrolyse, EU-godkendelse i bilag III (lexparency-gengivelse af EU-forordning og EFSA 2018 om E 1520), ingen EFSA-udtalelse. Rettet: gruppegrænsen omfatter E 1505, E 1517, E 1518 og E 1520 (ikke E 1519). Fjernet: fødevareeksempler, 'meget lav eksponering' og henvisning til E 1518-data (ikke fundet)."
+  },
+  "wikipedia": "",
+  "wikidata": "Q904648",
+  "claims": [
+   {
+    "claim": "Forestring af glycerol med eddikesyre (diester)",
+    "source": "https://en.wikipedia.org/wiki/Glyceryl_diacetate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Farveløs, olieagtig væske",
+    "source": "https://en.wikipedia.org/wiki/Glyceryl_diacetate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Opløser aromastoffer / bærestof",
+    "source": "https://en.wikipedia.org/wiki/Glyceryl_diacetate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Spaltes til glycerol og eddikesyre",
+    "source": "https://foodcom.pl/en/term-e/e1517/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Godkendt i EU som bærestof i aromaer (bilag III)",
+    "source": "https://lexparency.org/eu/32008R1333/ANX_III/ ; https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009459/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Gruppegrænse 3.000 mg/kg (E 1519 fjernet fra gruppen)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009459/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Eksempler: drikkevarer, slik, bagværk",
+    "source": "https://lexparency.org/eu/32008R1333/ANX_III/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Ingen numerisk ADI / ingen EFSA-udtalelse fundet",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009459/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Lav toksicitet' -> nedbrydningsprodukter indgår i normalt stofskifte",
+    "source": "https://foodcom.pl/en/term-e/e1517/",
+    "result": "rettet"
+   },
+   {
+    "claim": "'Eksponeringen er meget lav'",
+    "source": "https://lexparency.org/eu/32008R1333/ANX_III/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Sikkerhed understøttes af data for E 1518",
+    "source": "https://lexparency.org/eu/32008R1333/ANX_III/",
+    "result": "fjernet"
+   }
+  ]
+ },
+ {
+  "code": "E1518",
+  "nameDa": "Glyceryltriacetat",
+  "nameEn": "Glyceryl triacetate",
+  "category": "Bærestof / fugtighedsbevarende middel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En ester af glycerol og eddikesyre (triacetin). Den bruges som bærestof for aromaer og i tyggegummi.",
+  "description": "Glyceryltriacetat (triacetin) fremstilles ved at forestre alle tre hydroxylgrupper i glycerol med eddikesyre. Den er en farveløs, olieagtig væske med bitter smag i højere koncentrationer og bruges som opløsningsmiddel for aromastoffer. I tyggegummi fungerer den som blødgører og fugtighedsbevarende middel. I kroppen omsættes den som andre triglycerider til glycerol og eddikesyre. Den bruges også i cigaretfiltre og som hjælpestof i lægemidler.",
+  "uses": "Bærestof i aromaer (højst 3.000 mg/kg i færdig fødevare sammen med E 1505, E 1517 og E 1520) samt tyggegummi (uden fastsat maksimumgrænse).",
+  "health": "Triacetin har lav toksicitet; JECFA (1975) og SCF vurderede stoffet uden at fastsætte en numerisk ADI ('not specified'), da det omsættes som andre triglycerider. Der er ikke fundet oplysninger om særlige risikogrupper.",
+  "research": "JECFA (1975) og SCF gav ADI 'not specified'. Der er ikke fundet en offentliggjort EFSA-gen-evaluering af E 1518. Triacetin er i dyreforsøg undersøgt som mulig energikilde i parenteral ernæring.",
+  "keyReferences": [],
+  "pubmedTerm": "triacetin",
+  "flags": [],
+  "classes": [
+   "carrier",
+   "emulsifier",
+   "humectant"
+  ],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Triacetin",
+    "https://cfpub.epa.gov/ncea/pprtv/documents/Triacetin.pdf",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2016.4559",
+    "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009459/",
+    "https://lexparency.org/eu/32008R1333/ANX_III/"
+   ],
+   "notes": "Runde 4: alle udsagn søgt op. Bekræftet: kemi, tyggegummi, cigaretfiltre, JECFA 1975 'not specified', ingen EFSA-gen-evaluering. Rettet: SCF-årstal 1990 fjernet (kilde angiver 1995 – ikke entydigt), sondeernæring -> parenteral ernæring i dyreforsøg, gruppegrænse (E 1519 fjernet), smag. Fjernet: 'ingen kontroverser' og 'lav eksponering'. Tyggegummi-anvendelsen er kun bekræftet via søgeresumé af forordning 1129/2011."
+  },
+  "wikipedia": "",
+  "wikidata": "Q83253",
+  "claims": [
+   {
+    "claim": "Triester af glycerol og eddikesyre",
+    "source": "https://en.wikipedia.org/wiki/Triacetin",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Farveløs væske med let bitter smag",
+    "source": "https://en.wikipedia.org/wiki/Triacetin",
+    "result": "rettet"
+   },
+   {
+    "claim": "Opløsningsmiddel/bærestof for aromaer",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2016.4559",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Blødgører og fugtighedsbevarende i tyggegummi",
+    "source": "https://en.wikipedia.org/wiki/Triacetin",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Spaltes til glycerol og eddikesyre / omsættes som triglycerider",
+    "source": "https://cfpub.epa.gov/ncea/pprtv/documents/Triacetin.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Cigaretfiltre og lægemidler",
+    "source": "https://en.wikipedia.org/wiki/Triacetin",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Gruppegrænse 3.000 mg/kg (E 1519 fjernet fra gruppen)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009459/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Tyggegummi quantum satis -> uden fastsat maksimumgrænse",
+    "source": "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "JECFA 1975 ADI not specified",
+    "source": "https://cfpub.epa.gov/ncea/pprtv/documents/Triacetin.pdf ; https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2016.4559",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "SCF 1990 -> årstal fjernet (kilde angiver 1995)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2016.4559",
+    "result": "rettet"
+   },
+   {
+    "claim": "Ingen EFSA-gen-evaluering fundet",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009459/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Undersøgt som energikilde i sondeernæring -> parenteral ernæring i dyreforsøg",
+    "source": "https://en.wikipedia.org/wiki/Triacetin",
+    "result": "rettet"
+   },
+   {
+    "claim": "'Ingen kontroverser' / 'eksponering lav'",
+    "source": "https://en.wikipedia.org/wiki/Triacetin",
+    "result": "fjernet"
+   }
+  ]
+ },
+ {
+  "code": "E1519",
+  "nameDa": "Benzylalkohol",
+  "nameEn": "Benzyl alcohol",
+  "category": "Bærestof",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "En aromatisk alkohol med svag, sød duft. Den bruges som bærestof for aromaer i bl.a. likører og slik.",
+  "description": "Benzylalkohol findes naturligt i mange frugter, te og æteriske olier (fx jasmin og ylang-ylang). Industrielt fremstilles den typisk ved hydrolyse af benzylchlorid eller ved hydrogenering af benzaldehyd. Den fungerer som opløsningsmiddel for aromaer og bruges som konserveringsmiddel i lægemidler og kosmetik. I kroppen oxideres den til benzoesyre, der kobles med glycin og udskilles i urinen som hippursyre.",
+  "uses": "Tilladt i EU kun som bærestof i aromaer: højst 100 mg/l i likører, aromatiserede vine og aromatiserede vinbaserede drikke samt højst 250 mg/kg i konfekture, herunder chokolade, og fint bagværk.",
+  "health": "EFSA's gen-evaluering fra 2019 fastsatte en ADI på 4 mg/kg legemsvægt/dag og fandt eksponeringen fra tilsætningsstofbrug under ADI i alle befolkningsgrupper (højst ca. 0,8 mg/kg/dag hos småbørn i det høje, forfinede scenarie). For tidligt fødte børn kan ikke omsætte stoffet effektivt, og det har i intravenøse skylleopløsninger forårsaget alvorlig forgiftning ('gasping syndrome'). Stoffet er et kontaktallergen i kosmetik, men sensibilisering er sjælden. Krydsreaktion med benzoater er beskrevet som mulig, men et studie fandt ikke krydsreaktion hos personer, der reagerede på natriumbenzoat.",
+  "research": "EFSA's FAF-panel gen-evaluerede benzylalkohol (E 1519) i 2019: ingen bekymring for genotoksicitet eller kræft, og ADI 4 mg/kg legemsvægt/dag baseret på NOAEL 400 mg/kg fra et kræftstudie i rotter. Gasping syndrome hos præmature spædbørn blev beskrevet i 1982 i forbindelse med intravenøse skylleopløsninger konserveret med benzylalkohol. EFSA konkluderede, at eksponeringen ved de rapporterede anvendelser ikke giver anledning til sikkerhedsbekymring.",
+  "keyReferences": [
+   {
+    "citation": "EFSA FAF Panel (2019). Re-evaluation of benzyl alcohol (E 1519) as food additive. EFSA Journal 17(10):5876.",
+    "searchTitle": "Re-evaluation of benzyl alcohol (E 1519) as food additive"
+   }
+  ],
+  "pubmedTerm": "benzyl alcohol",
+  "flags": [
+   "children_caution",
+   "allergen"
+  ],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Re-evaluation of benzyl alcohol (E 1519) as food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2019.5876",
+   "date": "2019-10-01",
+   "adi": "4 mg/kg bw/day",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7008871/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2019.5876",
+    "https://en.wikipedia.org/wiki/Benzyl_alcohol",
+    "https://pubmed.ncbi.nlm.nih.gov/7133084/",
+    "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/benzyl-alcohol",
+    "https://journals.sagepub.com/doi/10.1177/17103568251386038",
+    "https://pubmed.ncbi.nlm.nih.gov/35080274/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC12223916/"
+   ],
+   "notes": "Runde 4: alle udsagn søgt op. Bekræftet: forekomst, fremstilling, metabolisme til hippursyre, EFSA 2019 (ADI 4, NOAEL 400, eksponering 0,81 mg/kg/dag hos småbørn, ingen genotoksicitet/kræft), gasping syndrome 1982. Rettet: EU-anvendelser præciseret til bilag III-grænserne (100 mg/l / 250 mg/kg), kontaktallergi (sjælden), benzoat-krydsreaktion (usikker, et studie fandt ingen). Fjernet: 'drikkevarer' generelt og 'lav akut toksicitet' (ikke fundet i søgeresultater)."
+  },
+  "wikipedia": "",
+  "wikidata": "Q52353",
+  "claims": [
+   {
+    "claim": "Findes naturligt i frugter, te, jasmin",
+    "source": "https://en.wikipedia.org/wiki/Benzyl_alcohol",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fremstilles af benzylchlorid eller ved reduktion af benzaldehyd",
+    "source": "https://en.wikipedia.org/wiki/Benzyl_alcohol",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Opløsningsmiddel for aromaer",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7008871/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Svag konserverende virkning' -> konserveringsmiddel i lægemidler/kosmetik",
+    "source": "https://journals.sagepub.com/doi/10.1177/17103568251386038",
+    "result": "rettet"
+   },
+   {
+    "claim": "Omdannes til benzoesyre, udskilles som hippursyre",
+    "source": "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/benzyl-alcohol",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bredt brugt i lægemidler og kosmetik",
+    "source": "https://journals.sagepub.com/doi/10.1177/17103568251386038",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kun bærestof i aromaer; likører/aromatiserede vine 100 mg/l; konfekture/chokolade/fint bagværk 250 mg/kg",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7008871/",
+    "result": "rettet"
+   },
+   {
+    "claim": "'drikkevarer' generelt",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7008871/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA 2019 ADI 4 mg/kg; NOAEL 400 mg/kg kræftstudie rotter",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7008871/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Eksponering højst ca. 0,8 mg/kg/dag hos småbørn",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7008871/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen bekymring for genotoksicitet/kræft",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7008871/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Lav akut toksicitet'",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7008871/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Gasping syndrome hos præmature, IV-opløsninger, 1980'erne -> 1982",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/7133084/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Kendt kontaktallergen i kosmetik -> sjælden sensibilisering",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/35080274/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Personer, der reagerer på benzoater, kan være følsomme",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12223916/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Ingen tegn på risiko ved lave mængder i aromaer",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7008871/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E1520",
+  "nameDa": "Propan-1,2-diol (propylenglycol)",
+  "nameEn": "Propylene glycol",
+  "category": "Bærestof",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "En syntetisk, farveløs væske, der bruges som opløsningsmiddel og bærestof for aromaer, farvestoffer og emulgatorer.",
+  "description": "Propan-1,2-diol (propylenglycol) fremstilles kommercielt ved hydratisering af propylenoxid, som stammer fra petrokemisk propylen; det kan også laves af vegetabilsk glycerol. Den er fugtbindende, blandbar med vand og et godt opløsningsmiddel. I kroppen omdannes en del til mælkesyre og pyrodruesyre, resten udskilles uændret med urinen. I fødevarer må den i EU ikke tilsættes direkte, men kun bruges som bærestof for aromaer, farvestoffer, emulgatorer, antioxidanter, enzymer og næringsstoffer. Den findes også i e-cigaretvæsker, lægemidler og kosmetik.",
+  "uses": "Kun som bærestof: for farvestoffer, emulgatorer og antioxidanter højst 1.000 mg/kg i den færdige fødevare; for aromaer højst 3.000 mg/kg fra alle kilder sammen med E 1505, E 1517 og E 1518 (i drikkevarer undtagen flødelikør højst 1.000 mg/l). Stoffet havner derfor i små mængder i fx aromatiserede fødevarer og drikkevarer.",
+  "health": "EFSA's gen-evaluering fra 2018 fandt ingen grund til at ændre den gældende ADI på 25 mg/kg legemsvægt/dag og konkluderede, at eksponeringen i det forfinede scenarie ikke overstiger ADI for nogen befolkningsgruppe. Meget høje doser (typisk fra lægemidler) kan give mælkesyreforgiftning (acidose) og forhøjet osmolalitet, især hos nyfødte og personer med nedsat nyre- eller leverfunktion. Stoffet kan give irritativt og i sjældne tilfælde allergisk kontakteksem. Katte er særligt følsomme (Heinz-legeme-anæmi), men det er ikke relevant for mennesker.",
+  "research": "EFSA's ANS-panel gen-evaluerede propan-1,2-diol i 2018 og fastholdt ADI på 25 mg/kg (oprindeligt fastsat af SCF i 1996). I et toårigt studie i hunde sås tegn på øget nedbrydning af røde blodlegemer ved den højeste dosis (5.000 mg/kg/dag), og data gav ikke anledning til bekymring for genotoksicitet eller kræft. JECFA har fastsat en ADI på 0-25 mg/kg (1973). Der forskes i indånding via e-cigaretter, som er et andet eksponeringsscenarie end fødevarer.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2018). Re-evaluation of propane-1,2-diol (E 1520) as a food additive. EFSA Journal 16(4):5235.",
+    "searchTitle": "Re-evaluation of propane-1,2-diol (E 1520) as a food additive"
+   }
+  ],
+  "pubmedTerm": "propylene glycol",
+  "flags": [
+   "children_caution",
+   "kidney_caution"
+  ],
+  "classes": [
+   "emulsifier",
+   "humectant"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of propane‐1,2‐diol (E 1520) as a food additive",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5235",
+   "date": "2018/04/05",
+   "adi": "25",
+   "overexposureRisk": "en:no"
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009459/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5235",
+    "https://lexparency.org/eu/32008R1333/ANX_III/",
+    "https://www.atsdr.cdc.gov/toxprofiles/tp189.pdf",
+    "https://www.ncbi.nlm.nih.gov/books/NBK598037/",
+    "https://www.inchem.org/documents/jecfa/jeceval/jec_2031.htm",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC3517950/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC2853765/",
+    "https://dermnetnz.org/topics/contact-allergy-to-propylene-glycol",
+    "https://avmajournals.avma.org/view/journals/javma/194/8/javma.1989.194.08.1045.xml",
+    "https://respiratory-research.biomedcentral.com/articles/10.1186/s12931-022-02142-2"
+   ],
+   "notes": "Runde 4: alle udsagn søgt op. Væsentlig rettelse: E 1520 er ikke godkendt til direkte tilsætning (ikke i bilag II) – kun som bærestof; kategori ændret til 'Bærestof' og 'fugtighedsbevarende middel' fjernet. Rettet: EFSA fastholdt (ikke fastsatte) ADI 25 fra SCF 1996; gruppegrænse for aromaer uden E 1519; nervesystem -> acidose/hyperosmolalitet. Bekræftet: fremstilling, metabolisme, grænseværdier, eksponering < ADI, JECFA 0-25, neonatal/nyre-risiko, kontakteksem, katte, e-cigaretter."
+  },
+  "wikipedia": "",
+  "wikidata": "Q18967269",
+  "claims": [
+   {
+    "claim": "Fremstilles ved hydrolyse/hydratisering af propylenoxid; også af glycerol",
+    "source": "https://www.ncbi.nlm.nih.gov/books/NBK598037/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Omdannes til mælkesyre og pyrodruesyre",
+    "source": "https://www.atsdr.cdc.gov/toxprofiles/tp189.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bærestof for aromaer, farvestoffer, antioxidanter",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009459/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'fugtighedsbevarende middel' i fødevarer",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009459/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Ikke godkendt til direkte tilsætning (ikke i bilag II)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009459/",
+    "result": "rettet"
+   },
+   {
+    "claim": "1.000 mg/kg for farve/emulgator/antioxidant",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009459/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "3.000 mg/kg aromaer sammen med E 1505/E 1517/E 1518 (E 1519 fjernet)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009459/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Drikkevarer 1.000 mg/l (undtagen flødelikør)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009459/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Drikkevarer, slik, bagværk, is (direkte eksempler)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009459/",
+    "result": "rettet"
+   },
+   {
+    "claim": "E-cigaretter, lægemidler, kosmetik",
+    "source": "https://respiratory-research.biomedcentral.com/articles/10.1186/s12931-022-02142-2",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2018 'fastsatte' ADI 25 -> fastholdt (SCF 1996)",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009459/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Eksponering overstiger ikke ADI for nogen gruppe",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009459/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "ADI baseret på toårigt hundestudie -> hundestudie beskrevet uden at påstå basis",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009459/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Ingen bekymring for genotoksicitet/kræft",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009459/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "JECFA ADI 0-25 mg/kg",
+    "source": "https://www.ncbi.nlm.nih.gov/books/NBK598037/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Mælkesyreforgiftning ved høje doser; nyfødte, nyre-/leverpatienter",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2853765/ ; https://pmc.ncbi.nlm.nih.gov/articles/PMC3517950/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'påvirke nervesystemet' -> acidose og hyperosmolalitet",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3517950/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Kontakteksem hos følsomme",
+    "source": "https://dermnetnz.org/topics/contact-allergy-to-propylene-glycol",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Katte særligt følsomme",
+    "source": "https://avmajournals.avma.org/view/journals/javma/194/8/javma.1989.194.08.1045.xml",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Forskning i e-cigaretter",
+    "source": "https://respiratory-research.biomedcentral.com/articles/10.1186/s12931-022-02142-2",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E1521",
+  "nameDa": "Polyethylenglycol",
+  "nameEn": "Polyethylene glycol",
+  "category": "Overtræk / bærestof",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Syntetiske polymerer af ethylenoxid (PEG), der i EU må bruges i bordsødemidler og faste kosttilskud.",
+  "description": "Polyethylenglycol fremstilles ved polymerisering af ethylenoxid og findes i forskellige kædelængder (fx PEG 4000 og 6000). Det er vandopløseligt, har lav toksicitet og optages kun i spormængder fra tarmen, hvor det binder vand. Denne egenskab udnyttes i afføringsmidler (makrogol). I fødevarer bruges det i bordsødemidler og i kosttilskud i fast form, fx som overtræk.",
+  "uses": "Bordsødemidler (quantum satis) og kosttilskud i fast form (højst 10.000 mg/kg). Findes ikke i almindelige dagligvarer i nævneværdigt omfang.",
+  "health": "PEG har lav toksicitet ved oral indtagelse, fordi det næsten ikke optages; store doser virker afførende. JECFA har fastsat en gruppe-ADI på 10 mg/kg legemsvægt/dag for PEG 200-10000 og SCF en gruppe-ADI på 5 mg/kg for PEG 300-4000. EFSA's forfinede eksponeringsvurdering fra 2018 fandt eksponering på op til 3,5 mg/kg/dag i gennemsnit og 6,1 mg/kg/dag ved højt indtag, dvs. inden for intervallet af de to ADI'er, og vurderede, at tallene sandsynligvis overvurderer den reelle eksponering. Der er beskrevet sjældne, men alvorlige allergiske reaktioner (anafylaksi) på PEG, fx i afføringsmidler, depotsteroider og mRNA-vacciner, så personer med kendt PEG-allergi bør være opmærksomme.",
+  "research": "EFSA offentliggjorde i 2018 en forfinet eksponeringsvurdering af PEG (E 1521) baseret på indberettede brugsniveauer fra 2017; højeste gennemsnit var 3,5 mg/kg/dag hos børn (3-9 år) og højeste 95-percentil 6,1 mg/kg/dag hos ældre. PEG-allergi har fået øget opmærksomhed siden 2020 i forbindelse med mRNA-vacciner mod COVID-19. Makrogol er i kliniske studier vist at være sikkert og effektivt mod forstoppelse.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2018). Refined exposure assessment of polyethylene glycol (E 1521) from its use as a food additive. EFSA Journal 16(6):5293.",
+    "searchTitle": "Refined exposure assessment of polyethylene glycol (E 1521)"
+   }
+  ],
+  "pubmedTerm": "polyethylene glycol",
+  "flags": [
+   "allergen",
+   "laxative"
+  ],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Refined exposure assessment of polyethylene glycol (E 1521) from its use as a food additive",
+   "url": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5293",
+   "date": "2018/06/22",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009417/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5293",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC6586169/",
+    "https://pubmed.ncbi.nlm.nih.gov/21604961/",
+    "https://pubmed.ncbi.nlm.nih.gov/34318537/",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8974707/"
+   ],
+   "notes": "Runde 4: alle udsagn søgt op. Rettet: EU-anvendelser (bordsødemidler quantum satis; faste kosttilskud højst 10.000 mg/kg – ikke quantum satis), EFSA 2018-resultat præciseret (3,5/6,1 mg/kg/dag inden for SCF- og JECFA-gruppe-ADI), 'ikke-giftigt' -> lav toksicitet. Bekræftet: fremstilling, ringe optagelse, makrogol, JECFA-ADI, PEG-allergi og mRNA-vacciner."
+  },
+  "wikipedia": "",
+  "wikidata": "Q410083",
+  "claims": [
+   {
+    "claim": "Polymerisering af ethylenoxid",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/21604961/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Vandopløseligt, optages ringe, binder vand",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6586169/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'ikke-giftigt' -> lav toksicitet",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/21604961/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Afføringsmiddel (makrogol)",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6586169/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Overtræk på kosttilskud quantum satis -> kosttilskud i fast form højst 10.000 mg/kg",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009417/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Bærestof for sødestoffer -> bordsødemidler quantum satis",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009417/",
+    "result": "rettet"
+   },
+   {
+    "claim": "JECFA ADI 0-10 mg/kg",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009417/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2018 'bekræftede lav eksponering' -> op til 6,1 mg/kg/dag inden for ADI-interval",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7009417/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Sjældne alvorlige allergiske reaktioner (lægemidler, mRNA-vacciner)",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/34318537/ ; https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8974707/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "PEG-allergi øget opmærksomhed siden 2020",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/34318537/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Makrogol veldokumenteret sikkert laksantium",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/21604961/",
+    "result": "bekræftet"
+   }
+  ]
+ }
+]
