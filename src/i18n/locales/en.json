@@ -1102,7 +1102,7 @@
       "points": "Points",
       "inviteFriend": "Invite a friend",
       "notifications": "Communication",
-      "reportBug": "Report a bug",
+      "reportBug": "Found a mistake?",
       "recipes": "Recipes",
       "settings": "Settings"
     },
@@ -1455,7 +1455,7 @@
     "saveError": "Couldn't save the changes. Please try again."
   },
   "registrationReportError": {
-    "title": "Report error",
+    "title": "Found a mistake?",
     "intro": "Tap the green exclamation mark next to the item that is wrong and write what is correct.",
     "selectPoint": "Flag error in {point}",
     "correctionPlaceholder": "What is wrong, and what is correct?",
@@ -1494,7 +1494,7 @@
     "kcalPer100ml": "({kcal} kcal/100ml)",
     "kcalAmount": "{kcal} calories",
     "additivesWarning": "This product contains E-numbers",
-    "reportError": "Report error",
+    "reportError": "Found a mistake?",
     "alternativeServing": "{label}: {kcal} kcal",
     "nutritionUnknown": "Nutrition unknown",
     "additivesWarningTitle": "Contains E-numbers",
@@ -1842,7 +1842,7 @@
   "swipeableRow": {
     "saveAsFavorite": "Save as favorite",
     "favorite": "Favorite",
-    "reportErrorAria": "Report error",
+    "reportErrorAria": "Found a mistake?",
     "reportError": "Error",
     "delete": "Delete"
   },
