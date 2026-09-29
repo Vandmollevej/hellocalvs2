@@ -3235,3 +3235,15 @@ Synlige tekster i app og admin kalder madvarer "vare/varer", og "Produktdatabase
 ## 2026-09-28: Ingen "Branded"-mærkat
 
 Produktsiden viser aldrig teksten "Branded". Brandet vises kun som brandnavn/logo.
+
+## 2026-09-29: Mærkbart pulsudsving og brugertilføjede aktiviteter
+
+- Udsving: puls ≥ max(100, hvilepuls + 35) i mindst 10 min (huller ≤ 10 min
+  tæller med). Hvilepuls = seneste RESTING_HEART_RATE_BPM, ellers 10.-percentilen
+  af 7 dages puls, ellers 65. Mærkbart = mindst 150 ekstra kcal: urets
+  ACTIVE_ENERGY_KCAL i perioden, ellers Keytel-formlen minus samme ved hvilepuls.
+- Udsving, der overlapper en registreret aktivitet eller allerede er besvaret/
+  sprunget over (`HeartRateSpikeReview`), vises ikke.
+- Egne aktiviteter kan bruges straks af den, der tilføjede dem; andre ser dem
+  først efter godkendelse i Kvalitetskontrol → Aktiviteter.
+

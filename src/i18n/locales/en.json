@@ -1808,6 +1808,24 @@
       "micCouldNotStart": "The microphone couldn't be started. Please try again."
     }
   },
+  "activity": {
+    "title": "Activity",
+    "searchPlaceholder": "Search activities",
+    "addManual": "Add \"{name}\" as an activity",
+    "pending": "awaiting approval",
+    "spikeTitle": "You burned {kcal} extra calories {day}. What were you doing?",
+    "spikeHint": "Your heart rate reached {peak} (resting {rest}) for {minutes} min.",
+    "spikeQuestion": "Choose activity",
+    "today": "today",
+    "skip": "Skip",
+    "change": "change",
+    "startedAt": "Start time",
+    "minutes": "Duration (minutes)",
+    "kcal": "Calories burned",
+    "save": "Save activity",
+    "invalid": "Enter a duration and calories above 0.",
+    "saveError": "The activity could not be saved."
+  },
   "addButton": {
     "closeMenu": "Close add menu",
     "openMenu": "Open add menu",
@@ -1816,6 +1834,7 @@
     "search": "Search",
     "weight": "Weight",
     "water": "Water",
+    "activity": "Activity",
     "camera": "Scan with camera",
     "list": "See all",
     "menstrualCycle": "Period",
