@@ -2,6 +2,12 @@
 
 Last updated: 2026-09-29
 
+## 2026-09-29: Hello Doc-insight på admins design + fælles designklasser
+
+- Nye fælles klasser i `globals.css` (`.hf-insight*`, `.hf-panel`, `.hf-kpi`, `.hf-avatar-initials`) og komponenter i `src/components/hf/HelloDocInsight.tsx`; dokumenteret i design.md §6.15 og DECISIONS. Bruges af `/hello-doc/[token]`, `/admin/hello-doc` og `/settings/hello-doc/preview`.
+- Lint på de ændrede filer, typecheck og `npm run build` grønne. Ikke visuelt testet i browser (ingen lokal DB/login) — tjek lægevisningen på desktop og telefon.
+- Næste: flyt evt. andre brede rapportsider over på de samme klasser; tilføj dem til admin → Designmanual, hvis ønsket.
+
 ## 2026-09-29: Admin-brugere
 
 - Ny side `/admin/admin-users` (profil-menuen): invitér (24 t-link), læseadgang/administrator, deaktivér, IP-begrænsning pr. bruger, login-log (tid/sted/IP/udstyr) og godkendt udstyr. Se DECISIONS.md.

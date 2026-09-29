@@ -771,6 +771,35 @@ konstant hen over dem (1400 ms, lineær).
   Statiske tekster (overskrifter, knaptekster) vises som de er; ikoner og
   knapper, der kræver data, skjules uden at ændre pladsen.
 
+### 6.15 Insight/dashboard-sider (bygget på adminfladens design) — tilføjet 2026-09-29
+
+Brede, skrivebordsvenlige sider uden telefonramme (Hello Doc-lægevisningen
+`/hello-doc/[token]`, admins Hello Doc, ejerens "Sådan ser det ud" og senere
+rapportsider) bruger ÉT sæt fælles klasser i `globals.css` — samme tokens som
+appen, samme udseende som admin: side #FAF8F3, hvid topbjælke/panel med 1 px
+#DFD9CC kant, kort #EEE9DF, radius 8, afstande 8/16/32 px.
+
+| Klasse | Rolle |
+| --- | --- |
+| `.hf-insight` | Rod og egen scroll-container (`h-dvh`, html/body er låst) |
+| `.hf-insight__topbar` | 56 px hvid topbjælke, 1 px bundkant, logo + titel |
+| `.hf-insight__main` | Indhold, maks 80 rem, 16 px gutter (32 px fra 1024 px) |
+| `.hf-insight__head` / `__toolbar` | Titel + tekst / filterrække (brug `.hf-choice` til valg) |
+| `.hf-insight__kpis` + `.hf-kpi` | Nøgletal: 2 kolonner, 4 fra 640 px |
+| `.hf-insight__grid` + `.hf-panel` | Grafpaneler: 1 kolonne, 2 fra 1024 px; panel = hvid flade, tynd kant |
+| `.hf-insight__layout` / `__aside` / `__facts` / `__content` | Profilkolonne (256 px) + indhold |
+| `.hf-insight__center` | Enkelt centreret statuskort (med `.hf-card`) |
+| `.hf-insight__footer` | Fodnote/disclaimer |
+| `.hf-avatar-initials` | 96 px rund initialer-badge |
+
+- Skrift sættes med `.hf-type-*` (panelets titel er `.hf-type-title`, ikke
+  sektionsoverskriften med streger), farve med farveklasser; knapper er
+  `.hf-btn-*`. Ingen side må style disse flader selv.
+- Fælles React-bidder: `src/components/hf/HelloDocInsight.tsx`
+  (`HelloDocInsight`, `InsightGrid`, `InsightKpi`, `InsightPanel`). Ændres et
+  panel eller en klasse, følger alle sider med.
+- Mangler en variation, udvides klasserne her og i `globals.css` én gang.
+
 ### Velkomst/start
 
 - Viewport-gutter: 16 px.

@@ -3375,3 +3375,10 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - **Sikkerhed mod forkerte modtagere:** klienten sender kun et partnerId; modtagere er altid den partners egne aktive kontakter (server-side), data hentes kun for den partners lokationer, og begge dele kontrolleres igen før afsendelse. Én mail pr. modtager, hver logget. Bekræftelsesdialog viser partner → adresser, og serveren afviser afsendelsen (409), hvis modtagerlisten er ændret siden dialogen. Intervalplaner kan kun oprettes, hvis partneren har aktive kontakter.
 
 - Afsendere pr. formål (`src/lib/mail-senders.ts`): `signup@hellocal.io` (konto/e-mailbekræftelse), `invite@hellocal.io` (invitationer, deling, scan-invites), `noreply@hellocal.io` (alt andet), `report@hellocal.io` (partnerrapporter). Alle på det verificerede Mailjet-domæne.
+
+## 2026-09-29: Hello Doc-indsigten bygger på adminfladens design (fælles klasser)
+
+- Lægevisningen `/hello-doc/[token]`, admins Hello Doc og "Sådan ser det ud" bruger nu de samme `.hf-insight*`-, `.hf-panel`-, `.hf-kpi`- og `.hf-avatar-initials`-klasser (`globals.css`, design.md §6.15) og de fælles komponenter i `HelloDocInsight.tsx`. Tidligere havde hver side sine egne Tailwind-kæder (admin brugte `text-xl`/`font-semibold`, som ikke findes i designreglen).
+- Udseende følger admin: hvid topbjælke med logo, sidefarve #FAF8F3, hvide paneler med tynd #DFD9CC kant; lægevisningens grønne topbjælke er droppet. Tokens er appens egne — ingen nye farver, størrelser eller afstande.
+- Delekategorier styrer stadig, hvad lægen ser (`show.food`/`show.vitamins`, udeladte felter skjules).
+
