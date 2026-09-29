@@ -3307,3 +3307,11 @@ generelle forsider. DB-tabellen `additives` bruges kun som fallback.
 Ikke-danske ingrediensnavne i ingredienslister linkes til `/mad-paa-latin#<ord>` som almindelig tekst (ingen understregning eller fed). Ordlisten er statisk kode i `src/lib/food-latin.ts`; E-numre håndteres fortsat af `/e-numre`.
 
 Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sundhedsstyrelsen, EFSA) når de findes; Wikipedia kun som sidste udvej (brugerkrav 2026-09-29).
+## 2026-09-29: Face ID-login i Oprettelses-appen
+
+- En verificeret passkey med brugerbekræftelse giver fuld medarbejdersession
+  (som admin-passkey): den erstatter adgangskode + TOTP, ikke kun TOTP.
+- Medarbejder-passkeys ligger i egen tabel `scan_worker_passkeys`, da
+  medarbejdere ikke er `User`.
+- `SCAN_PII_KEY` indføres uden datatab: dekryptering prøver `SCAN_PII_KEY`
+  og derefter `ADMIN_SESSION_SECRET`; nye værdier krypteres med `SCAN_PII_KEY`.
