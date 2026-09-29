@@ -132,9 +132,9 @@ const NAV: NavEntry[] = [
     links: [
       { href: "/admin/partners/ads", key: "nav_partners_ads" },
       { href: "/admin/partners/contacts", key: "nav_partners_contacts" },
+      { href: "/admin/partners/reports", key: "nav_reports" },
     ],
   },
-  { kind: "link", href: "/admin/reports", key: "nav_reports", icon: "chart" },
   {
     kind: "group",
     id: "roadmap",
@@ -808,9 +808,10 @@ export function AdminShell({
           onClick={toggleCollapsed}
           title={t(currentLocale, collapsed ? "nav_expand" : "nav_collapse")}
           aria-label={t(currentLocale, collapsed ? "nav_expand" : "nav_collapse")}
-          className="absolute left-full top-16 z-30 flex h-9 w-7 items-center justify-center rounded-r-md border border-l-0 border-hf-tan-dark bg-hf-white text-text-secondary hover:bg-hf-tan"
+          className="absolute left-full top-1/2 z-30 flex h-[72px] w-7 -translate-y-1/2 items-center justify-center rounded-r-md border border-l-0 border-hf-tan-dark bg-hf-white hover:bg-hf-tan"
         >
-          <Icon name="collapse" className={`h-4 w-4 transition-transform ${collapsed ? "rotate-180" : ""}`} />
+          {/* Samme grå slider-streg som kalenderens/bottom sheetets håndtag, blot lodret. */}
+          <span className="block h-10 w-1 rounded-full bg-hf-gray" />
         </button>
       </aside>
 
