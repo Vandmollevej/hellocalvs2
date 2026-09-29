@@ -5,9 +5,9 @@ import { usePathname } from "next/navigation";
 import { isPublicPath } from "@/components/AuthGate";
 import { WebShell } from "@/components/web/WebShell";
 
-// Ingen telefonramme (bruger 2026-09-29): appen fylder altid hele
-// browserens viewport. Bred skærm får desktop-skallen (bygget på admin-
-// skallen), mindre skærme får appen som den er.
+// Appen fylder altid hele browserens viewport (bruger 2026-09-29). Bred
+// skærm får desktop-skallen, bygget på admin-skallen; mindre skærme får appen
+// som den er.
 const DESKTOP_QUERY = "(min-width: 1024px)";
 
 function subscribeDesktop(onChange: () => void) {
@@ -16,7 +16,7 @@ function subscribeDesktop(onChange: () => void) {
   return () => mq.removeEventListener("change", onChange);
 }
 
-export function PhoneFrame({ children }: { children: React.ReactNode }) {
+export function AppFrame({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() ?? "/";
   const isDesktop = useSyncExternalStore(
     subscribeDesktop,
@@ -32,11 +32,11 @@ export function PhoneFrame({ children }: { children: React.ReactNode }) {
 
   if (isDesktop) {
     if (!isPublicPath(pathname)) return <WebShell>{children}</WebShell>;
-    // Log ind, opret og øvrige offentlige sider: centreret kolonne uden ramme.
+    // Log ind, opret og øvrige offentlige sider: som admin-loginsiden.
     return (
       <div className="flex h-dvh justify-center bg-page-bg">
         <div
-          className="phone-frame-content flex h-full w-full max-w-lg flex-col overflow-hidden overscroll-contain bg-hf-cream"
+          className="flex h-full w-full max-w-4xl flex-col overflow-hidden overscroll-contain bg-hf-cream"
           style={{ transform: "translateZ(0)" }}
         >
           {children}
@@ -46,7 +46,7 @@ export function PhoneFrame({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="phone-frame-content flex h-dvh flex-col overflow-hidden overscroll-contain bg-hf-cream">
+    <div className="flex h-dvh flex-col overflow-hidden overscroll-contain bg-hf-cream">
       {children}
     </div>
   );

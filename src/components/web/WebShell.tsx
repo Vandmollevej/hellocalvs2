@@ -179,7 +179,7 @@ export function WebShell({ children }: { children: React.ReactNode }) {
           onClick={toggleCollapsed}
           title={t(collapsed ? "web.expand" : "web.collapse")}
           aria-label={t(collapsed ? "web.expand" : "web.collapse")}
-          className="absolute left-full top-16 z-30 flex h-9 w-7 items-center justify-center rounded-r-md border border-l-0 border-hf-tan-dark bg-hf-white text-text-secondary hover:bg-hf-tan"
+          className="absolute left-full top-1/2 z-30 -translate-y-1/2 flex h-9 w-7 items-center justify-center rounded-r-md border border-l-0 border-hf-tan-dark bg-hf-white text-text-secondary hover:bg-hf-tan"
         >
           <IconChevronLeft size={16} stroke={1.75} className={`transition-transform ${collapsed ? "rotate-180" : ""}`} />
         </button>
@@ -230,7 +230,7 @@ export function WebShell({ children }: { children: React.ReactNode }) {
         <main className="min-h-0 min-w-0 flex-1 overflow-y-auto">
           {/* transform holder appens position: fixed-ark og -menuer inde i indholdsfladen. */}
           <div
-            className="web-shell-content mx-auto flex h-full w-full max-w-4xl flex-col overflow-hidden bg-hf-cream"
+            className="web-shell-content mx-auto flex h-full w-full max-w-7xl flex-col overflow-hidden bg-hf-cream"
             style={{ transform: "translateZ(0)" }}
           >
             {children}

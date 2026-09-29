@@ -40,20 +40,17 @@ function StoreButtons() {
   );
 }
 
-function PhoneMockup() {
+function AppPreview() {
   return (
     <div
       aria-hidden
-      className="relative mx-auto h-[440px] w-[220px] shrink-0 rounded-[40px] bg-neutral-900 p-2.5 shadow-2xl sm:h-[520px] sm:w-[260px] sm:rounded-[44px] sm:p-3"
+      className="mx-auto flex h-64 w-full max-w-sm shrink-0 flex-col items-center justify-center gap-6 rounded-2xl bg-gradient-to-b from-[#0a8f53] to-[#035624] shadow-xl sm:h-80"
     >
-      <div className="absolute left-1/2 top-4 z-10 h-4 w-20 -translate-x-1/2 rounded-full bg-neutral-900 sm:top-5 sm:h-5 sm:w-24" />
-      <div className="flex h-full w-full flex-col items-center justify-center gap-6 rounded-[30px] bg-gradient-to-b from-[#0a8f53] to-[#035624] sm:rounded-[34px]">
-        <Image src="/hello-cal-logo-white.png" alt="" width={180} height={180} className="h-auto w-32 sm:w-40" priority />
-        <div className="flex w-3/4 flex-col gap-2">
-          <div className="h-2.5 w-full rounded-full bg-white/25"><div className="h-full w-2/3 rounded-full bg-white" /></div>
-          <div className="h-2.5 w-full rounded-full bg-white/25"><div className="h-full w-1/3 rounded-full bg-white" /></div>
-          <div className="h-2.5 w-full rounded-full bg-white/25"><div className="h-full w-5/6 rounded-full bg-white" /></div>
-        </div>
+      <Image src="/hello-cal-logo-white.png" alt="" width={180} height={180} className="h-auto w-36 sm:w-44" priority />
+      <div className="flex w-3/4 flex-col gap-2">
+        <div className="h-2.5 w-full rounded-full bg-white/25"><div className="h-full w-2/3 rounded-full bg-white" /></div>
+        <div className="h-2.5 w-full rounded-full bg-white/25"><div className="h-full w-1/3 rounded-full bg-white" /></div>
+        <div className="h-2.5 w-full rounded-full bg-white/25"><div className="h-full w-5/6 rounded-full bg-white" /></div>
       </div>
     </div>
   );
@@ -107,7 +104,7 @@ function LandingContent() {
               </Link>
             </p>
           </div>
-          <PhoneMockup />
+          <AppPreview />
         </section>
 
         <section className="bg-[#eee9df] px-4 py-14 sm:py-20">

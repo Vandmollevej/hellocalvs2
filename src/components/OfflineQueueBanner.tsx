@@ -7,7 +7,7 @@ import { useTranslation } from "@/i18n/LocaleProvider";
 // App-wide indicator for src/lib/offline-product-queue.ts: product creations
 // (photos + form data) captured while offline are queued on the device and
 // replayed here as soon as the browser reports a connection again. Mounted
-// once in the root layout (outside PhoneFrame's per-screen content) so it
+// once in the root layout (outside AppFrame's per-screen content) so it
 // survives navigation between screens instead of being a per-page concern.
 export function OfflineQueueBanner() {
   const { t } = useTranslation();

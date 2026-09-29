@@ -5012,7 +5012,7 @@ udgivet. Lint og typecheck kørt; `npm run build` og visuel test ikke kørt.
 
 ## 2026-09-29: Desktop-version af appen (WebShell)
 
-Telefonrammen er fjernet helt (bruger 2026-09-29): `PhoneFrame` tegner ingen
+Telefonrammen er fjernet helt (bruger 2026-09-29): `AppFrame` (tidl. PhoneFrame) tegner ingen
 bezel mere. Bredde ≥1024 px viser appen i
 `src/components/web/WebShell.tsx`, bygget på admin-skallen (`AdminShell`): sidebjælke til venstre med logo, søgefelt, genveje
 øverst (Tilføj, Madvarer, Retter, Ingredienser, Kalender, Statistik, Vand, Vægt,
