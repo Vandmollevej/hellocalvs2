@@ -88,7 +88,7 @@ export function AdditiveInfoModal({
                 href={`/e-numre/${encodeURIComponent(code.toUpperCase())}`}
                 className="hf-type-small hf-heading text-hf-green underline underline-offset-2"
               >
-                Se hele siden med forskning og alternative kilder
+                Læs hele beskrivelsen med forskning og kilder om stoffet
               </Link>
             </div>
           )}

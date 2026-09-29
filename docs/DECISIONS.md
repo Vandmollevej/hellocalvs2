@@ -3293,3 +3293,12 @@ Produktsiden viser aldrig teksten "Branded". Brandet vises kun som brandnavn/log
 - Produktsiden målt 1:1 mod HelloFresh-velkomsten (3×): cirkel 180 px (før
   190) og 62 px under appbaren, 41 px cirkel→h1-tekst, 40 px h1→h2, 20 px
   h2→næste tekst. Uden h2 bevares linjens 40 px luft, så resten ikke rykker op.
+## 2026-09-28: E-nummer-opslagsværk ligger i repoet, ikke i databasen
+
+E-numrenes beskrivelser er referenceindhold (ikke brugerdata) og versioneres som
+`src/data/e-numbers.json` (genereret af `scripts/e-numre/build_catalog.py`), så
+alle miljøer får samme indhold uden import på Synology. Hvert E-nummer har sin
+egen side `/e-numre/[kode]`, og kilderne skal være specifikke for netop det stof
+(EFSA-udtalelsens DOI og søgninger på stoffets præcise navn) — aldrig kun
+generelle forsider. DB-tabellen `additives` bruges kun som fallback.
+

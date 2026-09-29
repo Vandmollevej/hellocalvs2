@@ -1,0 +1,131 @@
+[
+ {
+  "code": "E423",
+  "nameDa": "Octenylravsyremodificeret gummi arabicum",
+  "nameEn": "Octenyl succinic acid modified gum arabic",
+  "category": "Emulgator",
+  "classes": [
+   "emulsifier"
+  ],
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Kemisk modificeret gummi arabicum (akaciegummi), der bruges som emulgator, især til at holde aromaolier fordelt i drikke og aromapræparater.",
+  "description": "E423 fremstilles ved at lade naturligt gummi arabicum (E414, harpiks fra Acacia senegal/seyal) reagere med octenylravsyreanhydrid (OSA). Den tilføjede fedtopløselige octenylgruppe gør molekylet bedre til at binde både vand og olie, så det fungerer som en effektiv emulgator. Princippet svarer til OSA-modificeret stivelse (E1450). Stoffet blev godkendt i EU ved Kommissionens forordning (EU) nr. 817/2013 efter en ansøgning fra 2007.",
+  "uses": "Godkendt i begrænsede fødevarekategorier, primært som emulgator i aromaer og i aromatiserede drikke (fx sodavand med citrusolier), hvor det forhindrer at olien skiller og lægger sig som en ring. Anvendes i små mængder med fastsatte maksimumgrænser.",
+  "health": "EFSA (2010) konkluderede, at brugen ved de foreslåede anvendelser og niveauer ikke giver anledning til sikkerhedsbekymring, bl.a. ud fra data for gummi arabicum og OSA-modificerede stivelser. Der er ikke fastsat en numerisk ADI. Stoffet nedbrydes kun delvist i tyndtarmen og opfører sig som kostfiber; store mængder kan give luft i maven, men indtaget fra fødevarer er lavt.",
+  "research": "Forskningen er sparsom og drejer sig mest om teknologiske egenskaber (emulgeringsevne, stabilitet af drikkeemulsioner). Sikkerhedsvurderingen bygger på read-across fra gummi arabicum, som EFSA genvurderede i 2017 uden at finde behov for en numerisk ADI, og fra OSA-stivelser.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2010). Scientific Opinion on the use of Gum Acacia modified with Octenyl Succinic Anhydride (OSA) as a food additive. EFSA Journal 8(3):1539. doi:10.2903/j.efsa.2010.1539",
+    "searchTitle": "Scientific Opinion on the use of Gum Acacia modified with Octenyl Succinic Anhydride (OSA) as a food additive"
+   }
+  ],
+  "pubmedTerm": "octenyl succinic anhydride gum arabic",
+  "flags": [],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the use of Gum Acacia modified with Octenyl Succinic Anhydride (OSA) as a food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2010.1539",
+   "date": "2010",
+   "adi": "Ikke fastsat (ingen sikkerhedsbekymring ved foreslåede anvendelser)",
+   "overexposureRisk": false
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32013R0817",
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2010.1539",
+    "https://en.wikipedia.org/wiki/Octenyl_succinic_acid_modified_gum_arabic"
+   ],
+   "notes": "Godkendelse (forordning 817/2013) og EFSA 2010 bekræftet via websøgning. Præcise maksimumgrænser ikke gengivet."
+  }
+ },
+ {
+  "code": "E463a",
+  "nameDa": "Lavsubstitueret hydroxypropylcellulose",
+  "nameEn": "Low-substituted hydroxypropyl cellulose (L-HPC)",
+  "category": "Fyldstof / bindemiddel (tabletter)",
+  "classes": [
+   "bulking agent",
+   "binder"
+  ],
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Vanduopløselig, modificeret cellulose, der bruges som bindemiddel og sprængmiddel i kosttilskud i tabletform.",
+  "description": "L-HPC er en poly(hydroxypropyl)ether af cellulose med lav substitutionsgrad, hvilket adskiller den fra almindelig hydroxypropylcellulose (E463). Den fremstilles ved at behandle cellulose fra træmasse med propylenoxid under basiske forhold. Den er uopløselig i vand, men suger vand og svulmer op, og den kan presses godt, så tabletter både holder sammen og falder hurtigt fra hinanden efter indtagelse. Kendt i medicinalindustrien i mange år.",
+  "uses": "Kun godkendt i kosttilskud i fast form (tabletter), jf. Kommissionens forordning (EU) 2018/1461. EFSA vurderede et maksimalt anvendelsesniveau på 20.000 mg/kg (typisk 10.000 mg/kg).",
+  "health": "EFSA (2018) konkluderede, at der ikke er sikkerhedsbekymring ved den foreslåede brug. Vurderingen byggede på read-across fra andre genvurderede celluloser (E460–E469), for hvilke der ikke er behov for en numerisk ADI. Stoffet optages ikke, men passerer tarmen som ufordøjelig fiber. Eksponeringen fra tabletter er meget lille.",
+  "research": "Forskningen stammer overvejende fra farmaceutisk teknologi (tabletdesintegration). Toksikologiske data er overført fra øvrige modificerede celluloser, der ikke viser relevante skadevirkninger ved normale indtag.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2018). Safety of low-substituted hydroxypropyl cellulose (L-HPC) to be used as a food additive in food supplements in tablet form. EFSA Journal 16(1):5062. doi:10.2903/j.efsa.2018.5062",
+    "searchTitle": "Safety of low-substituted hydroxypropyl cellulose (L-HPC) to be used as a food additive in food supplements in tablet form"
+   }
+  ],
+  "pubmedTerm": "low-substituted hydroxypropyl cellulose",
+  "flags": [],
+  "variants": [],
+  "efsa": {
+   "title": "Safety of low-substituted hydroxypropyl cellulose (L-HPC) to be used as a food additive in food supplements in tablet form",
+   "url": "https://doi.org/10.2903/j.efsa.2018.5062",
+   "date": "2018",
+   "adi": "Ikke specificeret (read-across fra celluloser)",
+   "overexposureRisk": false
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32018R1461",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2018.5062",
+    "https://pubmed.ncbi.nlm.nih.gov/32625653"
+   ],
+   "notes": "Forordning 2018/1461 og EFSA 2018 bekræftet via websøgning."
+  }
+ },
+ {
+  "code": "E499",
+  "nameDa": "Stigmasterolrige plantesteroler",
+  "nameEn": "Stigmasterol-rich plant sterols",
+  "category": "Stabilisator",
+  "classes": [
+   "stabiliser"
+  ],
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Blanding af plantesteroler med højt indhold af stigmasterol, godkendt som stabilisator i frysefærdige alkoholiske cocktails.",
+  "description": "E499 udvindes fra sojabønneolie og består hovedsageligt af stigmasterol sammen med bl.a. beta-sitosterol, campesterol og brassicasterol. Plantesteroler ligner kolesterol kemisk. I drikken forhindrer de, at iskrystallerne klumper, så cocktailen får en ensartet, sorbetagtig konsistens efter frysning. Godkendt ved Kommissionens forordning (EU) nr. 739/2013.",
+  "uses": "Kun tilladt som stabilisator i frysefærdige alkoholiske cocktails (drikke der sælges flydende og fryses af forbrugeren) med en fastsat maksimumgrænse. Må ikke forveksles med plantesteroler i kolesterolsænkende smøreprodukter, som reguleres som nye fødevarer.",
+  "health": "EFSA (2012) fandt de toksikologiske data utilstrækkelige til at fastsætte en ADI, men konkluderede at den foreslåede brug og mængde ikke giver sikkerhedsbekymring, da indtaget er meget lavt sammenlignet med indtaget af plantesteroler fra kosten. Plantesteroler optages dårligt og kan i større mængder sænke optagelsen af kolesterol og fedtopløselige carotenoider. Personer med den sjældne arvelige sygdom sitosterolæmi bør undgå tilskud af plantesteroler.",
+  "research": "Der er omfattende forskning i plantesteroler generelt, især deres kolesterolsænkende virkning ved ca. 1,5–3 g dagligt. Den teknologiske dosis i E499 er langt lavere og har ingen ernæringsmæssig effekt. Specifik forskning i stigmasterol som tilsætningsstof er begrænset.",
+  "keyReferences": [
+   {
+    "citation": "EFSA ANS Panel (2012). Scientific Opinion on the safety of stigmasterol-rich plant sterols as food additive. EFSA Journal 10(5):2659. doi:10.2903/j.efsa.2012.2659",
+    "searchTitle": "Scientific Opinion on the safety of stigmasterol-rich plant sterols as food additive"
+   }
+  ],
+  "pubmedTerm": "stigmasterol-rich plant sterols food additive",
+  "flags": [],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the safety of stigmasterol-rich plant sterols as food additive",
+   "url": "https://doi.org/10.2903/j.efsa.2012.2659",
+   "date": "2012",
+   "adi": "Ikke fastsat (utilstrækkelige data; ingen bekymring ved foreslået brug)",
+   "overexposureRisk": false
+  },
+  "wikipedia": "",
+  "wikidata": "",
+  "verification": {
+   "status": "verified",
+   "sources": [
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32013R0739",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC13151835/"
+   ],
+   "notes": "Forordning 739/2013 og EFSA 2012 (doi 10.2903/j.efsa.2012.2659) bekræftet via websøgning."
+  }
+ }
+]

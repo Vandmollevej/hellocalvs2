@@ -2,51 +2,71 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { IconArrowLeft, IconSearch } from "@tabler/icons-react";
-import type { AdditiveInfo } from "@/lib/additives";
-import { alternativeSources, eNumberAnchor, researchLinks, type ExternalLink } from "@/lib/e-number-links";
+import { useRouter } from "next/navigation";
+import { IconArrowLeft, IconChevronRight, IconSearch } from "@tabler/icons-react";
+
+export type DirectoryItem = {
+  code: string;
+  nameDa: string;
+  nameEn: string;
+  category: string;
+  summary: string;
+  euStatus: "approved" | "banned" | "not_approved";
+  variants: string;
+};
+
+type StatusFilter = "all" | "approved" | "other";
+
+// Nummerområderne fra EU's klassifikation.
+const RANGES: Array<{ label: string; from: number; to: number }> = [
+  { label: "Farvestoffer (E100–E199)", from: 100, to: 199 },
+  { label: "Konserveringsmidler (E200–E299)", from: 200, to: 299 },
+  { label: "Antioxidanter og surhedsregulerende midler (E300–E399)", from: 300, to: 399 },
+  { label: "Fortykningsmidler, stabilisatorer og emulgatorer (E400–E499)", from: 400, to: 499 },
+  { label: "Surhedsregulerende og antiklumpningsmidler (E500–E599)", from: 500, to: 599 },
+  { label: "Smagsforstærkere (E600–E699)", from: 600, to: 699 },
+  { label: "Antibiotika (E700–E799)", from: 700, to: 799 },
+  { label: "Overfladebehandling, gasser og sødestoffer (E900–E999)", from: 800, to: 999 },
+  { label: "Øvrige stoffer (E1000+)", from: 1000, to: 99999 },
+];
 
 function numericPart(code: string) {
   return Number.parseInt(code.replace(/\D/g, ""), 10) || 0;
 }
 
-export function ENumberDirectory({ additives }: { additives: AdditiveInfo[] }) {
+export function ENumberDirectory({ items }: { items: DirectoryItem[] }) {
+  const router = useRouter();
   const [query, setQuery] = useState("");
-  const [activeAnchor, setActiveAnchor] = useState("");
+  const [status, setStatus] = useState<StatusFilter>("all");
 
-  const sorted = useMemo(
-    () =>
-      [...additives].sort(
-        (a, b) => numericPart(a.eNumber) - numericPart(b.eNumber) || a.eNumber.localeCompare(b.eNumber),
-      ),
-    [additives],
-  );
+  // Gamle links (/e-numre#e330) sendes videre til nummerets egen side.
+  useEffect(() => {
+    const anchor = decodeURIComponent(window.location.hash.slice(1));
+    if (anchor) router.replace(`/e-numre/${encodeURIComponent(anchor.toUpperCase())}`);
+  }, [router]);
 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return sorted;
-    const compact = q.replace(/[^a-z0-9]/g, "");
-    return sorted.filter(
-      (item) =>
-        (compact && eNumberAnchor(item.eNumber).includes(compact)) ||
-        [item.internationalName, item.danishName, item.function].some((text) => text.toLowerCase().includes(q)),
-    );
-  }, [query, sorted]);
+    const compact = q.replace(/[^a-z0-9]/g, "").replace(/^e/, "");
+    return items.filter((item) => {
+      if (status === "approved" && item.euStatus !== "approved") return false;
+      if (status === "other" && item.euStatus === "approved") return false;
+      if (!q) return true;
+      const code = item.code.toLowerCase().replace(/^e/, "");
+      if (compact && code.startsWith(compact)) return true;
+      return [item.nameDa, item.nameEn, item.category, item.variants].some((text) =>
+        text.toLowerCase().includes(q),
+      );
+    });
+  }, [items, query, status]);
 
-  // Fremhæv og scroll til det E-nummer, der er linket til (#e330).
-  useEffect(() => {
-    const sync = () => {
-      const anchor = decodeURIComponent(window.location.hash.slice(1));
-      setActiveAnchor(anchor);
-      if (anchor) {
-        setQuery("");
-        requestAnimationFrame(() => document.getElementById(anchor)?.scrollIntoView({ block: "start" }));
-      }
-    };
-    sync();
-    window.addEventListener("hashchange", sync);
-    return () => window.removeEventListener("hashchange", sync);
-  }, []);
+  const groups = RANGES.map((range) => ({
+    label: range.label,
+    items: visible.filter((item) => {
+      const n = numericPart(item.code);
+      return n >= range.from && n <= range.to;
+    }),
+  })).filter((group) => group.items.length > 0);
 
   return (
     <div className="min-h-dvh bg-hf-white text-hf-black">
@@ -57,6 +77,7 @@ export function ENumberDirectory({ additives }: { additives: AdditiveInfo[] }) {
               <IconArrowLeft size={20} />
             </Link>
             <h1 className="hf-type-title hf-heading">E-numre</h1>
+            <span className="hf-type-small ml-auto text-text-secondary">{visible.length} stoffer</span>
           </div>
           <label className="flex items-center gap-2 rounded-full bg-hf-tan px-4 py-2">
             <IconSearch size={18} className="text-text-secondary" />
@@ -68,83 +89,68 @@ export function ENumberDirectory({ additives }: { additives: AdditiveInfo[] }) {
               className="hf-type-body w-full bg-transparent outline-none"
             />
           </label>
+          <div className="flex gap-2">
+            {(
+              [
+                ["all", "Alle"],
+                ["approved", "Godkendt i EU"],
+                ["other", "Forbudt/ikke godkendt"],
+              ] as const
+            ).map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setStatus(value)}
+                className={`hf-type-small rounded-full px-3 py-1 ${
+                  status === value ? "bg-hf-green text-hf-white" : "bg-hf-tan text-hf-black"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
-      <div className="mx-auto flex max-w-xl flex-col gap-4 px-4 py-4">
-        {visible.length === 0 && (
+      <div className="mx-auto flex max-w-xl flex-col gap-5 px-4 py-4">
+        {groups.length === 0 && (
           <p className="hf-type-body text-text-secondary">Ingen E-numre matcher din søgning.</p>
         )}
-        {visible.map((item) => {
-          const anchor = eNumberAnchor(item.eNumber);
-          const name = item.internationalName;
-          return (
-            <section
-              key={item.eNumber}
-              id={anchor}
-              className={`scroll-mt-32 rounded-2xl border p-4 ${
-                activeAnchor === anchor ? "border-hf-green" : "border-hf-black/10"
-              }`}
-            >
-              <h2 className="hf-type-body hf-heading">
-                <a href={`#${anchor}`} className="hover:underline">
-                  {item.eNumber.toUpperCase()}
-                  {name ? ` · ${name}` : ""}
-                </a>
-              </h2>
-              {item.danishName && <p className="hf-type-small text-text-secondary">{item.danishName}</p>}
-              <div className="mt-3 flex flex-col gap-3">
-                <Field label="Forklaring" text={item.function} />
-                <Field label="Sundhed og anvendelse" text={item.risks} />
-                <Field label="Forskning" text={item.research} />
-                <Links
-                  label="Links til forskning"
-                  links={[
-                    ...(item.link ? [{ label: item.source || "Kilde", href: item.link }] : []),
-                    ...researchLinks(item.eNumber, name),
-                  ]}
-                />
-                <Links label="Andre troværdige kilder" links={alternativeSources(item.eNumber, name)} />
-              </div>
-            </section>
-          );
-        })}
+        {groups.map((group) => (
+          <section key={group.label} className="flex flex-col gap-2">
+            <h2 className="hf-type-small hf-heading uppercase text-text-secondary">{group.label}</h2>
+            <ul className="flex flex-col gap-2">
+              {group.items.map((item) => (
+                <li key={item.code}>
+                  <Link
+                    href={`/e-numre/${encodeURIComponent(item.code)}`}
+                    className="flex items-center gap-3 rounded-2xl bg-hf-tan p-3"
+                  >
+                    <span className="hf-type-body hf-heading w-16 shrink-0">{item.code}</span>
+                    <span className="min-w-0 flex-1">
+                      <span className="hf-type-body block">{item.nameDa || item.nameEn}</span>
+                      <span className="hf-type-small line-clamp-2 block text-text-secondary">
+                        {item.euStatus !== "approved" && (
+                          <span className="hf-heading text-hf-red-dark">
+                            {item.euStatus === "banned" ? "Forbudt i EU · " : "Ikke godkendt i EU · "}
+                          </span>
+                        )}
+                        {item.category}
+                        {item.summary ? ` — ${item.summary}` : ""}
+                      </span>
+                    </span>
+                    <IconChevronRight size={18} className="shrink-0 text-text-secondary" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
         <p className="hf-type-small text-text-secondary">
-          Generel baggrundsinformation baseret på EFSA/EU-kilder — ikke personlig kostrådgivning.
+          Generel baggrundsinformation baseret på EFSA, JECFA og fagfællebedømt forskning — ikke
+          personlig kostrådgivning.
         </p>
       </div>
-    </div>
-  );
-}
-
-function Field({ label, text }: { label: string; text: string }) {
-  if (!text) return null;
-  return (
-    <div>
-      <p className="hf-type-small hf-heading uppercase text-text-secondary">{label}</p>
-      <p className="hf-type-body">{text}</p>
-    </div>
-  );
-}
-
-function Links({ label, links }: { label: string; links: ExternalLink[] }) {
-  return (
-    <div>
-      <p className="hf-type-small hf-heading uppercase text-text-secondary">{label}</p>
-      <ul className="flex flex-wrap gap-x-3 gap-y-1">
-        {links.map((link) => (
-          <li key={link.href}>
-            <a
-              href={link.href}
-              target="_blank"
-              rel="noreferrer"
-              className="hf-type-small text-hf-green underline underline-offset-2"
-            >
-              {link.label}
-            </a>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }

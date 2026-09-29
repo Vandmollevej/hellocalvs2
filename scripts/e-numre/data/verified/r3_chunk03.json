@@ -1,0 +1,3132 @@
+[
+ {
+  "code": "E251",
+  "nameDa": "Natriumnitrat",
+  "nameEn": "Sodium nitrate",
+  "category": "Konserveringsmiddel",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Natriumnitrat (chilesalpeter) bruges til langtidsmodnede kødprodukter som spegepølse og spegeskinke, i visse oste og i syltede sild, hvor det af bakterier omdannes til nitrit.",
+  "description": "Natriumnitrat (NaNO3, chilesalpeter) findes naturligt som mineralet nitratin, der historisk blev brudt i store aflejringer i Chile, og fremstilles industrielt ved at neutralisere salpetersyre med natriumkarbonat. Nitrat har ikke selv den konserverende virkning; det skal først reduceres til nitrit af bakterier med enzymet nitratreduktase (fx Staphylococcus- og Kocuria-arter). Derfor bruges nitrat især i produkter med lang modning, som spegepølse og lufttørret skinke, hvor det fungerer som et langsomt frigivende nitritlager. I visse oste (fx Gouda og Edam) tilsættes det mælken for at hæmme sporedannende clostridier (Clostridium tyrobutyricum), der ellers giver 'sen gæring' (late blowing).",
+  "uses": "Ikke-varmebehandlede, traditionelt saltede og lufttørrede kødprodukter (fx spegepølse og spegeskinke), hårde, halvfaste og halvbløde oste samt syltede sild og brisling. Nitrat må ikke tilsættes varmebehandlede kødprodukter. Med forordning (EU) 2023/2108 sænkede EU de tilladte maksimumsmængder af nitrit og nitrat og udtrykker dem nu som nitrat-ion (NO3); de nye grænser indfases fra 9. oktober 2025 og for visse oste frem til 2027.",
+  "health": "EFSA fandt ingen tegn på, at natrium- og kaliumnitrat er genotoksiske, og kræftstudier i mus og rotter var negative. Sundhedsrisikoen hænger i stedet sammen med, at en del af det optagne nitrat udskilles i spyttet og omdannes til nitrit af bakterier i munden; nitrit kan danne nitrosaminer, hvoraf nogle er kræftfremkaldende. EFSA's ADI for nitrat er 3,7 mg/kg legemsvægt/dag. Mindre end 5 % af nitratindtaget fra kosten stammer fra tilsætningsstoffer; grøntsager er den største kilde, især bladgrøntsager som salat, spinat og rucola. Spædbørn er særligt følsomme, da store mængder nitrat kan give methæmoglobinæmi (nedsat iltoptagelse i blodet).",
+  "research": "EFSA's gen-evaluering fra 2017 fastholdt ADI på 3,7 mg/kg legemsvægt/dag for nitrat og konkluderede, at eksponeringen fra tilsat nitrat ligger inden for sikre niveauer, bortset fra en lille overskridelse hos børn med et højt indtag af fødevarer med tilsætningsstoffet. Medregnes alle kilder (naturligt indhold og forurening), kan ADI overskrides i alle aldersgrupper. IARC klassificerede i 2010 (monografi 94) indtaget nitrat eller nitrit under forhold, der fører til nitrosering i kroppen, som sandsynligt kræftfremkaldende (gruppe 2A). EFSA vurderede i 2023, at den nuværende eksponering for nitrosaminer i fødevarer giver anledning til sundhedsmæssig bekymring, og EU sænkede derefter maksimumsgrænserne med forordning (EU) 2023/2108. Samtidig viser metaanalyser, at nitrat fra fx rødbedesaft kan sænke blodtrykket via dannelse af nitrogenoxid, og det undersøges for effekter på fysisk præstation, så billedet er nuanceret.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium nitrate",
+  "flags": [
+   "children_caution"
+  ],
+  "classes": [
+   "preservative"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Re‐evaluation of sodium nitrate (E 251) and potassium nitrate (E 252) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2017.4787",
+   "date": "2017-06-15",
+   "adi": "3.7 mg/kg bw/day",
+   "overexposureRisk": "en:high"
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://agrinfo.eu/book-of-reports/maximum-levels-of-nitrites-and-nitrates-lowered/",
+    "https://earthwormexpress.com/wp-content/uploads/2022/06/EFSA-Journal-2008-Nitrate-in-vegetables-%E2%80%90-Scientific-Opinion-of-the-Panel-on-Contaminants-in-the-Food-chain.pdf",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4787",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.7884",
+    "https://en.wikipedia.org/wiki/Nitratine",
+    "https://en.wikipedia.org/wiki/Sodium_nitrate",
+    "https://eur-lex.europa.eu/eli/reg/2023/2108/oj",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202302108",
+    "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/4382971",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC7010087",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC8965354/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC9986499/",
+    "https://porkgateway.org/resource/alternative-curing/",
+    "https://pubmed.ncbi.nlm.nih.gov/21141240/",
+    "https://www.efsa.europa.eu/en/press/news/170615",
+    "https://www.efsa.europa.eu/sites/default/files/corporate_publications/files/nitrates-nitrites-170614.pdf",
+    "https://www.fil-idf.org/wp-content/uploads/2020/11/IDF-Fact-Sheet-%E2%80%93-naturally-occuring-nitrates-in-cheese.pdf",
+    "https://www.fsai.ie/business-advice/running-a-food-business/food-safety-and-hygiene/additives/nitrates-and-nitrites",
+    "https://www.ncbi.nlm.nih.gov/books/NBK326535/",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5707643/",
+    "https://www.neotron.it/en/media/news/new-regulation-eu-20232108-nitrites-and-nitrates",
+    "https://www.sciencedirect.com/science/article/pii/S0022316622012044",
+    "https://www.tandfonline.com/doi/full/10.1080/23311932.2025.2460462",
+    "https://www.who.int/docs/default-source/wash-documents/wash-chemicals/nitrate-nitrite-chemical-fact-sheet.pdf"
+   ],
+   "notes": "Runde 2 gennemført udsagn for udsagn. Bekræftet: kemi/chilesalpeter, syntese af salpetersyre + natriumkarbonat, bakteriel omdannelse til nitrit (nitritlager i langtidsmodnede produkter), nitrat uden egen direkte virkning, brug mod sen gæring i Gouda-typer, godkendte anvendelser (ikke-varmebehandlet kød, hårde/halvfaste/halvbløde oste, syltede sild og brisling), ADI 3,7 mg/kg lgv/dag, <5 % af indtaget fra tilsætningsstoffer, grøntsager som hovedkilde, IARC 2A (2010), methæmoglobinæmi hos spædbørn, blodtrykseffekt af rødbedesaft. Rettet: 'salpeter' -> 'chilesalpeter' (salpeter alene er kaliumnitrat); 'ikke særligt giftigt' omformuleret til EFSA's konklusion (ikke genotoksisk, negative kræftstudier); '(ca. 5 %)' -> 'mindre end 5 %'; ADI blev 'fastholdt' (fastsat af SCF 1997/JECFA 2002). Fjernet: rullepølse som eksempel (ikke bekræftet for nitrat); de konkrete grænser 150 mg/kg (kød) og 75 mg/kg (ost) efter 2023/2108 kunne ikke bekræftes i søgeresultaterne og er erstattet af den generelle, bekræftede beskrivelse (sænkede grænser, udtrykt som NO3-ion, indfasning 2025-2027). 'Muskelpræstation' nedtonet til 'undersøges'. Tilføjet (belagt): børneoverskridelse og samlet ADI-overskridelse fra EFSA 2017 samt EFSA 2023 om nitrosaminer. Flag children_caution begrundet i EFSA 2017 (overskridelse hos børn) og methæmoglobinæmi hos spædbørn (WHO)."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_nitrate",
+  "wikidata": "Q184373",
+  "claims": [
+   {
+    "claim": "Natriumnitrat har formlen NaNO3 og kaldes chilesalpeter (rettet fra blot 'salpeter', som er kaliumnitrat).",
+    "source": "https://en.wikipedia.org/wiki/Sodium_nitrate",
+    "result": "rettet"
+   },
+   {
+    "claim": "Natriumnitrat findes naturligt som mineralet nitratin, historisk brudt i store aflejringer i Chile.",
+    "source": "https://en.wikipedia.org/wiki/Nitratine",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Natriumnitrat fremstilles industrielt ved neutralisering af salpetersyre med natriumkarbonat.",
+    "source": "https://en.wikipedia.org/wiki/Sodium_nitrate",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kategori: konserveringsmiddel; E 251 er godkendt som tilsætningsstof i EU (bilag II til forordning (EF) nr. 1333/2008).",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202302108",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Nitrat skal reduceres til nitrit af bakterier med nitratreduktase (fx Staphylococcus, Kocuria) før det virker.",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9986499/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Nitrat har ikke selv den konserverende virkning; effekten kommer fra den dannede nitrit.",
+    "source": "https://porkgateway.org/resource/alternative-curing/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Nitrat bruges i produkter med lang modning (tørre pølser, lufttørret skinke) som et langsomt nitritlager.",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9986499/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Rullepølse som eksempel på nitratprodukt.",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9986499/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Nitrat tilsættes ostemælk til fx Gouda og Edam for at forhindre sen gæring forårsaget af clostridier.",
+    "source": "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/4382971",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Clostridium tyrobutyricum er årsag til sen gæring (late blowing), og tilsat natriumnitrat har været brugt mod den.",
+    "source": "https://www.tandfonline.com/doi/full/10.1080/23311932.2025.2460462",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Nitrat er godkendt i ikke-varmebehandlede kødprodukter og må ikke tilsættes varmebehandlede kødprodukter.",
+    "source": "https://www.fsai.ie/business-advice/running-a-food-business/food-safety-and-hygiene/additives/nitrates-and-nitrites",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Nitrat er godkendt i hårde, halvfaste og halvbløde oste.",
+    "source": "https://food.ec.europa.eu/document/download/b115942a-a869-4f4e-8e40-64905aae7ca0_en?filename=fs_food-improvement-agents_reeval_call_20221207_e249-252_data.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Nitrat er godkendt i syltede sild og brisling.",
+    "source": "https://www.fsai.ie/business-advice/running-a-food-business/food-safety-and-hygiene/additives/nitrates-and-nitrites",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Forordning (EU) 2023/2108 sænkede maksimumsmængderne af nitrit og nitrat som tilsætningsstoffer i kød, fisk og ost.",
+    "source": "https://agrinfo.eu/book-of-reports/maximum-levels-of-nitrites-and-nitrates-lowered/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Grænserne udtrykkes efter 2023/2108 som NO3-ion; de gælder fra 9. oktober 2025 og for visse oste 2026/2027.",
+    "source": "https://www.neotron.it/en/media/news/new-regulation-eu-20232108-nitrites-and-nitrates",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Konkrete grænser 150 mg/kg (kød) og 75 mg/kg (ost) efter 2023/2108 kunne ikke bekræftes og er fjernet.",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202302108",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA fandt ingen genotoksicitet for natrium- og kaliumnitrat, og kræftstudier i mus og rotter var negative (erstatter 'ikke særligt giftigt').",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4787",
+    "result": "rettet"
+   },
+   {
+    "claim": "En del af optaget nitrat udskilles i spyttet og omdannes til nitrit af mundbakterier.",
+    "source": "https://www.efsa.europa.eu/sites/default/files/corporate_publications/files/nitrates-nitrites-170614.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Nitrit/nitrat kan give anledning til dannelse af nitrosaminer, hvoraf nogle er kræftfremkaldende.",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202302108",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "ADI for nitrat er 3,7 mg/kg legemsvægt/dag.",
+    "source": "https://www.efsa.europa.eu/en/press/news/170615",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2017 fastholdt ADI 3,7 mg/kg lgv/dag (oprindeligt fastsat af SCF 1997 og JECFA 2002).",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2017.4787",
+    "result": "rettet"
+   },
+   {
+    "claim": "Mindre end 5 % af nitratindtaget fra kosten stammer fra tilsætningsstoffer (rettet fra 'ca. 5 %').",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7010087",
+    "result": "rettet"
+   },
+   {
+    "claim": "Grøntsager er den største kilde til nitrat i kosten.",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7010087",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bladgrøntsager som salat, spinat og rucola kan indeholde høje nitratniveauer (rødbede nævnt i EFSA 2008-data).",
+    "source": "https://earthwormexpress.com/wp-content/uploads/2022/06/EFSA-Journal-2008-Nitrate-in-vegetables-%E2%80%90-Scientific-Opinion-of-the-Panel-on-Contaminants-in-the-Food-chain.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Spædbørn er særligt følsomme for methæmoglobinæmi ved højt nitratindtag.",
+    "source": "https://www.who.int/docs/default-source/wash-documents/wash-chemicals/nitrate-nitrite-chemical-fact-sheet.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Eksponering for tilsat nitrat er inden for sikre niveauer, bortset fra lille overskridelse hos børn med højt indtag; medregnes alle kilder, kan ADI overskrides i alle aldersgrupper.",
+    "source": "https://www.efsa.europa.eu/en/press/news/170615",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "IARC (monografi 94, 2010): indtaget nitrat eller nitrit under forhold med endogen nitrosering er sandsynligt kræftfremkaldende (gruppe 2A).",
+    "source": "https://www.ncbi.nlm.nih.gov/books/NBK326535/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA vurderede i 2023, at eksponeringen for nitrosaminer i fødevarer giver sundhedsmæssig bekymring.",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2023.7884",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Nitrat fra rødbedesaft kan sænke blodtrykket (metaanalyser) via nitrogenoxid.",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8965354/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Nitrat undersøges for effekter på fysisk præstation (nedtonet fra 'muskelpræstation' som etableret effekt).",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5707643/",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA-udtalelsen 'Re-evaluation of sodium nitrate (E 251) and potassium nitrate (E 252) as food additives', EFSA Journal 2017;15(6):4787, offentliggjort 15. juni 2017.",
+    "source": "https://www.efsa.europa.eu/en/press/news/170615",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flag children_caution: begrundet i EFSA 2017 (overskridelse hos børn med højt indtag) og spædbørns følsomhed for methæmoglobinæmi.",
+    "source": "https://www.efsa.europa.eu/en/press/news/170615",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E284",
+  "nameDa": "Borsyre",
+  "nameEn": "Boric acid",
+  "category": "Konserveringsmiddel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Borsyre er et borholdigt konserveringsmiddel, som i EU kun må bruges i ægte kaviar (rogn af stør).",
+  "description": "Borsyre (H3BO3) er en svag syre, der fremstilles ved at behandle boratmineraler som borax med syre, fx svovlsyre. Den har en mild antiseptisk virkning og bidrager i kaviar til en blødere og mildere, let sødlig smag. Fra 1870'erne til 1920'erne blev borsyre og borax brugt bredt som konserveringsmidler i fødevarer, men fra midten af 1920'erne forbød mange lande brugen pga. giftighed. Borsyre bruges også som antiseptisk middel, insekticid, flammehæmmer og i glas- og glasfiberindustrien.",
+  "uses": "Kun tilladt i ægte kaviar (rogn af stør), maks. 4 g/kg udtrykt som borsyre (samlet med E285).",
+  "health": "Bor er giftigt i høje doser. I dyreforsøg har borsyre og natriumtetraborat skadet de mandlige forplantningsorganer (fodringsstudier i rotter, mus og hunde) og fosterudviklingen, og borsyre er i EU harmoniseret klassificeret som reproduktionstoksisk kategori 1B (H360FD: kan skade forplantningsevnen og det ufødte barn). EFSA fastsatte i 2013 en gruppe-ADI på 0,16 mg bor/kg legemsvægt/dag for borsyre og borax (NOAEL 9,6 mg bor/kg legemsvægt/dag fra et udviklingstoksicitetsstudie i rotter, usikkerhedsfaktor 60) og fandt ingen bekymring for genotoksicitet. EFSA vurderede, at en regelmæssig overskridelse af ADI er usandsynlig, men for de børn, der faktisk spiser kaviar, lå det høje (95.-percentil) skøn over indtaget (0,56 mg bor/kg legemsvægt/dag) over ADI. Pga. den fosterskadende klassificering er gravide en særligt relevant gruppe.",
+  "research": "EFSA's gen-evaluering fra 2013 af borsyre (E284) og natriumtetraborat (E285) fastsatte en gruppe-ADI og konkluderede, at en regelmæssig overskridelse af ADI er usandsynlig. Bor findes også naturligt i kosten, især i plantefødevarer som tørret frugt, nødder, frø, bladgrøntsager og bælgfrugter, og drikkevand kan bidrage med varierende mængder afhængigt af geografi. Bor er ikke formelt anerkendt som et essentielt næringsstof for mennesker, og der er ingen officiel anbefalet daglig tilførsel; om bor i små mængder er gavnligt, er fortsat genstand for forskning.",
+  "keyReferences": [],
+  "pubmedTerm": "boric acid",
+  "flags": [
+   "pregnancy_caution",
+   "children_caution"
+  ],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of boric acid (E 284) and sodium tetraborate (borax) (E 285) as food additives.",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2013.3407",
+   "date": "2013-10-24",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.efsa.europa.eu/en/efsajournal/pub/3407",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2013.3407",
+    "https://www.researchgate.net/publication/280736910_Scientific_Opinion_on_the_re-evaluation_of_boric_acid_E_284_and_sodium_tetraborate_borax_E_285_as_food_additives_EFSA_Panel_on_Food_Additives_and_Nutrient_Sources_added_to_Food_ANS",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005",
+    "https://food.ec.europa.eu/system/files/2022-12/fs_food-improvement-agents_guidance_1333-2008_annex-2.pdf",
+    "https://echa.europa.eu/documents/10162/23665416/clh_rep_boric_acid_5521_en.pdf/ee39f026-9d2d-28f7-5d90-63a424112162",
+    "https://en.wikipedia.org/wiki/Boric_acid",
+    "https://byjus.com/chemistry/boric-acid/",
+    "https://www.cooksinfo.com/caviar",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9592044/",
+    "https://www.cfs.gov.hk/english/multimedia/multimedia_pub/multimedia_pub_fsf_131_01.html",
+    "https://www.cfs.gov.hk/english/multimedia/multimedia_pub/multimedia_pub_fsf_37_01.html",
+    "https://benthamopenarchives.com/abstract.php?ArticleCode=TOMPJ-3-36",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC4712861/"
+   ],
+   "notes": "Runde 2 udsagn-for-udsagn gennemført. Bekræftet: EU-godkendelse kun i størkaviar, 4 g/kg som borsyre (1333/2008 bilag II), EFSA 2013 gruppe-ADI 0,16 mg bor/kg, NOAEL 9,6 og UF 60, mandlig reproduktionstoksicitet i dyr, ingen genotoksicitet, 'regelmæssig overskridelse usandsynlig', CLP Repr. 1B H360FD, kemi og historisk brug. Rettet: fremstilling præciseret (borax + svovlsyre), antimikrobiel virkning -> mild antiseptisk, desinfektionsmiddel -> antiseptisk/insekticid/flammehæmmer/glasindustri, smag i kaviar præciseret, drikkevand er IKKE dokumenteret som hovedkilde (plantefødevarer er de rigeste kilder), essentialitet omformuleret. Fjernet: 'indtaget for de fleste ubetydeligt' og ukildebelagt råd til gravide (erstattet af EFSA-eksponeringstal og klassificering). Flags pregnancy_caution og children_caution begrundet."
+  },
+  "wikipedia": "",
+  "wikidata": "Q187045",
+  "claims": [
+   {
+    "claim": "Borsyre har formlen H3BO3 og er en svag syre.",
+    "source": "https://en.wikipedia.org/wiki/Boric_acid",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Borsyre fremstilles ved at behandle borax (natriumborat) med svovlsyre; oprindeligt udsagn om 'udvinding af boratmineraler' præciseret.",
+    "source": "https://byjus.com/chemistry/boric-acid/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Borsyre i opløsning virker som et mildt antiseptisk middel ('svag antimikrobiel virkning' omformuleret).",
+    "source": "https://en.wikipedia.org/wiki/Boric_acid",
+    "result": "rettet"
+   },
+   {
+    "claim": "Borater tilsættes kaviar for at give en blødere og sødere smag, og den let sødende effekt betød, at der krævedes mindre salt.",
+    "source": "https://www.cooksinfo.com/caviar",
+    "result": "rettet"
+   },
+   {
+    "claim": "Borsyre og borax blev brugt bredt som konserveringsmidler i fødevarer fra 1870'erne til 1920'erne.",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9592044/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fra midten af 1920'erne forbød mange lande brugen i fødevarer pga. giftighed.",
+    "source": "https://www.cfs.gov.hk/english/multimedia/multimedia_pub/multimedia_pub_fsf_131_01.html",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Borsyre bruges som antiseptisk middel, insekticid og flammehæmmer ('desinfektionsmiddel' præciseret).",
+    "source": "https://en.wikipedia.org/wiki/Boric_acid",
+    "result": "rettet"
+   },
+   {
+    "claim": "Borsyres største industrielle anvendelse er i glas og glasfiber.",
+    "source": "https://en.wikipedia.org/wiki/Boric_acid",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kategori: konserveringsmiddel.",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3407",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Borsyre (E284) er fortsat godkendt i EU (euStatus approved).",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "E284 og E285 er i EU kun tilladt i ægte kaviar (rogn af stør), maks. 4 g/kg udtrykt som borsyre (forordning (EF) 1333/2008, bilag II, kategori 09.3).",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendelsen er begrænset til størrogn; 'kaviar' dækker kun rogn fra stør.",
+    "source": "https://food.ec.europa.eu/system/files/2022-12/fs_food-improvement-agents_guidance_1333-2008_annex-2.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA-udtalelsen 'Scientific Opinion on the re-evaluation of boric acid (E 284) and sodium tetraborate (borax) (E 285) as food additives' blev offentliggjort i oktober 2013 (EFSA Journal 11(10):3407).",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3407",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA fastsatte i 2013 en gruppe-ADI på 0,16 mg bor/kg legemsvægt/dag for borsyre og borax.",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3407",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "ADI er baseret på NOAEL 9,6 mg bor/kg legemsvægt/dag fra et udviklingstoksicitetsstudie i rotter og en usikkerhedsfaktor på 60.",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3407",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fodringsstudier i rotter, mus og hunde viste skadelige effekter på det mandlige forplantningssystem.",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3407",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA fandt ingen bekymring for genotoksicitet.",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3407",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA konkluderede, at en regelmæssig overskridelse af ADI er usandsynlig.",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3407",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Højt (95.-percentil) indtag for forbrugere blandt børn blev skønnet til 0,56 mg bor/kg legemsvægt/dag, dvs. over ADI (tilføjet præcisering).",
+    "source": "https://www.researchgate.net/publication/280736910_Scientific_Opinion_on_the_re-evaluation_of_boric_acid_E_284_and_sodium_tetraborate_borax_E_285_as_food_additives_EFSA_Panel_on_Food_Additives_and_Nutrient_Sources_added_to_Food_ANS",
+    "result": "rettet"
+   },
+   {
+    "claim": "Borsyre har harmoniseret CLP-klassificering Repr. 1B, H360FD (kan skade forplantningsevnen og det ufødte barn), baseret på effekter i forsøgsdyr.",
+    "source": "https://echa.europa.eu/documents/10162/23665416/clh_rep_boric_acid_5521_en.pdf/ee39f026-9d2d-28f7-5d90-63a424112162",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bor er giftigt i høje doser (kvalme, opkast, diarré, i alvorlige tilfælde nyreskade og kramper).",
+    "source": "https://www.cfs.gov.hk/english/multimedia/multimedia_pub/multimedia_pub_fsf_37_01.html",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Oprindeligt udsagn 'gravide bør være forsigtige med store mængder kaviar' var en ukildebelagt anbefaling; omformuleret til at gravide er en relevant gruppe pga. klassificeringen som fosterskadende.",
+    "source": "https://echa.europa.eu/documents/10162/23665416/clh_rep_boric_acid_5521_en.pdf/ee39f026-9d2d-28f7-5d90-63a424112162",
+    "result": "rettet"
+   },
+   {
+    "claim": "Oprindeligt udsagn 'indtaget for de fleste ubetydeligt' er fjernet og erstattet af EFSA's egne eksponeringsskøn.",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3407",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Bor findes naturligt især i plantefødevarer: tørret frugt, nødder, frø, bladgrøntsager og bælgfrugter.",
+    "source": "https://benthamopenarchives.com/abstract.php?ArticleCode=TOMPJ-3-36",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Udsagnet om, at drikkevand er hovedkilden til bor, kunne ikke bekræftes; rettet til at drikkevand bidrager med varierende mængder afhængigt af geografi.",
+    "source": "https://benthamopenarchives.com/abstract.php?ArticleCode=TOMPJ-3-36",
+    "result": "rettet"
+   },
+   {
+    "claim": "Bor er ikke formelt anerkendt som essentielt for mennesker, og der findes ingen officiel anbefalet daglig tilførsel; gavnlige effekter undersøges fortsat.",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4712861/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Flag pregnancy_caution: begrundet i CLP-klassificeringen H360FD (kan skade det ufødte barn) og EFSA's udviklingstoksiske NOAEL.",
+    "source": "https://echa.europa.eu/documents/10162/23665416/clh_rep_boric_acid_5521_en.pdf/ee39f026-9d2d-28f7-5d90-63a424112162",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flag children_caution: begrundet i EFSA's skøn, hvor højt indtag blandt børn, der spiser kaviar, lå over ADI.",
+    "source": "https://www.researchgate.net/publication/280736910_Scientific_Opinion_on_the_re-evaluation_of_boric_acid_E_284_and_sodium_tetraborate_borax_E_285_as_food_additives_EFSA_Panel_on_Food_Additives_and_Nutrient_Sources_added_to_Food_ANS",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E285",
+  "nameDa": "Natriumtetraborat (borax)",
+  "nameEn": "Sodium tetraborate (borax)",
+  "category": "Konserveringsmiddel",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Borax er et naturligt forekommende mineral og natriumsalt af borsyre, som i EU kun må bruges i ægte kaviar (rogn af stør).",
+  "description": "Natriumtetraborat (borax) forekommer naturligt i evaporitaflejringer i udtørrede saltsøer; de kommercielt vigtigste forekomster findes i Tyrkiet og i Californien (Boron og Searles Lake). Naturligt borax renses ved omkrystallisering. I vand hydrolyserer borax og danner borsyre og en basisk opløsning, og det virker derfor på samme måde som E284. Borax og borsyre er i flere lande, bl.a. Indonesien og Malaysia, trods forbud fundet tilsat ulovligt i fx nudler og fiskeboller for at forlænge holdbarheden og give en fastere, mere elastisk konsistens. I EU er det kun tilladt i ægte kaviar.",
+  "uses": "Kun tilladt i ægte kaviar (rogn af stør), maks. 4 g/kg udtrykt som borsyre (samlet med E284).",
+  "health": "Bor er giftigt i høje doser. I dyreforsøg har borsyre og natriumtetraborat skadet de mandlige forplantningsorganer (fodringsstudier i rotter, mus og hunde) og fosterudviklingen, og borsyre og borater som natriumtetraborat er i EU harmoniseret klassificeret som reproduktionstoksisk kategori 1B (H360FD: kan skade forplantningsevnen og det ufødte barn). EFSA fastsatte i 2013 en gruppe-ADI på 0,16 mg bor/kg legemsvægt/dag for borsyre og borax (NOAEL 9,6 mg bor/kg legemsvægt/dag fra et udviklingstoksicitetsstudie i rotter, usikkerhedsfaktor 60) og fandt ingen bekymring for genotoksicitet. EFSA vurderede, at en regelmæssig overskridelse af ADI er usandsynlig, men for de børn, der faktisk spiser kaviar, lå det høje (95.-percentil) skøn over indtaget (0,56 mg bor/kg legemsvægt/dag) over ADI. Pga. den fosterskadende klassificering er gravide en særligt relevant gruppe.",
+  "research": "EFSA's gen-evaluering fra 2013 af borsyre (E284) og natriumtetraborat (E285) fastsatte en gruppe-ADI og konkluderede, at en regelmæssig overskridelse af ADI er usandsynlig. Bor findes også naturligt i kosten, især i plantefødevarer som tørret frugt, nødder, frø, bladgrøntsager og bælgfrugter, og drikkevand kan bidrage med varierende mængder afhængigt af geografi. Bor er ikke formelt anerkendt som et essentielt næringsstof for mennesker, og der er ingen officiel anbefalet daglig tilførsel; om bor i små mængder er gavnligt, er fortsat genstand for forskning.",
+  "keyReferences": [],
+  "pubmedTerm": "borax",
+  "flags": [
+   "pregnancy_caution",
+   "children_caution"
+  ],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of boric acid (E 284) and sodium tetraborate (borax) (E 285) as food additives.",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2013.3407",
+   "date": "2013-10-24",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://www.efsa.europa.eu/en/efsajournal/pub/3407",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2013.3407",
+    "https://www.researchgate.net/publication/280736910_Scientific_Opinion_on_the_re-evaluation_of_boric_acid_E_284_and_sodium_tetraborate_borax_E_285_as_food_additives_EFSA_Panel_on_Food_Additives_and_Nutrient_Sources_added_to_Food_ANS",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005",
+    "https://food.ec.europa.eu/system/files/2022-12/fs_food-improvement-agents_guidance_1333-2008_annex-2.pdf",
+    "https://echa.europa.eu/documents/10162/23665416/clh_rep_boric_acid_5521_en.pdf/ee39f026-9d2d-28f7-5d90-63a424112162",
+    "https://echa.europa.eu/documents/10162/2842450/clh_rep_boric+acid+and+borates_10344_en.pdf/74c34c0b-2129-abf5-a0f4-2c5b21d7d926",
+    "https://en.wikipedia.org/wiki/Borax",
+    "https://link.springer.com/chapter/10.1007/978-3-030-02950-0_11",
+    "https://www.researchgate.net/publication/26527212_Boric_Acid_Levels_in_Fresh_Noodles_and_Fish_Ball",
+    "https://publisher.unimas.my/ojs/index.php/BJRST/article/view/1975",
+    "https://www.cfs.gov.hk/english/multimedia/multimedia_pub/multimedia_pub_fsf_131_01.html",
+    "https://www.cfs.gov.hk/english/multimedia/multimedia_pub/multimedia_pub_fsf_37_01.html",
+    "https://benthamopenarchives.com/abstract.php?ArticleCode=TOMPJ-3-36",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC4712861/",
+    "https://www.ebsco.com/research-starters/chemistry/borax-mineral/"
+   ],
+   "notes": "Runde 2 udsagn-for-udsagn gennemført. Bekræftet: forekomst i evaporitter i Tyrkiet og Californien, rensning ved omkrystallisering, hydrolyse til borsyre, ulovlig brug i nudler og fiskeboller, EU-godkendelse kun i størkaviar 4 g/kg som borsyre, EFSA 2013 gruppe-ADI 0,16 mg bor/kg (NOAEL 9,6, UF 60), 'regelmæssig overskridelse usandsynlig', CLP-klassificering. Rettet: kategori (kun konserveringsmiddel), drikkevand er IKKE dokumenteret som hovedkilde, essentialitet omformuleret, sundhedsafsnit præciseret med EFSA-eksponeringstal. Fjernet: ris som eksempel, 'indtaget for de fleste ubetydeligt' og ukildebelagt råd til gravide. Flags pregnancy_caution og children_caution begrundet."
+  },
+  "wikipedia": "",
+  "wikidata": "Q5319",
+  "claims": [
+   {
+    "claim": "Borax forekommer i evaporitaflejringer dannet ved gentagen fordampning af sæsonsøer; de kommercielt vigtigste forekomster findes i Tyrkiet og i Californien (Boron og Searles Lake).",
+    "source": "https://en.wikipedia.org/wiki/Borax",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tyrkiet har store boratforekomster, bl.a. Kırka-forekomsten.",
+    "source": "https://link.springer.com/chapter/10.1007/978-3-030-02950-0_11",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Naturligt borax renses ved omkrystallisering.",
+    "source": "https://en.wikipedia.org/wiki/Borax",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Borax hydrolyserer i vand og danner borsyre; opløsningen er basisk.",
+    "source": "https://en.wikipedia.org/wiki/Borax",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Borsyre/borax er trods forbud fundet ulovligt tilsat nudler og fiskeboller for holdbarhed og fast/elastisk konsistens (Malaysia, Indonesien).",
+    "source": "https://www.researchgate.net/publication/26527212_Boric_Acid_Levels_in_Fresh_Noodles_and_Fish_Ball",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Højt indhold af borsyre fundet i nudler og fiskebaserede forarbejdede fødevarer i Malaysia.",
+    "source": "https://publisher.unimas.my/ojs/index.php/BJRST/article/view/1975",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ris som eksempel på ulovlig brug kunne ikke bekræftes og er fjernet.",
+    "source": "https://www.cfs.gov.hk/english/multimedia/multimedia_pub/multimedia_pub_fsf_131_01.html",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Borater som natriumtetraborat er omfattet af den harmoniserede reproduktionstoksiske klassificering sammen med borsyre.",
+    "source": "https://echa.europa.eu/documents/10162/2842450/clh_rep_boric+acid+and+borates_10344_en.pdf/74c34c0b-2129-abf5-a0f4-2c5b21d7d926",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kategori rettet til 'Konserveringsmiddel': EFSA og EU angiver kun anvendelse som konserveringsmiddel i kaviar; 'surhedsregulerende middel' kunne ikke bekræftes.",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3407",
+    "result": "rettet"
+   },
+   {
+    "claim": "Natriumtetraborat (E285) er fortsat godkendt i EU (euStatus approved).",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "E284 og E285 er i EU kun tilladt i ægte kaviar (rogn af stør), maks. 4 g/kg udtrykt som borsyre (forordning (EF) 1333/2008, bilag II, kategori 09.3).",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A02008R1333-20231005",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendelsen er begrænset til størrogn; 'kaviar' dækker kun rogn fra stør.",
+    "source": "https://food.ec.europa.eu/system/files/2022-12/fs_food-improvement-agents_guidance_1333-2008_annex-2.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA-udtalelsen 'Scientific Opinion on the re-evaluation of boric acid (E 284) and sodium tetraborate (borax) (E 285) as food additives' blev offentliggjort i oktober 2013 (EFSA Journal 11(10):3407).",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3407",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA fastsatte i 2013 en gruppe-ADI på 0,16 mg bor/kg legemsvægt/dag for borsyre og borax.",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3407",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "ADI er baseret på NOAEL 9,6 mg bor/kg legemsvægt/dag fra et udviklingstoksicitetsstudie i rotter og en usikkerhedsfaktor på 60.",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3407",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fodringsstudier i rotter, mus og hunde viste skadelige effekter på det mandlige forplantningssystem.",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3407",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA fandt ingen bekymring for genotoksicitet.",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3407",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA konkluderede, at en regelmæssig overskridelse af ADI er usandsynlig.",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3407",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Højt (95.-percentil) indtag for forbrugere blandt børn blev skønnet til 0,56 mg bor/kg legemsvægt/dag, dvs. over ADI (tilføjet præcisering).",
+    "source": "https://www.researchgate.net/publication/280736910_Scientific_Opinion_on_the_re-evaluation_of_boric_acid_E_284_and_sodium_tetraborate_borax_E_285_as_food_additives_EFSA_Panel_on_Food_Additives_and_Nutrient_Sources_added_to_Food_ANS",
+    "result": "rettet"
+   },
+   {
+    "claim": "Borsyre har harmoniseret CLP-klassificering Repr. 1B, H360FD (kan skade forplantningsevnen og det ufødte barn), baseret på effekter i forsøgsdyr.",
+    "source": "https://echa.europa.eu/documents/10162/23665416/clh_rep_boric_acid_5521_en.pdf/ee39f026-9d2d-28f7-5d90-63a424112162",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bor er giftigt i høje doser (kvalme, opkast, diarré, i alvorlige tilfælde nyreskade og kramper).",
+    "source": "https://www.cfs.gov.hk/english/multimedia/multimedia_pub/multimedia_pub_fsf_37_01.html",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Oprindeligt udsagn 'gravide bør være forsigtige med store mængder kaviar' var en ukildebelagt anbefaling; omformuleret til at gravide er en relevant gruppe pga. klassificeringen som fosterskadende.",
+    "source": "https://echa.europa.eu/documents/10162/23665416/clh_rep_boric_acid_5521_en.pdf/ee39f026-9d2d-28f7-5d90-63a424112162",
+    "result": "rettet"
+   },
+   {
+    "claim": "Oprindeligt udsagn 'indtaget for de fleste ubetydeligt' er fjernet og erstattet af EFSA's egne eksponeringsskøn.",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/3407",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Bor findes naturligt især i plantefødevarer: tørret frugt, nødder, frø, bladgrøntsager og bælgfrugter.",
+    "source": "https://benthamopenarchives.com/abstract.php?ArticleCode=TOMPJ-3-36",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Udsagnet om, at drikkevand er hovedkilden til bor, kunne ikke bekræftes; rettet til at drikkevand bidrager med varierende mængder afhængigt af geografi.",
+    "source": "https://benthamopenarchives.com/abstract.php?ArticleCode=TOMPJ-3-36",
+    "result": "rettet"
+   },
+   {
+    "claim": "Bor er ikke formelt anerkendt som essentielt for mennesker, og der findes ingen officiel anbefalet daglig tilførsel; gavnlige effekter undersøges fortsat.",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4712861/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Flag pregnancy_caution: begrundet i CLP-klassificeringen H360FD (kan skade det ufødte barn) og EFSA's udviklingstoksiske NOAEL.",
+    "source": "https://echa.europa.eu/documents/10162/23665416/clh_rep_boric_acid_5521_en.pdf/ee39f026-9d2d-28f7-5d90-63a424112162",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flag children_caution: begrundet i EFSA's skøn, hvor højt indtag blandt børn, der spiser kaviar, lå over ADI.",
+    "source": "https://www.researchgate.net/publication/280736910_Scientific_Opinion_on_the_re-evaluation_of_boric_acid_E_284_and_sodium_tetraborate_borax_E_285_as_food_additives_EFSA_Panel_on_Food_Additives_and_Nutrient_Sources_added_to_Food_ANS",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E290",
+  "nameDa": "Kuldioxid",
+  "nameEn": "Carbon dioxide",
+  "category": "Konserveringsmiddel / drivgas / emballagegas",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Kuldioxid (CO2) er den gas, der giver bobler i sodavand og øl. Den bruges også som beskyttende gas i emballage.",
+  "description": "Kuldioxid er en farveløs, lugtfri gas, der dannes ved forbrænding, respiration og gæring. Fødevare-CO2 i Europa kommer især som biprodukt fra ammoniakproduktion (gødningsindustrien) samt fra gæring i bioethanolanlæg og destillerier. Opløst i vand danner den den svage kulsyre; den prikkende fornemmelse skyldes bl.a., at enzymet kulsyreanhydrase 4 på de sur-sansende smagsceller omdanner CO2 til bikarbonat og brintioner. I emballage med modificeret atmosfære hæmmer den mange aerobe bakterier og skimmelsvampe. Fast CO2 (tøris) er CO2 under -78,5 °C.",
+  "uses": "Sodavand, danskvand, øl, cider og mousserende vin; kød, fisk, færdigpakket salat og bagværk i beskyttende (modificeret) atmosfære; drivgas i spraydåser, fx flødeskum (ofte sammen med lattergas). I EU er E 290 i gruppe I og tilladt efter quantum satis.",
+  "health": "Kuldioxid anses ikke for et sundhedsproblem i de brugte mængder; JECFA har ikke fundet det nødvendigt at fastsætte en numerisk ADI. Kulsyreholdige drikke øger gasmængden i mavesækken og kan give oppustethed, mæthedsfølelse, opstød og hos nogle halsbrand, selv om en systematisk gennemgang ikke fandt direkte belæg for, at de forårsager eller forværrer refluxsygdom. Danskvand opløser tandemalje langt mindre end sodavand; erosionen fra sodavand skyldes især tilsat citron- og fosforsyre, ikke kulsyren.",
+  "research": "JECFA har tildelt CO2 ADI 'ikke specificeret'. I EU er E 290 blandt de gasformige tilsætningsstoffer, som EFSA endnu ikke har gen-evalueret; EFSA har indkaldt data til gen-evalueringen, og der er modtaget data for E 290. Små studier har undersøgt kulsyreholdigt vand og fordøjelse: det ændrede ikke den samlede mavetømning, men fordelingen af måltidet i mavesækken, og i et lille dobbeltblindet forsøg med 21 patienter mindskede det dyspepsisymptomer. Forsyningen af fødevare-CO2 har været et praktisk problem i Europa, fx i 2022, da høje gaspriser fik ammoniakproducenter til at skære ned; det er ikke et sundhedsspørgsmål.",
+  "keyReferences": [],
+  "pubmedTerm": "carbon dioxide",
+  "flags": [],
+  "classes": [
+   "preservative",
+   "propellent-gas"
+  ],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/592",
+    "https://en.wikipedia.org/wiki/Dry_ice",
+    "https://eur-lex.europa.eu/eli/reg/2008/1333/2026-02-18/eng",
+    "https://food.ec.europa.eu/food-safety/food-improvement-agents/additives/re-evaluation_en",
+    "https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1365-2036.2010.04232.x",
+    "https://pubmed.ncbi.nlm.nih.gov/11556958/",
+    "https://pubmed.ncbi.nlm.nih.gov/19833970/",
+    "https://pubmed.ncbi.nlm.nih.gov/9009113/",
+    "https://rockymountainair.com/blog/nitrogen-carbon-dioxide-food-and-beverage-superstars/",
+    "https://www.atamanchemicals.com/e-290-carbon-dioxide_u28011/",
+    "https://www.britannica.com/science/carbon-dioxide",
+    "https://www.britannica.com/science/carbonation",
+    "https://www.campdenbri.co.uk/blogs/modified-atmosphere-packing.php",
+    "https://www.efsa.europa.eu/sites/default/files/2023-04/210323-m.pdf",
+    "https://www.efsa.europa.eu/sites/default/files/2024-03/12-re-evaluations-food-additives-ongoing-and-upcoming-calls-for-data.pdf",
+    "https://www.euronews.com/next/2022/08/26/carbon-dioxide-output",
+    "https://www.gasworld.com/story/carbon-dioxide-recovery-and-production/2074445.article/",
+    "https://www.globalaerosols.com/food-grade-aerosols-nitrous-oxide-co2-applications/",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7590068/",
+    "https://www.researchgate.net/publication/11105354_Effects_of_carbonated_water_on_functional_dyspepsia_and_constipation",
+    "https://www.wittgas.com/fileadmin/user_upload/Dateien/whitepapers/Whitepaper_modified_atmosphere_packaging_US.pdf"
+   ],
+   "notes": "Runde 2 gennemført udsagn for udsagn. Bekræftet: kemi, dannelse, fremstilling fra ammoniak og bioethanol, MAP-virkning, drikkevarer, gruppe I/quantum satis, JECFA-ADI 'ikke specificeret', maveeffekter, 2022-forsyningskrise. Rettet: EFSA-status (gen-evaluering udestår, data indkaldt), smagsmekanisme, reflux nuanceret, tanderosion konkretiseret, studier om fordøjelse konkretiseret. Fjernet: kaffe (nitrogen foretrækkes), pålæg/frisk pasta, 'bryggerier/naturlige kilder' som kilde."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Carbon_dioxide",
+  "wikidata": "Q1997",
+  "claims": [
+   {
+    "claim": "Navn: kuldioxid (carbon dioxide), E 290, godkendt i EU",
+    "source": "https://eur-lex.europa.eu/eli/reg/2008/1333/2026-02-18/eng",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kategori: konserveringsmiddel, drivgas og emballagegas (funktioner for E 290)",
+    "source": "https://www.atamanchemicals.com/e-290-carbon-dioxide_u28011/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "CO2 er en farveløs, lugtfri gas",
+    "source": "https://www.britannica.com/science/carbon-dioxide",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Dannes ved forbrænding, respiration og gæring",
+    "source": "https://www.britannica.com/science/carbon-dioxide",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fødevare-CO2 fås især som biprodukt fra ammoniakproduktion",
+    "source": "https://www.gasworld.com/story/carbon-dioxide-recovery-and-production/2074445.article/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fødevare-CO2 genvindes også fra gæring i bioethanolanlæg og destillerier (rettet: 'bryggerier' og 'naturlige kilder' fjernet som ubelagt)",
+    "source": "https://www.gasworld.com/story/carbon-dioxide-recovery-and-production/2074445.article/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Opløst i vand danner CO2 den svage kulsyre",
+    "source": "https://www.britannica.com/science/carbon-dioxide",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Den prikkende fornemmelse formidles af kulsyreanhydrase 4 på sur-sansende smagsceller (rettet: præciseret mekanisme i stedet for 'let syrlig smag')",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/19833970/",
+    "result": "rettet"
+   },
+   {
+    "claim": "CO2 i modificeret atmosfære hæmmer mange aerobe bakterier og skimmelsvampe",
+    "source": "https://www.wittgas.com/fileadmin/user_upload/Dateien/whitepapers/Whitepaper_modified_atmosphere_packaging_US.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tøris er fast CO2 under -78,5 °C (rettet: 'bruges til køling' omformuleret)",
+    "source": "https://en.wikipedia.org/wiki/Dry_ice",
+    "result": "rettet"
+   },
+   {
+    "claim": "Anvendes i sodavand, danskvand, øl, cider og mousserende vin",
+    "source": "https://www.britannica.com/science/carbonation",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendes i beskyttende atmosfære til kød og fisk",
+    "source": "https://www.wittgas.com/fileadmin/user_upload/Dateien/whitepapers/Whitepaper_modified_atmosphere_packaging_US.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendes i færdigpakket salat og bagværk i modificeret atmosfære",
+    "source": "https://www.campdenbri.co.uk/blogs/modified-atmosphere-packing.php",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kaffe i beskyttende CO2-atmosfære fjernet: kilden angiver, at nitrogen foretrækkes til kaffe",
+    "source": "https://rockymountainair.com/blog/nitrogen-carbon-dioxide-food-and-beverage-superstars/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Pålæg og frisk pasta fjernet som selvstændige eksempler (ikke fundet i kilder)",
+    "source": "https://www.wittgas.com/fileadmin/user_upload/Dateien/whitepapers/Whitepaper_modified_atmosphere_packaging_US.pdf",
+    "result": "fjernet"
+   },
+   {
+    "claim": "CO2 bruges som drivgas til flødeskum på spraydåse, sammen med lattergas",
+    "source": "https://www.globalaerosols.com/food-grade-aerosols-nitrous-oxide-co2-applications/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "E 290 er i gruppe I og tilladt quantum satis i EU",
+    "source": "https://eur-lex.europa.eu/eli/reg/2008/1333/2026-02-18/eng",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "JECFA: ADI 'ikke specificeret' for kuldioxid",
+    "source": "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/592",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Indtaget fra tilsætningsstoffet er ubetydeligt sammenlignet med kroppens egen dannelse af CO2",
+    "source": "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/592",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kulsyreholdige drikke øger gasmængden i mavesækken og kan give oppustethed, mæthedsfølelse og opstød",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7590068/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kulsyreholdige drikke kan øge refluxrelaterede symptomer som halsbrand; systematisk review fandt ikke direkte belæg for at de forårsager/forværrer refluxsygdom (rettet: nuanceret)",
+    "source": "https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1365-2036.2010.04232.x",
+    "result": "rettet"
+   },
+   {
+    "claim": "Danskvand opløser emalje ca. hundred gange mindre end sodavand (rettet: sammenligning præciseret til målt forskel)",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/11556958/",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA har endnu ikke gen-evalueret E 290; datakald for gasformige tilsætningsstoffer er gennemført, og der er modtaget data for E 290 (rettet: 'ikke fundet en gen-evaluering' præciseret)",
+    "source": "https://www.efsa.europa.eu/sites/default/files/2024-03/12-re-evaluations-food-additives-ongoing-and-upcoming-calls-for-data.pdf",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA's FAF-panel drøftede datakald for de resterende gasformige tilsætningsstoffer, herunder E 290",
+    "source": "https://www.efsa.europa.eu/sites/default/files/2023-04/210323-m.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kulsyreholdigt vand ændrede ikke samlet mavetømning, men fordelingen af måltidet i mavesækken",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/9009113/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Dobbeltblindet forsøg med 21 patienter: kulsyreholdigt vand mindskede dyspepsisymptomer (rettet: 'mæthed' og 'små og usikre' konkretiseret)",
+    "source": "https://www.researchgate.net/publication/11105354_Effects_of_carbonated_water_on_functional_dyspepsia_and_constipation",
+    "result": "rettet"
+   },
+   {
+    "claim": "Mangel på fødevare-CO2 i Europa i 2022, da ammoniakproduktion blev skåret ned pga. energipriser",
+    "source": "https://www.euronews.com/next/2022/08/26/carbon-dioxide-output",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flag: ingen – ingen følsom gruppe identificeret i kilderne",
+    "source": "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/592",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E296",
+  "nameDa": "Æblesyre",
+  "nameEn": "Malic acid",
+  "category": "Syre / surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Æblesyre er en organisk syre, der naturligt giver den friske, syrlige smag i æbler og andre frugter.",
+  "description": "Æblesyre (hydroxybutandisyre) er en dicarboxylsyre; som malat indgår den i citronsyrecyklussen i celler med aerob respiration. Naturligt forekommer L-formen, mens syntetisk fremstillet æblesyre er en blanding af L- og D-formen (DL-æblesyre), som laves ved hydrering af maleinsyreanhydrid/fumarsyre ved høj temperatur og tryk. Den giver en frugtagtig syrlighed, der varer længere end citronsyrens mere skarpe syrlighed, og bruges til at justere pH. Den kan forstærke frugtsmag og bruges i 'sure' slik.",
+  "uses": "Bruges i sodavand og frugtdrikke, sure bolsjer, vingummi og gelé-slik, marmelade og gelé, desserter, konserverede frugter og grøntsager, vin og cider. I EU er E 296 i gruppe I (quantum satis); i forarbejdede cerealiebaserede fødevarer og babymad til spædbørn og småbørn må kun L(+)-formen bruges og kun til pH-regulering.",
+  "health": "Æblesyre betragtes som ufarlig i de mængder, der bruges i fødevarer; ifølge JECFA omsættes begge former let af både forsøgsdyr og mennesker. JECFA har ikke fastsat en numerisk ADI ('ikke specificeret'), men understreger, at ADI'en for D-æblesyre og dens salte ikke gælder for helt små spædbørn. I EU må kun L(+)-formen anvendes i forarbejdede fødevarer til spædbørn og småbørn. Som andre syrer kan store mængder i sure drikke og slik bidrage til syreerosion af tænderne.",
+  "research": "JECFA fastsatte i 1969 en gruppe-ADI 'ikke specificeret' for DL-æblesyre og bekræftede den i 1980 med den begrundelse, at der ikke var grund til at skelne mellem L- og DL-formen. EFSA indkaldte i 2024 data (frist 31. december 2024) til sin igangværende gen-evaluering af æblesyre og malater (E 296, E 350–352). Den mest relevante forskning handler om tanderosion: laboratoriestudier har målt emaljeerosion fra citron-, æble- og mælkesyre ved pH-værdier som i læskedrikke og fundet, at sure slik – der kan indeholde æble-, fumar- og citronsyre – har større erosionspotentiale end almindelige varianter.",
+  "keyReferences": [],
+  "pubmedTerm": "malic acid",
+  "flags": [
+   "children_caution"
+  ],
+  "classes": [],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/5163",
+    "https://efsa.europa.eu/en/call/call-data-re-evaluation-malic-acid-and-malates-e-296-e-350-352-food-additives",
+    "https://en.wikipedia.org/wiki/Malic_acid",
+    "https://eur-lex.europa.eu/eli/reg/2008/1333/2026-02-18/eng",
+    "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng",
+    "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/RE31139",
+    "https://www.chemtradeasia.com/market-insights/decoding-flavor-profiles-food-acidulants",
+    "https://www.efsa.europa.eu/sites/default/files/2024-07/call-for-data-malic-acid-malates_0.pdf",
+    "https://www.foodrepublic.com/1407153/what-is-sour-candy-flavor-acids/",
+    "https://www.inchem.org/documents/jecfa/jeceval/jec_1313.htm",
+    "https://www.sciencedirect.com/science/article/abs/pii/S0002817714644767",
+    "https://www.sciencedirect.com/science/article/abs/pii/S0300571299000603",
+    "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/malic-acid"
+   ],
+   "notes": "Runde 2 gennemført udsagn for udsagn. Bekræftet: kemi, naturlig forekomst, syntese af DL-form, smagsprofil, anvendelser, gruppe I/quantum satis, babymadsregel (kun L(+), kun pH), JECFA 1969/1980, EFSA-datakald 2024, tanderosion. Rettet: 'alle levende celler', 'blødere end citronsyre', D-formens omsætning (erstattet af JECFA's forbehold for helt små spædbørn). Fjernet: saftevand/dessertblandinger og udsagn om manglende kontrovers. Flag children_caution bevaret med begrundelse."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Malic_acid",
+  "wikidata": "Q190143",
+  "claims": [
+   {
+    "claim": "Navn: æblesyre (malic acid), E 296, godkendt i EU",
+    "source": "https://eur-lex.europa.eu/eli/reg/2008/1333/2026-02-18/eng",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kategori: syre/surhedsregulerende middel",
+    "source": "https://www.efsa.europa.eu/sites/default/files/2024-07/call-for-data-malic-acid-malates_0.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Æblesyre er en organisk dicarboxylsyre, HOOCCH(OH)CH2COOH",
+    "source": "https://en.wikipedia.org/wiki/Malic_acid",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Giver syrlig smag i æbler og mange andre frugter",
+    "source": "https://en.wikipedia.org/wiki/Malic_acid",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Malat indgår i citronsyrecyklussen i celler med aerob respiration (rettet fra 'alle levende celler')",
+    "source": "https://en.wikipedia.org/wiki/Malic_acid",
+    "result": "rettet"
+   },
+   {
+    "claim": "L-formen er den naturligt forekommende; syntetisk fremstilles en blanding af L og D",
+    "source": "https://en.wikipedia.org/wiki/Malic_acid",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "DL-æblesyre fremstilles ved hydrering af maleinsyreanhydrid/fumarsyre ved høj temperatur og tryk",
+    "source": "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/RE31139",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Specifikationer for E 296 fastsat i forordning (EU) 231/2012",
+    "source": "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Æblesyre giver en frugtagtig, mere vedvarende syrlighed end citronsyrens skarpere (rettet fra 'blødere')",
+    "source": "https://www.chemtradeasia.com/market-insights/decoding-flavor-profiles-food-acidulants",
+    "result": "rettet"
+   },
+   {
+    "claim": "Æblesyre forstærker frugtsmag",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/malic-acid",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Bruges i sure slik for den langvarige syrlighed",
+    "source": "https://www.foodrepublic.com/1407153/what-is-sour-candy-flavor-acids/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendes i sodavand og frugtdrikke",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/malic-acid",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendes i vingummi og gelé-slik",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/malic-acid",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendes i marmelade og gelé",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/malic-acid",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendes i desserter samt konserverede frugter og grøntsager",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/malic-acid",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendes i vin og cider",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/malic-acid",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Saftevand' og 'dessertblandinger' fjernet/omformuleret (ikke specifikt belagt)",
+    "source": "https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/malic-acid",
+    "result": "fjernet"
+   },
+   {
+    "claim": "E 296 er i gruppe I med quantum satis",
+    "source": "https://eur-lex.europa.eu/eli/reg/2008/1333/2026-02-18/eng",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "I forarbejdede cerealiebaserede fødevarer og babymad må kun L(+)-formen bruges og kun til pH-regulering",
+    "source": "https://eur-lex.europa.eu/eli/reg/2008/1333/2026-02-18/eng",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "JECFA: ADI 'ikke specificeret' for DL-æblesyre (13. møde, 1969)",
+    "source": "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/5163",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "JECFA 1980: begge enantiomerer omsættes let; ingen grund til at skelne mellem L- og DL-form; gruppe-ADI bekræftet",
+    "source": "https://www.inchem.org/documents/jecfa/jeceval/jec_1313.htm",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "JECFA: ADI for D-æblesyre og dens salte gælder ikke for helt små spædbørn (rettet: 'D-formen omsættes langsommere' fjernet som ubelagt)",
+    "source": "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/5163",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA datakald 2024 til gen-evaluering af æblesyre og malater (E 296, E 350–352), datafrist 31.12.2024",
+    "source": "https://efsa.europa.eu/en/call/call-data-re-evaluation-malic-acid-and-malates-e-296-e-350-352-food-additives",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Laboratoriestudier af emaljeerosion fra citron-, æble- og mælkesyre ved læskedrik-pH",
+    "source": "https://www.sciencedirect.com/science/article/abs/pii/S0300571299000603",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Sure slik (med fumar-, æble- og citronsyre) har større erosionspotentiale end almindelige varianter",
+    "source": "https://www.sciencedirect.com/science/article/abs/pii/S0002817714644767",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Ikke genstand for væsentlig kontrovers' og 'lang historie som ingrediens' fjernet (ikke direkte belagt)",
+    "source": "https://www.efsa.europa.eu/sites/default/files/2024-07/call-for-data-malic-acid-malates_0.pdf",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Flag children_caution: begrundet i EU-krav om kun L(+)-form i babymad og JECFA's forbehold for D-formen hos helt små spædbørn",
+    "source": "https://apps.who.int/food-additives-contaminants-jecfa-database/Home/Chemical/5163",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E297",
+  "nameDa": "Fumarsyre",
+  "nameEn": "Fumaric acid",
+  "category": "Syre / surhedsregulerende middel",
+  "euStatus": "approved",
+  "origin": "mixed",
+  "summary": "Fumarsyre er en organisk syre, der bruges til at give syrlig smag og regulere surhed i fødevarer.",
+  "description": "Fumarsyre (trans-butendisyre) er en naturlig mellemforbindelse i citronsyrecyklussen og findes bl.a. i jordrøg, svampe, laver og islandsk lav. Industrielt fremstilles den typisk ved katalytisk isomerisering af maleinsyre, som fås fra maleinsyreanhydrid fremstillet ved oxidation af benzen eller butan; den kan også fremstilles ved fermentering af glukose. Den er en stærk syre, men tungtopløselig i vand og ikke hygroskopisk, så den ikke trækker fugt og ikke får pulverblandinger til at klumpe under opbevaring. Den bruges også som syrekomponent i bagepulver.",
+  "uses": "Pulverdrikke, instantprodukter til te og urtete, gelé- og dessertpulver, fyld og overtræk i bagværk, tyggegummi, sure slik samt som syre i bagepulver. I vin er fumarsyre en tilladt ønologisk praksis efter forordning (EU) 2019/934. I EU er E 297 kun tilladt i specifikke kategorier med maksimumsgrænser (fx 1 000–2 500 mg/kg i fyld og overtræk og 2 000 mg/kg i tyggegummi), ikke generelt quantum satis.",
+  "health": "Fumarsyre omsættes i kroppen som et normalt stofskiftemellemprodukt. Ifølge EU's Videnskabelige Fødevarekomité sås testikelatrofi hos kaniner efter høje doser givet i bughulen ikke ved oral indgift, selv ved 6–9 % i foderet. Fri fumarsyre kan irritere mave-tarm-kanalen. Som andre syrer kan sure produkter bidrage til syreerosion af tænder.",
+  "research": "JECFA fastsatte en ADI på 0–6 mg/kg legemsvægt, som EU's Videnskabelige Fødevarekomité (SCF) bekræftede. EFSA indkaldte i 2024 data til sin igangværende gen-evaluering af fumarsyre (E 297) og ravsyre (E 363); EFSA's foreløbige beregning ved de maksimalt tilladte niveauer gav en gennemsnitlig eksponering fra 0,0 mg/kg legemsvægt/dag hos voksne og ældre til 21,4 mg/kg legemsvægt/dag hos småbørn. Estere af fumarsyre (fx dimethylfumarat) er godkendt som lægemidler mod psoriasis og attakvis multipel sklerose, men det er andre stoffer end fumarsyre som tilsætningsstof.",
+  "keyReferences": [],
+  "pubmedTerm": "fumaric acid",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": null,
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://ec.europa.eu/food/fs/sc/scan/out112_en.pdf",
+    "https://en.wikipedia.org/wiki/Fumaric_acid",
+    "https://eur-lex.europa.eu/eli/reg/2008/1333/2026-02-18/eng",
+    "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng",
+    "https://eur-lex.europa.eu/eli/reg_del/2019/934/2024-12-29/eng",
+    "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/4707366",
+    "https://www.chemicalbook.com/ChemicalProductProperty_EN_CB5852804.htm",
+    "https://www.efsa.europa.eu/en/call/call-data-re-evaluation-fumaric-acid-e-297-and-succinic-acid-e-363-food-additives",
+    "https://www.efsa.europa.eu/sites/default/files/2024-07/call-for-data-fumaric-e297-succinic-e363-background-document.pdf",
+    "https://www.inchem.org/documents/jecfa/jecmono/v06je04.htm",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7602023/",
+    "https://www.sciencedirect.com/science/article/abs/pii/S0002817714644767"
+   ],
+   "notes": "Runde 2 gennemført udsagn for udsagn. Bekræftet: kemi, citronsyrecyklus, fremstilling, opløselighed/ikke-hygroskopisk, bagepulver, EU-kategorier og maksimumsgrænser (EFSA-baggrundsdokument 2024), JECFA-ADI 0–6 mg/kg bekræftet af SCF, EFSA-datakald 2024 og eksponeringstal, dimethylfumarat som lægemiddel. Rettet: naturlig forekomst, vinbrug (forordning 2019/934), toksicitetsudsagn, ADI-oprindelse. Fjernet: 'kraftig syrlighed pr. gram' og 'ingen kendte risici for særlige grupper'."
+  },
+  "wikipedia": "",
+  "wikidata": "Q139857",
+  "claims": [
+   {
+    "claim": "Navn: fumarsyre (fumaric acid), E 297, godkendt i EU",
+    "source": "https://eur-lex.europa.eu/eli/reg/2008/1333/2026-02-18/eng",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kategori: syre/surhedsregulerende middel",
+    "source": "https://www.efsa.europa.eu/sites/default/files/2024-07/call-for-data-fumaric-e297-succinic-e363-background-document.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fumarsyre er trans-butendisyre",
+    "source": "https://en.wikipedia.org/wiki/Fumaric_acid",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Mellemforbindelse i citronsyrecyklussen",
+    "source": "https://en.wikipedia.org/wiki/Fumaric_acid",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Forekommer naturligt i jordrøg, svampe, laver og islandsk lav (rettet fra 'små mængder i planter og svampe')",
+    "source": "https://en.wikipedia.org/wiki/Fumaric_acid",
+    "result": "rettet"
+   },
+   {
+    "claim": "Fremstilles ved katalytisk isomerisering af maleinsyre fra maleinsyreanhydrid (oxidation af benzen/butan)",
+    "source": "https://en.wikipedia.org/wiki/Fumaric_acid",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kan også fremstilles ved glukosefermentering",
+    "source": "https://en.wikipedia.org/wiki/Fumaric_acid",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Specifikationer for E 297 fastsat i forordning (EU) 231/2012",
+    "source": "https://eur-lex.europa.eu/eli/reg/2012/231/oj/eng",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Stærk syre, tungtopløselig (ca. 0,63 g/100 ml ved 25 °C) og ikke hygroskopisk",
+    "source": "https://www.chemicalbook.com/ChemicalProductProperty_EN_CB5852804.htm",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Velegnet i pulverprodukter, som ikke klumper under opbevaring (rettet: 'kraftig syrlighed pr. gram' fjernet)",
+    "source": "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/4707366",
+    "result": "rettet"
+   },
+   {
+    "claim": "Bruges som syre i bagepulver",
+    "source": "https://www.chemicalbook.com/ChemicalProductProperty_EN_CB5852804.htm",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendes i pulverdrikke og instantprodukter til te/urtete (max 1 000 mg/kg)",
+    "source": "https://www.efsa.europa.eu/sites/default/files/2024-07/call-for-data-fumaric-e297-succinic-e363-background-document.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendes i gelé-/dessertpulver",
+    "source": "https://www.chemicalbook.com/ChemicalProductProperty_EN_CB5852804.htm",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendes i fyld og overtræk (1 000–2 500 mg/kg) og tyggegummi (2 000 mg/kg)",
+    "source": "https://www.efsa.europa.eu/sites/default/files/2024-07/call-for-data-fumaric-e297-succinic-e363-background-document.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Sure slik indeholder bl.a. fumarsyre",
+    "source": "https://www.sciencedirect.com/science/article/abs/pii/S0002817714644767",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Vin: fumarsyre er tilladt ønologisk praksis efter forordning (EU) 2019/934 (rettet fra 'begrænset brug')",
+    "source": "https://eur-lex.europa.eu/eli/reg_del/2019/934/2024-12-29/eng",
+    "result": "rettet"
+   },
+   {
+    "claim": "I EU kun tilladt i specifikke kategorier med maksimumsgrænser, ikke generelt quantum satis",
+    "source": "https://www.efsa.europa.eu/sites/default/files/2024-07/call-for-data-fumaric-e297-succinic-e363-background-document.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "SCF: testikelatrofi ved høje intraperitoneale doser sås ikke ved oral indgift op til 6–9 % i foderet (rettet: erstatter generelt 'lav toksicitet')",
+    "source": "https://ec.europa.eu/food/fs/sc/scan/out112_en.pdf",
+    "result": "rettet"
+   },
+   {
+    "claim": "Fri fumarsyre kan irritere mave-tarm-kanalen",
+    "source": "https://en.wikipedia.org/wiki/Fumaric_acid",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Ingen kendte risici for særlige grupper' fjernet (ikke belagt; EFSA's eksponeringsberegning viser højest eksponering hos småbørn)",
+    "source": "https://www.efsa.europa.eu/sites/default/files/2024-07/call-for-data-fumaric-e297-succinic-e363-background-document.pdf",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Sure produkter kan bidrage til tanderosion",
+    "source": "https://www.sciencedirect.com/science/article/abs/pii/S0002817714644767",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "JECFA-ADI 0–6 mg/kg legemsvægt",
+    "source": "https://www.inchem.org/documents/jecfa/jecmono/v06je04.htm",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "SCF bekræftede ADI på 6 mg/kg legemsvægt (rettet: fastsat af JECFA, bekræftet af SCF)",
+    "source": "https://www.efsa.europa.eu/sites/default/files/2024-07/call-for-data-fumaric-e297-succinic-e363-background-document.pdf",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA datakald 2024 til gen-evaluering af fumarsyre (E 297) og ravsyre (E 363)",
+    "source": "https://www.efsa.europa.eu/en/call/call-data-re-evaluation-fumaric-acid-e-297-and-succinic-acid-e-363-food-additives",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA foreløbig gennemsnitlig eksponering 0,0 (voksne/ældre) til 21,4 mg/kg lgv/dag (småbørn) ved maksimalt tilladte niveauer",
+    "source": "https://www.efsa.europa.eu/sites/default/files/2024-07/call-for-data-fumaric-e297-succinic-e363-background-document.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Dimethylfumarat er godkendt mod psoriasis og attakvis multipel sklerose",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7602023/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flag: ingen – intet kildebelagt grundlag for flag",
+    "source": "https://www.efsa.europa.eu/sites/default/files/2024-07/call-for-data-fumaric-e297-succinic-e363-background-document.pdf",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E300",
+  "nameDa": "Ascorbinsyre",
+  "nameEn": "Ascorbic acid",
+  "category": "Antioxidant",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Ascorbinsyre er C-vitamin, som bruges som antioxidant for at forhindre, at fødevarer bruner eller harskner.",
+  "description": "Ascorbinsyre (L-ascorbinsyre) er vitamin C, som findes naturligt i frugt og grønt. Industrielt fremstilles den ud fra glukose: den klassiske Reichstein-proces fra 1933 er kemisk med ét mikrobielt trin, mens den i dag overvejende produceres med en totrins-fermenteringsproces udviklet i Kina. Som tilsætningsstof bruges den som antioxidant, der beskytter farve og smag mod oxidation. I brød fungerer den som melforbedringsmiddel, der styrker glutennetværket, og i saltede kødvarer hæmmer den sammen med nitrit dannelsen af nitrosaminer.",
+  "uses": "Frugtjuice og nektar, øl og vin, skåret frugt, kartofler og andre konserverede frugter og grøntsager, kødvarer (sammen med nitrit), brød og bagværk samt marmelade. E300 hører til gruppe I i EU's positivliste og må i mange fødevarekategorier anvendes quantum satis.",
+  "health": "Ascorbinsyre er et essentielt vitamin, og EFSA fandt i 2015 ingen sikkerhedsbekymring ved anvendelsen som tilsætningsstof og intet behov for en numerisk ADI. Meget høje doser fra kosttilskud kan give forbigående mavegener og diarré; EFSA (2004) fandt, at 1.000 mg ekstra dagligt ikke gav mavegener, men at højere tilskud kan øge risikoen. Et svensk kohortestudie (2013) fandt dobbelt så høj risiko for nyresten hos mænd, der tog tilskud af ascorbinsyre (ca. 1.000 mg), mens EFSA ikke fandt øget risiko ved et vanligt indtag på 1,5 g dagligt. C-vitamin øger optagelsen af jern fra kosten, og personer med hæmokromatose (jernophobning) frarådes derfor højdosis-tilskud.",
+  "research": "EFSA's gen-evaluering af E300-E302 (2015) konkluderede, at der ikke var sikkerhedsbekymring ved de rapporterede anvendelser og brugsniveauer, og at en numerisk ADI ikke var nødvendig. Et kendt kemisk forbehold er, at ascorbinsyre sammen med natriumbenzoat (E211) i drikkevarer – især under påvirkning af varme, lys og metalioner – kan danne små mængder benzen, hvilket har ført til reformulering af de berørte drikkevarer.",
+  "keyReferences": [],
+  "pubmedTerm": "ascorbic acid",
+  "flags": [
+   "kidney_caution"
+  ],
+  "classes": [
+   "antioxidant",
+   "sequestrant"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re‐evaluation of ascorbic acid (E 300), sodium ascorbate (E 301) and calcium ascorbate (E 302) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2015.4087",
+   "date": "2015-05-06",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4087",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC5076701/",
+    "https://www.researchgate.net/publication/301763006_Industrial_Fermentation_of_Vitamin_C",
+    "https://bakerpedia.com/ingredients/ascorbic-acid/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC12565750/",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A32011R1129",
+    "https://www.efsa.europa.eu/en/efsajournal/pub/59",
+    "https://pubmed.ncbi.nlm.nih.gov/23381591/",
+    "https://pubmed.ncbi.nlm.nih.gov/10218143/",
+    "https://www.fda.gov/food/environmental-contaminants-food/questions-and-answers-occurrence-benzene-soft-drinks-and-other-beverages",
+    "https://en.wikipedia.org/wiki/Benzene_in_soft_drinks"
+   ],
+   "notes": "Runde 2 gennemført. Bekræftet: EFSA 2015 (ingen sikkerhedsbekymring, ingen numerisk ADI), gruppe I/quantum satis, fremstilling, anvendelser, nitrosaminhæmning, melforbedring, benzen. Rettet: fremstillingshistorik præciseret; mavegener og nyresten omformuleret til hvad EFSA 2004 og kohortestudiet (2013) faktisk siger; hæmokromatose præciseret til højdosis-tilskud. Fjernet: smoothies, ubegrundet vurdering af kontrovers."
+  },
+  "wikipedia": "",
+  "wikidata": "Q193598",
+  "claims": [
+   {
+    "claim": "Navn: Ascorbinsyre (E300), kategori antioxidant",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4087",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ascorbinsyre er C-vitamin og bruges som antioxidant mod bruning og harskning",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5076701/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Findes naturligt i frugt og grønt",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5076701/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Industriel fremstilling fra glukose; Reichstein-processen (1933) er kemisk med ét mikrobielt trin; i dag primært totrins-fermentering udviklet i Kina (rettet: præciseret historik)",
+    "source": "https://www.researchgate.net/publication/301763006_Industrial_Fermentation_of_Vitamin_C",
+    "result": "rettet"
+   },
+   {
+    "claim": "Beskytter farve og smag mod oxidation",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5076701/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Melforbedringsmiddel i brød, styrker glutennetværket",
+    "source": "https://bakerpedia.com/ingredients/ascorbic-acid/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hæmmer nitrosamindannelse i kødvarer sammen med nitrit",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12565750/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendes i frugtjuice, nektar, øl og vin",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5076701/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendes i skåret frugt, kartofler og konserverede frugter/grøntsager",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5076701/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendes i kødvarer, brød/bagværk og marmelade",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5076701/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "E300 er i gruppe I (quantum satis) i bilag II til forordning 1333/2008",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A32011R1129",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Smoothies' og 'bagermel' som selvstændige anvendelser kunne ikke bekræftes og er fjernet/omformuleret",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5076701/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA 2015: ingen sikkerhedsbekymring og intet behov for numerisk ADI",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4087",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Høje tilskudsdoser kan give mavegener/diarré; EFSA 2004: 1.000 mg ekstra dagligt uden mavegener (rettet: 'flere gram' præciseret)",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/59",
+    "result": "rettet"
+   },
+   {
+    "claim": "Svensk kohortestudie 2013: ca. dobbelt risiko for nyresten hos mænd med ascorbinsyretilskud (rettet: omformuleret fra generel påstand om oxalat hos disponerede)",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/23381591/",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA fandt ikke øget nyrestensrisiko ved vanligt indtag på 1,5 g/dag",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/59",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "C-vitamin øger jernoptag; personer med hæmokromatose frarådes højdosis-tilskud",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/10218143/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Benzendannelse med natriumbenzoat i drikke under visse forhold (varme, lys, metalioner)",
+    "source": "https://www.fda.gov/food/environmental-contaminants-food/questions-and-answers-occurrence-benzene-soft-drinks-and-other-beverages",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Benzensagen førte til reformulering af berørte drikkevarer",
+    "source": "https://en.wikipedia.org/wiki/Benzene_in_soft_drinks",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Udsagnet 'C-vitamin mest undersøgt som næringsstof; tilsætningsstofbrugen er ikke kontroversiel' er fjernet (vurdering uden kilde)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4087",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Flag kidney_caution: begrundet i kohortestudie om nyresten ved ascorbinsyretilskud (gælder højdosis-tilskud, ikke normalt fødevareindtag)",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/23381591/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E301",
+  "nameDa": "Natriumascorbat",
+  "nameEn": "Sodium ascorbate",
+  "category": "Antioxidant",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Natriumascorbat er natriumsaltet af C-vitamin og bruges som antioxidant, især i kødvarer.",
+  "description": "Natriumascorbat er natriumsaltet af ascorbinsyre og fremstilles ved at neutralisere ascorbinsyre med natriumbicarbonat eller natriumcarbonat. Som mineralsk ascorbat er det bufret og mindre surt end ascorbinsyre og leverer C-vitamin på samme måde. I kødprodukter virker det som reduktionsmiddel, der fremskynder omdannelsen af nitrit til nitrogenoxid og dermed dannelsen af den røde saltningsfarve, og det hæmmer dannelsen af nitrosaminer. Det beskytter desuden mod fedt- og proteinoxidation.",
+  "uses": "Især saltede kødvarer som spegepølse, skinke, bacon og pølser. E301 hører til gruppe I i EU's positivliste og må i mange fødevarekategorier anvendes quantum satis.",
+  "health": "Natriumascorbat anses som sikkert; EFSA (2015) fandt ingen sikkerhedsbekymring og intet behov for en numerisk ADI. 1.000 mg natriumascorbat indeholder ca. 111 mg natrium, hvilket primært er relevant ved store tilskudsdoser for personer på natriumbegrænset diæt. Som for ascorbinsyre gælder, at meget høje doser fra kosttilskud kan give mavegener.",
+  "research": "EFSA's gen-evaluering af ascorbinsyre og dens salte (E300-E302) i 2015 konkluderede, at der ikke var sikkerhedsbekymring. Brugen i kødvarer er underbygget af forskning, der viser, at ascorbat og erythorbat hæmmer dannelsen af N-nitrosaminer, bl.a. ved stegning af bacon.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium ascorbate",
+  "flags": [],
+  "classes": [
+   "antioxidant"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re‐evaluation of ascorbic acid (E 300), sodium ascorbate (E 301) and calcium ascorbate (E 302) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2015.4087",
+   "date": "2015-05-06",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4087",
+    "https://proe.info/en/additives/e301",
+    "https://lpi.oregonstate.edu/mic/vitamins/vitamin-C/supplemental-forms",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12027098/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC12565750/",
+    "https://www.researchgate.net/publication/305112312_Effect_of_sodium_ascorbate_and_sodium_nitrite_on_protein_and_lipid_oxidation_in_dry_fermented_sausages",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A32011R1129",
+    "https://www.efsa.europa.eu/en/efsajournal/pub/59"
+   ],
+   "notes": "Runde 2 gennemført. Bekræftet: EFSA 2015, gruppe I, funktion i kødvarer (saltningsfarve, nitrosaminhæmning), natriumindhold. Rettet: fremstilling (natriumbicarbonat/-carbonat), natriumindhold kvantificeret. Fjernet: ubekræftede anvendelser (færdigretter, frugtprodukter, drikkevarer)."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_ascorbate",
+  "wikidata": "Q424551",
+  "claims": [
+   {
+    "claim": "Navn: Natriumascorbat (E301), antioxidant",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4087",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Natriumsaltet af ascorbinsyre; fremstilles ved neutralisering med natriumbicarbonat eller natriumcarbonat (rettet: tidligere 'natriumhydroxid')",
+    "source": "https://proe.info/en/additives/e301",
+    "result": "rettet"
+   },
+   {
+    "claim": "Mineralske ascorbater er bufrede/mindre sure og leverer C-vitamin",
+    "source": "https://lpi.oregonstate.edu/mic/vitamins/vitamin-C/supplemental-forms",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fremskynder omdannelsen af nitrit til nitrogenoxid og dannelsen af saltningsfarven",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12027098/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hæmmer nitrosamindannelse",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12565750/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Beskytter mod fedt- og proteinoxidation (fx i spegepølse)",
+    "source": "https://www.researchgate.net/publication/305112312_Effect_of_sodium_ascorbate_and_sodium_nitrite_on_protein_and_lipid_oxidation_in_dry_fermented_sausages",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Anvendes i saltede kødvarer som spegepølse, skinke, bacon og pølser",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12565750/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Gruppe I, quantum satis i mange kategorier",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A32011R1129",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Færdigretter, frugtprodukter og drikkevarer som specifikke anvendelser kunne ikke bekræftes og er fjernet",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A32011R1129",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA 2015: ingen sikkerhedsbekymring, ingen numerisk ADI",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4087",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "1.000 mg natriumascorbat indeholder ca. 111 mg natrium (rettet: kvantificeret)",
+    "source": "https://lpi.oregonstate.edu/mic/vitamins/vitamin-C/supplemental-forms",
+    "result": "rettet"
+   },
+   {
+    "claim": "Meget høje tilskudsdoser kan give mavegener",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/59",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Forskning viser, at ascorbat hæmmer nitrosamindannelse, bl.a. i stegt bacon",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12565750/",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E302",
+  "nameDa": "Calciumascorbat",
+  "nameEn": "Calcium ascorbate",
+  "category": "Antioxidant",
+  "euStatus": "approved",
+  "origin": "nature_identical",
+  "summary": "Calciumascorbat er calciumsaltet af C-vitamin, der bruges som antioxidant.",
+  "description": "Calciumascorbat fremstilles ud fra ascorbinsyre og calciumcarbonat. Det er mindre surt end ascorbinsyre og tilfører en smule calcium. Det bruges til at forhindre brunfarvning og er særlig nyttigt til frisk-skårne æbler, hvor calcium desuden hjælper med at bevare fastheden. Det sælges også som 'bufret' C-vitamin i kosttilskud.",
+  "uses": "Frisk-skårne æbler og andre færdigskårne frugter samt kosttilskud. E302 hører til gruppe I i EU's positivliste og må i mange fødevarekategorier anvendes quantum satis.",
+  "health": "Calciumascorbat anses som sikkert i de anvendte mængder; EFSA (2015) fandt ingen sikkerhedsbekymring og intet behov for en numerisk ADI. Meget høje doser C-vitamin fra kosttilskud kan give mavegener, og tilskud af ascorbinsyre er i et kohortestudie forbundet med øget risiko for nyresten hos mænd.",
+  "research": "EFSA's gen-evaluering af E300-E302 fra 2015 fandt ingen sikkerhedsbekymring ved anvendelse som tilsætningsstof. Forsøg med frisk-skårne æbleskiver viser, at calciumascorbat hæmmer brunfarvning og bidrager til at bevare fastheden.",
+  "keyReferences": [],
+  "pubmedTerm": "calcium ascorbate",
+  "flags": [],
+  "classes": [
+   "antioxidant"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re‐evaluation of ascorbic acid (E 300), sodium ascorbate (E 301) and calcium ascorbate (E 302) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2015.4087",
+   "date": "2015-05-06",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4087",
+    "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-073.pdf",
+    "https://lpi.oregonstate.edu/mic/vitamins/vitamin-C/supplemental-forms",
+    "https://www.sciencedirect.com/science/article/abs/pii/S0925521410000475",
+    "https://www.researchgate.net/publication/229857819_Refrigerated_apple_slices_Preservative_effects_of_ascorbic_acid_calcium_and_sulfites",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A32011R1129",
+    "https://www.efsa.europa.eu/en/efsajournal/pub/59",
+    "https://pubmed.ncbi.nlm.nih.gov/23381591/"
+   ],
+   "notes": "Runde 2 gennemført. Bekræftet: EFSA 2015, gruppe I, fremstilling fra calciumcarbonat, anvendelse på skårne æbler (brunfarvning og fasthed), bufret C-vitamin. Rettet: nyrestensudsagn omformuleret efter kohortestudie. Fjernet: ubekræftede anvendelser (kødvarer, drikkevarer) og ubegrundet kontroversvurdering."
+  },
+  "wikipedia": "",
+  "wikidata": "Q283033",
+  "claims": [
+   {
+    "claim": "Navn: Calciumascorbat (E302), antioxidant",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4087",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fremstilles ud fra ascorbinsyre og calciumcarbonat",
+    "source": "https://www.fao.org/fileadmin/user_upload/jecfa_additives/docs/Monograph1/Additive-073.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Mindre surt (bufret) og tilfører calcium",
+    "source": "https://lpi.oregonstate.edu/mic/vitamins/vitamin-C/supplemental-forms",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hæmmer brunfarvning af frisk-skårne æbler",
+    "source": "https://www.sciencedirect.com/science/article/abs/pii/S0925521410000475",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Calcium bevarer fastheden i skårne æbler",
+    "source": "https://www.researchgate.net/publication/229857819_Refrigerated_apple_slices_Preservative_effects_of_ascorbic_acid_calcium_and_sulfites",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Sælges som bufret C-vitamin i kosttilskud",
+    "source": "https://lpi.oregonstate.edu/mic/vitamins/vitamin-C/supplemental-forms",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Gruppe I, quantum satis i mange kategorier",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A32011R1129",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kødvarer og drikkevarer som specifikke anvendelser kunne ikke bekræftes og er fjernet; 'harskning' fjernet fra beskrivelsen",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A32011R1129",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA 2015: ingen sikkerhedsbekymring, ingen numerisk ADI",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4087",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Høje tilskudsdoser kan give mavegener",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/59",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ascorbinsyretilskud forbundet med øget nyrestensrisiko hos mænd (rettet fra generel advarsel til personer med tendens til nyresten)",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/23381591/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Udsagnet 'ikke genstand for nævneværdig kontrovers' er fjernet (vurdering uden kilde)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4087",
+    "result": "fjernet"
+   }
+  ]
+ },
+ {
+  "code": "E304",
+  "nameDa": "Fedtsyreestere af ascorbinsyre",
+  "nameEn": "Fatty acid esters of ascorbic acid",
+  "category": "Antioxidant",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Fedtopløselige former af C-vitamin, som beskytter fedtstoffer mod harskning.",
+  "description": "E304 er estere af ascorbinsyre og fedtsyrer: (i) ascorbylpalmitat (med palmitinsyre) og (ii) ascorbylstearat (med stearinsyre). De fremstilles ved forestring. I modsætning til almindelig ascorbinsyre er de fedtopløselige og kan derfor beskytte olier og fedt mod oxidation. De virker synergistisk med tocopheroler (E306-E309). I fordøjelsen spaltes de næsten fuldstændigt til ascorbinsyre og fedtsyre.",
+  "uses": "Vegetabilske olier og fedtblandinger, herunder olier i modermælkserstatning. E304 hører til gruppe I i EU's positivliste og må i mange kategorier anvendes quantum satis; i modermælkserstatning gælder en maksimumsgrænse (SCF fandt i 1998 op til 10 mg/l acceptabelt).",
+  "health": "E304 anses som sikkert, da det nedbrydes til ascorbinsyre og almindelige fedtsyrer. EFSA konkluderede i sin gen-evaluering (2015), at der ikke var sikkerhedsbekymring ved de rapporterede anvendelser, men de toksikologiske data var for begrænsede til at fastsætte en ADI. I 2020 konkluderede EFSA, at brugen af ascorbylpalmitat i modermælkserstatning og fødevarer til særlige medicinske formål ikke giver sikkerhedsbekymring for spædbørn under 16 uger.",
+  "research": "EFSA's gen-evaluering af fedtsyreestere af ascorbinsyre (2015) byggede på, at stofferne hydrolyseres fuldstændigt før optagelse, understøttet af et in vitro-studie og humane data; toksiciteten blev derfor udledt fra ascorbinsyre og fedtsyrerne. En opfølgende EFSA-udtalelse fra 2020 vurderede ascorbylpalmitat i fødevarer til spædbørn under 16 uger.",
+  "keyReferences": [],
+  "pubmedTerm": "ascorbyl palmitate",
+  "flags": [],
+  "classes": [
+   "antioxidant"
+  ],
+  "variants": [
+   {
+    "code": "E304(i)",
+    "nameDa": "Ascorbylpalmitat",
+    "nameEn": "Ascorbyl palmitate"
+   },
+   {
+    "code": "E304(ii)",
+    "nameDa": "Ascorbylstearat",
+    "nameEn": "Ascorbyl stearate"
+   }
+  ],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of ascorbyl palmitate (E 304(i)) and ascorbyl stearate (E 304(ii)) as food additives",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2015.4289",
+   "date": "2015-11-18",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4289",
+    "https://www.sciencedirect.com/science/article/abs/pii/S1359511324001107",
+    "https://link.springer.com/article/10.1007/BF02633006",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A32011R1129",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7448004/",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6153"
+   ],
+   "notes": "Runde 2 gennemført. Bekræftet: EFSA 2015-konklusion, hydrolyse, fedtopløselighed, synergi med tocopheroler, gruppe I, SCF-grænse i modermælkserstatning, EFSA 2020 om spædbørn. Rettet: tilføjet at ADI ikke kunne fastsættes pga. begrænsede data; følsomme grupper præciseret med EFSA 2020. Fjernet: ubekræftede anvendelser og kontroversvurdering."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Ascorbyl_palmitate",
+  "wikidata": "Q43303953",
+  "claims": [
+   {
+    "claim": "Navn og varianter: ascorbylpalmitat E304(i) og ascorbylstearat E304(ii)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4289",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Estere af ascorbinsyre og fedtsyre, fremstillet ved forestring",
+    "source": "https://www.sciencedirect.com/science/article/abs/pii/S1359511324001107",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fedtopløselige, beskytter olier og fedt mod oxidation",
+    "source": "https://www.sciencedirect.com/science/article/abs/pii/S1359511324001107",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Synergi med tocopheroler",
+    "source": "https://link.springer.com/article/10.1007/BF02633006",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hydrolyseres næsten fuldstændigt til ascorbinsyre og fedtsyre (rettet: 'i kroppen' præciseret til før optagelse)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4289",
+    "result": "rettet"
+   },
+   {
+    "claim": "Anvendes i vegetabilske olier og i olier i modermælkserstatning",
+    "source": "https://www.sciencedirect.com/science/article/abs/pii/S1359511324001107",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Gruppe I, quantum satis i mange kategorier",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A32011R1129",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "SCF 1998: op til 10 mg/l i modermælkserstatning acceptabelt",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7448004/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Margarine, fiskeolie, dressinger, mælkepulver, snacks og omega-3-tilskud som specifikke anvendelser kunne ikke bekræftes og er fjernet",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A32011R1129",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA 2015: ingen sikkerhedsbekymring ved rapporterede anvendelser",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4289",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2015: data for begrænsede til at fastsætte ADI (tilføjet)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4289",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA 2020: ingen sikkerhedsbekymring for spædbørn under 16 uger (erstatter 'ingen kendte særlige risici for følsomme grupper')",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2020.6153",
+    "result": "rettet"
+   },
+   {
+    "claim": "Udsagnet 'ikke genstand for væsentlig videnskabelig kontrovers' er fjernet (vurdering uden kilde)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4289",
+    "result": "fjernet"
+   }
+  ]
+ },
+ {
+  "code": "E306",
+  "nameDa": "Tocopherolrigt ekstrakt",
+  "nameEn": "Tocopherol-rich extract",
+  "category": "Antioxidant",
+  "euStatus": "approved",
+  "origin": "natural",
+  "summary": "Et naturligt ekstrakt af vitamin E-forbindelser (tocopheroler) fra vegetabilske olier, der bruges som antioxidant for at beskytte fedt mod iltning.",
+  "description": "E306 er et ekstrakt af naturlig oprindelse, der indeholder tocopheroler som d-alfa-, d-beta-, d-gamma- og d-delta-tocopherol samt tocotrienoler. Det udvindes ved vakuum-dampdestillation af spiselige vegetabilske olieprodukter: ved desodoriseringen under olieraffinering destilleres tocopherolerne med over i fedtsyredestillatet, hvorfra de koncentreres. Tocopheroler virker som kædebrydende antioxidanter, der opfanger peroxylradikaler og bremser oxidation af flerumættede fedtsyrer. Gamma- og delta-tocopherol har højere antioxidantaktivitet i vegetabilske olier end alfa-tocopherol, mens alfa-tocopherol er den form, kroppen udnytter som vitamin E.",
+  "uses": "Tilladt quantum satis i en række fødevarekategorier i EU, herunder fedtstoffer og olier (dog ikke jomfruolier og olivenolier). Tocopheroler (E 306–E 309) er også tilladt i modermælkserstatning og visse andre fødevarer til spædbørn under særlige betingelser.",
+  "health": "Tocopheroler er former af vitamin E. EFSA konkluderede i sin gen-evaluering (2015), at tocopheroler (E 306–E 309) ikke giver anledning til sikkerhedsbekymring ved de anvendte niveauer i fødevarer, og fastsatte ikke en numerisk ADI. Den kritiske effekt ved højt indtag af vitamin E er påvirkning af blodets størkning med øget risiko for blødning. EFSA bekræftede i 2024 et øvre tolerabelt indtag (UL) for vitamin E (som alfa-tocopherol) på 300 mg/dag for voksne, inkl. gravide og ammende, med lavere værdier for børn; UL gælder ikke for personer i behandling med blodfortyndende eller blodpladehæmmende medicin (fx acetylsalicylsyre). Naturlige blandede tocopheroler (E306) fra soja er i EU undtaget fra allergenmærkning af soja (forordning (EU) nr. 1169/2011, bilag II).",
+  "research": "EFSA's gen-evaluering af E 306–E 309 (2015) konkluderede, at tocopheroler ikke giver sikkerhedsbekymring ved de anvendte niveauer, men vurderede, at datagrundlaget for tocopherolrigt ekstrakt samt gamma- og delta-tocopherol var for begrænset til at indgå i sikkerhedsvurderingen, og at data om reproduktions- og udviklingstoksicitet var utilstrækkelige. Den akutte orale toksicitet er lav, NOAEL i 13-ugers- og 16-måneders-studier var 125 mg/kg legemsvægt/dag, og der er ingen bekymring for genotoksicitet eller kræftfremkaldende virkning. I SELECT-forsøget (Klein et al., JAMA 2011) havde raske mænd, der tog 400 IE vitamin E dagligt, en signifikant forøget risiko for prostatakræft på ca. 17 % sammenlignet med placebo, og tilskuddet forebyggede ikke prostatakræft.",
+  "keyReferences": [
+   {
+    "citation": "Klein EA et al. Vitamin E and the risk of prostate cancer: the Selenium and Vitamin E Cancer Prevention Trial (SELECT). JAMA. 2011.",
+    "searchTitle": "Vitamin E and the risk of prostate cancer: the Selenium and Vitamin E Cancer Prevention Trial (SELECT)"
+   }
+  ],
+  "pubmedTerm": "tocopherols",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of tocopherol-rich extract (E 306), alpha-tocopherol (E 307), gamma-tocopherol (E 308) and delta-tocopherol (E 309) as food additives",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2015.4247",
+   "date": "2015-09-30",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4247",
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2015.4247",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8953",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11294871/",
+    "https://jamanetwork.com/journals/jama/fullarticle/1104493",
+    "https://pubmed.ncbi.nlm.nih.gov/22298668/",
+    "https://ascopost.com/issues/april-15-2012/select-trial-update-vitamin-e-fails-to-prevent-prostate-cancer-in-healthy-men/",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+    "https://www.efsa.europa.eu/en/consultations/call/181010",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC3874081/",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A02011R1169-20250401",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC6017329/"
+   ],
+   "notes": "Runde 2 udsagn-for-udsagn gennemført. Bekræftet: EU-godkendelse, naturlig oprindelse, indhold af tocopheroler og tocotrienoler, fremstilling ved vakuum-dampdestillation/desodorisering, EFSA 2015-konklusioner (ingen sikkerhedsbekymring, ingen ADI, begrænsede data, NOAEL 125 mg/kg lgv/dag), UL 300 mg/dag (bekræftet som gældende i EFSA 2024), quantum satis-anvendelse. Rettet: UL-formulering opdateret til EFSA 2024 inkl. undtagelse for blodfortyndende behandling; SELECT-resultat præciseret (signifikant ~17 % øget risiko); soja-allergenudsagn erstattet af EU-undtagelsen i forordning 1169/2011; vitamin E-aktivitet omformuleret. Fjernet: konkrete kildeolier, 'populært som naturligt', konkrete fødevareeksempler og sammenligningen med tilsætningsstofniveauer. Britiske kilder ikke anvendt."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Vitamin_E",
+  "wikidata": "Q141180",
+  "claims": [
+   {
+    "claim": "Navn: tocopherolrigt ekstrakt af naturlig oprindelse (origin natural)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Indeholder d-alfa-, d-beta-, d-gamma- og d-delta-tocopherol samt tocotrienoler (rettet: tocotrienoler er en del af matrixen, ikke blot 'evt.')",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2015.4247",
+    "result": "rettet"
+   },
+   {
+    "claim": "Fremstilles ved vakuum-dampdestillation af spiselige vegetabilske olieprodukter",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tocopheroler co-destilleres i fedtsyredestillatet ved desodorisering under olieraffinering (biprodukt)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Konkrete kildeolier 'soja-, raps- eller solsikkeolie' fjernet (ikke bekræftet i EU-kilde)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2015.4247",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Tocopheroler er kædebrydende antioxidanter, der opfanger peroxylradikaler og beskytter flerumættede fedtsyrer mod oxidation",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3874081/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Gamma- og delta-tocopherol har højere antioxidantpotentiale i vegetabilske olier end alfa-tocopherol",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6017329/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Alfa-tocopherol er den eneste essentielle form af vitamin E (omformuleret fra 'størst vitamin E-aktivitet')",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8953",
+    "result": "rettet"
+   },
+   {
+    "claim": "'Populært i produkter markedsført som naturlige' fjernet (ikke bekræftet)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Tilladt quantum satis (ingen numerisk maksimumsgrænse) i bilag II",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt i fedtstoffer og olier, dog ikke jomfruolier og olivenolier",
+    "source": "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt i modermælkserstatning og fødevarer til spædbørn (kategori 13.1.1, 13.1.5.1, 13.1.5.2) under særlige betingelser",
+    "source": "https://www.efsa.europa.eu/en/consultations/call/181010",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Konkrete fødevarer (mayonnaise, dressinger, chips, morgenmadsprodukter, kødprodukter, kosttilskud) fjernet – ikke bekræftet i EU-kilde",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Soja-allergen: naturlige blandede tocopheroler (E306) fra soja er undtaget fra allergenmærkning (omformuleret fra 'spor af protein ... ikke allergifremkaldende i praksis')",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A02011R1169-20250401",
+    "result": "rettet"
+   },
+   {
+    "claim": "Kategori: antioxidant – tocopheroler bruges som antioxidanter i fødevarer",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "E-nummeret er godkendt i EU og opført i bilag II til forordning (EF) nr. 1333/2008",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA (2015): tocopheroler (E 306–E 309) giver ikke anledning til sikkerhedsbekymring ved de anvendte niveauer",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA/SCF fastsatte ingen numerisk ADI (efsa.adi tom er korrekt)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Datagrundlaget for tocopherolrigt ekstrakt samt gamma- og delta-tocopherol var for begrænset til at indgå i sikkerhedsvurderingen",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Data om reproduktions- og udviklingstoksicitet var utilstrækkelige",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Akut oral toksicitet er lav; NOAEL 125 mg/kg lgv/dag i 13-ugers- og 16-måneders-studier; ingen bekymring for genotoksicitet/carcinogenicitet (tilføjet fra abstract)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kritisk effekt ved højt indtag: påvirkning af blodstørkning og øget blødningsrisiko (omformuleret fra 'meget høje doser fra kosttilskud kan øge blødningstendensen'; sammenligningen 'langt over hvad fødevarer giver' fjernet som ubekræftet)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8953",
+    "result": "rettet"
+   },
+   {
+    "claim": "UL for vitamin E er 300 mg/dag for voksne – bekræftet som gældende i EFSA's nye vurdering fra 2024 (inkl. gravide og ammende; lavere UL for børn)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8953",
+    "result": "rettet"
+   },
+   {
+    "claim": "UL gælder ikke for personer i blodfortyndende/blodpladehæmmende behandling (erstatter 'især hos personer i blodfortyndende behandling')",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11294871/",
+    "result": "rettet"
+   },
+   {
+    "claim": "SELECT (Klein et al., JAMA 2011): 400 IE vitamin E dagligt gav ca. 17 % øget risiko for prostatakræft (rettet fra 'måske kan øge risikoen' – øgningen var statistisk signifikant)",
+    "source": "https://jamanetwork.com/journals/jama/fullarticle/1104493",
+    "result": "rettet"
+   },
+   {
+    "claim": "Vitamin E-tilskud forebyggede ikke prostatakræft i SELECT (omformuleret fra det bredere 'forebygger ikke kræft')",
+    "source": "https://ascopost.com/issues/april-15-2012/select-trial-update-vitamin-e-fails-to-prevent-prostate-cancer-in-healthy-men/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Udsagnet om at SELECT-doserne 'ligger langt over tilsætningsstofniveauer' er fjernet (ikke bekræftet i kilde)",
+    "source": "https://jamanetwork.com/journals/jama/fullarticle/1104493",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA-udtalelsens titel, DOI og dato 30.09.2015",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Nøglereference Klein EA et al., JAMA 2011, SELECT",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/22298668/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen flag: ingen kilde begrunder children_caution, pregnancy_caution, allergen m.fl. ved tilsætningsstofbrug",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E307",
+  "nameDa": "Alfa-tocopherol",
+  "nameEn": "Alpha-tocopherol",
+  "category": "Antioxidant",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Alfa-tocopherol er den form af vitamin E, kroppen udnytter; som tilsætningsstof (E307) er den syntetisk og bruges som antioxidant.",
+  "description": "E307 er i EU defineret som syntetisk alfa-tocopherol (all-rac-alfa-tocopherol, dl-alfa-tocopherol), en blanding af alle otte stereoisomerer i lige store mængder. Det fremstilles ved kemisk syntese, hvor trimethylhydroquinon kobles med isophytol. Det beskytter fedtstoffer mod iltning og er samtidig en kilde til vitamin E. Den naturlige form, RRR-alfa-tocopherol, har højere biologisk aktivitet end den syntetiske blanding, fordi leverens alfa-tocopherol-transportprotein fortrinsvis binder 2R-stereoisomererne.",
+  "uses": "Tilladt quantum satis i en række fødevarekategorier i EU, herunder fedtstoffer og olier (dog ikke jomfruolier og olivenolier). Tocopheroler (E 306–E 309) er også tilladt i modermælkserstatning og visse andre fødevarer til spædbørn under særlige betingelser.",
+  "health": "Tocopheroler er former af vitamin E. EFSA konkluderede i sin gen-evaluering (2015), at tocopheroler (E 306–E 309) ikke giver anledning til sikkerhedsbekymring ved de anvendte niveauer i fødevarer, og fastsatte ikke en numerisk ADI. Den kritiske effekt ved højt indtag af vitamin E er påvirkning af blodets størkning med øget risiko for blødning. EFSA bekræftede i 2024 et øvre tolerabelt indtag (UL) for vitamin E (som alfa-tocopherol) på 300 mg/dag for voksne, inkl. gravide og ammende, med lavere værdier for børn; UL gælder ikke for personer i behandling med blodfortyndende eller blodpladehæmmende medicin (fx acetylsalicylsyre).",
+  "research": "EFSA's gen-evaluering af E 306–E 309 (2015) konkluderede, at tocopheroler ikke giver sikkerhedsbekymring ved de anvendte niveauer, men vurderede, at datagrundlaget for tocopherolrigt ekstrakt samt gamma- og delta-tocopherol var for begrænset til at indgå i sikkerhedsvurderingen, og at data om reproduktions- og udviklingstoksicitet var utilstrækkelige. Den akutte orale toksicitet er lav, NOAEL i 13-ugers- og 16-måneders-studier var 125 mg/kg legemsvægt/dag, og der er ingen bekymring for genotoksicitet eller kræftfremkaldende virkning. I SELECT-forsøget (Klein et al., JAMA 2011) havde raske mænd, der tog 400 IE vitamin E dagligt, en signifikant forøget risiko for prostatakræft på ca. 17 % sammenlignet med placebo, og tilskuddet forebyggede ikke prostatakræft.",
+  "keyReferences": [
+   {
+    "citation": "Klein EA et al. Vitamin E and the risk of prostate cancer: the Selenium and Vitamin E Cancer Prevention Trial (SELECT). JAMA. 2011.",
+    "searchTitle": "Vitamin E and the risk of prostate cancer: the Selenium and Vitamin E Cancer Prevention Trial (SELECT)"
+   }
+  ],
+  "pubmedTerm": "alpha-tocopherol",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of tocopherol-rich extract (E 306), alpha-tocopherol (E 307), gamma-tocopherol (E 308) and delta-tocopherol (E 309) as food additives",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2015.4247",
+   "date": "2015-09-30",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4247",
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2015.4247",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8953",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11294871/",
+    "https://jamanetwork.com/journals/jama/fullarticle/1104493",
+    "https://pubmed.ncbi.nlm.nih.gov/22298668/",
+    "https://ascopost.com/issues/april-15-2012/select-trial-update-vitamin-e-fails-to-prevent-prostate-cancer-in-healthy-men/",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+    "https://www.efsa.europa.eu/en/consultations/call/181010",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC3874081/",
+    "https://www.ncbi.nlm.nih.gov/books/NBK225461/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC6101621/"
+   ],
+   "notes": "Runde 2 udsagn-for-udsagn gennemført. Bekræftet: syntetisk all-rac-alfa-tocopherol, otte stereoisomerer, syntese fra trimethylhydroquinon og isophytol, højere aktivitet af RRR-formen, EFSA 2015-konklusioner, UL 300 mg/dag (gældende iflg. EFSA 2024), quantum satis. Rettet: UL-formulering (EFSA 2024, undtagelse ved blodfortyndende behandling), SELECT præciseret, spædbørnsbetingelser omformuleret. Fjernet: konkrete fødevareeksempler og sammenligninger med tilsætningsstofniveauer uden kilde."
+  },
+  "wikipedia": "",
+  "wikidata": "Q158348",
+  "claims": [
+   {
+    "claim": "E307 er syntetisk alfa-tocopherol (all-rac-, dl-alfa-tocopherol) (origin synthetic)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "All-rac-alfa-tocopherol indeholder alle otte stereoisomerer i lige store mængder",
+    "source": "https://www.ncbi.nlm.nih.gov/books/NBK225461/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fremstilles ved kobling af trimethylhydroquinon med isophytol",
+    "source": "https://www.ncbi.nlm.nih.gov/books/NBK225461/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Beskytter fedtstoffer mod iltning (kædebrydende antioxidant)",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3874081/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "RRR-alfa-tocopherol har højere biologisk aktivitet end all-rac-alfa-tocopherol; alfa-TTP binder fortrinsvis 2R-stereoisomerer",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6101621/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Alfa-tocopherol er den eneste essentielle form af vitamin E (summary omformuleret fra 'den vigtigste form')",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8953",
+    "result": "rettet"
+   },
+   {
+    "claim": "Tilladt quantum satis (ingen numerisk maksimumsgrænse) i bilag II",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt i fedtstoffer og olier, dog ikke jomfruolier og olivenolier",
+    "source": "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt i modermælkserstatning og fødevarer til spædbørn (kategori 13.1.1, 13.1.5.1, 13.1.5.2) under særlige betingelser",
+    "source": "https://www.efsa.europa.eu/en/consultations/call/181010",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Konkrete fødevarer (margarine, babymad, kødprodukter, snacks, kosttilskud) fjernet – ikke bekræftet i EU-kilde; spædbørnsudsagn omformuleret til 'under særlige betingelser'",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "rettet"
+   },
+   {
+    "claim": "Kategori: antioxidant – tocopheroler bruges som antioxidanter i fødevarer",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "E-nummeret er godkendt i EU og opført i bilag II til forordning (EF) nr. 1333/2008",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA (2015): tocopheroler (E 306–E 309) giver ikke anledning til sikkerhedsbekymring ved de anvendte niveauer",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA/SCF fastsatte ingen numerisk ADI (efsa.adi tom er korrekt)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Datagrundlaget for tocopherolrigt ekstrakt samt gamma- og delta-tocopherol var for begrænset til at indgå i sikkerhedsvurderingen",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Data om reproduktions- og udviklingstoksicitet var utilstrækkelige",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Akut oral toksicitet er lav; NOAEL 125 mg/kg lgv/dag i 13-ugers- og 16-måneders-studier; ingen bekymring for genotoksicitet/carcinogenicitet (tilføjet fra abstract)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kritisk effekt ved højt indtag: påvirkning af blodstørkning og øget blødningsrisiko (omformuleret fra 'meget høje doser fra kosttilskud kan øge blødningstendensen'; sammenligningen 'langt over hvad fødevarer giver' fjernet som ubekræftet)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8953",
+    "result": "rettet"
+   },
+   {
+    "claim": "UL for vitamin E er 300 mg/dag for voksne – bekræftet som gældende i EFSA's nye vurdering fra 2024 (inkl. gravide og ammende; lavere UL for børn)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8953",
+    "result": "rettet"
+   },
+   {
+    "claim": "UL gælder ikke for personer i blodfortyndende/blodpladehæmmende behandling (erstatter 'især hos personer i blodfortyndende behandling')",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11294871/",
+    "result": "rettet"
+   },
+   {
+    "claim": "SELECT (Klein et al., JAMA 2011): 400 IE vitamin E dagligt gav ca. 17 % øget risiko for prostatakræft (rettet fra 'måske kan øge risikoen' – øgningen var statistisk signifikant)",
+    "source": "https://jamanetwork.com/journals/jama/fullarticle/1104493",
+    "result": "rettet"
+   },
+   {
+    "claim": "Vitamin E-tilskud forebyggede ikke prostatakræft i SELECT (omformuleret fra det bredere 'forebygger ikke kræft')",
+    "source": "https://ascopost.com/issues/april-15-2012/select-trial-update-vitamin-e-fails-to-prevent-prostate-cancer-in-healthy-men/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Udsagnet om at SELECT-doserne 'ligger langt over tilsætningsstofniveauer' er fjernet (ikke bekræftet i kilde)",
+    "source": "https://jamanetwork.com/journals/jama/fullarticle/1104493",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA-udtalelsens titel, DOI og dato 30.09.2015",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Nøglereference Klein EA et al., JAMA 2011, SELECT",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/22298668/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen flag: ingen kilde begrunder children_caution, pregnancy_caution, allergen m.fl. ved tilsætningsstofbrug",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E308",
+  "nameDa": "Gamma-tocopherol",
+  "nameEn": "Gamma-tocopherol",
+  "category": "Antioxidant",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Gamma-tocopherol er en form af vitamin E, der som tilsætningsstof (E308) er syntetisk og bruges som antioxidant i fedtholdige fødevarer.",
+  "description": "E308 er i EU specificeret som syntetisk gamma-tocopherol (dl-gamma-tocopherol). Gamma-tocopherol er den dominerende tocopherolform i majsolie og en af de dominerende i sojaolie. Den har højere antioxidantpotentiale i vegetabilske olier end alfa-tocopherol og beskytter flerumættede fedtsyrer mod iltning. Til gengæld bidrager den ikke til at dække kroppens vitamin E-behov, da den genkendes dårligt af leverens alfa-tocopherol-transportprotein. Ifølge EFSA er der indberettet langt lavere anvendelseskoncentrationer og færre anvendelser af gamma- og delta-tocopherol end af alfa-tocopherol.",
+  "uses": "Tilladt quantum satis i en række fødevarekategorier i EU, herunder fedtstoffer og olier (dog ikke jomfruolier og olivenolier). Tocopheroler (E 306–E 309) er også tilladt i modermælkserstatning og visse andre fødevarer til spædbørn under særlige betingelser.",
+  "health": "Tocopheroler er former af vitamin E. EFSA konkluderede i sin gen-evaluering (2015), at tocopheroler (E 306–E 309) ikke giver anledning til sikkerhedsbekymring ved de anvendte niveauer i fødevarer, og fastsatte ikke en numerisk ADI. Den kritiske effekt ved højt indtag af vitamin E er påvirkning af blodets størkning med øget risiko for blødning. EFSA bekræftede i 2024 et øvre tolerabelt indtag (UL) for vitamin E (som alfa-tocopherol) på 300 mg/dag for voksne, inkl. gravide og ammende, med lavere værdier for børn; UL gælder ikke for personer i behandling med blodfortyndende eller blodpladehæmmende medicin (fx acetylsalicylsyre).",
+  "research": "EFSA's gen-evaluering af E 306–E 309 (2015) konkluderede, at tocopheroler ikke giver sikkerhedsbekymring ved de anvendte niveauer, men vurderede, at datagrundlaget for tocopherolrigt ekstrakt samt gamma- og delta-tocopherol var for begrænset til at indgå i sikkerhedsvurderingen, og at data om reproduktions- og udviklingstoksicitet var utilstrækkelige. Den akutte orale toksicitet er lav, NOAEL i 13-ugers- og 16-måneders-studier var 125 mg/kg legemsvægt/dag, og der er ingen bekymring for genotoksicitet eller kræftfremkaldende virkning. I SELECT-forsøget (Klein et al., JAMA 2011) havde raske mænd, der tog 400 IE vitamin E dagligt, en signifikant forøget risiko for prostatakræft på ca. 17 % sammenlignet med placebo, og tilskuddet forebyggede ikke prostatakræft.",
+  "keyReferences": [],
+  "pubmedTerm": "gamma-tocopherol",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of tocopherol-rich extract (E 306), alpha-tocopherol (E 307), gamma-tocopherol (E 308) and delta-tocopherol (E 309) as food additives",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2015.4247",
+   "date": "2015-09-30",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4247",
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2015.4247",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8953",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11294871/",
+    "https://jamanetwork.com/journals/jama/fullarticle/1104493",
+    "https://pubmed.ncbi.nlm.nih.gov/22298668/",
+    "https://ascopost.com/issues/april-15-2012/select-trial-update-vitamin-e-fails-to-prevent-prostate-cancer-in-healthy-men/",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+    "https://www.efsa.europa.eu/en/consultations/call/181010",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC3874081/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC5085773/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC6017329/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC2040110/"
+   ],
+   "notes": "Runde 2 udsagn-for-udsagn gennemført. Bekræftet: syntetisk dl-gamma-tocopherol, højere antioxidantpotentiale i olier, EFSA 2015-konklusioner, UL 300 mg/dag (gældende iflg. EFSA 2024), quantum satis. Rettet: forekomst i olier præciseret, vitamin E-aktivitet omformuleret, 'bruges sjældent' erstattet med EFSA's konstatering af lavere/færre indberettede anvendelser, UL og SELECT præciseret. Fjernet: konkrete fødevareeksempler og ubekræftede sammenligninger."
+  },
+  "wikipedia": "",
+  "wikidata": "Q155753",
+  "claims": [
+   {
+    "claim": "E308 er syntetisk gamma-tocopherol (dl-gamma-tocopherol) (origin synthetic)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Gamma-tocopherol dominerer i majsolie; gamma og delta dominerer i sojaolie (rettet fra 'den dominerende i soja- og majsolie')",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5085773/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Gamma-tocopherol har højere antioxidantpotentiale i vegetabilske olier end alfa-tocopherol",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6017329/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Beskytter flerumættede fedtsyrer mod iltning",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3874081/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Forlænger holdbarheden' indgår implicit i antioxidantfunktionen; eksplicit formulering fjernet",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Gamma-tocopherol bidrager ikke til vitamin E-behovet og genkendes dårligt af alfa-TTP (rettet fra 'lavere vitamin E-aktivitet')",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2040110/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Langt lavere koncentrationer og færre anvendelser indberettet for gamma- og delta-tocopherol end for alfa-tocopherol (erstatter 'bruges sjældent; naturlige blandinger langt mere almindelige', som ikke kunne bekræftes)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "rettet"
+   },
+   {
+    "claim": "Tilladt quantum satis (ingen numerisk maksimumsgrænse) i bilag II",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt i fedtstoffer og olier, dog ikke jomfruolier og olivenolier",
+    "source": "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt i modermælkserstatning og fødevarer til spædbørn (kategori 13.1.1, 13.1.5.1, 13.1.5.2) under særlige betingelser",
+    "source": "https://www.efsa.europa.eu/en/consultations/call/181010",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Konkrete fødevarer (margarine, snacks, dressinger, kosttilskud) fjernet – ikke bekræftet i EU-kilde",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Kategori: antioxidant – tocopheroler bruges som antioxidanter i fødevarer",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "E-nummeret er godkendt i EU og opført i bilag II til forordning (EF) nr. 1333/2008",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA (2015): tocopheroler (E 306–E 309) giver ikke anledning til sikkerhedsbekymring ved de anvendte niveauer",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA/SCF fastsatte ingen numerisk ADI (efsa.adi tom er korrekt)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Datagrundlaget for tocopherolrigt ekstrakt samt gamma- og delta-tocopherol var for begrænset til at indgå i sikkerhedsvurderingen",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Data om reproduktions- og udviklingstoksicitet var utilstrækkelige",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Akut oral toksicitet er lav; NOAEL 125 mg/kg lgv/dag i 13-ugers- og 16-måneders-studier; ingen bekymring for genotoksicitet/carcinogenicitet (tilføjet fra abstract)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kritisk effekt ved højt indtag: påvirkning af blodstørkning og øget blødningsrisiko (omformuleret fra 'meget høje doser fra kosttilskud kan øge blødningstendensen'; sammenligningen 'langt over hvad fødevarer giver' fjernet som ubekræftet)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8953",
+    "result": "rettet"
+   },
+   {
+    "claim": "UL for vitamin E er 300 mg/dag for voksne – bekræftet som gældende i EFSA's nye vurdering fra 2024 (inkl. gravide og ammende; lavere UL for børn)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8953",
+    "result": "rettet"
+   },
+   {
+    "claim": "UL gælder ikke for personer i blodfortyndende/blodpladehæmmende behandling (erstatter 'især hos personer i blodfortyndende behandling')",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11294871/",
+    "result": "rettet"
+   },
+   {
+    "claim": "SELECT (Klein et al., JAMA 2011): 400 IE vitamin E dagligt gav ca. 17 % øget risiko for prostatakræft (rettet fra 'måske kan øge risikoen' – øgningen var statistisk signifikant)",
+    "source": "https://jamanetwork.com/journals/jama/fullarticle/1104493",
+    "result": "rettet"
+   },
+   {
+    "claim": "Vitamin E-tilskud forebyggede ikke prostatakræft i SELECT (omformuleret fra det bredere 'forebygger ikke kræft')",
+    "source": "https://ascopost.com/issues/april-15-2012/select-trial-update-vitamin-e-fails-to-prevent-prostate-cancer-in-healthy-men/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Udsagnet om at SELECT-doserne 'ligger langt over tilsætningsstofniveauer' er fjernet (ikke bekræftet i kilde)",
+    "source": "https://jamanetwork.com/journals/jama/fullarticle/1104493",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA-udtalelsens titel, DOI og dato 30.09.2015",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Nøglereference Klein EA et al., JAMA 2011, SELECT",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/22298668/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen flag: ingen kilde begrunder children_caution, pregnancy_caution, allergen m.fl. ved tilsætningsstofbrug",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E309",
+  "nameDa": "Delta-tocopherol",
+  "nameEn": "Delta-tocopherol",
+  "category": "Antioxidant",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Delta-tocopherol er en form af vitamin E, der som tilsætningsstof (E309) er syntetisk og bruges som antioxidant i fødevarer.",
+  "description": "E309 er i EU specificeret som syntetisk delta-tocopherol. Delta-tocopherol har højere antioxidantpotentiale i vegetabilske olier end alfa-tocopherol og beskytter flerumættede fedtsyrer mod iltning. Den bidrager derimod ikke til at dække kroppens vitamin E-behov, da den genkendes dårligt af leverens alfa-tocopherol-transportprotein. Ifølge EFSA er der indberettet langt lavere anvendelseskoncentrationer og færre anvendelser af gamma- og delta-tocopherol end af alfa-tocopherol.",
+  "uses": "Tilladt quantum satis i en række fødevarekategorier i EU, herunder fedtstoffer og olier (dog ikke jomfruolier og olivenolier). Tocopheroler (E 306–E 309) er også tilladt i modermælkserstatning og visse andre fødevarer til spædbørn under særlige betingelser.",
+  "health": "Tocopheroler er former af vitamin E. EFSA konkluderede i sin gen-evaluering (2015), at tocopheroler (E 306–E 309) ikke giver anledning til sikkerhedsbekymring ved de anvendte niveauer i fødevarer, og fastsatte ikke en numerisk ADI. Den kritiske effekt ved højt indtag af vitamin E er påvirkning af blodets størkning med øget risiko for blødning. EFSA bekræftede i 2024 et øvre tolerabelt indtag (UL) for vitamin E (som alfa-tocopherol) på 300 mg/dag for voksne, inkl. gravide og ammende, med lavere værdier for børn; UL gælder ikke for personer i behandling med blodfortyndende eller blodpladehæmmende medicin (fx acetylsalicylsyre).",
+  "research": "EFSA's gen-evaluering af E 306–E 309 (2015) konkluderede, at tocopheroler ikke giver sikkerhedsbekymring ved de anvendte niveauer, men vurderede, at datagrundlaget for tocopherolrigt ekstrakt samt gamma- og delta-tocopherol var for begrænset til at indgå i sikkerhedsvurderingen, og at data om reproduktions- og udviklingstoksicitet var utilstrækkelige. Den akutte orale toksicitet er lav, NOAEL i 13-ugers- og 16-måneders-studier var 125 mg/kg legemsvægt/dag, og der er ingen bekymring for genotoksicitet eller kræftfremkaldende virkning. I SELECT-forsøget (Klein et al., JAMA 2011) havde raske mænd, der tog 400 IE vitamin E dagligt, en signifikant forøget risiko for prostatakræft på ca. 17 % sammenlignet med placebo, og tilskuddet forebyggede ikke prostatakræft.",
+  "keyReferences": [],
+  "pubmedTerm": "delta-tocopherol",
+  "flags": [],
+  "classes": [],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of tocopherol-rich extract (E 306), alpha-tocopherol (E 307), gamma-tocopherol (E 308) and delta-tocopherol (E 309) as food additives",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2015.4247",
+   "date": "2015-09-30",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4247",
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "https://efsa.onlinelibrary.wiley.com/doi/pdfdirect/10.2903/j.efsa.2015.4247",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8953",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11294871/",
+    "https://jamanetwork.com/journals/jama/fullarticle/1104493",
+    "https://pubmed.ncbi.nlm.nih.gov/22298668/",
+    "https://ascopost.com/issues/april-15-2012/select-trial-update-vitamin-e-fails-to-prevent-prostate-cancer-in-healthy-men/",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+    "https://www.efsa.europa.eu/en/consultations/call/181010",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC3874081/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC6017329/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC2040110/"
+   ],
+   "notes": "Runde 2 udsagn-for-udsagn gennemført. Bekræftet: syntetisk delta-tocopherol, højere antioxidantpotentiale i olier, EFSA 2015-konklusioner, UL 300 mg/dag (gældende iflg. EFSA 2024), quantum satis. Rettet: 'laveste vitamin E-aktivitet' omformuleret (bidrager ikke til vitamin E-behovet), 'bruges sjældent' erstattet med EFSA's konstatering, UL og SELECT præciseret. Fjernet: konkrete fødevareeksempler og ubekræftede sammenligninger."
+  },
+  "wikipedia": "",
+  "wikidata": "Q155751",
+  "claims": [
+   {
+    "claim": "E309 er syntetisk delta-tocopherol (origin synthetic)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Delta-tocopherol har højere antioxidantpotentiale i vegetabilske olier end alfa-tocopherol (omformuleret fra 'blandt de mest effektive')",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6017329/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Beskytter flerumættede fedtsyrer mod iltning",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3874081/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Delta-tocopherol bidrager ikke til vitamin E-behovet og genkendes dårligt af alfa-TTP (rettet: 'den laveste vitamin E-aktivitet af tocopherolerne' kunne ikke bekræftes)",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2040110/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Langt lavere koncentrationer og færre anvendelser indberettet for gamma- og delta-tocopherol end for alfa-tocopherol (erstatter 'bruges sjældent; naturlige blandinger oftest', som ikke kunne bekræftes)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "rettet"
+   },
+   {
+    "claim": "Tilladt quantum satis (ingen numerisk maksimumsgrænse) i bilag II",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt i fedtstoffer og olier, dog ikke jomfruolier og olivenolier",
+    "source": "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ%3AL%3A2011%3A295%3A0001%3A0177%3Aen%3APDF",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt i modermælkserstatning og fødevarer til spædbørn (kategori 13.1.1, 13.1.5.1, 13.1.5.2) under særlige betingelser",
+    "source": "https://www.efsa.europa.eu/en/consultations/call/181010",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Konkrete fødevarer (margarine, snacks, dressinger) fjernet – ikke bekræftet i EU-kilde",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Kategori: antioxidant – tocopheroler bruges som antioxidanter i fødevarer",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "E-nummeret er godkendt i EU og opført i bilag II til forordning (EF) nr. 1333/2008",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20240602",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA (2015): tocopheroler (E 306–E 309) giver ikke anledning til sikkerhedsbekymring ved de anvendte niveauer",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA/SCF fastsatte ingen numerisk ADI (efsa.adi tom er korrekt)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Datagrundlaget for tocopherolrigt ekstrakt samt gamma- og delta-tocopherol var for begrænset til at indgå i sikkerhedsvurderingen",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Data om reproduktions- og udviklingstoksicitet var utilstrækkelige",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Akut oral toksicitet er lav; NOAEL 125 mg/kg lgv/dag i 13-ugers- og 16-måneders-studier; ingen bekymring for genotoksicitet/carcinogenicitet (tilføjet fra abstract)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kritisk effekt ved højt indtag: påvirkning af blodstørkning og øget blødningsrisiko (omformuleret fra 'meget høje doser fra kosttilskud kan øge blødningstendensen'; sammenligningen 'langt over hvad fødevarer giver' fjernet som ubekræftet)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8953",
+    "result": "rettet"
+   },
+   {
+    "claim": "UL for vitamin E er 300 mg/dag for voksne – bekræftet som gældende i EFSA's nye vurdering fra 2024 (inkl. gravide og ammende; lavere UL for børn)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2024.8953",
+    "result": "rettet"
+   },
+   {
+    "claim": "UL gælder ikke for personer i blodfortyndende/blodpladehæmmende behandling (erstatter 'især hos personer i blodfortyndende behandling')",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11294871/",
+    "result": "rettet"
+   },
+   {
+    "claim": "SELECT (Klein et al., JAMA 2011): 400 IE vitamin E dagligt gav ca. 17 % øget risiko for prostatakræft (rettet fra 'måske kan øge risikoen' – øgningen var statistisk signifikant)",
+    "source": "https://jamanetwork.com/journals/jama/fullarticle/1104493",
+    "result": "rettet"
+   },
+   {
+    "claim": "Vitamin E-tilskud forebyggede ikke prostatakræft i SELECT (omformuleret fra det bredere 'forebygger ikke kræft')",
+    "source": "https://ascopost.com/issues/april-15-2012/select-trial-update-vitamin-e-fails-to-prevent-prostate-cancer-in-healthy-men/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Udsagnet om at SELECT-doserne 'ligger langt over tilsætningsstofniveauer' er fjernet (ikke bekræftet i kilde)",
+    "source": "https://jamanetwork.com/journals/jama/fullarticle/1104493",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA-udtalelsens titel, DOI og dato 30.09.2015",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Nøglereference Klein EA et al., JAMA 2011, SELECT",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/22298668/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen flag: ingen kilde begrunder children_caution, pregnancy_caution, allergen m.fl. ved tilsætningsstofbrug",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2015.4247",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E310",
+  "nameDa": "Propylgallat",
+  "nameEn": "Propyl gallate",
+  "category": "Antioxidant",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Propylgallat er en syntetisk antioxidant, der forsinker harskning af fedt og olie.",
+  "description": "Propylgallat er en ester af gallussyre og n-propanol. Gallussyre udvindes ved hydrolyse af garvestoffer (tanniner) fra galæbler, hvorefter den forestres med propanol under syrekatalyse. Stoffet bruges ofte i kombination med BHA (E320) og BHT (E321), fordi antioxidanterne virker synergistisk. Det mister sin virkning ved høje temperaturer og nedbrydes hurtigt i fritureolie, og med jern danner det et blåsort kompleks, der kan misfarve fødevaren.",
+  "uses": "Fedtstoffer og olier til professionel fremstilling af varmebehandlede fødevarer samt friturefedt, tyggegummi, supper og saucer, forarbejdede kartoffelprodukter, snacks, forarbejdede nødder samt krydderier og smagsgivere. Kun tilladt med maksimumsgrænser, der gælder for gallater, TBHQ og BHA enkeltvis eller samlet (fx 200 mg/kg beregnet på fedtindholdet i fedtstoffer og olier og 400 mg/kg i tyggegummi, hvor også BHT indgår i summen).",
+  "health": "EFSA fastsatte i 2014 en ADI på 0,5 mg/kg legemsvægt/dag. Stoffet er kendt for at kunne give kontaktallergi (typisk eksem i ansigt eller på hænder), især via kosmetik som læbeprodukter og ved erhvervsmæssig kontakt. I EFSA's konservative beregning kunne voksne og ældre med højt indtag overskride ADI, hovedsageligt pga. kosttilskud, men EFSA vurderede ikke den nuværende brug som en sikkerhedsbekymring. EU's regler tillader kun tilsætningsstoffer i fødevarer til spædbørn og småbørn, når det udtrykkeligt er fastsat i bilag II til forordning (EF) nr. 1333/2008.",
+  "research": "EFSA's gen-evaluering (2014) konkluderede, at der ikke længere var grundlag for den tidligere fælles gruppe-ADI for propyl-, octyl- og dodecylgallat, og fastsatte en særskilt ADI på 0,5 mg/kg lgv/dag for propylgallat, baseret på en NOAEL på 135 mg/kg lgv/dag fra et 90-dages studie i rotter med usikkerhedsfaktor 300. Højforbrugende voksne og ældre kunne overskride ADI, men pga. de konservative antagelser konkluderede EFSA, at den nuværende brug ikke giver sikkerhedsbekymring. Cellestudier (in vitro) har vist anti-østrogen aktivitet i østrogenfølsomme brystkræftcellelinjer, men der er tale om laboratoriefund. Kontaktallergi over for gallater er veldokumenteret i dermatologisk litteratur, og propylgallat er den hyppigst rapporterede gallat-allergen.",
+  "keyReferences": [],
+  "pubmedTerm": "propyl gallate",
+  "flags": [
+   "allergen"
+  ],
+  "classes": [
+   "antioxidant"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re-evaluation of propyl gallate (E 310) as a food additive",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2014.3642",
+   "date": "2014-04-24",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3642",
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2014.3642",
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4363",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32008R1333",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32018R1481&from=EN",
+    "https://onlinelibrary.wiley.com/doi/10.1034/j.1600-0536.2002.470210_15.x",
+    "https://pubmed.ncbi.nlm.nih.gov/28169852/",
+    "https://pubmed.ncbi.nlm.nih.gov/29460325/",
+    "https://pubmed.ncbi.nlm.nih.gov/4819104/",
+    "https://www.chemicalbook.com/ChemicalProductProperty_EN_CB1465703.htm",
+    "https://www.sciencedirect.com/science/article/pii/S2590259822000255",
+    "https://www.sciencedirect.com/topics/immunology-and-microbiology/propyl-gallate",
+    "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/gallic-acid-propyl-ester"
+   ],
+   "notes": "Runde 3 udsagn-for-udsagn: EFSA 2014 (ADI 0,5, NOAEL 135/UF 300, gruppe-ADI trukket tilbage, overskridelse hos voksne/ældre, ingen sikkerhedsbekymring), kemi/fremstilling, synergi, varme- og jernegenskaber, anvendelser (EU bilag II via EUR-Lex/EFSA) og kontaktallergi bekræftet. Rettet: fremstilling præciseret, 'opfanger frie radikaler' omformuleret, anvendelser uden 'pulverform/dehydrerede', hormonudsagn præciseret til in vitro anti-østrogen aktivitet, spædbørnsudsagn omformuleret til EU's generelle regel (art. 16). Fjernet: overfølsomhed ved indtag og flaget children_caution (ikke kildebegrundet)."
+  },
+  "wikipedia": "",
+  "wikidata": "Q608726",
+  "claims": [
+   {
+    "claim": "Propylgallat hedder på dansk propylgallat (E310) og er en antioxidant.",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3642",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Propylgallat er syntetisk fremstillet (ester fremstillet ved forestring).",
+    "source": "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/gallic-acid-propyl-ester",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Propylgallat er en ester af gallussyre og n-propanol.",
+    "source": "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/gallic-acid-propyl-ester",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Gallussyre udvindes ved hydrolyse af garvestoffer (tanniner) fra galæbler (tidligere: 'plantegarvestoffer ... eller fremstilles syntetisk' – præciseret).",
+    "source": "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/gallic-acid-propyl-ester",
+    "result": "rettet"
+   },
+   {
+    "claim": "Propylgallat fremstilles ved forestring af gallussyre med n-propanol under syrekatalyse.",
+    "source": "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/gallic-acid-propyl-ester",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Propylgallat virker som antioxidant, der forsinker harskning af fedt og olie ('opfanger frie radikaler' ikke specifikt bekræftet og omformuleret).",
+    "source": "https://www.sciencedirect.com/topics/immunology-and-microbiology/propyl-gallate",
+    "result": "rettet"
+   },
+   {
+    "claim": "Bruges ofte sammen med BHA og BHT pga. synergistisk effekt.",
+    "source": "https://www.sciencedirect.com/science/article/pii/S2590259822000255",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Mister virkningen ved høje temperaturer og nedbrydes hurtigt i fritureolie.",
+    "source": "https://www.chemicalbook.com/ChemicalProductProperty_EN_CB1465703.htm",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Danner et blåsort kompleks med jern (misfarvning).",
+    "source": "https://www.chemicalbook.com/ChemicalProductProperty_EN_CB1465703.htm",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt i fedtstoffer og olier til professionel fremstilling af varmebehandlede fødevarer og friturefedt (E 310-320, 200 mg/kg).",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4363",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt i tyggegummi (E 310-321, 400 mg/kg).",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4363",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt i supper og saucer, forarbejdede kartoffelprodukter, krydderier/smagsgivere og forarbejdede nødder (fødevarekategorier i bilag II; 'i pulverform' og 'dehydrerede' ikke bekræftet og fjernet).",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32018R1481&from=EN",
+    "result": "rettet"
+   },
+   {
+    "claim": "Tilladt i snacks (fødevarekategori omfattet af E 310-320).",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4363",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Maksimumsgrænserne gælder for gallater, TBHQ og BHA enkeltvis eller samlet, beregnet på fedtindholdet (200 mg/kg for fedtstoffer og olier).",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4363",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA fastsatte i 2014 en ADI på 0,5 mg/kg legemsvægt/dag.",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3642",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "ADI er baseret på en NOAEL på 135 mg/kg lgv/dag fra et 90-dages rottestudie med usikkerhedsfaktor 300.",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3642",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA trak den tidligere gruppe-ADI for propyl-, octyl- og dodecylgallat tilbage.",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3642",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Højforbrugende voksne og ældre kunne overskride ADI, hovedsageligt pga. kosttilskud.",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2014.3642",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Pga. de konservative antagelser vurderede EFSA, at den nuværende brug ikke giver sikkerhedsbekymring.",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2014.3642",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Propylgallat kan give kontaktallergi (typisk ansigts-/håndeksem), og er den hyppigst rapporterede gallat-allergen.",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/28169852/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kontaktallergi forekommer via kosmetik (fx læbeprodukter) og erhvervsmæssig kontakt.",
+    "source": "https://onlinelibrary.wiley.com/doi/10.1034/j.1600-0536.2002.470210_15.x",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'I sjældne tilfælde overfølsomhedsreaktioner ved indtag' kunne ikke bekræftes (kilden beskriver tværtimod oralt induceret tolerance) – fjernet.",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/4819104/",
+    "result": "fjernet"
+   },
+   {
+    "claim": "'Ikke tilladt i fødevarer til spædbørn og småbørn' omformuleret til den generelle EU-regel: tilsætningsstoffer må kun bruges i fødevarer til spædbørn og småbørn, når bilag II udtrykkeligt tillader det (art. 16).",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32008R1333",
+    "result": "rettet"
+   },
+   {
+    "claim": "In vitro-studier har vist anti-østrogen aktivitet af propylgallat i østrogenfølsomme brystkræftcellelinjer (T47D-Kbluc, MCF-7); 'evidensen anses for utilstrækkelig' omformuleret.",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/29460325/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Flag 'allergen': begrundet i veldokumenteret kontaktallergi.",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/28169852/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flag 'children_caution' fjernet: EFSA fandt ADI-overskridelse hos højforbrugende voksne og ældre, ikke specifikt hos børn.",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2014.3642",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA-udtalelsen 'Scientific Opinion on the re-evaluation of propyl gallate (E 310) as a food additive' (2014, doi 10.2903/j.efsa.2014.3642).",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2014.3642",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E315",
+  "nameDa": "Erythorbinsyre",
+  "nameEn": "Erythorbic acid",
+  "category": "Antioxidant",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Erythorbinsyre er en nær slægtning til C-vitamin, der bruges som antioxidant, især i kødvarer.",
+  "description": "Erythorbinsyre (isoascorbinsyre) er en stereoisomer af ascorbinsyre. Den fremstilles ud fra glukose/stivelseshydrolysat via fermentering til 2-keto-D-gluconsyre efterfulgt af kemiske trin. Den har antioxidante egenskaber som C-vitamin, men langt lavere vitaminaktivitet. I kødvarer fremskynder den saltningsfarven og hæmmer nitrosamindannelse.",
+  "uses": "Varmebehandlede og ikke-varmebehandlede kødprodukter (fx skinke, bacon og pølser) samt visse fisk og fiskeprodukter, herunder forarbejdede fiskeprodukter og fiskerogn. I EU er stoffet kun tilladt i disse kategorier med fastsatte maksimumsgrænser.",
+  "health": "EFSA bekræftede i 2016 den ADI på 6 mg/kg legemsvægt/dag, som SCF havde fastsat, og vurderede, at ADI ikke overskrides i nogen befolkningsgruppe. Erythorbinsyre kan i moderate til høje doser hæmme vævets optag af C-vitamin, men humane studier med op til 1 g dagligt har ikke vist nogen vekselvirkning.",
+  "research": "EFSA's gen-evaluering af E315 og E316 (2016) fandt ingen grund til at ændre ADI på 6 mg/kg lgv/dag og konkluderede, at eksponeringen for alle befolkningsgrupper lå under denne. Kødprodukter stod for mindst 96 % af den samlede gennemsnitlige eksponering. EFSA noterede begrænsninger i datagrundlaget (ingen reproduktions- eller kroniske toksicitetsstudier).",
+  "keyReferences": [],
+  "pubmedTerm": "erythorbic acid",
+  "flags": [],
+  "classes": [
+   "antioxidant"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re‐evaluation of erythorbic acid (E 315) and sodium erythorbate (E 316) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2016.4360",
+   "date": "2016-01-20",
+   "adi": "6 mg/kg bw/day",
+   "overexposureRisk": "en:no"
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4360",
+    "https://www.inchem.org/documents/jecfa/jecmono/v28je03.htm",
+    "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/isoascorbic-acid",
+    "https://www.researchgate.net/publication/327690203_Scientific_Opinion_on_the_re-evaluation_of_erythorbic_acid_E_315_and_sodium_erythorbate_E_316_as_food_additives",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC12565750/"
+   ],
+   "notes": "Runde 2 gennemført. Bekræftet: stereoisomer, fremstilling, EFSA 2016 (ADI 6 mg/kg ikke overskredet, kød ≥96 % af eksponering), tilladte kategorier. Rettet: ADI oprindeligt fastsat af SCF og kun bekræftet af EFSA; vitaminaktivitet og C-vitamin-interaktion præciseret. Fjernet: tal for maksimumsgrænser (ikke bekræftet i EU-kilde), D-araboascorbinsyre, ubegrundede vurderinger."
+  },
+  "wikipedia": "",
+  "wikidata": "Q424531",
+  "claims": [
+   {
+    "claim": "Navn: Erythorbinsyre (E315), antioxidant",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4360",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Erythorbinsyre er en stereoisomer af ascorbinsyre",
+    "source": "https://www.inchem.org/documents/jecfa/jecmono/v28je03.htm",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Synonym isoascorbinsyre ('D-araboascorbinsyre' fjernet, ikke bekræftet)",
+    "source": "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/isoascorbic-acid",
+    "result": "rettet"
+   },
+   {
+    "claim": "Fremstilles ved fermentering af stivelseshydrolysat til 2-keto-D-gluconat og efterfølgende kemiske trin",
+    "source": "https://www.researchgate.net/publication/327690203_Scientific_Opinion_on_the_re-evaluation_of_erythorbic_acid_E_315_and_sodium_erythorbate_E_316_as_food_additives",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Langt lavere vitamin C-aktivitet end ascorbinsyre (rettet fra 'næsten ingen')",
+    "source": "https://www.inchem.org/documents/jecfa/jecmono/v28je03.htm",
+    "result": "rettet"
+   },
+   {
+    "claim": "Fremskynder saltningsfarve og hæmmer nitrosamindannelse i kødvarer",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12565750/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt i kødprodukter og fisk/fiskeprodukter inkl. fiskerogn",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4360",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Maksimumsgrænserne 500 mg/kg og 1500 mg/kg samt 'frosne fisk med rødt skind' kunne ikke bekræftes i EU-kilde og er fjernet",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4360",
+    "result": "fjernet"
+   },
+   {
+    "claim": "ADI 6 mg/kg lgv/dag blev fastsat af SCF; EFSA 2016 fandt ingen grund til at ændre den (rettet: EFSA fastsatte den ikke)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4360",
+    "result": "rettet"
+   },
+   {
+    "claim": "ADI overskrides ikke i nogen befolkningsgruppe",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4360",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Kødprodukter bidrager med ≥96 % af gennemsnitseksponeringen",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4360",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hæmning af C-vitaminoptag ved moderate-høje doser; ingen vekselvirkning ved ≤1 g/dag hos mennesker (rettet formulering)",
+    "source": "https://www.inchem.org/documents/jecfa/jecmono/v28je03.htm",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA noterede begrænset toksikologisk database",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4360",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Ingen kendte særlige risici for følsomme grupper' og 'ingen væsentlig kontrovers' fjernet (uden kilde)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4360",
+    "result": "fjernet"
+   }
+  ]
+ },
+ {
+  "code": "E316",
+  "nameDa": "Natriumerythorbat",
+  "nameEn": "Sodium erythorbate",
+  "category": "Antioxidant",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "Natriumerythorbat er natriumsaltet af erythorbinsyre og bruges som antioxidant i kød- og fiskevarer.",
+  "description": "Natriumerythorbat er natriumsaltet af erythorbinsyre, en stereoisomer af ascorbinsyre. I kødvarer virker det som reduktionsmiddel og saltningsaccelerator, der fremskynder dannelsen af nitrogenoxid fra nitrit og dermed den stabile røde farve, og det hæmmer dannelse af nitrosaminer. Det har langt lavere vitamin C-aktivitet end ascorbinsyre.",
+  "uses": "Varmebehandlede og ikke-varmebehandlede kødprodukter (fx skinke, bacon og pølser) samt visse fisk og fiskeprodukter, herunder forarbejdede fiskeprodukter og fiskerogn. I EU er stoffet kun tilladt i disse kategorier med fastsatte maksimumsgrænser.",
+  "health": "EFSA bekræftede i 2016 ADI på 6 mg/kg legemsvægt/dag for erythorbinsyre og natriumerythorbat, og eksponeringen overstiger ikke ADI i nogen befolkningsgruppe. Stoffet anses ikke for at give sikkerhedsbekymring ved de tilladte anvendelser.",
+  "research": "EFSA's gen-evaluering af E315 og E316 (2016) fandt ingen sikkerhedsbekymring ved de tilladte eller rapporterede anvendelser. Forskning har vist, at erythorbat og ascorbat hæmmer dannelsen af N-nitrosaminer i saltede kødvarer, bl.a. i stegt bacon.",
+  "keyReferences": [],
+  "pubmedTerm": "sodium erythorbate",
+  "flags": [],
+  "classes": [
+   "antioxidant"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Scientific Opinion on the re‐evaluation of erythorbic acid (E 315) and sodium erythorbate (E 316) as food additives",
+   "url": "https://doi.org/10.2903/j.efsa.2016.4360",
+   "date": "2016-01-20",
+   "adi": "6 mg/kg bw/day",
+   "overexposureRisk": "en:no"
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4360",
+    "https://en.wikipedia.org/wiki/Sodium_erythorbate",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12027098/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC12565750/",
+    "https://www.inchem.org/documents/jecfa/jecmono/v28je03.htm"
+   ],
+   "notes": "Runde 2 gennemført. Bekræftet: EFSA 2016 (ADI 6 mg/kg, ingen overskridelse, ingen sikkerhedsbekymring), funktion i kødvarer, nitrosaminhæmning. Rettet: ADI stammer fra SCF og blev bekræftet af EFSA; vitaminaktivitet præciseret. Fjernet: ubekræftet fremstilling, opløselighed/surhed, tal for maksimumsgrænser og ubegrundet vurdering."
+  },
+  "wikipedia": "https://en.wikipedia.org/wiki/Sodium_erythorbate",
+  "wikidata": "Q417003",
+  "claims": [
+   {
+    "claim": "Navn: Natriumerythorbat (E316), natriumsalt af erythorbinsyre",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4360",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Produktion 'ved neutralisering med natrium' kunne ikke bekræftes og er fjernet",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4360",
+    "result": "fjernet"
+   },
+   {
+    "claim": "'Mere vandopløseligt og mindre surt end syren' fjernet: ikke bekræftet (kilder angiver lavere opløselighed for saltet)",
+    "source": "https://en.wikipedia.org/wiki/Sodium_erythorbate",
+    "result": "fjernet"
+   },
+   {
+    "claim": "Saltningsaccelerator; fremmer dannelsen af nitrogenoxid fra nitrit og saltningsfarven",
+    "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12027098/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Hæmmer nitrosamindannelse",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12565750/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Langt lavere vitamin C-aktivitet end ascorbinsyre (rettet fra 'ubetydelig')",
+    "source": "https://www.inchem.org/documents/jecfa/jecmono/v28je03.htm",
+    "result": "rettet"
+   },
+   {
+    "claim": "Tilladt i kødprodukter og fisk/fiskeprodukter; tal for maksimumsgrænser fjernet (ikke bekræftet i EU-kilde)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4360",
+    "result": "rettet"
+   },
+   {
+    "claim": "ADI 6 mg/kg lgv/dag (SCF), bekræftet af EFSA 2016 (rettet fra 'EFSA fastsatte gruppe-ADI')",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4360",
+    "result": "rettet"
+   },
+   {
+    "claim": "Eksponering overstiger ikke ADI i nogen befolkningsgruppe",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4360",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ingen sikkerhedsbekymring ved tilladte/rapporterede anvendelser",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4360",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Forskning viser hæmning af N-nitrosaminer, bl.a. i stegt bacon",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12565750/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Forskning fokuserer primært på teknologisk effekt' fjernet (vurdering uden kilde)",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4360",
+    "result": "fjernet"
+   }
+  ]
+ },
+ {
+  "code": "E319",
+  "nameDa": "Tert-butylhydroquinon (TBHQ)",
+  "nameEn": "Tertiary-butylhydroquinone (TBHQ)",
+  "category": "Antioxidant",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "TBHQ er en syntetisk antioxidant, der gør olier og fedt mere holdbare, også ved stegning.",
+  "description": "TBHQ (tert-butylhydroquinon) er en fenolisk forbindelse, der fremstilles syntetisk ved alkylering af hydroquinon med isobutylen. Den forhindrer oxidation af umættede fedtsyrer i olier og fedtstoffer og er meget modstandsdygtig over for varmenedbrydning, hvilket gør den velegnet til stegeolier. Stoffet blev optaget i EU's regler for tilsætningsstoffer med direktiv 2006/52/EF efter EFSA's vurdering i 2004 og må bruges alene eller i kombination med gallater og BHA.",
+  "uses": "Fedtstoffer og olier til professionel fremstilling af varmebehandlede fødevarer, friturefedt, svinefedt, fiskeolie samt okse-, fjerkræ- og fårefedt; desuden snacks, forarbejdede nødder, supper, saucer, krydderier og tyggegummi. Kun tilladt med maksimumsgrænser (fx 200 mg/kg i fedtstoffer og olier, samlet med gallater og BHA; 400 mg/kg i tyggegummi, samlet med gallater, BHA og BHT).",
+  "health": "EFSA bekræftede i 2004 en ADI på 0,7 mg/kg legemsvægt/dag (fastsat af JECFA). I EFSA's eksponeringsvurdering fra 2016 kunne indtaget ved maksimumsgrænserne overskride ADI hos småbørn og børn med højt forbrug, men i de forfinede scenarier blev ADI ikke overskredet i nogen aldersgruppe. Ved høje doser i dyreforsøg er der set let påvirkning af blodet hos hunde og celleforøgelse (hyperplasi) i formaven hos rotter. EU's regler tillader kun tilsætningsstoffer i fødevarer til spædbørn og småbørn, når det udtrykkeligt er fastsat i bilag II til forordning (EF) nr. 1333/2008.",
+  "research": "EFSA vurderede TBHQ i 2004, fandt det ikke kræftfremkaldende og bekræftede ADI på 0,7 mg/kg lgv/dag; i 2016 viste en forfinet eksponeringsvurdering baseret på faktiske brugsniveauer, at indtaget ligger under ADI i alle aldersgrupper. En artikel fra forskere i Environmental Working Group (Naidenko et al., Int J Environ Res Public Health 2021) baseret på amerikanske ToxCast-data samt klassiske immunologiske studier har rejst spørgsmål om mulig påvirkning af immunsystemet, men stoffet er fortsat godkendt i EU. Det er et åbent forskningsspørgsmål.",
+  "keyReferences": [],
+  "pubmedTerm": "tert-butylhydroquinone",
+  "flags": [
+   "children_caution"
+  ],
+  "classes": [
+   "antioxidant"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Statement on the refined exposure assessment of tertiary-butyl hydroquinone (E 319)",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2016.4363",
+   "date": "2016-01-12",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2004.84",
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4363",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32008R1333",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A32006L0052&amp=&from=EN",
+    "https://inchem.org/documents/jecfa/jecmono/v21je04.htm",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC4375234/",
+    "https://pubmed.ncbi.nlm.nih.gov/33804855/",
+    "https://www.efsa.europa.eu/en/efsajournal/pub/4363",
+    "https://www.europarl.europa.eu/doceo/document/E-9-2022-003133-ASW_EN.html",
+    "https://www.inchem.org/documents/jecfa/jecmono/v040je02.htm",
+    "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8036665/",
+    "https://www.sciencedirect.com/science/article/abs/pii/S0920586100003436",
+    "https://www.sciencedirect.com/topics/immunology-and-microbiology/tert-butylhydroquinone"
+   ],
+   "notes": "Runde 3 udsagn-for-udsagn: kemi/fremstilling, varmestabilitet, EFSA 2004 (ADI 0,7 bekræftet, oprindeligt fastsat af JECFA; ikke kræftfremkaldende) og EFSA 2016 (overskridelse hos småbørn/børn ved maksimumsgrænser, ingen i forfinede scenarier) bekræftet; Naidenko 2021 bekræftet. Rettet: ADI-ophav, godkendelse (direktiv 2006/52/EF), dyreforsøgsfund præciseret (blod hos hunde, formavehyperplasi hos rotter), tyggegummigrænse (inkl. BHT), spædbørnsudsagn omformuleret til EU's generelle regel. Fjernet: instant-nudler, kiks og 'i pulverform' (ikke bekræftet som EU-anvendelser). EWG-kilden erstattet af den videnskabelige artikel."
+  },
+  "wikipedia": "",
+  "wikidata": "Q662443",
+  "claims": [
+   {
+    "claim": "TBHQ (tert-butylhydroquinon, E319) er en syntetisk fenolisk antioxidant.",
+    "source": "https://www.sciencedirect.com/science/article/abs/pii/S0920586100003436",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Fremstilles ved alkylering af hydroquinon med isobutylen.",
+    "source": "https://www.sciencedirect.com/science/article/abs/pii/S0920586100003436",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Forhindrer oxidation af umættede fedtsyrer i olier og fedtstoffer.",
+    "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4375234/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Meget modstandsdygtig over for varmenedbrydning; velegnet til stegning/fritureolier.",
+    "source": "https://www.sciencedirect.com/topics/immunology-and-microbiology/tert-butylhydroquinone",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Godkendt i EU i 2000'erne efter en EFSA-vurdering' præciseret: optaget med direktiv 2006/52/EF efter EFSA's vurdering i 2004.",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX%3A32006L0052&amp=&from=EN",
+    "result": "rettet"
+   },
+   {
+    "claim": "Må bruges alene eller i kombination med gallater og BHA (E 310-320 'individually or in combination').",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4363",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt i fedtstoffer og olier til professionel fremstilling af varmebehandlede fødevarer, friturefedt, svinefedt, fiskeolie samt okse-, fjerkræ- og fårefedt (200 mg/kg).",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4363",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt i snacks, forarbejdede nødder, supper, saucer, krydderier og tyggegummi (EU-maksimumsgrænser, jf. EFSA 2016).",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/4363",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tyggegummi: 400 mg/kg samlet for E 310-321 (inkl. BHT) – rettet fra 'samlet med gallater og BHA'.",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4363",
+    "result": "rettet"
+   },
+   {
+    "claim": "'Instant-nudler' og 'kiks' kunne ikke bekræftes som EU-anvendelser – fjernet; 'chips og snacks' samlet til snacks; 'i pulverform' fjernet.",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4363",
+    "result": "fjernet"
+   },
+   {
+    "claim": "ADI 0,7 mg/kg lgv/dag, fastsat af JECFA og bekræftet af EFSA i 2004 (rettet fra 'EFSA fastsatte').",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4363",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA 2004 konkluderede, at TBHQ ikke er kræftfremkaldende.",
+    "source": "https://www.europarl.europa.eu/doceo/document/E-9-2022-003133-ASW_EN.html",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Ved maksimumsgrænserne kunne indtaget overskride ADI hos småbørn og børn med højt forbrug.",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4363",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "I de forfinede scenarier blev ADI ikke overskredet i nogen befolkningsgruppe.",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4363",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Den forfinede vurdering byggede på faktiske brugsniveauer og analysedata fra industri og medlemsstater.",
+    "source": "https://www.efsa.europa.eu/en/efsajournal/pub/4363",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Høje doser gav let fald i røde blodlegemer/hæmoglobin hos hunde (præciseret fra 'påvirkning af blod').",
+    "source": "https://inchem.org/documents/jecfa/jecmono/v21je04.htm",
+    "result": "rettet"
+   },
+   {
+    "claim": "Høje doser gav hyperplasi i formaven hos rotter (rettet fra 'forstadier til forandringer i formaven').",
+    "source": "https://www.inchem.org/documents/jecfa/jecmono/v040je02.htm",
+    "result": "rettet"
+   },
+   {
+    "claim": "'Ikke tilladt i fødevarer til spædbørn og småbørn' omformuleret til EU's generelle regel (art. 16 i forordning 1333/2008).",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32008R1333",
+    "result": "rettet"
+   },
+   {
+    "claim": "Naidenko et al. (EWG), Int J Environ Res Public Health 2021, brugte ToxCast-data og klassiske immunologiske studier og fandt, at TBHQ kan påvirke immunresponset.",
+    "source": "https://pubmed.ncbi.nlm.nih.gov/33804855/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "TBHQ er fortsat godkendt i EU (ingen ændret regulering).",
+    "source": "https://www.europarl.europa.eu/doceo/document/E-9-2022-003133-ASW_EN.html",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flag 'children_caution': begrundet i mulig ADI-overskridelse hos småbørn og børn ved maksimumsgrænserne.",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4363",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA-udtalelsen 'Statement on the refined exposure assessment of tertiary-butyl hydroquinone (E 319)' (2016, doi 10.2903/j.efsa.2016.4363).",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4363",
+    "result": "bekræftet"
+   }
+  ]
+ },
+ {
+  "code": "E320",
+  "nameDa": "Butylhydroxyanisol (BHA)",
+  "nameEn": "Butylated hydroxyanisole (BHA)",
+  "category": "Antioxidant",
+  "euStatus": "approved",
+  "origin": "synthetic",
+  "summary": "BHA er en syntetisk antioxidant, der forhindrer harskning af fedt i fx snacks og krydderier.",
+  "description": "BHA er en blanding af to isomerer (2- og 3-tert-butyl-4-hydroxyanisol), fremstillet syntetisk ud fra 4-methoxyfenol og isobutylen. Den er varmestabil og bruges derfor også i fødevarer, der er stegt i animalsk fedt, og i bagte produkter. Den bruges ofte sammen med BHT og gallater, som den virker synergistisk med. Fødevareproducenter har i stigende grad erstattet BHA med naturlige antioxidanter som tocopheroler og rosmarinekstrakt.",
+  "uses": "Tyggegummi, supper og saucer, krydderier, snacks, forarbejdede nødder samt fedtstoffer og olier til stegning og professionel fremstilling af varmebehandlede fødevarer. Kun tilladt med maksimumsgrænser (fx 200 mg/kg i fedtstoffer og olier, samlet med gallater og TBHQ; 400 mg/kg i tyggegummi, samlet med gallater, TBHQ og BHT).",
+  "health": "EFSA fastsatte i 2011 en ADI på 1,0 mg/kg legemsvægt/dag og vurderede i 2012 med ny metode, at indtaget fra brug som tilsætningsstof ikke overskrider ADI i gennemsnit og generelt heller ikke for voksne med højt forbrug (undtagen i ét land); samlet med BHA fra fødevarekontaktmaterialer kunne ADI dog overskrides for de fleste befolkningsgrupper. IARC klassificerede i 1986 BHA som 'muligvis kræftfremkaldende for mennesker' (gruppe 2B) baseret på formavetumorer hos gnavere; mennesker har ikke formave, og relevansen er omdiskuteret. EU's regler tillader kun tilsætningsstoffer i fødevarer til spædbørn og småbørn, når det udtrykkeligt er fastsat i bilag II til forordning (EF) nr. 1333/2008. BHA er vurderet for mulige hormonforstyrrende egenskaber i EU.",
+  "research": "IARC (1986) placerede BHA i gruppe 2B. EFSA's gen-evaluering (2011) fandt ingen genotoksicitetsbekymring, vurderede at formaveforandringer hos gnavere muligvis ikke længere er relevante for mennesker, og fastsatte ADI på 1,0 mg/kg lgv/dag ud fra en NOAEL på 100 mg/kg lgv/dag (væksthæmning, øget dødelighed og adfærdseffekter hos rotteunger ved højere doser) med usikkerhedsfaktor 100. BHA's mulige hormonforstyrrende egenskaber er vurderet af ECHA og EU's videnskabelige komité for forbrugersikkerhed (SCCS), og US National Toxicology Program anser det for 'reasonably anticipated to be a human carcinogen'. Der er således uenighed mellem myndigheder om fortolkningen.",
+  "keyReferences": [],
+  "pubmedTerm": "butylated hydroxyanisole",
+  "flags": [],
+  "classes": [
+   "antioxidant"
+  ],
+  "variants": [],
+  "efsa": {
+   "title": "Statement on the safety assessment of the exposure to butylated hydroxyanisole E 320 (BHA) by applying a new exposure assessment methodology",
+   "url": "http://dx.doi.org/10.2903/j.efsa.2012.2759",
+   "date": "2012-07-24",
+   "adi": "",
+   "overexposureRisk": ""
+  },
+  "verification": {
+   "status": "corrected",
+   "sources": [
+    "https://echa.europa.eu/documents/10162/562a6691-9917-f654-be5a-0bf3b0ba5e44",
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2011.2392",
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2012.2759",
+    "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4363",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32008R1333",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32018R1481&from=EN",
+    "https://health.ec.europa.eu/document/download/502956f3-471d-4e2d-899f-08aa4511bb90_en?filename=sccs_o_306.pdf",
+    "https://ntp.niehs.nih.gov/sites/default/files/ntp/roc/content/profiles/butylatedhydroxyanisole.pdf",
+    "https://www.cspi.org/chemical-cuisine/butylated-hydroxyanisole-bha",
+    "https://www.healthvermont.gov/sites/default/files/documents/pdf/ENV_CDP_25013_16_5_BHA.pdf",
+    "https://www.inchem.org/documents/iarc/vol40/butylatedhydroxyanisole.html",
+    "https://www.kalsec.com/natural-food-protection/insights/clean-label-bha-bht-replacement-strategies",
+    "https://www.ncbi.nlm.nih.gov/books/NBK590883/",
+    "https://www.sciencedirect.com/science/article/pii/S0273230021000271",
+    "https://www.sciencedirect.com/science/article/pii/S2590259822000255",
+    "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/butylated-hydroxyanisole"
+   ],
+   "notes": "Runde 3 udsagn-for-udsagn: isomersammensætning og fremstilling, varmestabilitet, synergi, EU-anvendelser og grænser, EFSA 2011 (ADI 1,0; NOAEL 100/UF 100; ingen genotoksicitet), EFSA 2012-eksponering, IARC 2B (1986) og NTP RoC bekræftet. Rettet: EFSA 2011-begrundelse (ikke 'tærskelmekanisme' men at formavefund muligvis ikke er relevante for mennesker), IARC-grundlag (gnavere), hormonudsagn (vurderet af ECHA/SCCS), spædbørnsudsagn (EU's generelle regel), erstatning med tocopheroler, EFSA-titel. Fjernet: 'kiks', 'fedtopløselig' og flaget children_caution (ikke kildebegrundet)."
+  },
+  "wikipedia": "",
+  "wikidata": "Q409401",
+  "claims": [
+   {
+    "claim": "BHA er en blanding af to isomerer: 2- og 3-tert-butyl-4-hydroxyanisol.",
+    "source": "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/butylated-hydroxyanisole",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "BHA fremstilles syntetisk ud fra 4-methoxyfenol og isobutylen.",
+    "source": "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/butylated-hydroxyanisole",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "BHA er varmestabil og bruges i fødevarer stegt i animalsk fedt og i bagværk ('fedtopløselig' ikke eksplicit bekræftet, fjernet).",
+    "source": "https://www.sciencedirect.com/topics/pharmacology-toxicology-and-pharmaceutical-science/butylated-hydroxyanisole",
+    "result": "rettet"
+   },
+   {
+    "claim": "BHA virker synergistisk med BHT og gallater (PG).",
+    "source": "https://www.sciencedirect.com/science/article/pii/S2590259822000255",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Producenter erstatter i stigende grad BHA med tocopheroler og rosmarinekstrakt (rettet fra 'mange producenter de seneste år').",
+    "source": "https://www.kalsec.com/natural-food-protection/insights/clean-label-bha-bht-replacement-strategies",
+    "result": "rettet"
+   },
+   {
+    "claim": "Tilladt i fedtstoffer og olier til professionel fremstilling af varmebehandlede fødevarer og friturefedt, 200 mg/kg samlet med gallater og TBHQ.",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4363",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt i tyggegummi, 400 mg/kg samlet for E 310-321 (inkl. BHT).",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2016.4363",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Tilladt i supper, saucer, krydderier, snacks og forarbejdede nødder (E 310-320-kategorier i bilag II); 'kiks' og 'dehydrerede ...baser' ikke bekræftet – fjernet/omformuleret.",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32018R1481&from=EN",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA fastsatte i 2011 en ADI på 1,0 mg/kg lgv/dag.",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2011.2392",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "ADI er baseret på en NOAEL på 100 mg/kg lgv/dag (væksthæmning, dødelighed og adfærdseffekter hos rotteunger) med usikkerhedsfaktor 100.",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2011.2392",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2011: BHA giver ikke anledning til genotoksicitetsbekymring.",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2011.2392",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2011: formavehyperplasi hos gnavere er muligvis ikke længere relevant for risikovurdering hos mennesker (rettet fra 'tærskelmekanisme').",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2011.2392",
+    "result": "rettet"
+   },
+   {
+    "claim": "EFSA 2012: indtag fra tilsætningsstofbrug overskrider ikke ADI i gennemsnit og generelt ikke for voksne med højt forbrug (undtagen ét land).",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2012.2759",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "EFSA 2012: samlet eksponering fra tilsætningsstof og fødevarekontaktmaterialer overskrider ADI for de fleste befolkningsgrupper.",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2012.2759",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "IARC klassificerede BHA i gruppe 2B i 1986 (vol. 40).",
+    "source": "https://www.inchem.org/documents/iarc/vol40/butylatedhydroxyanisole.html",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Klassificeringen byggede på formavetumorer hos rotter (samt mus og hamstere) – præciseret til gnavere.",
+    "source": "https://www.ncbi.nlm.nih.gov/books/NBK590883/",
+    "result": "rettet"
+   },
+   {
+    "claim": "Mennesker har ikke formave; EFSA satte spørgsmålstegn ved relevansen.",
+    "source": "https://www.cspi.org/chemical-cuisine/butylated-hydroxyanisole-bha",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Ikke tilladt i fødevarer til spædbørn og småbørn' omformuleret til EU's generelle regel (art. 16).",
+    "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32008R1333",
+    "result": "rettet"
+   },
+   {
+    "claim": "BHA's mulige hormonforstyrrende egenskaber er vurderet af ECHA (ED-ekspertgruppe 2014, CoRAP 2015).",
+    "source": "https://echa.europa.eu/documents/10162/562a6691-9917-f654-be5a-0bf3b0ba5e44",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "SCCS har afgivet videnskabelig rådgivning om BHA.",
+    "source": "https://health.ec.europa.eu/document/download/502956f3-471d-4e2d-899f-08aa4511bb90_en?filename=sccs_o_306.pdf",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "'Enkelte studier har antydet svag hormonforstyrrende aktivitet' omformuleret til, at egenskaberne er vurderet i EU.",
+    "source": "https://www.healthvermont.gov/sites/default/files/documents/pdf/ENV_CDP_25013_16_5_BHA.pdf",
+    "result": "rettet"
+   },
+   {
+    "claim": "US NTP anser BHA for 'reasonably anticipated to be a human carcinogen'.",
+    "source": "https://www.ncbi.nlm.nih.gov/books/NBK590883/",
+    "result": "bekræftet"
+   },
+   {
+    "claim": "Flag 'children_caution' fjernet: EFSA 2012 fandt ikke overskridelse hos småbørn/børn fra tilsætningsstofbrug (P95 0,14-0,60 mg/kg lgv/dag); ingen børnespecifik kildebegrundelse.",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2012.2759",
+    "result": "fjernet"
+   },
+   {
+    "claim": "EFSA-titel rettet (stavefejl 'ydroxyanisole' -> 'hydroxyanisole').",
+    "source": "https://efsa.onlinelibrary.wiley.com/doi/abs/10.2903/j.efsa.2012.2759",
+    "result": "rettet"
+   }
+  ]
+ }
+]

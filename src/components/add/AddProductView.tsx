@@ -432,7 +432,7 @@ export function AddProductView({
       setAdditiveNames((prev) => {
         const next = { ...prev };
         results.forEach((info, index) => {
-          next[codes[index]] = info.internationalName || codes[index];
+          next[codes[index]] = info.danishName || info.internationalName || codes[index];
         });
         return next;
       });
