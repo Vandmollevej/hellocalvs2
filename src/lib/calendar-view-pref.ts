@@ -3,14 +3,16 @@ import { useSyncExternalStore } from "react";
 // Settings → Visning → Kalendervisning: which view the calendar (/calendar)
 // opens in by default. A per-device preference, same localStorage-not-database
 // pattern as the front page's FAB side (src/lib/frontpage-layout.ts).
-export type CalendarDefaultView = "month" | "week" | "list";
+export type CalendarDefaultView = "list" | "month" | "week" | "day";
+
+export const CALENDAR_DEFAULT_VIEWS: CalendarDefaultView[] = ["list", "month", "week", "day"];
 
 export const DEFAULT_CALENDAR_VIEW: CalendarDefaultView = "month";
 
 const CALENDAR_VIEW_STORAGE_KEY = "hellocal.kalender.defaultView";
 
 function isCalendarDefaultView(value: unknown): value is CalendarDefaultView {
-  return value === "month" || value === "week" || value === "list";
+  return CALENDAR_DEFAULT_VIEWS.includes(value as CalendarDefaultView);
 }
 
 let cachedRaw: string | null | undefined;

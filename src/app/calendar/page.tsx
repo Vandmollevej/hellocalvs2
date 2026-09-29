@@ -304,7 +304,7 @@ export default function CalendarPage() {
   const [visibleDate, setVisibleDate] = useState(() => new Date(today));
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const defaultView = useDefaultCalendarView();
-  const [view, setView] = useState<CalendarView>(defaultView);
+  const [view, setView] = useState<CalendarView>(defaultView === "day" ? "month" : defaultView);
   const appliedDefaultView = useRef(false);
   // Settings → Visning → Kalendervisning determines only the INITIAL view on
   // load (useState above already SSR-safely defaults to "month" before the
@@ -313,8 +313,11 @@ export default function CalendarPage() {
   useEffect(() => {
     if (appliedDefaultView.current) return;
     appliedDefaultView.current = true;
-    setView(defaultView);
-  }, [defaultView]);
+    // "Dag" opens today's full-screen day view (DayDetails) over the month view.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage-præferencen findes først efter hydrering
+    if (defaultView === "day") setSelectedDate(new Date(today));
+    else setView(defaultView);
+  }, [defaultView, today]);
   const [monthMenuOpen, setMonthMenuOpen] = useState(false);
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
   const [slideDirection, setSlideDirection] = useState<"next" | "previous">("next");
