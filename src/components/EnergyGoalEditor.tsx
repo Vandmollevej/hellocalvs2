@@ -1,5 +1,6 @@
 "use client";
 
+import { activitySummaryUrl } from "@/lib/daily-budget";
 import { useState } from "react";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import type { EnergySummary } from "@/lib/activity-profile";
@@ -50,7 +51,7 @@ export function EnergyGoalEditor({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(patch),
       });
-      const response = await fetch("/api/profile/activity");
+      const response = await fetch(activitySummaryUrl());
       if (response.ok) {
         const data = (await response.json()) as { summary: EnergySummary };
         onChange(next, data.summary);

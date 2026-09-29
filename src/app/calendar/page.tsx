@@ -21,7 +21,7 @@ import { HfChevron } from "@/components/hf/HfChevron";
 import { ActionLink } from "@/components/hf/ActionButton";
 import { FoodRow } from "@/components/FoodRow";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
-import { makeBudgetLookup, type BudgetSnapshot } from "@/lib/daily-budget";
+import { makeBudgetLookup, type BudgetSnapshot, activitySummaryUrl } from "@/lib/daily-budget";
 import { isIntakeTooLow, minimumHealthyKcal } from "@/lib/healthy-intake";
 import { groupByDay } from "@/lib/daily-totals";
 import {
@@ -510,7 +510,7 @@ export default function CalendarPage() {
   useEffect(() => {
     let cancelled = false;
     // Regnestykket gemmer dagens budget som snapshot; derefter hentes alle.
-    fetch("/api/profile/activity")
+    fetch(activitySummaryUrl())
       .catch(() => null)
       .then(() => fetch("/api/daily-budgets"))
       .then(async (response) => (response.ok ? ((await response.json()) as { snapshots: BudgetSnapshot[] }) : null))

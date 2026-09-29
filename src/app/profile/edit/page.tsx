@@ -1,5 +1,6 @@
 "use client";
 
+import { activitySummaryUrl } from "@/lib/daily-budget";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { IconCamera, IconLock } from "@tabler/icons-react";
@@ -135,7 +136,7 @@ export default function ProfileEditPage() {
   useEffect(() => {
     if (energyVersion === null) return;
     let cancelled = false;
-    fetch("/api/profile/activity")
+    fetch(activitySummaryUrl())
       .then((response) => (response.ok ? response.json() : null))
       .then((data: { summary: EnergySummary } | null) => {
         if (!cancelled && data) setEnergySummary(data.summary);

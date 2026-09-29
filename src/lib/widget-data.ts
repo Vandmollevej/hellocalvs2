@@ -128,7 +128,7 @@ export async function buildWidgetSnapshot(
   const eatenKcal = Math.round(kcalByDay.get(todayKey) ?? 0);
   // Dagens budget (DailyBudgetSnapshot, src/lib/daily-budget.ts); den faste
   // konstant er kun fallback, til brugeren har set sit regnestykke.
-  const goalKcal = (await currentDailyBudget(userId, now)) ?? DAILY_KCAL_GOAL;
+  const goalKcal = (await currentDailyBudget(userId, tzOffsetMinutes, now)) ?? DAILY_KCAL_GOAL;
   const leftKcal = goalKcal - eatenKcal;
 
   const charts: WidgetSnapshot["charts"] = [

@@ -42,3 +42,23 @@ export function makeBudgetLookup(snapshots: BudgetSnapshot[], fallbackKcal: numb
     return best?.budgetKcal ?? fallbackKcal;
   };
 }
+
+/**
+ * Brugerens kalenderdato som UTC-midnat ud fra telefonens tidszone (minutter
+ * øst for UTC, samme fortegn som widget-data.ts). Serveren kører i UTC, så
+ * uden dette ville en snapshot omkring midnat dansk tid lande på "i går".
+ */
+export function localDayAsUtc(now: Date, tzOffsetMinutesEast: number) {
+  const shifted = new Date(now.getTime() + tzOffsetMinutesEast * 60_000);
+  return new Date(Date.UTC(shifted.getUTCFullYear(), shifted.getUTCMonth(), shifted.getUTCDate()));
+}
+
+/** Klientens tidszone som minutter øst for UTC (browserens fortegn er omvendt). */
+export function clientTzOffsetMinutesEast() {
+  return -new Date().getTimezoneOffset();
+}
+
+/** URL til regnestykket med telefonens tidszone, så dagens snapshot får rigtig dato. */
+export function activitySummaryUrl() {
+  return `/api/profile/activity?tz=${clientTzOffsetMinutesEast()}`;
+}

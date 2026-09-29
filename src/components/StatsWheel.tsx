@@ -1,5 +1,6 @@
 "use client";
 
+import { activitySummaryUrl } from "@/lib/daily-budget";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IconHeartbeat, IconMoon, type Icon } from "@tabler/icons-react";
 import { DAILY_KCAL_GOAL } from "@/lib/goals";
@@ -197,7 +198,7 @@ export function StatsWheel({ side }: { side: "left" | "right" }) {
   // budget som snapshot; den faste konstant er kun fallback.
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/profile/activity")
+    fetch(activitySummaryUrl())
       .then(async (response) => (response.ok ? ((await response.json()) as { summary: { budget: { budgetKcal: number } | null } }) : null))
       .then((data) => {
         if (!cancelled && data?.summary.budget) setGoalKcal(data.summary.budget.budgetKcal);

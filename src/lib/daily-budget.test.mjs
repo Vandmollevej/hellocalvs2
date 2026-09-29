@@ -1,7 +1,7 @@
 // Kør: npm test  (node --test, Node 24 fjerner TypeScript-typer selv)
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { budgetForDate, isoDayKey, makeBudgetLookup } from "./daily-budget.ts";
+import { budgetForDate, isoDayKey, localDayAsUtc, makeBudgetLookup } from "./daily-budget.ts";
 
 const snapshots = [
   { date: "2026-09-29", budgetKcal: 2450 },
@@ -24,4 +24,12 @@ test("egen snapshot vinder, ellers bæres den seneste frem", () => {
 
 test("dagsnøglen er lokal kalenderdato", () => {
   assert.equal(isoDayKey(new Date(2026, 0, 5)), "2026-01-05");
+});
+
+test("snapshot-datoen følger telefonens tidszone", () => {
+  // 23:30 UTC den 29. er 01:30 dansk sommertid den 30.
+  const now = new Date(Date.UTC(2026, 8, 29, 23, 30));
+  assert.equal(localDayAsUtc(now, 120).toISOString().slice(0, 10), "2026-09-30");
+  assert.equal(localDayAsUtc(now, 0).toISOString().slice(0, 10), "2026-09-29");
+  assert.equal(localDayAsUtc(now, -300).toISOString().slice(0, 10), "2026-09-29");
 });

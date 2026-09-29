@@ -25,6 +25,7 @@ import {
   type Calibration,
 } from "@/lib/energy-calibration";
 import { minimumHealthyKcal } from "@/lib/healthy-intake";
+import { localDayAsUtc } from "@/lib/daily-budget";
 import { computeTrendWeight } from "@/lib/weight-trend";
 import {
   childPhysicalActivityLevel,
@@ -276,9 +277,9 @@ export async function applyManualLevel(userId: string, level: ActivityLevelKey) 
   return updated;
 }
 
-/** Kalenderdato som UTC-midnat, som Prisma @db.Date forventer. */
-function utcDate(date: Date) {
-  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+/** Brugerens kalenderdato (UTC-midnat, som Prisma @db.Date forventer) ud fra tidszonen. */
+function utcDate(date: Date, tzOffsetMinutesEast: number) {
+  return localDayAsUtc(date, tzOffsetMinutesEast);
 }
 
 /**
@@ -286,8 +287,8 @@ function utcDate(date: Date) {
  * fremadrettet): findes rækken, opdateres den — budgettet for i dag følger
  * altid det nyeste regnestykke, men gårsdagen røres aldrig.
  */
-export async function recordDailyBudget(userId: string, budgetKcal: number, needKcal: number, now = new Date()) {
-  const date = utcDate(now);
+export async function recordDailyBudget(userId: string, budgetKcal: number, needKcal: number, tzOffsetMinutesEast = 0, now = new Date()) {
+  const date = utcDate(now, tzOffsetMinutesEast);
   await prisma.dailyBudgetSnapshot.upsert({
     where: { userId_date: { userId, date } },
     create: { userId, date, budgetKcal: Math.round(budgetKcal), needKcal: Math.round(needKcal) },
@@ -306,9 +307,9 @@ export async function listDailyBudgets(userId: string) {
 }
 
 /** Dagens gældende budget (seneste snapshot til og med i dag), eller null. */
-export async function currentDailyBudget(userId: string, now = new Date()) {
+export async function currentDailyBudget(userId: string, tzOffsetMinutesEast = 0, now = new Date()) {
   const row = await prisma.dailyBudgetSnapshot.findFirst({
-    where: { userId, date: { lte: utcDate(now) } },
+    where: { userId, date: { lte: utcDate(now, tzOffsetMinutesEast) } },
     orderBy: { date: "desc" },
     select: { budgetKcal: true },
   });

@@ -15,7 +15,14 @@ import {
 // GET: regnestykket for profilen. PUT: gem onboarding-svar og beregn PAL.
 // PATCH { activityLevel }: brugeren retter niveauet selv.
 
-export async function GET() {
+// ?tz=<minutter øst for UTC> (src/lib/daily-budget.ts) — telefonens tidszone,
+// så dagens budget-snapshot får brugerens dato, ikke serverens.
+function tzOffsetFrom(req: Request) {
+  const raw = Number(new URL(req.url).searchParams.get("tz"));
+  return Number.isFinite(raw) && Math.abs(raw) <= 14 * 60 ? raw : 0;
+}
+
+export async function GET(req: Request) {
   try {
     const user = await getProfileUser("profile", "VIEWED");
     if (!user) return unauthorized();
@@ -26,7 +33,7 @@ export async function GET() {
     // Dagens budget gemmes som snapshot, så kalender/statistik bruger det
     // fra i dag og frem — aldrig bagud (src/lib/daily-budget.ts).
     if (summary.budget && summary.needKcal !== null) {
-      await recordDailyBudget(user.id, summary.budget.budgetKcal, summary.needKcal);
+      await recordDailyBudget(user.id, summary.budget.budgetKcal, summary.needKcal, tzOffsetFrom(req));
     }
     return NextResponse.json({ summary, answers: user.activityAnswers });
   } catch (error) {

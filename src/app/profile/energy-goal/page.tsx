@@ -1,5 +1,6 @@
 "use client";
 
+import { activitySummaryUrl } from "@/lib/daily-budget";
 import { useEffect, useState } from "react";
 import { HfScreen } from "@/components/HfScreen";
 import { EnergyGoalEditor, type EnergyGoalUser } from "@/components/EnergyGoalEditor";
@@ -18,7 +19,7 @@ export default function EnergyGoalPage() {
     let cancelled = false;
     Promise.all([
       fetch("/api/profile").then((response) => (response.ok ? response.json() : null)),
-      fetch("/api/profile/activity").then((response) => (response.ok ? response.json() : null)),
+      fetch(activitySummaryUrl()).then((response) => (response.ok ? response.json() : null)),
     ])
       .then(([profile, activity]: [{ user: EnergyGoalUser } | null, { summary: EnergySummary } | null]) => {
         if (cancelled) return;
