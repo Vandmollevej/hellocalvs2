@@ -68,6 +68,7 @@ export default function SleepStatisticsPage() {
             <SleepInsightChart kind="coffee" days={days} />
             <SleepInsightChart kind="sport" days={days} />
             {connected.length > 0 && <SleepInsightChart kind="device" days={days} />}
+            <SleepInsightChart kind="bodyFat" days={days} />
           </>
         )}
 

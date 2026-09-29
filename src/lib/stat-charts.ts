@@ -33,7 +33,7 @@ export const STAT_CHART_DEFS: StatChartDef[] = [
   { key: "caloriesAndWeight", kind: "caloriesAndWeight" },
   { key: "intradayKcal", kind: "intradayKcal" },
   { key: "sleepQuality", kind: "sleepQuality" },
-  ...(["quality", "kcal", "coffee", "sport", "device"] as const).map(
+  ...(["quality", "kcal", "coffee", "sport", "device", "bodyFat"] as const).map(
     (insight): StatChartDef => ({ key: `sleep:${insight}`, kind: "sleepInsight", insight }),
   ),
   daily("protein", "g"),

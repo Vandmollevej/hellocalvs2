@@ -49,6 +49,8 @@ export type SleepStatDay = {
   lastSportEndMinutes: number | null;
   /** Målt søvn fra smartudstyr, i timer. */
   deviceSleepHours: number | null;
+  /** Fedtprocent målt på dagen (gennemsnit, hvis flere målinger). */
+  bodyFatPercent: number | null;
 };
 
 // Koffein genkendes med samme ordliste som produktsidens toksiner.
@@ -92,12 +94,23 @@ export function buildSleepStatDays(input: {
     sleepMinutesByDay.set(key, (sleepMinutesByDay.get(key) ?? 0) + metric.value);
   }
 
+  const bodyFatByDay = new Map<string, { sum: number; count: number }>();
+  for (const metric of input.metrics) {
+    if (metric.type !== "BODY_FAT_PERCENT") continue;
+    const key = localDateKey(new Date(metric.recordedAt));
+    const entry = bodyFatByDay.get(key) ?? { sum: 0, count: 0 };
+    entry.sum += metric.value;
+    entry.count += 1;
+    bodyFatByDay.set(key, entry);
+  }
+
   return input.days.map((date) => {
     const eveningKey = localDateKey(addDays(date, -1));
     const regs = regsByDay.get(eveningKey) ?? [];
     const coffee = regs.filter((registration) => isCaffeine(registration.titleSnapshot));
     const sports = activitiesByDay.get(eveningKey) ?? [];
     const deviceMinutes = sleepMinutesByDay.get(localDateKey(date));
+    const bodyFat = bodyFatByDay.get(localDateKey(date));
 
     const latest = (times: number[]) => (times.length ? Math.max(...times) : null);
     return {
@@ -110,6 +123,7 @@ export function buildSleepStatDays(input: {
       sportMinutes: sports.reduce((sum, a) => sum + a.durationMinutes, 0),
       lastSportEndMinutes: latest(sports.map((a) => minutesOfDay(new Date(a.startedAt)) + a.durationMinutes)),
       deviceSleepHours: deviceMinutes ? Math.round((deviceMinutes / 60) * 10) / 10 : null,
+      bodyFatPercent: bodyFat ? Math.round((bodyFat.sum / bodyFat.count) * 10) / 10 : null,
     };
   });
 }
