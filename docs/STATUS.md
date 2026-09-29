@@ -310,6 +310,11 @@ PRODUCT_FRONT-fritskrabningsjob for det eksterne billede (https), som
 `scripts/image-agent/cutout.py` henter, fritskraber og skriver til
 `pendingImageUrl` via samme admin-godkendelse som kamerafotos.
 
+## 2026-09-28: E-numre — direkte navigation (opgave 35)
+
+- Ny side `/e-numre` med alle E-numre fra `additives`-tabellen; hvert har anchor `#e330` osv.
+- Klik på et E-nummer på produktsiden linker nu til `/e-numre#<nummer>` (i stedet for popup) og scroller/fremhæver stoffet, når listen er hentet.
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen
