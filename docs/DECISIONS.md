@@ -3342,4 +3342,4 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - Menu top→bund: Oversigt, Varegodkendelse, Produkt-database, Retter, Flows, Design, Statistik, Brugere, Indstillinger, Administration, Partnere, Roadmap, Log (Log altid nederst).
 - Sammenfold-ikonet sidder på sidebjælkens kant i hovedsiden (altid synligt), ikke som "Skjul sidebjælke" nederst.
 - Analyse er slået sammen med Statistik: `/admin/statistics` har faner (Brugere og indtjening / Trafik / Reklamer). `/admin/analytics` omdirigerer til Trafik-fanen. Indtjening og betalingsmetoder ligger i fanen Brugere og indtjening.
-- Reklamer: anonym tabel `ad_events` (ingen bruger-id) og `POST /api/ads/event` ({adKey, placement, type IMPRESSION|CLICK}). Der findes endnu ingen reklamevisning i appen, så fanen er tom, til reklamer kalder endpointet.
+- Reklamer: fanen læser fra partner-reklamernes tabeller (`ad_locations`, `ad_events`, `partners`, ejet af Partnere-arbejdet) via rå SQL med try/catch, så den er tom, indtil tabellerne findes og der er hændelser.
