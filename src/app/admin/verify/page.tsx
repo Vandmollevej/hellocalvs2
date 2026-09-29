@@ -25,6 +25,10 @@ export default function AdminVerifyPage() {
         setError(data.message ?? "Verifikation mislykkedes");
         return;
       }
+      if (data.approvalRequired) {
+        router.push("/admin/login-approval/wait");
+        return;
+      }
       router.push("/admin");
       router.refresh();
     } catch {

@@ -19,8 +19,13 @@ function getSecretKey() {
   return new TextEncoder().encode(secret);
 }
 
-export async function signAdminSession(userId: string) {
-  return new SignJWT({ sub: userId, purpose: "admin-session" })
+export type AdminSessionLevel = "READ" | "FULL";
+
+// "lvl" ligger i selve sessionen, så middleware kan blokere skrivninger for
+// læseadgang uden databaseopslag. Sessioner uden "lvl" er udstedt til den
+// første administrator, før Admin-brugere fandtes, og er FULL.
+export async function signAdminSession(userId: string, level: AdminSessionLevel = "FULL") {
+  return new SignJWT({ sub: userId, purpose: "admin-session", lvl: level })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime(`${SESSION_TTL_SECONDS}s`)
@@ -47,6 +52,16 @@ async function verify(token: string, purpose: string) {
 
 export function verifyAdminSession(token: string) {
   return verify(token, "admin-session");
+}
+
+export async function verifyAdminSessionInfo(token: string): Promise<{ userId: string; level: AdminSessionLevel; issuedAt: number } | null> {
+  try {
+    const { payload } = await jwtVerify(token, getSecretKey());
+    if (payload.purpose !== "admin-session" || typeof payload.sub !== "string") return null;
+    return { userId: payload.sub, level: payload.lvl === "READ" ? "READ" : "FULL", issuedAt: (payload.iat ?? 0) * 1000 };
+  } catch {
+    return null;
+  }
 }
 
 export function verifyAdminMfaPending(token: string) {
@@ -124,4 +139,50 @@ export async function verifyWebauthnAuthChallenge(token: string): Promise<AuthCh
   } catch {
     return null;
   }
+}
+
+// Admin-brugere (docs/DECISIONS.md 2026-09-29): invitation, godkendelse af ny enhed.
+export const ADMIN_DEVICE_COOKIE = "hc_admin_device";
+export const ADMIN_INVITE_COOKIE = "hc_admin_invite";
+export const ADMIN_APPROVAL_COOKIE = "hc_admin_approval";
+export const ADMIN_DEVICE_MAX_AGE = 365 * 24 * 60 * 60;
+export const ADMIN_APPROVAL_MAX_AGE = 15 * 60;
+
+type InvitePending = { inviteId: string; passwordHash: string; totpSecret: string };
+
+export async function signAdminInvitePending(data: InvitePending) {
+  return new SignJWT({ ...data, purpose: "admin-invite-pending" })
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime(`${SETUP_TTL_SECONDS}s`)
+    .sign(getSecretKey());
+}
+
+export async function verifyAdminInvitePending(token: string): Promise<InvitePending | null> {
+  try {
+    const { payload } = await jwtVerify(token, getSecretKey());
+    if (
+      payload.purpose !== "admin-invite-pending" ||
+      typeof payload.inviteId !== "string" ||
+      typeof payload.passwordHash !== "string" ||
+      typeof payload.totpSecret !== "string"
+    ) {
+      return null;
+    }
+    return { inviteId: payload.inviteId, passwordHash: payload.passwordHash, totpSecret: payload.totpSecret };
+  } catch {
+    return null;
+  }
+}
+
+export async function signAdminApprovalPending(approvalId: string) {
+  return new SignJWT({ sub: approvalId, purpose: "admin-approval-pending" })
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime(`${ADMIN_APPROVAL_MAX_AGE}s`)
+    .sign(getSecretKey());
+}
+
+export function verifyAdminApprovalPending(token: string) {
+  return verify(token, "admin-approval-pending");
 }

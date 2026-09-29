@@ -248,6 +248,20 @@ model User {
   // hændelser efter dette tidspunkt vises i panelet, der glider ned.
   accessLogSeenAt         DateTime?
 
+  // Admin-brugere (docs/DECISIONS.md 2026-09-29): kun relevant for role=ADMIN.
+  // READ = kun læseadgang, FULL = fuld administratoradgang. Den første
+  // administrator (oprettet via /admin/setup) er altid FULL.
+  adminAccessLevel    AdminAccessLevel @default(FULL)
+  adminDisabledAt     DateTime?
+  // Sessioner udstedt før dette tidspunkt afvises (niveau-/IP-/enhedsændringer, deaktivering).
+  adminSessionsValidFrom DateTime?
+  // Kommasepareret liste af tilladte IP-adresser/IPv4-CIDR. Null = ingen begrænsning.
+  adminAllowedIps     String?
+  adminInvitesSent    AdminInvite[]        @relation("AdminInviteInviter")
+  adminLoginEvents    AdminLoginEvent[]
+  adminDevices        AdminDevice[]
+  adminLoginApprovals AdminLoginApproval[]
+
   @@map("users")
 }
 
@@ -3521,4 +3535,99 @@ model PartnerReportSend {
 
   @@index([partnerId, createdAt])
   @@map("partner_report_sends")
+}
+
+// ---------------------------------------------------------------------------
+// Admin-brugere (docs/DECISIONS.md 2026-09-29)
+// ---------------------------------------------------------------------------
+
+enum AdminAccessLevel {
+  READ
+  FULL
+}
+
+enum AdminLoginOutcome {
+  SUCCESS
+  PASSWORD_FAILED
+  CODE_FAILED
+  IP_BLOCKED
+  APPROVAL_SENT
+  APPROVED
+  DISABLED
+}
+
+// Invitation til admin-panelet. Kun tokenets hash gemmes; gyldig i 24 timer.
+model AdminInvite {
+  id             String           @id @default(cuid())
+  email          String
+  name           String
+  accessLevel    AdminAccessLevel
+  tokenHash      String           @unique
+  expiresAt      DateTime
+  invitedBy      User             @relation("AdminInviteInviter", fields: [invitedById], references: [id], onDelete: Cascade)
+  invitedById    String
+  acceptedAt     DateTime?
+  acceptedUserId String?
+  // Sat når den, der inviterede, har set tilmeldingen i admin-panelet.
+  acceptSeenAt   DateTime?
+  revokedAt      DateTime?
+  createdAt      DateTime         @default(now())
+
+  @@index([email])
+  @@map("admin_invites")
+}
+
+// Enheder en admin-bruger har godkendt (identificeret via en cookie).
+model AdminDevice {
+  id          String    @id @default(cuid())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  deviceId    String
+  label       String
+  ip          String?
+  country     String?
+  city        String?
+  firstSeenAt DateTime  @default(now())
+  lastSeenAt  DateTime  @default(now())
+  revokedAt   DateTime?
+
+  @@unique([userId, deviceId])
+  @@map("admin_devices")
+}
+
+model AdminLoginEvent {
+  id          String            @id @default(cuid())
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  outcome     AdminLoginOutcome
+  method      String
+  ip          String?
+  country     String?
+  city        String?
+  userAgent   String?
+  deviceLabel String?
+  createdAt   DateTime          @default(now())
+
+  @@index([userId, createdAt])
+  @@index([createdAt])
+  @@map("admin_login_events")
+}
+
+// Godkendelse af login fra ny enhed: linket mailes til brugeren selv.
+model AdminLoginApproval {
+  id          String    @id @default(cuid())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  tokenHash   String    @unique
+  deviceId    String
+  deviceLabel String
+  ip          String?
+  country     String?
+  city        String?
+  expiresAt   DateTime
+  approvedAt  DateTime?
+  consumedAt  DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@map("admin_login_approvals")
 }

@@ -2,6 +2,13 @@
 
 Last updated: 2026-09-29
 
+## 2026-09-29: Admin-brugere
+
+- Ny side `/admin/admin-users` (profil-menuen): invitér (24 t-link), læseadgang/administrator, deaktivér, IP-begrænsning pr. bruger, login-log (tid/sted/IP/udstyr) og godkendt udstyr. Se DECISIONS.md.
+- Login: 2-faktor obligatorisk; inviterede skal godkende nyt udstyr via link i egen mail. Underretning ved tilmelding: mail + rød prik på avataren.
+- Migration `20260929180000_admin_users` skal køre ved deploy. Lint grøn; ikke live-testet (ingen lokal DB, SMTP skal være sat op til invitations-/godkendelsesmails).
+- Mangler/bemærk: sted (by) kræver Cloudflare "visitor location headers"; ellers kun land. Læseadgang håndhæves i middleware + `requireAdminUser` (niveau i DB).
+
 ## 2026-09-29: Fedtprocent + muskelmasse i Målsætning, fælles kropssammensætning, hals fjernet
 
 - Målsætning har nyt kort "Kropssammensætning": Fedtprocent (%) og Muskelmasse (kg). Målene gemmes som GoalTarget (`bodyFatPercent`, `muscleMassKg`) og vurderes mod `HealthMetric` (`BODY_FAT_PERCENT`, `MUSCLE_MASS_KG`) — samme felter, alle integrationer skriver til (`src/lib/goal-composition.ts`).

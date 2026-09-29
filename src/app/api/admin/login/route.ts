@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { ADMIN_MFA_COOKIE, ADMIN_MFA_MAX_AGE, signAdminMfaPending } from "@/lib/admin-auth";
 import { isLocked, recordFailure, recordSuccess } from "@/lib/rate-limit";
+import { checkAdminLoginAllowed, logAdminLogin, requestInfo } from "@/lib/admin-access";
 
 // A generic failure message avoids telling an attacker whether the email
 // exists at all.
@@ -37,11 +38,19 @@ export async function POST(req: Request) {
   const isValidAdmin = Boolean(user && user.role === "ADMIN" && user.passwordHash && user.totpSecret);
   const ok = await bcrypt.compare(password, isValidAdmin ? user!.passwordHash! : DUMMY_HASH);
 
+  const info = requestInfo(req.headers);
   if (!isValidAdmin || !ok || !user) {
     recordFailure(rateLimitKey);
+    if (isValidAdmin && user) await logAdminLogin(user.id, "PASSWORD_FAILED", "password", info);
     return NextResponse.json(GENERIC_FAILURE, { status: 401 });
   }
   recordSuccess(rateLimitKey);
+
+  // Deaktiveret bruger eller IP uden for brugerens liste: samme generiske svar,
+  // så det ikke afslører hvorfor (forsøget logges dog).
+  if (!(await checkAdminLoginAllowed(user, info, "password"))) {
+    return NextResponse.json(GENERIC_FAILURE, { status: 401 });
+  }
 
   const mfaToken = await signAdminMfaPending(user.id);
   const response = NextResponse.json({ ok: true });

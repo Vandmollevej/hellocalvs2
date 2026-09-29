@@ -2,6 +2,18 @@
 
 This file records durable decisions. Add a dated entry when a later decision changes one of them.
 
+## 2026-09-29: Admin-brugere (adgang til admin-panelet)
+
+- Punktet "Admin-brugere" ligger i profil-menuen (avatar øverst til højre) — bevidst uden for sidemenuen. `/admin/admin-users`, kun for fuld administratoradgang.
+- To niveauer (`User.adminAccessLevel`): **Læseadgang** (middleware afviser alle POST/PUT/DELETE/server actions med 403, undtagen log ud, sprog og egne passkeys) og **Administrator** (fuld). Den første administrator (`/admin/setup`) er altid fuld og kan ikke ændres af andre.
+- Invitation: navn + e-mail + niveau → mail med link `/admin/invite/<token>`, gyldigt **24 timer**, kun én brug (kun tokenets hash gemmes, `admin_invites`). Modtageren vælger adgangskode og scanner TOTP-QR; først ved bekræftet kode oprettes brugeren. En e-mail, der allerede er bruger, kan ikke inviteres.
+- **2-faktor er obligatorisk** ved hvert login (adgangskode + TOTP, eller passkey som allerede er to faktorer).
+- **Godkendelse af nyt udstyr er obligatorisk for inviterede brugere:** login fra en browser uden godkendt enheds-cookie sender et 15-minutters link til brugerens egen mail (`/admin/login-approval/<token>`, kræver aktivt klik); login-siden venter og fortsætter først, når brugeren har godkendt, og kun i samme browser. Den første administrator er undtaget (ellers kan vedkommende låses ude uden mail). "Log ud overalt og nulstil udstyr" tvinger ny godkendelse.
+- **Underretning:** når en invitation accepteres, mailes den, der inviterede, og der vises rød prik/tæller på avataren og banner på Admin-brugere, til siden er set (`AdminInvite.acceptSeenAt`).
+- **IP-begrænsning pr. bruger** (`adminAllowedIps`, kommasepareret; IPv4-CIDR understøttes): tjekkes ved login og på hver forespørgsel. Kommer *ud over* den globale `ADMIN_ALLOWED_IPS`-spærre i middleware.
+- **Sporing:** `admin_login_events` (tid, sted fra Cloudflare-headers, IP, udstyr, resultat inkl. mislykkede/blokerede forsøg) og `admin_devices` vises pr. bruger. By-oplysning kræver Cloudflares "visitor location headers"; ellers vises kun land.
+- Deaktivering, niveauskift, IP-ændring og "log ud overalt" sætter `adminSessionsValidFrom`, så eksisterende sessioner afvises med det samme (`requireAdminUser`). Fortolkning: "godkende" ved login er udstyrs-godkendelse via brugerens egen mail.
+
 ## 2026-09-29: Vitaminer og mineraler har egen info-side som E-numre
 
 Vitaminer/mineraler på varesiden er klikbare på samme måde som E-numre: popup

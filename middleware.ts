@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ADMIN_SESSION_COOKIE, verifyAdminSession } from "@/lib/admin-auth";
+import { ADMIN_SESSION_COOKIE, verifyAdminSessionInfo } from "@/lib/admin-auth";
 import { SCAN_SESSION_COOKIE, verifyScanSession } from "@/lib/scan/auth";
 
 // Dedicated admin hostname (docs/DEPLOYMENT.md). One codebase, one
@@ -18,6 +18,10 @@ const PUBLIC_ADMIN_PATHS = [
   // sikkerheden kommer fra det unikke, uigætlige token i URL'en, ikke fra
   // en admin-session — se src/app/admin/approve/[token]/page.tsx.
   "/admin/approve",
+  // Admin-brugere (docs/DECISIONS.md 2026-09-29): invitation og godkendelse af
+  // ny enhed sker før login; sikret af engangstoken i mail-linket.
+  "/admin/invite",
+  "/admin/login-approval",
   // Glemt adgangskode: sker per definition uden session; nulstillingen
   // sikres af engangstokenet i mail-linket.
   "/admin/forgot-password",
@@ -31,9 +35,14 @@ const PUBLIC_ADMIN_API_PATHS = [
   // by definition happens before there is any session.
   "/api/admin/passkey/authenticate",
   "/api/admin/approve",
+  "/api/admin/invite",
+  "/api/admin/login-approval",
   "/api/admin/forgot-password",
   "/api/admin/reset-password",
 ];
+
+// Selv med læseadgang må man logge ud, skifte sprog og administrere egne passkeys.
+const READ_ONLY_WRITE_EXCEPTIONS = ["/api/admin/logout", "/api/admin/locale", "/api/admin/passkey"];
 
 // Admin IP-spærre (docs/DECISIONS.md 2026-09-27): /admin og /api/admin kan
 // kun nås fra det lokale netværk og fra IP'erne i ADMIN_ALLOWED_IPS
@@ -159,12 +168,21 @@ export async function middleware(req: NextRequest) {
 
   if (!isPublic) {
     const token = req.cookies.get(ADMIN_SESSION_COOKIE)?.value;
-    const userId = token ? await verifyAdminSession(token) : null;
-    if (!userId) {
+    const session = token ? await verifyAdminSessionInfo(token) : null;
+    if (!session) {
       if (isAdminApi) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
       const login = url.clone();
       login.pathname = "/admin/login";
       return NextResponse.redirect(login);
+    }
+    // Læseadgang (docs/DECISIONS.md 2026-09-29): ingen skrivninger. Server
+    // actions er POST til sidens egen sti, så alt andet end GET/HEAD afvises.
+    // requireAdminUser() tjekker desuden niveauet i databasen.
+    const isRead = req.method === "GET" || req.method === "HEAD";
+    if (session.level === "READ" && !isRead && !isPublicPath(pathname, READ_ONLY_WRITE_EXCEPTIONS)) {
+      return isAdminApi
+        ? NextResponse.json({ error: "read_only" }, { status: 403 })
+        : new NextResponse("Kun læseadgang", { status: 403 });
     }
   }
 

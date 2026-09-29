@@ -51,6 +51,10 @@ export function AdminLoginForm() {
       const data = await verifyRes.json();
       if (!verifyRes.ok) throw new Error(data.message ?? "Kunne ikke logge ind med passkey");
 
+      if (data.approvalRequired) {
+        router.push("/admin/login-approval/wait");
+        return;
+      }
       router.push("/admin");
       router.refresh();
     } catch (err) {

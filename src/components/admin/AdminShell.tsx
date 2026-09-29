@@ -488,11 +488,15 @@ function UserMenu({
   locale,
   onLocale,
   onLogout,
+  canManageAdmins,
+  newAdminSignups,
 }: {
   email: string;
   locale: Locale;
   onLocale: (next: Locale) => void;
   onLogout: () => void;
+  canManageAdmins: boolean;
+  newAdminSignups: number;
 }) {
   const [open, setOpen] = useState(false);
   const [countryOpen, setCountryOpen] = useState(false);
@@ -518,9 +522,12 @@ function UserMenu({
         }}
         aria-expanded={open}
         aria-label={email}
-        className="hf-type-body hf-type-strong flex h-8 w-8 items-center justify-center rounded-full bg-hf-green-dark uppercase text-hf-white"
+        className="hf-type-body hf-type-strong relative flex h-8 w-8 items-center justify-center rounded-full bg-hf-green-dark uppercase text-hf-white"
       >
         {email.charAt(0)}
+        {newAdminSignups > 0 && (
+          <span aria-hidden="true" className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border border-hf-white bg-hf-red-dark" />
+        )}
       </button>
       {open && (
         <div className="absolute right-0 top-10 z-50 w-64 rounded-lg border border-hf-tan-dark bg-hf-white p-1.5 shadow-lg">
@@ -528,6 +535,18 @@ function UserMenu({
             <p className="hf-type-small text-text-muted">{t(locale, "nav_signed_in_as")}</p>
             <p className="hf-type-body truncate text-hf-black">{email}</p>
           </div>
+          {canManageAdmins && (
+            <Link
+              href="/admin/admin-users"
+              onClick={() => setOpen(false)}
+              className="hf-type-body flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-text-secondary hover:bg-hf-tan hover:text-text-primary"
+            >
+              <span className="flex-1">{t(locale, "nav_admin_users")}</span>
+              {newAdminSignups > 0 && (
+                <span className="hf-type-small rounded-full bg-hf-red-dark px-1.5 text-hf-white">{newAdminSignups}</span>
+              )}
+            </Link>
+          )}
           <button
             type="button"
             onClick={() => {
@@ -606,6 +625,7 @@ function Breadcrumbs({ locale, pathname }: { locale: Locale; pathname: string })
     }
   }
   if (pathname === "/admin") crumbs.push({ label: t(locale, "nav_overview") });
+  if (matches(pathname, "/admin/admin-users")) crumbs.push({ label: t(locale, "nav_admin_users") });
 
   return (
     <nav aria-label="Breadcrumb" className="hf-type-body hidden min-w-0 items-center gap-1.5 text-text-muted sm:flex">
@@ -629,11 +649,15 @@ export function AdminShell({
   email,
   locale,
   hasOpenUncertainties = false,
+  canManageAdmins = false,
+  newAdminSignups = 0,
   children,
 }: {
   email: string;
   locale: Locale;
   hasOpenUncertainties?: boolean;
+  canManageAdmins?: boolean;
+  newAdminSignups?: number;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -813,7 +837,14 @@ export function AdminShell({
             <Icon name="search" />
           </button>
           <div className="lg:ml-auto">
-            <UserMenu email={email} locale={currentLocale} onLocale={changeLocale} onLogout={logout} />
+            <UserMenu
+              email={email}
+              locale={currentLocale}
+              onLocale={changeLocale}
+              onLogout={logout}
+              canManageAdmins={canManageAdmins}
+              newAdminSignups={newAdminSignups}
+            />
           </div>
         </header>
 

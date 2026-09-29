@@ -2,13 +2,8 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { verifyTotpCode } from "@/lib/admin-totp";
-import {
-  ADMIN_MFA_COOKIE,
-  ADMIN_SESSION_COOKIE,
-  ADMIN_SESSION_MAX_AGE,
-  signAdminSession,
-  verifyAdminMfaPending,
-} from "@/lib/admin-auth";
+import { ADMIN_MFA_COOKIE, verifyAdminMfaPending } from "@/lib/admin-auth";
+import { finishAdminLogin, logAdminLogin, requestInfo } from "@/lib/admin-access";
 import { isLocked, recordFailure, recordSuccess } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
@@ -40,19 +35,10 @@ export async function POST(req: Request) {
   const valid = await verifyTotpCode(user.totpSecret, code);
   if (!valid) {
     recordFailure(rateLimitKey);
+    await logAdminLogin(user.id, "CODE_FAILED", "password+totp", requestInfo(req.headers));
     return NextResponse.json({ message: "Forkert kode" }, { status: 401 });
   }
   recordSuccess(rateLimitKey);
 
-  const sessionToken = await signAdminSession(user.id);
-  const response = NextResponse.json({ ok: true });
-  response.cookies.set(ADMIN_SESSION_COOKIE, sessionToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "lax",
-    path: "/",
-    maxAge: ADMIN_SESSION_MAX_AGE,
-  });
-  response.cookies.delete(ADMIN_MFA_COOKIE);
-  return response;
+  return finishAdminLogin(user, "password+totp", req, (response) => response.cookies.delete(ADMIN_MFA_COOKIE));
 }

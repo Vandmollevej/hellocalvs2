@@ -22,6 +22,7 @@ const DICTIONARY = {
   nav_quality_control: { DA: "Kvalitetskontrol", EN: "Quality control" },
   nav_activities: { DA: "Aktiviteter", EN: "Activities" },
   nav_passkeys: { DA: "Passkeys", EN: "Passkeys" },
+  nav_admin_users: { DA: "Admin-brugere", EN: "Admin users" },
   nav_scan_invites: { DA: "Scan-invites", EN: "Scan invites" },
   nav_logos: { DA: "Logoer", EN: "Logos" },
   nav_api_keys: { DA: "API-nøgler", EN: "API keys" },

@@ -3,13 +3,8 @@ import { cookies } from "next/headers";
 import { verifyAuthenticationResponse } from "@simplewebauthn/server";
 import type { AuthenticationResponseJSON, AuthenticatorTransportFuture } from "@simplewebauthn/server";
 import { prisma } from "@/lib/prisma";
-import {
-  ADMIN_SESSION_COOKIE,
-  ADMIN_SESSION_MAX_AGE,
-  ADMIN_WEBAUTHN_AUTH_CHALLENGE_COOKIE,
-  signAdminSession,
-  verifyWebauthnAuthChallenge,
-} from "@/lib/admin-auth";
+import { ADMIN_WEBAUTHN_AUTH_CHALLENGE_COOKIE, verifyWebauthnAuthChallenge } from "@/lib/admin-auth";
+import { finishAdminLogin } from "@/lib/admin-access";
 import { getWebauthnRelyingParty } from "@/lib/admin-webauthn";
 import { isLocked, recordFailure, recordSuccess } from "@/lib/rate-limit";
 
@@ -76,15 +71,7 @@ export async function POST(req: Request) {
     data: { counter: verification.authenticationInfo.newCounter, lastUsedAt: new Date() },
   });
 
-  const sessionToken = await signAdminSession(passkey.userId);
-  const response = NextResponse.json({ ok: true });
-  response.cookies.set(ADMIN_SESSION_COOKIE, sessionToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "lax",
-    path: "/",
-    maxAge: ADMIN_SESSION_MAX_AGE,
-  });
-  response.cookies.delete(ADMIN_WEBAUTHN_AUTH_CHALLENGE_COOKIE);
-  return response;
+  return finishAdminLogin(passkey.user, "passkey", req, (response) =>
+    response.cookies.delete(ADMIN_WEBAUTHN_AUTH_CHALLENGE_COOKIE),
+  );
 }
