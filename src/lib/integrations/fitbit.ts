@@ -59,9 +59,15 @@ export const fitbit: OAuthProviderAdapter = {
     activitiesUrl.searchParams.set("limit", "100");
     const weightUrl = `https://api.fitbit.com/1/user/-/body/log/weight/date/${formatDate(since)}/${formatDate(new Date())}.json`;
 
-    const [activities, weights] = await Promise.all([
+    const fatUrl = `https://api.fitbit.com/1/user/-/body/log/fat/date/${formatDate(since)}/${formatDate(new Date())}.json`;
+
+    const [activities, weights, fats] = await Promise.all([
       getJson<{ activities?: ActivityLog[] }>(activitiesUrl, accessToken, "Fitbit aktivitets-opslag"),
       getJson<{ weight?: WeightLog[] }>(weightUrl, accessToken, "Fitbit vægt-opslag"),
+      // Fedtprocent er valgfri (kræver en Aria-vægt/manuel log) — fejl må ikke vælte synkroniseringen.
+      getJson<{ fat?: { date: string; time: string; fat: number }[] }>(fatUrl, accessToken, "Fitbit fedt-opslag").catch(() => ({
+        fat: [],
+      })),
     ]);
 
     const items: IntegrationItem[] = [
@@ -78,6 +84,15 @@ export const fitbit: OAuthProviderAdapter = {
       ...(weights.weight ?? []).map((log) => ({
         kind: "weight",
         payload: { source: "FITBIT", weightKg: log.weight, weighedAt: new Date(`${log.date}T${log.time}`).toISOString() },
+      })),
+      ...(fats.fat ?? []).map((log) => ({
+        kind: "metric",
+        payload: {
+          source: "FITBIT",
+          type: "BODY_FAT_PERCENT",
+          value: log.fat,
+          recordedAt: new Date(`${log.date}T${log.time}`).toISOString(),
+        },
       })),
     ];
     return items;

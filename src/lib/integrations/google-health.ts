@@ -21,6 +21,7 @@ const WRITE_SCOPES = {
 type Interval = { startTime: string; endTime: string; startUtcOffset?: string };
 type DataPoint = {
   weight?: { sampleTime: { physicalTime: string }; weightGrams: number };
+  bodyFat?: { sampleTime: { physicalTime: string }; percentage: number };
   steps?: { interval: Interval; count: string | number };
   exercise?: {
     interval: Interval;
@@ -72,6 +73,30 @@ async function weights(accessToken: string, since: Date): Promise<IntegrationIte
               source: "GOOGLE_HEALTH",
               weightKg: p.weight.weightGrams / 1000,
               weighedAt: new Date(p.weight.sampleTime.physicalTime).toISOString(),
+            },
+          },
+        ]
+      : []
+  );
+}
+
+async function bodyFat(accessToken: string, since: Date): Promise<IntegrationItem[]> {
+  const points = await listDataPoints(
+    accessToken,
+    "body-fat",
+    `body_fat.sample_time.physical_time >= "${since.toISOString()}"`,
+    1000
+  );
+  return points.flatMap((p) =>
+    p.bodyFat
+      ? [
+          {
+            kind: "metric",
+            payload: {
+              source: "GOOGLE_HEALTH",
+              type: "BODY_FAT_PERCENT",
+              value: p.bodyFat.percentage,
+              recordedAt: new Date(p.bodyFat.sampleTime.physicalTime).toISOString(),
             },
           },
         ]
@@ -162,6 +187,7 @@ export const googleHealth: OAuthProviderAdapter = {
   async fetchItems(accessToken, since) {
     const results = await Promise.allSettled([
       weights(accessToken, since),
+      bodyFat(accessToken, since),
       exercises(accessToken, since),
       dailySteps(accessToken, since),
     ]);

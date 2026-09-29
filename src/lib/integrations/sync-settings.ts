@@ -27,11 +27,11 @@ export const SYNC_CAPABILITIES: Partial<Record<IntegrationProvider, ProviderSync
     read: ["weight", "bodyFat", "activities", "steps", "energy", "heart", "sleep", "water", "body"],
     write: ["nutrition", "water", "weight", "activities"],
   },
-  GOOGLE_HEALTH: { read: ["weight", "activities", "steps"], write: ["nutrition", "water", "weight"] },
+  GOOGLE_HEALTH: { read: ["weight", "bodyFat", "activities", "steps"], write: ["nutrition", "water", "weight"] },
   STRAVA: { read: ["activities"], write: ["activities"] },
   WITHINGS: { read: ["weight", "bodyFat"], write: [] },
   POLAR: { read: ["activities"], write: [] },
-  FITBIT: { read: ["weight", "activities"], write: [] },
+  FITBIT: { read: ["weight", "bodyFat", "activities"], write: [] },
 };
 
 export function capabilitiesFor(provider: IntegrationProvider): ProviderSyncCapabilities {
