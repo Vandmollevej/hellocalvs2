@@ -5,6 +5,10 @@ import { parseStatsFilter } from "@/lib/admin-stats-range";
 import { StatsFilters } from "@/components/admin/stats/StatsFilters";
 import { StatsBarChart, type ChartSeries } from "@/components/admin/stats/StatsBarChart";
 import { StatsAiSummary } from "@/components/admin/stats/StatsAiSummary";
+import { AnalyticsView, parseAnalyticsRange } from "@/components/admin/stats/AnalyticsView";
+import { AdsView } from "@/components/admin/stats/AdsView";
+import { StatsTabs, parseStatsView } from "@/components/admin/stats/StatsTabs";
+import { AD_STATS_RANGES, type AdStatsRange } from "@/lib/admin-ad-stats";
 
 // Admin "Statistik" (docs/DECISIONS.md 2026-09-27): dashboards med periode-,
 // land/region- og abonnementsfilter øverst. Alle tal beregnes i
@@ -193,6 +197,16 @@ export default async function AdminStatisticsPage({
   if (!admin) redirect("/admin/login");
 
   const params = await searchParams;
+  const view = parseStatsView(params.view);
+  if (view !== "users") {
+    const adRange = AD_STATS_RANGES.some((r) => r.id === params.range) ? (params.range as AdStatsRange) : "7d";
+    return (
+      <div className="flex flex-col gap-6">
+        <StatsTabs active={view} />
+        {view === "traffic" ? <AnalyticsView range={parseAnalyticsRange(params.range)} /> : <AdsView range={adRange} />}
+      </div>
+    );
+  }
   const filter = parseStatsFilter(params);
   const s = await getAdminStatistics(filter);
   const query = new URLSearchParams(
@@ -204,6 +218,7 @@ export default async function AdminStatisticsPage({
 
   return (
     <div className="flex flex-col gap-8">
+      <StatsTabs active="users" />
       <div className="flex flex-col gap-3">
         <div>
           <h1 className="text-lg font-semibold text-text-primary">Statistik</h1>

@@ -3336,3 +3336,10 @@ Kilder på "Mad på latin" skal altid være officielle (Fødevarestyrelsen, Sund
 - "Oplevelse af søvn" vises som bundark (popup, lukkes ved træk ned) i stedet for fuldskærmsside.
 - Der må aldrig bruges "Luk" på overlays/sider i HELLO CAL, selvom HelloFresh gør det — lukning sker ved træk ned.
 - Tallene 1–5 står i skærmens lodrette midte; "Slå fra" står nederst til venstre uden understregning.
+
+## 2026-09-29 — Admin-menuens rækkefølge, Analyse+Statistik samlet, Reklamer
+
+- Menu top→bund: Oversigt, Varegodkendelse, Produkt-database, Retter, Flows, Design, Statistik, Brugere, Indstillinger, Administration, Partnere, Roadmap, Log (Log altid nederst).
+- Sammenfold-ikonet sidder på sidebjælkens kant i hovedsiden (altid synligt), ikke som "Skjul sidebjælke" nederst.
+- Analyse er slået sammen med Statistik: `/admin/statistics` har faner (Brugere og indtjening / Trafik / Reklamer). `/admin/analytics` omdirigerer til Trafik-fanen. Indtjening og betalingsmetoder ligger i fanen Brugere og indtjening.
+- Reklamer: anonym tabel `ad_events` (ingen bruger-id) og `POST /api/ads/event` ({adKey, placement, type IMPRESSION|CLICK}). Der findes endnu ingen reklamevisning i appen, så fanen er tom, til reklamer kalder endpointet.

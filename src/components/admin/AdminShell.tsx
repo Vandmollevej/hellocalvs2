@@ -85,7 +85,6 @@ const NAV: NavEntry[] = [
       { href: "/admin/page-tree", key: "nav_page_tree" },
     ],
   },
-  { kind: "link", href: "/admin/analytics", key: "nav_analytics", icon: "chart" },
   { kind: "link", href: "/admin/statistics", key: "nav_statistics", icon: "chart" },
   {
     kind: "group",

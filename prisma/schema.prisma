@@ -3417,3 +3417,18 @@ model FlowPage {
   @@index([flowId, sortOrder])
   @@map("flow_pages")
 }
+
+// Reklamestatistik (docs/DECISIONS.md 2026-09-29): anonyme visninger/klik pr.
+// reklame og placering. Ingen bruger-id — kun aggregeret statistik i admin.
+model AdEvent {
+  id        String   @id @default(cuid())
+  adKey     String
+  placement String   @default("")
+  type      String
+  country   String?
+  createdAt DateTime @default(now())
+
+  @@index([adKey, createdAt])
+  @@index([createdAt])
+  @@map("ad_events")
+}
