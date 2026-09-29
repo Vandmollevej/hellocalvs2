@@ -34,7 +34,9 @@ import {
   formatSignedKcal,
   formulaMaintenanceEstimate,
   weightAt,
+  deviceDataByDay,
   type EnergyProfile,
+  type HealthMetricSample,
   type WeighIn,
   type WeightChangeEstimate,
 } from "@/lib/weekly-energy-summary";
@@ -334,6 +336,8 @@ export default function CalendarPage() {
   const [sleepDefaults, setSleepDefaults] = useState<SleepDefaults | null>(null);
   const [energyProfile, setEnergyProfile] = useState<EnergyProfile | null>(null);
   const [weighIns, setWeighIns] = useState<WeighIn[]>([]);
+  // Enhedsdata (aktiv energi, skridt) pr. dag — docs/ACTIVITY-PAL.md F4.
+  const [healthMetrics, setHealthMetrics] = useState<HealthMetricSample[]>([]);
   const [weekdaySchedules, setWeekdaySchedules] = useState<Record<number, SleepScheduleEntry>>({});
   const [workShifts, setWorkShifts] = useState<Record<string, WorkShiftEntry>>({});
   const [goals, setGoals] = useState<GoalDTO[]>([]);
@@ -395,6 +399,8 @@ export default function CalendarPage() {
     ),
   );
 
+  const deviceData = useMemo(() => deviceDataByDay(healthMetrics), [healthMetrics]);
+
   const weeklyWeightEstimate = useMemo(() => {
     if (!energyProfile) return null;
     const weekEnd = addDays(weekDays[6], 1);
@@ -409,7 +415,7 @@ export default function CalendarPage() {
       dailyTotals,
       weighIns,
       endExclusive: asOf,
-      formulaMaintenance: formulaMaintenanceEstimate(bmr, activities, energyProfile.activityLevel),
+      formulaMaintenance: formulaMaintenanceEstimate(bmr, activities, energyProfile, deviceData),
     });
     return estimateWeeklyWeightChange({
       days: weekDays,
@@ -418,9 +424,10 @@ export default function CalendarPage() {
       activityByDay: activityKcalByDay(activities),
       bmr,
       adaptiveMaintenance,
-      activityLevel: energyProfile.activityLevel,
+      profile: energyProfile,
+      device: deviceData,
     });
-  }, [energyProfile, weighIns, activities, dailyTotals, weekDays, today]);
+  }, [energyProfile, weighIns, activities, dailyTotals, weekDays, today, deviceData]);
 
   const monthlyStatus = useMemo(() => {
     const isCurrentMonth = year === today.getFullYear() && month === today.getMonth();
@@ -476,6 +483,19 @@ export default function CalendarPage() {
       .finally(() => {
         if (!cancelled) setRegistrationsLoading(false);
       });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/health-metrics")
+      .then(async (response) => (response.ok ? ((await response.json()) as { metrics: HealthMetricSample[] }) : null))
+      .then((data) => {
+        if (!cancelled && data) setHealthMetrics(data.metrics ?? []);
+      })
+      .catch(() => {});
     return () => {
       cancelled = true;
     };
@@ -552,6 +572,8 @@ export default function CalendarPage() {
             age: computeAge(user.birthDate),
             sex: user.sex ?? null,
             activityLevel: user.activityLevel ?? null,
+            palBase: user.palBase ?? null,
+            trainingAllowanceKcal: user.trainingAllowanceKcal ?? null,
           });
         }
         const byWeekday: Record<number, SleepScheduleEntry> = {};

@@ -83,6 +83,10 @@ const STEP_PAL: Record<StepBand, number> = {
 export const PAL_MIN = 1.2;
 export const PAL_MAX = 2.0;
 
+// Kun skridt for en dag (ingen målt aktiv energi): PAL må højst rykkes ±0,15
+// fra baseline mod skridt-PAL (docs/ACTIVITY-PAL.md, datakilde 4).
+export const STEPS_MAX_DAILY_PAL_SHIFT = 0.15;
+
 const STEP_WEIGHT_SELF_REPORTED = 0.3;
 const STEP_WEIGHT_MEASURED = 0.5;
 
@@ -107,6 +111,23 @@ export function questionnairePal(answers: Pick<ActivityAnswers, "work" | "walkSt
 
 export function stepsPal(band: StepBand | null | undefined): number | null {
   return band ? STEP_PAL[band] : null;
+}
+
+export function stepBandForCount(steps: number): StepBand {
+  if (steps < 3000) return "UNDER_3K";
+  if (steps < 5000) return "K3_5";
+  if (steps < 7500) return "K5_7_5";
+  if (steps < 10000) return "K7_5_10";
+  if (steps < 15000) return "K10_15";
+  return "OVER_15K";
+}
+
+/** Dagens PAL, når kun skridt kendes: baseline trukket mod skridt-PAL, højst ±0,15. */
+export function stepsAdjustedPal(basePal: number, steps: number | null | undefined): number {
+  if (steps === null || steps === undefined || !(steps >= 0)) return basePal;
+  const target = STEP_PAL[stepBandForCount(steps)];
+  const shift = Math.max(-STEPS_MAX_DAILY_PAL_SHIFT, Math.min(STEPS_MAX_DAILY_PAL_SHIFT, target - basePal));
+  return round2(clampPal(basePal + shift));
 }
 
 export type PalEstimate = {
@@ -239,6 +260,20 @@ export type DailyEnergyInput = {
 
 function round10(value: number) {
   return Math.round(value / 10) * 10;
+}
+
+/**
+ * Dagens vedligehold uafrundet (samme regler som estimateDailyEnergy):
+ * målt aktiv energi erstatter alt over BMR; ellers BMR × PAL + (logget
+ * aktivitet, eller træningstillægget når intet er logget). Bruges af
+ * kalenderens vægtestimat og kalibreringen.
+ */
+export function maintenanceKcal(input: DailyEnergyInput): number {
+  const measured = input.measuredActiveKcal;
+  if (measured !== null && measured !== undefined && measured > 0) return input.bmr + measured;
+  const logged = input.loggedActivityKcal ?? 0;
+  const allowance = input.trainingAllowanceKcal ?? 0;
+  return input.bmr * input.pal + (logged > 0 ? logged : allowance);
 }
 
 /**

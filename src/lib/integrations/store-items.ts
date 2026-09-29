@@ -98,6 +98,8 @@ export async function storeIntegrationItems(userId: string, items: IntegrationIt
           sportType,
           durationMinutes: Math.max(0, Math.round(num(p.durationMinutes) ?? 0)),
           caloriesBurned: Math.max(0, num(p.caloriesBurned) ?? 0),
+          // Enhedens eget tal (docs/ACTIVITY-PAL.md F3/F4).
+          energySource: "DEVICE",
         },
       });
       stored += 1;

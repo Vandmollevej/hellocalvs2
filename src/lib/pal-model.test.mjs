@@ -5,6 +5,8 @@ import {
   estimateBasePal,
   estimateDailyEnergy,
   levelForPal,
+  maintenanceKcal,
+  stepsAdjustedPal,
   netActivityKcal,
   questionnairePal,
   trainingAllowanceKcalPerDay,
@@ -86,4 +88,17 @@ test("dagens energibehov: tillæg, logget erstatter tillæg, målt erstatter alt
   const plain = estimateDailyEnergy({ bmr: 1700, pal: 1.5 });
   assert.equal(plain.method, "BASELINE");
   assert.equal(plain.kcal, 2550);
+});
+
+test("skridt alene rykker dagens PAL højst ±0,15", () => {
+  assert.equal(stepsAdjustedPal(1.45, 17000), 1.6);
+  assert.equal(stepsAdjustedPal(1.45, 2000), 1.3);
+  assert.equal(stepsAdjustedPal(1.45, 6000), 1.5);
+  assert.equal(stepsAdjustedPal(1.45, null), 1.45);
+});
+
+test("vedligehold pr. dag følger samme regler uafrundet", () => {
+  assert.equal(maintenanceKcal({ bmr: 1700, pal: 1.5, trainingAllowanceKcal: 200 }), 2750);
+  assert.equal(maintenanceKcal({ bmr: 1700, pal: 1.5, trainingAllowanceKcal: 200, loggedActivityKcal: 400 }), 2950);
+  assert.equal(maintenanceKcal({ bmr: 1700, pal: 1.5, trainingAllowanceKcal: 200, measuredActiveKcal: 900 }), 2600);
 });
