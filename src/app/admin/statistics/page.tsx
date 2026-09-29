@@ -7,6 +7,7 @@ import { StatsBarChart, type ChartSeries } from "@/components/admin/stats/StatsB
 import { StatsAiSummary } from "@/components/admin/stats/StatsAiSummary";
 import { AnalyticsView, parseAnalyticsRange } from "@/components/admin/stats/AnalyticsView";
 import { AdsView } from "@/components/admin/stats/AdsView";
+import { HelloDocView } from "@/components/admin/stats/HelloDocView";
 import { StatsTabs, parseStatsView } from "@/components/admin/stats/StatsTabs";
 import { AD_STATS_RANGES, type AdStatsRange } from "@/lib/admin-ad-stats";
 
@@ -203,7 +204,13 @@ export default async function AdminStatisticsPage({
     return (
       <div className="flex flex-col gap-6">
         <StatsTabs active={view} />
-        {view === "traffic" ? <AnalyticsView range={parseAnalyticsRange(params.range)} /> : <AdsView range={adRange} />}
+        {view === "traffic" ? (
+          <AnalyticsView range={parseAnalyticsRange(params.range)} />
+        ) : view === "doc" ? (
+          <HelloDocView range={adRange} />
+        ) : (
+          <AdsView range={adRange} />
+        )}
       </div>
     );
   }

@@ -1,15 +1,16 @@
 import Link from "next/link";
 
-export type StatsView = "users" | "traffic" | "ads";
+export type StatsView = "users" | "traffic" | "ads" | "doc";
 
 const TABS: { id: StatsView; label: string; href: string }[] = [
   { id: "users", label: "Brugere og indtjening", href: "/admin/statistics" },
   { id: "traffic", label: "Trafik", href: "/admin/statistics?view=traffic" },
   { id: "ads", label: "Reklamer", href: "/admin/statistics?view=ads" },
+  { id: "doc", label: "Hello Doc", href: "/admin/statistics?view=doc" },
 ];
 
 export function parseStatsView(value: string | string[] | undefined): StatsView {
-  return value === "traffic" || value === "ads" ? value : "users";
+  return value === "traffic" || value === "ads" || value === "doc" ? value : "users";
 }
 
 export function StatsTabs({ active }: { active: StatsView }) {
