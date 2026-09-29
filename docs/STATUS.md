@@ -2,6 +2,10 @@
 
 Last updated: 2026-09-29
 
+## 2026-09-29: Plan for aktivitetsniveau, PAL og kaloriemål
+
+- Ny plan `docs/ACTIVITY-PAL.md` + beslutning i DECISIONS.md + række G-PAL i OPEN-TASKS.md. Intet kode bygget; venter på brugerens godkendelse, derefter F0–F6 (beregningsmodul, onboarding, MET, enhedsdata, kalibrering, kaloriemål).
+
 ## 2026-09-29: Admin-brugere
 
 - Ny side `/admin/admin-users` (profil-menuen): invitér (24 t-link), læseadgang/administrator, deaktivér, IP-begrænsning pr. bruger, login-log (tid/sted/IP/udstyr) og godkendt udstyr. Se DECISIONS.md.

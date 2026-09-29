@@ -239,6 +239,14 @@ Filer: `src/components/OnboardingWizard.tsx`. Krav i `docs/DESIGN_V2.md` §8.
 `src/components/hf/PointsPromoBanner.tsx`, `src/i18n/locales/*.json`, `src/lib/vault/webauthn-client.ts`.
 Nogle hører muligvis til login-/Mailjet-sessionerne på konto B. Rør dem ikke uden at læse diff'en først.
 
+## G-PAL — Aktivitetsniveau, energibehov og kaloriemål
+Filer: `docs/ACTIVITY-PAL.md`, `src/lib/activity-level.ts`, nye `src/lib/pal-model*`/`energy-budget*`, aktivitetstrinnene i `src/components/OnboardingWizard.tsx`, `src/lib/goals.ts`. Ændringer i kalender/statistik (erstat `DAILY_KCAL_GOAL`) kræver aftale med G1/G2.
+Ejer: cloud-session (2026-09-29)
+
+| Id | Opgave | Status | Næste skridt |
+| --- | --- | --- | --- |
+| pal-plan | Plan for aktivitetsniveau, PAL, MET, kalibrering og kaloriemål (`docs/ACTIVITY-PAL.md`); erstatter de 5 sider i `onboarding-integration` | Venter på bruger | Brugeren godkender planen; derefter F0-afklaringer og F1 (beregningsmodul + tests) |
+
 ## G-FAM — Familieabonnement og børneprofiler
 Filer: `docs/FAMILY.md`, Prisma-skema (Family*, ProfileAccessLog), `src/lib/family*.ts`, `src/lib/session.ts`, `src/app/api/family/**`, `src/app/profile/family/**`, profilvælger/panel-komponenter, dagbogs-API'erne der skal følge den valgte profil.
 Ejer: cloud-session `claude/lucid-bell-s5vyhv` (2026-09-25)
