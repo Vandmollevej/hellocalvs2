@@ -682,7 +682,9 @@
     "stepNutrition": "Energi",
     "stepIngredients": "Indhold",
     "stepDone": "{step}: taget og aflæst",
-    "bothFound": "Energi og indhold fundet på samme billede"
+    "bothFound": "Energi og indhold fundet på samme billede",
+    "chooseObject": "Tryk på den vare, der skal være i fokus",
+    "useWholePhoto": "Brug hele billedet"
   },
   "foods": {
     "title": "Madvarer",

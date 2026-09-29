@@ -72,6 +72,14 @@ grøn tekst. Brandet står ikke længere under produktnavnet, og certificeringer
   Et logo i fotoet bliver altid et BRAND_LOGO-fritskrabningsjob (logo-kandidat).
   Brand og variant fra stregkode-fotoet bruges kun, når forsiden ikke gav dem.
   Resultatet gemmes i BARCODE-rækkens `prediction.logo`.
+## 2026-09-28: Flere objekter i kameraet — brugeren vælger fokus
+
+- Forsidefotoet i kameraflowet objektgenkendes (OpenAI vision). Ved to eller flere
+  objekter markeres hvert med en grøn cirkel, og brugeren trykker på den vare, der
+  skal være fokus. Ét objekt eller fejl: hele fotoet bruges uden spørgsmål.
+- Undtagelse fra "ingen beskæring" (2026-09-17): efter et aktivt valg beskæres
+  forsidefotoet til objektet med 15 % luft. "Brug hele billedet" bevarer det fulde foto.
+
 ## 2026-09-28: Open Food Facts kun som backup ved scanning
 
 - Brugerens krav: Open Food Facts må kun vises ved scanning som backup, aldrig i søgeresultater.

@@ -315,6 +315,15 @@ PRODUCT_FRONT-fritskrabningsjob for det eksterne billede (https), som
 - Ny side `/e-numre` med alle E-numre fra `additives`-tabellen; hvert har anchor `#e330` osv.
 - Klik på et E-nummer på produktsiden linker nu til `/e-numre#<nummer>` (i stedet for popup) og scroller/fremhæver stoffet, når listen er hentet.
 
+## 2026-09-28: Flere objekter i kameraet (opgave 16)
+
+- Forside-trinnet i kameraflowet: fotoet sendes til `POST /api/products/detect-objects`
+  (OpenAI vision, bokse 0..1). Ved 2+ objekter vises grønne cirkler; brugeren trykker
+  på den vare, der skal være fokus, og fotoet beskæres til den (15 % luft), før OCR
+  og oprettelse. "Brug hele billedet" springer valget over. Fejler kaldet, bruges hele
+  fotoet som før. Beslutning: DECISIONS 2026-09-28.
+- Lint, typecheck og build kørt; ikke testet på telefon (kræver login + OpenAI-nøgle).
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen
