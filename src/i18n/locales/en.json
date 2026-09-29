@@ -336,7 +336,8 @@
     "intro": "Choose which view the calendar opens in by default.",
     "optionMonth": "Month view",
     "optionWeek": "Week view",
-    "optionList": "List view"
+    "optionList": "List view",
+    "optionDay": "Day view"
   },
   "displaySettings": {
     "title": "Recommended limits",
@@ -1824,6 +1825,8 @@
     }
   },
   "onboarding": {
+    "calendarViewQuestion": "Which view should the calendar open in?",
+    "calendarViewHint": "You can change it anytime under Settings → Display → Calendar view.",
     "stepProgress": "Step {current} of {total} completed",
     "sleepPatternQuestion": "Do you have a regular sleep pattern?",
     "shiftWorkQuestion": "Is that due to varying work hours or night work?",

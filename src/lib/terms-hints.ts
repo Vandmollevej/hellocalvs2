@@ -43,7 +43,7 @@ export function termsParagraphs(text: string) {
 }
 
 // Startguidens trin (samme id'er som i OnboardingWizard).
-export type OnboardingTermsStep = "sleep-pattern" | "shift-work" | "daily-log-preference" | "health-import";
+export type OnboardingTermsStep = "sleep-pattern" | "shift-work" | "daily-log-preference" | "calendar-view" | "health-import";
 
 export const ONBOARDING_TERMS: Record<OnboardingTermsStep, TermsHint> = {
   "sleep-pattern": {
@@ -67,6 +67,13 @@ export const ONBOARDING_TERMS: Record<OnboardingTermsStep, TermsHint> = {
     paragraphs: [
       "Her vælger du, om din dag i Hello Cal starter og slutter ved dine arbejdstider eller ved dine sovetider.",
       "Valget ændrer kun, hvordan dine egne registreringer samles pr. dag. Selve registreringerne bliver ikke ændret eller slettet, og du kan skifte når som helst.",
+    ],
+  },
+  "calendar-view": {
+    anchor: "hvad-er-hello-cal",
+    paragraphs: [
+      "Valget af kalendervisning gemmes kun på denne enhed og bestemmer blot, hvordan kalenderen åbner.",
+      "Du kan altid skifte visning i kalenderen eller ændre standarden under Indstillinger → Visning → Kalendervisning.",
     ],
   },
   "health-import": {

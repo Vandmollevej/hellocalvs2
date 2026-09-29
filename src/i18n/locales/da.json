@@ -336,7 +336,8 @@
     "intro": "Vælg hvilken visning kalenderen skal åbne i som standard.",
     "optionMonth": "Månedsvisning",
     "optionWeek": "Ugevisning",
-    "optionList": "Listevisning"
+    "optionList": "Listevisning",
+    "optionDay": "Dagsvisning"
   },
   "displaySettings": {
     "title": "Anbefalede grænser",
@@ -1824,6 +1825,8 @@
     }
   },
   "onboarding": {
+    "calendarViewQuestion": "Hvilken visning skal kalenderen åbne i?",
+    "calendarViewHint": "Du kan altid ændre det under Indstillinger → Visning → Kalendervisning.",
     "stepProgress": "Trin {current} af {total} gennemført",
     "sleepPatternQuestion": "Har du et fast søvnmønster?",
     "shiftWorkQuestion": "Skyldes det varierende arbejdstider eller natarbejde?",

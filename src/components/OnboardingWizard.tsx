@@ -5,6 +5,11 @@ import { BottomSheet, BottomSheetCloseButton, BottomSheetDots, useBottomSheetClo
 import { TermsSheet } from "@/components/hf/TermsSheet";
 import { useTranslation } from "@/i18n/LocaleProvider";
 import { ONBOARDING_TERMS } from "@/lib/terms-hints";
+import {
+  CALENDAR_DEFAULT_VIEWS,
+  saveDefaultCalendarView,
+  useDefaultCalendarView,
+} from "@/lib/calendar-view-pref";
 
 // Hvordan arket blev lukket — bestemmer hvad der gemmes, når glid-ud-
 // animationen er færdig. Træk ned/scrim/Escape tæller som "Påmind mig senere".
@@ -25,17 +30,19 @@ type OnboardingUser = {
 // The order of steps the user can actually encounter. "Shift work" and
 // "daily logging" are automatically skipped if the user answers that they
 // have a regular sleep pattern. See docs/UI.md "Onboarding og hjælp" — only
-// these steps are specified today; more can be added to the wizard later.
+// these steps are specified today (+ "calendar-view", user request 2026-09-29); more can be added to the wizard later.
 type StepId =
   | "sleep-pattern"
   | "shift-work"
   | "daily-log-preference"
+  | "calendar-view"
   | "health-import";
 
 const ALL_STEPS: StepId[] = [
   "sleep-pattern",
   "shift-work",
   "daily-log-preference",
+  "calendar-view",
   "health-import",
 ];
 
@@ -60,6 +67,7 @@ export function OnboardingWizard({
   const [stepIndex, setStepIndex] = useState(0);
   const [canDismissPermanently, setCanDismissPermanently] = useState(false);
   const exitRef = useRef<ExitReason>("remind");
+  const calendarView = useDefaultCalendarView();
 
   useEffect(() => {
     let cancelled = false;
@@ -200,6 +208,25 @@ export function OnboardingWizard({
                   save({ dailyLogPreference: "SLEEP_TIMES" });
                 }}
               />
+            </div>
+          </div>
+        )}
+
+        {currentStep === "calendar-view" && (
+          <div className="flex flex-col gap-4">
+            <h2 id="onboarding-title" className="hf-type-body-lg hf-heading text-hf-black">
+              {t("onboarding.calendarViewQuestion")}
+            </h2>
+            <p className="hf-type-body text-text-secondary">{t("onboarding.calendarViewHint")}</p>
+            <div className="grid grid-cols-2 gap-3">
+              {CALENDAR_DEFAULT_VIEWS.map((view) => (
+                <ChoiceButton
+                  key={view}
+                  label={t(`calendarViewSettings.option${view[0].toUpperCase()}${view.slice(1)}`)}
+                  selected={calendarView === view}
+                  onClick={() => saveDefaultCalendarView(view)}
+                />
+              ))}
             </div>
           </div>
         )}

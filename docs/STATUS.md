@@ -4894,3 +4894,9 @@ Lint + build grønne; ikke verificeret i browser (ingen database).
 statistik og knappen i kalenderen, indtil der er en volumengrænse (se
 DECISIONS.md). Næste skridt: indfør grænser og sæt flaget til `true`.
 - 2026-09-28: Opgave 32 (varesidens titel/varetype/branding) implementeret i `AddProductView.tsx` — se DECISIONS 2026-09-28. Certifikatlogoerne er forenklede badges; rigtige logofiler kan erstatte dem i `CertificationLogo.tsx`.
+
+## 2026-09-29 — Kalendervisning: "Dag" + trin i opsætningsguiden
+
+- Indstillinger → Visning → Kalendervisning har nu fire valg: Liste, Måned, Uge, Dag (`src/lib/calendar-view-pref.ts`). "Dag" åbner dagens fuldskærms dagsvisning (`DayDetails`) når kalenderen indlæses.
+- Opsætningsguiden (`OnboardingWizard`) har fået trinnet "calendar-view" før sundhedsimport, så standardvisningen vælges ved opstart.
+- Lint og build kørt grønt.
