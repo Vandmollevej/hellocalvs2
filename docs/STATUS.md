@@ -339,6 +339,13 @@ Mens et foto analyseres i kameraflowet viser `ProductCaptureFlow` nu `ScanningOv
 - Efter deploy kan en hård genindlæsning/rydning af browser-cache være
   nødvendig, fordi `/favicon.ico` caches uden versions-hash.
 
+## 2026-09-28: Scroll-hjul snapper præcist igen (opgave 8)
+
+- `WheelPicker` og `BirthDatePicker` bruger ny `useWheelSnap`-hook: tallet
+  aflæses først ved `scrollend` (250 ms fallback), hjulet justeres ikke udefra
+  under scroll, og hvert tal har `snap-always`. Lint og build kørt; ikke
+  testet på fysisk telefon.
+
 ## 2026-09-28: Open Food Facts ude af søgningen
 
 - Produktsøgningen viser ikke længere Open Food Facts-varer og laver ingen
